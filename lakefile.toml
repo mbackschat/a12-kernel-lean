@@ -1,0 +1,6 @@
+name = "a12-kernel-lean"
+version = "0.1.0"
+defaultTargets = ["A12Kernel"]
+
+[[lean_lib]]
+name = "A12Kernel"

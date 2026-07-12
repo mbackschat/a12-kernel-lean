@@ -1,0 +1,11 @@
+/-
+Root of the `A12Kernel` library — a clean-room Lean 4 executable specification of
+the A12 kernel's validation & computation semantics.
+
+The language-neutral semantics live in `spec/` (start at `spec/SEMANTICS-MAP.md`);
+the sibling repos serve as oracle (`../a12-kernel`) and knowledge source
+(`../a12-rulekit`). See `CLAUDE.md` for the source-of-truth hierarchy and the
+clean-room / EUPL boundary that governs how they may be used.
+-/
+import A12Kernel.Basic
+import A12Kernel.Core
