@@ -10,7 +10,7 @@ The language-neutral semantics live in [`spec/`](spec/) — start at [`spec/SEMA
 
 ## Goal & role
 
-**A proved reference oracle, executable-first, with proofs added where they pay** (decided 2026-07-12). Build the `#eval`-able reference evaluator first, differential-tested against the engine and by replaying `../a12-rulekit/corpus`; add declarative-judgment + refinement proofs incrementally (verdict-algebra laws, monotonicity, partial-validation & polarity one-sided soundness). Lean is the ecosystem's formal semantics-of-record — *not* a replacement for the shipped Kotlin interpreter. The concrete encoding decisions, their rationale, and what was adopted / rejected live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); read it before extending the core types.
+**A proved reference oracle, executable-first, with proofs added where they pay** (decided 2026-07-12). Build the `#eval`-able reference evaluator first, differential-tested against the engine and by replaying `../a12-rulekit/corpus`; add declarative-judgment + refinement proofs incrementally (verdict-algebra laws, monotonicity, partial-validation & polarity one-sided soundness). Lean is the ecosystem's formal semantics-of-record — *not* a replacement for the shipped Kotlin interpreter. The concrete encoding decisions, their rationale, and what was adopted / rejected live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); read it before extending the core types. The *why Lean, and what it buys us* argument is in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
 
 ## ⚠️ HARD RULE — clean-room reimplementation; never link, call, or transcribe the kernel
 
