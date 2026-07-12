@@ -19,7 +19,7 @@ This is a **licensing boundary, not a preference**, and it is the same rule a12-
 - **Never** link, call, or ship the kernel (or a JS-kernel binding) from this project, and **never** transcribe a kernel *source expression* into Lean.
 - **Do** read the kernel — and a12-rulekit's interpreter — to *learn the exact behaviour*, then write **original** Lean and lock it against that behaviour with property/differential tests. Reading the source to *understand* (and to find surprising special cases) is encouraged; the *fix* is never a transliteration. **Copy the mechanism, never the expression.**
 
-Because this project's source ships no kernel code, it can carry a permissive license of the owner's choice — a12-rulekit's source is MIT for exactly this reason (see [`../a12-rulekit/docs/LICENSING.md`](../a12-rulekit/docs/LICENSING.md)). No `LICENSE` is committed yet: that is the owner's call; MIT would match the A12 OSS family.
+Because this project's source ships no kernel code, it is licensed **MIT** (see [`LICENSE`](LICENSE)) — matching the A12 OSS family (a12-rulekit's source is MIT for the same reason; see [`../a12-rulekit/docs/LICENSING.md`](../a12-rulekit/docs/LICENSING.md)).
 
 ## ⚠️ HARD RULE — no machine-specific data in committed files
 
