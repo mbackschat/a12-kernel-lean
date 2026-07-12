@@ -66,26 +66,7 @@ The guard-checked hub is [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANT
 
 ## The `§n` drill-down index
 
-Per area: our prose, the a12-rulekit canonical source, whether machine-readable facets / replay vectors exist, and the kernel runtime class holding the mechanism. For the exhaustive per-`§n` lock-test list, follow a12-rulekit's guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (don't duplicate it — it re-derives from the live surface).
-
-| § | Area | Our prose | Canonical (a12-rulekit) | Facet | Corpus | Kernel class (mechanism) |
-|---|---|---|---|---|---|---|
-| §1 | Truth / logic | [`spec/02`](../spec/02-logic-and-formal-errors.md) | `KERNEL-SEMANTICS §1` | — | — | `ValidierungsErgebnis` (combineUND/ODER), `DreiWertBool` |
-| §2 | Empty values | [`spec/03`](../spec/03-empty-and-required.md) | `§2` | `emptyOperand`, `aggregateIdentity` | — | `VkBigDecimal` (empty sentinels), `NumberCombiner` |
-| §3 | Formal errors / unknown | [`spec/02`](../spec/02-logic-and-formal-errors.md) | `§3` | — | — | `FormalChecker`, `VkBigDecimal` (`NICHT_PRUEF_REL_ZAHL`) |
-| §4 | Required | [`spec/03`](../spec/03-empty-and-required.md) | `§4` | — | — | generated mandatory rule; `IndexFieldCache` |
-| §5 | Numbers / decimals | [`spec/04`](../spec/04-numbers-and-decimals.md) | `§5` | `boundary` | `comparison` | `VkBigDecimal` (scale-19, `MathContext(50)`, divide), `BedingungsOperatorHelper.vergleiche` |
-| §6 | Dates / time | [`spec/05`](../spec/05-dates-and-time.md) | `§6` | `boundary` | `clock` | `BedingungsOperatorHelper` (add/diff/extract), `DateUtil.clearTime` |
-| §7 | Strings / patterns | [`spec/06`](../spec/06-strings-and-enumerations.md) | `§7` | — | — | string conversion (`kernel-conversion-java`), `VkString` |
-| §8 | Enumerations | [`spec/06`](../spec/06-strings-and-enumerations.md) | `§8` | — | — | `BedingungsOperatorHelper` (compare by stored value), value-list |
-| §9 | Repetition / iteration | [`spec/07`](../spec/07-repetition-and-iteration.md) | `§9` | `iterationRange` | `compute`, `fuzz` | `EntityIterator`/`KontextIterator`/`EbenenIterator`, `Combiner` |
-| §10 | Paths / references | [`spec/08`](../spec/08-paths-and-references.md) | `§10` | — | — | codegen path resolution (`SemanticIndexLevelVisitor`); runtime index caches |
-| §11 | Computations | [`spec/09`](../spec/09-computations.md) | `§11` | — | `compute`, `fuzz` | `CalculationController`/`CalculationCommand`/`CalculationCache` |
-| §12 | Validation / polarity | [`spec/10`](../spec/10-validation-and-polarity.md) | `§12` | `polarity` | `partial` | `ValidierungsErgebnis` (WF/AF), `VkBigDecimal.kannGroesser/KleinerWerden` |
-| §13 | Interpolation | [`spec/11`](../spec/11-messages-and-custom.md) | `§13` | — | — | `kernel-core-service` errortext grammar; message rendering |
-| §14 | CustomCondition | [`spec/11`](../spec/11-messages-and-custom.md) | `§14` | — | — | custom-condition SPI (`ICustomCondition`) |
-
-Concrete syntax (lexing/keywords/directives) is outside the `§n` taxonomy → our [`spec/12`](../spec/12-concrete-syntax.md); a12-rulekit locks it under "Outside the taxonomy" (`ParserDiffTest`, directive/comment parse tests).
+The per-`§n` map — which a12-rulekit source, catalog facet, corpus family, and kernel class carries each area — lives in [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) §9, kept inside the spec map so it doubles as a live index from the prose into ground truth. For the exhaustive per-`§n` lock-test list, follow a12-rulekit's guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (it re-derives from the live surface, so it never rots).
 
 ## What the coverage tells us
 

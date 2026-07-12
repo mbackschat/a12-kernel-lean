@@ -2,7 +2,7 @@
 
 This is the entry point to a standalone description of how the **A12 kernel's validation/computation language evaluates**, written so a future reader with no access to the source project can (a) understand the semantics precisely and (b) reimplement them — the working assumption is **Lean 4** as the eventual target, but the content is a language-neutral specification with Lean-flavoured modelling notes layered on top.
 
-> **How to read this set.** This file is the *map*: the mental model, the taxonomy, the difficulty ranking, the cross-cutting invariants, the recommended Lean core types, and a glossary. Each numbered companion file deep-dives one area. You do **not** need any other repository or document — everything needed to reason about (and reimplement) the semantics is inside this folder. Where a companion file exists it is linked; where it is still to be written the map entry already states the essential behaviour.
+> **How to read this set.** This file is the *map*: the mental model, the taxonomy, the difficulty ranking, the cross-cutting invariants, the recommended Lean core types, and a glossary. Each numbered companion file deep-dives one area. You do **not** need any other repository or document to *understand or reimplement* the semantics — everything needed to reason is inside this folder; the sole exception is [§9](#9-drilling-into-the-authoritative-sources), an optional layer for *verifying* claims against the real engine that points to the sibling repos. Where a companion file exists it is linked; where it is still to be written the map entry already states the essential behaviour.
 
 ---
 
@@ -256,3 +256,28 @@ Self-contained definitions of the recurring vocabulary (the deep-dive files assu
 | [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md) | the consolidated Lean formalization plan | ✅ written |
 
 The status column is updated as files land. Read in file order for a first pass; the map plus any single deep-dive is self-contained for a targeted question.
+
+---
+
+## 9. Drilling into the authoritative sources
+
+An **optional verification layer** — unlike §0–§8, it points *outside* this folder and assumes the sibling repos ([`../../a12-kernel`](../../a12-kernel), [`../../a12-rulekit`](../../a12-rulekit)) are checked out alongside. The prose above is enough to *understand and reimplement*; this section is for *verifying* a claim against the real engine. It is keyed by the same `§n` taxonomy: for each area, the canonical a12-rulekit prose ([`KERNEL-SEMANTICS.md`](../../a12-rulekit/docs/KERNEL-SEMANTICS.md) + [`KERNEL-FINDINGS.md`](../../a12-rulekit/docs/KERNEL-FINDINGS.md)), whether a machine-readable catalog facet or a replayable corpus family exists, and the kernel runtime class holding the mechanism. Repo inventory + the general drill chain: [`../docs/SOURCES.md`](../docs/SOURCES.md). For the exhaustive per-`§n` lock-test list, follow a12-rulekit's guard-checked [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (it re-derives from the live surface, so it never rots).
+
+| § | Area | Canonical (a12-rulekit `§n`) | Facet | Corpus | Kernel class (mechanism) |
+|---|---|---|---|---|---|
+| §1 | Truth / logic | §1 | — | — | `ValidierungsErgebnis` (combineUND/ODER), `DreiWertBool` |
+| §2 | Empty values | §2 | `emptyOperand`, `aggregateIdentity` | — | `VkBigDecimal` (empty sentinels), `NumberCombiner` |
+| §3 | Formal errors / unknown | §3 | — | — | `FormalChecker`, `VkBigDecimal` (`NICHT_PRUEF_REL_ZAHL`) |
+| §4 | Required | §4 | — | — | generated mandatory rule; `IndexFieldCache` |
+| §5 | Numbers / decimals | §5 | `boundary` | `comparison` | `VkBigDecimal` (scale-19, `MathContext(50)`, divide), `BedingungsOperatorHelper.vergleiche` |
+| §6 | Dates / time | §6 | `boundary` | `clock` | `BedingungsOperatorHelper` (add/diff/extract), `DateUtil.clearTime` |
+| §7 | Strings / patterns | §7 | — | — | string conversion (`kernel-conversion-java`), `VkString` |
+| §8 | Enumerations | §8 | — | — | `BedingungsOperatorHelper` (compare by stored value), value-list |
+| §9 | Repetition / iteration | §9 | `iterationRange` | `compute`, `fuzz` | `EntityIterator`/`KontextIterator`/`EbenenIterator`, `Combiner` |
+| §10 | Paths / references | §10 | — | — | codegen path resolution (`SemanticIndexLevelVisitor`); runtime index caches |
+| §11 | Computations | §11 | — | `compute`, `fuzz` | `CalculationController`/`CalculationCommand`/`CalculationCache` |
+| §12 | Validation / polarity | §12 | `polarity` | `partial` | `ValidierungsErgebnis` (WF/AF), `VkBigDecimal.kannGroesser/KleinerWerden` |
+| §13 | Interpolation | §13 | — | — | `kernel-core-service` errortext grammar |
+| §14 | CustomCondition | §14 | — | — | custom-condition SPI (`ICustomCondition`) |
+
+Machine-readable facets exist for only §2 / §5 / §6 / §9 / §12, and a replayable corpus for only §5 / §6 / §9 / §11 / §12; elsewhere the ground truth is the canonical prose + findings + the kernel class. Concrete syntax (lexing, keywords, directives) sits outside the taxonomy → [`12-concrete-syntax.md`](12-concrete-syntax.md) here; a12-rulekit locks it under its "Outside the taxonomy" lane.
