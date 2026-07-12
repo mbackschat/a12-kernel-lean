@@ -11,3 +11,5 @@ import A12Kernel.Basic
 import A12Kernel.Core
 import A12Kernel.Cell
 import A12Kernel.Document
+import A12Kernel.Proofs
+import A12Kernel.Conformance

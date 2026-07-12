@@ -107,7 +107,9 @@ The **"Only if the Parent Group is filled"** option changes *which* group is ref
 
 ### B.2 Required manifests as a *formal error*
 
-A required-by-checkbox, unfilled field produces a **formal error** — so the field becomes "unknown" ([§3](02-logic-and-formal-errors.md)). That is *stronger* than the equivalent author-written `FieldNotFilled(F)`, which leaves the field evaluable. The required-and-empty "unknown" is branch-scoped like any formal error: `[ReqNum] < 100` is suppressed, but `[ReqNum] < 100 Or <true>` still fires.
+A required-by-checkbox, unfilled field eventually produces a **formal error** — so the field becomes "unknown" to authored validation rules ([§3](02-logic-and-formal-errors.md)). That is *stronger* than the equivalent author-written `FieldNotFilled(F)`, which leaves the field evaluable. The required-and-empty "unknown" is branch-scoped like any formal error: `[ReqNum] < 100` is suppressed, but `[ReqNum] < 100 Or <VALUE-true>` still fires.
+
+The generated rule and the formal finding cannot be installed as one eager check. Start with the base checked cells, where `formalCheck` has applied only ordinary local checks. Evaluate the generated mandatory condition against that base view and retain its `mandatoryField` hit/message. Only on a hit, and only after retaining the message, annotate the empty target cell with the validation-scoped `.required` finding used by subsequent authored rules. If the annotation came first, the generated rule's own `FieldNotFilled(F)` would read UNKNOWN, suppress itself, and never produce the mandatory message: requiredness would be defined by a circular self-suppression.
 
 ⚠ **The compute/validate asymmetry.** For *validation*, a required-and-empty cell is UNKNOWN (a formal error). For *computation*, the same cell reads as **plainly empty** (a number reads `0`) — compute does not treat "required" as invalidity. This asymmetry is load-bearing in [§11](09-computations.md).
 
@@ -126,7 +128,7 @@ A duplicate-flagged cell enters the third state ([§3](02-logic-and-formal-error
 
 Because the engine generates both checks, a model must **not** also author the equivalent rules — they would double up. (The index field is also the join key for parallel iteration and the semantic index; [§9](07-repetition-and-iteration.md).)
 
-> **Lean modelling note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** the formal-check sources of [§3.B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). Concretely: a `required` flag emits (i) a `mandatoryField` rule with the ancestor-decided condition and (ii) a formal-check that marks the required-and-empty cell `notCheckRelevant` *for validation* (but leaves compute reading it empty — encode that as the formal-check being *validation-scoped*). An `indexFieldName` emits the mandatory rule, the per-parent-row uniqueness check (marking *all* duplicate participants `notCheckRelevant`), and registers the join key. Doing this as desugaring keeps the evaluator's core small and mirrors how the real engine treats these as generated, not special-cased.
+> **Lean modelling note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3.B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). Concretely, a `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base `formalCheck` result, retains any hit/message, and only on a hit adds `.required` to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule, the per-parent-row uniqueness check (marking *all* duplicate participants `notCheckRelevant`), and registers the join key. Doing this as desugaring keeps the evaluator's core small and mirrors how the real engine treats these as generated, not special-cased.
 
 ---
 
@@ -136,5 +138,5 @@ Because the engine generates both checks, a model must **not** also author the e
 - [ ] The per-operator overrides (concat, `Length`, patterns, extractors, value-list, counts, operand-list `Min`/`Max`, aggregates) each behave per A.2.
 - [ ] All-empty aggregate **identities** per kind (NUMBER→`0`, DATE min/max→no value, `FirstFilledValue`→by kind).
 - [ ] The **row gate**: substitutions only inside content-bearing instances; instantiated repeatable rows *are* content.
-- [ ] `required` desugars to the ancestor-decided generated rule **and** a validation-scoped formal error; compute reads the cell empty.
+- [ ] `required` desugars to the ancestor-decided generated rule; validation evaluates and retains that rule's message on base checked cells before adding the target's validation-scoped `.required` finding, and computation reads the cell empty.
 - [ ] `indexFieldName` desugars to mandatory + per-parent-row uniqueness (every duplicate flagged), and registers the join key.

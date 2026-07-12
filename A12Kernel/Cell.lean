@@ -1,7 +1,7 @@
 /- # A12Kernel.Cell — the phase-sensitive cell model
 
-Refines `spec/13`'s three-state `CellState` (empty ≠ invalid) into two levels: an
-invariant `CheckedCell` (raw presence + parsed value + formal findings), and a
+Implements `spec/13`'s phase-sensitive cell boundary as two levels: an invariant
+`CheckedCell` (raw presence + parsed value + formal findings), and a
 *phase-indexed* read producing a `CellObservation`, where the same formal invalidity
 surfaces as `unknown` in validation but `poison` in computation.
 
@@ -49,9 +49,9 @@ inductive CellObservation where
   | poison  (cause : FormalCause)   -- computation face: aborts the computing instance
   deriving Repr, DecidableEq
 
--- Next (Semantics stage): the total functions
---   formalCheck : FieldPolicy → RawCell     → CheckedCell
---   observeCell : Phase → FieldPolicy → CheckedCell → CellObservation
+-- Implemented in `A12Kernel.Semantics.Observation` as the total functions
+--   formalCheck : FieldPolicy → RawCell → CheckedCell
+--   observeCell : Phase → CheckedCell → CellObservation
 -- neither of which may collapse the three states into `Option`.
 
 end A12Kernel

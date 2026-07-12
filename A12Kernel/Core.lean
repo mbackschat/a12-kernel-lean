@@ -109,7 +109,7 @@ structure NumField where
     (`7` vs `7.00`) is a separate rendered-string concern, not carried here. Arithmetic
     applies explicit rounding (scale-19 `HALF_UP` for compares, `MathContext(50)` for
     intermediates) at the `spec/04` points, so exactness never silently diverges from the
-    engine. (`spec/13` §1(c)) -/
+    engine. (`spec/13` §1) -/
 inductive Value where
   | num  (d : Rat)
   | str  (s : String)

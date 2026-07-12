@@ -1,118 +1,117 @@
-# 13 — The Lean encoding guide (the consolidated plan)
+# 13 — The Lean encoding guide
 
-This gathers the per-file `Lean modelling note` callouts into one actionable head-start for a Lean 4 formalization. It is opinionated: it recommends a **type design**, names the **encoding traps** that break naive attempts, proposes a **staged build order**, and lists the **properties worth proving/testing**. Read the deep-dive files for the *why* behind each; this is the *how to start*.
+This consolidates the per-file `Lean modelling note` callouts into an actionable implementation plan. It names the representation choices, the encoding traps that make plausible implementations diverge, the staged build order, and the evidence/proof gate for each semantic slice. Read the deep dives for the behavioral rationale; this document owns the order in which the Lean theory should grow.
 
-The stance is *semantics-first*: the goal is a faithful **executable specification** (`#eval`-able, property-testable) whose behaviour matches the engine — proofs about it are a later, optional layer that this design tries not to obstruct.
+The stance is semantics-first and executable-first, but proofs are not an optional afterthought. Each stage produces a small `#eval`-able reference meaning, engine-backed evidence, exact theorem obligations for the supported fragment, and checked non-laws. [`../docs/LEAN-FORMALIZATION.md`](../docs/LEAN-FORMALIZATION.md) defines the project-wide claim boundaries and required proof spine; [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) owns the concrete representation decisions.
 
 ---
 
-## 1. The core types
+## 1. The semantic foundations
 
-Six types carry the language. Get these right and the rest is filling in operator clauses.
+The current foundations already live in [`../A12Kernel/Core.lean`](../A12Kernel/Core.lean), [`../A12Kernel/Cell.lean`](../A12Kernel/Cell.lean), and [`../A12Kernel/Document.lean`](../A12Kernel/Document.lean). Extend those types rather than reviving the older single-level sketches that this guide superseded.
 
-```lean
-/-- (a) A number's scale is a STATIC field property, not a runtime datum. -/
-structure NumField where
-  scale       : Nat        -- max fractional digits (always bounded; missing ⇒ 0)
-  signed      : Bool       -- `positivesOnly = false`; drives fillability, NOT minValue
+The essential boundaries are:
 
-/-- (b) The three cell states — empty ≠ invalid. This is non-negotiable. -/
-inductive CellState where
-  | empty
-  | filled (v : Value)
-  | notCheckRelevant        -- present but formally invalid ⇒ "unknown"
+- `Value` represents semantic values. Numbers use exact `Rat`; a field's scale is static `NumField` data, while stored-form rendering is separate.
+- `K` represents strong-Kleene truth. The object language has no generic negation operation.
+- `Verdict` represents `notFired`, `fired Polarity`, and `unknown`; it does not discard the invalid/suppressed outcome.
+- `CheckedCell` records raw presence, an optional parsed value, and formal findings before a phase reads it. Base `formalCheck` contributes ordinary local findings; generated and structural passes may add later annotations to the same representation.
+- `observeCell` will map the same `CheckedCell` to `CellObservation.empty`, `.value`, `.unknown`, or `.poison` according to validation/computation phase. Operator-specific empty substitution happens after this boundary.
+- `Document` represents instantiated rows independently of raw cell values, because an instantiated blank row is semantically observable.
+- `Env` binds enclosing repeatable levels to rows; `World` supplies clocks and other otherwise ambient inputs.
+- Surface rules remain extrinsic. A checked elaborator should reject illegal paths/types/scales/scopes or return a `WellFormed` core rule; successful host elaboration of an AST constructor is not that guarantee.
 
-/-- (c) The value domain (sketch — expand per kind). -/
-inductive Value where
-  | num  (d : Rat)          -- exact; rescale explicitly at the §5 points
-  | str  (s : String)
-  | bool (b : Bool)
-  | conf (b : Bool)         -- Confirm: empty reads False
-  | date (d : CalDate)      -- with precision; an unreal date is a *non-value*, see below
-  | enum (stored : String)  -- compared by stored token
-  -- date-time, time, fragment, range, custom …
-
-/-- (d) Kleene truth. No negation combinator exists. -/
-inductive K where | tru | fls | unknown
-
-/-- (e) The firing outcome = truth × polarity, folded into one 3-way lattice. -/
-inductive Outcome where | firedValue | firedOmission | notFired
-
-/-- (f) The iteration environment: a binding of each enclosing repeatable level to a row. -/
-abbrev Env := List (RepeatableLevel × Nat)
-```
-
-And the two top-level functions the whole set builds toward:
+The conceptual public flow is:
 
 ```lean
-def eval    : Ast → Env → Document → EvalResult          -- EvalResult ≈ { truth : K, pol : Polarity, fill : Fillability }
-def compute : Model → Document → (Path → Env → ComputeOutcome)  -- VALUE / CLEARED / ERRORED, with an order-dependent poison effect
+def elaborate   : SurfaceRule → Model → Except ElabError CoreRule
+def eval        : Model → World → Document → Env → CoreCondition → Verdict
+def computeOne  : Model → World → Document → Env → CoreComputation → ComputeOutcome
+def apply       : Document → List (CellAddr × ComputeOutcome) → Document
+def validate    : Model → World → Document → ValidationResult
 ```
 
-Keep `compute` **outcome-producing**, not document-mutating; make `apply : Document → outcomes → Document` and `validate` separate, so the compute→apply→validate flow ([`01-data-model.md`](01-data-model.md)) is explicit and the poison stays contained in `compute`.
+These signatures are design targets, not declarations already present. Keep computation outcome-producing rather than document-mutating so compute → apply → validate remains explicit and read-driven poison cannot leak into unrelated instances.
 
 ---
 
 ## 2. The ten encoding traps
 
-Each has burned a real reimplementation; each is a place a "reasonable" design silently diverges.
+Each trap reflects observed A12 behavior that a reasonable-looking implementation can silently lose.
 
-1. **Two-state value domain.** Using `Option Value` cannot express *empty ≠ invalid*. Use the three-state `CellState`, resolved once at the read via a single `formalCheck`. ([§3](02-logic-and-formal-errors.md))
-2. **Per-kind empty.** An empty operand's meaning depends on the field kind *and* the operator position (number→`0`, confirm→`False`, string/date→not-evaluated; overridden by concat/`Length`/counts/aggregates). Carry a `given : Bool` bit alongside the substituted value. ([§2](03-empty-and-required.md))
-3. **Scale as a runtime datum.** Scale is *static*; it gates `==`/`!=` at *parse time* via a `scaleOf` derivation (`+`→max, `*`→sum, `/`,`^`→unknown). Don't attach it to the runtime decimal. ([§5](04-numbers-and-decimals.md))
-4. **Forgetting the second lattice (polarity).** VALUE/OMISSION is computed from *directional fillability* propagated through the whole expression — a second interpreter pass parallel to truth. Budget for it up front; retrofitting is painful. ([§12](10-validation-and-polarity.md))
-5. **Eager operand evaluation in `compute`.** Poison is *read-driven*: `And`/`Or` short-circuit and scans stop early, so an unread invalid cell must **not** poison. Thread reads through `Except Poison` with genuinely short-circuiting connectives — never evaluate-all-then-combine. ([§11](09-computations.md))
-6. **Conflating the two "no values" in compute.** A precondition-clear cascades as EMPTY (implemented by *pre-stripping* computed inputs); an invalidity-clear POISONS (throw-on-read). Both mechanisms must exist and be distinct. ([§11](09-computations.md))
-7. **Iteration scope from placement.** Scope = the *referenced* repeatable fields, never the node's tree position; empty scope ⇒ evaluate once. ([§9](07-repetition-and-iteration.md))
-8. **Star binding.** Fix `Env` levels *strictly above* the first `*`; re-open the starred level and below. Same-group star spans *all* rows (only `$` correlates). This one function is ~half of §9. ([§9](07-repetition-and-iteration.md))
-9. **Semantic-index no-match = unknown.** A no-match reads **empty** (fillable `0` / NOT-GIVEN), *not* UNKNOWN — so `[X For "k"] == 0` and `FieldNotFilled(X For "k")` fire on absence. ([§10](08-paths-and-references.md))
-10. **The row gate & declared-vs-instantiated ranges.** Substitutions only inside content-bearing instances; `AllFieldsFilled` folds the *declared* range while `AtLeastOneFieldFilled` folds the *instantiated* rows. ([§2](03-empty-and-required.md)/[§1](02-logic-and-formal-errors.md))
-
----
-
-## 3. A staged build order
-
-Build the executable spec bottom-up; each stage is testable against the engine before the next.
-
-1. **Scalars & literals.** `Value`, the number model with explicit rescale (constants **19 / HALF_UP / 50-digit**), the calendar (`AddMonths`/`AddYears` conventions, epoch sub-day, Gregorian floor), the string/date literal typer. Lock the rounding table and the `RoundDown([q]/3*3,0)==[q]` pre-round example. ([§5](04-numbers-and-decimals.md), [§6](05-dates-and-time.md), [§7](06-strings-and-enumerations.md))
-2. **`CellState` + `formalCheck`.** Route all five invalidity sources ([§3](02-logic-and-formal-errors.md)) through one function; get *empty ≠ invalid* into the type.
-3. **Kleene evaluation of flat conditions.** `K.and`/`K.or` (no negation), comparisons over the per-kind empty substitution, the individual negative predicates, the fill quantifiers (both ranges). Prove **monotonicity**. ([§1](02-logic-and-formal-errors.md), [§2](03-empty-and-required.md))
-4. **Required & index desugaring.** Emit the generated `mandatoryField`/uniqueness rules + their (validation-scoped) formal-check sources. ([§4](03-empty-and-required.md))
-5. **The iteration environment.** `iterationScope`, context enumeration, star binding, `Having`/`$` correlation, parallel-iteration outer join, `RepetitionNotUnique`'s two-phase cache. Property-test star binding on tiny models. ([§9](07-repetition-and-iteration.md))
-6. **Paths.** Three-tier bare-name resolution, `..`/named-ancestor, semantic index (no-match = empty), the `..`+`*` rejection. ([§10](08-paths-and-references.md))
-7. **Polarity.** Add the `Fillability` pass (`canGrow`/`canShrink`, sign-aware seeds; propagation through arithmetic/functions/aggregates/counts/dates/concat/`Having`); fold into `Outcome` with omission-wins-And / value-wins-Or. ([§12](10-validation-and-polarity.md))
-8. **Computation.** The three outcomes, the empty-cascade (pre-strip) vs poison (throw-on-read, short-circuit), the stored form (render + reduced formal check), the delta reporting, the implicit-validation-rule desugaring. ([§11](09-computations.md))
-9. **Partial validation.** Relevant-set gating, out-of-set = UNKNOWN, global auto-add, starred-aggregate-only-when-wildcarded, phantom rows. ([§12](10-validation-and-polarity.md))
-10. **Interpolation & CustomCondition.** Pure `render` step; oracle-parameterized `custom`. ([§13/§14](11-messages-and-custom.md))
+1. **Collapsing the cell boundary into `Option Value`.** Empty, malformed, validation-unknown, and computation-poison are different states. Preserve the two-level `CheckedCell → observeCell Phase → CellObservation` model and route every finding through that common checked-cell boundary. Keep base `formalCheck` limited to ordinary local checks; generated and structural findings are staged annotations, not hidden operator behavior. ([§3](02-logic-and-formal-errors.md))
+2. **One universal meaning for empty.** Empty meaning depends on kind and consuming operator: Number may substitute `0`, Confirm may substitute `False`, comparisons may not evaluate String/Date, concat uses `""`, and several aggregates skip empties. Preserve whether a value was actually given alongside any substituted value. ([§2](03-empty-and-required.md))
+3. **Scale as a runtime numeric attribute.** Scale is static and gates equality/inequality through `scaleOf` (`+` → max, `*` → sum, `/` and `^` → unknown). Do not attach declared scale to the runtime rational. ([§5](04-numbers-and-decimals.md))
+4. **Forgetting directional fillability and polarity.** VALUE/OMISSION depends on how legal fills can move the expression, not only on current truth. Design its propagation together with each operator and fold it into `Verdict` without losing `unknown`. ([§12](10-validation-and-polarity.md))
+5. **Eager computation reads.** Poison is read-driven. `And`, `Or`, conditionals, and scans stop early, so an unread malformed cell must not poison. Make evaluation order explicit and genuinely short-circuiting. ([§11](09-computations.md))
+6. **Conflating the two computation clears.** A precondition clear cascades as empty after computed inputs are pre-stripped; an invalidity clear poisons when read. Both mechanisms must remain distinct. ([§11](09-computations.md))
+7. **Deriving iteration scope from placement.** Scope comes from referenced repeatable fields, never from the syntax node's tree position; empty scope means evaluate once. ([§9](07-repetition-and-iteration.md))
+8. **Binding `*` like `$`.** Fix environment levels strictly above the first `*`, reopen the starred level and descendants, and let same-group star range over all rows. Only `$` correlates. ([§9](07-repetition-and-iteration.md))
+9. **Treating semantic-index no-match as unknown.** No match reads empty, so numeric-zero and field-not-filled conditions can fire. It is not formal invalidity. ([§10](08-paths-and-references.md))
+10. **Inferring row existence from filled cells.** Substitution is gated by content-bearing instances, `AllFieldsFilled` uses the declared range, and `AtLeastOneFieldFilled` uses instantiated rows. `Document.instantiatedRows` must remain independent of cell contents. ([§2](03-empty-and-required.md), [§1](02-logic-and-formal-errors.md))
 
 ---
 
-## 4. What to lock with property tests
+## 3. Staged build order
 
-The engine is the oracle; if a real instance is available, differential-test against it. Regardless, these internal properties are strong regression guards:
+Build the theory bottom-up. Do not expand broadly across operator families until the current stage has completed one proof-bearing semantic capsule.
 
-- **Monotonicity** — replacing a `U` (invalid/UNKNOWN) operand with any definite value never turns a *fired* result into *not-fired* against the fire direction (formalizes "suppression only hides errors"). ([§3](02-logic-and-formal-errors.md))
-- **Determinism given a clock** — `eval`/`compute` are pure functions of `(model, document, injected clock, label provider, custom oracles)`; no hidden global reads. ([§6](05-dates-and-time.md), [§14](11-messages-and-custom.md))
-- **Compute delta** — reporting `= project(computeAll, changedOrClearedOrErrored)`; unchanged cells are not reported. ([§11](09-computations.md))
-- **Poison order-dependence is *intended*** — a test that an invalid cell beyond a short-circuit/scan-stop does **not** poison (a naive eager engine fails this). ([§11](09-computations.md))
-- **`No` vs `NotAll`** — the value-list quantifiers are not duals; property-test their poison asymmetry on shared inputs. ([§8](06-strings-and-enumerations.md))
-- **Star binding small cases** — hand-computed 1–2 row / 1–2 level expectations for same-group vs cross-subtree stars. ([§9](07-repetition-and-iteration.md))
-- **Rescale order** — `RoundDown([q]/3*3, 0) == [q]` fires at `q=1`; the scale-19 pre-round is present. ([§5](04-numbers-and-decimals.md))
-- **`Valid`/`Invalid` are not complements** — under a malformed part both are UNKNOWN; under an empty part `Invalid` fires OMISSION. ([§6](05-dates-and-time.md))
+1. **Scalars and literals.** Complete `Value`, explicit numeric rescaling (19 / `HALF_UP` / 50-digit intermediate context), calendar conventions, and the string/date literal typer. Lock the rounding table and the `RoundDown([q] / 3 * 3, 0) == [q]` pre-round case. ([§5](04-numbers-and-decimals.md), [§6](05-dates-and-time.md), [§7](06-strings-and-enumerations.md))
+2. **Formal checking and phase observation.** Define `FieldPolicy`, `RawCell`, base `formalCheck`, checked-cell annotation, and `observeCell`; keep ordinary local findings in the base pass and route later generated/structural findings through the same checked-cell boundary. Prove the phase laws, including that computation ignores a validation-scoped `.required` annotation. ([§3](02-logic-and-formal-errors.md), [§4](03-empty-and-required.md))
+3. **Flat condition semantics.** Add comparisons, per-kind empty handling, negative predicates, presence/fill predicates, and the exact strong-Kleene `And`/`Or` verdict tables. Because value-wins `Or` may upgrade an OMISSION-fired branch, do not infer a validation read trace from truth short-circuiting; add phase-specific trace semantics only when an observable distinction or focused probe justifies it. Define the strong-Kleene information order before proving monotonicity: unknown may refine to true or false, while definite results remain stable. ([§1](02-logic-and-formal-errors.md), [§2](03-empty-and-required.md))
+4. **Checked elaboration and generated rules.** Introduce `WellFormed` core rules and explicit rejection; implement required/index generation and staged checked-cell annotations. Required validation must evaluate the generated mandatory rule on base checked cells, retain its hit/message, and only on a hit annotate the empty target with `.required` for authored rules; this order prevents the mandatory rule's `FieldNotFilled` from suppressing itself. Prove the accepted elaborations and desugarings preserve meaning. ([§4](03-empty-and-required.md))
+5. **Iteration environment.** Implement referenced-field scope, context enumeration, star binding, `Having`/`$` correlation, parallel-iteration outer join, and the two-phase uniqueness cache. Specify the declarative context set before optimizing enumeration. ([§9](07-repetition-and-iteration.md))
+6. **Paths.** Implement bare-name resolution, `..` and named ancestors, semantic index with no-match-as-empty, and the `..` plus `*` rejection; make successful resolution part of `WellFormed`. ([§10](08-paths-and-references.md))
+7. **Directional fillability and polarity.** Define `FillExtends`, sign-aware seeds, and propagation through arithmetic, functions, aggregates, counts, dates, concat, and `Having`; prove only the one-sided result supported by the explicit fill relation. ([§12](10-validation-and-polarity.md))
+8. **Computation.** Add VALUE/CLEARED/ERRORED outcomes, precondition empty cascade, poison-on-read, stored-form render plus reduced formal check, delta reporting, and implicit validation-rule elaboration. Prove read-footprint noninterference before adding caches. ([§11](09-computations.md))
+9. **Partial validation.** Define relevant-set agreement, out-of-set unknown, global auto-add, starred-aggregate gating, and phantom rows; state the one-sided theorem over that exact relation. ([§12](10-validation-and-polarity.md))
+10. **Interpolation and custom conditions.** Keep rendering pure and model custom operations as explicit oracles. Exclude them from locality/monotonicity results unless their contracts provide the required footprint and stability laws. ([§13/§14](11-messages-and-custom.md))
+
+Every stage has the same exit gate:
+
+- the smallest total executable definition for the clause;
+- focused examples for ordinary, boundary, empty, malformed, and order-sensitive behavior as applicable;
+- direct replay of every matching portable corpus case and retained external kernel differential evidence;
+- an updated `§n` coverage entry with version, provenance, support status, and outcome domain;
+- the proof-spine obligation introduced by the stage, with exact assumptions and root-axiom review;
+- a checked counterexample to the nearest attractive false generalization;
+- focused elaboration and a green whole-project build.
 
 ---
 
-## 5. The clean-room boundary (if you port from a real engine)
+## 4. Regression, conformance, and theorem guards
 
-The original engine is licensed such that a runtime *linking/shipping/calling* it, or a *line-by-line transliteration of its source*, is a derivative work. This specification is a description of **observable behaviour**, which is free to reimplement. So:
+Examples and tests anchor concrete behavior; theorems establish universal consequences of the Lean definitions; differential evidence anchors primitive choices to the kernel. Do not use any one of these as a label for the other two.
 
-- **Do** read this set (and, if you have it, probe a real engine) to learn exact behaviour, then write **original** Lean and lock it against that behaviour with the property/differential tests above.
-- **Don't** transcribe engine source expressions into Lean, and **don't** call the engine from the reimplementation. Copy the *mechanism*, never the *expression*.
+Use four distinct evidence roles. [`../../a12-kernel`](../../a12-kernel) is the authoritative behavior. [`../../a12-rulekit/adapter`](../../a12-rulekit/adapter) is the external kernel harness and result-export boundary for focused probes; it remains outside this repository's trusted or shipped dependency graph. [`../../a12-rulekit/corpus`](../../a12-rulekit/corpus) is the portable replay format consumed here. [`../../a12-rulekit/interpreter`](../../a12-rulekit/interpreter) is a valuable independent clean-room peer for triangulation and finding divergences, but agreement with it is not kernel evidence and it never resolves a disagreement against the kernel.
 
-This is exactly how the specification behind this document set was itself built — behaviour observed and re-expressed, never source ported.
+The first engine-backed conformance witnesses should be:
+
+1. empty Number participates as fillable zero in a comparison;
+2. empty Boolean remains not evaluable while empty Confirm behaves as false;
+3. a VALUE-fired `Or` remains fired rather than becoming suppressed by a malformed sibling; make no validation-read-trace claim without a focused kernel probe;
+4. fired `And` with a malformed sibling becomes unknown;
+5. semantic-index no-match reads empty rather than unknown;
+6. required-empty produces its validation-scoped formal finding but not computation poison;
+7. a malformed computation input beyond a short-circuit or scan stop does not poison;
+8. precondition clear and invalidity poison cascade differently;
+9. same-group and cross-subtree star binding use their distinct context sets;
+10. scale-19 pre-rounding is observable in the documented numeric boundary case; its legal witness uses arithmetic, so whole-rule replay waits for the arithmetic-expression fragment rather than inventing a scale-20 field.
+
+Useful sampled regression properties include determinism under an injected `World`, computation-delta projection, star-binding small cases, intended poison order sensitivity, `No` versus `NotAll` asymmetry, and the fact that `Valid`/`Invalid` are not complements. Sampled property tests remain valuable even after related theorems exist because they exercise executable integration and produce small counterexamples.
+
+The universal theorem catalog and its required scopes live in [`../docs/LEAN-FORMALIZATION.md`](../docs/LEAN-FORMALIZATION.md). In particular, do not write “prove monotonicity” without first defining the information/fill relation and excluding or constraining counting quantifiers, row creation, custom oracles, and order-sensitive computations.
+
+Follow Cedar's mechanical coverage lesson: when the proof hierarchy grows, maintain one trusted theorem root that recursively imports every trusted proof module and make a coverage/hygiene check part of CI. `lake build` alone is not sufficient because Lean accepts `sorry`.
 
 ---
 
-## 6. One-paragraph summary
+## 5. Clean-room boundary
 
-A faithful A12 evaluator is a pair of pure functions over a **three-state** value domain and an explicit **iteration environment**: `eval` produces a **truth (Kleene) and a polarity (VALUE/OMISSION)** together, and `compute` produces a **per-cell outcome (VALUE/CLEARED/ERRORED)** with an **order-dependent, read-driven poison** kept inside it. The genuinely hard parts — and the ones to build and test first — are the third cell state (empty ≠ invalid), the polarity second-lattice, the star-binding environment, and the compute poison. Everything else is careful but mechanical per-operator work.
+The engine is a behavioral oracle, not a dependency or transcription source. Learn the mechanism from the specifications, findings, source inspection, and focused external probes; write original Lean; then lock it with own-domain examples, portable corpus replay, and externally exported kernel differential evidence. The a12-rulekit adapter may host the kernel-facing probe outside this repository; this repository consumes the resulting portable evidence and never links, calls, or ships that harness or the kernel. Never translate kernel expressions line by line. [`../CLAUDE.md`](../CLAUDE.md) is the authoritative licensing and clean-room rule.
+
+---
+
+## 6. Summary
+
+The semantic center is a total, pure evaluator over phase-aware cell observations, explicit document rows, an iteration environment, and an injected world. Validation yields a `Verdict` that retains unknown and polarity; computation yields explicit per-cell outcomes with order-sensitive, read-driven poison; elaboration separates legal surface rules from a smaller well-formed core; application and orchestration remain outside individual semantic clauses. The difficulty is not merely implementing every operator. It is preserving the interacting distinctions, connecting each primitive choice to evidence, proving the consequences that matter, and retaining checked boundaries where stronger claims fail.
