@@ -8,6 +8,10 @@ A12 Kernel is mgm technology partners' model-and-DSL engine for complex business
 
 The language-neutral semantics live in [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) (the map: taxonomy, invariants, core types, glossary) and follow the numbered deep-dives; the concrete Lean plan is [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md). The `spec/` is self-contained by design — the sibling repos below are the **authority and knowledge layer** beneath it, not a substitute for reading it.
 
+## Goal & role
+
+**A proved reference oracle, executable-first, with proofs added where they pay** (decided 2026-07-12). Build the `#eval`-able reference evaluator first, differential-tested against the engine and by replaying `../a12-rulekit/corpus`; add declarative-judgment + refinement proofs incrementally (verdict-algebra laws, monotonicity, partial-validation & polarity one-sided soundness). Lean is the ecosystem's formal semantics-of-record — *not* a replacement for the shipped Kotlin interpreter. The concrete encoding decisions, their rationale, and what was adopted / rejected live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); read it before extending the core types.
+
 ## ⚠️ HARD RULE — clean-room reimplementation; never link, call, or transcribe the kernel
 
 This is a **licensing boundary, not a preference**, and it is the same rule a12-rulekit's interpreter already operates under. The A12 kernel is **EUPL-1.2 (copyleft) OR commercial**. A work that *links, ships, or calls* the kernel is a combined work the EUPL copyleft reaches; a **line-by-line transliteration of its source** is a copyright derivative that re-attracts the EUPL. Therefore:
@@ -55,8 +59,12 @@ lake env lean A12Kernel/Core.lean   # elaborate a single module with imports ava
 ## Layout & the staged build order
 
 - [`A12Kernel.lean`](A12Kernel.lean) — library root (imports the modules below).
-- [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the core types from the encoding guide: `CellState` (three states — empty ≠ invalid), `Value`, `K` (strong-Kleene, no negation), `Polarity`/`Outcome`, `NumField`, `Env`.
+- [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the truth/polarity algebra and value domain: `K` (strong-Kleene, no negation), `Polarity`, `Verdict` + `conj`/`disj`, `ScaleInfo`, `NumField`, `Value`.
+- [`A12Kernel/Cell.lean`](A12Kernel/Cell.lean) — the phase-sensitive cell model: `FormalCause`, `Phase`, `CheckedCell`, `CellObservation` (empty ≠ invalid, refined into a phase-indexed read).
+- [`A12Kernel/Document.lean`](A12Kernel/Document.lean) — addressing & instance: `RowAddr`/`CellAddr`, `Document` (instantiated rows kept separate from cell values), `Env`, `World` (injected clock).
 - [`A12Kernel/Basic.lean`](A12Kernel/Basic.lean) — smoke module.
+
+The design decisions behind these types (extrinsic AST, `Rat` + rendered stored-form, the unified `Verdict`, the two-level cell model, the `Document` split, the injected `World`) are recorded with rationale in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 Build the executable spec **bottom-up** in the order of [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) §3 — scalars & literals → `CellState`/`formalCheck` → flat Kleene eval → required/index desugaring → the iteration environment → paths → polarity → computation → partial validation → interpolation/custom. Lock each stage against the engine before the next; the **ten encoding traps** (encoding guide §2) are where naive attempts silently diverge, and the properties in §4 are the strong regression guards.
 
