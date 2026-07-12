@@ -57,3 +57,11 @@ transitive axiom report below. -/
 #print axioms A12Kernel.withRequiredFinding_preserves_computation
 #print axioms A12Kernel.applyAbsoluteRequired_preserves_computation
 #print axioms A12Kernel.requiredFinding_empty_phase_split
+
+#print axioms A12Kernel.elaborate_success_wellFormed
+#print axioms A12Kernel.elaborate_success_modelWellFormed
+#print axioms A12Kernel.admitsField_has_unique_matching_declaration
+#print axioms A12Kernel.checkContext_lookup_coherent
+#print axioms A12Kernel.checkContext_admittedField_coherent
+#print axioms A12Kernel.checkContext_lookup_error_is_malformed
+#print axioms A12Kernel.checkContext_lookup_error_observes_unknown

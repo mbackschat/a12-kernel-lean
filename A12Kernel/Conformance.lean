@@ -1,3 +1,4 @@
+import A12Kernel.Conformance.Elaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.Observation
 import A12Kernel.Conformance.Required

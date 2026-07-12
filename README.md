@@ -12,7 +12,7 @@ Lean makes every captured semantic clause explicit and executable, then lets sel
 
 ## Status
 
-The first proof-bearing semantic capsule is implemented. It covers base formal checking and phase observation; typed flat equality/inequality for Number, Boolean, and Confirm; presence predicates; the full-validation row gate; verdict-aware `And`/`Or`; scale-19 `HALF_UP`; and the staged absolute/non-repeatable required-field transformation. The default build includes executable conformance locks, the trusted proof root, algebra and information-order laws, cell/phase invariants, and required-staging preservation. Coverage is deliberately partial and recorded clause by clause in [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md#10-lean-coverage-projection); paths, repetition, ordering/arithmetic, computation, and partial validation have not landed.
+The first proof-bearing semantic capsule and the first checked-elaboration slice are implemented internally. They cover base formal checking and phase observation; typed flat equality/inequality for Number, Boolean, and Confirm; presence predicates; the full-validation row gate; verdict-aware `And`/`Or`; scale-19 `HALF_UP`; the staged absolute/non-repeatable required-field transformation; checked model/path resolution for a deliberately small non-repeatable path subset; and model-derived formal checking. The default build includes executable conformance locks, the trusted proof root, algebra and information-order laws, cell/phase invariants, required-staging preservation, and elaboration/context-coherence theorems. Coverage is deliberately partial and recorded clause by clause in [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md); the full path language, repetition, ordering/arithmetic, computation, and partial validation have not landed, and slices without retained portable kernel observations remain marked `external evidence pending`.
 
 ## Build
 
@@ -26,8 +26,12 @@ lake build
 ## Design and sources
 
 - [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) — the project charter: purpose, ecosystem role, deliverables, non-goals, and success criteria.
+- [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
+- [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
+- [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.
 - [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) — Lean's role and potential, audited project studies, proof/trust boundaries, theorem opportunities, and best practices.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the concrete Lean encoding decisions and rejected alternatives.
+- [`docs/DOC-DISCIPLINE.md`](docs/DOC-DISCIPLINE.md) — where findings, structure, status, and plans belong.
 - [`spec/`](spec/) — the distilled, language-neutral specification; start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md).
 - [`docs/SOURCES.md`](docs/SOURCES.md) — the drill chain from each semantic clause to its evidence.
 - [`../a12-kernel`](../a12-kernel) — the real engine, the behavioural **source of truth** (EUPL-1.2 / commercial).

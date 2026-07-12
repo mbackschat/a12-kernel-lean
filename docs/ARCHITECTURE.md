@@ -42,6 +42,14 @@ The differential path assigns distinct roles rather than treating all executable
 
 The AST is indexed only by nothing — a closed inductive with an exhaustive evaluator (per [`../spec/13`](../spec/13-lean-encoding-guide.md)). We **rejected** an intrinsically-typed `Expr (σ : Schema) : Ty → Type`: A12's type system does not encode cheaply into indices (scale goes `unknown` after `/`/`^`; `TypeDefinition` legality is only known post-expansion; enum comparability is config-dependent; `Custom` delegates), and the hard semantic content lives in the *value domain and cell observations*, not in type indices — where intrinsic typing would make proofs fight `Eq.mpr`/transport. Static type/scale/scope checking is done by an elaboration pass that produces a core rule with an explicit `WellFormed` boundary; elaboration soundness and the absence of impossible evaluator failures for accepted core rules are proof obligations. Intrinsic typing stays available as a later hardening only if a concrete proof goal demands it. Derived scale is modelled as `ScaleInfo (exact | unknown)` plain data ([`A12Kernel/Core.lean`](../A12Kernel/Core.lean)).
 
+### Checked elaboration resolves names and owns field-policy coherence
+
+[`A12Kernel/Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean) follows the parser–elaborator–core split used by Lean/Lean4Lean and the explicit surface-to-core boundary exemplified by `do` Unchained. Its input is structured and parser-independent; its output is a `CheckedFlatCondition` carrying proofs that the expanded model validated and every core field matches one unique non-repeatable declaration. The supported path subset is intentionally narrow: absolute paths, parent-relative paths without named turning-point labels, and bare lookup in the kernel order local → nearest ancestor → flag-gated model-wide unique. Ambiguity, invalid models, repeatable references, unsupported operators, kind mismatches, and illegal Confirm literals fail closed.
+
+The same `FlatModel` compiles raw cells into the runtime `FlatContext`, so successful surface evaluation cannot pair a resolved numeric field with a caller-invented Boolean policy. Trusted theorems connect every admitted field to its unique matching declaration and prove that context construction applies exactly that declaration’s `formalCheck` policy; missing or ambiguous IDs become malformed/unknown. The low-level `FlatCondition.evalFull` remains available for isolated semantic laws and can still receive an arbitrary `FlatContext`, so policy coherence is claimed only for the checked surface route.
+
+This slice does not implement the complete §10 path language. Quoted concrete syntax, named-ancestor labels, `RuleGroup`, stars, `$`, semantic indices, repeatable evaluation, and parser/renderer preservation are outside the current structure. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns the live assurance and external-evidence status.
+
 ### `Value.num` is `Rat` + a separate rendered stored-form — not a `{coefficient, scale}` decimal
 
 The value domain carries exact `Rat` for numeric value. A plain `Rat` loses the *representation* A12 needs (`7` vs `7.00` is a reportable compute delta; `minFractionalDigits` rendering). We resolve that by keeping the **numeric value** as `Rat` and modelling the **stored form** as a separately-rendered string (which is literally what A12 stores — a value in the target's declared format), so representation-equality is stored-form string equality while numeric comparison is on `Rat`. Faithfulness to the engine's `BigDecimal` requires applying explicit rounding at the arithmetic points — scale-19 `HALF_UP` for comparisons, `MathContext(50)` for intermediates — which the number stage will implement as named operations. This keeps the value domain simple and reversible; switching to an explicit `{coefficient, scale}` decimal remains an option if the rendered-string split proves awkward.
@@ -74,7 +82,7 @@ Partial validation (relevant cells concrete, non-relevant → `unknown`, `true O
 - Keep the executable core dependency-free while cheap. If serious proof work needs mature finite-map, permutation, order, rational, or calendar theory, prefer a separate Mathlib-backed proof target over reimplementing a theorem library or burdening `#eval`.
 - Current executable target: pinned `leanprover/lean4:v4.31.0` ([`../lean-toolchain`](../lean-toolchain)) with no external dependencies. A future separate proof or documentation target may add version-pinned dependencies without changing that core contract.
 
-## Module layout (current + intended)
+## Current module layout
 
 Current ([`../A12Kernel.lean`](../A12Kernel.lean) is the root):
 
@@ -84,10 +92,9 @@ Current ([`../A12Kernel.lean`](../A12Kernel.lean) is the root):
 - `A12Kernel/Semantics/Observation.lean` — normalized scalar input, the closed base-finding subset, `formalCheck`, staged annotations, and phase observation.
 - `A12Kernel/Semantics/FlatValidation.lean` — the typed one-field equality/presence fragment, row gate, scale-19 comparison rescaling, and verdict evaluator.
 - `A12Kernel/Semantics/Required.lean` — the two-pass absolute/non-repeatable required-field fragment.
-- `A12Kernel/Proofs.lean` — trusted theorem root; algebra, information order, checked-cell invariants, phase laws, and required-staging preservation.
-- `A12Kernel/Conformance.lean` — executable semantic locks for the supported fragment.
+- `A12Kernel/Elaboration/Flat.lean` — checked structured-surface lowering, normalized non-repeatable path lookup, field legality, and model-derived raw-cell checking.
+- `A12Kernel/Proofs.lean` — trusted theorem root; algebra, information order, checked-cell invariants, phase laws, required-staging preservation, and elaboration/context coherence.
+- `A12Kernel/Conformance.lean` — executable semantic and elaboration locks for the supported fragment.
 - `A12Kernel/Basic.lean` — smoke + `kernelVersion`.
 
-Intended growth (bottom-up per [`../spec/13`](../spec/13-lean-encoding-guide.md) §3): an `Elaboration/` boundary for surface legality and generated-rule desugaring; a `Semantics/` group (`FormalCheck`, `Observation`/`observeCell`, `Values`, `Iteration`, `Validation`, `Computation`, and selective declarative/trace judgments); an `Interpreter/Reference` implementation; a `Proofs/` group for algebra, semantic-preservation, evaluator/judgment bridges, and whole-rule properties; and a `Conformance/` group. Add `CompiledModel`/`Fast` only when a measured consumer exists and prove it refines `Reference`. The `Iteration` layer is expected to elaborate string paths into explicit access / iteration plans rather than resolving them during evaluation.
-
-The staged exit gates and first conformance witnesses live in [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) §3–§4 so this file remains focused on representation decisions.
+Planned sequencing and open work belong in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md), durable treatment decisions in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), and live coverage/evidence state in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). This file changes when the actual module or representation structure changes; it does not carry a parallel roadmap or status table.

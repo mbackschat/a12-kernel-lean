@@ -30,7 +30,7 @@ fi
 
 if rg -n '\b(sorry|admit|sorryAx|native_decide|Lean\.ofReduceBool|Lean\.trustCompiler)\b|^[[:space:]]*(private[[:space:]]+)?(axiom|unsafe|partial)([[:space:]]|$)' \
     A12Kernel/Basic.lean A12Kernel/Core.lean A12Kernel/Cell.lean A12Kernel/Document.lean \
-    A12Kernel/Semantics A12Kernel/Proofs A12Kernel/Proofs.lean; then
+    A12Kernel/Elaboration A12Kernel/Semantics A12Kernel/Proofs A12Kernel/Proofs.lean; then
   echo "trusted Lean proof sources contain a banned trust mechanism" >&2
   exit 1
 fi

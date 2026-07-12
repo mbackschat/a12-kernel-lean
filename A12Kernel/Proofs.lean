@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.Information
+import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.Required
 import A12Kernel.Proofs.Verdict
