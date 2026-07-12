@@ -54,6 +54,15 @@ Formalizing forces precision. The genuinely fuzzy corners — DST / timezone han
 
 The full source-of-truth hierarchy and the clean-room / EUPL boundary are in [`../CLAUDE.md`](../CLAUDE.md).
 
+## Success criteria
+
+What "working" means here, in the order to reach it:
+
+- The **reference evaluator** reproduces the engine on every replayable case in [`../../a12-rulekit/corpus`](../../a12-rulekit/corpus) (100% PASS on the families it covers); any divergence is documented, never silent.
+- The **core theorems** — verdict-algebra laws, monotonicity, determinism, partial-validation soundness — are proven, each with a clean `#print axioms` (no `sorry`, no `native_decide` in the trusted chain; discipline in [`ARCHITECTURE.md`](ARCHITECTURE.md)).
+- Each staged layer ([`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) §3) is locked against the engine before the next is built.
+- The trusted core stays `partial`/`unsafe`-free and `IO`-free.
+
 ## Where we are, and the first Lean-specific wins
 
 The executable-spec skeleton is in place ([`../A12Kernel/Core.lean`](../A12Kernel/Core.lean), [`../A12Kernel/Cell.lean`](../A12Kernel/Cell.lean), [`../A12Kernel/Document.lean`](../A12Kernel/Document.lean)) and the verdict algebra is locked by `rfl`. In order, the first wins that are genuinely Lean's: implement `eval` returning `Verdict` and `#eval` it → replay the corpus → prove the verdict-algebra laws and monotonicity (small, high-value, and they guard every later stage). The staged build order is [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) §3; the first conformance targets are listed in [`ARCHITECTURE.md`](ARCHITECTURE.md).
