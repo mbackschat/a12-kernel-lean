@@ -9,3 +9,5 @@ clean-room / EUPL boundary that governs how they may be used.
 -/
 import A12Kernel.Basic
 import A12Kernel.Core
+import A12Kernel.Cell
+import A12Kernel.Document
