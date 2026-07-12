@@ -33,19 +33,9 @@ Three layers, in order of authority for a semantic question:
 2. **`../a12-kernel` — the ultimate source of truth (the behavioural oracle).** The real engine. When `spec/` and the engine disagree, **the engine wins and the spec is corrected**. Use it to *learn* and to *differentially test* — always under the clean-room rule above.
 3. **`../a12-rulekit` (a12-dmkits) — the knowledge source.** A peer **clean-room** reimplementation of the same semantics (in Kotlin), a reusable test corpus, semantics ledgers, and an evaluation harness.
 
-### Entry points in `../a12-kernel` (the oracle)
+### Entry points
 
-- [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) — the **canonical validation-language guide** (operators, predicates, arithmetic, dates, iteration, computations). The single best behaviour reference; worked examples throughout.
-- [`../a12-kernel/documentation/_merged/kernel-dev.md`](../a12-kernel/documentation/_merged/kernel-dev.md) — developer docs: custom conditions, custom field types, the public-API contract.
-- [`../a12-kernel/KERNEL-GRAMMAR.md`](../a12-kernel/KERNEL-GRAMMAR.md) and [`../a12-kernel/KERNEL-USE.md`](../a12-kernel/KERNEL-USE.md) — DSL grammar gotchas and the consumer call sequence.
-- Source, for *understanding* behaviour only (never to transcribe): `kernel-tool/*` (parse → codegen), `kernel-md/*` (model/document API), `kernel-rt/*` (runtime).
-
-### Entry points in `../a12-rulekit` (the knowledge source)
-
-- [`../a12-rulekit/docs/KERNEL-SEMANTICS.md`](../a12-rulekit/docs/KERNEL-SEMANTICS.md) — the canonical kernel-truth prose in the **same 14-section `§n` taxonomy** `spec/` uses, and [`../a12-rulekit/docs/KERNEL-FINDINGS.md`](../a12-rulekit/docs/KERNEL-FINDINGS.md) — experiment-verified behaviours, each test-locked.
-- [`../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md`](../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md) + [`../a12-rulekit/corpus/`](../a12-rulekit/corpus/) — **portable, engine-verified JSON test cases** (a shared model + placements + one op + kernel-verified `code|type|pointer` expectations, no message text) designed so that *any* engine — including a third-party reimplementation — can replay them to prove kernel-compatibility. **This is our ready-made differential oracle**; the schema is [`../a12-rulekit/corpus/case.schema.json`](../a12-rulekit/corpus/case.schema.json).
-- [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) with [`../a12-rulekit/interpreter/CLAUDE.md`](../a12-rulekit/interpreter/CLAUDE.md), [`../a12-rulekit/docs/INTERPRETER-ARCHITECTURE.md`](../a12-rulekit/docs/INTERPRETER-ARCHITECTURE.md), and [`../a12-rulekit/docs/INTERPRETER-FINDINGS.md`](../a12-rulekit/docs/INTERPRETER-FINDINGS.md) — how a peer clean-room engine models Kleene 3VL, operator dispatch, star aggregation, iteration, polarity, and the compute poison. Read for *approach*, not to copy.
-- [`../a12-rulekit/docs/RT-SEMANTICS-LEDGER.md`](../a12-rulekit/docs/RT-SEMANTICS-LEDGER.md), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md), and the full index [`../a12-rulekit/docs/README.md`](../a12-rulekit/docs/README.md).
+The full inventory of both sibling repos (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy).
 
 ## Building & running
 
