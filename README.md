@@ -2,6 +2,8 @@
 
 A clean-room **Lean 4 executable specification** of the [A12 Kernel](../a12-kernel)'s validation & computation semantics.
 
+> **Not an official A12 artifact.** A personal exploration, not affiliated with or endorsed by mgm — currently a private project, built with LLM assistance. This is a **clean-room** formal spec: it ships no kernel code and never links, calls, or transcribes the kernel (see [`CLAUDE.md`](CLAUDE.md)).
+
 The A12 Kernel is mgm technology partners' model-and-DSL engine for complex business forms: analysts declare validation rules (each phrased as the *error* condition) and computations (derived fields), which the engine evaluates against form documents. This project reimplements that **evaluation semantics** in Lean 4 as a faithful, `#eval`-able, property-testable specification — behaviour first, proofs a later optional layer.
 
 ## Why Lean
@@ -27,3 +29,7 @@ lake build
 - [`../a12-rulekit`](../a12-rulekit) — a peer clean-room reimplementation, a reusable conformance corpus, and semantics docs.
 
 This is a **clean-room** reimplementation: it never links, calls, or transcribes the kernel; it reproduces observed behaviour in original code and locks it with tests. See [`CLAUDE.md`](CLAUDE.md) for the full source-of-truth hierarchy and the licensing boundary.
+
+## License
+
+MIT © 2026 mbackschat — see [`LICENSE`](LICENSE). This project's source ships no kernel code, so it carries no copyleft entanglement (the same basis as [`../a12-rulekit`](../a12-rulekit)'s MIT source).

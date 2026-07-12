@@ -1,0 +1,17 @@
+name: Lean Action CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        # Uses the pinned toolchain (lean-toolchain) and runs `lake build`, which also
+        # elaborates the #eval / example smoke checks.
+        # TODO: add a `#print axioms` gate on the root theorems once they land
+        # (see docs/ARCHITECTURE.md, "Proof discipline").
