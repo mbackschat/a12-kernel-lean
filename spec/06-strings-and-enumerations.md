@@ -45,7 +45,7 @@ The category mapping is **positional** (`values[i]` categorizes enum value *i*) 
 - **`NotAll`** needs a filled fields-cell and fires iff **some filled cell's value is *not* in the set**. An UNKNOWN **values** member poisons; an UNKNOWN **fields**-cell is merely skipped — this is the **`No`-vs-`NotAll` asymmetry**. OMISSION only on the values side's account.
 - An empty **values member** contributes nothing to the set (never a substituted `0`) but flags a fired `No`/`NotAll` as **OMISSION**. A `Having` filter is accepted on either side, drops rows **before** the per-cell classification, and escalates a fired result to **OMISSION unconditionally** ([§12](10-validation-and-polarity.md)).
 
-> **Lean modelling note.** Model each quantifier as a fold over a list of `CellState` cells against a set of `CellState` members, returning a `firedAsValue | firedAsOmission | notFired` outcome (the three-way result of [§12](10-validation-and-polarity.md)). The asymmetry is the crux: `No` poisons on an UNKNOWN in *either* position, `NotAll` poisons only on an UNKNOWN *member*. Write the two folds separately and property-test them against each other on shared inputs — they *look* like duals but are not, and conflating them is the predictable bug.
+> **Lean modelling note.** Model each quantifier as a fold over phase-appropriate `CellObservation`s (or a smaller operator-specific classification derived from them) and return `Verdict`, retaining `unknown` explicitly. The asymmetry is the crux: `No` becomes unknown on an UNKNOWN in *either* position, while `NotAll` does so only on an UNKNOWN *member*. Write the two folds separately, prove their actual clauses, and property-test them on shared inputs—they look like duals but are not.
 
 ---
 

@@ -39,7 +39,7 @@ Constraints and runtime behaviour:
 
 **The extensibility surface is closed.** Custom **conditions** and custom **field types** are the engine's *only* custom hooks — there is **no** custom *computation* or function. A computation's operation vocabulary is closed, and `CustomCondition` (the one hook that could reach a computation) is barred there.
 
-> **Lean modelling note.** Parameterise the evaluator by an oracle map `custom : Name → (Env → Document → Bool)` — a total function per registered name. `CustomCondition X` evaluates to `firedValue` iff `custom X env doc = true` *and* the row gate + suppression allow it. For reproducible property tests, the oracles must be **pure and total** (no I/O, no clock); model a missing name as a well-formedness error, not a runtime failure. The "no custom computation/function" fact means the *operation* vocabulary is a fixed closed inductive — you never need an oracle on the compute side.
+> **Lean modelling note.** Parameterise the evaluator by an oracle map `custom : Name → (Env → Document → Bool)`—a total function per registered name. `CustomCondition X` yields `.fired .value` iff the oracle returns true and the row gate plus suppression permit evaluation; a suppressed input remains `unknown`. For reproducibility, oracles must be pure and total (no I/O or ambient clock), and a missing name is an elaboration/well-formedness error rather than a runtime default. Purity alone does not imply locality or monotonicity, so whole-rule theorems must exclude custom conditions or require an explicit oracle contract. The operation vocabulary on the computation side remains closed.
 
 ---
 

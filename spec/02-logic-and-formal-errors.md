@@ -96,26 +96,26 @@ The distinction *empty ≠ invalid* is the reason a two-state value domain canno
 
 ### B.3 What puts a cell in the third state
 
-More than a type-format mismatch. The *same* mechanism (same "unknown", same suppression) is triggered by all of:
+More than a type-format mismatch. The *same* checked-cell mechanism (same eventual "unknown", same suppression for authored validation rules) receives findings from several stages:
 
 - **a malformed value** — the base case, *plus* two cross-kind baseline checks that run before any type-format check: legal charset (the model's `supportedCharacters`, else the full BMP `U+0000..U+FFFF`), and no leading/trailing blanks;
 - **a declared-constraint violation** — range, length, pattern, digit counts, enum domain: a parseable-but-out-of-bounds value is *exactly as invalid* as an unparseable one. A value violating several checks reports the **first** in the engine's fixed precedence;
-- **the "required" checkbox on an empty field** ([§4](03-empty-and-required.md)) — for *validation* this required-and-empty cell is unknown like any other formal error; for *computation* it reads as plainly empty (an important asymmetry, [§11](09-computations.md));
-- **a duplicate index value** — the auto uniqueness check marks *every* participating cell, field-locally;
-- **an over-repetition row** — a row beyond the group's declared `repeatability`, which also suppresses that row's ordinary checks.
+- **the "required" checkbox on an empty field** ([§4](03-empty-and-required.md)) — after its generated mandatory rule has fired and its hit/message has been retained, the empty target is annotated with a validation-scoped required finding; authored validation rules then see unknown, while computation sees plain empty (an important asymmetry, [§11](09-computations.md));
+- **a duplicate index value** — a later model/instance check marks *every* participating cell, field-locally;
+- **an over-repetition row** — a later structural check marks a row beyond the group's declared `repeatability`, which also suppresses that row's ordinary checks.
 
-> **Lean modelling note.** These are five *sources* of one state. Model a single `formalCheck : Model → Field → RawValue → CellState` that returns `filled v` or `notCheckRelevant`, and route *all* five sources through it, so downstream evaluation only ever sees the resolved three-state cell. Do not scatter invalidity handling across the operators — resolve it once, at the read.
+> **Lean modelling note.** Keep one checked-cell representation, but do not collapse every producer into the base `formalCheck : FieldPolicy → RawCell → CheckedCell`. The base function handles ordinary local findings such as malformed data and declared constraints. Generated and structural findings are staged annotations on those base checked cells. Requiredness specifically runs in this order: evaluate the generated `mandatoryField` rule against the base cells, retain its hit/message, then, on a hit, annotate the empty target with `.required` before authored validation rules run. Annotating first would make the mandatory rule's own `FieldNotFilled` read UNKNOWN and suppress the message that creates the annotation — a circular self-suppression. `observeCell` maps applicable findings to validation `unknown` and ordinary computation `poison`, but ignores `.required` during computation so the cell remains empty. Do not scatter invalidity handling across operators, and do not perform per-kind empty substitution inside the read.
 
 ### B.4 Suppression is branch-scoped, and reaches presence checks
 
 A formal error does **not** remove the whole rule; it makes the reading operand UNKNOWN and Kleene `And`/`Or` decides the rest:
 
 ```
-healthyTrue Or  [broken] > 0     -- still FIRES  (healthy branch decides)
-healthyTrue And [broken] > 0     -- SUPPRESSED   (unknown absorbs the And)
+healthyValueTrue Or  [broken] > 0     -- still FIRES  (the VALUE-fired branch decides the verdict)
+healthyTrue      And [broken] > 0     -- SUPPRESSED   (unknown absorbs the And)
 ```
 
-A single-branch rule is just the case where branch-scoped and rule-scoped suppression look identical. The unknown reaches **even operators that read no value**: `FieldFilled(malformed)` decides nothing (it is UNKNOWN, not FALSE). And the suppression is **silent** from the author's viewpoint — the engine emits its own formal-error code on the sentinel path while the author's rule yields nothing; in a report the discriminator is the sentinel path vs the rule's own path.
+A single-branch rule is just the case where branch-scoped and rule-scoped suppression look identical. The unknown reaches **even operators that read no value**: `FieldFilled(malformed)` decides nothing (it is UNKNOWN, not FALSE). And the suppression is **silent** from the author's viewpoint — the engine emits its own formal-error code on the sentinel path while the author's rule yields nothing; in a report the discriminator is the sentinel path vs the rule's own path. The VALUE qualifier matters for the unified `Verdict`: `Or` uses value-wins polarity, so an OMISSION-fired branch may still be upgraded by a VALUE-fired sibling. The truth table establishes the result despite an unknown sibling, but it does not by itself establish whether validation physically skipped that read; treat validation read traces as unobserved until a focused engine probe exposes them.
 
 ### B.5 The strong-Kleene tables (the exact algebra)
 
@@ -139,7 +139,7 @@ Note the absorbing cases that make suppression branch-scoped: `F And U = F`, `T 
 >   | .tru, _ => .tru | _, .tru => .tru
 >   | .fls, .fls => .fls | _, _ => .unknown
 > ```
-> A predicate that reads a cell produces `K` (not `Bool`): reading a `notCheckRelevant` cell yields `.unknown`; reading `empty`/`filled` yields a definite `.tru`/`.fls` per the operator's rules. A worthwhile property to prove: **monotonicity** — turning any `U` operand into a definite value can only move the rule from *not-fired* toward *fired* or leave it (no non-monotone flips). This is the formal statement of "suppression only ever hides errors, never invents them", and it is a strong regression guard.
+> A predicate that reads a cell produces `K` (not `Bool`): reading a `notCheckRelevant` cell yields `.unknown`; reading `empty`/`filled` yields a definite `.tru`/`.fls` per the operator's rules. Define the strong-Kleene information order by `U ⊑ T`, `U ⊑ F`, and reflexivity, with `T` and `F` incomparable. `And` and `Or` are monotone in each argument under this order: refining unknown input may resolve the result to either truth value, while a result that is already definite is stable under further input refinement. This exact statement is the useful regression theorem; a blanket "not-fired can only move toward fired" claim is false because unknown may refine to false as well as true.
 
 ### B.6 Validation *excludes*; computation *poisons*
 
@@ -161,4 +161,4 @@ The compute side is the subject of [§11](09-computations.md); the key is that t
 - [ ] Boolean has three field-states; `== True` ≠ `FieldFilled`; Confirm-empty = `False` while Boolean-empty = not-evaluated.
 - [ ] Fill quantifiers distinguish the **declared** vs **instantiated** iteration ranges, and count an invalid cell as neither filled nor empty.
 - [ ] Suppression is **branch-scoped** and reaches presence predicates (`FieldFilled(invalid)` = UNKNOWN).
-- [ ] Monotonicity property holds (locking test).
+- [ ] Strong-Kleene information order is explicit; `And`/`Or` are monotone under it, and definite results are stable under refinement.

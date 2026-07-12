@@ -3,7 +3,7 @@
 Three topics, one of which (polarity) is a *whole second semantic dimension* a naive reimplementation omits entirely:
 
 1. **Severity** (ERROR/WARNING/INFO) is pure message metadata — only ERROR invalidates.
-2. **Message type** (VALUE vs OMISSION) is **computed from the data** via *directional fillability*, and it has its own three-way algebra alongside Kleene truth.
+2. **Message type** (VALUE vs OMISSION) is **computed from the data** via *directional fillability* and combines with Kleene truth in a verdict algebra that retains `unknown`.
 3. **Full vs partial** validation — partial gates rules by a relevant set and treats out-of-set references as UNKNOWN.
 
 If you only implement "does the rule fire", you have implemented *half* of validation. The engine also answers "*why*, and what repair helps" — that is the polarity, and it is load-bearing for the message a user sees.
@@ -34,25 +34,22 @@ Beyond severity, every message carries a **message type**:
 - **OMISSION** — filling one or more currently-empty fields *could* satisfy the rule ("something is missing").
 - **VALUE** — no fill can; only changing an entered value helps ("what you entered is wrong").
 
-Because empty operands participate in so many firings ([§2](03-empty-and-required.md)), the type is what tells a user *which* repair to attempt. Internally, the evaluation result is **three-state** — **fired-as-value / fired-as-omission / not-fired** — with its own `And`/`Or` algebra and (again) **no negation** combinator:
+Because empty operands participate in so many firings ([§2](03-empty-and-required.md)), the type is what tells a user *which* repair to attempt. Internally, the evaluation result must also preserve a formally-invalid/suppressed **unknown** result; it is **not-fired / fired-as-value / fired-as-omission / unknown**, with its own `And`/`Or` algebra and (again) **no negation** combinator:
 
 - under **`And`**, **omission wins** (filling could still rescue the whole rule);
 - under **`Or`**, **value wins** (the value branch alone convicts).
 
-> **Lean modelling note.** The full evaluation result of a rule is best modelled as **two coupled lattices**: a Kleene truth `K` *and* a polarity, or more directly a single three-way outcome:
+> **Lean modelling note.** Model the full evaluation result as a unified verdict so `unknown` can never be mistaken for `notFired`:
 > ```lean
-> inductive Outcome where | firedValue | firedOmission | notFired
-> def Outcome.and : Outcome → Outcome → Outcome
->   -- notFired is the identity-ish for And-of-fired; among fired, omission wins
->   | .notFired, y => y | x, .notFired => x
->   | .firedOmission, _ => .firedOmission | _, .firedOmission => .firedOmission
->   | _, _ => .firedValue
-> def Outcome.or : Outcome → Outcome → Outcome
->   | .notFired, y => y | x, .notFired => x
->   | .firedValue, _ => .firedValue | _, .firedValue => .firedValue
->   | _, _ => .firedOmission
+> inductive Polarity where | value | omission
+> inductive Verdict where
+>   | notFired
+>   | fired (polarity : Polarity)
+>   | unknown
+> -- conj: notFired dominates; then unknown; among two fires omission wins.
+> -- disj: a fire dominates unknown/notFired; among fires value wins.
 > ```
-> (Reconcile this with the formal-error UNKNOWN of [§3](02-logic-and-formal-errors.md): a suppressed branch contributes `notFired` here, and the Kleene `U` handling decides suppression *before* polarity is combined. In practice you evaluate a node to a small record `{ truth : K, polarity : Polarity }` and combine both under the same `And`/`Or`.)
+> The explicit tables live in [`../A12Kernel/Core.lean`](../A12Kernel/Core.lean). A suppressed branch contributes `unknown`, not `notFired`; strong-Kleene dominance then explains why a fired `Or` can decide despite an unknown sibling while a fired `And` cannot.
 
 ---
 
@@ -98,7 +95,7 @@ Verified mechanics:
 ## Checklist for §12
 
 - [ ] Severity is message metadata; only ERROR invalidates; firing is severity-independent.
-- [ ] Every fired result is **three-way** (firedValue / firedOmission / notFired) with `And`→omission-wins, `Or`→value-wins, no negation.
+- [ ] Every condition result preserves `notFired`, `fired VALUE`, `fired OMISSION`, and `unknown`; `And`→not-fired dominates then omission-wins among fires, `Or`→a fire dominates then value-wins among fires; no negation.
 - [ ] Numeric operands carry `canGrow`/`canShrink`, seeded sign-aware (trigger = `positivesOnly`), propagated through arithmetic/functions/aggregates; counts grow-only; dates symmetric `notGiven`; concat ORs `notGiven`; `Having` escalates (counts excepted).
 - [ ] The same rule can type either way per document (`NotExactlyOneFieldFilled`, `FirstFilledValue` prefix-sensitivity, `CurrentRepetition` always VALUE).
 - [ ] `validatePart` = gate rules by relevant error field + read out-of-set refs as UNKNOWN; auto-add globals; starred aggregates UNKNOWN unless wildcarded; phantom relevant rows evaluated; uniqueness needs the partner relevant.

@@ -125,7 +125,7 @@ Fourteen numbered areas cover the language. This is the same `§n` numbering the
 
 If you internalise nothing else, internalise these. Each is the root of a whole family of bugs, and each is expanded in a deep-dive file.
 
-1. **There are three cell states, not two — empty ≠ invalid.** Besides *empty* and *filled*, a cell can be **not-check-relevant**: present but formally invalid (wrong format, out of range, pattern miss, duplicate index, over-repetition, required-and-empty). This third state answers *every* question with "unknown" and behaves differently from empty in every position — it is counted as neither filled nor empty, it makes aggregates non-evaluable, it suppresses rules, and in computation it *poisons*. A two-state (`Option`) value domain cannot express the language. **Model the value domain with three states from the start.** ([§3](#3-the-taxonomy))
+1. **There are at least three semantic cell classifications, not two — empty ≠ invalid.** Besides *empty* and *filled*, a cell can be **not-check-relevant** because of formal invalidity (wrong format, out of range, pattern miss, duplicate index, over-repetition, or validation-scoped requiredness). Validation observes applicable invalidity as UNKNOWN: it is counted as neither filled nor empty, makes aggregates non-evaluable, and suppresses undecided rule branches. Computation observes ordinary invalidity as poison, while required-and-empty remains ordinary empty. A two-state (`Option Value`) domain cannot express this; the Lean model uses `CheckedCell` plus a phase-sensitive `CellObservation`. ([§3](#3-the-taxonomy))
 
 2. **Evaluation is three-valued (Kleene), but only the *data* is three-valued.** Connectives (`And`/`Or`) and predicates are two-valued; the third value ("unknown") enters only when an operand reads an invalid cell, and then ordinary Kleene `And`/`Or` decides how far it reaches — **branch-scoped, not rule-scoped**: `healthy Or [broken] > 0` still fires; `healthy And [broken] > 0` is suppressed. ([§1](#3-the-taxonomy), [§3](#3-the-taxonomy))
 
@@ -154,15 +154,21 @@ These hold across the whole language; a reimplementation can assert them as glob
 
 ## 6. Lean-encoding orientation
 
-The full plan is [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md); this is the orientation so the deep-dive callouts have shared vocabulary. Six core types carry the semantics.
+The full plan is [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md); this is the orientation so the deep-dive callouts have shared vocabulary. The current types separate invariant cell classification from phase-sensitive observation.
 
-**(a) The three-valued cell state.** Every cell read resolves to one of three states before anything else looks at it:
+**(a) The checked-cell and observation boundary.** Formal checking records raw presence, a parsed value when one exists, and formal findings. A phase read then distinguishes empty, value, validation-unknown, and computation-poison. Required-and-empty is a validation-scoped finding and remains ordinary empty in computation; operator-specific empty substitution happens after the read.
 
 ```lean
-inductive CellState where
-  | empty                    -- not specified
-  | filled (v : Value)       -- a well-formed value of the field's type
-  | notCheckRelevant         -- present but formally invalid ("unknown")
+structure CheckedCell where
+  rawPresent : Bool
+  parsed     : Option Value
+  findings   : List FormalCause
+
+inductive CellObservation where
+  | empty
+  | value   (v : Value)
+  | unknown (cause : FormalCause)
+  | poison  (cause : FormalCause)
 ```
 
 **(b) Kleene three-valued logic** for truth, with the caveat that the third value arises only from reads, and the connectives are the strong-Kleene tables:
@@ -174,20 +180,25 @@ def K.or  : K → K → K | .tru,_ => .tru | _,.tru => .tru | .fls,.fls => .fls 
 -- (there is no K.not: the language has no negation combinator)
 ```
 
-**(c) The polarity lattice** — an orthogonal result carried alongside truth for a *firing* message:
+**(c) The verdict algebra** retains both Kleene-unknown and a fired message's polarity:
 
 ```lean
 inductive Polarity where | value | omission
--- combine under And: omission wins; under Or: value wins
+inductive Verdict where
+  | notFired
+  | fired (polarity : Polarity)
+  | unknown
+-- And: notFired dominates; among fires omission wins.
+-- Or: a fire dominates; among fires value wins.
 ```
 
-Evaluating a rule against a row therefore yields something like `firedAsValue | firedAsOmission | notFired` — a *three*-way outcome with its own And/Or algebra (see [§12](#3-the-taxonomy)).
+This unified result avoids treating a suppressed/invalid rule as though it were definitely not fired (see [§12](#3-the-taxonomy)).
 
 **(d) The value domain** must model per-kind values *and* the "not-given / fillable" information polarity needs. A first cut:
 
 ```lean
 inductive Value where
-  | num  (d : Decimal) (scale : Nat)     -- scale is a static field property, not the runtime value
+  | num  (d : Rat)                       -- declared scale is separate static field data
   | str  (s : String)
   | bool (b : Bool)
   | date (d : CalDate)                   -- with precision; unreal dates are a *bottom*, not a value
@@ -199,7 +210,7 @@ inductive Value where
 
 **(f) The environment / document.** Evaluation happens *at a repetition context* — a binding of each enclosing repeatable level to a row index. Iteration produces a set of such contexts; a path resolves against one. Model this explicitly (an `Env` mapping repeatable levels → row indices) rather than trying to thread positions implicitly — the star-binding and correlation rules ([§9](#3-the-taxonomy), [§10](#3-the-taxonomy)) are *about* how that environment is extended.
 
-> **The one-sentence encoding thesis.** A faithful evaluator is a function `eval : Ast → Env → Document → (K × Polarity)` over a three-state value domain, where `compute` is a *separate* function with an order-dependent poison effect — and the hard parts are (3) the third state, (4) the polarity, and (9)/(11) the environment and the poison.
+> **The one-sentence encoding thesis.** A faithful reference evaluator is a total pure function of model, world, document, environment, and well-formed core rule; validation returns a `Verdict`, while computation is a separate outcome-producing function with read-driven poison. The hard parts are the phase-sensitive cell boundary, directional polarity, iteration environment, observable read order, and the evidence/proof chain around each clause.
 
 ---
 
@@ -212,8 +223,8 @@ Self-contained definitions of the recurring vocabulary (the deep-dive files assu
 | **cell** | one field value at one repetition (a repeated field's value in a specific row). The kernel has no single noun for this; it is this document set's shorthand. |
 | **row** | one instantiated repetition of a repeatable group. |
 | **(index) column** | a field's values across all rows of its group — the scan unit for uniqueness and starred aggregates. |
-| **cell state** | the three-way evaluability of a cell: **empty** · **filled** · **not-check-relevant**. |
-| **not-check-relevant** | the third cell state: present but formally invalid; behaves as UNKNOWN everywhere and is counted as *neither* filled nor empty. |
+| **cell observation** | the result of reading a checked cell in a phase: **empty** · **value** · validation **unknown** · computation **poison**. |
+| **not-check-relevant** | the validation classification of a formally invalid cell: reads as UNKNOWN and is counted as neither filled nor empty; the computation view is normally poison, with the required-empty exception. |
 | **formal error** | a violation of a field's *data-type configuration* (type, pattern, scale, range, charset, leading/trailing blanks, required-and-empty, duplicate index, over-repetition). Puts the cell in the not-check-relevant state; uses a fixed, non-authorable message; blocks the field from all rules. |
 | **3VL / Kleene** | three-valued logic (TRUE / FALSE / UNKNOWN); the truth model. Only data is three-valued; connectives are two-valued and use the strong-Kleene tables. |
 | **suppression** | a formal error on an operand makes that operand UNKNOWN; the ordinary `And`/`Or` algebra decides how far it reaches (**branch-scoped**). |
@@ -281,3 +292,20 @@ An **optional verification layer** — unlike §0–§8, it points *outside* thi
 | §14 | CustomCondition | §14 | — | — | custom-condition SPI (`ICustomCondition`) |
 
 Machine-readable facets exist for only §2 / §5 / §6 / §9 / §12, and a replayable corpus for only §5 / §6 / §9 / §11 / §12; elsewhere the ground truth is the canonical prose + findings + the kernel class. Concrete syntax (lexing, keywords, directives) sits outside the taxonomy → [`12-concrete-syntax.md`](12-concrete-syntax.md) here; a12-rulekit locks it under its "Outside the taxonomy" lane.
+
+---
+
+## 10. Lean coverage projection
+
+This is the live projection from semantic clauses to executable definitions, proofs/counterexamples, and external evidence. “Implemented” means the named Lean fragment is executable; “proved” means an internal consequence of that definition is kernel-checked; neither label claims universal correspondence with the external kernel. The primitive choices below have focused kernel-backed law/differential tests in the read-only a12-rulekit repository, but the current portable corpus has no focused cases for empty Number/Boolean/Confirm, malformed branches, simple absolute requiredness, or the legal precision witness. Those remain explicit external-adequacy obligations.
+
+| Clauses | Current Lean home | Internal assurance | External adequacy | Status and exact boundary |
+|---|---|---|---|---|
+| §1 truth and verdict algebra | [`Core.lean`](../A12Kernel/Core.lean), [`Proofs/Verdict.lean`](../A12Kernel/Proofs/Verdict.lean), [`Proofs/Information.lean`](../A12Kernel/Proofs/Information.lean) | Commutativity, associativity, idempotence, identities, absorbers, absorption, distributivity, strong-Kleene information monotonicity, and checked non-laws for unknown/polarity | Canonical §1 evidence; no matching portable corpus case | **Proved internally** for the finite `K`/`Verdict` algebras; no generic negation |
+| §2 empty scalar comparisons and row gate | [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean), [`Conformance/FlatValidation.lean`](../A12Kernel/Conformance/FlatValidation.lean) | Executable locks for Number-empty as fillable zero, Boolean-empty as not evaluated, Confirm-empty as false, equality/inequality, polarity, and atomic/composed blank-instance row gates | Kernel-backed [`EmptyValueLawsTest`](../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/EmptyValueLawsTest.java) and [`EmptyRowGateDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/EmptyRowGateDiffTest.kt); focused portable replay pending | **Implemented, partial:** one resolved non-repeatable field; equality/inequality only; lookup/policy coherence is an admitted boundary until checked elaboration; no paths, ordering, arithmetic, aggregates, or partial-validation override |
+| §3 base formal checking and phase observation | [`Semantics/Observation.lean`](../A12Kernel/Semantics/Observation.lean), [`Proofs/Observation.lean`](../A12Kernel/Proofs/Observation.lean), [`Conformance/Observation.lean`](../A12Kernel/Conformance/Observation.lean) | `CheckedCell.WellFormed`, preservation under staged findings, validation-unknown/computation-poison phase laws, and required-only exception | Kernel-backed [`FormalErrorScopeLawsTest`](../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/FormalErrorScopeLawsTest.java); focused portable replay pending; complete multiple-finding precedence is still unspecified | **Implemented, partial:** starts after scalar text decoding; the closed base-cause type excludes contextual findings |
+| §4 absolute requiredness | [`Semantics/Required.lean`](../A12Kernel/Semantics/Required.lean), [`Proofs/Required.lean`](../A12Kernel/Proofs/Required.lean), [`Conformance/Required.lean`](../A12Kernel/Conformance/Required.lean) | Generated-rule evaluation preserves an independently stated source outcome and message metadata; `mandatoryField` runs on base cells before annotation; computation-observation preservation is proved for the complete transformation | Kernel/interpreter [`RequirednessDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/RequirednessDiffTest.kt); the broad [`model-validation-seed`](../../a12-rulekit/corpus/cases/fuzz/model-validation-seed.json) contains mandatory outcomes but is outside this fragment; focused portable replay pending | **Implemented, partial:** absolute/non-repeatable only; generated rule identity/name is not modeled; parent-filled, repeatable-ancestor, and index generation are excluded |
+| §5 numeric comparison precision | [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean) | Named scale `19`, executable positive and negative `HALF_UP` tie locks, literal scale exemption by typed constructor; the `4e-20`/`6e-20` examples test the helper directly rather than pretending to be legal fields | Kernel/interpreter [`PrecisionDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/PrecisionDiffTest.kt); external whole-rule replay is deferred because the legal witness is `[Quantity] + tiny == 0` | **Implemented helper, narrow:** field-to-literal equality/inequality only; arithmetic `MathContext(50)`, the legal precision witness, and target rounding are excluded |
+| §12 polarity and malformed branches | [`Core.lean`](../A12Kernel/Core.lean), [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean), [`Conformance/FlatValidation.lean`](../A12Kernel/Conformance/FlatValidation.lean) | VALUE/OMISSION precedence is proved algebraically; VALUE-fired `Or`, fired `And`, not-fired `And`, and OMISSION-fired `Or` malformed-sibling outcomes are executable locks | Kernel-backed [`FormalErrorScopeLawsTest`](../../a12-rulekit/adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/FormalErrorScopeLawsTest.java); focused portable replay pending | **Implemented for the admitted flat constructors only:** directional numeric fillability, aggregates, filters, iteration, and partial relevance remain open |
+
+The trusted root is [`A12Kernel/Proofs.lean`](../A12Kernel/Proofs.lean). [`scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh) rejects `sorry`, `admit`, user axioms, `unsafe`, `partial`, and `native_decide` in that proof tree, then checks representative transitive roots while allowing Lean’s standard `propext`, `Classical.choice`, and `Quot.sound` foundations. Executable conformance may use `native_decide` for opaque computations such as rational rescaling, but those examples are outside the trusted theorem root.

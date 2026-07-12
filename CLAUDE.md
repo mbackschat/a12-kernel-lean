@@ -1,16 +1,16 @@
 # CLAUDE.md
 
-Guidance for working in **a12-kernel-lean** — a clean-room **Lean 4 executable specification** of the A12 kernel's validation & computation semantics.
+Guidance for working in **a12-kernel-lean** — a clean-room, versioned **Lean 4 formal theory and executable specification** of the A12 kernel's validation & computation semantics.
 
 ## What this is
 
-A12 Kernel is mgm technology partners' model-and-DSL engine for complex business forms: business analysts declare **validation rules** (each states the *error* condition — true ⇒ the data is invalid) and **computations** (derived fields) in a bilingual EN/DE DSL, and the engine evaluates them against form *Documents*. This project reimplements that **evaluation semantics** in Lean 4 as a faithful, `#eval`-able, property-testable specification. The stance is *semantics-first*: an executable spec whose behaviour matches the engine, with proofs a later, optional layer this design tries not to obstruct.
+A12 Kernel is mgm technology partners' model-and-DSL engine for complex business forms: business analysts declare **validation rules** (each states the *error* condition — true ⇒ the data is invalid) and **computations** (derived fields) in a bilingual EN/DE DSL, and the engine evaluates them against form *Documents*. This project preserves that observed **evaluation semantics** as a versioned mechanized theory: executable as a reference oracle, empirically anchored to kernel 30.8.1, and equipped with a required proof spine plus selectively proved higher-level properties.
 
-The language-neutral semantics live in [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) (the map: taxonomy, invariants, core types, glossary) and follow the numbered deep-dives; the concrete Lean plan is [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md). The `spec/` is self-contained by design — the sibling repos below are the **authority and knowledge layer** beneath it, not a substitute for reading it.
+The language-neutral semantics live in [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) (the map: taxonomy, invariants, core types, glossary) and follow the numbered deep-dives. [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) is the canonical guide to Lean's role, claim boundaries, project studies, theorem opportunities, and working discipline; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records concrete encoding decisions; [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) gives the staged implementation order. The `spec/` is self-contained by design — the sibling repos below are the authority and evidence beneath it, not a substitute for reading it.
 
 ## Goal & role
 
-**A proved reference oracle, executable-first, with proofs added where they pay** (decided 2026-07-12). Build the `#eval`-able reference evaluator first, differential-tested against the engine and by replaying `../a12-rulekit/corpus`; add declarative-judgment + refinement proofs incrementally (verdict-algebra laws, monotonicity, partial-validation & polarity one-sided soundness). Lean is the ecosystem's formal semantics-of-record — *not* a replacement for the shipped Kotlin interpreter. The concrete encoding decisions, their rationale, and what was adopted / rejected live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); read it before extending the core types. The *why Lean, and what it buys us* argument is in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
+**A versioned mechanized theory, executable-first, with a required proof spine and additional proofs selected by payoff** (decided 2026-07-12). Build small semantic capsules: each lands with its executable clause, evidence, useful law when one exists, nearest checked non-law, exact assumptions, and coverage entry. The reference evaluator is differentially checked against the engine and by direct replay of `../a12-rulekit/corpus`; proofs establish internal universal consequences and semantic-preservation bridges, never universal correspondence to the external kernel. Lean is the ecosystem's formal semantics-of-record for the chosen account of observed behaviour — *not* a replacement for the shipped Kotlin interpreter. Read [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) for the charter and [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) before extending the proof or semantics architecture; read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) before extending the core types.
 
 ## ⚠️ HARD RULE — clean-room reimplementation; never link, call, or transcribe the kernel
 
@@ -25,24 +25,38 @@ Because this project's source ships no kernel code, it is licensed **MIT** (see 
 
 No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel`, `../a12-rulekit`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does.
 
+## ⚠️ HARD RULE — write only inside this repository
+
+Treat every path outside the `a12-kernel-lean` repository root as **strictly read-only**, including all sibling repositories such as `../a12-kernel` and `../a12-rulekit`.
+
+- Never edit, create, generate, format, delete, restore, clean, stage, or commit files outside this repository.
+- Never run sibling builds, tests, generators, or other commands that create build output, caches, reports, lockfiles, temporary files, or Git metadata changes there.
+- Read-only source and documentation inspection is allowed. If verification or generation would require an external write, stop and ask for an explicitly authorized workflow instead.
+- Keep temporary artifacts inside this repository only when unavoidable, and remove them before completing the task.
+
 ## The source-of-truth hierarchy
 
-Three layers, in order of authority for a semantic question:
+Three layers, in authority order for a semantic question:
 
-1. **`spec/` (this repo) — the primary working reference.** The distilled, language-neutral semantics with Lean modelling notes. Its `§n` taxonomy mirrors a12-rulekit's (below), so section numbers line up across repos.
-2. **`../a12-kernel` — the ultimate source of truth (the behavioural oracle).** The real engine. When `spec/` and the engine disagree, **the engine wins and the spec is corrected**. Use it to *learn* and to *differentially test* — always under the clean-room rule above.
+1. **`../a12-kernel` — the ultimate source of truth (the behavioural oracle).** The real engine. When the local theory and the engine disagree, **the engine wins and the theory is corrected**. Use it to learn and to differentially test — always under the clean-room rule above.
+2. **`spec/` and the Lean theory (this repo) — the primary working reference.** The distilled, language-neutral semantics, executable definitions, and proved consequences of the chosen account. The `§n` taxonomy mirrors a12-rulekit's (below), so section numbers line up across repos.
 3. **`../a12-rulekit` (a12-dmkits) — the knowledge source.** A peer **clean-room** reimplementation of the same semantics (in Kotlin), a reusable test corpus, semantics ledgers, and an evaluation harness.
 
 ### Entry points
 
-The full inventory of both sibling repos (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy).
+The full inventory of both sibling repos (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy). The external Lean case studies and their primary-source links are curated in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
+
+### Codebase orientation
+
+For codebase warm-ups and explanations, work directly from this repository's source and documentation. Ignore Showboat and the a12-rulekit CLI unless the user explicitly asks for either; they are not part of understanding or explaining this codebase.
 
 ## Building & running
 
-Toolchain: **Lean 4.31.0**, pinned in [`lean-toolchain`](lean-toolchain); Lake 5.0. No external dependencies — the skeleton is self-contained.
+Toolchain: **Lean 4.31.0**, pinned in [`lean-toolchain`](lean-toolchain); Lake 5.0. No external dependencies — the library is self-contained.
 
 ```sh
-lake build                          # elaborate & build the A12Kernel library (runs the #eval / example smoke checks)
+lake build                          # build definitions, proofs, and executable conformance locks
+./scripts/check-lean-trust.sh       # reject proof escape hatches and audit theorem-root axioms
 lake env lean A12Kernel/Core.lean   # elaborate a single module with imports available
 ```
 
@@ -52,11 +66,16 @@ lake env lean A12Kernel/Core.lean   # elaborate a single module with imports ava
 - [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the truth/polarity algebra and value domain: `K` (strong-Kleene, no negation), `Polarity`, `Verdict` + `conj`/`disj`, `ScaleInfo`, `NumField`, `Value`.
 - [`A12Kernel/Cell.lean`](A12Kernel/Cell.lean) — the phase-sensitive cell model: `FormalCause`, `Phase`, `CheckedCell`, `CellObservation` (empty ≠ invalid, refined into a phase-indexed read).
 - [`A12Kernel/Document.lean`](A12Kernel/Document.lean) — addressing & instance: `RowAddr`/`CellAddr`, `Document` (instantiated rows kept separate from cell values), `Env`, `World` (injected clock).
+- [`A12Kernel/Semantics/`](A12Kernel/Semantics/) — phase observation, the admitted flat validation fragment, and staged absolute-required semantics.
+- [`A12Kernel/Proofs.lean`](A12Kernel/Proofs.lean) — trusted theorem root importing algebra, information-order, observation, and required-staging proofs.
+- [`A12Kernel/Conformance.lean`](A12Kernel/Conformance.lean) — executable locks for the supported fragment; these are semantic examples, not a substitute for external differential evidence.
 - [`A12Kernel/Basic.lean`](A12Kernel/Basic.lean) — smoke module.
 
 The design decisions behind these types (extrinsic AST, `Rat` + rendered stored-form, the unified `Verdict`, the two-level cell model, the `Document` split, the injected `World`) are recorded with rationale in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-Build the executable spec **bottom-up** in the order of [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) §3 — scalars & literals → `CellState`/`formalCheck` → flat Kleene eval → required/index desugaring → the iteration environment → paths → polarity → computation → partial validation → interpolation/custom. Lock each stage against the engine before the next; the **ten encoding traps** (encoding guide §2) are where naive attempts silently diverge, and the properties in §4 are the strong regression guards.
+Build the executable theory **bottom-up** in the order of [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) §3 — scalars & literals → `CheckedCell`/`formalCheck`/phase observation → flat Kleene eval → required/index desugaring → the iteration environment → paths → polarity → computation → partial validation → interpolation/custom. Close each stage's evidence and required proof obligations before the next; the **ten encoding traps** (encoding guide §2) are where naive attempts silently diverge.
+
+Every new semantic clause must link to its `§n` spec and evidence, state whether it is empirically checked, formally proved, deliberately counterexampled, or still open, and update the clause-level coverage projection once that surface exists. Never use theorem counts or `0 sorry` as a substitute for reviewing the exact statement, hypotheses, direction, result domain, and axiom dependencies.
 
 ## Conventions
 

@@ -13,5 +13,5 @@ jobs:
       - uses: leanprover/lean-action@v1
         # Uses the pinned toolchain (lean-toolchain) and runs `lake build`, which also
         # elaborates the #eval / example smoke checks.
-        # TODO: add a `#print axioms` gate on the root theorems once they land
-        # (see docs/ARCHITECTURE.md, "Proof discipline").
+      - name: Audit trusted theorem roots
+        run: ./scripts/check-lean-trust.sh

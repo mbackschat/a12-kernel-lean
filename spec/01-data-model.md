@@ -132,10 +132,10 @@ This matters for reimplementation packaging: model **`compute`** and **`validate
 
 > **Lean modelling note.** Signatures to aim for:
 > ```lean
-> def validateFull : Model → Document → List Message
-> def validatePart : Model → Document → RelevantSet → List Message
-> def compute      : Model → Document → (Path → Env → ComputeOutcome)   -- outcome, not a mutated doc
-> def apply        : Document → (Path → Env → ComputeOutcome) → Document
+> def validateFull : Model → World → Document → List Message
+> def validatePart : Model → World → Document → RelevantSet → List Message
+> def compute      : Model → World → Document → List (CellAddr × ComputeOutcome)
+> def apply        : Document → List (CellAddr × ComputeOutcome) → Document
 > ```
 > Keeping `compute` as *outcome-producing* rather than *document-mutating* isolates the order-dependent poison ([§11](09-computations.md)) inside one function and lets `apply`/`validate` stay pure.
 
