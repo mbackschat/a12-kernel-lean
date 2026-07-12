@@ -65,16 +65,6 @@ structure AbsoluteRequiredRule where
   metadata : MandatoryFieldMetadata
   deriving Repr, DecidableEq
 
-namespace FlatField
-
-/-- The resolved field identifier, independent of its scalar kind. -/
-def id : FlatField → FieldId
-  | .number field => field.id
-  | .boolean field => field.id
-  | .confirm field => field.id
-
-end FlatField
-
 /-- The message metadata required by the source declaration. -/
 def mandatoryFieldMetadata : MandatoryFieldMetadata :=
   { errorCode := "mandatoryField"

@@ -2,7 +2,7 @@
 
 The overall goal is to build `a12-kernel-lean` into a self-contained, executable, proof-bearing semantics-of-record and body of knowledge for A12 validation and computation: capture observed behavior precisely, make it a practical reference for independent interpreter implementations and semantic reviews, prove the universal consequences and semantic-preservation results that provide real value beyond testing, keep correspondence with the external kernel empirical and explicitly bounded, preserve the provenance and limits of every claim, reuse established formal-language architectures where they fit, and advance one complete semantic capsule at a time without writing outside this repository.
 
-This document is the project constitution: the decision being made, who the work serves, its semantic boundary, the artifacts and evidence it produces, and the gates by which progress is judged. [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns the detailed theorem contract, case studies, trust discipline, and later publication strategy; [`ARCHITECTURE.md`](ARCHITECTURE.md) owns concrete Lean representations; [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) owns implementation order and stage-level conformance witnesses.
+This document is the project constitution: the decision being made, who the work serves, its semantic boundary, the artifacts and evidence it produces, and the gates by which progress is judged. [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns the detailed theorem contract, case studies, trust discipline, and later publication strategy; [`ARCHITECTURE.md`](ARCHITECTURE.md) owns concrete Lean representations; [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns live clause-level status and evidence gates; read-only [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) supplies consulted staged guidance rather than a writable project plan.
 
 ## Decision
 
@@ -58,7 +58,11 @@ The resulting claim classes are deliberately separate:
 
 A wrong Lean clause can support flawless proofs, and finite differential testing can miss an input. Confidence comes from connecting the artifacts without claiming that one subsumes the others.
 
+> **Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-rulekit contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle.
+
 The recommended differential topology has four roles. [`../../a12-kernel`](../../a12-kernel) is the authoritative behavior. The external [`../../a12-rulekit/adapter`](../../a12-rulekit/adapter) harness runs focused kernel probes and exports normalized results without becoming a Lean dependency. [`../../a12-rulekit/corpus`](../../a12-rulekit/corpus) is the portable replay boundary for this repository. [`../../a12-rulekit/interpreter`](../../a12-rulekit/interpreter) is a secondary clean-room peer for triangulation and divergence discovery, not an oracle; agreement with it cannot override contrary kernel evidence.
+
+This differential topology is the required way to anchor primitive semantic choices. For each new clause, prefer a small own-domain witness executed by a kernel-facing harness outside this repository, compare the kernel result independently with the clean-room interpreter where useful, retain the observable result and kernel version as portable evidence, and replay the supported projection against Lean. A mismatch is a finding to resolve at the semantic definition, never a tolerance to hide. Proofs establish universal consequences of the chosen Lean definitions; differentials establish empirical correspondence on retained observations; fuzzing broadens the search for missed observations. None substitutes for the others. Under this repository’s write boundary, Codex treats every sibling as read-only and never runs its build or capture tasks; new external evidence must arrive through an explicitly authorized, externally produced artifact or workflow.
 
 ## Delivery unit: the semantic capsule
 
@@ -73,11 +77,11 @@ The unit of progress is a **semantic capsule**, not a batch of evaluator branche
 7. the nearest plausible false generalization as a checked counterexample;
 8. updated clause coverage, trusted-root audit, focused elaboration, and a green build.
 
-A slice that misses an applicable obligation is `partial` and records the missing work. The full definition of done and proof spine live in [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).
+A slice that misses an applicable obligation is `partial` and records the missing work. In particular, an implemented and proved capsule without retained portable kernel observations is internally closed but remains `external evidence pending`; it must not be described as kernel-correspondence complete. The full definition of done and proof spine live in [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).
 
 ## Milestones and gates
 
-Development proceeds in vertical slices, following the detailed order in [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md).
+Development proceeds in vertical slices, using the baseline order and traps in read-only [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md), with current dispositions recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and durable changes of treatment in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 
 1. **Foundations:** align values, verdict algebra, checked cells, documents, environment, world, and theorem vocabulary.
 2. **First proof-bearing capsule:** flat conditions and phase-aware invalid-cell suppression, including engine-backed examples, algebra/information-order laws, an evaluator/judgment or trace bridge where useful, and one generated-rule desugaring proof.
@@ -127,10 +131,13 @@ Once the semantic center and proof spine are credible, the highest-value later u
 - equivalence outside explicit deltas between versioned kernel-semantics theories;
 - domain proofs that validation implies business invariants or computations preserve ranges and conservation laws;
 - rule implication, redundancy, overlap, dependency, and repair analyses;
+- a dedicated `$` correlation program split into single-level star/uncorrelated `Having`, captured-outer correlation, and kept-row observation-order capsules; [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md#lf3--correlation-requires-two-explicit-environments) records the prerequisites, differentials, proof obligations, checked non-laws, and deliberate deferrals;
 - a checked Verso semantics handbook, presentation decks importing the live theory, and a Blueprint view of provenance, theorem dependencies, and progress.
 
 ## Reevaluation and immediate next step
 
 The first capsule demonstrates value beyond a second evaluator: it has an exact information order replacing a false monotonicity slogan, a closed base-finding type that prevents requiredness from entering the wrong stage, a non-circular two-pass required transformation, universal computation-preservation and algebra laws, and checked counterexamples. Its primitive clauses are supported by focused kernel-backed law and differential tests in the read-only a12-rulekit repository, but the current portable corpus has no focused cases for empty Number/Boolean/Confirm, malformed branches, or simple absolute requiredness. Because sibling repositories are strictly read-only, this project records that portable replay as an open external-adequacy obligation rather than manufacturing or modifying evidence elsewhere.
 
-Continue to the smallest checked elaboration and normalized path-resolution slice. Replace admitted field identifiers and policy coherence with explicit model lookup, fail-closed rejection, and model-derived formal checking while staying non-repeatable. Do not claim full §10 path syntax or add iteration/arithmetic breadth until the elaboration result, context-coherence theorem, rejected cases, scope documentation, and internal conformance locks are closed. The legal kernel precision witness remains open because it reaches scale 20 through arithmetic; the direct rescaling examples are internal helper laws, not external whole-rule evidence.
+The smallest checked elaboration and normalized path-resolution slice is now internally closed: explicit model validation and order-independent lookup, fail-closed scalar/path rejection, a proof-bearing `CheckedFlatCondition`, model-derived formal checking, context-coherence theorems, rejected cases, scope documentation, trusted-root coverage, and internal conformance locks are present. It deliberately covers only structured absolute, plain parent-relative, and bare non-repeatable references; it does not claim complete §10 syntax.
+
+The immediate gate is external evidence, not more evaluator breadth. Supply and replay retained portable kernel 30.8.1 observations for the supported flat validation, requiredness, and normalized path cases; until then these slices remain `external evidence pending` rather than kernel-correspondence complete. Once that evidence gate closes, proceed to iteration capsule 5a (single-level star and uncorrelated `Having`) and only then 5b (`$` as an explicit captured-outer binding). The legal kernel precision witness also remains open because it reaches scale 20 through arithmetic; the direct rescaling examples are internal helper laws, not external whole-rule evidence.

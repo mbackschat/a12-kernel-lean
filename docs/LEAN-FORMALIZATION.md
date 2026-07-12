@@ -105,7 +105,7 @@ The fourteen-section taxonomy in [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-
   → assumptions, unsupported fragment, and version caveat
 ```
 
-The existing a12-rulekit map verifies that prose, findings, catalog facets, corpus families, and test classes are present. A Lean coverage projection should add semantic agreement and theorem scope rather than duplicating that inventory blindly.
+The existing a12-rulekit map verifies that prose, findings, catalog facets, corpus families, and test classes are present. This repository's live [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) adds Lean definitions, theorem scope, support boundaries, and external-evidence state rather than duplicating that inventory blindly.
 
 ## 3. Architectural pattern for A12
 
@@ -411,12 +411,15 @@ The adoption test is concrete: Verso must make checked examples, theorem navigat
 ### 12.10 Keep document ownership explicit
 
 - [`../README.md`](../README.md) owns the entry point, current status, and build command.
+- [`README.md`](README.md) owns the documentation index and routes each knowledge kind to one owning surface.
 - [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the charter, audience, ecosystem role, deliverables, and non-goals.
 - This document owns the formalization contract, case-study knowledge, theorem/trust discipline, and documentation strategy.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) owns concrete Lean encodings and rejected alternatives.
-- [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) owns implementation order, semantic traps, exit gates, and initial conformance witnesses.
+- [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md) owns the documentation lifecycle and same-change update triggers.
+- [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable numbered formalization findings and researched treatment.
+- [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns live clause-level Lean/proof/evidence status and open adequacy obligations.
+- Read-only [`../spec/`](../spec/) owns the consulted language-neutral semantic baseline, including staged guidance and semantic traps; it is not updated as part of Lean implementation work.
 - [`SOURCES.md`](SOURCES.md) owns provenance and drill paths into the sibling evidence repositories.
-- [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) owns the stable taxonomy and, once implemented, the live clause-level coverage projection.
 - A future Verso handbook or blueprint is a checked publication view over these sources, not an additional authority.
 
 ## 13. Anti-patterns
@@ -456,7 +459,7 @@ Before the evaluator grows across the full operator surface, complete one thin s
 
 This milestone tests the project's complete thesis: readable knowledge, executable semantics, universal proof, checked non-laws, transformation correctness, and empirical anchoring. Only after it works should breadth across the remaining scalar, iteration, computation, and partial-validation clauses dominate the schedule.
 
-Status on 2026-07-13: the internal capsule is complete for the stated flat fragment, while focused portable replay remains an open external-adequacy obligation. Items 5–6 were deliberately not materialized as a duplicate judgment: at this size it would restate the evaluator without exposing an independently useful trace or refinement boundary. Instead the capsule proves the verdict algebra, exact information-order result, checked-cell/phase laws, and the independently stated absolute-required source meaning versus its generated-rule elaboration. A judgment becomes warranted when checked path elaboration or an observable read trace supplies a genuinely separate relation. The legal scale-19 whole-rule witness is likewise deferred until arithmetic expressions are admitted; current `rescaleHalfUp` checks are helper laws only.
+Status on 2026-07-13: the internal flat capsule and first checked-elaboration slice are complete for their stated fragments, while focused portable replay remains an open external-adequacy obligation. Items 5–6 were deliberately not materialized as a duplicate judgment: at this size they would restate the evaluator without exposing an independently useful trace or refinement boundary. Instead the flat capsule proves the verdict algebra, exact information-order result, checked-cell/phase laws, and the independently stated absolute-required source meaning versus its generated-rule elaboration; the new structured path elaborator carries model/core well-formedness and proves unique declaration plus runtime policy coherence. It has no separate surface evaluator whose dynamic meaning could support a non-circular preservation theorem. A declarative relation becomes warranted when repeatable access plans or an observable read trace supply genuinely separate steps. The legal scale-19 whole-rule witness is likewise deferred until arithmetic expressions are admitted; current `rescaleHalfUp` checks are helper laws only.
 
 ## 15. Study sources
 

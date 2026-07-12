@@ -3,7 +3,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
-An admitted core for one resolved, non-repeatable field reference. It covers typed
+A small core for resolved, non-repeatable field references. It covers typed
 Number/Boolean/Confirm equality, presence predicates, and `And`/`Or`. Paths, iteration,
 arithmetic, partial validation, and concrete syntax are outside this capsule.
 -/
@@ -37,6 +37,16 @@ inductive FlatField where
   | confirm (field : FlatConfirmField)
   deriving Repr, DecidableEq
 
+namespace FlatField
+
+/-- The resolved field identifier, independent of its scalar kind. -/
+def id : FlatField → FieldId
+  | .number field => field.id
+  | .boolean field => field.id
+  | .confirm field => field.id
+
+end FlatField
+
 /-- The typed comparison fragment. Numeric literals are scale-exempt by construction;
     Confirm admits only the legal `True` literal, made implicit in its constructor. -/
 inductive FlatComparison where
@@ -45,7 +55,7 @@ inductive FlatComparison where
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   deriving Repr, DecidableEq
 
-/-- Admitted flat conditions. The closed constructors make unsupported operations
+/-- Flat core conditions. The closed constructors make unsupported operations
     impossible to represent in this fragment. -/
 inductive FlatCondition where
   | compare (comparison : FlatComparison)
@@ -55,9 +65,9 @@ inductive FlatCondition where
   | or (left right : FlatCondition)
   deriving Repr, DecidableEq
 
-/-- Lookup for already-resolved field references. Checked cells are expected to come from
-    the matching base policy; until checked elaboration lands, the total evaluator treats
-    an inconsistent value kind defensively as malformed rather than assuming coherence. -/
+/-- Lookup for already-resolved field references. The checked surface route constructs
+    this context from the same model policies used by elaboration; the low-level evaluator
+    still treats an inconsistent value kind defensively as malformed. -/
 structure FlatContext where
   read : FieldId → CheckedCell
 

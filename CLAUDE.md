@@ -6,7 +6,7 @@ Guidance for working in **a12-kernel-lean** — a clean-room, versioned **Lean 4
 
 A12 Kernel is mgm technology partners' model-and-DSL engine for complex business forms: business analysts declare **validation rules** (each states the *error* condition — true ⇒ the data is invalid) and **computations** (derived fields) in a bilingual EN/DE DSL, and the engine evaluates them against form *Documents*. This project preserves that observed **evaluation semantics** as a versioned mechanized theory: executable as a reference oracle, empirically anchored to kernel 30.8.1, and equipped with a required proof spine plus selectively proved higher-level properties.
 
-The language-neutral semantics live in [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) (the map: taxonomy, invariants, core types, glossary) and follow the numbered deep-dives. [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) is the canonical guide to Lean's role, claim boundaries, project studies, theorem opportunities, and working discipline; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records concrete encoding decisions; [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) gives the staged implementation order. The `spec/` is self-contained by design — the sibling repos below are the authority and evidence beneath it, not a substitute for reading it.
+The language-neutral semantics live in read-only [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) and follow the numbered deep-dives. [`docs/README.md`](docs/README.md) indexes the living project documentation; [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) tracks clause-level Lean/proof/evidence status; [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) records durable formalization findings; [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) owns Lean's role and trust contract; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records concrete encoding decisions. [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) remains consulted staged guidance, not a writable plan.
 
 ## Goal & role
 
@@ -34,6 +34,10 @@ Treat every path outside the `a12-kernel-lean` repository root as **strictly rea
 - Read-only source and documentation inspection is allowed. If verification or generation would require an external write, stop and ask for an explicitly authorized workflow instead.
 - Keep temporary artifacts inside this repository only when unavoidable, and remove them before completing the task.
 
+## ⚠️ HARD RULE — treat `spec/` as read-only
+
+The language-neutral semantics in [`spec/`](spec/) are consulted upstream reference input, playing the same role for this repository that the merged BA/dev kernel documentation plays for a12-rulekit. They are not a working log or implementation-status surface. Do not edit files under `spec/` unless the user explicitly authorizes that exact change. Put new findings, Lean design decisions, implementation progress, evidence status, research notes, and plans under [`docs/`](docs/) instead.
+
 ## The source-of-truth hierarchy
 
 Three layers, in authority order for a semantic question:
@@ -45,6 +49,8 @@ Three layers, in authority order for a semantic question:
 ### Entry points
 
 The full inventory of both sibling repos (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy). The external Lean case studies and their primary-source links are curated in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
+
+**Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-rulekit contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle. Kernel execution happens only in an external harness outside this repository and outside Codex's write workflow. This project consumes explicitly supplied portable observations read-only, and a capsule without them remains marked `external evidence pending` rather than kernel-correspondence complete. The exact topology and evidence roles are fixed in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
 
 ### Codebase orientation
 
@@ -66,8 +72,9 @@ lake env lean A12Kernel/Core.lean   # elaborate a single module with imports ava
 - [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the truth/polarity algebra and value domain: `K` (strong-Kleene, no negation), `Polarity`, `Verdict` + `conj`/`disj`, `ScaleInfo`, `NumField`, `Value`.
 - [`A12Kernel/Cell.lean`](A12Kernel/Cell.lean) — the phase-sensitive cell model: `FormalCause`, `Phase`, `CheckedCell`, `CellObservation` (empty ≠ invalid, refined into a phase-indexed read).
 - [`A12Kernel/Document.lean`](A12Kernel/Document.lean) — addressing & instance: `RowAddr`/`CellAddr`, `Document` (instantiated rows kept separate from cell values), `Env`, `World` (injected clock).
-- [`A12Kernel/Semantics/`](A12Kernel/Semantics/) — phase observation, the admitted flat validation fragment, and staged absolute-required semantics.
-- [`A12Kernel/Proofs.lean`](A12Kernel/Proofs.lean) — trusted theorem root importing algebra, information-order, observation, and required-staging proofs.
+- [`A12Kernel/Semantics/`](A12Kernel/Semantics/) — phase observation, the flat validation core, and staged absolute-required semantics.
+- [`A12Kernel/Elaboration/`](A12Kernel/Elaboration/) — checked lowering from a structured, parser-independent surface subset, including normalized non-repeatable path resolution and model-derived cell policies.
+- [`A12Kernel/Proofs.lean`](A12Kernel/Proofs.lean) — trusted theorem root importing algebra, information-order, observation, required-staging, elaboration, and context-coherence proofs.
 - [`A12Kernel/Conformance.lean`](A12Kernel/Conformance.lean) — executable locks for the supported fragment; these are semantic examples, not a substitute for external differential evidence.
 - [`A12Kernel/Basic.lean`](A12Kernel/Basic.lean) — smoke module.
 
@@ -75,7 +82,9 @@ The design decisions behind these types (extrinsic AST, `Rat` + rendered stored-
 
 Build the executable theory **bottom-up** in the order of [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) §3 — scalars & literals → `CheckedCell`/`formalCheck`/phase observation → flat Kleene eval → required/index desugaring → the iteration environment → paths → polarity → computation → partial validation → interpolation/custom. Close each stage's evidence and required proof obligations before the next; the **ten encoding traps** (encoding guide §2) are where naive attempts silently diverge.
 
-Every new semantic clause must link to its `§n` spec and evidence, state whether it is empirically checked, formally proved, deliberately counterexampled, or still open, and update the clause-level coverage projection once that surface exists. Never use theorem counts or `0 sorry` as a substitute for reviewing the exact statement, hypotheses, direction, result domain, and axiom dependencies.
+Every new semantic clause must link to its read-only `§n` spec and evidence, state whether it is empirically checked, formally proved, deliberately counterexampled, or still open, and update [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) once that surface exists. Record non-obvious settled treatment in [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md). Never use theorem counts or `0 sorry` as a substitute for reviewing the exact statement, hypotheses, direction, result domain, and axiom dependencies.
+
+For Lean-specific architecture and proof-engineering choices, inspect the audited cloned projects' actual sources before promoting a practice. Cedar is the primary precedent for executable specification, validation/theorem separation, proof-root coverage, residual error claims, tests, and differential boundaries; Radix is a compact secondary check for relational/evaluator bridges, transformation proofs, and checked Verso exposition. If their patterns conflict, prefer Cedar unless A12's semantics or clean-room boundary supplies a documented reason otherwise. The audited revisions and transferred lessons live in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) and [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md).
 
 ## Conventions
 
