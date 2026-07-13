@@ -87,7 +87,7 @@ private inductive ResolvedOperand (α : Type) where
 def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : CellObservation :=
   observeCell .validation (context.read id)
 
-private def resolveNumber (context : FlatContext) (field : FlatNumberField) :
+private def resolveNumberComparisonOperand (context : FlatContext) (field : FlatNumberField) :
     ResolvedOperand Rat :=
   match context.observeValidationAt field.id with
   | .empty => .value 0 false
@@ -96,7 +96,7 @@ private def resolveNumber (context : FlatContext) (field : FlatNumberField) :
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-private def resolveBoolean (context : FlatContext) (field : FlatBooleanField) :
+private def resolveBooleanComparisonOperand (context : FlatContext) (field : FlatBooleanField) :
     ResolvedOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .notEvaluated
@@ -105,7 +105,7 @@ private def resolveBoolean (context : FlatContext) (field : FlatBooleanField) :
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-private def resolveConfirm (context : FlatContext) (field : FlatConfirmField) :
+private def resolveConfirmComparisonOperand (context : FlatContext) (field : FlatConfirmField) :
     ResolvedOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .value false false
@@ -146,11 +146,11 @@ private def evalResolved (equivalent : α → α → Bool) (op : EqualityOp)
 
 private def evalComparison (context : FlatContext) : FlatComparison → Verdict
   | .number op field expected =>
-      evalResolved numberEquivalent op (resolveNumber context field) expected
+      evalResolved numberEquivalent op (resolveNumberComparisonOperand context field) expected
   | .boolean op field expected =>
-      evalResolved (· == ·) op (resolveBoolean context field) expected
+      evalResolved (· == ·) op (resolveBooleanComparisonOperand context field) expected
   | .confirm op field =>
-      evalResolved (· == ·) op (resolveConfirm context field) true
+      evalResolved (· == ·) op (resolveConfirmComparisonOperand context field) true
 
 def FlatField.observeValidation (context : FlatContext) : FlatField → CellObservation
   | .number field => context.observeValidationAt field.id

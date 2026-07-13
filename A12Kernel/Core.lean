@@ -114,7 +114,7 @@ inductive Value where
   | num  (d : Rat)
   | str  (s : String)
   | bool (b : Bool)
-  | conf (b : Bool)         -- Confirm: an empty Confirm reads `False` (unlike Boolean)
+  | conf (b : Bool)         -- Stored Confirm values are `true`; `false` is comparison-local substitution.
   | enum (stored : String)  -- compared by the stored token, never the display text
   deriving Repr, DecidableEq
 

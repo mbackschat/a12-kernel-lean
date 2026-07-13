@@ -49,6 +49,7 @@ transitive axiom report below. -/
 
 #print axioms A12Kernel.formalCheck_wellFormed
 #print axioms A12Kernel.withFinding_preserves_wellFormed
+#print axioms A12Kernel.formalCheck_empty_observes_empty
 #print axioms A12Kernel.required_empty_observes_unknown_in_validation
 #print axioms A12Kernel.required_empty_observes_empty_in_computation
 #print axioms A12Kernel.ordinary_finding_still_poisons_computation

@@ -23,6 +23,12 @@ theorem withFinding_preserves_wellFormed (cell : CheckedCell) (cause : FormalCau
     · exact Or.inl parsed
     · exact Or.inr (by simp [CheckedCell.withFinding])
 
+/-- A clean absent cell crosses the shared observation boundary without acquiring a
+    kind- or phase-specific substitute. The consuming semantic clause owns that choice. -/
+theorem formalCheck_empty_observes_empty (policy : FieldPolicy) (phase : Phase) :
+    observeCell phase (formalCheck policy .empty) = .empty := by
+  cases phase <;> rfl
+
 theorem required_empty_observes_unknown_in_validation (policy : FieldPolicy) :
     observeCell .validation ((formalCheck policy .empty).withFinding .required) =
       .unknown .required := by
