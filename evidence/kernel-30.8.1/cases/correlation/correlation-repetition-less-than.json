@@ -1,0 +1,179 @@
+{
+    "meta": {
+        "id": "correlation-repetition-less-than",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§9"
+        ],
+        "tags": [
+            "single-star",
+            "having",
+            "outer-correlation",
+            "lean-evidence"
+        ],
+        "scenario": "a12-kernel-lean admitted correlation evidence gaps",
+        "notes": "inner repetition less-than outer repetition selects ordered predecessors"
+    },
+    "modelRef": "models/lean-correlation-repetition-less-than.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "A"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/StockQty",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "8.00"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                2
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "B"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/StockQty",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "2"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "9.00"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                3
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "C"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/StockQty",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "3"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "10.00"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "CORR_REP_LT|OMISSION_ERROR|/Order[1]/Items[2]/Count",
+        "CORR_REP_LT|OMISSION_ERROR|/Order[1]/Items[3]/Count"
+    ]
+}

@@ -20,6 +20,9 @@ private def marker : FlatNumberField :=
 private def checkedNumber : RawCell → CheckedCell :=
   formalCheck { kind := .number count.info }
 
+private def number (value : Rat) : RawCell :=
+  .parsed (.num value)
+
 private def rawContextOf (values : List RawCell) : SingleGroupValidationContext where
   group := items
   candidates := (List.range values.length).map (· + 1)
@@ -44,14 +47,14 @@ private def emptyAndZero : SingleGroupValidationContext :=
 private def malformedSecond : SingleGroupValidationContext :=
   rawContextOf [.parsed (.num 5), .rejected .malformed]
 
-private def selfExcludedConsumerContext
-    (rows : List (Rat × RawCell)) : SingleGroupValidationContext where
+private def correlatedConsumerContext
+    (rows : List (RawCell × RawCell)) : SingleGroupValidationContext where
   group := items
   candidates := (List.range rows.length).map (· + 1)
   read row fieldId :=
     if fieldId == count.id then
       match rows[row - 1]? with
-      | some (key, _) => checkedNumber (.parsed (.num key))
+      | some (key, _) => checkedNumber key
       | none => checkedNumber .empty
     else if fieldId == payload.id then
       match rows[row - 1]? with
@@ -63,26 +66,54 @@ private def selfExcludedConsumerContext
       checkedNumber .empty
 
 private def malformedFirstConsumer : SingleGroupValidationContext :=
-  selfExcludedConsumerContext [
-    (5, .rejected .malformed), (5, .parsed (.num 9))]
+  correlatedConsumerContext [
+    (number 5, .rejected .malformed), (number 5, number 9)]
 
 private def malformedSecondConsumer : SingleGroupValidationContext :=
-  selfExcludedConsumerContext [
-    (5, .parsed (.num 9)), (5, .rejected .malformed)]
+  correlatedConsumerContext [
+    (number 5, number 9), (number 5, .rejected .malformed)]
 
 private def validConsumers : SingleGroupValidationContext :=
-  selfExcludedConsumerContext [
-    (5, .parsed (.num 8)), (5, .parsed (.num 9))]
+  correlatedConsumerContext [
+    (number 5, number 8), (number 5, number 9)]
 
 private def distinctConsumerKeys : SingleGroupValidationContext :=
-  selfExcludedConsumerContext [
-    (5, .parsed (.num 8)), (6, .parsed (.num 9))]
+  correlatedConsumerContext [
+    (number 5, number 8), (number 6, number 9)]
 
 private def mixedConsumers : SingleGroupValidationContext :=
-  selfExcludedConsumerContext [
-    (5, .rejected .malformed),
-    (5, .parsed (.num 9)),
-    (5, .parsed (.num 10))]
+  correlatedConsumerContext [
+    (number 5, .rejected .malformed),
+    (number 5, number 9),
+    (number 5, number 10)]
+
+private def emptyZeroFilterKeys : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (.empty, number 8),
+    (number 0, number 9)]
+
+private def malformedFilterKeys : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (.rejected .malformed, number 8),
+    (number 5, number 9),
+    (number 5, number 10)]
+
+private def numericNotEqualRows : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (number 5, .empty),
+    (number 5, .empty),
+    (number 9, number 10)]
+
+private def repetitionEqualRows : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (number 1, .empty),
+    (number 2, number 9)]
+
+private def repetitionLessRows : SingleGroupValidationContext :=
+  correlatedConsumerContext [
+    (number 1, number 8),
+    (number 2, number 9),
+    (number 3, number 10)]
 
 private def emptyFirstMarker : SingleGroupValidationContext :=
   { validConsumers with read := fun row fieldId =>
@@ -114,6 +145,21 @@ private def selfExcluded : SingleCorrelatedStar :=
 
 private def selfExcludedPayload : SingleCorrelatedStar :=
   { valueField := payload, having := selfExcluded.having }
+
+private def numberNotEqualPayload : SingleCorrelatedStar :=
+  { valueField := payload
+    having := checkedHaving
+      (.compareNumbers .notEqual innerCount outerCount) (by decide) (by decide) }
+
+private def repetitionEqualPayload : SingleCorrelatedStar :=
+  { valueField := payload
+    having := checkedHaving
+      (.compareRepetitions .equal .inner .outer) (by decide) (by decide) }
+
+private def repetitionLessPayload : SingleCorrelatedStar :=
+  { valueField := payload
+    having := checkedHaving
+      (.compareRepetitions .lessThan .inner .outer) (by decide) (by decide) }
 
 private def smallerInner : SingleCorrelatedStar :=
   { valueField := count
@@ -203,6 +249,65 @@ example :
 
 example :
     selfExcludedPayload.firingRowsOn marker validConsumers = [1, 2] := by
+  native_decide
+
+/-- Empty Number filter keys compare as zero at both origins. Self-exclusion leaves the
+    other row selected in each direction. -/
+example :
+    selfExcludedPayload.select (captured emptyZeroFilterKeys 1) = [2] ∧
+    selfExcludedPayload.select (captured emptyZeroFilterKeys 2) = [1] ∧
+    selfExcludedPayload.firingRowsOn marker emptyZeroFilterKeys = [1, 2] := by
+  native_decide
+
+/-- A malformed outer key selects nothing; as an inner key it drops locally while the
+    two valid duplicate keys continue to select each other. -/
+example :
+    selfExcludedPayload.select (captured malformedFilterKeys 1) = [] ∧
+    selfExcludedPayload.select (captured malformedFilterKeys 2) = [3] ∧
+    selfExcludedPayload.select (captured malformedFilterKeys 3) = [2] ∧
+    selfExcludedPayload.firingRowsOn marker malformedFilterKeys = [2, 3] := by
+  native_decide
+
+/-- Numeric inequality is separated from equality by putting the only filled consumer
+    on the distinct-key row. -/
+example :
+    numberNotEqualPayload.select (captured numericNotEqualRows 1) = [3] ∧
+    numberNotEqualPayload.select (captured numericNotEqualRows 2) = [3] ∧
+    numberNotEqualPayload.select (captured numericNotEqualRows 3) = [1, 2] ∧
+    numberNotEqualPayload.firingRowsOn marker numericNotEqualRows = [1, 2] := by
+  native_decide
+
+/-- Structural repetition equality selects only the captured row. -/
+example :
+    repetitionEqualPayload.select (captured repetitionEqualRows 1) = [1] ∧
+    repetitionEqualPayload.select (captured repetitionEqualRows 2) = [2] ∧
+    repetitionEqualPayload.firingRowsOn marker repetitionEqualRows = [2] := by
+  native_decide
+
+/-- Inner repetition less-than outer repetition selects ordered predecessors. -/
+example :
+    repetitionLessPayload.select (captured repetitionLessRows 1) = [] ∧
+    repetitionLessPayload.select (captured repetitionLessRows 2) = [1] ∧
+    repetitionLessPayload.select (captured repetitionLessRows 3) = [1, 2] ∧
+    repetitionLessPayload.firingRowsOn marker repetitionLessRows = [2, 3] := by
+  native_decide
+
+/-- On a one-sided malformed operand, numeric inequality is not Boolean negation of
+    equality: both comparisons are unknown. Whether the malformed key is inner or
+    outer, neither comparison keeps the affected candidate. -/
+example :
+    let equal : CorrelatedHaving := .compareNumbers .equal innerCount outerCount
+    let notEqual : CorrelatedHaving := .compareNumbers .notEqual innerCount outerCount
+    let innerMalformed : SingleGroupFilterFrame := { innerRow := 1, outerRow := 2 }
+    let outerMalformed : SingleGroupFilterFrame := { innerRow := 2, outerRow := 1 }
+    equal.evalTruth malformedFilterKeys innerMalformed = .unknown ∧
+    notEqual.evalTruth malformedFilterKeys innerMalformed = .unknown ∧
+    equal.evalTruth malformedFilterKeys outerMalformed = .unknown ∧
+    notEqual.evalTruth malformedFilterKeys outerMalformed = .unknown ∧
+    selfIncluded.keeps (captured malformedFilterKeys 2) 1 = false ∧
+    numberNotEqualPayload.keeps (captured malformedFilterKeys 2) 1 = false ∧
+    selfIncluded.select (captured malformedFilterKeys 1) = [] ∧
+    numberNotEqualPayload.select (captured malformedFilterKeys 1) = [] := by
   native_decide
 
 /-- A selected valid cell satisfies the existential consumer even when another selected
