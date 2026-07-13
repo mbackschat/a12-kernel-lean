@@ -1,0 +1,47 @@
+{
+    "meta": {
+        "id": "number-empty-equals-zero-content",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§2"
+        ],
+        "tags": [
+            "lean-flat"
+        ],
+        "notes": "empty Number reads as fillable zero in a content-bearing row"
+    },
+    "modelRef": "models/lean-number-empty-zero.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/CustomerName",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "Acme"
+        },
+        {
+            "kind": "EMPTY",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ]
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "NUM_EMPTY_ZERO|OMISSION_ERROR|/Order[1]/Quantity"
+    ]
+}

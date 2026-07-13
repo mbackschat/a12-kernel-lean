@@ -1,16 +1,16 @@
 # Lean formalization findings
 
-This is the durable findings ledger for `a12-kernel-lean`, adapted from a12-rulekit's separation between kernel truth, implementation treatment, and live gaps. It records settled conclusions about how this project should formalize, prove, and empirically anchor the read-only semantics. It does not redefine kernel behavior and it is not a backlog.
+This is the durable findings ledger for `a12-kernel-lean`, adapted from a12-dmkits' separation between kernel truth, implementation treatment, and live gaps. It records settled conclusions about how this project should formalize, prove, and empirically anchor the read-only semantics. It does not redefine kernel behavior and it is not a backlog.
 
 Each finding has a stable `LF<n>` identifier, date, semantic section, evidence basis, Lean treatment, and explicit limit. Findings are not deleted or renumbered; later corrections amend the record visibly.
 
 ## LF1 — differential evidence and proofs answer different questions
 
-> Date: 2026-07-13. Sections: cross-cutting. Basis: project decision; Cedar-style executable-spec/production-engine separation; local a12-rulekit corpus and differential architecture.
+> Date: 2026-07-13. Sections: cross-cutting. Basis: project decision; Cedar-style executable-spec/production-engine separation; the local a12-dmkits (`a12-rulekit/`) corpus and differential architecture.
 
 Kernel differential testing is the empirical backbone. Each executable Lean capsule must ultimately be checked against retained portable observations from the real kernel. Proofs establish universal consequences of the chosen Lean definitions; they do not establish that the external kernel implements those definitions. Fuzzing broadens the empirical search but proves neither internal laws nor universal correspondence.
 
-The evidence topology has four distinct roles: the real kernel is behavioral authority; the external a12-rulekit adapter is the kernel-facing probe/export harness; the portable corpus or another explicitly versioned artifact is the repository boundary; the a12-rulekit interpreter is a clean-room peer for triangulation and divergence discovery, never the oracle. Contrary kernel evidence overrides agreement between Lean and the interpreter.
+The evidence topology has four distinct roles: the real kernel is behavioral authority; the external a12-dmkits adapter is the kernel-facing probe/export harness; the portable corpus or another explicitly versioned artifact is the repository boundary; the a12-dmkits interpreter is a clean-room peer for triangulation and divergence discovery, never the oracle. Contrary kernel evidence overrides agreement between Lean and the interpreter.
 
 Lean treatment: every live fragment in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) separates internal assurance from external adequacy. A capsule without retained kernel observations is marked `external evidence pending`, even when it builds, executes, and has trusted proofs.
 
@@ -28,11 +28,11 @@ Lean treatment: [`A12Kernel/Elaboration/Flat.lean`](../A12Kernel/Elaboration/Fla
 
 Supported path treatment: structured absolute paths, plain parent-relative paths, and bare lookup in the kernel order declaring group → nearest ancestors → flag-gated model-wide unique name. Excluded: concrete parsing/quoting, named turning-point labels, `RuleGroup`, stars, `$`, semantic indices, and repeatable evaluation.
 
-External limit: [`ShortNameRefDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/ShortNameRefDiffTest.kt) and [`NamedAncestorPathDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NamedAncestorPathDiffTest.kt) establish kernel-backed provenance, but no retained portable kernel artifact currently covers this exact Lean projection. Its status is therefore internal-only, external evidence pending.
+External limit, amended 2026-07-13: [`ShortNameRefDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/ShortNameRefDiffTest.kt) and [`NamedAncestorPathDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NamedAncestorPathDiffTest.kt) establish broad kernel-backed provenance, and the retained bundle now replays one plain parent-relative and one bare-ancestor positive projection. Those witnesses do not separate ancestor lookup from model-wide fallback or cover local precedence, absolute paths, no-fire values, and static rejection, so external adequacy remains partial.
 
 ## LF3 — `$` correlation requires two explicit environments
 
-> Date: 2026-07-13. Sections: §9, §10, §12. Basis: [`../spec/07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), [`../spec/01-data-model.md`](../spec/01-data-model.md), read-only a12-rulekit findings, interpreter treatment, and kernel differentials.
+> Date: 2026-07-13. Sections: §9, §10, §12. Basis: [`../spec/07-repetition-and-iteration.md`](../spec/07-repetition-and-iteration.md), [`../spec/01-data-model.md`](../spec/01-data-model.md), read-only a12-dmkits findings and interpreter treatment from the `a12-rulekit/` checkout, and kernel differentials.
 
 The semantic mechanism is an explicit two-environment filter. A rule begins with a captured repetition environment `outerEnv`. A starred operand enumerates candidate rows and constructs an `innerEnv` for each candidate. Inside `Having`, ordinary references resolve against `innerEnv`, while `$`-marked references resolve against `outerEnv`; correspondingly, `CurrentRepetition(G)` reads the candidate row and `CurrentRepetition($G)` reads the captured outer row. `$` is correlation, not positional selection.
 
@@ -68,7 +68,7 @@ Decision rule: inspect Cedar first for a new Lean architectural or proof-enginee
 
 ## LF5 — empty handling is a layered consuming-clause policy, not a field-kind function
 
-> Date: 2026-07-13. Sections: §2, §3, §4, §6, §7, §8, §9, §11, §12. Basis: a12-rulekit's kernel-verified operator catalog and structural checks, focused differential tests, and read-only kernel source inspection.
+> Date: 2026-07-13. Sections: §2, §3, §4, §6, §7, §8, §9, §11, §12. Basis: a12-dmkits' kernel-verified operator catalog and structural checks, focused differential tests, and read-only kernel source inspection.
 
 The expert rule “empty input depends only on field type” is a useful baseline for direct comparisons, but `only` is false. The catalog has exactly eight kind defaults: Number is `AS_ZERO`, Confirm is `AS_FALSE`, and Boolean, String, Enumeration, Date, Time, and DateTime are `NOT_EVALUATED`. It also has 31 operators carrying empty-operand deviation blocks: 36 separate claims because five operators distinguish operand positions, backed by 39 executable probes. Every default and deviation claim has at least one probe. [`CATALOG-SPEC.md`](../../a12-rulekit/docs/CATALOG-SPEC.md#4-the-emptyoperand-dimension) defines this as a deviation-only layer and explicitly separates empty operands from invalid/not-check-relevant values.
 

@@ -44,10 +44,10 @@ The project should retain several representations because they answer different 
 
 | Layer | Question | Canonical artifact | What keeps it honest |
 |---|---|---|---|
-| Human semantics and rationale | What does the rule mean, why, and where did the claim come from? | [`../spec/`](../spec/) plus the evidence trail in [`../../a12-rulekit/docs/KERNEL-FINDINGS.md`](../../a12-rulekit/docs/KERNEL-FINDINGS.md) | Review, source provenance, focused kernel probes |
+| Human semantics and rationale | What does the rule mean, why, and where did the claim come from? | [`../spec/`](../spec/) plus the a12-dmkits evidence trail in [`../../a12-rulekit/docs/KERNEL-FINDINGS.md`](../../a12-rulekit/docs/KERNEL-FINDINGS.md) | Review, source provenance, focused kernel probes |
 | Mechanized semantics | What is the exact compositional meaning? | Lean definitions and, where useful, declarative judgments | Exhaustive definitions, elaboration, `#eval`, named examples |
 | Semantic theory | What follows for every modeled input, and what tempting generalizations fail? | Lean theorems and checked counterexamples | Kernel-checked proof terms, `#print axioms`, explicit theorem scope |
-| External adequacy | Why believe the chosen primitives match kernel 30.8.1? | Direct replay of [`../../a12-rulekit/corpus/`](../../a12-rulekit/corpus/) plus findings/differentials | Empirical comparison against the behavioural oracle |
+| External adequacy | Why believe the chosen primitives match kernel 30.8.1? | Direct replay of the [a12-dmkits corpus](../../a12-rulekit/corpus/) plus findings/differentials | Empirical comparison against the behavioural oracle |
 
 Lean does not replace the prose or evidence layer. Rationale, discovery history, unresolved questions, and the licensing provenance remain more readable and honest in Markdown. Conversely, prose and tests should not be asked to carry universal consequences that can be stated and checked once in Lean.
 
@@ -105,7 +105,7 @@ The fourteen-section taxonomy in [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-
   → assumptions, unsupported fragment, and version caveat
 ```
 
-The existing a12-rulekit map verifies that prose, findings, catalog facets, corpus families, and test classes are present. This repository's live [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) adds Lean definitions, theorem scope, support boundaries, and external-evidence state rather than duplicating that inventory blindly.
+The existing a12-dmkits map verifies that prose, findings, catalog facets, corpus families, and test classes are present. This repository's live [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) adds Lean definitions, theorem scope, support boundaries, and external-evidence state rather than duplicating that inventory blindly.
 
 ## 3. Architectural pattern for A12
 
@@ -352,7 +352,7 @@ Counting quantifiers, custom conditions, created rows, and order-sensitive compu
 ### 12.5 Keep proofs and evidence independent
 
 - Do not derive Lean clauses mechanically from the implementation being checked and then claim independence.
-- Use a12-rulekit findings, catalog facts, and corpus cases as evidence inputs, not as runtime dependencies.
+- Use a12-dmkits findings, catalog facts, and corpus cases as evidence inputs, not as runtime dependencies.
 - Continue differential testing after a theorem is proved; the theorem validates consequences of the Lean definition, while the differential validates the primitive definition against the external engine.
 - Seek a second predicted instance for every discovered semantic mechanism before encoding it, following the project's root-cause discipline.
 
@@ -489,4 +489,4 @@ Repository claims in this review were checked against shallow local clones at th
 - [`do` Unchained paper](https://lean-lang.org/papers/do.pdf) and [supplement](https://github.com/Kha/do-supplement)
 - [Verso](https://verso.lean-lang.org/), its [package and versioning guidance](https://reservoir.lean-lang.org/@leanprover/verso), [Verso Blueprint](https://github.com/leanprover/verso-blueprint), the [Lean Reference Manual source](https://github.com/leanprover/reference-manual/blob/main/Manual.lean), and [`doc-gen4`](https://github.com/leanprover/doc-gen4)
 - [Strata](https://github.com/strata-org/Strata), [CvxLean](https://github.com/verified-optimization/CvxLean), [Veil](https://github.com/verse-lab/veil), [KLR](https://github.com/leanprover/KLR), and [SampCert](https://github.com/leanprover/SampCert)
-- The local A12 evidence inventory in [`SOURCES.md`](SOURCES.md) and a12-rulekit's [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md)
+- The local A12 evidence inventory in [`SOURCES.md`](SOURCES.md) and a12-dmkits' [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md)

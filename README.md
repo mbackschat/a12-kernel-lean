@@ -12,7 +12,7 @@ Lean makes every captured semantic clause explicit and executable, then lets sel
 
 ## Status
 
-The first proof-bearing semantic capsule and the first checked-elaboration slice are implemented internally. They cover base formal checking and phase observation; typed flat equality/inequality for Number, Boolean, and Confirm; presence predicates; the full-validation row gate; verdict-aware `And`/`Or`; scale-19 `HALF_UP`; the staged absolute/non-repeatable required-field transformation; checked model/path resolution for a deliberately small non-repeatable path subset; and model-derived formal checking. The default build includes executable conformance locks, the trusted proof root, algebra and information-order laws, cell/phase invariants, required-staging preservation, and elaboration/context-coherence theorems. Coverage is deliberately partial and recorded clause by clause in [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md); the full path language, repetition, ordering/arithmetic, computation, and partial validation have not landed, and slices without retained portable kernel observations remain marked `external evidence pending`.
+The first proof-bearing semantic capsule and the first checked-elaboration slice are implemented internally. They cover base formal checking and phase observation; typed flat equality/inequality for Number, Boolean, and Confirm; presence predicates; the full-validation row gate; verdict-aware `And`/`Or`; scale-19 `HALF_UP`; the staged absolute/non-repeatable required-field transformation; checked model/path resolution for a deliberately small non-repeatable path subset; and model-derived formal checking. The default build includes executable conformance locks and the trusted proof root. A separate `lake test` driver replays 11 retained kernel 30.8.1 observations through a focused typed projection; [`docs/EVIDENCE.md`](docs/EVIDENCE.md) states exactly what this establishes and which required/path witnesses remain open. Coverage is deliberately partial and recorded clause by clause in [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md); the full path language, repetition, ordering/arithmetic, computation, and partial validation have not landed.
 
 ## Build
 
@@ -20,6 +20,7 @@ Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned 
 
 ```sh
 lake build
+lake test
 ./scripts/check-lean-trust.sh
 ```
 
@@ -35,10 +36,10 @@ lake build
 - [`spec/`](spec/) — the distilled, language-neutral specification; start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md).
 - [`docs/SOURCES.md`](docs/SOURCES.md) — the drill chain from each semantic clause to its evidence.
 - [`../a12-kernel`](../a12-kernel) — the real engine, the behavioural **source of truth** (EUPL-1.2 / commercial).
-- [`../a12-rulekit`](../a12-rulekit) — a peer clean-room reimplementation, a reusable conformance corpus, and semantics docs.
+- [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) — a peer clean-room reimplementation, reusable conformance corpus, semantics docs, and the dmtool-release public distribution.
 
 This is a **clean-room** reimplementation: it never links, calls, or transcribes the kernel; it reproduces observed behaviour in original code and locks it with tests. See [`CLAUDE.md`](CLAUDE.md) for the full source-of-truth hierarchy and the licensing boundary.
 
 ## License
 
-MIT © 2026 mbackschat — see [`LICENSE`](LICENSE). This project's source ships no kernel code, so it carries no copyleft entanglement (the same basis as [`../a12-rulekit`](../a12-rulekit)'s MIT source).
+MIT © 2026 mbackschat — see [`LICENSE`](LICENSE). This project's source ships no kernel code, so it carries no copyleft entanglement (the same basis as [a12-dmkits](../a12-rulekit)' MIT source).

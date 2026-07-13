@@ -1,0 +1,36 @@
+{
+    "meta": {
+        "id": "number-empty-equals-zero-empty-row",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§2"
+        ],
+        "tags": [
+            "lean-flat"
+        ],
+        "notes": "the full-validation row gate suppresses positive empty substitution on an all-empty row"
+    },
+    "modelRef": "models/lean-number-empty-zero.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "EMPTY",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ]
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": []
+}

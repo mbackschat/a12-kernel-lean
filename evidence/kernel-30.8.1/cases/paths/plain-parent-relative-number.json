@@ -1,0 +1,57 @@
+{
+    "meta": {
+        "id": "plain-parent-relative-number",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§10"
+        ],
+        "tags": [
+            "lean-flat"
+        ],
+        "notes": "plain parent-relative lookup reaches the parent group field"
+    },
+    "modelRef": "models/lean-parent-relative-number.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "5"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/ShippingAddress",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/ShippingAddress/Street",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "Main"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "PARENT_RELATIVE_NUMBER|VALUE_ERROR|/Order[1]/Quantity"
+    ]
+}

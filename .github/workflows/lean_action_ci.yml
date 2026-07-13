@@ -15,3 +15,5 @@ jobs:
         # elaborates the #eval / example smoke checks.
       - name: Audit trusted theorem roots
         run: ./scripts/check-lean-trust.sh
+      - name: Replay retained kernel evidence
+        run: lake test
