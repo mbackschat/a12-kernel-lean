@@ -1,0 +1,37 @@
+{
+    "meta": {
+        "id": "absolute-required-number-filled",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§4"
+        ],
+        "tags": [
+            "lean-flat"
+        ],
+        "notes": "a filled absolute-required Number produces no mandatoryField"
+    },
+    "modelRef": "models/lean-absolute-required-number.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "5"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": []
+}

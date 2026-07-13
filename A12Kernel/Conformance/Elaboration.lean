@@ -99,11 +99,16 @@ example : coreOf (elaborate model ["Order"]
       (.compare (.number .equal { id := 0, info := numberInfo } 0))) := by
   native_decide
 
--- Bare resolution is local-first, then nearest ancestor, then unique model-wide.
+-- Bare resolution is declaring-group-first, then flag-gated unique model-wide.
 example : resolvedIdOf (model.resolveField ["Order", "Details"] (bare "Limit")) = some 4 := by
   native_decide
 
 example : resolvedIdOf (model.resolveField ["Order", "Details"] (bare "Quantity")) = some 0 := by
+  native_decide
+
+-- Ancestors have no special tier: after a local miss, duplicate names are model-wide ambiguous.
+example : errorOf (model.resolveField ["Order", "Details", "Deep"] (bare "Limit")) =
+    some (.shortNameNotUnique "Limit") := by
   native_decide
 
 example : resolvedIdOf (model.resolveField ["Order", "Details"] (bare "ExternalCode")) = some 5 := by
@@ -130,9 +135,14 @@ example : errorOf (ambiguousModel.resolveField ["Rule"] (bare "Code")) =
 private def shortNamesDisabled : FlatModel :=
   { model with fieldRefByShortNameAllowed := false }
 
--- Local and ancestor tiers do not depend on the model-wide short-name flag.
+-- The declaring-group tier does not depend on the model-wide short-name flag.
 example : resolvedIdOf (shortNamesDisabled.resolveField ["Order", "Details"]
-    (bare "Quantity")) = some 0 := by
+    (bare "Limit")) = some 4 := by
+  native_decide
+
+-- There is no implicit ancestor walk when short-name fallback is disabled.
+example : errorOf (shortNamesDisabled.resolveField ["Order", "Details"]
+    (bare "Quantity")) = some (.invalidEntity (bare "Quantity")) := by
   native_decide
 
 example : errorOf (shortNamesDisabled.resolveField ["Order", "Details"]

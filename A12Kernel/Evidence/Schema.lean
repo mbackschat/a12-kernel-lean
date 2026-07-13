@@ -64,6 +64,7 @@ structure CellSpec where
 inductive OperationSpec where
   | flat (declaringGroup : List String) (condition : ConditionSpec) (hasContent : Bool)
   | absoluteRequired (targetFieldId : Nat)
+  | resolve (declaringGroup : List String) (path : PathSpec)
   deriving Repr, DecidableEq
 
 structure CaseSpec where
@@ -71,6 +72,7 @@ structure CaseSpec where
   caseRef : String
   focusCode : String
   focusPointer : String
+  fieldRefByShortNameAllowed : Bool
   fields : List FieldSpec
   cells : List CellSpec
   operation : OperationSpec
@@ -84,6 +86,12 @@ structure Bundle where
 
 private def member [FromJson α] (json : Json) (name : String) : Except String α := do
   fromJson? (← json.getObjVal? name)
+
+private def memberD [FromJson α] (json : Json) (name : String) (fallback : α) :
+    Except String α :=
+  match json.getObjVal? name with
+  | .ok value => fromJson? value
+  | .error _ => pure fallback
 
 private def parseField (json : Json) : Except String FieldSpec := do
   let kind : String ← member json "kind"
@@ -152,6 +160,9 @@ private def parseCase (json : Json) : Except String CaseSpec := do
         (← parseCondition 64 (← json.getObjVal? "condition"))
         (← member json "hasContent"))
     | "absoluteRequired" => pure (.absoluteRequired (← member json "targetFieldId"))
+    | "resolve" => pure (.resolve
+        (← member json "declaringGroup")
+        (← parsePath (← json.getObjVal? "path")))
     | other => throw s!"unsupported evidence operation '{other}'"
   let fieldJson : List Json ← member json "fields"
   let cellJson : List Json ← member json "cells"
@@ -160,6 +171,7 @@ private def parseCase (json : Json) : Except String CaseSpec := do
     caseRef := ← member json "caseRef"
     focusCode := ← member json "focusCode"
     focusPointer := ← member json "focusPointer"
+    fieldRefByShortNameAllowed := ← memberD json "fieldRefByShortNameAllowed" true
     fields := ← fieldJson.mapM parseField
     cells := ← cellJson.mapM parseCell
     operation }

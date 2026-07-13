@@ -1,0 +1,39 @@
+{
+    "meta": {
+        "id": "absolute-required-number-malformed",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§4"
+        ],
+        "tags": [
+            "lean-flat"
+        ],
+        "notes": "a malformed absolute-required Number keeps its formal error and is not relabelled mandatory"
+    },
+    "modelRef": "models/lean-absolute-required-number.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "bad"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "zahlHatUngueltigeZeichen|VALUE_ERROR|/Order[1]/Quantity"
+    ]
+}

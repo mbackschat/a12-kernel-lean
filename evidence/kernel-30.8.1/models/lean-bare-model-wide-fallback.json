@@ -1,0 +1,158 @@
+{
+    "header": {
+        "id": "lean-bare-model-wide-fallback",
+        "modelType": "document",
+        "modelVersion": "28.4.0",
+        "locales": [
+            {
+                "code": "en_US"
+            }
+        ],
+        "labels": [],
+        "annotations": [],
+        "modelReferences": []
+    },
+    "content": {
+        "modelInfo": {
+            "name": "lean-bare-model-wide-fallback",
+            "variant": "cockpit",
+            "revision": "Arbeitsversion",
+            "immutable": false
+        },
+        "modelConfig": {
+            "decimalSeparator": ".",
+            "timeZone": "Europe/Berlin",
+            "conditionLanguage": {
+                "code": "en_US"
+            },
+            "fieldRefByShortNameAllowed": true
+        },
+        "modelRoot": {
+            "rootGroups": [
+                {
+                    "type": "Group",
+                    "id": "/Order",
+                    "name": "Order",
+                    "Group": {
+                        "repeatability": 1,
+                        "elements": [
+                            {
+                                "type": "Field",
+                                "id": "/Order/Limit",
+                                "name": "Limit",
+                                "Field": {
+                                    "fieldType": {
+                                        "type": "NumberType",
+                                        "NumberType": {
+                                            "maxFractionalDigits": 0,
+                                            "minFractionalDigits": 0
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "type": "Group",
+                                "id": "/Order/ShippingAddress",
+                                "name": "ShippingAddress",
+                                "Group": {
+                                    "repeatability": 1,
+                                    "elements": [
+                                        {
+                                            "type": "Rule",
+                                            "id": "/Order/ShippingAddress/R_BARE_MODEL_WIDE",
+                                            "name": "R_BARE_MODEL_WIDE",
+                                            "Rule": {
+                                                "errorEntityRelPath": "../../Reference/ExternalLimit",
+                                                "errorCode": "BARE_MODEL_WIDE",
+                                                "errorCondition": "[ExternalLimit] == 9",
+                                                "severity": "ERROR",
+                                                "errorMessage": [
+                                                    {
+                                                        "locale": "en_US",
+                                                        "text": "x"
+                                                    },
+                                                    {
+                                                        "locale": "de_DE",
+                                                        "text": "x"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "type": "Field",
+                                            "id": "/Order/ShippingAddress/Limit",
+                                            "name": "Limit",
+                                            "Field": {
+                                                "fieldType": {
+                                                    "type": "NumberType",
+                                                    "NumberType": {
+                                                        "maxFractionalDigits": 0,
+                                                        "minFractionalDigits": 0
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "Field",
+                                            "id": "/Order/ShippingAddress/Marker",
+                                            "name": "Marker",
+                                            "Field": {
+                                                "fieldType": {
+                                                    "type": "BooleanType"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "Group",
+                                            "id": "/Order/ShippingAddress/Details",
+                                            "name": "Details",
+                                            "Group": {
+                                                "repeatability": 1,
+                                                "elements": [
+                                                    {
+                                                        "type": "Field",
+                                                        "id": "/Order/ShippingAddress/Details/Active",
+                                                        "name": "Active",
+                                                        "Field": {
+                                                            "fieldType": {
+                                                                "type": "BooleanType"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "Group",
+                                "id": "/Order/Reference",
+                                "name": "Reference",
+                                "Group": {
+                                    "repeatability": 1,
+                                    "elements": [
+                                        {
+                                            "type": "Field",
+                                            "id": "/Order/Reference/ExternalLimit",
+                                            "name": "ExternalLimit",
+                                            "Field": {
+                                                "fieldType": {
+                                                    "type": "NumberType",
+                                                    "NumberType": {
+                                                        "maxFractionalDigits": 0,
+                                                        "minFractionalDigits": 0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}
