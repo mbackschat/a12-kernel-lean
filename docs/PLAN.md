@@ -6,38 +6,58 @@ This is the resumable plan for the next concrete delivery unit. Stable purpose a
 
 The checked one-star correlation capsule is complete. It adds explicit repeatable-group declarations, path-derived outer-to-inner repeatable ancestry, shared repeatable-aware path resolution, a parser-independent single-star correlated surface, proof-bearing lowering, exact group/scope/kind/operator/scale checks, model-derived raw-cell checking, fail-closed unknown/cross-group/wrong-scope runtime references, and candidate-row validation before firing evaluation. Nested false-singleton scope metadata is rejected while sibling repeatable groups remain valid. All twelve retained captured-outer runtime cases now pass through checked lowering and model-derived formal checking instead of constructing the core directly.
 
-The fourth closed evidence lane retains four kernel 30.8.1 authoring observations and their exact seeded models: all-outer rejection, unequal-scale `==` rejection, acceptance of the same operands under `<`, and one sibling-repeatable-group inner-reference rejection. The projection contains no expected diagnostic code, pins each complete model file by SHA-256, requires the retained `en_US` condition language, rejects every English lexer keyword in its unquoted identifier subset and any projected group with a repeatable proper ancestor, and binds the retained model hierarchy, seed rule, complete candidate draft, capture provenance, and diagnostic routing. It maps only the three externally established rejection shapes, including only inner-origin `fieldOutsideGroup`, and fails closed on outer-origin `fieldOutsideGroup`, `missingOuter`, and every other unclassified result. Generic binding guards cover structural mutations, while focused mutations of one real retained diagnostic fixture exercise the digest, language, ancestry, draft/seed, provenance, and diagnostic-routing rejection paths; all retained cases cross the positive binding gate. The full gate reports `42/42`: 36 runtime observations and six static authoring observations.
+The fourth closed evidence lane retains four kernel 30.8.1 authoring observations and their exact seeded models: all-outer rejection, unequal-scale `==` rejection, acceptance of the same operands under `<`, and one sibling-repeatable-group inner-reference rejection. Its exact binding and fail-closed projection rules remain owned by [`EVIDENCE.md`](EVIDENCE.md). The full gate reports `42/42`: 36 runtime observations and six static authoring observations.
 
 The theorem boundary is intentionally precise. Selector/relation, observation-footprint, declaration/policy coherence, fail-closed routing, scale-law, and raw-candidate-validation-to-semantic-`WellFormed` results are proved. The checked-wrapper lemmas expose structural certificates carried by successful lowering; they are not a surface-to-core semantic-preservation proof because the surface does not yet have an independent dynamic semantics.
 
-## Next milestone: first product-shaped Lean reference interpreter
+The first product-shaped process boundary is also complete. `a12-kernel-reference` reads at most the protocol byte limit plus one detection byte, safely preflights JSON depth and canonical structural integers before ordinary parsing, decodes exact decimal strings, validates the expanded model and sparse cells, and routes the condition through the existing checked elaborator and evaluator. It emits deterministic verdicts or finite fail-closed category/code diagnostics, and `--manifest` is generated from the same typed classifiers used by the decoder and checked against [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json). [`PROTOCOL.md`](PROTOCOL.md) owns the exact contract and the runnable samples under [`examples/reference-cli/`](../examples/reference-cli/); `lake exe checkReferenceProcess` exercises the compiled binary independently of `lake test`.
 
-The project already has a small executable interpreter internally: supported conditions lower and evaluate in Lean, conformance examples elaborate, and retained observations replay through `lake test`. The immediate next milestone is to make the flat fragment usable by non-Lean software through a stable process boundary. This is one focused capsule away, not a later computation-stage dependency.
+## Natural verification checkpoint
 
-The first interpreter slice should accept a versioned normalized JSON request containing the existing expanded flat model, declaring group, supported structured condition, raw scalar cells, and row-content flag. It should return a deterministic JSON response containing either the normalized `Verdict` or a structured unsupported/elaboration/input diagnostic. It must use the existing public checked route—`FlatModel`, `elaborate`, model-derived `checkContext`, and evaluation—rather than introduce a parallel evaluator or parse the bilingual A12 DSL.
+This is the intended stop for user verification: the first usable Lean reference CLI exists without broadening semantic support or changing the retained kernel-evidence claim. From the repository root, run:
+
+```sh
+lake build
+lake test
+lake exe checkReferenceProcess
+./scripts/check-lean-trust.sh
+lake exe a12-kernel-reference < examples/reference-cli/empty-number-equals-zero.request.json
+lake exe a12-kernel-reference --manifest
+```
+
+The expected first sample result is `fired` with `omission` polarity. Other accepted and rejected inputs, with adjacent expected responses, are listed in [`PROTOCOL.md`](PROTOCOL.md#regression-checked-sample-data).
+
+Known non-blocking process-hardening work remains before packaging a public release: add exact maximum/maximum-plus-one black-box probes for every manifest limit not already covered at the process boundary, exercise every rejected-cause tag and the remaining accepted Number-`notEqual` matrix cell, and decide whether a future manifest schema should expose the documented preclassified-scalar trust boundary directly. The decoder is already bounded, finite classifiers generate the manifest, and focused unit/process checks cover the mechanisms; these are coverage and machine-discoverability gaps, not known runtime/manifest disagreements, so they do not block this first interpreter checkpoint.
+
+A resumed session must distinguish three states. If this CLI capsule is still an uncommitted diff, it is only a release candidate: finish the independent reviews, correct every blocker, run the complete gates, and commit it separately before starting new semantics. If the commit exists but the user has not yet accepted the checkpoint, remain here and answer verification questions without modifying files unless explicitly asked. Only after the committed checkpoint is accepted should work proceed to the next delivery unit below.
+
+## Next delivery unit: expose the checked one-star correlation slice
+
+After this checkpoint is accepted, the next recommended product increment is a row-addressed normalized operation for the already implemented and evidenced one-star captured-outer validation slice. This is preferable to adding a new semantic family immediately because it makes the project's most difficult existing mechanism—the `$`-outer distinction—available to independent consumers while reusing its checked lowering, candidate validation, retained kernel observations, and proofs.
+
+The design must stop and be reassessed if exposing that exact slice would require pretending to have a general `Document` adapter, complete repeatable semantics, or filtered-result polarity. In that case, record the missing abstraction in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and choose the smallest semantic capsule that closes it; do not widen protocol v1 around an invented approximation.
 
 Success criteria:
 
-1. A protocol-v1 schema represents exactly the currently supported non-repeatable flat fragment: Number/Boolean/Confirm equality and inequality, filled/not-filled, `And`/`Or`, structured absolute/parent-relative/bare paths, declared field policy, raw scalar state, and row-content eligibility.
-2. A Lean executable reads one request or a deterministic stream from standard input, writes one machine-readable response to standard output, uses standard error only for process/infrastructure failures, and has documented exit behavior.
-3. Unsupported operators, kinds, paths, malformed protocol data, ambiguous models, and repeatable references fail closed with stable structured diagnostics; no nearby implemented clause is used as permission to guess.
-4. Process-level black-box tests lock JSON bytes or canonical semantic equality, exit status, output-channel discipline, malformed input, and at least one accepted and one unsupported request. The ordinary `lake build`, `lake test`, and trust audit remain separate gates.
-5. A machine-readable supported-fragment manifest is generated from or mechanically cross-checked with the protocol constructors and names kernel behavior version `30.8.1`; it must not claim the one-star runtime fragment until that fragment has a deliberate protocol shape.
-6. A concise user-facing example invokes the real executable and is regression-checked. Plain Markdown plus shared fixtures is the default; Verso is considered only if Lean-aware checked exposition materially improves the explanation.
+1. The existing `flatValidation.evaluateFull` request and response remain byte-stable; a new named operation has its own closed row-addressed input and output shapes.
+2. The request represents only the current one-group, one-star, direct-child Number/repetition comparison slice: explicit ordered 1-based unique candidates, checked inner/outer origins, model-derived raw cells, outer guard, and selected-presence consumer.
+3. The response exposes only observations the current semantics and retained evidence justify, principally firing rows and the documented polarity boundary; it does not manufacture kernel emission order or unimplemented filtered-result polarity.
+4. Every accepted request routes through the existing checked correlation lowering and model-derived candidate validator. There is no second repeatable evaluator and no general DM-JSON or concrete DSL parser.
+5. Process-level red/green tests cover an accepted `$` case, self-exclusion, malformed selected versus dropped consumers, row-zero/duplicate-candidate rejection, a static elaboration rejection, deterministic output, and unchanged flat fixtures.
+6. The generated support manifest distinguishes the two operations and their disjoint supported fragments. The implementation map preserves the exact external-evidence projection and marks any transport-only behavior separately.
 
 ## Implementation sequence
 
-1. Specify the smallest protocol and response algebra in an architecture decision, including exact Number encoding, missing versus rejected raw cells, stable diagnostic tags, protocol/kernel-version mismatch, and whether the first executable processes one request or newline-delimited requests. State the nearest unsupported inputs before coding.
-2. Write process-level red tests for one successful flat evaluation, one elaboration rejection, malformed JSON, unsupported protocol version, and deterministic output. Keep the tests independent of the retained-kernel evidence driver.
-3. Add the closed JSON transport and pure request-to-response adapter over the existing checked evaluator. Do not add the bilingual parser, `Document` adaptation, a service, FFI, or a second semantic implementation.
-4. Add the executable target and make the red process tests green. Keep IO and JSON parsing outside the trusted semantics and theorem roots, following the Cedar-style separation already used by `EvidenceMain`.
-5. Add and mechanically check the supported-fragment manifest, then add the smallest checked user example. Update only the documents whose ownership triggers fire: [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), [`TESTING.md`](TESTING.md), the root status/orientation surfaces, and [`EVIDENCE.md`](EVIDENCE.md) only if the external claim changes.
-6. Run independent code/API, protocol/fail-closed, proof-claim, documentation, and clean-room reviews. Correct mechanism-level findings, run the full gates, commit the interpreter capsule separately, and then reassess whether the next priority is one-star protocol exposure or the next semantic mechanism.
+1. Read [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), the §9 row in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and the public checked API in [`../A12Kernel/Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean). Write the smallest operation-specific contract and nearest exclusions before code.
+2. Add independent process-level red tests that leave the existing flat fixtures unchanged and demonstrate the exact firing-row boundary.
+3. Add only the transport structures and pure adapter required to call the checked correlation route; keep JSON/IO outside the library, conformance, and trusted theorem roots.
+4. Extend the finite support declarations and shipped manifest mirror, then add runnable correlation samples that are the same files exercised by the black-box gate.
+5. Update the ownership-triggered documents, run independent code/protocol/proof-claim/documentation reviews, run every final gate, and commit the correlation process capsule separately.
 
-## Deliberate exclusions from this milestone
+## Deliberate exclusions from the next delivery unit
 
-The first process API does not add concrete EN/DE condition parsing, general DM-JSON loading, repeatable execution, `$`, `CurrentRepetition`, message interpolation, filtered-result polarity, computation, partial validation, a long-running service, FFI, or packaged release binaries. Those remain later capsules. Exposing the flat fragment first gives Kotlin, TypeScript, and CI consumers a real Lean oracle without pretending the broader semantics are ready.
+The next operation does not add concrete EN/DE condition parsing, general DM-JSON loading, arbitrary repeatable execution, nested or multiple stars, general cross-group references, general consumers, message interpolation, filtered-result polarity, computation, partial validation, a long-running service, FFI, or packaged release binaries. Those remain later capsules.
 
 ## Resume procedure
 
-Read [`../CLAUDE.md`](../CLAUDE.md), this file, and [`ARCHITECTURE.md`](ARCHITECTURE.md); inspect `git status --short` and the current diff; verify `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, no `spec/` diff, and a clean visible sibling status. If the checked correlation capsule is already committed and green, begin at implementation sequence step 1. Do not reopen it or broaden the interpreter protocol to make an unsupported test convenient.
+Read [`../CLAUDE.md`](../CLAUDE.md), this file, [`PROTOCOL.md`](PROTOCOL.md), and [`ARCHITECTURE.md`](ARCHITECTURE.md); inspect `git status --short` and the current diff; verify `lake build`, `lake test`, `lake exe checkReferenceProcess`, `./scripts/check-lean-trust.sh`, `git diff --check`, no `spec/` diff, and both sibling statuses against their recorded baseline. Follow the three-state rule above. If the flat CLI checkpoint is committed and accepted, begin at the implementation sequence; preserve the existing flat protocol bytes and do not broaden either semantic fragment merely to make a transport test convenient.

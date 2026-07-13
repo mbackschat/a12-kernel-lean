@@ -9,6 +9,7 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 - [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) owns the proposed releasable product boundary, public claims and nonclaims, integration shape, release gates, staged product progression, and user-facing documentation strategy until that proposal is explicitly adopted or replaced.
 - [`PLAN.md`](PLAN.md) owns the resumable current checkpoint, preserved observations, immediate continuation order, and session-resume procedure. It is operational state, not a second roadmap.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) owns the current Lean structure, representations, dependency boundaries, and adopted/rejected encoding decisions. It describes what exists, not a feature-status board.
+- [`PROTOCOL.md`](PROTOCOL.md) owns the normalized reference process and JSON contract, including invocation, exit behavior, closed wire shapes, diagnostics, limits, support-manifest interpretation, and runnable sample data.
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
 - [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable, numbered findings about this project's formalization treatment and research conclusions. A finding is settled knowledge and rationale, not an open task.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the retained external-observation format, projection boundary, replay guarantees, and evidence-specific limitations.
@@ -28,6 +29,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 ## Same-change update triggers
 
 - A new or changed Lean module, representation, or dependency boundary updates [`ARCHITECTURE.md`](ARCHITECTURE.md).
+- A changed reference-process invocation, wire shape, diagnostic, limit, manifest field, or runnable sample updates [`PROTOCOL.md`](PROTOCOL.md).
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).

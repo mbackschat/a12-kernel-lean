@@ -47,7 +47,7 @@ Four artifacts answer different questions and must not be collapsed:
 |---|---|---|
 | [`../spec/`](../spec/) and evidence provenance | Human-readable meaning, rationale, taxonomy, and source trail | Review, kernel findings, and focused probes |
 | Lean definitions, judgments, theorems, and counterexamples | Exact executable meaning and universal internal consequences | Elaboration, totality, proof checking, and root-axiom audit |
-| Portable corpus replay and externally exported differential evidence | Empirical correspondence to kernel 30.8.1 | Pinned cases, independent kernel observations, and explicit divergence records |
+| Retained portable evidence replay and externally exported differentials | Empirical correspondence to kernel 30.8.1 | Pinned own-repository cases, independent kernel observations, and explicit divergence records |
 | Kernel and Kotlin ecosystem | Behavioral authority, external probe harness, portable evidence, peer implementation, and production execution | Existing release, integration, fuzz, and operational processes |
 
 The resulting claim classes are deliberately separate:
@@ -60,7 +60,7 @@ A wrong Lean clause can support flawless proofs, and finite differential testing
 
 > **Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-dmkits contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle.
 
-The recommended differential topology has four roles. [`../../a12-kernel`](../../a12-kernel) is the authoritative behavior. The external a12-dmkits [`adapter/`](../../a12-rulekit/adapter) harness runs focused kernel probes and exports normalized results without becoming a Lean dependency. Its [`corpus/`](../../a12-rulekit/corpus) is the portable replay boundary for this repository. Its [`interpreter/`](../../a12-rulekit/interpreter) is a secondary clean-room peer for triangulation and divergence discovery, not an oracle; agreement with it cannot override contrary kernel evidence. All three paths are under the local `a12-rulekit/` checkout.
+The recommended differential topology has four roles. [`../../a12-kernel`](../../a12-kernel) is the authoritative behavior. The external a12-dmkits [`adapter/`](../../a12-rulekit/adapter) harness runs focused kernel probes and exports normalized results without becoming a Lean dependency. This repository retains and replays its own typed projections of those portable observations; the sibling [`corpus/`](../../a12-rulekit/corpus) is knowledge and reusable source material, not a live runtime dependency. The a12-dmkits [`interpreter/`](../../a12-rulekit/interpreter) is a secondary clean-room peer for triangulation and divergence discovery, not an oracle; agreement with it cannot override contrary kernel evidence. All three external paths are under the local `a12-rulekit/` checkout.
 
 This differential topology is the required way to anchor primitive semantic choices. For each new clause, prefer a small own-domain witness executed by a kernel-facing harness outside this repository, compare the kernel result independently with the clean-room interpreter where useful, retain the observable result and kernel version as portable evidence, and replay the supported projection against Lean. A mismatch is a finding to resolve at the semantic definition, never a tolerance to hide. Proofs establish universal consequences of the chosen Lean definitions; differentials establish empirical correspondence on retained observations; fuzzing broadens the search for missed observations. None substitutes for the others. Codex may run the sibling harness and write its already-ignored build/cache outputs, but never alter or leave visible files in the sibling worktree; tracked corpus generation must be redirected to an ignored disposable workspace before portable evidence is copied here.
 
@@ -130,7 +130,7 @@ The project succeeds only when all three claim classes are visible:
 
 - **Coverage:** every in-scope taxonomy/operator clause is implemented or explicitly classified; no silent semantic fallthrough exists.
 - **Internal correctness:** the required proof spine is complete for its named fragments, theorem roots have clean reviewed dependencies, and exclusions are documented beside the claim.
-- **Kernel correspondence:** the reference evaluator agrees with the pinned replayable corpus and focused kernel evidence exported through the external adapter harness, with every divergence explicit.
+- **Kernel correspondence:** the reference evaluator agrees with the pinned retained projections of focused kernel evidence exported through the external adapter harness, with every divergence explicit.
 - **Operational discipline:** each semantic capsule closes its evidence, theorem/counterexample, coverage, trust, and build gates before the next layer expands.
 
 The first proof-bearing capsule is also the project's reevaluation point. Continue the full program only if it demonstrates material value beyond the Kotlin interpreter plus tests—such as a useful universal law, a clarified false generalization, a semantics-preserving transformation, or a reusable model-level proof boundary. If it produces only another evaluator and ceremonial `rfl` facts, redesign or stop before reproducing the entire operator surface.
@@ -140,7 +140,7 @@ Theorem counts, proof-line counts, zero `sorry`, corpus counts, or evaluator bre
 ## Ecosystem role and non-goals
 
 - **[`../../a12-kernel`](../../a12-kernel)** is the behavioral source of truth. This repository reads and probes it under the clean-room boundary but never links, calls, ships, or transliterates it.
-- **[a12-dmkits (local `a12-rulekit/` checkout)](../../a12-rulekit)** supplies three non-authoritative facilities with separate jobs: the adapter is the external kernel probe/export boundary, the corpus is portable replay evidence, and the interpreter is a peer clean-room implementation for triangulation. Its public release is dmtool-release.
+- **[a12-dmkits (local `a12-rulekit/` checkout)](../../a12-rulekit)** supplies three non-authoritative facilities with separate jobs: the adapter is the external kernel probe/export boundary, the corpus supplies knowledge and reusable source cases, and the interpreter is a peer clean-room implementation for triangulation. This repository commits its own portable evidence projections for replay. The public a12-dmkits release is dmtool-release.
 - **a12-kernel-lean** is the versioned mechanized theory: precise definitions, theorems and counterexamples, a reference evaluator, and an empirical conformance projection.
 
 This project does not claim to verify the external kernel, eliminate empirical testing, make ambiguous clauses correct by typechecking them, prove arbitrary custom oracles well behaved, or justify speculative compilers, extraction, certificates, and production deployment before a consumer requires them.

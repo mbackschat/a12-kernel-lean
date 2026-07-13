@@ -17,3 +17,5 @@ jobs:
         run: ./scripts/check-lean-trust.sh
       - name: Replay retained kernel evidence
         run: lake test
+      - name: Check reference process contract
+        run: lake exe checkReferenceProcess

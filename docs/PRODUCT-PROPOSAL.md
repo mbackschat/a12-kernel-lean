@@ -13,7 +13,7 @@ This product realizes the durable mission in [`PROJECT-DESIGN.md`](PROJECT-DESIG
 A useful first 0.x release could contain:
 
 - a Lean-built command-line reference evaluator for the explicitly supported fragment;
-- a stable JSON input/output protocol for normalized models, rules, documents, worlds, messages, computation deltas, and diagnostics;
+- a stable JSON input/output protocol for each explicitly supported operation's normalized models, rules, runtime inputs, observable outcomes, and diagnostics, extended to documents, worlds, messages, and computation deltas only as those semantic stages land;
 - the retained A12 kernel 30.8.1 evidence bundle and a conformance runner that replays its supported projection;
 - a machine-readable supported-fragment manifest that fails closed rather than guessing outside the implemented theory;
 - a theorem and checked-counterexample index with a report of trusted roots, dependencies, and exclusions;
@@ -52,7 +52,7 @@ The reference CLI should optimize for determinism, stable structured output, and
 
 ## Supported-fragment manifest
 
-Each release should ship a machine-readable manifest beside its binary and evidence bundle. The exact schema is an implementation decision, but it should carry at least the following information:
+Each release should ship a machine-readable manifest beside its binary and evidence bundle. The first implemented flat slice now has an exact Lean-generated contract in [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json), documented by [`PROTOCOL.md`](PROTOCOL.md); the broader release shape below remains illustrative because theorem roots and evidence-bundle identity are not yet packaged into that process manifest.
 
 ```json
 {
@@ -69,11 +69,11 @@ Each release should ship a machine-readable manifest beside its binary and evide
 }
 ```
 
-This is an illustrative contract shape, not a current schema. The eventual manifest should be generated from or mechanically cross-checked against the same coverage data that feeds [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); a hand-maintained release claim that can drift from the executable and proof roots would defeat its purpose.
+This is an illustrative release contract shape, not the current flat-process schema. The current manifest is generated from finite Lean support declarations and mechanically checked against its readable shipped mirror; its relationship to semantic and external-evidence status is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). A future release manifest should additionally consume proof-root and evidence-bundle metadata rather than duplicate them by hand.
 
 ## User-facing documentation as a regression consumer
 
-The transferable lesson from the a12-dmkits Showboat material is not “document the CLI” or “use the same tool here.” It is that an explanation is more trustworthy when the examples users see are also exercised by automation. A compatibility guide should therefore execute or elaborate its displayed semantic scenarios and consume maintained support declarations, theorem names, counterexamples, and evidence summaries wherever possible instead of copying results into prose that can silently drift.
+The transferable lesson from the audited Cedar and Radix practices is that an explanation is more trustworthy when the examples users see consume the live theory and are also exercised by automation. A compatibility guide should therefore execute or elaborate its displayed semantic scenarios and consume maintained support declarations, theorem names, counterexamples, and evidence summaries wherever possible instead of copying results into prose that can silently drift.
 
 The checking mechanism should follow the artifact being explained:
 
@@ -117,6 +117,6 @@ Each stage extends the manifest and public claim only after its semantic capsule
 
 ## Adoption and reevaluation
 
-Adopt this proposal as product strategy when the current executable fragments can be exposed through one coherent normalized protocol, a real non-Lean consumer is willing to run the reference in CI, and retained evidence plus proof metadata can be packaged reproducibly. Until then, it guides product-shaped architecture without forcing premature CLI or release infrastructure into every semantic capsule.
+The first condition is now partially realized: the non-repeatable flat fragment is exposed through the coherent normalized process contract in [`PROTOCOL.md`](PROTOCOL.md), with deterministic black-box tests and a generated support manifest. Adopt the full proposal as product strategy when a real non-Lean consumer is willing to run the reference in CI and retained evidence plus proof metadata can be packaged reproducibly. Until then, it guides product-shaped architecture without treating this first CLI capsule as a release commitment or forcing process infrastructure into every semantic capsule.
 
 Reevaluate the shape if process startup dominates realistic conformance workloads, consumers require interactive high-volume evaluation, a stable parser boundary proves more valuable than normalized input, or protocol versioning cannot express the semantic support boundary without duplicating the Lean theory. Those findings may justify a service, FFI, generated bindings, or certificates, but only with a concrete consumer and documented trust tradeoff.

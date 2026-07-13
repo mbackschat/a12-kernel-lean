@@ -1,0 +1,17 @@
+{
+  "protocolVersion": 2,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "flatValidation.evaluateFull",
+  "model": {
+    "fieldRefByShortNameAllowed": false,
+    "repeatableGroups": [],
+    "fields": []
+  },
+  "declaringGroup": ["Order"],
+  "condition": {
+    "tag": "fieldNotFilled",
+    "field": {"base": "absolute", "groups": ["Order"], "field": "Missing"}
+  },
+  "cells": [],
+  "hasContent": true
+}

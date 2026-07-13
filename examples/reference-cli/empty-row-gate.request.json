@@ -1,0 +1,27 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "flatValidation.evaluateFull",
+  "model": {
+    "fieldRefByShortNameAllowed": false,
+    "repeatableGroups": [],
+    "fields": [
+      {
+        "id": 0,
+        "groupPath": ["Order"],
+        "name": "Quantity",
+        "kind": {"tag": "number", "scale": 0, "signed": false},
+        "repeatableScope": []
+      }
+    ]
+  },
+  "declaringGroup": ["Order"],
+  "condition": {
+    "tag": "compare",
+    "operator": "equal",
+    "field": {"base": "absolute", "groups": ["Order"], "field": "Quantity"},
+    "literal": {"tag": "number", "value": "0"}
+  },
+  "cells": [],
+  "hasContent": false
+}
