@@ -51,7 +51,7 @@ The module's layering — (1) data-access → (2) **pure operator semantics** (`
 - `adapter/src/test/kotlin/…/perf/InterpreterKernelFuzzTest.kt` — tri-engine fuzz (interpreter vs kernel-groovy-dynamic vs kernel-java-static); `laws/FuzzDiagnostics.kt` shrinks divergences.
 - `adapter/src/test/kotlin/…/laws/{CorpusEngines,CorpusReplay}.kt` — the corpus reference runner.
 
-How it works: the kernel is a **black box**; the same document is materialized into every engine and outcomes are compared as signature multisets. "Correctness" for the interpreter (and for us) is *defined* as agreement with this oracle.
+How it works: the kernel is a **black box**; the same document is materialized into every engine and outcomes are compared as signature multisets. For one observed case, empirical kernel correspondence for the a12-dmkits interpreter or this project means agreement with that oracle at the explicitly retained projection. It does not define internal Lean correctness or establish universal kernel equivalence.
 
 ### The doc set (indexed by the hub)
 
@@ -71,6 +71,6 @@ The per-`§n` map — which a12-dmkits source, catalog facet, corpus family, and
 ## What the coverage tells us
 
 - **Machine-readable facts exist for only 5 areas** (§2, §5, §6, §9, §12). For those, lean on the catalog `semantics` facets + their runnable probes; for the other nine, ground truth is prose + findings + tests + the kernel class.
-- **Replayable corpus covers only 5 areas** (§5, §6, §9, §11, §12) and is thin. Corpus replay is a real but partial oracle; the exhaustive differential is `adapter/laws` (JVM, kernel-linked, not portable to Lean). Expanding coverage means generating more corpus cases (`CorpusCapture`) or re-expressing DiffTest scenarios.
+- **The sibling replayable corpus covers only 5 areas** (§5, §6, §9, §11, §12) and is thin. It is useful kernel-derived source evidence, not a live dependency or substitute oracle for this repository; the broader focused differentials live in `adapter/laws` (JVM, kernel-linked, not portable to Lean). Expanding local coverage means externally capturing the relevant case, retaining a portable own-repository observation, and adding only the typed projection needed by the Lean capsule.
 - **The hardest, test-densest areas are §6, §9, §11, §12** — the same ones our [`spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) rates ★★★★★. Encoding risk and proof payoff concentrate there.
 - **The `interpreter` `commonTest` property tests are the Kotlin analogues of our target theorems** — `KleeneMonotonicityPropertyTest`, `DeterminismPropertyTest`, `RowPermutationPropertyTest`, `AggregateIdentityPropertyTest`. Mirror them as Lean theorems and cross-check.

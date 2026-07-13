@@ -12,6 +12,7 @@ This is the canonical index and ownership map for the project's documentation. I
 
 - **[`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md)** — why Lean, what it can and cannot establish, audited project studies, theorem and trust discipline, proof opportunities, publication-tool comparison, and adoption criteria.
 - **[`ARCHITECTURE.md`](ARCHITECTURE.md)** — the Lean structure that exists now: representations, module boundaries, dependency direction, and adopted or rejected design choices.
+- **[`PROTOCOL.md`](PROTOCOL.md)** — the exact normalized reference-process contract: invocation, closed JSON request and response algebra, diagnostics, limits, support manifest, and regression-checked sample data.
 - **[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md)** — durable numbered conclusions and rationale learned while formalizing the semantics and studying local evidence.
 - **[`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md)** — the live `§n`-to-Lean map: implemented fragments, theorem and counterexample coverage, retained kernel evidence, exact support boundaries, and open adequacy obligations.
 
@@ -38,6 +39,7 @@ The language-neutral semantic body lives under [`../spec/`](../spec/) and is tre
 | Current checkpoint, immediate sequencing, and session-resume state | [`PLAN.md`](PLAN.md) |
 | Lean's role, theorem/trust contract, external project studies, and publication strategy | [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) |
 | Current module and representation design | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| Normalized process/JSON contract, diagnostics, limits, manifest, and runnable samples | [`PROTOCOL.md`](PROTOCOL.md) |
 | Settled formalization conclusions and rationale | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
 | Live semantic coverage and open evidence/proof obligations | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
 | Retained external-observation and replay contract | [`EVIDENCE.md`](EVIDENCE.md) |

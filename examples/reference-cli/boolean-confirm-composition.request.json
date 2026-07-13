@@ -1,0 +1,67 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "flatValidation.evaluateFull",
+  "model": {
+    "fieldRefByShortNameAllowed": true,
+    "repeatableGroups": [],
+    "fields": [
+      {
+        "id": 0,
+        "groupPath": ["Order"],
+        "name": "Active",
+        "kind": {"tag": "boolean"},
+        "repeatableScope": []
+      },
+      {
+        "id": 1,
+        "groupPath": ["Order"],
+        "name": "Accepted",
+        "kind": {"tag": "confirm"},
+        "repeatableScope": []
+      },
+      {
+        "id": 2,
+        "groupPath": ["Order"],
+        "name": "OptionalCount",
+        "kind": {"tag": "number", "scale": 0, "signed": false},
+        "repeatableScope": []
+      }
+    ]
+  },
+  "declaringGroup": ["Order", "Rules"],
+  "condition": {
+    "tag": "and",
+    "left": {
+      "tag": "compare",
+      "operator": "notEqual",
+      "field": {"base": "relative", "parents": 0, "groups": [], "field": "Active"},
+      "literal": {"tag": "boolean", "value": false}
+    },
+    "right": {
+      "tag": "and",
+      "left": {
+        "tag": "fieldFilled",
+        "field": {"base": "relative", "parents": 1, "groups": [], "field": "Accepted"}
+      },
+      "right": {
+        "tag": "or",
+        "left": {
+          "tag": "fieldNotFilled",
+          "field": {"base": "absolute", "groups": ["Order"], "field": "OptionalCount"}
+        },
+        "right": {
+          "tag": "compare",
+          "operator": "equal",
+          "field": {"base": "relative", "parents": 1, "groups": [], "field": "Accepted"},
+          "literal": {"tag": "boolean", "value": true}
+        }
+      }
+    }
+  },
+  "cells": [
+    {"fieldId": 0, "state": {"tag": "parsedBoolean", "value": true}},
+    {"fieldId": 1, "state": {"tag": "parsedConfirm", "value": true}}
+  ],
+  "hasContent": true
+}

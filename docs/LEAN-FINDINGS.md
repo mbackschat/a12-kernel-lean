@@ -10,7 +10,7 @@ Each finding has a stable `LF<n>` identifier, date, semantic section, evidence b
 
 Kernel differential testing is the empirical backbone. Each executable Lean capsule must ultimately be checked against retained portable observations from the real kernel. Proofs establish universal consequences of the chosen Lean definitions; they do not establish that the external kernel implements those definitions. Fuzzing broadens the empirical search but proves neither internal laws nor universal correspondence.
 
-The evidence topology has four distinct roles: the real kernel is behavioral authority; the external a12-dmkits adapter is the kernel-facing probe/export harness; the portable corpus or another explicitly versioned artifact is the repository boundary; the a12-dmkits interpreter is a clean-room peer for triangulation and divergence discovery, never the oracle. Contrary kernel evidence overrides agreement between Lean and the interpreter.
+The evidence topology has four distinct roles: the real kernel is behavioral authority; the external a12-dmkits adapter is the kernel-facing probe/export harness; explicitly versioned portable observations retained in this repository are the replay boundary, with sibling corpus cases available as source material; the a12-dmkits interpreter is a clean-room peer for triangulation and divergence discovery, never the oracle. Contrary kernel evidence overrides agreement between Lean and the interpreter.
 
 Lean treatment: every live fragment in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) separates internal assurance from external adequacy. A capsule without retained kernel observations is marked `external evidence pending`, even when it builds, executes, and has trusted proofs.
 

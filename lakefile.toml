@@ -1,6 +1,6 @@
 name = "a12-kernel-lean"
 version = "0.1.0"
-defaultTargets = ["A12Kernel"]
+defaultTargets = ["A12Kernel", "a12-kernel-reference"]
 testDriver = "checkKernelEvidence"
 
 [[lean_lib]]
@@ -9,3 +9,12 @@ name = "A12Kernel"
 [[lean_exe]]
 name = "checkKernelEvidence"
 root = "A12Kernel.EvidenceMain"
+
+[[lean_exe]]
+name = "a12-kernel-reference"
+root = "A12Kernel.ReferenceMain"
+
+[[lean_exe]]
+name = "checkReferenceProcess"
+root = "A12Kernel.ReferenceProcessTestMain"
+needs = ["a12-kernel-reference"]

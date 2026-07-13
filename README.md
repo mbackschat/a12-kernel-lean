@@ -16,7 +16,7 @@ An internal Lean reference evaluator now exists for the implemented fragments: f
 
 `lake test` replays 42 retained kernel 30.8.1 observations: 36 runtime cases and six static authoring observations. The twelve captured-outer runtime witnesses retain exact firing rows and stored `$` conditions; four new static witnesses pin all-outer rejection, unequal-scale `==` rejection, acceptance of the same unequal-scale operands under `<`, and one sibling-repeatable-group inner-reference rejection. The fourth evidence projection carries no expected codes, pins each complete seeded model file by SHA-256, binds its structured model and rule to the complete captured draft identity, and fails closed on every unmapped elaboration result, including `missingOuter`. Earlier evidence corrected bare-name resolution and exposed one a12-dmkits interpreter disagreement on a malformed uncorrelated filter. [`docs/EVIDENCE.md`](docs/EVIDENCE.md) owns the exact claim boundary.
 
-This is already a simple evaluator inside Lean, exercised through definitions, `#eval`-style examples, conformance modules, and the evidence runner; it is not yet a release-shaped interpreter API. The next product milestone is a versioned normalized JSON protocol and Lean executable for the supported flat fragment, with structured unsupported diagnostics and process-level tests. Current exclusions include the bilingual concrete parser, general `Document` adaptation, filtered-result polarity, nested/multi-star and cross-group execution, general arithmetic and consumers, computation, and partial validation.
+The first product-shaped Lean interpreter boundary is now available as the `a12-kernel-reference` executable. Its versioned normalized [JSON protocol](docs/PROTOCOL.md) exposes exactly the checked non-repeatable flat slice: Number/Boolean/Confirm equality, inequality, and presence; `And`/`Or`; structured absolute, parent-relative, and bare paths; model-derived raw checking; the row-content gate; stable fail-closed diagnostics; and a generated [support manifest](reference/supported-fragment-v1.json). It accepts neither the bilingual concrete DSL nor general DM-JSON, and it does not yet expose the internally implemented iteration/correlation fragments, `Document` adaptation, computation, partial validation, or messages.
 
 ## Build
 
@@ -25,8 +25,25 @@ Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned 
 ```sh
 lake build
 lake test
+lake exe checkReferenceProcess
 ./scripts/check-lean-trust.sh
 ```
+
+## Try the reference CLI
+
+The committed files under [`examples/reference-cli/`](examples/reference-cli/) are runnable sample data and regression fixtures. This example demonstrates the kernel's comparison-local empty-Number substitution: omitting the declared Number cell makes the equality with zero fire with omission polarity.
+
+```sh
+lake exe a12-kernel-reference < examples/reference-cli/empty-number-equals-zero.request.json
+```
+
+Inspect the exact supported boundary with:
+
+```sh
+lake exe a12-kernel-reference --manifest
+```
+
+See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the request/response contract, exit behavior, all sample scenarios, and deliberate exclusions.
 
 ## Design and sources
 
@@ -36,6 +53,7 @@ lake test
 - [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.
 - [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) — Lean's role and potential, audited project studies, proof/trust boundaries, theorem opportunities, and best practices.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the concrete Lean encoding decisions and rejected alternatives.
+- [`docs/PROTOCOL.md`](docs/PROTOCOL.md) — the normalized reference process, JSON schema, diagnostics, support manifest, and checked sample data.
 - [`docs/TESTING.md`](docs/TESTING.md) — the Lean red/green method, concrete conformance harness, trusted-proof audit, kernel replay, and final verification gate.
 - [`docs/DOC-DISCIPLINE.md`](docs/DOC-DISCIPLINE.md) — where findings, structure, status, and plans belong.
 - [`spec/`](spec/) — the distilled, language-neutral specification; start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md).

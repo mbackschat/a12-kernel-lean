@@ -1,0 +1,11 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "outcome": "error",
+  "diagnostic": {
+    "category": "elaboration",
+    "code": "illegalConfirmLiteral",
+    "at": "$.condition",
+    "details": {"path": ["Order", "Accepted"]}
+  }
+}

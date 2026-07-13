@@ -1,17 +1,18 @@
 # Testing methodology
 
-This document owns the test harness and working method for `a12-kernel-lean`. The project tests three different claims—execution of the Lean theory, universal consequences inside that theory, and empirical correspondence with kernel 30.8.1—and deliberately does not collapse them into one green check.
+This document owns the test harness and working method for `a12-kernel-lean`. The project tests four different claims—execution of the Lean theory, universal consequences inside that theory, empirical correspondence with kernel 30.8.1, and compatibility of the public reference process—and deliberately does not collapse them or repository hygiene into one green check.
 
-## The four harness layers
+## The five harness layers
 
 | Layer | Repository surface | What a pass establishes | What it does not establish |
 |---|---|---|---|
 | Focused executable locks | [`../A12Kernel/Conformance/`](../A12Kernel/Conformance/) imported by [`../A12Kernel/Conformance.lean`](../A12Kernel/Conformance.lean) | Concrete inputs execute through the Lean definitions and produce the stated values, truth states, verdicts, or rejections | Universal correctness or agreement with the external kernel |
 | Trusted proofs and checked non-laws | [`../A12Kernel/Proofs/`](../A12Kernel/Proofs/), [`../A12Kernel/Proofs.lean`](../A12Kernel/Proofs.lean), and [`../A12Kernel/TrustAudit.lean`](../A12Kernel/TrustAudit.lean) | Named theorems hold for every modeled input satisfying their hypotheses; counterexamples prevent a plausible stronger claim from being mistaken for a law | Correctness of the chosen primitive semantics or universal correspondence with kernel code |
 | Retained external evidence replay | [`../evidence/`](../evidence/), [`../A12Kernel/Evidence/`](../A12Kernel/Evidence/), and [`../A12Kernel/EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean) | The focused Lean projection agrees with retained portable observations produced by the real pinned kernel on those cases | Exhaustive agreement, hidden kernel intermediate states, or correctness outside the projected fragment |
+| Reference-process black box | [`../A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean), [`../examples/reference-cli/`](../examples/reference-cli/), and [`../reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json) | The compiled public executable obeys its documented JSON bytes, exit status, output-channel, determinism, strict-input, fixture, and manifest contract | New semantic correspondence with the kernel or universal correctness of the transport |
 | Structural and hygiene gates | [`../scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh), `git diff --check`, and worktree checks | Trusted roots contain no banned proof escape hatch, every exported theorem is audited, axiom dependencies are classified, patches are clean, and sibling worktrees remain untouched | Any new semantic fact by itself |
 
-`lake build` runs the first two layers because the library root imports both the conformance root and the trusted proof root. `lake test` runs the retained-evidence executable separately. The trust script inspects the proof closure separately again because successful elaboration alone does not reveal an accidental axiom or omitted theorem-root import.
+`lake build` runs the first two layers because the library root imports both the conformance root and the trusted proof root, and it builds the reference executable because that executable is a default target. `lake test` runs the retained-evidence executable separately. `lake exe checkReferenceProcess` runs the compiled CLI through an independent process driver. The trust script inspects the proof closure separately again because successful elaboration alone does not reveal an accidental axiom or omitted theorem-root import.
 
 ## Red/green semantic development
 
@@ -26,6 +27,8 @@ Every new semantic capsule uses red/green TDD.
 7. Apply the ownership triggers in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md), update only the documents whose owned facts changed, then run every final gate.
 
 A red run is part of the evidence for the workflow, not a file committed to the repository. A test that was green before the semantic implementation is either not testing the requested behavior or is accidentally passing through an older path.
+
+For a public process or protocol change, write the independent process expectation before adding the decoder or IO route, run `lake exe checkReferenceProcess`, and confirm that it fails for the missing or wrong public behavior. Make the existing checked semantic route satisfy the test; never make a protocol fixture green by introducing a second evaluator.
 
 ## Executable Lean examples
 
@@ -58,6 +61,22 @@ lake env lean A12Kernel/Conformance/CorrelationElaboration.lean
 ```
 
 Run `lake build` before handoff so the same examples also pass through the actual library import graph.
+
+## Reference-process harness and sample data
+
+[`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) discovers the sibling `a12-kernel-reference` build artifact and invokes it as an operating-system process. It does not call `evaluateText` or any protocol decoder directly, so it covers executable wiring, arguments, stdin/stdout/stderr, and exit behavior in addition to JSON semantics. Lake's `needs` edge builds the tested executable first without making this gate part of the retained-kernel `lake test` claim.
+
+The requests and adjacent expected responses under [`examples/reference-cli/`](../examples/reference-cli/) are committed sample data as well as test inputs. The harness parses each readable expected JSON file and compares the executable's deterministic compact encoding, so whitespace in the maintained fixture is irrelevant while every JSON value is locked. The accepted samples separate omitted Number, Boolean, and Confirm behavior; legal present Number consumption and exact canonical decimal transport; the independent false row gate; malformed input; `And`/`Or`; filled/not-filled; equality/inequality; and all admitted path forms. Rejection samples cover a recognized unsupported operator, illegal Confirm comparison, protocol version mismatch, and malformed JSON. Scale-19 boundary values remain direct helper conformance checks because their legal whole-rule witness requires the arithmetic fragment; they are not disguised as classified field input in the process fixtures.
+
+Additional generated-in-test cases reject invalid UTF-8, oversized input, hostile JSON numbers, excessive JSON nesting, duplicate object members, empty input, unknown members, out-of-range naturals, non-canonical or oversized decimals, overlong complete field paths, explicit omission, child-relative paths, invalid model/cell/repeatable shapes, all recognized ordering operators, and unexpected command-line arguments. They also lock wrong-kind classified cells as formal `unknown`, the portable path/decimal boundaries, kernel and operation version assertions, and the externally injectible exit-0 domain and exit-2 invocation classes; exit 1 remains reserved for an actual IO or internal invariant failure. The successful request is run in readable, compact/reordered, and repeated forms to lock response determinism. `--manifest` output is compared as JSON with [`reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json), ensuring the shipped readable mirror agrees with the Lean-generated manifest without requiring identical whitespace.
+
+Run the public process gate with:
+
+```sh
+lake exe checkReferenceProcess
+```
+
+[`PROTOCOL.md`](PROTOCOL.md) owns the exact public contract and gives the invocation pattern shared by every request fixture. This harness establishes compatibility of that boundary; it adds no kernel observation and therefore does not change the external-evidence count.
 
 ## Universal proofs and counterexamples
 
@@ -100,13 +119,16 @@ Run the complete gate from the repository root:
 ```sh
 lake build
 lake test
+lake exe checkReferenceProcess
 ./scripts/check-lean-trust.sh
 git diff --check
+git diff --exit-code -- spec/
 git status --short
+git -C ../a12-kernel status --short
 git -C ../a12-rulekit status --short
 ```
 
-Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed.
+Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
 
 ## Capsule test checklist
 
@@ -118,4 +140,4 @@ Interpret failures by layer. A conformance failure means a concrete Lean behavio
 - Every exported theorem is in the trusted root and axiom audit.
 - Focused portable kernel observations exist, or the implementation map says `external evidence pending`.
 - The replay derives expectations from retained external output rather than duplicating them in Lean-shaped data.
-- `lake build`, `lake test`, the trust audit, and patch/worktree hygiene gates all pass.
+- `lake build`, `lake test`, any applicable reference-process gate, the trust audit, and patch/worktree hygiene gates all pass.

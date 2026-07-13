@@ -23,6 +23,12 @@ The target behavior version is kernel **30.8.1**. “Implemented” means the na
 | §13 message interpolation | — | — | Indexed in [`SOURCES.md`](SOURCES.md) | **Open** |
 | §14 custom conditions | Explicit pure-oracle boundary in [`Document.lean`](../A12Kernel/Document.lean) design only | No runtime semantics or oracle laws yet | Indexed in [`SOURCES.md`](SOURCES.md) | **Open** |
 
+## Reference-process exposure
+
+The `a12-kernel-reference` executable exposes the intersection of the implemented §2, §3, §5, §10, and §12 flat slices through the normalized [`PROTOCOL.md`](PROTOCOL.md) contract. [`Reference/Protocol.lean`](../A12Kernel/Reference/Protocol.lean) decodes the bounded closed model, path, condition, raw-cell, and row-gate shapes; [`Reference/Evaluator.lean`](../A12Kernel/Reference/Evaluator.lean) routes every admitted request through one checked flat elaboration, model-derived formal checking, and the full verdict evaluator; [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean) supplies the finite runtime classifiers and generates the positive support and diagnostic declaration mirrored in [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json). The executable deliberately does not expose the implemented §9 iteration/correlation slices yet.
+
+This process surface adds accessibility and fail-closed protocol assurance, not new kernel correspondence. Its accepted semantic clauses inherit the focused external-evidence statuses in the table above, while [`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) independently locks only transport behavior, deterministic output, diagnostics, exit codes, sample fixtures, and manifest agreement. The protocol's known-exclusion list is a product boundary, not a claim to enumerate every unsupported A12 construct.
+
 ## Empty-handling coverage rule
 
 Empty semantics is not complete at field-kind granularity. Coverage is clause-shaped and must record field kind, operator and operand position, enclosing consumer, selection/all-empty identity, model-derived field role, row eligibility, validation/computation phase, and observable polarity or store outcome. The current §2 capsule covers only direct Number/Boolean/Confirm field-to-literal comparison and presence behavior; its resolvers must not be reused as defaults for functions, aggregates, lookups, or computation. [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function) records the verified counterexamples and architectural treatment.
