@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "kernelVersion": "30.8.1",
+  "cases": [
+    {
+      "id": "correlation-direction",
+      "caseRef": "cases/correlation/correlation-direction.json",
+      "focusCode": "CORR_DIRECTION",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 6 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 9 }
+      ],
+      "filter": {
+        "kind": "compareNumbers",
+        "comparison": "lessThan",
+        "left": { "origin": "inner", "fieldId": 0 },
+        "right": { "origin": "outer", "fieldId": 0 }
+      },
+      "valueFieldId": 0,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
+        { "rowId": 3, "pointer": "/Order[1]/Items[3]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    },
+    {
+      "id": "correlation-self-included",
+      "caseRef": "cases/correlation/correlation-self-included.json",
+      "focusCode": "CORR_SELF",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 6 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 9 }
+      ],
+      "filter": {
+        "kind": "compareNumbers",
+        "comparison": "equal",
+        "left": { "origin": "inner", "fieldId": 0 },
+        "right": { "origin": "outer", "fieldId": 0 }
+      },
+      "valueFieldId": 0,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
+        { "rowId": 3, "pointer": "/Order[1]/Items[3]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    },
+    {
+      "id": "correlation-self-excluded-distinct",
+      "caseRef": "cases/correlation/correlation-self-excluded-distinct.json",
+      "focusCode": "CORR_EXCLUDED",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 6 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 9 }
+      ],
+      "filter": {
+        "kind": "and",
+        "left": {
+          "kind": "compareRepetitions",
+          "comparison": "notEqual",
+          "left": "inner",
+          "right": "outer"
+        },
+        "right": {
+          "kind": "compareNumbers",
+          "comparison": "equal",
+          "left": { "origin": "inner", "fieldId": 0 },
+          "right": { "origin": "outer", "fieldId": 0 }
+        }
+      },
+      "valueFieldId": 0,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
+        { "rowId": 3, "pointer": "/Order[1]/Items[3]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    },
+    {
+      "id": "correlation-self-excluded-duplicate",
+      "caseRef": "cases/correlation/correlation-self-excluded-duplicate.json",
+      "focusCode": "CORR_EXCLUDED",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 5 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 9 }
+      ],
+      "filter": {
+        "kind": "and",
+        "left": {
+          "kind": "compareRepetitions",
+          "comparison": "notEqual",
+          "left": "inner",
+          "right": "outer"
+        },
+        "right": {
+          "kind": "compareNumbers",
+          "comparison": "equal",
+          "left": { "origin": "inner", "fieldId": 0 },
+          "right": { "origin": "outer", "fieldId": 0 }
+        }
+      },
+      "valueFieldId": 0,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
+        { "rowId": 3, "pointer": "/Order[1]/Items[3]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    }
+  ]
+}

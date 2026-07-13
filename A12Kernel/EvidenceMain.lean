@@ -1,3 +1,4 @@
+import A12Kernel.Evidence.CorrelationReplay
 import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
 import Lean.Data.Json
@@ -38,6 +39,38 @@ private structure FocusObservation where
   polarity : Option ObservedPolarity
   deriving Repr, DecidableEq
 
+private structure CorrelationFocusObservation where
+  firings : List A12Kernel.Evidence.Correlation.Firing
+  signatures : List MessageSignature
+  deriving Repr, DecidableEq
+
+private structure RetainedRule where
+  id : String
+  errorEntityRelPath : String
+  errorCode : String
+  errorCondition : String
+  deriving Repr, DecidableEq
+
+private structure RetainedField where
+  id : String
+  kind : String
+  scale : Nat
+  deriving Repr, DecidableEq
+
+private structure RetainedModelIndex where
+  groups : List String
+  fields : List RetainedField
+  rules : List RetainedRule
+  deriving Repr, DecidableEq
+
+private def RetainedModelIndex.append (left right : RetainedModelIndex) : RetainedModelIndex :=
+  { groups := left.groups ++ right.groups
+    fields := left.fields ++ right.fields
+    rules := left.rules ++ right.rules }
+
+private def RetainedModelIndex.empty : RetainedModelIndex :=
+  { groups := [], fields := [], rules := [] }
+
 private def FocusObservation.fired (observation : FocusObservation) : Bool :=
   observation.polarity.isSome
 
@@ -48,6 +81,50 @@ private def optionalArray (json : Json) (name : String) : Except String (List Js
   match json.getObjVal? name with
   | .ok value => fromJson? value
   | .error _ => pure []
+
+private def optionalNat (json : Json) (name : String) : Except String Nat :=
+  match json.getObjVal? name with
+  | .ok value => fromJson? value
+  | .error _ => pure 0
+
+private def collectGroupIndex : Nat → Json → Except String RetainedModelIndex
+  | 0, _ => throw "retained model group nesting exceeds maximum depth"
+  | fuel + 1, group => do
+      let groupId : String ← member group "id"
+      let body ← group.getObjVal? "Group"
+      let elements ← optionalArray body "elements"
+      let children ← elements.mapM fun element => do
+        let elementType : String ← member element "type"
+        match elementType with
+        | "Group" => collectGroupIndex fuel element
+        | "Field" => do
+            let fieldId : String ← member element "id"
+            let fieldBody ← element.getObjVal? "Field"
+            let fieldType ← fieldBody.getObjVal? "fieldType"
+            let kind : String ← member fieldType "type"
+            let scale ← if kind == "NumberType" then
+              optionalNat (← fieldType.getObjVal? "NumberType") "maxFractionalDigits"
+            else
+              pure 0
+            pure { RetainedModelIndex.empty with fields := [{ id := fieldId, kind, scale }] }
+        | "Rule" => do
+            let ruleId : String ← member element "id"
+            let rule ← element.getObjVal? "Rule"
+            pure { RetainedModelIndex.empty with rules := [{
+              id := ruleId
+              errorEntityRelPath := ← member rule "errorEntityRelPath"
+              errorCode := ← member rule "errorCode"
+              errorCondition := ← member rule "errorCondition" }] }
+        | other => throw s!"unsupported retained model element type '{other}'"
+      pure <| children.foldl RetainedModelIndex.append
+        { RetainedModelIndex.empty with groups := [groupId] }
+
+private def retainedModelIndex (json : Json) : Except String RetainedModelIndex := do
+  let content ← json.getObjVal? "content"
+  let modelRoot ← content.getObjVal? "modelRoot"
+  let rootGroups : List Json ← member modelRoot "rootGroups"
+  let indexes ← rootGroups.mapM (collectGroupIndex 64)
+  pure <| indexes.foldl RetainedModelIndex.append RetainedModelIndex.empty
 
 private def Observation.fromJson (json : Json) : Except String Observation := do
   let metadata ← json.getObjVal? "meta"
@@ -105,6 +182,79 @@ private def focusedObservation (caseId focusCode focusPointer : String)
   | [signature] => pure { polarity := some signature.polarity }
   | _ => throw s!"{caseId}: retained case has duplicate focused message signatures"
 
+private def hasDuplicate [BEq α] (values : List α) : Bool :=
+  match values with
+  | [] => false
+  | value :: rest => rest.contains value || hasDuplicate rest
+
+private def focusedCorrelationObservation
+    (case : A12Kernel.Evidence.Correlation.CaseSpec) (expected : List String) :
+    Except String CorrelationFocusObservation := do
+  let signatures ← expected.mapM MessageSignature.parse
+  let focused := signatures.filter (·.code == case.focusCode)
+  if hasDuplicate (focused.map (·.pointer)) then
+    throw s!"{case.id}: retained case has duplicate focused correlation pointers"
+  for signature in focused do
+    if !(case.outerRows.any (·.pointer == signature.pointer)) then
+      throw s!"{case.id}: focused message has unmapped pointer '{signature.pointer}'"
+  let firings ← focused.mapM fun signature =>
+    match case.outerRows.find? (·.pointer == signature.pointer) with
+    | some row => pure { rowId := row.rowId, pointer := signature.pointer }
+    | none => throw s!"{case.id}: focused message has unmapped pointer '{signature.pointer}'"
+  pure { firings, signatures := focused }
+
+private def pathSegments (path : String) : List String :=
+  (path.splitOn "/").filter (!·.isEmpty)
+
+private def applyRelativeSegments : List String → List String → Except String (List String)
+  | base, [] => pure base
+  | base, segment :: rest =>
+      if segment == "." || segment.isEmpty then
+        applyRelativeSegments base rest
+      else if segment == ".." then
+        match base with
+        | [] => throw "relative entity reference escapes the model root"
+        | _ => applyRelativeSegments base.dropLast rest
+      else
+        applyRelativeSegments (base ++ [segment]) rest
+
+private def resolveEntityReference (entityId reference : String) : Except String String := do
+  let base := if reference.startsWith "/" then [] else pathSegments entityId
+  let segments ← applyRelativeSegments base (pathSegments reference)
+  if segments.isEmpty then throw "entity reference resolves to the model root"
+  pure ("/" ++ String.intercalate "/" segments)
+
+private def bindCorrelationProjectionToModel
+    (case : A12Kernel.Evidence.Correlation.CaseSpec) (model : Json) : Except String Unit := do
+  let index ← retainedModelIndex model
+  match index.groups.filter (· == case.groupPath) with
+  | [_] => pure ()
+  | [] => throw s!"{case.id}: retained model has no group '{case.groupPath}'"
+  | _ => throw s!"{case.id}: retained model has duplicate group '{case.groupPath}'"
+  for projectedField in case.fields do
+    match index.fields.filter (·.id == projectedField.path) with
+    | [field] =>
+        if field.kind != "NumberType" then
+          throw s!"{case.id}: retained field '{field.id}' is {field.kind}, not NumberType"
+        if field.scale != projectedField.scale then
+          throw s!"{case.id}: retained field '{field.id}' scale is {field.scale}, projection says {projectedField.scale}"
+    | [] => throw s!"{case.id}: retained model has no field '{projectedField.path}'"
+    | _ => throw s!"{case.id}: retained model has duplicate field '{projectedField.path}'"
+  let rule ← match index.rules.filter (·.errorCode == case.focusCode) with
+    | [rule] => pure rule
+    | [] => throw s!"{case.id}: retained model has no rule with code '{case.focusCode}'"
+    | _ => throw s!"{case.id}: retained model has multiple rules with code '{case.focusCode}'"
+  let valueField ← match case.fields.filter (·.id == case.valueFieldId) with
+    | [field] => pure field
+    | [] => throw s!"{case.id}: projection has no value field {case.valueFieldId}"
+    | _ => throw s!"{case.id}: projection has duplicate value field {case.valueFieldId}"
+  let errorPath ← resolveEntityReference rule.id rule.errorEntityRelPath
+  if errorPath != valueField.path then
+    throw s!"{case.id}: retained rule error path resolves to '{errorPath}', expected '{valueField.path}'"
+  let projectedCondition ← case.renderCondition
+  if rule.errorCondition != projectedCondition then
+    throw s!"{case.id}: retained condition '{rule.errorCondition}' does not equal projection '{projectedCondition}'"
+
 private def checkCase (root : System.FilePath) (bundle : Bundle) (case : CaseSpec) : IO Unit := do
   if !safeRelative case.caseRef then
     throw (IO.userError s!"{case.id}: unsafe caseRef '{case.caseRef}'")
@@ -159,6 +309,31 @@ private def checkIterationCase (root : System.FilePath)
     throw (IO.userError
       s!"{case.id}: observed fired={observed.fired} polarity={repr observed.polarity}, Lean produced {repr actual}")
 
+private def checkCorrelationCase (root : System.FilePath)
+    (bundle : A12Kernel.Evidence.Correlation.Bundle)
+    (case : A12Kernel.Evidence.Correlation.CaseSpec) : IO Unit := do
+  if !safeRelative case.caseRef then
+    throw (IO.userError s!"{case.id}: unsafe correlation caseRef '{case.caseRef}'")
+  let json ← readJson (root / case.caseRef)
+  let observation ← orThrow case.id (Observation.fromJson json)
+  if !observation.divergences.isEmpty then
+    throw (IO.userError s!"{case.id}: external capture records a kernel-strategy divergence")
+  if observation.id != case.id then
+    throw (IO.userError s!"{case.id}: external id is '{observation.id}'")
+  if observation.kernelVersion != bundle.kernelVersion then
+    throw (IO.userError s!"{case.id}: external kernel version is {observation.kernelVersion}")
+  if !safeRelative observation.modelRef then
+    throw (IO.userError s!"{case.id}: unsafe modelRef '{observation.modelRef}'")
+  if !(← System.FilePath.pathExists (root / observation.modelRef)) then
+    throw (IO.userError s!"{case.id}: missing retained model '{observation.modelRef}'")
+  let model ← readJson (root / observation.modelRef)
+  orThrow case.id (bindCorrelationProjectionToModel case model)
+  let observed ← orThrow case.id (focusedCorrelationObservation case observation.expected)
+  let actual ← orThrow case.id case.replay
+  if actual != observed.firings then
+    throw (IO.userError
+      s!"{case.id}: observed {repr observed.signatures}, Lean produced ordered firings {repr actual}")
+
 def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
   let bundle ← orThrow "projection.json"
@@ -172,5 +347,11 @@ def main : IO Unit := do
   orThrow "iteration-projection.json" iterationBundle.validate
   for case in iterationBundle.cases do
     checkIterationCase root iterationBundle case
-  let total := bundle.cases.length + iterationBundle.cases.length
+  let correlationBundle ← orThrow "correlation-projection.json"
+    (A12Kernel.Evidence.Correlation.Bundle.fromJson
+      (← readJson (root / "correlation-projection.json")))
+  orThrow "correlation-projection.json" correlationBundle.validate
+  for case in correlationBundle.cases do
+    checkCorrelationCase root correlationBundle case
+  let total := bundle.cases.length + iterationBundle.cases.length + correlationBundle.cases.length
   IO.println s!"kernel evidence: {total}/{total} projections agree ({bundle.kernelVersion})"

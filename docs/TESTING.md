@@ -38,15 +38,19 @@ example : (filteredCounts 1).sumSelected source = .value 7 := by
 
 The left side executes the pure Lean function on the concrete fixture. Equality for the result type is decidable, so `native_decide` compiles and evaluates the decision procedure; if it produces `false`, elaboration fails and therefore `lake build` fails. Use `decide` for small structural propositions that reduce economically in the kernel, and `native_decide` for concrete executable fixtures where compiled evaluation materially reduces cost.
 
+Lean tests do not require a JUnit-style runtime runner. The conformance modules are ordinary Lean modules imported by the conformance root: a false `example`, an ill-typed fixture, or an unprovable expected equality prevents elaboration and fails the build. `#eval` remains useful while exploring a new definition and for deliberate smoke output, but printed output alone is not an assertion; once behavior matters, move it behind an `example`, theorem, or retained-evidence comparison that can fail automatically.
+
 `native_decide` is permitted only in conformance examples and other explicitly untrusted executable test surfaces. It is forbidden from the trusted semantics/proof closure by [`../scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh), because a general theorem should be supported by an inspectable proof term rather than trusted native execution.
 
-Concrete cases should be separating, not merely numerous. Hold the model, kind, document, and condition fixed while varying one semantic axis. For filtered iteration, for example, pair an invalid consumed cell in a filter-dropped row with the same cell in a kept row; this distinguishes filter-before-consumer semantics from an eager whole-column scan. Include ordinary, boundary, empty, malformed, and order-sensitive cases whenever that axis is observable.
+Concrete cases should be separating, not merely numerous. Hold the model, kind, document, and condition fixed while varying one semantic axis. For filtered iteration, pair an invalid consumed cell in a filter-dropped row with the same cell in a kept row; this distinguishes filter-before-consumer semantics from an eager whole-column scan. For captured-outer correlation, pair equality with and without explicit repetition self-exclusion, then add an asymmetric inner-less-than-outer case so reversed or collapsed origins cannot pass accidentally. Include ordinary, boundary, empty, malformed, and order-sensitive cases whenever that axis is observable.
 
 Run a focused executable file after its imports have been built:
 
 ```sh
 lake build A12Kernel.Semantics.Iteration
 lake env lean A12Kernel/Conformance/Iteration.lean
+lake build A12Kernel.Semantics.Correlation
+lake env lean A12Kernel/Conformance/Correlation.lean
 ```
 
 Run `lake build` before handoff so the same examples also pass through the actual library import graph.
@@ -65,7 +69,9 @@ Every exported theorem under `A12Kernel/Proofs/` must be imported by [`../A12Ker
 
 Kernel differential testing is the empirical backbone, but the kernel never becomes a dependency of this repository. Focused scenarios run externally through the a12-dmkits adapter in the local `../a12-rulekit/` checkout. The Groovy-dynamic kernel result is the observation anchor, the static-Java kernel strategy detects a strategy split, and the a12-dmkits interpreter is a clean-room triangulation peer that may reveal a disagreement but is never the oracle.
 
-Only portable own-domain artifacts—standalone model, placements, operation, complete observed signatures, kernel version, and any divergence record—are retained under `evidence/`. A narrow typed projection contains the input needed by the current Lean fragment but never a separately hand-authored expected Lean result. The replay driver derives the focused expectation from the complete external observation, executes the public Lean semantics, and exits nonzero on mismatch.
+Only portable own-domain artifacts—standalone model, placements, operation, complete observed signatures, kernel version, and any divergence record—are retained under `evidence/`. A narrow typed projection contains the input needed by the current Lean fragment but never a separately hand-authored expected Lean result. The replay driver derives the focused expectation from the complete external observation, executes the public Lean semantics, and exits nonzero on mismatch. The current driver keeps flat/path/required, uncorrelated iteration, and captured-outer correlation in three separate closed projections. Correlation replay validates 1-based unique rows, a complete ordered outer-row pointer map, and both inner and outer origins; preserves the raw focused message order; and compares ordered firing row/pointer pairs rather than only a message count. It also binds the typed filter to the retained model without a general parser: unique group and Number-field paths, a unique focused rule, the resolved error field, and a canonical rendering of the admitted condition subset must all match exactly. Classified projected cells and row IDs remain a review-trusted transcription of the retained placements until a general instance decoder exists.
+
+For `$` evidence, retain the actual executed stored condition in the standalone DM-JSON model. A typed origin projection is useful for Lean replay but cannot replace the raw condition because a formatter or conversion path may silently lose a `$`-bearing conjunct. Preserve full VALUE/OMISSION signatures even while the current truth-only replay deliberately compares only firing rows and pointers.
 
 Observable boundaries must stay explicit. Validation output can establish that an authored message fired or was silent and can preserve its observed VALUE/OMISSION signature; it cannot generally distinguish the kernel's hidden `unknown` from `false`. When the Lean capsule deliberately defers a dimension such as filtered-result polarity, replay compares only the admitted truth/firing projection while retaining the full external signature for the later capsule.
 

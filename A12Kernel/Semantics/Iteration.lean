@@ -22,6 +22,22 @@ structure SingleGroupValidationContext where
   candidates : List RowIndex
   read : RowIndex → FieldId → CheckedCell
 
+def RowIndex.hasDuplicates : List RowIndex → Bool
+  | [] => false
+  | row :: rest => rest.contains row || RowIndex.hasDuplicates rest
+
+/-- Kernel-correspondence boundary for the explicit row list. Repetition indices are
+    1-based and each instantiated row occurs once; the list itself carries document
+    order. The low-level evaluator remains total outside this predicate. -/
+def SingleGroupValidationContext.WellFormed
+    (context : SingleGroupValidationContext) : Prop :=
+  RowIndex.hasDuplicates context.candidates = false ∧
+    context.candidates.all (0 < ·) = true
+
+instance (context : SingleGroupValidationContext) : Decidable context.WellFormed := by
+  unfold SingleGroupValidationContext.WellFormed
+  infer_instance
+
 def SingleGroupValidationContext.atRow (context : SingleGroupValidationContext)
     (row : RowIndex) : FlatContext :=
   { read := context.read row }
