@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.Elaboration
+import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.Correlation
 import A12Kernel.Conformance.Iteration

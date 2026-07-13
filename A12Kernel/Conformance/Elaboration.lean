@@ -37,9 +37,13 @@ private def repeatableCountDecl : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } },
     repeatableScope := [10] }
 
+private def repeatableItems : RepeatableGroupDecl :=
+  { level := 10, path := ["Order", "Items"] }
+
 private def model : FlatModel :=
   { fields := [quantityDecl, expressDecl, confirmDecl, ancestorLimitDecl,
       localLimitDecl, externalCodeDecl, repeatableCountDecl],
+    repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 
 private def absolute (groups : List String) (field : String) : SurfaceFieldPath :=

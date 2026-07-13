@@ -1,0 +1,28 @@
+{
+  "meta" : {
+    "id" : "correlation-elaboration-cross-group-inner-rejected",
+    "kernelVersion" : "30.8.1",
+    "source" : "curated",
+    "capture" : "KernelAdapter.diagnose",
+    "sections" : [ "§9", "§10" ],
+    "notes" : "the inner filter reference comes from sibling repeatable Supply while the starred field iterates Demand"
+  },
+  "modelRef" : "models/lean-correlation-elaboration-staffing.json",
+  "draft" : {
+    "group" : "/Staffing",
+    "name" : "LeanCorrelationElaborationProbe",
+    "errorField" : "../Demand/Headcount",
+    "condition" : "FieldFilled(Demand/Headcount) And AtLeastOneFieldFilled(Demand*/Headcount Having [Supply/Headcount] == [$Demand/Headcount])",
+    "errorCode" : "LEAN_CORRELATION_ELABORATION",
+    "severity" : "ERROR"
+  },
+  "diagnostics" : [ {
+    "severity" : "ERROR",
+    "source" : "KERNEL",
+    "code" : "MVK_INVALID_ITERATION_IN_FILTER_CONDITION",
+    "summary" : "Error for 'Supply' in 'Supply/Headcount': in filter conditions iterations are only allowed on levels, that specify an asterisk for the filtered field. [MVK_INVALID_ITERATION_IN_FILTER_CONDITION]",
+    "where" : {
+      "rule" : "/Staffing/LeanCorrelationElaborationProbe"
+    }
+  } ]
+}
