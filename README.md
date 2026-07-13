@@ -20,7 +20,7 @@ The first product-shaped Lean interpreter boundary is now available as the `a12-
 
 ## Build
 
-Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned in [`lean-toolchain`](lean-toolchain)). No external dependencies.
+Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned in [`lean-toolchain`](lean-toolchain)). There are no external Lake package dependencies; native executables still include pinned Lean toolchain/runtime components, whose release implications are tracked in [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md).
 
 ```sh
 lake build
@@ -48,6 +48,8 @@ See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the request/response contract, ex
 ## Design and sources
 
 - [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) — the project charter: purpose, ecosystem role, deliverables, non-goals, and success criteria.
+- [`docs/PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md) — the proposed compatibility-kit product boundary, public claim, and staged progression.
+- [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md) — production artifact qualification, reproducibility, packaging, signing, measured size work, and release blockers.
 - [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
 - [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
 - [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.

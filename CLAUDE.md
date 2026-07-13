@@ -6,7 +6,7 @@ Guidance for working in **a12-kernel-lean** — a clean-room, versioned **Lean 4
 
 A12 Kernel is mgm technology partners' model-and-DSL engine for complex business forms: business analysts declare **validation rules** (each states the *error* condition — true ⇒ the data is invalid) and **computations** (derived fields) in a bilingual EN/DE DSL, and the engine evaluates them against form *Documents*. This project preserves that observed **evaluation semantics** as a versioned mechanized theory: executable as a reference oracle, empirically anchored to kernel 30.8.1, and equipped with a required proof spine plus selectively proved higher-level properties.
 
-The language-neutral semantics live in read-only [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) and follow the numbered deep-dives. [`docs/README.md`](docs/README.md) indexes the living project documentation; [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) tracks clause-level Lean/proof/evidence status; [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) records durable formalization findings; [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) owns Lean's role and trust contract; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records concrete encoding decisions; [`docs/PROTOCOL.md`](docs/PROTOCOL.md) owns the normalized reference process contract. [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) remains consulted staged guidance, not a writable plan.
+The language-neutral semantics live in read-only [`spec/`](spec/) — start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md) and follow the numbered deep-dives. [`docs/README.md`](docs/README.md) indexes the living project documentation; [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) tracks clause-level Lean/proof/evidence status; [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) records durable formalization findings; [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) owns Lean's role and trust contract; [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records concrete encoding decisions; [`docs/PROTOCOL.md`](docs/PROTOCOL.md) owns the normalized reference process contract; [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md) owns production artifact qualification and measured release experiments. [`spec/13-lean-encoding-guide.md`](spec/13-lean-encoding-guide.md) remains consulted staged guidance, not a writable plan.
 
 ## Goal & role
 
@@ -26,6 +26,10 @@ Because this project's source ships no kernel code, it is licensed **MIT** (see 
 ## ⚠️ HARD RULE — no machine-specific data in committed files
 
 No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel/`, `../a12-rulekit/`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does.
+
+## ⚠️ HARD RULE — dependency changes require user approval
+
+Consult the user and obtain explicit approval before adding, removing, upgrading, vendoring, or replacing a Lake package, runtime library, build tool, or other dependency, and before changing static/shared linkage or the distribution strategy for a bundled component. Discovering an implicit toolchain dependency is not authorization to change it: report the dependency, its purpose, licensing/deployment consequence, and concrete options first. Read-only inspection and measurements of the existing dependency graph are allowed.
 
 ## Naming convention
 
@@ -67,7 +71,7 @@ For codebase warm-ups and explanations, work directly from this repository's sou
 
 ## Building & running
 
-Toolchain: **Lean 4.31.0**, pinned in [`lean-toolchain`](lean-toolchain); Lake 5.0. No external dependencies — the library is self-contained.
+Toolchain: **Lean 4.31.0**, pinned in [`lean-toolchain`](lean-toolchain); Lake 5.0. There are no external Lake package dependencies. Native executables still incorporate pinned toolchain/runtime components, including GMP; [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md) owns their release implications.
 
 ```sh
 lake build                          # build definitions, proofs, and executable conformance locks

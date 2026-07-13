@@ -94,6 +94,8 @@ The adoption trigger is therefore a concrete reader or maintenance problem: repe
 
 ## Release gates
 
+This section owns the product-level credibility conditions. Concrete artifact qualification, reproducibility, platform support, packaging, signing, optimization, publication, and rollback are governed by [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md); creating that engineering contract does not by itself adopt this proposal.
+
 A 0.x compatibility-kit release is credible only when:
 
 1. the normalized protocol is versioned, deterministic, documented, and protected by process-level conformance tests;

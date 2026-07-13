@@ -2,10 +2,11 @@
 
 This is the canonical index and ownership map for the project's documentation. It follows the useful a12-dmkits pattern of routing each kind of knowledge to one maintained document rather than making every document repeat the same overview. Documentation lifecycle rules live in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); repository rules that must stop an unsafe action before it happens remain in [`../CLAUDE.md`](../CLAUDE.md).
 
-## Charter, product, and current plan
+## Charter, product, release, and current plan
 
 - **[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md)** — the stable project constitution: purpose, users, semantic and evidence boundaries, delivery-unit definition, durable milestones, success criteria, and long-term potential.
 - **[`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md)** — the proposed releasable product boundary: compatibility-kit artifacts, public claims and nonclaims, integration model, release gates, staged progression, and user-facing documentation as a regression consumer. It is a proposal until explicitly adopted.
+- **[`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md)** — the production-release engineering contract and experiment log: artifact qualification, version identity, platform matrix, reproducibility, packaging, signing, size work, publication, rollback, and open blockers. It does not itself adopt a release.
 - **[`PLAN.md`](PLAN.md)** — the resumable working checkpoint: the landed verification boundary, next delivery unit, immediate continuation order, and resume procedure. It may change often and does not redefine the charter or product direction.
 
 ## Semantics, formalization, and implementation
@@ -36,6 +37,7 @@ The language-neutral semantic body lives under [`../spec/`](../spec/) and is tre
 | Language-neutral semantic baseline | Read-only [`../spec/`](../spec/) |
 | Stable mission, audience, authority model, evidence doctrine, durable milestones, and long-term potential | [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) |
 | Proposed release artifacts, public product claim, integration boundary, release gates, and product progression | [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) |
+| Artifact qualification, platform support, reproducibility, packaging, signing, size experiments, publication, and rollback | [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) |
 | Current checkpoint, immediate sequencing, and session-resume state | [`PLAN.md`](PLAN.md) |
 | Lean's role, theorem/trust contract, external project studies, and publication strategy | [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) |
 | Current module and representation design | [`ARCHITECTURE.md`](ARCHITECTURE.md) |

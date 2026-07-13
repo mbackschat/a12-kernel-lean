@@ -7,6 +7,7 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 - [`../spec/`](../spec/) is read-only language-neutral semantic input. It plays the same consulted-upstream role for this repository that a12-kernel's merged BA/dev documentation plays for a12-dmkits; it is not a work log, findings ledger, implementation map, or roadmap.
 - [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the stable project argument, goals, evidence doctrine, success gates, durable milestones, and long-term outlook.
 - [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) owns the proposed releasable product boundary, public claims and nonclaims, integration shape, release gates, staged product progression, and user-facing documentation strategy until that proposal is explicitly adopted or replaced.
+- [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) owns the production artifact contract, version binding, platform qualification, reproducibility, packaging, signing, release-size experiments, publication, and rollback. It records how a release would be engineered without adopting the product proposal or redefining semantic support.
 - [`PLAN.md`](PLAN.md) owns the resumable current checkpoint, preserved observations, immediate continuation order, and session-resume procedure. It is operational state, not a second roadmap.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) owns the current Lean structure, representations, dependency boundaries, and adopted/rejected encoding decisions. It describes what exists, not a feature-status board.
 - [`PROTOCOL.md`](PROTOCOL.md) owns the normalized reference process and JSON contract, including invocation, exit behavior, closed wire shapes, diagnostics, limits, support-manifest interpretation, and runnable sample data.
@@ -36,6 +37,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
 - A changed stable goal, evidence rule, durable milestone, success criterion, or long-term project potential updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
 - A changed proposed release artifact, public claim, integration boundary, release gate, product stage, or user-facing product-documentation strategy updates [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md).
+- A changed production artifact format, version binding, supported platform, reproducibility rule, packaging/signing/SBOM process, size policy, publication process, or rollback rule updates [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md).
 - A changed current checkpoint, preserved observation, immediate step order, or resume instruction updates [`PLAN.md`](PLAN.md).
 - A changed theorem/trust discipline or external-study conclusion updates [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).
 - A new, renamed, or removed document updates [`README.md`](README.md) in the same change.

@@ -1,4 +1,4 @@
-import Lean.Data.Json
+import Lean.Data.Json.Parser
 
 /-! # Strict JSON parsing
 
