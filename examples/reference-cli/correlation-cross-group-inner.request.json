@@ -1,0 +1,116 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "singleGroupCorrelation.firingRows",
+  "model": {
+    "fieldRefByShortNameAllowed": false,
+    "repeatableGroups": [
+      {
+        "level": 10,
+        "path": [
+          "Staffing",
+          "Demand"
+        ]
+      },
+      {
+        "level": 20,
+        "path": [
+          "Staffing",
+          "Supply"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "id": 0,
+        "groupPath": [
+          "Staffing",
+          "Demand"
+        ],
+        "name": "Headcount",
+        "kind": {
+          "tag": "number",
+          "scale": 0,
+          "signed": true
+        },
+        "repeatableScope": [
+          10
+        ]
+      },
+      {
+        "id": 1,
+        "groupPath": [
+          "Staffing",
+          "Supply"
+        ],
+        "name": "Headcount",
+        "kind": {
+          "tag": "number",
+          "scale": 0,
+          "signed": true
+        },
+        "repeatableScope": [
+          20
+        ]
+      }
+    ]
+  },
+  "declaringGroup": [
+    "Staffing"
+  ],
+  "rule": {
+    "errorField": {
+      "base": "relative",
+      "parents": 0,
+      "groups": [
+        "Demand"
+      ],
+      "field": "Headcount"
+    },
+    "guardField": {
+      "base": "relative",
+      "parents": 0,
+      "groups": [
+        "Demand"
+      ],
+      "field": "Headcount"
+    },
+    "valueField": {
+      "base": "relative",
+      "parents": 0,
+      "groupsBeforeStar": [],
+      "starredGroup": "Demand",
+      "field": "Headcount"
+    },
+    "having": {
+      "tag": "compareNumbers",
+      "operator": "equal",
+      "left": {
+        "origin": "inner",
+        "field": {
+          "base": "relative",
+          "parents": 0,
+          "groups": [
+            "Supply"
+          ],
+          "field": "Headcount"
+        }
+      },
+      "right": {
+        "origin": "outer",
+        "field": {
+          "base": "relative",
+          "parents": 0,
+          "groups": [
+            "Demand"
+          ],
+          "field": "Headcount"
+        }
+      }
+    }
+  },
+  "candidates": [
+    1
+  ],
+  "cells": []
+}

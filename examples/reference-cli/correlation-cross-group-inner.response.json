@@ -1,0 +1,22 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "outcome": "error",
+  "diagnostic": {
+    "category": "elaboration",
+    "code": "fieldOutsideGroup",
+    "at": "$.rule.having",
+    "details": {
+      "origin": "inner",
+      "fieldPath": [
+        "Staffing",
+        "Supply",
+        "Headcount"
+      ],
+      "expectedGroup": [
+        "Staffing",
+        "Demand"
+      ]
+    }
+  }
+}

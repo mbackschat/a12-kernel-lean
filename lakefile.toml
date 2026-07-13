@@ -15,6 +15,10 @@ name = "a12-kernel-reference"
 root = "A12Kernel.ReferenceMain"
 
 [[lean_exe]]
+name = "checkCandidateConformance"
+root = "A12Kernel.CandidateConformanceMain"
+
+[[lean_exe]]
 name = "checkReferenceProcess"
 root = "A12Kernel.ReferenceProcessTestMain"
-needs = ["a12-kernel-reference"]
+needs = ["a12-kernel-reference", "checkCandidateConformance"]

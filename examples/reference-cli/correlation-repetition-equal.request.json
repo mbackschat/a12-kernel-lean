@@ -1,0 +1,133 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "singleGroupCorrelation.firingRows",
+  "model": {
+    "fieldRefByShortNameAllowed": false,
+    "repeatableGroups": [
+      {
+        "level": 10,
+        "path": [
+          "Order",
+          "Items"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "id": 1,
+        "groupPath": [
+          "Order",
+          "Items"
+        ],
+        "name": "UnitWeight",
+        "kind": {
+          "tag": "number",
+          "scale": 2,
+          "signed": true
+        },
+        "repeatableScope": [
+          10
+        ]
+      },
+      {
+        "id": 2,
+        "groupPath": [
+          "Order",
+          "Items"
+        ],
+        "name": "Count",
+        "kind": {
+          "tag": "number",
+          "scale": 0,
+          "signed": true
+        },
+        "repeatableScope": [
+          10
+        ]
+      }
+    ]
+  },
+  "declaringGroup": [
+    "Order"
+  ],
+  "rule": {
+    "errorField": {
+      "base": "relative",
+      "parents": 0,
+      "groups": [
+        "Items"
+      ],
+      "field": "Count"
+    },
+    "guardField": {
+      "base": "relative",
+      "parents": 0,
+      "groups": [
+        "Items"
+      ],
+      "field": "Count"
+    },
+    "valueField": {
+      "base": "relative",
+      "parents": 0,
+      "groupsBeforeStar": [],
+      "starredGroup": "Items",
+      "field": "UnitWeight"
+    },
+    "having": {
+      "tag": "compareRepetitions",
+      "operator": "equal",
+      "left": {
+        "origin": "inner",
+        "group": {
+          "base": "relative",
+          "parents": 0,
+          "groups": [
+            "Items"
+          ]
+        }
+      },
+      "right": {
+        "origin": "outer",
+        "group": {
+          "base": "relative",
+          "parents": 0,
+          "groups": [
+            "Items"
+          ]
+        }
+      }
+    }
+  },
+  "candidates": [
+    1,
+    2
+  ],
+  "cells": [
+    {
+      "row": 1,
+      "fieldId": 2,
+      "state": {
+        "tag": "parsedNumber",
+        "value": "1"
+      }
+    },
+    {
+      "row": 2,
+      "fieldId": 1,
+      "state": {
+        "tag": "parsedNumber",
+        "value": "9"
+      }
+    },
+    {
+      "row": 2,
+      "fieldId": 2,
+      "state": {
+        "tag": "parsedNumber",
+        "value": "1"
+      }
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import A12Kernel.Reference.Protocol
 
 /-! # A12Kernel.Reference.Evaluator — pure protocol-to-semantics adapter
 
-This adapter validates transport-only cell invariants, calls the existing checked flat elaborator and evaluator, and exhaustively translates internal rejection constructors into the stable public diagnostic algebra.
+This adapter validates transport-only cell invariants, calls the existing checked elaborators and evaluators, and exhaustively translates internal rejection constructors into the stable public diagnostic algebra.
 -/
 
 namespace A12Kernel.Reference
@@ -23,13 +23,23 @@ private def fieldReferenceJson (reference : SurfaceFieldPath) : Json :=
   Json.mkObj (baseFields ++ [("groups", toJson reference.groups),
     ("field", toJson reference.field)])
 
+private def groupReferenceJson (reference : SurfaceGroupPath) : Json :=
+  let baseFields := match reference.base with
+    | .absolute => [("base", toJson "absolute")]
+    | .relative parents => [("base", toJson "relative"), ("parents", toJson parents)]
+  Json.mkObj (baseFields ++ [("groups", toJson reference.groups)])
+
+private def havingOriginTag : HavingOrigin → String
+  | .inner => "inner"
+  | .outer => "outer"
+
 private def scalarKindTag : SurfaceScalarKind → String
   | .number => "number"
   | .boolean => "boolean"
   | .confirm => "confirm"
   | .string => "string"
 
-private def resolveDiagnostic : ResolveError → Diagnostic
+private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → Diagnostic
   | .invalidModelPath path =>
       .make .invalidPath "$.model" (pathDetails path)
   | .duplicateFieldId id =>
@@ -52,31 +62,31 @@ private def resolveDiagnostic : ResolveError → Diagnostic
         (Json.mkObj [("path", toJson path), ("expected", toJson expected),
           ("actual", toJson actual)])
   | .unknownRepeatableGroup path =>
-      .make .unknownRepeatableGroup "$.condition" (pathDetails path)
+      .make .unknownRepeatableGroup referenceLocation (pathDetails path)
   | .unknownFieldId id =>
-      .make .unknownFieldId "$.condition"
+      .make .unknownFieldId referenceLocation
         (Json.mkObj [("fieldId", toJson id)])
   | .invalidRuleGroup path =>
       .make .invalidRuleGroup "$.declaringGroup" (pathDetails path)
   | .invalidReference reference =>
-      .make .invalidReference "$.condition"
+      .make .invalidReference referenceLocation
         (Json.mkObj [("field", fieldReferenceJson reference)])
   | .aboveRoot parents =>
-      .make .aboveRoot "$.condition"
+      .make .aboveRoot referenceLocation
         (Json.mkObj [("parents", toJson parents)])
   | .invalidEntity reference =>
-      .make .unknownField "$.condition"
+      .make .unknownField referenceLocation
         (Json.mkObj [("field", fieldReferenceJson reference)])
   | .ambiguousEntity path =>
-      .make .ambiguousField "$.condition" (pathDetails path)
+      .make .ambiguousField referenceLocation (pathDetails path)
   | .shortNameNotUnique name =>
-      .make .shortNameNotUnique "$.condition"
+      .make .shortNameNotUnique referenceLocation
         (Json.mkObj [("name", toJson name)])
   | .repeatableReference path =>
-      .make .repeatableReference "$.condition" (pathDetails path)
+      .make .repeatableReference referenceLocation (pathDetails path)
 
 private def elaborationResult : ElabError → Except InternalFailure Diagnostic
-  | .resolve error => pure (resolveDiagnostic error)
+  | .resolve error => pure (resolveDiagnosticAt "$.condition" error)
   | .unsupportedOperator operator =>
       let tag := Support.ComparisonOperator.ofSurface operator |>.tag
       pure (.make .operator "$.condition"
@@ -88,6 +98,47 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .illegalConfirmLiteral path =>
       pure (.make .illegalConfirmLiteral "$.condition"
         (pathDetails path))
+  | .incoherentCore => throw .incoherentCore
+
+private def correlationElaborationResult : CorrelationElabError →
+    Except InternalFailure Diagnostic
+  | .resolve error => pure (resolveDiagnosticAt "$.rule" error)
+  | .invalidGroupReference reference =>
+      pure (.make .invalidGroupReference "$.rule"
+        (Json.mkObj [("group", groupReferenceJson reference)]))
+  | .wildcardWithParentNavigation parents =>
+      pure (.make .pathForm "$.rule.valueField"
+        (Json.mkObj [("form", toJson "parentNavigatingStar"),
+          ("parents", toJson parents)]))
+  | .fieldNotNumber path =>
+      pure (.make .fieldKindMismatch "$.rule"
+        (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
+  | .fieldOutsideGroup origin fieldPath expectedGroup =>
+      pure (.make .fieldOutsideGroup "$.rule.having"
+        (Json.mkObj [("origin", toJson (havingOriginTag origin)),
+          ("fieldPath", toJson fieldPath), ("expectedGroup", toJson expectedGroup)]))
+  | .fieldScopeMismatch fieldPath expected actual =>
+      pure (.make .fieldScopeMismatch "$.rule"
+        (Json.mkObj [("fieldPath", toJson fieldPath), ("expected", toJson expected),
+          ("actual", toJson actual)]))
+  | .repetitionGroupMismatch expected actual =>
+      pure (.make .repetitionGroupMismatch "$.rule.having"
+        (Json.mkObj [("expected", toJson expected), ("actual", toJson actual)]))
+  | .equalityScaleMismatch leftPath leftScale rightPath rightScale =>
+      pure (.make .equalityScaleMismatch "$.rule.having"
+        (Json.mkObj [("leftPath", toJson leftPath), ("leftScale", toJson leftScale),
+          ("rightPath", toJson rightPath), ("rightScale", toJson rightScale)]))
+  | .unsupportedOperator operator =>
+      let tag := Support.ComparisonOperator.ofSurface operator |>.tag
+      pure (.make .operator "$.rule.having"
+        (Json.mkObj [("operator", toJson tag)]))
+  | .missingInner =>
+      pure (.make .missingInner "$.rule.having")
+  | .missingOuter =>
+      pure (.make .uncorrelatedHaving "$.rule.having")
+  | .errorGuardMismatch errorPath guardPath =>
+      pure (.make .errorGuardMismatch "$.rule"
+        (Json.mkObj [("errorPath", toJson errorPath), ("guardPath", toJson guardPath)]))
   | .incoherentCore => throw .incoherentCore
 
 private def duplicateCellId? : List CellInput → Option FieldId
@@ -120,7 +171,58 @@ private def rawContext (cells : List CellInput) : RawFlatContext where
     | some cell => cell.raw
     | none => .empty
 
-def evaluate (request : Request) : Except InternalFailure Response := do
+private def duplicateCellAddress? : List CorrelationCellInput → Option (RowIndex × FieldId)
+  | [] => none
+  | cell :: rest =>
+      if rest.any fun other => other.row == cell.row && other.fieldId == cell.fieldId then
+        some (cell.row, cell.fieldId)
+      else
+        duplicateCellAddress? rest
+
+private def contextDiagnostic : SingleGroupContextError → Diagnostic
+  | .zeroCandidate row =>
+      .make .zeroCandidate "$.candidates" (Json.mkObj [("row", toJson row)])
+  | .duplicateCandidate row =>
+      .make .duplicateCandidate "$.candidates" (Json.mkObj [("row", toJson row)])
+
+private def validateCandidateSequence (candidates : List RowIndex) : Except Diagnostic Unit := do
+  let expected := (List.range candidates.length).map (· + 1)
+  if candidates.isEmpty || candidates != expected then
+    throw (.make .invalidCandidateSequence "$.candidates"
+      (Json.mkObj [("required", toJson "nonEmptyContiguousOneBased"),
+        ("received", toJson candidates)]))
+
+private def validateCorrelationCells (model : FlatModel) (group : RepeatableGroupDecl)
+    (candidates : List RowIndex) (cells : List CorrelationCellInput) :
+    Except Diagnostic Unit := do
+  match duplicateCellAddress? cells with
+  | some (row, fieldId) =>
+      throw (.make .duplicateCellAddress "$.cells"
+        (Json.mkObj [("row", toJson row), ("fieldId", toJson fieldId)]))
+  | none => pure ()
+  for cell in cells do
+    if !candidates.contains cell.row then
+      throw (.make .cellRowNotCandidate "$.cells"
+        (Json.mkObj [("row", toJson cell.row), ("fieldId", toJson cell.fieldId)]))
+    let declaration ← match model.lookupUniqueId cell.fieldId with
+      | .ok declaration => pure declaration
+      | .error _ =>
+          throw (.make .undeclaredCellId "$.cells"
+            (Json.mkObj [("fieldId", toJson cell.fieldId)]))
+    if declaration.groupPath != group.path || declaration.repeatableScope != [group.level] then
+      throw (.make .cellOutsideGroup "$.cells"
+        (Json.mkObj [("row", toJson cell.row), ("fieldId", toJson cell.fieldId),
+          ("fieldPath", toJson declaration.path), ("expectedGroup", toJson group.path),
+          ("expectedScope", toJson [group.level])]))
+
+private def correlationRawContext (request : CorrelationRequest) : RawSingleGroupContext where
+  candidates := request.candidates
+  read row id :=
+    match request.cells.find? fun cell => cell.row == row && cell.fieldId == id with
+    | some cell => cell.raw
+    | none => .empty
+
+private def evaluateFlat (request : FlatRequest) : Except InternalFailure Response := do
   match elaborate request.model request.declaringGroup request.condition with
   | .error error => pure (.diagnostic (← elaborationResult error))
   | .ok checked =>
@@ -130,6 +232,31 @@ def evaluate (request : Request) : Except InternalFailure Response := do
           pure (.verdict (checked.core.evalFull
             (request.model.checkContext (rawContext request.cells))
             request.hasContent))
+
+private def evaluateCorrelation (request : CorrelationRequest) :
+    Except InternalFailure Response := do
+  match elaborateSingleCorrelatedRule request.model request.declaringGroup request.rule with
+  | .error error => pure (.diagnostic (← correlationElaborationResult error))
+  | .ok checked =>
+      let raw := correlationRawContext request
+      match raw.validate with
+      | .error error => pure (.diagnostic (contextDiagnostic error))
+      | .ok () =>
+          match validateCandidateSequence request.candidates with
+          | .error diagnostic => pure (.diagnostic diagnostic)
+          | .ok () =>
+              match validateCorrelationCells request.model checked.core.group
+                  request.candidates request.cells with
+              | .error diagnostic => pure (.diagnostic diagnostic)
+              | .ok () =>
+                  match checked.firingRows raw with
+                  | .ok rows => pure (.firingRows rows)
+                  | .error error => pure (.diagnostic (contextDiagnostic error))
+
+def evaluate (request : Request) : Except InternalFailure Response := do
+  match request with
+  | .flatValidation flat => evaluateFlat flat
+  | .singleGroupCorrelation correlation => evaluateCorrelation correlation
 
 private def inputBytesDiagnostic : Diagnostic :=
   .make .resourceLimit "$"

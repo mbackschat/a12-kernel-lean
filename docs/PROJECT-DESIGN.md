@@ -89,7 +89,7 @@ The release gate is **research closure**: every observable branch required by th
 
 The adequacy test is a **cold implementation**. A developer or isolated coding agent with no kernel or sibling access receives only the proposed compatibility-kit artifacts and must implement the fragment, pass its fixtures and conformance tools, derive its property/non-law tests, explain its evidence limits, and classify an injected divergence. Needing kernel research, guessing an undocumented branch, or merely translating Lean syntax is a failed handover even if the resulting examples happen to pass.
 
-[`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the exact implementation-capsule contents, research-closure checklist, cold-implementer gate, downstream playbook, and disagreement protocol. A semantic capsule closes the internal theory and evidence obligations above; its implementation capsule is the consumer-facing projection required before release support.
+[`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the exact implementation-capsule contents, research-closure checklist, cold-implementer gate, downstream playbook, and disagreement protocol. A semantic capsule closes the internal theory and evidence obligations above; its implementation capsule is the consumer-facing projection required before release support. [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) is the first concrete development spike under this rule and keeps its remaining evidence and cold-implementation gaps explicit rather than treating runnable tooling as automatic release closure.
 
 ## Planning high-complexity operator families
 

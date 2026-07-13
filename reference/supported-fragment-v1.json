@@ -1,92 +1,415 @@
 {
-  "manifestSchemaVersion": 1,
-  "referenceSemanticsVersion": "0.1.0",
-  "protocolVersion": 1,
-  "kernelBehaviorVersion": "30.8.1",
-  "operation": "flatValidation.evaluateFull",
-  "supportPolicy": "onlyListedCapabilities",
-  "accepted": {
-    "fieldKinds": ["number", "boolean", "confirm"],
-    "conditionForms": ["compare", "fieldFilled", "fieldNotFilled", "and", "or"],
-    "comparisonMatrix": [
-      {"fieldKind": "number", "literalKind": "number", "operators": ["equal", "notEqual"]},
-      {"fieldKind": "boolean", "literalKind": "boolean", "operators": ["equal", "notEqual"]},
-      {"fieldKind": "confirm", "literalKind": "booleanTrue", "operators": ["equal", "notEqual"]}
-    ],
-    "pathForms": ["absolute", "parentRelative", "bare"],
-    "referencedScopes": ["nonrepeatable"],
-    "explicitRawCellForms": ["parsedNumber", "parsedBoolean", "parsedConfirm", "rejected"],
-    "emptyCellEncoding": "sparseOmission",
-    "rejectedCauses": ["malformed", "declaredConstraint", "unsupportedCharacter", "leadingOrTrailingSpace", "customValidation"],
-    "rowGate": "explicitHasContent",
-    "verdicts": ["notFired", "fired.value", "fired.omission", "unknown"]
-  },
-  "recognizedButUnsupportedComparisonOperators": ["less", "lessEqual", "greater", "greaterEqual"],
   "diagnostics": [
-    {"category": "protocol", "code": "unsupportedVersion"},
-    {"category": "protocol", "code": "kernelBehaviorVersionMismatch"},
-    {"category": "protocol", "code": "unsupportedOperation"},
-    {"category": "input", "code": "invalidShape"},
-    {"category": "input", "code": "resourceLimit"},
-    {"category": "input", "code": "invalidDecimal"},
-    {"category": "input", "code": "invalidJsonNumber"},
-    {"category": "input", "code": "duplicateCellId"},
-    {"category": "input", "code": "undeclaredCellId"},
-    {"category": "input", "code": "invalidJson"},
-    {"category": "input", "code": "duplicateMember"},
-    {"category": "unsupported", "code": "pathBase"},
-    {"category": "unsupported", "code": "pathForm"},
-    {"category": "unsupported", "code": "literalKind"},
-    {"category": "unsupported", "code": "conditionForm"},
-    {"category": "unsupported", "code": "operator"},
-    {"category": "unsupported", "code": "fieldKind"},
-    {"category": "unsupported", "code": "cellState"},
-    {"category": "unsupported", "code": "rejectedCause"},
-    {"category": "unsupported", "code": "repeatableReference"},
-    {"category": "unsupported", "code": "repeatableCell"},
-    {"category": "model", "code": "invalidPath"},
-    {"category": "model", "code": "duplicateFieldId"},
-    {"category": "model", "code": "duplicateEntityPath"},
-    {"category": "model", "code": "invalidRepeatableGroupPath"},
-    {"category": "model", "code": "duplicateRepeatableGroupPath"},
-    {"category": "model", "code": "duplicateRepeatableLevel"},
-    {"category": "model", "code": "hierarchyCollision"},
-    {"category": "model", "code": "repeatableScopeMismatch"},
-    {"category": "elaboration", "code": "unknownRepeatableGroup"},
-    {"category": "elaboration", "code": "unknownFieldId"},
-    {"category": "elaboration", "code": "invalidRuleGroup"},
-    {"category": "elaboration", "code": "invalidReference"},
-    {"category": "elaboration", "code": "aboveRoot"},
-    {"category": "elaboration", "code": "unknownField"},
-    {"category": "elaboration", "code": "ambiguousField"},
-    {"category": "elaboration", "code": "shortNameNotUnique"},
-    {"category": "elaboration", "code": "literalKindMismatch"},
-    {"category": "elaboration", "code": "illegalConfirmLiteral"}
+    {
+      "category": "protocol",
+      "code": "unsupportedVersion"
+    },
+    {
+      "category": "protocol",
+      "code": "kernelBehaviorVersionMismatch"
+    },
+    {
+      "category": "protocol",
+      "code": "unsupportedOperation"
+    },
+    {
+      "category": "input",
+      "code": "invalidShape"
+    },
+    {
+      "category": "input",
+      "code": "resourceLimit"
+    },
+    {
+      "category": "input",
+      "code": "invalidDecimal"
+    },
+    {
+      "category": "input",
+      "code": "invalidJsonNumber"
+    },
+    {
+      "category": "input",
+      "code": "duplicateCellId"
+    },
+    {
+      "category": "input",
+      "code": "duplicateCellAddress"
+    },
+    {
+      "category": "input",
+      "code": "cellRowNotCandidate"
+    },
+    {
+      "category": "input",
+      "code": "zeroCandidate"
+    },
+    {
+      "category": "input",
+      "code": "duplicateCandidate"
+    },
+    {
+      "category": "input",
+      "code": "invalidCandidateSequence"
+    },
+    {
+      "category": "input",
+      "code": "cellOutsideGroup"
+    },
+    {
+      "category": "input",
+      "code": "undeclaredCellId"
+    },
+    {
+      "category": "input",
+      "code": "invalidJson"
+    },
+    {
+      "category": "input",
+      "code": "duplicateMember"
+    },
+    {
+      "category": "unsupported",
+      "code": "pathBase"
+    },
+    {
+      "category": "unsupported",
+      "code": "pathForm"
+    },
+    {
+      "category": "unsupported",
+      "code": "literalKind"
+    },
+    {
+      "category": "unsupported",
+      "code": "conditionForm"
+    },
+    {
+      "category": "unsupported",
+      "code": "havingForm"
+    },
+    {
+      "category": "unsupported",
+      "code": "havingOrigin"
+    },
+    {
+      "category": "unsupported",
+      "code": "uncorrelatedHaving"
+    },
+    {
+      "category": "unsupported",
+      "code": "operator"
+    },
+    {
+      "category": "unsupported",
+      "code": "fieldKind"
+    },
+    {
+      "category": "unsupported",
+      "code": "cellState"
+    },
+    {
+      "category": "unsupported",
+      "code": "rejectedCause"
+    },
+    {
+      "category": "unsupported",
+      "code": "repeatableReference"
+    },
+    {
+      "category": "unsupported",
+      "code": "repeatableCell"
+    },
+    {
+      "category": "model",
+      "code": "invalidPath"
+    },
+    {
+      "category": "model",
+      "code": "duplicateFieldId"
+    },
+    {
+      "category": "model",
+      "code": "duplicateEntityPath"
+    },
+    {
+      "category": "model",
+      "code": "invalidRepeatableGroupPath"
+    },
+    {
+      "category": "model",
+      "code": "duplicateRepeatableGroupPath"
+    },
+    {
+      "category": "model",
+      "code": "duplicateRepeatableLevel"
+    },
+    {
+      "category": "model",
+      "code": "hierarchyCollision"
+    },
+    {
+      "category": "model",
+      "code": "repeatableScopeMismatch"
+    },
+    {
+      "category": "elaboration",
+      "code": "unknownRepeatableGroup"
+    },
+    {
+      "category": "elaboration",
+      "code": "unknownFieldId"
+    },
+    {
+      "category": "elaboration",
+      "code": "invalidRuleGroup"
+    },
+    {
+      "category": "elaboration",
+      "code": "invalidReference"
+    },
+    {
+      "category": "elaboration",
+      "code": "aboveRoot"
+    },
+    {
+      "category": "elaboration",
+      "code": "unknownField"
+    },
+    {
+      "category": "elaboration",
+      "code": "ambiguousField"
+    },
+    {
+      "category": "elaboration",
+      "code": "shortNameNotUnique"
+    },
+    {
+      "category": "elaboration",
+      "code": "literalKindMismatch"
+    },
+    {
+      "category": "elaboration",
+      "code": "illegalConfirmLiteral"
+    },
+    {
+      "category": "elaboration",
+      "code": "invalidGroupReference"
+    },
+    {
+      "category": "elaboration",
+      "code": "fieldKindMismatch"
+    },
+    {
+      "category": "elaboration",
+      "code": "fieldOutsideGroup"
+    },
+    {
+      "category": "elaboration",
+      "code": "fieldScopeMismatch"
+    },
+    {
+      "category": "elaboration",
+      "code": "repetitionGroupMismatch"
+    },
+    {
+      "category": "elaboration",
+      "code": "equalityScaleMismatch"
+    },
+    {
+      "category": "elaboration",
+      "code": "missingInner"
+    },
+    {
+      "category": "elaboration",
+      "code": "errorGuardMismatch"
+    }
   ],
-  "limits": {
-    "inputBytes": 1048576,
-    "jsonNesting": 128,
-    "jsonNumberCharacters": 16,
-    "naturalNumberMaximum": 9007199254740991,
-    "fields": 1024,
-    "cells": 1024,
-    "repeatableGroups": 128,
-    "conditionDepth": 64,
-    "conditionNodes": 4096,
-    "pathSegments": 64,
-    "repeatableScopeLevels": 64,
-    "segmentBytes": 256,
-    "decimalCharacters": 256
-  },
+  "kernelBehaviorVersion": "30.8.1",
   "knownExclusions": [
     "concreteDsl",
     "generalDmJson",
     "stringDateTimeEnumeration",
-    "orderingArithmetic",
-    "repeatableEvaluation",
-    "correlation",
+    "generalOrderingAndArithmetic",
+    "generalRepeatableEvaluation",
+    "nestedOrMultipleStars",
+    "crossGroupCorrelation",
+    "generalCorrelationConsumers",
+    "filteredResultPolarity",
     "computation",
     "partialValidation",
     "messageConstruction"
-  ]
+  ],
+  "limits": {
+    "candidates": 1024,
+    "cells": 1024,
+    "conditionDepth": 64,
+    "conditionNodes": 4096,
+    "decimalCharacters": 256,
+    "fields": 1024,
+    "inputBytes": 1048576,
+    "jsonNesting": 128,
+    "jsonNumberCharacters": 16,
+    "naturalNumberMaximum": 9007199254740991,
+    "pathSegments": 64,
+    "repeatableGroups": 128,
+    "repeatableScopeLevels": 64,
+    "segmentBytes": 256
+  },
+  "manifestSchemaVersion": 2,
+  "operations": [
+    {
+      "accepted": {
+        "comparisonMatrix": [
+          {
+            "fieldKind": "number",
+            "literalKind": "number",
+            "operators": [
+              "equal",
+              "notEqual"
+            ]
+          },
+          {
+            "fieldKind": "boolean",
+            "literalKind": "boolean",
+            "operators": [
+              "equal",
+              "notEqual"
+            ]
+          },
+          {
+            "fieldKind": "confirm",
+            "literalKind": "booleanTrue",
+            "operators": [
+              "equal",
+              "notEqual"
+            ]
+          }
+        ],
+        "conditionForms": [
+          "compare",
+          "fieldFilled",
+          "fieldNotFilled",
+          "and",
+          "or"
+        ],
+        "emptyCellEncoding": "sparseOmission",
+        "explicitRawCellForms": [
+          "parsedNumber",
+          "parsedBoolean",
+          "parsedConfirm",
+          "rejected"
+        ],
+        "fieldKinds": [
+          "number",
+          "boolean",
+          "confirm"
+        ],
+        "pathForms": [
+          "absolute",
+          "parentRelative",
+          "bare"
+        ],
+        "referencedScopes": [
+          "nonrepeatable"
+        ],
+        "rejectedCauses": [
+          "malformed",
+          "declaredConstraint",
+          "unsupportedCharacter",
+          "leadingOrTrailingSpace",
+          "customValidation"
+        ],
+        "rowGate": "explicitHasContent",
+        "verdicts": [
+          "notFired",
+          "fired.value",
+          "fired.omission",
+          "unknown"
+        ]
+      },
+      "operation": "flatValidation.evaluateFull",
+      "recognizedButUnsupportedComparisonOperators": [
+        "less",
+        "lessEqual",
+        "greater",
+        "greaterEqual"
+      ]
+    },
+    {
+      "accepted": {
+        "candidateEncoding": "nonEmptyContiguousOneBasedRowIds",
+        "childRelativeGroupSegments": 1,
+        "comparisonOperators": [
+          "equal",
+          "notEqual",
+          "less"
+        ],
+        "comparisonScalePolicy": {
+          "equal": "declaredScalesEqual",
+          "less": "declaredScalesMayDiffer",
+          "notEqual": "declaredScalesEqual"
+        },
+        "consumer": "selectedNumberPresence",
+        "directChildRelativeStarPrefixSegments": 0,
+        "emptyCellEncoding": "sparseRowFieldOmission",
+        "explicitRawCellForms": [
+          "parsedNumber",
+          "rejected.malformed"
+        ],
+        "externalEvidenceBoundary": {
+          "candidateRows": "retainedCasesUseContiguousOneBasedRows",
+          "claimScope": "finiteRetainedCasesOnly",
+          "generalAcceptedInputs": "leanAccountExternalEvidencePending",
+          "observable": "firingRowsOnly",
+          "retainedRuntimeCaseCount": 12,
+          "retainedStaticCaseCount": 4,
+          "runtimeNumberCells": "retainedCasesUseNonNegativeIntegers",
+          "suiteId": "single-group-correlation-v1"
+        },
+        "fieldAndGroupPathForms": [
+          "absolute",
+          "childRelative"
+        ],
+        "fieldKinds": [
+          "number"
+        ],
+        "havingForms": [
+          "compareNumbers",
+          "compareRepetitions",
+          "and"
+        ],
+        "modelMayDeclareSiblingRepeatableGroups": true,
+        "numberTransport": "canonicalExactDecimal",
+        "origins": [
+          "inner",
+          "outer"
+        ],
+        "outerGuard": "numberFieldFilled",
+        "result": "orderedFiringRows",
+        "selectedFieldPlacement": "directChildOfSelectedGroup",
+        "selectedGroupCount": 1,
+        "starCount": 1,
+        "starParentNavigation": "rejected",
+        "starPathForms": [
+          "absolute",
+          "directChildRelative"
+        ],
+        "wholeRuleInvariants": [
+          "havingContainsInnerAndOuter",
+          "errorFieldEqualsGuardField",
+          "allRuleFieldsUseSelectedGroupAndSingletonScope"
+        ]
+      },
+      "operation": "singleGroupCorrelation.firingRows",
+      "recognizedButUnsupportedComparisonOperators": [
+        "lessEqual",
+        "greater",
+        "greaterEqual"
+      ]
+    }
+  ],
+  "protocolVersion": 1,
+  "referenceSemanticsVersion": "0.2.0",
+  "supportPolicy": "onlyListedCapabilities"
 }
