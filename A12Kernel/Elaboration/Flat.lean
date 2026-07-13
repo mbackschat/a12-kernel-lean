@@ -20,7 +20,8 @@ inductive PathBase where
 
 /-- A field path after concrete syntax has decoded quoting and path separators. For a
     relative path, `parents = 0`, `groups = []` is the bare-name form and therefore uses
-    the documented local → ancestor → model-wide lookup order. -/
+    the documented declaring-group → flag-gated model-wide lookup order. There is no
+    implicit ancestor walk; parent lookup requires an explicit `parents > 0`. -/
 structure SurfaceFieldPath where
   base : PathBase
   groups : List String
