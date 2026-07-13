@@ -5,7 +5,9 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 ## Document roles
 
 - [`../spec/`](../spec/) is read-only language-neutral semantic input. It plays the same consulted-upstream role for this repository that a12-kernel's merged BA/dev documentation plays for a12-dmkits; it is not a work log, findings ledger, implementation map, or roadmap.
-- [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the project argument, goals, evidence doctrine, success gates, roadmap, and outlook.
+- [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the stable project argument, goals, evidence doctrine, success gates, durable milestones, and long-term outlook.
+- [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) owns the proposed releasable product boundary, public claims and nonclaims, integration shape, release gates, staged product progression, and user-facing documentation strategy until that proposal is explicitly adopted or replaced.
+- [`PLAN.md`](PLAN.md) owns the resumable current checkpoint, preserved observations, immediate continuation order, and session-resume procedure. It is operational state, not a second roadmap.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) owns the current Lean structure, representations, dependency boundaries, and adopted/rejected encoding decisions. It describes what exists, not a feature-status board.
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
 - [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable, numbered findings about this project's formalization treatment and research conclusions. A finding is settled knowledge and rationale, not an open task.
@@ -21,7 +23,7 @@ Record a non-obvious formalization or research conclusion in [`LEAN-FINDINGS.md`
 
 Kernel-behavior discoveries are not invented or canonized here. They remain grounded in the read-only `spec/`, kernel documentation/source, and a12-dmkits' findings and real-kernel differentials. `LEAN-FINDINGS.md` records what this project learned from those sources and how the Lean theory should represent or bound it.
 
-Open work does not belong in the findings ledger. Until a separate gaps ledger is justified by volume, current open obligations and `external evidence pending` states live in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), while sequencing and re-open criteria live in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
+Open work does not belong in the findings ledger. Until a separate gaps ledger is justified by volume, current open obligations and `external evidence pending` states live in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), immediate sequencing lives in [`PLAN.md`](PLAN.md), durable milestone and reevaluation criteria live in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md), and proposed release progression lives in [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md).
 
 ## Same-change update triggers
 
@@ -30,7 +32,9 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).
 - A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
-- A changed goal, evidence rule, milestone, or next-capsule decision updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
+- A changed stable goal, evidence rule, durable milestone, success criterion, or long-term project potential updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
+- A changed proposed release artifact, public claim, integration boundary, release gate, product stage, or user-facing product-documentation strategy updates [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md).
+- A changed current checkpoint, preserved observation, immediate step order, or resume instruction updates [`PLAN.md`](PLAN.md).
 - A changed theorem/trust discipline or external-study conclusion updates [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).
 - A new, renamed, or removed document updates [`README.md`](README.md) in the same change.
 - A user-visible status change updates the top-level [`../README.md`](../README.md) without turning it into a detailed status table.

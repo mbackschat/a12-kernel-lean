@@ -1,0 +1,28 @@
+{
+  "meta" : {
+    "id" : "correlation-elaboration-missing-inner-rejected",
+    "kernelVersion" : "30.8.1",
+    "source" : "curated",
+    "capture" : "KernelAdapter.diagnose",
+    "sections" : [ "§9", "§10" ],
+    "notes" : "all-outer Having omits the required inner iteration for the starred field"
+  },
+  "modelRef" : "models/lean-correlation-elaboration-order.json",
+  "draft" : {
+    "group" : "/Order",
+    "name" : "LeanCorrelationElaborationProbe",
+    "errorField" : "../Items/Count",
+    "condition" : "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/UnitWeight Having [$Items/StockQty] == [$Items/StockQty])",
+    "errorCode" : "LEAN_CORRELATION_ELABORATION",
+    "severity" : "ERROR"
+  },
+  "diagnostics" : [ {
+    "severity" : "ERROR",
+    "source" : "KERNEL",
+    "code" : "MVK_NO_ITERATION_FOR_WILDCARD",
+    "summary" : "In filter conditions, iteration must be specified for at least one level, that specified asterisk for the filtered field. [MVK_NO_ITERATION_FOR_WILDCARD]",
+    "where" : {
+      "rule" : "/Order/LeanCorrelationElaborationProbe"
+    }
+  } ]
+}

@@ -22,9 +22,12 @@ structure SingleGroupValidationContext where
   candidates : List RowIndex
   read : RowIndex → FieldId → CheckedCell
 
-def RowIndex.hasDuplicates : List RowIndex → Bool
-  | [] => false
-  | row :: rest => rest.contains row || RowIndex.hasDuplicates rest
+def RowIndex.firstDuplicate? : List RowIndex → Option RowIndex
+  | [] => none
+  | row :: rest => if rest.contains row then some row else RowIndex.firstDuplicate? rest
+
+def RowIndex.hasDuplicates (rows : List RowIndex) : Bool :=
+  (RowIndex.firstDuplicate? rows).isSome
 
 /-- Kernel-correspondence boundary for the explicit row list. Repetition indices are
     1-based and each instantiated row occurs once; the list itself carries document

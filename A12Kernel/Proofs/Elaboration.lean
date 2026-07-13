@@ -2,26 +2,18 @@ import A12Kernel.Elaboration.Flat
 
 /-! # A12Kernel.Proofs.Elaboration — checked flat-elaboration invariants
 
-These theorems expose the guarantee carried by successful elaboration and connect the
-resolved model declaration to the policy used to check runtime cells. The latter closes
-the previously admitted boundary between typed core references and caller-supplied
-checked cells.
+These theorems eliminate certificates carried by checked values and connect the resolved model declaration to the policy used to check runtime cells. The latter closes the previously admitted boundary between typed core references and caller-supplied checked cells.
 -/
 
 namespace A12Kernel
 
-/-- Public elimination theorem for the checked elaboration boundary. -/
-theorem elaborate_success_wellFormed (model : FlatModel) (declaringGroup : GroupPath)
-    (condition : SurfaceCondition) (checked : CheckedFlatCondition model)
-    (_success : elaborate model declaringGroup condition = .ok checked) :
+/-- Eliminate the core static-legality certificate carried by a checked flat condition. -/
+theorem checkedFlatCondition_wellFormed (checked : CheckedFlatCondition model) :
     checked.core.WellFormed model :=
   checked.wellFormed
 
-/-- Successful elaboration also certifies the model checks that make name and identifier
-    resolution unambiguous. -/
-theorem elaborate_success_modelWellFormed (model : FlatModel) (declaringGroup : GroupPath)
-    (condition : SurfaceCondition) (checked : CheckedFlatCondition model)
-    (_success : elaborate model declaringGroup condition = .ok checked) :
+/-- Eliminate the model-validity certificate carried by a checked flat condition. -/
+theorem checkedFlatCondition_modelWellFormed (checked : CheckedFlatCondition model) :
     model.validate.isOk = true :=
   checked.modelWellFormed
 

@@ -1,6 +1,6 @@
 import A12Kernel.Basic
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Evidence.CorrelationSchema
-import A12Kernel.Semantics.Correlation
 
 /-! # A12Kernel.Evidence.CorrelationReplay — pure captured-outer replay -/
 
@@ -18,9 +18,6 @@ private def hasDuplicate [BEq α] (values : List α) : Bool :=
   | [] => false
   | value :: rest => rest.contains value || hasDuplicate rest
 
-private def NumberFieldSpec.toField (field : NumberFieldSpec) : FlatNumberField :=
-  { id := field.id, info := { scale := field.scale, signed := field.signed } }
-
 private def NumberCellStateSpec.toRaw : NumberCellStateSpec → RawCell
   | .empty => .empty
   | .number value => .parsed (.num value)
@@ -30,10 +27,10 @@ private def OriginSpec.toOrigin : OriginSpec → HavingOrigin
   | .inner => .inner
   | .outer => .outer
 
-private def ComparisonOpSpec.toOp : ComparisonOpSpec → CorrelationComparisonOp
+private def ComparisonOpSpec.toSurfaceOp : ComparisonOpSpec → SurfaceComparisonOp
   | .equal => .equal
   | .notEqual => .notEqual
-  | .lessThan => .lessThan
+  | .lessThan => .less
 
 private def ComparisonOpSpec.token : ComparisonOpSpec → String
   | .equal => "=="
@@ -78,25 +75,57 @@ private def directChildOf (groupPath fieldPath : String) : Bool :=
   else
     false
 
-private def CaseSpec.checkedCell (case : CaseSpec) (rowId : RowIndex)
-    (field : NumberFieldSpec) : CheckedCell :=
-  let raw := (findCell case.cells rowId field.id).map (·.state.toRaw) |>.getD .empty
-  formalCheck { kind := .number { scale := field.scale, signed := field.signed } } raw
-
-private def CaseSpec.context (case : CaseSpec) : SingleGroupValidationContext where
-  group := case.groupId
+private def CaseSpec.rawContext (case : CaseSpec) : RawSingleGroupContext where
   candidates := case.rowIds
   read rowId fieldId :=
-    match findField case.fields fieldId with
-    | some field => case.checkedCell rowId field
-    | none => formalCheck { kind := .number { scale := 0, signed := false } } .empty
+    (findCell case.cells rowId fieldId).map (·.state.toRaw) |>.getD .empty
 
-private def NumberRefSpec.toRef (fields : List NumberFieldSpec)
-    (reference : NumberRefSpec) : Except String HavingNumberRef := do
+private def pathSegments (path : String) : List String :=
+  (path.splitOn "/").filter (!·.isEmpty)
+
+private def pathBase (path : String) : PathBase :=
+  if path.startsWith "/" then .absolute else .relative 0
+
+private def surfaceFieldPath (path : String) : SurfaceFieldPath :=
+  let segments := pathSegments path
+  { base := pathBase path, groups := segments.dropLast,
+    field := segments.getLast?.getD "" }
+
+private def surfaceGroupPath (path : String) : SurfaceGroupPath :=
+  { base := pathBase path, groups := pathSegments path }
+
+private def surfaceStarPath (groupPath : String) (field : String) :
+    SurfaceSingleStarFieldPath :=
+  let segments := pathSegments groupPath
+  { base := pathBase groupPath, groupsBeforeStar := segments.dropLast,
+    starredGroup := segments.getLast?.getD "", field }
+
+private def NumberFieldSpec.toDeclaration (groupPath : GroupPath)
+    (groupId : RepeatableLevel) (field : NumberFieldSpec) : FlatFieldDecl :=
+  { id := field.id, groupPath, name := (pathSegments field.path).getLast?.getD "",
+    policy := { kind := .number { scale := field.scale, signed := field.signed } },
+    repeatableScope := [groupId] }
+
+private def CaseSpec.model (case : CaseSpec) : FlatModel :=
+  let groupPath := pathSegments case.groupPath
+  { fields := case.fields.map (·.toDeclaration groupPath case.groupId)
+    repeatableGroups := [{ level := case.groupId, path := groupPath }] }
+
+private def CaseSpec.declaringGroup (case : CaseSpec) : GroupPath :=
+  (pathSegments case.groupPath).dropLast
+
+private def NumberRefSpec.toSurfaceRef (fields : List NumberFieldSpec)
+    (reference : NumberRefSpec) : Except String SurfaceHavingNumberRef := do
   let field ← match findField fields reference.fieldId with
     | some field => pure field
     | none => throw s!"correlation filter references undeclared field {reference.fieldId}"
-  pure { origin := reference.origin.toOrigin, field := field.toField }
+  let origin := reference.origin.toOrigin
+  let surfaceField := surfaceFieldPath field.conditionPath
+  pure { origin, field := surfaceField }
+
+private def surfaceRepetitionRef (origin : OriginSpec) (groupPath : String) :
+    SurfaceHavingRepetitionRef :=
+  { origin := origin.toOrigin, group := surfaceGroupPath groupPath }
 
 private def NumberRefSpec.render (fields : List NumberFieldSpec)
     (reference : NumberRefSpec) : Except String String := do
@@ -111,14 +140,18 @@ private def OriginSpec.renderRepetition (groupPath : String) : OriginSpec → St
   | .inner => s!"CurrentRepetition({groupPath})"
   | .outer => s!"CurrentRepetition(${groupPath})"
 
-private def FilterSpec.toHaving (fields : List NumberFieldSpec) :
-    FilterSpec → Except String CorrelatedHaving
+private def FilterSpec.toSurfaceHaving (fields : List NumberFieldSpec)
+    (groupPath : String) : FilterSpec → Except String SurfaceCorrelatedHaving
   | .compareNumbers op left right => do
-      pure (.compareNumbers op.toOp (← left.toRef fields) (← right.toRef fields))
+      pure (.compareNumbers op.toSurfaceOp
+        (← left.toSurfaceRef fields) (← right.toSurfaceRef fields))
   | .compareRepetitions op left right =>
-      pure (.compareRepetitions op.toOp left.toOrigin right.toOrigin)
+      pure (.compareRepetitions op.toSurfaceOp
+        (surfaceRepetitionRef left groupPath)
+        (surfaceRepetitionRef right groupPath))
   | .and left right => do
-      pure (.and (← left.toHaving fields) (← right.toHaving fields))
+      pure (.and (← left.toSurfaceHaving fields groupPath)
+        (← right.toSurfaceHaving fields groupPath))
 
 private def FilterSpec.render (fields : List NumberFieldSpec) (groupPath : String) :
     FilterSpec → Except String String
@@ -129,13 +162,20 @@ private def FilterSpec.render (fields : List NumberFieldSpec) (groupPath : Strin
   | .and left right => do
       pure s!"{← left.render fields groupPath} And {← right.render fields groupPath}"
 
-private def CaseSpec.checkedHaving (case : CaseSpec) :
-    Except String OriginCheckedCorrelatedHaving := do
-  let condition ← case.filter.toHaving case.fields
-  match condition.check with
-  | .ok checked => pure checked
-  | .error .missingInner => throw "correlation filter has no inner reference"
-  | .error .missingOuter => throw "correlation filter has no outer reference"
+private def CaseSpec.surfaceRule (case : CaseSpec) :
+    Except String SurfaceSingleCorrelatedRule := do
+  let valueField ← match findField case.fields case.valueFieldId with
+    | some field => pure field
+    | none => throw s!"{case.id}: valueFieldId {case.valueFieldId} is undeclared"
+  let guardField ← match findField case.fields case.guardFieldId with
+    | some field => pure field
+    | none => throw s!"{case.id}: guardFieldId {case.guardFieldId} is undeclared"
+  pure {
+    errorField := surfaceFieldPath guardField.conditionPath
+    guardField := surfaceFieldPath guardField.conditionPath
+    valueField := surfaceStarPath case.conditionGroupPath
+      ((pathSegments valueField.conditionPath).getLast?.getD "")
+    having := ← case.filter.toSurfaceHaving case.fields case.conditionGroupPath }
 
 private def CaseSpec.validateTransport (case : CaseSpec) : Except String Unit := do
   if case.id.isEmpty then throw "correlation evidence case id must not be empty"
@@ -179,7 +219,10 @@ private def CaseSpec.validateTransport (case : CaseSpec) : Except String Unit :=
       throw s!"{case.id}: cell references non-candidate row {cell.rowId}"
     if !(case.fields.any (·.id == cell.fieldId)) then
       throw s!"{case.id}: cell references undeclared field {cell.fieldId}"
-  discard case.checkedHaving
+  let surfaceRule ← case.surfaceRule
+  match elaborateSingleCorrelatedRule case.model case.declaringGroup surfaceRule with
+  | .ok _ => pure ()
+  | .error error => throw s!"{case.id}: correlation elaboration rejected the projection: {repr error}"
 
 /-- Canonical stored-English rendering for the one admitted external rule shape. This
     is intentionally not a general condition parser or renderer. -/
@@ -199,15 +242,14 @@ def CaseSpec.renderCondition (case : CaseSpec) : Except String String := do
     pointers. Message polarity remains an observation retained by the IO driver. -/
 def CaseSpec.replay (case : CaseSpec) : Except String (List Firing) := do
   case.validateTransport
-  let valueField ← match findField case.fields case.valueFieldId with
-    | some field => pure field
-    | none => throw s!"{case.id}: valueFieldId {case.valueFieldId} is undeclared"
-  let star : SingleCorrelatedStar :=
-    { valueField := valueField.toField, having := ← case.checkedHaving }
-  let guardField ← match findField case.fields case.guardFieldId with
-    | some field => pure field
-    | none => throw s!"{case.id}: guardFieldId {case.guardFieldId} is undeclared"
-  let firingRows := star.firingRowsOn guardField.toField case.context
+  let surfaceRule ← case.surfaceRule
+  let checked ← match elaborateSingleCorrelatedRule case.model case.declaringGroup surfaceRule with
+    | .ok checked => pure checked
+    | .error error =>
+        throw s!"{case.id}: correlation elaboration rejected the projection: {repr error}"
+  let firingRows ← match checked.firingRows case.rawContext with
+    | .ok rows => pure rows
+    | .error error => throw s!"{case.id}: invalid candidate topology: {repr error}"
   firingRows.mapM fun rowId =>
     match findOuterRow case.outerRows rowId with
     | some row => pure { rowId, pointer := row.pointer }

@@ -91,8 +91,15 @@ def toFlatField (declaration : FlatFieldDecl) : FlatField :=
 
 end FlatFieldDecl
 
+/-- One repeatable model level with the exact group path on which `*` may be written. A field's `repeatableScope` alone cannot identify that path segment. -/
+structure RepeatableGroupDecl where
+  level : RepeatableLevel
+  path : GroupPath
+  deriving Repr, DecidableEq
+
 structure FlatModel where
   fields : List FlatFieldDecl
+  repeatableGroups : List RepeatableGroupDecl := []
   fieldRefByShortNameAllowed : Bool := false
   deriving Repr, DecidableEq
 
@@ -100,6 +107,13 @@ inductive ResolveError where
   | invalidModelPath (path : List String)
   | duplicateFieldId (id : FieldId)
   | duplicateEntityPath (path : List String)
+  | invalidRepeatableGroupPath (path : GroupPath)
+  | duplicateRepeatableGroupPath (path : GroupPath)
+  | duplicateRepeatableLevel (level : RepeatableLevel)
+  | entityHierarchyCollision (fieldPath groupPath : GroupPath)
+  | repeatableScopeMismatch (path : List String)
+      (expected actual : List RepeatableLevel)
+  | unknownRepeatableGroup (path : GroupPath)
   | unknownFieldId (id : FieldId)
   | invalidRuleGroup (path : GroupPath)
   | invalidReference (reference : SurfaceFieldPath)
@@ -120,11 +134,17 @@ inductive ElabError where
 
 private def validName (name : String) : Bool := !name.isEmpty
 
-private def validGroupPath (path : GroupPath) : Bool :=
+def GroupPath.isValid (path : GroupPath) : Bool :=
   !path.isEmpty && path.all validName
 
+def GroupPath.isPrefixOf : GroupPath → GroupPath → Bool
+  | [], _ => true
+  | _, [] => false
+  | prefixHead :: prefixRest, segment :: pathRest =>
+      prefixHead == segment && GroupPath.isPrefixOf prefixRest pathRest
+
 private def FlatFieldDecl.hasValidPath (declaration : FlatFieldDecl) : Bool :=
-  validGroupPath declaration.groupPath && validName declaration.name
+  GroupPath.isValid declaration.groupPath && validName declaration.name
 
 private def invalidDeclPath? : List FlatFieldDecl → Option (List String)
   | [] => none
@@ -147,6 +167,60 @@ private def duplicatePath? : List FlatFieldDecl → Option (List String)
       else
         duplicatePath? rest
 
+private def invalidRepeatableGroupPath? : List RepeatableGroupDecl → Option GroupPath
+  | [] => none
+  | group :: rest =>
+      if GroupPath.isValid group.path then invalidRepeatableGroupPath? rest else some group.path
+
+private def duplicateRepeatableGroupPath? : List RepeatableGroupDecl → Option GroupPath
+  | [] => none
+  | group :: rest =>
+      if rest.any (fun candidate => candidate.path == group.path) then
+        some group.path
+      else
+        duplicateRepeatableGroupPath? rest
+
+private def duplicateRepeatableLevel? : List RepeatableGroupDecl → Option RepeatableLevel
+  | [] => none
+  | group :: rest =>
+      if rest.any (fun candidate => candidate.level == group.level) then
+        some group.level
+      else
+        duplicateRepeatableLevel? rest
+
+private def prefixedGroupPath? (fieldPath : GroupPath) :
+    List GroupPath → Option GroupPath
+  | [] => none
+  | groupPath :: rest =>
+      if fieldPath.isPrefixOf groupPath then some groupPath
+      else prefixedGroupPath? fieldPath rest
+
+private def entityHierarchyCollision? (groupPaths : List GroupPath) :
+    List FlatFieldDecl → Option (GroupPath × GroupPath)
+  | [] => none
+  | declaration :: rest =>
+      match prefixedGroupPath? declaration.path groupPaths with
+      | some groupPath => some (declaration.path, groupPath)
+      | none => entityHierarchyCollision? groupPaths rest
+
+/-- Derive the canonical outer-to-inner repeatable ancestry from declared group paths. -/
+def FlatModel.repeatableScopeForGroupPath (model : FlatModel) (groupPath : GroupPath) :
+    List RepeatableLevel :=
+  (List.range groupPath.length).filterMap fun offset =>
+    (model.repeatableGroups.find? fun group =>
+      group.path == groupPath.take (offset + 1)).map (·.level)
+
+private def repeatableScopeMismatch? (model : FlatModel) :
+    List FlatFieldDecl →
+      Option (List String × List RepeatableLevel × List RepeatableLevel)
+  | [] => none
+  | declaration :: rest =>
+      let expected := model.repeatableScopeForGroupPath declaration.groupPath
+      if declaration.repeatableScope == expected then
+        repeatableScopeMismatch? model rest
+      else
+        some (declaration.path, expected, declaration.repeatableScope)
+
 def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   match invalidDeclPath? model.fields with
   | some path => throw (.invalidModelPath path)
@@ -157,6 +231,24 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   match duplicatePath? model.fields with
   | some path => throw (.duplicateEntityPath path)
   | none => pure ()
+  match invalidRepeatableGroupPath? model.repeatableGroups with
+  | some path => throw (.invalidRepeatableGroupPath path)
+  | none => pure ()
+  match duplicateRepeatableGroupPath? model.repeatableGroups with
+  | some path => throw (.duplicateRepeatableGroupPath path)
+  | none => pure ()
+  match duplicateRepeatableLevel? model.repeatableGroups with
+  | some level => throw (.duplicateRepeatableLevel level)
+  | none => pure ()
+  let groupPaths := model.fields.map (·.groupPath) ++ model.repeatableGroups.map (·.path)
+  match entityHierarchyCollision? groupPaths model.fields with
+  | some (fieldPath, groupPath) =>
+      throw (.entityHierarchyCollision fieldPath groupPath)
+  | none => pure ()
+  match repeatableScopeMismatch? model model.fields with
+  | some (path, expected, actual) =>
+      throw (.repeatableScopeMismatch path expected actual)
+  | none => pure ()
 
 /-- Unique lookup is intentionally order-independent: ambiguity is an error, never a
     first-match choice. -/
@@ -166,6 +258,14 @@ def FlatModel.lookupUniqueId (model : FlatModel) (id : FieldId) :
   | [] => .error (.unknownFieldId id)
   | [declaration] => .ok declaration
   | _ => .error (.duplicateFieldId id)
+
+/-- Look up the declaration proving that an exact written group path is repeatable. -/
+def FlatModel.lookupUniqueRepeatablePath (model : FlatModel) (path : GroupPath) :
+    Except ResolveError RepeatableGroupDecl :=
+  match model.repeatableGroups.filter (fun group => group.path == path) with
+  | [] => .error (.unknownRepeatableGroup path)
+  | [group] => .ok group
+  | _ => .error (.duplicateRepeatableGroupPath path)
 
 private def FlatModel.lookupPath? (model : FlatModel) (path : List String) :
     Except ResolveError (Option FlatFieldDecl) :=
@@ -180,7 +280,7 @@ private def SurfaceFieldPath.hasValidShape (reference : SurfaceFieldPath) : Bool
     | .absolute => !reference.groups.isEmpty
     | .relative _ => true
 
-private def walkUp (group : GroupPath) (parents : Nat) : Except ResolveError GroupPath :=
+def GroupPath.walkUp (group : GroupPath) (parents : Nat) : Except ResolveError GroupPath :=
   if parents < group.length then
     .ok (group.take (group.length - parents))
   else
@@ -196,43 +296,55 @@ private def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
 /-- Resolve a bare single-segment reference exactly as the kernel parser does: try the
     declaring group, then (when enabled) require one model-wide short-name match. There
     is deliberately no implicit ancestor walk; parent lookup requires `..`. -/
-private def FlatModel.resolveBare (model : FlatModel) (declaringGroup : GroupPath)
+private def FlatModel.resolveBareDeclaration (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
   match ← model.lookupPath? (declaringGroup ++ [reference.field]) with
-  | some declaration => declaration.requireNonrepeatable
+  | some declaration => pure declaration
   | none =>
       if model.fieldRefByShortNameAllowed then
         match model.fields.filter (fun declaration => declaration.name == reference.field) with
         | [] => throw (.invalidEntity reference)
-        | [declaration] => declaration.requireNonrepeatable
+        | [declaration] => pure declaration
         | _ => throw (.shortNameNotUnique reference.field)
       else
         throw (.invalidEntity reference)
 
-private def FlatModel.resolveFieldUnchecked (model : FlatModel)
+/-- Shared path mechanism for both non-repeatable and repeatable elaborators. This resolves one declaration without deciding whether its repeatable scope is legal for the caller. -/
+def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
-  if !validGroupPath declaringGroup then throw (.invalidRuleGroup declaringGroup)
+  if !GroupPath.isValid declaringGroup then throw (.invalidRuleGroup declaringGroup)
   if !reference.hasValidShape then throw (.invalidReference reference)
   match reference.base with
   | .absolute =>
       match ← model.lookupPath? (reference.groups ++ [reference.field]) with
-      | some declaration => declaration.requireNonrepeatable
+      | some declaration => pure declaration
       | none => throw (.invalidEntity reference)
   | .relative parents =>
       if parents == 0 && reference.groups.isEmpty then
-        model.resolveBare declaringGroup reference
+        model.resolveBareDeclaration declaringGroup reference
       else
-        let base ← walkUp declaringGroup parents
+        let base ← GroupPath.walkUp declaringGroup parents
         match ← model.lookupPath? (base ++ reference.groups ++ [reference.field]) with
-        | some declaration => declaration.requireNonrepeatable
+        | some declaration => pure declaration
         | none => throw (.invalidEntity reference)
+
+private def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
+    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except ResolveError FlatFieldDecl := do
+  (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatable
+
+/-- Resolve one structured field path against a validated expanded model while preserving its repeatable scope for a later elaborator. -/
+def FlatModel.resolveFieldDeclaration (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
+  model.validate
+  model.resolveFieldDeclarationUnchecked declaringGroup reference
 
 /-- Resolve one structured field path against a validated expanded model. -/
 def FlatModel.resolveField (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
   model.validate
-  model.resolveFieldUnchecked declaringGroup reference
+  model.resolveNonrepeatableFieldUnchecked declaringGroup reference
 
 private def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .number _ => .number
@@ -277,16 +389,16 @@ structure CheckedFlatCondition (model : FlatModel) where
 private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
-      let declaration ← (model.resolveFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       pure (.fieldFilled declaration.toFlatField)
   | .fieldNotFilled reference => do
-      let declaration ← (model.resolveFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       pure (.fieldNotFilled declaration.toFlatField)
   | .compare op reference literal => do
       let equality ← match op.toEquality? with
         | some equality => pure equality
         | none => throw (.unsupportedOperator op)
-      let declaration ← (model.resolveFieldUnchecked declaringGroup reference).mapError .resolve
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.policy.kind, literal with
       | .number info, .number expected =>
           pure (.compare (.number equality { id := declaration.id, info } expected))

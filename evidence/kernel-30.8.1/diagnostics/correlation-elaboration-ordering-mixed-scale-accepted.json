@@ -1,0 +1,20 @@
+{
+  "meta" : {
+    "id" : "correlation-elaboration-ordering-mixed-scale-accepted",
+    "kernelVersion" : "30.8.1",
+    "source" : "curated",
+    "capture" : "KernelAdapter.diagnose",
+    "sections" : [ "§5", "§9", "§10" ],
+    "notes" : "numeric ordering admits the same scale 0 versus scale 2 operands"
+  },
+  "modelRef" : "models/lean-correlation-elaboration-order.json",
+  "draft" : {
+    "group" : "/Order",
+    "name" : "LeanCorrelationElaborationProbe",
+    "errorField" : "../Items/Count",
+    "condition" : "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/UnitWeight Having [Items/StockQty] < [$Items/UnitWeight])",
+    "errorCode" : "LEAN_CORRELATION_ELABORATION",
+    "severity" : "ERROR"
+  },
+  "diagnostics" : [ ]
+}

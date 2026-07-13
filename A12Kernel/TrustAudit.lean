@@ -39,6 +39,18 @@ transitive axiom report below. -/
 #print axioms A12Kernel.explicitSelfExclusion_drops_outer
 #print axioms A12Kernel.sameFieldEquality_selfMatches
 
+#print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
+#print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed
+#print axioms A12Kernel.rawSingleGroupContext_validate_wellFormed
+#print axioms A12Kernel.admitsSingleGroupNumber_has_unique_matching_declaration
+#print axioms A12Kernel.checkSingleGroupContext_lookup_coherent
+#print axioms A12Kernel.checkSingleGroupContext_lookup_error_is_malformed
+#print axioms A12Kernel.checkSingleGroupContext_wrong_group_is_malformed
+#print axioms A12Kernel.checkSingleGroupContext_wrong_scope_is_malformed
+#print axioms A12Kernel.checkSingleGroupContext_admittedNumber_coherent
+#print axioms A12Kernel.correlatedHaving_wellFormed_equalityScalesAgree
+#print axioms A12Kernel.resolvedSingleCorrelatedRule_wellFormed_equalityScalesAgree
+
 #print axioms A12Kernel.Verdict.conj_commutative
 #print axioms A12Kernel.Verdict.conj_associative
 #print axioms A12Kernel.Verdict.conj_idempotent
@@ -70,8 +82,8 @@ transitive axiom report below. -/
 #print axioms A12Kernel.applyAbsoluteRequired_preserves_computation
 #print axioms A12Kernel.requiredFinding_empty_phase_split
 
-#print axioms A12Kernel.elaborate_success_wellFormed
-#print axioms A12Kernel.elaborate_success_modelWellFormed
+#print axioms A12Kernel.checkedFlatCondition_wellFormed
+#print axioms A12Kernel.checkedFlatCondition_modelWellFormed
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
 #print axioms A12Kernel.checkContext_lookup_coherent
 #print axioms A12Kernel.checkContext_admittedField_coherent
