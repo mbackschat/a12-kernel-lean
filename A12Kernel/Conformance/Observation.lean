@@ -23,6 +23,12 @@ example : formalCheck optionalNumber .empty =
     { rawPresent := false, parsed := none, findings := [] } := by
   decide
 
+example : observeCell .validation (formalCheck optionalNumber .empty) = .empty := by
+  rfl
+
+example : observeCell .computation (formalCheck optionalNumber .empty) = .empty := by
+  rfl
+
 example : observeCell .validation requiredEmpty = .unknown .required := by
   decide
 

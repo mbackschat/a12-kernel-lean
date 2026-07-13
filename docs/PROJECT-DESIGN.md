@@ -1,6 +1,6 @@
 # a12-kernel-lean — project design
 
-The overall goal is to build `a12-kernel-lean` into a self-contained, executable, proof-bearing semantics-of-record and body of knowledge for A12 validation and computation: capture observed behavior precisely, make it a practical reference for independent interpreter implementations and semantic reviews, prove the universal consequences and semantic-preservation results that provide real value beyond testing, keep correspondence with the external kernel empirical and explicitly bounded, preserve the provenance and limits of every claim, reuse established formal-language architectures where they fit, and advance one complete semantic capsule at a time without writing outside this repository.
+The overall goal is to build `a12-kernel-lean` into a self-contained, executable, proof-bearing semantics-of-record and body of knowledge for A12 validation and computation: capture observed behavior precisely, make it a practical reference for independent interpreter implementations and semantic reviews, prove the universal consequences and semantic-preservation results that provide real value beyond testing, keep correspondence with the external kernel empirical and explicitly bounded, preserve the provenance and limits of every claim, reuse established formal-language architectures where they fit, and advance one complete semantic capsule at a time without altering tracked or visible files outside this repository.
 
 This document is the project constitution: the decision being made, who the work serves, its semantic boundary, the artifacts and evidence it produces, and the gates by which progress is judged. [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns the detailed theorem contract, case studies, trust discipline, and later publication strategy; [`ARCHITECTURE.md`](ARCHITECTURE.md) owns concrete Lean representations; [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns live clause-level status and evidence gates; read-only [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md) supplies consulted staged guidance rather than a writable project plan.
 
@@ -79,6 +79,27 @@ The unit of progress is a **semantic capsule**, not a batch of evaluator branche
 
 A slice that misses an applicable obligation is `partial` and records the missing work. In particular, an implemented and proved capsule without retained portable kernel observations is internally closed but remains `external evidence pending`; it must not be described as kernel-correspondence complete. The full definition of done and proof spine live in [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).
 
+## Planning high-complexity operator families
+
+The operator surface is planned as a matrix of consuming clauses, not as a checklist of operator names and not as a global type-dispatch table. [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function) demonstrates why: even empty-input behavior varies by kind baseline, operator and operand position, enclosing consumer, field role, phase, row eligibility, and result polarity.
+
+Before implementing an operator family, create a compact evidence inventory with these dimensions:
+
+| Dimension | Question that must be answered |
+|---|---|
+| Input state | Clean empty, filled valid, formally invalid, contextual finding, missing row, or unresolved lookup? |
+| Kind and role | What is the field/value kind, and is the field ordinary, required, index, computed, or otherwise model-derived? |
+| Operator slot | Which operator consumes the value, and does subject/entry/left/right/starred position change treatment? |
+| Selection | Is the operand scalar, repeated, filtered, skipped, or part of an all-empty selection with its own identity? |
+| Consumer and phase | Is the result used by validation comparison, concatenation, aggregation, computation, or the store boundary, under validation or computation reads? |
+| Observable result | Does it produce a value with fillability provenance, not-evaluated, false, unknown, poison, VALUE/OMISSION, CLEARED, or ERRORED? |
+
+Preparation follows six rules. First, cluster operators by shared semantic mechanism confirmed in source and probes—comparison, conversion, fold, predicate, lookup, or store—not by surface naming alone. Second, mark every matrix cell as verified, inferred, contradictory, or unknown; unknown never silently inherits a convenient default. Third, design paired separating witnesses that hold the kind and document fixed while varying exactly one axis, such as String comparison versus `Length`, or `FieldValueAsString` in comparison versus concatenation versus assignment. Fourth, choose an intermediate result domain that preserves the distinction the next consumer observes, including no-value, not-check-relevant/poison, and given-versus-substituted provenance. Fifth, state the smallest useful law and the nearest false generalization before broadening the evaluator. Sixth, finish the capsule vertically—legality, execution, differential replay, theorem/counterexample, coverage, and trust audit—before opening the next mechanism.
+
+This method deliberately avoids a speculative universal operator framework. Repeated structure may be factored only after at least two completed capsules expose the same law and result domain. The first implementation stays direct and named; an optimized table, generic fold, or compiled evaluator becomes a separate refinement target only when a real consumer and preservation theorem justify it. Cedar's executable-spec/validation/theorem separation is the default project shape, while Radix's evaluator/relation and transformation-preservation patterns are used only where their narrower proof form fits.
+
+The planning artifact is [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md): it records the live supported cells and evidence gaps. The durable reason for a distinction belongs in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), the current representation in [`ARCHITECTURE.md`](ARCHITECTURE.md), and kernel behavior remains grounded in the read-only sources indexed by [`SOURCES.md`](SOURCES.md). This prevents the matrix from becoming a second semantics specification or an unreviewed backlog.
+
 ## Milestones and gates
 
 Development proceeds in vertical slices, using the baseline order and traps in read-only [`../spec/13-lean-encoding-guide.md`](../spec/13-lean-encoding-guide.md), with current dispositions recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and durable changes of treatment in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
@@ -136,7 +157,7 @@ Once the semantic center and proof spine are credible, the highest-value later u
 
 ## Reevaluation and immediate next step
 
-The first capsule demonstrates value beyond a second evaluator: it has an exact information order replacing a false monotonicity slogan, a closed base-finding type that prevents requiredness from entering the wrong stage, a non-circular two-pass required transformation, universal computation-preservation and algebra laws, and checked counterexamples. Its primitive clauses are supported by focused kernel-backed law and differential tests in the read-only a12-rulekit repository, but the current portable corpus has no focused cases for empty Number/Boolean/Confirm, malformed branches, or simple absolute requiredness. Because sibling repositories are strictly read-only, this project records that portable replay as an open external-adequacy obligation rather than manufacturing or modifying evidence elsewhere.
+The first capsule demonstrates value beyond a second evaluator: it has an exact information order replacing a false monotonicity slogan, a closed base-finding type that prevents requiredness from entering the wrong stage, a non-circular two-pass required transformation, universal computation-preservation and algebra laws, and checked counterexamples. Its primitive clauses are supported by focused kernel-backed law and differential tests in a12-rulekit, but the current portable corpus has no focused cases for empty Number/Boolean/Confirm, malformed branches, or simple absolute requiredness. The external harness may be run with outputs redirected entirely into already-ignored sibling paths; until an own-domain observation bundle is retained and replayed here, portable correspondence remains an open external-adequacy obligation.
 
 The smallest checked elaboration and normalized path-resolution slice is now internally closed: explicit model validation and order-independent lookup, fail-closed scalar/path rejection, a proof-bearing `CheckedFlatCondition`, model-derived formal checking, context-coherence theorems, rejected cases, scope documentation, trusted-root coverage, and internal conformance locks are present. It deliberately covers only structured absolute, plain parent-relative, and bare non-repeatable references; it does not claim complete §10 syntax.
 
