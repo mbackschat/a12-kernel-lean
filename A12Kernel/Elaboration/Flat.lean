@@ -179,9 +179,6 @@ private def SurfaceFieldPath.hasValidShape (reference : SurfaceFieldPath) : Bool
     | .absolute => !reference.groups.isEmpty
     | .relative _ => true
 
-private def properAncestorGroupsNearest (group : GroupPath) : List GroupPath :=
-  (List.range (group.length - 1)).reverse.map fun index => group.take (index + 1)
-
 private def walkUp (group : GroupPath) (parents : Nat) : Except ResolveError GroupPath :=
   if parents < group.length then
     .ok (group.take (group.length - parents))
@@ -195,19 +192,12 @@ private def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
   else
     .error (.repeatableReference declaration.path)
 
-private def FlatModel.lookupFirstInGroups (model : FlatModel) (groups : List GroupPath)
-    (field : String) : Except ResolveError (Option FlatFieldDecl) :=
-  match groups with
-  | [] => .ok none
-  | group :: rest => do
-      match ← model.lookupPath? (group ++ [field]) with
-      | some declaration => pure (some declaration)
-      | none => model.lookupFirstInGroups rest field
-
+/-- Resolve a bare single-segment reference exactly as the kernel parser does: try the
+    declaring group, then (when enabled) require one model-wide short-name match. There
+    is deliberately no implicit ancestor walk; parent lookup requires `..`. -/
 private def FlatModel.resolveBare (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
-  let groups := declaringGroup :: properAncestorGroupsNearest declaringGroup
-  match ← model.lookupFirstInGroups groups reference.field with
+  match ← model.lookupPath? (declaringGroup ++ [reference.field]) with
   | some declaration => declaration.requireNonrepeatable
   | none =>
       if model.fieldRefByShortNameAllowed then

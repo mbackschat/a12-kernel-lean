@@ -1,0 +1,28 @@
+            {
+              "meta": {
+                "id": "bare-duplicate-ancestors-rejected",
+                "kernelVersion": "30.8.1",
+                "source": "curated",
+                "sections": ["§10"],
+                "notes": "after a declaring-group miss, two same-named ancestor fields are model-wide ambiguous"
+              },
+              "modelRef": "models/lean-path-duplicate-ancestors.json",
+              "draft": {
+                "group": "/Order/ShippingAddress/Details",
+                "name": "R",
+                "errorField": "../../Limit",
+                "condition": "[Limit] == 7",
+                "errorCode": "C",
+                "severity": "ERROR"
+              },
+              "expectedCode": "MVK_FIELDNAME_NOT_UNIQUE",
+              "diagnostics": [ {
+  "severity" : "ERROR",
+  "source" : "KERNEL",
+  "code" : "MVK_FIELDNAME_NOT_UNIQUE",
+  "summary" : "Rule with path '/Order/ShippingAddress/Details/R': The field name 'Limit' is used multiple times in the model. Therefore, the short name does not suffice to reference the field. (Fields with the same name: '/Order/ShippingAddress/Limit', '/Order/Limit') [MVK_FIELDNAME_NOT_UNIQUE]",
+  "where" : {
+    "rule" : "/Order/ShippingAddress/Details/R"
+  }
+} ]
+            }

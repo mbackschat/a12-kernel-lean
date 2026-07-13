@@ -245,6 +245,148 @@
       "cells": [
         { "fieldId": 0, "state": "empty" }
       ]
+    },
+    {
+      "id": "absolute-required-number-filled",
+      "caseRef": "cases/required/absolute-required-number-filled.json",
+      "focusCode": "mandatoryField",
+      "focusPointer": "/Order[1]/Quantity",
+      "operation": "absoluteRequired",
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Quantity", "kind": "number", "scale": 2, "signed": false }
+      ],
+      "targetFieldId": 0,
+      "cells": [
+        { "fieldId": 0, "state": "number", "number": 5 }
+      ]
+    },
+    {
+      "id": "absolute-required-number-malformed",
+      "caseRef": "cases/required/absolute-required-number-malformed.json",
+      "focusCode": "mandatoryField",
+      "focusPointer": "/Order[1]/Quantity",
+      "operation": "absoluteRequired",
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Quantity", "kind": "number", "scale": 2, "signed": false }
+      ],
+      "targetFieldId": 0,
+      "cells": [
+        { "fieldId": 0, "state": "rejected" }
+      ]
+    },
+    {
+      "id": "absolute-number-path-match",
+      "caseRef": "cases/paths/absolute-number-path-match.json",
+      "focusCode": "ABSOLUTE_NUMBER_PATH",
+      "focusPointer": "/Order[1]/Quantity",
+      "operation": "flat",
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Quantity", "kind": "number", "scale": 2, "signed": false }
+      ],
+      "declaringGroup": ["Order", "ShippingAddress"],
+      "condition": {
+        "kind": "compare",
+        "comparison": "equal",
+        "path": { "base": "absolute", "parents": 0, "groups": ["Order"], "field": "Quantity" },
+        "literal": { "kind": "number", "number": 5 }
+      },
+      "cells": [
+        { "fieldId": 0, "state": "number", "number": 5 }
+      ],
+      "hasContent": true
+    },
+    {
+      "id": "parent-relative-number-mismatch",
+      "caseRef": "cases/paths/parent-relative-number-mismatch.json",
+      "focusCode": "PARENT_RELATIVE_MISMATCH",
+      "focusPointer": "/Order[1]/Quantity",
+      "operation": "flat",
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Quantity", "kind": "number", "scale": 2, "signed": false }
+      ],
+      "declaringGroup": ["Order", "ShippingAddress"],
+      "condition": {
+        "kind": "compare",
+        "comparison": "equal",
+        "path": { "base": "relative", "parents": 1, "groups": [], "field": "Quantity" },
+        "literal": { "kind": "number", "number": 5 }
+      },
+      "cells": [
+        { "fieldId": 0, "state": "number", "number": 6 }
+      ],
+      "hasContent": true
+    },
+    {
+      "id": "bare-local-precedes-ancestor",
+      "caseRef": "cases/paths/bare-local-precedes-ancestor.json",
+      "focusCode": "BARE_LOCAL_PRECEDENCE",
+      "focusPointer": "/Order[1]/ShippingAddress[1]/Limit",
+      "operation": "flat",
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Limit", "kind": "number", "scale": 0, "signed": false },
+        { "id": 1, "groups": ["Order", "ShippingAddress"], "name": "Limit", "kind": "number", "scale": 0, "signed": false }
+      ],
+      "declaringGroup": ["Order", "ShippingAddress"],
+      "condition": {
+        "kind": "compare",
+        "comparison": "equal",
+        "path": { "base": "relative", "parents": 0, "groups": [], "field": "Limit" },
+        "literal": { "kind": "number", "number": 7 }
+      },
+      "cells": [
+        { "fieldId": 0, "state": "number", "number": 5 },
+        { "fieldId": 1, "state": "number", "number": 7 }
+      ],
+      "hasContent": true
+    },
+    {
+      "id": "bare-model-wide-number-fallback",
+      "caseRef": "cases/paths/bare-model-wide-number-fallback.json",
+      "focusCode": "BARE_MODEL_WIDE",
+      "focusPointer": "/Order[1]/Reference[1]/ExternalLimit",
+      "operation": "flat",
+      "fields": [
+        { "id": 0, "groups": ["Order", "Reference"], "name": "ExternalLimit", "kind": "number", "scale": 0, "signed": false }
+      ],
+      "declaringGroup": ["Order", "ShippingAddress"],
+      "condition": {
+        "kind": "compare",
+        "comparison": "equal",
+        "path": { "base": "relative", "parents": 0, "groups": [], "field": "ExternalLimit" },
+        "literal": { "kind": "number", "number": 9 }
+      },
+      "cells": [
+        { "fieldId": 0, "state": "number", "number": 9 }
+      ],
+      "hasContent": true
+    },
+    {
+      "id": "bare-duplicate-ancestors-rejected",
+      "caseRef": "diagnostics/bare-duplicate-ancestors-rejected.json",
+      "focusCode": "MVK_FIELDNAME_NOT_UNIQUE",
+      "focusPointer": "",
+      "operation": "resolve",
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Limit", "kind": "number", "scale": 0, "signed": false },
+        { "id": 1, "groups": ["Order", "ShippingAddress"], "name": "Limit", "kind": "number", "scale": 0, "signed": false }
+      ],
+      "declaringGroup": ["Order", "ShippingAddress", "Details"],
+      "path": { "base": "relative", "parents": 0, "groups": [], "field": "Limit" },
+      "cells": []
+    },
+    {
+      "id": "bare-unique-ancestor-flag-disabled-rejected",
+      "caseRef": "diagnostics/bare-unique-ancestor-flag-disabled-rejected.json",
+      "focusCode": "MVK_INVALID_ENTITY",
+      "focusPointer": "",
+      "operation": "resolve",
+      "fieldRefByShortNameAllowed": false,
+      "fields": [
+        { "id": 0, "groups": ["Order"], "name": "Limit", "kind": "number", "scale": 0, "signed": false }
+      ],
+      "declaringGroup": ["Order", "ShippingAddress", "Details"],
+      "path": { "base": "relative", "parents": 0, "groups": [], "field": "Limit" },
+      "cells": []
     }
   ]
 }

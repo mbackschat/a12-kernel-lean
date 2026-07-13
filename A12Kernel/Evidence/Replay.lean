@@ -66,7 +66,7 @@ private def CaseSpec.rawContext (case : CaseSpec) : RawFlatContext where
 
 private def CaseSpec.model (case : CaseSpec) : FlatModel :=
   { fields := case.fields.map FieldSpec.toDeclaration
-    fieldRefByShortNameAllowed := true }
+    fieldRefByShortNameAllowed := case.fieldRefByShortNameAllowed }
 
 private def signature (code pointer : String) : Verdict → List String
   | .fired .value => [s!"{code}|VALUE_ERROR|{pointer}"]
@@ -114,12 +114,26 @@ private def CaseSpec.replayRequired (case : CaseSpec) (targetFieldId : FieldId) 
     (case.model.checkContext case.rawContext)
   pure (signature case.focusCode case.focusPointer result.mandatoryVerdict)
 
+private def resolveErrorCode : ResolveError → Option String
+  | .invalidEntity _ => some "MVK_INVALID_ENTITY"
+  | .shortNameNotUnique _ => some "MVK_FIELDNAME_NOT_UNIQUE"
+  | _ => none
+
+private def CaseSpec.replayResolve (case : CaseSpec) (declaringGroup : List String)
+    (path : PathSpec) : Except String (List String) :=
+  match case.model.resolveField declaringGroup path.toSurface with
+  | .ok declaration => throw s!"{case.id}: expected resolution rejection, resolved {declaration.path}"
+  | .error error => match resolveErrorCode error with
+      | some code => pure [code]
+      | none => throw s!"{case.id}: unsupported projected resolution error: {repr error}"
+
 def CaseSpec.replay (case : CaseSpec) : Except String (List String) := do
   case.validateTransport
   match case.operation with
   | .flat declaringGroup condition hasContent =>
       case.replayFlat declaringGroup condition hasContent
   | .absoluteRequired targetFieldId => case.replayRequired targetFieldId
+  | .resolve declaringGroup path => case.replayResolve declaringGroup path
 
 def Bundle.validate (bundle : Bundle) : Except String Unit := do
   if bundle.schemaVersion != 1 then

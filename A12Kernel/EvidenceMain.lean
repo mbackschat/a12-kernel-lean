@@ -15,6 +15,13 @@ private structure Observation where
   expected : List String
   divergences : List Json
 
+private structure DiagnosticObservation where
+  id : String
+  kernelVersion : String
+  modelRef : String
+  expectedCode : String
+  diagnosticCodes : List String
+
 private def member [FromJson α] (json : Json) (name : String) : Except String α := do
   fromJson? (← json.getObjVal? name)
 
@@ -36,6 +43,16 @@ private def Observation.fromJson (json : Json) : Except String Observation := do
     expected := ← member json "expected"
     divergences := ← optionalArray json "divergences" }
 
+private def DiagnosticObservation.fromJson (json : Json) : Except String DiagnosticObservation := do
+  let metadata ← json.getObjVal? "meta"
+  let diagnostics : List Json ← member json "diagnostics"
+  pure {
+    id := ← member metadata "id"
+    kernelVersion := ← member metadata "kernelVersion"
+    modelRef := ← member json "modelRef"
+    expectedCode := ← member json "expectedCode"
+    diagnosticCodes := ← diagnostics.mapM fun diagnostic => member diagnostic "code" }
+
 private def orThrow (context : String) : Except String α → IO α
   | .ok value => pure value
   | .error message => throw (IO.userError s!"{context}: {message}")
@@ -50,18 +67,28 @@ private def safeRelative (reference : String) : Bool :=
 private def checkCase (root : System.FilePath) (bundle : Bundle) (case : CaseSpec) : IO Unit := do
   if !safeRelative case.caseRef then
     throw (IO.userError s!"{case.id}: unsafe caseRef '{case.caseRef}'")
-  let observation ← orThrow case.id (Observation.fromJson (← readJson (root / case.caseRef)))
-  if observation.id != case.id then
-    throw (IO.userError s!"{case.id}: external id is '{observation.id}'")
-  if observation.kernelVersion != bundle.kernelVersion then
-    throw (IO.userError s!"{case.id}: external kernel version is {observation.kernelVersion}")
-  if !observation.divergences.isEmpty then
-    throw (IO.userError s!"{case.id}: external capture records a kernel-strategy divergence")
-  if !safeRelative observation.modelRef then
-    throw (IO.userError s!"{case.id}: unsafe modelRef '{observation.modelRef}'")
-  if !(← System.FilePath.pathExists (root / observation.modelRef)) then
-    throw (IO.userError s!"{case.id}: missing retained model '{observation.modelRef}'")
-  let observed := observation.expected.filter (·.startsWith s!"{case.focusCode}|")
+  let json ← readJson (root / case.caseRef)
+  let (externalId, externalVersion, modelRef, observed) ← match case.operation with
+    | .resolve _ _ => do
+        let observation ← orThrow case.id (DiagnosticObservation.fromJson json)
+        if !(observation.diagnosticCodes.contains observation.expectedCode) then
+          throw (IO.userError s!"{case.id}: expected diagnostic code is absent from retained diagnostics")
+        pure (observation.id, observation.kernelVersion, observation.modelRef,
+          [observation.expectedCode])
+    | _ => do
+        let observation ← orThrow case.id (Observation.fromJson json)
+        if !observation.divergences.isEmpty then
+          throw (IO.userError s!"{case.id}: external capture records a kernel-strategy divergence")
+        pure (observation.id, observation.kernelVersion, observation.modelRef,
+          observation.expected.filter (·.startsWith s!"{case.focusCode}|"))
+  if externalId != case.id then
+    throw (IO.userError s!"{case.id}: external id is '{externalId}'")
+  if externalVersion != bundle.kernelVersion then
+    throw (IO.userError s!"{case.id}: external kernel version is {externalVersion}")
+  if !safeRelative modelRef then
+    throw (IO.userError s!"{case.id}: unsafe modelRef '{modelRef}'")
+  if !(← System.FilePath.pathExists (root / modelRef)) then
+    throw (IO.userError s!"{case.id}: missing retained model '{modelRef}'")
   let actual ← orThrow case.id case.replay
   if actual != observed then
     throw (IO.userError s!"{case.id}: observed {repr observed}, Lean produced {repr actual}")
