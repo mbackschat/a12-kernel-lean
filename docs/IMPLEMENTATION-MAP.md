@@ -25,7 +25,7 @@ The target behavior version is kernel **30.8.1**. “Implemented” means the na
 
 ## Current external-evidence gate
 
-The implemented flat validation, phase observation, absolute-requiredness, numeric-helper, and normalized non-repeatable path fragments have focused kernel-backed provenance in the read-only a12-rulekit repository, but this repository has no retained portable observation bundle for their exact Lean projection. Under the repository write rule, Codex cannot run or modify the external adapter harness. The next empirical step therefore requires an explicitly supplied, externally produced kernel 30.8.1 artifact; internal examples must not be relabeled as differential evidence.
+The implemented flat validation, phase observation, absolute-requiredness, numeric-helper, and normalized non-repeatable path fragments have focused kernel-backed provenance in a12-rulekit, but this repository has no retained portable observation bundle for their exact Lean projection. Codex may run the external adapter harness while keeping its tracked and visible worktree clean; capture that would normally rewrite tracked corpus files must instead target an ignored disposable workspace. Internal examples must not be relabeled as differential evidence.
 
 ## Trusted theorem surface
 

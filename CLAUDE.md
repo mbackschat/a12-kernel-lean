@@ -25,14 +25,15 @@ Because this project's source ships no kernel code, it is licensed **MIT** (see 
 
 No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel`, `../a12-rulekit`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does.
 
-## ⚠️ HARD RULE — write only inside this repository
+## ⚠️ HARD RULE — sibling tracked worktrees stay immutable and visibly clean
 
-Treat every path outside the `a12-kernel-lean` repository root as **strictly read-only**, including all sibling repositories such as `../a12-kernel` and `../a12-rulekit`.
+Treat every tracked or visible-untracked path outside the `a12-kernel-lean` repository root as **strictly read-only**, including all sibling repositories such as `../a12-kernel` and `../a12-rulekit`. The user permits build/test writes only under paths that the owning sibling repository already ignores.
 
-- Never edit, create, generate, format, delete, restore, clean, stage, or commit files outside this repository.
-- Never run sibling builds, tests, generators, or other commands that create build output, caches, reports, lockfiles, temporary files, or Git metadata changes there.
-- Read-only source and documentation inspection is allowed. If verification or generation would require an external write, stop and ask for an explicitly authorized workflow instead.
-- Keep temporary artifacts inside this repository only when unavoidable, and remove them before completing the task.
+- Never edit, create, generate, format, delete, restore, stage, or commit a tracked file outside this repository, and never create a visible untracked file there.
+- Sibling builds, tests, and external kernel-harness runs are allowed only when every produced cache, build directory, report, lock, or temporary artifact is already ignored by that sibling repository. Check the intended path with `git check-ignore` when uncertain.
+- Check the sibling's visible `git status --short` before and after the run. It must remain unchanged and clean; remove any visible temporary artifact created by the run without using broad destructive cleanup.
+- A generator that normally rewrites tracked fixtures or corpus files must be redirected to an ignored workspace or run on an ignored disposable copy. Never let it touch the sibling's tracked outputs.
+- Read-only source and documentation inspection remains allowed. Keep temporary artifacts in ignored locations only, and remove project-local temporary files before completing the task.
 
 ## ⚠️ HARD RULE — treat `spec/` as read-only
 
@@ -50,7 +51,7 @@ Three layers, in authority order for a semantic question:
 
 The full inventory of both sibling repos (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy). The external Lean case studies and their primary-source links are curated in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
 
-**Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-rulekit contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle. Kernel execution happens only in an external harness outside this repository and outside Codex's write workflow. This project consumes explicitly supplied portable observations read-only, and a capsule without them remains marked `external evidence pending` rather than kernel-correspondence complete. The exact topology and evidence roles are fixed in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
+**Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-rulekit contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle. Kernel execution happens only through the external sibling harness, never as a dependency or shipped component of this repository. Codex may run that harness while preserving the sibling's tracked/visible worktree under the rule above, then bring only portable own-domain observations into this repository. A capsule without them remains marked `external evidence pending` rather than kernel-correspondence complete. The exact topology and evidence roles are fixed in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
 
 ### Codebase orientation
 
