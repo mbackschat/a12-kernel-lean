@@ -79,7 +79,9 @@ def FlatCondition.canFireOnEmpty : FlatCondition → Bool
   | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
   | .or left right => left.canFireOnEmpty || right.canFireOnEmpty
 
-private inductive ResolvedOperand (α : Type) where
+/-- Comparison-local operand classification. `given` preserves whether a concrete value
+    came from stored input or from the consuming comparison's empty substitution. -/
+inductive ComparisonOperand (α : Type) where
   | value (value : α) (given : Bool)
   | notEvaluated
   | unknown (cause : FormalCause)
@@ -87,8 +89,8 @@ private inductive ResolvedOperand (α : Type) where
 def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : CellObservation :=
   observeCell .validation (context.read id)
 
-private def resolveNumberComparisonOperand (context : FlatContext) (field : FlatNumberField) :
-    ResolvedOperand Rat :=
+def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
+    (field : FlatNumberField) : ComparisonOperand Rat :=
   match context.observeValidationAt field.id with
   | .empty => .value 0 false
   | .value (.num value) => .value value true
@@ -97,7 +99,7 @@ private def resolveNumberComparisonOperand (context : FlatContext) (field : Flat
   | .poison cause => .unknown cause
 
 private def resolveBooleanComparisonOperand (context : FlatContext) (field : FlatBooleanField) :
-    ResolvedOperand Bool :=
+    ComparisonOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .notEvaluated
   | .value (.bool value) => .value value true
@@ -106,7 +108,7 @@ private def resolveBooleanComparisonOperand (context : FlatContext) (field : Fla
   | .poison cause => .unknown cause
 
 private def resolveConfirmComparisonOperand (context : FlatContext) (field : FlatConfirmField) :
-    ResolvedOperand Bool :=
+    ComparisonOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .value false false
   | .value (.conf true) => .value true true
@@ -134,7 +136,7 @@ private def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
   | .notEqual => !equivalent
 
 private def evalResolved (equivalent : α → α → Bool) (op : EqualityOp)
-    (operand : ResolvedOperand α) (expected : α) : Verdict :=
+    (operand : ComparisonOperand α) (expected : α) : Verdict :=
   match operand with
   | .notEvaluated => .notFired
   | .unknown _ => .unknown
@@ -146,7 +148,7 @@ private def evalResolved (equivalent : α → α → Bool) (op : EqualityOp)
 
 private def evalComparison (context : FlatContext) : FlatComparison → Verdict
   | .number op field expected =>
-      evalResolved numberEquivalent op (resolveNumberComparisonOperand context field) expected
+      evalResolved numberEquivalent op (context.resolveNumberComparisonOperand field) expected
   | .boolean op field expected =>
       evalResolved (· == ·) op (resolveBooleanComparisonOperand context field) expected
   | .confirm op field =>

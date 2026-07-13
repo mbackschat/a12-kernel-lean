@@ -1,0 +1,119 @@
+{
+    "meta": {
+        "id": "correlation-self-included",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§9"
+        ],
+        "tags": [
+            "single-star",
+            "having",
+            "outer-correlation",
+            "lean-evidence"
+        ],
+        "scenario": "a12-kernel-lean capsule 5b"
+    },
+    "modelRef": "models/lean-correlation-self.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "K1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "5"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                2
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "K2"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "6"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                3
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "K3"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "9"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "CORR_SELF|OMISSION_ERROR|/Order[1]/Items[1]/Count",
+        "CORR_SELF|OMISSION_ERROR|/Order[1]/Items[2]/Count",
+        "CORR_SELF|OMISSION_ERROR|/Order[1]/Items[3]/Count"
+    ]
+}
