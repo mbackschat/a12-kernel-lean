@@ -1,4 +1,5 @@
 import A12Kernel.Evidence.Replay
+import A12Kernel.Evidence.IterationReplay
 import Lean.Data.Json
 
 /-! IO-only retained-kernel-evidence replay. This module is an executable boundary and
@@ -21,6 +22,24 @@ private structure DiagnosticObservation where
   modelRef : String
   expectedCode : String
   diagnosticCodes : List String
+
+private inductive ObservedPolarity where
+  | value
+  | omission
+  deriving Repr, DecidableEq
+
+private structure MessageSignature where
+  code : String
+  polarity : ObservedPolarity
+  pointer : String
+  deriving Repr, DecidableEq
+
+private structure FocusObservation where
+  polarity : Option ObservedPolarity
+  deriving Repr, DecidableEq
+
+private def FocusObservation.fired (observation : FocusObservation) : Bool :=
+  observation.polarity.isSome
 
 private def member [FromJson α] (json : Json) (name : String) : Except String α := do
   fromJson? (← json.getObjVal? name)
@@ -64,6 +83,28 @@ private def readJson (path : System.FilePath) : IO Json := do
 private def safeRelative (reference : String) : Bool :=
   !reference.isEmpty && !reference.startsWith "/" && !(reference.splitOn "/").contains ".."
 
+private def MessageSignature.parse (signature : String) : Except String MessageSignature := do
+  let (code, polarityName, pointer) ← match signature.splitOn "|" with
+    | [code, polarity, pointer] => pure (code, polarity, pointer)
+    | _ => throw s!"invalid retained message signature '{signature}'"
+  if code.isEmpty then throw s!"empty code in retained message signature '{signature}'"
+  if pointer.isEmpty then throw s!"empty pointer in retained message signature '{signature}'"
+  let polarity ← match polarityName with
+    | "VALUE_ERROR" => pure .value
+    | "OMISSION_ERROR" => pure .omission
+    | other => throw s!"unsupported retained message polarity '{other}'"
+  pure { code, polarity, pointer }
+
+private def focusedObservation (caseId focusCode focusPointer : String)
+    (expected : List String) : Except String FocusObservation := do
+  let signatures ← expected.mapM MessageSignature.parse
+  let focused := signatures.filter fun signature =>
+    signature.code == focusCode && signature.pointer == focusPointer
+  match focused with
+  | [] => pure { polarity := none }
+  | [signature] => pure { polarity := some signature.polarity }
+  | _ => throw s!"{caseId}: retained case has duplicate focused message signatures"
+
 private def checkCase (root : System.FilePath) (bundle : Bundle) (case : CaseSpec) : IO Unit := do
   if !safeRelative case.caseRef then
     throw (IO.userError s!"{case.id}: unsafe caseRef '{case.caseRef}'")
@@ -93,6 +134,31 @@ private def checkCase (root : System.FilePath) (bundle : Bundle) (case : CaseSpe
   if actual != observed then
     throw (IO.userError s!"{case.id}: observed {repr observed}, Lean produced {repr actual}")
 
+private def checkIterationCase (root : System.FilePath)
+    (bundle : A12Kernel.Evidence.Iteration.Bundle)
+    (case : A12Kernel.Evidence.Iteration.CaseSpec) : IO Unit := do
+  if !safeRelative case.caseRef then
+    throw (IO.userError s!"{case.id}: unsafe iteration caseRef '{case.caseRef}'")
+  let json ← readJson (root / case.caseRef)
+  let observation ← orThrow case.id (Observation.fromJson json)
+  if !observation.divergences.isEmpty then
+    throw (IO.userError s!"{case.id}: external capture records a kernel-strategy divergence")
+  if observation.id != case.id then
+    throw (IO.userError s!"{case.id}: external id is '{observation.id}'")
+  if observation.kernelVersion != bundle.kernelVersion then
+    throw (IO.userError s!"{case.id}: external kernel version is {observation.kernelVersion}")
+  if !safeRelative observation.modelRef then
+    throw (IO.userError s!"{case.id}: unsafe modelRef '{observation.modelRef}'")
+  if !(← System.FilePath.pathExists (root / observation.modelRef)) then
+    throw (IO.userError s!"{case.id}: missing retained model '{observation.modelRef}'")
+  let observed ← orThrow case.id
+    (focusedObservation case.id case.focusCode case.focusPointer observation.expected)
+  let actual ← orThrow case.id case.replay
+  let actualFired := actual == .tru
+  if actualFired != observed.fired then
+    throw (IO.userError
+      s!"{case.id}: observed fired={observed.fired} polarity={repr observed.polarity}, Lean produced {repr actual}")
+
 def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
   let bundle ← orThrow "projection.json"
@@ -100,4 +166,11 @@ def main : IO Unit := do
   orThrow "projection.json" bundle.validate
   for case in bundle.cases do
     checkCase root bundle case
-  IO.println s!"kernel evidence: {bundle.cases.length}/{bundle.cases.length} projections agree ({bundle.kernelVersion})"
+  let iterationBundle ← orThrow "iteration-projection.json"
+    (A12Kernel.Evidence.Iteration.Bundle.fromJson
+      (← readJson (root / "iteration-projection.json")))
+  orThrow "iteration-projection.json" iterationBundle.validate
+  for case in iterationBundle.cases do
+    checkIterationCase root iterationBundle case
+  let total := bundle.cases.length + iterationBundle.cases.length
+  IO.println s!"kernel evidence: {total}/{total} projections agree ({bundle.kernelVersion})"

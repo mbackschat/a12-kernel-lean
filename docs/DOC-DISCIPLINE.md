@@ -10,6 +10,7 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
 - [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable, numbered findings about this project's formalization treatment and research conclusions. A finding is settled knowledge and rationale, not an open task.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the retained external-observation format, projection boundary, replay guarantees, and evidence-specific limitations.
+- [`TESTING.md`](TESTING.md) owns the red/green workflow, executable-example conventions, proof/trust harness, external replay method, and final verification gate.
 - [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the live join from the read-only `§n` taxonomy to Lean definitions, proofs/counterexamples, kernel evidence, status, and exact support boundaries.
 - [`SOURCES.md`](SOURCES.md) owns the drill path into the read-only kernel and rulekit evidence layers.
 - [`README.md`](README.md) indexes the documentation set and its ownership rules; the top-level [`../README.md`](../README.md) remains the concise project front door.
@@ -28,6 +29,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).
+- A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
 - A changed goal, evidence rule, milestone, or next-capsule decision updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
 - A changed theorem/trust discipline or external-study conclusion updates [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).
 - A new, renamed, or removed document updates [`README.md`](README.md) in the same change.

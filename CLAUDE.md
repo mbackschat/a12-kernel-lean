@@ -74,16 +74,18 @@ lake test                           # replay retained kernel 30.8.1 observations
 lake env lean A12Kernel/Core.lean   # elaborate a single module with imports available
 ```
 
+The canonical red/green workflow, executable-example conventions, proof/trust boundary, external replay method, and final gate are documented in [`docs/TESTING.md`](docs/TESTING.md). Follow it for every semantic capsule.
+
 ## Layout & the staged build order
 
 - [`A12Kernel.lean`](A12Kernel.lean) — library root (imports the modules below).
 - [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the truth/polarity algebra and value domain: `K` (strong-Kleene, no negation), `Polarity`, `Verdict` + `conj`/`disj`, `ScaleInfo`, `NumField`, `Value`.
 - [`A12Kernel/Cell.lean`](A12Kernel/Cell.lean) — the phase-sensitive cell model: `FormalCause`, `Phase`, `CheckedCell`, `CellObservation` (empty ≠ invalid, refined into a phase-indexed read).
 - [`A12Kernel/Document.lean`](A12Kernel/Document.lean) — addressing & instance: `RowAddr`/`CellAddr`, `Document` (instantiated rows kept separate from cell values), `Env`, `World` (injected clock).
-- [`A12Kernel/Semantics/`](A12Kernel/Semantics/) — phase observation, the flat validation core, and staged absolute-required semantics.
+- [`A12Kernel/Semantics/`](A12Kernel/Semantics/) — phase observation, the flat validation core, staged absolute-required semantics, and narrow ordered single-group iteration with uncorrelated row-local `Having`.
 - [`A12Kernel/Elaboration/`](A12Kernel/Elaboration/) — checked lowering from a structured, parser-independent surface subset, including normalized non-repeatable path resolution and model-derived cell policies.
-- [`A12Kernel/Proofs.lean`](A12Kernel/Proofs.lean) — trusted theorem root importing algebra, information-order, observation, required-staging, elaboration, and context-coherence proofs.
-- [`A12Kernel/Conformance.lean`](A12Kernel/Conformance.lean) — executable locks for the supported fragment; these are semantic examples, not a substitute for external differential evidence.
+- [`A12Kernel/Proofs.lean`](A12Kernel/Proofs.lean) — trusted theorem root importing algebra, information-order, observation, required-staging, elaboration/context-coherence, and ordered-selection/filter-before-consumer proofs.
+- [`A12Kernel/Conformance.lean`](A12Kernel/Conformance.lean) — executable locks for the supported fragment, including the iteration capsule's separating cases and checked non-law; these are semantic examples, not a substitute for external differential evidence.
 - [`A12Kernel/EvidenceMain.lean`](A12Kernel/EvidenceMain.lean) — IO-only `lake test` driver for retained external observations; it is outside the library, conformance, and proof roots.
 - [`A12Kernel/Basic.lean`](A12Kernel/Basic.lean) — smoke module.
 

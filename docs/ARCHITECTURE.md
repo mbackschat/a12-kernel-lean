@@ -48,7 +48,7 @@ The AST is indexed only by nothing — a closed inductive with an exhaustive eva
 
 The same `FlatModel` compiles raw cells into the runtime `FlatContext`, so successful surface evaluation cannot pair a resolved numeric field with a caller-invented Boolean policy. Trusted theorems connect every admitted field to its unique matching declaration and prove that context construction applies exactly that declaration’s `formalCheck` policy; missing or ambiguous IDs become malformed/unknown. The low-level `FlatCondition.evalFull` remains available for isolated semantic laws and can still receive an arbitrary `FlatContext`, so policy coherence is claimed only for the checked surface route.
 
-This slice does not implement the complete §10 path language. Quoted concrete syntax, named-ancestor labels, `RuleGroup`, stars, `$`, semantic indices, repeatable evaluation, and parser/renderer preservation are outside the current structure. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns the live assurance and external-evidence status.
+This elaboration slice does not implement the complete §10 path language. Quoted concrete syntax, named-ancestor labels, `RuleGroup`, star syntax, `$`, semantic indices, repeatable surface lowering, and parser/renderer preservation are outside it. The separate single-level core iteration capsule below starts after static legality and path elaboration; it must not be mistaken for support for authored repeatable syntax. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns the live assurance and external-evidence status.
 
 ### `Value.num` is `Rat` + a separate rendered stored-form — not a `{coefficient, scale}` decimal
 
@@ -67,6 +67,16 @@ The earlier three-state sketch (empty ≠ invalid) is refined into an invariant 
 ### `Document` = instantiated rows independent of cell values
 
 `Document {instantiatedRows : List RowAddr, rawCells : CellAddr → Option String}` ([`A12Kernel/Document.lean`](../A12Kernel/Document.lean)). Row existence is tracked separately from cell content because a blank-but-instantiated repeat row is observable — inferring rows from non-empty cells breaks `GroupFilled`, requiredness, the row-gate, and repeatable-group quantifiers. We use `List`, **not `Finset`**, because order is observable (`FirstFilledValue`, computation scheduling, poison reads) — and `Finset` would pull Mathlib and hurt `#eval`.
+
+### Single-level iteration starts from an ordered candidate list
+
+[`A12Kernel/Semantics/Iteration.lean`](../A12Kernel/Semantics/Iteration.lean) models the first repeatable core capsule as `SingleGroupValidationContext`: one repeatable group, an ordered `List RowIndex` of explicitly instantiated candidates, and a row-local validation read. It never infers candidates from filled cells and never invents a declared-but-uninstantiated tail. `envAt` exposes the corresponding one-binding `Env`; captured outer bindings do not yet exist.
+
+`SingleStar` contains one numeric value field and an optional uncorrelated row-local `Having` condition. Selection keeps a candidate exactly when the condition evaluates to `Verdict.fired`—with either polarity—and drops `notFired` and validation `unknown`; no filter keeps every candidate. Selection is completed before `NumberFold.sumRows` observes the numeric consumer. Empty selected cells are skipped, so a selection with no numeric values sums to zero; an invalid selected consumer yields `NumberFold.unknown`, while a consumer in a dropped row is irrelevant.
+
+The executable selector preserves order and multiplicity with `List.filter`. [`A12Kernel/Proofs/Iteration.lean`](../A12Kernel/Proofs/Iteration.lean) relates it exactly—not merely by membership—to the independent ordered `SelectRows` keep/drop relation, and proves `sumSelected_filter_before_consumer`: once two contexts select the same ordered rows, agreement on consumer cells in those rows is sufficient for equal sums. [`A12Kernel/Conformance/Iteration.lean`](../A12Kernel/Conformance/Iteration.lean) checks the neighboring false claim that a same-group star collapses to the current row, plus empty, malformed-filter, malformed-dropped-consumer, and malformed-kept-consumer cases.
+
+This is a validation-only selection capsule, not general aggregation support. Numeric `Sum` is deliberately the narrow observer of which rows were selected, and its comparison returns truth `K` only. Filtered-result polarity, captured-outer `$`, nested or multiple stars, cross-group joins, static legality and elaboration, adaptation from `Document`, computation, partial validation, and general aggregate operators remain separate capsules. Seven retained kernel observations replay the truth/firing projection; the full external OMISSION signatures are preserved but are not yet a Lean polarity claim.
 
 ### Injected `World`, custom hooks as pure/total oracles
 
@@ -94,11 +104,12 @@ Current ([`../A12Kernel.lean`](../A12Kernel.lean) is the root):
 - `A12Kernel/Semantics/Observation.lean` — normalized scalar input, the closed base-finding subset, `formalCheck`, staged annotations, and phase observation.
 - `A12Kernel/Semantics/FlatValidation.lean` — the typed one-field equality/presence fragment, row gate, scale-19 comparison rescaling, and verdict evaluator.
 - `A12Kernel/Semantics/Required.lean` — the two-pass absolute/non-repeatable required-field fragment.
+- `A12Kernel/Semantics/Iteration.lean` — ordered explicit candidates for one repeatable group, optional uncorrelated row-local `Having`, and a narrow validation-only numeric selected sum.
 - `A12Kernel/Elaboration/Flat.lean` — checked structured-surface lowering, normalized non-repeatable path lookup, field legality, and model-derived raw-cell checking.
-- `A12Kernel/Proofs.lean` — trusted theorem root; algebra, information order, checked-cell invariants, phase laws, required-staging preservation, and elaboration/context coherence.
-- `A12Kernel/Conformance.lean` — executable semantic and elaboration locks for the supported fragment.
+- `A12Kernel/Proofs.lean` — trusted theorem root; algebra, information order, checked-cell invariants, phase laws, required-staging preservation, elaboration/context coherence, and ordered-selection/filter-before-consumer proofs.
+- `A12Kernel/Conformance.lean` — executable semantic and elaboration locks for the supported fragment, including the single-level iteration capsule and its checked non-law.
 - `A12Kernel/Basic.lean` — smoke + `kernelVersion`.
 
-The external evidence lane is deliberately outside those roots: `A12Kernel/Evidence/Schema.lean` decodes the closed projection transport, `A12Kernel/Evidence/Replay.lean` converts and evaluates it through the public semantics/elaboration API, and `A12Kernel/EvidenceMain.lean` performs IO over the retained cases. The `checkKernelEvidence` executable is the `lake test` driver; it is not imported by the library, conformance root, or trusted theorem root. [`EVIDENCE.md`](EVIDENCE.md) owns the transport and claim boundary.
+The external evidence lane is deliberately outside those roots: `A12Kernel/Evidence/Schema.lean` and `Replay.lean` own the flat/path/required projection; `A12Kernel/Evidence/IterationSchema.lean` and `IterationReplay.lean` own the separate single-level selection projection; and `A12Kernel/EvidenceMain.lean` performs IO over the retained cases. The `checkKernelEvidence` executable is the `lake test` driver; it is not imported by the library, conformance root, or trusted theorem root. [`EVIDENCE.md`](EVIDENCE.md) owns the transport and claim boundary.
 
 Planned sequencing and open work belong in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md), durable treatment decisions in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), and live coverage/evidence state in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). This file changes when the actual module or representation structure changes; it does not carry a parallel roadmap or status table.
