@@ -1,0 +1,8 @@
+{
+  "id" : "having-malformed-filter-drops",
+  "kernelVersion" : "30.8.1",
+  "anchorStrategy" : "kernel-groovy-dynamic",
+  "anchorExpected" : [ "HAVING_FILTERED|OMISSION_ERROR|/Order[1]/CustomerName", "zahlHatUngueltigeZeichen|VALUE_ERROR|/Order[1]/Items[1]/UnitWeight" ],
+  "kernelJavaStatic" : [ "HAVING_FILTERED|OMISSION_ERROR|/Order[1]/CustomerName", "zahlHatUngueltigeZeichen|VALUE_ERROR|/Order[1]/Items[1]/UnitWeight" ],
+  "interpreter" : [ "zahlHatUngueltigeZeichen|VALUE_ERROR|/Order[1]/Items[1]/UnitWeight" ]
+}

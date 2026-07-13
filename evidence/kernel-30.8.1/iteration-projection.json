@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "kernelVersion": "30.8.1",
+  "cases": [
+    {
+      "id": "having-unfiltered-sum-all",
+      "caseRef": "cases/iteration/having-unfiltered-sum-all.json",
+      "focusCode": "HAVING_UNFILTERED",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 10 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 4 }
+      ],
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 17
+    },
+    {
+      "id": "having-filtered-sum-match",
+      "caseRef": "cases/iteration/having-filtered-sum-match.json",
+      "focusCode": "HAVING_FILTERED",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "scale": 2, "signed": false },
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 2 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 10 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 4 }
+      ],
+      "having": { "fieldId": 0, "equals": 1 },
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 7
+    },
+    {
+      "id": "having-filtered-sum-mismatch",
+      "caseRef": "cases/iteration/having-filtered-sum-mismatch.json",
+      "focusCode": "HAVING_FILTERED",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "scale": 2, "signed": false },
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 2 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 10 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 5 }
+      ],
+      "having": { "fieldId": 0, "equals": 1 },
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 7
+    },
+    {
+      "id": "having-filtered-empty-selection",
+      "caseRef": "cases/iteration/having-filtered-empty-selection.json",
+      "focusCode": "HAVING_NO_MATCH",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "scale": 2, "signed": false },
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 2 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 10 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 4 }
+      ],
+      "having": { "fieldId": 0, "equals": 9 },
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 0
+    },
+    {
+      "id": "having-malformed-filter-drops",
+      "caseRef": "cases/iteration/having-malformed-filter-drops.json",
+      "focusCode": "HAVING_FILTERED",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "scale": 2, "signed": false },
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "rejected" },
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 100 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 4 }
+      ],
+      "having": { "fieldId": 0, "equals": 1 },
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 7
+    },
+    {
+      "id": "having-malformed-consumer-dropped",
+      "caseRef": "cases/iteration/having-malformed-consumer-dropped.json",
+      "focusCode": "HAVING_FILTERED",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "scale": 2, "signed": false },
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 2 },
+        { "rowId": 1, "fieldId": 1, "state": "rejected" },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 4 }
+      ],
+      "having": { "fieldId": 0, "equals": 1 },
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 7
+    },
+    {
+      "id": "having-malformed-consumer-kept",
+      "caseRef": "cases/iteration/having-malformed-consumer-kept.json",
+      "focusCode": "HAVING_FILTERED",
+      "focusPointer": "/Order[1]/CustomerName",
+      "groupId": 10,
+      "rowIds": [1, 2, 3],
+      "fields": [
+        { "id": 0, "scale": 2, "signed": false },
+        { "id": 1, "scale": 0, "signed": false }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 1, "fieldId": 1, "state": "rejected" },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 3 },
+        { "rowId": 3, "fieldId": 0, "state": "number", "number": 1 },
+        { "rowId": 3, "fieldId": 1, "state": "number", "number": 4 }
+      ],
+      "having": { "fieldId": 0, "equals": 1 },
+      "operation": "sumEquals",
+      "valueFieldId": 1,
+      "equals": 7
+    }
+  ]
+}

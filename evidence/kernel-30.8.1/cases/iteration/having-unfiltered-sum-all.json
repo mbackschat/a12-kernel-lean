@@ -1,0 +1,155 @@
+{
+    "meta": {
+        "id": "having-unfiltered-sum-all",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§9"
+        ],
+        "tags": [
+            "single-star",
+            "having",
+            "lean-evidence"
+        ],
+        "scenario": "a12-kernel-lean capsule 5a"
+    },
+    "modelRef": "models/lean-having-unfiltered.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/CustomerName",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "Acme"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "K1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "3"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                2
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "K2"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "2"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "10"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                3
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "K3"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                3,
+                1
+            ],
+            "value": "4"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "HAVING_UNFILTERED|OMISSION_ERROR|/Order[1]/CustomerName"
+    ]
+}

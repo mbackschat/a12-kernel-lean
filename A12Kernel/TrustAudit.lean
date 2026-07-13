@@ -28,6 +28,9 @@ transitive axiom report below. -/
 #print axioms A12Kernel.K.and_information_monotone
 #print axioms A12Kernel.K.or_information_monotone
 
+#print axioms A12Kernel.selectRows_iff
+#print axioms A12Kernel.sumSelected_filter_before_consumer
+
 #print axioms A12Kernel.Verdict.conj_commutative
 #print axioms A12Kernel.Verdict.conj_associative
 #print axioms A12Kernel.Verdict.conj_idempotent
