@@ -1,7 +1,7 @@
 import A12Kernel.Basic
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Reference.StrictJson
-import Lean.Data.Json
+import Lean.Data.Json.FromToJson.Basic
 
 /-! # A12Kernel.Reference.Support — protocol-v1 support metadata
 
