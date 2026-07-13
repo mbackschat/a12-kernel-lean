@@ -201,30 +201,53 @@ inductive SelectCorrelatedRows (star : SingleCorrelatedStar)
       (tail : SelectCorrelatedRows star context rows selected) :
       SelectCorrelatedRows star context (row :: rows) selected
 
-private def filledTruth (context : SingleGroupValidationContext)
-    (row : RowIndex) (field : FlatNumberField) : K :=
+/-- Validation presence of one typed Number cell for the narrow selected-presence
+    consumer. -/
+def FlatNumberField.filledTruthAt (field : FlatNumberField)
+    (context : SingleGroupValidationContext) (row : RowIndex) : K :=
   match observeCell .validation (context.read row field.id) with
   | .empty => .fls
   | .value _ => .tru
   | .unknown _ | .poison _ => .unknown
 
-private def anyFilledTruth (context : SingleGroupValidationContext)
-    (field : FlatNumberField) : List RowIndex → K
+/-- Fold validation presence over exactly the supplied ordered rows. -/
+def FlatNumberField.anyFilledTruth (field : FlatNumberField)
+    (context : SingleGroupValidationContext) : List RowIndex → K
   | [] => .fls
   | row :: rest =>
-      K.or (filledTruth context row field) (anyFilledTruth context field rest)
+      K.or (field.filledTruthAt context row) (field.anyFilledTruth context rest)
 
-/-- Narrow rule observer matching the retained law shape:
-    `FieldFilled(outer F) And AtLeastOneFieldFilled(G*/F Having filter)`. -/
+/-- Evaluate selected Number-cell presence only after correlated filtering. -/
+def SingleCorrelatedStar.evalSelectedAnyFilled (star : SingleCorrelatedStar)
+    (context : CapturedSingleGroupContext) : K :=
+  star.valueField.anyFilledTruth context.rows (star.select context)
+
+/-- Narrow rule observer with an explicitly supplied outer guard field:
+    `FieldFilled(outer Guard) And AtLeastOneFieldFilled(G*/F Having filter)`. The
+    presence consumer classifies `F` only after selection; the filter may independently
+    reference the same field. The API does not require the guard and `F` to differ. -/
+def SingleCorrelatedStar.evalGuardedAnyFilledOn (star : SingleCorrelatedStar)
+    (guardField : FlatNumberField) (context : CapturedSingleGroupContext) : K :=
+  K.and
+    (guardField.filledTruthAt context.rows context.outerRow)
+    (star.evalSelectedAnyFilled context)
+
+/-- Convenience form for the earlier same-field retained rule shape. -/
 def SingleCorrelatedStar.evalGuardedAnyFilled (star : SingleCorrelatedStar)
     (context : CapturedSingleGroupContext) : K :=
-  K.and
-    (filledTruth context.rows context.outerRow star.valueField)
-    (anyFilledTruth context.rows star.valueField (star.select context))
+  star.evalGuardedAnyFilledOn star.valueField context
 
-def SingleCorrelatedStar.firingRows (star : SingleCorrelatedStar)
+/-- Evaluate the guarded selected-presence observer for every outer row, preserving
+    candidate order and retaining exactly the rows where its truth is definite true. -/
+def SingleCorrelatedStar.firingRowsOn (star : SingleCorrelatedStar)
+    (guardField : FlatNumberField)
     (context : SingleGroupValidationContext) : List RowIndex :=
   context.candidates.filter fun outerRow =>
-    star.evalGuardedAnyFilled { rows := context, outerRow } == .tru
+    star.evalGuardedAnyFilledOn guardField { rows := context, outerRow } == .tru
+
+/-- Convenience firing-row observer for the earlier same guard/consumer rule shape. -/
+def SingleCorrelatedStar.firingRows (star : SingleCorrelatedStar)
+    (context : SingleGroupValidationContext) : List RowIndex :=
+  star.firingRowsOn star.valueField context
 
 end A12Kernel

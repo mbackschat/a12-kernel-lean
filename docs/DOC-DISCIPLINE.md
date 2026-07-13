@@ -12,7 +12,7 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 - [`EVIDENCE.md`](EVIDENCE.md) owns the retained external-observation format, projection boundary, replay guarantees, and evidence-specific limitations.
 - [`TESTING.md`](TESTING.md) owns the red/green workflow, executable-example conventions, proof/trust harness, external replay method, and final verification gate.
 - [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the live join from the read-only `§n` taxonomy to Lean definitions, proofs/counterexamples, kernel evidence, status, and exact support boundaries.
-- [`SOURCES.md`](SOURCES.md) owns the drill path into the read-only kernel and rulekit evidence layers.
+- [`SOURCES.md`](SOURCES.md) owns the drill path into the read-only kernel and a12-dmkits evidence layers.
 - [`README.md`](README.md) indexes the documentation set and its ownership rules; the top-level [`../README.md`](../README.md) remains the concise project front door.
 
 ## Finding lifecycle

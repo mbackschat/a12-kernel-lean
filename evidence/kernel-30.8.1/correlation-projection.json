@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "kernelVersion": "30.8.1",
   "cases": [
     {
@@ -8,9 +8,10 @@
       "focusCode": "CORR_DIRECTION",
       "groupId": 10,
       "groupPath": "/Order/Items",
+      "conditionGroupPath": "/Order/Items",
       "rowIds": [1, 2, 3],
       "fields": [
-        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+        { "id": 0, "path": "/Order/Items/Count", "conditionPath": "/Order/Items/Count", "scale": 0, "signed": true }
       ],
       "cells": [
         { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
@@ -24,6 +25,7 @@
         "right": { "origin": "outer", "fieldId": 0 }
       },
       "valueFieldId": 0,
+      "guardFieldId": 0,
       "outerRows": [
         { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
         { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
@@ -37,9 +39,10 @@
       "focusCode": "CORR_SELF",
       "groupId": 10,
       "groupPath": "/Order/Items",
+      "conditionGroupPath": "/Order/Items",
       "rowIds": [1, 2, 3],
       "fields": [
-        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+        { "id": 0, "path": "/Order/Items/Count", "conditionPath": "/Order/Items/Count", "scale": 0, "signed": true }
       ],
       "cells": [
         { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
@@ -53,6 +56,7 @@
         "right": { "origin": "outer", "fieldId": 0 }
       },
       "valueFieldId": 0,
+      "guardFieldId": 0,
       "outerRows": [
         { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
         { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
@@ -66,9 +70,10 @@
       "focusCode": "CORR_EXCLUDED",
       "groupId": 10,
       "groupPath": "/Order/Items",
+      "conditionGroupPath": "/Order/Items",
       "rowIds": [1, 2, 3],
       "fields": [
-        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+        { "id": 0, "path": "/Order/Items/Count", "conditionPath": "/Order/Items/Count", "scale": 0, "signed": true }
       ],
       "cells": [
         { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
@@ -91,6 +96,7 @@
         }
       },
       "valueFieldId": 0,
+      "guardFieldId": 0,
       "outerRows": [
         { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
         { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
@@ -104,9 +110,10 @@
       "focusCode": "CORR_EXCLUDED",
       "groupId": 10,
       "groupPath": "/Order/Items",
+      "conditionGroupPath": "/Order/Items",
       "rowIds": [1, 2, 3],
       "fields": [
-        { "id": 0, "path": "/Order/Items/Count", "scale": 0, "signed": false }
+        { "id": 0, "path": "/Order/Items/Count", "conditionPath": "/Order/Items/Count", "scale": 0, "signed": true }
       ],
       "cells": [
         { "rowId": 1, "fieldId": 0, "state": "number", "number": 5 },
@@ -129,10 +136,143 @@
         }
       },
       "valueFieldId": 0,
+      "guardFieldId": 0,
       "outerRows": [
         { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
         { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" },
         { "rowId": 3, "pointer": "/Order[1]/Items[3]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    },
+    {
+      "id": "correlation-consumer-all-valid",
+      "caseRef": "cases/correlation/correlation-consumer-all-valid.json",
+      "focusCode": "CORR_CONSUMER",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "conditionGroupPath": "Items",
+      "rowIds": [1, 2],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/StockQty", "conditionPath": "Items/StockQty", "scale": 0, "signed": false },
+        { "id": 1, "path": "/Order/Items/UnitWeight", "conditionPath": "Items/UnitWeight", "scale": 2, "signed": true },
+        { "id": 2, "path": "/Order/Items/Count", "conditionPath": "Items/Count", "scale": 0, "signed": true }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 7 },
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 5 },
+        { "rowId": 1, "fieldId": 2, "state": "number", "number": 1 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 7 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 6 },
+        { "rowId": 2, "fieldId": 2, "state": "number", "number": 1 }
+      ],
+      "filter": {
+        "kind": "and",
+        "left": {
+          "kind": "compareRepetitions",
+          "comparison": "notEqual",
+          "left": "inner",
+          "right": "outer"
+        },
+        "right": {
+          "kind": "compareNumbers",
+          "comparison": "equal",
+          "left": { "origin": "inner", "fieldId": 0 },
+          "right": { "origin": "outer", "fieldId": 0 }
+        }
+      },
+      "valueFieldId": 1,
+      "guardFieldId": 2,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    },
+    {
+      "id": "correlation-consumer-first-malformed",
+      "caseRef": "cases/correlation/correlation-consumer-first-malformed.json",
+      "focusCode": "CORR_CONSUMER",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "conditionGroupPath": "Items",
+      "rowIds": [1, 2],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/StockQty", "conditionPath": "Items/StockQty", "scale": 0, "signed": false },
+        { "id": 1, "path": "/Order/Items/UnitWeight", "conditionPath": "Items/UnitWeight", "scale": 2, "signed": true },
+        { "id": 2, "path": "/Order/Items/Count", "conditionPath": "Items/Count", "scale": 0, "signed": true }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 7 },
+        { "rowId": 1, "fieldId": 1, "state": "rejected" },
+        { "rowId": 1, "fieldId": 2, "state": "number", "number": 1 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 7 },
+        { "rowId": 2, "fieldId": 1, "state": "number", "number": 6 },
+        { "rowId": 2, "fieldId": 2, "state": "number", "number": 1 }
+      ],
+      "filter": {
+        "kind": "and",
+        "left": {
+          "kind": "compareRepetitions",
+          "comparison": "notEqual",
+          "left": "inner",
+          "right": "outer"
+        },
+        "right": {
+          "kind": "compareNumbers",
+          "comparison": "equal",
+          "left": { "origin": "inner", "fieldId": 0 },
+          "right": { "origin": "outer", "fieldId": 0 }
+        }
+      },
+      "valueFieldId": 1,
+      "guardFieldId": 2,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" }
+      ],
+      "operation": "guardedAnyFilled"
+    },
+    {
+      "id": "correlation-consumer-second-malformed",
+      "caseRef": "cases/correlation/correlation-consumer-second-malformed.json",
+      "focusCode": "CORR_CONSUMER",
+      "groupId": 10,
+      "groupPath": "/Order/Items",
+      "conditionGroupPath": "Items",
+      "rowIds": [1, 2],
+      "fields": [
+        { "id": 0, "path": "/Order/Items/StockQty", "conditionPath": "Items/StockQty", "scale": 0, "signed": false },
+        { "id": 1, "path": "/Order/Items/UnitWeight", "conditionPath": "Items/UnitWeight", "scale": 2, "signed": true },
+        { "id": 2, "path": "/Order/Items/Count", "conditionPath": "Items/Count", "scale": 0, "signed": true }
+      ],
+      "cells": [
+        { "rowId": 1, "fieldId": 0, "state": "number", "number": 7 },
+        { "rowId": 1, "fieldId": 1, "state": "number", "number": 5 },
+        { "rowId": 1, "fieldId": 2, "state": "number", "number": 1 },
+        { "rowId": 2, "fieldId": 0, "state": "number", "number": 7 },
+        { "rowId": 2, "fieldId": 1, "state": "rejected" },
+        { "rowId": 2, "fieldId": 2, "state": "number", "number": 1 }
+      ],
+      "filter": {
+        "kind": "and",
+        "left": {
+          "kind": "compareRepetitions",
+          "comparison": "notEqual",
+          "left": "inner",
+          "right": "outer"
+        },
+        "right": {
+          "kind": "compareNumbers",
+          "comparison": "equal",
+          "left": { "origin": "inner", "fieldId": 0 },
+          "right": { "origin": "outer", "fieldId": 0 }
+        }
+      },
+      "valueFieldId": 1,
+      "guardFieldId": 2,
+      "outerRows": [
+        { "rowId": 1, "pointer": "/Order[1]/Items[1]/Count" },
+        { "rowId": 2, "pointer": "/Order[1]/Items[2]/Count" }
       ],
       "operation": "guardedAnyFilled"
     }
