@@ -10,24 +10,30 @@ The language-neutral semantics live in read-only [`spec/`](spec/) — start at [
 
 ## Goal & role
 
-**A versioned mechanized theory, executable-first, with a required proof spine and additional proofs selected by payoff** (decided 2026-07-12). Build small semantic capsules: each lands with its executable clause, evidence, useful law when one exists, nearest checked non-law, exact assumptions, and coverage entry. The reference evaluator is differentially checked against the engine and by direct replay of `../a12-rulekit/corpus`; proofs establish internal universal consequences and semantic-preservation bridges, never universal correspondence to the external kernel. Lean is the ecosystem's formal semantics-of-record for the chosen account of observed behaviour — *not* a replacement for the shipped Kotlin interpreter. Read [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) for the charter and [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) before extending the proof or semantics architecture; read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) before extending the core types.
+**A versioned mechanized theory, executable-first, with a required proof spine and additional proofs selected by payoff** (decided 2026-07-12). Build small semantic capsules: each lands with its executable clause, evidence, useful law when one exists, nearest checked non-law, exact assumptions, and coverage entry. The reference evaluator is differentially checked against the engine and by direct replay of the a12-dmkits corpus in `../a12-rulekit/corpus`; proofs establish internal universal consequences and semantic-preservation bridges, never universal correspondence to the external kernel. Lean is the ecosystem's formal semantics-of-record for the chosen account of observed behaviour — *not* a replacement for the shipped Kotlin interpreter. Read [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) for the charter and [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) before extending the proof or semantics architecture; read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) before extending the core types.
 
 ## ⚠️ HARD RULE — clean-room reimplementation; never link, call, or transcribe the kernel
 
-This is a **licensing boundary, not a preference**, and it is the same rule a12-rulekit's interpreter already operates under. The A12 kernel is **EUPL-1.2 (copyleft) OR commercial**. A work that *links, ships, or calls* the kernel is a combined work the EUPL copyleft reaches; a **line-by-line transliteration of its source** is a copyright derivative that re-attracts the EUPL. Therefore:
+This is a **licensing boundary, not a preference**, and it is the same rule the a12-dmkits interpreter already operates under. The A12 kernel is **EUPL-1.2 (copyleft) OR commercial**. A work that *links, ships, or calls* the kernel is a combined work the EUPL copyleft reaches; a **line-by-line transliteration of its source** is a copyright derivative that re-attracts the EUPL. Therefore:
 
 - **Never** link, call, or ship the kernel (or a JS-kernel binding) from this project, and **never** transcribe a kernel *source expression* into Lean.
-- **Do** read the kernel — and a12-rulekit's interpreter — to *learn the exact behaviour*, then write **original** Lean and lock it against that behaviour with property/differential tests. Reading the source to *understand* (and to find surprising special cases) is encouraged; the *fix* is never a transliteration. **Copy the mechanism, never the expression.**
+- **Do** read the kernel — and the a12-dmkits interpreter under `../a12-rulekit/interpreter/` — to *learn the exact behaviour*, then write **original** Lean and lock it against that behaviour with property/differential tests. Reading the source to *understand* (and to find surprising special cases) is encouraged; the *fix* is never a transliteration. **Copy the mechanism, never the expression.**
 
-Because this project's source ships no kernel code, it is licensed **MIT** (see [`LICENSE`](LICENSE)) — matching the A12 OSS family (a12-rulekit's source is MIT for the same reason; see [`../a12-rulekit/docs/LICENSING.md`](../a12-rulekit/docs/LICENSING.md)).
+Because this project's source ships no kernel code, it is licensed **MIT** (see [`LICENSE`](LICENSE)) — matching the A12 OSS family (a12-dmkits source is MIT for the same reason; see [`../a12-rulekit/docs/LICENSING.md`](../a12-rulekit/docs/LICENSING.md)).
 
 ## ⚠️ HARD RULE — no machine-specific data in committed files
 
-No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel`, `../a12-rulekit`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does.
+No absolute home paths, usernames, hostnames, emails, or credentials in source, docs, or commit messages. Reference the sibling repos by **relative path** (`../a12-kernel/`, `../a12-rulekit/`); this project assumes they are checked out as adjacent directories under a shared parent, as the rest of the A12 OSS family does.
+
+## Naming convention
+
+- **a12-dmkits** is the project/repository name. Use it when referring to the software, semantics corpus, interpreter, adapter, catalog, documentation, or project as a whole.
+- **dmtool-release** is a12-dmkits' public release/distribution. Use it when referring to the released CLI or public binary surface.
+- **`a12-rulekit/`** is only the local checkout folder name. Use `../a12-rulekit/` or an explicitly labeled “a12-dmkits (`a12-rulekit/` checkout)” when a filesystem path matters; do not use “a12-rulekit” as the project name.
 
 ## ⚠️ HARD RULE — sibling tracked worktrees stay immutable and visibly clean
 
-Treat every tracked or visible-untracked path outside the `a12-kernel-lean` repository root as **strictly read-only**, including all sibling repositories such as `../a12-kernel` and `../a12-rulekit`. The user permits build/test writes only under paths that the owning sibling repository already ignores.
+Treat every tracked or visible-untracked path outside the `a12-kernel-lean` repository root as **strictly read-only**, including all sibling repositories such as `../a12-kernel/` and `../a12-rulekit/`. The user permits build/test writes only under paths that the owning sibling repository already ignores.
 
 - Never edit, create, generate, format, delete, restore, stage, or commit a tracked file outside this repository, and never create a visible untracked file there.
 - Sibling builds, tests, and external kernel-harness runs are allowed only when every produced cache, build directory, report, lock, or temporary artifact is already ignored by that sibling repository. Check the intended path with `git check-ignore` when uncertain.
@@ -37,25 +43,25 @@ Treat every tracked or visible-untracked path outside the `a12-kernel-lean` repo
 
 ## ⚠️ HARD RULE — treat `spec/` as read-only
 
-The language-neutral semantics in [`spec/`](spec/) are consulted upstream reference input, playing the same role for this repository that the merged BA/dev kernel documentation plays for a12-rulekit. They are not a working log or implementation-status surface. Do not edit files under `spec/` unless the user explicitly authorizes that exact change. Put new findings, Lean design decisions, implementation progress, evidence status, research notes, and plans under [`docs/`](docs/) instead.
+The language-neutral semantics in [`spec/`](spec/) are consulted upstream reference input, playing the same role for this repository that the merged BA/dev kernel documentation plays for a12-dmkits. They are not a working log or implementation-status surface. Do not edit files under `spec/` unless the user explicitly authorizes that exact change. Put new findings, Lean design decisions, implementation progress, evidence status, research notes, and plans under [`docs/`](docs/) instead.
 
 ## The source-of-truth hierarchy
 
 Three layers, in authority order for a semantic question:
 
 1. **`../a12-kernel` — the ultimate source of truth (the behavioural oracle).** The real engine. When the local theory and the engine disagree, **the engine wins and the theory is corrected**. Use it to learn and to differentially test — always under the clean-room rule above.
-2. **`spec/` and the Lean theory (this repo) — the primary working reference.** The distilled, language-neutral semantics, executable definitions, and proved consequences of the chosen account. The `§n` taxonomy mirrors a12-rulekit's (below), so section numbers line up across repos.
-3. **`../a12-rulekit` (a12-dmkits) — the knowledge source.** A peer **clean-room** reimplementation of the same semantics (in Kotlin), a reusable test corpus, semantics ledgers, and an evaluation harness.
+2. **`spec/` and the Lean theory (this repo) — the primary working reference.** The distilled, language-neutral semantics, executable definitions, and proved consequences of the chosen account. The `§n` taxonomy mirrors a12-dmkits, so section numbers line up across repos.
+3. **a12-dmkits — the knowledge source, checked out locally as `../a12-rulekit/`.** A peer **clean-room** reimplementation of the same semantics (in Kotlin), a reusable test corpus, semantics ledgers, and an evaluation harness. Its public release is **dmtool-release**.
 
 ### Entry points
 
-The full inventory of both sibling repos (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy). The external Lean case studies and their primary-source links are curated in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
+The full inventory of both sibling checkouts (modules, docs, `interpreter/`, `adapter/`, `corpus/`, catalog) and a per-`§n` drill-down index live in [`docs/SOURCES.md`](docs/SOURCES.md) — the single map from `spec/` prose down to ground truth. Highest-signal starting points: [`../a12-kernel/documentation/_merged/kernel-ba.md`](../a12-kernel/documentation/_merged/kernel-ba.md) (the definitive behaviour spec), a12-dmkits' [`../a12-rulekit/docs/SEMANTICS-MAP.md`](../a12-rulekit/docs/SEMANTICS-MAP.md) (the guard-checked `§n` hub), and [`../a12-rulekit/interpreter/`](../a12-rulekit/interpreter/) (the peer clean-room engine — read for approach, never to copy). The external Lean case studies and their primary-source links are curated in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
 
-**Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-rulekit contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle. Kernel execution happens only through the external sibling harness, never as a dependency or shipped component of this repository. Codex may run that harness while preserving the sibling's tracked/visible worktree under the rule above, then bring only portable own-domain observations into this repository. A capsule without them remains marked `external evidence pending` rather than kernel-correspondence complete. The exact topology and evidence roles are fixed in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
+**Differential doctrine:** Kernel differential testing remains the empirical backbone. Each executable Lean capsule must be checked against retained portable observations from the real kernel; proofs establish internal laws; a12-dmkits contributes knowledge, evidence transport, and clean-room triangulation, but its interpreter is never the oracle. Kernel execution happens only through the external sibling harness, never as a dependency or shipped component of this repository. Codex may run that harness while preserving the sibling's tracked/visible worktree under the rule above, then bring only portable own-domain observations into this repository. A capsule without them remains marked `external evidence pending` rather than kernel-correspondence complete. The exact topology and evidence roles are fixed in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md).
 
 ### Codebase orientation
 
-For codebase warm-ups and explanations, work directly from this repository's source and documentation. Ignore Showboat and the a12-rulekit CLI unless the user explicitly asks for either; they are not part of understanding or explaining this codebase.
+For codebase warm-ups and explanations, work directly from this repository's source and documentation. Ignore Showboat and the dmtool-release CLI unless the user explicitly asks for either; they are not part of understanding or explaining this codebase.
 
 ## Building & running
 
@@ -63,6 +69,7 @@ Toolchain: **Lean 4.31.0**, pinned in [`lean-toolchain`](lean-toolchain); Lake 5
 
 ```sh
 lake build                          # build definitions, proofs, and executable conformance locks
+lake test                           # replay retained kernel 30.8.1 observations through the Lean projection
 ./scripts/check-lean-trust.sh       # reject proof escape hatches and audit theorem-root axioms
 lake env lean A12Kernel/Core.lean   # elaborate a single module with imports available
 ```
@@ -77,6 +84,7 @@ lake env lean A12Kernel/Core.lean   # elaborate a single module with imports ava
 - [`A12Kernel/Elaboration/`](A12Kernel/Elaboration/) — checked lowering from a structured, parser-independent surface subset, including normalized non-repeatable path resolution and model-derived cell policies.
 - [`A12Kernel/Proofs.lean`](A12Kernel/Proofs.lean) — trusted theorem root importing algebra, information-order, observation, required-staging, elaboration, and context-coherence proofs.
 - [`A12Kernel/Conformance.lean`](A12Kernel/Conformance.lean) — executable locks for the supported fragment; these are semantic examples, not a substitute for external differential evidence.
+- [`A12Kernel/EvidenceMain.lean`](A12Kernel/EvidenceMain.lean) — IO-only `lake test` driver for retained external observations; it is outside the library, conformance, and proof roots.
 - [`A12Kernel/Basic.lean`](A12Kernel/Basic.lean) — smoke module.
 
 The design decisions behind these types (extrinsic AST, `Rat` + rendered stored-form, the unified `Verdict`, the two-level cell model, the `Document` split, the injected `World`) are recorded with rationale in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

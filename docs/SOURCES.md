@@ -1,8 +1,8 @@
 # Authoritative sources & how to drill
 
-The working map from `spec/` prose down to ground truth. [`../spec/`](../spec/) is the *self-contained prose helper* (its intro deliberately promises you need no other repo to *understand* the semantics); **this doc is the drill hub** that connects each `spec/` area to the authoritative sources when you need to *verify* or go deeper. Authority order: **[`../../a12-kernel`](../../a12-kernel) (the engine — ground truth) → [`../spec/`](../spec/) → [`../../a12-rulekit`](../../a12-rulekit) (peer clean-room + verified knowledge)**. Everything here is pinned to kernel **30.8.1**. Read to learn behaviour; never link, call, or transcribe the engine (see [`../CLAUDE.md`](../CLAUDE.md)).
+The working map from `spec/` prose down to ground truth. [`../spec/`](../spec/) is the *self-contained prose helper* (its intro deliberately promises you need no other repo to *understand* the semantics); **this doc is the drill hub** that connects each `spec/` area to the authoritative sources when you need to *verify* or go deeper. Authority order: **[`../../a12-kernel`](../../a12-kernel) (the engine — ground truth) → [`../spec/`](../spec/) → [a12-dmkits (local `a12-rulekit/` checkout)](../../a12-rulekit) (peer clean-room + verified knowledge)**. Everything here is pinned to kernel **30.8.1**. Read to learn behaviour; never link, call, or transcribe the engine (see [`../CLAUDE.md`](../CLAUDE.md)).
 
-**The drill chain**, per semantic area (`§n` = the shared 14-section taxonomy): our `spec/NN-*.md` (understand) → a12-rulekit `KERNEL-SEMANTICS.md §n` (the canonical rule) → `KERNEL-FINDINGS.md §n` (edge cases + the oracle that established each) → the catalog `semantics` facet if one exists (machine-readable + runnable probes) → the `corpus/` family if one exists (replayable `expected` signatures) → the `interpreter` `commonTest` classes (portable property/unit tests to mirror as Lean theorems) → if you need the mechanism, the kernel runtime class. a12-rulekit's own [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) is the **guard-checked hub** for the middle of that chain — follow it for the exhaustive per-`§n` test list rather than duplicating it here.
+**The drill chain**, per semantic area (`§n` = the shared 14-section taxonomy): our `spec/NN-*.md` (understand) → a12-dmkits `KERNEL-SEMANTICS.md §n` (the canonical rule) → `KERNEL-FINDINGS.md §n` (edge cases + the oracle that established each) → the catalog `semantics` facet if one exists (machine-readable + runnable probes) → the `corpus/` family if one exists (replayable `expected` signatures) → the `interpreter` `commonTest` classes (portable property/unit tests to mirror as Lean theorems) → if you need the mechanism, the kernel runtime class. a12-dmkits' own [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) is the **guard-checked hub** for the middle of that chain — follow it for the exhaustive per-`§n` test list rather than duplicating it here.
 
 ---
 
@@ -30,7 +30,7 @@ TS mirror (identical, German-named files): `kernel-rt/kernel-core-runtime-ts/src
 
 ---
 
-## `../../a12-rulekit` — peer clean-room engine + verified knowledge
+## a12-dmkits — peer clean-room engine + verified knowledge (`../../a12-rulekit/` checkout)
 
 ### `interpreter/` — a peer clean-room KMP evaluator (the closest reference)
 
@@ -66,7 +66,7 @@ The guard-checked hub is [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANT
 
 ## The `§n` drill-down index
 
-The per-`§n` map — which a12-rulekit source, catalog facet, corpus family, and kernel class carries each area — lives in [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) §9, kept inside the spec map so it doubles as a live index from the prose into ground truth. For the exhaustive per-`§n` lock-test list, follow a12-rulekit's guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (it re-derives from the live surface, so it never rots).
+The per-`§n` map — which a12-dmkits source, catalog facet, corpus family, and kernel class carries each area — lives in [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) §9, kept inside the spec map so it doubles as a live index from the prose into ground truth. For the exhaustive per-`§n` lock-test list, follow a12-dmkits' guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (it re-derives from the live surface, so it never rots).
 
 ## What the coverage tells us
 

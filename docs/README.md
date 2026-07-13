@@ -9,7 +9,8 @@ This index routes readers to the document that owns each kind of knowledge. The 
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — the current Lean encoding and module structure, including adopted and rejected representation choices.
 - [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) — durable numbered findings and rationale from formalization and local evidence research.
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) — why Lean, what it can and cannot establish, audited project studies, proof opportunities, trust rules, and the later Verso strategy.
-- [`SOURCES.md`](SOURCES.md) — the drill chain from each semantic topic to the read-only kernel and a12-rulekit sources, findings, corpus, and differential locks.
+- [`EVIDENCE.md`](EVIDENCE.md) — the retained kernel-observation boundary, focused Lean projection, replay guarantees, and current external-adequacy limits.
+- [`SOURCES.md`](SOURCES.md) — the drill chain from each semantic topic to the read-only kernel and a12-dmkits sources, findings, corpus, and differential locks in the local `a12-rulekit/` checkout.
 
 ## Semantic input
 
@@ -17,4 +18,4 @@ The language-neutral semantic body lives under [`../spec/`](../spec/) and is tre
 
 ## Ownership rule
 
-Use one owning surface per fact: semantic meaning in the read-only `spec/`; settled Lean treatment in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md); current structure in [`ARCHITECTURE.md`](ARCHITECTURE.md); live coverage/evidence state in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); future intent in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md). Cross-link instead of copying.
+Use one owning surface per fact: semantic meaning in the read-only `spec/`; settled Lean treatment in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md); current structure in [`ARCHITECTURE.md`](ARCHITECTURE.md); evidence transport in [`EVIDENCE.md`](EVIDENCE.md); live coverage/evidence state in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); future intent in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md). Cross-link instead of copying.

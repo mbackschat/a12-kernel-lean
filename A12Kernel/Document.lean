@@ -36,7 +36,7 @@ structure CellAddr where
     String length/pattern semantics still to pin: the kernel counts Java `String.length`
     (UTF-16 code units), not Lean USVs — but the default BMP legal charset makes any
     non-BMP input a formal error, so the two counts agree by default (cross-check
-    `../a12-rulekit`'s interpreter when the string stage lands). -/
+    the a12-dmkits interpreter under `../a12-rulekit/interpreter/` when the string stage lands). -/
 structure Document where
   instantiatedRows : List RowAddr
   rawCells         : CellAddr → Option String
@@ -52,7 +52,7 @@ abbrev Instant := Int
 /-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise
     read from ambient state, kept as explicit input so `eval` / `compute` stay pure (no
     `IO`; determinism given a clock). Timezone semantics (with DST spring-gap / autumn-fold
-    and a pinned tz-rule version — the one still-open divergence in `../a12-rulekit`, IG62),
+    and a pinned tz-rule version — the one still-open a12-dmkits divergence (IG62 in `../a12-rulekit/`)),
     the custom-condition / validator oracles, and the label provider join here with the
     dates / custom stages. -/
 structure World where

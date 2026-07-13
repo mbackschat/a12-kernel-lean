@@ -1,0 +1,39 @@
+{
+    "meta": {
+        "id": "absolute-required-number-empty",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§4"
+        ],
+        "tags": [
+            "lean-flat",
+            "required"
+        ],
+        "notes": "an absolute required Number fires mandatoryField while otherwise empty"
+    },
+    "modelRef": "models/lean-absolute-required-number.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "EMPTY",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ]
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "mandatoryField|OMISSION_ERROR|/Order[1]/Quantity"
+    ]
+}

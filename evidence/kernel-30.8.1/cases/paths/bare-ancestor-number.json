@@ -1,0 +1,57 @@
+{
+    "meta": {
+        "id": "bare-ancestor-number",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§10"
+        ],
+        "tags": [
+            "lean-flat"
+        ],
+        "notes": "bare lookup searches ancestor groups before model-wide fallback"
+    },
+    "modelRef": "models/lean-bare-ancestor-number.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Quantity",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "5"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/ShippingAddress",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/ShippingAddress/Street",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "Main"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "BARE_ANCESTOR_NUMBER|VALUE_ERROR|/Order[1]/Quantity"
+    ]
+}
