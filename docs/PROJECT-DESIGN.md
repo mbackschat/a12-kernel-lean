@@ -19,7 +19,7 @@ The project follows a **reuse-before-invention** discipline. Architecture and pr
 | User | Question this project should answer |
 |---|---|
 | Semantics maintainer | What exactly does this condition or computation mean, where did that claim come from, and what interactions follow from it? |
-| Interpreter implementer | What is the small reference behavior, which edge cases must conform, and which optimizations preserve it? |
+| Interpreter implementer | What is the language-neutral decision procedure, which edge cases and non-laws must conform, which optimizations preserve it, and can I implement it without repeating kernel research? |
 | Rule author or domain expert | Are two rules equivalent, does one imply another, can a computation violate a business invariant, and which assumptions bound the answer? |
 | Formalization contributor | What is trusted, what is proved, which fragment is supported, and what obligation closes the next semantic slice? |
 | Reviewer or auditor | Does a headline such as “sound,” “complete,” or “equivalent” match the exact theorem, result domain, evidence, and external boundary? |
@@ -81,6 +81,16 @@ A slice that misses an applicable obligation is `partial` and records the missin
 
 Completed and partial capsule instances are reported in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), with their immediate continuation state in [`PLAN.md`](PLAN.md). They are not repeated here because their evidence counts and exact support boundaries change while this delivery contract should remain stable.
 
+## Independent-interpreter handover and research closure
+
+Serving as a reference for independent interpreters requires more than correct Lean code and a result oracle. For each release-supported capability, this project must package the semantics so that a Rust, Kotlin, TypeScript, or other implementer can reproduce the normalized behavior without access to the kernel, the sibling a12-dmkits checkout, or undocumented maintainer knowledge. Lean is the exact executable backstop; the primary handover is language-neutral.
+
+The release gate is **research closure**: every observable branch required by the capability is either determined with provenance or rejected explicitly; the decision procedure, checked examples, evidence limits, theorem/non-law boundary, protocol, and manifest agree; and no downstream step delegates semantic archaeology to the consumer. Internal Lean work may be marked partial before that package exists, but an unresearchable gap keeps the capability out of the release-supported set.
+
+The adequacy test is a **cold implementation**. A developer or isolated coding agent with no kernel or sibling access receives only the proposed compatibility-kit artifacts and must implement the fragment, pass its fixtures and conformance tools, derive its property/non-law tests, explain its evidence limits, and classify an injected divergence. Needing kernel research, guessing an undocumented branch, or merely translating Lean syntax is a failed handover even if the resulting examples happen to pass.
+
+[`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the exact implementation-capsule contents, research-closure checklist, cold-implementer gate, downstream playbook, and disagreement protocol. A semantic capsule closes the internal theory and evidence obligations above; its implementation capsule is the consumer-facing projection required before release support.
+
 ## Planning high-complexity operator families
 
 The operator surface is planned as a matrix of consuming clauses, not as a checklist of operator names and not as a global type-dispatch table. [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function) demonstrates why: even empty-input behavior varies by kind baseline, operator and operand position, enclosing consumer, field role, phase, row eligibility, and result polarity.
@@ -126,11 +136,12 @@ Breadth does not advance a milestone while the current slice lacks its evidence,
 
 ## Success and reevaluation criteria
 
-The project succeeds only when all three claim classes are visible:
+The project succeeds only when its claim classes, independent-implementation boundary, and delivery discipline are visible:
 
 - **Coverage:** every in-scope taxonomy/operator clause is implemented or explicitly classified; no silent semantic fallthrough exists.
 - **Internal correctness:** the required proof spine is complete for its named fragments, theorem roots have clean reviewed dependencies, and exclusions are documented beside the claim.
 - **Kernel correspondence:** the reference evaluator agrees with the pinned retained projections of focused kernel evidence exported through the external adapter harness, with every divergence explicit.
+- **Independent implementability:** every release-supported capability is research-closed and has passed the cold-implementer gate without kernel, sibling-source, or undocumented-context access.
 - **Operational discipline:** each semantic capsule closes its evidence, theorem/counterexample, coverage, trust, and build gates before the next layer expands.
 
 The first proof-bearing capsule is also the project's reevaluation point. Continue the full program only if it demonstrates material value beyond the Kotlin interpreter plus tests—such as a useful universal law, a clarified false generalization, a semantics-preserving transformation, or a reusable model-level proof boundary. If it produces only another evaluator and ceremonial `rfl` facts, redesign or stop before reproducing the entire operator surface.
