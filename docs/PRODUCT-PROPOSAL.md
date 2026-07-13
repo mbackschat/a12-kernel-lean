@@ -17,6 +17,7 @@ A useful first 0.x release could contain:
 - the retained A12 kernel 30.8.1 evidence bundle and a conformance runner that replays its supported projection;
 - a machine-readable supported-fragment manifest that fails closed rather than guessing outside the implemented theory;
 - a theorem and checked-counterexample index with a report of trusted roots, dependencies, and exclusions;
+- a language-neutral implementer handbook containing a research-closed decision procedure, worked trace, evidence limits, property/non-law guidance, and escalation path for every released capability;
 - reproducible binaries or packages suitable for CI use on the supported platforms;
 - a concise user-facing compatibility guide whose displayed examples are executed or elaborated by a documentation regression gate and whose support metadata comes from canonical sources, using whatever publication mechanism best fits the material.
 
@@ -49,6 +50,14 @@ expanded A12 model + resolved rule + document + world
 The diagram is a target integration shape, not a claim that all adapters already exist. The kernel remains outside this repository and outside the released process. The a12-dmkits adapter in the sibling `a12-rulekit/` checkout may execute focused kernel probes externally and export portable observations; this repository consumes only the retained clean-room evidence. The a12-dmkits interpreter remains a useful independent peer for triangulation and disagreement discovery, never the behavioral oracle.
 
 The reference CLI should optimize for determinism, stable structured output, and diagnostic precision before terminal presentation. Human formatting can be layered over the JSON contract. A library API may coexist with the CLI, but the process-level protocol is the safer ecosystem boundary for Kotlin, TypeScript, CI, and future languages because it avoids coupling consumers to Lean runtime internals.
+
+## Independent-interpreter handover
+
+The compatibility kit should remove repeated kernel archaeology from downstream implementation work. A capability may be under internal Lean development before its handover is complete, but it enters a released supported set only when the research-closure gate in [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) is green: language-neutral types and decision procedure, runnable fixtures, retained evidence and its limits, theorem-inspired properties, checked non-laws, a worked non-trivial trace, oracle/conformance tooling, and an escalation protocol all describe the same fragment.
+
+The corresponding product test is a cold implementation by a developer or isolated coding agent with no kernel access, sibling checkout, or private conversation context. It must be able to implement the normalized fragment idiomatically, pass its conformance surface, explain the evidence boundary, and diagnose a seeded disagreement. Any question that forces fresh kernel research is a product defect to close in this repository and release once for every consumer, not work to repeat in Rust, Kotlin, or TypeScript.
+
+This handover does not transfer Lean proofs to the independent implementation. The kit distinguishes proved properties of the Lean theory, executed cross-language conformance, and retained empirical kernel correspondence; a compatibility report names all three without collapsing them.
 
 ## Supported-fragment manifest
 
@@ -100,15 +109,16 @@ A 0.x compatibility-kit release is credible only when:
 
 1. the normalized protocol is versioned, deterministic, documented, and protected by process-level conformance tests;
 2. every accepted input belongs to a machine-readable supported fragment and every unsupported construct fails closed with a structured diagnostic;
-3. each claimed primitive semantic choice has retained, versioned kernel observations or is visibly marked as lacking external correspondence evidence;
+3. each claimed kernel-semantic choice has retained, versioned kernel observations; any `external evidence pending` capability stays out of the released supported set, while project-defined transport and diagnostic choices are labeled separately and process-tested;
 4. the theorem and counterexample index names exact hypotheses, result domains, exclusions, and trusted roots rather than advertising theorem counts;
 5. the trust audit, executable examples, retained evidence replay, protocol tests, and reproducible build are green from a clean checkout;
 6. the released source, binaries, evidence, and documentation respect the clean-room boundary and contain no kernel-linked or transcribed implementation;
 7. user-facing executable examples, if shipped, are fed by the corresponding regression surface and clearly separate internal proof claims from empirical kernel correspondence.
+8. every manifest-listed release capability is research-closed, ships its complete implementation capsule, and has passed a recorded cold-implementer test without kernel or sibling-source access.
 
 ## Recommended progression
 
-1. **Compatibility kit:** stabilize the normalized protocol, reference CLI, support manifest, retained evidence bundle, conformance runner, CI integration, and a concise user guide with its own executable-documentation regression gate.
+1. **Compatibility kit:** stabilize the normalized protocol, reference CLI, support manifest, retained evidence bundle, conformance runner, CI integration, research-closed implementer handbook, cold-implementation gate, and a concise user guide with its own executable-documentation regression gate.
 2. **Complete validation reference:** add whole-rule evaluation, message location and type, iteration, correlation, polarity, and partial validation across explicitly versioned fragments.
 3. **Computation reference:** add ordered state transition, clearing, poison, target rendering, and implicit validation rules while preserving read-order observability.
 4. **Model-audit tooling:** expose equivalence, implication, redundancy, overlap, counterexample generation, dependency analysis, and domain-invariant checks over admitted models.

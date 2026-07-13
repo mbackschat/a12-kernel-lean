@@ -33,11 +33,11 @@ The flat CLI capsule is committed as `b5dcf8d` and the checkpoint has been accep
 
 The GMP outlook review makes no dependency decision: the bundled static archive is under 1 MB and is not the approximately 100 MB size cause; retain the official toolchain for now. Lean's built-in `USE_GMP=OFF` backend is the only credible later dependency-removal experiment, but it changes `.olean` compatibility and therefore requires an isolated full custom-toolchain rebuild plus semantic and performance qualification. Shared GMP changes deployment more than total size, and third-party or fixed-width replacements are not viable current paths. [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md#gmp-alternatives-outlook) owns the evidence and experiment gate.
 
-This release-engineering spike is the next natural user-verification point. If it is an uncommitted diff when a session resumes, inspect it, finish every gate, and report it for verification without starting the correlation protocol work. Once the spike is accepted, the next semantic delivery remains the checked one-star correlation operation below; the spike does not adopt or schedule a packaged public release.
+The release-engineering spike was accepted when the user instructed the plan to continue and is committed separately as `e318c25`. It does not adopt or schedule a packaged public release. The current delivery is now the checked one-star correlation operation below, expanded by the user into the first concrete independent-interpreter handover spike.
 
-## Next delivery unit: expose the checked one-star correlation slice
+## Current delivery unit: expose and hand over the checked one-star correlation slice
 
-After this checkpoint is accepted, the next recommended product increment is a row-addressed normalized operation for the already implemented and evidenced one-star captured-outer validation slice. This is preferable to adding a new semantic family immediately because it makes the project's most difficult existing mechanism—the `$`-outer distinction—available to independent consumers while reusing its checked lowering, candidate validation, retained kernel observations, and proofs.
+The current product increment is a row-addressed normalized operation for the already implemented and evidenced one-star captured-outer validation slice. This is preferable to adding a new semantic family immediately because it makes the project's most difficult existing mechanism—the `$`-outer distinction—available to independent consumers while reusing its checked lowering, candidate validation, retained kernel observations, and proofs. It is also the first implementation-capsule spike under [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md): the delivered material must be sufficient for a Rust developer or isolated coding agent to implement the fragment without kernel or sibling-source access.
 
 The design must stop and be reassessed if exposing that exact slice would require pretending to have a general `Document` adapter, complete repeatable semantics, or filtered-result polarity. In that case, record the missing abstraction in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and choose the smallest semantic capsule that closes it; do not widen protocol v1 around an invented approximation.
 
@@ -49,14 +49,17 @@ Success criteria:
 4. Every accepted request routes through the existing checked correlation lowering and model-derived candidate validator. There is no second repeatable evaluator and no general DM-JSON or concrete DSL parser.
 5. Process-level red/green tests cover an accepted `$` case, self-exclusion, malformed selected versus dropped consumers, row-zero/duplicate-candidate rejection, a static elaboration rejection, deterministic output, and unchanged flat fixtures.
 6. The generated support manifest distinguishes the two operations and their disjoint supported fragments. The implementation map preserves the exact external-evidence projection and marks any transport-only behavior separately.
+7. The handover includes the language-neutral checked model and decision procedure, ordinary and separating fixtures, worked `$` trace, evidence-to-claim map, language-neutral properties and non-laws with Lean audit links, exact exclusions, reference commands, candidate-conformance workflow, and a seeded-divergence exercise.
+8. An independent cold review receives only the handover artifacts and project-local public reference surfaces, not the kernel or sibling sources; every ambiguity it finds is corrected or recorded as a release-blocking handover gap.
 
 ## Implementation sequence
 
-1. Read [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), the §9 row in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and the public checked API in [`../A12Kernel/Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean). Write the smallest operation-specific contract and nearest exclusions before code.
+1. Read [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), the §9 row in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and the public checked API in [`../A12Kernel/Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean). Write the smallest operation-specific contract, implementation capsule, and nearest exclusions before code.
 2. Add independent process-level red tests that leave the existing flat fixtures unchanged and demonstrate the exact firing-row boundary.
 3. Add only the transport structures and pure adapter required to call the checked correlation route; keep JSON/IO outside the library, conformance, and trusted theorem roots.
 4. Extend the finite support declarations and shipped manifest mirror, then add runnable correlation samples that are the same files exercised by the black-box gate.
-5. Update the ownership-triggered documents, run independent code/protocol/proof-claim/documentation reviews, run every final gate, and commit the correlation process capsule separately.
+5. Add a dependency-free candidate-conformance workflow and complete the implementation handover with the exact properties, non-laws, worked trace, evidence limits, and seeded-divergence exercise.
+6. Update the ownership-triggered documents, run independent code/protocol/proof-claim/documentation and cold-implementer reviews, run every final gate, and commit the correlation handover capsule separately.
 
 ## Deliberate exclusions from the next delivery unit
 
@@ -64,4 +67,4 @@ The next operation does not add concrete EN/DE condition parsing, general DM-JSO
 
 ## Resume procedure
 
-Read [`../CLAUDE.md`](../CLAUDE.md), this file, [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), and any current production work in [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md); inspect `git status --short` and the current diff; verify `lake build`, `lake test`, `lake exe checkReferenceProcess`, `./scripts/check-lean-trust.sh`, `git diff --check`, no `spec/` diff, and both sibling statuses against their recorded baseline. If the release-engineering spike is still under review, stop after its gates and report it. Otherwise begin at the correlation implementation sequence; preserve the existing flat protocol bytes and do not broaden either semantic fragment merely to make a transport test convenient.
+Read [`../CLAUDE.md`](../CLAUDE.md), this file, [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), and any current production work in [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md); inspect `git status --short` and the current diff; verify `lake build`, `lake test`, `lake exe checkReferenceProcess`, `./scripts/check-lean-trust.sh`, `git diff --check`, no `spec/` diff, and both sibling statuses against their recorded baseline. Continue the correlation handover implementation sequence; preserve the existing flat protocol bytes and do not broaden either semantic fragment merely to make a transport or implementer example convenient.
