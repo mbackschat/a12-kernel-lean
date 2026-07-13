@@ -12,11 +12,11 @@ Lean makes every captured semantic clause explicit and executable, then lets sel
 
 ## Status
 
-An internal Lean reference evaluator now exists for the implemented fragments: formal checking and phase observation; typed flat Number/Boolean/Confirm equality, inequality, and presence; verdict-aware `And`/`Or`; staged absolute requiredness; checked flat model/path resolution and model-derived cell checking; ordered one-group iteration with row-local `Having`; and one captured-outer `$` correlation shape with selected presence and a separate outer guard. A checked parser-independent lowering route now resolves one group-qualified direct-child star, correlated Number or `CurrentRepetition` comparisons, explicit repeatable-group paths, field group/scope, operator-specific equality scale legality, and raw runtime cells. Its public firing route rejects row zero and duplicate candidates before evaluation. The accompanying theorems cover algebra, selector/relation agreement, filter-before-consumer footprints, declaration/policy coherence, fail-closed runtime routing, and carried structural certificates; they do not yet prove surface-to-core semantic preservation.
+An internal Lean reference evaluator now exists for the implemented fragments: formal checking and phase observation; typed flat Number/Boolean/Confirm equality, inequality, and presence; verdict-aware `And`/`Or`; staged absolute requiredness; checked flat model/path resolution and model-derived cell checking; ordered one-group iteration with row-local `Having`; and one captured-outer `$` correlation shape with selected presence and a separate outer guard. A checked parser-independent lowering route resolves one group-qualified direct-child star, correlated Number or `CurrentRepetition` comparisons, explicit repeatable-group paths, field group/scope, operator-specific equality scale legality, and raw runtime cells. Its normalized public route further requires non-empty contiguous one-based candidates and returns firing rows only. The accompanying theorems cover algebra, selector/relation agreement, filter-before-consumer footprints, declaration/policy coherence, fail-closed runtime routing, and carried structural certificates; they do not yet prove surface-to-core semantic preservation.
 
 `lake test` replays 42 retained kernel 30.8.1 observations: 36 runtime cases and six static authoring observations. The twelve captured-outer runtime witnesses retain exact firing rows and stored `$` conditions; four new static witnesses pin all-outer rejection, unequal-scale `==` rejection, acceptance of the same unequal-scale operands under `<`, and one sibling-repeatable-group inner-reference rejection. The fourth evidence projection carries no expected codes, pins each complete seeded model file by SHA-256, binds its structured model and rule to the complete captured draft identity, and fails closed on every unmapped elaboration result, including `missingOuter`. Earlier evidence corrected bare-name resolution and exposed one a12-dmkits interpreter disagreement on a malformed uncorrelated filter. [`docs/EVIDENCE.md`](docs/EVIDENCE.md) owns the exact claim boundary.
 
-The first product-shaped Lean interpreter boundary is now available as the `a12-kernel-reference` executable. Its versioned normalized [JSON protocol](docs/PROTOCOL.md) exposes exactly the checked non-repeatable flat slice: Number/Boolean/Confirm equality, inequality, and presence; `And`/`Or`; structured absolute, parent-relative, and bare paths; model-derived raw checking; the row-content gate; stable fail-closed diagnostics; and a generated [support manifest](reference/supported-fragment-v1.json). It accepts neither the bilingual concrete DSL nor general DM-JSON, and it does not yet expose the internally implemented iteration/correlation fragments, `Document` adaptation, computation, partial validation, or messages.
+The product-shaped `a12-kernel-reference` executable has two disjoint operations in its versioned normalized [JSON protocol](docs/PROTOCOL.md): the checked non-repeatable flat slice, and `singleGroupCorrelation.firingRows` for the named one-group captured-outer slice. The generated schema-2 [support manifest](reference/supported-fragment-v1.json) declares each positive boundary separately. A [concrete independent-implementer kit](docs/IMPLEMENTER-KIT-CORRELATION.md), 16-case [conformance suite](reference/single-group-correlation-v1.conformance.json) manually cross-referenced to retained evidence, and candidate runner now show a Rust developer exactly how to implement and test the difficult `$` route without kernel or sibling-source access. This remains a development spike rather than a release-ready complete interpreter: the suite-to-evidence mapping still needs a mechanical integrity bridge, and the concrete DSL, general DM-JSON/`Document` adaptation, general repeatable execution, polarity, computation, partial validation, and messages remain outside it.
 
 ## Build
 
@@ -26,6 +26,7 @@ Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned 
 lake build
 lake test
 lake exe checkReferenceProcess
+lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/single-group-correlation-v1.conformance.json
 ./scripts/check-lean-trust.sh
 ```
 
@@ -45,6 +46,14 @@ lake exe a12-kernel-reference --manifest
 
 See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the request/response contract, exit behavior, all sample scenarios, and deliberate exclusions.
 
+The captured-outer sample returns firing rows 2 and 3:
+
+```sh
+lake exe a12-kernel-reference < examples/reference-cli/correlation-direction.request.json
+```
+
+See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) for the exact language-neutral model, algorithm, worked traces, evidence/law/non-law map, Rust playbook, and candidate tools.
+
 ## Design and sources
 
 - [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) — the project charter: purpose, ecosystem role, deliverables, non-goals, and success criteria.
@@ -53,6 +62,7 @@ See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the request/response contract, ex
 - [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
 - [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
 - [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md) — language-neutral handover contract and playbook for independent interpreters.
+- [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) — concrete one-star correlation implementation capsule and Rust-facing conformance workflow.
 - [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.
 - [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) — Lean's role and potential, audited project studies, proof/trust boundaries, theorem opportunities, and best practices.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the concrete Lean encoding decisions and rejected alternatives.

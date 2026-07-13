@@ -12,6 +12,7 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) owns the current Lean structure, representations, dependency boundaries, and adopted/rejected encoding decisions. It describes what exists, not a feature-status board.
 - [`PROTOCOL.md`](PROTOCOL.md) owns the normalized reference process and JSON contract, including invocation, exit behavior, closed wire shapes, diagnostics, limits, support-manifest interpretation, and runnable sample data.
 - [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the independent-interpreter handover contract, implementation-capsule contents, research-closure and cold-implementer gates, downstream playbook, and disagreement protocol.
+- [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) owns the concrete `single-group-correlation-v1` handover: its language-neutral algorithm, worked traces, evidence/law/non-law map, candidate suite usage, and capsule-specific open boundary. Future capability kits should be separate documents only when an actual handover capsule exists.
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
 - [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable, numbered findings about this project's formalization treatment and research conclusions. A finding is settled knowledge and rationale, not an open task.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the retained external-observation format, projection boundary, replay guarantees, and evidence-specific limitations.
@@ -33,6 +34,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A new or changed Lean module, representation, or dependency boundary updates [`ARCHITECTURE.md`](ARCHITECTURE.md).
 - A changed reference-process invocation, wire shape, diagnostic, limit, manifest field, or runnable sample updates [`PROTOCOL.md`](PROTOCOL.md).
 - A changed implementer handover artifact, research-closure requirement, cold-implementer test, downstream conformance playbook, or missing-semantics escalation path updates [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md).
+- A changed one-star correlation wire/semantic handover, suite, candidate tool, evidence mapping, law/non-law guidance, or release gap updates [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md).
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).

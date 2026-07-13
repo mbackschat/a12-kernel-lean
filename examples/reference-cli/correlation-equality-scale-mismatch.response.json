@@ -1,0 +1,24 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "outcome": "error",
+  "diagnostic": {
+    "category": "elaboration",
+    "code": "equalityScaleMismatch",
+    "at": "$.rule.having",
+    "details": {
+      "leftPath": [
+        "Order",
+        "Items",
+        "StockQty"
+      ],
+      "leftScale": 0,
+      "rightPath": [
+        "Order",
+        "Items",
+        "UnitWeight"
+      ],
+      "rightScale": 2
+    }
+  }
+}

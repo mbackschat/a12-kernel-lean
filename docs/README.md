@@ -15,6 +15,7 @@ This is the canonical index and ownership map for the project's documentation. I
 - **[`ARCHITECTURE.md`](ARCHITECTURE.md)** — the Lean structure that exists now: representations, module boundaries, dependency direction, and adopted or rejected design choices.
 - **[`PROTOCOL.md`](PROTOCOL.md)** — the exact normalized reference-process contract: invocation, closed JSON request and response algebra, diagnostics, limits, support manifest, and regression-checked sample data.
 - **[`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md)** — the language-neutral handover contract for independent interpreters: implementation-capsule contents, research closure, cold implementation, downstream conformance, and missing-semantics escalation.
+- **[`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md)** — the first concrete implementation capsule: exact one-star captured-outer model and algorithm, worked traces, evidence/law/non-law maps, Rust playbook, candidate suite commands, and open release boundary.
 - **[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md)** — durable numbered conclusions and rationale learned while formalizing the semantics and studying local evidence.
 - **[`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md)** — the live `§n`-to-Lean map: implemented fragments, theorem and counterexample coverage, retained kernel evidence, exact support boundaries, and open adequacy obligations.
 
@@ -44,6 +45,7 @@ The language-neutral semantic body lives under [`../spec/`](../spec/) and is tre
 | Current module and representation design | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Normalized process/JSON contract, diagnostics, limits, manifest, and runnable samples | [`PROTOCOL.md`](PROTOCOL.md) |
 | Independent-interpreter handover, research-closure and cold-implementer gates, and downstream playbook | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) |
+| Concrete `single-group-correlation-v1` implementer material, algorithm, tools, and capsule-specific gaps | [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) |
 | Settled formalization conclusions and rationale | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
 | Live semantic coverage and open evidence/proof obligations | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
 | Retained external-observation and replay contract | [`EVIDENCE.md`](EVIDENCE.md) |

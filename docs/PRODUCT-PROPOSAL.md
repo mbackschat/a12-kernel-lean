@@ -25,7 +25,7 @@ The proposed public claim is deliberately narrow:
 
 > Mechanized executable reference semantics for the named A12 30.8.1 fragment, internally proved at the documented boundaries and empirically checked against retained kernel evidence.
 
-The release must not claim that it verifies the external kernel implementation, covers all A12 semantics, replaces the production runtime, or proves an independent Kotlin or TypeScript implementation correct for inputs outside a separately established conformance boundary. An unsupported construct is a structured rejection, never permission to extrapolate from a nearby supported operator.
+The release must not claim that it verifies the external kernel implementation, covers all A12 semantics, replaces the production runtime, or proves an independent Rust, Kotlin, or TypeScript implementation correct for inputs outside a separately established conformance boundary. An unsupported construct is a structured rejection, never permission to extrapolate from a nearby supported operator.
 
 ## Product boundary and integration
 
@@ -49,7 +49,7 @@ expanded A12 model + resolved rule + document + world
 
 The diagram is a target integration shape, not a claim that all adapters already exist. The kernel remains outside this repository and outside the released process. The a12-dmkits adapter in the sibling `a12-rulekit/` checkout may execute focused kernel probes externally and export portable observations; this repository consumes only the retained clean-room evidence. The a12-dmkits interpreter remains a useful independent peer for triangulation and disagreement discovery, never the behavioral oracle.
 
-The reference CLI should optimize for determinism, stable structured output, and diagnostic precision before terminal presentation. Human formatting can be layered over the JSON contract. A library API may coexist with the CLI, but the process-level protocol is the safer ecosystem boundary for Kotlin, TypeScript, CI, and future languages because it avoids coupling consumers to Lean runtime internals.
+The reference CLI should optimize for determinism, stable structured output, and diagnostic precision before terminal presentation. Human formatting can be layered over the JSON contract. A library API may coexist with the CLI, but the process-level protocol is the safer ecosystem boundary for Rust, Kotlin, TypeScript, CI, and future languages because it avoids coupling consumers to Lean runtime internals.
 
 ## Independent-interpreter handover
 
@@ -61,7 +61,7 @@ This handover does not transfer Lean proofs to the independent implementation. T
 
 ## Supported-fragment manifest
 
-Each release should ship a machine-readable manifest beside its binary and evidence bundle. The first implemented flat slice now has an exact Lean-generated contract in [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json), documented by [`PROTOCOL.md`](PROTOCOL.md); the broader release shape below remains illustrative because theorem roots and evidence-bundle identity are not yet packaged into that process manifest.
+Each release should ship a machine-readable manifest beside its binary and evidence bundle. The implemented flat and one-group correlation slices now have separate exact Lean-generated operation records in schema-2 [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json), documented by [`PROTOCOL.md`](PROTOCOL.md). The correlation record includes its narrower external-evidence boundary, and [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) plus [`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json) form the first concrete handover spike. The broader release shape below remains illustrative because theorem roots and whole-bundle evidence identity are not yet packaged into that process manifest.
 
 ```json
 {
@@ -78,7 +78,7 @@ Each release should ship a machine-readable manifest beside its binary and evide
 }
 ```
 
-This is an illustrative release contract shape, not the current flat-process schema. The current manifest is generated from finite Lean support declarations and mechanically checked against its readable shipped mirror; its relationship to semantic and external-evidence status is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). A future release manifest should additionally consume proof-root and evidence-bundle metadata rather than duplicate them by hand.
+This is an illustrative release contract shape, not the current two-operation process schema. The current manifest is generated from finite Lean support declarations and mechanically checked against its readable shipped mirror; its relationship to semantic and external-evidence status is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). A future release manifest should additionally consume proof-root and whole-evidence-bundle metadata rather than duplicate them by hand.
 
 ## User-facing documentation as a regression consumer
 
@@ -129,6 +129,6 @@ Each stage extends the manifest and public claim only after its semantic capsule
 
 ## Adoption and reevaluation
 
-The first condition is now partially realized: the non-repeatable flat fragment is exposed through the coherent normalized process contract in [`PROTOCOL.md`](PROTOCOL.md), with deterministic black-box tests and a generated support manifest. Adopt the full proposal as product strategy when a real non-Lean consumer is willing to run the reference in CI and retained evidence plus proof metadata can be packaged reproducibly. Until then, it guides product-shaped architecture without treating this first CLI capsule as a release commitment or forcing process infrastructure into every semantic capsule.
+The first condition is now more concretely realized: the non-repeatable flat fragment and one-group correlation fragment are exposed through the coherent normalized process contract in [`PROTOCOL.md`](PROTOCOL.md), with deterministic black-box tests, a generated per-operation support manifest, a manually evidence-cross-referenced language-neutral suite with explicit claim-source metadata, and a candidate runner exercised against the Lean reference. The correlation kit still records release-blocking suite-integrity, evidence, negative-protocol, process-hardening, and cold-implementation gaps. Adopt the full proposal as product strategy when a real non-Lean consumer completes that cold gate and is willing to run the reference or suite in CI, and retained evidence plus proof metadata can be packaged reproducibly. Until then, it guides product-shaped architecture without treating these development capsules as a release commitment or forcing process infrastructure into every semantic capsule.
 
 Reevaluate the shape if process startup dominates realistic conformance workloads, consumers require interactive high-volume evaluation, a stable parser boundary proves more valuable than normalized input, or protocol versioning cannot express the semantic support boundary without duplicating the Lean theory. Those findings may justify a service, FFI, generated bindings, or certificates, but only with a concrete consumer and documented trust tradeoff.

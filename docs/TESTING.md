@@ -1,8 +1,8 @@
 # Testing methodology
 
-This document owns the test harness and working method for `a12-kernel-lean`. The project tests four different claims—execution of the Lean theory, universal consequences inside that theory, empirical correspondence with kernel 30.8.1, and compatibility of the public reference process—and deliberately does not collapse them or repository hygiene into one green check.
+This document owns the test harness and working method for `a12-kernel-lean`. The project tests five different claims—execution of the Lean theory, universal consequences inside that theory, empirical correspondence with kernel 30.8.1, compatibility of the public reference process, and conformance of an independent candidate—and deliberately does not collapse them or repository hygiene into one green check.
 
-## The five harness layers
+## The six harness layers
 
 | Layer | Repository surface | What a pass establishes | What it does not establish |
 |---|---|---|---|
@@ -10,9 +10,10 @@ This document owns the test harness and working method for `a12-kernel-lean`. Th
 | Trusted proofs and checked non-laws | [`../A12Kernel/Proofs/`](../A12Kernel/Proofs/), [`../A12Kernel/Proofs.lean`](../A12Kernel/Proofs.lean), and [`../A12Kernel/TrustAudit.lean`](../A12Kernel/TrustAudit.lean) | Named theorems hold for every modeled input satisfying their hypotheses; counterexamples prevent a plausible stronger claim from being mistaken for a law | Correctness of the chosen primitive semantics or universal correspondence with kernel code |
 | Retained external evidence replay | [`../evidence/`](../evidence/), [`../A12Kernel/Evidence/`](../A12Kernel/Evidence/), and [`../A12Kernel/EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean) | The focused Lean projection agrees with retained portable observations produced by the real pinned kernel on those cases | Exhaustive agreement, hidden kernel intermediate states, or correctness outside the projected fragment |
 | Reference-process black box | [`../A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean), [`../examples/reference-cli/`](../examples/reference-cli/), and [`../reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json) | The compiled public executable obeys its documented JSON bytes, exit status, output-channel, determinism, strict-input, fixture, and manifest contract | New semantic correspondence with the kernel or universal correctness of the transport |
+| Independent candidate conformance | [`../A12Kernel/CandidateConformanceMain.lean`](../A12Kernel/CandidateConformanceMain.lean), [`../reference/single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json), and the indexed fixtures/manual evidence cross-references | A candidate process reproduces the named observable JSON cases deterministically; all six compatibility identifiers match the manifest; each case declares whether its response is externally supported, project-defined, or a Lean runtime projection; retained evidence IDs still exist | Mechanical fixture derivation from retained evidence, correctness outside the finite suite, inheritance of Lean proofs, or release readiness of the candidate or capsule |
 | Structural and hygiene gates | [`../scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh), `git diff --check`, and worktree checks | Trusted roots contain no banned proof escape hatch, every exported theorem is audited, axiom dependencies are classified, patches are clean, and sibling worktrees remain untouched | Any new semantic fact by itself |
 
-`lake build` runs the first two layers because the library root imports both the conformance root and the trusted proof root, and it builds the reference executable because that executable is a default target. `lake test` runs the retained-evidence executable separately. `lake exe checkReferenceProcess` runs the compiled CLI through an independent process driver. The trust script inspects the proof closure separately again because successful elaboration alone does not reveal an accidental axiom or omitted theorem-root import.
+`lake build` runs the first two layers because the library root imports both the conformance root and the trusted proof root, and it builds the reference executable because that executable is a default target. `lake test` runs the retained-evidence executable separately. `lake exe checkReferenceProcess` runs the compiled CLI through an independent process driver, invokes the candidate-runner integrity self-test, and runs the full candidate suite against the compiled Lean reference as a control. `lake exe checkCandidateConformance --candidate … --suite …` runs only the selected language-neutral capability suite against an independent process. The trust script inspects the proof closure separately again because successful elaboration alone does not reveal an accidental axiom or omitted theorem-root import.
 
 ## Red/green semantic development
 
@@ -66,9 +67,9 @@ Run `lake build` before handoff so the same examples also pass through the actua
 
 [`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) discovers the sibling `a12-kernel-reference` build artifact and invokes it as an operating-system process. It does not call `evaluateText` or any protocol decoder directly, so it covers executable wiring, arguments, stdin/stdout/stderr, and exit behavior in addition to JSON semantics. Lake's `needs` edge builds the tested executable first without making this gate part of the retained-kernel `lake test` claim.
 
-The requests and adjacent expected responses under [`examples/reference-cli/`](../examples/reference-cli/) are committed sample data as well as test inputs. The harness parses each readable expected JSON file and compares the executable's deterministic compact encoding, so whitespace in the maintained fixture is irrelevant while every JSON value is locked. The accepted samples separate omitted Number, Boolean, and Confirm behavior; legal present Number consumption and exact canonical decimal transport; the independent false row gate; malformed input; `And`/`Or`; filled/not-filled; equality/inequality; and all admitted path forms. Rejection samples cover a recognized unsupported operator, illegal Confirm comparison, protocol version mismatch, and malformed JSON. Scale-19 boundary values remain direct helper conformance checks because their legal whole-rule witness requires the arithmetic fragment; they are not disguised as classified field input in the process fixtures.
+The requests and adjacent expected responses under [`examples/reference-cli/`](../examples/reference-cli/) are committed sample data as well as test inputs. The harness parses each readable expected JSON file and compares the executable's deterministic compact encoding, so whitespace in the maintained fixture is irrelevant while every JSON value is locked. The flat samples separate omitted Number, Boolean, and Confirm behavior; legal present Number consumption and exact canonical decimal transport; the independent false row gate; malformed input; `And`/`Or`; filled/not-filled; equality/inequality; and all admitted path forms. The correlation samples carry all 12 retained runtime firing cases plus normalized requests for all four static authoring observations, separating origin direction, self-match/exclusion, filter-before-consumer footprint, empty/malformed filter handling, numeric inequality, repetition equality/order, both-origin checking, scale legality, and sibling-group rejection. The accepted mixed-scale ordering fixture's runtime result is a Lean-account projection; external evidence establishes its static acceptance only. Rejection samples also cover a recognized unsupported flat operator, illegal Confirm comparison, protocol version mismatch, and malformed JSON. Scale-19 boundary values remain direct helper conformance checks because their legal whole-rule witness requires the arithmetic fragment; they are not disguised as classified flat input in the process fixtures.
 
-Additional generated-in-test cases reject invalid UTF-8, oversized input, hostile JSON numbers, excessive JSON nesting, duplicate object members, empty input, unknown members, out-of-range naturals, non-canonical or oversized decimals, overlong complete field paths, explicit omission, child-relative paths, invalid model/cell/repeatable shapes, all recognized ordering operators, and unexpected command-line arguments. They also lock wrong-kind classified cells as formal `unknown`, the portable path/decimal boundaries, kernel and operation version assertions, and the externally injectible exit-0 domain and exit-2 invocation classes; exit 1 remains reserved for an actual IO or internal invariant failure. The successful request is run in readable, compact/reordered, and repeated forms to lock response determinism. `--manifest` output is compared as JSON with [`reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json), ensuring the shipped readable mirror agrees with the Lean-generated manifest without requiring identical whitespace.
+Additional generated-in-test cases reject invalid UTF-8, oversized input, hostile JSON numbers, excessive JSON nesting, duplicate object members, empty input, unknown members, out-of-range naturals, non-canonical or oversized decimals, overlong complete field paths, explicit omission, flat child-relative paths, invalid model/cell/repeatable shapes, all recognized flat ordering operators, and unexpected command-line arguments. Correlation adversaries cover zero, duplicate, empty, gapped, reordered, and over-limit candidates; duplicate row/field addresses; non-candidate rows; undeclared and out-of-group cells; operation-inappropriate cell states; unknown origins; unsupported operators; and all-outer `Having`. They also lock wrong-kind flat classified cells as formal `unknown`, the portable path/decimal boundaries, kernel and operation version assertions, and the externally injectible exit-0 domain and exit-2 invocation classes; exit 1 remains reserved for an actual IO or internal invariant failure. One success request per operation is run in readable, compact/reordered, and repeated forms to lock response determinism. `--manifest` output is compared as JSON with [`reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json), ensuring the shipped readable mirror agrees with the Lean-generated manifest without requiring identical whitespace.
 
 Run the public process gate with:
 
@@ -77,6 +78,28 @@ lake exe checkReferenceProcess
 ```
 
 [`PROTOCOL.md`](PROTOCOL.md) owns the exact public contract and gives the invocation pattern shared by every request fixture. This harness establishes compatibility of that boundary; it adds no kernel observation and therefore does not change the external-evidence count.
+
+### Independent candidate suite
+
+[`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json) is the portable downstream index. It pins the capability, operation, reference-semantics, protocol, manifest-schema, and kernel-behavior identities plus the support-manifest path. Each case names a normalized request, expected response, separating coverage labels, evidence kind, projection, retained case ID, exact externally supported projection, and expected-response source. [`A12Kernel/CandidateConformanceMain.lean`](../A12Kernel/CandidateConformanceMain.lean) uses bounded duplicate-safe JSON parsing for all inputs, enforces closed suite/case/evidence objects, validates the compatibility tuple and finite evidence boundary against selected support-manifest members, checks the allowed evidence/source combination and case-ID existence, invokes the candidate directly without a shell, requires exit `0`, empty standard error, normalized JSON plus a final newline, and byte-identical repeated output, then compares expected and actual JSON structurally so language-specific object-key ordering is irrelevant. Support-manifest and retained-projection objects intentionally remain extensible outside the members this runner consumes. The tool does not yet derive a fixture from its manually assigned evidence case; [`PLAN.md`](PLAN.md) records that separate integrity bridge.
+
+The selected manifest operation must be unique and its `externalEvidenceBoundary` must carry the same suite ID, `finiteRetainedCasesOnly` claim scope, and 12-runtime/4-static case counts actually present in the suite. The runner's in-memory integrity self-test first validates every canonical case's fixture metadata, evidence classification, and retained ID. It then corrupts conformance schema, reference semantics, manifest schema, protocol, kernel behavior, suite ID, operation presence/uniqueness, claim scope, evidence-kind count, evidence classification, evidence case ID, JSON member uniqueness, and unknown-member handling at the suite, case, and evidence levels and requires all sixteen mutations to fail. Success prints `16/16 guards passed`:
+
+```sh
+lake exe checkCandidateConformance \
+  --self-test \
+  --suite reference/single-group-correlation-v1.conformance.json
+```
+
+Run the suite against the reference as a control:
+
+```sh
+lake exe checkCandidateConformance \
+  --candidate .lake/build/bin/a12-kernel-reference \
+  --suite reference/single-group-correlation-v1.conformance.json
+```
+
+Replace `--candidate` with a Rust, Kotlin, or TypeScript executable to test that implementation without requiring it to implement flat validation, `--manifest`, or Lean's compact key order. The suite establishes only the indexed observable cases. It does not transfer Lean's theorems to the candidate; implement the language-neutral laws in [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md#law-index-for-property-tests) as downstream properties. The current runner has no wall-clock timeout or streamed output cap and must not yet be used for untrusted binaries.
 
 ## Universal proofs and counterexamples
 
@@ -120,6 +143,8 @@ Run the complete gate from the repository root:
 lake build
 lake test
 lake exe checkReferenceProcess
+lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v1.conformance.json
+lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/single-group-correlation-v1.conformance.json
 ./scripts/check-lean-trust.sh
 git diff --check
 git diff --exit-code -- spec/
@@ -128,7 +153,7 @@ git -C ../a12-kernel status --short
 git -C ../a12-rulekit status --short
 ```
 
-Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
+Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A candidate-suite failure means the suite/evidence linkage or candidate observable changed and must be classified using [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md); agreement with the reference is not allowed to overwrite external evidence. A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
 
 ## Capsule test checklist
 
@@ -140,4 +165,4 @@ Interpret failures by layer. A conformance failure means a concrete Lean behavio
 - Every exported theorem is in the trusted root and axiom audit.
 - Focused portable kernel observations exist, or the implementation map says `external evidence pending`.
 - The replay derives expectations from retained external output rather than duplicating them in Lean-shaped data.
-- `lake build`, `lake test`, any applicable reference-process gate, the trust audit, and patch/worktree hygiene gates all pass.
+- `lake build`, `lake test`, any applicable reference-process and candidate-conformance gates, the trust audit, and patch/worktree hygiene gates all pass.

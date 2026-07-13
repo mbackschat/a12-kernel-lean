@@ -1,0 +1,147 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "singleGroupCorrelation.firingRows",
+  "model": {
+    "fieldRefByShortNameAllowed": false,
+    "repeatableGroups": [
+      {
+        "level": 10,
+        "path": [
+          "Order",
+          "Items"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "id": 0,
+        "groupPath": [
+          "Order",
+          "Items"
+        ],
+        "name": "Count",
+        "kind": {
+          "tag": "number",
+          "scale": 0,
+          "signed": true
+        },
+        "repeatableScope": [
+          10
+        ]
+      }
+    ]
+  },
+  "declaringGroup": [
+    "Order"
+  ],
+  "rule": {
+    "errorField": {
+      "base": "relative",
+      "parents": 0,
+      "groups": [
+        "Items"
+      ],
+      "field": "Count"
+    },
+    "guardField": {
+      "base": "relative",
+      "parents": 0,
+      "groups": [
+        "Items"
+      ],
+      "field": "Count"
+    },
+    "valueField": {
+      "base": "relative",
+      "parents": 0,
+      "groupsBeforeStar": [],
+      "starredGroup": "Items",
+      "field": "Count"
+    },
+    "having": {
+      "tag": "and",
+      "left": {
+        "tag": "compareRepetitions",
+        "operator": "notEqual",
+        "left": {
+          "origin": "inner",
+          "group": {
+            "base": "relative",
+            "parents": 0,
+            "groups": [
+              "Items"
+            ]
+          }
+        },
+        "right": {
+          "origin": "outer",
+          "group": {
+            "base": "relative",
+            "parents": 0,
+            "groups": [
+              "Items"
+            ]
+          }
+        }
+      },
+      "right": {
+        "tag": "compareNumbers",
+        "operator": "equal",
+        "left": {
+          "origin": "inner",
+          "field": {
+            "base": "relative",
+            "parents": 0,
+            "groups": [
+              "Items"
+            ],
+            "field": "Count"
+          }
+        },
+        "right": {
+          "origin": "outer",
+          "field": {
+            "base": "relative",
+            "parents": 0,
+            "groups": [
+              "Items"
+            ],
+            "field": "Count"
+          }
+        }
+      }
+    }
+  },
+  "candidates": [
+    1,
+    2,
+    3
+  ],
+  "cells": [
+    {
+      "row": 1,
+      "fieldId": 0,
+      "state": {
+        "tag": "parsedNumber",
+        "value": "5"
+      }
+    },
+    {
+      "row": 2,
+      "fieldId": 0,
+      "state": {
+        "tag": "parsedNumber",
+        "value": "6"
+      }
+    },
+    {
+      "row": 3,
+      "fieldId": 0,
+      "state": {
+        "tag": "parsedNumber",
+        "value": "9"
+      }
+    }
+  ]
+}

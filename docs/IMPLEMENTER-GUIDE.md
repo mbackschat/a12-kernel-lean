@@ -112,12 +112,17 @@ A later production consumer may justify stronger integration such as checked eva
 
 ## Current tools and limits
 
-The current reference executable and manifest are documented in [`PROTOCOL.md`](PROTOCOL.md); runnable inputs live under [`../examples/reference-cli/`](../examples/reference-cli/); retained observations and their limits are in [`EVIDENCE.md`](EVIDENCE.md); theorem, counterexample, and trust methodology is in [`TESTING.md`](TESTING.md). The basic interaction is:
+The current reference executable and manifest are documented in [`PROTOCOL.md`](PROTOCOL.md); runnable inputs live under [`../examples/reference-cli/`](../examples/reference-cli/); retained observations and their limits are in [`EVIDENCE.md`](EVIDENCE.md); theorem, counterexample, and trust methodology is in [`TESTING.md`](TESTING.md). The first concrete handover spike is [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md), backed by the language-neutral [`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json) suite. The basic interaction is:
 
 ```sh
 lake exe a12-kernel-reference --manifest
 lake exe a12-kernel-reference < examples/reference-cli/empty-number-equals-zero.request.json
+lake exe a12-kernel-reference < examples/reference-cli/correlation-direction.request.json
 lake exe checkReferenceProcess
+lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v1.conformance.json
+lake exe checkCandidateConformance \
+  --candidate .lake/build/bin/a12-kernel-reference \
+  --suite reference/single-group-correlation-v1.conformance.json
 ```
 
-The existing flat operation is a narrow development reference, not a complete A12 interpreter kit. High-volume cross-language fuzzing may later justify a batch runner or long-running process, but process architecture changes require measurement and a separate protocol decision. [`PLAN.md`](PLAN.md) owns the first non-trivial handover spike: exposing the already implemented and evidenced one-star `$`-correlation slice with exact implementer material and tools.
+The flat and correlation operations are narrow development references, not a complete A12 interpreter kit. The candidate runner uses bounded duplicate-safe parsing, enforces closed suite/case/evidence objects, checks the full compatibility identity, finite evidence scope, retained runtime/static counts, and per-case claim-source classification, structurally compares suite JSON, and verifies retained evidence identifiers. Its canonical all-case validation, sixteen negative guards, and full Lean-reference suite control are run by the reference-process gate. It does not close unrelated manifest/projection members, mechanically derive fixtures from retained projections, impose a process timeout, or cap streamed output. High-volume cross-language fuzzing may later justify a batch runner or long-running process, but process architecture changes require measurement and a separate protocol decision. [`PLAN.md`](PLAN.md) owns the remaining suite-integrity, cold-implementation, and release-closure work.

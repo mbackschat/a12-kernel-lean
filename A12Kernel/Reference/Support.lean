@@ -12,15 +12,33 @@ namespace A12Kernel.Reference.Support
 
 open Lean
 
-def manifestSchemaVersion : Nat := 1
+def manifestSchemaVersion : Nat := 2
 
-def referenceSemanticsVersion : String := "0.1.0"
+def referenceSemanticsVersion : String := "0.2.0"
 
 def protocolVersion : Nat := 1
 
 def kernelBehaviorVersion : String := A12Kernel.kernelVersion
 
-def operation : String := "flatValidation.evaluateFull"
+inductive Operation where
+  | flatValidationEvaluateFull
+  | singleGroupCorrelationFiringRows
+  deriving Repr, DecidableEq, BEq
+
+namespace Operation
+
+def all : List Operation := [.flatValidationEvaluateFull, .singleGroupCorrelationFiringRows]
+
+def tag : Operation → String
+  | .flatValidationEvaluateFull => "flatValidation.evaluateFull"
+  | .singleGroupCorrelationFiringRows => "singleGroupCorrelation.firingRows"
+
+def fromTag? : String → Option Operation
+  | "flatValidation.evaluateFull" => some .flatValidationEvaluateFull
+  | "singleGroupCorrelation.firingRows" => some .singleGroupCorrelationFiringRows
+  | _ => none
+
+end Operation
 
 def supportPolicy : String := "onlyListedCapabilities"
 
@@ -35,6 +53,8 @@ def maxNaturalNumber : Nat := 9007199254740991
 def maxFields : Nat := 1024
 
 def maxCells : Nat := 1024
+
+def maxCandidates : Nat := 1024
 
 def maxRepeatableGroups : Nat := 128
 
@@ -57,6 +77,7 @@ structure PublicLimits where
   naturalNumberMaximum : Nat
   fields : Nat
   cells : Nat
+  candidates : Nat
   repeatableGroups : Nat
   conditionDepth : Nat
   conditionNodes : Nat
@@ -73,6 +94,7 @@ def publicLimits : PublicLimits := {
   naturalNumberMaximum := maxNaturalNumber
   fields := maxFields
   cells := maxCells
+  candidates := maxCandidates
   repeatableGroups := maxRepeatableGroups
   conditionDepth := maxConditionDepth
   conditionNodes := maxConditionNodes
@@ -124,6 +146,10 @@ def supportStatus : ComparisonOperator → SupportStatus
 def isSupported (operator : ComparisonOperator) : Bool :=
   operator.supportStatus == .supported
 
+def isCorrelationSupported : ComparisonOperator → Bool
+  | .equal | .notEqual | .less => true
+  | .lessEqual | .greater | .greaterEqual => false
+
 def toSurface : ComparisonOperator → A12Kernel.SurfaceComparisonOp
   | .equal => .equal
   | .notEqual => .notEqual
@@ -148,6 +174,12 @@ def supported : List ComparisonOperator :=
 
 def unsupported : List ComparisonOperator :=
   all.filter fun operator => !operator.isSupported
+
+def correlationSupported : List ComparisonOperator :=
+  all.filter isCorrelationSupported
+
+def correlationUnsupported : List ComparisonOperator :=
+  all.filter fun operator => !operator.isCorrelationSupported
 
 end ComparisonOperator
 
@@ -207,6 +239,49 @@ def tagTable : List String := all.map tag
 
 end ConditionFormTag
 
+inductive CorrelatedHavingFormTag where
+  | compareNumbers
+  | compareRepetitions
+  | and
+  deriving Repr, DecidableEq, BEq
+
+namespace CorrelatedHavingFormTag
+
+def all : List CorrelatedHavingFormTag := [.compareNumbers, .compareRepetitions, .and]
+
+def tag : CorrelatedHavingFormTag → String
+  | .compareNumbers => "compareNumbers"
+  | .compareRepetitions => "compareRepetitions"
+  | .and => "and"
+
+def fromTag? : String → Option CorrelatedHavingFormTag
+  | "compareNumbers" => some .compareNumbers
+  | "compareRepetitions" => some .compareRepetitions
+  | "and" => some .and
+  | _ => none
+
+end CorrelatedHavingFormTag
+
+inductive HavingOriginTag where
+  | inner
+  | outer
+  deriving Repr, DecidableEq, BEq
+
+namespace HavingOriginTag
+
+def all : List HavingOriginTag := [.inner, .outer]
+
+def tag : HavingOriginTag → String
+  | .inner => "inner"
+  | .outer => "outer"
+
+def fromTag? : String → Option HavingOriginTag
+  | "inner" => some .inner
+  | "outer" => some .outer
+  | _ => none
+
+end HavingOriginTag
+
 inductive LiteralKindTag where
   | number
   | boolean
@@ -264,6 +339,60 @@ def classify (base : A12Kernel.PathBase) (groups : List String) : Option PathFor
 
 end PathFormTag
 
+inductive CorrelationPathFormTag where
+  | absolute
+  | childRelative
+  deriving Repr, DecidableEq, BEq
+
+namespace CorrelationPathFormTag
+
+def all : List CorrelationPathFormTag := [.absolute, .childRelative]
+
+def tag : CorrelationPathFormTag → String
+  | .absolute => "absolute"
+  | .childRelative => "childRelative"
+
+def fromTag? : String → Option CorrelationPathFormTag
+  | "absolute" => some .absolute
+  | "childRelative" => some .childRelative
+  | _ => none
+
+def classify (base : A12Kernel.PathBase) (groups : List String) :
+    Option CorrelationPathFormTag :=
+  match base, groups with
+  | .absolute, _ => some .absolute
+  | .relative 0, [_] => some .childRelative
+  | .relative 0, [] | .relative 0, _ :: _ :: _ | .relative (_ + 1), _ => none
+
+end CorrelationPathFormTag
+
+inductive CorrelationStarPathFormTag where
+  | absolute
+  | directChildRelative
+  deriving Repr, DecidableEq, BEq
+
+namespace CorrelationStarPathFormTag
+
+def all : List CorrelationStarPathFormTag := [.absolute, .directChildRelative]
+
+def tag : CorrelationStarPathFormTag → String
+  | .absolute => "absolute"
+  | .directChildRelative => "directChildRelative"
+
+def fromTag? : String → Option CorrelationStarPathFormTag
+  | "absolute" => some .absolute
+  | "directChildRelative" => some .directChildRelative
+  | _ => none
+
+def classify (base : A12Kernel.PathBase) (groupsBeforeStar : List String) :
+    Option CorrelationStarPathFormTag :=
+  match base, groupsBeforeStar with
+  | .absolute, _ => some .absolute
+  | .relative 0, [] => some .directChildRelative
+  | .relative 0, _ :: _ | .relative (_ + 1), _ => none
+
+end CorrelationStarPathFormTag
+
 inductive ReferencedScopeTag where
   | nonrepeatable
   deriving Repr, DecidableEq, BEq
@@ -312,6 +441,26 @@ def tagTable : List String := all.map tag
 
 end RawCellFormTag
 
+inductive CorrelationCellFormTag where
+  | parsedNumber
+  | rejectedMalformed
+  deriving Repr, DecidableEq, BEq
+
+namespace CorrelationCellFormTag
+
+def all : List CorrelationCellFormTag := [.parsedNumber, .rejectedMalformed]
+
+def tag : CorrelationCellFormTag → String
+  | .parsedNumber => "parsedNumber"
+  | .rejectedMalformed => "rejected.malformed"
+
+def fromTag? : String → Option CorrelationCellFormTag
+  | "parsedNumber" => some .parsedNumber
+  | "rejected.malformed" => some .rejectedMalformed
+  | _ => none
+
+end CorrelationCellFormTag
+
 inductive RejectedCauseTag where
   | malformed
   | declaredConstraint
@@ -344,6 +493,17 @@ def fromTag? : String → Option RejectedCauseTag
 def tagTable : List String := all.map tag
 
 end RejectedCauseTag
+
+namespace CorrelationCellFormTag
+
+def classify (form : RawCellFormTag) (cause : Option RejectedCauseTag) :
+    Option CorrelationCellFormTag :=
+  match form, cause with
+  | .parsedNumber, none => some .parsedNumber
+  | .rejected, some .malformed => some .rejectedMalformed
+  | _, _ => none
+
+end CorrelationCellFormTag
 
 inductive VerdictTag where
   | notFired
@@ -419,6 +579,12 @@ inductive DiagnosticCode where
   | invalidDecimal
   | invalidJsonNumber
   | duplicateCellId
+  | duplicateCellAddress
+  | cellRowNotCandidate
+  | zeroCandidate
+  | duplicateCandidate
+  | invalidCandidateSequence
+  | cellOutsideGroup
   | undeclaredCellId
   | invalidJson
   | duplicateMember
@@ -426,6 +592,9 @@ inductive DiagnosticCode where
   | pathForm
   | literalKind
   | conditionForm
+  | havingForm
+  | havingOrigin
+  | uncorrelatedHaving
   | operator
   | fieldKind
   | cellState
@@ -450,6 +619,14 @@ inductive DiagnosticCode where
   | shortNameNotUnique
   | literalKindMismatch
   | illegalConfirmLiteral
+  | invalidGroupReference
+  | fieldKindMismatch
+  | fieldOutsideGroup
+  | fieldScopeMismatch
+  | repetitionGroupMismatch
+  | equalityScaleMismatch
+  | missingInner
+  | errorGuardMismatch
   deriving Repr, DecidableEq, BEq
 
 namespace DiagnosticCode
@@ -457,14 +634,20 @@ namespace DiagnosticCode
 def all : List DiagnosticCode := [
   .unsupportedVersion, .kernelBehaviorVersionMismatch, .unsupportedOperation,
   .invalidShape, .resourceLimit, .invalidDecimal, .invalidJsonNumber,
-  .duplicateCellId, .undeclaredCellId, .invalidJson, .duplicateMember,
-  .pathBase, .pathForm, .literalKind, .conditionForm, .operator, .fieldKind,
+  .duplicateCellId, .duplicateCellAddress, .cellRowNotCandidate, .zeroCandidate,
+  .duplicateCandidate, .invalidCandidateSequence, .cellOutsideGroup, .undeclaredCellId, .invalidJson,
+  .duplicateMember,
+  .pathBase, .pathForm, .literalKind, .conditionForm, .havingForm, .havingOrigin,
+  .uncorrelatedHaving, .operator, .fieldKind,
   .cellState, .rejectedCause, .repeatableReference, .repeatableCell,
   .invalidPath, .duplicateFieldId, .duplicateEntityPath, .invalidRepeatableGroupPath,
   .duplicateRepeatableGroupPath, .duplicateRepeatableLevel, .hierarchyCollision,
   .repeatableScopeMismatch, .unknownRepeatableGroup, .unknownFieldId,
   .invalidRuleGroup, .invalidReference, .aboveRoot, .unknownField, .ambiguousField,
-  .shortNameNotUnique, .literalKindMismatch, .illegalConfirmLiteral]
+  .shortNameNotUnique, .literalKindMismatch, .illegalConfirmLiteral,
+  .invalidGroupReference, .fieldKindMismatch, .fieldOutsideGroup,
+  .fieldScopeMismatch, .repetitionGroupMismatch, .equalityScaleMismatch,
+  .missingInner, .errorGuardMismatch]
 
 def tag : DiagnosticCode → String
   | .unsupportedVersion => "unsupportedVersion"
@@ -475,6 +658,12 @@ def tag : DiagnosticCode → String
   | .invalidDecimal => "invalidDecimal"
   | .invalidJsonNumber => "invalidJsonNumber"
   | .duplicateCellId => "duplicateCellId"
+  | .duplicateCellAddress => "duplicateCellAddress"
+  | .cellRowNotCandidate => "cellRowNotCandidate"
+  | .zeroCandidate => "zeroCandidate"
+  | .duplicateCandidate => "duplicateCandidate"
+  | .invalidCandidateSequence => "invalidCandidateSequence"
+  | .cellOutsideGroup => "cellOutsideGroup"
   | .undeclaredCellId => "undeclaredCellId"
   | .invalidJson => "invalidJson"
   | .duplicateMember => "duplicateMember"
@@ -482,6 +671,9 @@ def tag : DiagnosticCode → String
   | .pathForm => "pathForm"
   | .literalKind => "literalKind"
   | .conditionForm => "conditionForm"
+  | .havingForm => "havingForm"
+  | .havingOrigin => "havingOrigin"
+  | .uncorrelatedHaving => "uncorrelatedHaving"
   | .operator => "operator"
   | .fieldKind => "fieldKind"
   | .cellState => "cellState"
@@ -506,19 +698,34 @@ def tag : DiagnosticCode → String
   | .shortNameNotUnique => "shortNameNotUnique"
   | .literalKindMismatch => "literalKindMismatch"
   | .illegalConfirmLiteral => "illegalConfirmLiteral"
+  | .invalidGroupReference => "invalidGroupReference"
+  | .fieldKindMismatch => "fieldKindMismatch"
+  | .fieldOutsideGroup => "fieldOutsideGroup"
+  | .fieldScopeMismatch => "fieldScopeMismatch"
+  | .repetitionGroupMismatch => "repetitionGroupMismatch"
+  | .equalityScaleMismatch => "equalityScaleMismatch"
+  | .missingInner => "missingInner"
+  | .errorGuardMismatch => "errorGuardMismatch"
 
 def category : DiagnosticCode → DiagnosticCategory
   | .unsupportedVersion | .kernelBehaviorVersionMismatch | .unsupportedOperation => .protocol
   | .invalidShape | .resourceLimit | .invalidDecimal | .invalidJsonNumber |
-      .duplicateCellId | .undeclaredCellId | .invalidJson | .duplicateMember => .input
-  | .pathBase | .pathForm | .literalKind | .conditionForm | .operator | .fieldKind |
-      .cellState | .rejectedCause | .repeatableReference | .repeatableCell => .unsupported
+      .duplicateCellId | .duplicateCellAddress | .cellRowNotCandidate | .zeroCandidate |
+      .duplicateCandidate | .invalidCandidateSequence | .cellOutsideGroup |
+      .undeclaredCellId | .invalidJson |
+      .duplicateMember => .input
+  | .pathBase | .pathForm | .literalKind | .conditionForm | .havingForm |
+      .havingOrigin | .uncorrelatedHaving | .operator | .fieldKind | .cellState |
+      .rejectedCause | .repeatableReference | .repeatableCell => .unsupported
   | .invalidPath | .duplicateFieldId | .duplicateEntityPath |
       .invalidRepeatableGroupPath | .duplicateRepeatableGroupPath |
       .duplicateRepeatableLevel | .hierarchyCollision | .repeatableScopeMismatch => .model
   | .unknownRepeatableGroup | .unknownFieldId | .invalidRuleGroup | .invalidReference |
       .aboveRoot | .unknownField | .ambiguousField | .shortNameNotUnique |
-      .literalKindMismatch | .illegalConfirmLiteral => .elaboration
+      .literalKindMismatch | .illegalConfirmLiteral | .invalidGroupReference |
+      .fieldKindMismatch | .fieldOutsideGroup | .fieldScopeMismatch |
+      .repetitionGroupMismatch | .equalityScaleMismatch | .missingInner |
+      .errorGuardMismatch => .elaboration
 
 end DiagnosticCode
 
@@ -526,9 +733,12 @@ inductive KnownExclusion where
   | concreteDsl
   | generalDmJson
   | stringDateTimeEnumeration
-  | orderingArithmetic
-  | repeatableEvaluation
-  | correlation
+  | generalOrderingAndArithmetic
+  | generalRepeatableEvaluation
+  | nestedOrMultipleStars
+  | crossGroupCorrelation
+  | generalCorrelationConsumers
+  | filteredResultPolarity
   | computation
   | partialValidation
   | messageConstruction
@@ -537,17 +747,21 @@ inductive KnownExclusion where
 namespace KnownExclusion
 
 def all : List KnownExclusion :=
-  [.concreteDsl, .generalDmJson, .stringDateTimeEnumeration, .orderingArithmetic,
-    .repeatableEvaluation, .correlation, .computation, .partialValidation,
-    .messageConstruction]
+  [.concreteDsl, .generalDmJson, .stringDateTimeEnumeration, .generalOrderingAndArithmetic,
+    .generalRepeatableEvaluation, .nestedOrMultipleStars, .crossGroupCorrelation,
+    .generalCorrelationConsumers, .filteredResultPolarity, .computation,
+    .partialValidation, .messageConstruction]
 
 def tag : KnownExclusion → String
   | .concreteDsl => "concreteDsl"
   | .generalDmJson => "generalDmJson"
   | .stringDateTimeEnumeration => "stringDateTimeEnumeration"
-  | .orderingArithmetic => "orderingArithmetic"
-  | .repeatableEvaluation => "repeatableEvaluation"
-  | .correlation => "correlation"
+  | .generalOrderingAndArithmetic => "generalOrderingAndArithmetic"
+  | .generalRepeatableEvaluation => "generalRepeatableEvaluation"
+  | .nestedOrMultipleStars => "nestedOrMultipleStars"
+  | .crossGroupCorrelation => "crossGroupCorrelation"
+  | .generalCorrelationConsumers => "generalCorrelationConsumers"
+  | .filteredResultPolarity => "filteredResultPolarity"
   | .computation => "computation"
   | .partialValidation => "partialValidation"
   | .messageConstruction => "messageConstruction"
@@ -556,9 +770,12 @@ def fromTag? : String → Option KnownExclusion
   | "concreteDsl" => some .concreteDsl
   | "generalDmJson" => some .generalDmJson
   | "stringDateTimeEnumeration" => some .stringDateTimeEnumeration
-  | "orderingArithmetic" => some .orderingArithmetic
-  | "repeatableEvaluation" => some .repeatableEvaluation
-  | "correlation" => some .correlation
+  | "generalOrderingAndArithmetic" => some .generalOrderingAndArithmetic
+  | "generalRepeatableEvaluation" => some .generalRepeatableEvaluation
+  | "nestedOrMultipleStars" => some .nestedOrMultipleStars
+  | "crossGroupCorrelation" => some .crossGroupCorrelation
+  | "generalCorrelationConsumers" => some .generalCorrelationConsumers
+  | "filteredResultPolarity" => some .filteredResultPolarity
   | "computation" => some .computation
   | "partialValidation" => some .partialValidation
   | "messageConstruction" => some .messageConstruction
@@ -599,6 +816,7 @@ private def publicLimitsJson (limits : PublicLimits) : Json :=
     ("naturalNumberMaximum", toJson limits.naturalNumberMaximum),
     ("fields", toJson limits.fields),
     ("cells", toJson limits.cells),
+    ("candidates", toJson limits.candidates),
     ("repeatableGroups", toJson limits.repeatableGroups),
     ("conditionDepth", toJson limits.conditionDepth),
     ("conditionNodes", toJson limits.conditionNodes),
@@ -612,7 +830,7 @@ private def diagnosticCodeJson (code : DiagnosticCode) : Json :=
     ("category", toJson code.category.tag),
     ("code", toJson code.tag)]
 
-private def acceptedManifest : Json :=
+private def flatAcceptedManifest : Json :=
   Json.mkObj [
     ("fieldKinds", tagArray FieldKindTag.all FieldKindTag.tag),
     ("conditionForms", tagArray ConditionFormTag.all ConditionFormTag.tag),
@@ -625,17 +843,72 @@ private def acceptedManifest : Json :=
     ("rowGate", toJson "explicitHasContent"),
     ("verdicts", tagArray VerdictTag.all VerdictTag.tag)]
 
+private def correlationAcceptedManifest : Json :=
+  Json.mkObj [
+    ("fieldKinds", toJson ["number"]),
+    ("havingForms", tagArray CorrelatedHavingFormTag.all CorrelatedHavingFormTag.tag),
+    ("comparisonOperators",
+      tagArray ComparisonOperator.correlationSupported ComparisonOperator.tag),
+    ("origins", tagArray HavingOriginTag.all HavingOriginTag.tag),
+    ("fieldAndGroupPathForms",
+      tagArray CorrelationPathFormTag.all CorrelationPathFormTag.tag),
+    ("childRelativeGroupSegments", toJson 1),
+    ("starPathForms",
+      tagArray CorrelationStarPathFormTag.all CorrelationStarPathFormTag.tag),
+    ("directChildRelativeStarPrefixSegments", toJson 0),
+    ("starParentNavigation", toJson "rejected"),
+    ("selectedGroupCount", toJson 1),
+    ("selectedFieldPlacement", toJson "directChildOfSelectedGroup"),
+    ("modelMayDeclareSiblingRepeatableGroups", toJson true),
+    ("starCount", toJson 1),
+    ("wholeRuleInvariants", toJson [
+      "havingContainsInnerAndOuter",
+      "errorFieldEqualsGuardField",
+      "allRuleFieldsUseSelectedGroupAndSingletonScope"]),
+    ("comparisonScalePolicy", Json.mkObj [
+      ("equal", toJson "declaredScalesEqual"),
+      ("notEqual", toJson "declaredScalesEqual"),
+      ("less", toJson "declaredScalesMayDiffer")]),
+    ("consumer", toJson "selectedNumberPresence"),
+    ("outerGuard", toJson "numberFieldFilled"),
+    ("candidateEncoding", toJson "nonEmptyContiguousOneBasedRowIds"),
+    ("explicitRawCellForms",
+      tagArray CorrelationCellFormTag.all CorrelationCellFormTag.tag),
+    ("numberTransport", toJson "canonicalExactDecimal"),
+    ("emptyCellEncoding", toJson "sparseRowFieldOmission"),
+    ("result", toJson "orderedFiringRows"),
+    ("externalEvidenceBoundary", Json.mkObj [
+      ("runtimeNumberCells", toJson "retainedCasesUseNonNegativeIntegers"),
+      ("candidateRows", toJson "retainedCasesUseContiguousOneBasedRows"),
+      ("observable", toJson "firingRowsOnly"),
+      ("claimScope", toJson "finiteRetainedCasesOnly"),
+      ("suiteId", toJson "single-group-correlation-v1"),
+      ("retainedRuntimeCaseCount", toJson 12),
+      ("retainedStaticCaseCount", toJson 4),
+      ("generalAcceptedInputs", toJson "leanAccountExternalEvidencePending")])]
+
+private def operationManifest : Operation → Json
+  | .flatValidationEvaluateFull =>
+      Json.mkObj [
+        ("operation", toJson Operation.flatValidationEvaluateFull.tag),
+        ("accepted", flatAcceptedManifest),
+        ("recognizedButUnsupportedComparisonOperators",
+          tagArray ComparisonOperator.unsupported ComparisonOperator.tag)]
+  | .singleGroupCorrelationFiringRows =>
+      Json.mkObj [
+        ("operation", toJson Operation.singleGroupCorrelationFiringRows.tag),
+        ("accepted", correlationAcceptedManifest),
+        ("recognizedButUnsupportedComparisonOperators",
+          tagArray ComparisonOperator.correlationUnsupported ComparisonOperator.tag)]
+
 def supportManifest : Json :=
   Json.mkObj [
     ("manifestSchemaVersion", toJson manifestSchemaVersion),
     ("referenceSemanticsVersion", toJson referenceSemanticsVersion),
     ("protocolVersion", toJson protocolVersion),
     ("kernelBehaviorVersion", toJson kernelBehaviorVersion),
-    ("operation", toJson operation),
     ("supportPolicy", toJson supportPolicy),
-    ("accepted", acceptedManifest),
-    ("recognizedButUnsupportedComparisonOperators",
-      tagArray ComparisonOperator.unsupported ComparisonOperator.tag),
+    ("operations", Json.arr (Operation.all.map operationManifest).toArray),
     ("diagnostics", Json.arr (DiagnosticCode.all.map diagnosticCodeJson).toArray),
     ("limits", publicLimitsJson publicLimits),
     ("knownExclusions", tagArray KnownExclusion.all KnownExclusion.tag)]
@@ -643,6 +916,9 @@ def supportManifest : Json :=
 private def tagsRoundTrip [BEq α] (values : List α) (tag : α → String)
     (fromTag? : String → Option α) : Bool :=
   values.all fun value => fromTag? (tag value) == some value
+
+example (operation : Operation) : Operation.all.contains operation = true := by
+  cases operation <;> native_decide
 
 example (operator : ComparisonOperator) : ComparisonOperator.all.contains operator = true := by
   cases operator <;> native_decide
@@ -653,16 +929,35 @@ example (kind : FieldKindTag) : FieldKindTag.all.contains kind = true := by
 example (form : ConditionFormTag) : ConditionFormTag.all.contains form = true := by
   cases form <;> native_decide
 
+example (form : CorrelatedHavingFormTag) :
+    CorrelatedHavingFormTag.all.contains form = true := by
+  cases form <;> native_decide
+
+example (origin : HavingOriginTag) : HavingOriginTag.all.contains origin = true := by
+  cases origin <;> native_decide
+
 example (kind : LiteralKindTag) : LiteralKindTag.all.contains kind = true := by
   cases kind <;> native_decide
 
 example (form : PathFormTag) : PathFormTag.all.contains form = true := by
   cases form <;> native_decide
 
+example (form : CorrelationPathFormTag) :
+    CorrelationPathFormTag.all.contains form = true := by
+  cases form <;> native_decide
+
+example (form : CorrelationStarPathFormTag) :
+    CorrelationStarPathFormTag.all.contains form = true := by
+  cases form <;> native_decide
+
 example (scope : ReferencedScopeTag) : ReferencedScopeTag.all.contains scope = true := by
   cases scope <;> native_decide
 
 example (form : RawCellFormTag) : RawCellFormTag.all.contains form = true := by
+  cases form <;> native_decide
+
+example (form : CorrelationCellFormTag) :
+    CorrelationCellFormTag.all.contains form = true := by
   cases form <;> native_decide
 
 example (cause : RejectedCauseTag) : RejectedCauseTag.all.contains cause = true := by
@@ -690,13 +985,19 @@ example : comparisonMatrix.all fun capability =>
     capability.operators == ComparisonOperator.supported := by
   native_decide
 
-example : (ComparisonOperator.all.map ComparisonOperator.tag).Nodup ∧
+example : (Operation.all.map Operation.tag).Nodup ∧
+    (ComparisonOperator.all.map ComparisonOperator.tag).Nodup ∧
     (FieldKindTag.all.map FieldKindTag.tag).Nodup ∧
     (ConditionFormTag.all.map ConditionFormTag.tag).Nodup ∧
+    (CorrelatedHavingFormTag.all.map CorrelatedHavingFormTag.tag).Nodup ∧
+    (HavingOriginTag.all.map HavingOriginTag.tag).Nodup ∧
     (LiteralKindTag.all.map LiteralKindTag.tag).Nodup ∧
     (PathFormTag.all.map PathFormTag.tag).Nodup ∧
+    (CorrelationPathFormTag.all.map CorrelationPathFormTag.tag).Nodup ∧
+    (CorrelationStarPathFormTag.all.map CorrelationStarPathFormTag.tag).Nodup ∧
     (ReferencedScopeTag.all.map ReferencedScopeTag.tag).Nodup ∧
     (RawCellFormTag.all.map RawCellFormTag.tag).Nodup ∧
+    (CorrelationCellFormTag.all.map CorrelationCellFormTag.tag).Nodup ∧
     (RejectedCauseTag.all.map RejectedCauseTag.tag).Nodup ∧
     (VerdictTag.all.map VerdictTag.tag).Nodup ∧
     (DiagnosticCategory.all.map DiagnosticCategory.tag).Nodup ∧
@@ -712,12 +1013,22 @@ example : ComparisonOperator.all.all fun operator =>
     ComparisonOperator.ofSurface operator.toSurface == operator := by
   native_decide
 
-example : tagsRoundTrip FieldKindTag.all FieldKindTag.tag FieldKindTag.fromTag? &&
+example : tagsRoundTrip Operation.all Operation.tag Operation.fromTag? &&
+    tagsRoundTrip FieldKindTag.all FieldKindTag.tag FieldKindTag.fromTag? &&
     tagsRoundTrip ConditionFormTag.all ConditionFormTag.tag ConditionFormTag.fromTag? &&
+    tagsRoundTrip CorrelatedHavingFormTag.all CorrelatedHavingFormTag.tag
+      CorrelatedHavingFormTag.fromTag? &&
+    tagsRoundTrip HavingOriginTag.all HavingOriginTag.tag HavingOriginTag.fromTag? &&
     tagsRoundTrip LiteralKindTag.all LiteralKindTag.tag LiteralKindTag.fromTag? &&
     tagsRoundTrip PathFormTag.all PathFormTag.tag PathFormTag.fromTag? &&
+    tagsRoundTrip CorrelationPathFormTag.all CorrelationPathFormTag.tag
+      CorrelationPathFormTag.fromTag? &&
+    tagsRoundTrip CorrelationStarPathFormTag.all CorrelationStarPathFormTag.tag
+      CorrelationStarPathFormTag.fromTag? &&
     tagsRoundTrip ReferencedScopeTag.all ReferencedScopeTag.tag ReferencedScopeTag.fromTag? &&
     tagsRoundTrip RawCellFormTag.all RawCellFormTag.tag RawCellFormTag.fromTag? &&
+    tagsRoundTrip CorrelationCellFormTag.all CorrelationCellFormTag.tag
+      CorrelationCellFormTag.fromTag? &&
     tagsRoundTrip RejectedCauseTag.all RejectedCauseTag.tag RejectedCauseTag.fromTag? &&
     tagsRoundTrip VerdictTag.all VerdictTag.tag VerdictTag.fromTag? &&
     tagsRoundTrip DiagnosticCategory.all DiagnosticCategory.tag DiagnosticCategory.fromTag? &&
@@ -734,6 +1045,33 @@ example : PathFormTag.classify (.relative 0) ["Child"] = none := by
   native_decide
 
 example : PathFormTag.classify (.relative 1) ["Sibling"] = some .parentRelative := by
+  native_decide
+
+example : CorrelationPathFormTag.classify (.relative 0) ["Items"] =
+    some .childRelative := by
+  native_decide
+
+example : CorrelationPathFormTag.classify (.relative 0) ["Sub", "Items"] = none := by
+  native_decide
+
+example : CorrelationPathFormTag.classify (.relative 0) [] = none := by
+  native_decide
+
+example : CorrelationStarPathFormTag.classify (.relative 0) [] =
+    some .directChildRelative := by
+  native_decide
+
+example : CorrelationStarPathFormTag.classify (.relative 0) ["Sub"] = none := by
+  native_decide
+
+example : CorrelationCellFormTag.classify .parsedNumber none = some .parsedNumber := by
+  native_decide
+
+example : CorrelationCellFormTag.classify .rejected (some .malformed) =
+    some .rejectedMalformed := by
+  native_decide
+
+example : CorrelationCellFormTag.classify .rejected (some .declaredConstraint) = none := by
   native_decide
 
 example : ComparisonOperator.unsupported = [.less, .lessEqual, .greater, .greaterEqual] := by

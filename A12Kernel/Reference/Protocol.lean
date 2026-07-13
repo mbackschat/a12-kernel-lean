@@ -1,11 +1,11 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Reference.Decimal
 import A12Kernel.Reference.StrictJson
 import A12Kernel.Reference.Support
 
-/-! # A12Kernel.Reference.Protocol — normalized flat-reference protocol v1
+/-! # A12Kernel.Reference.Protocol — normalized reference protocol v1
 
-The transport is intentionally outside the trusted semantic and theorem roots. It decodes one closed normalized request into the existing checked flat surface and emits a stable response algebra without exposing Lean `Repr` text.
+The transport is intentionally outside the trusted semantic and theorem roots. It decodes each closed normalized operation into an existing checked surface and emits a stable response algebra without exposing Lean `Repr` text.
 -/
 
 namespace A12Kernel.Reference
@@ -34,6 +34,7 @@ end Diagnostic
 
 inductive Response where
   | verdict (value : Verdict)
+  | firingRows (rows : List RowIndex)
   | diagnostic (value : Diagnostic)
 
 namespace Response
@@ -54,6 +55,12 @@ def asJson : Response → Json
         ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
         ("outcome", toJson "ok"),
         ("verdict", verdictJson value)]
+  | .firingRows rows =>
+      Json.mkObj [
+        ("protocolVersion", toJson Support.protocolVersion),
+        ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
+        ("outcome", toJson "ok"),
+        ("firingRows", toJson rows)]
   | .diagnostic value =>
       Json.mkObj [
         ("protocolVersion", toJson Support.protocolVersion),
@@ -71,12 +78,31 @@ structure CellInput where
   raw : RawCell
   deriving Repr, DecidableEq
 
-structure Request where
+structure FlatRequest where
   model : FlatModel
   declaringGroup : GroupPath
   condition : SurfaceCondition
   cells : List CellInput
   hasContent : Bool
+  deriving Repr, DecidableEq
+
+structure CorrelationCellInput where
+  row : RowIndex
+  fieldId : FieldId
+  raw : RawCell
+  deriving Repr, DecidableEq
+
+structure CorrelationRequest where
+  model : FlatModel
+  declaringGroup : GroupPath
+  rule : SurfaceSingleCorrelatedRule
+  candidates : List RowIndex
+  cells : List CorrelationCellInput
+  deriving Repr, DecidableEq
+
+inductive Request where
+  | flatValidation (value : FlatRequest)
+  | singleGroupCorrelation (value : CorrelationRequest)
   deriving Repr, DecidableEq
 
 namespace Decode
@@ -165,14 +191,9 @@ private def validateFieldPath (groups : List String) (field location : String) :
   if groups.length + 1 > Support.maxPathSegments then
     throw (resourceLimit location "pathSegments" Support.maxPathSegments)
 
-private def parsePath (json : Json) (location : String) :
-    Except Diagnostic SurfaceFieldPath := do
-  requireObject json location ["base", "parents", "groups", "field"]
+private def parsePathBase (json : Json) (location : String) : Except Diagnostic PathBase := do
   let baseTag : String ← required json location "base"
-  let groups : List String ← required json location "groups"
-  let field : String ← required json location "field"
-  validateFieldPath groups field location
-  let base ← match baseTag with
+  match baseTag with
     | "absolute" =>
         if hasMember json "parents" then
           throw (invalidShape (child location "parents") "absolutePathHasParents")
@@ -180,9 +201,80 @@ private def parsePath (json : Json) (location : String) :
           pure PathBase.absolute
     | "relative" => pure (.relative (← requiredNatural json location "parents"))
     | other => throw (unsupported .pathBase (child location "base") "base" other)
-  if (Support.PathFormTag.classify base groups).isNone then
+
+private def parseFieldPath (allowChildRelative : Bool) (json : Json) (location : String) :
+    Except Diagnostic SurfaceFieldPath := do
+  requireObject json location ["base", "parents", "groups", "field"]
+  let groups : List String ← required json location "groups"
+  let field : String ← required json location "field"
+  validateFieldPath groups field location
+  let base ← parsePathBase json location
+  if !allowChildRelative && (Support.PathFormTag.classify base groups).isNone then
     throw (unsupported .pathForm location "form" "childRelative")
   pure { base, groups, field }
+
+private def parsePath (json : Json) (location : String) :
+    Except Diagnostic SurfaceFieldPath :=
+  parseFieldPath false json location
+
+private def parseCorrelationFieldPath (json : Json) (location : String) :
+    Except Diagnostic SurfaceFieldPath := do
+  let path ← parseFieldPath true json location
+  match Support.CorrelationPathFormTag.classify path.base path.groups with
+  | some _ => pure path
+  | none =>
+      let form := match path.base, path.groups with
+        | .relative 0, _ :: _ :: _ => "nestedRelativePath"
+        | _, _ => match Support.PathFormTag.classify path.base path.groups with
+          | some form => form.tag
+          | none => "unsupportedCorrelationPath"
+      throw (unsupported .pathForm location "form" form)
+
+private def parseCorrelationGroupPath (json : Json) (location : String) :
+    Except Diagnostic SurfaceGroupPath := do
+  requireObject json location ["base", "parents", "groups"]
+  let groups : List String ← required json location "groups"
+  validateSegments groups (child location "groups")
+  let base ← parsePathBase json location
+  match Support.CorrelationPathFormTag.classify base groups with
+  | some _ => pure { base, groups }
+  | none =>
+      let form := match base, groups with
+        | .relative 0, _ :: _ :: _ => "nestedRelativePath"
+        | _, _ => match Support.PathFormTag.classify base groups with
+          | some form => form.tag
+          | none => "unsupportedCorrelationPath"
+      throw (unsupported .pathForm location "form" form)
+
+private def parseSingleStarFieldPath (json : Json) (location : String) :
+    Except Diagnostic SurfaceSingleStarFieldPath := do
+  requireObject json location
+    ["base", "parents", "groupsBeforeStar", "starredGroup", "field"]
+  let groupsBeforeStar : List String ← required json location "groupsBeforeStar"
+  let starredGroup : String ← required json location "starredGroup"
+  let field : String ← required json location "field"
+  validateSegments groupsBeforeStar (child location "groupsBeforeStar")
+  validateSegment starredGroup (child location "starredGroup")
+  validateSegment field (child location "field")
+  if groupsBeforeStar.length + 2 > Support.maxPathSegments then
+    throw (resourceLimit location "pathSegments" Support.maxPathSegments)
+  let base ← parsePathBase json location
+  match Support.CorrelationStarPathFormTag.classify base groupsBeforeStar with
+  | some _ => pure ()
+  | none =>
+      match base with
+      | .relative 0 =>
+          throw (unsupported .pathForm location "form" "nestedRelativeStar")
+      | .relative parents =>
+          throw (.make .pathForm location
+            (Json.mkObj [("form", toJson "parentNavigatingStar"),
+              ("parents", toJson parents)]))
+      | .absolute => throw (unsupported .pathForm location "form" "invalidStarPath")
+  pure {
+    base
+    groupsBeforeStar
+    starredGroup
+    field }
 
 private def parseDecimal (json : Json) (location : String) : Except Diagnostic Rat := do
   let text ← match fromJson? (α := String) json with
@@ -365,25 +457,127 @@ private def parseCell (json : Json) (location : String) : Except Diagnostic Cell
     raw := ← parseCellState (← requiredJson json location "state")
       (child location "state") }
 
-def request (json : Json) : Except Diagnostic Request := do
+private def parseCorrelationCellState (json : Json) (location : String) :
+    Except Diagnostic RawCell := do
+  requireObject json location ["tag", "value", "cause"]
+  let tag : String ← required json location "tag"
+  match Support.RawCellFormTag.fromTag? tag with
+  | some .parsedNumber =>
+      match Support.CorrelationCellFormTag.classify .parsedNumber none with
+      | some .parsedNumber => parseCellState json location
+      | some .rejectedMalformed | none =>
+          throw (unsupported .cellState (child location "tag") "state" tag)
+  | some .rejected => do
+      let causeTag : String ← required json location "cause"
+      let cause ← match Support.RejectedCauseTag.fromTag? causeTag with
+        | some cause => pure cause
+        | none =>
+            throw (unsupported .rejectedCause (child location "cause") "cause" causeTag)
+      match Support.CorrelationCellFormTag.classify .rejected (some cause) with
+      | some .rejectedMalformed => parseCellState json location
+      | some .parsedNumber | none =>
+          throw (unsupported .rejectedCause (child location "cause") "cause" causeTag)
+  | some form =>
+      throw (unsupported .cellState (child location "tag") "state" form.tag)
+  | none => throw (unsupported .cellState (child location "tag") "state" tag)
+
+private def parseCorrelationCell (json : Json) (location : String) :
+    Except Diagnostic CorrelationCellInput := do
+  requireObject json location ["row", "fieldId", "state"]
+  pure {
+    row := ← requiredNatural json location "row"
+    fieldId := ← requiredNatural json location "fieldId"
+    raw := ← parseCorrelationCellState (← requiredJson json location "state")
+      (child location "state") }
+
+private def parseCorrelationOperator (json : Json) (location : String) :
+    Except Diagnostic SurfaceComparisonOp := do
+  let operatorTag : String ← required json location "operator"
+  let operator ← match Support.ComparisonOperator.fromTag? operatorTag with
+    | some operator => pure operator
+    | none => throw (unsupported .operator (child location "operator")
+        "operator" operatorTag)
+  if !operator.isCorrelationSupported then
+    throw (unsupported .operator location "operator" operatorTag)
+  pure operator.toSurface
+
+private def parseHavingOrigin (json : Json) (location : String) :
+    Except Diagnostic HavingOrigin := do
+  let originTag : String ← required json location "origin"
+  match Support.HavingOriginTag.fromTag? originTag with
+  | some .inner => pure .inner
+  | some .outer => pure .outer
+  | none => throw (unsupported .havingOrigin (child location "origin")
+      "origin" originTag)
+
+private def parseHavingNumberRef (json : Json) (location : String) :
+    Except Diagnostic SurfaceHavingNumberRef := do
+  requireObject json location ["origin", "field"]
+  pure {
+    origin := ← parseHavingOrigin json location
+    field := ← parseCorrelationFieldPath (← requiredJson json location "field")
+      (child location "field") }
+
+private def parseHavingRepetitionRef (json : Json) (location : String) :
+    Except Diagnostic SurfaceHavingRepetitionRef := do
+  requireObject json location ["origin", "group"]
+  pure {
+    origin := ← parseHavingOrigin json location
+    group := ← parseCorrelationGroupPath (← requiredJson json location "group")
+      (child location "group") }
+
+private def parseCorrelatedHaving : Nat → Json → String →
+    Except Diagnostic (SurfaceCorrelatedHaving × Nat)
+  | 0, _, location =>
+      throw (resourceLimit location "conditionDepth" Support.maxConditionDepth)
+  | fuel + 1, json, location => do
+      requireObject json location ["tag", "operator", "left", "right"]
+      let tag : String ← required json location "tag"
+      match Support.CorrelatedHavingFormTag.fromTag? tag with
+      | none => throw (unsupported .havingForm (child location "tag") "form" tag)
+      | some .compareNumbers => do
+          requireObject json location ["tag", "operator", "left", "right"]
+          pure (.compareNumbers
+            (← parseCorrelationOperator json location)
+            (← parseHavingNumberRef (← requiredJson json location "left")
+              (child location "left"))
+            (← parseHavingNumberRef (← requiredJson json location "right")
+              (child location "right")), 1)
+      | some .compareRepetitions => do
+          requireObject json location ["tag", "operator", "left", "right"]
+          pure (.compareRepetitions
+            (← parseCorrelationOperator json location)
+            (← parseHavingRepetitionRef (← requiredJson json location "left")
+              (child location "left"))
+            (← parseHavingRepetitionRef (← requiredJson json location "right")
+              (child location "right")), 1)
+      | some .and => do
+          requireObject json location ["tag", "left", "right"]
+          let (left, leftNodes) ← parseCorrelatedHaving fuel
+            (← requiredJson json location "left") (child location "left")
+          let (right, rightNodes) ← parseCorrelatedHaving fuel
+            (← requiredJson json location "right") (child location "right")
+          let nodes ← checkNodeLimit location (1 + leftNodes + rightNodes)
+          pure (.and left right, nodes)
+
+private def parseCorrelationRule (json : Json) (location : String) :
+    Except Diagnostic SurfaceSingleCorrelatedRule := do
+  requireObject json location ["errorField", "guardField", "valueField", "having"]
+  let (having, _) ← parseCorrelatedHaving Support.maxConditionDepth
+    (← requiredJson json location "having") (child location "having")
+  pure {
+    errorField := ← parseCorrelationFieldPath (← requiredJson json location "errorField")
+      (child location "errorField")
+    guardField := ← parseCorrelationFieldPath (← requiredJson json location "guardField")
+      (child location "guardField")
+    valueField := ← parseSingleStarFieldPath (← requiredJson json location "valueField")
+      (child location "valueField")
+    having }
+
+private def parseFlatRequest (json : Json) : Except Diagnostic FlatRequest := do
   let location := "$"
   requireObject json location ["protocolVersion", "kernelBehaviorVersion", "operation",
     "model", "declaringGroup", "condition", "cells", "hasContent"]
-  let receivedVersion ← requiredNatural json location "protocolVersion"
-  if receivedVersion != Support.protocolVersion then
-    throw (.make .unsupportedVersion "$.protocolVersion"
-      (Json.mkObj [("received", toJson receivedVersion),
-        ("supported", toJson Support.protocolVersion)]))
-  let receivedKernel : String ← required json location "kernelBehaviorVersion"
-  if receivedKernel != Support.kernelBehaviorVersion then
-    throw (.make .kernelBehaviorVersionMismatch "$.kernelBehaviorVersion"
-      (Json.mkObj [("received", toJson receivedKernel),
-        ("supported", toJson Support.kernelBehaviorVersion)]))
-  let receivedOperation : String ← required json location "operation"
-  if receivedOperation != Support.operation then
-    throw (.make .unsupportedOperation "$.operation"
-      (Json.mkObj [("received", toJson receivedOperation),
-        ("supported", toJson Support.operation)]))
   let declaringGroup : List String ← required json location "declaringGroup"
   validateSegments declaringGroup "$.declaringGroup"
   let cellJson : List Json ← required json location "cells"
@@ -399,6 +593,54 @@ def request (json : Json) : Except Diagnostic Request := do
     condition
     cells
     hasContent := ← required json location "hasContent" }
+
+private def parseCorrelationRequest (json : Json) : Except Diagnostic CorrelationRequest := do
+  let location := "$"
+  requireObject json location ["protocolVersion", "kernelBehaviorVersion", "operation",
+    "model", "declaringGroup", "rule", "candidates", "cells"]
+  let declaringGroup : List String ← required json location "declaringGroup"
+  validateSegments declaringGroup "$.declaringGroup"
+  let candidates ← parseNaturalList (← requiredJson json location "candidates") "$.candidates"
+  if candidates.length > Support.maxCandidates then
+    throw (resourceLimit "$.candidates" "candidates" Support.maxCandidates)
+  let cellJson : List Json ← required json location "cells"
+  if cellJson.length > Support.maxCells then
+    throw (resourceLimit "$.cells" "cells" Support.maxCells)
+  let cells ← cellJson.zipIdx.mapM fun (cell, index) =>
+    parseCorrelationCell cell (indexed "$.cells" index)
+  pure {
+    model := ← parseModel (← requiredJson json location "model") "$.model"
+    declaringGroup
+    rule := ← parseCorrelationRule (← requiredJson json location "rule") "$.rule"
+    candidates
+    cells }
+
+def request (json : Json) : Except Diagnostic Request := do
+  let location := "$"
+  requireObject json location ["protocolVersion", "kernelBehaviorVersion", "operation",
+    "model", "declaringGroup", "condition", "rule", "candidates", "cells", "hasContent"]
+  let receivedVersion ← requiredNatural json location "protocolVersion"
+  if receivedVersion != Support.protocolVersion then
+    throw (.make .unsupportedVersion "$.protocolVersion"
+      (Json.mkObj [("received", toJson receivedVersion),
+        ("supported", toJson Support.protocolVersion)]))
+  let receivedKernel : String ← required json location "kernelBehaviorVersion"
+  if receivedKernel != Support.kernelBehaviorVersion then
+    throw (.make .kernelBehaviorVersionMismatch "$.kernelBehaviorVersion"
+      (Json.mkObj [("received", toJson receivedKernel),
+        ("supported", toJson Support.kernelBehaviorVersion)]))
+  let receivedOperation : String ← required json location "operation"
+  match Support.Operation.fromTag? receivedOperation with
+  | some .flatValidationEvaluateFull =>
+      pure (.flatValidation (← parseFlatRequest json))
+  | some .singleGroupCorrelationFiringRows =>
+      pure (.singleGroupCorrelation (← parseCorrelationRequest json))
+  | none =>
+      throw (.make .unsupportedOperation "$.operation"
+        (Json.mkObj [("received", toJson receivedOperation),
+          ("supported", toJson Support.Operation.flatValidationEvaluateFull.tag),
+          ("supportedOperations", toJson
+            (Support.Operation.all.map Support.Operation.tag))]))
 
 end Decode
 

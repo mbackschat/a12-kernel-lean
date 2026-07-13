@@ -28,6 +28,38 @@ private def fixtures : List Fixture := [
     response := "examples/reference-cli/unsupported-ordering.response.json" },
   { request := "examples/reference-cli/illegal-confirm-false.request.json",
     response := "examples/reference-cli/illegal-confirm-false.response.json" },
+  { request := "examples/reference-cli/correlation-direction.request.json",
+    response := "examples/reference-cli/correlation-direction.response.json" },
+  { request := "examples/reference-cli/correlation-self-included.request.json",
+    response := "examples/reference-cli/correlation-self-included.response.json" },
+  { request := "examples/reference-cli/correlation-self-excluded-distinct.request.json",
+    response := "examples/reference-cli/correlation-self-excluded-distinct.response.json" },
+  { request := "examples/reference-cli/correlation-self-excluded-duplicate.request.json",
+    response := "examples/reference-cli/correlation-self-excluded-duplicate.response.json" },
+  { request := "examples/reference-cli/correlation-consumer-all-valid.request.json",
+    response := "examples/reference-cli/correlation-consumer-all-valid.response.json" },
+  { request := "examples/reference-cli/correlation-consumer-first-malformed.request.json",
+    response := "examples/reference-cli/correlation-consumer-first-malformed.response.json" },
+  { request := "examples/reference-cli/correlation-consumer-second-malformed.request.json",
+    response := "examples/reference-cli/correlation-consumer-second-malformed.response.json" },
+  { request := "examples/reference-cli/correlation-filter-empty-equals-zero.request.json",
+    response := "examples/reference-cli/correlation-filter-empty-equals-zero.response.json" },
+  { request := "examples/reference-cli/correlation-filter-malformed-local.request.json",
+    response := "examples/reference-cli/correlation-filter-malformed-local.response.json" },
+  { request := "examples/reference-cli/correlation-number-not-equal.request.json",
+    response := "examples/reference-cli/correlation-number-not-equal.response.json" },
+  { request := "examples/reference-cli/correlation-repetition-equal.request.json",
+    response := "examples/reference-cli/correlation-repetition-equal.response.json" },
+  { request := "examples/reference-cli/correlation-repetition-less-than.request.json",
+    response := "examples/reference-cli/correlation-repetition-less-than.response.json" },
+  { request := "examples/reference-cli/correlation-missing-inner.request.json",
+    response := "examples/reference-cli/correlation-missing-inner.response.json" },
+  { request := "examples/reference-cli/correlation-equality-scale-mismatch.request.json",
+    response := "examples/reference-cli/correlation-equality-scale-mismatch.response.json" },
+  { request := "examples/reference-cli/correlation-ordering-mixed-scale.request.json",
+    response := "examples/reference-cli/correlation-ordering-mixed-scale.response.json" },
+  { request := "examples/reference-cli/correlation-cross-group-inner.request.json",
+    response := "examples/reference-cli/correlation-cross-group-inner.response.json" },
   { request := "examples/reference-cli/unsupported-version.request.json",
     response := "examples/reference-cli/unsupported-version.response.json" },
   { request := "examples/reference-cli/malformed-json.input",
@@ -40,6 +72,10 @@ private def fail (message : String) : IO α :=
 private def referenceExecutable : IO System.FilePath := do
   let directory ← IO.appDir
   pure ((directory / "a12-kernel-reference").addExtension System.FilePath.exeExtension)
+
+private def candidateConformanceExecutable : IO System.FilePath := do
+  let directory ← IO.appDir
+  pure ((directory / "checkCandidateConformance").addExtension System.FilePath.exeExtension)
 
 private def invoke (input : String) (args : Array String := #[]) : IO IO.Process.Output := do
   let executable ← referenceExecutable
@@ -142,6 +178,21 @@ private def checkDeterminism : IO Unit := do
   if original.stdout != compact.stdout || original.stdout != repeated.stdout then
     fail "equivalent or repeated requests produced different response bytes"
 
+private def checkCorrelationDeterminism : IO Unit := do
+  let requestPath : System.FilePath :=
+    "examples/reference-cli/correlation-direction.request.json"
+  let input ← IO.FS.readFile requestPath
+  let parsed ← readJsonFile requestPath
+  let expected ← canonicalFile "examples/reference-cli/correlation-direction.response.json"
+  let original ← invoke input
+  let compact ← invoke parsed.compress
+  let repeated ← invoke input
+  checkOutput "correlation determinism/original" original expected
+  checkOutput "correlation determinism/reordered" compact expected
+  checkOutput "correlation determinism/repeated" repeated expected
+  if original.stdout != compact.stdout || original.stdout != repeated.stdout then
+    fail "equivalent or repeated correlation requests produced different response bytes"
+
 private def checkDuplicateMember : IO Unit := do
   let input := "{\"protocolVersion\":1,\"protocolVersion\":2}"
   let expected :=
@@ -220,7 +271,9 @@ private def checkVersionAndOperationAssertions : IO Unit := do
     "\"operation\": \"flatValidation.evaluateFull\"" "\"operation\": \"unknown\""
   let operationDetails := Json.mkObj [
     ("received", toJson "unknown"),
-    ("supported", toJson "flatValidation.evaluateFull")]
+    ("supported", toJson "flatValidation.evaluateFull"),
+    ("supportedOperations", toJson ["flatValidation.evaluateFull",
+      "singleGroupCorrelation.firingRows"])]
   checkOutput "unsupported operation" (← invoke wrongOperation)
     (expectedDiagnostic "protocol" "unsupportedOperation" "$.operation" operationDetails)
 
@@ -338,9 +391,186 @@ private def checkModelAndRepeatableBoundary : IO Unit := do
     (expectedDiagnostic "unsupported" "repeatableReference" "$.condition"
       (Json.mkObj [("path", toJson ["Order", "Items", "Count"])]))
 
+private def checkCorrelationBoundary : IO Unit := do
+  let request ← readJsonFile "examples/reference-cli/correlation-direction.request.json"
+  let zero := request.setObjVal! "candidates" (toJson [0, 2, 3])
+  checkOutput "correlation zero candidate" (← invoke zero.compress)
+    (expectedDiagnostic "input" "zeroCandidate" "$.candidates"
+      (Json.mkObj [("row", toJson 0)]))
+  let duplicate := request.setObjVal! "candidates" (toJson [1, 1, 3])
+  checkOutput "correlation duplicate candidate" (← invoke duplicate.compress)
+    (expectedDiagnostic "input" "duplicateCandidate" "$.candidates"
+      (Json.mkObj [("row", toJson 1)]))
+  for (label, candidates) in [
+      ("gapped", [1, 3, 4]), ("reordered", [2, 1, 3]), ("empty", [])] do
+    let changed := request.setObjVal! "candidates" (toJson candidates)
+    checkOutput s!"correlation {label} candidate sequence" (← invoke changed.compress)
+      (expectedDiagnostic "input" "invalidCandidateSequence" "$.candidates"
+        (Json.mkObj [("required", toJson "nonEmptyContiguousOneBased"),
+          ("received", toJson candidates)]))
+  let tooManyCandidates := request.setObjVal! "candidates"
+    (toJson (List.replicate 1025 1))
+  checkOutput "correlation candidate limit" (← invoke tooManyCandidates.compress)
+    (expectedDiagnostic "input" "resourceLimit" "$.candidates"
+      (Json.mkObj [("limit", toJson "candidates"), ("maximum", toJson 1024)]))
+  let cellValues ← arrayValue (← objectMember request "cells")
+  let firstCell ← firstValue cellValues
+  let duplicateCell := request.setObjVal! "cells" (Json.arr (cellValues.push firstCell))
+  checkOutput "correlation duplicate cell address" (← invoke duplicateCell.compress)
+    (expectedDiagnostic "input" "duplicateCellAddress" "$.cells"
+      (Json.mkObj [("row", toJson 1), ("fieldId", toJson 0)]))
+  let foreignRowCell := firstCell.setObjVal! "row" (toJson 4)
+  let foreignRow := request.setObjVal! "cells" (Json.arr (cellValues.set! 0 foreignRowCell))
+  checkOutput "correlation cell row not candidate" (← invoke foreignRow.compress)
+    (expectedDiagnostic "input" "cellRowNotCandidate" "$.cells"
+      (Json.mkObj [("row", toJson 4), ("fieldId", toJson 0)]))
+  let undeclaredCell := firstCell.setObjVal! "fieldId" (toJson 99)
+  let undeclared := request.setObjVal! "cells" (Json.arr (cellValues.set! 0 undeclaredCell))
+  checkOutput "correlation undeclared cell" (← invoke undeclared.compress)
+    (expectedDiagnostic "input" "undeclaredCellId" "$.cells"
+      (Json.mkObj [("fieldId", toJson 99)]))
+  let model ← objectMember request "model"
+  let fieldValues ← arrayValue (← objectMember model "fields")
+  let outsideDeclaration := (← firstValue fieldValues).setObjVal! "id" (toJson 1)
+    |>.setObjVal! "groupPath" (toJson ["Order"])
+    |>.setObjVal! "name" (toJson "OtherCount")
+    |>.setObjVal! "repeatableScope" (toJson ([] : List Nat))
+  let outsideModel := model.setObjVal! "fields" (Json.arr (fieldValues.push outsideDeclaration))
+  let outsideCell := firstCell.setObjVal! "fieldId" (toJson 1)
+  let outside := request.setObjVal! "model" outsideModel
+    |>.setObjVal! "cells" (Json.arr (cellValues.push outsideCell))
+  checkOutput "correlation cell outside group" (← invoke outside.compress)
+    (expectedDiagnostic "input" "cellOutsideGroup" "$.cells"
+      (Json.mkObj [("row", toJson 1), ("fieldId", toJson 1),
+        ("fieldPath", toJson ["Order", "OtherCount"]),
+        ("expectedGroup", toJson ["Order", "Items"]),
+        ("expectedScope", toJson [10])]))
+  let booleanState := Json.mkObj [("tag", toJson "parsedBoolean"),
+    ("value", toJson true)]
+  let booleanCell := firstCell.setObjVal! "state" booleanState
+  let booleanInput := request.setObjVal! "cells" (Json.arr (cellValues.set! 0 booleanCell))
+  checkOutput "correlation non-number cell state" (← invoke booleanInput.compress)
+    (expectedDiagnostic "unsupported" "cellState" "$.cells[0].state.tag"
+      (Json.mkObj [("state", toJson "parsedBoolean")]))
+  let nonObjectCell := firstCell.setObjVal! "state" (toJson 42)
+  let nonObjectInput := request.setObjVal! "cells" (Json.arr (cellValues.set! 0 nonObjectCell))
+  checkOutput "correlation non-object cell state" (← invoke nonObjectInput.compress)
+    (expectedDiagnostic "input" "invalidShape" "$.cells[0].state"
+      (Json.mkObj [("reason", toJson "expectedObject")]))
+  let unsupportedRejectedState := Json.mkObj [
+    ("tag", toJson "rejected"), ("cause", toJson "declaredConstraint")]
+  let unsupportedRejectedCell := firstCell.setObjVal! "state" unsupportedRejectedState
+  let unsupportedRejectedInput := request.setObjVal! "cells"
+    (Json.arr (cellValues.set! 0 unsupportedRejectedCell))
+  checkOutput "correlation unsupported rejected cause"
+    (← invoke unsupportedRejectedInput.compress)
+    (expectedDiagnostic "unsupported" "rejectedCause" "$.cells[0].state.cause"
+      (Json.mkObj [("cause", toJson "declaredConstraint")]))
+  let rule ← objectMember request "rule"
+  let errorField ← objectMember rule "errorField"
+  let bareCorrelationPath := errorField.setObjVal! "base" (toJson "relative")
+    |>.setObjVal! "parents" (toJson 0)
+    |>.setObjVal! "groups" (toJson ([] : List String))
+  let bareCorrelationRequest := request.setObjVal! "rule"
+    (rule.setObjVal! "errorField" bareCorrelationPath)
+  checkOutput "correlation bare field path" (← invoke bareCorrelationRequest.compress)
+    (expectedDiagnostic "unsupported" "pathForm" "$.rule.errorField"
+      (Json.mkObj [("form", toJson "bare")]))
+  let parentCorrelationPath := errorField.setObjVal! "base" (toJson "relative")
+    |>.setObjVal! "parents" (toJson 1)
+  let parentCorrelationRequest := request.setObjVal! "rule"
+    (rule.setObjVal! "errorField" parentCorrelationPath)
+  checkOutput "correlation parent-relative field path"
+    (← invoke parentCorrelationRequest.compress)
+    (expectedDiagnostic "unsupported" "pathForm" "$.rule.errorField"
+      (Json.mkObj [("form", toJson "parentRelative")]))
+  let nestedCorrelationPath := errorField.setObjVal! "base" (toJson "relative")
+    |>.setObjVal! "parents" (toJson 0)
+    |>.setObjVal! "groups" (toJson ["Sub", "Items"])
+  let nestedCorrelationRequest := request.setObjVal! "rule"
+    (rule.setObjVal! "errorField" nestedCorrelationPath)
+  checkOutput "correlation nested relative field path"
+    (← invoke nestedCorrelationRequest.compress)
+    (expectedDiagnostic "unsupported" "pathForm" "$.rule.errorField"
+      (Json.mkObj [("form", toJson "nestedRelativePath")]))
+  let valueField ← objectMember rule "valueField"
+  let parentNavigatingStar := rule.setObjVal! "valueField"
+    (valueField.setObjVal! "base" (toJson "relative")
+      |>.setObjVal! "parents" (toJson 1)
+      |>.setObjVal! "groupsBeforeStar" (toJson ([] : List String)))
+  let parentNavigatingStarRequest := request.setObjVal! "rule" parentNavigatingStar
+  checkOutput "correlation parent-navigating star"
+    (← invoke parentNavigatingStarRequest.compress)
+    (expectedDiagnostic "unsupported" "pathForm" "$.rule.valueField"
+      (Json.mkObj [("form", toJson "parentNavigatingStar"), ("parents", toJson 1)]))
+  let nestedRelativeStar := rule.setObjVal! "valueField"
+    (valueField.setObjVal! "base" (toJson "relative")
+      |>.setObjVal! "parents" (toJson 0)
+      |>.setObjVal! "groupsBeforeStar" (toJson ["Sub"]))
+  let nestedRelativeStarRequest := request.setObjVal! "rule" nestedRelativeStar
+  checkOutput "correlation nested relative star"
+    (← invoke nestedRelativeStarRequest.compress)
+    (expectedDiagnostic "unsupported" "pathForm" "$.rule.valueField"
+      (Json.mkObj [("form", toJson "nestedRelativeStar")]))
+  let having ← objectMember rule "having"
+  let left ← objectMember having "left"
+  let unknownOrigin := having.setObjVal! "left" (left.setObjVal! "origin" (toJson "ambient"))
+  let unknownOriginRequest := request.setObjVal! "rule"
+    (rule.setObjVal! "having" unknownOrigin)
+  checkOutput "correlation unknown origin" (← invoke unknownOriginRequest.compress)
+    (expectedDiagnostic "unsupported" "havingOrigin" "$.rule.having.left.origin"
+      (Json.mkObj [("origin", toJson "ambient")]))
+  let unsupportedOperator := having.setObjVal! "operator" (toJson "greater")
+  let unsupportedOperatorRequest := request.setObjVal! "rule"
+    (rule.setObjVal! "having" unsupportedOperator)
+  checkOutput "correlation unsupported operator" (← invoke unsupportedOperatorRequest.compress)
+    (expectedDiagnostic "unsupported" "operator" "$.rule.having"
+      (Json.mkObj [("operator", toJson "greater")]))
+  let allOuter := having.setObjVal! "left" (left.setObjVal! "origin" (toJson "outer"))
+  let allOuterRequest := request.setObjVal! "rule" (rule.setObjVal! "having" allOuter)
+  checkOutput "correlation all-outer having" (← invoke allOuterRequest.compress)
+    (expectedDiagnostic "elaboration" "missingInner" "$.rule.having")
+  let right ← objectMember having "right"
+  let allInner := having.setObjVal! "right" (right.setObjVal! "origin" (toJson "inner"))
+  let allInnerRequest := request.setObjVal! "rule" (rule.setObjVal! "having" allInner)
+  checkOutput "correlation all-inner having" (← invoke allInnerRequest.compress)
+    (expectedDiagnostic "unsupported" "uncorrelatedHaving" "$.rule.having")
+  let consumerRequest ← readJsonFile
+    "examples/reference-cli/correlation-consumer-all-valid.request.json"
+  let consumerRule ← objectMember consumerRequest "rule"
+  let consumerHaving ← objectMember consumerRule "having"
+  let consumerEquality ← objectMember consumerHaving "right"
+  let consumerLeft ← objectMember consumerEquality "left"
+  let stockQtyField ← objectMember consumerLeft "field"
+  let mismatchedRule := consumerRule.setObjVal! "guardField" stockQtyField
+  let mismatchedRequest := consumerRequest.setObjVal! "rule" mismatchedRule
+  checkOutput "correlation error and guard mismatch" (← invoke mismatchedRequest.compress)
+    (expectedDiagnostic "elaboration" "errorGuardMismatch" "$.rule"
+      (Json.mkObj [("errorPath", toJson ["Order", "Items", "Count"]),
+        ("guardPath", toJson ["Order", "Items", "StockQty"])]))
+
 private def checkManifest : IO Unit := do
   let expected ← canonicalFile "reference/supported-fragment-v1.json"
   checkOutput "manifest" (← invoke "" #["--manifest"]) expected
+
+private def checkCandidateRunnerIntegrity : IO Unit := do
+  let executable ← candidateConformanceExecutable
+  let selfTest ← IO.Process.output {
+    cmd := executable.toString
+    args := #["--self-test", "--suite",
+      "reference/single-group-correlation-v1.conformance.json"] } (some "")
+  checkOutput "candidate runner integrity" selfTest
+    "candidate conformance self-test: 16/16 guards passed\n"
+
+private def checkCandidateSuiteControl : IO Unit := do
+  let runner ← candidateConformanceExecutable
+  let candidate ← referenceExecutable
+  let output ← IO.Process.output {
+    cmd := runner.toString
+    args := #["--candidate", candidate.toString, "--suite",
+      "reference/single-group-correlation-v1.conformance.json"] } (some "")
+  checkOutput "candidate suite control" output
+    "candidate conformance 'single-group-correlation-v1': 16/16 cases passed\n"
 
 private def checkInvocationError : IO Unit := do
   checkOutput "unexpected argument" (← invoke "" #["--unknown"])
@@ -350,6 +580,7 @@ def main : IO Unit := do
   for fixture in fixtures do
     checkFixture fixture
   checkDeterminism
+  checkCorrelationDeterminism
   checkDuplicateMember
   checkEmptyInput
   checkUnknownMember
@@ -366,6 +597,9 @@ def main : IO Unit := do
   checkPathSegmentBoundary
   checkCellBoundary
   checkModelAndRepeatableBoundary
+  checkCorrelationBoundary
   checkManifest
+  checkCandidateRunnerIntegrity
+  checkCandidateSuiteControl
   checkInvocationError
-  IO.println s!"reference process: {fixtures.length + 19}/{fixtures.length + 19} check groups passed"
+  IO.println s!"reference process: {fixtures.length + 23}/{fixtures.length + 23} check groups passed"
