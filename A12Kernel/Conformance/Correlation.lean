@@ -11,6 +11,12 @@ private def items : RepeatableLevel := 10
 private def count : FlatNumberField :=
   { id := 0, info := { scale := 0, signed := false } }
 
+private def payload : FlatNumberField :=
+  { id := 1, info := { scale := 0, signed := false } }
+
+private def marker : FlatNumberField :=
+  { id := 2, info := { scale := 0, signed := false } }
+
 private def checkedNumber : RawCell → CheckedCell :=
   formalCheck { kind := .number count.info }
 
@@ -38,6 +44,51 @@ private def emptyAndZero : SingleGroupValidationContext :=
 private def malformedSecond : SingleGroupValidationContext :=
   rawContextOf [.parsed (.num 5), .rejected .malformed]
 
+private def selfExcludedConsumerContext
+    (rows : List (Rat × RawCell)) : SingleGroupValidationContext where
+  group := items
+  candidates := (List.range rows.length).map (· + 1)
+  read row fieldId :=
+    if fieldId == count.id then
+      match rows[row - 1]? with
+      | some (key, _) => checkedNumber (.parsed (.num key))
+      | none => checkedNumber .empty
+    else if fieldId == payload.id then
+      match rows[row - 1]? with
+      | some (_, value) => checkedNumber value
+      | none => checkedNumber .empty
+    else if fieldId == marker.id then
+      checkedNumber (.parsed (.num 1))
+    else
+      checkedNumber .empty
+
+private def malformedFirstConsumer : SingleGroupValidationContext :=
+  selfExcludedConsumerContext [
+    (5, .rejected .malformed), (5, .parsed (.num 9))]
+
+private def malformedSecondConsumer : SingleGroupValidationContext :=
+  selfExcludedConsumerContext [
+    (5, .parsed (.num 9)), (5, .rejected .malformed)]
+
+private def validConsumers : SingleGroupValidationContext :=
+  selfExcludedConsumerContext [
+    (5, .parsed (.num 8)), (5, .parsed (.num 9))]
+
+private def distinctConsumerKeys : SingleGroupValidationContext :=
+  selfExcludedConsumerContext [
+    (5, .parsed (.num 8)), (6, .parsed (.num 9))]
+
+private def mixedConsumers : SingleGroupValidationContext :=
+  selfExcludedConsumerContext [
+    (5, .rejected .malformed),
+    (5, .parsed (.num 9)),
+    (5, .parsed (.num 10))]
+
+private def emptyFirstMarker : SingleGroupValidationContext :=
+  { validConsumers with read := fun row fieldId =>
+      if row == 1 && fieldId == marker.id then checkedNumber .empty
+      else validConsumers.read row fieldId }
+
 private def innerCount : HavingNumberRef :=
   { origin := .inner, field := count }
 
@@ -60,6 +111,9 @@ private def selfExcluded : SingleCorrelatedStar :=
       (.and
         (.compareRepetitions .notEqual .inner .outer)
         (.compareNumbers .equal innerCount outerCount)) (by decide) (by decide) }
+
+private def selfExcludedPayload : SingleCorrelatedStar :=
+  { valueField := payload, having := selfExcluded.having }
 
 private def smallerInner : SingleCorrelatedStar :=
   { valueField := count
@@ -123,6 +177,62 @@ example : selfExcluded.select (captured duplicates 3) = [] := by
   native_decide
 
 example : selfExcluded.firingRows duplicates = [1, 2] := by
+  native_decide
+
+/-- Row 1's malformed consumed value is outside its self-excluded selection; row 2's
+    valid value is selected, so the guarded quantifier fires. -/
+example :
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+      (captured malformedFirstConsumer 1) = .tru := by
+  native_decide
+
+/-- From row 2, the same malformed value is selected and makes the consumer unknown. -/
+example :
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+      (captured malformedFirstConsumer 2) = .unknown := by
+  native_decide
+
+example :
+    selfExcludedPayload.firingRowsOn marker malformedFirstConsumer = [1] := by
+  native_decide
+
+/-- Swapping only which consumed row is malformed mirrors the firing row. -/
+example :
+    selfExcludedPayload.firingRowsOn marker malformedSecondConsumer = [2] := by
+  native_decide
+
+example :
+    selfExcludedPayload.firingRowsOn marker validConsumers = [1, 2] := by
+  native_decide
+
+/-- A selected valid cell satisfies the existential consumer even when another selected
+    cell is malformed; kept invalidity is not global poison for this operator. -/
+example :
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+      (captured mixedConsumers 3) = .tru := by
+  native_decide
+
+/-- Selection stability is load-bearing in the footprint theorem. The left selected
+    consumer premise would be vacuous, yet changing only the filter keys changes the
+    selection and the result. -/
+example :
+    selfExcludedPayload.select (captured distinctConsumerKeys 1) = [] ∧
+    selfExcludedPayload.select (captured validConsumers 1) = [2] ∧
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+        (captured distinctConsumerKeys 1) = .fls ∧
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+        (captured validConsumers 1) = .tru := by
+  native_decide
+
+/-- Guard-observation agreement is also load-bearing when selection and selected
+    consumer cells are identical. -/
+example :
+    selfExcludedPayload.select (captured emptyFirstMarker 1) =
+        selfExcludedPayload.select (captured validConsumers 1) ∧
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+        (captured emptyFirstMarker 1) = .fls ∧
+    selfExcludedPayload.evalGuardedAnyFilledOn marker
+        (captured validConsumers 1) = .tru := by
   native_decide
 
 /-- This asymmetric case distinguishes inner/outer routing from reversal or collapse. -/

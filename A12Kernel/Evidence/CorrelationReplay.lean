@@ -65,6 +65,11 @@ private def safeEntityPath (path : String) : Bool :=
     !path.contains '*' && !path.contains '$' && !path.contains '|' &&
     !(path.splitOn "/").contains ".." && !(path.splitOn "/").contains "."
 
+private def safeConditionPath (path : String) : Bool :=
+  !path.isEmpty && !path.endsWith "/" && !path.contains '*' &&
+    !path.contains '$' && !path.contains '|' &&
+    !(path.splitOn "/").contains ".." && !(path.splitOn "/").contains "."
+
 private def directChildOf (groupPath fieldPath : String) : Bool :=
   let pathPrefix := groupPath ++ "/"
   if fieldPath.startsWith pathPrefix then
@@ -99,8 +104,8 @@ private def NumberRefSpec.render (fields : List NumberFieldSpec)
     | some field => pure field
     | none => throw s!"correlation filter references undeclared field {reference.fieldId}"
   pure <| match reference.origin with
-    | .inner => s!"[{field.path}]"
-    | .outer => s!"[${field.path}]"
+    | .inner => s!"[{field.conditionPath}]"
+    | .outer => s!"[${field.conditionPath}]"
 
 private def OriginSpec.renderRepetition (groupPath : String) : OriginSpec → String
   | .inner => s!"CurrentRepetition({groupPath})"
@@ -139,20 +144,30 @@ private def CaseSpec.validateTransport (case : CaseSpec) : Except String Unit :=
   if case.fields.isEmpty then throw s!"{case.id}: fields must not be empty"
   if !safeEntityPath case.groupPath then
     throw s!"{case.id}: invalid groupPath '{case.groupPath}'"
+  if !safeConditionPath case.conditionGroupPath then
+    throw s!"{case.id}: invalid conditionGroupPath '{case.conditionGroupPath}'"
   if case.rowIds.isEmpty then throw s!"{case.id}: rowIds must not be empty"
   if case.rowIds.any (· == 0) then throw s!"{case.id}: row ids must be 1-based"
   if hasDuplicate case.rowIds then throw s!"{case.id}: duplicate row id"
   if hasDuplicate (case.fields.map (·.id)) then throw s!"{case.id}: duplicate field id"
   if hasDuplicate (case.fields.map (·.path)) then throw s!"{case.id}: duplicate field path"
+  if hasDuplicate (case.fields.map (·.conditionPath)) then
+    throw s!"{case.id}: duplicate field conditionPath"
   for field in case.fields do
     if !safeEntityPath field.path then
       throw s!"{case.id}: invalid field path '{field.path}'"
     if !directChildOf case.groupPath field.path then
       throw s!"{case.id}: field '{field.path}' is not a direct child of group '{case.groupPath}'"
+    if !safeConditionPath field.conditionPath then
+      throw s!"{case.id}: invalid field conditionPath '{field.conditionPath}'"
+    if !directChildOf case.conditionGroupPath field.conditionPath then
+      throw s!"{case.id}: condition field '{field.conditionPath}' is not a direct child of condition group '{case.conditionGroupPath}'"
   if hasDuplicate (case.cells.map fun cell => (cell.rowId, cell.fieldId)) then
     throw s!"{case.id}: duplicate row/field cell"
   if !(case.fields.any (·.id == case.valueFieldId)) then
     throw s!"{case.id}: valueFieldId {case.valueFieldId} is undeclared"
+  if !(case.fields.any (·.id == case.guardFieldId)) then
+    throw s!"{case.id}: guardFieldId {case.guardFieldId} is undeclared"
   if case.outerRows.map (·.rowId) != case.rowIds then
     throw s!"{case.id}: outerRows must map every rowId once and in row order"
   if case.outerRows.any (·.pointer.isEmpty) then
@@ -173,9 +188,12 @@ def CaseSpec.renderCondition (case : CaseSpec) : Except String String := do
   let valueField ← match findField case.fields case.valueFieldId with
     | some field => pure field
     | none => throw s!"{case.id}: valueFieldId {case.valueFieldId} is undeclared"
-  let suffix := valueField.path.drop case.groupPath.length
-  let starPath := case.groupPath ++ "*" ++ suffix
-  pure s!"FieldFilled({valueField.path}) And AtLeastOneFieldFilled({starPath} Having {← case.filter.render case.fields case.groupPath})"
+  let guardField ← match findField case.fields case.guardFieldId with
+    | some field => pure field
+    | none => throw s!"{case.id}: guardFieldId {case.guardFieldId} is undeclared"
+  let suffix := valueField.conditionPath.drop case.conditionGroupPath.length
+  let starPath := case.conditionGroupPath ++ "*" ++ suffix
+  pure s!"FieldFilled({guardField.conditionPath}) And AtLeastOneFieldFilled({starPath} Having {← case.filter.render case.fields case.conditionGroupPath})"
 
 /-- Replay returns only ordered outer row identities and their externally meaningful
     pointers. Message polarity remains an observation retained by the IO driver. -/
@@ -186,14 +204,17 @@ def CaseSpec.replay (case : CaseSpec) : Except String (List Firing) := do
     | none => throw s!"{case.id}: valueFieldId {case.valueFieldId} is undeclared"
   let star : SingleCorrelatedStar :=
     { valueField := valueField.toField, having := ← case.checkedHaving }
-  let firingRows := star.firingRows case.context
+  let guardField ← match findField case.fields case.guardFieldId with
+    | some field => pure field
+    | none => throw s!"{case.id}: guardFieldId {case.guardFieldId} is undeclared"
+  let firingRows := star.firingRowsOn guardField.toField case.context
   firingRows.mapM fun rowId =>
     match findOuterRow case.outerRows rowId with
     | some row => pure { rowId, pointer := row.pointer }
     | none => throw s!"{case.id}: firing row {rowId} has no pointer mapping"
 
 def Bundle.validate (bundle : Bundle) : Except String Unit := do
-  if bundle.schemaVersion != 1 then
+  if bundle.schemaVersion != 2 then
     throw s!"unsupported correlation evidence schema version {bundle.schemaVersion}"
   if bundle.kernelVersion != A12Kernel.kernelVersion then
     throw s!"correlation evidence targets kernel {bundle.kernelVersion}, Lean targets {A12Kernel.kernelVersion}"

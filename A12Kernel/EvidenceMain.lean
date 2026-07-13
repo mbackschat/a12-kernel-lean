@@ -55,6 +55,7 @@ private structure RetainedField where
   id : String
   kind : String
   scale : Nat
+  signed : Bool
   deriving Repr, DecidableEq
 
 private structure RetainedModelIndex where
@@ -87,6 +88,11 @@ private def optionalNat (json : Json) (name : String) : Except String Nat :=
   | .ok value => fromJson? value
   | .error _ => pure 0
 
+private def optionalBool (json : Json) (name : String) : Except String Bool :=
+  match json.getObjVal? name with
+  | .ok value => fromJson? value
+  | .error _ => pure false
+
 private def collectGroupIndex : Nat → Json → Except String RetainedModelIndex
   | 0, _ => throw "retained model group nesting exceeds maximum depth"
   | fuel + 1, group => do
@@ -102,11 +108,14 @@ private def collectGroupIndex : Nat → Json → Except String RetainedModelInde
             let fieldBody ← element.getObjVal? "Field"
             let fieldType ← fieldBody.getObjVal? "fieldType"
             let kind : String ← member fieldType "type"
-            let scale ← if kind == "NumberType" then
-              optionalNat (← fieldType.getObjVal? "NumberType") "maxFractionalDigits"
-            else
-              pure 0
-            pure { RetainedModelIndex.empty with fields := [{ id := fieldId, kind, scale }] }
+            let (scale, signed) ← if kind == "NumberType" then do
+              let numberType ← fieldType.getObjVal? "NumberType"
+              let scale ← optionalNat numberType "maxFractionalDigits"
+              let positivesOnly ← optionalBool numberType "positivesOnly"
+              pure (scale, !positivesOnly)
+            else pure (0, false)
+            pure { RetainedModelIndex.empty with fields := [{
+              id := fieldId, kind, scale, signed }] }
         | "Rule" => do
             let ruleId : String ← member element "id"
             let rule ← element.getObjVal? "Rule"
@@ -197,10 +206,11 @@ private def focusedCorrelationObservation
   for signature in focused do
     if !(case.outerRows.any (·.pointer == signature.pointer)) then
       throw s!"{case.id}: focused message has unmapped pointer '{signature.pointer}'"
-  let firings ← focused.mapM fun signature =>
-    match case.outerRows.find? (·.pointer == signature.pointer) with
-    | some row => pure { rowId := row.rowId, pointer := signature.pointer }
-    | none => throw s!"{case.id}: focused message has unmapped pointer '{signature.pointer}'"
+  let firings := case.outerRows.flatMap fun row =>
+    if focused.any (·.pointer == row.pointer) then
+      [{ rowId := row.rowId, pointer := row.pointer }]
+    else
+      []
   pure { firings, signatures := focused }
 
 private def pathSegments (path : String) : List String :=
@@ -224,6 +234,12 @@ private def resolveEntityReference (entityId reference : String) : Except String
   if segments.isEmpty then throw "entity reference resolves to the model root"
   pure ("/" ++ String.intercalate "/" segments)
 
+private def resolveConditionReference (ruleId reference : String) : Except String String := do
+  let base := if reference.startsWith "/" then [] else pathSegments ruleId |>.dropLast
+  let segments ← applyRelativeSegments base (pathSegments reference)
+  if segments.isEmpty then throw "condition reference resolves to the model root"
+  pure ("/" ++ String.intercalate "/" segments)
+
 private def bindCorrelationProjectionToModel
     (case : A12Kernel.Evidence.Correlation.CaseSpec) (model : Json) : Except String Unit := do
   let index ← retainedModelIndex model
@@ -238,19 +254,28 @@ private def bindCorrelationProjectionToModel
           throw s!"{case.id}: retained field '{field.id}' is {field.kind}, not NumberType"
         if field.scale != projectedField.scale then
           throw s!"{case.id}: retained field '{field.id}' scale is {field.scale}, projection says {projectedField.scale}"
+        if field.signed != projectedField.signed then
+          throw s!"{case.id}: retained field '{field.id}' signed={field.signed}, projection says {projectedField.signed}"
     | [] => throw s!"{case.id}: retained model has no field '{projectedField.path}'"
     | _ => throw s!"{case.id}: retained model has duplicate field '{projectedField.path}'"
   let rule ← match index.rules.filter (·.errorCode == case.focusCode) with
     | [rule] => pure rule
     | [] => throw s!"{case.id}: retained model has no rule with code '{case.focusCode}'"
     | _ => throw s!"{case.id}: retained model has multiple rules with code '{case.focusCode}'"
-  let valueField ← match case.fields.filter (·.id == case.valueFieldId) with
+  let conditionGroupPath ← resolveConditionReference rule.id case.conditionGroupPath
+  if conditionGroupPath != case.groupPath then
+    throw s!"{case.id}: condition group path resolves to '{conditionGroupPath}', expected '{case.groupPath}'"
+  for projectedField in case.fields do
+    let conditionFieldPath ← resolveConditionReference rule.id projectedField.conditionPath
+    if conditionFieldPath != projectedField.path then
+      throw s!"{case.id}: condition field path resolves to '{conditionFieldPath}', expected '{projectedField.path}'"
+  let guardField ← match case.fields.filter (·.id == case.guardFieldId) with
     | [field] => pure field
-    | [] => throw s!"{case.id}: projection has no value field {case.valueFieldId}"
-    | _ => throw s!"{case.id}: projection has duplicate value field {case.valueFieldId}"
+    | [] => throw s!"{case.id}: projection has no guard field {case.guardFieldId}"
+    | _ => throw s!"{case.id}: projection has duplicate guard field {case.guardFieldId}"
   let errorPath ← resolveEntityReference rule.id rule.errorEntityRelPath
-  if errorPath != valueField.path then
-    throw s!"{case.id}: retained rule error path resolves to '{errorPath}', expected '{valueField.path}'"
+  if errorPath != guardField.path then
+    throw s!"{case.id}: retained rule error path resolves to '{errorPath}', expected '{guardField.path}'"
   let projectedCondition ← case.renderCondition
   if rule.errorCondition != projectedCondition then
     throw s!"{case.id}: retained condition '{rule.errorCondition}' does not equal projection '{projectedCondition}'"

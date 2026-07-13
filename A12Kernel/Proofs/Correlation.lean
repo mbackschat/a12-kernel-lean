@@ -8,6 +8,27 @@ private theorem K.and_eq_tru_iff (left right : K) :
     K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
   cases left <;> cases right <;> decide
 
+private theorem anyFilledTruth_congr (field : FlatNumberField)
+    (left right : SingleGroupValidationContext) (rows : List RowIndex)
+    (agree : ∀ row, row ∈ rows →
+      observeCell .validation (left.read row field.id) =
+        observeCell .validation (right.read row field.id)) :
+    field.anyFilledTruth left rows = field.anyFilledTruth right rows := by
+  induction rows with
+  | nil => rfl
+  | cons row rows inductionHypothesis =>
+      have headAgreement := agree row (by simp)
+      have tailAgreement : ∀ tailRow, tailRow ∈ rows →
+          observeCell .validation (left.read tailRow field.id) =
+            observeCell .validation (right.read tailRow field.id) := by
+        intro tailRow member
+        exact agree tailRow (by simp [member])
+      simp only [FlatNumberField.anyFilledTruth]
+      rw [show field.filledTruthAt left row = field.filledTruthAt right row by
+        unfold FlatNumberField.filledTruthAt
+        rw [headAgreement]]
+      rw [inductionHypothesis tailAgreement]
+
 /-- An outer numeric reference is stable when only the candidate/inner row changes. -/
 theorem outer_number_reference_stable (rows : SingleGroupValidationContext)
     (field : FlatNumberField) (outerRow inner₁ inner₂ : RowIndex) :
@@ -96,6 +117,31 @@ theorem selectCorrelatedRows_iff (star : SingleCorrelatedStar)
     exact selectCorrelatedRows_sound_on star context context.rows.candidates
   · intro derivation
     exact selectCorrelatedRows_complete_on derivation
+
+/-- Once correlated selection agrees, the guarded presence consumer observes only the
+    outer guard cell and consumer cells in the selected rows. -/
+theorem evalGuardedAnyFilledOn_filter_before_consumer
+    (star : SingleCorrelatedStar) (guardField : FlatNumberField)
+    (left right : CapturedSingleGroupContext)
+    (sameSelection : star.select left = star.select right)
+    (agreeGuard :
+      observeCell .validation (left.rows.read left.outerRow guardField.id) =
+        observeCell .validation (right.rows.read right.outerRow guardField.id))
+    (agreeSelected : ∀ row, row ∈ star.select left →
+      observeCell .validation (left.rows.read row star.valueField.id) =
+        observeCell .validation (right.rows.read row star.valueField.id)) :
+    star.evalGuardedAnyFilledOn guardField left =
+      star.evalGuardedAnyFilledOn guardField right := by
+  have guardTruth :
+      guardField.filledTruthAt left.rows left.outerRow =
+        guardField.filledTruthAt right.rows right.outerRow := by
+    unfold FlatNumberField.filledTruthAt
+    rw [agreeGuard]
+  have selectedTruth := anyFilledTruth_congr star.valueField left.rows right.rows
+    (star.select left) agreeSelected
+  simp only [SingleCorrelatedStar.evalGuardedAnyFilledOn,
+    SingleCorrelatedStar.evalSelectedAnyFilled]
+  rw [guardTruth, ← sameSelection, selectedTruth]
 
 /-- `CurrentRepetition(inner) != CurrentRepetition($outer)` is false on the outer row
     itself. Self-exclusion is therefore explicit and structural. -/

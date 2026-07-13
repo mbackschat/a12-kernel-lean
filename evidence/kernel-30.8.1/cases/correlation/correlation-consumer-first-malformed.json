@@ -1,0 +1,131 @@
+{
+    "meta": {
+        "id": "correlation-consumer-first-malformed",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§9"
+        ],
+        "tags": [
+            "single-star",
+            "having",
+            "outer-correlation",
+            "consumer-footprint",
+            "lean-evidence"
+        ],
+        "scenario": "a12-kernel-lean capsule 5c"
+    },
+    "modelRef": "models/lean-correlation-consumer.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "A"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/StockQty",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "7"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                1,
+                1
+            ],
+            "value": "5.000"
+        },
+        {
+            "kind": "GROUP",
+            "path": "/Order/Items",
+            "reps": [
+                1,
+                2
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Sku",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "B"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/Count",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "1"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/StockQty",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "7"
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/Items/UnitWeight",
+            "reps": [
+                1,
+                2,
+                1
+            ],
+            "value": "6.00"
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "CORR_CONSUMER|OMISSION_ERROR|/Order[1]/Items[1]/Count",
+        "zahlFalscheAnzahlNachkommastellen|VALUE_ERROR|/Order[1]/Items[1]/UnitWeight"
+    ]
+}

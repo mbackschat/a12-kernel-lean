@@ -14,6 +14,7 @@ open Lean
 structure NumberFieldSpec where
   id : Nat
   path : String
+  conditionPath : String
   scale : Nat
   signed : Bool
   deriving Repr, DecidableEq
@@ -63,11 +64,13 @@ structure CaseSpec where
   focusCode : String
   groupId : Nat
   groupPath : String
+  conditionGroupPath : String
   rowIds : List Nat
   fields : List NumberFieldSpec
   cells : List NumberCellSpec
   filter : FilterSpec
   valueFieldId : Nat
+  guardFieldId : Nat
   outerRows : List OuterRowSpec
   deriving Repr, DecidableEq
 
@@ -84,6 +87,7 @@ private def parseField (json : Json) : Except String NumberFieldSpec := do
   pure {
     id := ← member json "id"
     path := ← member json "path"
+    conditionPath := ← member json "conditionPath"
     scale := ← member json "scale"
     signed := ← member json "signed" }
 
@@ -156,11 +160,13 @@ private def parseCase (json : Json) : Except String CaseSpec := do
     focusCode := ← member json "focusCode"
     groupId := ← member json "groupId"
     groupPath := ← member json "groupPath"
+    conditionGroupPath := ← member json "conditionGroupPath"
     rowIds := ← member json "rowIds"
     fields := ← fieldJson.mapM parseField
     cells := ← cellJson.mapM parseCell
     filter := ← parseFilter 64 (← json.getObjVal? "filter")
     valueFieldId := ← member json "valueFieldId"
+    guardFieldId := ← member json "guardFieldId"
     outerRows := ← outerRowJson.mapM parseOuterRow }
 
 def Bundle.fromJson (json : Json) : Except String Bundle := do
