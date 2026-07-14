@@ -292,6 +292,9 @@ These projects sharpen the selection criterion: include a case as a primary prec
 - Reference path resolution versus compiled access-plan equivalence.
 - Declarative joins versus hash joins and cache correctness.
 - Reference versus optimized evaluator refinement.
+- Checked import from a named JSON Schema dialect/subset into a supported A12 fragment: explicit source semantics; checked parsing and reference-resolution soundness, or an explicit pre-parsed source-AST trust boundary; target well-formedness; and precisely directed satisfaction preservation over an explicit JSON-instance-to-Document relation.
+- Rule-refactoring preservation over the complete observation domain admitted by the fragment, with the weakest accurate relation—equivalence, forward/backward refinement, reduction, relaxation, or conservative approximation—and compositionality for multi-pass tools.
+- Soundness of compact certificates emitted by untrusted importer, refactoring, analysis, or optimization frontends and checked by a smaller Lean-defined verifier.
 
 ### 11.4 Actual rule models
 
@@ -405,7 +408,7 @@ The audiences impose different tests of value:
 | Audience | Potential benefit | Warning sign |
 |---|---|---|
 | A12 rule authors and domain readers | Executable examples and plain-language explanations remain synchronized with the semantic theory | The page exposes Lean machinery without improving understanding of A12 behavior |
-| Independent interpreter authors | One path connects a supported scenario to its normalized result, theorem boundary, counterexample, and kernel-evidence status | The publication invents a second protocol, support list, or expected-result store |
+| Independent semantic-consumer authors | One path connects a supported scenario or transformation to its normalized result or relation, theorem/checker boundary, counterexample, and evidence status | The publication invents a second task interface, support list, expected-result store, or transformation contract |
 | Lean contributors | Narrative navigation through related declarations and proofs, with examples checked during the documentation build | The handbook duplicates module docstrings or generated API documentation |
 | LLM and coding agents | Stable anchors and checked exemplars reduce stale prose and make claim-to-code-to-proof-to-evidence traversal more reliable | Canonical knowledge becomes harder to read, search, or update than Markdown and ordinary Lean files |
 
@@ -424,6 +427,9 @@ The canonical document ownership map is [`README.md`](README.md), and lifecycle/
 - **Headline verification:** citing theorem counts, zero `sorry`, or a label such as “memory safe” without its statement and boundary.
 - **Success-only theorem promoted to full correctness:** omitting unknown, poison, rejection, failure, or divergence from a relation while calling its bridge equivalence.
 - **Forward preservation called equivalence:** proving only that a successful source execution is preserved and then claiming identical behavior in both directions.
+- **Format-name verification:** claiming a “verified JSON Schema importer” without pinning a dialect/subset, modeling its source meaning, defining the JSON-instance-to-Document relation, and stating the exact preservation direction.
+- **Boolean-only refactoring equivalence:** proving that condition truth agrees while omitting in-scope unknown/poison, polarity, messages, computation deltas, storage, or observable order.
+- **Silent import approximation:** dropping or defaulting an unsupported source construct while returning an ordinary successful A12 model instead of an explicit rejection or declared approximation.
 - **Host/object-language confusion:** assuming a syntax macro makes A12 programs well typed because Lean typechecks the macro expansion.
 - **Hidden fuel semantics:** treating exhaustion at an arbitrary bound as though it were an A12 outcome.
 - **Monadic order accident:** allowing a generic traversal to choose read order where short-circuiting or poison makes order observable.

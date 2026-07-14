@@ -5,13 +5,14 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 ## Document roles
 
 - [`../spec/`](../spec/) is read-only language-neutral semantic input. It plays the same consulted-upstream role for this repository that a12-kernel's merged BA/dev documentation plays for a12-dmkits; it is not a work log, findings ledger, implementation map, or roadmap.
-- [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the stable project argument, goals, evidence doctrine, success gates, durable milestones, and long-term outlook.
-- [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) owns the proposed releasable product boundary, public claims and nonclaims, integration shape, release gates, staged product progression, and user-facing documentation strategy until that proposal is explicitly adopted or replaced.
+- [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the stable project argument, goals, evidence doctrine, semantics-factory/shipment/consumer topology, success gates, durable milestones, and long-term outlook.
+- [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) owns the general consumer-task taxonomy, proposed releasable product boundary, public claims and nonclaims, integration shape, release gates, staged product progression, and user-facing documentation strategy until that proposal is explicitly adopted or replaced.
+- [`USE-CASES.md`](USE-CASES.md) owns the concise user-facing projection of the proposal's consumer-task taxonomy: representative products, concrete ways Lean helps, and category-specific assurance limits. It explains potential without redefining the taxonomy or declaring current support.
 - [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) owns the production artifact contract, version binding, platform qualification, reproducibility, packaging, signing, release-size experiments, publication, and rollback. It records how a release would be engineered without adopting the product proposal or redefining semantic support.
 - [`PLAN.md`](PLAN.md) owns the resumable current checkpoint, preserved observations, immediate continuation order, and session-resume procedure. It is operational state, not a second roadmap.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) owns the current Lean structure, representations, dependency boundaries, and adopted/rejected encoding decisions. It describes what exists, not a feature-status board.
 - [`PROTOCOL.md`](PROTOCOL.md) owns the normalized reference process and JSON contract, including invocation, exit behavior, closed wire shapes, diagnostics, limits, support-manifest interpretation, and runnable sample data.
-- [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the independent-interpreter handover contract, implementation-capsule contents, research-closure and cold-implementer gates, downstream playbook, and disagreement protocol.
+- [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the semantic-consumer shipment contract, portable versus task/language-specific layers, evaluator/importer/refactoring profiles, research-closure and cold-consumer gates, downstream playbooks, and disagreement protocol.
 - [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) owns the concrete `flat-validation-empty-logic-v1` handover, its generated descriptor, suite and post-cold mutation qualification plan, linked cold-test outcome, and capsule-specific open boundary.
 - [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) owns the concrete `single-group-correlation-v1` handover: its language-neutral algorithm, worked traces, evidence/law/non-law map, candidate suite usage, and capsule-specific open boundary. Future capability kits should be separate documents only when an actual handover capsule exists.
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
@@ -34,7 +35,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 
 - A new or changed Lean module, representation, or dependency boundary updates [`ARCHITECTURE.md`](ARCHITECTURE.md).
 - A changed reference-process invocation, wire shape, diagnostic, limit, manifest field, or runnable sample updates [`PROTOCOL.md`](PROTOCOL.md).
-- A changed implementer handover artifact, research-closure requirement, cold-implementer test, downstream conformance playbook, or missing-semantics escalation path updates [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md).
+- A changed semantic-shipment artifact, consumer task/language profile, research-closure requirement, cold-consumer test, downstream qualification playbook, or missing-semantics escalation path updates [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md).
 - A changed capability-specific semantic handover, descriptor, suite, candidate tool, evidence mapping, law/non-law guidance, cold-test outcome, or release gap updates its owning implementation kit: currently [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) or [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md).
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
@@ -42,6 +43,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
 - A changed stable goal, evidence rule, durable milestone, success criterion, or long-term project potential updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
 - A changed proposed release artifact, public claim, integration boundary, release gate, product stage, or user-facing product-documentation strategy updates [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md).
+- A changed general consumer-task taxonomy starts in [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) and updates its reader-facing projection in [`USE-CASES.md`](USE-CASES.md); a changed user-facing account of Lean's contribution or limits updates [`USE-CASES.md`](USE-CASES.md) without redefining the taxonomy there.
 - A changed production artifact format, version binding, supported platform, reproducibility rule, packaging/signing/SBOM process, size policy, publication process, or rollback rule updates [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md).
 - A changed current checkpoint, preserved observation, immediate step order, or resume instruction updates [`PLAN.md`](PLAN.md).
 - A changed theorem/trust discipline or external-study conclusion updates [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md).

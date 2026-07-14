@@ -24,7 +24,7 @@ This is the deliberately small first cold-implementation exercise for a downstre
 
 The capability starts from normalized, already classified scalar cells. It does not parse EN/DE condition text or locale-sensitive raw field text. The normalized request still carries an expanded field model, absolute field paths, sparse cells, and the authoritative `hasContent` bit because those distinctions are needed to run the cases through the public process contract.
 
-This is a finite semantic slice of `flatValidation.evaluateFull`, not a declaration that all accepted inputs of that wider development operation are research-closed. An implementation may share code with a larger flat evaluator, but its compatibility report must claim only this named suite.
+This is a finite semantic slice of `flatValidation.evaluateFull`, not a declaration that all accepted inputs of that wider development operation are research-closed. An implementation may share code with a larger flat evaluator, but its candidate qualification record must claim only this named suite.
 
 ## Exact handover material
 
