@@ -23,6 +23,7 @@ This is the canonical index and ownership map for the project's documentation. I
 
 ## Evidence, testing, and sources
 
+- **[`ARTIFACTS.md`](ARTIFACTS.md)** — the user-facing lifecycle map for `evidence/`, `reference/`, `examples/`, and `qualification/`: contents, responsibility, authority, generated/manual status, evolution rules, drift gates, and current integrity gaps.
 - **[`EVIDENCE.md`](EVIDENCE.md)** — the retained kernel-observation contract: portable formats, focused Lean projections, provenance, replay guarantees, and external-adequacy limits.
 - **[`TESTING.md`](TESTING.md)** — the red/green Lean workflow, executable conformance harness, proof and trust gates, differential replay method, and final verification checklist.
 - **[`SOURCES.md`](SOURCES.md)** — the drill path from a semantic topic to the read-only kernel and a12-dmkits knowledge layers, including the local `a12-rulekit/` checkout's documentation, interpreter, adapter, corpus, and differential locks.
@@ -53,6 +54,7 @@ The language-neutral semantic body lives under [`../spec/`](../spec/) and is tre
 | Settled formalization conclusions and rationale | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
 | Live semantic coverage and open evidence/proof obligations | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
 | Retained external-observation and replay contract | [`EVIDENCE.md`](EVIDENCE.md) |
+| Directory-level contents, authority, generation, and evolution of `evidence/`, `reference/`, `examples/`, and `qualification/` | [`ARTIFACTS.md`](ARTIFACTS.md) |
 | Test methodology and verification gates | [`TESTING.md`](TESTING.md) |
 | Provenance and source drill paths | [`SOURCES.md`](SOURCES.md) |
 | Documentation lifecycle and update triggers | [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md) |

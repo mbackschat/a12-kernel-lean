@@ -55,6 +55,8 @@ Four artifacts answer different questions and must not be collapsed:
 | Retained portable evidence replay and externally exported differentials | Empirical correspondence to kernel 30.8.1 | Pinned own-repository cases, independent kernel observations, and explicit divergence records |
 | Kernel and Kotlin ecosystem | Behavioral authority, external probe harness, portable evidence, peer implementation, and production execution | Existing release, integration, fuzz, and operational processes |
 
+[`ARTIFACTS.md`](ARTIFACTS.md) projects this authority model onto the repository's concrete `evidence/`, `reference/`, `examples/`, and `qualification/` trees and defines how each is retained, generated, checked, versioned, or kept transient.
+
 The resulting claim classes are deliberately separate:
 
 1. **Semantic coverage:** every in-scope clause has a Lean home or an explicit open/external/unsupported status.
