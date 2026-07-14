@@ -66,14 +66,29 @@ Success criteria:
 5. Add a dependency-free candidate-conformance workflow and complete the implementation handover with the exact properties, non-laws, worked trace, evidence limits, and seeded-divergence exercise.
 6. Update the ownership-triggered documents, run independent code/protocol/proof-claim/documentation and cold-handover reviews, run every final gate, and commit the correlation handover capsule separately.
 
+## Current delivery unit: evidence-bound flat cold handover
+
+The first executable cold-implementation exercise uses `flat-validation-empty-logic-v1`, a smaller eight-case slice that still separates empty Number, Boolean, and Confirm consumption, the independent empty-row gate, malformed input, strong-Kleene `And`/`Or`, and VALUE/OMISSION polarity. Four retained kernel observations establish exact authored firing and polarity; four establish authored silence while the normalized `notFired` versus `unknown` distinction remains explicitly sourced from the Lean account.
+
+[`A12Kernel/Evidence/FlatProtocolBridge.lean`](../A12Kernel/Evidence/FlatProtocolBridge.lean) is the canonical typed capability descriptor and checked projection-to-protocol bridge. It selects exactly eight retained cases, pins their exact Lean verdicts and coverage labels, serializes the retained typed input into normalized requests, decodes those requests back through the real protocol, evaluates them through the real reference adapter, checks the observable result against the retained focused message, and generates the public capability descriptor, fixtures, and suite. `lake test` and `lake exe syncFlatHandover --check` compare every derivative artifact and the typed support-manifest evidence boundary, so a semantic, evidence, version, request, response, classification, or case-set drift fails before export.
+
+The independent candidate runner now understands exact firing-and-polarity evidence versus suppression-only evidence without claiming that kernel output reveals hidden `notFired`/`unknown` truth. Its flat self-test exercises 24 guards, and the process gate runs both the eight-case flat suite and the sixteen-case correlation suite against the Lean reference.
+
+The separate `../a12-kernel-rust-spike/` repository is an isolated consumer, not another semantics source. This repository owns the bundle and its meaning; the Rust project owns only an idiomatic downstream implementation and its cold-test report.
+
+## Rust cold-session stop boundary
+
+The current session may create and commit only the Rust project scaffold: approved JSON dependencies, one-request process plumbing boundary, red tests, an immutable allowlisted handover bundle with SHA-256 inventory, ready-to-paste prompts, and a blank compatibility report. It must not implement the semantic evaluator, copy expected responses into production logic, inspect forbidden A12 sources on behalf of the cold implementer, or make the initial red suite green.
+
+The separate implementation session receives only its repository. Its prompt forbids reading this Lean repository's source, `spec/`, the kernel, a12-dmkits, sibling repositories, or prior conversation for semantic answers. It must record every unresolved semantic question as a handover defect rather than researching or guessing. This isolation is the experiment: success means the checked compatibility material transported enough knowledge; failure identifies work for this formalization project.
+
 ## Next continuation order
 
-1. Add a checked projection-to-protocol export or equivalent suite-integrity bridge that mechanically binds each normalized request/response claim to the retained case rather than verifying only a manually assigned case ID.
-2. Close the cold audit's remaining arbitrary-negative-input gaps: general path/model validation rules, within-stage diagnostic precedence, compound limit accounting, and exact payload requirements for the release-tested rejection surface.
-3. Decide the release boundary for correlation Number cells: capture negative and fractional kernel cases through the external evidence workflow, or narrow the release protocol to the externally closed value subset. Do not let the development manifest imply research closure meanwhile.
-4. Add candidate timeout and bounded-output handling before running untrusted implementations in CI.
-5. Run a genuinely isolated Rust implementation exercise with only the compatibility-kit artifacts. Adding any repository dependency or changing tool/distribution strategy still requires explicit user approval.
-6. Only after those gates, decide whether `single-group-correlation-v1` can move from development spike to the first release-supported implementation capsule; otherwise retain the exact open boundary and proceed to the next semantic evidence task separately.
+1. Finish and verify the scaffold-only Rust repository, commit it while its semantic tests are intentionally red, and stop before implementation.
+2. Let the user start a fresh session in that repository using the committed implementer prompt. Do not supplement it with undocumented semantic hints.
+3. Receive the cold report, questions, failing cases, and implementation revision. Classify each result as implementation defect, handover defect, suite weakness, or excluded behavior.
+4. Correct handover defects at their owning Lean/evidence/document layer, regenerate the bundle, bump compatibility identity when required, and repeat the cold test without asking the implementer to research the kernel.
+5. After the transport experiment is evaluated, resume the prior release-closure backlog: arbitrary-negative-input documentation, correlation Number evidence or narrowing, candidate process hardening, and the release decision for `single-group-correlation-v1`.
 
 ## Deliberate exclusions from the landed delivery unit
 
@@ -81,4 +96,4 @@ The landed operation does not add concrete EN/DE condition parsing, general DM-J
 
 ## Resume procedure
 
-Read [`../CLAUDE.md`](../CLAUDE.md), this file, [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md), and any current production work in [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md); inspect `git status --short` and the current diff; verify `lake build`, `lake test`, `lake exe checkReferenceProcess`, the candidate-suite control command, `./scripts/check-lean-trust.sh`, `git diff --check`, no `spec/` diff, and both sibling statuses against their recorded baseline. Continue the next-order closure work above; preserve flat response bytes and the correlation firing-only boundary, and do not broaden either semantic fragment merely to make a transport or implementer example convenient.
+Read [`../CLAUDE.md`](../CLAUDE.md), this file, [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md), [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md), and any current production work in [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md); inspect `git status --short` and the current diff; verify `lake build`, `lake test`, `lake exe syncFlatHandover --check`, `lake exe checkReferenceProcess`, both candidate-suite self-tests and Lean controls, `./scripts/check-lean-trust.sh`, `git diff --check`, no `spec/` diff, and sibling statuses against their recorded baselines. If the Rust cold session has begun, consume only its committed report and reproducible failures; do not silently coach it with semantics outside the bundle. Preserve flat response bytes and the correlation firing-only boundary, and do not broaden either semantic fragment merely to make a transport or implementer example convenient.

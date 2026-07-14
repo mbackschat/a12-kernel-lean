@@ -32,6 +32,8 @@ end EvidenceKind
 
 private inductive ExternalSupport where
   | firingRows
+  | verdictFiringAndPolarity
+  | verdictSuppressionOnly
   | elaborationRejectionClass
   | elaborationAcceptanceOnly
   deriving Repr, DecidableEq
@@ -40,11 +42,15 @@ namespace ExternalSupport
 
 def tag : ExternalSupport → String
   | .firingRows => "firingRows"
+  | .verdictFiringAndPolarity => "verdictFiringAndPolarity"
+  | .verdictSuppressionOnly => "verdictSuppressionOnly"
   | .elaborationRejectionClass => "elaborationRejectionClass"
   | .elaborationAcceptanceOnly => "elaborationAcceptanceOnly"
 
 def fromTag? : String → Option ExternalSupport
   | "firingRows" => some .firingRows
+  | "verdictFiringAndPolarity" => some .verdictFiringAndPolarity
+  | "verdictSuppressionOnly" => some .verdictSuppressionOnly
   | "elaborationRejectionClass" => some .elaborationRejectionClass
   | "elaborationAcceptanceOnly" => some .elaborationAcceptanceOnly
   | _ => none
@@ -260,6 +266,23 @@ private def validateExpectedEvidenceScope (testCase : ConformanceCase)
   | .kernelRuntimeObservation, .firingRows, .retainedProjection =>
       assertMember response "outcome" context "ok"
       let _ : List Nat ← required response "firingRows" context
+  | .kernelRuntimeObservation, .verdictFiringAndPolarity, .retainedProjection =>
+      assertMember response "outcome" context "ok"
+      let verdict ← requiredJson response "verdict" context
+      let verdictContext := s!"{context} verdict"
+      requireObject verdict ["tag", "polarity"] verdictContext
+      assertMember verdict "tag" verdictContext "fired"
+      let polarity : String ← required verdict "polarity" verdictContext
+      if polarity != "value" && polarity != "omission" then
+        fail s!"{verdictContext}: unsupported firing polarity '{polarity}'"
+  | .kernelRuntimeObservation, .verdictSuppressionOnly, .leanRuntimeProjection =>
+      assertMember response "outcome" context "ok"
+      let verdict ← requiredJson response "verdict" context
+      let verdictContext := s!"{context} verdict"
+      requireObject verdict ["tag"] verdictContext
+      let tag : String ← required verdict "tag" verdictContext
+      if tag != "notFired" && tag != "unknown" then
+        fail s!"{verdictContext}: suppression-only projection has verdict '{tag}'"
   | .kernelStaticDiagnostic, .elaborationRejectionClass, .projectDiagnostic =>
       assertMember response "outcome" context "error"
       let diagnostic ← requiredJson response "diagnostic" context
@@ -376,7 +399,64 @@ private def firstCase (suite : ConformanceSuite) : IO ConformanceCase :=
   | [] => fail "candidate conformance self-test: suite has no cases"
   | testCase :: _ => pure testCase
 
-private def runSelfTest (suitePath : System.FilePath) : IO Unit := do
+private def caseWithSupport (suite : ConformanceSuite) (support : ExternalSupport) :
+    IO ConformanceCase :=
+  match suite.cases.filter (·.evidence.externalSupports == support) with
+  | testCase :: _ => pure testCase
+  | [] => fail s!"candidate conformance self-test: suite has no '{support.tag}' case"
+
+private def runFlatEvidenceSelfTests (suiteJson : Json)
+    (suite : ConformanceSuite) : IO Unit := do
+  let firingCase ← caseWithSupport suite .verdictFiringAndPolarity
+  let firingResponse ← readJsonFile firingCase.expectedResponse
+  let suppressionCase ← caseWithSupport suite .verdictSuppressionOnly
+  let suppressionResponse ← readJsonFile suppressionCase.expectedResponse
+
+  expectFailure "firing mislabeled suppression-only"
+    (validateExpectedEvidenceScope
+      { firingCase with evidence := {
+          firingCase.evidence with externalSupports := .verdictSuppressionOnly } }
+      firingResponse)
+
+  expectFailure "firing response sourced from Lean"
+    (validateExpectedEvidenceScope
+      { firingCase with evidence := {
+          firingCase.evidence with expectedResponseSource := .leanRuntimeProjection } }
+      firingResponse)
+
+  let notFiredResponse := firingResponse.setObjVal! "verdict"
+    (Json.mkObj [("tag", toJson "notFired")])
+  expectFailure "firing case with non-firing verdict"
+    (validateExpectedEvidenceScope firingCase notFiredResponse)
+
+  let missingPolarityResponse := firingResponse.setObjVal! "verdict"
+    (Json.mkObj [("tag", toJson "fired")])
+  expectFailure "firing verdict without polarity"
+    (validateExpectedEvidenceScope firingCase missingPolarityResponse)
+
+  expectFailure "suppression response sourced from retained projection"
+    (validateExpectedEvidenceScope
+      { suppressionCase with evidence := {
+          suppressionCase.evidence with expectedResponseSource := .retainedProjection } }
+      suppressionResponse)
+
+  let firedResponse := suppressionResponse.setObjVal! "verdict"
+    (Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "value")])
+  expectFailure "suppression case with firing verdict"
+    (validateExpectedEvidenceScope suppressionCase firedResponse)
+
+  let suppressionWithPolarity := suppressionResponse.setObjVal! "verdict"
+    (Json.mkObj [("tag", toJson "unknown"), ("polarity", toJson "value")])
+  expectFailure "suppression verdict with polarity"
+    (validateExpectedEvidenceScope suppressionCase suppressionWithPolarity)
+
+  let unknownSupportJson ← replaceFirstEvidenceMember suiteJson "externalSupports"
+    (toJson "self-test-unknown-support")
+  expectFailure "unknown external-support tag" (do
+    let _ ← parseSuite unknownSupportJson
+    pure ())
+
+private def runSelfTest (suitePath : System.FilePath) : IO Nat := do
   let suiteJson ← readJsonFile suitePath
   let canonicalSuite ← parseSuite suiteJson
   validateSupportManifest canonicalSuite
@@ -481,6 +561,12 @@ private def runSelfTest (suitePath : System.FilePath) : IO Unit := do
     let _ ← parseSuite unknownEvidenceJson
     pure ())
 
+  if canonicalSuite.id == "flat-validation-empty-logic-v1" then
+    runFlatEvidenceSelfTests suiteJson canonicalSuite
+    pure 24
+  else
+    pure 16
+
 private def run (args : List String) : IO UInt32 :=
   match args with
   | ["--candidate", candidate, "--suite", suitePath] => do
@@ -491,8 +577,8 @@ private def run (args : List String) : IO UInt32 :=
       IO.println s!"candidate conformance '{suite.id}': {suite.cases.length}/{suite.cases.length} cases passed"
       pure 0
   | ["--self-test", "--suite", suitePath] => do
-      runSelfTest suitePath
-      IO.println "candidate conformance self-test: 16/16 guards passed"
+      let guardCount ← runSelfTest suitePath
+      IO.println s!"candidate conformance self-test: {guardCount}/{guardCount} guards passed"
       pure 0
   | _ => do
       let stderr ← IO.getStderr

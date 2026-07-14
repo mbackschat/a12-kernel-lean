@@ -17,7 +17,8 @@ The release unit is more than an executable. Every downloadable artifact must be
 | Artifact | Purpose | Canonical source or gate | Current state |
 |---|---|---|---|
 | Platform-specific `a12-kernel-reference` executable | Direct reference-oracle invocation | [`PROTOCOL.md`](PROTOCOL.md) and packaged-binary process gate | Builds locally; no platform is qualified |
-| Supported-fragment manifest | Machine-readable fail-closed capability boundary | [`Support.lean`](../A12Kernel/Reference/Support.lean) and [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json) | Implemented for the flat operation |
+| Supported-fragment manifest | Machine-readable fail-closed operation and evidence boundary | [`Support.lean`](../A12Kernel/Reference/Support.lean) and [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json) | Implemented for the flat and one-group correlation development operations; not a release-readiness declaration |
+| Capability descriptor, implementation capsule, and conformance suite | Pin one independently implementable semantic slice, its evidence classifications, exclusions, and cold-test contract | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), [`flat-validation-empty-logic-v1.capability.json`](../reference/flat-validation-empty-logic-v1.capability.json), and capsule-specific artifacts | Flat eight-case development handover is generated and drift-checked; its cold implementation report is pending; correlation associations remain manual |
 | Runnable requests and expected responses | Minimal integration examples and packaged smoke tests | [`examples/reference-cli/`](../examples/reference-cli/) | Implemented for protocol v1 |
 | Source archive, tag, and commit identity | Exact source correspondence | Git release process | Not yet defined |
 | [`LICENSE`](../LICENSE) and third-party notices | Source and bundled-runtime licensing | Package-content, SBOM, and license review | Project license exists; bundled-runtime inventory and GMP compliance are open |
@@ -41,6 +42,7 @@ These identities are different and must never be silently collapsed:
 | `referenceSemanticsVersion` | [`Support.lean`](../A12Kernel/Reference/Support.lean) | Version of the executable reference boundary |
 | `protocolVersion` | [`Support.lean`](../A12Kernel/Reference/Support.lean) | Compatibility of request and response shapes |
 | `manifestSchemaVersion` | [`Support.lean`](../A12Kernel/Reference/Support.lean) | Compatibility of the support-manifest shape |
+| Capability and conformance-suite identities | Capability descriptor and suite shipped for the selected fragment | Exact finite downstream handover, exclusions, fixtures, and per-case evidence/response-source classifications |
 | `kernelBehaviorVersion` | [`Basic.lean`](../A12Kernel/Basic.lean) | External behavior version to which retained evidence refers |
 | Evidence-bundle identity and digest | Future release metadata governed by [`EVIDENCE.md`](EVIDENCE.md) | Exact empirical observations included in the claim |
 | Lean and Lake toolchain | [`lean-toolchain`](../lean-toolchain) plus recorded Lean commit | Compiler, runtime, and build-system input |
@@ -80,6 +82,7 @@ The ordinary gates remain owned by [`TESTING.md`](TESTING.md):
 ```sh
 lake build
 lake test
+lake exe syncFlatHandover --check
 lake exe checkReferenceProcess
 ./scripts/check-lean-trust.sh
 ```
@@ -87,8 +90,8 @@ lake exe checkReferenceProcess
 A release candidate additionally requires:
 
 1. clean-checkout and version-consistency checks;
-2. semantic equality between the executable's generated manifest and the committed readable mirror;
-3. every packaged request/response fixture exercised against the packaged executable, not only the build-tree binary;
+2. semantic equality between the executable's generated manifest and the committed readable mirror, plus a clean drift check against the reproducibly generated form of every packaged capability descriptor, suite, and derived fixture;
+3. every packaged request/response fixture and selected candidate suite exercised against the packaged executable, not only the build-tree binary;
 4. process checks for arguments, exit status, stdout/stderr separation, malformed and invalid-UTF-8 input, resource limits, and deterministic bytes on the final artifact;
 5. a package-content allowlist, relocation test, clean-host smoke test, and dynamic-library inventory for each target;
 6. the oldest-supported-OS execution for each target and an explicit ABI/deployment-baseline check;
@@ -221,7 +224,7 @@ A qualified release may carry only the narrow claim owned by [`PRODUCT-PROPOSAL.
 
 > Mechanized executable reference semantics for the named A12 30.8.1 fragment, internally proved at the documented boundaries and empirically checked against retained kernel evidence.
 
-The manifest-listed fragment is the entire admitted support boundary. Internal proofs establish consequences of the Lean definitions, not universal equivalence to the external kernel. Retained observations establish agreement only for their recorded projection. A checksum identifies bytes only when its expected digest arrives through an already trusted path; an adjacent unsigned `SHA256SUMS` file does not independently authenticate the publisher. Reproducibility connects source and unsigned artifact bytes, signed provenance can authenticate that build statement, and optional platform signing can authenticate a publisher to the platform. None of those mechanisms establishes semantic correctness.
+The release manifest and each released capability descriptor together form the admitted support boundary; a development operation record alone is not permission to publish every input it accepts as research-closed. Internal proofs establish consequences of the Lean definitions, not universal equivalence to the external kernel. Retained observations establish agreement only for their recorded projection. In the current flat cold slice, four cases externally establish exact firing and polarity while four externally establish silence only; their exact `NotFired` or `Unknown` verdict remains the Lean account. The correlation suite still relies on reviewed manual fixture/evidence associations. Neither slice is release-ready until its remaining research, integrity, cold-test, and packaging gates are complete. A checksum identifies bytes only when its expected digest arrives through an already trusted path; an adjacent unsigned `SHA256SUMS` file does not independently authenticate the publisher. Reproducibility connects source and unsigned artifact bytes, signed provenance can authenticate that build statement, and optional platform signing can authenticate a publisher to the platform. None of those mechanisms establishes semantic correctness.
 
 The first CLI is a reference and CI oracle, not a replacement production runtime or throughput claim. It does not parse the concrete bilingual DSL or general DM-JSON. Its deterministic JSON is the pinned protocol encoding, not a claim of general RFC canonical JSON. It is not an official mgm artifact, and no kernel code or binding is distributed.
 
@@ -229,6 +232,8 @@ The first CLI is a reference and CI oracle, not a replacement production runtime
 
 - adopt the product proposal for a concrete non-Lean consumer rather than treating this engineering contract as a release decision;
 - close or explicitly scope the current process-coverage gaps in [`PLAN.md`](PLAN.md);
+- complete and retain the isolated cold-implementation report for every released capability, with no kernel or sibling-source research by the downstream implementer;
+- either mechanically bind the correlation suite to its retained projection as the flat bridge does or explicitly keep correlation outside the first released capability set;
 - define the supported platform, architecture, ABI, and oldest-OS matrix;
 - add immutable release builders and demonstrate the reproducibility required by [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md); any provenance-only relaxation requires an explicit product-level decision;
 - implement final-packaged-artifact testing rather than relying solely on Lake's build-tree layout;

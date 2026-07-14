@@ -1,0 +1,20 @@
+{"protocolVersion": 1,
+ "operation": "flatValidation.evaluateFull",
+ "model":
+ {"repeatableGroups": [],
+  "fields":
+  [{"repeatableScope": [],
+    "name": "ExpressShipping",
+    "kind": {"tag": "boolean"},
+    "id": 1,
+    "groupPath": ["Order"]}],
+  "fieldRefByShortNameAllowed": true},
+ "kernelBehaviorVersion": "30.8.1",
+ "hasContent": true,
+ "declaringGroup": ["Order"],
+ "condition":
+ {"tag": "compare",
+  "operator": "equal",
+  "literal": {"value": true, "tag": "boolean"},
+  "field": {"groups": ["Order"], "field": "ExpressShipping", "base": "absolute"}},
+ "cells": []}
