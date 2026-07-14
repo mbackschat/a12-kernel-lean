@@ -88,6 +88,7 @@ See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md)
 - [`docs/USE-CASES.md`](docs/USE-CASES.md) — the user-facing map of ten consumer categories, concrete product possibilities, Lean's contribution, and assurance limits.
 - [`docs/PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md) — the proposed compatibility-kit product boundary, public claim, and staged progression.
 - [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md) — production artifact qualification, reproducibility, packaging, signing, measured size work, and release blockers.
+- [`docs/ARTIFACTS.md`](docs/ARTIFACTS.md) — the user-facing map of `evidence/`, `reference/`, `examples/`, and `qualification/`: contents, authority, generation, and evolution rules.
 - [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
 - [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
 - [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md) — language-neutral semantic-shipment contract and playbooks for independent evaluators, importers, and transformation tools.

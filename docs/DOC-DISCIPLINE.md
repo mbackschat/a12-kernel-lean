@@ -18,6 +18,7 @@ This project adopts the useful a12-dmkits documentation principles in [`../../a1
 - [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
 - [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable, numbered findings about this project's formalization treatment and research conclusions. A finding is settled knowledge and rationale, not an open task.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the retained external-observation format, projection boundary, replay guarantees, and evidence-specific limitations.
+- [`ARTIFACTS.md`](ARTIFACTS.md) owns the user-facing directory-level classification and lifecycle of `evidence/`, `reference/`, `examples/`, and `qualification/`: what belongs in each tree, its authority, generated/manual status, update policy, drift gate, and known consolidation gaps. It links to the detailed semantic, protocol, evidence, testing, and qualification owners rather than replacing them.
 - [`TESTING.md`](TESTING.md) owns the red/green workflow, executable-example conventions, proof/trust harness, external replay method, and final verification gate.
 - [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the live join from the read-only `§n` taxonomy to Lean definitions, proofs/counterexamples, kernel evidence, status, and exact support boundaries.
 - [`SOURCES.md`](SOURCES.md) owns the drill path into the read-only kernel and a12-dmkits evidence layers.
@@ -40,6 +41,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).
+- A changed role, ownership boundary, generation policy, versioning rule, retained-versus-transient policy, or drift mechanism for `evidence/`, `reference/`, `examples/`, or `qualification/` updates [`ARTIFACTS.md`](ARTIFACTS.md).
 - A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
 - A changed stable goal, evidence rule, durable milestone, success criterion, or long-term project potential updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
 - A changed proposed release artifact, public claim, integration boundary, release gate, product stage, or user-facing product-documentation strategy updates [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md).
