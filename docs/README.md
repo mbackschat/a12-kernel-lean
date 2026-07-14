@@ -1,63 +1,64 @@
 # a12-kernel-lean documentation
 
-This is the canonical index and ownership map for the project's documentation. It follows the useful a12-dmkits pattern of routing each kind of knowledge to one maintained document rather than making every document repeat the same overview. Documentation lifecycle rules live in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); repository rules that must stop an unsafe action before it happens remain in [`../CLAUDE.md`](../CLAUDE.md).
+This is the sole documentation registry: it gives reader routes, identifies the stable reader-facing paths, and assigns one owner and lifecycle to every maintained document. Documentation policy lives in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); mandatory repository rules remain in [`../CLAUDE.md`](../CLAUDE.md).
 
-## Charter, product, release, and current plan
+## Choose a route
 
-- **[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md)** — the stable project constitution: purpose, users, semantic and evidence boundaries, semantic-capsule and consumer-shipment model, durable milestones, success criteria, and long-term potential.
-- **[`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md)** — the proposed releasable product boundary: ten general consumer-task categories, compatibility-kit artifacts, public claims and nonclaims, integration model, release gates, staged progression, and user-facing documentation as a regression consumer. It is a proposal until explicitly adopted.
-- **[`USE-CASES.md`](USE-CASES.md)** — the user-facing projection of the proposal's taxonomy: ten general consumer categories, concrete example products, how Lean helps in each category, and the assurance limits that remain.
-- **[`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md)** — the production-release engineering contract and experiment log: artifact qualification, version identity, platform matrix, reproducibility, packaging, signing, size work, publication, rollback, and open blockers. It does not itself adopt a release.
-- **[`PLAN.md`](PLAN.md)** — the resumable working checkpoint: the landed verification boundary, next delivery unit, immediate continuation order, and resume procedure. It may change often and does not redefine the charter or product direction.
+| Reader or task | Start here | Continue with |
+|---|---|---|
+| New reader | Top-level [`README.md`](../README.md) | [`USE-CASES.md`](USE-CASES.md) for potential, then [`ARTIFACTS.md`](ARTIFACTS.md) for repository data |
+| Reference CLI user | [`PROTOCOL.md`](PROTOCOL.md) | Runnable [`examples/reference-cli/`](../examples/reference-cli/) and exact support from `--manifest` |
+| Independent evaluator implementer | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) | The implemented [`flat empty-logic kit`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) or [`correlation kit`](IMPLEMENTER-KIT-CORRELATION.md) |
+| Future importer or rule-tool designer | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md#task-profiles) | [`USE-CASES.md`](USE-CASES.md); no importer or refactoring shipment is implemented yet |
+| Product stakeholder | [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) | [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) for the adopted constitution and [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) for release engineering |
+| Reader evaluating Lean | [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) | [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md), then [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| Semantics contributor | [`../CLAUDE.md`](../CLAUDE.md) | Read-only [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md), writable deltas in [`SOURCES.md`](SOURCES.md), then [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`TESTING.md`](TESTING.md) |
+| Resuming agent | [`../CLAUDE.md`](../CLAUDE.md) | [`PLAN.md`](PLAN.md), then the relevant gate in [`TESTING.md`](TESTING.md) |
+| Evidence or assurance reviewer | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) | [`EVIDENCE.md`](EVIDENCE.md), [`TESTING.md`](TESTING.md), [`SOURCES.md`](SOURCES.md), and [`ARTIFACTS.md`](ARTIFACTS.md) |
 
-## Semantics, formalization, and implementation
+The language-neutral semantic body under [`../spec/`](../spec/) is read-only upstream input. Start with [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) and follow its numbered deep-dives. New Lean findings, implementation state, evidence state, and plans belong under `docs/`, not `spec/`.
 
-- **[`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md)** — why Lean, what it can and cannot establish, audited project studies, theorem and trust discipline, proof opportunities, publication-tool comparison, and adoption criteria.
-- **[`ARCHITECTURE.md`](ARCHITECTURE.md)** — the Lean structure that exists now: representations, module boundaries, dependency direction, and adopted or rejected design choices.
-- **[`PROTOCOL.md`](PROTOCOL.md)** — the exact normalized reference-process contract: invocation, closed JSON request and response algebra, diagnostics, limits, support manifest, and regression-checked sample data.
-- **[`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md)** — the language-neutral semantic-shipment contract: portable versus task/language-specific layers, evaluator/importer/refactoring profiles, research closure, cold-consumer qualification, downstream playbooks, and missing-semantics escalation.
-- **[`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md)** — the first executed development evaluator shipment: eight evidence-derived flat-validation cases, exact empty/malformed/verdict rules, law and non-law maps, shipment-specific cold-implementation and mutation observations, and explicit non-release boundary. Its generated machine-readable entry points are the [`flat-validation-empty-logic-v1` capability descriptor](../reference/flat-validation-empty-logic-v1.capability.json), [conformance suite](../reference/flat-validation-empty-logic-v1.conformance.json), [post-cold mutation qualification plan](../reference/flat-validation-empty-logic-v1.mutation-plan.json), and [fixture directory](../examples/reference-cli/flat-evidence/); [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md#lessons-from-the-first-cold-implementation) owns the generalized lessons.
-- **[`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md)** — the captured-outer evaluator shipment: exact one-star model and algorithm, worked traces, evidence/law/non-law maps, Rust playbook, candidate suite commands, and open release boundary.
-- **[`LEAN-FINDINGS.md`](LEAN-FINDINGS.md)** — durable numbered conclusions and rationale learned while formalizing the semantics and studying local evidence.
-- **[`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md)** — the live `§n`-to-Lean map: implemented fragments, theorem and counterexample coverage, retained kernel evidence, exact support boundaries, and open adequacy obligations.
+## Stable reader-facing paths
 
-## Evidence, testing, and sources
+The following names and locations form the intentional reader-facing surface. Their content evolves through the ownership rules below, but they should not be moved, renamed, or folded into maintainer logs without an explicit documentation-interface decision:
 
-- **[`ARTIFACTS.md`](ARTIFACTS.md)** — the user-facing lifecycle map for `evidence/`, `reference/`, `examples/`, and `qualification/`: contents, responsibility, authority, generated/manual status, evolution rules, drift gates, and current integrity gaps.
-- **[`EVIDENCE.md`](EVIDENCE.md)** — the retained kernel-observation contract: portable formats, focused Lean projections, provenance, replay guarantees, and external-adequacy limits.
-- **[`TESTING.md`](TESTING.md)** — the red/green Lean workflow, executable conformance harness, proof and trust gates, differential replay method, and final verification checklist.
-- **[`SOURCES.md`](SOURCES.md)** — the drill path from a semantic topic to the read-only kernel and a12-dmkits knowledge layers, including the local `a12-rulekit/` checkout's documentation, interpreter, adapter, corpus, and differential locks.
-- **[`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md)** — document lifecycle, finding rules, same-change update triggers, evidence discipline, and Markdown conventions.
+- top-level [`README.md`](../README.md) — concise project front door and quick start;
+- this [`docs/README.md`](README.md) — navigation and canonical ownership registry;
+- [`USE-CASES.md`](USE-CASES.md) — approachable potential and concrete ways Lean helps;
+- [`ARTIFACTS.md`](ARTIFACTS.md) — user-facing explanation of repository artifact contents, authority, and evolution;
+- [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) — adopted project constitution, full potential, and durable delivery model;
+- [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) — product-stakeholder proposal and progression;
+- [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) — technical evaluation of Lean's role, limits, precedents, and practices;
+- [`PROTOCOL.md`](PROTOCOL.md) — public normalized process contract;
+- [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) — language-neutral consumer and qualification playbook;
+- [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) — self-contained capability handovers.
 
-## Read-only semantic input
+The remaining documents are public technical or maintainer surfaces. They may be consolidated, split, or reorganized when doing so makes their single ownership clearer, provided links and stable reader paths remain intact.
 
-The language-neutral semantic body lives under [`../spec/`](../spec/) and is treated as read-only. Start with [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md), then follow the numbered deep-dives. For this repository, `spec/` has the same consulted-upstream role that a12-kernel's merged BA/developer documentation has for a12-dmkits: it supplies semantic input, while new Lean findings, implementation state, evidence state, and plans are recorded under `docs/`.
+## Canonical ownership registry
 
-## Canonical ownership map
+| Surface | Primary audience | Lifecycle | Sole ownership |
+|---|---|---|---|
+| [`../README.md`](../README.md) | New users | Stable entry, concise live summary | Purpose, qualitative status, quick start, and routes into this registry |
+| [`../CLAUDE.md`](../CLAUDE.md) | Contributors and agents | Mandatory operational policy | Hard repository rules and required contributor workflow |
+| Read-only [`../spec/`](../spec/) | Semantics readers | Upstream input | Language-neutral semantic baseline; never implementation status or working notes |
+| [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) | Contributors and stakeholders | Stable constitution | Mission, audience, authority and evidence doctrine, semantic capsules, consumer shipments, durable milestones, success criteria, and long-term potential |
+| [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) | Product stakeholders | Proposal until adopted or replaced | Consumer-task taxonomy, proposed release boundary, public product claim, product gates, and progression |
+| [`USE-CASES.md`](USE-CASES.md) | General users | Stable reader guide | Reader-facing projection of potential categories and Lean's concrete contribution and limits |
+| [`ARTIFACTS.md`](ARTIFACTS.md) | Users and reviewers | Stable lifecycle guide | Contents, authority, generation, retention, versioning, and drift policy for `evidence/`, `reference/`, `examples/`, and `qualification/` |
+| [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) | Release maintainers | Evolving engineering contract and measured experiment record | Artifact qualification, platform support, reproducibility, packaging, dependencies, signing, size experiments, publication, and rollback |
+| [`PLAN.md`](PLAN.md) | Active maintainers and resuming agents | Volatile checkpoint, never an archive | Current verified baseline summary, active objective, immediate order, blockers, and minimal resume procedure |
+| [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) | Technical readers and proof contributors | Researched guidance | Lean's role and limits, required proof spine, case studies, proof engineering, trust discipline, and publication-tool research |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Implementers | Current-state design | Concrete Lean representations, dependency direction, module boundaries, and adopted or rejected encoding decisions |
+| [`PROTOCOL.md`](PROTOCOL.md) | CLI and integration users | Versioned public contract | Invocation, wire algebra, diagnostics, limits, support-manifest interpretation, and representative runnable samples |
+| [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) | Independent consumers | Stable general contract | Portable shipment model, task/language profiles, research closure, cold-consumer gates, downstream playbooks, and disagreement protocol |
+| [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) | Capability implementers | Versioned development handover and experiment record | Exact flat capability, decision procedure, laws/non-laws, evidence limits, cold-test outcome, and capsule-specific gaps |
+| [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) | Capability implementers | Versioned development handover | Exact one-star correlation capability, algorithm, evidence/law/non-law map, candidate workflow, and capsule-specific gaps |
+| [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) | Semantics and proof maintainers | Append-only corrected findings | Durable numbered mechanisms, rationale, evidence basis, Lean consequence, and limits; never live task status |
+| [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) | Maintainers and reviewers | Live status | Sole detailed map of implemented fragments, proof/counterexample coverage, external evidence, support boundaries, and open adequacy obligations |
+| [`EVIDENCE.md`](EVIDENCE.md) | Evidence reviewers | Versioned empirical inventory | Exact retained observations, provenance, projection and replay boundary, current evidence coverage, and claim limits |
+| [`TESTING.md`](TESTING.md) | Contributors | Maintained methodology | Red/green workflow, executable and process harness mechanics, proof/trust gates, evidence replay procedure, and final verification commands |
+| [`SOURCES.md`](SOURCES.md) | Researchers and maintainers | Maintained drill map | Writable navigation from semantic areas to kernel and a12-dmkits sources, plus every post-spec correction, narrowing, or extension notice and its source trail |
+| [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md) | Documentation maintainers | Stable policy | Document creation criteria, history/volatility rules, findings lifecycle, same-change triggers, evidence documentation discipline, and Markdown conventions |
 
-| Knowledge or artifact | Owning surface |
-|---|---|
-| Repository entry point, concise current status, and build command | [`../README.md`](../README.md) |
-| Operational hard rules and mandatory contributor workflow | [`../CLAUDE.md`](../CLAUDE.md) |
-| Language-neutral semantic baseline | Read-only [`../spec/`](../spec/) |
-| Stable mission, audience, authority model, evidence doctrine, semantics-factory/shipment/consumer topology, durable milestones, and long-term potential | [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) |
-| General consumer-task taxonomy, proposed release artifacts, public product claim, integration boundary, release gates, and product progression | [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) |
-| User-facing projection of potential consumer categories, example products, concrete Lean contribution, and assurance limits | [`USE-CASES.md`](USE-CASES.md) |
-| Artifact qualification, platform support, reproducibility, packaging, signing, size experiments, publication, and rollback | [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) |
-| Current checkpoint, immediate sequencing, and session-resume state | [`PLAN.md`](PLAN.md) |
-| Lean's role, theorem/trust contract, external project studies, and publication strategy | [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) |
-| Current module and representation design | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
-| Normalized process/JSON contract, diagnostics, limits, manifest, and runnable samples | [`PROTOCOL.md`](PROTOCOL.md) |
-| Portable semantic-shipment contract, task/language profiles, research-closure and cold-consumer gates, and downstream playbooks | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) |
-| Development `flat-validation-empty-logic-v1` cold-handover material, generated capability descriptor, suite and mutation qualification plan, evidence classifications, cold-test outcome, prompts, and capsule-specific gaps | [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) |
-| Concrete `single-group-correlation-v1` implementer material, algorithm, tools, and capsule-specific gaps | [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) |
-| Settled formalization conclusions and rationale | [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) |
-| Live semantic coverage and open evidence/proof obligations | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) |
-| Retained external-observation and replay contract | [`EVIDENCE.md`](EVIDENCE.md) |
-| Directory-level contents, authority, generation, and evolution of `evidence/`, `reference/`, `examples/`, and `qualification/` | [`ARTIFACTS.md`](ARTIFACTS.md) |
-| Test methodology and verification gates | [`TESTING.md`](TESTING.md) |
-| Provenance and source drill paths | [`SOURCES.md`](SOURCES.md) |
-| Documentation lifecycle and update triggers | [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md) |
-| Checked or generated user-facing publication rendered from maintained sources | Tool chosen for the artifact being explained; publication view only, never an additional authority |
-
-When a fact is useful elsewhere, link to its owner and add only the local consequence. Do not maintain parallel inventories, roadmaps, support claims, or semantic explanations in several files.
+When a fact is useful elsewhere, link to its owner and add only the local consequence. Intentional repetition is limited to reader orientation and self-contained capability handovers; exact live counts, revision histories, support matrices, roadmaps, and detailed inventories must have only one owner.

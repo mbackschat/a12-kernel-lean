@@ -2,33 +2,25 @@
 
 This project adopts the useful a12-dmkits documentation principles in [`../../a12-rulekit/docs/DOC-DISCIPLINE.md`](../../a12-rulekit/docs/DOC-DISCIPLINE.md), adapted to a Lean formalization and the repository's stricter write boundary. The purpose is to keep semantic truth, settled knowledge, current structure, live status, and future intent from collapsing into one document that inevitably drifts.
 
-## Document roles
+## Registry and document creation
 
-- [`../spec/`](../spec/) is read-only language-neutral semantic input. It plays the same consulted-upstream role for this repository that a12-kernel's merged BA/dev documentation plays for a12-dmkits; it is not a work log, findings ledger, implementation map, or roadmap.
-- [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the stable project argument, goals, evidence doctrine, semantics-factory/shipment/consumer topology, success gates, durable milestones, and long-term outlook.
-- [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) owns the general consumer-task taxonomy, proposed releasable product boundary, public claims and nonclaims, integration shape, release gates, staged product progression, and user-facing documentation strategy until that proposal is explicitly adopted or replaced.
-- [`USE-CASES.md`](USE-CASES.md) owns the concise user-facing projection of the proposal's consumer-task taxonomy: representative products, concrete ways Lean helps, and category-specific assurance limits. It explains potential without redefining the taxonomy or declaring current support.
-- [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) owns the production artifact contract, version binding, platform qualification, reproducibility, packaging, signing, release-size experiments, publication, and rollback. It records how a release would be engineered without adopting the product proposal or redefining semantic support.
-- [`PLAN.md`](PLAN.md) owns the resumable current checkpoint, preserved observations, immediate continuation order, and session-resume procedure. It is operational state, not a second roadmap.
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) owns the current Lean structure, representations, dependency boundaries, and adopted/rejected encoding decisions. It describes what exists, not a feature-status board.
-- [`PROTOCOL.md`](PROTOCOL.md) owns the normalized reference process and JSON contract, including invocation, exit behavior, closed wire shapes, diagnostics, limits, support-manifest interpretation, and runnable sample data.
-- [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md) owns the semantic-consumer shipment contract, portable versus task/language-specific layers, evaluator/importer/refactoring profiles, research-closure and cold-consumer gates, downstream playbooks, and disagreement protocol.
-- [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) owns the concrete `flat-validation-empty-logic-v1` handover, its generated descriptor, suite and post-cold mutation qualification plan, linked cold-test outcome, and capsule-specific open boundary.
-- [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) owns the concrete `single-group-correlation-v1` handover: its language-neutral algorithm, worked traces, evidence/law/non-law map, candidate suite usage, and capsule-specific open boundary. Future capability kits should be separate documents only when an actual handover capsule exists.
-- [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns Lean's role, theorem and trust contract, external case studies, and publication strategy.
-- [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) owns durable, numbered findings about this project's formalization treatment and research conclusions. A finding is settled knowledge and rationale, not an open task.
-- [`EVIDENCE.md`](EVIDENCE.md) owns the retained external-observation format, projection boundary, replay guarantees, and evidence-specific limitations.
-- [`ARTIFACTS.md`](ARTIFACTS.md) owns the user-facing directory-level classification and lifecycle of `evidence/`, `reference/`, `examples/`, and `qualification/`: what belongs in each tree, its authority, generated/manual status, update policy, drift gate, and known consolidation gaps. It links to the detailed semantic, protocol, evidence, testing, and qualification owners rather than replacing them.
-- [`TESTING.md`](TESTING.md) owns the red/green workflow, executable-example conventions, proof/trust harness, external replay method, and final verification gate.
-- [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the live join from the read-only `§n` taxonomy to Lean definitions, proofs/counterexamples, kernel evidence, status, and exact support boundaries.
-- [`SOURCES.md`](SOURCES.md) owns the drill path into the read-only kernel and a12-dmkits evidence layers.
-- [`README.md`](README.md) indexes the documentation set and its ownership rules; the top-level [`../README.md`](../README.md) remains the concise project front door.
+[`README.md`](README.md) is the sole registry of document audiences, lifecycles, and canonical ownership. Do not reproduce that complete catalog here, in the top-level README, in [`CLAUDE.md`](../CLAUDE.md), or in a project charter. Those surfaces link to the registry and retain only their local operational consequence.
+
+Create a new document only when it has a distinct audience, a fact set not already owned elsewhere, and a lifecycle that would make a section in the existing owner misleading or unwieldy. Otherwise add a section to the current owner. The stable reader-facing paths listed in [`README.md`](README.md#stable-reader-facing-paths) are a documentation interface: moving, renaming, or dissolving one requires an explicit decision and same-change link migration.
+
+Read-only [`../spec/`](../spec/) remains upstream semantic input. It is never a work log, findings ledger, implementation map, roadmap, or destination for Lean-specific status.
+
+## Volatility and history
+
+Exact live state belongs only in its volatile owner. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns detailed support/proof/evidence status; [`EVIDENCE.md`](EVIDENCE.md) owns the retained observation inventory; [`PLAN.md`](PLAN.md) owns immediate sequencing; capability kits own their historical consumer experiments. The top-level [`README.md`](../README.md) carries only a qualitative summary and links.
+
+[`PLAN.md`](PLAN.md) is not an archive. Keep only a concise verified baseline, the active objective, ordered next actions, blockers or guardrails, and the minimal resume procedure. Move durable results to their owning design, evidence, implementation, release, or capability document and rely on Git history for completed sequences and old revisions.
 
 ## Finding lifecycle
 
 Record a non-obvious formalization or research conclusion in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) before relying on it across several changes. Give it a stable `LF<n>` identifier, the date, its semantic section(s), its evidence basis, the claim, its Lean treatment, and its limits. Findings are not deleted or renumbered; if later evidence corrects one, amend it visibly and link the correcting finding.
 
-Kernel-behavior discoveries are not invented or canonized here. They remain grounded in the read-only `spec/`, kernel documentation/source, and a12-dmkits' findings and real-kernel differentials. `LEAN-FINDINGS.md` records what this project learned from those sources and how the Lean theory should represent or bound it.
+Kernel-behavior discoveries are not invented or canonized here. They remain grounded in the read-only `spec/`, kernel documentation/source, and a12-dmkits' findings and real-kernel differentials. [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) records what this project learned from those sources and how the Lean theory should represent or bound it.
 
 Open work does not belong in the findings ledger. Until a separate gaps ledger is justified by volume, current open obligations and `external evidence pending` states live in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), immediate sequencing lives in [`PLAN.md`](PLAN.md), durable milestone and reevaluation criteria live in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md), and proposed release progression lives in [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md).
 
@@ -41,6 +33,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).
+- A discovered correction, narrowing, or extension to the read-only `spec/` account adds or updates a notice and authoritative drill trail in [`SOURCES.md`](SOURCES.md) in the same change; add a numbered finding as well when the formalization rationale is non-obvious and durable.
 - A changed role, ownership boundary, generation policy, versioning rule, retained-versus-transient policy, or drift mechanism for `evidence/`, `reference/`, `examples/`, or `qualification/` updates [`ARTIFACTS.md`](ARTIFACTS.md).
 - A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
 - A changed stable goal, evidence rule, durable milestone, success criterion, or long-term project potential updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).
@@ -54,9 +47,7 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 
 ## Evidence discipline
 
-Kernel differential testing is the empirical backbone. Internal examples are executable semantic locks, and proofs establish universal consequences of the Lean definitions, but neither is portable evidence of correspondence with the real kernel. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) must mark a fragment `external evidence pending` until retained, versioned kernel observations for that fragment are replayable in this repository.
-
-The a12-dmkits interpreter is a clean-room peer used for triangulation and finding disagreements. It is never the oracle. A kernel mismatch changes the Lean definition or opens an explicit divergence; it is never hidden by relaxing an expected result.
+[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#artifact-and-authority-model) owns the differential doctrine and source roles; [`EVIDENCE.md`](EVIDENCE.md) owns the exact retained observations and claim boundary. The documentation consequence is simple: internal examples and proofs are never labeled kernel evidence, the a12-dmkits interpreter is never labeled the oracle, and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) marks a fragment `external evidence pending` until retained versioned kernel observations are replayable here. A mismatch changes the theory or opens an explicit divergence; it never justifies relaxing an expected result.
 
 ## Markdown and links
 

@@ -10,13 +10,7 @@ The external-project review is a snapshot from 2026-07-12 and uses primary repos
 
 This is deliberately stronger than “another evaluator in Lean” and narrower than “prove the A12 kernel correct.” The existing Kotlin interpreter already supplies an excellent clean-room runtime implementation. Lean earns its place by turning selected behavioural knowledge into definitions that compose, propositions with explicit hypotheses, proofs that range over all modeled inputs, and checked witnesses for attractive claims that are false.
 
-Three claims must remain separate:
-
-1. **Semantic coverage:** the in-scope body of knowledge has a precise, navigable Lean home.
-2. **Internal correctness:** the stated laws follow from the chosen semantics, and executable/elaborated/optimized forms are related by proofs where claimed.
-3. **Kernel correspondence:** the primitive semantic choices agree with observed kernel 30.8.1 behaviour. This remains empirical because the external kernel has no formal model here.
-
-Confusing these claims produces the two common overstatements: a proved evaluator may formalize the wrong behaviour, while a million passing differential cases do not establish a universal theorem.
+[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#artifact-and-authority-model) owns the three project claim classes—semantic coverage, internal correctness, and empirical kernel correspondence—and their evidence topology. The formalization consequence is that theorem statements justify only internal consequences of the chosen definitions: a proved evaluator may formalize the wrong behaviour, while any finite differential campaign remains empirical.
 
 ### 1.1 Scope and semantic boundary
 
@@ -38,18 +32,9 @@ The reference evaluator is useful before the entire theorem program is complete,
 
 The proof spine is a contract about theorem shape, not a promise that each theorem covers the entire DSL. A root theorem must name a machine-readable supported fragment or hypotheses whenever custom oracles, counting quantifiers, row creation, time behavior, or order-sensitive constructs are excluded.
 
-## 2. The knowledge stack
+## 2. Formal knowledge carried by the stack
 
-The project should retain several representations because they answer different questions.
-
-| Layer | Question | Canonical artifact | What keeps it honest |
-|---|---|---|---|
-| Human semantics and rationale | What does the rule mean, why, and where did the claim come from? | [`../spec/`](../spec/) plus the a12-dmkits evidence trail in [`../../a12-rulekit/docs/KERNEL-FINDINGS.md`](../../a12-rulekit/docs/KERNEL-FINDINGS.md) | Review, source provenance, focused kernel probes |
-| Mechanized semantics | What is the exact compositional meaning? | Lean definitions and, where useful, declarative judgments | Exhaustive definitions, elaboration, `#eval`, named examples |
-| Semantic theory | What follows for every modeled input, and what tempting generalizations fail? | Lean theorems and checked counterexamples | Kernel-checked proof terms, `#print axioms`, explicit theorem scope |
-| External adequacy | Why believe the chosen primitives match kernel 30.8.1? | Replay of retained own-repository projections exported from focused kernel probes, informed by a12-dmkits corpus cases and findings | Empirical comparison against the behavioural oracle |
-
-Lean does not replace the prose or evidence layer. Rationale, discovery history, unresolved questions, and the licensing provenance remain more readable and honest in Markdown. Conversely, prose and tests should not be asked to carry universal consequences that can be stated and checked once in Lean.
+[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#artifact-and-authority-model) owns the artifact stack and authority order; [`ARTIFACTS.md`](ARTIFACTS.md) explains its concrete repository trees. Lean's distinctive responsibility inside that stack is to make the chosen compositional meaning and its universal consequences checkable. It does not replace readable rationale, discovery history, provenance, or empirical observations, while prose and finite tests should not be asked to carry laws that can be stated and proved once.
 
 ### 2.1 Kinds of semantic knowledge
 
@@ -67,29 +52,11 @@ A semantic clause is not fully captured merely because an evaluator has a branch
 
 ### 2.2 The semantic capsule
 
-The unit of delivery should be a **semantic capsule**, not a batch of operator code. A capsule contains:
-
-1. the relevant syntax or core constructor;
-2. its static well-formedness conditions;
-3. a small executable semantic clause;
-4. representative engine-backed examples;
-5. at least one named general law when a useful law exists;
-6. a checked counterexample to the nearest plausible false law;
-7. explicit assumptions, exclusions, version, and provenance links.
-
-No semantic stage is complete with evaluator code alone. It is complete when the reader can answer what the construct means, why the project believes that meaning, what follows from it, and where those consequences stop.
+[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#delivery-unit-the-semantic-capsule) owns the semantic capsule and its complete delivery obligations. The formalization-specific rule is that evaluator code alone never closes a capsule: the useful theorem must state its exact hypotheses and result domain, and the nearest plausible stronger false claim must remain checked.
 
 ### 2.3 Semantic-slice definition of done
 
-A semantic slice is complete only when all applicable obligations below are satisfied; otherwise its coverage status is `partial` and names what is missing.
-
-- **Scope and evidence:** identify the owning `§n` clause and kernel version; classify the claim; link the local spec and evidence; confirm the proposed mechanism with a second predicted instance; state included and excluded constructors, oracle assumptions, and the complete outcome domain.
-- **Representation and legality:** add only the necessary distinctions; keep static path, kind, scale, scope, and hook legality separate from runtime evaluation; ensure accepted surface input elaborates to `WellFormed` core or returns an explicit rejection.
-- **Executable semantics:** implement a small, pure, kernel-accepted total definition; preserve observable read order; make fuel exhaustion explicit if fuel is genuinely necessary and prove the associated sufficient-fuel results.
-- **Independent presentation:** add a judgment or trace only when it exposes meaningful derivations, reads, or a stable refinement target; if present, prove the exact soundness/completeness or functionality bridge over the claimed outcomes rather than defining the relation as equality with the evaluator.
-- **Laws and limits:** prove at least one useful general law when one exists; state its direction and hypotheses; retain the nearest plausible false generalization as a checked witness; distinguish forward preservation from equivalence.
-- **External adequacy:** cover ordinary, boundary, empty, malformed, and order-sensitive cases as applicable; replay every matching portable case; preserve independent differential evidence for the primitive clause.
-- **Trust and completion:** review root axioms; keep `sorry`, unclassified axioms, `unsafe`, `partial`, `native_decide`, and experimental imports out of the trusted roots; fail closed on unsupported input; update the coverage map; pass focused elaboration, the whole build, proof-hygiene checks, and conformance replay.
+The stable definition of done is the capsule contract in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#delivery-unit-the-semantic-capsule). [`TESTING.md`](TESTING.md#capsule-test-checklist) owns its operational red/green and final-gate checklist, while [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) records `partial` and `external evidence pending` states. This document contributes the required proof spine above and the proof-engineering rules below; it does not maintain a second completion checklist.
 
 ### 2.4 Coverage chain
 
@@ -443,24 +410,13 @@ The canonical document ownership map is [`README.md`](README.md), and lifecycle/
 - **Rebuilding mathematics:** retaining “no dependencies” at the cost of writing inferior map, permutation, arithmetic, or calendar theory.
 - **Prose erasure:** moving rationale and provenance into code comments until the semantics becomes formally checked but humanly unintelligible.
 
-## 14. First proof-bearing milestone
+## 14. Proof-spine retrospective
 
-Before the evaluator grows across the full operator surface, complete one thin semantic slice end to end:
+The first thin slices validated the formalization strategy without making this document a second milestone plan. Finite truth and verdict algebras support quantified laws and checked non-laws; phase-aware observation makes empty, malformed, required, and poison distinctions explicit; required-property treatment supplies an independently meaningful transformation boundary; and iteration/correlation use declarative relations or observation-footprint theorems where they expose structure beyond execution.
 
-1. Define the truth projection and the intended information order for `K` and `Verdict`.
-2. Prove the algebraic laws that actually hold; retain witnesses for plausible failures.
-3. Define phase-aware cell observation, including the validation-scoped required finding.
-4. Define flat conditions for Number, Boolean, Confirm, presence, `And`, and `Or`.
-5. Give an independent small-step, big-step, or read-trace judgment if it clarifies the observation and short-circuit mechanism.
-6. Prove the executable flat evaluator sound and complete for the judgment's full result domain.
-7. State and prove the exact covered monotonicity theorem rather than copying the sampled Kotlin property wholesale.
-8. Replay the first engine-backed cases: empty Number, empty Boolean, empty Confirm, fired-`Or`-malformed, and fired-`And`-malformed.
-9. Add one transformation proof—required-property desugaring is the best early candidate.
-10. Record theorem scopes, counterexamples, provenance, and axiom output in the coverage map.
+A duplicate flat judgment was deliberately not added because it would restate the evaluator without an independently useful trace or refinement target. The same restraint applies to checked wrappers: their carried model/core certificates justify structural coherence, not source-to-core semantic preservation in the absence of an independent surface dynamics. Add another relational presentation only when observable reads, scheduling, access plans, or a real transformation make its steps semantically informative.
 
-This milestone tests the project's complete thesis: readable knowledge, executable semantics, universal proof, checked non-laws, transformation correctness, and empirical anchoring. Only after it works should breadth across the remaining scalar, iteration, computation, and partial-validation clauses dominate the schedule.
-
-Items 5–6 were deliberately not materialized as a duplicate flat judgment: at this size they would restate the evaluator without exposing an independently useful trace or refinement boundary. The adopted proof spine instead uses independent relations where they expose meaningful structure—required-property source meaning, ordered selection, correlation truth, and observation footprints—plus model/declaration/runtime-policy coherence. The checked flat and one-star wrappers carry structural model/core certificates, but neither surface has a separate evaluator whose dynamic meaning could support a non-circular source-to-core preservation theorem. A further declarative relation becomes warranted when repeatable access plans or an observable read trace supply genuinely separate steps. The legal scale-19 whole-rule witness remains deferred until arithmetic expressions are admitted; current `rescaleHalfUp` checks are helper laws only. Current implementation and evidence status belong to [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), [`EVIDENCE.md`](EVIDENCE.md), and [`PLAN.md`](PLAN.md).
+[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#milestones-and-gates) owns durable milestones, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`EVIDENCE.md`](EVIDENCE.md) own current closure, and [`PLAN.md`](PLAN.md) owns immediate work. This section retains only the proof-engineering lesson: independent presentations earn their maintenance cost by exposing a theorem boundary that the executable definition alone does not.
 
 ## 15. Study sources
 

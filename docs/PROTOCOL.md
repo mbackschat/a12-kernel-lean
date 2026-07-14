@@ -131,7 +131,7 @@ The checked evidence bridge generates those requests from the retained typed fla
 
 Run `lake exe syncFlatHandover --check` to verify the generated descriptor, suite, [fixtures](../examples/reference-cli/flat-evidence/), support-manifest evidence boundary, and adjacent source-maintainer [mutation qualification plan](../reference/flat-validation-empty-logic-v1.mutation-plan.json). After an intentional change to the typed capability or one of its owned inputs, `lake exe syncFlatHandover --write` regenerates the descriptor, suite, fixtures, and mutation plan; rerun `--check` before handoff. The mutation plan targets candidate behavior exposed through this protocol but is not part of the protocol contract or the immutable first cold bundle.
 
-This is a `developmentColdHandover` capability, not full flat-operation release closure. It excludes the wider accepted path, value, condition, and negative-diagnostic surface, and passing its eight cases supports only the named finite slice.
+This is a `developmentColdHandover` capability, not full flat-operation release closure. It excludes the wider accepted path, value, condition, and negative-diagnostic surface, and passing its indexed cases supports only the named finite slice.
 
 ## Single-group captured-outer correlation operation
 
@@ -209,26 +209,18 @@ The generated [`supported-fragment-v1.json`](../reference/supported-fragment-v1.
 
 ## Regression-checked sample data
 
-The files under [`examples/reference-cli/`](../examples/reference-cli/) are both runnable sample data and black-box test fixtures:
+The files under [`examples/reference-cli/`](../examples/reference-cli/) are both runnable sample data and black-box test fixtures. Start with these separating examples:
 
 - [`empty-number-equals-zero.request.json`](../examples/reference-cli/empty-number-equals-zero.request.json) demonstrates that an omitted Number cell compares as zero and fires with omission polarity.
 - [`empty-boolean-equals-true.request.json`](../examples/reference-cli/empty-boolean-equals-true.request.json) demonstrates that an omitted Boolean suppresses a direct comparison and does not fire.
-- [`empty-confirm-not-equal-true.request.json`](../examples/reference-cli/empty-confirm-not-equal-true.request.json) demonstrates that an omitted Confirm behaves as the fillable negative value and fires inequality with omission polarity.
-- [`present-number-equals-literal.request.json`](../examples/reference-cli/present-number-equals-literal.request.json) demonstrates a legal present scale-2 Number and exact canonical decimal transport.
 - [`empty-row-gate.request.json`](../examples/reference-cli/empty-row-gate.request.json) holds the omitted Number comparison fixed but sets `hasContent` false, demonstrating the independent full-validation row gate.
 - [`malformed-number.request.json`](../examples/reference-cli/malformed-number.request.json) demonstrates that rejected input yields the successful semantic verdict `unknown`.
 - [`boolean-confirm-composition.request.json`](../examples/reference-cli/boolean-confirm-composition.request.json) exercises Boolean and Confirm comparisons, inequality, filled/not-filled, `And`/`Or`, and absolute, parent-relative, and bare paths in one accepted request.
-- [`unsupported-ordering.request.json`](../examples/reference-cli/unsupported-ordering.request.json) demonstrates a recognized but unsupported operator.
-- [`illegal-confirm-false.request.json`](../examples/reference-cli/illegal-confirm-false.request.json) demonstrates a checked elaboration rejection.
-- [`unsupported-version.request.json`](../examples/reference-cli/unsupported-version.request.json) demonstrates protocol-version fail-closed behavior.
-- [`malformed-json.input`](../examples/reference-cli/malformed-json.input) demonstrates malformed JSON as a structured input response rather than a process failure.
-- the eight evidence-derived flat cold-handover requests and responses are under [`flat-evidence/`](../examples/reference-cli/flat-evidence/) and indexed by [`flat-validation-empty-logic-v1.conformance.json`](../reference/flat-validation-empty-logic-v1.conformance.json); the [`capability descriptor`](../reference/flat-validation-empty-logic-v1.capability.json) records their exact accepted profile, exclusions, evidence support, expected verdict, and expected-response source.
 - [`correlation-direction.request.json`](../examples/reference-cli/correlation-direction.request.json) is the smallest asymmetric captured-outer sample and returns `[2,3]`.
-- [`correlation-self-included.request.json`](../examples/reference-cli/correlation-self-included.request.json), [`correlation-self-excluded-distinct.request.json`](../examples/reference-cli/correlation-self-excluded-distinct.request.json), and [`correlation-self-excluded-duplicate.request.json`](../examples/reference-cli/correlation-self-excluded-duplicate.request.json) separate implicit self-match from authored self-exclusion.
-- [`correlation-consumer-first-malformed.request.json`](../examples/reference-cli/correlation-consumer-first-malformed.request.json) and its mirrored second-malformed fixture expose filter-before-consumer observation order.
-- the complete 12-runtime-case plus four-static-case handover set is indexed by [`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json), with each expected result linked to its retained evidence case and the accepted static ordering case's runtime projection labeled separately.
 
-Each adjacent `.response.json` file is the expected response and can be run with the same redirection pattern shown above. [`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) invokes the compiled executable, checks exit status and both output channels, compares deterministic compact JSON for both operations, compares the shipped manifest with `--manifest`, runs each candidate-suite integrity self-test, and runs both the 8-case flat suite and 16-case correlation suite against the compiled reference as controls. Its generated adversarial cases additionally cover invalid UTF-8, capped input, hostile JSON numbers and nesting, portable-natural and decimal bounds, all recognized ordering operators, version and operation assertions, model/cell/repeatable rejection, complete-path boundaries, explicit omission, wrong-kind classified values, the flat child-relative near miss, correlation candidate topology and limits, duplicate/foreign/undeclared/out-of-group row cells, unsupported correlation cell states/rejected causes/operators/origins, parent-navigating and nested-relative stars, bare/parent/nested-relative ordinary correlation paths, all-outer rejection, all-inner routing, and error/guard mismatch.
+Each adjacent `.response.json` file is the expected response and can be run with the same redirection pattern shown above. The generated flat set under [`flat-evidence/`](../examples/reference-cli/flat-evidence/) and the curated correlation set are completely indexed by their [flat](../reference/flat-validation-empty-logic-v1.conformance.json) and [correlation](../reference/single-group-correlation-v1.conformance.json) suites; those machine-readable suites, not a duplicated Markdown list, own their complete finite case inventories. [`ARTIFACTS.md`](ARTIFACTS.md#examples-human-examples-and-regression-fixtures) explains which examples are generated or curated and how they evolve.
+
+[`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) invokes the compiled executable, checks the process and JSON contract, compares the shipped manifest, exercises hostile and near-miss inputs, runs each suite's integrity self-test, and uses the compiled Lean reference as a control candidate. [`TESTING.md`](TESTING.md#reference-process-harness-and-sample-data) owns these harness mechanics; this document owns the observable wire contract.
 
 An independent command-line implementation can run only its selected handover suite without implementing the other operation or the Lean product's `--manifest` behavior. For the flat cold spike:
 
@@ -240,7 +232,7 @@ lake exe checkCandidateConformance \
 
 The runner requires deterministic candidate bytes but compares expected and actual JSON structurally, so object-key order is not cross-language normative. Its current lack of a wall-clock timeout and streamed output cap is a documented spike limitation, not a production qualification.
 
-The runner also has an in-memory integrity mode that first validates all canonical case metadata and evidence links, then mutates independent suite/manifest/fixture boundaries and requires rejection; `checkReferenceProcess` invokes it for both suites automatically. The flat suite adds bridge-specific evidence-source guards and currently reports `24/24 guards passed`:
+The runner also has an in-memory integrity mode that validates canonical case metadata and evidence links, then mutates independent suite, manifest, and fixture boundaries and requires rejection; `checkReferenceProcess` invokes it for every suite automatically:
 
 ```sh
 lake exe checkCandidateConformance \
