@@ -300,6 +300,15 @@
           "parsedConfirm",
           "rejected"
         ],
+        "externalEvidenceBoundary": {
+          "claimScope": "finiteRetainedCasesOnly",
+          "generalAcceptedInputs": "leanAccountExternalEvidencePending",
+          "nonFiringVerdictDistinction": "notFiredVersusUnknownLeanAccountOnly",
+          "observable": "focusedRuleMessagePresenceAndPolarity",
+          "retainedRuntimeCaseCount": 8,
+          "retainedStaticCaseCount": 0,
+          "suiteId": "flat-validation-empty-logic-v1"
+        },
         "fieldKinds": [
           "number",
           "boolean",

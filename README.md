@@ -16,7 +16,7 @@ An internal Lean reference evaluator now exists for the implemented fragments: f
 
 `lake test` replays 42 retained kernel 30.8.1 observations: 36 runtime cases and six static authoring observations. The twelve captured-outer runtime witnesses retain exact firing rows and stored `$` conditions; four new static witnesses pin all-outer rejection, unequal-scale `==` rejection, acceptance of the same unequal-scale operands under `<`, and one sibling-repeatable-group inner-reference rejection. The fourth evidence projection carries no expected codes, pins each complete seeded model file by SHA-256, binds its structured model and rule to the complete captured draft identity, and fails closed on every unmapped elaboration result, including `missingOuter`. Earlier evidence corrected bare-name resolution and exposed one a12-dmkits interpreter disagreement on a malformed uncorrelated filter. [`docs/EVIDENCE.md`](docs/EVIDENCE.md) owns the exact claim boundary.
 
-The product-shaped `a12-kernel-reference` executable has two disjoint operations in its versioned normalized [JSON protocol](docs/PROTOCOL.md): the checked non-repeatable flat slice, and `singleGroupCorrelation.firingRows` for the named one-group captured-outer slice. The generated schema-2 [support manifest](reference/supported-fragment-v1.json) declares each positive boundary separately. A [concrete independent-implementer kit](docs/IMPLEMENTER-KIT-CORRELATION.md), 16-case [conformance suite](reference/single-group-correlation-v1.conformance.json) manually cross-referenced to retained evidence, and candidate runner now show a Rust developer exactly how to implement and test the difficult `$` route without kernel or sibling-source access. This remains a development spike rather than a release-ready complete interpreter: the suite-to-evidence mapping still needs a mechanical integrity bridge, and the concrete DSL, general DM-JSON/`Document` adaptation, general repeatable execution, polarity, computation, partial validation, and messages remain outside it.
+The product-shaped `a12-kernel-reference` executable has two disjoint operations in its versioned normalized [JSON protocol](docs/PROTOCOL.md): the checked non-repeatable flat slice, and `singleGroupCorrelation.firingRows` for the named one-group captured-outer slice. The generated schema-2 [support manifest](reference/supported-fragment-v1.json) declares each positive boundary separately. The smaller [`flat-validation-empty-logic-v1`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) cold-handover capsule has a typed [capability descriptor](reference/flat-validation-empty-logic-v1.capability.json), eight projection-derived request/response pairs, an evidence-classified [conformance suite](reference/flat-validation-empty-logic-v1.conformance.json), and a checked projection-to-protocol bridge. The separate [correlation kit](docs/IMPLEMENTER-KIT-CORRELATION.md) and 16-case [suite](reference/single-group-correlation-v1.conformance.json) remain the difficult `$` handover. Both are development spikes rather than a release-ready complete interpreter; concrete DSL, general DM-JSON/`Document` adaptation, general repeatable execution, computation, partial validation, and messages remain outside them.
 
 ## Build
 
@@ -25,7 +25,9 @@ Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned 
 ```sh
 lake build
 lake test
+lake exe syncFlatHandover --check
 lake exe checkReferenceProcess
+lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/flat-validation-empty-logic-v1.conformance.json
 lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/single-group-correlation-v1.conformance.json
 ./scripts/check-lean-trust.sh
 ```
@@ -62,6 +64,7 @@ See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md)
 - [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
 - [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
 - [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md) — language-neutral handover contract and playbook for independent interpreters.
+- [`docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) — the smaller evidence-bound cold-implementation capsule and knowledge-transport experiment.
 - [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) — concrete one-star correlation implementation capsule and Rust-facing conformance workflow.
 - [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.
 - [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) — Lean's role and potential, audited project studies, proof/trust boundaries, theorem opportunities, and best practices.

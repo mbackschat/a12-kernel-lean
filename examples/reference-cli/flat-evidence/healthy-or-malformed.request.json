@@ -1,0 +1,34 @@
+{"protocolVersion": 1,
+ "operation": "flatValidation.evaluateFull",
+ "model":
+ {"repeatableGroups": [],
+  "fields":
+  [{"repeatableScope": [],
+    "name": "Quantity",
+    "kind": {"tag": "number", "signed": false, "scale": 2},
+    "id": 0,
+    "groupPath": ["Order"]},
+   {"repeatableScope": [],
+    "name": "ExpressShipping",
+    "kind": {"tag": "boolean"},
+    "id": 1,
+    "groupPath": ["Order"]}],
+  "fieldRefByShortNameAllowed": true},
+ "kernelBehaviorVersion": "30.8.1",
+ "hasContent": true,
+ "declaringGroup": ["Order"],
+ "condition":
+ {"tag": "or",
+  "right":
+  {"tag": "compare",
+   "operator": "equal",
+   "literal": {"value": "0", "tag": "number"},
+   "field": {"groups": ["Order"], "field": "Quantity", "base": "absolute"}},
+  "left":
+  {"tag": "compare",
+   "operator": "equal",
+   "literal": {"value": true, "tag": "boolean"},
+   "field": {"groups": ["Order"], "field": "ExpressShipping", "base": "absolute"}}},
+ "cells":
+ [{"state": {"tag": "rejected", "cause": "malformed"}, "fieldId": 0},
+  {"state": {"value": true, "tag": "parsedBoolean"}, "fieldId": 1}]}

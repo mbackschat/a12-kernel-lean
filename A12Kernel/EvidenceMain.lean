@@ -1,5 +1,6 @@
 import A12Kernel.Evidence.CorrelationReplay
 import A12Kernel.Evidence.CorrelationElaborationReplay
+import A12Kernel.Evidence.FlatProtocolBridge
 import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
 import Lean.Data.Json
@@ -702,6 +703,8 @@ def main : IO Unit := do
   orThrow "projection.json" bundle.validate
   for case in bundle.cases do
     checkCase root bundle case
+  let flatHandoverCount ←
+    A12Kernel.Evidence.FlatProtocolBridge.capability.checkArtifacts
   let iterationBundle ← orThrow "iteration-projection.json"
     (A12Kernel.Evidence.Iteration.Bundle.fromJson
       (← readJson (root / "iteration-projection.json")))
@@ -725,4 +728,4 @@ def main : IO Unit := do
     checkCorrelationElaborationCase root correlationElaborationBundle case
   let total := bundle.cases.length + iterationBundle.cases.length + correlationBundle.cases.length +
     correlationElaborationBundle.cases.length
-  IO.println s!"kernel evidence: {total}/{total} projections agree ({bundle.kernelVersion})"
+  IO.println s!"kernel evidence: {total}/{total} projections agree; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound ({bundle.kernelVersion})"

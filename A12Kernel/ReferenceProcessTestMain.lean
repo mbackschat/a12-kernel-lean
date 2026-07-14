@@ -553,24 +553,40 @@ private def checkManifest : IO Unit := do
   let expected ← canonicalFile "reference/supported-fragment-v1.json"
   checkOutput "manifest" (← invoke "" #["--manifest"]) expected
 
+private structure CandidateSuiteControl where
+  path : String
+  id : String
+  caseCount : Nat
+  guardCount : Nat
+
+private def candidateSuites : List CandidateSuiteControl := [
+  { path := "reference/single-group-correlation-v1.conformance.json"
+    id := "single-group-correlation-v1"
+    caseCount := 16
+    guardCount := 16 },
+  { path := "reference/flat-validation-empty-logic-v1.conformance.json"
+    id := "flat-validation-empty-logic-v1"
+    caseCount := 8
+    guardCount := 24 }]
+
 private def checkCandidateRunnerIntegrity : IO Unit := do
   let executable ← candidateConformanceExecutable
-  let selfTest ← IO.Process.output {
-    cmd := executable.toString
-    args := #["--self-test", "--suite",
-      "reference/single-group-correlation-v1.conformance.json"] } (some "")
-  checkOutput "candidate runner integrity" selfTest
-    "candidate conformance self-test: 16/16 guards passed\n"
+  for suite in candidateSuites do
+    let selfTest ← IO.Process.output {
+      cmd := executable.toString
+      args := #["--self-test", "--suite", suite.path] } (some "")
+    checkOutput s!"candidate runner integrity {suite.id}" selfTest
+      s!"candidate conformance self-test: {suite.guardCount}/{suite.guardCount} guards passed\n"
 
 private def checkCandidateSuiteControl : IO Unit := do
   let runner ← candidateConformanceExecutable
   let candidate ← referenceExecutable
-  let output ← IO.Process.output {
-    cmd := runner.toString
-    args := #["--candidate", candidate.toString, "--suite",
-      "reference/single-group-correlation-v1.conformance.json"] } (some "")
-  checkOutput "candidate suite control" output
-    "candidate conformance 'single-group-correlation-v1': 16/16 cases passed\n"
+  for suite in candidateSuites do
+    let output ← IO.Process.output {
+      cmd := runner.toString
+      args := #["--candidate", candidate.toString, "--suite", suite.path] } (some "")
+    checkOutput s!"candidate suite control {suite.id}" output
+      s!"candidate conformance '{suite.id}': {suite.caseCount}/{suite.caseCount} cases passed\n"
 
 private def checkInvocationError : IO Unit := do
   checkOutput "unexpected argument" (← invoke "" #["--unknown"])

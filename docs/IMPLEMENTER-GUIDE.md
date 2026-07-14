@@ -39,6 +39,8 @@ Every release-ready semantic capability must hand over one navigable implementat
 
 A link to a Lean definition alone is not a decision procedure, a corpus count is not an evidence account, and a list of expected outputs without the separating reason is not an implementation guide.
 
+For a handover produced from retained evidence, build the machine-readable capability descriptor and checked projection-to-protocol bridge before the first downstream implementation. The bridge must derive normalized requests from typed replay inputs, prove operationally that the public decoder reaches the same checked input, run the public evaluator, classify exactly what the external observation supports, and generate or reject drift in the fixtures and conformance suite. This sequencing tests a repeatable handover-production process rather than the quality of one manually assembled document.
+
 ## Research-closure gate
 
 A capability is research-closed only when:
@@ -112,17 +114,19 @@ A later production consumer may justify stronger integration such as checked eva
 
 ## Current tools and limits
 
-The current reference executable and manifest are documented in [`PROTOCOL.md`](PROTOCOL.md); runnable inputs live under [`../examples/reference-cli/`](../examples/reference-cli/); retained observations and their limits are in [`EVIDENCE.md`](EVIDENCE.md); theorem, counterexample, and trust methodology is in [`TESTING.md`](TESTING.md). The first concrete handover spike is [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md), backed by the language-neutral [`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json) suite. The basic interaction is:
+The current reference executable and manifest are documented in [`PROTOCOL.md`](PROTOCOL.md); runnable inputs live under [`../examples/reference-cli/`](../examples/reference-cli/); retained observations and their limits are in [`EVIDENCE.md`](EVIDENCE.md); theorem, counterexample, and trust methodology is in [`TESTING.md`](TESTING.md). [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) is the first development cold-handover exercise, backed by its generated [`capability descriptor`](../reference/flat-validation-empty-logic-v1.capability.json), [`conformance suite`](../reference/flat-validation-empty-logic-v1.conformance.json), and [evidence-derived fixtures](../examples/reference-cli/flat-evidence/). [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) remains the higher-complexity captured-outer capsule, backed by [`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json). The basic flat-spike interaction is:
 
 ```sh
 lake exe a12-kernel-reference --manifest
-lake exe a12-kernel-reference < examples/reference-cli/empty-number-equals-zero.request.json
-lake exe a12-kernel-reference < examples/reference-cli/correlation-direction.request.json
+lake exe syncFlatHandover --check
+lake exe a12-kernel-reference < examples/reference-cli/flat-evidence/number-empty-equals-zero-content.request.json
 lake exe checkReferenceProcess
-lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v1.conformance.json
+lake exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v1.conformance.json
 lake exe checkCandidateConformance \
   --candidate .lake/build/bin/a12-kernel-reference \
-  --suite reference/single-group-correlation-v1.conformance.json
+  --suite reference/flat-validation-empty-logic-v1.conformance.json
 ```
 
-The flat and correlation operations are narrow development references, not a complete A12 interpreter kit. The candidate runner uses bounded duplicate-safe parsing, enforces closed suite/case/evidence objects, checks the full compatibility identity, finite evidence scope, retained runtime/static counts, and per-case claim-source classification, structurally compares suite JSON, and verifies retained evidence identifiers. Its canonical all-case validation, sixteen negative guards, and full Lean-reference suite control are run by the reference-process gate. It does not close unrelated manifest/projection members, mechanically derive fixtures from retained projections, impose a process timeout, or cap streamed output. High-volume cross-language fuzzing may later justify a batch runner or long-running process, but process architecture changes require measurement and a separate protocol decision. [`PLAN.md`](PLAN.md) owns the remaining suite-integrity, cold-implementation, and release-closure work.
+`lake exe syncFlatHandover --check` is the non-writing drift gate. After an intentional change to the typed capability or one of its owned inputs, `lake exe syncFlatHandover --write` regenerates the flat descriptor, suite, and fixtures; review the result and rerun `--check`. The bridge classifies four fired cases as externally supporting exact final firing and polarity. For the four cases where the focused authored message is absent, external evidence supports only silence and the exact `NotFired` or `Unknown` response is explicitly a Lean runtime projection.
+
+The flat and correlation operations are narrow development references, not a complete A12 interpreter kit. In particular, `flat-validation-empty-logic-v1` has status `developmentColdHandover`: it exists to measure whether the project can transfer a finite semantic slice to an isolated implementer without renewed A12 kernel research, not to claim release closure for the wider flat operation. The candidate runner uses bounded duplicate-safe parsing, enforces closed suite/case/evidence objects, checks the full compatibility identity, finite evidence scope, retained runtime/static counts, and per-case claim-source classification, structurally compares suite JSON, and verifies retained evidence identifiers. The flat suite is mechanically projected; the correlation suite retains reviewed manual projection links. The reference-process gate runs every suite's integrity checks and Lean-reference control. The runner does not close unrelated manifest/projection members, impose a process timeout, or cap streamed output. High-volume cross-language fuzzing may later justify a batch runner or long-running process, but process architecture changes require measurement and a separate protocol decision. [`PLAN.md`](PLAN.md) owns the remaining cold-implementation and release-closure work.

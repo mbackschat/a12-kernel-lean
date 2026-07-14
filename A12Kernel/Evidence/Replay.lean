@@ -56,17 +56,41 @@ private def CellStateSpec.toRaw : CellStateSpec → RawCell
   | .confirm value => .parsed (.conf value)
   | .rejected => .rejected .malformed
 
-private def findCell (cells : List CellSpec) (id : FieldId) : Option CellSpec :=
+private def findRawCell (cells : List (FieldId × RawCell)) (id : FieldId) : Option RawCell :=
   match cells with
   | [] => none
-  | cell :: rest => if cell.fieldId = id then some cell else findCell rest id
-
-private def CaseSpec.rawContext (case : CaseSpec) : RawFlatContext where
-  read id := (findCell case.cells id).map (·.state.toRaw) |>.getD .empty
+  | (fieldId, raw) :: rest => if fieldId = id then some raw else findRawCell rest id
 
 private def CaseSpec.model (case : CaseSpec) : FlatModel :=
   { fields := case.fields.map FieldSpec.toDeclaration
     fieldRefByShortNameAllowed := case.fieldRefByShortNameAllowed }
+
+private def CaseSpec.rawContext (case : CaseSpec) : RawFlatContext where
+  read id := (case.cells.find? (·.fieldId == id)).map (·.state.toRaw) |>.getD .empty
+
+/-- The canonical typed input shared by retained-evidence replay and the normalized
+    protocol bridge. Explicit evidence `empty` cells are removed because protocol-v1
+    represents clean emptiness by sparse omission. -/
+structure FlatReplayInput where
+  model : FlatModel
+  declaringGroup : GroupPath
+  condition : SurfaceCondition
+  cells : List (FieldId × RawCell)
+  hasContent : Bool
+  deriving Repr, DecidableEq
+
+namespace FlatReplayInput
+
+private def rawContext (input : FlatReplayInput) : RawFlatContext where
+  read id := (findRawCell input.cells id).getD .empty
+
+def replay (input : FlatReplayInput) : Except String Verdict :=
+  match elaborateAndEvalFull input.model input.declaringGroup input.rawContext
+      input.hasContent input.condition with
+  | .ok verdict => pure verdict
+  | .error error => throw s!"flat evidence elaboration failed: {repr error}"
+
+end FlatReplayInput
 
 private def signature (code pointer : String) : Verdict → List String
   | .fired .value => [s!"{code}|VALUE_ERROR|{pointer}"]
@@ -92,12 +116,21 @@ private def CaseSpec.validateTransport (case : CaseSpec) : Except String Unit :=
   | .ok _ => pure ()
   | .error error => throw s!"{case.id}: invalid projected model: {repr error}"
 
-private def CaseSpec.replayFlat (case : CaseSpec) (declaringGroup : List String)
-    (condition : ConditionSpec) (hasContent : Bool) : Except String (List String) := do
-  let surface ← condition.toSurface
-  match elaborateAndEvalFull case.model declaringGroup case.rawContext hasContent surface with
-  | .ok verdict => pure (signature case.focusCode case.focusPointer verdict)
-  | .error error => throw s!"{case.id}: elaboration failed: {repr error}"
+def CaseSpec.toFlatReplayInput (case : CaseSpec) : Except String FlatReplayInput := do
+  case.validateTransport
+  let (declaringGroup, condition, hasContent) ← match case.operation with
+    | .flat declaringGroup condition hasContent => pure (declaringGroup, condition, hasContent)
+    | _ => throw s!"{case.id}: expected a flat evidence operation"
+  let cells := case.cells.filterMap fun cell =>
+    match cell.state with
+    | .empty => none
+    | state => some (cell.fieldId, state.toRaw)
+  pure {
+    model := case.model
+    declaringGroup
+    condition := ← condition.toSurface
+    cells
+    hasContent }
 
 private def FlatFieldDecl.toFlatField (declaration : FlatFieldDecl) : FlatField :=
   match declaration.policy.kind with
@@ -128,12 +161,16 @@ private def CaseSpec.replayResolve (case : CaseSpec) (declaringGroup : List Stri
       | none => throw s!"{case.id}: unsupported projected resolution error: {repr error}"
 
 def CaseSpec.replay (case : CaseSpec) : Except String (List String) := do
-  case.validateTransport
   match case.operation with
-  | .flat declaringGroup condition hasContent =>
-      case.replayFlat declaringGroup condition hasContent
-  | .absoluteRequired targetFieldId => case.replayRequired targetFieldId
-  | .resolve declaringGroup path => case.replayResolve declaringGroup path
+  | .flat _ _ _ =>
+      let verdict ← (← case.toFlatReplayInput).replay
+      pure (signature case.focusCode case.focusPointer verdict)
+  | .absoluteRequired targetFieldId =>
+      case.validateTransport
+      case.replayRequired targetFieldId
+  | .resolve declaringGroup path =>
+      case.validateTransport
+      case.replayResolve declaringGroup path
 
 def Bundle.validate (bundle : Bundle) : Except String Unit := do
   if bundle.schemaVersion != 1 then

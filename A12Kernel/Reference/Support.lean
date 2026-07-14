@@ -841,7 +841,15 @@ private def flatAcceptedManifest : Json :=
     ("emptyCellEncoding", toJson "sparseOmission"),
     ("rejectedCauses", tagArray RejectedCauseTag.all RejectedCauseTag.tag),
     ("rowGate", toJson "explicitHasContent"),
-    ("verdicts", tagArray VerdictTag.all VerdictTag.tag)]
+    ("verdicts", tagArray VerdictTag.all VerdictTag.tag),
+    ("externalEvidenceBoundary", Json.mkObj [
+      ("observable", toJson "focusedRuleMessagePresenceAndPolarity"),
+      ("nonFiringVerdictDistinction", toJson "notFiredVersusUnknownLeanAccountOnly"),
+      ("claimScope", toJson "finiteRetainedCasesOnly"),
+      ("suiteId", toJson "flat-validation-empty-logic-v1"),
+      ("retainedRuntimeCaseCount", toJson 8),
+      ("retainedStaticCaseCount", toJson 0),
+      ("generalAcceptedInputs", toJson "leanAccountExternalEvidencePending")])]
 
 private def correlationAcceptedManifest : Json :=
   Json.mkObj [
