@@ -10,13 +10,37 @@ The A12 Kernel is mgm technology partners' model-and-DSL engine for complex busi
 
 Lean makes every captured semantic clause explicit and executable, then lets selected consequences be stated with exact hypotheses and proved for all modeled inputs. It can also preserve checked counterexamples, prove elaborations and optimizations semantics-preserving, and eventually verify real rule models against independently stated business invariants. It does **not** make a chosen clause correct merely by typechecking it or prove the real kernel universally equivalent; corpus and differential evidence remain the empirical bridge. The project charter is [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md), and the case studies, potential, proof boundaries, and working practices are in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
 
+## How knowledge travels to other software
+
+Think of this repository as a **semantics factory**. It centralizes reusable A12 research, retains relevant kernel observations, states the chosen account precisely in Lean, checks useful laws and counterexamples, and packages the result as a small versioned **semantic shipment**. A downstream **consumer** receives that shipment instead of repeating the semantic archaeology.
+
+```text
+kernel observations and source knowledge
+                    ↓
+       Lean semantics, proofs, and limits
+                    ↓
+       purpose-specific semantic shipment
+                    ↓
+ evaluator, importer, refactoring tool, or other consumer
+                    ↓
+ qualification results and newly discovered gaps return here
+```
+
+A shipment contains only the closed capability a consumer needs: its identity and exclusions, language-neutral types and rules or relations, normalized examples, evidence limits, and appropriate qualification tools. The normative semantics stay fixed when an evaluator moves from Rust to Python, while the implementation profile must still resolve relevant host boundaries such as exact numbers, Unicode, resource limits, and process behavior. Changing the job—from evaluation to import or refactoring—changes the task contract itself.
+
+The proposal defines ten general task categories:
+
+> **Execute · Translate · Transform · Compile · Analyze · Verify · Synthesize · Qualify · Explain · Govern**
+
+[`PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md#general-consumer-task-categories) owns this taxonomy. The user-facing [`use-case guide`](docs/USE-CASES.md) explains what each category can produce, how Lean helps concretely, and where proof, retained evidence, certificates, or finite testing still differ. The current Rust experiment exercises **Execute** and **Qualify** for one finite evaluator capability; importer, refactoring, compilation, analysis, and the other categories remain future potential rather than current support claims. The durable model and gates are in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md), and the detailed shipment contract is in [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md).
+
 ## Status
 
 An internal Lean reference evaluator now exists for the implemented fragments: formal checking and phase observation; typed flat Number/Boolean/Confirm equality, inequality, and presence; verdict-aware `And`/`Or`; staged absolute requiredness; checked flat model/path resolution and model-derived cell checking; ordered one-group iteration with row-local `Having`; and one captured-outer `$` correlation shape with selected presence and a separate outer guard. A checked parser-independent lowering route resolves one group-qualified direct-child star, correlated Number or `CurrentRepetition` comparisons, explicit repeatable-group paths, field group/scope, operator-specific equality scale legality, and raw runtime cells. Its normalized public route further requires non-empty contiguous one-based candidates and returns firing rows only. The accompanying theorems cover algebra, selector/relation agreement, filter-before-consumer footprints, declaration/policy coherence, fail-closed runtime routing, and carried structural certificates; they do not yet prove surface-to-core semantic preservation.
 
 `lake test` replays 42 retained kernel 30.8.1 observations: 36 runtime cases and six static authoring observations. The twelve captured-outer runtime witnesses retain exact firing rows and stored `$` conditions; four new static witnesses pin all-outer rejection, unequal-scale `==` rejection, acceptance of the same unequal-scale operands under `<`, and one sibling-repeatable-group inner-reference rejection. The fourth evidence projection carries no expected codes, pins each complete seeded model file by SHA-256, binds its structured model and rule to the complete captured draft identity, and fails closed on every unmapped elaboration result, including `missingOuter`. Earlier evidence corrected bare-name resolution and exposed one a12-dmkits interpreter disagreement on a malformed uncorrelated filter. [`docs/EVIDENCE.md`](docs/EVIDENCE.md) owns the exact claim boundary.
 
-The product-shaped `a12-kernel-reference` executable has two disjoint operations in its versioned normalized [JSON protocol](docs/PROTOCOL.md): the checked non-repeatable flat slice, and `singleGroupCorrelation.firingRows` for the named one-group captured-outer slice. The generated schema-2 [support manifest](reference/supported-fragment-v1.json) declares each positive boundary separately. The smaller [`flat-validation-empty-logic-v1`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) cold-handover capsule has a typed [capability descriptor](reference/flat-validation-empty-logic-v1.capability.json), eight projection-derived request/response pairs, an evidence-classified [conformance suite](reference/flat-validation-empty-logic-v1.conformance.json), a post-cold [mutation qualification plan](reference/flat-validation-empty-logic-v1.mutation-plan.json), and a checked projection-to-protocol bridge. The separate [correlation kit](docs/IMPLEMENTER-KIT-CORRELATION.md) and 16-case [suite](reference/single-group-correlation-v1.conformance.json) remain the difficult `$` handover. Both are development spikes rather than a release-ready complete interpreter; concrete DSL, general DM-JSON/`Document` adaptation, general repeatable execution, computation, partial validation, and messages remain outside them.
+The product-shaped `a12-kernel-reference` executable has two disjoint operations in its versioned normalized [JSON protocol](docs/PROTOCOL.md): the checked non-repeatable flat slice, and `singleGroupCorrelation.firingRows` for the named one-group captured-outer slice. The generated schema-2 [support manifest](reference/supported-fragment-v1.json) declares each positive boundary separately. The smaller [`flat-validation-empty-logic-v1`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) development evaluator shipment has a typed [capability descriptor](reference/flat-validation-empty-logic-v1.capability.json), eight projection-derived request/response pairs, an evidence-classified [conformance suite](reference/flat-validation-empty-logic-v1.conformance.json), a post-cold [mutation qualification plan](reference/flat-validation-empty-logic-v1.mutation-plan.json), and a checked projection-to-protocol bridge. The separate [correlation shipment](docs/IMPLEMENTER-KIT-CORRELATION.md) and 16-case [suite](reference/single-group-correlation-v1.conformance.json) remain the difficult `$` consumer handover. Both are development spikes rather than a release-ready complete interpreter; concrete DSL, general DM-JSON/`Document` adaptation, general repeatable execution, computation, partial validation, and messages remain outside them.
 
 Under its recorded isolation boundary, the first Rust consumer passed all eight canonical flat cases without reported renewed A12 research and detected the predicted failures for three representative mutations. Empty Confirm matched one source-declared exercise exactly, the `Or` mutation covered only the observable half of the source's global-both-connectives exercise, and row-gate bypass was an additional inverse variant. The source now generates one exact seven-exercise plan with declared expected case deltas, exhaustive connective-table deltas for the under-observed mutations, and explicit result-record requirements; a strict result checker, replayable execution of that plan, generated Rust-versus-Lean differentials, broader input and negative-protocol coverage, and replication beyond one coding-agent run remain pending in the [flat kit's recorded outcome](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#cold-test-outcome-2026-07-14).
 
@@ -61,13 +85,14 @@ See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md)
 ## Design and sources
 
 - [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) — the project charter: purpose, ecosystem role, deliverables, non-goals, and success criteria.
+- [`docs/USE-CASES.md`](docs/USE-CASES.md) — the user-facing map of ten consumer categories, concrete product possibilities, Lean's contribution, and assurance limits.
 - [`docs/PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md) — the proposed compatibility-kit product boundary, public claim, and staged progression.
 - [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md) — production artifact qualification, reproducibility, packaging, signing, measured size work, and release blockers.
 - [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
 - [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
-- [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md) — language-neutral handover contract and playbook for independent interpreters.
-- [`docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) — the smaller evidence-bound cold-implementation capsule and knowledge-transport experiment.
-- [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) — concrete one-star correlation implementation capsule and Rust-facing conformance workflow.
+- [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md) — language-neutral semantic-shipment contract and playbooks for independent evaluators, importers, and transformation tools.
+- [`docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) — the smaller evidence-bound evaluator shipment and cold knowledge-transport experiment.
+- [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) — concrete one-star correlation evaluator shipment and Rust-facing conformance workflow.
 - [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.
 - [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) — Lean's role and potential, audited project studies, proof/trust boundaries, theorem opportunities, and best practices.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the concrete Lean encoding decisions and rejected alternatives.

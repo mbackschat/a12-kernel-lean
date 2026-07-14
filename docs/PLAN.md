@@ -59,7 +59,7 @@ Success criteria:
 
 ## Completed implementation sequence
 
-1. Read [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), the §9 row in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and the public checked API in [`../A12Kernel/Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean). Write the smallest operation-specific contract, implementation capsule, and nearest exclusions before code.
+1. Read [`PROTOCOL.md`](PROTOCOL.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), the §9 row in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and the public checked API in [`../A12Kernel/Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean). Write the smallest operation-specific contract, evaluator shipment, and nearest exclusions before code.
 2. Add independent process-level red tests that leave the existing flat fixtures unchanged and demonstrate the exact firing-row boundary.
 3. Add only the transport structures and pure adapter required to call the checked correlation route; keep JSON/IO outside the library, conformance, and trusted theorem roots.
 4. Extend the finite support declarations and shipped manifest mirror, then add runnable correlation samples that are the same files exercised by the black-box gate.
@@ -75,6 +75,8 @@ The first executable cold-implementation exercise uses `flat-validation-empty-lo
 The independent candidate runner now understands exact firing-and-polarity evidence versus suppression-only evidence without claiming that kernel output reveals hidden `notFired`/`unknown` truth. Its flat self-test exercises 24 guards, and the process gate runs both the eight-case flat suite and the sixteen-case correlation suite against the Lean reference.
 
 The separate `../a12-kernel-rust-spike/` repository is an isolated consumer, not another semantics source. This repository owns the bundle and its meaning; the Rust project owns only an idiomatic downstream implementation and its cold-test report.
+
+In the general terminology of [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#consumer-shipments-and-research-closure), this repository is the semantics factory; the typed flat capability, generated fixtures/suite, and qualification material form an evaluator-shaped shipment; and the Rust repository is one language-specific consumer. Rust revisions, mutations, commands, and result records qualify that consumer but do not extend or redefine the portable semantics.
 
 ## Rust cold-implementation checkpoint
 
