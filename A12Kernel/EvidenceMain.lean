@@ -728,4 +728,4 @@ def main : IO Unit := do
     checkCorrelationElaborationCase root correlationElaborationBundle case
   let total := bundle.cases.length + iterationBundle.cases.length + correlationBundle.cases.length +
     correlationElaborationBundle.cases.length
-  IO.println s!"kernel evidence: {total}/{total} projections agree; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound ({bundle.kernelVersion})"
+  IO.println s!"kernel evidence: {total}/{total} projections agree; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"
