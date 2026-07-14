@@ -1,8 +1,8 @@
 # Authoritative sources & how to drill
 
-The working map from `spec/` prose down to ground truth. [`../spec/`](../spec/) is the *self-contained prose helper* (its intro deliberately promises you need no other repo to *understand* the semantics); **this doc is the drill hub** that connects each `spec/` area to the authoritative sources when you need to *verify* or go deeper. Authority order: **[`../../a12-kernel`](../../a12-kernel) (the engine — ground truth) → [`../spec/`](../spec/) → [a12-dmkits (local `a12-rulekit/` checkout)](../../a12-rulekit) (peer clean-room + verified knowledge)**. Everything here is pinned to kernel **30.8.1**. Read to learn behaviour; never link, call, or transcribe the engine (see [`../CLAUDE.md`](../CLAUDE.md)).
+This is the repository's writable drill hub from semantic topics to the sources that verify or deepen them. It owns the project-local navigation topology and the canonical notice and source trail for every correction, narrowing, or extension discovered after the read-only [`../spec/`](../spec/) snapshot. [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) remains self-contained upstream semantic input and the starting taxonomy, not a live writable index. Authority order: **[`../../a12-kernel`](../../a12-kernel) (the engine — ground truth) → [`../spec/`](../spec/) → [a12-dmkits (local `a12-rulekit/` checkout)](../../a12-rulekit) (peer clean-room + verified knowledge)**. Everything here is pinned to kernel **30.8.1**. Read to learn behaviour; never link, call, or transcribe the engine (see [`../CLAUDE.md`](../CLAUDE.md)).
 
-**The drill chain**, per semantic area (`§n` = the shared 14-section taxonomy): our `spec/NN-*.md` (understand) → a12-dmkits `KERNEL-SEMANTICS.md §n` (the canonical rule) → `KERNEL-FINDINGS.md §n` (edge cases + the oracle that established each) → the catalog `semantics` facet if one exists (machine-readable + runnable probes) → the `corpus/` family if one exists (replayable `expected` signatures) → the `interpreter` `commonTest` classes (portable property/unit tests to mirror as Lean theorems) → if you need the mechanism, the kernel runtime class. a12-dmkits' own [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) is the **guard-checked hub** for the middle of that chain — follow it for the exhaustive per-`§n` test list rather than duplicating it here.
+**The drill chain**, per semantic area (`§n` = the shared 14-section taxonomy): our `spec/NN-*.md` (understand) → a12-dmkits [`KERNEL-SEMANTICS.md §n`](../../a12-rulekit/docs/KERNEL-SEMANTICS.md) (the canonical rule) → [`KERNEL-FINDINGS.md §n`](../../a12-rulekit/docs/KERNEL-FINDINGS.md) (edge cases + the oracle that established each) → the catalog `semantics` facet if one exists (machine-readable + runnable probes) → the `corpus/` family if one exists (replayable `expected` signatures) → the `interpreter` `commonTest` classes (portable property/unit tests to mirror as Lean theorems) → if you need the mechanism, the kernel runtime class. a12-dmkits' own [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) is the **guard-checked hub** for the middle of that chain — follow it for the exhaustive per-`§n` test list rather than duplicating it here.
 
 ---
 
@@ -26,7 +26,7 @@ TS mirror (identical, German-named files): `kernel-rt/kernel-core-runtime-ts/src
 
 **Docs:** [`documentation/_merged/kernel-ba.md`](../../a12-kernel/documentation/_merged/kernel-ba.md) — the definitive evaluation-behaviour spec (**read first**); [`documentation/_merged/kernel-dev.md`](../../a12-kernel/documentation/_merged/kernel-dev.md) — custom conditions/types, Document API; [`ANALYSIS.md`](../../a12-kernel/ANALYSIS.md) — architecture; [`KERNEL-GRAMMAR.md`](../../a12-kernel/KERNEL-GRAMMAR.md), [`KERNEL-USE.md`](../../a12-kernel/KERNEL-USE.md).
 
-**Drill path for one operator:** kernel-ba.md section → keyword table (`LexerTerminals_*`) → backing-bean `getRuntimeName()` → the runtime helper method above.
+**Drill path for one operator:** [`kernel-ba.md`](../../a12-kernel/documentation/_merged/kernel-ba.md) section → keyword table (`LexerTerminals_*`) → backing-bean `getRuntimeName()` → the runtime helper method above.
 
 ---
 
@@ -59,14 +59,23 @@ The guard-checked hub is [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANT
 
 ### `corpus/` and the catalog
 
-- [`corpus/`](../../a12-rulekit/corpus/) — portable replay vectors: `case.schema.json` (`modelRef` + `placements` + `op` + `expected` signature), `models/*.json` (bare DM-JSON), `cases/{comparison,clock,compute,fuzz,partial}/`. **Caveat: thin** — the committed cases cover only 5 of the 14 areas (see the table). Full differential coverage lives in `adapter/laws` (kernel-linked, not portable).
+- [`corpus/`](../../a12-rulekit/corpus/) — portable replay vectors: `case.schema.json` (`modelRef` + `placements` + `op` + `expected` signature), `models/*.json` (bare DM-JSON), `cases/{comparison,clock,compute,fuzz,partial}/`. **Caveat: thin** — the committed cases cover only 5 of the 14 areas, as summarized in the coverage conclusions below. Full differential coverage lives in `adapter/laws` (kernel-linked, not portable).
 - [`rulekit/src/main/resources/catalog/operators.json`](../../a12-rulekit/rulekit/src/main/resources/catalog/operators.json) — 110 operators; `emptyOperandDefaults` (the per-kind empty matrix); `semantics` facets (`emptyOperand`/`aggregateIdentity`/`boundary`/`iterationRange`/`polarity`) with runnable kernel probes; `gotchas`.
 
 ---
 
-## The `§n` drill-down index
+## The `§n` drill-down topology and post-spec deltas
 
-The per-`§n` map — which a12-dmkits source, catalog facet, corpus family, and kernel class carries each area — lives in [`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) §9, kept inside the spec map so it doubles as a live index from the prose into ground truth. For the exhaustive per-`§n` lock-test list, follow a12-dmkits' guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (it re-derives from the live surface, so it never rots).
+[`../spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) supplies the upstream 14-section taxonomy and its original source pointers, but it is read-only and does not absorb later navigation fixes or semantic corrections. This document owns those writable routes and deltas. When later kernel evidence or source research corrects, narrows, or extends a spec statement, record the delta here with a link to the affected upstream section, the authoritative source or retained evidence, and the living Lean/documentation consequence; do not silently rewrite `spec/`. [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) may own the detailed formalization rationale and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) the current coverage state, while this document remains the canonical place to discover that the upstream account has a delta and where to drill.
+
+### Known post-spec deltas
+
+| Read-only upstream account | Corrected or superseding account | Authority and evidence | Living consequence and owner |
+|---|---|---|---|
+| [`08-paths-and-references.md` §1](../spec/08-paths-and-references.md#1-absolute-relative-and-short-name-references) gives bare names three tiers: declaring group, implicit ancestor walk, then flag-gated model-wide lookup | Kernel 30.8.1 uses two tiers: exact declaring-group candidate, then flag-gated model-wide unique short-name lookup; an ancestor is reachable by a bare name only incidentally when it is the unique model-wide match | Kernel parser [`CheckIdNameRefImpl.java`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/entity/CheckIdNameRefImpl.java), retained [`duplicate-ancestor rejection`](../evidence/kernel-30.8.1/diagnostics/bare-duplicate-ancestors-rejected.json) and [`flag-disabled unique-ancestor rejection`](../evidence/kernel-30.8.1/diagnostics/bare-unique-ancestor-flag-disabled-rejected.json), and [`LF6`](LEAN-FINDINGS.md#lf6--bare-name-resolution-is-local-or-global-not-an-ancestor-walk) | [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean) implements the corrected lookup; [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns its live support and evidence status |
+| [`SEMANTICS-MAP.md` §10](../spec/SEMANTICS-MAP.md#10-lean-coverage-projection) labels its embedded Lean table a live coverage projection | The table is a frozen upstream snapshot and must not be used for current implementation, proof, or portable-evidence status | Repository read-only-spec policy in [`CLAUDE.md`](../CLAUDE.md) and [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md#volatility-and-history) | [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the sole live support/assurance map; [`EVIDENCE.md`](EVIDENCE.md) owns the exact retained inventory and claim boundary |
+
+Do not duplicate a full 14-section table here merely to mirror the sibling project. For the exhaustive per-`§n` mapping to a12-dmkits prose, findings, catalog facets, corpus families, and lock tests, follow its guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md); use the drill chain above for kernel sources and add project-local routes here only when this repository needs them.
 
 ## What the coverage tells us
 

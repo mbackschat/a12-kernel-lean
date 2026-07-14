@@ -20,7 +20,7 @@ retained evidence of the observation
         ↓
 reviewed projection + Lean semantic account
         ↓
-generated language-neutral reference shipment
+exported language-neutral reference shipment
         ↓
 independent candidate qualification
 ```
@@ -54,7 +54,7 @@ The complete provenance and claim boundary are owned by [`EVIDENCE.md`](EVIDENCE
 - A pure Lean refactor must not change raw retained observations. A reviewed projection also remains unchanged unless the Lean-facing bridge itself intentionally changes.
 - A protocol, fixture-layout, or shipment change must not change raw retained observations.
 - A changed Lean semantic account must replay against the same retained observations. A disagreement is investigated; the raw evidence is never refreshed merely to make the test green.
-- A project-owned projection may intentionally evolve with the supported Lean bridge, but that change creates no new evidence and must remain bound to the same raw artifacts through `lake test`.
+- A project-owned projection may intentionally evolve with the supported Lean bridge, but that change creates no new evidence and must remain bound through `lake test` to every retained raw artifact it claims.
 - A newly modeled semantic clause may remain explicitly `external evidence pending`. Before claiming external correspondence or evidence-complete status, add the smallest focused observation and reviewed projection needed to anchor it.
 - A new kernel version gets a new versioned bundle. It must not silently rewrite [`kernel-30.8.1/`](../evidence/kernel-30.8.1/).
 - A faulty capture is corrected only as an explicit provenance-bearing evidence correction.
@@ -144,7 +144,7 @@ This tree answers: **what did this exact candidate revision pass against this ex
 - Commit a compact receipt only when its historical audit value justifies retaining it. Large raw payloads should remain in durable external artifact storage and be referenced by digest.
 - A record that passed a finite suite claims only those executed checks. It is neither release approval nor a universal implementation-correctness proof.
 
-The strict result checker remains pending. Until it exists and validates a complete retained record, the current mutation plan is test planning rather than mechanically accepted qualification evidence.
+A mutation plan becomes qualification evidence only after the adopted strict checker validates a complete retained record; [`PLAN.md`](PLAN.md) owns the current delivery state. Until that gate exists and passes, a plan remains test planning rather than mechanically accepted qualification evidence.
 
 ## Evolution by change type
 

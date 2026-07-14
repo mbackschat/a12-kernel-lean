@@ -36,13 +36,16 @@ The proposal defines ten general task categories:
 
 ## Status
 
-An internal Lean reference evaluator now exists for the implemented fragments: formal checking and phase observation; typed flat Number/Boolean/Confirm equality, inequality, and presence; verdict-aware `And`/`Or`; staged absolute requiredness; checked flat model/path resolution and model-derived cell checking; ordered one-group iteration with row-local `Having`; and one captured-outer `$` correlation shape with selected presence and a separate outer guard. A checked parser-independent lowering route resolves one group-qualified direct-child star, correlated Number or `CurrentRepetition` comparisons, explicit repeatable-group paths, field group/scope, operator-specific equality scale legality, and raw runtime cells. Its normalized public route further requires non-empty contiguous one-based candidates and returns firing rows only. The accompanying theorems cover algebra, selector/relation agreement, filter-before-consumer footprints, declaration/policy coherence, fail-closed runtime routing, and carried structural certificates; they do not yet prove surface-to-core semantic preservation.
+This is a development formal semantics and compatibility-kit experiment, not a complete A12 interpreter or qualified production release.
 
-`lake test` replays 42 retained kernel 30.8.1 observations: 36 runtime cases and six static authoring observations. The twelve captured-outer runtime witnesses retain exact firing rows and stored `$` conditions; four new static witnesses pin all-outer rejection, unequal-scale `==` rejection, acceptance of the same unequal-scale operands under `<`, and one sibling-repeatable-group inner-reference rejection. The fourth evidence projection carries no expected codes, pins each complete seeded model file by SHA-256, binds its structured model and rule to the complete captured draft identity, and fails closed on every unmapped elaboration result, including `missingOuter`. Earlier evidence corrected bare-name resolution and exposed one a12-dmkits interpreter disagreement on a malformed uncorrelated filter. [`docs/EVIDENCE.md`](docs/EVIDENCE.md) owns the exact claim boundary.
+| Surface | Current boundary |
+|---|---|
+| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, staged requiredness, one-group iteration, and one checked captured-outer `$` correlation shape |
+| Public reference | The versioned normalized process exposes a checked flat operation and one named single-group correlation operation; unsupported forms fail closed |
+| Empirical and formal assurance | Retained kernel observations anchor selected implemented primitive choices, while the theorem root establishes selected internal laws and structural certificates—not universal kernel equivalence |
+| Consumer handover | Flat and correlation development shipments exist; one finite isolated Rust exercise tested the flat knowledge-transfer path, while strict replayable qualification and broader differentials remain open |
 
-The product-shaped `a12-kernel-reference` executable has two disjoint operations in its versioned normalized [JSON protocol](docs/PROTOCOL.md): the checked non-repeatable flat slice, and `singleGroupCorrelation.firingRows` for the named one-group captured-outer slice. The generated schema-2 [support manifest](reference/supported-fragment-v1.json) declares each positive boundary separately. The smaller [`flat-validation-empty-logic-v1`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) development evaluator shipment has a typed [capability descriptor](reference/flat-validation-empty-logic-v1.capability.json), eight projection-derived request/response pairs, an evidence-classified [conformance suite](reference/flat-validation-empty-logic-v1.conformance.json), a post-cold [mutation qualification plan](reference/flat-validation-empty-logic-v1.mutation-plan.json), and a checked projection-to-protocol bridge. The separate [correlation shipment](docs/IMPLEMENTER-KIT-CORRELATION.md) and 16-case [suite](reference/single-group-correlation-v1.conformance.json) remain the difficult `$` consumer handover. Both are development spikes rather than a release-ready complete interpreter; concrete DSL, general DM-JSON/`Document` adaptation, general repeatable execution, computation, partial validation, and messages remain outside them.
-
-Under its recorded isolation boundary, the first Rust consumer passed all eight canonical flat cases without reported renewed A12 research and detected the predicted failures for three representative mutations. Empty Confirm matched one source-declared exercise exactly, the `Or` mutation covered only the observable half of the source's global-both-connectives exercise, and row-gate bypass was an additional inverse variant. The source now generates one exact seven-exercise plan with declared expected case deltas, exhaustive connective-table deltas for the under-observed mutations, and explicit result-record requirements; a strict result checker, replayable execution of that plan, generated Rust-versus-Lean differentials, broader input and negative-protocol coverage, and replication beyond one coding-agent run remain pending in the [flat kit's recorded outcome](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#cold-test-outcome-2026-07-14).
+[`IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) owns exact semantic/proof/evidence status, [`EVIDENCE.md`](docs/EVIDENCE.md) owns the retained observation inventory and claim boundary, the [flat](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [correlation](docs/IMPLEMENTER-KIT-CORRELATION.md) kits own capability-specific handover state, and [`PLAN.md`](docs/PLAN.md) owns only the immediate continuation.
 
 ## Build
 
@@ -51,12 +54,11 @@ Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned 
 ```sh
 lake build
 lake test
-lake exe syncFlatHandover --check
 lake exe checkReferenceProcess
-lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/flat-validation-empty-logic-v1.conformance.json
-lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/single-group-correlation-v1.conformance.json
 ./scripts/check-lean-trust.sh
 ```
+
+Contributor, artifact-drift, and independent-candidate commands are maintained in [`TESTING.md`](docs/TESTING.md#final-gate).
 
 ## Try the reference CLI
 
@@ -72,7 +74,7 @@ Inspect the exact supported boundary with:
 lake exe a12-kernel-reference --manifest
 ```
 
-See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the request/response contract, exit behavior, all sample scenarios, and deliberate exclusions.
+See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the request/response contract, exit behavior, representative sample scenarios, and deliberate exclusions; the machine-readable suites own their complete finite case inventories.
 
 The captured-outer sample returns firing rows 2 and 3:
 
@@ -82,30 +84,18 @@ lake exe a12-kernel-reference < examples/reference-cli/correlation-direction.req
 
 See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) for the exact language-neutral model, algorithm, worked traces, evidence/law/non-law map, Rust playbook, and candidate tools.
 
-## Design and sources
+## Where to go next
 
-- [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) — the project charter: purpose, ecosystem role, deliverables, non-goals, and success criteria.
-- [`docs/USE-CASES.md`](docs/USE-CASES.md) — the user-facing map of ten consumer categories, concrete product possibilities, Lean's contribution, and assurance limits.
-- [`docs/PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md) — the proposed compatibility-kit product boundary, public claim, and staged progression.
-- [`docs/PRODUCTION-RELEASE.md`](docs/PRODUCTION-RELEASE.md) — production artifact qualification, reproducibility, packaging, signing, measured size work, and release blockers.
-- [`docs/ARTIFACTS.md`](docs/ARTIFACTS.md) — the user-facing map of `evidence/`, `reference/`, `examples/`, and `qualification/`: contents, authority, generation, and evolution rules.
-- [`docs/README.md`](docs/README.md) — the documentation index and ownership map.
-- [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) — live clause-level Lean coverage, proof, boundary, and external-evidence state.
-- [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md) — language-neutral semantic-shipment contract and playbooks for independent evaluators, importers, and transformation tools.
-- [`docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) — the smaller evidence-bound evaluator shipment and cold knowledge-transport experiment.
-- [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md) — concrete one-star correlation evaluator shipment and Rust-facing conformance workflow.
-- [`docs/LEAN-FINDINGS.md`](docs/LEAN-FINDINGS.md) — durable numbered formalization and research findings, including the `$` correlation treatment.
-- [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md) — Lean's role and potential, audited project studies, proof/trust boundaries, theorem opportunities, and best practices.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the concrete Lean encoding decisions and rejected alternatives.
-- [`docs/PROTOCOL.md`](docs/PROTOCOL.md) — the normalized reference process, JSON schema, diagnostics, support manifest, and checked sample data.
-- [`docs/TESTING.md`](docs/TESTING.md) — the Lean red/green method, concrete conformance harness, trusted-proof audit, kernel replay, and final verification gate.
-- [`docs/DOC-DISCIPLINE.md`](docs/DOC-DISCIPLINE.md) — where findings, structure, status, and plans belong.
-- [`spec/`](spec/) — the distilled, language-neutral specification; start at [`spec/SEMANTICS-MAP.md`](spec/SEMANTICS-MAP.md).
-- [`docs/SOURCES.md`](docs/SOURCES.md) — the drill chain from each semantic clause to its evidence.
-- [`../a12-kernel`](../a12-kernel) — the real engine, the behavioural **source of truth** (EUPL-1.2 / commercial).
-- [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) — a peer clean-room reimplementation, reusable conformance corpus, semantics docs, and the dmtool-release public distribution.
+- Explore possible products and ways Lean helps in the [`use-case guide`](docs/USE-CASES.md).
+- Understand which repository trees are authoritative, generated, retained, or transient in the [`artifact lifecycle guide`](docs/ARTIFACTS.md).
+- Integrate with the reference executable through the [`normalized protocol`](docs/PROTOCOL.md).
+- Build an independent evaluator with the [`implementer guide`](docs/IMPLEMENTER-GUIDE.md) and an implemented [flat](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) or [correlation](docs/IMPLEMENTER-KIT-CORRELATION.md) kit.
+- Design a future importer or rule-transformation shipment from the guide's [`task profiles`](docs/IMPLEMENTER-GUIDE.md#task-profiles) and [`use cases`](docs/USE-CASES.md); no such shipment is implemented yet.
+- Study Lean's role, limits, case studies, and proof practices in [`LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
+- Review the durable charter in [`PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) and the proposed product boundary in [`PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md).
+- Use [`docs/README.md`](docs/README.md) for every other route and the canonical document-ownership registry.
 
-This is a **clean-room** reimplementation: it never links, calls, or transcribes the kernel; it reproduces observed behaviour in original code and locks it with tests. See [`CLAUDE.md`](CLAUDE.md) for the full source-of-truth hierarchy and the licensing boundary.
+The read-only [`spec/`](spec/) is the distilled language-neutral baseline, while [`../a12-kernel`](../a12-kernel) remains the behavioural source of truth and [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) is the peer clean-room knowledge and evidence-transport project. [`SOURCES.md`](docs/SOURCES.md) provides the writable drill map. This repository never links, calls, or transcribes the kernel; [`CLAUDE.md`](CLAUDE.md) defines the full clean-room, source-authority, dependency, and worktree rules.
 
 ## License
 
