@@ -4,9 +4,10 @@ import A12Kernel.Reference.StrictJson
 
 /-! # A12Kernel.Evidence.FlatProtocolBridge — retained flat evidence to protocol
 
-This evidence-only module owns the typed descriptor for the first cold-implementation
+This IO/test-side module owns the typed descriptor for the first cold-implementation
 capability and mechanically binds its retained projection to normalized protocol requests.
-It remains outside the library, conformance, and proof roots.
+It also generates the post-cold mutation qualification plan as explicitly non-evidence
+source-maintainer metadata. It remains outside the library, conformance, and proof roots.
 -/
 
 namespace A12Kernel.Evidence.FlatProtocolBridge
@@ -67,6 +68,175 @@ structure CapabilityDescriptor where
   cases : List CaseDescriptor
   deriving Repr, DecidableEq
 
+inductive MutationStage where
+  | rowEligibility
+  | comparisonOperand
+  | comparisonEvaluation
+  | verdictCombination
+  | polarity
+  deriving Repr, DecidableEq
+
+namespace MutationStage
+
+def tag : MutationStage → String
+  | .rowEligibility => "rowEligibility"
+  | .comparisonOperand => "comparisonOperand"
+  | .comparisonEvaluation => "comparisonEvaluation"
+  | .verdictCombination => "verdictCombination"
+  | .polarity => "polarity"
+
+end MutationStage
+
+structure MutationCaseChange where
+  caseId : String
+  mutantVerdict : Verdict
+  deriving Repr, DecidableEq
+
+inductive VerdictConnective where
+  | and
+  | or
+  deriving Repr, DecidableEq
+
+namespace VerdictConnective
+
+def tag : VerdictConnective → String
+  | .and => "and"
+  | .or => "or"
+
+def evaluate : VerdictConnective → Verdict → Verdict → Verdict
+  | .and => Verdict.conj
+  | .or => Verdict.disj
+
+end VerdictConnective
+
+structure MutationAlgebraChange where
+  connective : VerdictConnective
+  left : Verdict
+  right : Verdict
+  mutantVerdict : Verdict
+  deriving Repr, DecidableEq
+
+structure MutationAlgebraInput where
+  connective : VerdictConnective
+  left : Verdict
+  right : Verdict
+  deriving Repr, DecidableEq
+
+inductive VerdictAlgebraMutation where
+  | unknownGlobalPoison
+  | unknownAsFalse
+  deriving Repr, DecidableEq
+
+namespace VerdictAlgebraMutation
+
+def domain : List MutationAlgebraInput :=
+  let connectives : List VerdictConnective := [.and, .or]
+  let verdicts : List Verdict := [.notFired, .fired .value, .fired .omission, .unknown]
+  connectives.flatMap fun connective =>
+    verdicts.flatMap fun left =>
+      verdicts.map fun right => { connective, left, right }
+
+private def withoutUnknown : Verdict → Verdict
+  | .unknown => .notFired
+  | verdict => verdict
+
+def evaluate (mutation : VerdictAlgebraMutation) (connective : VerdictConnective)
+    (left right : Verdict) : Verdict :=
+  match mutation with
+  | .unknownGlobalPoison =>
+      if left == .unknown || right == .unknown then .unknown
+      else connective.evaluate left right
+  | .unknownAsFalse =>
+      connective.evaluate (withoutUnknown left) (withoutUnknown right)
+
+def changes (mutation : VerdictAlgebraMutation) : List MutationAlgebraChange :=
+  domain.filterMap fun input =>
+    let canonical := input.connective.evaluate input.left input.right
+    let mutant := mutation.evaluate input.connective input.left input.right
+    if canonical == mutant then none
+    else some {
+      connective := input.connective
+      left := input.left
+      right := input.right
+      mutantVerdict := mutant }
+
+end VerdictAlgebraMutation
+
+inductive MutationMechanism where
+  | emptyNumberNotEvaluated
+  | inferRowContentFromSparseCells
+  | emptyConfirmNotEvaluated
+  | malformedComparisonNotFired
+  | unknownGlobalPoison
+  | unknownAsFalse
+  | emptyFiringValuePolarity
+  deriving Repr, DecidableEq
+
+namespace MutationMechanism
+
+def exercise : MutationMechanism → Nat
+  | .emptyNumberNotEvaluated => 1
+  | .inferRowContentFromSparseCells => 2
+  | .emptyConfirmNotEvaluated => 3
+  | .malformedComparisonNotFired => 4
+  | .unknownGlobalPoison => 5
+  | .unknownAsFalse => 6
+  | .emptyFiringValuePolarity => 7
+
+def tag : MutationMechanism → String
+  | .emptyNumberNotEvaluated => "empty-number-not-evaluated"
+  | .inferRowContentFromSparseCells => "infer-row-content-from-sparse-cells"
+  | .emptyConfirmNotEvaluated => "empty-confirm-not-evaluated"
+  | .malformedComparisonNotFired => "malformed-comparison-not-fired"
+  | .unknownGlobalPoison => "unknown-global-poison"
+  | .unknownAsFalse => "unknown-as-false"
+  | .emptyFiringValuePolarity => "empty-firing-value-polarity"
+
+def stage : MutationMechanism → MutationStage
+  | .emptyNumberNotEvaluated | .emptyConfirmNotEvaluated => .comparisonOperand
+  | .inferRowContentFromSparseCells => .rowEligibility
+  | .malformedComparisonNotFired => .comparisonEvaluation
+  | .unknownGlobalPoison | .unknownAsFalse => .verdictCombination
+  | .emptyFiringValuePolarity => .polarity
+
+def semanticChange : MutationMechanism → String
+  | .emptyNumberNotEvaluated =>
+      "Treat an empty Number comparison as not evaluated instead of substituting not-given zero."
+  | .inferRowContentFromSparseCells =>
+      "Ignore authoritative hasContent and infer row content from the sparse cell map."
+  | .emptyConfirmNotEvaluated =>
+      "Treat empty Confirm as not evaluated instead of comparison-local not-given false."
+  | .malformedComparisonNotFired =>
+      "Collapse the Unknown result of a malformed comparison to NotFired before connective evaluation."
+  | .unknownGlobalPoison =>
+      "Make Unknown a global poison for both And and Or whenever either operand is Unknown."
+  | .unknownAsFalse =>
+      "Treat Unknown as ordinary false for both And and Or."
+  | .emptyFiringValuePolarity =>
+      "Mark every firing caused by an empty substitution or empty presence observation as value polarity."
+
+def algebraMutation? : MutationMechanism → Option VerdictAlgebraMutation
+  | .unknownGlobalPoison => some .unknownGlobalPoison
+  | .unknownAsFalse => some .unknownAsFalse
+  | _ => none
+
+def algebraChanges (mechanism : MutationMechanism) : List MutationAlgebraChange :=
+  mechanism.algebraMutation?.map VerdictAlgebraMutation.changes |>.getD []
+
+end MutationMechanism
+
+structure MutationDescriptor where
+  mechanism : MutationMechanism
+  expectedCaseChanges : List MutationCaseChange
+  deriving Repr, DecidableEq
+
+structure MutationPlan where
+  schemaVersion : Nat
+  id : String
+  capabilityId : String
+  mutations : List MutationDescriptor
+  deriving Repr, DecidableEq
+
 def capability : CapabilityDescriptor := {
   id := "flat-validation-empty-logic-v1"
   referenceSemanticsVersion := Support.referenceSemanticsVersion
@@ -104,6 +274,37 @@ def capability : CapabilityDescriptor := {
       expectedVerdict := .fired .omission
       covers := ["fieldNotFilled", "emptyRowEligibility", "omissionPolarity"] }] }
 
+def mutationPlan : MutationPlan := {
+  schemaVersion := 1
+  id := s!"{capability.id}-mutation-qualification"
+  capabilityId := capability.id
+  mutations := [
+    { mechanism := .emptyNumberNotEvaluated
+      expectedCaseChanges := [
+        { caseId := "number-empty-equals-zero-content", mutantVerdict := .notFired }] },
+    { mechanism := .inferRowContentFromSparseCells
+      expectedCaseChanges := [
+        { caseId := "number-empty-equals-zero-content", mutantVerdict := .notFired },
+        { caseId := "confirm-empty-not-true", mutantVerdict := .notFired }] },
+    { mechanism := .emptyConfirmNotEvaluated
+      expectedCaseChanges := [
+        { caseId := "confirm-empty-not-true", mutantVerdict := .notFired }] },
+    { mechanism := .malformedComparisonNotFired
+      expectedCaseChanges := [
+        { caseId := "malformed-number-equals-zero", mutantVerdict := .notFired },
+        { caseId := "healthy-and-malformed", mutantVerdict := .notFired }] },
+    { mechanism := .unknownGlobalPoison
+      expectedCaseChanges := [
+        { caseId := "healthy-or-malformed", mutantVerdict := .unknown }] },
+    { mechanism := .unknownAsFalse
+      expectedCaseChanges := [
+        { caseId := "healthy-and-malformed", mutantVerdict := .notFired }] },
+    { mechanism := .emptyFiringValuePolarity
+      expectedCaseChanges := [
+        { caseId := "number-empty-equals-zero-content", mutantVerdict := .fired .value },
+        { caseId := "confirm-empty-not-true", mutantVerdict := .fired .value },
+        { caseId := "number-not-filled-empty-row", mutantVerdict := .fired .value }] }] }
+
 private def firstDuplicate? [BEq α] : List α → Option α
   | [] => none
   | value :: rest =>
@@ -121,6 +322,119 @@ def CapabilityDescriptor.validate (descriptor : CapabilityDescriptor) : Except S
     if case.covers.isEmpty then throw s!"{case.id}: coverage labels must not be empty"
     if (firstDuplicate? case.covers).isSome then
       throw s!"{case.id}: coverage labels must be unique"
+
+private def CapabilityDescriptor.mutationCaseById (descriptor : CapabilityDescriptor)
+    (id : String) : Except String CaseDescriptor :=
+  match descriptor.cases.filter (·.id == id) with
+  | [case] => pure case
+  | [] => throw s!"{descriptor.id}: mutation plan names unknown case '{id}'"
+  | _ => throw s!"{descriptor.id}: mutation plan case '{id}' is ambiguous"
+
+private def mutationAlgebraKey (connective : VerdictConnective) (left right : Verdict) : String :=
+  s!"{connective.tag}|{repr left}|{repr right}"
+
+def MutationPlan.validate (plan : MutationPlan) (descriptor : CapabilityDescriptor) :
+    Except String Unit := do
+  descriptor.validate
+  if plan.schemaVersion != 1 then
+    throw s!"{plan.id}: unsupported mutation-plan schema version {plan.schemaVersion}"
+  if plan.id.isEmpty then throw "mutation-plan id must not be empty"
+  let expectedPlanId := s!"{descriptor.id}-mutation-qualification"
+  if plan.id != expectedPlanId then
+    throw s!"mutation-plan id '{plan.id}' does not match '{expectedPlanId}'"
+  if plan.capabilityId != descriptor.id then
+    throw s!"{plan.id}: capability '{plan.capabilityId}' does not match '{descriptor.id}'"
+  let algebraDomain := VerdictAlgebraMutation.domain
+  if algebraDomain.length != 32 then
+    throw s!"{plan.id}: expected a 32-cell verdict-algebra domain, found {algebraDomain.length}"
+  let algebraDomainKeys := algebraDomain.map fun input =>
+    mutationAlgebraKey input.connective input.left input.right
+  match firstDuplicate? algebraDomainKeys with
+  | some duplicate => throw s!"{plan.id}: duplicate verdict-algebra input '{duplicate}'"
+  | none => pure ()
+  if plan.mutations.length != 7 then
+    throw s!"{plan.id}: expected exactly seven mutations, found {plan.mutations.length}"
+  if plan.mutations.map (·.mechanism.exercise) != [1, 2, 3, 4, 5, 6, 7] then
+    throw s!"{plan.id}: mutation exercises must be ordered exactly from one through seven"
+  match firstDuplicate? (plan.mutations.map (·.mechanism.tag)) with
+  | some duplicate => throw s!"{plan.id}: duplicate mutation id '{duplicate}'"
+  | none => pure ()
+  for mutation in plan.mutations do
+    let mutationId := mutation.mechanism.tag
+    if mutation.expectedCaseChanges.isEmpty then
+      throw s!"{mutationId}: expected case changes must not be empty"
+    let changedIds := mutation.expectedCaseChanges.map (·.caseId)
+    match firstDuplicate? changedIds with
+    | some duplicate => throw s!"{mutationId}: duplicate changed case '{duplicate}'"
+    | none => pure ()
+    for change in mutation.expectedCaseChanges do
+      let baseline ← descriptor.mutationCaseById change.caseId
+      if baseline.expectedVerdict == change.mutantVerdict then
+        throw s!"{mutationId}: case '{change.caseId}' does not change verdict"
+    let algebraChanges := mutation.mechanism.algebraChanges
+    match mutation.mechanism.algebraMutation? with
+    | none =>
+        if mutation.mechanism.stage == .verdictCombination then
+          throw s!"{mutationId}: verdict-combination mutation has no algebra definition"
+        if !algebraChanges.isEmpty then
+          throw s!"{mutationId}: non-algebra mutation unexpectedly changes the verdict algebra"
+    | some algebraMutation =>
+        if mutation.mechanism.stage != .verdictCombination then
+          throw s!"{mutationId}: algebra changes require the verdict-combination stage"
+        let expectedCount := match algebraMutation with
+          | .unknownGlobalPoison => 6
+          | .unknownAsFalse => 8
+        if algebraChanges.length != expectedCount then
+          throw s!"{mutationId}: expected {expectedCount} algebra changes, found {algebraChanges.length}"
+    let algebraChangeKeys := algebraChanges.map fun change =>
+      mutationAlgebraKey change.connective change.left change.right
+    match firstDuplicate? algebraChangeKeys with
+    | some duplicate => throw s!"{mutationId}: duplicate algebra change '{duplicate}'"
+    | none => pure ()
+    for change in algebraChanges do
+      let baseline := change.connective.evaluate change.left change.right
+      if baseline == change.mutantVerdict then
+        throw s!"{mutationId}: algebra witness does not change verdict"
+
+private def expectInvalidMutationPlan (label : String) (plan : MutationPlan)
+    (descriptor : CapabilityDescriptor) : Except String Unit :=
+  match plan.validate descriptor with
+  | .error _ => pure ()
+  | .ok _ => throw s!"mutation-plan guard accepted {label}"
+
+private def checkMutationPlanGuards (descriptor : CapabilityDescriptor) : Except String Unit := do
+  expectInvalidMutationPlan "a mismatched plan id"
+    { mutationPlan with id := "wrong-mutation-plan" } descriptor
+  expectInvalidMutationPlan "a mismatched capability id"
+    { mutationPlan with capabilityId := "wrong-capability" } descriptor
+  expectInvalidMutationPlan "an incomplete mutation set"
+    { mutationPlan with mutations := mutationPlan.mutations.drop 1 } descriptor
+  match mutationPlan.mutations with
+  | [] => throw "mutation-plan guard requires a nonempty canonical plan"
+  | first :: rest =>
+      let unchangedFirst := {
+        first with
+        expectedCaseChanges := [
+          { caseId := "number-empty-equals-zero-content"
+            mutantVerdict := .fired .omission }] }
+      expectInvalidMutationPlan "a mutation whose verdict does not change"
+        { mutationPlan with mutations := unchangedFirst :: rest } descriptor
+      let unknownCaseFirst := {
+        first with
+        expectedCaseChanges := [
+          { caseId := "unknown-case", mutantVerdict := .notFired }] }
+      expectInvalidMutationPlan "an unknown case"
+        { mutationPlan with mutations := unknownCaseFirst :: rest } descriptor
+      let duplicateCaseFirst := {
+        first with
+        expectedCaseChanges := first.expectedCaseChanges ++ first.expectedCaseChanges }
+      expectInvalidMutationPlan "a duplicate changed case"
+        { mutationPlan with mutations := duplicateCaseFirst :: rest } descriptor
+      match rest with
+      | [] => throw "mutation-plan guard requires at least two canonical mutations"
+      | second :: tail =>
+          expectInvalidMutationPlan "a reordered mutation set"
+            { mutationPlan with mutations := second :: first :: tail } descriptor
 
 private def fieldKindJson : FieldKindSpec → Json
   | .number scale signed => Json.mkObj [
@@ -453,6 +767,9 @@ def CapabilityDescriptor.suitePath (descriptor : CapabilityDescriptor) : System.
 def CapabilityDescriptor.descriptorPath (descriptor : CapabilityDescriptor) : System.FilePath :=
   "reference" / s!"{descriptor.id}.capability.json"
 
+def CapabilityDescriptor.mutationPlanPath (descriptor : CapabilityDescriptor) : System.FilePath :=
+  "reference" / s!"{descriptor.id}.mutation-plan.json"
+
 private def verdictJson : Verdict → Json
   | .notFired => Json.mkObj [("tag", toJson "notFired")]
   | .unknown => Json.mkObj [("tag", toJson "unknown")]
@@ -460,6 +777,109 @@ private def verdictJson : Verdict → Json
       Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "value")]
   | .fired .omission =>
       Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "omission")]
+
+private def MutationPlan.caseChangeJson (descriptor : CapabilityDescriptor)
+    (change : MutationCaseChange) : Except String Json := do
+  let baseline ← descriptor.mutationCaseById change.caseId
+  pure <| Json.mkObj [
+    ("caseId", toJson change.caseId),
+    ("canonicalVerdict", verdictJson baseline.expectedVerdict),
+    ("mutantVerdict", verdictJson change.mutantVerdict)]
+
+private def MutationPlan.algebraChangeJson (change : MutationAlgebraChange) : Json :=
+  Json.mkObj [
+    ("connective", toJson change.connective.tag),
+    ("left", verdictJson change.left),
+    ("right", verdictJson change.right),
+    ("canonicalVerdict", verdictJson (change.connective.evaluate change.left change.right)),
+    ("mutantVerdict", verdictJson change.mutantVerdict)]
+
+private def MutationPlan.mutationJson (descriptor : CapabilityDescriptor)
+    (mutation : MutationDescriptor) : Except String Json := do
+  let changes ← mutation.expectedCaseChanges.mapM (MutationPlan.caseChangeJson descriptor)
+  let changedIds := mutation.expectedCaseChanges.map (·.caseId)
+  let unchangedIds := descriptor.cases.filterMap fun case =>
+    if changedIds.contains case.id then none else some case.id
+  let algebraChanges := mutation.mechanism.algebraChanges
+  pure <| Json.mkObj [
+    ("exercise", toJson mutation.mechanism.exercise),
+    ("id", toJson mutation.mechanism.tag),
+    ("firstDivergentStage", toJson mutation.mechanism.stage.tag),
+    ("semanticChange", toJson mutation.mechanism.semanticChange),
+    ("expectedCaseChanges", Json.arr changes.toArray),
+    ("expectedUnchangedCaseIds", toJson unchangedIds),
+    ("expectedAlgebraChanges",
+      Json.arr (algebraChanges.map MutationPlan.algebraChangeJson).toArray)]
+
+def MutationPlan.asJson (plan : MutationPlan) (descriptor : CapabilityDescriptor) :
+    Except String Json := do
+  plan.validate descriptor
+  let mutations ← plan.mutations.mapM (MutationPlan.mutationJson descriptor)
+  pure <| Json.mkObj [
+    ("mutationPlanSchemaVersion", toJson plan.schemaVersion),
+    ("mutationPlanId", toJson plan.id),
+    ("status", toJson "sourceSidePostColdQualificationPlan"),
+    ("artifactRole", toJson "sourceMaintainerQualificationPlan"),
+    ("claimScope", toJson "leanAccountMutationPlanOnly"),
+    ("capabilityId", toJson plan.capabilityId),
+    ("referenceSemanticsVersion", toJson descriptor.referenceSemanticsVersion),
+    ("protocolVersion", toJson descriptor.protocolVersion),
+    ("manifestSchemaVersion", toJson descriptor.manifestSchemaVersion),
+    ("kernelBehaviorVersion", toJson descriptor.kernelBehaviorVersion),
+    ("operation", toJson descriptor.operation),
+    ("suite", toJson descriptor.suitePath.toString),
+    ("execution", toJson
+      "applyEachMutationSeparatelyThenRunCanonicalSuiteAndFullAlgebraMatrixForExercisesFiveAndSix"),
+    ("observabilityLimit", toJson
+      "Case and algebra outputs establish sensitivity, while the retained patch establishes that the exact named mechanism was mutated."),
+    ("resultRecordRequirements", Json.mkObj [
+      ("resultSchemaVersion", toJson 1),
+      ("sourceValidation", toJson "strictCheckerPending"),
+      ("digestAlgorithm", toJson "sha256"),
+      ("digestEncoding", toJson "lowercaseHex64"),
+      ("digestScopes", Json.mkObj [
+        ("mutationPlanSha256", toJson "exactMutationPlanFileBytes"),
+        ("sourceFileSha256", toJson "exactNamedCandidateSourceFileBytes"),
+        ("patchSha256", toJson "exactRetainedUnifiedDiffFileBytes"),
+        ("rawLogSha256", toJson "exactNamedRawLogFileBytes")]),
+      ("caseResultPolicy", toJson "allEightCanonicalCasesInDescriptorOrder"),
+      ("caseResultCountPerMutation", toJson descriptor.cases.length),
+      ("algebraResultPolicy", toJson
+        "allFourByFourOperandPairsForAndThenOrOnExercisesFiveAndSix"),
+      ("algebraResultCountForExercisesFiveAndSix",
+        toJson VerdictAlgebraMutation.domain.length),
+      ("algebraResultCountForOtherExercises", toJson 0),
+      ("requiredTopLevelFields", toJson [
+        "resultSchemaVersion", "mutationPlanId", "mutationPlanSha256",
+        "capabilityId", "baselineImplementationRevision", "baselineSourceFiles",
+        "toolchain", "naturalGate", "mutations", "finalRestorationGate"]),
+      ("requiredPerMutationFields", toJson [
+        "exercise", "mutationId", "predictionRecordedBeforePatch", "patch",
+        "patchSha256", "commands", "rawLogs", "exitStatuses",
+        "observedCaseResults", "observedAlgebraResults",
+        "unexpectedDifferences", "outcome",
+        "restoration", "restoredSourceFiles"]),
+      ("sourceFileRecordFields", toJson ["path", "sha256"]),
+      ("commandRecordFields", toJson [
+        "id", "argv", "exitStatus", "stdoutLog", "stderrLog"]),
+      ("rawLogRecordFields", toJson ["path", "sha256"]),
+      ("caseResultFields", toJson ["caseId", "verdict"]),
+      ("algebraResultFields", toJson ["connective", "left", "right", "verdict"]),
+      ("outcomeValues", toJson ["matchedPrediction", "unexpectedDifference", "notRun"]),
+      ("rules", toJson [
+        "runOneMutationAtATime",
+        "recordPredictionBeforePatch",
+        "retainExactPatchAndRawOutputs",
+        "stopOnMissingOrAdditionalDifference",
+        "reversePatchBeforeNextMutation",
+        "verifyBaselineDigestAfterEveryRestoration",
+        "neverCommitMutatedImplementation"]) ]),
+    ("doesNotEstablish", toJson [
+      "kernelCorrespondence",
+      "proofTransferToCandidate",
+      "behaviorOutsideNamedCasesAndAlgebraVectors",
+      "releaseQualification"]),
+    ("mutations", Json.arr mutations.toArray)]
 
 private def CapabilityDescriptor.descriptorCaseJson (descriptor : CapabilityDescriptor)
     (artifact : CaseArtifact) : Json :=
@@ -516,8 +936,14 @@ def CapabilityDescriptor.descriptorJson (descriptor : CapabilityDescriptor)
 private def assertJsonArtifact (path : System.FilePath) (expected : Json) : IO Unit := do
   let actual ← readJson path
   if actual != expected then
-    throw (IO.userError
-      s!"generated handover artifact '{path}' is stale\nexpected: {expected.compress}\nactual:   {actual.compress}")
+    let expectedText := expected.compress
+    let actualText := actual.compress
+    let details :=
+      if expectedText.length + actualText.length ≤ 4000 then
+        s!"\nexpected: {expectedText}\nactual:   {actualText}"
+      else
+        "\nvalues omitted because the artifact is large; inspect the owning typed source, then if the change is intentional run 'lake exe syncFlatHandover --write' and review the resulting diff"
+    throw (IO.userError s!"generated handover artifact '{path}' is stale{details}")
 
 private def CapabilityDescriptor.checkFixtureDirectory
     (descriptor : CapabilityDescriptor) : IO Unit := do
@@ -551,6 +977,7 @@ private def manifestBoundary (descriptor : CapabilityDescriptor) (manifest : Jso
 
 def CapabilityDescriptor.checkArtifacts (descriptor : CapabilityDescriptor) : IO Nat := do
   orThrow descriptor.id checkFocusedObservationGuards
+  orThrow descriptor.id (checkMutationPlanGuards descriptor)
   let artifacts ← descriptor.loadArtifacts
   descriptor.checkFixtureDirectory
   for artifact in artifacts do
@@ -559,6 +986,8 @@ def CapabilityDescriptor.checkArtifacts (descriptor : CapabilityDescriptor) : IO
   assertJsonArtifact descriptor.descriptorPath
     (← orThrow descriptor.id (descriptor.descriptorJson artifacts))
   assertJsonArtifact descriptor.suitePath (← orThrow descriptor.id (descriptor.suiteJson artifacts))
+  assertJsonArtifact descriptor.mutationPlanPath
+    (← orThrow descriptor.id (mutationPlan.asJson descriptor))
   let manifest ← readJson descriptor.supportManifest
   let actualBoundary ← orThrow descriptor.id (manifestBoundary descriptor manifest)
   let expectedBoundary := descriptor.manifestBoundaryJson
@@ -579,6 +1008,8 @@ def CapabilityDescriptor.writeArtifacts (descriptor : CapabilityDescriptor) : IO
   writeJson descriptor.descriptorPath
     (← orThrow descriptor.id (descriptor.descriptorJson artifacts))
   writeJson descriptor.suitePath (← orThrow descriptor.id (descriptor.suiteJson artifacts))
+  writeJson descriptor.mutationPlanPath
+    (← orThrow descriptor.id (mutationPlan.asJson descriptor))
   pure artifacts.length
 
 end A12Kernel.Evidence.FlatProtocolBridge

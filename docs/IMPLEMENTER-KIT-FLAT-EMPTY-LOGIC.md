@@ -316,6 +316,8 @@ Classify defects 1, 3, and 7 as consuming-clause or polarity evaluation errors; 
 
 The suite cannot detect an implementation that substitutes `false` for empty Boolean only in the exercised `== true` case, because both false and not-evaluated are silent there. Do not use that ineffective mutation as evidence of suite sensitivity; it is an open evidence item.
 
+The generated [`flat-validation-empty-logic-v1.mutation-plan.json`](../reference/flat-validation-empty-logic-v1.mutation-plan.json) is the exact machine-readable companion to these exercises. It derives canonical verdicts for changed cases and the complete unchanged-case ID set from the typed capability, records every reviewed expected mutant verdict, and exhaustively derives the complete connective-table deltas for exercises 5 and 6 from the live verdict algebra because the eight canonical cases observe only one connective-sensitive result from each mechanism. It also makes an exact consequence of exercise 2 explicit: sparse-cell inference suppresses both `number-empty-equals-zero-content` and `confirm-empty-not-true`, while empty Boolean remains silent under either row decision. The plan's result-record requirements call for the exact patch because output agreement does not establish which internal mechanism changed and cannot by itself prove that exercises 5 and 6 changed both connectives. They also require complete eight-case and 32-cell algebra observations, but remain labeled `strictCheckerPending` until a source-side validator enforces their shape and digest scopes. This is a source-side post-cold qualification plan, not execution evidence, kernel evidence, or a retroactive member of the immutable first Rust bundle.
+
 ## Tools and exact commands
 
 Build the reference and candidate runner:
@@ -330,7 +332,7 @@ Check that the typed capability descriptor, projection-derived requests, exact L
 lake exe syncFlatHandover --check
 ```
 
-`syncFlatHandover --write` regenerates the descriptor, eight request/response pairs, and suite from the retained projection and typed descriptor, then immediately applies the same check. It does not rewrite the typed support manifest; a changed evidence boundary must first be reviewed and changed in its owning Lean declaration, then the committed manifest mirror must be regenerated through the reference process.
+`syncFlatHandover --write` regenerates the descriptor, eight request/response pairs, and suite from the retained projection and typed descriptor; it separately regenerates the post-cold mutation qualification plan from the typed capability and live verdict algebra, then immediately applies the same check to all outputs. It does not rewrite the typed support manifest; a changed evidence boundary must first be reviewed and changed in its owning Lean declaration, then the committed manifest mirror must be regenerated through the reference process.
 
 Replay the retained kernel observations and run the reference process gate:
 
@@ -371,7 +373,7 @@ The cold implementation report must record:
 - semantic questions, assumptions, unsupported shapes, and any deviation from the process contract;
 - a verdict of `pass for named development spike`, `handover defect`, or `implementation defect`.
 
-On disagreement, preserve the normalized request and both responses, then identify the first divergent stage: transport, model/path resolution, formal checking, row eligibility, comparison operand, presence, verdict combination, polarity, or response encoding. If this capsule decides the case, fix the violating implementation. If the capsule, Lean response, and retained observation do not determine it consistently, mark the capability incomplete and open a semantics defect here. A semantics maintainer performs any new kernel research through the clean-room evidence workflow and publishes a new compatibility tuple; the downstream implementer must not repeat kernel archaeology.
+On disagreement, preserve the normalized request and both responses, then identify the first divergent stage: transport, model/path resolution, formal checking, row eligibility, comparison operand, comparison evaluation, presence, verdict combination, polarity, or response encoding. If this capsule decides the case, fix the violating implementation. If the capsule, Lean response, and retained observation do not determine it consistently, mark the capability incomplete and open a semantics defect here. A semantics maintainer performs any new kernel research through the clean-room evidence workflow and publishes a new compatibility tuple; the downstream implementer must not repeat kernel archaeology.
 
 ## Cold-test outcome 2026-07-14
 
@@ -394,7 +396,7 @@ This capsule is a maintained projection over four owned sources, not an independ
 3. normalized transport and support declarations in [`PROTOCOL.md`](PROTOCOL.md) and [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json);
 4. retained kernel observations and the typed replay input in [`EVIDENCE.md`](EVIDENCE.md), [`projection.json`](../evidence/kernel-30.8.1/projection.json), and the eight case artifacts above.
 
-Any change to a named semantic clause, exact verdict, evidence classification, protocol or manifest version, case request/response, or law statement invalidates the old bundle digest. Update the owning source first, make the Lean conformance and evidence gates agree, update this capsule and the language-neutral suite together, regenerate the allowlisted bundle and digest inventory, then repeat the isolated implementation exercise. Never silently patch only the downstream prompt or expected response.
+Any change to a named semantic clause, exact verdict, evidence classification, protocol or manifest version, case request/response, or law statement invalidates the old bundle digest. Update the owning source first, make the Lean conformance and evidence gates agree, update this capsule and the language-neutral suite together, regenerate the allowlisted bundle and digest inventory, then repeat the isolated implementation exercise. Never silently patch only the downstream prompt or expected response. The mutation plan is intentionally a later source-maintainer artifact tied to that tuple and is not inserted into the already consumed bundle; a downstream exact-qualification packet must copy it under a new digest inventory rather than rewriting the cold experiment's history.
 
 ## Open boundary
 
