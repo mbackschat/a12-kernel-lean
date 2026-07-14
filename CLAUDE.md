@@ -116,5 +116,6 @@ For Lean-specific architecture and proof-engineering choices, inspect the audite
 ## Conventions
 
 - **English is canonical** — code, identifiers, comments, docs — matching the A12 OSS family.
+- **Lean comments:** Use `/-! ... -/` for a nontrivial module's purpose, semantic scope, and boundary; `/-- ... -/` for public semantic declarations and main theorems; and `--` only beside a non-obvious implementation or proof choice. Following a12-dmkits' intent, explain rationale, phase or context, an invariant or counterexample, and a short provenance pointer (`spec/` section, finding, or evidence ID) when those facts are not evident from the types or statements. Never narrate Lean syntax, restate an encoded definition or truth table, document routine proof steps, or let prose claim more than the formal statement. Keep durable analysis in [`docs/`](docs/); code comments stay concise, local, and synchronized with tests and proofs.
 - **Commits:** Conventional Commits (`type(scope): subject`, imperative, lowercase type); subject-only by default, a 1–2 sentence body only for a non-obvious *why*.
 - Keep this file tool-neutral; [`AGENTS.md`](AGENTS.md) is a symlink to it so Codex and other AGENTS.md-reading agents get the same guidance.
