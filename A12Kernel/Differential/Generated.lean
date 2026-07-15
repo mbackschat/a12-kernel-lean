@@ -2,7 +2,7 @@ import A12Kernel.Differential.Profile
 
 /-! # Generated differential profile self-test
 
-This executable-only gate checks the closed profile decoder, exact finite enumeration, structural budgets, response projection, and the current in-process Lean reference distribution. `A12Kernel.Differential.Runner` owns the separate bounded subprocess campaign.
+This executable-only gate checks the frozen profile decoder, exact finite enumeration, structural budgets, and response projection. A separately named compatibility audit then runs those historical requests through the current in-process Lean reference; it is not reconstruction of the historical result. `A12Kernel.Differential.Runner` owns the separate bounded subprocess campaign.
 -/
 
 namespace A12Kernel.Differential.Generated
@@ -19,12 +19,15 @@ private def zeroRevision : String := String.ofList (List.replicate 40 '0')
 private def oneRevision : String := String.ofList (List.replicate 40 '1')
 
 private def compatibilityJson : Json := Json.mkObj [
-  ("capabilityId", toJson "flat-validation-empty-logic-v1"),
-  ("operation", toJson Support.Operation.flatValidationEvaluateFull.tag),
-  ("referenceSemanticsVersion", toJson Support.referenceSemanticsVersion),
-  ("protocolVersion", toJson Support.protocolVersion),
-  ("manifestSchemaVersion", toJson Support.manifestSchemaVersion),
-  ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion)]
+  ("capabilityId", toJson Lineage.historicalFlatCapability.suiteId),
+  ("operation", toJson Lineage.historicalFlatCapability.operation),
+  ("referenceSemanticsVersion",
+    toJson Lineage.historicalFlatCapability.compatibility.referenceSemanticsVersion),
+  ("protocolVersion", toJson Lineage.historicalFlatCapability.compatibility.protocolVersion),
+  ("manifestSchemaVersion",
+    toJson Lineage.historicalFlatCapability.compatibility.manifestSchemaVersion),
+  ("kernelBehaviorVersion",
+    toJson Lineage.historicalFlatCapability.compatibility.kernelBehaviorVersion)]
 
 private def boundsJson : Json := Json.mkObj [
   ("cases", toJson expectedCaseCount),
@@ -122,7 +125,7 @@ private def Distribution.add (distribution : Distribution) : ProjectedVerdict �
   | .firedOmission => { distribution with firedOmission := distribution.firedOmission + 1 }
   | .unknown => { distribution with unknown := distribution.unknown + 1 }
 
-private def evaluateDistribution (profile : Profile) (cases : List GeneratedCase) :
+private def evaluateCurrentCompatibilityDistribution (profile : Profile) (cases : List GeneratedCase) :
     Except String Distribution := do
   let mut distribution := {}
   for case in cases do
@@ -249,38 +252,41 @@ private def expectProjectionFailure (profile : Profile) (label : String) (json :
   | .error _ => pure ()
   | .ok _ => throw s!"response projection accepted {label}"
 
-private def responseJson (tag : String) (polarity? : Option String := none) : Json :=
+private def responseJson (profile : Profile) (tag : String)
+    (polarity? : Option String := none) : Json :=
   let verdictMembers := [("tag", toJson tag)] ++
     match polarity? with
     | some polarity => [("polarity", toJson polarity)]
     | none => []
   Json.mkObj [
-    ("protocolVersion", toJson Support.protocolVersion),
-    ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
+    ("protocolVersion", toJson profile.compatibility.protocolVersion),
+    ("kernelBehaviorVersion", toJson profile.compatibility.kernelBehaviorVersion),
     ("outcome", toJson "ok"),
     ("verdict", Json.mkObj verdictMembers)]
 
 private def checkProjectionGuards (profile : Profile) : Except String Unit := do
   expectProjectionFailure profile "a wrong protocol version"
-    (← replaceMember (responseJson "notFired") "protocolVersion" (toJson 2))
+    (← replaceMember (responseJson profile "notFired") "protocolVersion" (toJson 2))
   expectProjectionFailure profile "a wrong kernel version"
-    (← replaceMember (responseJson "notFired") "kernelBehaviorVersion" (toJson "other"))
+    (← replaceMember (responseJson profile "notFired") "kernelBehaviorVersion" (toJson "other"))
   expectProjectionFailure profile "an unknown response member"
-    (← addMember (responseJson "notFired") "unexpected" (toJson true))
-  let base ← responseJson "notFired" |>.getObjVal? "verdict" |>.mapError fun _ =>
+    (← addMember (responseJson profile "notFired") "unexpected" (toJson true))
+  let base ← responseJson profile "notFired" |>.getObjVal? "verdict" |>.mapError fun _ =>
     "self-test response has no verdict"
   expectProjectionFailure profile "an unknown verdict member"
-    (← replaceMember (responseJson "notFired") "verdict"
+    (← replaceMember (responseJson profile "notFired") "verdict"
       (← addMember base "unexpected" (toJson true)))
-  expectProjectionFailure profile "polarity on notFired" (responseJson "notFired" (some "value"))
-  expectProjectionFailure profile "polarity on unknown" (responseJson "unknown" (some "value"))
-  expectProjectionFailure profile "fired without polarity" (responseJson "fired")
-  let mistypedPolarity ← replaceMember (responseJson "fired" (some "value")) "verdict"
+  expectProjectionFailure profile "polarity on notFired"
+    (responseJson profile "notFired" (some "value"))
+  expectProjectionFailure profile "polarity on unknown"
+    (responseJson profile "unknown" (some "value"))
+  expectProjectionFailure profile "fired without polarity" (responseJson profile "fired")
+  let mistypedPolarity ← replaceMember (responseJson profile "fired" (some "value")) "verdict"
     (Json.mkObj [("tag", toJson "fired"), ("polarity", toJson 1)])
   expectProjectionFailure profile "a mistyped polarity" mistypedPolarity
   let diagnostic := Json.mkObj [
-    ("protocolVersion", toJson Support.protocolVersion),
-    ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
+    ("protocolVersion", toJson profile.compatibility.protocolVersion),
+    ("kernelBehaviorVersion", toJson profile.compatibility.kernelBehaviorVersion),
     ("outcome", toJson "error"),
     ("diagnostic", Json.mkObj [])]
   expectProjectionFailure profile "an error response" diagnostic
@@ -314,7 +320,8 @@ private def checkProfileGuards : Except String Unit := do
   expectParseFailure "a missing process-output budget"
     (← replaceNestedMember canonical "bounds" "processStdoutBytes" (toJson 0)).compress
   expectParseFailure "a request-body budget that leaves no room for the JSON-line newline"
-    (← replaceNestedMember canonical "bounds" "requestBytes" (toJson Support.maxInputBytes)).compress
+    (← replaceNestedMember canonical "bounds" "requestBytes"
+      (toJson historicalMaxInputBytes)).compress
   expectParseFailure "an undersized aggregate process-input budget"
     (← replaceNestedMember canonical "bounds" "aggregateProcessInputBytes" (toJson 1)).compress
   expectParseFailure "an undersized result budget"
@@ -326,7 +333,10 @@ private def checkProfileGuards : Except String Unit := do
   expectGenerationFailure "an undersized aggregate request budget"
     (← replaceNestedMember canonical "bounds" "aggregateRequestBytes" (toJson 4096))
 
-/-- Exercise the profile decoder and all generator invariants without launching a child process. -/
+/-- Exercise the frozen profile/generator and an explicitly separate current-reference
+backward-compatibility audit without launching a child process. The frozen result artifact
+is validated from its pinned bytes and distribution elsewhere; this function does not
+reconstruct it from today's evaluator. -/
 def selfTest : IO Unit := do
   let result : Except String (Nat × Distribution) := do
     let profile ← parseText canonicalProfileJson.compress
@@ -343,7 +353,9 @@ def selfTest : IO Unit := do
     if repeated.map (·.id) != cases.map (·.id) ||
         repeated.map (·.request.compress) != cases.map (·.request.compress) then
       throw "deterministic generation changed between invocations"
-    let distribution ← evaluateDistribution profile cases
+    -- This is deliberately a current compatibility audit. It may change or be retired when
+    -- the current decoder/evaluator no longer supports the historical request vocabulary.
+    let distribution ← evaluateCurrentCompatibilityDistribution profile cases
     let expected : Distribution := { notFired := 14, firedValue := 11, firedOmission := 13, unknown := 14 }
     if distribution != expected then
       throw s!"reference verdict distribution {repr distribution} does not match {repr expected}"
@@ -355,6 +367,6 @@ def selfTest : IO Unit := do
   match result with
   | .error error => fail error
   | .ok (count, distribution) =>
-      IO.println s!"generated differential profile self-test: {count}/{expectedCaseCount}; verdicts notFired={distribution.notFired}, fired.value={distribution.firedValue}, fired.omission={distribution.firedOmission}, unknown={distribution.unknown}"
+      IO.println s!"generated differential profile self-test: {count}/{expectedCaseCount}; current compatibility verdicts notFired={distribution.notFired}, fired.value={distribution.firedValue}, fired.omission={distribution.firedOmission}, unknown={distribution.unknown}"
 
 end A12Kernel.Differential.Generated

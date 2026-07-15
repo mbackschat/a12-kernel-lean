@@ -3,7 +3,10 @@ import A12Kernel.Evidence.CorrelationElaborationReplay
 import A12Kernel.Evidence.FlatProtocolBridge
 import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
+import A12Kernel.Evidence.OperatorEmptyReplay
+import A12Kernel.Evidence.OperatorProtocolBridge
 import A12Kernel.Process.Sha256
+import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
 
 /-! IO-only retained-kernel-evidence replay. This module is an executable boundary and
@@ -101,6 +104,46 @@ private structure RetainedElaborationModel where
   index : RetainedModelIndex
   deriving Repr, DecidableEq
 
+private structure OperatorCaptureRule where
+  name : String
+  code : String
+  errorField : String
+  condition : String
+  deriving Repr, DecidableEq
+
+private structure OperatorCaptureArtifact where
+  sha256 : String
+  bytes : Nat
+  deriving Repr, DecidableEq
+
+private structure OperatorCaptureCase where
+  id : String
+  caseSha256 : String
+  groovyDynamic : List String
+  javaStatic : List String
+  interpreter : List String
+  deriving Repr, DecidableEq
+
+private structure OperatorCasePlacement where
+  kind : String
+  path : String
+  reps : List Nat
+  value : Option String
+  deriving Repr, DecidableEq
+
+private structure OperatorCaptureReceipt where
+  schemaVersion : Nat
+  kernelVersion : String
+  a12DmkitsRevision : String
+  captureDate : String
+  anchor : String
+  confirmationStrategies : List String
+  operation : String
+  ruleValidation : String
+  rules : List OperatorCaptureRule
+  models : Json
+  cases : List OperatorCaptureCase
+
 private def RetainedModelIndex.append (left right : RetainedModelIndex) : RetainedModelIndex :=
   { groups := left.groups ++ right.groups
     fields := left.fields ++ right.fields
@@ -129,6 +172,11 @@ private def optionalBool (json : Json) (name : String) : Except String Bool :=
   match json.getObjVal? name with
   | .ok value => fromJson? value
   | .error _ => pure false
+
+private def optionalString (json : Json) (name : String) : Except String (Option String) :=
+  match json.getObjVal? name with
+  | .ok value => some <$> fromJson? value
+  | .error _ => pure none
 
 private def collectGroupIndex : Nat → Option String → Json → Except String RetainedModelIndex
   | 0, _, _ => throw "retained model group nesting exceeds maximum depth"
@@ -246,13 +294,62 @@ private def CorrelationElaborationObservation.fromJson (json : Json) :
     diagnostics := parsedDiagnostics
     diagnosticCodes := parsedDiagnostics.map (·.code) }
 
+private def OperatorCaptureRule.fromJson (json : Json) : Except String OperatorCaptureRule := do
+  pure {
+    name := ← member json "name"
+    code := ← member json "code"
+    errorField := ← member json "errorField"
+    condition := ← member json "condition" }
+
+private def OperatorCaptureArtifact.fromJson (json : Json) :
+    Except String OperatorCaptureArtifact := do
+  pure { sha256 := ← member json "sha256", bytes := ← member json "bytes" }
+
+private def OperatorCaptureCase.fromJson (json : Json) : Except String OperatorCaptureCase := do
+  pure {
+    id := ← member json "id"
+    caseSha256 := ← member json "caseSha256"
+    groovyDynamic := ← member json "groovyDynamic"
+    javaStatic := ← member json "javaStatic"
+    interpreter := ← member json "interpreter" }
+
+private def OperatorCasePlacement.fromJson (json : Json) : Except String OperatorCasePlacement := do
+  pure {
+    kind := ← member json "kind"
+    path := ← member json "path"
+    reps := ← member json "reps"
+    value := ← optionalString json "value" }
+
+private def operatorCasePlacements (json : Json) : Except String (List OperatorCasePlacement) := do
+  let placements : List Json ← member json "placements"
+  placements.mapM OperatorCasePlacement.fromJson
+
+private def OperatorCaptureReceipt.fromJson (json : Json) :
+    Except String OperatorCaptureReceipt := do
+  let rules : List Json ← member json "rules"
+  let cases : List Json ← member json "cases"
+  pure {
+    schemaVersion := ← member json "schemaVersion"
+    kernelVersion := ← member json "kernelVersion"
+    a12DmkitsRevision := ← member json "a12DmkitsRevision"
+    captureDate := ← member json "captureDate"
+    anchor := ← member json "anchor"
+    confirmationStrategies := ← member json "confirmationStrategies"
+    operation := ← member json "operation"
+    ruleValidation := ← member json "ruleValidation"
+    rules := ← rules.mapM OperatorCaptureRule.fromJson
+    models := ← json.getObjVal? "models"
+    cases := ← cases.mapM OperatorCaptureCase.fromJson }
+
 private def orThrow (context : String) : Except String α → IO α
   | .ok value => pure value
   | .error message => throw (IO.userError s!"{context}: {message}")
 
 private def readJson (path : System.FilePath) : IO Json := do
   let content ← IO.FS.readFile path
-  orThrow path.toString (Json.parse content)
+  match A12Kernel.Reference.StrictJson.parseEvidence content with
+  | .ok json => pure json
+  | .error error => throw (IO.userError s!"{path}: {repr error}")
 
 private def requireSnapshotDigest (caseId expected actual : String) : Except String Unit := do
   if actual != expected then
@@ -507,10 +604,263 @@ private def validateCorrelationElaborationBinding
   validateCorrelationElaborationObservation case observation
   bindCorrelationElaborationProjectionToModel case observation.draft model
 
+private def bindOperatorProjectionToModel
+    (projected : A12Kernel.Evidence.OperatorEmpty.ModelSpec)
+    (retained : RetainedElaborationModel) : Except String Unit := do
+  if retained.conditionLanguage != "en_US" then
+    throw s!"{projected.id}: retained condition language is '{retained.conditionLanguage}'"
+  let declaringGroupPath := absolutePath projected.declaringGroup
+  let declaringGroup ← bindUniqueGroup projected.id declaringGroupPath false retained.index
+  if declaringGroup.repeatable then
+    throw s!"{projected.id}: declaring group '{declaringGroupPath}' is unexpectedly repeatable"
+  let contentFieldPath := declaringGroupPath ++ "/CustomerName"
+  let contentField ← bindUniqueField projected.id contentFieldPath retained.index
+  if contentField.kind != "StringType" then
+    throw s!"{projected.id}: content witness '{contentFieldPath}' is {contentField.kind}, not StringType"
+  for projectedField in projected.fields do
+    let path := absolutePath projectedField.path
+    let field ← bindUniqueField projected.id path retained.index
+    match projectedField.kind with
+    | .string =>
+        if field.kind != "StringType" then
+          throw s!"{projected.id}: retained field '{path}' is {field.kind}, not StringType"
+    | .number scale signed =>
+        if field.kind != "NumberType" then
+          throw s!"{projected.id}: retained field '{path}' is {field.kind}, not NumberType"
+        if field.scale != scale || field.signed != signed then
+          throw s!"{projected.id}: retained Number metadata differs at '{path}'"
+  let projectedRuleIds := (projected.rules.map fun rule =>
+    declaringGroupPath ++ "/" ++ rule.name).mergeSort
+  let retainedRuleIds := (retained.index.rules.map (·.id)).mergeSort
+  if retainedRuleIds != projectedRuleIds then
+    throw s!"{projected.id}: retained rule inventory differs from the projection"
+  for projectedRule in projected.rules do
+    let ruleId := declaringGroupPath ++ "/" ++ projectedRule.name
+    let retainedRule ← match retained.index.rules.filter (·.id == ruleId) with
+      | [rule] => pure rule
+      | [] => throw s!"{projected.id}: retained model has no rule '{ruleId}'"
+      | _ => throw s!"{projected.id}: retained model has duplicate rule '{ruleId}'"
+    if retainedRule.name != projectedRule.name || retainedRule.parentGroup != declaringGroupPath ||
+        retainedRule.errorCode != projectedRule.code || retainedRule.severity != "ERROR" then
+      throw s!"{projected.id}: retained rule identity/metadata differs for '{ruleId}'"
+    let errorField ← projected.findField projectedRule.errorFieldId
+    let retainedErrorPath ← resolveEntityReference retainedRule.id retainedRule.errorEntityRelPath
+    let expectedErrorPath := absolutePath errorField.path
+    if retainedErrorPath != expectedErrorPath then
+      throw s!"{projected.id}: retained rule '{ruleId}' routes to '{retainedErrorPath}'"
+    let expectedPointer := declaringGroupPath ++ "[1]/" ++ errorField.name
+    if projectedRule.errorPointer != expectedPointer then
+      throw s!"{projected.id}: projected rule '{ruleId}' has noncanonical first-row pointer '{projectedRule.errorPointer}'"
+    let condition ← projectedRule.condition.render projected
+    if retainedRule.errorCondition != condition then
+      throw s!"{projected.id}: retained condition '{retainedRule.errorCondition}' does not equal '{condition}'"
+
+private def validateOperatorCaptureBasics
+    (bundle : A12Kernel.Evidence.OperatorEmpty.Bundle)
+    (receipt : OperatorCaptureReceipt) : Except String Unit := do
+  if receipt.schemaVersion != 1 || receipt.kernelVersion != bundle.kernelVersion ||
+      receipt.a12DmkitsRevision != bundle.sourceRevision then
+    throw "operator-empty capture compatibility identity differs from its projection"
+  if receipt.captureDate != "2026-07-15" || receipt.anchor != "kernel-groovy-dynamic" ||
+      receipt.confirmationStrategies != ["kernel-java-static", "interpreter"] ||
+      receipt.operation != "validateFull" ||
+      receipt.ruleValidation != "allAcceptedByKernelCheckConsistency" then
+    throw "operator-empty capture provenance or rule-validation posture is unsupported"
+  if hasDuplicate (receipt.rules.map (·.code)) || hasDuplicate (receipt.cases.map (·.id)) then
+    throw "operator-empty capture has duplicate rule or case identity"
+  let projectedCodes := (bundle.models.flatMap fun model => model.rules.map (·.code)).mergeSort
+  if (receipt.rules.map (·.code)).mergeSort != projectedCodes then
+    throw "operator-empty capture rule inventory differs from its projection"
+  if (receipt.cases.map (·.id)).mergeSort != (bundle.cases.map (·.id)).mergeSort then
+    throw "operator-empty capture case inventory differs from its projection"
+  let modelObject ← match receipt.models.getObj? with
+    | .ok object => pure object
+    | .error _ => throw "operator-empty capture models member is not an object"
+  if (modelObject.toList.map (·.1)).mergeSort != (bundle.models.map (·.id)).mergeSort then
+    throw "operator-empty capture model inventory differs from its projection"
+
+private def validateOperatorCaptureRules
+    (bundle : A12Kernel.Evidence.OperatorEmpty.Bundle)
+    (receipt : OperatorCaptureReceipt) : Except String Unit := do
+  for model in bundle.models do
+    for rule in model.rules do
+      let captured ← match receipt.rules.filter (·.code == rule.code) with
+        | [captured] => pure captured
+        | [] => throw s!"capture has no rule '{rule.code}'"
+        | _ => throw s!"capture has duplicate rule '{rule.code}'"
+      let errorField ← model.findField rule.errorFieldId
+      let condition ← rule.condition.render model
+      if captured.name != rule.name || captured.errorField != "../" ++ errorField.name ||
+          captured.condition != condition then
+        throw s!"capture rule '{rule.code}' differs from the typed projection"
+
+private def operatorCaptureArtifact (receipt : OperatorCaptureReceipt) (modelId : String) :
+    Except String OperatorCaptureArtifact := do
+  OperatorCaptureArtifact.fromJson (← receipt.models.getObjVal? modelId)
+
+private def operatorCaptureCase (receipt : OperatorCaptureReceipt) (caseId : String) :
+    Except String OperatorCaptureCase :=
+  match receipt.cases.filter (·.id == caseId) with
+  | [captured] => pure captured
+  | [] => throw s!"operator-empty capture has no case '{caseId}'"
+  | _ => throw s!"operator-empty capture has duplicate case '{caseId}'"
+
+private def validateOperatorCaptureCase (caseId expectedDigest : String)
+    (expected : List String) (captured : OperatorCaptureCase) : Except String Unit := do
+  if captured.caseSha256 != expectedDigest then
+    throw s!"{caseId}: capture case digest differs from the projection"
+  if captured.groovyDynamic != expected || captured.javaStatic != expected ||
+      captured.interpreter != expected then
+    throw s!"{caseId}: kernel strategies or interpreter differ from the retained observation"
+
+private def expectedOperatorPlacements
+    (model : A12Kernel.Evidence.OperatorEmpty.ModelSpec)
+    (case : A12Kernel.Evidence.OperatorEmpty.CaseSpec) :
+    Except String (List OperatorCasePlacement) := do
+  if model.declaringGroup.length != 1 then
+    throw s!"{case.id}: operator-empty capture admits exactly one nonrepeatable declaring group"
+  let groupPath := absolutePath model.declaringGroup
+  let groupPlacement : OperatorCasePlacement :=
+    { kind := "GROUP", path := groupPath, reps := [1], value := none }
+  let contentPlacement : OperatorCasePlacement :=
+    { kind := "FIELD", path := groupPath ++ "/CustomerName", reps := [1, 1],
+      value := some "Acme" }
+  let contentPlacements : List OperatorCasePlacement :=
+    if case.hasContent then [contentPlacement] else []
+  let projectedPlacements ← case.cells.mapM fun cell => do
+    let field ← model.findField cell.fieldId
+    let path := absolutePath field.path
+    match cell.state with
+    | .empty => pure { kind := "EMPTY", path, reps := [1, 1], value := none }
+    | .number value =>
+        pure { kind := "FIELD", path, reps := [1, 1], value := some (toString value) }
+    | .string value =>
+        pure { kind := "FIELD", path, reps := [1, 1], value := some value }
+  pure ([groupPlacement] ++ contentPlacements ++ projectedPlacements)
+
+private def bindOperatorCasePlacements
+    (model : A12Kernel.Evidence.OperatorEmpty.ModelSpec)
+    (case : A12Kernel.Evidence.OperatorEmpty.CaseSpec)
+    (retained : List OperatorCasePlacement) : Except String Unit := do
+  let expected ← expectedOperatorPlacements model case
+  if retained != expected then
+    throw s!"{case.id}: retained placements {repr retained} differ from projection {repr expected}"
+
 private def expectRejected (context : String) (result : Except String Unit) : IO Unit :=
   match result with
   | .error _ => pure ()
   | .ok () => throw (IO.userError s!"negative evidence lock accepted {context}")
+
+private def checkOperatorModel (root : System.FilePath)
+    (receipt : OperatorCaptureReceipt)
+    (model : A12Kernel.Evidence.OperatorEmpty.ModelSpec) : IO RetainedElaborationModel := do
+  if !safeRelative model.modelRef then
+    throw (IO.userError s!"{model.id}: unsafe modelRef '{model.modelRef}'")
+  let modelPath := root / model.modelRef
+  let content ← IO.FS.readFile modelPath
+  let actualDigest ← A12Kernel.Process.Sha256.file modelPath
+  orThrow model.id (requireSnapshotDigest model.id model.modelSha256 actualDigest)
+  let captured ← orThrow model.id (operatorCaptureArtifact receipt model.id)
+  if captured.sha256 != model.modelSha256 || captured.bytes != content.utf8ByteSize then
+    throw (IO.userError s!"{model.id}: capture model identity differs from retained bytes")
+  let retained ← orThrow model.id (retainedElaborationModel (← readJson modelPath))
+  orThrow model.id (bindOperatorProjectionToModel model retained)
+  pure retained
+
+private def checkOperatorCase (root : System.FilePath)
+    (bundle : A12Kernel.Evidence.OperatorEmpty.Bundle)
+    (receipt : OperatorCaptureReceipt)
+    (case : A12Kernel.Evidence.OperatorEmpty.CaseSpec) : IO Unit := do
+  if !safeRelative case.caseRef then
+    throw (IO.userError s!"{case.id}: unsafe caseRef '{case.caseRef}'")
+  let casePath := root / case.caseRef
+  let actualDigest ← A12Kernel.Process.Sha256.file casePath
+  orThrow case.id (requireSnapshotDigest case.id case.caseSha256 actualDigest)
+  let caseJson ← readJson casePath
+  let observation ← orThrow case.id (Observation.fromJson caseJson)
+  let model ← orThrow case.id (bundle.modelFor case)
+  let placements ← orThrow case.id (operatorCasePlacements caseJson)
+  orThrow case.id (bindOperatorCasePlacements model case placements)
+  if observation.id != case.id || observation.kernelVersion != bundle.kernelVersion ||
+      observation.modelRef != model.modelRef then
+    throw (IO.userError s!"{case.id}: retained observation identity differs from the projection")
+  if !observation.divergences.isEmpty then
+    throw (IO.userError s!"{case.id}: retained observation records a kernel-strategy divergence")
+  if observation.expected != observation.expected.mergeSort ||
+      hasDuplicate observation.expected then
+    throw (IO.userError s!"{case.id}: retained signatures are not canonical and duplicate-free")
+  for signature in observation.expected do
+    discard <| orThrow case.id (MessageSignature.parse signature)
+  let captured ← orThrow case.id (operatorCaptureCase receipt case.id)
+  orThrow case.id (validateOperatorCaptureCase case.id case.caseSha256
+    observation.expected captured)
+  let actual ← orThrow case.id (model.replay case)
+  if actual != observation.expected then
+    throw (IO.userError s!"{case.id}: observed {repr observation.expected}, Lean produced {repr actual}")
+
+private def checkOperatorBindingLocks (root : System.FilePath)
+    (bundle : A12Kernel.Evidence.OperatorEmpty.Bundle)
+    (receipt : OperatorCaptureReceipt) : IO Unit := do
+  let model ← match bundle.models with
+    | model :: _ => pure model
+    | [] => throw (IO.userError "operator-empty binding lock requires a model")
+  let retained ← checkOperatorModel root receipt model
+  let changedRules := retained.index.rules.map fun rule =>
+    { rule with errorCondition := rule.errorCondition ++ " changed" }
+  expectRejected "an operator-empty stored condition change"
+    (bindOperatorProjectionToModel model
+      { retained with index := { retained.index with rules := changedRules } })
+  let renamedFields := retained.index.fields.map fun field =>
+    { field with name := field.name ++ "Changed" }
+  expectRejected "an operator-empty retained field rename"
+    (bindOperatorProjectionToModel model
+      { retained with index := { retained.index with fields := renamedFields } })
+  let duplicatedRules := match retained.index.rules with
+    | rule :: _ => rule :: retained.index.rules
+    | [] => []
+  expectRejected "an operator-empty extra retained rule"
+    (bindOperatorProjectionToModel model
+      { retained with index := { retained.index with rules := duplicatedRules } })
+  let case ← match bundle.cases with
+    | case :: _ => pure case
+    | [] => throw (IO.userError "operator-empty binding lock requires a case")
+  let caseJson ← readJson (root / case.caseRef)
+  let observation ← orThrow case.id (Observation.fromJson caseJson)
+  let placements ← orThrow case.id (operatorCasePlacements caseJson)
+  let caseModel ← orThrow case.id (bundle.modelFor case)
+  expectRejected "an operator-empty row-content projection change"
+    (bindOperatorCasePlacements caseModel { case with hasContent := !case.hasContent } placements)
+  let changedCells := case.cells.map fun cell =>
+    { cell with state := match cell.state with
+      | .empty => .string "Changed"
+      | .number _ | .string _ => .empty }
+  expectRejected "an operator-empty cell-state projection change"
+    (bindOperatorCasePlacements caseModel { case with cells := changedCells } placements)
+  let captured ← orThrow case.id (operatorCaptureCase receipt case.id)
+  expectRejected "an operator-empty interpreter strategy disagreement"
+    (validateOperatorCaptureCase case.id case.caseSha256 observation.expected
+      { captured with interpreter := [] })
+  expectRejected "an operator-empty capture revision change"
+    (validateOperatorCaptureBasics bundle
+      { receipt with a12DmkitsRevision := "0000000000000000000000000000000000000000" })
+
+private def checkOperatorEvidence (root : System.FilePath)
+    (bundle : A12Kernel.Evidence.OperatorEmpty.Bundle) : IO Unit := do
+  if !safeRelative bundle.captureRef then
+    throw (IO.userError s!"unsafe operator-empty captureRef '{bundle.captureRef}'")
+  let capturePath := root / bundle.captureRef
+  let actualCaptureDigest ← A12Kernel.Process.Sha256.file capturePath
+  orThrow "operator-empty capture" (requireSnapshotDigest "operator-empty capture"
+    bundle.captureSha256 actualCaptureDigest)
+  let receipt ← orThrow "operator-empty capture"
+    (OperatorCaptureReceipt.fromJson (← readJson capturePath))
+  orThrow "operator-empty capture" (validateOperatorCaptureBasics bundle receipt)
+  orThrow "operator-empty capture" (validateOperatorCaptureRules bundle receipt)
+  for model in bundle.models do
+    discard <| checkOperatorModel root receipt model
+  checkOperatorBindingLocks root bundle receipt
+  for case in bundle.cases do
+    checkOperatorCase root bundle receipt case
 
 private def checkCorrelationElaborationBindingLocks (root : System.FilePath)
     (case : A12Kernel.Evidence.CorrelationElaboration.CaseSpec) : IO Unit := do
@@ -677,6 +1027,13 @@ def main : IO Unit := do
     checkCase root bundle case
   let flatHandoverCount ←
     A12Kernel.Evidence.FlatProtocolBridge.capability.checkArtifacts
+  let operatorBundle ← orThrow "operator-empty-projection.json"
+    (A12Kernel.Evidence.OperatorEmpty.Bundle.fromJson
+      (← readJson (root / "operator-empty-projection.json")))
+  orThrow "operator-empty-projection.json" operatorBundle.validate
+  let _operatorProtocolCase ←
+    A12Kernel.Evidence.OperatorEmpty.ProtocolBridge.checkArtifacts
+  checkOperatorEvidence root operatorBundle
   let iterationBundle ← orThrow "iteration-projection.json"
     (A12Kernel.Evidence.Iteration.Bundle.fromJson
       (← readJson (root / "iteration-projection.json")))
@@ -698,6 +1055,6 @@ def main : IO Unit := do
   | [] => throw (IO.userError "correlation-elaboration evidence bundle is empty")
   for case in correlationElaborationBundle.cases do
     checkCorrelationElaborationCase root correlationElaborationBundle case
-  let total := bundle.cases.length + iterationBundle.cases.length + correlationBundle.cases.length +
-    correlationElaborationBundle.cases.length
+  let total := bundle.cases.length + operatorBundle.cases.length + iterationBundle.cases.length +
+    correlationBundle.cases.length + correlationElaborationBundle.cases.length
   IO.println s!"kernel evidence: {total}/{total} projections agree; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"

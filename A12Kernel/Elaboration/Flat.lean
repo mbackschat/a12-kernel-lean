@@ -62,6 +62,7 @@ end SurfaceLiteral
 inductive SurfaceCondition where
   | compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (literal : SurfaceLiteral)
+  | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
   | and (left right : SurfaceCondition)
@@ -83,11 +84,12 @@ namespace FlatFieldDecl
 def path (declaration : FlatFieldDecl) : List String :=
   declaration.groupPath ++ [declaration.name]
 
-def toFlatField (declaration : FlatFieldDecl) : FlatField :=
+def toPresenceField? (declaration : FlatFieldDecl) : Option FlatField :=
   match declaration.policy.kind with
-  | .number info => .number { id := declaration.id, info }
-  | .boolean => .boolean { id := declaration.id }
-  | .confirm => .confirm { id := declaration.id }
+  | .number info => some (.number { id := declaration.id, info })
+  | .boolean => some (.boolean { id := declaration.id })
+  | .confirm => some (.confirm { id := declaration.id })
+  | .string => none
 
 end FlatFieldDecl
 
@@ -129,6 +131,8 @@ inductive ElabError where
   | unsupportedOperator (op : SurfaceComparisonOp)
   | literalKindMismatch (path : List String) (expected actual : SurfaceScalarKind)
   | illegalConfirmLiteral (path : List String)
+  | unsupportedPresenceKind (path : List String) (actual : SurfaceScalarKind)
+  | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -350,28 +354,52 @@ private def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .number _ => .number
   | .boolean => .boolean
   | .confirm => .confirm
+  | .string => .string
 
 private def SurfaceComparisonOp.toEquality? : SurfaceComparisonOp → Option EqualityOp
   | .equal => some .equal
   | .notEqual => some .notEqual
   | _ => none
 
-private def FlatComparison.asField : FlatComparison → FlatField
-  | .number _ field _ => .number field
-  | .boolean _ field _ => .boolean field
-  | .confirm _ field => .confirm field
+private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
+    Option StringLengthComparisonOp
+  | .less => some .less
+  | .greaterEqual => some .greaterEqual
+  | _ => none
+
+def FlatComparison.fieldId : FlatComparison → FieldId
+  | .number _ field _ => field.id
+  | .boolean _ field _ => field.id
+  | .confirm _ field => field.id
+  | .stringEqual field _ => field.id
+  | .stringLength _ field _ => field.id
+
+def FlatComparison.matchesDecl (comparison : FlatComparison)
+    (declaration : FlatFieldDecl) : Bool :=
+  match comparison, declaration.policy.kind with
+  | .number _ field _, .number info => field.id == declaration.id && field.info == info
+  | .boolean _ field _, .boolean => field.id == declaration.id
+  | .confirm _ field, .confirm => field.id == declaration.id
+  | .stringEqual field _, .string => field.id == declaration.id
+  | .stringLength _ field _, .string => field.id == declaration.id
+  | _, _ => false
 
 def FlatField.matchesDecl (field : FlatField) (declaration : FlatFieldDecl) : Bool :=
-  field == declaration.toFlatField
+  declaration.toPresenceField? == some field
 
 def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   match model.lookupUniqueId field.id with
   | .ok declaration => declaration.repeatableScope.isEmpty && field.matchesDecl declaration
   | .error _ => false
 
+def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
+  match model.lookupUniqueId comparison.fieldId with
+  | .ok declaration => declaration.repeatableScope.isEmpty && comparison.matchesDecl declaration
+  | .error _ => false
+
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
-  | .compare comparison => model.admitsField comparison.asField
+  | .compare comparison => model.admitsComparison comparison
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
   | .and left right => left.wellFormedBool model && right.wellFormedBool model
@@ -390,10 +418,14 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      pure (.fieldFilled declaration.toFlatField)
+      match declaration.toPresenceField? with
+      | some field => pure (.fieldFilled field)
+      | none => throw (.unsupportedPresenceKind declaration.path declaration.policy.kind.surfaceKind)
   | .fieldNotFilled reference => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      pure (.fieldNotFilled declaration.toFlatField)
+      match declaration.toPresenceField? with
+      | some field => pure (.fieldNotFilled field)
+      | none => throw (.unsupportedPresenceKind declaration.path declaration.policy.kind.surfaceKind)
   | .compare op reference literal => do
       let equality ← match op.toEquality? with
         | some equality => pure equality
@@ -408,8 +440,20 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           pure (.compare (.confirm equality { id := declaration.id }))
       | .confirm, .boolean false =>
           throw (.illegalConfirmLiteral declaration.path)
+      | .string, .string expected =>
+          match equality with
+          | .equal => pure (.compare (.stringEqual { id := declaration.id } expected))
+          | .notEqual => throw (.unsupportedOperator op)
       | fieldKind, literal =>
           throw (.literalKindMismatch declaration.path fieldKind.surfaceKind literal.kind)
+  | .lengthCompare op reference expected => do
+      let lengthOp ← match op.toStringLength? with
+        | some lengthOp => pure lengthOp
+        | none => throw (.unsupportedOperator op)
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      match declaration.policy.kind with
+      | .string => pure (.compare (.stringLength lengthOp { id := declaration.id } expected))
+      | fieldKind => throw (.lengthOperandKindMismatch declaration.path fieldKind.surfaceKind)
   | .and left right => do
       pure (.and (← elaborateCore model declaringGroup left)
         (← elaborateCore model declaringGroup right))

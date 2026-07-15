@@ -1,5 +1,5 @@
 import A12Kernel.Evidence.Replay
-import A12Kernel.Reference.Evaluator
+import A12Kernel.Reference.Protocol
 import A12Kernel.Reference.StrictJson
 
 /-! # A12Kernel.Evidence.FlatProtocolBridge — retained flat evidence to protocol
@@ -103,9 +103,24 @@ def tag : VerdictConnective → String
   | .and => "and"
   | .or => "or"
 
+/-- Frozen `0.2.0` verdict table used only to validate the historical mutation shipment.
+It is intentionally exhaustive instead of delegating to today's core algebra: a later
+semantic correction must not reinterpret already-qualified mutation metadata. -/
 def evaluate : VerdictConnective → Verdict → Verdict → Verdict
-  | .and => Verdict.conj
-  | .or => Verdict.disj
+  | .and, .notFired, _ => .notFired
+  | .and, _, .notFired => .notFired
+  | .and, .unknown, _ => .unknown
+  | .and, _, .unknown => .unknown
+  | .and, .fired .omission, _ => .fired .omission
+  | .and, _, .fired .omission => .fired .omission
+  | .and, .fired .value, .fired .value => .fired .value
+  | .or, .fired .value, _ => .fired .value
+  | .or, _, .fired .value => .fired .value
+  | .or, .fired .omission, _ => .fired .omission
+  | .or, _, .fired .omission => .fired .omission
+  | .or, .unknown, _ => .unknown
+  | .or, _, .unknown => .unknown
+  | .or, .notFired, .notFired => .notFired
 
 end VerdictConnective
 
@@ -241,12 +256,15 @@ structure MutationPlan where
 def mutationQualificationResultSchemaVersion : Nat := 2
 
 def capability : CapabilityDescriptor := {
-  id := "flat-validation-empty-logic-v1"
-  referenceSemanticsVersion := Support.referenceSemanticsVersion
-  protocolVersion := Support.protocolVersion
-  manifestSchemaVersion := Support.manifestSchemaVersion
-  kernelBehaviorVersion := Support.kernelBehaviorVersion
-  operation := Support.Operation.flatValidationEvaluateFull.tag
+  id := Lineage.historicalFlatCapability.suiteId
+  referenceSemanticsVersion :=
+    Lineage.historicalFlatCapability.compatibility.referenceSemanticsVersion
+  protocolVersion := Lineage.historicalFlatCapability.compatibility.protocolVersion
+  manifestSchemaVersion :=
+    Lineage.historicalFlatCapability.compatibility.manifestSchemaVersion
+  kernelBehaviorVersion :=
+    Lineage.historicalFlatCapability.compatibility.kernelBehaviorVersion
+  operation := Lineage.historicalFlatCapability.operation
   supportManifest := "reference/supported-fragment-v1.json"
   evidenceRoot := "evidence/kernel-30.8.1"
   projection := "evidence/kernel-30.8.1/projection.json"
@@ -502,15 +520,16 @@ private def cellJson? (cell : CellSpec) : Except String (Option Json) := do
   pure <| state.map fun value => Json.mkObj [
     ("fieldId", toJson cell.fieldId), ("state", value)]
 
-def caseProtocolRequestJson (case : CaseSpec) : Except String Json := do
+def CapabilityDescriptor.caseProtocolRequestJson (descriptor : CapabilityDescriptor)
+    (case : CaseSpec) : Except String Json := do
   let (declaringGroup, condition, hasContent) ← match case.operation with
     | .flat declaringGroup condition hasContent => pure (declaringGroup, condition, hasContent)
     | _ => throw s!"{case.id}: expected a flat evidence operation"
   let cells ← case.cells.filterMapM cellJson?
   pure <| Json.mkObj [
-    ("protocolVersion", toJson Support.protocolVersion),
-    ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
-    ("operation", toJson Support.Operation.flatValidationEvaluateFull.tag),
+    ("protocolVersion", toJson descriptor.protocolVersion),
+    ("kernelBehaviorVersion", toJson descriptor.kernelBehaviorVersion),
+    ("operation", toJson descriptor.operation),
     ("model", Json.mkObj [
       ("fieldRefByShortNameAllowed", toJson case.fieldRefByShortNameAllowed),
       ("repeatableGroups", toJson ([] : List Json)),
@@ -519,29 +538,6 @@ def caseProtocolRequestJson (case : CaseSpec) : Except String Json := do
     ("condition", ← conditionJson condition),
     ("cells", Json.arr cells.toArray),
     ("hasContent", toJson hasContent)]
-
-private def replayInputToReferenceRequest
-    (input : A12Kernel.Evidence.FlatReplayInput) : FlatRequest :=
-  let { model, declaringGroup, condition, cells, hasContent } := input
-  {
-    model
-    declaringGroup
-    condition
-    cells := cells.map fun (fieldId, raw) => { fieldId, raw }
-    hasContent }
-
-def checkedProtocolRequest (case : CaseSpec) : Except String (Json × FlatRequest) := do
-  let requestJson ← caseProtocolRequestJson case
-  let expected := replayInputToReferenceRequest
-    (← A12Kernel.Evidence.CaseSpec.toFlatReplayInput case)
-  match Decode.request requestJson with
-  | .ok (.flatValidation decoded) =>
-      if decoded != expected then
-        throw s!"{case.id}: generated protocol request does not decode to the retained replay input"
-      pure (requestJson, decoded)
-  | .ok _ => throw s!"{case.id}: generated request decoded as the wrong operation"
-  | .error diagnostic =>
-      throw s!"{case.id}: generated protocol request was rejected: {diagnostic.asJson.compress}"
 
 private structure MessageSignature where
   code : String
@@ -602,6 +598,22 @@ def FocusedAuthoredObservation.classification : FocusedAuthoredObservation →
       (.verdictFiringAndPolarity, .retainedProjection)
   | .silent => (.verdictSuppressionOnly, .leanRuntimeProjection)
 
+private def verdictJson : Verdict → Json
+  | .notFired => Json.mkObj [("tag", toJson "notFired")]
+  | .unknown => Json.mkObj [("tag", toJson "unknown")]
+  | .fired .value =>
+      Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "value")]
+  | .fired .omission =>
+      Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "omission")]
+
+private def CapabilityDescriptor.verdictResponseJson (descriptor : CapabilityDescriptor)
+    (verdict : Verdict) : Json :=
+  Json.mkObj [
+    ("protocolVersion", toJson descriptor.protocolVersion),
+    ("kernelBehaviorVersion", toJson descriptor.kernelBehaviorVersion),
+    ("outcome", toJson "ok"),
+    ("verdict", verdictJson verdict)]
+
 structure CaseArtifact where
   descriptor : CaseDescriptor
   request : Json
@@ -620,21 +632,17 @@ def CapabilityDescriptor.buildCaseArtifact (descriptor : CapabilityDescriptor)
     (case : CaseSpec) (externalExpected : List String) : Except String CaseArtifact := do
   let caseDescriptor ← descriptor.caseById case.id
   let observation ← focusedObservation case.id case.focusCode case.focusPointer externalExpected
-  let (requestJson, request) ← checkedProtocolRequest case
-  let actual ← match Reference.evaluate (.flatValidation request) with
-    | .ok response => pure response
-    | .error failure => throw s!"{case.id}: reference evaluation failed internally: {repr failure}"
-  let expected : Response := .verdict caseDescriptor.expectedVerdict
-  if actual.asJson != expected.asJson then
-    throw s!"{case.id}: descriptor expects {expected.asJson.compress}, Lean produced {actual.asJson.compress}"
-  if !FocusedAuthoredObservation.accepts observation expected then
-    throw s!"{case.id}: retained focused observation does not accept {expected.asJson.compress}"
+  let requestJson ← descriptor.caseProtocolRequestJson case
+  let expectedVerdict := caseDescriptor.expectedVerdict
+  let expectedResponse := descriptor.verdictResponseJson expectedVerdict
+  if !FocusedAuthoredObservation.accepts observation (.verdict expectedVerdict) then
+    throw s!"{case.id}: retained focused observation does not accept {expectedResponse.compress}"
   let (externalSupport, responseSource) :=
     FocusedAuthoredObservation.classification observation
   pure {
     descriptor := caseDescriptor
     request := requestJson
-    response := expected.asJson
+    response := expectedResponse
     externalSupport
     responseSource }
 
@@ -772,14 +780,6 @@ def CapabilityDescriptor.descriptorPath (descriptor : CapabilityDescriptor) : Sy
 
 def CapabilityDescriptor.mutationPlanPath (descriptor : CapabilityDescriptor) : System.FilePath :=
   "reference" / s!"{descriptor.id}.mutation-plan.json"
-
-private def verdictJson : Verdict → Json
-  | .notFired => Json.mkObj [("tag", toJson "notFired")]
-  | .unknown => Json.mkObj [("tag", toJson "unknown")]
-  | .fired .value =>
-      Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "value")]
-  | .fired .omission =>
-      Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "omission")]
 
 private def MutationPlan.caseChangeJson (descriptor : CapabilityDescriptor)
     (change : MutationCaseChange) : Except String Json := do
@@ -950,7 +950,7 @@ private def assertJsonArtifact (path : System.FilePath) (expected : Json) : IO U
       if expectedText.length + actualText.length ≤ 4000 then
         s!"\nexpected: {expectedText}\nactual:   {actualText}"
       else
-        "\nvalues omitted because the artifact is large; inspect the owning typed source, then if the change is intentional run 'lake exe syncFlatHandover --write' and review the resulting diff"
+        "\nvalues omitted because the artifact is large; inspect the owning typed source and committed artifact; this frozen historical shipment is read-only, so an intentional change requires a new capability identity and generator path"
     throw (IO.userError s!"generated handover artifact '{path}' is stale{details}")
 
 private def CapabilityDescriptor.checkFixtureDirectory
@@ -1004,20 +1004,8 @@ def CapabilityDescriptor.checkArtifacts (descriptor : CapabilityDescriptor) : IO
       s!"{descriptor.id}: support-manifest evidence boundary is stale\nexpected: {expectedBoundary.compress}\nactual:   {actualBoundary.compress}")
   pure artifacts.length
 
-private def writeJson (path : System.FilePath) (json : Json) : IO Unit :=
-  IO.FS.writeFile path (json.pretty 100 ++ "\n")
-
 def CapabilityDescriptor.writeArtifacts (descriptor : CapabilityDescriptor) : IO Nat := do
-  let artifacts ← descriptor.loadArtifacts
-  IO.FS.createDirAll descriptor.fixtureDirectory
-  for artifact in artifacts do
-    writeJson (descriptor.requestPath artifact.descriptor) artifact.request
-    writeJson (descriptor.responsePath artifact.descriptor) artifact.response
-  writeJson descriptor.descriptorPath
-    (← orThrow descriptor.id (descriptor.descriptorJson artifacts))
-  writeJson descriptor.suitePath (← orThrow descriptor.id (descriptor.suiteJson artifacts))
-  writeJson descriptor.mutationPlanPath
-    (← orThrow descriptor.id (mutationPlan.asJson descriptor))
-  pure artifacts.length
+  throw (IO.userError
+    s!"{descriptor.id}: this writer owns only the frozen historical shipment and is permanently read-only; create a separately versioned current writer instead")
 
 end A12Kernel.Evidence.FlatProtocolBridge

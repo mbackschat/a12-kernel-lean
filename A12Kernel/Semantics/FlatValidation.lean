@@ -1,11 +1,13 @@
 import A12Kernel.Document
+import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
 A small core for resolved, non-repeatable field references. It covers typed
-Number/Boolean/Confirm equality, presence predicates, and `And`/`Or`. Paths, iteration,
-arithmetic, partial validation, and concrete syntax are outside this capsule.
+Number/Boolean/Confirm equality, direct String equality, two observed String `Length`
+comparisons, presence predicates, and `And`/`Or`. Paths, iteration, arithmetic, partial
+validation, and concrete syntax are outside this capsule.
 -/
 
 namespace A12Kernel
@@ -30,6 +32,10 @@ structure FlatConfirmField where
   id : FieldId
   deriving Repr, DecidableEq
 
+structure FlatStringField where
+  id : FieldId
+  deriving Repr, DecidableEq
+
 /-- A typed, resolved field reference for presence predicates. -/
 inductive FlatField where
   | number (field : FlatNumberField)
@@ -47,12 +53,24 @@ def id : FlatField → FieldId
 
 end FlatField
 
+/-- The two String `Length` comparisons closed by the current operator-sensitive capsule. -/
+inductive StringLengthComparisonOp where
+  | less
+  | greaterEqual
+  deriving Repr, DecidableEq
+
+def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericComparisonOp
+  | .less => .less
+  | .greaterEqual => .greaterEqual
+
 /-- The typed comparison fragment. Numeric literals are scale-exempt by construction;
     Confirm admits only the legal `True` literal, made implicit in its constructor. -/
 inductive FlatComparison where
   | number (op : EqualityOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
   | confirm (op : EqualityOp) (field : FlatConfirmField)
+  | stringEqual (field : FlatStringField) (expected : String)
+  | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
   deriving Repr, DecidableEq
 
 /-- Flat core conditions. The closed constructors make unsupported operations
@@ -79,9 +97,9 @@ def FlatCondition.canFireOnEmpty : FlatCondition → Bool
   | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
   | .or left right => left.canFireOnEmpty || right.canFireOnEmpty
 
-/-- Comparison-local operand classification. `given` preserves whether a concrete value
-    came from stored input or from the consuming comparison's empty substitution. -/
-inductive ComparisonOperand (α : Type) where
+/-- Comparison-local classification for the nonnumeric clauses whose substitution
+    polarity is symmetric. Numeric operands use directional fillability instead. -/
+inductive SimpleComparisonOperand (α : Type) where
   | value (value : α) (given : Bool)
   | notEvaluated
   | unknown (cause : FormalCause)
@@ -90,16 +108,16 @@ def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : Cel
   observeCell .validation (context.read id)
 
 def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
-    (field : FlatNumberField) : ComparisonOperand Rat :=
+    (field : FlatNumberField) : NumericOperand :=
   match context.observeValidationAt field.id with
-  | .empty => .value 0 false
-  | .value (.num value) => .value value true
+  | .empty => .value 0 (.emptyNumber field.info.signed)
+  | .value (.num value) => .value value .fixed
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
 private def resolveBooleanComparisonOperand (context : FlatContext) (field : FlatBooleanField) :
-    ComparisonOperand Bool :=
+    SimpleComparisonOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .notEvaluated
   | .value (.bool value) => .value value true
@@ -108,7 +126,7 @@ private def resolveBooleanComparisonOperand (context : FlatContext) (field : Fla
   | .poison cause => .unknown cause
 
 private def resolveConfirmComparisonOperand (context : FlatContext) (field : FlatConfirmField) :
-    ComparisonOperand Bool :=
+    SimpleComparisonOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .value false false
   | .value (.conf true) => .value true true
@@ -116,27 +134,39 @@ private def resolveConfirmComparisonOperand (context : FlatContext) (field : Fla
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-/-- The fixed decimal scale applied to both numeric operands before every comparison. -/
-def comparisonScale : Nat := 19
+def FlatContext.resolveDirectStringComparisonOperand (context : FlatContext)
+    (field : FlatStringField) :
+    SimpleComparisonOperand String :=
+  match context.observeValidationAt field.id with
+  | .empty => .notEvaluated
+  | .value (.str value) => if value.isEmpty then .notEvaluated else .value value true
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
 
-/-- Decimal `HALF_UP`, i.e. ties round away from zero. -/
-def rescaleHalfUp (value : Rat) (scale : Nat) : Rat :=
-  let factor : Nat := 10 ^ scale
-  let shifted := value * (factor : Rat)
-  let half : Rat := 1 / 2
-  let rounded := if shifted < 0 then Rat.ceil (shifted - half) else Rat.floor (shifted + half)
-  (rounded : Rat) / (factor : Rat)
+/-- A12 String `Length` counts UTF-16 code units, matching the JVM/JavaScript engine boundary rather than Unicode scalar values or grapheme clusters. -/
+def utf16CodeUnitLength (value : String) : Nat :=
+  value.toList.foldl (fun units character =>
+    units + if character.toNat < 0x10000 then 1 else 2) 0
 
-private def numberEquivalent (left right : Rat) : Bool :=
-  rescaleHalfUp left comparisonScale == rescaleHalfUp right comparisonScale
+def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : FlatStringField) :
+    NumericOperand :=
+  match context.observeValidationAt field.id with
+  | .empty => .value 0 .growOnly
+  | .value (.str value) =>
+      if value.isEmpty then .value 0 .growOnly
+      else .value (utf16CodeUnitLength value) .fixed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
 
 private def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
   match op with
   | .equal => equivalent
   | .notEqual => !equivalent
 
-private def evalResolved (equivalent : α → α → Bool) (op : EqualityOp)
-    (operand : ComparisonOperand α) (expected : α) : Verdict :=
+def EqualityOp.evalSimple (op : EqualityOp) (equivalent : α → α → Bool)
+    (operand : SimpleComparisonOperand α) (expected : α) : Verdict :=
   match operand with
   | .notEvaluated => .notFired
   | .unknown _ => .unknown
@@ -146,13 +176,32 @@ private def evalResolved (equivalent : α → α → Bool) (op : EqualityOp)
       else
         .notFired
 
-private def evalComparison (context : FlatContext) : FlatComparison → Verdict
+/-- Direct String equality suppresses an empty literal only after the field read has
+    preserved malformed input as unknown. -/
+def SimpleComparisonOperand.evalDirectStringEqual
+    (operand : SimpleComparisonOperand String) (expected : String) : Verdict :=
+  match operand with
+  | .unknown _ => .unknown
+  | .notEvaluated => .notFired
+  | .value actual given =>
+      if expected.isEmpty then .notFired
+      else EqualityOp.equal.evalSimple (· == ·) (.value actual given) expected
+
+def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
+  match comparison with
   | .number op field expected =>
-      evalResolved numberEquivalent op (context.resolveNumberComparisonOperand field) expected
+      let numericOp := match op with
+        | .equal => NumericComparisonOp.equal
+        | .notEqual => NumericComparisonOp.notEqual
+      numericOp.evalFixedRight (context.resolveNumberComparisonOperand field) expected
   | .boolean op field expected =>
-      evalResolved (· == ·) op (resolveBooleanComparisonOperand context field) expected
+      op.evalSimple (· == ·) (resolveBooleanComparisonOperand context field) expected
   | .confirm op field =>
-      evalResolved (· == ·) op (resolveConfirmComparisonOperand context field) true
+      op.evalSimple (· == ·) (resolveConfirmComparisonOperand context field) true
+  | .stringEqual field expected =>
+      (context.resolveDirectStringComparisonOperand field).evalDirectStringEqual expected
+  | .stringLength op field expected =>
+      op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
 
 def FlatField.observeValidation (context : FlatContext) : FlatField → CellObservation
   | .number field => context.observeValidationAt field.id
@@ -177,7 +226,7 @@ def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdic
     skip only after `fired value`, because any other verdict can still change when the
     right-hand polarity is combined. -/
 def FlatCondition.evalSelected (context : FlatContext) : FlatCondition → Verdict
-  | .compare comparison => evalComparison context comparison
+  | .compare comparison => comparison.eval context
   | .fieldFilled field => field.evalFilled context
   | .fieldNotFilled field => field.evalNotFilled context
   | .and left right =>

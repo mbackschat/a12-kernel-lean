@@ -2,7 +2,7 @@ import A12Kernel.Reference.Evaluator
 
 /-! # Bounded generated-differential profile
 
-This process-side module defines the closed JSON profile and deterministic request generator for the first flat-validation differential campaign. It carries no semantic or evidence authority: requests are accepted by the public decoder and evaluated through the existing reference adapter.
+This process-side module defines the frozen JSON profile, compatibility tuple, v1 request vocabulary, and deterministic request generator for the first flat-validation differential campaign. It carries no semantic or evidence authority. Historical generation is self-contained; explicitly named compatibility checks may separately pass those requests through the current public decoder and evaluator.
 -/
 
 namespace A12Kernel.Differential.Profile
@@ -15,6 +15,10 @@ def schemaVersion : Nat := 1
 def profileId : String := "flat-validation-empty-logic-v1-generated-differential-v1"
 
 def expectedCaseCount : Nat := 52
+
+/-- Frozen protocol-v1 input ceiling carried by the historical campaign. It must not
+inherit a later current protocol limit. -/
+def historicalMaxInputBytes : Nat := 1048576
 
 inductive ResponseProjection where
   | flatVerdictV1
@@ -223,12 +227,15 @@ private def parseGenerator (json : Json) : Except String GeneratorConfig := do
     connectiveOrder := ← required json location "connectiveOrder" }
 
 private def expectedCompatibility : Compatibility := {
-  capabilityId := "flat-validation-empty-logic-v1"
-  operation := Support.Operation.flatValidationEvaluateFull.tag
-  referenceSemanticsVersion := Support.referenceSemanticsVersion
-  protocolVersion := Support.protocolVersion
-  manifestSchemaVersion := Support.manifestSchemaVersion
-  kernelBehaviorVersion := Support.kernelBehaviorVersion }
+  capabilityId := Reference.Lineage.historicalFlatCapability.suiteId
+  operation := Reference.Lineage.historicalFlatCapability.operation
+  referenceSemanticsVersion :=
+    Reference.Lineage.historicalFlatCapability.compatibility.referenceSemanticsVersion
+  protocolVersion := Reference.Lineage.historicalFlatCapability.compatibility.protocolVersion
+  manifestSchemaVersion :=
+    Reference.Lineage.historicalFlatCapability.compatibility.manifestSchemaVersion
+  kernelBehaviorVersion :=
+    Reference.Lineage.historicalFlatCapability.compatibility.kernelBehaviorVersion }
 
 private def expectedGenerator : GeneratorConfig := {
   strategy := "exhaustiveFiniteMatrices"
@@ -252,7 +259,7 @@ private def expectedExecution : ExecutionConfig := {
 private def validateBounds (bounds : ResourceBounds) : Except String Unit := do
   if bounds.cases != expectedCaseCount then
     throw s!"$.bounds.cases: expected {expectedCaseCount}, found {bounds.cases}"
-  if bounds.requestBytes == 0 || bounds.requestBytes >= Support.maxInputBytes then
+  if bounds.requestBytes == 0 || bounds.requestBytes >= historicalMaxInputBytes then
     throw "$.bounds.requestBytes: must be positive and leave one protocol input byte for the JSON-line newline"
   if bounds.fields != 3 then throw "$.bounds.fields: expected the closed three-field model"
   if bounds.cells != 2 then throw "$.bounds.cells: expected the tight two-cell bound"
@@ -260,10 +267,10 @@ private def validateBounds (bounds : ResourceBounds) : Except String Unit := do
   if bounds.conditionNodes != 3 then throw "$.bounds.conditionNodes: expected the tight three-node bound"
   if bounds.aggregateRequestBytes < bounds.requestBytes || bounds.aggregateRequestBytes == 0 then
     throw "$.bounds.aggregateRequestBytes: must cover at least one maximum-size request"
-  if bounds.aggregateRequestBytes > 4 * Support.maxInputBytes then
+  if bounds.aggregateRequestBytes > 4 * historicalMaxInputBytes then
     throw "$.bounds.aggregateRequestBytes: exceeds the profile safety ceiling"
   if bounds.aggregateProcessInputBytes < bounds.aggregateRequestBytes ||
-      bounds.aggregateProcessInputBytes > 8 * Support.maxInputBytes then
+      bounds.aggregateProcessInputBytes > 8 * historicalMaxInputBytes then
     throw "$.bounds.aggregateProcessInputBytes: must cover aggregate requests and remain below the profile safety ceiling"
   if bounds.processTimeoutMilliseconds == 0 || bounds.processTimeoutMilliseconds > 30000 then
     throw "$.bounds.processTimeoutMilliseconds: must be between 1 and 30000"
@@ -277,12 +284,12 @@ private def validateBounds (bounds : ResourceBounds) : Except String Unit := do
       bounds.processTimeoutMilliseconds + bounds.processCleanupMilliseconds ||
       bounds.aggregateElapsedMilliseconds > 300000 then
     throw "$.bounds.aggregateElapsedMilliseconds: must cover one process lifecycle and be no greater than five minutes"
-  if bounds.processStdoutBytes == 0 || bounds.processStdoutBytes > Support.maxInputBytes ||
-      bounds.processStderrBytes == 0 || bounds.processStderrBytes > Support.maxInputBytes then
+  if bounds.processStdoutBytes == 0 || bounds.processStdoutBytes > historicalMaxInputBytes ||
+      bounds.processStderrBytes == 0 || bounds.processStderrBytes > historicalMaxInputBytes then
     throw "$.bounds: per-process output bounds must be positive and no greater than the protocol input limit"
   if bounds.aggregateProcessOutputBytes < bounds.processStdoutBytes + bounds.processStderrBytes then
     throw "$.bounds.aggregateProcessOutputBytes: must cover at least one process output budget"
-  if bounds.aggregateProcessOutputBytes > 128 * Support.maxInputBytes then
+  if bounds.aggregateProcessOutputBytes > 128 * historicalMaxInputBytes then
     throw "$.bounds.aggregateProcessOutputBytes: exceeds the profile safety ceiling"
   -- A successful projected response has a closed, small schema. A failure can
   -- retain stdout both as a byte capture and as parsed JSON; six bytes per
@@ -293,7 +300,7 @@ private def validateBounds (bounds : ResourceBounds) : Except String Unit := do
       12 * bounds.processStdoutBytes + 6 * bounds.processStderrBytes + 65536
   if bounds.resultBytes < minimumResultBytes then
     throw s!"$.bounds.resultBytes: must be at least {minimumResultBytes} bytes to preserve every possible disagreement or process failure"
-  if bounds.resultBytes > 32 * Support.maxInputBytes then
+  if bounds.resultBytes > 32 * historicalMaxInputBytes then
     throw "$.bounds.resultBytes: exceeds the profile safety ceiling"
 
 private def Profile.validate (profile : Profile) : Except String Unit := do
@@ -407,11 +414,6 @@ private def name : GeneratedField → String
   | .boolean => "B"
   | .confirm => "C"
 
-private def policy : GeneratedField → FieldPolicy
-  | .number => { kind := .number { scale := 2, signed := false } }
-  | .boolean => { kind := .boolean }
-  | .confirm => { kind := .confirm }
-
 private def kindJson : GeneratedField → Json
   | .number => Json.mkObj [
       ("tag", toJson "number"), ("scale", toJson 2), ("signed", toJson false)]
@@ -506,17 +508,6 @@ private def GeneratorConfig.domain (config : GeneratorConfig) : Except String Ge
     rowGateAtoms := ← config.rowGateAtomOrder.mapM parseRowGateAtom
     connectives := ← config.connectiveOrder.mapM Connective.parse }
 
-private def fieldDeclarations (groupPath : List String) : Nat → List GeneratedField → List FlatFieldDecl
-  | _, [] => []
-  | id, field :: rest =>
-      { id, groupPath, name := field.name, policy := field.policy } ::
-        fieldDeclarations groupPath (id + 1) rest
-
-private def GeneratorDomain.expectedModel (domain : GeneratorDomain) : FlatModel := {
-  fieldRefByShortNameAllowed := true
-  repeatableGroups := []
-  fields := fieldDeclarations domain.groupPath 0 domain.fields }
-
 private def pathJson (domain : GeneratorDomain) (field : String) : Json :=
   Json.mkObj [
     ("base", toJson "absolute"), ("groups", toJson domain.groupPath), ("field", toJson field)]
@@ -569,12 +560,12 @@ private def rejectedCell (fieldId : Nat) : Json :=
     ("fieldId", toJson fieldId),
     ("state", Json.mkObj [("tag", toJson "rejected"), ("cause", toJson "malformed")])]
 
-private def requestJson (domain : GeneratorDomain) (condition : Json) (cells : List Json)
-    (hasContent : Bool) : Json :=
+private def requestJson (compatibility : Compatibility) (domain : GeneratorDomain)
+    (condition : Json) (cells : List Json) (hasContent : Bool) : Json :=
   Json.mkObj [
-    ("protocolVersion", toJson Support.protocolVersion),
-    ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
-    ("operation", toJson Support.Operation.flatValidationEvaluateFull.tag),
+    ("protocolVersion", toJson compatibility.protocolVersion),
+    ("kernelBehaviorVersion", toJson compatibility.kernelBehaviorVersion),
+    ("operation", toJson compatibility.operation),
     ("model", modelJson domain),
     ("declaringGroup", toJson domain.groupPath),
     ("condition", condition),
@@ -606,7 +597,8 @@ private def leafCells (domain : GeneratorDomain) (atom : Atom) : CellState → E
       let id ← domain.fieldId (targetField atom)
       pure [rejectedCell id]
 
-private def leafCases (domain : GeneratorDomain) : Except String (List GeneratedCase) := do
+private def leafCases (compatibility : Compatibility) (domain : GeneratorDomain) :
+    Except String (List GeneratedCase) := do
   let mut cases := []
   for atom in domain.leafAtoms do
     for state in domain.cellStates do
@@ -614,7 +606,7 @@ private def leafCases (domain : GeneratorDomain) : Except String (List Generated
       cases := {
         id := s!"generated-leaf-{atom.tag}-{state.tag}"
         family := .leafCellState
-        request := requestJson domain (conditionJson domain atom) cells true
+        request := requestJson compatibility domain (conditionJson domain atom) cells true
         metrics := {
           fields := domain.fields.length
           cells := cells.length
@@ -622,7 +614,8 @@ private def leafCases (domain : GeneratorDomain) : Except String (List Generated
           conditionNodes := 1 } } :: cases
   pure cases.reverse
 
-private def verdictAlgebraCases (domain : GeneratorDomain) : Except String (List GeneratedCase) := do
+private def verdictAlgebraCases (compatibility : Compatibility) (domain : GeneratorDomain) :
+    Except String (List GeneratedCase) := do
   let cells := [
     parsedBooleanCell (← domain.fieldId .boolean),
     rejectedCell (← domain.fieldId .confirm)]
@@ -633,7 +626,7 @@ private def verdictAlgebraCases (domain : GeneratorDomain) : Except String (List
         cases := {
           id := s!"generated-algebra-{connective.tag}-{left.name}-{right.name}"
           family := .verdictAlgebra
-          request := requestJson domain
+          request := requestJson compatibility domain
             (connectiveJson domain connective left.atom right.atom) cells true
           metrics := {
             fields := domain.fields.length
@@ -642,7 +635,8 @@ private def verdictAlgebraCases (domain : GeneratorDomain) : Except String (List
             conditionNodes := 3 } } :: cases
   pure cases.reverse
 
-private def rowGateCases (domain : GeneratorDomain) : Except String (List GeneratedCase) := do
+private def rowGateCases (compatibility : Compatibility) (domain : GeneratorDomain) :
+    Except String (List GeneratedCase) := do
   -- `hasContent = false` is authoritative even with this present Boolean control cell;
   -- the matrix must not infer row content from sparse-cell presence.
   let cells := [parsedBooleanCell (← domain.fieldId .boolean)]
@@ -653,7 +647,7 @@ private def rowGateCases (domain : GeneratorDomain) : Except String (List Genera
         cases := {
           id := s!"generated-row-gate-{connective.tag}-{left.name}-{right.name}"
           family := .rowGate
-          request := requestJson domain
+          request := requestJson compatibility domain
             (connectiveJson domain connective left.atom right.atom) cells false
           metrics := {
             fields := domain.fields.length
@@ -666,16 +660,78 @@ private def firstDuplicate? [BEq α] : List α → Option α
   | [] => none
   | value :: rest => if rest.contains value then some value else firstDuplicate? rest
 
-private def conditionMetrics : SurfaceCondition → Nat × Nat
-  | .compare .. | .fieldFilled .. | .fieldNotFilled .. => (1, 1)
-  | .and left right | .or left right =>
-      let leftMetrics := conditionMetrics left
-      let rightMetrics := conditionMetrics right
-      (Nat.max leftMetrics.1 rightMetrics.1 + 1, leftMetrics.2 + rightMetrics.2 + 1)
-
 private def strictlyIncreasing : List Nat → Bool
   | [] | [_] => true
   | first :: second :: rest => first < second && strictlyIncreasing (second :: rest)
+
+private def historicalConditionMetrics : Nat → Json → String → Except String (Nat × Nat)
+  | 0, _, location => throw s!"{location}: historical condition exceeds the profile depth"
+  | fuel + 1, json, location => do
+    let tag : String ← required json location "tag"
+    match tag with
+    | "compare" =>
+        let _ ← requireObject json location ["tag", "operator", "field", "literal"]
+        let _ ← requiredJson json location "operator"
+        let _ ← requiredJson json location "field"
+        let _ ← requiredJson json location "literal"
+        pure (1, 1)
+    | "fieldNotFilled" =>
+        let _ ← requireObject json location ["tag", "field"]
+        let _ ← requiredJson json location "field"
+        pure (1, 1)
+    | "and" | "or" =>
+        let _ ← requireObject json location ["tag", "left", "right"]
+        let left ← historicalConditionMetrics fuel (← requiredJson json location "left")
+          s!"{location}.left"
+        let right ← historicalConditionMetrics fuel (← requiredJson json location "right")
+          s!"{location}.right"
+        pure (Nat.max left.1 right.1 + 1, left.2 + right.2 + 1)
+    | other =>
+        throw s!"{location}.tag: unsupported historical generated condition '{other}'"
+
+private def historicalCellIds (json : Json) : Except String (List Nat) := do
+  let cells ← match json.getArr? with
+    | .ok values => pure values.toList
+    | .error _ => throw "$.cells: expected array"
+  cells.zipIdx.mapM fun (cell, index) => do
+    let location := s!"$.cells[{index}]"
+    let _ ← requireObject cell location ["fieldId", "state"]
+    let _ ← requiredJson cell location "state"
+    required cell location "fieldId"
+
+/-- Validate the frozen v1 request vocabulary without delegating ownership to today's
+protocol decoder. The current decoder is exercised separately as a backward-compatibility
+audit, but it cannot define whether the historical profile itself is well formed. -/
+private def validateHistoricalRequest (profile : Profile) (domain : GeneratorDomain)
+    (case : GeneratedCase) : Except String Unit := do
+  let request := case.request
+  let _ ← requireObject request "$" ["protocolVersion", "kernelBehaviorVersion", "operation",
+    "model", "declaringGroup", "condition", "cells", "hasContent"]
+  let protocol : Nat ← required request "$" "protocolVersion"
+  let kernel : String ← required request "$" "kernelBehaviorVersion"
+  let operation : String ← required request "$" "operation"
+  if protocol != profile.compatibility.protocolVersion ||
+      kernel != profile.compatibility.kernelBehaviorVersion ||
+      operation != profile.compatibility.operation then
+    throw s!"{case.id}: generated request escaped its frozen compatibility identity"
+  let model ← requiredJson request "$" "model"
+  if model != modelJson domain then
+    throw s!"{case.id}: generated request escaped the configured three-field model"
+  let declaringGroup : List String ← required request "$" "declaringGroup"
+  if declaringGroup != domain.groupPath then
+    throw s!"{case.id}: generated request escaped the configured declaring group"
+  let cellIds ← historicalCellIds (← requiredJson request "$" "cells")
+  if !strictlyIncreasing cellIds then
+    throw s!"{case.id}: generated cells are not in strict field-id order"
+  let conditionShape ← historicalConditionMetrics (profile.bounds.conditionDepth + 1)
+    (← requiredJson request "$" "condition") "$.condition"
+  let actualMetrics : Metrics := {
+    fields := domain.fields.length
+    cells := cellIds.length
+    conditionDepth := conditionShape.1
+    conditionNodes := conditionShape.2 }
+  if actualMetrics != case.metrics then
+    throw s!"{case.id}: declared metrics do not match the historical request shape"
 
 private def validateCase (profile : Profile) (domain : GeneratorDomain)
     (case : GeneratedCase) : Except String Unit := do
@@ -687,30 +743,15 @@ private def validateCase (profile : Profile) (domain : GeneratorDomain)
       case.metrics.conditionDepth > profile.bounds.conditionDepth ||
       case.metrics.conditionNodes > profile.bounds.conditionNodes then
     throw s!"{case.id}: generated shape exceeds its declared structural bounds"
-  match Decode.request case.request with
-  | .ok (.flatValidation request) =>
-      if request.model != domain.expectedModel || request.declaringGroup != domain.groupPath then
-        throw s!"{case.id}: generated request escaped the configured three-field model"
-      if !strictlyIncreasing (request.cells.map (·.fieldId)) then
-        throw s!"{case.id}: generated cells are not in strict field-id order"
-      let conditionShape := conditionMetrics request.condition
-      let actualMetrics : Metrics := {
-        fields := request.model.fields.length
-        cells := request.cells.length
-        conditionDepth := conditionShape.1
-        conditionNodes := conditionShape.2 }
-      if actualMetrics != case.metrics then
-        throw s!"{case.id}: declared metrics do not match the decoded request"
-  | .ok _ => throw s!"{case.id}: generated request decoded as the wrong operation"
-  | .error diagnostic =>
-      throw s!"{case.id}: generated request was rejected: {diagnostic.asJson.compress}"
+  validateHistoricalRequest profile domain case
 
 /-- Enumerate and validate the complete finite positive profile. -/
 def generate (profile : Profile) : Except String (List GeneratedCase) := do
   profile.validate
   let domain ← profile.generator.domain
-  let cases := (← leafCases domain) ++ (← verdictAlgebraCases domain) ++
-    (← rowGateCases domain)
+  let cases := (← leafCases profile.compatibility domain) ++
+    (← verdictAlgebraCases profile.compatibility domain) ++
+    (← rowGateCases profile.compatibility domain)
   if cases.length != profile.bounds.cases then
     throw s!"generated {cases.length} cases, expected {profile.bounds.cases}"
   match firstDuplicate? (cases.map (·.id)) with

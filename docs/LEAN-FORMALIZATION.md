@@ -314,7 +314,7 @@ Counting quantifiers, custom conditions, created rows, and order-sensitive compu
 
 ### 12.4 Make assumptions visible and fail closed
 
-- A new `sorry`, axiom, `unsafe`, `partial`, or unclassified oracle boundary must fail the trusted proof gate.
+- A new `sorry`, project axiom, `unsafe`, source-partial or unclassified opaque declaration, compiled-body substitution, foreign entry point, or unclassified oracle boundary must fail the trusted proof gate through the elaborated environment rather than source spelling alone.
 - Custom conditions should be excluded from locality/fill theorems unless supplied with explicit contracts.
 - Timezone/DST, Unicode/regex, decimal approximation, and kernel-version assumptions should be named at the theorem or module boundary.
 - An unsupported language fragment must produce an explicit elaboration/conformance status, never silently reuse a stronger theorem label.

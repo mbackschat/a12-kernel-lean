@@ -34,6 +34,23 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
       cases nonrepeatable : declaration.repeatableScope.isEmpty <;>
         cases matching : field.matchesDecl declaration <;> simp_all
 
+/-- A comparison admitted by the core well-formedness check has a unique model
+    declaration with the same operator-specific field representation and no repeatable scope. -/
+theorem admitsComparison_has_unique_matching_declaration (model : FlatModel)
+    (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
+    ∃ declaration,
+      model.lookupUniqueId comparison.fieldId = .ok declaration ∧
+      declaration.repeatableScope.isEmpty = true ∧
+      comparison.matchesDecl declaration = true := by
+  unfold FlatModel.admitsComparison at admitted
+  generalize lookupEq : model.lookupUniqueId comparison.fieldId = lookup at admitted
+  cases lookup with
+  | error error => simp at admitted
+  | ok declaration =>
+      refine ⟨declaration, rfl, ?_⟩
+      cases nonrepeatable : declaration.repeatableScope.isEmpty <;>
+        cases matching : comparison.matchesDecl declaration <;> simp_all
+
 /-- Model-derived context construction checks a resolved cell with exactly the policy
     carried by its unique declaration. -/
 theorem checkContext_lookup_coherent (model : FlatModel) (raw : RawFlatContext)
@@ -56,6 +73,21 @@ theorem checkContext_admittedField_coherent (model : FlatModel) (raw : RawFlatCo
     admitsField_has_unique_matching_declaration model field admitted
   exact ⟨declaration, lookup, nonrepeatable, matching,
     checkContext_lookup_coherent model raw field.id declaration lookup⟩
+
+/-- A core-admitted comparison therefore reads a cell checked by its unique compatible
+    declaration, including the String-only direct-equality and Length routes. -/
+theorem checkContext_admittedComparison_coherent (model : FlatModel) (raw : RawFlatContext)
+    (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
+    ∃ declaration,
+      model.lookupUniqueId comparison.fieldId = .ok declaration ∧
+      declaration.repeatableScope.isEmpty = true ∧
+      comparison.matchesDecl declaration = true ∧
+      (model.checkContext raw).read comparison.fieldId =
+        formalCheck declaration.policy (raw.read comparison.fieldId) := by
+  obtain ⟨declaration, lookup, nonrepeatable, matching⟩ :=
+    admitsComparison_has_unique_matching_declaration model comparison admitted
+  exact ⟨declaration, lookup, nonrepeatable, matching,
+    checkContext_lookup_coherent model raw comparison.fieldId declaration lookup⟩
 
 /-- Missing or ambiguous identifiers fail closed at the raw-to-checked boundary. -/
 theorem checkContext_lookup_error_is_malformed (model : FlatModel) (raw : RawFlatContext)

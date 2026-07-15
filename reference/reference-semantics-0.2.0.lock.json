@@ -1,0 +1,615 @@
+{
+  "lockSchemaVersion": 1,
+  "referenceSemanticsVersion": "0.2.0",
+  "sourceRevision": "9fa50276f5fb70dcd879b0a9712c8d69c0868967",
+  "artifacts": [
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-consumer-all-valid.json",
+      "sha256": "9449ef57abb9dd07d83efe857cd489a0751ea46f99b891d84c6d4a37758d3fff"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-consumer-first-malformed.json",
+      "sha256": "55e8ab34e5f072a5c99209f817e08d5ac3b734dd7583881d1b6ed219d94b63b1"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-consumer-second-malformed.json",
+      "sha256": "81be247faf26604aca473854825ce3aea12649ad55b89543afacc03883e47142"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-direction.json",
+      "sha256": "e025fa78379509efde34497f297d3bd517ecb3be890046c0a7fd0d893766c2fd"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-filter-empty-equals-zero.json",
+      "sha256": "e209e146f206330dbf7fcf3560ce652e2ed0c7704505535db846249f3ecd35d9"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-filter-malformed-local.json",
+      "sha256": "f7e5713f4819f0c76f07fdcfa350a91641dcfb3ab35efe1a0a05160b95980e98"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-number-not-equal.json",
+      "sha256": "295b1f600b4fd7e86904f89478eeae3a05d7f71ad7190989e2dcc511820df4bd"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-repetition-equal.json",
+      "sha256": "6774df47f7bcb489b53889e2338475810981dff0661107b7955e7128172b40e2"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-repetition-less-than.json",
+      "sha256": "f0a7d149d91e1d08c1d76885fea9b6424eae4ddd02c6414f2fff7aeb0b949d6c"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-self-excluded-distinct.json",
+      "sha256": "918a05465b19ac316bc88b73cbf6ae56750d65789d2f0cb929805b3ccd1029a1"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-self-excluded-duplicate.json",
+      "sha256": "19c28d7dcdae14bf8f3c230d48a0c9a2e1fa7c55b2e7319985942b2f2bb2f9ad"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/correlation/correlation-self-included.json",
+      "sha256": "02285e99fc42bec3dd017bc47e4244e7289551050bab1ed2da761de10abe63f9"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/empty/boolean-empty-equals-true.json",
+      "sha256": "bedbc238628d6a22bb7c87f6bb3351bf81dc646df290bc4a249253a8e5683f1d"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/empty/confirm-empty-not-true.json",
+      "sha256": "b56306dfd23668be55e37058952030c01e09f50e3e3dfd0ddf146bea2642a175"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/empty/number-empty-equals-zero-content.json",
+      "sha256": "3d5fae7bc57a4e5082cfe34fd6210e20f745c54b4af01fa3561cd28c2f213fc0"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/empty/number-empty-equals-zero-empty-row.json",
+      "sha256": "c95517c3824aea6eee82cd199f73ba51be044f2c2fc0a172efa88b395dfc0f22"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/empty/number-not-filled-empty-row.json",
+      "sha256": "dc6b8aa28cbf48127ab20afff65e9e3fadbc534590950fc84e6b8d2596e6bbeb"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/formal-error/healthy-and-malformed.json",
+      "sha256": "a13be78244aad7fa17d3dd2c4ce8c7f412dfa47084b3bcad7bdd001df320b653"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/formal-error/healthy-or-malformed.json",
+      "sha256": "e678587137db0f899961b8a289ee19e28f37786ac603a933c630e4ee2fdb2935"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/formal-error/malformed-number-equals-zero.json",
+      "sha256": "80c75a2f252c29af060ddf0fda4638b210d75ac0aaa41f87bacd6949f5a07102"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-filtered-empty-selection.json",
+      "sha256": "b31ccb2cbc11495213b9cd2c1c39eaaa213c54db0f5541220524a564451c22bb"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-filtered-sum-match.json",
+      "sha256": "24775feaca5715f3b2cc59c9f3185e8e941fd86c7aa6573bfa014ee4feabb19f"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-filtered-sum-mismatch.json",
+      "sha256": "e5bc47dc252e7e33f228a2d64034e2bbbda30b791258886a535baaa8be5b944b"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-malformed-consumer-dropped.json",
+      "sha256": "d1f89122ecd12fcfa081c505cba8acc0261700ed8b839090cf919462cad721c8"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-malformed-consumer-kept.json",
+      "sha256": "b5445f92082790bbddc1e1752b7d25059d0ffcc98db876f4279c4f01c819dc4e"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-malformed-filter-drops.json",
+      "sha256": "d8782838482068c21ddcbc3646e2b0cc527023857c37070fd26726be3f874c61"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/iteration/having-unfiltered-sum-all.json",
+      "sha256": "4df9e3c50274f7fc64c307ae8637426c50c2c4f02310dd34d6aaa80605c32638"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/paths/absolute-number-path-match.json",
+      "sha256": "5c9ff9260db6c5701a55579f3d57813d7829298824bc880c490392af1247a4f6"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/paths/bare-ancestor-number.json",
+      "sha256": "028c1973f5dee69ade19c980cc8be81a737cfe1012cb9bc1daf51638ea3ea441"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/paths/bare-local-precedes-ancestor.json",
+      "sha256": "0df4db7d39a1aab64b36c3e7c0333b242f90ecba123cd9f4f17bd6c1bc77fbaf"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/paths/bare-model-wide-number-fallback.json",
+      "sha256": "f08af43a21d95d0ac7d86eecf69fa5929833c5cd35abf567305122da0f134660"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/paths/parent-relative-number-mismatch.json",
+      "sha256": "d088f939bdc12f23e7f2704a6bccc075a38aafa1872e6abe5d79a514b49138e1"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/paths/plain-parent-relative-number.json",
+      "sha256": "471cf4e3b034e7463b7a864665754f66cb948abb4fb0225b73705ad9aa596134"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/required/absolute-required-number-empty.json",
+      "sha256": "6f017174d5176edd190e488a113be218d105540c2ab4db48f0ca973f1d44d1c4"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/required/absolute-required-number-filled.json",
+      "sha256": "f764ac5e7a16170c2c9911f6ac9c53974d4c25436528cebcbfa791edfa7e47b4"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/cases/required/absolute-required-number-malformed.json",
+      "sha256": "2e60a48c1c96593f0437e89873842c06e6fbcc25a18b9389d461414631a5d448"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/correlation-elaboration-projection.json",
+      "sha256": "fadb3eaf1e0192ca81291de11786d9aa1b5a9e2fff2d1ffcd6a4a2e972bc6b0e"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/correlation-projection.json",
+      "sha256": "d7da5dcca7e743a7216e3de6a194a243e1fe4af91285fad4779f410dd58db787"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/diagnostics/bare-duplicate-ancestors-rejected.json",
+      "sha256": "093386f7422f371f81557770b44b61fe585ecab6f6754c0378fc43652db59cf6"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/diagnostics/bare-unique-ancestor-flag-disabled-rejected.json",
+      "sha256": "8acf19092870596654dca58ce69c24d759fbef343b6f623450d2fc679d1cf2be"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/diagnostics/correlation-elaboration-cross-group-inner-rejected.json",
+      "sha256": "681ba4cf8b20a7ce41774ac391fddbe9feb7382593298775912a4fbcc03ec5bd"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/diagnostics/correlation-elaboration-equality-scale-mismatch-rejected.json",
+      "sha256": "32b2fa19cb590130d683cdb011f4cf4efb01addd693e1fcd6c91e21baac1bf77"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/diagnostics/correlation-elaboration-missing-inner-rejected.json",
+      "sha256": "682dbf49360e997cc1c78f01624d26dcc0fc32b02b5eb56eb03ca2cc27ecbb92"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/diagnostics/correlation-elaboration-ordering-mixed-scale-accepted.json",
+      "sha256": "fdaf6316553e1be5f7eb0a16bc8fb035465f6d49b3ac0e5eefc761eec2d7f63d"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/iteration-projection.json",
+      "sha256": "d9b470e94fc577940d7bab2a8b4be9dd303acff31145fe03de68872dd2088be5"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-absolute-number-path.json",
+      "sha256": "d5d4490c1df1c7270676ab38cf37ebc822ec4d6065a54dfe3229915028a46ec6"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-absolute-required-number.json",
+      "sha256": "dc9934e24a5eb5aab0e8a829aeb8d34cd420700123ba157bd006fd33e8c5b947"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-bare-ancestor-number.json",
+      "sha256": "7d23b8be9fbca8b04fcec32546793a574468d61b94211958dce576ea2af8790e"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-bare-local-precedence.json",
+      "sha256": "472cf12d3a9b300144ea47f1bfdf67f650a1c05ac6fe83968ed2ea9f2b4d65fe"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-bare-model-wide-fallback.json",
+      "sha256": "d4f1ade5f5ba857088e0440a190d24b22a164d1d8f3b6115c9ea48b219354107"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-boolean-empty-true.json",
+      "sha256": "c424e93d193408d901f28bc4518219eaeb8ebc65a5b95b616bf6b6b1e5e67044"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-confirm-empty-not-true.json",
+      "sha256": "d1c4083344bea6d5860d0fb9a3100c9309b505aaedf65f28c9bc1ed16ccbede0"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-consumer.json",
+      "sha256": "bca527a5e6a91a7cf3dd2de78de049a4468119b1fe502b2b34b218d282fea7c9"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-direction.json",
+      "sha256": "57c6fa0464c4615a21c2729148770f9dcde97c28ba5df8ed24d49340e72cdd3d"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-elaboration-order.json",
+      "sha256": "539803bc76e083b3a8bb9dbb259012dc5cf41c40ea3258a7fa677939617b7075"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-elaboration-staffing.json",
+      "sha256": "d0f02498c3be1c1574dbb48d10dfa562966f680cd11aae97aedfa51e338623fa"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-excluded.json",
+      "sha256": "a72462d8bd6f63c71c1a518827e7edb968af7a57f954531fc1a9b7e36a842e65"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-number-not-equal.json",
+      "sha256": "1a9b3f61b3ef44316a569478439b9fc519ec2cc989864bf30d42cd483d4456b7"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-repetition-equal.json",
+      "sha256": "eac32011062ca8c8169762d30e37f500c0f5f900ff55881778b301ed06049ac7"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-repetition-less-than.json",
+      "sha256": "6caa88978e84e71a476bb31445e708909be23067370f881e8c94241fc395bb59"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-correlation-self.json",
+      "sha256": "6ff7cca666bf9cca2aabfd19d733ca9e6d7bcb3836590f7d754b126c07296d5f"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-having-no-match.json",
+      "sha256": "9f2c92b72a33df5ed6b6bdf061f5168fb410808a82123917ff3d6415ebf935dd"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-having-unfiltered.json",
+      "sha256": "3c9060d207d10c5814a99841d55d2c1082cad131a3b18d2acd4ba9e130efaf0a"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-having-weight-one.json",
+      "sha256": "ec8b61ee7673da0d3b356f607f64e3639270625ae7151db2e3a74983d3c8e568"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-healthy-and-malformed.json",
+      "sha256": "9f3f87dc2a1c214be25a6a8c27566bc08e5374fe196d1bdc52acbb801e35ad93"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-healthy-or-malformed.json",
+      "sha256": "e9c8d7f77e1b7777a83ae0cb8b2f75984041c12f3bca08a92badf53c415b32d4"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-malformed-number-zero.json",
+      "sha256": "d0b45f42fa3b18314d16cee14e4e5c1cd7002b90290f2e9b21c1cc7a1b21dd9d"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-number-empty-zero.json",
+      "sha256": "5bb99fc80014fa0f86cc05c25c201fe454d15d5adca01ad7e6d12709d308fec1"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-number-not-filled.json",
+      "sha256": "503f9d86ca214917ec2ef4c20d4f62ae18616af815479a50f74676844ab1e8a6"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-parent-relative-number-mismatch.json",
+      "sha256": "aea4e0c16613269c3f5862ad96c5cf2d2fe5d8e429b2324ea3ea540e4255a984"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-parent-relative-number.json",
+      "sha256": "c1dffe92a06a5aff9df3942902363b035ad39da08218f08a21315643ecf8d31d"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-path-disabled-short-name.json",
+      "sha256": "b08f5a776036d3851dad4f75c75a5c0f924f732452cd926ed60620dece90e772"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/models/lean-path-duplicate-ancestors.json",
+      "sha256": "019d62a248d12ea277051abe0193a89cde2296be0779ed1dc6c3624a3add5521"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/projection.json",
+      "sha256": "cee1f64ed7395dcd87da5488ebb4e602c332d9ea1bde50fc06886c1c1e08b468"
+    },
+    {
+      "path": "evidence/kernel-30.8.1/triangulation/having-malformed-filter-drops.json",
+      "sha256": "af4f812484b5de61c165322588631de7021d950329d84ac889b50700f45c58a7"
+    },
+    {
+      "path": "examples/reference-cli/boolean-confirm-composition.request.json",
+      "sha256": "d707de0bc50e0c2f7519fe277df365765a5bff4788c8cb864c992cb206e134af"
+    },
+    {
+      "path": "examples/reference-cli/boolean-confirm-composition.response.json",
+      "sha256": "d3fa8302e82fbecb4f6bf5b0adc06bf6f3558a198ac1a3e08b7c0f0460df192e"
+    },
+    {
+      "path": "examples/reference-cli/correlation-consumer-all-valid.request.json",
+      "sha256": "fbfb69f8e3891060c50a53f26d898ad2cd016412bdb8a49cbf42db933e0a0d46"
+    },
+    {
+      "path": "examples/reference-cli/correlation-consumer-all-valid.response.json",
+      "sha256": "62a66c7a3c422266501eb9ec0490a0d940ef3a77422db2937732e30ded6c8a10"
+    },
+    {
+      "path": "examples/reference-cli/correlation-consumer-first-malformed.request.json",
+      "sha256": "41a551fdefaf33fecd4b0601a481fbe560f1d3d1c88cb53fa58b6c7c8befadf1"
+    },
+    {
+      "path": "examples/reference-cli/correlation-consumer-first-malformed.response.json",
+      "sha256": "6b230c89d5619f784d4c2cdfeba45e9ee0ca460d82b3bd41b5eb127be6e0e9dc"
+    },
+    {
+      "path": "examples/reference-cli/correlation-consumer-second-malformed.request.json",
+      "sha256": "7422f099f92ed91feeccdc637b2315bf4ba9d20d540d2f997a1876db86483b6b"
+    },
+    {
+      "path": "examples/reference-cli/correlation-consumer-second-malformed.response.json",
+      "sha256": "0ee72960a920e498442a96856b57e91030be03b352c982ecad50e0260649fda0"
+    },
+    {
+      "path": "examples/reference-cli/correlation-cross-group-inner.request.json",
+      "sha256": "521b71e52a755aa1890fe42d399f6c906498a3f4c46a7487a354bbfacb4d20f8"
+    },
+    {
+      "path": "examples/reference-cli/correlation-cross-group-inner.response.json",
+      "sha256": "89c7bf46cc08143d7741db77123d7a9972d2f3027332cc65e434809a4aa18b22"
+    },
+    {
+      "path": "examples/reference-cli/correlation-direction.request.json",
+      "sha256": "81f188e7bafa3a4bafdfa5fc9b5fe04fa8528541ea8691ac94efcf6cd7b78261"
+    },
+    {
+      "path": "examples/reference-cli/correlation-direction.response.json",
+      "sha256": "d7e188971a638933525fb0bc3a54e2e7eb8fc5c183b4ccb1ce286ac960a9eac3"
+    },
+    {
+      "path": "examples/reference-cli/correlation-equality-scale-mismatch.request.json",
+      "sha256": "f06042a02d5fc995fdec14e3c0738f2aed194bfc4a4b09c7c4da1a772fb05eae"
+    },
+    {
+      "path": "examples/reference-cli/correlation-equality-scale-mismatch.response.json",
+      "sha256": "ec9ce7ec3c32e486ad524e6dc284b0727e3d3814f4b251f0f264548b44b92f91"
+    },
+    {
+      "path": "examples/reference-cli/correlation-filter-empty-equals-zero.request.json",
+      "sha256": "0ca994739fa2ee1b6e2e8b17469c64bad5f55a8d677e897b2d155fb0d3505ef9"
+    },
+    {
+      "path": "examples/reference-cli/correlation-filter-empty-equals-zero.response.json",
+      "sha256": "62a66c7a3c422266501eb9ec0490a0d940ef3a77422db2937732e30ded6c8a10"
+    },
+    {
+      "path": "examples/reference-cli/correlation-filter-malformed-local.request.json",
+      "sha256": "50feaa017791510b4c91b34292ee2a94644d8866270c48fcebbc809195cd298b"
+    },
+    {
+      "path": "examples/reference-cli/correlation-filter-malformed-local.response.json",
+      "sha256": "483b3e592aaff8265697682580a5691123afdfed2ca31a46646466464e0a5cac"
+    },
+    {
+      "path": "examples/reference-cli/correlation-missing-inner.request.json",
+      "sha256": "72646fd8f049be1c01ca2b3e2d7c7e08686788558581057fbe04f011f323b255"
+    },
+    {
+      "path": "examples/reference-cli/correlation-missing-inner.response.json",
+      "sha256": "cb4236d8d9b388c01afe72462e6547cc1eab6be408c9f7dfde1977729b3d31aa"
+    },
+    {
+      "path": "examples/reference-cli/correlation-number-not-equal.request.json",
+      "sha256": "8a8805548c97a8527c4d1de199f98ccaff06b87737b744f6b91e1c9ca38d71a1"
+    },
+    {
+      "path": "examples/reference-cli/correlation-number-not-equal.response.json",
+      "sha256": "62a66c7a3c422266501eb9ec0490a0d940ef3a77422db2937732e30ded6c8a10"
+    },
+    {
+      "path": "examples/reference-cli/correlation-ordering-mixed-scale.request.json",
+      "sha256": "c1880b3511700a967a845b108c601f4fa05d2d775e3032598fb5ab52672b620f"
+    },
+    {
+      "path": "examples/reference-cli/correlation-ordering-mixed-scale.response.json",
+      "sha256": "dc01a59b5b2c0e194ebbc1e02cf8f726d7d6ad4e361a557ab69d0232e529eb59"
+    },
+    {
+      "path": "examples/reference-cli/correlation-repetition-equal.request.json",
+      "sha256": "97f2026c10c3c6f8424cd918e0e2c0fbce6c408e475e6640bee0b080307df7cc"
+    },
+    {
+      "path": "examples/reference-cli/correlation-repetition-equal.response.json",
+      "sha256": "0ee72960a920e498442a96856b57e91030be03b352c982ecad50e0260649fda0"
+    },
+    {
+      "path": "examples/reference-cli/correlation-repetition-less-than.request.json",
+      "sha256": "43ecbf8f9f0671232f8a728fc82f8208e3170e0cd4d9de908ee9e34c6000860e"
+    },
+    {
+      "path": "examples/reference-cli/correlation-repetition-less-than.response.json",
+      "sha256": "483b3e592aaff8265697682580a5691123afdfed2ca31a46646466464e0a5cac"
+    },
+    {
+      "path": "examples/reference-cli/correlation-self-excluded-distinct.request.json",
+      "sha256": "3df1dd63196ca13790b02fe504b3cdcd1cc7d085538a0dd2d335875b5bda855e"
+    },
+    {
+      "path": "examples/reference-cli/correlation-self-excluded-distinct.response.json",
+      "sha256": "dc01a59b5b2c0e194ebbc1e02cf8f726d7d6ad4e361a557ab69d0232e529eb59"
+    },
+    {
+      "path": "examples/reference-cli/correlation-self-excluded-duplicate.request.json",
+      "sha256": "5b4f40366f884bb43b99825aa98a827bdee07334081977950a14208b2c189a22"
+    },
+    {
+      "path": "examples/reference-cli/correlation-self-excluded-duplicate.response.json",
+      "sha256": "62a66c7a3c422266501eb9ec0490a0d940ef3a77422db2937732e30ded6c8a10"
+    },
+    {
+      "path": "examples/reference-cli/correlation-self-included.request.json",
+      "sha256": "88088968a8325d7ee150e3ec1a73a1f78f20002c47a512f23ef74059c8f19b50"
+    },
+    {
+      "path": "examples/reference-cli/correlation-self-included.response.json",
+      "sha256": "04310e0d00167fb645ada6a90b850bcda5a4496461be044031391098c38c0314"
+    },
+    {
+      "path": "examples/reference-cli/empty-boolean-equals-true.request.json",
+      "sha256": "0ed8a6040cfc966d4e56c5fb1348988719540bc4cab90972ba1327646c97f340"
+    },
+    {
+      "path": "examples/reference-cli/empty-boolean-equals-true.response.json",
+      "sha256": "4a5468cac4d6f316975ed5961be91e25f02f7006c4a263b2ea2f7ed4f7a73b28"
+    },
+    {
+      "path": "examples/reference-cli/empty-confirm-not-equal-true.request.json",
+      "sha256": "64fe039beb2acb5700f3385a3c53c4a8fc154d487e6cf66d02c3d9ccb20c8e27"
+    },
+    {
+      "path": "examples/reference-cli/empty-confirm-not-equal-true.response.json",
+      "sha256": "daabdaef358924e582f5986f686ef18c33718287309cd08d7651878c722f671b"
+    },
+    {
+      "path": "examples/reference-cli/empty-number-equals-zero.request.json",
+      "sha256": "f2b8f13350a3c204d187995709ca1981a0e7eb42900f070a9d747e31f5b401b2"
+    },
+    {
+      "path": "examples/reference-cli/empty-number-equals-zero.response.json",
+      "sha256": "daabdaef358924e582f5986f686ef18c33718287309cd08d7651878c722f671b"
+    },
+    {
+      "path": "examples/reference-cli/empty-row-gate.request.json",
+      "sha256": "404d17c81d105c433cb2898c175ff74cf3d085f49c3ceee979029e4c93c813d9"
+    },
+    {
+      "path": "examples/reference-cli/empty-row-gate.response.json",
+      "sha256": "4a5468cac4d6f316975ed5961be91e25f02f7006c4a263b2ea2f7ed4f7a73b28"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/boolean-empty-equals-true.request.json",
+      "sha256": "887cd3ef89514bce2471079ddd474af428c5d094639de0c5494b5a81b4dd2b18"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/boolean-empty-equals-true.response.json",
+      "sha256": "085e2c310f2d78709228aa47a56ed99598cf2f0cfafc1ceecc4b3bf56084ef8c"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/confirm-empty-not-true.request.json",
+      "sha256": "557ebccb7be7741305803a2bd06dfb2c087a50a056fddcaf62648b05184ce003"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/confirm-empty-not-true.response.json",
+      "sha256": "a785e8364f83ad93343f59b350b4cfc628aa6e2f1280998a0e36a6bd451c7d87"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/healthy-and-malformed.request.json",
+      "sha256": "5949f453a1286b7d113ec1ab672b7cefa275b2674cf23bfdb66cf8eff7aab020"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/healthy-and-malformed.response.json",
+      "sha256": "5e467d0c572a7909fdd82d09ba4ab05e23016cfe68f15bce932405838ade62fb"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/healthy-or-malformed.request.json",
+      "sha256": "3f1982e8f8fb6a1971e1f7974f5e7f14e2658ea9ddcf7375afca36c3c70cb175"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/healthy-or-malformed.response.json",
+      "sha256": "67c9e94d79446928dea2d54380a478bcfa33eed1914916e2c3887d2c493d0ae8"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/malformed-number-equals-zero.request.json",
+      "sha256": "371f61a5608f54f9d89bb78c46ec38e1794b7a7f217e69924d1664d0e3e6a136"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/malformed-number-equals-zero.response.json",
+      "sha256": "5e467d0c572a7909fdd82d09ba4ab05e23016cfe68f15bce932405838ade62fb"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/number-empty-equals-zero-content.request.json",
+      "sha256": "ae873524418961c799bfe4bde8db432c70fdd9b5d0a22be128c109678422feb8"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/number-empty-equals-zero-content.response.json",
+      "sha256": "a785e8364f83ad93343f59b350b4cfc628aa6e2f1280998a0e36a6bd451c7d87"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/number-empty-equals-zero-empty-row.request.json",
+      "sha256": "57c5361973d04d00c841cf894001e3554c15e6abf3a84ae11e08b16d6e19a132"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/number-empty-equals-zero-empty-row.response.json",
+      "sha256": "085e2c310f2d78709228aa47a56ed99598cf2f0cfafc1ceecc4b3bf56084ef8c"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/number-not-filled-empty-row.request.json",
+      "sha256": "773688b945afdaeb78cd75d04578cce4b0cea271d28034931cba4f80ae44aeab"
+    },
+    {
+      "path": "examples/reference-cli/flat-evidence/number-not-filled-empty-row.response.json",
+      "sha256": "a785e8364f83ad93343f59b350b4cfc628aa6e2f1280998a0e36a6bd451c7d87"
+    },
+    {
+      "path": "examples/reference-cli/illegal-confirm-false.request.json",
+      "sha256": "9a255519b9ebda60a156efbe71bc3c1bb3592847de0a0d80fc45c5dd66f1555e"
+    },
+    {
+      "path": "examples/reference-cli/illegal-confirm-false.response.json",
+      "sha256": "4b93a2db6bc16a8f37e582400f0c5e3b8202404abb662cc11918a80da5404ab3"
+    },
+    {
+      "path": "examples/reference-cli/malformed-json.input",
+      "sha256": "5e19e2950577f1f3dc617272321f453e9f39997d236d68a9718110c1dcc53865"
+    },
+    {
+      "path": "examples/reference-cli/malformed-json.response.json",
+      "sha256": "de70a27949665d623f800a998b9a54be54490b602f128da0c602a1a52322c164"
+    },
+    {
+      "path": "examples/reference-cli/malformed-number.request.json",
+      "sha256": "1853d34c8e340eac230a1bf702ed7ef8885fe183581e3301b39cfdb055d40d37"
+    },
+    {
+      "path": "examples/reference-cli/malformed-number.response.json",
+      "sha256": "18f19e7b985f5c9b254601f0428fe3035f139248b0868ea001eb3aac3ed1ac8e"
+    },
+    {
+      "path": "examples/reference-cli/present-number-equals-literal.request.json",
+      "sha256": "810285854265115026d356222ca2b9888cb4f452e5c07d2303ebf67797cf8538"
+    },
+    {
+      "path": "examples/reference-cli/present-number-equals-literal.response.json",
+      "sha256": "d3fa8302e82fbecb4f6bf5b0adc06bf6f3558a198ac1a3e08b7c0f0460df192e"
+    },
+    {
+      "path": "examples/reference-cli/unsupported-ordering.request.json",
+      "sha256": "d30a982c2d5e0814df0a38bbf9f12634bbe80215f704be7a82476e3853fe20b3"
+    },
+    {
+      "path": "examples/reference-cli/unsupported-ordering.response.json",
+      "sha256": "a213bb70fbd850d69678f98ba7de30b40a61ef47149dad24ac6928ff25561f3c"
+    },
+    {
+      "path": "examples/reference-cli/unsupported-version.request.json",
+      "sha256": "d2e13b0296e391d118eee5f89fd96619000a9c05bfff529b6f80fe60e4189919"
+    },
+    {
+      "path": "examples/reference-cli/unsupported-version.response.json",
+      "sha256": "03790cbdca8c51b69461c778893ecdb86c730cecd8610df16904b03a76f9b7e4"
+    },
+    {
+      "path": "qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json",
+      "sha256": "478ad0be4fefe2f0e7e0e5cddc6b81171c5f0ed6f7fc32abc1d2156106781f15"
+    },
+    {
+      "path": "reference/flat-validation-empty-logic-v1.capability.json",
+      "sha256": "52708f38e3d72e6d0939c00438baf1abdd3b34df31fbb23f8dea0bac86fef3c1"
+    },
+    {
+      "path": "reference/flat-validation-empty-logic-v1.conformance.json",
+      "sha256": "a71b70dfd832ed607c171a4d9139d76663ebb224c63f41059cfbd5ea272f3c8c"
+    },
+    {
+      "path": "reference/flat-validation-empty-logic-v1.generated-differential-v1.json",
+      "sha256": "897dca670bf9fcb6d0cff7cbcb6ce01fd6feb1c41187712928d9f0edcdbe6f87"
+    },
+    {
+      "path": "reference/flat-validation-empty-logic-v1.mutation-plan.json",
+      "sha256": "5489f223e2cf5362d718ca94935533cf2982beadd5c944b9c78e11cd54e89381"
+    },
+    {
+      "path": "reference/single-group-correlation-v1.conformance.json",
+      "sha256": "7e1b8f52ee08c8b3aed8e414df27573ebc9f8ffe27c4103aa8f954fe7277ec2d"
+    },
+    {
+      "path": "reference/supported-fragment-v1.json",
+      "sha256": "89e47bda4ee54ac1f80f3bba004e85c27b0cb31c5d97fda1869727cf358e3f17"
+    }
+  ]
+}

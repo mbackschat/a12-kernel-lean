@@ -679,12 +679,13 @@ private def Distribution.total (distribution : Distribution) : Nat :=
   distribution.notFired + distribution.firedValue + distribution.firedOmission +
     distribution.unknown
 
-private def expectedReferenceDistribution (profile : Profile) (cases : List GeneratedCase) :
-    Except String Distribution := do
-  let mut distribution : Distribution := {}
-  for generated in cases do
-    distribution := distribution.add (← evaluateReference profile generated)
-  pure distribution
+/-- Distribution recorded by the immutable 0.2.0 campaign. Retained-result validation
+    must not reinterpret historical output through today's evaluator. -/
+private def historicalReferenceDistribution : Distribution := {
+  notFired := 14
+  firedValue := 11
+  firedOmission := 13
+  unknown := 14 }
 
 private def validateCompatibilityRecord (profile : Profile) (json : Json) : Except String Unit := do
   let context := "$.compatibility"
@@ -838,7 +839,7 @@ private def validateResultJson (loaded : LoadedProfile) (profileDigest : String)
     (← resultRequiredJson distribution "$.distribution" "candidate") "$.distribution.candidate"
   resultRequireEqual "$.distribution.reference total" referenceDistribution.total counts.completedCases
   resultRequireEqual "$.distribution.candidate total" candidateDistribution.total counts.completedCases
-  let expectedReference ← expectedReferenceDistribution loaded.profile loaded.cases
+  let expectedReference := historicalReferenceDistribution
   resultRequireEqual "$.distribution.reference" referenceDistribution expectedReference
   resultRequireEqual "$.distribution.candidate" candidateDistribution expectedReference
   resultRequireEqual "$.outcome" (← resultRequired json "$" "outcome") "agree"
@@ -943,12 +944,15 @@ private def testSide (projection : ProjectedVerdict) : SideSuccess := {
 private def testProfile : Profile := {
   id := profileId
   compatibility := {
-    capabilityId := "flat-validation-empty-logic-v1"
-    operation := Support.Operation.flatValidationEvaluateFull.tag
-    referenceSemanticsVersion := Support.referenceSemanticsVersion
-    protocolVersion := Support.protocolVersion
-    manifestSchemaVersion := Support.manifestSchemaVersion
-    kernelBehaviorVersion := Support.kernelBehaviorVersion }
+    capabilityId := Lineage.historicalFlatCapability.suiteId
+    operation := Lineage.historicalFlatCapability.operation
+    referenceSemanticsVersion :=
+      Lineage.historicalFlatCapability.compatibility.referenceSemanticsVersion
+    protocolVersion := Lineage.historicalFlatCapability.compatibility.protocolVersion
+    manifestSchemaVersion :=
+      Lineage.historicalFlatCapability.compatibility.manifestSchemaVersion
+    kernelBehaviorVersion :=
+      Lineage.historicalFlatCapability.compatibility.kernelBehaviorVersion }
   revisions := {
     referenceRepository := "a12-kernel-lean"
     reference := String.ofList (List.replicate 40 '0')
@@ -1006,8 +1010,8 @@ private def expectOutputFailure (label : String) (output : Bounded.Output) : Exc
 
 private def checkOutputContract : Except String Unit := do
   let response := Json.mkObj [
-    ("protocolVersion", toJson Support.protocolVersion),
-    ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
+    ("protocolVersion", toJson testProfile.compatibility.protocolVersion),
+    ("kernelBehaviorVersion", toJson testProfile.compatibility.kernelBehaviorVersion),
     ("outcome", toJson "ok"),
     ("verdict", Json.mkObj [("tag", toJson "notFired")])]
   match validateOutput testProfile "candidate" "self-test" (testOutput (response.compress ++ "\n")) with
@@ -1020,7 +1024,8 @@ private def checkOutputContract : Except String Unit := do
   expectOutputFailure "a nonzero status" (testOutput (response.compress ++ "\n") "" 1)
   expectOutputFailure "duplicate response members"
     (testOutput ("{\"protocolVersion\":1,\"protocolVersion\":1,\"kernelBehaviorVersion\":\"" ++
-      Support.kernelBehaviorVersion ++ "\",\"outcome\":\"ok\",\"verdict\":{\"tag\":\"notFired\"}}\n"))
+      testProfile.compatibility.kernelBehaviorVersion ++
+      "\",\"outcome\":\"ok\",\"verdict\":{\"tag\":\"notFired\"}}\n"))
 
 private def checkCleanupSerialization : Except String Unit := do
   let empty : Bounded.Capture := { bytes := ByteArray.empty, exceeded := false }
@@ -1141,7 +1146,7 @@ private def expectResultValidationFailure (label : String) (result : Except Stri
 
 private def canonicalGreenResult : Except String (LoadedProfile × String × Json) := do
   let cases ← generate testProfile
-  let distribution ← expectedReferenceDistribution testProfile cases
+  let distribution := historicalReferenceDistribution
   let profileDigest := String.ofList (List.replicate 64 'a')
   let executableDigest := String.ofList (List.replicate 64 'b')
   let loaded : LoadedProfile := { profile := testProfile, cases, bytes := ByteArray.empty }

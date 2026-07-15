@@ -124,16 +124,13 @@ def HavingNumberRef.resolve (reference : HavingNumberRef)
   match rowContext.resolveNumberComparisonOperand reference.field with
   | .value amount _ => .value amount
   | .unknown cause => .unknown cause
-  | .notEvaluated => .unknown .malformed
 
 def CorrelationComparisonOp.holdsRat (op : CorrelationComparisonOp)
     (left right : Rat) : Bool :=
-  let left := rescaleHalfUp left comparisonScale
-  let right := rescaleHalfUp right comparisonScale
   match op with
-  | .equal => left == right
-  | .notEqual => left != right
-  | .lessThan => left < right
+  | .equal => NumericComparisonOp.equal.holds left right
+  | .notEqual => NumericComparisonOp.notEqual.holds left right
+  | .lessThan => NumericComparisonOp.less.holds left right
 
 def CorrelationComparisonOp.holdsRow (op : CorrelationComparisonOp)
     (left right : RowIndex) : Bool :=
