@@ -82,6 +82,7 @@ lake exe checkReferenceProcess      # run the black-box CLI/fixture/manifest and
 lake exe syncFlatHandover --check   # bind flat evidence artifacts and the post-cold mutation plan to typed source
 lake exe checkBoundedProcess        # check timeout, streamed caps, exact bytes, and process-group cleanup
 lake exe checkGeneratedDifferential --self-test # check the closed 52-case generator and runner guards without a candidate
+lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json # validate the pinned Rust campaign without executing it
 lake build checkMutationQualification # build the mutation packet/replay/checker executable
 lake exe checkMutationQualification --self-test --candidate-repo ../a12-kernel-rust-spike # replay the baseline and mutations, then exercise checker guards
 lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v1.conformance.json

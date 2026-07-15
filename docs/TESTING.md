@@ -134,6 +134,12 @@ Validate a committed or proposed profile without executing either target with:
 lake exe checkGeneratedDifferential --check-profile <profile.json>
 ```
 
+The current reviewed campaign is [`flat-validation-empty-logic-v1.generated-differential-v1.json`](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json):
+
+```sh
+lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
+```
+
 Run an actual pinned comparison only from the exact clean checkouts named by the profile. The result must be an absolute, absent file whose existing non-symlink parent is outside both repositories:
 
 ```sh

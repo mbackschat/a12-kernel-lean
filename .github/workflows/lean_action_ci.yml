@@ -23,3 +23,5 @@ jobs:
         run: lake exe checkBoundedProcess
       - name: Check generated differential profile
         run: lake exe checkGeneratedDifferential --self-test
+      - name: Validate pinned generated differential campaign
+        run: lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
