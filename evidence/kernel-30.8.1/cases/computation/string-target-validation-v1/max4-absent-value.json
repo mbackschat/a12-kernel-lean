@@ -1,0 +1,29 @@
+{
+  "meta" : {
+    "id" : "max4-absent-value",
+    "kernelVersion" : "30.8.1",
+    "source" : "curated",
+    "sections" : [ "§3", "§11" ],
+    "tags" : [ "computation", "string", "target-validation", "errored", "apply" ],
+    "scenario" : "a12-kernel-lean String target-validation capture"
+  },
+  "modelRef" : "models/lean-string-target-max4.json",
+  "placements" : [ {
+    "kind" : "GROUP",
+    "path" : "/Shipment",
+    "reps" : [ 1 ]
+  }, {
+    "kind" : "FIELD",
+    "path" : "/Shipment/Source",
+    "reps" : [ 1, 1 ],
+    "value" : "ABCD"
+  } ],
+  "op" : {
+    "kind" : "compute"
+  },
+  "computeExpected" : [ "/Shipment[1]/Target|VALUE|ABCD" ],
+  "applyExpected" : {
+    "tag" : "string",
+    "value" : "ABCD"
+  }
+}

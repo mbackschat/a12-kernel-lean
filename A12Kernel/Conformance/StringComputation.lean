@@ -42,6 +42,17 @@ private def storedSeed : StoredString := ⟨"SEED", by decide⟩
 private def storedReference : StoredString := ⟨"REF-42", by decide⟩
 private def storedSuffix : StoredString := ⟨"-X", by decide⟩
 private def storedPrefix : StoredString := ⟨"X-", by decide⟩
+private def storedAbcd : StoredString := ⟨"ABCD", by decide⟩
+private def storedAbcde : StoredString := ⟨"ABCDE", by decide⟩
+private def storedSpacedAbc : StoredString := ⟨" ABC ", by decide⟩
+private def storedCr : StoredString := ⟨"\r", by decide⟩
+private def storedLf : StoredString := ⟨"\n", by decide⟩
+
+private def maxThree : StringTargetLengthPolicy := .maximum ⟨3, by decide⟩
+private def maxFour : StringTargetLengthPolicy := .maximum ⟨4, by decide⟩
+private def maxFive : StringTargetLengthPolicy := .maximum ⟨5, by decide⟩
+private def minThree : StringTargetLengthPolicy := .minimum ⟨3, by decide⟩
+private def minFive : StringTargetLengthPolicy := .minimum ⟨5, by decide⟩
 
 example : valueOf (copySource.eval (rawContext (.parsed (.str "REF-42")) .empty)) =
     some (.text "REF-42") := by
@@ -150,5 +161,85 @@ example : StringTerm.concat .noValue .noValue != .noValue := by
 
 example : (StringTerm.concat .noValue .noValue).store = StringTerm.noValue.store := by
   decide
+
+/- Target checking is a layer after the root write attempt: the same nonempty result is accepted at the boundary and rejected one unit below it. -/
+example : maxFour.check (.produced storedAbcd) = .supported (.accepted storedAbcd) := by
+  native_decide
+
+example : maxThree.check (.produced storedAbcd) =
+    .supported (.errored storedAbcd .tooLong) := by
+  native_decide
+
+example : maxFive.check (.produced storedAbcd) = .supported (.accepted storedAbcd) := by
+  native_decide
+
+/- A minimum-length violation retains the same attempted stored form with its distinct cause. -/
+example : minFive.check (.produced storedAbcd) =
+    .supported (.errored storedAbcd .tooShort) := by
+  native_decide
+
+example : minFive.check (.produced storedAbcde) = .supported (.accepted storedAbcde) := by
+  native_decide
+
+example : minThree.check (.produced storedAbcd) = .supported (.accepted storedAbcd) := by
+  native_decide
+
+/- Computed leading and trailing blanks survive the reduced target check when the length bound admits them. -/
+example : maxFive.check (.produced storedSpacedAbc) = .supported (.accepted storedSpacedAbc) := by
+  native_decide
+
+/- Unlike a clean value, ERRORED is reported even when the attempted value equals the prior target. -/
+example : (maxThree.check (.produced storedAbcd)).mapOutcome
+    (·.projectDelta (.filled storedAbcd)) =
+      some (some (.errored storedAbcd .tooLong)) := by
+  native_decide
+
+example : (maxThree.check (.produced storedAbcd)).mapOutcome (·.projectDelta .empty) =
+    some (some (.errored storedAbcd .tooLong)) := by
+  native_decide
+
+example : (maxThree.check (.produced storedAbcd)).mapOutcome (·.appliedValue) = some none := by
+  native_decide
+
+example : (maxFour.check (.produced storedAbcd)).mapOutcome (·.appliedValue) =
+    some (some storedAbcd) := by
+  native_decide
+
+example : (maxFour.check (.produced storedAbcd)).mapOutcome
+    (·.projectDelta (.filled storedAbcd)) = some none := by
+  native_decide
+
+/- Equal value-only application results do not imply equal deltas: ERRORED remains visible where quiet no-value is silent. -/
+example : (StringTargetOutcome.errored storedAbcd .tooLong).appliedValue =
+      StringTargetOutcome.noValue.appliedValue ∧
+    (StringTargetOutcome.errored storedAbcd .tooLong).projectDelta .empty !=
+      StringTargetOutcome.noValue.projectDelta .empty := by
+  decide
+
+/- Quiet no-value and poison never become target-validation errors. -/
+example : maxThree.check .noValue = .supported .noValue := by
+  rfl
+
+example : minFive.check .noValue = .supported .noValue := by
+  rfl
+
+example : (minFive.check .noValue).mapOutcome (·.projectDelta .empty) = some none := by
+  rfl
+
+example : (minFive.check .noValue).mapOutcome (·.projectDelta (.filled storedSeed)) =
+    some (some .cleared) := by
+  rfl
+
+example : minFive.check (.poison .malformed) = .supported (.poison .malformed) := by
+  rfl
+
+/- The length-only target capsule fails closed when the preceding line-break clause would be needed. -/
+example : maxThree.check (.produced storedCr) =
+    .unsupported .unsupportedLineBreak := by
+  native_decide
+
+example : minFive.check (.produced storedLf) =
+    .unsupported .unsupportedLineBreak := by
+  native_decide
 
 end A12Kernel.Conformance.StringComputation

@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "kernelVersion": "30.8.1",
+  "captureRef": "captures/string-target-validation-2026-07-15.json",
+  "captureSha256": "3281bac938fd4dbdb199050262bfb58c4b30eb9fde71cf30bd2858d0eef07b37",
+  "sourceRevision": "699e8619ac1667c861e14b285c5924ac57a705f1",
+  "targetPointer": "/Shipment[1]/Target",
+  "models": [
+    {
+      "id": "lean-string-target-max4",
+      "modelRef": "models/lean-string-target-max4.json",
+      "modelSha256": "9ce1060c9c4df1098f61d2855f7b0aa67b450459499a5e01d82f57f75ea3e8cf",
+      "operation": { "tag": "copy" },
+      "policy": { "tag": "maximum", "bound": 4 }
+    },
+    {
+      "id": "lean-string-target-max3",
+      "modelRef": "models/lean-string-target-max3.json",
+      "modelSha256": "34787bca678e9590a6dd326b0540843ab7e44d7c2889da990fee27cb1fdf1d43",
+      "operation": { "tag": "copy" },
+      "policy": { "tag": "maximum", "bound": 3 }
+    },
+    {
+      "id": "lean-string-target-min5",
+      "modelRef": "models/lean-string-target-min5.json",
+      "modelSha256": "7bcc96560c5cfd5ac4e9fedb1645f7dbf2db0692caced57e43de8d2831c2349f",
+      "operation": { "tag": "copy" },
+      "policy": { "tag": "minimum", "bound": 5 }
+    },
+    {
+      "id": "lean-string-target-spaced-max5",
+      "modelRef": "models/lean-string-target-spaced-max5.json",
+      "modelSha256": "031ec09d33e94ed69be8b5082e110ab57092f10f1bb7760c25e8995a45c9757c",
+      "operation": { "tag": "padded", "prefix": " ", "suffix": " " },
+      "policy": { "tag": "maximum", "bound": 5 }
+    }
+  ],
+  "cases": [
+    {
+      "id": "max4-stale-value",
+      "caseRef": "cases/computation/string-target-validation-v1/max4-stale-value.json",
+      "caseSha256": "5bf21cb066f046eab496ae97a467129e7e8578ca959235342dc9d79a72dc8324",
+      "modelId": "lean-string-target-max4",
+      "source": "ABCD",
+      "priorTarget": { "tag": "string", "value": "OLD" }
+    },
+    {
+      "id": "max3-stale-errored",
+      "caseRef": "cases/computation/string-target-validation-v1/max3-stale-errored.json",
+      "caseSha256": "28d0e7075f0e5f3f0d35d433c53212e5c4455b45db01ddb74c8c7c7544c9ed0f",
+      "modelId": "lean-string-target-max3",
+      "source": "ABCD",
+      "priorTarget": { "tag": "string", "value": "OLD" }
+    },
+    {
+      "id": "max4-absent-value",
+      "caseRef": "cases/computation/string-target-validation-v1/max4-absent-value.json",
+      "caseSha256": "efc6d6feb70a7c00b7a49761778ef9034b553c812ad73968f9f6e3dfacf8b3e4",
+      "modelId": "lean-string-target-max4",
+      "source": "ABCD",
+      "priorTarget": { "tag": "absent" }
+    },
+    {
+      "id": "max3-absent-errored",
+      "caseRef": "cases/computation/string-target-validation-v1/max3-absent-errored.json",
+      "caseSha256": "d4ce5c9ee0433780cd12cee9a4503218a0a6645d314860c3af91817f7e256b34",
+      "modelId": "lean-string-target-max3",
+      "source": "ABCD",
+      "priorTarget": { "tag": "absent" }
+    },
+    {
+      "id": "max4-equal-unchanged",
+      "caseRef": "cases/computation/string-target-validation-v1/max4-equal-unchanged.json",
+      "caseSha256": "23a0680f12041df49f6deb3fa8cbaf115d18a9222c5960a1a620c4b26989ab27",
+      "modelId": "lean-string-target-max4",
+      "source": "ABCD",
+      "priorTarget": { "tag": "string", "value": "ABCD" }
+    },
+    {
+      "id": "max3-equal-errored",
+      "caseRef": "cases/computation/string-target-validation-v1/max3-equal-errored.json",
+      "caseSha256": "8f19a48f41eb0698a8c70fcfad1b58b4ba1f94164fef16c3303953e95cc36d3d",
+      "modelId": "lean-string-target-max3",
+      "source": "ABCD",
+      "priorTarget": { "tag": "string", "value": "ABCD" }
+    },
+    {
+      "id": "min5-boundary-value",
+      "caseRef": "cases/computation/string-target-validation-v1/min5-boundary-value.json",
+      "caseSha256": "f7250419b8803ee6d00ed2a886aff2f77f0bf30668d29a6c2b9a4177e86d452c",
+      "modelId": "lean-string-target-min5",
+      "source": "ABCDE",
+      "priorTarget": { "tag": "string", "value": "OLDER" }
+    },
+    {
+      "id": "min5-short-errored",
+      "caseRef": "cases/computation/string-target-validation-v1/min5-short-errored.json",
+      "caseSha256": "56f31dbd3277aca575dfa0d470f214a5c60d05ed37ccc1f1c6d82ae63c2ac8b0",
+      "modelId": "lean-string-target-min5",
+      "source": "ABCD",
+      "priorTarget": { "tag": "string", "value": "OLDER" }
+    },
+    {
+      "id": "spaced-boundary-value",
+      "caseRef": "cases/computation/string-target-validation-v1/spaced-boundary-value.json",
+      "caseSha256": "a4260936414e606716fc612594da9b442ffc05d5dab76dbb4ba81236e7dd20cc",
+      "modelId": "lean-string-target-spaced-max5",
+      "source": "ABC",
+      "priorTarget": { "tag": "absent" }
+    }
+  ]
+}
