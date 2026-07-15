@@ -94,7 +94,7 @@ private def requireRegularFile (label : String) (path : System.FilePath) : IO Un
     fail s!"{label} '{path}' is unavailable: {error}"
   if metadata.type != .file then fail s!"{label} '{path}' is not a regular file"
 
-private partial def readBoundedFile (handle : IO.FS.Handle) (limit : Nat)
+private partial def readBoundedFile (label : String) (handle : IO.FS.Handle) (limit : Nat)
     (accumulator : ByteArray := ByteArray.empty) : IO ByteArray := do
   let remaining := limit + 1 - accumulator.size
   let chunk ← handle.read (USize.ofNat (min remaining 4096))
@@ -103,15 +103,15 @@ private partial def readBoundedFile (handle : IO.FS.Handle) (limit : Nat)
   else
     let next := accumulator ++ chunk
     if next.size > limit then
-      fail s!"profile exceeds {limit} bytes"
-    readBoundedFile handle limit next
+      fail s!"{label} exceeds {limit} bytes"
+    readBoundedFile label handle limit next
 
-private def readBoundedPath (path : System.FilePath) (limit : Nat) : IO ByteArray :=
-  IO.FS.withFile path .read fun handle => readBoundedFile handle limit
+private def readBoundedPath (label : String) (path : System.FilePath) (limit : Nat) : IO ByteArray :=
+  IO.FS.withFile path .read fun handle => readBoundedFile label handle limit
 
 private def loadProfile (path : System.FilePath) : IO LoadedProfile := do
   requireRegularFile "profile" path
-  let bytes ← readBoundedPath path maxProfileBytes
+  let bytes ← readBoundedPath "profile" path maxProfileBytes
   let text ← match String.fromUTF8? bytes with
     | some text => pure text
     | none => fail s!"profile '{path}' is not UTF-8"
@@ -126,6 +126,9 @@ private def generatedProcessInputBytes (loaded : LoadedProfile) : Nat :=
   (loaded.cases.map fun generated =>
     (generated.request.compress ++ "\n").utf8ByteSize * loaded.profile.execution.processesPerCase).sum
 
+private def isPortableMetadataCharacter (character : Char) : Bool :=
+  character.toNat < 0x80 && (character.isAlphanum || ['.', '_', '-'].contains character)
+
 private def validateRelativeExecutable (value : String) : Except String Unit := do
   let path := System.FilePath.mk value
   if value.isEmpty then throw "executable path must not be empty"
@@ -139,9 +142,30 @@ private def validateRelativeExecutable (value : String) : Except String Unit := 
     if segment.isEmpty || segment == "." || segment == ".." then
       throw "executable path contains an empty, current-directory, or parent-directory segment"
     if segment.utf8ByteSize > 255 then throw "executable path segment exceeds 255 UTF-8 bytes"
-    if !segment.toList.all fun character =>
-        character.toNat < 0x80 && (character.isAlphanum || ['.', '_', '-'].contains character) then
+    if !segment.toList.all isPortableMetadataCharacter then
       throw "executable path contains a non-portable character"
+
+private def isAsciiDigit (character : Char) : Bool :=
+  '0' <= character && character <= '9'
+
+private def isDarwinComponent (component : String) : Bool :=
+  if component == "darwin" then true
+  else if !component.startsWith "darwin" then false
+  else
+    match (component.drop "darwin".length).toString.toList with
+    | [] => false
+    | first :: suffix => isAsciiDigit first && suffix.all fun character =>
+        isAsciiDigit character || character == '.'
+
+private def platformTargetMatches (platforms : List String) (target : String) : Bool :=
+  match target.splitOn "-" with
+  | [architecture, "apple", operatingSystem] =>
+      platforms.contains "macos" && !architecture.isEmpty && isDarwinComponent operatingSystem
+  | [architecture, vendor, "linux"] =>
+      platforms.contains "linux" && !architecture.isEmpty && !vendor.isEmpty
+  | [architecture, vendor, "linux", abi] =>
+      platforms.contains "linux" && !architecture.isEmpty && !vendor.isEmpty && !abi.isEmpty
+  | _ => false
 
 private def componentsContained (root path : System.FilePath) : Bool :=
   List.isPrefixOf root.components path.components
@@ -530,7 +554,7 @@ private def postflightIntegrityFailure? (loaded : LoadedProfile) (config : RunCo
     requireContainedRegularFile "bounded-process relay" config.referenceRepo relay
     requireContainedRegularFile "reference executable" config.referenceRepo reference
     requireContainedRegularFile "candidate executable" config.candidateRepo candidate
-    if (← readBoundedPath config.profilePath maxProfileBytes) != loaded.bytes then
+    if (← readBoundedPath "profile" config.profilePath maxProfileBytes) != loaded.bytes then
       fail "profile bytes changed during execution"
     for (label, path, expected) in [
         ("profile", config.profilePath, digests.profile),
@@ -596,6 +620,261 @@ private def resultJson (loaded : LoadedProfile) (config : RunConfig) (digests : 
     ("minimalWitnesses", Json.arr (minimalWitnesses state.disagreements |>.map witnessJson).toArray),
     ("failure", state.failure?.getD Json.null),
     ("integrityFailure", state.integrityFailure?.getD Json.null)]
+
+/-! ### Retained agreement-result validation
+
+The retained-result gate accepts only a complete green agreement receipt. It checks that Git-reviewed historical record for exact profile identity and internal consistency without authenticating the historical execution or rebuilding and rehashing its platform-specific executables; disagreement and failure records remain run outputs for immediate classification rather than admitted retained receipts.
+-/
+
+private structure ResultUsage where
+  generatedRequestBytes : Nat
+  plannedProcessInputBytes : Nat
+  processInputBytes : Nat
+  processOutputBytes : Nat
+  elapsedMilliseconds : Nat
+
+private structure ResultCounts where
+  generatedCases : Nat
+  completedCases : Nat
+  agreements : Nat
+  disagreements : Nat
+  processesStarted : Nat
+
+private def resultChild (context name : String) : String :=
+  if context == "$" then s!"$.{name}" else s!"{context}.{name}"
+
+private def resultRequireObject (json : Json) (context : String) (allowed : List String) :
+    Except String Unit := do
+  let object ← match json.getObj? with
+    | .ok object => pure object
+    | .error _ => throw s!"result {context}: expected object"
+  for (name, _) in object.toList do
+    if !allowed.contains name then throw s!"result {resultChild context name}: unknown member"
+
+private def resultRequiredJson (json : Json) (context name : String) : Except String Json :=
+  match json.getObjVal? name with
+  | .ok value => pure value
+  | .error _ => throw s!"result {resultChild context name}: missing member"
+
+private def resultRequired [FromJson α] (json : Json) (context name : String) : Except String α := do
+  let value ← resultRequiredJson json context name
+  match fromJson? value with
+  | .ok decoded => pure decoded
+  | .error _ => throw s!"result {resultChild context name}: wrong type"
+
+private def resultRequireEqual [BEq α] (context : String) (actual expected : α) :
+    Except String Unit :=
+  if actual == expected then pure ()
+  else throw s!"result {context}: value does not match the bound profile or schema"
+
+private def parseResultDistribution (json : Json) (context : String) : Except String Distribution := do
+  resultRequireObject json context ["notFired", "fired.value", "fired.omission", "unknown"]
+  pure {
+    notFired := ← resultRequired json context "notFired"
+    firedValue := ← resultRequired json context "fired.value"
+    firedOmission := ← resultRequired json context "fired.omission"
+    unknown := ← resultRequired json context "unknown" }
+
+private def Distribution.total (distribution : Distribution) : Nat :=
+  distribution.notFired + distribution.firedValue + distribution.firedOmission +
+    distribution.unknown
+
+private def expectedReferenceDistribution (profile : Profile) (cases : List GeneratedCase) :
+    Except String Distribution := do
+  let mut distribution : Distribution := {}
+  for generated in cases do
+    distribution := distribution.add (← evaluateReference profile generated)
+  pure distribution
+
+private def validateCompatibilityRecord (profile : Profile) (json : Json) : Except String Unit := do
+  let context := "$.compatibility"
+  resultRequireObject json context ["capabilityId", "operation", "referenceSemanticsVersion",
+    "protocolVersion", "manifestSchemaVersion", "kernelBehaviorVersion"]
+  resultRequireEqual s!"{context}.capabilityId" (← resultRequired json context "capabilityId")
+    profile.compatibility.capabilityId
+  resultRequireEqual s!"{context}.operation" (← resultRequired json context "operation")
+    profile.compatibility.operation
+  resultRequireEqual s!"{context}.referenceSemanticsVersion"
+    (← resultRequired json context "referenceSemanticsVersion")
+    profile.compatibility.referenceSemanticsVersion
+  resultRequireEqual s!"{context}.protocolVersion" (← resultRequired json context "protocolVersion")
+    profile.compatibility.protocolVersion
+  resultRequireEqual s!"{context}.manifestSchemaVersion"
+    (← resultRequired json context "manifestSchemaVersion") profile.compatibility.manifestSchemaVersion
+  resultRequireEqual s!"{context}.kernelBehaviorVersion"
+    (← resultRequired json context "kernelBehaviorVersion") profile.compatibility.kernelBehaviorVersion
+
+private def validateRevisionRecord (profile : Profile) (json : Json) : Except String Unit := do
+  let context := "$.revisions"
+  resultRequireObject json context ["referenceRepository", "reference", "candidateRepository", "candidate"]
+  resultRequireEqual s!"{context}.referenceRepository"
+    (← resultRequired json context "referenceRepository") profile.revisions.referenceRepository
+  resultRequireEqual s!"{context}.reference" (← resultRequired json context "reference")
+    profile.revisions.reference
+  resultRequireEqual s!"{context}.candidateRepository"
+    (← resultRequired json context "candidateRepository") profile.revisions.candidateRepository
+  resultRequireEqual s!"{context}.candidate" (← resultRequired json context "candidate")
+    profile.revisions.candidate
+
+private def validateDeclaredBudgets (profile : Profile) (json : Json) : Except String Unit := do
+  let context := "$.budgets.declared"
+  resultRequireObject json context ["cases", "requestBytes", "aggregateRequestBytes",
+    "aggregateProcessInputBytes", "processTimeoutMilliseconds", "processCleanupMilliseconds",
+    "processPollMilliseconds", "aggregateElapsedMilliseconds", "processStdoutBytes",
+    "processStderrBytes", "aggregateProcessOutputBytes", "resultBytes"]
+  for (name, expected) in [
+      ("cases", profile.bounds.cases),
+      ("requestBytes", profile.bounds.requestBytes),
+      ("aggregateRequestBytes", profile.bounds.aggregateRequestBytes),
+      ("aggregateProcessInputBytes", profile.bounds.aggregateProcessInputBytes),
+      ("processTimeoutMilliseconds", profile.bounds.processTimeoutMilliseconds),
+      ("processCleanupMilliseconds", profile.bounds.processCleanupMilliseconds),
+      ("processPollMilliseconds", profile.bounds.processPollMilliseconds),
+      ("aggregateElapsedMilliseconds", profile.bounds.aggregateElapsedMilliseconds),
+      ("processStdoutBytes", profile.bounds.processStdoutBytes),
+      ("processStderrBytes", profile.bounds.processStderrBytes),
+      ("aggregateProcessOutputBytes", profile.bounds.aggregateProcessOutputBytes),
+      ("resultBytes", profile.bounds.resultBytes)] do
+    resultRequireEqual s!"{context}.{name}" (← resultRequired json context name) expected
+
+private def parseResultUsage (json : Json) : Except String ResultUsage := do
+  let context := "$.budgets.usage"
+  resultRequireObject json context ["generatedRequestBytes", "plannedProcessInputBytes",
+    "processInputBytes", "processOutputBytes", "elapsedMilliseconds"]
+  pure {
+    generatedRequestBytes := ← resultRequired json context "generatedRequestBytes"
+    plannedProcessInputBytes := ← resultRequired json context "plannedProcessInputBytes"
+    processInputBytes := ← resultRequired json context "processInputBytes"
+    processOutputBytes := ← resultRequired json context "processOutputBytes"
+    elapsedMilliseconds := ← resultRequired json context "elapsedMilliseconds" }
+
+private def parseResultCounts (json : Json) : Except String ResultCounts := do
+  let context := "$.counts"
+  resultRequireObject json context ["generatedCases", "completedCases", "agreements",
+    "disagreements", "processesStarted"]
+  pure {
+    generatedCases := ← resultRequired json context "generatedCases"
+    completedCases := ← resultRequired json context "completedCases"
+    agreements := ← resultRequired json context "agreements"
+    disagreements := ← resultRequired json context "disagreements"
+    processesStarted := ← resultRequired json context "processesStarted" }
+
+private def validateResultJson (loaded : LoadedProfile) (profileDigest : String) (json : Json) :
+    Except String Unit := do
+  resultRequireObject json "$" ["schemaVersion", "profileSchemaVersion", "profileId",
+    "responseProjection", "observableVerdicts", "compatibility", "revisions", "execution",
+    "artifacts", "claim", "outcome", "budgets", "counts", "distribution", "disagreements",
+    "minimalWitnesses", "failure", "integrityFailure"]
+  resultRequireEqual "$.schemaVersion" (← resultRequired json "$" "schemaVersion") 1
+  resultRequireEqual "$.profileSchemaVersion" (← resultRequired json "$" "profileSchemaVersion")
+    schemaVersion
+  resultRequireEqual "$.profileId" (← resultRequired json "$" "profileId") loaded.profile.id
+  resultRequireEqual "$.responseProjection" (← resultRequired json "$" "responseProjection")
+    loaded.profile.responseProjection.tag
+  resultRequireEqual "$.observableVerdicts" (← resultRequired json "$" "observableVerdicts")
+    loaded.profile.observableVerdicts
+  validateCompatibilityRecord loaded.profile (← resultRequiredJson json "$" "compatibility")
+  validateRevisionRecord loaded.profile (← resultRequiredJson json "$" "revisions")
+
+  let execution ← resultRequiredJson json "$" "execution"
+  resultRequireObject execution "$.execution" ["platformTarget", "strategy", "jobs"]
+  let platformTarget : String ← resultRequired execution "$.execution" "platformTarget"
+  if platformTarget.isEmpty || platformTarget.utf8ByteSize > 255 ||
+      !platformTarget.toList.all isPortableMetadataCharacter then
+    throw "result $.execution.platformTarget: must be a portable nonempty target of at most 255 bytes"
+  if !platformTargetMatches loaded.profile.execution.platforms platformTarget then
+    throw "result $.execution.platformTarget: target is outside the profile's declared platforms"
+  resultRequireEqual "$.execution.strategy" (← resultRequired execution "$.execution" "strategy")
+    loaded.profile.execution.strategy
+  resultRequireEqual "$.execution.jobs" (← resultRequired execution "$.execution" "jobs")
+    loaded.profile.execution.jobs
+
+  let artifacts ← resultRequiredJson json "$" "artifacts"
+  resultRequireObject artifacts "$.artifacts" ["profile", "runner", "relay", "reference", "candidate"]
+  for name in ["profile", "runner", "relay", "reference", "candidate"] do
+    let artifact ← resultRequiredJson artifacts "$.artifacts" name
+    let allowed := if name == "reference" || name == "candidate" then ["path", "sha256"] else ["sha256"]
+    let context := s!"$.artifacts.{name}"
+    resultRequireObject artifact context allowed
+    let digest : String ← resultRequired artifact context "sha256"
+    if !Sha256.isDigest digest then throw s!"result {context}.sha256: expected lowercase SHA-256"
+    if name == "profile" then resultRequireEqual s!"{context}.sha256" digest profileDigest
+    if name == "reference" || name == "candidate" then
+      validateRelativeExecutable (← resultRequired artifact context "path")
+
+  let budgets ← resultRequiredJson json "$" "budgets"
+  resultRequireObject budgets "$.budgets" ["declared", "usage"]
+  validateDeclaredBudgets loaded.profile (← resultRequiredJson budgets "$.budgets" "declared")
+  let usage ← parseResultUsage (← resultRequiredJson budgets "$.budgets" "usage")
+  let generatedBytes := generatedRequestBytes loaded.cases
+  let plannedInput := generatedProcessInputBytes loaded
+  resultRequireEqual "$.budgets.usage.generatedRequestBytes" usage.generatedRequestBytes generatedBytes
+  resultRequireEqual "$.budgets.usage.plannedProcessInputBytes" usage.plannedProcessInputBytes plannedInput
+  resultRequireEqual "$.budgets.usage.processInputBytes" usage.processInputBytes plannedInput
+  if usage.processOutputBytes > loaded.profile.bounds.aggregateProcessOutputBytes then
+    throw "result $.budgets.usage.processOutputBytes: exceeds declared bound"
+  if usage.elapsedMilliseconds > loaded.profile.bounds.aggregateElapsedMilliseconds then
+    throw "result $.budgets.usage.elapsedMilliseconds: exceeds declared bound"
+
+  let counts ← parseResultCounts (← resultRequiredJson json "$" "counts")
+  resultRequireEqual "$.counts.generatedCases" counts.generatedCases loaded.cases.length
+  resultRequireEqual "$.counts.completedCases" counts.completedCases loaded.cases.length
+  resultRequireEqual "$.counts.agreements" counts.agreements loaded.cases.length
+  resultRequireEqual "$.counts.disagreements" counts.disagreements 0
+  resultRequireEqual "$.counts arithmetic" (counts.agreements + counts.disagreements)
+    counts.completedCases
+  resultRequireEqual "$.counts.processesStarted" counts.processesStarted
+    (loaded.cases.length * loaded.profile.execution.processesPerCase)
+  let disagreements : List Json ← resultRequired json "$" "disagreements"
+  if !disagreements.isEmpty then throw "result $.disagreements: retained agreement receipt must be empty"
+  let witnesses : List Json ← resultRequired json "$" "minimalWitnesses"
+  if !witnesses.isEmpty then throw "result $.minimalWitnesses: retained agreement receipt must be empty"
+
+  let distribution ← resultRequiredJson json "$" "distribution"
+  resultRequireObject distribution "$.distribution" ["reference", "candidate"]
+  let referenceDistribution ← parseResultDistribution
+    (← resultRequiredJson distribution "$.distribution" "reference") "$.distribution.reference"
+  let candidateDistribution ← parseResultDistribution
+    (← resultRequiredJson distribution "$.distribution" "candidate") "$.distribution.candidate"
+  resultRequireEqual "$.distribution.reference total" referenceDistribution.total counts.completedCases
+  resultRequireEqual "$.distribution.candidate total" candidateDistribution.total counts.completedCases
+  let expectedReference ← expectedReferenceDistribution loaded.profile loaded.cases
+  resultRequireEqual "$.distribution.reference" referenceDistribution expectedReference
+  resultRequireEqual "$.distribution.candidate" candidateDistribution expectedReference
+  resultRequireEqual "$.outcome" (← resultRequired json "$" "outcome") "agree"
+  resultRequireEqual "$.failure" (← resultRequiredJson json "$" "failure") Json.null
+  resultRequireEqual "$.integrityFailure" (← resultRequiredJson json "$" "integrityFailure") Json.null
+
+  let claim ← resultRequiredJson json "$" "claim"
+  resultRequireObject claim "$.claim" ["class", "scope", "leanAccountAgreement",
+    "kernelEvidence", "externalKernelCorrespondence"]
+  resultRequireEqual "$.claim.class" (← resultRequired claim "$.claim" "class")
+    "finiteLeanAccountDifferential"
+  resultRequireEqual "$.claim.scope" (← resultRequired claim "$.claim" "scope")
+    "generatedProfileCasesOnly"
+  resultRequireEqual "$.claim.kernelEvidence" (← resultRequired claim "$.claim" "kernelEvidence") "none"
+  resultRequireEqual "$.claim.externalKernelCorrespondence"
+    (← resultRequired claim "$.claim" "externalKernelCorrespondence") false
+  resultRequireEqual "$.claim.leanAccountAgreement"
+    (← resultRequired claim "$.claim" "leanAccountAgreement") true
+
+private def parseAndValidateResult (loaded : LoadedProfile) (profileDigest : String)
+    (bytes : ByteArray) : Except String Unit := do
+  let input ← match String.fromUTF8? bytes with
+    | some input => pure input
+    | none => throw "result is not UTF-8"
+  let json ← match StrictJson.parse input with
+    | .ok json => pure json
+    | .error error => throw s!"invalid result JSON: {repr error}"
+  validateResultJson loaded profileDigest json
+
+private def checkResult (profilePath resultPath : System.FilePath) : IO Unit := do
+  let loaded ← loadProfile profilePath
+  requireRegularFile "result" resultPath
+  let bytes ← readBoundedPath "result" resultPath loaded.profile.bounds.resultBytes
+  let profileDigest ← Sha256.file profilePath
+  parseAndValidateResult loaded profileDigest bytes |> IO.ofExcept
+  IO.println s!"generated differential agreement-result check: {loaded.cases.length}/{loaded.profile.bounds.cases} cases bound to profile sha256={profileDigest}; no historical executable digest replay"
 
 private def writeResult (path : System.FilePath) (maximumBytes : Nat) (json : Json) : IO Unit := do
   let content := json.compress ++ "\n"
@@ -843,6 +1122,93 @@ private def checkCanonicalResultBudget : Except String Unit := do
   if resultBytes > testProfile.bounds.resultBytes then
     throw s!"canonical all-disagreement plus late-failure result requires {resultBytes} bytes"
 
+private def replaceResultObjectMember (root : Json) (objectName memberName : String)
+    (value : Json) : Except String Json := do
+  let object ← resultRequiredJson root "$" objectName
+  pure (root.setObjVal! objectName (object.setObjVal! memberName value))
+
+private def replaceArtifactDigest (root : Json) (name digest : String) : Except String Json := do
+  let artifacts ← resultRequiredJson root "$" "artifacts"
+  let artifact ← resultRequiredJson artifacts "$.artifacts" name
+  pure (root.setObjVal! "artifacts"
+    (artifacts.setObjVal! name (artifact.setObjVal! "sha256" (toJson digest))))
+
+private def expectResultValidationFailure (label : String) (result : Except String Unit) :
+    Except String Unit :=
+  match result with
+  | .error _ => pure ()
+  | .ok _ => throw s!"result validator accepted {label}"
+
+private def canonicalGreenResult : Except String (LoadedProfile × String × Json) := do
+  let cases ← generate testProfile
+  let distribution ← expectedReferenceDistribution testProfile cases
+  let profileDigest := String.ofList (List.replicate 64 'a')
+  let executableDigest := String.ofList (List.replicate 64 'b')
+  let loaded : LoadedProfile := { profile := testProfile, cases, bytes := ByteArray.empty }
+  let config : RunConfig := {
+    profilePath := "/profile.json"
+    referenceRepo := "/reference"
+    referenceExecutable := ".lake/build/bin/a12-kernel-reference"
+    candidateRepo := "/candidate"
+    candidateExecutable := "target/debug/a12-kernel-rust-spike"
+    resultPath := "/result.json" }
+  let state : CampaignState := {
+    processesStarted := cases.length * testProfile.execution.processesPerCase
+    processInputBytes := generatedProcessInputBytes loaded
+    processOutputBytes := 0
+    elapsedMs := 1
+    completedCases := cases.length
+    referenceDistribution := distribution
+    candidateDistribution := distribution }
+  let result := resultJson loaded config {
+    profile := profileDigest
+    runner := executableDigest
+    relay := executableDigest
+    reference := executableDigest
+    candidate := executableDigest } state
+  pure (loaded, profileDigest, result)
+
+private def checkResultValidation : IO Unit := do
+  let (loaded, profileDigest, canonical) ← canonicalGreenResult |> IO.ofExcept
+  validateResultJson loaded profileDigest canonical |> IO.ofExcept
+  let mutations : List (String × Except String Json) := [
+    ("an outcome mutation", pure (canonical.setObjVal! "outcome" (toJson "disagreement"))),
+    ("a revision mutation", replaceResultObjectMember canonical "revisions" "candidate"
+      (toJson (String.ofList (List.replicate 40 '0')))),
+    ("an excluded platform mutation", replaceResultObjectMember canonical "execution"
+      "platformTarget" (toJson "x86_64-pc-windows-msvc")),
+    ("a platform-name-only mutation", replaceResultObjectMember canonical "execution"
+      "platformTarget" (toJson "linux")),
+    ("a trailing-platform-token mutation", replaceResultObjectMember canonical "execution"
+      "platformTarget" (toJson "x86_64-pc-windows-linux")),
+    ("a contradictory platform mutation", replaceResultObjectMember canonical "execution"
+      "platformTarget" (toJson "x86_64-apple-darwin-linux")),
+    ("a count mutation", replaceResultObjectMember canonical "counts" "completedCases" (toJson 51)),
+    ("a claim mutation", replaceResultObjectMember canonical "claim" "kernelEvidence" (toJson "retained")),
+    ("a failure mutation", pure (canonical.setObjVal! "failure" (Json.mkObj [("kind", toJson "processFailure")]))),
+    ("a disagreement mutation", pure (canonical.setObjVal! "disagreements" (toJson [Json.mkObj []]))),
+    ("a witness mutation", pure (canonical.setObjVal! "minimalWitnesses" (toJson [Json.mkObj []]))),
+    ("a profile digest mutation", replaceArtifactDigest canonical "profile"
+      (String.ofList (List.replicate 64 'c'))),
+    ("an artifact digest mutation", replaceArtifactDigest canonical "runner" "not-a-digest"),
+    ("an unknown top-level member", pure (canonical.setObjVal! "unexpected" (toJson true)))]
+  for (label, mutation) in mutations do
+    let mutated ← mutation |> IO.ofExcept
+    expectResultValidationFailure label (validateResultJson loaded profileDigest mutated) |> IO.ofExcept
+  let canonicalText := canonical.compress
+  let duplicateText := "{\"schemaVersion\":1," ++ (canonicalText.drop 1).toString
+  expectResultValidationFailure "a duplicate JSON member"
+    (parseAndValidateResult loaded profileDigest duplicateText.toUTF8) |> IO.ofExcept
+  expectResultValidationFailure "truncated JSON"
+    (parseAndValidateResult loaded profileDigest (canonicalText.dropEnd 1).toString.toUTF8) |> IO.ofExcept
+  IO.FS.withTempDir fun directory => do
+    let path := directory / "oversized-result.json"
+    IO.FS.writeBinFile path (ByteArray.mk <| Array.replicate (testProfile.bounds.resultBytes + 1) 0)
+    let accepted ← try
+      readBoundedPath "result" path testProfile.bounds.resultBytes *> pure true
+    catch _ => pure false
+    if accepted then fail "result validator accepted an oversized result read"
+
 private def expectIoFailure (label : String) (action : IO Unit) : IO Unit := do
   let accepted ← try action *> pure true catch _ => pure false
   if accepted then fail s!"runner guard accepted {label}"
@@ -852,7 +1218,7 @@ private def checkBoundedProfileRead : IO Unit :=
     let path := directory / "oversized-profile.json"
     IO.FS.writeBinFile path (ByteArray.mk <| Array.replicate (maxProfileBytes + 1) 0)
     expectIoFailure "an oversized postflight profile read"
-      (readBoundedPath path maxProfileBytes *> pure ())
+      (readBoundedPath "profile" path maxProfileBytes *> pure ())
 
 private def checkRepositoryAndResultPaths : IO Unit := do
   let root := System.FilePath.mk "/repo"
@@ -883,6 +1249,7 @@ private def checkRepositoryAndResultPaths : IO Unit := do
 
 def selfTest : IO Unit := do
   A12Kernel.Differential.Generated.selfTest
+  checkResultValidation
   checkWitnessSelection |> IO.ofExcept
   checkOutputContract |> IO.ofExcept
   checkCleanupSerialization |> IO.ofExcept
@@ -894,10 +1261,10 @@ def selfTest : IO Unit := do
     if (validateRelativeExecutable invalid).isOk then
       fail s!"relative executable guard accepted '{invalid}'"
   checkRepositoryAndResultPaths
-  IO.println "generated differential runner self-test: profile, output contract, cleanup record, witness ordering, repository containment, and result publication passed"
+  IO.println "generated differential runner self-test: profile, strict retained-result validation, output contract, cleanup record, witness ordering, repository containment, and result publication passed"
 
 private def usage : String :=
-  "usage: checkGeneratedDifferential --self-test | --check-profile PROFILE | --run --profile PROFILE --reference-repo REPO --reference EXE --candidate-repo REPO --candidate EXE --result RESULT"
+  "usage: checkGeneratedDifferential --self-test | --check-profile PROFILE | --check-result PROFILE RESULT | --run --profile PROFILE --reference-repo REPO --reference EXE --candidate-repo REPO --candidate EXE --result RESULT"
 
 def main (arguments : List String) : IO UInt32 := do
   match arguments with
@@ -907,6 +1274,9 @@ def main (arguments : List String) : IO UInt32 := do
   | ["--check-profile", profile] =>
       try checkProfile profile *> pure 0
       catch error => IO.eprintln s!"generated differential profile check failed: {error}" *> pure 1
+  | ["--check-result", profile, result] =>
+      try checkResult profile result *> pure 0
+      catch error => IO.eprintln s!"generated differential result check failed: {error}" *> pure 1
   | ["--run", "--profile", profile, "--reference-repo", referenceRepo,
       "--reference", reference, "--candidate-repo", candidateRepo,
       "--candidate", candidate, "--result", result] =>
