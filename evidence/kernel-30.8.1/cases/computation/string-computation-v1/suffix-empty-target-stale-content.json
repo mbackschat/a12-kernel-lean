@@ -1,0 +1,63 @@
+{
+    "meta": {
+        "id": "suffix-empty-target-stale-content",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§2",
+            "§7",
+            "§11"
+        ],
+        "tags": [
+            "computation",
+            "string",
+            "empty",
+            "store",
+            "delta"
+        ],
+        "scenario": "a12-kernel-lean String computation capture",
+        "notes": "Groovy dynamic anchor; Java static confirmed; a12-dmkits interpreter triangulation recorded in the capture receipt."
+    },
+    "modelRef": "models/lean-string-computation-suffix.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Shipment",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Shipment/Witness",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "present"
+        },
+        {
+            "kind": "EMPTY",
+            "path": "/Shipment/Source",
+            "reps": [
+                1,
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Shipment/Target",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "SEED"
+        }
+    ],
+    "op": {
+        "kind": "compute"
+    },
+    "computeExpected": [
+        "/Shipment[1]/Target|VALUE|-X"
+    ]
+}

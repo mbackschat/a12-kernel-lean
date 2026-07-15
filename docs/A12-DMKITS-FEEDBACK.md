@@ -78,6 +78,14 @@ This document is the a12-kernel-lean maintainers' actionable feedback queue for 
 
 **Acceptance check:** Searching the live documentation yields one non-contradictory bare-field resolution rule: declaring-group first, then flag-gated model-wide unique field fallback; an ancestor field requires either explicit `../` navigation or qualification through that separately named fallback.
 
+### F10 — Treat a final empty String computation as no stored value
+
+**Finding:** At a12-dmkits revision `699e8619ac1667c861e14b285c5924ac57a705f1`, the interpreter correctly lets a clean empty String field contribute `""` inside concatenation, but it then reports the resulting final empty text as `VALUE ""`. Kernel 30.8.1 applies a second root-store decision: a final empty String is no computed value. The retained [`String-computation receipt`](../evidence/kernel-30.8.1/captures/string-computation-2026-07-15.json) records both kernel strategies agreeing and the already kernel-granularity-projected interpreter disagreeing in exactly three cases: a stale target becomes `CLEARED`, while an absent target remains silent in both a content-bearing and an otherwise empty row. The nonempty control `[Source] + "-X"` still produces `VALUE "-X"`, so the problem is not empty operand substitution; it is the final String store boundary.
+
+**Recommendation:** Keep expression evaluation and target storage separate. Concatenation should continue to map clean missing operands to empty contributions, but the root String store must convert a final empty text to the same no-value store decision as a bare empty copy. Apply kernel delta granularity only afterward: no-value clears a previously filled target and reports nothing for an already empty target. Preserve poison separately even where its immediate delta is also `CLEARED`.
+
+**Acceptance check:** Add paired interpreter and kernel-differential cases for filled-plus-empty, empty-plus-nonempty, all-empty with stale target, and all-empty with absent target. Mutation controls must independently catch skipping empty contribution, storing final empty text, and clearing an already empty target. The three retained mismatch cases then agree without weakening the comparison or treating a12-dmkits as the oracle.
+
 ## Handoff use
 
 When feeding this queue back to a12-dmkits, open or update items in that project's own gap/plan surfaces and link back to the specific evidence or capsule that motivated them. Close an item here only after recording the upstream revision and outcome; if upstream rejects or supersedes it, retain the disposition so later formalization work does not rediscover the same question.
