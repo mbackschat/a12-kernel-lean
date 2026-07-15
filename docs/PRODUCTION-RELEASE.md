@@ -18,7 +18,7 @@ The release unit is more than an executable. Every downloadable artifact must be
 |---|---|---|---|
 | Platform-specific `a12-kernel-reference` executable | Direct reference-oracle invocation | [`PROTOCOL.md`](PROTOCOL.md) and packaged-binary process gate | Builds locally; no platform is qualified |
 | Supported-fragment manifest | Machine-readable fail-closed operation and evidence boundary | [`Support.lean`](../A12Kernel/Reference/Support.lean) and [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json) | Implemented for the flat and one-group correlation development operations; not a release-readiness declaration |
-| Capability descriptor, evaluator shipment, and conformance suite | Pin one independently implementable semantic slice, its evidence classifications, exclusions, and cold-consumer contract | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), [`flat-validation-empty-logic-v1.capability.json`](../reference/flat-validation-empty-logic-v1.capability.json), and shipment-specific artifacts | Current support and evidence readiness are owned by [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); the exact flat cold-consumer and mutation-qualification outcome plus remaining generated-differential and release work are owned by [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) |
+| Capability descriptor, evaluator shipment, and conformance suite | Pin one independently implementable semantic slice, its evidence classifications, exclusions, and cold-consumer contract | [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), [`flat-validation-empty-logic-v1.capability.json`](../reference/flat-validation-empty-logic-v1.capability.json), and shipment-specific artifacts | Current support and evidence readiness are owned by [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); the exact flat cold-consumer, mutation-qualification, and generated-differential outcomes plus remaining release work are owned by [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) |
 | Runnable requests and expected responses | Minimal integration examples and packaged smoke tests | [`examples/reference-cli/`](../examples/reference-cli/) | Implemented for protocol v1 |
 | Source archive, tag, and commit identity | Exact source correspondence | Git release process | Not yet defined |
 | [`LICENSE`](../LICENSE) and third-party notices | Source and bundled-runtime licensing | Package-content, SBOM, and license review | Project license exists; bundled-runtime inventory and GMP compliance are open |
@@ -87,10 +87,11 @@ lake exe checkReferenceProcess
 lake exe checkBoundedProcess
 lake exe checkGeneratedDifferential --self-test
 lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
+lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json
 ./scripts/check-lean-trust.sh
 ```
 
-`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before a generated differential may run. The ordinary gate validates the committed profile's compatibility identity, revisions, generator, projection, and budgets without executing either implementation.
+`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before a generated differential may run. The ordinary gates validate the committed profile's compatibility identity, revisions, generator, projection, and budgets without executing either implementation, then check the retained green receipt's exact profile identity and internal consistency. They do not authenticate its historical execution or compare its historical macOS executable digests with later Linux binaries.
 
 A release candidate additionally requires:
 
@@ -234,7 +235,7 @@ The first CLI is a reference and CI oracle, not a replacement production runtime
 ## Open blockers before the first production release
 
 - adopt the product proposal for a concrete non-Lean consumer rather than treating this engineering contract as a release decision;
-- execute and classify the active generated-differential campaign in [`PLAN.md`](PLAN.md), or explicitly exclude the affected development capability from the release;
+- review the retained [52-case flat generated-differential result](../qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json) as finite candidate qualification only; it does not by itself close the capability's remaining research or release gates;
 - complete and retain the isolated cold-implementation report for every released capability, with no kernel or sibling-source research by the downstream implementer;
 - either mechanically bind the correlation suite to its retained projection as the flat bridge does or explicitly keep correlation outside the first released capability set;
 - define the supported platform, architecture, ABI, and oldest-OS matrix;
