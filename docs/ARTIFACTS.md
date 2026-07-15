@@ -78,13 +78,14 @@ Some runtime projections still repeat cells, rows, paths, and structured conditi
 - the generated [`flat-validation-empty-logic-v1` capability descriptor](../reference/flat-validation-empty-logic-v1.capability.json);
 - its generated [conformance suite](../reference/flat-validation-empty-logic-v1.conformance.json);
 - its generated source-maintainer [mutation qualification plan](../reference/flat-validation-empty-logic-v1.mutation-plan.json);
+- reviewed generated-differential profiles, which pin a closed generator, compatibility tuple, source and candidate revisions, response projection, execution contract, and resource budgets for one finite campaign;
 - the [`single-group-correlation-v1` conformance suite](../reference/single-group-correlation-v1.conformance.json), whose evidence and fixture associations are still reviewed manual projections.
 
 ### Responsibility and authority
 
 This tree answers: **what exact, language-neutral capability can an independent consumer implement or check?** These files are committed because a Rust, Python, Kotlin, or TypeScript consumer should not need a Lean installation to inspect or use a shipment.
 
-They are distribution projections, not the authoring source of the semantics. Generated members are owned by typed Lean support or capability declarations plus the retained evidence they cite; the correlation suite remains a reviewed manual index until its bridge is mechanized. Once an exact bundle or packet is exported or digest-pinned for an independent consumer, those exported files and their declared compatibility tuple form an immutable record. A working development projection may evolve and be exported under a new digest or revision; an incompatible supported compatibility change requires a new identity or version.
+They are distribution projections, not the authoring source of the semantics. Generated members are owned by typed Lean support or capability declarations plus the retained evidence they cite; the correlation suite remains a reviewed manual index until its bridge is mechanized. A generated-differential profile is a campaign definition rather than a support declaration: it may select only already admitted inputs, and its revision pins and budgets make one execution repeatable without expanding the capability. Once an exact bundle, packet, or differential profile is exported or digest-pinned for an independent consumer, those files and their declared compatibility tuple form an immutable record. A working development projection may evolve and be exported under a new identity, digest, or revision; an incompatible supported compatibility change requires a new identity or version.
 
 ### Evolution policy
 
@@ -93,6 +94,7 @@ They are distribution projections, not the authoring source of the semantics. Ge
 - During development, an intentional semantic, protocol, or classification change regenerates the affected current-development shipment and reruns all drift gates.
 - After a shipment becomes a supported external contract, an incompatible semantic or protocol change creates a new capability or schema version rather than mutating the old identity.
 - Removing a generated case must also remove every generated file and index entry; exact-directory checks should reject stale output.
+- Do not update a differential profile in place after it has a retained result. A changed generator, bound, projection, source revision, or candidate revision creates a new profile identity and a new result.
 
 For the flat shipment, `lake exe syncFlatHandover --check` performs a non-writing comparison of the descriptor, suite, mutation plan, exact fixture set, and manifest evidence boundary. `lake exe syncFlatHandover --write` intentionally regenerates those files and must be followed by diff review and another `--check`. `lake exe checkReferenceProcess` independently compares the live CLI manifest with its committed mirror and exercises the committed process fixtures.
 
@@ -155,11 +157,21 @@ The result's assurance class is part of its authority. `sourceExecutedReplay` me
 
 A mutation plan remains test planning by itself. It contributes to candidate qualification evidence only as a digest-bound packet input paired with a complete result accepted by the strict checker. That result remains candidate-process evidence, never retained kernel evidence. [`TESTING.md`](TESTING.md#rust-mutation-qualification) owns the exact commands, checker coverage, resource caps, and remaining process-sandbox limits.
 
+### Generated differential profile and result lifecycle
+
+The tracked runner source lives under [`A12Kernel/Differential/`](../A12Kernel/Differential/), with [`A12Kernel/GeneratedDifferentialMain.lean`](../A12Kernel/GeneratedDifferentialMain.lean) as its command-line boundary and [`A12Kernel/Process/`](../A12Kernel/Process/) supplying the bounded relay and digest support. The profile belongs under `reference/` because it is a language-neutral, inspectable campaign definition. It is reviewed input, not generated kernel evidence, a support-manifest extension, or a second semantics source.
+
+Run output is first written to an absolute, absent path whose existing non-symlink parent is outside both pinned repositories, such as a new file under `/private/tmp`; an ignored directory inside either checkout is deliberately rejected. A disagreement result retains every differing normalized request and both projected responses plus deterministic minimal witnesses; it must be classified before any expected result changes. A green result may be retained under `qualification/` as a compact immutable receipt when it records exact source and candidate revisions, profile and executable digests, budgets and actual usage, verdict distributions, and the explicit finite-Lean-account claim. It contains no kernel observation and does not transfer a Lean proof to the candidate.
+
+The profile must pin a clean source revision that already contains the generator, relay, and runner. Because adding the profile itself changes the repository revision, the first execution uses a clean disposable checkout at the pinned source revision and supplies the later committed profile by path. The candidate runs from its own clean pinned checkout; build outputs may exist only where that repository ignores them. Any postflight revision, worktree, profile-byte, or executable-digest change makes the run an integrity failure rather than an agreement result.
+
+Once retained, a profile/result pair is historical and immutable. A semantics correction, generator change, response-projection change, resource-bound change, executable change, or candidate revision requires a new profile/result identity. [`TESTING.md`](TESTING.md#bounded-generated-lean-account-differential) owns execution mechanics and commands; the capability kit owns the finite outcome and remaining semantic boundary.
+
 ## Evolution by change type
 
 | Project change | `evidence/` | `reference/` | `examples/` | Qualification artifacts |
 |---|---|---|---|---|
-| Internal refactor, same observable account | Unchanged | Unchanged | Unchanged | Existing records remain historical |
+| Internal refactor, same observable account | Unchanged | Existing shipments unchanged; create a new pinned differential profile only when rerunning | Unchanged | Existing records remain historical |
 | Lean semantic correction | Replay unchanged observations; add evidence only if the old boundary was insufficient | Regenerate development shipment or publish a new supported version | Update affected generated/golden responses with review | Run a new qualification for affected candidates |
 | Protocol or manifest change | Unchanged | Regenerate or version affected contract | Update affected requests/responses | Run a new protocol qualification |
 | New semantic capability | Add focused observation and projection before claiming external correspondence, or mark it `external evidence pending` | Add a closed capability shipment only when its task boundary is research-closed | Add a few curated examples plus generated cases as applicable | Qualify selected consumers separately |

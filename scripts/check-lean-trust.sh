@@ -103,7 +103,7 @@ if ! trusted_source_closure="$(collect_project_source_closure \
 fi
 while IFS= read -r trusted_source; do
   case "$trusted_source" in
-    A12Kernel/Qualification/*|A12Kernel/Process/*|A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/FlatHandoverMain.lean|A12Kernel/MutationQualificationMain.lean)
+    A12Kernel/Qualification/*|A12Kernel/Differential/*|A12Kernel/Process/*|A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/FlatHandoverMain.lean|A12Kernel/MutationQualificationMain.lean|A12Kernel/GeneratedDifferentialMain.lean|A12Kernel/ProcessTestMain.lean)
       echo "trusted Lean roots transitively reach IO or qualification driver ${trusted_source}" >&2
       exit 1
       ;;

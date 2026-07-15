@@ -55,6 +55,8 @@ Needs **Lean 4.31.0** (via [`elan`](https://github.com/leanprover/elan); pinned 
 lake build
 lake test
 lake exe checkReferenceProcess
+lake exe checkBoundedProcess
+lake exe checkGeneratedDifferential --self-test
 ./scripts/check-lean-trust.sh
 ```
 

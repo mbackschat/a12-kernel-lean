@@ -12,15 +12,15 @@ The flat cold experiment established finite implementation and representative mu
 
 ## Current objective
 
-Define and execute the first bounded generated Rust-versus-Lean differential profile for this exact capability. It must expand beyond the eight retained fixtures while staying inside the admitted normalized positive-input fragment, pin both revisions and the compatibility tuple, preserve minimized disagreements, and remain Lean-account conformance rather than new kernel evidence. Add explicit dependency-free process resource bounds before the new driver invokes the independent candidate so the known unbounded-output and no-timeout limitation is not copied into a new testing lane.
+Land and execute the first bounded generated Rust-versus-Lean differential profile for this exact capability. The dependency-free bounded POSIX process boundary, closed profile schema, deterministic 52-case generator, strict four-verdict projection, dual-process runner, result publication, and adversarial self-tests are implemented, green, and included in this source checkpoint. The remaining delivery must pin this source revision and the frozen Rust revision, run both exact clean checkouts, retain and classify the result, and preserve the claim as finite Lean-account conformance rather than new kernel evidence.
 
 ## Immediate continuation order
 
-1. Define a machine-readable bounded differential profile for `flat-validation-empty-logic-v1`: pin both revisions and the compatibility tuple, admit only supported positive normalized inputs, define deterministic enumeration or a recorded seed, cap case count and request size, name the exact response projection, and require minimized disagreement retention. Rejected inputs remain excluded until their compared diagnostic projection is normative.
-2. Establish the smallest dependency-free process boundary with a per-process wall-clock timeout, stdout and stderr caps enforced while capturing, and aggregate case, byte, and elapsed-time budgets with deterministic failure records. Inspect Cedar's actual bounded differential and fuzz drivers again before fixing the limits, while preserving the subprocess and clean-room boundary.
-3. Add the dual-process driver, generate non-fixture requests through the profile, execute the Lean reference and frozen Rust candidate, and compare only the declared observable response projection. Keep the first run deliberately small and pinned; the Rust sibling remains read-only except for already-ignored build output.
-4. Preserve and minimize every disagreement before classification. A green run records only finite Lean-account conformance for the generated profile; it adds no kernel evidence, transfers no proof, and does not expand the supported capability.
-5. Update the flat kit, testing methodology, artifact lifecycle, and implementation map only where their owned facts change, then decide from the observed coverage whether to deepen this flat capsule or resume the next semantic capsule.
+1. Record the exact revision of this source checkpoint after commit and confirm its complete source and public-CI gates before using it as qualification input.
+2. Add a separately committed profile for `flat-validation-empty-logic-v1` that pins that exact source revision, Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`, the compatibility tuple, the closed 52-case enumeration, the four-verdict projection, and all process/result budgets; validate it without running either implementation.
+3. Build clean disposable checkouts at both pinned revisions, execute the Lean reference and frozen Rust candidate through the bounded runner, and write the result to a new absolute external temporary path. The Rust sibling remains read-only and visibly clean.
+4. Preserve and minimize every disagreement before classification, or retain a compact green receipt with exact revisions, digests, distributions, and budget usage. A green run adds no kernel evidence, transfers no proof, and does not expand the supported capability.
+5. Update the flat kit, plan, artifact lifecycle, implementation map, and production gates with the observed result, then decide from the measured coverage whether to deepen this flat capsule or resume the next semantic capsule.
 
 ## Guardrails and stop conditions
 

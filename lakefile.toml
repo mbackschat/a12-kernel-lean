@@ -30,3 +30,17 @@ root = "A12Kernel.MutationQualificationMain"
 name = "checkReferenceProcess"
 root = "A12Kernel.ReferenceProcessTestMain"
 needs = ["a12-kernel-reference", "checkCandidateConformance"]
+
+[[lean_exe]]
+name = "checkGeneratedDifferential"
+root = "A12Kernel.GeneratedDifferentialMain"
+needs = ["a12-bounded-process-relay"]
+
+[[lean_exe]]
+name = "a12-bounded-process-relay"
+root = "A12Kernel.Process.RelayMain"
+
+[[lean_exe]]
+name = "checkBoundedProcess"
+root = "A12Kernel.ProcessTestMain"
+needs = ["a12-bounded-process-relay"]

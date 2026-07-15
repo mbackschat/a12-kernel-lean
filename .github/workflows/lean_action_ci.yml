@@ -19,3 +19,7 @@ jobs:
         run: lake test
       - name: Check reference process contract
         run: lake exe checkReferenceProcess
+      - name: Check bounded process boundary
+        run: lake exe checkBoundedProcess
+      - name: Check generated differential profile
+        run: lake exe checkGeneratedDifferential --self-test
