@@ -1,5 +1,6 @@
 import A12Kernel.Basic
 import A12Kernel.Elaboration.Correlation
+import A12Kernel.Evidence.AuthoringIdentifier
 import A12Kernel.Evidence.CorrelationElaborationSchema
 
 /-! # A12Kernel.Evidence.CorrelationElaborationReplay — pure authoring replay -/
@@ -13,48 +14,9 @@ private def hasDuplicate [BEq α] (values : List α) : Bool :=
   | [] => false
   | value :: rest => rest.contains value || hasDuplicate rest
 
-private def asciiAlpha (character : Char) : Bool :=
-  decide (character.toNat < 128) && character.isAlpha
-
-private def asciiAlphanum (character : Char) : Bool :=
-  decide (character.toNat < 128) && character.isAlphanum
-
-/-- The ASCII-identifier terminals in the pinned English authoring vocabulary. The non-identifier terminal `@From` is rejected by shape before this lookup. -/
-private def reservedIdentifiers : List String :=
-  ["Abs", "AbsValue", "AddDays", "AddHours", "AddMinutes", "AddMonths", "AddSeconds",
-    "AddYears", "AllFieldsFilled", "AllGroupsFilled", "And", "and", "AND",
-    "AtLeastOneDateRangeOverlaps", "AtLeastOneFieldFilled",
-    "AtLeastOneFieldValueIncludedInValueList", "AtLeastOneGroupFilled", "BaseYear",
-    "CurrentRepetition", "CustomCondition", "Date", "DateFromDateTime", "DateRange",
-    "DateRangesOverlap", "DateTime", "DayFromDate", "DifferenceInDays", "DifferenceInHours",
-    "DifferenceInMinutes", "DifferenceInMonths", "DifferenceInSeconds", "DifferenceInYears",
-    "DiffersWithToleranceRange1", "DiffersWithToleranceRange2", "DiffersWithToleranceRange5",
-    "DiffersWithToleranceRange10", "EndOfDateRange", "False", "FieldFilled",
-    "FieldNotFilled", "FieldValueAsNumber", "FieldValueAsString",
-    "FieldValueIncludedInValueList", "FieldValueNotIncludedInValueList",
-    "FieldValuesNotUnique", "FieldsNotCollectivelyFilled", "FirstDay", "FirstFilledValue",
-    "For", "GroupFilled", "GroupNotFilled", "GroupsNotCollectivelyFilled", "Having",
-    "HoursFromTime", "In", "in", "IN", "Invalid", "LastDay", "Length", "Max", "MaxValue",
-    "Min", "MinutesFromTime", "MinValue", "MonthFromDate", "MoreThanOneFieldFilled",
-    "NoFieldFilled", "NoFieldValueIncludedInValueList", "NoGroupFilled",
-    "NotAllFieldValuesIncludedInValueList", "NotAllFieldsFilled", "NotAllGroupsFilled",
-    "NotExactlyOneFieldFilled", "Now", "NumberOfDifferentValues", "NumberOfFilledFields",
-    "NumberOfFilledGroups", "NumberOfValueInFields", "Or", "or", "OR", "PatternMatched",
-    "PatternViolated", "QuarterFromDate", "RangeAsNumber", "RangeAsString",
-    "RepetitionNotUnique", "RoundAccounting", "RoundAccountingValue", "RoundDown",
-    "RoundDownValue", "RoundUp", "RoundUpValue", "RuleGroup", "SecondsFromTime",
-    "StartOfDateRange", "Sum", "SumOfProducts", "SuppressWarning", "Time",
-    "TimeFromDateTime", "to", "To", "TO", "Today", "True", "Valid", "ValueAsDate",
-    "ValueNotConsistent", "YearFromDate"]
-
 /-- This evidence renderer deliberately supports only unquoted ASCII identifiers. Supporting the full quoted authoring grammar would require a separately tested canonical escaping layer. -/
 private def safeSegment (segment : String) : Bool :=
-  match segment.toList with
-  | [] => false
-  | first :: rest =>
-      (asciiAlpha first || first == '_') &&
-      rest.all (fun character => asciiAlphanum character || character == '_') &&
-      !reservedIdentifiers.contains segment
+  A12Kernel.Evidence.AuthoringIdentifier.safe segment
 
 private def safePath (path : GroupPath) : Bool :=
   GroupPath.isValid path && path.all safeSegment
@@ -63,8 +25,6 @@ private def asciiLowerHex (character : Char) : Bool :=
   decide (character.toNat >= '0'.toNat && character.toNat <= '9'.toNat) ||
     decide (character.toNat >= 'a'.toNat && character.toNat <= 'f'.toNat)
 
-example : reservedIdentifiers.length = 111 := by native_decide
-example : hasDuplicate reservedIdentifiers = false := by native_decide
 example : safeSegment "Date" = false := by native_decide
 example : safeSegment "Today" = false := by native_decide
 example : safeSegment "Length" = false := by native_decide

@@ -40,9 +40,9 @@ This is a development formal semantics and compatibility-kit experiment, not a c
 
 | Surface | Current boundary |
 |---|---|
-| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, directional numeric polarity, the direct-String-versus-`Length` empty distinction, staged requiredness, one-group iteration, and one checked captured-outer `$` correlation shape |
-| Public reference | The current normalized process advertises reference semantics 0.3.0 through [`supported-fragment-v2.json`](reference/supported-fragment-v2.json), exposes a checked flat operation and one named single-group correlation operation, and fails closed outside that boundary; the internal String/Length capsule is not exposed |
-| Empirical and formal assurance | Retained kernel observations include the six-case operator-sensitive Number/String capture and anchor selected implemented primitive choices, while the theorem root establishes selected internal laws and structural certificates—not universal kernel equivalence |
+| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, directional numeric polarity, the direct-String-versus-`Length` empty distinction, staged requiredness, one-group iteration, one checked captured-outer `$` correlation shape, and a first one-target String computation capsule separating expression evaluation, root storage, and change-only delta reporting |
+| Public reference | The current normalized process advertises reference semantics 0.3.0 through [`supported-fragment-v2.json`](reference/supported-fragment-v2.json), exposes a checked flat operation and one named single-group correlation operation, and fails closed outside that boundary; the internal String/Length and String-computation capsules are not exposed |
+| Empirical and formal assurance | Retained kernel observations include focused operator-sensitive Number/String and clean String-computation packets, while the theorem root establishes selected evaluator, store, delta, algebraic, and structural laws—not universal kernel equivalence |
 | Consumer handover | Flat and correlation development shipments exist; one isolated Rust exercise implemented the flat shipment, completed its checker-accepted seven-mutation qualification, and agreed with the pinned Lean reference on all 52 post-cold generated cases |
 
 [`IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) owns exact semantic/proof/evidence status, [`EVIDENCE.md`](docs/EVIDENCE.md) owns the retained observation inventory and claim boundary, the [flat](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [correlation](docs/IMPLEMENTER-KIT-CORRELATION.md) kits own capability-specific handover state, and [`PLAN.md`](docs/PLAN.md) owns only the immediate continuation.
@@ -81,7 +81,7 @@ Direction matters after substitution. An empty unsigned Number can grow but cann
 lake exe a12-kernel-reference < examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json
 ```
 
-This correction is why the current executable advertises reference semantics 0.3.0. It does not expand or relabel the frozen 0.2.0 Rust capability, which excludes this request, and it does not expose the internal String/Length capsule. A request carries protocol and kernel-behavior versions but no reference-semantics selector; detect the executable account from that exact binary's `--manifest` output and pin the binary or release digest. Do not infer it from response shape alone.
+This correction is why the current executable advertises reference semantics 0.3.0. It does not expand or relabel the frozen 0.2.0 Rust capability, which excludes this request, and it does not expose the internal String/Length or String-computation capsules. A request carries protocol and kernel-behavior versions but no reference-semantics selector; detect the executable account from that exact binary's `--manifest` output and pin the binary or release digest. Do not infer it from response shape alone.
 
 Inspect the exact supported boundary with:
 

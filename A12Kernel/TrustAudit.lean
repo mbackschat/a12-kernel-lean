@@ -121,3 +121,24 @@ run_cmd do
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value
 #print axioms A12Kernel.emptyString_operatorDistinction
+
+#print axioms A12Kernel.emptyStringField_evaluates_noValue
+#print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
+#print axioms A12Kernel.poisonedStringField_evaluates_poison
+#print axioms A12Kernel.poisonedLeftStringField_shortCircuits_concat
+#print axioms A12Kernel.emptyLeftStringField_reads_poisonedRight
+#print axioms A12Kernel.noValue_concat_text
+#print axioms A12Kernel.text_concat_noValue
+#print axioms A12Kernel.stringTerm_concat_associative
+#print axioms A12Kernel.twoNoValues_concat_to_emptyText
+#print axioms A12Kernel.finalEmptyString_is_noValue
+#print axioms A12Kernel.concat_noValue_right_preserves_store
+#print axioms A12Kernel.concat_noValue_left_preserves_store
+#print axioms A12Kernel.concat_noValue_right_preserves_delta
+#print axioms A12Kernel.concat_noValue_left_preserves_delta
+#print axioms A12Kernel.concat_noValue_is_not_term_identity
+#print axioms A12Kernel.noValue_delta_iff_prior_filled
+#print axioms A12Kernel.poison_and_noValue_same_immediate_delta
+#print axioms A12Kernel.poison_is_not_noValue
+#print axioms A12Kernel.unchangedString_has_no_delta
+#print axioms A12Kernel.changedString_has_value_delta
