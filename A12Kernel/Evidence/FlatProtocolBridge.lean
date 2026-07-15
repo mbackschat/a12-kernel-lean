@@ -237,6 +237,9 @@ structure MutationPlan where
   mutations : List MutationDescriptor
   deriving Repr, DecidableEq
 
+/-- Result-schema version required by the generated mutation plan and its strict checker. -/
+def mutationQualificationResultSchemaVersion : Nat := 2
+
 def capability : CapabilityDescriptor := {
   id := "flat-validation-empty-logic-v1"
   referenceSemanticsVersion := Support.referenceSemanticsVersion
@@ -833,8 +836,8 @@ def MutationPlan.asJson (plan : MutationPlan) (descriptor : CapabilityDescriptor
     ("observabilityLimit", toJson
       "Case and algebra outputs establish sensitivity, while the retained patch establishes that the exact named mechanism was mutated."),
     ("resultRecordRequirements", Json.mkObj [
-      ("resultSchemaVersion", toJson 1),
-      ("sourceValidation", toJson "strictCheckerPending"),
+      ("resultSchemaVersion", toJson mutationQualificationResultSchemaVersion),
+      ("sourceValidation", toJson "strictPacketResultAndLogCheckerAvailable"),
       ("digestAlgorithm", toJson "sha256"),
       ("digestEncoding", toJson "lowercaseHex64"),
       ("digestScopes", Json.mkObj [
@@ -850,11 +853,13 @@ def MutationPlan.asJson (plan : MutationPlan) (descriptor : CapabilityDescriptor
         toJson VerdictAlgebraMutation.domain.length),
       ("algebraResultCountForOtherExercises", toJson 0),
       ("requiredTopLevelFields", toJson [
-        "resultSchemaVersion", "mutationPlanId", "mutationPlanSha256",
+        "resultSchemaVersion", "packetId", "packetIndexSha256", "sourceRevision",
+        "candidateBaseRevision", "assuranceClass", "isolationBoundary",
+        "unresolvedQuestions", "mutationPlanId", "mutationPlanSha256",
         "capabilityId", "baselineImplementationRevision", "baselineSourceFiles",
         "toolchain", "naturalGate", "mutations", "finalRestorationGate"]),
       ("requiredPerMutationFields", toJson [
-        "exercise", "mutationId", "predictionRecordedBeforePatch", "patch",
+        "exercise", "mutationId", "predictionAttestedBeforePatch", "patch",
         "patchSha256", "commands", "rawLogs", "exitStatuses",
         "observedCaseResults", "observedAlgebraResults",
         "unexpectedDifferences", "outcome",
@@ -868,8 +873,11 @@ def MutationPlan.asJson (plan : MutationPlan) (descriptor : CapabilityDescriptor
       ("outcomeValues", toJson ["matchedPrediction", "unexpectedDifference", "notRun"]),
       ("rules", toJson [
         "runOneMutationAtATime",
-        "recordPredictionBeforePatch",
+        "attestPredictionBeforePatch",
         "retainExactPatchAndRawOutputs",
+        "bindPatchBytesToSourceOwnedMutationProjection",
+        "bindRecordedObservationsToParsedRawObserverOutput",
+        "rejectGlobalArtifactPathCollisions",
         "stopOnMissingOrAdditionalDifference",
         "reversePatchBeforeNextMutation",
         "verifyBaselineDigestAfterEveryRestoration",

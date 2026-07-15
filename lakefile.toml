@@ -23,6 +23,10 @@ name = "syncFlatHandover"
 root = "A12Kernel.FlatHandoverMain"
 
 [[lean_exe]]
+name = "checkMutationQualification"
+root = "A12Kernel.MutationQualificationMain"
+
+[[lean_exe]]
 name = "checkReferenceProcess"
 root = "A12Kernel.ReferenceProcessTestMain"
 needs = ["a12-kernel-reference", "checkCandidateConformance"]

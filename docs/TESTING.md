@@ -1,8 +1,8 @@
 # Testing methodology
 
-This document owns the test harness and working method for `a12-kernel-lean`. The project tests five different claims—execution of the Lean theory, universal consequences inside that theory, empirical correspondence with kernel 30.8.1, compatibility of the public reference process, and conformance of an independent candidate—and deliberately does not collapse them or repository hygiene into one green check.
+This document owns the test harness and working method for `a12-kernel-lean`. The project tests six different claims—execution of the Lean theory, universal consequences inside that theory, empirical correspondence with kernel 30.8.1, compatibility of the public reference process, finite conformance of an independent candidate, and mutation sensitivity of a pinned candidate shipment—and deliberately does not collapse them or repository hygiene into one green check.
 
-## The six harness layers
+## The seven harness layers
 
 | Layer | Repository surface | What a pass establishes | What it does not establish |
 |---|---|---|---|
@@ -11,9 +11,10 @@ This document owns the test harness and working method for `a12-kernel-lean`. Th
 | Retained external evidence replay | [`../evidence/`](../evidence/), [`../A12Kernel/Evidence/`](../A12Kernel/Evidence/), and [`../A12Kernel/EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean) | The focused Lean projection agrees with retained portable observations produced by the real pinned kernel on those cases | Exhaustive agreement, hidden kernel intermediate states, or correctness outside the projected fragment |
 | Reference-process black box | [`../A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean), [`../examples/reference-cli/`](../examples/reference-cli/), and [`../reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json) | The compiled public executable obeys its documented JSON bytes, exit status, output-channel, determinism, strict-input, fixture, and manifest contract | New semantic correspondence with the kernel or universal correctness of the transport |
 | Independent candidate conformance | [`../A12Kernel/CandidateConformanceMain.lean`](../A12Kernel/CandidateConformanceMain.lean), the [`flat-validation-empty-logic-v1`](../reference/flat-validation-empty-logic-v1.conformance.json) and [`single-group-correlation-v1`](../reference/single-group-correlation-v1.conformance.json) suites, and their indexed fixtures/evidence classifications | A candidate process reproduces the named observable JSON cases deterministically; all compatibility identifiers match the manifest; each case declares whether its response is externally supported, project-defined, or a Lean runtime projection; retained evidence IDs still exist | Correctness outside the selected finite suite, inheritance of Lean proofs, or release readiness of the candidate or capsule; the flat bridge derives its fixtures mechanically, while the correlation suite still has reviewed manual projection links |
+| Mutation qualification | [`../A12Kernel/Qualification/`](../A12Kernel/Qualification/) and [`../A12Kernel/MutationQualificationMain.lean`](../A12Kernel/MutationQualificationMain.lean) | A digest-pinned Rust packet is structurally reproducible; its natural baseline and seven declared mutants execute with the predicted finite observations in a source replay; exact command logs and path-and-byte restoration are checkable in a returned record | Universal candidate correctness, kernel correspondence beyond retained evidence, release approval, or proof that an externally returned attestation's recorded commands historically ran |
 | Structural and hygiene gates | [`../scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh), `git diff --check`, and worktree checks | Trusted roots contain no banned proof escape hatch, every exported theorem is audited, axiom dependencies are classified, patches are clean, and sibling worktrees remain untouched | Any new semantic fact by itself |
 
-`lake build` runs the first two layers because the library root imports both the conformance root and the trusted proof root, and it builds the reference executable because that executable is a default target. `lake test` runs the retained-evidence executable separately and checks the generated flat handover artifacts against their projection. `lake exe checkReferenceProcess` runs the compiled CLI through an independent process driver, invokes every candidate-runner integrity self-test, and runs both candidate suites against the compiled Lean reference as controls. `lake exe checkCandidateConformance --candidate … --suite …` runs only the selected language-neutral capability suite against an independent process. The trust script inspects the proof closure separately again because successful elaboration alone does not reveal an accidental axiom or omitted theorem-root import.
+`lake build` runs the first two layers because the library root imports both the conformance root and the trusted proof root, and it builds the reference executable because that executable is a default target. `lake test` runs the retained-evidence executable separately and checks the generated flat handover artifacts against their projection. `lake exe checkReferenceProcess` runs the compiled CLI through an independent process driver, invokes every candidate-runner integrity self-test, and runs both candidate suites against the compiled Lean reference as controls. `lake exe checkCandidateConformance --candidate … --suite …` runs only the selected language-neutral capability suite against an independent process. `lake exe checkMutationQualification --self-test …` exports and validates a packet, executes its complete Rust source replay in a temporary copy, checks the result, and then exercises the strict rejection surface. The trust script inspects the proof closure separately again because successful elaboration alone does not reveal an accidental axiom, omitted theorem-root import, or accidental dependency from a trusted root into process or qualification code.
 
 ## Red/green semantic development
 
@@ -71,7 +72,7 @@ The requests and adjacent expected responses under [`examples/reference-cli/`](.
 
 The eight fixtures under [`examples/reference-cli/flat-evidence/`](../examples/reference-cli/flat-evidence/) are not manually assembled duplicates. [`FlatProtocolBridge.lean`](../A12Kernel/Evidence/FlatProtocolBridge.lean) projects them from the retained typed flat cases, checks that each generated request decodes to the same replay input, evaluates it through the public reference, classifies the evidence boundary, and generates the [`capability descriptor`](../reference/flat-validation-empty-logic-v1.capability.json), [`conformance suite`](../reference/flat-validation-empty-logic-v1.conformance.json), and post-cold [`mutation qualification plan`](../reference/flat-validation-empty-logic-v1.mutation-plan.json). `lake exe syncFlatHandover --check` compares every generated artifact and the manifest boundary without writing; `lake exe syncFlatHandover --write` regenerates the descriptor, suite, mutation plan, and fixtures after an intentional owned-input change.
 
-The mutation plan is source-maintainer test planning, not retained kernel evidence and not proof that a candidate was mutated. It derives the baseline and predicted deltas from the typed capability and live verdict algebra, requires one mutation at a time plus restoration, and distinguishes observable suite sensitivity from evidence that the requested internal mechanism actually changed. [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#seeded-divergence-exercises) owns the exact exercises and candidate record requirements; [`PLAN.md`](PLAN.md) owns the current qualification-checker delivery state.
+The mutation plan is source-maintainer test planning, not retained kernel evidence and not proof that a candidate was mutated. It derives the baseline and predicted deltas from the typed capability and live verdict algebra, requires one mutation at a time plus restoration, and distinguishes observable suite sensitivity from evidence that the requested internal mechanism actually changed. [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#seeded-divergence-exercises) owns the exact exercises and candidate record requirements; the [qualification harness](#rust-mutation-qualification) owns their executable packet and strict result check.
 
 Generated-in-test adversaries cover hostile transport, numeric and path bounds, closed-object decoding, version and operation mismatches, model/cell/repeatable validation, operation-specific near misses, candidate topology, unsupported semantic constructors, invocation classes, and deterministic repeated success. The executable test source is authoritative for the exact adversarial matrix. `--manifest` output is compared structurally with [`reference/supported-fragment-v1.json`](../reference/supported-fragment-v1.json), ensuring the shipped readable mirror agrees with the Lean-generated manifest without requiring identical whitespace.
 
@@ -106,6 +107,52 @@ lake exe checkCandidateConformance \
 ```
 
 Replace `--candidate` with a Rust, Kotlin, or TypeScript executable to test that implementation without requiring it to implement the other operation, `--manifest`, or Lean's compact key order. A suite establishes only its indexed observable cases and does not transfer Lean's theorems to the candidate; use the law index in [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#law-index-for-downstream-tests) or [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md#law-index-for-property-tests) as applicable. The flat capability remains a development cold-handover slice, not full flat release closure. The current runner has no wall-clock timeout or streamed output cap and must not yet be used for untrusted binaries.
+
+### Rust mutation qualification
+
+[`A12Kernel/Qualification/`](../A12Kernel/Qualification/) turns the generated flat mutation plan into an exact executable shipment for the frozen Rust implementation revision. The packet index pins this Lean source revision, the Rust candidate base revision and complete classified build-input closure, the compatibility tuple, a macOS/Homebrew Rust execution profile, tool versions, every payload digest, exact commands, expected observations, complete baseline and mutant inventories, and seven one-at-a-time patches. Export reads candidate bytes from Git objects and requires clean source and candidate checkouts; it never patches or builds in the sibling checkout. The packet is generated under ignored project storage or another new disposable directory and must be distributed with the SHA-256 of `PACKET.json` supplied out of band.
+
+The packet-owned Rust observer consumes the frozen canonical conformance suite and each indexed request fixture instead of reconstructing those eight requests. It rejects a missing, extra, reordered, or renamed case, sends the fixture bytes through the candidate's public evaluator, and captures all eight verdicts. The natural baseline and connective mutations also capture all 32 ordered verdict-algebra inputs. The checker binds the parsed captured observation to the record before comparing it with the packet expectation, so a result cannot substitute predicted case or algebra values for the observer's actual stdout.
+
+Run the complete source-side replay and checker self-test with:
+
+```sh
+lake exe checkMutationQualification \
+  --self-test \
+  --candidate-repo ../a12-kernel-rust-spike
+```
+
+This command writes only in an automatically removed temporary directory. It exports and verifies the real packet, runs the natural gate, all seven mutations, their reverse-patch and full verification commands, and the final restoration gate, then requires the strict checker to accept the captured `sourceExecutedReplay`. It subsequently runs 36 independent adversarial guards over packet shape and digests, compatibility and revision identity, mutation order and source-owned patch bytes, strict result JSON, exact file trees, globally collision-free log paths, command records, log identities and content, actual observation records, assurance class, restoration inventories, resource limits, candidate-revision closure, and preservation of a pre-existing export directory. One guard replaces a captured mutation observer log with different but syntactically valid observation JSON, updates that log's digest, leaves the record unchanged, and requires rejection specifically because the recorded case results differ from captured stdout. Another replaces one mutation with a valid-applying observer-only patch and updates its local inventory, proving that packet self-consistency cannot substitute for the reviewed source-owned mutation projection. Each guard must fail with the intended diagnostic fragment; merely throwing at some unrelated boundary does not count as a passing negative test.
+
+Export and independently preflight a packet with:
+
+```sh
+lake exe checkMutationQualification \
+  --export \
+  --candidate-repo ../a12-kernel-rust-spike \
+  --output .lake/qualification/flat-validation-empty-logic-v1-rust-v1
+
+lake exe checkMutationQualification \
+  --verify-packet \
+  --candidate-repo ../a12-kernel-rust-spike \
+  --packet .lake/qualification/flat-validation-empty-logic-v1-rust-v1/PACKET.json
+```
+
+`--output` must name a new directory. After a separate isolated session returns its exact result directory, check it with:
+
+```sh
+lake exe checkMutationQualification \
+  --check \
+  --candidate-repo ../a12-kernel-rust-spike \
+  --packet .lake/qualification/flat-validation-empty-logic-v1-rust-v1/PACKET.json \
+  --result <returned-result>/RESULT.json
+```
+
+The assurance-class distinction is part of the claim. The built-in runner emits `sourceExecutedReplay` because this process invoked and captured the commands in a disposable baseline copy. `--check` accepts `isolatedSessionAttestation`: it establishes that the returned packet identity, command/status records, exact log tree and digests, observer outputs, and restored path-and-byte inventories are internally consistent with the packet, but files cannot prove the historical execution of an external session. Both are finite qualification results, not candidate correctness proofs, release approval, or new kernel evidence.
+
+The strict artifact boundary rejects symlinks, non-files, empty directories, unsafe or case-fold-colliding portable paths, and missing or additional files. A portable path is capped at 1,024 UTF-8 bytes, 255 bytes per segment, and 64 segments; packet/result JSON is capped at 4 MiB; each payload or raw log is capped at 16 MiB; and each exact packet, result, or candidate source inventory is capped at 512 files and depth 16. These are post-execution artifact limits, not complete process sandboxing. The current runner and candidate-conformance process still have no wall-clock timeout, no streamed stdout/stderr cap before `IO.Process.output` buffers them, and no aggregate byte budget across all packet or result files. Add those bounds before using either runner with untrusted binaries or high-volume qualification suites.
+
+The architecture follows Cedar's separation of `Spec`, `Validation`, and `Thm` from `DiffTest`, unit-test, and FFI roots, but this lane deliberately remains subprocess-based. The clean-room rule forbids a kernel FFI, and binding the packet to Rust through an in-process FFI would weaken its language-neutral consumer boundary. The digest-bound external-attestation model is A12-specific rather than a claim inherited from Cedar. [`ARCHITECTURE.md`](ARCHITECTURE.md#mutation-qualification-is-a-separate-replayable-process-lane) owns that dependency decision; [`ARTIFACTS.md`](ARTIFACTS.md#qualification-artifacts-tracked-source-ignored-packet-and-immutable-result) owns packet and result retention.
 
 ## Universal proofs and counterexamples
 
@@ -154,15 +201,17 @@ lake exe checkCandidateConformance --self-test --suite reference/flat-validation
 lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/flat-validation-empty-logic-v1.conformance.json
 lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v1.conformance.json
 lake exe checkCandidateConformance --candidate .lake/build/bin/a12-kernel-reference --suite reference/single-group-correlation-v1.conformance.json
+lake exe checkMutationQualification --self-test --candidate-repo ../a12-kernel-rust-spike
 ./scripts/check-lean-trust.sh
 git diff --check
 git diff --exit-code -- spec/
 git status --short
 git -C ../a12-kernel status --short
 git -C ../a12-rulekit status --short
+git -C ../a12-kernel-rust-spike status --short
 ```
 
-Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A candidate-suite failure means the suite/evidence linkage or candidate observable changed and must be classified using [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md); agreement with the reference is not allowed to overwrite external evidence. A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
+Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A candidate-suite failure means the suite/evidence linkage or candidate observable changed and must be classified using [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md); agreement with the reference is not allowed to overwrite external evidence. A qualification failure means the packet projection, frozen candidate closure, mutation sensitivity, actual captured observation, command policy, or restoration invariant disagrees; preserve the exact packet/result and investigate that boundary instead of editing an expected observation or weakening the checker. A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
 
 ## Capsule test checklist
 
@@ -174,4 +223,5 @@ Interpret failures by layer. A conformance failure means a concrete Lean behavio
 - Every exported theorem is in the trusted root and axiom audit.
 - Focused portable kernel observations exist, or the implementation map says `external evidence pending`.
 - The replay derives expectations from retained external output rather than duplicating them in Lean-shaped data.
-- `lake build`, `lake test`, any applicable reference-process and candidate-conformance gates, the trust audit, and patch/worktree hygiene gates all pass.
+- If the flat shipment or mutation plan changed, the exact qualification packet source replay and adversarial checker self-test pass, with actual observer output distinct from typed expectations.
+- `lake build`, `lake test`, any applicable reference-process, candidate-conformance, and mutation-qualification gates, the trust audit, and patch/worktree hygiene gates all pass.

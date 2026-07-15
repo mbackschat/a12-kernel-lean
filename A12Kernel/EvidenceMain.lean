@@ -3,6 +3,7 @@ import A12Kernel.Evidence.CorrelationElaborationReplay
 import A12Kernel.Evidence.FlatProtocolBridge
 import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
+import A12Kernel.Process.Sha256
 import Lean.Data.Json
 
 /-! IO-only retained-kernel-evidence replay. This module is an executable boundary and
@@ -252,35 +253,6 @@ private def orThrow (context : String) : Except String α → IO α
 private def readJson (path : System.FilePath) : IO Json := do
   let content ← IO.FS.readFile path
   orThrow path.toString (Json.parse content)
-
-private def isLowerHex (character : Char) : Bool :=
-  decide (character.toNat >= '0'.toNat && character.toNat <= '9'.toNat) ||
-    decide (character.toNat >= 'a'.toNat && character.toNat <= 'f'.toNat)
-
-private def sha256Command? (command : String) (arguments : Array String) :
-    IO (Option String) := do
-  try
-    let output ← IO.Process.output { cmd := command, args := arguments }
-    if output.exitCode != 0 then
-      pure none
-    else
-      match output.stdout.trimAscii.toString.splitOn " " |>.filter (!·.isEmpty) with
-      | digest :: _ =>
-          if digest.length == 64 && digest.toList.all isLowerHex then
-            pure (some digest)
-          else
-            pure none
-      | [] => pure none
-  catch _ => pure none
-
-private def fileSha256 (path : System.FilePath) : IO String := do
-  match ← sha256Command? "sha256sum" #[path.toString] with
-  | some digest => pure digest
-  | none =>
-      match ← sha256Command? "shasum" #["-a", "256", path.toString] with
-      | some digest => pure digest
-      | none =>
-          throw (IO.userError "lake test requires either sha256sum or shasum to bind retained model snapshots")
 
 private def requireSnapshotDigest (caseId expected actual : String) : Except String Unit := do
   if actual != expected then
@@ -550,7 +522,7 @@ private def checkCorrelationElaborationBindingLocks (root : System.FilePath)
     throw (IO.userError s!"{case.id}: unsafe modelRef '{observation.modelRef}'")
   let modelJson ← readJson (root / observation.modelRef)
   let model ← orThrow case.id (retainedElaborationModel modelJson)
-  let actualDigest ← fileSha256 (root / observation.modelRef)
+  let actualDigest ← A12Kernel.Process.Sha256.file (root / observation.modelRef)
   orThrow case.id (requireSnapshotDigest case.id case.modelSha256 actualDigest)
   let wrongDigest :=
     (if case.modelSha256.startsWith "0" then "1" else "0") ++ case.modelSha256.drop 1
@@ -686,7 +658,7 @@ private def checkCorrelationElaborationCase (root : System.FilePath)
   let modelPath := root / observation.modelRef
   if !(← System.FilePath.pathExists modelPath) then
     throw (IO.userError s!"{case.id}: missing retained model '{observation.modelRef}'")
-  let actualDigest ← fileSha256 modelPath
+  let actualDigest ← A12Kernel.Process.Sha256.file modelPath
   orThrow case.id (requireSnapshotDigest case.id case.modelSha256 actualDigest)
   let modelJson ← readJson modelPath
   let model ← orThrow case.id (retainedElaborationModel modelJson)

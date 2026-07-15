@@ -1,6 +1,6 @@
 # Independent implementer kit: flat empty handling and verdict logic
 
-**Status:** development cold-handover spike, not a release-readiness claim. `flat-validation-empty-logic-v1` packages eight retained kernel 30.8.1 runtime observations around empty Number, Boolean, and Confirm comparisons, the independent all-empty-row gate, malformed input, strong-Kleene `And`/`Or`, and VALUE/OMISSION polarity. The exact four-state verdicts are the Lean semantics-of-record; retained external output directly establishes authored firing and polarity when the authored message fires, but authored silence cannot reveal whether the kernel's hidden condition result was `notFired` or `unknown`. The limits are classified case by case below.
+**Status:** development cold-handover spike with a complete source-side mutation-qualification implementation, not a release-readiness claim. `flat-validation-empty-logic-v1` packages eight retained kernel 30.8.1 runtime observations around empty Number, Boolean, and Confirm comparisons, the independent all-empty-row gate, malformed input, strong-Kleene `And`/`Or`, and VALUE/OMISSION polarity. The exact four-state verdicts are the Lean semantics-of-record; retained external output directly establishes authored firing and polarity when the authored message fires, but authored silence cannot reveal whether the kernel's hidden condition result was `notFired` or `unknown`. The limits are classified case by case below.
 
 ## Compatibility identity
 
@@ -316,14 +316,26 @@ Classify defects 1, 3, and 7 as consuming-clause or polarity evaluation errors; 
 
 The suite cannot detect an implementation that substitutes `false` for empty Boolean only in the exercised `== true` case, because both false and not-evaluated are silent there. Do not use that ineffective mutation as evidence of suite sensitivity; it is an open evidence item.
 
-The generated [`flat-validation-empty-logic-v1.mutation-plan.json`](../reference/flat-validation-empty-logic-v1.mutation-plan.json) is the exact machine-readable companion to these exercises. It derives canonical verdicts for changed cases and the complete unchanged-case ID set from the typed capability, records every reviewed expected mutant verdict, and exhaustively derives the complete connective-table deltas for exercises 5 and 6 from the live verdict algebra because the eight canonical cases observe only one connective-sensitive result from each mechanism. It also makes an exact consequence of exercise 2 explicit: sparse-cell inference suppresses both `number-empty-equals-zero-content` and `confirm-empty-not-true`, while empty Boolean remains silent under either row decision. The plan's result-record requirements call for the exact patch because output agreement does not establish which internal mechanism changed and cannot by itself prove that exercises 5 and 6 changed both connectives. They also require complete eight-case and 32-cell algebra observations, but remain labeled `strictCheckerPending` until a source-side validator enforces their shape and digest scopes. This is a source-side post-cold qualification plan, not execution evidence, kernel evidence, or a retroactive member of the immutable first Rust bundle.
+The generated [`flat-validation-empty-logic-v1.mutation-plan.json`](../reference/flat-validation-empty-logic-v1.mutation-plan.json) is the exact machine-readable companion to these exercises. It derives canonical verdicts for changed cases and the complete unchanged-case ID set from the typed capability, records every reviewed expected mutant verdict, and exhaustively derives the complete connective-table deltas for exercises 5 and 6 from the live verdict algebra because the eight canonical cases observe only one connective-sensitive result from each mechanism. It also makes an exact consequence of exercise 2 explicit: sparse-cell inference suppresses both `number-empty-equals-zero-content` and `confirm-empty-not-true`, while empty Boolean remains silent under either row decision. Its result-record requirements use schema 2 and now identify `strictPacketResultAndLogCheckerAvailable`: the source-side checker enforces the closed packet/result shapes, exact patch and raw-log digest scopes, all eight ordered case observations, all 32 ordered connective cells for exercises 5 and 6, and path-and-byte restoration. The plan remains source-maintainer qualification material, not execution evidence, kernel evidence, or a retroactive member of the immutable first Rust bundle.
+
+## Post-cold mutation qualification packet
+
+[`A12Kernel/Qualification/`](../A12Kernel/Qualification/) implements a packet schema 2 and result schema 2 around the generated plan. An export binds the current semantics-project revision, the frozen natural Rust revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, the exact candidate build/test-input closure, compatibility tuple, execution profile, canonical observer, observer-only baseline patch, seven semantic patches, expected observations, commands, and every payload file by SHA-256. The packet-local payload verifier and an out-of-band `PACKET.json` digest let the isolated session check what it received without calling back into this source checkout.
+
+The observer reads the frozen conformance suite and its eight canonical request fixtures; it does not reconstruct those requests in a second semantic harness. The natural observation and every mutation contain all eight case results, while exercises 5 and 6 additionally contain the complete 32-cell `And`-then-`Or` algebra. Predictions come from the typed plan, but the runner fills the result's observed values by parsing actual observer stdout. The checker binds those recorded observations back to the raw log bytes before comparing them with the prediction, and separately reconstructs every patch from the frozen natural library, tracked observer, and reviewed source edits so a self-consistent packet cannot replace the named mutation.
+
+Restoration means exact paths and bytes for the packet-pinned candidate build/test-input closure after the natural gate, after each reversed mutation, and at the final gate. The closure includes the Cargo/toolchain inputs, source, tests, verification scripts, and consumed handover material frozen at the baseline revision; it deliberately excludes build output such as `target/` and unrelated reports, prompts, or agent instructions. This is not a claim that every filesystem or operating-system side effect was sandboxed.
+
+Two assurance classes keep the execution claim honest. The source-owned self-test records `sourceExecutedReplay` because its runner actually executes the commands in a disposable candidate copy and captures the streams. A returned downstream record uses `isolatedSessionAttestation`: `--check` can establish that its packet identity, commands, statuses, logs, observations, and restoration inventories are digest-bound and internally consistent, but cannot independently prove that the isolated session executed those commands. Cedar supplies the structural precedent for separating specification, validation, theorems, differential tests, and integration machinery; the assurance classes and digest-bound external-attestation model are A12-specific and intentionally weaker than an execution attestation service.
+
+The complete source-side replay of the natural baseline and all seven mutations is green, including the complete adversarial checker set owned by [`TESTING.md`](TESTING.md#rust-mutation-qualification). The corresponding isolated downstream result has not yet been produced; that is the next experiment, not a result inferred from the source replay.
 
 ## Tools and exact commands
 
-Build the reference and candidate runner:
+Build the reference, candidate runner, and mutation-qualification process:
 
 ```sh
-lake build a12-kernel-reference checkCandidateConformance
+lake build a12-kernel-reference checkCandidateConformance checkMutationQualification
 ```
 
 Check that the typed capability descriptor, projection-derived requests, exact Lean responses, suite, and manifest evidence boundary still agree:
@@ -361,6 +373,38 @@ Run it against an independent candidate by replacing the candidate path. The can
 
 The runner and suite establish only the eight indexed outputs and their metadata classifications. They do not transfer Lean proofs to the independent implementation.
 
+Run the complete source-executed natural/mutation replay and adversarial checker set against the frozen Rust candidate:
+
+```sh
+lake exe checkMutationQualification --self-test --candidate-repo ../a12-kernel-rust-spike
+```
+
+After the qualification implementation is committed and the source checkout is clean, export a new packet directory and immediately verify it against both repositories:
+
+```sh
+lake exe checkMutationQualification \
+  --export \
+  --candidate-repo ../a12-kernel-rust-spike \
+  --output .lake/qualification/flat-validation-empty-logic-v1-rust-v1
+
+lake exe checkMutationQualification \
+  --verify-packet \
+  --candidate-repo ../a12-kernel-rust-spike \
+  --packet .lake/qualification/flat-validation-empty-logic-v1-rust-v1/PACKET.json
+```
+
+Supply the exported packet and the SHA-256 of its `PACKET.json` out of band to the isolated Rust session. After that session commits its result without changing the frozen implementation inputs, place or copy the returned result in an ignored source-side location and check it:
+
+```sh
+lake exe checkMutationQualification \
+  --check \
+  --candidate-repo ../a12-kernel-rust-spike \
+  --packet .lake/qualification/flat-validation-empty-logic-v1-rust-v1/PACKET.json \
+  --result .lake/qualification/returned-flat-validation-empty-logic-v1-rust-v1/RESULT.json
+```
+
+`--export` refuses a pre-existing destination and requires a clean source checkout. `--verify-packet` rechecks the closed payload tree, source-owned bytes, frozen candidate revision and current build-input closure, patches, expected observations, and command policy. `--check` additionally expects the result's `isolatedSessionAttestation` assurance class and validates the exact result/log tree and actual-observation bindings. Acceptance means a digest-bound, internally consistent external attestation for this mutation plan; it is deliberately not reported as source-witnessed execution.
+
 ## Compatibility report and escalation
 
 The cold implementation report must record:
@@ -381,11 +425,13 @@ One isolated coding-agent run consumed the bundle exported from source revision 
 
 The eight canonical process cases, exhaustive four-verdict tables, associativity triples, focused staged tests, formatting, Clippy, and the complete Rust gate passed. In a post-cold source-side audit on 2026-07-14, `lake exe checkCandidateConformance --candidate ../a12-kernel-rust-spike/target/debug/a12-kernel-rust-spike --suite reference/flat-validation-empty-logic-v1.conformance.json` accepted the frozen Rust implementation with `8/8 cases passed`. This second execution confirms process compatibility with the same finite suite; it adds no semantic breadth and is not the pending generated Rust-versus-Lean differential lane.
 
-The downstream Prompt 03 exercised three representative defects: bypassing the row gate, treating empty Confirm as not evaluated, and making `Unknown` poison `Or`. Each produced exactly the one predicted case divergence and the natural implementation was restored between mutations. Empty Confirm exactly matches declared exercise 3. The `Or` change detects the fixture named by exercise 5 but does not implement that exercise's full “global poison for both connectives” mechanism, so exercise 5 is only partially covered. Row-gate bypass is not declared exercise 2: exercise 2 infers an empty row from sparse cells and would suppress the content-bearing control, while bypass evaluates the empty-row control and is therefore an additional inverse defect. Six exact exercises—1, 2, 4, 5, 6, and 7—remain from [Seeded divergence exercises](#seeded-divergence-exercises) unless a later reviewed capsule version deliberately changes the required set. The temporary patches and raw command transcripts were not retained, so Git establishes the immutable bundle and restored final code while the historical mutation execution remains an attested experiment record.
+The downstream Prompt 03 exercised three representative defects: bypassing the row gate, treating empty Confirm as not evaluated, and making `Unknown` poison `Or`. Each produced exactly the one predicted case divergence and the natural implementation was restored between mutations. Empty Confirm exactly matches declared exercise 3. The `Or` change detects the fixture named by exercise 5 but does not implement that exercise's full “global poison for both connectives” mechanism, so exercise 5 is only partially covered. Row-gate bypass is not declared exercise 2: exercise 2 infers an empty row from sparse cells and would suppress the content-bearing control, while bypass evaluates the empty-row control and is therefore an additional inverse defect. At that historical point, six exact exercises—1, 2, 4, 5, 6, and 7—remained from [Seeded divergence exercises](#seeded-divergence-exercises). The temporary patches and raw command transcripts were not retained, so Git establishes the immutable bundle and restored final code while the historical mutation execution remains an attested experiment record.
+
+The later source-side qualification replay closes that tooling gap without rewriting the historical experiment. It applies each of the seven exact source-declared mutations separately to a disposable copy of the frozen natural implementation, captures the canonical fixture-driven observations and complete required algebra, reverses each patch, reruns the full Rust verification gate, verifies the restored path-and-byte inventory, and passes the strict checker. The complete adversarial checker set also passes. This establishes that the generated packet and source replay are executable and mutation-sensitive on the source maintainer's machine; the separate isolated-session schema-2 record is still pending.
 
 The run supports the handover method for this finite slice. The language-neutral state model, staged algorithm, complete tables, worked traces, separating pairs, exclusions, and evidence classifications carried the implementation knowledge; Lean theorem names were not required to write the Rust evaluator. The implementer kit was the primary semantic guide, the capability descriptor controlled scope, the protocol and fixtures controlled transport and executable behavior, the retained artifacts served provenance audit rather than a second specification, and the digest inventory made the isolation boundary concrete. The paired row-content and healthy/malformed branch cases were especially effective. The broader operation manifest and source-maintainer material created avoidable navigation tension, which motivates explicit artifact roles, a concise normative path with a maintainer appendix, generated machine-readable law vectors and mutation records, and a capability-specific positive profile with explicit exclusions. [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md#lessons-from-the-first-cold-implementation) owns these generalized process lessons; this section records only their capsule-specific basis.
 
-This is knowledge-transport evidence, not new kernel evidence, a transferred Lean proof, release qualification, or a general claim about human or cross-language repeatability. Generated non-fixture Rust-versus-Lean differentials, the complete declared mutation set, exact negative-protocol compatibility, and the external empty-Boolean distinction remain open.
+This is knowledge-transport evidence, not new kernel evidence, a transferred Lean proof, release qualification, or a general claim about human or cross-language repeatability. The complete declared mutation set is green only as a source-executed replay; its isolated downstream attestation, generated non-fixture Rust-versus-Lean differentials, exact negative-protocol compatibility, and the external empty-Boolean distinction remain open.
 
 ## Repeatable production of the handover
 
@@ -396,13 +442,13 @@ This capsule is a maintained projection over four owned sources, not an independ
 3. normalized transport and support declarations in [`PROTOCOL.md`](PROTOCOL.md) and [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json);
 4. retained kernel observations and the typed replay input in [`EVIDENCE.md`](EVIDENCE.md), [`projection.json`](../evidence/kernel-30.8.1/projection.json), and the eight case artifacts above.
 
-Any change to a named semantic clause, exact verdict, evidence classification, protocol or manifest version, case request/response, or law statement invalidates the old bundle digest. Update the owning source first, make the Lean conformance and evidence gates agree, update this capsule and the language-neutral suite together, regenerate the allowlisted bundle and digest inventory, then repeat the isolated implementation exercise. Never silently patch only the downstream prompt or expected response. The mutation plan is intentionally a later source-maintainer artifact tied to that tuple and is not inserted into the already consumed bundle; a downstream exact-qualification packet must copy it under a new digest inventory rather than rewriting the cold experiment's history.
+Any change to a named semantic clause, exact verdict, evidence classification, protocol or manifest version, case request/response, or law statement invalidates the old bundle digest. Update the owning source first, make the Lean conformance and evidence gates agree, update this capsule and the language-neutral suite together, regenerate the allowlisted bundle and digest inventory, then repeat the isolated implementation exercise. Never silently patch only the downstream prompt or expected response. The mutation plan is intentionally a later source-maintainer artifact tied to that tuple and is not inserted into the already consumed bundle. The post-cold exporter copies it and the frozen candidate inputs into a separately identified schema-2 qualification packet, preserving the cold experiment's immutable history.
 
 ## Open boundary
 
 This spike is intentionally useful before it is release-qualified:
 
-- one isolated Rust implementation has demonstrated that this exact bundle is sufficient for the eight indexed cases, one exact source-declared mutation, the observable `Or` half of another, and one additional inverse row-gate variant, but generated differentials, six exact source-declared exercises, broader-language or human replication, and release qualification remain open;
+- one isolated Rust implementation has demonstrated that this exact bundle is sufficient for the eight indexed cases, one exact source-declared mutation, the observable `Or` half of another, and one additional inverse row-gate variant; all seven exact mutations now pass the source-executed packet replay, but the isolated schema-2 qualification record, generated differentials, broader-language or human replication, and release qualification remain open;
 - the suite covers eight finite positive semantic requests, not arbitrary valid flat requests or the public operation's negative-input diagnostics;
 - the exact `NotFired` versus `Unknown` response in four silent cases comes from the Lean/source account because external message output cannot expose hidden kernel truth;
 - the empty Boolean `== true` observation does not distinguish not-evaluated from a hypothetical false substitution; retain a separating empty Boolean `== false` or `!= true` kernel observation before claiming that distinction externally closed;
