@@ -330,6 +330,41 @@ Two assurance classes keep the execution claim honest. The source-owned self-tes
 
 The complete source-side replay of the natural baseline and all seven mutations is green, including the complete adversarial checker set owned by [`TESTING.md`](TESTING.md#rust-mutation-qualification). A separate isolated session produced the schema-2 downstream record committed at Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`; the strict checker accepted its exact packet identity, command/status records, observer outputs, complete raw-log tree, and restoration inventories as an `isolatedSessionAttestation`. The [outcome section](#cold-test-and-qualification-outcome-2026-07-1415) records the precise boundary.
 
+## Post-cold generated differential
+
+The bounded generated-differential lane is deliberately separate from the original cold handover. The isolated implementer first had to construct the eight-case implementation without access to the Lean source or executable; only after that result and its mutation qualification were frozen does this lane introduce the Lean reference as a black-box comparison oracle. It tests whether the transported semantic mechanism generalizes beyond the handed-over fixtures, not whether an implementer can copy reference outputs.
+
+[`A12Kernel/Differential/Profile.lean`](../A12Kernel/Differential/Profile.lean) defines a closed profile schema and [`Generated.lean`](../A12Kernel/Differential/Generated.lean) deterministically enumerates 52 supported positive requests: 12 leaf/cell-state combinations, all 32 ordered pairs of the four verdict atoms under `And` and `Or`, and 8 ordered authoritatively empty-row eligibility combinations where `hasContent=false` despite a present Boolean control cell. In a leaf case, the chosen sparse, parsed-Boolean-true, or rejected-malformed state is installed in the targeted field; parsed Boolean is therefore intentionally wrong-kind for Number and Confirm leaves. Every request stays inside the admitted three-field absolute/non-repeatable flat capability and is decoded through the public protocol before use. The comparison projects each strict success response only to `notFired`, `fired.value`, `fired.omission`, or `unknown`; negative protocol diagnostics remain outside this campaign.
+
+[`Runner.lean`](../A12Kernel/Differential/Runner.lean) requires clean repositories at the profile-pinned revisions, repository-relative contained executable paths, exact executable/profile digests, and unchanged postflight identities. It invokes the Lean reference and candidate sequentially through the project-owned bounded relay, enforces per-process and aggregate time/input/output/result budgets, and writes either a finite agreement receipt, a process/integrity failure, or every disagreement with both responses and deterministic minimal witnesses. This is a cooperative macOS/Linux resource boundary for candidates retaining the caller's credentials, not an untrusted-code sandbox.
+
+Before a pinned profile exists, the source gates are:
+
+```sh
+lake exe checkBoundedProcess
+lake exe checkGeneratedDifferential --self-test
+```
+
+After a profile is committed, validate it without executing either implementation:
+
+```sh
+lake exe checkGeneratedDifferential --check-profile <profile.json>
+```
+
+Execute from the clean source checkout named by that profile. The result must be an absolute, absent file whose existing non-symlink parent is outside both pinned repositories; a new file under `/private/tmp` is suitable, while an ignored path inside either checkout is not:
+
+```sh
+lake exe checkGeneratedDifferential --run \
+  --profile <profile.json> \
+  --reference-repo <clean-pinned-source-checkout> \
+  --reference .lake/build/bin/a12-kernel-reference \
+  --candidate-repo <clean-pinned-candidate-checkout> \
+  --candidate target/debug/a12-kernel-rust-spike \
+  --result /private/tmp/a12-flat-generated-result.json
+```
+
+The profile and eventual result lifecycle belongs to [`ARTIFACTS.md`](ARTIFACTS.md#generated-differential-profile-and-result-lifecycle), while [`TESTING.md`](TESTING.md#bounded-generated-lean-account-differential) owns the process method. No Rust-versus-Lean outcome is claimed until a retained result from the exact pinned revisions exists.
+
 ## Tools and exact commands
 
 Build the reference, candidate runner, and mutation-qualification process:
@@ -450,7 +485,7 @@ Any change to a named semantic clause, exact verdict, evidence classification, p
 
 This spike is intentionally useful before it is release-qualified:
 
-- one isolated Rust implementation has demonstrated that this exact bundle is sufficient for the eight indexed cases; its historical Prompt 03 covered one exact source-declared mutation, the observable `Or` half of another, and one additional inverse row-gate variant, while the later schema-2 qualification completed all seven exact mutations in both the source-executed replay and a checker-accepted isolated downstream record; generated differentials, broader-language or human replication, and release qualification remain open;
+- one isolated Rust implementation has demonstrated that this exact bundle is sufficient for the eight indexed cases; its historical Prompt 03 covered one exact source-declared mutation, the observable `Or` half of another, and one additional inverse row-gate variant, while the later schema-2 qualification completed all seven exact mutations in both the source-executed replay and a checker-accepted isolated downstream record; the bounded 52-case generated-differential mechanism is implemented but has not yet produced a pinned result, and broader-language or human replication and release qualification remain open;
 - the suite covers eight finite positive semantic requests, not arbitrary valid flat requests or the public operation's negative-input diagnostics;
 - the exact `NotFired` versus `Unknown` response in four silent cases comes from the Lean/source account because external message output cannot expose hidden kernel truth;
 - the empty Boolean `== true` observation does not distinguish not-evaluated from a hypothetical false substitution; retain a separating empty Boolean `== false` or `!= true` kernel observation before claiming that distinction externally closed;
@@ -461,6 +496,6 @@ This spike is intentionally useful before it is release-qualified:
 - the checked bridge closes retained `projection.json` case → normalized protocol request → exact Lean response → suite association for these eight cases, but the earlier retained DM model/case → flat projection transcription remains outside that bridge and is guarded only by the existing evidence replay checks;
 - the normalized result deliberately omits formal diagnostic messages, error pointers, message construction, and kernel emission order even though retained malformed artifacts preserve their formal messages;
 - concrete DSL parsing, general DM-JSON adaptation, strings, dates, enumerations, arithmetic, required/index generation, iteration, `$` correlation, computation, partial validation, interpolation, and custom conditions are excluded;
-- the candidate runner requires timeout and output-cap hardening before executing untrusted binaries in production CI.
+- the eight-case `checkCandidateConformance` runner remains directly buffered and has no wall-clock timeout; the generated-differential runner adds bounded streamed process control for cooperative same-credential candidates but is not a security sandbox for untrusted binaries.
 
 These limits are part of the handover. A downstream implementation can implement and test the named semantic slice without researching the kernel, but it must not advertise a complete flat or A12 interpreter on that basis.

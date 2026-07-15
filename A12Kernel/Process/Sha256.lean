@@ -1,8 +1,6 @@
 /-! # Portable SHA-256 process support
 
-IO-only helpers for executable gates. The project already requires either `sha256sum`
-or macOS `shasum` for retained-evidence snapshot binding; qualification gates reuse the
-same dependency rather than introducing another hashing implementation.
+IO-only helpers for executable gates. The project already requires either `sha256sum` or macOS `shasum` for retained-evidence snapshot binding; qualification gates reuse the same dependency rather than introducing another hashing implementation.
 -/
 
 namespace A12Kernel.Process.Sha256

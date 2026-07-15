@@ -84,8 +84,12 @@ lake build
 lake test
 lake exe syncFlatHandover --check
 lake exe checkReferenceProcess
+lake exe checkBoundedProcess
+lake exe checkGeneratedDifferential --self-test
 ./scripts/check-lean-trust.sh
 ```
+
+`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before a generated differential may run. The profile checker is added to the ordinary gate once a campaign profile is committed.
 
 A release candidate additionally requires:
 
@@ -229,7 +233,7 @@ The first CLI is a reference and CI oracle, not a replacement production runtime
 ## Open blockers before the first production release
 
 - adopt the product proposal for a concrete non-Lean consumer rather than treating this engineering contract as a release decision;
-- close the active qualification and generated-differential gaps in [`PLAN.md`](PLAN.md), or explicitly exclude the affected development capability from the release;
+- execute and classify the active generated-differential campaign in [`PLAN.md`](PLAN.md), or explicitly exclude the affected development capability from the release;
 - complete and retain the isolated cold-implementation report for every released capability, with no kernel or sibling-source research by the downstream implementer;
 - either mechanically bind the correlation suite to its retained projection as the flat bridge does or explicitly keep correlation outside the first released capability set;
 - define the supported platform, architecture, ABI, and oldest-OS matrix;

@@ -230,7 +230,7 @@ lake exe checkCandidateConformance \
   --suite reference/flat-validation-empty-logic-v1.conformance.json
 ```
 
-The runner requires deterministic candidate bytes but compares expected and actual JSON structurally, so object-key order is not cross-language normative. Its current lack of a wall-clock timeout and streamed output cap is a documented spike limitation, not a production qualification.
+The `checkCandidateConformance` suite runner requires deterministic candidate bytes but compares expected and actual JSON structurally, so object-key order is not cross-language normative. Its current lack of a wall-clock timeout and streamed output cap is a documented spike limitation, not a production qualification. The separate bounded generated-differential runner is maintainer qualification machinery and does not change this public protocol.
 
 The runner also has an in-memory integrity mode that validates canonical case metadata and evidence links, then mutates independent suite, manifest, and fixture boundaries and requires rejection; `checkReferenceProcess` invokes it for every suite automatically:
 
