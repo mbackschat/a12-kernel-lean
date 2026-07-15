@@ -15,6 +15,43 @@ if [[ "$missing_import" == true ]]; then
   exit 1
 fi
 
+project_root="$(pwd -P)"
+
+collect_project_source_closure() {
+  local queue=("$@")
+  local seen=()
+  local index=0
+  local source_dependency
+  local relative_dependency
+
+  while (( index < ${#queue[@]} )); do
+    local source="${queue[$index]}"
+    index=$((index + 1))
+    if printf '%s\n' "${seen[@]}" | rg -Fxq "$source"; then
+      continue
+    fi
+    seen+=("$source")
+    while IFS= read -r source_dependency; do
+      case "$source_dependency" in
+        "$project_root"/*.lean)
+          relative_dependency="${source_dependency#"$project_root"/}"
+          queue+=("$relative_dependency")
+          ;;
+      esac
+    done < <(lake env lean --src-deps "$source")
+  done
+
+  printf '%s\n' "${seen[@]}"
+}
+
+trusted_source_closure="$(collect_project_source_closure \
+  A12Kernel.lean A12Kernel/Proofs.lean A12Kernel/Conformance.lean)"
+if printf '%s\n' "$trusted_source_closure" | rg -n \
+    'A12Kernel/(Qualification|Process)/|A12Kernel/(EvidenceMain|ReferenceMain|ReferenceProcessTestMain|CandidateConformanceMain|FlatHandoverMain|MutationQualificationMain)\.lean$'; then
+  echo "trusted Lean roots transitively reach an IO or qualification driver" >&2
+  exit 1
+fi
+
 missing_theorem=false
 while IFS= read -r theorem_name; do
   if ! rg -q "^#print axioms [A-Za-z0-9_.]+\\.${theorem_name}$" A12Kernel/TrustAudit.lean; then

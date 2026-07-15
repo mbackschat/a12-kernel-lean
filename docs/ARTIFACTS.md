@@ -1,6 +1,6 @@
 # Repository artifact lifecycle
 
-This guide explains what belongs under [`evidence/`](../evidence/), [`reference/`](../reference/), [`examples/`](../examples/), and `qualification/`, which facts each tree owns, and how each tree should evolve. These directories deliberately have different lifecycles; treating all of them as either source files or disposable generated output would break the project's evidence and consumer contracts.
+This guide explains what belongs under [`evidence/`](../evidence/), [`reference/`](../reference/), [`examples/`](../examples/), and the three qualification locations—tracked source, ignored generated packet, and immutable downstream result—which facts each owns, and how each should evolve. These artifacts deliberately have different lifecycles; treating all of them as either hand-authored source or disposable generated output would break the project's evidence and consumer contracts.
 
 ## The short answer
 
@@ -9,7 +9,9 @@ This guide explains what belongs under [`evidence/`](../evidence/), [`reference/
 | [`evidence/`](../evidence/) | Retained external observations and exact probe inputs plus project-owned Lean-facing projections | Raw observation records preserve what a pinned kernel run observed; projections are reviewed bridges, not external authority | Append, version, or explicitly correct raw observations; evolve projections only through a checked bridge change |
 | [`reference/`](../reference/) | Portable consumer shipments and the readable support-manifest mirror | Mostly derived from Lean and retained evidence; the correlation suite remains a reviewed manual index | Regenerate typed outputs, maintain reviewed indices explicitly, and version incompatible supported changes |
 | [`examples/`](../examples/) | Runnable user examples, golden process regressions, and generated shipment fixtures | No; expected outputs are reviewed regression locks, not kernel evidence | Curate the small human-facing set and regenerate owned fixture sets |
-| `qualification/` | Candidate-specific execution records and, if adopted, compact audit receipts | No; a qualification record reports checks against a pinned shipment | Keep work transient; retain selected records immutably rather than updating them |
+| [`A12Kernel/Qualification/`](../A12Kernel/Qualification/) | Tracked packet/result contracts, Rust packet projection, canonical observer, runner, checker, and adversarial self-test | Source of the project-owned qualification policy and projection; frozen candidate Git bytes and toolchain identity remain separate packet inputs | Change through ordinary reviewed source development and rerun the complete qualification self-test |
+| ignored `.lake/qualification/` | Generated exact packet for a pinned source/candidate tuple | No; it is a reproducible, digest-pinned projection of tracked source and frozen candidate Git bytes | Export to a new directory, verify, distribute with an out-of-band index digest, then discard or archive unchanged |
+| Downstream `qualification/` or external artifact storage | Returned `RESULT.json` and exact raw logs for one reported packet run | No; it reports finite checks under one assurance class | Retain selected results immutably; a changed packet, candidate, profile, or run produces a new record |
 
 The authority chain remains:
 
@@ -25,7 +27,7 @@ exported language-neutral reference shipment
 independent candidate qualification
 ```
 
-The real kernel remains the behavioral authority. The Lean theory is the executable semantics-of-record for the project's chosen account. Retained evidence connects that account empirically to particular kernel observations. Generated shipments expose a closed part of the account to independent consumers. Qualification records describe what a particular candidate actually passed. None of these roles should silently absorb another.
+The real kernel remains the behavioral authority. The Lean theory is the executable semantics-of-record for the project's chosen account. Retained evidence connects that account empirically to particular kernel observations. Generated shipments expose a closed part of the account to independent consumers. Qualification records preserve what was source-replayed or externally reported under their explicit assurance class. None of these roles should silently absorb another.
 
 Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and manifest compatibility in [`PROTOCOL.md`](PROTOCOL.md), executable gates in [`TESTING.md`](TESTING.md), consumer shipment and qualification contracts in [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), and current unfinished work in [`PLAN.md`](PLAN.md). This guide owns only the directory-level classification and lifecycle connecting those contracts.
 
@@ -125,30 +127,37 @@ As the shipment corpus grows, generated conformance matrices should move concept
 
 Run `lake exe checkReferenceProcess` to execute the committed request/response pairs through the real process boundary. Run `lake exe syncFlatHandover --check` for the generated flat subset.
 
-## `qualification/`: candidate-specific historical records
+## Qualification artifacts: tracked source, ignored packet, and immutable result
 
 ### Contents
 
-There are currently no tracked qualification artifacts. Any local empty subdirectories are working scaffolding for the unfinished strict post-cold qualification path; they are not project source and do not establish a result.
+The tracked qualification source lives under [`A12Kernel/Qualification/`](../A12Kernel/Qualification/), with [`A12Kernel/MutationQualificationMain.lean`](../A12Kernel/MutationQualificationMain.lean) as its command-line boundary and [`A12Kernel/Process/Sha256.lean`](../A12Kernel/Process/Sha256.lean) as shared IO-only digest support. `Artifact.lean`, `Packet.lean`, and `MutationResult.lean` define the pure closed identities, codecs, and invariants. `RustPacket.lean` projects the typed plan and frozen Rust Git bytes into an exact packet. `Checker.lean`, `Runner.lean`, and `SelfTest.lean` verify, execute, and adversarially test that process. [`Assets/flat_validation_observer.rs`](../A12Kernel/Qualification/Assets/flat_validation_observer.rs) is tracked source for the canonical fixture-driven observer. These files are process source, not a candidate qualification result and not part of the trusted theorem root.
 
-A future accepted qualification record may contain a compact result and receipt identifying the shipment tuple, candidate revision, toolchain, commands, mutations or properties exercised, outcomes, and SHA-256 references to supporting logs or bundles. It must keep finite qualification separate from Lean proof and kernel evidence.
+An exported packet normally lives under ignored `.lake/qualification/<packet-id>/`. Its exact tree contains `PACKET.json`, the generated mutation plan, frozen candidate build inputs with executable modes, the observer, observer-only and semantic patches, expected baseline and mutation observations, source inventories, packet-local verification tools and instructions, and a SHA-256 payload manifest. The packet index binds every role-bearing file and command to the source revision, candidate base revision, compatibility tuple, and execution profile. It is generated output, not committed source and not evidence that any mutation ran.
+
+A returned result is a separate exact directory containing `RESULT.json` and only the raw stdout/stderr logs named and digested by that record. It binds the packet-index digest, source and candidate revisions, plan, baseline inventory, toolchain, exact commands and statuses, actual parsed case/algebra observations, restoration inventories, and assurance class. The current Rust experiment may retain that directory under the downstream candidate's `qualification/` tree; this repository currently tracks no candidate-specific result. A compact receipt may later be retained here only when its historical audit value justifies it and every referenced large payload remains durably available by digest.
 
 ### Responsibility and authority
 
-This tree answers: **what did this exact candidate revision pass against this exact shipment, under which recorded conditions?** It never defines A12 semantics, changes the shipment, transfers Lean proofs to a candidate, or creates new kernel evidence.
+Together these locations answer two different questions: **what exact qualification experiment did this source define and ship?** and **what did this exact candidate revision report or execute against that packet under the recorded profile?** The tracked source owns the former. A checked result owns only the latter finite record. Neither location defines A12 semantics, changes retained kernel evidence, transfers Lean proofs to a candidate, approves a release, or creates universal correctness.
+
+The result's assurance class is part of its authority. `sourceExecutedReplay` means this repository's runner invoked the packet commands in a disposable baseline copy and captured their streams, after which the checker validated the resulting finite record. `isolatedSessionAttestation` means the checker accepted a digest-bound, internally consistent record returned by another session; it checks byte-level consistency with the declared natural gate, seven mutations, finite observations, exact logs, and path-and-byte restoration projection, but does not claim to have witnessed that external process history.
 
 ### Evolution policy
 
-- Candidate checkouts, extracted packets, binaries, toolchains, raw logs, patches, and temporary observations belong under ignored `.lake/` storage, a temporary directory, or an external CI/release artifact—not as visible worktree files.
-- A retained qualification record is immutable and digest-pinned. A changed candidate, shipment, plan, or toolchain produces a new record rather than updating the old one.
-- Commit a compact receipt only when its historical audit value justifies retaining it. Large raw payloads should remain in durable external artifact storage and be referenced by digest.
-- A record that passed a finite suite claims only those executed checks. It is neither release approval nor a universal implementation-correctness proof.
+- Change the tracked qualification modules or observer only when the packet contract, candidate projection, or checker behavior intentionally changes. Run the complete source replay and all adversarial guards; do not hand-edit a generated packet to follow the new source.
+- Export requires a clean Lean source checkout and clean candidate checkout. The frozen candidate build-input closure is read from Git objects; the sibling checkout remains unmodified. A later candidate commit is admissible only when the frozen base remains an ancestor and the classified build-input bytes are unchanged.
+- Candidate copies, generated packets, binaries, toolchains, raw logs, patches, and temporary observations belong under ignored `.lake/` storage, an automatically removed temporary directory, or external CI/release artifact storage—not as visible untracked files in this repository or a sibling.
+- Once the `PACKET.json` digest has been supplied to a consumer, treat that packet tree as immutable. A changed source revision, candidate closure, mutation plan, observer, command policy, toolchain profile, or payload produces a new packet and digest rather than an in-place update.
+- A retained result is immutable and digest-pinned. A changed packet, candidate, profile, command outcome, or rerun produces a new record rather than updating the old one.
+- Commit a compact receipt or downstream result only when its historical audit value justifies retaining it. Large raw payloads should remain in durable external artifact storage and be referenced by digest.
+- A record that passed a finite suite claims only those checked observations and mutations under its assurance class. It is neither release approval nor a universal implementation-correctness proof.
 
-A mutation plan becomes qualification evidence only after the adopted strict checker validates a complete retained record; [`PLAN.md`](PLAN.md) owns the current delivery state. Until that gate exists and passes, a plan remains test planning rather than mechanically accepted qualification evidence.
+A mutation plan remains test planning by itself. It contributes to candidate qualification evidence only as a digest-bound packet input paired with a complete result accepted by the strict checker. That result remains candidate-process evidence, never retained kernel evidence. [`TESTING.md`](TESTING.md#rust-mutation-qualification) owns the exact commands, checker coverage, resource caps, and remaining process-sandbox limits.
 
 ## Evolution by change type
 
-| Project change | `evidence/` | `reference/` | `examples/` | `qualification/` |
+| Project change | `evidence/` | `reference/` | `examples/` | Qualification artifacts |
 |---|---|---|---|---|
 | Internal refactor, same observable account | Unchanged | Unchanged | Unchanged | Existing records remain historical |
 | Lean semantic correction | Replay unchanged observations; add evidence only if the old boundary was insufficient | Regenerate development shipment or publish a new supported version | Update affected generated/golden responses with review | Run a new qualification for affected candidates |
@@ -159,6 +168,6 @@ A mutation plan becomes qualification evidence only after the adopted strict che
 
 ## Desired repository-wide drift contract
 
-The flat shipment demonstrates the intended pattern but the repository does not yet have one global artifact graph. Before these trees grow substantially, every committed artifact path or glob should have one recorded owner, role, input set, generator or capture method, compatibility identity, update policy, and non-writing check. A repository-wide gate should derive expected generated output in memory or ignored temporary storage, reject changed, missing, and stale files, validate retained evidence and exported shipment digests, and never rewrite the worktree in CI.
+The flat shipment and Rust qualification packet demonstrate checked local artifact graphs, but the repository does not yet have one global graph. Before these trees grow substantially, every committed artifact path or glob should have one recorded owner, role, input set, generator or capture method, compatibility identity, update policy, and non-writing check. A repository-wide gate should derive expected generated output in memory or ignored temporary storage, reject changed, missing, and stale files, validate retained evidence and exported shipment digests, and never rewrite the worktree in CI.
 
 Generation remains an explicit maintainer action followed by review. A green generator run cannot create kernel evidence, approve a semantic correction, or qualify an independent consumer by itself.
