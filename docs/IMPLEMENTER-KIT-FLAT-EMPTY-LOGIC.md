@@ -338,17 +338,17 @@ The bounded generated-differential lane is deliberately separate from the origin
 
 [`Runner.lean`](../A12Kernel/Differential/Runner.lean) requires clean repositories at the profile-pinned revisions, repository-relative contained executable paths, exact executable/profile digests, and unchanged postflight identities. It invokes the Lean reference and candidate sequentially through the project-owned bounded relay, enforces per-process and aggregate time/input/output/result budgets, and writes either a finite agreement receipt, a process/integrity failure, or every disagreement with both responses and deterministic minimal witnesses. This is a cooperative macOS/Linux resource boundary for candidates retaining the caller's credentials, not an untrusted-code sandbox.
 
-Before a pinned profile exists, the source gates are:
+The source gates are:
 
 ```sh
 lake exe checkBoundedProcess
 lake exe checkGeneratedDifferential --self-test
 ```
 
-After a profile is committed, validate it without executing either implementation:
+The reviewed [`flat-validation-empty-logic-v1.generated-differential-v1.json`](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json) pins source `2cdc37746737d83241f91cd89fa0b56c99c2d47a` and Rust candidate `d213005b3972c2acd8f67e87f523a923d69f6a54`. Validate it without executing either implementation:
 
 ```sh
-lake exe checkGeneratedDifferential --check-profile <profile.json>
+lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
 ```
 
 Execute from the clean source checkout named by that profile. The result must be an absolute, absent file whose existing non-symlink parent is outside both pinned repositories; a new file under `/private/tmp` is suitable, while an ignored path inside either checkout is not:

@@ -78,7 +78,7 @@ Some runtime projections still repeat cells, rows, paths, and structured conditi
 - the generated [`flat-validation-empty-logic-v1` capability descriptor](../reference/flat-validation-empty-logic-v1.capability.json);
 - its generated [conformance suite](../reference/flat-validation-empty-logic-v1.conformance.json);
 - its generated source-maintainer [mutation qualification plan](../reference/flat-validation-empty-logic-v1.mutation-plan.json);
-- reviewed generated-differential profiles, which pin a closed generator, compatibility tuple, source and candidate revisions, response projection, execution contract, and resource budgets for one finite campaign;
+- the reviewed [`flat-validation-empty-logic-v1` generated-differential profile](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json), which pins a closed generator, compatibility tuple, source and candidate revisions, response projection, execution contract, and resource budgets for one finite campaign;
 - the [`single-group-correlation-v1` conformance suite](../reference/single-group-correlation-v1.conformance.json), whose evidence and fixture associations are still reviewed manual projections.
 
 ### Responsibility and authority

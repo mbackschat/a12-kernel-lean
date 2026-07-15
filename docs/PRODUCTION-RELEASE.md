@@ -86,10 +86,11 @@ lake exe syncFlatHandover --check
 lake exe checkReferenceProcess
 lake exe checkBoundedProcess
 lake exe checkGeneratedDifferential --self-test
+lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
 ./scripts/check-lean-trust.sh
 ```
 
-`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before a generated differential may run. The profile checker is added to the ordinary gate once a campaign profile is committed.
+`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before a generated differential may run. The ordinary gate validates the committed profile's compatibility identity, revisions, generator, projection, and budgets without executing either implementation.
 
 A release candidate additionally requires:
 

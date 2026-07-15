@@ -43,7 +43,7 @@ This is a development formal semantics and compatibility-kit experiment, not a c
 | Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, staged requiredness, one-group iteration, and one checked captured-outer `$` correlation shape |
 | Public reference | The versioned normalized process exposes a checked flat operation and one named single-group correlation operation; unsupported forms fail closed |
 | Empirical and formal assurance | Retained kernel observations anchor selected implemented primitive choices, while the theorem root establishes selected internal laws and structural certificates—not universal kernel equivalence |
-| Consumer handover | Flat and correlation development shipments exist; one finite isolated Rust exercise implemented the flat shipment and completed its checker-accepted seven-mutation qualification, while broader generated differentials remain open |
+| Consumer handover | Flat and correlation development shipments exist; one finite isolated Rust exercise implemented the flat shipment and completed its checker-accepted seven-mutation qualification, and a bounded 52-case Rust-versus-Lean profile is pinned for the post-cold differential run |
 
 [`IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) owns exact semantic/proof/evidence status, [`EVIDENCE.md`](docs/EVIDENCE.md) owns the retained observation inventory and claim boundary, the [flat](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [correlation](docs/IMPLEMENTER-KIT-CORRELATION.md) kits own capability-specific handover state, and [`PLAN.md`](docs/PLAN.md) owns only the immediate continuation.
 
@@ -57,6 +57,7 @@ lake test
 lake exe checkReferenceProcess
 lake exe checkBoundedProcess
 lake exe checkGeneratedDifferential --self-test
+lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
 ./scripts/check-lean-trust.sh
 ```
 

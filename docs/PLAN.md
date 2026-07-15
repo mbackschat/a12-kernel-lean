@@ -12,15 +12,14 @@ The flat cold experiment established finite implementation and representative mu
 
 ## Current objective
 
-Land and execute the first bounded generated Rust-versus-Lean differential profile for this exact capability. The dependency-free bounded POSIX process boundary, closed profile schema, deterministic 52-case generator, strict four-verdict projection, dual-process runner, result publication, and adversarial self-tests are implemented, green, and included in this source checkpoint. The remaining delivery must pin this source revision and the frozen Rust revision, run both exact clean checkouts, retain and classify the result, and preserve the claim as finite Lean-account conformance rather than new kernel evidence.
+Execute and retain the first bounded generated Rust-versus-Lean differential for this exact capability. Source checkpoint `2cdc37746737d83241f91cd89fa0b56c99c2d47a` contains the dependency-free bounded POSIX process boundary, closed profile schema, deterministic 52-case generator, strict four-verdict projection, dual-process runner, result publication, and adversarial self-tests. The reviewed profile now pins that source revision and frozen Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`; its local profile check is green. The remaining delivery must run both exact clean checkouts, retain and classify the result, and preserve the claim as finite Lean-account conformance rather than new kernel evidence.
 
 ## Immediate continuation order
 
-1. Record the exact revision of this source checkpoint after commit and confirm its complete source and public-CI gates before using it as qualification input.
-2. Add a separately committed profile for `flat-validation-empty-logic-v1` that pins that exact source revision, Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`, the compatibility tuple, the closed 52-case enumeration, the four-verdict projection, and all process/result budgets; validate it without running either implementation.
-3. Build clean disposable checkouts at both pinned revisions, execute the Lean reference and frozen Rust candidate through the bounded runner, and write the result to a new absolute external temporary path. The Rust sibling remains read-only and visibly clean.
-4. Preserve and minimize every disagreement before classification, or retain a compact green receipt with exact revisions, digests, distributions, and budget usage. A green run adds no kernel evidence, transfers no proof, and does not expand the supported capability.
-5. Update the flat kit, plan, artifact lifecycle, implementation map, and production gates with the observed result, then decide from the measured coverage whether to deepen this flat capsule or resume the next semantic capsule.
+1. Confirm the complete source/profile gate in public Linux CI after push; local source, process, profile, trust, evidence, reference-process, candidate-control, and mutation-qualification gates are green.
+2. Build clean disposable checkouts at both pinned revisions, execute the Lean reference and frozen Rust candidate through the bounded runner, and write the result to a new absolute external temporary path. The Rust sibling remains read-only and visibly clean.
+3. Preserve and minimize every disagreement before classification, or retain a compact green receipt with exact revisions, digests, distributions, and budget usage. A green run adds no kernel evidence, transfers no proof, and does not expand the supported capability.
+4. Update the flat kit, plan, artifact lifecycle, implementation map, and production gates with the observed result, then decide from the measured coverage whether to deepen this flat capsule or resume the next semantic capsule.
 
 ## Guardrails and stop conditions
 
