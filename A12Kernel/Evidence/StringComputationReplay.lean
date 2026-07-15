@@ -70,10 +70,13 @@ private def TargetStateSpec.toPrior : TargetStateSpec → Except String PriorStr
       if nonempty : value ≠ "" then pure (.filled { text := value, nonempty })
       else throw "a prior stored String cannot be empty"
 
-private def deltaSignature (targetPointer : String) : Option StringDelta → List String
-  | none => []
-  | some (.value stored) => [s!"{targetPointer}|VALUE|{stored.text}"]
-  | some .cleared => [s!"{targetPointer}|CLEARED"]
+private def deltaSignature (targetPointer : String) :
+    Option StringDelta → Except String (List String)
+  | none => pure []
+  | some (.value stored) => pure [s!"{targetPointer}|VALUE|{stored.text}"]
+  | some .cleared => pure [s!"{targetPointer}|CLEARED"]
+  | some (.errored _ _) =>
+      throw "unconstrained String-computation replay produced a target error"
 
 private def FieldSpec.validate (model : ModelSpec) (field : FieldSpec) : Except String Unit := do
   if field.groups != model.declaringGroup || field.groups.any String.isEmpty || field.name.isEmpty then
@@ -136,7 +139,7 @@ def CaseSpec.replay (case : CaseSpec) (model : ModelSpec) : Except String (List 
     | .error (.fieldKindMismatch fieldId) =>
         throw s!"{case.id}: projected field {fieldId} failed its String kind invariant"
   let prior ← case.priorTarget.toPrior
-  pure <| deltaSignature model.targetPointer (store.projectDelta prior)
+  deltaSignature model.targetPointer (store.projectDelta prior)
 
 def Bundle.validate (bundle : Bundle) : Except String Unit := do
   if bundle.schemaVersion != 1 then

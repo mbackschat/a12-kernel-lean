@@ -1,0 +1,78 @@
+{
+  "header" : {
+    "id" : "lean-string-target-validation",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "lean-string-target-validation",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Shipment",
+        "name" : "Shipment",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Computation",
+            "id" : "/Shipment/StringTargetComp",
+            "name" : "StringTargetComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Target",
+              "computationAlternatives" : [ {
+                "operation" : "\" \" + [Source] + \" \""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "x"
+              }, {
+                "locale" : "de_DE",
+                "text" : "x"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Shipment/Source",
+            "name" : "Source",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Shipment/Target",
+            "name" : "Target",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 5
+                }
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

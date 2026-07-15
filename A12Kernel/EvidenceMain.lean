@@ -6,6 +6,7 @@ import A12Kernel.Evidence.IterationReplay
 import A12Kernel.Evidence.OperatorEmptyReplay
 import A12Kernel.Evidence.OperatorProtocolBridge
 import A12Kernel.Evidence.StringComputationBinding
+import A12Kernel.Evidence.StringTargetValidationBinding
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
@@ -1037,6 +1038,8 @@ def main : IO Unit := do
   checkOperatorEvidence root operatorBundle
   let stringComputationCount ←
     A12Kernel.Evidence.StringComputation.Binding.checkArtifacts root
+  let stringTargetValidationCount ←
+    A12Kernel.Evidence.StringTargetValidation.Binding.checkArtifacts root
   let iterationBundle ← orThrow "iteration-projection.json"
     (A12Kernel.Evidence.Iteration.Bundle.fromJson
       (← readJson (root / "iteration-projection.json")))
@@ -1060,5 +1063,5 @@ def main : IO Unit := do
     checkCorrelationElaborationCase root correlationElaborationBundle case
   let total := bundle.cases.length + operatorBundle.cases.length + iterationBundle.cases.length +
     correlationBundle.cases.length + correlationElaborationBundle.cases.length +
-    stringComputationCount
-  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"
+    stringComputationCount + stringTargetValidationCount
+  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; String target validation: {stringTargetValidationCount}/{stringTargetValidationCount} cases bound; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"

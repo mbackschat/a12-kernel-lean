@@ -1,6 +1,7 @@
 import A12Kernel.Document
 import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.String
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
@@ -143,11 +144,6 @@ def FlatContext.resolveDirectStringComparisonOperand (context : FlatContext)
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
-
-/-- A12 String `Length` counts UTF-16 code units, matching the JVM/JavaScript engine boundary rather than Unicode scalar values or grapheme clusters. -/
-def utf16CodeUnitLength (value : String) : Nat :=
-  value.toList.foldl (fun units character =>
-    units + if character.toNat < 0x10000 then 1 else 2) 0
 
 def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : FlatStringField) :
     NumericOperand :=

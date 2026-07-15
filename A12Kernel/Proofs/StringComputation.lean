@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.StringComputation
 
-/-! # A12Kernel.Proofs.StringComputation — String expression/store/delta laws -/
+/-! # A12Kernel.Proofs.StringComputation — String expression, store, target, application-value, and delta laws -/
 
 namespace A12Kernel
 
@@ -105,8 +105,8 @@ theorem noValue_delta_iff_prior_filled (prior : PriorStringTarget) :
     StringStore.noValue.projectDelta prior = some .cleared ↔
       ∃ previous, prior = .filled previous := by
   cases prior with
-  | empty => simp [StringStore.projectDelta]
-  | filled previous => simp [StringStore.projectDelta]
+  | empty => simp [StringStore.projectDelta, StringDelta.projectNoValue]
+  | filled previous => simp [StringStore.projectDelta, StringDelta.projectNoValue]
 
 /-- A formally poisoned computation and a quiet no-value have the same immediate target delta, while remaining distinct semantic states. -/
 theorem poison_and_noValue_same_immediate_delta (cause : FormalCause)
@@ -123,12 +123,149 @@ theorem poison_is_not_noValue (cause : FormalCause) :
 /-- A produced String equal to the prior typed value is omitted from the delta. -/
 theorem unchangedString_has_no_delta (value : StoredString) :
     (StringStore.produced value).projectDelta (.filled value) = none := by
-  simp [StringStore.projectDelta]
+  simp [StringStore.projectDelta, StringDelta.projectValue]
 
 /-- A produced String different from the prior typed value is reported as `VALUE`. -/
 theorem changedString_has_value_delta (value previous : StoredString)
     (changed : value ≠ previous) :
     (StringStore.produced value).projectDelta (.filled previous) = some (.value value) := by
-  simp [StringStore.projectDelta, changed]
+  simp [StringStore.projectDelta, StringDelta.projectValue, changed]
+
+/-- A produced String below a positive minimum is a normal target error that retains the attempted value. -/
+theorem belowMinimumStringTarget_is_errored (bound : PositiveStringLength)
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (below : utf16CodeUnitLength attempted.text < bound.value) :
+    (StringTargetLengthPolicy.minimum bound).check (.produced attempted) =
+      .supported (.errored attempted .tooShort) := by
+  simp [StringTargetLengthPolicy.check, StringTargetLengthPolicy.admittedViolation,
+    noLineBreak, below]
+
+/-- A produced String above a positive maximum is a normal target error that retains the attempted value. -/
+theorem aboveMaximumStringTarget_is_errored (bound : PositiveStringLength)
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (above : bound.value < utf16CodeUnitLength attempted.text) :
+    (StringTargetLengthPolicy.maximum bound).check (.produced attempted) =
+      .supported (.errored attempted .tooLong) := by
+  simp [StringTargetLengthPolicy.check, StringTargetLengthPolicy.admittedViolation,
+    noLineBreak, above]
+
+/-- A produced String at or above a positive minimum is accepted. -/
+theorem minimumStringTarget_at_or_above_is_accepted (bound : PositiveStringLength)
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (permitted : bound.value ≤ utf16CodeUnitLength attempted.text) :
+    (StringTargetLengthPolicy.minimum bound).check (.produced attempted) =
+      .supported (.accepted attempted) := by
+  simp [StringTargetLengthPolicy.check, StringTargetLengthPolicy.admittedViolation,
+    noLineBreak, Nat.not_lt.mpr permitted]
+
+/-- A produced String at or below a positive maximum is accepted. -/
+theorem maximumStringTarget_at_or_below_is_accepted (bound : PositiveStringLength)
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (permitted : utf16CodeUnitLength attempted.text ≤ bound.value) :
+    (StringTargetLengthPolicy.maximum bound).check (.produced attempted) =
+      .supported (.accepted attempted) := by
+  simp [StringTargetLengthPolicy.check, StringTargetLengthPolicy.admittedViolation,
+    noLineBreak, Nat.not_lt.mpr permitted]
+
+/-- Exact equality with a minimum bound is accepted. -/
+theorem minimumStringTarget_boundary_is_accepted (bound : PositiveStringLength)
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (boundary : utf16CodeUnitLength attempted.text = bound.value) :
+    (StringTargetLengthPolicy.minimum bound).check (.produced attempted) =
+      .supported (.accepted attempted) := by
+  apply minimumStringTarget_at_or_above_is_accepted bound attempted noLineBreak
+  simp [boundary]
+
+/-- Exact equality with a maximum bound is accepted. -/
+theorem maximumStringTarget_boundary_is_accepted (bound : PositiveStringLength)
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (boundary : utf16CodeUnitLength attempted.text = bound.value) :
+    (StringTargetLengthPolicy.maximum bound).check (.produced attempted) =
+      .supported (.accepted attempted) := by
+  apply maximumStringTarget_at_or_below_is_accepted bound attempted noLineBreak
+  simp [boundary]
+
+/-- Every produced String containing CR or LF fails closed before the length policy is consulted. -/
+theorem lineBreakStringTarget_is_unsupported (policy : StringTargetLengthPolicy)
+    (attempted : StoredString)
+    (lineBreak : containsLineBreak attempted.text = true) :
+    policy.check (.produced attempted) = .unsupported .unsupportedLineBreak := by
+  simp [StringTargetLengthPolicy.check, lineBreak]
+
+/-- A clean root no-value bypasses every target-length policy. In particular, a positive minimum cannot turn absence into `tooShort`. -/
+theorem noValue_bypassesStringTargetLength (policy : StringTargetLengthPolicy) :
+    policy.check .noValue = .supported .noValue := by
+  rfl
+
+/-- A poisoned root result bypasses every target-length policy while preserving its formal cause. -/
+theorem poison_bypassesStringTargetLength (policy : StringTargetLengthPolicy)
+    (cause : FormalCause) :
+    policy.check (.poison cause) = .supported (.poison cause) := by
+  rfl
+
+/-- Whenever target checking accepts a produced value, its delta is exactly the established unconstrained clean projection for every prior target. -/
+theorem acceptedStringTarget_preserves_unconstrained_delta
+    (policy : StringTargetLengthPolicy) (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (accepted : policy.admittedViolation attempted noLineBreak = none)
+    (prior : PriorStringTarget) :
+    (policy.check (.produced attempted)).mapOutcome (·.projectDelta prior) =
+      some ((StringStore.produced attempted).projectDelta prior) := by
+  simp [StringTargetLengthPolicy.check, StringTargetCheckResult.mapOutcome,
+    noLineBreak, accepted, StringStore.projectDelta, StringTargetOutcome.projectDelta]
+
+/-- On an admitted produced String, the unconstrained target layer preserves the legacy pre-target-check delta. -/
+theorem unconstrainedStringTarget_preserves_store_delta
+    (attempted : StoredString)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (prior : PriorStringTarget) :
+    (StringTargetLengthPolicy.unconstrained.check (.produced attempted)).mapOutcome
+        (·.projectDelta prior) =
+      some ((StringStore.produced attempted).projectDelta prior) := by
+  simp [StringTargetLengthPolicy.check, StringTargetLengthPolicy.admittedViolation,
+    StringTargetCheckResult.mapOutcome, noLineBreak, StringStore.projectDelta,
+    StringTargetOutcome.projectDelta]
+
+/-- Once a target violation is classified, checking preserves both its attempted value and cause. -/
+theorem rejectedStringTarget_preserves_attempt (policy : StringTargetLengthPolicy)
+    (attempted : StoredString) (cause : StringTargetError)
+    (noLineBreak : containsLineBreak attempted.text = false)
+    (rejected : policy.admittedViolation attempted noLineBreak = some cause) :
+    policy.check (.produced attempted) = .supported (.errored attempted cause) := by
+  simp [StringTargetLengthPolicy.check, noLineBreak, rejected]
+
+/-- ERRORED reporting is independent of target absence, stale content, or typed equality. -/
+theorem erroredStringTarget_reports_unconditionally (attempted : StoredString)
+    (cause : StringTargetError) (prior : PriorStringTarget) :
+    (StringTargetOutcome.errored attempted cause).projectDelta prior =
+      some (.errored attempted cause) := by
+  cases prior <;> rfl
+
+/-- Applying an errored outcome exposes no stored value; exact absent versus present-empty shape belongs to the later document-application layer. -/
+theorem erroredStringTarget_has_no_appliedValue (attempted : StoredString)
+    (cause : StringTargetError) :
+    (StringTargetOutcome.errored attempted cause).appliedValue = none := by
+  rfl
+
+/-- Applying an accepted outcome exposes its checked stored value. -/
+theorem acceptedStringTarget_applies_value (value : StoredString) :
+    (StringTargetOutcome.accepted value).appliedValue = some value := by
+  rfl
+
+/-- The nearest stronger application claim is false: equal value-only application results do not imply equal computation deltas. A quiet no-value and ERRORED both apply to no stored value, but only ERRORED reports its attempted value and cause. -/
+theorem same_appliedValue_does_not_imply_same_delta (attempted : StoredString)
+    (cause : StringTargetError) :
+    (StringTargetOutcome.errored attempted cause).appliedValue =
+        StringTargetOutcome.noValue.appliedValue ∧
+      (StringTargetOutcome.errored attempted cause).projectDelta .empty ≠
+        StringTargetOutcome.noValue.projectDelta .empty := by
+  simp [StringTargetOutcome.appliedValue, StringTargetOutcome.projectDelta,
+    StringDelta.projectNoValue]
 
 end A12Kernel

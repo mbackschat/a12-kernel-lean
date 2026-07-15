@@ -1,0 +1,472 @@
+{
+  "schemaVersion" : 1,
+  "kernelVersion" : "30.8.1",
+  "a12DmkitsRevision" : "699e8619ac1667c861e14b285c5924ac57a705f1",
+  "captureDate" : "2026-07-15",
+  "anchor" : "kernel-groovy-dynamic",
+  "confirmationStrategies" : [ "kernel-java-static" ],
+  "triangulation" : {
+    "strategy" : "interpreter",
+    "role" : "knowledge source, not oracle"
+  },
+  "operation" : "compute",
+  "modelValidation" : "allAcceptedByKernelCheckConsistency",
+  "disposableHarness" : {
+    "captureTest" : {
+      "path" : "adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/StringTargetValidationPortableCaptureTest.kt",
+      "sha256" : "5ad337d3c15d50c2b5f5b26b76e44119a65ae0a8cacc03ce12f710d220c9b883"
+    },
+    "runtimeLaws" : {
+      "path" : "adapter/src/test/java/io/github/mbackschat/a12/dm/adapter/laws/RuntimeLaws.java",
+      "sha256" : "7810bfbc664f40940a71460fc500ac5d9315f3d84aaf9a18a1db4279d94dce5f"
+    }
+  },
+  "runtime" : {
+    "javaVersion" : "21.0.11",
+    "javaVendor" : "Oracle Corporation",
+    "gradleDistribution" : "https\\://services.gradle.org/distributions/gradle-9.0.0-bin.zip"
+  },
+  "normalizedCaptureCommand" : "./build.sh :adapter:test --tests io.github.mbackschat.a12.dm.adapter.laws.StringTargetValidationPortableCaptureTest -PtestForks=1",
+  "requiredEnvironment" : {
+    "A12_CAPTURE_LABEL" : "build/lean-string-target-validation-capture",
+    "A12_DMKITS_REVISION" : "699e8619ac1667c861e14b285c5924ac57a705f1",
+    "A12_CAPTURE_TEST_SHA256" : "5ad337d3c15d50c2b5f5b26b76e44119a65ae0a8cacc03ce12f710d220c9b883",
+    "A12_RUNTIME_LAWS_SHA256" : "7810bfbc664f40940a71460fc500ac5d9315f3d84aaf9a18a1db4279d94dce5f"
+  },
+  "computation" : {
+    "name" : "StringTargetComp",
+    "target" : "../Target"
+  },
+  "models" : [ {
+    "id" : "lean-string-target-max4",
+    "sha256" : "9ce1060c9c4df1098f61d2855f7b0aa67b450459499a5e01d82f57f75ea3e8cf",
+    "bytes" : 1979,
+    "operation" : "[Source]",
+    "lengthPolicy" : {
+      "minLength" : null,
+      "maxLength" : 4
+    },
+    "operationShape" : "copy",
+    "consistencyNotifications" : [ ]
+  }, {
+    "id" : "lean-string-target-max3",
+    "sha256" : "34787bca678e9590a6dd326b0540843ab7e44d7c2889da990fee27cb1fdf1d43",
+    "bytes" : 1979,
+    "operation" : "[Source]",
+    "lengthPolicy" : {
+      "minLength" : null,
+      "maxLength" : 3
+    },
+    "operationShape" : "copy",
+    "consistencyNotifications" : [ ]
+  }, {
+    "id" : "lean-string-target-min5",
+    "sha256" : "7bcc96560c5cfd5ac4e9fedb1645f7dbf2db0692caced57e43de8d2831c2349f",
+    "bytes" : 1979,
+    "operation" : "[Source]",
+    "lengthPolicy" : {
+      "minLength" : 5,
+      "maxLength" : null
+    },
+    "operationShape" : "copy",
+    "consistencyNotifications" : [ ]
+  }, {
+    "id" : "lean-string-target-spaced-max5",
+    "sha256" : "031ec09d33e94ed69be8b5082e110ab57092f10f1bb7760c25e8995a45c9757c",
+    "bytes" : 1995,
+    "operation" : "\" \" + [Source] + \" \"",
+    "lengthPolicy" : {
+      "minLength" : null,
+      "maxLength" : 5
+    },
+    "operationShape" : "padded",
+    "consistencyNotifications" : [ ]
+  } ],
+  "cases" : [ {
+    "id" : "max4-stale-value",
+    "modelId" : "lean-string-target-max4",
+    "caseSha256" : "5bf21cb066f046eab496ae97a467129e7e8578ca959235342dc9d79a72dc8324",
+    "groovyDynamic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|VALUE|ABCD" ],
+      "projected" : [ "/Shipment[1]/Target|VALUE|ABCD" ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "max3-stale-errored",
+    "modelId" : "lean-string-target-max3",
+    "caseSha256" : "28d0e7075f0e5f3f0d35d433c53212e5c4455b45db01ddb74c8c7c7544c9ed0f",
+    "groovyDynamic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuLang",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuLang",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "projected" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "max4-absent-value",
+    "modelId" : "lean-string-target-max4",
+    "caseSha256" : "efc6d6feb70a7c00b7a49761778ef9034b553c812ad73968f9f6e3dfacf8b3e4",
+    "groovyDynamic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|VALUE|ABCD" ],
+      "projected" : [ "/Shipment[1]/Target|VALUE|ABCD" ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "max3-absent-errored",
+    "modelId" : "lean-string-target-max3",
+    "caseSha256" : "d4ce5c9ee0433780cd12cee9a4503218a0a6645d314860c3af91817f7e256b34",
+    "groovyDynamic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuLang",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "absent",
+        "value" : null
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuLang",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "absent",
+        "value" : null
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "projected" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "max4-equal-unchanged",
+    "modelId" : "lean-string-target-max4",
+    "caseSha256" : "23a0680f12041df49f6deb3fa8cbaf115d18a9222c5960a1a620c4b26989ab27",
+    "groovyDynamic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "changed" : false
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "changed" : false
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|VALUE|ABCD" ],
+      "projected" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCD"
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "max3-equal-errored",
+    "modelId" : "lean-string-target-max3",
+    "caseSha256" : "8f19a48f41eb0698a8c70fcfad1b58b4ba1f94164fef16c3303953e95cc36d3d",
+    "groovyDynamic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuLang",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuLang",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "projected" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "min5-boundary-value",
+    "modelId" : "lean-string-target-min5",
+    "caseSha256" : "f7250419b8803ee6d00ed2a886aff2f77f0bf30668d29a6c2b9a4177e86d452c",
+    "groovyDynamic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCDE",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCDE"
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCDE",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCDE"
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|VALUE|ABCDE" ],
+      "projected" : [ "/Shipment[1]/Target|VALUE|ABCDE" ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : "ABCDE"
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "min5-short-errored",
+    "modelId" : "lean-string-target-min5",
+    "caseSha256" : "56f31dbd3277aca575dfa0d470f214a5c60d05ed37ccc1f1c6d82ae63c2ac8b0",
+    "groovyDynamic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuKurz",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ ],
+      "errored" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : "ABCD",
+        "errorCode" : "stringZuKurz",
+        "errorPointer" : "/Shipment[1]/Target"
+      } ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "projected" : [ "/Shipment[1]/Target|ERRORED|ABCD" ],
+      "appliedTarget" : {
+        "tag" : "empty",
+        "value" : null
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  }, {
+    "id" : "spaced-boundary-value",
+    "modelId" : "lean-string-target-spaced-max5",
+    "caseSha256" : "a4260936414e606716fc612594da9b442ffc05d5dab76dbb4ba81236e7dd20cc",
+    "groovyDynamic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : " ABC ",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : " ABC "
+      }
+    },
+    "javaStatic" : {
+      "clean" : [ {
+        "pointer" : "/Shipment[1]/Target",
+        "value" : " ABC ",
+        "changed" : true
+      } ],
+      "errored" : [ ],
+      "cleared" : [ ],
+      "operandErrors" : [ ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : " ABC "
+      }
+    },
+    "interpreter" : {
+      "raw" : [ "/Shipment[1]/Target|VALUE| ABC " ],
+      "projected" : [ "/Shipment[1]/Target|VALUE| ABC " ],
+      "appliedTarget" : {
+        "tag" : "string",
+        "value" : " ABC "
+      }
+    },
+    "interpreterAgreesWithKernelDelta" : true,
+    "interpreterAgreesWithKernelStoredApply" : true
+  } ]
+}
