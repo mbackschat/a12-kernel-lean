@@ -1,0 +1,54 @@
+{
+    "meta": {
+        "id": "string-length-empty-content",
+        "kernelVersion": "30.8.1",
+        "source": "curated",
+        "sections": [
+            "§2",
+            "§7",
+            "§12"
+        ],
+        "tags": [
+            "empty-string",
+            "length",
+            "operator-deviation",
+            "polarity"
+        ],
+        "scenario": "a12-kernel-lean operator-sensitive empty-value capture",
+        "notes": "Captured from the exact normalized model through kernel Groovy dynamic, kernel Java static, and the independent a12-dmkits interpreter."
+    },
+    "modelRef": "models/lean-string-length-empty.json",
+    "placements": [
+        {
+            "kind": "GROUP",
+            "path": "/Order",
+            "reps": [
+                1
+            ]
+        },
+        {
+            "kind": "FIELD",
+            "path": "/Order/CustomerName",
+            "reps": [
+                1,
+                1
+            ],
+            "value": "Acme"
+        },
+        {
+            "kind": "EMPTY",
+            "path": "/Order/ProductCode",
+            "reps": [
+                1,
+                1
+            ]
+        }
+    ],
+    "op": {
+        "kind": "validateFull"
+    },
+    "expected": [
+        "STR_LEN_GE|VALUE_ERROR|/Order[1]/ProductCode",
+        "STR_LEN_LT|OMISSION_ERROR|/Order[1]/ProductCode"
+    ]
+}

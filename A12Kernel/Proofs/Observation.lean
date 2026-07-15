@@ -9,8 +9,10 @@ theorem formalCheck_wellFormed (policy : FieldPolicy) (raw : RawCell) :
   cases raw with
   | empty => simp [formalCheck, CheckedCell.WellFormed]
   | parsed value =>
-      simp [formalCheck, CheckedCell.WellFormed]
-      split <;> simp_all
+      rcases policy with ⟨kind⟩
+      cases kind <;> cases value <;>
+        simp [formalCheck, CheckedCell.WellFormed, FieldKind.accepts] <;>
+        split <;> simp_all
   | rejected cause => simp [formalCheck, CheckedCell.WellFormed]
 
 theorem withFinding_preserves_wellFormed (cell : CheckedCell) (cause : FormalCause)
@@ -27,6 +29,11 @@ theorem withFinding_preserves_wellFormed (cell : CheckedCell) (cause : FormalCau
     kind- or phase-specific substitute. The consuming semantic clause owns that choice. -/
 theorem formalCheck_empty_observes_empty (policy : FieldPolicy) (phase : Phase) :
     observeCell phase (formalCheck policy .empty) = .empty := by
+  cases phase <;> rfl
+
+/-- A parser-boundary empty String is the same unspecified cell as an absent raw value; it does not become a fixed zero-length value before an operator consumes it. -/
+theorem formalCheck_parsedEmptyString_observes_empty (phase : Phase) :
+    observeCell phase (formalCheck { kind := .string } (.parsed (.str ""))) = .empty := by
   cases phase <;> rfl
 
 theorem required_empty_observes_unknown_in_validation (policy : FieldPolicy) :

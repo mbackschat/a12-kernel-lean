@@ -113,7 +113,7 @@ private def FlatFieldDecl.numberField? (declaration : FlatFieldDecl) :
     Option FlatNumberField :=
   match declaration.policy.kind with
   | .number info => some { id := declaration.id, info }
-  | .boolean | .confirm => none
+  | .boolean | .confirm | .string => none
 
 private structure ResolvedNumberRef where
   declaration : FlatFieldDecl

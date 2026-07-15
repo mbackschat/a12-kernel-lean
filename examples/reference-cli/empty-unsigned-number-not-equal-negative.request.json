@@ -1,0 +1,27 @@
+{
+  "protocolVersion": 1,
+  "kernelBehaviorVersion": "30.8.1",
+  "operation": "flatValidation.evaluateFull",
+  "model": {
+    "fieldRefByShortNameAllowed": false,
+    "repeatableGroups": [],
+    "fields": [
+      {
+        "id": 0,
+        "groupPath": ["Order"],
+        "name": "StockOnHand",
+        "kind": {"tag": "number", "scale": 0, "signed": false},
+        "repeatableScope": []
+      }
+    ]
+  },
+  "declaringGroup": ["Order"],
+  "condition": {
+    "tag": "compare",
+    "operator": "notEqual",
+    "field": {"base": "absolute", "groups": ["Order"], "field": "StockOnHand"},
+    "literal": {"tag": "number", "value": "-1"}
+  },
+  "cells": [],
+  "hasContent": true
+}

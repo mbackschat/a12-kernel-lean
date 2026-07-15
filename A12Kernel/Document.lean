@@ -33,10 +33,9 @@ structure CellAddr where
     scheduling, poison reads) and to stay dependency-free / `#eval`-able. `rawCells` yields
     a cell's raw text when present.
 
-    String length/pattern semantics still to pin: the kernel counts Java `String.length`
-    (UTF-16 code units), not Lean USVs — but the default BMP legal charset makes any
-    non-BMP input a formal error, so the two counts agree by default (cross-check
-    the a12-dmkits interpreter under `../a12-rulekit/interpreter/` when the string stage lands). -/
+    `rawCells` assigns no universal String-empty or length policy. The narrow checked
+    `Length` consumer counts UTF-16 code units; patterns, coercions, and the remaining
+    String consumers stay outside the current document semantics. -/
 structure Document where
   instantiatedRows : List RowAddr
   rawCells         : CellAddr → Option String

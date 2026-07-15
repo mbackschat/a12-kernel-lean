@@ -32,7 +32,6 @@ theorem desugarAbsoluteRequired_preserves (declaration : AbsoluteRequiredDecl)
             desugarAbsoluteRequired, mandatoryFieldMetadata, FlatCondition.evalFull,
             FlatCondition.canFireOnEmpty, FlatCondition.evalSelected, FlatField.evalNotFilled]
           cases (FlatField.confirm field).observeValidation context <;> rfl
-
 /-- Required annotation is computation-inert, even when it follows an ordinary finding.
     This is the preservation property that lets requiredness share `CheckedCell` without
     turning compute-time empty substitution into poison. -/

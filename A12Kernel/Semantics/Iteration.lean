@@ -125,11 +125,9 @@ def SingleStar.sumSelected (star : SingleStar)
   NumberFold.sumRows context star.valueField (star.select context)
 
 private def equalityHolds (op : EqualityOp) (left right : Rat) : Bool :=
-  let equivalent :=
-    rescaleHalfUp left comparisonScale == rescaleHalfUp right comparisonScale
   match op with
-  | .equal => equivalent
-  | .notEqual => !equivalent
+  | .equal => NumericComparisonOp.equal.holds left right
+  | .notEqual => NumericComparisonOp.notEqual.holds left right
 
 /-- Truth-only comparison used by the first external selection witnesses. Filtered-star
     polarity is intentionally deferred until directional fillability is modeled. -/

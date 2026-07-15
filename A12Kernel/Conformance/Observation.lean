@@ -16,6 +16,9 @@ private def optionalNumber : FieldPolicy :=
 private def confirm : FieldPolicy :=
   { kind := .confirm }
 
+private def string : FieldPolicy :=
+  { kind := .string }
+
 private def requiredEmpty : CheckedCell :=
   (formalCheck optionalNumber .empty).withFinding .required
 
@@ -28,6 +31,9 @@ example : observeCell .validation (formalCheck optionalNumber .empty) = .empty :
 
 example : observeCell .computation (formalCheck optionalNumber .empty) = .empty := by
   rfl
+
+example : formalCheck string (.parsed (.str "")) = formalCheck string .empty := by
+  decide
 
 example : observeCell .validation requiredEmpty = .unknown .required := by
   decide

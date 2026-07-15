@@ -1,6 +1,6 @@
 # Independent implementer kit: flat empty handling and verdict logic
 
-**Status:** development cold-handover spike with a complete source-side mutation replay and checker-accepted isolated downstream qualification record, not a release-readiness claim. `flat-validation-empty-logic-v1` packages eight retained kernel 30.8.1 runtime observations around empty Number, Boolean, and Confirm comparisons, the independent all-empty-row gate, malformed input, strong-Kleene `And`/`Or`, and VALUE/OMISSION polarity. The exact four-state verdicts are the Lean semantics-of-record; retained external output directly establishes authored firing and polarity when the authored message fires, but authored silence cannot reveal whether the kernel's hidden condition result was `notFired` or `unknown`. The limits are classified case by case below.
+**Status:** frozen reference-semantics 0.2.0 cold-handover spike with a complete source-side mutation replay and checker-accepted isolated downstream qualification record, not a release-readiness claim or the current 0.3.0 shipment. `flat-validation-empty-logic-v1` packages eight retained kernel 30.8.1 runtime observations around empty Number, Boolean, and Confirm comparisons, the independent all-empty-row gate, malformed input, strong-Kleene `And`/`Or`, and VALUE/OMISSION polarity. The exact four-state verdicts are the historical Lean semantics-of-record for this capability; retained external output directly establishes authored firing and polarity when the authored message fires, but authored silence cannot reveal whether the kernel's hidden condition result was `notFired` or `unknown`. The limits are classified case by case below.
 
 ## Compatibility identity
 
@@ -16,7 +16,7 @@
 | Observable compatibility result | `notFired`, `fired.value`, `fired.omission`, or `unknown` |
 | External evidence scope | Eight finite runtime observations; focused authored-message firing and polarity, not hidden kernel truth |
 
-Pin these identifiers together. Passing this capability does not establish conformance to another semantics version or to the rest of the flat operation advertised by the development manifest.
+Pin these identifiers together. Passing this capability does not establish conformance to another semantics version or to the rest of the flat operation advertised by the development manifest. Current [`flat-validation-empty-logic-v2.conformance.json`](../reference/flat-validation-empty-logic-v2.conformance.json) belongs to reference semantics 0.3.0, preserves this suite's eight cases, and adds the directional Number witness; it does not retroactively change this kit or its completed Rust claims.
 
 ## Purpose and boundary
 
@@ -41,7 +41,7 @@ The cold implementer receives an immutable bundle containing only these artifact
 - an artifact inventory containing the source project revision and a SHA-256 digest for every supplied file;
 - a blank compatibility-report template recording toolchain, implementation revision, isolation boundary, test results, injected defects, questions, and final verdict.
 
-The Lean source, `spec/`, sibling repositories, kernel source or binaries, a12-dmkits material, and prior conversation are deliberately absent. The Lean reference executable may be introduced only after the implementer has produced a first suite-passing version, and then only for generated Lean-account differentials clearly separated from retained kernel evidence.
+The Lean source, `spec/`, sibling repositories, kernel source or binaries, a12-dmkits material, and prior conversation are deliberately absent. A reference executable may be introduced only after the implementer has produced a first suite-passing version, must be pinned to the 0.2.0 source revision recorded by [`reference-semantics-lineage-v1.json`](../reference/reference-semantics-lineage-v1.json), and may then be used only for Lean-account differentials clearly separated from retained kernel evidence. The current 0.3.0 binary is not a historical compatibility control merely because it agrees on these eight requests.
 
 ## Language-neutral model
 
@@ -316,7 +316,7 @@ Classify defects 1, 3, and 7 as consuming-clause or polarity evaluation errors; 
 
 The suite cannot detect an implementation that substitutes `false` for empty Boolean only in the exercised `== true` case, because both false and not-evaluated are silent there. Do not use that ineffective mutation as evidence of suite sensitivity; it is an open evidence item.
 
-The generated [`flat-validation-empty-logic-v1.mutation-plan.json`](../reference/flat-validation-empty-logic-v1.mutation-plan.json) is the exact machine-readable companion to these exercises. It derives canonical verdicts for changed cases and the complete unchanged-case ID set from the typed capability, records every reviewed expected mutant verdict, and exhaustively derives the complete connective-table deltas for exercises 5 and 6 from the live verdict algebra because the eight canonical cases observe only one connective-sensitive result from each mechanism. It also makes an exact consequence of exercise 2 explicit: sparse-cell inference suppresses both `number-empty-equals-zero-content` and `confirm-empty-not-true`, while empty Boolean remains silent under either row decision. Its result-record requirements use schema 2 and now identify `strictPacketResultAndLogCheckerAvailable`: the source-side checker enforces the closed packet/result shapes, exact patch and raw-log digest scopes, all eight ordered case observations, all 32 ordered connective cells for exercises 5 and 6, and path-and-byte restoration. The plan remains source-maintainer qualification material, not execution evidence, kernel evidence, or a retroactive member of the immutable first Rust bundle.
+The generated [`flat-validation-empty-logic-v1.mutation-plan.json`](../reference/flat-validation-empty-logic-v1.mutation-plan.json) is the exact machine-readable companion to these exercises. It derives canonical verdicts for changed cases and the complete unchanged-case ID set from the typed capability, records every reviewed expected mutant verdict, and exhaustively derives the complete connective-table deltas for exercises 5 and 6 from the frozen historical verdict algebra because the eight canonical cases observe only one connective-sensitive result from each mechanism. It also makes an exact consequence of exercise 2 explicit: sparse-cell inference suppresses both `number-empty-equals-zero-content` and `confirm-empty-not-true`, while empty Boolean remains silent under either row decision. Its result-record requirements use schema 2 and now identify `strictPacketResultAndLogCheckerAvailable`: the source-side checker enforces the closed packet/result shapes, exact patch and raw-log digest scopes, all eight ordered case observations, all 32 ordered connective cells for exercises 5 and 6, and path-and-byte restoration. The plan remains source-maintainer qualification material, not execution evidence, kernel evidence, or a retroactive member of the immutable first Rust bundle.
 
 ## Post-cold mutation qualification packet
 
@@ -367,7 +367,9 @@ lake exe checkGeneratedDifferential --run \
 
 The exact pinned run is retained as [`generated-differential-v1.RESULT.json`](../qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json). It executed 104 bounded processes and completed all 52 generated cases with no disagreement, process failure, or integrity failure. Lean and Rust both produced 14 `notFired`, 11 `fired.value`, 13 `fired.omission`, and 14 `unknown` verdicts. The measured campaign used 94,088 process-input bytes, 11,114 process-output bytes, and 4,997 ms on `arm64-apple-darwin24.6.0`, within every declared bound; the receipt binds the exact profile, runner, relay, reference, candidate, and source revisions by SHA-256 or Git identity.
 
-Its strict non-writing receipt-consistency gate is `lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json`. The checker bounded-reads the receipt, rejects duplicate or unknown JSON members and non-agreement records, reconstructs the profile's exact cases and current Lean distribution, and checks compatibility, revisions, counts, budgets, claim, admitted platform, and artifact-digest syntax. It does not authenticate the historical execution, rebuild or compare the historical macOS executable bytes on another platform, or reconstruct per-case green transcripts omitted by the compact receipt.
+Its strict non-writing receipt-consistency gate is `lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json`. The checker bounded-reads the receipt, rejects duplicate or unknown JSON members and non-agreement records, reconstructs the profile's exact cases, compares both recorded distributions with the frozen historical distribution, and checks compatibility, revisions, counts, budgets, claim, admitted platform, and artifact-digest syntax. It does not call today's evaluator, authenticate the historical execution, rebuild or compare the historical macOS executable bytes on another platform, or reconstruct per-case green transcripts omitted by the compact receipt.
+
+Downstream revision `6a4df4ebaf15efd5620d60caf6cf9ac9834b668e` later copied that canonical receipt into the Rust repository, added [`GENERATED-DIFFERENTIAL-ADDENDUM.md`](../../a12-kernel-rust-spike/reports/GENERATED-DIFFERENTIAL-ADDENDUM.md), and updated its entry documentation to report 52/52 finite-profile agreement while leaving the historical reports byte-for-byte unchanged. This is a documentation and receipt mirror only: the candidate actually executed and qualified by the pinned campaign remains Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`, and the later downstream revision must not replace that candidate identity in the compatibility tuple or receipt.
 
 Under the recorded attested isolation boundary, this result answers the spike's knowledge-transport question positively for the closed capability: the Rust implementation reported as reconstructed from the language-neutral handover generalized from the eight visible conformance fixtures to the separately generated 52-case matrix once black-box Lean comparison was permitted. It remains `finiteLeanAccountDifferential` with `kernelEvidence=none`; the run does not expand the supported fragment, establish universal candidate correctness, transfer Lean proofs, or add external-kernel correspondence.
 
@@ -375,10 +377,10 @@ The profile and result lifecycle belongs to [`ARTIFACTS.md`](ARTIFACTS.md#genera
 
 ## Tools and exact commands
 
-Build the reference, candidate runner, and mutation-qualification process:
+Build the candidate runner and mutation-qualification process in the current maintainer checkout:
 
 ```sh
-lake build a12-kernel-reference checkCandidateConformance checkMutationQualification
+lake build checkCandidateConformance checkMutationQualification
 ```
 
 Check that the typed capability descriptor, projection-derived requests, exact Lean responses, suite, and manifest evidence boundary still agree:
@@ -387,7 +389,7 @@ Check that the typed capability descriptor, projection-derived requests, exact L
 lake exe syncFlatHandover --check
 ```
 
-`syncFlatHandover --write` regenerates the descriptor, eight request/response pairs, and suite from the retained projection and typed descriptor; it separately regenerates the post-cold mutation qualification plan from the typed capability and live verdict algebra, then immediately applies the same check to all outputs. It does not rewrite the typed support manifest; a changed evidence boundary must first be reviewed and changed in its owning Lean declaration, then the committed manifest mirror must be regenerated through the reference process.
+This v1 shipment is immutable. `syncFlatHandover --check` re-derives it through the decoupled historical request renderer and explicit verdict table and rejects drift; it does not reinterpret the shipment through today's decoder or evaluator. `syncFlatHandover --write` rejects the v1 identity. A semantic or evidence-boundary change requires a new capability identity and generator path rather than regeneration of the descriptor, eight request/response pairs, suite, or mutation plan in place.
 
 Replay the retained kernel observations and run the reference process gate:
 
@@ -404,15 +406,15 @@ lake exe checkCandidateConformance \
   --suite reference/flat-validation-empty-logic-v1.conformance.json
 ```
 
-Run the suite against the Lean process as a control:
+Run the suite against an independently built reference only when that binary is pinned to historical source revision `9fa50276f5fb70dcd879b0a9712c8d69c0868967`:
 
 ```sh
 lake exe checkCandidateConformance \
-  --candidate .lake/build/bin/a12-kernel-reference \
+  --candidate <historical-0.2.0-reference> \
   --suite reference/flat-validation-empty-logic-v1.conformance.json
 ```
 
-Run it against an independent candidate by replacing the candidate path. The candidate reads one JSON request from standard input, writes one JSON response followed by a newline to standard output, emits nothing on standard error, exits `0` for semantic results and domain diagnostics, and produces byte-identical output on repeated execution. The runner compares parsed JSON structurally, so object-key order is not normative.
+Run it against an independent candidate by replacing the candidate path. The candidate reads one JSON request from standard input, writes one JSON response followed by a newline to standard output, emits nothing on standard error, exits `0` for semantic results and domain diagnostics, and produces byte-identical output on repeated execution. The runner compares parsed JSON structurally, so object-key order is not normative. It validates this suite against the committed v1 manifest but does not call the candidate's `--manifest`; the qualification record must pin the candidate bytes and 0.2.0 claim separately.
 
 The runner and suite establish only the eight indexed outputs and their metadata classifications. They do not transfer Lean proofs to the independent implementation.
 
@@ -478,16 +480,16 @@ The run supports the handover method for this finite slice. The language-neutral
 
 This is knowledge-transport evidence, not new kernel evidence, a transferred Lean proof, release qualification, or a general claim about human or cross-language repeatability. The complete declared mutation set is green both as a source-executed replay and as a checker-accepted isolated downstream attestation under their distinct assurance classes, and the later 52-case generated differential is green under its separate finite-Lean-account claim. Exact negative-protocol compatibility and the external empty-Boolean distinction remain open.
 
-## Repeatable production of the handover
+## Repeatable production of a successor handover
 
-This capsule is a maintained projection over four owned sources, not an independently authored semantics document. [`FlatProtocolBridge.lean`](../A12Kernel/Evidence/FlatProtocolBridge.lean) owns the typed capability descriptor and generator/checker that joins those sources:
+This capsule is now an immutable historical projection, not an independently evolving semantics document. [`FlatProtocolBridge.lean`](../A12Kernel/Evidence/FlatProtocolBridge.lean) owns its frozen typed descriptor and non-writing artifact checker. The [`0.2.0 artifact lock`](../reference/reference-semantics-0.2.0.lock.json) pins the selected 152-entry historical evidence/example/principal-artifact inventory; it does not include this human handover document, and the post-revision separating request and replay receipt are bound separately by the lineage. The lineage also pins the historical source revision, while the bridge's explicit verdict table prevents today's evaluator from reinterpreting the qualified shipment. The four source classes that produced it were:
 
-1. semantic definitions and checked cases in [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean) and [`Conformance/FlatValidation.lean`](../A12Kernel/Conformance/FlatValidation.lean);
-2. theorem and non-law boundaries in [`Proofs/Verdict.lean`](../A12Kernel/Proofs/Verdict.lean), [`Proofs/Observation.lean`](../A12Kernel/Proofs/Observation.lean), and [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean);
+1. the semantic definitions and checked cases at the pinned historical source revision, whose current descendants are [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean) and [`Conformance/FlatValidation.lean`](../A12Kernel/Conformance/FlatValidation.lean);
+2. the theorem and non-law boundaries at that revision, whose current descendants include [`Proofs/Verdict.lean`](../A12Kernel/Proofs/Verdict.lean), [`Proofs/Observation.lean`](../A12Kernel/Proofs/Observation.lean), and [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean);
 3. normalized transport and support declarations in [`PROTOCOL.md`](PROTOCOL.md) and [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json);
 4. retained kernel observations and the typed replay input in [`EVIDENCE.md`](EVIDENCE.md), [`projection.json`](../evidence/kernel-30.8.1/projection.json), and the eight case artifacts above.
 
-Any change to a named semantic clause, exact verdict, evidence classification, protocol or manifest version, case request/response, or law statement invalidates the old bundle digest. Update the owning source first, make the Lean conformance and evidence gates agree, update this capsule and the language-neutral suite together, regenerate the allowlisted bundle and digest inventory, then repeat the isolated implementation exercise. Never silently patch only the downstream prompt or expected response. The mutation plan is intentionally a later source-maintainer artifact tied to that tuple and is not inserted into the already consumed bundle. The post-cold exporter copies it and the frozen candidate inputs into a separately identified schema-2 qualification packet, preserving the cold experiment's immutable history.
+No later change invalidates and regenerates this v1 bundle in place; a mismatch is evidence that the historical bytes or their checker drifted. For a successor, update the current owning semantics first, close its conformance and evidence gates, create a new capability/manifest/suite identity and a new typed bridge connected to that current account, generate a new allowlisted bundle and digest inventory, and repeat the isolated implementation exercise. Never patch only a downstream prompt or expected response. The existing mutation plan and post-cold qualification remain tied to the frozen 0.2.0 tuple and candidate inputs.
 
 ## Open boundary
 

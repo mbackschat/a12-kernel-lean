@@ -40,12 +40,14 @@ This is a development formal semantics and compatibility-kit experiment, not a c
 
 | Surface | Current boundary |
 |---|---|
-| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, staged requiredness, one-group iteration, and one checked captured-outer `$` correlation shape |
-| Public reference | The versioned normalized process exposes a checked flat operation and one named single-group correlation operation; unsupported forms fail closed |
-| Empirical and formal assurance | Retained kernel observations anchor selected implemented primitive choices, while the theorem root establishes selected internal laws and structural certificates—not universal kernel equivalence |
+| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, directional numeric polarity, the direct-String-versus-`Length` empty distinction, staged requiredness, one-group iteration, and one checked captured-outer `$` correlation shape |
+| Public reference | The current normalized process advertises reference semantics 0.3.0 through [`supported-fragment-v2.json`](reference/supported-fragment-v2.json), exposes a checked flat operation and one named single-group correlation operation, and fails closed outside that boundary; the internal String/Length capsule is not exposed |
+| Empirical and formal assurance | Retained kernel observations include the six-case operator-sensitive Number/String capture and anchor selected implemented primitive choices, while the theorem root establishes selected internal laws and structural certificates—not universal kernel equivalence |
 | Consumer handover | Flat and correlation development shipments exist; one isolated Rust exercise implemented the flat shipment, completed its checker-accepted seven-mutation qualification, and agreed with the pinned Lean reference on all 52 post-cold generated cases |
 
 [`IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) owns exact semantic/proof/evidence status, [`EVIDENCE.md`](docs/EVIDENCE.md) owns the retained observation inventory and claim boundary, the [flat](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [correlation](docs/IMPLEMENTER-KIT-CORRELATION.md) kits own capability-specific handover state, and [`PLAN.md`](docs/PLAN.md) owns only the immediate continuation.
+
+The public wire shape remains protocol 1, but the executable semantics now has an explicit lineage. Reference semantics 0.2.0 and its v1 manifest, suites, Rust qualification, and generated-differential receipt are frozen historical artifacts; the current executable advertises reference semantics 0.3.0 with v2 manifest and suites. The separating request is [`empty-unsigned-number-not-equal-negative.request.json`](examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json): replaying historical source revision `9fa50276f5fb70dcd879b0a9712c8d69c0868967` produces OMISSION, while the corrected current process produces VALUE. [`reference-semantics-lineage-v1.json`](reference/reference-semantics-lineage-v1.json) records that distinction, and the referenced [`0.2.0 artifact lock`](reference/reference-semantics-0.2.0.lock.json) lets the process gate rehash its selected 152-entry historical evidence/example/principal-artifact inventory. Human handover documents are outside that lock, while the post-revision separating request and replay receipt are bound separately by the lineage.
 
 ## Build
 
@@ -57,6 +59,7 @@ lake test
 lake exe checkReferenceProcess
 lake exe checkBoundedProcess
 lake exe checkGeneratedDifferential --self-test
+# The next two gates deliberately validate the frozen 0.2.0 Rust campaign.
 lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
 lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json
 ./scripts/check-lean-trust.sh
@@ -71,6 +74,14 @@ The committed files under [`examples/reference-cli/`](examples/reference-cli/) a
 ```sh
 lake exe a12-kernel-reference < examples/reference-cli/empty-number-equals-zero.request.json
 ```
+
+Direction matters after substitution. An empty unsigned Number can grow but cannot shrink, so the already accepted flat request `empty unsigned Number != -1` fires with VALUE polarity rather than the blanket OMISSION produced by the earlier one-bit account:
+
+```sh
+lake exe a12-kernel-reference < examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json
+```
+
+This correction is why the current executable advertises reference semantics 0.3.0. It does not expand or relabel the frozen 0.2.0 Rust capability, which excludes this request, and it does not expose the internal String/Length capsule. A request carries protocol and kernel-behavior versions but no reference-semantics selector; detect the executable account from that exact binary's `--manifest` output and pin the binary or release digest. Do not infer it from response shape alone.
 
 Inspect the exact supported boundary with:
 

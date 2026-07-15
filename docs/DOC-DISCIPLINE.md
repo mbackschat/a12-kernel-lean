@@ -27,13 +27,14 @@ Open work does not belong in the findings ledger. Until a separate gaps ledger i
 ## Same-change update triggers
 
 - A new or changed Lean module, representation, or dependency boundary updates [`ARCHITECTURE.md`](ARCHITECTURE.md).
-- A changed reference-process invocation, wire shape, diagnostic, limit, manifest field, or runnable sample updates [`PROTOCOL.md`](PROTOCOL.md).
+- A changed reference-process invocation, wire shape, diagnostic, limit, manifest field, reference-semantics identity or detection rule, compatibility lineage, or runnable sample updates [`PROTOCOL.md`](PROTOCOL.md); immutable-versus-current artifact consequences update [`ARTIFACTS.md`](ARTIFACTS.md) in the same change.
 - A changed semantic-shipment artifact, consumer task/language profile, research-closure requirement, cold-consumer test, downstream qualification playbook, or missing-semantics escalation path updates [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md).
 - A changed capability-specific semantic handover, descriptor, suite, candidate tool, evidence mapping, law/non-law guidance, cold-test outcome, or release gap updates its owning implementation kit: currently [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) or [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md).
 - A new supported semantic clause updates [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) with its exact fragment, proof/counterexample state, kernel version, and external evidence status.
 - A non-obvious mechanism, research conclusion, or rejected alternative updates [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md).
 - A changed evidence format, capture provenance, or replay boundary updates [`EVIDENCE.md`](EVIDENCE.md).
 - A discovered correction, narrowing, or extension to the read-only `spec/` account adds or updates a notice and authoritative drill trail in [`SOURCES.md`](SOURCES.md) in the same change; add a numbered finding as well when the formalization rationale is non-obvious and durable.
+- A concrete documentation, implementation, corpus, capture, or portability improvement for a12-dmkits that should be fed back later updates [`A12-DMKITS-FEEDBACK.md`](A12-DMKITS-FEEDBACK.md) with the audited upstream revision, exact source links, recommendation, and acceptance check. This queue does not own a12-dmkits' live status and never authorizes a sibling edit.
 - A changed role, ownership boundary, generation policy, versioning rule, retained-versus-transient policy, or drift mechanism for `evidence/`, `reference/`, `examples/`, or `qualification/` updates [`ARTIFACTS.md`](ARTIFACTS.md).
 - A changed test layer, Lean example convention, trust gate, or final verification workflow updates [`TESTING.md`](TESTING.md).
 - A changed stable goal, evidence rule, durable milestone, success criterion, or long-term project potential updates [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md).

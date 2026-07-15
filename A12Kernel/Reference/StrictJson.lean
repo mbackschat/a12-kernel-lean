@@ -60,49 +60,58 @@ private partial def scanNaturalToken (characters : List Char) (digits : Nat) :
         pure characters
   | [] => pure []
 
-private partial def safetyScan (characters : List Char) (inString escaped : Bool)
+private partial def safetyScan (allowNegativeIntegers : Bool) (characters : List Char)
+    (inString escaped : Bool)
     (nesting : Nat) : Except Error Unit := do
   match characters with
   | [] => pure ()
   | character :: rest =>
       if inString then
         if escaped then
-          safetyScan rest true false nesting
+          safetyScan allowNegativeIntegers rest true false nesting
         else if character == '\\' then
-          safetyScan rest true true nesting
+          safetyScan allowNegativeIntegers rest true true nesting
         else if character == '"' then
-          safetyScan rest false false nesting
+          safetyScan allowNegativeIntegers rest false false nesting
         else
-          safetyScan rest true false nesting
+          safetyScan allowNegativeIntegers rest true false nesting
       else if character == '"' then
-        safetyScan rest true false nesting
+        safetyScan allowNegativeIntegers rest true false nesting
       else if character == '{' || character == '[' then
         let nesting := nesting + 1
         if nesting > maxNesting then
           throw (.resourceLimit .nesting)
-        safetyScan rest false false nesting
+        safetyScan allowNegativeIntegers rest false false nesting
       else if character == '}' || character == ']' then
-        safetyScan rest false false nesting.pred
+        safetyScan allowNegativeIntegers rest false false nesting.pred
       else if character == '-' then
         match rest with
-        | next :: _ =>
-            if isDigit next then throw .nonCanonicalNumber
-            else safetyScan rest false false nesting
-        | [] => safetyScan rest false false nesting
+        | next :: tail =>
+            if isDigit next then
+              if !allowNegativeIntegers then throw .nonCanonicalNumber
+              else if next == '0' then throw .nonCanonicalNumber
+              else
+                let remaining ← scanNaturalToken tail 1
+                safetyScan allowNegativeIntegers remaining false false nesting
+            else safetyScan allowNegativeIntegers rest false false nesting
+        | [] => safetyScan allowNegativeIntegers rest false false nesting
       else if isDigit character then
         if character == '0' then
           match rest with
           | next :: _ =>
               if isDigit next then throw .nonCanonicalNumber
-              else safetyScan (← scanNaturalToken rest 1) false false nesting
+              else
+                let remaining ← scanNaturalToken rest 1
+                safetyScan allowNegativeIntegers remaining false false nesting
           | [] => pure ()
         else
-          safetyScan (← scanNaturalToken rest 1) false false nesting
+          let remaining ← scanNaturalToken rest 1
+          safetyScan allowNegativeIntegers remaining false false nesting
       else
-        safetyScan rest false false nesting
+        safetyScan allowNegativeIntegers rest false false nesting
 
-private def safetyPreflight (input : String) : Except Error Unit :=
-  safetyScan input.toList false false 0
+private def safetyPreflight (allowNegativeIntegers : Bool) (input : String) : Except Error Unit :=
+  safetyScan allowNegativeIntegers input.toList false false 0
 
 private def firstDuplicate (earlier later : Option String) : Option String :=
   match earlier with
@@ -206,17 +215,26 @@ private def preflight : Parser (Option String) := do
 private def duplicateMember? (input : String) : Except String (Option String) :=
   Parser.run preflight input
 
-def parse (input : String) : Except Error Lean.Json :=
-  match safetyPreflight input with
-  | .error error => .error error
-  | .ok () =>
-      match Lean.Json.parse input with
+private def parseAfterSafety (input : String) : Except Error Lean.Json :=
+  match Lean.Json.parse input with
+  | .error message => .error (.invalidJson message)
+  | .ok json =>
+      match duplicateMember? input with
       | .error message => .error (.invalidJson message)
-      | .ok json =>
-          match duplicateMember? input with
-          | .error message => .error (.invalidJson message)
-          | .ok (some name) => .error (.duplicateMember name)
-          | .ok none => .ok json
+      | .ok (some name) => .error (.duplicateMember name)
+      | .ok none => .ok json
+
+def parse (input : String) : Except Error Lean.Json := do
+  safetyPreflight false input
+  parseAfterSafety input
+
+/-- Parse retained, trusted evidence JSON with the same duplicate, nesting, and numeric
+resource guards as normalized protocol JSON, while additionally admitting canonical signed
+integers. Evidence projections may contain typed negative operands; protocol v1 transports
+exact A12 decimals as strings and therefore continues to reject every signed JSON number. -/
+def parseEvidence (input : String) : Except Error Lean.Json := do
+  safetyPreflight true input
+  parseAfterSafety input
 
 private def duplicateOf : Except Error Lean.Json → Option String
   | .error (.duplicateMember name) => some name
@@ -248,6 +266,18 @@ example : (parse "[{\"name\":1},{\"name\":2}]").isOk = true := by
   native_decide
 
 example : errorOf (parse "{\"value\":1e100000000}") = some .nonCanonicalNumber := by
+  native_decide
+
+example : (parseEvidence "{\"value\":-1}").isOk = true := by
+  native_decide
+
+example : errorOf (parseEvidence "{\"value\":-0}") = some .nonCanonicalNumber := by
+  native_decide
+
+example : duplicateOf (parseEvidence "{\"value\":-1,\"value\":-2}") = some "value" := by
+  native_decide
+
+example : errorOf (parseEvidence "{\"value\":-1e100000000}") = some .nonCanonicalNumber := by
   native_decide
 
 example : errorOf (parse "{\"value\":12345678901234567}") =

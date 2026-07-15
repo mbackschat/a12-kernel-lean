@@ -132,19 +132,15 @@ def CaseSpec.toFlatReplayInput (case : CaseSpec) : Except String FlatReplayInput
     cells
     hasContent }
 
-private def FlatFieldDecl.toFlatField (declaration : FlatFieldDecl) : FlatField :=
-  match declaration.policy.kind with
-  | .number info => .number { id := declaration.id, info }
-  | .boolean => .boolean { id := declaration.id }
-  | .confirm => .confirm { id := declaration.id }
-
 private def CaseSpec.replayRequired (case : CaseSpec) (targetFieldId : FieldId) :
     Except String (List String) := do
   let declaration ← match case.model.lookupUniqueId targetFieldId with
     | .ok declaration => pure declaration
     | .error error => throw s!"{case.id}: required target lookup failed: {repr error}"
-  let result := applyAbsoluteRequired declaration.toFlatField
-    (case.model.checkContext case.rawContext)
+  let field ← match declaration.toPresenceField? with
+    | some field => pure field
+    | none => throw s!"{case.id}: required target kind is outside the retained presence fragment"
+  let result := applyAbsoluteRequired field (case.model.checkContext case.rawContext)
   pure (signature case.focusCode case.focusPointer result.mandatoryVerdict)
 
 private def resolveErrorCode : ResolveError → Option String

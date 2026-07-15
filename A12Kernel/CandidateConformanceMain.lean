@@ -4,7 +4,7 @@ import Lean.Data.Json
 
 /-! # A12Kernel.CandidateConformanceMain — language-neutral candidate gate
 
-This process runs a suite of normalized request/response fixtures against an independently implemented command-line candidate. It compares parsed JSON, while separately requiring deterministic candidate output bytes.
+This process runs a suite of normalized request/response fixtures against an independently implemented command-line candidate. It compares parsed JSON, while separately requiring deterministic candidate output bytes. Passing establishes finite behavioral agreement with the selected suite only: the runner does not ask the candidate to advertise a compatibility identity, so the invoking qualification record owns that binding.
 -/
 
 open Lean
@@ -121,6 +121,12 @@ private def readJsonFile (path : System.FilePath) : IO Json := do
   match A12Kernel.Reference.StrictJson.parse input with
   | .ok json => pure json
   | .error error => fail s!"invalid normalized JSON file '{path}': {repr error}"
+
+private def readEvidenceJsonFile (path : System.FilePath) : IO Json := do
+  let input ← IO.FS.readFile path
+  match A12Kernel.Reference.StrictJson.parseEvidence input with
+  | .ok json => pure json
+  | .error error => fail s!"invalid evidence JSON file '{path}': {repr error}"
 
 private def requireObject (json : Json) (allowed : List String)
     (context : String) : IO Unit := do
@@ -295,14 +301,21 @@ private def validateExpectedEvidenceScope (testCase : ConformanceCase)
 
 private def validateEvidenceLink (suite : ConformanceSuite)
     (testCase : ConformanceCase) : IO Unit := do
-  let projection ← readJsonFile testCase.evidence.projection
+  let projection ← readEvidenceJsonFile testCase.evidence.projection
   assertMember projection "kernelVersion" s!"case '{testCase.id}' evidence projection"
     suite.kernelBehaviorVersion
   let cases : List Json ← required projection "cases" s!"case '{testCase.id}' evidence projection"
-  let ids ← cases.mapM fun evidenceCase =>
-    required evidenceCase "id" s!"case '{testCase.id}' evidence projection case"
-  if !ids.contains testCase.evidence.caseId then
-    fail s!"case '{testCase.id}': evidence case '{testCase.evidence.caseId}' is absent from '{testCase.evidence.projection}'"
+  let tagged ← cases.mapM fun evidenceCase => do
+    let id : String ← required evidenceCase "id"
+      s!"case '{testCase.id}' evidence projection case"
+    pure (evidenceCase, id)
+  let _evidenceCase ← match tagged.filter (fun (_, id) => id == testCase.evidence.caseId) with
+    | [(evidenceCase, _)] => pure evidenceCase
+    | [] =>
+        fail s!"case '{testCase.id}': evidence case '{testCase.evidence.caseId}' is absent from '{testCase.evidence.projection}'"
+    | _ =>
+        fail s!"case '{testCase.id}': evidence case '{testCase.evidence.caseId}' is duplicated in '{testCase.evidence.projection}'"
+  pure ()
 
 private def loadAndValidateCaseArtifacts (suite : ConformanceSuite)
     (testCase : ConformanceCase) : IO (String × Json) := do
@@ -561,7 +574,7 @@ private def runSelfTest (suitePath : System.FilePath) : IO Nat := do
     let _ ← parseSuite unknownEvidenceJson
     pure ())
 
-  if canonicalSuite.id == "flat-validation-empty-logic-v1" then
+  if canonicalSuite.operation == "flatValidation.evaluateFull" then
     runFlatEvidenceSelfTests suiteJson canonicalSuite
     pure 24
   else

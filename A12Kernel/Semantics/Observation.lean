@@ -11,11 +11,12 @@ independent from concrete syntax while preserving every distinction needed by `s
 
 namespace A12Kernel
 
-/-- The field kinds whose empty-comparison behaviour is locked by the first capsule. -/
+/-- Field kinds admitted by the currently implemented scalar and operator capsules. -/
 inductive FieldKind where
   | number (config : NumField)
   | boolean
   | confirm
+  | string
   deriving Repr, DecidableEq
 
 /-- Static scalar policy consumed once by formal checking. Requiredness is deliberately
@@ -66,6 +67,7 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .number _, .num _ => true
   | .boolean, .bool _ => true
   | .confirm, .conf true => true
+  | .string, .str _ => true
   | _, _ => false
 
 /-- Apply static scalar policy and collect formal findings before any phase reads the
@@ -74,10 +76,17 @@ def formalCheck (policy : FieldPolicy) : RawCell → CheckedCell
   | .empty =>
       { rawPresent := false, parsed := none, findings := [] }
   | .parsed value =>
-      if policy.kind.accepts value then
-        { rawPresent := true, parsed := some value, findings := [] }
-      else
-        { rawPresent := true, parsed := none, findings := [.malformed] }
+      match policy.kind, value with
+      | .string, .str text =>
+          if text.isEmpty then
+            { rawPresent := false, parsed := none, findings := [] }
+          else
+            { rawPresent := true, parsed := some value, findings := [] }
+      | _, _ =>
+          if policy.kind.accepts value then
+            { rawPresent := true, parsed := some value, findings := [] }
+          else
+            { rawPresent := true, parsed := none, findings := [.malformed] }
   | .rejected cause =>
       { rawPresent := true, parsed := none, findings := [cause.toFormalCause] }
 

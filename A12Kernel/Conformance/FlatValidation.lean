@@ -21,6 +21,9 @@ private def healthyField : FlatBooleanField :=
 private def brokenField : FlatNumberField :=
   { id := 4, info := { scale := 0, signed := false } }
 
+private def signedNumberField : FlatNumberField :=
+  { id := 5, info := { scale := 0, signed := true } }
+
 private def checked (kind : FieldKind) (raw : RawCell) : CheckedCell :=
   formalCheck { kind := kind } raw
 
@@ -28,6 +31,7 @@ private def emptyContext : FlatContext where
   read fieldId :=
     if fieldId = numberField.id then checked (.number numberField.info) .empty
     else if fieldId = booleanField.id then checked .boolean .empty
+    else if fieldId = signedNumberField.id then checked (.number signedNumberField.info) .empty
     else checked .confirm .empty
 
 private def branchingContext : FlatContext where
@@ -39,6 +43,8 @@ private def filledContext : FlatContext where
   read fieldId :=
     if fieldId = numberField.id then checked (.number numberField.info) (.parsed (.num 5))
     else if fieldId = booleanField.id then checked .boolean (.parsed (.bool false))
+    else if fieldId = signedNumberField.id then
+      checked (.number signedNumberField.info) (.parsed (.num 0))
     else checked .confirm (.parsed (.conf true))
 
 private def omissionAndBrokenContext : FlatContext where
@@ -78,6 +84,18 @@ private def brokenIsZero : FlatCondition :=
 
 private def numberIsNotZero : FlatCondition :=
   .compare (.number .notEqual numberField 0)
+
+private def unsignedNumberIsNotNegativeOne : FlatCondition :=
+  .compare (.number .notEqual numberField (-1))
+
+private def unsignedNumberIsNotNegativeTwo : FlatCondition :=
+  .compare (.number .notEqual numberField (-2))
+
+private def unsignedNumberIsNotOne : FlatCondition :=
+  .compare (.number .notEqual numberField 1)
+
+private def signedNumberIsNotNegativeOne : FlatCondition :=
+  .compare (.number .notEqual signedNumberField (-1))
 
 private def booleanNotFilled : FlatCondition :=
   .fieldNotFilled (.boolean booleanField)
@@ -119,6 +137,21 @@ example : numberIsZero.evalSelected emptyContext = .fired .omission := by
   native_decide
 
 example : numberIsNotZero.evalSelected emptyContext = Verdict.notFired := by
+  native_decide
+
+example : unsignedNumberIsNotNegativeOne.evalSelected emptyContext = .fired .value := by
+  native_decide
+
+example : unsignedNumberIsNotNegativeTwo.evalSelected emptyContext = .fired .value := by
+  native_decide
+
+example : unsignedNumberIsNotOne.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+example : signedNumberIsNotNegativeOne.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+example : signedNumberIsNotNegativeOne.evalSelected filledContext = .fired .value := by
   native_decide
 
 example : numberIsFive.evalSelected filledContext = Verdict.fired .value := by

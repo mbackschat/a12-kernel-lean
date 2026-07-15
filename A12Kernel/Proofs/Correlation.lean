@@ -183,6 +183,6 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
   simp [SingleCorrelatedStar.select, candidate, SingleCorrelatedStar.keeps, condition,
     CapturedSingleGroupContext.frame, CorrelatedHaving.evalTruth,
     CorrelationComparisonOp.evalOperands, usable, outerUsable,
-    CorrelationComparisonOp.holdsRat]
+    CorrelationComparisonOp.holdsRat, NumericComparisonOp.holds]
 
 end A12Kernel

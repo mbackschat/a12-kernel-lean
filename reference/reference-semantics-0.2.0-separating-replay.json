@@ -1,0 +1,28 @@
+{
+  "receiptSchemaVersion": 1,
+  "sourceRevision": "9fa50276f5fb70dcd879b0a9712c8d69c0868967",
+  "compatibility": {
+    "referenceSemanticsVersion": "0.2.0",
+    "protocolVersion": 1,
+    "manifestSchemaVersion": 2,
+    "kernelBehaviorVersion": "30.8.1"
+  },
+  "capability": {
+    "suiteId": "flat-validation-empty-logic-v1",
+    "operation": "flatValidation.evaluateFull"
+  },
+  "method": "buildReferenceAtPinnedRevisionAndInvokeWithRetainedRequest",
+  "request": {
+    "path": "examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json",
+    "sha256": "f4fd1aa8f9e740e6799192250659765f9c10d725565ea7e32cf68f24e8e87005"
+  },
+  "observedResponse": {
+    "protocolVersion": 1,
+    "kernelBehaviorVersion": "30.8.1",
+    "outcome": "ok",
+    "verdict": {
+      "tag": "fired",
+      "polarity": "omission"
+    }
+  }
+}
