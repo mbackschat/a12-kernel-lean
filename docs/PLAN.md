@@ -16,9 +16,9 @@ Hold the completed flat Rust knowledge-transport experiment at a natural verific
 
 ## Immediate continuation order
 
-1. Commit and push the retained 52/52 receipt, its strict profile-bound receipt-consistency gate, and outcome documentation, then confirm the complete source/profile/result gates in public Linux CI. Local source, process, profile, result, trust, evidence, reference-process, candidate-control, and mutation-qualification gates are green.
-2. Let the user verify the profile, receipt, and bounded-run claim at this natural checkpoint before changing semantic source.
-3. Resume with read-only research for the String-comparison-versus-Length capsule: map the relevant `spec/` clauses, a12-dmkits implementation/ledger/corpus material, existing kernel probe provenance, and Cedar/Radix structuring precedent; then use the ignored disposable adapter workflow to capture/import a paired content-bearing-row observation where field kind and value stay fixed and only direct comparison versus `Length` changes. Record the semantic decision table and evidence gaps in `docs/` without editing `spec/` or siblings.
+1. Stop for user verification before changing semantic source. Feature commit `f35517558e0f00d90bcd1147090ab849c991cbca` retains the 52/52 receipt, strict profile-bound receipt-consistency gate, and outcome documentation; public Linux CI [run 29385108238](https://github.com/mbackschat/a12-kernel-lean/actions/runs/29385108238) passed the complete source, trust, evidence, process, profile, and result gate set.
+2. After verification, resume with read-only research for the String-comparison-versus-Length capsule: map the relevant `spec/` clauses, a12-dmkits implementation/ledger/corpus material, existing kernel probe provenance, and Cedar/Radix structuring precedent. Record the semantic decision table and evidence gaps in `docs/` without editing `spec/` or siblings.
+3. Use the ignored disposable adapter workflow to capture and import a paired content-bearing-row observation where field kind and value stay fixed and only direct comparison versus `Length` changes.
 4. If the external observation is portable and the boundary is research-closed, implement the smallest typed String/Length capsule by red/green TDD, then add its proof/counterexample/evidence/coverage spine. If evidence is not portable, mark it `external evidence pending` rather than inferring correspondence.
 
 ## Guardrails and stop conditions
