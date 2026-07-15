@@ -2,7 +2,7 @@
 
 A clean-room **Lean 4 mechanized theory and executable specification** of the [A12 Kernel](../a12-kernel)'s validation & computation semantics.
 
-> **Not an official A12 artifact.** A personal exploration, not affiliated with or endorsed by mgm — currently a private project, built with LLM assistance. This is a **clean-room** formal spec: it ships no kernel code and never links, calls, or transcribes the kernel (see [`CLAUDE.md`](CLAUDE.md)).
+> **Not an official A12 artifact.** A personal exploration, not affiliated with or endorsed by mgm — currently a private project, built with LLM assistance. This is a **clean-room** formal spec: it ships no kernel code and never links, calls, or transcribes the kernel (see [`AGENTS.md`](AGENTS.md)).
 
 The A12 Kernel is mgm technology partners' model-and-DSL engine for complex business forms: analysts declare validation rules (each phrased as the *error* condition) and computations (derived fields), which the engine evaluates against form documents. This project preserves that observed **evaluation semantics** as a versioned [mechanized theory](docs/LEAN-FORMALIZATION.md): executable as a reference oracle, empirically anchored to kernel 30.8.1, and equipped with a required proof spine plus selectively proved higher-level properties.
 
@@ -95,8 +95,8 @@ See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md)
 - Review the durable charter in [`PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) and the proposed product boundary in [`PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md).
 - Use [`docs/README.md`](docs/README.md) for every other route and the canonical document-ownership registry.
 
-The read-only [`spec/`](spec/) is the distilled language-neutral baseline, while [`../a12-kernel`](../a12-kernel) remains the behavioural source of truth and [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) is the peer clean-room knowledge and evidence-transport project. [`SOURCES.md`](docs/SOURCES.md) provides the writable drill map. This repository never links, calls, or transcribes the kernel; [`CLAUDE.md`](CLAUDE.md) defines the full clean-room, source-authority, dependency, and worktree rules.
+The read-only [`spec/`](spec/) is the distilled language-neutral baseline, while [`../a12-kernel`](../a12-kernel) remains the behavioural source of truth and [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) is the peer clean-room knowledge and evidence-transport project. [`SOURCES.md`](docs/SOURCES.md) provides the writable drill map. This repository never links, calls, or transcribes the kernel; [`AGENTS.md`](AGENTS.md) defines the full clean-room, source-authority, dependency, and worktree rules.
 
 ## License
 
-MIT © 2026 mbackschat — see [`LICENSE`](LICENSE). This project's source ships no kernel code, so it carries no copyleft entanglement (the same basis as [a12-dmkits](../a12-rulekit)' MIT source).
+MIT © 2026 Martin Backschat — see [`LICENSE`](LICENSE). This project's source ships no kernel code, so it carries no copyleft entanglement (the same basis as [a12-dmkits](../a12-rulekit)' MIT source).
