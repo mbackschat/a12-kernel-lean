@@ -1,0 +1,125 @@
+{
+  "schema": "capture-receipt-v1",
+  "artifacts": [
+    {
+      "path": "PACKET.json",
+      "role": "packet-envelope",
+      "bytes": 15291,
+      "sha256": "b847754bcc36281c97f8df89382ac11719ebb63bfdfc4abbbff12bf22032b39f"
+    },
+    {
+      "path": "capabilities/capabilities.json",
+      "role": "capability-declaration",
+      "bytes": 5366,
+      "sha256": "b87d381e7f43446bc886292766e34beab72ca3ec179be5f0f614975e66d603ca"
+    },
+    {
+      "path": "inputs/models/string-direct-cascade.json",
+      "role": "copied-input",
+      "bytes": 3069,
+      "sha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d"
+    },
+    {
+      "path": "legality/models/string-direct-cascade.json",
+      "role": "legality",
+      "bytes": 402,
+      "sha256": "ceba48ccaca29604464f197b365e8bdaaf3e9ba0cdd5ec93d15cff152fe06498"
+    },
+    {
+      "path": "observations/source-abc-mid-abc/a12-dmkits-interpreter.json",
+      "role": "observation",
+      "bytes": 2887,
+      "sha256": "c1522e51e4e8dd5639b3dbf6eafb50e03e114d108cf74353d988a2ca86869d69"
+    },
+    {
+      "path": "observations/source-abc-mid-abc/kernel-groovy-dynamic.json",
+      "role": "observation",
+      "bytes": 3468,
+      "sha256": "40111f36b893fb18c5534e7452e2a2936cebb45d3f041f03c85e5980f145481c"
+    },
+    {
+      "path": "observations/source-abc-mid-abc/kernel-java-static.json",
+      "role": "observation",
+      "bytes": 3465,
+      "sha256": "df3aae6e7af0259698479a749cc67460ef027177b777612c621f4ef2bb15de21"
+    },
+    {
+      "path": "observations/source-abc-mid-old/a12-dmkits-interpreter.json",
+      "role": "observation",
+      "bytes": 2887,
+      "sha256": "77f675d778ef349c87561e0c2e57c664ba87c0b555607e1bb2a8afde27989ac9"
+    },
+    {
+      "path": "observations/source-abc-mid-old/kernel-groovy-dynamic.json",
+      "role": "observation",
+      "bytes": 3875,
+      "sha256": "16d31ef69fdb7cafd4569efd2227a7cff427b720dc3ee53ff8c88ffc86d6ddb9"
+    },
+    {
+      "path": "observations/source-abc-mid-old/kernel-java-static.json",
+      "role": "observation",
+      "bytes": 3872,
+      "sha256": "8235a501ca3d1b870ac344081b8fb6b80afb1c7864ede41cdb41a4d6906906e4"
+    },
+    {
+      "path": "observations/source-abcd-mid-old/a12-dmkits-interpreter.json",
+      "role": "observation",
+      "bytes": 2289,
+      "sha256": "167c5e4d90a6928d73b2bc79e4f5ddc55253947727c2637d0abe6f6cdf67b523"
+    },
+    {
+      "path": "observations/source-abcd-mid-old/kernel-groovy-dynamic.json",
+      "role": "observation",
+      "bytes": 2435,
+      "sha256": "789147f562bd7b0b93d6eff2c369548c4fdddfcb6c363da82e42fd8574fcab7a"
+    },
+    {
+      "path": "observations/source-abcd-mid-old/kernel-java-static.json",
+      "role": "observation",
+      "bytes": 2432,
+      "sha256": "b97d57eb36d3ea15b6f93ed22511fec72bc17faeb0edeccf5ba71eb358e5938c"
+    },
+    {
+      "path": "observations/source-absent-mid-absent/a12-dmkits-interpreter.json",
+      "role": "observation",
+      "bytes": 2431,
+      "sha256": "1c18987dd39e592bfd1b03012f1b5ed5d778a725ed8feb92f244a5027b7e4686"
+    },
+    {
+      "path": "observations/source-absent-mid-absent/kernel-groovy-dynamic.json",
+      "role": "observation",
+      "bytes": 2779,
+      "sha256": "158cad064d40972824934f9fb631ce4b295bdbf26ffd3e464ee1be9520b3ad3a"
+    },
+    {
+      "path": "observations/source-absent-mid-absent/kernel-java-static.json",
+      "role": "observation",
+      "bytes": 2776,
+      "sha256": "555365d5dcc3976c1824360a7adf6fcc78ef057927e9f5cb78c4b633544b6425"
+    },
+    {
+      "path": "observations/source-absent-mid-old/a12-dmkits-interpreter.json",
+      "role": "observation",
+      "bytes": 2428,
+      "sha256": "ae85301a11b913209a6891991bd4b648ecaacbb1773dae5d13d4347c291d0917"
+    },
+    {
+      "path": "observations/source-absent-mid-old/kernel-groovy-dynamic.json",
+      "role": "observation",
+      "bytes": 2907,
+      "sha256": "4befcb35b5e30a53f54965becf13ace968161b15779af18beb6b0136af7e0e00"
+    },
+    {
+      "path": "observations/source-absent-mid-old/kernel-java-static.json",
+      "role": "observation",
+      "bytes": 2904,
+      "sha256": "9b6cc97b7582822aea121a1707b4821c1cf93a955ca290bb463889d48bef69f0"
+    },
+    {
+      "path": "request/scenarios.json",
+      "role": "copied-request",
+      "bytes": 5003,
+      "sha256": "4c5d4911ecacde819618b3b921b0bd30aa34b514cb0bbf3f0d2b735f21a0fd43"
+    }
+  ]
+}

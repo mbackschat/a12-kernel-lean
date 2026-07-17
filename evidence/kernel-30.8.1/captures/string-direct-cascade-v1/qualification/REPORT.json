@@ -1,0 +1,531 @@
+{
+  "schema": "qualification-report-v1",
+  "policy": {
+    "id": "kernel-route-confirmed-v1",
+    "version": "1"
+  },
+  "request": {
+    "scenarioSetId": "string-direct-cascade-v1",
+    "scenarioSetVersion": "1",
+    "requestSha256": "4c5d4911ecacde819618b3b921b0bd30aa34b514cb0bbf3f0d2b735f21a0fd43",
+    "qualificationPolicy": "kernel-route-confirmed-v1",
+    "observationRequirement": {
+      "id": "string-direct-cascade-kernel-route-v1",
+      "version": "1",
+      "requiredChannels": [
+        "withoutErrors",
+        "changedSubset",
+        "withErrors",
+        "cleared",
+        "formalErrorsInOperands",
+        "appliedState"
+      ],
+      "comparisonProjections": [
+        "compute-projection-kernel-route-v1",
+        "compute-projection-dmkits-portable-v1"
+      ]
+    }
+  },
+  "packet": {
+    "receiptSha256": "7e38744283cf17f7f57fe0bce342084a8e2896fb99aa60c2a9f4fb52e185dc17",
+    "sourceRevision": "c992afd62e4fa6148733a5538a3248c30fce60bf",
+    "workingTree": "clean"
+  },
+  "profileSha256": "43d620443f934ea95bb57428cc8531f3c9dce915e44f87050877393de40f7a0c",
+  "verifier": {
+    "tool": "a12-dmkits-capture",
+    "toolVersion": "1",
+    "sourceRevision": "c992afd62e4fa6148733a5538a3248c30fce60bf",
+    "workingTree": "clean",
+    "treeStateDigest": "69baef2e85ac323e83aa3961ad1a59f5a541f8e1b64bc23ec0941e19e842a4ec"
+  },
+  "verdict": "satisfied",
+  "reasons": [],
+  "comparisons": [
+    {
+      "caseId": "source-abc-mid-old",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "kernel-java-static",
+      "projection": "compute-projection-kernel-route-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "allChannels",
+        "typedValues",
+        "renderedValues",
+        "structuredCauses",
+        "appliedStates"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-abc-mid-old",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "a12-dmkits-interpreter",
+      "projection": "compute-projection-dmkits-portable-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "targets",
+        "outcomeClassification",
+        "renderedValues",
+        "attemptedRenderedValues",
+        "clearedAtKernelGranularity",
+        "appliedValueText"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "excluded",
+          "detail": "report-all granularity exposes no delta subset"
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "excluded",
+          "detail": "not exposed on the interpreter's compute surface"
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-abc-mid-abc",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "kernel-java-static",
+      "projection": "compute-projection-kernel-route-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "allChannels",
+        "typedValues",
+        "renderedValues",
+        "structuredCauses",
+        "appliedStates"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-abc-mid-abc",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "a12-dmkits-interpreter",
+      "projection": "compute-projection-dmkits-portable-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "targets",
+        "outcomeClassification",
+        "renderedValues",
+        "attemptedRenderedValues",
+        "clearedAtKernelGranularity",
+        "appliedValueText"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "excluded",
+          "detail": "report-all granularity exposes no delta subset"
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "excluded",
+          "detail": "not exposed on the interpreter's compute surface"
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-absent-mid-old",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "kernel-java-static",
+      "projection": "compute-projection-kernel-route-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "allChannels",
+        "typedValues",
+        "renderedValues",
+        "structuredCauses",
+        "appliedStates"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-absent-mid-old",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "a12-dmkits-interpreter",
+      "projection": "compute-projection-dmkits-portable-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "targets",
+        "outcomeClassification",
+        "renderedValues",
+        "attemptedRenderedValues",
+        "clearedAtKernelGranularity",
+        "appliedValueText"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "excluded",
+          "detail": "report-all granularity exposes no delta subset"
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "excluded",
+          "detail": "not exposed on the interpreter's compute surface"
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-absent-mid-absent",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "kernel-java-static",
+      "projection": "compute-projection-kernel-route-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "allChannels",
+        "typedValues",
+        "renderedValues",
+        "structuredCauses",
+        "appliedStates"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-absent-mid-absent",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "a12-dmkits-interpreter",
+      "projection": "compute-projection-dmkits-portable-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "targets",
+        "outcomeClassification",
+        "renderedValues",
+        "attemptedRenderedValues",
+        "clearedAtKernelGranularity",
+        "appliedValueText"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "excluded",
+          "detail": "report-all granularity exposes no delta subset"
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "excluded",
+          "detail": "not exposed on the interpreter's compute surface"
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-abcd-mid-old",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "kernel-java-static",
+      "projection": "compute-projection-kernel-route-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "allChannels",
+        "typedValues",
+        "renderedValues",
+        "structuredCauses",
+        "appliedStates"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        }
+      ],
+      "result": "equal"
+    },
+    {
+      "caseId": "source-abcd-mid-old",
+      "runnerA": "kernel-groovy-dynamic",
+      "runnerB": "a12-dmkits-interpreter",
+      "projection": "compute-projection-dmkits-portable-v1",
+      "projectionVersion": "1",
+      "includedFields": [
+        "targets",
+        "outcomeClassification",
+        "renderedValues",
+        "attemptedRenderedValues",
+        "clearedAtKernelGranularity",
+        "appliedValueText"
+      ],
+      "unavailableFields": [],
+      "channels": [
+        {
+          "channel": "withoutErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "withErrors",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "cleared",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "appliedState",
+          "result": "equal",
+          "detail": null
+        },
+        {
+          "channel": "changedSubset",
+          "result": "excluded",
+          "detail": "report-all granularity exposes no delta subset"
+        },
+        {
+          "channel": "formalErrorsInOperands",
+          "result": "excluded",
+          "detail": "not exposed on the interpreter's compute surface"
+        }
+      ],
+      "result": "equal"
+    }
+  ]
+}

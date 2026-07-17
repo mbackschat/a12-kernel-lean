@@ -1,0 +1,402 @@
+{
+  "schema": "evidence-packet-v1",
+  "operationSchema": "compute-observation-v1",
+  "capabilities": {
+    "schema": "a12-dmkits-capture-capabilities-v1",
+    "version": "1",
+    "artifact": "capabilities/capabilities.json",
+    "sha256": "b87d381e7f43446bc886292766e34beab72ca3ec179be5f0f614975e66d603ca"
+  },
+  "kernel": {
+    "artifactCoordinate": "com.mgmtp.a12.kernel:kernel-md-runtime-service",
+    "version": "30.8.1",
+    "artifactSha256": "d2ebb96d717616dd9fd258b3e875df403be36479bb4762a8b9d112a056c5da5e",
+    "closure": [
+      {
+        "coordinate": "com.mgmtp.a12.base:base-model-api",
+        "version": "29.3.0",
+        "sha256": "1de5eeef1149f72bdadd36918216d0f0e62047be7350c8280b99bc86a5bace85"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.base:base-model-consistency",
+        "version": "29.3.0",
+        "sha256": "67686b173d76ad490161aaedd4ef58bbd577b8b9bafbe6bb754d885ccb00eb58"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.base:base-model-migration-api",
+        "version": "29.3.0",
+        "sha256": "7ec156f991d732b814ff8bfccd5f34145ab9a8ce8777de08cabcdc816113da5a"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-conversion-java",
+        "version": "30.8.1",
+        "sha256": "631710f016ed6e896a89d8aadba93e4ac1f4ebb42ad02226ad7f31f7791940fa"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-base-utils",
+        "version": "30.8.1",
+        "sha256": "3434fc2c4068c235849270e74e90031a6c7450f37305011aa6e28f3194dfbe96"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-calc",
+        "version": "30.8.1",
+        "sha256": "258b50d220747f310d09ada775e655985edc386d1abefc1d4f67f269662a07be"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-codegen",
+        "version": "30.8.1",
+        "sha256": "5c753b5e306ee5321797d0b57b1acb4f7adad6871d10f38757121ba594424a8f"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-codegen-base",
+        "version": "30.8.1",
+        "sha256": "467a3d956b834868b4f7b5fdf97176b1ff1291a2b09208abfc0883c17d66d827"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-codegen-condition",
+        "version": "30.8.1",
+        "sha256": "92ba648bf50d64c29ec9751a7a29ecd425cd6d15bda851a1004561e818c04796"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-codegen-entities",
+        "version": "30.8.1",
+        "sha256": "1a99b8a88bc54eff8a3e8cceaf147c7032e52c7a96a9f367a74347ce7d0be655"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-codegen-meta-base",
+        "version": "30.8.1",
+        "sha256": "e7588e6f8715281ea4721d71bc96ebd5483a42db257ed9db32f4174a04979340"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-codegen-rules",
+        "version": "30.8.1",
+        "sha256": "3163a79c088e7791f2fc0b9d72309b3fb2ec87ed4f24fa282ed0231722bbc63a"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-customfieldtype-api",
+        "version": "28.2.0",
+        "sha256": "89f52761c5de0af4707de36477acd543c7ce8721d8c4632f039044bcb32564ad"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-extmpspecifics",
+        "version": "30.8.1",
+        "sha256": "b3c1a2f25fd00851d7caaa7c3d2ca485ccb41d5aa345758397fd1f35440c075a"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-facade",
+        "version": "30.8.1",
+        "sha256": "e9c241b07e0484ce6cffe7ba4244285d9c07e57b65c3a99c0a466fdfdcf49603"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-parser",
+        "version": "30.8.1",
+        "sha256": "2afe4f39a671b8a1d241d268a7d8f7b2435b9342bf798cdf941828ac1065b0f5"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-parsetree-api",
+        "version": "30.8.1",
+        "sha256": "c3ccbbc4621f4d1984b05bc2335652eb1615e37418cede5a63f4ce7b2e3ca931"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-runtime",
+        "version": "30-8-30.8.1",
+        "sha256": "4fdfcd1e07518c4e03758a83c22456f81d59b4f72445e16e0ce9c64a4e75fb54"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-runtime-api",
+        "version": "32.3.4",
+        "sha256": "c9dfa94db132487e6108592fd07139336f44f91f498a6fb6d7ac48f80e984b6f"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-service",
+        "version": "30.8.1",
+        "sha256": "a98073c59aa6823dc924a2b8473da9b6c39bf9ecd89aad9252c3e4cc037140c5"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-tool-api",
+        "version": "30.8.1",
+        "sha256": "794e5738bfed1d13cafbb690afc48e25aa687ac3ffd782327c6eb58ab78d245c"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-core-utils",
+        "version": "30.8.1",
+        "sha256": "bf9a5265af81d70c439e2312206afa111c68bc79d387d25a33b3ef11b5d0305e"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-mapping-rt-api",
+        "version": "30.8.1",
+        "sha256": "0b4e2a03bfff8a361ecdc275e7c1dc70a935e7c9c355b89c66e676aa15985d86"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-a12internal",
+        "version": "30.8.1",
+        "sha256": "b7f2e01bca09a06ca3d6a8d71d4e09fabb93f5c818c440c607d80a021275073c"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-document-api",
+        "version": "30.8.1",
+        "sha256": "8a33d538d0070391d3fd4be0faa84e8a4786a4a295a8706a142d6ac7a8dc1baa"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-document-service",
+        "version": "30.8.1",
+        "sha256": "12bae737c982729bee549e615526b6541998f472480b704008674ff518d70e2a"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-document-v2",
+        "version": "30.8.1",
+        "sha256": "6cbee2598f92e21ab01dcafba5102b9f93ef3ecdee78a5bb080b01a23215911f"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-facade",
+        "version": "30.8.1",
+        "sha256": "b5c76063c52748d7557cc954d197a6df412e3eda3811ca0c2e3b7cc78a00455d"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-model",
+        "version": "30.8.1",
+        "sha256": "3ea7b016845b5c1a190398bf4293de1664ec2267692605864053e0897416860d"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-model-api",
+        "version": "30.8.1",
+        "sha256": "0d906e2bafb471bac253c9e9dd1872abfe4dfafddd9ca5a643032574f47d62b8"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-model-migration",
+        "version": "30.8.1",
+        "sha256": "aacacc6728f8c784ebd2e58ca30fd31f141dcf0d97a41f1ba9a873b61c8345de"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-runtime-api",
+        "version": "30.8.1",
+        "sha256": "6329b2e6a757e4aca6ad3fee9aa2e595107d6115eb5e7256b4c63e4fa688b44b"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-runtime-service",
+        "version": "30.8.1",
+        "sha256": "d2ebb96d717616dd9fd258b3e875df403be36479bb4762a8b9d112a056c5da5e"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:kernel-md-serializer",
+        "version": "30.8.1",
+        "sha256": "56aa33a3afa1915d852f338927fe6c5ab78435d6f0b1c1c1b668d12ee4c86984"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:mmtypings-ct_model_header",
+        "version": "1-3.5.541340",
+        "sha256": "10d98598ba956f092a679360faf3d63eeaab2b9af9bc434678ffe1db5535c52b"
+      },
+      {
+        "coordinate": "com.mgmtp.a12.kernel:mmvalidators-extmpinternal-mm_common-v2-codegen",
+        "version": "19.8.541420",
+        "sha256": "4371bd64810a866b38d3030507f88495ca8236236b6c9f7db9ba743817236689"
+      },
+      {
+        "coordinate": "org.codehaus.groovy:groovy",
+        "version": "3.0.25",
+        "sha256": "ad009e985dd84e4f524f4ed1751866da5bef816b691851bfbcefa48a01180a07"
+      }
+    ]
+  },
+  "capture": {
+    "tool": "a12-dmkits-capture",
+    "toolVersion": "1",
+    "sourceRevision": "c992afd62e4fa6148733a5538a3248c30fce60bf",
+    "workingTree": "clean",
+    "developmentMode": false,
+    "treeStateDigest": "69baef2e85ac323e83aa3961ad1a59f5a541f8e1b64bc23ec0941e19e842a4ec",
+    "runtime": {
+      "javaSpecificationVersion": "21",
+      "javaVendor": "Oracle Corporation",
+      "javaRuntimeVersion": "21.0.11+9-LTS-jvmci-23.1-b92",
+      "vmName": "Java HotSpot(TM) 64-Bit Server VM"
+    },
+    "closureNote": "the capture implementation and interpreter closures are in-repo source, bound by sourceRevision + treeStateDigest; the in-memory javac of the java-static route is the JDK's own compiler, bound by the runtime identity; this identity was resolved before execution and re-verified unchanged before finalization"
+  },
+  "scenario": {
+    "id": "string-direct-cascade-v1",
+    "version": "1",
+    "requestArtifact": "request/scenarios.json",
+    "requestSha256": "4c5d4911ecacde819618b3b921b0bd30aa34b514cb0bbf3f0d2b735f21a0fd43"
+  },
+  "world": {
+    "profile": "local-wallclock-v1",
+    "locale": "en_US",
+    "timezoneHandling": "runner-local-wall-clock"
+  },
+  "runners": [
+    {
+      "id": "kernel-groovy-dynamic",
+      "role": "anchor",
+      "route": "kernel-md-runtime dynamic service"
+    },
+    {
+      "id": "kernel-java-static",
+      "role": "cross-route-confirmation",
+      "route": "kernel static generated-java codegen"
+    },
+    {
+      "id": "a12-dmkits-interpreter",
+      "role": "triangulation",
+      "route": "a12-dmkits interpreter"
+    }
+  ],
+  "inputs": [
+    {
+      "ref": "models/string-direct-cascade.json",
+      "artifact": "inputs/models/string-direct-cascade.json",
+      "suppliedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d",
+      "adaptedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d"
+    }
+  ],
+  "legality": [
+    {
+      "ref": "models/string-direct-cascade.json",
+      "artifact": "legality/models/string-direct-cascade.json",
+      "sha256": "ceba48ccaca29604464f197b365e8bdaaf3e9ba0cdd5ec93d15cff152fe06498",
+      "verdict": "legal"
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "source-abc-mid-old",
+      "modelRef": "models/string-direct-cascade.json",
+      "legality": "legal",
+      "executed": true,
+      "observations": [
+        {
+          "runner": "kernel-groovy-dynamic",
+          "artifact": "observations/source-abc-mid-old/kernel-groovy-dynamic.json",
+          "sha256": "16d31ef69fdb7cafd4569efd2227a7cff427b720dc3ee53ff8c88ffc86d6ddb9",
+          "status": "success"
+        },
+        {
+          "runner": "kernel-java-static",
+          "artifact": "observations/source-abc-mid-old/kernel-java-static.json",
+          "sha256": "8235a501ca3d1b870ac344081b8fb6b80afb1c7864ede41cdb41a4d6906906e4",
+          "status": "success"
+        },
+        {
+          "runner": "a12-dmkits-interpreter",
+          "artifact": "observations/source-abc-mid-old/a12-dmkits-interpreter.json",
+          "sha256": "77f675d778ef349c87561e0c2e57c664ba87c0b555607e1bb2a8afde27989ac9",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "caseId": "source-abc-mid-abc",
+      "modelRef": "models/string-direct-cascade.json",
+      "legality": "legal",
+      "executed": true,
+      "observations": [
+        {
+          "runner": "kernel-groovy-dynamic",
+          "artifact": "observations/source-abc-mid-abc/kernel-groovy-dynamic.json",
+          "sha256": "40111f36b893fb18c5534e7452e2a2936cebb45d3f041f03c85e5980f145481c",
+          "status": "success"
+        },
+        {
+          "runner": "kernel-java-static",
+          "artifact": "observations/source-abc-mid-abc/kernel-java-static.json",
+          "sha256": "df3aae6e7af0259698479a749cc67460ef027177b777612c621f4ef2bb15de21",
+          "status": "success"
+        },
+        {
+          "runner": "a12-dmkits-interpreter",
+          "artifact": "observations/source-abc-mid-abc/a12-dmkits-interpreter.json",
+          "sha256": "c1522e51e4e8dd5639b3dbf6eafb50e03e114d108cf74353d988a2ca86869d69",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "caseId": "source-absent-mid-old",
+      "modelRef": "models/string-direct-cascade.json",
+      "legality": "legal",
+      "executed": true,
+      "observations": [
+        {
+          "runner": "kernel-groovy-dynamic",
+          "artifact": "observations/source-absent-mid-old/kernel-groovy-dynamic.json",
+          "sha256": "4befcb35b5e30a53f54965becf13ace968161b15779af18beb6b0136af7e0e00",
+          "status": "success"
+        },
+        {
+          "runner": "kernel-java-static",
+          "artifact": "observations/source-absent-mid-old/kernel-java-static.json",
+          "sha256": "9b6cc97b7582822aea121a1707b4821c1cf93a955ca290bb463889d48bef69f0",
+          "status": "success"
+        },
+        {
+          "runner": "a12-dmkits-interpreter",
+          "artifact": "observations/source-absent-mid-old/a12-dmkits-interpreter.json",
+          "sha256": "ae85301a11b913209a6891991bd4b648ecaacbb1773dae5d13d4347c291d0917",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "caseId": "source-absent-mid-absent",
+      "modelRef": "models/string-direct-cascade.json",
+      "legality": "legal",
+      "executed": true,
+      "observations": [
+        {
+          "runner": "kernel-groovy-dynamic",
+          "artifact": "observations/source-absent-mid-absent/kernel-groovy-dynamic.json",
+          "sha256": "158cad064d40972824934f9fb631ce4b295bdbf26ffd3e464ee1be9520b3ad3a",
+          "status": "success"
+        },
+        {
+          "runner": "kernel-java-static",
+          "artifact": "observations/source-absent-mid-absent/kernel-java-static.json",
+          "sha256": "555365d5dcc3976c1824360a7adf6fcc78ef057927e9f5cb78c4b633544b6425",
+          "status": "success"
+        },
+        {
+          "runner": "a12-dmkits-interpreter",
+          "artifact": "observations/source-absent-mid-absent/a12-dmkits-interpreter.json",
+          "sha256": "1c18987dd39e592bfd1b03012f1b5ed5d778a725ed8feb92f244a5027b7e4686",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "caseId": "source-abcd-mid-old",
+      "modelRef": "models/string-direct-cascade.json",
+      "legality": "legal",
+      "executed": true,
+      "observations": [
+        {
+          "runner": "kernel-groovy-dynamic",
+          "artifact": "observations/source-abcd-mid-old/kernel-groovy-dynamic.json",
+          "sha256": "789147f562bd7b0b93d6eff2c369548c4fdddfcb6c363da82e42fd8574fcab7a",
+          "status": "success"
+        },
+        {
+          "runner": "kernel-java-static",
+          "artifact": "observations/source-abcd-mid-old/kernel-java-static.json",
+          "sha256": "b97d57eb36d3ea15b6f93ed22511fec72bc17faeb0edeccf5ba71eb358e5938c",
+          "status": "success"
+        },
+        {
+          "runner": "a12-dmkits-interpreter",
+          "artifact": "observations/source-abcd-mid-old/a12-dmkits-interpreter.json",
+          "sha256": "167c5e4d90a6928d73b2bc79e4f5ddc55253947727c2637d0abe6f6cdf67b523",
+          "status": "success"
+        }
+      ]
+    }
+  ],
+  "command": {
+    "args": [
+      "capture",
+      "--scenarios",
+      "request/scenarios.json",
+      "--output",
+      "<caller-owned-directory>"
+    ]
+  }
+}

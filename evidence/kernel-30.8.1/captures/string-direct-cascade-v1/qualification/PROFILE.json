@@ -1,0 +1,65 @@
+{
+  "schema": "qualification-profile-v1",
+  "policy": {
+    "id": "kernel-route-confirmed-v1",
+    "version": "1"
+  },
+  "projections": [
+    {
+      "id": "compute-projection-kernel-route-v1",
+      "version": "1",
+      "role": "required",
+      "includedFields": [
+        "allChannels",
+        "typedValues",
+        "renderedValues",
+        "structuredCauses",
+        "appliedStates"
+      ],
+      "comparison": "canonical multiset per channel (the public collections carry no order contract; observed order stays recorded in the raw observation)"
+    },
+    {
+      "id": "compute-projection-dmkits-portable-v1",
+      "version": "1",
+      "role": "reported",
+      "includedFields": [
+        "targets",
+        "outcomeClassification",
+        "renderedValues",
+        "attemptedRenderedValues",
+        "clearedAtKernelGranularity",
+        "appliedValueText"
+      ],
+      "excludedFields": [
+        {
+          "field": "typedValues",
+          "rationale": "the interpreter exposes rendered form only"
+        },
+        {
+          "field": "structuredCauses",
+          "rationale": "no interpreter cause transport — never rendered as \"no cause\""
+        },
+        {
+          "field": "changedSubset",
+          "rationale": "report-all granularity exposes no delta subset"
+        },
+        {
+          "field": "formalErrorsInOperands",
+          "rationale": "not exposed on the interpreter's compute surface"
+        },
+        {
+          "field": "appliedState.absentVsPresentEmpty",
+          "rationale": "the interpreter's public read surface has no absent-vs-empty distinction (IG72)"
+        }
+      ],
+      "comparison": "sorted projected-string multisets; the interpreter's report-all cleared entries are restricted to input-filled cells before comparing"
+    }
+  ],
+  "rules": [
+    "every portable policy rejects a development-mode or dirty-source packet before semantic comparison",
+    "an unavailable required field/channel fails the policy CLOSED",
+    "characterization may retain runner failures and disagreements and can never promote a corpus case",
+    "kernel-route confirmation claims ONLY exact cross-route agreement on the pinned projection — one kernel implementation, never independent engines",
+    "interpreter agreement is reported under the confirmed policy and required under the conformance policy"
+  ]
+}

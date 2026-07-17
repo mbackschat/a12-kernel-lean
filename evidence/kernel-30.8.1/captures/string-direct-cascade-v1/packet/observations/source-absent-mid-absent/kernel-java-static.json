@@ -1,0 +1,105 @@
+{
+  "schema": "compute-observation-v1",
+  "caseId": "source-absent-mid-absent",
+  "runner": "kernel-java-static",
+  "status": "success",
+  "statusDetail": null,
+  "consumedModel": {
+    "ref": "models/string-direct-cascade.json",
+    "suppliedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d",
+    "adaptedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d"
+  },
+  "consumedDocument": {
+    "placements": 2,
+    "canonicalSha256": "3e6c0a9426bf7c5cc667e1641936a3ac27ee1a483ef4cdeebc01ffe3825ab3bf"
+  },
+  "channels": {
+    "withoutErrors": {
+      "availability": "available",
+      "granularity": "all-computed-clean",
+      "order": "observed",
+      "entries": [
+        {
+          "target": "/Cascade[1]/Out",
+          "declaredComputation": "/Cascade/OutComputation",
+          "value": {
+            "typed": {
+              "availability": "available",
+              "kind": "STRING",
+              "value": "-X"
+            },
+            "rendered": {
+              "availability": "available",
+              "value": "-X"
+            }
+          }
+        }
+      ]
+    },
+    "changedSubset": {
+      "availability": "available",
+      "granularity": "delta-vs-input",
+      "order": "observed",
+      "entries": [
+        {
+          "target": "/Cascade[1]/Out",
+          "declaredComputation": "/Cascade/OutComputation",
+          "value": {
+            "typed": {
+              "availability": "available",
+              "kind": "STRING",
+              "value": "-X"
+            },
+            "rendered": {
+              "availability": "available",
+              "value": "-X"
+            }
+          }
+        }
+      ]
+    },
+    "withErrors": {
+      "availability": "available",
+      "granularity": "errored-instances",
+      "order": "observed",
+      "entries": []
+    },
+    "cleared": {
+      "availability": "available",
+      "granularity": "input-filled-only",
+      "order": "observed",
+      "entries": []
+    },
+    "formalErrorsInOperands": {
+      "availability": "available",
+      "granularity": "operand-formal-errors",
+      "order": "observed",
+      "entries": []
+    },
+    "appliedState": {
+      "availability": "available",
+      "granularity": "requested-probes",
+      "order": "observed",
+      "entries": [
+        {
+          "pointer": "/Cascade[1]/Mid",
+          "state": "absent"
+        },
+        {
+          "pointer": "/Cascade[1]/Out",
+          "state": "presentValue",
+          "value": {
+            "typed": {
+              "availability": "available",
+              "kind": "STRING",
+              "value": "-X"
+            },
+            "rendered": {
+              "availability": "notExposedByRunner"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
