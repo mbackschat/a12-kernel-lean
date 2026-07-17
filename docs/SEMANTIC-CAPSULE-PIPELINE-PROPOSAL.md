@@ -128,6 +128,8 @@ Across future migrated families, common compact evidence infrastructure should s
 
 If the generic reader exceeds its limit, stop and remove leaked producer responsibilities. If a family exceeds 360 lines, stop and identify whether it is really multiple semantic families. Do not solve a budget miss with compressed unreadable code or generic untyped maps.
 
+The local pre-producer measurement is now concrete: generic reader 157 nonblank lines, its tests 99, direct-cascade family 226, family tests 128, and current `EvidenceMain` glue 1, for 611 raw nonblank lines. This leaves 59 under the complete 670-line cap for the two relocated artifact-tree guards and final glue. Applying the stated exclusion for module comments and inline JSON fixture data leaves 89 lines of family executable test logic and therefore 21 under the narrower tests-plus-guards allowance. The migration must measure the actual relocated guards before deleting the old lane and trim test scaffolding if that allowance is missed.
+
 ## First migration: direct String cascade
 
 The direct-cascade family is the proof case because its current raw binder is the most expensive and its five semantic observations are already understood.
