@@ -1,0 +1,244 @@
+{
+  "schema": "capture-scenario-set-v1",
+  "scenarioSet": {
+    "id": "string-direct-cascade-v1",
+    "version": "1"
+  },
+  "operationSchema": "compute-observation-v1",
+  "requiredCapabilities": {
+    "schema": "a12-dmkits-capture-capabilities-v1",
+    "version": "1"
+  },
+  "world": {
+    "profile": "local-wallclock-v1",
+    "locale": "en_US"
+  },
+  "models": [
+    {
+      "ref": "models/string-direct-cascade.json",
+      "sha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d"
+    }
+  ],
+  "requiredRunners": [
+    "kernel-groovy-dynamic",
+    "kernel-java-static",
+    "a12-dmkits-interpreter"
+  ],
+  "qualificationPolicy": "kernel-route-confirmed-v1",
+  "observationRequirement": {
+    "id": "string-direct-cascade-kernel-route-v1",
+    "version": "1",
+    "requiredChannels": [
+      "withoutErrors",
+      "changedSubset",
+      "withErrors",
+      "cleared",
+      "formalErrorsInOperands",
+      "appliedState"
+    ],
+    "comparisonProjections": [
+      "compute-projection-kernel-route-v1",
+      "compute-projection-dmkits-portable-v1"
+    ]
+  },
+  "cases": [
+    {
+      "caseId": "source-abc-mid-old",
+      "modelRef": "models/string-direct-cascade.json",
+      "operation": "compute",
+      "placements": [
+        {
+          "kind": "GROUP",
+          "path": "/Cascade",
+          "reps": [
+            1
+          ]
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Source",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "ABC"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Mid",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "OLD"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Out",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "STALE"
+        }
+      ],
+      "probes": [
+        "/Cascade[1]/Mid",
+        "/Cascade[1]/Out"
+      ]
+    },
+    {
+      "caseId": "source-abc-mid-abc",
+      "modelRef": "models/string-direct-cascade.json",
+      "operation": "compute",
+      "placements": [
+        {
+          "kind": "GROUP",
+          "path": "/Cascade",
+          "reps": [
+            1
+          ]
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Source",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "ABC"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Mid",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "ABC"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Out",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "STALE"
+        }
+      ],
+      "probes": [
+        "/Cascade[1]/Mid",
+        "/Cascade[1]/Out"
+      ]
+    },
+    {
+      "caseId": "source-absent-mid-old",
+      "modelRef": "models/string-direct-cascade.json",
+      "operation": "compute",
+      "placements": [
+        {
+          "kind": "GROUP",
+          "path": "/Cascade",
+          "reps": [
+            1
+          ]
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Mid",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "OLD"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Out",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "STALE"
+        }
+      ],
+      "probes": [
+        "/Cascade[1]/Mid",
+        "/Cascade[1]/Out"
+      ]
+    },
+    {
+      "caseId": "source-absent-mid-absent",
+      "modelRef": "models/string-direct-cascade.json",
+      "operation": "compute",
+      "placements": [
+        {
+          "kind": "GROUP",
+          "path": "/Cascade",
+          "reps": [
+            1
+          ]
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Out",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "STALE"
+        }
+      ],
+      "probes": [
+        "/Cascade[1]/Mid",
+        "/Cascade[1]/Out"
+      ]
+    },
+    {
+      "caseId": "source-abcd-mid-old",
+      "modelRef": "models/string-direct-cascade.json",
+      "operation": "compute",
+      "placements": [
+        {
+          "kind": "GROUP",
+          "path": "/Cascade",
+          "reps": [
+            1
+          ]
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Source",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "ABCD"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Mid",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "OLD"
+        },
+        {
+          "kind": "FIELD",
+          "path": "/Cascade/Out",
+          "reps": [
+            1,
+            1
+          ],
+          "value": "STALE"
+        }
+      ],
+      "probes": [
+        "/Cascade[1]/Mid",
+        "/Cascade[1]/Out"
+      ]
+    }
+  ]
+}
