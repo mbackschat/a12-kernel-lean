@@ -6,6 +6,7 @@ import A12Kernel.Conformance.Iteration
 import A12Kernel.Conformance.Observation
 import A12Kernel.Conformance.Required
 import A12Kernel.Conformance.StringLength
+import A12Kernel.Conformance.StringIngestion
 import A12Kernel.Conformance.StringCascade
 import A12Kernel.Conformance.StringComputation
 
