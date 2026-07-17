@@ -1,6 +1,6 @@
 # 08 — Paths and references (§10)
 
-How a condition names a field. Mostly mechanical, with two things that matter for a faithful reimplementation: the **bare-name resolution order** (declaring-group-first, then upward, then model-wide) and the fact that **rows are addressed by semantic key, never by position**.
+How a condition names a field. Mostly mechanical, with two things that matter for a faithful reimplementation: the **two-tier bare-name resolution order** (declaring group, then flag-gated model-wide uniqueness) and the fact that **rows are addressed by semantic key, never by position**.
 
 Path resolution reads a cell *relative to the current repetition context* ([`01-data-model.md §2.1`](01-data-model.md#21-repetition-contexts-the-iteration-environment)); this file is about how a path string selects that cell.
 
@@ -12,24 +12,27 @@ Path resolution reads a cell *relative to the current repetition context* ([`01-
 - **`RuleGroup`** references the rule's own containing group as an entity: `GroupFilled(RuleGroup)` validates and **counts as referencing the error field** ([§9](07-repetition-and-iteration.md)); a `*` on it is rejected.
 - Paths are **absolute** (`/Order/Quantity`) or **relative** (`../Other`). Relative paths within a rule's group are shorter and survive the group being moved.
 - **The one combination that *requires* absolute:** a relative `..` up-navigation may **not** be combined with `*` (`MVK_INVALID_WILDCARD_REL` — "use the absolute path notation"). So reaching **upward *and* across all repetitions** must be written absolutely (e.g. `/A*/F`).
-- A field may be referenced by a **bare short name** (`[Quantity]`) when the model sets `fieldRefByShortNameAllowed`.
+- A field may be referenced by a **bare short name** (`[Quantity]`). Direct lookup under the declaring group is always attempted; the model-wide fallback requires `fieldRefByShortNameAllowed`, whose kernel default is off.
 
 ---
 
 ## 2. Bare-name resolution order ⚠
 
-A bare segment resolves in a fixed order — **declaring-group-first, then upward through ancestors, then (flag-gated) model-wide:**
+A bare segment resolves in exactly two tiers — **declaring-group-first, then (flag-gated) model-wide unique field lookup:**
 
 1. Look **directly under the rule's declaring group**.
-2. On a miss, look in **ancestor** groups (no `../` needed): `[Tier]` from a rule at `/Subscription/Addons` binds the *ancestor's* field.
-3. Only on a further miss, **and** for a relative reference with `fieldRefByShortNameAllowed` on, run a **model-wide unique field short-name lookup**:
+2. Only on a miss, **and** for a relative reference with `fieldRefByShortNameAllowed` on, run a **model-wide unique field short-name lookup over fields only**:
    - more than one match ⇒ `MVK_FIELDNAME_NOT_UNIQUE` (**never a silent pick**);
    - zero matches ⇒ falls through to `MVK_INVALID_ENTITY`.
    The serialized condition **retains** the short name (resolution is not rewritten into a path).
 
-And the **named-ancestor** form: in a `..Name/rest` path the up-count comes **only** from the `..` tokens; the trailing `Name` merely *names* (and validates) the ancestor landed on — a matching `..Name/rest` resolves exactly like `../rest`.
+There is **no implicit ancestor walk**. A field in an ancestor group is reachable only through explicit `../` navigation or, when its short name is model-wide unique, through the flag-gated fallback. The earlier observation that `[Tier]` from `/Subscription/Addons` bound an ancestor field was the fallback firing in a draft with the flag enabled; with the flag off, the same reference is rejected as `MVK_INVALID_ENTITY`.
 
-> **Lean modelling note.** Resolution is a scoped name lookup with three tiers: (1) declaring group, (2) ancestor walk, (3) model-wide unique. Implement as `resolve : Path → DeclaringGroup → Model → Except ResolveError FieldRef`, returning a *distinct error* for the not-unique case (never a silent first-match). Tiers (2) and (3) are the parts a naive "just resolve the path literally" implementation omits — and omitting the ancestor walk breaks real models that rely on bare ancestor references. The `..Name` name is a *validation label*, not an extra hop; compute the target purely from the `..` count.
+The **named-ancestor** form remains separate: in a `..Name/rest` path the up-count comes **only** from the `..` tokens; the trailing `Name` merely *names* (and validates) the ancestor landed on — a matching `..Name/rest` resolves exactly like `../rest`.
+
+The two-tier mechanism and both flag arms are locked in a12-dmkits' [`ShortNameRefDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/ShortNameRefDiffTest.kt) and [`PathLawsTest`](../../a12-rulekit/src/test/java/io/github/mbackschat/a12/dm/rulekit/validate/laws/PathLawsTest.java) (IF119).
+
+> **Lean modelling note.** Resolution is a scoped name lookup with two tiers: (1) declaring group, (2) flag-gated model-wide unique field short name. Implement as `resolve : Path → DeclaringGroup → Model → Except ResolveError FieldRef`, returning a *distinct error* for the not-unique case (never a silent first-match). Do not add an implicit ancestor tier; parent lookup requires explicit `..`. The `..Name` name is a *validation label*, not an extra hop; compute the target purely from the `..` count.
 
 ---
 
@@ -71,7 +74,7 @@ The semantic index is **unsupported** in several combinations: multiple repetiti
 
 - [ ] Keyword-named segments quoted; `RuleGroup` = the rule's group and counts as an error-field reference; no `*` on it.
 - [ ] `..` + `*` together is rejected (`MVK_INVALID_WILDCARD_REL`) — force absolute.
-- [ ] Bare-name resolution: declaring group → ancestor walk → model-wide unique (distinct not-unique error, never a silent pick); `..Name` name is a validation label only.
+- [ ] Bare-name resolution: declaring group → flag-gated model-wide unique field lookup (distinct not-unique error, never a silent pick), with no implicit ancestor walk; `..Name` name is a validation label only.
 - [ ] `*` flatten requires every lower repeatable level to also `*`.
 - [ ] **No positional row addressing**; `CurrentRepetition` compares only; semantic index `[Field For key]` is the sole row selector, with its unsupported-combination restrictions.
 - [ ] Semantic-index no-match = **empty** (not unknown); presence on absence = FALSE ⇒ `FieldNotFilled(X For "k")` fires; malformed matched cell / invalid key = UNKNOWN.

@@ -65,7 +65,18 @@ The type is **not** a per-operator constant — it is computed from **directiona
 - **A `Having` filter escalates:** a fired quantifier over a filtered field star is **unconditionally OMISSION**, and so is a fired *comparison* consuming a filtered star (every value combiner marks a filtered result "not specified"). The filtered **counts** are the exception — they escalate only when the filter actually *counted* a value; a kept-nothing count stays directional (grow-only).
 - **A concatenation ORs the not-given flag across its parts:** a fired string comparison is **OMISSION iff any operand carries the flag** — so a concat containing *any* not-given read (an empty field, a no-match indexed read, a not-given coercion) types a fired mismatch OMISSION even though the concatenated string is non-empty.
 
-> **Lean modelling note.** Attach two booleans to every evaluated *numeric* operand — `canGrow`, `canShrink` — seeded at the leaves (empty unsigned number: `canGrow=true, canShrink=false`; empty signed: both true; a filled value: neither, unless it feeds an aggregate with a fillable tail) and propagated by the operator table above. A comparison then types OMISSION iff the operand can still move in the direction that would falsify the (currently-true) error condition. Dates use a simpler `notGiven` bit with a *symmetric* rule; strings/concats OR a `notGiven` bit; counts are grow-only. This is a second interpreter pass structurally parallel to truth — budget for it from the start; retrofitting polarity onto a truth-only evaluator is painful.
+The consuming comparison dispatches those directions per operator:
+
+| Fired comparison | A legal fill could falsify it when… |
+|---|---|
+| `left > right` / `left >= right` | left can shrink **or** right can grow |
+| `left < right` / `left <= right` | left can grow **or** right can shrink |
+| `left == right` | either operand can move in either available direction |
+| `left != right` | the currently smaller side can grow **or** the currently larger side can shrink |
+
+The `!=` arm is directional rather than “any operand is fillable.” For example, an empty unsigned number reads `0`; `0 != -1` fires **VALUE** because equality would require the unsigned empty side to shrink below zero, which it cannot do. The signed twin fires **OMISSION** because a signed empty can shrink. These and their literal-direction controls are locked in a12-dmkits' [`DirectionalPolarityDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/DirectionalPolarityDiffTest.kt) and retained in its [`empty-polarity` corpus family](../../a12-rulekit/corpus/cases/empty-polarity/).
+
+> **Lean modelling note.** Attach two booleans to every evaluated *numeric* operand — `canGrow`, `canShrink` — seeded at the leaves (empty unsigned number: `canGrow=true, canShrink=false`; empty signed: both true; a filled value: neither, unless it feeds an aggregate with a fillable tail) and propagated by the operator table above. Apply the explicit comparison-direction dispatch, including the dedicated normalized-side `!=` arm, and type OMISSION exactly when a legal move can falsify the currently true error condition. Dates use a simpler `notGiven` bit with a *symmetric* rule; strings/concats OR a `notGiven` bit; counts are grow-only. This is a second interpreter pass structurally parallel to truth — budget for it from the start; retrofitting polarity onto a truth-only evaluator is painful.
 
 ### 4.1 The same rule fires either type
 

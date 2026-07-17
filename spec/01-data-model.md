@@ -124,11 +124,15 @@ Validation and computation are **separate operations**; `validateFull` does **no
 
 ```
 compute(document)   →  a per-cell outcome map (VALUE / CLEARED / ERRORED)
-apply(...)          →  write back clean VALUEs; empty CLEARED and ERRORED cells
+apply(...)          →  apply each outcome under its placement guard
 validate(document)  →  messages over the now-updated document
 ```
 
-This matters for reimplementation packaging: model **`compute`** and **`validate`** as two total functions over the document, and make `apply` an explicit step. Do not fuse them.
+For each target cell, a **VALUE** is written and creates the cell plus any missing ancestor rows when absent. A **CLEARED** outcome is produced only for an input-filled cell and empties that existing cell in place; clearing never removes the cell instance. An **ERRORED** outcome empties the target only when the target cell already exists, so an absent target remains absent rather than being created as present-empty. A computed-nothing outcome changes nothing: a present-empty target remains present-empty and an absent target remains absent. Untouched cells preserve their placement and raw stored text, including a stored CRLF pair; evaluation-side normalization never rewrites the document. Read-back therefore distinguishes **absent**, **present-empty**, and **present-value**.
+
+This placement table is source- and dual-strategy-differential-locked in a12-dmkits' [`AppliedCellStateDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/AppliedCellStateDiffTest.kt) (IF126).
+
+This matters for reimplementation packaging: model **`compute`** and **`validate`** as two total functions over the document, and make `apply` an explicit, placement-sensitive step. Do not fuse them.
 
 > **Lean modelling note.** Signatures to aim for:
 > ```lean
