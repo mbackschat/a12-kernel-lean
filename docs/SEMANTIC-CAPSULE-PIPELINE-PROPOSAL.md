@@ -2,7 +2,7 @@
 
 ## Status
 
-This is an a12-kernel-lean architecture proposal, not current implementation state. It complements the upstream [`a12-dmkits portable-capture proposal`](A12-DMKITS-CAPTURE-PROPOSAL.md). The source-maintained packet schema and capture boundary now exist and have passed generic process qualification plus a disposable first-client smoke run. The official direct-cascade packet is still pending, so the input-only scenario investment is active while the shared Lean packet binder and registry remain deliberately unimplemented. Do not redesign frozen historical evidence or shipments merely for uniformity.
+This is an a12-kernel-lean architecture proposal, not current implementation state. It builds on the live upstream [`a12-dmkits capture contract`](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md) and the accepted [`string-direct-cascade-v1` packet](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/README.md). The source-maintained packet schema and capture boundary have passed generic process qualification and their first retained external-client run. Stage A is complete; Stage B is active while the shared Lean packet binder, typed cascade projection, semantics, and registry remain unimplemented. Do not redesign frozen historical evidence or shipments merely for uniformity.
 
 ## Goal
 
@@ -43,6 +43,14 @@ Classify a requested change before editing code. This keeps an ordinary new case
 | A new downstream interpreter, importer, auditor, or refactoring tool | Reuse the capsule registry and common shipment envelope; add only the task-specific capability and fixtures | New shipment/capability identity; no universal consumer-task IR |
 
 If a proposed change touches more rows than expected, stop and identify the hidden boundary instead of spreading a one-off adaptation through capture, Lean, and shipment code.
+
+## Future a12-dmkits engagements
+
+When a capsule needs new upstream capture support, start by reading the current machine-readable capabilities and the live a12-dmkits [`CONFORMANCE-CORPUS-SPEC.md` §15–§15f](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md). Pin the exact kernel version, request, payload, input-support, runner, projection, policy, and capabilities identities before authoring an expectation-free scenario. An existing frozen identity is never widened or reinterpreted: a missing observation channel, changed closed shape, or richer fidelity contract requires a new upstream ID/version and an explicit owner decision.
+
+The handoff request must name the audited upstream revision, source evidence, broken or missing invariant, exact requested contract, compatibility consequences, separating acceptance cases, and predicted guards. The upstream result must come from a clean committed revision and include the exact scenario bytes, packet-local capabilities, complete runner observations and fidelity gaps, packet receipt plus out-of-band digest, qualification profile/report/receipt plus digest, implementation and runtime closure identities, a second byte-identical clean capture, and a structural no-drift diff. Scenario-specific mutation assurance remains a process record rather than semantic evidence.
+
+This project independently verifies and retains the complete returned unit before interpreting it, keeps the a12-dmkits interpreter as triangulation rather than oracle, and never patches a sibling or copied harness. Record the local open obligation in its normal owner while the request is active. Once the committed handback is accepted, move durable facts into [`SOURCES.md`](SOURCES.md), [`EVIDENCE.md`](EVIDENCE.md), [`TESTING.md`](TESTING.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), or [`PLAN.md`](PLAN.md) as appropriate, then delete the completed handoff and rely on Git history.
 
 ## Investment 1 — input-only scenario packs
 
@@ -126,7 +134,7 @@ The envelope and lifecycle can be reused for evaluator, importer, and refactorin
 
 ## Investment 6 — efficient recapture and review
 
-Request the upstream capture tool's deterministic `diff` in V1. It should classify request/input changes, provenance-only changes, each kernel route's observation changes, new cross-route splits, interpreter-only changes, projection changes, and case/inventory additions or removals. This makes a12-dmkits fixes and kernel-version upgrades reviewable without manually comparing bespoke receipts.
+The upstream V1 capture contract now provides deterministic packet and report diffs that classify request/input changes, provenance-only changes, each kernel route's observation changes, new cross-route splits, interpreter-only changes, projection changes, and case/inventory additions or removals. Set Z4 used that surface to establish two byte-identical clean captures and a no-drift packet comparison. Keep this full structural diff authoritative for a12-dmkits fixes and kernel-version upgrades.
 
 Keep full uncached capture authoritative. Case filtering is useful for local development, but final qualification runs the complete scenario set. Add content-addressed incremental reuse only after measured case volume justifies it; reused-plus-new output must be byte-identical to a clean full run at the same identities.
 
@@ -134,19 +142,17 @@ Keep full Lean CI authoritative as well. Focused capsule commands and a capsule-
 
 ## Investment 7 — explicit trust-zone classification
 
-The current trust audit recursively rejects imports from known nontrusted directories such as evidence, reference, qualification, differential, process, and trust drivers. Before the pipeline adds packet-binding, registry, import, or generation directories, strengthen that mechanism so an unclassified future directory cannot enter a trusted closure merely because it is absent from the blacklist.
-
-Use explicit allowed zones for each root class: the logical theorem closure admits only declared foundations, core semantics, elaboration, and proof modules; the executable conformance closure may additionally admit conformance modules; evidence, packet binding, registry, generators, process drivers, and qualification remain outside both unless deliberately classified. Every newly introduced directory must fail the gate until assigned to a zone. Preserve the existing recursive theorem-root completeness and axiom audit.
+Commit `c2c60c6` implements explicit source zones before adding the packet binder. Every project Lean source must be classified; the logical theorem closure admits only declared foundations, core semantics, elaboration, and proof modules; the executable conformance closure may additionally admit conformance modules; and the library root admits only its root plus those two zones. Evidence, packet binding, registry, generators, process drivers, reference, qualification, and IO drivers stay outside. An unclassified future directory fails the gate instead of entering a trusted closure merely because it was absent from a blacklist. The recursive theorem-root completeness and axiom audit remain in force.
 
 ## Recommended staging
 
 ### Stage A — upstream observation contract
 
-The source-maintained schema, capabilities, non-executing scenario validation, public computation observations, deterministic packet, sidecar qualification, and diff boundary are implemented and repaired upstream at the revision recorded in [`PLAN.md`](PLAN.md). This repository has authored and structurally validated the exact five-case [`direct-cascade pack`](../evidence/scenarios/string-direct-cascade-v1/README.md). Stage A completes only when that unchanged external pack produces the official qualified packet without capsule-specific Java or Kotlin source or a second canonical scenario copy upstream.
+The source-maintained schema, capabilities, non-executing scenario validation, public computation observations, deterministic packet, sidecar qualification, and diff boundary are implemented and frozen upstream. The unchanged five-case [`direct-cascade pack`](../evidence/scenarios/string-direct-cascade-v1/README.md) produced the accepted clean qualified [`Set Z4 packet`](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/README.md) without capsule-specific Java or Kotlin source or a second canonical scenario copy upstream. Stage A is complete.
 
 ### Stage B — first shared Lean binding
 
-Verify and retain the returned cascade packet, classify the new binding/registry paths outside the trusted zones, build the common envelope/receipt binder only to the extent exercised by that real packet, and keep the cascade's computation projection explicit. Implement the direct-cascade semantics, proofs, non-law, and evidence binding through that path.
+Starting from the verified retained cascade packet and completed positive source-zone classification, build the common envelope/receipt binder only to the extent exercised by that real packet and keep the cascade's computation projection explicit. Implement the direct-cascade semantics, proofs, non-law, and evidence binding through that path.
 
 ### Stage C — prove operation extensibility
 

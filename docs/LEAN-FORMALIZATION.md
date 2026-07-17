@@ -315,6 +315,7 @@ Counting quantifiers, custom conditions, created rows, and order-sensitive compu
 ### 12.4 Make assumptions visible and fail closed
 
 - A new `sorry`, project axiom, `unsafe`, source-partial or unclassified opaque declaration, compiled-body substitution, foreign entry point, or unclassified oracle boundary must fail the trusted proof gate through the elaborated environment rather than source spelling alone.
+- Every project Lean source must have an explicit architectural zone, and each trusted or executable root must admit only its declared zones. A newly named evidence, registry, process, or other directory fails closed until classified; absence from a blacklist is never permission to enter the logical closure.
 - Custom conditions should be excluded from locality/fill theorems unless supplied with explicit contracts.
 - Timezone/DST, Unicode/regex, decimal approximation, and kernel-version assumptions should be named at the theorem or module boundary.
 - An unsupported language fragment must produce an explicit elaboration/conformance status, never silently reuse a stronger theorem label.
