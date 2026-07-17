@@ -1,6 +1,26 @@
 # Feedback queue for a12-dmkits
 
-This document is the a12-kernel-lean maintainers' actionable feedback queue for the a12-dmkits project, whose local checkout is `../a12-rulekit/`. It records concrete upstream improvements discovered while formalizing and transporting semantics here; it does not redefine a12-dmkits behavior, authorize writes to the sibling checkout, or claim that an item has been accepted upstream. The source review below is pinned to a12-dmkits revision `699e8619ac1667c861e14b285c5924ac57a705f1` and kernel behavior version 30.8.1.
+This document is the a12-kernel-lean maintainers' feedback ledger for the a12-dmkits project, whose local checkout is `../a12-rulekit/`. It records concrete upstream improvements discovered while formalizing and transporting semantics here, then reconciles their reported dispositions; it does not redefine a12-dmkits behavior, authorize writes to the sibling checkout, or become a second owner for upstream implementation status. The original source review below is pinned to a12-dmkits revision `699e8619ac1667c861e14b285c5924ac57a705f1` and kernel behavior version 30.8.1.
+
+## Disposition at the repaired capture baseline
+
+The findings below remain the immutable record of what was observed at `699e8619ac1667c861e14b285c5924ac57a705f1`. Their upstream dispositions were reconciled read-only against clean a12-dmkits revision `3ebe756422e8f2dea447fbd62f9b26c2f774b7e5` on 2026-07-17; an upstream fix never rewrites an older retained observation or triangulation result.
+
+| Item | Disposition |
+|---|---|
+| F1, F2, F3, F9 | **Fixed** at `0d4a5f56` |
+| F4, F5, F7, F8 | **Superseded** by the maintained portable capture boundary and fulfilled by its repaired V1 implementation; the first retained official packet remains pending |
+| F6 | **Open, re-sequenced:** promotion of the seven controls is outside capture V1 and follows the capture program |
+| F10 | **Confirmed and fixed** as IF123 at `b5a69d9c`; the three mismatches in the retained 699e-era String-computation packet remain immutable history |
+| F11a, documentation of payloadful `ERRORED` | **Fixed** at `0d4a5f56` |
+| F11b, rich evidence transport | **Superseded** by `compute-observation-v1` with explicit per-runner fidelity; this is not a new general rich interpreter signature |
+| F12 | **Confirmed, broadened, and fixed** as IF124 at `0093fc86`, with evidence hardening at `311d190e`; the separate review discriminator IF125 was fixed at `c9c5550a` |
+
+### Capture-boundary audit disposition
+
+The initial Prompt-1 handback at `c0c29b76` was rejected locally before an external packet was accepted because several declared contracts were parsed or recorded without being enforced. No V1 packet had escaped, so a12-dmkits repaired the pre-acceptance V1 identities in place rather than minting V2. The repaired boundary uses one request-bound policy mechanism (`490fa915`), per-runner consumed-document binding (`a1137046`), an in-packet capabilities declaration (`698fa30b`), pre/post implementation and runtime closure identity (`7f74efaa`), and one closed relational packet verifier (`24119589`). Its 40-mutation process-qualification receipt landed at `e7242b09`; stale guard references were closed at `8b8a9f60`; the reconciled clean revision is `3ebe7564`.
+
+These mutations qualify capture and verification machinery, not A12 semantics. The V1 transport identities are now frozen: a12-kernel-lean successfully ran the exact [`string-direct-cascade-v1` question](../evidence/scenarios/string-direct-cascade-v1/README.md) through real `capture` and `captureVerify` at `3ebe7564`. The run printed packet-receipt SHA-256 `f84e38fa6307cda755dbf660e31044db54d5e1ff0e4332c7d416de096c034463` and qualification-receipt SHA-256 `2a0db1f4f6a16fb576c9dbe21944ac950b522ecc2b056336aae2470ce43cc9df`; the artifacts were then deleted, so the digests can no longer be checked against retained bytes and are only a historical process trace. The run freezes compatibility but contributes no retained kernel observation; a complete official handback remains pending. The interpreter's IG72 absence-versus-present-empty fidelity gap remains declared and does not block `kernel-route-confirmed-v1`, because only the two kernel routes qualify that policy. Consolidating duplicate in-memory Java-static bootstrap code is also deferred until the retained cascade run succeeds or a third copy demonstrates the abstraction; neither item weakens the current transport acceptance.
 
 ## Recommended corrections
 

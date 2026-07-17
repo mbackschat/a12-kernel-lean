@@ -2,7 +2,7 @@
 
 ## Status
 
-This is an a12-kernel-lean architecture proposal, not current implementation state. It complements the upstream [`a12-dmkits portable-capture proposal`](A12-DMKITS-CAPTURE-PROPOSAL.md). Adopt its stages only after the source-maintained upstream packet schema exists and has been test-driven; do not redesign frozen historical evidence or shipments merely for uniformity.
+This is an a12-kernel-lean architecture proposal, not current implementation state. It complements the upstream [`a12-dmkits portable-capture proposal`](A12-DMKITS-CAPTURE-PROPOSAL.md). The source-maintained packet schema and capture boundary now exist and have passed generic process qualification plus a disposable first-client smoke run. The official direct-cascade packet is still pending, so the input-only scenario investment is active while the shared Lean packet binder and registry remain deliberately unimplemented. Do not redesign frozen historical evidence or shipments merely for uniformity.
 
 ## Goal
 
@@ -142,7 +142,7 @@ Use explicit allowed zones for each root class: the logical theorem closure admi
 
 ### Stage A — upstream observation contract
 
-Let the current a12-dmkits feedback work finish, reconcile its actual revision, then implement the source-maintained schema, capabilities, non-executing scenario validation, public computation observations, deterministic packet, sidecar qualification, and diff boundary from [`A12-DMKITS-CAPTURE-PROPOSAL.md`](A12-DMKITS-CAPTURE-PROPOSAL.md). Once the real schema is returned, this repository authors the five-case direct-cascade pack and supplies it externally as the acceptance client; capture must require no capsule-specific Java or Kotlin source and must not commit a second canonical scenario copy upstream.
+The source-maintained schema, capabilities, non-executing scenario validation, public computation observations, deterministic packet, sidecar qualification, and diff boundary are implemented and repaired upstream at the revision recorded in [`PLAN.md`](PLAN.md). This repository has authored and structurally validated the exact five-case [`direct-cascade pack`](../evidence/scenarios/string-direct-cascade-v1/README.md). Stage A completes only when that unchanged external pack produces the official qualified packet without capsule-specific Java or Kotlin source or a second canonical scenario copy upstream.
 
 ### Stage B — first shared Lean binding
 
