@@ -2,7 +2,7 @@
 
 ## Status
 
-This is an a12-kernel-lean architecture proposal, not current implementation state. It builds on the live upstream [`a12-dmkits capture contract`](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md) and the accepted [`string-direct-cascade-v1` packet](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/README.md). The source-maintained packet schema and capture boundary have passed generic process qualification and their first retained external-client run. Stage A is complete; Stage B is active while the shared Lean packet binder, typed cascade projection, semantics, and registry remain unimplemented. Do not redesign frozen historical evidence or shipments merely for uniformity.
+This is an a12-kernel-lean architecture proposal, not the owner of current implementation detail. It builds on the live upstream [`a12-dmkits capture contract`](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md) and the accepted [`string-direct-cascade-v1` packet](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/README.md). The source-maintained packet schema and capture boundary have passed generic process qualification and their first retained external-client run. Stages A and B are complete; Stage C is next. The capsule registry remains deliberately deferred to Stage D, after a second real operation demonstrates which metadata is genuinely shared. Current facts live in [`ARCHITECTURE.md`](ARCHITECTURE.md), [`TESTING.md`](TESTING.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). Do not redesign frozen historical evidence or shipments merely for uniformity.
 
 ## Goal
 
@@ -152,7 +152,7 @@ The source-maintained schema, capabilities, non-executing scenario validation, p
 
 ### Stage B — first shared Lean binding
 
-Starting from the verified retained cascade packet and completed positive source-zone classification, build the common envelope/receipt binder only to the extent exercised by that real packet and keep the cascade's computation projection explicit. Implement the direct-cascade semantics, proofs, non-law, and evidence binding through that path.
+Completed. Starting from the verified retained cascade packet and positive source-zone classification, the project implemented common artifact-tree and receipt identity only to the extent exercised by the real packet, then kept the cascade request, computation observation, relational checks, and semantic projection explicit. The direct-cascade semantics, proof spine, nearest non-laws, closed typed decoder, qualification binder, and five-case observable replay now pass together without importing evidence into the trusted roots.
 
 ### Stage C — prove operation extensibility
 

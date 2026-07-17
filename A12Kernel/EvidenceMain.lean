@@ -7,6 +7,9 @@ import A12Kernel.Evidence.IterationReplay
 import A12Kernel.Evidence.OperatorEmptyReplay
 import A12Kernel.Evidence.OperatorProtocolBridge
 import A12Kernel.Evidence.StringComputationBinding
+import A12Kernel.Evidence.StringCascadeBinding
+import A12Kernel.Evidence.StringCascadeReplayTest
+import A12Kernel.Evidence.StringCascadeSchemaTest
 import A12Kernel.Evidence.StringTargetValidationBinding
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.StrictJson
@@ -1025,6 +1028,9 @@ def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
   A12Kernel.Evidence.Capture.ReceiptTest.check
     (root / "captures/string-direct-cascade-v1")
+  let directCascadeCount ←
+    A12Kernel.Evidence.StringCascade.Binding.checkArtifacts
+      (root / "captures/string-direct-cascade-v1")
   let bundle ← orThrow "projection.json"
     (Bundle.fromJson (← readJson (root / "projection.json")))
   orThrow "projection.json" bundle.validate
@@ -1066,5 +1072,5 @@ def main : IO Unit := do
     checkCorrelationElaborationCase root correlationElaborationBundle case
   let total := bundle.cases.length + operatorBundle.cases.length + iterationBundle.cases.length +
     correlationBundle.cases.length + correlationElaborationBundle.cases.length +
-    stringComputationCount + stringTargetValidationCount
-  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; String target validation: {stringTargetValidationCount}/{stringTargetValidationCount} cases bound; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"
+    stringComputationCount + stringTargetValidationCount + directCascadeCount
+  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; String target validation: {stringTargetValidationCount}/{stringTargetValidationCount} cases bound; direct String cascade: {directCascadeCount}/{directCascadeCount} qualified cases bound; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"
