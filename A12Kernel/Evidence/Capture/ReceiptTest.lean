@@ -46,18 +46,6 @@ private def copyQualificationFixture (source target : System.FilePath) : IO Unit
   copyFile (source / "REPORT.json") (target / "REPORT.json")
   copyFile (source / "RECEIPT.json") (target / "RECEIPT.json")
 
-private def checkGlobalTreeOrder : IO Unit :=
-  IO.FS.withTempDir fun temporary => do
-    IO.FS.createDirAll (temporary / "a")
-    IO.FS.writeFile (temporary / "a/inside.json") "{}"
-    IO.FS.writeFile (temporary / "a.json") "{}"
-    let actual := (← A12Kernel.Process.ArtifactTree.collectFiles temporary).map
-      (·.toString)
-    let expected := ["a.json", "a/inside.json"]
-    if actual != expected then
-      throw (IO.userError
-        s!"artifact tree is not globally sorted; expected {repr expected}, found {repr actual}")
-
 private def checkScenarioMutationReceipt (captureRoot : System.FilePath)
     (expectedDigest : Digest) : IO Unit := do
   let path := captureRoot / "process/scenario-mutation-receipt.json"
@@ -83,14 +71,6 @@ private def checkScenarioMutationReceipt (captureRoot : System.FilePath)
     throw (IO.userError
       s!"scenario-mutation process receipt has unsupported schema '{schema}'")
 
-private def createSymlink (target link : System.FilePath) : IO Unit := do
-  let output ← IO.Process.output {
-    cmd := "ln"
-    args := #["-s", target.toString, link.toString] }
-  if output.exitCode != 0 then
-    throw (IO.userError
-      s!"capture receipt test could not create symlink: {output.stderr.trimAscii.toString}")
-
 def check (captureRoot : System.FilePath) : IO Unit := do
   let packetDigest ← orThrow "packet receipt digest" <|
     Digest.parse "7e38744283cf17f7f57fe0bce342084a8e2896fb99aa60c2a9f4fb52e185dc17"
@@ -111,7 +91,6 @@ def check (captureRoot : System.FilePath) : IO Unit := do
   checkScenarioMutationReceipt captureRoot scenarioMutationDigest
   expectFailure "the out-of-band receipt digest" "capture receipt digest mismatch" <|
     A12Kernel.Evidence.Capture.Receipt.readAndVerify source wrongDigest
-  checkGlobalTreeOrder
   let zeros := String.ofList (List.replicate 64 '0')
   expectParseFailure "an artifact larger than the retained-artifact limit"
       "declared byte count exceeds" <|
@@ -135,11 +114,6 @@ def check (captureRoot : System.FilePath) : IO Unit := do
     expectFailure "an unlisted artifact" "file tree is not exact" <|
       A12Kernel.Evidence.Capture.Receipt.readAndVerify fixture qualificationDigest
     IO.FS.removeFile (fixture / "ORPHAN.json")
-    let symlinkPath := fixture / "ALIAS.json"
-    createSymlink reportPath symlinkPath
-    expectFailure "a symlink artifact" "contains symlink" <|
-      A12Kernel.Evidence.Capture.Receipt.readAndVerify fixture qualificationDigest
-    IO.FS.removeFile symlinkPath
     IO.FS.removeFile reportPath
     expectFailure "a listed artifact is missing" "file tree is not exact" <|
       A12Kernel.Evidence.Capture.Receipt.readAndVerify fixture qualificationDigest

@@ -13,6 +13,7 @@ import A12Kernel.Evidence.StringCascadeProjectionTest
 import A12Kernel.Evidence.StringCascadeReplayTest
 import A12Kernel.Evidence.StringCascadeSchemaTest
 import A12Kernel.Evidence.StringTargetValidationBinding
+import A12Kernel.Process.ArtifactTreeTest
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
@@ -1028,6 +1029,7 @@ private def checkCorrelationElaborationCase (root : System.FilePath)
 
 def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
+  A12Kernel.Process.ArtifactTreeTest.check
   A12Kernel.Evidence.Capture.ReceiptTest.check
     (root / "captures/string-direct-cascade-v1")
   let directCascadeCount ←
