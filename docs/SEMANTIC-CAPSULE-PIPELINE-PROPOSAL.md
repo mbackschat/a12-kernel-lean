@@ -128,7 +128,7 @@ Across future migrated families, common compact evidence infrastructure should s
 
 If the generic reader exceeds its limit, stop and remove leaked producer responsibilities. If a family exceeds 360 lines, stop and identify whether it is really multiple semantic families. Do not solve a budget miss with compressed unreadable code or generic untyped maps.
 
-The local pre-producer measurement is now concrete: generic reader 157 nonblank lines, its tests 99, direct-cascade family 226, family tests 128, and current `EvidenceMain` glue 1, for 611 raw nonblank lines. This leaves 59 under the complete 670-line cap for the two relocated artifact-tree guards and final glue. Applying the stated exclusion for module comments and inline JSON fixture data leaves 89 lines of family executable test logic and therefore 21 under the narrower tests-plus-guards allowance. The migration must measure the actual relocated guards before deleting the old lane and trim test scaffolding if that allowance is missed.
+The local pre-producer measurement is now concrete: generic reader 157 nonblank lines, its tests 99, direct-cascade family 226, family tests 128, relocated artifact-tree tests 23, and three lines of `EvidenceMain` glue, for 636 raw nonblank lines. This leaves 34 under the complete 670-line cap. Applying the stated exclusion for module comments and inline JSON fixture data leaves 89 lines of family executable test logic plus 19 lines of generic guard logic, totaling 108 under the 110-line tests-plus-guards allowance.
 
 ## First migration: direct String cascade
 
@@ -146,7 +146,7 @@ The checker compares typed observations directly rather than canonical signature
 
 The old and new lanes may coexist only during the migration gate. Once the producer-certified compact bundle is ferried and both lanes agree, delete the old direct-cascade binder, schema, replay, and tests in the same delivery sequence. Do not leave permanent dual paths.
 
-`A12Kernel/Process/Artifact.lean` and `ArtifactTree.lean` remain because downstream mutation qualification still uses them. Before deleting the capture receipt tests, move their unique global path-order and symlink guards into a small process-owned `ArtifactTreeTest.lean`.
+`A12Kernel/Process/Artifact.lean` and `ArtifactTree.lean` remain because downstream mutation qualification still uses them. Their unique global path-order and symlink guards now live in the 23-nonblank-line process-owned `ArtifactTreeTest.lean`, so deleting the capture receipt tests will not discard generic filesystem coverage.
 
 ## Producer-side consolidation and frozen a12-dmkits capture-contract V1
 
@@ -167,7 +167,7 @@ The future upstream proposal must inventory three categories:
 3. Measure the implementation. If it misses the limits, simplify locally before asking upstream to implement the producer.
 4. Completed: [`A12-DMKITS-COMPACT-EVIDENCE-PROPOSAL.md`](A12-DMKITS-COMPACT-EVIDENCE-PROPOSAL.md) defines the one post-capture direct-cascade exporter, exact source identities and acceptance bytes, handback, and the separate capture-contract V1 sunset inventory. Validation-message capture remains outlook only. The user ferries the proposal; this project never edits the sibling.
 5. Receive and verify the producer-certified compact bundle, retain it beside the opaque raw unit, and prove old-versus-new semantic agreement during the migration gate.
-6. Switch `lake test` to the compact family, relocate the two generic artifact-tree guards, and delete the replaced direct-cascade stack.
+6. Switch `lake test` to the compact family, retain the already relocated generic artifact-tree guards, and delete the replaced direct-cascade stack.
 7. Rerun the real and semantic-mutation gates, measure the net deletion, and update current-state owners.
 8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
 9. Request a new external operation only when a real semantic family needs an observation the settled exporter cannot represent. Do not front-load a universal capture protocol.

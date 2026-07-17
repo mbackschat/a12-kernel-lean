@@ -21,7 +21,7 @@ The settled split is:
 3. Lean validates only the small closed bundle, decodes its typed family, and compares it with the real Lean evaluator.
 4. The raw packet remains immutable and available for audit, but ordinary Lean replay never parses its runner or receipt machinery again.
 
-The local consumer is already executable under synthetic contract tests and measures 611 nonblank lines in total. Its replacement target is the existing 2,179-nonblank-line direct-cascade binder stack, with a required net deletion of at least 1,500 lines after the producer bytes arrive.
+The local consumer and relocated generic artifact-tree guards are already executable under synthetic contract tests and measure 636 raw nonblank lines in total. Their replacement target is the existing 2,179-nonblank-line direct-cascade binder stack, with a required net deletion of at least 1,500 lines after the producer bytes arrive.
 
 The upstream capture estate currently measures roughly 5,348 nonblank production lines, 2,422 capture-test lines, and 831 mutation-script lines. That investment should remain one settled transporter, not be duplicated into parallel full V1 and V2 stacks.
 
@@ -270,7 +270,7 @@ After ferrying, a12-kernel-lean will:
 3. decode all five cases with the typed direct-cascade family;
 4. require zero mismatches from the real Lean evaluator;
 5. run the old complete binder and new compact lane together once;
-6. relocate the two generic artifact-tree guards;
+6. confirm the already relocated generic artifact-tree guards remain green;
 7. switch `lake test` to the compact lane and delete the old cascade binder, schema, replay, receipt decoder, and replaced tests;
 8. retain the raw packet and sidecars byte-for-byte;
 9. require at least 1,500 net nonblank lines deleted and a real semantic mutation still caught.
