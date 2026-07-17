@@ -165,7 +165,7 @@ The future upstream proposal must inventory three categories:
 1. Finish the internally proved String-ingestion capsule and leave its external observation pending. Completed in commit `41ddc9d`.
 2. Implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures are schema tests, not kernel evidence.
 3. Measure the implementation. If it misses the limits, simplify locally before asking upstream to implement the producer.
-4. Write a project-local a12-dmkits proposal defining compact bundle production, source identities, direct-cascade acceptance bytes, the later validation-message family, and the capture-contract V1 sunset inventory. The user ferries it; this project never edits the sibling.
+4. Completed: [`A12-DMKITS-COMPACT-EVIDENCE-PROPOSAL.md`](A12-DMKITS-COMPACT-EVIDENCE-PROPOSAL.md) defines the one post-capture direct-cascade exporter, exact source identities and acceptance bytes, handback, and the separate capture-contract V1 sunset inventory. Validation-message capture remains outlook only. The user ferries the proposal; this project never edits the sibling.
 5. Receive and verify the producer-certified compact bundle, retain it beside the opaque raw unit, and prove old-versus-new semantic agreement during the migration gate.
 6. Switch `lake test` to the compact family, relocate the two generic artifact-tree guards, and delete the replaced direct-cascade stack.
 7. Rerun the real and semantic-mutation gates, measure the net deletion, and update current-state owners.
