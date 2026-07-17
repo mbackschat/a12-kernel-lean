@@ -95,33 +95,37 @@ collect_project_source_closure() {
   printf '%s\n' "${seen[@]}"
 }
 
-trusted_source_closure=""
-if ! trusted_source_closure="$(collect_project_source_closure \
-    A12Kernel.lean A12Kernel/Proofs.lean A12Kernel/Conformance.lean)"; then
-  echo "failed to collect the trusted Lean source closure" >&2
-  exit 1
-fi
-
-logical_source_closure=""
-if ! logical_source_closure="$(collect_project_source_closure \
-    A12Kernel/Basic.lean A12Kernel/Proofs.lean)"; then
-  echo "failed to collect the trusted logical source closure" >&2
-  exit 1
-fi
-
-while IFS= read -r logical_source; do
-  case "$logical_source" in
-    A12Kernel/Conformance.lean|A12Kernel/Conformance/*)
-      echo "trusted logical roots transitively reach conformance source ${logical_source}" >&2
-      exit 1
-      ;;
-  esac
-done <<< "$logical_source_closure"
-
-is_forbidden_trusted_source() {
+source_zone() {
   case "$1" in
-    A12Kernel/Evidence/*|A12Kernel/Reference/*|A12Kernel/Qualification/*|A12Kernel/Differential/*|A12Kernel/Process/*|A12Kernel/Trust/*|A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/FlatHandoverMain.lean|A12Kernel/MutationQualificationMain.lean|A12Kernel/GeneratedDifferentialMain.lean|A12Kernel/ProcessTestMain.lean)
-      return 0
+    A12Kernel.lean)
+      printf '%s\n' "library-root"
+      ;;
+    A12Kernel/Basic.lean|A12Kernel/Core.lean|A12Kernel/Cell.lean|A12Kernel/Document.lean|A12Kernel/Semantics/*|A12Kernel/Elaboration/*|A12Kernel/Proofs.lean|A12Kernel/Proofs/*)
+      printf '%s\n' "logical"
+      ;;
+    A12Kernel/Conformance.lean|A12Kernel/Conformance/*)
+      printf '%s\n' "conformance"
+      ;;
+    A12Kernel/Evidence/*)
+      printf '%s\n' "evidence"
+      ;;
+    A12Kernel/Reference/*)
+      printf '%s\n' "reference"
+      ;;
+    A12Kernel/Qualification/*)
+      printf '%s\n' "qualification"
+      ;;
+    A12Kernel/Differential/*)
+      printf '%s\n' "differential"
+      ;;
+    A12Kernel/Process/*)
+      printf '%s\n' "process"
+      ;;
+    A12Kernel/Trust/*|A12Kernel/TrustAudit.lean)
+      printf '%s\n' "trust-driver"
+      ;;
+    A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/FlatHandoverMain.lean|A12Kernel/MutationQualificationMain.lean|A12Kernel/GeneratedDifferentialMain.lean|A12Kernel/ProcessTestMain.lean)
+      printf '%s\n' "io-driver"
       ;;
     *)
       return 1
@@ -129,25 +133,86 @@ is_forbidden_trusted_source() {
   esac
 }
 
-for guarded_source in \
-    A12Kernel/Evidence/Replay.lean \
-    A12Kernel/Reference/Evaluator.lean \
-    A12Kernel/Qualification/Checker.lean \
-    A12Kernel/Differential/Runner.lean \
-    A12Kernel/Process/Sha256.lean \
-    A12Kernel/Trust/Environment.lean; do
-  if ! is_forbidden_trusted_source "$guarded_source"; then
-    echo "trusted dependency guard does not classify ${guarded_source}" >&2
+is_logical_source() {
+  [[ "$(source_zone "$1")" == "logical" ]]
+}
+
+for allowed_logical_source in \
+    A12Kernel/Basic.lean \
+    A12Kernel/Semantics/Future.lean \
+    A12Kernel/Elaboration/Future.lean \
+    A12Kernel/Proofs/Future.lean; do
+  if ! is_logical_source "$allowed_logical_source"; then
+    echo "trusted source-zone classifier rejects logical source ${allowed_logical_source}" >&2
     exit 1
   fi
 done
 
-while IFS= read -r trusted_source; do
-  if is_forbidden_trusted_source "$trusted_source"; then
-    echo "trusted Lean roots transitively reach evidence, transport, IO, or qualification source ${trusted_source}" >&2
+for rejected_logical_source in \
+    A12Kernel/Conformance/Future.lean \
+    A12Kernel/Evidence/CapturePacket.lean \
+    A12Kernel/Future/Unexpected.lean; do
+  if is_logical_source "$rejected_logical_source"; then
+    echo "trusted source-zone classifier admits nonlogical source ${rejected_logical_source}" >&2
     exit 1
   fi
-done <<< "$trusted_source_closure"
+done
+
+project_source_files="A12Kernel.lean"
+enumerated_project_sources=""
+if ! enumerated_project_sources="$(find A12Kernel -type f -name '*.lean' -print | sort)"; then
+  echo "failed to enumerate project Lean sources" >&2
+  exit 1
+fi
+if [[ -n "$enumerated_project_sources" ]]; then
+  project_source_files+=$'\n'"${enumerated_project_sources}"
+fi
+while IFS= read -r project_source; do
+  if ! source_zone "$project_source" >/dev/null; then
+    echo "project Lean source has no explicit trust zone: ${project_source}" >&2
+    exit 1
+  fi
+done <<< "$project_source_files"
+
+logical_source_closure=""
+if ! logical_source_closure="$(collect_project_source_closure \
+    A12Kernel/Basic.lean A12Kernel/Proofs.lean)"; then
+  echo "failed to collect the trusted logical source closure" >&2
+  exit 1
+fi
+while IFS= read -r logical_source; do
+  if [[ "$(source_zone "$logical_source")" != "logical" ]]; then
+    echo "trusted logical roots transitively reach nonlogical source ${logical_source}" >&2
+    exit 1
+  fi
+done <<< "$logical_source_closure"
+
+conformance_source_closure=""
+if ! conformance_source_closure="$(collect_project_source_closure A12Kernel/Conformance.lean)"; then
+  echo "failed to collect the executable conformance source closure" >&2
+  exit 1
+fi
+while IFS= read -r conformance_source; do
+  conformance_zone="$(source_zone "$conformance_source")"
+  if [[ "$conformance_zone" != "logical" && "$conformance_zone" != "conformance" ]]; then
+    echo "executable conformance root transitively reaches disallowed source ${conformance_source}" >&2
+    exit 1
+  fi
+done <<< "$conformance_source_closure"
+
+library_source_closure=""
+if ! library_source_closure="$(collect_project_source_closure A12Kernel.lean)"; then
+  echo "failed to collect the library source closure" >&2
+  exit 1
+fi
+while IFS= read -r library_source; do
+  library_zone="$(source_zone "$library_source")"
+  if [[ "$library_zone" != "library-root" && "$library_zone" != "logical" &&
+      "$library_zone" != "conformance" ]]; then
+    echo "library root transitively reaches disallowed source ${library_source}" >&2
+    exit 1
+  fi
+done <<< "$library_source_closure"
 
 theorem_sources="${proof_files}"$'\n'A12Kernel/Proofs.lean
 theorem_names=""
