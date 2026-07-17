@@ -8,11 +8,24 @@ Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns not evaluate
 
 ## Part A — §7 Strings and patterns
 
-- **Length counts Unicode combining sequences as multiple characters.** One visible glyph (a base letter + combining marks) can occupy several characters of a length limit. So `Length` and the min/max-length formal checks operate on **code units/combining pieces**, not grapheme clusters.
-- **`PatternMatched` / `PatternViolated`** evaluate the **whole** value (implicitly **anchored** — the pattern must match the entire string), use only the **regex subset portable across the code-generation target languages**, and can be a performance/security risk if written to backtrack (e.g. `(a+)+`). The portable subset is **enforced, not advisory**: a Java-valid lookbehind is rejected with `MVK_INVALID_PATTERN`, so a Java-side `Pattern.compile` success is a *necessary* condition only, never sufficient. A fired pattern comparison is always a **VALUE** error (there is no fillable branch); an empty string violates no pattern ([§2](03-empty-and-required.md)).
+- **`Length` and min/max-length checks count UTF-16 code units exactly.** There is no code-point folding or grapheme clustering in any length-bearing path. A decomposed combining sequence `e` + `U+0301` counts 2, and a supplementary-plane character would also count 2 code units, although realistic legal-character policies reject it first. Grapheme clustering appears only in legal-charset acceptance, never in a count.
+- **`PatternMatched` / `PatternViolated`** evaluate the **whole** value (implicitly **anchored** — the pattern must match the entire string), use only the **regex subset portable across the code-generation target languages**, and can be a performance/security risk if written to backtrack (e.g. `(a+)+`). The portable subset is **enforced, not advisory**: a Java-valid lookbehind is rejected with `MVK_INVALID_PATTERN`, so a Java-side `Pattern.compile` success is a *necessary* condition only, never sufficient. A fired pattern comparison is always a **VALUE** error (there is no fillable branch); an empty string violates no pattern ([§2](03-empty-and-required.md)). Length and pattern consumers see the evaluation-normalized text: a permitted `"AB\r\nCD"` measures 5 UTF-16 code units and a whitespace-class pattern sees one `\n`, while the stored text remains unchanged ([§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state)).
 - **`+` is overloaded** — numeric **addition** between Number operands, string **concatenation** between strings. There is no general operand-dispatch rule beyond one pitfall: a string literal shaped like a date parses as a *date constant* and cannot be concatenated ([§6](05-dates-and-time.md)).
 
-> **Lean modelling note.** For length, model a string as its sequence of code units and define length as the count the engine uses (combining-sequence-inclusive) — do **not** reach for a grapheme-cluster count, which would disagree. For patterns, compile from a *restricted* pattern grammar (no lookbehind/lookahead, the portable subset) to a decidable matcher over the whole string (anchored); the acceptance of the *pattern itself* is a separate well-formedness check that must reject the non-portable constructs, mirroring `MVK_INVALID_PATTERN`.
+### A.1 Raw-type Strings (`noValueValidation`)
+
+The String-only `noValueValidation` option declares a **raw type**. Its value remains in the document but is never interned for evaluation. Model validation closes every value window:
+
+- comparisons, value lists, computation operands, coercions, and any other value operation are rejected with `MVK_INVALID_RAW_TYPE`;
+- message interpolation of the value is rejected;
+- `Length` is authorable only as the whole rule condition `Length(f) > c`, or the mirrored `c < Length(f)`, using strict GT/LT;
+- every other `Length` shape, including computation preconditions, is rejected with `MVK_INVALID_LENGTH_OF_RAW_TYPE`.
+
+The one legal `Length` shape is **not a runtime rule**. Code generation eliminates it in both strategies and lifts `(field, c)` into the generated meta-model's maximum-length metadata, so it never fires for either filled or empty values. Presence semantics over the same cell remain ordinary: `FieldFilled`, quantifiers, and counts can observe whether content exists without reading its value.
+
+The exact UTF-16 count is locked by a12-dmkits' [`AbsLengthDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/AbsLengthDiffTest.kt); CRLF ingestion and raw-type closure are locked by [`CrlfLengthNormalizationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrlfLengthNormalizationDiffTest.kt) and [`NvvRawTypeDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NvvRawTypeDiffTest.kt).
+
+> **Lean modelling note.** Represent String length as UTF-16 code-unit count after the ingestion normalization described in [§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state); do **not** use Unicode scalar count or grapheme clusters. For patterns, compile from a *restricted* pattern grammar (no lookbehind/lookahead, the portable subset) to a decidable matcher over the whole normalized string (anchored); pattern acceptance is a separate well-formedness check. The checked elaborator rejects every raw-type value window, while the one admitted strict `Length` declaration desugars to metadata and produces no core runtime rule. No additional runtime value state is needed because legal evaluation cannot read the raw value.
 
 ---
 
@@ -51,8 +64,9 @@ The category mapping is **positional** (`values[i]` categorizes enum value *i*) 
 
 ## Checklist for §7 + §8
 
-- [ ] String length counts combining sequences (not graphemes); length limits use the same count.
+- [ ] String `Length` and min/max limits count UTF-16 code units after CRLF→LF evaluation ingestion; no length-bearing path counts code points or graphemes.
 - [ ] Patterns are **anchored/whole-value**, restricted to the **portable subset** (reject lookbehind etc. with `MVK_INVALID_PATTERN`); a fired pattern check is always **VALUE**.
+- [ ] Raw-type String values remain available to presence predicates but every value window is rejected; the sole strict whole-condition `Length` form is eliminated into metadata and never runs.
 - [ ] `+` dispatches numeric-add vs string-concat by operand kind; date-shaped literals are dates, not concatenable strings.
 - [ ] Enums compared by **stored value**; comparability governed by **texts presence** (text-bearing ✗ plain string; texts-less ✓ plain string).
 - [ ] `->` category read is **positional, many-to-one**.

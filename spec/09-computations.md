@@ -16,14 +16,14 @@ This is the file to get exactly right if computed fields chain.
 - **Every computation is also a validation rule.** If the computed field is *filled* and its stored value disagrees with what the computation would produce, that is an error (exact shape in §7 below). Assigning a time-dependent value like `Now` therefore reports an error as soon as time passes — which is *why* `Now` is forbidden in computations ([§6](05-dates-and-time.md)).
 - **Scale must match.** The computed field's declared decimal scale must equal the operation's derived scale, or the model is rejected — wrap the calculation in a rounding construct to match ([§5](04-numbers-and-decimals.md)).
 - **The computed field may not appear in a precondition *nor* in an operation** (both directions draw the same rejection). The ban is on a *direct field* reference; guarding a repeatable computed field via its **containing group** (`GroupFilled` / `CurrentRepetition` on the group) is legal.
-- A **non-repeatable computed field is calculated even when all its inputs are empty** (yielding `0` or an empty/space string); add an `AllFieldsFilled(...)` precondition to suppress that.
+- A **non-repeatable computed field is calculated even when all its inputs are empty**. A Number calculation stores the real value `0`; a String expression runs, but a final empty text stores nothing. A literal-bearing result such as `" "` does store. Add an `AllFieldsFilled(...)` precondition to suppress the calculation entirely.
 - Indirect calculation **cycles** among computed fields are possible and not always easy to detect.
 
 ---
 
 ## 2. Separate operations, and the three outcomes
 
-**Validation and computation are separate operations.** `validateFull` never computes first; the consumer composes the form-engine flow **compute → apply → validate**, where *apply* writes back only clean values and **empties** errored and cleared instances ([`01-data-model.md §4.3`](01-data-model.md#43-the-compute--apply--validate-flow)).
+**Validation and computation are separate operations.** `validateFull` never computes first; the consumer composes the form-engine flow **compute → apply → validate**, where *apply* follows the placement-sensitive per-cell contract in [`01-data-model.md §4.3`](01-data-model.md#43-the-compute--apply--validate-flow).
 
 Per computed cell the outcome is one of:
 
@@ -35,11 +35,17 @@ Which outcome an operand's state produces follows the per-kind split of [§2](03
 
 | an operand that is… | NUMBER | DATE | STRING in a concatenation |
 |---|---|---|---|
-| **empty** | reads `0` → **VALUE** | operation not evaluated → **CLEARED** | concatenates as `""` → **VALUE** |
+| **empty** | reads `0` → **VALUE** | operation not evaluated → **CLEARED** | contributes `""` inside the expression; the final result still passes through the root-store gate |
 | **required and empty** | still `0` (the mandatory error is *validation's* concern, not compute's) | as empty → CLEARED | still `""` |
 | **filled but formally invalid** | **CLEARED + poisons** the target for dependents (below) | CLEARED + poison (type-agnostic) | CLEARED + poison |
 
 ⚠ The guard consequence cuts both ways: over **DATE** operands an `AllFieldsFilled` precondition is *redundant* (a false precondition clears exactly as the unevaluated operation does), while over a **NUMBER** operand the same guard *changes behaviour* (guarded → CLEARED, where unguarded → computes `0`).
+
+For String computations, replacing an empty operand by `""` is only the **per-operand expression rule**. The root store makes a second decision on the final result: a final empty String stores no value, regardless of whether it came from a bare copy, a literal, or an all-empty concatenation. It therefore yields CLEARED when a stale filled target exists and is otherwise silent; it is never a stored `""` VALUE. This empty-result gate runs **before** the target format check, so an empty final result aimed at a `minLength` target clears rather than becoming ERRORED. A no-value Date result similarly means that no operation produced a value, while Number has no empty result arm because empty-as-zero produces the real number `0`.
+
+A final empty outcome behaves as though this computation produced nothing: a later computation targeting the same cell may still win, and dependents read the target as EMPTY. Delta reporting is decided afterward from the prior target state. ERRORED and poison are decided before the empty gate and are not swallowed by it.
+
+The root-store decision and its precedence over target format checking are source- and dual-strategy-differential-locked in a12-dmkits' [`EmptyConcatStoreDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/EmptyConcatStoreDiffTest.kt) (IF123).
 
 The STRING column above is the *concatenation* position. A **bare string copy** (`X = [S]`, one operand, no `+`) of an empty operand computes **nothing — CLEARED**, never a stored `""`. The `FieldValueAsString` coercion of a not-given read follows the same per-context split — a standalone copy CLEARS (the store path treats an empty string value as "no calculation was done"), a concatenation gets `""`; the coercion's operand must be a NUMBER/AMOUNT field (a string copies bare).
 
