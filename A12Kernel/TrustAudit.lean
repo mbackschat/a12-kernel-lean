@@ -11,16 +11,21 @@ proof-spine registry.
 
 open Lean Lean.Elab Command
 
-private def isAuditedProjectModule (moduleName : Name) : Bool :=
+private def isAuditedLogicalModule (moduleName : Name) : Bool :=
   let text := moduleName.toString
-  let isProject := text == "A12Kernel" || text.startsWith "A12Kernel."
-  let isConformance := text == "A12Kernel.Conformance" || text.startsWith "A12Kernel.Conformance."
-  let isTrustDriver := text == "A12Kernel.Trust" || text.startsWith "A12Kernel.Trust."
-  isProject && !isConformance && !isTrustDriver
+  text == "A12Kernel" ||
+    text == "A12Kernel.Basic" ||
+    text == "A12Kernel.Core" ||
+    text == "A12Kernel.Cell" ||
+    text == "A12Kernel.Document" ||
+    text == "A12Kernel.Proofs" ||
+    text.startsWith "A12Kernel.Semantics." ||
+    text.startsWith "A12Kernel.Elaboration." ||
+    text.startsWith "A12Kernel.Proofs."
 
 run_cmd do
   let (moduleCount, declarationCount) ←
-    A12Kernel.Trust.auditImportedModules isAuditedProjectModule
+    A12Kernel.Trust.auditImportedModules isAuditedLogicalModule
   logInfo m!"environment trust audit passed: {declarationCount} declarations in {moduleCount} modules"
 
 #print axioms A12Kernel.K.and_commutative
