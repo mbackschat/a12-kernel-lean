@@ -6,6 +6,7 @@ import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
 import A12Kernel.Evidence.OperatorEmptyReplay
 import A12Kernel.Evidence.OperatorProtocolBridge
+import A12Kernel.Evidence.ObservationBundleTest
 import A12Kernel.Evidence.StringComputationBinding
 import A12Kernel.Evidence.StringCascadeBinding
 import A12Kernel.Evidence.StringCascadeReplayTest

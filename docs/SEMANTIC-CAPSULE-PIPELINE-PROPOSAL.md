@@ -87,7 +87,7 @@ structure Bundle where
   families : List Family
 ```
 
-The generic reader enforces closed members, the supported schema and kernel version, valid nonempty identities, positive versions, portable source paths and digest syntax, unique family/projection identities, nonempty unique case IDs, bounded input size, and exact preservation of the opaque `input` and `observed` JSON values.
+The generic reader enforces closed members, the supported schema and kernel version, valid nonempty identities, positive versions, portable source paths and digest syntax, unique compound `(family id, projection id, projection version)` identities, nonempty unique case IDs within each family record, bounded input size, and exact preservation of the opaque `input` and `observed` JSON values. This permits multiple projection records for one semantic family and reuse of one projection contract across families without making an exact consumer identity ambiguous.
 
 Separating `input` from `observed` is mandatory. A family decoder must not hide an expected result inside the replay input, and a semantic mutation must still disagree with the observation half.
 
