@@ -9,7 +9,7 @@ namespace A12Kernel.Qualification.Runner
 
 open Lean
 open A12Kernel.Evidence.FlatProtocolBridge
-open A12Kernel.Qualification.Artifact
+open A12Kernel.Process.Artifact
 open A12Kernel.Qualification.Packet
 
 private def fail (message : String) : IO α :=

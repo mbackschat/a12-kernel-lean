@@ -1,13 +1,12 @@
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
 
-/-! # Qualification artifact identities
+/-! # Portable artifact identities
 
-Portable, validated names used by qualification packets and returned result records.
-This module is pure: it parses and renders identities but performs no filesystem IO.
+Portable, validated names shared by retained evidence receipts, qualification packets, and returned result records. This module is pure: it parses and renders identities but performs no filesystem IO.
 -/
 
-namespace A12Kernel.Qualification.Artifact
+namespace A12Kernel.Process.Artifact
 
 open Lean
 
@@ -307,4 +306,4 @@ private example : (do
     let reparsed ← FileDigest.parseText file.render
     if reparsed == file then pure () else throw "round-trip mismatch").isOk := by native_decide
 
-end A12Kernel.Qualification.Artifact
+end A12Kernel.Process.Artifact
