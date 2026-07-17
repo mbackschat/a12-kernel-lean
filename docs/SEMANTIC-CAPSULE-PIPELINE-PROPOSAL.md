@@ -1,190 +1,194 @@
-# Proposal: amortized semantic-capsule pipeline
+# Compact semantic-evidence pipeline
 
-## Status
+> Status: accepted consolidation plan, 2026-07-17. This document owns the migration from packet-specific Lean re-auditing to a settled a12-dmkits transporter and compact Lean semantic projections. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
-This is an a12-kernel-lean architecture proposal, not the owner of current implementation detail. It builds on the live upstream [`a12-dmkits capture contract`](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md) and the accepted [`string-direct-cascade-v1` packet](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/README.md). The source-maintained packet schema and capture boundary have passed generic process qualification and their first retained external-client run. Stages A and B are complete; Stage C is next. The capsule registry remains deliberately deferred to Stage D, after a second real operation demonstrates which metadata is genuinely shared. Current facts live in [`ARCHITECTURE.md`](ARCHITECTURE.md), [`TESTING.md`](TESTING.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). Do not redesign frozen historical evidence or shipments merely for uniformity.
+## Decision
 
-## Goal
+The project will keep kernel differential evidence but stop reproducing the complete capture system inside Lean. a12-dmkits owns kernel execution, runner fidelity, request and consumed-document binding, capabilities, legality, qualification, closure identity, receipts, deterministic recapture, and raw-packet verification. a12-kernel-lean retains that complete certified raw unit for audit, treats it as opaque during normal replay, and consumes one compact producer-certified semantic-observation bundle through an operation-neutral reader plus a small typed family projection.
 
-Make the bespoke work in a future semantic capsule consist primarily of the semantic clause, separating cases, projection, useful laws, and nearest non-laws. Scenario transport, engine execution, packet verification, inventory binding, status indexing, and shipment metadata should reuse maintained infrastructure.
+This is an explicit trust boundary, not a claim that transport no longer matters. The real kernel remains the behavioral oracle. a12-dmkits becomes the trusted transporter from kernel execution to the compact observation bundle, while its interpreter remains triangulation rather than an oracle. Lean checks the bundle's closed semantic projection against its executable account and proves internal laws; it no longer re-implements the transporter's receipt, filesystem, runner, capability, qualification, or closure audit for every capsule.
 
-The intended pipeline has two one-way inputs that meet only at nontrusted replay and reporting:
+## Why this changes
 
-```text
-input-only scenario pack ──→ a12-dmkits ──→ portable packet ──→ strict binding ──┐
-                                                                                 ├─→ nontrusted evidence replay ──→ capsule registry and shipment metadata
-Lean semantics ──→ executable evaluator ─────────────────────────────────────────┘
-       └─→ proofs and laws
+The first full capture proved that a maintained external boundary can produce reproducible, qualified evidence. It also showed that downstream re-auditing does not scale with the semantic body:
+
+| Current surface | Physical lines | Nonblank lines |
+|---|---:|---:|
+| `A12Kernel/Evidence/` | about 8,200 | — |
+| Direct-cascade semantics, proofs, and conformance | about 405 | — |
+| Direct-cascade schema, replay, binder, and tests | 2,183 | 1,936 |
+| Complete replaceable direct-cascade stack including capture-receipt code and tests | 2,458 | 2,179 |
+| Three packet-specific String binders | 2,733 | 2,493 |
+
+The problem is not the once-in-a-lifetime upstream capture implementation. The problem is making each new Lean semantic capsule understand packet inventories, capability bytes, qualification reports, consumed-document identities, runner fidelity, closure identities, and process receipts. Those are producer assurance concerns, not A12 semantic clauses.
+
+The completed Rust experiment, retained direct-cascade packet, trusted proof root, pure semantic capsules, and small older projection replays have all proved useful. The packet-specific Lean binder pattern has proved too expensive to repeat. The project therefore consolidates around the parts that paid for themselves and removes the duplicated boundary.
+
+## Ownership after consolidation
+
+| Concern | Owner | Lean treatment |
+|---|---|---|
+| Kernel execution and engine closure | a12-dmkits | Named provenance only |
+| Request legality and consumed-input identity | a12-dmkits | Trusted producer assertion |
+| Runner route integrity and fidelity | a12-dmkits | Trusted producer assertion |
+| Qualification, receipts, deterministic recapture, and mutation qualification | a12-dmkits | Raw artifacts retained, opaque to ordinary replay |
+| Compact bundle production from the certified observation | a12-dmkits | Producer-certified interface |
+| Bundle schema, identity, bounded decoding, and case separation | a12-kernel-lean owns the canonical consumer contract; a12-dmkits explicitly accepts and implements its producer side | Checked once by an operation-neutral Lean reader; a12-kernel-lean mints an incompatible schema version only through an accepted cross-project proposal |
+| Family input and observable result meaning | a12-kernel-lean | Closed typed family projection |
+| Executable semantics, laws, and non-laws | a12-kernel-lean | Trusted semantic and proof roots |
+| Interpreter comparison | a12-dmkits plus project review | Triangulation only |
+
+The raw packet remains immutable and inspectable. “Opaque to Lean” means ordinary `lake test` does not recursively verify or reinterpret it; it does not mean the packet is deleted or unauditable.
+
+## Three assurance tiers
+
+### Tier 1 — semantic development
+
+The default unit is the small vertical Lean capsule: source study, exact executable clause, red/green conformance, useful theorem, nearest non-law, assumptions, and implementation-map update. A missing external observation is recorded as `external evidence pending`; it does not block independent semantic and proof work when the clause is sufficiently grounded to model narrowly.
+
+Tier 1 must remain the dominant day-to-day work. It must not require a capture schema change, packet binder, qualification report, filesystem inventory, or release artifact.
+
+### Tier 2 — family calibration
+
+Related primitive choices receive a focused external matrix through the maintained a12-dmkits boundary. The producer returns a compact semantic-observation bundle plus references to the retained raw certified unit. Lean decodes the compact bundle, projects one named family into typed inputs and observations, executes the real semantic definitions, and rejects mismatches.
+
+Tier 2 establishes empirical correspondence only for the retained observations. It does not prove universal kernel equivalence.
+
+### Tier 3 — shipment and release qualification
+
+Full candidate differentials, mutation qualification, production packaging, protocol compatibility, and downstream release claims run only for a real shipment or consumer. Existing Rust qualification remains useful history, but these process lanes are not mandatory scaffolding for every new semantic clause.
+
+## Compact bundle contract
+
+The generic envelope deliberately knows almost nothing about A12 operations:
+
+```lean
+structure SourceIdentity where
+  producer : String
+  revision : String
+  rawCapture : FileDigest
+  qualification : Option QualificationIdentity
+
+structure ObservationCase where
+  id : String
+  input : Json
+  observed : Json
+
+structure Family where
+  id : String
+  projectionId : String
+  projectionVersion : Nat
+  source : SourceIdentity
+  cases : List ObservationCase
+
+structure Bundle where
+  schemaVersion : Nat
+  kernelVersion : String
+  families : List Family
 ```
 
-The registry and reporting layer may index declarations and evidence, but semantics and proofs never import evidence, the registry, or generated shipment/process drivers. This pipeline preserves the current authority boundary: a12-dmkits never needs to understand Lean, and Lean never needs kernel-facing Kotlin or Java instrumentation.
+The generic reader enforces closed members, the supported schema and kernel version, valid nonempty identities, positive versions, portable source paths and digest syntax, unique family/projection identities, nonempty unique case IDs, bounded input size, and exact preservation of the opaque `input` and `observed` JSON values.
 
-## Why invest early
+Separating `input` from `observed` is mandatory. A family decoder must not hide an expected result inside the replay input, and a semantic mutation must still disagree with the observation half.
 
-The present evidence pipeline proved that strict binding is valuable, but its transport mechanics are repeating. [`StringComputationBinding.lean`](../A12Kernel/Evidence/StringComputationBinding.lean) has 722 lines and [`StringTargetValidationBinding.lean`](../A12Kernel/Evidence/StringTargetValidationBinding.lean) has 901; both separately define receipt structures, closed-member checks, relative-path safety, uniqueness, inventories, revision binding, runner binding, and artifact digests. Their operation-specific checks are necessary, but this common plumbing should not be rewritten for every capsule.
+The generic reader must not contain operation, model, computation, validation-message, runner, channel, legality, capability, packet-envelope, or qualification-report vocabulary. It must not walk, parse, hash, or relationally validate the retained raw packet. The source identities are provenance anchors asserted by the producer-certified bundle.
 
-The Rust experiment exposed the same issue one layer later: a carefully assembled handover worked, but repeated normative identity, evidence, fixture, and capability facts are expensive to keep synchronized unless generated from a checked owner.
+Each family owns a small typed decoder for its exact inputs and observables. It preserves multiplicity and every semantically claimed distinction, but deliberately omits producer-only transport detail. A family may project away a stronger raw distinction only when the exclusion is explicit—for example, the first direct-cascade account projects exact absent versus present-empty application state to a value-only result.
 
-The early investments below therefore target repeated mechanisms already observed at least twice. They deliberately avoid speculative universal languages or frameworks.
+## What leaves ordinary Lean replay
 
-## Route each future change to one owner
+After the compact direct-cascade bundle is accepted, remove its packet-specific:
 
-Classify a requested change before editing code. This keeps an ordinary new case cheap and makes an actual compatibility change explicit.
+- capture-receipt decoder and role inventory;
+- recursive packet-tree hashing and receipt sidecar checks;
+- capabilities byte parsing;
+- packet, legality, model, request, placement, and consumed-document relation checks;
+- raw route/channel/fidelity decoders;
+- qualification profile/report and closure parsing;
+- recapture-diff and scenario-mutation receipt checks;
+- interpreter-fidelity reconstruction.
 
-| Change | Normal work unit | Identity consequence |
-|---|---|---|
-| Another case within an existing operation, input-support version, and observation profile | Add one input-only scenario case and recapture; no a12-dmkits source change | New scenario-set version or ID and new packet digest |
-| Another operator or shape already representable by the same payload but outside current interpreter support | Add scenario data; the interpreter may report `unsupported` or divergence while both kernel routes still characterize it | New scenario/capsule identity; no payload-schema claim expansion |
-| A required observation the current payload cannot express | Add one closed operation-payload or projection version upstream, then its explicit Lean decoder | New immutable payload/projection ID; old packets remain valid |
-| A new execution route or richer published fidelity | Add a new versioned compile-time runner descriptor or route upstream; never reinterpret a published descriptor in place | New runner/fidelity ID and implementation-closure digest |
-| An a12-dmkits interpreter, runner, or capture-mapper fix that preserves its published schema and fidelity contract | Change the upstream implementation, recapture unchanged scenarios, and structurally diff the packets and reports | New a12-dmkits revision, implementation-closure, packet, and report digests; schema and runner IDs stay stable and old packets remain valid |
-| A kernel-version upgrade | Replay unchanged scenario packs, produce new packets, and use structural diff before changing Lean | New kernel compatibility tuple; never overwrite old evidence |
-| A new Lean semantic clause over already captured data | Add the clause, separating locks, law/non-law, typed projection, and capsule descriptor | New Lean semantic/capsule version as required; packet bytes stay unchanged |
-| A new downstream interpreter, importer, auditor, or refactoring tool | Reuse the capsule registry and common shipment envelope; add only the task-specific capability and fixtures | New shipment/capability identity; no universal consumer-task IR |
+The complete raw packet, qualification sidecars, recapture diff, and mutation receipt remain under `evidence/` unchanged. Their upstream checks and Git provenance remain available for an audit. Lean's durable statement becomes:
 
-If a proposed change touches more rows than expected, stop and identify the hidden boundary instead of spreading a one-off adaptation through capture, Lean, and shipment code.
+> Lean decodes and replays an upstream-certified compact typed projection anchored to named retained raw receipt identities; the raw unit remains available for upstream verification and human audit but is opaque to ordinary Lean replay.
 
-## Future a12-dmkits engagements
+## Measurable limits
 
-When a capsule needs new upstream capture support, start by reading the current machine-readable capabilities and the live a12-dmkits [`CONFORMANCE-CORPUS-SPEC.md` §15–§15f](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md). Pin the exact kernel version, request, payload, input-support, runner, projection, policy, and capabilities identities before authoring an expectation-free scenario. An existing frozen identity is never widened or reinterpreted: a missing observation channel, changed closed shape, or richer fidelity contract requires a new upstream ID/version and an explicit owner decision.
+The first migration has hard budgets measured as nonblank production lines, excluding module comments and JSON data:
 
-The handoff request must name the audited upstream revision, source evidence, broken or missing invariant, exact requested contract, compatibility consequences, separating acceptance cases, and predicted guards. The upstream result must come from a clean committed revision and include the exact scenario bytes, packet-local capabilities, complete runner observations and fidelity gaps, packet receipt plus out-of-band digest, qualification profile/report/receipt plus digest, implementation and runtime closure identities, a second byte-identical clean capture, and a structural no-drift diff. Scenario-specific mutation assurance remains a process record rather than semantic evidence.
+- generic envelope and loader: at most 180;
+- direct-cascade typed family decoder, evaluator projection, and checker: at most 360;
+- steady-state target for a later ordinary family: at most 250;
+- family tests plus relocated generic process locks: at most 110;
+- `EvidenceMain` glue: at most 20;
+- complete first replacement: at most 670;
+- required net reduction from the current direct-cascade stack: at least 1,500.
 
-This project independently verifies and retains the complete returned unit before interpreting it, keeps the a12-dmkits interpreter as triangulation rather than oracle, and never patches a sibling or copied harness. Record the local open obligation in its normal owner while the request is active. Once the committed handback is accepted, move durable facts into [`SOURCES.md`](SOURCES.md), [`EVIDENCE.md`](EVIDENCE.md), [`TESTING.md`](TESTING.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), or [`PLAN.md`](PLAN.md) as appropriate, then delete the completed handoff and rely on Git history.
+Across future migrated families, common compact evidence infrastructure should settle around 800–1,000 nonblank lines, not grow in proportion to packet complexity. A new family must not add receipt, filesystem, digest, capability, qualification, or closure code.
 
-## Investment 1 — input-only scenario packs
+If the generic reader exceeds its limit, stop and remove leaked producer responsibilities. If a family exceeds 360 lines, stop and identify whether it is really multiple semantic families. Do not solve a budget miss with compressed unreadable code or generic untyped maps.
 
-a12-kernel-lean should own the questions it asks of the external oracle as closed scenario packs containing complete model and input-document bytes, stable case IDs, operation profile, required observation channels, probe scope, world inputs where relevant, and short non-normative rationale or varied-axis labels.
+## First migration: direct String cascade
 
-a12-dmkits owns the versioned scenario schema and generic exporter self-tests; this repository owns each capsule-specific instance after that schema is available. The capture command consumes the external pack and copies its exact bytes into the packet. The same capsule scenario is not committed independently in both repositories, and any later a12-dmkits corpus promotion has a new explicit projection and ownership lifecycle.
+The direct-cascade family is the proof case because its current raw binder is the most expensive and its five semantic observations are already understood.
 
-Scenario packs must never contain expected verdicts, values, diagnostics, error codes, agreement flags, or mutation answers. A structural checker should reject such members and verify that claimed one-axis pairs differ only on their declared input axes. Complete DM-JSON models remain the portable authored form; conveniences may generate them, but the contract must not become a second A12 authoring DSL.
+The compact family carries:
 
-V1 uses explicit cases with shared ordinary-data defaults only if that representation remains closed and fully expands before capture. A later input-only matrix expander may cover repeated kind × operator × emptiness × context combinations, but it must retain the expanded manifest and must not branch on observed output.
+- `source`, prior `Mid`, and prior `Out` as typed case input;
+- typed clean, changed, errored, cleared, and value-only applied observations;
+- closed Mid/Out targets and a closed target-error cause;
+- the exact five case IDs and input matrix;
+- explicit exclusions for hidden dependency representation, scheduling, raw runner fidelity, typed/rendered dual values, exact absent-versus-present-empty state, and interpreter-only differences.
 
-## Investment 2 — shared strict packet and qualification-sidecar binding
+The checker compares typed observations directly rather than canonical signature strings. It is parameterized over the replay function so a test mutation can deliberately evaluate the consumer against the original context instead of the producer overlay. The required mismatch set is the three cases with a pre-filled `Mid`: `source-abc-mid-old`, `source-absent-mid-old`, and `source-abcd-mid-old`; the equal and initially absent controls must remain equal. A separate observed-payload mutation changes the target error cause and must also fail.
 
-After the upstream packet/receipt and qualification-report/receipt schemas stabilize, add reusable IO-only Lean support with one-way references: the packet binder knows only the immutable capture packet and receipt, while the sidecar binder independently verifies a qualification report that names the packet receipt digest. Add common support for:
+The old and new lanes may coexist only during the migration gate. Once the producer-certified compact bundle is ferried and both lanes agree, delete the old direct-cascade binder, schema, replay, and tests in the same delivery sequence. Do not leave permanent dual paths.
 
-- exact closed-object decoding;
-- safe relative artifact references without traversal or symlinks;
-- sorted complete inventories, byte counts, and SHA-256 identities;
-- request, model, document, case, observation, and packet-receipt references;
-- qualification profile, report, sidecar-receipt, and bound packet-receipt references without a backward packet-to-report edge;
-- kernel, exporter, source-revision, schema, runner, and policy identities;
-- duplicate and missing ID rejection;
-- exact engine inventories and named projection-comparison assertions;
-- machine-specific-data rejection.
+`A12Kernel/Process/Artifact.lean` and `ArtifactTree.lean` remain because downstream mutation qualification still uses them. Before deleting the capture receipt tests, move their unique global path-order and symlink guards into a small process-owned `ArtifactTreeTest.lean`.
 
-This shared binder belongs outside the trusted semantics, elaboration, proof, and conformance roots. It verifies transport and provenance; it does not assign semantic meaning to operation fields and does not prove correspondence to the external kernel.
+## Producer-side consolidation and frozen a12-dmkits capture-contract V1
 
-Each operation keeps a closed typed decoder and explicit semantic projection. Computation result, delta, application state, and diagnostics must not disappear behind generic maps. The framework eliminates receipt boilerplate without hiding the claim boundary.
+Frozen a12-dmkits capture-contract V1 identities and retained artifacts must never be mutated, but current-main implementation code does not have to live forever merely because an immutable artifact exists. This is unrelated to this repository's separate frozen reference-semantics v1 manifests, suites, and Rust shipment, which are not candidates for deletion here. When a successor capture/export path arrives, a12-dmkits should avoid maintaining complete parallel capture-contract V1 and successor stacks indefinitely.
 
-Apply the framework first to the new direct-cascade packet. Do not migrate or regenerate frozen reference semantics 0.2.0, historical Rust artifacts, or completed evidence packets just to make their shape uniform.
+The future upstream proposal must inventory three categories:
 
-## Investment 3 — typed capsule registry
+1. **Immutable history:** capture-contract V1 capabilities bytes, packet/receipt identities, accepted raw packets, source revisions, and acceptance record remain untouched.
+2. **Minimal compatibility duty:** keep only the smallest fixture or verifier needed by an actual supported consumer, or explicitly pin the historical verifier to its tagged source revision.
+3. **Retirable implementation:** duplicate capture-contract V1 runner, mapper, command, schema, and mutation machinery may be removed from current main after the successor reproduces the required semantic bundle, all named external consumers accept it, the frozen packet remains auditable through a documented historical reproduction route, immutable bytes are proven unchanged, a clean successor capture passes, and the owner approves the sunset.
 
-Introduce one nontrusted, typed descriptor per capsule that links maintained facts without becoming a semantic dependency. Each descriptor should name:
+“V2 exists” alone is not a deletion condition. The sunset gate requires a consumer inventory, byte-preservation proof for immutable artifacts, a documented historical reproduction route, a clean successor capture, explicit owner approval, and removal rather than indefinite dual maintenance. If no live external consumer needs current-main capture-contract V1 execution, Git history or a tagged release may own historical reproducibility instead of a permanent compatibility subsystem. Retained raw bytes and this repository's frozen reference-semantics v1 shipment remain immutable regardless of the upstream implementation decision.
 
-- capsule ID and version;
-- read-only `spec/` clauses and writable source findings;
-- semantic and elaboration declaration roots;
-- theorem roots and checked non-laws;
-- external packet, model, case, and projection IDs;
-- exact externally observable fields and evidence exclusions;
-- protocol capability and operation, when exposed;
-- consumer shipment and qualification identity, when one exists;
-- open semantic, proof, evidence, protocol, shipment, and qualification boundaries.
+## Sequencing
 
-Status must remain multidimensional. “Implemented internally,” “proved internally,” “externally observed,” “publicly supported,” “shipped,” and “independently qualified” are distinct facts and must never collapse into one `complete` Boolean.
+1. Finish the internally proved String-ingestion capsule and leave its external observation pending. Completed in commit `41ddc9d`.
+2. Implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures are schema tests, not kernel evidence.
+3. Measure the implementation. If it misses the limits, simplify locally before asking upstream to implement the producer.
+4. Write a project-local a12-dmkits proposal defining compact bundle production, source identities, direct-cascade acceptance bytes, the later validation-message family, and the capture-contract V1 sunset inventory. The user ferries it; this project never edits the sibling.
+5. Receive and verify the producer-certified compact bundle, retain it beside the opaque raw unit, and prove old-versus-new semantic agreement during the migration gate.
+6. Switch `lake test` to the compact family, relocate the two generic artifact-tree guards, and delete the replaced direct-cascade stack.
+7. Rerun the real and semantic-mutation gates, measure the net deletion, and update current-state owners.
+8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
+9. Request a new external operation only when a real semantic family needs an observation the settled exporter cannot represent. Do not front-load a universal capture protocol.
 
-A registry checker should resolve Lean declaration names, verify referenced artifact IDs and digests, ensure every public capability names a capsule, and detect orphaned or contradictory registered status. Any claim that every maintained semantic or theorem root is registered requires an independent enumeration mechanism—for example dedicated Lean attributes plus a source-root manifest whose discovered set must equal registry membership. Without that independent set, the checker may claim completeness only for registered entries. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) remains the explanatory human owner, but its mechanical identities should be generated from or checked against the registry rather than copied independently.
+## Upstream engagement rule
 
-The registry may import and inspect semantics, proofs, evidence, and protocol metadata; none of those trusted layers may import the registry back. This preserves the Cedar-style one-way assurance boundary.
+Simple, isolated upstream changes receive a paste-ready prompt. The compact exporter plus capture-contract V1 sunset is a cross-project compatibility change with architecture and lifecycle consequences, so it receives a proposal document under this repository's `docs/` until accepted. That proposal must name the audited a12-dmkits revision, exact source mechanism, required versioned bytes, producer/consumer responsibility, compatibility and retirement effects, separating tests, mutation predictions, acceptance gates, and handback format.
 
-## Investment 4 — checked evidence import
+After acceptance, durable producer facts move into a12-dmkits' live spec and this project's evidence/current-state owners. The temporary cross-project proposal is then archived or deleted according to [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); it must not remain a second live upstream specification.
 
-Once two official packets demonstrate a stable shape, add a local command conceptually equivalent to `importEvidence` that:
+## Stop conditions
 
-1. verifies the complete upstream packet/receipt and required qualification sidecars against their supplied out-of-band digests;
-2. checks the upstream source and kernel identities against the requested compatibility tuple;
-3. copies the complete portable packet into a new project-owned evidence location without rewriting existing evidence;
-4. creates or checks an input-only capsule index selecting case IDs;
-5. scaffolds operation-specific projection references and registry entries;
-6. refuses to invent expected Lean results, semantic field mappings, laws, or proof statements.
+Stop and redesign if:
 
-The command should have `--check` reproduction from the committed packet and descriptor. It may generate mechanical indexes and references, but human review still owns the semantic projection and correspondence claim.
+- a new semantic case requires new Lean packet plumbing rather than data;
+- the generic reader learns an operation-specific concept;
+- family code revalidates producer receipts or runner fidelity;
+- raw packets become the input to normal Lean replay again;
+- compact observations lose polarity, poison/unknown, multiplicity, order, applied-state, or other distinctions the family actually claims;
+- a semantic mutation does not fail;
+- old and new evidence lanes remain after the migration gate;
+- a12-dmkits capture-contract V1 and its successor become permanent duplicated implementations without a supported-consumer reason;
+- external evidence blocks unrelated internal semantic/proof progress;
+- evidence infrastructure resumes growing faster than executable semantics and proofs.
 
-## Investment 5 — reusable shipment builder
-
-After a second downstream consumer profile confirms the pattern, generate or check the mechanical portion of capability shipments from the capsule registry:
-
-- compatibility tuple;
-- task and operation profile;
-- supported and excluded fragments;
-- normalized fixtures and conformance-suite inventory;
-- case-level external-evidence, Lean-law, and Lean-refinement classification;
-- theorem and checked-non-law index;
-- artifact inventory and digests;
-- verification commands and qualification hooks.
-
-Human implementer guides and worked traces remain curated. Their referenced identities should be checked rather than manually duplicated. The builder must preserve whether a fact comes from a kernel observation, an internal Lean refinement, or a project-defined transport contract.
-
-The envelope and lifecycle can be reused for evaluator, importer, and refactoring consumers, but their payloads remain task-specific. Do not invent a universal consumer-task IR.
-
-## Investment 6 — efficient recapture and review
-
-The upstream V1 capture contract now provides deterministic packet and report diffs that classify request/input changes, provenance-only changes, each kernel route's observation changes, new cross-route splits, interpreter-only changes, projection changes, and case/inventory additions or removals. Set Z4 used that surface to establish two byte-identical clean captures and a no-drift packet comparison. Keep this full structural diff authoritative for a12-dmkits fixes and kernel-version upgrades.
-
-Keep full uncached capture authoritative. Case filtering is useful for local development, but final qualification runs the complete scenario set. Add content-addressed incremental reuse only after measured case volume justifies it; reused-plus-new output must be byte-identical to a clean full run at the same identities.
-
-Keep full Lean CI authoritative as well. Focused capsule commands and a capsule-to-command index are useful now; dependency-based regression selection is not justified until measured runtime becomes a problem.
-
-## Investment 7 — explicit trust-zone classification
-
-Commit `c2c60c6` implements explicit source zones before adding the packet binder. Every project Lean source must be classified; the logical theorem closure admits only declared foundations, core semantics, elaboration, and proof modules; the executable conformance closure may additionally admit conformance modules; and the library root admits only its root plus those two zones. Evidence, packet binding, registry, generators, process drivers, reference, qualification, and IO drivers stay outside. An unclassified future directory fails the gate instead of entering a trusted closure merely because it was absent from a blacklist. The recursive theorem-root completeness and axiom audit remain in force.
-
-## Recommended staging
-
-### Stage A — upstream observation contract
-
-The source-maintained schema, capabilities, non-executing scenario validation, public computation observations, deterministic packet, sidecar qualification, and diff boundary are implemented and frozen upstream. The unchanged five-case [`direct-cascade pack`](../evidence/scenarios/string-direct-cascade-v1/README.md) produced the accepted clean qualified [`Set Z4 packet`](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/README.md) without capsule-specific Java or Kotlin source or a second canonical scenario copy upstream. Stage A is complete.
-
-### Stage B — first shared Lean binding
-
-Completed. Starting from the verified retained cascade packet and positive source-zone classification, the project implemented common artifact-tree and receipt identity only to the extent exercised by the real packet, then kept the cascade request, computation observation, relational checks, and semantic projection explicit. The direct-cascade semantics, proof spine, nearest non-laws, closed typed decoder, qualification binder, and five-case observable replay now pass together without importing evidence into the trusted roots.
-
-### Stage C — prove operation extensibility
-
-Add one second upstream operation payload—prefer existing validation-message or static-authoring observations whose semantics and artifacts already exist—and route one new or deliberately recaptured non-frozen packet through the same envelope. Extend shared code only where the second real operation demonstrates a common mechanism.
-
-### Stage D — capsule registry
-
-Register the cascade and the next new capsule, add registered-root/artifact/status checks, and project the mechanical status facts into the human implementation map. Claim global source-root completeness only after the independent attribute/source-manifest enumeration mechanism exists. Do not rewrite historical capsule identities.
-
-### Stage E — shipment generation
-
-Use the next real interpreter, importer, or refactoring handover to factor the mechanical shipment builder. The consumer task determines the task-specific payload; the common lifecycle supplies identity, evidence, laws, fixtures, and qualification.
-
-### Stage F — scenario matrices and incremental capture
-
-Add input-only matrix expansion and content-addressed reuse only after repeated explicit scenario sets or measured capture time make their payoff concrete.
-
-## Success criteria
-
-The pipeline is paying for itself when:
-
-- an ordinary new computation case is added as scenario data without Java or Kotlin capture changes;
-- a new packet uses the shared receipt/inventory binder rather than another private receipt parser;
-- an unavailable observation channel is rejected mechanically before research begins;
-- an a12-dmkits or kernel revision can be recaptured and structurally diffed with one maintained workflow;
-- a capsule's semantics, law, non-law, evidence, protocol, shipment, and qualification identities are checked from one typed descriptor;
-- every project source directory is explicitly classified for logical, executable-conformance, or nontrusted use before it can enter a root closure;
-- a downstream implementer receives a generated mechanical inventory plus curated semantic explanation without researching the kernel;
-- frozen historical evidence and shipments remain byte-for-byte unchanged.
-
-## Avoid
-
-Do not build another patched or copied `RuntimeLaws` harness, put expected output in capture requests, treat interpreter agreement as an oracle prerequisite, use compact signature strings as canonical evidence, sort observable order away, auto-promote characterization data, rewrite frozen artifacts, generate semantic prose as authority, add a universal A12 scenario DSL, add a universal consumer-task IR, implement automatic semantic minimization, or optimize CI/caching before measurement justifies it.
-
-The practical target is simple: future work begins with a data-only question, receives one official portable answer packet, and follows a mostly standard binding, registry, and shipment route. Only the semantics and the evidence-sensitive distinctions should remain bespoke.
+The practical goal is one settled evidence bridge and many small semantic capsules. Once that bridge is proven, most project effort returns to semantics, theorems, counterexamples, and useful consumer-facing knowledge.
