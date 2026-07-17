@@ -9,6 +9,7 @@ import A12Kernel.Evidence.OperatorProtocolBridge
 import A12Kernel.Evidence.ObservationBundleTest
 import A12Kernel.Evidence.StringComputationBinding
 import A12Kernel.Evidence.StringCascadeBinding
+import A12Kernel.Evidence.StringCascadeProjectionTest
 import A12Kernel.Evidence.StringCascadeReplayTest
 import A12Kernel.Evidence.StringCascadeSchemaTest
 import A12Kernel.Evidence.StringTargetValidationBinding

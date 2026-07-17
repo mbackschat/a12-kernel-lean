@@ -5,7 +5,7 @@ import Lean.Data.Json
 
 /-! # Compact semantic-observation bundles
 
-This nontrusted reader owns only the operation-neutral contract between a certified evidence producer and typed Lean family projections. Raw capture verification remains a producer responsibility. The `qualification` member is always present on the wire; JSON `null` is its sole absent encoding.
+This nontrusted reader owns only the operation-neutral contract between a certified evidence producer and typed Lean family projections. Raw capture verification remains a producer responsibility. The `revision` is the producer implementation revision that certified the compact bundle; raw and qualification receipts separately anchor the historical capture. Source file paths are relative to the directory containing the bundle. The `qualification` member is always present on the wire; JSON `null` is its sole absent encoding.
 -/
 
 namespace A12Kernel.Evidence.ObservationBundle
@@ -48,18 +48,20 @@ structure Bundle where
   families : List Family
   deriving BEq
 
-private def requiredJson (json : Json) (name context : String) : Except String Json :=
+namespace Decode
+
+def requiredJson (json : Json) (name context : String) : Except String Json :=
   match json.getObjVal? name with
   | .ok value => pure value
   | .error _ => throw s!"{context}: missing member '{name}'"
 
-private def required [FromJson α] (json : Json) (name context : String) : Except String α := do
+def required [FromJson α] (json : Json) (name context : String) : Except String α := do
   let value ← requiredJson json name context
   match fromJson? value with
   | .ok decoded => pure decoded
   | .error _ => throw s!"{context}: member '{name}' has the wrong type"
 
-private def requireObject (json : Json) (allowed : List String)
+def requireObject (json : Json) (allowed : List String)
     (context : String) : Except String Unit := do
   let object ← match json.getObj? with
     | .ok object => pure object
@@ -67,6 +69,10 @@ private def requireObject (json : Json) (allowed : List String)
   for (name, _) in object.toList do
     if !allowed.contains name then
       throw s!"{context}: unknown member '{name}'"
+
+end Decode
+
+open Decode
 
 private def nonempty (value context : String) : Except String String := do
   if value.isEmpty then throw s!"{context}: must not be empty"
