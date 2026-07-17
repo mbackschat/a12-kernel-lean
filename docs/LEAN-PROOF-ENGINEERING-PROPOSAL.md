@@ -226,6 +226,56 @@ Commit completed work locally using Conventional Commits. Do not push unless the
 
 ## Finding and decision destinations
 
+## Active study record
+
+### PE0 baseline
+
+The focused command `lake build A12Kernel.Proofs.StringCascade` fails under the pinned Lean 4.31.0 at the four transport theorem families. The goal has the shape `Except.map readTerm (withDependencyOutcome ...) = .ok (.ok term)`, while the attempted `change` asks Lean to replace it directly with `readTerm (withDependencyCell ...) = .ok term`. The missing step is the outer `Except.map`: `readTerm` itself returns an `Except`, so the result is intentionally nested. The statements preserve the dependency fault separately from the computation-read fault and are not false; the semantic API is also deliberate because validation-scoped required poison must fail at the outer boundary. The same mechanism recurs in every successful outcome branch (no-value, accepted, target error, inherited poison) and in checked elaboration whenever a successful lookup exposes a later checked read. The positive correlation control explicitly case-splits an `Except` before simplifying its branch.
+
+The proof-tree inventory found no project `[simp]` declarations and no `native_decide` in `A12Kernel/Proofs/`; the existing sources use both broad `simp` and smaller `simp only`/`rw`/`cases` proof shapes. Those observations are diagnostic, not quality scores.
+
+| Failure or control | Exact mechanism | Classification | Candidate response |
+|---|---|---|---|
+| `noValueDependency_reads_noValue` | `Except.map` wraps an `Except`-returning read | intentionally nested semantic result; failed `change` skipped a functor layer | expose the successful outer constructor locally, then prove the inner read |
+| `acceptedDependency_reads_value` | same outer map plus checked-cell observation | intentionally nested result plus local observation reduction | reviewed local rewrite set after exposing the outer constructor |
+| errored and inherited-poison reads | target outcome or `FormalCause` case precedes the same map | explicit enum branches are semantically relevant | retain case analysis; do not collapse failure constructors |
+| `requiredDependencyPoison_is_rejected` | `ofOutcome` returns the outer dependency error | intended separating error branch | keep definitional `rfl` |
+| `checkContext_lookup_coherent` / correlation controls | successful `Except` lookup selects a later checked read | independent second occurrence / positive control | test a named branch equation with local `simp only`; retain clearer existing proofs if the pattern adds no value |
+
+### PE1 Cedar audit
+
+Fresh detached source at revision `3977eb4f017b421b7ac0b31ea4635e1dd36ce3ef` was verified before inspection. `GUIDE.md` prefers `simp only` and explicitly permits plain `simp` to close a goal. `Cedar/Thm/Data/Control.lean` owns small constructor equations and `do_eq_ok`-style bridges; `Cedar/Thm/Tactics.lean` implements `simp_do_let` by first case-splitting the subcomputation and then applying a short explicit set. Typechecker `Basic.lean` owns the residual-error-aware `EvaluatesTo` and `TypeOfIsSound` vocabulary and a `split_type_of` projection tactic; `And.lean` separates inversion from soundness; `Call.lean` applies the same vocabulary across operator cases; `WellTyped/Expr/Typechecking.lean` uses explicit `Except.bind_ok`/`bind_err` reductions; and `Authorization/Evaluator.lean` states domain results such as `ways_and_can_error`, `and_produces_bool_or_error`, and record-success inversion without pretending errors cannot occur. The specification and validation roots have no domain `[simp]` declarations at this revision. The Lake `checkThmFile` function checks literal import aggregation only; it is not an elaborated axiom or trust audit. Cedar's trusted SymCC arithmetic sources do use `native_decide`, which is not adopted because A12's prohibition is project policy.
+
+| Cedar mechanism | Source declaration | A12 analogue | Benefit | Risk | Trial |
+|---|---|---|---|---|---|
+| constructor equations for effectful `do` | `Except.bind_ok`, `Except.bind_err`, `do_eq_ok` | outcome overlay followed by `readTerm` | exposes one effect layer without erasing the result domain | a success-only bridge can hide the rejected outer branch | B, C, D |
+| split subcomputation, then narrow simplification | `simp_do_let` | `withDependencyOutcome` / checked lookup | keeps error and success branches visible | a custom tactic would be needless infrastructure for one site | C, D |
+| owning residual-error vocabulary | `EvaluatesTo`, `TypeOfIsSound` | nested dependency/read faults | theorem statements communicate admissible residual failures | flattening the two errors would weaken the A12 domain | all |
+| inversion before soundness | `type_of_and_inversion` then `type_of_and_is_sound` | outcome-to-cell equation then read theorem | separates stable domain boundary from downstream consequence | helper can become tactic-only scaffolding | B |
+| explicit map projection | `split_type_of` | outer `Except.map readTerm` | identifies the exact hidden map mechanism | broad `simp` can obscure which branch was used | C, D |
+
+### PE2 Radix audit
+
+Fresh detached source at revision `617b67eb09681ca98e19759b48978866dcafeb17` was verified before inspection. `Eval/Expr.lean`, `Eval/Stmt.lean`, and `Eval/Interp.lean` define separate expression, relation, and fuelled interpreter layers. `Proofs/InterpCorrectness.lean` builds the `evalExpr_ok/ok'`, `evalArgs_ok/ok'`, and `mkFrame_ok/ok'` bridge ladder, gives small closed `andThen` constructor equations, proves fuel monotonicity, and keeps completeness and soundness directional. `Proofs/Determinism.lean` is relation-oriented case analysis. `Opt/ConstFold.lean` requires inferred-type hypotheses for identities whose partial evaluator would otherwise make them unsound and proves forward preservation rather than total error equivalence. Other optimization modules lift primitive state agreement into `BigStep` preservation; exact results, rather than `.isOk` alone, are used in the bridge theorems. `Linear.lean` similarly lifts get/set, heap, frame, and function-table facts into strengthened execution invariants. `BigStep.funs_preserved` and analogous get/set lemmas are duplicated in optimization/state modules, confirming the proposal's warning that shared A12 effect machinery needs one owner. Radix's Lean version differs, so only mechanisms re-elaborated under A12's pinned toolchain are candidates.
+
+| Radix observation | Confirms or limits | A12 consequence |
+|---|---|---|
+| small `andThen` constructor equations are `[simp]` | confirms canonical closed reducers can be safe | trial an equation only if both A12 instances need it and all outer errors remain distinct |
+| `evalExpr_ok` and `evalExpr_ok'` are directional bridges | confirms exact success bridges, not total equivalence | do not turn a success projection into a theorem that erases dependency faults |
+| `interp_complete` and `interp_sound` are separate | confirms theorem direction belongs in the statement | preserve the exact nested result equality |
+| constant-fold identities require tag/success facts | limits attractive algebraic rewrites under partiality | reject any unconditional rewrite that changes no-value, poison, or error behavior |
+| repeated state/effect lemmas occur across modules | warning against local duplication | introduce a proof utility owner only if a genuinely shared second instance exists |
+
+### PE3 controlled experiment matrix
+
+| Trial | Cascade claim and result domain | Observation | Provisional decision |
+|---|---|---|---|
+| A — reduction / `rfl` | required-poison rejection and attempted-payload non-exposure | succeeds where the semantic constructor equation is intentionally exposed; fails to skip the outer map on successful reads | accept only for transparent constructor equations |
+| B — named equation plus `rw` | successful `withDependencyOutcome` branch, then nested read result | expresses the stable outcome-to-overlay phase if it is reused; a theorem solely restating `Except.map` would be scaffolding | trial a branch equation, retain only if the second instance benefits |
+| C — local `simp only` | accepted/no-value/error/poison transport, exact nested `Except` equality | should expose `withDependencyOutcome`, `ofOutcome`, and `Except.map` with a reviewable set before using the existing shadow law | preferred pilot |
+| D — explicit cases | target errors, inherited causes, and outer dependency result | preserves every constructor and discharges impossible/error branches visibly | accept in enum/effect boundaries |
+| E — candidate `[simp]` | possible successful overlay or map equation | no candidate yet satisfies demonstrated cross-instance need; recursive evaluators and rich outcome bridges are unsuitable | reject unless PE4–PE5 produce the required safety evidence |
+
 | Result | Canonical destination | What belongs there |
 |---|---|---|
 | Pending questions, source-audit matrix, experiment matrix, task order, and provisional decisions | This proposal | Active study material only; deleted on closure |
