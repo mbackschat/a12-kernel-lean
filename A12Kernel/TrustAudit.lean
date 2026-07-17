@@ -129,6 +129,14 @@ run_cmd do
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value
 #print axioms A12Kernel.emptyString_operatorDistinction
 
+#print axioms A12Kernel.normalizeEvaluatedString_crlfPrefix
+#print axioms A12Kernel.normalizeEvaluatedString_notIdempotent
+#print axioms A12Kernel.formalCheckString_cachesNormalized
+#print axioms A12Kernel.checkedString_phasesReadNormalized
+#print axioms A12Kernel.directStringOperand_readsNormalized
+#print axioms A12Kernel.stringLengthOperand_readsNormalized
+#print axioms A12Kernel.stringComputationField_readsNormalized
+
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
 #print axioms A12Kernel.poisonedStringField_evaluates_poison

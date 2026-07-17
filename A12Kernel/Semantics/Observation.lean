@@ -1,4 +1,5 @@
 import A12Kernel.Cell
+import A12Kernel.Semantics.String
 
 /-! # A12Kernel.Semantics.Observation — formal checking and phase reads
 
@@ -45,8 +46,7 @@ def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .leadingOrTrailingSpace => .leadingOrTrailingSpace
   | .customValidation => .customValidation
 
-/-- Scalar-parser output at the formal-check boundary. `rejected` is present raw input
-    that could not become a legal scalar value. -/
+/-- Scalar-parser output at the formal-check boundary. `parsed` means the reduced capsule's preceding raw constraints have admitted the value; a forbidden line break, pattern failure, or other rejected raw String must enter as `rejected`. `rejected` is present raw input that could not become a legal scalar value. -/
 inductive RawCell where
   | empty
   | parsed (value : Value)
@@ -70,18 +70,18 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .string, .str _ => true
   | _, _ => false
 
-/-- Apply static scalar policy and collect formal findings before any phase reads the
-    cell. A parsed value of the wrong kind is malformed at this boundary. -/
+/-- Apply static scalar policy and collect formal findings before any phase reads the cell. A parsed value of the wrong kind is malformed at this boundary. An admitted parsed String receives its one-pass evaluated-cache normalization here; this function does not decide raw line-break permission. -/
 def formalCheck (policy : FieldPolicy) : RawCell → CheckedCell
   | .empty =>
       { rawPresent := false, parsed := none, findings := [] }
   | .parsed value =>
       match policy.kind, value with
       | .string, .str text =>
-          if text.isEmpty then
+          let normalized := normalizeEvaluatedString text
+          if normalized.isEmpty then
             { rawPresent := false, parsed := none, findings := [] }
           else
-            { rawPresent := true, parsed := some value, findings := [] }
+            { rawPresent := true, parsed := some (.str normalized), findings := [] }
       | _, _ =>
           if policy.kind.accepts value then
             { rawPresent := true, parsed := some value, findings := [] }
