@@ -1,0 +1,17 @@
+{
+  "schema": "capture-receipt-v1",
+  "artifacts": [
+    {
+      "path": "PROFILE.json",
+      "role": "qualification-profile",
+      "bytes": 2373,
+      "sha256": "43d620443f934ea95bb57428cc8531f3c9dce915e44f87050877393de40f7a0c"
+    },
+    {
+      "path": "REPORT.json",
+      "role": "qualification-report",
+      "bytes": 13629,
+      "sha256": "b06f4f67d65828bf03c25f6f6dd2669acc618adbb37c5591b6e9969584688d8f"
+    }
+  ]
+}

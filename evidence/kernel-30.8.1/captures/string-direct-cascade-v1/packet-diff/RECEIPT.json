@@ -1,0 +1,11 @@
+{
+  "schema": "capture-receipt-v1",
+  "artifacts": [
+    {
+      "path": "DIFF.json",
+      "role": "diff-report",
+      "bytes": 343,
+      "sha256": "2d8ae60aa3394e7c8190db84e5f5b1595ed4b444e41348b94c6e89df86d35200"
+    }
+  ]
+}

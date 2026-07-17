@@ -1,0 +1,108 @@
+{
+  "schema": "compute-observation-v1",
+  "caseId": "source-abc-mid-old",
+  "runner": "a12-dmkits-interpreter",
+  "status": "success",
+  "statusDetail": null,
+  "consumedModel": {
+    "ref": "models/string-direct-cascade.json",
+    "suppliedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d",
+    "adaptedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d"
+  },
+  "consumedDocument": {
+    "placements": 4,
+    "canonicalSha256": "ad8a8b4dd054f854987f74bf9f803e081fdac23cf9427d8eb17189eb8500409c"
+  },
+  "channels": {
+    "withoutErrors": {
+      "availability": "available",
+      "granularity": "all-computed-clean",
+      "order": "observed",
+      "entries": [
+        {
+          "target": "/Cascade[1]/Mid",
+          "declaredComputation": "/Cascade/MidComputation",
+          "value": {
+            "typed": {
+              "availability": "notExposedByRunner"
+            },
+            "rendered": {
+              "availability": "available",
+              "value": "ABC"
+            }
+          }
+        },
+        {
+          "target": "/Cascade[1]/Out",
+          "declaredComputation": "/Cascade/OutComputation",
+          "value": {
+            "typed": {
+              "availability": "notExposedByRunner"
+            },
+            "rendered": {
+              "availability": "available",
+              "value": "ABC-X"
+            }
+          }
+        }
+      ]
+    },
+    "changedSubset": {
+      "availability": "notExposedByRunner",
+      "granularity": "notExposed",
+      "order": "notApplicable",
+      "entries": []
+    },
+    "withErrors": {
+      "availability": "available",
+      "granularity": "errored-instances",
+      "order": "observed",
+      "entries": []
+    },
+    "cleared": {
+      "availability": "available",
+      "granularity": "all-cleared",
+      "order": "observed",
+      "entries": []
+    },
+    "formalErrorsInOperands": {
+      "availability": "notExposedByRunner",
+      "granularity": "notExposed",
+      "order": "notApplicable",
+      "entries": []
+    },
+    "appliedState": {
+      "availability": "available",
+      "granularity": "requested-probes",
+      "order": "observed",
+      "entries": [
+        {
+          "pointer": "/Cascade[1]/Mid",
+          "state": "presentValue",
+          "value": {
+            "typed": {
+              "availability": "notExposedByRunner"
+            },
+            "rendered": {
+              "availability": "available",
+              "value": "ABC"
+            }
+          }
+        },
+        {
+          "pointer": "/Cascade[1]/Out",
+          "state": "presentValue",
+          "value": {
+            "typed": {
+              "availability": "notExposedByRunner"
+            },
+            "rendered": {
+              "availability": "available",
+              "value": "ABC-X"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

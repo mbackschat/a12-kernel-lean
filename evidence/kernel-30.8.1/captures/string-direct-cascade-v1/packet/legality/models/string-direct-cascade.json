@@ -1,0 +1,12 @@
+{
+  "schema": "capture-legality-v1",
+  "validator": {
+    "runner": "kernel-checkConsistency",
+    "kernelVersion": "30.8.1"
+  },
+  "modelRef": "models/string-direct-cascade.json",
+  "suppliedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d",
+  "adaptedSha256": "3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d",
+  "verdict": "legal",
+  "notifications": []
+}
