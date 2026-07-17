@@ -33,6 +33,10 @@ No absolute home paths, usernames, hostnames, emails, or credentials in source, 
 
 Consult the user and obtain explicit approval before adding, removing, upgrading, vendoring, or replacing a Lake package, runtime library, build tool, or other dependency, and before changing static/shared linkage or the distribution strategy for a bundled component. Discovering an implicit toolchain dependency is not authorization to change it: report the dependency, its purpose, licensing/deployment consequence, and concrete options first. Read-only inspection and measurements of the existing dependency graph are allowed.
 
+## ⚠️ HARD RULE — never push without an explicit current request
+
+Local commits are allowed under the normal workflow, but never run `git push`, create or update a remote branch or tag, publish a release, or otherwise send repository state to GitHub or another remote unless the user explicitly asks for that remote action in the current request. Earlier permission or a standing instruction to continue does not authorize a later push.
+
 ## Naming convention
 
 - **a12-dmkits** is the project/repository name. Use it when referring to the software, semantics corpus, interpreter, adapter, catalog, documentation, or project as a whole.
