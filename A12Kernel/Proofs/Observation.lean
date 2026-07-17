@@ -36,6 +36,23 @@ theorem formalCheck_parsedEmptyString_observes_empty (phase : Phase) :
     observeCell phase (formalCheck { kind := .string } (.parsed (.str ""))) = .empty := by
   cases phase <;> rfl
 
+/-- A clean synthetic computation cell exposes its parsed value without adding a phase-specific interpretation. -/
+theorem computation_observes_clean_value (value : Value) :
+    observeCell .computation {
+      rawPresent := true
+      parsed := some value
+      findings := [] } = .value value := by
+  rfl
+
+/-- A synthetic computation cell with one non-required finding exposes that finding as poison and ignores its absent parsed payload. -/
+theorem computation_observes_single_poison (cause : FormalCause)
+    (notRequired : cause ≠ .required) :
+    observeCell .computation {
+      rawPresent := true
+      parsed := none
+      findings := [cause] } = .poison cause := by
+  cases cause <;> first | contradiction | rfl
+
 theorem required_empty_observes_unknown_in_validation (policy : FieldPolicy) :
     observeCell .validation ((formalCheck policy .empty).withFinding .required) =
       .unknown .required := by

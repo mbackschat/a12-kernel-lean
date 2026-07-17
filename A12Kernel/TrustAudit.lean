@@ -98,6 +98,8 @@ run_cmd do
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty
 #print axioms A12Kernel.formalCheck_parsedEmptyString_observes_empty
+#print axioms A12Kernel.computation_observes_clean_value
+#print axioms A12Kernel.computation_observes_single_poison
 #print axioms A12Kernel.required_empty_observes_unknown_in_validation
 #print axioms A12Kernel.required_empty_observes_empty_in_computation
 #print axioms A12Kernel.ordinary_finding_still_poisons_computation
@@ -163,3 +165,17 @@ run_cmd do
 #print axioms A12Kernel.erroredStringTarget_has_no_appliedValue
 #print axioms A12Kernel.acceptedStringTarget_applies_value
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_delta
+
+#print axioms A12Kernel.dependencyOutcome_produces_wellFormedCell
+#print axioms A12Kernel.dependencyCell_shadows_target
+#print axioms A12Kernel.dependencyCell_preserves_other_read
+#print axioms A12Kernel.dependencyOutcome_preserves_other_read
+#print axioms A12Kernel.noValueDependency_reads_noValue
+#print axioms A12Kernel.acceptedDependency_reads_value
+#print axioms A12Kernel.erroredDependency_reads_declaredConstraintPoison
+#print axioms A12Kernel.inheritedDependency_reads_samePoison
+#print axioms A12Kernel.requiredDependencyPoison_is_rejected
+#print axioms A12Kernel.erroredDependency_does_not_expose_attempt
+#print axioms A12Kernel.stringStep_outcome_independent_of_prior
+#print axioms A12Kernel.same_delta_does_not_imply_same_dependency
+#print axioms A12Kernel.same_appliedValue_does_not_imply_same_dependency

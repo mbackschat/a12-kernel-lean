@@ -57,7 +57,7 @@ theorem checkContext_lookup_coherent (model : FlatModel) (raw : RawFlatContext)
     (id : FieldId) (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId id = .ok declaration) :
     (model.checkContext raw).read id = formalCheck declaration.policy (raw.read id) := by
-  simp [FlatModel.checkContext, lookup]
+  simp only [FlatModel.checkContext, lookup]
 
 /-- A core-admitted reference therefore reads a cell checked by a unique matching model
     declaration, rather than by caller-supplied field metadata. -/
@@ -94,7 +94,7 @@ theorem checkContext_lookup_error_is_malformed (model : FlatModel) (raw : RawFla
     (id : FieldId) (error : ResolveError)
     (lookup : model.lookupUniqueId id = .error error) :
     (model.checkContext raw).read id = malformedCheckedCell := by
-  simp [FlatModel.checkContext, lookup]
+  simp only [FlatModel.checkContext, lookup]
 
 /-- The fail-closed cell has the ordinary validation face of malformed input. -/
 theorem checkContext_lookup_error_observes_unknown (model : FlatModel)
