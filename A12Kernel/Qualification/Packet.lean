@@ -1,5 +1,5 @@
 import A12Kernel.Evidence.FlatProtocolBridge
-import A12Kernel.Qualification.Artifact
+import A12Kernel.Process.Artifact
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
 
@@ -14,7 +14,7 @@ namespace A12Kernel.Qualification.Packet
 
 open Lean
 open A12Kernel.Evidence.FlatProtocolBridge
-open A12Kernel.Qualification.Artifact
+open A12Kernel.Process.Artifact
 
 def packetSchemaVersion : Nat := 2
 

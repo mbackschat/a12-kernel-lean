@@ -1,3 +1,4 @@
+import A12Kernel.Process.ArtifactTree
 import A12Kernel.Qualification.RustPacket
 
 /-! # Strict mutation qualification verification
@@ -9,87 +10,31 @@ namespace A12Kernel.Qualification.Checker
 
 open Lean
 open A12Kernel.Evidence.FlatProtocolBridge
-open A12Kernel.Qualification.Artifact
+open A12Kernel.Process.Artifact
 open A12Kernel.Qualification.Packet
-
-private def maxJsonBytes : Nat := 4 * 1024 * 1024
-private def maxArtifactBytes : Nat := 16 * 1024 * 1024
-private def maxTreeFiles : Nat := 512
-private def maxTreeDepth : Nat := 16
 
 private def fail (message : String) : IO α :=
   throw (IO.userError message)
 
 private def requireRegularFile (path : System.FilePath) : IO Unit := do
-  let metadata ← path.symlinkMetadata
-  if metadata.type != .file then
-    fail s!"qualification artifact '{path}' is not a regular non-symlink file"
+  A12Kernel.Process.ArtifactTree.requireRegularFile path "qualification artifact"
 
 private def requireBoundedRegularFile (path : System.FilePath) (label : String)
-    (limit : Nat := maxArtifactBytes) : IO Unit := do
-  requireRegularFile path
-  let metadata ← path.symlinkMetadata
-  if metadata.byteSize > UInt64.ofNat limit then
-    fail s!"{label} exceeds the {limit}-byte qualification limit"
+    (limit : Nat := A12Kernel.Process.ArtifactTree.maxArtifactBytes) : IO Unit :=
+  A12Kernel.Process.ArtifactTree.requireBoundedRegularFile path label limit
 
 private def readBoundedText (path : System.FilePath) (label : String) : IO String := do
-  requireRegularFile path
-  let metadata ← path.symlinkMetadata
-  if metadata.byteSize > UInt64.ofNat maxJsonBytes then
-    fail s!"{label} exceeds the {maxJsonBytes}-byte qualification limit"
-  IO.FS.readFile path
-
-private partial def collectFilesFrom (current : System.FilePath)
-    (relativePrefix : String := "") (depth : Nat := 0)
-    (ignoredRootDirectory? : Option String := none) : IO (List PortablePath) := do
-  if depth > maxTreeDepth then
-    fail s!"qualification artifact tree exceeds depth {maxTreeDepth} at '{relativePrefix}'"
-  let entries := (← current.readDir).toList.mergeSort fun left right =>
-    left.fileName ≤ right.fileName
-  let mut files : List PortablePath := []
-  for entry in entries do
-    let relative := if relativePrefix.isEmpty then entry.fileName
-      else s!"{relativePrefix}/{entry.fileName}"
-    let portable ← match PortablePath.parse relative with
-      | .ok path => pure path
-      | .error error => fail s!"unsafe qualification artifact path '{relative}': {error}"
-    let metadata ← entry.path.symlinkMetadata
-    match metadata.type with
-    | .file => files := files ++ [portable]
-    | .dir =>
-        if depth == 0 && ignoredRootDirectory? == some entry.fileName then
-          pure ()
-        else
-          let nested ← collectFilesFrom entry.path relative (depth + 1) ignoredRootDirectory?
-          if nested.isEmpty then
-            fail s!"qualification artifact tree contains empty directory '{relative}'"
-          files := files ++ nested
-    | .symlink => fail s!"qualification artifact tree contains symlink '{relative}'"
-    | .other => fail s!"qualification artifact tree contains non-regular path '{relative}'"
-  pure files
+  A12Kernel.Process.ArtifactTree.readBoundedText path label
 
 private def collectFiles (root : System.FilePath) : IO (List PortablePath) := do
-  let metadata ← root.symlinkMetadata
-  if metadata.type != .dir then fail s!"qualification root '{root}' is not a directory"
-  let files ← collectFilesFrom root
-  if files.length > maxTreeFiles then
-    fail s!"qualification artifact tree contains more than {maxTreeFiles} files"
-  pure files
+  A12Kernel.Process.ArtifactTree.collectFiles root
 
 private def collectCandidateFiles (root : System.FilePath) : IO (List PortablePath) := do
-  let metadata ← root.symlinkMetadata
-  if metadata.type != .dir then fail s!"candidate root '{root}' is not a directory"
-  let files ← collectFilesFrom root "" 0 (some "target")
-  if files.length > maxTreeFiles then
-    fail s!"candidate source tree contains more than {maxTreeFiles} non-build-output files"
-  pure files
+  A12Kernel.Process.ArtifactTree.collectFiles root (some "target")
 
 private def verifyFileDigest (root : System.FilePath) (file : FileDigest) : IO Unit := do
-  let path := root / file.path.toString
-  requireBoundedRegularFile path s!"qualification payload '{file.path}'"
-  let actual ← A12Kernel.Process.Sha256.file path
-  if actual != file.sha256.toString then
-    fail s!"qualification artifact digest mismatch for '{file.path}': expected {file.sha256}, found {actual}"
+  A12Kernel.Process.ArtifactTree.verifyDigest root file
+    s!"qualification payload '{file.path}'"
 
 private def expectedObservationJson (mutation : MutationDescriptor) : Json :=
   ({
@@ -143,12 +88,7 @@ private def expectedPacketPaths (index : Index) : List String :=
 
 private def verifyExactTree (root : System.FilePath) (expected : List String)
     (label : String) : IO Unit := do
-  let actual := (← collectFiles root).map (·.toString)
-  let expected := expected.mergeSort
-  if actual != expected then
-    let missing := expected.filter fun path => !actual.contains path
-    let extra := actual.filter fun path => !expected.contains path
-    fail s!"{label} file tree is not exact; missing={repr missing}, extra={repr extra}"
+  A12Kernel.Process.ArtifactTree.verifyExactTreeStrings root expected label
 
 private def packetPlanMatchesSource (projectRoot packetRoot : System.FilePath)
     (index : Index) : IO Unit := do

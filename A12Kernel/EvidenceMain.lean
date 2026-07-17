@@ -1,5 +1,6 @@
 import A12Kernel.Evidence.CorrelationReplay
 import A12Kernel.Evidence.CorrelationElaborationReplay
+import A12Kernel.Evidence.Capture.ReceiptTest
 import A12Kernel.Evidence.FlatProtocolBridge
 import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
@@ -1022,6 +1023,8 @@ private def checkCorrelationElaborationCase (root : System.FilePath)
 
 def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
+  A12Kernel.Evidence.Capture.ReceiptTest.check
+    (root / "captures/string-direct-cascade-v1")
   let bundle ← orThrow "projection.json"
     (Bundle.fromJson (← readJson (root / "projection.json")))
   orThrow "projection.json" bundle.validate

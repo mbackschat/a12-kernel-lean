@@ -1,5 +1,5 @@
 import A12Kernel.Evidence.FlatProtocolBridge
-import A12Kernel.Qualification.Artifact
+import A12Kernel.Process.Artifact
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
 
@@ -17,7 +17,7 @@ namespace A12Kernel.Qualification.MutationResult
 open Lean
 open A12Kernel
 open A12Kernel.Evidence.FlatProtocolBridge
-open A12Kernel.Qualification.Artifact
+open A12Kernel.Process.Artifact
 
 def resultSchemaVersion : Nat := mutationQualificationResultSchemaVersion
 
@@ -436,8 +436,8 @@ def GateRecord.asJson (gate : GateRecord) : Json :=
   Json.mkObj [
     ("outcome", toJson gate.outcome.tag),
     ("commands", Json.arr (gate.commands.map CommandRecord.asJson).toArray),
-    ("rawLogs", Json.arr (gate.rawLogs.map Artifact.FileDigest.asJson).toArray),
-    ("sourceFiles", Json.arr (gate.sourceFiles.map Artifact.FileDigest.asJson).toArray)]
+    ("rawLogs", Json.arr (gate.rawLogs.map FileDigest.asJson).toArray),
+    ("sourceFiles", Json.arr (gate.sourceFiles.map FileDigest.asJson).toArray)]
 
 def RestorationRecord.asJson (restoration : RestorationRecord) : Json :=
   Json.mkObj [
@@ -452,7 +452,7 @@ def MutationRecord.asJson (mutation : MutationRecord) : Json :=
     ("patch", toJson mutation.patch.toString),
     ("patchSha256", mutation.patchSha256.asJson),
     ("commands", Json.arr (mutation.commands.map CommandRecord.asJson).toArray),
-    ("rawLogs", Json.arr (mutation.rawLogs.map Artifact.FileDigest.asJson).toArray),
+    ("rawLogs", Json.arr (mutation.rawLogs.map FileDigest.asJson).toArray),
     ("exitStatuses", toJson mutation.exitStatuses),
     ("observedCaseResults", Json.arr (mutation.observedCaseResults.map CaseResult.asJson).toArray),
     ("observedAlgebraResults",
@@ -461,7 +461,7 @@ def MutationRecord.asJson (mutation : MutationRecord) : Json :=
     ("outcome", toJson mutation.outcome.tag),
     ("restoration", mutation.restoration.asJson),
     ("restoredSourceFiles",
-      Json.arr (mutation.restoredSourceFiles.map Artifact.FileDigest.asJson).toArray)]
+      Json.arr (mutation.restoredSourceFiles.map FileDigest.asJson).toArray)]
 
 def Result.asJson (result : Result) : Json :=
   Json.mkObj [
@@ -478,7 +478,7 @@ def Result.asJson (result : Result) : Json :=
     ("capabilityId", toJson result.capabilityId),
     ("baselineImplementationRevision", toJson result.baselineImplementationRevision),
     ("baselineSourceFiles",
-      Json.arr (result.baselineSourceFiles.map Artifact.FileDigest.asJson).toArray),
+      Json.arr (result.baselineSourceFiles.map FileDigest.asJson).toArray),
     ("toolchain", Json.arr (result.toolchain.map ToolchainRecord.asJson).toArray),
     ("naturalGate", result.naturalGate.asJson),
     ("mutations", Json.arr (result.mutations.map MutationRecord.asJson).toArray),

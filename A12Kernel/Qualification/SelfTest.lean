@@ -9,7 +9,7 @@ namespace A12Kernel.Qualification.SelfTest
 
 open Lean
 open A12Kernel.Evidence.FlatProtocolBridge
-open A12Kernel.Qualification.Artifact
+open A12Kernel.Process.Artifact
 open A12Kernel.Qualification.Packet
 
 private abbrev Result := A12Kernel.Qualification.MutationResult.Result

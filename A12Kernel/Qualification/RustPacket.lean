@@ -13,7 +13,7 @@ namespace A12Kernel.Qualification.RustPacket
 
 open Lean
 open A12Kernel.Evidence.FlatProtocolBridge
-open A12Kernel.Qualification.Artifact
+open A12Kernel.Process.Artifact
 open A12Kernel.Qualification.Packet
 
 private structure Edit where
