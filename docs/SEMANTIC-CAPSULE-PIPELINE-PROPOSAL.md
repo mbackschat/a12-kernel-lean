@@ -150,22 +150,22 @@ The compact [`ObservationBundle`](../A12Kernel/Evidence/ObservationBundle.lean) 
 
 ## Producer-side consolidation and frozen a12-dmkits capture-contract V1
 
-Frozen a12-dmkits capture-contract V1 identities and retained artifacts must never be mutated, but current-main implementation code does not have to live forever merely because an immutable artifact exists. This is unrelated to this repository's separate frozen reference-semantics v1 manifests, suites, and Rust shipment, which are not candidates for deletion here. When a successor capture/export path arrives, a12-dmkits should avoid maintaining complete parallel capture-contract V1 and successor stacks indefinitely.
+Frozen a12-dmkits capture-contract V1 identities and retained artifacts must never be mutated, but current-main implementation code does not have to live forever merely because an immutable artifact exists. The owner has confirmed that no known maintained external consumer needs current-main execution and that Git history plus the retained raw and compact artifacts may own historical reproducibility. The current [retirement handoff](A12-DMKITS-CAPTURE-V1-RETIREMENT-PROPOSAL.md) therefore directs a12-dmkits to remove the complete portable capture-V1 implementation and every live documentation trace without minting a successor; only archived documentation retains the exact history.
 
-The future upstream proposal must inventory three categories:
+This decision is separate from this repository's reference-semantics 0.2.0/V1 lineage. That local compatibility estate is now independently audited for migration to current 0.3.0/V2 in the [reference and evidence simplification proposal](REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md); immutable historical Rust claims are archived rather than relabeled.
 
-1. **Immutable history:** capture-contract V1 capabilities bytes, packet/receipt identities, accepted raw packets, source revisions, and acceptance record remain untouched.
-2. **Minimal compatibility duty:** keep only the smallest fixture or verifier needed by an actual supported consumer, or explicitly pin the historical verifier to its tagged source revision.
-3. **Retirable implementation:** duplicate capture-contract V1 runner, mapper, command, schema, and mutation machinery may be removed from current main after the successor reproduces the required semantic bundle, all named external consumers accept it, the frozen packet remains auditable through a documented historical reproduction route, immutable bytes are proven unchanged, a clean successor capture passes, and the owner approves the sunset.
+The durable distinction is:
 
-“V2 exists” alone is not a deletion condition. The sunset gate requires a consumer inventory, byte-preservation proof for immutable artifacts, a documented historical reproduction route, a clean successor capture, explicit owner approval, and removal rather than indefinite dual maintenance. If no live external consumer needs current-main capture-contract V1 execution, Git history or a tagged release may own historical reproducibility instead of a permanent compatibility subsystem. Retained raw bytes and this repository's frozen reference-semantics v1 shipment remain immutable regardless of the upstream implementation decision.
+1. **Immutable historical evidence:** accepted raw and compact bytes, packet and qualification identities, and source revisions remain recoverable and are never rewritten.
+2. **Current-main producer code:** the unused capture source set, schemas, commands, exporter, qualification machinery, mutations, tests, and live documentation are removed rather than maintained or duplicated.
+3. **Future producer capability:** a new operation is demand-driven by a concrete semantic family and designed from its observation needs; it is not a compatibility successor created merely to preserve V1 structure.
 
 ## Sequencing
 
 1. Finish the internally proved String-ingestion capsule and leave its external observation pending. Completed in commit `41ddc9d`.
 2. Completed: implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures remain schema tests, not kernel evidence.
 3. Completed: measure and simplify the local implementation before requesting the producer.
-4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter now owned by a12-dmkits' [`CONFORMANCE-CORPUS-SPEC.md` §15h](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md). Validation-message capture remains outlook only.
+4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter recorded historically in a12-dmkits' capture-contract V1 estate. The accepted bytes are retained here; the unused upstream implementation is now subject to the owner-directed [retirement handoff](A12-DMKITS-CAPTURE-V1-RETIREMENT-PROPOSAL.md). Validation-message capture remains outlook only.
 5. Completed: verify and retain the producer-certified compact bundle beside the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
 6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
 7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines.
@@ -174,9 +174,9 @@ The future upstream proposal must inventory three categories:
 
 ## Upstream engagement rule
 
-Simple, isolated upstream changes receive a paste-ready prompt. The compact exporter plus capture-contract V1 sunset is a cross-project compatibility change with architecture and lifecycle consequences, so it receives a proposal document under this repository's `docs/` until accepted. That proposal must name the audited a12-dmkits revision, exact source mechanism, required versioned bytes, producer/consumer responsibility, compatibility and retirement effects, separating tests, mutation predictions, acceptance gates, and handback format.
+Simple, isolated upstream changes receive a paste-ready prompt. A cross-project capability or retirement with architecture and lifecycle consequences receives a temporary proposal document under this repository's `docs/` until accepted. It must name the audited a12-dmkits revision, exact source mechanism, required versioned bytes, producer/consumer responsibility, compatibility and retirement effects, separating tests where relevant, acceptance gates, and handback format.
 
-After acceptance, durable producer facts move into a12-dmkits' live spec and this project's evidence/current-state owners. The temporary cross-project proposal is then archived or deleted according to [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); it must not remain a second live upstream specification.
+After acceptance, durable producer facts move into a12-dmkits' live owners when the capability remains current, or into its archived documentation when the capability is retired; this project's evidence/current-state owners retain only their local consequences. The temporary cross-project proposal is then archived or deleted according to [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); it must not remain a second live upstream specification.
 
 ## Stop conditions
 
