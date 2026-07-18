@@ -102,6 +102,14 @@ def evaluateOutcome (step : StringComputationStep) (context : StringComputationC
       | .supported outcome => .ok outcome
       | .unsupported fault => .error (.targetCheck fault)
 
+/-- Evaluate the body only when its already-evaluated, poison-free common precondition holds. A false precondition is a quiet no-value outcome; because the branch returns before `evaluateOutcome`, the body cannot observe or poison on any operand. Precondition evaluation and its own poison channel remain a later boundary. -/
+def evaluateOutcomeWhen (step : StringComputationStep) (commonPreconditionHolds : Bool)
+    (context : StringComputationContext) :
+    Except StringComputationStepFault StringTargetOutcome :=
+  match commonPreconditionHolds with
+  | false => .ok .noValue
+  | true => step.evaluateOutcome context
+
 /-- Evaluate, store, target-check, and project one explicit step without mutating a document. -/
 def evaluate (step : StringComputationStep) (context : StringComputationContext) :
     Except StringComputationStepFault StringComputationStepResult :=

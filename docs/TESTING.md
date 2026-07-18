@@ -33,7 +33,7 @@ Every new semantic capsule uses red/green TDD.
 4. Implement the smallest total pure definition that makes those examples green.
 5. Add an independent declarative relation or judgment only when it exposes a useful boundary, then prove its connection to the executable definition in `A12Kernel/Proofs/`.
 6. Replay any already available matching observation. Otherwise mark the capsule `external evidence pending` and add it to the smallest coherent Tier 2 calibration family; do not build packet machinery in the semantic change.
-7. Apply the ownership triggers in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md), update only the documents whose owned facts changed, then run every final gate.
+7. Apply the ownership triggers in [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md), update only the documents whose owned facts changed, then run the applicable tier gate below.
 
 A red run is part of the evidence for the workflow, not a file committed to the repository. A test that was green before the semantic implementation is either not testing the requested behavior or is accidentally passing through an older path.
 
@@ -274,11 +274,22 @@ In the settled workflow, a12-dmkits performs the complete raw verification and c
 
 For the first compact client, [`ObservationBundleTest.lean`](../A12Kernel/Evidence/ObservationBundleTest.lean) locks the operation-neutral closed envelope with synthetic payloads, while [`StringCascadeProjectionTest.lean`](../A12Kernel/Evidence/StringCascadeProjectionTest.lean) locks the exact producer identity, five-case input matrix, typed observation distinctions, list order and multiplicity, broken dependency-overlay mismatch set, and observed cause/order/duplicate mutations. Synthetic fixtures prove the consumer contract and mutation sensitivity but are not external evidence. `lake test` separately hashes and loads the retained [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json), decodes the family, and requires zero mismatches from the real evaluator.
 
-## Final gate
+## Tier gates
 
-Run the complete gate from the repository root:
+Run this Tier 1 gate for an internal semantic capsule:
 
-`lake test` already performs the frozen flat handover artifact check. `checkReferenceProcess` already runs structural self-tests for both historical v1 suites and both current v2 suites, then runs both current v2 suites against the compiled Lean reference. The final gate therefore does not repeat those nested commands; use their direct forms above only for focused diagnosis or an independent candidate.
+```sh
+lake build
+lake test
+./scripts/check-lean-trust.sh
+git diff --check
+git diff HEAD --exit-code -- spec/
+git status --short
+```
+
+Add only the focused replay or producer-bundle check owned by a Tier 2 calibration family. `lake test` already replays every retained project-local observation and checks the frozen flat handover artifacts, so do not invent another family-independent gate.
+
+Run the complete Tier 3 gate only when the change affects a public process, independent-consumer shipment, qualification mechanism, packaging, or release—or before an actual release:
 
 ```sh
 lake build
@@ -298,7 +309,7 @@ git -C ../a12-rulekit status --short
 git -C ../a12-kernel-rust-spike status --short
 ```
 
-Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A candidate-suite failure means the suite/evidence linkage or candidate observable changed and must be classified using [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md); agreement with the reference is not allowed to overwrite external evidence. A bounded-process failure means the relay lifecycle, byte/deadline limit, status separation, or process-group cleanup invariant changed. A generated-differential failure means profile/generator integrity, a pinned input, the process contract, or a candidate/reference projection disagreed; preserve the result and classify the recorded failure or minimal witness without turning Lean agreement into a kernel-evidence claim. A qualification failure means the packet projection, frozen candidate closure, mutation sensitivity, actual captured observation, command policy, or restoration invariant disagrees; preserve the exact packet/result and investigate that boundary instead of editing an expected observation or weakening the checker. A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
+Do not run a Tier 3 gate merely because its executable exists or because it was needed by a historical experiment. Interpret failures by layer. A conformance failure means a concrete Lean behavior changed. A proof failure means the definition no longer supports the stated universal law or the proof needs legitimate repair. An evidence mismatch means the Lean projection and retained kernel observation disagree and must be investigated at the semantic definition or projection boundary; never relax the expected result merely to make it green. A reference-process failure means the public transport, executable wiring, fixture, or manifest changed and must be reconciled with [`PROTOCOL.md`](PROTOCOL.md). A candidate-suite failure means the suite/evidence linkage or candidate observable changed and must be classified using [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md); agreement with the reference is not allowed to overwrite external evidence. A bounded-process failure means the relay lifecycle, byte/deadline limit, status separation, or process-group cleanup invariant changed. A generated-differential failure means profile/generator integrity, a pinned input, the process contract, or a candidate/reference projection disagreed; preserve the result and classify the recorded failure or minimal witness without turning Lean agreement into a kernel-evidence claim. A qualification failure means the packet projection, frozen candidate closure, mutation sensitivity, actual captured observation, command policy, or restoration invariant disagreed; preserve the exact packet/result and investigate that boundary instead of editing an expected observation or weakening the checker. A trust failure means the theorem closure or audit is incomplete even if ordinary compilation passed. Sibling status must be unchanged from the recorded pre-run baseline and should be clean; if a sibling was already visibly dirty, report that pre-existing state rather than touching or concealing it.
 
 ## Capsule test checklist
 
@@ -312,4 +323,4 @@ Interpret failures by layer. A conformance failure means a concrete Lean behavio
 - The replay derives expectations from retained external output rather than duplicating them in Lean-shaped data.
 - If the flat shipment or mutation plan changed, the exact qualification packet source replay and adversarial checker self-test pass, with actual observer output distinct from typed expectations.
 - If a generated profile or differential result changed, its closed generator self-test, bounded-process gate, profile check, and exact pinned run pass, with the finite Lean-account claim kept separate from retained kernel evidence.
-- `lake build`, `lake test`, any applicable reference-process, bounded-process, generated-differential, candidate-conformance, and mutation-qualification gates, the trust audit, and patch/worktree hygiene gates all pass.
+- The applicable tier gate passes. A Tier 1 semantic capsule does not inherit unrelated historical shipment and qualification gates.

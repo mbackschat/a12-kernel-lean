@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.StringApplication
 import A12Kernel.Semantics.StringCascade
 
 /-! # Direct String-cascade executable locks
@@ -57,6 +58,46 @@ private def expected (producerOutcome : StringTargetOutcome)
     (consumerDelta : Option StringDelta) : StringDirectCascadeResult := {
   producer := { outcome := producerOutcome, delta := producerDelta }
   consumer := { outcome := consumerOutcome, delta := consumerDelta } }
+
+/- A false common precondition skips the body even when reading that body would poison. -/
+example : (cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
+    false (context (.rejected .malformed) (.parsed (.str "OLD"))) =
+      .ok .noValue := by
+  rfl
+
+/- With only the gate changed to true, the same malformed source is consumed and poisons the producer. -/
+example : (cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
+    true (context (.rejected .malformed) (.parsed (.str "OLD"))) =
+      .ok (.poison .malformed) := by
+  rfl
+
+/- A true common precondition delegates to the ordinary accepted-body path. -/
+example : valueOf
+    ((cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
+      true (context (.parsed (.str "ABC")) (.parsed (.str "OLD")))) =
+        some (.accepted storedAbc) := by
+  native_decide
+
+/- A false common precondition suppresses the same otherwise accepted body. -/
+example : (cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
+    false (context (.parsed (.str "ABC")) (.parsed (.str "OLD"))) =
+      .ok .noValue := by
+  rfl
+
+/- Quiet precondition clearing and consumed-operand poison have the same immediate target placement but remain different dependency reads. -/
+example :
+    StringTargetOutcome.noValue.applyTo (.presentValue storedOld) =
+        (StringTargetOutcome.poison .malformed).applyTo (.presentValue storedOld) ∧
+      valueOf ((context .empty .empty).withDependencyOutcome midId .noValue
+          |>.map (fun updated => updated.readTerm midId)) ≠
+        valueOf ((context .empty .empty).withDependencyOutcome midId (.poison .malformed)
+          |>.map (fun updated => updated.readTerm midId)) := by
+  constructor
+  · rfl
+  · change
+      (some (.ok StringTerm.noValue) : Option (Except StringComputationFault StringTerm)) ≠
+        some (.ok (.poison .malformed))
+    simp
 
 /- A changed accepted producer value is consumed by the downstream expression. -/
 example : valueOf ((cascade (.filled storedOld) (.filled storedOldX)).evaluate
