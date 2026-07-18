@@ -4,7 +4,7 @@ import Lean.Data.Json
 
 /-! # Compact semantic-observation bundles
 
-This nontrusted reader owns only the operation-neutral contract between a certified evidence producer and typed Lean family projections. Raw capture verification remains a producer responsibility. The `revision` is the producer implementation revision that certified the compact bundle; raw and qualification receipt identities separately anchor the historical capture. Their portable paths identify members of the recoverable producer unit and need not exist in the current checkout. The `qualification` member is always present on the wire; JSON `null` is its sole absent encoding.
+This nontrusted reader owns only the operation-neutral contract between an evidence source or reviewer and typed Lean family projections. Raw capture verification remains outside this reader. Each family defines whether `revision` names a direct compact exporter or a reviewed source snapshot; raw and optional qualification identities separately anchor the historical capture. Their portable paths identify members of a recoverable unit and need not exist in the current checkout. The `qualification` member is always present on the wire; JSON `null` is its sole absent encoding.
 -/
 
 namespace A12Kernel.Evidence.ObservationBundle
