@@ -1,6 +1,6 @@
 # Reference and evidence simplification proposal
 
-> **Status:** adopted and in progress, 2026-07-18. Decision 1 is complete; Decisions 2 and 3 are the remaining one-time evidence consolidation. This is not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived.
+> **Status:** adopted and in progress, 2026-07-18. Decisions 1 and 3 are complete; Decision 2 is the remaining one-time evidence consolidation. This is not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived.
 
 ## Outcome
 
@@ -100,9 +100,9 @@ Current V2 suites inspect only four projection files for kernel version and case
 
 Once every current family is compact, reduce `EvidenceMain.lean` to a small dispatcher and delete the superseded schemas, replays, raw-model parsers, and family-specific binding logic. The settled compact reader remains outside the trusted semantics/proof/conformance roots.
 
-## Decision 3 — archive opaque raw units outside `HEAD`
+## Decision 3 — archive opaque raw units outside `HEAD` (completed for direct cascade)
 
-The current Lean code reads only the 4,969-byte direct-cascade compact export. Its packet, qualification, recapture diff, and process artifacts occupy 107,866 bytes; the answered scenario root adds 11,237 bytes. After recording their exact digests and recovery revision in an archived evidence manifest, remove those 119,103 bytes from `HEAD`.
+The current Lean code reads only the 4,969-byte direct-cascade compact export. The accepted archive migration recorded exact producer revisions, project recovery revision, Git tree objects, receipt and scenario SHA-256 identities, and claim limits in [`archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md`](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md), then removed 31 raw/scenario files, 123,184 bytes, and 4,056 nonblank lines from `HEAD`.
 
 Apply the same rule to each migrated family: compact observations stay checked out; complete raw audit material moves to a named immutable Git revision or tag with a digest manifest. Git history remains the recovery archive. A release asset may mirror that archive for convenience but is not the sole authority.
 

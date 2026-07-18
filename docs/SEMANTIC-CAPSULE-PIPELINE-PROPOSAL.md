@@ -28,7 +28,7 @@ The completed Rust experiment, retained direct-cascade packet, trusted proof roo
 
 | Concern | Owner | Lean treatment |
 |---|---|---|
-| Accepted direct-cascade execution, input binding, runner fidelity, qualification, receipts, recapture, and compact production | Historical a12-dmkits revisions named by the retained artifacts | Raw and compact artifacts remain immutable; ordinary Lean replay trusts the pinned historical producer assertions |
+| Accepted direct-cascade execution, input binding, runner fidelity, qualification, receipts, recapture, and compact production | Historical a12-dmkits revisions and the project-local recovery record | Raw artifacts remain immutable in Git history; the checked-out compact artifact and its pinned producer assertions drive ordinary Lean replay |
 | Current ordinary corpus capture/replay and kernel differentials | Current a12-dmkits facilities under their live owners | Used only when their existing own-domain observation naturally closes the requested family |
 | Missing future observation capability | a12-kernel-lean specifies the concrete semantic need; a12-dmkits implements only an accepted upstream request | No V1 packet shape, qualification graph, exporter, or universal successor is presumed |
 | Bundle schema, identity, bounded decoding, and case separation | a12-kernel-lean | Checked once by an operation-neutral Lean reader; reuse or evolution requires a concrete accepted consumer need |
@@ -36,7 +36,7 @@ The completed Rust experiment, retained direct-cascade packet, trusted proof roo
 | Executable semantics, laws, and non-laws | a12-kernel-lean | Trusted semantic and proof roots |
 | Interpreter comparison | a12-dmkits plus project review | Triangulation only |
 
-The raw packet remains immutable and inspectable. “Opaque to Lean” means ordinary `lake test` does not recursively verify or reinterpret it; it does not mean the packet is deleted or unauditable.
+The raw packet remains immutable and inspectable at its named Git revision. “Opaque to Lean” means ordinary `lake test` does not recursively verify or reinterpret it; deleting it from `HEAD` does not delete its audit history.
 
 ## Three assurance tiers
 
@@ -106,7 +106,7 @@ The completed compact direct-cascade migration removed its packet-specific:
 - recapture-diff and scenario-mutation receipt checks;
 - interpreter-fidelity reconstruction.
 
-The complete historical raw packet, qualification sidecars, recapture diff, and mutation receipt remain under `evidence/` unchanged pending the accepted local archive migration. Their pinned upstream revision, archived contract, and Git provenance remain available for an audit. Lean's durable statement is:
+The complete historical raw packet, qualification sidecars, recapture diff, mutation receipt, and expectation-free scenario have moved out of `HEAD`. Their exact project revision, Git tree objects, principal SHA-256 identities, producer revisions, and claim limits are recorded in the [archived evidence record](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md). Lean's durable statement is:
 
 > Lean decodes and replays a historically producer-certified compact typed projection anchored to named retained raw receipt identities; the raw unit remains available through pinned Git history and human audit but is opaque to ordinary Lean replay.
 
@@ -164,9 +164,9 @@ The durable distinction is:
 2. Completed: implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures remain schema tests, not kernel evidence.
 3. Completed: measure and simplify the local implementation before requesting the producer.
 4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter recorded historically in a12-dmkits' archived capture-contract V1 estate. The accepted bytes are retained here, and upstream revision `45b264b2` removed the unused implementation. Validation-message capture remains outlook only.
-5. Completed: verify and retain the producer-certified compact bundle beside the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
+5. Completed: verify the producer-certified compact bundle against the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
 6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
-7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines.
+7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines. The local archive migration then removed 31 raw/scenario files and 123,184 bytes from `HEAD` while preserving the compact bundle and exact recovery identities.
 8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
 9. Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
 
