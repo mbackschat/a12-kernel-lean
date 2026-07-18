@@ -4,7 +4,7 @@ import A12Kernel.Semantics.StringCascade
 
 /-! # Compact direct String-cascade observation family
 
-This nontrusted projection assigns the five producer-certified case payloads their narrow A12 meaning and compares them with the real two-step Lean evaluator. Observation lists use canonical semantic target order—producer `mid` before consumer `out`—and preserve multiplicity; incidental raw runner order remains only in the opaque packet. The projection deliberately excludes raw runner, packet, scheduling, and exact absent-versus-present-empty state.
+This nontrusted projection assigns the five producer-certified case payloads their narrow A12 meaning and compares them with the real two-step Lean evaluator. Observation lists use canonical semantic target order—producer `mid` before consumer `out`—and preserve multiplicity; incidental raw runner order remains only in the archived producer unit. The projection deliberately excludes raw runner, packet, scheduling, and exact absent-versus-present-empty state.
 -/
 
 namespace A12Kernel.Evidence.StringCascadeProjection

@@ -4,7 +4,7 @@ import Lean.Data.Json
 
 /-! # Compact semantic-observation bundles
 
-This nontrusted reader owns only the operation-neutral contract between a certified evidence producer and typed Lean family projections. Raw capture verification remains a producer responsibility. The `revision` is the producer implementation revision that certified the compact bundle; raw and qualification receipts separately anchor the historical capture. Source file paths are relative to the directory containing the bundle. The `qualification` member is always present on the wire; JSON `null` is its sole absent encoding.
+This nontrusted reader owns only the operation-neutral contract between a certified evidence producer and typed Lean family projections. Raw capture verification remains a producer responsibility. The `revision` is the producer implementation revision that certified the compact bundle; raw and qualification receipt identities separately anchor the historical capture. Their portable paths identify members of the recoverable producer unit and need not exist in the current checkout. The `qualification` member is always present on the wire; JSON `null` is its sole absent encoding.
 -/
 
 namespace A12Kernel.Evidence.ObservationBundle
@@ -18,7 +18,7 @@ private def isLowerHex (character : Char) : Bool :=
   decide ('0' ≤ character && character ≤ '9') ||
     decide ('a' ≤ character && character ≤ 'f')
 
-/-- A closed portable identity for one producer-owned receipt. The compact reader does not re-audit the opaque raw unit. -/
+/-- A closed portable identity for one receipt in a producer-owned recoverable unit. The compact reader does not re-audit that raw unit. -/
 structure FileDigest where
   private mk ::
   path : String
