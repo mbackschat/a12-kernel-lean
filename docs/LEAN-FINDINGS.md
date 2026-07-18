@@ -223,7 +223,7 @@ The a12-dmkits one-family exporter itself exceeded its provisional 550-line esti
 
 ## LF17 — dead error conditions and uninhabitable models are different queries
 
-> Date: 2026-07-18. Sections: §3, §5, §11, §12, cross-cutting analysis. Basis: [`spec/01-data-model.md`](../spec/01-data-model.md), [`spec/10-validation-and-polarity.md`](../spec/10-validation-and-polarity.md), the current `Verdict` and phase-sensitive formal-observation semantics, and the read-only a12-dmkits G40/SME-TDG investigation at revision `1b5f463b89adc6cfb81b41121cd6c97855e8cbe3`.
+> Date: 2026-07-18. Sections: §3, §5, §11, §12, cross-cutting analysis. Basis: [`spec/01-data-model.md`](../spec/01-data-model.md), [`spec/10-validation-and-polarity.md`](../spec/10-validation-and-polarity.md), the current `Verdict` and phase-sensitive formal-observation semantics, and the corrected a12-dmkits [G40/SME-TDG contract](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open-backlog) at revision `93e2bd57fc53db49cd36b743d3912e2dc5088df2`.
 
 An authored A12 rule describes an error condition. Therefore an internally contradictory condition such as `[A] > 5 And [A] < 3` is unreachable and never fires; it does not by itself make the model uninhabitable. Whole-model inhabitance instead asks whether some structurally and formally admissible document survives generated checks, computation/application under a fixed profile, and every invalidating authored rule. Multiple individually reachable error rules can exhaust the admissible domain even though no rule condition is internally contradictory.
 
