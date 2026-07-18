@@ -2,7 +2,7 @@
 
 > **Status:** proposal, pending adoption, 2026-07-18. This document owns the proposed satisfiability, contradiction-analysis, accepted-document synthesis, and SMT integration architecture. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md). No solver, package, runtime dependency, public command, or support claim is adopted by this proposal. Once adopted and implemented, durable contracts graduate to their owning documents and this proposal is retired or narrowed to unresolved work.
 
-The G40 and source-mechanism audit was performed at a12-dmkits revision `1b5f463b89adc6cfb81b41121cd6c97855e8cbe3` and rechecked through clean sibling revision `aa69f32e3a197a58fc1da2b53c30a0dbe906c0b0`; the intervening changes only added G41/G42 below the unchanged G40 text. Every upstream handoff must still re-audit the then-current revision.
+The [G40 contract](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open-backlog) correction landed in a12-dmkits revision `93e2bd57fc53db49cd36b743d3912e2dc5088df2` across its current gap, seed, CLI, interpreter, and example owners; revision `71dd93df111c88eab701f9b6f94310c8e29eb825` followed with another seed-vocabulary KDoc correction. Reconciliation against that clean sibling HEAD confirmed that G40 remains open, distinguishes condition reachability, model inhabitance, and computation-table partition analysis, preserves the SME/TDG evidence and two independent demand gates, and adds no analyzer, solver, dependency, command, or behavior. Every future upstream handoff must still re-audit the then-current revision.
 
 ## Decision
 
@@ -167,7 +167,7 @@ Authored error rules are encoded as non-firing constraints according to the acce
 
 No generic A12 `Not` should be added to simplify analysis. Query-level complement and meta-negation belong to the constraint language, with proved connections to the specific A12 verdict and acceptance predicates.
 
-Computations are ordered state transitions. Computed targets are derived states, not unconstrained SMT inputs, and alternatives preserve the optional common precondition, authored first-match order, evaluator truth, expression evaluation, root-store checks, application, poison, and subsequent reads. A clean false common precondition disables the table and is neither an alternative gap nor an overlap, while an absent common precondition behaves as enabled; an absent alternative precondition is the unconditional true alternative. Unknown or poison during the guard or alternative checks remains its own computation outcome, not a clean gap/overlap witness. The current expression/store/target-check/value-only-application/delta separation should be retained, and exact document application must become an explicit later state transition; simultaneous equations would admit states the evaluator cannot produce.
+Computations are ordered state transitions. Computed targets are derived states, not unconstrained SMT inputs, and alternatives preserve the optional common precondition, authored first-match order, evaluator truth, expression evaluation, root-store checks, application, poison, and subsequent reads. A clean false common precondition disables the table and is neither an alternative gap nor an overlap, while an absent common precondition behaves as enabled; an absent alternative precondition is the unconditional true alternative. Unknown or poison during the guard or alternative checks remains its own computation outcome, not a clean gap/overlap witness. The current expression, root-store check, target check, payloadful outcome, deliberately lossy value projection, delta, and exact one-address String target-application state are separate and should remain so. General finite-document mutation, repeatable target addressing, scheduling, raw-text preservation, and multi-target application remain later explicit transitions; simultaneous equations would admit states the evaluator cannot produce.
 
 Custom validators, custom conditions, external labels, timezone behavior without pinned rules, unrestricted regex, and other oracles are unsupported until each receives a finite exact contract. An uninterpreted SMT function is not an acceptable substitute when its arbitrary interpretation could create or remove a witness.
 
@@ -194,11 +194,11 @@ UNSAT additionally trusts the query lowering, SMT renderer, and solver unless a 
 
 Lean proofs establish consequences of the chosen Lean semantics. Retained kernel observations are still required before the supported fragment is described as kernel-correspondence complete. Agreement between Lean, a12-dmkits, and a solver is valuable triangulation, not a universal kernel theorem.
 
-Solver execution reuses the existing bounded-process mechanisms where compatible: explicit time and byte caps, exit/status separation, process-group cleanup, and platform qualification. That boundary is resource control, not hostile-code containment. No solver executable, binding, Lake package, bundled native binary, or distribution change may be adopted without the repository's separate dependency approval and release-impact review.
+Solver execution should reuse the settled bounded-process lane where compatible rather than introduce another runner: explicit input/output/time caps, candidate-status separation, streamed output, process-group cleanup, and independent lifecycle checks. That lane is currently a cooperative macOS/Linux resource boundary, not hostile-code containment or a cross-platform packaging decision. No solver executable, binding, Lake package, bundled native binary, or distribution change may be adopted without the repository's separate dependency approval and release-impact review.
 
 ## Architecture audit and preparation invariants
 
-This is a source-audit snapshot at a12-kernel-lean revision `1dd0538d947e94cbb67d928760954c2c85ad7d6c`, not live implementation status. Exact current coverage remains owned by [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); re-audit these seams if their source changes before implementation. The snapshot found useful existing seams but no whole-model object or accepted-document relation sufficient for the proposed query.
+This source-audit snapshot was refreshed at a12-kernel-lean revision `d975cd89183a8094a0d41905b8afafb860ed2a57`, after exact one-target String application, the narrow clean-Boolean common-precondition seam, bounded candidate-process hardening, the semantic-first simplification decision, and retirement of completed one-off shipment machinery. It is not live implementation status. Exact current coverage remains owned by [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); re-audit these seams if their source changes before implementation. The snapshot still found useful existing seams but no checked whole-model object or accepted-document relation sufficient for the proposed query.
 
 | Audited source seam | Keep or prepare | Reason for SMT work |
 |---|---|---|
@@ -211,9 +211,10 @@ This is a source-audit snapshot at a12-kernel-lean revision `1dd0538d947e94cbb67
 | `K`, `Verdict`, formal findings, and phase-sensitive observation are explicit | Preserve | Acceptance cannot collapse empty, invalid, unknown, poison, and non-firing |
 | `Rat` and declared scale are separated; general numeric stored-form semantics remains open | Preserve the separation; close rendering explicitly and prove any scaled-integer lowering | Avoids silent Number and representation drift |
 | [`World`](../A12Kernel/Document.lean) is explicit | Require one fixed world per query | Makes date/time-dependent search deterministic |
-| Computation expression, store, target check, value-only application view, and delta are separated; exact document application remains open | Preserve the distinctions and later add exact application and scheduling as explicit state transitions | Prevents unconstrained or simultaneous computed targets |
+| Computation expression, store, target check, outcome, value projection, delta, and exact one-address String application are separated | Preserve the distinctions; extend only through explicit finite-document state, repeatable addressing, and scheduling capsules | Prevents unconstrained or simultaneous computed targets without overstating the narrow application state as whole-document mutation |
+| [`StringComputationStep.evaluateOutcomeWhen`](../A12Kernel/Semantics/StringCascade.lean) accepts only an already-evaluated poison-free Boolean guard | Preserve the false-before-body seam; later model guard evaluation, its poison channel, ordered `And`/`Or`, and first-match alternatives explicitly | Supports the table contract without pretending that computation-condition or partition semantics already exists |
 | Support manifests use closed enumerations and fail closed | Reuse as a separate analysis profile | Makes every admitted model/query and every exclusion machine-readable |
-| Logical and process zones are audited separately | Extend the source-zone classifier only when implementation begins | Constraint denotation/proofs belong to the logical zone; SMT rendering and solver IO do not |
+| Logical and process zones are audited separately; the bounded relay remains while one-off artifact, differential, and qualification frameworks are retired | Make an explicit adopted source-zone decision when implementation begins; reuse only the settled subprocess mechanics | Constraint denotation/proofs belong to the logical zone; SMT rendering and solver IO do not, and retired shipment machinery is not a future analysis template |
 
 The low-cost decisions to apply during nearby semantic work are:
 
@@ -227,17 +228,17 @@ The low-cost decisions to apply during nearby semantic work are:
 - continue proving evaluator/relational bridges for ordered iteration and state transitions;
 - avoid an empty generic SMT framework before the first closed profile supplies concrete types and separating tests.
 
-No Lean source change is justified now solely for SMT, and this proposal does not authorize reordering semantic closure. [`PLAN.md`](PLAN.md) remains the sole owner of the current sequence. When nearby semantic work reaches document application, generated validation, domains, iteration, or scheduling, it should preserve the explicit distinctions above rather than add solver-specific shortcuts.
+No Lean source change is justified now solely for SMT, and this proposal does not authorize reordering semantic closure. [`PLAN.md`](PLAN.md) remains the sole owner of the current sequence. When nearby semantic work extends exact application, computation-condition evaluation, generated validation, domains, iteration, or scheduling, it should preserve the explicit distinctions above rather than add solver-specific shortcuts.
+
+The stages below are semantic prerequisites, not permission to prebuild a generic analysis schema, registry, renderer, runner, or qualification framework. Land the required semantics as ordinary Tier 1 capsules first. Add solver IO and shipment qualification only for an explicitly adopted Analyze or Synthesize consumer, reuse the settled bounded-process lane where it fits, and do not restore retired one-off shipment machinery as anticipated infrastructure.
 
 ## Staged delivery
 
 These stages state technical dependency order for a future experiment. They are not an adopted product/release progression and do not replace the active sequence in [`PLAN.md`](PLAN.md). A public task profile, CLI, release, or dmtool integration requires an explicit adoption change in its owning project documents.
 
-### Stage 0 — terminology and query contract
+### Stage 0 — fixed query contract
 
-Correct a12-dmkits G40 using the copy-ready prompt at the end of this proposal. Keep the feature open and preserve the verified SME TDG/Z3 evidence. This stage changes no solver behavior and adopts no dependency.
-
-Record the query taxonomy, acceptance-profile requirements, trust directions, and early Lean invariants here. The durable distinction is also recorded as LF17 in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md#lf17--dead-error-conditions-and-uninhabitable-models-are-different-queries).
+The query taxonomy, acceptance-profile requirements, trust directions, and early Lean invariants are fixed here and in LF17 in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md#lf17--dead-error-conditions-and-uninhabitable-models-are-different-queries). a12-dmkits [G40](../../a12-rulekit/docs/FEATURE-GAPS.md#3-open-backlog) independently adopted the same three-way distinction while keeping the analyses unimplemented and demand-gated. This prerequisite changes no solver behavior and adopts no dependency.
 
 ### Stage 1 — solver-free reachability
 
@@ -251,7 +252,7 @@ Admit only full validation over nonrepeatable Number, Boolean, and Confirm field
 
 The proposed initial query set is `conditionTruthReachable`, `ruleFiringReachable`, `modelInhabited`, and `constrainedSample`; co-firing and computation-partition queries remain unsupported. Deliver the finite checked model, finite document adapter, exact `Accepted` relation, support predicate, solver-neutral constraint semantics, canonical SMT-LIB2 projection, bounded external solver lane, strict SAT decoding, and mandatory replay. This profile explicitly begins at the pre-classified scalar boundary used by `RawCell`; its verified output is a normalized semantic witness, not proof of concrete raw-document parsing or serialization. Begin with `verifiedSat`; label negative results `solverReportedUnsatWithinBounds`.
 
-Qualify the profile with a tiny exhaustive finite-domain oracle in addition to examples, property tests, translation mutations, replay-rejection tests, and retained kernel observations for every semantic clause claimed.
+Qualify the profile with a tiny exhaustive finite-domain oracle in addition to examples, property tests, focused lowering-mutation checks, replay-rejection tests, and retained kernel observations for every semantic clause claimed. Any shipment-level qualification lane must be justified for this consumer rather than restoring the retired generic campaign machinery.
 
 ### Stage 3 — scalar domains one capsule at a time
 
@@ -275,11 +276,7 @@ No stage may call itself “whole-model translation” while its manifest reject
 
 The sibling checkout stays read-only. The user carries each request upstream, and this project consumes only committed handback.
 
-### H0 — correct G40 now
-
-Use the paste-ready prompt below. This is an isolated documentation/contract correction, so it is a prompt rather than a separate temporary proposal. On handback, reconcile the committed revision, exact edited owners, guards, and terminology here; then remove the stale prompt text while retaining any durable cross-project consequence.
-
-### H1 — versioned expanded analysis-model export
+### First future handoff — versioned expanded analysis-model export
 
 Mint `docs/A12-DMKITS-SMT-MODEL-EXPORT-PROPOSAL.md` only after the Lean consumer has fixed the first exact schema, checked support predicate, sample fixtures, and mutation predictions. Register that temporary handoff in [`README.md`](README.md), have the user carry it upstream, and delete it after accepted handback and migration of durable facts.
 
@@ -297,7 +294,7 @@ That proposal must pin:
 
 Do not ask a12-dmkits to freeze an undifferentiated “whole model” before the first consumer profile can name the exact transported declarations and feature markers. The export must nevertheless carry a complete feature/declaration inventory for Lean support checking. A smaller semantic payload is permissible only when it also carries an explicit omitted-declaration inventory and a closure certificate accepted by a Lean checker; producer certification alone does not establish semantic irrelevance. Silently dropping unsupported fields, rules, computations, or generated roles would invalidate fail-closed admission. Do not reproduce its parser or expander in this repository merely to avoid the handoff.
 
-### H2 — concrete sample rendering and product integration
+### Second future handoff — concrete sample rendering and product integration
 
 Mint a separate temporary cross-project proposal after `flat-satisfiability-v1` produces stable verified normalized witnesses. It must decide whether dmtool calls the Lean analysis executable, independently consumes a semantic shipment, or uses another explicitly qualified arrangement; the projects must not drift into two unnamed SMT semantics.
 
@@ -309,7 +306,7 @@ The proposal must cover:
 - CLI naming and the distinction between a field-aware candidate and a model-accepted sample;
 - solver discovery or bundling, platform matrix, licensing, native-image and distribution impact, size, update policy, resource controls, and failure diagnostics;
 - provenance tying model bytes, query/profile, solver, Lean shipment, normalized witness, concrete document, and replay/evaluation receipts;
-- compatibility with the existing heuristic `model seed`, including whether it remains separate or gains an explicitly named solver-grade mode;
+- compatibility with the existing best-effort model-derived sample candidate from `model seed`, including whether it remains separate or gains an explicitly named solver-grade mode;
 - product acceptance cases and mutation predictions.
 
 Bundling Z3, selecting another solver, adding a runtime library, or changing distribution remains a separate explicit dependency decision even though this proposal recommends the subprocess + SMT-LIB2 shape.
@@ -333,7 +330,7 @@ The first SMT-backed profile is not accepted until all of the following hold:
 - resource caps and process cleanup are adversarially checked on every supported platform;
 - named-assertion provenance includes generated and domain constraints as well as authored rules;
 - tiny finite domains are differentially checked against exhaustive enumeration;
-- translation mutations fail for the predicted cases;
+- focused lowering mutations fail for the predicted cases, with any shipment-level mutation gate newly justified for this profile rather than inherited from retired campaign machinery;
 - external kernel evidence covers every clause claimed as kernel-correspondent;
 - a cold consumer can identify the profile, implement or invoke it without hidden repository state, and reproduce a seeded disagreement;
 - dependency, licensing, packaging, and release consequences have received separate approval.
@@ -343,88 +340,3 @@ The first SMT-backed profile is not accepted until all of the following hold:
 Stop and narrow the profile if whole-model acceptance cannot be stated without unsupported semantic guesses, if solver encodings start defining A12 behavior instead of preserving it, if replay cannot consume the exact decoded witness, if a required upstream export lacks a maintained owner, or if the runtime/package cost is not justified by a concrete Analyze/Synthesize consumer.
 
 Reevaluate the architecture if a checked portable proof format makes certified UNSAT materially cheaper, a proved cutoff removes important repetition bounds, the solver subprocess cannot meet the bounded-process contract, or a12-dmkits adopts a product constraint that changes the best integration owner. Those are proposal changes, not reasons to silently widen a shipped profile.
-
-## Current upstream prompt: correct a12-dmkits G40
-
-Copy the following prompt to the a12-dmkits agent. It deliberately requests only the current terminology/contract correction and does not authorize SMT implementation.
-
-```text
-Correct G40 in the a12-dmkits project. This is a documentation and contract-terminology correction only; do not make changes in the Lean project.
-
-Record the current a12-dmkits HEAD before editing and report relevant drift. The G40/source-mechanism analysis was first audited at 1b5f463b89adc6cfb81b41121cd6c97855e8cbe3 and rechecked through aa69f32e3a197a58fc1da2b53c30a0dbe906c0b0; the intervening commits only added G41/G42, leaving G40 unchanged.
-
-Before editing, read the whole docs/FEATURE-GAPS.md and follow its OPEN-only lifecycle. G40 remains open because no feature is shipping. Do not add a shipped-history section. When this capability eventually ships, its G40 row must be deleted and its durable rationale moved to the proper owning spec/finding.
-
-The current G40 conflates three different questions. Rewrite it so they are explicitly distinct:
-
-1. Condition reachability / dead-rule analysis
-
-An A12 rule condition describes the violation: TRUE means the document is invalid. The query is therefore:
-
-∃ document/context. errorCondition = TRUE
-
-If that query is UNSAT, the condition is unreachable and the rule never fires. [A] > 5 And [A] < 3 is this case. It does not make the model contradictory; absent other problems, it makes that rule harmless/dead. A SAT local-condition result does not by itself establish that the full rule's iteration, content, relevance, and eligibility gates can fire; keep local condition truth and full-rule firing distinct.
-
-Call the proposed solver-free work an “unreachable-condition” or “condition-reachability” lint. “Condition-local contradiction” is acceptable when explicitly qualified, but never present it as proof that the whole model has no valid document. The existing RK_CONTRADICTORY_PRESENCE diagnostic is a good precedent because its message already says the rule never fires; do not rename it merely to eliminate the overloaded English word.
-
-2. Whole-model inhabitance / accepted-sample generation
-
-The distinct query is:
-
-∃ document. Accepted(model, document)
-
-where acceptance includes the model’s actual structural/formal checks, requiredness and other automatic checks, computations according to the selected runtime profile, and no authored message/firing disallowed by the selected acceptance profile. If this query is UNSAT, no model-accepted document exists and the whole model is contradictory/uninhabitable.
-
-Preserve the verified SME/TDG evidence in G40: SME 12.5.2’s RuleContradictionCheckService.check(DocumentModel, Date) delegates to TDG; TDG translates the whole model to SMT-LIB2 and asks for a satisfying valid-sample assignment. Preserve exactly what the investigation established about solver UNSAT, unsat-core reporting, SmtProofTranslator/Smt2ProofLib$Z3 proof-related classes, and conflicting-rule explanations, but keep those concepts separate: an unsat core names contributing assertions and is neither a checked proof nor guaranteed minimal. Preserve the verified subprocess/Z3 stack, licensing, platform-size, alternative-solver, and amortization facts. Clarify that SME’s product name “Rule Contradiction Detection” names a whole-model inhabitance mechanism; it is not evidence that its mechanism is the same as the proposed condition-local lint. Do not invent an exact SME acceptance profile or certificate guarantee beyond what the bytecode investigation established.
-
-3. Computation-table partition analysis
-
-Overlap and gap are separate analysis queries. Restrict both to contexts where the computation's commonPrecondition completes as TRUE; an absent common precondition means TRUE. A clean FALSE guard disables the table and is neither a gap nor an overlap, while UNKNOWN/poison follows the ordinary computation semantics and is not relabeled as a clean partition result. Under the enabled guard, alternative checks must complete normally: an absent alternative precondition is unconditional TRUE, overlap asks whether two ordered alternative preconditions both evaluate TRUE, and gap asks whether none evaluates TRUE. Preserve evaluator truth and authored first-match order rather than treating the table as unordered Boolean clauses. Add controls for a false common guard, a true guard with no matching alternative, and a true guard with two matching alternatives. Do not describe these as merely harder instances of either dead-rule detection or whole-model inhabitance.
-
-Correct the current model seed terminology at its owning current surfaces. SeedGenerator constructs a deterministic, best-effort field-aware/model-derived candidate: it walks fields/groups and uses selected properties such as numeric min/max, sign, and scale formatting, but it neither enforces every declared field constraint nor solves authored rules or computations. ModelDef contains rules and computations, while SeedGenerator’s generation path only consumes fields, repeatable groups, row counts, and a subset of value constraints. Current gaps include numeric constraints recorded by IF76, unsupported String patterns becoming empty, possible index collisions, and caller-selected row counts exceeding model maxima.
-
-Use an unambiguous term such as “best-effort model-derived sample candidate” for dmtool model seed. Do not call the general output model-shaped, field-valid, formally valid, rule-valid, or guaranteed valid. Reserve “model-accepted sample under profile X” for a candidate actually checked against that complete selected model/runtime profile. ValidValues may keep its API name, but its documentation must describe the exact local generation heuristic rather than imply universal per-field or whole-document validity.
-
-Audit, rather than blindly replacing, these current owners:
-
-- docs/FEATURE-GAPS.md G40
-- docs/CLI-SPEC.md’s canonical model seed contract
-- docs/SEED-GENERATOR-FUZZ-SPEC.md
-- docs/INTERPRETER-ARCHITECTURE.md
-- docs/INTERPRETER-FINDINGS.md, especially IF13 and IF76
-- docs/KERNEL-FINDINGS.md §3's signed-zero supplement if its “random valid documents” wording refers to generated candidates
-- docs/CLI-TOUR-SPEC.md
-- docs/README.md
-- README.md, examples/README.md, and examples/cli-runtime.md
-- interpreter/.../gen/SeedGenerator.kt KDoc
-- cli/.../model/ModelSeedCommand.java KDoc and command help
-- cli/.../interp/JsonInstanceSink.java KDoc
-- interpreter/.../SeedGeneratorTest.kt terminology
-
-Do not rewrite historical changelog prose merely for terminology. Follow the project’s generated/plugin-asset synchronization rules instead of manually editing generated copies. In examples/cli-runtime.md, correct the specific inference that outcome:"read" proves document acceptance: it proves that the read operation succeeded, not that complete model validation accepted the generated document.
-
-Also correct G40’s advertised solver-free examples against the live typed surface:
-
-- The typed EnumRef.is/eq path already rejects an out-of-domain enum literal before a ComparisonCondition is built. Do not retain “enum equality against a value outside the allowed set” as a future lint unless you identify a real loaded/raw-condition path that can reach the linter with that state. Prefer realizable enum-domain intersections if retained.
-- Verify that every retained numeric/date case can actually arise through the typed or converted AST and that its treatment respects empty/UNKNOWN semantics, scale, signedness, and declared field constraints.
-- If the first advertised slice retains a date-window or realizable enum-domain class, add both a dead case and a reachable sibling control for that class; otherwise remove it from the advertised first slice.
-- Keep false negatives explicit; never imply whole-AST completeness from a narrow interval/domain analyzer.
-
-Document or test these separating acceptance cases for the future feature description:
-
-- Unreachable local condition: one optional integer field and one error rule [A] > 5 And [A] < 3. The local analyzer reports “rule never fires”; A = 4 demonstrates that this rule does not make the model uninhabitable.
-- Reachable sibling control: [A] > 5 And [A] < 8; A = 6 fires, so the local analyzer must not report it unreachable.
-- Declared-bound sibling: with A.maxValue = 5, [A] > 5 is unreachable, while [A] >= 5 is reachable at the boundary.
-- Whole-model UNSAT: required integer A with domain 0..10, ERROR-severity rule 1 [A] <= 5, and ERROR-severity rule 2 [A] > 5. Every admissible value fires an invalidating rule, so no accepted document exists.
-- Whole-model SAT polarity control: required integer A with ERROR-severity rules [A] < 3 and [A] > 5; A = 4 is accepted.
-- Severity control: change the exhaustive pair to WARNING under the kernel no-ERROR acceptance policy. Both conditions can still fire messages, but those warnings alone do not make the model uninhabitable; every whole-model result must name its acceptance profile.
-- Conjunction-vs-model control: a single error rule [A] <= 5 And [A] > 5 is dead and does not imply whole-model UNSAT. This must not be confused with the two separate exhaustive error rules above.
-- Seed terminology control: in a fixture where the generated Price value is independently checked formally clean, an authored ERROR rule FieldFilled(Price) fires on the generated filled value. This demonstrates that even a clean candidate is not necessarily model-accepted; do not generalize that fixture's formal cleanliness to all seed output.
-
-This task does not implement either future feature. Do not add Z3, SMT-LIB2 generation, a solver subprocess, a new command, or the solver-free lint now. Preserve the two independent demand gates: the solver-free reachability lint may be minted when an eval/probe/user report shows an agent actually authoring unreachable conditions; whole-model SMT work re-opens only if a12-dmkits itself adopts SMT-grade model-accepted sample generation/model-inhabitance as an amortizing product capability, or another concrete measured a12-dmkits consumer supplies equivalent amortization. Interest from another repository is not by itself adoption of that a12-dmkits SMT product.
-
-Run the appropriate documentation/link/help guards and focused existing tests affected by any help/KDoc wording. Report the exact edited owners and why. Do not push.
-
-Suggested commit subject if requested:
-docs(gaps): distinguish reachability from model inhabitance
-```
