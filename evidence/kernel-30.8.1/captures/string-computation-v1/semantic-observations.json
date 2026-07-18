@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "kernelVersion": "30.8.1",
+  "families": [
+    {
+      "id": "string-root-computation-v1",
+      "projectionId": "string-unconstrained-delta-v1",
+      "projectionVersion": 1,
+      "source": {
+        "producer": "a12-kernel-lean",
+        "revision": "23f35e3c23e53283defeb15e792901f9637238f5",
+        "rawCapture": {
+          "path": "captures/string-computation-2026-07-15.json",
+          "sha256": "e6a31b7916fc99a8901b26d2a303e436a3909787904fb5803bafaa11d6b40b83"
+        },
+        "qualification": null
+      },
+      "cases": [
+        {
+          "id": "direct-filled-target-stale-content",
+          "input": {
+            "operation": "copy",
+            "source": "REF-42",
+            "other": null,
+            "prior": "SEED",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "value",
+              "value": "REF-42"
+            }
+          }
+        },
+        {
+          "id": "direct-filled-target-equal",
+          "input": {
+            "operation": "copy",
+            "source": "REF-42",
+            "other": null,
+            "prior": "REF-42",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": null
+          }
+        },
+        {
+          "id": "direct-empty-target-stale-content",
+          "input": {
+            "operation": "copy",
+            "source": null,
+            "other": null,
+            "prior": "SEED",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "cleared"
+            }
+          }
+        },
+        {
+          "id": "direct-empty-target-absent-content",
+          "input": {
+            "operation": "copy",
+            "source": null,
+            "other": null,
+            "prior": null,
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": null
+          }
+        },
+        {
+          "id": "direct-empty-target-absent-empty-row",
+          "input": {
+            "operation": "copy",
+            "source": null,
+            "other": null,
+            "prior": null,
+            "rowHasContent": false,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": null
+          }
+        },
+        {
+          "id": "suffix-filled-target-stale-content",
+          "input": {
+            "operation": "suffix",
+            "source": "REF-42",
+            "other": null,
+            "prior": "SEED",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "value",
+              "value": "REF-42-X"
+            }
+          }
+        },
+        {
+          "id": "suffix-empty-target-stale-content",
+          "input": {
+            "operation": "suffix",
+            "source": null,
+            "other": null,
+            "prior": "SEED",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "value",
+              "value": "-X"
+            }
+          }
+        },
+        {
+          "id": "suffix-empty-target-absent-content",
+          "input": {
+            "operation": "suffix",
+            "source": null,
+            "other": null,
+            "prior": null,
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "value",
+              "value": "-X"
+            }
+          }
+        },
+        {
+          "id": "suffix-empty-target-absent-empty-row",
+          "input": {
+            "operation": "suffix",
+            "source": null,
+            "other": null,
+            "prior": null,
+            "rowHasContent": false,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "value",
+              "value": "-X"
+            }
+          }
+        },
+        {
+          "id": "all-empty-filled-target-stale-content",
+          "input": {
+            "operation": "appendFields",
+            "source": "REF-42",
+            "other": null,
+            "prior": "SEED",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "value",
+              "value": "REF-42"
+            }
+          }
+        },
+        {
+          "id": "all-empty-target-stale-content",
+          "input": {
+            "operation": "appendFields",
+            "source": null,
+            "other": null,
+            "prior": "SEED",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": {
+              "tag": "cleared"
+            }
+          }
+        },
+        {
+          "id": "all-empty-target-absent-content",
+          "input": {
+            "operation": "appendFields",
+            "source": null,
+            "other": null,
+            "prior": null,
+            "rowHasContent": true,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": null
+          }
+        },
+        {
+          "id": "all-empty-target-absent-empty-row",
+          "input": {
+            "operation": "appendFields",
+            "source": null,
+            "other": null,
+            "prior": null,
+            "rowHasContent": false,
+            "policy": {
+              "tag": "unconstrained"
+            }
+          },
+          "observed": {
+            "delta": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "string-root-computation-v1",
+      "projectionId": "string-target-validation-v1",
+      "projectionVersion": 1,
+      "source": {
+        "producer": "a12-kernel-lean",
+        "revision": "23f35e3c23e53283defeb15e792901f9637238f5",
+        "rawCapture": {
+          "path": "captures/string-target-validation-2026-07-15.json",
+          "sha256": "3281bac938fd4dbdb199050262bfb58c4b30eb9fde71cf30bd2858d0eef07b37"
+        },
+        "qualification": null
+      },
+      "cases": [
+        {
+          "id": "max4-stale-value",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": "OLD",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 4
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "accepted",
+              "value": "ABCD"
+            },
+            "delta": {
+              "tag": "value",
+              "value": "ABCD"
+            },
+            "applied": {
+              "tag": "presentValue",
+              "value": "ABCD"
+            }
+          }
+        },
+        {
+          "id": "max3-stale-errored",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": "OLD",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 3
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooLong"
+            },
+            "delta": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooLong"
+            },
+            "applied": {
+              "tag": "presentEmpty"
+            }
+          }
+        },
+        {
+          "id": "max4-absent-value",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": null,
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 4
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "accepted",
+              "value": "ABCD"
+            },
+            "delta": {
+              "tag": "value",
+              "value": "ABCD"
+            },
+            "applied": {
+              "tag": "presentValue",
+              "value": "ABCD"
+            }
+          }
+        },
+        {
+          "id": "max3-absent-errored",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": null,
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 3
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooLong"
+            },
+            "delta": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooLong"
+            },
+            "applied": {
+              "tag": "absent"
+            }
+          }
+        },
+        {
+          "id": "max4-equal-unchanged",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": "ABCD",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 4
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "accepted",
+              "value": "ABCD"
+            },
+            "delta": null,
+            "applied": {
+              "tag": "presentValue",
+              "value": "ABCD"
+            }
+          }
+        },
+        {
+          "id": "max3-equal-errored",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": "ABCD",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 3
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooLong"
+            },
+            "delta": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooLong"
+            },
+            "applied": {
+              "tag": "presentEmpty"
+            }
+          }
+        },
+        {
+          "id": "min5-boundary-value",
+          "input": {
+            "operation": "copy",
+            "source": "ABCDE",
+            "other": null,
+            "prior": "OLDER",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "minimum",
+              "bound": 5
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "accepted",
+              "value": "ABCDE"
+            },
+            "delta": {
+              "tag": "value",
+              "value": "ABCDE"
+            },
+            "applied": {
+              "tag": "presentValue",
+              "value": "ABCDE"
+            }
+          }
+        },
+        {
+          "id": "min5-short-errored",
+          "input": {
+            "operation": "copy",
+            "source": "ABCD",
+            "other": null,
+            "prior": "OLDER",
+            "rowHasContent": true,
+            "policy": {
+              "tag": "minimum",
+              "bound": 5
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooShort"
+            },
+            "delta": {
+              "tag": "errored",
+              "attempted": "ABCD",
+              "cause": "tooShort"
+            },
+            "applied": {
+              "tag": "presentEmpty"
+            }
+          }
+        },
+        {
+          "id": "spaced-boundary-value",
+          "input": {
+            "operation": "padded",
+            "source": "ABC",
+            "other": null,
+            "prior": null,
+            "rowHasContent": true,
+            "policy": {
+              "tag": "maximum",
+              "bound": 5
+            }
+          },
+          "observed": {
+            "outcome": {
+              "tag": "accepted",
+              "value": " ABC "
+            },
+            "delta": {
+              "tag": "value",
+              "value": " ABC "
+            },
+            "applied": {
+              "tag": "presentValue",
+              "value": " ABC "
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
