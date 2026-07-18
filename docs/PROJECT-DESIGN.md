@@ -73,6 +73,8 @@ This differential topology is the required way to anchor primitive semantic choi
 
 The assurance cadence has three tiers. Ordinary semantic development closes the executable clause, proof spine, counterexample, assumptions, and status without waiting for a new capture facility. Family calibration later closes `external evidence pending` through a compact producer-certified observation bundle. Full protocol, candidate, mutation, packaging, and release qualification runs only for a real shipment or consumer. This keeps the empirical backbone while preventing capture infrastructure from dominating semantic work.
 
+Infrastructure is retained by current responsibility, not by sunk cost. A process or evidence component remains live only when a current semantic family or consumer depends on it, when it uniquely guards a still-relevant failure class, or when accepted current state cannot otherwise be reproduced. Exact retained artifacts plus a pinned last reproducing revision are sufficient history for a completed one-off experiment; its generator, campaign runner, and qualification machinery need not remain on `main`. Shared infrastructure must amortize across semantic families, stay smaller than the semantic work it enables, and have an explicit retirement path when superseded. A capsule that starts growing a new packet vocabulary, registry, receipt audit, compatibility adapter, or qualification framework fails this design test and must return to the settled compact observation boundary.
+
 ## Delivery unit: the semantic capsule
 
 The unit of progress is a **semantic capsule**, not a batch of evaluator branches. Every completed capsule contains:
