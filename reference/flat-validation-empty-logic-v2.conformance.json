@@ -14,7 +14,7 @@
       "id": "number-empty-equals-zero-content",
       "expectedResponse": "examples/reference-cli/flat-evidence/number-empty-equals-zero-content.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictFiringAndPolarity",
         "expectedResponseSource": "retainedProjection",
@@ -31,7 +31,7 @@
       "id": "number-empty-equals-zero-empty-row",
       "expectedResponse": "examples/reference-cli/flat-evidence/number-empty-equals-zero-empty-row.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictSuppressionOnly",
         "expectedResponseSource": "leanRuntimeProjection",
@@ -48,7 +48,7 @@
       "id": "boolean-empty-equals-true",
       "expectedResponse": "examples/reference-cli/flat-evidence/boolean-empty-equals-true.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictSuppressionOnly",
         "expectedResponseSource": "leanRuntimeProjection",
@@ -65,7 +65,7 @@
       "id": "confirm-empty-not-true",
       "expectedResponse": "examples/reference-cli/flat-evidence/confirm-empty-not-true.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictFiringAndPolarity",
         "expectedResponseSource": "retainedProjection",
@@ -82,7 +82,7 @@
       "id": "malformed-number-equals-zero",
       "expectedResponse": "examples/reference-cli/flat-evidence/malformed-number-equals-zero.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictSuppressionOnly",
         "expectedResponseSource": "leanRuntimeProjection",
@@ -99,7 +99,7 @@
       "id": "healthy-or-malformed",
       "expectedResponse": "examples/reference-cli/flat-evidence/healthy-or-malformed.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictFiringAndPolarity",
         "expectedResponseSource": "retainedProjection",
@@ -116,7 +116,7 @@
       "id": "healthy-and-malformed",
       "expectedResponse": "examples/reference-cli/flat-evidence/healthy-and-malformed.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictSuppressionOnly",
         "expectedResponseSource": "leanRuntimeProjection",
@@ -133,7 +133,7 @@
       "id": "number-not-filled-empty-row",
       "expectedResponse": "examples/reference-cli/flat-evidence/number-not-filled-empty-row.response.json",
       "evidence": {
-        "projection": "evidence/kernel-30.8.1/projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "kind": "kernelRuntimeObservation",
         "externalSupports": "verdictFiringAndPolarity",
         "expectedResponseSource": "retainedProjection",
@@ -151,7 +151,7 @@
       "expectedResponse": "examples/reference-cli/empty-unsigned-number-not-equal-negative.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/operator-empty-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "number-directional-empty-content",
         "externalSupports": "verdictFiringAndPolarity",
         "expectedResponseSource": "retainedProjection"

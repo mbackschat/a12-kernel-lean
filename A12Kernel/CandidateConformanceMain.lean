@@ -1,4 +1,5 @@
 import Lake
+import A12Kernel.Evidence.ValidationProjection
 import A12Kernel.Process.Bounded
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
@@ -122,12 +123,6 @@ private def readJsonFile (path : System.FilePath) : IO Json := do
   match A12Kernel.Reference.StrictJson.parse input with
   | .ok json => pure json
   | .error error => fail s!"invalid normalized JSON file '{path}': {repr error}"
-
-private def readEvidenceJsonFile (path : System.FilePath) : IO Json := do
-  let input ← IO.FS.readFile path
-  match A12Kernel.Reference.StrictJson.parseEvidence input with
-  | .ok json => pure json
-  | .error error => fail s!"invalid evidence JSON file '{path}': {repr error}"
 
 private def requireObject (json : Json) (allowed : List String)
     (context : String) : IO Unit := do
@@ -265,14 +260,15 @@ private def validateSupportManifest (suite : ConformanceSuite) : IO Unit := do
   validateSupportManifestJson suite manifest
     s!"conformance suite support manifest '{suite.supportManifest}'"
 
-private def validateExpectedEvidenceScope (testCase : ConformanceCase)
-    (response : Json) : IO Unit := do
+private def projectExpectedEvidence (testCase : ConformanceCase)
+    (response : Json) : IO Json := do
   let context := s!"case '{testCase.id}' expected response"
   match testCase.evidence.kind, testCase.evidence.externalSupports,
       testCase.evidence.expectedResponseSource with
   | .kernelRuntimeObservation, .firingRows, .retainedProjection =>
       assertMember response "outcome" context "ok"
-      let _ : List Nat ← required response "firingRows" context
+      let rows : List Nat ← required response "firingRows" context
+      pure (Json.mkObj [("firingRows", toJson rows)])
   | .kernelRuntimeObservation, .verdictFiringAndPolarity, .retainedProjection =>
       assertMember response "outcome" context "ok"
       let verdict ← requiredJson response "verdict" context
@@ -282,6 +278,8 @@ private def validateExpectedEvidenceScope (testCase : ConformanceCase)
       let polarity : String ← required verdict "polarity" verdictContext
       if polarity != "value" && polarity != "omission" then
         fail s!"{verdictContext}: unsupported firing polarity '{polarity}'"
+      pure (Json.mkObj [("verdict", Json.mkObj [
+        ("tag", toJson "fired"), ("polarity", toJson polarity)])])
   | .kernelRuntimeObservation, .verdictSuppressionOnly, .leanRuntimeProjection =>
       assertMember response "outcome" context "ok"
       let verdict ← requiredJson response "verdict" context
@@ -290,33 +288,43 @@ private def validateExpectedEvidenceScope (testCase : ConformanceCase)
       let tag : String ← required verdict "tag" verdictContext
       if tag != "notFired" && tag != "unknown" then
         fail s!"{verdictContext}: suppression-only projection has verdict '{tag}'"
+      pure (Json.mkObj [("suppressed", toJson true)])
   | .kernelStaticDiagnostic, .elaborationRejectionClass, .projectDiagnostic =>
       assertMember response "outcome" context "error"
       let diagnostic ← requiredJson response "diagnostic" context
       assertMember diagnostic "category" s!"{context} diagnostic" "elaboration"
+      let code : String ← required diagnostic "code" s!"{context} diagnostic"
+      pure (Json.mkObj [("rejectionClass", toJson code)])
   | .kernelStaticAcceptance, .elaborationAcceptanceOnly, .leanRuntimeProjection =>
       assertMember response "outcome" context "ok"
       let _ : List Nat ← required response "firingRows" context
+      pure (Json.mkObj [("accepted", toJson true)])
   | kind, support, source =>
       fail s!"case '{testCase.id}': incompatible evidence classification '{kind.tag}', '{support.tag}', '{source.tag}'"
 
-private def validateEvidenceLink (suite : ConformanceSuite)
-    (testCase : ConformanceCase) : IO Unit := do
-  let projection ← readEvidenceJsonFile testCase.evidence.projection
-  assertMember projection "kernelVersion" s!"case '{testCase.id}' evidence projection"
-    suite.kernelBehaviorVersion
-  let cases : List Json ← required projection "cases" s!"case '{testCase.id}' evidence projection"
-  let tagged ← cases.mapM fun evidenceCase => do
-    let id : String ← required evidenceCase "id"
-      s!"case '{testCase.id}' evidence projection case"
-    pure (evidenceCase, id)
-  let _evidenceCase ← match tagged.filter (fun (_, id) => id == testCase.evidence.caseId) with
-    | [(evidenceCase, _)] => pure evidenceCase
-    | [] =>
-        fail s!"case '{testCase.id}': evidence case '{testCase.evidence.caseId}' is absent from '{testCase.evidence.projection}'"
-    | _ =>
-        fail s!"case '{testCase.id}': evidence case '{testCase.evidence.caseId}' is duplicated in '{testCase.evidence.projection}'"
+private def validateExpectedEvidenceScope (testCase : ConformanceCase)
+    (response : Json) : IO Unit := do
+  let _ ← projectExpectedEvidence testCase response
   pure ()
+
+private def validateEvidenceLink (suite : ConformanceSuite)
+    (testCase : ConformanceCase) (request response : Json) : IO Unit := do
+  let bundle ← A12Kernel.Evidence.ValidationProjection.load testCase.evidence.projection
+  if bundle.kernelVersion != suite.kernelBehaviorVersion then
+    fail s!"case '{testCase.id}': evidence kernel version is '{bundle.kernelVersion}'"
+  let evidenceCase ← match
+      A12Kernel.Evidence.ValidationProjection.selectPublicCase bundle testCase.evidence.caseId with
+    | .ok evidenceCase => pure evidenceCase
+    | .error error => fail s!"case '{testCase.id}': {error}"
+  if evidenceCase.input != request then
+    fail s!"case '{testCase.id}': normalized request differs from retained evidence input"
+  let observed ← match
+      A12Kernel.Evidence.ValidationProjection.publicObservationView evidenceCase.observed with
+    | .ok observed => pure observed
+    | .error error => fail s!"case '{testCase.id}': {error}"
+  let expected ← projectExpectedEvidence testCase response
+  if observed != expected then
+    fail s!"case '{testCase.id}': expected response differs from retained evidence projection"
 
 private def loadAndValidateCaseArtifacts (suite : ConformanceSuite)
     (testCase : ConformanceCase) : IO (String × Json) := do
@@ -324,8 +332,7 @@ private def loadAndValidateCaseArtifacts (suite : ConformanceSuite)
   let request ← readJsonFile testCase.request
   let expected ← readJsonFile testCase.expectedResponse
   validateFixtureMetadata suite testCase request expected
-  validateExpectedEvidenceScope testCase expected
-  validateEvidenceLink suite testCase
+  validateEvidenceLink suite testCase request expected
   pure (input, expected)
 
 private def boundedRelayExecutable : IO System.FilePath := do
@@ -594,8 +601,37 @@ private def runSelfTest (suitePath : System.FilePath) : IO Nat := do
     (toJson "self-test-missing-evidence")
   let missingEvidenceSuite ← parseSuite missingEvidenceJson
   let missingEvidenceCase ← firstCase missingEvidenceSuite
+  let missingEvidenceRequest ← readJsonFile missingEvidenceCase.request
+  let missingEvidenceResponse ← readJsonFile missingEvidenceCase.expectedResponse
   expectFailure "evidence case ID"
-    (validateEvidenceLink missingEvidenceSuite missingEvidenceCase)
+    (validateEvidenceLink missingEvidenceSuite missingEvidenceCase
+      missingEvidenceRequest missingEvidenceResponse)
+
+  let bindingCase ← firstCase canonicalSuite
+  let bindingRequest ← readJsonFile bindingCase.request
+  let bindingResponse ← readJsonFile bindingCase.expectedResponse
+  expectFailure "retained request binding"
+    (validateEvidenceLink canonicalSuite bindingCase
+      (bindingRequest.setObjVal! "operation" (toJson "self-test"))
+      bindingResponse)
+
+  let changedBindingResponse :=
+    if canonicalSuite.operation == "flatValidation.evaluateFull" then
+      bindingResponse.setObjVal! "verdict"
+        (Json.mkObj [("tag", toJson "fired"), ("polarity", toJson "value")])
+    else
+      bindingResponse.setObjVal! "firingRows" (toJson ([] : List Nat))
+  expectFailure "retained response binding"
+    (validateEvidenceLink canonicalSuite bindingCase bindingRequest changedBindingResponse)
+
+  let alternativeCase ← match canonicalSuite.cases.drop 1 with
+    | alternative :: _ => pure alternative
+    | [] => fail "candidate conformance self-test: suite needs two evidence cases"
+  expectFailure "retained case association"
+    (validateEvidenceLink canonicalSuite {
+      bindingCase with evidence := {
+        bindingCase.evidence with caseId := alternativeCase.evidence.caseId } }
+      bindingRequest bindingResponse)
 
   expectFailure "duplicate JSON member" (do
     match A12Kernel.Reference.StrictJson.parse
@@ -621,9 +657,9 @@ private def runSelfTest (suitePath : System.FilePath) : IO Nat := do
 
   if canonicalSuite.operation == "flatValidation.evaluateFull" then
     runFlatEvidenceSelfTests suiteJson canonicalSuite
-    pure 25
+    pure 28
   else
-    pure 17
+    pure 20
 
 private def run (args : List String) : IO UInt32 :=
   match args with

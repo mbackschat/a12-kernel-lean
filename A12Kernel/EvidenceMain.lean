@@ -9,6 +9,8 @@ import A12Kernel.Evidence.StringComputationProjection
 import A12Kernel.Evidence.StringComputationProjectionTest
 import A12Kernel.Evidence.StringCascadeProjection
 import A12Kernel.Evidence.StringCascadeProjectionTest
+import A12Kernel.Evidence.ValidationProjection
+import A12Kernel.Evidence.ValidationProjectionTest
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
@@ -1025,6 +1027,8 @@ private def checkCorrelationElaborationCase (root : System.FilePath)
 def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
   A12Kernel.Evidence.ObservationBundleTest.checkIo
+  let compactValidationCount ←
+    A12Kernel.Evidence.ValidationProjection.checkArtifacts root
   let directCascadeCount ←
     A12Kernel.Evidence.StringCascadeProjection.checkArtifacts
       (root / "captures/string-direct-cascade-v1")
@@ -1067,4 +1071,4 @@ def main : IO Unit := do
   let total := bundle.cases.length + operatorBundle.cases.length + iterationBundle.cases.length +
     correlationBundle.cases.length + correlationElaborationBundle.cases.length +
     stringComputationCount + directCascadeCount
-  IO.println s!"kernel evidence: {total}/{total} projections agree; root String computation: {stringComputationCount}/{stringComputationCount} project-reviewed compact cases replayed; direct String cascade: {directCascadeCount}/{directCascadeCount} producer-certified cases replayed ({bundle.kernelVersion})"
+  IO.println s!"kernel evidence: {total}/{total} legacy projections agree; compact validation dual path: {compactValidationCount}/{compactValidationCount} private cases replayed; root String computation: {stringComputationCount}/{stringComputationCount} project-reviewed compact cases replayed; direct String cascade: {directCascadeCount}/{directCascadeCount} producer-certified cases replayed ({bundle.kernelVersion})"
