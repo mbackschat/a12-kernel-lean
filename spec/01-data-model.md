@@ -36,7 +36,7 @@ Order                       group (root, non-repeatable)
 A handful of model-wide settings change evaluation globally; carry them in the model, not per field:
 
 - **Base Year** — a reference year that omitted-year date literals (`"13.07."`) and date fragments complete against. Absent ⇒ those constructs are rejected. ([§6](05-dates-and-time.md))
-- **Time zone** — meta key `TimeZone`, **default `UTC`**, only other supported value `Europe/Berlin`. Applied at parse time; affects sub-day date-time differences across a daylight-saving transition. ([§6](05-dates-and-time.md))
+- **Time zone** — the DM-JSON key `content.modelConfig.timeZone` (the capitalized `TimeZone` is the *internal* metamodel key code generation copies it into); **default `UTC`**, only other *documented* value `Europe/Berlin` — the code itself whitelists nothing (any Java zone id passes, unknown ids silently collapse to GMT; only a GMT-collapsing id is rejected at code generation). Applied at **parse time** to every DATE and DATE_TIME (a plain date is midnight in the model zone); under `Europe/Berlin` this makes datetime evaluation DST-aware — instant-based sub-day differences and comparison, a nonexistent spring-gap wall time as a *formal error*, and direction-dependent `AddDays` landings. ([§6](05-dates-and-time.md))
 - **Supported characters** — an optional legal charset. If the model declares one it is runtime-enforced; otherwise the legal set is the full Basic Multilingual Plane (`U+0000..U+FFFF`), so any supplementary-plane character is a formal error. ([§3](02-logic-and-formal-errors.md))
 - **`fieldRefByShortNameAllowed`** — enables model-wide unique short-name field references. ([§10](08-paths-and-references.md))
 

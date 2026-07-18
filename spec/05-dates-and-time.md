@@ -91,12 +91,19 @@ Also: **a date value is stored and formal-checked in its field's declared `forma
 
 `DifferenceInHours/Minutes/Seconds` is **absolute-instant subtraction** — `floor(|instant₂ − instant₁| / unit)`, sign from operand order — computed **identically** by the runtime and by every code-generation target (they all call the one runtime helper; no target inlines its own arithmetic).
 
-Across a **daylight-saving transition** the result depends on the model's configured **`timeZone`** (meta key `TimeZone`, **default `UTC`**, only other supported value `Europe/Berlin`), applied at *parse time* — **not** on the code-gen target language:
+Across a **daylight-saving transition** the result depends on the model's configured **`timeZone`** (the DM-JSON key `content.modelConfig.timeZone`; the capitalized `TimeZone` is the *internal* metamodel key code generation copies it into; **default `UTC`**, only other *documented* value `Europe/Berlin` — the code whitelists nothing: unknown ids silently collapse to GMT), applied at *parse time* — **not** on the code-gen target language:
 
 - Under **`UTC`**, the wall-clock gap equals the instant gap.
-- Under **`Europe/Berlin`**, two datetimes straddling a transition differ by their *physical* elapsed time: `2024-03-31T01:30:00 → 03:30:00` is `DifferenceInHours = 1` (the skipped 02:00 hour).
+- Under **`Europe/Berlin`**, two datetimes straddling a transition differ by their *physical* elapsed time: `2024-03-31T01:30:00 → 03:30:00` is `DifferenceInHours = 1` (the skipped 02:00 hour), and `2024-10-27T01:30:00 → 03:30:00` is `3` (the repeated hour).
 
-> **Lean modelling note.** Carry the time zone in the model (§1 of [`01-data-model.md`](01-data-model.md)). A `UTC`-only implementation matches every `UTC` model and diverges from a `Europe/Berlin` model *only* across DST transitions — an acceptable staged first cut if you record it as a known gap, but the faithful version needs the two-zone conversion at datetime construction.
+**The zone applies to every DATE and DATE_TIME parse** — a plain date is midnight in the model zone — through a zone-set, **non-lenient** formatter. That non-lenience gives the two DST edge hours exact, probe-verified laws (kernel 30.8.1):
+
+- **The spring-forward gap is a FORMAL error.** A stored wall time that does not exist (`2024-03-31T02:30:00` under Berlin) draws `datumFormatFalsch` — the non-lenient round-trip rejects it — and suppresses a referencing rule exactly like any malformed value. It is **not** rolled forward.
+- **The fall-back ambiguous hour parses as STANDARD time** (CET): `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 120`, and two stored `02:30` values are instant-equal.
+- **Datetime comparison is instant-based too** (`==`/ordering compare the parsed instants), and a **chained `Add{Hours,Minutes,Seconds}` result keeps its exact instant**: `AddHours(01:30 CEST, 1)` lands on the *daylight* side of the ambiguous hour, so it is **not** equal to the equal-looking stored `"02:30:00"` (which re-parses standard) — the pair is 60 real minutes apart. A rendering-based re-parse loses this; the arithmetic is instant-in, instant-out.
+- **`AddDays` landings in a special hour never overshoot the direction of travel** (all four combinations probed): a **forward** add resolves the landing with the DAYLIGHT (earlier) instant — a gap landing renders `01:30` CET — and a **backward** add with the STANDARD (later) instant.
+
+> **Lean modelling note.** Carry the time zone in the model (§1 of [`01-data-model.md`](01-data-model.md)). A `UTC`-only implementation matches every `UTC` model and diverges from a `Europe/Berlin` model *only* across DST transitions — an acceptable staged first cut if you record it as a known gap. The faithful version needs the two-zone conversion at datetime construction *plus the edge-hour laws above* (gap ⇒ formal error at the value gate; ambiguous ⇒ standard; instant-space arithmetic so chains keep identity; the no-overshoot day-add landing). The Berlin offset rule to encode is the **current EU rule** (CEST between the last Sundays of March and October, transitions at 01:00Z, in force since 1996) — pre-1996 values follow older tz-database rules only the engine knows; record that boundary explicitly. The peer clean-room encoding (a12-dmkits interpreter, IF128) implements exactly this and is differentially locked (`DstTimeZoneDiffTest`, `WallDayArithmeticDiffTest`, JVM+JS `ModelTimeZoneTest`).
 
 ---
 
@@ -120,7 +127,7 @@ A **fragment-format date range** completes its two endpoints **asymmetrically**:
 
 ## 7. The point-in-time and reference sources
 
-- `Today` ignores the time of day. `Now` is **not recommended with `==`** and is **forbidden in computations** (a time-dependent computed value would immediately disagree with itself; [§11](09-computations.md)). `Now` compares only to an operand whose format carries a *time* component — against a plain date field the rejection fires at **code generation**, not at the parse/consistency check.
+- `Today` ignores the time of day — more precisely, it truncates the validation instant to midnight **in the model zone** (a zone-set calendar), so under `Europe/Berlin` the day boundary is Berlin midnight, not UTC midnight. `Now` is the raw validation instant. `Now` is **not recommended with `==`** and is **forbidden in computations** (a time-dependent computed value would immediately disagree with itself; [§11](09-computations.md)). `Now` compares only to an operand whose format carries a *time* component — against a plain date field the rejection fires at **code generation**, not at the parse/consistency check.
 - **`BaseYear` is polymorphic by the other operand:** against a **date** it is the base-year *start* (`2020-01-01`); against a **number** it is the year *number* (`2020`); as a range source, `StartOfDateRange(BaseYear)` / `EndOfDateRange(BaseYear)` are `01.01` / `31.12` of the reference year. It is *model config*, not the clock; **VALUE** polarity.
 
 > **Lean modelling note.** Inject the clock (`Today`/`Now`) as an explicit parameter — a `PointInTime` in the evaluation environment — never a global read. This keeps `eval`/`compute` pure and deterministic (essential for reproducible property tests and for the "compute is a function" stance of [`01-data-model.md`](01-data-model.md)). `BaseYear` is model config, resolved by the *other operand's kind* — a small dispatch, not a clock read.
@@ -140,9 +147,14 @@ For both: intervals are **closed** (back-to-back periods sharing a boundary day 
 
 ---
 
-## 9. DateTime rides the date-format definition
+## 9. DateTime rides the date-format definition — but the operand gates are PER-OPERATOR ⚠
 
-The date **extractors** (`DayFromDate`, …) and the date **differences** accept a DateTime operand and see its **DATE part** (times ignored). The date **arithmetic** family (`AddYears`, …) over a DateTime is **rejected at code generation** (again, later than the parse check).
+The date **extractors** (`DayFromDate`, …) accept a DateTime operand and see its **DATE part** (times ignored). Beyond the extractors, the earlier blanket claims ("differences see the date part; arithmetic is rejected") are **wrong per-operator** — probe-corrected (kernel 30.8.1, 2026-07-18):
+
+- **`DifferenceInDays` accepts DateTime operands and is TIME-OF-DAY AWARE**: the count of whole **wall-clock** days (Δ wall-seconds / 86 400, truncated toward zero) — `23:00 → 01:00` next day is **0** days, *not* the date-part 1; a DST-shortened 23-real-hour Berlin day still counts as **1** wall day (wall basis, not instants). **Mixed `(datetime, date)` pairs are legal** — the date reads as midnight.
+- **`DifferenceIn{Months,Years}` REJECT a DateTime operand** at code generation (`MVK_WRONG_DATE_FORMAT_FOR_OP`) — date-only.
+- **`AddDays` accepts a DateTime operand and is TIME-PRESERVING** (`15T22:00 + 1 = 16T22:00`); a special-hour landing follows the no-overshoot rule (§5). **`AddMonths` / `AddYears` REJECT a DateTime operand** at code generation.
+- **`DifferenceIn{Hours,Minutes,Seconds}` REJECT a plain DATE operand** — DateTime-only, mirror-image of the months/years gate.
 
 ---
 
@@ -154,6 +166,8 @@ The date **extractors** (`DayFromDate`, …) and the date **differences** accept
 - [ ] `Valid`/`Invalid(Date(...))` are **not** complements; unreal date = non-evaluable; malformed part suppresses both; `Invalid` directional polarity; fires on all-empty.
 - [ ] **Gregorian floor** at 1583-10-16 on *values* (stored → `datumFalsch`, computed → ERRORED), day-optional completes day first; **not** applied to the `Date(...)` constructor's reality test.
 - [ ] Dates stored/checked in the field's **declared format**.
-- [ ] Sub-day differences honour the model **time zone** (UTC default, Europe/Berlin) across DST; clock injected, not read globally.
+- [ ] Sub-day differences AND datetime comparison honour the model **time zone** (UTC default, Europe/Berlin) across DST — instant-based, with chained `Add*` keeping instant identity; clock injected, not read globally.
+- [ ] Berlin edge hours: a spring-gap wall time is `datumFormatFalsch` (formal error, suppresses); the ambiguous fall-back hour parses as **standard** time; `AddDays` special-hour landings never overshoot the travel direction.
+- [ ] Per-operator DateTime gates: `DifferenceInDays`/`AddDays` accept DateTime (time-aware wall-day count / time-preserving add); `DifferenceIn{Months,Years}`/`AddMonths`/`AddYears` reject it; `DifferenceIn{Hours,Minutes,Seconds}` reject a plain DATE.
 - [ ] Fragment completion: earliest for a value/start, latest for a range end (leap-aware); day-optional `00`; `ValueAsDate` only as a direct comparison operand.
 - [ ] Ranges: `==`/`!=` only, no nesting, closed intervals; `DateRangesOverlap` (any-pair, growing set) vs `AtLeastOneDateRangeOverlaps` (scalar-vs-list); inverted never overlaps.
