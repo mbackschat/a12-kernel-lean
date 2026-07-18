@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.String
 import A12Kernel.Document
@@ -40,9 +41,8 @@ inductive StringComputationFault where
   | fieldKindMismatch (field : FieldId)
   deriving Repr, DecidableEq
 
-/-- Pure, already-resolved read context for one non-repeatable computation instance. Model/path checking remains a later elaboration boundary. -/
-structure StringComputationContext where
-  read : FieldId → CheckedCell
+/-- The String fragment uses the common checked scalar-computation read boundary without adding a second context representation. -/
+abbrev StringComputationContext := ScalarComputationContext
 
 namespace StringComputationContext
 

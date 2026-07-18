@@ -104,6 +104,16 @@ run_cmd do
 #print axioms A12Kernel.required_empty_observes_empty_in_computation
 #print axioms A12Kernel.ordinary_finding_still_poisons_computation
 
+#print axioms A12Kernel.fieldFilled_observedEmpty_notTrue
+#print axioms A12Kernel.fieldNotFilled_observedEmpty_holds
+#print axioms A12Kernel.fieldFilled_observedValue_holds
+#print axioms A12Kernel.fieldNotFilled_observedValue_notTrue
+#print axioms A12Kernel.fieldFilled_observedPoison_preserves
+#print axioms A12Kernel.fieldNotFilled_observedPoison_preserves
+#print axioms A12Kernel.requiredOnlyFieldNotFilled_holds
+#print axioms A12Kernel.ordinaryFindingFieldNotFilled_poisons
+#print axioms A12Kernel.presencePredicates_agree_on_poison
+
 #print axioms A12Kernel.desugarAbsoluteRequired_preserves
 #print axioms A12Kernel.withRequiredFinding_preserves_computation
 #print axioms A12Kernel.applyAbsoluteRequired_preserves_computation
@@ -194,9 +204,10 @@ run_cmd do
 #print axioms A12Kernel.requiredDependencyPoison_is_rejected
 #print axioms A12Kernel.erroredDependency_does_not_expose_attempt
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
-#print axioms A12Kernel.falseStringPrecondition_evaluates_noValue
-#print axioms A12Kernel.trueStringPrecondition_preserves_outcome
-#print axioms A12Kernel.trueStringPrecondition_consumedInvalidField_poisons
+#print axioms A12Kernel.notTrueStringPrecondition_evaluates_noValue
+#print axioms A12Kernel.holdingStringPrecondition_preserves_outcome
+#print axioms A12Kernel.poisonedStringPrecondition_preserves_cause
+#print axioms A12Kernel.holdingStringPrecondition_consumedInvalidField_poisons
 #print axioms A12Kernel.same_delta_does_not_imply_same_dependency
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_dependency
 #print axioms A12Kernel.same_exact_application_does_not_imply_same_dependency_read
