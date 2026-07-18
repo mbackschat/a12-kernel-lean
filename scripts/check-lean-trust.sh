@@ -156,17 +156,12 @@ expect_source_zone A12Kernel/Semantics/Future.lean logical
 expect_source_zone A12Kernel/Elaboration/Future.lean logical
 expect_source_zone A12Kernel/Proofs/Future.lean logical
 expect_source_zone A12Kernel/Conformance/Future.lean conformance
-expect_source_zone A12Kernel/Evidence/CapturePacket.lean evidence
+expect_source_zone A12Kernel/Evidence/Future.lean evidence
 expect_source_zone A12Kernel/Reference/Future.lean reference
 expect_source_zone A12Kernel/Process/Future.lean process
 expect_source_zone A12Kernel/Trust/Future.lean trust-driver
 expect_source_zone A12Kernel/EvidenceMain.lean io-driver
 
-expect_unclassified_source A12Kernel/Qualification/Future.lean
-expect_unclassified_source A12Kernel/Differential/Future.lean
-expect_unclassified_source A12Kernel/FlatHandoverMain.lean
-expect_unclassified_source A12Kernel/MutationQualificationMain.lean
-expect_unclassified_source A12Kernel/GeneratedDifferentialMain.lean
 expect_unclassified_source A12Kernel/Future/Unexpected.lean
 
 project_source_files="A12Kernel.lean"

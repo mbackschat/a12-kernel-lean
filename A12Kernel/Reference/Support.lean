@@ -1,6 +1,5 @@
 import A12Kernel.Basic
 import A12Kernel.Elaboration.Flat
-import A12Kernel.Reference.Lineage
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json.FromToJson.Basic
 
@@ -13,13 +12,13 @@ namespace A12Kernel.Reference.Support
 
 open Lean
 
-def manifestSchemaVersion : Nat := Lineage.current.manifestSchemaVersion
+def manifestSchemaVersion : Nat := 2
 
-def referenceSemanticsVersion : String := Lineage.current.referenceSemanticsVersion
+def referenceSemanticsVersion : String := "0.3.0"
 
-def protocolVersion : Nat := Lineage.current.protocolVersion
+def protocolVersion : Nat := 1
 
-def kernelBehaviorVersion : String := Lineage.current.kernelBehaviorVersion
+def kernelBehaviorVersion : String := A12Kernel.kernelVersion
 
 inductive Operation where
   | flatValidationEvaluateFull
@@ -847,7 +846,7 @@ private def flatAcceptedManifest : Json :=
       ("observable", toJson "focusedRuleMessagePresenceAndPolarity"),
       ("nonFiringVerdictDistinction", toJson "notFiredVersusUnknownLeanAccountOnly"),
       ("claimScope", toJson "finiteRetainedCasesOnly"),
-      ("suiteId", toJson Lineage.currentFlatSuiteId),
+      ("suiteId", toJson "flat-validation-empty-logic-v2"),
       ("retainedRuntimeCaseCount", toJson 9),
       ("retainedStaticCaseCount", toJson 0),
       ("generalAcceptedInputs", toJson "leanAccountExternalEvidencePending")])]
@@ -891,7 +890,7 @@ private def correlationAcceptedManifest : Json :=
       ("candidateRows", toJson "retainedCasesUseContiguousOneBasedRows"),
       ("observable", toJson "firingRowsOnly"),
       ("claimScope", toJson "finiteRetainedCasesOnly"),
-      ("suiteId", toJson Lineage.currentCorrelationSuiteId),
+      ("suiteId", toJson "single-group-correlation-v2"),
       ("retainedRuntimeCaseCount", toJson 12),
       ("retainedStaticCaseCount", toJson 4),
       ("generalAcceptedInputs", toJson "leanAccountExternalEvidencePending")])]

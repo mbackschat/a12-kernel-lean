@@ -1,6 +1,5 @@
 import A12Kernel.Evidence.OperatorEmptyReplay
 import A12Kernel.Process.Sha256
-import A12Kernel.Reference.Lineage
 import A12Kernel.Reference.Protocol
 import A12Kernel.Reference.StrictJson
 
@@ -289,8 +288,8 @@ private def capturedVerdict (descriptor : Descriptor) (signatures : List String)
 
 private def requestJson (descriptor : Descriptor) (field : FieldSpec) (case : CaseSpec) : Json :=
   Json.mkObj [
-    ("protocolVersion", toJson Lineage.current.protocolVersion),
-    ("kernelBehaviorVersion", toJson Lineage.current.kernelBehaviorVersion),
+    ("protocolVersion", toJson Support.protocolVersion),
+    ("kernelBehaviorVersion", toJson Support.kernelBehaviorVersion),
     ("operation", toJson Support.Operation.flatValidationEvaluateFull.tag),
     ("model", Json.mkObj [
       ("fieldRefByShortNameAllowed", toJson false),

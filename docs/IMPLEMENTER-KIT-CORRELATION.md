@@ -1,21 +1,21 @@
 # Independent implementer kit: single-group captured-outer correlation
 
-**Status:** frozen reference-semantics 0.2.0 development handover spike, not the current 0.3.0 suite and not a release-readiness claim. Twelve runtime firing-membership cases and four static authoring cases are retained kernel 30.8.1 observations; the algorithm and laws are the historical Lean semantics-of-record for this kit; the normalized JSON shapes, diagnostics, contiguous-row restriction, resource limits, and candidate-runner behavior are project-defined compatibility decisions. The accepted mixed-scale ordering fixture combines externally observed static acceptance with a labeled Lean-account runtime projection. The remaining release blockers are listed under [Open boundary](#open-boundary).
+**Status:** current reference-semantics 0.3.0 development handover for the finite `single-group-correlation-v2` suite, not a release-readiness claim or a complete correlation evaluator. Twelve runtime firing-membership cases and four static authoring cases are retained kernel 30.8.1 observations. The normalized JSON shapes, diagnostics, contiguous-row restriction, resource limits, and candidate-runner behavior are project-defined compatibility decisions. The accepted mixed-scale ordering fixture combines externally observed static acceptance with a labeled Lean-account runtime projection.
 
 ## Compatibility identity
 
 | Item | Value |
 |---|---|
-| Capability | `single-group-correlation-v1` |
+| Suite | `single-group-correlation-v2` |
 | Operation | `singleGroupCorrelation.firingRows` |
-| Reference semantics | `0.2.0` |
+| Reference semantics | `0.3.0` |
 | Protocol | `1` |
 | Manifest schema | `2` |
 | Kernel behavior | `30.8.1` |
 | Owning language section | `§9` repetition, iteration, and `$` correlation |
 | Observable result | Ordered outer-row firing membership only |
 
-Pin all six identifiers together. Agreement with a different tuple is not established by this kit. Current [`single-group-correlation-v2.conformance.json`](../reference/single-group-correlation-v2.conformance.json) preserves the same 16-case body under reference semantics 0.3.0 and the v2 manifest, but that identity change does not relabel this handover.
+Pin these identifiers together. Passing this suite establishes only its finite normalized cases, not every accepted input of the wider development operation. Its 16-case body descends unchanged from the retired 0.2.0 suite, but historical results are not relabeled as current qualification.
 
 ## Exact handover material
 
@@ -23,11 +23,11 @@ A Rust developer receives these project-local artifacts and does not need the ke
 
 - this language-neutral capsule;
 - the exact wire contract in [`PROTOCOL.md`](PROTOCOL.md#single-group-captured-outer-correlation-operation);
-- the generated positive support declaration in [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json);
-- the language-neutral 16-case suite in [`single-group-correlation-v1.conformance.json`](../reference/single-group-correlation-v1.conformance.json);
+- the generated positive support declaration in [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json);
+- the language-neutral 16-case suite in [`single-group-correlation-v2.conformance.json`](../reference/single-group-correlation-v2.conformance.json);
 - its runnable request/response files under [`examples/reference-cli/`](../examples/reference-cli/), beginning with [`correlation-direction.request.json`](../examples/reference-cli/correlation-direction.request.json);
 - the retained runtime and static evidence projections, [`correlation-projection.json`](../evidence/kernel-30.8.1/correlation-projection.json) and [`correlation-elaboration-projection.json`](../evidence/kernel-30.8.1/correlation-elaboration-projection.json), referenced case-by-case by the suite;
-- an `a12-kernel-reference` executable pinned to the historical 0.2.0 source revision for development differentials;
+- the current `a12-kernel-reference` executable for development differentials;
 - the standalone `checkCandidateConformance` runner for any command-line implementation;
 - the theorem and checked-non-law audit links in this document.
 
@@ -184,7 +184,7 @@ The executable witnesses are in [`Conformance/Correlation.lean`](../A12Kernel/Co
 
 ## Tools and exact commands
 
-Build the current 0.3.0 reference only to inspect today's process shape and build the candidate runner; it is not a 0.2.0 historical oracle. Use the separately pinned executable below for a historical control:
+Build the current reference and candidate runner:
 
 ```sh
 lake build a12-kernel-reference checkCandidateConformance
@@ -206,43 +206,37 @@ lake test
 ./scripts/check-lean-trust.sh
 ```
 
-`checkReferenceProcess` runs the v1 suite's structural integrity self-test, but it executes only the current v2 suite against the compiled current Lean reference. To run the historical integrity guard directly:
+Run the current suite integrity guard:
 
 ```sh
 lake exe checkCandidateConformance \
   --self-test \
-  --suite reference/single-group-correlation-v1.conformance.json
+  --suite reference/single-group-correlation-v2.conformance.json
 ```
 
-Run the language-neutral v1 suite against a Lean executable only when that executable is pinned to historical source revision `9fa50276f5fb70dcd879b0a9712c8d69c0868967`:
+Run the suite against the current Lean reference:
 
 ```sh
 lake exe checkCandidateConformance \
-  --candidate <historical-0.2.0-reference> \
-  --suite reference/single-group-correlation-v1.conformance.json
+  --candidate .lake/build/bin/a12-kernel-reference \
+  --suite reference/single-group-correlation-v2.conformance.json
 ```
 
-Run the same suite against a Rust candidate:
+For an independent candidate, replace the candidate path:
 
 ```sh
 lake exe checkCandidateConformance \
   --candidate target/debug/a12-rust-reference \
-  --suite reference/single-group-correlation-v1.conformance.json
+  --suite reference/single-group-correlation-v2.conformance.json
 ```
 
-The runner invokes the candidate directly without a shell, requires exit `0`, empty standard error, one normalized JSON response ending in a newline, and deterministic repeated output bytes. It compares parsed JSON structurally, so Rust need not reproduce Lean's object-key ordering. It uses bounded duplicate-safe JSON parsing for every artifact, enforces closed suite/case/evidence objects, selects exactly one matching operation from the committed manifest named by the suite, validates all six compatibility identifiers plus the finite evidence-scope marker and declared 12-runtime/4-static counts, checks each case's declared external-support and expected-response-source classification, and verifies that every evidence case identifier exists in the referenced retained projection. It does not query the candidate's `--manifest`; a qualification record must pin candidate bytes and the claimed suite identity separately. Before mutation, its integrity mode validates the metadata, classification, and evidence link of all 16 canonical cases. Its sixteen negative guards then cover conformance schema, all six manifest-bound identities, absent and duplicate operations, finite scope, retained counts, evidence classification, evidence case ID, duplicate members, and unknown members at all three closed suite levels; success prints `16/16 guards passed`. It does not close unrelated support-manifest or retained-projection members and does not yet mechanically derive a normalized request or response from that projection. A downstream Rust test can consume the same suite directly instead of building the runner.
+The runner invokes the candidate directly without a shell through the bounded relay, requires exit `0`, empty standard error, one normalized JSON response ending in a newline, and deterministic repeated output bytes. It compares parsed JSON structurally, so the candidate need not reproduce Lean's object-key ordering. It uses bounded duplicate-safe parsing, enforces closed suite/case/evidence objects, selects exactly one matching operation from the committed manifest, validates the compatibility identity and retained case counts, checks every evidence classification and case ID, and exercises 17 negative integrity guards. It does not query the candidate's manifest; a qualification record must pin candidate bytes and the claimed suite identity separately.
 
-The runner is a local spike tool: it does not yet impose a wall-clock timeout or stream candidate output with a fixed cap. Close those process-hardening gaps before using untrusted candidate binaries in production CI.
+Candidate execution has a 10-second invocation deadline, 1-second cleanup deadline, 1 MiB standard-input and standard-output caps, and a 64 KiB standard-error cap. It is cooperative same-credential process control, not a sandbox for hostile binaries.
 
-The suite pins exact full responses for its 16 historical cases, including the diagnostic `at` and `details` objects frozen under this identity. A future compatible protocol implementation may add diagnostic detail members for ordinary consumers, as documented in [`PROTOCOL.md`](PROTOCOL.md#responses), but that future version must update the conformance policy or fixtures deliberately; adding details to a candidate claiming this exact suite identity will fail structural comparison.
+The suite pins exact full responses for its 16 current cases, including diagnostic `at` and `details` objects. A future compatible protocol implementation may add diagnostic detail members for ordinary consumers, as documented in [`PROTOCOL.md`](PROTOCOL.md#responses), but that future version must update the conformance policy or fixtures deliberately; adding details to a candidate claiming this exact suite identity will fail structural comparison.
 
-## Cold documentation audit record
-
-On 2026-07-13 an isolated coding agent was given only this kit, [`PROTOCOL.md`](PROTOCOL.md), the generated manifest, the 16-case suite, its examples and evidence projections, and ordinary build commands. It did not read `spec/`, Lean implementation/proof sources, sibling repositories, or kernel material. From those artifacts it independently recovered idiomatic Rust raw and resolved types, the seven-stage evaluator, exact process invocation, both worked hard cases, the seeded-reversal classification, and the current evidence limits. Its verdict was: ready to start an idiomatic Rust spike for the named semantic/evidence cases, not release-qualified.
-
-The audit found and this revision corrects two material contradictions: the model may declare sibling repeatable groups even though a rule selects exactly one, and the public all-inner result is `unsupported/uncorrelatedHaving`, not the internal `missingOuter` constructor. A subsequent code review caused ordinary field/group paths and the narrower star paths to receive separate finite classifiers and narrowed the public ordinary correlation path subset to the absolute and direct child-relative forms exercised by this spike. The isolated reviewer then found no remaining contradiction that blocks implementing the named 16 cases.
-
-The audit could not derive a complete arbitrary-negative-input implementation from these artifacts. General path-resolution edge cases, every model-invalidity predicate, within-stage diagnostic precedence, accounting conventions for every compound resource-limit failure, and most exact diagnostic payloads are not exhaustively specified or exercised by the 16-case suite. Those are release-blocking handover gaps for a claim of full protocol-negative compatibility, but they do not prevent an implementation of the named semantic capsule and suite. No Rust code was generated in this repository, no downstream revision or language toolchain was tested, and this documentation audit is therefore not the cold executable gate required for release.
+The historical 0.2.0 documentation audit and its corrections are retained in the [archived experiment record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). It was not an executable V2 candidate qualification.
 
 ## Seeded divergence exercise
 
@@ -263,7 +257,7 @@ This spike is materially usable but is not yet a release-ready closed capsule:
 - suite-to-evidence association is manually cross-referenced and case-ID checked rather than mechanically derived; a checked projection-to-protocol export or equivalent integrity bridge remains release-blocking;
 - retained parsed runtime Number cells are non-negative integers, while malformed cells are retained separately and the Lean account/normalized decoder admit general canonical exact decimals and signed values; fractional scale-19 behavior and negative correlation values remain externally unverified;
 - mixed-scale `notEqual`, empty or malformed outer guards, dynamic mixed-scale ordering, and the selected-valid-plus-selected-malformed consumer case have internal Lean coverage or static evidence but no dedicated retained kernel runtime observation;
-- the candidate runner needs timeout and output-cap hardening before it should execute untrusted binaries;
+- the bounded candidate runner is cooperative same-credential process control rather than a security sandbox for hostile binaries;
 - general `Document` adaptation, concrete EN/DE DSL, ordinary parent-relative/bare correlation paths, nested or multiple stars, cross-group execution, general guards or consumers, message construction, filtered-result polarity, computation, and partial validation are explicitly outside the capability.
 
 These gaps are visible so a Rust developer can implement the named Lean-compatible spike without researching the kernel while avoiding a stronger release claim than the evidence permits.
