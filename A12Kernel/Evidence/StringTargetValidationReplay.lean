@@ -1,10 +1,10 @@
 import A12Kernel.Basic
 import A12Kernel.Evidence.StringTargetValidationSchema
-import A12Kernel.Semantics.StringComputation
+import A12Kernel.Semantics.StringApplication
 
 /-! # A12Kernel.Evidence.StringTargetValidationReplay — pure nine-case target replay
 
-This lane replays the closed String expression, positive length policy, payloadful delta, and value-only post-application view. Exact absent-versus-present-empty application state remains an external observation bound by the IO gate because the current core intentionally collapses those states.
+This lane replays the closed String expression, positive length policy, payloadful delta, and exact one-target post-application state. Its retained cases calibrate only accepted and errored application over absent or filled priors; the wider exact-state table remains an internal account with explicit external-evidence gaps.
 -/
 
 namespace A12Kernel.Evidence.StringTargetValidation
@@ -48,17 +48,23 @@ def LengthPolicySpec.toCore : LengthPolicySpec → Except String StringTargetLen
       if positive : 0 < bound then pure (.maximum { value := bound, positive })
       else throw "a projected maximum String length must be positive"
 
-def PriorTargetSpec.toCore : PriorTargetSpec → Except String PriorStringTarget
-  | .absent => pure .empty
+def PriorTargetSpec.toApplicationState : PriorTargetSpec → Except String StringTargetState
+  | .absent => pure .absent
   | .string value =>
-      if nonempty : value ≠ "" then pure (.filled { text := value, nonempty })
+      if nonempty : value ≠ "" then pure (.presentValue { text := value, nonempty })
       else throw "a prior stored String cannot be empty"
+
+def PriorTargetSpec.toCore (spec : PriorTargetSpec) : Except String PriorStringTarget :=
+  return (← spec.toApplicationState).toDeltaPrior
 
 structure ReplayResult where
   outcome : StringTargetOutcome
   delta : List String
-  appliedValue : Option String
+  appliedState : StringTargetState
   deriving Repr, DecidableEq
+
+def ReplayResult.appliedValue (result : ReplayResult) : Option String :=
+  result.appliedState.storedValue.map (·.text)
 
 private def errorCode : StringTargetError → String
   | .tooShort => "stringZuKurz"
@@ -89,15 +95,15 @@ def CaseSpec.replay (case : CaseSpec) (model : ModelSpec)
     | .error (.fieldKindMismatch fieldId) =>
         throw s!"{case.id}: projected field {fieldId} failed its String kind invariant"
   let policy ← model.policy.toCore
-  let prior ← case.priorTarget.toCore
+  let prior ← case.priorTarget.toApplicationState
   let outcome ← match policy.check store with
     | .supported result => pure result
     | .unsupported .unsupportedLineBreak =>
         throw s!"{case.id}: projected text requires the unsupported target line-break clause"
   pure {
     outcome
-    delta := deltaSignature targetPointer (outcome.projectDelta prior)
-    appliedValue := outcome.appliedValue.map (·.text) }
+    delta := deltaSignature targetPointer (outcome.projectDelta prior.toDeltaPrior)
+    appliedState := outcome.applyTo prior }
 
 private def OperationSpec.validate (modelId : String) : OperationSpec → Except String Unit
   | .copy => pure ()

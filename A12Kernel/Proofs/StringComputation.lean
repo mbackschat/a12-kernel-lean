@@ -247,7 +247,7 @@ theorem erroredStringTarget_reports_unconditionally (attempted : StoredString)
       some (.errored attempted cause) := by
   cases prior <;> rfl
 
-/-- Applying an errored outcome exposes no stored value; exact absent versus present-empty shape belongs to the later document-application layer. -/
+/-- The lossy application projection exposes no stored value for an errored outcome; exact absent versus present-empty shape belongs to `StringApplication`. -/
 theorem erroredStringTarget_has_no_appliedValue (attempted : StoredString)
     (cause : StringTargetError) :
     (StringTargetOutcome.errored attempted cause).appliedValue = none := by
