@@ -91,7 +91,7 @@ lake exe checkCandidateConformance --self-test --suite reference/flat-validation
 ./scripts/check-lean-trust.sh
 ```
 
-`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before relying on candidate conformance. `checkReferenceProcess` checks only the current 0.3.0/V2 process, manifest, fixtures, and suite controls; retired 0.2.0/V1 bytes are not a current release gate.
+`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before relying on candidate conformance. `checkReferenceProcess` checks only the current 0.3.0/V2 process, manifest, fixtures, suite controls, and each public suite case's exact normalized request and externally supported expected-response projection against the compact [validation evidence bundle](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json); retired 0.2.0/V1 bytes are not a current release gate.
 
 A release candidate additionally requires:
 
@@ -237,7 +237,6 @@ The first CLI is a reference and CI oracle, not a replacement production runtime
 - adopt the product proposal for a concrete non-Lean consumer rather than treating this engineering contract as a release decision;
 - complete current 0.3.0/V2 candidate qualification; the archived 0.2.0/V1 Rust result is historical evidence only and does not close current release gates;
 - complete and retain the isolated cold-implementation report for every released capability, with no kernel or sibling-source research by the downstream implementer;
-- either mechanically bind the correlation suite to its retained projection as the flat bridge does or explicitly keep correlation outside the first released capability set;
 - define the supported platform, architecture, ABI, and oldest-OS matrix;
 - add immutable release builders and demonstrate the reproducibility required by [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md); any provenance-only relaxation requires an explicit product-level decision;
 - implement final-packaged-artifact testing rather than relying solely on Lake's build-tree layout;

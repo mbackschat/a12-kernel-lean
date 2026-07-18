@@ -29,7 +29,7 @@ The supplied material is:
 - the generated current support declaration [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json);
 - the nine-case suite [`flat-validation-empty-logic-v2.conformance.json`](../reference/flat-validation-empty-logic-v2.conformance.json);
 - every request and expected response referenced by that suite under [`examples/reference-cli/`](../examples/reference-cli/);
-- the retained flat projection [`projection.json`](../evidence/kernel-30.8.1/projection.json), the operator-sensitive projection [`operator-empty-projection.json`](../evidence/kernel-30.8.1/operator-empty-projection.json), and the retained cases linked below;
+- the compact validation [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), its typed [`ValidationProjection.lean`](../A12Kernel/Evidence/ValidationProjection.lean) consumer, and the [archive](archived/VALIDATION-RAW-EVIDENCE.md) for removed raw provenance and recovery;
 - the standalone `checkCandidateConformance` runner;
 - the laws, non-laws, evidence qualifications, and open boundaries in this document.
 
@@ -205,7 +205,7 @@ A present Boolean comparison returns `Fired(Value)` while malformed Number compa
 | `number-not-filled-empty-row` | `Fired(Omission)` | Empty-row-eligible OMISSION firing |
 | `number-empty-not-equal-negative-directional` | `Fired(Value)` | Authored VALUE firing under directional fillability |
 
-The first eight rows come from [`projection.json`](../evidence/kernel-30.8.1/projection.json). The ninth is mechanically associated with [`operator-empty-projection.json`](../evidence/kernel-30.8.1/operator-empty-projection.json) by [`OperatorProtocolBridge.lean`](../A12Kernel/Evidence/OperatorProtocolBridge.lean). Groovy-dynamic and static-Java kernel routes agree on these observations; a12-dmkits is triangulation rather than the oracle. Fired rows externally establish firing and polarity. Silent rows cannot reveal the kernel's hidden `NotFired`/`Unknown` distinction.
+All nine rows are public records in the compact validation bundle. The candidate process pins that bundle, requires each suite case's exact normalized request to equal the retained input, and requires the externally supported projection of its expected response to equal the retained observation. Its self-test rejects a changed request, changed projected response, or alias to another existing evidence case. Groovy-dynamic and static-Java kernel routes agree on these observations; a12-dmkits is triangulation rather than the oracle. Fired rows externally establish firing and polarity. Silent rows establish only suppression and cannot reveal the kernel's hidden `NotFired`/`Unknown` distinction. The [historical validation record](archived/VALIDATION-RAW-EVIDENCE.md) preserves the removed source projections and exact migration checkpoint.
 
 ## Law and non-law index
 
@@ -251,7 +251,7 @@ lake test
 ./scripts/check-lean-trust.sh
 ```
 
-For an independent candidate, replace `.lake/build/bin/a12-kernel-reference` with its executable path. The runner invokes the command without a shell through the bounded relay, requires exit `0`, empty standard error, one normalized JSON response plus newline, deterministic repeated bytes, and structural JSON agreement. It validates the suite against the committed current manifest but does not query the candidate's manifest; a qualification record must pin candidate bytes and the claimed compatibility tuple separately.
+For an independent candidate, replace `.lake/build/bin/a12-kernel-reference` with its executable path. The runner invokes the command without a shell through the bounded relay, requires exit `0`, empty standard error, one normalized JSON response plus newline, deterministic repeated bytes, and structural JSON agreement. Before invoking the candidate, it validates the suite against the current manifest and pins each public case's exact normalized request and externally supported expected-response projection to the compact evidence bundle. It does not query the candidate's manifest; a qualification record must pin candidate bytes and the claimed compatibility tuple separately.
 
 ## Escalation and open boundary
 

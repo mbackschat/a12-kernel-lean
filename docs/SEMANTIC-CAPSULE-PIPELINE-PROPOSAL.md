@@ -1,6 +1,6 @@
 # Compact semantic-evidence pipeline
 
-> Status: implemented and measured, 2026-07-18. This document owns the settled compact Lean consumer boundary, the completed retirement of its one-time upstream producer estate, and the scaling constraints for future demand-driven calibration. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
+> Status: implemented and measured, last consolidated 2026-07-19. This document owns the settled compact Lean consumer boundary, the completed retirement of its one-time upstream producer estate, and the scaling constraints for future demand-driven calibration. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
 ## Decision
 
@@ -154,11 +154,21 @@ Commit `19733d9` is the one-time dual-path agreement checkpoint. At that revisio
 
 The permanent family-specific addition is 271 nonblank production lines plus 65 test lines. It replaces 2,106 old permanent Lean lines and a 125-line migration-only checker. The 13,104-byte compact bundle replaces 80,490 bytes of raw captures, models, projections, and cases. The generic reader did not grow, and no packet, receipt, qualification, route, or generator concept entered ordinary replay.
 
+## Third migration: validation, operators, iteration, and correlation
+
+The final migration uses one compact validation bundle rather than four more readers or a duplicate correlation evaluator. Its 49 records preserve seven closed families: 25 public normalized evidence associations and 24 private path, required, operator-sensitive, and uncorrelated-iteration replays. There are 48 distinct external observations because the directional empty-Number witness intentionally appears in both halves.
+
+The public half reuses the existing candidate/reference process gate. It binds the pinned bundle, kernel version, declared evidence case, exact normalized request, and fidelity-projected expected response; no second public replay driver or protocol bridge remains. The private half uses small adapters over the live reference evaluator, required staging, checked flat evaluator, and one-star iteration semantics. Static rejection code/class pairs are closed together, required-empty retains its modeled message code and pointer, external silence remains suppression rather than a claimed hidden verdict, and static acceptance remains acceptance rather than an external runtime-row claim.
+
+Commit `a04d6d9f51227dbe47014a5181590507e1b269bd` is the one-time validation dual-path checkpoint. It ran all 48 validation cases through their complete legacy stack beside the 24-case compact private replay and passed both current public suites with strengthened request, response, and case-association mutations. The already-compact 22-case root-String and five-case cascade lanes also passed; their own archives record their earlier complete-binder comparisons. The subsequent deletion removes 85 raw files and 761,310 bytes, 12 legacy modules and 2,061 nonblank lines, and the legacy driver body. The permanent validation projection and focused tests occupy 428 nonblank lines; the final driver is a small dispatcher. Exact source digests, producer caveats, the one a12-dmkits iteration disagreement, and recovery revisions live in [`VALIDATION-RAW-EVIDENCE.md`](archived/VALIDATION-RAW-EVIDENCE.md).
+
+After all three migrations, the complete evidence source estate is 1,528 nonblank Lean lines and 82,628 bytes. Total Evidence/Reference/Process support is 5,449 nonblank lines versus 5,453 theory lines, so the adopted support ratio is met without compression; evidence is below one third of theory. The checked-out `evidence/` directory contains only the three compact bundles and totals 135,047 bytes. These are settled baselines, not invitations to spend the four-line support margin: future ordinary work grows semantic capsules, and any support growth must be justified by a current consumer and rechecked against the ratio.
+
 ## Producer-side consolidation and retired a12-dmkits capture-contract V1
 
 Frozen a12-dmkits capture-contract V1 identities and retained artifacts remain immutable, while revision `45b264b2d6213dd7d4d261fa040034371b0c8fcd` removed the complete unused implementation from current upstream `main`: 96 tracked files, 634,739 bytes, and 11,637 nonblank lines of source, tests, fixtures, mutation machinery, commands, build wiring, and live documentation. The exact historical contract and detached-revision recovery route live only in a12-dmkits' [`archived capture proposal`](../../a12-rulekit/docs/archived/A12-DMKITS-CAPTURE-PROPOSAL.md). No successor was minted.
 
-This decision is separate from this repository's reference-semantics identities. The local 0.2.0/V1 compatibility estate has been retired; current shipments use 0.3.0/V2 over unchanged wire protocol 1, and the exact historical Rust claims and recovery revisions live in the [archived record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). The [reference and evidence simplification proposal](REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md) now tracks only the remaining evidence-compaction and raw-archive decisions.
+This decision is separate from this repository's reference-semantics identities. The local 0.2.0/V1 compatibility estate has been retired; current shipments use 0.3.0/V2 over unchanged wire protocol 1, and the exact historical Rust claims and recovery revisions live in the [archived record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). The completed [reference and evidence simplification work program](archived/REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md) records the measured deletion sequence and tradeoff.
 
 The durable distinction is:
 
@@ -176,7 +186,8 @@ The durable distinction is:
 6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
 7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines. The local archive migration then removed 31 raw/scenario files and 123,184 bytes from `HEAD` while preserving the compact bundle and exact recovery identities.
 8. Completed: the measured pattern justified migrating the two historical root-String binders. One compact typed lane preserves their two independent source identities and fidelities; the one-time comparator established 22/22 agreement before the old stacks and raw estate were removed.
-9. Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
+9. Completed: one compact validation bundle and one existing process association gate replace the flat/operator, path/required, iteration, correlation-runtime, and correlation-authoring raw/binder estates. The dual-path checkpoint and archive preserve exact recovery; no per-family packet machinery or duplicate public replay remains.
+10. Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
 
 ## Upstream engagement rule
 
