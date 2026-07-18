@@ -1,6 +1,6 @@
 # Compact semantic-evidence pipeline
 
-> Status: accepted consolidation plan, 2026-07-17. This document owns the migration from packet-specific Lean re-auditing to a settled a12-dmkits transporter and compact Lean semantic projections. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
+> Status: implemented and measured, 2026-07-18. This document owns the settled boundary and scaling constraints that replaced packet-specific Lean re-auditing with the a12-dmkits transporter and compact Lean semantic projections. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
 ## Decision
 
@@ -12,7 +12,7 @@ This is an explicit trust boundary, not a claim that transport no longer matters
 
 The first full capture proved that a maintained external boundary can produce reproducible, qualified evidence. It also showed that downstream re-auditing does not scale with the semantic body:
 
-| Current surface | Physical lines | Nonblank lines |
+| Baseline before migration | Physical lines | Nonblank lines |
 |---|---:|---:|
 | `A12Kernel/Evidence/` | about 8,200 | — |
 | Direct-cascade semantics, proofs, and conformance | about 405 | — |
@@ -97,7 +97,7 @@ Each family owns a small typed decoder for its exact inputs and observables. It 
 
 ## What leaves ordinary Lean replay
 
-After the compact direct-cascade bundle is accepted, remove its packet-specific:
+The completed compact direct-cascade migration removed its packet-specific:
 
 - capture-receipt decoder and role inventory;
 - recursive packet-tree hashing and receipt sidecar checks;
@@ -128,7 +128,7 @@ Across future migrated families, common compact evidence infrastructure should s
 
 If the generic reader exceeds its limit, stop and remove leaked producer responsibilities. If a family exceeds 360 lines, stop and identify whether it is really multiple semantic families. Do not solve a budget miss with compressed unreadable code or generic untyped maps.
 
-The local pre-producer measurement is now concrete: generic reader 157 nonblank lines, its tests 99, direct-cascade family 226, family tests 128, relocated artifact-tree tests 23, and three lines of `EvidenceMain` glue, for 636 raw nonblank lines. This leaves 34 under the complete 670-line cap. Applying the stated exclusion for module comments and inline JSON fixture data leaves 89 lines of family executable test logic plus 19 lines of generic guard logic, totaling 108 under the 110-line tests-plus-guards allowance.
+The completed measurement is concrete: generic reader 157 nonblank lines, its tests 99, direct-cascade family 249, family tests 130, relocated artifact-tree tests 23, and eight lines of `EvidenceMain` import/check glue, for 666 raw nonblank lines. This is four under the complete 670-line cap. Applying the stated exclusion for module comments and inline JSON fixture data leaves 91 lines of family executable test logic plus 19 lines of generic guard logic, exactly meeting the 110-line tests-plus-guards allowance. The replaceable baseline was 2,179, so the migration removes 1,513 net nonblank lines and clears the required 1,500 reduction by 13.
 
 ## First migration: direct String cascade
 
@@ -144,7 +144,7 @@ The compact family carries:
 
 The checker compares typed observations directly rather than canonical signature strings. It is parameterized over the replay function so a test mutation can deliberately evaluate the consumer against the original context instead of the producer overlay. The required mismatch set is the three cases with a pre-filled `Mid`: `source-abc-mid-old`, `source-absent-mid-old`, and `source-abcd-mid-old`; the equal and initially absent controls must remain equal. A separate observed-payload mutation changes the target error cause and must also fail.
 
-The old and new lanes may coexist only during the migration gate. Once the producer-certified compact bundle is ferried and both lanes agree, delete the old direct-cascade binder, schema, replay, and tests in the same delivery sequence. Do not leave permanent dual paths.
+The old and new lanes coexisted for one migration gate, agreed on all five cases, and the old direct-cascade binder, schema, replay, receipt decoder, and tests were then deleted. No permanent dual path remains.
 
 `A12Kernel/Process/Artifact.lean` and `ArtifactTree.lean` remain because downstream mutation qualification still uses them. Their unique global path-order and symlink guards now live in the 23-nonblank-line process-owned `ArtifactTreeTest.lean`, so deleting the capture receipt tests will not discard generic filesystem coverage.
 
@@ -163,12 +163,12 @@ The future upstream proposal must inventory three categories:
 ## Sequencing
 
 1. Finish the internally proved String-ingestion capsule and leave its external observation pending. Completed in commit `41ddc9d`.
-2. Implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures are schema tests, not kernel evidence.
-3. Measure the implementation. If it misses the limits, simplify locally before asking upstream to implement the producer.
-4. Completed: [`A12-DMKITS-COMPACT-EVIDENCE-PROPOSAL.md`](A12-DMKITS-COMPACT-EVIDENCE-PROPOSAL.md) defines the one post-capture direct-cascade exporter, exact source identities and acceptance bytes, handback, and the separate capture-contract V1 sunset inventory. Validation-message capture remains outlook only. The user ferries the proposal; this project never edits the sibling.
-5. Receive and verify the producer-certified compact bundle, retain it beside the opaque raw unit, and prove old-versus-new semantic agreement during the migration gate.
-6. Switch `lake test` to the compact family, retain the already relocated generic artifact-tree guards, and delete the replaced direct-cascade stack.
-7. Rerun the real and semantic-mutation gates, measure the net deletion, and update current-state owners.
+2. Completed: implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures remain schema tests, not kernel evidence.
+3. Completed: measure and simplify the local implementation before requesting the producer.
+4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter now owned by a12-dmkits' [`CONFORMANCE-CORPUS-SPEC.md` §15h](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md). Validation-message capture remains outlook only.
+5. Completed: verify and retain the producer-certified compact bundle beside the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
+6. Completed: switch `lake test` to the compact family, retain the relocated generic artifact-tree guards, and delete the replaced direct-cascade stack.
+7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, the net deletion measured 1,513, and current-state owners were updated.
 8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
 9. Request a new external operation only when a real semantic family needs an observation the settled exporter cannot represent. Do not front-load a universal capture protocol.
 

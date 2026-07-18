@@ -44,7 +44,7 @@ private def bundleJson (familyCases : List Json := cases) : Json := Json.mkObj [
     Json.mkObj [
       ("id", toJson familyId), ("projectionId", toJson projectionId), ("projectionVersion", toJson projectionVersion),
       ("source", Json.mkObj [
-        ("producer", toJson "a12-dmkits"), ("revision", toJson "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"),
+        ("producer", toJson "a12-dmkits"), ("revision", toJson "1b5f463b89adc6cfb81b41121cd6c97855e8cbe3"),
         ("rawCapture", Json.mkObj [("path", toJson "packet/RECEIPT.json"), ("sha256", toJson rawDigest)]),
         ("qualification", Json.mkObj [
           ("policyId", toJson "kernel-route-confirmed-v1"),
@@ -123,6 +123,8 @@ example : (match fixtureFamily with
         [
           rejects "compatibility identity" <| decodeFamily { family with id := "other" },
           rejects "producer" <| decodeFamily { family with source := { family.source with producer := "other" } },
+          rejects "producer revision" <| decodeFamily {
+            family with source := { family.source with revision := "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" } },
           rejects "qualification identity" <| decodeFamily {
             family with source := { family.source with qualification := none } },
           rejects "kernel-route-confirmed" <| decodeFamily wrongPolicy,

@@ -10,9 +10,12 @@ The out-of-band identities verified before and after ferrying are:
 - packet-diff [`RECEIPT.json`](packet-diff/RECEIPT.json): `b868d6fb57c38dd1b01edf56e58b507567c9c1a17265bcd692b822e97a4d0ce8`
 - qualification [`RECEIPT.json`](qualification/RECEIPT.json): `f581d82d7eb04929b38d4663bbb48a28f09c7399273cd5974cd59e739eca5d64`
 - scenario-mutation [`receipt`](process/scenario-mutation-receipt.json): `1ecff441da99528c798eef57a7152da0f7814de481dd4a9654b1f3eb472718c3`
+- compact [`semantic-observations.json`](semantic-observations.json): `1d8d253e553eba70fa990975666884833748bed9d9b2b6483f472767a9837c7a`, exported by clean a12-dmkits revision `1b5f463b89adc6cfb81b41121cd6c97855e8cbe3`
 
 The packet binds the exact request digest `4c5d4911ecacde819618b3b921b0bd30aa34b514cb0bbf3f0d2b735f21a0fd43`, model digest `3d21add02d259a8d1ad2e14475582513aec2f4e60176f1c02c81d40de88a895d`, and frozen V1 capabilities digest `b87d381e7f43446bc886292766e34beab72ca3ec179be5f0f614975e66d603ca`. The successor process receipt uses `capture-scenario-mutation-receipt-v2` because its closed process-record shape adds an explicit rejected-predecessor binding and frozen-capabilities refusal; it does not mint a capture-capabilities, observation, packet, projection, or policy V2.
 
 The immutable qualification [`PROFILE.json`](qualification/PROFILE.json) contains historical wording that the interpreter's public read surface cannot distinguish absent from present-empty. IF126 later added that distinction to the interpreter API, but frozen capture V1 deliberately does not consume it. Interpret the retained sentence as a V1 capture-lane and projection exclusion; do not rewrite the returned artifact.
 
-Raw packet and sidecar bytes are immutable evidence. Project-owned typed projections, Lean replay code, findings, and status live outside this directory and may evolve only by naming these exact retained identities.
+The compact migration ran the former complete Lean packet binder and the producer-certified bundle replay together once and required exact five-case agreement before removing the packet-specific Lean machinery. Ordinary `lake test` replay now pins the compact file digest, exporter revision, raw and qualification receipt identities, and typed five-case observations; it does not reopen or independently reverify the packet tree.
+
+Raw packet and sidecar bytes remain immutable evidence and the authoritative audit source. a12-dmkits owns their full packet, runner, input, capability, qualification, closure, receipt, recapture, and export verification. Treating that raw unit as opaque during ordinary Lean replay is a deliberate assurance trade for a substantially smaller and scalable semantic gate, not a weakening or reinterpretation of the retained raw evidence.

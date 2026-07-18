@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "kernelVersion": "30.8.1",
+  "families": [
+    {
+      "id": "string-direct-cascade-v1",
+      "projectionId": "string-direct-cascade-semantic-v1",
+      "projectionVersion": 1,
+      "source": {
+        "producer": "a12-dmkits",
+        "revision": "1b5f463b89adc6cfb81b41121cd6c97855e8cbe3",
+        "rawCapture": {
+          "path": "packet/RECEIPT.json",
+          "sha256": "7e38744283cf17f7f57fe0bce342084a8e2896fb99aa60c2a9f4fb52e185dc17"
+        },
+        "qualification": {
+          "policyId": "kernel-route-confirmed-v1",
+          "receipt": {
+            "path": "qualification/RECEIPT.json",
+            "sha256": "f581d82d7eb04929b38d4663bbb48a28f09c7399273cd5974cd59e739eca5d64"
+          }
+        }
+      },
+      "cases": [
+        {
+          "id": "source-abc-mid-old",
+          "input": {
+            "source": "ABC",
+            "priorMid": "OLD",
+            "priorOut": "STALE"
+          },
+          "observed": {
+            "clean": [
+              {
+                "target": "mid",
+                "value": "ABC"
+              },
+              {
+                "target": "out",
+                "value": "ABC-X"
+              }
+            ],
+            "changed": [
+              {
+                "target": "mid",
+                "value": "ABC"
+              },
+              {
+                "target": "out",
+                "value": "ABC-X"
+              }
+            ],
+            "errors": [],
+            "cleared": [],
+            "applied": [
+              {
+                "target": "mid",
+                "value": "ABC"
+              },
+              {
+                "target": "out",
+                "value": "ABC-X"
+              }
+            ]
+          }
+        },
+        {
+          "id": "source-abc-mid-abc",
+          "input": {
+            "source": "ABC",
+            "priorMid": "ABC",
+            "priorOut": "STALE"
+          },
+          "observed": {
+            "clean": [
+              {
+                "target": "mid",
+                "value": "ABC"
+              },
+              {
+                "target": "out",
+                "value": "ABC-X"
+              }
+            ],
+            "changed": [
+              {
+                "target": "out",
+                "value": "ABC-X"
+              }
+            ],
+            "errors": [],
+            "cleared": [],
+            "applied": [
+              {
+                "target": "mid",
+                "value": "ABC"
+              },
+              {
+                "target": "out",
+                "value": "ABC-X"
+              }
+            ]
+          }
+        },
+        {
+          "id": "source-absent-mid-old",
+          "input": {
+            "source": null,
+            "priorMid": "OLD",
+            "priorOut": "STALE"
+          },
+          "observed": {
+            "clean": [
+              {
+                "target": "out",
+                "value": "-X"
+              }
+            ],
+            "changed": [
+              {
+                "target": "out",
+                "value": "-X"
+              }
+            ],
+            "errors": [],
+            "cleared": [
+              "mid"
+            ],
+            "applied": [
+              {
+                "target": "mid",
+                "value": null
+              },
+              {
+                "target": "out",
+                "value": "-X"
+              }
+            ]
+          }
+        },
+        {
+          "id": "source-absent-mid-absent",
+          "input": {
+            "source": null,
+            "priorMid": null,
+            "priorOut": "STALE"
+          },
+          "observed": {
+            "clean": [
+              {
+                "target": "out",
+                "value": "-X"
+              }
+            ],
+            "changed": [
+              {
+                "target": "out",
+                "value": "-X"
+              }
+            ],
+            "errors": [],
+            "cleared": [],
+            "applied": [
+              {
+                "target": "mid",
+                "value": null
+              },
+              {
+                "target": "out",
+                "value": "-X"
+              }
+            ]
+          }
+        },
+        {
+          "id": "source-abcd-mid-old",
+          "input": {
+            "source": "ABCD",
+            "priorMid": "OLD",
+            "priorOut": "STALE"
+          },
+          "observed": {
+            "clean": [],
+            "changed": [],
+            "errors": [
+              {
+                "target": "mid",
+                "attempted": "ABCD",
+                "cause": "tooLong"
+              }
+            ],
+            "cleared": [
+              "out"
+            ],
+            "applied": [
+              {
+                "target": "mid",
+                "value": null
+              },
+              {
+                "target": "out",
+                "value": null
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

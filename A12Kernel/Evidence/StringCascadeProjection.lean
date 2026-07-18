@@ -1,4 +1,5 @@
 import A12Kernel.Evidence.ObservationBundle
+import A12Kernel.Process.Sha256
 import A12Kernel.Semantics.StringCascade
 
 /-! # Compact direct String-cascade observation family
@@ -15,6 +16,9 @@ open A12Kernel.Evidence.ObservationBundle
 def familyId := "string-direct-cascade-v1"
 def projectionId := "string-direct-cascade-semantic-v1"
 def projectionVersion : Nat := 1
+def producerRevision := "1b5f463b89adc6cfb81b41121cd6c97855e8cbe3"
+def bundleSha256 := "1d8d253e553eba70fa990975666884833748bed9d9b2b6483f472767a9837c7a"
+private def bundleFile := "semantic-observations.json"
 private def rawReceiptPath := "packet/RECEIPT.json"
 private def rawReceiptDigest := "7e38744283cf17f7f57fe0bce342084a8e2896fb99aa60c2a9f4fb52e185dc17"
 private def qualificationReceiptPath := "qualification/RECEIPT.json"
@@ -163,6 +167,8 @@ def decodeFamily (family : ObservationBundle.Family) : Except String (List Case)
     throw "direct-cascade family compatibility identity differs"
   if family.source.producer != "a12-dmkits" then
     throw "direct-cascade family producer must be a12-dmkits"
+  if family.source.revision != producerRevision then
+    throw "direct-cascade family producer revision differs"
   if family.source.rawCapture.path.toString != rawReceiptPath ||
       family.source.rawCapture.sha256.toString != rawReceiptDigest then
     throw "direct-cascade family raw receipt identity differs"
@@ -263,5 +269,24 @@ def mismatchIds (replay : Input → Except String Observation)
       | .error error => throw s!"{case.id}: {error}"
     if actual != case.observed then mismatches := case.id :: mismatches
   pure mismatches.reverse
+
+private def ioOrThrow (context : String) : Except String α → IO α
+  | .ok value => pure value
+  | .error error => throw (IO.userError s!"{context}: {error}")
+
+def checkArtifacts (captureRoot : System.FilePath) : IO Nat := do
+  let path := captureRoot / bundleFile
+  let actualSha256 ← A12Kernel.Process.Sha256.file path
+  if actualSha256 != bundleSha256 then
+    throw (IO.userError
+      s!"direct-cascade compact bundle digest differs: expected {bundleSha256}, found {actualSha256}")
+  let bundle ← ObservationBundle.Bundle.load path
+  let family ← match bundle.families with
+    | [family] => pure family
+    | _ => throw (IO.userError "direct-cascade compact bundle must contain exactly one family")
+  let mismatches ← ioOrThrow "direct-cascade compact replay" (mismatchIds replay family)
+  if !mismatches.isEmpty then
+    throw (IO.userError s!"direct-cascade compact replay mismatched cases: {repr mismatches}")
+  pure family.cases.length
 
 end A12Kernel.Evidence.StringCascadeProjection
