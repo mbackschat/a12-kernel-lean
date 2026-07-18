@@ -59,28 +59,28 @@ private def expected (producerOutcome : StringTargetOutcome)
   producer := { outcome := producerOutcome, delta := producerDelta }
   consumer := { outcome := consumerOutcome, delta := consumerDelta } }
 
-/- A false common precondition skips the body even when reading that body would poison. -/
+/- A clean not-true common precondition skips the body even when reading that body would poison. -/
 example : (cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
-    false (context (.rejected .malformed) (.parsed (.str "OLD"))) =
+    .notTrue (context (.rejected .malformed) (.parsed (.str "OLD"))) =
       .ok .noValue := by
   rfl
 
-/- With only the gate changed to true, the same malformed source is consumed and poisons the producer. -/
+/- With only the decision changed to holds, the same malformed source is consumed and poisons the producer. -/
 example : (cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
-    true (context (.rejected .malformed) (.parsed (.str "OLD"))) =
+    .holds (context (.rejected .malformed) (.parsed (.str "OLD"))) =
       .ok (.poison .malformed) := by
   rfl
 
-/- A true common precondition delegates to the ordinary accepted-body path. -/
+/- A holding common precondition delegates to the ordinary accepted-body path. -/
 example : valueOf
     ((cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
-      true (context (.parsed (.str "ABC")) (.parsed (.str "OLD")))) =
+      .holds (context (.parsed (.str "ABC")) (.parsed (.str "OLD")))) =
         some (.accepted storedAbc) := by
   native_decide
 
-/- A false common precondition suppresses the same otherwise accepted body. -/
+/- A clean not-true common precondition suppresses the same otherwise accepted body. -/
 example : (cascade (.filled storedOld) (.filled storedOldX)).producer.evaluateOutcomeWhen
-    false (context (.parsed (.str "ABC")) (.parsed (.str "OLD"))) =
+    .notTrue (context (.parsed (.str "ABC")) (.parsed (.str "OLD"))) =
       .ok .noValue := by
   rfl
 

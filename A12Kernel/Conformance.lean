@@ -4,6 +4,7 @@ import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.Correlation
 import A12Kernel.Conformance.Iteration
 import A12Kernel.Conformance.Observation
+import A12Kernel.Conformance.ComputationCondition
 import A12Kernel.Conformance.Required
 import A12Kernel.Conformance.StringLength
 import A12Kernel.Conformance.StringIngestion

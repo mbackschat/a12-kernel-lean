@@ -128,20 +128,27 @@ theorem stringStep_outcome_independent_of_prior
       ({ step with prior := otherPrior }.evaluateOutcome context) := by
   rfl
 
-/-- A false common precondition suppresses an arbitrary String body without consulting its expression or context. -/
-theorem falseStringPrecondition_evaluates_noValue
+/-- A clean not-true common precondition suppresses an arbitrary String body without consulting its expression or context. -/
+theorem notTrueStringPrecondition_evaluates_noValue
     (step : StringComputationStep) (context : StringComputationContext) :
-    step.evaluateOutcomeWhen false context = .ok .noValue := by
+    step.evaluateOutcomeWhen .notTrue context = .ok .noValue := by
   rfl
 
-/-- A true common precondition delegates without changing the ordinary checked outcome. -/
-theorem trueStringPrecondition_preserves_outcome
+/-- A holding common precondition delegates without changing the ordinary checked outcome. -/
+theorem holdingStringPrecondition_preserves_outcome
     (step : StringComputationStep) (context : StringComputationContext) :
-    step.evaluateOutcomeWhen true context = step.evaluateOutcome context := by
+    step.evaluateOutcomeWhen .holds context = step.evaluateOutcome context := by
+  rfl
+
+/-- A poisoned common precondition preserves its exact cause and suppresses the body. -/
+theorem poisonedStringPrecondition_preserves_cause
+    (step : StringComputationStep) (context : StringComputationContext)
+    (cause : FormalCause) :
+    step.evaluateOutcomeWhen (.poison cause) context = .ok (.poison cause) := by
   rfl
 
 /-- Once the common precondition holds, a consumed formally invalid String operand poisons the target instead of becoming quiet no-value. -/
-theorem trueStringPrecondition_consumedInvalidField_poisons
+theorem holdingStringPrecondition_consumedInvalidField_poisons
     (context : StringComputationContext) (operand target : FieldId)
     (cause : FormalCause) (policy : StringTargetLengthPolicy)
     (prior : PriorStringTarget)
@@ -149,7 +156,7 @@ theorem trueStringPrecondition_consumedInvalidField_poisons
     ({ targetField := target
        expression := .field operand
        targetPolicy := policy
-       prior } : StringComputationStep).evaluateOutcomeWhen true context =
+       prior } : StringComputationStep).evaluateOutcomeWhen .holds context =
       .ok (.poison cause) := by
   simp only [StringComputationStep.evaluateOutcomeWhen,
     StringComputationStep.evaluateOutcome,
