@@ -85,16 +85,14 @@ The ordinary gates remain owned by [`TESTING.md`](TESTING.md):
 ```sh
 lake build
 lake test
-lake exe syncFlatHandover --check
 lake exe checkReferenceProcess
 lake exe checkBoundedProcess
-lake exe checkGeneratedDifferential --self-test
-lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
-lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json
+lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v2.conformance.json
+lake exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh
 ```
 
-`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before a generated differential may run. The ordinary gates validate the committed profile's compatibility identity, revisions, generator, projection, and budgets without executing either implementation, then check the retained green receipt's exact profile identity and internal consistency. They do not authenticate its historical execution or compare its historical macOS executable digests with later Linux binaries.
+`checkBoundedProcess` is a release/toolchain regression gate for the maintainer-side process boundary, not a public runtime feature. It must remain green on every supported maintainer platform. Any Lean toolchain or host-platform change requires a fresh source audit of `IO.Process` process-group behavior plus the black-box timeout, output-cap, descendant-cleanup, binary-stream, and status-record tests before relying on candidate conformance. `checkReferenceProcess` rehashes the frozen 0.2.0 descriptor, suites, mutation plan, generated profile, and retained result; it preserves those historical bytes but does not authenticate their original execution or compare historical macOS executable digests with later Linux binaries.
 
 A release candidate additionally requires:
 

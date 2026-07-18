@@ -1,6 +1,5 @@
 import A12Kernel.Evidence.CorrelationReplay
 import A12Kernel.Evidence.CorrelationElaborationReplay
-import A12Kernel.Evidence.FlatProtocolBridge
 import A12Kernel.Evidence.Replay
 import A12Kernel.Evidence.IterationReplay
 import A12Kernel.Evidence.OperatorEmptyReplay
@@ -10,7 +9,6 @@ import A12Kernel.Evidence.StringComputationBinding
 import A12Kernel.Evidence.StringCascadeProjection
 import A12Kernel.Evidence.StringCascadeProjectionTest
 import A12Kernel.Evidence.StringTargetValidationBinding
-import A12Kernel.Process.ArtifactTreeTest
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
@@ -1026,7 +1024,7 @@ private def checkCorrelationElaborationCase (root : System.FilePath)
 
 def main : IO Unit := do
   let root : System.FilePath := "evidence/kernel-30.8.1"
-  A12Kernel.Process.ArtifactTreeTest.check
+  A12Kernel.Evidence.ObservationBundleTest.checkIo
   let directCascadeCount ←
     A12Kernel.Evidence.StringCascadeProjection.checkArtifacts
       (root / "captures/string-direct-cascade-v1")
@@ -1035,8 +1033,6 @@ def main : IO Unit := do
   orThrow "projection.json" bundle.validate
   for case in bundle.cases do
     checkCase root bundle case
-  let flatHandoverCount ←
-    A12Kernel.Evidence.FlatProtocolBridge.capability.checkArtifacts
   let operatorBundle ← orThrow "operator-empty-projection.json"
     (A12Kernel.Evidence.OperatorEmpty.Bundle.fromJson
       (← readJson (root / "operator-empty-projection.json")))
@@ -1072,4 +1068,4 @@ def main : IO Unit := do
   let total := bundle.cases.length + operatorBundle.cases.length + iterationBundle.cases.length +
     correlationBundle.cases.length + correlationElaborationBundle.cases.length +
     stringComputationCount + stringTargetValidationCount + directCascadeCount
-  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; String target validation: {stringTargetValidationCount}/{stringTargetValidationCount} cases bound; direct String cascade: {directCascadeCount}/{directCascadeCount} producer-certified cases replayed; flat handover: {flatHandoverCount}/{flatHandoverCount} cases bound and qualification metadata checked ({bundle.kernelVersion})"
+  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; String target validation: {stringTargetValidationCount}/{stringTargetValidationCount} cases bound; direct String cascade: {directCascadeCount}/{directCascadeCount} producer-certified cases replayed ({bundle.kernelVersion})"

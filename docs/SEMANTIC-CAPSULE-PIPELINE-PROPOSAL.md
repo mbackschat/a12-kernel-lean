@@ -114,7 +114,7 @@ The complete raw packet, qualification sidecars, recapture diff, and mutation re
 
 ## Measurable limits
 
-The first migration has hard budgets measured as nonblank production lines, excluding module comments and JSON data:
+The first migration used the following stop-and-inspect budgets measured as nonblank production lines, excluding module comments and JSON data:
 
 - generic envelope and loader: at most 180;
 - direct-cascade typed family decoder, evaluator projection, and checker: at most 360;
@@ -124,11 +124,11 @@ The first migration has hard budgets measured as nonblank production lines, excl
 - complete first replacement: at most 670;
 - required net reduction from the current direct-cascade stack: at least 1,500.
 
-Across future migrated families, common compact evidence infrastructure should settle around 800–1,000 nonblank lines, not grow in proportion to packet complexity. A new family must not add receipt, filesystem, digest, capability, qualification, or closure code.
+These scoped migration thresholds forced producer responsibilities out of the first replacement; they are not permanent component-size promises after an all-in consolidation moves a live shared guard into the reader while deleting the larger generic mechanism that owned it. Across future migrated families, common compact evidence infrastructure must remain below a 1,000-line ceiling rather than grow in proportion to packet complexity. A new family must not add receipt, filesystem, digest, capability, qualification, or closure code.
 
-If the generic reader exceeds its limit, stop and remove leaked producer responsibilities. If a family exceeds 360 lines, stop and identify whether it is really multiple semantic families. Do not solve a budget miss with compressed unreadable code or generic untyped maps.
+During the first migration, exceeding a scoped limit required stopping to remove leaked producer responsibilities or split an oversized family. After consolidation, any proposed reader growth still requires a demonstrated live cross-family need and an all-in recount below the ceiling. Do not solve a budget miss with compressed unreadable code or generic untyped maps.
 
-The completed measurement is concrete: generic reader 157 nonblank lines, its tests 99, direct-cascade family 249, family tests 130, relocated artifact-tree tests 23, and eight lines of `EvidenceMain` import/check glue, for 666 raw nonblank lines. This is four under the complete 670-line cap. Applying the stated exclusion for module comments and inline JSON fixture data leaves 91 lines of family executable test logic plus 19 lines of generic guard logic, exactly meeting the 110-line tests-plus-guards allowance. The replaceable baseline was 2,179, so the migration removes 1,513 net nonblank lines and clears the required 1,500 reduction by 13.
+The first migration checkpoint measured 666 raw nonblank lines against a 2,179-line packet-specific baseline, a scoped reduction of 1,513. That checkpoint deliberately excluded 359 nonblank lines of shared `Artifact` and `ArtifactTree` production support, so it must not be reported as the final all-in cost. The subsequent consolidation deleted all 382 nonblank lines of generic artifact, tree, and tree-test machinery, moved the live path/digest/file guards into the compact reader, and removed one glue line. The settled all-in lane is 753 nonblank lines: reader 211, reader tests 156, direct-cascade family 249, family tests 130, and seven `EvidenceMain` import/check lines. This is 272 fewer than the honest 1,025-line all-in checkpoint and remains below the 1,000-line common-infrastructure ceiling. The reader's 211 lines supersede the scoped 180-line checkpoint because they absorb only the live guards while removing 359 lines of generic production support; the narrower 670-line first-replacement cap served its migration audit and is not reused to hide formerly shared support.
 
 ## First migration: direct String cascade
 
@@ -146,7 +146,7 @@ The checker compares typed observations directly rather than canonical signature
 
 The old and new lanes coexisted for one migration gate, agreed on all five cases, and the old direct-cascade binder, schema, replay, receipt decoder, and tests were then deleted. No permanent dual path remains.
 
-`A12Kernel/Process/Artifact.lean` and `ArtifactTree.lean` remain because downstream mutation qualification still uses them. Their unique global path-order and symlink guards now live in the 23-nonblank-line process-owned `ArtifactTreeTest.lean`, so deleting the capture receipt tests will not discard generic filesystem coverage.
+The compact [`ObservationBundle`](../A12Kernel/Evidence/ObservationBundle.lean) now owns directly the closed portable-path, digest, bounded-file, and regular non-symlink behavior needed by the live reader. No generic artifact-tree helper remains. The completed Rust mutation campaign is not a reason to retain broader packet-oriented APIs or tests; their historical implementation remains available at Git revision `03186c1`.
 
 ## Producer-side consolidation and frozen a12-dmkits capture-contract V1
 
@@ -167,8 +167,8 @@ The future upstream proposal must inventory three categories:
 3. Completed: measure and simplify the local implementation before requesting the producer.
 4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter now owned by a12-dmkits' [`CONFORMANCE-CORPUS-SPEC.md` §15h](../../a12-rulekit/docs/CONFORMANCE-CORPUS-SPEC.md). Validation-message capture remains outlook only.
 5. Completed: verify and retain the producer-certified compact bundle beside the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
-6. Completed: switch `lake test` to the compact family, retain the relocated generic artifact-tree guards, and delete the replaced direct-cascade stack.
-7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, the net deletion measured 1,513, and current-state owners were updated.
+6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
+7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines.
 8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
 9. Request a new external operation only when a real semantic family needs an observation the settled exporter cannot represent. Do not front-load a universal capture protocol.
 

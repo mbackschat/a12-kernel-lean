@@ -112,19 +112,13 @@ source_zone() {
     A12Kernel/Reference/*)
       printf '%s\n' "reference"
       ;;
-    A12Kernel/Qualification/*)
-      printf '%s\n' "qualification"
-      ;;
-    A12Kernel/Differential/*)
-      printf '%s\n' "differential"
-      ;;
     A12Kernel/Process/*)
       printf '%s\n' "process"
       ;;
     A12Kernel/Trust/*|A12Kernel/TrustAudit.lean)
       printf '%s\n' "trust-driver"
       ;;
-    A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/FlatHandoverMain.lean|A12Kernel/MutationQualificationMain.lean|A12Kernel/GeneratedDifferentialMain.lean|A12Kernel/ProcessTestMain.lean)
+    A12Kernel/EvidenceMain.lean|A12Kernel/ReferenceMain.lean|A12Kernel/ReferenceProcessTestMain.lean|A12Kernel/CandidateConformanceMain.lean|A12Kernel/ProcessTestMain.lean)
       printf '%s\n' "io-driver"
       ;;
     *)
@@ -133,30 +127,47 @@ source_zone() {
   esac
 }
 
-is_logical_source() {
-  [[ "$(source_zone "$1")" == "logical" ]]
+expect_source_zone() {
+  local source="$1"
+  local expected="$2"
+  local actual
+  if ! actual="$(source_zone "$source")"; then
+    echo "trusted source-zone classifier rejects ${expected} source ${source}" >&2
+    exit 1
+  fi
+  if [[ "$actual" != "$expected" ]]; then
+    echo "trusted source-zone classifier assigns ${source} to ${actual}, expected ${expected}" >&2
+    exit 1
+  fi
 }
 
-for allowed_logical_source in \
-    A12Kernel/Basic.lean \
-    A12Kernel/Semantics/Future.lean \
-    A12Kernel/Elaboration/Future.lean \
-    A12Kernel/Proofs/Future.lean; do
-  if ! is_logical_source "$allowed_logical_source"; then
-    echo "trusted source-zone classifier rejects logical source ${allowed_logical_source}" >&2
+expect_unclassified_source() {
+  local source="$1"
+  local actual
+  if actual="$(source_zone "$source")"; then
+    echo "trusted source-zone classifier admits retired or unknown source ${source} as ${actual}" >&2
     exit 1
   fi
-done
+}
 
-for rejected_logical_source in \
-    A12Kernel/Conformance/Future.lean \
-    A12Kernel/Evidence/CapturePacket.lean \
-    A12Kernel/Future/Unexpected.lean; do
-  if is_logical_source "$rejected_logical_source"; then
-    echo "trusted source-zone classifier admits nonlogical source ${rejected_logical_source}" >&2
-    exit 1
-  fi
-done
+expect_source_zone A12Kernel.lean library-root
+expect_source_zone A12Kernel/Basic.lean logical
+expect_source_zone A12Kernel/Semantics/Future.lean logical
+expect_source_zone A12Kernel/Elaboration/Future.lean logical
+expect_source_zone A12Kernel/Proofs/Future.lean logical
+expect_source_zone A12Kernel/Conformance/Future.lean conformance
+expect_source_zone A12Kernel/Evidence/CapturePacket.lean evidence
+expect_source_zone A12Kernel/Reference/Future.lean reference
+expect_source_zone A12Kernel/Process/Future.lean process
+expect_source_zone A12Kernel/Trust/Future.lean trust-driver
+expect_source_zone A12Kernel/EvidenceMain.lean io-driver
+
+expect_unclassified_source A12Kernel/Qualification/Future.lean
+expect_unclassified_source A12Kernel/Differential/Future.lean
+expect_unclassified_source A12Kernel/FlatHandoverMain.lean
+expect_unclassified_source A12Kernel/MutationQualificationMain.lean
+expect_unclassified_source A12Kernel/GeneratedDifferentialMain.lean
+expect_unclassified_source A12Kernel/Future/Unexpected.lean
 
 project_source_files="A12Kernel.lean"
 enumerated_project_sources=""

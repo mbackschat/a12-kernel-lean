@@ -20,22 +20,9 @@ root = "A12Kernel.CandidateConformanceMain"
 needs = ["a12-bounded-process-relay"]
 
 [[lean_exe]]
-name = "syncFlatHandover"
-root = "A12Kernel.FlatHandoverMain"
-
-[[lean_exe]]
-name = "checkMutationQualification"
-root = "A12Kernel.MutationQualificationMain"
-
-[[lean_exe]]
 name = "checkReferenceProcess"
 root = "A12Kernel.ReferenceProcessTestMain"
 needs = ["a12-kernel-reference", "checkCandidateConformance"]
-
-[[lean_exe]]
-name = "checkGeneratedDifferential"
-root = "A12Kernel.GeneratedDifferentialMain"
-needs = ["a12-bounded-process-relay"]
 
 [[lean_exe]]
 name = "a12-bounded-process-relay"

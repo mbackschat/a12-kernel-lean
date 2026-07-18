@@ -61,10 +61,6 @@ lake build
 lake test
 lake exe checkReferenceProcess
 lake exe checkBoundedProcess
-lake exe checkGeneratedDifferential --self-test
-# The next two gates deliberately validate the frozen 0.2.0 Rust campaign.
-lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
-lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json
 ./scripts/check-lean-trust.sh
 ```
 
