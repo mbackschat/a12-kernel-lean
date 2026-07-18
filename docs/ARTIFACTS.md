@@ -6,7 +6,7 @@ This guide explains what belongs under [`evidence/`](../evidence/), [`reference/
 
 | Directory | Role | Source of truth? | Normal evolution |
 |---|---|---|---|
-| [`evidence/`](../evidence/) | Retained external observations, exact probe inputs, and compact accepted semantic bundles | Checked-out observations preserve the current empirical claim; accepted compact bundles are the ordinary Lean replay interface, not a second oracle | Append, version, explicitly correct, or compact under a reviewed migration; archive superseded raw estates at an exact Git revision before deletion |
+| [`evidence/`](../evidence/) | Three compact accepted semantic-observation bundles | Checked-out observations preserve the current finite empirical claim; compact bundles are the ordinary Lean replay and public-association interface, not a second oracle | Append, version, or explicitly correct; retain raw audit inputs only until a reviewed compact migration records their exact recovery revision |
 | [`reference/`](../reference/) | Portable consumer shipments and the readable support-manifest mirror | Mostly derived from Lean and retained evidence; the correlation suite remains a reviewed manual index | Derive new current identities from their owners, maintain reviewed indices explicitly, and never regenerate a frozen compatibility line in place |
 | [`examples/`](../examples/) | Runnable user examples, golden process regressions, and generated shipment fixtures | No; expected outputs are reviewed regression locks, not kernel evidence | Curate the small human-facing set and regenerate owned fixture sets |
 | [`docs/archived/`](archived/) plus exact Git revisions | Retired compatibility identities, campaign outcomes, deleted artifact digests, and recovery instructions | Yes, for the documented historical claim and recovery boundary; no, for current behavior | Preserve concise immutable records; inspect deleted bytes at their pinned revision rather than restoring them to current source |
@@ -27,7 +27,7 @@ independent candidate qualification
 
 The real kernel remains the behavioral authority. The Lean theory is the executable semantics-of-record for the project's chosen account. Retained evidence connects that account empirically to particular kernel observations. Generated shipments expose a closed part of the account to independent consumers. Qualification records preserve what was source-replayed or externally reported under their explicit assurance class. None of these roles should silently absorb another.
 
-The direct-cascade migration demonstrates how a complete raw audit unit can certify a compact Lean replay bundle without remaining in every checkout. The producing a12-dmkits revisions verified the raw packet, runner, input, capability, qualification, closure, receipt, recapture relations, and compact export. One small generic reader checks the compact bundle contract, and a typed family decoder checks the pinned semantic input/observation projection. The migration ran the former complete binder and compact lane together once; the current tree retains only the compact bundle, while the [archive](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) names the exact raw recovery revision and identities.
+The three completed migrations demonstrate how a complete raw audit estate can certify a compact semantic bundle without remaining in every checkout. One small generic reader checks the bundle contract, and each typed family projection checks its pinned semantic input/observation account. Each migration ran its former complete binder and compact lane together once; the current tree retains only the compact bundle, while the [validation](archived/VALIDATION-RAW-EVIDENCE.md), [root-String](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), and [direct-cascade](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) archives name exact raw recovery revisions and identities.
 
 Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and manifest compatibility in [`PROTOCOL.md`](PROTOCOL.md), executable gates in [`TESTING.md`](TESTING.md), consumer shipment and qualification contracts in [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md), and current unfinished work in [`PLAN.md`](PLAN.md). This guide owns only the directory-level classification and lifecycle connecting those contracts.
 
@@ -35,16 +35,13 @@ Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and man
 
 ### Contents
 
-The versioned [`evidence/kernel-30.8.1/`](../evidence/kernel-30.8.1/) bundle currently contains:
+The versioned [`evidence/kernel-30.8.1/`](../evidence/kernel-30.8.1/) tree currently contains exactly three files, all named `semantic-observations.json` under separate capture identities:
 
-- runtime observation records under [`cases/`](../evidence/kernel-30.8.1/cases/);
-- static authoring observations under [`diagnostics/`](../evidence/kernel-30.8.1/diagnostics/);
-- complete standalone DM-JSON probe inputs under [`models/`](../evidence/kernel-30.8.1/models/);
-- the digest-pinned [`operator-sensitive-empty-2026-07-15.json`](../evidence/kernel-30.8.1/captures/operator-sensitive-empty-2026-07-15.json) capture receipt plus two compact semantic bundles under [`captures/`](../evidence/kernel-30.8.1/captures/): the project-reviewed root-String [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json) and producer-certified direct-cascade [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json);
-- an auxiliary interpreter-versus-kernel disagreement record under [`triangulation/`](../evidence/kernel-30.8.1/triangulation/);
-- five reviewed Lean-facing projection files: [`projection.json`](../evidence/kernel-30.8.1/projection.json) for flat/path/required, [`iteration-projection.json`](../evidence/kernel-30.8.1/iteration-projection.json) for uncorrelated iteration, [`correlation-projection.json`](../evidence/kernel-30.8.1/correlation-projection.json) for captured-outer correlation, [`correlation-elaboration-projection.json`](../evidence/kernel-30.8.1/correlation-elaboration-projection.json) for checked correlation elaboration, and [`operator-empty-projection.json`](../evidence/kernel-30.8.1/operator-empty-projection.json) for operator-sensitive empty values.
+- [validation core](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), 49 records split into 25 public associations and 24 private replays, with 48 distinct external observations because one directional witness is intentionally shared;
+- [root String computation](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json), 22 project-reviewed non-public replays;
+- [direct String cascade](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json), five producer-certified non-public replays.
 
-The case, diagnostic, and model files preserve the input and externally observable result of a focused experiment. A capture receipt binds provenance, file identities, and strategy outputs that do not fit the portable case shape; it remains a retained historical report, not proof that an unavailable temporary harness or validator command ran. The projections are narrower structured translations into the input boundary understood by the current Lean capsules. A projection is therefore a reviewed bridge, not an additional kernel observation and not a replacement for the retained full model and output.
+Each bundle preserves the narrow typed input and externally supported observation consumed by the current Lean semantics or public suite. The raw case, diagnostic, model, triangulation, packet, and receipt estates are historical audit inputs recoverable through the archives and Git, not live source-of-truth files that routine replay rechecks.
 
 ### Responsibility and authority
 
@@ -57,18 +54,18 @@ The complete provenance and claim boundary are owned by [`EVIDENCE.md`](EVIDENCE
 - A pure Lean refactor must not change raw retained observations. A reviewed projection also remains unchanged unless the Lean-facing bridge itself intentionally changes.
 - A protocol, fixture-layout, or shipment change must not change raw retained observations.
 - A changed Lean semantic account must replay against the same retained observations. A disagreement is investigated; the raw evidence is never refreshed merely to make the test green.
-- For root-String computation and direct cascade, compact bundles name archived raw audit identities and ordinary Lean replay binds only typed semantic projections. Their one-time migration records remain immutable; current replay never restores the removed packet/model binders.
+- All three compact bundles name archived raw audit identities, and ordinary gates bind only typed semantic projections or exact public request/observation associations. Their one-time migration records remain immutable; current replay never restores the removed schema, packet, model, or diagnostic binders.
 - A newly modeled semantic clause may remain explicitly `external evidence pending`. Before claiming external correspondence or evidence-complete status, add the smallest focused observation and reviewed projection needed to anchor it.
 - Historical evidence layouts and disposable-harness receipts remain immutable at their named recovery revision. A future accepted handback retains the complete observation and assurance material required by its own reviewed contract long enough to certify the smallest compact semantic account needed for ordinary Lean replay; its lifecycle must say whether the raw unit remains checked out or moves to Git history. It does not automatically reproduce the retired V1 packet, capabilities, qualification, or receipt graph. Do not retain only selected agreeing observations when the accepted contract claims a richer raw boundary. Kernel binaries, kernel-linked types or implementation code, volatile execution logs, and generated machine-specific state remain outside `evidence/`.
 - A new kernel version gets a new versioned bundle. It must not silently rewrite [`kernel-30.8.1/`](../evidence/kernel-30.8.1/).
 - A faulty capture is corrected only as an explicit provenance-bearing evidence correction.
-- Full probe models remain complete and readable while they are the active replay source. A reviewed compact migration may move them to an exact recovery revision only after preserving the claimed semantic inputs and observations.
+- Full probe models remain complete and readable while they are the active migration source. A reviewed compact migration may move them to an exact recovery revision only after preserving the claimed semantic inputs, observations, assurance limits, and triangulation disagreements.
 
-Run `lake test` to replay the supported projection of all retained observations. `checkReferenceProcess` checks the current 0.3.0 manifest, fixtures, transport behavior, and V2 controls; neither gate writes under `evidence/`.
+Run `lake test` to replay the 51 non-public cases: 24 validation, 22 root String, and five direct cascade. `checkReferenceProcess` owns the 25 public validation/correlation evidence associations as well as the current 0.3.0 manifest, fixtures, transport behavior, and V2 controls. Neither gate writes under `evidence/`.
 
 ### Current integrity gaps
 
-Some older runtime projections still repeat cells, rows, paths, and structured conditions that were manually read from retained placements. Those transcriptions are reviewed but not all mechanically derived from the full case and model. The producer-certified direct-cascade bundle removed that live binding gap for its named projection. The project-reviewed root-String migration instead preserves its original transcription boundary honestly while removing the recurring raw/binder checkout and maintenance burden: its exact old/new agreement and historical complete binders remain recoverable, but routine replay checks only the compact semantics. No new placement-to-packet binder or repository-wide raw inventory should be added merely for uniformity.
+The validation and root-String bundles remain project-reviewed projections; not every typed cell, row, path, or condition was mechanically derived from a current full model because those raw estates are no longer live. Their exact old/new agreement and historical complete binders remain recoverable, while routine replay checks only the accepted compact semantics. The direct-cascade bundle has a stronger producer-certified provenance. This distinction is intentional and documented in [`EVIDENCE.md`](EVIDENCE.md); no new placement-to-packet binder or repository-wide raw inventory should be added merely for uniformity.
 
 ## `reference/`: portable consumer shipments
 
@@ -96,11 +93,11 @@ They are distribution projections, not the authoring source of the semantics. Cu
 - Removing a generated case must also remove every generated file and index entry; exact-directory checks should reject stale output.
 - Do not update a qualification or differential profile in place after it has a retained result. A changed generator, bound, projection, source revision, or candidate revision creates a new profile identity and a new result.
 
-`lake exe checkReferenceProcess` compares the live CLI manifest with the current readable V2 mirror, exercises the committed process fixtures, and runs the current flat and correlation suite controls against the compiled reference. The current flat suite's directional witness remains independently bound by [`OperatorProtocolBridge`](../A12Kernel/Evidence/OperatorProtocolBridge.lean) rather than trusting a hand-written evidence association. A future shipment must use a current production path and a reviewed identity; it must not revive the historical V1 bridge merely to reconstruct deleted bytes.
+`lake exe checkReferenceProcess` compares the live CLI manifest with the current readable V2 mirror, exercises the committed process fixtures, runs the current flat and correlation suite controls against the compiled reference, and checks all 25 public suite cases against their exact request and supported observation in the SHA-pinned compact validation bundle. A future shipment must use a current production path and a reviewed identity; it must not revive a deleted case-specific or historical V1 bridge merely to reconstruct bytes.
 
 ### Current integrity gap
 
-The current correlation suite is structurally validated and executed against the current reference, but its projection-to-protocol associations are still maintained manually. Correlation should be converted to a typed descriptor and checked generation pattern before another large capability is added. The current support-manifest mirror is drift-checked by the process gate but does not have an independent write command.
+The current public case-to-evidence associations are mechanically checked, but the correlation suite document itself remains a reviewed manual index rather than generated output. The current support-manifest mirror is drift-checked by the process gate but does not have an independent write command.
 
 ## `examples/`: human examples and regression fixtures
 

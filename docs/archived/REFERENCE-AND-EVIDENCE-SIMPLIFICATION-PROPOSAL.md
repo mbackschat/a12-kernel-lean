@@ -1,6 +1,6 @@
 # Reference and evidence simplification proposal
 
-> **Status:** adopted and in progress, 2026-07-18. Decision 1 is complete, Decision 2 has completed the direct-cascade and root-String migrations and continues with the remaining old evidence families, and Decision 3 is complete for every migrated family. This is not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived.
+> **Status:** archived 2026-07-19 after completion. All three decisions are implemented; current semantics, proofs, V2 controls, and empirical observations remain live through the compact boundary. Durable architecture and artifact rules have moved to their owners.
 
 ## Outcome
 
@@ -22,11 +22,11 @@ All figures below count tracked file bytes and exclude ignored `.DS_Store` files
 | Evidence modules and driver | 315,181 | 5,893 | Primary source-reduction target |
 | `evidence/` | 969,605 | 25,128 | Primary data-reduction target |
 
-The existing compact direct-cascade reader, typed projection, and tests occupy 42,356 bytes and 746 nonblank lines. The other evidence modules occupy 217,746 bytes and 4,163 lines, while [`EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean) adds another 55,079 bytes and 984 lines. This is the imbalance to remove.
+The existing compact direct-cascade reader, typed projection, and tests occupy 42,356 bytes and 746 nonblank lines. The other evidence modules occupy 217,746 bytes and 4,163 lines, while [`EvidenceMain.lean`](../../A12Kernel/EvidenceMain.lean) adds another 55,079 bytes and 984 lines. This is the imbalance to remove.
 
 The `evidence/` mass is mostly repeated complete input material: `models/` alone is 630,297 bytes, captures are 146,049 bytes, and cases are 110,649 bytes. These files are valuable audit inputs, but most are not needed by current V2 candidate execution and need not remain checked out after compact replay and exact historical recovery are established.
 
-The durable ratio guard is defined in [`CLAUDE.md`](../CLAUDE.md): after this wave, total Evidence/Reference/Process support code and its IO/test drivers must not exceed the Semantics/Elaboration/Proofs/Conformance estate in tracked nonblank Lean lines, and evidence alone should remain below one third of that theory estate. Until then, support-only changes must be net-negative. These are stop-and-redesign thresholds, not incentives to compress readable code or weaken tests.
+The durable ratio guard is defined in [`CLAUDE.md`](../../CLAUDE.md): after this wave, total Evidence/Reference/Process support code and its IO/test drivers must not exceed the Semantics/Elaboration/Proofs/Conformance estate in tracked nonblank Lean lines, and evidence alone should remain below one third of that theory estate. Until then, support-only changes must be net-negative. These are stop-and-redesign thresholds, not incentives to compress readable code or weaken tests.
 
 Use this exact `zsh` count while the proposal is active:
 
@@ -41,34 +41,36 @@ awk 'NF { n++ } END { print n+0 }' "${evidence_files[@]}"
 
 At this baseline it prints 5,453 theory, 10,076 support, and 5,893 evidence lines. After local V1 retirement and before writing any replacement family, recount and compute the final evidence allowance as the smaller of one third of theory and `theory − non-evidence support`. Budget the existing compact lane and every remaining family together against that allowance. If readable closed projections and their separating tests do not fit, remove more obsolete support, retain the affected old family temporarily, or request an explicit owner exception; never meet the ratio by compression, untyped shortcuts, weakened checks, or deleting an observation still claimed by current documentation.
 
-After the root-String deletion, the same count prints 5,453 theory, 8,009 support, and 4,121 evidence lines. Non-evidence support is 3,888, so both ratio limits currently converge on a final evidence allowance of 1,565 lines. The settled generic reader/tests and the two compact String lanes already occupy 1,082; every remaining typed family plus the final driver therefore has at most 483 readable nonblank lines. Step 10 begins with a shape-and-budget preflight against that real limit. If the necessary closed decoders and separating checks cannot fit without compression or a new framework, stop and report the exact invariant and alternatives rather than forcing the number.
+After the root-String deletion, the same count printed 5,453 theory, 8,009 support, and 4,121 evidence lines. Non-evidence support was 3,888, so both ratio limits converged on a final evidence allowance of 1,565 lines. The settled generic reader/tests and the two compact String lanes occupied 1,082, leaving 483 readable nonblank lines for every remaining typed family plus the final driver. Step 10 therefore began with a shape-and-budget preflight against that real limit rather than forcing the number through compression, untyped shortcuts, or weakened checks.
+
+The completed wave measures 5,453 theory, 5,449 support, and 1,528 evidence nonblank Lean lines. Tracked `A12Kernel/` is 577,449 bytes and tracked `evidence/` is 135,047 bytes. Evidence is below one third of theory, total support is four lines below theory, and the checked-out evidence is exactly three compact bundles. The permanent validation projection and focused tests occupy 428 readable lines; the final common driver remains small.
 
 ## Decision 1 — retire local reference-semantics V1 (completed)
 
 Current V2 already subsumes the finite V1 behavior:
 
-- [`flat-validation-empty-logic-v2.conformance.json`](../reference/flat-validation-empty-logic-v2.conformance.json) contains the complete eight-case V1 body unchanged and adds the corrected directional Number witness.
-- [`single-group-correlation-v2.conformance.json`](../reference/single-group-correlation-v2.conformance.json) has the same sixteen-case body as V1; only the identity, reference-semantics version, and manifest association differ.
-- [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json) retains protocol 1, manifest schema 2, kernel 30.8.1, the same operations, and the same admitted surface while naming the current account.
+- [`flat-validation-empty-logic-v2.conformance.json`](../../reference/flat-validation-empty-logic-v2.conformance.json) contains the complete eight-case V1 body unchanged and adds the corrected directional Number witness.
+- [`single-group-correlation-v2.conformance.json`](../../reference/single-group-correlation-v2.conformance.json) has the same sixteen-case body as V1; only the identity, reference-semantics version, and manifest association differ.
+- [`supported-fragment-v2.json`](../../reference/supported-fragment-v2.json) retains protocol 1, manifest schema 2, kernel 30.8.1, the same operations, and the same admitted surface while naming the current account.
 - The current reference executable passes both old finite suites as well as V2.
 
 V2 therefore replaces every active V1 conformance use. It does not retroactively relabel the Rust candidate or its 52/52 result as a V2 qualification. Move that historical experiment to one archived document with its exact revisions, verdict distribution, and key hashes, then remove it from live compatibility gates and current handover instructions.
 
-The stale `checkGeneratedDifferential` invocations were already removed from [CI](../.github/workflows/lean_action_ci.yml) in commit `c2287d5`; the retired Lake target is no longer called. The completed migration:
+The stale `checkGeneratedDifferential` invocations were already removed from [CI](../../.github/workflows/lean_action_ci.yml) in commit `c2287d5`; the retired Lake target is no longer called. The completed migration:
 
 1. Update the two existing implementer-kit paths in place to describe current V2 semantics, manifests, suites, commands, and exclusions. Do not create parallel V1/V2 kits.
 2. Move the historical Rust experiment and reference-semantics 0.2.0 provenance into `docs/archived/`; remove V1 compatibility history from live docs.
-3. Deleted `Reference/Lineage.lean` and moved its four current constants directly into [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean); a separate one-record identity module would have added indirection without a second live account.
-4. Remove historical lock traversal, separating-replay serialization, V1-prefix comparison, and lineage-mirror checks from [`ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean), while retaining current manifest, directional regression, V2 suite integrity, and current candidate controls.
+3. Deleted `Reference/Lineage.lean` and moved its four current constants directly into [`Reference/Support.lean`](../../A12Kernel/Reference/Support.lean); a separate one-record identity module would have added indirection without a second live account.
+4. Remove historical lock traversal, separating-replay serialization, V1-prefix comparison, and lineage-mirror checks from [`ReferenceProcessTestMain.lean`](../../A12Kernel/ReferenceProcessTestMain.lean), while retaining current manifest, directional regression, V2 suite integrity, and current candidate controls.
 5. Delete the V1 manifest, descriptor, two V1 suites, mutation plan, generated profile, Rust result, artifact lock, separating replay, and lineage mirror. Delete the empty `qualification/` tree if nothing remains.
 6. Remove redundant trust-script probes for already-deleted source names; the general source-zone inventory remains the owning guard.
 7. Sweep live docs for reference-semantics 0.2.0/V1 compatibility claims. Preserve the current wire protocol 1 and never rename it V2.
 
-This stage removed 88,535 checked-out bytes and 2,196 nonblank data/source lines across the explicit V1 estate, plus the historical process-gate branch. Its direct `A12Kernel/` saving is modest; its main value is removing compatibility coupling and unlocking the larger evidence deletion. The current gate still checks the current manifest, fixtures, V2 integrity suites, and compiled-reference controls. The [archive](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md) owns the deleted identities, hashes, Rust outcome, and recovery revisions.
+This stage removed 88,535 checked-out bytes and 2,196 nonblank data/source lines across the explicit V1 estate, plus the historical process-gate branch. Its direct `A12Kernel/` saving is modest; its main value is removing compatibility coupling and unlocking the larger evidence deletion. The current gate still checks the current manifest, fixtures, V2 integrity suites, and compiled-reference controls. The [archive](REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md) owns the deleted identities, hashes, Rust outcome, and recovery revisions.
 
-## Decision 2 — perform one final evidence-compaction wave
+## Decision 2 — perform one final evidence-compaction wave (completed)
 
-Do not create another general harness. Reuse the existing closed [`ObservationBundle`](../A12Kernel/Evidence/ObservationBundle.lean) contract and write only small family-specific typed projections. For each old family, establish exact old/new agreement once at a named revision, retain the compact bundle and projection, then delete the old schema/replay/binder code and verbose raw artifacts from `HEAD`.
+Do not create another general harness. Reuse the existing closed [`ObservationBundle`](../../A12Kernel/Evidence/ObservationBundle.lean) contract and write only small family-specific typed projections. For each old family, establish exact old/new agreement once at a named revision, retain the compact bundle and projection, then delete the old schema/replay/binder code and verbose raw artifacts from `HEAD`.
 
 The compact family must retain enough information to replay the same empirical claim: kernel behavior version, stable case identity and order, normalized semantic input, externally observed output at the claimed fidelity, provenance revision, and digest references to the archived raw source. If a current upstream route can certify those bytes without resurrecting the retired capture V1, use that certification. Otherwise label the result honestly as a project-reviewed compact projection, bind the exact pre-compaction Git revision and raw digests, and keep the full raw material recoverable there.
 
@@ -84,13 +86,13 @@ The two older String stacks were migrated together before further computation-co
 | String target-validation schema/replay/binder and retained data | 61,521 bytes | 33,399 bytes | 94,920 bytes |
 | Combined | 114,804 bytes | 80,490 bytes | 195,294 bytes |
 
-Commit `19733d9` is the immutable dual-path checkpoint: the complete old binders, a migration-only typed comparator, and the compact replay agreed on all 22 ordered cases. The deletion then removes the six old modules, the temporary comparator, and 33 raw files. One 13,104-byte compact bundle retains two independent source records, while one 271-nonblank-line typed projection and 65 lines of focused mutation tests preserve the two original observation fidelities without adding a route, reader, registry, or generator. The source replacement is 336 lines versus the old permanent 2,106, a net removal of 1,770 nonblank Lean lines; the data replacement removes 67,386 bytes. Exact recovery identities and limits live in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](archived/STRING-COMPUTATION-RAW-EVIDENCE.md).
+Commit `19733d9` is the immutable dual-path checkpoint: the complete old binders, a migration-only typed comparator, and the compact replay agreed on all 22 ordered cases. The deletion then removes the six old modules, the temporary comparator, and 33 raw files. One 13,104-byte compact bundle retains two independent source records, while one 271-nonblank-line typed projection and 65 lines of focused mutation tests preserve the two original observation fidelities without adding a route, reader, registry, or generator. The source replacement is 336 lines versus the old permanent 2,106, a net removal of 1,770 nonblank Lean lines; the data replacement removes 67,386 bytes. Exact recovery identities and limits live in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](STRING-COMPUTATION-RAW-EVIDENCE.md).
 
-### Remaining families
+### Remaining families — completed
 
-After the String migration proves the deletion pattern, compact the remaining old families in the same bounded wave:
+The final migration compacted the remaining old families together because their public cases could reuse the current process gate and their non-public cases fit one closed typed projection:
 
-| Family data currently checked out | Bytes |
+| Removed family data | Bytes |
 |---|---:|
 | Flat/path/required | 340,292 |
 | Correlation | 221,666 |
@@ -98,15 +100,15 @@ After the String migration proves the deletion pattern, compact the remaining ol
 | Operator-sensitive | 72,000 |
 | Correlation elaboration | 26,266 |
 
-Current V2 suites inspect only four projection files for kernel version and case-ID membership. Point those controls at the compact bundles or retain tiny evidence indexes; do not keep full models solely for membership checks.
+Commit `a04d6d9f51227dbe47014a5181590507e1b269bd` is the immutable validation dual-path checkpoint. Its legacy readers checked all 48 validation cases, the new compact lane replayed all 24 private validation cases, and the current V2 process gates checked the 25 public associations against exact normalized requests and projected responses. The already-compact 22-case root-String and five-case cascade lanes also passed, while their own archives retain their earlier complete-binder comparisons. The public/private directional witness is deliberately shared, so the validation bundle has 49 records for 48 distinct external observations.
 
-Once every current family is compact, reduce `EvidenceMain.lean` to a small dispatcher and delete the superseded schemas, replays, raw-model parsers, and family-specific binding logic. The settled compact reader remains outside the trusted semantics/proof/conformance roots.
+The final deletion removes 85 raw files totaling 761,310 bytes and 12 schema/replay/bridge modules totaling 2,061 nonblank Lean lines, then replaces the legacy driver with a small dispatcher. The 116,974-byte validation bundle and 428-line projection/test lane retain the observable boundary without preserving a second model, path, or correlation interpreter. Exact recovery identities and limits live in [`archived/VALIDATION-RAW-EVIDENCE.md`](VALIDATION-RAW-EVIDENCE.md).
 
-## Decision 3 — archive opaque raw units outside `HEAD` (completed for migrated families)
+## Decision 3 — archive opaque raw units outside `HEAD` (completed)
 
-The current Lean code reads only the 4,969-byte direct-cascade compact export and the 13,104-byte root-String compact bundle for those migrated lanes. The direct-cascade archive migration recorded exact producer revisions, project recovery revision, Git tree objects, receipt and scenario SHA-256 identities, and claim limits in [`archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md`](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md), then removed 31 raw/scenario files, 123,184 bytes, and 4,056 nonblank lines from `HEAD`. The root-String migration records its two raw capture identities, projection and model digests, case trees, dual-path agreement checkpoint, and claim limits in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), then removes 33 raw files and 80,490 bytes after exact 22/22 agreement.
+The current Lean code reads only three compact bundles: the 4,969-byte direct-cascade export, the 13,104-byte root-String bundle, and the 116,974-byte validation bundle. The direct-cascade archive migration recorded exact producer revisions, project recovery revision, Git tree objects, receipt and scenario SHA-256 identities, and claim limits in [`archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md`](STRING-DIRECT-CASCADE-RAW-EVIDENCE.md), then removed 31 raw/scenario files, 123,184 bytes, and 4,056 nonblank lines from `HEAD`. The root-String migration records its two raw capture identities, projection and model digests, case trees, dual-path agreement checkpoint, and claim limits in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](STRING-COMPUTATION-RAW-EVIDENCE.md), then removes 33 raw files and 80,490 bytes after exact 22/22 agreement. The validation archive records the five source projection digests, operator receipt, source trees, one-time checkpoint, fidelity reductions, and triangulation limits before removing the remaining raw estate.
 
-Apply the same rule to each migrated family: compact observations stay checked out; complete raw audit material moves to a named immutable Git revision or tag with a digest manifest. Git history remains the recovery archive. A release asset may mirror that archive for convenience but is not the sole authority.
+The durable rule is now settled: compact observations stay checked out; complete raw audit material moves to a named immutable Git revision with exact identities in an archive record. Git history remains the recovery archive. A release asset may mirror that archive for convenience but is not the sole authority.
 
 This reduces working trees, source archives, and ordinary release checkouts. It does not shrink existing full Git history; rewriting history for a repository of this size would add more risk than value and is not proposed.
 
@@ -135,6 +137,8 @@ Going materially below the target ranges would require a separate product decisi
 
 The realistic target is `A12Kernel/` at approximately 580–650 KiB and `evidence/` at approximately 50–150 KiB, excluding ignored files, without cutting the theory or current product boundary.
 
+The completed working tree is 577,449 tracked bytes under `A12Kernel/` and 135,047 tracked bytes under `evidence/`; the small `A12Kernel/` underrun reflects deletion of obsolete support rather than lost theory. `lake test` owns 51 compact private replays—24 validation, 22 root-String, and five direct-cascade—while `checkReferenceProcess` owns 25 exact public normalized associations. These are separate gates and must not be summed into a claim that one runner replayed all 76 records; the validation bundle itself contains 49 records for 48 distinct observations.
+
 Run after each independently committable stage:
 
 ```sh
@@ -155,4 +159,4 @@ Also require resolved Markdown links, no live reference to deleted Lake targets 
 
 ## Recommended order
 
-The stale CI calls, local V1-to-V2 retirement, direct-cascade archive migration, and root-String migration are complete. Compact flat/operator, correlation/elaboration, and iteration next; reduce the driver as those families move. Archive this proposal once the measured targets and gates pass, then return immediately to ordered computation connectives and first-match alternatives with the infrastructure settled.
+The stale CI calls, local V1-to-V2 retirement, all three compact migrations, raw-estate deletion, driver reduction, measurements, and gates are complete. This proposal is archived with the delivery; subsequent work returns immediately to ordered computation connectives and first-match alternatives with the infrastructure settled.

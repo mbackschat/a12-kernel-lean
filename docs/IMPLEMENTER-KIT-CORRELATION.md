@@ -26,12 +26,12 @@ A Rust developer receives these project-local artifacts and does not need the ke
 - the generated positive support declaration in [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json);
 - the language-neutral 16-case suite in [`single-group-correlation-v2.conformance.json`](../reference/single-group-correlation-v2.conformance.json);
 - its runnable request/response files under [`examples/reference-cli/`](../examples/reference-cli/), beginning with [`correlation-direction.request.json`](../examples/reference-cli/correlation-direction.request.json);
-- the retained runtime and static evidence projections, [`correlation-projection.json`](../evidence/kernel-30.8.1/correlation-projection.json) and [`correlation-elaboration-projection.json`](../evidence/kernel-30.8.1/correlation-elaboration-projection.json), referenced case-by-case by the suite;
+- the compact validation [`semantic-observations.json`](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), its typed [`ValidationProjection.lean`](../A12Kernel/Evidence/ValidationProjection.lean) consumer, and the [archive](archived/VALIDATION-RAW-EVIDENCE.md) for removed raw provenance and recovery;
 - the current `a12-kernel-reference` executable for development differentials;
 - the standalone `checkCandidateConformance` runner for any command-line implementation;
 - the theorem and checked-non-law audit links in this document.
 
-The suite is the downstream test input. The evidence projections establish why the listed expected choices are credible; a downstream implementation does not have to decode their Lean replay schemas.
+The suite is the downstream test input. The compact evidence associations establish why the listed expected choices are credible; a downstream implementation does not have to decode the bundle or its Lean projection.
 
 ## Language-neutral checked model
 
@@ -115,7 +115,7 @@ And StockQty(Inner) == StockQty(Outer)
 
 ## Evidence-to-decision map
 
-Every runtime row below is manually cross-referenced by the conformance suite to [`correlation-projection.json`](../evidence/kernel-30.8.1/correlation-projection.json). Groovy-dynamic kernel, static-Java kernel, a12-dmkits, retained external messages, and the Lean projection agree for these exact cases. The public operation's projected external observable is firing membership; the retained artifacts also contain complete message signatures and polarity that this operation does not expose.
+Every runtime row below is a public record in the compact validation bundle. The candidate process pins that bundle, requires the suite case's exact normalized request to equal the retained input, and requires its expected `firingRows` projection to equal the retained observation. Its self-test rejects a changed request, changed projected response, or alias to another existing evidence case. Groovy-dynamic kernel, static-Java kernel, a12-dmkits, retained external messages, and the Lean projection agree for these exact cases. The public operation exposes only firing membership; richer historical message signatures and polarity are recoverable through the [validation archive](archived/VALIDATION-RAW-EVIDENCE.md), not part of this public response.
 
 | Case | Decision locked | Expected `firingRows` |
 |---|---|---:|
@@ -132,7 +132,7 @@ Every runtime row below is manually cross-referenced by the conformance suite to
 | `correlation-repetition-equal` | repetition equality selects self | `[2]` |
 | `correlation-repetition-less-than` | inner repetition ordering selects predecessors | `[2,3]` |
 
-The suite's final four cases are manually cross-referenced to [`correlation-elaboration-projection.json`](../evidence/kernel-30.8.1/correlation-elaboration-projection.json): all-outer maps to public `elaboration/missingInner`; mixed-scale equality maps to `elaboration/equalityScaleMismatch`; the same fields under `<` elaborate successfully; and an inner field in sibling repeatable `Supply` maps to `elaboration/fieldOutsideGroup` while starring `Demand`. The retained observations establish the three rejection classes or static acceptance; the public diagnostic category/code, `at`, and `details` are project-defined normalized projections. For the accepted ordering case, the fixture's empty `firingRows` runtime answer is a Lean-account expectation over its normalized empty cells, not a kernel runtime observation.
+The suite's final four cases are likewise bound to compact public records: all-outer maps to public `elaboration/missingInner`; mixed-scale equality maps to `elaboration/equalityScaleMismatch`; comparison of the same fields under `<` elaborates successfully; and an inner field in sibling repeatable `Supply` maps to `elaboration/fieldOutsideGroup` while starring `Demand`. The retained observations establish the three rejection classes or static acceptance; the public diagnostic category/code, `at`, and `details` are project-defined normalized projections. For the accepted ordering case, evidence binds only static acceptance; the fixture's empty `firingRows` answer is a Lean-account evaluation over its normalized empty cells.
 
 ## Law index for property tests
 
@@ -230,7 +230,7 @@ lake exe checkCandidateConformance \
   --suite reference/single-group-correlation-v2.conformance.json
 ```
 
-The runner invokes the candidate directly without a shell through the bounded relay, requires exit `0`, empty standard error, one normalized JSON response ending in a newline, and deterministic repeated output bytes. It compares parsed JSON structurally, so the candidate need not reproduce Lean's object-key ordering. It uses bounded duplicate-safe parsing, enforces closed suite/case/evidence objects, selects exactly one matching operation from the committed manifest, validates the compatibility identity and retained case counts, checks every evidence classification and case ID, and exercises 17 negative integrity guards. It does not query the candidate's manifest; a qualification record must pin candidate bytes and the claimed suite identity separately.
+The runner invokes the candidate directly without a shell through the bounded relay, requires exit `0`, empty standard error, one normalized JSON response ending in a newline, and deterministic repeated output bytes. It compares parsed JSON structurally, so the candidate need not reproduce Lean's object-key ordering. It uses bounded duplicate-safe parsing, enforces closed suite/case/evidence objects, selects exactly one matching operation from the committed manifest, validates the compatibility identity and retained case counts, and pins each public case's exact normalized request and externally supported expected-response projection to the compact evidence bundle. Its 20 negative integrity guards include changed-request, changed-response, and evidence-alias failures. It does not query the candidate's manifest; a qualification record must pin candidate bytes and the claimed suite identity separately.
 
 Candidate execution has a 10-second invocation deadline, 1-second cleanup deadline, 1 MiB standard-input and standard-output caps, and a 64 KiB standard-error cap. It is cooperative same-credential process control, not a sandbox for hostile binaries.
 
@@ -254,7 +254,6 @@ This spike is materially usable but is not yet a release-ready closed capsule:
 
 - no isolated Rust implementation has yet completed the full cold-implementer gate; the documentation audit above is not a substitute for executable Rust conformance;
 - arbitrary negative-input compatibility remains under-specified beyond the closed shapes, staged checks, manifest classifiers, and exact diagnostics exercised by the suite; path/model edge rules and within-stage precedence must be closed before a full-protocol release claim;
-- suite-to-evidence association is manually cross-referenced and case-ID checked rather than mechanically derived; a checked projection-to-protocol export or equivalent integrity bridge remains release-blocking;
 - retained parsed runtime Number cells are non-negative integers, while malformed cells are retained separately and the Lean account/normalized decoder admit general canonical exact decimals and signed values; fractional scale-19 behavior and negative correlation values remain externally unverified;
 - mixed-scale `notEqual`, empty or malformed outer guards, dynamic mixed-scale ordering, and the selected-valid-plus-selected-malformed consumer case have internal Lean coverage or static evidence but no dedicated retained kernel runtime observation;
 - the bounded candidate runner is cooperative same-credential process control rather than a security sandbox for hostile binaries;
