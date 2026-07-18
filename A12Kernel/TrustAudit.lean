@@ -174,6 +174,15 @@ run_cmd do
 #print axioms A12Kernel.acceptedStringTarget_applies_value
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_delta
 
+#print axioms A12Kernel.stringTargetApplies_iff_applyTo
+#print axioms A12Kernel.stringTargetApplies_deterministic
+#print axioms A12Kernel.acceptedStringTarget_applies_exactly
+#print axioms A12Kernel.noAppliedStringValue_clears_exactly
+#print axioms A12Kernel.noAppliedStringValue_preserves_presence
+#print axioms A12Kernel.exactStringApplication_storedValue
+#print axioms A12Kernel.equal_noValue_delta_does_not_imply_equal_exact_application
+#print axioms A12Kernel.equal_exact_application_does_not_imply_equal_delta
+
 #print axioms A12Kernel.dependencyOutcome_produces_wellFormedCell
 #print axioms A12Kernel.dependencyCell_shadows_target
 #print axioms A12Kernel.dependencyCell_preserves_other_read

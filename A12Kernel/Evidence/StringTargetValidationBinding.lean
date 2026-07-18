@@ -5,7 +5,7 @@ import A12Kernel.Reference.StrictJson
 
 /-! # A12Kernel.Evidence.StringTargetValidationBinding — retained target-validation packet binding
 
-This IO-only gate binds the input projection to exact retained model, case, and capture bytes. It checks the Groovy dynamic kernel anchor, Java static confirmation, and a12-dmkits interpreter triangulation separately. Exact external `absent` versus present-`empty` application tags are retained and checked without claiming that the current value-only Lean application view distinguishes them.
+This IO-only gate binds the input projection to exact retained model, case, and capture bytes. It checks the Groovy dynamic kernel anchor, Java static confirmation, and a12-dmkits interpreter triangulation separately. Exact external `absent` versus present-`empty` application tags are checked against the narrow core transition without broadening the retained case matrix.
 -/
 
 namespace A12Kernel.Evidence.StringTargetValidation.Binding
@@ -629,18 +629,23 @@ private def AppliedState.normalizedValue (state : AppliedState) : Option String 
   | "string" => state.value
   | _ => none
 
-/-- This derives the exact observed wrapper application state for packet binding only. It is intentionally not the Lean core's value-only `appliedValue` semantics. -/
-private def expectedExternalAppliedState (case : CaseSpec) : StringTargetOutcome → Except String AppliedState
-  | .accepted value => pure { tag := "string", value := some value.text }
-  | .errored _ _ => match case.priorTarget with
-      | .absent => pure { tag := "absent", value := none }
-      | .string _ => pure { tag := "empty", value := none }
+/-- Render the exact core state into the retained packet's three-state vocabulary. -/
+private def AppliedState.fromCore : StringTargetState → AppliedState
+  | .absent => { tag := "absent", value := none }
+  | .presentEmpty => { tag := "empty", value := none }
+  | .presentValue stored => { tag := "string", value := some stored.text }
+
+/-- The closed target-validation packet admits only accepted and errored outcomes; their exact state is supplied by the core transition. -/
+private def expectedExternalAppliedState (case : CaseSpec)
+    (replay : ReplayResult) : Except String AppliedState :=
+  match replay.outcome with
+  | .accepted _ | .errored _ _ => pure <| AppliedState.fromCore replay.appliedState
   | .noValue | .poison _ =>
       throw s!"{case.id}: closed target-validation evidence unexpectedly produced no value or poison"
 
 private def expectedKernelStrategy (bundle : Bundle) (case : CaseSpec)
     (replay : ReplayResult) : Except String KernelStrategy := do
-  let appliedTarget ← expectedExternalAppliedState case replay.outcome
+  let appliedTarget ← expectedExternalAppliedState case replay
   match replay.outcome with
   | .accepted value =>
       let changed := match case.priorTarget with
@@ -697,7 +702,7 @@ private def validateObservation (bundle : Bundle) (model : ModelSpec) (case : Ca
     throw s!"{case.id}: retained placements differ from the projected source and prior target"
   if observation.computeExpected != replay.delta then
     throw s!"{case.id}: retained rich delta {repr observation.computeExpected} differs from Lean {repr replay.delta}"
-  let exactApplied ← expectedExternalAppliedState case replay.outcome
+  let exactApplied ← expectedExternalAppliedState case replay
   if observation.applyExpected != exactApplied then
     throw s!"{case.id}: retained exact external application state differs from its captured prior-state rule"
   if observation.applyExpected.normalizedValue != replay.appliedValue then
