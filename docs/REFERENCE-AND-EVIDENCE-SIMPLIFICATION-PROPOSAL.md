@@ -1,6 +1,6 @@
 # Reference and evidence simplification proposal
 
-> **Status:** adopted and in progress, 2026-07-18. Decisions 1 and 3 are complete; Decision 2 is the remaining one-time evidence consolidation. This is not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived.
+> **Status:** adopted and in progress, 2026-07-18. Decision 1 is complete, Decision 2 has completed the direct-cascade and root-String migrations and continues with the remaining old evidence families, and Decision 3 is complete for every migrated family. This is not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived.
 
 ## Outcome
 
@@ -41,6 +41,8 @@ awk 'NF { n++ } END { print n+0 }' "${evidence_files[@]}"
 
 At this baseline it prints 5,453 theory, 10,076 support, and 5,893 evidence lines. After local V1 retirement and before writing any replacement family, recount and compute the final evidence allowance as the smaller of one third of theory and `theory − non-evidence support`. Budget the existing compact lane and every remaining family together against that allowance. If readable closed projections and their separating tests do not fit, remove more obsolete support, retain the affected old family temporarily, or request an explicit owner exception; never meet the ratio by compression, untyped shortcuts, weakened checks, or deleting an observation still claimed by current documentation.
 
+After the root-String deletion, the same count prints 5,453 theory, 8,009 support, and 4,121 evidence lines. Non-evidence support is 3,888, so both ratio limits currently converge on a final evidence allowance of 1,565 lines. The settled generic reader/tests and the two compact String lanes already occupy 1,082; every remaining typed family plus the final driver therefore has at most 483 readable nonblank lines. Step 10 begins with a shape-and-budget preflight against that real limit. If the necessary closed decoders and separating checks cannot fit without compression or a new framework, stop and report the exact invariant and alternatives rather than forcing the number.
+
 ## Decision 1 — retire local reference-semantics V1 (completed)
 
 Current V2 already subsumes the finite V1 behavior:
@@ -72,9 +74,9 @@ The compact family must retain enough information to replay the same empirical c
 
 Any one-off converter or dual-reader used for migration is deleted in the same change after its agreement record is accepted. No new permanent generator, receipt graph, schema registry, qualification framework, or compatibility layer survives the wave.
 
-### Highest-return family
+### Highest-return family — completed
 
-Migrate the two older String stacks together after the current computation-condition/connective/alternative family closes:
+The two older String stacks were migrated together before further computation-control semantics so the one-time infrastructure wave can finish and stay finished:
 
 | Removable estate | Code | Data | Gross total |
 |---|---:|---:|---:|
@@ -82,7 +84,7 @@ Migrate the two older String stacks together after the current computation-condi
 | String target-validation schema/replay/binder and retained data | 61,521 bytes | 33,399 bytes | 94,920 bytes |
 | Combined | 114,804 bytes | 80,490 bytes | 195,294 bytes |
 
-This directly fulfills the existing plan to replace both String binders with one compact family instead of adding a third route.
+Commit `19733d9` is the immutable dual-path checkpoint: the complete old binders, a migration-only typed comparator, and the compact replay agreed on all 22 ordered cases. The deletion then removes the six old modules, the temporary comparator, and 33 raw files. One 13,104-byte compact bundle retains two independent source records, while one 271-nonblank-line typed projection and 65 lines of focused mutation tests preserve the two original observation fidelities without adding a route, reader, registry, or generator. The source replacement is 336 lines versus the old permanent 2,106, a net removal of 1,770 nonblank Lean lines; the data replacement removes 67,386 bytes. Exact recovery identities and limits live in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](archived/STRING-COMPUTATION-RAW-EVIDENCE.md).
 
 ### Remaining families
 
@@ -100,9 +102,9 @@ Current V2 suites inspect only four projection files for kernel version and case
 
 Once every current family is compact, reduce `EvidenceMain.lean` to a small dispatcher and delete the superseded schemas, replays, raw-model parsers, and family-specific binding logic. The settled compact reader remains outside the trusted semantics/proof/conformance roots.
 
-## Decision 3 — archive opaque raw units outside `HEAD` (completed for direct cascade)
+## Decision 3 — archive opaque raw units outside `HEAD` (completed for migrated families)
 
-The current Lean code reads only the 4,969-byte direct-cascade compact export. The accepted archive migration recorded exact producer revisions, project recovery revision, Git tree objects, receipt and scenario SHA-256 identities, and claim limits in [`archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md`](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md), then removed 31 raw/scenario files, 123,184 bytes, and 4,056 nonblank lines from `HEAD`.
+The current Lean code reads only the 4,969-byte direct-cascade compact export and the 13,104-byte root-String compact bundle for those migrated lanes. The direct-cascade archive migration recorded exact producer revisions, project recovery revision, Git tree objects, receipt and scenario SHA-256 identities, and claim limits in [`archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md`](archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md), then removed 31 raw/scenario files, 123,184 bytes, and 4,056 nonblank lines from `HEAD`. The root-String migration records its two raw capture identities, projection and model digests, case trees, dual-path agreement checkpoint, and claim limits in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](archived/STRING-COMPUTATION-RAW-EVIDENCE.md), then removes 33 raw files and 80,490 bytes after exact 22/22 agreement.
 
 Apply the same rule to each migrated family: compact observations stay checked out; complete raw audit material moves to a named immutable Git revision or tag with a digest manifest. Git history remains the recovery archive. A release asset may mirror that archive for convenience but is not the sole authority.
 
@@ -153,4 +155,4 @@ Also require resolved Markdown links, no live reference to deleted Lake targets 
 
 ## Recommended order
 
-The stale CI calls and local V1-to-V2 retirement are complete. Record recovery identities and remove the already-opaque direct-cascade raw estate first. Then compact the two String families together, followed by flat/operator, correlation/elaboration, and iteration; reduce the driver only after those families have moved. Archive this proposal once the measured targets and gates pass, then return immediately to ordered computation connectives and first-match alternatives with the infrastructure settled.
+The stale CI calls, local V1-to-V2 retirement, direct-cascade archive migration, and root-String migration are complete. Compact flat/operator, correlation/elaboration, and iteration next; reduce the driver as those families move. Archive this proposal once the measured targets and gates pass, then return immediately to ordered computation connectives and first-match alternatives with the infrastructure settled.

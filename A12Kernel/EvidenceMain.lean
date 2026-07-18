@@ -5,13 +5,10 @@ import A12Kernel.Evidence.IterationReplay
 import A12Kernel.Evidence.OperatorEmptyReplay
 import A12Kernel.Evidence.OperatorProtocolBridge
 import A12Kernel.Evidence.ObservationBundleTest
-import A12Kernel.Evidence.StringComputationBinding
-import A12Kernel.Evidence.StringComputationMigrationTest
 import A12Kernel.Evidence.StringComputationProjection
 import A12Kernel.Evidence.StringComputationProjectionTest
 import A12Kernel.Evidence.StringCascadeProjection
 import A12Kernel.Evidence.StringCascadeProjectionTest
-import A12Kernel.Evidence.StringTargetValidationBinding
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
@@ -1044,17 +1041,8 @@ def main : IO Unit := do
     A12Kernel.Evidence.OperatorEmpty.ProtocolBridge.checkArtifacts
   checkOperatorEvidence root operatorBundle
   let stringComputationCount ←
-    A12Kernel.Evidence.StringComputation.Binding.checkArtifacts root
-  let stringTargetValidationCount ←
-    A12Kernel.Evidence.StringTargetValidation.Binding.checkArtifacts root
-  let compactStringCount ←
     A12Kernel.Evidence.StringComputationProjection.checkArtifacts root
   A12Kernel.Evidence.StringComputationProjectionTest.checkIo root
-  let migratedStringCount ←
-    A12Kernel.Evidence.StringComputationMigrationTest.checkArtifacts root
-  if compactStringCount != stringComputationCount + stringTargetValidationCount ||
-      compactStringCount != migratedStringCount then
-    throw (IO.userError "legacy and compact String evidence inventories differ")
   let iterationBundle ← orThrow "iteration-projection.json"
     (A12Kernel.Evidence.Iteration.Bundle.fromJson
       (← readJson (root / "iteration-projection.json")))
@@ -1078,5 +1066,5 @@ def main : IO Unit := do
     checkCorrelationElaborationCase root correlationElaborationBundle case
   let total := bundle.cases.length + operatorBundle.cases.length + iterationBundle.cases.length +
     correlationBundle.cases.length + correlationElaborationBundle.cases.length +
-    stringComputationCount + stringTargetValidationCount + directCascadeCount
-  IO.println s!"kernel evidence: {total}/{total} projections agree; String computation: {stringComputationCount}/{stringComputationCount} cases bound; String target validation: {stringTargetValidationCount}/{stringTargetValidationCount} cases bound; direct String cascade: {directCascadeCount}/{directCascadeCount} producer-certified cases replayed ({bundle.kernelVersion})"
+    stringComputationCount + directCascadeCount
+  IO.println s!"kernel evidence: {total}/{total} projections agree; root String computation: {stringComputationCount}/{stringComputationCount} project-reviewed compact cases replayed; direct String cascade: {directCascadeCount}/{directCascadeCount} producer-certified cases replayed ({bundle.kernelVersion})"

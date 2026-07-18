@@ -89,7 +89,7 @@ The generic reader enforces closed members, the supported schema and kernel vers
 
 Separating `input` from `observed` is mandatory. A family decoder must not hide an expected result inside the replay input, and a semantic mutation must still disagree with the observation half.
 
-The generic reader must not contain operation, model, computation, validation-message, runner, channel, legality, capability, packet-envelope, or qualification-report vocabulary. It must not walk, parse, hash, or relationally validate the retained raw packet. The source identities are provenance anchors asserted by the producer-certified bundle.
+The generic reader must not contain operation, model, computation, validation-message, runner, channel, legality, capability, packet-envelope, or qualification-report vocabulary. It must not walk, parse, hash, or relationally validate retained raw material. Source identities are provenance anchors asserted by the direct producer or by the reviewed migration that created the compact bundle; each family must state which assurance route it uses.
 
 Each family owns a small typed decoder for its exact inputs and observables. It preserves multiplicity and every semantically claimed distinction, but deliberately omits producer-only transport detail. A family may project away a stronger raw distinction only when the exclusion is explicit—for example, the first direct-cascade account projects exact absent versus present-empty application state to a value-only result.
 
@@ -146,6 +146,14 @@ The old and new lanes coexisted for one migration gate, agreed on all five cases
 
 The compact [`ObservationBundle`](../A12Kernel/Evidence/ObservationBundle.lean) now owns directly the closed portable-path, digest, bounded-file, and regular non-symlink behavior needed by the live reader. No generic artifact-tree helper remains. The completed Rust mutation campaign is not a reason to retain broader packet-oriented APIs or tests; their historical implementation remains available at Git revision `03186c1`.
 
+## Second migration: root-String computation and target validation
+
+The two older root-String stacks now use one compact typed lane with two ordered source records rather than falsely merging two independent captures. The unconstrained record preserves 13 delta-only cases; it does not promote exact application into external evidence. The target-validation record preserves nine checked outcomes, deltas, and exact absent/present-empty/present-value application states. Both records remain project-reviewed projections of historically route-agreed kernel observations, not producer-certified compact exports.
+
+Commit `19733d9` is the one-time dual-path agreement checkpoint. At that revision, the complete old binders checked receipts, models, case shapes, route agreement, and triangulation; a temporary typed comparator required exact ordered equality with all 22 compact inputs and observations; and focused semantic mutations failed on their predicted sets. The old schemas, replays, binders, raw data, and comparator are subsequently removed. [`STRING-COMPUTATION-RAW-EVIDENCE.md`](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns the recovery revisions, digests, claims, and exclusions.
+
+The permanent family-specific addition is 271 nonblank production lines plus 65 test lines. It replaces 2,106 old permanent Lean lines and a 125-line migration-only checker. The 13,104-byte compact bundle replaces 80,490 bytes of raw captures, models, projections, and cases. The generic reader did not grow, and no packet, receipt, qualification, route, or generator concept entered ordinary replay.
+
 ## Producer-side consolidation and retired a12-dmkits capture-contract V1
 
 Frozen a12-dmkits capture-contract V1 identities and retained artifacts remain immutable, while revision `45b264b2d6213dd7d4d261fa040034371b0c8fcd` removed the complete unused implementation from current upstream `main`: 96 tracked files, 634,739 bytes, and 11,637 nonblank lines of source, tests, fixtures, mutation machinery, commands, build wiring, and live documentation. The exact historical contract and detached-revision recovery route live only in a12-dmkits' [`archived capture proposal`](../../a12-rulekit/docs/archived/A12-DMKITS-CAPTURE-PROPOSAL.md). No successor was minted.
@@ -167,7 +175,7 @@ The durable distinction is:
 5. Completed: verify the producer-certified compact bundle against the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
 6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
 7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines. The local archive migration then removed 31 raw/scenario files and 123,184 bytes from `HEAD` while preserving the compact bundle and exact recovery identities.
-8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
+8. Completed: the measured pattern justified migrating the two historical root-String binders. One compact typed lane preserves their two independent source identities and fidelities; the one-time comparator established 22/22 agreement before the old stacks and raw estate were removed.
 9. Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
 
 ## Upstream engagement rule

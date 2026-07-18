@@ -10,12 +10,12 @@ namespace A12Kernel.Evidence.StringComputationProjectionTest
 open A12Kernel
 open A12Kernel.Evidence.StringComputationProjection
 
-private def emptyTextStored : StoredString := {
+private def coercedEmptySentinel : StoredString := {
   text := " "
   nonempty := by decide }
 
-private def storeFinalEmpty : StringTerm → StringStore
-  | .text "" => .produced emptyTextStored
+private def storeCoercedEmpty : StringTerm → StringStore
+  | .text "" => .produced coercedEmptySentinel
   | term => term.store
 
 private def acceptProduced (_ : StringTargetLengthPolicy) : StringStore → StringTargetCheckResult
@@ -57,10 +57,10 @@ def checkIo (root : System.FilePath) : IO Unit := do
   expectMismatches "validation-style row gate"
     ["suffix-empty-target-absent-empty-row"]
     { naturalRunner with evaluateRow := id } cases
-  expectMismatches "final empty text stored"
+  expectMismatches "final empty coerced to a stored sentinel"
     ["all-empty-target-stale-content", "all-empty-target-absent-content",
       "all-empty-target-absent-empty-row"]
-    { naturalRunner with store := storeFinalEmpty } cases
+    { naturalRunner with store := storeCoercedEmpty } cases
   expectMismatches "target constraints bypassed"
     ["max3-stale-errored", "max3-absent-errored", "max3-equal-errored",
       "min5-short-errored"]
