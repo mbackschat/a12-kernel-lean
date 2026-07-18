@@ -1,10 +1,11 @@
 import Lake
+import A12Kernel.Process.Bounded
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
 
 /-! # A12Kernel.CandidateConformanceMain — language-neutral candidate gate
 
-This process runs a suite of normalized request/response fixtures against an independently implemented command-line candidate. It compares parsed JSON, while separately requiring deterministic candidate output bytes. Passing establishes finite behavioral agreement with the selected suite only: the runner does not ask the candidate to advertise a compatibility identity, so the invoking qualification record owns that binding.
+This process runs a suite of normalized request/response fixtures against an independently implemented command-line candidate. It compares parsed JSON, while separately requiring deterministic candidate output bytes. Passing establishes finite behavioral agreement with the selected suite only: the runner does not ask the candidate to advertise a compatibility identity, so the invoking qualification record owns that binding. Candidate execution uses the project's bounded process relay and therefore supports macOS and Linux, not Windows or Emscripten.
 -/
 
 open Lean
@@ -327,27 +328,49 @@ private def loadAndValidateCaseArtifacts (suite : ConformanceSuite)
   validateEvidenceLink suite testCase
   pure (input, expected)
 
-private def invoke (candidate : System.FilePath) (input : String) : IO IO.Process.Output :=
-  IO.Process.output { cmd := candidate.toString } (some input)
+private def boundedRelayExecutable : IO System.FilePath := do
+  let directory ← IO.appDir
+  pure ((directory / "a12-bounded-process-relay").addExtension System.FilePath.exeExtension)
+
+/-- Candidate-runner resource policy, separate from the public normalized protocol. Input matches the protocol's 1 MiB request limit; stdout has the same bounded headroom, while stderr is diagnostics-only. -/
+private def candidateLimits : A12Kernel.Process.Bounded.Limits := {
+  timeoutMs := 10000
+  cleanupMs := 1000
+  pollMs := 10
+  inputBytes := 1024 * 1024
+  stdoutBytes := 1024 * 1024
+  stderrBytes := 64 * 1024 }
+
+private def invoke (context : String) (candidate : System.FilePath)
+    (args : Array String) (input : String) :
+    IO A12Kernel.Process.Bounded.Output := do
+  match ← A12Kernel.Process.Bounded.runViaRelay
+      (← boundedRelayExecutable) candidate args input candidateLimits with
+  | .ok output => pure output
+  | .error failure =>
+      fail s!"{context}: candidate process failed: {repr failure.kind}; elapsed={failure.elapsedMs}ms; cleanup={repr failure.cleanup}"
 
 private def validateProcessOutput (testCase : ConformanceCase)
-    (output : IO.Process.Output) : IO Json := do
+    (output : A12Kernel.Process.Bounded.Output) : IO Json := do
   if output.exitCode != 0 then
     fail s!"case '{testCase.id}': candidate exited {output.exitCode}, expected 0"
   if !output.stderr.isEmpty then
-    fail s!"case '{testCase.id}': candidate wrote stderr {repr output.stderr}"
-  if !output.stdout.endsWith "\n" then
+    fail s!"case '{testCase.id}': candidate wrote {output.stderr.size} stderr bytes"
+  let stdout ← match String.fromUTF8? output.stdout with
+    | some stdout => pure stdout
+    | none => fail s!"case '{testCase.id}': candidate response is not UTF-8"
+  if !stdout.endsWith "\n" then
     fail s!"case '{testCase.id}': candidate response must end with a newline"
-  match A12Kernel.Reference.StrictJson.parse output.stdout with
+  match A12Kernel.Reference.StrictJson.parse stdout with
   | .ok json => pure json
   | .error error => fail s!"case '{testCase.id}': candidate emitted invalid normalized JSON: {repr error}"
 
 private def runCase (candidate : System.FilePath) (suite : ConformanceSuite)
     (testCase : ConformanceCase) : IO Unit := do
   let (input, expected) ← loadAndValidateCaseArtifacts suite testCase
-  let first ← invoke candidate input
+  let first ← invoke s!"case '{testCase.id}' first invocation" candidate #[] input
   let firstJson ← validateProcessOutput testCase first
-  let second ← invoke candidate input
+  let second ← invoke s!"case '{testCase.id}' repeated invocation" candidate #[] input
   let secondJson ← validateProcessOutput testCase second
   if first.stdout != second.stdout || firstJson != secondJson then
     fail s!"case '{testCase.id}': repeated candidate output is not byte-deterministic"
@@ -362,6 +385,26 @@ private def expectFailure (label : String) (action : IO Unit) : IO Unit := do
     pure false
   if unexpectedlySucceeded then
     fail s!"candidate conformance self-test '{label}' did not reject its mutation"
+
+private def expectFailureContaining (label fragment : String) (action : IO Unit) : IO Unit := do
+  let message? ← try
+    action
+    pure none
+  catch error =>
+    pure (some (toString error))
+  match message? with
+  | none =>
+      fail s!"candidate conformance self-test '{label}' did not reject its mutation"
+  | some message =>
+      if !message.contains fragment then
+        fail s!"candidate conformance self-test '{label}' failed through {repr message}, expected {repr fragment}"
+
+/-- Prove that the candidate consumer itself enforces streamed output bounds. The general bounded-process suite separately owns timeout and process-group cleanup. -/
+private def checkCandidateOutputBound : IO Unit :=
+  expectFailureContaining "candidate stdout bound" "stdoutLimitExceeded" do
+    let _ ← invoke "candidate stdout bound" "/bin/sh"
+      #["-c", s!"dd if=/dev/zero bs={candidateLimits.stdoutBytes + 1} count=1 2>/dev/null"] ""
+    pure ()
 
 private def replaceFirstEvidenceMember (suiteJson : Json) (name : String)
     (value : Json) : IO Json := do
@@ -574,11 +617,13 @@ private def runSelfTest (suitePath : System.FilePath) : IO Nat := do
     let _ ← parseSuite unknownEvidenceJson
     pure ())
 
+  checkCandidateOutputBound
+
   if canonicalSuite.operation == "flatValidation.evaluateFull" then
     runFlatEvidenceSelfTests suiteJson canonicalSuite
-    pure 24
+    pure 25
   else
-    pure 16
+    pure 17
 
 private def run (args : List String) : IO UInt32 :=
   match args with

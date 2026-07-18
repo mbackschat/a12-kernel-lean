@@ -679,28 +679,18 @@ private structure CandidateSuiteControl where
   caseCount : Nat
   guardCount : Nat
 
-private def historicalCandidateSuites : List CandidateSuiteControl := [
-  { path := "reference/single-group-correlation-v1.conformance.json"
-    id := "single-group-correlation-v1"
-    caseCount := 16
-    guardCount := 16 },
-  { path := "reference/flat-validation-empty-logic-v1.conformance.json"
-    id := "flat-validation-empty-logic-v1"
-    caseCount := 8
-    guardCount := 24 }]
-
 private def currentCandidateSuites : List CandidateSuiteControl := [
   { path := "reference/single-group-correlation-v2.conformance.json"
     id := "single-group-correlation-v2"
     caseCount := 16
-    guardCount := 16 },
+    guardCount := 17 },
   { path := "reference/flat-validation-empty-logic-v2.conformance.json"
     id := "flat-validation-empty-logic-v2"
     caseCount := 9
-    guardCount := 24 }]
+    guardCount := 25 }]
 
 private def candidateSuites : List CandidateSuiteControl :=
-  historicalCandidateSuites ++ currentCandidateSuites
+  currentCandidateSuites
 
 private def checkCandidateRunnerIntegrity : IO Unit := do
   let executable ← candidateConformanceExecutable

@@ -17,6 +17,7 @@ root = "A12Kernel.ReferenceMain"
 [[lean_exe]]
 name = "checkCandidateConformance"
 root = "A12Kernel.CandidateConformanceMain"
+needs = ["a12-bounded-process-relay"]
 
 [[lean_exe]]
 name = "syncFlatHandover"
