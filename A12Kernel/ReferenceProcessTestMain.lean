@@ -1,7 +1,5 @@
 import Lake
-import A12Kernel.Evidence.OperatorProtocolBridge
-import A12Kernel.Process.Sha256
-import A12Kernel.Reference.Lineage
+import A12Kernel.Reference.Protocol
 import Lean.Data.Json
 
 /-! # A12Kernel.ReferenceProcessTestMain — black-box reference CLI gate -/
@@ -143,25 +141,6 @@ private def arrayValue (json : Json) : IO (Array Json) :=
   match json.getArr? with
   | .ok values => pure values
   | .error error => fail s!"test setup expected array: {error}"
-
-private def stringValue (json : Json) (context : String) : IO String :=
-  match json.getStr? with
-  | .ok value => pure value
-  | .error error => fail s!"{context}: expected string: {error}"
-
-private def requireExactMembers (json : Json) (context : String)
-    (expected : List String) : IO Unit := do
-  let members ← match json.getObj? with
-    | .ok object => pure (object.toList.map (·.1))
-    | .error error => fail s!"{context}: expected object: {error}"
-  if members.length != expected.length || !expected.all members.contains then
-    fail s!"{context}: expected exactly members {repr expected}, found {repr members}"
-
-private def isLowerHex (character : Char) : Bool :=
-  character.isDigit || ('a' <= character && character <= 'f')
-
-private def isPortableRelative (path : String) : Bool :=
-  !path.isEmpty && !path.startsWith "/" && !(path.splitOn "/").contains ".."
 
 private def firstValue (values : Array Json) : IO Json :=
   match values[0]? with
@@ -574,104 +553,8 @@ private def checkCorrelationBoundary : IO Unit := do
         ("guardPath", toJson ["Order", "Items", "StockQty"])]))
 
 private def checkManifest : IO Unit := do
-  let expected ← canonicalFile A12Kernel.Reference.Lineage.currentSupportManifest
+  let expected ← canonicalFile "reference/supported-fragment-v2.json"
   checkOutput "manifest" (← invoke "" #["--manifest"]) expected
-
-private def checkHistoricalArtifactLock : IO Unit := do
-  let lockPath := A12Kernel.Reference.Lineage.historicalArtifactLock
-  let lock ← readJsonFile lockPath
-  requireExactMembers lock lockPath
-    ["lockSchemaVersion", "referenceSemanticsVersion", "sourceRevision", "artifacts"]
-  if (← objectMember lock "lockSchemaVersion") != toJson 1 then
-    fail s!"{lockPath}: unsupported lock schema"
-  if (← objectMember lock "referenceSemanticsVersion") !=
-      toJson A12Kernel.Reference.Lineage.historicalReferenceSemanticsVersion then
-    fail s!"{lockPath}: reference-semantics identity changed"
-  if (← objectMember lock "sourceRevision") !=
-      toJson A12Kernel.Reference.Lineage.historicalReferenceRevision then
-    fail s!"{lockPath}: historical source revision changed"
-  let artifacts ← arrayValue (← objectMember lock "artifacts")
-  if artifacts.size != A12Kernel.Reference.Lineage.historicalArtifactCount then
-    fail s!"{lockPath}: expected {A12Kernel.Reference.Lineage.historicalArtifactCount} artifacts, found {artifacts.size}"
-  let mut seen : List String := []
-  for artifact in artifacts do
-    requireExactMembers artifact s!"{lockPath}.artifacts[]" ["path", "sha256"]
-    let path ← stringValue (← objectMember artifact "path") s!"{lockPath}.artifacts[].path"
-    let expected ← stringValue (← objectMember artifact "sha256")
-      s!"{lockPath}.artifacts[].sha256"
-    if !isPortableRelative path then
-      fail s!"{lockPath}: non-portable artifact path '{path}'"
-    if expected.length != 64 || !expected.toList.all isLowerHex then
-      fail s!"{lockPath}: invalid SHA-256 for '{path}'"
-    if seen.contains path then
-      fail s!"{lockPath}: duplicate artifact path '{path}'"
-    seen := path :: seen
-    let actual ← A12Kernel.Process.Sha256.file path
-    if actual != expected then
-      fail s!"frozen historical dependency '{path}' changed: expected {expected}, found {actual}"
-  for artifact in A12Kernel.Reference.Lineage.frozenHistoricalArtifacts do
-    let isPostRevision :=
-      A12Kernel.Reference.Lineage.postRevisionHistoricalArtifacts.any (·.path == artifact.path)
-    if artifact.path != lockPath && !isPostRevision && !seen.contains artifact.path then
-      fail s!"{lockPath}: principal frozen artifact '{artifact.path}' is outside the lock"
-
-private def checkReferenceSemanticsLineage : IO Unit := do
-  let lineage ← readJsonFile "reference/reference-semantics-lineage-v1.json"
-  if lineage != A12Kernel.Reference.Lineage.asJson then
-    fail "reference-semantics lineage mirror differs from its Lean source"
-  for artifact in A12Kernel.Reference.Lineage.frozenHistoricalArtifacts do
-    let actual ← A12Kernel.Process.Sha256.file artifact.path
-    if actual != artifact.sha256 then
-      fail s!"frozen reference-semantics artifact '{artifact.path}' changed: expected {artifact.sha256}, found {actual}"
-  checkHistoricalArtifactLock
-  let replay ← readJsonFile A12Kernel.Reference.Lineage.historicalSeparatingReplay.path
-  if replay != A12Kernel.Reference.Lineage.historicalSeparatingReplayJson then
-    fail "historical separating replay receipt differs from its Lean identity"
-  let separatingRequestHash ←
-    A12Kernel.Process.Sha256.file A12Kernel.Reference.Lineage.separatingRequest
-  if separatingRequestHash != A12Kernel.Reference.Lineage.separatingRequestSha256 then
-    fail s!"lineage-separating request changed: expected {A12Kernel.Reference.Lineage.separatingRequestSha256}, found {separatingRequestHash}"
-  let currentManifest ← readJsonFile A12Kernel.Reference.Lineage.currentSupportManifest
-  let currentVersion ← objectMember currentManifest "referenceSemanticsVersion"
-  if currentVersion != toJson A12Kernel.Reference.Lineage.current.referenceSemanticsVersion then
-    fail "current support manifest does not carry the current reference-semantics identity"
-  let historicalFlat ← readJsonFile "reference/flat-validation-empty-logic-v1.conformance.json"
-  let currentFlat ← readJsonFile "reference/flat-validation-empty-logic-v2.conformance.json"
-  let historicalFlatCases ← arrayValue (← objectMember historicalFlat "cases")
-  let currentFlatCases ← arrayValue (← objectMember currentFlat "cases")
-  if currentFlatCases.toList.take historicalFlatCases.size != historicalFlatCases.toList then
-    fail "current flat suite does not preserve the complete historical eight-case prefix"
-  let addedFlatCases := currentFlatCases.toList.drop historicalFlatCases.size
-  let addedFlatCase ← match addedFlatCases with
-    | [added] => pure added
-    | _ => fail "current flat suite must add exactly one lineage-separating case"
-  if (← objectMember addedFlatCase "id") != toJson "number-empty-not-equal-negative-directional" then
-    fail "current flat suite is missing the directional Number lineage witness"
-  if (← objectMember addedFlatCase "request") !=
-      toJson A12Kernel.Reference.Lineage.separatingRequest then
-    fail "current flat suite does not bind the lineage-separating request"
-  if (← objectMember addedFlatCase "expectedResponse") !=
-      toJson A12Kernel.Reference.Lineage.separatingCurrentResponse then
-    fail "current flat suite does not bind the lineage-separating response"
-  let currentSeparatingResponse ←
-    readJsonFile A12Kernel.Reference.Lineage.separatingCurrentResponse
-  if currentSeparatingResponse != A12Kernel.Reference.Lineage.currentSeparatingResponseJson then
-    fail "lineage-separating response does not carry the current VALUE verdict"
-  let separatingInput ← IO.FS.readFile A12Kernel.Reference.Lineage.separatingRequest
-  checkOutput "lineage-separating current process" (← invoke separatingInput)
-    (A12Kernel.Reference.Lineage.currentSeparatingResponseJson.compress ++ "\n")
-  let operatorArtifact ←
-    A12Kernel.Evidence.OperatorEmpty.ProtocolBridge.loadArtifact
-  if addedFlatCase != operatorArtifact.suiteCaseJson then
-    fail "current flat suite directional witness differs from its typed evidence bridge"
-  let historicalCorrelation ←
-    readJsonFile "reference/single-group-correlation-v1.conformance.json"
-  let currentCorrelation ←
-    readJsonFile "reference/single-group-correlation-v2.conformance.json"
-  let historicalCorrelationCases ← arrayValue (← objectMember historicalCorrelation "cases")
-  let currentCorrelationCases ← arrayValue (← objectMember currentCorrelation "cases")
-  if currentCorrelationCases != historicalCorrelationCases then
-    fail "current correlation suite changed the historical finite case body"
 
 private structure CandidateSuiteControl where
   path : String
@@ -689,12 +572,9 @@ private def currentCandidateSuites : List CandidateSuiteControl := [
     caseCount := 9
     guardCount := 25 }]
 
-private def candidateSuites : List CandidateSuiteControl :=
-  currentCandidateSuites
-
 private def checkCandidateRunnerIntegrity : IO Unit := do
   let executable ← candidateConformanceExecutable
-  for suite in candidateSuites do
+  for suite in currentCandidateSuites do
     let selfTest ← IO.Process.output {
       cmd := executable.toString
       args := #["--self-test", "--suite", suite.path] } (some "")
@@ -738,8 +618,7 @@ def main : IO Unit := do
   checkModelAndRepeatableBoundary
   checkCorrelationBoundary
   checkManifest
-  checkReferenceSemanticsLineage
   checkCandidateRunnerIntegrity
   checkCandidateSuiteControl
   checkInvocationError
-  IO.println s!"reference process: {fixtures.length + 24}/{fixtures.length + 24} check groups passed"
+  IO.println s!"reference process: {fixtures.length + 23}/{fixtures.length + 23} check groups passed"

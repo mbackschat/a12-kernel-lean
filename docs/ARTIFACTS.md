@@ -1,6 +1,6 @@
 # Repository artifact lifecycle
 
-This guide explains what belongs under [`evidence/`](../evidence/), [`reference/`](../reference/), [`examples/`](../examples/), and the retained [`qualification/`](../qualification/) history, which facts each owns, and how each should evolve. These artifacts deliberately have different lifecycles; treating all of them as either hand-authored source or disposable generated output would break the project's evidence and consumer contracts.
+This guide explains what belongs under [`evidence/`](../evidence/), [`reference/`](../reference/), [`examples/`](../examples/), and the historical records under [`docs/archived/`](archived/), which facts each owns, and how each should evolve. These artifacts deliberately have different lifecycles; treating all of them as either hand-authored source or disposable generated output would break the project's evidence and consumer contracts.
 
 ## The short answer
 
@@ -10,8 +10,7 @@ This guide explains what belongs under [`evidence/`](../evidence/), [`reference/
 | [`evidence/scenarios/`](../evidence/scenarios/) | The frozen expectation-free question used by the historical direct-cascade capture | Yes, for those exact historical request bytes; never a source of observed behavior or a standing format for future producers | Keep paired with its retained answer until the accepted local archive migration; a future capability defines its own reviewed input contract |
 | [`reference/`](../reference/) | Portable consumer shipments and the readable support-manifest mirror | Mostly derived from Lean and retained evidence; the correlation suite remains a reviewed manual index | Derive new current identities from their owners, maintain reviewed indices explicitly, and never regenerate a frozen compatibility line in place |
 | [`examples/`](../examples/) | Runnable user examples, golden process regressions, and generated shipment fixtures | No; expected outputs are reviewed regression locks, not kernel evidence | Curate the small human-facing set and regenerate owned fixture sets |
-| Project-local [`qualification/`](../qualification/) | Compact retained receipt from the completed Rust generated-differential campaign | No; it reports one finite historical run and its explicit claim boundary | Retain immutably; a future real consumer receives a newly designed qualification identity rather than extending the retired one-off runner |
-| Historical Git revision `03186c1` | Retired flat bridge, mutation packet/checker, and generated-differential source | No; Git history preserves how the accepted records were produced and checked | Inspect or reproduce at the pinned revision only; do not restore the machinery to current source for possible future reuse |
+| [`docs/archived/`](archived/) plus exact Git revisions | Retired compatibility identities, campaign outcomes, deleted artifact digests, and recovery instructions | Yes, for the documented historical claim and recovery boundary; no, for current behavior | Preserve concise immutable records; inspect deleted bytes at their pinned revision rather than restoring them to current source |
 
 The authority chain remains:
 
@@ -74,7 +73,7 @@ The complete provenance and claim boundary are owned by [`EVIDENCE.md`](EVIDENCE
 - A faulty capture is corrected only as an explicit provenance-bearing evidence correction.
 - Full probe models remain complete and readable even when they share substantial structure; exact executed input is more important than reducing a small amount of repository storage.
 
-Run `lake test` to replay the supported projection of all retained observations. `checkReferenceProcess` separately rehashes the frozen 0.2.0 shipment and qualification artifacts; neither gate writes under `evidence/`.
+Run `lake test` to replay the supported projection of all retained observations. `checkReferenceProcess` checks the current 0.3.0 manifest, fixtures, transport behavior, and V2 controls; neither gate writes under `evidence/`.
 
 ### Current integrity gaps
 
@@ -84,19 +83,18 @@ Some older runtime projections still repeat cells, rows, paths, and structured c
 
 ### Contents
 
-[`reference/`](../reference/) currently contains two explicit compatibility lines plus campaign infrastructure pinned to historical reference semantics 0.2.0:
+[`reference/`](../reference/) contains only the current reference-semantics 0.3.0/V2 shipment:
 
 - current [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json), the readable 0.3.0 support manifest generated from finite Lean declarations in [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean);
-- [`reference-semantics-lineage-v1.json`](../reference/reference-semantics-lineage-v1.json), the generated readable 0.2.0 → 0.3.0 lineage whose lines each carry a complete compatibility tuple and capability identities, plus [`reference-semantics-0.2.0.lock.json`](../reference/reference-semantics-0.2.0.lock.json), whose 152 path/digest entries close the selected historical evidence/example/principal-artifact inventory, and the separately retained [`0.2.0 separating replay receipt`](../reference/reference-semantics-0.2.0-separating-replay.json); human handover documents are outside the lock, while the post-revision separating request and replay receipt are bound separately by the lineage;
-- current [`flat-validation-empty-logic-v2`](../reference/flat-validation-empty-logic-v2.conformance.json) and [`single-group-correlation-v2`](../reference/single-group-correlation-v2.conformance.json) conformance suites for 0.3.0;
-- frozen historical [`supported-fragment-v1.json`](../reference/supported-fragment-v1.json), [`flat-validation-empty-logic-v1` capability descriptor](../reference/flat-validation-empty-logic-v1.capability.json), [flat v1 suite](../reference/flat-validation-empty-logic-v1.conformance.json), [mutation qualification plan](../reference/flat-validation-empty-logic-v1.mutation-plan.json), and [correlation v1 suite](../reference/single-group-correlation-v1.conformance.json) for the completed 0.2.0 handovers;
-- the frozen reviewed [`flat-validation-empty-logic-v1` generated-differential profile](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json), which pins the closed 0.2.0 generator, compatibility tuple, source and candidate revisions, response projection, execution contract, and resource budgets for one finite campaign.
+- current [`flat-validation-empty-logic-v2`](../reference/flat-validation-empty-logic-v2.conformance.json) and [`single-group-correlation-v2`](../reference/single-group-correlation-v2.conformance.json) conformance suites for 0.3.0.
+
+The deleted reference-semantics 0.2.0/V1 files, their SHA-256 identities, the Rust campaign outcome, and exact recovery revisions are consolidated in the [archived historical record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). They are not current shipment files or process-gate inputs.
 
 ### Responsibility and authority
 
 This tree answers: **what exact, language-neutral capability can an independent consumer implement or check?** These files are committed because a Rust, Python, Kotlin, or TypeScript consumer should not need a Lean installation to inspect or use a shipment.
 
-They are distribution projections, not the authoring source of the semantics. Current generated members are owned by typed Lean support or lineage declarations plus the retained evidence they cite; the correlation suites remain reviewed manual indices until their bridge is mechanized. The frozen v1 capability, suite, mutation plan, and generated-differential profile are immutable historical outputs whose retired source remains in Git at revision `03186c1`. A generated-differential profile is a campaign definition rather than a support declaration: it selects only already admitted inputs and does not expand the capability. Once an exact bundle, packet, or differential profile is exported or digest-pinned for an independent consumer, those files and their declared compatibility tuple form an immutable record. A working development projection may evolve only under a new identity, digest, or revision; an incompatible supported compatibility change requires a new identity or version.
+They are distribution projections, not the authoring source of the semantics. Current generated members are owned by typed Lean support plus the retained evidence they cite; the correlation suite remains a reviewed manual index until its bridge is mechanized. Once an exact bundle, packet, or profile is exported or digest-pinned for an independent consumer, its declared compatibility tuple forms an immutable record. A working development projection may evolve only under a new identity, digest, or revision; an incompatible supported compatibility change requires a new identity or version.
 
 ### Evolution policy
 
@@ -105,13 +103,13 @@ They are distribution projections, not the authoring source of the semantics. Cu
 - During development, an intentional semantic, protocol, or classification change regenerates the affected current-development shipment and reruns all drift gates.
 - After a shipment becomes a supported external contract, an incompatible semantic or protocol change creates a new capability or schema version rather than mutating the old identity.
 - Removing a generated case must also remove every generated file and index entry; exact-directory checks should reject stale output.
-- Do not update a differential profile in place after it has a retained result. A changed generator, bound, projection, source revision, or candidate revision creates a new profile identity and a new result.
+- Do not update a qualification or differential profile in place after it has a retained result. A changed generator, bound, projection, source revision, or candidate revision creates a new profile identity and a new result.
 
-For the frozen flat v1 shipment, `lake exe checkReferenceProcess` compares the live CLI manifest with current v2, compares the readable lineage with its Lean source, verifies the historical lock file's own digest, requires its exact closed schema/count/identities, rehashes all 152 inventoried dependencies plus the principal frozen artifacts, and exercises the committed process fixtures. The same gate requires the current flat suite's ninth case to equal its typed [`OperatorProtocolBridge`](../A12Kernel/Evidence/OperatorProtocolBridge.lean) artifact rather than trusting a hand-written evidence association. A future writable shipment must use a new capability identity and current production path; it must not revive the historical bridge merely to rewrite frozen bytes.
+`lake exe checkReferenceProcess` compares the live CLI manifest with the current readable V2 mirror, exercises the committed process fixtures, and runs the current flat and correlation suite controls against the compiled reference. The current flat suite's directional witness remains independently bound by [`OperatorProtocolBridge`](../A12Kernel/Evidence/OperatorProtocolBridge.lean) rather than trusting a hand-written evidence association. A future shipment must use a current production path and a reviewed identity; it must not revive the historical V1 bridge merely to reconstruct deleted bytes.
 
 ### Current integrity gap
 
-The current and historical correlation suites are structurally validated, but their projection-to-protocol associations are still maintained manually. The current v2 suite is executed against the current reference; v1 receives only structural integrity checks and remains frozen handover history. Correlation should be converted to a typed descriptor and checked generation pattern before another large capability is added. The current support-manifest and lineage mirrors are drift-checked by the process gate but do not have an independent write command.
+The current correlation suite is structurally validated and executed against the current reference, but its projection-to-protocol associations are still maintained manually. Correlation should be converted to a typed descriptor and checked generation pattern before another large capability is added. The current support-manifest mirror is drift-checked by the process gate but does not have an independent write command.
 
 ## `examples/`: human examples and regression fixtures
 
@@ -122,7 +120,7 @@ The current and historical correlation suites are structurally validated, but th
 1. curated request/response pairs intended to be readable and runnable by a user;
 2. complete fixture sets used by process and downstream conformance tests.
 
-The eight pairs under [`flat-evidence/`](../examples/reference-cli/flat-evidence/) are frozen outputs generated from the typed 0.2.0 flat capability and retained projection; they are shared as the unchanged eight-case prefix of current flat v2 rather than regenerated in place. The root request/response pairs are maintained as readable golden examples and are explicitly enumerated by the reference-process test; this includes the 0.3.0 directional-polarity control [`empty-unsigned-number-not-equal-negative.request.json`](../examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json), while the correlation subset is referenced by both versioned suites.
+The eight pairs under [`flat-evidence/`](../examples/reference-cli/flat-evidence/) originated in the retired 0.2.0 handover and remain useful unchanged fixtures for the corresponding current flat V2 cases; their historical generation is recorded in the [archive](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). The root request/response pairs are maintained as readable golden examples and are explicitly enumerated by the reference-process test; this includes the current directional-polarity control [`empty-unsigned-number-not-equal-negative.request.json`](../examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json), while the correlation subset is referenced by the current suite.
 
 ### Responsibility and authority
 
@@ -138,19 +136,11 @@ This tree answers: **how can a user run the current reference process, and which
 
 As the shipment corpus grows, generated conformance matrices should move conceptually—and, at a versioned layout boundary, physically—beside their capability under the shipment surface. `examples/` should remain the concise human entry point instead of becoming the complete test corpus.
 
-Run `lake exe checkReferenceProcess` to execute the committed request/response pairs through the real process boundary and rehash the frozen generated flat subset.
+Run `lake exe checkReferenceProcess` to execute the committed request/response pairs through the real process boundary and run the current suite controls.
 
-## Retained Rust qualification records
+## Archived Rust qualification record
 
-The Rust knowledge-transport exercise is complete and its one-off source machinery is retired. The project retains the language-neutral [mutation plan](../reference/flat-validation-empty-logic-v1.mutation-plan.json), [52-case profile](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json), and compact [generated-differential result](../qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json). [`Reference/Lineage.lean`](../A12Kernel/Reference/Lineage.lean) pins each exact byte identity, and `checkReferenceProcess` rehashes them without reconstructing the historical execution.
-
-The generated campaign profile pins Lean revision `2cdc37746737d83241f91cd89fa0b56c99c2d47a` and candidate revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. The result records 52/52 agreement, identical 14/11/13/14 verdict distributions, bounded usage, and no process or integrity failure. The compact green receipt deliberately omits the 52 agreeing request/response transcripts and does not authenticate its own historical execution.
-
-The mutation packet was exported from source revision `e408c9bd87ab8de576c900f2e42e0f13e868da76` with `PACKET.json` SHA-256 `28b1e0e074a53dc3abb7fe69f4ae97286f4fdf1e81a1d80e92e8a29709a8ab16`. Candidate revision `d213005b3972c2acd8f67e87f523a923d69f6a54` passed the natural gate, all seven declared mutations, exact restoration checks, and the 138-log isolated attestation. This repository does not duplicate that raw downstream result tree; the exact accepted outcome and assurance limits are preserved in the frozen [`flat implementer kit`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#cold-test-and-qualification-outcome-2026-07-1415).
-
-These records answer only what the pinned experiment reported. They do not define A12 semantics, change retained kernel evidence, transfer Lean proofs, approve a release, or establish candidate correctness beyond the finite profile and mutations. Their bridge, packet, checker, observer, and generated-differential implementation remain inspectable at Git revision `03186c1`. Reproducing those old commands requires a clean checkout of that revision and the exact pinned candidate inputs; they are not current project gates.
-
-The artifacts are immutable. A future consumer or shipment receives a newly designed qualification identity against the then-current semantics, runner, and operational constraints. Do not restore this one-off machinery for anticipated reuse, and do not update its profile, result, revisions, digests, or historical wording in place.
+The Rust knowledge-transport exercise is complete, and its checked-out profile, result, and one-off source machinery have been retired. The [archived historical record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md) preserves the exact compatibility identity, source and candidate revisions, packet and result hashes, 52/52 verdict distribution, assurance limits, and recovery instructions. These facts answer only what the pinned experiment reported: they do not define current A12 semantics, add kernel evidence, transfer Lean proofs, approve a release, or establish candidate correctness beyond the finite historical profile. A future consumer receives a newly designed qualification identity against the then-current semantics and operational constraints; do not restore the retired machinery for anticipated reuse.
 
 ## Evolution by change type
 
@@ -165,6 +155,6 @@ The artifacts are immutable. A future consumer or shipment receives a newly desi
 
 ## Desired repository-wide drift contract
 
-The lineage, reference-process gate, evidence replay, and per-family compact bundle owners form the current drift contract. Every committed artifact path or closed inventory must have one recorded owner, role, compatibility identity, update policy, and non-writing check, but the retired flat packet machinery is not a template for a repository-wide generator or receipt graph.
+The current support declarations, reference-process gate, evidence replay, and per-family compact bundle owners form the current drift contract. Every committed artifact path or closed inventory must have one recorded owner, role, compatibility identity, update policy, and non-writing check, but the retired flat packet machinery is not a template for a repository-wide generator or receipt graph.
 
 Generation remains an explicit maintainer action for current artifacts followed by review. A green generator run cannot create kernel evidence, approve a semantic correction, or qualify an independent consumer by itself.

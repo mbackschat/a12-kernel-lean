@@ -1,6 +1,6 @@
 # Reference and evidence simplification proposal
 
-> **Status:** local proposal, pending owner adoption. This is a one-time compatibility and evidence consolidation, not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived or deleted.
+> **Status:** adopted and in progress, 2026-07-18. Decision 1 is complete; Decisions 2 and 3 are the remaining one-time evidence consolidation. This is not authorization to remove current semantics, proofs, V2 controls, or empirical observations. After implementation, durable architecture and artifact rules move to their owners and this proposal is archived.
 
 ## Outcome
 
@@ -41,7 +41,7 @@ awk 'NF { n++ } END { print n+0 }' "${evidence_files[@]}"
 
 At this baseline it prints 5,453 theory, 10,076 support, and 5,893 evidence lines. After local V1 retirement and before writing any replacement family, recount and compute the final evidence allowance as the smaller of one third of theory and `theory − non-evidence support`. Budget the existing compact lane and every remaining family together against that allowance. If readable closed projections and their separating tests do not fit, remove more obsolete support, retain the affected old family temporarily, or request an explicit owner exception; never meet the ratio by compression, untyped shortcuts, weakened checks, or deleting an observation still claimed by current documentation.
 
-## Decision 1 — retire local reference-semantics V1
+## Decision 1 — retire local reference-semantics V1 (completed)
 
 Current V2 already subsumes the finite V1 behavior:
 
@@ -52,17 +52,17 @@ Current V2 already subsumes the finite V1 behavior:
 
 V2 therefore replaces every active V1 conformance use. It does not retroactively relabel the Rust candidate or its 52/52 result as a V2 qualification. Move that historical experiment to one archived document with its exact revisions, verdict distribution, and key hashes, then remove it from live compatibility gates and current handover instructions.
 
-The stale `checkGeneratedDifferential` invocations were already removed from [CI](../.github/workflows/lean_action_ci.yml) in commit `c2287d5`; the retired Lake target is no longer called. The remaining migration should:
+The stale `checkGeneratedDifferential` invocations were already removed from [CI](../.github/workflows/lean_action_ci.yml) in commit `c2287d5`; the retired Lake target is no longer called. The completed migration:
 
 1. Update the two existing implementer-kit paths in place to describe current V2 semantics, manifests, suites, commands, and exclusions. Do not create parallel V1/V2 kits.
 2. Move the historical Rust experiment and reference-semantics 0.2.0 provenance into `docs/archived/`; remove V1 compatibility history from live docs.
-3. Replace [`Reference/Lineage.lean`](../A12Kernel/Reference/Lineage.lean) with a small current-only `Reference/Identity.lean`.
+3. Deleted `Reference/Lineage.lean` and moved its four current constants directly into [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean); a separate one-record identity module would have added indirection without a second live account.
 4. Remove historical lock traversal, separating-replay serialization, V1-prefix comparison, and lineage-mirror checks from [`ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean), while retaining current manifest, directional regression, V2 suite integrity, and current candidate controls.
 5. Delete the V1 manifest, descriptor, two V1 suites, mutation plan, generated profile, Rust result, artifact lock, separating replay, and lineage mirror. Delete the empty `qualification/` tree if nothing remains.
 6. Remove redundant trust-script probes for already-deleted source names; the general source-zone inventory remains the owning guard.
 7. Sweep live docs for reference-semantics 0.2.0/V1 compatibility claims. Preserve the current wire protocol 1 and never rename it V2.
 
-This stage removes roughly 88,535 checked-out bytes and 2,196 nonblank data/source lines across the explicit V1 estate, plus about 95 historical process-test lines. Its direct `A12Kernel/` saving is only about 15–25 KiB; its main value is removing compatibility coupling and unlocking the larger evidence deletion.
+This stage removed 88,535 checked-out bytes and 2,196 nonblank data/source lines across the explicit V1 estate, plus the historical process-gate branch. Its direct `A12Kernel/` saving is modest; its main value is removing compatibility coupling and unlocking the larger evidence deletion. The current gate still checks the current manifest, fixtures, V2 integrity suites, and compiled-reference controls. The [archive](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md) owns the deleted identities, hashes, Rust outcome, and recovery revisions.
 
 ## Decision 2 — perform one final evidence-compaction wave
 
@@ -153,4 +153,4 @@ Also require resolved Markdown links, no live reference to deleted Lake targets 
 
 ## Recommended order
 
-The stale CI calls are fixed. Adopt and execute the local V1-to-V2 retirement as one bounded compatibility cleanup. Then return to computation semantics and complete ordered connectives and first-match alternatives. At that natural family boundary, perform the single final evidence-compaction wave, delete all superseded raw/binder estates, update the durable artifact doctrine, and resume semantics with the infrastructure settled.
+The stale CI calls and local V1-to-V2 retirement are complete. Record recovery identities and remove the already-opaque direct-cascade raw estate first. Then compact the two String families together, followed by flat/operator, correlation/elaboration, and iteration; reduce the driver only after those families have moved. Archive this proposal once the measured targets and gates pass, then return immediately to ordered computation connectives and first-match alternatives with the infrastructure settled.

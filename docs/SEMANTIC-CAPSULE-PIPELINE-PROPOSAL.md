@@ -150,7 +150,7 @@ The compact [`ObservationBundle`](../A12Kernel/Evidence/ObservationBundle.lean) 
 
 Frozen a12-dmkits capture-contract V1 identities and retained artifacts remain immutable, while revision `45b264b2d6213dd7d4d261fa040034371b0c8fcd` removed the complete unused implementation from current upstream `main`: 96 tracked files, 634,739 bytes, and 11,637 nonblank lines of source, tests, fixtures, mutation machinery, commands, build wiring, and live documentation. The exact historical contract and detached-revision recovery route live only in a12-dmkits' [`archived capture proposal`](../../a12-rulekit/docs/archived/A12-DMKITS-CAPTURE-PROPOSAL.md). No successor was minted.
 
-This decision is separate from this repository's reference-semantics 0.2.0/V1 lineage. That local compatibility estate is now independently audited for migration to current 0.3.0/V2 in the [reference and evidence simplification proposal](REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md); immutable historical Rust claims are archived rather than relabeled.
+This decision is separate from this repository's reference-semantics identities. The local 0.2.0/V1 compatibility estate has been retired; current shipments use 0.3.0/V2 over unchanged wire protocol 1, and the exact historical Rust claims and recovery revisions live in the [archived record](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md). The [reference and evidence simplification proposal](REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md) now tracks only the remaining evidence-compaction and raw-archive decisions.
 
 The durable distinction is:
 
