@@ -194,5 +194,9 @@ run_cmd do
 #print axioms A12Kernel.requiredDependencyPoison_is_rejected
 #print axioms A12Kernel.erroredDependency_does_not_expose_attempt
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
+#print axioms A12Kernel.falseStringPrecondition_evaluates_noValue
+#print axioms A12Kernel.trueStringPrecondition_preserves_outcome
+#print axioms A12Kernel.trueStringPrecondition_consumedInvalidField_poisons
 #print axioms A12Kernel.same_delta_does_not_imply_same_dependency
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_dependency
+#print axioms A12Kernel.same_exact_application_does_not_imply_same_dependency_read

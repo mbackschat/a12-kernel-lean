@@ -1,4 +1,6 @@
 import A12Kernel.Proofs.Observation
+import A12Kernel.Proofs.StringComputation
+import A12Kernel.Semantics.StringApplication
 import A12Kernel.Semantics.StringCascade
 
 /-! # A12Kernel.Proofs.StringCascade — direct dependency-edge laws
@@ -126,6 +128,34 @@ theorem stringStep_outcome_independent_of_prior
       ({ step with prior := otherPrior }.evaluateOutcome context) := by
   rfl
 
+/-- A false common precondition suppresses an arbitrary String body without consulting its expression or context. -/
+theorem falseStringPrecondition_evaluates_noValue
+    (step : StringComputationStep) (context : StringComputationContext) :
+    step.evaluateOutcomeWhen false context = .ok .noValue := by
+  rfl
+
+/-- A true common precondition delegates without changing the ordinary checked outcome. -/
+theorem trueStringPrecondition_preserves_outcome
+    (step : StringComputationStep) (context : StringComputationContext) :
+    step.evaluateOutcomeWhen true context = step.evaluateOutcome context := by
+  rfl
+
+/-- Once the common precondition holds, a consumed formally invalid String operand poisons the target instead of becoming quiet no-value. -/
+theorem trueStringPrecondition_consumedInvalidField_poisons
+    (context : StringComputationContext) (operand target : FieldId)
+    (cause : FormalCause) (policy : StringTargetLengthPolicy)
+    (prior : PriorStringTarget)
+    (poisonedRead : observeCell .computation (context.read operand) = .poison cause) :
+    ({ targetField := target
+       expression := .field operand
+       targetPolicy := policy
+       prior } : StringComputationStep).evaluateOutcomeWhen true context =
+      .ok (.poison cause) := by
+  simp only [StringComputationStep.evaluateOutcomeWhen,
+    StringComputationStep.evaluateOutcome,
+    poisonedStringField_evaluates_poison context operand cause poisonedRead,
+    StringTargetLengthPolicy.check]
+
 /-- Equal immediate deltas do not imply equal dependency states. Clean no-value and malformed poison both clear the same prior target, but their consumer reads remain different. -/
 theorem same_delta_does_not_imply_same_dependency
     (prior : PriorStringTarget) :
@@ -147,5 +177,22 @@ theorem same_appliedValue_does_not_imply_same_dependency
   constructor
   · rfl
   · cases cause <;> decide
+
+/-- Quiet precondition clearing and consumed-operand poison have identical exact target placement, yet a later read still distinguishes clean empty from poison. -/
+theorem same_exact_application_does_not_imply_same_dependency_read
+    (context : StringComputationContext) (field : FieldId)
+    (prior : StringTargetState) (cause : FormalCause)
+    (notRequired : cause ≠ .required) :
+    StringTargetOutcome.noValue.applyTo prior =
+        (StringTargetOutcome.poison cause).applyTo prior ∧
+      (context.withDependencyOutcome field .noValue).map
+          (fun updated => updated.readTerm field) ≠
+        (context.withDependencyOutcome field (.poison cause)).map
+          (fun updated => updated.readTerm field) := by
+  constructor
+  · cases prior <;> rfl
+  · rw [noValueDependency_reads_noValue,
+      inheritedDependency_reads_samePoison context field cause notRequired]
+    simp
 
 end A12Kernel
