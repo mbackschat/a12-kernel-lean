@@ -1,12 +1,12 @@
 # Compact semantic-evidence pipeline
 
-> Status: implemented and measured, 2026-07-18. This document owns the settled boundary and scaling constraints that replaced packet-specific Lean re-auditing with the a12-dmkits transporter and compact Lean semantic projections. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
+> Status: implemented and measured, 2026-07-18. This document owns the settled compact Lean consumer boundary, the completed retirement of its one-time upstream producer estate, and the scaling constraints for future demand-driven calibration. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
 ## Decision
 
-The project will keep kernel differential evidence but stop reproducing the complete capture system inside Lean. a12-dmkits owns kernel execution, runner fidelity, request and consumed-document binding, capabilities, legality, qualification, closure identity, receipts, deterministic recapture, and raw-packet verification. a12-kernel-lean retains that complete certified raw unit for audit, treats it as opaque during normal replay, and consumes one compact producer-certified semantic-observation bundle through an operation-neutral reader plus a small typed family projection.
+The project keeps kernel differential evidence without reproducing a complete producer system inside Lean. Historical a12-dmkits capture-contract V1 established kernel execution, runner fidelity, request and consumed-document binding, capabilities, legality, qualification, closure identity, receipts, deterministic recapture, raw-packet verification, and the compact export for the accepted direct-cascade unit. a12-kernel-lean retains that unit for audit, treats it as opaque during normal replay, and consumes its compact semantic-observation bundle through an operation-neutral reader plus a small typed family projection. a12-dmkits has since retired the producer implementation from current `main`.
 
-This is an explicit trust boundary, not a claim that transport no longer matters. The real kernel remains the behavioral oracle. a12-dmkits becomes the trusted transporter from kernel execution to the compact observation bundle, while its interpreter remains triangulation rather than an oracle. Lean checks the bundle's closed semantic projection against its executable account and proves internal laws; it no longer re-implements the transporter's receipt, filesystem, runner, capability, qualification, or closure audit for every capsule.
+This is an explicit historical trust boundary, not a claim that transport no longer matters. The real kernel remains the behavioral oracle. For the accepted unit, the pinned a12-dmkits revisions are the producer and its interpreter is triangulation rather than an oracle. Lean checks the bundle's closed semantic projection against its executable account and proves internal laws; it does not re-implement receipt, filesystem, runner, capability, qualification, or closure audits. For a future family, current corpus/differential facilities are used only when their natural observation fits; otherwise the family remains `external evidence pending` until a concrete minimal upstream capability and its assurance contract are accepted.
 
 ## Why this changes
 
@@ -28,12 +28,10 @@ The completed Rust experiment, retained direct-cascade packet, trusted proof roo
 
 | Concern | Owner | Lean treatment |
 |---|---|---|
-| Kernel execution and engine closure | a12-dmkits | Named provenance only |
-| Request legality and consumed-input identity | a12-dmkits | Trusted producer assertion |
-| Runner route integrity and fidelity | a12-dmkits | Trusted producer assertion |
-| Qualification, receipts, deterministic recapture, and mutation qualification | a12-dmkits | Raw artifacts retained, opaque to ordinary replay |
-| Compact bundle production from the certified observation | a12-dmkits | Producer-certified interface |
-| Bundle schema, identity, bounded decoding, and case separation | a12-kernel-lean owns the canonical consumer contract; a12-dmkits explicitly accepts and implements its producer side | Checked once by an operation-neutral Lean reader; a12-kernel-lean mints an incompatible schema version only through an accepted cross-project proposal |
+| Accepted direct-cascade execution, input binding, runner fidelity, qualification, receipts, recapture, and compact production | Historical a12-dmkits revisions named by the retained artifacts | Raw and compact artifacts remain immutable; ordinary Lean replay trusts the pinned historical producer assertions |
+| Current ordinary corpus capture/replay and kernel differentials | Current a12-dmkits facilities under their live owners | Used only when their existing own-domain observation naturally closes the requested family |
+| Missing future observation capability | a12-kernel-lean specifies the concrete semantic need; a12-dmkits implements only an accepted upstream request | No V1 packet shape, qualification graph, exporter, or universal successor is presumed |
+| Bundle schema, identity, bounded decoding, and case separation | a12-kernel-lean | Checked once by an operation-neutral Lean reader; reuse or evolution requires a concrete accepted consumer need |
 | Family input and observable result meaning | a12-kernel-lean | Closed typed family projection |
 | Executable semantics, laws, and non-laws | a12-kernel-lean | Trusted semantic and proof roots |
 | Interpreter comparison | a12-dmkits plus project review | Triangulation only |
@@ -50,7 +48,7 @@ Tier 1 must remain the dominant day-to-day work. It must not require a capture s
 
 ### Tier 2 — family calibration
 
-Related primitive choices receive a focused external matrix through the maintained a12-dmkits boundary. The producer returns a compact semantic-observation bundle plus references to the retained raw certified unit. Lean decodes the compact bundle, projects one named family into typed inputs and observations, executes the real semantic definitions, and rejects mismatches.
+Related primitive choices receive a focused external matrix. First use an existing maintained a12-dmkits corpus or differential route if its natural observation shape is sufficient. Otherwise request the smallest purpose-specific producer capability and define its assurance and retention boundary from the concrete need. An accepted handback supplies a compact semantic account and the provenance or supporting material required by that contract; it does not automatically reproduce the retired V1 packet structure. Lean decodes the compact account, projects one named family into typed inputs and observations, executes the real semantic definitions, and rejects mismatches.
 
 Tier 2 establishes empirical correspondence only for the retained observations. It does not prove universal kernel equivalence.
 
@@ -108,9 +106,9 @@ The completed compact direct-cascade migration removed its packet-specific:
 - recapture-diff and scenario-mutation receipt checks;
 - interpreter-fidelity reconstruction.
 
-The complete raw packet, qualification sidecars, recapture diff, and mutation receipt remain under `evidence/` unchanged. Their upstream checks and Git provenance remain available for an audit. Lean's durable statement becomes:
+The complete historical raw packet, qualification sidecars, recapture diff, and mutation receipt remain under `evidence/` unchanged pending the accepted local archive migration. Their pinned upstream revision, archived contract, and Git provenance remain available for an audit. Lean's durable statement is:
 
-> Lean decodes and replays an upstream-certified compact typed projection anchored to named retained raw receipt identities; the raw unit remains available for upstream verification and human audit but is opaque to ordinary Lean replay.
+> Lean decodes and replays a historically producer-certified compact typed projection anchored to named retained raw receipt identities; the raw unit remains available through pinned Git history and human audit but is opaque to ordinary Lean replay.
 
 ## Measurable limits
 
@@ -148,16 +146,16 @@ The old and new lanes coexisted for one migration gate, agreed on all five cases
 
 The compact [`ObservationBundle`](../A12Kernel/Evidence/ObservationBundle.lean) now owns directly the closed portable-path, digest, bounded-file, and regular non-symlink behavior needed by the live reader. No generic artifact-tree helper remains. The completed Rust mutation campaign is not a reason to retain broader packet-oriented APIs or tests; their historical implementation remains available at Git revision `03186c1`.
 
-## Producer-side consolidation and frozen a12-dmkits capture-contract V1
+## Producer-side consolidation and retired a12-dmkits capture-contract V1
 
-Frozen a12-dmkits capture-contract V1 identities and retained artifacts must never be mutated, but current-main implementation code does not have to live forever merely because an immutable artifact exists. The owner has confirmed that no known maintained external consumer needs current-main execution and that Git history plus the retained raw and compact artifacts may own historical reproducibility. The current [retirement handoff](A12-DMKITS-CAPTURE-V1-RETIREMENT-PROPOSAL.md) therefore directs a12-dmkits to remove the complete portable capture-V1 implementation and every live documentation trace without minting a successor; only archived documentation retains the exact history.
+Frozen a12-dmkits capture-contract V1 identities and retained artifacts remain immutable, while revision `45b264b2d6213dd7d4d261fa040034371b0c8fcd` removed the complete unused implementation from current upstream `main`: 96 tracked files, 634,739 bytes, and 11,637 nonblank lines of source, tests, fixtures, mutation machinery, commands, build wiring, and live documentation. The exact historical contract and detached-revision recovery route live only in a12-dmkits' [`archived capture proposal`](../../a12-rulekit/docs/archived/A12-DMKITS-CAPTURE-PROPOSAL.md). No successor was minted.
 
 This decision is separate from this repository's reference-semantics 0.2.0/V1 lineage. That local compatibility estate is now independently audited for migration to current 0.3.0/V2 in the [reference and evidence simplification proposal](REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md); immutable historical Rust claims are archived rather than relabeled.
 
 The durable distinction is:
 
 1. **Immutable historical evidence:** accepted raw and compact bytes, packet and qualification identities, and source revisions remain recoverable and are never rewritten.
-2. **Current-main producer code:** the unused capture source set, schemas, commands, exporter, qualification machinery, mutations, tests, and live documentation are removed rather than maintained or duplicated.
+2. **Current-main producer code:** the unused capture source set, schemas, commands, exporter, qualification machinery, mutations, tests, and live documentation have been removed rather than maintained or duplicated.
 3. **Future producer capability:** a new operation is demand-driven by a concrete semantic family and designed from its observation needs; it is not a compatibility successor created merely to preserve V1 structure.
 
 ## Sequencing
@@ -165,12 +163,12 @@ The durable distinction is:
 1. Finish the internally proved String-ingestion capsule and leave its external observation pending. Completed in commit `41ddc9d`.
 2. Completed: implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures remain schema tests, not kernel evidence.
 3. Completed: measure and simplify the local implementation before requesting the producer.
-4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter recorded historically in a12-dmkits' capture-contract V1 estate. The accepted bytes are retained here; the unused upstream implementation is now subject to the owner-directed [retirement handoff](A12-DMKITS-CAPTURE-V1-RETIREMENT-PROPOSAL.md). Validation-message capture remains outlook only.
+4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter recorded historically in a12-dmkits' archived capture-contract V1 estate. The accepted bytes are retained here, and upstream revision `45b264b2` removed the unused implementation. Validation-message capture remains outlook only.
 5. Completed: verify and retain the producer-certified compact bundle beside the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
 6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
 7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines.
 8. Only if the measured pattern meets the limits, consider migrating the two historical String binders. Do not rewrite them merely for uniformity.
-9. Request a new external operation only when a real semantic family needs an observation the settled exporter cannot represent. Do not front-load a universal capture protocol.
+9. Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
 
 ## Upstream engagement rule
 
@@ -189,7 +187,7 @@ Stop and redesign if:
 - compact observations lose polarity, poison/unknown, multiplicity, order, applied-state, or other distinctions the family actually claims;
 - a semantic mutation does not fail;
 - old and new evidence lanes remain after the migration gate;
-- a12-dmkits capture-contract V1 and its successor become permanent duplicated implementations without a supported-consumer reason;
+- retired a12-dmkits capture-contract V1 is resurrected or a universal successor is built without a supported-consumer reason;
 - external evidence blocks unrelated internal semantic/proof progress;
 - evidence infrastructure resumes growing faster than executable semantics and proofs.
 
