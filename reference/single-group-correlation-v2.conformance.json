@@ -15,7 +15,7 @@
       "expectedResponse": "examples/reference-cli/correlation-direction.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-direction",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -32,7 +32,7 @@
       "expectedResponse": "examples/reference-cli/correlation-self-included.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-self-included",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -48,7 +48,7 @@
       "expectedResponse": "examples/reference-cli/correlation-self-excluded-distinct.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-self-excluded-distinct",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -64,7 +64,7 @@
       "expectedResponse": "examples/reference-cli/correlation-self-excluded-duplicate.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-self-excluded-duplicate",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -80,7 +80,7 @@
       "expectedResponse": "examples/reference-cli/correlation-consumer-all-valid.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-consumer-all-valid",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -96,7 +96,7 @@
       "expectedResponse": "examples/reference-cli/correlation-consumer-first-malformed.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-consumer-first-malformed",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -112,7 +112,7 @@
       "expectedResponse": "examples/reference-cli/correlation-consumer-second-malformed.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-consumer-second-malformed",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -128,7 +128,7 @@
       "expectedResponse": "examples/reference-cli/correlation-filter-empty-equals-zero.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-filter-empty-equals-zero",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -144,7 +144,7 @@
       "expectedResponse": "examples/reference-cli/correlation-filter-malformed-local.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-filter-malformed-local",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -160,7 +160,7 @@
       "expectedResponse": "examples/reference-cli/correlation-number-not-equal.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-number-not-equal",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -176,7 +176,7 @@
       "expectedResponse": "examples/reference-cli/correlation-repetition-equal.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-repetition-equal",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -192,7 +192,7 @@
       "expectedResponse": "examples/reference-cli/correlation-repetition-less-than.response.json",
       "evidence": {
         "kind": "kernelRuntimeObservation",
-        "projection": "evidence/kernel-30.8.1/correlation-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-repetition-less-than",
         "externalSupports": "firingRows",
         "expectedResponseSource": "retainedProjection"
@@ -208,7 +208,7 @@
       "expectedResponse": "examples/reference-cli/correlation-missing-inner.response.json",
       "evidence": {
         "kind": "kernelStaticDiagnostic",
-        "projection": "evidence/kernel-30.8.1/correlation-elaboration-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-elaboration-missing-inner-rejected",
         "externalSupports": "elaborationRejectionClass",
         "expectedResponseSource": "projectDiagnostic"
@@ -224,7 +224,7 @@
       "expectedResponse": "examples/reference-cli/correlation-equality-scale-mismatch.response.json",
       "evidence": {
         "kind": "kernelStaticDiagnostic",
-        "projection": "evidence/kernel-30.8.1/correlation-elaboration-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-elaboration-equality-scale-mismatch-rejected",
         "externalSupports": "elaborationRejectionClass",
         "expectedResponseSource": "projectDiagnostic"
@@ -240,7 +240,7 @@
       "expectedResponse": "examples/reference-cli/correlation-ordering-mixed-scale.response.json",
       "evidence": {
         "kind": "kernelStaticAcceptance",
-        "projection": "evidence/kernel-30.8.1/correlation-elaboration-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-elaboration-ordering-mixed-scale-accepted",
         "externalSupports": "elaborationAcceptanceOnly",
         "expectedResponseSource": "leanRuntimeProjection"
@@ -257,7 +257,7 @@
       "expectedResponse": "examples/reference-cli/correlation-cross-group-inner.response.json",
       "evidence": {
         "kind": "kernelStaticDiagnostic",
-        "projection": "evidence/kernel-30.8.1/correlation-elaboration-projection.json",
+        "projection": "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
         "caseId": "correlation-elaboration-cross-group-inner-rejected",
         "externalSupports": "elaborationRejectionClass",
         "expectedResponseSource": "projectDiagnostic"

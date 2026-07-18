@@ -74,6 +74,7 @@ structure Descriptor where
   contentValue : String
   expectedPolarity : Polarity
   projection : System.FilePath
+  suiteProjection : System.FilePath
   request : System.FilePath
   response : System.FilePath
   suite : System.FilePath
@@ -96,6 +97,7 @@ def descriptor : Descriptor := {
   contentValue := "Acme"
   expectedPolarity := .value
   projection := "evidence/kernel-30.8.1/operator-empty-projection.json"
+  suiteProjection := "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json"
   request := "examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json"
   response := "examples/reference-cli/empty-unsigned-number-not-equal-negative.response.json"
   suite := "reference/flat-validation-empty-logic-v2.conformance.json"
@@ -206,6 +208,9 @@ private def Descriptor.validate (descriptor : Descriptor) : Except String Unit :
     throw "operator protocol descriptor is incomplete"
   if descriptor.projection != "evidence/kernel-30.8.1/operator-empty-projection.json" then
     throw "operator protocol descriptor names the wrong evidence projection"
+  if descriptor.suiteProjection !=
+      "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json" then
+    throw "operator protocol descriptor names the wrong compact suite projection"
   if descriptor.suite != "reference/flat-validation-empty-logic-v2.conformance.json" then
     throw "operator protocol descriptor names the wrong current suite"
 
@@ -330,7 +335,7 @@ def CaseArtifact.suiteCaseJson (_artifact : CaseArtifact)
     ("expectedResponse", toJson descriptor.response.toString),
     ("evidence", Json.mkObj [
       ("kind", toJson "kernelRuntimeObservation"),
-      ("projection", toJson descriptor.projection.toString),
+      ("projection", toJson descriptor.suiteProjection.toString),
       ("caseId", toJson descriptor.retainedCaseId),
       ("externalSupports", toJson "verdictFiringAndPolarity"),
       ("expectedResponseSource", toJson "retainedProjection")]),

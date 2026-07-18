@@ -566,11 +566,11 @@ private def currentCandidateSuites : List CandidateSuiteControl := [
   { path := "reference/single-group-correlation-v2.conformance.json"
     id := "single-group-correlation-v2"
     caseCount := 16
-    guardCount := 17 },
+    guardCount := 20 },
   { path := "reference/flat-validation-empty-logic-v2.conformance.json"
     id := "flat-validation-empty-logic-v2"
     caseCount := 9
-    guardCount := 25 }]
+    guardCount := 28 }]
 
 private def checkCandidateRunnerIntegrity : IO Unit := do
   let executable ← candidateConformanceExecutable
