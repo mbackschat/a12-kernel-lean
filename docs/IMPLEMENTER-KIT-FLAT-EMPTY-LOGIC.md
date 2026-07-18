@@ -320,7 +320,7 @@ The generated [`flat-validation-empty-logic-v1.mutation-plan.json`](../reference
 
 ## Post-cold mutation qualification packet
 
-[`A12Kernel/Qualification/`](../A12Kernel/Qualification/) implements a packet schema 2 and result schema 2 around the generated plan. An export binds the current semantics-project revision, the frozen natural Rust revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, the exact candidate build/test-input closure, compatibility tuple, execution profile, canonical observer, observer-only baseline patch, seven semantic patches, expected observations, commands, and every payload file by SHA-256. The packet-local payload verifier and an out-of-band `PACKET.json` digest let the isolated session check what it received without calling back into this source checkout.
+The retired qualification implementation created a packet schema 2 and result schema 2 around the generated plan. Its export bound the semantics-project revision, frozen natural Rust revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, exact candidate build/test-input closure, compatibility tuple, execution profile, canonical observer, observer-only baseline patch, seven semantic patches, expected observations, commands, and every payload file by SHA-256. The accepted implementation remains inspectable at source revision `e408c9bd87ab8de576c900f2e42e0f13e868da76` and in the common pre-deletion snapshot `03186c1`; it is not current project infrastructure.
 
 The observer reads the frozen conformance suite and its eight canonical request fixtures; it does not reconstruct those requests in a second semantic harness. The natural observation and every mutation contain all eight case results, while exercises 5 and 6 additionally contain the complete 32-cell `And`-then-`Or` algebra. Predictions come from the typed plan, but the runner fills the result's observed values by parsing actual observer stdout. The checker binds those recorded observations back to the raw log bytes before comparing them with the prediction, and separately reconstructs every patch from the frozen natural library, tracked observer, and reviewed source edits so a self-consistent packet cannot replace the named mutation.
 
@@ -328,24 +328,29 @@ Restoration means exact paths and bytes for the packet-pinned candidate build/te
 
 Two assurance classes keep the execution claim honest. The source-owned self-test records `sourceExecutedReplay` because its runner actually executes the commands in a disposable candidate copy and captures the streams. A returned downstream record uses `isolatedSessionAttestation`: `--check` can establish that its packet identity, commands, statuses, logs, observations, and restoration inventories are digest-bound and internally consistent, but cannot independently prove that the isolated session executed those commands. Cedar supplies the structural precedent for separating specification, validation, theorems, differential tests, and integration machinery; the assurance classes and digest-bound external-attestation model are A12-specific and intentionally weaker than an execution attestation service.
 
-The complete source-side replay of the natural baseline and all seven mutations is green, including the complete adversarial checker set owned by [`TESTING.md`](TESTING.md#rust-mutation-qualification). A separate isolated session produced the schema-2 downstream record committed at Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`; the strict checker accepted its exact packet identity, command/status records, observer outputs, complete raw-log tree, and restoration inventories as an `isolatedSessionAttestation`. The [outcome section](#cold-test-and-qualification-outcome-2026-07-1415) records the precise boundary.
+The complete source-side replay of the natural baseline and all seven mutations is green. A separate isolated session produced the schema-2 downstream record committed at Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`; the strict checker accepted its exact packet identity, command/status records, observer outputs, complete 138-log tree, and restoration inventories as an `isolatedSessionAttestation`. The [outcome section](#cold-test-and-qualification-outcome-2026-07-1415) records the precise boundary.
 
 ## Post-cold generated differential
 
 The bounded generated-differential lane is deliberately separate from the original cold handover. The isolated implementer first had to construct the eight-case implementation without access to the Lean source or executable; only after that result and its mutation qualification were frozen does this lane introduce the Lean reference as a black-box comparison oracle. It tests whether the transported semantic mechanism generalizes beyond the handed-over fixtures, not whether an implementer can copy reference outputs.
 
-[`A12Kernel/Differential/Profile.lean`](../A12Kernel/Differential/Profile.lean) defines a closed profile schema and [`Generated.lean`](../A12Kernel/Differential/Generated.lean) deterministically enumerates 52 supported positive requests: 12 leaf/cell-state combinations, all 32 ordered pairs of the four verdict atoms under `And` and `Or`, and 8 ordered authoritatively empty-row eligibility combinations where `hasContent=false` despite a present Boolean control cell. In a leaf case, the chosen sparse, parsed-Boolean-true, or rejected-malformed state is installed in the targeted field; parsed Boolean is therefore intentionally wrong-kind for Number and Confirm leaves. Every request stays inside the admitted three-field absolute/non-repeatable flat capability and is decoded through the public protocol before use. The comparison projects each strict success response only to `notFired`, `fired.value`, `fired.omission`, or `unknown`; negative protocol diagnostics remain outside this campaign.
+The retired generated-differential implementation defined a closed profile schema and deterministically enumerated 52 supported positive requests: 12 leaf/cell-state combinations, all 32 ordered pairs of the four verdict atoms under `And` and `Or`, and 8 ordered authoritatively empty-row eligibility combinations where `hasContent=false` despite a present Boolean control cell. In a leaf case, the chosen sparse, parsed-Boolean-true, or rejected-malformed state is installed in the targeted field; parsed Boolean is therefore intentionally wrong-kind for Number and Confirm leaves. Every request stays inside the admitted three-field absolute/non-repeatable flat capability and is decoded through the public protocol before use. The comparison projects each strict success response only to `notFired`, `fired.value`, `fired.omission`, or `unknown`; negative protocol diagnostics remain outside this campaign. The exact source is preserved at revision `2cdc37746737d83241f91cd89fa0b56c99c2d47a` and in pre-deletion snapshot `03186c1`.
 
-[`Runner.lean`](../A12Kernel/Differential/Runner.lean) requires clean repositories at the profile-pinned revisions, repository-relative contained executable paths, exact executable/profile digests, and unchanged postflight identities. It invokes the Lean reference and candidate sequentially through the project-owned bounded relay, enforces per-process and aggregate time/input/output/result budgets, and writes either a finite agreement receipt, a process/integrity failure, or every disagreement with both responses and deterministic minimal witnesses. This is a cooperative macOS/Linux resource boundary for candidates retaining the caller's credentials, not an untrusted-code sandbox.
+The historical runner required clean repositories at the profile-pinned revisions, repository-relative contained executable paths, exact executable/profile digests, and unchanged postflight identities. It invoked the Lean reference and candidate sequentially through the project-owned bounded relay, enforced per-process and aggregate time/input/output/result budgets, and wrote either a finite agreement receipt, a process/integrity failure, or every disagreement with both responses and deterministic minimal witnesses. This was a cooperative macOS/Linux resource boundary for candidates retaining the caller's credentials, not an untrusted-code sandbox.
 
-The source gates are:
+The bounded relay remains a current command:
 
 ```sh
 lake exe checkBoundedProcess
+```
+
+The generated-differential driver requires a clean checkout of Git revision `03186c1`; it is not available at current HEAD:
+
+```sh
 lake exe checkGeneratedDifferential --self-test
 ```
 
-The reviewed [`flat-validation-empty-logic-v1.generated-differential-v1.json`](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json) pins source `2cdc37746737d83241f91cd89fa0b56c99c2d47a` and Rust candidate `d213005b3972c2acd8f67e87f523a923d69f6a54`. Validate it without executing either implementation:
+The reviewed [`flat-validation-empty-logic-v1.generated-differential-v1.json`](../reference/flat-validation-empty-logic-v1.generated-differential-v1.json) pins source `2cdc37746737d83241f91cd89fa0b56c99c2d47a` and Rust candidate `d213005b3972c2acd8f67e87f523a923d69f6a54`. At the historical checkout it can be validated without executing either implementation:
 
 ```sh
 lake exe checkGeneratedDifferential --check-profile reference/flat-validation-empty-logic-v1.generated-differential-v1.json
@@ -367,36 +372,27 @@ lake exe checkGeneratedDifferential --run \
 
 The exact pinned run is retained as [`generated-differential-v1.RESULT.json`](../qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json). It executed 104 bounded processes and completed all 52 generated cases with no disagreement, process failure, or integrity failure. Lean and Rust both produced 14 `notFired`, 11 `fired.value`, 13 `fired.omission`, and 14 `unknown` verdicts. The measured campaign used 94,088 process-input bytes, 11,114 process-output bytes, and 4,997 ms on `arm64-apple-darwin24.6.0`, within every declared bound; the receipt binds the exact profile, runner, relay, reference, candidate, and source revisions by SHA-256 or Git identity.
 
-Its strict non-writing receipt-consistency gate is `lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json`. The checker bounded-reads the receipt, rejects duplicate or unknown JSON members and non-agreement records, reconstructs the profile's exact cases, compares both recorded distributions with the frozen historical distribution, and checks compatibility, revisions, counts, budgets, claim, admitted platform, and artifact-digest syntax. It does not call today's evaluator, authenticate the historical execution, rebuild or compare the historical macOS executable bytes on another platform, or reconstruct per-case green transcripts omitted by the compact receipt.
+At revision `03186c1`, the strict non-writing receipt-consistency command was `lake exe checkGeneratedDifferential --check-result reference/flat-validation-empty-logic-v1.generated-differential-v1.json qualification/flat-validation-empty-logic-v1-rust-v1/generated-differential-v1.RESULT.json`. The checker bounded-read the receipt, rejected duplicate or unknown JSON members and non-agreement records, reconstructed the profile's exact cases, compared both recorded distributions with the frozen historical distribution, and checked compatibility, revisions, counts, budgets, claim, admitted platform, and artifact-digest syntax. Current `checkReferenceProcess` instead pins and rehashes the immutable profile and result bytes; it does not authenticate the historical execution, rebuild or compare the historical macOS executable bytes on another platform, or reconstruct per-case green transcripts omitted by the compact receipt.
 
-Downstream revision `6a4df4ebaf15efd5620d60caf6cf9ac9834b668e` later copied that canonical receipt into the Rust repository, added [`GENERATED-DIFFERENTIAL-ADDENDUM.md`](../../a12-kernel-rust-spike/reports/GENERATED-DIFFERENTIAL-ADDENDUM.md), and updated its entry documentation to report 52/52 finite-profile agreement while leaving the historical reports byte-for-byte unchanged. This is a documentation and receipt mirror only: the candidate actually executed and qualified by the pinned campaign remains Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`, and the later downstream revision must not replace that candidate identity in the compatibility tuple or receipt.
+Downstream revision `6a4df4ebaf15efd5620d60caf6cf9ac9834b668e` later copied that canonical receipt into the Rust repository, added the report `GENERATED-DIFFERENTIAL-ADDENDUM.md`, and updated its entry documentation to report 52/52 finite-profile agreement while leaving the historical reports byte-for-byte unchanged. This is a documentation and receipt mirror only: the candidate actually executed and qualified by the pinned campaign remains Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`, and the later downstream revision must not replace that candidate identity in the compatibility tuple or receipt.
 
 Under the recorded attested isolation boundary, this result answers the spike's knowledge-transport question positively for the closed capability: the Rust implementation reported as reconstructed from the language-neutral handover generalized from the eight visible conformance fixtures to the separately generated 52-case matrix once black-box Lean comparison was permitted. It remains `finiteLeanAccountDifferential` with `kernelEvidence=none`; the run does not expand the supported fragment, establish universal candidate correctness, transfer Lean proofs, or add external-kernel correspondence.
 
-The profile and result lifecycle belongs to [`ARTIFACTS.md`](ARTIFACTS.md#generated-differential-profile-and-result-lifecycle), while [`TESTING.md`](TESTING.md#bounded-generated-lean-account-differential) owns the process method.
+The profile and result lifecycle belongs to [`ARTIFACTS.md`](ARTIFACTS.md#retained-rust-qualification-records), while [`TESTING.md`](TESTING.md#historical-rust-qualification-experiment) records the claim limits.
 
-## Tools and exact commands
+## Current and historical commands
 
-Build the candidate runner and mutation-qualification process in the current maintainer checkout:
-
-```sh
-lake build checkCandidateConformance checkMutationQualification
-```
-
-Check that the typed capability descriptor, projection-derived requests, exact Lean responses, suite, and manifest evidence boundary still agree:
-
-```sh
-lake exe syncFlatHandover --check
-```
-
-This v1 shipment is immutable. `syncFlatHandover --check` re-derives it through the decoupled historical request renderer and explicit verdict table and rejects drift; it does not reinterpret the shipment through today's decoder or evaluator. `syncFlatHandover --write` rejects the v1 identity. A semantic or evidence-boundary change requires a new capability identity and generator path rather than regeneration of the descriptor, eight request/response pairs, suite, or mutation plan in place.
+The current checkout retains the candidate suite and frozen-byte gates:
 
 Replay the retained kernel observations and run the reference process gate:
 
 ```sh
 lake test
 lake exe checkReferenceProcess
+lake build checkCandidateConformance
 ```
+
+`checkReferenceProcess` rehashes the immutable descriptor, eight request/response pairs, suite, mutation plan, generated profile, and retained result. A semantic or evidence-boundary change requires a new capability identity and current shipment path rather than regeneration of those historical artifacts in place.
 
 Validate the suite's own metadata and evidence links:
 
@@ -416,39 +412,9 @@ lake exe checkCandidateConformance \
 
 Run it against an independent candidate by replacing the candidate path. The candidate reads one JSON request from standard input, writes one JSON response followed by a newline to standard output, emits nothing on standard error, exits `0` for semantic results and domain diagnostics, and produces byte-identical output on repeated execution. The runner compares parsed JSON structurally, so object-key order is not normative. It validates this suite against the committed v1 manifest but does not call the candidate's `--manifest`; the qualification record must pin the candidate bytes and 0.2.0 claim separately.
 
-The runner and suite establish only the eight indexed outputs and their metadata classifications. They do not transfer Lean proofs to the independent implementation.
+The runner and suite establish only the eight indexed outputs and their metadata classifications. They do not transfer Lean proofs to the independent implementation. Each current candidate invocation has a 10-second deadline, 1-second cleanup deadline, 1 MiB stdin and stdout caps, and a 64 KiB stderr cap.
 
-Run the complete source-executed natural/mutation replay and adversarial checker set against the frozen Rust candidate:
-
-```sh
-lake exe checkMutationQualification --self-test --candidate-repo ../a12-kernel-rust-spike
-```
-
-After the qualification implementation is committed and the source checkout is clean, export a new packet directory and immediately verify it against both repositories:
-
-```sh
-lake exe checkMutationQualification \
-  --export \
-  --candidate-repo ../a12-kernel-rust-spike \
-  --output .lake/qualification/flat-validation-empty-logic-v1-rust-v1
-
-lake exe checkMutationQualification \
-  --verify-packet \
-  --candidate-repo ../a12-kernel-rust-spike \
-  --packet .lake/qualification/flat-validation-empty-logic-v1-rust-v1/PACKET.json
-```
-
-Supply the exported packet and the SHA-256 of its `PACKET.json` out of band to the isolated Rust session. After that session commits its result without changing the frozen implementation inputs, check the retained downstream result directly or from an ignored source-side copy:
-
-```sh
-lake exe checkMutationQualification \
-  --check \
-  --candidate-repo ../a12-kernel-rust-spike \
-  --packet .lake/qualification/flat-validation-empty-logic-v1-rust-v1/PACKET.json \
-  --result ../a12-kernel-rust-spike/qualification/flat-validation-empty-logic-v1-rust-v1/RESULT.json
-```
-
-`--export` refuses a pre-existing destination and requires a clean source checkout. `--verify-packet` rechecks the closed payload tree, source-owned bytes, frozen candidate revision and current build-input closure, patches, expected observations, and command policy. `--check` additionally expects the result's `isolatedSessionAttestation` assurance class and validates the exact result/log tree and actual-observation bindings. Run packet verification and result checking from a clean checkout at the packet's exact `sourceRevision`; an unrelated later commit is intentionally rejected because source-owned packet projections are revision-bound. If the main branch has advanced, use a disposable checkout at that revision and pass the retained packet and result paths rather than regenerating the historical packet. Acceptance means a digest-bound, internally consistent external attestation for this mutation plan; it is deliberately not reported as source-witnessed execution.
+The old `syncFlatHandover`, `checkMutationQualification`, and `checkGeneratedDifferential` commands are available only from a clean checkout of Git revision `03186c1`. Their accepted packet and campaign identities are recorded above; use that revision only to audit or reproduce the completed experiment, never to regenerate its frozen outputs or as a reason to restore the machinery to current source.
 
 ## Compatibility report and escalation
 
@@ -466,7 +432,7 @@ On disagreement, preserve the normalized request and both responses, then identi
 
 ## Cold-test and qualification outcome, 2026-07-14–15
 
-One isolated coding-agent run consumed the bundle exported from source revision `fb0a50d8715aaef07431692811ed89ac69a764c5`, produced the natural Rust implementation revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, and recorded its first report containing mutation observations at revision `c39be53cb5031e60a8244d5feadda4c851846288` in the downstream [`COLD-IMPLEMENTATION-REPORT.md`](../../a12-kernel-rust-spike/reports/COLD-IMPLEMENTATION-REPORT.md). Revision `91044000c7f71d98e1e67691be035b627e6f7508` corrected that report's inventory and evidence wording and synchronized the downstream lifecycle documentation; revision `9e308bf405ddc7c029a5d1297386ecb2415e5c4c` committed the separate [`HANDOVER-FEEDBACK.md`](../../a12-kernel-rust-spike/reports/HANDOVER-FEEDBACK.md). The implementer reported no use of Lean source, the kernel, a12-dmkits, sibling repositories, prior semantic conversation, or A12 web research, and no in-scope question required guessing. It implemented typed raw, checked, operand, condition, polarity, and verdict states rather than dispatching on fixture identities.
+One isolated coding-agent run consumed the bundle exported from source revision `fb0a50d8715aaef07431692811ed89ac69a764c5`, produced the natural Rust implementation revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, and recorded its first report containing mutation observations at revision `c39be53cb5031e60a8244d5feadda4c851846288` in downstream report `COLD-IMPLEMENTATION-REPORT.md`. Revision `91044000c7f71d98e1e67691be035b627e6f7508` corrected that report's inventory and evidence wording and synchronized the downstream lifecycle documentation; revision `9e308bf405ddc7c029a5d1297386ecb2415e5c4c` committed the separate downstream report `HANDOVER-FEEDBACK.md`. The implementer reported no use of Lean source, the kernel, a12-dmkits, sibling repositories, prior semantic conversation, or A12 web research, and no in-scope question required guessing. It implemented typed raw, checked, operand, condition, polarity, and verdict states rather than dispatching on fixture identities.
 
 The eight canonical process cases, exhaustive four-verdict tables, associativity triples, focused staged tests, formatting, Clippy, and the complete Rust gate passed. In a post-cold source-side audit on 2026-07-14, `lake exe checkCandidateConformance --candidate ../a12-kernel-rust-spike/target/debug/a12-kernel-rust-spike --suite reference/flat-validation-empty-logic-v1.conformance.json` accepted the frozen Rust implementation with `8/8 cases passed`. This second execution confirmed process compatibility with the same finite suite but added no semantic breadth; the later generated differential recorded above supplied the separate non-fixture check.
 
@@ -474,7 +440,7 @@ The downstream Prompt 03 exercised three representative defects: bypassing the r
 
 The later source-side qualification replay closes that tooling gap without rewriting the historical experiment. It applies each of the seven exact source-declared mutations separately to a disposable copy of the frozen natural implementation, captures the canonical fixture-driven observations and complete required algebra, reverses each patch, reruns the full Rust verification gate, verifies the restored path-and-byte inventory, and passes the strict checker. The complete adversarial checker set also passes. This establishes that the generated packet and source replay are executable and mutation-sensitive on the source maintainer's machine.
 
-The packet exported from source revision `e408c9bd87ab8de576c900f2e42e0f13e868da76` pins candidate base revision `9e308bf405ddc7c029a5d1297386ecb2415e5c4c`, natural implementation revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, and `PACKET.json` SHA-256 `28b1e0e074a53dc3abb7fe69f4ae97286f4fdf1e81a1d80e92e8a29709a8ab16`. The isolated consumer committed [`RESULT.json`](../../a12-kernel-rust-spike/qualification/flat-validation-empty-logic-v1-rust-v1/RESULT.json) and its complete 138-log tree at downstream revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. The natural gate, all seven pre-attested mutations, every per-mutation restoration, the final restoration gate, and the downstream `scripts/verify.sh` passed with no unresolved question. Running `--check` from a disposable clean checkout at the packet-pinned source revision accepted the record against downstream revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. This is a digest-bound, internally consistent `isolatedSessionAttestation`; the source checker did not witness the external command history.
+The packet exported from source revision `e408c9bd87ab8de576c900f2e42e0f13e868da76` pins candidate base revision `9e308bf405ddc7c029a5d1297386ecb2415e5c4c`, natural implementation revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, and `PACKET.json` SHA-256 `28b1e0e074a53dc3abb7fe69f4ae97286f4fdf1e81a1d80e92e8a29709a8ab16`. The isolated consumer committed `RESULT.json` and its complete 138-log tree at downstream revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. The natural gate, all seven pre-attested mutations, every per-mutation restoration, the final restoration gate, and the downstream `scripts/verify.sh` passed with no unresolved question. Running `--check` from a disposable clean checkout at the packet-pinned source revision accepted the record against downstream revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. This is a digest-bound, internally consistent `isolatedSessionAttestation`; the source checker did not witness the external command history.
 
 The run supports the handover method for this finite slice. The language-neutral state model, staged algorithm, complete tables, worked traces, separating pairs, exclusions, and evidence classifications carried the implementation knowledge; Lean theorem names were not required to write the Rust evaluator. The implementer kit was the primary semantic guide, the capability descriptor controlled scope, the protocol and fixtures controlled transport and executable behavior, the retained artifacts served provenance audit rather than a second specification, and the digest inventory made the isolation boundary concrete. The paired row-content and healthy/malformed branch cases were especially effective. The broader operation manifest and source-maintainer material created avoidable navigation tension, which motivates explicit artifact roles, a concise normative path with a maintainer appendix, generated machine-readable law vectors and mutation records, and a capability-specific positive profile with explicit exclusions. [`IMPLEMENTER-GUIDE.md`](IMPLEMENTER-GUIDE.md#lessons-from-the-first-cold-implementation) owns these generalized process lessons; this section records only their capsule-specific basis.
 
@@ -482,7 +448,7 @@ This is knowledge-transport evidence, not new kernel evidence, a transferred Lea
 
 ## Repeatable production of a successor handover
 
-This capsule is now an immutable historical projection, not an independently evolving semantics document. [`FlatProtocolBridge.lean`](../A12Kernel/Evidence/FlatProtocolBridge.lean) owns its frozen typed descriptor and non-writing artifact checker. The [`0.2.0 artifact lock`](../reference/reference-semantics-0.2.0.lock.json) pins the selected 152-entry historical evidence/example/principal-artifact inventory; it does not include this human handover document, and the post-revision separating request and replay receipt are bound separately by the lineage. The lineage also pins the historical source revision, while the bridge's explicit verdict table prevents today's evaluator from reinterpreting the qualified shipment. The four source classes that produced it were:
+This capsule is now an immutable historical projection, not an independently evolving semantics document. The retired typed bridge and its explicit verdict table remain inspectable at Git revision `03186c1`; current [`Reference/Lineage.lean`](../A12Kernel/Reference/Lineage.lean) pins the artifact bytes and `checkReferenceProcess` is their non-writing gate. The [`0.2.0 artifact lock`](../reference/reference-semantics-0.2.0.lock.json) pins the selected 152-entry historical evidence/example/principal-artifact inventory; it does not include this human handover document, and the post-revision separating request and replay receipt are bound separately by the lineage. The four source classes that produced it were:
 
 1. the semantic definitions and checked cases at the pinned historical source revision, whose current descendants are [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean) and [`Conformance/FlatValidation.lean`](../A12Kernel/Conformance/FlatValidation.lean);
 2. the theorem and non-law boundaries at that revision, whose current descendants include [`Proofs/Verdict.lean`](../A12Kernel/Proofs/Verdict.lean), [`Proofs/Observation.lean`](../A12Kernel/Proofs/Observation.lean), and [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean);
@@ -506,6 +472,6 @@ This spike is intentionally useful before it is release-qualified:
 - the checked bridge closes retained `projection.json` case → normalized protocol request → exact Lean response → suite association for these eight cases, but the earlier retained DM model/case → flat projection transcription remains outside that bridge and is guarded only by the existing evidence replay checks;
 - the normalized result deliberately omits formal diagnostic messages, error pointers, message construction, and kernel emission order even though retained malformed artifacts preserve their formal messages;
 - concrete DSL parsing, general DM-JSON adaptation, strings, dates, enumerations, arithmetic, required/index generation, iteration, `$` correlation, computation, partial validation, interpolation, and custom conditions are excluded;
-- the eight-case `checkCandidateConformance` runner remains directly buffered and has no wall-clock timeout; the generated-differential runner adds bounded streamed process control for cooperative same-credential candidates but is not a security sandbox for untrusted binaries.
+- the eight-case `checkCandidateConformance` runner now uses bounded streamed process control with the current per-invocation limits, but it has no aggregate campaign budget and is not a security sandbox for untrusted binaries; the retired generated-differential runner's stronger campaign-wide controls apply only to the completed historical run.
 
 These limits are part of the handover. A downstream implementation can implement and test the named semantic slice without researching the kernel, but it must not advertise a complete flat or A12 interpreter on that basis.

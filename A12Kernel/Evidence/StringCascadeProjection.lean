@@ -169,16 +169,16 @@ def decodeFamily (family : ObservationBundle.Family) : Except String (List Case)
     throw "direct-cascade family producer must be a12-dmkits"
   if family.source.revision != producerRevision then
     throw "direct-cascade family producer revision differs"
-  if family.source.rawCapture.path.toString != rawReceiptPath ||
-      family.source.rawCapture.sha256.toString != rawReceiptDigest then
+  if family.source.rawCapture.path != rawReceiptPath ||
+      family.source.rawCapture.sha256 != rawReceiptDigest then
     throw "direct-cascade family raw receipt identity differs"
   match family.source.qualification with
   | none => throw "direct-cascade family requires a qualification identity"
   | some qualification =>
       if qualification.policyId != "kernel-route-confirmed-v1" then
         throw "direct-cascade family requires kernel-route-confirmed-v1"
-      if qualification.receipt.path.toString != qualificationReceiptPath ||
-          qualification.receipt.sha256.toString != qualificationReceiptDigest then
+      if qualification.receipt.path != qualificationReceiptPath ||
+          qualification.receipt.sha256 != qualificationReceiptDigest then
         throw "direct-cascade family qualification receipt identity differs"
   if family.cases.map (·.id) != expectedInputs.map (·.1) then
     throw "direct-cascade family differs from the closed five-case order"
