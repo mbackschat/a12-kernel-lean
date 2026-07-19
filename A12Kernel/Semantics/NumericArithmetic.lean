@@ -55,4 +55,17 @@ def NumericArithmeticOp.eval (op : NumericArithmeticOp) (left right : Rat) : Rat
     | .subtract => left - right
     | .multiply => left * right
 
+/-- Result of a known-value arithmetic operation that can be semantically undefined. -/
+inductive NumericArithmeticResult where
+  | value (amount : Rat)
+  | notEvaluated
+  deriving Repr, DecidableEq
+
+/-- Divide at precision 50; a zero divisor is explicitly not evaluated rather than Lean's rational zero. -/
+def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=
+  if divisor = 0 then
+    .notEvaluated
+  else
+    .value (roundMathContext50 (dividend / divisor))
+
 end A12Kernel

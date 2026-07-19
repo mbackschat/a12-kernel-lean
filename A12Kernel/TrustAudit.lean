@@ -166,6 +166,10 @@ run_cmd do
 #print axioms A12Kernel.numericArithmetic_multiply_comm
 #print axioms A12Kernel.numericArithmetic_subtract_as_add_neg
 #print axioms A12Kernel.numericArithmetic_multiply_zero
+#print axioms A12Kernel.divideNumeric_zero
+#print axioms A12Kernel.divideNumeric_of_ne_zero
+#print axioms A12Kernel.divideNumeric_notEvaluated_iff
+#print axioms A12Kernel.divideNumeric_zero_dividend
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission

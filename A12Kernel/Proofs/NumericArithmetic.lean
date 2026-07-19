@@ -27,4 +27,22 @@ theorem numericArithmetic_multiply_zero (value : Rat) :
     NumericArithmeticOp.multiply.eval value 0 = 0 := by
   simp [NumericArithmeticOp.eval, roundMathContext50_zero]
 
+theorem divideNumeric_zero (dividend : Rat) :
+    divideNumeric dividend 0 = .notEvaluated := by
+  rfl
+
+theorem divideNumeric_of_ne_zero (dividend divisor : Rat) (nonzero : divisor ≠ 0) :
+    divideNumeric dividend divisor =
+      .value (roundMathContext50 (dividend / divisor)) := by
+  simp [divideNumeric, nonzero]
+
+theorem divideNumeric_notEvaluated_iff (dividend divisor : Rat) :
+    divideNumeric dividend divisor = .notEvaluated ↔ divisor = 0 := by
+  simp [divideNumeric]
+
+theorem divideNumeric_zero_dividend (divisor : Rat) (nonzero : divisor ≠ 0) :
+    divideNumeric 0 divisor = .value 0 := by
+  rw [divideNumeric_of_ne_zero 0 divisor nonzero, Rat.div_def, Rat.zero_mul,
+    roundMathContext50_zero]
+
 end A12Kernel
