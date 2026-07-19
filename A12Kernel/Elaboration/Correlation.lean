@@ -109,12 +109,6 @@ def CorrelationComparisonOp.acceptsScales (op : CorrelationComparisonOp)
   | .equal | .notEqual => left.info.scale == right.info.scale
   | .lessThan => true
 
-private def FlatFieldDecl.numberField? (declaration : FlatFieldDecl) :
-    Option FlatNumberField :=
-  match declaration.policy.kind with
-  | .number info => some { id := declaration.id, info }
-  | .boolean | .confirm | .string => none
-
 private structure ResolvedNumberRef where
   declaration : FlatFieldDecl
   core : HavingNumberRef
@@ -130,7 +124,7 @@ private def FlatModel.resolveNumberInGroup (model : FlatModel)
   let expectedScope := [group.level]
   if declaration.repeatableScope != expectedScope then
     throw (.fieldScopeMismatch declaration.path expectedScope declaration.repeatableScope)
-  let field ← match declaration.numberField? with
+  let field ← match declaration.toNumberField? with
     | some field => pure field
     | none => throw (.fieldNotNumber declaration.path)
   pure { declaration, core := { origin, field } }

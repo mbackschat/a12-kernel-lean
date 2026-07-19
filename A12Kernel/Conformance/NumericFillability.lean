@@ -122,13 +122,6 @@ private def arithmeticOperand (op : NumericArithmeticOp)
   .value (op.eval leftValue rightValue)
     (op.fillability leftValue leftFill rightValue rightFill)
 
-/- Validation comparisons suppress a domain failure; this is not a computation projection. -/
-private def validationComparisonVerdict (op : NumericComparisonOp)
-    (outcome : NumericArithmeticOutcome) (expected : Rat) : Verdict :=
-  match outcome with
-  | .notEvaluated => .notFired
-  | .value amount fillability => op.evalFixedRight (.value amount fillability) expected
-
 /- The propagated directions are consumed by the existing comparison polarity account. -/
 example : NumericComparisonOp.less.evalFixedRight
     (arithmeticOperand .multiply 0 .growOnly 4 .fixed) 100 = .fired .omission := by
@@ -151,29 +144,29 @@ example : NumericComparisonOp.less.evalFixedRight
   native_decide
 
 /- A fixed divisor's sign changes the polarity of the same zero-valued quotient. -/
-example : validationComparisonVerdict .greaterEqual
-    (NumericArithmeticOutcome.divide
-      (.value 0 .growOnly) (.value 2 .fixed)) 0 = .fired .value := by
+example : NumericComparisonOp.greaterEqual.evalArithmeticFixedRight
+    (.ok (NumericArithmeticOutcome.divide
+      (.value 0 .growOnly) (.value 2 .fixed))) 0 = .fired .value := by
   native_decide
 
-example : validationComparisonVerdict .less
-    (NumericArithmeticOutcome.divide
-      (.value 0 .growOnly) (.value 2 .fixed)) 1 = .fired .omission := by
+example : NumericComparisonOp.less.evalArithmeticFixedRight
+    (.ok (NumericArithmeticOutcome.divide
+      (.value 0 .growOnly) (.value 2 .fixed))) 1 = .fired .omission := by
   native_decide
 
-example : validationComparisonVerdict .greaterEqual
-    (NumericArithmeticOutcome.divide
-      (.value 0 .growOnly) (.value (-2) .fixed)) 0 = .fired .omission := by
+example : NumericComparisonOp.greaterEqual.evalArithmeticFixedRight
+    (.ok (NumericArithmeticOutcome.divide
+      (.value 0 .growOnly) (.value (-2) .fixed))) 0 = .fired .omission := by
   native_decide
 
-example : validationComparisonVerdict .less
-    (NumericArithmeticOutcome.divide
-      (.value 0 .growOnly) (.value (-2) .fixed)) 1 = .fired .value := by
+example : NumericComparisonOp.less.evalArithmeticFixedRight
+    (.ok (NumericArithmeticOutcome.divide
+      (.value 0 .growOnly) (.value (-2) .fixed))) 1 = .fired .value := by
   native_decide
 
-example : validationComparisonVerdict .greaterEqual
-    (NumericArithmeticOutcome.divide
-      (.value 1 .fixed) (.value 0 .both)) 0 = .notFired := by
+example : NumericComparisonOp.greaterEqual.evalArithmeticFixedRight
+    (.ok (NumericArithmeticOutcome.divide
+      (.value 1 .fixed) (.value 0 .both))) 0 = .notFired := by
   native_decide
 
 end A12Kernel.Conformance.NumericFillability
