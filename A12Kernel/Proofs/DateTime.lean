@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.DateTime
 
-/-! # Decoded UTC DateTime laws -/
+/-! # Decoded DateTime and selected overlap laws -/
 
 namespace A12Kernel
 
@@ -88,5 +88,31 @@ theorem instant_shiftHours_inverse
       instant_shiftHours_add instant hours (-hours)
     _ = instant.shiftHours 0 := by congr; omega
     _ = instant := instant_shiftHours_zero instant
+
+/-- The narrow Berlin resolver succeeds exactly on its one declared transition date. -/
+theorem berlinAutumn2024_resolveLocal_isSome_iff
+    (dateTime : LocalDateTime) :
+    (BerlinAutumn2024.resolveLocal? dateTime).isSome = true ↔
+      BerlinAutumn2024.Supported dateTime := by
+  simp [BerlinAutumn2024.resolveLocal?]
+
+/-- Fresh labels before the repeated hour resolve with the daylight offset. -/
+theorem berlinAutumn2024_resolve_before_two
+    (dateTime : LocalDateTime)
+    (supported : BerlinAutumn2024.Supported dateTime)
+    (beforeTwo : dateTime.time.hour < 2) :
+    BerlinAutumn2024.resolveLocal? dateTime =
+      some (dateTime.resolveUtc.shiftHours (-2)) := by
+  simp [BerlinAutumn2024.resolveLocal?, supported, beforeTwo]
+
+/-- Fresh labels from the repeated hour onward resolve with the standard offset. -/
+theorem berlinAutumn2024_resolve_at_or_after_two
+    (dateTime : LocalDateTime)
+    (supported : BerlinAutumn2024.Supported dateTime)
+    (atOrAfterTwo : 2 ≤ dateTime.time.hour) :
+    BerlinAutumn2024.resolveLocal? dateTime =
+      some (dateTime.resolveUtc.shiftHours (-1)) := by
+  simp [BerlinAutumn2024.resolveLocal?, supported,
+    show ¬dateTime.time.hour < 2 by omega]
 
 end A12Kernel

@@ -1,11 +1,11 @@
 import A12Kernel.Semantics.FullDate
 import A12Kernel.Document
 
-/-! # Decoded UTC DateTime semantics
+/-! # Decoded DateTime and selected instant semantics
 
-This is a selected post-parse, whole-second boundary for one clean full DateTime under UTC. A local wall label and scalar instant identity are different types even though UTC resolves each admitted label deterministically. The runtime core of `AddHours` operates only on the instant. This preserves the representation needed for a later zone where one local label can denote more than one instant.
+This module contains a post-parse, whole-second UTC baseline plus one exact Berlin autumn-transition slice. A local wall label and scalar instant identity are different types even though UTC resolves each admitted label deterministically. The runtime core of `AddHours` operates only on the instant, preserving the identity needed when two Berlin instants share one wall label.
 
-The definitions are original clean-room semantics for the decoded time, value-admission, UTC, and instant-arithmetic clauses of `spec/05` §§2–5 and 9. Formats, numeric offset coercion, cells, non-UTC zones, rendering, and consumer-specific result admission belong to later capsules.
+The definitions are original clean-room semantics for the decoded time, value-admission, UTC, instant-arithmetic, and exact Berlin 2024 autumn-overlap clauses of `spec/05` §§2–5 and 9. Formats, numeric offset coercion, cells, general zone dispatch, rendering, and consumer-specific result admission belong to later capsules.
 -/
 
 namespace A12Kernel
@@ -98,5 +98,30 @@ def shiftHours (instant : Instant) (hours : Int) : Instant :=
   { epochSecond := instant.epochSecond + hours * 3600 }
 
 end Instant
+
+/-!
+`BerlinAutumn2024` is a risk-isolation slice, not a general timezone implementation. It admits only the observed 2024 autumn transition date, chooses daylight time before 02:00 and standard time from 02:00 onward, and fails closed on every other date. A later general Berlin resolver should replace this slice rather than coexist with it as legacy behavior.
+-/
+namespace BerlinAutumn2024
+
+/-- The exact local-date domain of the selected Berlin autumn-transition slice. -/
+def Supported (dateTime : LocalDateTime) : Prop :=
+  dateTime.date.civil.parts.year = 2024 ∧
+    dateTime.date.civil.parts.month = 10 ∧
+    dateTime.date.civil.parts.day = 27
+
+instance (dateTime : LocalDateTime) : Decidable (Supported dateTime) := by
+  unfold Supported
+  infer_instance
+
+/-- Resolve a freshly supplied local label on 2024-10-27 in Berlin. The repeated `02:xx` hour selects standard time; instant arithmetic does not call this function again. -/
+def resolveLocal? (dateTime : LocalDateTime) : Option Instant :=
+  if Supported dateTime then
+    some (dateTime.resolveUtc.shiftHours
+      (if dateTime.time.hour < 2 then -2 else -1))
+  else
+    none
+
+end BerlinAutumn2024
 
 end A12Kernel

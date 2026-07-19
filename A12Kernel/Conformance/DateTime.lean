@@ -1,8 +1,8 @@
 import A12Kernel.Semantics.DateTime
 
-/-! # UTC DateTime conformance
+/-! # DateTime conformance
 
-Executable separators for decoded, whole-second local DateTime resolution under UTC and exact whole-hour shifting in instant space. Parsing, formats, numeric-to-hour conversion, non-UTC zones, cells, and target admission remain outside this capsule.
+Executable separators for decoded, whole-second local DateTime resolution under UTC, exact whole-hour shifting in instant space, and one fixed Berlin autumn-overlap risk slice. Parsing, formats, numeric-to-hour conversion, general zones, cells, and target admission remain outside this capsule.
 -/
 
 namespace A12Kernel
@@ -90,6 +90,65 @@ example :
     (dateTime 1583 10 16 0 0 0 (by native_decide)).resolveUtc.shiftHours (-1) =
       { epochSecond :=
           (dateTime 1583 10 16 0 0 0 (by native_decide)).resolveUtc.epochSecond - 3600 } := by
+  native_decide
+
+/- The selected Berlin autumn slice distinguishes fresh wall-time parsing from chained instant arithmetic. -/
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 1 30 0 (by native_decide)) =
+      some { epochSecond := 1729985400 } := by
+  native_decide
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 2 30 0 (by native_decide)) =
+      some { epochSecond := 1729992600 } := by
+  native_decide
+example :
+    (BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 1 30 0 (by native_decide))).map
+          (fun instant => instant.shiftHours 1) =
+      some { epochSecond := 1729989000 } := by
+  native_decide
+example :
+    (BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 1 30 0 (by native_decide))).map
+          (fun instant => instant.shiftHours 1) ≠
+      BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 2 30 0 (by native_decide)) := by
+  native_decide
+example :
+    (BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 1 30 0 (by native_decide))).map
+          (fun instant => instant.shiftHours 2) =
+      BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 2 30 0 (by native_decide)) := by
+  native_decide
+
+/- The offset changes exactly at 02:00; unsupported dates fail closed. -/
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 1 59 59 (by native_decide)) =
+      some ((dateTime 2024 10 27 1 59 59 (by native_decide)).resolveUtc.shiftHours (-2)) := by
+  native_decide
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 27 2 0 0 (by native_decide)) =
+      some ((dateTime 2024 10 27 2 0 0 (by native_decide)).resolveUtc.shiftHours (-1)) := by
+  native_decide
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 10 26 2 30 0 (by native_decide)) =
+      none := by
+  native_decide
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2024 3 31 2 30 0 (by native_decide)) =
+      none := by
+  native_decide
+example :
+    BerlinAutumn2024.resolveLocal?
+        (dateTime 2025 10 26 2 30 0 (by native_decide)) =
+      none := by
   native_decide
 
 end A12Kernel
