@@ -43,16 +43,20 @@ def NumericComparisonOp.holds (op : NumericComparisonOp) (left right : Rat) : Bo
   | .less => left < right
   | .greaterEqual => left >= right
 
+/-- Whether an available operand movement can close the current normalized numeric gap. Callers use this only when the normalized operands differ. -/
+def numericDifferenceFillCanClose (left right : Rat)
+    (leftFill rightFill : NumericFillability) : Bool :=
+  if normalizedComparisonValue left < normalizedComparisonValue right then
+    leftFill.canGrow || rightFill.canShrink
+  else
+    leftFill.canShrink || rightFill.canGrow
+
 /-- Whether filling the left operand in an available direction could falsify a condition that currently holds against a fixed literal. For inequality, the breaking direction depends on which normalized side is smaller. -/
 def NumericComparisonOp.leftFillCanBreak (op : NumericComparisonOp) (left right : Rat)
     (fillability : NumericFillability) : Bool :=
   match op with
   | .equal => fillability.canGrow || fillability.canShrink
-  | .notEqual =>
-      if normalizedComparisonValue left < normalizedComparisonValue right then
-        fillability.canGrow
-      else
-        fillability.canShrink
+  | .notEqual => numericDifferenceFillCanClose left right fillability .fixed
   | .less => fillability.canGrow
   | .greaterEqual => fillability.canShrink
 

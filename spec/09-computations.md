@@ -113,10 +113,12 @@ The "also acts as a validation rule" ground rule has an exact generated shape:
 
 ```
 FieldFilled(F) And <optional commonPrecondition> And
-  ( (precond₁ And [F] != operation₁) Or (precond₂ And [F] != operation₂) Or … )
+  ( (precond₁ And mismatch₁([F], operation₁)) Or
+    (precond₂ And mismatch₂([F], operation₂)) Or … )
 ```
 
 - It fires **only when the field is *filled*** and at least one alternative whose precondition holds **disagrees** with the stored value — with the **computation's own name** as the fired error code.
+- Each alternative's mismatch is ordinary strict `!=` unless that alternative declares a `toleranceRangeOp`; in that case the generated rule preserves the named fixed `DiffersWithToleranceRange1 / 2 / 5 / 10` operator. Stored and computed values inside or exactly on that normalized tolerance band do not produce a mismatch firing.
 - A **cleared-vs-stored** mismatch is deliberately **not** flagged (no tier's comparison holds).
 - When the alternative preconditions are mutually exclusive, the one holding comparison describes the same operation that computation selects. If alternatives overlap, the paths deliberately differ: computation executes only the first holding operation, while the generated validation rule retains every holding alternative's mismatch disjunct and may therefore fire even when the stored field equals the first operation. This validation behavior is why authors must make tier preconditions mutually exclusive even though model consistency checking does not reject overlap.
 
@@ -136,4 +138,4 @@ The generated rule **anchors at the computed field**: its error entity is the ta
 - [ ] **Stored form**: target's declared format; NUMBER padded to `minFractionalDigits`, no length cap ⇒ over-long ERRORED; reduced formal check (no charset/blank baseline); downstream reads the stored string.
 - [ ] Scope = computed field's repetition scope; alternatives select the first known-true precondition and stop even when its operation produces no value; poison aborts; no match clears; a multi-alternative table has no unconditional default; multi-computation first-non-empty-wins remains separate.
 - [ ] Parallel join by index value; invalid index in any joined group clears **every** instance; semantic index **column-strict** in compute.
-- [ ] Implicit validation rule generated with the exact all-alternatives shape; agreement with first-match computation is proved only under mutual exclusivity or another stated sufficient condition; anchors at the computed field.
+- [ ] Implicit validation rule generated with the exact all-alternatives shape, preserving each alternative's optional fixed tolerance operator; agreement with first-match computation is proved only under mutual exclusivity or another stated sufficient condition; anchors at the computed field.

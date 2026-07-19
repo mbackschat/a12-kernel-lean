@@ -1,0 +1,43 @@
+import A12Kernel.Semantics.NumericComparison
+
+/-! # Fixed numeric-tolerance comparisons
+
+The kernel exposes four closed tolerance bands. Each operand is normalized independently at the ordinary comparison scale before the absolute difference is tested. Polarity follows directional inequality: only a legal movement toward the other operand can repair a firing.
+-/
+
+namespace A12Kernel
+
+inductive NumericToleranceRange where
+  | range1
+  | range2
+  | range5
+  | range10
+  deriving Repr, DecidableEq
+
+def NumericToleranceRange.threshold : NumericToleranceRange → Rat
+  | .range1 => 1
+  | .range2 => 2
+  | .range5 => 5
+  | .range10 => 10
+
+def normalizedNumericDifference (left right : Rat) : Rat :=
+  (normalizedComparisonValue left - normalizedComparisonValue right).abs
+
+def NumericToleranceRange.holds (range : NumericToleranceRange) (left right : Rat) : Bool :=
+  range.threshold < normalizedNumericDifference left right
+
+def NumericToleranceRange.eval (range : NumericToleranceRange)
+    (left right : NumericOperand) : Verdict :=
+  match left, right with
+  | .unknown _, _ => .unknown
+  | _, .unknown _ => .unknown
+  | .value leftAmount leftFill, .value rightAmount rightFill =>
+      if range.holds leftAmount rightAmount then
+        if numericDifferenceFillCanClose leftAmount rightAmount leftFill rightFill then
+          .fired .omission
+        else
+          .fired .value
+      else
+        .notFired
+
+end A12Kernel

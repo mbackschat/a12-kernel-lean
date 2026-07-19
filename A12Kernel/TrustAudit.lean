@@ -153,6 +153,17 @@ run_cmd do
 #print axioms A12Kernel.emptyNumberLessFiring_is_omission
 #print axioms A12Kernel.emptyNumberGreaterEqualFiring_polarity
 #print axioms A12Kernel.growOnlyNotEqualWhenLeftNotBelow_is_value
+#print axioms A12Kernel.numericTolerance_threshold_pos
+#print axioms A12Kernel.normalizedNumericDifference_comm
+#print axioms A12Kernel.numericTolerance_holds_comm
+#print axioms A12Kernel.numericDifferenceFillCanClose_comm_of_ne
+#print axioms A12Kernel.numericTolerance_unknown_left
+#print axioms A12Kernel.numericTolerance_unknown_right
+#print axioms A12Kernel.numericTolerance_exactBoundary_notFired
+#print axioms A12Kernel.fixedNumericToleranceFiring_is_value
+#print axioms A12Kernel.growOnlyToleranceBelowFiring_is_omission
+#print axioms A12Kernel.growOnlyToleranceNotBelowFiring_is_value
+#print axioms A12Kernel.numericTolerance_eval_comm
 
 #print axioms A12Kernel.rescaleFloor_le
 #print axioms A12Kernel.le_rescaleCeiling

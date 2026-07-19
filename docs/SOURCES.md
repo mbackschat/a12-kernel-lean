@@ -12,7 +12,7 @@ A codegen + runtime: the DSL compiles to Java/TS/Groovy that **calls runtime hel
 
 **Where the semantics are** — `kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/`:
 
-- `core/BedingungsOperatorHelper.java` — operator evaluation: numeric/date/string comparison, date arithmetic (`addiereJahre`/`addiereMonate` with Feb-28 / leap corrections), date difference, date-part extraction.
+- `core/BedingungsOperatorHelper.java` — operator evaluation: numeric/date/string comparison, the four fixed tolerance bands with independent scale-19 operand normalization and directional inequality polarity, date arithmetic (`addiereJahre`/`addiereMonate` with Feb-28 / leap corrections), date difference, date-part extraction.
 - `core/ValidierungsErgebnis.java` — the **3-valued truth model**: `TRUE_WF` (value error), `TRUE_AF` (omission error), `FALSE_OR_UNKNOWN`, with `combineUND`/`combineODER` (the Kleene AND/OR tables).
 - `core/{Number,Date,FirstValue}Combiner.java` — aggregation over iteration + the empty→0 machinery.
 - `util/VkBigDecimal.java` — decimals: `DEFAULT_SCALE=19`; one `MathContext(50)` used by `+`, `−`, `×`, `÷`, and `^`; div-by-zero→`INVALID_NUMBER`; negative power computes the precision-50 reciprocal before positive power; exact directional fillability formulas for ordinary arithmetic; conservative `powCanChange*` dispatch rather than exact reachability; empty sentinels. The positive-power operation order comes from the OpenJDK 21 [`BigDecimal.pow(int, MathContext)` contract](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html#pow(int,java.math.MathContext)): X3.274 binary exponentiation at enlarged working precision followed by the destination round.
@@ -39,8 +39,8 @@ TS mirror (identical, German-named files): `kernel-rt/kernel-core-runtime-ts/src
 Pure `interpreter/src/commonMain/kotlin/…/dm/interpreter/`; only the `Dec` decimal is platform-specific. The `eval/` package is what maps most directly to Lean:
 
 - `eval/ThreeValued.kt` — `Kleene` and/or/not tables. `eval/Operators.kt` — enum-keyed operator registry (`PredicateOp`/`ConstantOp`/`FunctionOp`) + `quantifierFires`.
-- `eval/Polarity.kt` + `eval/PolarityWalk.kt` — VALUE/OMISSION fillability (`Fill(canGrow,canShrink)`) and the typed truth+polarity walk.
-- `eval/ValCompare.kt` (scale-19 vs full-precision compare), `eval/ArithFill.kt`, `eval/Aggregates.kt`, `eval/DateMath.kt`.
+- `eval/Polarity.kt` + `eval/PolarityWalk.kt` — VALUE/OMISSION fillability (`Fill(canGrow,canShrink)`) and the typed truth+polarity walk. At audited revision `2ceee778`, tolerance is a known exception: it uses equality-like `anyMove` rather than the kernel's directional gap-closing rule.
+- `eval/ValCompare.kt` (scale-19 vs full-precision compare), `eval/ArithFill.kt`, `eval/Aggregates.kt`, `eval/DateMath.kt`. At the same audited revision, `evalTolerance` rounds after subtraction rather than independently normalizing operands; [`SPEC-2026-07-19-13`](A12-DMKITS-SPEC-SYNC.md#spec-2026-07-19-13--tolerance-normalizes-operands-first-and-uses-directional-inequality-polarity) owns both corrections and the existing computation-transport gap.
 - `eval/Poison.kt` + `eval/OverlayContext.kt` + `ComputationEngine.kt` — compute cascade + poison-on-read. `eval/FormalError.kt` — the invalidity sources.
 - `ValidationPass.kt`, `model/RelevantEntity.kt`, and `DmInterpreter.validatePart` — partial-validation rule gating and call-local relevance masking. `PartialValidationTest` is the portable JVM/JS lock; `adapter/.../laws/PartialValidationDiffTest.kt` is the focused kernel differential.
 - `ast/Ast.kt` — `Cond`/`Expr`/`Tri`/`Val` + `emptyValue(kind)`. `model/` — `EvalClock`, `CustomCondition`, `LegalCharset`. `Document.kt`/`EvalContext.kt` — the data-access seam. Entry point: `DmInterpreter.kt`.
