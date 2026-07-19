@@ -2,7 +2,7 @@ import A12Kernel.Semantics.FlatValidation
 
 /-! # One flat validation-rule emission boundary
 
-This capsule attaches whole-rule metadata to the existing flat condition verdict. Its low-level input assumes an already-lowered condition, resolved error-field ID, nonrepeatable context, and already-resolved per-instance text. Checked model assembly is separate; interpolation, authored templates, repeatable addressing, partial validation, rule collections, and orchestration remain outside.
+This capsule attaches whole-rule metadata to the existing flat condition verdict. Its low-level input assumes an already-lowered condition, resolved error-field ID, nonrepeatable context, and already-resolved per-instance text. It also defines the one-pass renderer intended to produce that text after firing from parser-independent, already-resolved message parts. Checked post-fire integration and model assembly are separate; authored-template parsing and legality, field lookup, locale and display conversion, repeatable addressing, partial validation, rule collections, and orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -18,6 +18,73 @@ inductive ValidationSeverity where
 structure ResolvedMessageText where
   text : String
   deriving Repr, DecidableEq
+
+/-- Inputs needed after a field-name token has already resolved to one field instance. A provider result, including an empty result, wins; otherwise a nonempty model label precedes the caller's debug representation. Locale selection and provider invocation happen before this boundary. -/
+structure MessageNameInput where
+  providerResult : Option String
+  modelLabel : Option String
+  debugDisplay : String
+  deriving Repr, DecidableEq
+
+namespace MessageNameInput
+
+def resolve (input : MessageNameInput) : String :=
+  match input.providerResult with
+  | some label => label
+  | none =>
+      match input.modelLabel with
+      | some label => if label.isEmpty then input.debugDisplay else label
+      | none => input.debugDisplay
+
+end MessageNameInput
+
+/-- Display-layer input for one field-value token. The caller supplies the field format's exact default, so this renderer does not invent Number scale, locale, date, Boolean, enumeration, or unit formatting. A missing or empty display value selects that default. -/
+structure MessageValueInput where
+  displayValue : Option String
+  defaultDisplay : String
+  deriving Repr, DecidableEq
+
+namespace MessageValueInput
+
+def resolve (input : MessageValueInput) : String :=
+  match input.displayValue with
+  | some value => if value.isEmpty then input.defaultDisplay else value
+  | none => input.defaultDisplay
+
+end MessageValueInput
+
+/-- One already-decoded rule-message part. Field references and `$` syntax have been checked before this point; replacement strings are opaque and are never parsed again. -/
+inductive MessageRenderPart where
+  | text (value : String)
+  | fieldName (input : MessageNameInput)
+  | fieldValue (input : MessageValueInput)
+  deriving Repr, DecidableEq
+
+namespace MessageRenderPart
+
+def render : MessageRenderPart → String
+  | .text value => value
+  | .fieldName input => input.resolve
+  | .fieldValue input => input.resolve
+
+end MessageRenderPart
+
+/-- Ordered, structured input to the resolved-message renderer. This is not raw authored `$...$` syntax. A decoded literal dollar is ordinary text. -/
+structure MessageRenderPlan where
+  parts : List MessageRenderPart
+  deriving Repr, DecidableEq
+
+namespace MessageRenderPlan
+
+def renderText : List MessageRenderPart → String
+  | [] => ""
+  | part :: rest => part.render ++ renderText rest
+
+/-- Render each structured part exactly once, from left to right. -/
+def render (plan : MessageRenderPlan) : ResolvedMessageText :=
+  { text := renderText plan.parts }
+
+end MessageRenderPlan
 
 /-- One already-resolved flat rule instance. The checked layer proves the model, error-field, and nonrepeatable assumptions before using this semantic core. -/
 structure ResolvedFlatRule where

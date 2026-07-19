@@ -4,6 +4,56 @@ import A12Kernel.Elaboration.ValidationRule
 
 namespace A12Kernel
 
+/-- A configured provider result has priority even when it is the empty string. -/
+theorem messageName_provider_wins (providerResult : String)
+    (modelLabel : Option String) (debugDisplay : String) :
+    ({ providerResult := some providerResult, modelLabel, debugDisplay } :
+      MessageNameInput).resolve = providerResult := by
+  rfl
+
+/-- Without a provider result, a missing or empty model label uses the debug representation. -/
+theorem messageName_missingOrEmptyModelLabel_usesDebug (debugDisplay : String) :
+    ({ providerResult := none, modelLabel := none, debugDisplay } :
+        MessageNameInput).resolve = debugDisplay ∧
+      ({ providerResult := none, modelLabel := some "", debugDisplay } :
+        MessageNameInput).resolve = debugDisplay := by
+  simp [MessageNameInput.resolve]
+
+/-- Without a provider result, a nonempty model label has priority over the debug representation. -/
+theorem messageName_nonemptyModelLabel_wins (modelLabel debugDisplay : String)
+    (nonempty : modelLabel.isEmpty = false) :
+    ({ providerResult := none, modelLabel := some modelLabel, debugDisplay } :
+      MessageNameInput).resolve = modelLabel := by
+  simp [MessageNameInput.resolve, nonempty]
+
+/-- A missing or explicitly empty display value selects the exact format-supplied default. -/
+theorem messageValue_missingOrEmpty_usesDefault (defaultDisplay : String) :
+    ({ displayValue := none, defaultDisplay } : MessageValueInput).resolve =
+        defaultDisplay ∧
+      ({ displayValue := some "", defaultDisplay } : MessageValueInput).resolve =
+        defaultDisplay := by
+  simp [MessageValueInput.resolve]
+
+/-- Rendering adjacent structured sequences is the same as concatenating their rendered text. -/
+theorem messageRenderText_append (left right : List MessageRenderPart) :
+    MessageRenderPlan.renderText (left ++ right) =
+      MessageRenderPlan.renderText left ++
+        MessageRenderPlan.renderText right := by
+  induction left with
+  | nil => rfl
+  | cons part rest ih =>
+      simp only [List.cons_append, MessageRenderPlan.renderText, ih,
+        String.append_assoc]
+
+/-- A nonempty display string is opaque replacement data, including token-looking bytes. -/
+theorem messageValue_present_isOpaque (value defaultDisplay : String)
+    (nonempty : value.isEmpty = false) :
+    (MessageRenderPart.fieldValue {
+      displayValue := some value
+      defaultDisplay
+    }).render = value := by
+  simp [MessageRenderPart.render, MessageValueInput.resolve, nonempty]
+
 /-- Forgetting emitted metadata recovers exactly the verdict of the reused condition evaluator. -/
 theorem flatRule_eval_verdict (rule : ResolvedFlatRule)
     (context : FlatContext) (hasContent : Bool) :

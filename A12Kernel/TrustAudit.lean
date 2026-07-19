@@ -268,6 +268,12 @@ run_cmd do
 #print axioms A12Kernel.numericInvalidity_dependency_is_poisoned
 #print axioms A12Kernel.rejectedNumericDependency_doesNotExposeAttempt
 #print axioms A12Kernel.same_numericApplicationAndDelta_doesNotImply_sameDependency
+#print axioms A12Kernel.messageName_provider_wins
+#print axioms A12Kernel.messageName_missingOrEmptyModelLabel_usesDebug
+#print axioms A12Kernel.messageName_nonemptyModelLabel_wins
+#print axioms A12Kernel.messageValue_missingOrEmpty_usesDefault
+#print axioms A12Kernel.messageRenderText_append
+#print axioms A12Kernel.messageValue_present_isOpaque
 #print axioms A12Kernel.flatRule_eval_verdict
 #print axioms A12Kernel.flatRule_fired_message_exact
 #print axioms A12Kernel.flatRule_metadata_doesNotChangeVerdict
