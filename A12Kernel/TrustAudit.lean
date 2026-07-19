@@ -77,6 +77,9 @@ run_cmd do
 #print axioms A12Kernel.instant_shiftHours_zero
 #print axioms A12Kernel.instant_shiftHours_add
 #print axioms A12Kernel.instant_shiftHours_inverse
+#print axioms A12Kernel.berlinAutumn2024_resolveLocal_isSome_iff
+#print axioms A12Kernel.berlinAutumn2024_resolve_before_two
+#print axioms A12Kernel.berlinAutumn2024_resolve_at_or_after_two
 
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer
