@@ -37,6 +37,15 @@ inductive LoweredNumericExpr (Atom : Type) where
       (body : LoweredNumericExpr Atom)
   deriving Repr, DecidableEq
 
+/-- Result of the plain-arithmetic authoring check. `outsideFragment` makes no kernel-legality judgment about operation-valued wrappers. -/
+inductive NumericAuthoringCheck where
+  | accepted
+  | tooManyDivisions
+  | directLeftNestedPower
+  | tooManyDivisionsAndDirectLeftNestedPower
+  | outsideFragment
+  deriving Repr, DecidableEq
+
 namespace AuthoredNumericExpr
 
 /-- The narrow power-scale exception recognizes only an ungrouped, nonnegative numeric literal. Runtime exponent legality is checked separately. -/
@@ -62,6 +71,55 @@ def summary? (atomSummary : Atom → NumericScaleSummary) :
   | .round _ places body => do
       let _ ← body.summary? atomSummary
       pure (NumericScaleSummary.rounded places.val)
+
+private def isDirectPower : AuthoredNumericExpr Atom → Bool
+  | .power _ _ => true
+  | _ => false
+
+private structure AuthoringScan where
+  exposedDivisions : Nat
+  tooManyDivisions : Bool
+  directLeftNestedPower : Bool
+
+private def authoringScan? : AuthoredNumericExpr Atom → Option AuthoringScan
+  | .atom _ | .literal _ => some ⟨0, false, false⟩
+  | .group body => do
+      let bodyScan ← body.authoringScan?
+      pure ⟨0, bodyScan.tooManyDivisions, bodyScan.directLeftNestedPower⟩
+  | .binary op left right => do
+      let leftScan ← left.authoringScan?
+      let rightScan ← right.authoringScan?
+      let divisionViolation :=
+        leftScan.tooManyDivisions || rightScan.tooManyDivisions
+      let powerViolation :=
+        leftScan.directLeftNestedPower || rightScan.directLeftNestedPower
+      match op with
+      | .add | .subtract => pure ⟨0, divisionViolation, powerViolation⟩
+      | .multiply | .divide =>
+          let ownDivision := if op = .divide then 1 else 0
+          let exposed :=
+            leftScan.exposedDivisions + rightScan.exposedDivisions + ownDivision
+          pure ⟨exposed, divisionViolation || decide (1 < exposed), powerViolation⟩
+  | .power base exponent => do
+      let baseScan ← base.authoringScan?
+      let exponentScan ← exponent.authoringScan?
+      pure ⟨0,
+        baseScan.tooManyDivisions || exponentScan.tooManyDivisions,
+        base.isDirectPower ||
+          baseScan.directLeftNestedPower ||
+          exponentScan.directLeftNestedPower⟩
+  | .round _ _ _ => none
+
+/-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Any rounding wrapper fails closed because the kernel's legacy function traversal is not a compositional region rule. -/
+def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  match expression.authoringScan? with
+  | some scan =>
+      match scan.tooManyDivisions, scan.directLeftNestedPower with
+      | false, false => .accepted
+      | true, false => .tooManyDivisions
+      | false, true => .directLeftNestedPower
+      | true, true => .tooManyDivisionsAndDirectLeftNestedPower
+  | none => .outsideFragment
 
 end AuthoredNumericExpr
 

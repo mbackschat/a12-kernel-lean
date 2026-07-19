@@ -85,4 +85,59 @@ theorem authoredNumericEval_uses_lowered_tree
       expression.lowerForEvaluation.evalValue read := by
   rfl
 
+theorem numericAuthoring_single_division
+    (left right : Atom) :
+    (.binary .divide (.atom left) (.atom right) :
+      AuthoredNumericExpr Atom).authoringCheck = .accepted := by
+  rfl
+
+theorem numericAuthoring_addition_separates_divisions
+    (a b c d : Atom) :
+    (.binary .add
+      (.binary .divide (.atom a) (.atom b))
+      (.binary .divide (.atom c) (.atom d)) :
+      AuthoredNumericExpr Atom).authoringCheck = .accepted := by
+  rfl
+
+theorem numericAuthoring_group_separates_inner_and_outer_divisions
+    (a b c : Atom) :
+    (.binary .divide
+      (.group (.binary .divide (.atom a) (.atom b)))
+      (.atom c) : AuthoredNumericExpr Atom).authoringCheck = .accepted := by
+  rfl
+
+theorem numericAuthoring_group_preserves_inner_division_violation
+    (a b c : Atom) :
+    (.group (.binary .divide
+      (.binary .divide (.atom a) (.atom b))
+      (.atom c)) : AuthoredNumericExpr Atom).authoringCheck =
+        .tooManyDivisions := by
+  rfl
+
+theorem numericAuthoring_rejects_direct_left_power
+    (a b c : Atom) :
+    (.power (.power (.atom a) (.atom b)) (.atom c) :
+      AuthoredNumericExpr Atom).authoringCheck = .directLeftNestedPower := by
+  rfl
+
+theorem numericAuthoring_group_allows_left_power
+    (a b c : Atom) :
+    (.power (.group (.power (.atom a) (.atom b))) (.atom c) :
+      AuthoredNumericExpr Atom).authoringCheck = .accepted := by
+  rfl
+
+/-- The generic tree can represent a direct-right power that the concrete left-associative parser cannot produce without grouping. The authoring check deliberately does not invent a symmetric kernel restriction. -/
+theorem numericAuthoring_right_power_requires_parser_shape_boundary
+    (a b c : Atom) :
+    (.power (.atom a) (.power (.atom b) (.atom c)) :
+      AuthoredNumericExpr Atom).authoringCheck = .accepted := by
+  rfl
+
+theorem numericAuthoring_round_is_outside_fragment
+    (mode : DecimalRoundingMode) (places : RoundingPlaces)
+    (body : AuthoredNumericExpr Atom) :
+    (AuthoredNumericExpr.round mode places body).authoringCheck =
+      NumericAuthoringCheck.outsideFragment := by
+  rfl
+
 end A12Kernel
