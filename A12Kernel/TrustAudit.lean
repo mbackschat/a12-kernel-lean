@@ -121,6 +121,13 @@ run_cmd do
 #print axioms A12Kernel.computationOr_leftPoison_preserves
 #print axioms A12Kernel.computationAnd_operandOrderObservable
 #print axioms A12Kernel.computationOr_operandOrderObservable
+#print axioms A12Kernel.alternativeSelection_empty_is_noMatch
+#print axioms A12Kernel.alternativeSelection_holdingHead_selects
+#print axioms A12Kernel.alternativeSelection_notTrueHead_continues
+#print axioms A12Kernel.alternativeSelection_poisonedHead_aborts
+#print axioms A12Kernel.alternativeSelection_noMatch_iff
+#print axioms A12Kernel.alternativeSelection_holdingOrderObservable
+#print axioms A12Kernel.alternativeSelection_holdingPoisonOrderObservable
 
 #print axioms A12Kernel.desugarAbsoluteRequired_preserves
 #print axioms A12Kernel.withRequiredFinding_preserves_computation
