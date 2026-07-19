@@ -1,9 +1,9 @@
 import A12Kernel.Proofs.Observation
 import A12Kernel.Semantics.ComputationCondition
 
-/-! # A12Kernel.Proofs.ComputationCondition — computation presence and ordered-connective laws
+/-! # A12Kernel.Proofs.ComputationCondition — ordered computation-control laws
 
-These laws characterize presence after computation-phase observation and the complete left-to-right decision table for the admitted `And`/`Or` fragment. They do not claim that the external kernel exposes the internal `poison` cause or that this fragment covers comparisons, quantifiers, paths, or alternatives.
+These laws characterize presence after computation-phase observation, the complete left-to-right decision table for the admitted `And`/`Or` fragment, and operation-neutral first-match alternative selection. They do not claim that the external kernel exposes the internal `poison` cause or that this fragment covers comparison or quantifier leaves, checked paths, operation evaluation, or model-level alternative legality.
 -/
 
 namespace A12Kernel
@@ -140,6 +140,90 @@ theorem computationOr_operandOrderObservable
     (ComputationCondition.or clean poisonous).eval context ≠
       (ComputationCondition.or poisonous clean).eval context := by
   simp only [ComputationCondition.eval, cleanResult, poisonousResult]
+  intro impossible
+  cases impossible
+
+/-- An empty alternative table has no selected operation. This totalizes the semantic function without claiming that an empty authored table is legal. -/
+theorem alternativeSelection_empty_is_noMatch
+    (context : ScalarComputationContext) :
+    ComputationAlternative.selectFirst
+      ([] : List (ComputationAlternative Operation)) context = .noMatch := by
+  rfl
+
+/-- A holding head selects its operation without consulting the remaining alternatives. -/
+theorem alternativeSelection_holdingHead_selects
+    (context : ScalarComputationContext)
+    (head : ComputationAlternative Operation)
+    (remaining : List (ComputationAlternative Operation))
+    (holds : head.precondition.eval context = .holds) :
+    ComputationAlternative.selectFirst (head :: remaining) context =
+      .selected head.operation := by
+  simp only [ComputationAlternative.selectFirst, holds]
+
+/-- A clean non-matching head delegates selection to the remaining alternatives. -/
+theorem alternativeSelection_notTrueHead_continues
+    (context : ScalarComputationContext)
+    (head : ComputationAlternative Operation)
+    (remaining : List (ComputationAlternative Operation))
+    (notTrue : head.precondition.eval context = .notTrue) :
+    ComputationAlternative.selectFirst (head :: remaining) context =
+      ComputationAlternative.selectFirst remaining context := by
+  simp only [ComputationAlternative.selectFirst, notTrue]
+
+/-- A poisoned head aborts selection with the same cause and leaves the remaining alternatives unread. -/
+theorem alternativeSelection_poisonedHead_aborts
+    (context : ScalarComputationContext)
+    (head : ComputationAlternative Operation)
+    (remaining : List (ComputationAlternative Operation))
+    (cause : FormalCause)
+    (poisoned : head.precondition.eval context = .poison cause) :
+    ComputationAlternative.selectFirst (head :: remaining) context =
+      .poison cause := by
+  simp only [ComputationAlternative.selectFirst, poisoned]
+
+/-- Selection has no match exactly when every declared alternative is reached and cleanly not true. -/
+theorem alternativeSelection_noMatch_iff
+    (context : ScalarComputationContext)
+    (alternatives : List (ComputationAlternative Operation)) :
+    ComputationAlternative.selectFirst alternatives context = .noMatch ↔
+      ∀ alternative ∈ alternatives,
+        alternative.precondition.eval context = .notTrue := by
+  induction alternatives with
+  | nil =>
+      simp [ComputationAlternative.selectFirst]
+  | cons head remaining inductionHypothesis =>
+      cases headResult : head.precondition.eval context with
+      | holds =>
+          simp [ComputationAlternative.selectFirst, headResult]
+      | notTrue =>
+          simp [ComputationAlternative.selectFirst, headResult, inductionHypothesis]
+      | poison cause =>
+          simp [ComputationAlternative.selectFirst, headResult]
+
+/-- Declaration order is observable when two holding alternatives carry different operations. -/
+theorem alternativeSelection_holdingOrderObservable
+    (context : ScalarComputationContext)
+    (first second : ComputationAlternative Operation)
+    (firstHolds : first.precondition.eval context = .holds)
+    (secondHolds : second.precondition.eval context = .holds)
+    (different : first.operation ≠ second.operation) :
+    ComputationAlternative.selectFirst [first, second] context ≠
+      ComputationAlternative.selectFirst [second, first] context := by
+  simp only [ComputationAlternative.selectFirst, firstHolds, secondHolds]
+  intro same
+  injection same with sameOperation
+  exact different sameOperation
+
+/-- Swapping a holding alternative with a poisoned one can change selection into poison. -/
+theorem alternativeSelection_holdingPoisonOrderObservable
+    (context : ScalarComputationContext)
+    (holding poisonous : ComputationAlternative Operation)
+    (cause : FormalCause)
+    (holds : holding.precondition.eval context = .holds)
+    (poisoned : poisonous.precondition.eval context = .poison cause) :
+    ComputationAlternative.selectFirst [holding, poisonous] context ≠
+      ComputationAlternative.selectFirst [poisonous, holding] context := by
+  simp only [ComputationAlternative.selectFirst, holds, poisoned]
   intro impossible
   cases impossible
 

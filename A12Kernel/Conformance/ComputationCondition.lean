@@ -1,7 +1,7 @@
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.StringCascade
 
-/-! # A12Kernel.Conformance.ComputationCondition — computation presence and ordered-connective locks -/
+/-! # A12Kernel.Conformance.ComputationCondition — ordered computation-control locks -/
 
 namespace A12Kernel.Conformance.ComputationCondition
 
@@ -38,6 +38,11 @@ private def copyBody : StringComputationStep where
   expression := .field bodyId
   targetPolicy := .unconstrained
   prior := .empty
+
+private def alternative (precondition : ComputationCondition)
+    (operation : α) : ComputationAlternative α where
+  precondition := precondition
+  operation := operation
 
 private def storedOk : StoredString := ⟨"OK", by decide⟩
 
@@ -162,5 +167,69 @@ example :
         probeId (.poison .malformed)).map
       (fun updated => fieldNotFilled.eval updated) = .ok (.poison .malformed) := by
   rfl
+
+example : ComputationAlternative.selectFirst
+    ([] : List (ComputationAlternative Nat))
+    emptyProbePoisonBody = .noMatch := by
+  rfl
+
+/- A clean non-match falls through to the next declared alternative. -/
+example : ComputationAlternative.selectFirst
+    [alternative fieldFilled 1, alternative fieldNotFilled 2]
+    emptyProbePoisonBody = .selected 2 := by
+  native_decide
+
+/- Overlapping preconditions select the first declared operation. -/
+example : ComputationAlternative.selectFirst
+    [alternative fieldNotFilled 1, alternative fieldNotFilled 2]
+    emptyProbePoisonBody = .selected 1 := by
+  native_decide
+
+example : ComputationAlternative.selectFirst
+    [alternative fieldFilled 1, alternative fieldFilled 2]
+    emptyProbePoisonBody = .noMatch := by
+  rfl
+
+/- Selection stops before a poisoning later precondition is read. -/
+example : ComputationAlternative.selectFirst
+    [alternative fieldNotFilled 1, alternative (.fieldFilled bodyId) 2]
+    emptyProbePoisonBody = .selected 1 := by
+  native_decide
+
+/- A poisoned precondition aborts before a later holding alternative can be selected. -/
+example : ComputationAlternative.selectFirst
+    [alternative (.fieldFilled bodyId) 1, alternative fieldNotFilled 2]
+    emptyProbePoisonBody = .poison .declaredConstraint := by
+  rfl
+
+/- Earlier clean non-matches do not hide a later poison or permit selection beyond it. -/
+example : ComputationAlternative.selectFirst
+    [alternative fieldFilled 1, alternative (.fieldFilled bodyId) 2,
+      alternative fieldNotFilled 3]
+    emptyProbePoisonBody = .poison .declaredConstraint := by
+  rfl
+
+/- These admitted String operation payloads contain no target or prior-target state. Selection ends at the first holding expression without inspecting its later result. -/
+example : ComputationAlternative.selectFirst
+    [alternative fieldNotFilled copyBody.expression,
+      alternative fieldNotFilled (.literal "LATER")]
+    (context (checkedBoolean .empty) (checkedString .empty)) =
+      .selected copyBody.expression := by
+  native_decide
+
+/- Two legal singleton tables can differ at selection even though the selected String expression later produces clean no-value. -/
+example :
+    ComputationAlternative.selectFirst
+        [alternative fieldFilled copyBody.expression]
+        (context (checkedBoolean .empty) (checkedString .empty)) = .noMatch ∧
+      ComputationAlternative.selectFirst
+        [alternative fieldNotFilled copyBody.expression]
+        (context (checkedBoolean .empty) (checkedString .empty)) =
+          .selected copyBody.expression ∧
+      copyBody.evaluateOutcome
+        (context (checkedBoolean .empty) (checkedString .empty)) = .ok .noValue := by
+  constructor
+  · rfl
+  constructor <;> rfl
 
 end A12Kernel.Conformance.ComputationCondition

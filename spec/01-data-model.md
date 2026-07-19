@@ -96,11 +96,11 @@ Firing a rule against a repetition context yields either *no message* or a **mes
 A **computation rule** writes a value into a **computed field**. It has:
 
 - a **target** (the computed field),
-- an optional **common precondition**, then one or more **alternatives**, each a `(precondition, operation)` pair. Alternatives are tried top-to-bottom; the **first** whose precondition holds supplies the value; none holding ⇒ the target is **CLEARED**.
+- an optional **common precondition**, then one or more **alternatives**, each a `(precondition, operation)` pair. Alternatives are tried top-to-bottom: clean false/unknown falls through, a poisoned read aborts, and the **first** holding precondition selects its operation and ends the scan even if that operation later produces no value. No match ⇒ the target is **CLEARED**.
 
 Three cross-cutting facts (detailed in [§11](09-computations.md)):
 
-1. **Every computation is also a validation rule**: if the computed field is *filled* and its stored value disagrees with what the computation would produce, that is an error.
+1. **Every computation also generates a validation rule** with one guarded mismatch clause per alternative. With mutually exclusive guards this checks the selected computed result; with overlapping guards a later holding mismatch can fire even though computation itself selected the first operation.
 2. The computed field's declared **scale must equal** the operation's derived scale, or the model is rejected (wrap in a rounding construct to match).
 3. The computed field may appear **neither** in a precondition **nor** in an operation (guarding via its *containing group* is allowed).
 

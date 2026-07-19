@@ -112,7 +112,7 @@ Fourteen numbered areas cover the language. This is the same `§n` numbering the
 | §8 | Enumerations | Compare by stored value; texts-bearing comparability; category `->`; value-list quantifiers | ★★★☆☆ | [`06-strings-and-enumerations.md`](06-strings-and-enumerations.md) |
 | §9 | Repetition, iteration & cross-array eval | Rules become per-row queries; scope from references; joins by index; `Having`/`$`; star binding | ★★★★★ | [`07-repetition-and-iteration.md`](07-repetition-and-iteration.md) |
 | §10 | Paths & references | Absolute/relative/short-name; `..`-plus-`*` needs absolute; semantic index; addressed by key never position | ★★★★☆ | [`08-paths-and-references.md`](08-paths-and-references.md) |
-| §11 | Computations | Also a validation rule; three outcomes VALUE/CLEARED/ERRORED; empty-cascade vs order-dependent poison | ★★★★★ | [`09-computations.md`](09-computations.md) |
+| §11 | Computations | First-match execution plus all-alternatives generated validation; VALUE/CLEARED/ERRORED; empty-cascade vs poison | ★★★★★ | [`09-computations.md`](09-computations.md) |
 | §12 | The validation model | Severity metadata; VALUE/OMISSION typing via directional fill; full vs partial validation | ★★★★★ | [`10-validation-and-polarity.md`](10-validation-and-polarity.md) |
 | §13 | Error-message interpolation | `$Field$` / `$Field.value$`; label provider; empty → `0`/empty string | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
 | §14 | CustomCondition — the escape hatch | Delegates the decision to host code; barred in compute + filters | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
@@ -148,7 +148,7 @@ These hold across the whole language; a reimplementation can assert them as glob
 - **Rows are addressed by semantic key, never by position.** There is no `[Field At n]`, no neighbour offset. `CurrentRepetition` *yields* an index to compare or correlate, never one to select with; the only row-selection form is the semantic index `[Field For key]`. ([§10](#3-the-taxonomy))
 - **Empty is not evaluable to a value; invalid is UNKNOWN; only content-bearing instances evaluate.** The empty-as-`0` substitutions presuppose a content-bearing row (the "row gate"); an all-empty instance is evaluated only by conditions that *can* fire on emptiness (the negative-presence family). Partial validation overrides this for relevant instances. ([§2](#3-the-taxonomy), [§12](#3-the-taxonomy))
 - **Formal validity is prior to rules.** A formally invalid cell is unknown to *every* rule that reads it; author rules never make a field unevaluable, only formal errors do. ([§3](#3-the-taxonomy))
-- **Every computation is also a validation rule.** If a computed field is filled and disagrees with what its computation would produce, that is an error. ([§11](#3-the-taxonomy))
+- **Every computation generates an all-alternatives validation rule.** With mutually exclusive guards it checks the same operation that first-match computation selects; with overlapping guards a later holding mismatch can fire even when the stored field equals the first computed result. ([§11](#3-the-taxonomy))
 - **Typed equality throughout.** Equality between numbers is by numeric value after rescale (a scale-0 `5` equals a scale-2 `5.00`), enums by stored value, dates chronologically — never by stored string. ([§5](#3-the-taxonomy), [§8](#3-the-taxonomy))
 
 ---

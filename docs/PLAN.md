@@ -8,15 +8,15 @@ The repository has executable Lean semantics for admitted flat validation, one-g
 
 The infrastructure simplification is complete and settled. Three compact evidence bundles remain; retired raw readers, packet binders, generators, qualification campaigns, and capture V1 machinery stay retired. [`SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md`](SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md) owns the scaling boundary, and the [simplification archive](archived/REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md) owns measurements and recovery history.
 
-Direct computation presence plus ordered left-to-right `And`/`Or` are internally complete over the admitted direct-presence leaves in one resolved checked context. The branch laws and operand-order counterexamples preserve clean not-true versus poison; local portable computation-control evidence remains pending and should be batched at the next meaningful family milestone.
+Direct computation presence, ordered left-to-right `And`/`Or`, and operation-neutral first-match alternatives are internally complete over the admitted direct-presence leaves in one resolved checked context. The branch laws and declaration-order counterexamples preserve clean not-true/no-match versus poison. Selection returns an operation payload before that operation is evaluated, so no operation result feeds back into the scan; a conformance separator instantiates the payload with a String expression without putting target, policy, or prior-target state inside each alternative. A shared checked computation-table representation, model-level alternative legality, selected-operation integration, and implicit generated validation remain separate. Local portable computation-control evidence remains pending.
 
 The project now owns [`../spec/`](../spec/) as its language-neutral semantic bridge. [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) is the compact reconciliation ledger; its current pending entries cover the audited spec corrections and additions that a12-dmkits must review.
 
 ## Immediate order
 
-1. Add first-matching computation alternatives: clean no-match falls through, the first holding alternative supplies the operation, and poison aborts without examining remaining alternatives. Keep selection separate from producer outcome, exact target application, dependency observation, and delta reporting.
-2. At that computation-control milestone, decide whether the completed family needs one compact external calibration request. Do not build a new local harness; if no maintained upstream route exposes the required observations, keep the clauses `external evidence pending` and prepare the smallest a12-dmkits request.
-3. Begin the first narrow partial-validation capsule after computation control.
+1. Research-close the smallest high-value partial-validation boundary: error-field relevance gates rule execution, while an out-of-set referenced cell becomes validation `unknown`. Select a non-repeatable flat fragment first; global expansion, wildcarded aggregates, uniqueness, and phantom rows remain later clauses.
+2. Implement that boundary as a narrow executable semantic capsule with red/green separating cases, one useful law, the nearest false converse, and an honest evidence status.
+3. Continue partial validation only through separately justified clauses. Do not add a relevance framework, public protocol, evidence machinery, or whole-document orchestration speculatively.
 
 ## Guardrails and stop conditions
 
@@ -24,7 +24,7 @@ The project now owns [`../spec/`](../spec/) as its language-neutral semantic bri
 - Put verified language-neutral behavior in [`../spec/`](../spec/) and update [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) in the same change. Keep Lean design, implementation status, evidence status, and plans in their `docs/` owners.
 - Use red/green TDD, the Tier 1 gate in [`TESTING.md`](TESTING.md), payoff-selected laws/non-laws, and honest external-evidence status for each capsule.
 - Add no dependency and change no linkage, hashing, or distribution policy without explicit approval.
-- Do not restore retired V1, raw-packet, generator, registry, qualification, or universal-capture machinery. Reopen infrastructure only for a reproduced retained-mechanism defect, a concrete adopted semantic observation shape, or an actual consumer/release gate.
+- Do not restore retired V1, raw-packet, generator, registry, qualification, or universal-capture machinery. Any proposed harness or governance work must first be surfaced with the reproduced need, existing-mechanism gap, payoff, cost, and alternatives, then receive explicit user approval.
 - Stop only for a serious blocker requiring new authority, an unavailable observation that changes the intended claim, an irreconcilable compatibility choice, or a dependency/licensing decision.
 
 ## Resume procedure
