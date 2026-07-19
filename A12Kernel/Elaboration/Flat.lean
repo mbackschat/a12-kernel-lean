@@ -367,13 +367,6 @@ private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
   | .greaterEqual => some .greaterEqual
   | _ => none
 
-def FlatComparison.fieldId : FlatComparison → FieldId
-  | .number _ field _ => field.id
-  | .boolean _ field _ => field.id
-  | .confirm _ field => field.id
-  | .stringEqual field _ => field.id
-  | .stringLength _ field _ => field.id
-
 def FlatComparison.matchesDecl (comparison : FlatComparison)
     (declaration : FlatFieldDecl) : Bool :=
   match comparison, declaration.policy.kind with

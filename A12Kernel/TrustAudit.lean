@@ -104,6 +104,9 @@ run_cmd do
 #print axioms A12Kernel.required_empty_observes_empty_in_computation
 #print axioms A12Kernel.ordinary_finding_still_poisons_computation
 
+#print axioms A12Kernel.partialSelected_agreesOn
+#print axioms A12Kernel.partialRule_fired_implies_fullWithContent_fired_of_agreesOn
+
 #print axioms A12Kernel.fieldFilled_observedEmpty_notTrue
 #print axioms A12Kernel.fieldNotFilled_observedEmpty_holds
 #print axioms A12Kernel.fieldFilled_observedValue_holds

@@ -1,0 +1,133 @@
+import A12Kernel.Proofs.Information
+import A12Kernel.Semantics.PartialValidation
+
+/-! # A12Kernel.Proofs.PartialValidation — flat relevance laws
+
+These laws characterize only the admitted nonrepeatable rule instance. The error-field gate and the relevance of condition leaves are independent; no theorem lifts this predicate to groups, wildcard repetitions, aggregates, or whole-document validation.
+-/
+
+namespace A12Kernel
+
+private def Verdict.truth : Verdict → K
+  | .notFired => .fls
+  | .fired _ => .tru
+  | .unknown => .unknown
+
+private theorem Verdict.truth_conj (left right : Verdict) :
+    truth (conj left right) = K.and (truth left) (truth right) := by
+  cases left <;> cases right <;> simp [truth, conj, K.and]
+  case fired.fired leftPolarity rightPolarity =>
+    cases leftPolarity <;> cases rightPolarity <;> rfl
+
+private theorem Verdict.truth_disj (left right : Verdict) :
+    truth (disj left right) = K.or (truth left) (truth right) := by
+  cases left <;> cases right <;> simp [truth, disj, K.or]
+  case notFired.fired polarity | fired.notFired polarity |
+      fired.unknown polarity | unknown.fired polarity => cases polarity <;> rfl
+  case fired.fired leftPolarity rightPolarity =>
+    cases leftPolarity <;> cases rightPolarity <;> rfl
+
+private theorem selectedAnd_eq_conj (left right : FlatCondition)
+    (context : FlatContext) (isRelevant : FlatRelevance) :
+    (FlatCondition.and left right).evalSelected context isRelevant =
+      Verdict.conj (left.evalSelected context isRelevant)
+        (right.evalSelected context isRelevant) := by
+  simp only [FlatCondition.evalSelected]
+  generalize leftEq : left.evalSelected context isRelevant = leftVerdict
+  cases leftVerdict <;> rfl
+
+private theorem selectedOr_eq_disj (left right : FlatCondition)
+    (context : FlatContext) (isRelevant : FlatRelevance) :
+    (FlatCondition.or left right).evalSelected context isRelevant =
+      Verdict.disj (left.evalSelected context isRelevant)
+        (right.evalSelected context isRelevant) := by
+  simp only [FlatCondition.evalSelected]
+  generalize leftEq : left.evalSelected context isRelevant = leftVerdict
+  cases leftVerdict with
+  | notFired => rfl
+  | unknown => rfl
+  | fired polarity => cases polarity <;> rfl
+
+/-- Masked partial evaluation depends only on the flat fields marked relevant. -/
+theorem partialSelected_agreesOn
+    (condition : FlatCondition) (left right : FlatContext)
+    (isRelevant : FlatRelevance) (agreement : left.AgreesOn right isRelevant) :
+    condition.evalSelected left isRelevant =
+      condition.evalSelected right isRelevant := by
+  induction condition with
+  | compare comparison =>
+      simp only [FlatCondition.evalSelected]
+      split
+      · have readEq := agreement comparison.fieldId (by assumption)
+        cases comparison <;>
+          simp_all [FlatComparison.fieldId, FlatComparison.eval,
+            FlatContext.resolveNumberComparisonOperand,
+            FlatContext.resolveBooleanComparisonOperand,
+            FlatContext.resolveConfirmComparisonOperand,
+            FlatContext.resolveDirectStringComparisonOperand,
+            FlatContext.resolveStringLengthOperand,
+            FlatContext.observeValidationAt]
+      · rfl
+  | fieldFilled field | fieldNotFilled field =>
+      simp only [FlatCondition.evalSelected]
+      split
+      · have readEq := agreement field.id (by assumption)
+        cases field <;>
+          simp_all [FlatField.id, FlatField.evalFilled, FlatField.evalNotFilled,
+            FlatField.observeValidation, FlatContext.observeValidationAt]
+      · rfl
+  | and left right leftIH rightIH | or left right leftIH rightIH =>
+      simp only [FlatCondition.evalSelected]
+      rw [leftIH]
+      split
+      · rfl
+      · rw [rightIH]
+
+private theorem partialSelected_truth_refines_full
+    (condition : FlatCondition) (context : FlatContext) (isRelevant : FlatRelevance) :
+    K.InformationRefines
+      (Verdict.truth (condition.evalSelected context isRelevant))
+      (Verdict.truth (condition.evalSelected context)) := by
+  induction condition with
+  | compare comparison | fieldFilled field | fieldNotFilled field =>
+      simp only [FlatCondition.evalSelected]
+      split
+      · exact K.informationRefines_refl _
+      · trivial
+  | and left right leftIH rightIH =>
+      rw [selectedAnd_eq_conj left right context isRelevant,
+        selectedAnd_eq_conj left right context (fun _ => true),
+        Verdict.truth_conj, Verdict.truth_conj]
+      exact K.and_information_monotone leftIH rightIH
+  | or left right leftIH rightIH =>
+      rw [selectedOr_eq_disj left right context isRelevant,
+        selectedOr_eq_disj left right context (fun _ => true),
+        Verdict.truth_disj, Verdict.truth_disj]
+      exact K.or_information_monotone leftIH rightIH
+
+/-- If partial validation fires, every content-bearing completion agreeing on the
+    relevant flat fields also fires. Completion may change the firing polarity. -/
+theorem partialRule_fired_implies_fullWithContent_fired_of_agreesOn
+    (condition : FlatCondition) (partialContext completionContext : FlatContext)
+    (errorField : FieldId) (isRelevant : FlatRelevance) (partialPolarity : Polarity)
+    (agreement : partialContext.AgreesOn completionContext isRelevant)
+    (relevant : isRelevant errorField = true)
+    (partialFired :
+      condition.evalPartial partialContext errorField isRelevant =
+        .evaluated (.fired partialPolarity)) :
+    ∃ fullPolarity,
+      condition.evalFull completionContext true = .fired fullPolarity := by
+  have refinement := partialSelected_truth_refines_full condition completionContext isRelevant
+  rw [show condition.evalSelected completionContext isRelevant = .fired partialPolarity by
+    rw [← partialSelected_agreesOn condition partialContext completionContext
+      isRelevant agreement]
+    simpa [FlatCondition.evalPartial, relevant] using partialFired] at refinement
+  generalize fullEq : condition.evalSelected completionContext = fullVerdict at refinement
+  cases fullVerdict with
+  | notFired => contradiction
+  | unknown => contradiction
+  | fired fullPolarity =>
+      exact ⟨fullPolarity, by
+        simpa [FlatCondition.evalFull] using fullEq⟩
+
+end A12Kernel
