@@ -12,6 +12,7 @@ import A12Kernel.Conformance.NumericExpression
 import A12Kernel.Conformance.NumericRounding
 import A12Kernel.Conformance.NumericArithmetic
 import A12Kernel.Conformance.NumericFillability
+import A12Kernel.Conformance.NumericValidation
 import A12Kernel.Conformance.NumericTolerance
 import A12Kernel.Conformance.StringLength
 import A12Kernel.Conformance.StringIngestion

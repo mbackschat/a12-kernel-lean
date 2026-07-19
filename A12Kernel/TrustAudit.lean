@@ -179,6 +179,14 @@ run_cmd do
 #print axioms A12Kernel.numericAuthoring_group_allows_left_power
 #print axioms A12Kernel.numericAuthoring_right_power_requires_parser_shape_boundary
 #print axioms A12Kernel.numericAuthoring_round_is_outside_fragment
+#print axioms A12Kernel.checkedNumericFixedRight_modelWellFormed
+#print axioms A12Kernel.checkedNumericFixedRight_wellFormed
+#print axioms A12Kernel.numericArithmeticFixedRight_formalInvalid_is_unknown
+#print axioms A12Kernel.numericArithmeticFixedRight_domainFailure_is_notFired
+#print axioms A12Kernel.numericArithmeticFixedRight_value_delegates
+#print axioms A12Kernel.checkedNumericFixedRight_evaluation_isSome
+#print axioms A12Kernel.numericFixedRight_atom_agrees_flat
+#print axioms A12Kernel.checkedNumericFixedRight_emptyRow_notFired
 #print axioms A12Kernel.numericTolerance_threshold_pos
 #print axioms A12Kernel.normalizedNumericDifference_comm
 #print axioms A12Kernel.numericTolerance_holds_comm

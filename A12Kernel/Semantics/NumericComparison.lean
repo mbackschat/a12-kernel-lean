@@ -74,4 +74,13 @@ def NumericComparisonOp.evalFixedRight (op : NumericComparisonOp) (operand : Num
       else
         .notFired
 
+/-- Validation's fixed-right projection distinguishes a formal-invalid expression from a pure arithmetic domain failure. -/
+def NumericComparisonOp.evalArithmeticFixedRight (op : NumericComparisonOp)
+    (outcome : Except FormalCause NumericArithmeticOutcome) (expected : Rat) : Verdict :=
+  match outcome with
+  | .error _ => .unknown
+  | .ok .notEvaluated => .notFired
+  | .ok (.value amount fillability) =>
+      op.evalFixedRight (.value amount fillability) expected
+
 end A12Kernel

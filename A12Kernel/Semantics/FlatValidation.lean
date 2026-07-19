@@ -66,8 +66,10 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
   | .less => .less
   | .greaterEqual => .greaterEqual
 
-/-- The typed comparison fragment. Numeric literals are scale-exempt by construction;
-    Confirm admits only the legal `True` literal, made implicit in its constructor. -/
+/-- The typed comparison fragment. The reduced direct-Number route receives only a
+    rational literal and therefore cannot enforce authored-scale compatibility; the
+    checked numeric-expression route retains that metadata. Confirm admits only the
+    legal `True` literal, made implicit in its constructor. -/
 inductive FlatComparison where
   | number (op : NumericComparisonOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)

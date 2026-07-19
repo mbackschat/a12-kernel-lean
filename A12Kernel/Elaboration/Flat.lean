@@ -84,6 +84,12 @@ namespace FlatFieldDecl
 def path (declaration : FlatFieldDecl) : List String :=
   declaration.groupPath ++ [declaration.name]
 
+/-- Convert one expanded declaration to the shared resolved Number-field representation. -/
+def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
+  match declaration.policy.kind with
+  | .number info => some { id := declaration.id, info }
+  | .boolean | .confirm | .string => none
+
 def toPresenceField? (declaration : FlatFieldDecl) : Option FlatField :=
   match declaration.policy.kind with
   | .number info => some (.number { id := declaration.id, info })

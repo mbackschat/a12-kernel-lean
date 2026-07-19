@@ -9,6 +9,7 @@ import A12Kernel.Proofs.NumericTolerance
 import A12Kernel.Proofs.NumericRounding
 import A12Kernel.Proofs.NumericArithmetic
 import A12Kernel.Proofs.NumericFillability
+import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.PartialValidation
