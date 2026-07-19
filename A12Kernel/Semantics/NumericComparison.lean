@@ -85,13 +85,4 @@ def NumericComparisonOp.evalFixedRight (op : NumericComparisonOp) (operand : Num
     (expected : Rat) : Verdict :=
   op.eval operand (.value expected .fixed)
 
-/-- Validation's two-expression projection preserves formal invalidity as unknown and maps pure arithmetic domain failure to not-fired. In a mixed case formal invalidity conservatively dominates; that hidden precedence is a project refinement rather than an external-kernel claim. -/
-def NumericComparisonOp.evalArithmetic (op : NumericComparisonOp)
-    (left right : Except FormalCause NumericArithmeticOutcome) : Verdict :=
-  match left, right with
-  | .error _, _ | _, .error _ => .unknown
-  | .ok .notEvaluated, _ | _, .ok .notEvaluated => .notFired
-  | .ok (.value left leftFill), .ok (.value right rightFill) =>
-      op.eval (.value left leftFill) (.value right rightFill)
-
 end A12Kernel

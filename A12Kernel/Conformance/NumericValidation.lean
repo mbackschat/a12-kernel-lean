@@ -39,12 +39,12 @@ private def comparison (op : NumericComparisonOp)
     (left : AuthoredNumericExpr SurfaceFieldPath)
     (rightValue : Rat) (rightScale : Int := 0) :
     SurfaceNumericComparison :=
-  { op, left, right := literal rightValue rightScale }
+  { op := .ordinary op, left, right := literal rightValue rightScale }
 
 private def twoSided (op : NumericComparisonOp)
     (left right : AuthoredNumericExpr SurfaceFieldPath) :
     SurfaceNumericComparison :=
-  { op, left, right }
+  { op := .ordinary op, left, right }
 
 private def raw (u v : RawCell := .empty) : RawFlatContext where
   read id := if id == 0 then u else if id == 1 then v else .empty
@@ -59,8 +59,71 @@ private def errorOf (surface : SurfaceNumericComparison) :
   | .ok _ => none
   | .error error => some error
 
+private def tolerance (range : NumericToleranceRange)
+    (left right : AuthoredNumericExpr SurfaceFieldPath) :
+    SurfaceNumericComparison :=
+  { op := .tolerance range, left, right }
+
 private def dividedThird : AuthoredNumericExpr SurfaceFieldPath :=
   .group (.binary .divide (literal 3 0) (literal 3 0))
+
+/- Checked tolerance bypasses exact-comparison scale agreement and preserves directional arithmetic fillability. -/
+example : (elaborateNumericComparison model ["Order"]
+    (tolerance .range1 (atom "U") (atom "Scale2"))).isOk = true := by
+  native_decide
+
+example : verdictOf
+    (tolerance .range1
+      (atom "U")
+      (.binary .add (atom "V") (literal 2 0)))
+    (raw .empty (.parsed (.num 0))) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (tolerance .range1
+      (atom "U")
+      (.binary .subtract (atom "V") (literal 2 0)))
+    (raw .empty (.parsed (.num 0))) = some (.fired .value) := by
+  native_decide
+
+/- The closed band is not ordinary inequality: its exact endpoint remains quiet. -/
+example : verdictOf
+    (tolerance .range1 (atom "U") (literal 1 0))
+    (raw (.parsed (.num 0))) = some .notFired := by
+  native_decide
+
+example : verdictOf
+    (comparison .notEqual (atom "U") 1)
+    (raw (.parsed (.num 0))) = some (.fired .value) := by
+  native_decide
+
+/- The checked bridge keeps formal invalidity, pure arithmetic domain failure, and the row gate distinct. -/
+example : verdictOf
+    (tolerance .range1 (atom "U") (literal 5 0))
+    (raw (.rejected .malformed)) = some .unknown := by
+  native_decide
+
+example : verdictOf
+    (tolerance .range1
+      (.binary .divide (literal 1 0) (atom "U"))
+      (literal 5 0)) = some .notFired := by
+  native_decide
+
+example : verdictOf
+    (tolerance .range1 (atom "U") (literal 5 0))
+    raw false = some .notFired := by
+  native_decide
+
+/- Tolerance shares the checked expression subset and still rejects constant-only or unsupported trees. -/
+example : errorOf
+    (tolerance .range1 (literal 0 0) (literal 5 0)) =
+      some .constantExpression := by
+  native_decide
+
+example : errorOf
+    (tolerance .range1 (.power (atom "U") (literal 2 0)) (literal 5 0)) =
+      some .unsupportedExpression := by
+  native_decide
 
 /- The right operand's grow-only empty Number changes a true comparison from VALUE to OMISSION. -/
 example : verdictOf
@@ -146,6 +209,20 @@ example : verdictOf
       (literal (precisionAmplifier - 1 / (10 ^ 19)) 19)
       amplifiedThird)
     (raw (.parsed (.num 3))) = some (.fired .value) := by
+  native_decide
+
+/- Tolerance consumes the same one-pass lowered tree: the lowered gap is exactly the closed range-1 boundary. -/
+example : verdictOf
+    (tolerance .range1
+      amplifiedThird
+      (literal (precisionAmplifier + 1) 0))
+    (raw (.parsed (.num 3))) = some .notFired := by
+  native_decide
+
+/- A counterfactual direct authored fold would retain a scale-19-visible gap beyond the band and fire. -/
+example : NumericToleranceRange.range1.eval
+    (.value (precisionAmplifier - 1 / (10 ^ 19)) .fixed)
+    (.value (precisionAmplifier + 1) .fixed) = .fired .value := by
   native_decide
 
 /- Both total binary branches are exercised through the integrated checked route. -/

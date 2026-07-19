@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.NumericComparison
+import A12Kernel.Semantics.NumericTolerance
 
 /-! # Arithmetic fillability separating cases -/
 
@@ -144,27 +144,27 @@ example : NumericComparisonOp.less.evalFixedRight
   native_decide
 
 /- A fixed divisor's sign changes the polarity of the same zero-valued quotient. -/
-example : NumericComparisonOp.greaterEqual.evalArithmetic
+example : (NumericValidationOp.ordinary .greaterEqual).evalArithmetic
     (.ok (NumericArithmeticOutcome.divide
       (.value 0 .growOnly) (.value 2 .fixed))) (.ok (.value 0 .fixed)) = .fired .value := by
   native_decide
 
-example : NumericComparisonOp.less.evalArithmetic
+example : (NumericValidationOp.ordinary .less).evalArithmetic
     (.ok (NumericArithmeticOutcome.divide
       (.value 0 .growOnly) (.value 2 .fixed))) (.ok (.value 1 .fixed)) = .fired .omission := by
   native_decide
 
-example : NumericComparisonOp.greaterEqual.evalArithmetic
+example : (NumericValidationOp.ordinary .greaterEqual).evalArithmetic
     (.ok (NumericArithmeticOutcome.divide
       (.value 0 .growOnly) (.value (-2) .fixed))) (.ok (.value 0 .fixed)) = .fired .omission := by
   native_decide
 
-example : NumericComparisonOp.less.evalArithmetic
+example : (NumericValidationOp.ordinary .less).evalArithmetic
     (.ok (NumericArithmeticOutcome.divide
       (.value 0 .growOnly) (.value (-2) .fixed))) (.ok (.value 1 .fixed)) = .fired .value := by
   native_decide
 
-example : NumericComparisonOp.greaterEqual.evalArithmetic
+example : (NumericValidationOp.ordinary .greaterEqual).evalArithmetic
     (.ok (NumericArithmeticOutcome.divide
       (.value 1 .fixed) (.value 0 .both))) (.ok (.value 0 .fixed)) = .notFired := by
   native_decide
