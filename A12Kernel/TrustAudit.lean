@@ -52,6 +52,22 @@ run_cmd do
 #print axioms A12Kernel.K.and_information_monotone
 #print axioms A12Kernel.K.or_information_monotone
 
+#print axioms A12Kernel.dateParts_real_iff
+#print axioms A12Kernel.civilDate_ofParts_isSome_iff
+#print axioms A12Kernel.civilDate_is_real
+#print axioms A12Kernel.civilDate_before_irreflexive
+#print axioms A12Kernel.civilDate_before_asymmetric
+#print axioms A12Kernel.civilDate_before_transitive
+#print axioms A12Kernel.civilDate_not_before_iff_eq_or_after
+#print axioms A12Kernel.fullDate_ofCivil_isSome_iff
+#print axioms A12Kernel.fullDate_ofYmd_isSome_iff
+#print axioms A12Kernel.fullDate_is_real
+#print axioms A12Kernel.fullDate_not_before_gregorianFloor
+#print axioms A12Kernel.fullDate_eq_floor_or_floor_before
+#print axioms A12Kernel.fullDate_before_iff
+#print axioms A12Kernel.fullDate_before_irreflexive
+#print axioms A12Kernel.fullDate_before_transitive
+
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer
 #print axioms A12Kernel.outer_number_reference_stableIn

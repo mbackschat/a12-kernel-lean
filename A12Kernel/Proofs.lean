@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.Information
+import A12Kernel.Proofs.FullDate
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.CrossLevelCorrelation
 import A12Kernel.Proofs.CorrelationElaboration
