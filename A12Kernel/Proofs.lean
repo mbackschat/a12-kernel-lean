@@ -4,6 +4,7 @@ import A12Kernel.Proofs.CorrelationElaboration
 import A12Kernel.Proofs.Iteration
 import A12Kernel.Proofs.NumericComparison
 import A12Kernel.Proofs.NumericScale
+import A12Kernel.Proofs.NumericExpression
 import A12Kernel.Proofs.NumericTolerance
 import A12Kernel.Proofs.NumericRounding
 import A12Kernel.Proofs.NumericArithmetic

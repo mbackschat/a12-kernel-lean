@@ -162,6 +162,15 @@ run_cmd do
 #print axioms A12Kernel.exactNumericScaleComparisonAllowed_fields
 #print axioms A12Kernel.exactNumericScaleComparisonAllowed_unknown_left
 #print axioms A12Kernel.exactNumericScaleComparisonAllowed_unknown_right
+#print axioms A12Kernel.authoredNumericSummary_group
+#print axioms A12Kernel.authoredNumericGroup_not_simple_constant
+#print axioms A12Kernel.authoredNumericLower_group
+#print axioms A12Kernel.lowerMultiply_two_divisions
+#print axioms A12Kernel.lowerMultiply_left_division
+#print axioms A12Kernel.lowerMultiply_right_division
+#print axioms A12Kernel.lowerMultiply_without_divisions
+#print axioms A12Kernel.lowerMultiply_nested_numerator_once
+#print axioms A12Kernel.authoredNumericEval_uses_lowered_tree
 #print axioms A12Kernel.numericTolerance_threshold_pos
 #print axioms A12Kernel.normalizedNumericDifference_comm
 #print axioms A12Kernel.numericTolerance_holds_comm

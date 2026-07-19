@@ -8,6 +8,7 @@ import A12Kernel.Conformance.PartialValidation
 import A12Kernel.Conformance.ComputationCondition
 import A12Kernel.Conformance.Required
 import A12Kernel.Conformance.NumericScale
+import A12Kernel.Conformance.NumericExpression
 import A12Kernel.Conformance.NumericRounding
 import A12Kernel.Conformance.NumericArithmetic
 import A12Kernel.Conformance.NumericFillability
