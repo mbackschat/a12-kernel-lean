@@ -23,13 +23,15 @@ structure ResolvedMessageText where
 structure ResolvedFlatRule where
   condition : FlatCondition
   errorField : FieldId
+  errorCode : String
   severity : ValidationSeverity
   resolvedText : ResolvedMessageText
   deriving Repr, DecidableEq
 
-/-- The externally meaningful fields of one emitted authored-rule message in the flat fragment. -/
+/-- The message fields admitted by this flat capsule. Rule path, referenced fields, and fill-to-fix metadata remain outside. -/
 structure FlatRuleMessage where
   errorAddress : CellAddr
+  errorCode : String
   severity : ValidationSeverity
   messageType : Polarity
   text : ResolvedMessageText
@@ -75,6 +77,7 @@ def evalFull (rule : ResolvedFlatRule) (context : FlatContext)
   | .fired messageType =>
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
+        errorCode := rule.errorCode
         severity := rule.severity
         messageType
         text := rule.resolvedText
