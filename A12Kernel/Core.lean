@@ -91,12 +91,9 @@ end Verdict
 
 /-! ## Number scale and the value domain -/
 
-/-- Scale summary used by the current admitted field/expression fragments. A field's declared
-    scale is a concrete `Nat`; unknown covers expressions whose scale this narrow checker cannot
-    derive. The full numeric authoring language additionally needs signed literal scales and
-    multiplicative-constant capability, kept for its later checked-expression capsule. (`spec/04`) -/
+/-- The statically derived decimal scale of a numeric expression. Exact scales are signed because stripping trailing zeros from an integer constant can produce a negative scale; runtime values do not carry this authoring summary. (`spec/04`) -/
 inductive ScaleInfo where
-  | exact (digits : Nat)
+  | exact (digits : Int)
   | unknown
   deriving Repr, DecidableEq
 
