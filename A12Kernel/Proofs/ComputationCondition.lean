@@ -1,9 +1,9 @@
 import A12Kernel.Proofs.Observation
 import A12Kernel.Semantics.ComputationCondition
 
-/-! # A12Kernel.Proofs.ComputationCondition — direct computation-presence laws
+/-! # A12Kernel.Proofs.ComputationCondition — computation presence and ordered-connective laws
 
-These laws characterize presence after computation-phase observation. They do not claim that the external kernel exposes the internal `poison` cause or that direct presence covers composite computation conditions.
+These laws characterize presence after computation-phase observation and the complete left-to-right decision table for the admitted `And`/`Or` fragment. They do not claim that the external kernel exposes the internal `poison` cause or that this fragment covers comparisons, quantifiers, paths, or alternatives.
 -/
 
 namespace A12Kernel
@@ -78,5 +78,69 @@ theorem presencePredicates_agree_on_poison
   rw [fieldFilled_observedPoison_preserves context field cause observed,
     fieldNotFilled_observedPoison_preserves context field cause observed]
   constructor <;> rfl
+
+/-- A clean not-true left operand decides computation `And` without consulting the right operand. -/
+theorem computationAnd_leftNotTrue_shortCircuits
+    (context : ScalarComputationContext) (left right : ComputationCondition)
+    (leftResult : left.eval context = .notTrue) :
+    (ComputationCondition.and left right).eval context = .notTrue := by
+  simp only [ComputationCondition.eval, leftResult]
+
+/-- A holding left operand delegates computation `And` to the right operand. -/
+theorem computationAnd_leftHolds_evaluatesRight
+    (context : ScalarComputationContext) (left right : ComputationCondition)
+    (leftResult : left.eval context = .holds) :
+    (ComputationCondition.and left right).eval context = right.eval context := by
+  simp only [ComputationCondition.eval, leftResult]
+
+/-- A poison already read on the left aborts computation `And` with the same cause. -/
+theorem computationAnd_leftPoison_preserves
+    (context : ScalarComputationContext) (left right : ComputationCondition)
+    (cause : FormalCause) (leftResult : left.eval context = .poison cause) :
+    (ComputationCondition.and left right).eval context = .poison cause := by
+  simp only [ComputationCondition.eval, leftResult]
+
+/-- A holding left operand decides computation `Or` without consulting the right operand. -/
+theorem computationOr_leftHolds_shortCircuits
+    (context : ScalarComputationContext) (left right : ComputationCondition)
+    (leftResult : left.eval context = .holds) :
+    (ComputationCondition.or left right).eval context = .holds := by
+  simp only [ComputationCondition.eval, leftResult]
+
+/-- A clean not-true left operand delegates computation `Or` to the right operand. -/
+theorem computationOr_leftNotTrue_evaluatesRight
+    (context : ScalarComputationContext) (left right : ComputationCondition)
+    (leftResult : left.eval context = .notTrue) :
+    (ComputationCondition.or left right).eval context = right.eval context := by
+  simp only [ComputationCondition.eval, leftResult]
+
+/-- A poison already read on the left aborts computation `Or` with the same cause. -/
+theorem computationOr_leftPoison_preserves
+    (context : ScalarComputationContext) (left right : ComputationCondition)
+    (cause : FormalCause) (leftResult : left.eval context = .poison cause) :
+    (ComputationCondition.or left right).eval context = .poison cause := by
+  simp only [ComputationCondition.eval, leftResult]
+
+/-- Computation `And` is observably order-sensitive when a clean deciding operand can precede a poison. -/
+theorem computationAnd_operandOrderObservable
+    (context : ScalarComputationContext) (clean poisonous : ComputationCondition)
+    (cause : FormalCause) (cleanResult : clean.eval context = .notTrue)
+    (poisonousResult : poisonous.eval context = .poison cause) :
+    (ComputationCondition.and clean poisonous).eval context ≠
+      (ComputationCondition.and poisonous clean).eval context := by
+  simp only [ComputationCondition.eval, cleanResult, poisonousResult]
+  intro impossible
+  cases impossible
+
+/-- Computation `Or` is observably order-sensitive when a clean deciding operand can precede a poison. -/
+theorem computationOr_operandOrderObservable
+    (context : ScalarComputationContext) (clean poisonous : ComputationCondition)
+    (cause : FormalCause) (cleanResult : clean.eval context = .holds)
+    (poisonousResult : poisonous.eval context = .poison cause) :
+    (ComputationCondition.or clean poisonous).eval context ≠
+      (ComputationCondition.or poisonous clean).eval context := by
+  simp only [ComputationCondition.eval, cleanResult, poisonousResult]
+  intro impossible
+  cases impossible
 
 end A12Kernel

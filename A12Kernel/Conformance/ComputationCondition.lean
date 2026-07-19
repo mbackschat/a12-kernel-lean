@@ -1,7 +1,7 @@
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.StringCascade
 
-/-! # A12Kernel.Conformance.ComputationCondition — direct computation-presence locks -/
+/-! # A12Kernel.Conformance.ComputationCondition — computation presence and ordered-connective locks -/
 
 namespace A12Kernel.Conformance.ComputationCondition
 
@@ -25,6 +25,13 @@ private def context (probe body : CheckedCell) : StringComputationContext where
 
 private def fieldFilled : ComputationCondition := .fieldFilled probeId
 private def fieldNotFilled : ComputationCondition := .fieldNotFilled probeId
+
+private def emptyProbePoisonBody : StringComputationContext :=
+  context (checkedBoolean .empty) (checkedString (.rejected .declaredConstraint))
+
+private def filledProbePoisonBody : StringComputationContext :=
+  context (checkedBoolean (.parsed (.bool false)))
+    (checkedString (.rejected .declaredConstraint))
 
 private def copyBody : StringComputationStep where
   targetField := targetId
@@ -67,6 +74,56 @@ example : fieldNotFilled.eval
 example : fieldNotFilled.eval
     (context ((checkedBoolean (.rejected .declaredConstraint)).withFinding .required)
       (checkedString .empty)) = .poison .declaredConstraint := by
+  rfl
+
+/- `And` stops after a clean not-true left operand, so the formally invalid right field is not read. -/
+example :
+    (ComputationCondition.and fieldFilled (.fieldFilled bodyId)).eval
+      emptyProbePoisonBody = .notTrue := by
+  rfl
+
+/- Reversing the same operands reads the formally invalid field first and therefore poisons. -/
+example :
+    (ComputationCondition.and (.fieldFilled bodyId) fieldFilled).eval
+      emptyProbePoisonBody = .poison .declaredConstraint := by
+  rfl
+
+/- A holding left operand does not decide `And`; the formally invalid right field is read. -/
+example :
+    (ComputationCondition.and fieldFilled (.fieldFilled bodyId)).eval
+      filledProbePoisonBody = .poison .declaredConstraint := by
+  rfl
+
+/- `Or` stops after a clean holding left operand, so the formally invalid right field is not read. -/
+example :
+    (ComputationCondition.or fieldFilled (.fieldFilled bodyId)).eval
+      filledProbePoisonBody = .holds := by
+  rfl
+
+/- Reversing the same operands exposes the otherwise-unread formally invalid field. -/
+example :
+    (ComputationCondition.or (.fieldFilled bodyId) fieldFilled).eval
+      filledProbePoisonBody = .poison .declaredConstraint := by
+  rfl
+
+/- A clean not-true left operand does not decide `Or`; the formally invalid right field is read. -/
+example :
+    (ComputationCondition.or fieldFilled (.fieldFilled bodyId)).eval
+      emptyProbePoisonBody = .poison .declaredConstraint := by
+  rfl
+
+/- The ordered `And` result is consumed before the String body, yielding quiet no-value. -/
+example : copyBody.evaluateOutcomeWhen
+    ((ComputationCondition.and fieldFilled (.fieldFilled bodyId)).eval
+      emptyProbePoisonBody)
+    emptyProbePoisonBody = .ok .noValue := by
+  rfl
+
+/- Reversing the same precondition operands poisons the target before the body can run. -/
+example : copyBody.evaluateOutcomeWhen
+    ((ComputationCondition.and (.fieldFilled bodyId) fieldFilled).eval
+      emptyProbePoisonBody)
+    emptyProbePoisonBody = .ok (.poison .declaredConstraint) := by
   rfl
 
 /- Clean not-true skips a body that would otherwise poison. -/
