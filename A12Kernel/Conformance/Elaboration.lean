@@ -189,9 +189,44 @@ example : errorOf (elaborate model ["Order"]
     some (.illegalConfirmLiteral ["Order", "TermsConfirmed"]) := by
   native_decide
 
-example : errorOf (elaborate model ["Order"]
+example : coreOf (elaborate model ["Order"]
     (compare .less (absolute ["Order"] "Quantity") (.number 10))) =
+    some (.compare (.number .less { id := 0, info := numberInfo } 10)) := by
+  native_decide
+
+example : coreOf (elaborate model ["Order"]
+    (compare .greaterEqual (absolute ["Order"] "Quantity") (.number 0))) =
+    some (.compare (.number .greaterEqual { id := 0, info := numberInfo } 0)) := by
+  native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (compare .lessEqual (absolute ["Order"] "Quantity") (.number 10))) =
+    some (.unsupportedOperator .lessEqual) := by
+  native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (compare .greater (absolute ["Order"] "Quantity") (.number 10))) =
+    some (.unsupportedOperator .greater) := by
+  native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (compare .lessEqual (absolute ["Order"] "Missing") (.number 10))) =
+    some (.unsupportedOperator .lessEqual) := by
+  native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (compare .less (absolute ["Order"] "ExpressShipping") (.boolean false))) =
     some (.unsupportedOperator .less) := by
+  native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (compare .less (absolute ["Order"] "ExpressShipping") (.number 10))) =
+    some (.unsupportedOperator .less) := by
+  native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (compare .greaterEqual (absolute ["Order"] "TermsConfirmed") (.boolean false))) =
+    some (.unsupportedOperator .greaterEqual) := by
   native_decide
 
 private def wrongKindRaw : RawFlatContext where

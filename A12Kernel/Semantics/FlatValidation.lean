@@ -5,11 +5,12 @@ import A12Kernel.Semantics.String
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
-A small core for resolved, non-repeatable field references. It covers typed
-Number/Boolean/Confirm equality, direct String equality, two observed String `Length`
-comparisons, presence predicates, and `And`/`Or`. It also exposes the leaf-relevance seam
-used by the separate flat partial-validation capsule. Paths, iteration, arithmetic,
-repeatable relevance, and concrete syntax are outside this capsule.
+A small core for resolved, non-repeatable field references. It covers the admitted
+direct Number comparisons, Boolean/Confirm equality and inequality, direct String
+equality, two observed String `Length` comparisons, presence predicates, and `And`/`Or`.
+It also exposes the leaf-relevance seam used by the separate flat partial-validation
+capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
+outside this capsule.
 -/
 
 namespace A12Kernel
@@ -68,7 +69,7 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
 /-- The typed comparison fragment. Numeric literals are scale-exempt by construction;
     Confirm admits only the legal `True` literal, made implicit in its constructor. -/
 inductive FlatComparison where
-  | number (op : EqualityOp) (field : FlatNumberField) (expected : Rat)
+  | number (op : NumericComparisonOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   | stringEqual (field : FlatStringField) (expected : String)
@@ -207,10 +208,7 @@ def SimpleComparisonOperand.evalDirectStringEqual
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
   | .number op field expected =>
-      let numericOp := match op with
-        | .equal => NumericComparisonOp.equal
-        | .notEqual => NumericComparisonOp.notEqual
-      numericOp.evalFixedRight (context.resolveNumberComparisonOperand field) expected
+      op.evalFixedRight (context.resolveNumberComparisonOperand field) expected
   | .boolean op field expected =>
       op.evalSimple (· == ·) (context.resolveBooleanComparisonOperand field) expected
   | .confirm op field =>

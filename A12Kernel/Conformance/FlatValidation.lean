@@ -47,6 +47,11 @@ private def filledContext : FlatContext where
       checked (.number signedNumberField.info) (.parsed (.num 0))
     else checked .confirm (.parsed (.conf true))
 
+private def filledZeroContext : FlatContext where
+  read fieldId :=
+    if fieldId = numberField.id then checked (.number numberField.info) (.parsed (.num 0))
+    else checked (.number signedNumberField.info) (.parsed (.num 0))
+
 private def omissionAndBrokenContext : FlatContext where
   read fieldId :=
     if fieldId = brokenField.id then checked (.number brokenField.info) (.rejected .malformed)
@@ -96,6 +101,21 @@ private def unsignedNumberIsNotOne : FlatCondition :=
 
 private def signedNumberIsNotNegativeOne : FlatCondition :=
   .compare (.number .notEqual signedNumberField (-1))
+
+private def unsignedNumberIsLessThanOne : FlatCondition :=
+  .compare (.number .less numberField 1)
+
+private def signedNumberIsLessThanOne : FlatCondition :=
+  .compare (.number .less signedNumberField 1)
+
+private def unsignedNumberIsGreaterEqualZero : FlatCondition :=
+  .compare (.number .greaterEqual numberField 0)
+
+private def signedNumberIsGreaterEqualZero : FlatCondition :=
+  .compare (.number .greaterEqual signedNumberField 0)
+
+private def brokenNumberIsLessThanOne : FlatCondition :=
+  .compare (.number .less brokenField 1)
 
 private def booleanNotFilled : FlatCondition :=
   .fieldNotFilled (.boolean booleanField)
@@ -152,6 +172,33 @@ example : signedNumberIsNotNegativeOne.evalSelected emptyContext = .fired .omiss
   native_decide
 
 example : signedNumberIsNotNegativeOne.evalSelected filledContext = .fired .value := by
+  native_decide
+
+example : unsignedNumberIsLessThanOne.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+example : signedNumberIsLessThanOne.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+example : unsignedNumberIsGreaterEqualZero.evalSelected emptyContext = .fired .value := by
+  native_decide
+
+example : signedNumberIsGreaterEqualZero.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+example : unsignedNumberIsGreaterEqualZero.evalSelected filledZeroContext = .fired .value := by
+  native_decide
+
+example : signedNumberIsGreaterEqualZero.evalSelected filledZeroContext = .fired .value := by
+  native_decide
+
+example : unsignedNumberIsLessThanOne.evalSelected filledContext = .notFired := by
+  native_decide
+
+example : brokenNumberIsLessThanOne.evalSelected branchingContext = .unknown := by
+  native_decide
+
+example : unsignedNumberIsLessThanOne.evalFull emptyContext false = .notFired := by
   native_decide
 
 example : numberIsFive.evalSelected filledContext = Verdict.fired .value := by
