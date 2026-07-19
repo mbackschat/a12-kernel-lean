@@ -1,8 +1,23 @@
 import A12Kernel.Semantics.NumericFillability
+import A12Kernel.Proofs.NumericArithmetic
 
 /-! # A12Kernel.Proofs.NumericFillability — arithmetic direction laws -/
 
 namespace A12Kernel
+
+theorem numericSign_ofRat_negative (value : Rat) (negative : value < 0) :
+    NumericSign.ofRat value = .negative := by
+  simp [NumericSign.ofRat, negative]
+
+theorem numericSign_ofRat_zero :
+    NumericSign.ofRat 0 = .zero := by
+  rfl
+
+theorem numericSign_ofRat_positive (value : Rat) (positive : 0 < value) :
+    NumericSign.ofRat value = .positive := by
+  have notNegative : ¬value < 0 := Rat.not_lt.mpr (Rat.le_of_lt positive)
+  have nonzero : value ≠ 0 := Rat.ne_of_gt positive
+  simp [NumericSign.ofRat, notNegative, nonzero]
 
 theorem numericArithmetic_fixed_fillability (op : NumericArithmeticOp) (left right : Rat) :
     op.fillability left .fixed right .fixed = .fixed := by
@@ -63,5 +78,90 @@ theorem numericFillability_multiply_fixed_zero
     fillability.multiply sign .fixed .zero = .fixed := by
   rcases fillability with ⟨canGrow, canShrink⟩
   cases canGrow <;> cases canShrink <;> cases sign <;> rfl
+
+theorem numericArithmeticOutcome_eval_notEvaluated_left
+    (op : NumericArithmeticOp) (right : NumericArithmeticOutcome) :
+    NumericArithmeticOutcome.eval op .notEvaluated right = .notEvaluated := by
+  rfl
+
+theorem numericArithmeticOutcome_eval_notEvaluated_right
+    (op : NumericArithmeticOp) (left : NumericArithmeticOutcome) :
+    NumericArithmeticOutcome.eval op left .notEvaluated = .notEvaluated := by
+  cases left <;> rfl
+
+theorem numericArithmeticOutcome_divide_notEvaluated_left
+    (right : NumericArithmeticOutcome) :
+    NumericArithmeticOutcome.divide .notEvaluated right = .notEvaluated := by
+  rfl
+
+theorem numericArithmeticOutcome_divide_notEvaluated_right
+    (left : NumericArithmeticOutcome) :
+    NumericArithmeticOutcome.divide left .notEvaluated = .notEvaluated := by
+  cases left <;> rfl
+
+theorem numericArithmeticOutcome_divide_values_notEvaluated_iff
+    (dividend divisor : Rat) (dividendFill divisorFill : NumericFillability) :
+    NumericArithmeticOutcome.divide
+      (.value dividend dividendFill) (.value divisor divisorFill) = .notEvaluated ↔
+        divisor = 0 := by
+  constructor
+  · intro outcome
+    by_cases zero : divisor = 0
+    · exact zero
+    · simp [NumericArithmeticOutcome.divide, divideNumeric, zero] at outcome
+  · intro zero
+    subst divisor
+    rfl
+
+theorem numericArithmeticOutcome_divide_fixed
+    (dividend divisor : Rat) (nonzero : divisor ≠ 0) :
+    NumericArithmeticOutcome.divide
+      (.value dividend .fixed) (.value divisor .fixed) =
+        .value (roundMathContext50 (dividend / divisor)) .fixed := by
+  simp only [NumericArithmeticOutcome.divide, divideNumeric, if_neg nonzero]
+  generalize NumericSign.ofRat dividend = dividendSign
+  generalize NumericSign.ofRat divisor = divisorSign
+  cases dividendSign <;> cases divisorSign <;> rfl
+
+theorem numericArithmeticOutcome_divide_fixed_positive
+    (dividend divisor : Rat) (fillability : NumericFillability)
+    (positive : 0 < divisor) :
+    NumericArithmeticOutcome.divide
+      (.value dividend fillability) (.value divisor .fixed) =
+        .value (roundMathContext50 (dividend / divisor)) fillability := by
+  have nonzero : divisor ≠ 0 := Rat.ne_of_gt positive
+  have divisorSign := numericSign_ofRat_positive divisor positive
+  simp [NumericArithmeticOutcome.divide, divideNumeric, nonzero, divisorSign]
+  generalize NumericSign.ofRat dividend = dividendSign
+  cases dividendSign
+  · exact numericFillability_multiply_fixed_positive fillability .negative
+  · exact numericFillability_multiply_fixed_positive fillability .zero
+  · exact numericFillability_multiply_fixed_positive fillability .positive
+
+theorem numericArithmeticOutcome_divide_fixed_negative
+    (dividend divisor : Rat) (fillability : NumericFillability)
+    (negative : divisor < 0) :
+    NumericArithmeticOutcome.divide
+      (.value dividend fillability) (.value divisor .fixed) =
+        .value (roundMathContext50 (dividend / divisor)) fillability.swapDirections := by
+  have nonzero : divisor ≠ 0 := Ne.symm (Rat.ne_of_gt negative)
+  have divisorSign := numericSign_ofRat_negative divisor negative
+  simp [NumericArithmeticOutcome.divide, divideNumeric, nonzero, divisorSign]
+  generalize NumericSign.ofRat dividend = dividendSign
+  cases dividendSign
+  · exact numericFillability_multiply_fixed_negative fillability .negative
+  · exact numericFillability_multiply_fixed_negative fillability .zero
+  · exact numericFillability_multiply_fixed_negative fillability .positive
+
+theorem numericArithmeticOutcome_divide_fixed_zero_dividend
+    (divisor : Rat) (divisorFill : NumericFillability) (nonzero : divisor ≠ 0) :
+    NumericArithmeticOutcome.divide
+      (.value 0 .fixed) (.value divisor divisorFill) = .value 0 .fixed := by
+  simp only [NumericArithmeticOutcome.divide]
+  rw [divideNumeric_zero_dividend divisor nonzero]
+  simp only
+  generalize NumericSign.ofRat divisor = divisorSign
+  rcases divisorFill with ⟨canGrow, canShrink⟩
+  cases canGrow <;> cases canShrink <;> cases divisorSign <;> rfl
 
 end A12Kernel

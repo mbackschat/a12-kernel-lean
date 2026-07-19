@@ -57,13 +57,15 @@ A CLEARED cell is not one thing; *why* it cleared decides what a downstream comp
 
 ### 3.1 A precondition-clear cascades as EMPTY
 
-A field its **own** computation cleared silently — a false `commonPrecondition`, no matching alternative, or an unevaluated operation (division by zero is one: it computes nothing and clears a stale value) — reads as **plainly empty** in a dependent: `FieldFilled(dep)` is false, a number operand reads empty-as-`0`.
+A field whose own computation was cleanly unselected — because its `commonPrecondition` was false or no alternative matched — reads as **plainly empty** in a dependent: `FieldFilled(dep)` is false, a number operand reads empty-as-`0`.
 
 The mechanism: a calculation run **strips every calculated field's *input* value from the working data**, so an un-computed calculated field reads **empty regardless of what the document stored**.
 
+Do not put every domain-undefined numeric operation in this clean-empty class. Division by zero belongs to the poison class in §3.2: on the legal `RoundAccounting(div, 2)` route, the invalid numeric result survives rounding, marks the target invalid, emits `berechnungsWertFehler`, and makes a dependent read poison. A pinned a12-dmkits public-API computation probe currently exposes only fresh no-value-output and stale CLEARED; those delta observations do not imply a clean-empty target. Portable dual-kernel-route confirmation of the formal-error and dependent-read channels remains pending.
+
 ### 3.2 An invalidity-clear POISONS
 
-Reading a **formally-invalid cell** (an invalid operand's target, an ERRORED computed value, [§3](02-logic-and-formal-errors.md)'s third state generally) **throws** inside the computing instance: it **aborts**, skips its remaining alternatives, produces no value, and **is itself marked invalid** — so its dependents' reads poison in turn.
+Reading a **formally-invalid cell** (an invalid operand's target, a domain-invalid computed Number such as division by zero, an ERRORED computed value, [§3](02-logic-and-formal-errors.md)'s third state generally) **throws** inside the computing instance: it **aborts**, skips its remaining alternatives, produces no value, and **is itself marked invalid** — so its dependents' reads poison in turn.
 
 The poison is **read-driven, therefore order-dependent**:
 

@@ -177,6 +177,9 @@ run_cmd do
 #print axioms A12Kernel.powerNumeric_zero_exponent
 #print axioms A12Kernel.powerNumeric_zero_negative_exponent
 #print axioms A12Kernel.powerNumeric_negative_exponent
+#print axioms A12Kernel.numericSign_ofRat_negative
+#print axioms A12Kernel.numericSign_ofRat_zero
+#print axioms A12Kernel.numericSign_ofRat_positive
 #print axioms A12Kernel.numericArithmetic_fixed_fillability
 #print axioms A12Kernel.numericFillability_add_comm
 #print axioms A12Kernel.numericFillability_subtract_eq_add_swapped
@@ -186,6 +189,15 @@ run_cmd do
 #print axioms A12Kernel.numericFillability_multiply_fixed_positive
 #print axioms A12Kernel.numericFillability_multiply_fixed_negative
 #print axioms A12Kernel.numericFillability_multiply_fixed_zero
+#print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_left
+#print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_right
+#print axioms A12Kernel.numericArithmeticOutcome_divide_notEvaluated_left
+#print axioms A12Kernel.numericArithmeticOutcome_divide_notEvaluated_right
+#print axioms A12Kernel.numericArithmeticOutcome_divide_values_notEvaluated_iff
+#print axioms A12Kernel.numericArithmeticOutcome_divide_fixed
+#print axioms A12Kernel.numericArithmeticOutcome_divide_fixed_positive
+#print axioms A12Kernel.numericArithmeticOutcome_divide_fixed_negative
+#print axioms A12Kernel.numericArithmeticOutcome_divide_fixed_zero_dividend
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission

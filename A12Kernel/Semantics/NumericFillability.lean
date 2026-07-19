@@ -90,4 +90,51 @@ def NumericArithmeticOp.fillability (op : NumericArithmeticOp)
       leftFill.multiply (NumericSign.ofRat leftValue)
         rightFill (NumericSign.ofRat rightValue)
 
+/--
+A known numeric arithmetic result carries its value and directional fillability together. A
+domain-undefined child absorbs its enclosing arithmetic node; formal-invalid operands remain a separate
+checked-expression concern.
+-/
+inductive NumericArithmeticOutcome where
+  | value (amount : Rat) (fillability : NumericFillability)
+  | notEvaluated
+  deriving Repr, DecidableEq
+
+namespace NumericArithmeticOutcome
+
+/-- Evaluate one total arithmetic node, absorbing a domain-undefined child before doing arithmetic. -/
+def eval (op : NumericArithmeticOp) :
+    NumericArithmeticOutcome → NumericArithmeticOutcome → NumericArithmeticOutcome
+  | .value leftValue leftFill, .value rightValue rightFill =>
+      .value (op.eval leftValue rightValue)
+        (op.fillability leftValue leftFill rightValue rightFill)
+  | _, _ => .notEvaluated
+
+private def reciprocalFillability (fillability : NumericFillability) :
+    NumericSign → NumericFillability
+  | .negative =>
+      { canGrow := fillability.canShrink || fillability.canGrow
+        canShrink := fillability.canGrow }
+  | .zero => fillability.swapDirections
+  | .positive =>
+      { canGrow := fillability.canShrink
+        canShrink := fillability.canGrow || fillability.canShrink }
+
+/--
+Divide two arithmetic outcomes. The value route reuses direct precision-50 division; only the
+fillability route treats the divisor as a reciprocal, and a current zero divisor is rejected first.
+-/
+def divide : NumericArithmeticOutcome → NumericArithmeticOutcome → NumericArithmeticOutcome
+  | .value dividend dividendFill, .value divisor divisorFill =>
+      match divideNumeric dividend divisor with
+      | .notEvaluated => .notEvaluated
+      | .value quotient =>
+          let divisorSign := NumericSign.ofRat divisor
+          .value quotient
+            (dividendFill.multiply (NumericSign.ofRat dividend)
+              (reciprocalFillability divisorFill divisorSign) divisorSign)
+  | _, _ => .notEvaluated
+
+end NumericArithmeticOutcome
+
 end A12Kernel
