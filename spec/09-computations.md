@@ -71,6 +71,7 @@ The poison is **read-driven, therefore order-dependent**:
 
 - compute's `And`/`Or` collapse each clean condition result to whether it is known true and evaluate left-to-right. `And` skips its right side when the clean left is false or unknown; `Or` skips its right side when the clean left is true. A poison already encountered on the left aborts either connective. The quantifier scans likewise **stop at their deciding cell**. An invalid cell *beyond* a connective or scan stop is **never read and never poisons**.
 - `FirstFilledValue` is the one **stop-at-first** value combiner: it consumes its selection only until the first filled cell, so an invalid *tail* cell is invisible, while an invalid cell *before* the first given one clears the computation.
+- A numeric arithmetic expression evaluates its **one-pass lowered tree**, not necessarily the authored tree, from left to right. At a binary node the left subtree is evaluated first and the right subtree is evaluated before the arithmetic method is applied. A domain-invalid numeric result such as division by zero is a value-level invalid result rather than a thrown read, so it does not hide a later poisoned read; a poison already thrown by the left subtree aborts before the right subtree. A lowering rewrite can therefore change which of two poisoned field reads is encountered first.
 
 Both cascade read-rules reach **inside** a downstream computation's `Having` filter and its preconditions' quantifiers — a silently-cleared upstream target reads EMPTY there; a poisoned one poisons the reading computation.
 
@@ -132,7 +133,7 @@ The generated rule **anchors at the computed field**: its error entity is the ta
 
 - [ ] `compute` returns an **outcome map** (VALUE/CLEARED/ERRORED), not a mutated document; `apply` is a separate step.
 - [ ] Operand-state table (empty/required-empty/invalid × NUMBER/DATE/STRING-concat) reproduced; bare string copy CLEARS on empty (no stored `""`).
-- [ ] **Empty cascade** via pre-stripping computed inputs; **poison** via throw-on-read with short-circuiting `And`/`Or` and stop-at-deciding-cell scans (⇒ order-dependent); `FirstFilledValue` stop-at-first.
+- [ ] **Empty cascade** via pre-stripping computed inputs; **poison** via throw-on-read with short-circuiting `And`/`Or`, stop-at-deciding-cell scans, `FirstFilledValue` stop-at-first, and left-to-right evaluation of the one-pass lowered numeric tree.
 - [ ] Cascades reach into downstream `Having`/preconditions.
 - [ ] Reporting is a **delta** (VALUE on typed change, CLEARED on filled-input, ERRORED always).
 - [ ] **Stored form**: target's declared format; NUMBER padded to `minFractionalDigits`, no length cap ⇒ over-long ERRORED; reduced formal check (no charset/blank baseline); downstream reads the stored string.

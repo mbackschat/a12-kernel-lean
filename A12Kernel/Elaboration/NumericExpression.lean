@@ -144,15 +144,27 @@ def lowerMultiply (left right : LoweredNumericExpr Atom) : LoweredNumericExpr At
       .binary .divide (.binary .multiply left numerator) denominator
   | none, none => .binary .multiply left right
 
+end LoweredNumericExpr
+
+namespace NumericScaleBinaryOp
+
+/-- Evaluate one binary numeric node over two known values. Consumer-specific failure and metadata propagation stay outside this shared primitive dispatch. -/
+def evalValues (op : NumericScaleBinaryOp) (left right : Rat) :
+    NumericArithmeticResult :=
+  match op with
+  | .add => .value (NumericArithmeticOp.add.eval left right)
+  | .subtract => .value (NumericArithmeticOp.subtract.eval left right)
+  | .multiply => .value (NumericArithmeticOp.multiply.eval left right)
+  | .divide => divideNumeric left right
+
+end NumericScaleBinaryOp
+
+namespace LoweredNumericExpr
+
 private def evalBinary (op : NumericScaleBinaryOp)
     (left right : NumericArithmeticResult) : NumericArithmeticResult :=
   match left, right with
-  | .value leftValue, .value rightValue =>
-      match op with
-      | .add => .value (NumericArithmeticOp.add.eval leftValue rightValue)
-      | .subtract => .value (NumericArithmeticOp.subtract.eval leftValue rightValue)
-      | .multiply => .value (NumericArithmeticOp.multiply.eval leftValue rightValue)
-      | .divide => divideNumeric leftValue rightValue
+  | .value leftValue, .value rightValue => op.evalValues leftValue rightValue
   | _, _ => .notEvaluated
 
 /-- Evaluate only the admitted numeric-value fragment. A field reader or arithmetic child may return `notEvaluated`, which absorbs the enclosing expression. -/

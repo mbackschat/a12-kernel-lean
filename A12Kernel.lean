@@ -12,6 +12,7 @@ import A12Kernel.Core
 import A12Kernel.Cell
 import A12Kernel.Document
 import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Proofs
