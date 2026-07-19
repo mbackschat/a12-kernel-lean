@@ -30,10 +30,39 @@ The implementer may also read the new repository's own `AGENTS.md`, `README.md`,
 
 If the allowed material does not decide a required behavior, record the exact question and stop rather than researching or guessing.
 
-## Paste-ready prompt for the external session
+The phase-specific allowlist overrides the broader handover list, links, Rust playbook, Lean commands, and candidate-runner instructions inside the correlation kit. The cold implementer reads the kit as semantic material but does not follow a link or command that leaves this allowlist.
+
+## Operator preflight
+
+Immediately before starting the external session, the owner runs the following from `a12-kernel-lean`. Exit status zero confirms that every allowed input still has exactly its baseline bytes; a nonzero result blocks the probe until this work order is deliberately repinned.
+
+```sh
+baseline=2bb2d232cd62367d6aa92f64b6b0c1dfc591a830
+git diff --quiet "$baseline" -- \
+  docs/IMPLEMENTER-KIT-CORRELATION.md \
+  reference/single-group-correlation-v2.conformance.json \
+  examples/reference-cli/correlation-direction.{request,response}.json \
+  examples/reference-cli/correlation-self-included.{request,response}.json \
+  examples/reference-cli/correlation-self-excluded-distinct.{request,response}.json \
+  examples/reference-cli/correlation-self-excluded-duplicate.{request,response}.json \
+  examples/reference-cli/correlation-consumer-all-valid.{request,response}.json \
+  examples/reference-cli/correlation-consumer-first-malformed.{request,response}.json \
+  examples/reference-cli/correlation-consumer-second-malformed.{request,response}.json \
+  examples/reference-cli/correlation-filter-empty-equals-zero.{request,response}.json \
+  examples/reference-cli/correlation-filter-malformed-local.{request,response}.json \
+  examples/reference-cli/correlation-number-not-equal.{request,response}.json \
+  examples/reference-cli/correlation-repetition-equal.{request,response}.json \
+  examples/reference-cli/correlation-repetition-less-than.{request,response}.json
+```
+
+The owner also confirms that the Lean worktree is clean, records the successful preflight in the external repository's initial README or agent instructions, and delivers only Prompt 1. The implementer does not use Git history to repeat this operator check.
+
+## Prompt 1 — cold readback only
+
+Deliver this prompt first. Do not reveal either later prompt before the readback commit is frozen.
 
 ```text
-You are implementing a cold consumer probe in a brand-new Rust repository. The purpose is to test knowledge transport from a12-kernel-lean, not to rediscover A12 behavior.
+You are performing the cold-readback phase of a consumer probe in a brand-new Rust repository. The purpose is to test knowledge transport from a12-kernel-lean, not to rediscover A12 behavior. The owner has already verified that the allowed source bytes match baseline 2bb2d232cd62367d6aa92f64b6b0c1dfc591a830.
 
 Use the existing Homebrew Rust toolchain. Do not install or add dependencies. Use Rust's standard library only. Work only in this new repository; treat every other repository as read-only.
 
@@ -43,11 +72,11 @@ The only semantic material you may consult is in the sibling a12-kernel-lean che
 - reference/single-group-correlation-v2.conformance.json
 - the request and expected-response files referenced by its first twelve cases, correlation-direction through correlation-repetition-less-than
 
-The semantic source baseline is 2bb2d232cd62367d6aa92f64b6b0c1dfc591a830. Do not inspect the A12 kernel, a12-dmkits, Lean source or executable, unlisted a12-kernel-lean files, the historical Rust experiment, web sources, Git history, or prior conversation. If the allowlist does not decide something required, record the exact gap and stop. Do not infer nearby behavior.
+This phase-specific allowlist overrides the kit's broader handover list, links, playbook, commands, and runner instructions. Do not follow its links or run its Lean/reference commands. Do not inspect the A12 kernel, a12-dmkits, Lean source or executable, unlisted a12-kernel-lean files, the historical Rust experiment, web sources, Git history, or prior conversation. If the allowlist does not decide something required, record the exact gap and stop. Do not infer nearby behavior.
 
 Phase 1 is the already-resolved runtime core only. Exclude JSON decoding, model/path validation and lowering, public diagnostics, CLI/process behavior, the suite's four static-authoring cases, general exact decimals, and every A12 feature outside the named correlation runtime. The admitted numeric inputs are the integer-valued cells exercised by the twelve retained runtime cases. State this restriction in code and reports.
 
-First create reports/COLD-READBACK.md before implementation. It must state:
+Create reports/COLD-READBACK.md without writing implementation source. It must state:
 
 1. the capability and assurance boundary;
 2. the recovered types and decision procedure;
@@ -59,15 +88,33 @@ First create reports/COLD-READBACK.md before implementation. It must state:
 8. every consulted file;
 9. whether implementation is possible without additional A12 research.
 
-Commit that readback separately.
+Commit the readback separately, leave the worktree clean, report the commit identity and any blocker, and stop. Do not begin implementation.
+```
 
-Then implement an idiomatic pure Rust library with closed enums or equivalent sum types for raw cell state, reference origin, numeric/repetition comparisons, strong-Kleene truth, `Having`, the captured inner/outer frame, and the resolved runtime rule/context. Keep selection separate from consumer observation. Preserve candidate order, explicit self-inclusion, local malformed filter behavior, filter-before-consumer observation, empty Number substitution as comparison zero, and definitely-true-only selection/firing.
+The owner ferries the readback here for assessment. Prompt 2 is delivered only if the report demonstrates the intended scope, contains no prohibited research, and identifies no blocking ambiguity.
 
-Encode all twelve retained runtime fixtures as native Rust tests against one generic evaluator; do not write one function per fixture or embed expected results in production code. Add focused property-style tests, over finite generated inputs where useful, for outer-reference stability, inner-reference locality, candidate-order preservation, definitely-true-only selection, and no implicit self-exclusion.
+## Prompt 2 — natural implementation
+
+```text
+Proceed from the accepted cold-readback commit. The source allowlist, isolation rules, runtime-only scope, integer fixture profile, and no-dependency rule from Prompt 1 remain unchanged. Do not consult any new source.
+
+Implement an idiomatic pure Rust library for the resolved runtime described by your committed readback. Use closed enums and exhaustive matches for semantic alternatives. Implement one generic evaluator; production code must not branch on fixture IDs, expected firing rows, or case-specific constants.
+
+Manually project the first twelve JSON fixtures into native Rust test builders. Copy only their already-resolved candidate list, cell states, lowered runtime condition, guard/consumer field identities, and expected firing rows. Do not implement or silently exercise JSON decoding, response envelopes, model/path validation, or lowering. Make the manual projection visible in test setup and keep it outside production evaluation.
+
+Encode all twelve projections as tests against the same evaluator. Add finite property-style tests for the applicable laws listed by the kit and regressions for its runtime checked non-laws, within the declared integer profile.
 
 Run cargo fmt --check and cargo test until green, then commit the naturally green implementation and tests before any mutation exercise. Write reports/NATURAL-IMPLEMENTATION-REPORT.md with that commit identity, the exact commands, tool versions, result, consulted-file inventory, supported profile, explicit exclusions, and unresolved questions; commit the report separately.
 
-After the natural commit is frozen, predict and apply these defects one at a time:
+Leave the worktree clean and stop. Return the cold-readback, natural-implementation, and natural-report commit identities. Do not perform mutations, add JSON or a CLI, consult Lean, or run the candidate runner.
+```
+
+The owner ferries the exact natural repository state here. Project-side review must inspect the natural commit and tests—not only the report—and confirm generic evaluation, absence of fixture-ID branching, correct manual projection boundaries, isolation compliance, and a clean worktree before Prompt 3 is delivered.
+
+## Prompt 3 — mutation sensitivity
+
+```text
+Proceed from the reviewed and frozen natural implementation. Consult no new semantic source and change no scope. Before editing production code, record your predicted failing cases for each of the following defects:
 
 1. resolve `Outer` Number references from the current inner row;
 2. let an unselected malformed consumer poison the whole consumer scan;
@@ -80,8 +127,8 @@ Stop after mutation sensitivity. Do not add JSON, Serde, a CLI, a protocol adapt
 
 ## Acceptance and stop conditions
 
-The natural phase succeeds only if one generic evaluator reproduces the twelve runtime cases, the focused laws hold over its declared finite domains, every mutation is detected in the predicted semantic neighborhood, the final worktree is clean, and the report confirms that no external A12 research was needed.
+The probe is accepted only after project-side inspection confirms that one generic evaluator reproduces the twelve native projections without fixture-ID branching, the focused laws hold over its declared finite domains, every mutation is detected in the predicted semantic neighborhood, manual test projection did not become hidden decoding or lowering, the final worktree is clean, and the exact source plus reports confirm that no external A12 research was needed. Reports alone are not acceptance evidence.
 
 The phase fails usefully if the implementer needs an unlisted semantic source, cannot distinguish a required state, or finds that the kit and fixtures disagree. That result comes back here as a handover defect; it does not authorize kernel archaeology downstream.
 
-After the natural result is frozen and ferried back, the owner decides whether to start phase 2. Phase 2 would add the existing normalized JSON/process contract, checked authoring boundary, all sixteen suite cases, and the already-present `checkCandidateConformance` runner. It must reuse those current mechanisms and may require an explicitly approved Rust JSON dependency; it must not create another protocol or qualification harness.
+After the complete runtime probe is accepted, the owner decides whether to start phase 2. Phase 2 would add the existing normalized JSON/process contract, checked authoring boundary, all sixteen suite cases, and the already-present `checkCandidateConformance` runner. It must reuse those current mechanisms and may require an explicitly approved Rust JSON dependency; it must not create another protocol or qualification harness.
