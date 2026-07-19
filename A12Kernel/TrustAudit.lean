@@ -154,6 +154,13 @@ run_cmd do
 #print axioms A12Kernel.emptyNumberGreaterEqualFiring_polarity
 #print axioms A12Kernel.growOnlyNotEqualWhenLeftNotBelow_is_value
 
+#print axioms A12Kernel.rescaleFloor_le
+#print axioms A12Kernel.le_rescaleCeiling
+#print axioms A12Kernel.roundFloor_le_preRound
+#print axioms A12Kernel.preRound_le_roundCeiling
+#print axioms A12Kernel.numericOperand_round_unknown
+#print axioms A12Kernel.numericOperand_round_value_preserves_fillability
+
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value
