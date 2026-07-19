@@ -9,7 +9,8 @@ theorem fixedNumericFiring_is_value (op : NumericComparisonOp) (actual expected 
     (holds : op.holds actual expected = true) :
     op.evalFixedRight (.value actual .fixed) expected = .fired .value := by
   cases op <;> simp_all [NumericComparisonOp.evalFixedRight,
-    NumericComparisonOp.leftFillCanBreak, NumericFillability.fixed]
+    NumericComparisonOp.leftFillCanBreak, numericDifferenceFillCanClose,
+    NumericFillability.fixed]
 
 /-- A grow-only result cannot be repaired by filling when a greater-or-equal condition already fires. -/
 theorem growOnlyGreaterEqualFiring_is_value (actual expected : Rat)
@@ -52,6 +53,7 @@ theorem growOnlyNotEqualWhenLeftNotBelow_is_value (actual expected : Rat)
     NumericComparisonOp.notEqual.evalFixedRight (.value actual .growOnly) expected =
       .fired .value := by
   simp [NumericComparisonOp.evalFixedRight, holds,
-    NumericComparisonOp.leftFillCanBreak, NumericFillability.growOnly, notBelow]
+    NumericComparisonOp.leftFillCanBreak, numericDifferenceFillCanClose,
+    NumericFillability.growOnly, NumericFillability.fixed, notBelow]
 
 end A12Kernel
