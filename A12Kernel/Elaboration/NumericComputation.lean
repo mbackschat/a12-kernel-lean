@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Semantics.ComputationCondition
+import A12Kernel.Semantics.NumericComputationResult
 
 /-! # Numeric computation-expression outcomes
 
@@ -8,13 +9,6 @@ This capsule evaluates one already-resolved numeric expression before target che
 -/
 
 namespace A12Kernel
-
-/-- The numeric expression result before any computed-target policy is applied. Number has no clean no-value arm: an empty Number operand contributes the real value zero. -/
-inductive NumericComputationResult where
-  | value (amount : Rat)
-  | domainFailure
-  | poison (cause : FormalCause)
-  deriving Repr, DecidableEq
 
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where

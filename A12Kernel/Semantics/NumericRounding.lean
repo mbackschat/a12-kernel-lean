@@ -42,13 +42,16 @@ inductive DecimalRoundingMode where
 def decimalFactor (scale : Nat) : Nat :=
   10 ^ scale
 
-/-- Decimal `HALF_UP`, i.e. exact ties round away from zero. -/
-def rescaleHalfUp (value : Rat) (scale : Nat) : Rat :=
+/-- The exact signed coefficient produced by decimal `HALF_UP` at one scale. -/
+def rescaleHalfUpUnscaled (value : Rat) (scale : Nat) : Int :=
   let factor := decimalFactor scale
   let shifted := value * (factor : Rat)
   let half : Rat := 1 / 2
-  let rounded := if shifted < 0 then Rat.ceil (shifted - half) else Rat.floor (shifted + half)
-  (rounded : Rat) / (factor : Rat)
+  if shifted < 0 then Rat.ceil (shifted - half) else Rat.floor (shifted + half)
+
+/-- Decimal `HALF_UP`, i.e. exact ties round away from zero. -/
+def rescaleHalfUp (value : Rat) (scale : Nat) : Rat :=
+  (rescaleHalfUpUnscaled value scale : Rat) / (decimalFactor scale : Rat)
 
 /-- Rescale toward negative infinity. -/
 def rescaleFloor (value : Rat) (scale : Nat) : Rat :=

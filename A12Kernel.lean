@@ -11,6 +11,8 @@ import A12Kernel.Basic
 import A12Kernel.Core
 import A12Kernel.Cell
 import A12Kernel.Document
+import A12Kernel.Semantics.NumericStoredNumber
+import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.NumericValidation
