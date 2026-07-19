@@ -12,6 +12,8 @@ This product realizes the durable mission in [`PROJECT-DESIGN.md`](PROJECT-DESIG
 
 The semantics factory should be able to produce purpose-specific shipments across ten general categories. These are task contracts, not implementation-language choices, and each concrete capability still needs a closed source/target fragment and assurance boundary. Categories may overlap and compose; they are a vocabulary for consumer contracts, not ten release commitments or a development sequence.
 
+During semantic development, these categories are explored through bounded **consumer probes** rather than presumed products. A probe tests one named task against current artifacts, returns gaps or newly discovered potential to the semantics project, and creates no support or release claim. Only a later explicit decision may promote a useful probe into a research-closed shipment, cold-consumer qualification, and optional product. [`USE-CASES.md`](USE-CASES.md#consumer-probes-first) owns the reader-facing probe catalog and lifecycle.
+
 | Category | Abstract contract | Representative products |
 |---|---|---|
 | **Execute** | A12 artifact + runtime input → semantic outcome | Reference evaluator, independent interpreter, validation/computation service |
@@ -25,7 +27,7 @@ The semantics factory should be able to produce purpose-specific shipments acros
 | **Explain** | Execution/proof/change → human-understandable account | Traces, debugging, checked documentation, change reports |
 | **Govern** | Versioned artifacts and evidence → compatibility or release decision | Support manifests, migration reports, audits, release gates |
 
-The first compatibility-kit release is intentionally concentrated on **Execute** and **Qualify**, with a limited **Explain** and **Govern** surface through checked examples, manifests, evidence, and trust reports. Later stages add other categories only when their semantic prerequisites and concrete consumer contracts exist. [`USE-CASES.md`](USE-CASES.md) is the user-facing explanation of how Lean contributes to each category and what it does not establish automatically.
+The first compatibility-kit release is intentionally concentrated on **Execute** and **Qualify**, with a limited **Explain** and **Govern** surface through checked examples, manifests, evidence, and trust reports. Until that release is separately adopted, even those paths remain development references and consumer probes rather than product commitments. Later stages add other categories only when their semantic prerequisites and concrete consumer contracts exist. [`USE-CASES.md`](USE-CASES.md) is the user-facing explanation of how Lean contributes to each category and what it does not establish automatically.
 
 ## Proposed first 0.x release
 
