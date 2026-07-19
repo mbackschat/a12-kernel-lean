@@ -35,11 +35,13 @@ Multiplication grows scale (two 3-decimal factors ⇒ a 6-decimal product), whic
 
 ## 2. Rounding
 
-Three rounding families, each with a value-construct variant (`…Value(Field)` taking a Number field; `RoundAccounting([F])` and `RoundAccountingValue(F)` are equivalent). The optional `DecimalPlaces` argument is an integer **1..14**.
+Three rounding families, each with a value-construct variant taking a Number field. Both forms accept an optional `DecimalPlaces` argument: `RoundAccounting([F], n)` and `RoundAccountingValue(F, n)` have the same arithmetic, `n` is an integer **0..14 inclusive**, and omission is exactly `0` decimal places.
 
-- **`RoundDown` / `RoundDownValue`** — always toward **−∞** (value never increases).
-- **`RoundUp` / `RoundUpValue`** — always toward **+∞** (value never decreases).
+- **`RoundDown` / `RoundDownValue`** — target-scale `FLOOR`, toward **−∞**.
+- **`RoundUp` / `RoundUpValue`** — target-scale `CEILING`, toward **+∞**.
 - **`RoundAccounting` / `RoundAccountingValue`** — to the **nearest**; on an equidistant tie, **away from zero**. ⚠ This is **not** banker's rounding: `RoundAccounting(2.5) = 3`, `RoundAccounting(-2.5) = -3` (banker's would give `2` and `-2`).
+
+The directional bounds apply to the scale-19 `HALF_UP` pre-rounded value consumed by the target-scale step, not necessarily to the raw higher-precision input. A raw value just below `1` can pre-round to `1` and then remain `1` under `RoundDown(..., 0)`.
 
 Worked values (no `DecimalPlaces` argument):
 
@@ -96,7 +98,8 @@ These fixed constants decide the last-digit behaviour; a reimplementation must u
 
 - [ ] Scale is a **static** attribute; `scaleOf` derives expression scale (`+`→max, `*`→sum, `/`,`^`→unknown); `==`/`!=` gate is **parse-time**, literal- and ordering-exempt.
 - [ ] `MVK_INVALID_COMPARE_DEC_PLACES` is the only suppressible diagnostic.
-- [ ] Three rounding modes with `RoundAccounting` = **half away from zero** (not banker's); down/up follow the number line.
+- [ ] Three rounding modes with `RoundAccounting` = **half away from zero** (not banker's); down/up follow the number line after the scale-19 pre-round.
+- [ ] Both expression and `…Value` forms accept `DecimalPlaces` **0..14**; omission means exactly `0`.
 - [ ] Division-by-zero and out-of-range power are **total**: comparison → `false`/not-fired, never an error.
 - [ ] Scale is always bounded (missing `maxFractionalDigits` ⇒ `0`); ≤15 input digits.
 - [ ] Tolerance is **strictly outside** (`> N`); the fixed 1/2/5/10 thresholds only.

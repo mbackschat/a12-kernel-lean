@@ -1,4 +1,5 @@
 import A12Kernel.Cell
+import A12Kernel.Semantics.NumericRounding
 
 /-! # A12Kernel.Semantics.NumericComparison — numeric truth and directional polarity
 
@@ -37,16 +38,15 @@ inductive NumericOperand where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- The fixed decimal scale applied to both numeric operands before every comparison. -/
-def comparisonScale : Nat := 19
+/-- Rounding preserves the operand's invalid cause or directional fillability; it changes only a known amount. -/
+def NumericOperand.round (operand : NumericOperand) (mode : DecimalRoundingMode)
+    (places : RoundingPlaces) : NumericOperand :=
+  match operand with
+  | .value amount fillability => .value (roundDecimal mode amount places) fillability
+  | .unknown cause => .unknown cause
 
-/-- Decimal `HALF_UP`, i.e. ties round away from zero. -/
-def rescaleHalfUp (value : Rat) (scale : Nat) : Rat :=
-  let factor : Nat := 10 ^ scale
-  let shifted := value * (factor : Rat)
-  let half : Rat := 1 / 2
-  let rounded := if shifted < 0 then Rat.ceil (shifted - half) else Rat.floor (shifted + half)
-  (rounded : Rat) / (factor : Rat)
+/-- The fixed decimal scale applied to both numeric operands before every comparison. -/
+def comparisonScale : Nat := decimalPreRoundScale
 
 def normalizedComparisonValue (value : Rat) : Rat :=
   rescaleHalfUp value comparisonScale

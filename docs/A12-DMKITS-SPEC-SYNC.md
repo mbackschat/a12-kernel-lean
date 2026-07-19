@@ -136,3 +136,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits states the two distinct mechanisms, preserves the focused selection/poison/overlap/implicit-validation controls, and returns the exact audited revision plus a per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-19-07 — rounding accepts zero places and preserves the two-stage mode
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`04-numbers-and-decimals.md` §§2 and 5](../spec/04-numbers-and-decimals.md#2-rounding)
+- **Delta:** Correct the authored `DecimalPlaces` range from `1..14` to **`0..14` inclusive**, state that omission is exactly zero places for both expression and `…Value(field[, n])` forms, and qualify `FLOOR`/`CEILING` direction against the scale-19 `HALF_UP` pre-rounded operand rather than the raw higher-precision input. The field-value forms honor an explicit places argument and share the same arithmetic as expression rounding.
+- **Basis:** kernel `CheckOpUtils` and the parser-error contract establish `0..14`, both rounding parse-tree creators lower omission to zero, both checked forms assign the requested result scale, and `BigDecimalUtils` applies scale-19 `HALF_UP` before target-scale `FLOOR`, `CEILING`, or `HALF_UP` at kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. a12-dmkits `NumberLawsTest`, `RoundingLawsTest`, `RoundDiffTest`, and `SingleArgRoundDiffTest` lock rejection at `15` and exercise zero places, directions, ties, pre-round, omission, and the parameterized value form against kernel 30.8.1; they do not yet contain a focused accepted-`14` control.
+- **Requested a12-dmkits reconciliation:** Correct `docs/KERNEL-SEMANTICS.md` and catalog/Javadoc claims that still say `1..14`, toward-zero/away-from-zero, integer-only value forms, or banker's rounding. Preserve the already-correct interpreter arithmetic and differentials. Extend the typed DSL/read model only as needed so `RoundDownValue`, `RoundUpValue`, and `RoundAccountingValue` retain and render an optional explicit places argument instead of discarding it during conversion.
+- **Compatibility:** This corrects canonical semantics and exposes a currently lost legal authored form in a12-dmkits's typed representation; it does not change kernel behavior. Preserve the existing one-argument DSL factories, their zero-place meaning, and their rendering. A new places-bearing factory overload is additive, but the handback must explicitly classify source, binary, serialization, and exhaustive-consumer compatibility for whichever public sealed-AST representation carries the argument rather than assuming that a record or variant change is additive.
+- **Acceptance:** a12-dmkits prose, catalog, Javadocs, typed read/model/rendering, and focused tests agree that `0` and `14` are legal, `15` is rejected, omission equals zero, `…Value(field, 2)` round-trips without losing the argument, negative floor/ceiling directions are correct, and accounting ties round away from zero. The handback supplies the exact reviewed revision and per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending

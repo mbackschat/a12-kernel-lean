@@ -14,13 +14,15 @@ The first partial-validation capsule is internally complete for one explicit non
 
 Direct nonrepeatable Number field-to-literal `<` and `>=` are internally complete through the existing flat comparison and checked-lowering path. The same scale-19 fixed-right comparator now covers all four admitted Number operations; executable separators preserve empty unsigned/signed polarity, filled controls, malformed suppression, and the independent empty-row gate. The proof spine states the universal empty-Number `<` and `>=` polarity laws. The public flat JSON operation remains deliberately narrower at equality/inequality, and project-local portable direct-ordering evidence remains pending.
 
+The first pure decimal-rounding capsule is internally complete. Authored places are statically bounded to `0..14`, omission is zero, expression and field-value forms share scale-19 `HALF_UP` pre-rounding followed by mathematical `FLOOR`, `CEILING`, or `HALF_UP`, and the requested places determine static result scale. Universal bounds use the pre-rounded operand; checked counterexamples block both false raw-input bounds. Numeric unknown causes and directional fillability survive rounding unchanged. No expression AST, public protocol, target application, or evidence machinery was added, and project-local portable rounding evidence remains pending.
+
 The project now owns [`../spec/`](../spec/) as its language-neutral semantic bridge. [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) is the compact reconciliation ledger; its current pending entries cover the audited spec corrections and additions that a12-dmkits must review.
 
 ## Immediate order
 
-1. Research-close the first numeric rounding capsule, beginning with the disputed explicit `DecimalPlaces` lower bound and the exact three rounding directions, scale-19 pre-round boundary, invalid/no-evaluation cases, and target-independent executable seam.
-2. Implement only the smallest coherent pure rounding meaning justified by that audit, using the existing exact `Rat` domain, red/green separating cases, and payoff-bearing laws/non-laws. Do not add expression parsing, public protocol, target application, or evidence machinery merely to host it.
-3. Return to broader arithmetic, formal checking, or partial validation only through separately justified clauses. Keep each capsule on an existing semantic path unless a reproduced semantic need proves that a new abstraction is unavoidable.
+1. Research-close the first arithmetic capsule: distinguish exact `+`/`−`, 50-significant-digit `×`/`÷`/`^`, quiet division/power failure, and per-operation rounding order before choosing an executable boundary.
+2. Implement only the smallest coherent arithmetic meaning justified by that audit. Do not add a dormant `MathContext` abstraction, expression parser, target store, protocol surface, or evidence mechanism; make division-by-zero and unsupported powers explicit before Lean's total rational operations can hide them.
+3. Continue the number stage through separately justified arithmetic, tolerance, scale-derivation, and checked-expression capsules, then return to the highest-payoff formal-checking or validation boundary. Keep every addition on an existing semantic path unless a reproduced semantic need proves that a new abstraction is unavoidable.
 
 ## Guardrails and stop conditions
 
