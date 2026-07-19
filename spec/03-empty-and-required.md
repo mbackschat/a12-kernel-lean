@@ -13,13 +13,15 @@ The third cell state (formally-invalid) is [§3](02-logic-and-formal-errors.md)'
 
 ### A.1 The per-kind default
 
-How an unspecified field affects a comparison depends on its **type**:
+How an unspecified field affects a comparison depends on its **type**. The operator catalog's default tier has exactly eight primitive kinds:
 
 | Field type | Unspecified value in a comparison |
 |---|---|
 | **number** | a default of **`0`** is substituted |
 | **confirm** | treated as **`False`** |
-| **string, date, boolean, enumeration, custom** | the comparison is **not evaluated** (no error, no fire) |
+| **boolean, string, enumeration, date, time, date-time** | the comparison is **not evaluated** (no error, no fire) |
+
+Other model types—such as DateFragment, DateRange, and Custom—belong to their own type-family or registered-validator clauses; the eight-kind header does not silently define them. Operator-specific deviations from the header begin in A.2.
 
 ```
 [Amount] < 100          -- number: FIRES on an empty Amount, because 0 < 100
@@ -37,13 +39,13 @@ Two immediate riders:
 - The `0` substitution does **not** apply to minimum/maximum *aggregate* calculations — there, unspecified fields are *ignored* (see A.3–A.4; note the operand-list `Min`/`Max` are a *different* family that *does* substitute).
 - **There are no empty strings.** `[F] == ""` is never satisfied, even when `F` is unfilled — and neither is `!= ""`: a string comparison with an empty operand on *either* side (a literal `""`, or an empty coercion result) is **not evaluated**, for both `==` and `!=`. Use `FieldNotFilled(F)` to test absence.
 
-> **Lean modelling note.** Resolve an operand read to a small sum that carries *both* the kind's substitution and the "was it actually given" bit polarity needs later ([§12](10-validation-and-polarity.md)):
+> **Lean modelling note.** Separate whether an operand is evaluated from the provenance needed by the later polarity calculation ([§12](10-validation-and-polarity.md)):
 > ```lean
-> inductive Operand where
->   | value (v : Value) (given : Bool)   -- given=false ⇒ a substituted default (0 / False)
+> inductive OperandRead (Provenance : Type) where
+>   | value (v : Value) (provenance : Provenance)
 >   | notEvaluated                       -- string/date/bool/enum empty ⇒ the comparison yields notFired
 > ```
-> Then a comparison over any `notEvaluated` operand short-circuits to *not-fired*, a number-empty reads `value (num 0) (given:=false)`, a confirm-empty reads `value (bool false) (given:=false)`. The `given` bit is what makes a fired comparison OMISSION vs VALUE downstream.
+> Then a comparison over any `notEvaluated` operand short-circuits to *not-fired*. A number-empty reads numeric zero with sign-aware directional fillability, while a confirm-empty reads Boolean false with not-given provenance. There is no universal `given` bit: a simple symmetric clause such as Confirm may use one-bit not-given provenance; numeric expressions and numeric aggregates propagate `canGrow`/`canShrink`; counts are grow-only; dates use symmetric `notGiven`; strings and concatenations combine `notGiven`; and filtered or other consumers retain their explicit family rules in [§12.4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
 
 ### A.2 Where an operator overrides its kind's default
 
@@ -134,7 +136,8 @@ Because the engine generates both checks, a model must **not** also author the e
 
 ## Checklist for §2 + §4
 
-- [ ] Operand reads carry the per-kind substitution **and** a `given` bit; `notEvaluated` short-circuits comparisons.
+- [ ] Operand reads separate `notEvaluated` from evaluated substitutions and carry consumer-appropriate provenance: a `given` bit only for symmetric clauses, directional `canGrow`/`canShrink` where required by [§12.4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
+- [ ] The primitive default tier is exactly Number→`0`, Confirm→`False`, and Boolean/String/Enumeration/Date/Time/DateTime→`notEvaluated`; other type families and operator deviations remain explicit clauses.
 - [ ] The per-operator overrides (concat, `Length`, patterns, extractors, value-list, counts, operand-list `Min`/`Max`, aggregates) each behave per A.2.
 - [ ] All-empty aggregate **identities** per kind (NUMBER→`0`, DATE min/max→no value, `FirstFilledValue`→by kind).
 - [ ] The **row gate**: substitutions only inside content-bearing instances; instantiated repeatable rows *are* content.

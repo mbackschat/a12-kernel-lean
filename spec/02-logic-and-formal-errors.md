@@ -61,7 +61,7 @@ The fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled
 - **Group quantifiers admit a starred single group only for the count-zero / count-≥1 members.** `NoGroupFilled(G*)` and `AtLeastOneGroupFilled(G*)` count *instantiated* rows — and a **created-but-empty row counts as a filled group** (a row is content; [§9](07-repetition-and-iteration.md)). The `AllGroupsFilled` / `NotAllGroupsFilled` / `GroupsNotCollectivelyFilled` family **rejects** the asterisk.
 - **A formally-invalid cell counts in neither bucket.** A present-but-invalid cell (§B) is *neither* filled nor empty in a fill tally, and any invalid element makes a value aggregate non-evaluable.
 
-> **Lean modelling note.** "Declared range vs instantiated range" is a real semantic fork, not an optimisation — encode both. A clean approach: give a repeatable group both its `repeatability` (declared) and its actual row count, and let each quantifier state which range it folds over. `AllFieldsFilled` folds over `0 .. repeatability-1` (missing rows = empty); `AtLeastOneFieldFilled` folds over `0 .. rowCount-1`.
+> **Lean modelling note.** "Declared range vs instantiated range" is a real semantic fork, not an optimisation — encode both. A clean approach: give a repeatable group both its `repeatability` (declared) and its actual row count, and let each quantifier state which range it folds over. `AllFieldsFilled` folds over the 1-based semantic range `1 .. repeatability` (missing rows = empty); `AtLeastOneFieldFilled` folds over `1 .. rowCount` (an empty range when `rowCount = 0`).
 
 ---
 

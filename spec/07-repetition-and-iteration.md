@@ -54,7 +54,11 @@ FieldsNotCollectivelyFilled(Demand/Units, Capacity/Units)   -- iterated per shar
 Sum(Products*/Quantity Having [Products/ProductName] == "N33") > 100
 ```
 
+The keep rule is exact: retain a candidate only when the filter condition is **known true**. A false or three-valued unknown result drops that row **before the aggregate or quantifier reads the selected consumer cell**. The filter otherwise uses the ordinary condition tables, so a dominating true `Or` may still decide despite an unknown sibling. In a standalone comparison, an invalid row-local operand drops only that candidate; an invalid captured-outer operand makes that comparison unknown for every candidate that reads it, so each such standalone filter drops.
+
 The **`$` operator** — usable **only inside a filter condition** — pins a reference to the **current *outer* repetition of the iterating rule**, turning the filter into a **correlated subquery** (e.g. "holidays whose date equals the current stop's ETA"). Not every reference in a filter may be `$`-marked. `$` is **not** optional sugar: a filter may only iterate the repetition levels the *filtered field* stars, so `$` is the **sole** way a filter references an out-of-scope (outer) field.
+
+A same-group starred candidate set includes the current outer row itself; correlation does **not** imply self-exclusion. Exclude that row only by authoring an explicit discriminator such as `CurrentRepetition(Items) != CurrentRepetition($Items)`.
 
 **Aggregation handles missing rows per function:** `Sum` substitutes `0` for an unspecified field; `MaxValue` / `MinValue` **ignore** unspecified fields (a Number list with none specified yields `0`; a Date list yields no value — [§2](03-empty-and-required.md)).
 
@@ -106,7 +110,7 @@ This is the subtlest part. A `*` in an operand path controls which enclosing ind
 - [ ] Iteration scope = referenced repeatable fields (condition + error field), **not** placement; empty scope ⇒ evaluate once.
 - [ ] Error field must be referenced by the condition and share its scope.
 - [ ] Parallel iteration = outer join over the **union** of shared-index values; unmatched side = sentinel `-5` "not specified"; invalid index ⇒ UNKNOWN ⇒ suppresses negatives.
-- [ ] `Having` filters before aggregation; `$` correlates to the **outer** env and is the only way to reach an outer field; filter-content restrictions enforced.
+- [ ] `Having` keeps only known-true candidates before consuming their selected cells; false/unknown rows drop; `$` correlates to the **outer** env and is the only way to reach an outer field; same-group correlation includes self unless explicitly excluded; filter-content restrictions enforced.
 - [ ] Star binding: fix levels **strictly above** the first star, re-open the starred level and below; same-group star spans all rows; cross-subtree binds only on shared ancestry.
 - [ ] `GroupFilled`: repeatable ⇒ "row exists"; non-repeatable ⇒ content (incl. an instantiated repeatable descendant).
 - [ ] Over-repetition rows ⇒ `zuGrosseZeile` (VALUE) + suppressed; negative-in-iteration rejected unless guarded.

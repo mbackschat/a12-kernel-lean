@@ -10,7 +10,7 @@ See [`SEMANTICS-MAP.md`](SEMANTICS-MAP.md) for the glossary and the taxonomy; te
 
 A **document model** is a static declaration — a tree:
 
-- **Groups** are internal nodes. Each group is **non-repeatable** (occurs at most once wherever its parent occurs) or **repeatable** (an ordered array of **rows**, `0 … repeatability`). The model's root is a single group.
+- **Groups** are internal nodes. Each group is **non-repeatable** (occurs at most once wherever its parent occurs) or **repeatable** (declares an ordered 1-based row-address range `1 … repeatability`; a valid document may instantiate only a prefix `1 … rowCount`, where `rowCount ≤ repeatability`). The model's root is a single group.
 - **Fields** are leaves. Each has a **type** and per-type configuration. (The type table is in [`SEMANTICS-MAP.md §2`](SEMANTICS-MAP.md#2-field-types-at-a-glance); per-type evaluation is in files 04–06.)
 
 Groups nest arbitrarily; a repeatable group may contain repeatable subgroups, giving multi-dimensional arrays.
@@ -57,8 +57,10 @@ A **cell** is *the value (or empty/invalid) of one field at one repetition conte
 Because a field can live under several repeatable ancestors, addressing a cell requires knowing *which row* at each repeatable level. Call that a **repetition context** (the kernel's `Kontext`/`Kontextnummer`): a mapping from each enclosing repeatable group to a row index.
 
 ```
-LineItem[1]/Discount[0]/Pct         -- the Pct cell in the first LineItem's zeroth Discount row
+LineItem[1]/Discount[2]/Pct         -- the Pct cell in the first LineItem's second Discount row
 ```
+
+Concrete repetition indices are **1-based**. Index `0` is a document-path API special value for a wildcard, not a concrete row; the runtime also uses separate negative sentinels for unmatched iteration sides where documented.
 
 This is the single most important runtime structure to model well, because *iteration is the act of producing these contexts* and *path resolution is the act of reading a cell relative to one* ([§9](07-repetition-and-iteration.md), [§10](08-paths-and-references.md)).
 
