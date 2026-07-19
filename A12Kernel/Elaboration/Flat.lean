@@ -420,6 +420,21 @@ structure CheckedFlatCondition (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model
 
+/-- Certify a constructed core condition against an already-validated model. This is the shared boundary for ordinary surface lowering and semantic desugarings. -/
+def FlatCondition.checkAgainstValidatedModel (condition : FlatCondition)
+    (model : FlatModel) (modelValid : model.validate = .ok ()) :
+    Except ElabError (CheckedFlatCondition model) :=
+  if hCore : condition.wellFormedBool model = true then
+    .ok {
+      core := condition
+      modelWellFormed := by
+        rw [modelValid]
+        rfl
+      wellFormed := hCore
+    }
+  else
+    .error .incoherentCore
+
 private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
@@ -502,16 +517,7 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
   | .error error => .error (.resolve error)
   | .ok () => do
       let core ← elaborateCore model declaringGroup condition
-      if hCore : core.wellFormedBool model = true then
-        pure {
-          core
-          modelWellFormed := by
-            rw [hModel]
-            rfl
-          wellFormed := hCore
-        }
-      else
-        throw .incoherentCore
+      core.checkAgainstValidatedModel model hModel
 
 structure RawFlatContext where
   read : FieldId → RawCell
