@@ -425,7 +425,7 @@ The first thin slices validated the formalization strategy without making this d
 
 A duplicate flat judgment was deliberately not added because it would restate the evaluator without an independently useful trace or refinement target. The same restraint applies to checked wrappers: their carried model/core certificates justify structural coherence, not source-to-core semantic preservation in the absence of an independent surface dynamics. Add another relational presentation only when observable reads, scheduling, access plans, or a real transformation make its steps semantically informative.
 
-[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#milestones-and-gates) owns durable milestones, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`EVIDENCE.md`](EVIDENCE.md) own current closure, and [`PLAN.md`](PLAN.md) owns immediate work. This section retains only the proof-engineering lesson: independent presentations earn their maintenance cost by exposing a theorem boundary that the executable definition alone does not.
+[`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#controlled-interleaving-and-coverage-horizons) owns the durable development method and coverage horizons, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`EVIDENCE.md`](EVIDENCE.md) own current closure, and [`PLAN.md`](PLAN.md) owns the current spiral. This section retains only the proof-engineering lesson: independent presentations earn their maintenance cost by exposing a theorem boundary that the executable definition alone does not.
 
 ## 15. Study sources
 

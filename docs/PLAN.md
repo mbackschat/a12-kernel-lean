@@ -1,6 +1,6 @@
 # Active implementation plan
 
-This is the volatile checkpoint for resuming current work. Stable purpose and milestones belong in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md); exact implementation and proof coverage in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); retained correspondence in [`EVIDENCE.md`](EVIDENCE.md); and durable design conclusions in [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md). Git and those owners retain completed history.
+This is the volatile checkpoint for resuming current work. Stable purpose, method, and coverage horizons belong in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md); exact implementation and proof coverage in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md); retained correspondence in [`EVIDENCE.md`](EVIDENCE.md); and durable design conclusions in [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md). Git and those owners retain completed history.
 
 ## Verified checkpoint
 
@@ -34,16 +34,25 @@ The checked numeric-expression consumer is internally complete for one full-vali
 
 The project now owns [`../spec/`](../spec/) as its language-neutral semantic bridge. [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) is the compact reconciliation ledger; its current pending entries cover the audited spec corrections and additions that a12-dmkits must review.
 
-## Immediate order
+## Current spiral
 
-1. Keep power fillability separate until the surprising zero-base/empty-exponent discriminator has real kernel observations. If obtaining that observation needs any new harness or governance work, surface the exact need, alternatives, cost, and payoff and obtain approval before proceeding.
-2. Choose between checked tolerance-expression integration and the first numeric computation target by clause payoff and prerequisite count. Prefer the capsule that reuses the now-complete two-expression checked route with the smaller new semantic surface.
-3. Keep the next capsule narrow: do not build a generic expression framework, target store, public protocol, evidence mechanism, or other infrastructure merely to host it.
+The project now follows the controlled-interleaving method in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#controlled-interleaving-and-coverage-horizons). This is interleaving between completed vertical capsules, not parallel partial implementation. Each item must close and commit before the next starts; after every item, reassess whether the next candidate still has the best semantic-risk reduction, reuse payoff, and prerequisite count.
+
+1. **Numeric validation:** integrate checked tolerance expressions by reusing the complete two-expression checked route and the existing pure tolerance seam. Add no generic expression framework or public surface.
+2. **Computation:** implement the first numeric computation target over already closed numeric-expression behavior, keeping expression outcome, computation poison, target checking/rounding, application, and delta boundaries explicit. Split this candidate further if its audit reveals more than one new semantic axis.
+3. **Scalar breadth:** audit and implement one narrow date/time validation capsule in the already established nonrepeatable checked context. Its purpose is to test whether the value/observation architecture generalizes without importing numeric fillability assumptions.
+4. **Repetition:** implement one repeat-aware validation consumer over an already closed scalar clause. Add repetition context and selection as the only new major axis; do not combine it with a new scalar family or computation scheduler.
+5. **Whole validation:** assemble one checked whole-rule and authored-message path around an already supported condition, preserving the distinction between semantic verdict, polarity, error field, and message construction.
+6. **Language boundary:** implement one narrow interpolation or structured-lowering capsule that consumes the preceding closed rule/message semantics. Concrete parser or publication infrastructure is not implied.
+7. **Consumer checkpoint:** assess whether the resulting named fragment is coherent enough for a bounded explanation, evaluator, importer, or refactoring probe. A probe may test knowledge transport and return semantic gaps; it does not automatically widen the protocol, create qualification infrastructure, or establish a release claim.
+
+Power fillability remains parked until the zero-base/empty-exponent discriminator has real kernel observations. If any current-spiral item needs a new harness or governance mechanism, surface the reproduced need, existing-mechanism gap, payoff, cost, and alternatives and obtain approval; otherwise mark the observation `external evidence pending` and continue with the next unblocked frontier. Related pending observations may be calibrated together at a later family checkpoint.
 
 ## Guardrails and stop conditions
 
 - Work only in this repository. Sibling repositories remain read-only and visibly unchanged.
 - Put verified language-neutral behavior in [`../spec/`](../spec/) and update [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) in the same change. Keep Lean design, implementation status, evidence status, and plans in their `docs/` owners.
+- Keep one active capsule. Do not leave parallel half-built semantic branches, and do not generalize a mechanism until a second completed consumer demonstrates the same meaning, result domain, and law.
 - Use red/green TDD, the Tier 1 gate in [`TESTING.md`](TESTING.md), payoff-selected laws/non-laws, and honest external-evidence status for each capsule.
 - Add no dependency and change no linkage, hashing, or distribution policy without explicit approval.
 - Do not restore retired V1, raw-packet, generator, registry, qualification, or universal-capture machinery. Any proposed harness or governance work must first be surfaced with the reproduced need, existing-mechanism gap, payoff, cost, and alternatives, then receive explicit user approval.
@@ -51,4 +60,4 @@ The project now owns [`../spec/`](../spec/) as its language-neutral semantic bri
 
 ## Resume procedure
 
-Read [`../AGENTS.md`](../AGENTS.md), this file, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), [`EVIDENCE.md`](EVIDENCE.md), and [`TESTING.md`](TESTING.md). Inspect `git status --short`, recent commits, and the complete diff. Resume from the first unfinished step above. Finish each delivery with the relevant gates, measured theory/support/evidence ratios, `git diff --check`, a matching ledger entry for every behavioral `spec/` change, no machine-specific data, clean project-local temporary state, and no sibling worktree changes.
+Read [`../AGENTS.md`](../AGENTS.md), this file, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), [`EVIDENCE.md`](EVIDENCE.md), and [`TESTING.md`](TESTING.md). Inspect `git status --short`, recent commits, and the complete diff. Resume from the first unfinished item in the current spiral. Finish each delivery with the relevant gates, measured theory/support/evidence ratios, `git diff --check`, a matching ledger entry for every behavioral `spec/` change, no machine-specific data, clean project-local temporary state, and no sibling worktree changes.
