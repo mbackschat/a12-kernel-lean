@@ -21,18 +21,20 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
     rule.evalFull context hasContent =
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
+        errorCode := rule.errorCode
         severity := rule.severity
         messageType
         text := rule.resolvedText
       } := by
   simp only [ResolvedFlatRule.evalFull, fires]
 
-/-- Error address, severity, and already-resolved text cannot change firing or polarity. -/
+/-- Error address, code, severity, and already-resolved text cannot change firing or polarity. -/
 theorem flatRule_metadata_doesNotChangeVerdict (rule : ResolvedFlatRule)
-    (errorField : FieldId) (severity : ValidationSeverity)
+    (errorField : FieldId) (errorCode : String)
+    (severity : ValidationSeverity)
     (resolvedText : ResolvedMessageText)
     (context : FlatContext) (hasContent : Bool) :
-    (({ rule with errorField, severity, resolvedText }).evalFull
+    (({ rule with errorField, errorCode, severity, resolvedText }).evalFull
         context hasContent).verdict =
       (rule.evalFull context hasContent).verdict := by
   rw [flatRule_eval_verdict, flatRule_eval_verdict]
@@ -77,6 +79,7 @@ theorem checkedFlatRule_fired_message_exact
     rule.evalFull raw hasContent =
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
+        errorCode := rule.errorCode
         severity := rule.severity
         messageType
         text := rule.resolvedText

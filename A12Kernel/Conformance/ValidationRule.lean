@@ -36,6 +36,9 @@ private def amountNonnegative : SurfaceCondition :=
 private def resolvedText : ResolvedMessageText :=
   { text := "$Amount.value$ stays opaque" }
 
+private def errorCode : String :=
+  "amountNonnegative"
+
 private def rawAmount (cell : RawCell) : RawFlatContext where
   read id := if id = amount.id then cell else .empty
 
@@ -50,7 +53,7 @@ private def assemble (condition : SurfaceCondition) (errorField : FieldId)
     Except (ElabError ⊕ FlatRuleAssemblyError)
       (CheckedResolvedFlatRule model) := do
   let checked ← (elaborate model ["Order"] condition).mapError Sum.inl
-  (assembleResolvedFlatRule model checked errorField severity
+  (assembleResolvedFlatRule model checked errorField errorCode severity
     resolvedText).mapError Sum.inr
 
 private def errorOf : Except ε α → Option ε
@@ -75,6 +78,7 @@ private def expectedMessage (severity : ValidationSeverity)
   { errorAddress := { field := amount.id, path := [] }
     severity
     messageType
+    errorCode
     text := resolvedText }
 
 /- The same checked rule derives OMISSION for empty zero and VALUE for given zero. -/
@@ -121,6 +125,7 @@ example :
           errorAddress := { field := acknowledged.id, path := [] }
           severity := .error
           messageType := .value
+          errorCode
           text := resolvedText
         }) ∧
       errorOf (assemble amountNonnegative unattached.id) =

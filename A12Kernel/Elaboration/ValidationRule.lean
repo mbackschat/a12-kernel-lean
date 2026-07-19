@@ -31,6 +31,7 @@ inductive FlatRuleAssemblyError where
 structure CheckedResolvedFlatRule (model : FlatModel) where
   condition : CheckedFlatCondition model
   errorField : FieldId
+  errorCode : String
   severity : ValidationSeverity
   resolvedText : ResolvedMessageText
   errorDeclaration : FlatFieldDecl
@@ -46,6 +47,7 @@ namespace CheckedResolvedFlatRule
 def core (rule : CheckedResolvedFlatRule model) : ResolvedFlatRule :=
   { condition := rule.condition.core
     errorField := rule.errorField
+    errorCode := rule.errorCode
     severity := rule.severity
     resolvedText := rule.resolvedText }
 
@@ -58,7 +60,8 @@ end CheckedResolvedFlatRule
 /-- Assemble the metadata boundary after condition elaboration. A repeatable error field is rejected before reference membership because this capsule has no row address. -/
 def assembleResolvedFlatRule (model : FlatModel)
     (condition : CheckedFlatCondition model)
-    (errorField : FieldId) (severity : ValidationSeverity)
+    (errorField : FieldId) (errorCode : String)
+    (severity : ValidationSeverity)
     (resolvedText : ResolvedMessageText) :
     Except FlatRuleAssemblyError (CheckedResolvedFlatRule model) :=
   match hLookup : model.lookupUniqueId errorField with
@@ -69,6 +72,7 @@ def assembleResolvedFlatRule (model : FlatModel)
           .ok {
             condition
             errorField
+            errorCode
             severity
             resolvedText
             errorDeclaration := declaration
