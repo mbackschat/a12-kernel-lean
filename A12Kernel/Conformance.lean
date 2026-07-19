@@ -16,6 +16,7 @@ import A12Kernel.Conformance.NumericComputation
 import A12Kernel.Conformance.NumericStoredNumber
 import A12Kernel.Conformance.NumericTarget
 import A12Kernel.Conformance.NumericApplication
+import A12Kernel.Conformance.NumericDependency
 import A12Kernel.Conformance.NumericValidation
 import A12Kernel.Conformance.NumericTolerance
 import A12Kernel.Conformance.StringLength
