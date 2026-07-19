@@ -7,10 +7,42 @@ Executable separators for decoded, whole-second local DateTime resolution under 
 
 namespace A12Kernel
 
+private def civilDate (year : Int) (month day : Nat)
+    (real : (CivilDate.ofYmd? year month day).isSome) :
+    CivilDate :=
+  (CivilDate.ofYmd? year month day).get real
+
 private def dateTime (year : Int) (month day hour minute second : Nat)
     (admissible : (LocalDateTime.ofYmdHms? year month day hour minute second).isSome) :
     LocalDateTime :=
   (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
+
+/- Civil successor is calendar-aware and advances the scalar day coordinate exactly once. -/
+example :
+    (civilDate 2024 2 28 (by native_decide)).next? =
+      some (civilDate 2024 2 29 (by native_decide)) := by
+  native_decide
+example :
+    (civilDate 2024 2 29 (by native_decide)).next? =
+      some (civilDate 2024 3 1 (by native_decide)) := by
+  native_decide
+example :
+    (civilDate 1900 2 28 (by native_decide)).next? =
+      some (civilDate 1900 3 1 (by native_decide)) := by
+  native_decide
+example :
+    (civilDate 2023 4 30 (by native_decide)).next? =
+      some (civilDate 2023 5 1 (by native_decide)) := by
+  native_decide
+example :
+    (civilDate 1999 12 31 (by native_decide)).next? =
+      some (civilDate 2000 1 1 (by native_decide)) := by
+  native_decide
+example :
+    (civilDate 2024 2 29 (by native_decide)).next?.map
+        CivilDate.unixEpochDay =
+      some ((civilDate 2024 2 29 (by native_decide)).unixEpochDay + 1) := by
+  native_decide
 
 /- Decoded clock values enforce the exact whole-second bounds. -/
 example : (TimeOfDay.ofHms? 0 0 0).isSome = true := by native_decide
@@ -29,6 +61,28 @@ example :
   native_decide
 example :
     (dateTime 1969 12 31 23 59 59 (by native_decide)).resolveUtc.epochSecond = -1 := by
+  native_decide
+
+/- Strict local chronology is preserved by UTC resolution across seconds, days, years, and leap days. -/
+example :
+    (dateTime 2024 1 1 0 0 0 (by native_decide)).Before
+      (dateTime 2024 1 1 0 0 1 (by native_decide)) := by
+  native_decide
+example :
+    (dateTime 2023 12 31 23 59 59 (by native_decide)).Before
+      (dateTime 2024 1 1 0 0 0 (by native_decide)) := by
+  native_decide
+example :
+    (dateTime 2024 2 29 23 59 59 (by native_decide)).Before
+      (dateTime 2024 3 1 0 0 0 (by native_decide)) := by
+  native_decide
+example :
+    ¬(dateTime 2024 1 1 0 0 1 (by native_decide)).Before
+      (dateTime 2024 1 1 0 0 0 (by native_decide)) := by
+  native_decide
+example :
+    (dateTime 2023 12 31 23 59 59 (by native_decide)).resolveUtc.epochSecond <
+      (dateTime 2024 1 1 0 0 0 (by native_decide)).resolveUtc.epochSecond := by
   native_decide
 
 /- Whole-hour shifting is instant-in/instant-out and carries over calendar boundaries. -/
