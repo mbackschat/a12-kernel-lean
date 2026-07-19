@@ -143,6 +143,13 @@ private def shapeOf (result : Except CorrelationElabError (CheckedSingleCorrelat
       checked.core.guardField, checked.core.star.valueField,
       checked.core.star.having.condition)
 
+private def havingOf
+    (result : Except CorrelationElabError (CheckedSingleCorrelatedRule model)) :
+    Option CorrelatedHaving :=
+  match result with
+  | .error _ => none
+  | .ok checked => some checked.core.star.having.condition
+
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
@@ -183,6 +190,15 @@ example : shapeOf (elaborateSingleCorrelatedRule model ["Order"]
     (relativeRule (.compareNumbers .equal
       (numberRef .inner (relative ["Items"] "Count"))
       (numberRef .outer (relative ["Items"] "Count"))))) = some expectedShape := by
+  native_decide
+
+example : havingOf (elaborateSingleCorrelatedRule model ["Order"]
+    (absoluteRule (.compareRepetitions .equal
+      (repetitionRef .inner (absoluteGroup items.path))
+      (repetitionRef .outer (absoluteGroup items.path))))) =
+    some (.compareRepetitions .equal
+      { origin := .inner, level := items.level }
+      { origin := .outer, level := items.level }) := by
   native_decide
 
 -- Equality and inequality are scale-gated; ordering over the same pair is not.

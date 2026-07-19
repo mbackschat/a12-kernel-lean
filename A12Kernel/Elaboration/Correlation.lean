@@ -160,7 +160,9 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let rightGroup ← right.group.resolveAgainst declaringGroup
       if rightGroup != group.path then
         throw (.repetitionGroupMismatch group.path rightGroup)
-      pure (.compareRepetitions coreOp left.origin right.origin)
+      pure (.compareRepetitions coreOp
+        { origin := left.origin, level := group.level }
+        { origin := right.origin, level := group.level })
   | .and left right => do
       pure (.and (← elaborateHavingCore model declaringGroup group left)
         (← elaborateHavingCore model declaringGroup group right))
@@ -189,7 +191,8 @@ def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
       model.admitsSingleGroupNumber group left.field &&
       model.admitsSingleGroupNumber group right.field &&
       op.acceptsScales left.field right.field
-  | .compareRepetitions _ _ _ => true
+  | .compareRepetitions _ left right =>
+      left.level == group.level && right.level == group.level
   | .and left right =>
       left.wellFormedForSingleGroup model group &&
       right.wellFormedForSingleGroup model group

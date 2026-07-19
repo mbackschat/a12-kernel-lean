@@ -39,7 +39,7 @@ The two-tier mechanism and both flag arms are locked in a12-dmkits' [`ShortNameR
 ## 3. The asterisk and `$`
 
 - The **asterisk `*` flattens** a repeatable group into the list of its rows. **If an outer repeatable group uses `*`, every repeatable group below it in the path must also use `*`** (you cannot flatten an outer level while pinning an inner one).
-- The **`$`** operator (a correlated reference to the current outer row) may be used **only inside a filter condition**, and not every reference in the filter may be `$`-marked ([§9](07-repetition-and-iteration.md)).
+- The **`$`** operator switches resolution to the complete captured outer repetition environment. The marked reference's resolved group/path selects the corresponding level's coordinate, so parent and nested-descendant `$` references may resolve through different row coordinates; correspondingly, `CurrentRepetition` over those paths may yield different indices. `$` may be used **only inside a filter condition**, and not every reference in the filter may be `$`-marked ([§9](07-repetition-and-iteration.md)).
 
 (How a star *binds* the enclosing indices — the anchor rules — is [§9 part 4](07-repetition-and-iteration.md#4-where-a-star-binds--the-anchor-rules-); this section is only about the *path syntax* constraints.)
 
@@ -66,7 +66,7 @@ The semantic index is **unsupported** in several combinations: multiple repetiti
 - **Validation-side** indexed reads are judged **per lookup**: a malformed key cell *elsewhere* in the column does **not** suppress a clean match; but an *unresolvable no-match* over a column that contains **any** not-check-relevant cell **suppresses** the referencing rule.
 - **Compute-side** is **stricter — per column**: any invalid cell in the index column clears every reading computation ([§11](09-computations.md)).
 
-> **Lean modelling note.** Make indexed lookup phase-aware and return a `CellObservation`, with **no match returning `empty`** rather than `unknown` or `poison`. This is the load-bearing difference from “missing ⇒ invalid,” and it is why `[X For "k"] == 0` and `FieldNotFilled(X For "k")` fire on absence. Keep the validation-per-lookup versus computation-per-column strictness as an explicit lookup policy: validation checks the selected cell plus the documented no-match invalid-column guard, while computation can poison from the index column. Keep `CurrentRepetition` as a value-producing operand (`Env → RowIndex`) that can only be compared; omit any positional-select constructor from the AST.
+> **Lean modelling note.** Make indexed lookup phase-aware and return a `CellObservation`, with **no match returning `empty`** rather than `unknown` or `poison`. This is the load-bearing difference from “missing ⇒ invalid,” and it is why `[X For "k"] == 0` and `FieldNotFilled(X For "k")` fire on absence. Keep the validation-per-lookup versus computation-per-column strictness as an explicit lookup policy: validation checks the selected cell plus the documented no-match invalid-column guard, while computation can poison from the index column. Keep `CurrentRepetition` as a value-producing operand conceptually shaped as `ResolvedRepeatableLevel → Env → Option RowIndex`: `$` chooses the captured outer `Env`, then the resolved level chooses its coordinate. It can only be compared; omit any positional-select constructor from the AST, and fail closed on a missing or ambiguous level binding.
 
 ---
 
@@ -76,6 +76,6 @@ The semantic index is **unsupported** in several combinations: multiple repetiti
 - [ ] `..` + `*` together is rejected (`MVK_INVALID_WILDCARD_REL`) — force absolute.
 - [ ] Bare-name resolution: declaring group → flag-gated model-wide unique field lookup (distinct not-unique error, never a silent pick), with no implicit ancestor walk; `..Name` name is a validation label only.
 - [ ] `*` flatten requires every lower repeatable level to also `*`.
-- [ ] **No positional row addressing**; `CurrentRepetition` compares only; semantic index `[Field For key]` is the sole row selector, with its unsupported-combination restrictions.
+- [ ] **No positional row addressing**; `CurrentRepetition` compares only and reads the named level from the selected candidate/outer environment; semantic index `[Field For key]` is the sole row selector, with its unsupported-combination restrictions.
 - [ ] Semantic-index no-match = **empty** (not unknown); presence on absence = FALSE ⇒ `FieldNotFilled(X For "k")` fires; malformed matched cell / invalid key = UNKNOWN.
 - [ ] Validation reads **per lookup**; compute reads **per column** (stricter).

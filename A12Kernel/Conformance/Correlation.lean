@@ -126,6 +126,9 @@ private def innerCount : HavingNumberRef :=
 private def outerCount : HavingNumberRef :=
   { origin := .outer, field := count }
 
+private def repetition (origin : HavingOrigin) : HavingRepetitionRef :=
+  { origin, level := items }
+
 private def checkedHaving (condition : CorrelatedHaving)
     (inner : condition.usesInner = true) (outer : condition.usesOuter = true) :
     OriginCheckedCorrelatedHaving :=
@@ -140,7 +143,7 @@ private def selfExcluded : SingleCorrelatedStar :=
   { valueField := count
     having := checkedHaving
       (.and
-        (.compareRepetitions .notEqual .inner .outer)
+        (.compareRepetitions .notEqual (repetition .inner) (repetition .outer))
         (.compareNumbers .equal innerCount outerCount)) (by decide) (by decide) }
 
 private def selfExcludedPayload : SingleCorrelatedStar :=
@@ -154,12 +157,14 @@ private def numberNotEqualPayload : SingleCorrelatedStar :=
 private def repetitionEqualPayload : SingleCorrelatedStar :=
   { valueField := payload
     having := checkedHaving
-      (.compareRepetitions .equal .inner .outer) (by decide) (by decide) }
+      (.compareRepetitions .equal (repetition .inner) (repetition .outer))
+      (by decide) (by decide) }
 
 private def repetitionLessPayload : SingleCorrelatedStar :=
   { valueField := payload
     having := checkedHaving
-      (.compareRepetitions .lessThan .inner .outer) (by decide) (by decide) }
+      (.compareRepetitions .lessThan (repetition .inner) (repetition .outer))
+      (by decide) (by decide) }
 
 private def smallerInner : SingleCorrelatedStar :=
   { valueField := count
