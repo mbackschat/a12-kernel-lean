@@ -1,6 +1,6 @@
 # 11 — Error-message interpolation and CustomCondition (§13 + §14)
 
-Two small areas. Interpolation is a pure render step over an already-fired message; CustomCondition is the language's one escape hatch to host code — an *opaque oracle* the evaluator is parameterised by.
+Two small areas. Interpolation is a pure render step over an already-fired message; `CustomCondition` is the rule language's host-code predicate hook. The separate registered [custom field-type validator](06-strings-and-enumerations.md#a3-custom-field-type-validation) classifies stored cells during formal observation and is not a `CustomCondition`.
 
 ---
 
@@ -37,9 +37,9 @@ Constraints and runtime behaviour:
 - Like any predicate it does **not** exempt the rule from the error-field rule ([§9](07-repetition-and-iteration.md)) — here the `FieldFilled(id)` conjunct references the error field. A **bare** `CustomCondition X` referencing no field is rejected (`MVK_ERROR_FIELD_NOT_REFERENCED`).
 - At runtime, `CustomCondition X` fires **iff the registered implementation returns `true`**, on an **evaluated row only** ([§2](03-empty-and-required.md)'s row gate — it does *not* fire on an all-empty row), with **VALUE** polarity. A formal error on the fields the rule references **suppresses** it like any operator ([§3](02-logic-and-formal-errors.md)).
 
-**The extensibility surface is closed.** Custom **conditions** and custom **field types** are the engine's *only* custom hooks — there is **no** custom *computation* or function. A computation's operation vocabulary is closed, and `CustomCondition` (the one hook that could reach a computation) is barred there.
+**The extensibility surface is closed.** Custom **conditions** and [custom **field types**](06-strings-and-enumerations.md#a3-custom-field-type-validation) are the engine's *only* custom hooks — there is **no** custom *computation* or function. A custom field validator contributes a formal cell observation; `CustomCondition` contributes a rule-predicate result. A computation's operation vocabulary is closed, and `CustomCondition` (the one predicate hook that could otherwise reach a computation) is barred there.
 
-> **Lean modelling note.** Parameterise the evaluator by an oracle map `custom : Name → (Env → Document → Bool)`—a total function per registered name. `CustomCondition X` yields `.fired .value` iff the oracle returns true and the row gate plus suppression permit evaluation; a suppressed input remains `unknown`. For reproducibility, oracles must be pure and total (no I/O or ambient clock), and a missing name is an elaboration/well-formedness error rather than a runtime default. Purity alone does not imply locality or monotonicity, so whole-rule theorems must exclude custom conditions or require an explicit oracle contract. The operation vocabulary on the computation side remains closed.
+> **Lean modelling note.** Parameterise the evaluator by an oracle map `customConditions : Name → (Env → Document → Bool)`—a total function per registered name, separate from the custom-field-validator map in `World`. `CustomCondition X` yields `.fired .value` iff the oracle returns true and the row gate plus suppression permit evaluation; a suppressed input remains `unknown`. For reproducibility, oracles must be pure and total (no I/O or ambient clock), and a missing name is an elaboration/well-formedness error rather than a runtime default. Purity alone does not imply locality or monotonicity, so whole-rule theorems must exclude custom conditions or require an explicit oracle contract. The operation vocabulary on the computation side remains closed.
 
 ---
 
@@ -48,4 +48,5 @@ Constraints and runtime behaviour:
 - [ ] Interpolation is a **pure render step** after firing; `$Field$` via an injected label provider (fallback: name; absent: debug string); `$Field.value$` empty → `0`/empty string; unit trait not rendered.
 - [ ] `$Field.value$` requires a non-starred reference; error-text paths asterisk-free.
 - [ ] `CustomCondition` = injected **pure total oracle**; VALUE polarity; row-gated; suppressible; must reference the error field; **barred** in computations and filters.
+- [ ] A `CustomCondition` result is distinct from the declaration-driven custom-field formal observation owned by §7.
 - [ ] Extensibility surface is **closed**: custom conditions + custom field types only; no custom computation/function.

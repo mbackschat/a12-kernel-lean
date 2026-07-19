@@ -162,7 +162,7 @@ lake build
 lake test
 ./scripts/check-lean-trust.sh
 git diff --check
-git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC.md
+git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC-LEDGER.md
 git status --short
 ```
 
@@ -179,7 +179,7 @@ lake exe checkCandidateConformance --self-test --suite reference/single-group-co
 lake exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh
 git diff --check
-git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC.md
+git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC-LEDGER.md
 git status --short
 git -C ../a12-kernel status --short
 git -C ../a12-rulekit status --short
