@@ -1,25 +1,37 @@
-# What this Lean semantics can enable
+# Consumer probes and what this Lean semantics can enable
 
-This is the user-facing map of possible products built from `a12-kernel-lean`. It explains the potential of the project, not the set of tools implemented today. The current executable surface remains the narrow evaluator described in the top-level [`README.md`](../README.md); current clause-level support is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
+This is the user-facing map of bounded consumer probes and possible later products built from `a12-kernel-lean`. It explains the potential of the project, not the set of tools implemented today. The current executable surface remains the narrow evaluator described in the top-level [`README.md`](../README.md); current clause-level support is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
 The central idea is simple: once A12 behavior is represented as explicit executable semantics, linked to retained kernel observations, and surrounded by named theorems and counterexamples, the result can support more than an interpreter. Different consumers ask different questions of the same semantic foundation. The canonical category taxonomy is defined in [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md#general-consumer-task-categories); this document is its reader-facing explanation.
 
 ## The ten general categories
 
-| Category | General task | Example products |
-|---|---|---|
-| Execute | A12 artifact + runtime input → semantic outcome | Reference evaluator, independent interpreter, validation/computation service |
-| Translate | Source representation ↔ checked A12 artifact or target projection | JSON Schema importer, concrete-DSL lowering, legacy-model migration, bounded export |
-| Transform | A12 artifact → behavior-related A12 artifact | Rule refactoring, simplification, normalization |
-| Compile | A12 artifact → executable plan or target program | Specialized evaluator, indexed correlation plan, WASM/Rust generator |
-| Analyze | A12 artifact → facts or witnesses | Equivalence, redundancy, dependency, impact, satisfiability |
-| Verify | Artifact + independently stated claim → checked proof/certificate, counterexample, or explicit inconclusive result | Business invariants, preservation theorems, model approval |
-| Synthesize | Goal or constraint → document, rule, repair, or counterexample | Test-data generation, minimal repair, missing-case witness |
-| Qualify | Implementation/version + reference → agreement or differences | Conformance, differential, property, fuzz, and mutation testing |
-| Explain | Execution/proof/change → human-understandable account | Evaluation traces, debugging, checked tutorials, change reports |
-| Govern | Versioned artifacts and evidence → compatibility or release decision | Support manifests, migration reports, audits, release gates |
+| Category | General task | First bounded consumer probe | Possible later products |
+|---|---|---|---|
+| Execute | A12 artifact + runtime input → semantic outcome | Have an isolated implementer reconstruct one named evaluator fragment's decision procedure and predict its separating outcomes from existing artifacts | Reference evaluator, independent interpreter, validation/computation service |
+| Translate | Source representation ↔ checked A12 artifact or target projection | Lower one pinned external subset into a closed A12 target and expose every rejection or loss | JSON Schema importer, concrete-DSL lowering, legacy-model migration, bounded export |
+| Transform | A12 artifact → behavior-related A12 artifact | Apply one rule rewrite under explicit preconditions and check its complete named observation relation | Rule refactoring, simplification, normalization |
+| Compile | A12 artifact → executable plan or target program | Replace one evaluator step with a specialized plan and test a narrow refinement claim | Specialized evaluator, indexed correlation plan, WASM/Rust generator |
+| Analyze | A12 artifact → facts or witnesses | Run one solver-free reachability, overlap, dependency, or redundancy analysis over a closed fragment | Equivalence, redundancy, dependency, impact, satisfiability |
+| Verify | Artifact + independently stated claim → checked proof/certificate, counterexample, or explicit inconclusive result | State and check one business or preservation claim for a small admitted model | Business invariants, preservation theorems, model approval |
+| Synthesize | Goal or constraint → document, rule, repair, or counterexample | Generate one bounded witness and replay it through the Lean semantics | Test-data generation, minimal repair, missing-case witness |
+| Qualify | Implementation/version + reference → agreement or differences | Seed one predicted semantic defect and check that existing fixtures, laws, or differentials detect it | Conformance, differential, property, fuzz, and mutation testing |
+| Explain | Execution/proof/change → human-understandable account | Give an isolated reader one checked non-trivial trace and test whether they can reconstruct the outcome and limits | Evaluation traces, debugging, checked tutorials, change reports |
+| Govern | Versioned artifacts and evidence → compatibility or release decision | Simulate one semantic correction and identify the affected clauses, claims, and candidate capabilities | Support manifests, migration reports, audits, release gates |
 
 These categories describe task contracts, not programming languages or maturity levels, and a real product may combine several of them. Rust and Python versions of the same evaluator remain in **Execute**; their test program also uses **Qualify**. Moving from an evaluator to a JSON Schema importer changes the primary task to **Translate**, even if both programs happen to be written in Rust, and a production importer may additionally use **Verify**, **Explain**, and **Govern**.
+
+## Consumer probes first
+
+A consumer probe is a small pre-product experiment over one named task profile. It uses the current semantics, examples, laws/non-laws, evidence limits, and exclusions to test whether the material is useful and whether a consumer would have to repeat A12 research. It may end with a successful readback or prototype, but it may also return a missing semantic distinction, an unsupported prerequisite, an awkward interface, a new use case, or a better task boundary.
+
+The lifecycle is intentionally conditional:
+
+```text
+semantic capsules → consumer probe → research-closed shipment → cold qualification → optional product
+```
+
+Catalog inclusion commits the project to none of these stages. When [`PLAN.md`](PLAN.md) explicitly selects a probe, only that bounded probe is authorized; shipment, qualification, infrastructure, and product work remain separate decisions. A successful probe demonstrates potential for its exact task. New potential discovered by a probe is classified under the ten categories when one fits, or proposed as a new task category when its input/output relation is genuinely different.
 
 ## 1. Execute
 

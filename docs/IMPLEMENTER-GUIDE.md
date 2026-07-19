@@ -12,6 +12,20 @@ Lean is the precision engine and executable backstop behind the shipment. It is 
 
 The short reader-facing explanation is in the top-level [`README.md`](../README.md#how-knowledge-travels-to-other-software). In the precise model, this repository is the **semantics factory**, a **semantic shipment** is a versioned purpose-specific projection, and an evaluator, importer, refactoring tool, or other independent program is the **consumer**. Consumer feedback returns here; a semantic correction creates a new shipment identity instead of private downstream behavior.
 
+## Consumer probes before shipment
+
+A **consumer probe** is a bounded pre-product exercise against a draft task profile and the semantic material that currently exists. It asks whether a prospective evaluator, importer, refactoring tool, analyzer, synthesizer, explainer, or other consumer can reconstruct the task's decision procedure or relation, identify its exclusions and assurance limits, and expose missing semantics without repeating kernel archaeology. Artifact-only isolated readback is the default; an external prototype, dependency, protocol, runner, or qualification campaign requires separate approval.
+
+A probe is allowed to fail. Its useful output may be a successful task readback, a tiny disposable prototype, a counterexample, a dependency cut, an unresolved-question report, a newly discovered use case, or evidence that the proposed task boundary is wrong. The probe must not guess an undetermined A12 branch or privately research and retain semantics outside this project; that gap returns here. Probe success establishes potential and usability only for the exercised material—it is not research closure, candidate qualification, product adoption, or release support.
+
+The conditional maturation path is:
+
+```text
+semantic capsules → consumer probe → research-closed shipment → cold-consumer qualification → optional product
+```
+
+The ten categories in [`USE-CASES.md`](USE-CASES.md) organize current probe ideas without exhausting future potential. A new probe uses an existing category when its abstract task contract fits; a genuinely different input/output or claimed relation may motivate a new category. No probe creates a roadmap commitment merely by being useful.
+
 ## Responsibility split
 
 | Role | Responsibility |

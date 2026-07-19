@@ -14,16 +14,22 @@ Lean makes every captured semantic clause explicit and executable, then lets sel
 
 Think of this repository as a **semantics factory**. It centralizes reusable A12 research, retains relevant kernel observations, states the chosen account precisely in Lean, checks useful laws and counterexamples, and packages the result as a small versioned **semantic shipment**. A downstream **consumer** receives that shipment instead of repeating the semantic archaeology.
 
+During development, the first outward step is usually a bounded **consumer probe**: apply current semantic material to one concrete interpreter, importer, refactoring, analysis, synthesis, explanation, or other task and see what is usable or missing. A probe may reveal a new use case and may later motivate a shipment or product, but it creates no support, qualification, infrastructure, or roadmap commitment by itself.
+
 ```text
 kernel observations and source knowledge
                     ↓
        Lean semantics, proofs, and limits
                     ↓
+            bounded consumer probe
+                    ↓ if valuable and research-closed
        purpose-specific semantic shipment
                     ↓
- evaluator, importer, refactoring tool, or other consumer
+       cold-qualified independent consumer
                     ↓
- qualification results and newly discovered gaps return here
+             optional adopted product
+
+gaps and newly discovered potential return to the Lean semantics
 ```
 
 A shipment contains only the closed capability a consumer needs: its identity and exclusions, language-neutral types and rules or relations, normalized examples, evidence limits, and appropriate qualification tools. The normative semantics stay fixed when an evaluator moves from Rust to Python, while the implementation profile must still resolve relevant host boundaries such as exact numbers, Unicode, resource limits, and process behavior. Changing the job—from evaluation to import or refactoring—changes the task contract itself.
@@ -32,7 +38,7 @@ The proposal defines ten general task categories:
 
 > **Execute · Translate · Transform · Compile · Analyze · Verify · Synthesize · Qualify · Explain · Govern**
 
-[`PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md#general-consumer-task-categories) owns this taxonomy. The user-facing [`use-case guide`](docs/USE-CASES.md) explains what each category can produce, how Lean helps concretely, and where proof, retained evidence, certificates, or finite testing still differ. A completed historical Rust experiment exercised **Execute** and **Qualify** for one finite evaluator capability; importer, refactoring, compilation, analysis, and the other categories remain future potential rather than current support claims. The durable model and gates are in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md), and the detailed shipment contract is in [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md).
+[`PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md#general-consumer-task-categories) owns this taxonomy. The user-facing [`use-case guide`](docs/USE-CASES.md) gives every category a first consumer probe, explains what it could later produce, shows how Lean helps, and keeps proof, retained evidence, certificates, and finite testing distinct. A completed historical Rust experiment was a particularly strong **Execute/Qualify** probe that reached finite qualification for one retired evaluator capability; it is not current or general interpreter support. Importer, refactoring, SMT-backed analysis/synthesis, compilation, explanation, and newly discovered tasks remain probe candidates and future potential rather than product claims. The durable model and gates are in [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md), and the detailed probe, shipment, and qualification contract is in [`docs/IMPLEMENTER-GUIDE.md`](docs/IMPLEMENTER-GUIDE.md).
 
 ## Status
 
@@ -100,7 +106,7 @@ See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md)
 
 ## Where to go next
 
-- Explore possible products and ways Lean helps in the [`use-case guide`](docs/USE-CASES.md).
+- Explore bounded consumer probes, possible later products, and how Lean helps in the [`use-case guide`](docs/USE-CASES.md).
 - Understand which repository trees are authoritative, generated, retained, or transient in the [`artifact lifecycle guide`](docs/ARTIFACTS.md).
 - Integrate with the reference executable through the [`normalized protocol`](docs/PROTOCOL.md).
 - Build an independent evaluator with the [`implementer guide`](docs/IMPLEMENTER-GUIDE.md) and an implemented [flat](docs/IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) or [correlation](docs/IMPLEMENTER-KIT-CORRELATION.md) kit.
