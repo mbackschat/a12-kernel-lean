@@ -171,6 +171,14 @@ run_cmd do
 #print axioms A12Kernel.lowerMultiply_without_divisions
 #print axioms A12Kernel.lowerMultiply_nested_numerator_once
 #print axioms A12Kernel.authoredNumericEval_uses_lowered_tree
+#print axioms A12Kernel.numericAuthoring_single_division
+#print axioms A12Kernel.numericAuthoring_addition_separates_divisions
+#print axioms A12Kernel.numericAuthoring_group_separates_inner_and_outer_divisions
+#print axioms A12Kernel.numericAuthoring_group_preserves_inner_division_violation
+#print axioms A12Kernel.numericAuthoring_rejects_direct_left_power
+#print axioms A12Kernel.numericAuthoring_group_allows_left_power
+#print axioms A12Kernel.numericAuthoring_right_power_requires_parser_shape_boundary
+#print axioms A12Kernel.numericAuthoring_round_is_outside_fragment
 #print axioms A12Kernel.numericTolerance_threshold_pos
 #print axioms A12Kernel.normalizedNumericDifference_comm
 #print axioms A12Kernel.numericTolerance_holds_comm

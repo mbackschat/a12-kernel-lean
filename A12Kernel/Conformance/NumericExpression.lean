@@ -153,4 +153,85 @@ example : (.binary .multiply (literal 2 0)
       (fun _ => .notEvaluated) = .notEvaluated := by
   native_decide
 
+private def source (id : Nat) : Expr := .atom id
+
+private def quotient (left right : Expr) : Expr :=
+  .binary .divide left right
+
+/- One division is legal, while a second division in the same multiplicative region is not. -/
+example : (quotient (source 0) (source 1)).authoringCheck = .accepted := by
+  native_decide
+
+example : (quotient (quotient (source 0) (source 1)) (source 2)).authoringCheck =
+    .tooManyDivisions := by
+  native_decide
+
+example : (.binary .multiply
+    (quotient (source 0) (source 1))
+    (quotient (source 2) (source 3)) : Expr).authoringCheck =
+      .tooManyDivisions := by
+  native_decide
+
+/- Addition and explicit grouping validate fresh regions and expose no division upward. -/
+example : (.binary .add
+    (quotient (source 0) (source 1))
+    (quotient (source 2) (source 3)) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+example : (quotient
+    (.group (quotient (source 0) (source 1)))
+    (source 2) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+example : (quotient
+    (source 0)
+    (.group (quotient (source 1) (source 2))) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+/- A boundary resets only outward contribution; it does not erase an illegal inner region. -/
+example : (.group
+    (quotient (quotient (source 0) (source 1)) (source 2)) : Expr).authoringCheck =
+      .tooManyDivisions := by
+  native_decide
+
+example : (.power
+    (quotient (source 0) (source 1))
+    (quotient (source 2) (source 3)) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+/- Only an ungrouped power in the direct left operand is the kernel's nested-power error. -/
+example : (.power
+    (.power (source 0) (source 1))
+    (source 2) : Expr).authoringCheck =
+      .directLeftNestedPower := by
+  native_decide
+
+example : (.power
+    (.group (.power (source 0) (source 1)))
+    (source 2) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+example : (.power
+    (source 0)
+    (.group (.power (source 1) (source 2))) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+/- This right-nested ungrouped tree is parser-unreachable; its acceptance keeps grammar shape a separate precondition. -/
+example : (.power
+    (source 0)
+    (.power (source 1) (source 2)) : Expr).authoringCheck = .accepted := by
+  native_decide
+
+/- Independent violations are retained without inventing a first-diagnostic order. -/
+example : (.binary .add
+    (quotient (quotient (source 0) (source 1)) (source 2))
+    (.power (.power (source 3) (source 4)) (source 5)) :
+      Expr).authoringCheck = .tooManyDivisionsAndDirectLeftNestedPower := by
+  native_decide
+
+/- Operation-valued wrappers are deliberately outside this first compositional checker. -/
+example : (.round .halfUp omittedRoundingPlaces
+    (quotient (source 0) (source 1)) : Expr).authoringCheck = .outsideFragment := by
+  native_decide
+
 end A12Kernel.Conformance.NumericExpression

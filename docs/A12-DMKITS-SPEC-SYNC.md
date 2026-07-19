@@ -241,3 +241,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits has one source of truth for operand normalization and directional tolerance polarity; the separating matrix agrees with both kernel strategies; `toleranceRangeOp` survives the implicit-validation path; affected docs and capability claims are corrected; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-19-14 — numeric authoring regions are structural and function wrappers remain unclosed
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`04-numbers-and-decimals.md` §4 and checklist](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints)
+- **Delta:** Replace the vague “one division per calculation subtree” account with the exact plain-arithmetic region rule: multiplication/division combines open division contributions and adds one for `/`; grouping, addition, subtraction, and power validate fresh children and expose zero. The separate power check rejects only a power whose direct left operand is an ungrouped power; left-associative grammar makes this the reachable unbraced chain. Operation-valued function wrappers are not covered by that compositional summary: the legacy walk descends through them, and a nested reset aborts the enclosing scan.
+- **Basis:** kernel grammar and `CheckOperationImpl.checkOnlyOneDiv`/`checkOnlyOnePow` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` establish the plain recursion, direct-left power rule, brace behavior, and control-flow-exception wrapper caveat. The tracked BA examples separate chained division from brace-isolated division but do not exercise wrappers. a12-dmkits currently delegates `MVK_TOO_MANY_DIV_FOR_CALC` and `MVK_TOO_MANY_POW_FOR_CALC` to the kernel, summarizes division as a calculation subtree, and its typed arithmetic tree does not retain grouping.
+- **Requested a12-dmkits reconciliation:** Correct canonical prose and the MVK ledger to state the exact plain structural rule and the parser-shape precondition. Preserve kernel delegation unless a source-maintained clean-room authoring checker has a real consumer. Before admitting function wrappers to such a checker, use the existing adapter facilities to characterize focused ordered `Round`/other operation-valued cases against both kernel strategies; do not invent a new capture framework or assume wrappers are uniformly transparent/reset. If a typed precheck is pursued, retain grouping rather than reconstructing it from rendered precedence.
+- **Compatibility:** The kernel and currently delegated authoring path do not change. A future a12-dmkits precheck or grouping-preserving AST may affect typed-source/serialization compatibility and diagnostic timing, so classify those surfaces before implementation. The wrapper caveat is explicitly an open evidence boundary, not a new public legality promise.
+- **Acceptance:** a12-dmkits prose distinguishes the exact plain rule, direct-left power rule, parser reachability, and unclosed wrapper surface; focused plain cases agree with both kernel strategies; any wrapper expansion is probe-locked with the existing harness; no current interpreter/runtime claim is broadened; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending
