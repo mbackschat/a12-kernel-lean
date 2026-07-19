@@ -77,8 +77,6 @@ The requests and adjacent expected responses under [`examples/reference-cli/`](.
 
 The eight fixtures under [`examples/reference-cli/flat-evidence/`](../examples/reference-cli/flat-evidence/) were mechanically produced from retained typed flat cases, the historical 0.2.0 verdict table, and case-level observation classifications. They remain unchanged inputs for the corresponding current V2 cases. The deleted bridge, artifacts, hashes, and recovery revisions are recorded in the [historical archive](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md); `checkReferenceProcess` tests the retained fixtures and current V2 suites rather than reconstituting or digest-checking the retired shipment.
 
-The mutation plan is historical source-maintainer test planning, not retained kernel evidence and not proof that a candidate was mutated. It derives the baseline and predicted deltas from the typed capability and its frozen historical verdict algebra, requires one mutation at a time plus restoration, and distinguishes observable suite sensitivity from evidence that the requested internal mechanism actually changed. [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#seeded-divergence-exercises) owns the exact exercises and the accepted historical result.
-
 Generated-in-test adversaries cover hostile transport, numeric and path bounds, closed-object decoding, version and operation mismatches, model/cell/repeatable validation, operation-specific near misses, candidate topology, unsupported semantic constructors, invocation classes, and deterministic repeated success. The executable test source is authoritative for the exact adversarial matrix. `--manifest` output is compared structurally with current [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json), ensuring the shipped readable mirror agrees with the Lean-generated manifest without requiring identical whitespace. The candidate-conformance control also loads the SHA-pinned compact [validation bundle](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), requires each selected evidence case's exact normalized request, and compares the suite response only at the observation's declared fidelity. This single association check covers all 25 current public cases, including the directional witness, without a case-specific bridge.
 
 Run the public process gate with:
@@ -111,7 +109,7 @@ lake exe checkCandidateConformance \
   --suite reference/flat-validation-empty-logic-v2.conformance.json
 ```
 
-Replace `--candidate` with a Rust, Kotlin, or TypeScript executable to test that implementation without requiring it to implement the other operation, `--manifest`, or Lean's compact key order. Because the runner does not query a candidate manifest, pin the candidate bytes and claimed suite identity separately in any qualification record. A suite establishes only its indexed observable cases and does not transfer Lean's theorems to the candidate; use the law index in the frozen [`flat kit`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#law-index-for-downstream-tests) or [`correlation kit`](IMPLEMENTER-KIT-CORRELATION.md#law-index-for-property-tests) as applicable. The current flat v2 suite is still a development slice, not full flat release closure. Each candidate invocation has a 10-second deadline, 1-second cleanup deadline, 1 MiB stdin and stdout caps, and a 64 KiB stderr cap. The relay streams both output channels and terminates the owned process group on timeout or overflow. This is cooperative macOS/Linux resource control for same-credential candidates, not a security sandbox, and the suite currently has no aggregate elapsed or byte budget.
+Replace `--candidate` with a Rust, Kotlin, or TypeScript executable to test that implementation without requiring it to implement the other operation, `--manifest`, or Lean's compact key order. Because the runner does not query a candidate manifest, pin the candidate bytes and claimed suite identity separately in any qualification record. A suite establishes only its indexed observable cases and does not transfer Lean's theorems to the candidate; use the current [flat kit's law and non-law index](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md#law-and-non-law-index) or [correlation kit's law index](IMPLEMENTER-KIT-CORRELATION.md#law-index-for-property-tests) as applicable. The current flat v2 suite is still a development slice, not full flat release closure. Each candidate invocation has a 10-second deadline, 1-second cleanup deadline, 1 MiB stdin and stdout caps, and a 64 KiB stderr cap. The relay streams both output channels and terminates the owned process group on timeout or overflow. This is cooperative macOS/Linux resource control for same-credential candidates, not a security sandbox, and the suite currently has no aggregate elapsed or byte budget.
 
 ### Historical Rust qualification experiment
 
@@ -164,11 +162,11 @@ lake build
 lake test
 ./scripts/check-lean-trust.sh
 git diff --check
-git diff HEAD --exit-code -- spec/
+git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC.md
 git status --short
 ```
 
-Add only the focused replay or producer-bundle check owned by a Tier 2 calibration family. `lake test` already replays every retained non-public compact observation, while `checkReferenceProcess` owns the 25 public evidence associations and current shipment process integrity; do not invent another family-independent gate.
+If the scoped status lists a behavioral `spec/` change, it must also list the synchronization ledger; pure spelling, formatting, link, or navigation-only spec changes are exempt. A ledger-only status receipt may legitimately list only the ledger. Add only the focused replay or producer-bundle check owned by a Tier 2 calibration family. `lake test` already replays every retained non-public compact observation, while `checkReferenceProcess` owns the 25 public evidence associations and current shipment process integrity; do not invent another family-independent gate.
 
 Run the complete Tier 3 gate only when the change affects a public process, independent-consumer shipment, qualification mechanism, packaging, or release—or before an actual release:
 
@@ -181,7 +179,7 @@ lake exe checkCandidateConformance --self-test --suite reference/single-group-co
 lake exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh
 git diff --check
-git diff HEAD --exit-code -- spec/
+git status --short -- spec/ docs/A12-DMKITS-SPEC-SYNC.md
 git status --short
 git -C ../a12-kernel status --short
 git -C ../a12-rulekit status --short

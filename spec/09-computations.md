@@ -67,7 +67,7 @@ Reading a **formally-invalid cell** (an invalid operand's target, an ERRORED com
 
 The poison is **read-driven, therefore order-dependent**:
 
-- compute's `And`/`Or` collapse each conjunct **two-valued and short-circuit** — a false *or unknown* left side skips the right side **entirely** — and the quantifier scans **stop at their deciding cell**. An invalid cell *beyond* the stop is **never read and never poisons**.
+- compute's `And`/`Or` collapse each clean condition result to whether it is known true and evaluate left-to-right. `And` skips its right side when the clean left is false or unknown; `Or` skips its right side when the clean left is true. A poison already encountered on the left aborts either connective. The quantifier scans likewise **stop at their deciding cell**. An invalid cell *beyond* a connective or scan stop is **never read and never poisons**.
 - `FirstFilledValue` is the one **stop-at-first** value combiner: it consumes its selection only until the first filled cell, so an invalid *tail* cell is invisible, while an invalid cell *before* the first given one clears the computation.
 
 Both cascade read-rules reach **inside** a downstream computation's `Having` filter and its preconditions' quantifiers — a silently-cleared upstream target reads EMPTY there; a poisoned one poisons the reading computation.

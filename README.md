@@ -40,7 +40,7 @@ This is a development formal semantics and compatibility-kit experiment, not a c
 
 | Surface | Current boundary |
 |---|---|
-| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, directional numeric polarity, exactly-once evaluated-String CRLF normalization shared by comparison, UTF-16 `Length`, and computation reads, the direct-String-versus-`Length` empty distinction, staged requiredness, one-group iteration, one checked captured-outer `$` correlation shape, and narrow one-target String computation capsules separating expression evaluation, root storage, target minimum/maximum checking, payloadful error, exact absent/present-empty/present-value application, and change-only delta reporting |
+| Lean theory | Executable and proof-bearing fragments cover phase-aware flat validation, directional numeric polarity, exactly-once evaluated-String CRLF normalization shared by comparison, UTF-16 `Length`, and computation reads, the direct-String-versus-`Length` empty distinction, staged requiredness, one-group iteration, one checked captured-outer `$` correlation shape, direct computation-presence conditions with ordered left-to-right `And`/`Or`, and narrow one-target String computation capsules separating expression evaluation, root storage, target minimum/maximum checking, payloadful error, exact absent/present-empty/present-value application, and change-only delta reporting |
 | Public reference | The current normalized process advertises reference semantics 0.3.0 through [`supported-fragment-v2.json`](reference/supported-fragment-v2.json), exposes a checked flat operation and one named single-group correlation operation, and fails closed outside that boundary; the internal String/Length and String-computation capsules are not exposed |
 | Empirical and formal assurance | Compact retained observations cover flat validation, paths, requiredness, directional Number/String operators, iteration, correlation, clean String computation, and direct String cascade, while the theorem root establishes selected evaluator, store, target-check, delta, algebraic, and structural laws—not universal kernel equivalence |
 | Evidence replay | The shared [`ObservationBundle`](A12Kernel/Evidence/ObservationBundle.lean) reader and typed projections pin three compact bundles. [`ValidationProjection`](A12Kernel/Evidence/ValidationProjection.lean) replays 24 private records from the compact [validation bundle](evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), while the candidate process binds each of its 25 public flat/correlation records to the exact normalized request and externally supported response projection. `lake test` also replays 22 root-String and five direct-cascade cases. Complete removed raw estates remain recoverable through the [validation](docs/archived/VALIDATION-RAW-EVIDENCE.md), [root-String](docs/archived/STRING-COMPUTATION-RAW-EVIDENCE.md), and [direct-cascade](docs/archived/STRING-DIRECT-CASCADE-RAW-EVIDENCE.md) records |
@@ -64,7 +64,7 @@ lake exe checkBoundedProcess
 ./scripts/check-lean-trust.sh
 ```
 
-Contributor, artifact-drift, and independent-candidate commands are maintained in [`TESTING.md`](docs/TESTING.md#final-gate).
+Contributor, artifact-drift, and independent-candidate commands are maintained in [`TESTING.md`](docs/TESTING.md#tier-gates).
 
 ## Try the reference CLI
 
@@ -109,7 +109,7 @@ See [`docs/IMPLEMENTER-KIT-CORRELATION.md`](docs/IMPLEMENTER-KIT-CORRELATION.md)
 - Review the durable charter in [`PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md) and the proposed product boundary in [`PRODUCT-PROPOSAL.md`](docs/PRODUCT-PROPOSAL.md).
 - Use [`docs/README.md`](docs/README.md) for every other route and the canonical document-ownership registry.
 
-The read-only [`spec/`](spec/) is the distilled language-neutral baseline, while [`../a12-kernel`](../a12-kernel) remains the behavioural source of truth and [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) is the peer clean-room knowledge, corpus, interpreter, and kernel-differential project as well as the historical producer of the retained direct-cascade evidence. [`SOURCES.md`](docs/SOURCES.md) provides the writable drill map. This repository never links, calls, or transcribes the kernel; [`AGENTS.md`](AGENTS.md) defines the full clean-room, source-authority, dependency, and worktree rules.
+The project-owned [`spec/`](spec/) is the distilled language-neutral semantic bridge, while [`../a12-kernel`](../a12-kernel) remains the behavioural source of truth and [a12-dmkits (local `a12-rulekit/` checkout)](../a12-rulekit) is the peer clean-room knowledge, corpus, interpreter, and kernel-differential project as well as the historical producer of the retained direct-cascade evidence. [`SOURCES.md`](docs/SOURCES.md) provides the provenance and drill map; [`A12-DMKITS-SPEC-SYNC.md`](docs/A12-DMKITS-SPEC-SYNC.md) queues spec changes for reconciliation into a12-dmkits. This repository never links, calls, or transcribes the kernel; [`AGENTS.md`](AGENTS.md) defines the full clean-room, source-authority, dependency, and worktree rules.
 
 ## License
 
