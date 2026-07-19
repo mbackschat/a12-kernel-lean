@@ -5,6 +5,7 @@ import A12Kernel.Proofs.Iteration
 import A12Kernel.Proofs.NumericComparison
 import A12Kernel.Proofs.NumericRounding
 import A12Kernel.Proofs.NumericArithmetic
+import A12Kernel.Proofs.NumericFillability
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.PartialValidation
