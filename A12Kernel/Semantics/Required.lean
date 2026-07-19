@@ -37,9 +37,9 @@ def render : MandatoryMessageType → String
 
 end MandatoryMessageType
 
-/-- The message metadata exposed by this capsule. Generated-rule identity/name is not
-    represented yet; this intentionally avoids a general rule/message schema before the
-    elaboration and interpolation layers land. -/
+/-- The message metadata exposed by this capsule. Its one-constructor severity and
+    message type are stronger refinements for generated mandatory rules; projection into
+    the general resolved-rule boundary waits for a generated-rule integration capsule. -/
 structure MandatoryFieldMetadata where
   errorCode : String
   severity : MandatorySeverity

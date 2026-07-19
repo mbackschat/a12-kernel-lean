@@ -16,6 +16,7 @@ import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
 import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.Correlation
