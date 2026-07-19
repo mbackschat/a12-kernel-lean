@@ -271,3 +271,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits has one source of truth for both render branches and the warning-suppression gate; `docs/KERNEL-SEMANTICS.md` no longer presents one universal target-scale rounding path; existing focused multi-route controls remain green; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-19-16 — `$` correlation captures every named outer repetition level
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `5fd309d36c3bd43811ac9f298fdf88dd85f51706`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation) and [`08-paths-and-references.md` §§3–4](../spec/08-paths-and-references.md#3-the-asterisk-and-)
+- **Delta:** A `$`-marked reference resolves against the complete captured outer repetition environment, and its resolved group/path chooses the corresponding level's coordinate. Parent and nested-descendant references may therefore observe different indices in one rule instance; one scalar outer-row representation is unsound.
+- **Basis:** Kernel 30.8.1 source at `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `IterationState` retains the complete repetition-index vector and outer state, `EbenenIterator` carries that capture into candidate evaluation, and `RtInternalIdentifier` resolves every marked path level from it. At the audited a12-dmkits revision, `Interpreter.havingInterp` passes the complete outer `EvalContext`, and `CurrentRepetition` uses path-specific `repsOf(...).last()`, so its implementation appears structurally aligned; no focused diagonal/off-diagonal differential currently closes the behavior.
+- **Requested a12-dmkits reconciliation:** Clarify §9 prose and interpreter-facing documentation, then add one focused existing-harness control over a nested rule context with one ancestor star. The filter requires candidate `CurrentRepetition(Parent)` to equal both `CurrentRepetition($Parent)` and `CurrentRepetition($Parent/Child)`. Hold the captured parent row at `1`; compare a diagonal descendant row `1`, which selects parent candidate `1`, against descendant row `2`, which selects none. Exercise both kernel strategies and the interpreter. Do not add a capture framework.
+- **Compatibility:** A scalar captured-row implementation changes valid cross-level filter truth. The current a12-dmkits interpreter is expected to remain behaviorally unchanged if the source reading is correct. The local Lean public one-group protocol is unchanged.
+- **Acceptance:** Prose states the full-environment rule; the diagonal/off-diagonal discriminator agrees across both kernel routes and the interpreter; no broader nested/multi-star claim is inferred; and the handback supplies the exact reviewed revision and disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending

@@ -2,9 +2,11 @@ import A12Kernel.Semantics.Iteration
 
 /-! # A12Kernel.Semantics.Correlation — captured outer `$` inside Having
 
-This validation-only capsule gives `$` its direct nested-loop meaning for one repeatable
-group. Reference origins exist only in this filter AST: ordinary references read the
-candidate/inner row and `$` references read the explicitly captured outer rule row.
+This validation-only core gives `$` its direct nested-loop meaning through explicit
+candidate and captured repetition environments. Reference origins exist only in this
+filter AST: ordinary references read the candidate environment and `$` references read
+the explicitly captured outer rule environment. The established one-group API remains
+an adapter over this shared core.
 -/
 
 namespace A12Kernel
@@ -14,6 +16,17 @@ inductive HavingOrigin where
   | inner
   | outer
   deriving Repr, DecidableEq
+
+/-- Resolve exactly one binding for a repeatable level. Missing and duplicate bindings
+    both fail closed; correlation must never guess a first row or substitute row zero. -/
+def Env.uniqueRowAt? (env : Env) (level : RepeatableLevel) : Option RowIndex :=
+  match env with
+  | [] => none
+  | (boundLevel, row) :: rest =>
+      if boundLevel == level then
+        if rest.any (fun binding => binding.1 == level) then none else some row
+      else
+        Env.uniqueRowAt? rest level
 
 /-- The comparison subset needed to separate inner/outer routing and self-exclusion. -/
 inductive CorrelationComparisonOp where
@@ -27,25 +40,39 @@ structure HavingNumberRef where
   field : FlatNumberField
   deriving Repr, DecidableEq
 
+/-- A structural repetition reference retains the resolved level. The one-group capsule
+    previously erased it because only one coordinate existed. -/
+structure HavingRepetitionRef where
+  origin : HavingOrigin
+  level : RepeatableLevel
+  deriving Repr, DecidableEq
+
+/-- One correlated filter frame. Both candidate and captured rule environments are
+    explicit full repetition contexts. -/
+structure CorrelationFrame where
+  innerEnv : Env
+  outerEnv : Env
+  deriving Repr, DecidableEq
+
+def CorrelationFrame.envAt (frame : CorrelationFrame) : HavingOrigin → Env
+  | .inner => frame.innerEnv
+  | .outer => frame.outerEnv
+
+def CorrelationFrame.rowAt? (frame : CorrelationFrame)
+    (reference : HavingRepetitionRef) : Option RowIndex :=
+  (frame.envAt reference.origin).uniqueRowAt? reference.level
+
 /-- One correlated filter frame: both row identities are explicit and neither is an
-    ambient implicit "current" row. -/
+    ambient implicit "current" row. This remains the one-group adapter. -/
 structure SingleGroupFilterFrame where
   innerRow : RowIndex
   outerRow : RowIndex
   deriving Repr, DecidableEq
 
-def SingleGroupFilterFrame.rowAt (frame : SingleGroupFilterFrame) :
-    HavingOrigin → RowIndex
-  | .inner => frame.innerRow
-  | .outer => frame.outerRow
-
-def SingleGroupFilterFrame.innerEnv (frame : SingleGroupFilterFrame)
-    (context : SingleGroupValidationContext) : Env :=
-  context.envAt frame.innerRow
-
-def SingleGroupFilterFrame.outerEnv (frame : SingleGroupFilterFrame)
-    (context : SingleGroupValidationContext) : Env :=
-  context.envAt frame.outerRow
+def SingleGroupFilterFrame.toCorrelationFrame (frame : SingleGroupFilterFrame)
+    (context : SingleGroupValidationContext) : CorrelationFrame :=
+  { innerEnv := context.envAt frame.innerRow
+    outerEnv := context.envAt frame.outerRow }
 
 structure CapturedSingleGroupContext where
   rows : SingleGroupValidationContext
@@ -61,7 +88,7 @@ inductive CorrelatedHaving where
   | compareNumbers (op : CorrelationComparisonOp)
       (left right : HavingNumberRef)
   | compareRepetitions (op : CorrelationComparisonOp)
-      (left right : HavingOrigin)
+      (left right : HavingRepetitionRef)
   | and (left right : CorrelatedHaving)
   deriving Repr, DecidableEq
 
@@ -75,12 +102,12 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
 
 def CorrelatedHaving.usesInner : CorrelatedHaving → Bool
   | .compareNumbers _ left right => left.origin.isInner || right.origin.isInner
-  | .compareRepetitions _ left right => left.isInner || right.isInner
+  | .compareRepetitions _ left right => left.origin.isInner || right.origin.isInner
   | .and left right => left.usesInner || right.usesInner
 
 def CorrelatedHaving.usesOuter : CorrelatedHaving → Bool
   | .compareNumbers _ left right => left.origin.isOuter || right.origin.isOuter
-  | .compareRepetitions _ left right => left.isOuter || right.isOuter
+  | .compareRepetitions _ left right => left.origin.isOuter || right.origin.isOuter
   | .and left right => left.usesOuter || right.usesOuter
 
 /-- Proof that a filter genuinely uses both environments. This is only the origin check;
@@ -114,16 +141,37 @@ inductive CorrelatedNumberOperand where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Resolve one numeric filter reference at its declared origin. Empty-to-zero is local
-    to numeric comparison; formal invalidity remains explicit. -/
-def HavingNumberRef.resolve (reference : HavingNumberRef)
-    (context : SingleGroupValidationContext) (frame : SingleGroupFilterFrame) :
+/-- The only document operation needed by the shared correlation evaluator. Topology
+    adapters construct environments; this seam reads a checked field through one. -/
+structure CorrelationContext where
+  read : Env → FieldId → CheckedCell
+
+/-- Resolve one numeric filter reference through the selected environment. Empty-to-zero
+    is local to numeric comparison; formal invalidity remains explicit. -/
+def HavingNumberRef.resolveIn (reference : HavingNumberRef)
+    (context : CorrelationContext) (frame : CorrelationFrame) :
     CorrelatedNumberOperand :=
   let rowContext : FlatContext :=
-    { read := context.read (frame.rowAt reference.origin) }
+    { read := context.read (frame.envAt reference.origin) }
   match rowContext.resolveNumberComparisonOperand reference.field with
   | .value amount _ => .value amount
   | .unknown cause => .unknown cause
+
+private def malformedCorrelationCell : CheckedCell :=
+  { rawPresent := true, parsed := none, findings := [.malformed] }
+
+def SingleGroupValidationContext.asCorrelationContext
+    (context : SingleGroupValidationContext) : CorrelationContext where
+  read env field :=
+    match env.uniqueRowAt? context.group with
+    | some row => context.read row field
+    | none => malformedCorrelationCell
+
+/-- Backwards-compatible one-group numeric resolution. -/
+def HavingNumberRef.resolve (reference : HavingNumberRef)
+    (context : SingleGroupValidationContext) (frame : SingleGroupFilterFrame) :
+    CorrelatedNumberOperand :=
+  reference.resolveIn context.asCorrelationContext (frame.toCorrelationFrame context)
 
 def CorrelationComparisonOp.holdsRat (op : CorrelationComparisonOp)
     (left right : Rat) : Bool :=
@@ -145,31 +193,50 @@ def CorrelationComparisonOp.evalOperands (op : CorrelationComparisonOp)
   | .value left, .value right => if op.holdsRat left right then .tru else .fls
   | _, _ => .unknown
 
+def CorrelationComparisonOp.evalRows (op : CorrelationComparisonOp)
+    (left right : Option RowIndex) : K :=
+  match left, right with
+  | some left, some right => if op.holdsRow left right then .tru else .fls
+  | _, _ => .unknown
+
 /-- Truth of a correlated filter. Numeric empty operands use the comparison-local zero
     substitution; invalid operands are unknown; only the later selector decides that
     unknown is not kept. -/
-def CorrelatedHaving.evalTruth (context : SingleGroupValidationContext)
-    (frame : SingleGroupFilterFrame) : CorrelatedHaving → K
+def CorrelatedHaving.evalTruthIn (context : CorrelationContext)
+    (frame : CorrelationFrame) : CorrelatedHaving → K
   | .compareNumbers op left right =>
-      op.evalOperands (left.resolve context frame) (right.resolve context frame)
+      op.evalOperands (left.resolveIn context frame) (right.resolveIn context frame)
   | .compareRepetitions op left right =>
-      if op.holdsRow (frame.rowAt left) (frame.rowAt right) then .tru else .fls
+      op.evalRows (frame.rowAt? left) (frame.rowAt? right)
   | .and left right =>
-      K.and (left.evalTruth context frame) (right.evalTruth context frame)
+      K.and (left.evalTruthIn context frame) (right.evalTruthIn context frame)
 
 /-- Declarative truth predicate for the correlated filter. Atomic comparisons are
     stated over resolved values/rows, independently of the executable `Bool`; `And`
     remains structural. -/
-def CorrelatedHaving.Holds (context : SingleGroupValidationContext)
-    (frame : SingleGroupFilterFrame) : CorrelatedHaving → Prop
+def CorrelatedHaving.HoldsIn (context : CorrelationContext)
+    (frame : CorrelationFrame) : CorrelatedHaving → Prop
   | .compareNumbers op left right =>
       ∃ leftValue rightValue,
-        left.resolve context frame = .value leftValue ∧
-        right.resolve context frame = .value rightValue ∧
+        left.resolveIn context frame = .value leftValue ∧
+        right.resolveIn context frame = .value rightValue ∧
         op.holdsRat leftValue rightValue = true
   | .compareRepetitions op left right =>
-      op.holdsRow (frame.rowAt left) (frame.rowAt right) = true
-  | .and left right => left.Holds context frame ∧ right.Holds context frame
+      ∃ leftRow rightRow,
+        frame.rowAt? left = some leftRow ∧
+        frame.rowAt? right = some rightRow ∧
+        op.holdsRow leftRow rightRow = true
+  | .and left right => left.HoldsIn context frame ∧ right.HoldsIn context frame
+
+/-- One-group executable wrapper retained for the established public capsule. -/
+def CorrelatedHaving.evalTruth (context : SingleGroupValidationContext)
+    (frame : SingleGroupFilterFrame) (condition : CorrelatedHaving) : K :=
+  condition.evalTruthIn context.asCorrelationContext (frame.toCorrelationFrame context)
+
+/-- One-group declarative wrapper retained for the established proof boundary. -/
+def CorrelatedHaving.Holds (context : SingleGroupValidationContext)
+    (frame : SingleGroupFilterFrame) (condition : CorrelatedHaving) : Prop :=
+  condition.HoldsIn context.asCorrelationContext (frame.toCorrelationFrame context)
 
 structure SingleCorrelatedStar where
   valueField : FlatNumberField

@@ -54,14 +54,19 @@ run_cmd do
 
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer
+#print axioms A12Kernel.outer_number_reference_stableIn
+#print axioms A12Kernel.outer_repetition_reference_stableIn
 #print axioms A12Kernel.outer_number_reference_stable
 #print axioms A12Kernel.inner_number_reference_local
+#print axioms A12Kernel.correlatedHaving_truthIn_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds
 #print axioms A12Kernel.selectCorrelatedRows_iff
 #print axioms A12Kernel.evalGuardedAnyFilledOn_filter_before_consumer
 #print axioms A12Kernel.currentRepetition_selfExclusion_false
 #print axioms A12Kernel.explicitSelfExclusion_drops_outer
 #print axioms A12Kernel.sameFieldEquality_selfMatches
+#print axioms A12Kernel.crossLevelCorrelation_outer_levels_resolve
+#print axioms A12Kernel.crossLevelCorrelation_no_single_outer_row
 
 #print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
 #print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed

@@ -1,5 +1,6 @@
 import A12Kernel.Proofs.Information
 import A12Kernel.Proofs.Correlation
+import A12Kernel.Proofs.CrossLevelCorrelation
 import A12Kernel.Proofs.CorrelationElaboration
 import A12Kernel.Proofs.Iteration
 import A12Kernel.Proofs.NumericComparison
