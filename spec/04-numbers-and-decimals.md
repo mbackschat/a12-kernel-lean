@@ -59,16 +59,16 @@ Worked values (no `DecimalPlaces` argument):
 
 ---
 
-## 3. Division by zero and power edge cases evaluate *quietly*
+## 3. Arithmetic domain failures are consumer-sensitive
 
-- **Division by zero** is not executed; the comparison containing it evaluates to **`false`** — never an error, never a fire.
-- **Power** is not evaluated for some inputs (`0` to a negative power; a non-integral exponent; an exponent outside ±1000), so a rule containing it may simply **not fire** — indistinguishable from a satisfied condition unless tested explicitly. The endpoints `−1000` and `1000` are admitted, and `0 ^ 0 = 1`.
+- **Division by zero** produces no numeric value. A validation comparison containing it evaluates to **not-fired** — never an authored error fire.
+- **Power** produces no numeric value for some inputs (`0` to a negative power; a non-integral exponent; an exponent outside ±1000), so a validation rule containing it may simply **not fire** — indistinguishable from a satisfied condition unless tested explicitly. The endpoints `−1000` and `1000` are admitted, and `0 ^ 0 = 1`.
 
 Power has two precision stages that are observable and must not be replaced with exact rational exponentiation followed by one final round. A positive exponent uses the OpenJDK 21 X3.274 `BigDecimal.pow` numeric-value algorithm: binary exponentiation rounds its intermediate squares and accumulator multiplications at working precision `50 + decimalDigits(exponent) + 1`, then rounds the result to precision 50. For a negative exponent the kernel does **not** use Java's negative-exponent branch: it first computes `1 / base` at precision 50, then applies the same positive-power algorithm to that already-rounded reciprocal. For example, `3 ^ -3` ends in `…7036` under the kernel's reciprocal-first order, while taking the precision-50 reciprocal of `3 ^ 3` ends in `…7037`.
 
-⚠ Both are *silent*. A reimplementation must make these total (return "not evaluated" / `false`), never throw. A test that only checks the happy path will miss that `[x]/0 > 5` quietly does not fire.
+⚠ The domain failure is silent only at the **validation-comparison consumer**. A computation must preserve it through the expression and target boundary. For the legal `RoundAccounting([x] / 0, 2)` shape, rounding preserves the invalid result, the target is marked invalid with `berechnungsWertFehler`, and a later computation that reads that target is itself poisoned. A fresh target has no computed-value result and a stale target is reported CLEARED, but that delta shape does not make the target cleanly empty.
 
-> **Lean modelling note.** Arithmetic evaluation is a *partial* operation surfaced as total: `arith : Ast → Env → Doc → Option Decimal`, where `_ / 0`, `0 ^ (neg)`, and out-of-range exponents return `none`, and a comparison over a `none` operand yields *not-fired*. Do not use Lean's junk-value `x / 0 = 0` — the semantics is "the whole comparison does not fire", which is different from "the quotient is 0".
+> **Lean modelling note.** Arithmetic evaluation is a *partial* operation surfaced as a total result type: `_ / 0`, `0 ^ (neg)`, and out-of-range exponents return a domain-failure result rather than Lean's junk rational value. A validation comparison maps that result to not-fired; a checked computation consumer maps it to an invalid target whose dependent reads poison. Do not erase the distinction into a globally clean `Option.none`.
 
 ---
 
@@ -103,7 +103,7 @@ These fixed constants decide the last-digit behaviour; a reimplementation must u
 - [ ] `MVK_INVALID_COMPARE_DEC_PLACES` is the only suppressible diagnostic.
 - [ ] Three rounding modes with `RoundAccounting` = **half away from zero** (not banker's); down/up follow the number line after the scale-19 pre-round.
 - [ ] Both expression and `…Value` forms accept `DecimalPlaces` **0..14**; omission means exactly `0`.
-- [ ] Division-by-zero and invalid power inputs are **total**: comparison → `false`/not-fired, never an exception; `±1000` and `0^0` are admitted. Positive power follows the staged X3.274 working-precision algorithm; negative power rounds the reciprocal to precision 50 before positive exponentiation.
+- [ ] Division-by-zero and invalid power inputs are **total domain failures**: validation comparison → not-fired; computation target → invalid/formal error and dependent poison. `±1000` and `0^0` are admitted. Positive power follows the staged X3.274 working-precision algorithm; negative power rounds the reciprocal to precision 50 before positive exponentiation.
 - [ ] Scale is always bounded (missing `maxFractionalDigits` ⇒ `0`); ≤15 input digits.
 - [ ] Tolerance is **strictly outside** (`> N`); the fixed 1/2/5/10 thresholds only.
 - [ ] Precision constants and order: comparison rescale **scale 19 HALF_UP**, every lowered arithmetic node **50 significant digits HALF_UP**, division-bearing multiplication normalization before evaluation, and a scale-19 HALF_UP **pre-round** before any target rounding.
