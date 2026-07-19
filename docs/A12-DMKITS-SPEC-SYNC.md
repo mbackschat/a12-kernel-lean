@@ -181,3 +181,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits reproduces the asymmetric scale gate and narrow power-scale exception against both kernel strategies, carries enough checked metadata to express the rule without syntax-specific patches, and returns the exact reviewed revision plus a per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-19-10 — power preserves staged Java precision and reciprocal-first negative order
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`04-numbers-and-decimals.md` §3](../spec/04-numbers-and-decimals.md#3-division-by-zero-and-power-edge-cases-evaluate-quietly) and [`§5`](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly)
+- **Delta:** Specify the numeric mechanism behind admitted powers. Positive power follows the OpenJDK 21 X3.274 numeric-value algorithm, rounding binary-exponentiation intermediates at precision `50 + decimalDigits(exponent) + 1` before the final precision-50 round. Negative power is kernel-specific: it first rounds `1 / base` at precision 50, then applies the positive algorithm. Exact rational power plus one final round and reciprocal-after-positive-power are both observably different.
+- **Basis:** kernel `VkBigDecimal.power` and `getKehrwert` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`, together with the OpenJDK 21 `BigDecimal.pow(int, MathContext)` X3.274 contract. The positive separator `0.473471768303411 ^ 7` ends in `…3319` under staged power but `…3318` under exact-power/final-round. The negative separator `3 ^ -3` ends in `…7036` under the kernel's reciprocal-first order but `…7037` under a final reciprocal. a12-dmkits calls Java's positive primitive correctly, but its JVM negative path currently takes the reciprocal after positive power; existing `4 ^ -1` coverage cannot distinguish the orders, and no committed power test crosses the 50-significant-digit boundary.
+- **Requested a12-dmkits reconciliation:** Fix the JVM numeric mechanism at its shared power locus so negative exponents use the kernel's reciprocal-first order; correct any exact/bit-for-bit correspondence claim; add positive staged-precision and negative reciprocal-order differentials against both kernel strategies plus `±1000`, `±1001`, `0^0`, `0^-1`, and fractional-exponent controls. Keep the JS limitation explicit until that implementation matches the same mechanism. Do not use the peer interpreter as the oracle.
+- **Compatibility:** Legal negative powers can change in the last retained digit; nested arithmetic and scale-19 comparisons can amplify the difference into a visible verdict. Classify JVM, JS, public interpreter, serialization, and dmtool-release consequences. Positive behavior should remain unchanged if it already delegates to Java `BigDecimal.pow(MathContext)`.
+- **Acceptance:** Both kernel strategies and the JVM interpreter agree on discriminating positive and negative precision cases and the named known-value domain-edge matrix; the implementation performs reciprocal-first staging structurally rather than special-casing examples; prose makes the OpenJDK 21 algorithm and external-evidence boundary explicit; the handback supplies the exact reviewed revision and per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending

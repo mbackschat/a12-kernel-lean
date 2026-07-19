@@ -79,4 +79,75 @@ example :
       1 := by
   native_decide
 
+private def stagedPowerBase : Rat := 473471768303411 / 10 ^ 15
+private def stagedPowerResult : Rat :=
+  53340688743367123920238743454888667967326752493319 / 10 ^ 52
+
+/- Java's staged power differs from exact rational exponentiation followed by one final round. -/
+example : powerNumeric stagedPowerBase 7 = .value stagedPowerResult := by
+  native_decide
+
+example : roundMathContext50 (stagedPowerBase ^ 7) =
+    53340688743367123920238743454888667967326752493318 / 10 ^ 52 := by
+  native_decide
+
+private def powerSevenAtWorkingPrecision (precision : Nat) (base : Rat) : Rat :=
+  let first := roundSignificantHalfUp precision base
+  let squared := roundSignificantHalfUp precision (first * first)
+  let cubed := roundSignificantHalfUp precision (squared * base)
+  let sixth := roundSignificantHalfUp precision (cubed * cubed)
+  roundMathContext50 (roundSignificantHalfUp precision (sixth * base))
+
+private def workingPrecisionBase : Rat := 484893708568307 / 10 ^ 15
+
+/- Exponent seven requires work precision 52; omitting X3.274's final guard digit changes the result. -/
+example : positivePower workingPrecisionBase 7 =
+    63026885189266057080768245915433088146473404170653 / 10 ^ 52 := by
+  native_decide
+
+example : powerSevenAtWorkingPrecision 51 workingPrecisionBase =
+    63026885189266057080768245915433088146473404170654 / 10 ^ 52 := by
+  native_decide
+
+private def reciprocalFirstPowerResult : Rat :=
+  37037037037037037037037037037037037037037037037036 / 10 ^ 51
+
+/- A12 rounds the reciprocal first; taking the reciprocal after positive power is observably different. -/
+example : powerNumeric 3 (-3) = .value reciprocalFirstPowerResult := by
+  native_decide
+
+example : divideNumeric 1 27 =
+    .value (37037037037037037037037037037037037037037037037037 / 10 ^ 51) := by
+  native_decide
+
+example : powerNumeric 0 0 = .value 1 := by
+  native_decide
+
+example : powerNumeric 0 (-1) = .notEvaluated := by
+  native_decide
+
+example : powerNumeric 4 (-1) = .value (1 / 4) := by
+  native_decide
+
+example : powerNumeric (-2) 2 = .value 4 := by
+  native_decide
+
+example : powerNumeric (-2) 3 = .value (-8) := by
+  native_decide
+
+example : powerNumeric 2 (1 / 2) = .notEvaluated := by
+  native_decide
+
+example : powerNumeric 1 1000 = .value 1 := by
+  native_decide
+
+example : powerNumeric 1 (-1000) = .value 1 := by
+  native_decide
+
+example : powerNumeric 1 1001 = .notEvaluated := by
+  native_decide
+
+example : powerNumeric 1 (-1001) = .notEvaluated := by
+  native_decide
+
 end A12Kernel.Conformance.NumericArithmetic
