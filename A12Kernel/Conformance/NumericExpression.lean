@@ -1,0 +1,156 @@
+import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Semantics.NumericComparison
+
+/-! # Numeric-expression lowering separating cases -/
+
+namespace A12Kernel.Conformance.NumericExpression
+
+open A12Kernel
+
+private abbrev Expr := AuthoredNumericExpr Nat
+private abbrev Lowered := LoweredNumericExpr Nat
+
+private def literal (value : Rat) (authoredScale : Int) : Expr :=
+  .literal { value, authoredScale }
+
+private def noAtoms (_ : Nat) : NumericScaleSummary :=
+  NumericScaleSummary.field 0
+
+private def oneThird : Expr :=
+  .group (.binary .divide (literal 1 0) (literal 3 0))
+
+private def fourFifths : Expr :=
+  .group (.binary .divide (literal 4 0) (literal 5 0))
+
+/- Equal numeric values retain distinct authored scales. -/
+example : (literal 0 0).summary? noAtoms =
+    some { scale := .exact 0, canExpandScale := true } := by
+  native_decide
+
+example : (literal 0 2).summary? noAtoms =
+    some { scale := .exact 2, canExpandScale := true } := by
+  native_decide
+
+/- Grouping is summary-transparent but blocks the narrow simple-constant power case. -/
+example : (.power (literal 2 0) (literal 2 0) : Expr).summary? noAtoms =
+    some { scale := .exact 0, canExpandScale := false } := by
+  native_decide
+
+example : (.power (literal 2 0) (.group (literal 2 0)) : Expr).summary? noAtoms =
+    some { scale := .unknown, canExpandScale := false } := by
+  native_decide
+
+private def threeTimesOneThird : Expr :=
+  .binary .multiply (literal 3 0) oneThird
+
+private def normalizedThreeTimesOneThird : Lowered :=
+  .binary .divide
+    (.binary .multiply (.literal 3) (.literal 1))
+    (.literal 3)
+
+/- Grouping does not block the later bottom-up division rewrite. -/
+example : threeTimesOneThird.lowerForEvaluation = normalizedThreeTimesOneThird := by
+  native_decide
+
+/- A leading divided factor puts the non-divided factor first in the new numerator. -/
+example : (.binary .multiply oneThird (literal 3 0) : Expr).lowerForEvaluation =
+    normalizedThreeTimesOneThird := by
+  native_decide
+
+/- Two immediate divided factors become one quotient of numerator and denominator products. -/
+example : (.binary .multiply oneThird fourFifths : Expr).lowerForEvaluation =
+    .binary .divide
+      (.binary .multiply (.literal 1) (.literal 4))
+      (.binary .multiply (.literal 3) (.literal 5)) := by
+  native_decide
+
+/- A later ordinary factor precedes the numerator synthesized by the child pass. -/
+example : (.binary .multiply threeTimesOneThird (literal 5 0) : Expr).lowerForEvaluation =
+    .binary .divide
+      (.binary .multiply (.literal 5)
+        (.binary .multiply (.literal 3) (.literal 1)))
+      (.literal 3) := by
+  native_decide
+
+/- The pass does not revisit a newly constructed product containing an extracted nested division. -/
+example : (.binary .multiply (literal 2 0)
+    (.group (.binary .divide oneThird (literal 5 0))) : Expr).lowerForEvaluation =
+      .binary .divide
+        (.binary .multiply (.literal 2)
+          (.binary .divide (.literal 1) (.literal 3)))
+        (.literal 5) := by
+  native_decide
+
+/- Addition, rounding, and power remain transformation boundaries. -/
+example : (.binary .multiply (literal 3 0)
+    (.binary .add oneThird (literal 1 0)) : Expr).lowerForEvaluation =
+      .binary .multiply (.literal 3)
+        (.binary .add
+          (.binary .divide (.literal 1) (.literal 3))
+          (.literal 1)) := by
+  native_decide
+
+example : (.binary .multiply (literal 3 0)
+    (.round .halfUp omittedRoundingPlaces oneThird) : Expr).lowerForEvaluation =
+      .binary .multiply (.literal 3)
+        (.round .halfUp omittedRoundingPlaces
+          (.binary .divide (.literal 1) (.literal 3))) := by
+  native_decide
+
+example : (.binary .multiply (literal 3 0)
+    (.power oneThird (literal 2 0)) : Expr).lowerForEvaluation =
+      .binary .multiply (.literal 3)
+        (.power
+          (.binary .divide (.literal 1) (.literal 3))
+          (.literal 2)) := by
+  native_decide
+
+/- Static checking consumes the authored tree: lowering would clear this surviving capability at the new root division. -/
+example : threeTimesOneThird.summary? noAtoms =
+    some { scale := .unknown, canExpandScale := true } := by
+  native_decide
+
+/- Per-node precision makes the normalization part of evaluation semantics, not a value-preserving optimization. -/
+example : threeTimesOneThird.evalValue (fun _ => .notEvaluated) = .value 1 := by
+  native_decide
+
+private def directAuthoredThreeTimesOneThird : NumericArithmeticResult :=
+  match divideNumeric 1 3 with
+  | .value quotient => .value (NumericArithmeticOp.multiply.eval 3 quotient)
+  | .notEvaluated => .notEvaluated
+
+example : directAuthoredThreeTimesOneThird = .value (1 - 1 / 10 ^ 50) := by
+  native_decide
+
+private def precisionAmplifier : Rat := 10 ^ 31
+
+private def amplifiedThreeTimesOneThird : Expr :=
+  .binary .multiply threeTimesOneThird
+    (literal precisionAmplifier (-31))
+
+example : amplifiedThreeTimesOneThird.evalValue (fun _ => .notEvaluated) =
+    .value precisionAmplifier := by
+  native_decide
+
+/- The counterfactual authored fold leaves a scale-19-visible gap after amplification. -/
+example :
+    (match directAuthoredThreeTimesOneThird with
+    | .value value =>
+        NumericArithmeticResult.value
+          (NumericArithmeticOp.multiply.eval value precisionAmplifier)
+    | .notEvaluated => NumericArithmeticResult.notEvaluated) =
+      NumericArithmeticResult.value
+        (precisionAmplifier - 1 / 10 ^ 19) := by
+  native_decide
+
+/- The amplified gap survives the actual scale-19 comparison boundary. -/
+example : NumericComparisonOp.notEqual.holds
+    precisionAmplifier (precisionAmplifier - 1 / 10 ^ 19) = true := by
+  native_decide
+
+example : (.binary .multiply (literal 2 0)
+    (.group (.binary .divide (literal 1 0) (literal 0 0))) : Expr).evalValue
+      (fun _ => .notEvaluated) = .notEvaluated := by
+  native_decide
+
+end A12Kernel.Conformance.NumericExpression
