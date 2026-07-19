@@ -36,6 +36,25 @@ private def amountNonnegative : SurfaceCondition :=
 private def resolvedText : ResolvedMessageText :=
   { text := "$Amount.value$ stays opaque" }
 
+private def amountName : MessageNameInput :=
+  { providerResult := none
+    modelLabel := some "Amount"
+    debugDisplay := "/Order[1]/Amount" }
+
+private def customerName : MessageNameInput :=
+  { providerResult := some "Customer name"
+    modelLabel := some "Customer"
+    debugDisplay := "/Order[1]/Customer" }
+
+private def emptyScaleZeroNumber : MessageValueInput :=
+  { displayValue := none, defaultDisplay := "0" }
+
+private def emptyScaleTwoNumber : MessageValueInput :=
+  { displayValue := none, defaultDisplay := "0.00" }
+
+private def emptyString : MessageValueInput :=
+  { displayValue := none, defaultDisplay := "" }
+
 private def errorCode : String :=
   "amountNonnegative"
 
@@ -134,6 +153,60 @@ example :
         some (.inr (.repeatableErrorField repeatedAmount.id)) ∧
       errorOf (assemble amountNonnegative 99) =
         some (.inr (.errorField (.unknownFieldId 99))) := by
+  native_decide
+
+/- Rendering happens once over structured parts: missing values use their format-supplied default, while replacement bytes remain opaque. The first dollar below is decoded literal text; `$Other$` is replacement data. -/
+example :
+    ({ parts := [
+        .text "Amount [",
+        .fieldValue emptyScaleZeroNumber,
+        .text "], name [",
+        .fieldName customerName,
+        .text "], cost ",
+        .text "$",
+        .fieldValue { emptyScaleZeroNumber with displayValue := some "$Other$" }
+      ] } : MessageRenderPlan).render =
+      { text := "Amount [0], name [Customer name], cost $$Other$" } := by
+  native_decide
+
+/- Format defaults are exact display strings: empty String stays empty, an explicitly empty display falls back, and Number scale is not collapsed to a universal `0`. -/
+example :
+    ({ parts := [
+        .text "[",
+        .fieldValue emptyString,
+        .text "][",
+        .fieldValue { emptyScaleZeroNumber with displayValue := some "" },
+        .text "][",
+        .fieldValue emptyScaleTwoNumber,
+        .text "]"
+      ] } : MessageRenderPlan).render =
+      { text := "[][0][0.00]" } := by
+  native_decide
+
+/- Provider output wins even when empty; otherwise a nonempty model label wins before the debug representation. -/
+example :
+    ({ parts := [
+        .fieldName { amountName with providerResult := some "" },
+        .text "|",
+        .fieldName amountName,
+        .text "|",
+        .fieldName { amountName with modelLabel := some "" },
+        .text "|",
+        .fieldName { amountName with modelLabel := none }
+      ] } : MessageRenderPlan).render =
+      { text := "|Amount|/Order[1]/Amount|/Order[1]/Amount" } := by
+  native_decide
+
+/- A present display value is repeated byte-for-byte; this renderer does not normalize display-layer CRLF. -/
+example :
+    let rawDisplay : MessageValueInput :=
+      { displayValue := some "A\r\nB", defaultDisplay := "" }
+    ({ parts := [
+        .fieldValue rawDisplay,
+        .text "|",
+        .fieldValue rawDisplay
+      ] } : MessageRenderPlan).render =
+      { text := "A\r\nB|A\r\nB" } := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule
