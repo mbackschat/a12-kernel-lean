@@ -231,6 +231,14 @@ run_cmd do
 #print axioms A12Kernel.numericInvalidity_dependency_is_poisoned
 #print axioms A12Kernel.rejectedNumericDependency_doesNotExposeAttempt
 #print axioms A12Kernel.same_numericApplicationAndDelta_doesNotImply_sameDependency
+#print axioms A12Kernel.flatRule_eval_verdict
+#print axioms A12Kernel.flatRule_fired_message_exact
+#print axioms A12Kernel.flatRule_metadata_doesNotChangeVerdict
+#print axioms A12Kernel.flatRule_hasMessage_iff_fired
+#print axioms A12Kernel.flatRuleMessage_invalidates_iff_error
+#print axioms A12Kernel.equal_flatRuleSilence_doesNotImply_equalVerdict
+#print axioms A12Kernel.checkedFlatRule_errorField_coherent
+#print axioms A12Kernel.checkedFlatRule_fired_message_exact
 #print axioms A12Kernel.checkedNumericComparison_modelWellFormed
 #print axioms A12Kernel.checkedNumericComparison_wellFormed
 #print axioms A12Kernel.numericArithmetic_formalInvalid_left_is_unknown
