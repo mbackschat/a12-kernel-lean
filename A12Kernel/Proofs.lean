@@ -12,6 +12,7 @@ import A12Kernel.Proofs.NumericFillability
 import A12Kernel.Proofs.NumericComputation
 import A12Kernel.Proofs.NumericStoredNumber
 import A12Kernel.Proofs.NumericTarget
+import A12Kernel.Proofs.NumericApplication
 import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.Observation
