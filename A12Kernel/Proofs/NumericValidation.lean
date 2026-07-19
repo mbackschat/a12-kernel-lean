@@ -5,32 +5,45 @@ import A12Kernel.Elaboration.NumericValidation
 namespace A12Kernel
 
 /-- Eliminate the model-validity certificate carried by a checked comparison. -/
-theorem checkedNumericFixedRight_modelWellFormed
-    (checked : CheckedNumericFixedRightComparison model) :
+theorem checkedNumericComparison_modelWellFormed
+    (checked : CheckedNumericComparison model) :
     model.validate.isOk = true :=
   checked.modelWellFormed
 
 /-- Eliminate the core static-legality certificate carried by a checked comparison. -/
-theorem checkedNumericFixedRight_wellFormed
-    (checked : CheckedNumericFixedRightComparison model) :
+theorem checkedNumericComparison_wellFormed
+    (checked : CheckedNumericComparison model) :
     checked.core.WellFormed model checked.rowGroup :=
   checked.wellFormed
 
-theorem numericArithmeticFixedRight_formalInvalid_is_unknown
-    (op : NumericComparisonOp) (cause : FormalCause) (expected : Rat) :
-    op.evalArithmeticFixedRight (.error cause) expected = .unknown := by
+theorem numericArithmetic_formalInvalid_left_is_unknown
+    (op : NumericComparisonOp) (cause : FormalCause)
+    (right : Except FormalCause NumericArithmeticOutcome) :
+    op.evalArithmetic (.error cause) right = .unknown := by
   rfl
 
-theorem numericArithmeticFixedRight_domainFailure_is_notFired
-    (op : NumericComparisonOp) (expected : Rat) :
-    op.evalArithmeticFixedRight (.ok .notEvaluated) expected = .notFired := by
+theorem numericArithmetic_formalInvalid_right_is_unknown
+    (op : NumericComparisonOp) (cause : FormalCause)
+    (left : Except FormalCause NumericArithmeticOutcome) :
+    op.evalArithmetic left (.error cause) = .unknown := by
+  cases left <;> rfl
+
+theorem numericArithmetic_domainFailure_left_is_notFired
+    (op : NumericComparisonOp) (right : NumericArithmeticOutcome) :
+    op.evalArithmetic (.ok .notEvaluated) (.ok right) = .notFired := by
   rfl
 
-theorem numericArithmeticFixedRight_value_delegates
-    (op : NumericComparisonOp) (amount expected : Rat)
-    (fillability : NumericFillability) :
-    op.evalArithmeticFixedRight (.ok (.value amount fillability)) expected =
-      op.evalFixedRight (.value amount fillability) expected := by
+theorem numericArithmetic_domainFailure_right_is_notFired
+    (op : NumericComparisonOp) (left : NumericArithmeticOutcome) :
+    op.evalArithmetic (.ok left) (.ok .notEvaluated) = .notFired := by
+  cases left <;> rfl
+
+theorem numericArithmetic_values_delegate
+    (op : NumericComparisonOp) (left right : Rat)
+    (leftFill rightFill : NumericFillability) :
+    op.evalArithmetic
+        (.ok (.value left leftFill)) (.ok (.value right rightFill)) =
+      op.eval (.value left leftFill) (.value right rightFill) := by
   rfl
 
 private theorem rootDivision_plain
@@ -130,42 +143,50 @@ private theorem loweredPlainValidation_isSome
   | power | round =>
       simp [LoweredNumericExpr.isPlainArithmetic] at plain
 
-private theorem numericFixedRight_wellFormed_isPlain
-    (comparison : NumericFixedRightComparison)
+private theorem numericComparison_wellFormed_sidesPlain
+    (comparison : NumericComparison)
     (wellFormed : comparison.WellFormed model rowGroup) :
-    comparison.left.isPlainArithmetic = true := by
-  simp only [NumericFixedRightComparison.WellFormed,
-    NumericFixedRightComparison.wellFormedBool, Bool.and_eq_true] at wellFormed
-  exact wellFormed.1.1.1.2
+    comparison.left.isPlainArithmetic = true ∧
+      comparison.right.isPlainArithmetic = true := by
+  simp only [NumericComparison.WellFormed,
+    NumericComparison.wellFormedBool, Bool.and_eq_true] at wellFormed
+  exact ⟨wellFormed.1.1.1.1.1.1.2, wellFormed.1.1.1.1.1.2⟩
 
-/-- The checked certificate makes the evaluator's unsupported-shape fallback unreachable. -/
-theorem checkedNumericFixedRight_evaluation_isSome
-    (checked : CheckedNumericFixedRightComparison model)
+/-- The checked certificate makes both evaluator unsupported-shape fallbacks unreachable. -/
+theorem checkedNumericComparison_evaluations_areSome
+    (checked : CheckedNumericComparison model)
     (context : FlatContext) :
     (checked.core.left.lowerForEvaluation.evalPlainValidation?
-      context.resolveNumericArithmetic).isSome = true := by
-  apply loweredPlainValidation_isSome
-  apply authoredNumericLower_plain
-  exact numericFixedRight_wellFormed_isPlain checked.core checked.wellFormed
+        context.resolveNumericArithmetic).isSome = true ∧
+      (checked.core.right.lowerForEvaluation.evalPlainValidation?
+        context.resolveNumericArithmetic).isSome = true := by
+  have plain :=
+    numericComparison_wellFormed_sidesPlain checked.core checked.wellFormed
+  exact ⟨
+    loweredPlainValidation_isSome _ _
+      (authoredNumericLower_plain _ plain.1),
+    loweredPlainValidation_isSome _ _
+      (authoredNumericLower_plain _ plain.2)⟩
 
-/-- A direct atom in the new core evaluates exactly like the older direct Number-field core. -/
-theorem numericFixedRight_atom_agrees_flat
+/-- A direct atom and literal evaluate exactly like the shared low-level Number-field evaluator. -/
+theorem numericComparison_atom_literal_agrees_flat
     (op : NumericComparisonOp) (field : FlatNumberField)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op, left := .atom field, right } :
-      NumericFixedRightComparison).evalSelected context =
+    ({ op, left := .atom field, right := .literal right } :
+      NumericComparison).evalSelected context =
         (FlatComparison.number op field right.value).eval context := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp only [NumericFixedRightComparison.evalSelected,
+    simp only [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericArithmetic, FlatComparison.eval,
-      NumericComparisonOp.evalArithmeticFixedRight,
-      NumericComparisonOp.evalFixedRight, observed]
+      NumericComparisonOp.evalArithmetic,
+      NumericComparisonOp.evalFixedRight,
+      NumericComparisonOp.eval, observed]
 
 /-- Full validation gates a plain comparison before any empty-Number substitution can fire. -/
-theorem checkedNumericFixedRight_emptyRow_notFired
-    (checked : CheckedNumericFixedRightComparison model)
+theorem checkedNumericComparison_emptyRow_notFired
+    (checked : CheckedNumericComparison model)
     (context : FlatContext) :
     checked.evalFull context false = .notFired := by
   rfl

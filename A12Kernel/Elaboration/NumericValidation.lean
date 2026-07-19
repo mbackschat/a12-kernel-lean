@@ -1,25 +1,25 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
 
-/-! # Checked fixed-right numeric validation
+/-! # Checked ordinary numeric validation
 
-This capsule connects model-resolved nonrepeatable Number atoms to the existing authored-scale, one-pass lowering, arithmetic-fillability, and fixed-right comparison semantics. It deliberately admits only plain arithmetic in the evaluated row group. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, and ordinary comparison semantics. It deliberately admits only plain arithmetic in the evaluated row group. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
 
-/-- Parser-independent input to the checked fixed-right consumer. -/
-structure SurfaceNumericFixedRightComparison where
+/-- Parser-independent input to the checked ordinary numeric consumer. -/
+structure SurfaceNumericComparison where
   op : NumericComparisonOp
   left : AuthoredNumericExpr SurfaceFieldPath
-  right : DecodedNumericLiteral
+  right : AuthoredNumericExpr SurfaceFieldPath
   deriving Repr, DecidableEq
 
-/-- Resolved runtime representation; static guarantees belong to `CheckedNumericFixedRightComparison`. -/
-structure NumericFixedRightComparison where
+/-- Resolved runtime representation; static guarantees belong to `CheckedNumericComparison`. -/
+structure NumericComparison where
   op : NumericComparisonOp
   left : AuthoredNumericExpr FlatNumberField
-  right : DecodedNumericLiteral
+  right : AuthoredNumericExpr FlatNumberField
   deriving Repr, DecidableEq
 
 /-- Closed rejection classes for this deliberately narrow consumer, not kernel diagnostic codes. -/
@@ -67,35 +67,40 @@ private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupP
   | .error _ => false
 
 /-- Ordering is scale-exempt; unsuppressed equality and inequality use the exact authored-scale gate. -/
-def NumericComparisonOp.acceptsFixedRightScales (op : NumericComparisonOp)
+def NumericComparisonOp.acceptsScales (op : NumericComparisonOp)
     (left right : NumericScaleSummary) : Bool :=
   match op with
   | .equal | .notEqual => exactNumericScaleComparisonAllowed left right
-  | .less | .greaterEqual => true
+  | .less | .lessEqual | .greater | .greaterEqual => true
 
-def NumericFixedRightComparison.wellFormedBool
-    (comparison : NumericFixedRightComparison)
+def NumericComparison.wellFormedBool
+    (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
-  comparison.left.hasAtom &&
+  (comparison.left.hasAtom || comparison.right.hasAtom) &&
     comparison.left.isPlainArithmetic &&
+    comparison.right.isPlainArithmetic &&
     comparison.left.allAtoms (model.admitsNumberInGroup rowGroup) &&
+    comparison.right.allAtoms (model.admitsNumberInGroup rowGroup) &&
     comparison.left.authoringCheck == .accepted &&
-    match comparison.left.summary? (fun field =>
-        NumericScaleSummary.field field.info.scale) with
-    | some leftSummary =>
-        comparison.op.acceptsFixedRightScales leftSummary
-          (NumericScaleSummary.constant comparison.right.authoredScale)
-    | none => false
+    comparison.right.authoringCheck == .accepted &&
+    match
+        comparison.left.summary? (fun field =>
+          NumericScaleSummary.field field.info.scale),
+        comparison.right.summary? (fun field =>
+          NumericScaleSummary.field field.info.scale) with
+    | some leftSummary, some rightSummary =>
+        comparison.op.acceptsScales leftSummary rightSummary
+    | _, _ => false
 
-def NumericFixedRightComparison.WellFormed
-    (comparison : NumericFixedRightComparison)
+def NumericComparison.WellFormed
+    (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Prop :=
   comparison.wellFormedBool model rowGroup = true
 
-/-- A model-coherent fixed-right comparison produced only after every static stage succeeds. -/
-structure CheckedNumericFixedRightComparison (model : FlatModel) where
+/-- A model-coherent ordinary comparison produced only after every static stage succeeds. -/
+structure CheckedNumericComparison (model : FlatModel) where
   rowGroup : GroupPath
-  core : NumericFixedRightComparison
+  core : NumericComparison
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model rowGroup
 
@@ -124,30 +129,37 @@ private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) 
   | .round mode places body => do
       pure (.round mode places (← resolveNumericExpression model rowGroup body))
 
-/-- Resolve and check the supported surface before performing the one-pass lowering at evaluation time. -/
-def elaborateNumericFixedRight (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceNumericFixedRightComparison) :
-    Except NumericValidationElabError (CheckedNumericFixedRightComparison model) := do
+/-- Resolve and check both operands before performing their one-pass lowering at evaluation time. -/
+def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
+    (surface : SurfaceNumericComparison) :
+    Except NumericValidationElabError (CheckedNumericComparison model) := do
   match hModel : model.validate with
   | .error error => throw (.resolve error)
   | .ok () =>
       if !GroupPath.isValid rowGroup then
         throw (.resolve (.invalidRuleGroup rowGroup))
       let left ← resolveNumericExpression model rowGroup surface.left
-      if !left.hasAtom then throw .constantExpression
+      let right ← resolveNumericExpression model rowGroup surface.right
+      if !(left.hasAtom || right.hasAtom) then throw .constantExpression
       if !left.isPlainArithmetic then throw .unsupportedExpression
+      if !right.isPlainArithmetic then throw .unsupportedExpression
       match left.authoringCheck with
+      | .accepted => pure ()
+      | result => throw (.authoring result)
+      match right.authoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
       let leftSummary ← match left.summary? (fun field =>
           NumericScaleSummary.field field.info.scale) with
         | some summary => pure summary
         | none => throw .unsupportedExpression
-      let rightSummary := NumericScaleSummary.constant surface.right.authoredScale
-      if !surface.op.acceptsFixedRightScales leftSummary rightSummary then
+      let rightSummary ← match right.summary? (fun field =>
+          NumericScaleSummary.field field.info.scale) with
+        | some summary => pure summary
+        | none => throw .unsupportedExpression
+      if !surface.op.acceptsScales leftSummary rightSummary then
         throw (.exactScaleMismatch leftSummary rightSummary)
-      let core : NumericFixedRightComparison :=
-        { op := surface.op, left, right := surface.right }
+      let core : NumericComparison := { op := surface.op, left, right }
       if hCore : core.wellFormedBool model rowGroup = true then
         pure {
           rowGroup
@@ -198,32 +210,35 @@ def LoweredNumericExpr.evalPlainValidation?
       pure (evalPlainBinary op leftOutcome rightOutcome)
   | .power _ _ | .round _ _ _ => none
 
-/-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported core and is unreachable through the checked route. -/
-def NumericFixedRightComparison.evalSelected
-    (comparison : NumericFixedRightComparison) (context : FlatContext) : Verdict :=
-  match comparison.left.lowerForEvaluation.evalPlainValidation?
-      context.resolveNumericArithmetic with
-  | some outcome => comparison.op.evalArithmeticFixedRight outcome comparison.right.value
-  | none => .unknown
+/-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/
+def NumericComparison.evalSelected
+    (comparison : NumericComparison) (context : FlatContext) : Verdict :=
+  match
+      comparison.left.lowerForEvaluation.evalPlainValidation?
+        context.resolveNumericArithmetic,
+      comparison.right.lowerForEvaluation.evalPlainValidation?
+        context.resolveNumericArithmetic with
+  | some left, some right => comparison.op.evalArithmetic left right
+  | _, _ => .unknown
 
 /-- Evaluate one already row-selected checked comparison. -/
-def CheckedNumericFixedRightComparison.evalSelected
-    (checked : CheckedNumericFixedRightComparison model)
+def CheckedNumericComparison.evalSelected
+    (checked : CheckedNumericComparison model)
     (context : FlatContext) : Verdict :=
   checked.core.evalSelected context
 
 /-- A plain comparison never fires on an entirely blank full-validation row. -/
-def CheckedNumericFixedRightComparison.evalFull
-    (checked : CheckedNumericFixedRightComparison model)
+def CheckedNumericComparison.evalFull
+    (checked : CheckedNumericComparison model)
     (context : FlatContext) (hasContent : Bool) : Verdict :=
   if hasContent then checked.evalSelected context else .notFired
 
 /-- Check a surface comparison and evaluate it against model-derived cells under full validation. -/
-def elaborateAndEvalNumericFixedRight (model : FlatModel) (rowGroup : GroupPath)
+def elaborateAndEvalNumericComparison (model : FlatModel) (rowGroup : GroupPath)
     (raw : RawFlatContext) (hasContent : Bool)
-    (surface : SurfaceNumericFixedRightComparison) :
+    (surface : SurfaceNumericComparison) :
     Except NumericValidationElabError Verdict := do
-  let checked ← elaborateNumericFixedRight model rowGroup surface
+  let checked ← elaborateNumericComparison model rowGroup surface
   pure (checked.evalFull (model.checkContext raw) hasContent)
 
 end A12Kernel

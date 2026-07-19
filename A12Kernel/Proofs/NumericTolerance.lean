@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericTolerance
+import A12Kernel.Proofs.NumericComparison
 
 /-! # Fixed numeric-tolerance laws -/
 
@@ -15,23 +16,6 @@ theorem normalizedNumericDifference_comm (left right : Rat) :
 theorem numericTolerance_holds_comm (range : NumericToleranceRange) (left right : Rat) :
     range.holds left right = range.holds right left := by
   simp [NumericToleranceRange.holds, normalizedNumericDifference_comm left right]
-
-theorem numericDifferenceFillCanClose_comm_of_ne (left right : Rat)
-    (leftFill rightFill : NumericFillability)
-    (different :
-      normalizedComparisonValue left ≠ normalizedComparisonValue right) :
-    numericDifferenceFillCanClose left right leftFill rightFill =
-      numericDifferenceFillCanClose right left rightFill leftFill := by
-  by_cases below :
-      normalizedComparisonValue left < normalizedComparisonValue right
-  · have notAbove :
-        ¬normalizedComparisonValue right < normalizedComparisonValue left :=
-      Rat.not_lt.mpr (Rat.le_of_lt below)
-    simp [numericDifferenceFillCanClose, below, notAbove, Bool.or_comm]
-  · have above :
-        normalizedComparisonValue right < normalizedComparisonValue left :=
-      Rat.lt_of_le_of_ne (Rat.not_lt.mp below) different.symm
-    simp [numericDifferenceFillCanClose, above, below, Bool.or_comm]
 
 theorem numericTolerance_unknown_left (range : NumericToleranceRange)
     (cause : FormalCause) (right : NumericOperand) :

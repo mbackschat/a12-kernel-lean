@@ -3,7 +3,7 @@ import A12Kernel.Semantics.NumericFillability
 
 /-! # A12Kernel.Semantics.NumericComparison — numeric truth and directional polarity
 
-Numeric comparison has two independent outputs: whether the normalized values satisfy the condition, and whether later filling could move a substituted value far enough to clear a firing. This module owns the shared scale-19 comparison boundary and the left-operand fillability needed by the current field-versus-literal fragment.
+Numeric comparison has two independent outputs: whether the normalized values satisfy the condition, and whether later filling could move either substituted operand far enough to clear a firing. This module owns the shared scale-19 comparison boundary and the complete two-sided directional-polarity dispatch.
 -/
 
 namespace A12Kernel
@@ -12,6 +12,8 @@ inductive NumericComparisonOp where
   | equal
   | notEqual
   | less
+  | lessEqual
+  | greater
   | greaterEqual
   deriving Repr, DecidableEq
 
@@ -41,6 +43,8 @@ def NumericComparisonOp.holds (op : NumericComparisonOp) (left right : Rat) : Bo
   | .equal => left == right
   | .notEqual => left != right
   | .less => left < right
+  | .lessEqual => left <= right
+  | .greater => left > right
   | .greaterEqual => left >= right
 
 /-- Whether an available operand movement can close the current normalized numeric gap. Callers use this only when the normalized operands differ. -/
@@ -51,36 +55,43 @@ def numericDifferenceFillCanClose (left right : Rat)
   else
     leftFill.canShrink || rightFill.canGrow
 
-/-- Whether filling the left operand in an available direction could falsify a condition that currently holds against a fixed literal. For inequality, the breaking direction depends on which normalized side is smaller. -/
-def NumericComparisonOp.leftFillCanBreak (op : NumericComparisonOp) (left right : Rat)
-    (fillability : NumericFillability) : Bool :=
+/-- Whether filling either operand in an available direction could falsify a numeric condition that currently holds. -/
+def NumericComparisonOp.fillCanBreak (op : NumericComparisonOp) (left right : Rat)
+    (leftFill rightFill : NumericFillability) : Bool :=
   match op with
-  | .equal => fillability.canGrow || fillability.canShrink
-  | .notEqual => numericDifferenceFillCanClose left right fillability .fixed
-  | .less => fillability.canGrow
-  | .greaterEqual => fillability.canShrink
+  | .equal =>
+      leftFill.canGrow || leftFill.canShrink ||
+        rightFill.canGrow || rightFill.canShrink
+  | .notEqual => numericDifferenceFillCanClose left right leftFill rightFill
+  | .less | .lessEqual => leftFill.canGrow || rightFill.canShrink
+  | .greater | .greaterEqual => leftFill.canShrink || rightFill.canGrow
 
-/-- Evaluate one numeric expression against a fixed literal. Unknown remains distinct from false; a firing is omission-typed exactly when filling can move the left operand in a breaking direction. -/
-def NumericComparisonOp.evalFixedRight (op : NumericComparisonOp) (operand : NumericOperand)
-    (expected : Rat) : Verdict :=
-  match operand with
-  | .unknown _ => .unknown
-  | .value actual fillability =>
-      if op.holds actual expected then
-        if op.leftFillCanBreak actual expected fillability then
+/-- Evaluate two numeric operands. Unknown remains distinct from false; a firing is omission-typed exactly when filling can move either operand in a breaking direction. -/
+def NumericComparisonOp.eval (op : NumericComparisonOp)
+    (leftOperand rightOperand : NumericOperand) : Verdict :=
+  match leftOperand, rightOperand with
+  | .unknown _, _ | _, .unknown _ => .unknown
+  | .value left leftFill, .value right rightFill =>
+      if op.holds left right then
+        if op.fillCanBreak left right leftFill rightFill then
           .fired .omission
         else
           .fired .value
       else
         .notFired
 
-/-- Validation's fixed-right projection distinguishes a formal-invalid expression from a pure arithmetic domain failure. -/
-def NumericComparisonOp.evalArithmeticFixedRight (op : NumericComparisonOp)
-    (outcome : Except FormalCause NumericArithmeticOutcome) (expected : Rat) : Verdict :=
-  match outcome with
-  | .error _ => .unknown
-  | .ok .notEvaluated => .notFired
-  | .ok (.value amount fillability) =>
-      op.evalFixedRight (.value amount fillability) expected
+/-- Evaluate one numeric expression against a fixed literal. -/
+def NumericComparisonOp.evalFixedRight (op : NumericComparisonOp) (operand : NumericOperand)
+    (expected : Rat) : Verdict :=
+  op.eval operand (.value expected .fixed)
+
+/-- Validation's two-expression projection preserves formal invalidity as unknown and maps pure arithmetic domain failure to not-fired. In a mixed case formal invalidity conservatively dominates; that hidden precedence is a project refinement rather than an external-kernel claim. -/
+def NumericComparisonOp.evalArithmetic (op : NumericComparisonOp)
+    (left right : Except FormalCause NumericArithmeticOutcome) : Verdict :=
+  match left, right with
+  | .error _, _ | _, .error _ => .unknown
+  | .ok .notEvaluated, _ | _, .ok .notEvaluated => .notFired
+  | .ok (.value left leftFill), .ok (.value right rightFill) =>
+      op.eval (.value left leftFill) (.value right rightFill)
 
 end A12Kernel
