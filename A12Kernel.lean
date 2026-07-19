@@ -12,6 +12,7 @@ import A12Kernel.Core
 import A12Kernel.Cell
 import A12Kernel.Document
 import A12Kernel.Semantics.FullDate
+import A12Kernel.Semantics.DateTime
 import A12Kernel.Semantics.NumericStoredNumber
 import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericApplication

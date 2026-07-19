@@ -45,15 +45,16 @@ structure Document where
     (`spec/07` §9 / `spec/08` §10) -/
 abbrev Env := List (RepeatableLevel × Nat)
 
-/-- An injected instant (placeholder epoch value; a real calendar lands in the dates stage). -/
-abbrev Instant := Int
+/-- Scalar whole-second instant identity. Calendar and zone resolution live in the date/time semantics. -/
+structure Instant where
+  epochSecond : Int
+  deriving Repr, DecidableEq
 
 /-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise
     read from ambient state, kept as explicit input so `eval` / `compute` stay pure (no
-    `IO`; determinism given a clock). Timezone semantics (with DST spring-gap / autumn-fold
-    and a pinned tz-rule version — the one still-open a12-dmkits divergence (IG62 in `../a12-rulekit/`)),
-    the custom-condition / validator oracles, and the label provider join here with the
-    dates / custom stages. -/
+    `IO`; determinism given a clock). Model configuration selects a time zone; an explicit
+    timezone-rule version may later join the clock here. Custom-condition / validator
+    oracles and the label provider likewise belong to later custom stages. -/
 structure World where
   now      : Instant
   baseYear : Option Int
