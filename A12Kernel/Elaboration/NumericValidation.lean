@@ -1,23 +1,24 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Semantics.NumericTolerance
 
-/-! # Checked ordinary numeric validation
+/-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, and ordinary comparison semantics. It deliberately admits only plain arithmetic in the evaluated row group. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It deliberately admits only plain arithmetic in the evaluated row group. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
 
-/-- Parser-independent input to the checked ordinary numeric consumer. -/
+/-- Parser-independent input to the checked numeric consumer. -/
 structure SurfaceNumericComparison where
-  op : NumericComparisonOp
+  op : NumericValidationOp
   left : AuthoredNumericExpr SurfaceFieldPath
   right : AuthoredNumericExpr SurfaceFieldPath
   deriving Repr, DecidableEq
 
 /-- Resolved runtime representation; static guarantees belong to `CheckedNumericComparison`. -/
 structure NumericComparison where
-  op : NumericComparisonOp
+  op : NumericValidationOp
   left : AuthoredNumericExpr FlatNumberField
   right : AuthoredNumericExpr FlatNumberField
   deriving Repr, DecidableEq
@@ -73,6 +74,13 @@ def NumericComparisonOp.acceptsScales (op : NumericComparisonOp)
   | .equal | .notEqual => exactNumericScaleComparisonAllowed left right
   | .less | .lessEqual | .greater | .greaterEqual => true
 
+/-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
+def NumericValidationOp.acceptsScales (op : NumericValidationOp)
+    (left right : NumericScaleSummary) : Bool :=
+  match op with
+  | .ordinary comparison => comparison.acceptsScales left right
+  | .tolerance _ => true
+
 def NumericComparison.wellFormedBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
@@ -97,7 +105,7 @@ def NumericComparison.WellFormed
     (model : FlatModel) (rowGroup : GroupPath) : Prop :=
   comparison.wellFormedBool model rowGroup = true
 
-/-- A model-coherent ordinary comparison produced only after every static stage succeeds. -/
+/-- A model-coherent numeric comparison produced only after every static stage succeeds. -/
 structure CheckedNumericComparison (model : FlatModel) where
   rowGroup : GroupPath
   core : NumericComparison

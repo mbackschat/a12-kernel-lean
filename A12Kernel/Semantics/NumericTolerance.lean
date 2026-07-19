@@ -40,4 +40,26 @@ def NumericToleranceRange.eval (range : NumericToleranceRange)
       else
         .notFired
 
+/-- Closed operator family admitted by the checked numeric-validation leaf. -/
+inductive NumericValidationOp where
+  | ordinary (op : NumericComparisonOp)
+  | tolerance (range : NumericToleranceRange)
+  deriving Repr, DecidableEq
+
+/-- Dispatch two already classified operands without changing either primitive operation's semantics. -/
+def NumericValidationOp.eval (op : NumericValidationOp)
+    (left right : NumericOperand) : Verdict :=
+  match op with
+  | .ordinary comparison => comparison.eval left right
+  | .tolerance range => range.eval left right
+
+/-- Shared validation projection: formal invalidity stays unknown and arithmetic domain failure stays quiet before operator dispatch. -/
+def NumericValidationOp.evalArithmetic (op : NumericValidationOp)
+    (left right : Except FormalCause NumericArithmeticOutcome) : Verdict :=
+  match left, right with
+  | .error _, _ | _, .error _ => .unknown
+  | .ok .notEvaluated, _ | _, .ok .notEvaluated => .notFired
+  | .ok (.value left leftFill), .ok (.value right rightFill) =>
+      op.eval (.value left leftFill) (.value right rightFill)
+
 end A12Kernel

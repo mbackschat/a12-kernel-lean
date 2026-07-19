@@ -192,8 +192,12 @@ run_cmd do
 #print axioms A12Kernel.numericArithmetic_domainFailure_left_is_notFired
 #print axioms A12Kernel.numericArithmetic_domainFailure_right_is_notFired
 #print axioms A12Kernel.numericArithmetic_values_delegate
+#print axioms A12Kernel.ordinaryNumericValidation_acceptsScales
+#print axioms A12Kernel.ordinaryNumericValidation_eval
+#print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.checkedNumericComparison_evaluations_areSome
 #print axioms A12Kernel.numericComparison_atom_literal_agrees_flat
+#print axioms A12Kernel.numericTolerance_atom_literal_delegates
 #print axioms A12Kernel.checkedNumericComparison_emptyRow_notFired
 #print axioms A12Kernel.numericTolerance_threshold_pos
 #print axioms A12Kernel.normalizedNumericDifference_comm

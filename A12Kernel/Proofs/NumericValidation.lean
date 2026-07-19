@@ -17,33 +17,53 @@ theorem checkedNumericComparison_wellFormed
   checked.wellFormed
 
 theorem numericArithmetic_formalInvalid_left_is_unknown
-    (op : NumericComparisonOp) (cause : FormalCause)
+    (op : NumericValidationOp) (cause : FormalCause)
     (right : Except FormalCause NumericArithmeticOutcome) :
     op.evalArithmetic (.error cause) right = .unknown := by
   rfl
 
 theorem numericArithmetic_formalInvalid_right_is_unknown
-    (op : NumericComparisonOp) (cause : FormalCause)
+    (op : NumericValidationOp) (cause : FormalCause)
     (left : Except FormalCause NumericArithmeticOutcome) :
     op.evalArithmetic left (.error cause) = .unknown := by
   cases left <;> rfl
 
 theorem numericArithmetic_domainFailure_left_is_notFired
-    (op : NumericComparisonOp) (right : NumericArithmeticOutcome) :
+    (op : NumericValidationOp) (right : NumericArithmeticOutcome) :
     op.evalArithmetic (.ok .notEvaluated) (.ok right) = .notFired := by
   rfl
 
 theorem numericArithmetic_domainFailure_right_is_notFired
-    (op : NumericComparisonOp) (left : NumericArithmeticOutcome) :
+    (op : NumericValidationOp) (left : NumericArithmeticOutcome) :
     op.evalArithmetic (.ok left) (.ok .notEvaluated) = .notFired := by
   cases left <;> rfl
 
 theorem numericArithmetic_values_delegate
-    (op : NumericComparisonOp) (left right : Rat)
+    (op : NumericValidationOp) (left right : Rat)
     (leftFill rightFill : NumericFillability) :
     op.evalArithmetic
         (.ok (.value left leftFill)) (.ok (.value right rightFill)) =
       op.eval (.value left leftFill) (.value right rightFill) := by
+  rfl
+
+/-- The new closed dispatch leaves every ordinary operator's static-scale rule unchanged. -/
+theorem ordinaryNumericValidation_acceptsScales
+    (op : NumericComparisonOp) (left right : NumericScaleSummary) :
+    (NumericValidationOp.ordinary op).acceptsScales left right =
+      op.acceptsScales left right := by
+  rfl
+
+/-- The new closed dispatch leaves every ordinary primitive verdict unchanged. -/
+theorem ordinaryNumericValidation_eval
+    (op : NumericComparisonOp) (left right : NumericOperand) :
+    (NumericValidationOp.ordinary op).eval left right =
+      op.eval left right := by
+  rfl
+
+/-- Every fixed tolerance range deliberately bypasses the exact-comparison scale gate. -/
+theorem numericTolerance_acceptsScales
+    (range : NumericToleranceRange) (left right : NumericScaleSummary) :
+    (NumericValidationOp.tolerance range).acceptsScales left right = true := by
   rfl
 
 private theorem rootDivision_plain
@@ -172,7 +192,7 @@ theorem checkedNumericComparison_evaluations_areSome
 theorem numericComparison_atom_literal_agrees_flat
     (op : NumericComparisonOp) (field : FlatNumberField)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op, left := .atom field, right := .literal right } :
+    ({ op := .ordinary op, left := .atom field, right := .literal right } :
       NumericComparison).evalSelected context =
         (FlatComparison.number op field right.value).eval context := by
   cases observed : context.resolveNumberComparisonOperand field <;>
@@ -180,11 +200,27 @@ theorem numericComparison_atom_literal_agrees_flat
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericArithmetic, FlatComparison.eval,
-      NumericComparisonOp.evalArithmetic,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericComparisonOp.evalFixedRight,
       NumericComparisonOp.eval, observed]
 
-/-- Full validation gates a plain comparison before any empty-Number substitution can fire. -/
+/-- A direct tolerance core atom/literal pair delegates to the existing pure tolerance seam. -/
+theorem numericTolerance_atom_literal_delegates
+    (range : NumericToleranceRange) (field : FlatNumberField)
+    (right : DecodedNumericLiteral) (context : FlatContext) :
+    ({ op := .tolerance range, left := .atom field, right := .literal right } :
+      NumericComparison).evalSelected context =
+        range.eval (context.resolveNumberComparisonOperand field)
+          (.value right.value .fixed) := by
+  cases observed : context.resolveNumberComparisonOperand field <;>
+    simp only [NumericComparison.evalSelected,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericArithmetic,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericToleranceRange.eval, observed]
+
+/-- Full validation gates a checked numeric condition before any empty-Number substitution can fire. -/
 theorem checkedNumericComparison_emptyRow_notFired
     (checked : CheckedNumericComparison model)
     (context : FlatContext) :
