@@ -1,5 +1,5 @@
 import A12Kernel.Cell
-import A12Kernel.Semantics.NumericRounding
+import A12Kernel.Semantics.NumericFillability
 
 /-! # A12Kernel.Semantics.NumericComparison — numeric truth and directional polarity
 
@@ -14,23 +14,6 @@ inductive NumericComparisonOp where
   | less
   | greaterEqual
   deriving Repr, DecidableEq
-
-/-- Directions in which filling a currently substituted numeric result can move it. -/
-structure NumericFillability where
-  canGrow : Bool
-  canShrink : Bool
-  deriving Repr, DecidableEq
-
-namespace NumericFillability
-
-def fixed : NumericFillability := { canGrow := false, canShrink := false }
-
-def emptyNumber (signed : Bool) : NumericFillability :=
-  { canGrow := true, canShrink := signed }
-
-def growOnly : NumericFillability := { canGrow := true, canShrink := false }
-
-end NumericFillability
 
 /-- A numeric comparison operand after the consuming clause has applied its own empty-value rule. -/
 inductive NumericOperand where

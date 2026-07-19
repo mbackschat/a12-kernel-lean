@@ -55,15 +55,48 @@ Because empty operands participate in so many firings ([§2](03-empty-and-requir
 
 ## 4. The directional-fill machinery behind the typing
 
-The type is **not** a per-operator constant — it is computed from **directional fillability**: every operand carries *"could this result still grow / still shrink if something were filled"*, and the enclosing comparison's direction decides whether a fillable direction could clear the firing. The verified load-bearing pieces:
+The type is **not** a per-operator constant — it is computed from **directional fillability**: every operand carries *"could this result still grow / still shrink if something were filled"*, and the enclosing comparison's direction decides whether a fillable direction could clear the firing. The load-bearing pieces:
 
 - **An empty number's fillability is asymmetric and sign-aware:** it can always **grow**, but can **shrink only if the field is *signed*** — and the trigger is `positivesOnly`, **not** `minValue`. So `[Unsigned] >= 0` fired on the empty substitution is a **VALUE** error (no fill breaks `>= 0` from above), while the signed twin is **OMISSION**.
-- **Fill propagates through arithmetic and the value functions:** `+` combines both directions, `−` flips the subtrahend's, `×`/`÷` are sign-dependent, `^` follows base/exponent parity; `Round*` preserves the flags, `Abs` transforms them with the value's sign, operand-list `Min`/`Max` combine them directionally, `RangeAsNumber` is grow-only. So `[F] != [A] + [B]` with an empty `B` types **OMISSION** — the right side can still move.
+- **Fill propagates through arithmetic and the value functions:** `+` combines both directions, `−` flips the subtrahend's, and `×`/`÷` use both current signs plus joint-direction terms. Power is not a parity-only rule: it dispatches by fixedness, base magnitude relative to `−1`, `0`, and `1`, exponent direction and parity, with reciprocal-first negative handling and conservative fallback branches. `Round*` preserves the flags, `Abs` transforms them with the value's sign, operand-list `Min`/`Max` combine them directionally, `RangeAsNumber` is grow-only. So `[F] != [A] + [B]` with an empty `B` types **OMISSION** — the right side can still move.
 - **Each aggregate combiner has its own directions:** `Sum` grows always and shrinks only when signed, `MaxValue` is grow-only, `MinValue` shrink-only. A starred aggregate's **un-instantiated declared tail counts as fillable**, keeping a firing OMISSION until the repetition is exhausted.
 - **The counts can only grow:** a fired `count >= n` is **VALUE** (no fill lowers a count), while `count < n` stays **OMISSION**.
 - **Dates ride a *symmetric* combiner:** a fired date comparison types **OMISSION iff either side is not-given**, regardless of the comparison's direction.
 - **A `Having` filter escalates:** a fired quantifier over a filtered field star is **unconditionally OMISSION**, and so is a fired *comparison* consuming a filtered star (every value combiner marks a filtered result "not specified"). The filtered **counts** are the exception — they escalate only when the filter actually *counted* a value; a kept-nothing count stays directional (grow-only).
 - **A concatenation ORs the not-given flag across its parts:** a fired string comparison is **OMISSION iff any operand carries the flag** — so a concat containing *any* not-given read (an empty field, a no-match indexed read, a not-given coercion) types a fired mismatch OMISSION even though the concatenated string is non-empty.
+
+For valid numeric operands `a` and `b`, write `Gₐ`/`Sₐ` for “can grow”/“can shrink,” and similarly for `b`. The exact ordinary-arithmetic propagation is:
+
+| Result | Can grow | Can shrink |
+|---|---|---|
+| `a + b` | `Gₐ ∨ Gᵦ` | `Sₐ ∨ Sᵦ` |
+| `a − b` | `Gₐ ∨ Sᵦ` | `Sₐ ∨ Gᵦ` |
+| `a × b` | `(Gₐ ∧ Gᵦ) ∨ (Sₐ ∧ Sᵦ) ∨ (b > 0 ∧ Gₐ) ∨ (b < 0 ∧ Sₐ) ∨ (a > 0 ∧ Gᵦ) ∨ (a < 0 ∧ Sᵦ)` | `(Gₐ ∧ Sᵦ) ∨ (Sₐ ∧ Gᵦ) ∨ (b > 0 ∧ Sₐ) ∨ (b < 0 ∧ Gₐ) ∨ (a > 0 ∧ Sᵦ) ∨ (a < 0 ∧ Gᵦ)` |
+
+Division rejects a current numeric-zero divisor before fillability is consulted. Otherwise it applies the multiplication table to `a × (1 / b)`, where `G(1 / b) = Sᵦ ∨ (b < 0 ∧ Gᵦ)` and `S(1 / b) = Gᵦ ∨ (b > 0 ∧ Sᵦ)`. The joint terms are load-bearing: two grow-only operands currently at zero produce a grow-only product even though neither current sign alone contributes.
+
+Power first transforms a negative exponent by taking the precision-50 reciprocal of the base and swapping the exponent's directions; invalid `0`-negative, fractional, and out-of-range cases stop before polarity. For a valid nonnegative exponent, the kernel's conservative branch table is:
+
+| Fixedness/value region | Result directions |
+|---|---|
+| fixed exponent `0`, or both operands fixed | fixed |
+| fixed positive odd exponent | base directions |
+| fixed positive even exponent | grow; shrink iff the base can move toward zero from its current sign |
+| fixed base `> 1` | exponent directions |
+| fixed base `= 1` | fixed |
+| fixed base in `(0, 1)` | swapped exponent directions |
+| fixed base `= 0`, exponent cannot shrink, exponent `> 0` | fixed |
+| fixed base `= 0`, exponent cannot shrink, exponent `= 0` | shrink-only |
+| fixed base `= 0`, exponent can shrink | grow-only |
+| fixed base in `(−1, 0)`, exponent cannot shrink | shrink-only for even, grow-only for odd |
+| fixed base in `(−1, 0)`, exponent can shrink | grow and shrink |
+| fixed base `= −1` | shrink-only for even, grow-only for odd |
+| fixed base `< −1`, exponent cannot grow | shrink-only for even, grow-only for odd |
+| fixed base `< −1`, exponent can grow | grow and shrink |
+| both operands variable, with `base > 1` and neither able to shrink | grow-only |
+| every other both-variable case | grow and shrink |
+
+This power table is the kernel's hand-written conservative metadata algorithm, not a theorem that the flags equal exact mathematical reachability. In particular, do not simplify it from intuition about parity. Invalidity and the separate “result is empty” provenance marker remain independent of these two direction bits.
 
 The consuming comparison dispatches those directions per operator:
 

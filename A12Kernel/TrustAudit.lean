@@ -177,6 +177,15 @@ run_cmd do
 #print axioms A12Kernel.powerNumeric_zero_exponent
 #print axioms A12Kernel.powerNumeric_zero_negative_exponent
 #print axioms A12Kernel.powerNumeric_negative_exponent
+#print axioms A12Kernel.numericArithmetic_fixed_fillability
+#print axioms A12Kernel.numericFillability_add_comm
+#print axioms A12Kernel.numericFillability_subtract_eq_add_swapped
+#print axioms A12Kernel.numericFillability_subtract_fixed_right
+#print axioms A12Kernel.numericFillability_fixed_subtract
+#print axioms A12Kernel.numericFillability_multiply_comm
+#print axioms A12Kernel.numericFillability_multiply_fixed_positive
+#print axioms A12Kernel.numericFillability_multiply_fixed_negative
+#print axioms A12Kernel.numericFillability_multiply_fixed_zero
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
