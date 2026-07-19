@@ -22,14 +22,14 @@ Multiplication grows scale (two 3-decimal factors ⇒ a 6-decimal product), whic
 
 **Four verified boundaries of the gate:**
 
-- It applies to **field/expression operands only** — a numeric **literal is scale-exempt** (`== 0`, `== 0.00`, `<= 0.000` are all accepted against any scale). So scale-explicit literals are a rendering nicety, not a correctness requirement.
+- A numeric literal is **not globally scale-exempt**. A fractional literal contributes its authored fractional length, while an integer literal is stripped of trailing zeros and can therefore contribute a negative scale. Every literal also carries a separate “multiplicative constant” capability: on `==`/`!=`, the side with the smaller scale may be padded to the larger scale only when that smaller-scale expression carries the capability. Consequently, a scale-2 field may be compared with literal `0`, but a scale-0 field may not be compared with literal `0.00` unless the warning is suppressed.
 - **Ordering** (`<`, `<=`, `>`, `>=`) is scale-exempt, even field-vs-field.
-- An expression's **derived** scale is what the gate sees. `+`/`−` take the max input scale; `×` adds them; `÷` and `^` derive an *unknown* scale (shown as `?`), so an `==`/`!=` involving them is rejected until you wrap in a rounding.
+- An expression's **derived** scale is what the gate sees. `+`/`−` take the max input scale; `×` adds them; `÷` derives an *unknown* scale (shown as `?`). Power is normally unknown, but a scale-0 base raised to a syntactically simple nonnegative constant exponent derives scale 0. The exponent itself must have a statically known scale no greater than 0. An `==`/`!=` involving an unknown-scale result is rejected until a rounding gives it a known scale.
 - **Strings** compare field-vs-field with `==`/`!=` only; string *ordering* draws `MVK_INVALID_TYPE_FOR_COMPARISON`.
 
 **The one waivable diagnostic.** Beginning a rule condition with `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)` allows an `==`/`!=` across differing scales (e.g. comparing a checksum). This is the **only** suppressible code — naming any other raises `MVK_INVALID_SUPPRESSED_WARNING`.
 
-> **Lean modelling note.** Model scale as a *static, derivable* attribute of an expression, computed by a `scaleOf : Ast → Option Nat` pass (literals → `none`/exempt; field → its declared scale; `a+b` → `max`; `a*b` → sum; `a/b`, `a^b` → `none`-as-unknown). The `==`/`!=` well-formedness check is then a *parse-time* predicate over `scaleOf`, entirely separate from evaluation. This cleanly reflects that the gate never looks at runtime values.
+> **Lean modelling note.** A complete checked expression needs a static summary containing at least a known signed decimal scale or unknown plus the multiplicative-constant capability; `Option Nat` and “literal means exempt” are insufficient. Fields contribute their declared nonnegative scale without the capability. Literals contribute their authored/stripped scale with the capability. Multiplication adds known scales and OR-propagates the capability, while addition/subtraction take the maximum known scale and preserve the capability only when both sides carry it. The `==`/`!=` well-formedness check is a parse-time predicate over that summary, entirely separate from evaluation.
 
 ---
 
@@ -62,7 +62,7 @@ Worked values (no `DecimalPlaces` argument):
 ## 3. Division by zero and power edge cases evaluate *quietly*
 
 - **Division by zero** is not executed; the comparison containing it evaluates to **`false`** — never an error, never a fire.
-- **Power** is not evaluated for some inputs (`0` to a negative power; an exponent outside ±1000), so a rule containing it may simply **not fire** — indistinguishable from a satisfied condition unless tested explicitly.
+- **Power** is not evaluated for some inputs (`0` to a negative power; a non-integral exponent; an exponent outside ±1000), so a rule containing it may simply **not fire** — indistinguishable from a satisfied condition unless tested explicitly. The endpoints `−1000` and `1000` are admitted, and `0 ^ 0 = 1`.
 
 ⚠ Both are *silent*. A reimplementation must make these total (return "not evaluated" / `false`), never throw. A test that only checks the happy path will miss that `[x]/0 > 5` quietly does not fire.
 
@@ -72,7 +72,7 @@ Worked values (no `DecimalPlaces` argument):
 
 ## 4. Other numeric constraints
 
-- **At most one division per calculation** without grouping braces: write `{ [G] / [F] } / 2`. Powers cannot be nested without brackets.
+- **At most one division per calculation region** without grouping braces: write `{ [G] / [F] } / 2`. Addition/subtraction, power, and `{ … }` establish separate regions for this check. Powers cannot be nested without braces.
 - Input numbers may have at most **15 digits** (checked before each validation); internal arithmetic uses higher precision.
 - A Number field's scale is **always bounded** — there is *no* unbounded-scale decimal. A model that omits `maxFractionalDigits` gets scale **`0`**, never unbounded, never rejected.
 - **Tolerance comparisons** exist only at fixed thresholds — `DiffersWithToleranceRange1 / 2 / 5 / 10` — and fire when the difference is **strictly outside** the tolerance: `|a − b| > N`. A difference of *exactly* `N` does **not** fire. An empty numeric operand reads `0` ([§2](03-empty-and-required.md)); a fired tolerance comparison types like `==` (either operand's fill can close the band → OMISSION; [§12](10-validation-and-polarity.md)).
@@ -84,11 +84,12 @@ Worked values (no `DecimalPlaces` argument):
 These fixed constants decide the last-digit behaviour; a reimplementation must use the same ones or diverge on edge inputs.
 
 - **Every comparison** (ordering, equality, tolerance) rescales **both** operands to **scale 19, `HALF_UP`** before comparing. `Min`/`Max` *selection* stays full-precision (it does not rescale).
-- **Arithmetic** `×` / `÷` / `^` rounds to a **50-digit `MathContext`** (`+` / `−` stay exact). This is reachable through high-scale multiplication and is what makes `÷` terminate at all (a non-terminating decimal is cut to 50 significant digits).
+- **Every arithmetic node** — `+`, `−`, `×`, `÷`, and `^` — rounds to a **50-significant-digit `MathContext`, `HALF_UP`**. Addition and subtraction are therefore not universally exact: an intermediate 51-digit result can lose its least significant digit before the enclosing operation runs. The boundary is reachable through high-scale intermediates and is what makes `÷` terminate at all.
+- The evaluated tree is not always the authored tree. Before code generation, multiplication containing divided factors is normalized by collecting numerators and denominators: `a * {b / c}` becomes `{a * b} / c`, and `a * {b / c} * {d / e}` becomes `{a * b * d} / {c * e}`. Because every resulting node rounds independently, an evaluator must lower through this normalization rather than assume direct authored-AST fold order.
 - A **scale-19 `HALF_UP` pre-round precedes every target-scale rounding.** Worked consequence: `RoundDown([q] / 3 * 3, 0) == [q]` fires for `q = 1`, because the internal `0.999…9` pre-rounds to `1.000…` *before* the floor to 0 places yields `1`.
 
 > **Lean modelling note.** Two viable value representations:
-> - **exact rational (`ℚ`)** for arithmetic, with an explicit `rescale : ℚ → (scale : Nat) → RoundingMode → ℚ` applied at exactly the points above (comparison → scale 19 HALF_UP; arithmetic result → 50 significant digits; before a target rounding → scale 19 HALF_UP). Cleanest for *proving* things, but you must not forget the rescales — they are semantically load-bearing, not hygiene.
+> - **exact rational (`ℚ`)** for arithmetic, with explicit rounding applied at exactly the points above (comparison → scale 19 HALF_UP; every lowered arithmetic node → 50 significant digits HALF_UP; before a target rounding → scale 19 HALF_UP). Significant-digit rounding needs a signed target scale derived from the result's decimal magnitude; fixed scale 50 is not equivalent. Cleanest for *proving* things, but you must not forget the operation-local rounds or the division normalization — they are semantically load-bearing, not hygiene.
 > - **a `BigDecimal` model** (unscaled integer + scale) mirroring the engine directly. Easier to match ulp-for-ulp, harder to reason about.
 > Whichever you pick, make the three magic constants (**19**, `HALF_UP`, **50-digit**) named definitions, and property-test the pre-round example above — it is the canonical "did you get the rescale order right" check.
 
@@ -96,11 +97,11 @@ These fixed constants decide the last-digit behaviour; a reimplementation must u
 
 ## Checklist for §5
 
-- [ ] Scale is a **static** attribute; `scaleOf` derives expression scale (`+`→max, `*`→sum, `/`,`^`→unknown); `==`/`!=` gate is **parse-time**, literal- and ordering-exempt.
+- [ ] Scale is a **static** signed-or-unknown attribute paired with multiplicative-constant capability; `+`→max, `*`→sum, `/`→unknown, and the narrow scale-0/simple-nonnegative-power case→0. The `==`/`!=` gate is parse-time and asymmetrically pads only a capable smaller-scale side; ordering alone is scale-exempt.
 - [ ] `MVK_INVALID_COMPARE_DEC_PLACES` is the only suppressible diagnostic.
 - [ ] Three rounding modes with `RoundAccounting` = **half away from zero** (not banker's); down/up follow the number line after the scale-19 pre-round.
 - [ ] Both expression and `…Value` forms accept `DecimalPlaces` **0..14**; omission means exactly `0`.
-- [ ] Division-by-zero and out-of-range power are **total**: comparison → `false`/not-fired, never an error.
+- [ ] Division-by-zero and invalid power inputs are **total**: comparison → `false`/not-fired, never an exception; `±1000` and `0^0` are admitted.
 - [ ] Scale is always bounded (missing `maxFractionalDigits` ⇒ `0`); ≤15 input digits.
 - [ ] Tolerance is **strictly outside** (`> N`); the fixed 1/2/5/10 thresholds only.
-- [ ] Precision constants: comparison rescale **scale 19 HALF_UP**, arithmetic **50-digit MathContext**, a scale-19 HALF_UP **pre-round** before any target rounding.
+- [ ] Precision constants and order: comparison rescale **scale 19 HALF_UP**, every lowered arithmetic node **50 significant digits HALF_UP**, division-bearing multiplication normalization before evaluation, and a scale-19 HALF_UP **pre-round** before any target rounding.

@@ -16,13 +16,15 @@ Direct nonrepeatable Number field-to-literal `<` and `>=` are internally complet
 
 The first pure decimal-rounding capsule is internally complete. Authored places are statically bounded to `0..14`, omission is zero, expression and field-value forms share scale-19 `HALF_UP` pre-rounding followed by mathematical `FLOOR`, `CEILING`, or `HALF_UP`, and the requested places determine static result scale. Universal bounds use the pre-rounded operand; checked counterexamples block both false raw-input bounds. Numeric unknown causes and directional fillability survive rounding unchanged. No expression AST, public protocol, target application, or evidence machinery was added, and project-local portable rounding evidence remains pending.
 
+The first significant-digit arithmetic capsule is internally complete for pure `+`, `−`, and `×` nodes. Exact rational arithmetic is followed immediately by precision-50 decimal `HALF_UP`, including signed target scales for values above and below one. Universal commutativity, subtraction-as-add-negation, zero, and multiply-zero laws are retained; checked 51/52-digit and tiny tie cases plus a non-associativity witness prevent exact-, fixed-scale-, and final-round-only substitutes. The kernel audit corrected the former spec and a12-dmkits claim that `+`/`−` stay exact and exposed separate checked-expression normalization and scale-summary obligations. No expression AST, fillability propagation, public protocol, target application, or evidence mechanism was added, and project-local portable arithmetic evidence remains pending.
+
 The project now owns [`../spec/`](../spec/) as its language-neutral semantic bridge. [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) is the compact reconciliation ledger; its current pending entries cover the audited spec corrections and additions that a12-dmkits must review.
 
 ## Immediate order
 
-1. Research-close the first arithmetic capsule: distinguish exact `+`/`−`, 50-significant-digit `×`/`÷`/`^`, quiet division/power failure, and per-operation rounding order before choosing an executable boundary.
-2. Implement only the smallest coherent arithmetic meaning justified by that audit. Do not add a dormant `MathContext` abstraction, expression parser, target store, protocol surface, or evidence mechanism; make division-by-zero and unsupported powers explicit before Lean's total rational operations can hide them.
-3. Continue the number stage through separately justified arithmetic, tolerance, scale-derivation, and checked-expression capsules, then return to the highest-payoff formal-checking or validation boundary. Keep every addition on an existing semantic path unless a reproduced semantic need proves that a new abstraction is unavoidable.
+1. Add the separate pure division capsule on the existing precision-50 boundary: return an explicit non-value on zero before Lean's total rational division can hide the failure, lock positive/negative nonterminating quotients, and state only the definedness and symmetry laws justified by the value seam.
+2. Research-close power before implementation. Preserve the kernel's rounded reciprocal for negative exponents, Java `BigDecimal.pow(MathContext)` behavior, integral/`±1000` legality, `0^0`, and quiet invalidity; do not approximate it with exact rational exponentiation followed by one final round.
+3. Continue the number stage through arithmetic fillability, tolerance, the corrected signed-scale/constant-expandability summary, division-bearing checked-expression normalization, and checked rounding/arithmetic lowering. Keep every addition on an existing semantic path; add no parser, target store, protocol surface, or evidence mechanism merely to host the pure clauses.
 
 ## Guardrails and stop conditions
 
