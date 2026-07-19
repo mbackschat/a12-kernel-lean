@@ -1,6 +1,6 @@
-# Fresh Rust correlation consumer probe
+# Archived work order: fresh Rust correlation consumer probe
 
-**Status:** prepared in `a12-kernel-lean`; awaiting an owner-started or owner-authorized external repository and session. Nothing in this document authorizes changes outside this repository.
+**Completed 2026-07-20.** This file preserves the staged source allowlist and three prompts that produced the accepted Phase 1 result. The current correlation kit owns the [result, exact identities, assurance classification, and open boundary](../IMPLEMENTER-KIT-CORRELATION.md#fresh-rust-runtime-consumer-probe). This work order is not a live plan and authorizes no further external changes.
 
 ## Purpose and recommended boundary
 
@@ -16,8 +16,8 @@ Semantic source baseline: `2bb2d232cd62367d6aa92f64b6b0c1dfc591a830`. Later docu
 
 The external implementer may read only these files from this repository during the natural phase:
 
-- [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md);
-- [`single-group-correlation-v2.conformance.json`](../reference/single-group-correlation-v2.conformance.json);
+- [`IMPLEMENTER-KIT-CORRELATION.md`](../IMPLEMENTER-KIT-CORRELATION.md);
+- [`single-group-correlation-v2.conformance.json`](../../reference/single-group-correlation-v2.conformance.json);
 - the request and expected-response files referenced by the first twelve runtime cases in that suite, from `correlation-direction` through `correlation-repetition-less-than`.
 
 The implementer may also read the new repository's own `AGENTS.md`, `README.md`, source, tests, and reports. It must not inspect:

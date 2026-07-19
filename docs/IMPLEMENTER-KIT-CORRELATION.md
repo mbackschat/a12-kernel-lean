@@ -248,11 +248,28 @@ A second useful injection is to scan every consumer cell before filtering. `corr
 
 Preserve the complete normalized request and the first divergent response. Classify the first mismatch as decoding, elaboration, row/cell validation, origin routing, filter truth, selection, consumer observation, firing projection, or response encoding. If this capsule already decides it, fix the violating implementation. If the capsule, Lean result, and retained evidence do not determine the input consistently, mark the capability incomplete and open a semantics defect here; a semantics maintainer closes it through the clean-room evidence workflow and publishes a new compatibility tuple. The Rust implementer must not repeat kernel archaeology.
 
+## Fresh Rust runtime consumer probe
+
+The first current-version cold implementation completed on 2026-07-20 in the fresh external repository `a12-correlation-rust-probe`. It used semantic baseline `2bb2d232cd62367d6aa92f64b6b0c1dfc591a830`, this kit, the V2 suite index, and only the first twelve request/response pairs. It did not use Lean source or executables, the kernel, a12-dmkits, the historical Rust project, web research, or unlisted semantic material.
+
+| Artifact | Commit |
+|---|---|
+| Cold readback | `ca5bfc224b83ff056a201d7644bc0125a2fcd20d` |
+| Natural implementation | `ea94eacf80f3cfddfe1b4e7b6cae14bbccb2ffba` |
+| Natural implementation report | `975a69ce7ffd79f106e5e5fc4820220c2d1d1bd5` |
+| Mutation-sensitivity report and accepted Phase 1 tip | `db7b9dd3321aec52600dfd063f69489c52cf94af` |
+
+The dependency-free Rust 1.76.0 implementation contains one fixture-independent evaluator. Manual projection of the normalized cases is confined to native tests. Twelve retained cases, finite laws, complete strong-Kleene tables, and checked non-laws form 26 tests; `cargo fmt --check` and `cargo test` pass. Project-side inspection checked the exact natural source and tests, found no fixture-ID or expected-result production branch, confirmed that manifest and lockfile were unchanged, independently reran the final gate, and verified that the accepted tip's source and tests equal the natural implementation.
+
+The isolated session predicted and injected three defects only after the natural result was frozen. Collapsing `Outer` Number lookup to the inner row failed exactly 11 predicted tests, globally poisoning selected presence from an unselected malformed consumer failed exactly 4, and adding implicit self-exclusion failed exactly 6. It restored the natural source after every mutation and committed only its report. These executions are an isolated-session attestation; project-side review verified report consistency and final restoration but did not independently witness the mutation commands.
+
+The accepted claim is deliberately narrow: this kit transported the named resolved runtime and non-negative integer fixture profile into independent executable Rust without renewed A12 research. It does not establish JSON or diagnostic compatibility, checked lowering, the four static-authoring cases, general decimal behavior, candidate-process qualification, shipment readiness, or general A12 interpreter correctness. The completed staged prompt sequence is retained only as an [archived work order](archived/RUST-CORRELATION-CONSUMER-PROBE.md).
+
 ## Open boundary
 
-This spike is materially usable but is not yet a release-ready closed capsule:
+The resolved runtime transport gate is closed, but the public capability is not yet release-ready:
 
-- no isolated Rust implementation has yet completed the full cold-implementer gate; the documentation audit above is not a substitute for executable Rust conformance;
+- the accepted Rust probe deliberately stops before JSON decoding, checked authoring, the four static cases, the process contract, and candidate-runner conformance;
 - arbitrary negative-input compatibility remains under-specified beyond the closed shapes, staged checks, manifest classifiers, and exact diagnostics exercised by the suite; path/model edge rules and within-stage precedence must be closed before a full-protocol release claim;
 - retained parsed runtime Number cells are non-negative integers, while malformed cells are retained separately and the Lean account/normalized decoder admit general canonical exact decimals and signed values; fractional scale-19 behavior and negative correlation values remain externally unverified;
 - mixed-scale `notEqual`, empty or malformed outer guards, dynamic mixed-scale ordering, and the selected-valid-plus-selected-malformed consumer case have internal Lean coverage or static evidence but no dedicated retained kernel runtime observation;
