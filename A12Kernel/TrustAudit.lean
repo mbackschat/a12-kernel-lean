@@ -131,6 +131,9 @@ run_cmd do
 #print axioms A12Kernel.alternativeSelection_noMatch_iff
 #print axioms A12Kernel.alternativeSelection_holdingOrderObservable
 #print axioms A12Kernel.alternativeSelection_holdingPoisonOrderObservable
+#print axioms A12Kernel.twoAlternativeLiteralNumber_firstHolds_selects
+#print axioms A12Kernel.twoAlternativeGeneratedNumberCondition_exact
+#print axioms A12Kernel.generatedNumberCondition_emptyTarget_notFired
 
 #print axioms A12Kernel.desugarAbsoluteRequired_preserves
 #print axioms A12Kernel.withRequiredFinding_preserves_computation

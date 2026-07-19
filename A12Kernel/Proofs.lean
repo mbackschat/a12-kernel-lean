@@ -20,6 +20,7 @@ import A12Kernel.Proofs.ValidationRule
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.PartialValidation
 import A12Kernel.Proofs.ComputationCondition
+import A12Kernel.Proofs.GeneratedComputationValidation
 import A12Kernel.Proofs.Required
 import A12Kernel.Proofs.StringLength
 import A12Kernel.Proofs.StringIngestion
