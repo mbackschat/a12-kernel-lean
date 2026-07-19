@@ -361,6 +361,13 @@ private def SurfaceComparisonOp.toEquality? : SurfaceComparisonOp → Option Equ
   | .notEqual => some .notEqual
   | _ => none
 
+private def SurfaceComparisonOp.toNumeric? : SurfaceComparisonOp → Option NumericComparisonOp
+  | .equal => some .equal
+  | .notEqual => some .notEqual
+  | .less => some .less
+  | .greaterEqual => some .greaterEqual
+  | _ => none
+
 private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
     Option StringLengthComparisonOp
   | .less => some .less
@@ -420,25 +427,52 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       | some field => pure (.fieldNotFilled field)
       | none => throw (.unsupportedPresenceKind declaration.path declaration.policy.kind.surfaceKind)
   | .compare op reference literal => do
-      let equality ← match op.toEquality? with
-        | some equality => pure equality
-        | none => throw (.unsupportedOperator op)
+      match op with
+      | .lessEqual | .greater => throw (.unsupportedOperator op)
+      | _ => pure ()
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.policy.kind, literal with
-      | .number info, .number expected =>
-          pure (.compare (.number equality { id := declaration.id, info } expected))
-      | .boolean, .boolean expected =>
-          pure (.compare (.boolean equality { id := declaration.id } expected))
-      | .confirm, .boolean true =>
-          pure (.compare (.confirm equality { id := declaration.id }))
-      | .confirm, .boolean false =>
-          throw (.illegalConfirmLiteral declaration.path)
-      | .string, .string expected =>
-          match equality with
-          | .equal => pure (.compare (.stringEqual { id := declaration.id } expected))
-          | .notEqual => throw (.unsupportedOperator op)
-      | fieldKind, literal =>
-          throw (.literalKindMismatch declaration.path fieldKind.surfaceKind literal.kind)
+      match declaration.policy.kind with
+      | .number info => do
+          let numeric ← match op.toNumeric? with
+            | some numeric => pure numeric
+            | none => throw (.unsupportedOperator op)
+          match literal with
+          | .number expected =>
+              pure (.compare (.number numeric { id := declaration.id, info } expected))
+          | literal =>
+              throw (.literalKindMismatch declaration.path .number literal.kind)
+      | .boolean => do
+          let equality ← match op.toEquality? with
+            | some equality => pure equality
+            | none => throw (.unsupportedOperator op)
+          match literal with
+          | .boolean expected =>
+              pure (.compare (.boolean equality { id := declaration.id } expected))
+          | literal =>
+              throw (.literalKindMismatch declaration.path .boolean literal.kind)
+      | .confirm => do
+          let equality ← match op.toEquality? with
+            | some equality => pure equality
+            | none => throw (.unsupportedOperator op)
+          match literal with
+          | .boolean expected =>
+              if expected then
+                pure (.compare (.confirm equality { id := declaration.id }))
+              else
+                throw (.illegalConfirmLiteral declaration.path)
+          | literal =>
+              throw (.literalKindMismatch declaration.path .confirm literal.kind)
+      | .string => do
+          let equality ← match op.toEquality? with
+            | some equality => pure equality
+            | none => throw (.unsupportedOperator op)
+          match literal with
+          | .string expected =>
+              match equality with
+              | .equal => pure (.compare (.stringEqual { id := declaration.id } expected))
+              | .notEqual => throw (.unsupportedOperator op)
+          | literal =>
+              throw (.literalKindMismatch declaration.path .string literal.kind)
   | .lengthCompare op reference expected => do
       let lengthOp ← match op.toStringLength? with
         | some lengthOp => pure lengthOp

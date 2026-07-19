@@ -150,6 +150,8 @@ run_cmd do
 #print axioms A12Kernel.fixedNumericFiring_is_value
 #print axioms A12Kernel.growOnlyGreaterEqualFiring_is_value
 #print axioms A12Kernel.growOnlyLessFiring_is_omission
+#print axioms A12Kernel.emptyNumberLessFiring_is_omission
+#print axioms A12Kernel.emptyNumberGreaterEqualFiring_polarity
 #print axioms A12Kernel.growOnlyNotEqualWhenLeftNotBelow_is_value
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
