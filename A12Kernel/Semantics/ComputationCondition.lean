@@ -1,9 +1,9 @@
 import A12Kernel.Document
 import A12Kernel.Semantics.Observation
 
-/-! # A12Kernel.Semantics.ComputationCondition — checked computation-presence decisions
+/-! # A12Kernel.Semantics.ComputationCondition — checked ordered computation conditions
 
-This capsule admits direct, already-resolved field presence for one non-repeatable computation instance. It separates clean not-true from an invalid cell actually read as poison. Connectives, comparisons, quantifiers, paths, and alternatives remain separate later clauses.
+This capsule admits direct, already-resolved field presence plus ordered `And`/`Or` for one non-repeatable computation instance. It separates clean not-true from an invalid cell actually read as poison. Comparisons, quantifiers, paths, and alternatives remain separate later clauses.
 -/
 
 namespace A12Kernel
@@ -12,17 +12,19 @@ namespace A12Kernel
 structure ScalarComputationContext where
   read : FieldId → CheckedCell
 
-/-- A computation-specific condition result. Unlike validation `Verdict`, it carries no message polarity; unlike `Bool`, it preserves poison from a field actually read. -/
+/-- A computation-specific condition result. Unlike validation `Verdict`, it carries no message polarity; `notTrue` is the clean non-holding result of the admitted clauses, while poison from a field actually read remains explicit. -/
 inductive ComputationConditionResult where
   | holds
   | notTrue
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- The first parser-independent computation-condition fragment: direct presence over one resolved field. -/
+/-- The parser-independent computation-condition fragment: direct presence and ordered binary connectives over resolved fields. -/
 inductive ComputationCondition where
   | fieldFilled (field : FieldId)
   | fieldNotFilled (field : FieldId)
+  | and (left right : ComputationCondition)
+  | or (left right : ComputationCondition)
   deriving Repr, DecidableEq
 
 namespace ComputationCondition
@@ -36,7 +38,7 @@ def evalFieldFilled (context : ScalarComputationContext)
   | .unknown cause => .poison cause
   | .poison cause => .poison cause
 
-/-- Evaluate direct presence at the computation observation boundary. `FieldNotFilled` reverses only clean truth; poison is preserved rather than Boolean-negated. -/
+/-- Evaluate a computation condition left-to-right. `And` stops on clean not-true, `Or` stops on clean holds, and a poison already read aborts without consulting the remaining operand. -/
 def eval (condition : ComputationCondition)
     (context : ScalarComputationContext) : ComputationConditionResult :=
   match condition with
@@ -45,6 +47,16 @@ def eval (condition : ComputationCondition)
       match evalFieldFilled context field with
       | .holds => .notTrue
       | .notTrue => .holds
+      | .poison cause => .poison cause
+  | .and left right =>
+      match left.eval context with
+      | .holds => right.eval context
+      | .notTrue => .notTrue
+      | .poison cause => .poison cause
+  | .or left right =>
+      match left.eval context with
+      | .holds => .holds
+      | .notTrue => right.eval context
       | .poison cause => .poison cause
 
 end ComputationCondition

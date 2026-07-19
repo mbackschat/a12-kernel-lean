@@ -113,6 +113,14 @@ run_cmd do
 #print axioms A12Kernel.requiredOnlyFieldNotFilled_holds
 #print axioms A12Kernel.ordinaryFindingFieldNotFilled_poisons
 #print axioms A12Kernel.presencePredicates_agree_on_poison
+#print axioms A12Kernel.computationAnd_leftNotTrue_shortCircuits
+#print axioms A12Kernel.computationAnd_leftHolds_evaluatesRight
+#print axioms A12Kernel.computationAnd_leftPoison_preserves
+#print axioms A12Kernel.computationOr_leftHolds_shortCircuits
+#print axioms A12Kernel.computationOr_leftNotTrue_evaluatesRight
+#print axioms A12Kernel.computationOr_leftPoison_preserves
+#print axioms A12Kernel.computationAnd_operandOrderObservable
+#print axioms A12Kernel.computationOr_operandOrderObservable
 
 #print axioms A12Kernel.desugarAbsoluteRequired_preserves
 #print axioms A12Kernel.withRequiredFinding_preserves_computation
