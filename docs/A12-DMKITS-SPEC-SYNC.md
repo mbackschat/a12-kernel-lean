@@ -151,3 +151,33 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits prose, catalog, Javadocs, typed read/model/rendering, and focused tests agree that `0` and `14` are legal, `15` is rejected, omission equals zero, `…Value(field, 2)` round-trips without losing the argument, negative floor/ceiling directions are correct, and accounting ties round away from zero. The handback supplies the exact reviewed revision and per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-19-08 — every arithmetic node uses precision-50 `HALF_UP`
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`04-numbers-and-decimals.md` §5](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly)
+- **Delta:** Correct the former claim that `+` and `−` stay exact. The kernel applies one precision-50 decimal `MathContext`, default `HALF_UP`, independently to every `+`, `−`, `×`, `÷`, and `^` node. Before evaluation/code generation, a multiplication containing divided factors is normalized by collecting numerators and denominators, so authored fold order is not always evaluated fold order.
+- **Basis:** kernel `VkBigDecimal` constructs one `MathContext(50)` and passes it to `add`, `subtract`, `multiply`, `divide`, and `pow`; `DivisionTransformer` rewrites `a * {b / c}` to `{a * b} / c` and combines multiple divided factors at kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. a12-dmkits' JVM `Dec` and `KERNEL-FINDINGS.md` currently cap only multiplication/division/power, while `ArithmeticDiffTest` has a genuine 52-to-50-digit multiplication separator but no above-50 addition/subtraction or division-normalization separator.
+- **Requested a12-dmkits reconciliation:** Apply the precision boundary to JVM addition and subtraction as well as the existing operations; reconcile the common contract, JS gap/account, interpreter findings, kernel semantics, catalog/operator guidance, and any evaluator optimization that assumes exact `+`/`−`. Determine one clean-room lowering mechanism for division-bearing multiplication rather than accumulating expression-shape patches. Add focused kernel differentials that separate rounded `+` and `−` from exact arithmetic and direct authored-tree evaluation from the normalized tree; preserve per-node rounding order.
+- **Compatibility:** This changes a12-dmkits results for legal expressions whose addition or subtraction produces more than 50 significant digits and may change division-bearing products whose authored and normalized trees round differently. Classify JVM, JS, public interpreter, serialization, and dmtool-release consequences explicitly; do not describe the correction as documentation-only.
+- **Acceptance:** Both kernel strategies and the JVM interpreter agree on focused above-50 `+`/`−` witnesses and division-normalization witnesses; all five operations use the same precision/rounding contract at each evaluated node; JS either conforms or remains an explicit fail-closed/nonconforming capability; prose and operator metadata contain no “`+`/`−` stay exact” claim. The handback supplies the exact reviewed revision and per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending
+
+### SPEC-2026-07-19-09 — numeric scale gating tracks signed scale and constant expandability
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`04-numbers-and-decimals.md` §§1, 3, and 4](../spec/04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time)
+- **Delta:** Replace the blanket “numeric literals are scale-exempt” and “power always has unknown scale” account. Checked numeric expressions carry a known signed scale or unknown plus a multiplicative-constant capability. Equality/inequality may pad only a capable smaller-scale side; a scale-2 field compared with `0` is legal, while a scale-0 field compared with `0.00` is not. A scale-0 base raised to a syntactically simple nonnegative constant exponent derives scale 0; the exponent must itself have known scale no greater than 0. The power endpoints `±1000`, `0^0`, and brace-based nesting/region rules are explicit.
+- **Basis:** kernel parser `CheckKonstanteImpl` retains fractional literal length and strips trailing zeros from integer literals, `CheckOperationImpl` derives power/addition/multiplication summaries and propagates the multiplicative-constant capability, and `CheckVergleichsBedingungImpl` applies the asymmetric smaller-side rule at kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. The committed a12-dmkits prose still states global literal exemption and always-unknown power scale; its focused laws cover neighboring field/expression gates but not the asymmetric literal-scale or scale-0 power matrix.
+- **Requested a12-dmkits reconciliation:** Correct canonical prose, typed authoring/checking summaries, operator metadata, and any implementation that represents the gate as only `Option<Nat>` or treats every literal as exempt. Add a focused legal/illegal matrix for both operand orders, `0` versus `0.00`, negative stripped integer-literal scales, scale-0 versus fractional/unknown power bases and exponents, and the admitted/quiet power endpoints. Preserve ordering's scale exemption and warning suppression.
+- **Compatibility:** This narrows and widens distinct authored equality/power shapes to match the kernel. Classify parser/read/typed-builder compatibility and diagnostic effects; runtime arithmetic values are unaffected when the model was already legal.
+- **Acceptance:** a12-dmkits reproduces the asymmetric scale gate and narrow power-scale exception against both kernel strategies, carries enough checked metadata to express the rule without syntax-specific patches, and returns the exact reviewed revision plus a per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending

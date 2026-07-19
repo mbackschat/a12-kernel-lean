@@ -91,9 +91,10 @@ end Verdict
 
 /-! ## Number scale and the value domain -/
 
-/-- Scale of a *derived* numeric expression. A field's declared scale is a concrete `Nat`;
-    derivation makes it `+`→max, `*`→sum, `/`,`^`→`unknown`. Modelled as data (not a
-    runtime datum on the value) so `==`/`!=` scale-gating stays a static check. (`spec/04`) -/
+/-- Scale summary used by the current admitted field/expression fragments. A field's declared
+    scale is a concrete `Nat`; unknown covers expressions whose scale this narrow checker cannot
+    derive. The full numeric authoring language additionally needs signed literal scales and
+    multiplicative-constant capability, kept for its later checked-expression capsule. (`spec/04`) -/
 inductive ScaleInfo where
   | exact (digits : Nat)
   | unknown

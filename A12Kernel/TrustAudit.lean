@@ -161,6 +161,12 @@ run_cmd do
 #print axioms A12Kernel.numericOperand_round_unknown
 #print axioms A12Kernel.numericOperand_round_value_preserves_fillability
 
+#print axioms A12Kernel.roundMathContext50_zero
+#print axioms A12Kernel.numericArithmetic_add_comm
+#print axioms A12Kernel.numericArithmetic_multiply_comm
+#print axioms A12Kernel.numericArithmetic_subtract_as_add_neg
+#print axioms A12Kernel.numericArithmetic_multiply_zero
+
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value
