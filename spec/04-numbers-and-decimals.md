@@ -64,6 +64,8 @@ Worked values (no `DecimalPlaces` argument):
 - **Division by zero** is not executed; the comparison containing it evaluates to **`false`** — never an error, never a fire.
 - **Power** is not evaluated for some inputs (`0` to a negative power; a non-integral exponent; an exponent outside ±1000), so a rule containing it may simply **not fire** — indistinguishable from a satisfied condition unless tested explicitly. The endpoints `−1000` and `1000` are admitted, and `0 ^ 0 = 1`.
 
+Power has two precision stages that are observable and must not be replaced with exact rational exponentiation followed by one final round. A positive exponent uses the OpenJDK 21 X3.274 `BigDecimal.pow` numeric-value algorithm: binary exponentiation rounds its intermediate squares and accumulator multiplications at working precision `50 + decimalDigits(exponent) + 1`, then rounds the result to precision 50. For a negative exponent the kernel does **not** use Java's negative-exponent branch: it first computes `1 / base` at precision 50, then applies the same positive-power algorithm to that already-rounded reciprocal. For example, `3 ^ -3` ends in `…7036` under the kernel's reciprocal-first order, while taking the precision-50 reciprocal of `3 ^ 3` ends in `…7037`.
+
 ⚠ Both are *silent*. A reimplementation must make these total (return "not evaluated" / `false`), never throw. A test that only checks the happy path will miss that `[x]/0 > 5` quietly does not fire.
 
 > **Lean modelling note.** Arithmetic evaluation is a *partial* operation surfaced as total: `arith : Ast → Env → Doc → Option Decimal`, where `_ / 0`, `0 ^ (neg)`, and out-of-range exponents return `none`, and a comparison over a `none` operand yields *not-fired*. Do not use Lean's junk-value `x / 0 = 0` — the semantics is "the whole comparison does not fire", which is different from "the quotient is 0".
@@ -84,7 +86,7 @@ Worked values (no `DecimalPlaces` argument):
 These fixed constants decide the last-digit behaviour; a reimplementation must use the same ones or diverge on edge inputs.
 
 - **Every comparison** (ordering, equality, tolerance) rescales **both** operands to **scale 19, `HALF_UP`** before comparing. `Min`/`Max` *selection* stays full-precision (it does not rescale).
-- **Every arithmetic node** — `+`, `−`, `×`, `÷`, and `^` — rounds to a **50-significant-digit `MathContext`, `HALF_UP`**. Addition and subtraction are therefore not universally exact: an intermediate 51-digit result can lose its least significant digit before the enclosing operation runs. The boundary is reachable through high-scale intermediates and is what makes `÷` terminate at all.
+- **Every arithmetic node** — `+`, `−`, `×`, `÷`, and the final result of `^` — rounds to a **50-significant-digit `MathContext`, `HALF_UP`**. Addition and subtraction are therefore not universally exact: an intermediate 51-digit result can lose its least significant digit before the enclosing operation runs. The boundary is reachable through high-scale intermediates and is what makes `÷` terminate at all. Power additionally has the working-precision intermediate rounds described in §3; “one precision-50 round after exact exponentiation” is not equivalent.
 - The evaluated tree is not always the authored tree. Before code generation, multiplication containing divided factors is normalized by collecting numerators and denominators: `a * {b / c}` becomes `{a * b} / c`, and `a * {b / c} * {d / e}` becomes `{a * b * d} / {c * e}`. Because every resulting node rounds independently, an evaluator must lower through this normalization rather than assume direct authored-AST fold order.
 - A **scale-19 `HALF_UP` pre-round precedes every target-scale rounding.** Worked consequence: `RoundDown([q] / 3 * 3, 0) == [q]` fires for `q = 1`, because the internal `0.999…9` pre-rounds to `1.000…` *before* the floor to 0 places yields `1`.
 
@@ -101,7 +103,7 @@ These fixed constants decide the last-digit behaviour; a reimplementation must u
 - [ ] `MVK_INVALID_COMPARE_DEC_PLACES` is the only suppressible diagnostic.
 - [ ] Three rounding modes with `RoundAccounting` = **half away from zero** (not banker's); down/up follow the number line after the scale-19 pre-round.
 - [ ] Both expression and `…Value` forms accept `DecimalPlaces` **0..14**; omission means exactly `0`.
-- [ ] Division-by-zero and invalid power inputs are **total**: comparison → `false`/not-fired, never an exception; `±1000` and `0^0` are admitted.
+- [ ] Division-by-zero and invalid power inputs are **total**: comparison → `false`/not-fired, never an exception; `±1000` and `0^0` are admitted. Positive power follows the staged X3.274 working-precision algorithm; negative power rounds the reciprocal to precision 50 before positive exponentiation.
 - [ ] Scale is always bounded (missing `maxFractionalDigits` ⇒ `0`); ≤15 input digits.
 - [ ] Tolerance is **strictly outside** (`> N`); the fixed 1/2/5/10 thresholds only.
 - [ ] Precision constants and order: comparison rescale **scale 19 HALF_UP**, every lowered arithmetic node **50 significant digits HALF_UP**, division-bearing multiplication normalization before evaluation, and a scale-19 HALF_UP **pre-round** before any target rounding.

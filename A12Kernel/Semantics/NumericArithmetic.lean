@@ -7,6 +7,9 @@ namespace A12Kernel
 /-- Significant-digit precision applied independently at every numeric arithmetic node. -/
 def arithmeticPrecision : Nat := 50
 
+/-- Greatest admitted absolute runtime exponent. -/
+def maxPowerExponent : Nat := 1000
+
 /-- Binary arithmetic operations whose runtime value is exact arithmetic followed by the shared precision boundary. -/
 inductive NumericArithmeticOp where
   | add
@@ -39,13 +42,19 @@ def rescaleHalfUpSigned (value : Rat) : Int → Rat
       let factor : Rat := (decimalFactor (exponent + 1) : Nat)
       rescaleHalfUp (value / factor) 0 * factor
 
-/-- Numeric-value account of Java `MathContext(50, HALF_UP)` over an exact rational. -/
-def roundMathContext50 (value : Rat) : Rat :=
-  if value = 0 then
+/-- Decimal significant-digit `HALF_UP`; precision zero is the exact, unlimited case. -/
+def roundSignificantHalfUp (precision : Nat) (value : Rat) : Rat :=
+  if precision = 0 then
+    value
+  else if value = 0 then
     0
   else
-    let scale : Int := (arithmeticPrecision : Int) - 1 - decimalMagnitude value
+    let scale : Int := (precision : Int) - 1 - decimalMagnitude value
     rescaleHalfUpSigned value scale
+
+/-- Numeric-value account of Java `MathContext(50, HALF_UP)` over an exact rational. -/
+def roundMathContext50 (value : Rat) : Rat :=
+  roundSignificantHalfUp arithmeticPrecision value
 
 /-- Evaluate one total binary arithmetic node and immediately apply the kernel's precision boundary. -/
 def NumericArithmeticOp.eval (op : NumericArithmeticOp) (left right : Rat) : Rat :=
@@ -67,5 +76,41 @@ def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=
     .notEvaluated
   else
     .value (roundMathContext50 (dividend / divisor))
+
+/-- Admit exactly integral runtime exponents in the kernel's inclusive `-1000..1000` range. -/
+def checkedPowerExponent? (exponent : Rat) : Option Int :=
+  if exponent.den = 1 then
+    let integral := exponent.num
+    if -(maxPowerExponent : Int) ≤ integral ∧ integral ≤ maxPowerExponent then some integral else none
+  else
+    none
+
+/-- OpenJDK 21 X3.274 numeric-value algorithm for an already-admitted A12 exponent in `0..1000`. -/
+def positivePower (base : Rat) (exponent : Nat) : Rat :=
+  if exponent = 0 then
+    1
+  else
+    let workPrecision := arithmeticPrecision + decimalDigits exponent + 1
+    let bitIndices := (List.range (Nat.log2 exponent + 1)).reverse
+    let result := bitIndices.foldl (fun accumulator bitIndex =>
+      let squared := roundSignificantHalfUp workPrecision (accumulator * accumulator)
+      if Nat.testBit exponent bitIndex then
+        roundSignificantHalfUp workPrecision (squared * base)
+      else
+        squared) 1
+    roundMathContext50 result
+
+/--
+Raise a known numeric value to a runtime exponent. Invalid exponent shapes are quiet; negative powers
+round the reciprocal first, before applying the positive Java power algorithm.
+-/
+def powerNumeric (base exponent : Rat) : NumericArithmeticResult :=
+  match checkedPowerExponent? exponent with
+  | none => .notEvaluated
+  | some (.ofNat magnitude) => .value (positivePower base magnitude)
+  | some (.negSucc predecessor) =>
+      match divideNumeric 1 base with
+      | .notEvaluated => .notEvaluated
+      | .value reciprocal => .value (positivePower reciprocal (predecessor + 1))
 
 end A12Kernel

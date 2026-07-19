@@ -170,6 +170,13 @@ run_cmd do
 #print axioms A12Kernel.divideNumeric_of_ne_zero
 #print axioms A12Kernel.divideNumeric_notEvaluated_iff
 #print axioms A12Kernel.divideNumeric_zero_dividend
+#print axioms A12Kernel.roundSignificantHalfUp_unlimited
+#print axioms A12Kernel.positivePower_zero
+#print axioms A12Kernel.powerNumeric_of_rejected_exponent
+#print axioms A12Kernel.powerNumeric_of_nonnegative_exponent
+#print axioms A12Kernel.powerNumeric_zero_exponent
+#print axioms A12Kernel.powerNumeric_zero_negative_exponent
+#print axioms A12Kernel.powerNumeric_negative_exponent
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission

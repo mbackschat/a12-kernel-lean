@@ -8,6 +8,10 @@ theorem roundMathContext50_zero :
     roundMathContext50 0 = 0 := by
   rfl
 
+theorem roundSignificantHalfUp_unlimited (value : Rat) :
+    roundSignificantHalfUp 0 value = value := by
+  rfl
+
 theorem numericArithmetic_add_comm (left right : Rat) :
     NumericArithmeticOp.add.eval left right =
       NumericArithmeticOp.add.eval right left := by
@@ -44,5 +48,35 @@ theorem divideNumeric_zero_dividend (divisor : Rat) (nonzero : divisor ≠ 0) :
     divideNumeric 0 divisor = .value 0 := by
   rw [divideNumeric_of_ne_zero 0 divisor nonzero, Rat.div_def, Rat.zero_mul,
     roundMathContext50_zero]
+
+theorem positivePower_zero (base : Rat) :
+    positivePower base 0 = 1 := by
+  rfl
+
+theorem powerNumeric_of_rejected_exponent (base exponent : Rat)
+    (rejected : checkedPowerExponent? exponent = none) :
+    powerNumeric base exponent = .notEvaluated := by
+  simp [powerNumeric, rejected]
+
+theorem powerNumeric_of_nonnegative_exponent (base exponent : Rat) (magnitude : Nat)
+    (accepted : checkedPowerExponent? exponent = some (.ofNat magnitude)) :
+    powerNumeric base exponent = .value (positivePower base magnitude) := by
+  simp [powerNumeric, accepted]
+
+theorem powerNumeric_zero_exponent (base : Rat) :
+    powerNumeric base 0 = .value 1 := by
+  rfl
+
+theorem powerNumeric_zero_negative_exponent (exponent : Rat) (predecessor : Nat)
+    (accepted : checkedPowerExponent? exponent = some (.negSucc predecessor)) :
+    powerNumeric 0 exponent = .notEvaluated := by
+  simp [powerNumeric, accepted, divideNumeric]
+
+theorem powerNumeric_negative_exponent (base exponent : Rat) (predecessor : Nat)
+    (accepted : checkedPowerExponent? exponent = some (.negSucc predecessor))
+    (nonzero : base ≠ 0) :
+    powerNumeric base exponent =
+      .value (positivePower (roundMathContext50 (1 / base)) (predecessor + 1)) := by
+  simp [powerNumeric, accepted, divideNumeric, nonzero]
 
 end A12Kernel
