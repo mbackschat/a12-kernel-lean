@@ -7,8 +7,9 @@ import A12Kernel.Semantics.String
 
 A small core for resolved, non-repeatable field references. It covers typed
 Number/Boolean/Confirm equality, direct String equality, two observed String `Length`
-comparisons, presence predicates, and `And`/`Or`. Paths, iteration, arithmetic, partial
-validation, and concrete syntax are outside this capsule.
+comparisons, presence predicates, and `And`/`Or`. It also exposes the leaf-relevance seam
+used by the separate flat partial-validation capsule. Paths, iteration, arithmetic,
+repeatable relevance, and concrete syntax are outside this capsule.
 -/
 
 namespace A12Kernel
@@ -74,6 +75,18 @@ inductive FlatComparison where
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
   deriving Repr, DecidableEq
 
+namespace FlatComparison
+
+/-- The single resolved field read by every atomic comparison in the flat fragment. -/
+def fieldId : FlatComparison → FieldId
+  | .number _ field _ => field.id
+  | .boolean _ field _ => field.id
+  | .confirm _ field => field.id
+  | .stringEqual field _ => field.id
+  | .stringLength _ field _ => field.id
+
+end FlatComparison
+
 /-- Flat core conditions. The closed constructors make unsupported operations
     impossible to represent in this fragment. -/
 inductive FlatCondition where
@@ -89,6 +102,10 @@ inductive FlatCondition where
     still treats an inconsistent value kind defensively as malformed. -/
 structure FlatContext where
   read : FieldId → CheckedCell
+
+/-- Per-field relevance for the nonrepeatable flat fragment. This is not the eventual
+    wildcardable, row-addressed partial-validation relevant set. -/
+abbrev FlatRelevance := FieldId → Bool
 
 /-- Whether an all-empty full-validation instance is eligible for this condition. -/
 def FlatCondition.canFireOnEmpty : FlatCondition → Bool
@@ -117,7 +134,9 @@ def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-private def resolveBooleanComparisonOperand (context : FlatContext) (field : FlatBooleanField) :
+/-- Resolve a Boolean field for direct comparison. Empty Boolean is not evaluated. -/
+def FlatContext.resolveBooleanComparisonOperand
+    (context : FlatContext) (field : FlatBooleanField) :
     SimpleComparisonOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .notEvaluated
@@ -126,7 +145,9 @@ private def resolveBooleanComparisonOperand (context : FlatContext) (field : Fla
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-private def resolveConfirmComparisonOperand (context : FlatContext) (field : FlatConfirmField) :
+/-- Resolve a Confirm field for direct comparison. Empty Confirm substitutes false. -/
+def FlatContext.resolveConfirmComparisonOperand
+    (context : FlatContext) (field : FlatConfirmField) :
     SimpleComparisonOperand Bool :=
   match context.observeValidationAt field.id with
   | .empty => .value false false
@@ -191,9 +212,9 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
         | .notEqual => NumericComparisonOp.notEqual
       numericOp.evalFixedRight (context.resolveNumberComparisonOperand field) expected
   | .boolean op field expected =>
-      op.evalSimple (· == ·) (resolveBooleanComparisonOperand context field) expected
+      op.evalSimple (· == ·) (context.resolveBooleanComparisonOperand field) expected
   | .confirm op field =>
-      op.evalSimple (· == ·) (resolveConfirmComparisonOperand context field) true
+      op.evalSimple (· == ·) (context.resolveConfirmComparisonOperand field) true
   | .stringEqual field expected =>
       (context.resolveDirectStringComparisonOperand field).evalDirectStringEqual expected
   | .stringLength op field expected =>
@@ -218,23 +239,30 @@ def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdic
   | .unknown _ => .unknown
   | .poison _ => .unknown
 
-/-- Evaluate an already-selected context. `And` may skip only after `notFired`; `Or` may
-    skip only after `fired value`, because any other verdict can still change when the
-    right-hand polarity is combined. -/
-def FlatCondition.evalSelected (context : FlatContext) : FlatCondition → Verdict
-  | .compare comparison => comparison.eval context
-  | .fieldFilled field => field.evalFilled context
-  | .fieldNotFilled field => field.evalNotFilled context
+/-- Evaluate an already-selected context. The optional relevance predicate makes an
+    out-of-set atomic read validation-unknown before `context.read`, so a per-call
+    partial-validation exclusion is never misrepresented as a formal finding. Full
+    validation uses the all-relevant default. `And` may skip only after `notFired`; `Or`
+    may skip only after `fired value`, because any other verdict can still change when
+    the right-hand polarity is combined. -/
+def FlatCondition.evalSelected (context : FlatContext)
+    (isRelevant : FlatRelevance := fun _ => true) : FlatCondition → Verdict
+  | .compare comparison =>
+      if isRelevant comparison.fieldId then comparison.eval context else .unknown
+  | .fieldFilled field =>
+      if isRelevant field.id then field.evalFilled context else .unknown
+  | .fieldNotFilled field =>
+      if isRelevant field.id then field.evalNotFilled context else .unknown
   | .and left right =>
-      let leftVerdict := left.evalSelected context
+      let leftVerdict := left.evalSelected context isRelevant
       match leftVerdict with
       | .notFired => .notFired
-      | _ => Verdict.conj leftVerdict (right.evalSelected context)
+      | _ => Verdict.conj leftVerdict (right.evalSelected context isRelevant)
   | .or left right =>
-      let leftVerdict := left.evalSelected context
+      let leftVerdict := left.evalSelected context isRelevant
       match leftVerdict with
       | .fired .value => .fired .value
-      | _ => Verdict.disj leftVerdict (right.evalSelected context)
+      | _ => Verdict.disj leftVerdict (right.evalSelected context isRelevant)
 
 /-- Full-validation row gate. Instantiated/content-bearing status is supplied by the
     document/iteration layer and remains independent of cell values. -/

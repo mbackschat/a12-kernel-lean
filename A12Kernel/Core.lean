@@ -11,9 +11,11 @@ namespace A12Kernel
 
 /-! ## Kleene truth -/
 
-/-- **Kleene truth.** `unknown` arises *only* from a read of a formally-invalid cell; the
-    connectives are two-valued (the strong-Kleene tables). There is deliberately **no
-    negation combinator** — the language has no generic `Not`. (`spec/02`, §1/§3) -/
+/-- **Kleene truth.** `unknown` arises from an unavailable validation operand, including
+    a formally invalid cell or a partial-validation reference outside the relevant set.
+    The binary `And`/`Or` connectives use the strong-Kleene tables. There is deliberately
+    **no negation combinator** — the language has no generic `Not`. (`spec/02`, §1/§3;
+    `spec/10`, §5) -/
 inductive K where
   | tru
   | fls
