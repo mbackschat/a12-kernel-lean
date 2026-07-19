@@ -36,14 +36,14 @@ If a12-dmkits returns contrary evidence, do not mark the entry accepted. Verify 
 The introducing revision cannot name itself inside the same commit. Until handoff, `introducing commit` means the first commit containing the stable entry ID; resolve it with:
 
 ```sh
-git log -S 'SPEC-YYYY-MM-DD-NN' --format='%H' -- docs/A12-DMKITS-SPEC-SYNC.md
+git log -S 'SPEC-YYYY-MM-DD-NN' --format='%H' -- docs/A12-DMKITS-SPEC-SYNC-LEDGER.md
 ```
 
 ## Copy-ready handoff prompt
 
 Use this prompt for one or more pending IDs, replacing both placeholders with the exact values:
 
-> Requested entries: `<SPEC-YYYY-MM-DD-NN, ...>`. a12-kernel-lean revision: `<full introducing revision>`. Work only in the a12-dmkits repository. Read those entries in `../a12-kernel-lean/docs/A12-DMKITS-SPEC-SYNC.md` and the linked canonical clauses under `../a12-kernel-lean/spec/` read-only. For each entry, reconcile the language-neutral semantic change into the appropriate a12-dmkits semantic documentation, findings, interpreter, catalog, corpus, and focused kernel differential surfaces—but change only the surfaces the entry actually affects. Treat the real kernel as the behavioral oracle, preserve a12-dmkits' clean-room boundary, and do not infer broader behavior from the named case. Run the relevant master gates and commit any changes. If an entry is already satisfied and requires no change, do not create an empty commit; return the exact audited a12-dmkits revision. Return that exact revision plus a per-entry disposition of documentation-only, implementation/test change, already satisfied, rejected with evidence, or superseded. Do not write into a12-kernel-lean.
+> Requested entries: `<SPEC-YYYY-MM-DD-NN, ...>`. a12-kernel-lean revision: `<full introducing revision>`. Work only in the a12-dmkits repository. Read those entries in `../a12-kernel-lean/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md` and the linked canonical clauses under `../a12-kernel-lean/spec/` read-only. For each entry, reconcile the language-neutral semantic change into the appropriate a12-dmkits semantic documentation, findings, interpreter, catalog, corpus, and focused kernel differential surfaces—but change only the surfaces the entry actually affects. Treat the real kernel as the behavioral oracle, preserve a12-dmkits' clean-room boundary, and do not infer broader behavior from the named case. Run the relevant master gates and commit any changes. If an entry is already satisfied and requires no change, do not create an empty commit; return the exact audited a12-dmkits revision. Return that exact revision plus a per-entry disposition of documentation-only, implementation/test change, already satisfied, rejected with evidence, or superseded. Do not write into a12-kernel-lean.
 
 ## Entries
 
@@ -60,7 +60,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** Semantic precision for an already observed 30.8.1 behavior. The current a12-dmkits implementation and focused tests are expected to remain behaviorally unchanged.
 - **Acceptance:** a12-dmkits documentation states the distinct `And` and `Or` stop conditions; the IF85 controls remain green; the handback supplies an exact revision and per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial at `517ef65b93ded2775355175dcec18877f8bc8106`: implementation and focused tests already distinguish the operators; only the ambiguous collective wording in canonical prose remains pending.
 
 ### SPEC-2026-07-19-02 — empty-operand provenance is not one universal `given` bit
 
@@ -71,11 +71,11 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Canonical clauses:** [`03-empty-and-required.md` §A.1 and checklist](../spec/03-empty-and-required.md#a1-the-per-kind-default), read with [`10-validation-and-polarity.md` §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
 - **Delta:** The earlier §A.1 modelling note and checklist generalized one `given` bit to every substituted operand. The corrected account separates evaluation from consumer-specific polarity provenance: a one-bit not-given flag may serve a simple symmetric clause, numeric expressions and numeric aggregates use directional fillability, counts are grow-only, date and string families use their own not-given propagation, and filters and other families retain explicit rules.
 - **Basis:** the operator-sensitive [validation bundle](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), [`LF10`](LEAN-FINDINGS.md#lf10--numeric-polarity-needs-directional-fillability-not-a-given-bit), the canonical directional account already present in `spec/10`, and a12-dmkits [`DirectionalPolarityDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/DirectionalPolarityDiffTest.kt) plus the [`empty-polarity` corpus](../../a12-rulekit/corpus/cases/empty-polarity/); the retained cases separate empty unsigned, empty signed, fixed Number, and grow-only `Length` polarity.
-- **Requested a12-dmkits reconciliation:** Check `KERNEL-SEMANTICS.md`, interpreter design/specification prose, catalog guidance, and any public modelling summaries for an equivalent universal-one-bit claim. Preserve the existing directional implementation and tests. Make no implementation change if those surfaces already distinguish the operator families correctly.
+- **Requested a12-dmkits reconciliation:** No source or documentation change is requested. Confirm the relevant existing directional controls against the exact returned revision.
 - **Compatibility:** Internal spec consistency and modelling precision for already observed 30.8.1 behavior. No current Lean or a12-dmkits evaluator change is expected.
 - **Acceptance:** a12-dmkits has no prose that promotes one `given` bit to the universal polarity representation; its directional Number/`Length` controls remain green; the handback supplies an exact revision and per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Read-only audit at `517ef65b93ded2775355175dcec18877f8bc8106` found the prose, implementation, and test sources already satisfied; acceptance awaits exact-revision gate confirmation.
 
 ### SPEC-2026-07-19-03 — concrete repetition indices are 1-based
 
@@ -86,11 +86,11 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Canonical clauses:** [`01-data-model.md` §§1 and 2.1](../spec/01-data-model.md#21-repetition-contexts-the-iteration-environment) and [`02-logic-and-formal-errors.md` §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges)
 - **Delta:** Correct the zero-based wording and examples. Concrete repetition rows and semantic fold ranges use indices `1, 2, …`; the declared fold spans `1 .. repeatability`, the instantiated fold spans `1 .. rowCount`, and `0` is a document-path API wildcard/special value rather than the first row.
 - **Basis:** kernel `PathPart.repetitionIndex()` documentation, a12-dmkits [`CurrentRepetitionDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CurrentRepetitionDiffTest.kt), [`GroupScopedFieldFillDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/GroupScopedFieldFillDiffTest.kt), and the [`current-repetition` corpus](../../a12-rulekit/corpus/cases/current-repetition/), which establish the 1-based concrete rows and declared-versus-instantiated ranges.
-- **Requested a12-dmkits reconciliation:** Check language-neutral data-model, document-addressing, fill-quantifier range, and interpreter documentation and examples for zero-based concrete-row or semantic-fold wording. Preserve the already-correct 1-based runtime and corpus behavior.
+- **Requested a12-dmkits reconciliation:** No source or documentation change is requested. Confirm the relevant current-repetition and group-scoped fill controls against the exact returned revision.
 - **Compatibility:** Documentation correction for existing 30.8.1 behavior; no evaluator change is expected.
 - **Acceptance:** All concrete-row examples and semantic fold ranges are 1-based, `0` is described only in its special/wildcard role, current-repetition and group-scoped fill controls remain green, and the handback supplies an exact revision and disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Read-only audit at `517ef65b93ded2775355175dcec18877f8bc8106` found the prose, implementation, and test sources already satisfied; acceptance awaits exact-revision gate confirmation.
 
 ### SPEC-2026-07-19-04 — exact primitive empty-default tier
 
@@ -105,7 +105,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** Semantic scope precision for existing catalogued 30.8.1 defaults; no implementation change is expected unless a prose-driven default leaked into code.
 - **Acceptance:** a12-dmkits prose matches the catalog header exactly, keeps other type families explicit, all header probes remain green, and the handback supplies an exact revision and disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial at `517ef65b93ded2775355175dcec18877f8bc8106`: the catalog and probes carry the exact eight defaults; only the canonical prose inventory remains pending.
 
 ### SPEC-2026-07-19-05 — `Having` keeps known truth and includes self by default
 
@@ -116,11 +116,11 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation)
 - **Delta:** Make three implicit rules explicit: a `Having` candidate is kept only when its complete filter result is known true; a false or unknown candidate is dropped before its selected cell is consumed; and a same-group correlated star includes the outer row unless an authored `CurrentRepetition` inequality excludes it.
 - **Basis:** retained `having-malformed-filter-drops` observations and [`LF7`](LEAN-FINDINGS.md#lf7--a-malformed-having-filter-drops-its-row-before-consumption), plus a12-dmkits [`OuterCorrelationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/OuterCorrelationDiffTest.kt), [`SelfCorrelatedOverlapQuantifierDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/SelfCorrelatedOverlapQuantifierDiffTest.kt), and the [`filter` corpus](../../a12-rulekit/corpus/cases/filter/).
-- **Requested a12-dmkits reconciliation:** Check §9 prose, interpreter documentation, and rule-authoring guidance for the exact known-true keep rule and explicit self-inclusion. Preserve ordinary three-valued condition composition: the rule concerns the complete filter result, not an eager ban on every unknown subexpression.
+- **Requested a12-dmkits reconciliation:** State the exact known-true keep rule and default self-inclusion in canonical/public prose. Preserve the already-correct interpreter and focused controls, ordinary three-valued condition composition, and filter-before-consumer behavior.
 - **Compatibility:** Clarification of already tested 30.8.1 behavior. Existing interpreter and differential results are expected to remain unchanged.
 - **Acceptance:** a12-dmkits states the known-true keep rule, filter-before-consumer order, and explicit self-exclusion requirement without weakening ordinary `Or` dominance; focused controls remain green; the handback supplies an exact revision and disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial at `517ef65b93ded2775355175dcec18877f8bc8106`: implementation, differentials, and findings already establish the behavior; only the general canonical/public prose remains pending.
 
 ### SPEC-2026-07-19-06 — first-match computation differs from all-alternatives validation
 
@@ -165,7 +165,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** This changes a12-dmkits results for legal expressions whose addition or subtraction produces more than 50 significant digits and may change division-bearing products whose authored and one-pass rewritten trees round differently. Classify JVM, JS, public interpreter, serialization, and dmtool-release consequences explicitly; do not describe the correction as documentation-only.
 - **Acceptance:** Both kernel strategies and the JVM interpreter agree on focused above-50 `+`/`−` witnesses, order-sensitive one-pass division-rewrite witnesses, a nested no-second-pass witness, and the corrected three-thirds pre-round witness; all five operations use the same precision/rounding contract at each evaluated node; JS either conforms or remains an explicit fail-closed/nonconforming capability; prose and operator metadata contain neither “`+`/`−` stay exact” nor global/fixed-point normalization claims. The handback supplies the exact reviewed revision and per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial adjacent progress at `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`: JVM/JS now share host-level precision locks for multiplication, division, and power, but `+`/`−` remain uncapped and the one-pass division-bearing multiplication lowering remains pending.
 
 ### SPEC-2026-07-19-09 — numeric scale gating tracks signed scale and constant expandability
 
@@ -187,15 +187,16 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Partial handback revision:** `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`04-numbers-and-decimals.md` §3](../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive) and [`§5`](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly)
 - **Delta:** Specify the numeric mechanism behind admitted powers. Positive power follows the OpenJDK 21 X3.274 numeric-value algorithm, rounding binary-exponentiation intermediates at precision `50 + decimalDigits(exponent) + 1` before the final precision-50 round. Negative power is kernel-specific: it first rounds `1 / base` at precision 50, then applies the positive algorithm. Exact rational power plus one final round and reciprocal-after-positive-power are both observably different.
-- **Basis:** kernel `VkBigDecimal.power` and `getKehrwert` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`, together with the OpenJDK 21 `BigDecimal.pow(int, MathContext)` X3.274 contract. The positive separator `0.473471768303411 ^ 7` ends in `…3319` under staged power but `…3318` under exact-power/final-round. The negative separator `3 ^ -3` ends in `…7036` under the kernel's reciprocal-first order but `…7037` under a final reciprocal. a12-dmkits calls Java's positive primitive correctly, but its JVM negative path currently takes the reciprocal after positive power; existing `4 ^ -1` coverage cannot distinguish the orders, and no committed power test crosses the 50-significant-digit boundary.
-- **Requested a12-dmkits reconciliation:** Fix the JVM numeric mechanism at its shared power locus so negative exponents use the kernel's reciprocal-first order; correct any exact/bit-for-bit correspondence claim; add positive staged-precision and negative reciprocal-order differentials against both kernel strategies plus `±1000`, `±1001`, `0^0`, `0^-1`, and fractional-exponent controls. Keep the JS limitation explicit until that implementation matches the same mechanism. Do not use the peer interpreter as the oracle.
-- **Compatibility:** Legal negative powers can change in the last retained digit; nested arithmetic and scale-19 comparisons can amplify the difference into a visible verdict. Classify JVM, JS, public interpreter, serialization, and dmtool-release consequences. Positive behavior should remain unchanged if it already delegates to Java `BigDecimal.pow(MathContext)`.
+- **Basis:** kernel `VkBigDecimal.power` and `getKehrwert` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`, together with the OpenJDK 21 `BigDecimal.pow(int, MathContext)` X3.274 contract. The positive separator `0.473471768303411 ^ 7` ends in `…3319` under staged power but `…3318` under exact-power/final-round. The negative separator `3 ^ -3` ends in `…7036` under the kernel's reciprocal-first order but `…7037` under a final reciprocal. Revision `41ecfc51` moved both peer backends to the reciprocal-first negative mechanism, added host-level positive/negative precision locks, and closed the negative separator against both kernel routes. Canonical prose and the complete dual-route edge matrix remain open.
+- **Requested a12-dmkits reconciliation:** Preserve the reciprocal-first mechanism at its shared power locus; correct any stale exact/bit-for-bit or reciprocal-after-power prose; and complete the dual-kernel-route matrix with the positive staged-precision separator, `±1000`, `±1001`, `0^0`, `0^-1`, and fractional-exponent controls. Do not use the peer interpreter as the oracle.
+- **Compatibility:** The partial handback already corrected legal negative powers that differ in the last retained digit and aligned both peer backends. Remaining work should add prose and evidence without changing that mechanism unless a named kernel separator disagrees.
 - **Acceptance:** Both kernel strategies and the JVM interpreter agree on discriminating positive and negative precision cases and the named known-value domain-edge matrix; the implementation performs reciprocal-first staging structurally rather than special-casing examples; prose makes the OpenJDK 21 algorithm and external-evidence boundary explicit; the handback supplies the exact reviewed revision and per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial handback accepted at `41ecfc51`: reciprocal-first negative power and host-level JVM/JS precision locks are implemented, and the negative separator agrees with both kernel routes; canonical prose and the complete positive/domain-edge dual-route matrix remain pending.
 
 ### SPEC-2026-07-19-11 — arithmetic fillability uses joint terms and conservative power dispatch
 
@@ -232,15 +233,16 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Partial handback revision:** `d6a08f5b53022d9caae35e6d842a2b7b22cd5b25`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`04-numbers-and-decimals.md` §§4–5 and checklist](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints), [`09-computations.md` §6 and checklist](../spec/09-computations.md#6-the-implicit-validation-rule-precisely), and [`10-validation-and-polarity.md` §4 and checklist](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
 - **Delta:** Correct tolerance truth from rounding the completed difference to independently normalizing both operands before subtraction: `|R₁₉(a) − R₁₉(b)| > N` for the fixed `N ∈ {1,2,5,10}`, with a closed exact boundary. Correct the former equality-like polarity claim: tolerance reuses directional `!=` polarity, so only movement of the normalized smaller side upward or larger side downward can type a firing OMISSION. Tolerance accepts numeric `BaseYear`, bypasses the ordinary exact-comparison scale-agreement gate, and an implicit computation-validation alternative preserves its declared `toleranceRangeOp` instead of always using strict `!=`.
-- **Basis:** kernel `BedingungsOperatorHelper` independently scale-19-normalizes both operands, applies the strict four-band predicate, and routes all four tolerance operators through its directional inequality polarity helper at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`; the parser's tolerance branch establishes number-like typing and scale-gate bypass, and the computation-alternative generator preserves the optional tolerance operator. The audited a12-dmkits implementation instead rounds after subtraction in `evalTolerance`, uses `Polarity.anyMove`, and drops `toleranceRangeOp` under recorded gap IG96. Its current signed-field tolerance differentials cannot separate either the normalization-order defect or the directional-polarity defect.
-- **Requested a12-dmkits reconciliation:** Fix the shared tolerance evaluator to normalize both operands before subtraction and reuse the existing ordered-inequality fillability mechanism rather than `anyMove`. Complete IG96 by carrying a closed tolerance enum through loading and implicit-rule synthesis. Add focused existing-harness controls for the independent-rounding separator `ε = 49 / 10²¹`, `a = 1 + ε`, `b = −ε`, range 1; unsigned empty `0` versus `−2` VALUE and versus `+2` OMISSION; the signed and swapped controls; every fixed strict boundary; malformed and empty-row suppression; mixed declared scales and numeric `BaseYear` authoring; and implicit-computation inside/at/outside-band behavior. Cover both kernel strategies and JVM/JS where the existing facilities support them; do not create a new capture framework.
-- **Compatibility:** This is a behavioral correction to the a12-dmkits interpreter for legal tolerance rules and implicit computation validation. The four public syntax tokens and kernel behavior version do not change. The local Lean capsule now covers the parser-independent checked same-group Number-expression leaf, including authored checks, scale-gate bypass, one-pass lowering, full-row gating, formal/domain projection, directional polarity, and fixed thresholds; concrete syntax, `BaseYear`, implicit computation lowering, and portable tolerance evidence remain explicit later work.
-- **Acceptance:** a12-dmkits has one source of truth for operand normalization and directional tolerance polarity; the separating matrix agrees with both kernel strategies; `toleranceRangeOp` survives the implicit-validation path; affected docs and capability claims are corrected; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **Basis:** kernel `BedingungsOperatorHelper` independently scale-19-normalizes both operands, applies the strict four-band predicate, and routes all four tolerance operators through its directional inequality polarity helper at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`; the parser's tolerance branch establishes number-like typing and scale-gate bypass, and the computation-alternative generator preserves the optional tolerance operator. a12-dmkits revisions `73f039a9` and `d6a08f5b` completed the formerly missing metadata path: a closed tolerance enum now survives loading, generated-validation synthesis, and consumer read-modify-write. The evaluator still rounds after subtraction in `evalTolerance`, and `PolarityWalk` still uses `Polarity.anyMove`; its current signed-field differentials cannot separate either remaining defect.
+- **Requested a12-dmkits reconciliation:** Preserve the completed per-alternative `toleranceRangeOp` path. Fix the shared tolerance evaluator to normalize both operands before subtraction and reuse the existing ordered-inequality fillability mechanism rather than `anyMove`. Add focused existing-harness controls for the independent-rounding separator `ε = 49 / 10²¹`, `a = 1 + ε`, `b = −ε`, range 1; unsigned empty `0` versus `−2` VALUE and versus `+2` OMISSION; the signed and swapped controls; every fixed strict boundary; malformed and empty-row suppression; mixed declared scales and numeric `BaseYear` authoring; and implicit-computation inside/at/outside-band behavior. Cover both kernel strategies and JVM/JS where the existing facilities support them; do not create a new capture framework.
+- **Compatibility:** The per-alternative metadata arm is complete and should not change again. The remaining operand-normalization and directional-polarity mechanisms are behavioral corrections to the a12-dmkits interpreter for legal tolerance rules. The four public syntax tokens and kernel behavior version do not change. The local Lean capsule covers the parser-independent checked same-group Number-expression leaf, including authored checks, scale-gate bypass, one-pass lowering, full-row gating, formal/domain projection, directional polarity, and fixed thresholds; concrete syntax, `BaseYear`, implicit computation lowering, and portable tolerance evidence remain explicit later work.
+- **Acceptance:** The metadata arm is accepted at `d6a08f5b`: `toleranceRangeOp` survives loading, implicit-validation generation, and consumer read-modify-write. The entry remains pending until a12-dmkits has one source of truth for independent operand normalization and directional tolerance polarity, the unchanged separating matrix agrees with both kernel strategies, affected docs and capability claims are corrected, and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial handback accepted for per-alternative tolerance metadata at `d6a08f5b`; operand-normalization order and directional polarity remain pending.
 
 ### SPEC-2026-07-19-14 — numeric authoring regions are structural and function wrappers remain unclosed
 
@@ -270,7 +272,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** This corrects the language-neutral specification and known stale peer prose without changing the already-correct a12-dmkits fit/no-fit implementation. A consumer that modeled one universal “round to target scale” path or compared only numeric `Rat`/value equality would change behavior. The local Lean fragment implements only the ordinary fit path plus universal digit and signedness checks; it fails closed on the warning-suppressed no-fit surface and leaves other Number constraints outside its current claim.
 - **Acceptance:** a12-dmkits has one source of truth for both render branches and the warning-suppression gate; `docs/KERNEL-SEMANTICS.md` no longer presents one universal target-scale rounding path; existing focused multi-route controls remain green; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Partial at `77e3220fb07096f8017dfeef8e763b020fd784b4`: implementation and focused evidence already satisfy the two storage branches; only the stale single-path paragraph in `docs/KERNEL-SEMANTICS.md` and its public-prose sweep remain pending.
 
 ### SPEC-2026-07-19-16 — `$` correlation captures every named outer repetition level
 
@@ -285,4 +287,64 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** A scalar captured-row implementation changes valid cross-level filter truth. The current a12-dmkits interpreter is expected to remain behaviorally unchanged if the source reading is correct. The local Lean public one-group protocol is unchanged.
 - **Acceptance:** Prose states the full-environment rule; the diagonal/off-diagonal discriminator agrees across both kernel routes and the interpreter; no broader nested/multi-star claim is inferred; and the handback supplies the exact reviewed revision and disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** pending
+- **Disposition:** Adjacent evidence only at `c15036b5d4ee7ff76ffaf5cb1f860a86317ae272` and `e3cc376229ced8c2d8c8460562e30b8e3c9b282c`: deep multi-star binding is covered, but the exact parent-versus-descendant captured-coordinate discriminator and canonical prose remain pending.
+
+### SPEC-2026-07-19-17 — bare-group fill quantifiers use an ordered field-major stream
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `b52de06ead0eba254838f5513235dfded64c9568`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`01-data-model.md` §1](../spec/01-data-model.md#1-model--a-typed-tree), [`02-logic-and-formal-errors.md` §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges), and [`09-computations.md` §3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons)
+- **Delta:** Make the observable scan order explicit: recursively flatten fields in declaration order; complete each field's instantiated repetitions in repetition order; place that field's operator-relevant declared omissions immediately afterward; then advance to the next field. Stop when the result is decided, so an unread malformed tail cannot poison computation. A reached valid non-scalar `DAY_OPTIONAL` value remains FILLED.
+- **Basis:** a12-dmkits IF147 and the focused `BareGroupComputeExactnessDiffTest`, `BareGroupComputePoisonDiffTest`, `BareGroupComputeExactnessTest`, and `BareGroupScanLazinessTest` at `b52de06e` separate field order, per-field declared omissions, valid non-scalar values, deciding-cell stops, and reached poison across both kernel strategies and the peer evaluator.
+- **Requested a12-dmkits reconciliation:** None. The exact reviewed revision already implements and documents the ordered stream and focused separators; this entry records an inbound semantic handback rather than creating a new upstream request.
+- **Compatibility:** A consumer that reorders the flattened cells or appends every declared omission as one group-wide tail can change VALUE/CLEARED into poison. Existing a12-dmkits behavior remains unchanged.
+- **Acceptance:** The reviewed revision has one declaration-order expansion mechanism, genuinely stops before unread cells, retains the declared-versus-instantiated operator distinction, and carries focused dual-kernel-route and portable controls for the separating cases.
+- **a12-dmkits revision:** `b52de06ead0eba254838f5513235dfded64c9568`
+- **Disposition:** accepted — already satisfied by the reviewed implementation, prose, and tests.
+
+### SPEC-2026-07-19-18 — custom field validators produce one project-coded formal observation
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `955ccdc7251350383a43733621e80b8f7e8629e2`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`06-strings-and-enumerations.md` §A.3](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation), with cross-cutting summaries in [`01-data-model.md`](../spec/01-data-model.md), [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md), [`11-messages-and-custom.md`](../spec/11-messages-and-custom.md), and [`SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md)
+- **Delta:** Specify the registered custom-field callback as a formal-observation boundary: preserve raw optional bounds but supply effective `1`/`999`, locale, and stored-value mode; sample one pure result per relevant concrete-valued cell; reuse it for emission, suppression, poison, and RNU filtering; and preserve a rejection's project code plus optional field-placeholder-aware message. The checked Lean world requires complete registration, while the kernel itself fails loudly only when a missing validator is reached.
+- **Basis:** a12-dmkits IF150/IF152 and `CustomFieldTypeContextDiffTest`, `CustomFieldTypeRejectionCodeDiffTest`, `CustomFieldTypeMessageDiffTest`, `CustomFieldTypeContextCacheTest`, and `CustomFieldTypeLoadTest` at `955ccdc7` establish the registered callback context, result identity, project code, message substitution, and raw/effective-bound distinction.
+- **Requested a12-dmkits reconciliation:** None for the registered path. The reviewed revision already implements and documents it. a12-dmkits' lenient unregistered-validator outcome remains an explicit native-tool divergence rather than a kernel-equivalence claim; the canonical checked Lean account simply excludes an incomplete registry as ill-formed.
+- **Compatibility:** Consumers must not generically enforce the declared bounds, replace omitted callback bounds with null, resample a stateful validator per semantic consumer, or collapse a project code to `customFieldTypeInvalid`. Existing registered a12-dmkits behavior remains unchanged.
+- **Acceptance:** The reviewed revision forwards the exact registered context, shares one complete result across consumers, preserves code and optional message, excludes nonrelevant cells before sampling, and locks the registered surface against both kernel strategies plus portable JVM/Node controls.
+- **a12-dmkits revision:** `955ccdc7251350383a43733621e80b8f7e8629e2`
+- **Disposition:** accepted — the registered path is already satisfied; the separately documented lenient missing-registration behavior is outside its exactness claim.
+
+### SPEC-2026-07-19-19 — legal charset definitions are bounded and combined entries match atomically
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `1903cd8046a81c3689e6b02a4131c3633f095425`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`06-strings-and-enumerations.md` §A.2](../spec/06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching), with summaries in [`01-data-model.md`](../spec/01-data-model.md), [`02-logic-and-formal-errors.md`](../spec/02-logic-and-formal-errors.md), and [`SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md)
+- **Delta:** Distinguish absent/empty-list defaulting from an illegal empty entry; define legal singleton, inclusive range, and bounded surrogate-free combined entries; retain legal shared and terminal prefixes while applying the pinned narrower ambiguity predicate; and match configured combined entries atomically with positive progress and singleton/range fallback. String length remains UTF-16-unit based.
+- **Basis:** a12-dmkits IF151, the source-characterized overlap predicate, and `SupportedCharactersDefinitionDiffTest`, `SupportedCharactersGraphemeDiffTest`, `LegalCharsetDefinitionTest`, and `LegalCharsetGraphemeTest` at `1903cd80` separate malformed definitions, legal prefix shapes, atomic full-sequence acceptance, component leakage, and fallback behavior across both kernel strategies and the peer evaluator.
+- **Requested a12-dmkits reconciliation:** None. The exact reviewed revision already has one validated definition mechanism, one atomic matcher, and focused differential/portable controls; this entry records the inbound handback.
+- **Compatibility:** Flattening a combined entry into independently legal components is observably wrong, while banning all prefix overlap rejects legal models. Definition validation must exclude empty transitions and bound entries, but no implementation layout or performance target is prescribed.
+- **Acceptance:** The reviewed revision distinguishes empty list from empty entry, enforces the bounded legal-entry and exact ambiguity rules, matches combined entries atomically with guaranteed progress, and retains focused controls against both kernel strategies and on JVM/Node.
+- **a12-dmkits revision:** `1903cd8046a81c3689e6b02a4131c3633f095425`
+- **Disposition:** accepted — already satisfied by the reviewed implementation, prose, and tests.
+
+### SPEC-2026-07-19-20 — repetition uniqueness composes ordinarily and projects complete duplicate peers
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `07fb8c03f36a19e91eb018679e04dacbc95e57e1`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`07-repetition-and-iteration.md` §6](../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely), [`10-validation-and-polarity.md` §5](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation), and the message shape in [`01-data-model.md` §3.1](../spec/01-data-model.md#31-rules-validation)
+- **Delta:** Complete the RNU account: it is an ordinary per-row 3VL leaf in every model-legal `And`/`Or` tree; partial duplicate construction admits a row only when every composite-key component is relevant; and RNU-owned `referenced`/`fillToFix` sets expand over every key in the complete duplicate cluster while independent branch references stay on the current row.
+- **Basis:** a12-dmkits IF149 and `RepetitionNotUniqueCompositionDiffTest`, `RepetitionNotUniqueExactnessDiffTest`, `PartialValidationRepetitionNotUniqueDiffTest`, and `RepetitionNotUniqueExactnessTest` at `07fb8c03` establish ordinary composition, typed keys, all-key relevance, peer-exact pointer sets, branch ownership, and VALUE/OMISSION projection across both kernel strategies and portable JVM/Node evaluation.
+- **Requested a12-dmkits reconciliation:** None. The exact reviewed revision replaced the positional recognizer with the ordinary predicate mechanism and already carries the focused handback tests.
+- **Compatibility:** Consumers must not recognize only standalone/top-level-conjunct RNU, gate duplicate construction by an enclosing branch, inspect only one composite-key field for relevance, or discard duplicate peers before message projection. No generic negation surface or pointer ordering is introduced.
+- **Acceptance:** The reviewed revision evaluates RNU through the ordinary legal Boolean tree, builds duplicate outcomes independently of surrounding branches, requires complete-key relevance, retains typed equality and every peer, and matches both kernel strategies for composition and rich-message separators.
+- **a12-dmkits revision:** `07fb8c03f36a19e91eb018679e04dacbc95e57e1`
+- **Disposition:** accepted — already satisfied by the reviewed implementation, prose, and tests.

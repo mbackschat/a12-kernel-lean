@@ -13,7 +13,9 @@ A **document model** is a static declaration — a tree:
 - **Groups** are internal nodes. Each group is **non-repeatable** (occurs at most once wherever its parent occurs) or **repeatable** (declares an ordered 1-based row-address range `1 … repeatability`; a valid document may instantiate only a prefix `1 … rowCount`, where `rowCount ≤ repeatability`). The model's root is a single group.
 - **Fields** are leaves. Each has a **type** and per-type configuration. (The type table is in [`SEMANTICS-MAP.md §2`](SEMANTICS-MAP.md#2-field-types-at-a-glance); per-type evaluation is in files 04–06.)
 
-Groups nest arbitrarily; a repeatable group may contain repeatable subgroups, giving multi-dimensional arrays.
+A group's direct children form an ordered declaration sequence. Groups nest arbitrarily; a repeatable group may contain repeatable subgroups, giving multi-dimensional arrays. Recursive expansion to descendant fields preserves model declaration order: a child field is visited when reached, while a child group's descendant fields are visited recursively before the next sibling.
+
+A Custom field names a registered validator and preserves whether its optional length bounds were declared; the exact formal-check contract is in [§7](06-strings-and-enumerations.md#a3-custom-field-type-validation).
 
 ```
 Order                       group (root, non-repeatable)
@@ -37,7 +39,7 @@ A handful of model-wide settings change evaluation globally; carry them in the m
 
 - **Base Year** — a reference year that omitted-year date literals (`"13.07."`) and date fragments complete against. Absent ⇒ those constructs are rejected. ([§6](05-dates-and-time.md))
 - **Time zone** — the DM-JSON key `content.modelConfig.timeZone` (the capitalized `TimeZone` is the *internal* metamodel key code generation copies it into); **default `UTC`**, only other *documented* value `Europe/Berlin` — the code itself whitelists nothing (any Java zone id passes, unknown ids silently collapse to GMT; only a GMT-collapsing id is rejected at code generation). Applied at **parse time** to every DATE and DATE_TIME (a plain date is midnight in the model zone); under `Europe/Berlin` this makes datetime evaluation DST-aware — instant-based sub-day differences and comparison, a nonexistent spring-gap wall time as a *formal error*, and direction-dependent `AddDays` landings. ([§6](05-dates-and-time.md))
-- **Supported characters** — an optional legal charset. If the model declares one it is runtime-enforced; otherwise the legal set is the full Basic Multilingual Plane (`U+0000..U+FFFF`), so any supplementary-plane character is a formal error. ([§3](02-logic-and-formal-errors.md))
+- **Supported characters** — an optional legal charset. An absent or empty list uses the default Basic Multilingual Plane policy; a list containing an empty entry is malformed. The configured definition is runtime-enforced according to the exact entry and atomic-matching rules in [§7](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching).
 - **`fieldRefByShortNameAllowed`** — enables model-wide unique short-name field references. ([§10](08-paths-and-references.md))
 
 ---
@@ -87,7 +89,7 @@ A **rule** has:
 - an **error field** — where a fired message attaches. The error field must be *referenced* by the condition (directly, or indirectly via an enclosing `GroupFilled`), or the model is rejected; and it must share the condition's iteration scope ([§9](07-repetition-and-iteration.md));
 - **message metadata** — severity (ERROR/WARNING/INFO) and authored error text (with interpolation, [§13](11-messages-and-custom.md)).
 
-Firing a rule against a repetition context yields either *no message* or a **message** carrying: the error field's resolved location, the severity, the computed **message type** (VALUE/OMISSION, [§12](10-validation-and-polarity.md)), and the interpolated text.
+Firing a rule against a repetition context yields either *no message* or a **message** carrying: the error field's resolved location, the severity, the computed **message type** (VALUE/OMISSION, [§12](10-validation-and-polarity.md)), the interpolated text, and two structured sets of resolved field-instance pointers. `referenced` reports the condition operands associated with the firing; for an OMISSION, `fillToFix` reports the kernel's omission-responsibility projection, which need not be a minimal set of empty cells whose literal filling alone repairs the rule, while a VALUE message has no fill-to-fix pointers. An operator may define a more specific projection, such as the complete duplicate-peer expansion of [`RepetitionNotUnique`](07-repetition-and-iteration.md#6-repetitionnotunique-precisely); these channels are sets, so no pointer order is specified.
 
 > **Lean modelling note.** A faithful `Rule` is roughly `structure Rule where errorCond : Ast; errorField : Path; severity : Severity; text : Template`. There is deliberately no `polarity` or `assert` field — those are *derived* (polarity from the data; the error semantics from "condition true ⇒ invalid").
 
@@ -96,7 +98,7 @@ Firing a rule against a repetition context yields either *no message* or a **mes
 A **computation rule** writes a value into a **computed field**. It has:
 
 - a **target** (the computed field),
-- an optional **common precondition**, then one or more **alternatives**, each a `(precondition, operation)` pair. Alternatives are tried top-to-bottom: clean false/unknown falls through, a poisoned read aborts, and the **first** holding precondition selects its operation and ends the scan even if that operation later produces no value. No match ⇒ the target is **CLEARED**.
+- an optional **common precondition**, then one or more **alternatives**. Each alternative contains its precondition, its operation, and an optional fixed `toleranceRangeOp`. The tolerance metadata does not affect first-match selection or operation evaluation; it changes only that alternative's implicit generated mismatch from strict `!=` to the named fixed tolerance-band predicate ([the precise generated-rule account](09-computations.md#6-the-implicit-validation-rule-precisely)). Alternatives are tried top-to-bottom: clean false/unknown falls through, a poisoned read aborts, and the **first** holding precondition selects its operation and ends the scan even if that operation later produces no value. No match ⇒ the target is **CLEARED**.
 
 Three cross-cutting facts (detailed in [§11](09-computations.md)):
 
@@ -118,7 +120,7 @@ Three cross-cutting facts (detailed in [§11](09-computations.md)):
 
 - Global-flagged fields are auto-added to the relevant set at all repetitions.
 - A relevant instance is *always* evaluated (overriding the content-gate of [§2](03-empty-and-required.md)), even if empty or phantom.
-- Uniqueness checks need the duplicate **partner** in the relevant set too.
+- Uniqueness checks need the duplicate **partner** in the relevant set too. For a composite `RepetitionNotUnique` key, every key component of every participating row must be relevant; a cluster is built only from rows whose complete keys are relevant ([§9](07-repetition-and-iteration.md#6-repetitionnotunique-precisely)).
 
 ### 4.3 The compute → apply → validate flow
 
@@ -143,6 +145,7 @@ This matters for reimplementation packaging: model **`compute`** and **`validate
 > def compute      : Model → World → Document → List (CellAddr × ComputeOutcome)
 > def apply        : Document → List (CellAddr × ComputeOutcome) → Document
 > ```
+> `World` supplies evaluation inputs that are neither model declarations nor document state: the injected clock, effective locale, and a total named custom-field-validator map ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation)).
 > Keeping `compute` as *outcome-producing* rather than *document-mutating* isolates the order-dependent poison ([§11](09-computations.md)) inside one function and lets `apply`/`validate` stay pure.
 
 ---

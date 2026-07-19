@@ -1,6 +1,6 @@
 # a12-kernel-lean — encoding architecture & decisions
 
-This document owns the current concrete Lean representations, dependency direction, module boundaries, and adopted or rejected encoding choices. The project-owned language-neutral semantics remain in [`../spec/`](../spec/); [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the project and evidence doctrine, [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns proof and trust practice, [`SOURCES.md`](SOURCES.md) owns source navigation and provenance, and [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) owns outbound reconciliation. Those contracts are assumed here rather than restated.
+This document owns the current concrete Lean representations, dependency direction, module boundaries, and adopted or rejected encoding choices. The project-owned language-neutral semantics remain in [`../spec/`](../spec/); [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) owns the project and evidence doctrine, [`LEAN-FORMALIZATION.md`](LEAN-FORMALIZATION.md) owns proof and trust practice, [`SOURCES.md`](SOURCES.md) owns source navigation and provenance, and [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) owns outbound reconciliation. Those contracts are assumed here rather than restated.
 
 ## Architecture boundary
 

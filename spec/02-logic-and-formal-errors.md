@@ -57,6 +57,7 @@ So `[Flag] == True` is **not** `FieldFilled(Flag)`, and an unset boolean satisfi
 The fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled`, `MoreThanOneFieldFilled`, `NotExactlyOneFieldFilled`, `NotAllFieldsFilled`, `FieldsNotCollectivelyFilled`) and the group quantifiers (`AllGroupsFilled`, `NoGroupFilled`, …) have subtle counting rules:
 
 - **A group operand means "every field inside it, recursively."** A field-fill quantifier over a group expands to the quantifier over every descendant field, through nested subgroups; a repeatable group in the operand carries its `*` onto each descendant; a mixed group+field operand list is legal. Value aggregates (`Sum`, `MinValue`, `MaxValue`, `NumberOfDifferentValues`) over a starred group expand the same way.
+- **A bare-group field-fill quantifier consumes a field-major, repetition-major stream.** Descendant fields occur in the recursive model declaration order of [§1](01-data-model.md#1-model--a-typed-tree), and one field is completed before the next. Its instantiated repetitions occur in repetition order; when the operator uses the declared range, that field's declared-but-uninstantiated repetitions follow immediately as empty cells before the next descendant field. An instantiated-range operator adds no declared omissions. Evaluation consumes only through the cell that decides its result, so a later cell is semantically unread and cannot affect it. A reached formally invalid cell remains UNKNOWN in validation and poisons computation; a formally valid value remains FILLED even when it has no concrete scalar projection, so a valid `DAY_OPTIONAL` value with an omitted day remains FILLED.
 - **Two iteration ranges over a starred scope.** `AllFieldsFilled` / `NotAllFieldsFilled` walk the **full declared range** — up to `repeatability`, an un-instantiated repetition reading *empty* — so `AllFieldsFilled(G*)` holds only when every *declared* row is filled. `AtLeastOneFieldFilled`, `NoFieldFilled`, `MoreThanOneFieldFilled`, `NotExactlyOneFieldFilled` clamp to the **instantiated** rows. `FieldsNotCollectivelyFilled` mixes them (≥1 filled over instantiated rows AND ≥1 empty over the declared range). On a non-repeatable scope the two ranges coincide.
 - **Group quantifiers admit a starred single group only for the count-zero / count-≥1 members.** `NoGroupFilled(G*)` and `AtLeastOneGroupFilled(G*)` count *instantiated* rows — and a **created-but-empty row counts as a filled group** (a row is content; [§9](07-repetition-and-iteration.md)). The `AllGroupsFilled` / `NotAllGroupsFilled` / `GroupsNotCollectivelyFilled` family **rejects** the asterisk.
 - **A formally-invalid cell counts in neither bucket.** A present-but-invalid cell (§B) is *neither* filled nor empty in a fill tally, and any invalid element makes a value aggregate non-evaluable.
@@ -71,7 +72,7 @@ The fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled
 
 A field whose value violates its **data-type configuration** produces a **formal error**. While it stands, the field is **"unknown"** to the kernel and **cannot be evaluated in any validation rule**. Formal errors:
 
-- use a **fixed, non-authorable** message (contrast rule errors, which are authored and can be error/warning/info),
+- ordinarily use a **fixed, non-authorable** message (contrast rule errors, which are authored and can be error/warning/info); a registered custom field validator is the explicit exception, carrying its project code and optional validator-provided message ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation)),
 - are attributed internally to a sentinel rule path (`formalePruefung`) — so from the *author's* rule's viewpoint the rule simply produces nothing,
 - **block the field from participating in any rule** (author rules never do this — only formal errors do).
 
@@ -98,8 +99,9 @@ The distinction *empty ≠ invalid* is the reason a two-state value domain canno
 
 More than a type-format mismatch. The *same* checked-cell mechanism (same eventual "unknown", same suppression for authored validation rules) receives findings from several stages:
 
-- **a malformed value** — the base case, *plus* two cross-kind baseline checks that run before any type-format check: legal charset (the model's `supportedCharacters`, else the full BMP `U+0000..U+FFFF`), and no leading/trailing blanks;
+- **a malformed value** — the base case, *plus* two cross-kind baseline checks that run before any type-format check on a stored/input value: the model's [legal charset](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching), and no leading/trailing blanks;
 - **a declared-constraint violation** — range, length, pattern, digit counts, enum domain: a parseable-but-out-of-bounds value is *exactly as invalid* as an unparseable one. A value violating several checks reports the **first** in the engine's fixed precedence;
+- **a registered custom field-validator rejection** — one project-coded formal observation reused by every consumer of that relevant concrete-valued cell ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation));
 - **the "required" checkbox on an empty field** ([§4](03-empty-and-required.md)) — after its generated mandatory rule has fired and its hit/message has been retained, the empty target is annotated with a validation-scoped required finding; authored validation rules then see unknown, while computation sees plain empty (an important asymmetry, [§11](09-computations.md));
 - **a duplicate index value** — a later model/instance check marks *every* participating cell, field-locally;
 - **an over-repetition row** — a later structural check marks a row beyond the group's declared `repeatability`, which also suppresses that row's ordinary checks.
@@ -165,6 +167,7 @@ The compute side is the subject of [§11](09-computations.md); the key is that t
 - [ ] Parser **rejects** un-bracketed `And`/`Or` mixes.
 - [ ] Negative predicates are individual constructors, **not** `Not p`; the non-complementary pairs behave as specified.
 - [ ] Boolean has three field-states; `== True` ≠ `FieldFilled`; Confirm-empty = `False` while Boolean-empty = not-evaluated.
-- [ ] Fill quantifiers distinguish the **declared** vs **instantiated** iteration ranges, and count an invalid cell as neither filled nor empty.
+- [ ] Fill quantifiers distinguish the **declared** vs **instantiated** iteration ranges, use the canonical field-major/repetition-major bare-group stream, stop at the deciding cell, and count a reached invalid cell as neither filled nor empty.
+- [ ] Legal-charset and registered custom-validator rejections enter the same formal-observation boundary; the latter preserves its project code and optional message.
 - [ ] Suppression is **branch-scoped** and reaches presence predicates (`FieldFilled(invalid)` = UNKNOWN).
 - [ ] Strong-Kleene information order is explicit; `And`/`Or` are monotone under it, and definite results are stable under refinement.

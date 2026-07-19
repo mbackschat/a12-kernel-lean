@@ -55,7 +55,7 @@ Four artifacts answer different questions and must not be collapsed:
 | Retained portable evidence replay and externally exported differentials | Empirical correspondence to kernel 30.8.1 | Pinned own-repository cases, externally captured cross-route kernel observations, and explicit divergence records |
 | Kernel and Kotlin ecosystem | Behavioral authority, external probe harness, portable evidence, peer implementation, and production execution | Existing release, integration, fuzz, and operational processes |
 
-[`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md) records reconciliation of spec changes into a12-dmkits. It transports reviewed semantic changes and retains their revision receipts; it is not evidence that keeps a semantic claim honest.
+[`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) records reconciliation of spec changes into a12-dmkits. It transports reviewed semantic changes and retains their revision receipts; it is not evidence that keeps a semantic claim honest.
 
 [`ARTIFACTS.md`](ARTIFACTS.md) projects this authority model onto the repository's concrete scenario-question, `evidence/`, `reference/`, `examples/`, and `qualification/` trees and defines how each is authored, retained, generated, checked, versioned, or kept transient.
 
@@ -137,7 +137,7 @@ Preparation follows six rules. First, cluster operators by shared semantic mecha
 
 This method deliberately avoids a speculative universal operator framework. Repeated structure may be factored only after at least two completed capsules expose the same law and result domain. The first implementation stays direct and named; an optimized table, generic fold, or compiled evaluator becomes a separate refinement target only when a real consumer and preservation theorem justify it. Cedar's executable-spec/validation/theorem separation is the default project shape, while Radix's evaluator/relation and transformation-preservation patterns are used only where their narrower proof form fits.
 
-The live coverage and adequacy artifact is [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md): it records the supported cells and evidence gaps, while [`PLAN.md`](PLAN.md) owns the current spiral. Language-neutral kernel behavior belongs in the project-owned [`../spec/`](../spec/) body and remains grounded in the sources indexed by [`SOURCES.md`](SOURCES.md); every outbound semantic change is tracked in [`A12-DMKITS-SPEC-SYNC.md`](A12-DMKITS-SPEC-SYNC.md). The durable reason for a Lean distinction belongs in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), and the current representation in [`ARCHITECTURE.md`](ARCHITECTURE.md). This prevents the implementation matrix from becoming a second semantics specification or an unreviewed backlog.
+The live coverage and adequacy artifact is [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md): it records the supported cells and evidence gaps, while [`PLAN.md`](PLAN.md) owns the current spiral. Language-neutral kernel behavior belongs in the project-owned [`../spec/`](../spec/) body and remains grounded in the sources indexed by [`SOURCES.md`](SOURCES.md); every outbound semantic change is tracked in [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md). The durable reason for a Lean distinction belongs in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), and the current representation in [`ARCHITECTURE.md`](ARCHITECTURE.md). This prevents the implementation matrix from becoming a second semantics specification or an unreviewed backlog.
 
 ## Controlled interleaving and coverage horizons
 
