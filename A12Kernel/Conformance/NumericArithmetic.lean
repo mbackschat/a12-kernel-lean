@@ -40,6 +40,34 @@ example : roundMathContext50 (-tinyTie) = -tinyTieRounded := by
 example : NumericArithmeticOp.add.eval (12 / 10) (23 / 10) = 35 / 10 := by
   native_decide
 
+example : divideNumeric 1 0 = .notEvaluated := by
+  rfl
+
+private def repeatingThird50Coefficient : Nat := (10 ^ 50 - 1) / 3
+private def repeatingThird50 : Rat := repeatingThird50Coefficient / 10 ^ 50
+
+example : divideNumeric 1 3 = .value repeatingThird50 := by
+  native_decide
+
+example : divideNumeric (-1) 3 = .value (-repeatingThird50) := by
+  native_decide
+
+example : divideNumeric 1 (-3) = .value (-repeatingThird50) := by
+  native_decide
+
+/- Precision counts all digits: this quotient has 20 integer and 30 fractional digits. -/
+example : divideNumeric (10 ^ 20) 3 =
+    .value (repeatingThird50Coefficient / 10 ^ 30) := by
+  native_decide
+
+example : divideNumeric 0 7 = .value 0 := by
+  native_decide
+
+/- The rounded quotient is consumed as-is by the following multiplication node. -/
+example : NumericArithmeticOp.multiply.eval repeatingThird50 3 =
+    1 - 1 / 10 ^ 50 := by
+  native_decide
+
 /- Per-node precision makes arithmetic non-associative. -/
 example :
     NumericArithmeticOp.add.eval (NumericArithmeticOp.add.eval tenPow50 (-tenPow50)) (3 / 5) =
