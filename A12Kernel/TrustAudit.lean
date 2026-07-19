@@ -67,6 +67,16 @@ run_cmd do
 #print axioms A12Kernel.fullDate_before_iff
 #print axioms A12Kernel.fullDate_before_irreflexive
 #print axioms A12Kernel.fullDate_before_transitive
+#print axioms A12Kernel.timeOfDay_ofHms_isSome_iff
+#print axioms A12Kernel.timeOfDay_secondsSinceMidnight_lt
+#print axioms A12Kernel.localDateTime_ofDateHms_isSome_iff
+#print axioms A12Kernel.localDateTime_ofYmdHms_isSome_iff
+#print axioms A12Kernel.localDateTime_resolveUtc_epochSecond
+#print axioms A12Kernel.localDateTime_sameDate_difference
+#print axioms A12Kernel.instant_shiftHours_epochSecond
+#print axioms A12Kernel.instant_shiftHours_zero
+#print axioms A12Kernel.instant_shiftHours_add
+#print axioms A12Kernel.instant_shiftHours_inverse
 
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer

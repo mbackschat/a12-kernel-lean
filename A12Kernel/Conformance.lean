@@ -1,5 +1,6 @@
 import A12Kernel.Conformance.Elaboration
 import A12Kernel.Conformance.FullDate
+import A12Kernel.Conformance.DateTime
 import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.ValidationRule
