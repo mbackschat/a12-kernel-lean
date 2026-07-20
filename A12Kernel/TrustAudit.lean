@@ -458,6 +458,13 @@ run_cmd do
 #print axioms A12Kernel.numericFillability_multiply_fixed_negative
 #print axioms A12Kernel.numericFillability_multiply_fixed_zero
 #print axioms A12Kernel.numericOperand_mapValue_unknown
+#print axioms A12Kernel.numericExtremumAggregate_scan_error_iff
+#print axioms A12Kernel.numericExtremumAggregate_scan_allEmpty
+#print axioms A12Kernel.numericExtremumAggregate_allEmpty
+#print axioms A12Kernel.numericExtremumAggregate_singleton_fixed
+#print axioms A12Kernel.numericExtremumAggregate_singleton_tail
+#print axioms A12Kernel.numericExtremumAggregate_tail_metadata_separator
+#print axioms A12Kernel.numericExtremumAggregate_singleton_having
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_left
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_right
 #print axioms A12Kernel.numericArithmeticOutcome_divide_notEvaluated_left
