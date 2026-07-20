@@ -15,6 +15,7 @@ import A12Kernel.Semantics.FullDate
 import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.DateRangeOverlapOperators
 import A12Kernel.Semantics.DateConstruction
+import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.DateTime
 import A12Kernel.Semantics.DateTimeDifference
 import A12Kernel.Semantics.NumericStoredNumber

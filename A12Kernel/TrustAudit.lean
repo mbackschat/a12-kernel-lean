@@ -104,6 +104,11 @@ run_cmd do
 #print axioms A12Kernel.dateConstruction_valid_forgets_nonvalue_reason
 #print axioms A12Kernel.dateConstruction_invalid_preserves_nonvalue_reason
 #print axioms A12Kernel.dateConstruction_truth_complement
+#print axioms A12Kernel.dateNumericPart_extracts_components
+#print axioms A12Kernel.dateConstruction_numericPart_real
+#print axioms A12Kernel.dateConstruction_numericPart_same_zero_distinct_provenance
+#print axioms A12Kernel.dateConstruction_numericPart_unavailable_comparison
+#print axioms A12Kernel.dateConstruction_numericPart_true_comparison_polarity
 #print axioms A12Kernel.civilDate_next_unixEpochDay
 #print axioms A12Kernel.civilDate_before_unixEpochDay
 #print axioms A12Kernel.timeOfDay_ofHms_isSome_iff
