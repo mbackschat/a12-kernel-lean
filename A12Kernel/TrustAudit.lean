@@ -454,6 +454,14 @@ run_cmd do
 #print axioms A12Kernel.semanticIndex_unavailableNoMatch_phaseSplit
 #print axioms A12Kernel.semanticIndex_cleanNoMatch_numberOperand
 #print axioms A12Kernel.semanticIndex_cleanNoMatch_greaterEqual_polarity
+#print axioms A12Kernel.enumerationCategory_lookup_head
+#print axioms A12Kernel.enumerationCategory_lookup_skip
+#print axioms A12Kernel.enumeration_stored_resolves_exactly
+#print axioms A12Kernel.enumeration_category_resolves_lookup
+#print axioms A12Kernel.enumerationCategory_manyToOne_sameVerdict
+#print axioms A12Kernel.enumeration_empty_notFired
+#print axioms A12Kernel.enumeration_unavailable_unknown
+#print axioms A12Kernel.enumeration_resolved_never_omission
 
 #print axioms A12Kernel.valueList_number_equal_iff_normalized_eq
 #print axioms A12Kernel.valueList_contains_prependEmpty

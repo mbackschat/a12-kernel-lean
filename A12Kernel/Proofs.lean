@@ -42,6 +42,7 @@ import A12Kernel.Proofs.Verdict
 import A12Kernel.Proofs.ValueList
 import A12Kernel.Proofs.FirstFilledValue
 import A12Kernel.Proofs.RepetitionNotUnique
+import A12Kernel.Proofs.Enumeration
 import A12Kernel.Proofs.SemanticIndex
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/

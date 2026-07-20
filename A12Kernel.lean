@@ -27,6 +27,8 @@ import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Semantics.RepetitionNotUnique
+import A12Kernel.Semantics.ScalarEquality
+import A12Kernel.Semantics.Enumeration
 import A12Kernel.Semantics.SemanticIndex
 import A12Kernel.Semantics.StringAlternatives
 import A12Kernel.Elaboration.Flat
