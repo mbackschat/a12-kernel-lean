@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.ComputationCondition
+import A12Kernel.Semantics.FieldFillQuantifier
 
 /-! # Resolved computation field-fill quantifiers
 
@@ -15,18 +16,7 @@ inductive ComputationFillSlot where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- The seven field-fill operators admitted by this resolved computation capsule. Each constructor has its own scan clause because the language has no generic negation. -/
-inductive ComputationFieldFillQuantifier where
-  | allFieldsFilled
-  | noFieldFilled
-  | atLeastOneFieldFilled
-  | moreThanOneFieldFilled
-  | notAllFieldsFilled
-  | notExactlyOneFieldFilled
-  | fieldsNotCollectivelyFilled
-  deriving Repr, DecidableEq
-
-namespace ComputationFieldFillQuantifier
+namespace FieldFillQuantifier
 
 private inductive ScanResult where
   | found
@@ -59,7 +49,7 @@ private def scanSecondFilled : List ComputationFillSlot → Bool → ScanResult
   | .poison cause :: _, _ => .poison cause
 
 /-- Evaluate one field-fill quantifier over the canonical resolved slot order. `NotExactlyOneFieldFilled` and `FieldsNotCollectivelyFilled` deliberately perform their two source-level scans from the beginning; the slot domain is pure, so rereading a clean slot adds no state, while the first reached poison remains exact. -/
-def eval (operator : ComputationFieldFillQuantifier)
+def evalComputation (operator : FieldFillQuantifier)
     (slots : List ComputationFillSlot) : ComputationConditionResult :=
   match operator with
   | .allFieldsFilled =>
@@ -106,6 +96,6 @@ def eval (operator : ComputationFieldFillQuantifier)
           | .exhausted => .notTrue
           | .poison cause => .poison cause
 
-end ComputationFieldFillQuantifier
+end FieldFillQuantifier
 
 end A12Kernel
