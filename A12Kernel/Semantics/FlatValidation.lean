@@ -1,6 +1,7 @@
 import A12Kernel.Document
 import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
@@ -14,13 +15,6 @@ outside this capsule.
 -/
 
 namespace A12Kernel
-
-/-- Equality and inequality are separate surface operators; there is no generic
-    condition negation in the language. -/
-inductive EqualityOp where
-  | equal
-  | notEqual
-  deriving Repr, DecidableEq
 
 structure FlatNumberField where
   id : FieldId
@@ -118,13 +112,6 @@ def FlatCondition.canFireOnEmpty : FlatCondition → Bool
   | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
   | .or left right => left.canFireOnEmpty || right.canFireOnEmpty
 
-/-- Comparison-local classification for the nonnumeric clauses whose substitution
-    polarity is symmetric. Numeric operands use directional fillability instead. -/
-inductive SimpleComparisonOperand (α : Type) where
-  | value (value : α) (given : Bool)
-  | notEvaluated
-  | unknown (cause : FormalCause)
-
 def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : CellObservation :=
   observeCell .validation (context.read id)
 
@@ -174,22 +161,6 @@ def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : Flat
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
-
-private def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
-  match op with
-  | .equal => equivalent
-  | .notEqual => !equivalent
-
-def EqualityOp.evalSimple (op : EqualityOp) (equivalent : α → α → Bool)
-    (operand : SimpleComparisonOperand α) (expected : α) : Verdict :=
-  match operand with
-  | .notEvaluated => .notFired
-  | .unknown _ => .unknown
-  | .value actual given =>
-      if op.holds (equivalent actual expected) then
-        if given then .fired .value else .fired .omission
-      else
-        .notFired
 
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/
