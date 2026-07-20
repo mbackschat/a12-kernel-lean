@@ -76,11 +76,11 @@ The last two rows are one design split seen from both sides, and they resolve th
 
 ### A.4 The row gate — where the substitutions stop
 
-All of the above happens **inside a content-bearing row.** Under full validation, an entirely empty instance is evaluated only when the condition is one that *can* fire on emptiness — a *structural* property of the condition, true of the negative-presence family (`NoFieldFilled`, `FieldNotFilled`, `NotAllFieldsFilled`, …) and composing through `And`/`Or`. A plain comparison **never** fires on a truly blank instance, so the empty-as-`0` rows above presuppose some sibling content.
+All of the above happens **inside a content-bearing row.** Under full validation, an entirely empty instance is evaluated only when the condition is one that *can* fire on emptiness — a *structural* property of the condition, true of the negative-presence family (`NoFieldFilled`, `FieldNotFilled`, `NotAllFieldsFilled`, …), true of a [`CustomCondition`](11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch) leaf whose hidden dependencies are not represented in the AST, and composing through `And`/`Or`. A plain comparison **never** fires on a truly blank instance, so the empty-as-`0` rows above presuppose some sibling content.
 
 One wrinkle in "what counts as content": an **instantiated repeatable row is itself content** — a created-but-blank repeat row *is* evaluated, so per-row empty-as-`0` fires on every such row — whereas a non-repeatable group's bare structural presence is *not* content. Partial validation overrides the gate entirely: a *relevant* instance is always evaluated, even empty or phantom ([§12](10-validation-and-polarity.md)).
 
-> **Lean modelling note.** The row gate is easy to miss and produces "fires on a blank document" bugs. Model it as a predicate `canFireOnEmpty : Ast → Bool` (structurally: true for the negative-presence predicates, closed under `And`/`Or`), and gate a row's evaluation on `hasContent(row) ∨ canFireOnEmpty(cond)`. Treat an instantiated repeatable row as `hasContent := true` by construction.
+> **Lean modelling note.** The row gate is easy to miss and produces "fires on a blank document" bugs. Model it as a predicate `canFireOnEmpty : Ast → Bool` (structurally: true for the negative-presence predicates and `CustomCondition`, closed under `And`/`Or`), and gate a row's evaluation on `hasContent(row) ∨ canFireOnEmpty(cond)`. Treat an instantiated repeatable row as `hasContent := true` by construction. This eligibility says only that the callback may be reached; its supplied relevance/formal-invalid context still determines what a conforming implementation should return.
 
 ---
 
