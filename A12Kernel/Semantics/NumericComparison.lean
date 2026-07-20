@@ -38,12 +38,26 @@ def asValidationNumericOperand (field : NumField) :
 
 end CellObservation
 
+/-- Transform only a known amount and its directional metadata; preserve the exact invalid cause. -/
+def NumericOperand.mapValue (operand : NumericOperand)
+    (transform : Rat → NumericFillability → Rat × NumericFillability) : NumericOperand :=
+  match operand with
+  | .value amount fillability =>
+      let transformed := transform amount fillability
+      .value transformed.1 transformed.2
+  | .unknown cause => .unknown cause
+
 /-- Rounding preserves the operand's invalid cause or directional fillability; it changes only a known amount. -/
 def NumericOperand.round (operand : NumericOperand) (mode : DecimalRoundingMode)
     (places : RoundingPlaces) : NumericOperand :=
-  match operand with
-  | .value amount fillability => .value (roundDecimal mode amount places) fillability
-  | .unknown cause => .unknown cause
+  operand.mapValue (fun amount fillability =>
+    (roundDecimal mode amount places, fillability))
+
+/-- Absolute value preserves an invalid cause and transforms known directional metadata from the operand's current sign. -/
+def NumericOperand.absolute (operand : NumericOperand) : NumericOperand :=
+  operand.mapValue (fun amount fillability =>
+    (absoluteNumeric amount,
+      fillability.absolute (NumericSign.ofRat amount)))
 
 /-- The fixed decimal scale applied to both numeric operands before every comparison. -/
 def comparisonScale : Nat := decimalPreRoundScale

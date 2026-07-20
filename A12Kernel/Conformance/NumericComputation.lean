@@ -62,6 +62,10 @@ private def rounded (body : AuthoredNumericExpr FlatFieldDecl) :
     AuthoredNumericExpr FlatFieldDecl :=
   .round .halfUp omittedRoundingPlaces body
 
+private def absolute (body : AuthoredNumericExpr FlatFieldDecl) :
+    AuthoredNumericExpr FlatFieldDecl :=
+  .abs body
+
 private def power (base exponent : AuthoredNumericExpr FlatFieldDecl) :
     AuthoredNumericExpr FlatFieldDecl :=
   .power base exponent
@@ -112,6 +116,20 @@ example : resultOf (rounded (divide (literal 1) (literal 0))) =
 
 /- Rounding preserves a reached computation poison instead of manufacturing a numeric result. -/
 example : resultOf (rounded (field source))
+    (context (checkedNumber (.rejected .malformed))) =
+      some (.poison .malformed) := by
+  rfl
+
+/- Absolute value shares the numeric tree but preserves computation-domain failure and poison. -/
+example : resultOf (absolute (field source))
+    (context (checkedNumber (.parsed (.num (-5))))) = some (.value 5) := by
+  native_decide
+
+example : resultOf (absolute (divide (literal 1) (literal 0))) =
+    some .domainFailure := by
+  native_decide
+
+example : resultOf (absolute (field source))
     (context (checkedNumber (.rejected .malformed))) =
       some (.poison .malformed) := by
   rfl

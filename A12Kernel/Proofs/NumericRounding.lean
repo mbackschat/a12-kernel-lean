@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.NumericComputationResult
+import A12Kernel.Proofs.NumericFillability
 
 /-! # A12Kernel.Proofs.NumericRounding — rounding bounds and metadata preservation -/
 
@@ -54,14 +55,8 @@ theorem numericArithmeticOutcome_round_notEvaluated_iff
     (outcome : NumericArithmeticOutcome)
     (mode : DecimalRoundingMode) (places : RoundingPlaces) :
     outcome.round mode places = .notEvaluated ↔ outcome = .notEvaluated := by
-  cases outcome <;> simp [NumericArithmeticOutcome.round]
-
-/-- The computation result additionally preserves the exact reached poison cause. -/
-theorem numericComputationResult_round_poison
-    (cause : FormalCause) (mode : DecimalRoundingMode)
-    (places : RoundingPlaces) :
-    (NumericComputationResult.poison cause).round mode places = .poison cause := by
-  rfl
+  exact numericArithmeticOutcome_mapValue_notEvaluated_iff outcome
+    (fun amount fillability => (roundDecimal mode amount places, fillability))
 
 /-- Rounding an arithmetic outcome changes only its available amount. -/
 theorem numericArithmeticOutcome_round_value

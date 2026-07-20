@@ -22,6 +22,7 @@ inductive AuthoredNumericExpr (Atom : Type) where
   | binary (op : NumericScaleBinaryOp)
       (left right : AuthoredNumericExpr Atom)
   | power (base exponent : AuthoredNumericExpr Atom)
+  | abs (body : AuthoredNumericExpr Atom)
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
       (body : AuthoredNumericExpr Atom)
   deriving Repr, DecidableEq
@@ -33,6 +34,7 @@ inductive LoweredNumericExpr (Atom : Type) where
   | binary (op : NumericScaleBinaryOp)
       (left right : LoweredNumericExpr Atom)
   | power (base exponent : LoweredNumericExpr Atom)
+  | abs (body : LoweredNumericExpr Atom)
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
       (body : LoweredNumericExpr Atom)
   deriving Repr, DecidableEq
@@ -68,6 +70,7 @@ def summary? (atomSummary : Atom → NumericScaleSummary) :
       let exponentSummary ← exponent.summary? atomSummary
       NumericScaleSummary.power? baseSummary exponentSummary
         exponent.isSimpleNonnegativeConstant
+  | .abs body => body.summary? atomSummary
   | .round _ places body => do
       let _ ← body.summary? atomSummary
       pure (NumericScaleSummary.rounded places.val)
@@ -108,9 +111,9 @@ private def authoringScan? : AuthoredNumericExpr Atom → Option AuthoringScan
         base.isDirectPower ||
           baseScan.directLeftNestedPower ||
           exponentScan.directLeftNestedPower⟩
-  | .round _ _ _ => none
+  | .abs _ | .round _ _ _ => none
 
-/-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Any rounding wrapper fails closed because the kernel's legacy function traversal is not a compositional region rule. -/
+/-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Operation-valued wrappers fail closed because the kernel's legacy function traversal is not a compositional region rule. -/
 def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   match expression.authoringScan? with
   | some scan =>
@@ -178,6 +181,7 @@ def evalValue (read : Atom → NumericArithmeticResult) :
       match base.evalValue read, exponent.evalValue read with
       | .value baseValue, .value exponentValue => powerNumeric baseValue exponentValue
       | _, _ => .notEvaluated
+  | .abs body => (body.evalValue read).absolute
   | .round mode places body =>
       (body.evalValue read).round mode places
 
@@ -185,7 +189,7 @@ end LoweredNumericExpr
 
 namespace AuthoredNumericExpr
 
-/-- Perform exactly one bottom-up lowering pass. Braces do not block a parent from recognizing a lowered root division; addition, subtraction, power, and rounding do. -/
+/-- Perform exactly one bottom-up lowering pass. Braces do not block a parent from recognizing a lowered root division; addition, subtraction, power, absolute value, and rounding do. -/
 def lowerForEvaluation : AuthoredNumericExpr Atom → LoweredNumericExpr Atom
   | .atom sourceAtom => .atom sourceAtom
   | .literal decoded => .literal decoded.value
@@ -200,6 +204,7 @@ def lowerForEvaluation : AuthoredNumericExpr Atom → LoweredNumericExpr Atom
       | .divide => .binary .divide loweredLeft loweredRight
   | .power base exponent =>
       .power base.lowerForEvaluation exponent.lowerForEvaluation
+  | .abs body => .abs body.lowerForEvaluation
   | .round mode places body =>
       .round mode places body.lowerForEvaluation
 

@@ -153,6 +153,16 @@ example : (.binary .multiply (literal 2 0)
       (fun _ => .notEvaluated) = .notEvaluated := by
   native_decide
 
+/- Absolute value is a numeric-tree operation: it transforms only available values and preserves the child's static summary. -/
+example : (.abs (literal (-5) 0) : Expr).evalValue (fun _ => .notEvaluated) =
+    .value 5 := by
+  native_decide
+
+example : (.abs (.atom 0) : Expr).summary? (fun _ =>
+    { scale := .exact 2, canExpandScale := false }) =
+      some { scale := .exact 2, canExpandScale := false } := by
+  native_decide
+
 private def source (id : Nat) : Expr := .atom id
 
 private def quotient (left right : Expr) : Expr :=
@@ -232,6 +242,10 @@ example : (.binary .add
 /- Operation-valued wrappers are deliberately outside this first compositional checker. -/
 example : (.round .halfUp omittedRoundingPlaces
     (quotient (source 0) (source 1)) : Expr).authoringCheck = .outsideFragment := by
+  native_decide
+
+example : (.abs (quotient (source 0) (source 1)) : Expr).authoringCheck =
+    .outsideFragment := by
   native_decide
 
 end A12Kernel.Conformance.NumericExpression

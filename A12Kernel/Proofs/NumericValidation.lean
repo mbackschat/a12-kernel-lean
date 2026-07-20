@@ -73,7 +73,7 @@ private theorem rootDivision_plain
     numerator.isPlainArithmetic = true ∧
       denominator.isPlainArithmetic = true := by
   cases expression with
-  | atom | literal | power | round =>
+  | atom | literal | power | abs | round =>
       simp [LoweredNumericExpr.rootDivision?] at division
   | binary op left right =>
       cases op <;>
@@ -136,7 +136,7 @@ private theorem authoredNumericLower_plain
       | multiply =>
           exact lowerMultiply_plain _ _
             (leftIh plain.1) (rightIh plain.2)
-  | power | round =>
+  | power | abs | round =>
       simp [AuthoredNumericExpr.isPlainArithmetic] at plain
 
 private theorem loweredPlainValidation_isSome
@@ -160,21 +160,26 @@ private theorem loweredPlainValidation_isSome
           | some rightOutcome =>
               simp [LoweredNumericExpr.evalPlainValidation?,
                 leftResult, rightResult]
-  | power | round =>
+  | power | abs | round =>
       simp [LoweredNumericExpr.isPlainArithmetic] at plain
 
-private theorem authoredNumericLower_directFieldRounding
+private theorem authoredNumericLower_directFieldValueFunction
     (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectFieldRounding = true) :
-    expression.lowerForEvaluation.isDirectFieldRounding = true := by
+    (direct : expression.isDirectFieldValueFunction = true) :
+    expression.lowerForEvaluation.isDirectFieldValueFunction = true := by
   cases expression with
   | atom | literal | group | binary | power =>
-      simp [AuthoredNumericExpr.isDirectFieldRounding] at direct
+      simp [AuthoredNumericExpr.isDirectFieldValueFunction] at direct
+  | abs body =>
+      cases body <;>
+        simp [AuthoredNumericExpr.isDirectFieldValueFunction,
+          AuthoredNumericExpr.lowerForEvaluation,
+          LoweredNumericExpr.isDirectFieldValueFunction] at direct ⊢
   | round mode places body =>
       cases body <;>
-        simp [AuthoredNumericExpr.isDirectFieldRounding,
+        simp [AuthoredNumericExpr.isDirectFieldValueFunction,
           AuthoredNumericExpr.lowerForEvaluation,
-          LoweredNumericExpr.isDirectFieldRounding] at direct ⊢
+          LoweredNumericExpr.isDirectFieldValueFunction] at direct ⊢
 
 private theorem authoredNumericLower_admittedValidation
     (expression : AuthoredNumericExpr Atom)
@@ -186,7 +191,8 @@ private theorem authoredNumericLower_admittedValidation
   cases admitted with
   | inl plain => exact Or.inl (authoredNumericLower_plain expression plain)
   | inr direct =>
-      exact Or.inr (authoredNumericLower_directFieldRounding expression direct)
+      exact Or.inr
+        (authoredNumericLower_directFieldValueFunction expression direct)
 
 private theorem loweredAdmittedValidation_isSome
     (expression : LoweredNumericExpr Atom)
@@ -201,15 +207,19 @@ private theorem loweredAdmittedValidation_isSome
       cases expression with
       | atom | literal | binary =>
           simpa [LoweredNumericExpr.evalAdmittedValidation?] using plainSome
-      | power | round =>
+      | power | abs | round =>
           simp [LoweredNumericExpr.isPlainArithmetic] at plain
   | inr direct =>
       cases expression with
       | atom | literal | binary | power =>
-          simp [LoweredNumericExpr.isDirectFieldRounding] at direct
+          simp [LoweredNumericExpr.isDirectFieldValueFunction] at direct
+      | abs body =>
+          cases body <;>
+            simp [LoweredNumericExpr.isDirectFieldValueFunction,
+              LoweredNumericExpr.evalAdmittedValidation?] at direct ⊢
       | round mode places body =>
           cases body <;>
-            simp [LoweredNumericExpr.isDirectFieldRounding,
+            simp [LoweredNumericExpr.isDirectFieldValueFunction,
               LoweredNumericExpr.evalAdmittedValidation?] at direct ⊢
 
 private theorem numericComparison_wellFormed_sidesAdmitted
@@ -270,10 +280,31 @@ theorem numericValidation_round_atom_literal_delegates
       LoweredNumericExpr.evalAdmittedValidation?,
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericArithmetic,
-      NumericArithmeticOutcome.round,
-      NumericOperand.round, NumericValidationOp.evalArithmetic,
+      NumericArithmeticOutcome.round, NumericArithmeticOutcome.mapValue,
+      NumericOperand.round, NumericOperand.mapValue,
+      NumericValidationOp.evalArithmetic,
       NumericValidationOp.eval, NumericComparisonOp.eval,
       NumericToleranceRange.eval, observed]
+
+/-- An absolute-valued left atom against a literal delegates to the shared operand transformation for every ordinary and tolerance consumer. -/
+theorem numericValidation_abs_atom_literal_delegates
+    (op : NumericValidationOp) (field : FlatNumberField)
+    (right : DecodedNumericLiteral) (context : FlatContext) :
+    ({ op, left := .abs (.atom field), right := .literal right } :
+      NumericComparison).evalSelected context =
+        op.eval (context.resolveNumberComparisonOperand field).absolute
+          (.value right.value .fixed) := by
+  cases op <;>
+    cases observed : context.resolveNumberComparisonOperand field <;>
+    simp [NumericComparison.evalSelected,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericArithmetic,
+      NumericArithmeticOutcome.absolute, NumericArithmeticOutcome.mapValue,
+      NumericOperand.absolute, NumericOperand.mapValue,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericComparisonOp.eval, NumericToleranceRange.eval, observed]
 
 /-- A direct tolerance core atom/literal pair delegates to the existing pure tolerance seam. -/
 theorem numericTolerance_atom_literal_delegates

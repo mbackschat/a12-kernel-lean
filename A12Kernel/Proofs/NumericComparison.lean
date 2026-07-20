@@ -4,6 +4,13 @@ import A12Kernel.Semantics.NumericComparison
 
 namespace A12Kernel
 
+/-- A value transformation cannot hide or replace the exact invalid operand cause. -/
+theorem numericOperand_mapValue_unknown
+    (cause : FormalCause)
+    (transform : Rat → NumericFillability → Rat × NumericFillability) :
+    (NumericOperand.unknown cause).mapValue transform = .unknown cause := by
+  rfl
+
 theorem numericDifferenceFillCanClose_comm_of_ne (left right : Rat)
     (leftFill rightFill : NumericFillability)
     (different :

@@ -296,6 +296,8 @@ run_cmd do
 #print axioms A12Kernel.authoredNumericSummary_group
 #print axioms A12Kernel.authoredNumericGroup_not_simple_constant
 #print axioms A12Kernel.authoredNumericLower_group
+#print axioms A12Kernel.authoredNumericSummary_abs
+#print axioms A12Kernel.authoredNumericLower_abs
 #print axioms A12Kernel.lowerMultiply_two_divisions
 #print axioms A12Kernel.lowerMultiply_left_division
 #print axioms A12Kernel.lowerMultiply_right_division
@@ -310,11 +312,15 @@ run_cmd do
 #print axioms A12Kernel.numericAuthoring_group_allows_left_power
 #print axioms A12Kernel.numericAuthoring_right_power_requires_parser_shape_boundary
 #print axioms A12Kernel.numericAuthoring_round_is_outside_fragment
+#print axioms A12Kernel.numericAuthoring_abs_is_outside_fragment
 #print axioms A12Kernel.emptyNumericField_evaluates_zero
 #print axioms A12Kernel.requiredEmptyNumericField_evaluates_zero
 #print axioms A12Kernel.poisonedNumericField_evaluates_poison
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
 #print axioms A12Kernel.numericComputation_round_preserves_domainFailure
+#print axioms A12Kernel.numericComputation_abs_delegates
+#print axioms A12Kernel.numericComputationResult_mapValue_domainFailure
+#print axioms A12Kernel.numericComputationResult_mapValue_poison
 #print axioms A12Kernel.numericComputation_leftPoison_shortCircuits
 #print axioms A12Kernel.numericComputation_rightPoison_after_leftDomain
 #print axioms A12Kernel.numericComputation_leftDomain_absorbs_value
@@ -383,6 +389,7 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericComparison_evaluations_areSome
 #print axioms A12Kernel.numericComparison_atom_literal_agrees_flat
 #print axioms A12Kernel.numericValidation_round_atom_literal_delegates
+#print axioms A12Kernel.numericValidation_abs_atom_literal_delegates
 #print axioms A12Kernel.numericTolerance_atom_literal_delegates
 #print axioms A12Kernel.checkedNumericComparison_emptyRow_notFired
 #print axioms A12Kernel.numericTolerance_threshold_pos
@@ -404,10 +411,11 @@ run_cmd do
 #print axioms A12Kernel.numericOperand_round_unknown
 #print axioms A12Kernel.numericOperand_round_value_preserves_fillability
 #print axioms A12Kernel.numericArithmeticOutcome_round_notEvaluated_iff
-#print axioms A12Kernel.numericComputationResult_round_poison
 #print axioms A12Kernel.numericArithmeticOutcome_round_value
 
 #print axioms A12Kernel.roundMathContext50_zero
+#print axioms A12Kernel.absoluteNumeric_eq_abs
+#print axioms A12Kernel.numericArithmeticResult_mapValue_notEvaluated_iff
 #print axioms A12Kernel.numericArithmetic_add_comm
 #print axioms A12Kernel.numericArithmetic_multiply_comm
 #print axioms A12Kernel.numericArithmetic_subtract_as_add_neg
@@ -426,6 +434,10 @@ run_cmd do
 #print axioms A12Kernel.numericSign_ofRat_negative
 #print axioms A12Kernel.numericSign_ofRat_zero
 #print axioms A12Kernel.numericSign_ofRat_positive
+#print axioms A12Kernel.numericFillability_absolute_negative
+#print axioms A12Kernel.numericFillability_absolute_zero
+#print axioms A12Kernel.numericFillability_absolute_positive
+#print axioms A12Kernel.numericArithmeticOutcome_mapValue_notEvaluated_iff
 #print axioms A12Kernel.numericArithmetic_fixed_fillability
 #print axioms A12Kernel.numericFillability_add_comm
 #print axioms A12Kernel.numericFillability_subtract_eq_add_swapped
@@ -435,6 +447,7 @@ run_cmd do
 #print axioms A12Kernel.numericFillability_multiply_fixed_positive
 #print axioms A12Kernel.numericFillability_multiply_fixed_negative
 #print axioms A12Kernel.numericFillability_multiply_fixed_zero
+#print axioms A12Kernel.numericOperand_mapValue_unknown
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_left
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_right
 #print axioms A12Kernel.numericArithmeticOutcome_divide_notEvaluated_left

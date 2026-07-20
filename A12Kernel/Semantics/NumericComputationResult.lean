@@ -1,5 +1,5 @@
 import A12Kernel.Cell
-import A12Kernel.Semantics.NumericRounding
+import A12Kernel.Semantics.NumericArithmetic
 
 /-! # Numeric computation-expression results
 
@@ -15,12 +15,22 @@ inductive NumericComputationResult where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Round only an available computation value; arithmetic failure and read poison keep their meanings. -/
-def NumericComputationResult.round (result : NumericComputationResult)
-    (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericComputationResult :=
+/-- Transform only an available computation value; arithmetic failure and read poison keep their meanings. -/
+def NumericComputationResult.mapValue (result : NumericComputationResult)
+    (transform : Rat → Rat) : NumericComputationResult :=
   match result with
-  | .value amount => .value (roundDecimal mode amount places)
+  | .value amount => .value (transform amount)
   | .domainFailure => .domainFailure
   | .poison cause => .poison cause
+
+/-- Round only an available computation value. -/
+def NumericComputationResult.round (result : NumericComputationResult)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericComputationResult :=
+  result.mapValue (fun amount => roundDecimal mode amount places)
+
+/-- Apply absolute value only to an available computation result. -/
+def NumericComputationResult.absolute
+    (result : NumericComputationResult) : NumericComputationResult :=
+  result.mapValue absoluteNumeric
 
 end A12Kernel

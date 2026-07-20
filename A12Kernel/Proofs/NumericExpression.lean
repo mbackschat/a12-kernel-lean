@@ -19,7 +19,21 @@ theorem authoredNumericGroup_not_simple_constant
 theorem authoredNumericLower_group
     (body : AuthoredNumericExpr Atom) :
     (AuthoredNumericExpr.group body).lowerForEvaluation =
-      body.lowerForEvaluation := by
+    body.lowerForEvaluation := by
+  rfl
+
+/-- Absolute value preserves the complete authored numeric scale summary. -/
+theorem authoredNumericSummary_abs
+    (atomSummary : Atom → NumericScaleSummary)
+    (body : AuthoredNumericExpr Atom) :
+    (AuthoredNumericExpr.abs body).summary? atomSummary =
+      body.summary? atomSummary := by
+  rfl
+
+theorem authoredNumericLower_abs
+    (body : AuthoredNumericExpr Atom) :
+    (AuthoredNumericExpr.abs body).lowerForEvaluation =
+      .abs body.lowerForEvaluation := by
   rfl
 
 theorem lowerMultiply_two_divisions
@@ -137,6 +151,12 @@ theorem numericAuthoring_round_is_outside_fragment
     (mode : DecimalRoundingMode) (places : RoundingPlaces)
     (body : AuthoredNumericExpr Atom) :
     (AuthoredNumericExpr.round mode places body).authoringCheck =
+      NumericAuthoringCheck.outsideFragment := by
+  rfl
+
+theorem numericAuthoring_abs_is_outside_fragment
+    (body : AuthoredNumericExpr Atom) :
+    (AuthoredNumericExpr.abs body).authoringCheck =
       NumericAuthoringCheck.outsideFragment := by
   rfl
 
