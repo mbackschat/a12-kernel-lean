@@ -102,6 +102,14 @@ inductive NumericArithmeticOutcome where
 
 namespace NumericArithmeticOutcome
 
+/-- Round a known amount while preserving its directional metadata; domain failure remains unavailable. -/
+def round (outcome : NumericArithmeticOutcome)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericArithmeticOutcome :=
+  match outcome with
+  | .value amount fillability =>
+      .value (roundDecimal mode amount places) fillability
+  | .notEvaluated => .notEvaluated
+
 /-- Evaluate one total arithmetic node, absorbing a domain-undefined child before doing arithmetic. -/
 def eval (op : NumericArithmeticOp) :
     NumericArithmeticOutcome → NumericArithmeticOutcome → NumericArithmeticOutcome

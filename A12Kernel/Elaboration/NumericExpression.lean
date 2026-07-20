@@ -179,9 +179,7 @@ def evalValue (read : Atom → NumericArithmeticResult) :
       | .value baseValue, .value exponentValue => powerNumeric baseValue exponentValue
       | _, _ => .notEvaluated
   | .round mode places body =>
-      match body.evalValue read with
-      | .value value => .value (roundDecimal mode value places)
-      | .notEvaluated => .notEvaluated
+      (body.evalValue read).round mode places
 
 end LoweredNumericExpr
 

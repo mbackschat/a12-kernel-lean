@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It deliberately admits only plain arithmetic in the evaluated row group. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It admits plain arithmetic plus the separately audited direct-field root-rounding shape in the evaluated row group; general operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -49,6 +49,20 @@ def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
   | .power _ _ | .round _ _ _ => false
 
+/-- The first checked operation wrapper: one root rounding over one direct Number field. Both expression and `…Value` surface spellings normalize to this same shape. -/
+def AuthoredNumericExpr.isDirectFieldRounding : AuthoredNumericExpr Atom → Bool
+  | .round _ _ (.atom _) => true
+  | _ => false
+
+/-- The checked validation fragment is plain arithmetic plus the independently audited root rounding shape. -/
+def AuthoredNumericExpr.isAdmittedValidation : AuthoredNumericExpr Atom → Bool
+  | expression => expression.isPlainArithmetic || expression.isDirectFieldRounding
+
+/-- General operation-wrapper traversal remains unclosed; only the exact root rounding shape bypasses the plain-arithmetic authoring scan. -/
+def AuthoredNumericExpr.validationAuthoringCheck
+    (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  if expression.isDirectFieldRounding then .accepted else expression.authoringCheck
+
 private def AuthoredNumericExpr.allAtoms (predicate : Atom → Bool) :
     AuthoredNumericExpr Atom → Bool
   | .atom sourceAtom => predicate sourceAtom
@@ -85,12 +99,12 @@ def NumericComparison.wellFormedBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
   (comparison.left.hasAtom || comparison.right.hasAtom) &&
-    comparison.left.isPlainArithmetic &&
-    comparison.right.isPlainArithmetic &&
+    comparison.left.isAdmittedValidation &&
+    comparison.right.isAdmittedValidation &&
     comparison.left.allAtoms (model.admitsNumberInGroup rowGroup) &&
     comparison.right.allAtoms (model.admitsNumberInGroup rowGroup) &&
-    comparison.left.authoringCheck == .accepted &&
-    comparison.right.authoringCheck == .accepted &&
+    comparison.left.validationAuthoringCheck == .accepted &&
+    comparison.right.validationAuthoringCheck == .accepted &&
     match
         comparison.left.summary? (fun field =>
           NumericScaleSummary.field field.info.scale),
@@ -149,12 +163,12 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
       let left ← resolveNumericExpression model rowGroup surface.left
       let right ← resolveNumericExpression model rowGroup surface.right
       if !(left.hasAtom || right.hasAtom) then throw .constantExpression
-      if !left.isPlainArithmetic then throw .unsupportedExpression
-      if !right.isPlainArithmetic then throw .unsupportedExpression
-      match left.authoringCheck with
+      if !left.isAdmittedValidation then throw .unsupportedExpression
+      if !right.isAdmittedValidation then throw .unsupportedExpression
+      match left.validationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
-      match right.authoringCheck with
+      match right.validationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
       let leftSummary ← match left.summary? (fun field =>
@@ -206,7 +220,15 @@ def LoweredNumericExpr.isPlainArithmetic : LoweredNumericExpr Atom → Bool
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
   | .power _ _ | .round _ _ _ => false
 
-/-- Evaluate the plain validation subset; `none` is reserved for power or rounding and is unreachable for a checked comparison. -/
+/-- Lowering preserves the checked root-rounding shape exactly. -/
+def LoweredNumericExpr.isDirectFieldRounding : LoweredNumericExpr Atom → Bool
+  | .round _ _ (.atom _) => true
+  | _ => false
+
+def LoweredNumericExpr.isAdmittedValidation : LoweredNumericExpr Atom → Bool
+  | expression => expression.isPlainArithmetic || expression.isDirectFieldRounding
+
+/-- Evaluate the plain validation subset; `none` marks a wrapper outside this helper's responsibility. -/
 def LoweredNumericExpr.evalPlainValidation?
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
     LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
@@ -218,13 +240,23 @@ def LoweredNumericExpr.evalPlainValidation?
       pure (evalPlainBinary op leftOutcome rightOutcome)
   | .power _ _ | .round _ _ _ => none
 
+/-- Evaluate exactly the checked runtime fragment. Rounding is admitted only at the root over a direct field; its result-domain map preserves both formal invalidity and arithmetic domain failure. -/
+def LoweredNumericExpr.evalAdmittedValidation?
+    (read : Atom → Except FormalCause NumericArithmeticOutcome) :
+    LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
+  | .round mode places (.atom sourceAtom) =>
+      some <| match read sourceAtom with
+        | .ok outcome => .ok (outcome.round mode places)
+        | .error cause => .error cause
+  | expression => expression.evalPlainValidation? read
+
 /-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/
 def NumericComparison.evalSelected
     (comparison : NumericComparison) (context : FlatContext) : Verdict :=
   match
-      comparison.left.lowerForEvaluation.evalPlainValidation?
+      comparison.left.lowerForEvaluation.evalAdmittedValidation?
         context.resolveNumericArithmetic,
-      comparison.right.lowerForEvaluation.evalPlainValidation?
+      comparison.right.lowerForEvaluation.evalAdmittedValidation?
         context.resolveNumericArithmetic with
   | some left, some right => comparison.op.evalArithmetic left right
   | _, _ => .unknown
@@ -235,7 +267,7 @@ def CheckedNumericComparison.evalSelected
     (context : FlatContext) : Verdict :=
   checked.core.evalSelected context
 
-/-- A plain comparison never fires on an entirely blank full-validation row. -/
+/-- An admitted comparison never fires on an entirely blank full-validation row. -/
 def CheckedNumericComparison.evalFull
     (checked : CheckedNumericComparison model)
     (context : FlatContext) (hasContent : Bool) : Verdict :=

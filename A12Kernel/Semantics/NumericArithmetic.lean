@@ -70,6 +70,13 @@ inductive NumericArithmeticResult where
   | notEvaluated
   deriving Repr, DecidableEq
 
+/-- Apply a decimal rounding wrapper without turning an unavailable numeric value into zero. -/
+def NumericArithmeticResult.round (result : NumericArithmeticResult)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericArithmeticResult :=
+  match result with
+  | .value amount => .value (roundDecimal mode amount places)
+  | .notEvaluated => .notEvaluated
+
 /-- Divide at precision 50; a zero divisor is explicitly not evaluated rather than Lean's rational zero. -/
 def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=
   if divisor = 0 then

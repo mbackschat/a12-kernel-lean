@@ -382,6 +382,7 @@ run_cmd do
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.checkedNumericComparison_evaluations_areSome
 #print axioms A12Kernel.numericComparison_atom_literal_agrees_flat
+#print axioms A12Kernel.numericValidation_round_atom_literal_delegates
 #print axioms A12Kernel.numericTolerance_atom_literal_delegates
 #print axioms A12Kernel.checkedNumericComparison_emptyRow_notFired
 #print axioms A12Kernel.numericTolerance_threshold_pos
@@ -402,6 +403,9 @@ run_cmd do
 #print axioms A12Kernel.preRound_le_roundCeiling
 #print axioms A12Kernel.numericOperand_round_unknown
 #print axioms A12Kernel.numericOperand_round_value_preserves_fillability
+#print axioms A12Kernel.numericArithmeticOutcome_round_notEvaluated_iff
+#print axioms A12Kernel.numericComputationResult_round_poison
+#print axioms A12Kernel.numericArithmeticOutcome_round_value
 
 #print axioms A12Kernel.roundMathContext50_zero
 #print axioms A12Kernel.numericArithmetic_add_comm

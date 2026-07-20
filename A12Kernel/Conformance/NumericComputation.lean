@@ -110,6 +110,12 @@ example : resultOf (rounded (divide (literal 1) (literal 0))) =
     some .domainFailure := by
   native_decide
 
+/- Rounding preserves a reached computation poison instead of manufacturing a numeric result. -/
+example : resultOf (rounded (field source))
+    (context (checkedNumber (.rejected .malformed))) =
+      some (.poison .malformed) := by
+  rfl
+
 example : resultOf
     (binary .add (divide (literal 1) (literal 0)) (literal 2)) =
       some .domainFailure := by

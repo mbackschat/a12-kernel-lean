@@ -354,9 +354,54 @@ example : errorOf (comparison .less (.power (atom "U") (literal 2 0)) 0) =
     some .unsupportedExpression := by
   native_decide
 
+/- A source-confirmed root rounding operation is admitted without widening the unclosed wrapper traversal. -/
+example : verdictOf
+    (comparison .less (.round .halfUp omittedRoundingPlaces (atom "U")) 1) =
+      some (.fired .omission) := by
+  native_decide
+
+/- The checked route retains the existing negative half-tie behavior. The mode-parametric delegation law covers all three modes without duplicating their pure matrix here. -/
+example : verdictOf
+    (comparison .equal (.round .halfUp omittedRoundingPlaces (atom "U")) (-3))
+    (raw (.parsed (.num ((-25 : Rat) / 10)))) = some (.fired .value) := by
+  native_decide
+
+/- The independently traversed right operand uses the same admitted root-rounding seam. -/
+example : verdictOf
+    (twoSided .equal
+      (literal 1 0)
+      (.round .floor omittedRoundingPlaces (atom "U")))
+    (raw (.parsed (.num ((16 : Rat) / 10)))) = some (.fired .value) := by
+  native_decide
+
+/- The rounded result's authored places, rather than the source field's scale, control exact-comparison admission. -/
+example : (elaborateNumericComparison model ["Order"]
+    (twoSided .equal
+      (.round .halfUp ⟨2, by decide⟩ (atom "U"))
+      (atom "Scale2"))).isOk = true := by
+  native_decide
+
+/- Formal invalidity survives the wrapper instead of becoming a rounded zero. -/
+example : verdictOf
+    (comparison .less (.round .halfUp omittedRoundingPlaces (atom "U")) 1)
+    (raw (.rejected .malformed)) = some .unknown := by
+  native_decide
+
+/- Nested wrapper/arithmetic authoring remains deliberately outside this checked fragment. -/
 example : errorOf
-    (comparison .less (.round .halfUp omittedRoundingPlaces (atom "U")) 0) =
-      some .unsupportedExpression := by
+    (comparison .less
+      (.binary .add
+        (.round .halfUp omittedRoundingPlaces (atom "U"))
+        (literal 1 0))
+      0) = some .unsupportedExpression := by
+  native_decide
+
+/- Root rounding over arithmetic is the opposite unclosed nesting direction and must not be mistaken for direct-field rounding. -/
+example : errorOf
+    (comparison .less
+      (.round .halfUp omittedRoundingPlaces
+        (.binary .add (atom "U") (literal 1 0)))
+      0) = some .unsupportedExpression := by
   native_decide
 
 example : errorOf (comparison .equal (literal 0 0) 0) =
