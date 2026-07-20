@@ -71,6 +71,24 @@ The second post-simplification probe used the checked nonrepeatable whole-rule/m
 
 The result is stronger than “more documentation is needed.” Each slice is internally usable for its exact job, and the probes recover the crucial kernel complexities without doing kernel research again. A combined evaluator is not internally closed because one genuine semantic bridge is absent: checked two-level correlation must feed a polarity-bearing repeatable whole-rule outcome with the correct row address. An importer additionally needs a pinned source semantics and mapping relation; a refactoring capability needs a checked transformation and preservation relation over a named observation. A language-neutral projection would make either existing slice easier to hand over, but documentation cannot substitute for those missing semantics and task relations. No eleventh task category emerged, and SMT would not close these gaps: the useful current questions are already finite and solver-free.
 
+## Current probe record: resolved `FirstFilledValue`
+
+The next artifact-only probe used the single-operand resolved Number `FirstFilledValue` capsule at revision `b7c214e`. An isolated reader acted first as an evaluator implementer and then as a refactoring-tool author. It could read the capsule's Lean semantics, laws, cases, linked canonical spec, and existing implementer/use-case guidance, but it could not inspect the kernel, a12-dmkits, the web, or prior discussion and changed no file.
+
+The evaluator decision procedure was recovered without further A12 research:
+
+| First reached outcome | Resolved result | Validation projection | Computation projection |
+|---|---|---|---|
+| Present value before any empty | That value; fillable exactly when the sole operand has `Having` | Fixed unless `Having`, then bidirectionally fillable | The value |
+| Present value after one or more empties | That value, fillable | Bidirectionally fillable | The value |
+| Formal unavailability before any present value | Exact unavailable cause | UNKNOWN | Poison with the same cause |
+| Exhaustion after an empty, an uninstantiated-tail marker, or `Having` | Fillable zero | Bidirectionally fillable zero | Zero |
+| Unmarked empty low-level stream | Fixed zero | Fixed zero | Zero; explicitly not claimed as an authored no-row star |
+
+The refactoring result is useful but deliberately narrower than a product. At the resolved boundary, removing a suffix after the first present or unavailable cell and collapsing repeated leading empties are safe. Forgetting a leading empty is safe only for the computation projection; validation observes the changed fillability. Reordering cells, validating every suffix eagerly, treating empty as a selected zero, deleting the no-row marker, or removing a filter merely because it kept the same values are unsafe. These conclusions already prevent several plausible interpreter and rule-optimizer mistakes.
+
+The probe therefore passed for **Execute** and resolved-boundary **Transform/Explain**, but not for an authored evaluator, shipment, or rule-refactoring product. Missing dependencies are checked lowering, path/star expansion, actual filter evaluation, partial-relevance classification, language-neutral task types and fixtures, a public operation, portable kernel evidence, and a source-level transformation relation. The gaps are integration and shipment boundaries, not ambiguity in the admitted scan. No protocol, runner, external implementation, qualification campaign, or harness was added.
+
 ## Current probe record: fresh Rust correlation runtime
 
 The first post-simplification probe to produce independent executable code used the current `single-group-correlation-v2` kit and only its twelve retained runtime fixtures. A fresh Rust implementer first committed a cold readback, then built one dependency-free generic resolved-runtime evaluator, and only after project-side source review received the mutation tasks. It consulted neither Lean nor the kernel, a12-dmkits, the retired Rust project, web research, or unlisted A12 material.
