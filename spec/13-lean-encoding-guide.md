@@ -98,7 +98,7 @@ The first engine-backed conformance witnesses should be:
 9. same-group and cross-subtree star binding use their distinct context sets;
 10. scale-19 pre-rounding is observable in the documented numeric boundary case; its legal witness uses arithmetic, so whole-rule replay waits for the arithmetic-expression fragment rather than inventing a scale-20 field.
 
-Useful sampled regression properties include determinism under an injected `World`, computation-delta projection, star-binding small cases, intended poison order sensitivity, `No` versus `NotAll` asymmetry, and the fact that `Valid`/`Invalid` are not complements. Sampled property tests remain valuable even after related theorems exist because they exercise executable integration and produce small counterexamples.
+Useful sampled regression properties include determinism under an injected `World`, computation-delta projection, star-binding small cases, intended poison order sensitivity, `No` versus `NotAll` asymmetry, and the constructed-Date boundary where `Valid`/`Invalid` complement at truth projection but one full verdict does not determine the other. Sampled property tests remain valuable even after related theorems exist because they exercise executable integration and produce small counterexamples.
 
 The universal theorem catalog and its required scopes live in [`../docs/LEAN-FORMALIZATION.md`](../docs/LEAN-FORMALIZATION.md). In particular, do not write “prove monotonicity” without first defining the information/fill relation and excluding or constraining counting quantifiers, row creation, custom oracles, and order-sensitive computations.
 
