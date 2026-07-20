@@ -75,11 +75,13 @@ a12-dmkits' [`CustomFieldTypeContextDiffTest`](../../a12-rulekit/adapter/src/tes
 
 ## Part B — §8 Enumerations
 
-### B.1 Comparison is by stored value, and comparability depends on texts
+### B.1 Comparison is by stored value, and direct-field comparability depends on effective display remapping
 
 - Rule conditions compare the **stored enumeration value**, not the displayed text: write `[Country] == "F"`, not `[Country] == "France"`.
-- An enumeration that **defines localized texts** cannot be compared with a plain string, nor with an enumeration that has **no** texts; comparing two text-bearing enumerations also requires their values *and* texts to be mutually consistent.
-- A plain string ↔ **texts-less** enum comparison **is** allowed — it is the *presence of display texts*, not the stored value, that governs comparability.
+- An ordinary enumeration is **effectively display-bearing** only when at least one localized display differs from its stored value. No authored labels and labels that all repeat their stored values are both effectively textless for this rule.
+- A direct plain-String field can be compared with an effectively textless enumeration field, but not with an effectively display-bearing one. Likewise, two enumeration fields are rejected when exactly one is effectively display-bearing.
+- Two effectively display-bearing enumeration fields need not have identical declarations. For every locale common to both, a shared stored value must have the same display and a shared display must denote the same stored value. Disjoint mappings and non-overlapping locale sets are accepted.
+- This direct-field gate is shared by `==` and `!=`. A String literal that is a valid stored or selected-category token and an already-checked category access follow their separate domain and projection rules rather than this field-to-field display gate.
 
 ### B.2 Categories via `->`
 
@@ -91,7 +93,7 @@ Enumeration values can carry named **category** attributes, read with the `->` o
 
 The category mapping is **positional** (`values[i]` categorizes enum value *i*) and **many-to-one** — the comparison fires for *every* value sharing that category value. An empty enum rides the not-evaluated track, category hop or not.
 
-> **Lean modelling note.** Give an enum type two parallel vectors — `values : Array String` and (optionally) `texts`, plus a category map `categories : String → Array String` — and derive comparability as a *typing rule* over `(hasTexts?, otherOperandKind)`: `textsBearing × plainString → ill-typed`; `textsLess × plainString → ok`; etc. Evaluation compares stored tokens; `->` is a lookup `value → category[value]` that then compares as a string. Positional many-to-one falls out of the vector representation directly.
+> **Lean modelling note.** Keep static comparability separate from runtime projection. For a legal ordinary enum declaration, retain locale-tagged `(stored, display)` facts, derive effective display-bearing status from `stored ≠ display`, and check the common-locale relation in both directions. Runtime evaluation compares stored tokens; `->` is a positional lookup over parallel stored/category vectors, so many-to-one mapping falls out directly.
 
 ### B.3 The value-list quantifiers — per-cell three-way classification ⚠
 
@@ -114,6 +116,6 @@ The category mapping is **positional** (`values[i]` categorizes enum value *i*) 
 - [ ] `supportedCharacters`: absent/empty list selects the BMP default, an empty entry is malformed, accepted entries are bounded and surrogate-free, configured combined entries match atomically with the exact overlap restriction, and every successful match advances.
 - [ ] A declared custom field type preserves raw optional bounds, supplies effective `1`/`999`, locale, and stored-value mode to one pure registered-validator observation per relevant concrete cell, and preserves a rejection's project code and optional field-aware message across all consumers.
 - [ ] `+` dispatches numeric-add vs string-concat by operand kind; date-shaped literals are dates, not concatenable strings.
-- [ ] Enums compared by **stored value**; comparability governed by **texts presence** (text-bearing ✗ plain string; texts-less ✓ plain string).
+- [ ] Enums compare **stored values**; direct-field comparability uses effective display remapping, treats identity labels as textless, and requires a consistent common-locale partial bijection between two display-bearing enums.
 - [ ] `->` category read is **positional, many-to-one**.
 - [ ] Value-list quantifiers classify each cell three-way; `No` poisons on UNKNOWN cell **or** member, `NotAll` only on UNKNOWN **member**; `Having` escalates a fire to OMISSION.
