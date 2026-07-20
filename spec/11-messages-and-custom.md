@@ -11,15 +11,15 @@ The authored error text carries tokens that are resolved against the evaluated d
 - **`$Field$`** interpolates the field's **name/label**; **`$Field.value$`** interpolates its **value**. A literal `$` is written **`$$`**.
 - For a **field** error text (as opposed to a **rule** error text), the tokens are literally `Field` and `Field.value`, **independent of the actual field name**.
 - `$Field.value$` may be used **only if** the field is referenced in the condition at least once **without an asterisk**, and error-text paths **may not contain asterisks**.
-- For an **unspecified** value, the interpolation yields **`0` for numbers** and an **empty string** for other types.
+- For a missing or empty display value, interpolation uses the referenced field format's exact default for the active presentation information and locale. Common externally differentiated defaults are **`0` for a scale-zero Number** and **`""` for String**; Number scale/locale and other formats are not collapsed to universal per-kind literals.
 
 What a fired message actually carries:
 
 - The message's error text is the **interpolated end-user text** — tokens already resolved against the evaluated document (the authored template stays in the model). Only the runtime can produce it, because it depends on the data.
-- **`$Field$` resolves through a caller-supplied label provider**, not a direct model-label read: a faithful provider returns the field's label for the locale, falling back to the name; with **no** provider configured the engine emits a path+index debug string (`fullName/idx.idx`). In practice surveyed models leave field labels empty, so the token resolves to the field **name**.
+- **`$Field$` delegates to the runtime identifier-display policy.** On the public service route, an available label-provider result wins exactly, including `""`; otherwise a nonempty localized model label wins; otherwise the resolved identifier's path/index debug representation is used. A configured provider may itself choose label-or-name, but that is caller policy rather than the kernel's built-in fallback.
 - A number's **unit trait** (amount / percent / permille) does **not** render into `$Field.value$` — the interpolation yields the bare number; the unit is a UI concern.
 
-> **Lean modelling note.** Model interpolation as a pure `render : Template → ResolvedTokens → LabelProvider → String`, where `ResolvedTokens` is computed from the fired instance's data (so it lives *after* evaluation, not inside it) and `LabelProvider : FieldRef → Locale → Option String` is an injected parameter (default: fall back to the field name; absent: the debug string). Keep it entirely separate from firing — the *decision* to fire is §1–§12; interpolation only shapes the text of an already-decided message. The `$Field.value$`-needs-a-non-starred-reference rule is a well-formedness check on the template against the condition.
+> **Lean modelling note.** Model interpolation as a pure post-fire render over structured, already-resolved inputs. Field-name input is `{ providerResult?, modelLabel?, debugDisplay }`; field-value input is `{ displayValue?, exactFormatDefault }`. A present provider result, including empty output, wins; only a nonempty model label beats the debug display. A missing or empty display value selects the exact format default. Do not derive these display inputs from core `Value` or the normalized evaluation cache; replacement text is opaque and processed once. Keep rendering entirely separate from firing — the *decision* to fire is §1–§12; interpolation only shapes the text of an already-decided message. The `$Field.value$`-needs-a-non-starred-reference rule is a well-formedness check on the template against the condition.
 
 ---
 
@@ -48,7 +48,8 @@ Constraints and runtime behaviour:
 
 ## Checklist for §13 + §14
 
-- [ ] Interpolation is a **pure render step** after firing; `$Field$` via an injected label provider (fallback: name; absent: debug string); `$Field.value$` empty → `0`/empty string; unit trait not rendered.
+- [ ] Interpolation is a **pure render step** after firing; field names use provider result → nonempty model label → debug priority, with a present empty provider result still winning.
+- [ ] A missing or empty field display uses the exact format-supplied default; display bytes are opaque, and message rendering neither reads nor renormalizes the evaluation cache. Scale-zero Number `0` and String empty are common differentiated instances, not a universal formatter; a number's unit trait is not rendered.
 - [ ] `$Field.value$` requires a non-starred reference; error-text paths asterisk-free.
 - [ ] A reached `CustomCondition` receives document, relevance, formal-invalid addresses, and the current error pointer; its callback—not an evaluator pre-gate—decides its hidden dependencies. `true` is VALUE; whole-condition structure decides empty-row reach; the rule must reference the error field; the construct is **barred** in computations and filters. Lean deliberately admits a pure, total successful-result oracle and treats missing/throwing host callbacks as integration failures.
 - [ ] A `CustomCondition` result is distinct from the declaration-driven custom-field formal observation owned by §7.

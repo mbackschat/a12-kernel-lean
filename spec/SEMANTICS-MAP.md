@@ -114,7 +114,7 @@ Fourteen numbered areas cover the language. This is the same `§n` numbering the
 | §10 | Paths & references | Absolute/relative/short-name; `..`-plus-`*` needs absolute; semantic index; addressed by key never position | ★★★★☆ | [`08-paths-and-references.md`](08-paths-and-references.md) |
 | §11 | Computations | First-match execution plus all-alternatives generated validation; VALUE/CLEARED/ERRORED; empty-cascade vs poison | ★★★★★ | [`09-computations.md`](09-computations.md) |
 | §12 | The validation model | Severity metadata; VALUE/OMISSION typing via directional fill; full vs partial validation | ★★★★★ | [`10-validation-and-polarity.md`](10-validation-and-polarity.md) |
-| §13 | Error-message interpolation | `$Field$` / `$Field.value$`; label provider; empty → `0`/empty string | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
+| §13 | Error-message interpolation | `$Field$` / `$Field.value$`; provider → model label → debug; missing/empty display → exact format default | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
 | §14 | CustomCondition — the escape hatch | Delegates the decision to host code; barred in compute + filters | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
 | — | Concrete syntax (lexing & grammar) | Keyword catalog (EN/DE), comments, `@`-directives, literals, path grammar, an EBNF sketch | ★★★☆☆ | [`12-concrete-syntax.md`](12-concrete-syntax.md) |
 | — | Lean encoding guide | Recommended core types, the encoding traps, a "start here" order, what to property-test | — | [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md) |

@@ -1,8 +1,8 @@
 # 13 — The Lean encoding guide
 
-This consolidates the per-file `Lean modelling note` callouts into an actionable implementation plan. It names the representation choices, the encoding traps that make plausible implementations diverge, the staged build order, and the evidence/proof gate for each semantic slice. Read the deep dives for the behavioral rationale; this document owns the order in which the Lean theory should grow.
+This consolidates the per-file `Lean modelling note` callouts into encoding guidance. It names representation choices, the traps that make plausible implementations diverge, the dependency spine within a semantic capsule, and the evidence/proof gate for each slice. Read the deep dives for behavioral rationale. Global sequencing, interleaving, and the active work item belong to [`../docs/PROJECT-DESIGN.md`](../docs/PROJECT-DESIGN.md) and [`../docs/PLAN.md`](../docs/PLAN.md), not this guide.
 
-The stance is semantics-first and executable-first, but proofs are not an optional afterthought. Each stage produces a small `#eval`-able reference meaning, engine-backed evidence, exact theorem obligations for the supported fragment, and checked non-laws. [`../docs/LEAN-FORMALIZATION.md`](../docs/LEAN-FORMALIZATION.md) defines the project-wide claim boundaries and required proof spine; [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) owns the concrete representation decisions.
+The stance is semantics-first and executable-first, but proofs are not an optional afterthought. Each capsule produces a small executable reference meaning, exact theorem obligations for the supported fragment, checked non-laws, and an honest evidence status. Matching retained observations are replayed when available; related external evidence may be batched later while the capsule remains `external evidence pending`. [`../docs/LEAN-FORMALIZATION.md`](../docs/LEAN-FORMALIZATION.md) defines the project-wide claim boundaries and required proof spine; [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) owns the concrete representation decisions.
 
 ---
 
@@ -52,9 +52,9 @@ Each trap reflects observed A12 behavior that a reasonable-looking implementatio
 
 ---
 
-## 3. Staged build order
+## 3. Dependency spine within a capsule
 
-Build the theory bottom-up. Do not expand broadly across operator families until the current stage has completed one proof-bearing semantic capsule.
+Build each claimed semantic path bottom-up through the layers it actually needs. The numbered list is a dependency and risk guide, not a global instruction to complete one entire domain before work may rotate to another. Reuse completed layers, follow the controlled spiral, and close one active proof-bearing capsule or bounded risk spike at a time.
 
 1. **Scalars and literals.** Complete `Value`, explicit numeric rescaling (19 / `HALF_UP` / 50-digit intermediate context), calendar conventions, the string/date literal typer, and UTF-16 code-unit String length. Lock the rounding table, the three-independently-divided-thirds `RoundDown` pre-round case from §5, and the decomposed-combining length witness. ([§5](04-numbers-and-decimals.md), [§6](05-dates-and-time.md), [§7](06-strings-and-enumerations.md))
 2. **Formal checking and phase observation.** Define `FieldPolicy`, `RawCell`, base `formalCheck`, checked-cell annotation, and `observeCell`; keep ordinary local findings in the base pass and route later generated/structural findings through the same checked-cell boundary. Make CRLF→LF normalization an explicit ingestion-stage fact after the raw-text line-break gate and before normalized pattern/domain/length checks, without rewriting the document. Prove the phase laws, including that computation ignores a validation-scoped `.required` annotation. ([§3](02-logic-and-formal-errors.md), [§4](03-empty-and-required.md))
@@ -65,13 +65,13 @@ Build the theory bottom-up. Do not expand broadly across operator families until
 7. **Directional fillability and polarity.** Define `FillExtends`, sign-aware seeds, propagation through arithmetic, functions, aggregates, counts, dates, concat, and `Having`, and the per-comparison-direction consumer dispatch including the normalized-side `!=` arm. Prove only the one-sided result supported by the explicit fill relation. The portable [`empty-polarity` family](../../a12-rulekit/corpus/cases/empty-polarity/) supplies focused replay for the empty-Number and polarity witnesses. ([§12](10-validation-and-polarity.md))
 8. **Computation.** Add VALUE/CLEARED/ERRORED outcomes, precondition empty cascade, poison-on-read, stored-form render, the final-empty String root-store gate before the reduced formal check, delta reporting, the placement-sensitive apply table including ERRORED-never-creates, and implicit validation-rule elaboration. Prove read-footprint noninterference before adding caches and state application laws over absent/present-empty/present-value target placement. ([§11](09-computations.md))
 9. **Partial validation.** Define relevant-set agreement, out-of-set unknown, global auto-add, starred-aggregate gating, and phantom rows; state the one-sided theorem over that exact relation. ([§12](10-validation-and-polarity.md))
-10. **Interpolation and custom conditions.** Keep rendering pure and model custom operations as explicit oracles. Exclude them from locality/monotonicity results unless their contracts provide the required footprint and stability laws. ([§13/§14](11-messages-and-custom.md))
+10. **Interpolation and custom conditions.** Keep rendering pure over post-fire resolved display-policy inputs, distinct from normalized evaluation reads, and model custom operations as explicit oracles. Exclude them from locality/monotonicity results unless their contracts provide the required footprint and stability laws. ([§13/§14](11-messages-and-custom.md))
 
-Every stage has the same exit gate:
+Every capsule has the same internal exit gate:
 
 - the smallest total executable definition for the clause;
 - focused examples for ordinary, boundary, empty, malformed, and order-sensitive behavior as applicable;
-- direct replay of every matching portable corpus case and retained external kernel differential evidence;
+- direct replay of every currently available matching portable corpus case and retained external kernel observation, with unavailable correspondence recorded as `external evidence pending` for later family calibration;
 - an updated `§n` coverage entry with version, provenance, support status, and outcome domain;
 - the proof-spine obligation introduced by the stage, with exact assumptions and root-axiom review;
 - a checked counterexample to the nearest attractive false generalization;
