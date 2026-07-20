@@ -19,6 +19,7 @@ import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
 import A12Kernel.Semantics.ValueList
 import A12Kernel.Semantics.RepetitionNotUnique
+import A12Kernel.Semantics.StringAlternatives
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation
