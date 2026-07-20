@@ -60,7 +60,21 @@ The fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled
 - **A bare-group field-fill quantifier consumes a field-major, repetition-major stream.** Descendant fields occur in the recursive model declaration order of [§1](01-data-model.md#1-model--a-typed-tree), and one field is completed before the next. Its instantiated repetitions occur in repetition order; when the operator uses the declared range, that field's declared-but-uninstantiated repetitions follow immediately as empty cells before the next descendant field. An instantiated-range operator adds no declared omissions. Evaluation consumes only through the cell that decides its result, so a later cell is semantically unread and cannot affect it. A reached formally invalid cell remains UNKNOWN in validation and poisons computation; a formally valid value remains FILLED even when it has no concrete scalar projection, so a valid `DAY_OPTIONAL` value with an omitted day remains FILLED.
 - **Two iteration ranges over a starred scope.** `AllFieldsFilled` / `NotAllFieldsFilled` walk the **full declared range** — up to `repeatability`, an un-instantiated repetition reading *empty* — so `AllFieldsFilled(G*)` holds only when every *declared* row is filled. `AtLeastOneFieldFilled`, `NoFieldFilled`, `MoreThanOneFieldFilled`, `NotExactlyOneFieldFilled` clamp to the **instantiated** rows. `FieldsNotCollectivelyFilled` mixes them (≥1 filled over instantiated rows AND ≥1 empty over the declared range). On a non-repeatable scope the two ranges coincide.
 - **Group quantifiers admit a starred single group only for the count-zero / count-≥1 members.** `NoGroupFilled(G*)` and `AtLeastOneGroupFilled(G*)` count *instantiated* rows — and a **created-but-empty row counts as a filled group** (a row is content; [§9](07-repetition-and-iteration.md)). The `AllGroupsFilled` / `NotAllGroupsFilled` / `GroupsNotCollectivelyFilled` family **rejects** the asterisk.
-- **A formally-invalid cell counts in neither bucket.** A present-but-invalid cell (§B) is *neither* filled nor empty in a fill tally, and any invalid element makes a value aggregate non-evaluable.
+- **Validation and computation consume reached invalid cells differently.** In a validation fill tally, a present-but-invalid cell (§B) is *neither* filled nor empty. In computation, reaching that slot poisons the computation instance; an invalid slot after the full predicate's final decision is unread and therefore inert. Any invalid element reached by a value aggregate makes the aggregate non-evaluable.
+
+Computation uses the following ordered scans over the canonical resolved slot stream. A declared-but-uninstantiated slot is a clean declared absence, not a value read:
+
+| Computation predicate | Ordered decision |
+|---|---|
+| `AllFieldsFilled` | Scan the declared range; first empty or uninstantiated slot → not true; exhaustion → holds. |
+| `NotAllFieldsFilled` | Scan the declared range; first empty or uninstantiated slot → holds; exhaustion → not true. |
+| `NoFieldFilled` | Scan instantiated slots; first filled slot → not true; exhaustion → holds. |
+| `AtLeastOneFieldFilled` | Scan instantiated slots; first filled slot → holds; exhaustion → not true. |
+| `MoreThanOneFieldFilled` | Scan instantiated slots; second filled slot → holds; exhaustion with zero or one → not true. |
+| `NotExactlyOneFieldFilled` | Run the `NoFieldFilled` decision first; if a filled slot exists, restart and run the `MoreThanOneFieldFilled` decision. Zero or at least two filled slots hold; exactly one does not. |
+| `FieldsNotCollectivelyFilled` | Run the instantiated `AtLeastOneFieldFilled` decision first; if a filled slot exists, restart and run the declared-range `NotAllFieldsFilled` decision. It holds exactly when both witnesses exist. |
+
+Every reached invalid slot in these computation scans poisons the computation instance. Each component scan stops at its own result, but a successful first stage of either composite starts the stated second scan again from the beginning. Only a suffix after the full predicate's final decision is unread.
 
 > **Lean modelling note.** "Declared range vs instantiated range" is a real semantic fork, not an optimisation — encode both. A clean approach: give a repeatable group both its `repeatability` (declared) and its actual row count, and let each quantifier state which range it folds over. `AllFieldsFilled` folds over the 1-based semantic range `1 .. repeatability` (missing rows = empty); `AtLeastOneFieldFilled` folds over `1 .. rowCount` (an empty range when `rowCount = 0`).
 
@@ -169,7 +183,7 @@ The compute side is the subject of [§11](09-computations.md); the key is that t
 - [ ] Parser **rejects** un-bracketed `And`/`Or` mixes.
 - [ ] Negative predicates are individual constructors, **not** `Not p`; the non-complementary pairs behave as specified.
 - [ ] Boolean has three field-states; `== True` ≠ `FieldFilled`; Confirm-empty = `False` while Boolean-empty = not-evaluated.
-- [ ] Fill quantifiers distinguish the **declared** vs **instantiated** iteration ranges, use the canonical field-major/repetition-major bare-group stream, stop at the deciding cell, and count a reached invalid cell as neither filled nor empty.
+- [ ] Fill quantifiers distinguish the **declared** vs **instantiated** iteration ranges and use the canonical field-major/repetition-major bare-group stream. Validation counts an invalid cell in neither bucket; computation poisons on a reached invalid slot and leaves every suffix after the full predicate's final decision unread.
 - [ ] Legal-charset and registered custom-validator rejections enter the same formal-observation boundary; the latter preserves its project code and optional message.
 - [ ] Suppression is **branch-scoped** and reaches presence predicates (`FieldFilled(invalid)` = UNKNOWN).
 - [ ] Strong-Kleene information order is explicit; `And`/`Or` are monotone under it, and definite results are stable under refinement.

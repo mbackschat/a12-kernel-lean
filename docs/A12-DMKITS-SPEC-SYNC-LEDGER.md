@@ -518,3 +518,19 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** Both kernel strategies and the interpreter agree on exact required-empty and repeated-row formal pointers plus the current error pointer; a clean out-of-relevance pointer is absent from both the partial relevant set and the formal-invalid set; the callback—not an evaluator pre-gate—makes the deciding Boolean; blank-row custom-`Or` fires when the callback returns true while the guarded custom-`And` control stays silent; full and partial relevance controls remain green; public and internal prose no longer claims automatic suppression; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-20-12 — computation fill quantifiers retain their exact staged scans
+
+- **Status:** accepted
+- **Supersedes:** [`SPEC-2026-07-19-17`](#spec-2026-07-19-17--bare-group-fill-quantifiers-use-an-ordered-field-major-stream)
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `d90082aaeb15372b0ef7f593149967f02c28a790`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`02-logic-and-formal-errors.md` §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges) and [`09-computations.md` §3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons)
+- **Delta:** State every computation fill operator's exact ordered stop condition and preserve the source-level two-stage definitions of `NotExactlyOneFieldFilled` and `FieldsNotCollectivelyFilled`: each composite restarts its second scan from the beginning and may therefore observe a poison that the first scan did not reach. Qualify the formerly phase-ambiguous statement that an invalid cell counts in neither bucket: that is validation behavior, while a malformed slot reached by a computation scan poisons the computation instance.
+- **Basis:** Kernel source revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` has seven distinct runtime methods over the ordered stream, including fresh second scans for both composite predicates and first-reached exception propagation. a12-dmkits revision `d90082aaeb15372b0ef7f593149967f02c28a790` retains the same computation account and the focused `ComputePoisonReadDiffTest` and `BareGroupComputeExactnessDiffTest` controls.
+- **Requested a12-dmkits reconciliation:** None. The exact reviewed revision already implements the staged computation scans; this entry makes their operator-specific contract explicit in the shared specification.
+- **Compatibility:** Eagerly reading the whole stream, replacing the staged composites with an eager tally, starting the mixed predicate's declared-empty search after its filled witness and thereby losing an earlier absence, or treating a reached malformed cell as an ordinary third bucket can change a clean result into poison, hide poison, or reverse truth.
+- **Acceptance:** The shared specification distinguishes validation invalidity from computation poison, lists all seven stop conditions, preserves the two fresh composite scans, and keeps declared versus instantiated iteration ranges explicit. The reviewed a12-dmkits revision and the local Lean capsule implement that account without widening authored expansion, group construction, or validation polarity.
+- **a12-dmkits revision:** `d90082aaeb15372b0ef7f593149967f02c28a790`
+- **Disposition:** accepted — the reviewed implementation and focused controls already satisfy the clarified computation contract.
