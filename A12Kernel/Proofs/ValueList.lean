@@ -7,6 +7,63 @@ These laws cover only the already-expanded, already-filtered runtime boundary. T
 
 namespace A12Kernel
 
+/-- The strict classified-cell scan is unavailable exactly when its input contains an unavailable cell. The accumulator step cannot create or erase availability. -/
+theorem valueListCell_scanPresent_error_iff
+    (step : state → ValueListAtom kind → state)
+    (cells : List (ValueListCell kind)) (initial : state) :
+    (∃ cause, ValueListCell.scanPresent step cells initial = .error cause) ↔
+      cells.any ValueListCell.isUnknown = true := by
+  induction cells generalizing initial with
+  | nil => simp [ValueListCell.scanPresent]
+  | cons cell cells inductionHypothesis =>
+      cases cell with
+      | present value =>
+          simpa [ValueListCell.scanPresent, ValueListCell.isUnknown] using
+            inductionHypothesis (step initial value)
+      | empty =>
+          simpa [ValueListCell.scanPresent, ValueListCell.isUnknown] using
+            inductionHypothesis initial
+      | unknown cause =>
+          simp [ValueListCell.scanPresent, ValueListCell.isUnknown]
+
+/-- A stream consisting only of empty cells preserves every caller-supplied accumulator. -/
+theorem valueListCell_scanPresent_allEmpty
+    (step : state → ValueListAtom kind → state)
+    (cells : List (ValueListCell kind)) (initial : state)
+    (allEmpty : cells.all ValueListCell.isEmpty = true) :
+    ValueListCell.scanPresent step cells initial = .ok initial := by
+  induction cells generalizing initial with
+  | nil => rfl
+  | cons cell cells inductionHypothesis =>
+      cases cell with
+      | present value => simp [ValueListCell.isEmpty] at allEmpty
+      | empty =>
+          simp only [List.all_cons, ValueListCell.isEmpty, Bool.true_and] at allEmpty
+          exact inductionHypothesis initial allEmpty
+      | unknown cause => simp [ValueListCell.isEmpty] at allEmpty
+
+/-- A known prefix cannot hide or replace the cause of the first unavailable cell; the suffix is not consumed by this scan. -/
+theorem valueListCell_scanPresent_firstUnknown
+    (step : state → ValueListAtom kind → state)
+    (before after : List (ValueListCell kind)) (initial : state)
+    (cause : FormalCause)
+    (beforeKnown : before.any ValueListCell.isUnknown = false) :
+    ValueListCell.scanPresent step
+      (before ++ .unknown cause :: after) initial = .error cause := by
+  induction before generalizing initial with
+  | nil => rfl
+  | cons cell before inductionHypothesis =>
+      cases cell with
+      | present value =>
+          simp only [List.any_cons, ValueListCell.isUnknown, Bool.false_or] at beforeKnown
+          simpa [ValueListCell.scanPresent] using
+            inductionHypothesis (step initial value) beforeKnown
+      | empty =>
+          simp only [List.any_cons, ValueListCell.isUnknown, Bool.false_or] at beforeKnown
+          simpa [ValueListCell.scanPresent] using
+            inductionHypothesis initial beforeKnown
+      | unknown found => simp [ValueListCell.isUnknown] at beforeKnown
+
 /-- Numeric membership is exactly equality after the shared scale-19 normalization. -/
 theorem valueList_number_equal_iff_normalized_eq (left right : Rat) :
     ValueListAtom.equal (kind := .number) left right = true ↔

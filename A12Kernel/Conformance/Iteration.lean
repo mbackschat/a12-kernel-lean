@@ -75,6 +75,33 @@ private def filteredCounts (expected : Rat) : SingleStar :=
 private def allCounts : SingleStar :=
   { valueField := count, having := none }
 
+private def tenPow50 : Rat := 10 ^ 50
+
+private def precisionSumSource : SingleGroupValidationContext where
+  group := items
+  candidates := [1, 2]
+  read index fieldId :=
+    if fieldId = count.id then
+      match index with
+      | 1 => checkedNumber (.parsed (.num (tenPow50 - 1)))
+      | 2 => checkedNumber (.parsed (.num (3 / 5)))
+      | _ => checkedNumber .empty
+    else
+      checkedNumber .empty
+
+private def orderedSumSource : SingleGroupValidationContext where
+  group := items
+  candidates := [1, 2, 3]
+  read index fieldId :=
+    if fieldId = count.id then
+      match index with
+      | 1 => checkedNumber (.parsed (.num tenPow50))
+      | 2 => checkedNumber (.parsed (.num (-tenPow50)))
+      | 3 => checkedNumber (.parsed (.num (3 / 5)))
+      | _ => checkedNumber .empty
+    else
+      checkedNumber .empty
+
 example : source.candidates.map source.envAt = [row 1, row 2, row 3, row 4] := by
   decide
 
@@ -86,6 +113,14 @@ example : (filteredCounts 1).select source = [1, 3, 4] := by
   native_decide
 
 example : allCounts.sumSelected source = .value 17 := by
+  native_decide
+
+/- The checked-row route applies precision 50 at every selected addition. -/
+example : allCounts.sumSelected precisionSumSource = .value tenPow50 := by
+  native_decide
+
+/- The checked-row route preserves encounter order rather than using a right-associated staged fold. -/
+example : allCounts.sumSelected orderedSumSource = .value (3 / 5) := by
   native_decide
 
 example : (filteredCounts 1).sumSelected source = .value 7 := by

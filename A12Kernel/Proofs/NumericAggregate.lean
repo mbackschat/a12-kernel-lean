@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericAggregate
+import A12Kernel.Proofs.ValueList
 
 /-! # Resolved Number aggregate laws
 
@@ -6,44 +7,6 @@ These laws characterize one already-expanded and already-filtered Number selecti
 -/
 
 namespace A12Kernel
-
-/-- A scan is unavailable exactly when its selected stream contains an unavailable cell. -/
-theorem numericExtremumAggregate_scan_error_iff
-    (op : NumericExtremumOp)
-    (cells : List (ValueListCell .number))
-    (selected : Option Rat) :
-    (∃ cause, op.scanAggregateCells cells selected = .error cause) ↔
-      cells.any ValueListCell.isUnknown = true := by
-  induction cells generalizing selected with
-  | nil => simp [NumericExtremumOp.scanAggregateCells]
-  | cons cell cells inductionHypothesis =>
-      cases cell with
-      | present amount =>
-          cases selected <;>
-            simp [NumericExtremumOp.scanAggregateCells,
-              ValueListCell.isUnknown, inductionHypothesis]
-      | empty =>
-          simp [NumericExtremumOp.scanAggregateCells,
-            ValueListCell.isUnknown, inductionHypothesis]
-      | unknown cause =>
-          simp [NumericExtremumOp.scanAggregateCells, ValueListCell.isUnknown]
-
-/-- A stream consisting only of empty cells leaves the selection accumulator unchanged. -/
-theorem numericExtremumAggregate_scan_allEmpty
-    (op : NumericExtremumOp)
-    (cells : List (ValueListCell .number))
-    (selected : Option Rat)
-    (allEmpty : cells.all ValueListCell.isEmpty = true) :
-    op.scanAggregateCells cells selected = .ok selected := by
-  induction cells generalizing selected with
-  | nil => rfl
-  | cons cell cells inductionHypothesis =>
-      cases cell with
-      | present amount => simp [ValueListCell.isEmpty] at allEmpty
-      | empty =>
-          simp only [List.all_cons, ValueListCell.isEmpty, Bool.true_and] at allEmpty
-          exact inductionHypothesis selected allEmpty
-      | unknown cause => simp [ValueListCell.isEmpty] at allEmpty
 
 /-- Every authored all-empty Number aggregate identity is zero and both-directionally fillable. This is the kernel's conservative classification even when the selected field is unsigned. -/
 theorem numericExtremumAggregate_allEmpty
@@ -57,7 +20,10 @@ theorem numericExtremumAggregate_allEmpty
       { cells, hasUninstantiatedTail, hasHaving } =
         .value 0 .both := by
   unfold evalNumericExtremumAggregate
-  rw [numericExtremumAggregate_scan_allEmpty op cells none allEmpty]
+  have scanEmpty := valueListCell_scanPresent_allEmpty
+    op.aggregateStep cells none allEmpty
+  rw [show op.scanAggregateCells cells none = .ok none by
+    simpa [NumericExtremumOp.scanAggregateCells] using scanEmpty]
   cases hasHaving with
   | false =>
       have missingPotential :
@@ -117,5 +83,87 @@ theorem numericExtremumAggregate_singleton_having
         hasHaving := true } =
       .value amount .both := by
   cases op <;> cases hasUninstantiatedTail <;> rfl
+
+/-- Every authored all-empty Number sum is zero and both-directionally fillable, independently of declaration signedness. -/
+theorem numericSumAggregate_allEmpty
+    (fieldSigned : Bool)
+    (cells : List (ValueListCell .number))
+    (hasUninstantiatedTail hasHaving : Bool)
+    (allEmpty : cells.all ValueListCell.isEmpty = true)
+    (hasMissingOrHaving :
+      ((cells.any ValueListCell.isEmpty || hasUninstantiatedTail) || hasHaving) = true) :
+    evalNumericSumAggregate fieldSigned
+      { cells, hasUninstantiatedTail, hasHaving } =
+        .value 0 .both := by
+  unfold evalNumericSumAggregate scanNumericSumCells
+  rw [valueListCell_scanPresent_allEmpty numericSumStep cells none allEmpty]
+  cases hasHaving with
+  | false =>
+      have missingPotential :
+          (ResolvedValueListSide.hasMissingPotential
+            { cells := cells
+              hasUninstantiatedTail := hasUninstantiatedTail
+              hasHaving := false }) = true := by
+        simpa [ResolvedValueListSide.hasMissingPotential,
+          ResolvedValueListSide.hasEmpty] using hasMissingOrHaving
+      simp [missingPotential]
+  | true => simp
+
+/-- A complete singleton sum is fixed, but its first value still passes through precision-50 addition from zero. -/
+theorem numericSumAggregate_singleton_fixed
+    (fieldSigned : Bool) (amount : Rat) :
+    evalNumericSumAggregate fieldSigned
+      { cells := [.present amount]
+        hasUninstantiatedTail := false
+        hasHaving := false } =
+      .value (NumericArithmeticOp.add.eval 0 amount) .fixed := by
+  rfl
+
+/-- Missing potential after a present sum uses that missing declaration's signedness. -/
+theorem numericSumAggregate_singleton_tail
+    (fieldSigned : Bool) (amount : Rat) :
+    evalNumericSumAggregate fieldSigned
+      { cells := [.present amount]
+        hasUninstantiatedTail := true
+        hasHaving := false } =
+      .value (NumericArithmeticOp.add.eval 0 amount)
+        (NumericFillability.emptyNumber fieldSigned) := by
+  cases fieldSigned <;> rfl
+
+/-- Equal totals do not erase the unsigned-versus-signed missing-direction distinction. -/
+theorem numericSumAggregate_tail_signedness_separator (amount : Rat) :
+    evalNumericSumAggregate false
+      { cells := [.present amount]
+        hasUninstantiatedTail := true
+        hasHaving := false } ≠
+    evalNumericSumAggregate true
+      { cells := [.present amount]
+        hasUninstantiatedTail := true
+        hasHaving := false } := by
+  simp [numericSumAggregate_singleton_tail, NumericFillability.emptyNumber]
+
+/-- A resolved `Having` marker makes every available singleton sum both-directionally fillable. -/
+theorem numericSumAggregate_singleton_having
+    (fieldSigned hasUninstantiatedTail : Bool) (amount : Rat) :
+    evalNumericSumAggregate fieldSigned
+      { cells := [.present amount]
+        hasUninstantiatedTail
+        hasHaving := true } =
+      .value (NumericArithmeticOp.add.eval 0 amount) .both := by
+  cases fieldSigned <;> cases hasUninstantiatedTail <;> rfl
+
+/-- The first unavailable cell after a known prefix determines the internal suppression cause independently of every suffix cell and metadata flag. -/
+theorem numericSumAggregate_firstUnknown
+    (fieldSigned hasUninstantiatedTail hasHaving : Bool)
+    (before after : List (ValueListCell .number))
+    (cause : FormalCause)
+    (beforeKnown : before.any ValueListCell.isUnknown = false) :
+    evalNumericSumAggregate fieldSigned
+      { cells := before ++ .unknown cause :: after
+        hasUninstantiatedTail
+        hasHaving } = .unknown cause := by
+  unfold evalNumericSumAggregate scanNumericSumCells
+  rw [valueListCell_scanPresent_firstUnknown
+    numericSumStep before after none cause beforeKnown]
 
 end A12Kernel
