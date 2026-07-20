@@ -76,6 +76,12 @@ run_cmd do
 #print axioms A12Kernel.localDateTime_resolveUtc_epochSecond
 #print axioms A12Kernel.localDateTime_before_resolveUtc
 #print axioms A12Kernel.localDateTime_sameDate_difference
+#print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
+#print axioms A12Kernel.instant_difference_self
+#print axioms A12Kernel.instant_difference_swap
+#print axioms A12Kernel.instant_difference_seconds
+#print axioms A12Kernel.instant_difference_exactUnits
+#print axioms A12Kernel.instant_difference_shiftHours
 #print axioms A12Kernel.instant_shiftHours_epochSecond
 #print axioms A12Kernel.instant_shiftHours_zero
 #print axioms A12Kernel.instant_shiftHours_add
