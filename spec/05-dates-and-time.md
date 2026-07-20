@@ -58,17 +58,20 @@ And addition is not the inverse of difference:
 Invalid(Date(Day, Month, Year))   -- fires on 31.11, 30.02, an unfilled part, …
 ```
 
-**`Valid` and `Invalid` are *not* complements**, and the construction has a defined non-value:
+**The truth projections of `Valid` and `Invalid` are strong-Kleene complements, but one full verdict does not determine the other**, because the construction has reason-bearing non-values:
 
 - An **unreal `Date(...)` is non-evaluable** — it does *not* roll over and does *not* keep an out-of-range value, so an extractor over it yields nothing.
 - `Valid(Date(...))` = all parts present ∧ well-formed ∧ the date is real → fired **VALUE**.
 - `Invalid(Date(...))` = parts well-formed ∧ (not real ∨ some part empty). Its polarity is **directional**: an empty fillable part → **OMISSION**, a present-but-unreal date → **VALUE**. It even fires on an **all-empty** row.
-- A **malformed** part suppresses **both** predicates (each goes UNKNOWN; the formal error fires instead) — they are complementary only when no part is malformed.
+- A **malformed** part suppresses **both** predicates (each goes UNKNOWN; the formal error fires instead). This is the UNKNOWN/UNKNOWN arm of strong-Kleene complementation, not ordinary Boolean false.
+- The decisive non-law is at the full verdict/polarity level: incomplete and unreal constructions both make `Valid` not fire, but `Invalid` must recover **OMISSION** for incomplete and **VALUE** for unreal.
 - To fire `Invalid` **only** on a complete-but-impossible date, prefix `AllFieldsFilled(...)`.
+
+The constructor's **calendar-reality test is model-zone-sensitive and uses the legacy hybrid calendar**, not an abstract proleptic-Gregorian `LocalDate`. Kernel 30.8.1 creates a non-lenient `GregorianCalendar` in `modelConfig.timeZone`; the default cutover uses Julian rules before the Gregorian transition, and a zone discontinuity can remove a complete local date. Consequently, UTC `Date(29, 2, 1500)` is real under the Julian side of that calendar, while `Date(30, 12, 2011)` is unreal in `Pacific/Apia` because that local date was skipped. This is separate from the later 1583-10-16 stored/computed-value floor. The zone database is a runtime input not identified by the kernel behavior version alone. A portable implementation must reproduce the pinned legacy calendar, zone, and zone-data behavior or fail closed outside its explicitly supported calendar domain; substituting a zone-free proleptic-Gregorian predicate is not equivalent.
 
 `Valid(Field, "CustomTypeName")` is the other form: it runs the project's registered validator for that custom type against the field.
 
-> **Lean modelling note.** Model a constructed date as `Option CalDate` where `none` is the *non-evaluable* unreal/incomplete date — but note `Valid`/`Invalid` are **not** `isSome`/`isNone`: they split the `none` case by *why* (empty part → OMISSION-flavoured, unreal → VALUE-flavoured) and both go UNKNOWN under a malformed part. Encode `Valid`/`Invalid` as two separate predicates reading the construction's *reason*, not as `p`/`¬p`.
+> **Lean modelling note.** A bare `Option CalDate` is insufficient: its `none` would collapse incomplete and unreal constructions even though `Invalid` assigns them different polarity. Use a reason-bearing result such as `real CalDate | incomplete | unreal | unknown`, then define the two verdict projections separately. Their truth projections complement under strong Kleene; `Invalid` is not a unary function of the full `Valid` verdict.
 
 ---
 
@@ -238,7 +241,8 @@ The date **extractors** (`DayFromDate`, …) accept a DateTime operand and see i
 - [ ] Literal kind (`dateConst` vs `strConst`) resolved at **lex/type** time by shape; ISO always a string; omitted-year needs a Base Year.
 - [ ] `AddMonths` (day-preserving + end-of-month clamp) vs `AddYears` (last-of-Feb-preserving, corrects into leap years) — **different** conventions; fractional offsets truncated.
 - [ ] Sub-day diffs = epoch-seconds `/ unit`, **truncated toward zero**, order `b − a`.
-- [ ] `Valid`/`Invalid(Date(...))` are **not** complements; unreal date = non-evaluable; malformed part suppresses both; `Invalid` directional polarity; fires on all-empty.
+- [ ] `Valid`/`Invalid(Date(...))` have strong-Kleene-complementary truth but distinct full verdict projections; unreal date = non-evaluable; malformed part makes both UNKNOWN; `Invalid` distinguishes unreal VALUE from incomplete OMISSION and fires on all-empty.
+- [ ] `Date(...)` reality uses non-lenient legacy `GregorianCalendar` in the model zone: hybrid cutover and zone-skipped local dates matter; a zone-free proleptic replacement is not equivalent.
 - [ ] **Gregorian floor** at 1583-10-16 on *values* (stored → `datumFalsch`, computed → ERRORED), day-optional completes day first; **not** applied to the `Date(...)` constructor's reality test.
 - [ ] Dates stored/checked in the field's **declared format**.
 - [ ] Time-zone admission follows the legacy recognized-id rule: absent ⇒ UTC; literal GMT or an id that does not collapse to GMT is legal; collapsed empty/unknown/typo ids draw `MVK_INVALID_TIME_ZONE`.
