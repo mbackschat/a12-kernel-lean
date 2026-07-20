@@ -488,3 +488,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits documentation states the positional encounter rule; a focused source or differential control distinguishes an encountered filter from an unreachable later filter; the clean-room interpreter retains per-slot order or otherwise proves equivalent behavior; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-20-10 — Date-range overlap polarity follows the reached scan
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `6f062a0d001e6140103e1acedbf00ff7ee512189`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`05-dates-and-time.md` §8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap)
+- **Delta:** Complete the existing truth-and-shape account with the two distinct polarity scans. Any-pair overlap becomes OMISSION after a kept, filled range from any reached filter-bearing operand; scalar-vs-list overlap becomes OMISSION only when the matched list container is filtered. Empty filtered containers do not taint, and an unavailable scalar terminates scalar-vs-list as no fire before any list-internal pair can matter.
+- **Basis:** kernel `RuntimeController.datumsBereicheUeberlappend` owns the sticky reached-filter flag after the filled-cell gate, while `mindestensEinDatumsBereichUeberlappendFL` gates the scalar first and derives polarity only from the matching list container. `DatumBereich.ueberlappt` supplies the defensive inverted-range guard. Maintained a12-dmkits `DateRangeOverlapSemanticsDiffTest`, `DateRangeDiffTest`, and the separate `overlapAny`/`atLeastOneOverlap` clean-room evaluators at the basis revision already distinguish any-pair shape, empty scalar, filter-derived polarity, inversion, touching endpoints, and list-internal overlap.
+- **Requested a12-dmkits reconciliation:** No behavior change is expected. Confirm that the owning prose states both polarity algorithms, the empty-filter and unavailable-scalar boundaries, and the difference between ordinary formal-check skipping and the defensive resolved inversion guard. Retain separate evaluators; do not factor the two operators through one scalar-versus-list scan.
+- **Compatibility:** A generic “any filtered argument means OMISSION” pass overclassifies firings after empty or unreachable filtered operands, while reusing any-pair for the scalar-vs-list form can fire on an internal list pair after the scalar failed.
+- **Acceptance:** a12-dmkits documentation and focused controls preserve both reached-filter algorithms, the scalar early exit, and the defensive inversion boundary; the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending

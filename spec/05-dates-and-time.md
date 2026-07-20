@@ -221,7 +221,14 @@ The two overlap predicates differ in **shape** ⚠:
 - **`DateRangesOverlap(op0, op1, …)`** is **any-pair** among *all* operands' kept, filled ranges (one growing set): a list-internal pair fires even when a scalar operand is disjoint, and a same-cell self-pair via scalar + star fires on every filled row.
 - **`AtLeastOneDateRangeOverlaps(scalar In list…)`** is genuinely **scalar-vs-list**: two list cells overlapping *each other* do **not** fire.
 
-For both: intervals are **closed** (back-to-back periods sharing a boundary day overlap); an **inverted** range (start after end) **never** overlaps; empty/malformed cells are **skipped**.
+For both: intervals are **closed** (back-to-back periods sharing a boundary day overlap); an **inverted** range (start after end) **never** overlaps; empty or formally unavailable cells are **skipped**.
+
+Their firing polarity is scan- and operand-shape-sensitive:
+
+- `DateRangesOverlap` fires **OMISSION** exactly when the scan has processed a kept, filled range from a filter-bearing operand at or before the first overlapping pair; otherwise it fires **VALUE**. A filtered operand with no kept, filled range does not taint a later firing.
+- `AtLeastOneDateRangeOverlaps` fires **OMISSION** exactly when the list operand containing the matched range carries a filter; otherwise it fires **VALUE**. An earlier filtered but disjoint list operand does not taint a later unfiltered match.
+
+For `AtLeastOneDateRangeOverlaps`, an empty, malformed, or formally unavailable scalar collapses directly to no fire; overlaps internal to the list cannot rescue it. Stored inverted ranges are normally rejected by their field's formal check and therefore skipped, while the resolved interval relation independently returns false if an inverted pair reaches it.
 
 ---
 
