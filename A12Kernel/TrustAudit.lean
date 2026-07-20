@@ -469,6 +469,13 @@ run_cmd do
 #print axioms A12Kernel.enumeration_mixedDisplayClass_rejected
 #print axioms A12Kernel.enumeration_sharedDisplayMapConflict_rejected
 #print axioms A12Kernel.directFieldComparisonAllowed_comm
+#print axioms A12Kernel.evalReachedCustomCondition_fired_value_iff
+#print axioms A12Kernel.evalReachedCustomCondition_notFired_iff
+#print axioms A12Kernel.evalReachedCustomCondition_ne_unknown
+#print axioms A12Kernel.evalReachedCustomCondition_ne_omission
+#print axioms A12Kernel.customConditionCanFireOnEmpty_eq_true
+#print axioms A12Kernel.customCondition_purity_does_not_imply_data_locality
+#print axioms A12Kernel.customCondition_purity_does_not_imply_formal_monotonicity
 
 #print axioms A12Kernel.valueList_number_equal_iff_normalized_eq
 #print axioms A12Kernel.valueList_contains_prependEmpty

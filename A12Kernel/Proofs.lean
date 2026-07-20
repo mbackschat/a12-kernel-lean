@@ -45,5 +45,6 @@ import A12Kernel.Proofs.RepetitionNotUnique
 import A12Kernel.Proofs.Enumeration
 import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.SemanticIndex
+import A12Kernel.Proofs.CustomCondition
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/
