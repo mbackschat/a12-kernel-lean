@@ -12,9 +12,9 @@ open A12Kernel
 private def malformed : FormalCause := .malformed
 private def constrained : FormalCause := .declaredConstraint
 
-private def eval (operator : ComputationFieldFillQuantifier)
+private def eval (operator : FieldFillQuantifier)
     (slots : List ComputationFillSlot) : ComputationConditionResult :=
-  operator.eval slots
+  operator.evalComputation slots
 
 /- Declared-range operators observe an uninstantiated slot as empty. -/
 example : eval .allFieldsFilled [.uninstantiated] = .notTrue := by rfl

@@ -9,91 +9,91 @@ namespace A12Kernel
 
 /-- Every field-fill operator preserves the exact cause of a poison reached at the head. -/
 theorem computationFillQuantifier_poisonHead_preserves
-    (operator : ComputationFieldFillQuantifier)
+    (operator : FieldFillQuantifier)
     (cause : FormalCause) (suffix : List ComputationFillSlot) :
-    operator.eval (.poison cause :: suffix) = .poison cause := by
+    operator.evalComputation (.poison cause :: suffix) = .poison cause := by
   cases operator <;> rfl
 
 /-- An instantiated empty head decides `AllFieldsFilled`; the suffix is unread. -/
 theorem allFieldsFilled_emptyHead_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.allFieldsFilled.eval
+    FieldFillQuantifier.allFieldsFilled.evalComputation
       (.empty :: suffix) = .notTrue := by
   rfl
 
 /-- An instantiated empty head decides `NotAllFieldsFilled`; the suffix is unread. -/
 theorem notAllFieldsFilled_emptyHead_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.notAllFieldsFilled.eval
+    FieldFillQuantifier.notAllFieldsFilled.evalComputation
       (.empty :: suffix) = .holds := by
   rfl
 
 /-- A filled head decides `NoFieldFilled`; the suffix is unread. -/
 theorem noFieldFilled_filledHead_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.noFieldFilled.eval
+    FieldFillQuantifier.noFieldFilled.evalComputation
       (.filled :: suffix) = .notTrue := by
   rfl
 
 /-- A filled head decides `AtLeastOneFieldFilled`; the suffix is unread. -/
 theorem atLeastOneFieldFilled_filledHead_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.atLeastOneFieldFilled.eval
+    FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
       (.filled :: suffix) = .holds := by
   rfl
 
 /-- Two leading filled slots decide `MoreThanOneFieldFilled`; the suffix is unread. -/
 theorem moreThanOneFieldFilled_twoFilledPrefix_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.moreThanOneFieldFilled.eval
+    FieldFillQuantifier.moreThanOneFieldFilled.evalComputation
       (.filled :: .filled :: suffix) = .holds := by
   rfl
 
 /-- Two leading filled slots decide `NotExactlyOneFieldFilled`; the suffix is unread. -/
 theorem notExactlyOneFieldFilled_twoFilledPrefix_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval
+    FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation
       (.filled :: .filled :: suffix) = .holds := by
   rfl
 
 /-- Reaching an empty and then a filled slot decides `FieldsNotCollectivelyFilled`; the suffix is unread. -/
 theorem fieldsNotCollectivelyFilled_emptyFilledPrefix_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.fieldsNotCollectivelyFilled.eval
+    FieldFillQuantifier.fieldsNotCollectivelyFilled.evalComputation
       (.empty :: .filled :: suffix) = .holds := by
   rfl
 
 /-- Reaching a filled and then an empty slot also decides `FieldsNotCollectivelyFilled`; the suffix is unread. -/
 theorem fieldsNotCollectivelyFilled_filledEmptyPrefix_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.fieldsNotCollectivelyFilled.eval
+    FieldFillQuantifier.fieldsNotCollectivelyFilled.evalComputation
       (.filled :: .empty :: suffix) = .holds := by
   rfl
 
 /-- Declared-range predicates observe an uninstantiated head as a deciding empty slot. -/
 theorem computationFillQuantifier_declaredRange_observesUninstantiated
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.allFieldsFilled.eval
+    FieldFillQuantifier.allFieldsFilled.evalComputation
         (.uninstantiated :: suffix) = .notTrue ∧
-      ComputationFieldFillQuantifier.notAllFieldsFilled.eval
+      FieldFillQuantifier.notAllFieldsFilled.evalComputation
         (.uninstantiated :: suffix) = .holds := by
   constructor <;> rfl
 
 /-- Every instantiated-range predicate skips an uninstantiated head without reading a cell. -/
 theorem computationFillQuantifier_instantiatedRange_skipsUninstantiated
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.noFieldFilled.eval
+    FieldFillQuantifier.noFieldFilled.evalComputation
         (.uninstantiated :: suffix) =
-          ComputationFieldFillQuantifier.noFieldFilled.eval suffix ∧
-      ComputationFieldFillQuantifier.atLeastOneFieldFilled.eval
+          FieldFillQuantifier.noFieldFilled.evalComputation suffix ∧
+      FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
         (.uninstantiated :: suffix) =
-          ComputationFieldFillQuantifier.atLeastOneFieldFilled.eval suffix ∧
-      ComputationFieldFillQuantifier.moreThanOneFieldFilled.eval
+          FieldFillQuantifier.atLeastOneFieldFilled.evalComputation suffix ∧
+      FieldFillQuantifier.moreThanOneFieldFilled.evalComputation
         (.uninstantiated :: suffix) =
-          ComputationFieldFillQuantifier.moreThanOneFieldFilled.eval suffix ∧
-      ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval
+          FieldFillQuantifier.moreThanOneFieldFilled.evalComputation suffix ∧
+      FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation
         (.uninstantiated :: suffix) =
-          ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval suffix := by
+          FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation suffix := by
   constructor
   · rfl
   constructor
@@ -103,17 +103,17 @@ theorem computationFillQuantifier_instantiatedRange_skipsUninstantiated
 /-- The mixed operator can combine an uninstantiated declared empty with a later instantiated filled slot, then ignore the suffix. -/
 theorem fieldsNotCollectivelyFilled_uninstantiatedFilledPrefix_shortCircuits
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.fieldsNotCollectivelyFilled.eval
+    FieldFillQuantifier.fieldsNotCollectivelyFilled.evalComputation
       (.uninstantiated :: .filled :: suffix) = .holds := by
   rfl
 
 /-- `NotExactlyOneFieldFilled` distinguishes zero, exactly one, and at least two filled slots. -/
 theorem notExactlyOneFieldFilled_zeroOneTwo
     (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval [] = .holds ∧
-      ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval
+    FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation [] = .holds ∧
+      FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation
         [.filled] = .notTrue ∧
-      ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval
+      FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation
         (.filled :: .filled :: suffix) = .holds := by
   constructor
   · rfl
@@ -122,25 +122,25 @@ theorem notExactlyOneFieldFilled_zeroOneTwo
 /-- A poison reached after only one filled slot prevents both two-filled predicates from deciding. -/
 theorem secondFilledPredicates_oneFilledThenPoison_preserve
     (cause : FormalCause) (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.moreThanOneFieldFilled.eval
+    FieldFillQuantifier.moreThanOneFieldFilled.evalComputation
         [.filled, .poison cause] = .poison cause ∧
-      ComputationFieldFillQuantifier.notExactlyOneFieldFilled.eval
+      FieldFillQuantifier.notExactlyOneFieldFilled.evalComputation
         (.filled :: .poison cause :: suffix) = .poison cause := by
   constructor <;> rfl
 
 /-- A filled witness alone does not let the mixed predicate skip a poison before any declared empty witness. -/
 theorem fieldsNotCollectivelyFilled_filledThenPoison_preserves
     (cause : FormalCause) (suffix : List ComputationFillSlot) :
-    ComputationFieldFillQuantifier.fieldsNotCollectivelyFilled.eval
+    FieldFillQuantifier.fieldsNotCollectivelyFilled.evalComputation
       (.filled :: .poison cause :: suffix) = .poison cause := by
   rfl
 
 /-- Read order is observable: a filled decision before poison differs from the same two slots reversed. -/
 theorem computationFillQuantifier_readOrderObservable
     (cause : FormalCause) :
-    ComputationFieldFillQuantifier.atLeastOneFieldFilled.eval
+    FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
         [.filled, .poison cause] ≠
-      ComputationFieldFillQuantifier.atLeastOneFieldFilled.eval
+      FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
         [.poison cause, .filled] := by
   intro impossible
   cases impossible
