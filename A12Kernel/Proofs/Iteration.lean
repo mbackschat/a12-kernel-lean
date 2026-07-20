@@ -57,10 +57,12 @@ theorem selectRows_iff (star : SingleStar) (context : SingleGroupValidationConte
   · intro derivation
     exact selectRows_complete_on derivation
 
-private theorem NumberFold.sumRows_congr (left right : SingleGroupValidationContext)
+private theorem NumberFold.classifyRows_congr
+    (left right : SingleGroupValidationContext)
     (field : FlatNumberField) (rows : List RowIndex)
     (agree : ∀ row, row ∈ rows → left.read row field.id = right.read row field.id) :
-    NumberFold.sumRows left field rows = NumberFold.sumRows right field rows := by
+    rows.map (NumberFold.classifyRow left field) =
+      rows.map (NumberFold.classifyRow right field) := by
   induction rows with
   | nil => rfl
   | cons row rows tail =>
@@ -69,8 +71,19 @@ private theorem NumberFold.sumRows_congr (left right : SingleGroupValidationCont
           left.read next field.id = right.read next field.id := by
         intro next member
         exact agree next (by simp [member])
-      simp only [NumberFold.sumRows, headAgree]
-      rw [tail tailAgree]
+      have headClassified :
+          NumberFold.classifyRow left field row =
+            NumberFold.classifyRow right field row := by
+        unfold NumberFold.classifyRow
+        rw [headAgree]
+      rw [List.map_cons, List.map_cons, headClassified, tail tailAgree]
+
+private theorem NumberFold.sumRows_congr (left right : SingleGroupValidationContext)
+    (field : FlatNumberField) (rows : List RowIndex)
+    (agree : ∀ row, row ∈ rows → left.read row field.id = right.read row field.id) :
+    NumberFold.sumRows left field rows = NumberFold.sumRows right field rows := by
+  unfold NumberFold.sumRows
+  rw [NumberFold.classifyRows_congr left right field rows agree]
 
 /-- Selection is a real read boundary: once two evaluations select the same ordered
     rows, their sums need agree only on consumed cells in those selected rows. Consumed

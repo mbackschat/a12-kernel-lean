@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Resolved Number aggregate executable locks
 
-These cases begin after one starred Number selection has been expanded, filtered, and classified. They distinguish aggregate `MinValue`/`MaxValue` from operand-list `Min`/`Max` without adding path lowering, row selection, partial relevance, or computation.
+These cases begin after one Number field-list or star has been expanded, filtered, and classified. They distinguish aggregate `Sum`/`MinValue`/`MaxValue` from operand-list arithmetic without adding path lowering, row selection, partial relevance, or computation.
 -/
 
 namespace A12Kernel.Conformance.NumericAggregate
@@ -16,6 +16,7 @@ private def side
   { cells, hasUninstantiatedTail, hasHaving }
 
 private def belowComparisonResolution : Rat := 1 / 10 ^ 20
+private def tenPow50 : Rat := 10 ^ 50
 
 /- Empty cells are dropped rather than substituted with the operand-list zero. -/
 example :
@@ -88,6 +89,61 @@ example :
 example :
     evalNumericExtremumAggregate .minimum (side []) =
       .value 0 .fixed := by
+  native_decide
+
+/- `Sum` rounds at every reached addition rather than accumulating one exact rational total. -/
+example :
+    evalNumericSumAggregate false
+      (side [.present (tenPow50 - 1), .present (3 / 5)]) =
+        .value tenPow50 .fixed := by
+  native_decide
+
+/- `Sum` is an encounter-ordered left fold. A right-associated implementation produces `1` for the first list, while reordering the same values changes the staged result. -/
+example :
+    evalNumericSumAggregate false
+      (side [.present tenPow50, .present (-tenPow50), .present (3 / 5)]) =
+        .value (3 / 5) .fixed ∧
+      evalNumericSumAggregate false
+        (side [.present (-tenPow50), .present (3 / 5), .present tenPow50]) =
+        .value 1 .fixed := by
+  native_decide
+
+/- A present value does not terminate the scan; the first later unavailable cell still owns suppression. -/
+example :
+    evalNumericSumAggregate false
+      (side [.present 7, .unknown .required, .unknown .malformed]) =
+        .unknown .required := by
+  native_decide
+
+/- An empty cell records missingness but neither terminates the scan nor contributes a numeric term. -/
+example :
+    evalNumericSumAggregate false
+      (side [.present 2, .empty, .present 5]) =
+        .value 7 .growOnly := by
+  native_decide
+
+/- Every authored all-empty Number sum has the both-directionally fillable zero identity, independently of signedness. -/
+example :
+    evalNumericSumAggregate false (side [.empty]) =
+        .value 0 .both ∧
+      evalNumericSumAggregate true (side [] true) =
+        .value 0 .both := by
+  native_decide
+
+/- After a value enters an incomplete sum, unsigned declarations grow only while signed declarations may move in both directions. -/
+example :
+    evalNumericSumAggregate false (side [.present 7] true) =
+        .value 7 .growOnly ∧
+      evalNumericSumAggregate true (side [.present 7] true) =
+        .value 7 .both ∧
+      evalNumericSumAggregate true (side [.present 7]) =
+        .value 7 .fixed := by
+  native_decide
+
+/- A reached resolved `Having` marker escalates an otherwise fixed sum without changing its amount. -/
+example :
+    evalNumericSumAggregate false (side [.present 7] false true) =
+      .value 7 .both := by
   native_decide
 
 end A12Kernel.Conformance.NumericAggregate

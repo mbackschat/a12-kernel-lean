@@ -4,27 +4,27 @@ This file is the volatile continuation checkpoint. Stable purpose and delivery r
 
 ## Verified baseline
 
-The semantic baseline is commit `0cd607f`. Its full build, retained-evidence replay, and trust audit passed, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
+The verified semantic baseline before this capsule was commit `0cd607f`. The current baseline is the introducing commit for the completed resolved Number Sum checkpoint below; its full build, retained-evidence replay, and trust audit passed, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
 
 The project currently has:
 
 - Reference semantics 0.3.0 with the current V2 flat-validation and one-group-correlation process suites.
 - Compact retained observations for the admitted public validation/correlation slices and String direct-cascade projection. Exact inventory and claim limits are in [`EVIDENCE.md`](EVIDENCE.md).
 - Internally closed proof-bearing capsules across flat validation, one-group correlation, selected String computation, numeric arithmetic and target behavior, selected temporal behavior, resolved quantifiers and iteration, enumeration, messages, partial validation, custom callbacks, and other bounded clauses indexed in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
-- A mechanism-first numeric value-function family containing checked root rounding, `Abs`, ordered operand-list `Min`/`Max`, and resolved aggregate `MinValue`/`MaxValue`.
+- A mechanism-first numeric value-function family containing checked root rounding, `Abs`, ordered operand-list `Min`/`Max`, and resolved aggregate `Sum`/`MinValue`/`MaxValue`.
 - Successful bounded consumer probes demonstrating that current artifacts can transport selected evaluator and refactoring knowledge while correctly refusing broader shipment claims. Results are in [`USE-CASES.md`](USE-CASES.md).
 
 The evidence and process simplification is complete. Retired capture, packet, qualification, and generator machinery stays retired. Current semantic capsules may close internally at levels 1–2 with `external evidence pending`; external calibration is batched by coherent family.
 
-## Active semantic unit: resolved Number `Sum`
+## Completed semantic unit: resolved Number `Sum`
 
-Implement validation-side resolved Number `Sum` and correct the existing shared fold semantics before reuse.
+This capsule implements validation-side resolved Number `Sum` and corrects the existing checked-row fold through the same semantic mechanism.
 
-The source audit found that [`Iteration.NumberFold.sumRows`](../A12Kernel/Semantics/Iteration.lean) is currently an exact right-recursive rational fold. Kernel `Sum` instead processes values in encounter order and applies precision-50 `HALF_UP` addition at every step. Exact rational totals can therefore agree on ordinary cases while disagreeing at precision boundaries. This is a semantic-root defect, not a test-only discrepancy.
+The source audit found that [`Iteration.NumberFold.sumRows`](../A12Kernel/Semantics/Iteration.lean) had been an exact right-recursive rational fold. Kernel `Sum` instead processes values in encounter order and applies precision-50 `HALF_UP` addition at every step. The capsule replaces that root mechanism; ordinary exact totals had hidden the precision-boundary disagreement.
 
-### Required behavior
+### Closed behavior
 
-The completed capsule must:
+The completed capsule:
 
 1. Consume the existing already-expanded, already-filtered `ResolvedValueListSide .number`; do not add paths, star expansion, or another stream representation.
 2. Scan left to right in encounter order.
@@ -54,7 +54,7 @@ Move universal scan facts to the shared mechanism where they genuinely agree, th
 
 ### Red/green separating matrix
 
-Before changing the fold, add a precision/order witness that fails under exact or right-associated addition. The compact matrix must independently distinguish:
+The initial precision/order witnesses failed against the exact right-recursive checked-row fold before the root correction. The final compact matrix independently distinguishes:
 
 - staged precision-50 addition from one exact total;
 - encounter order from right association or reordering;
@@ -64,17 +64,17 @@ Before changing the fold, add a precision/order witness that fails under exact o
 - reached `Having` from an ignored filter marker;
 - first unavailable from silently skipped or delayed poison.
 
-Temporary mutations may confirm these seams, but no mutation framework or retained campaign artifact is allowed.
+Temporary focused mutations confirm the precision and order seams; no mutation framework or retained campaign artifact belongs to this capsule.
 
 ### Documentation and completion
 
-If the source-grounded encounter-order/precision rule is missing or imprecise in canonical prose, correct the owning `spec/` clause and add the corresponding entry to [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) in the same change. Update [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and this checkpoint. Add a durable finding only if the work establishes a reusable non-obvious distinction not already owned elsewhere.
+The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) carries the corresponding pending peer reconciliation, while [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) record the admitted Lean boundary and reusable consumer consequence.
 
-Finish with focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. Do not push.
+The introducing commit is complete only after focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit all pass. Do not push.
 
 ## Immediate next step: artifact-only aggregate consumer probe
 
-After `Sum` closes, immediately run one bounded artifact-only consumer-adequacy probe before choosing the next family. This is a read-only knowledge-transport check, not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
+After the owner resumes work, run one bounded artifact-only consumer-adequacy probe before choosing the next family. Do not start it in the Sum capsule session: the owner explicitly requested a stop after the capsule commit. This is a read-only knowledge-transport check, not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
 
 Give an isolated reader only the canonical spec clauses, numeric aggregate Lean definitions, proofs, conformance cases, implementation-map boundary, and consumer guidance. Ask it to act as:
 

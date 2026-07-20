@@ -60,7 +60,7 @@ The **`$` operator** — usable **only inside a filter condition** — switches 
 
 A same-group starred candidate set includes the current outer coordinate unless explicitly excluded; correlation does **not** imply self-exclusion. `CurrentRepetition(G) != CurrentRepetition($G)` compares the resolved repetition coordinate at level `G`, not an opaque physical-row identity. In a multi-star `A*/B*` candidate set, comparing only `B` can therefore exclude every candidate that shares the outer row's `B` leaf index across different `A` rows.
 
-**Aggregation handles missing rows per function:** `Sum` substitutes `0` for an unspecified field; `MaxValue` / `MinValue` **ignore** unspecified fields (a Number list with none specified yields `0`; a Date list yields no value — [§2](03-empty-and-required.md)).
+**Aggregation consumes an ordered resolved stream, not a mathematical set.** Authored entity-list entries retain their authored order, a group entry expands its fields in stable model order, and repetition coordinates advance in ascending order with the lowest nested repeat level changing fastest. `Having` selection occurs before the selected target is read, as above; the first selected formally unavailable or non-relevant target makes the aggregate unavailable immediately, so the suffix is not read. `Sum` performs no arithmetic step for an unspecified cell—the same numeric contribution as zero—but records that cell's own declaration for polarity. `MaxValue` / `MinValue` ignore unspecified fields; a Number list with none specified yields `0`, while a Date list yields no value ([§2](03-empty-and-required.md)). `Sum`'s per-step arithmetic is specified in [§5](04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly).
 
 **The filter condition may not contain**: `CustomCondition`, `RepetitionNotUnique`, a semantic index, a parallel iteration, or a nested filter.
 
@@ -115,6 +115,7 @@ A model-legal condition contains at most one `RepetitionNotUnique` leaf. A secon
 - [ ] Error field must be referenced by the condition and share its scope.
 - [ ] Parallel iteration = outer join over the **union** of shared-index values; unmatched side = sentinel `-5` "not specified"; invalid index ⇒ UNKNOWN ⇒ suppresses negatives.
 - [ ] `Having` keeps only known-true candidates before consuming their selected cells; false/unknown rows drop; `$` switches to the **complete captured outer environment**, and the resolved level selects its coordinate; same-group correlation includes self unless explicitly excluded; filter-content restrictions enforced.
+- [ ] Aggregates consume entity/model/repetition encounter order; `Having` runs before the target read; the first selected unavailable target stops the scan; Number `Sum` retains each missing contributor's declaration for polarity.
 - [ ] Star binding: fix levels **strictly above** the first star, re-open the starred level and below; same-group star spans all rows; cross-subtree binds only on shared ancestry.
 - [ ] `GroupFilled`: repeatable ⇒ "row exists"; non-repeatable ⇒ content (incl. an instantiated repeatable descendant).
 - [ ] Over-repetition rows ⇒ `zuGrosseZeile` (VALUE) + suppressed; negative-in-iteration rejected unless guarded.

@@ -40,6 +40,15 @@ def isUnknown : ValueListCell kind → Bool
   | .unknown _ => true
   | _ => false
 
+/-- Scan already-classified cells from left to right, skipping empty cells and stopping at the first unavailable cell. The caller supplies the accumulator meaning; use this only for consumers whose own semantics have exactly this branch structure. -/
+def scanPresent (step : state → ValueListAtom kind → state) :
+    List (ValueListCell kind) → state → Except FormalCause state
+  | [], accumulator => .ok accumulator
+  | .empty :: cells, accumulator => scanPresent step cells accumulator
+  | .unknown cause :: _, _ => .error cause
+  | .present value :: cells, accumulator =>
+      scanPresent step cells (step accumulator value)
+
 end ValueListCell
 
 namespace ValueListAtom

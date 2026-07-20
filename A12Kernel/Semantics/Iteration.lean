@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.FlatValidation
+import A12Kernel.Semantics.NumericAggregate
 
 /-! # A12Kernel.Semantics.Iteration — single-level star and uncorrelated Having
 
@@ -105,19 +106,21 @@ inductive NumberFold where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- Classify one selected checked-row read for the shared resolved Number aggregate scan. -/
+def NumberFold.classifyRow (context : SingleGroupValidationContext)
+    (field : FlatNumberField) (row : RowIndex) : ValueListCell .number :=
+  match observeCell .validation (context.read row field.id) with
+  | .empty => .empty
+  | .value (.num amount) => .present amount
+  | .value _ => .unknown .malformed
+  | .unknown cause | .poison cause => .unknown cause
+
+/-- Project the shared encounter-ordered precision-50 Number sum to the older amount-or-cause result used by the one-group iteration boundary. -/
 def NumberFold.sumRows (context : SingleGroupValidationContext)
-    (field : FlatNumberField) : List RowIndex → NumberFold
-  | [] => .value 0
-  | row :: rest =>
-      match observeCell .validation (context.read row field.id) with
-      | CellObservation.empty => NumberFold.sumRows context field rest
-      | CellObservation.value (Value.num amount) =>
-          match NumberFold.sumRows context field rest with
-          | .value tail => .value (amount + tail)
-          | .unknown cause => .unknown cause
-      | CellObservation.value _ => .unknown .malformed
-      | CellObservation.unknown cause => .unknown cause
-      | CellObservation.poison cause => .unknown cause
+    (field : FlatNumberField) (rows : List RowIndex) : NumberFold :=
+  match scanNumericSumCells (rows.map (NumberFold.classifyRow context field)) with
+  | .ok total => .value (total.getD 0)
+  | .error cause => .unknown cause
 
 /-- Filter first, then fold only the selected rows' numeric cells. -/
 def SingleStar.sumSelected (star : SingleStar)
