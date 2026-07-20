@@ -158,6 +158,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
+- **Partial handback revisions:** `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`, `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`04-numbers-and-decimals.md` §5](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly)
 - **Delta:** Correct the former claim that `+` and `−` stay exact. The kernel applies one precision-50 decimal `MathContext`, default `HALF_UP`, independently to every `+`, `−`, `×`, `÷`, and `^` node. Before evaluation/code generation, it performs one order-sensitive post-order pass: each original multiplication pulls only immediate root-division operands, keeps ordinary factors first in their existing order, appends extracted numerators and denominators in division encounter order, left-folds multi-factor products, and never revisits newly created products. Authored fold order is therefore not always evaluated fold order, but the mechanism is not global or fixed-point normalization.
@@ -166,7 +167,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** This changes a12-dmkits results for legal expressions whose addition or subtraction produces more than 50 significant digits and may change division-bearing products whose authored and one-pass rewritten trees round differently. Classify JVM, JS, public interpreter, serialization, and dmtool-release consequences explicitly; do not describe the correction as documentation-only.
 - **Acceptance:** Both kernel strategies and the JVM interpreter agree on focused above-50 `+`/`−` witnesses, order-sensitive one-pass division-rewrite witnesses, a nested no-second-pass witness, and the corrected three-thirds pre-round witness; all five operations use the same precision/rounding contract at each evaluated node; JS either conforms or remains an explicit fail-closed/nonconforming capability; prose and operator metadata contain neither “`+`/`−` stay exact” nor global/fixed-point normalization claims. The handback supplies the exact reviewed revision and per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** Partial adjacent progress at `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`: JVM/JS now share host-level precision locks for multiplication, division, and power, but `+`/`−` remain uncapped and the one-pass division-bearing multiplication lowering remains pending.
+- **Disposition:** Partial at `41ecfc511d3828aa841bbbb2c5655ebbbacc10df` and `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`: JVM and Node now share the precision-50 contract for all five arithmetic operations; `DecimalHostParityTest`, `DecimalPrecisionParityDiffTest`, and `DecimalPowerGrowthTest` cover host parity, observable tri-engine addition/subtraction/division/power separators, and bounded JavaScript power work. The exact order-sensitive one-pass division-bearing multiplication lowering remains outside this evidence, so the entry stays pending.
 
 ### SPEC-2026-07-19-09 — numeric scale gating tracks signed scale and constant expandability
 
@@ -188,7 +189,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
-- **Partial handback revision:** `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`
+- **Partial handback revisions:** `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`, `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`04-numbers-and-decimals.md` §3](../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive) and [`§5`](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly)
 - **Delta:** Specify the numeric mechanism behind admitted powers. Positive power follows the OpenJDK 21 X3.274 numeric-value algorithm, rounding binary-exponentiation intermediates at precision `50 + decimalDigits(exponent) + 1` before the final precision-50 round. Negative power is kernel-specific: it first rounds `1 / base` at precision 50, then applies the positive algorithm. Exact rational power plus one final round and reciprocal-after-positive-power are both observably different.
@@ -197,7 +198,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Compatibility:** The partial handback already corrected legal negative powers that differ in the last retained digit and aligned both peer backends. Remaining work should add prose and evidence without changing that mechanism unless a named kernel separator disagrees.
 - **Acceptance:** Both kernel strategies and the JVM interpreter agree on discriminating positive and negative precision cases and the named known-value domain-edge matrix; the implementation performs reciprocal-first staging structurally rather than special-casing examples; prose makes the OpenJDK 21 algorithm and external-evidence boundary explicit; the handback supplies the exact reviewed revision and per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** Partial handback accepted at `41ecfc51`: reciprocal-first negative power and host-level JVM/JS precision locks are implemented, and the negative separator agrees with both kernel routes; canonical prose and the complete positive/domain-edge dual-route matrix remain pending.
+- **Disposition:** Partial handbacks accepted at `41ecfc511d3828aa841bbbb2c5655ebbbacc10df` and `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`: positive staged work and reciprocal-first negative power are implemented and tri-checked, with host zero and exponent controls. The complete named dual-kernel-route matrix for `±1000`, `±1001`, `0^0`, `0^-1`, and fractional exponents was not independently verified in this review, so the entry stays pending.
 
 ### SPEC-2026-07-19-11 — arithmetic fillability uses joint terms and conservative power dispatch
 
@@ -231,19 +232,20 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-19-13 — tolerance normalizes operands first and uses directional inequality polarity
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `2ceee778cbcbd16a63e456fb662d3b61a13c99a8`
 - **Partial handback revision:** `d6a08f5b53022d9caae35e6d842a2b7b22cd5b25`
+- **Completion handback revision:** `7b39728eafdb53b0a69fcafd34817980bb900632`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`04-numbers-and-decimals.md` §§4–5 and checklist](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints), [`09-computations.md` §6 and checklist](../spec/09-computations.md#6-the-implicit-validation-rule-precisely), and [`10-validation-and-polarity.md` §4 and checklist](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
 - **Delta:** Correct tolerance truth from rounding the completed difference to independently normalizing both operands before subtraction: `|R₁₉(a) − R₁₉(b)| > N` for the fixed `N ∈ {1,2,5,10}`, with a closed exact boundary. Correct the former equality-like polarity claim: tolerance reuses directional `!=` polarity, so only movement of the normalized smaller side upward or larger side downward can type a firing OMISSION. Tolerance accepts numeric `BaseYear`, bypasses the ordinary exact-comparison scale-agreement gate, and an implicit computation-validation alternative preserves its declared `toleranceRangeOp` instead of always using strict `!=`.
 - **Basis:** kernel `BedingungsOperatorHelper` independently scale-19-normalizes both operands, applies the strict four-band predicate, and routes all four tolerance operators through its directional inequality polarity helper at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`; the parser's tolerance branch establishes number-like typing and scale-gate bypass, and the computation-alternative generator preserves the optional tolerance operator. a12-dmkits revisions `73f039a9` and `d6a08f5b` completed the formerly missing metadata path: a closed tolerance enum now survives loading, generated-validation synthesis, and consumer read-modify-write. The evaluator still rounds after subtraction in `evalTolerance`, and `PolarityWalk` still uses `Polarity.anyMove`; its current signed-field differentials cannot separate either remaining defect.
 - **Requested a12-dmkits reconciliation:** Preserve the completed per-alternative `toleranceRangeOp` path. Fix the shared tolerance evaluator to normalize both operands before subtraction and reuse the existing ordered-inequality fillability mechanism rather than `anyMove`. Add focused existing-harness controls for the independent-rounding separator `ε = 49 / 10²¹`, `a = 1 + ε`, `b = −ε`, range 1; unsigned empty `0` versus `−2` VALUE and versus `+2` OMISSION; the signed and swapped controls; every fixed strict boundary; malformed and empty-row suppression; mixed declared scales and numeric `BaseYear` authoring; and implicit-computation inside/at/outside-band behavior. Cover both kernel strategies and JVM/JS where the existing facilities support them; do not create a new capture framework.
 - **Compatibility:** The per-alternative metadata arm is complete and should not change again. The remaining operand-normalization and directional-polarity mechanisms are behavioral corrections to the a12-dmkits interpreter for legal tolerance rules. The four public syntax tokens and kernel behavior version do not change. The local Lean capsule covers the parser-independent checked same-group Number-expression leaf, including authored checks, scale-gate bypass, one-pass lowering, full-row gating, formal/domain projection, directional polarity, and fixed thresholds; concrete syntax, `BaseYear`, implicit computation lowering, and portable tolerance evidence remain explicit later work.
-- **Acceptance:** The metadata arm is accepted at `d6a08f5b`: `toleranceRangeOp` survives loading, implicit-validation generation, and consumer read-modify-write. The entry remains pending until a12-dmkits has one source of truth for independent operand normalization and directional tolerance polarity, the unchanged separating matrix agrees with both kernel strategies, affected docs and capability claims are corrected, and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** Partial handback accepted for per-alternative tolerance metadata at `d6a08f5b`; operand-normalization order and directional polarity remain pending.
+- **Acceptance:** The metadata arm was accepted at `d6a08f5b53022d9caae35e6d842a2b7b22cd5b25`; completion at `7b39728eafdb53b0a69fcafd34817980bb900632` supplies one source of truth for independent operand normalization and directional tolerance polarity, agrees with both kernel strategies on the separating matrix, retains the affected metadata and authoring routes, and supplies the exact reviewed revision.
+- **a12-dmkits revision:** `7b39728eafdb53b0a69fcafd34817980bb900632`
+- **Disposition:** accepted — the earlier metadata handback at `d6a08f5b53022d9caae35e6d842a2b7b22cd5b25` is preserved; `7b39728eafdb53b0a69fcafd34817980bb900632` completes one shared `ToleranceOps` mechanism for independent scale-19 operand normalization and directional `!=` polarity, retains numeric `BaseYear` and per-alternative metadata, and locks the separating matrix through `ToleranceExactnessDiffTest`, cross-host `ToleranceOpsTest`, and the existing broader tolerance suites.
 
 ### SPEC-2026-07-19-14 — numeric authoring regions are structural and function wrappers remain unclosed
 
@@ -262,10 +264,10 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-19-15 — computed Number storage has distinct fit and warning-suppressed no-fit branches
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `a00bfc0861396b82409d51ae1c474347f37ca032`
-- **Partial handback revisions:** `77e3220fb07096f8017dfeef8e763b020fd784b4`, `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`
+- **Handback revisions:** `77e3220fb07096f8017dfeef8e763b020fd784b4`, `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`, `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`, `d1cab3b35be31a38ba71aed3bffe99d003bf1990`, `7b39728eafdb53b0a69fcafd34817980bb900632`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`09-computations.md` §4 and checklist](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape) and the [`SEMANTICS-MAP.md` glossary](../spec/SEMANTICS-MAP.md#7-glossary)
 - **Delta:** Correct the former single-path summary. Every computed Number is pre-rounded to scale 19 `HALF_UP`. When its stripped natural scale fits the target maximum, rendering pads to `max(naturalScale, minFractionalDigits)` with no length cap, so an over-15-digit result is retained in full and target-rejected. A legal no-fit result requires `MVK_INVALID_COMPARE_DEC_PLACES` suppression, uses the separate 16-significant-digit length-bounded renderer where the integer part permits that bound, and is invalid unconditionally. Both branches always store plain dot-decimal text and never exponent/scientific notation; stored-form equality is decimal-scale-sensitive.
@@ -273,8 +275,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Correct the known stale single-path Number paragraph in `docs/KERNEL-SEMANTICS.md`, then verify that canonical and consumer-facing prose retain the fit/no-fit distinction, warning-suppression precondition, uncapped fit attempt, unconditional no-exponent storage, and scale-sensitive stored equality. Preserve `ComputedNumberStore.kt`, its comments, and IF82/IF92 controls where they already satisfy this account; fix the shared host rendering boundary rather than special-casing magnitudes. Division-domain invalidity and dependent poison remain solely the separate open correction in `SPEC-2026-07-19-12`.
 - **Compatibility:** This corrects the language-neutral specification and known stale peer prose without changing the already-correct a12-dmkits fit/no-fit implementation. A consumer that modeled one universal “round to target scale” path or compared only numeric `Rat`/value equality would change behavior. The local Lean fragment implements only the ordinary fit path plus universal digit and signedness checks; it fails closed on the warning-suppressed no-fit surface and leaves other Number constraints outside its current claim.
 - **Acceptance:** a12-dmkits has one source of truth for both render branches, the warning-suppression gate, and unconditional plain dot-decimal storage; `docs/KERNEL-SEMANTICS.md` no longer presents one universal target-scale rounding path; no legal magnitude emits exponent notation; existing focused multi-route controls remain green; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** Partial at `77e3220fb07096f8017dfeef8e763b020fd784b4` and `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`: implementation and focused evidence satisfy the two storage branches, and ordinary JS plain rendering improved; the stale single-path paragraph and unconditional no-exponent host boundary remain pending because finite exponent thresholds can still emit scientific notation at legal magnitudes.
+- **a12-dmkits revision:** `7b39728eafdb53b0a69fcafd34817980bb900632`
+- **Disposition:** accepted — the earlier implementation and focused evidence already distinguished the fit and warning-suppressed no-fit branches; `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d` removes finite exponent thresholds for unconditional JVM/Node plain rendering, `d1cab3b35be31a38ba71aed3bffe99d003bf1990` replaces the stale universal-path prose, and `7b39728eafdb53b0a69fcafd34817980bb900632` states the two-arm, no-exponent contract canonically. Division-domain invalidity remains separate under `SPEC-2026-07-19-12`.
 
 ### SPEC-2026-07-19-16 — `$` correlation captures every named outer repetition level
 
@@ -410,3 +412,19 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits preserves the complete Berlin profile, exact accepted-id knowledge, and narrower fail-closed consumer capability; the exact reviewed revision records the remaining peer evidence-wording overclaim rather than being treated as proof that every documentation surface already states the representative evidence boundary exactly.
 - **a12-dmkits revision:** `53507298b3ca8dee4a73d851ecc3ca5f5e6b70ba`
 - **Disposition:** accepted as an inbound semantic receipt — the canonical knowledge and pinned table originated upstream, while the review-caught IF155/KERNEL-FINDINGS evidence-wording residual remains explicitly peer-owned and is not duplicated as a new outbound request here.
+
+### SPEC-2026-07-20-05 — uppercase `\P` is excluded by kernel pattern admission
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **Supersedes:** [`SPEC-2026-07-20-03`](#spec-2026-07-20-03--patterns-use-java-admission-and-java-runtime-semantics)
+- **a12-dmkits basis revision:** `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`06-strings-and-enumerations.md` Pattern admission and execution](../spec/06-strings-and-enumerations.md#pattern-admission-and-execution) and [`SEMANTICS-MAP.md` §9](../spec/SEMANTICS-MAP.md#9-drilling-into-the-authoritative-sources)
+- **Delta:** Narrow only the admitted pattern set recorded by the predecessor: a direct typed/full-kernel model rejects uppercase `\P{L}` with `MVK_INVALID_PATTERN` even though uppercase `P` is absent from the source-visible `PatternUtils` blacklist. The blacklist remains exact source evidence but is not an exhaustive total-admission grammar. Java whole-value runtime semantics and the explicit TypeScript strategy split are unchanged.
+- **Basis:** a12-dmkits IF164 records both the literal source blacklist and the direct real-kernel rejection, and explicitly classifies the interpreter's JVM/Node uppercase-`\P` primitive support as defensive rather than admission evidence.
+- **Requested a12-dmkits reconciliation:** None. The peer already owns the correction and its defensive runtime support; no new hidden grammar or broader exclusion is inferred.
+- **Compatibility:** Consumers must remove uppercase `\P` from any advertised kernel-admitted set while preserving the predecessor's Java-runtime and target-split account. A narrower implementation may continue to fail closed outside its declared pattern fragment.
+- **Acceptance:** The exact basis revision was reviewed; its durable findings distinguish source-visible blacklist evidence, direct full-kernel admission evidence, and defensive peer support without treating one as another.
+- **a12-dmkits revision:** `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`
+- **Disposition:** accepted — this successor corrects only the predecessor's uppercase-`\P` admission overclaim; the remainder of `SPEC-2026-07-20-03` stays valid.
