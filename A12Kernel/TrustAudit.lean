@@ -366,6 +366,14 @@ run_cmd do
 #print axioms A12Kernel.valueListAtLeastOne_having_fires_omission
 #print axioms A12Kernel.valueListNo_having_fires_omission
 #print axioms A12Kernel.valueListNotAll_having_fires_omission
+#print axioms A12Kernel.repetitionKey_number_equal_iff_normalized_eq
+#print axioms A12Kernel.mem_repetitionDuplicateCluster_iff
+#print axioms A12Kernel.repetitionNotUnique_refinedUnknown_iff
+#print axioms A12Kernel.repetitionNotUnique_allEmpty_notFired
+#print axioms A12Kernel.repetitionNotUnique_fired_iff_of_eligible
+#print axioms A12Kernel.repetitionNotUnique_fired_cluster
+#print axioms A12Kernel.repetitionDuplicateCluster_identities_nodup
+#print axioms A12Kernel.repetitionNotUnique_firing_has_distinct_peer
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
