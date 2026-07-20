@@ -65,6 +65,7 @@ def computationFault? : LoweredNumericExpr FlatFieldDecl →
       | some fault => some fault
       | none => right.computationFault?
   | .power _ _ => some .unsupportedPower
+  | .abs body => body.computationFault?
   | .round _ _ body => body.computationFault?
 
 /-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic. Power fails closed because its computation projection is not yet audited. -/
@@ -82,6 +83,8 @@ def evalComputation
           let rightResult ← right.evalComputation read
           pure (NumericComputationResult.evalBinary op leftResult rightResult)
   | .power _ _ => throw .unsupportedPower
+  | .abs body => do
+      pure ((← body.evalComputation read).absolute)
   | .round mode places body => do
       pure ((← body.evalComputation read).round mode places)
 

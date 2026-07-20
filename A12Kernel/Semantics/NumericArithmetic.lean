@@ -70,12 +70,26 @@ inductive NumericArithmeticResult where
   | notEvaluated
   deriving Repr, DecidableEq
 
+/-- Exact numeric magnitude before any consumer-specific metadata projection. -/
+def absoluteNumeric (value : Rat) : Rat :=
+  if value < 0 then -value else value
+
+/-- Transform only an available arithmetic value; unavailability remains unavailable. -/
+def NumericArithmeticResult.mapValue (result : NumericArithmeticResult)
+    (transform : Rat → Rat) : NumericArithmeticResult :=
+  match result with
+  | .value amount => .value (transform amount)
+  | .notEvaluated => .notEvaluated
+
 /-- Apply a decimal rounding wrapper without turning an unavailable numeric value into zero. -/
 def NumericArithmeticResult.round (result : NumericArithmeticResult)
     (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericArithmeticResult :=
-  match result with
-  | .value amount => .value (roundDecimal mode amount places)
-  | .notEvaluated => .notEvaluated
+  result.mapValue (fun amount => roundDecimal mode amount places)
+
+/-- Apply absolute value without turning an unavailable numeric value into zero. -/
+def NumericArithmeticResult.absolute
+    (result : NumericArithmeticResult) : NumericArithmeticResult :=
+  result.mapValue absoluteNumeric
 
 /-- Divide at precision 50; a zero divisor is explicitly not evaluated rather than Lean's rational zero. -/
 def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=

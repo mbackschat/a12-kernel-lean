@@ -12,6 +12,21 @@ theorem roundSignificantHalfUp_unlimited (value : Rat) :
     roundSignificantHalfUp 0 value = value := by
   rfl
 
+/-- The executable A12 magnitude operation is Lean's standard rational absolute value. -/
+theorem absoluteNumeric_eq_abs (value : Rat) :
+    absoluteNumeric value = value.abs := by
+  by_cases negative : value < 0
+  · rw [Rat.abs_of_nonpos (Rat.le_of_lt negative)]
+    simp [absoluteNumeric, negative]
+  · rw [Rat.abs_of_nonneg (Rat.not_lt.mp negative)]
+    simp [absoluteNumeric, negative]
+
+/-- Mapping an available arithmetic value preserves exactly the availability boundary. -/
+theorem numericArithmeticResult_mapValue_notEvaluated_iff
+    (result : NumericArithmeticResult) (transform : Rat → Rat) :
+    result.mapValue transform = .notEvaluated ↔ result = .notEvaluated := by
+  cases result <;> simp [NumericArithmeticResult.mapValue]
+
 theorem numericArithmetic_add_comm (left right : Rat) :
     NumericArithmeticOp.add.eval left right =
       NumericArithmeticOp.add.eval right left := by

@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It admits plain arithmetic plus the separately audited direct-field root-rounding shape in the evaluated row group; general operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It admits plain arithmetic plus separately audited direct-field root value functions in the evaluated row group; general operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -40,6 +40,7 @@ private def AuthoredNumericExpr.hasAtom : AuthoredNumericExpr Atom → Bool
   | .literal _ => false
   | .group body => body.hasAtom
   | .binary _ left right | .power left right => left.hasAtom || right.hasAtom
+  | .abs body => body.hasAtom
   | .round _ _ body => body.hasAtom
 
 /-- Whether an authored tree uses only atoms, literals, grouping, and ordinary binary arithmetic. -/
@@ -47,21 +48,22 @@ def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
   | .group body => body.isPlainArithmetic
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power _ _ | .round _ _ _ => false
+  | .power _ _ | .abs _ | .round _ _ _ => false
 
-/-- The first checked operation wrapper: one root rounding over one direct Number field. Both expression and `…Value` surface spellings normalize to this same shape. -/
-def AuthoredNumericExpr.isDirectFieldRounding : AuthoredNumericExpr Atom → Bool
+/-- The checked value-function shapes: one root operation over one direct Number field. Expression and `…Value` surface spellings normalize to these same semantic nodes. -/
+def AuthoredNumericExpr.isDirectFieldValueFunction : AuthoredNumericExpr Atom → Bool
+  | .abs (.atom _) => true
   | .round _ _ (.atom _) => true
   | _ => false
 
-/-- The checked validation fragment is plain arithmetic plus the independently audited root rounding shape. -/
+/-- The checked validation fragment is plain arithmetic plus independently audited root value functions. -/
 def AuthoredNumericExpr.isAdmittedValidation : AuthoredNumericExpr Atom → Bool
-  | expression => expression.isPlainArithmetic || expression.isDirectFieldRounding
+  | expression => expression.isPlainArithmetic || expression.isDirectFieldValueFunction
 
-/-- General operation-wrapper traversal remains unclosed; only the exact root rounding shape bypasses the plain-arithmetic authoring scan. -/
+/-- General operation-wrapper traversal remains unclosed; only exact direct-field root functions bypass the plain-arithmetic authoring scan. -/
 def AuthoredNumericExpr.validationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  if expression.isDirectFieldRounding then .accepted else expression.authoringCheck
+  if expression.isDirectFieldValueFunction then .accepted else expression.authoringCheck
 
 private def AuthoredNumericExpr.allAtoms (predicate : Atom → Bool) :
     AuthoredNumericExpr Atom → Bool
@@ -70,6 +72,7 @@ private def AuthoredNumericExpr.allAtoms (predicate : Atom → Bool) :
   | .group body => body.allAtoms predicate
   | .binary _ left right | .power left right =>
       left.allAtoms predicate && right.allAtoms predicate
+  | .abs body => body.allAtoms predicate
   | .round _ _ body => body.allAtoms predicate
 
 private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupPath)
@@ -148,6 +151,8 @@ private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) 
       pure (.power
         (← resolveNumericExpression model rowGroup base)
         (← resolveNumericExpression model rowGroup exponent))
+  | .abs body => do
+      pure (.abs (← resolveNumericExpression model rowGroup body))
   | .round mode places body => do
       pure (.round mode places (← resolveNumericExpression model rowGroup body))
 
@@ -218,15 +223,16 @@ private def evalPlainBinary (op : NumericScaleBinaryOp)
 def LoweredNumericExpr.isPlainArithmetic : LoweredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power _ _ | .round _ _ _ => false
+  | .power _ _ | .abs _ | .round _ _ _ => false
 
-/-- Lowering preserves the checked root-rounding shape exactly. -/
-def LoweredNumericExpr.isDirectFieldRounding : LoweredNumericExpr Atom → Bool
+/-- Lowering preserves the checked direct-field root-function shapes exactly. -/
+def LoweredNumericExpr.isDirectFieldValueFunction : LoweredNumericExpr Atom → Bool
+  | .abs (.atom _) => true
   | .round _ _ (.atom _) => true
   | _ => false
 
 def LoweredNumericExpr.isAdmittedValidation : LoweredNumericExpr Atom → Bool
-  | expression => expression.isPlainArithmetic || expression.isDirectFieldRounding
+  | expression => expression.isPlainArithmetic || expression.isDirectFieldValueFunction
 
 /-- Evaluate the plain validation subset; `none` marks a wrapper outside this helper's responsibility. -/
 def LoweredNumericExpr.evalPlainValidation?
@@ -238,15 +244,19 @@ def LoweredNumericExpr.evalPlainValidation?
       let leftOutcome ← left.evalPlainValidation? read
       let rightOutcome ← right.evalPlainValidation? read
       pure (evalPlainBinary op leftOutcome rightOutcome)
-  | .power _ _ | .round _ _ _ => none
+  | .power _ _ | .abs _ | .round _ _ _ => none
 
-/-- Evaluate exactly the checked runtime fragment. Rounding is admitted only at the root over a direct field; its result-domain map preserves both formal invalidity and arithmetic domain failure. -/
+/-- Evaluate exactly the checked runtime fragment. Value functions are admitted only at the root over a direct field; their result-domain maps preserve formal invalidity and arithmetic domain failure. -/
 def LoweredNumericExpr.evalAdmittedValidation?
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
     LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
   | .round mode places (.atom sourceAtom) =>
       some <| match read sourceAtom with
         | .ok outcome => .ok (outcome.round mode places)
+        | .error cause => .error cause
+  | .abs (.atom sourceAtom) =>
+      some <| match read sourceAtom with
+        | .ok outcome => .ok outcome.absolute
         | .error cause => .error cause
   | expression => expression.evalPlainValidation? read
 

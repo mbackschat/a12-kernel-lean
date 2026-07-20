@@ -7,6 +7,7 @@ namespace A12Kernel.Conformance.NumericValidation
 open A12Kernel
 
 private def unsigned : NumField := { scale := 0, signed := false }
+private def signed : NumField := { scale := 0, signed := true }
 private def scaleTwo : NumField := { scale := 2, signed := false }
 
 private def model : FlatModel :=
@@ -22,7 +23,9 @@ private def model : FlatModel :=
       { id := 4, groupPath := ["Reference"], name := "Other",
         policy := { kind := .number unsigned } },
       { id := 5, groupPath := ["Order", "Items"], name := "Item",
-        policy := { kind := .number unsigned }, repeatableScope := [10] }],
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := 6, groupPath := ["Order"], name := "S",
+        policy := { kind := .number signed } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def path (groups : List String) (field : String) : SurfaceFieldPath :=
@@ -46,8 +49,9 @@ private def twoSided (op : NumericComparisonOp)
     SurfaceNumericComparison :=
   { op := .ordinary op, left, right }
 
-private def raw (u v : RawCell := .empty) : RawFlatContext where
-  read id := if id == 0 then u else if id == 1 then v else .empty
+private def raw (u v s : RawCell := .empty) : RawFlatContext where
+  read id :=
+    if id == 0 then u else if id == 1 then v else if id == 6 then s else .empty
 
 private def verdictOf (surface : SurfaceNumericComparison)
     (context : RawFlatContext := raw) (hasContent : Bool := true) : Option Verdict :=
@@ -401,6 +405,43 @@ example : errorOf
     (comparison .less
       (.round .halfUp omittedRoundingPlaces
         (.binary .add (atom "U") (literal 1 0)))
+      0) = some .unsupportedExpression := by
+  native_decide
+
+/- Root absolute value is the second admitted numeric value function. Its sign-sensitive fillability is visible for signed empty input. -/
+example : verdictOf (comparison .greaterEqual (.abs (atom "S")) 0) =
+    some (.fired .value) := by
+  native_decide
+
+example : verdictOf (comparison .equal (.abs (atom "S")) 5)
+    (raw .empty .empty (.parsed (.num (-5)))) = some (.fired .value) := by
+  native_decide
+
+/- The independently traversed right operand applies the same absolute-value seam. -/
+example : verdictOf
+    (twoSided .equal (literal 5 0) (.abs (atom "S")))
+    (raw .empty .empty (.parsed (.num (-5)))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf (comparison .less (.abs (atom "S")) 1)
+    (raw .empty .empty (.rejected .malformed)) = some .unknown := by
+  native_decide
+
+/- Absolute value preserves the operand's static scale. -/
+example : (elaborateNumericComparison model ["Order"]
+    (twoSided .equal (.abs (atom "Scale2")) (atom "Scale2"))).isOk = true := by
+  native_decide
+
+/- Both wrapper/arithmetic nesting directions remain outside the checked boundary. -/
+example : errorOf
+    (comparison .less
+      (.binary .add (.abs (atom "U")) (literal 1 0))
+      0) = some .unsupportedExpression := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (.abs (.binary .add (atom "U") (literal 1 0)))
       0) = some .unsupportedExpression := by
   native_decide
 

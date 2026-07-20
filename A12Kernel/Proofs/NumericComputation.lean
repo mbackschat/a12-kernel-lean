@@ -83,6 +83,31 @@ theorem numericComputation_round_preserves_domainFailure
   rw [failed]
   rfl
 
+/-- Absolute value delegates every evaluated child result to the shared value-only transformation. -/
+theorem numericComputation_abs_delegates
+    (read : FlatFieldDecl →
+      Except NumericComputationFault NumericComputationResult)
+    (body : LoweredNumericExpr FlatFieldDecl)
+    (result : NumericComputationResult)
+    (evaluated : body.evalComputation read = .ok result) :
+    (LoweredNumericExpr.abs body).evalComputation read =
+      .ok result.absolute := by
+  simp only [LoweredNumericExpr.evalComputation]
+  rw [evaluated]
+  cases result <;> rfl
+
+/-- Every computation-value transformation preserves an arithmetic domain failure. -/
+theorem numericComputationResult_mapValue_domainFailure
+    (transform : Rat → Rat) :
+    NumericComputationResult.domainFailure.mapValue transform = .domainFailure := by
+  rfl
+
+/-- Every computation-value transformation preserves the exact reached poison cause. -/
+theorem numericComputationResult_mapValue_poison
+    (cause : FormalCause) (transform : Rat → Rat) :
+    (NumericComputationResult.poison cause).mapValue transform = .poison cause := by
+  rfl
+
 /-- A poison reached in the left operand fixes the result without consulting the right subtree. -/
 theorem numericComputation_leftPoison_shortCircuits
     (read : FlatFieldDecl →

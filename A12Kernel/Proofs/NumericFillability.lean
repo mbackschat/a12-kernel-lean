@@ -19,6 +19,37 @@ theorem numericSign_ofRat_positive (value : Rat) (positive : 0 < value) :
   have nonzero : value ≠ 0 := Rat.ne_of_gt positive
   simp [NumericSign.ofRat, notNegative, nonzero]
 
+/-- Below zero, increasing the source moves the magnitude toward zero and can therefore shrink it. -/
+theorem numericFillability_absolute_negative
+    (fillability : NumericFillability) :
+    fillability.absolute .negative =
+      { canGrow := fillability.canGrow || fillability.canShrink
+        canShrink := fillability.canGrow } := by
+  rfl
+
+/-- At zero, either source direction can grow the magnitude but no filling direction can shrink it. -/
+theorem numericFillability_absolute_zero
+    (fillability : NumericFillability) :
+    fillability.absolute .zero =
+      { canGrow := fillability.canGrow || fillability.canShrink
+        canShrink := false } := by
+  rfl
+
+/-- Above zero, decreasing the source is the only direction that can shrink the magnitude. -/
+theorem numericFillability_absolute_positive
+    (fillability : NumericFillability) :
+    fillability.absolute .positive =
+      { canGrow := fillability.canGrow || fillability.canShrink
+        canShrink := fillability.canShrink } := by
+  rfl
+
+/-- Every value transformation preserves exactly the arithmetic-outcome availability boundary. -/
+theorem numericArithmeticOutcome_mapValue_notEvaluated_iff
+    (outcome : NumericArithmeticOutcome)
+    (transform : Rat → NumericFillability → Rat × NumericFillability) :
+    outcome.mapValue transform = .notEvaluated ↔ outcome = .notEvaluated := by
+  cases outcome <;> simp [NumericArithmeticOutcome.mapValue]
+
 theorem numericArithmetic_fixed_fillability (op : NumericArithmeticOp) (left right : Rat) :
     op.fillability left .fixed right .fixed = .fixed := by
   cases op with

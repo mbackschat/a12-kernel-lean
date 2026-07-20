@@ -112,6 +112,22 @@ example : NumericArithmeticOutcome.eval .multiply
     (.value 0 .fixed) .notEvaluated = .notEvaluated := by
   native_decide
 
+/- Absolute value makes either input direction a possible magnitude increase, while only movement toward zero can shrink the result. -/
+example : NumericArithmeticOutcome.absolute (.value (-5) .growOnly) =
+    .value 5 .both := by
+  native_decide
+
+example : NumericArithmeticOutcome.absolute (.value 5 .shrinkOnly) =
+    .value 5 .both := by
+  native_decide
+
+example : NumericArithmeticOutcome.absolute (.value 0 .both) =
+    .value 0 .growOnly := by
+  native_decide
+
+example : NumericArithmeticOutcome.absolute .notEvaluated = .notEvaluated := by
+  native_decide
+
 example : NumericArithmeticOutcome.divide
     (.value 1 .fixed) .notEvaluated = .notEvaluated := by
   native_decide

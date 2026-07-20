@@ -48,6 +48,15 @@ def subtract (left right : NumericFillability) : NumericFillability :=
   { canGrow := left.canGrow || right.canShrink
     canShrink := left.canShrink || right.canGrow }
 
+/-- Absolute value can grow when either source direction moves the magnitude; only movement toward zero can shrink it. -/
+def absolute (fillability : NumericFillability)
+    (sign : NumericSign) : NumericFillability :=
+  { canGrow := fillability.canGrow || fillability.canShrink
+    canShrink := match sign with
+      | .negative => fillability.canGrow
+      | .zero => false
+      | .positive => fillability.canShrink }
+
 private def canGrowWhenScaledBy (fillability : NumericFillability) : NumericSign → Bool
   | .negative => fillability.canShrink
   | .zero => false
@@ -102,13 +111,27 @@ inductive NumericArithmeticOutcome where
 
 namespace NumericArithmeticOutcome
 
+/-- Transform only an available amount and its directional metadata; domain failure remains unavailable. -/
+def mapValue (outcome : NumericArithmeticOutcome)
+    (transform : Rat → NumericFillability → Rat × NumericFillability) :
+    NumericArithmeticOutcome :=
+  match outcome with
+  | .value amount fillability =>
+      let transformed := transform amount fillability
+      .value transformed.1 transformed.2
+  | .notEvaluated => .notEvaluated
+
+/-- Transform an available amount and its sign-sensitive directions; domain failure remains unavailable. -/
+def absolute (outcome : NumericArithmeticOutcome) : NumericArithmeticOutcome :=
+  outcome.mapValue (fun amount fillability =>
+    (absoluteNumeric amount,
+      fillability.absolute (NumericSign.ofRat amount)))
+
 /-- Round a known amount while preserving its directional metadata; domain failure remains unavailable. -/
 def round (outcome : NumericArithmeticOutcome)
     (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericArithmeticOutcome :=
-  match outcome with
-  | .value amount fillability =>
-      .value (roundDecimal mode amount places) fillability
-  | .notEvaluated => .notEvaluated
+  outcome.mapValue (fun amount fillability =>
+    (roundDecimal mode amount places, fillability))
 
 /-- Evaluate one total arithmetic node, absorbing a domain-undefined child before doing arithmetic. -/
 def eval (op : NumericArithmeticOp) :
