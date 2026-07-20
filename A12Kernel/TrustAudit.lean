@@ -390,6 +390,16 @@ run_cmd do
 #print axioms A12Kernel.valueListAtLeastOne_having_fires_omission
 #print axioms A12Kernel.valueListNo_having_fires_omission
 #print axioms A12Kernel.valueListNotAll_having_fires_omission
+#print axioms A12Kernel.firstFilledNumber_present_head
+#print axioms A12Kernel.firstFilledNumber_unknown_head
+#print axioms A12Kernel.firstFilledNumber_empty_then_present
+#print axioms A12Kernel.firstFilledNumber_repeated_empty_prefix
+#print axioms A12Kernel.firstFilledNumber_explicit_empty_zero
+#print axioms A12Kernel.firstFilledNumber_uninstantiated_zero
+#print axioms A12Kernel.firstFilledNumber_filtered_empty_zero
+#print axioms A12Kernel.firstFilledNumber_validation_projection
+#print axioms A12Kernel.firstFilledNumber_unavailable_projections
+#print axioms A12Kernel.firstFilledNumber_empty_prefix_projection_separator
 #print axioms A12Kernel.repetitionKey_number_equal_iff_normalized_eq
 #print axioms A12Kernel.mem_repetitionDuplicateCluster_iff
 #print axioms A12Kernel.repetitionNotUnique_refinedUnknown_iff

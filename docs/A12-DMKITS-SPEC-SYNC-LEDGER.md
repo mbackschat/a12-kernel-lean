@@ -473,3 +473,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** Both kernel routes lock the Berlin partial-gap and Apia skipped-date separators plus neighboring controls; canonical a12-dmkits prose no longer calls the general rule zone-independent wall-second division; the interpreter implements calendar-step semantics for its supported Berlin domain and continues to reject unsupported zones; unrelated temporal operations remain separately justified; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending
+
+### SPEC-2026-07-20-09 — `FirstFilledValue` observes only filters before termination
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `3696df4e38ae6f13fb97c2bddfcdf2cc730c4869`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`10-validation-and-polarity.md` §§4 and 4.1](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
+- **Delta:** Qualify the broad statement that `Having` escalates a consumed aggregate. Multi-operand `FirstFilledValue` encounters each slot's filter immediately before scanning that slot and terminates at the first present or formally unavailable value; a filter on any later, unvisited slot therefore cannot affect the result or its polarity.
+- **Basis:** kernel `RuntimeController.combineFeldListe` invokes the filter marker for the current operand before adding its values and returns as soon as `FirstValueCombiner` is no longer changeable; `FirstValueCombiner` makes present and formally unavailable prefixes terminal. Maintained a12-dmkits `FirstFilledValueLawsTest`, `FirstFilledValueInvalidTailDiffTest`, `FirstFilledValueDiffTest`, `FirstFilledValueKindDiffTest`, and `HavingStarComparisonPolarityDiffTest` establish prefix termination, suffix invisibility, and encountered-filter escalation, while the source order closes their composition.
+- **Requested a12-dmkits reconciliation:** Make the filter-position qualification durable in the owning `FirstFilledValue` prose and add one focused control only if no existing test directly distinguishes an unvisited later filtered slot from an encountered filtered slot. Preserve the current implementation if it already follows the ordered source mechanism; do not introduce a global aggregate-level filter flag.
+- **Compatibility:** A flat implementation that ORs filter presence across every authored operand can misclassify a firing as OMISSION even though an earlier terminal operand makes the later filtered slot unreachable. The one-operand Lean capsule is unaffected because its sole filter is necessarily encountered.
+- **Acceptance:** a12-dmkits documentation states the positional encounter rule; a focused source or differential control distinguishes an encountered filter from an unreachable later filter; the clean-room interpreter retains per-slot order or otherwise proves equivalent behavior; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending
