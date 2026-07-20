@@ -30,5 +30,6 @@ import A12Kernel.Conformance.StringCascade
 import A12Kernel.Conformance.StringComputation
 import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
+import A12Kernel.Conformance.RepetitionNotUnique
 
 /-! Executable semantic locks built with the default library target. -/
