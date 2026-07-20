@@ -1,6 +1,7 @@
 import A12Kernel.Proofs.Information
 import A12Kernel.Proofs.FullDate
 import A12Kernel.Proofs.DateRangeOverlap
+import A12Kernel.Proofs.DateRangeOverlapOperators
 import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateTime
 import A12Kernel.Proofs.DateTimeDifference
