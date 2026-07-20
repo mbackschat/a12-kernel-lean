@@ -62,7 +62,7 @@ The type is **not** a per-operator constant — it is computed from **directiona
 - **Each aggregate combiner has its own directions:** `Sum` grows always and shrinks only when signed, `MaxValue` is grow-only, `MinValue` shrink-only. A starred aggregate's **un-instantiated declared tail counts as fillable**, keeping a firing OMISSION until the repetition is exhausted.
 - **The counts can only grow:** a fired `count >= n` is **VALUE** (no fill lowers a count), while `count < n` stays **OMISSION**.
 - **Dates ride a *symmetric* combiner:** a fired date comparison types **OMISSION iff either side is not-given**, regardless of the comparison's direction.
-- **A `Having` filter escalates:** a fired quantifier over a filtered field star is **unconditionally OMISSION**, and so is a fired *comparison* consuming a filtered star (every value combiner marks a filtered result "not specified"). The filtered **counts** are the exception — they escalate only when the filter actually *counted* a value; a kept-nothing count stays directional (grow-only).
+- **An encountered `Having` filter escalates:** a fired quantifier over a filtered field star is **unconditionally OMISSION**, and so is a fired *comparison* consuming a filtered star (every value combiner marks a filtered result "not specified"). Filter encounter remains ordered for multi-operand `FirstFilledValue`: each operand slot marks its own filter immediately before that slot is scanned, and a terminal value or formal error prevents every later slot and its filter from being observed. The filtered **counts** are the exception — they escalate only when the filter actually *counted* a value; a kept-nothing count stays directional (grow-only).
 - **A concatenation ORs the not-given flag across its parts:** a fired string comparison is **OMISSION iff any operand carries the flag** — so a concat containing *any* not-given read (an empty field, a no-match indexed read, a not-given coercion) types a fired mismatch OMISSION even though the concatenated string is non-empty.
 
 For valid numeric operands `a` and `b`, write `Gₐ`/`Sₐ` for “can grow”/“can shrink,” and similarly for `b`. The exact ordinary-arithmetic propagation is:
@@ -117,7 +117,7 @@ The `!=` and tolerance arms are directional rather than “any operand is fillab
 Because the type is computed from data, **one rule legitimately fires OMISSION on one document and VALUE on another**:
 
 - `NotExactlyOneFieldFilled(A, B)` fired at **0 filled** is OMISSION (filling one reaches exactly one) but at **2 filled** is VALUE (no fill gets back to one).
-- `FirstFilledValue` types OMISSION only when no row is filled or an instantiated empty row *precedes* the first filled one (empties *after* it are irrelevant — the first value is fixed). It is prefix-sensitive generally: operands after the first filled one are never read (a formal error there is *invisible*), one before it *suppresses* the rule.
+- `FirstFilledValue` types OMISSION only when no row is filled, an instantiated empty row *precedes* the first filled one, or an encountered operand slot carries `Having` (empties *after* the first value are irrelevant). It is prefix-sensitive generally: operands after the first filled one are never read, so a formal error or filter there is invisible; a formal error before it suppresses the rule.
 - `CurrentRepetition` is a structural row index no fill can change — a fired comparison against it is **always VALUE**.
 
 ---
