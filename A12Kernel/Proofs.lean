@@ -1,6 +1,7 @@
 import A12Kernel.Proofs.Information
 import A12Kernel.Proofs.FullDate
 import A12Kernel.Proofs.DateTime
+import A12Kernel.Proofs.DateTimeDifference
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.CrossLevelCorrelation
 import A12Kernel.Proofs.CorrelationElaboration
