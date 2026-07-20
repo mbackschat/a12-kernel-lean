@@ -89,21 +89,96 @@ Also: **a date value is stored and formal-checked in its field's declared `forma
 
 ## 5. Time zones and the sub-day difference
 
-`DifferenceInHours/Minutes/Seconds` is **absolute-instant subtraction** — `floor(|instant₂ − instant₁| / unit)`, sign from operand order — computed **identically** by the runtime and by every code-generation target (they all call the one runtime helper; no target inlines its own arithmetic).
+`DifferenceInHours/Minutes/Seconds` is **absolute-instant subtraction** — `floor(|instant₂ − instant₁| / unit)`, sign from operand order — under the normative Groovy-dynamic behavioral anchor. Generated static-Java is required co-evidence and agrees on the exercised historical cases. No identical-behavior claim is made for the TypeScript/luxon target: a legal strategy split is recorded and never overrides Groovy-dynamic.
 
-Across a **daylight-saving transition** the result depends on the model's configured **`timeZone`** (the DM-JSON key `content.modelConfig.timeZone`; the capitalized `TimeZone` is the *internal* metamodel key code generation copies it into; **default `UTC`**, only other *documented* value `Europe/Berlin` — the code whitelists nothing: unknown ids silently collapse to GMT), applied at *parse time* — **not** on the code-gen target language:
+The model's configured **`timeZone`** is the DM-JSON key `content.modelConfig.timeZone`; the capitalized `TimeZone` is the *internal* metamodel key code generation copies it into. Absent means `UTC`. An explicit id is model-legal exactly when it is the literal `GMT` or `java.util.TimeZone.getTimeZone(id).getID() != "GMT"`. Known IANA ids, `GMT±HH:MM`, `UTC`, `Zulu`, and `Etc/UTC` are legal. An empty, unknown, or misspelled id that silently collapses to `GMT` is rejected with `MVK_INVALID_TIME_ZONE`.
+
+The normative kernel path applies that id at parse time through legacy `java.util.TimeZone` plus non-lenient `SimpleDateFormat`, not `java.time`. A plain DATE is midnight in the model zone. Across a daylight-saving transition:
 
 - Under **`UTC`**, the wall-clock gap equals the instant gap.
 - Under **`Europe/Berlin`**, two datetimes straddling a transition differ by their *physical* elapsed time: `2024-03-31T01:30:00 → 03:30:00` is `DifferenceInHours = 1` (the skipped 02:00 hour), and `2024-10-27T01:30:00 → 03:30:00` is `3` (the repeated hour).
 
-**The zone applies to every DATE and DATE_TIME parse** — a plain date is midnight in the model zone — through a zone-set, **non-lenient** formatter. That non-lenience gives the two DST edge hours exact, probe-verified laws (kernel 30.8.1):
+That non-lenient zone-set parse gives every historical transition the following laws:
 
-- **The spring-forward gap is a FORMAL error.** A stored wall time that does not exist (`2024-03-31T02:30:00` under Berlin) draws `datumFormatFalsch` — the non-lenient round-trip rejects it — and suppresses a referencing rule exactly like any malformed value. It is **not** rolled forward.
-- **The fall-back ambiguous hour parses as STANDARD time** (CET): `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 120`, and two stored `02:30` values are instant-equal.
+- **Every gap is a FORMAL error.** A stored wall time that does not exist (`2024-03-31T02:30:00` under Berlin) draws `datumFormatFalsch` — the non-lenient round-trip rejects it — and suppresses a referencing rule exactly like any malformed value. It is **not** rolled forward.
+- **Every overlap selects the smaller/after offset.** In an ordinary modern CEST→CET overlap that is CET: `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 120`, and two stored `02:30` values are instant-equal. In a historical CEMT→CEST overlap the same general rule selects CEST, not CET.
 - **Datetime comparison is instant-based too** (`==`/ordering compare the parsed instants), and a **chained `Add{Hours,Minutes,Seconds}` result keeps its exact instant**: `AddHours(01:30 CEST, 1)` lands on the *daylight* side of the ambiguous hour, so it is **not** equal to the equal-looking stored `"02:30:00"` (which re-parses standard) — the pair is 60 real minutes apart. A rendering-based re-parse loses this; the arithmetic is instant-in, instant-out.
-- **`AddDays` landings in a special hour never overshoot the direction of travel** (all four combinations probed): a **forward** add resolves the landing with the DAYLIGHT (earlier) instant — a gap landing renders `01:30` CET — and a **backward** add with the STANDARD (later) instant.
+- **`AddDays` landings in a special hour never overshoot the direction of travel**: a forward add selects the earlier consistent instant and a backward add the later one. “Daylight” versus “standard” is only an explanatory label for an ordinary modern two-offset transition; the ordering rule also covers CEMT. In the modern spring-gap control, a forward landing renders `01:30` CET.
 
-> **Lean modelling note.** Carry the time zone in the model (§1 of [`01-data-model.md`](01-data-model.md)). A `UTC`-only implementation matches every `UTC` model and diverges from a `Europe/Berlin` model *only* across DST transitions — an acceptable staged first cut if you record it as a known gap. The faithful version needs the two-zone conversion at datetime construction *plus the edge-hour laws above* (gap ⇒ formal error at the value gate; ambiguous ⇒ standard; instant-space arithmetic so chains keep identity; the no-overshoot day-add landing). The Berlin offset rule to encode is the **current EU rule** (CEST between the last Sundays of March and October, transitions at 01:00Z, in force since 1996) — pre-1996 values follow older tz-database rules only the engine knows; record that boundary explicitly. The peer clean-room encoding (a12-dmkits interpreter, IF128) implements exactly this and is differentially locked (`DstTimeZoneDiffTest`, `WallDayArithmeticDiffTest`, JVM+JS `ModelTimeZoneTest`).
+### 5.1 Versioned `Europe/Berlin` legacy profile
+
+The normative profile `europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1` records the legacy `java.util.TimeZone` observations on JDK 21.0.11 with tzdb 2026a. Before the first entry, the offset is flat CET `+3600`; unlike `java.time`, this path does not expose pre-1893 LMT `+3208`. At each listed UTC instant, `offset after` takes effect. The table contains all 62 legacy transitions through 1997, including CEMT `+10800` in the 1945 and 1947 double-summer periods.
+
+| UTC transition instant | Offset after (seconds) |
+|---|---:|
+| `1916-04-30T22:00:00Z` | 7200 |
+| `1916-09-30T23:00:00Z` | 3600 |
+| `1917-04-16T01:00:00Z` | 7200 |
+| `1917-09-17T01:00:00Z` | 3600 |
+| `1918-04-15T01:00:00Z` | 7200 |
+| `1918-09-16T01:00:00Z` | 3600 |
+| `1940-04-01T01:00:00Z` | 7200 |
+| `1942-11-02T01:00:00Z` | 3600 |
+| `1943-03-29T01:00:00Z` | 7200 |
+| `1943-10-04T01:00:00Z` | 3600 |
+| `1944-04-03T01:00:00Z` | 7200 |
+| `1944-10-02T01:00:00Z` | 3600 |
+| `1945-04-02T01:00:00Z` | 7200 |
+| `1945-05-24T00:00:00Z` | 10800 |
+| `1945-09-24T00:00:00Z` | 7200 |
+| `1945-11-18T01:00:00Z` | 3600 |
+| `1946-04-14T01:00:00Z` | 7200 |
+| `1946-10-07T01:00:00Z` | 3600 |
+| `1947-04-06T02:00:00Z` | 7200 |
+| `1947-05-11T01:00:00Z` | 10800 |
+| `1947-06-29T00:00:00Z` | 7200 |
+| `1947-10-05T01:00:00Z` | 3600 |
+| `1948-04-18T01:00:00Z` | 7200 |
+| `1948-10-03T01:00:00Z` | 3600 |
+| `1949-04-10T01:00:00Z` | 7200 |
+| `1949-10-02T01:00:00Z` | 3600 |
+| `1980-04-06T01:00:00Z` | 7200 |
+| `1980-09-28T01:00:00Z` | 3600 |
+| `1981-03-29T01:00:00Z` | 7200 |
+| `1981-09-27T01:00:00Z` | 3600 |
+| `1982-03-28T01:00:00Z` | 7200 |
+| `1982-09-26T01:00:00Z` | 3600 |
+| `1983-03-27T01:00:00Z` | 7200 |
+| `1983-09-25T01:00:00Z` | 3600 |
+| `1984-03-25T01:00:00Z` | 7200 |
+| `1984-09-30T01:00:00Z` | 3600 |
+| `1985-03-31T01:00:00Z` | 7200 |
+| `1985-09-29T01:00:00Z` | 3600 |
+| `1986-03-30T01:00:00Z` | 7200 |
+| `1986-09-28T01:00:00Z` | 3600 |
+| `1987-03-29T01:00:00Z` | 7200 |
+| `1987-09-27T01:00:00Z` | 3600 |
+| `1988-03-27T01:00:00Z` | 7200 |
+| `1988-09-25T01:00:00Z` | 3600 |
+| `1989-03-26T01:00:00Z` | 7200 |
+| `1989-09-24T01:00:00Z` | 3600 |
+| `1990-03-25T01:00:00Z` | 7200 |
+| `1990-09-30T01:00:00Z` | 3600 |
+| `1991-03-31T01:00:00Z` | 7200 |
+| `1991-09-29T01:00:00Z` | 3600 |
+| `1992-03-29T01:00:00Z` | 7200 |
+| `1992-09-27T01:00:00Z` | 3600 |
+| `1993-03-28T01:00:00Z` | 7200 |
+| `1993-09-26T01:00:00Z` | 3600 |
+| `1994-03-27T01:00:00Z` | 7200 |
+| `1994-09-25T01:00:00Z` | 3600 |
+| `1995-03-26T01:00:00Z` | 7200 |
+| `1995-09-24T01:00:00Z` | 3600 |
+| `1996-03-31T01:00:00Z` | 7200 |
+| `1996-10-27T01:00:00Z` | 3600 |
+| `1997-03-30T01:00:00Z` | 7200 |
+| `1997-10-26T01:00:00Z` | 3600 |
+
+After the final entry, retain its `+3600` offset through the end of 1997. Beginning with 1998, apply the recurring EU rule: offset `+7200` from the last Sunday of March at `01:00Z` inclusive until the last Sunday of October at `01:00Z` exclusive, otherwise `+3600`. The rule has held continuously since 1996; the explicit 1996 and 1997 entries make the table-to-recurrence boundary non-overlapping. For 1980–1995, the table records the historically different last-Sunday-of-September end.
+
+The a12-dmkits pinned profile carries the same 62 entries, but its retained external differential is representative rather than exhaustive: Groovy-dynamic is exercised at pre-1916, 1916, 1945, 1947, and 1980 discriminators, while generated static-Java is tri-checked only for the 1980 fall-back plus a summer control. The remaining table rows are source- and host-profile-characterized; this clause does not claim that both kernel routes executed all 62 transitions.
+
+> **Lean modelling note.** Carry the model's accepted time-zone id in the model and resolve it through a versioned zone-rule oracle/profile supplied by `World` (§4 of [`01-data-model.md`](01-data-model.md)). A staged consumer may support a smaller named set only by rejecting every other legal id before evaluation. A faithful `Europe/Berlin` implementation uses the versioned table and recurrence above, rejects gaps, selects the smaller/after overlap offset, keeps instant identity through sub-day arithmetic, and implements the no-overshoot wall-day landing. The current fixed 2024 overlap slice must be replaced when that general resolver lands, not retained as a parallel legacy mechanism.
 
 ---
 
@@ -166,8 +241,9 @@ The date **extractors** (`DayFromDate`, …) accept a DateTime operand and see i
 - [ ] `Valid`/`Invalid(Date(...))` are **not** complements; unreal date = non-evaluable; malformed part suppresses both; `Invalid` directional polarity; fires on all-empty.
 - [ ] **Gregorian floor** at 1583-10-16 on *values* (stored → `datumFalsch`, computed → ERRORED), day-optional completes day first; **not** applied to the `Date(...)` constructor's reality test.
 - [ ] Dates stored/checked in the field's **declared format**.
-- [ ] Sub-day differences AND datetime comparison honour the model **time zone** (UTC default, Europe/Berlin) across DST — instant-based, with chained `Add*` keeping instant identity; clock injected, not read globally.
-- [ ] Berlin edge hours: a spring-gap wall time is `datumFormatFalsch` (formal error, suppresses); the ambiguous fall-back hour parses as **standard** time; `AddDays` special-hour landings never overshoot the travel direction.
+- [ ] Time-zone admission follows the legacy recognized-id rule: absent ⇒ UTC; literal GMT or an id that does not collapse to GMT is legal; collapsed empty/unknown/typo ids draw `MVK_INVALID_TIME_ZONE`.
+- [ ] Zone resolution uses a versioned legacy `java.util.TimeZone` profile; the Berlin account is flat CET before 1916, uses the 62-transition table through 1997, then the recurring EU rule.
+- [ ] Sub-day differences and datetime comparison are instant-based; every historical gap draws `datumFormatFalsch`, every overlap selects the smaller/after offset, chained sub-day `Add*` keeps instant identity, and wall-day landings never overshoot the travel direction.
 - [ ] Per-operator DateTime gates: `DifferenceInDays`/`AddDays` accept DateTime (time-aware wall-day count / time-preserving add); `DifferenceIn{Months,Years}`/`AddMonths`/`AddYears` reject it; `DifferenceIn{Hours,Minutes,Seconds}` reject a plain DATE.
 - [ ] Fragment completion: earliest for a value/start, latest for a range end (leap-aware); day-optional `00`; `ValueAsDate` only as a direct comparison operand.
 - [ ] Ranges: `==`/`!=` only, no nesting, closed intervals; `DateRangesOverlap` (any-pair, growing set) vs `AtLeastOneDateRangeOverlaps` (scalar-vs-list); inverted never overlaps.

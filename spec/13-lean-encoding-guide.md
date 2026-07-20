@@ -83,7 +83,7 @@ Every stage has the same exit gate:
 
 Examples and tests anchor concrete behavior; theorems establish universal consequences of the Lean definitions; differential evidence anchors primitive choices to the kernel. Do not use any one of these as a label for the other two.
 
-Use four distinct evidence roles. [`../../a12-kernel`](../../a12-kernel) is the authoritative behavior. [`../../a12-rulekit/adapter`](../../a12-rulekit/adapter) is the external kernel harness and result-export boundary for focused probes; it remains outside this repository's trusted or shipped dependency graph. [`../../a12-rulekit/corpus`](../../a12-rulekit/corpus) is the portable replay format consumed here. [`../../a12-rulekit/interpreter`](../../a12-rulekit/interpreter) is a valuable independent clean-room peer for triangulation and finding divergences, but agreement with it is not kernel evidence and it never resolves a disagreement against the kernel.
+Use four distinct evidence roles. The kernel's Groovy-dynamic runtime service is the normative behavioral observation anchor. Generated static-Java is required co-evidence for detecting and characterizing strategy splits; when both routes accept the same legal input but disagree, record the split and do not let static-Java override Groovy-dynamic. [`../../a12-rulekit/adapter`](../../a12-rulekit/adapter) is the external kernel harness and result-export boundary for focused probes; it remains outside this repository's trusted or shipped dependency graph. [`../../a12-rulekit/corpus`](../../a12-rulekit/corpus) is the portable replay format consumed here. [`../../a12-rulekit/interpreter`](../../a12-rulekit/interpreter) is a valuable independent clean-room peer for triangulation and finding divergences, but agreement with it is not kernel evidence and it never resolves a disagreement against the kernel anchor.
 
 The first engine-backed conformance witnesses should be:
 
@@ -108,7 +108,7 @@ Follow Cedar's mechanical coverage lesson: when the proof hierarchy grows, maint
 
 ## 5. Clean-room boundary
 
-The engine is a behavioral oracle, not a dependency or transcription source. Learn the mechanism from the specifications, findings, source inspection, and focused external probes; write original Lean; then lock it with own-domain examples, portable corpus replay, and externally exported kernel differential evidence. The a12-dmkits adapter in the `a12-rulekit/` checkout may host the kernel-facing probe outside this repository; this repository consumes the resulting portable evidence and never links, calls, or ships that harness or the kernel. Never translate kernel expressions line by line. [`../CLAUDE.md`](../CLAUDE.md) is the authoritative licensing and clean-room rule.
+The kernel's Groovy-dynamic runtime service is the behavioral oracle, not a dependency or transcription source; generated static-Java remains co-evidence and a strategy-split detector. Learn the mechanism from the specifications, findings, source inspection, and focused external probes; write original Lean; then lock it with own-domain examples, portable corpus replay, and externally exported kernel differential evidence. The a12-dmkits adapter in the `a12-rulekit/` checkout may host the kernel-facing probe outside this repository; this repository consumes the resulting portable evidence and never links, calls, or ships that harness or the kernel. Never translate kernel expressions line by line. [`../CLAUDE.md`](../CLAUDE.md) is the authoritative licensing and clean-room rule.
 
 ---
 

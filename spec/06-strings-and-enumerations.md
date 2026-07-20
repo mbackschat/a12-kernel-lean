@@ -1,6 +1,6 @@
 # 06 — Strings, patterns, and enumerations (§7 + §8)
 
-Two mostly-manageable areas with a few sharp edges: Unicode length counting, legal-character definitions, custom field validation, the enforced portable regex subset, enum comparability rules, and the three-way value-list quantifiers (whose `No`-vs-`NotAll` poison asymmetry is the one genuinely tricky part).
+Two mostly-manageable areas with a few sharp edges: Unicode length counting, legal-character definitions, custom field validation, Java-Pattern admission and execution, enum comparability rules, and the three-way value-list quantifiers (whose `No`-vs-`NotAll` poison asymmetry is the one genuinely tricky part).
 
 Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns not evaluated on empty; value-list membership UNKNOWN on empty) is in [§2](03-empty-and-required.md).
 
@@ -9,8 +9,22 @@ Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns not evaluate
 ## Part A — §7 Strings and patterns
 
 - **`Length` and min/max-length checks count UTF-16 code units exactly.** There is no code-point folding or grapheme clustering in any length-bearing path. A decomposed combining sequence `e` + `U+0301` counts 2, and a supplementary-plane character would also count 2 code units, although realistic legal-character policies reject it first. Grapheme clustering appears only in legal-charset acceptance, never in a count.
-- **`PatternMatched` / `PatternViolated`** evaluate the **whole** value (implicitly **anchored** — the pattern must match the entire string), use only the **regex subset portable across the code-generation target languages**, and can be a performance/security risk if written to backtrack (e.g. `(a+)+`). The portable subset is **enforced, not advisory**: a Java-valid lookbehind is rejected with `MVK_INVALID_PATTERN`, so a Java-side `Pattern.compile` success is a *necessary* condition only, never sufficient. A fired pattern comparison is always a **VALUE** error (there is no fillable branch); an empty string violates no pattern ([§2](03-empty-and-required.md)). Length and pattern consumers see the evaluation-normalized text: a permitted `"AB\r\nCD"` measures 5 UTF-16 code units and a whitespace-class pattern sees one `\n`, while the stored text remains unchanged ([§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state)).
+- **`PatternMatched` / `PatternViolated`** evaluate the **whole** value (implicitly **anchored** — the pattern must match the entire string) with Java `Pattern` semantics under the Groovy-dynamic observation anchor. A fired pattern comparison is always a **VALUE** error (there is no fillable branch); an empty string violates no pattern ([§2](03-empty-and-required.md)). Length and pattern consumers see the evaluation-normalized text: a permitted `"AB\r\nCD"` measures 5 UTF-16 code units and a whitespace-class pattern sees one `\n`, while the stored text remains unchanged ([§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state)). Patterns can still be a performance/security risk if written to backtrack, for example `(a+)+`.
 - **`+` is overloaded** — numeric **addition** between Number operands, string **concatenation** between strings. There is no general operand-dispatch rule beyond one pitfall: a string literal shaped like a date parses as a *date constant* and cannot be concatenated ([§6](05-dates-and-time.md)).
+
+### Pattern admission and execution
+
+Condition-literal patterns (`PatternMatched` / `PatternViolated`) and declared STRING or predefined-type patterns have the same two-stage model-legality gate: the source must first compile as a Java `Pattern`, then pass `PatternUtils.isPatternValid`. Failure at either stage for a condition-literal pattern is rejected with `MVK_INVALID_PATTERN`; this clause does not infer the same outward diagnostic surface for every declared-pattern API. The second stage is this finite blacklist, not a portability proof:
+
+```text
+[?+}*]\+                 possessive quantifiers
+(?<...                   every such prefix, including lookbehind and named capture
+(?>...)                   atomic/independent groups
+\A \G \Z \z \a \e \p \Q \E
+an unescaped [ nested after an earlier unescaped [ before its closing ]
+```
+
+Ordinary positive and negative lookahead (`(?=...)` / `(?!...)`) are not categorically blacklisted. Nor does passing the gate imply JavaScript portability: known legal separators include inline flag forms, `\R` / `\h`, Unicode `\s`, dot/code-point differences, unmatched backreferences, non-nested class intersections, uppercase `\P`, `\x{…}`, `\N{…}`, `\X`, and `\b{g}`. Generated static-Java agrees with the normative Java runtime on the exercised cases. The kernel TypeScript target instead wraps the raw source as `new RegExp("^(?:" + p + ")$")`; any resulting difference is a characterized strategy split and is never adopted over the Groovy-dynamic result.
 
 ### A.1 Raw-type Strings (`noValueValidation`)
 
@@ -25,7 +39,7 @@ The one legal `Length` shape is **not a runtime rule**. Code generation eliminat
 
 The JVM/JavaScript rule is UTF-16 code-unit length. a12-dmkits' [`AbsLengthDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/AbsLengthDiffTest.kt) differentially locks the BMP combining-sequence discriminator—decomposed `e` plus U+0301 counts as two rather than one grapheme—while supplementary-plane characters counting as two UTF-16 units is source-characterized and internally locked by Lean's [`StringLength` conformance cases](../A12Kernel/Conformance/StringLength.lean), not by retained kernel differential evidence. CRLF ingestion and raw-type closure are differentially locked by [`CrlfLengthNormalizationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrlfLengthNormalizationDiffTest.kt) and [`NvvRawTypeDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NvvRawTypeDiffTest.kt).
 
-> **Lean modelling note.** Represent String length as UTF-16 code-unit count after the ingestion normalization described in [§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state); do **not** use Unicode scalar count or grapheme clusters. For patterns, compile from a *restricted* pattern grammar (no lookbehind/lookahead, the portable subset) to a decidable matcher over the whole normalized string (anchored); pattern acceptance is a separate well-formedness check. The checked elaborator rejects every raw-type value window, while the one admitted strict `Length` declaration desugars to metadata and produces no core runtime rule. No additional runtime value state is needed because legal evaluation cannot read the raw value.
+> **Lean modelling note.** Represent String length as UTF-16 code-unit count after the ingestion normalization described in [§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state); do **not** use Unicode scalar count or grapheme clusters. Do not turn the finite `PatternUtils` blacklist into an invented portable grammar: a faithful pattern capsule must separate the two-stage admission gate from whole-value Java-Pattern execution and record target splits explicitly, or fail closed outside its declared fragment. The checked elaborator rejects every raw-type value window, while the one admitted strict `Length` declaration desugars to metadata and produces no core runtime rule. No additional runtime value state is needed because legal evaluation cannot read the raw value.
 
 ### A.2 Legal charset definitions and atomic matching
 
@@ -95,7 +109,7 @@ The category mapping is **positional** (`values[i]` categorizes enum value *i*) 
 ## Checklist for §7 + §8
 
 - [ ] String `Length` and min/max limits count UTF-16 code units after CRLF→LF evaluation ingestion; no length-bearing path counts code points or graphemes.
-- [ ] Patterns are **anchored/whole-value**, restricted to the **portable subset** (reject lookbehind etc. with `MVK_INVALID_PATTERN`); a fired pattern check is always **VALUE**.
+- [ ] Condition and declared-field patterns share the Java-compilation plus finite-`PatternUtils` admission gate; either condition-pattern failure draws `MVK_INVALID_PATTERN`; evaluation is anchored/whole-value Java-Pattern semantics under the Groovy-dynamic anchor; target-language divergences remain explicit; a fired pattern check is always **VALUE**.
 - [ ] Raw-type String values remain available to presence predicates but every value window is rejected; the sole strict whole-condition `Length` form is eliminated into metadata and never runs.
 - [ ] `supportedCharacters`: absent/empty list selects the BMP default, an empty entry is malformed, accepted entries are bounded and surrogate-free, configured combined entries match atomically with the exact overlap restriction, and every successful match advances.
 - [ ] A declared custom field type preserves raw optional bounds, supplies effective `1`/`999`, locale, and stored-value mode to one pure registered-validator observation per relevant concrete cell, and preserves a rejection's project code and optional field-aware message across all consumers.
