@@ -68,7 +68,7 @@ The last two rows are one design split seen from both sides, and they resolve th
 
 "One operand empty" (A.2) and "the *whole* selection empty" are different questions. Each aggregate has a defined identity for the all-empty case:
 
-- **NUMBER aggregates fold to the fillable `0`**, not "undefined": `MaxValue(A,B) == 0` fires with both empty; `MinValue(Items*/Count) == 0` fires on a group with *no rows at all*. `Sum` over an all-empty list is likewise `0`.
+- **NUMBER aggregates fold to the both-directionally fillable `0`**, not "undefined": when no present value entered the fold, the identity can grow and shrink regardless of field signedness or whether the aggregate is `Sum`, `MaxValue`, or `MinValue`. Thus `MaxValue(A,B) == 0` fires with both empty; `MinValue(Items*/Count) == 0` fires on a group with *no rows at all*; and `Sum` over an all-empty list is likewise `0`. The ordinary per-combiner directions apply only after at least one present value has entered the fold.
 - **DATE `Min`/`Max` fold to *no value*:** a comparison against an all-empty date aggregate never fires; a *computation* of it CLEARS its target.
 - **`FirstFilledValue` follows its operand *kind*:** an all-empty selection yields the fillable `0` for a NUMBER operand, but *no value* (NOT-GIVEN) for a DATE or STRING operand.
 
