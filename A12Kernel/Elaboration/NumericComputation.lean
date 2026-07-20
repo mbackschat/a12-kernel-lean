@@ -83,10 +83,7 @@ def evalComputation
           pure (NumericComputationResult.evalBinary op leftResult rightResult)
   | .power _ _ => throw .unsupportedPower
   | .round mode places body => do
-      match ← body.evalComputation read with
-      | .value amount => pure (.value (roundDecimal mode amount places))
-      | .domainFailure => pure .domainFailure
-      | .poison cause => pure (.poison cause)
+      pure ((← body.evalComputation read).round mode places)
 
 end LoweredNumericExpr
 

@@ -1,4 +1,5 @@
 import A12Kernel.Cell
+import A12Kernel.Semantics.NumericRounding
 
 /-! # Numeric computation-expression results
 
@@ -13,5 +14,13 @@ inductive NumericComputationResult where
   | domainFailure
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
+
+/-- Round only an available computation value; arithmetic failure and read poison keep their meanings. -/
+def NumericComputationResult.round (result : NumericComputationResult)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) : NumericComputationResult :=
+  match result with
+  | .value amount => .value (roundDecimal mode amount places)
+  | .domainFailure => .domainFailure
+  | .poison cause => .poison cause
 
 end A12Kernel
