@@ -7,7 +7,7 @@ This capsule implements the reason and verdict boundary of [`spec/05-dates-and-t
 
 Calendar resolution is deliberately an input. Kernel 30.8.1 uses a model-zone-sensitive hybrid `GregorianCalendar`, while the reusable `CivilDate` account is zone-free and proleptic; using it here would silently disagree for legal dates around zone discontinuities and the historical cutover.
 
-The two-argument Base Year form, four-argument century form, textual component decoding, exact formal causes, row orchestration, concrete calendar resolution, and the stored/computed Date floor remain separate.
+The two-argument Base Year form, four-argument century form, textual component decoding, exact formal causes, row orchestration, concrete calendar resolution, and the stored/computed Date floor remain separate. Numeric extractor/difference projection, reason-bearing DateTime composition, direct Date `Min`/`Max`, shifts, and legacy-calendar month/year operations are consumer-specific follow-up boundaries; they must consume this classification rather than collapse it to an optional value.
 -/
 
 namespace A12Kernel

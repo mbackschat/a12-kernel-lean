@@ -77,7 +77,7 @@ def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=
   else
     .value (roundMathContext50 (dividend / divisor))
 
-/-- Admit exactly integral runtime exponents in the kernel's inclusive `-1000..1000` range. -/
+/-- Defensive value-level admission for exactly integral exponents in the kernel's inclusive `-1000..1000` runtime range. Kernel authoring rejects fractional-scale or unknown-scale exponents; the current Lean checked consumers reject every power, while the authored scale summary records that gate for a future checked power consumer. -/
 def checkedPowerExponent? (exponent : Rat) : Option Int :=
   if exponent.den = 1 then
     let integral := exponent.num
@@ -101,8 +101,7 @@ def positivePower (base : Rat) (exponent : Nat) : Rat :=
     roundMathContext50 result
 
 /--
-Raise a known numeric value to a runtime exponent. Invalid exponent shapes are quiet; negative powers
-round the reciprocal first, before applying the positive Java power algorithm.
+Raise a known numeric value to an already-authored runtime exponent. Out-of-range integral exponents are quiet; the fractional branch is defensive totality for unchecked callers, not legal-model runtime behavior. Negative powers round the reciprocal first, before applying the positive Java power algorithm.
 -/
 def powerNumeric (base exponent : Rat) : NumericArithmeticResult :=
   match checkedPowerExponent? exponent with
