@@ -17,7 +17,7 @@ Two independent layers:
 - **Formal validation** — the field-type checks the engine performs automatically (type, pattern, decimal places, required-by-checkbox, charset, blanks, …). These carry the internal sentinel path `formalePruefung` and make a field **"unknown"** while they stand ([§3](02-logic-and-formal-errors.md)).
 - **Rule validation** — the author-written (and generated) rules. These **never** block a field from evaluation.
 
-Formal validity is *prior*: a formally-invalid cell is unknown to every rule that reads it.
+Formal validity is *prior* for every built-in read: a formally-invalid cell is UNKNOWN to predicates, comparisons, and aggregates that consume it. `CustomCondition` is the explicit host-SPI exception because its hidden read footprint is unavailable to the kernel; a reached callback receives the formal-invalid set and owns the decision for its necessary fields ([§14](11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch)).
 
 ## 2. Severity is metadata
 

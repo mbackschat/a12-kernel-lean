@@ -70,11 +70,13 @@ The fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled
 
 ### B.1 What a formal error is
 
-A field whose value violates its **data-type configuration** produces a **formal error**. While it stands, the field is **"unknown"** to the kernel and **cannot be evaluated in any validation rule**. Formal errors:
+A field whose value violates its **data-type configuration** produces a **formal error**. While it stands, built-in validation reads observe the field as **"unknown"** and cannot consume it as a checked operand. Formal errors:
 
 - ordinarily use a **fixed, non-authorable** message (contrast rule errors, which are authored and can be error/warning/info); a registered custom field validator is the explicit exception, carrying its project code and optional validator-provided message ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation)),
 - are attributed internally to a sentinel rule path (`formalePruefung`) — so from the *author's* rule's viewpoint the rule simply produces nothing,
-- **block the field from participating in any rule** (author rules never do this — only formal errors do).
+- **block the field from participating in built-in predicates, comparisons, and aggregates** (author rules never create this state — only formal errors do).
+
+[`CustomCondition`](11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch) is the deliberate host-SPI exception to that read boundary. The kernel cannot infer the callback's hidden field dependencies from the rule AST, so a reached callback receives the document plus the complete formal-invalid set and decides for itself whether one of its necessary fields prevents evaluation. The callback contract requires `false` in that case, but the runtime does not pre-suppress the invocation.
 
 **A would-be tautology is not one.** If `F` has a formal error:
 
@@ -116,14 +118,14 @@ These boundaries are source- and dual-strategy-differential-locked in a12-dmkits
 
 ### B.4 Suppression is branch-scoped, and reaches presence checks
 
-A formal error does **not** remove the whole rule; it makes the reading operand UNKNOWN and Kleene `And`/`Or` decides the rest:
+For built-in predicates and operators, a formal error does **not** remove the whole rule; it makes the reading operand UNKNOWN and Kleene `And`/`Or` decides the rest:
 
 ```
 healthyValueTrue Or  [broken] > 0     -- still FIRES  (the VALUE-fired branch decides the verdict)
 healthyTrue      And [broken] > 0     -- SUPPRESSED   (unknown absorbs the And)
 ```
 
-A single-branch rule is just the case where branch-scoped and rule-scoped suppression look identical. The unknown reaches **even operators that read no value**: `FieldFilled(malformed)` decides nothing (it is UNKNOWN, not FALSE). And the suppression is **silent** from the author's viewpoint — the engine emits its own formal-error code on the sentinel path while the author's rule yields nothing; in a report the discriminator is the sentinel path vs the rule's own path. The VALUE qualifier matters for the unified `Verdict`: `Or` uses value-wins polarity, so an OMISSION-fired branch may still be upgraded by a VALUE-fired sibling. The truth table establishes the result despite an unknown sibling, but it does not by itself establish whether validation physically skipped that read; treat validation read traces as unobserved until a focused engine probe exposes them.
+A single-branch rule is just the case where branch-scoped and rule-scoped suppression look identical. The unknown reaches **even built-in operators that read no value**: `FieldFilled(malformed)` decides nothing (it is UNKNOWN, not FALSE). And the suppression is **silent** from the author's viewpoint — the engine emits its own formal-error code on the sentinel path while the author's rule yields nothing; in a report the discriminator is the sentinel path vs the rule's own path. The VALUE qualifier matters for the unified `Verdict`: `Or` uses value-wins polarity, so an OMISSION-fired branch may still be upgraded by a VALUE-fired sibling. The truth table establishes the result despite an unknown sibling, but it does not by itself establish whether validation physically skipped that read; treat validation read traces as unobserved until a focused engine probe exposes them. A reached `CustomCondition` is different: it receives the formal-invalid set, returns its own Boolean leaf result, and only then participates in the ordinary surrounding `And`/`Or`.
 
 ### B.5 The strong-Kleene tables (the exact algebra)
 
