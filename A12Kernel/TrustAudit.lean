@@ -356,6 +356,17 @@ run_cmd do
 #print axioms A12Kernel.numericArithmeticOutcome_divide_fixed_negative
 #print axioms A12Kernel.numericArithmeticOutcome_divide_fixed_zero_dividend
 
+#print axioms A12Kernel.valueList_number_equal_iff_normalized_eq
+#print axioms A12Kernel.valueList_contains_prependEmpty
+#print axioms A12Kernel.valueListAtLeastOne_never_unknown
+#print axioms A12Kernel.valueListNo_unknown_iff
+#print axioms A12Kernel.valueListNotAll_noPresent_notFired
+#print axioms A12Kernel.valueListNotAll_unknown_iff_of_present
+#print axioms A12Kernel.valueListNotAll_prependUnknownField
+#print axioms A12Kernel.valueListAtLeastOne_having_fires_omission
+#print axioms A12Kernel.valueListNo_having_fires_omission
+#print axioms A12Kernel.valueListNotAll_having_fires_omission
+
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value

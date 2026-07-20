@@ -31,5 +31,6 @@ import A12Kernel.Proofs.StringCascade
 import A12Kernel.Proofs.StringComputation
 import A12Kernel.Proofs.StringApplication
 import A12Kernel.Proofs.Verdict
+import A12Kernel.Proofs.ValueList
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/

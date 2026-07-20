@@ -29,5 +29,6 @@ import A12Kernel.Conformance.StringIngestion
 import A12Kernel.Conformance.StringCascade
 import A12Kernel.Conformance.StringComputation
 import A12Kernel.Conformance.StringApplication
+import A12Kernel.Conformance.ValueList
 
 /-! Executable semantic locks built with the default library target. -/
