@@ -202,7 +202,7 @@ inductive Value where
   | num  (d : Rat)                       -- declared scale is separate static field data
   | str  (s : String)
   | bool (b : Bool)
-  | date (d : CalDate)                   -- with precision; unreal dates are a *bottom*, not a value
+  | date (d : CalDate)                   -- with precision; unreal dates have no date value, though named numeric consumers may project a fixed 0
   | enum (stored : String)               -- compared by stored token, not display text
   -- …
 ```

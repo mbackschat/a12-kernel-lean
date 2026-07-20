@@ -135,6 +135,7 @@ example : powerNumeric (-2) 2 = .value 4 := by
 example : powerNumeric (-2) 3 = .value (-8) := by
   native_decide
 
+/- Defensive totality for an unchecked fractional exponent. Kernel authoring rejects this shape; the current Lean checked consumers reject every power before this pure evaluator. -/
 example : powerNumeric 2 (1 / 2) = .notEvaluated := by
   native_decide
 
