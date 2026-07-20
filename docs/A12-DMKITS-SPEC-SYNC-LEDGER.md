@@ -112,15 +112,16 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `0a9fc9b21ae76588e0f88266936fcaff0eb13568`
+- **Partial handback revisions:** `c15036b5d4ee7ff76ffaf5cb1f860a86317ae272`, `e3cc376229ced8c2d8c8460562e30b8e3c9b282c`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation)
-- **Delta:** Make three implicit rules explicit: a `Having` candidate is kept only when its complete filter result is known true; a false or unknown candidate is dropped before its selected cell is consumed; and a same-group correlated star includes the outer row unless an authored `CurrentRepetition` inequality excludes it.
-- **Basis:** retained `having-malformed-filter-drops` observations and [`LF7`](LEAN-FINDINGS.md#lf7--a-malformed-having-filter-drops-its-row-before-consumption), plus a12-dmkits [`OuterCorrelationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/OuterCorrelationDiffTest.kt), [`SelfCorrelatedOverlapQuantifierDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/SelfCorrelatedOverlapQuantifierDiffTest.kt), and the [`filter` corpus](../../a12-rulekit/corpus/cases/filter/).
-- **Requested a12-dmkits reconciliation:** State the exact known-true keep rule and default self-inclusion in canonical/public prose. Preserve the already-correct interpreter and focused controls, ordinary three-valued condition composition, and filter-before-consumer behavior.
+- **Delta:** Make the filter and exclusion rules explicit: a `Having` candidate is kept only when its complete filter result is known true; a false or unknown candidate is dropped before its selected cell is consumed; and a same-group correlated star includes the outer coordinate unless an authored `CurrentRepetition` inequality excludes it. `CurrentRepetition(G)` compares the resolved coordinate at level `G`, not an opaque physical row; in `A*/B*`, comparing only `B` may exclude candidates in several `A` rows when they share the outer `B` leaf index.
+- **Basis:** retained `having-malformed-filter-drops` observations and [`LF7`](LEAN-FINDINGS.md#lf7--a-malformed-having-filter-drops-its-row-before-consumption), plus a12-dmkits [`OuterCorrelationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/OuterCorrelationDiffTest.kt), [`SelfCorrelatedOverlapQuantifierDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/SelfCorrelatedOverlapQuantifierDiffTest.kt), [`MultiStarOuterCorrelationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/MultiStarOuterCorrelationDiffTest.kt), and the [`filter` corpus](../../a12-rulekit/corpus/cases/filter/).
+- **Requested a12-dmkits reconciliation:** State the exact known-true keep rule, default self-inclusion, and named-coordinate exclusion rule in canonical/public prose. Preserve the already-correct interpreter and focused controls, ordinary three-valued condition composition, filter-before-consumer behavior, and first-star binding.
 - **Compatibility:** Clarification of already tested 30.8.1 behavior. Existing interpreter and differential results are expected to remain unchanged.
-- **Acceptance:** a12-dmkits states the known-true keep rule, filter-before-consumer order, and explicit self-exclusion requirement without weakening ordinary `Or` dominance; focused controls remain green; the handback supplies an exact revision and disposition.
+- **Acceptance:** a12-dmkits states the known-true keep rule, filter-before-consumer order, and named-coordinate self-exclusion requirement without weakening ordinary `Or` dominance or the first-star binding rule; focused controls remain green; the handback supplies an exact revision and disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** Partial at `517ef65b93ded2775355175dcec18877f8bc8106`: implementation, differentials, and findings already establish the behavior; only the general canonical/public prose remains pending.
+- **Disposition:** Partial at `517ef65b93ded2775355175dcec18877f8bc8106`, `c15036b5d4ee7ff76ffaf5cb1f860a86317ae272`, and `e3cc376229ced8c2d8c8460562e30b8e3c9b282c`: implementation, differentials, and findings establish the known-true, self-inclusion, and multi-star coordinate behavior; general canonical/public wording remains pending. This does not close the separate parent-versus-descendant captured-coordinate discriminator in `SPEC-2026-07-19-16`.
 
 ### SPEC-2026-07-19-06 — first-match computation differs from all-alternatives validation
 
@@ -264,15 +265,16 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Status:** pending
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `a00bfc0861396b82409d51ae1c474347f37ca032`
+- **Partial handback revisions:** `77e3220fb07096f8017dfeef8e763b020fd784b4`, `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`09-computations.md` §4 and checklist](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape) and the [`SEMANTICS-MAP.md` glossary](../spec/SEMANTICS-MAP.md#7-glossary)
-- **Delta:** Correct the former single-path summary. Every computed Number is pre-rounded to scale 19 `HALF_UP`. When its stripped natural scale fits the target maximum, rendering pads to `max(naturalScale, minFractionalDigits)` with no length cap, so an over-15-digit result is retained in full and target-rejected. A legal no-fit result requires `MVK_INVALID_COMPARE_DEC_PLACES` suppression, uses the separate 16-significant-digit length-bounded renderer where the integer part permits that bound, and is invalid unconditionally. Stored-form equality is decimal-scale-sensitive.
-- **Basis:** kernel `CalculationController.handleBerechnetenWert(VkBigDecimal, id)`, `FormatDefinitionZahl`, `BigDecimalUtils.toStringWertLaengenBeschraenkt`, the computation scale-warning gate, and the scale-sensitive change path `DocumentComputationResultImpl` → `FieldInstanceImpl.fieldValuesEqual` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. a12-dmkits already records and implements the two store branches in `KERNEL-FINDINGS.md` IF82/IF92, `ComputedNumberStore.kt`, and `ComputationEngine.kt`; its focused scale, overflow, target-error, delta-granularity, and exact-application differentials provide clean-room triangulation but remain outside this repository's retained evidence.
-- **Requested a12-dmkits reconciliation:** Correct the known stale single-path Number paragraph in `docs/KERNEL-SEMANTICS.md`, then verify that canonical and consumer-facing prose retain the fit/no-fit distinction, warning-suppression precondition, uncapped fit attempt, and scale-sensitive stored equality. Preserve `ComputedNumberStore.kt`, its comments, and IF82/IF92 controls where they already satisfy this account; return an already-satisfied disposition rather than creating churn. Division-domain invalidity and dependent poison remain solely the separate open correction in `SPEC-2026-07-19-12`.
+- **Delta:** Correct the former single-path summary. Every computed Number is pre-rounded to scale 19 `HALF_UP`. When its stripped natural scale fits the target maximum, rendering pads to `max(naturalScale, minFractionalDigits)` with no length cap, so an over-15-digit result is retained in full and target-rejected. A legal no-fit result requires `MVK_INVALID_COMPARE_DEC_PLACES` suppression, uses the separate 16-significant-digit length-bounded renderer where the integer part permits that bound, and is invalid unconditionally. Both branches always store plain dot-decimal text and never exponent/scientific notation; stored-form equality is decimal-scale-sensitive.
+- **Basis:** kernel `CalculationController.handleBerechnetenWert(VkBigDecimal, id)`, `FormatDefinitionZahl`, `BigDecimalUtils.toStringWertLaengenBeschraenkt`, the computation scale-warning gate, and the scale-sensitive change path `DocumentComputationResultImpl` → `FieldInstanceImpl.fieldValuesEqual` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. a12-dmkits records and implements the two store branches in `KERNEL-FINDINGS.md` IF82/IF92, `ComputedNumberStore.kt`, and `ComputationEngine.kt`; IF153 at `41ecfc51` improved ordinary JS plain rendering but the IG89 review retains exponent-boundary and other host-exactness gaps. Focused scale, overflow, target-error, delta-granularity, and exact-application differentials provide clean-room triangulation but remain outside this repository's retained evidence.
+- **Requested a12-dmkits reconciliation:** Correct the known stale single-path Number paragraph in `docs/KERNEL-SEMANTICS.md`, then verify that canonical and consumer-facing prose retain the fit/no-fit distinction, warning-suppression precondition, uncapped fit attempt, unconditional no-exponent storage, and scale-sensitive stored equality. Preserve `ComputedNumberStore.kt`, its comments, and IF82/IF92 controls where they already satisfy this account; fix the shared host rendering boundary rather than special-casing magnitudes. Division-domain invalidity and dependent poison remain solely the separate open correction in `SPEC-2026-07-19-12`.
 - **Compatibility:** This corrects the language-neutral specification and known stale peer prose without changing the already-correct a12-dmkits fit/no-fit implementation. A consumer that modeled one universal “round to target scale” path or compared only numeric `Rat`/value equality would change behavior. The local Lean fragment implements only the ordinary fit path plus universal digit and signedness checks; it fails closed on the warning-suppressed no-fit surface and leaves other Number constraints outside its current claim.
-- **Acceptance:** a12-dmkits has one source of truth for both render branches and the warning-suppression gate; `docs/KERNEL-SEMANTICS.md` no longer presents one universal target-scale rounding path; existing focused multi-route controls remain green; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **Acceptance:** a12-dmkits has one source of truth for both render branches, the warning-suppression gate, and unconditional plain dot-decimal storage; `docs/KERNEL-SEMANTICS.md` no longer presents one universal target-scale rounding path; no legal magnitude emits exponent notation; existing focused multi-route controls remain green; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
-- **Disposition:** Partial at `77e3220fb07096f8017dfeef8e763b020fd784b4`: implementation and focused evidence already satisfy the two storage branches; only the stale single-path paragraph in `docs/KERNEL-SEMANTICS.md` and its public-prose sweep remain pending.
+- **Disposition:** Partial at `77e3220fb07096f8017dfeef8e763b020fd784b4` and `41ecfc511d3828aa841bbbb2c5655ebbbacc10df`: implementation and focused evidence satisfy the two storage branches, and ordinary JS plain rendering improved; the stale single-path paragraph and unconditional no-exponent host boundary remain pending because finite exponent thresholds can still emit scientific notation at legal magnitudes.
 
 ### SPEC-2026-07-19-16 — `$` correlation captures every named outer repetition level
 
@@ -348,3 +350,63 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** The reviewed revision evaluates RNU through the ordinary legal Boolean tree, builds duplicate outcomes independently of surrounding branches, requires complete-key relevance, retains typed equality and every peer, and matches both kernel strategies for composition and rich-message separators.
 - **a12-dmkits revision:** `07fb8c03f36a19e91eb018679e04dacbc95e57e1`
 - **Disposition:** accepted — already satisfied by the reviewed implementation, prose, and tests.
+
+### SPEC-2026-07-20-01 — Groovy-dynamic is the normative observation anchor
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `978991836ce298c6382b65e0559d3ccf9af24b3c`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`13-lean-encoding-guide.md` §§4–5](../spec/13-lean-encoding-guide.md#4-regression-conformance-and-theorem-guards), [`SEMANTICS-MAP.md` §9](../spec/SEMANTICS-MAP.md#9-drilling-into-the-authoritative-sources), and [`01-data-model.md` §5](../spec/01-data-model.md#5-what-is-not-modelled-here)
+- **Delta:** Name the kernel's Groovy-dynamic runtime service as the normative behavioral observation anchor. Generated static-Java remains required co-evidence and a strategy-split detector; a legal split is recorded and does not override Groovy-dynamic. The a12-dmkits interpreter remains a clean-room triangulation peer, never an oracle.
+- **Basis:** a12-dmkits IF136 and its conformance divergence enforcement establish the ratified strategy policy; this repository's [`TESTING.md`](TESTING.md) already used the same contract.
+- **Requested a12-dmkits reconciliation:** None. This is an inbound policy synchronization from the reviewed peer account.
+- **Compatibility:** Evidence classification only. It changes neither an evaluator nor previously retained observations.
+- **Acceptance:** a12-dmkits's canonical policy and executable conformance selection enforce the same hierarchy and preserve strategy divergences explicitly.
+- **a12-dmkits revision:** `53507298b3ca8dee4a73d851ecc3ca5f5e6b70ba`
+- **Disposition:** accepted — the exact policy originated upstream and was already enforced there.
+
+### SPEC-2026-07-20-02 — one `RepetitionNotUnique` leaf is legal per condition
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revisions:** `ced53da4ab16ab0c34f105fe37598ed034038795`, `07fb8c03f36a19e91eb018679e04dacbc95e57e1`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`07-repetition-and-iteration.md` §6 and checklist](../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely)
+- **Delta:** A model-legal condition contains at most one `RepetitionNotUnique` leaf. A second is rejected after parsing with `MVK_INVALID_COMBINATION_OF_REPETITON_NOT_UNIQUE`; this is separate from the ordinary runtime 3VL semantics accepted under `SPEC-2026-07-19-20`.
+- **Basis:** kernel `ParserService` delegates to `AnalyseService.containsMultipleRepetitionNotUnique`; a12-dmkits's MVK ledger preserves the exact diagnostic and its RNU findings preserve the separate runtime mechanism.
+- **Requested a12-dmkits reconciliation:** None. a12-dmkits already owns this model-legality knowledge and delegates the gate to the kernel; its broader authoring/public capability work remains in its own existing backlog rather than becoming a duplicate sync request.
+- **Compatibility:** A clean-room authoring checker must reject a second leaf before evaluation but must not special-case the legal single leaf's Boolean composition.
+- **Acceptance:** the peer knowledge surfaces distinguish the one-leaf legality gate from the runtime predicate semantics and retain the kernel's misspelled diagnostic code exactly.
+- **a12-dmkits revision:** `53507298b3ca8dee4a73d851ecc3ca5f5e6b70ba`
+- **Disposition:** accepted — inbound semantic knowledge already owned by a12-dmkits; no redundant handoff is required.
+
+### SPEC-2026-07-20-03 — patterns use Java admission and Java runtime semantics
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revisions:** `517ef65b93ded2775355175dcec18877f8bc8106`, `128f3f99f0e86765f809f6318dcedf88af7c9d02`, `380267fd12625c87146795b2fa63d2ef5e03973c`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`06-strings-and-enumerations.md` Pattern admission and execution](../spec/06-strings-and-enumerations.md#pattern-admission-and-execution) and [`SEMANTICS-MAP.md` §§3 and 9](../spec/SEMANTICS-MAP.md#3-the-taxonomy)
+- **Delta:** Replace the false portable-regex-subset account with two-stage model legality—Java `Pattern` compilation plus the finite `PatternUtils` blacklist—and normative whole-value Java-Pattern execution. Ordinary lookahead is not categorically blacklisted; the kernel TypeScript target's raw-RegExp differences are recorded strategy splits.
+- **Basis:** a12-dmkits IG90/IF154 source characterization, selected JS translation increment, and follow-up review enumerate the exact blacklist, admitted separators, and remaining peer-runtime gap.
+- **Requested a12-dmkits reconciliation:** None. The peer already owns the exact semantic account and explicitly tracks incomplete JS coverage under IG90; this ledger does not duplicate that implementation backlog.
+- **Compatibility:** A consumer must not infer JavaScript portability from model legality. A partial implementation must fail closed or declare its narrower capability instead of silently substituting raw host regex behavior.
+- **Acceptance:** a12-dmkits's findings and gap surfaces state Java semantics as normative, preserve the limited blacklist exactly, and expose IF154 as partial rather than claiming full parity.
+- **a12-dmkits revision:** `53507298b3ca8dee4a73d851ecc3ca5f5e6b70ba`
+- **Disposition:** accepted — the semantic correction is inbound and already durable upstream; IG90 remains a separate peer implementation gap.
+
+### SPEC-2026-07-20-04 — time zones use the legacy accepted-id domain and versioned Berlin history
+
+- **Status:** accepted
+- **Local revision:** introducing commit
+- **a12-dmkits basis revisions:** `ac743157c5ba990183a51bf00950c46703c7a7b5`, `4777b982e7cd79beeebd0f8edcb4298dd22efbec`, `bde3a581cba3c5da51f1095058c71c3ab9cf59ab`, `318d92f74661e4012570b7d868b2e843543f75af`, `82c1d005e863fef11a0012b4b37bc8b8e7edda6d`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`01-data-model.md` §§1.1 and 4](../spec/01-data-model.md#11-the-two-special-model-level-configurations), [`05-dates-and-time.md` §5 and checklist](../spec/05-dates-and-time.md#5-time-zones-and-the-sub-day-difference), and [`SEMANTICS-MAP.md` §9](../spec/SEMANTICS-MAP.md#9-drilling-into-the-authoritative-sources)
+- **Delta:** State the legacy `java.util.TimeZone` accepted-id rule and `MVK_INVALID_TIME_ZONE`, make `SimpleDateFormat` parsing and the Groovy-dynamic evidence anchor explicit, and add the versioned 62-transition `Europe/Berlin` profile with flat pre-1916 CET, CEMT periods, gap rejection, smaller/after-offset overlap resolution, and the post-1997 EU recurrence.
+- **Basis:** a12-dmkits IG83/IF155 characterization and pinned peer table at JDK 21.0.11/tzdb 2026a, representative Groovy-dynamic historical differentials, limited static-Java tri-checks, and the recorded Route-B review boundary.
+- **Requested a12-dmkits reconciliation:** None. The canonical kernel-wide domain and the peer's narrower `{UTC, GMT, Europe/Berlin}` fail-closed product scope are already distinguished upstream; the deferred general-zone Route A and review residuals remain its own explicit backlog.
+- **Compatibility:** Products may support a strict subset of kernel-legal ids only by refusing unsupported ids before evaluation. They must not substitute `java.time` history, collapse typos to GMT, or claim TypeScript/static-Java coverage beyond exercised evidence.
+- **Acceptance:** a12-dmkits preserves the complete Berlin profile, exact accepted-id knowledge, and narrower fail-closed consumer capability; the exact reviewed revision records the remaining peer evidence-wording overclaim rather than being treated as proof that every documentation surface already states the representative evidence boundary exactly.
+- **a12-dmkits revision:** `53507298b3ca8dee4a73d851ecc3ca5f5e6b70ba`
+- **Disposition:** accepted as an inbound semantic receipt — the canonical knowledge and pinned table originated upstream, while the review-caught IF155/KERNEL-FINDINGS evidence-wording residual remains explicitly peer-owned and is not duplicated as a new outbound request here.
