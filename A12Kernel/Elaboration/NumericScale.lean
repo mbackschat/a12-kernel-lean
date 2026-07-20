@@ -43,12 +43,15 @@ def constant (scale : Int) : NumericScaleSummary :=
 def rounded (scale : Nat) : NumericScaleSummary :=
   { scale := .exact scale, canExpandScale := false }
 
+/-- Combine scale metadata for an additive or operand-list extremum result: the largest exact operand scale wins, and trailing-zero expansion remains available only when every operand supplies it. -/
+def union (left right : NumericScaleSummary) : NumericScaleSummary :=
+  { scale := left.scale.maxExact right.scale
+    canExpandScale := left.canExpandScale && right.canExpandScale }
+
 def binary (op : NumericScaleBinaryOp)
     (left right : NumericScaleSummary) : NumericScaleSummary :=
   match op with
-  | .add | .subtract =>
-      { scale := left.scale.maxExact right.scale
-        canExpandScale := left.canExpandScale && right.canExpandScale }
+  | .add | .subtract => left.union right
   | .multiply =>
       { scale := left.scale.addExact right.scale
         canExpandScale := left.canExpandScale || right.canExpandScale }

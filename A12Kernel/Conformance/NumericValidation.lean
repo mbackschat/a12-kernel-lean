@@ -445,6 +445,72 @@ example : errorOf
       0) = some .unsupportedExpression := by
   native_decide
 
+/- Checked multi-operand Min/Max use one root over direct same-group Number fields. Empty Number remains a directional zero competitor. -/
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum (atom "U") [atom "V"]) 100)
+    (raw .empty (.parsed (.num 4))) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (comparison .greater
+      (AuthoredNumericExpr.extremumList .minimum (atom "U") [atom "V"]) (-100))
+    (raw .empty (.parsed (.num 4))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (comparison .greater
+      (AuthoredNumericExpr.extremumList .maximum (atom "S") [atom "V"]) (-100))
+    (raw .empty (.parsed (.num (-4))) .empty) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (atom "U") [atom "V", atom "S"])
+      100)
+    (raw (.parsed (.num 2)) (.parsed (.num 4)) (.rejected .malformed)) =
+      some .unknown := by
+  native_decide
+
+/- Min/Max derive the maximum operand scale for the ordinary equality gate. -/
+example : (elaborateNumericComparison model ["Order"]
+    (twoSided .equal
+      (AuthoredNumericExpr.extremumList .minimum (atom "U") [atom "Scale2"])
+      (atom "Scale2"))).isOk = true := by
+  native_decide
+
+/- The checked root remains deliberately narrower than general wrapper traversal in either direction. -/
+example : errorOf
+    (comparison .less
+      (.binary .add
+        (AuthoredNumericExpr.extremumList .minimum (atom "U") [atom "V"])
+        (literal 1 0))
+      0) = some .unsupportedExpression := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (.binary .add (atom "U") (literal 1 0))
+        [atom "V"])
+      0) = some .unsupportedExpression := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum (atom "U") [literal 1 0])
+      0) = some .unsupportedExpression := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (.extremum .minimum
+        (.extremum .maximum (atom "U") (atom "V"))
+        (atom "S"))
+      0) = some .unsupportedExpression := by
+  native_decide
+
 example : errorOf (comparison .equal (literal 0 0) 0) =
     some .constantExpression := by
   native_decide

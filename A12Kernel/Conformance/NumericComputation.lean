@@ -134,6 +134,47 @@ example : resultOf (absolute (field source))
       some (.poison .malformed) := by
   rfl
 
+/- Numeric operand-list extrema keep empty Number as a competing zero. -/
+example : resultOf (AuthoredNumericExpr.extremumList .minimum (field source) [literal 4]) =
+    some (.value 0) := by
+  native_decide
+
+example : resultOf (AuthoredNumericExpr.extremumList .maximum (field source) [literal (-4)]) =
+    some (.value 0) := by
+  native_decide
+
+/- A domain failure remains value-level and therefore does not hide a later reached poison. -/
+example : resultOf
+    (AuthoredNumericExpr.extremumList .maximum
+      (divide (literal 1) (literal 0)) [literal 3]) =
+      some .domainFailure := by
+  native_decide
+
+example : resultOf
+    (AuthoredNumericExpr.extremumList .minimum
+      (divide (literal 1) (literal 0)) [literal 3, field later])
+    (context (checkedNumber .empty)
+      (checkedNumber (.rejected .declaredConstraint))) =
+      some (.poison .declaredConstraint) := by
+  native_decide
+
+/- The first poison aborts the remaining ordered operand stream. -/
+example : resultOf
+    (AuthoredNumericExpr.extremumList .maximum (field source) [field later])
+    (context
+      (checkedNumber (.rejected .malformed))
+      (checkedNumber (.rejected .declaredConstraint))) =
+      some (.poison .malformed) := by
+  native_decide
+
+/- Structural preflight traverses the complete list before a reached poison could hide a wrong-kind tail. -/
+example : faultOf
+    (AuthoredNumericExpr.extremumList .minimum (field source)
+      [literal 3, field (stringDeclaration laterId "WrongLater")])
+    (context (checkedNumber (.rejected .malformed))) =
+      some (.fieldKindMismatch laterId) := by
+  native_decide
+
 example : resultOf
     (binary .add (divide (literal 1) (literal 0)) (literal 2)) =
       some .domainFailure := by

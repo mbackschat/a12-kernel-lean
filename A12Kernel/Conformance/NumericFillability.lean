@@ -128,6 +128,33 @@ example : NumericArithmeticOutcome.absolute (.value 0 .both) =
 example : NumericArithmeticOutcome.absolute .notEvaluated = .notEvaluated := by
   native_decide
 
+/- Operand-list extrema combine directional fillability according to the selected full-precision value. -/
+example : NumericExtremumOp.minimum.selectOutcome
+    (.value 0 .growOnly) (.value 4 .shrinkOnly) = .value 0 .both := by
+  native_decide
+
+example : NumericExtremumOp.minimum.selectOutcome
+    (.value 4 .growOnly) (.value 0 .shrinkOnly) = .value 0 .shrinkOnly := by
+  native_decide
+
+/- At a tie, Min can grow only if both tied operands can grow. -/
+example : NumericExtremumOp.minimum.selectOutcome
+    (.value 0 .both) (.value 0 .shrinkOnly) = .value 0 .shrinkOnly := by
+  native_decide
+
+/- Max mirrors the tie rule: either operand may grow it, but both tied operands must be able to shrink it. -/
+example : NumericExtremumOp.maximum.selectOutcome
+    (.value 0 .both) (.value 0 .growOnly) = .value 0 .growOnly := by
+  native_decide
+
+example : NumericExtremumOp.maximum.selectOutcome
+    (.value (-4) .growOnly) (.value 0 .shrinkOnly) = .value 0 .both := by
+  native_decide
+
+example : NumericExtremumOp.minimum.selectOutcome
+    .notEvaluated (.value 4 .fixed) = .notEvaluated := by
+  native_decide
+
 example : NumericArithmeticOutcome.divide
     (.value 1 .fixed) .notEvaluated = .notEvaluated := by
   native_decide

@@ -33,4 +33,22 @@ def NumericComputationResult.absolute
     (result : NumericComputationResult) : NumericComputationResult :=
   result.mapValue absoluteNumeric
 
+/-- Combine two already-reached numeric operands. Poison retains authored priority, then arithmetic domain failure absorbs, and only two values reach the operation-specific value combiner. -/
+def NumericComputationResult.combineReached
+    (combineValues : Rat → Rat → NumericComputationResult) :
+    NumericComputationResult → NumericComputationResult → NumericComputationResult
+  | .poison cause, _ => .poison cause
+  | _, .poison cause => .poison cause
+  | .domainFailure, _ => .domainFailure
+  | _, .domainFailure => .domainFailure
+  | .value left, .value right => combineValues left right
+
+/-- Select two reached operand-list computation results through the shared poison/domain/value combiner. The evaluator is responsible for not reaching the right operand after a left poison. -/
+def NumericExtremumOp.selectComputationResult (op : NumericExtremumOp) :
+    NumericComputationResult → NumericComputationResult → NumericComputationResult
+  | left, right =>
+      NumericComputationResult.combineReached
+        (fun leftValue rightValue => .value (op.selectAmount leftValue rightValue))
+        left right
+
 end A12Kernel

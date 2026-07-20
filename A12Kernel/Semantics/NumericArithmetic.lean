@@ -17,6 +17,22 @@ inductive NumericArithmeticOp where
   | multiply
   deriving Repr, DecidableEq
 
+/-- Numeric operand-list selectors. The source operation is nonempty and evaluates operands in authored order. -/
+inductive NumericExtremumOp where
+  | minimum
+  | maximum
+  deriving Repr, DecidableEq
+
+namespace NumericExtremumOp
+
+/-- Select one of two known values at full rational precision. On an equal pair, `Min` retains the left value while `Max` retains the right, matching the source fold even though this reduced amount domain cannot observe origin identity. -/
+def selectAmount (op : NumericExtremumOp) (left right : Rat) : Rat :=
+  match op with
+  | .minimum => if left ≤ right then left else right
+  | .maximum => if left > right then left else right
+
+end NumericExtremumOp
+
 private def decimalDigits (value : Nat) : Nat :=
   (Nat.toDigits 10 value).length
 
@@ -90,6 +106,12 @@ def NumericArithmeticResult.round (result : NumericArithmeticResult)
 def NumericArithmeticResult.absolute
     (result : NumericArithmeticResult) : NumericArithmeticResult :=
   result.mapValue absoluteNumeric
+
+/-- Combine two already-evaluated operand-list values; either unavailable operand makes the selector unavailable. -/
+def NumericExtremumOp.selectArithmeticResult (op : NumericExtremumOp) :
+    NumericArithmeticResult → NumericArithmeticResult → NumericArithmeticResult
+  | .value left, .value right => .value (op.selectAmount left right)
+  | _, _ => .notEvaluated
 
 /-- Divide at precision 50; a zero divisor is explicitly not evaluated rather than Lean's rational zero. -/
 def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=

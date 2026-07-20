@@ -27,6 +27,37 @@ theorem numericArithmeticResult_mapValue_notEvaluated_iff
     result.mapValue transform = .notEvaluated ↔ result = .notEvaluated := by
   cases result <;> simp [NumericArithmeticResult.mapValue]
 
+/-- A strict full-precision ordering selects the lower or higher operand according to the operation. -/
+theorem numericExtremum_selectAmount_of_lt
+    (op : NumericExtremumOp) (left right : Rat) (ordered : left < right) :
+    op.selectAmount left right =
+      match op with
+      | .minimum => left
+      | .maximum => right := by
+  have leftLeRight : left ≤ right := Rat.le_of_lt ordered
+  have notRightLtLeft : ¬ right < left := Rat.not_lt.mpr leftLeRight
+  cases op <;>
+    simp [NumericExtremumOp.selectAmount, leftLeRight, notRightLtLeft]
+
+/-- Reversing a strict full-precision ordering reverses which operand each selector retains. -/
+theorem numericExtremum_selectAmount_of_gt
+    (op : NumericExtremumOp) (left right : Rat) (ordered : right < left) :
+    op.selectAmount left right =
+      match op with
+      | .minimum => right
+      | .maximum => left := by
+  have notLeftLeRight : ¬ left ≤ right := Rat.not_le.mpr ordered
+  cases op <;>
+    simp [NumericExtremumOp.selectAmount, ordered, notLeftLeRight]
+
+/-- An operand-list arithmetic selection is unavailable exactly when either operand is unavailable. -/
+theorem numericExtremum_selectArithmeticResult_notEvaluated_iff
+    (op : NumericExtremumOp) (left right : NumericArithmeticResult) :
+    op.selectArithmeticResult left right = .notEvaluated ↔
+      left = .notEvaluated ∨ right = .notEvaluated := by
+  cases left <;> cases right <;>
+    simp [NumericExtremumOp.selectArithmeticResult]
+
 theorem numericArithmetic_add_comm (left right : Rat) :
     NumericArithmeticOp.add.eval left right =
       NumericArithmeticOp.add.eval right left := by

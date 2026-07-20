@@ -12,14 +12,20 @@ theorem scaleInfo_addExact_comm (left right : ScaleInfo) :
     left.addExact right = right.addExact left := by
   cases left <;> cases right <;> simp [ScaleInfo.addExact, Int.add_comm]
 
+theorem numericScale_union_comm (left right : NumericScaleSummary) :
+    left.union right = right.union left := by
+  cases left
+  cases right
+  simp [NumericScaleSummary.union, scaleInfo_maxExact_comm, Bool.and_comm]
+
 /-- Static binary summaries are operand-order independent, including subtraction because only its scale/capability abstraction is summarized here. -/
 theorem numericScale_binary_comm (op : NumericScaleBinaryOp)
     (left right : NumericScaleSummary) :
     NumericScaleSummary.binary op left right =
       NumericScaleSummary.binary op right left := by
   cases op <;>
-    simp [NumericScaleSummary.binary, scaleInfo_maxExact_comm,
-      scaleInfo_addExact_comm, Bool.and_comm, Bool.or_comm]
+    simp [NumericScaleSummary.binary, numericScale_union_comm,
+      scaleInfo_addExact_comm, Bool.or_comm]
 
 /-- Although scale expansion is locally directional, swapping both operands preserves exact-comparison acceptance. -/
 theorem exactNumericScaleComparisonAllowed_comm

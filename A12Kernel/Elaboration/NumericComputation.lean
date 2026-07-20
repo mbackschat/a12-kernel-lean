@@ -38,14 +38,26 @@ private def ofArithmetic : NumericArithmeticResult → NumericComputationResult
   | .value amount => .value amount
   | .notEvaluated => .domainFailure
 
-/-- Combine two already-evaluated computation operands. The caller enforces read order; this total table prefers a left poison, then a right poison, then arithmetic domain failure. -/
+/-- Combine two already-reached arithmetic operands through the shared poison/domain/value table. -/
 def evalBinary (op : NumericScaleBinaryOp) :
     NumericComputationResult → NumericComputationResult → NumericComputationResult
-  | .poison cause, _ => .poison cause
-  | _, .poison cause => .poison cause
-  | .domainFailure, _ => .domainFailure
-  | _, .domainFailure => .domainFailure
-  | .value left, .value right => ofArithmetic (op.evalValues left right)
+  | left, right =>
+      NumericComputationResult.combineReached
+        (fun leftValue rightValue => ofArithmetic (op.evalValues leftValue rightValue))
+        left right
+
+/-- Evaluate an ordered pair once. A left poison prevents the right computation from being reached; a value or domain failure reaches it and delegates the final result to the supplied semantic combiner. -/
+def evalOrdered
+    (left : Except NumericComputationFault NumericComputationResult)
+    (right : Unit → Except NumericComputationFault NumericComputationResult)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult) :
+    Except NumericComputationFault NumericComputationResult := do
+  let leftResult ← left
+  match leftResult with
+  | .poison cause => pure (.poison cause)
+  | .value _ | .domainFailure =>
+      pure (combine leftResult (← right ()))
 
 end NumericComputationResult
 
@@ -60,7 +72,7 @@ def computationFault? : LoweredNumericExpr FlatFieldDecl →
       else
         some (.fieldKindMismatch declaration.id)
   | .literal _ => none
-  | .binary _ left right =>
+  | .binary _ left right | .extremum _ left right =>
       match left.computationFault? with
       | some fault => some fault
       | none => right.computationFault?
@@ -75,16 +87,17 @@ def evalComputation
       Except NumericComputationFault NumericComputationResult
   | .atom sourceAtom => read sourceAtom
   | .literal amount => pure (.value amount)
-  | .binary op left right => do
-      let leftResult ← left.evalComputation read
-      match leftResult with
-      | .poison cause => pure (.poison cause)
-      | .value _ | .domainFailure =>
-          let rightResult ← right.evalComputation read
-          pure (NumericComputationResult.evalBinary op leftResult rightResult)
+  | .binary op left right =>
+      NumericComputationResult.evalOrdered
+        (left.evalComputation read) (fun _ => right.evalComputation read)
+        (NumericComputationResult.evalBinary op)
   | .power _ _ => throw .unsupportedPower
   | .abs body => do
       pure ((← body.evalComputation read).absolute)
+  | .extremum op left right =>
+      NumericComputationResult.evalOrdered
+        (left.evalComputation read) (fun _ => right.evalComputation read)
+        op.selectComputationResult
   | .round mode places body => do
       pure ((← body.evalComputation read).round mode places)
 

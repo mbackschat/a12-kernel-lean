@@ -50,6 +50,31 @@ theorem numericArithmeticOutcome_mapValue_notEvaluated_iff
     outcome.mapValue transform = .notEvaluated ↔ outcome = .notEvaluated := by
   cases outcome <;> simp [NumericArithmeticOutcome.mapValue]
 
+/-- An operand-list selection is unavailable exactly when either operand is unavailable, before directional fillability is consulted. -/
+theorem numericExtremum_selectOutcome_notEvaluated_iff
+    (op : NumericExtremumOp)
+    (left right : NumericArithmeticOutcome) :
+    op.selectOutcome left right = .notEvaluated ↔
+      left = .notEvaluated ∨ right = .notEvaluated := by
+  cases left <;> cases right <;>
+    simp [NumericExtremumOp.selectOutcome]
+
+/-- At a minimum tie, both operands must be able to grow the result, while either may shrink it. -/
+theorem numericFillability_minimum_tie
+    (left right : NumericFillability) (amount : Rat) :
+    NumericFillability.minimum left amount right amount =
+      { canGrow := left.canGrow && right.canGrow
+        canShrink := left.canShrink || right.canShrink } := by
+  simp [NumericFillability.minimum]
+
+/-- At a maximum tie, either operand may grow the result, while both must be able to shrink it. -/
+theorem numericFillability_maximum_tie
+    (left right : NumericFillability) (amount : Rat) :
+    NumericFillability.maximum left amount right amount =
+      { canGrow := left.canGrow || right.canGrow
+        canShrink := left.canShrink && right.canShrink } := by
+  simp [NumericFillability.maximum]
+
 theorem numericArithmetic_fixed_fillability (op : NumericArithmeticOp) (left right : Rat) :
     op.fillability left .fixed right .fixed = .fixed := by
   cases op with

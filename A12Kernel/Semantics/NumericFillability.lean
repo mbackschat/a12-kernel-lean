@@ -57,6 +57,24 @@ def absolute (fillability : NumericFillability)
       | .zero => false
       | .positive => fillability.canShrink }
 
+/-- Directional fillability for `Min(left, right)`: either operand may lower the result; only the currently smaller operand may raise it, and both must be able to raise an exact tie. -/
+def minimum (left : NumericFillability) (leftValue : Rat)
+    (right : NumericFillability) (rightValue : Rat) : NumericFillability :=
+  { canGrow :=
+      if leftValue < rightValue then left.canGrow
+      else if rightValue < leftValue then right.canGrow
+      else left.canGrow && right.canGrow
+    canShrink := left.canShrink || right.canShrink }
+
+/-- Directional fillability for `Max(left, right)`: either operand may raise the result; only the currently larger operand may lower it, and both must be able to lower an exact tie. -/
+def maximum (left : NumericFillability) (leftValue : Rat)
+    (right : NumericFillability) (rightValue : Rat) : NumericFillability :=
+  { canGrow := left.canGrow || right.canGrow
+    canShrink :=
+      if rightValue < leftValue then left.canShrink
+      else if leftValue < rightValue then right.canShrink
+      else left.canShrink && right.canShrink }
+
 private def canGrowWhenScaledBy (fillability : NumericFillability) : NumericSign → Bool
   | .negative => fillability.canShrink
   | .zero => false
@@ -108,6 +126,22 @@ inductive NumericArithmeticOutcome where
   | value (amount : Rat) (fillability : NumericFillability)
   | notEvaluated
   deriving Repr, DecidableEq
+
+namespace NumericExtremumOp
+
+/-- Select two available arithmetic outcomes at full precision while combining their directional fillability; unavailability absorbs on either side. -/
+def selectOutcome (op : NumericExtremumOp) :
+    NumericArithmeticOutcome → NumericArithmeticOutcome → NumericArithmeticOutcome
+  | .value leftValue leftFill, .value rightValue rightFill =>
+      let selectedFill := match op with
+        | minimum =>
+            NumericFillability.minimum leftFill leftValue rightFill rightValue
+        | maximum =>
+            NumericFillability.maximum leftFill leftValue rightFill rightValue
+      .value (selectAmount op leftValue rightValue) selectedFill
+  | _, _ => .notEvaluated
+
+end NumericExtremumOp
 
 namespace NumericArithmeticOutcome
 

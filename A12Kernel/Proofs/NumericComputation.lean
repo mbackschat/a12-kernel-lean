@@ -63,9 +63,7 @@ theorem numericComputation_divideByZero_domainFailure
   simp [AuthoredNumericExpr.evaluateComputation,
     AuthoredNumericExpr.lowerForEvaluation,
     LoweredNumericExpr.computationFault?,
-    LoweredNumericExpr.evalComputation,
-    NumericComputationResult.evalBinary,
-    NumericScaleBinaryOp.evalValues, divideNumeric]
+    LoweredNumericExpr.evalComputation]
   rfl
 
 /-- Rounding preserves a domain-failed lowered child instead of manufacturing a numeric value. -/
@@ -108,72 +106,72 @@ theorem numericComputationResult_mapValue_poison
     (NumericComputationResult.poison cause).mapValue transform = .poison cause := by
   rfl
 
-/-- A poison reached in the left operand fixes the result without consulting the right subtree. -/
-theorem numericComputation_leftPoison_shortCircuits
-    (read : FlatFieldDecl →
-      Except NumericComputationFault NumericComputationResult)
-    (op : NumericScaleBinaryOp)
-    (left right : LoweredNumericExpr FlatFieldDecl)
-    (cause : FormalCause)
-    (_admitted :
-      (LoweredNumericExpr.binary op left right).computationFault? = none)
-    (poisoned : left.evalComputation read = .ok (.poison cause)) :
-    (LoweredNumericExpr.binary op left right).evalComputation read =
-      .ok (.poison cause) := by
-  simp only [LoweredNumericExpr.evalComputation]
-  rw [poisoned]
+/-- The shared reached-result table always retains the left poison and its exact cause. -/
+theorem numericComputationResult_combineReached_leftPoison
+    (combineValues : Rat → Rat → NumericComputationResult)
+    (cause : FormalCause) (right : NumericComputationResult) :
+    NumericComputationResult.combineReached combineValues
+      (.poison cause) right = .poison cause := by
   rfl
 
-/-- A domain-failed left value does not hide a poison reached while evaluating the right operand. -/
-theorem numericComputation_rightPoison_after_leftDomain
-    (read : FlatFieldDecl →
-      Except NumericComputationFault NumericComputationResult)
-    (op : NumericScaleBinaryOp)
-    (left right : LoweredNumericExpr FlatFieldDecl)
-    (cause : FormalCause)
-    (_admitted :
-      (LoweredNumericExpr.binary op left right).computationFault? = none)
-    (leftFailed : left.evalComputation read = .ok .domainFailure)
-    (rightPoisoned : right.evalComputation read = .ok (.poison cause)) :
-    (LoweredNumericExpr.binary op left right).evalComputation read =
-      .ok (.poison cause) := by
-  simp only [LoweredNumericExpr.evalComputation]
-  rw [leftFailed, rightPoisoned]
+/-- Once the left result is known not to be poison, a reached right poison supplies the result. -/
+theorem numericComputationResult_combineReached_rightPoison_of_notPoison
+    (combineValues : Rat → Rat → NumericComputationResult)
+    (left : NumericComputationResult) (cause : FormalCause)
+    (leftNotPoison : ∀ leftCause, left ≠ .poison leftCause) :
+    NumericComputationResult.combineReached combineValues
+      left (.poison cause) = .poison cause := by
+  cases left with
+  | value _ => rfl
+  | domainFailure => rfl
+  | poison leftCause => exact (leftNotPoison leftCause rfl).elim
+
+/-- A reached domain failure absorbs a clean value on its right for every numeric consumer. -/
+theorem numericComputationResult_combineReached_leftDomain_value
+    (combineValues : Rat → Rat → NumericComputationResult)
+    (rightValue : Rat) :
+    NumericComputationResult.combineReached combineValues
+      .domainFailure (.value rightValue) = .domainFailure := by
   rfl
 
-/-- A clean right value cannot recover a domain-failed left arithmetic subtree. -/
-theorem numericComputation_leftDomain_absorbs_value
-    (read : FlatFieldDecl →
-      Except NumericComputationFault NumericComputationResult)
-    (op : NumericScaleBinaryOp)
-    (left right : LoweredNumericExpr FlatFieldDecl)
-    (rightValue : Rat)
-    (_admitted :
-      (LoweredNumericExpr.binary op left right).computationFault? = none)
-    (leftFailed : left.evalComputation read = .ok .domainFailure)
-    (rightEvaluated : right.evalComputation read = .ok (.value rightValue)) :
-    (LoweredNumericExpr.binary op left right).evalComputation read =
-      .ok .domainFailure := by
-  simp only [LoweredNumericExpr.evalComputation]
-  rw [leftFailed, rightEvaluated]
+/-- A reached domain failure absorbs a clean value on its left for every numeric consumer. -/
+theorem numericComputationResult_combineReached_value_rightDomain
+    (combineValues : Rat → Rat → NumericComputationResult)
+    (leftValue : Rat) :
+    NumericComputationResult.combineReached combineValues
+      (.value leftValue) .domainFailure = .domainFailure := by
   rfl
 
-/-- A clean left value cannot recover a domain-failed right arithmetic subtree. -/
-theorem numericComputation_rightDomain_absorbs_value
-    (read : FlatFieldDecl →
-      Except NumericComputationFault NumericComputationResult)
-    (op : NumericScaleBinaryOp)
-    (left right : LoweredNumericExpr FlatFieldDecl)
-    (leftValue : Rat)
-    (_admitted :
-      (LoweredNumericExpr.binary op left right).computationFault? = none)
-    (leftEvaluated : left.evalComputation read = .ok (.value leftValue))
-    (rightFailed : right.evalComputation read = .ok .domainFailure) :
-    (LoweredNumericExpr.binary op left right).evalComputation read =
-      .ok .domainFailure := by
-  simp only [LoweredNumericExpr.evalComputation]
-  rw [leftEvaluated, rightFailed]
+/-- Ordered evaluation returns a left poison independently of the right thunk. -/
+theorem numericComputationResult_evalOrdered_leftPoison
+    (right : Unit → Except NumericComputationFault NumericComputationResult)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (cause : FormalCause) :
+    NumericComputationResult.evalOrdered
+      (.ok (.poison cause)) right combine = .ok (.poison cause) := by
   rfl
+
+/-- A nonpoison left result reaches the supplied right result and delegates both results to the combiner. -/
+theorem numericComputationResult_evalOrdered_of_notPoison
+    (left rightResult : NumericComputationResult)
+    (right : Unit → Except NumericComputationFault NumericComputationResult)
+    (combine : NumericComputationResult → NumericComputationResult →
+      NumericComputationResult)
+    (leftNotPoison : ∀ cause, left ≠ .poison cause)
+    (rightEvaluated : right () = .ok rightResult) :
+    NumericComputationResult.evalOrdered (.ok left) right combine =
+      .ok (combine left rightResult) := by
+  cases left with
+  | value _ =>
+      simp only [NumericComputationResult.evalOrdered]
+      rw [rightEvaluated]
+      rfl
+  | domainFailure =>
+      simp only [NumericComputationResult.evalOrdered]
+      rw [rightEvaluated]
+      rfl
+  | poison cause => exact (leftNotPoison cause rfl).elim
 
 /-- Arithmetic domain failure and inherited formal poison are distinct expression results. -/
 theorem numericComputation_domainFailure_ne_poison (cause : FormalCause) :

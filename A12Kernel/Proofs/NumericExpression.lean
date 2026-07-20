@@ -22,6 +22,12 @@ theorem authoredNumericLower_group
     body.lowerForEvaluation := by
   rfl
 
+/-- A singleton source Min/Max list normalizes to its sole operand, with no synthetic numeric seed. -/
+theorem authoredNumericExtremumList_singleton
+    (op : NumericExtremumOp) (operand : AuthoredNumericExpr Atom) :
+    AuthoredNumericExpr.extremumList op operand [] = operand := by
+  rfl
+
 /-- Absolute value preserves the complete authored numeric scale summary. -/
 theorem authoredNumericSummary_abs
     (atomSummary : Atom → NumericScaleSummary)
