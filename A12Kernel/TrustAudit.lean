@@ -286,6 +286,7 @@ run_cmd do
 #print axioms A12Kernel.shrinkOnlyRightLessFiring_is_omission
 #print axioms A12Kernel.scaleInfo_maxExact_comm
 #print axioms A12Kernel.scaleInfo_addExact_comm
+#print axioms A12Kernel.numericScale_union_comm
 #print axioms A12Kernel.numericScale_binary_comm
 #print axioms A12Kernel.exactNumericScaleComparisonAllowed_comm
 #print axioms A12Kernel.exactNumericScaleComparisonAllowed_same
@@ -296,6 +297,7 @@ run_cmd do
 #print axioms A12Kernel.authoredNumericSummary_group
 #print axioms A12Kernel.authoredNumericGroup_not_simple_constant
 #print axioms A12Kernel.authoredNumericLower_group
+#print axioms A12Kernel.authoredNumericExtremumList_singleton
 #print axioms A12Kernel.authoredNumericSummary_abs
 #print axioms A12Kernel.authoredNumericLower_abs
 #print axioms A12Kernel.lowerMultiply_two_divisions
@@ -321,10 +323,12 @@ run_cmd do
 #print axioms A12Kernel.numericComputation_abs_delegates
 #print axioms A12Kernel.numericComputationResult_mapValue_domainFailure
 #print axioms A12Kernel.numericComputationResult_mapValue_poison
-#print axioms A12Kernel.numericComputation_leftPoison_shortCircuits
-#print axioms A12Kernel.numericComputation_rightPoison_after_leftDomain
-#print axioms A12Kernel.numericComputation_leftDomain_absorbs_value
-#print axioms A12Kernel.numericComputation_rightDomain_absorbs_value
+#print axioms A12Kernel.numericComputationResult_combineReached_leftPoison
+#print axioms A12Kernel.numericComputationResult_combineReached_rightPoison_of_notPoison
+#print axioms A12Kernel.numericComputationResult_combineReached_leftDomain_value
+#print axioms A12Kernel.numericComputationResult_combineReached_value_rightDomain
+#print axioms A12Kernel.numericComputationResult_evalOrdered_leftPoison
+#print axioms A12Kernel.numericComputationResult_evalOrdered_of_notPoison
 #print axioms A12Kernel.numericComputation_domainFailure_ne_poison
 #print axioms A12Kernel.numericComputation_structuralFault_contextIndependent
 #print axioms A12Kernel.stripFractionalZeros_preserves_amount
@@ -416,6 +420,9 @@ run_cmd do
 #print axioms A12Kernel.roundMathContext50_zero
 #print axioms A12Kernel.absoluteNumeric_eq_abs
 #print axioms A12Kernel.numericArithmeticResult_mapValue_notEvaluated_iff
+#print axioms A12Kernel.numericExtremum_selectAmount_of_lt
+#print axioms A12Kernel.numericExtremum_selectAmount_of_gt
+#print axioms A12Kernel.numericExtremum_selectArithmeticResult_notEvaluated_iff
 #print axioms A12Kernel.numericArithmetic_add_comm
 #print axioms A12Kernel.numericArithmetic_multiply_comm
 #print axioms A12Kernel.numericArithmetic_subtract_as_add_neg
@@ -438,6 +445,9 @@ run_cmd do
 #print axioms A12Kernel.numericFillability_absolute_zero
 #print axioms A12Kernel.numericFillability_absolute_positive
 #print axioms A12Kernel.numericArithmeticOutcome_mapValue_notEvaluated_iff
+#print axioms A12Kernel.numericExtremum_selectOutcome_notEvaluated_iff
+#print axioms A12Kernel.numericFillability_minimum_tie
+#print axioms A12Kernel.numericFillability_maximum_tie
 #print axioms A12Kernel.numericArithmetic_fixed_fillability
 #print axioms A12Kernel.numericFillability_add_comm
 #print axioms A12Kernel.numericFillability_subtract_eq_add_swapped

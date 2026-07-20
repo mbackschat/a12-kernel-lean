@@ -163,6 +163,23 @@ example : (.abs (.atom 0) : Expr).summary? (fun _ =>
       some { scale := .exact 2, canExpandScale := false } := by
   native_decide
 
+private def belowComparisonResolution : Rat := 1 / 10 ^ 20
+
+/- Operand-list Min/Max select at full precision rather than at the later scale-19 comparison boundary. -/
+example : (.extremum .minimum (literal belowComparisonResolution 20) (.atom 0) : Expr).evalValue
+    (fun _ => .value 0) = .value 0 := by
+  native_decide
+
+example : (.extremum .maximum (literal belowComparisonResolution 20) (.atom 0) : Expr).evalValue
+    (fun _ => .value 0) = .value belowComparisonResolution := by
+  native_decide
+
+/- The operand-list result uses the largest derived scale and retains constant expandability only when every operand has it. -/
+example : (.extremum .minimum (.atom 0) (literal 0 2) : Expr).summary? (fun _ =>
+    { scale := .exact 0, canExpandScale := false }) =
+      some { scale := .exact 2, canExpandScale := false } := by
+  native_decide
+
 private def source (id : Nat) : Expr := .atom id
 
 private def quotient (left right : Expr) : Expr :=
@@ -245,6 +262,10 @@ example : (.round .halfUp omittedRoundingPlaces
   native_decide
 
 example : (.abs (quotient (source 0) (source 1)) : Expr).authoringCheck =
+    .outsideFragment := by
+  native_decide
+
+example : (.extremum .minimum (source 0) (source 1) : Expr).authoringCheck =
     .outsideFragment := by
   native_decide
 

@@ -39,7 +39,8 @@ private def AuthoredNumericExpr.hasAtom : AuthoredNumericExpr Atom → Bool
   | .atom _ => true
   | .literal _ => false
   | .group body => body.hasAtom
-  | .binary _ left right | .power left right => left.hasAtom || right.hasAtom
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.hasAtom || right.hasAtom
   | .abs body => body.hasAtom
   | .round _ _ body => body.hasAtom
 
@@ -48,12 +49,27 @@ def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
   | .group body => body.isPlainArithmetic
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power _ _ | .abs _ | .round _ _ _ => false
+  | .power _ _ | .abs _ | .extremum _ _ _ | .round _ _ _ => false
 
-/-- The checked value-function shapes: one root operation over one direct Number field. Expression and `…Value` surface spellings normalize to these same semantic nodes. -/
+def AuthoredNumericExpr.isDirectAtom : AuthoredNumericExpr Atom → Bool
+  | .atom _ => true
+  | _ => false
+
+/-- Canonical left fold of one authored operand list, restricted to direct fields and one selector. The concrete decoder must construct this form from the nonempty source list. -/
+def AuthoredNumericExpr.isDirectFieldExtremumChain
+    (expected : NumericExtremumOp) : AuthoredNumericExpr Atom → Bool
+  | .atom _ => true
+  | .extremum actual left right =>
+      (actual == expected) &&
+        left.isDirectFieldExtremumChain expected && right.isDirectAtom
+  | _ => false
+
+/-- The checked value-function shapes: one root rounding or absolute-value operation over a direct Number field, or one canonical direct-field Min/Max fold. Expression and `…Value` surface spellings normalize to these same semantic nodes. -/
 def AuthoredNumericExpr.isDirectFieldValueFunction : AuthoredNumericExpr Atom → Bool
   | .abs (.atom _) => true
   | .round _ _ (.atom _) => true
+  | .extremum op left right =>
+      left.isDirectFieldExtremumChain op && right.isDirectAtom
   | _ => false
 
 /-- The checked validation fragment is plain arithmetic plus independently audited root value functions. -/
@@ -71,6 +87,8 @@ private def AuthoredNumericExpr.allAtoms (predicate : Atom → Bool) :
   | .literal _ => true
   | .group body => body.allAtoms predicate
   | .binary _ left right | .power left right =>
+      left.allAtoms predicate && right.allAtoms predicate
+  | .extremum _ left right =>
       left.allAtoms predicate && right.allAtoms predicate
   | .abs body => body.allAtoms predicate
   | .round _ _ body => body.allAtoms predicate
@@ -153,6 +171,10 @@ private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) 
         (← resolveNumericExpression model rowGroup exponent))
   | .abs body => do
       pure (.abs (← resolveNumericExpression model rowGroup body))
+  | .extremum op left right => do
+      pure (.extremum op
+        (← resolveNumericExpression model rowGroup left)
+        (← resolveNumericExpression model rowGroup right))
   | .round mode places body => do
       pure (.round mode places (← resolveNumericExpression model rowGroup body))
 
@@ -206,29 +228,52 @@ def FlatContext.resolveNumericArithmetic (context : FlatContext)
   | .value amount fillability => .ok (.value amount fillability)
   | .unknown cause => .error cause
 
-private def evalPlainBinary (op : NumericScaleBinaryOp)
+private def combineNumericValidationOutcomes
+    (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
+      NumericArithmeticOutcome)
     (left right : Except FormalCause NumericArithmeticOutcome) :
     Except FormalCause NumericArithmeticOutcome :=
   match left, right with
   | .error cause, _ => .error cause
   | _, .error cause => .error cause
-  | .ok leftOutcome, .ok rightOutcome =>
-      .ok <| match op with
+  | .ok leftOutcome, .ok rightOutcome => .ok (combine leftOutcome rightOutcome)
+
+private def evalPlainBinary (op : NumericScaleBinaryOp)
+    (left right : Except FormalCause NumericArithmeticOutcome) :
+    Except FormalCause NumericArithmeticOutcome :=
+  combineNumericValidationOutcomes
+    (fun leftOutcome rightOutcome =>
+      match op with
         | .add => NumericArithmeticOutcome.eval .add leftOutcome rightOutcome
         | .subtract => NumericArithmeticOutcome.eval .subtract leftOutcome rightOutcome
         | .multiply => NumericArithmeticOutcome.eval .multiply leftOutcome rightOutcome
-        | .divide => NumericArithmeticOutcome.divide leftOutcome rightOutcome
+        | .divide => NumericArithmeticOutcome.divide leftOutcome rightOutcome)
+    left right
 
 /-- Whether a lowered tree lies in the consumer's binary-arithmetic runtime subset. -/
 def LoweredNumericExpr.isPlainArithmetic : LoweredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power _ _ | .abs _ | .round _ _ _ => false
+  | .power _ _ | .abs _ | .extremum _ _ _ | .round _ _ _ => false
+
+def LoweredNumericExpr.isDirectAtom : LoweredNumericExpr Atom → Bool
+  | .atom _ => true
+  | _ => false
+
+def LoweredNumericExpr.isDirectFieldExtremumChain
+    (expected : NumericExtremumOp) : LoweredNumericExpr Atom → Bool
+  | .atom _ => true
+  | .extremum actual left right =>
+      (actual == expected) &&
+        left.isDirectFieldExtremumChain expected && right.isDirectAtom
+  | _ => false
 
 /-- Lowering preserves the checked direct-field root-function shapes exactly. -/
 def LoweredNumericExpr.isDirectFieldValueFunction : LoweredNumericExpr Atom → Bool
   | .abs (.atom _) => true
   | .round _ _ (.atom _) => true
+  | .extremum op left right =>
+      left.isDirectFieldExtremumChain op && right.isDirectAtom
   | _ => false
 
 def LoweredNumericExpr.isAdmittedValidation : LoweredNumericExpr Atom → Bool
@@ -244,7 +289,28 @@ def LoweredNumericExpr.evalPlainValidation?
       let leftOutcome ← left.evalPlainValidation? read
       let rightOutcome ← right.evalPlainValidation? read
       pure (evalPlainBinary op leftOutcome rightOutcome)
-  | .power _ _ | .abs _ | .round _ _ _ => none
+  | .power _ _ | .abs _ | .extremum _ _ _ | .round _ _ _ => none
+
+private def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
+    Except FormalCause NumericArithmeticOutcome →
+      Except FormalCause NumericArithmeticOutcome →
+        Except FormalCause NumericArithmeticOutcome
+  | left, right =>
+      combineNumericValidationOutcomes op.selectOutcome left right
+
+/-- Evaluate the canonical left fold for one direct-field numeric operand list. `none` rejects a mixed selector, a literal, or any nested non-field expression. -/
+def LoweredNumericExpr.evalDirectFieldExtremum?
+    (expected : NumericExtremumOp)
+    (read : Atom → Except FormalCause NumericArithmeticOutcome) :
+    LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
+  | .atom sourceAtom => some (read sourceAtom)
+  | .extremum actual left (.atom rightAtom) =>
+      if actual == expected then do
+        let leftOutcome ← left.evalDirectFieldExtremum? expected read
+        pure (expected.selectValidationOutcome leftOutcome (read rightAtom))
+      else
+        none
+  | _ => none
 
 /-- Evaluate exactly the checked runtime fragment. Value functions are admitted only at the root over a direct field; their result-domain maps preserve formal invalidity and arithmetic domain failure. -/
 def LoweredNumericExpr.evalAdmittedValidation?
@@ -258,6 +324,8 @@ def LoweredNumericExpr.evalAdmittedValidation?
       some <| match read sourceAtom with
         | .ok outcome => .ok outcome.absolute
         | .error cause => .error cause
+  | expression@(.extremum op _ _) =>
+      expression.evalDirectFieldExtremum? op read
   | expression => expression.evalPlainValidation? read
 
 /-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/

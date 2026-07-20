@@ -23,6 +23,8 @@ inductive AuthoredNumericExpr (Atom : Type) where
       (left right : AuthoredNumericExpr Atom)
   | power (base exponent : AuthoredNumericExpr Atom)
   | abs (body : AuthoredNumericExpr Atom)
+  | extremum (op : NumericExtremumOp)
+      (left right : AuthoredNumericExpr Atom)
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
       (body : AuthoredNumericExpr Atom)
   deriving Repr, DecidableEq
@@ -35,6 +37,8 @@ inductive LoweredNumericExpr (Atom : Type) where
       (left right : LoweredNumericExpr Atom)
   | power (base exponent : LoweredNumericExpr Atom)
   | abs (body : LoweredNumericExpr Atom)
+  | extremum (op : NumericExtremumOp)
+      (left right : LoweredNumericExpr Atom)
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
       (body : LoweredNumericExpr Atom)
   deriving Repr, DecidableEq
@@ -49,6 +53,12 @@ inductive NumericAuthoringCheck where
   deriving Repr, DecidableEq
 
 namespace AuthoredNumericExpr
+
+/-- Normalize one source-level nonempty numeric operand list to the shared left-associated expression tree. A singleton keeps the operand unchanged rather than introducing a synthetic seed. -/
+def extremumList (op : NumericExtremumOp)
+    (first : AuthoredNumericExpr Atom)
+    (rest : List (AuthoredNumericExpr Atom)) : AuthoredNumericExpr Atom :=
+  rest.foldl (fun result operand => .extremum op result operand) first
 
 /-- The narrow power-scale exception recognizes only an ungrouped, nonnegative numeric literal. Runtime exponent legality is checked separately. -/
 def isSimpleNonnegativeConstant : AuthoredNumericExpr Atom → Bool
@@ -71,6 +81,10 @@ def summary? (atomSummary : Atom → NumericScaleSummary) :
       NumericScaleSummary.power? baseSummary exponentSummary
         exponent.isSimpleNonnegativeConstant
   | .abs body => body.summary? atomSummary
+  | .extremum _ left right => do
+      let leftSummary ← left.summary? atomSummary
+      let rightSummary ← right.summary? atomSummary
+      pure (leftSummary.union rightSummary)
   | .round _ places body => do
       let _ ← body.summary? atomSummary
       pure (NumericScaleSummary.rounded places.val)
@@ -111,7 +125,7 @@ private def authoringScan? : AuthoredNumericExpr Atom → Option AuthoringScan
         base.isDirectPower ||
           baseScan.directLeftNestedPower ||
           exponentScan.directLeftNestedPower⟩
-  | .abs _ | .round _ _ _ => none
+  | .abs _ | .extremum _ _ _ | .round _ _ _ => none
 
 /-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Operation-valued wrappers fail closed because the kernel's legacy function traversal is not a compositional region rule. -/
 def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
@@ -182,6 +196,8 @@ def evalValue (read : Atom → NumericArithmeticResult) :
       | .value baseValue, .value exponentValue => powerNumeric baseValue exponentValue
       | _, _ => .notEvaluated
   | .abs body => (body.evalValue read).absolute
+  | .extremum op left right =>
+      op.selectArithmeticResult (left.evalValue read) (right.evalValue read)
   | .round mode places body =>
       (body.evalValue read).round mode places
 
@@ -189,7 +205,7 @@ end LoweredNumericExpr
 
 namespace AuthoredNumericExpr
 
-/-- Perform exactly one bottom-up lowering pass. Braces do not block a parent from recognizing a lowered root division; addition, subtraction, power, absolute value, and rounding do. -/
+/-- Perform exactly one bottom-up lowering pass. Braces do not block a parent from recognizing a lowered root division; addition, subtraction, power, absolute value, operand-list extrema, and rounding do. -/
 def lowerForEvaluation : AuthoredNumericExpr Atom → LoweredNumericExpr Atom
   | .atom sourceAtom => .atom sourceAtom
   | .literal decoded => .literal decoded.value
@@ -205,6 +221,8 @@ def lowerForEvaluation : AuthoredNumericExpr Atom → LoweredNumericExpr Atom
   | .power base exponent =>
       .power base.lowerForEvaluation exponent.lowerForEvaluation
   | .abs body => .abs body.lowerForEvaluation
+  | .extremum op left right =>
+      .extremum op left.lowerForEvaluation right.lowerForEvaluation
   | .round mode places body =>
       .round mode places body.lowerForEvaluation
 
