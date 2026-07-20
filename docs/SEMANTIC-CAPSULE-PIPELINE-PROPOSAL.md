@@ -8,7 +8,7 @@ The project keeps kernel differential evidence without reproducing a complete pr
 
 This is an explicit historical trust boundary, not a claim that transport no longer matters. The real kernel remains the behavioral oracle. For the accepted unit, the pinned a12-dmkits revisions are the producer and its interpreter is triangulation rather than an oracle. Lean checks the bundle's closed semantic projection against its executable account and proves internal laws; it does not re-implement receipt, filesystem, runner, capability, qualification, or closure audits. For a future family, current corpus/differential facilities are used only when their natural observation fits; otherwise the family remains `external evidence pending` until a concrete minimal upstream capability and its assurance contract are accepted.
 
-## Why this changes
+## Why this changed
 
 The first full capture proved that a maintained external boundary can produce reproducible, qualified evidence. It also showed that downstream re-auditing does not scale with the semantic body:
 
@@ -22,7 +22,7 @@ The first full capture proved that a maintained external boundary can produce re
 
 The problem is not the once-in-a-lifetime upstream capture implementation. The problem is making each new Lean semantic capsule understand packet inventories, capability bytes, qualification reports, consumed-document identities, runner fidelity, closure identities, and process receipts. Those are producer assurance concerns, not A12 semantic clauses.
 
-The completed Rust experiment, retained direct-cascade packet, trusted proof root, pure semantic capsules, and small older projection replays have all proved useful. The packet-specific Lean binder pattern has proved too expensive to repeat. The project therefore consolidates around the parts that paid for themselves and removes the duplicated boundary.
+The completed Rust experiment, retained direct-cascade packet, trusted proof root, pure semantic capsules, and small older projection replays have all proved useful. The packet-specific Lean binder pattern proved too expensive to repeat. The project therefore consolidated around the parts that paid for themselves and removed the duplicated boundary.
 
 ## Ownership after consolidation
 
@@ -120,7 +120,7 @@ The first migration used the following stop-and-inspect budgets measured as nonb
 - family tests plus relocated generic process locks: at most 110;
 - `EvidenceMain` glue: at most 20;
 - complete first replacement: at most 670;
-- required net reduction from the current direct-cascade stack: at least 1,500.
+- required net reduction from the then-current direct-cascade stack: at least 1,500.
 
 These scoped migration thresholds forced producer responsibilities out of the first replacement; they are not permanent component-size promises after an all-in consolidation moves a live shared guard into the reader while deleting the larger generic mechanism that owned it. Across future migrated families, common compact evidence infrastructure must remain below a 1,000-line ceiling rather than grow in proportion to packet complexity. A new family must not add receipt, filesystem, digest, capability, qualification, or closure code.
 
@@ -128,9 +128,9 @@ During the first migration, exceeding a scoped limit required stopping to remove
 
 The first migration checkpoint measured 666 raw nonblank lines against a 2,179-line packet-specific baseline, a scoped reduction of 1,513. That checkpoint deliberately excluded 359 nonblank lines of shared `Artifact` and `ArtifactTree` production support, so it must not be reported as the final all-in cost. The subsequent consolidation deleted all 382 nonblank lines of generic artifact, tree, and tree-test machinery, moved the live path/digest/file guards into the compact reader, and removed one glue line. The settled all-in lane is 753 nonblank lines: reader 211, reader tests 156, direct-cascade family 249, family tests 130, and seven `EvidenceMain` import/check lines. This is 272 fewer than the honest 1,025-line all-in checkpoint and remains below the 1,000-line common-infrastructure ceiling. The reader's 211 lines supersede the scoped 180-line checkpoint because they absorb only the live guards while removing 359 lines of generic production support; the narrower 670-line first-replacement cap served its migration audit and is not reused to hide formerly shared support.
 
-## First migration: direct String cascade
+## Historical first migration: direct String cascade
 
-The direct-cascade family is the proof case because its current raw binder is the most expensive and its five semantic observations are already understood.
+The direct-cascade family was selected as the first proof case because its then-current raw binder was the most expensive and its five semantic observations were already understood.
 
 The compact family carries:
 
@@ -162,7 +162,7 @@ The public half reuses the existing candidate/reference process gate. It binds t
 
 Commit `a04d6d9f51227dbe47014a5181590507e1b269bd` is the one-time validation dual-path checkpoint. It ran all 48 validation cases through their complete legacy stack beside the 24-case compact private replay and passed both current public suites with strengthened request, response, and case-association mutations. The already-compact 22-case root-String and five-case cascade lanes also passed; their own archives record their earlier complete-binder comparisons. The subsequent deletion removes 85 raw files and 761,310 bytes, 12 legacy modules and 2,061 nonblank lines, and the legacy driver body. The permanent validation projection and focused tests occupy 428 nonblank lines; the final driver is a small dispatcher. Exact source digests, producer caveats, the one a12-dmkits iteration disagreement, and recovery revisions live in [`VALIDATION-RAW-EVIDENCE.md`](archived/VALIDATION-RAW-EVIDENCE.md).
 
-After all three migrations, the complete evidence source estate is 1,528 nonblank Lean lines and 82,628 bytes. Total Evidence/Reference/Process support is 5,449 nonblank lines versus 5,453 theory lines, so the adopted support ratio is met without compression; evidence is below one third of theory. The checked-out `evidence/` directory contains only the three compact bundles and totals 135,047 bytes. These are settled baselines, not invitations to spend the four-line support margin: future ordinary work grows semantic capsules, and any support growth must be justified by a current consumer and rechecked against the ratio.
+At completion of the three migrations, the evidence source estate was 1,528 nonblank Lean lines and 82,628 bytes, while Evidence/Reference/Process support was 5,449 nonblank lines against 5,453 theory lines. This is a historical migration baseline, not the current theory count or a reusable support budget. The checked-out `evidence/` directory contained only the three compact bundles and totaled 135,047 bytes. Future ordinary work grows semantic capsules; any proposed support growth still needs a named current consumer, explicit approval under the repository rules, and a fresh ratio check.
 
 ## Producer-side consolidation and retired a12-dmkits capture-contract V1
 
@@ -176,18 +176,11 @@ The durable distinction is:
 2. **Current-main producer code:** the unused capture source set, schemas, commands, exporter, qualification machinery, mutations, tests, and live documentation have been removed rather than maintained or duplicated.
 3. **Future producer capability:** a new operation is demand-driven by a concrete semantic family and designed from its observation needs; it is not a compatibility successor created merely to preserve V1 structure.
 
-## Sequencing
+## Completed migration and continuing trigger
 
-1. Finish the internally proved String-ingestion capsule and leave its external observation pending. Completed in commit `41ddc9d`.
-2. Completed: implement the generic bundle reader and direct-cascade family decoder against red/green local contract tests. Local fixtures remain schema tests, not kernel evidence.
-3. Completed: measure and simplify the local implementation before requesting the producer.
-4. Completed: the temporary cross-project proposal produced the one closed post-capture exporter recorded historically in a12-dmkits' archived capture-contract V1 estate. The accepted bytes are retained here, and upstream revision `45b264b2` removed the unused implementation. Validation-message capture remains outlook only.
-5. Completed: verify the producer-certified compact bundle against the opaque raw unit and prove old-versus-new semantic agreement during the sole migration gate.
-6. Completed: switch `lake test` to the compact family, retain only its closed reader guards, and delete the replaced direct-cascade stack.
-7. Completed: the real overlay-bypass semantic mutation failed, the natural gate recovered, and the first scoped migration measured a 1,513-line reduction. The subsequent all-in audit removed the remaining generic artifact-tree machinery and settled the complete live lane at 753 nonblank lines. The local archive migration then removed 31 raw/scenario files and 123,184 bytes from `HEAD` while preserving the compact bundle and exact recovery identities.
-8. Completed: the measured pattern justified migrating the two historical root-String binders. One compact typed lane preserves their two independent source identities and fidelities; the one-time comparator established 22/22 agreement before the old stacks and raw estate were removed.
-9. Completed: one compact validation bundle and one existing process association gate replace the flat/operator, path/required, iteration, correlation-runtime, and correlation-authoring raw/binder estates. The dual-path checkpoint and archive preserve exact recovery; no per-family packet machinery or duplicate public replay remains.
-10. Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
+The archived [reference and evidence simplification work program](archived/REFERENCE-AND-EVIDENCE-SIMPLIFICATION-PROPOSAL.md) and the family-specific evidence archives own the completed migration checkpoints, measurements, recovery identities, and dual-path agreement records. They are history, not a live queue.
+
+Request a new external operation only when a real semantic family needs an observation the current corpus/differential facilities cannot retain. The retired exporter is not a live extension point; design the smallest new producer from the concrete observation need and do not front-load a universal capture protocol.
 
 ## Upstream engagement rule
 
@@ -204,7 +197,7 @@ Stop and redesign if:
 - family code revalidates producer receipts or runner fidelity;
 - raw packets become the input to normal Lean replay again;
 - compact observations lose polarity, poison/unknown, multiplicity, order, applied-state, or other distinctions the family actually claims;
-- a semantic mutation does not fail;
+- a deliberately selected mutation expected to cross a claimed semantic seam is not killed by its predicted separating case or cases;
 - old and new evidence lanes remain after the migration gate;
 - retired a12-dmkits capture-contract V1 is resurrected or a universal successor is built without a supported-consumer reason;
 - external evidence blocks unrelated internal semantic/proof progress;

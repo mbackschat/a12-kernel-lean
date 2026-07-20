@@ -1,6 +1,6 @@
 # Consumer probes and what this Lean semantics can enable
 
-This is the user-facing map of bounded consumer probes and possible later products built from `a12-kernel-lean`. It explains the potential of the project, not the set of tools implemented today. The current executable surface remains the narrow evaluator described in the top-level [`README.md`](../README.md); current clause-level support is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
+This is the user-facing map of bounded consumer probes and possible later products built from `a12-kernel-lean`. It explains the potential of the project, not the set of tools implemented today. The current public process surface remains the narrow evaluator described in the top-level [`README.md`](../README.md); current internal clause-level support is recorded in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
 The central idea is simple: once A12 behavior is represented as explicit executable semantics, linked to retained kernel observations, and surrounded by named theorems and counterexamples, the result can support more than an interpreter. Different consumers ask different questions of the same semantic foundation. The canonical category taxonomy is defined in [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md#general-consumer-task-categories); this document is its reader-facing explanation.
 
@@ -33,7 +33,7 @@ semantic capsules → consumer probe → research-closed shipment → cold quali
 
 Catalog inclusion commits the project to none of these stages. When [`PLAN.md`](PLAN.md) explicitly selects a probe, only that bounded probe is authorized; shipment, qualification, infrastructure, and product work remain separate decisions. A successful probe demonstrates potential for its exact task. New potential discovered by a probe is classified under the ten categories when one fits, or proposed as a new task category when its input/output relation is genuinely different.
 
-## Current probe record: generated computation alternatives
+## Completed probe record: generated computation alternatives
 
 The first post-simplification cross-category probe used the checked two-alternative literal-Number capsule at revision `b73d11e`. Two isolated read-only consumers received only project-local spec, Lean, status, and general task-contract files: an evaluator reader reconstructed the first-match selector and all-alternatives generated-rule shape, while a refactoring reader independently identified the shadowed-row deletion and reordering counterexamples. Neither could consult the kernel, a12-dmkits, the web, Git history, or prior discussion. Translate and Analyze/Synthesize were reviewed as task-profile probes rather than cold implementations.
 
@@ -52,7 +52,7 @@ The first post-simplification cross-category probe used the checked two-alternat
 
 The overall verdict is positive for semantic reuse and negative for shipment readiness. The current material prevents consumers from repeating the hardest kernel insight, but a standalone evaluator would still need a purpose-specific language-neutral projection of its imported semantic dependencies. Refactoring and analysis already receive valuable counterexamples without new infrastructure. The Translate result is a boundary correction, not a failed project goal: it prevents a JSON importer from inventing source meaning. The sharper computation-table consistency probe remains within **Analyze** and **Explain**, so this exercise discovered no eleventh task category. The next probe repeated these questions after the cross-level-correlation representation correction.
 
-## Current probe record: whole-rule messages and cross-level capture
+## Completed probe record: whole-rule messages and cross-level capture
 
 The second post-simplification probe used the checked nonrepeatable whole-rule/message capsule and raw cross-level captured-environment slice at revision `23755e0`. Three isolated read-only consumers received only project-local source, spec, status, and task-contract files. An evaluator reader reconstructed both decision procedures and their exact non-composability; a translation/refactoring reader tested JSON Schema target mappings and candidate rule rewrites; an analysis reader classified all ten task categories. They could not consult sibling repositories, the web, Git history, or prior discussion, and they changed no files.
 
@@ -71,7 +71,7 @@ The second post-simplification probe used the checked nonrepeatable whole-rule/m
 
 The result is stronger than “more documentation is needed.” Each slice is internally usable for its exact job, and the probes recover the crucial kernel complexities without doing kernel research again. A combined evaluator is not internally closed because one genuine semantic bridge is absent: checked two-level correlation must feed a polarity-bearing repeatable whole-rule outcome with the correct row address. An importer additionally needs a pinned source semantics and mapping relation; a refactoring capability needs a checked transformation and preservation relation over a named observation. A language-neutral projection would make either existing slice easier to hand over, but documentation cannot substitute for those missing semantics and task relations. No eleventh task category emerged, and SMT would not close these gaps: the useful current questions are already finite and solver-free.
 
-## Current probe record: resolved `FirstFilledValue`
+## Completed probe record: resolved `FirstFilledValue`
 
 The next artifact-only probe used the single-operand resolved Number `FirstFilledValue` capsule at revision `b7c214e`. An isolated reader acted first as an evaluator implementer and then as a refactoring-tool author. It could read the capsule's Lean semantics, laws, cases, linked canonical spec, and existing implementer/use-case guidance, but it could not inspect the kernel, a12-dmkits, the web, or prior discussion and changed no file.
 
@@ -89,7 +89,7 @@ The refactoring result is useful but deliberately narrower than a product. At th
 
 The probe therefore passed for **Execute** and resolved-boundary **Transform/Explain**, but not for an authored evaluator, shipment, or rule-refactoring product. Missing dependencies are checked lowering, path/star expansion, actual filter evaluation, partial-relevance classification, language-neutral task types and fixtures, a public operation, portable kernel evidence, and a source-level transformation relation. The gaps are integration and shipment boundaries, not ambiguity in the admitted scan. No protocol, runner, external implementation, qualification campaign, or harness was added.
 
-## Current probe record: resolved Date-range overlap
+## Completed probe record: resolved Date-range overlap
 
 An artifact-only interpreter/refactoring probe then read the resolved Date-range truth and operator capsules without consulting the kernel, a12-dmkits, the web, or prior semantic discussion. It reconstructed both evaluators exactly: any-pair keeps duplicate occurrences, scans against the seen prefix, and retains a sticky reached-filter bit; scalar-versus-list exits for a skipped scalar, ignores list-internal pairs, and takes polarity only from the first matching list operand. No additional A12 research was needed at this boundary.
 
@@ -97,7 +97,7 @@ The refactoring readback exposed a useful truth-versus-verdict distinction. Skip
 
 The probe therefore passed for resolved-boundary **Execute**, **Transform**, **Analyze**, and **Explain**. It did not establish an authored evaluator or releasable refactoring tool: raw DateRange classification, path/star expansion, actual `Having`/`$` evaluation, partial relevance, row gates/messages, checked lowering, portable evidence, task fixtures, and a source-level preservation certificate remain outside the capsule. The universal truth bridges were added because they directly reduce that future consumer's proof burden; no runner, protocol, external project, qualification campaign, or harness was added.
 
-## Current probe record: computation field-fill quantifiers
+## Completed probe record: computation field-fill quantifiers
 
 An isolated interpreter/refactoring reader then consumed only the resolved computation field-fill semantics, laws, executable cases, and linked local spec. It did not inspect the kernel, a12-dmkits, the web, or earlier source research. It recovered an exact bounded decision procedure for all seven predicates: one ordered stream contains instantiated filled cells, instantiated empty cells, declared-but-uninstantiated absences, and exact-cause poison; each scan stage uses its prescribed range, the mixed predicate uses both ranges, and the full predicate stops at its final deciding event while preserving the first poison it actually reaches. The reader also recovered both fresh second-stage scans and the zero/exactly-one/two-or-more split without additional A12 research.
 
@@ -105,7 +105,7 @@ That is enough for resolved-boundary **Execute**, **Analyze**, and **Explain**. 
 
 The probe deliberately stops before a product claim. Authored field/group/star expansion, canonical stream construction, `Having` and path resolution, checked-cell classification, declared-versus-instantiated row derivation, validation truth/polarity, pointer-bearing diagnostics, condition-AST integration, and portable project-local evidence remain outside the capsule. Those are semantic integration dependencies, not gaps in the resolved decision table. General certified refactoring would additionally need arbitrary-prefix laws or a named transformation relation. No protocol, runner, external implementation, qualification campaign, evidence mechanism, or harness was added.
 
-## Current probe record: validation field-fill quantifiers
+## Completed probe record: validation field-fill quantifiers
 
 The phase-companion readback then used only the shared operator vocabulary, resolved validation semantics, laws, cases, computation scan, canonical clause, and local status/use-case documents. The isolated interpreter/refactoring reader did not inspect the kernel, a12-dmkits, the web, Git history, or prior semantic research. It recovered the complete `(filled, empty, unavailable, uninstantiated)` decision table and all seven unfiltered polarities without another A12 question. It also identified the low-level vacuous `AllFieldsFilled` result as a leaf fact that says nothing about the separate whole-condition empty-row gate.
 
@@ -115,7 +115,7 @@ The phase comparison is the most useful result. The validation tally cannot impl
 
 The probe passed for resolved-boundary **Execute**, **Analyze**, and **Explain**, with bounded **Transform** potential. The laws help Verify the Lean account and the cases seed future Qualify work, but they neither prove nor qualify an external implementation. Authored expansion, checked-cell-to-tally construction, `Having`, row eligibility, partial relevance, physical validation reads, connective/whole-rule integration, source-level transformations, protocol/shipment, and portable kernel evidence still require semantic integration or research. There is no ambiguity in the admitted resolved evaluator. No protocol, runner, external project, qualification campaign, evidence mechanism, or harness was added.
 
-## Current probe record: fresh Rust correlation runtime
+## Completed probe record: fresh Rust correlation runtime
 
 The first post-simplification probe to produce independent executable code used the current `single-group-correlation-v2` kit and only its twelve retained runtime fixtures. A fresh Rust implementer first committed a cold readback, then built one dependency-free generic resolved-runtime evaluator, and only after project-side source review received the mutation tasks. It consulted neither Lean nor the kernel, a12-dmkits, the retired Rust project, web research, or unlisted A12 material.
 
