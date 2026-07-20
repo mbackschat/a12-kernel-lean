@@ -67,6 +67,17 @@ run_cmd do
 #print axioms A12Kernel.fullDate_before_iff
 #print axioms A12Kernel.fullDate_before_irreflexive
 #print axioms A12Kernel.fullDate_before_transitive
+#print axioms A12Kernel.classifyDateConstruction3_unknown_iff
+#print axioms A12Kernel.classifyDateConstruction3_incomplete_iff
+#print axioms A12Kernel.classifyDateConstruction3_present_real
+#print axioms A12Kernel.classifyDateConstruction3_present_unreal
+#print axioms A12Kernel.dateConstruction_valid_fired_iff
+#print axioms A12Kernel.dateConstruction_invalid_omission_iff
+#print axioms A12Kernel.dateConstruction_invalid_value_iff
+#print axioms A12Kernel.dateConstruction_both_unknown_iff
+#print axioms A12Kernel.dateConstruction_valid_forgets_nonvalue_reason
+#print axioms A12Kernel.dateConstruction_invalid_preserves_nonvalue_reason
+#print axioms A12Kernel.dateConstruction_truth_complement
 #print axioms A12Kernel.civilDate_next_unixEpochDay
 #print axioms A12Kernel.civilDate_before_unixEpochDay
 #print axioms A12Kernel.timeOfDay_ofHms_isSome_iff

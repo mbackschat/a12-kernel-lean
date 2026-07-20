@@ -428,3 +428,33 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** The exact basis revision was reviewed; its durable findings distinguish source-visible blacklist evidence, direct full-kernel admission evidence, and defensive peer support without treating one as another.
 - **a12-dmkits revision:** `7dc0a52fba5ffc2d90fdfef76cc8ac94e1d8dc4d`
 - **Disposition:** accepted — this successor corrects only the predecessor's uppercase-`\P` admission overclaim; the remainder of `SPEC-2026-07-20-03` stays valid.
+
+### SPEC-2026-07-20-06 — constructed-Date validity complements only at truth projection
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `883e0e22f87e22e3a7ff4529fd41ab87f331de8f`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`05-dates-and-time.md` §3 and checklist](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)
+- **Delta:** Replace the mathematically imprecise claim that `Valid(Date(...))` and `Invalid(Date(...))` are not complements. Their truth projections are exact strong-Kleene complements across real, unreal, incomplete, and formally unavailable constructions. The non-derivability is at the full verdict level: incomplete and unreal both make `Valid` not fire, while `Invalid` must recover OMISSION for incomplete and VALUE for unreal; malformed makes both UNKNOWN. A reason-bearing construction result is therefore required even though the truth table complements.
+- **Basis:** kernel `RuntimeController.constructDatumHelper`, `dateGueltig`, and `dateUngueltig` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` establish the four classifications and directional verdicts; a12-dmkits `DateConstructionDiffTest`, `DateValidityLawsTest`, and its `DateStatus` evaluator at the basis revision already implement the same classification-to-verdict table. The local Lean capsule takes concrete calendar reality as a separate input and proves truth complementation, both fired-polarity characterizations, and the nearest non-law: `Valid(incomplete) = Valid(unreal)` while `Invalid(incomplete) ≠ Invalid(unreal)`. Exact model-zone/cutover calendar resolution is a separate semantic issue and is not folded into this entry.
+- **Requested a12-dmkits reconciliation:** Correct only prose and comments that call the predicates non-complements because an unspecified component fires `Invalid` but not `Valid`. State strong-Kleene truth complementation separately from full-verdict/polarity recovery and preserve the already-correct four-way evaluator and focused kernel differentials. Do not add a general negation operator or change runtime behavior merely to produce a source diff.
+- **Compatibility:** Formal precision for existing 30.8.1 behavior. Evaluators and public condition syntax remain unchanged; a proof, refactoring, or implementer guide that derives the full `Invalid` verdict from the `Valid` verdict must change.
+- **Acceptance:** a12-dmkits canonical prose distinguishes truth projection from full verdict, retains malformed UNKNOWN/UNKNOWN and incomplete-versus-unreal polarity, existing Date-construction controls remain green, and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending
+
+### SPEC-2026-07-20-07 — constructed-Date reality uses the model-zone legacy hybrid calendar
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `883e0e22f87e22e3a7ff4529fd41ab87f331de8f`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`05-dates-and-time.md` §3 and checklist](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)
+- **Delta:** Specify that `Date(...)` calendar reality is decided by a non-lenient legacy `GregorianCalendar` in `modelConfig.timeZone`, not by a zone-free proleptic-Gregorian predicate. The default hybrid cutover admits UTC 1500-02-29 on its Julian side, while the `Pacific/Apia` discontinuity rejects the skipped local date 2011-12-30. This constructor rule remains separate from the later 1583-10-16 stored/computed-value floor.
+- **Basis:** kernel `RuntimeController.constructDatum` delegates to `DateUtil.createDate(..., timeZone)` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`; `constructDatumHelper` then accumulates not-given/nonrelevant provenance. `createDate` uses a cleared, non-lenient `GregorianCalendar` with the supplied zone. The two separators were independently reproduced through that JDK mechanism during Lean review, but not yet through a retained full-kernel differential; the zone database is a runtime input not identified by kernel 30.8.1 alone. At the basis revision, a12-dmkits `ExprEval.analyzeDate` delegates to the zone-free proleptic `DateMath.isRealDate`, so its current agreement on ordinary modern dates does not close this domain.
+- **Requested a12-dmkits reconciliation:** Confirm both separators against the real kernel's normative Groovy-dynamic route, retain generated-static-Java co-evidence where supported, and correct the clean-room interpreter at the construction-reality locus. First audit every other consumer of the shared proleptic date helper: do not globally replace stored-date, arithmetic, range, or timezone semantics merely to fix `Date(...)`. Record the exact supported calendar/zone domain and fail closed for any deliberately unsupported zone rather than silently using the proleptic predicate.
+- **Compatibility:** This can change `Valid`/`Invalid`, extractors, and any operation consuming a constructed Date for historical or zone-skipped triples. Ordinary modern UTC/GMT dates are expected to remain unchanged. A runtime without the configured model zone cannot claim general `Date(...)` parity.
+- **Acceptance:** Focused kernel differentials lock both named separators and neighboring controls; the interpreter construction path uses the model zone and pinned hybrid-cutover behavior or explicitly rejects an accurately declared narrower domain; unrelated date consumers retain their separately justified semantics; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending
