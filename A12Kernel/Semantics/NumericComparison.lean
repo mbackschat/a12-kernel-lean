@@ -23,6 +23,21 @@ inductive NumericOperand where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
+namespace CellObservation
+
+/-- Apply the direct-validation Number empty rule to an already phase-classified cell. This shared seam keeps ordinary and semantic-index reads from inventing different numeric substitutions. -/
+def asValidationNumericOperand (field : NumField) :
+    CellObservation → NumericOperand
+  | .empty => NumericOperand.value 0 (.emptyNumber field.signed)
+  | .value observed =>
+      match observed with
+      | .num amount => NumericOperand.value amount .fixed
+      | _ => NumericOperand.unknown .malformed
+  | .unknown cause => NumericOperand.unknown cause
+  | .poison cause => NumericOperand.unknown cause
+
+end CellObservation
+
 /-- Rounding preserves the operand's invalid cause or directional fillability; it changes only a known amount. -/
 def NumericOperand.round (operand : NumericOperand) (mode : DecimalRoundingMode)
     (places : RoundingPlaces) : NumericOperand :=

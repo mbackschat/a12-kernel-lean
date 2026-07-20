@@ -130,12 +130,7 @@ def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : Cel
 
 def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
     (field : FlatNumberField) : NumericOperand :=
-  match context.observeValidationAt field.id with
-  | .empty => .value 0 (.emptyNumber field.info.signed)
-  | .value (.num value) => .value value .fixed
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+  (context.observeValidationAt field.id).asValidationNumericOperand field.info
 
 /-- Resolve a Boolean field for direct comparison. Empty Boolean is not evaluated. -/
 def FlatContext.resolveBooleanComparisonOperand
