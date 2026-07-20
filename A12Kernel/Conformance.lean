@@ -40,5 +40,6 @@ import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.RepetitionNotUnique
+import A12Kernel.Conformance.SemanticIndex
 
 /-! Executable semantic locks built with the default library target. -/
