@@ -462,6 +462,13 @@ run_cmd do
 #print axioms A12Kernel.enumeration_empty_notFired
 #print axioms A12Kernel.enumeration_unavailable_unknown
 #print axioms A12Kernel.enumeration_resolved_never_omission
+#print axioms A12Kernel.enumerationDisplay_identityFacts_notEffective
+#print axioms A12Kernel.enumerationDisplayFact_conflictsWith_comm
+#print axioms A12Kernel.enumerationDisplay_conflictsWith_comm
+#print axioms A12Kernel.stringEnumeration_allowed_iff_textless
+#print axioms A12Kernel.enumeration_mixedDisplayClass_rejected
+#print axioms A12Kernel.enumeration_sharedDisplayMapConflict_rejected
+#print axioms A12Kernel.directFieldComparisonAllowed_comm
 
 #print axioms A12Kernel.valueList_number_equal_iff_normalized_eq
 #print axioms A12Kernel.valueList_contains_prependEmpty

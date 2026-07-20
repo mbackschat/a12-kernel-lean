@@ -37,5 +37,6 @@ import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.Correlation
+import A12Kernel.Elaboration.EnumerationComparability
 import A12Kernel.Proofs
 import A12Kernel.Conformance
