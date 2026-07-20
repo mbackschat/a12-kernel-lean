@@ -164,4 +164,44 @@ theorem numericArithmeticOutcome_divide_fixed_zero_dividend
   rcases divisorFill with ⟨canGrow, canShrink⟩
   cases canGrow <;> cases canShrink <;> cases divisorSign <;> rfl
 
+theorem numericArithmeticOutcome_power_notEvaluated_left
+    (right : NumericArithmeticOutcome) :
+    NumericArithmeticOutcome.power .notEvaluated right = .notEvaluated := by
+  rfl
+
+theorem numericArithmeticOutcome_power_notEvaluated_right
+    (left : NumericArithmeticOutcome) :
+    NumericArithmeticOutcome.power left .notEvaluated = .notEvaluated := by
+  cases left <;> rfl
+
+theorem numericArithmeticOutcome_power_rejected_exponent
+    (base exponent : Rat) (baseFill exponentFill : NumericFillability)
+    (rejected : checkedPowerExponent? exponent = none) :
+    NumericArithmeticOutcome.power
+      (.value base baseFill) (.value exponent exponentFill) = .notEvaluated := by
+  simp [NumericArithmeticOutcome.power, powerNumeric, rejected]
+
+theorem numericArithmeticOutcome_power_values_notEvaluated_iff
+    (base exponent : Rat) (baseFill exponentFill : NumericFillability) :
+    NumericArithmeticOutcome.power
+      (.value base baseFill) (.value exponent exponentFill) = .notEvaluated ↔
+        powerNumeric base exponent = .notEvaluated := by
+  unfold NumericArithmeticOutcome.power
+  generalize resultEq : powerNumeric base exponent = result
+  cases result <;> simp [resultEq]
+
+theorem numericArithmeticOutcome_power_zero_exponent
+    (base : Rat) (baseFill : NumericFillability) :
+    NumericArithmeticOutcome.power
+      (.value base baseFill) (.value 0 .fixed) = .value 1 .fixed := by
+  rfl
+
+/-- The kernel's conservative zero-base table distinguishes unsigned and signed empty exponents even though both current powers equal one. -/
+theorem numericArithmeticOutcome_power_zeroBase_emptyExponent_directions :
+    NumericArithmeticOutcome.power
+        (.value 0 .fixed) (.value 0 .growOnly) = .value 1 .shrinkOnly ∧
+      NumericArithmeticOutcome.power
+        (.value 0 .fixed) (.value 0 .both) = .value 1 .growOnly := by
+  decide
+
 end A12Kernel

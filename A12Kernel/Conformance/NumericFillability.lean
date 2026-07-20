@@ -116,6 +116,86 @@ example : NumericArithmeticOutcome.divide
     (.value 1 .fixed) .notEvaluated = .notEvaluated := by
   native_decide
 
+private def powerOutcome (base : Rat) (baseFill : NumericFillability)
+    (exponent : Rat) (exponentFill : NumericFillability) : NumericArithmeticOutcome :=
+  NumericArithmeticOutcome.power
+    (.value base baseFill) (.value exponent exponentFill)
+
+/- Power absorbs unavailable operands and every numeric domain failure before deriving directions. -/
+example :
+    NumericArithmeticOutcome.power .notEvaluated (.value 2 .fixed) = .notEvaluated ∧
+      NumericArithmeticOutcome.power (.value 2 .fixed) .notEvaluated = .notEvaluated ∧
+      powerOutcome 0 .fixed (-1) .fixed = .notEvaluated ∧
+      powerOutcome 2 .fixed 1001 .fixed = .notEvaluated ∧
+      powerOutcome 2 .fixed (1 / 2) .fixed = .notEvaluated := by
+  native_decide
+
+/- A fixed exponent separates zero, odd, and each current-sign route of the even branch. -/
+example :
+    powerOutcome 7 .both 0 .fixed = .value 1 .fixed ∧
+      powerOutcome 2 .fixed 2 .fixed = .value 4 .fixed ∧
+      powerOutcome 2 .both 3 .fixed = .value 8 .both ∧
+      powerOutcome 2 .shrinkOnly 3 .fixed = .value 8 .shrinkOnly ∧
+      powerOutcome (-2) .growOnly 3 .fixed = .value (-8) .growOnly ∧
+      powerOutcome 2 .shrinkOnly 2 .fixed = .value 4 .both ∧
+      powerOutcome (-2) .growOnly 2 .fixed = .value 4 .both ∧
+      powerOutcome 0 .both 2 .fixed = .value 0 .growOnly := by
+  native_decide
+
+/- A fixed nonnegative base dispatches around one and through all three zero-base cases. -/
+example :
+    powerOutcome 2 .fixed 0 .growOnly = .value 1 .growOnly ∧
+      powerOutcome 1 .fixed 2 .both = .value 1 .fixed ∧
+      powerOutcome (1 / 2) .fixed 0 .growOnly = .value 1 .shrinkOnly ∧
+      powerOutcome 0 .fixed 2 .growOnly = .value 0 .fixed ∧
+      powerOutcome 0 .fixed 0 .growOnly = .value 1 .shrinkOnly ∧
+      powerOutcome 0 .fixed 0 .both = .value 1 .growOnly ∧
+      powerOutcome 0 .fixed 2 .both = .value 0 .growOnly := by
+  native_decide
+
+/- Fixed negative bases retain all magnitude, parity, and exponent-direction regions. -/
+example :
+    powerOutcome (-1 / 2) .fixed 2 .growOnly = .value (1 / 4) .shrinkOnly ∧
+      powerOutcome (-1 / 2) .fixed 3 .growOnly = .value (-1 / 8) .growOnly ∧
+      powerOutcome (-1 / 2) .fixed 2 .both = .value (1 / 4) .both ∧
+      powerOutcome (-1) .fixed 2 .growOnly = .value 1 .shrinkOnly ∧
+      powerOutcome (-1) .fixed 3 .growOnly = .value (-1) .growOnly ∧
+      powerOutcome (-2) .fixed 2 .shrinkOnly = .value 4 .shrinkOnly ∧
+      powerOutcome (-2) .fixed 3 .shrinkOnly = .value (-8) .growOnly ∧
+      powerOutcome (-2) .fixed 2 .growOnly = .value 4 .both := by
+  native_decide
+
+/- The only one-directional both-variable branch requires all three guards. -/
+example :
+    powerOutcome 2 .growOnly 0 .growOnly = .value 1 .growOnly ∧
+      powerOutcome 2 .both 0 .growOnly = .value 1 .both ∧
+      powerOutcome 2 .growOnly 0 .both = .value 1 .both ∧
+      powerOutcome (1 / 2) .growOnly 0 .growOnly = .value 1 .both := by
+  native_decide
+
+/- Negative power uses the rounded reciprocal base and swaps the exponent's directions first. -/
+example :
+    powerOutcome 2 .growOnly (-1) .fixed = .value (1 / 2) .shrinkOnly ∧
+      powerOutcome (-2) .growOnly (-1) .fixed = .value (-1 / 2) .both ∧
+      powerOutcome (1 / 2) .fixed (-2) .growOnly = .value 4 .shrinkOnly := by
+  native_decide
+
+/- Equal current results do not imply equal polarity: conservative provenance remains observable. -/
+example :
+    (NumericValidationOp.ordinary .greater).evalArithmetic
+        (.ok (powerOutcome 0 .fixed 0 .growOnly)) (.ok (.value 0 .fixed)) =
+          .fired .omission ∧
+      (NumericValidationOp.ordinary .greater).evalArithmetic
+        (.ok (powerOutcome 0 .fixed 0 .both)) (.ok (.value 0 .fixed)) =
+          .fired .value ∧
+      (NumericValidationOp.ordinary .greater).evalArithmetic
+        (.ok (powerOutcome 5 .fixed 0 .growOnly)) (.ok (.value 0 .fixed)) =
+          .fired .value ∧
+      (NumericValidationOp.ordinary .greater).evalArithmetic
+        (.ok (powerOutcome (1 / 2) .fixed 0 .growOnly)) (.ok (.value 0 .fixed)) =
+          .fired .omission := by
+  native_decide
+
 private def arithmeticOperand (op : NumericArithmeticOp)
     (leftValue : Rat) (leftFill : NumericFillability)
     (rightValue : Rat) (rightFill : NumericFillability) : NumericOperand :=

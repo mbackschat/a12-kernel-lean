@@ -135,6 +135,95 @@ def divide : NumericArithmeticOutcome → NumericArithmeticOutcome → NumericAr
               (reciprocalFillability divisorFill divisorSign) divisorSign)
   | _, _ => .notEvaluated
 
+private def fillabilityIsFixed (fillability : NumericFillability) : Bool :=
+  !fillability.canGrow && !fillability.canShrink
+
+private def powerWithFixedExponent (base : Rat) (baseFill : NumericFillability)
+    (exponent : Nat) : NumericFillability :=
+  if exponent = 0 then
+    .fixed
+  else if fillabilityIsFixed baseFill then
+    .fixed
+  else
+    let even : Bool := decide (exponent % 2 = 0)
+    { canGrow := baseFill.canGrow || even
+      canShrink :=
+        (baseFill.canShrink && (!even || decide (0 < base))) ||
+          (even && decide (base < 0) && baseFill.canGrow) }
+
+private def powerWithFixedZeroBase (exponentFill : NumericFillability)
+    (exponent : Nat) : NumericFillability :=
+  if !exponentFill.canShrink then
+    if exponent = 0 then .shrinkOnly else .fixed
+  else
+    .growOnly
+
+private def powerWithFixedNegativeBase (base : Rat)
+    (exponentFill : NumericFillability) (exponent : Nat) : NumericFillability :=
+  let even : Bool := decide (exponent % 2 = 0)
+  if -1 < base then
+    if !exponentFill.canShrink then
+      if even then .shrinkOnly else .growOnly
+    else
+      .both
+  else if base = -1 then
+    if even then .shrinkOnly else .growOnly
+  else if !exponentFill.canGrow then
+    if even then .shrinkOnly else .growOnly
+  else
+    .both
+
+private def powerWithFixedBase (base : Rat) (exponentFill : NumericFillability)
+    (exponent : Nat) : NumericFillability :=
+  if 1 < base then
+    exponentFill
+  else if base = 1 then
+    .fixed
+  else if 0 < base then
+    exponentFill.swapDirections
+  else if base = 0 then
+    powerWithFixedZeroBase exponentFill exponent
+  else
+    powerWithFixedNegativeBase base exponentFill exponent
+
+/-- The kernel's conservative directional metadata for a domain-valid power with a nonnegative integral exponent. This is a branch table, not exact mathematical reachability. -/
+private def powerNonnegativeFillability (base : Rat)
+    (baseFill exponentFill : NumericFillability) (exponent : Nat) :
+    NumericFillability :=
+  if fillabilityIsFixed exponentFill then
+    powerWithFixedExponent base baseFill exponent
+  else if fillabilityIsFixed baseFill then
+    powerWithFixedBase base exponentFill exponent
+  else if decide (1 < base) && !exponentFill.canShrink && !baseFill.canShrink then
+    .growOnly
+  else
+    .both
+
+/-- Direction helper called only after `powerNumeric` succeeds; `.fixed` in its rejected branches is an unreachable totality fallback. -/
+private def powerFillability (base : Rat) (baseFill : NumericFillability)
+    (exponent : Rat) (exponentFill : NumericFillability) :
+    NumericFillability :=
+  match checkedPowerExponent? exponent with
+  | none => .fixed
+  | some (.ofNat magnitude) =>
+      powerNonnegativeFillability base baseFill exponentFill magnitude
+  | some (.negSucc predecessor) =>
+      match divideNumeric 1 base with
+      | .notEvaluated => .fixed
+      | .value reciprocal =>
+          powerNonnegativeFillability reciprocal
+            (reciprocalFillability baseFill (NumericSign.ofRat base))
+            exponentFill.swapDirections (predecessor + 1)
+
+/-- Evaluate power value and directional metadata together. The staged value evaluator is the sole domain gate; directional metadata is computed only for a successful value. Either unavailable child absorbs before comparison, and negative powers reuse the precision-50 reciprocal route and swap exponent directions. -/
+def power : NumericArithmeticOutcome → NumericArithmeticOutcome → NumericArithmeticOutcome
+  | .value base baseFill, .value exponent exponentFill =>
+      match powerNumeric base exponent with
+      | .notEvaluated => .notEvaluated
+      | .value amount =>
+          .value amount (powerFillability base baseFill exponent exponentFill)
+  | _, _ => .notEvaluated
+
 end NumericArithmeticOutcome
 
 end A12Kernel
