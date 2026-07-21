@@ -32,7 +32,19 @@ example : observeCell .validation (formalCheck optionalNumber .empty) = .empty :
 example : observeCell .computation (formalCheck optionalNumber .empty) = .empty := by
   rfl
 
-example : formalCheck string (.parsed (.str "")) = formalCheck string .empty := by
+example : formalCheck string .presentEmpty =
+    { rawPresent := true, parsed := none, findings := [] } := by
+  decide
+
+example : formalCheck string (.parsed (.str "")) = formalCheck string .presentEmpty := by
+  decide
+
+example : formalCheck string .presentEmpty != formalCheck string .empty := by
+  decide
+
+example :
+    observeCell .validation (formalCheck string .presentEmpty) = .empty ∧
+      observeCell .computation (formalCheck string .presentEmpty) = .empty := by
   decide
 
 example : observeCell .validation requiredEmpty = .unknown .required := by

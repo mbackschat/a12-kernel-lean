@@ -1,7 +1,7 @@
 /- # A12Kernel.Cell — the phase-sensitive cell model
 
 Implements `spec/13`'s phase-sensitive cell boundary as two levels: an invariant
-`CheckedCell` (raw presence + parsed value + formal findings), and a
+`CheckedCell` (raw placement + optional parsed value + formal findings), and a
 *phase-indexed* read producing a `CellObservation`, where the same formal invalidity
 surfaces as `unknown` in validation but `poison` in computation.
 
@@ -33,8 +33,11 @@ inductive Phase where
   deriving Repr, DecidableEq
 
 /-- The invariant classification of a raw cell, before any phase reads it. `parsed` is
-    `some` iff the raw content is well-formed for the field's type. -/
+    `some` exactly when the placement supplies a checked semantic value; a clean
+    present-empty placement carries neither a parsed value nor a finding. -/
 structure CheckedCell where
+  /-- Whether the field has a physical placement. A present-empty cell keeps this true
+      while carrying no parsed value. -/
   rawPresent : Bool
   parsed     : Option Value
   findings   : List FormalCause

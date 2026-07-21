@@ -4,7 +4,7 @@ This file is the volatile continuation checkpoint. Stable purpose and delivery r
 
 ## Verified baseline
 
-The verified semantic baseline before this capsule was commit `0cd607f`. The current baseline is the introducing commit for the completed resolved Number Sum checkpoint below; its full build, retained-evidence replay, and trust audit passed, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
+The verified semantic baseline before the current correction was commit `8f0f029`. The current baseline is the introducing commit for the completed empty-String placement correction below; its focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding resolved Number `Sum` capsule passed the same full gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
 
 The project currently has:
 
@@ -70,11 +70,21 @@ Temporary focused mutations confirm the precision and order seams; no mutation f
 
 The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) carries the corresponding pending peer reconciliation, while [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) record the admitted Lean boundary and reusable consumer consequence.
 
-The introducing commit is complete only after focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit all pass. Do not push.
+The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
+
+## Completed semantic correction: empty String input placement
+
+The IF198 handoff exposed a representation error at the existing scalar boundary: Lean normalized a parsed empty String to the same checked cell as an omitted placement. That preserved ordinary empty observations but discarded physical placement before downstream consumers could choose whether it mattered.
+
+The root correction adds an explicit present-empty parser-boundary state. Absence formal-checks to `rawPresent = false`; present-empty and a parsed empty String formal-check to `rawPresent = true, parsed = none`; all observe as ordinary empty in both phases. Generic laws now establish placement preservation, absent/present-empty inequality, equal empty observation, and parsed-empty-String normalization. The compact conformance cases distinguish the tempting `Option Value` collapse without adding another ingestion, document, or protocol layer.
+
+The canonical specification and accepted sync-ledger entry record a12-dmkits revision `f78f4fc864b7be05f94736070cd2da7bf95d04b3`. Whole-`Document` adaptation, String presence/requiredness, group-content derivation, custom-validator invocation, computation-applied copy behavior, and public transport remain explicit later consumers; maintained external controls establish the correction, while this repository retains no portable IF198 observation.
+
+The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
 
 ## Immediate next step: artifact-only aggregate consumer probe
 
-After the owner resumes work, run one bounded artifact-only consumer-adequacy probe before choosing the next family. Do not start it in the Sum capsule session: the owner explicitly requested a stop after the capsule commit. This is a read-only knowledge-transport check, not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
+After the empty-String placement correction closes, run one bounded artifact-only consumer-adequacy probe before choosing the next family. This is a deliberately cold, read-only knowledge-transport check under the long-lived-session rules in [`CLAUDE.md`](../CLAUDE.md), not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
 
 Give an isolated reader only the canonical spec clauses, numeric aggregate Lean definitions, proofs, conformance cases, implementation-map boundary, and consumer guidance. Ask it to act as:
 

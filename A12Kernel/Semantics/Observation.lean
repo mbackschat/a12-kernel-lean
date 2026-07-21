@@ -46,20 +46,25 @@ def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .leadingOrTrailingSpace => .leadingOrTrailingSpace
   | .customValidation => .customValidation
 
-/-- Scalar-parser output at the formal-check boundary. `parsed` means the reduced capsule's preceding raw constraints have admitted the value; a forbidden line break, pattern failure, or other rejected raw String must enter as `rejected`. `rejected` is present raw input that could not become a legal scalar value. -/
+/-- Scalar-parser output at the formal-check boundary. `empty` means that no field
+    placement exists; `presentEmpty` represents a physical placement with no raw value.
+    `parsed` means the reduced capsule's preceding raw constraints have admitted the
+    value; a parsed empty String also becomes present-empty below. A forbidden line
+    break, pattern failure, or other rejected raw String must enter as `rejected`.
+    `rejected` is present raw input that could not become a legal scalar value. -/
 inductive RawCell where
   | empty
+  | presentEmpty
   | parsed (value : Value)
   | rejected (cause : BaseFormalCause)
   deriving Repr, DecidableEq
 
-/-- The representational invariant expected of checked cells: absence carries no parsed
-    value, while present input has either a parsed value or at least one finding. A
-    required finding may validly be attached to an absent cell in the later validation
-    pass. -/
+/-- The representational invariant expected of checked cells: a parsed value requires a
+    physical placement. A present placement may carry neither a parsed value nor a
+    finding; that is the distinct present-empty state. A required finding may validly be
+    attached to an absent cell in the later validation pass. -/
 def CheckedCell.WellFormed (cell : CheckedCell) : Prop :=
-  (cell.rawPresent = false → cell.parsed = none) ∧
-  (cell.rawPresent = true → cell.parsed ≠ none ∨ cell.findings ≠ [])
+  cell.rawPresent = false → cell.parsed = none
 
 /-- Whether a parsed value is legal for a field kind. A stored `false` Confirm is not
     legal; `false` is only the comparison substitution for an empty Confirm. -/
@@ -74,12 +79,14 @@ def FieldKind.accepts : FieldKind → Value → Bool
 def formalCheck (policy : FieldPolicy) : RawCell → CheckedCell
   | .empty =>
       { rawPresent := false, parsed := none, findings := [] }
+  | .presentEmpty =>
+      { rawPresent := true, parsed := none, findings := [] }
   | .parsed value =>
       match policy.kind, value with
       | .string, .str text =>
           let normalized := normalizeEvaluatedString text
           if normalized.isEmpty then
-            { rawPresent := false, parsed := none, findings := [] }
+            { rawPresent := true, parsed := none, findings := [] }
           else
             { rawPresent := true, parsed := some (.str normalized), findings := [] }
       | _, _ =>
