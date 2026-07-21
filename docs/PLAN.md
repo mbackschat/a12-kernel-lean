@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: `eaec9e3` (`feat(dates): add resolved full-date comparisons`).
-- Its focused proof build, full 213-job `lake build`, 51/51 retained-observation replay, and 11,700-declaration trust audit passed.
+- Semantic baseline: `ec04faf` (`feat(dates): classify full-date comparison operands`).
+- Its focused proof build, full 213-job `lake build`, 51/51 retained-observation replay, and 11,721-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close validation projection for two already-classified full-Date operands. Retain a present Date with symmetric missing provenance separately from no value and formal unavailability, and delegate all six truth operations to the existing resolved Date comparison.
+Close resolved direct and selected-stream `Min`/`Max` over stored/full Dates. Reuse the existing classified Date comparison operand as the aggregate result while retaining one Date-specific fold because its no-value identity and symmetric missingness differ from Number extrema.
 
-Success means no-value comparisons do not fire, formal unavailability stays UNKNOWN, true fixed comparisons fire VALUE, true comparisons with missing provenance fire OMISSION, and false comparisons remain not fired without adding parsing, DateTime, checked paths, or a generic temporal framework.
+Success means empty operands do not compete, every reached formal unavailability aborts the complete fold, an all-empty fold has no synthetic value, minimum/maximum select chronologically, empty/tail/`Having` provenance makes a selected result symmetrically missing, and comparison composition reuses the existing Date verdict path. Constructed-Date calendar identity, DateTime instants, paths, raw cells, computation targets, and checked lowering remain outside.
 
 ## Frontier queue
 
@@ -39,8 +39,8 @@ Success means no-value comparisons do not fire, formal unavailability stays UNKN
 - **Satisfied — admitted full-Date day shift:** `b1d3dec` inverts the existing Gregorian day coordinate in bounded work, covers both signs and the value floor, and does not widen into DateTime wall-time or constructed-Date legacy-calendar behavior.
 - **Satisfied — resolved full-Date comparisons:** `eaec9e3` closes the six-operator truth family over two admitted values by reusing `FullDate.before`, without claiming literal typing, empty/formal polarity, DateTime instant comparison, or checked rule integration.
 - **Satisfied — bounded trust-audit optimization:** canonical local import traversal preserves the exact former logical/conformance/library source closures without repeated Lean process startup; successful audit output is one inventory line while failures retain their diagnostics.
-- **Active — classified full-Date comparison operands:** retain a present full Date with symmetric missing provenance separately from no value and formal unavailability, delegate truth to the existing six-operator family, and project only a true missing-bearing comparison to OMISSION. Do not add parsing, DateTime, checked paths, or a generic temporal framework.
-- **Ready after classified operands — stored/full-Date extrema:** make direct and resolved `Min`/`Max` the second consumer of that classification; skip empty inputs, propagate formal unavailability, preserve symmetric empty/tail/`Having` provenance on a selected result, and return no value for an all-empty fold. Keep constructed-Date calendar identity and DateTime instant aggregation outside rather than erasing them into `FullDate`.
+- **Satisfied — classified full-Date comparison operands:** `ec04faf` retains present full Dates with symmetric missing provenance separately from no value and formal unavailability, delegates truth to the existing six-operator family, and projects only true missing-bearing comparisons to OMISSION.
+- **Active — stored/full-Date extrema:** make direct and resolved `Min`/`Max` the second consumer of that classification; skip empty inputs, propagate formal unavailability, preserve symmetric empty/tail/`Having` provenance on a selected result, and return no value for an all-empty fold. Keep constructed-Date calendar identity and DateTime instant aggregation outside rather than erasing them into `FullDate`.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.

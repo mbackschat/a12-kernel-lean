@@ -14,6 +14,7 @@ import A12Kernel.Document
 import A12Kernel.Semantics.FullDate
 import A12Kernel.Semantics.CivilDateCoordinate
 import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.DateAggregate
 import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.DateRangeOverlapOperators
 import A12Kernel.Semantics.DateConstruction

@@ -18,6 +18,7 @@ inductive SimpleComparisonOperand (α : Type) where
   | value (value : α) (given : Bool)
   | notEvaluated
   | unknown (cause : FormalCause)
+  deriving Repr, DecidableEq
 
 private def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
   match op with
