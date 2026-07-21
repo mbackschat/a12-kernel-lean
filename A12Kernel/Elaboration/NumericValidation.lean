@@ -44,12 +44,14 @@ private def AuthoredNumericExpr.hasAtom : AuthoredNumericExpr Atom → Bool
   | .abs body => body.hasAtom
   | .round _ _ body => body.hasAtom
 
-/-- Whether an authored tree uses only atoms, literals, grouping, and ordinary binary arithmetic. -/
+/-- Whether an authored tree uses only atoms, literals, grouping, ordinary binary arithmetic, and power. -/
 def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
   | .group body => body.isPlainArithmetic
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power _ _ | .abs _ | .extremum _ _ _ | .round _ _ _ => false
+  | .power base exponent =>
+      base.isPlainArithmetic && exponent.isPlainArithmetic
+  | .abs _ | .extremum _ _ _ | .round _ _ _ => false
 
 def AuthoredNumericExpr.isDirectAtom : AuthoredNumericExpr Atom → Bool
   | .atom _ => true
@@ -254,7 +256,9 @@ private def evalPlainBinary (op : NumericScaleBinaryOp)
 def LoweredNumericExpr.isPlainArithmetic : LoweredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power _ _ | .abs _ | .extremum _ _ _ | .round _ _ _ => false
+  | .power base exponent =>
+      base.isPlainArithmetic && exponent.isPlainArithmetic
+  | .abs _ | .extremum _ _ _ | .round _ _ _ => false
 
 def LoweredNumericExpr.isDirectAtom : LoweredNumericExpr Atom → Bool
   | .atom _ => true
@@ -289,7 +293,12 @@ def LoweredNumericExpr.evalPlainValidation?
       let leftOutcome ← left.evalPlainValidation? read
       let rightOutcome ← right.evalPlainValidation? read
       pure (evalPlainBinary op leftOutcome rightOutcome)
-  | .power _ _ | .abs _ | .extremum _ _ _ | .round _ _ _ => none
+  | .power base exponent => do
+      let baseOutcome ← base.evalPlainValidation? read
+      let exponentOutcome ← exponent.evalPlainValidation? read
+      pure (combineNumericValidationOutcomes NumericArithmeticOutcome.power
+        baseOutcome exponentOutcome)
+  | .abs _ | .extremum _ _ _ | .round _ _ _ => none
 
 private def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
     Except FormalCause NumericArithmeticOutcome →

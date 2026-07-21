@@ -118,15 +118,15 @@ example : verdictOf
     raw false = some .notFired := by
   native_decide
 
-/- Tolerance shares the checked expression subset and still rejects constant-only or unsupported trees. -/
+/- Tolerance shares the checked expression subset and still rejects constant-only trees. -/
 example : errorOf
     (tolerance .range1 (literal 0 0) (literal 5 0)) =
       some .constantExpression := by
   native_decide
 
-example : errorOf
-    (tolerance .range1 (.power (atom "U") (literal 2 0)) (literal 5 0)) =
-      some .unsupportedExpression := by
+example : verdictOf
+    (tolerance .range1 (.power (atom "U") (literal 2 0)) (literal 5 0))
+    (raw (.parsed (.num 1))) = some (.fired .value) := by
   native_decide
 
 /- The right operand's grow-only empty Number changes a true comparison from VALUE to OMISSION. -/
@@ -354,8 +354,57 @@ example : errorOf
       some (.authoring .tooManyDivisions) := by
   native_decide
 
-example : errorOf (comparison .less (.power (atom "U") (literal 2 0)) 0) =
-    some .unsupportedExpression := by
+/- Checked power reuses authored scale, nesting, runtime value, and directional-fillability semantics. -/
+example : verdictOf
+    (comparison .equal (.power (atom "U") (literal 2 0)) 4)
+    (raw (.parsed (.num 2))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less (.power (atom "U") (literal 2 0)) 10) =
+      some (.fired .omission) := by
+  native_decide
+
+/- Runtime-invalid integral regions project to quiet validation domain failure. -/
+example : verdictOf
+    (comparison .less (.power (atom "U") (literal (-1) 0)) 1)
+    (raw (.parsed (.num 0))) = some .notFired := by
+  native_decide
+
+example : verdictOf
+    (comparison .less (.power (atom "U") (literal 1001 0)) 1)
+    (raw (.parsed (.num 2))) = some .notFired := by
+  native_decide
+
+/- Empty exponent polarity is not a generic given-bit: unsigned and signed zero exponents produce different directions at fixed base zero. -/
+example : verdictOf
+    (comparison .greaterEqual (.power (literal 0 0) (atom "U")) 1) =
+      some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (comparison .greaterEqual (.power (literal 0 0) (atom "S")) 1) =
+      some (.fired .value) := by
+  native_decide
+
+/- Fractional-scale exponents remain a static rejection before runtime. -/
+example : errorOf
+    (comparison .less
+      (.power (atom "U") (literal ((1 : Rat) / 2) 1)) 1) =
+      some .unsupportedExpression := by
+  native_decide
+
+/- Direct-left nested power is rejected, while grouping creates the legal fresh authoring region. -/
+example : errorOf
+    (comparison .less
+      (.power (.power (atom "U") (literal 2 0)) (literal 3 0)) 100) =
+      some (.authoring .directLeftNestedPower) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less
+      (.power (.group (.power (atom "U") (literal 2 0))) (literal 3 0)) 100)
+    (raw (.parsed (.num 2))) = some (.fired .value) := by
   native_decide
 
 /- A source-confirmed root rounding operation is admitted without widening the unclosed wrapper traversal. -/

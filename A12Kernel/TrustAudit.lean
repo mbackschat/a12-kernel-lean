@@ -402,6 +402,7 @@ run_cmd do
 #print axioms A12Kernel.numericArithmetic_domainFailure_left_is_notFired
 #print axioms A12Kernel.numericArithmetic_domainFailure_right_is_notFired
 #print axioms A12Kernel.numericArithmetic_values_delegate
+#print axioms A12Kernel.numericValidation_power_values_delegate
 #print axioms A12Kernel.ordinaryNumericValidation_acceptsScales
 #print axioms A12Kernel.ordinaryNumericValidation_eval
 #print axioms A12Kernel.numericTolerance_acceptsScales
