@@ -48,30 +48,21 @@ fi
 
 collect_project_source_closure() {
   local queue=("$@")
-  local seen=()
+  local seen_sources=""
+  local seen_index=$'\n'
   local index=0
   local line
   local module_name
   local relative_dependency
-  local seen_source
-  local already_seen
 
   while (( index < ${#queue[@]} )); do
     local source="${queue[$index]}"
     index=$((index + 1))
-    already_seen=false
-    if (( ${#seen[@]} > 0 )); then
-      for seen_source in "${seen[@]}"; do
-        if [[ "$seen_source" == "$source" ]]; then
-          already_seen=true
-          break
-        fi
-      done
-    fi
-    if [[ "$already_seen" == true ]]; then
-      continue
-    fi
-    seen+=("$source")
+    case "$seen_index" in
+      *$'\n'"$source"$'\n'*) continue ;;
+    esac
+    seen_sources+="${source}"$'\n'
+    seen_index+="${source}"$'\n'
     while IFS= read -r line; do
       if [[ "$line" =~ ^[[:space:]]*(public[[:space:]]+)?import[[:space:]]+([A-Za-z_][A-Za-z0-9_.]*)[[:space:]]*$ ]]; then
         module_name="${BASH_REMATCH[2]}"
@@ -98,7 +89,7 @@ collect_project_source_closure() {
     done < "$source"
   done
 
-  printf '%s\n' "${seen[@]}"
+  printf '%s' "$seen_sources"
 }
 
 source_zone() {
@@ -226,21 +217,19 @@ while IFS= read -r library_source; do
   fi
 done <<< "$library_source_closure"
 
-theorem_sources="${proof_files}"$'\n'A12Kernel/Proofs.lean
-theorem_names=""
+theorem_source_files=()
 while IFS= read -r proof_source; do
-  source_theorem_names=""
-  if ! source_theorem_names="$(sed -nE \
-      's/^[[:space:]]*(@\[[^]]+\][[:space:]]*)*((protected|public|noncomputable|meta)[[:space:]]+)*theorem[[:space:]]+([A-Za-z0-9_]+).*/\4/p' \
-      "$proof_source")"; then
-    echo "failed to inspect theorem declarations in ${proof_source}" >&2
-    exit 1
-  fi
-  if [[ -n "$source_theorem_names" ]]; then
-    theorem_names+="${source_theorem_names}"$'\n'
-  fi
-done <<< "$theorem_sources"
-theorem_names="${theorem_names%$'\n'}"
+  theorem_source_files+=("$proof_source")
+done <<< "$proof_files"
+theorem_source_files+=(A12Kernel/Proofs.lean)
+
+theorem_names=""
+if ! theorem_names="$(sed -nE \
+    "s/^[[:space:]]*(@\\[[^]]+\\][[:space:]]*)*((protected|public|noncomputable|meta)[[:space:]]+)*theorem[[:space:]]+([A-Za-z0-9_']+).*/\\4/p" \
+    "${theorem_source_files[@]}")"; then
+  echo "failed to inspect trusted theorem declarations" >&2
+  exit 1
+fi
 if [[ -z "$theorem_names" ]]; then
   echo "trusted theorem inventory is empty" >&2
   exit 1
@@ -252,7 +241,9 @@ if ! sorted_theorem_names="$(printf '%s\n' "$theorem_names" | sort)"; then
   exit 1
 fi
 previous_theorem_name=""
+theorem_count=0
 while IFS= read -r theorem_name; do
+  theorem_count=$((theorem_count + 1))
   if [[ -n "$previous_theorem_name" && "$theorem_name" == "$previous_theorem_name" ]]; then
     echo "trusted theorem basename is ambiguous across namespaces: ${theorem_name}" >&2
     exit 1
@@ -260,18 +251,26 @@ while IFS= read -r theorem_name; do
   previous_theorem_name="$theorem_name"
 done <<< "$sorted_theorem_names"
 
-missing_theorem=false
-theorem_count=0
-while IFS= read -r theorem_name; do
-  theorem_count=$((theorem_count + 1))
-  if ! checked_grep -Eq -- \
-      "^#print axioms [A-Za-z0-9_.]+\\.${theorem_name}$" A12Kernel/TrustAudit.lean; then
-    echo "trust audit does not cover theorem ${theorem_name}" >&2
-    missing_theorem=true
-  fi
-done <<< "$theorem_names"
+registered_theorem_names=""
+if ! registered_theorem_names="$(sed -nE \
+    "s/^#print axioms [A-Za-z0-9_.']+\\.([A-Za-z0-9_']+)$/\\1/p" \
+    A12Kernel/TrustAudit.lean | sort)"; then
+  echo "failed to inspect the human-readable theorem audit registry" >&2
+  exit 1
+fi
 
-if [[ "$missing_theorem" == true ]]; then
+if [[ "$registered_theorem_names" != "$sorted_theorem_names" ]]; then
+  echo "trust audit theorem registry differs from the trusted theorem inventory" >&2
+  while IFS= read -r theorem_name; do
+    if ! checked_grep -Fqx -- "$theorem_name" <<< "$registered_theorem_names"; then
+      echo "trust audit does not cover theorem ${theorem_name}" >&2
+    fi
+  done <<< "$sorted_theorem_names"
+  while IFS= read -r theorem_name; do
+    if ! checked_grep -Fqx -- "$theorem_name" <<< "$sorted_theorem_names"; then
+      echo "trust audit registers unknown theorem basename ${theorem_name}" >&2
+    fi
+  done <<< "$registered_theorem_names"
   exit 1
 fi
 
@@ -288,88 +287,17 @@ if checked_grep -En -- "$banned_trust_pattern" \
   exit 1
 fi
 
-if ! lake build A12Kernel.Trust.Environment >/dev/null; then
-  echo "failed to build the elaborated-environment trust audit" >&2
+if ! lake build A12Kernel A12Kernel.Trust.Environment >/dev/null; then
+  echo "failed to refresh the elaborated environment under audit" >&2
   exit 1
 fi
 
-expect_environment_rejection() {
-  local label="$1"
-  local expected="$2"
-  local source="$3"
-  local output
-  if output="$(printf '%s\n' "$source" | lake env lean --stdin 2>&1)"; then
-    echo "environment trust probe unexpectedly passed: ${label}" >&2
-    exit 1
-  fi
-  if [[ "$output" != *"$expected"* ]]; then
-    printf '%s\n' "$output" >&2
-    echo "environment trust probe failed for the wrong reason: ${label}" >&2
-    exit 1
-  fi
-}
-
-expect_environment_acceptance() {
-  local label="$1"
-  local source="$2"
-  local output
-  if ! output="$(printf '%s\n' "$source" | lake env lean --stdin 2>&1)"; then
-    printf '%s\n' "$output" >&2
-    echo "environment trust control unexpectedly failed: ${label}" >&2
-    exit 1
-  fi
-}
-
-expect_environment_rejection "attributed public axiom" \
-  "project axiom TrustFixture.hidden" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\n@[simp] public axiom hidden : True\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "macro-generated axiom" \
-  "project axiom TrustFixture.hidden" \
-  $'import A12Kernel.Trust.Environment\nsyntax "constant " ident " : " term : command\nmacro_rules\n  | `(constant $name:ident : $type:term) => `(axiom $name : $type)\nnamespace TrustFixture\nconstant hidden : True\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "public unsafe definition" \
-  "unsafe declaration TrustFixture.hidden" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\npublic unsafe def hidden : Nat := 0\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "attributed partial definition" \
-  "unclassified opaque declaration TrustFixture.hidden" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\n@[inline] public partial def hidden (n : Nat) : Nat := hidden n\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "late implemented_by substitution" \
-  "implemented_by substitution TrustFixture.target -> FixtureSupport.impl" \
-  $'import A12Kernel.Trust.Environment\nnamespace FixtureSupport\nunsafe def impl (n : Nat) : Nat := n + 1\nend FixtureSupport\nnamespace TrustFixture\ndef target (n : Nat) : Nat := n\nend TrustFixture\nattribute [implemented_by FixtureSupport.impl] TrustFixture.target\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.target]'
-
-expect_environment_rejection "late extern declaration" \
-  "extern declaration TrustFixture.target" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\ndef target (n : Nat) : Nat := n\nend TrustFixture\nattribute [extern "a12_trust_probe"] TrustFixture.target\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.target]'
-
-expect_environment_rejection "sorry dependency" \
-  "on axiom sorryAx" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\ntheorem hidden : True := by sorry\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "native_decide dependency" \
-  "on axiom TrustFixture.hidden._native.native_decide" \
-  $'import A12Kernel.Trust.Environment\nimport Std.Tactic\nnamespace TrustFixture\ntheorem hidden : (List.range 4).length = 4 := by native_decide\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "bodyless opaque declaration" \
-  "unclassified opaque declaration TrustFixture.hidden" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\nopaque hidden : Nat\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.hidden]'
-
-expect_environment_rejection "empty imported-module selection" \
-  "environment trust audit selected no project modules" \
-  $'import A12Kernel.Trust.Environment\nopen Lean Elab Command\nrun_cmd discard <| A12Kernel.Trust.auditImportedModules (fun _ => false)'
-
-expect_environment_rejection "generated recursor with unsafe parent" \
-  "partial declaration TrustFixture.parent._unsafe_rec" \
-  $'import A12Kernel\nimport A12Kernel.Trust.Environment\nnamespace TrustFixture\nunsafe def parent : Nat := 0\nend TrustFixture\nopen Lean Lean.Elab Lean.Elab.Command\nrun_cmd do\n  let env ← getEnv\n  let some (.defnInfo template) := env.find? `A12Kernel.FlatCondition.evalSelected._unsafe_rec\n    | throwError "missing partial helper template"\n  let name := `TrustFixture.parent._unsafe_rec\n  liftCoreM <| Lean.addDecl (.defnDecl {\n    name := name\n    levelParams := []\n    type := mkConst ``Nat\n    value := mkNatLit 0\n    hints := .regular 0\n    safety := template.safety\n    all := [name]\n  })\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.parent._unsafe_rec]'
-
-expect_environment_rejection "generated recursor with mismatched parent type" \
-  "partial declaration TrustFixture.parent._unsafe_rec" \
-  $'import A12Kernel\nimport A12Kernel.Trust.Environment\nnamespace TrustFixture\ndef parent : String := ""\nend TrustFixture\nopen Lean Lean.Elab Lean.Elab.Command\nrun_cmd do\n  let env ← getEnv\n  let some (.defnInfo template) := env.find? `A12Kernel.FlatCondition.evalSelected._unsafe_rec\n    | throwError "missing partial helper template"\n  let name := `TrustFixture.parent._unsafe_rec\n  liftCoreM <| Lean.addDecl (.defnDecl {\n    name := name\n    levelParams := []\n    type := mkConst ``Nat\n    value := mkNatLit 0\n    hints := .regular 0\n    safety := template.safety\n    all := [name]\n  })\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.parent._unsafe_rec]'
-
-expect_environment_acceptance "ordinary attributed definitions and allowed logical axioms" \
-  $'import A12Kernel.Trust.Environment\nnamespace TrustFixture\n@[inline] def target : String := "axiom extern implemented_by unsafe partial sorry"\nnoncomputable def chosen : True := Classical.choice (show Nonempty True from ⟨True.intro⟩)\nend TrustFixture\nopen Lean Elab Command\nrun_cmd A12Kernel.Trust.auditNames #[`TrustFixture.target, `TrustFixture.chosen]'
+adversarial_probe_output=""
+if ! adversarial_probe_output="$(lake env lean A12Kernel/Trust/Adversarial.lean 2>&1)"; then
+  printf '%s\n' "$adversarial_probe_output" >&2
+  echo "environment trust adversarial probes failed" >&2
+  exit 1
+fi
 
 audit=""
 if ! audit="$(lake env lean A12Kernel/TrustAudit.lean 2>&1)"; then
