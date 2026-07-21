@@ -1,0 +1,239 @@
+# Semantic work log — July 2026
+
+This archive preserves completed semantic-unit and risk-audit narratives removed from the live [`PLAN.md`](../PLAN.md). It is historical context, not current status, coverage ownership, or a resumption checkpoint. Use [`IMPLEMENTATION-MAP.md`](../IMPLEMENTATION-MAP.md) for current coverage and Git history for exact changes.
+
+## Completed semantic unit: resolved Number `Sum`
+
+This capsule implements validation-side resolved Number `Sum` and corrects the existing checked-row fold through the same semantic mechanism.
+
+The source audit found that [`Iteration.NumberFold.sumRows`](../../A12Kernel/Semantics/Iteration.lean) had been an exact right-recursive rational fold. Kernel `Sum` instead processes values in encounter order and applies precision-50 `HALF_UP` addition at every step. The capsule replaces that root mechanism; ordinary exact totals had hidden the precision-boundary disagreement.
+
+### Closed behavior
+
+The completed capsule:
+
+1. Consume the existing already-expanded, already-filtered `ResolvedValueListSide .number`; do not add paths, star expansion, or another stream representation.
+2. Scan left to right in encounter order.
+3. Apply the existing precision-50 numeric addition at every reached present value.
+4. Ignore empty cells for the numeric total but continue scanning, so a later unavailable cell still yields UNKNOWN.
+5. Preserve the first reached unavailability.
+6. Return zero for an all-empty selection.
+7. Mark all-empty zero as both-directionally fillable, independently of signedness.
+8. Treat an omitted/uninstantiated tail after a present result as grow-only for an unsigned declaration and both-directionally fillable for a signed declaration.
+9. Escalate a reached resolved `Having` marker to both-directional fillability.
+10. Preserve the existing filter-before-consumer behavior and all current small exact `NumberFold` witnesses.
+11. Retain each missing source's declaration signedness rather than selecting one representative global bit; the later per-declaration extension below closes this resolved boundary.
+
+### Local consolidation
+
+Aggregate extrema and `Sum` are now two completed semantic users of the same classified-cell scan shape. Extract only that shared ordered scan, with the step function and accumulator supplied by the consumer.
+
+Use it to specialize:
+
+- extrema: optional selected amount plus exact `Min`/`Max` selection;
+- `Sum`: zero accumulator plus staged precision-50 addition;
+- the existing checked-row `NumberFold` projection where its current input classification agrees exactly.
+
+Do not create a generic aggregate framework. Do not merge prefix-terminating `FirstFilledValue`, operand-list extrema, Date aggregates, computation aggregates, or unlike result domains into this scan.
+
+Move universal scan facts to the shared mechanism where they genuinely agree, then make operator laws short specializations. At minimum retain laws for first unavailability, all-empty completion, fixed completion, tail/signedness fillability, and `Having`. Preserve a checked non-law or separating example showing that exact/right-associated addition is not equivalent to encounter-ordered staged addition.
+
+### Red/green separating matrix
+
+The initial precision/order witnesses failed against the exact right-recursive checked-row fold before the root correction. The final compact matrix independently distinguishes:
+
+- staged precision-50 addition from one exact total;
+- encounter order from right association or reordering;
+- full scan from stopping after the first present value;
+- all-empty both-directional fillability from operator- or signedness-specific defaults;
+- unsigned versus signed missing-tail polarity;
+- reached `Having` from an ignored filter marker;
+- first unavailable from silently skipped or delayed poison.
+
+Temporary focused mutations confirm the precision and order seams; no mutation framework or retained campaign artifact belongs to this capsule.
+
+### Documentation and completion
+
+The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](../A12-DMKITS-SPEC-SYNC-LEDGER.md) records the accepted a12-dmkits reconciliation at revision `20230e403fa085c782534025f890669a975999a8`, while [`IMPLEMENTATION-MAP.md`](../IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](../LEAN-FINDINGS.md) record the narrower admitted Lean boundary and reusable consumer consequence.
+
+The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
+
+## Completed semantic correction: empty String input placement
+
+The IF198 handoff exposed a representation error at the existing scalar boundary: Lean normalized a parsed empty String to the same checked cell as an omitted placement. That preserved ordinary empty observations but discarded physical placement before downstream consumers could choose whether it mattered.
+
+The root correction adds an explicit present-empty parser-boundary state. Absence formal-checks to `rawPresent = false`; present-empty and a parsed empty String formal-check to `rawPresent = true, parsed = none`; all observe as ordinary empty in both phases. Generic laws now establish placement preservation, absent/present-empty inequality, equal empty observation, and parsed-empty-String normalization. The compact conformance cases distinguish the tempting `Option Value` collapse without adding another ingestion, document, or protocol layer.
+
+The canonical specification and accepted sync-ledger entry record a12-dmkits revision `f78f4fc864b7be05f94736070cd2da7bf95d04b3`. Whole-`Document` adaptation, group-content derivation, custom-validator invocation, computation-applied copy behavior, and public transport remain explicit later consumers; the checked String presence/requiredness capsule below closes the first downstream consumer. Maintained external controls establish the correction, while this repository retains no portable IF198 observation.
+
+The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
+
+## Completed inbound semantic correction: group presence and nested-star tails
+
+The read-only a12-dmkits handback at revision `7f152509eea76822068955055b0d57d8ed930ca2` supplied two dual-kernel/peer corrections. IF193 replaces Boolean validation group presence with the product of formally admitted content, independently propagated error state, and `NONE`/`PARTIAL`/`FULL` relevance; its consumers include scalar and list group predicates, plain multi-group counts, and parent-filled requiredness. IF194 makes a starred aggregate's omitted-tail input hierarchical at every repeatable level reopened from the first star, checked beneath each actual parent; missing finite capacity, an empty selected leaf, or an unbounded reopened level retains fillability, while capacity above the first star stays bound.
+
+The canonical clauses, modelling traps, provenance routes, and implementation boundaries state both corrections. At the handback point the theory neither derived validation group product states nor recursively proved multi-star completeness; the two resolved capsules below now close those internal seams without claiming authored/model/document construction. Because the findings originate in the already committed and reviewed a12-dmkits revision, no outbound sync-ledger entry or second peer acknowledgement is required.
+
+## Completed semantic unit: reopened-star structural completeness
+
+The IF194 risk audit found one bounded seam between first-star scope binding and the existing resolved operand stream. [`StarCompleteness.lean`](../../A12Kernel/Semantics/StarCompleteness.lean) represents only repeatable levels reopened from the first star downward, grouping each actual row beneath its actual parent and retaining a positive, sibling-unique coordinate invariant. It recursively derives the structural tail bit without enumerating a declared Cartesian product, then supplies that bit to `ResolvedValueListSide`; selected-cell emptiness remains in the classified cell stream.
+
+The red shallow implementation checked only the first reopened level. It correctly caught a missing outer row and an unbounded level but falsely closed both a missing middle branch and a missing leaf branch. The corrected recursive mechanism passes outer, middle, leaf, complete, bound-ancestor, and unbounded separators. Trusted laws characterize finite closure, unbounded openness, open-child propagation, coordinate independence of the result, and exact composition with existing missing potential. A Sum case confirms that the derived bit reaches the existing operator-specific direction unchanged.
+
+This closes levels 1–2 only for a caller-supplied reopened tree and resolved cell stream. Authored path checking, first-star discovery, repeatability lookup, scoped `Document` enumeration, tree/cell construction, `Having`, partial relevance, per-source declaration-metadata construction, computation aggregates, protocol exposure, and project-local portable evidence remain open. No path framework, Cartesian enumerator, protocol, evidence mechanism, or dependency was added.
+
+## Completed semantic unit: resolved validation group presence
+
+The IF193 audit found one phase-aware seam after descendant scope and group relevance are resolved. [`GroupPresence.lean`](../../A12Kernel/Semantics/GroupPresence.lean) folds already checked descendant cells, an independently supplied instantiated-row-content bit, a structural-error bit, and `NONE`/`PARTIAL`/`FULL` relevance into one admitted-content × error × relevance state. A parsed value remains admitted through `duplicateIndex` marking but not through malformed, constraint, custom, required, or over-repetition rejection; instantiated repeatable rows supply content independently of cells and diagnostics.
+
+The red matrix covered malformed-only, admitted-plus-malformed, duplicate-index admission, created and over-limit rows, partial positive, partial empty, full empty, group-list availability, numeric-count availability, and relative-requiredness. The completed state drives scalar `GroupFilled`/`GroupNotFilled`, all five fixed-list group predicates, plain multi-group `NumberOfFilledGroups`, and the parent-filled requiredness gate. In particular, list predicates put an admitted-but-erroneous group in the filled bucket, while the numeric count becomes unavailable; a shared Boolean count would be unsound.
+
+Trusted laws characterize both scalar firing regions, admitted row and duplicate sources, rejected scalar exclusion, exact list-tally partition, numeric error absorption, and the requiredness bridge. This closes levels 1–2 only for resolved inputs. Authored paths, group-instance and descendant enumeration, `Document` adaptation, `NONE`/`PARTIAL`/`FULL` relevance construction from wildcardable patterns, global fields, checked condition lowering, repeatable list expansion, generated required-rule orchestration, messages, protocol exposure, and project-local portable evidence remain open.
+
+## Completed risk audit: checked resolved-input construction
+
+The construction audit rejected both candidate routes at the present boundary. `FlatModel` owns exact paths and repeatable level identities but no repeatability capacities; `Document` owns instantiated row addresses and raw placements but no group ancestry or declaration policy; flat partial relevance is only `FieldId → Bool` and cannot express wildcardable groups, concrete repetitions, globals, or full coverage across deeper repeatable axes. Neither `ReopenedStarDomain` nor `ResolvedGroupPresenceInput` can therefore be constructed faithfully by one current owner.
+
+Adding those facts now would create the general model/path/relevance layer that the bounded capsule rule excludes. The audit made no code change and rotated to the already source-grounded per-declaration Sum discriminator.
+
+## Completed semantic unit: per-declaration Number Sum missingness
+
+[`NumericAggregate.lean`](../../A12Kernel/Semantics/NumericAggregate.lean) now represents every selected Sum cell with its own declaration signedness and retains signedness separately for uninstantiated sources. The encounter-ordered arithmetic scan remains unchanged. After a present total, any missing source permits growth and exactly a missing signed source permits shrinkage; signedness on a present source is irrelevant to that decision. The all-empty identity, first-unavailable termination, and `Having` escalation remain unchanged.
+
+The red matrix separated unsigned-present/signed-missing from signed-present/unsigned-missing for both explicit empty cells and uninstantiated sources. Trusted laws state both per-source branches and prove that the former homogeneous API is exactly the constant-signedness embedding. This closes mixed-declaration resolved evaluation at levels 1–2. Checked authored field-list/group/star lowering, tree/stream construction, actual filtering, partial relevance, computation aggregates, protocol exposure, and project-local portable evidence remain open.
+
+## Completed consumer checkpoint: artifact-only aggregate probe
+
+At revision `6670ce7`, one deliberately cold read-only consumer received only the aggregate clauses, Lean semantics, laws, executable separators, adjacent operator-family definitions, implementation boundary, and consumer guidance. It consulted no kernel, a12-dmkits, web, Git history, prior discussion, or unlisted source and changed no file.
+
+The reader reconstructed the complete admitted `Sum`/`MinValue`/`MaxValue` evaluator without semantic guessing, including order, staged precision, empty and unavailable cells, first cause, all-empty identity, tail, signedness, `Having`, and the distinctions from operand-list extrema and `FirstFilledValue`. It also classified a narrow set of resolved-stream rewrites and caught the non-obvious fact that inserting or deleting numeric zero is not universally safe because it can alter all-empty provenance or introduce another precision-50 step.
+
+The result passes consumer adequacy for the exact resolved homogeneous-signedness validation boundary it received. It correctly refused authored evaluation and source-level refactoring because checked path/star/filter lowering, partial relevance, mixed-declaration missingness, computation, messages, a source transformation relation, and external evidence were outside that artifact set. The later per-declaration capsule widens the resolved evaluator but was not part of this completed probe. [`USE-CASES.md`](../USE-CASES.md#completed-probe-record-resolved-number-aggregates) owns the durable reader-facing result; no report artifact, shipment, protocol, runner, qualification campaign, or harness was added.
+
+## Completed risk audit: computation state transition
+
+The transition audit found no faithful bounded common seam. String already has an explicit two-step outcome-to-checked-cell overlay and direct cascade; Number intentionally stops at a cause-free `NumericDependencyObservation`. Turning Number poison into the `CheckedCell` overlay required by the shared scalar context would invent a `FormalCause`, while abstracting both domains together would add the general scheduler/state framework this risk spike was meant to avoid. `Document` also retains raw cells and instantiated rows but no computation ordering, computed-field stripping policy, or typed target overlay.
+
+The existing mechanisms therefore remain separate and no duplicate cascade, generic transition type, or scheduler was added. A future transition unit first needs a source-grounded common poison carrier and at least two completed typed consumers, or checked model facts sufficient to build ordered target overlays.
+
+## Completed semantic unit: fired-only structured rule messages
+
+Checked flat rules now retain a `MessageRenderPlan` instead of pre-rendered text. The reused condition evaluator still runs exactly once; only its fired branch applies provider/default selection, preserves opaque replacement bytes including raw CRLF, renders the plan, and attaches metadata. `notFired` and `unknown` never inspect the plan and are universally independent of every alternative plan. The checked generated literal-Number computation-validation consumer uses the same corrected boundary.
+
+The red change supplied a plan to the existing checked assembler and failed at its pre-rendered-text parameter. The final cases distinguish both silent branches from a fired rule, exact scale-two default display, raw CRLF opacity, and different fired texts. Raw template parsing, token/path legality, actual provider invocation, document display lookup, exact-default construction, repeats, custom-condition integration, and protocol exposure remain outside. No canonical clause changed, so no synchronization-ledger entry was added.
+
+## Completed semantic unit: finite Berlin 2024 calendar-day difference
+
+The temporal risk audit selected one explicit profile instead of a timezone abstraction. `Berlin2024Profile` replaces the old autumn-only namespace and admits fresh labels only on 2024-03-29 through 2024-04-01 plus 2024-10-27. It rejects spring `02:xx` labels, preserves the later-side autumn overlap policy, and exposes consecutive calendar-day stepping only inside the spring slice.
+
+The red matrix first failed because no day-difference module existed. The completed evaluator counts successive stateful landings without passing the later resolved instant. A March 30 `02:30` landing becomes March 31 `01:30`, and the next step retains `01:30`; therefore a `01:45` endpoint counts one despite an elapsed-seconds quotient of zero, while April 1 `02:00` counts two. Ordinary, threshold, reverse-sign, retained-clock, and unsupported cross-slice cases separate the mechanism. Trusted laws establish gap rejection, admitted self-zero, and swap negation with symmetric failure.
+
+This closes levels 1–2 only for fresh resolved labels in the finite spring profile. Mixed Date/DateTime admission, empty/formal operands, polarity/fillability, constructed-Date legacy-calendar identity, other Berlin dates/years, other zones, checked lowering, and protocol exposure remain open. The canonical clause and a12-dmkits reconciliation were already accepted under `SPEC-2026-07-20-08`, so no new outbound ledger entry was created. No calendar framework, timezone database, support mechanism, dependency, or harness was added.
+
+## Completed follow-up audit: repeatable operand-resolution remains blocked at the same owner boundary
+
+The proposed one-operand audit does not escape the earlier checked resolved-input construction blocker. `FlatModel` resolves declarations and repeatable ancestry but carries neither repeatability capacity nor a starred path position. `Document` preserves raw placement and row order but supplies no checked-cell view. `ReopenedStarDomain` deliberately begins after first-star splitting, capacity lookup, and hierarchical row construction, while `ResolvedNumericSumSide` additionally needs per-source signedness for empty and uninstantiated sources.
+
+Implementing the narrower-sounding seam would therefore introduce the same general starred-path/model-capacity/checked-read adapter already rejected by the completed construction audit. No duplicate audit record, partial adapter, or code change was added; the plan rotated.
+
+## Completed semantic unit: checked String presence and absolute requiredness
+
+`FlatField` now admits `FlatStringField`, so the existing phase observation and presence evaluator handle String without a kind-specific branch. Absent, present-empty, and parsed `""` inputs all make `FieldFilled` not fire and `FieldNotFilled` fire with OMISSION; a nonempty admitted String fires VALUE, and malformed input remains UNKNOWN. Checked flat lowering resolves nonrepeatable String declarations into the same typed presence boundary.
+
+Absolute nonrepeatable requiredness reuses that generic generated `FieldNotFilled` stage. A required present-empty String retains `rawPresent = true` when `.required` is attached, proving that evaluation emptiness does not erase physical placement. A universal separator law shows that absent and present-empty checked cells differ while both String presence predicates agree. At this checkpoint the specialized generated two-alternative computation-validation consumer kept its prior Number/Boolean/Confirm-only guard contract through an explicit closed-kind gate; the later generated-guard unit below widens that consumer deliberately.
+
+This is an internal levels 1–2 downstream closure of accepted IF198. Repeatable/parent-gated requiredness, group-content derivation, `Document` adaptation, protocol exposure, and local portable observations remain open. The bounded generated-computation String-guard consumer closes separately below. The canonical clause and accepted reconciliation already own the behavior, so no new sync-ledger entry was added.
+
+## Completed semantic unit: direct String inequality
+
+Direct String comparison now retains the closed `EqualityOp` in `FlatComparison` instead of hard-coding equality. Equality and inequality share the existing validation operand resolver: an empty field suppresses either operator, an empty literal suppresses either operator after the field has been classified, malformed input therefore remains UNKNOWN, equal nonempty values suppress inequality, and distinct nonempty values fire VALUE. Checked flat lowering admits both operators without adding String expressions or a generic comparison layer.
+
+The red cases first failed on the absent core constructor and the checked `!=` rejection. The completed cases lock empty field, equal/distinct values, empty literal, malformed-before-empty-literal precedence, and checked admission. Trusted laws quantify empty-field suppression, clean empty-literal suppression, and unavailable precedence over both enum arms. The retained local evidence still covers only equality/Length, so inequality correspondence remains `external evidence pending`; no spec or ledger change was needed.
+
+## Completed semantic unit: generated-computation String presence guards
+
+The audit confirmed that both existing consumers already define the complete behavior. Computation reads direct guards through kind-neutral checked-cell observation, while generated validation lowers the same syntax through checked scalar presence. The canonical String clause explicitly assigns absence testing to `FieldNotFilled`; no String expression, target, scheduler, or new representation was needed.
+
+The generated two-alternative literal-Number assembler now resolves nonrepeatable String guards alongside Number, Boolean, and Confirm. A nonempty String selects `FieldFilled` and can fire the corresponding generated mismatch; present-empty selects `FieldNotFilled` and preserves OMISSION behavior; malformed String poisons computation while the generated validation result remains UNKNOWN. Non-Number targets, repeatable guards and targets, exact literal scales, two-alternative shape, and message limits are unchanged. The obsolete `unsupportedGuardField` error was removed because every closed `FieldKind` is now admitted at this boundary.
+
+This is an internal levels 1–2 integration of already accepted String presence semantics. General computation authoring, String operations or targets, common preconditions, tolerance, repeatable evaluation, scheduling, protocol exposure, and local portable observations remain outside. No canonical clause or sync-ledger entry was needed.
+
+## Completed semantic unit: checked String computation expressions
+
+The String frontier audit rejected pattern execution, legal charset matching, and raw-type rule elimination as falsely small at the current boundary. Pattern execution lacks Java-compatible admission and execution support; legal charset matching lacks the bounded grapheme/atomic representation; raw-type presence and accepted-but-eliminated metadata need model and elaboration result distinctions that the current flat types do not carry.
+
+The selected bounded seam reuses the existing copy/literal/concatenation runtime. `StringExpr` now parameterizes only its leaf, so structured surface paths lower into the exact same `FieldId` tree. `CheckedStringExpr` certifies model validity and that every field is a nonrepeatable String declaration, then checks raw inputs with that same model before evaluation. Wrong-kind and repeatable fields fail before runtime construction; literals and concatenation retain exact authored shape and order; evaluation delegates unchanged to the existing cached String reader and root store. The red file initially failed only because this checked module did not exist. The green matrix locks nested order, normalized CRLF consumption, all-empty final no-value, wrong raw-value classification, wrong declared-kind rejection, and repeatable rejection; trusted laws preserve literals, successful concatenation structure, and exact model-bound evaluator delegation.
+
+This closes levels 1–2 for decoded nonrepeatable String copy/literal/concatenation expressions only. Target declaration and length-policy checking, whole-computation authoring, alternatives, concrete syntax and date-shaped literal classification, repeatable reads, scheduling, protocol exposure, and new external observations remain outside. No spec, sync-ledger, dependency, or framework change was needed.
+
+## Completed semantic unit: checked nonrepeatable Number aggregates
+
+The post-String audit selected the narrow part of aggregate construction that current model facts can express completely. A nonempty unfiltered list of nonrepeatable Number paths needs no repeatability capacity, reopened-star tree, filter provenance, or wildcardable relevance state.
+
+`CheckedNumericAggregateFields` resolves each source against one validated flat model in authored order and checks raw cells with that same model. It constructs exact no-tail/no-`Having` views for the existing Sum and extremum evaluators; the Sum view alone retains each declaration's signedness. The original Sum red file failed because the checked owner was absent, and the later extrema red cases failed at the intentionally missing evaluator boundary. The green matrix distinguishes staged Sum encounter order, signed-missing versus unsigned-missing Sum polarity, operator-specific extremum directions, all-empty fillable zero, first formal unavailability, wrong declared kind, and repeatable rejection. Trusted laws prevent fabricated tail/filter metadata, prove identical classified cells and order across both views, and lock exact operator-specific delegation.
+
+This closes levels 1–2 for direct nonrepeatable Number `Sum`, `MinValue`, and `MaxValue` field lists. Group/star expansion, literal or filtered aggregate forms, partial relevance and row gates, enclosing comparison/rule lowering, computation aggregates, protocol exposure, consumer requalification, and local portable evidence remain outside. The only generalization was extracted after extrema became the second exact consumer; no spec, sync-ledger, dependency, or general aggregate framework was added.
+
+## Completed risk audit: aggregate comparison boundary
+
+Runtime composition is exact: checked aggregates return `NumericOperand`, which the established ordinary comparison/polarity evaluator already consumes. The pinned kernel parser source also derives `Sum`/`MinValue`/`MaxValue` result scale as the maximum declared fractional-digit count across expanded source fields, without constant-expansion privilege, so the current checked declarations retain enough facts for that static summary.
+
+The current checked numeric expression tree nevertheless has no aggregate node. Adding one only for this route would widen `AuthoredNumericExpr` and its authoring/lowering/evaluation proofs, while a separate aggregate-literal comparison object would duplicate `CheckedNumericComparison` and create a parallel static gate. Both violate this audit's bounded stop condition. No wrapper, evaluator, or speculative AST branch was added; enclosing comparison remains parked until the shared checked expression tree is deliberately extended for more than one concrete function-valued consumer.
+
+## Completed risk audit: checked String target construction
+
+The existing String expression and store/outcome types already distinguish produced value, quiet no-value, inherited poison, accepted target value, and payloadful target rejection. The checked model does not carry the other half of the composition: `FlatFieldDecl` retains scalar kind, Number metadata, path, and repeatable scope, but no String `minLength`/`maxLength` or preceding line-break permission. An unconstrained policy cannot be inferred from absence of those facts because the reduced declaration erased constrained and unconstrained targets alike.
+
+Adding target constraints to the flat model would widen a settled cross-family representation and require revisiting validation formal checking, model validation, and every declaration constructor. The bounded audit therefore added no default policy and no partial target step. Checked target construction remains parked until a concrete model-extension unit owns the full fact and its validation consumers.
+
+## Completed semantic unit: String Length ordering operators
+
+The six-operator hypothesis failed at the checked authoring boundary. Runtime `Length` is a scale-0 Number, but `==` and `!=` require the decoded literal's authored scale; `SurfaceCondition.lengthCompare` stores only `Rat`. Admitting exact comparisons there would therefore bypass the static scale gate. The safe closed family is the four scale-exempt ordering operators.
+
+`StringLengthComparisonOp` now contains `<`, `<=`, `>`, and `>=`, each delegating the shared UTF-16, empty-as-growable-zero operand to `NumericComparisonOp`. The red cases failed on absent `<=`/`>` core constructors and checked admission. The green matrix locks empty `<= 0` as OMISSION, empty `> -1` as VALUE, both new checked operators as accepted, and both exact operators as rejected. Trusted laws capture the two new polarity branches. No String expression, target, spec, sync-ledger, protocol, evidence, or dependency changed.
+
+## Completed semantic unit: direct Number ordering completion
+
+The direct Number core and `NumericComparisonOp` already contained all six ordinary operators; only the reduced checked surface rejected `<=` and `>` through a blanket pre-resolution branch. The red cases failed at that branch and also predicted the second mechanism consequence: an unknown field under `<=` must report path resolution, not an unsupported operator.
+
+The checked mapping is now exhaustive for Number while Boolean, Confirm, and String still reject ordering through their type-specific equality gates. Empty `<= 0` is omission-typed for either signedness because filling can grow the left operand. Empty `0 > -1` distinguishes unsigned VALUE from signed OMISSION because only the signed field may shrink. Trusted generic laws own both branches. Equality/inequality and their existing reduced scale limitation are unchanged; no spec, sync-ledger, protocol, evidence, or dependency changed.
+
+## Completed semantic unit: invalid-power Number computation projection
+
+Pinned kernel `VkBigDecimal.power` returns the same invalid-number sentinel for `0` raised to a negative integral exponent and integral exponents outside inclusive `-1000..1000` that zero division returns. The generic Number target handler then marks that sentinel invalid and emits `berechnungsWertFehler`; the existing dependent-invalid read rule therefore predicts poison despite fresh silence or stale CLEARED at the lossy delta boundary. The current a12-dmkits implementation instead projects invalid power to clean `Unknown`, so `SPEC-2026-07-21-05` is a genuinely outbound correction rather than a reconciliation feedback loop.
+
+The declaration-resolved numeric computation evaluator now traverses power subtrees during its complete preflight, evaluates reached operands through the existing left-to-right delayed-right mechanism, delegates valid values to the shared staged power algorithm, and maps its partial failure arm to the existing operation-neutral `domainFailure`. The red matrix distinguishes valid `2 ^ 3`, invalid `0 ^ -1`, invalid `2 ^ 1001`, and a wrong-kind exponent hidden behind an earlier poison. A second end-to-end lock proves that invalid power reaches Number target calculation invalidity and the existing poisoned dependency observation. Trusted laws state exact reached-value delegation and the zero-to-negative computation result.
+
+This closes levels 1–2 for an already-authored, declaration-resolved numeric computation expression and the existing target/dependency projection. Concrete computation syntax, exponent-scale/static authoring admission, checked target construction, scheduling/context overlay, generated validation, protocol exposure, and project-local portable evidence remain outside. The defensive fractional exponent arm stays total but is not claimed as a legal kernel runtime case. No new result type, target path, evidence mechanism, dependency, or harness was added.
+
+## Completed semantic unit: checked validation power
+
+The frontier reassessment found that checked validation power required no new representation. The authored numeric tree already retained grouping and literal scale, the static summary already rejected fractional/unknown-scale exponents, the authoring scan already enforced the direct-left nested-power rule, and the shared arithmetic outcome already coupled staged value evaluation with the full conservative fillability table. Only the checked plain-arithmetic classifier and evaluator stopped before the existing power node.
+
+The validator now admits power recursively on either comparison side and under both ordinary and tolerance operators. The red matrix distinguishes valid `2 ^ 2`, empty-base omission polarity, quiet `0 ^ -1` and exponent-`1001` domain failures, fractional-scale static rejection, ungrouped nested-power rejection versus grouped acceptance, tolerance reuse, and the equal-value/different-direction `0 ^ emptyUnsigned` versus `0 ^ emptySigned` separator. The generic checked certificate still proves that both evaluator fallbacks are unreachable, and a trusted law states exact reached-value delegation to the shared power outcome.
+
+This closes levels 1–2 for power inside the existing same-group nonrepeatable checked numeric validation consumer. Concrete syntax/decoder reachability, localized diagnostics, operation-valued wrappers, repeats, generated computation validation, protocol exposure, and project-local portable evidence remain outside. The canonical clauses and accepted power corrections already own this behavior, so no spec or sync-ledger change was needed.
+
+## Completed risk audit: authored literal scale at the reduced flat surface
+
+Direct Number exact-scale checking and String `Length ==`/`!=` share one real representation need: `SurfaceLiteral.number` and `SurfaceCondition.lengthCompare` currently erase authored scale. Moving the existing decoded-literal representation into that surface would also change the settled public reference protocol's scale-erasing Number input and require a new public diagnostic classification for exact-scale rejection. A second internal constructor or guessed scale would create the parallel or unsound gate that the audit was intended to prevent.
+
+The correction is therefore parked until protocol expansion is explicitly approved or the public boundary is deliberately versioned. No source type, protocol, diagnostic, or compatibility claim changed.
+
+## Completed semantic unit: exact-scale warning suppression
+
+The checked numeric-expression surface now carries an explicit default-off suppression for `MVK_INVALID_COMPARE_DEC_PLACES`, the kernel's only supported warning directive. It bypasses only the equality/inequality scale predicate, including mismatched field/literal and field/field scales plus unknown derived division scale; model validation, field resolution, scope, Number kind, expression admission, exponent legality, and the authoring-region check all still precede it.
+
+The red matrix first failed because no suppression fact reached the checked core. The completed cases preserve the unsuppressed rejections, admit all three source-grounded scale classes, and prove that nested-division illegality is not suppressed. Trusted laws state universal scale admission when the flag is set, exact recovery of the original gate when it is absent, and runtime irrelevance of the flag after checking. This closes levels 1–2 for a structured input whose preceding decoder has already recognized the one legal directive; concrete directive syntax, rejection of other names, localized diagnostics, rule-level transport, public protocol exposure, and project-local portable evidence remain outside. The canonical specification already owns the behavior, so no spec or sync-ledger entry changed.
+
+## Completed semantic unit: per-alternative generated-computation tolerance
+
+The two-alternative literal-Number fragment now retains each alternative's optional fixed tolerance solely for implicit validation. Computation selection deliberately erases that metadata and still selects the first holding literal operation; generated validation independently lowers each retained mismatch to strict `!=` or the declared band through the existing `NumericValidationOp`. This makes flat fixed-right validation the second exact consumer of the shared ordinary-or-tolerance dispatch instead of introducing a computation-specific evaluator.
+
+The red matrix first failed because alternatives carried no tolerance. The completed cases distinguish interior, exact boundary, and exterior differences, prove that one tolerant tier does not soften a later strict tier, preserve selection of the same literal operation, and separate ordinary exact-scale rejection from tolerance scale bypass. Trusted laws lock both translations, validation-only metadata erasure, exact two-branch structure, and empty-target suppression. General computation-table authoring, singleton/default or larger tables, common preconditions, expression operations, runtime target behavior, repeats, scheduling, concrete syntax, protocol exposure, and project-local observations remain outside. The canonical clause and accepted a12-dmkits reconciliation already own this behavior, so no spec or sync-ledger entry changed.
+
+## Completed semantic unit: operand-list extrema single constant
+
+The checked numeric validation consumer now admits one direct decoded Number constant inside a canonical root `Min`/`Max` operand-list fold. One state bit is preserved through authored recognition, lowering, and runtime shape validation, so the same mechanism rejects a second constant, grouped constants, nested expressions, mixed selectors, and noncanonical right-nested tails. The constant retains authored scale, evaluates as fixed, and participates in the existing exact-selection and directional-fillability semantics. Focused laws lock admission, runtime delegation, and two-constant rejection. The canonical spec now states this source-grounded boundary; its already-reviewed a12-dmkits provenance is recorded in [`SOURCES.md`](../SOURCES.md), not reflected back as a new outbound ledger item.
+
+This closes levels 1–2 for the single-constant subset in checked same-group nonrepeatable numeric validation. Other operand forms, tie-origin retention, checked computation authoring, protocol exposure, and project-local observations remain outside.

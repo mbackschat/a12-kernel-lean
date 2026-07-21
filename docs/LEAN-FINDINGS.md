@@ -2,7 +2,7 @@
 
 This is the durable findings ledger for `a12-kernel-lean`, adapted from a12-dmkits' separation between kernel truth, implementation treatment, and live gaps. It records settled conclusions about how this project should formalize, prove, and empirically anchor the project-owned semantics. Language-neutral behavior belongs in [`../spec/`](../spec/); this ledger owns its Lean consequence and does not become a second semantic specification or backlog.
 
-Each finding has a stable `LF<n>` identifier, date, semantic section, evidence basis, Lean treatment, and explicit limit. Findings are not deleted or renumbered; later corrections amend the record visibly.
+Each finding has a stable `LF<n>` identifier, date, semantic section, evidence basis, Lean treatment, and explicit limit. Admit a finding only when a durable non-obvious mechanism, representation choice, semantic surprise, or rejected stronger account will affect later work. Routine capsule closure, gate results, coverage status, and next steps belong in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), [`PLAN.md`](PLAN.md), or Git history. Findings are not deleted or renumbered; later corrections amend the existing record visibly.
 
 ## LF1 — differential evidence and proofs answer different questions
 
