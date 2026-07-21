@@ -60,6 +60,7 @@ The fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled
 - **A bare-group field-fill quantifier expands to a field-major, repetition-major stream.** Descendant fields occur in the recursive model declaration order of [§1](01-data-model.md#1-model--a-typed-tree), and one field is completed before the next. Its instantiated repetitions occur in repetition order; when the operator uses the declared range, that field's declared-but-uninstantiated repetitions follow immediately as empty cells before the next descendant field. An instantiated-range operator adds no declared omissions. Computation consumes this order through its operator-specific deciding scan. Validation's externally visible result is determined by the final classification counts described below; its physical read order and unread suffix are not established. A reached formally invalid cell contributes neither FILLED nor EMPTY in validation and poisons computation; a formally valid value remains FILLED even when it has no concrete scalar projection, so a valid `DAY_OPTIONAL` value with an omitted day remains FILLED.
 - **Two iteration ranges over a starred scope.** `AllFieldsFilled` / `NotAllFieldsFilled` walk the **full declared range** — up to `repeatability`, an un-instantiated repetition reading *empty* — so `AllFieldsFilled(G*)` holds only when every *declared* row is filled. `AtLeastOneFieldFilled`, `NoFieldFilled`, `MoreThanOneFieldFilled`, `NotExactlyOneFieldFilled` clamp to the **instantiated** rows. `FieldsNotCollectivelyFilled` mixes them (≥1 filled over instantiated rows AND ≥1 empty over the declared range). On a non-repeatable scope the two ranges coincide.
 - **Group quantifiers admit a starred single group only for the count-zero / count-≥1 members.** `NoGroupFilled(G*)` and `AtLeastOneGroupFilled(G*)` count *instantiated* rows — and a **created-but-empty row counts as a filled group** (a row is content; [§9](07-repetition-and-iteration.md)). The `AllGroupsFilled` / `NotAllGroupsFilled` / `GroupsNotCollectivelyFilled` family **rejects** the asterisk.
+- **Non-starred group operands use the validation group state from [§9](07-repetition-and-iteration.md#5-groupfilled-and-the-other-repetition-rules), not a Boolean descendant scan.** A group is definitely filled when admitted content is observed in a relevant slice; it is definitely empty only when the complete group is relevant, contentless, and error-free. An erroneous or insufficiently relevant group belongs to neither bucket unless admitted content already establishes positive presence.
 - **Validation and computation consume reached invalid cells differently.** In a validation fill tally, a present-but-invalid cell (§B) is *neither* filled nor empty. In computation, reaching that slot poisons the computation instance; an invalid slot after the full predicate's final decision is unread and therefore inert. Any invalid element reached by a value aggregate makes the aggregate non-evaluable.
 
 For unfiltered validation, let `t` be the number of known filled instantiated cells, `e` the number of known empty instantiated cells, `u` the number of formally invalid or non-relevant instantiated cells, and `d` the number of declared-but-uninstantiated omissions. An invalid cell contributes to the range but to neither the filled nor empty bucket. The leaf exposes only `TRUE_WF` (VALUE), `TRUE_AF` (OMISSION), or the single collapsed `FALSE_OR_UNKNOWN`; the kernel-visible result does not distinguish hidden false from unknown. Empty-row eligibility is a separate whole-condition gate, and `Having` can change both the selected range and firing polarity, so neither is part of this unfiltered table:
@@ -73,6 +74,18 @@ For unfiltered validation, let `t` be the number of known filled instantiated ce
 | `NotAllFieldsFilled` | declared | `e + d ≥ 1` | OMISSION |
 | `NotExactlyOneFieldFilled` | instantiated | `(t = 0 ∧ u = 0) ∨ t ≥ 2` | OMISSION in the zero-filled region; VALUE in the at-least-two region |
 | `FieldsNotCollectivelyFilled` | instantiated fill plus declared empty | `t ≥ 1 ∧ e + d ≥ 1` | OMISSION |
+
+For an unstarred group list, let `gₜ` be definitely filled groups, `gₑ` definitely empty groups, and `gᵤ` groups in neither bucket. The five legal group-list quantifiers consume that tally without treating unavailable as empty:
+
+| Validation predicate | Fires when | Unfiltered polarity |
+|---|---|---|
+| `AllGroupsFilled` | `gₑ = 0 ∧ gᵤ = 0` | VALUE |
+| `NoGroupFilled` | `gₜ = 0 ∧ gᵤ = 0` | OMISSION |
+| `AtLeastOneGroupFilled` | `gₜ ≥ 1` | VALUE |
+| `NotAllGroupsFilled` | `gₑ ≥ 1` | OMISSION |
+| `GroupsNotCollectivelyFilled` | `gₜ ≥ 1 ∧ gₑ ≥ 1` | OMISSION |
+
+The plain numeric `NumberOfFilledGroups(g1, g2, …)` is stricter than this partial tally: if any operand is erroneous or not fully relevant, the numeric result is unavailable; otherwise it counts operands with admitted content. Keep it separate from `NumberOfFilledGroups(G*)`, which counts instantiated rows structurally, including created-but-empty rows.
 
 Computation uses the following ordered scans over the canonical resolved slot stream. A declared-but-uninstantiated slot is a clean declared absence, not a value read:
 
@@ -196,6 +209,7 @@ The compute side is the subject of [§11](09-computations.md); the key is that t
 - [ ] Negative predicates are individual constructors, **not** `Not p`; the non-complementary pairs behave as specified.
 - [ ] Boolean has three field-states; `== True` ≠ `FieldFilled`; Confirm-empty = `False` while Boolean-empty = not-evaluated.
 - [ ] Fill quantifiers distinguish the **declared** vs **instantiated** iteration ranges and use the canonical field-major/repetition-major bare-group stream. Validation counts an invalid cell in neither bucket; computation poisons on a reached invalid slot and leaves every suffix after the full predicate's final decision unread.
+- [ ] Group-list quantifiers use definitely-filled/definitely-empty/unavailable buckets from the group product state; plain multi-group `NumberOfFilledGroups` is unavailable on any erroneous or not-fully-relevant operand, while the starred single-group form counts rows structurally.
 - [ ] Legal-charset and registered custom-validator rejections enter the same formal-observation boundary; the latter preserves its project code and optional message.
 - [ ] Suppression is **branch-scoped** and reaches presence predicates (`FieldFilled(invalid)` = UNKNOWN).
 - [ ] Strong-Kleene information order is explicit; `And`/`Or` are monotone under it, and definite results are stable under refinement.
