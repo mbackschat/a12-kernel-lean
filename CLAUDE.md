@@ -165,7 +165,7 @@ The canonical red/green workflow, executable-example conventions, proof/trust bo
 ## Layout and dependency spine
 
 - [`A12Kernel.lean`](A12Kernel.lean) — library root for the trusted semantics, proofs, and in-library conformance modules identified below; process and evidence drivers remain separate.
-- [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the truth/polarity algebra and value domain: `K` (strong-Kleene, no negation), `Polarity`, `Verdict` + `conj`/`disj`, signed-or-unknown `ScaleInfo`, `NumField`, exact epoch-millisecond `Instant`, and `Value`.
+- [`A12Kernel/Core.lean`](A12Kernel/Core.lean) — the truth/polarity algebra and value domain: `K` (strong-Kleene, no negation), `Polarity`, `Verdict` + `conj`/`disj`, signed-or-unknown `ScaleInfo`, `NumField`, exact epoch-millisecond `Instant`, `TemporalKind`, and heterogeneous `Value`.
 - [`A12Kernel/Cell.lean`](A12Kernel/Cell.lean) — the phase-sensitive cell model: `FormalCause`, `Phase`, `CheckedCell`, `CellObservation` (empty ≠ invalid, refined into a phase-indexed read).
 - [`A12Kernel/Document.lean`](A12Kernel/Document.lean) — addressing & instance: `RowAddr`/`CellAddr`, `Document` (instantiated rows kept separate from cell values), `Env`, and `World` (injected exact clock plus Base Year).
 - [`A12Kernel/Semantics/`](A12Kernel/Semantics/) owns pure executable clauses and reusable result domains. Exact family ownership, coverage, evidence, and exclusions belong only in [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md).

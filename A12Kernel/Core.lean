@@ -117,18 +117,27 @@ def ofEpochSecond (epochSecond : Int) : Instant :=
 
 end Instant
 
+/-- Runtime tag for the three scalar temporal field families. Their static format/component declarations remain model policy, while their admitted runtime payload shares exact instant identity. -/
+inductive TemporalKind where
+  | date
+  | time
+  | dateTime
+  deriving Repr, DecidableEq
+
 /-- The **value domain** (expanded per kind in later stages). Numbers are exact rationals;
     the field's `scale` lives in `NumField`, and *stored-form / representation* equality
     (`7` vs `7.00`) is a separate rendered-string concern, not carried here. Arithmetic
     applies explicit rounding (scale-19 `HALF_UP` for compares, `MathContext(50)` for
     intermediates) at the `spec/04` points, so exactness never silently diverges from the
-    engine. (`spec/13` §1) -/
+    engine. Date, Time, and DateTime retain distinct runtime tags over one exact instant
+    coordinate; declared format and partial-value admission remain upstream. (`spec/13` §1) -/
 inductive Value where
   | num  (d : Rat)
   | str  (s : String)
   | bool (b : Bool)
   | conf (b : Bool)         -- Stored Confirm values are `true`; `false` is comparison-local substitution.
   | enum (stored : String)  -- compared by the stored token, never the display text
+  | temporal (kind : TemporalKind) (instant : Instant)
   deriving Repr, DecidableEq
 
 /-! ## Sanity checks (double as regression guards) -/

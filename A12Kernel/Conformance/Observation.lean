@@ -65,7 +65,17 @@ example : formalCheck confirm (.parsed (.conf false)) =
     { rawPresent := true, parsed := none, findings := [.malformed] } := by
   decide
 
-/- The shared checked boundary retains a temporal or other typed value without wrapping it in the scalar `Value` sum. -/
+/- One heterogeneous runtime domain retains temporal kind independently of exact instant identity. -/
+example :
+    let instant : Instant := { epochMillis := 100999 }
+    (Value.temporal .date instant != Value.temporal .time instant) ∧
+      (Value.temporal .date instant != Value.temporal .dateTime instant) ∧
+      (Value.temporal .time instant != Value.temporal .dateTime instant) ∧
+      (Value.temporal .date instant =
+        Value.temporal .date { epochMillis := 100999 }) := by
+  decide
+
+/- The shared checked boundary remains generic for proof-bearing parser values before their admitted runtime projection into `Value`. -/
 example (value : Nat) :
     observeCell .validation
       ({ rawPresent := true, parsed := some value, findings := [] } : CheckedCell Nat) =
