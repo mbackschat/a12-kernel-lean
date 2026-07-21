@@ -66,7 +66,7 @@ theorem acceptedDependency_reads_value (context : StringComputationContext)
   rw [dependencyCell_shadows_target]
   rw [show observeCell .computation (StringDependencyCell.value stored).checked =
       .value (.str stored.text) by
-    exact computation_observes_clean_value (.str stored.text)]
+    exact computation_observes_clean_value (Value.str stored.text)]
   simp [stored.nonempty, pure, Except.pure]
 
 /-- Either admitted String target error becomes declared-constraint poison when a later computation reads the target. -/

@@ -258,6 +258,8 @@ run_cmd do
 #print axioms A12Kernel.stringPresence_absent_presentEmpty_separator
 #print axioms A12Kernel.computation_observes_clean_value
 #print axioms A12Kernel.computation_observes_single_poison
+#print axioms A12Kernel.typed_validation_observes_single_unknown
+#print axioms A12Kernel.typed_computation_observes_single_poison
 #print axioms A12Kernel.required_empty_observes_unknown_in_validation
 #print axioms A12Kernel.required_empty_observes_empty_in_computation
 #print axioms A12Kernel.ordinary_finding_still_poisons_computation

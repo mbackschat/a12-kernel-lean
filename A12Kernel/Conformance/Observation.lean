@@ -65,4 +65,21 @@ example : formalCheck confirm (.parsed (.conf false)) =
     { rawPresent := true, parsed := none, findings := [.malformed] } := by
   decide
 
+/- The shared checked boundary retains a temporal or other typed value without wrapping it in the scalar `Value` sum. -/
+example (value : Nat) :
+    observeCell .validation
+      ({ rawPresent := true, parsed := some value, findings := [] } : CheckedCell Nat) =
+        (.value value : CellObservation Nat) := by
+  rfl
+
+/- Typed present-empty cells and formal findings use the same phase projection. -/
+example :
+    observeCell .validation
+        ({ rawPresent := true, parsed := none, findings := [] } : CheckedCell Nat) =
+          (.empty : CellObservation Nat) ∧
+      observeCell .computation
+        ({ rawPresent := true, parsed := none, findings := [.malformed] } : CheckedCell Nat) =
+          (.poison .malformed : CellObservation Nat) := by
+  decide
+
 end A12Kernel.Conformance.Observation

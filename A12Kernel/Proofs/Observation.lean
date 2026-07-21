@@ -16,7 +16,8 @@ theorem formalCheck_wellFormed (policy : FieldPolicy) (raw : RawCell) :
         split <;> simp_all
   | rejected cause => simp [formalCheck, CheckedCell.WellFormed]
 
-theorem withFinding_preserves_wellFormed (cell : CheckedCell) (cause : FormalCause)
+theorem withFinding_preserves_wellFormed {α : Type} (cell : CheckedCell α)
+    (cause : FormalCause)
     (h : cell.WellFormed) : (cell.withFinding cause).WellFormed := by
   exact h
 
@@ -61,7 +62,7 @@ theorem formalCheck_parsedEmptyString_observes_empty (phase : Phase) :
   exact formalCheck_presentEmpty_observes_empty _ phase
 
 /-- A clean synthetic computation cell exposes its parsed value without adding a phase-specific interpretation. -/
-theorem computation_observes_clean_value (value : Value) :
+theorem computation_observes_clean_value {α : Type} (value : α) :
     observeCell .computation {
       rawPresent := true
       parsed := some value
@@ -71,10 +72,27 @@ theorem computation_observes_clean_value (value : Value) :
 /-- A synthetic computation cell with one non-required finding exposes that finding as poison and ignores its absent parsed payload. -/
 theorem computation_observes_single_poison (cause : FormalCause)
     (notRequired : cause ≠ .required) :
-    observeCell .computation {
+    observeCell .computation ({
       rawPresent := true
       parsed := none
-      findings := [cause] } = .poison cause := by
+      findings := [cause] } : CheckedCell Value) =
+        (.poison cause : CellObservation Value) := by
+  cases cause <;> first | contradiction | rfl
+
+/-- Any typed checked cell uses the same validation face for its first formal finding. -/
+theorem typed_validation_observes_single_unknown (α : Type)
+    (cause : FormalCause) :
+    observeCell .validation
+      ({ rawPresent := true, parsed := none, findings := [cause] } : CheckedCell α) =
+        .unknown cause := by
+  rfl
+
+/-- Any typed checked cell uses the same computation poison face for a non-required formal finding. -/
+theorem typed_computation_observes_single_poison (α : Type)
+    (cause : FormalCause) (notRequired : cause ≠ .required) :
+    observeCell .computation
+      ({ rawPresent := true, parsed := none, findings := [cause] } : CheckedCell α) =
+        .poison cause := by
   cases cause <;> first | contradiction | rfl
 
 theorem required_empty_observes_unknown_in_validation (policy : FieldPolicy) :
