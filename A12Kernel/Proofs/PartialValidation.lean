@@ -3,7 +3,7 @@ import A12Kernel.Semantics.PartialValidation
 
 /-! # A12Kernel.Proofs.PartialValidation — flat relevance laws
 
-These laws characterize only the admitted nonrepeatable rule instance. The error-field gate and the relevance of condition leaves are independent; no theorem lifts this predicate to groups, wildcard repetitions, aggregates, or whole-document validation.
+These laws characterize only the admitted nonrepeatable rule instance and its supplied rule-level filter marker. The filter gate precedes the independent error-field and condition-leaf relevance decisions; no theorem derives that marker or lifts the flat predicate to groups, wildcard repetitions, aggregates, or whole-document validation.
 -/
 
 namespace A12Kernel
@@ -105,6 +105,13 @@ private theorem partialSelected_truth_refines_full
         Verdict.truth_disj, Verdict.truth_disj]
       exact K.or_information_monotone leftIH rightIH
 
+/-- Kernel 30.8.1's rule-level filter gate precedes error-field relevance and every condition read. -/
+theorem partialFilteredRule_skipped
+    (condition : FlatCondition) (context : FlatContext)
+    (errorField : FieldId) (isRelevant : FlatRelevance) :
+    condition.evalPartial context errorField isRelevant .filtered = .skipped := by
+  rfl
+
 /-- If partial validation fires, every content-bearing completion agreeing on the
     relevant flat fields also fires. Completion may change the firing polarity. -/
 theorem partialRule_fired_implies_fullWithContent_fired_of_agreesOn
@@ -113,7 +120,7 @@ theorem partialRule_fired_implies_fullWithContent_fired_of_agreesOn
     (agreement : partialContext.AgreesOn completionContext isRelevant)
     (relevant : isRelevant errorField = true)
     (partialFired :
-      condition.evalPartial partialContext errorField isRelevant =
+      condition.evalPartial partialContext errorField isRelevant .unfiltered =
         .evaluated (.fired partialPolarity)) :
     ∃ fullPolarity,
       condition.evalFull completionContext true = .fired fullPolarity := by

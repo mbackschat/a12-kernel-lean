@@ -624,7 +624,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - The reopened-star completeness boundary recursively derives structural tail missingness per actual parent and feeds the existing resolved-side disjunction without changing operator directions.
 - The checked resolved-rule boundary preserves silent distinctions and retains a structured message plan until a fired verdict renders and attaches exact address, error code, severity, polarity, and text.
 - The generated-computation fragment reuses that same post-fire boundary and the shared strict-or-tolerance numeric dispatch; ERROR severity does not fix message polarity, and tolerance metadata cannot affect computation selection.
-- Flat partial evaluation remains a separate error-field/relevance consumer
+- Flat partial evaluation first skips a rule marked as containing `Having`, then applies the separate error-field gate and relevance-aware leaf evaluator for unfiltered rules.
 
 #### Evidence
 
@@ -632,6 +632,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Maintained a12-dmkits multi-route quantifier differentials ground the seven unfiltered formulas and broader filter behavior, but this repository retains no portable field-fill observation.
 - Direct ordering, arithmetic fillability, tolerance, partial relevance, integrated expression comparison, generated-rule details, and the label/value display refinements remain source/test anchored and project-locally `external evidence pending`.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` additionally triangulates IF193 group relevance/availability and IF194 nested-star aggregate polarity across both kernel strategies and the peer interpreter, without adding project-local portable evidence.
+- a12-dmkits revision `6039fd3e` and the three kernel code-generation templates ground IF202's method-entry skip for filtered partial rules; this repository retains no portable filtered-rule observation.
 - Same-field alias polarity is source-inferred
 - mixed formal-invalid/domain precedence is an explicit Lean refinement
 
@@ -645,13 +646,13 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - one same-group nonrepeatable two-expression comparison
 - one exact nonrepeatable structured-plan rule message rendered only after firing
 - one checked two-alternative literal-Number generated rule on the same message boundary
-- and one explicit nonrepeatable partial-validation gate.
+- and one ordered nonrepeatable partial-validation filter gate, error-field gate, and relevance-aware leaf evaluator.
 - Open:
   - Checked group-instance/descendant enumeration and wildcardable relevance construction
   - checked construction of reopened trees and ordered cell streams from authored/model/document inputs
   - field-fill authored expansion
   - checked-cell/tally construction
-  - `Having`
+  - `Having` discovery, lowering, and evaluation
   - row eligibility
   - physical read traces
   - hidden false/unknown refinement

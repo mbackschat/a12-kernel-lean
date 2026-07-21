@@ -198,6 +198,7 @@ run_cmd do
 #print axioms A12Kernel.ordinary_finding_still_poisons_computation
 
 #print axioms A12Kernel.partialSelected_agreesOn
+#print axioms A12Kernel.partialFilteredRule_skipped
 #print axioms A12Kernel.partialRule_fired_implies_fullWithContent_fired_of_agreesOn
 
 #print axioms A12Kernel.fieldFilled_observedEmpty_notTrue
