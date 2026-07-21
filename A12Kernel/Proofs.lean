@@ -30,6 +30,7 @@ import A12Kernel.Proofs.PartialValidation
 import A12Kernel.Proofs.ComputationCondition
 import A12Kernel.Proofs.ComputationFillQuantifier
 import A12Kernel.Proofs.ValidationFillQuantifier
+import A12Kernel.Proofs.GroupPresence
 import A12Kernel.Proofs.GeneratedComputationValidation
 import A12Kernel.Proofs.Required
 import A12Kernel.Proofs.StringLength
