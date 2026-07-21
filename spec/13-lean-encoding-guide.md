@@ -87,6 +87,8 @@ Examples and tests anchor concrete behavior; theorems establish universal conseq
 
 Use four distinct evidence roles. The kernel's Groovy-dynamic runtime service is the normative behavioral observation anchor. Generated static-Java is required co-evidence for detecting and characterizing strategy splits; when both routes accept the same legal input but disagree, record the split and do not let static-Java override Groovy-dynamic. [`../../a12-rulekit/adapter`](../../a12-rulekit/adapter) is the external kernel harness and result-export boundary for focused probes; it remains outside this repository's trusted or shipped dependency graph. [`../../a12-rulekit/corpus`](../../a12-rulekit/corpus) is the portable replay format consumed here. [`../../a12-rulekit/interpreter`](../../a12-rulekit/interpreter) is a valuable independent clean-room peer for triangulation and finding divergences, but agreement with it is not kernel evidence and it never resolves a disagreement against the kernel anchor.
 
+For semantics controlled by code generation, inspect in this order: generator template and its backing-bean predicate, concrete generated source for the selected model, then the runtime differential. The template proposes the mechanism, generated output confirms that the model instantiates the branch, and runtime behavior remains the oracle. Extend a12-dmkits' existing codegen-template source map only when a material finding needs another row; do not prebuild an exhaustive parallel operator ledger.
+
 The first engine-backed conformance witnesses should be:
 
 1. empty Number participates as fillable zero in a comparison, including the directional unsigned/signed `!=` cases from the portable `empty-polarity` family;
