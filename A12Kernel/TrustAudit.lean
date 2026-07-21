@@ -162,6 +162,12 @@ run_cmd do
 #print axioms A12Kernel.timeComparison_swapped
 #print axioms A12Kernel.timeComparison_before_excludes_after
 #print axioms A12Kernel.timeComparison_eval_swapped
+#print axioms A12Kernel.timeExtremum_select_of_before
+#print axioms A12Kernel.timeExtremum_select_eq_left_or_right
+#print axioms A12Kernel.timeExtremum_empty
+#print axioms A12Kernel.timeExtremum_unknown_head
+#print axioms A12Kernel.timeExtremum_fixed_singleton
+#print axioms A12Kernel.timeExtremum_tail_comparison_firing
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap

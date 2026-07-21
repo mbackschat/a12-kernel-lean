@@ -15,6 +15,7 @@ import A12Kernel.Proofs.DateTimeDifference
 import A12Kernel.Proofs.DateTimeDayDifference
 import A12Kernel.Proofs.DateShift
 import A12Kernel.Proofs.TimeComparison
+import A12Kernel.Proofs.TimeAggregate
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.CrossLevelCorrelation
 import A12Kernel.Proofs.CorrelationElaboration
