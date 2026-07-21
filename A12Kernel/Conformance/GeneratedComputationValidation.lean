@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.GeneratedComputationValidation
 
-/-! # Guarded generated-computation validation locks -/
+/-! # Literal generated-computation validation locks -/
 
 namespace A12Kernel.Conformance.GeneratedComputationValidation
 
@@ -53,13 +53,30 @@ private def alternative (precondition : ComputationCondition)
     (operation : Rat) : LiteralNumberComputationAlternative :=
   { precondition, operation := literal operation }
 
-private def computation (firstGuard : ComputationCondition) (firstValue : Rat)
-    (secondGuard : ComputationCondition) (secondValue : Rat) :
-    GuardedLiteralNumberComputation :=
+private def guardedComputation (first second : LiteralNumberComputationAlternative)
+    (remaining : List LiteralNumberComputationAlternative := []) :
+    LiteralNumberComputation :=
   { targetField := target.id
     name := "computedTarget"
-    first := alternative firstGuard firstValue
-    second := alternative secondGuard secondValue
+    alternatives := .guarded {
+      first
+      second
+      remaining }
+    messagePlan }
+
+private def computation (firstGuard : ComputationCondition) (firstValue : Rat)
+    (secondGuard : ComputationCondition) (secondValue : Rat) :
+    LiteralNumberComputation :=
+  guardedComputation (alternative firstGuard firstValue)
+    (alternative secondGuard secondValue)
+
+private def singletonComputation (precondition : Option ComputationCondition)
+    (value : Rat) : LiteralNumberComputation :=
+  { targetField := target.id
+    name := "computedTarget"
+    alternatives := .singleton {
+      precondition
+      operation := literal value }
     messagePlan }
 
 private def bothFilled (targetCell : RawCell) : RawFlatContext where
@@ -86,19 +103,19 @@ private def brokenAndHealthy : RawFlatContext where
     else if field = broken.id then .rejected .malformed
     else .empty
 
-private def selectionOf (candidate : GuardedLiteralNumberComputation)
+private def selectionOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) :
     ComputationAlternativeSelection DecodedNumericLiteral :=
   candidate.selectFirst { read := (model.checkContext raw).read }
 
-private def outcomeOf (candidate : GuardedLiteralNumberComputation)
+private def outcomeOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) : Option FlatRuleOutcome :=
   match assembleGeneratedLiteralNumberRule model candidate with
   | .error _ => none
   | .ok rule => some (rule.evalFull raw true)
 
 private def assemblyErrorIn (checkedModel : FlatModel)
-    (candidate : GuardedLiteralNumberComputation) :
+    (candidate : LiteralNumberComputation) :
     Option GeneratedComputationValidationError :=
   match assembleGeneratedLiteralNumberRule checkedModel candidate with
   | .ok _ => none
@@ -114,13 +131,19 @@ private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
     messageType
     text }
 
-private def bothHoldingDifferent : GuardedLiteralNumberComputation :=
+private def bothHoldingDifferent : LiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
 
 private def tolerateFirst (range : NumericToleranceRange)
-    (candidate : GuardedLiteralNumberComputation) :
-    GuardedLiteralNumberComputation :=
-  { candidate with first := { candidate.first with tolerance := some range } }
+    (candidate : LiteralNumberComputation) : LiteralNumberComputation :=
+  match candidate.alternatives with
+  | .singleton alternative =>
+      { candidate with alternatives := .singleton {
+          alternative with tolerance := some range } }
+  | .guarded alternatives =>
+      { candidate with alternatives := .guarded {
+          alternatives with
+          first := { alternatives.first with tolerance := some range } } }
 
 /- Computation selects the first holding operation, while generated validation retains the later holding mismatch. -/
 example :
@@ -131,12 +154,37 @@ example :
           some (.fired (expectedMessage .value)) := by
   native_decide
 
+/- The sole alternative may omit its precondition: computation selects it directly, while generated validation compares it without fabricating a guard. -/
+example :
+    let candidate := singletonComputation none 3
+    selectionOf candidate (bothFilled (.parsed (.num 1))) =
+        .selected (literal 3) ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 1))) =
+        some (.fired (expectedMessage .value)) ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 3))) =
+        some .notFired := by
+  native_decide
+
+/- A singleton's own guard and the table-wide common guard independently suppress both consumers when false. -/
+example :
+    let guarded := singletonComputation (some (.fieldNotFilled gate.id)) 3
+    let commonGuarded :=
+      { singletonComputation none 3 with
+        commonPrecondition := some (.fieldNotFilled gate.id) }
+    selectionOf guarded (bothFilled (.parsed (.num 1))) = .noMatch ∧
+      outcomeOf guarded (bothFilled (.parsed (.num 1))) = some .notFired ∧
+      selectionOf commonGuarded (bothFilled (.parsed (.num 1))) = .noMatch ∧
+      outcomeOf commonGuarded (bothFilled (.parsed (.num 1))) =
+        some .notFired := by
+  native_decide
+
 /- A third guarded alternative remains in declaration order for both first-match selection and all-alternatives validation. -/
 example :
     let candidate :=
-      { computation (.fieldNotFilled gate.id) 90
-          (.fieldNotFilled gate.id) 91 with
-        remaining := [alternative (.fieldFilled gate.id) 3] }
+      guardedComputation
+        (alternative (.fieldNotFilled gate.id) 90)
+        (alternative (.fieldNotFilled gate.id) 91)
+        [alternative (.fieldFilled gate.id) 3]
     selectionOf candidate (bothFilled (.parsed (.num 1))) =
         .selected (literal 3) ∧
       outcomeOf candidate (bothFilled (.parsed (.num 1))) =
@@ -268,25 +316,32 @@ example :
 
 /- Authored numeric scale remains checked before the literal value is erased into the flat comparison. -/
 example :
+    let singletonMismatch :=
+      { singletonComputation none 1 with alternatives := .singleton {
+          operation := { value := 1, authoredScale := 1 } } }
     let firstMismatch :=
-      { bothHoldingDifferent with
-        first := {
+      guardedComputation {
           precondition := .fieldFilled gate.id
           operation := { value := 1, authoredScale := 1 }
-        } }
+        } (alternative (.fieldFilled gate.id) 2)
     let secondMismatch :=
-      { bothHoldingDifferent with
-        second := {
+      guardedComputation (alternative (.fieldFilled gate.id) 1) {
           precondition := .fieldFilled gate.id
           operation := { value := 2, authoredScale := 1 }
-        } }
+        }
     let thirdMismatch :=
-      { bothHoldingDifferent with
-        remaining := [{
+      guardedComputation (alternative (.fieldFilled gate.id) 1)
+        (alternative (.fieldFilled gate.id) 2) [{
           precondition := .fieldFilled gate.id
           operation := { value := 3, authoredScale := 1 }
-        }] }
-    assemblyErrorOf firstMismatch =
+        }]
+    assemblyErrorOf singletonMismatch =
+        some (.operationScaleMismatch 1 0 1) ∧
+      assemblyErrorOf
+        { singletonMismatch with
+          commonPrecondition := some (.fieldFilled target.id) } =
+        some (.operationScaleMismatch 1 0 1) ∧
+      assemblyErrorOf firstMismatch =
         some (.operationScaleMismatch 1 0 1) ∧
       assemblyErrorOf secondMismatch =
         some (.operationScaleMismatch 2 0 1) ∧
@@ -296,21 +351,25 @@ example :
 
 /- A tolerance alternative bypasses the ordinary exact-comparison scale gate. -/
 example :
+    let singletonMismatch :=
+      { singletonComputation none 1 with alternatives := .singleton {
+          operation := { value := 1, authoredScale := 1 }
+          tolerance := some .range1 } }
     let firstMismatch :=
-      { bothHoldingDifferent with
-        first := {
+      guardedComputation {
           precondition := .fieldFilled gate.id
           operation := { value := 1, authoredScale := 1 }
           tolerance := some .range1
-        } }
+        } (alternative (.fieldFilled gate.id) 2)
     let thirdMismatch :=
-      { bothHoldingDifferent with
-        remaining := [{
+      guardedComputation (alternative (.fieldFilled gate.id) 1)
+        (alternative (.fieldFilled gate.id) 2) [{
           precondition := .fieldFilled gate.id
           operation := { value := 3, authoredScale := 1 }
           tolerance := some .range1
-        }] }
-    (assembleGeneratedLiteralNumberRule model firstMismatch).isOk = true ∧
+        }]
+    (assembleGeneratedLiteralNumberRule model singletonMismatch).isOk = true ∧
+      (assembleGeneratedLiteralNumberRule model firstMismatch).isOk = true ∧
       (assembleGeneratedLiteralNumberRule model thirdMismatch).isOk = true := by
   native_decide
 
@@ -358,13 +417,17 @@ example :
               (.or (.fieldNotFilled broken.id) (.fieldFilled target.id))) } =
         some (.targetSelfReference .common) ∧
       assemblyErrorOf
-        { bothHoldingDifferent with
-          first := alternative (.fieldFilled target.id) 1 } =
+        (guardedComputation (alternative (.fieldFilled target.id) 1)
+          (alternative (.fieldFilled gate.id) 2)) =
         some (.targetSelfReference (.alternative 1)) ∧
       assemblyErrorOf
-        { bothHoldingDifferent with
-          remaining := [alternative (.fieldFilled target.id) 3] } =
-        some (.targetSelfReference (.alternative 3)) := by
+        (guardedComputation (alternative (.fieldFilled gate.id) 1)
+          (alternative (.fieldFilled gate.id) 2)
+          [alternative (.fieldFilled target.id) 3]) =
+        some (.targetSelfReference (.alternative 3)) ∧
+      assemblyErrorOf
+        (singletonComputation (some (.fieldFilled target.id)) 1) =
+        some (.targetSelfReference (.alternative 1)) := by
   native_decide
 
 /- The direct-ID route rejects repeatable guard and target declarations before constructing a flat rule. -/
@@ -381,8 +444,9 @@ example :
           commonPrecondition := some (.fieldFilled repeatedGate.id) } =
         some (.resolve (.repeatableReference repeatedGate.path)) ∧
       assemblyErrorIn repeatableModel
-        { bothHoldingDifferent with
-          remaining := [alternative (.fieldFilled repeatedGate.id) 3] } =
+        (guardedComputation (alternative (.fieldFilled gate.id) 1)
+          (alternative (.fieldFilled gate.id) 2)
+          [alternative (.fieldFilled repeatedGate.id) 3]) =
         some (.resolve (.repeatableReference repeatedGate.path)) := by
   native_decide
 

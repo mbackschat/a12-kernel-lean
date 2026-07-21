@@ -555,7 +555,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - One resolved String table composes that selector once with the existing expression/target/delta step
 - clean no-value, target rejection, and poison from the selected operation are terminal, a holding head makes every suffix irrelevant through operation evaluation, and common false/poison decides before guard or operation reads.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
-- The checked two-or-more guarded literal-Number desugaring admits an optional common condition plus direct scalar-presence alternative guards. Computation reuses the common-expansion selector, while generated validation left-folds every mismatch in declaration order and places the common guard once below `FieldFilled(target)` and above that complete disjunction. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
+- The checked literal-Number desugaring represents every nonempty table as either one optionally guarded alternative or two-or-more fully guarded alternatives, without fabricating a true guard. Computation selects a wholly unguarded singleton directly and otherwise reuses the common-expansion selector, while generated validation omits an absent singleton guard, left-folds wider mismatch tables in declaration order, and places the common guard once below `FieldFilled(target)` and above the complete mismatch body. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
 - The checked guard traversal rejects the exact computed target ID in common and every alternative condition before phase lowering, retaining common versus one-based alternative position; literal operations make operation-side self-reference unrepresentable only in this narrow fragment.
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
@@ -578,13 +578,13 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - all seven field-fill predicates over a caller-supplied already-expanded ordered slot stream
 - first-match selection with resolved String selected-operation/target/delta integration
 - optional common-precondition expansion over that already-guarded table
-- a checked two-or-more guarded literal-Number generated-rule fragment with an optional checked common precondition
+- a checked nonempty literal-Number generated-rule fragment with an optionally guarded singleton or guarded two-or-more table and an optional checked common precondition
 - one String target and direct cascade
 - and one already-resolved Number expression → stored form → ordinary fit-path target → delta → exact application → cause-free dependency chain.
 - Open:
   - General computation authoring and operation-side target self-reference checks
   - warning-suppressed assignment and runtime target checks
-  - checked zero/singleton/default authoring
+  - checked zero/default authoring outside the structurally nonempty literal fragment
   - general checked common-precondition authoring beyond the guarded literal fragment
   - expression-valued generated validation
   - comparison guards
@@ -649,7 +649,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - known arithmetic and fixed-tolerance polarity
 - one same-group nonrepeatable two-expression comparison
 - one exact nonrepeatable structured-plan rule message rendered only after firing
-- one checked two-or-more guarded literal-Number generated rule with an optional common condition on the same message boundary
+- one checked nonempty literal-Number generated rule, split between an optionally guarded singleton and guarded two-or-more table, with an optional common condition on the same message boundary
 - and one ordered nonrepeatable partial-validation filter gate, error-field gate, and relevance-aware leaf evaluator.
 - Open:
   - Checked group-instance/descendant enumeration and wildcardable relevance construction

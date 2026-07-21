@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `e2f0f4a` (`feat(validation): support guarded computation tables`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,110-declaration trust audit passed.
+- Semantic baseline before the current capsule: `d085ae2` (`feat(computation): reject target self-reference`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,169-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Reject computed-target self-reference in every common or alternative guard of the existing checked literal-Number fragment. Preserve nested syntax detection and guard position, and leave operation-side checking for the future expression-valued owner.
+Close the checked literal-Number table's nonempty cardinality split: one alternative may omit its own precondition, while two-or-more alternatives remain fully guarded. Use an explicit singleton/guarded sum so zero alternatives and fabricated true guards remain unrepresentable.
 
-Success means common, first, and later alternative target references fail before phase lowering; a trusted law covers every admitted nested condition shape; and references to other fields remain unchanged. The newly found kernel authoring rule is canonicalized in `spec/09` and queued outbound as `SPEC-2026-07-21-06`.
+Success means runtime selection and generated validation consume the same optional singleton/common guards through their distinct phase semantics; singleton strict-scale, tolerance, and self-reference checks retain one-based diagnostics; the wider table remains unchanged; and focused plus full repository gates pass. The cardinality rule is already canonical in [`spec/09-computations.md`](../spec/09-computations.md), so this capsule creates no outbound ledger entry.
 
 ## Frontier queue
 
@@ -25,7 +25,8 @@ Success means common, first, and later alternative target references fail before
 - **Satisfied — guarded-table common precondition:** `9894c86` left-conjoins the resolved common condition into every guarded alternative and carries the exact holding/not-true/poison laws through the resolved String consumer.
 - **Satisfied — generated-validation common precondition:** `1fc3050` carries one checked common condition through both phases and keeps validation's guard outside the complete mismatch disjunction.
 - **Satisfied — guarded-table breadth:** `e2f0f4a` widens the same checked literal owner to two-or-more alternatives with one declaration-ordered remainder.
-- **Active — computed-target guard rejection:** reject the target ID in common and every alternative guard, with operation-side checking retained for expression-valued authoring.
+- **Satisfied — computed-target guard rejection:** `d085ae2` rejects the target ID in common and every alternative guard, with operation-side checking retained for expression-valued authoring.
+- **Active — nonempty literal table:** admit an optionally guarded singleton beside the existing guarded two-or-more table without manufacturing a true condition.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
 - **Missing fact — String targets:** needs declaration-owned length and line-break policy; do not infer unconstrained policy from erased model facts.

@@ -274,6 +274,8 @@ run_cmd do
 #print axioms A12Kernel.generatedComputationGuard_targetSelfReference_rejected
 #print axioms A12Kernel.guardedLiteralNumber_firstHolds_selects
 #print axioms A12Kernel.guardedLiteralNumber_holdingCommon_firstHolds_selects
+#print axioms A12Kernel.singleLiteralNumber_unconditional_selects
+#print axioms A12Kernel.singleLiteralNumber_holdingCommon_selects
 #print axioms A12Kernel.minimumGuardedGeneratedNumberCondition_exact
 #print axioms A12Kernel.minimumGuardedGeneratedNumberCondition_withCommon_exact
 #print axioms A12Kernel.disjoinGeneratedNumberMismatches_append
@@ -281,6 +283,7 @@ run_cmd do
 #print axioms A12Kernel.generatedLiteralNumberMismatch_withoutTolerance
 #print axioms A12Kernel.generatedLiteralNumberMismatch_withTolerance
 #print axioms A12Kernel.literalNumberAlternative_tolerance_selectionIrrelevant
+#print axioms A12Kernel.singleLiteralNumber_tolerance_selectionIrrelevant
 #print axioms A12Kernel.generatedNumberCondition_emptyTarget_notFired
 
 #print axioms A12Kernel.desugarAbsoluteRequired_preserves
