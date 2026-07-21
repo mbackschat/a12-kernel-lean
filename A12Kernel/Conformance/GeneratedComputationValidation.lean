@@ -18,7 +18,7 @@ private def broken : FlatFieldDecl :=
   { id := 2, groupPath := ["Form"], name := "Broken",
     policy := { kind := .boolean } }
 
-private def unsupportedTextGuard : FlatFieldDecl :=
+private def textGuard : FlatFieldDecl :=
   { id := 3, groupPath := ["Form"], name := "TextGuard",
     policy := { kind := .string } }
 
@@ -33,11 +33,11 @@ private def repeatedTarget : FlatFieldDecl :=
     repeatableScope := [10] }
 
 private def model : FlatModel :=
-  { fields := [gate, target, broken, unsupportedTextGuard] }
+  { fields := [gate, target, broken, textGuard] }
 
 private def repeatableModel : FlatModel :=
   { fields := [
-      gate, target, broken, unsupportedTextGuard, repeatedGate, repeatedTarget]
+      gate, target, broken, textGuard, repeatedGate, repeatedTarget]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
 private def messagePlan : MessageRenderPlan :=
@@ -71,6 +71,12 @@ private def bothFilled (targetCell : RawCell) : RawFlatContext where
 private def gateEmptyTargetOne : RawFlatContext where
   read field :=
     if field = target.id then .parsed (.num 1)
+    else .empty
+
+private def textGuardTargetOne (textCell : RawCell) : RawFlatContext where
+  read field :=
+    if field = textGuard.id then textCell
+    else if field = target.id then .parsed (.num 1)
     else .empty
 
 private def brokenAndHealthy : RawFlatContext where
@@ -211,15 +217,39 @@ example :
         some (.operationScaleMismatch 2 0 1) := by
   native_decide
 
-/- Unsupported guard kinds and non-Number targets fail closed at checked desugaring. -/
+/- String presence guards are consumed in both phases without widening the Number target or table shape. -/
+example :
+    let candidate :=
+      computation (.fieldFilled textGuard.id) 2
+        (.fieldNotFilled textGuard.id) 1
+    selectionOf candidate
+        (textGuardTargetOne (.parsed (.str "present"))) =
+        .selected (literal 2) ∧
+      outcomeOf candidate
+        (textGuardTargetOne (.parsed (.str "present"))) =
+        some (.fired (expectedMessage .value)) ∧
+      selectionOf candidate (textGuardTargetOne .presentEmpty) =
+        .selected (literal 1) ∧
+      outcomeOf candidate (textGuardTargetOne .presentEmpty) =
+        some .notFired := by
+  native_decide
+
+/- A malformed String guard preserves the established phase split: computation poisons while generated validation is unknown. -/
+example :
+    let candidate :=
+      computation (.fieldFilled textGuard.id) 2
+        (.fieldNotFilled textGuard.id) 2
+    selectionOf candidate (textGuardTargetOne (.rejected .malformed)) =
+        .poison .malformed ∧
+      outcomeOf candidate (textGuardTargetOne (.rejected .malformed)) =
+        some .unknown := by
+  native_decide
+
+/- The generated fragment still rejects a non-Number target. -/
 example :
     assemblyErrorOf
-        (computation (.fieldFilled unsupportedTextGuard.id) 1
-          (.fieldFilled gate.id) 2) =
-        some (.unsupportedGuardField unsupportedTextGuard.id) ∧
-      assemblyErrorOf
-        { bothHoldingDifferent with targetField := broken.id } =
-        some (.targetNotNumber broken.id) := by
+      { bothHoldingDifferent with targetField := broken.id } =
+      some (.targetNotNumber broken.id) := by
   native_decide
 
 /- The direct-ID route rejects repeatable guard and target declarations before constructing a flat rule. -/
