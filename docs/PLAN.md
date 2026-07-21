@@ -4,7 +4,7 @@ This file is the volatile continuation checkpoint. Stable purpose and delivery r
 
 ## Verified baseline
 
-The verified semantic baseline before the current correction was commit `8f0f029`. The current baseline is the introducing commit for the completed empty-String placement correction below; its focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding resolved Number `Sum` capsule passed the same full gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
+The verified semantic baseline before the current correction was commit `8f0f029`. The current baseline is the introducing commit for the completed finite Berlin 2024 calendar-day capsule below; its focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding semantic capsules passed the same proportional gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
 
 The project currently has:
 
@@ -136,9 +136,17 @@ Checked flat rules now retain a `MessageRenderPlan` instead of pre-rendered text
 
 The red change supplied a plan to the existing checked assembler and failed at its pre-rendered-text parameter. The final cases distinguish both silent branches from a fired rule, exact scale-two default display, raw CRLF opacity, and different fired texts. Raw template parsing, token/path legality, actual provider invocation, document display lookup, exact-default construction, repeats, custom-condition integration, and protocol exposure remain outside. No canonical clause changed, so no synchronization-ledger entry was added.
 
-## Immediate next step: model-zone temporal profile risk audit
+## Completed semantic unit: finite Berlin 2024 calendar-day difference
 
-Inventory the existing `FullDate`, `LocalDateTime`, `Instant`, fixed Berlin overlap, and DateTime difference boundaries against the `DifferenceInDays` calendar-step clause. Select the smallest explicit model-zone profile that proves day-step behavior for both ordinary days and a transition boundary without becoming a timezone database or calendar framework. If the required profile cannot be stated from current source-grounded facts, record the missing discriminator and rotate to another ready semantic keystone.
+The temporal risk audit selected one explicit profile instead of a timezone abstraction. `Berlin2024Profile` replaces the old autumn-only namespace and admits fresh labels only on 2024-03-29 through 2024-04-01 plus 2024-10-27. It rejects spring `02:xx` labels, preserves the later-side autumn overlap policy, and exposes consecutive calendar-day stepping only inside the spring slice.
+
+The red matrix first failed because no day-difference module existed. The completed evaluator counts successive stateful landings without passing the later resolved instant. A March 30 `02:30` landing becomes March 31 `01:30`, and the next step retains `01:30`; therefore a `01:45` endpoint counts one despite an elapsed-seconds quotient of zero, while April 1 `02:00` counts two. Ordinary, threshold, reverse-sign, retained-clock, and unsupported cross-slice cases separate the mechanism. Trusted laws establish gap rejection, admitted self-zero, and swap negation with symmetric failure.
+
+This closes levels 1–2 only for fresh resolved labels in the finite spring profile. Mixed Date/DateTime admission, empty/formal operands, polarity/fillability, constructed-Date legacy-calendar identity, other Berlin dates/years, other zones, checked lowering, and protocol exposure remain open. The canonical clause and a12-dmkits reconciliation were already accepted under `SPEC-2026-07-20-08`, so no new outbound ledger entry was created. No calendar framework, timezone database, support mechanism, dependency, or harness was added.
+
+## Immediate next step: repeatable operand-resolution risk audit
+
+Inventory the checked path/star/scope owners, `Document` row addresses, `ReopenedStarDomain`, correlation environment resolution, and resolved aggregate streams. Test the smallest high-risk seam that can turn one checked repeatable operand into an ordered resolved source without inventing the general model/path/relevance layer already rejected by the construction audit. Select a capsule only if current model facts can prove the source declaration, captured outer bindings, row order, and per-source missing metadata; otherwise record the exact missing owner and rotate.
 
 ## Likely next keystone rotation
 
@@ -160,7 +168,7 @@ Choose the next unit by:
 
 These are not repository-wide blockers:
 
-- `DifferenceInDays` requires a profile-aware model-zone legacy-calendar step account; the zone-free proleptic `CivilDate` coordinate is not a valid substitute.
+- `DifferenceInDays` outside the finite Berlin 2024 spring profile still requires a profile-aware model-zone legacy-calendar step account; the zone-free proleptic `CivilDate` coordinate is not a valid substitute.
 - Authored message/whole-rule integration must still parse and check templates and construct display inputs from actual providers, document values, and exact format defaults; untested display routes and project-local portable evidence remain open.
 - Validation group presence now has a resolved admitted-content/error/relevance derivation and four consumer projections; checked group-instance enumeration and wildcardable `NONE`/`PARTIAL`/`FULL` relevance construction remain open.
 - Authored nested-star aggregate lowering must construct the proved reopened tree and ordered cell stream from checked paths, model repeatabilities, and scoped `Document` rows; resolved aggregate consumers do not perform that lowering themselves.

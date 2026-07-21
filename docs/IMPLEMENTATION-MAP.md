@@ -268,6 +268,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Semantics/DateConstructionNumeric.lean`](../A12Kernel/Semantics/DateConstructionNumeric.lean)
 - [`Semantics/DateTime.lean`](../A12Kernel/Semantics/DateTime.lean)
 - [`Semantics/DateTimeDifference.lean`](../A12Kernel/Semantics/DateTimeDifference.lean)
+- [`Semantics/DateTimeDayDifference.lean`](../A12Kernel/Semantics/DateTimeDayDifference.lean)
 - the matching modules under [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/)
 
 #### Internal account
@@ -281,7 +282,9 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - laws establish positive divisors, self-zero, swap negation, exact seconds and exact-unit recovery, while cases separate reverse truncation toward zero from floor division.
 - `CivilDate.next?` uses checked construction
 - laws prove it always advances the Gregorian coordinate by one, strict civil chronology raises that coordinate, and UTC resolution preserves strict local chronology.
-- One fixed `BerlinAutumn2024` risk slice resolves only 2024-10-27, chooses daylight before 02:00 and standard from 02:00, and fails closed elsewhere
+- One finite `Berlin2024Profile` resolves fresh labels across the selected spring and autumn transition dates, rejects the spring gap, preserves the existing later-side autumn overlap policy, and fails closed elsewhere.
+- Its spring-only calendar step changes a March 30 `02:xx` landing to March 31 `01:xx` and retains that adjusted clock on the next step.
+- The bounded `DifferenceInDays` core counts those stateful landings in authored order, rejects pairs outside the consecutive spring slice, and has universal self-zero and swap-negation laws.
 
 #### External evidence
 
@@ -293,7 +296,10 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented internally, narrow; external evidence partly pending:** Lean defines an unbounded positive-era Date account, resolved three-part construction classification, closed occurrence-preserving Date-range overlap truth, both resolved overlap operator shapes and their filter-derived polarity scans, a proved calendar-coordinate successor/strict-monotonicity bridge, a proved UTC local-order bridge, resolved `DifferenceInHours/Minutes/Seconds` over exact instants, and one disposable exact-date Berlin overlap discriminator.
+- **Status:** implemented internally on narrow domains; external evidence partly pending.
+- Date coverage includes the unbounded positive-era account, resolved three-part construction classification, and the proved calendar-coordinate successor/strict-monotonicity bridge.
+- Date-range coverage includes closed occurrence-preserving overlap truth, both resolved operator shapes, and their filter-derived polarity scans.
+- DateTime coverage includes the proved UTC local-order bridge, resolved `DifferenceInHours/Minutes/Seconds`, the finite Berlin 2024 transition profile, and resolved `DifferenceInDays` inside its consecutive spring slice.
 - The construction classification and direct numeric component projection are implemented, but they do not yet retain calendar identity, compose temporal no-value reasons beyond extraction, implement date differences, or implement legacy month/year operations.
 - Date-range raw cell classification, actual filter evaluation, paths/stars, row gates, and checked lowering remain outside the resolved operator capsule.
 - Open:
@@ -303,14 +309,14 @@ For targeted work, open only the owning clause and any linked cross-clause note.
   - other operator gates and polarity
   - DateTime difference operand/result checking and Number consumption
   - general Date/DateTime comparisons and checked integration
-  - `DifferenceInDays` and calendar differences
+  - `DifferenceInDays` outside the finite spring profile and other calendar differences
   - other date arithmetic
   - full `Date(...)`/Time authoring
   - optional 1900 admission
   - fragments/range construction/Base Year
   - result admission/targets
   - general model-zone dispatch
-  - spring gaps
+  - spring-gap formal-error/cell integration
   - other Berlin dates/transitions/history
   - `Today`/`Now`
   - checked rule lowering
@@ -829,14 +835,15 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - computation consumption, date differences, compositional temporal no-value propagation, and legacy-calendar identity remain open.
 - Concrete calendar resolution is deliberately not implemented: kernel 30.8.1 uses a zone-aware hybrid `GregorianCalendar`, while the reusable `CivilDate` account is zone-free and proleptic, and the two accounts have reachable cutover and zone-discontinuity separators.
 
-### `DifferenceInDays` profile blocker
+### `DifferenceInDays` finite-profile closure
 
-- No resolved `DifferenceInDays` evaluator is retained.
 - Kernel source counts signed model-zone `Calendar.DAY_OF_MONTH` steps, while the obvious reuse of `CivilDate.unixEpochDay` would impose a zone-free proleptic coordinate.
-- Those accounts agree on the named maintained time-of-day and reverse-sign cases but separate both on a Berlin special-hour landing and across a skipped whole date
+- Those accounts separate on a Berlin special-hour landing and across a skipped whole date.
 - [`LF47`](LEAN-FINDINGS.md#lf47--differenceindays-needs-a-model-zone-calendar-step-account) records both reproduced discriminators.
 - Accepted [`SPEC-2026-07-20-08`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-08--differenceindays-counts-model-zone-calendar-steps) records both kernel-route separators and the peer calendar-step reconciliation.
-- A future Lean implementation must still consume a profile-aware calendar-step account or prove and enforce a narrower supported domain before it can add empty/formal operand coercion, fillability/polarity, checked lowering, or protocol exposure.
+- Lean now enforces the narrower option: `Berlin2024Profile` exposes fresh-label resolution and stateful spring day stepping, and `DateTimeDayDifference` counts at most the three landings within that exact slice.
+- Ordinary, threshold, reverse-sign, retained-adjusted-clock, elapsed-seconds non-equivalence, and unsupported cross-slice cases form the separating matrix.
+- Empty/formal operand coercion, fillability/polarity, checked lowering, constructed-Date calendar identity, wider Berlin history, other zones, and protocol exposure remain later consumers rather than being inferred from this profile.
 
 ## Reference-process exposure
 

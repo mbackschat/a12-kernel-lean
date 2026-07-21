@@ -6,6 +6,7 @@ import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateConstructionNumeric
 import A12Kernel.Proofs.DateTime
 import A12Kernel.Proofs.DateTimeDifference
+import A12Kernel.Proofs.DateTimeDayDifference
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.CrossLevelCorrelation
 import A12Kernel.Proofs.CorrelationElaboration
