@@ -168,6 +168,9 @@ run_cmd do
 #print axioms A12Kernel.timeExtremum_unknown_head
 #print axioms A12Kernel.timeExtremum_fixed_singleton
 #print axioms A12Kernel.timeExtremum_tail_comparison_firing
+#print axioms A12Kernel.temporalComparison_admitsFormats_symmetric
+#print axioms A12Kernel.temporalAggregateFormatsCompatible_implies_comparison
+#print axioms A12Kernel.temporalEqualFormats_implies_beforeFormats
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap
