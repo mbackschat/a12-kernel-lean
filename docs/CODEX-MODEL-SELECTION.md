@@ -23,6 +23,35 @@ The current Codex guidance describes Sol as the choice for complex open-ended wo
 
 Do not select maximum reasoning for a whole feature set by default. Escalate one identified hard decision, then return to the warm root's established selection. Do not select Ultra by default: this repository deliberately controls whether and how subagents are spawned, while Ultra may delegate proactively. An explicit owner request may still choose either setting for a concrete reason.
 
+## Project-specific work mapping
+
+Use this matrix when minting a root or subagent prompt for a12-kernel-lean. The concrete selection belongs in the mandatory prompt header; the abstract profile remains the durable classification.
+
+| Work | Abstract profile | Requested model and reasoning |
+|---|---|---|
+| Semantic representation decisions, ambiguous kernel behavior, theorem boundaries, or cross-family integration | BEST | GPT-5.6 Sol, Medium; High when the identified decision is materially difficult |
+| Multi-level outer correlation, temporal discontinuities, computation scheduling/poison, or a genuinely stuck foundational proof | BEST | GPT-5.6 Sol, High or Extra High |
+| Bounded whole-family source audit and semantic decision table | REGULAR | GPT-5.6 Terra, High |
+| Implementation after the semantics and representation are precisely specified | REGULAR | GPT-5.6 Terra, Medium; High when proof-heavy |
+| Independent adversarial review or deliberately cold consumer-readback probe | REGULAR | GPT-5.6 Terra, High |
+| Spec/Lean consistency audit with exact files and questions | REGULAR | GPT-5.6 Terra, Medium; High for a large or subtle boundary |
+| File inventories, targeted searches, link checks, test-log classification, or line counts | SIMPLE | GPT-5.6 Luna, Low |
+| Mechanical prose normalization or structured extraction with a closed output contract | SIMPLE | GPT-5.6 Luna, Low; Medium for a larger input |
+| Final semantic acceptance, integration review, and decision whether the feature set is closed | BEST | GPT-5.6 Sol, Medium; High only when unresolved risk remains |
+
+When one feature set contains several rows, preserve its warm root rather than restarting under a different model for every phase. A BEST/Sol root may delegate one bounded REGULAR/Terra or SIMPLE/Luna task at a time, wait for it, and then resume integration. If the work starts from an already closed decision table and has no unresolved representation risk, a REGULAR/Terra root may own the feature set instead.
+
+## Token optimization rules
+
+1. Keep an unresolved semantic feature set's root on GPT-5.6 Sol with Medium reasoning by default. Increase effort only for an actual hard decision, and return to the established warm-root level afterward.
+2. Prefer one bounded GPT-5.6 Terra worker over several overlapping reviews. All delegated work is sequential: the root waits, integrates the result, and only then decides whether another audit is justified.
+3. Use GPT-5.6 Luna only where correctness is mechanically checkable from an exact input and output contract. Luna must not decide kernel semantics, theorem claims, architecture, or evidence sufficiency.
+4. Do not compensate for a weaker model by automatically choosing Extra High. Terra/High is suitable for a bounded deep audit; Sol/Medium is normally safer for an ambiguous cross-cutting decision.
+5. Avoid delegation for one-file work, routine commands, or sequential reasoning that depends on the warm root's accumulated context. Each subagent repeats model and tool work and therefore normally consumes more total tokens than direct root work.
+6. Require compact results: decision table or requested structure, exact file/line evidence, contradictions, uncertainties, reusable mechanisms, and one recommendation. Do not request a long narrative when that structure is sufficient.
+7. Escalate model capability or reasoning only when the first appropriately scoped attempt exposes unresolved ambiguity, contradicts authoritative evidence, or fails a relevant semantic/proof gate. Do not escalate pre-emptively.
+8. Keep semantic acceptance with the root. A worker may audit, implement a closed task, or challenge a proposal, but it does not silently broaden scope or declare the feature set complete.
+
 ## Mandatory prompt header
 
 Every minted root or subagent prompt must name both the abstract profile and the current concrete selection. Use this header before the objective:
