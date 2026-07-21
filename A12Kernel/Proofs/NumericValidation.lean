@@ -85,6 +85,26 @@ theorem numericTolerance_acceptsScales
     (NumericValidationOp.tolerance range).acceptsScales left right = true := by
   rfl
 
+/-- Suppressing the one supported warning admits every exact-scale pair, including an unknown derived scale. -/
+theorem numericValidation_scaleSuppression_accepts
+    (op : NumericValidationOp) (left right : NumericScaleSummary) :
+    op.acceptsScalesWithSuppression true left right = true := by
+  simp [NumericValidationOp.acceptsScalesWithSuppression]
+
+/-- Without the directive, the checked consumer retains the ordinary scale gate exactly. -/
+theorem numericValidation_withoutScaleSuppression
+    (op : NumericValidationOp) (left right : NumericScaleSummary) :
+    op.acceptsScalesWithSuppression false left right =
+      op.acceptsScales left right := by
+  rfl
+
+/-- The parser warning directive affects admission only; once checked, it cannot change evaluation. -/
+theorem numericComparison_scaleSuppression_runtimeIrrelevant
+    (comparison : NumericComparison) (context : FlatContext) (suppressed : Bool) :
+    ({ comparison with suppressExactScaleWarning := suppressed }).evalSelected context =
+      comparison.evalSelected context := by
+  rfl
+
 private theorem rootDivision_plain
     (expression numerator denominator : LoweredNumericExpr Atom)
     (plain : expression.isPlainArithmetic = true)

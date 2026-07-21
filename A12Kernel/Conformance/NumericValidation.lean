@@ -49,9 +49,10 @@ private def twoSided (op : NumericComparisonOp)
     SurfaceNumericComparison :=
   { op := .ordinary op, left, right }
 
-private def raw (u v s : RawCell := .empty) : RawFlatContext where
+private def raw (u v s scale2Value : RawCell := .empty) : RawFlatContext where
   read id :=
-    if id == 0 then u else if id == 1 then v else if id == 6 then s else .empty
+    if id == 0 then u else if id == 1 then v else if id == 2 then scale2Value
+      else if id == 6 then s else .empty
 
 private def verdictOf (surface : SurfaceNumericComparison)
     (context : RawFlatContext := raw) (hasContent : Bool := true) : Option Verdict :=
@@ -62,6 +63,10 @@ private def errorOf (surface : SurfaceNumericComparison) :
   match elaborateNumericComparison model ["Order"] surface with
   | .ok _ => none
   | .error error => some error
+
+private def suppressScaleWarning
+    (surface : SurfaceNumericComparison) : SurfaceNumericComparison :=
+  { surface with suppressExactScaleWarning := true }
 
 private def tolerance (range : NumericToleranceRange)
     (left right : AuthoredNumericExpr SurfaceFieldPath) :
@@ -314,6 +319,19 @@ example : errorOf (twoSided .equal (atom "U") (atom "Scale2")) =
       { scale := .exact 2, canExpandScale := false }) := by
   native_decide
 
+/- The one legal warning suppression bypasses exact scale rejection without changing the evaluated comparison. -/
+example : verdictOf
+    (suppressScaleWarning (comparison .equal (atom "U") 0 2))
+    (raw (.parsed (.num 0))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (suppressScaleWarning
+      (twoSided .notEqual (atom "U") (atom "Scale2")))
+    (raw (.parsed (.num 0)) .empty .empty (.parsed (.num 1))) =
+      some (.fired .value) := by
+  native_decide
+
 example : (elaborateNumericComparison model ["Order"]
     (twoSided .greater (atom "U") (atom "Scale2"))).isOk = true := by
   native_decide
@@ -328,6 +346,24 @@ example : errorOf
       some (.exactScaleMismatch
         { scale := .unknown, canExpandScale := false }
         { scale := .exact 0, canExpandScale := true }) := by
+  native_decide
+
+/- Suppression also admits the kernel's unknown derived scale rather than guessing a concrete scale. -/
+example : verdictOf
+    (suppressScaleWarning
+      (comparison .equal
+        (.binary .divide (atom "U") (literal 2 0)) 2))
+    (raw (.parsed (.num 4))) = some (.fired .value) := by
+  native_decide
+
+/- Suppression is not a general authoring escape hatch. -/
+example : errorOf
+    (suppressScaleWarning
+      (comparison .equal
+        (.binary .divide
+          (.binary .divide (atom "U") (literal 2 0))
+          (literal 3 0))
+        0)) = some (.authoring .tooManyDivisions) := by
   native_decide
 
 /- Division-region legality resets at the comparison boundary, so one division on each side is accepted. -/

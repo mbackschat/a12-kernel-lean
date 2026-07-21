@@ -14,6 +14,7 @@ structure SurfaceNumericComparison where
   op : NumericValidationOp
   left : AuthoredNumericExpr SurfaceFieldPath
   right : AuthoredNumericExpr SurfaceFieldPath
+  suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
 /-- Resolved runtime representation; static guarantees belong to `CheckedNumericComparison`. -/
@@ -21,6 +22,7 @@ structure NumericComparison where
   op : NumericValidationOp
   left : AuthoredNumericExpr FlatNumberField
   right : AuthoredNumericExpr FlatNumberField
+  suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
 /-- Closed rejection classes for this deliberately narrow consumer, not kernel diagnostic codes. -/
@@ -118,6 +120,12 @@ def NumericValidationOp.acceptsScales (op : NumericValidationOp)
   | .ordinary comparison => comparison.acceptsScales left right
   | .tolerance _ => true
 
+/-- The one legal parser warning suppression bypasses only the exact-comparison scale gate. Every other authoring check remains independent. -/
+def NumericValidationOp.acceptsScalesWithSuppression
+    (op : NumericValidationOp) (suppressExactScaleWarning : Bool)
+    (left right : NumericScaleSummary) : Bool :=
+  suppressExactScaleWarning || op.acceptsScales left right
+
 def NumericComparison.wellFormedBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
@@ -134,7 +142,8 @@ def NumericComparison.wellFormedBool
         comparison.right.summary? (fun field =>
           NumericScaleSummary.field field.info.scale) with
     | some leftSummary, some rightSummary =>
-        comparison.op.acceptsScales leftSummary rightSummary
+        comparison.op.acceptsScalesWithSuppression
+          comparison.suppressExactScaleWarning leftSummary rightSummary
     | _, _ => false
 
 def NumericComparison.WellFormed
@@ -208,9 +217,14 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
           NumericScaleSummary.field field.info.scale) with
         | some summary => pure summary
         | none => throw .unsupportedExpression
-      if !surface.op.acceptsScales leftSummary rightSummary then
+      if !surface.op.acceptsScalesWithSuppression
+          surface.suppressExactScaleWarning leftSummary rightSummary then
         throw (.exactScaleMismatch leftSummary rightSummary)
-      let core : NumericComparison := { op := surface.op, left, right }
+      let core : NumericComparison := {
+        op := surface.op
+        left
+        right
+        suppressExactScaleWarning := surface.suppressExactScaleWarning }
       if hCore : core.wellFormedBool model rowGroup = true then
         pure {
           rowGroup
