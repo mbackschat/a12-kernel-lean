@@ -108,4 +108,48 @@ example :
           .fired .omission := by
   native_decide
 
+/- Presence consumes the resolved indexed observation rather than row existence. A clean match is filled, while a matched empty target and an absent row are both not filled. -/
+example :
+    let matched := indexColumn [indexEntry "wanted" (numberCell 7)]
+    let matchedEmpty := indexColumn [indexEntry "wanted" emptyCell]
+    let noMatch := indexColumn [indexEntry "other" (numberCell 7)]
+    matched.validationFilled "wanted" = .fired .value ∧
+      matched.validationNotFilled "wanted" = .notFired ∧
+      matchedEmpty.validationFilled "wanted" = .notFired ∧
+      matchedEmpty.validationNotFilled "wanted" = .fired .omission ∧
+      noMatch.validationFilled "wanted" = .notFired ∧
+      noMatch.validationNotFilled "wanted" = .fired .omission := by
+  native_decide
+
+/- Validation preserves the lookup policy at the presence consumer: a clean match wins over an unrelated unavailable key, while a selected invalid target and an unavailable no-match are unknown in both polarities. -/
+example :
+    let cleanMatch := indexColumn
+      [indexEntry "wanted" (numberCell 7)] (some .malformed)
+    let invalidMatch := indexColumn [indexEntry "wanted" invalidNumberCell]
+    let unavailableNoMatch := indexColumn [] (some .duplicateIndex)
+    cleanMatch.validationFilled "wanted" = .fired .value ∧
+      cleanMatch.validationNotFilled "wanted" = .notFired ∧
+      invalidMatch.validationFilled "wanted" = .unknown ∧
+      invalidMatch.validationNotFilled "wanted" = .unknown ∧
+      unavailableNoMatch.validationFilled "wanted" = .unknown ∧
+      unavailableNoMatch.validationNotFilled "wanted" = .unknown := by
+  native_decide
+
+/- Computation presence inherits the column-first gate and the clean no-match-as-empty rule. -/
+example :
+    let matched := indexColumn [indexEntry "wanted" (numberCell 7)]
+    let noMatch := indexColumn [indexEntry "other" (numberCell 7)]
+    let invalidMatch := indexColumn [indexEntry "wanted" invalidNumberCell]
+    let unavailableMatch := indexColumn
+      [indexEntry "wanted" (numberCell 7)] (some .malformed)
+    matched.computationFilled "wanted" = .holds ∧
+      matched.computationNotFilled "wanted" = .notTrue ∧
+      noMatch.computationFilled "wanted" = .notTrue ∧
+      noMatch.computationNotFilled "wanted" = .holds ∧
+      invalidMatch.computationFilled "wanted" = .poison .declaredConstraint ∧
+      invalidMatch.computationNotFilled "wanted" = .poison .declaredConstraint ∧
+      unavailableMatch.computationFilled "wanted" = .poison .malformed ∧
+      unavailableMatch.computationNotFilled "wanted" = .poison .malformed := by
+  native_decide
+
 end A12Kernel

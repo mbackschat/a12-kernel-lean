@@ -13,42 +13,48 @@ theorem fieldFilled_observedEmpty_notTrue
     (context : ScalarComputationContext) (field : FieldId)
     (observed : observeCell .computation (context.read field) = .empty) :
     (ComputationCondition.fieldFilled field).eval context = .notTrue := by
-  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed]
+  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed,
+    CellObservation.evalComputationFilled]
 
 /-- A clean empty computation read satisfies `FieldNotFilled`. -/
 theorem fieldNotFilled_observedEmpty_holds
     (context : ScalarComputationContext) (field : FieldId)
     (observed : observeCell .computation (context.read field) = .empty) :
     (ComputationCondition.fieldNotFilled field).eval context = .holds := by
-  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed]
+  simp only [ComputationCondition.eval, observed,
+    CellObservation.evalComputationNotFilled]
 
 /-- Any clean scalar value satisfies `FieldFilled`, independently of its scalar value. -/
 theorem fieldFilled_observedValue_holds
     (context : ScalarComputationContext) (field : FieldId) (value : Value)
     (observed : observeCell .computation (context.read field) = .value value) :
     (ComputationCondition.fieldFilled field).eval context = .holds := by
-  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed]
+  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed,
+    CellObservation.evalComputationFilled]
 
 /-- Any clean scalar value does not satisfy `FieldNotFilled`. -/
 theorem fieldNotFilled_observedValue_notTrue
     (context : ScalarComputationContext) (field : FieldId) (value : Value)
     (observed : observeCell .computation (context.read field) = .value value) :
     (ComputationCondition.fieldNotFilled field).eval context = .notTrue := by
-  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed]
+  simp only [ComputationCondition.eval, observed,
+    CellObservation.evalComputationNotFilled]
 
 /-- A computation-phase poison remains the exact poison under `FieldFilled`. -/
 theorem fieldFilled_observedPoison_preserves
     (context : ScalarComputationContext) (field : FieldId) (cause : FormalCause)
     (observed : observeCell .computation (context.read field) = .poison cause) :
     (ComputationCondition.fieldFilled field).eval context = .poison cause := by
-  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed]
+  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed,
+    CellObservation.evalComputationFilled]
 
 /-- `FieldNotFilled` reverses only clean truth; it preserves the same poison as `FieldFilled`. -/
 theorem fieldNotFilled_observedPoison_preserves
     (context : ScalarComputationContext) (field : FieldId) (cause : FormalCause)
     (observed : observeCell .computation (context.read field) = .poison cause) :
     (ComputationCondition.fieldNotFilled field).eval context = .poison cause := by
-  simp only [ComputationCondition.eval, ComputationCondition.evalFieldFilled, observed]
+  simp only [ComputationCondition.eval, observed,
+    CellObservation.evalComputationNotFilled]
 
 /-- Validation-scoped requiredness on an otherwise empty field remains clean not-filled in computation. -/
 theorem requiredOnlyFieldNotFilled_holds
