@@ -1,7 +1,7 @@
 import A12Kernel.Proofs.NumericComparison
 import A12Kernel.Semantics.SemanticIndex
 
-/-! # Resolved semantic-index value-read laws -/
+/-! # Resolved semantic-index consumer laws -/
 
 namespace A12Kernel
 
@@ -134,6 +134,49 @@ theorem semanticIndex_computation_unavailableKey_presence
       { entries, unavailableKey := some cause }
     column.computationFilled token = .poison cause ∧
       column.computationNotFilled token = .poison cause := by
+  constructor <;> rfl
+
+/-- A clean indexed no-match contributes one instantiated empty classification in validation and one empty slot in computation. -/
+theorem semanticIndex_cleanNoMatch_fillOperand (token : String) :
+    let column : ResolvedSemanticIndexColumn :=
+      { entries := [], unavailableKey := none }
+    column.validationFillTally token =
+        { filled := 0, empty := 1, unknown := 0, uninstantiated := 0 } ∧
+      column.computationFillSlot token = .empty := by
+  constructor <;> rfl
+
+/-- Validation's match-first gate remains intact when an indexed read is classified for a field-fill tally. -/
+theorem semanticIndex_validation_cleanMatch_fillTally_ignores_unavailableKey
+    (token : String) (target : CheckedCell)
+    (remaining : List ResolvedSemanticIndexEntry)
+    (cause : FormalCause) :
+    ({ entries := resolvedIndexEntry token target :: remaining
+       unavailableKey := some cause } :
+      ResolvedSemanticIndexColumn).validationFillTally token =
+        (observeCell .validation target).asValidationFillTally := by
+  simp [ResolvedSemanticIndexColumn.validationFillTally,
+    ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry]
+
+/-- Computation's column-first gate likewise becomes an exact poison slot before any quantifier scan consumes the indexed operand. -/
+theorem semanticIndex_computation_unavailableKey_fillSlot
+    (entries : List ResolvedSemanticIndexEntry) (cause : FormalCause)
+    (token : String) :
+    ({ entries, unavailableKey := some cause } :
+      ResolvedSemanticIndexColumn).computationFillSlot token = .poison cause := by
+  rfl
+
+/-- Authored operand order remains observable after indexed-slot projection: a prior filled witness decides `AtLeastOne`, but reaching the unavailable indexed column first poisons. -/
+theorem semanticIndex_computationFillSlot_orderObservable
+    (entries : List ResolvedSemanticIndexEntry) (cause : FormalCause)
+    (token : String) :
+    let indexed :=
+      ({ entries, unavailableKey := some cause } :
+        ResolvedSemanticIndexColumn).computationFillSlot token
+    FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
+        [.filled, indexed] = .holds ∧
+      FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
+        [indexed, .filled] = .poison cause := by
   constructor <;> rfl
 
 end A12Kernel
