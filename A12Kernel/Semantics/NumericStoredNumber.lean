@@ -42,6 +42,10 @@ def amount (value : StoredNumber) : Rat :=
 def digitCount (value : StoredNumber) : Nat :=
   max (toString value.unscaled.natAbs).length (value.scale + 1)
 
+/-- Count the magnitude digits before the decimal separator, retaining the canonical zero before a fractional value. -/
+def integerDigitCount (value : StoredNumber) : Nat :=
+  max 1 ((toString value.unscaled.natAbs).length - value.scale)
+
 /-- Remove only coefficient zeroes that correspond to fractional places, returning the reduced coefficient and natural scale. -/
 def stripFractionalZeros : Nat → Nat → Nat × Nat
   | magnitude, 0 => (magnitude, 0)

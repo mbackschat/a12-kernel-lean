@@ -43,39 +43,37 @@ theorem numericTarget_digitOverflow_retainsAttempt
     policy.check (.value amount) =
       .supported (.rejected attempted .totalDigitsTooLong) := by
   simp [NumericTargetPolicy.check, NumericTargetPolicy.checkAttempt,
+    NumericTargetPolicy.firstFittingAttemptError?,
     NumericTargetPolicy.firstAttemptError?, rendered, fits, tooLong]
 
-/-- On a signed target, a fitting value within the universal digit limit is accepted in its exact stored form. -/
-theorem numericTarget_signedFit_accepts
+/-- A fitting attempt that passes the complete ordered target check is accepted in its exact stored form. -/
+theorem numericTarget_fittingAttempt_accepts
     (policy : NumericTargetPolicy) (amount : Rat)
     (naturalScale : Nat) (attempted : StoredNumber)
     (rendered :
       StoredNumber.fromComputed amount policy.minFractionalDigits =
         (naturalScale, attempted))
     (fits : naturalScale ≤ policy.info.scale)
-    (withinLimit : ¬ numericStoredDigitLimit < attempted.digitCount)
-    (signed : policy.info.signed = true) :
+    (passes : policy.firstFittingAttemptError? attempted = none) :
     policy.check (.value amount) =
       .supported (.accepted attempted) := by
   simp [NumericTargetPolicy.check, NumericTargetPolicy.checkAttempt,
-    NumericTargetPolicy.firstAttemptError?, rendered, fits, withinLimit,
-    signed]
+    rendered, fits, passes]
 
-/-- A fitting nonnegative value within the universal digit limit is accepted independently of the target's signedness. -/
-theorem numericTarget_nonnegativeFit_accepts
+/-- A fitting attempt is rejected with the first error selected by the complete ordered target check. -/
+theorem numericTarget_fittingAttempt_rejectsFirstError
     (policy : NumericTargetPolicy) (amount : Rat)
     (naturalScale : Nat) (attempted : StoredNumber)
+    (cause : NumericTargetError)
     (rendered :
       StoredNumber.fromComputed amount policy.minFractionalDigits =
         (naturalScale, attempted))
     (fits : naturalScale ≤ policy.info.scale)
-    (withinLimit : ¬ numericStoredDigitLimit < attempted.digitCount)
-    (nonnegative : ¬ attempted.unscaled < 0) :
+    (fails : policy.firstFittingAttemptError? attempted = some cause) :
     policy.check (.value amount) =
-      .supported (.accepted attempted) := by
+      .supported (.rejected attempted cause) := by
   simp [NumericTargetPolicy.check, NumericTargetPolicy.checkAttempt,
-    NumericTargetPolicy.firstAttemptError?, rendered, fits, withinLimit,
-    nonnegative]
+    rendered, fits, fails]
 
 /-- Warning suppression does not alter the ordinary branch when the scale-19 stored value fits the target maximum. -/
 theorem numericTarget_suppressedFit_eq_check
