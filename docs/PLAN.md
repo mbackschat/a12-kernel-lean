@@ -82,29 +82,21 @@ The canonical specification and accepted sync-ledger entry record a12-dmkits rev
 
 The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
 
-## Immediate next step: artifact-only aggregate consumer probe
+## Completed consumer checkpoint: artifact-only aggregate probe
 
-After the empty-String placement correction closes, run one bounded artifact-only consumer-adequacy probe before choosing the next family. This is a deliberately cold, read-only knowledge-transport check, not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
+At revision `6670ce7`, one deliberately cold read-only consumer received only the aggregate clauses, Lean semantics, laws, executable separators, adjacent operator-family definitions, implementation boundary, and consumer guidance. It consulted no kernel, a12-dmkits, web, Git history, prior discussion, or unlisted source and changed no file.
 
-Give an isolated reader only the canonical spec clauses, numeric aggregate Lean definitions, proofs, conformance cases, implementation-map boundary, and consumer guidance. Ask it to act as:
+The reader reconstructed the complete admitted `Sum`/`MinValue`/`MaxValue` evaluator without semantic guessing, including order, staged precision, empty and unavailable cells, first cause, all-empty identity, tail, signedness, `Having`, and the distinctions from operand-list extrema and `FirstFilledValue`. It also classified a narrow set of resolved-stream rewrites and caught the non-obvious fact that inserting or deleting numeric zero is not universally safe because it can alter all-empty provenance or introduce another precision-50 step.
 
-1. an independent evaluator implementer; and
-2. a rule-refactoring-tool author.
+The result passes consumer adequacy for the exact resolved homogeneous-signedness validation boundary. It correctly refuses authored evaluation and source-level refactoring because checked path/star/filter lowering, partial relevance, mixed-declaration missingness, computation, messages, a source transformation relation, and external evidence remain open. [`USE-CASES.md`](USE-CASES.md#completed-probe-record-resolved-number-aggregates) owns the durable reader-facing result; no report artifact, shipment, protocol, runner, qualification campaign, or harness was added.
 
-It must reconstruct without kernel or a12-dmkits research:
+## Immediate next step: repeatable operand-resolution risk audit
 
-- the complete `Sum`/`MinValue`/`MaxValue` decision table;
-- encounter-order and staged-precision behavior;
-- empty, unavailable, tail, signedness, and `Having` treatment;
-- the difference between aggregate extrema, operand-list extrema, and `FirstFilledValue`;
-- which rewrites preserve full observable semantics and which fail because they reorder, reassociate, seed, terminate early, erase provenance, or collapse UNKNOWN;
-- exact exclusions and the evidence status.
-
-The probe succeeds only if it needs no semantic guessing at the admitted resolved boundary. Record its concise result in the existing probe owner only if it adds a durable consumer-facing conclusion. Any ambiguity feeds back into the semantic representation, proof obligations, separating matrix, exclusions, and this plan before another family begins.
+Audit the smallest source-grounded seam that connects authored repeatable operands to the existing resolved streams. Compare the canonical clauses, existing checked path/scope representations, current one-group and raw cross-level correlation semantics, and current a12-dmkits knowledge without writing to sibling repositories. Produce one decision table and one separating witness for either complete captured outer scope or per-declaration missing-potential retention. Select a semantic capsule only if it can close levels 1–2 without a new path framework, evidence mechanism, or protocol.
 
 ## Likely next keystone rotation
 
-After the probe, reassess the frontier rather than continuing numeric operators by momentum.
+Reassess the frontier rather than continuing numeric operators by momentum.
 
 The leading candidate is the repeatable operand-resolution and addressing seam that connects checked authored stars/scopes to already-resolved operand streams such as `ResolvedValueListSide`. It has high consumer payoff because current aggregate semantics are executable but still begin after expansion, filtering, scope resolution, and declaration-sensitive missingness. A correct seam would serve independent evaluators, import legality, refactoring preservation, and later multi-level correlation.
 
@@ -144,6 +136,6 @@ These are not repository-wide blockers:
 1. Read [`CLAUDE.md`](../CLAUDE.md), this checkpoint, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and [`TESTING.md`](TESTING.md).
 2. Inspect `git status --short`, recent commits, and the complete current diff. Do not overwrite concurrent work.
 3. If `Sum` is unfinished, resume its red/green checklist above.
-4. If `Sum` is complete but the aggregate consumer probe is not, run that probe and feed back its findings.
-5. Otherwise select the next keystone capsule using the criteria above.
+4. If the aggregate consumer probe is not recorded, run it and feed back its findings.
+5. Otherwise perform the repeatable operand-resolution risk audit and select the next keystone capsule using the criteria above.
 6. End each capsule with its applicable gates, honest completion/evidence levels, minimal owner-document updates, a clean worktree, and no sibling changes.
