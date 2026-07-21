@@ -29,6 +29,7 @@ import A12Kernel.Semantics.DateTimeDayDifference
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Semantics.TimeComparison
 import A12Kernel.Semantics.TimeAggregate
+import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.NumericStoredNumber
 import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericApplication

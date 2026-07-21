@@ -688,3 +688,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** Both kernel routes and the interpreter agree on the named Time and DateTime aggregate separators; adapter lowering preserves TIME/DATETIME kind plus decoded time or exact instant identity; incompatible component formats still fail authoring; existing Date aggregate controls remain green; canonical a12-dmkits prose records the common temporal fold without claiming general zone support; and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending handback.
+
+### SPEC-2026-07-22-01 — direct temporal comparison and extrema use different format gates
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `3b9584602f5d7a7ed8b241d963aa37870fb1288c`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`05-dates-and-time.md` §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)
+- **Delta:** Distinguish the coarse direct-comparison gate from exact temporal-extremum admission. After optional Base Year supplementation, direct comparisons require matching year presence and matching date/no-date class; equality/inequality additionally require matching time/no-time class, but no direct operator requires identical component sets. Temporal extrema require exact six-component equality after Base Year supplementation, and DATETIME extrema require all six components.
+- **Basis:** Kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `CheckVergleichsBedingungImpl.checkDateType` calls the deliberately coarse `DateFormat.formatsConsistentRegardingFormat` and adds only the equality/inequality time-presence check; `DateFormat.hasSameComponents` supplies optional `YEAR` and compares exact sets; and `CheckEntityListenUtils.checkOpTypesAreComparableDatetimeType` requires that exact predicate for temporal aggregate operands. The source TODO names `yyyyMMdd` versus `yyyyMM` as the coarse direct case. The reviewed a12-dmkits semantics map exposes fragment-comparability coverage but no exact owner or separating matrix for this direct-versus-aggregate distinction.
+- **Requested a12-dmkits reconciliation:** Record both gates in the canonical temporal semantics and enforce them at their existing authoring/admission owners. Reuse the current temporal kind and format representations. Do not change the resolved aggregate evaluator requested by `SPEC-2026-07-21-07`, add another parser, or turn the coarse direct gate into exact component equality.
+- **Compatibility:** A checker that applies exact equality everywhere rejects legal direct comparisons; one that applies the coarse gate to extrema admits operands whose resolved precision/component contract is incompatible. The correction affects authoring admission, not resolved chronology or aggregate folding.
+- **Acceptance:** Focused JVM/Node admission laws and maintained kernel-route controls separate `yyyy-MM` versus `yyyy-MM-dd`, Date versus DateTime ordering versus equality, `HH:mm` versus `HH:mm:ss`, Base Year supplementation, date-versus-time rejection, and exact aggregate rejection; canonical prose names both gates; `SPEC-2026-07-21-07` remains the sole aggregate-execution request; and the handback supplies the reviewed revision and per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending handback.

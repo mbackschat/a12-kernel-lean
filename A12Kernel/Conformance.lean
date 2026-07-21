@@ -16,6 +16,7 @@ import A12Kernel.Conformance.DateTimeDayDifference
 import A12Kernel.Conformance.DateShift
 import A12Kernel.Conformance.TimeComparison
 import A12Kernel.Conformance.TimeAggregate
+import A12Kernel.Conformance.TemporalFormat
 import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.ValidationRule
