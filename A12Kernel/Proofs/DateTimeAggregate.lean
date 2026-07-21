@@ -8,11 +8,11 @@ namespace A12Kernel
 
 /-- On a strict instant pair, minimum selects the earlier instant and maximum the later instant. -/
 theorem dateTimeExtremum_select_of_before (left right : Instant)
-    (before : DateComparisonOp.before.holdsInstant left right = true) :
+    (before : TemporalComparisonOp.before.holdsInstant left right = true) :
     TemporalExtremumOp.minimum.selectInstant left right = left ∧
       TemporalExtremumOp.maximum.selectInstant left right = right := by
-  have reverse : DateComparisonOp.before.holdsInstant right left = false := by
-    simpa [DateComparisonOp.holdsInstant] using
+  have reverse : TemporalComparisonOp.before.holdsInstant right left = false := by
+    simpa [TemporalComparisonOp.holdsInstant] using
       dateTimeComparison_before_excludes_after left right before
   simp [TemporalExtremumOp.selectInstant, before, reverse]
 
@@ -57,7 +57,7 @@ theorem dateTimeExtremum_fixed_singleton (op : TemporalExtremumOp)
 
 /-- Omitted-tail missingness reaches the established DateTime comparison polarity through the shared fold. -/
 theorem dateTimeExtremum_tail_comparison_firing (op : TemporalExtremumOp)
-    (comparison : DateComparisonOp) (selected expected : Instant)
+    (comparison : TemporalComparisonOp) (selected expected : Instant)
     (holds : comparison.holdsInstant selected expected = true) :
     comparison.evalInstant
         (evalDateTimeExtremumAggregate op {
@@ -67,7 +67,7 @@ theorem dateTimeExtremum_tail_comparison_firing (op : TemporalExtremumOp)
         })
         (.value expected true) = .fired .omission := by
   simpa [evalDateTimeExtremumAggregate, evalTemporalExtremumAggregate,
-    scanTemporalExtremumOperands, DateComparisonOp.evalInstant] using
+    scanTemporalExtremumOperands, TemporalComparisonOp.evalInstant] using
       evalSymmetricComparison_missing_firing comparison.holdsInstant
         selected expected false true (by decide) holds
 

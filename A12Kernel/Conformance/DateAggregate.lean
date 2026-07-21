@@ -73,15 +73,15 @@ example :
 
 /- Aggregate missingness feeds the existing symmetric Date-comparison polarity without another comparison path. -/
 example :
-    DateComparisonOp.before.eval
+    TemporalComparisonOp.before.eval
         (evalDateExtremumAggregate .minimum
           (side [.value february true, .notEvaluated]))
         (.value march true) = .fired .omission ∧
-      DateComparisonOp.before.eval
+      TemporalComparisonOp.before.eval
         (evalDateExtremumAggregate .minimum
           (side [.value february true]))
         (.value march true) = .fired .value ∧
-      DateComparisonOp.after.eval
+      TemporalComparisonOp.after.eval
         (evalDateExtremumAggregate .minimum
           (side [.value february true, .notEvaluated]))
         (.value march true) = .notFired := by

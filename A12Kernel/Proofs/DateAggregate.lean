@@ -52,7 +52,7 @@ theorem dateExtremum_select_of_before (left right : FullDate)
     TemporalExtremumOp.minimum.select left right = left ∧
       TemporalExtremumOp.maximum.select left right = right := by
   have reverse : right.before left = false := by
-    simpa [DateComparisonOp.holds] using
+    simpa [TemporalComparisonOp.holds] using
       dateComparison_before_excludes_after left right before
   simp [TemporalExtremumOp.select, before, reverse]
 
@@ -107,7 +107,7 @@ theorem dateExtremum_empty_prefix_marks_missing (op : TemporalExtremumOp)
 
 /-- Omitted-tail missingness reaches the established Date comparison polarity without another truth evaluator. -/
 theorem dateExtremum_tail_comparison_firing (op : TemporalExtremumOp)
-    (comparison : DateComparisonOp) (selected expected : FullDate)
+    (comparison : TemporalComparisonOp) (selected expected : FullDate)
     (holds : comparison.holds selected expected = true) :
     comparison.eval
         (evalDateExtremumAggregate op {
