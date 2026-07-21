@@ -54,4 +54,17 @@ theorem timeComparison_eval_swapped (op : TemporalComparisonOp)
   exact evalSymmetricComparison_swapped op.holdsTime op.swapped.holdsTime
     (timeComparison_swapped op) left right
 
+/-- A true comparison over clean typed Time observations delegates to the existing fixed-value verdict law. -/
+theorem timeComparison_evalObserved_clean_firing (op : TemporalComparisonOp)
+    (left right : TimeOfDay) (holds : op.holdsTime left right = true) :
+    op.evalTimeObserved (.value left) (.value right) = .fired .value := by
+  exact evalSymmetricComparison_fixed_firing op.holdsTime left right holds
+
+/-- Typed Time unavailability remains UNKNOWN through the shared observation classifier. -/
+theorem timeComparison_evalObserved_unknown_left (op : TemporalComparisonOp)
+    (cause : FormalCause) (right : CellObservation TimeOfDay) :
+    op.evalTimeObserved (.unknown cause) right = .unknown := by
+  exact evalSymmetricComparison_unknown_left op.holdsTime cause
+    right.asValidationSimpleOperand
+
 end A12Kernel

@@ -11,7 +11,7 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Active unit
 
-Apply the now-shared typed validation-observation projection to resolved Time and DateTime comparisons. Reuse the same clean-value/empty/unavailable classification and each existing six-operator evaluator; add no Time/DateTime parsing, wall-label representation, zone resolution, raw temporal cells, declarations, or second verdict path.
+Audit the raw typed temporal boundary after all three comparison consumers. Determine whether `RawCell` can safely share the same defaulted value-type parameter as `CheckedCell`, with one generic parser-result-to-checked-cell projection for absent, present-empty, parsed, and rejected states. Implement only if the existing scalar `formalCheck` remains unchanged and temporal declaration constraints, parsing, zone resolution, and format decoding cannot be bypassed or duplicated.
 
 ## Frontier queue
 
@@ -48,7 +48,8 @@ Apply the now-shared typed validation-observation projection to resolved Time an
 - **Satisfied — temporal format-component admission:** direct comparisons use the kernel's coarse year/date-class plus equality-only time-class gate, while extrema require exact component equality after optional Base Year supplementation; one component representation and separating matrix own both rules.
 - **Satisfied — typed checked temporal observation:** `CheckedCell α` and `CellObservation α` default to the existing scalar `Value` while sharing placement, staged findings, validation unknown, computation poison, and required-only behavior with resolved temporal value types; no parallel cell hierarchy was added.
 - **Satisfied — checked full-Date comparison projection:** typed full-Date validation observations map clean values, emptiness, and formal unavailability into the existing classified operand and six-operator verdict evaluator without parsing or declaration logic.
-- **Active — checked Time/DateTime comparison projections:** specialize the same generic observation classifier for decoded time-of-day and exact-instant comparison consumers.
+- **Satisfied — checked Time/DateTime comparison projections:** typed decoded-time and exact-instant observations reuse the same clean/empty/unavailable classifier and their existing six-operator evaluators without adding wall-label or zone machinery.
+- **Active — raw typed temporal boundary audit:** test whether the existing parser-result representation can be generalized without weakening scalar policy checking or creating a temporal parser shortcut.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.

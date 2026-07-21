@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.TimeComparison
+import A12Kernel.Semantics.Observation
 
 /-! # Resolved time-of-day comparison locks -/
 
@@ -14,6 +15,12 @@ private def morning : TimeOfDay := time 9 30 15 (by decide)
 
 private def evening : TimeOfDay := time 17 45 30 (by decide)
 
+private def checkedTime (value : TimeOfDay) : CheckedCell TimeOfDay :=
+  { rawPresent := true, parsed := some value, findings := [] }
+
+private def emptyTime : CheckedCell TimeOfDay :=
+  { rawPresent := false, parsed := none, findings := [] }
+
 /- All six operators compare decoded time-of-day coordinates, not rendered text. -/
 example :
     TemporalComparisonOp.equal.holdsTime morning evening = false ∧
@@ -22,6 +29,16 @@ example :
       TemporalComparisonOp.beforeOrEqual.holdsTime morning evening = true ∧
       TemporalComparisonOp.after.holdsTime morning evening = false ∧
       TemporalComparisonOp.afterOrEqual.holdsTime morning evening = false := by
+  native_decide
+
+/- Typed checked Time observations reuse the resolved time-of-day comparison path. -/
+example :
+    TemporalComparisonOp.before.evalTimeObserved
+        (observeCell .validation (checkedTime morning))
+        (observeCell .validation (checkedTime evening)) = .fired .value ∧
+      TemporalComparisonOp.equal.evalTimeObserved
+        (observeCell .validation emptyTime)
+        (observeCell .validation (checkedTime evening)) = .notFired := by
   native_decide
 
 /- Equal decoded times satisfy equality and both inclusive directions only. -/

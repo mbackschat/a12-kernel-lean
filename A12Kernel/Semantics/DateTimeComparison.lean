@@ -3,7 +3,7 @@ import A12Kernel.Semantics.DateTime
 
 /-! # Resolved DateTime instant comparison
 
-This capsule evaluates the six ordinary temporal comparison operators after both DateTime operands have resolved to exact whole-second instants. Comparison observes physical instant identity and order, never the local wall labels that produced them. Parsing, zone resolution, checked lowering, raw cells, and subsecond values remain outside.
+This capsule evaluates the six ordinary temporal comparison operators after both DateTime operands have resolved to exact whole-second instants. Comparison observes physical instant identity and order, never the local wall labels that produced them. Typed validation observations delegate to that resolved path. Parsing, zone resolution, raw-cell checking, declaration/path lowering, and subsecond values remain outside.
 -/
 
 namespace A12Kernel
@@ -23,5 +23,10 @@ def TemporalComparisonOp.holdsInstant (op : TemporalComparisonOp)
 def TemporalComparisonOp.evalInstant (op : TemporalComparisonOp)
     (leftOperand rightOperand : SimpleComparisonOperand Instant) : Verdict :=
   evalSymmetricComparison op.holdsInstant leftOperand rightOperand
+
+/-- Evaluate two typed exact-instant validation observations through the already-classified comparison path. -/
+def TemporalComparisonOp.evalInstantObserved (op : TemporalComparisonOp)
+    (left right : CellObservation Instant) : Verdict :=
+  op.evalInstant left.asValidationSimpleOperand right.asValidationSimpleOperand
 
 end A12Kernel

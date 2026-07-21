@@ -152,6 +152,9 @@ run_cmd do
 #print axioms A12Kernel.dateTimeComparison_swapped
 #print axioms A12Kernel.dateTimeComparison_before_excludes_after
 #print axioms A12Kernel.dateTimeComparison_eval_swapped
+#print axioms A12Kernel.dateTimeComparison_evalObserved_clean_firing
+#print axioms A12Kernel.dateTimeComparison_evalObserved_empty_left
+#print axioms A12Kernel.dateTimeComparison_evalObserved_unknown_left
 #print axioms A12Kernel.dateTimeExtremum_select_of_before
 #print axioms A12Kernel.dateTimeExtremum_select_eq_left_or_right
 #print axioms A12Kernel.dateTimeExtremum_empty
@@ -165,6 +168,8 @@ run_cmd do
 #print axioms A12Kernel.timeComparison_swapped
 #print axioms A12Kernel.timeComparison_before_excludes_after
 #print axioms A12Kernel.timeComparison_eval_swapped
+#print axioms A12Kernel.timeComparison_evalObserved_clean_firing
+#print axioms A12Kernel.timeComparison_evalObserved_unknown_left
 #print axioms A12Kernel.timeExtremum_select_of_before
 #print axioms A12Kernel.timeExtremum_select_eq_left_or_right
 #print axioms A12Kernel.timeExtremum_empty
