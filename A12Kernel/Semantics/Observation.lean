@@ -18,6 +18,7 @@ inductive FieldKind where
   | boolean
   | confirm
   | string
+  | temporal (kind : TemporalKind) (components : TemporalComponents)
   deriving Repr, DecidableEq
 
 /-- Static scalar policy consumed once by formal checking. Requiredness is deliberately
@@ -73,6 +74,7 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .boolean, .bool _ => true
   | .confirm, .conf true => true
   | .string, .str _ => true
+  | .temporal expected _, .temporal actual _ => expected == actual
   | _, _ => false
 
 /-- Project a parser result through one caller-supplied value admission step. The parser owns text decoding and raw constraints; this function owns placement and formal-cause construction once. -/

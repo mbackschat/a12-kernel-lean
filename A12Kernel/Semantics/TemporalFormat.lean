@@ -7,34 +7,6 @@ This capsule owns the static component facts shared by direct temporal compariso
 
 namespace A12Kernel
 
-/-- Presence of the six semantic components exposed by an admitted temporal format. -/
-structure TemporalComponents where
-  year : Bool
-  month : Bool
-  day : Bool
-  hour : Bool
-  minute : Bool
-  second : Bool
-  deriving Repr, DecidableEq
-
-/-- Whether a format exposes at least one calendar-date component. -/
-def TemporalComponents.hasDate (components : TemporalComponents) : Bool :=
-  components.year || components.month || components.day
-
-/-- Whether a format exposes at least one wall-time component. -/
-def TemporalComponents.hasTime (components : TemporalComponents) : Bool :=
-  components.hour || components.minute || components.second
-
-/-- Supply `YEAR` from the model-wide Base Year when one exists. -/
-def TemporalComponents.withBaseYear (components : TemporalComponents)
-    (hasBaseYear : Bool) : TemporalComponents :=
-  if hasBaseYear then { components with year := true } else components
-
-/-- Full DateTime aggregate formats expose every date and time component. -/
-def TemporalComponents.isFullDateTime (components : TemporalComponents) : Bool :=
-  components.year && components.month && components.day &&
-    components.hour && components.minute && components.second
-
 /-- Equality and inequality, unlike directional comparisons, require both formats to agree on whether they expose a time component. -/
 def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Bool
   | .equal | .notEqual => true

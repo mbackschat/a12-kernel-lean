@@ -124,6 +124,34 @@ inductive TemporalKind where
   | dateTime
   deriving Repr, DecidableEq
 
+/-- Presence of the six semantic components exposed by an admitted temporal field format. Concrete format spelling and parsing remain upstream. -/
+structure TemporalComponents where
+  year : Bool
+  month : Bool
+  day : Bool
+  hour : Bool
+  minute : Bool
+  second : Bool
+  deriving Repr, DecidableEq
+
+/-- Whether a format exposes at least one calendar-date component. -/
+def TemporalComponents.hasDate (components : TemporalComponents) : Bool :=
+  components.year || components.month || components.day
+
+/-- Whether a format exposes at least one wall-time component. -/
+def TemporalComponents.hasTime (components : TemporalComponents) : Bool :=
+  components.hour || components.minute || components.second
+
+/-- Supply `YEAR` from the model-wide Base Year when one exists. -/
+def TemporalComponents.withBaseYear (components : TemporalComponents)
+    (hasBaseYear : Bool) : TemporalComponents :=
+  if hasBaseYear then { components with year := true } else components
+
+/-- Full DateTime aggregate formats expose every date and time component. -/
+def TemporalComponents.isFullDateTime (components : TemporalComponents) : Bool :=
+  components.year && components.month && components.day &&
+    components.hour && components.minute && components.second
+
 /-- The **value domain** (expanded per kind in later stages). Numbers are exact rationals;
     the field's `scale` lives in `NumField`, and *stored-form / representation* equality
     (`7` vs `7.00`) is a separate rendered-string concern, not carried here. Arithmetic

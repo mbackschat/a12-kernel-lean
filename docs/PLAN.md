@@ -6,14 +6,14 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: the versioned Europe/Berlin legacy-timezone profile in this revision, building on `5f11430` (`feat(time): add resolved time extrema`).
-- Its focused semantics/proof/conformance builds, full 232-job `lake build`, 51/51 retained-observation replay, and trust audit over 735 theorem roots / 11,955 declarations / 136 logical modules passed.
+- Semantic baseline: checked temporal declaration admission and presence over the shared tagged runtime value, building on `7c95043` (`feat(core): add tagged temporal values`).
+- Its focused red/green checks, full 235-job `lake build`, 51/51 retained-observation replay, and trust audit over 754 theorem roots / 12,134 declarations / 138 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Park concrete temporal declaration/path lowering at the heterogeneous model-context boundary. The audit found no existing owner that can store scalar `Value`, `FullDate`, `TimeOfDay`, and `Instant` under one field-ID-indexed context: `FlatFieldDecl`, `RawFlatContext`, `FlatContext`, correlation/iteration contexts, and the reference protocol are scalar-`Value` owners, while the temporal types intentionally live outside that sum. Resume only after a bounded architecture audit chooses between extracting foundational temporal value types into the shared value domain and parameterizing/dependent-indexing the model/context spine; a Date-only context or second temporal declaration tree is forbidden.
+Connect checked temporal field-to-field comparison lowering to the existing declaration policy, shared tagged runtime value, format-admission gate, and resolved comparison evaluators. First audit whether the stored exact-instant coordinate preserves the kernel's admitted Date and Time comparison behavior after static component checks; do not introduce per-kind contexts, a second temporal declaration tree, or a second comparison evaluator.
 
 ## Frontier queue
 
@@ -54,7 +54,8 @@ Park concrete temporal declaration/path lowering at the heterogeneous model-cont
 - **Satisfied — raw typed temporal boundary:** `RawCell α` defaults to scalar `Value`; one admission-parameterized projector preserves placement and rejected causes, scalar checking retains its policy/normalization, and identity admission is available only after typed parsing and declaration checks.
 - **Satisfied — exact temporal runtime coordinate:** kernel source showed that `Now` retains a validation-clock millisecond remainder; `Instant` therefore moved to `Core` as exact epoch milliseconds, decoded temporal values embed through an explicit whole-second constructor, comparison/order/shift/difference/timezone/day consumers migrated, and `SPEC-2026-07-22-02` owns the peer whole-second gap.
 - **Satisfied — heterogeneous temporal model context:** the existing field-ID-indexed `Value` now carries one `temporal TemporalKind Instant` payload; Date, Time, and DateTime remain tag-distinct over the exact coordinate, while proof-bearing wall labels stay upstream and per-kind contexts remain excluded.
-- **Ready — temporal declaration admission:** add declaration-owned temporal kind plus component/format policy and project only an already-decoded, format-admitted exact instant into the matching `Value` tag. Do not make the bare tag a substitute for parsing, Base Year supplementation, or format comparability.
+- **Satisfied — temporal declaration admission and presence:** `TemporalComponents` is one shared static declaration fact, `FieldKind.temporal` admits only the matching tagged exact instant after parsing/format checks, and checked flat presence plus generated presence guards reuse `FlatTemporalField`, the shared context, and required staging. Temporal field-to-literal comparison remains fail-closed because no typed temporal literal surface exists.
+- **Ready — checked temporal field comparison:** reuse declaration-owned component admission and the existing resolved six-operator comparison paths over two checked temporal fields. First prove or disprove that the shared exact-instant payload is sufficient for admitted Date and Time operands; partial-Date resolution and Time anchoring must not be guessed.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.

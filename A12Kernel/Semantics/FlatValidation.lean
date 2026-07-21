@@ -34,12 +34,19 @@ structure FlatStringField where
   id : FieldId
   deriving Repr, DecidableEq
 
+structure FlatTemporalField where
+  id : FieldId
+  kind : TemporalKind
+  components : TemporalComponents
+  deriving Repr, DecidableEq
+
 /-- A typed, resolved field reference for presence predicates. -/
 inductive FlatField where
   | number (field : FlatNumberField)
   | boolean (field : FlatBooleanField)
   | confirm (field : FlatConfirmField)
   | string (field : FlatStringField)
+  | temporal (field : FlatTemporalField)
   deriving Repr, DecidableEq
 
 namespace FlatField
@@ -50,6 +57,7 @@ def id : FlatField → FieldId
   | .boolean field => field.id
   | .confirm field => field.id
   | .string field => field.id
+  | .temporal field => field.id
 
 end FlatField
 
@@ -199,6 +207,7 @@ def FlatField.observeValidation (context : FlatContext) : FlatField → CellObse
   | .boolean field => context.observeValidationAt field.id
   | .confirm field => context.observeValidationAt field.id
   | .string field => context.observeValidationAt field.id
+  | .temporal field => context.observeValidationAt field.id
 
 namespace CellObservation
 

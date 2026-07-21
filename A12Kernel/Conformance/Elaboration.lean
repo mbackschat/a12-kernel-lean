@@ -41,12 +41,21 @@ private def noteDecl : FlatFieldDecl :=
   { id := 7, groupPath := ["Order"], name := "Note",
     policy := { kind := .string } }
 
+private def dispatchDateComponents : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := false, minute := false, second := false }
+
+private def dispatchDateDecl : FlatFieldDecl :=
+  { id := 8, groupPath := ["Order"], name := "DispatchDate",
+    policy := { kind := .temporal .date dispatchDateComponents } }
+
 private def repeatableItems : RepeatableGroupDecl :=
   { level := 10, path := ["Order", "Items"] }
 
 private def model : FlatModel :=
   { fields := [quantityDecl, expressDecl, confirmDecl, ancestorLimitDecl,
-      localLimitDecl, externalCodeDecl, repeatableCountDecl, noteDecl],
+      localLimitDecl, externalCodeDecl, repeatableCountDecl, noteDecl,
+      dispatchDateDecl],
     repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 
@@ -104,6 +113,12 @@ example : coreOf (elaborate model ["Order"]
 example : coreOf (elaborate model ["Order"]
     (.fieldFilled (absolute ["Order"] "Note"))) =
     some (.fieldFilled (.string { id := 7 })) := by
+  native_decide
+
+example : coreOf (elaborate model ["Order"]
+    (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
+    some (.fieldFilled (.temporal
+      { id := 8, kind := .date, components := dispatchDateComponents })) := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
@@ -254,6 +269,11 @@ private def ordinaryRaw : RawFlatContext where
     else if id = 2 then .parsed (.conf true)
     else .empty
 
+private def temporalRaw (kind : TemporalKind) : RawFlatContext where
+  read id :=
+    if id = 8 then .parsed (.temporal kind { epochMillis := 100999 })
+    else .empty
+
 example : valueOf (elaborateAndEvalFull model ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 5))) =
     some (.fired .value) := by
@@ -272,6 +292,15 @@ example : valueOf (elaborateAndEvalFull model ["Order"] ordinaryRaw true
 example : valueOf (elaborateAndEvalFull model ["Order"] { read := fun _ => .empty } false
     (.fieldNotFilled (absolute ["Order"] "Quantity"))) =
     some (.fired .omission) := by
+  native_decide
+
+example :
+    valueOf (elaborateAndEvalFull model ["Order"] (temporalRaw .date) true
+      (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
+        some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull model ["Order"] (temporalRaw .dateTime) true
+        (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
+          some .unknown := by
   native_decide
 
 -- Model-derived formal checking prevents an inconsistent runtime kind from entering eval.

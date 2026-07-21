@@ -19,6 +19,13 @@ private def confirm : FieldPolicy :=
 private def string : FieldPolicy :=
   { kind := .string }
 
+private def fullDateComponents : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := false, minute := false, second := false }
+
+private def date : FieldPolicy :=
+  { kind := .temporal .date fullDateComponents }
+
 private def requiredEmpty : CheckedCell :=
   (formalCheck optionalNumber .empty).withFinding .required
 
@@ -63,6 +70,19 @@ example : observeCell .computation (formalCheck optionalNumber (.rejected .malfo
 
 example : formalCheck confirm (.parsed (.conf false)) =
     { rawPresent := true, parsed := none, findings := [.malformed] } := by
+  decide
+
+/- An already-decoded temporal payload is admitted only under the matching declaration kind. -/
+example :
+    let instant : Instant := { epochMillis := 100999 }
+    formalCheck date (.parsed (.temporal .date instant)) =
+        { rawPresent := true
+          parsed := some (.temporal .date instant)
+          findings := [] } ∧
+      formalCheck date (.parsed (.temporal .dateTime instant)) =
+        { rawPresent := true
+          parsed := none
+          findings := [.malformed] } := by
   decide
 
 /- One heterogeneous runtime domain retains temporal kind independently of exact instant identity. -/

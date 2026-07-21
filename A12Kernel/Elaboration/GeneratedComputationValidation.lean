@@ -122,6 +122,8 @@ private def FlatModel.resolveGeneratedGuardField
   | .boolean => pure (.boolean { id := declaration.id })
   | .confirm => pure (.confirm { id := declaration.id })
   | .string => pure (.string { id := declaration.id })
+  | .temporal kind components =>
+      pure (.temporal { id := declaration.id, kind, components })
 
 private def FlatModel.resolveGeneratedNumberTarget
     (model : FlatModel) (field : FieldId) :

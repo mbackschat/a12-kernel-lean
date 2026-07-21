@@ -38,6 +38,9 @@ private def scalarKindTag : SurfaceScalarKind → String
   | .boolean => "boolean"
   | .confirm => "confirm"
   | .string => "string"
+  | .temporal .date => "date"
+  | .temporal .time => "time"
+  | .temporal .dateTime => "dateTime"
 
 private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → Diagnostic
   | .invalidModelPath path =>
