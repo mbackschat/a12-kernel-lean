@@ -58,17 +58,17 @@ def readTerm (context : StringComputationContext) (field : FieldId) :
 
 end StringComputationContext
 
-/-- Parser-independent String expression admitted by the first computation capsule. -/
-inductive StringExpr where
-  | field (field : FieldId)
+/-- Parser-independent String expression admitted by the first computation capsule. Parameterizing only the leaf lets checked lowering reuse the runtime tree without defining a parallel expression language. -/
+inductive StringExpr (Atom : Type := FieldId) where
+  | field (field : Atom)
   | literal (value : String)
-  | concat (left right : StringExpr)
+  | concat (left right : StringExpr Atom)
   deriving Repr, DecidableEq
 
 namespace StringExpr
 
 /-- Evaluate without deciding whether the resulting text can be stored. The right operand is not consulted after a left poison. -/
-def eval (context : StringComputationContext) : StringExpr → Except StringComputationFault StringTerm
+def eval (context : StringComputationContext) : StringExpr FieldId → Except StringComputationFault StringTerm
   | StringExpr.field fieldId => context.readTerm fieldId
   | StringExpr.literal value => pure (.text value)
   | StringExpr.concat left right => do
@@ -103,7 +103,7 @@ end StringTerm
 namespace StringExpr
 
 /-- Evaluate and apply the root String storage rule, without mutating a document. -/
-def evaluate (expression : StringExpr) (context : StringComputationContext) :
+def evaluate (expression : StringExpr FieldId) (context : StringComputationContext) :
     Except StringComputationFault StringStore := do
   pure (← expression.eval context).store
 

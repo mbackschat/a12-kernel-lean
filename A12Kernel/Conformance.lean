@@ -38,6 +38,7 @@ import A12Kernel.Conformance.StringIngestion
 import A12Kernel.Conformance.StringCascade
 import A12Kernel.Conformance.StringAlternatives
 import A12Kernel.Conformance.StringComputation
+import A12Kernel.Conformance.StringComputationElaboration
 import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue

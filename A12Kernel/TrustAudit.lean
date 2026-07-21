@@ -628,6 +628,10 @@ run_cmd do
 #print axioms A12Kernel.acceptedStringTarget_applies_value
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_delta
 
+#print axioms A12Kernel.elaborateStringExprCore_literal
+#print axioms A12Kernel.elaborateStringExprCore_concat
+#print axioms A12Kernel.checkedStringExpr_evaluate
+
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic
 #print axioms A12Kernel.acceptedStringTarget_applies_exactly

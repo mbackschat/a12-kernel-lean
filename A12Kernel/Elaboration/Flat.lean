@@ -339,7 +339,8 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
         | some declaration => pure declaration
         | none => throw (.invalidEntity reference)
 
-private def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
+/-- Resolve a nonrepeatable declaration after a caller has validated the model. This is shared by checked condition and computation-expression lowering. -/
+def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl := do
   (← model.resolveFieldDeclarationUnchecked declaringGroup reference).requireNonrepeatable
@@ -356,7 +357,7 @@ def FlatModel.resolveField (model : FlatModel) (declaringGroup : GroupPath)
   model.validate
   model.resolveNonrepeatableFieldUnchecked declaringGroup reference
 
-private def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
+def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .number _ => .number
   | .boolean => .boolean
   | .confirm => .confirm

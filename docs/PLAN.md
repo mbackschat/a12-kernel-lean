@@ -154,7 +154,7 @@ Implementing the narrower-sounding seam would therefore introduce the same gener
 
 `FlatField` now admits `FlatStringField`, so the existing phase observation and presence evaluator handle String without a kind-specific branch. Absent, present-empty, and parsed `""` inputs all make `FieldFilled` not fire and `FieldNotFilled` fire with OMISSION; a nonempty admitted String fires VALUE, and malformed input remains UNKNOWN. Checked flat lowering resolves nonrepeatable String declarations into the same typed presence boundary.
 
-Absolute nonrepeatable requiredness reuses that generic generated `FieldNotFilled` stage. A required present-empty String retains `rawPresent = true` when `.required` is attached, proving that evaluation emptiness does not erase physical placement. A universal separator law shows that absent and present-empty checked cells differ while both String presence predicates agree. The specialized generated two-alternative computation-validation consumer keeps its prior Number/Boolean/Confirm-only guard contract through an explicit closed-kind gate; generic presence support does not widen that unrelated capsule accidentally.
+Absolute nonrepeatable requiredness reuses that generic generated `FieldNotFilled` stage. A required present-empty String retains `rawPresent = true` when `.required` is attached, proving that evaluation emptiness does not erase physical placement. A universal separator law shows that absent and present-empty checked cells differ while both String presence predicates agree. At this checkpoint the specialized generated two-alternative computation-validation consumer kept its prior Number/Boolean/Confirm-only guard contract through an explicit closed-kind gate; the later generated-guard unit below widens that consumer deliberately.
 
 This is an internal levels 1–2 downstream closure of accepted IF198. Repeatable/parent-gated requiredness, group-content derivation, `Document` adaptation, protocol exposure, and local portable observations remain open. The bounded generated-computation String-guard consumer closes separately below. The canonical clause and accepted reconciliation already own the behavior, so no new sync-ledger entry was added.
 
@@ -172,15 +172,23 @@ The generated two-alternative literal-Number assembler now resolves nonrepeatabl
 
 This is an internal levels 1–2 integration of already accepted String presence semantics. General computation authoring, String operations or targets, common preconditions, tolerance, repeatable evaluation, scheduling, protocol exposure, and local portable observations remain outside. No canonical clause or sync-ledger entry was needed.
 
-## Immediate next step: String operation frontier audit
+## Completed semantic unit: checked String computation expressions
 
-Reassess the remaining String clauses against the checked String field boundary. Prefer a bounded source-grounded discriminator that composes existing ingestion, presence, comparison, or `Length` semantics. Do not select pattern execution unless its exact regex contract can close without a new dependency, and do not broaden the generated-computation target or operation fragment by momentum.
+The String frontier audit rejected pattern execution, legal charset matching, and raw-type rule elimination as falsely small at the current boundary. Pattern execution lacks Java-compatible admission and execution support; legal charset matching lacks the bounded grapheme/atomic representation; raw-type presence and accepted-but-eliminated metadata need model and elaboration result distinctions that the current flat types do not carry.
+
+The selected bounded seam reuses the existing copy/literal/concatenation runtime. `StringExpr` now parameterizes only its leaf, so structured surface paths lower into the exact same `FieldId` tree. `CheckedStringExpr` certifies model validity and that every field is a nonrepeatable String declaration, then checks raw inputs with that same model before evaluation. Wrong-kind and repeatable fields fail before runtime construction; literals and concatenation retain exact authored shape and order; evaluation delegates unchanged to the existing cached String reader and root store. The red file initially failed only because this checked module did not exist. The green matrix locks nested order, normalized CRLF consumption, all-empty final no-value, wrong raw-value classification, wrong declared-kind rejection, and repeatable rejection; trusted laws preserve literals, successful concatenation structure, and exact model-bound evaluator delegation.
+
+This closes levels 1–2 for decoded nonrepeatable String copy/literal/concatenation expressions only. Target declaration and length-policy checking, whole-computation authoring, alternatives, concrete syntax and date-shaped literal classification, repeatable reads, scheduling, protocol exposure, and new external observations remain outside. No spec, sync-ledger, dependency, or framework change was needed.
+
+## Immediate next step: post-String frontier reassessment
+
+Reassess adjacent computation or validation seams rather than extending String by momentum. Prefer an existing resolved semantic mechanism whose missing checked consumer can reuse current model facts. Keep pattern, charset, and raw-type work parked until their named representation gaps can be closed as the semantic root rather than approximated.
 
 ## Likely next keystone rotation
 
 Reassess the frontier rather than continuing numeric operators by momentum.
 
-The leading candidates are checked admission for one existing String operation or a no-op finding that the remaining operations require a missing source-owned representation. Select by an independent discriminator and consumer payoff. Keep the repeatable operand-resolution seam parked until a source-owned model representation supplies star position, capacities, checked row reads, and per-source metadata; do not retry it under another adapter name.
+The leading candidates are a checked consumer for another existing resolved mechanism or a bounded high-risk temporal/computation discriminator. Select by an independent witness and consumer payoff. Keep the repeatable operand-resolution seam parked until a source-owned model representation supplies star position, capacities, checked row reads, and per-source metadata; do not retry it under another adapter name.
 
 Choose the next unit by:
 
