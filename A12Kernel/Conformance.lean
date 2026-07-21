@@ -7,6 +7,7 @@ import A12Kernel.Conformance.DateConstructionNumeric
 import A12Kernel.Conformance.DateTime
 import A12Kernel.Conformance.DateTimeDifference
 import A12Kernel.Conformance.DateTimeDayDifference
+import A12Kernel.Conformance.DateShift
 import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.ValidationRule
