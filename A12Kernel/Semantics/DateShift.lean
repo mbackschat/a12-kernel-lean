@@ -1,8 +1,8 @@
-import A12Kernel.Semantics.FullDate
+import A12Kernel.Semantics.CivilDateCoordinate
 
-/-! # Admitted full-Date month/year shifts
+/-! # Admitted full-Date day/month/year shifts
 
-This capsule starts with a stored/full Date and an already converted integer offset. It models the post-cutover `Calendar.MONTH` day clamp and the distinct `Calendar.YEAR` end-of-February preservation, then reapplies the universal A12 Date floor. A result below that floor fails closed. Numeric truncation and 32-bit conversion, `Date(...)` legacy-hybrid provenance, partial dates, DateTime, target formatting, and result-cell effects remain outside.
+This capsule starts with a stored/full Date and an already converted integer offset. Day shifting uses a bounded inverse of the existing Gregorian day coordinate; month shifting applies the post-cutover target-day clamp; year shifting applies the distinct end-of-February preservation. Every result passes through the universal A12 Date floor. Numeric truncation and 32-bit conversion, `Date(...)` legacy-hybrid provenance, partial dates, DateTime, target formatting, and result-cell effects remain outside.
 -/
 
 namespace A12Kernel
@@ -33,6 +33,43 @@ end DateParts
 
 namespace CivilDate
 
+namespace DayShift
+
+/-- Locate a zero-based day inside one Gregorian year, scanning at most one complete 400-year era. -/
+private def locateYear : Nat → Int → Nat → Option (Int × Nat)
+  | 0, _, _ => none
+  | fuel + 1, year, remaining =>
+      let yearLength := if DateParts.isLeapYear year then 366 else 365
+      if remaining < yearLength then some (year, remaining)
+      else locateYear fuel (year + 1) (remaining - yearLength)
+
+/-- Locate a one-based month/day inside one already selected Gregorian year. -/
+private def locateMonth : Nat → Int → Nat → Nat → Option (Nat × Nat)
+  | 0, _, _, _ => none
+  | fuel + 1, year, month, remaining =>
+      match DateParts.daysInMonth? year month with
+      | none => none
+      | some monthLength =>
+          if remaining < monthLength then some (month, remaining + 1)
+          else locateMonth fuel year (month + 1) (remaining - monthLength)
+
+end DayShift
+
+/-- Invert the Gregorian day coordinate with at most 400 year steps and 12 month steps. Coordinates before the positive era fail closed. -/
+def ofUnixEpochDay? (epochDay : Int) : Option CivilDate :=
+  let absoluteDay := epochDay + 719162
+  if absoluteDay < 0 then
+    none
+  else
+    let era := absoluteDay / 146097
+    let dayInEra := Int.toNat (absoluteDay % 146097)
+    match DayShift.locateYear 400 (era * 400 + 1) dayInEra with
+    | none => none
+    | some (year, dayInYear) =>
+        match DayShift.locateMonth 12 year 1 dayInYear with
+        | none => none
+        | some (month, day) => CivilDate.ofYmd? year month day
+
 /-- Gregorian month shift with target-month day clamping. -/
 private def addMonths? (date : CivilDate) (offset : Int) : Option CivilDate :=
   let (targetYear, targetMonth) := date.parts.shiftedYearMonth offset
@@ -56,6 +93,14 @@ private def addYears? (date : CivilDate) (offset : Int) : Option CivilDate :=
 end CivilDate
 
 namespace FullDate
+
+/-- Shift an admitted Date by whole days in work bounded independently of the offset, then reapply the full-Date floor. -/
+def addDays? (date : FullDate) (offset : Int) : Option FullDate :=
+  if offset = 0 then
+    some date
+  else
+    (CivilDate.ofUnixEpochDay? (date.unixEpochDay + offset)).bind
+      FullDate.ofCivil?
 
 /-- Shift an admitted Date by whole months and return the result only when it remains in the full-Date domain. -/
 def addMonths? (date : FullDate) (offset : Int) : Option FullDate :=

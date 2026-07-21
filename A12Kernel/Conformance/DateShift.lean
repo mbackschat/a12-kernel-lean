@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.DateShift
 
-/-! # Admitted full-Date month/year shift locks -/
+/-! # Admitted full-Date day/month/year shift locks -/
 
 namespace A12Kernel.Conformance.DateShift
 
@@ -13,6 +13,23 @@ private def addMonths? (year : Int) (month day : Nat) (offset : Int) :
 private def addYears? (year : Int) (month day : Nat) (offset : Int) :
     Option FullDate :=
   (FullDate.ofYmd? year month day).bind (fun date => date.addYears? offset)
+
+private def addDays? (year : Int) (month day : Nat) (offset : Int) :
+    Option FullDate :=
+  (FullDate.ofYmd? year month day).bind (fun date => date.addDays? offset)
+
+/- Day shifting crosses ordinary, leap, month, and year boundaries in both directions. -/
+example :
+    addDays? 2020 2 28 1 = FullDate.ofYmd? 2020 2 29 ∧
+      addDays? 2020 2 28 2 = FullDate.ofYmd? 2020 3 1 ∧
+      addDays? 2021 3 1 (-1) = FullDate.ofYmd? 2021 2 28 ∧
+      addDays? 1999 12 31 1 = FullDate.ofYmd? 2000 1 1 := by
+  native_decide
+
+/- The bounded coordinate inverse handles a complete Gregorian era independently of the offset's magnitude. -/
+example :
+    addDays? 2000 2 29 146097 = FullDate.ofYmd? 2400 2 29 := by
+  native_decide
 
 /- Calendar-month shifting preserves the day when possible and clamps at the target month's end in both directions. -/
 example :
@@ -38,7 +55,8 @@ example :
 /- This boundary returns only admitted full Dates: a result below the universal floor fails closed. -/
 example :
     addMonths? 1583 10 16 (-1) = none ∧
-      addYears? 1583 10 16 (-1) = none := by
+      addYears? 1583 10 16 (-1) = none ∧
+      addDays? 1583 10 16 (-1) = none := by
   native_decide
 
 end A12Kernel.Conformance.DateShift
