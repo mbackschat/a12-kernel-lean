@@ -82,6 +82,10 @@ run_cmd do
 #print axioms A12Kernel.dateComparison_eval_fixed_firing
 #print axioms A12Kernel.dateComparison_eval_missing_firing
 #print axioms A12Kernel.dateComparison_eval_swapped
+#print axioms A12Kernel.temporalExtremum_empty
+#print axioms A12Kernel.temporalExtremum_unknown_head
+#print axioms A12Kernel.temporalExtremum_fixed_singleton
+#print axioms A12Kernel.temporalExtremum_empty_prefix_marks_missing
 #print axioms A12Kernel.dateExtremum_select_of_before
 #print axioms A12Kernel.dateExtremum_select_eq_left_or_right
 #print axioms A12Kernel.dateExtremum_empty
@@ -145,6 +149,12 @@ run_cmd do
 #print axioms A12Kernel.dateTimeComparison_swapped
 #print axioms A12Kernel.dateTimeComparison_before_excludes_after
 #print axioms A12Kernel.dateTimeComparison_eval_swapped
+#print axioms A12Kernel.dateTimeExtremum_select_of_before
+#print axioms A12Kernel.dateTimeExtremum_select_eq_left_or_right
+#print axioms A12Kernel.dateTimeExtremum_empty
+#print axioms A12Kernel.dateTimeExtremum_unknown_head
+#print axioms A12Kernel.dateTimeExtremum_fixed_singleton
+#print axioms A12Kernel.dateTimeExtremum_tail_comparison_firing
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap
