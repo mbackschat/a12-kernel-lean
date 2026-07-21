@@ -76,6 +76,13 @@ run_cmd do
 #print axioms A12Kernel.dateComparison_eval_fixed_firing
 #print axioms A12Kernel.dateComparison_eval_missing_firing
 #print axioms A12Kernel.dateComparison_eval_swapped
+#print axioms A12Kernel.dateExtremum_select_of_before
+#print axioms A12Kernel.dateExtremum_select_eq_left_or_right
+#print axioms A12Kernel.dateExtremum_empty
+#print axioms A12Kernel.dateExtremum_unknown_head
+#print axioms A12Kernel.dateExtremum_fixed_singleton
+#print axioms A12Kernel.dateExtremum_empty_prefix_marks_missing
+#print axioms A12Kernel.dateExtremum_tail_comparison_firing
 #print axioms A12Kernel.dateRange_direction_ordered_iff
 #print axioms A12Kernel.dateRange_overlaps_iff
 #print axioms A12Kernel.dateRange_overlap_symmetric
