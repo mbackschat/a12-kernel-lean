@@ -33,7 +33,7 @@ structure CheckedResolvedFlatRule (model : FlatModel) where
   errorField : FieldId
   errorCode : String
   severity : ValidationSeverity
-  resolvedText : ResolvedMessageText
+  messagePlan : MessageRenderPlan
   errorDeclaration : FlatFieldDecl
   errorFieldLookup :
     model.lookupUniqueId errorField = .ok errorDeclaration
@@ -49,7 +49,7 @@ def core (rule : CheckedResolvedFlatRule model) : ResolvedFlatRule :=
     errorField := rule.errorField
     errorCode := rule.errorCode
     severity := rule.severity
-    resolvedText := rule.resolvedText }
+    messagePlan := rule.messagePlan }
 
 def evalFull (rule : CheckedResolvedFlatRule model) (raw : RawFlatContext)
     (hasContent : Bool) : FlatRuleOutcome :=
@@ -62,7 +62,7 @@ def assembleResolvedFlatRule (model : FlatModel)
     (condition : CheckedFlatCondition model)
     (errorField : FieldId) (errorCode : String)
     (severity : ValidationSeverity)
-    (resolvedText : ResolvedMessageText) :
+    (messagePlan : MessageRenderPlan) :
     Except FlatRuleAssemblyError (CheckedResolvedFlatRule model) :=
   match hLookup : model.lookupUniqueId errorField with
   | .error error => .error (.errorField error)
@@ -74,7 +74,7 @@ def assembleResolvedFlatRule (model : FlatModel)
             errorField
             errorCode
             severity
-            resolvedText
+            messagePlan
             errorDeclaration := declaration
             errorFieldLookup := hLookup
             errorFieldNonrepeatable := hNonrepeatable

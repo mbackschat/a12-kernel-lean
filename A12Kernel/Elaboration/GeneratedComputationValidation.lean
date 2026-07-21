@@ -15,7 +15,7 @@ structure TwoAlternativeLiteralNumberComputation where
   name : String
   first : ComputationAlternative DecodedNumericLiteral
   second : ComputationAlternative DecodedNumericLiteral
-  resolvedText : ResolvedMessageText
+  messagePlan : MessageRenderPlan
   deriving Repr, DecidableEq
 
 namespace TwoAlternativeLiteralNumberComputation
@@ -133,7 +133,7 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
         (core.checkAgainstValidatedModel model hModel).mapError
           GeneratedComputationValidationError.condition
       (assembleResolvedFlatRule model checked computation.targetField
-        computation.name .error computation.resolvedText).mapError
+        computation.name .error computation.messagePlan).mapError
           GeneratedComputationValidationError.rule
 
 end A12Kernel

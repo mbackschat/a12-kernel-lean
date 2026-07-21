@@ -40,8 +40,11 @@ private def repeatableModel : FlatModel :=
       gate, target, broken, unsupportedTextGuard, repeatedGate, repeatedTarget]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
+private def messagePlan : MessageRenderPlan :=
+  { parts := [.text "Target disagrees with the computation table"] }
+
 private def text : ResolvedMessageText :=
-  { text := "Target disagrees with the computation table" }
+  messagePlan.render
 
 private def literal (value : Rat) : DecodedNumericLiteral :=
   { value, authoredScale := 0 }
@@ -57,7 +60,7 @@ private def computation (firstGuard : ComputationCondition) (firstValue : Rat)
     name := "computedTarget"
     first := alternative firstGuard firstValue
     second := alternative secondGuard secondValue
-    resolvedText := text }
+    messagePlan }
 
 private def bothFilled (targetCell : RawCell) : RawFlatContext where
   read field :=
