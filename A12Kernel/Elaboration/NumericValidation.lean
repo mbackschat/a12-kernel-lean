@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It admits plain arithmetic plus separately audited direct-field root value functions in the evaluated row group; general operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It admits plain arithmetic plus separately audited root value functions in the evaluated row group; operand-list extrema may contain direct fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -55,35 +55,40 @@ def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
       base.isPlainArithmetic && exponent.isPlainArithmetic
   | .abs _ | .extremum _ _ _ | .round _ _ _ => false
 
-def AuthoredNumericExpr.isDirectAtom : AuthoredNumericExpr Atom → Bool
-  | .atom _ => true
-  | _ => false
-
-/-- Canonical left fold of one authored operand list, restricted to direct fields and one selector. The concrete decoder must construct this form from the nonempty source list. -/
-def AuthoredNumericExpr.isDirectFieldExtremumChain
-    (expected : NumericExtremumOp) : AuthoredNumericExpr Atom → Bool
-  | .atom _ => true
+/-- Recognize one canonical left-associated extremum operand list while tracking whether its single permitted direct constant has been consumed. `none` rejects mixed selectors, a second constant, wrappers, grouping, or a non-direct right operand. -/
+def AuthoredNumericExpr.directExtremumConstantUse?
+    (expected : NumericExtremumOp) :
+    AuthoredNumericExpr Atom → Option Bool
+  | .atom _ => some false
+  | .literal _ => some true
   | .extremum actual left right =>
-      (actual == expected) &&
-        left.isDirectFieldExtremumChain expected && right.isDirectAtom
-  | _ => false
+      if actual != expected then none else do
+        let constantUsed ← left.directExtremumConstantUse? expected
+        match right with
+        | .atom _ => some constantUsed
+        | .literal _ => if constantUsed then none else some true
+        | _ => none
+  | _ => none
 
-/-- The checked value-function shapes: one root rounding or absolute-value operation over a direct Number field, or one canonical direct-field Min/Max fold. Expression and `…Value` surface spellings normalize to these same semantic nodes. -/
-def AuthoredNumericExpr.isDirectFieldValueFunction : AuthoredNumericExpr Atom → Bool
+def AuthoredNumericExpr.isDirectExtremumChain
+    (expected : NumericExtremumOp) (expression : AuthoredNumericExpr Atom) : Bool :=
+  (expression.directExtremumConstantUse? expected).isSome
+
+/-- The checked value-function shapes: one root rounding or absolute-value operation over a direct Number field, or one canonical direct-operand Min/Max fold with at most one constant. Expression and `…Value` surface spellings normalize to these same semantic nodes. -/
+def AuthoredNumericExpr.isDirectValueFunction : AuthoredNumericExpr Atom → Bool
   | .abs (.atom _) => true
   | .round _ _ (.atom _) => true
-  | .extremum op left right =>
-      left.isDirectFieldExtremumChain op && right.isDirectAtom
+  | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
   | _ => false
 
 /-- The checked validation fragment is plain arithmetic plus independently audited root value functions. -/
 def AuthoredNumericExpr.isAdmittedValidation : AuthoredNumericExpr Atom → Bool
-  | expression => expression.isPlainArithmetic || expression.isDirectFieldValueFunction
+  | expression => expression.isPlainArithmetic || expression.isDirectValueFunction
 
 /-- General operation-wrapper traversal remains unclosed; only exact direct-field root functions bypass the plain-arithmetic authoring scan. -/
 def AuthoredNumericExpr.validationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  if expression.isDirectFieldValueFunction then .accepted else expression.authoringCheck
+  if expression.isDirectValueFunction then .accepted else expression.authoringCheck
 
 private def AuthoredNumericExpr.allAtoms (predicate : Atom → Bool) :
     AuthoredNumericExpr Atom → Bool
@@ -274,28 +279,34 @@ def LoweredNumericExpr.isPlainArithmetic : LoweredNumericExpr Atom → Bool
       base.isPlainArithmetic && exponent.isPlainArithmetic
   | .abs _ | .extremum _ _ _ | .round _ _ _ => false
 
-def LoweredNumericExpr.isDirectAtom : LoweredNumericExpr Atom → Bool
-  | .atom _ => true
-  | _ => false
-
-def LoweredNumericExpr.isDirectFieldExtremumChain
-    (expected : NumericExtremumOp) : LoweredNumericExpr Atom → Bool
-  | .atom _ => true
+/-- Runtime-shape mirror of the authored canonical extremum list. -/
+def LoweredNumericExpr.directExtremumConstantUse?
+    (expected : NumericExtremumOp) :
+    LoweredNumericExpr Atom → Option Bool
+  | .atom _ => some false
+  | .literal _ => some true
   | .extremum actual left right =>
-      (actual == expected) &&
-        left.isDirectFieldExtremumChain expected && right.isDirectAtom
-  | _ => false
+      if actual != expected then none else do
+        let constantUsed ← left.directExtremumConstantUse? expected
+        match right with
+        | .atom _ => some constantUsed
+        | .literal _ => if constantUsed then none else some true
+        | _ => none
+  | _ => none
 
-/-- Lowering preserves the checked direct-field root-function shapes exactly. -/
-def LoweredNumericExpr.isDirectFieldValueFunction : LoweredNumericExpr Atom → Bool
+def LoweredNumericExpr.isDirectExtremumChain
+    (expected : NumericExtremumOp) (expression : LoweredNumericExpr Atom) : Bool :=
+  (expression.directExtremumConstantUse? expected).isSome
+
+/-- Lowering preserves the checked direct root-function shapes exactly. -/
+def LoweredNumericExpr.isDirectValueFunction : LoweredNumericExpr Atom → Bool
   | .abs (.atom _) => true
   | .round _ _ (.atom _) => true
-  | .extremum op left right =>
-      left.isDirectFieldExtremumChain op && right.isDirectAtom
+  | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
   | _ => false
 
 def LoweredNumericExpr.isAdmittedValidation : LoweredNumericExpr Atom → Bool
-  | expression => expression.isPlainArithmetic || expression.isDirectFieldValueFunction
+  | expression => expression.isPlainArithmetic || expression.isDirectValueFunction
 
 /-- Evaluate the plain validation subset; `none` marks a wrapper outside this helper's responsibility. -/
 def LoweredNumericExpr.evalPlainValidation?
@@ -314,26 +325,44 @@ def LoweredNumericExpr.evalPlainValidation?
         baseOutcome exponentOutcome)
   | .abs _ | .extremum _ _ _ | .round _ _ _ => none
 
-private def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
+/-- Preserve the first formal cause across exact extremum selection of two reached validation outcomes. -/
+def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
     Except FormalCause NumericArithmeticOutcome →
       Except FormalCause NumericArithmeticOutcome →
         Except FormalCause NumericArithmeticOutcome
   | left, right =>
       combineNumericValidationOutcomes op.selectOutcome left right
 
-/-- Evaluate the canonical left fold for one direct-field numeric operand list. `none` rejects a mixed selector, a literal, or any nested non-field expression. -/
-def LoweredNumericExpr.evalDirectFieldExtremum?
+/-- Evaluate the canonical left fold while returning the same direct-constant usage bit as the runtime shape check. -/
+def LoweredNumericExpr.evalDirectExtremumWithConstantUse?
     (expected : NumericExtremumOp)
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
-    LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
-  | .atom sourceAtom => some (read sourceAtom)
-  | .extremum actual left (.atom rightAtom) =>
-      if actual == expected then do
-        let leftOutcome ← left.evalDirectFieldExtremum? expected read
-        pure (expected.selectValidationOutcome leftOutcome (read rightAtom))
-      else
-        none
+    LoweredNumericExpr Atom →
+      Option (Except FormalCause NumericArithmeticOutcome × Bool)
+  | .atom sourceAtom => some (read sourceAtom, false)
+  | .literal amount => some (.ok (.value amount .fixed), true)
+  | .extremum actual left right =>
+      if actual != expected then none else do
+        let (leftOutcome, constantUsed) ←
+          left.evalDirectExtremumWithConstantUse? expected read
+        match right with
+        | .atom rightAtom =>
+            some (expected.selectValidationOutcome leftOutcome (read rightAtom),
+              constantUsed)
+        | .literal amount =>
+            if constantUsed then none else
+              some (expected.selectValidationOutcome leftOutcome
+                (.ok (.value amount .fixed)), true)
+        | _ => none
   | _ => none
+
+/-- Evaluate one admitted canonical extremum list and erase its checked constant-usage state. -/
+def LoweredNumericExpr.evalDirectExtremum?
+    (expected : NumericExtremumOp)
+    (read : Atom → Except FormalCause NumericArithmeticOutcome)
+    (expression : LoweredNumericExpr Atom) :
+    Option (Except FormalCause NumericArithmeticOutcome) :=
+  (expression.evalDirectExtremumWithConstantUse? expected read).map Prod.fst
 
 /-- Evaluate exactly the checked runtime fragment. Value functions are admitted only at the root over a direct field; their result-domain maps preserve formal invalidity and arithmetic domain failure. -/
 def LoweredNumericExpr.evalAdmittedValidation?
@@ -348,7 +377,7 @@ def LoweredNumericExpr.evalAdmittedValidation?
         | .ok outcome => .ok outcome.absolute
         | .error cause => .error cause
   | expression@(.extremum op _ _) =>
-      expression.evalDirectFieldExtremum? op read
+      expression.evalDirectExtremum? op read
   | expression => expression.evalPlainValidation? read
 
 /-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/

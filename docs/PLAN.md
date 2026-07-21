@@ -246,9 +246,15 @@ The two-alternative literal-Number fragment now retains each alternative's optio
 
 The red matrix first failed because alternatives carried no tolerance. The completed cases distinguish interior, exact boundary, and exterior differences, prove that one tolerant tier does not soften a later strict tier, preserve selection of the same literal operation, and separate ordinary exact-scale rejection from tolerance scale bypass. Trusted laws lock both translations, validation-only metadata erasure, exact two-branch structure, and empty-target suppression. General computation-table authoring, singleton/default or larger tables, common preconditions, expression operations, runtime target behavior, repeats, scheduling, concrete syntax, protocol exposure, and project-local observations remain outside. The canonical clause and accepted a12-dmkits reconciliation already own this behavior, so no spec or sync-ledger entry changed.
 
-## Immediate next step: semantic frontier reassessment
+## Completed semantic unit: operand-list extrema single constant
 
-Reassess the next checked consumer or high-risk discriminator after the generated-computation tolerance capsule closes. Do not retry the parked flat-literal-scale, aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing authorization, model facts, or a second exact semantic user.
+The checked numeric validation consumer now admits one direct decoded Number constant inside a canonical root `Min`/`Max` operand-list fold. One state bit is preserved through authored recognition, lowering, and runtime shape validation, so the same mechanism rejects a second constant, grouped constants, nested expressions, mixed selectors, and noncanonical right-nested tails. The constant retains authored scale, evaluates as fixed, and participates in the existing exact-selection and directional-fillability semantics. Focused laws lock admission, runtime delegation, and two-constant rejection. The canonical spec now states this source-grounded boundary; its already-reviewed a12-dmkits provenance is recorded in [`SOURCES.md`](SOURCES.md), not reflected back as a new outbound ledger item.
+
+This closes levels 1–2 for the single-constant subset in checked same-group nonrepeatable numeric validation. Other operand forms, tie-origin retention, checked computation authoring, protocol exposure, and project-local observations remain outside.
+
+## Immediate next step: approved documentation consolidation
+
+Perform the approved bounded docs-only sweep: archive completed-unit narratives, reduce this live plan to continuation state, compact the duplicated implementation inventory in [`../CLAUDE.md`](../CLAUDE.md), normalize [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) into compact owner/implemented/evidence/excluded-next sections, keep [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) durable-only, and make the command ladder explicit in [`TESTING.md`](TESTING.md). Commit the sweep separately before reassessing the semantic frontier. Do not retry the parked flat-literal-scale, aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing authorization, model facts, or a second exact semantic user.
 
 ## Likely next keystone rotation
 

@@ -219,58 +219,65 @@ private theorem loweredPlainValidation_isSome
   | abs | extremum | round =>
       simp [LoweredNumericExpr.isPlainArithmetic] at plain
 
-private theorem authoredNumericLower_directAtom
-    (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectAtom = true) :
-    expression.lowerForEvaluation.isDirectAtom = true := by
-  cases expression with
-  | atom => rfl
-  | literal | group | binary | power | abs | extremum | round =>
-      simp [AuthoredNumericExpr.isDirectAtom] at direct
-
-private theorem authoredNumericLower_directFieldExtremumChain
+private theorem authoredNumericLower_directExtremumChain
     (expected : NumericExtremumOp)
     (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectFieldExtremumChain expected = true) :
-    expression.lowerForEvaluation.isDirectFieldExtremumChain expected = true := by
+    (direct : expression.isDirectExtremumChain expected = true) :
+    expression.lowerForEvaluation.directExtremumConstantUse? expected =
+      expression.directExtremumConstantUse? expected := by
   induction expression with
-  | atom => rfl
+  | atom | literal => rfl
   | extremum actual left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isDirectFieldExtremumChain,
-        Bool.and_eq_true] at direct
-      rcases direct with ⟨⟨actualOk, leftOk⟩, rightOk⟩
-      simp only [AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isDirectFieldExtremumChain, Bool.and_eq_true]
-      exact ⟨⟨actualOk, leftIh leftOk⟩,
-        authoredNumericLower_directAtom right rightOk⟩
-  | literal | group | binary | power | abs | round =>
-      simp [AuthoredNumericExpr.isDirectFieldExtremumChain] at direct
+      by_cases same : actual = expected
+      · subst actual
+        cases leftUse : left.directExtremumConstantUse? expected with
+        | none =>
+            simp [AuthoredNumericExpr.isDirectExtremumChain,
+              AuthoredNumericExpr.directExtremumConstantUse?, leftUse] at direct
+        | some constantUsed =>
+            have leftDirect : left.isDirectExtremumChain expected = true := by
+              simp [AuthoredNumericExpr.isDirectExtremumChain, leftUse]
+            have leftPreserved := leftIh leftDirect
+            cases right <;>
+              simp [AuthoredNumericExpr.isDirectExtremumChain,
+                AuthoredNumericExpr.directExtremumConstantUse?,
+                LoweredNumericExpr.directExtremumConstantUse?,
+                AuthoredNumericExpr.lowerForEvaluation,
+                leftUse, leftPreserved] at direct ⊢
+      · simp [AuthoredNumericExpr.isDirectExtremumChain,
+          AuthoredNumericExpr.directExtremumConstantUse?, same] at direct
+  | group | binary | power | abs | round =>
+      simp [AuthoredNumericExpr.isDirectExtremumChain,
+        AuthoredNumericExpr.directExtremumConstantUse?] at direct
 
-private theorem authoredNumericLower_directFieldValueFunction
+private theorem authoredNumericLower_directValueFunction
     (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectFieldValueFunction = true) :
-    expression.lowerForEvaluation.isDirectFieldValueFunction = true := by
+    (direct : expression.isDirectValueFunction = true) :
+    expression.lowerForEvaluation.isDirectValueFunction = true := by
   cases expression with
   | atom | literal | group | binary | power =>
-      simp [AuthoredNumericExpr.isDirectFieldValueFunction] at direct
+      simp [AuthoredNumericExpr.isDirectValueFunction] at direct
   | abs body =>
       cases body <;>
-        simp [AuthoredNumericExpr.isDirectFieldValueFunction,
+        simp [AuthoredNumericExpr.isDirectValueFunction,
           AuthoredNumericExpr.lowerForEvaluation,
-          LoweredNumericExpr.isDirectFieldValueFunction] at direct ⊢
+          LoweredNumericExpr.isDirectValueFunction] at direct ⊢
   | round mode places body =>
       cases body <;>
-        simp [AuthoredNumericExpr.isDirectFieldValueFunction,
+        simp [AuthoredNumericExpr.isDirectValueFunction,
           AuthoredNumericExpr.lowerForEvaluation,
-          LoweredNumericExpr.isDirectFieldValueFunction] at direct ⊢
+          LoweredNumericExpr.isDirectValueFunction] at direct ⊢
   | extremum op left right =>
-      simp only [AuthoredNumericExpr.isDirectFieldValueFunction,
-        Bool.and_eq_true] at direct
-      simp only [AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isDirectFieldValueFunction, Bool.and_eq_true]
-      exact ⟨
-        authoredNumericLower_directFieldExtremumChain op left direct.1,
-        authoredNumericLower_directAtom right direct.2⟩
+      have preserved := authoredNumericLower_directExtremumChain op
+        (.extremum op left right) direct
+      simp only [AuthoredNumericExpr.isDirectValueFunction] at direct
+      unfold AuthoredNumericExpr.isDirectExtremumChain at direct
+      unfold LoweredNumericExpr.isDirectValueFunction
+      unfold LoweredNumericExpr.isDirectExtremumChain
+      simp only [AuthoredNumericExpr.lowerForEvaluation]
+      simp only [AuthoredNumericExpr.lowerForEvaluation] at preserved
+      rw [preserved]
+      exact direct
 
 private theorem authoredNumericLower_admittedValidation
     (expression : AuthoredNumericExpr Atom)
@@ -283,34 +290,55 @@ private theorem authoredNumericLower_admittedValidation
   | inl plain => exact Or.inl (authoredNumericLower_plain expression plain)
   | inr direct =>
       exact Or.inr
-        (authoredNumericLower_directFieldValueFunction expression direct)
+        (authoredNumericLower_directValueFunction expression direct)
 
-private theorem loweredDirectFieldExtremum_isSome
+private theorem loweredDirectExtremum_constantUse_preserved
+    (expected : NumericExtremumOp)
+    (expression : LoweredNumericExpr Atom)
+    (read : Atom → Except FormalCause NumericArithmeticOutcome) :
+    (expression.evalDirectExtremumWithConstantUse? expected read).map Prod.snd =
+      expression.directExtremumConstantUse? expected := by
+  induction expression with
+  | atom | literal => rfl
+  | extremum actual left right leftIh rightIh =>
+      by_cases same : actual = expected
+      · subst actual
+        cases evaluated : left.evalDirectExtremumWithConstantUse? expected read with
+        | none =>
+            have leftUse : left.directExtremumConstantUse? expected = none := by
+              simpa [evaluated] using leftIh.symm
+            simp [LoweredNumericExpr.evalDirectExtremumWithConstantUse?,
+              LoweredNumericExpr.directExtremumConstantUse?, evaluated, leftUse]
+        | some result =>
+            rcases result with ⟨leftOutcome, constantUsed⟩
+            have leftUse :
+                left.directExtremumConstantUse? expected = some constantUsed := by
+              simpa [evaluated] using leftIh.symm
+            cases right <;> cases constantUsed <;>
+              simp [LoweredNumericExpr.evalDirectExtremumWithConstantUse?,
+                LoweredNumericExpr.directExtremumConstantUse?,
+                evaluated, leftUse]
+      · simp [LoweredNumericExpr.evalDirectExtremumWithConstantUse?,
+          LoweredNumericExpr.directExtremumConstantUse?, same]
+  | binary | power | abs | round => rfl
+
+private theorem loweredDirectExtremum_isSome
     (expected : NumericExtremumOp)
     (expression : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
-    (direct : expression.isDirectFieldExtremumChain expected = true) :
-    (expression.evalDirectFieldExtremum? expected read).isSome = true := by
-  induction expression with
-  | atom => rfl
-  | extremum actual left right leftIh rightIh =>
-      simp only [LoweredNumericExpr.isDirectFieldExtremumChain,
-        Bool.and_eq_true] at direct
-      rcases direct with ⟨⟨actualOk, leftOk⟩, rightOk⟩
-      have actualEq : actual = expected := by
-        simpa using actualOk
-      subst actual
-      have leftSome := leftIh leftOk
-      cases right with
-      | atom rightAtom =>
-          cases leftResult : left.evalDirectFieldExtremum? expected read with
-          | none => simp [leftResult] at leftSome
-          | some leftOutcome =>
-              simp [LoweredNumericExpr.evalDirectFieldExtremum?, leftResult]
-      | literal | binary | power | abs | extremum | round =>
-          simp [LoweredNumericExpr.isDirectAtom] at rightOk
-  | literal | binary | power | abs | round =>
-      simp [LoweredNumericExpr.isDirectFieldExtremumChain] at direct
+    (direct : expression.isDirectExtremumChain expected = true) :
+    (expression.evalDirectExtremum? expected read).isSome = true := by
+  have preserved :=
+    loweredDirectExtremum_constantUse_preserved expected expression read
+  cases evaluated : expression.evalDirectExtremumWithConstantUse? expected read with
+  | none =>
+      rw [evaluated] at preserved
+      simp only [Option.map_none] at preserved
+      unfold LoweredNumericExpr.isDirectExtremumChain at direct
+      rw [← preserved] at direct
+      simp at direct
+  | some result =>
+      simp [LoweredNumericExpr.evalDirectExtremum?, evaluated]
 
 private theorem loweredAdmittedValidation_isSome
     (expression : LoweredNumericExpr Atom)
@@ -330,29 +358,19 @@ private theorem loweredAdmittedValidation_isSome
   | inr direct =>
       cases expression with
       | atom | literal | binary | power =>
-          simp [LoweredNumericExpr.isDirectFieldValueFunction] at direct
+          simp [LoweredNumericExpr.isDirectValueFunction] at direct
       | abs body =>
           cases body <;>
-            simp [LoweredNumericExpr.isDirectFieldValueFunction,
+            simp [LoweredNumericExpr.isDirectValueFunction,
               LoweredNumericExpr.evalAdmittedValidation?] at direct ⊢
       | round mode places body =>
           cases body <;>
-            simp [LoweredNumericExpr.isDirectFieldValueFunction,
+            simp [LoweredNumericExpr.isDirectValueFunction,
               LoweredNumericExpr.evalAdmittedValidation?] at direct ⊢
       | extremum op left right =>
-          simp only [LoweredNumericExpr.isDirectFieldValueFunction,
-            Bool.and_eq_true] at direct
-          have leftSome :=
-            loweredDirectFieldExtremum_isSome op left read direct.1
-          cases right with
-          | atom rightAtom =>
-              cases leftResult : left.evalDirectFieldExtremum? op read with
-              | none => simp [leftResult] at leftSome
-              | some leftOutcome =>
-                  simp [LoweredNumericExpr.evalAdmittedValidation?,
-                    LoweredNumericExpr.evalDirectFieldExtremum?, leftResult]
-          | literal | binary | power | abs | extremum | round =>
-              simp [LoweredNumericExpr.isDirectAtom] at direct
+          have evaluated := loweredDirectExtremum_isSome op
+            (.extremum op left right) read direct
+          simpa [LoweredNumericExpr.evalAdmittedValidation?] using evaluated
 
 private theorem numericComparison_wellFormed_sidesAdmitted
     (comparison : NumericComparison)
@@ -378,6 +396,40 @@ theorem checkedNumericComparison_evaluations_areSome
       (authoredNumericLower_admittedValidation _ admitted.1),
     loweredAdmittedValidation_isSome _ _
       (authoredNumericLower_admittedValidation _ admitted.2)⟩
+
+/-- One direct constant is admitted on either side of the first extremum node. -/
+theorem numericValidation_extremum_singleConstant_admitted
+    (op : NumericExtremumOp) (atom : Atom)
+    (constant : DecodedNumericLiteral) :
+    (AuthoredNumericExpr.extremum op (.atom atom)
+        (.literal constant)).isDirectValueFunction = true ∧
+      (AuthoredNumericExpr.extremum op (.literal constant)
+        (.atom atom)).isDirectValueFunction = true := by
+  simp [AuthoredNumericExpr.isDirectValueFunction,
+    AuthoredNumericExpr.isDirectExtremumChain,
+    AuthoredNumericExpr.directExtremumConstantUse?]
+
+/-- A direct constant reaches the existing exact extremum selector as a fixed operand. -/
+theorem numericValidation_extremum_atom_constant_delegates
+    (op : NumericExtremumOp) (atom : Atom) (constant : Rat)
+    (read : Atom → Except FormalCause NumericArithmeticOutcome) :
+    (LoweredNumericExpr.extremum op (.atom atom)
+      (.literal constant)).evalDirectExtremum? op read =
+        some (op.selectValidationOutcome (read atom)
+          (.ok (.value constant .fixed))) := by
+  simp [LoweredNumericExpr.evalDirectExtremum?,
+    LoweredNumericExpr.evalDirectExtremumWithConstantUse?]
+
+/-- A second direct constant is rejected rather than silently widening the authored list contract. -/
+theorem numericValidation_extremum_twoConstants_rejected
+    (op : NumericExtremumOp) (atom : Atom)
+    (first second : DecodedNumericLiteral) :
+    (AuthoredNumericExpr.extremum op
+      (.extremum op (.atom atom) (.literal first))
+      (.literal second)).isDirectValueFunction = false := by
+  simp [AuthoredNumericExpr.isDirectValueFunction,
+    AuthoredNumericExpr.isDirectExtremumChain,
+    AuthoredNumericExpr.directExtremumConstantUse?]
 
 /-- A direct atom and literal evaluate exactly like the shared low-level Number-field evaluator. -/
 theorem numericComparison_atom_literal_agrees_flat

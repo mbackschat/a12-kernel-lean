@@ -582,9 +582,48 @@ example : errorOf
       0) = some .unsupportedExpression := by
   native_decide
 
+/- One direct top-level constant may occur at any position in the canonical operand list. -/
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum (literal 5 0) [atom "U"])
+      10) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (comparison .greater
+      (AuthoredNumericExpr.extremumList .maximum
+        (atom "U") [literal 5 0, atom "V"])
+      4)
+    (raw .empty (.parsed (.num 4))) = some (.fired .value) := by
+  native_decide
+
+/- The constant participates in the ordinary static summary without making the field-bearing fold a constant expression. -/
+example : (elaborateNumericComparison model ["Order"]
+    (twoSided .equal
+      (AuthoredNumericExpr.extremumList .minimum
+        (atom "U") [literal 0 2])
+      (atom "Scale2"))).isOk = true := by
+  native_decide
+
+/- Two constants, a grouped constant, and a noncanonical right-nested fold remain outside the admitted source shape. -/
 example : errorOf
     (comparison .less
-      (AuthoredNumericExpr.extremumList .minimum (atom "U") [literal 1 0])
+      (AuthoredNumericExpr.extremumList .minimum
+        (atom "U") [literal 1 0, literal 2 0])
+      0) = some .unsupportedExpression := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (atom "U") [.group (literal 1 0)])
+      0) = some .unsupportedExpression := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (.extremum .minimum (atom "U")
+        (.extremum .minimum (atom "V") (literal 1 0)))
       0) = some .unsupportedExpression := by
   native_decide
 
