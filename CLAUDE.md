@@ -85,7 +85,9 @@ Never perform redundant work. Before implementing or proposing a capability, ins
 
 ## ⚠️ HARD RULE — never push without an explicit current request
 
-Local commits are allowed under the normal workflow, but never run `git push`, create or update a remote branch or tag, publish a release, or otherwise send repository state to GitHub or another remote unless the user explicitly asks for that remote action in the current request. Earlier permission or a standing instruction to continue does not authorize a later push.
+Commit each completed coherent unit of work before reporting completion unless the user explicitly says not to commit. Do not leave verified work uncommitted merely to propose a commit message.
+
+Keep those commits local: never run `git push`, create or update a remote branch or tag, publish a release, or otherwise send repository state to GitHub or another remote unless the user explicitly asks for that remote action in the current request. Earlier permission or a standing instruction to continue does not authorize a later push.
 
 ## Naming convention
 
