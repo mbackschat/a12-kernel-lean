@@ -92,16 +92,26 @@ private def targetPolicy : NumericTargetPolicy where
 private def checkedTargetResultOf
     (expression : AuthoredNumericExpr SurfaceFieldPath)
     (suppressExactScaleWarning : Bool)
+    (policy : NumericTargetPolicy := targetPolicy)
     (input : ScalarComputationContext := context) :
     Option NumericTargetCheckResult :=
   match elaborateNumericComputationOperation model ["Root"] targetId expression
       suppressExactScaleWarning with
   | .error _ => none
   | .ok checked =>
-      if coherent : targetPolicy.info = checked.core.target.info then
-        (checked.evaluateTarget targetPolicy coherent input).toOption
-      else
-        none
+      match checked.attachTargetPolicy policy with
+      | .error _ => none
+      | .ok targetChecked => targetChecked.evaluate input |>.toOption
+
+private def targetPolicyAttachErrorOf (policy : NumericTargetPolicy) :
+    Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation model ["Root"] targetId
+      (.literal { value := 0, authoredScale := 0 }) with
+  | .error error => some error
+  | .ok checked =>
+      match checked.attachTargetPolicy policy with
+      | .error error => some error
+      | .ok _ => none
 
 private def literal (value : Rat) (authoredScale : Int := 0) :
     AuthoredNumericExpr FlatFieldDecl :=
@@ -152,6 +162,25 @@ example :
           (surfaceField ["Root"] "Target")
           (.literal { value := 2, authoredScale := 0 })))) =
       some (.targetSelfReference targetId) := by
+  native_decide
+
+/- Target policy is attached once: a different scale/signedness summary is rejected before evaluation. -/
+example :
+    let wrongPolicy : NumericTargetPolicy :=
+      { info := { scale := 1, signed := true }
+        minFractionalDigits := 0
+        minLeMax := by decide }
+    targetPolicyAttachErrorOf wrongPolicy =
+      some (.targetPolicyMismatch numberInfo wrongPolicy.info) := by
+  native_decide
+
+/- Evaluation consumes the retained complete policy rather than accepting a new caller-selected one. -/
+example :
+    let zeroForbidden := { targetPolicy with zeroAllowed := false }
+    checkedTargetResultOf (.literal { value := 0, authoredScale := 0 })
+      false zeroForbidden =
+        some (.supported (.rejected
+          { unscaled := 0, scale := 0 } .zeroNotAllowed)) := by
   native_decide
 
 /- The one legal warning suppression bypasses only the result-scale gate and selects the no-fit target branch carried by the checked operation. -/
