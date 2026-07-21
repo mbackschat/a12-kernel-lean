@@ -2,7 +2,7 @@ import A12Kernel.Semantics.DateComparison
 
 /-! # Resolved temporal extrema
 
-This capsule owns the fold shared by direct and selected-stream Date and DateTime `Min`/`Max` after their operands have been classified. Empty operands do not compete, but they retain symmetric missing provenance on any selected result; formal unavailability aborts the complete fold; and an all-empty fold has no synthetic value. Each temporal family supplies its exact selector and returns its existing classified comparison operand, so validation polarity uses the established comparison path.
+This capsule owns the fold shared by direct and selected-stream Date, Time, and DateTime `Min`/`Max` after their operands have been classified. Empty operands do not compete, but they retain symmetric missing provenance on any selected result; formal unavailability aborts the complete fold; and an all-empty fold has no synthetic value. Each temporal family supplies its exact selector and returns its existing classified comparison operand, so validation polarity uses the established comparison path.
 
 Path/star expansion, actual `Having` evaluation, raw cells, computation targets, constructed-Date calendar identity, DateTime parsing and zone resolution, and checked lowering remain outside.
 -/
