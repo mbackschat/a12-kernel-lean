@@ -37,4 +37,38 @@ theorem dateComparison_before_excludes_after (left right : FullDate)
           ((fullDate_before_iff left right).mp before))
           ((fullDate_before_iff right left).mp reverse))
 
+/-- Formal unavailability dominates every right operand, including a valueless one. -/
+theorem dateComparison_eval_unknown_left (op : DateComparisonOp)
+    (cause : FormalCause) (right : SimpleComparisonOperand FullDate) :
+    op.eval (.unknown cause) right = .unknown := by
+  cases right <;> rfl
+
+/-- A valueless left Date makes a comparison with a present Date not fire. -/
+theorem dateComparison_eval_noValue_left (op : DateComparisonOp)
+    (right : FullDate) (rightGiven : Bool) :
+    op.eval .notEvaluated (.value right rightGiven) = .notFired := by
+  rfl
+
+/-- A true comparison over fixed present Dates fires with VALUE polarity. -/
+theorem dateComparison_eval_fixed_firing (op : DateComparisonOp)
+    (left right : FullDate) (holds : op.holds left right = true) :
+    op.eval (.value left true) (.value right true) = .fired .value := by
+  simp [DateComparisonOp.eval, holds]
+
+/-- Missing provenance on either present operand makes every true Date comparison omission-typed. -/
+theorem dateComparison_eval_missing_firing (op : DateComparisonOp)
+    (left right : FullDate) (leftGiven rightGiven : Bool)
+    (missing : (leftGiven && rightGiven) = false)
+    (holds : op.holds left right = true) :
+    op.eval (.value left leftGiven) (.value right rightGiven) =
+      .fired .omission := by
+  simp [DateComparisonOp.eval, holds, missing]
+
+/-- Operand exchange plus the matching directional operator preserves classified comparison verdicts and polarity. -/
+theorem dateComparison_eval_swapped (op : DateComparisonOp)
+    (left right : SimpleComparisonOperand FullDate) :
+    op.swapped.eval left right = op.eval right left := by
+  cases left <;> cases right <;>
+    simp [DateComparisonOp.eval, dateComparison_swapped, Bool.and_comm]
+
 end A12Kernel
