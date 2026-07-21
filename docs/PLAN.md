@@ -4,16 +4,14 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: resolved Time comparison in this revision, building on `53340f5` (`feat(datetime): add resolved instant extrema`).
-- Its focused semantics/proof/conformance build, full 226-job `lake build`, 51/51 retained-observation replay, and trust audit over 731 theorem roots / 11,901 declarations / 132 logical modules passed.
+- Semantic baseline: resolved Time extrema in this revision, building on `2f8c08c` (`feat(time): add resolved time comparisons`).
+- Its focused semantics/proof/conformance build, full 229-job `lake build`, 51/51 retained-observation replay, and trust audit over 737 theorem roots / 11,918 declarations / 134 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close the resolved Time-extrema sibling now that Time comparison establishes the coordinate and the existing temporal fold supplies the scan. Update the existing pending `SPEC-2026-07-21-07` and handoff because the same kernel checker, combiner, and Date-only peer adapter gap admit Time as well as DateTime; do not create a parallel request.
-
-After that capsule and its final gate, schedule one bounded artifact-only resolved-temporal consumer probe covering Date/Time/DateTime comparison and extrema. This is a knowledge-transport probe, not authorization for a Rust/Python implementation, shipment, protocol expansion, qualification campaign, or new harness.
+Run one bounded artifact-only resolved-temporal consumer probe covering Date/Time/DateTime comparison and extrema. Test whether the existing semantic shipment lets an independent Execute plus Transform/Explain consumer recover the operation domains, value identities, empty/formal/missing distinctions, and separating examples without source archaeology. This is a knowledge-transport probe, not authorization for a Rust/Python implementation, shipment, protocol expansion, qualification campaign, or new harness.
 
 ## Frontier queue
 
@@ -41,11 +39,11 @@ After that capsule and its final gate, schedule one bounded artifact-only resolv
 - **Satisfied — bounded trust-audit optimization:** canonical local import traversal preserves the exact former logical/conformance/library source closures, the theorem registry is compared in one batch, and all adversarial guards run in one refreshed Lean session instead of one process per fixture; successful output is one inventory line while failures retain their diagnostics.
 - **Satisfied — classified full-Date comparison operands:** `ec04faf` retains present full Dates with symmetric missing provenance separately from no value and formal unavailability, delegates truth to the existing six-operator family, and projects only true missing-bearing comparisons to OMISSION.
 - **Satisfied — stored/full-Date extrema:** `35f4cb7` gives Date `Min`/`Max` a separate no-value fold, skips empty operands while retaining symmetric missing provenance, propagates formal unavailability, and composes through the existing Date verdict path.
-- **Satisfied — resolved DateTime instant comparison:** this revision compares exact whole-second instant identity/order through all six operators, reuses the shared classified scalar verdict path, and locks the equal-looking Berlin overlap separator without adding wall-label or zone-resolution machinery.
-- **Satisfied — resolved DateTime exact-instant extrema:** this revision reuses the shared temporal fold at its second completed consumer, selects exact instants for `Min`/`Max`, retains empty/unavailable/missing behavior, and records the a12-dmkits adapter gap without adding another aggregate scan.
-- **Satisfied — resolved Time comparison:** this revision compares decoded times by seconds since midnight, shares one operation-neutral enum and classified verdict path across Date/Time/DateTime, and keeps format decoding plus checked lowering outside.
-- **Active — resolved Time extrema:** reuse the temporal fold and decoded coordinate; widen pending `SPEC-2026-07-21-07` plus its handoff to the complete Time/DateTime adapter gap.
-- **Ready — resolved temporal consumer probe:** after Time extrema pass their final gate, run one isolated artifact-only Execute plus Transform/Explain readback over Date/Time/DateTime comparison and extrema. Do not start an external Rust/Python implementation or current-suite qualification without a separately adopted shipment boundary.
+- **Satisfied — resolved DateTime instant comparison:** `c9d904a` compares exact whole-second instant identity/order through all six operators, reuses the shared classified scalar verdict path, and locks the equal-looking Berlin overlap separator without adding wall-label or zone-resolution machinery.
+- **Satisfied — resolved DateTime exact-instant extrema:** `53340f5` reuses the shared temporal fold at its second completed consumer, selects exact instants for `Min`/`Max`, retains empty/unavailable/missing behavior, and records the a12-dmkits adapter gap without adding another aggregate scan.
+- **Satisfied — resolved Time comparison:** `2f8c08c` compares decoded times by seconds since midnight, shares one operation-neutral enum and classified verdict path across Date/Time/DateTime, and keeps format decoding plus checked lowering outside.
+- **Satisfied — resolved Time extrema:** this revision reuses the temporal fold and decoded coordinate, preserves the common empty/formal/missing distinctions, and widens pending `SPEC-2026-07-21-07` plus its handoff instead of creating a duplicate peer request.
+- **Active — resolved temporal consumer probe:** run one isolated artifact-only Execute plus Transform/Explain readback over Date/Time/DateTime comparison and extrema. Do not start an external Rust/Python implementation or current-suite qualification without a separately adopted shipment boundary.
 - **Missing fact — checked temporal lowering:** foundational checked values and field declarations do not yet retain Date/DateTime values, comparable format components, or zone-resolution policy; do not widen them through an aggregate-only adapter.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
