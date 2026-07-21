@@ -68,7 +68,7 @@ Temporary focused mutations confirm the precision and order seams; no mutation f
 
 ### Documentation and completion
 
-The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) carries the corresponding pending peer reconciliation, while [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) record the admitted Lean boundary and reusable consumer consequence.
+The canonical clauses now state encounter order, per-step precision, unavailable termination, and per-declaration missing directions. [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md) records the accepted a12-dmkits reconciliation at revision `20230e403fa085c782534025f890669a975999a8`, while [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) and [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) record the narrower admitted Lean boundary and reusable consumer consequence.
 
 The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
 
@@ -115,7 +115,7 @@ Choose the next unit by:
 These are not repository-wide blockers:
 
 - `DifferenceInDays` requires a profile-aware model-zone legacy-calendar step account; the zone-free proleptic `CivilDate` coordinate is not a valid substitute.
-- Authored message/whole-rule integration must not hide unresolved provider/default/CRLF distinctions. Correct canonical facts may proceed, but an externally unresolved discriminator remains explicit.
+- Authored message/whole-rule integration must preserve the accepted provider/default/raw-CRLF distinctions and the bounded modern `DocumentV2` dot-default profile; checked Lean integration, untested display routes, and project-local portable evidence remain open.
 - Mixed-declaration aggregate signedness requires per-declaration missing-potential representation.
 - Many internally closed families remain `external evidence pending`; collect them into coherent future calibration batches rather than creating per-capsule capture work.
 - Public protocol expansion, semantic shipments, external prototypes, candidate qualification, and SMT dependencies require separate adoption or approval.

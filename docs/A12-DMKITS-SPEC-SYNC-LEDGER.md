@@ -552,8 +552,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-20-14 — Enumeration direct-field comparability uses effective display remapping
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** accepted
+- **Local revision:** `106874218c12ffb7a1cd4971db815081abe3b198`
 - **a12-dmkits basis revision:** `99f70a23a5bc392aafda05600b4d800848bab513`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`06-strings-and-enumerations.md` B.1 and checklist](../spec/06-strings-and-enumerations.md#b1-comparison-is-by-stored-value-and-direct-field-comparability-depends-on-effective-display-remapping)
@@ -562,11 +562,13 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Correct canonical/public prose that treats any authored label as display-bearing. Using the existing model-legality harness, add focused controls for identity labels versus String accepted, identity-label versus truly textless Enumeration accepted, same stored token with different shared-locale displays rejected, same shared-locale display with different stored tokens rejected, an identity mapping that still participates in a conflict once another member makes both profiles display-bearing, and one compatible disjoint or partially overlapping display map. Preserve the existing interpreter/runtime representation unless a live consumer actually performs this static check; do not build a new capture facility. Keep category-to-plain-Enumeration API/converter support as a separate peer gap rather than folding it into this direct-field correction.
 - **Compatibility:** A checker or importer that uses label presence rejects legal identity-label models. One that requires declaration equality rejects legal disjoint/partial mappings. One that checks only stored-to-display direction accepts an ambiguous reverse display mapping. Runtime stored-token comparison is unchanged.
 - **Acceptance:** a12-dmkits prose states effective remapping and common-locale bidirectional consistency; the focused existing-harness controls above pass against kernel 30.8.1; unchanged production code is explicitly acceptable when static admission remains delegated; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `20230e403fa085c782534025f890669a975999a8`
+- **Disposition:** accepted — production admission remains kernel-delegated, while canonical prose and `EnumComparabilityLawsTest` now cover identity labels, both conflict directions, identity participation in a display-bearing conflict, and compatible partial/disjoint mappings.
 
 ### SPEC-2026-07-20-15 — all-empty Number aggregate identity is both-directionally fillable
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** accepted
+- **Local revision:** `0cd607f74bbe7381007574dffe144d87b9ca69ef`
 - **a12-dmkits basis revision:** `06128aa0c96f36f34d6f5782c35d33e13001647e`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`03-empty-and-required.md` §A.3](../spec/03-empty-and-required.md#a3-what-an-all-empty-selection-folds-to-the-aggregate-identities) and [`10-validation-and-polarity.md` §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
@@ -575,11 +577,14 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Correct the shared all-empty numeric-star polarity mechanism rather than patching individual operators: when no present value entered the aggregate but an empty cell or omitted tail made zero observable, return both-directional fillability independently of signedness. Preserve present-value-plus-tail directions, exhausted fixed results, unconditional `Having` escalation, and separate Date aggregate behavior. Reconcile prose, findings, and comments that currently apply signedness or per-operator direction to the empty identity. Through the existing differential and multiplatform facilities, add unsigned all-empty controls for `Sum(star) >= 0`, `MaxValue(star) >= 0`, and `MinValue(star) >= 0`, all firing with OMISSION against both kernel strategies and the interpreter. Retain unsigned `Sum` with at least one present value plus an omitted tail under `>= 0` as a VALUE control. Do not add a capture facility or polarity architecture.
 - **Compatibility:** Aggregate value and truth remain zero and unchanged. The correction changes only peer-interpreter message polarity for legal unsigned all-empty Number aggregates when the comparison can be broken only through the currently omitted direction. Existing signed all-empty cases and present-value aggregate cases should remain unchanged.
 - **Acceptance:** Both kernel strategies and the interpreter agree that each named unsigned all-empty aggregate returns zero with both-directional fillability and produces the stated OMISSION outcomes; the present-value unsigned `Sum` control remains VALUE; existing present-tail Min/Max, exhausted, filtered, signed, and Date aggregate controls remain green; canonical a12-dmkits prose states the all-empty exception without weakening ordinary per-operator directions; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `20230e403fa085c782534025f890669a975999a8`
+- **Disposition:** accepted — the shared numeric aggregate polarity root now separates the all-empty identity from present-value folds, with both kernel strategies, the interpreter, JVM, and Node locking the unsigned Sum/MaxValue/MinValue cases and adjacent controls.
 
 ### SPEC-2026-07-21-01 — message interpolation consumes exact display policy outside the evaluation cache
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** superseded
+- **Superseded by:** [`SPEC-2026-07-21-04`](#spec-2026-07-21-04--message-format-default-follows-the-actual-documentv2-profile)
+- **Local revision:** `8fbdbfd5aa973fb9db2ee81a9b7d7512564a8450`
 - **a12-dmkits basis revision:** `9d6802746eb15f9f7772d89d7ad6ca81ba23a609`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`02-logic-and-formal-errors.md` B.3](../spec/02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state), [`11-messages-and-custom.md` Part A](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation), and [`SEMANTICS-MAP.md` taxonomy](../spec/SEMANTICS-MAP.md#3-the-taxonomy)
@@ -588,11 +593,13 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** At one existing display-policy/default locus, reconcile or fail closed on the exact provider/model/debug cascade and null-or-empty exact-format-default rule; do not add a formatting framework. Through existing facilities, distinguish provider `some("")` over a nonempty model label, absent provider result to model label, absent result plus missing/empty label to debug, null and explicit-empty scale-two Number to the exact default while retaining scale-zero Number/String controls, and one CRLF-bearing String whose evaluation read is normalized while its message display remains raw. State unsupported display policies or formats explicitly rather than guessing.
 - **Compatibility:** A renderer that treats empty provider output as absence, hardcodes Number zero independently of format scale/locale, or sources message values from normalized evaluation data can emit different user-visible text while preserving rule truth. Existing scale-zero Number and String defaults remain controls, not a universal rule.
 - **Acceptance:** Canonical a12-dmkits prose states the exact cascade and display/evaluation channel split; both kernel routes lock the named separators; JVM and Node agree for their admitted format/provider profile; unsupported profiles are explicit; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `20230e403fa085c782534025f890669a975999a8`
+- **Disposition:** superseded — the provider cascade, raw-display channel, one-pass replacement, and exact scale-derived default were implemented, but dual-route kernel probes refuted the entry's implication that the current `DocumentV2` Number default follows message locale or `modelConfig.decimalSeparator`; the corrected profile is accepted under `SPEC-2026-07-21-04`.
 
 ### SPEC-2026-07-21-02 — Number `Sum` preserves encounter order, staged precision, and missing-declaration polarity
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** accepted
+- **Local revision:** `8f0f02983894995da2c5047a222f74c4b1203ca8`
 - **a12-dmkits basis revision:** `baf70f0c252475d4a3f6c0f817f0451b5e52a185`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`04-numbers-and-decimals.md` §5](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly), [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), and [`10-validation-and-polarity.md` §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
@@ -601,6 +608,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Preserve the existing shared Sum/Dec fold and document its ordered staged semantics. Add focused multiplatform pure controls using resolved values that separate per-step rounding, association, and order; treat them as source-grounded mechanism tests rather than a retained legal-model kernel differential when their magnitudes exceed the 15-digit input boundary. At the existing aggregate-polarity root, accumulate missingness per contributing declaration for multi-field and group-expanded Sum. Separate present-plus-missing unsigned, signed, and mixed-declaration cases, including controls where changing which declaration is missing changes only shrinkability. Preserve the all-empty correction under `SPEC-2026-07-20-15`, complete fixed results, `Having`, and first-unavailable behavior. Use existing facilities; do not add a capture or mutation framework.
 - **Compatibility:** Reimplementations may not sort, reassociate, exactly accumulate then round once, or parallel-reduce Sum. Most ordinary totals remain unchanged, but high-precision streams can differ. Correcting a12-dmkits' multi-declaration polarity can change VALUE versus OMISSION while leaving the numeric result and truth unchanged.
 - **Acceptance:** Canonical a12-dmkits prose states the encounter and per-step precision rule; JVM and JavaScript pure cases distinguish staged addition, left association, and reordering; focused existing-harness cases establish unsigned, signed, and mixed missing-declaration polarity; `SPEC-2026-07-20-15` remains the sole all-empty correction; existing aggregate differentials remain green; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `20230e403fa085c782534025f890669a975999a8`
+- **Disposition:** accepted — the existing staged precision-50 left fold is now locked for association and order, group expansion preserves declaration order, and aggregate polarity retains the signedness of each actually missing declaration without disturbing the separate all-empty branch.
 
 ### SPEC-2026-07-21-03 — empty String ingestion preserves present-empty placement
 
@@ -616,3 +625,19 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** The shared specification states the placement/value split without changing operator-specific empty semantics; a12-dmkits retains a present-empty placement and produces the named field/group/required outcomes across both kernel routes and its interpreter; and the local Lean checked-cell boundary distinguishes absent from present-empty while projecting both to the same empty phase observation.
 - **a12-dmkits revision:** `f78f4fc864b7be05f94736070cd2da7bf95d04b3`
 - **Disposition:** accepted — IF198's implementation, tri-engine presence/requiredness differential, and JVM/Node placement-state lock were reviewed; no further a12-dmkits change is requested.
+
+### SPEC-2026-07-21-04 — message format default follows the actual `DocumentV2` profile
+
+- **Status:** accepted
+- **Supersedes:** [`SPEC-2026-07-21-01`](#spec-2026-07-21-01--message-interpolation-consumes-exact-display-policy-outside-the-evaluation-cache)
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `20230e403fa085c782534025f890669a975999a8`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`11-messages-and-custom.md` Part A](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) and [`02-logic-and-formal-errors.md` B.3](../spec/02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state)
+- **Delta:** Preserve `SPEC-2026-07-21-01`'s provider/model/debug cascade, raw immutable display channel, one-pass opaque substitution, and `{ displayValue?, exactFormatDefault }` boundary, but remove the unsupported inference that the current default follows the message locale or model configuration. On the tested modern `DocumentV2` route, a missing exact-two-decimal Number renders `0.00` under both US and German locales and remains dot-decimal when `modelConfig.decimalSeparator` is comma; minimum fractional digits determine the zero form. Distinct legacy or presentation-information routes remain unclaimed.
+- **Basis:** At a12-dmkits revision `20230e403fa085c782534025f890669a975999a8`, `MessageValueDisplayPolicyDiffTest` makes both the live dynamic-Groovy and generated-Java kernel strategies produce `0.00` under US and German locales, while the separately exercised comma model configuration does not change that route. `MessageDisplayPolicyTest` locks the admitted provider/default/raw-CRLF/opaque-replacement policy on JVM and Node, and the clean-room implementation exposes only the actual profile rather than inventing a locale formatter.
+- **Requested a12-dmkits reconciliation:** None. The reviewed revision supplied the contrary kernel evidence, corrected canonical a12-dmkits prose, and implemented the bounded profile while returning the required lean-side correction.
+- **Compatibility:** A consumer that derives the empty Number default from message locale or `modelConfig.decimalSeparator` emits `0,00` where the tested modern kernel route emits `0.00`. Keeping the default as an explicit display-policy input preserves support for a separately characterized route without falsely generalizing the current observation.
+- **Acceptance:** The project-owned clause no longer infers the default from locale or model configuration; it records the tested `DocumentV2` minimum-fractional-digit and dot-separator profile, preserves the abstract exact-default input and raw display channel, and leaves untested routes explicit. The exact upstream revision and focused dual-route/JVM/Node controls were reviewed read-only.
+- **a12-dmkits revision:** `20230e403fa085c782534025f890669a975999a8`
+- **Disposition:** accepted — the source-proven dot-default correction and the unaffected cascade/channel/one-pass behavior are reconciled; no further a12-dmkits change is requested.
