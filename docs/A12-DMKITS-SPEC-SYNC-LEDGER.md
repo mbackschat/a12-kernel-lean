@@ -1,10 +1,12 @@
 # a12-dmkits specification synchronization ledger
 
-This ledger records reconciliation of changes to the project-owned language-neutral semantics under [`../spec/`](../spec/). Pending entries form the outbound queue. Those files are the semantic bridge between a12-kernel-lean and a12-dmkits: kernel-verified discoveries may arrive here from a12-dmkits, while corrections and additions canonized in `spec/` must be reconciled back into a12-dmkits. This ledger tracks that reconciliation without becoming a second semantic specification.
+This ledger records outbound reconciliation of changes to the project-owned language-neutral semantics under [`../spec/`](../spec/). Pending entries form the outbound queue. Those files are the semantic bridge between a12-kernel-lean and a12-dmkits: locally originated corrections and additions canonized in `spec/` must be reconciled back into a12-dmkits, while findings already committed and reviewed in a12-dmkits are incorporated locally as inbound provenance without entering this queue. This ledger tracks outbound reconciliation without becoming a second semantic specification.
 
 ## Ledger contract
 
-Every commit that corrects, narrows, or extends kernel behavior in `spec/` must add or update a ledger entry here in the same change. The spec clause owns the complete semantic account; an entry links to that clause and records only the transport facts needed by the other project.
+Every commit that corrects, narrows, or extends kernel behavior in `spec/` and still needs a12-dmkits reconciliation must add or update a ledger entry here in the same change. The spec clause owns the complete semantic account; an entry links to that clause and records only the transport facts needed by the other project.
+
+An inbound correction whose exact source revision is already committed and reviewed in a12-dmkits does not need reconciliation back to its origin and therefore creates no new ledger entry. Record that revision and its evidence routes in [`SOURCES.md`](SOURCES.md), plus any local implementation boundary in its owning document. If the inbound result answers an existing `pending` or `handed-off` entry, update that same entry instead. Never create a new pending entry merely because an inbound handoff template requests one for findings that the cited a12-dmkits revision already owns.
 
 Pure spelling, formatting, link, or non-semantic navigation edits do not enter the ledger. One entry may group several clauses only when they express one coherent behavioral correction with one upstream acceptance decision. Keep entries concise: do not copy the full spec text, Lean implementation status, or evidence inventory into this ledger.
 
