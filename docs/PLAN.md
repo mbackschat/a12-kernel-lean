@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `e91a2cd` (`feat(dates): add admitted month and year shifts`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,601-declaration trust audit passed.
+- Semantic baseline before the current capsule: `aadcbc3` (`feat(dates): add admitted month and year differences`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,625-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close signed whole-month and whole-year differences for stored/full Dates before broader temporal integration. Derive the only candidate from calendar coordinates, reduce it exactly when the matching month/year landing would pass the later date, and restore the authored operand sign.
+Close stored/full-Date day shifting after integer offset conversion and before DateTime or legacy-calendar integration. Invert the existing Gregorian day coordinate with a bounded 400-year/12-month search, then reapply the universal full-Date floor.
 
-Success means ordinary, partial-period, clamped month-end, leap-year, reverse, and equal cases are executable; general self-zero and swap-negation are proved; and the capsule explicitly excludes empty/formal operands, constructed-Date legacy-hybrid identity, DateTime, Number provenance/scale, checked lowering, and cell effects.
+Success means forward/backward leap, month, year, zero, complete-era, and below-floor cases are executable; work is bounded independently of the offset magnitude; and the capsule explicitly excludes numeric conversion, empty/formal operands, constructed-Date legacy-hybrid identity, DateTime wall-time, formatting, checked lowering, and cell effects.
 
 ## Frontier queue
 
@@ -35,7 +35,8 @@ Success means ordinary, partial-period, clamped month-end, leap-year, reverse, a
 - **Satisfied — target-policy ownership:** `3d216ff` retains one complete resolved policy on the checked numeric operation, rejects scale/signedness mismatch before evaluation, and removes caller policy choice from evaluation without duplicating constraints in `NumField` or inferring them from erased declaration data.
 - **Satisfied — checked direct numeric value functions:** `bf441bd` reuses one authored-shape predicate across validation and computation for direct-field `Round`/`Abs` and direct-field/one-constant `Min`/`Max`; general wrapper traversal remains fail-closed.
 - **Satisfied — admitted full-Date month/year shifts:** `e91a2cd` implements post-conversion integer `AddMonths`/`AddYears` on stored/full Dates, retains their clamp-versus-February-end distinction, and reapplies the universal Date floor without claiming constructed-Date legacy behavior.
-- **Active — admitted full-Date month/year differences:** compute signed completed periods through the matching shift convention and keep the February-end year boundary distinct from month counting without claiming reason-bearing or legacy-calendar operands.
+- **Satisfied — admitted full-Date month/year differences:** `aadcbc3` computes signed completed periods through the shared matching shift convention, proves self-zero and swap-negation, and keeps the February-end year boundary distinct from month counting without claiming reason-bearing or legacy-calendar operands.
+- **Active — admitted full-Date day shift:** invert the existing Gregorian day coordinate in bounded work, cover both signs and the value floor, and do not widen into DateTime wall-time or constructed-Date legacy-calendar behavior.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
