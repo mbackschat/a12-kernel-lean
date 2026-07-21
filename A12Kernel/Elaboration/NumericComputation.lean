@@ -1,11 +1,11 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Semantics.ComputationCondition
-import A12Kernel.Semantics.NumericComputationResult
+import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable plain numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the existing plain-arithmetic authoring and result-scale gates, and certifies model coherence. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, operation-valued wrappers, warning-suppressed scale mismatch, target policy, rendered storage, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable plain numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the existing plain-arithmetic authoring and result-scale gates, and certifies model coherence. The one explicit scale-warning suppression bypasses only that result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, operation-valued wrappers, target-policy construction, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -26,10 +26,11 @@ inductive NumericComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One resolved, ordinary scale-compatible numeric operation before target storage. -/
+/-- One resolved numeric operation before target storage, retaining whether its result-scale warning was explicitly suppressed. -/
 structure NumericComputationOperation where
   target : FlatNumberField
   expression : AuthoredNumericExpr FlatFieldDecl
+  suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
 def FlatModel.admitsNumericComputationOperand
@@ -49,7 +50,7 @@ def FlatModel.admitsNumericComputationTarget
         declaration.toNumberField? == some target
   | .error _ => false
 
-private def FlatFieldDecl.numericScaleSummary
+def FlatFieldDecl.numericScaleSummary
     (declaration : FlatFieldDecl) : NumericScaleSummary :=
   match declaration.toNumberField? with
   | some field => NumericScaleSummary.field field.info.scale
@@ -64,8 +65,9 @@ def NumericComputationOperation.wellFormedBool
     operation.expression.authoringCheck == .accepted &&
     match operation.expression.summary? FlatFieldDecl.numericScaleSummary with
     | some summary =>
-        exactNumericScaleComparisonAllowed
-          (NumericScaleSummary.field operation.target.info.scale) summary
+        operation.suppressExactScaleWarning ||
+          exactNumericScaleComparisonAllowed
+            (NumericScaleSummary.field operation.target.info.scale) summary
     | none => false
 
 def NumericComputationOperation.WellFormed
@@ -100,10 +102,11 @@ private def FlatModel.resolveNumericComputationExpression
     else
       throw (.operandNotNumber declaration.path)
 
-/-- Resolve and check one nonrepeatable plain numeric computation operation. Operation-valued wrappers, repeatable evaluation, warning-suppressed scale mismatch, table integration, target storage, and scheduling remain separate owners. -/
+/-- Resolve and check one nonrepeatable plain numeric computation operation. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. Operation-valued wrappers, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (expression : AuthoredNumericExpr SurfaceFieldPath) :
+    (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (suppressExactScaleWarning : Bool := false) :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation model) := do
   match hModel : model.validate with
@@ -120,10 +123,13 @@ def elaborateNumericComputationOperation
       let summary ← match resolved.summary? FlatFieldDecl.numericScaleSummary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
-      if !exactNumericScaleComparisonAllowed
-          (NumericScaleSummary.field target.info.scale) summary then
+      if !(suppressExactScaleWarning || exactNumericScaleComparisonAllowed
+          (NumericScaleSummary.field target.info.scale) summary) then
         throw (.operationScaleMismatch target.info.scale summary)
-      let core : NumericComputationOperation := { target, expression := resolved }
+      let core : NumericComputationOperation := {
+        target
+        expression := resolved
+        suppressExactScaleWarning }
       if hCore : core.wellFormedBool model = true then
         pure {
           core
@@ -238,6 +244,18 @@ def evaluate (operation : CheckedNumericComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericComputationResult :=
   operation.core.expression.evaluateComputation context
+
+/-- Evaluate the checked expression and route it through the target branch certified by the retained warning-suppression choice. The equality proof prevents a caller from pairing the operation with another target's signedness or maximum scale; the target's minimum scale remains an explicit policy input because the current flat declaration does not retain it. -/
+def evaluateTarget (operation : CheckedNumericComputationOperation model)
+    (policy : NumericTargetPolicy)
+    (_targetMatches : policy.info = operation.core.target.info)
+    (context : ScalarComputationContext) :
+    Except NumericComputationFault NumericTargetCheckResult := do
+  let result ← operation.evaluate context
+  if operation.core.suppressExactScaleWarning then
+    pure (policy.checkWithScaleWarningSuppressed result)
+  else
+    pure (policy.check result)
 
 end CheckedNumericComputationOperation
 

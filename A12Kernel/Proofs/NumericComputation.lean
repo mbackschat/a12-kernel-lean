@@ -15,6 +15,38 @@ theorem checkedNumericComputationOperation_noTargetReference
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
   simpa using admitted.1.1.2
 
+/-- Every checked operation either carries the explicit warning suppression or satisfies the ordinary exact result-scale gate. -/
+theorem checkedNumericComputationOperation_scaleGate
+    (checked : CheckedNumericComputationOperation model)
+    (summary : NumericScaleSummary)
+    (summarized : checked.core.expression.summary?
+      FlatFieldDecl.numericScaleSummary = some summary) :
+    (checked.core.suppressExactScaleWarning ||
+      exactNumericScaleComparisonAllowed
+        (NumericScaleSummary.field checked.core.target.info.scale) summary) = true := by
+  have admitted := checked.wellFormed
+  simp only [NumericComputationOperation.WellFormed,
+    NumericComputationOperation.wellFormedBool, Bool.and_eq_true,
+    summarized] at admitted
+  exact admitted.2
+
+/-- Checked target evaluation dispatches solely by the certified suppression bit after preserving the exact expression result. -/
+theorem checkedNumericComputationOperation_evaluateTarget_routes
+    (checked : CheckedNumericComputationOperation model)
+    (policy : NumericTargetPolicy)
+    (targetMatches : policy.info = checked.core.target.info)
+    (context : ScalarComputationContext)
+    (result : NumericComputationResult)
+    (evaluated : checked.evaluate context = .ok result) :
+    checked.evaluateTarget policy targetMatches context =
+      .ok (if checked.core.suppressExactScaleWarning then
+        policy.checkWithScaleWarningSuppressed result
+      else
+        policy.check result) := by
+  simp only [CheckedNumericComputationOperation.evaluateTarget]
+  rw [evaluated]
+  cases checked.core.suppressExactScaleWarning <;> rfl
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)

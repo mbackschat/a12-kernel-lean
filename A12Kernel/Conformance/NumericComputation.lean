@@ -58,9 +58,11 @@ private def surfaceField (groups : List String) (name : String) :
   .atom (surfacePath groups name)
 
 private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceFieldPath)
-    (target : FieldId := targetId) :
+    (target : FieldId := targetId)
+    (suppressExactScaleWarning : Bool := false) :
     Option NumericComputationElabError :=
-  match elaborateNumericComputationOperation model ["Root"] target expression with
+  match elaborateNumericComputationOperation model ["Root"] target expression
+      suppressExactScaleWarning with
   | .ok _ => none
   | .error error => some error
 
@@ -81,6 +83,25 @@ private def checkedResultOf
   match elaborateNumericComputationOperation model ["Root"] targetId expression with
   | .error _ => none
   | .ok checked => checked.evaluate input |>.toOption
+
+private def targetPolicy : NumericTargetPolicy where
+  info := numberInfo
+  minFractionalDigits := 0
+  minLeMax := by decide
+
+private def checkedTargetResultOf
+    (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (suppressExactScaleWarning : Bool)
+    (input : ScalarComputationContext := context) :
+    Option NumericTargetCheckResult :=
+  match elaborateNumericComputationOperation model ["Root"] targetId expression
+      suppressExactScaleWarning with
+  | .error _ => none
+  | .ok checked =>
+      if coherent : targetPolicy.info = checked.core.target.info then
+        (checked.evaluateTarget targetPolicy coherent input).toOption
+      else
+        none
 
 private def literal (value : Rat) (authoredScale : Int := 0) :
     AuthoredNumericExpr FlatFieldDecl :=
@@ -131,6 +152,31 @@ example :
           (surfaceField ["Root"] "Target")
           (.literal { value := 2, authoredScale := 0 })))) =
       some (.targetSelfReference targetId) := by
+  native_decide
+
+/- The one legal warning suppression bypasses only the result-scale gate and selects the no-fit target branch carried by the checked operation. -/
+example :
+    let scaleOne :=
+      AuthoredNumericExpr.literal
+        (Atom := SurfaceFieldPath) { value := 11 / 10, authoredScale := 1 }
+    checkedErrorOf scaleOne =
+        some (.operationScaleMismatch 0 (NumericScaleSummary.constant 1)) ∧
+      checkedErrorOf scaleOne (suppressExactScaleWarning := true) = none ∧
+      checkedTargetResultOf scaleOne true =
+        some (.supported (.rejected
+          { unscaled := 11, scale := 1 } .suppressedScaleMismatch)) := by
+  native_decide
+
+/- Suppression does not bypass the independent plain-authoring rejection. -/
+example :
+    let twoDivisions :=
+      AuthoredNumericExpr.binary .multiply
+        (.binary .divide (surfaceField ["Root"] "Source")
+          (.literal { value := 2, authoredScale := 0 }))
+        (.binary .divide (.literal { value := 3, authoredScale := 0 })
+          (.literal { value := 4, authoredScale := 0 }))
+    checkedErrorOf twoDivisions (suppressExactScaleWarning := true) =
+      some (.authoring .tooManyDivisions) := by
   native_decide
 
 /- A checked operation reuses the existing numeric evaluator; unlike a validation comparison, a constant-only computation is legal. -/
