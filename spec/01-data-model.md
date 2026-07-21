@@ -48,9 +48,11 @@ A handful of model-wide settings change evaluation globally; carry them in the m
 
 A **document** instantiates the model: repeatable groups are expanded into concrete rows, and fields hold **values** or are **empty**. A field is not just "value or empty" — recall the **three cell states** ([§3](02-logic-and-formal-errors.md)):
 
-- **empty** — no value specified,
+- **empty** — no evaluation value (whether the field placement is absent or present-empty),
 - **filled** — a well-formed value of the field's type,
 - **not-check-relevant** — a value is present but formally invalid.
+
+A cell's physical placement and its evaluation state are separate dimensions. At the in-memory evaluation-ingestion boundary, an omitted field cell is **absent**; a present field cell whose stored content is `null` or the empty text `""` is **present-empty**; and a present cell with nonempty text proceeds through parsing and formal checking to become either filled or not-check-relevant. Classifying a placed `""` as empty supplies no semantic String value but does not erase that placement or rewrite the document's stored input. Field-level fill predicates, fill quantifiers, and requiredness therefore treat absent and present-empty alike as unfilled, while placement-sensitive read-back and application may distinguish them ([§4.3](#43-the-compute--apply--validate-flow)). Non-repeatable group content follows descendant evaluation values, whereas an explicitly instantiated repeatable row remains structural content even when all its field cells are present-empty ([§9](07-repetition-and-iteration.md#5-groupfilled-and-the-other-repetition-rules)).
 
 A **cell** is *the value (or empty/invalid) of one field at one repetition context*. A non-repeated field has exactly one cell per document; a field inside a repeatable group has one cell per row (and, under nested repetition, one per combination of enclosing row indices).
 

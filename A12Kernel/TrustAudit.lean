@@ -182,6 +182,10 @@ run_cmd do
 #print axioms A12Kernel.formalCheck_wellFormed
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty
+#print axioms A12Kernel.formalCheck_presentEmpty_preservesPlacement
+#print axioms A12Kernel.formalCheck_presentEmpty_notAbsent
+#print axioms A12Kernel.formalCheck_presentEmpty_observes_empty
+#print axioms A12Kernel.formalCheck_parsedEmptyString_eq_presentEmpty
 #print axioms A12Kernel.formalCheck_parsedEmptyString_observes_empty
 #print axioms A12Kernel.computation_observes_clean_value
 #print axioms A12Kernel.computation_observes_single_poison

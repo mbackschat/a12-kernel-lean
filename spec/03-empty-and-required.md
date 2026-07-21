@@ -37,7 +37,7 @@ FieldFilled(Amount) And [Amount] < 100
 Two immediate riders:
 
 - The `0` substitution does **not** apply to minimum/maximum *aggregate* calculations — there, unspecified fields are *ignored* (see A.3–A.4; note the operand-list `Min`/`Max` are a *different* family that *does* substitute).
-- **There are no empty strings.** `[F] == ""` is never satisfied, even when `F` is unfilled — and neither is `!= ""`: a string comparison with an empty operand on *either* side (a literal `""`, or an empty coercion result) is **not evaluated**, for both `==` and `!=`. Use `FieldNotFilled(F)` to test absence.
+- **There is no empty String semantic value.** A physically placed raw `""` becomes present-empty at the [evaluation-ingestion boundary](01-data-model.md#2-document--an-instance-of-the-tree), not a filled zero-length String and not an absent placement. `[F] == ""` is never satisfied, even when `F` is unfilled — and neither is `!= ""`: a String comparison with an empty operand on *either* side (a literal `""`, or an empty coercion result) is **not evaluated**, for both `==` and `!=`. Use `FieldNotFilled(F)` to test whether the field has an evaluation value.
 
 > **Lean modelling note.** Separate whether an operand is evaluated from the provenance needed by the later polarity calculation ([§12](10-validation-and-polarity.md)):
 > ```lean
