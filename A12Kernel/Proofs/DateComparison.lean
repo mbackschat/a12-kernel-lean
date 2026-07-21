@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.FullDate
+import A12Kernel.Proofs.ScalarEquality
 import A12Kernel.Semantics.DateComparison
 
 /-! # Resolved full-Date comparison laws -/
@@ -41,19 +42,19 @@ theorem dateComparison_before_excludes_after (left right : FullDate)
 theorem dateComparison_eval_unknown_left (op : DateComparisonOp)
     (cause : FormalCause) (right : SimpleComparisonOperand FullDate) :
     op.eval (.unknown cause) right = .unknown := by
-  cases right <;> rfl
+  exact evalSymmetricComparison_unknown_left op.holds cause right
 
 /-- A valueless left Date makes a comparison with a present Date not fire. -/
 theorem dateComparison_eval_noValue_left (op : DateComparisonOp)
     (right : FullDate) (rightGiven : Bool) :
     op.eval .notEvaluated (.value right rightGiven) = .notFired := by
-  rfl
+  exact evalSymmetricComparison_noValue_left op.holds right rightGiven
 
 /-- A true comparison over fixed present Dates fires with VALUE polarity. -/
 theorem dateComparison_eval_fixed_firing (op : DateComparisonOp)
     (left right : FullDate) (holds : op.holds left right = true) :
     op.eval (.value left true) (.value right true) = .fired .value := by
-  simp [DateComparisonOp.eval, holds]
+  exact evalSymmetricComparison_fixed_firing op.holds left right holds
 
 /-- Missing provenance on either present operand makes every true Date comparison omission-typed. -/
 theorem dateComparison_eval_missing_firing (op : DateComparisonOp)
@@ -62,13 +63,14 @@ theorem dateComparison_eval_missing_firing (op : DateComparisonOp)
     (holds : op.holds left right = true) :
     op.eval (.value left leftGiven) (.value right rightGiven) =
       .fired .omission := by
-  simp [DateComparisonOp.eval, holds, missing]
+  exact evalSymmetricComparison_missing_firing op.holds left right
+    leftGiven rightGiven missing holds
 
 /-- Operand exchange plus the matching directional operator preserves classified comparison verdicts and polarity. -/
 theorem dateComparison_eval_swapped (op : DateComparisonOp)
     (left right : SimpleComparisonOperand FullDate) :
     op.swapped.eval left right = op.eval right left := by
-  cases left <;> cases right <;>
-    simp [DateComparisonOp.eval, dateComparison_swapped, Bool.and_comm]
+  exact evalSymmetricComparison_swapped op.holds op.swapped.holds
+    (dateComparison_swapped op) left right
 
 end A12Kernel
