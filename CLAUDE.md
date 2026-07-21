@@ -62,17 +62,102 @@ The repository-level ratio is also a guard. Count `Core.lean`, `Cell.lean`, `Doc
 
 Use one long-lived root session per coherent semantic feature set. Prompts and work items execute sequentially in the shared checkout, without worktrees. The root is the sole writer and integrator; keep it warm across the family audit, high-risk discriminator, semantic implementation, generic proofs, separating matrix, commits, and closure. Start a new root session only at a feature-set boundary, after material context pollution, or when deliberate coldness is part of a consumer test. Before ending a feature-set session, update [`docs/PLAN.md`](docs/PLAN.md) with the verified revision, closed boundary, unresolved questions, and exact next candidate.
 
+### Stable capability profiles
+
 Use these stable capability profiles rather than persistent product or model names. Map them to the best currently available model and the lowest adequate reasoning effort when starting an agent:
 
 - **BEST** — ambiguous, high-risk, or foundational work requiring deep semantic judgment, such as conflicting evidence, representation design, generic proof architecture, or adversarial review of a keystone mechanism. Use sparingly and increase reasoning only for the identified hard decision, not automatically for the whole feature set.
 - **REGULAR** — the default for bounded professional work: source and Lean audits, implementation from a closed decision table, ordinary theorem work, code review, structured synthesis, and cold consumer probes.
 - **SIMPLE** — deterministic mechanical work with an exact output contract: inventories, extraction, classification, reference searches, table construction from supplied facts, link checks, and test-log summaries. It must not settle semantic ambiguity or make architecture decisions.
 
+Prefer balanced reasoning by default. Increase reasoning only for a specifically identified difficult decision rather than running an entire feature set at maximum effort.
+
+### Root-session selection
+
 Choose the lowest profile that can safely complete the task. A feature set with unresolved semantics normally needs a BEST root; one whose decision table and representation are already closed may use a REGULAR root. Never use a SIMPLE root for an A12 semantic feature set, and do not restart a warm root under a cheaper profile merely because its next step is easier.
 
-Subagents are optional, bounded, and read-only. Do not delegate work that depends heavily on the root's accumulated context or is quicker to execute directly. Prefer one combined REGULAR audit; use at most two REGULAR agents only for genuinely independent large investigations. Use SIMPLE only with an explicit source allowlist, output schema, and instruction to report undetermined facts as `UNKNOWN`. Use one BEST agent only for an independently valuable adversarial review, unresolved semantic conflict, or foundational decision; never launch several BEST agents to vote on an unclear question. Known builds, routine tests, documentation maintenance, and tightly coupled implementation remain in the root.
+### Subagent selection
 
-Give every subagent one bounded objective, allowed and forbidden sources, the required result shape, and an explicit no-write instruction. A warm helper receives only the minimum relevant decision context and must not restart completed research. A deliberately cold consumer probe receives only the intended shipment, no inherited semantic conversation, no sibling or kernel research, and normally uses REGULAR so exceptional inference cannot conceal a documentation gap. The root verifies all returned facts and makes every edit. Spawn only when the expected reduction in root-context noise or independent-review value exceeds the duplicated context and tool cost.
+Subagents are optional, bounded, and read-only. The root remains the sole writer and integrator.
+
+- Use no subagent when the task depends heavily on the root's accumulated context or is quicker to execute directly.
+- Prefer one combined REGULAR subagent for a bounded read-heavy audit that would otherwise pollute the root context.
+- Use at most two REGULAR subagents only when two investigations are genuinely independent, such as source/spec evidence versus existing Lean reuse.
+- Use a SIMPLE subagent only for mechanical work with an explicit input allowlist, output schema, and no semantic discretion.
+- Use one BEST subagent only for an independently valuable adversarial review, unresolved semantic conflict, or foundational design decision. Never launch several BEST agents to vote on an unclear question.
+- Run known builds and test commands directly; do not spawn an agent merely to execute them.
+- Require every subagent to report facts, evidence locations, uncertainties, and recommendations. The root verifies the result and makes every edit.
+
+### Warm versus cold subagents
+
+A warm helper receives only the minimum relevant decision context:
+
+```text
+Context mode: warm-bounded
+Use the supplied decision table and named files. Do not restart the family audit or inspect unrelated project history.
+```
+
+A deliberately cold consumer probe receives no prior semantic conversation:
+
+```text
+Context mode: deliberately cold
+Use only the listed shipment artifacts. Do not inspect the broader repository, Git history, kernel, a12-dmkits, or prior semantic discussion.
+```
+
+A cold consumer probe normally uses REGULAR rather than BEST so exceptional inference cannot conceal a documentation gap. SIMPLE may later serve as a stronger clarity stress test, but it is not the initial qualification standard.
+
+### Delegation prompt template
+
+```text
+Agent profile: REGULAR
+Mode: read-only
+Context: warm-bounded
+Worktree: shared checkout; do not create a worktree
+Writes: prohibited
+
+Objective:
+<one bounded question>
+
+Allowed sources:
+- <exact files/directories>
+
+Forbidden:
+- unrelated repository exploration
+- sibling writes
+- implementation changes
+- new semantic assumptions
+
+Return:
+1. factual findings with file references;
+2. the semantic decision table or requested structured result;
+3. contradictions and unresolved questions;
+4. existing mechanisms that can be reused;
+5. whether the root can proceed without guessing.
+```
+
+For SIMPLE work, add:
+
+```text
+Do not interpret gaps or choose between competing semantics. Mark anything not explicitly determined as UNKNOWN.
+```
+
+For BEST review, add:
+
+```text
+Challenge the proposed mechanism at its root. Identify a second instance that would fail under an unsound design, and distinguish true sharing from superficially similar semantics.
+```
+
+### Token-conscious dispatch rule
+
+Before spawning, the root must answer:
+
+1. Is the task independently bounded?
+2. Will delegation keep substantial noise out of the warm root context?
+3. Is its expected benefit greater than duplicating context and tool work?
+4. Can the child remain read-only?
+5. What is the lowest adequate capability profile?
+
+If any of the first four answers is no, keep the work in the root session. Otherwise give the subagent one bounded objective, allowed and forbidden sources, the required result shape, and an explicit no-write instruction.
 
 ## ⚠️ HARD RULE — clean-room reimplementation; never link, call, or transcribe the kernel
 
