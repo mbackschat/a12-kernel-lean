@@ -296,12 +296,18 @@ def GroupPath.walkUp (group : GroupPath) (parents : Nat) : Except ResolveError G
   else
     .error (.aboveRoot parents)
 
-private def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
+def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
     Except ResolveError FlatFieldDecl :=
   if declaration.repeatableScope.isEmpty then
     .ok declaration
   else
     .error (.repeatableReference declaration.path)
+
+/-- Resolve one declaration by stable ID and reject repeatable targets or operands. -/
+def FlatModel.resolveNonrepeatableDeclarationById
+    (model : FlatModel) (field : FieldId) :
+    Except ResolveError FlatFieldDecl := do
+  (← model.lookupUniqueId field).requireNonrepeatable
 
 /-- Resolve a bare single-segment reference exactly as the kernel parser does: try the
     declaring group, then (when enabled) require one model-wide short-name match. There

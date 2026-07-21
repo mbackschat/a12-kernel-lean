@@ -5,6 +5,16 @@ import A12Kernel.Proofs.Observation
 
 namespace A12Kernel
 
+/-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
+theorem checkedNumericComputationOperation_noTargetReference
+    (checked : CheckedNumericComputationOperation model) :
+    checked.core.expression.anyAtom (fun declaration =>
+      declaration.id == checked.core.target.id) = false := by
+  have admitted := checked.wellFormed
+  simp only [NumericComputationOperation.WellFormed,
+    NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
+  simpa using admitted.1.1.2
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)

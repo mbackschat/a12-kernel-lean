@@ -54,6 +54,51 @@ inductive NumericAuthoringCheck where
 
 namespace AuthoredNumericExpr
 
+/-- Traverse every atom from left to right while preserving the authored expression shape and all syntax metadata. This is the shared path-resolution seam for checked validation and computation consumers. -/
+def mapM {SourceAtom TargetAtom Error : Type}
+    (resolve : SourceAtom → Except Error TargetAtom) :
+    AuthoredNumericExpr SourceAtom → Except Error (AuthoredNumericExpr TargetAtom)
+  | .atom sourceAtom => (resolve sourceAtom).map .atom
+  | .literal decoded => pure (.literal decoded)
+  | .group body => (body.mapM resolve).map .group
+  | .binary op left right => do
+      pure (.binary op (← left.mapM resolve) (← right.mapM resolve))
+  | .power base exponent => do
+      pure (.power (← base.mapM resolve) (← exponent.mapM resolve))
+  | .abs body => (body.mapM resolve).map .abs
+  | .extremum op left right => do
+      pure (.extremum op (← left.mapM resolve) (← right.mapM resolve))
+  | .round mode places body =>
+      (body.mapM resolve).map (.round mode places)
+
+def hasAtom : AuthoredNumericExpr Atom → Bool
+  | .atom _ => true
+  | .literal _ => false
+  | .group body => body.hasAtom
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.hasAtom || right.hasAtom
+  | .abs body => body.hasAtom
+  | .round _ _ body => body.hasAtom
+
+/-- Check one predicate against every atom without erasing authored tree structure. -/
+def allAtoms (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
+  | .atom sourceAtom => predicate sourceAtom
+  | .literal _ => true
+  | .group body => body.allAtoms predicate
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.allAtoms predicate && right.allAtoms predicate
+  | .abs body => body.allAtoms predicate
+  | .round _ _ body => body.allAtoms predicate
+
+def anyAtom (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
+  | .atom sourceAtom => predicate sourceAtom
+  | .literal _ => false
+  | .group body => body.anyAtom predicate
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.anyAtom predicate || right.anyAtom predicate
+  | .abs body => body.anyAtom predicate
+  | .round _ _ body => body.anyAtom predicate
+
 /-- Normalize one source-level nonempty numeric operand list to the shared left-associated expression tree. A singleton keeps the operand unchanged rather than introducing a synthetic seed. -/
 def extremumList (op : NumericExtremumOp)
     (first : AuthoredNumericExpr Atom)
