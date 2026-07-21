@@ -46,14 +46,12 @@ if [[ "$missing_import" == true ]]; then
   exit 1
 fi
 
-project_root="$(pwd -P)"
-
 collect_project_source_closure() {
   local queue=("$@")
   local seen=()
   local index=0
-  local source_dependency
-  local source_dependencies
+  local line
+  local module_name
   local relative_dependency
   local seen_source
   local already_seen
@@ -74,22 +72,30 @@ collect_project_source_closure() {
       continue
     fi
     seen+=("$source")
-    if ! source_dependencies="$(lake env lean --src-deps "$source")"; then
-      echo "failed to collect Lean source dependencies for ${source}" >&2
-      return 1
-    fi
-    if [[ -z "$source_dependencies" ]]; then
-      echo "Lean reported no source dependencies for ${source}" >&2
-      return 1
-    fi
-    while IFS= read -r source_dependency; do
-      case "$source_dependency" in
-        "$project_root"/*.lean)
-          relative_dependency="${source_dependency#"$project_root"/}"
-          queue+=("$relative_dependency")
-          ;;
-      esac
-    done <<< "$source_dependencies"
+    while IFS= read -r line; do
+      if [[ "$line" =~ ^[[:space:]]*(public[[:space:]]+)?import[[:space:]]+([A-Za-z_][A-Za-z0-9_.]*)[[:space:]]*$ ]]; then
+        module_name="${BASH_REMATCH[2]}"
+        case "$module_name" in
+          A12Kernel)
+            relative_dependency="A12Kernel.lean"
+            ;;
+          A12Kernel.*)
+            relative_dependency="${module_name//./\/}.lean"
+            ;;
+          *)
+            continue
+            ;;
+        esac
+        if [[ ! -f "$relative_dependency" ]]; then
+          echo "project import ${module_name} from ${source} has no source file ${relative_dependency}" >&2
+          return 1
+        fi
+        queue+=("$relative_dependency")
+      elif [[ "$line" =~ ^[[:space:]]*(public[[:space:]]+)?import[[:space:]]+ ]]; then
+        echo "trusted source uses a noncanonical import declaration: ${source}: ${line}" >&2
+        return 1
+      fi
+    done < "$source"
   done
 
   printf '%s\n' "${seen[@]}"
@@ -255,7 +261,9 @@ while IFS= read -r theorem_name; do
 done <<< "$sorted_theorem_names"
 
 missing_theorem=false
+theorem_count=0
 while IFS= read -r theorem_name; do
+  theorem_count=$((theorem_count + 1))
   if ! checked_grep -Eq -- \
       "^#print axioms [A-Za-z0-9_.]+\\.${theorem_name}$" A12Kernel/TrustAudit.lean; then
     echo "trust audit does not cover theorem ${theorem_name}" >&2
@@ -369,16 +377,20 @@ if ! audit="$(lake env lean A12Kernel/TrustAudit.lean 2>&1)"; then
   echo "failed to elaborate the trusted theorem audit" >&2
   exit 1
 fi
-printf '%s\n' "$audit"
 
-if ! checked_grep -Eq \
-    '^environment trust audit passed: [1-9][0-9]* declarations in [1-9][0-9]* modules$' \
-    <<< "$audit"; then
+environment_summary="$(sed -nE \
+    '/^environment trust audit passed: [1-9][0-9]* declarations in [1-9][0-9]* modules$/p' \
+    <<< "$audit")"
+if [[ ! "$environment_summary" =~ ^environment[[:space:]]trust[[:space:]]audit[[:space:]]passed:[[:space:]]([1-9][0-9]*)[[:space:]]declarations[[:space:]]in[[:space:]]([1-9][0-9]*)[[:space:]]modules$ ]]; then
+  printf '%s\n' "$audit" >&2
   echo "trusted environment audit did not report a non-empty project inventory" >&2
   exit 1
 fi
+declaration_count="${BASH_REMATCH[1]}"
+module_count="${BASH_REMATCH[2]}"
 
 if [[ "$audit" == *sorryAx* ]]; then
+  printf '%s\n' "$audit" >&2
   echo "trusted Lean theorem roots depend on sorryAx" >&2
   exit 1
 fi
@@ -398,7 +410,6 @@ while IFS= read -r axiom_line; do
     case "$axiom_name" in
       propext|Classical.choice|Quot.sound) ;;
       *)
-        echo "$axiom_line" >&2
         unexpected_axioms=true
         ;;
     esac
@@ -406,6 +417,10 @@ while IFS= read -r axiom_line; do
 done <<< "$audit"
 
 if [[ "$unexpected_axioms" == true ]]; then
+  printf '%s\n' "$audit" >&2
   echo "trusted Lean theorem roots depend on non-standard axioms" >&2
   exit 1
 fi
+
+printf 'trusted theorem audit passed: %s theorem roots; %s declarations in %s modules\n' \
+  "$theorem_count" "$declaration_count" "$module_count"

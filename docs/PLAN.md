@@ -11,9 +11,9 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Active unit
 
-Reduce the existing final trust gate's repetitive success output without changing its theorem roots, forbidden-declaration checks, or complete failure diagnostics. Do not add caching, a second audit harness, or a dependency.
+Close validation projection for two already-classified full-Date operands. Retain a present Date with symmetric missing provenance separately from no value and formal unavailability, and delegate all six truth operations to the existing resolved Date comparison.
 
-Success means the ordinary successful command emits one compact summary, a failing audit still exposes the actionable Lean diagnostics, and the existing trust guarantee remains unchanged.
+Success means no-value comparisons do not fire, formal unavailability stays UNKNOWN, true fixed comparisons fire VALUE, true comparisons with missing provenance fire OMISSION, and false comparisons remain not fired without adding parsing, DateTime, checked paths, or a generic temporal framework.
 
 ## Frontier queue
 
@@ -38,7 +38,8 @@ Success means the ordinary successful command emits one compact summary, a faili
 - **Satisfied — admitted full-Date month/year differences:** `aadcbc3` computes signed completed periods through the shared matching shift convention, proves self-zero and swap-negation, and keeps the February-end year boundary distinct from month counting without claiming reason-bearing or legacy-calendar operands.
 - **Satisfied — admitted full-Date day shift:** `b1d3dec` inverts the existing Gregorian day coordinate in bounded work, covers both signs and the value floor, and does not widen into DateTime wall-time or constructed-Date legacy-calendar behavior.
 - **Satisfied — resolved full-Date comparisons:** `eaec9e3` closes the six-operator truth family over two admitted values by reusing `FullDate.before`, without claiming literal typing, empty/formal polarity, DateTime instant comparison, or checked rule integration.
-- **Ready — classified full-Date comparison operands:** retain a present full Date with symmetric missing provenance separately from no value and formal unavailability, delegate truth to the existing six-operator family, and project only a true missing-bearing comparison to OMISSION. Do not add parsing, DateTime, checked paths, or a generic temporal framework.
+- **Satisfied — bounded trust-audit optimization:** canonical local import traversal preserves the exact former logical/conformance/library source closures without repeated Lean process startup; successful audit output is one inventory line while failures retain their diagnostics.
+- **Active — classified full-Date comparison operands:** retain a present full Date with symmetric missing provenance separately from no value and formal unavailability, delegate truth to the existing six-operator family, and project only a true missing-bearing comparison to OMISSION. Do not add parsing, DateTime, checked paths, or a generic temporal framework.
 - **Ready after classified operands — stored/full-Date extrema:** make direct and resolved `Min`/`Max` the second consumer of that classification; skip empty inputs, propagate formal unavailability, preserve symmetric empty/tail/`Having` provenance on a selected result, and return no value for an all-empty fold. Keep constructed-Date calendar identity and DateTime instant aggregation outside rather than erasing them into `FullDate`.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
