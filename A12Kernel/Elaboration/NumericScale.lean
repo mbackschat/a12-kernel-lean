@@ -88,4 +88,10 @@ def exactNumericScaleComparisonAllowed
         (decide (rightScale < leftScale) && right.canExpandScale)
   | _, _ => false
 
+/-- The single exact-scale warning directive admits an otherwise rejected pair without changing either scale summary. Validation equality/inequality and computed-target assignment share this gate. -/
+def exactNumericScaleComparisonAllowedWithSuppression
+    (suppressExactScaleWarning : Bool)
+    (left right : NumericScaleSummary) : Bool :=
+  suppressExactScaleWarning || exactNumericScaleComparisonAllowed left right
+
 end A12Kernel

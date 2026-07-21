@@ -65,9 +65,9 @@ def NumericComputationOperation.wellFormedBool
     operation.expression.authoringCheck == .accepted &&
     match operation.expression.summary? FlatFieldDecl.numericScaleSummary with
     | some summary =>
-        operation.suppressExactScaleWarning ||
-          exactNumericScaleComparisonAllowed
-            (NumericScaleSummary.field operation.target.info.scale) summary
+        exactNumericScaleComparisonAllowedWithSuppression
+          operation.suppressExactScaleWarning
+          (NumericScaleSummary.field operation.target.info.scale) summary
     | none => false
 
 def NumericComputationOperation.WellFormed
@@ -123,8 +123,9 @@ def elaborateNumericComputationOperation
       let summary ← match resolved.summary? FlatFieldDecl.numericScaleSummary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
-      if !(suppressExactScaleWarning || exactNumericScaleComparisonAllowed
-          (NumericScaleSummary.field target.info.scale) summary) then
+      if !exactNumericScaleComparisonAllowedWithSuppression
+          suppressExactScaleWarning
+          (NumericScaleSummary.field target.info.scale) summary then
         throw (.operationScaleMismatch target.info.scale summary)
       let core : NumericComputationOperation := {
         target
