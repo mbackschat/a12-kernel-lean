@@ -88,6 +88,14 @@ The read-only a12-dmkits handback at revision `7f152509eea76822068955055b0d57d8e
 
 The canonical clauses, modelling traps, provenance routes, and implementation boundaries now state both corrections. No Lean evaluator was added: the current theory neither derives validation group product states nor expands authored multi-star operands and recursively proves their completeness. The existing resolved aggregate semantics continue to consume caller-supplied missingness. Because the findings originate in the already committed and reviewed a12-dmkits revision, no outbound sync-ledger entry or second peer acknowledgement is required.
 
+## Completed semantic unit: reopened-star structural completeness
+
+The IF194 risk audit found one bounded seam between first-star scope binding and the existing resolved operand stream. [`StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean) represents only repeatable levels reopened from the first star downward, grouping each actual row beneath its actual parent and retaining a positive, sibling-unique coordinate invariant. It recursively derives the structural tail bit without enumerating a declared Cartesian product, then supplies that bit to `ResolvedValueListSide`; selected-cell emptiness remains in the classified cell stream.
+
+The red shallow implementation checked only the first reopened level. It correctly caught a missing outer row and an unbounded level but falsely closed both a missing middle branch and a missing leaf branch. The corrected recursive mechanism passes outer, middle, leaf, complete, bound-ancestor, and unbounded separators. Trusted laws characterize finite closure, unbounded openness, open-child propagation, coordinate independence of the result, and exact composition with existing missing potential. A Sum case confirms that the derived bit reaches the existing operator-specific direction unchanged.
+
+This closes levels 1–2 only for a caller-supplied reopened tree and resolved cell stream. Authored path checking, first-star discovery, repeatability lookup, scoped `Document` enumeration, tree/cell construction, `Having`, partial relevance, mixed-declaration missingness, computation aggregates, protocol exposure, and project-local portable evidence remain open. No path framework, Cartesian enumerator, protocol, evidence mechanism, or dependency was added.
+
 ## Completed consumer checkpoint: artifact-only aggregate probe
 
 At revision `6670ce7`, one deliberately cold read-only consumer received only the aggregate clauses, Lean semantics, laws, executable separators, adjacent operator-family definitions, implementation boundary, and consumer guidance. It consulted no kernel, a12-dmkits, web, Git history, prior discussion, or unlisted source and changed no file.
@@ -96,9 +104,9 @@ The reader reconstructed the complete admitted `Sum`/`MinValue`/`MaxValue` evalu
 
 The result passes consumer adequacy for the exact resolved homogeneous-signedness validation boundary. It correctly refuses authored evaluation and source-level refactoring because checked path/star/filter lowering, partial relevance, mixed-declaration missingness, computation, messages, a source transformation relation, and external evidence remain open. [`USE-CASES.md`](USE-CASES.md#completed-probe-record-resolved-number-aggregates) owns the durable reader-facing result; no report artifact, shipment, protocol, runner, qualification campaign, or harness was added.
 
-## Immediate next step: repeatable operand-resolution risk audit
+## Immediate next step: validation group-state risk audit
 
-Audit the smallest source-grounded seam that connects authored repeatable operands to the existing resolved streams. Use IF194's outer-tail, middle-tail, leaf-tail, complete, bound-ancestor, and unbounded cases as the separating matrix for whether the current checked path/scope representations can support a recursive reopened-tree completeness input. Compare the canonical clauses, existing one-group and raw cross-level correlation semantics, and current a12-dmkits knowledge without writing to sibling repositories. Select a semantic capsule only if it can close levels 1–2 without a new path framework, evidence mechanism, or protocol; keep IF193 group-state construction separate unless the inventory demonstrates one exact shared owner.
+Audit the smallest phase-aware seam that can derive IF193's admitted-content × error × `NONE`/`PARTIAL`/`FULL` relevance state from already-checked descendants and instantiated rows. Compare `CheckedCell`, `Document.instantiatedRows`, the current absolute requiredness and flat partial-validation boundaries, and the exact a12-dmkits IF193 evidence without writing to sibling repositories. Use malformed-only, admitted-plus-malformed, duplicate-index admission, created repeat row, over-limit ancestor content, partial positive, partial empty, full empty, group-list availability, plain numeric count, and relative-requiredness as the separating matrix. Select a semantic capsule only if one phase-aware state owner can serve at least two consumers without adding model traversal, validation orchestration, or another checked-cell representation.
 
 ## Likely next keystone rotation
 
@@ -123,7 +131,7 @@ These are not repository-wide blockers:
 - `DifferenceInDays` requires a profile-aware model-zone legacy-calendar step account; the zone-free proleptic `CivilDate` coordinate is not a valid substitute.
 - Authored message/whole-rule integration must preserve the accepted provider/default/raw-CRLF distinctions and the bounded modern `DocumentV2` dot-default profile; checked Lean integration, untested display routes, and project-local portable evidence remain open.
 - Validation group presence requires a phase-aware admitted-content/error/relevance derivation before group predicates, group counts, or relative requiredness can be implemented; the existing flat relevance gate is not that mechanism.
-- Authored nested-star aggregate lowering requires recursive completeness across every reopened repeatable level; resolved aggregate inputs currently receive tail missingness from their caller and cannot establish IF194 themselves.
+- Authored nested-star aggregate lowering must construct the proved reopened tree and ordered cell stream from checked paths, model repeatabilities, and scoped `Document` rows; resolved aggregate consumers do not perform that lowering themselves.
 - Mixed-declaration aggregate signedness requires per-declaration missing-potential representation.
 - Many internally closed families remain `external evidence pending`; collect them into coherent future calibration batches rather than creating per-capsule capture work.
 - Public protocol expansion, semantic shipments, external prototypes, candidate qualification, and SMT dependencies require separate adoption or approval.
@@ -145,5 +153,5 @@ These are not repository-wide blockers:
 2. Inspect `git status --short`, recent commits, and the complete current diff. Do not overwrite concurrent work.
 3. If `Sum` is unfinished, resume its red/green checklist above.
 4. If the aggregate consumer probe is not recorded, run it and feed back its findings.
-5. Otherwise perform the repeatable operand-resolution risk audit and select the next keystone capsule using the criteria above.
+5. Otherwise perform the validation group-state risk audit and select the next keystone capsule using the criteria above.
 6. End each capsule with its applicable gates, honest completion/evidence levels, minimal owner-document updates, a clean worktree, and no sibling changes.

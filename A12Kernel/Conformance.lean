@@ -39,6 +39,7 @@ import A12Kernel.Conformance.StringComputation
 import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue
+import A12Kernel.Conformance.StarCompleteness
 import A12Kernel.Conformance.NumericAggregate
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.Enumeration

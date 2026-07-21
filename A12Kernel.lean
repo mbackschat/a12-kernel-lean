@@ -24,6 +24,7 @@ import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
 import A12Kernel.Semantics.ValueList
 import A12Kernel.Semantics.FirstFilledValue
+import A12Kernel.Semantics.StarCompleteness
 import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.ValidationFillQuantifier
