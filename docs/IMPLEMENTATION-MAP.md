@@ -207,7 +207,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - precision-50 `+`/`−`/`×`/`÷`, staged power, rounding, absolute value, full-precision ordered extrema, arithmetic domain failure, and directional fillability including the conservative power and Min/Max tie tables
 - independent scale-19 normalization
 - a checked closed validation dispatch over all six direct ordinary comparison operators and four fixed tolerance ranges
-- one already-resolved computation-expression consumer with distinct numeric value, domain failure, and inherited poison
+- one checked nonrepeatable plain computation-operation consumer with model-resolved target/operands, unsuppressed result-scale admission, nested target-reference rejection, and distinct numeric value/domain-failure/inherited-poison evaluation
 - a separately proved exact stored-decimal conversion
 - and one ordinary fit-path target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
 - Checked validation resolves two same-group expressions, lowers each once, and gates empty rows before reads.
@@ -245,11 +245,11 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Excluded / next
 
 - **Implemented narrowly; external evidence pending.** Checked validation accepts two same-group expressions with at least one field, the admitted expression classes above, six ordinary operators, four tolerance ranges, and the exact-scale-warning bypass.
-- The separate computation expression accepts one already-resolved admitted arithmetic/power/rounding/`Abs`/Min/Max tree; it does not itself certify concrete power authoring or exponent-scale legality.
+- The checked computation operation resolves one nonrepeatable Number target and every nonrepeatable Number operand through the shared authored-tree traversal, accepts constant-only or field-bearing plain arithmetic and power after the existing authoring/summary checks, rejects the target at every nested operand position, applies the unsuppressed exact result-scale gate, and delegates evaluation to the established numeric computation result consumer. The lower-level evaluator still accepts already-resolved rounding/`Abs`/Min/Max trees without claiming their concrete authoring legality.
 - Stored conversion is exact after scale-19 pre-rounding
 - the target accepts only the ordinary scale-compatible path with signedness, minimum/maximum fractional digits, the universal 15-digit check, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation.
 - Open:
-  - Checked concrete computation/target authoring
+  - checked computation-table integration and concrete operation-valued wrapper authoring
   - concrete computation power authoring and result-empty provenance
   - broader numeric Min/Max operands, including grouped constants and nested arithmetic or wrappers
   - concrete tie-origin retention
@@ -261,7 +261,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - warning-suppressed no-fit rendering
   - range/zero/integer-digit/other Number constraints
   - downstream context/read integration
-  - expression-valued generated implicit validation beyond the guarded literal fragment
+  - expression-valued generated implicit validation beyond the literal fragment; the flat whole-rule condition currently has no checked numeric-expression leaf, so do not add a parallel condition tree
   - partial/repeatable evaluation
   - missing-ancestor creation
   - concrete parsing/diagnostics
@@ -556,7 +556,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - clean no-value, target rejection, and poison from the selected operation are terminal, a holding head makes every suffix irrelevant through operation evaluation, and common false/poison decides before guard or operation reads.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
 - The checked literal-Number desugaring represents every nonempty table as either one optionally guarded alternative or two-or-more fully guarded alternatives, without fabricating a true guard. Computation selects a wholly unguarded singleton directly and otherwise reuses the common-expansion selector, while generated validation omits an absent singleton guard, left-folds wider mismatch tables in declaration order, and places the common guard once below `FieldFilled(target)` and above the complete mismatch body. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
-- The checked guard traversal rejects the exact computed target ID in common and every alternative condition before phase lowering, retaining common versus one-based alternative position; literal operations make operation-side self-reference unrepresentable only in this narrow fragment.
+- The checked guard traversal rejects the exact computed target ID in common and every alternative condition before phase lowering, retaining common versus one-based alternative position. The separate checked plain numeric-operation boundary rejects the same target throughout an expression tree; expression-valued table integration remains open.
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
@@ -582,7 +582,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - one String target and direct cascade
 - and one already-resolved Number expression → stored form → ordinary fit-path target → delta → exact application → cause-free dependency chain.
 - Open:
-  - General computation authoring and operation-side target self-reference checks
+  - General computation-table authoring and operation-side target self-reference checks beyond the checked plain numeric-operation fragment
   - warning-suppressed assignment and runtime target checks
   - checked zero/default authoring outside the structurally nonempty literal fragment
   - general checked common-precondition authoring beyond the guarded literal fragment

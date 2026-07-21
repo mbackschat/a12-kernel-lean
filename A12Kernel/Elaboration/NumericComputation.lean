@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericComputationResult
 
 /-! # Numeric computation-expression outcomes
 
-This capsule evaluates one already-resolved numeric expression before target checking. It preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. The input is not a claim about concrete syntax or general operation-wrapper authoring legality. Target policy, rendered storage, application, delta projection, selection, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable plain numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the existing plain-arithmetic authoring and result-scale gates, and certifies model coherence. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, operation-valued wrappers, warning-suppressed scale mismatch, target policy, rendered storage, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -14,6 +14,125 @@ namespace A12Kernel
 inductive NumericComputationFault where
   | fieldKindMismatch (field : FieldId)
   deriving Repr, DecidableEq
+
+inductive NumericComputationElabError where
+  | resolve (error : ResolveError)
+  | targetNotNumber (field : FieldId)
+  | operandNotNumber (path : List String)
+  | targetSelfReference (field : FieldId)
+  | authoring (result : NumericAuthoringCheck)
+  | unsupportedExpression
+  | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
+  | incoherentCore
+  deriving Repr, DecidableEq
+
+/-- One resolved, ordinary scale-compatible numeric operation before target storage. -/
+structure NumericComputationOperation where
+  target : FlatNumberField
+  expression : AuthoredNumericExpr FlatFieldDecl
+  deriving Repr, DecidableEq
+
+def FlatModel.admitsNumericComputationOperand
+    (model : FlatModel) (declaration : FlatFieldDecl) : Bool :=
+  match model.lookupUniqueId declaration.id with
+  | .ok admitted =>
+      admitted == declaration &&
+        declaration.repeatableScope.isEmpty &&
+        declaration.toNumberField?.isSome
+  | .error _ => false
+
+def FlatModel.admitsNumericComputationTarget
+    (model : FlatModel) (target : FlatNumberField) : Bool :=
+  match model.lookupUniqueId target.id with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toNumberField? == some target
+  | .error _ => false
+
+private def FlatFieldDecl.numericScaleSummary
+    (declaration : FlatFieldDecl) : NumericScaleSummary :=
+  match declaration.toNumberField? with
+  | some field => NumericScaleSummary.field field.info.scale
+  | none => { scale := .unknown, canExpandScale := false }
+
+def NumericComputationOperation.wellFormedBool
+    (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
+  model.admitsNumericComputationTarget operation.target &&
+    operation.expression.allAtoms model.admitsNumericComputationOperand &&
+    !operation.expression.anyAtom (fun declaration =>
+      declaration.id == operation.target.id) &&
+    operation.expression.authoringCheck == .accepted &&
+    match operation.expression.summary? FlatFieldDecl.numericScaleSummary with
+    | some summary =>
+        exactNumericScaleComparisonAllowed
+          (NumericScaleSummary.field operation.target.info.scale) summary
+    | none => false
+
+def NumericComputationOperation.WellFormed
+    (operation : NumericComputationOperation) (model : FlatModel) : Prop :=
+  operation.wellFormedBool model = true
+
+/-- A model-coherent operation produced only after target, operands, authoring shape, self-reference, and result scale have been checked. -/
+structure CheckedNumericComputationOperation (model : FlatModel) where
+  core : NumericComputationOperation
+  modelWellFormed : model.validate.isOk = true
+  wellFormed : core.WellFormed model
+
+private def FlatModel.resolveNumericComputationTarget
+    (model : FlatModel) (target : FieldId) :
+    Except NumericComputationElabError FlatNumberField := do
+  let declaration ← (model.resolveNonrepeatableDeclarationById target).mapError .resolve
+  match declaration.toNumberField? with
+  | some field => pure field
+  | none => throw (.targetNotNumber target)
+
+private def FlatModel.resolveNumericComputationExpression
+    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
+    (expression : AuthoredNumericExpr SurfaceFieldPath) :
+    Except NumericComputationElabError (AuthoredNumericExpr FlatFieldDecl) :=
+  expression.mapM fun reference => do
+    let declaration ←
+      (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+    if declaration.id == target then
+      throw (.targetSelfReference target)
+    else if declaration.toNumberField?.isSome then
+      pure declaration
+    else
+      throw (.operandNotNumber declaration.path)
+
+/-- Resolve and check one nonrepeatable plain numeric computation operation. Operation-valued wrappers, repeatable evaluation, warning-suppressed scale mismatch, table integration, target storage, and scheduling remain separate owners. -/
+def elaborateNumericComputationOperation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression : AuthoredNumericExpr SurfaceFieldPath) :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation model) := do
+  match hModel : model.validate with
+  | .error error => throw (.resolve error)
+  | .ok () =>
+      if !GroupPath.isValid declaringGroup then
+        throw (.resolve (.invalidRuleGroup declaringGroup))
+      let target ← model.resolveNumericComputationTarget targetField
+      let resolved ← model.resolveNumericComputationExpression
+        declaringGroup targetField expression
+      match resolved.authoringCheck with
+      | .accepted => pure ()
+      | result => throw (.authoring result)
+      let summary ← match resolved.summary? FlatFieldDecl.numericScaleSummary with
+        | some summary => pure summary
+        | none => throw .unsupportedExpression
+      if !exactNumericScaleComparisonAllowed
+          (NumericScaleSummary.field target.info.scale) summary then
+        throw (.operationScaleMismatch target.info.scale summary)
+      let core : NumericComputationOperation := { target, expression := resolved }
+      if hCore : core.wellFormedBool model = true then
+        pure {
+          core
+          modelWellFormed := by
+            rw [hModel]
+            rfl
+          wellFormed := hCore }
+      else
+        throw .incoherentCore
 
 namespace ScalarComputationContext
 
@@ -112,5 +231,14 @@ def evaluateComputation (expression : AuthoredNumericExpr FlatFieldDecl)
   | none => lowered.evalComputation context.readNumeric
 
 end AuthoredNumericExpr
+
+namespace CheckedNumericComputationOperation
+
+def evaluate (operation : CheckedNumericComputationOperation model)
+    (context : ScalarComputationContext) :
+    Except NumericComputationFault NumericComputationResult :=
+  operation.core.expression.evaluateComputation context
+
+end CheckedNumericComputationOperation
 
 end A12Kernel

@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `d085ae2` (`feat(computation): reject target self-reference`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,169-declaration trust audit passed.
+- Semantic baseline before the current capsule: `3b7fea9` (`feat(computation): admit singleton literal tables`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,274-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close the checked literal-Number table's nonempty cardinality split: one alternative may omit its own precondition, while two-or-more alternatives remain fully guarded. Use an explicit singleton/guarded sum so zero alternatives and fabricated true guards remain unrepresentable.
+Admit one checked nonrepeatable plain numeric computation operation over the existing authored expression tree. Resolve target and operands from one validated model, reject nested direct target self-reference, enforce the existing plain authoring and unsuppressed result-scale gates, and delegate evaluation to the existing numeric computation-result owner.
 
-Success means runtime selection and generated validation consume the same optional singleton/common guards through their distinct phase semantics; singleton strict-scale, tolerance, and self-reference checks retain one-based diagnostics; the wider table remains unchanged; and focused plus full repository gates pass. The cardinality rule is already canonical in [`spec/09-computations.md`](../spec/09-computations.md), so this capsule creates no outbound ledger entry.
+Success means checked field-bearing and constant-only operations evaluate through the existing consumer; wrong-kind/repeatable operands, invalid plain authoring, result-scale mismatch, and target references at arbitrary nesting depth fail before runtime; a trusted law excludes the target from every accepted expression; and numeric validation retains identical behavior after moving its resolver onto the shared traversal. The semantic rules are already canonical in [`spec/09-computations.md`](../spec/09-computations.md), so this capsule creates no outbound ledger entry.
 
 ## Frontier queue
 
@@ -26,7 +26,9 @@ Success means runtime selection and generated validation consume the same option
 - **Satisfied — generated-validation common precondition:** `1fc3050` carries one checked common condition through both phases and keeps validation's guard outside the complete mismatch disjunction.
 - **Satisfied — guarded-table breadth:** `e2f0f4a` widens the same checked literal owner to two-or-more alternatives with one declaration-ordered remainder.
 - **Satisfied — computed-target guard rejection:** `d085ae2` rejects the target ID in common and every alternative guard, with operation-side checking retained for expression-valued authoring.
-- **Active — nonempty literal table:** admit an optionally guarded singleton beside the existing guarded two-or-more table without manufacturing a true condition.
+- **Satisfied — nonempty literal table:** `3b7fea9` admits an optionally guarded singleton beside the guarded two-or-more table without manufacturing a true condition.
+- **Active — checked numeric computation operation:** resolve and admit the plain nonrepeatable expression before its existing computation evaluator.
+- **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
 - **Missing fact — String targets:** needs declaration-owned length and line-break policy; do not infer unconstrained policy from erased model facts.

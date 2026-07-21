@@ -350,6 +350,7 @@ run_cmd do
 #print axioms A12Kernel.emptyNumericField_evaluates_zero
 #print axioms A12Kernel.requiredEmptyNumericField_evaluates_zero
 #print axioms A12Kernel.poisonedNumericField_evaluates_poison
+#print axioms A12Kernel.checkedNumericComputationOperation_noTargetReference
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
 #print axioms A12Kernel.numericComputationResult_evalPower_values
 #print axioms A12Kernel.numericComputation_zeroToNegativePower_domainFailure

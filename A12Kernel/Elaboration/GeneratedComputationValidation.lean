@@ -112,20 +112,11 @@ inductive GeneratedComputationValidationError where
   | rule (error : FlatRuleAssemblyError)
   deriving Repr, DecidableEq
 
-private def FlatModel.resolveNonrepeatableDeclarationById
-    (model : FlatModel) (field : FieldId) :
-    Except GeneratedComputationValidationError FlatFieldDecl := do
-  let declaration ← (model.lookupUniqueId field).mapError
-    GeneratedComputationValidationError.resolve
-  if declaration.repeatableScope.isEmpty then
-    pure declaration
-  else
-    throw (.resolve (.repeatableReference declaration.path))
-
 private def FlatModel.resolveGeneratedGuardField
     (model : FlatModel) (field : FieldId) :
     Except GeneratedComputationValidationError FlatField := do
-  let declaration ← model.resolveNonrepeatableDeclarationById field
+  let declaration ← (model.resolveNonrepeatableDeclarationById field).mapError
+    GeneratedComputationValidationError.resolve
   match declaration.policy.kind with
   | .number info => pure (.number { id := declaration.id, info })
   | .boolean => pure (.boolean { id := declaration.id })
@@ -135,7 +126,8 @@ private def FlatModel.resolveGeneratedGuardField
 private def FlatModel.resolveGeneratedNumberTarget
     (model : FlatModel) (field : FieldId) :
     Except GeneratedComputationValidationError FlatNumberField := do
-  let declaration ← model.resolveNonrepeatableDeclarationById field
+  let declaration ← (model.resolveNonrepeatableDeclarationById field).mapError
+    GeneratedComputationValidationError.resolve
   match declaration.toNumberField? with
   | some target => pure target
   | none => throw (.targetNotNumber field)

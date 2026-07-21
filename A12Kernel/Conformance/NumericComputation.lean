@@ -31,6 +31,39 @@ private def source : FlatFieldDecl :=
 private def later : FlatFieldDecl :=
   numberDeclaration laterId "Later"
 
+private def targetId : FieldId := 2
+private def wrongId : FieldId := 3
+private def repeatedId : FieldId := 4
+
+private def wrong : FlatFieldDecl :=
+  stringDeclaration wrongId "Wrong"
+
+private def repeated : FlatFieldDecl :=
+  { id := repeatedId
+    groupPath := ["Root", "Rows"]
+    name := "Repeated"
+    policy := { kind := .number numberInfo }
+    repeatableScope := [10] }
+
+private def model : FlatModel :=
+  { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated]
+    repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }] }
+
+private def surfacePath (groups : List String) (name : String) :
+    SurfaceFieldPath :=
+  { base := .absolute, groups, field := name }
+
+private def surfaceField (groups : List String) (name : String) :
+    AuthoredNumericExpr SurfaceFieldPath :=
+  .atom (surfacePath groups name)
+
+private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (target : FieldId := targetId) :
+    Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation model ["Root"] target expression with
+  | .ok _ => none
+  | .error error => some error
+
 private def checkedNumber (raw : RawCell) : CheckedCell :=
   formalCheck { kind := .number numberInfo } raw
 
@@ -40,6 +73,14 @@ private def context (source later : CheckedCell := checkedNumber .empty) :
     if field == sourceId then source
     else if field == laterId then later
     else checkedNumber .empty
+
+private def checkedResultOf
+    (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (input : ScalarComputationContext := context) :
+    Option NumericComputationResult :=
+  match elaborateNumericComputationOperation model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => checked.evaluate input |>.toOption
 
 private def literal (value : Rat) (authoredScale : Int := 0) :
     AuthoredNumericExpr FlatFieldDecl :=
@@ -81,6 +122,48 @@ private def faultOf (expression : AuthoredNumericExpr FlatFieldDecl)
   match expression.evaluateComputation input with
   | .ok _ => none
   | .error fault => some fault
+
+/- Checked computation-operation authoring resolves the shared numeric tree and rejects a nested direct reference to its own target. -/
+example :
+    checkedErrorOf
+      (.binary .add (surfaceField ["Root"] "Source")
+        (.group (.binary .multiply
+          (surfaceField ["Root"] "Target")
+          (.literal { value := 2, authoredScale := 0 })))) =
+      some (.targetSelfReference targetId) := by
+  native_decide
+
+/- A checked operation reuses the existing numeric evaluator; unlike a validation comparison, a constant-only computation is legal. -/
+example :
+    checkedResultOf
+        (.binary .add (surfaceField ["Root"] "Source")
+          (.literal { value := 2, authoredScale := 0 }))
+        (context (checkedNumber (.parsed (.num 3)))) = some (.value 5) ∧
+      checkedResultOf (.literal { value := 7, authoredScale := 0 }) =
+        some (.value 7) := by
+  native_decide
+
+example :
+    checkedErrorOf (surfaceField ["Root"] "Wrong") =
+        some (.operandNotNumber wrong.path) ∧
+      checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =
+        some (.resolve (.repeatableReference repeated.path)) ∧
+      checkedErrorOf (.literal { value := 1, authoredScale := 0 }) wrongId =
+        some (.targetNotNumber wrongId) := by
+  native_decide
+
+/- Authoring and result-scale checks precede runtime evaluation and retain their distinct rejection classes. -/
+example :
+    let twoDivisions :=
+      AuthoredNumericExpr.binary .multiply
+        (.binary .divide (surfaceField ["Root"] "Source")
+          (.literal { value := 2, authoredScale := 0 }))
+        (.binary .divide (.literal { value := 3, authoredScale := 0 })
+          (.literal { value := 4, authoredScale := 0 }))
+    checkedErrorOf twoDivisions = some (.authoring .tooManyDivisions) ∧
+      checkedErrorOf (.literal { value := 1, authoredScale := 1 }) =
+        some (.operationScaleMismatch 0 (NumericScaleSummary.constant 1)) := by
+  native_decide
 
 /- Empty Number is a real computation value, not clean no-selection. -/
 example : resultOf (field source) = some (.value 0) := by

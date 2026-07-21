@@ -37,15 +37,6 @@ inductive NumericValidationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-private def AuthoredNumericExpr.hasAtom : AuthoredNumericExpr Atom → Bool
-  | .atom _ => true
-  | .literal _ => false
-  | .group body => body.hasAtom
-  | .binary _ left right | .power left right | .extremum _ left right =>
-      left.hasAtom || right.hasAtom
-  | .abs body => body.hasAtom
-  | .round _ _ body => body.hasAtom
-
 /-- Whether an authored tree uses only atoms, literals, grouping, ordinary binary arithmetic, and power. -/
 def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .atom _ | .literal _ => true
@@ -89,18 +80,6 @@ def AuthoredNumericExpr.isAdmittedValidation : AuthoredNumericExpr Atom → Bool
 def AuthoredNumericExpr.validationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   if expression.isDirectValueFunction then .accepted else expression.authoringCheck
-
-private def AuthoredNumericExpr.allAtoms (predicate : Atom → Bool) :
-    AuthoredNumericExpr Atom → Bool
-  | .atom sourceAtom => predicate sourceAtom
-  | .literal _ => true
-  | .group body => body.allAtoms predicate
-  | .binary _ left right | .power left right =>
-      left.allAtoms predicate && right.allAtoms predicate
-  | .extremum _ left right =>
-      left.allAtoms predicate && right.allAtoms predicate
-  | .abs body => body.allAtoms predicate
-  | .round _ _ body => body.allAtoms predicate
 
 private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupPath)
     (field : FlatNumberField) : Bool :=
@@ -165,34 +144,15 @@ structure CheckedNumericComparison (model : FlatModel) where
 
 private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
     AuthoredNumericExpr SurfaceFieldPath →
-      Except NumericValidationElabError (AuthoredNumericExpr FlatNumberField)
-  | .atom reference => do
+      Except NumericValidationElabError (AuthoredNumericExpr FlatNumberField) :=
+  AuthoredNumericExpr.mapM fun reference => do
       let declaration ←
         (model.resolveField rowGroup reference).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toNumberField? with
-      | some field => pure (.atom field)
+      | some field => pure field
       | none => throw (.fieldNotNumber declaration.path)
-  | .literal literal => pure (.literal literal)
-  | .group body => do
-      pure (.group (← resolveNumericExpression model rowGroup body))
-  | .binary op left right => do
-      pure (.binary op
-        (← resolveNumericExpression model rowGroup left)
-        (← resolveNumericExpression model rowGroup right))
-  | .power base exponent => do
-      pure (.power
-        (← resolveNumericExpression model rowGroup base)
-        (← resolveNumericExpression model rowGroup exponent))
-  | .abs body => do
-      pure (.abs (← resolveNumericExpression model rowGroup body))
-  | .extremum op left right => do
-      pure (.extremum op
-        (← resolveNumericExpression model rowGroup left)
-        (← resolveNumericExpression model rowGroup right))
-  | .round mode places body => do
-      pure (.round mode places (← resolveNumericExpression model rowGroup body))
 
 /-- Resolve and check both operands before performing their one-pass lowering at evaluation time. -/
 def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
