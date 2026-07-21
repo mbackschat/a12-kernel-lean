@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `6cd756d` (`feat(computation): check plain numeric operations`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,471-declaration trust audit passed.
+- Semantic baseline before the current capsule: `2a77643` (`feat(computation): support suppressed numeric no-fit`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,492-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Implement the explicit warning-suppressed computed-Number no-fit target branch without weakening the ordinary target entry point. Consume the scale-19 pre-rounded canonical decimal, preserve short values, bound longer values to 16 significant digits where their integer part permits it, then reuse the reduced target checks before reporting the remaining suppressed-scale mismatch.
+Carry the one legal exact-scale warning suppression through checked nonrepeatable numeric computation admission and target classification. Retain the flag in the certified operation, bypass only the static result-scale predicate, and dispatch the evaluated result through the already-separated ordinary or warning-suppressed target entry point.
 
-Success means the ordinary no-fit path still fails closed; the explicit suppression path is identical on fitting values; short and over-budget no-fit attempts preserve the scale-19-then-bound staging; every no-fit attempt is rejected; and digit-length or signedness failures take precedence over the generic suppressed-scale cause. The semantic rules are already canonical in [`spec/09-computations.md`](../spec/09-computations.md) and accepted under [`SPEC-2026-07-19-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-15--computed-number-storage-has-distinct-fit-and-warning-suppressed-no-fit-branches), so this capsule creates no outbound ledger entry.
+Success means unsuppressed mismatches retain their current rejection; explicit suppression admits the same otherwise-valid operation; authoring, model, kind, scope, and target-self-reference checks remain independent; a proof-backed target-policy coherence argument prevents mismatched target metadata; and the retained flag alone selects the runtime target branch. The semantic rules are already canonical in [`spec/09-computations.md`](../spec/09-computations.md) and accepted under [`SPEC-2026-07-19-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-15--computed-number-storage-has-distinct-fit-and-warning-suppressed-no-fit-branches), so this capsule creates no outbound ledger entry.
 
 ## Frontier queue
 
@@ -28,7 +28,8 @@ Success means the ordinary no-fit path still fails closed; the explicit suppress
 - **Satisfied — computed-target guard rejection:** `d085ae2` rejects the target ID in common and every alternative guard, with operation-side checking retained for expression-valued authoring.
 - **Satisfied — nonempty literal table:** `3b7fea9` admits an optionally guarded singleton beside the guarded two-or-more table without manufacturing a true condition.
 - **Satisfied — checked numeric computation operation:** `6cd756d` resolves and admits the plain nonrepeatable expression before its existing computation evaluator.
-- **Active — warning-suppressed numeric no-fit:** add the explicit bounded-storage target branch while preserving the ordinary fail-closed entry point.
+- **Satisfied — warning-suppressed numeric no-fit:** `2a77643` adds the explicit bounded-storage target branch while preserving the ordinary fail-closed entry point.
+- **Active — checked computation suppression:** retain the legal warning flag through admission and route the evaluated result through the matching target entry point.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
