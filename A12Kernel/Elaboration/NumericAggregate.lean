@@ -1,28 +1,28 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Semantics.NumericAggregate
 
-/-! # Checked nonrepeatable Number Sum lowering
+/-! # Checked nonrepeatable Number aggregate lowering
 
-This capsule resolves one nonempty, unfiltered list of nonrepeatable Number fields into the existing per-declaration Sum side. It preserves authored encounter order and declaration signedness, and classifies raw cells through the same validated flat model. Stars, group expansion, `Having`, partial relevance, comparisons, computation aggregates, and concrete syntax remain outside.
+This capsule resolves one nonempty, unfiltered list of nonrepeatable Number fields into the existing aggregate sides. It preserves authored encounter order and declaration signedness, and classifies raw cells through the same validated flat model. Stars, group expansion, `Having`, partial relevance, comparisons, computation aggregates, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
 
-/-- A parser-independent nonempty Number `Sum` field list. -/
-structure SurfaceNumericSum where
+/-- A parser-independent nonempty Number aggregate field list. -/
+structure SurfaceNumericAggregateFields where
   first : SurfaceFieldPath
   rest : List SurfaceFieldPath
   deriving Repr, DecidableEq
 
-/-- Fail-closed errors owned by this aggregate lowering boundary. -/
-inductive NumericSumElabError where
+/-- Fail-closed errors owned by this aggregate-field lowering boundary. -/
+inductive NumericAggregateElabError where
   | resolve (error : ResolveError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
 
 /-- A nonempty resolved field list certified against one flat model. -/
-structure CheckedNumericSum (model : FlatModel) where
+structure CheckedNumericAggregateFields (model : FlatModel) where
   first : FlatNumberField
   rest : List FlatNumberField
   modelWellFormed : model.validate.isOk = true
@@ -30,16 +30,16 @@ structure CheckedNumericSum (model : FlatModel) where
     (model.admitsField (.number first) &&
       rest.all fun field => model.admitsField (.number field)) = true
 
-namespace CheckedNumericSum
+namespace CheckedNumericAggregateFields
 
-def fields (sum : CheckedNumericSum model) : List FlatNumberField :=
-  sum.first :: sum.rest
+def fields (checked : CheckedNumericAggregateFields model) : List FlatNumberField :=
+  checked.first :: checked.rest
 
-end CheckedNumericSum
+end CheckedNumericAggregateFields
 
-private def FlatModel.resolveNumericSumField (model : FlatModel)
+private def FlatModel.resolveNumericAggregateField (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
-    Except NumericSumElabError FlatNumberField := do
+    Except NumericAggregateElabError FlatNumberField := do
   let declaration ←
     (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
   match declaration.toNumberField? with
@@ -47,23 +47,23 @@ private def FlatModel.resolveNumericSumField (model : FlatModel)
   | none =>
       throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
-private def FlatModel.resolveNumericSumFields (model : FlatModel)
+private def FlatModel.resolveNumericAggregateFields (model : FlatModel)
     (declaringGroup : GroupPath) :
-    List SurfaceFieldPath → Except NumericSumElabError (List FlatNumberField)
+    List SurfaceFieldPath → Except NumericAggregateElabError (List FlatNumberField)
   | [] => pure []
   | reference :: remaining => do
-      pure ((← model.resolveNumericSumField declaringGroup reference) ::
-        (← model.resolveNumericSumFields declaringGroup remaining))
+      pure ((← model.resolveNumericAggregateField declaringGroup reference) ::
+        (← model.resolveNumericAggregateFields declaringGroup remaining))
 
 /-- Validate the model once, resolve every source in authored order, and certify the complete nonempty Number list. -/
-def elaborateNumericSum (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceNumericSum) :
-    Except NumericSumElabError (CheckedNumericSum model) :=
+def elaborateNumericAggregateFields (model : FlatModel) (declaringGroup : GroupPath)
+    (authored : SurfaceNumericAggregateFields) :
+    Except NumericAggregateElabError (CheckedNumericAggregateFields model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let first ← model.resolveNumericSumField declaringGroup authored.first
-      let rest ← model.resolveNumericSumFields declaringGroup authored.rest
+      let first ← model.resolveNumericAggregateField declaringGroup authored.first
+      let rest ← model.resolveNumericAggregateFields declaringGroup authored.rest
       if hFields :
           (model.admitsField (.number first) &&
             rest.all fun field => model.admitsField (.number field)) = true then
@@ -78,7 +78,7 @@ def elaborateNumericSum (model : FlatModel) (declaringGroup : GroupPath)
       else
         throw .incoherentCore
 
-namespace CheckedNumericSum
+namespace CheckedNumericAggregateFields
 
 private def classify (context : FlatContext)
     (field : FlatNumberField) : ValueListCell .number :=
@@ -88,21 +88,34 @@ private def classify (context : FlatContext)
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
-/-- Construct the exact resolved subset: explicit nonrepeatable cells in authored order, no uninstantiated source, and no filter. -/
-def resolvedSide (sum : CheckedNumericSum model)
+/-- Construct the common resolved subset: explicit nonrepeatable cells in authored order, no uninstantiated source, and no filter. -/
+def resolvedValueSide (checked : CheckedNumericAggregateFields model)
+    (raw : RawFlatContext) : ResolvedValueListSide .number :=
+  let context := model.checkContext raw
+  { cells := checked.fields.map fun field => classify context field
+    hasUninstantiatedTail := false
+    hasHaving := false }
+
+/-- Retain each source declaration's signedness for `Sum` polarity. -/
+def resolvedSumSide (checked : CheckedNumericAggregateFields model)
     (raw : RawFlatContext) : ResolvedNumericSumSide :=
   let context := model.checkContext raw
-  { cells := sum.fields.map fun field =>
+  { cells := checked.fields.map fun field =>
       { cell := classify context field
         declarationSigned := field.info.signed }
     uninstantiatedSignedness := []
     hasHaving := false }
 
-/-- Evaluate by delegating the constructed side to the existing per-declaration Sum semantics. -/
-def evaluate (sum : CheckedNumericSum model)
+/-- Evaluate `Sum` by delegating the constructed side to the existing per-declaration semantics. -/
+def evaluateSum (checked : CheckedNumericAggregateFields model)
     (raw : RawFlatContext) : NumericOperand :=
-  evalDeclaredNumericSumAggregate (sum.resolvedSide raw)
+  evalDeclaredNumericSumAggregate (checked.resolvedSumSide raw)
 
-end CheckedNumericSum
+/-- Evaluate direct `MinValue` or `MaxValue` by delegating the same checked sources to the existing extremum semantics. -/
+def evaluateExtremum (checked : CheckedNumericAggregateFields model)
+    (op : NumericExtremumOp) (raw : RawFlatContext) : NumericOperand :=
+  evalNumericExtremumAggregate op (checked.resolvedValueSide raw)
+
+end CheckedNumericAggregateFields
 
 end A12Kernel

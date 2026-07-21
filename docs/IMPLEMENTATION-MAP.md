@@ -737,7 +737,7 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 
 ### Resolved Number aggregates
 
-- [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), and their [`Proofs/`](../A12Kernel/Proofs.lean) and [`Conformance/`](../A12Kernel/Conformance.lean) counterparts close resolved validation-side Number `Sum`/`MinValue`/`MaxValue` plus checked construction of one nonempty unfiltered nonrepeatable `Sum` field list.
+- [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), and their [`Proofs/`](../A12Kernel/Proofs.lean) and [`Conformance/`](../A12Kernel/Conformance.lean) counterparts close resolved validation-side Number `Sum`/`MinValue`/`MaxValue` plus checked construction of their nonempty unfiltered nonrepeatable field lists.
 - The two completed consumers share only `ValueListCell.scanPresent`: it skips empty cells, stops at the first reached unavailable cell, and applies a caller-owned step to present cells from left to right.
 - Extrema select exact present amounts without a synthetic zero.
 - `Sum` starts at zero and applies precision-50 `HALF_UP` addition at every present term in encounter order, so exact accumulation, reassociation, and reordering are rejected by separate cases.
@@ -748,10 +748,12 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - Every all-empty route returns zero with both directions, while `Having` makes any available result both-directionally fillable.
 - Generic scan laws establish availability, all-empty preservation, and first-cause termination once
 - short operator laws specialize identity, fixed/tail results, per-source signedness, homogeneous embedding, metadata separation, and filter escalation.
-- `CheckedNumericSum` resolves a nonempty list of nonrepeatable Number paths in authored order, preserves each declaration's signedness, classifies raw cells through the same validated model, and constructs the exact no-tail/no-`Having` resolved subset.
+- `CheckedNumericAggregateFields` resolves the shared nonrepeatable Number source list once, classifies raw cells through the same validated model, and constructs exact no-tail/no-`Having` views for `Sum` and extrema.
+- A trusted equality locks both views to the same classified cells in authored order
+- only the Sum view adds each declaration's signedness.
 
 - This is internally complete at levels 1–2 and remains `external evidence pending`.
-- Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction are represented, but group/star expansion must still construct per-source cells and uninstantiated signedness without losing declaration identity.
+- Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction for all three operators are represented, but group/star expansion must still construct per-source cells and uninstantiated signedness without losing declaration identity.
 - The separate reopened-star capsule below can derive structural openness from a caller-supplied IF194 tree, but neither layer constructs the tree or ordered cell stream from authored paths and a `Document`.
 - The older checked-row `NumberFold` uses the homogeneous embedding and projects only amount or cause, preserving its existing truth-only API while deliberately erasing fillability.
 - The family does not share the prefix-terminating `FirstFilledValue` scan or operand-list empty substitution/fillability.

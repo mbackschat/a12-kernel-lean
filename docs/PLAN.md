@@ -180,17 +180,17 @@ The selected bounded seam reuses the existing copy/literal/concatenation runtime
 
 This closes levels 1–2 for decoded nonrepeatable String copy/literal/concatenation expressions only. Target declaration and length-policy checking, whole-computation authoring, alternatives, concrete syntax and date-shaped literal classification, repeatable reads, scheduling, protocol exposure, and new external observations remain outside. No spec, sync-ledger, dependency, or framework change was needed.
 
-## Completed semantic unit: checked nonrepeatable Number Sum
+## Completed semantic unit: checked nonrepeatable Number aggregates
 
 The post-String audit selected the narrow part of aggregate construction that current model facts can express completely. A nonempty unfiltered list of nonrepeatable Number paths needs no repeatability capacity, reopened-star tree, filter provenance, or wildcardable relevance state.
 
-`CheckedNumericSum` resolves each source against one validated flat model in authored order, preserves each declaration's signedness, and checks raw cells with that same model. It constructs `ResolvedNumericSumSide` with exactly the classified explicit cells, no uninstantiated source, and no `Having`, then delegates to the existing per-declaration Sum evaluator. The red file initially failed only because the checked owner was absent. The green matrix distinguishes staged encounter order, signed-missing versus unsigned-missing polarity independently of present-field signedness, all-empty fillable zero, first formal unavailability, wrong declared kind, and repeatable rejection. Trusted laws prevent this subset from fabricating tail/filter metadata and lock exact evaluator delegation.
+`CheckedNumericAggregateFields` resolves each source against one validated flat model in authored order and checks raw cells with that same model. It constructs exact no-tail/no-`Having` views for the existing Sum and extremum evaluators; the Sum view alone retains each declaration's signedness. The original Sum red file failed because the checked owner was absent, and the later extrema red cases failed at the intentionally missing evaluator boundary. The green matrix distinguishes staged Sum encounter order, signed-missing versus unsigned-missing Sum polarity, operator-specific extremum directions, all-empty fillable zero, first formal unavailability, wrong declared kind, and repeatable rejection. Trusted laws prevent fabricated tail/filter metadata, prove identical classified cells and order across both views, and lock exact operator-specific delegation.
 
-This closes levels 1–2 for direct nonrepeatable Number `Sum` field lists. Group/star expansion, literal or filtered aggregate forms, partial relevance and row gates, enclosing comparison/rule lowering, computation aggregates, protocol exposure, consumer requalification, and local portable evidence remain outside. No spec, sync-ledger, dependency, or general aggregate framework was added.
+This closes levels 1–2 for direct nonrepeatable Number `Sum`, `MinValue`, and `MaxValue` field lists. Group/star expansion, literal or filtered aggregate forms, partial relevance and row gates, enclosing comparison/rule lowering, computation aggregates, protocol exposure, consumer requalification, and local portable evidence remain outside. The only generalization was extracted after extrema became the second exact consumer; no spec, sync-ledger, dependency, or general aggregate framework was added.
 
-## Immediate next step: checked-consumer frontier reassessment
+## Immediate next step: aggregate comparison-boundary audit
 
-Reassess whether direct nonrepeatable `MinValue`/`MaxValue` can reuse this exact construction boundary with operator-specific evaluation, or whether a different high-connectivity seam is stronger. Extend the checked aggregate owner only if the common path/raw classification is exact for a second completed consumer; do not generalize toward group/star/filter construction.
+Audit whether one direct checked aggregate can enter an enclosing ordinary numeric comparison by composing the new field-list owner with the established comparison/polarity evaluator. Proceed only if the static scale contract and one-pass evaluation order can be represented without widening `AuthoredNumericExpr` or duplicating `CheckedNumericComparison`; otherwise record the exact representation gap and rotate to a stronger bounded seam. Do not generalize toward group/star/filter construction.
 
 ## Likely next keystone rotation
 
