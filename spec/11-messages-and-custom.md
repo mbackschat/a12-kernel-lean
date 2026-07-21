@@ -11,7 +11,7 @@ The authored error text carries tokens that are resolved against the evaluated d
 - **`$Field$`** interpolates the field's **name/label**; **`$Field.value$`** interpolates its **value**. A literal `$` is written **`$$`**.
 - For a **field** error text (as opposed to a **rule** error text), the tokens are literally `Field` and `Field.value`, **independent of the actual field name**.
 - `$Field.value$` may be used **only if** the field is referenced in the condition at least once **without an asterisk**, and error-text paths **may not contain asterisks**.
-- For a missing or empty display value, interpolation uses the referenced field format's exact default for the active presentation information and locale. Common externally differentiated defaults are **`0` for a scale-zero Number** and **`""` for String**; Number scale/locale and other formats are not collapsed to universal per-kind literals.
+- For a missing or empty display value, interpolation uses the referenced field format's exact default supplied by the actual presentation route; it is not inferred from the message locale or model configuration. On the current modern `DocumentV2` route, a Number's minimum fractional digits determine **`0`**, **`0.00`**, and so on, with `.` in the tested US-locale, German-locale, and comma-`decimalSeparator` model configurations; String supplies **`""`**. A distinct legacy or presentation-information route remains unclaimed until separately characterized.
 
 What a fired message actually carries:
 
@@ -49,7 +49,7 @@ Constraints and runtime behaviour:
 ## Checklist for §13 + §14
 
 - [ ] Interpolation is a **pure render step** after firing; field names use provider result → nonempty model label → debug priority, with a present empty provider result still winning.
-- [ ] A missing or empty field display uses the exact format-supplied default; display bytes are opaque, and message rendering neither reads nor renormalizes the evaluation cache. Scale-zero Number `0` and String empty are common differentiated instances, not a universal formatter; a number's unit trait is not rendered.
+- [ ] A missing or empty field display uses the exact format-supplied default; display bytes are opaque, and message rendering neither reads nor renormalizes the evaluation cache. The current `DocumentV2` Number default follows minimum fractional digits and uses `.` in the tested locale/model-config cases; String supplies empty. A number's unit trait is not rendered.
 - [ ] `$Field.value$` requires a non-starred reference; error-text paths asterisk-free.
 - [ ] A reached `CustomCondition` receives document, relevance, formal-invalid addresses, and the current error pointer; its callback—not an evaluator pre-gate—decides its hidden dependencies. `true` is VALUE; whole-condition structure decides empty-row reach; the rule must reference the error field; the construct is **barred** in computations and filters. Lean deliberately admits a pure, total successful-result oracle and treats missing/throwing host callbacks as integration failures.
 - [ ] A `CustomCondition` result is distinct from the declaration-driven custom-field formal observation owned by §7.
