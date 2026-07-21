@@ -161,7 +161,9 @@ example :
         (.group (.binary .multiply
           (surfaceField ["Root"] "Target")
           (.literal { value := 2, authoredScale := 0 })))) =
-      some (.targetSelfReference targetId) := by
+        some (.targetSelfReference targetId) ∧
+      checkedErrorOf (.abs (surfaceField ["Root"] "Target")) =
+        some (.targetSelfReference targetId) := by
   native_decide
 
 /- Target policy is attached once: a different scale/signedness summary is rejected before evaluation. -/
@@ -216,6 +218,35 @@ example :
         (context (checkedNumber (.parsed (.num 3)))) = some (.value 5) ∧
       checkedResultOf (.literal { value := 7, authoredScale := 0 }) =
         some (.value 7) := by
+  native_decide
+
+/- The checked boundary admits the source-closed direct root value functions already shared with numeric validation. -/
+example :
+    let sourceField := surfaceField ["Root"] "Source"
+    let input := context (checkedNumber (.parsed (.num (5 / 2))))
+    checkedResultOf (.round .halfUp omittedRoundingPlaces sourceField) input =
+        some (.value 3) ∧
+      checkedResultOf (.abs sourceField)
+        (context (checkedNumber (.parsed (.num (-5))))) = some (.value 5) ∧
+      checkedResultOf
+        (AuthoredNumericExpr.extremumList .maximum sourceField
+          [.literal { value := 4, authoredScale := 0 }]) input =
+        some (.value 4) := by
+  native_decide
+
+/- The narrow checked function fragment still rejects a second Min/Max constant and a wrapper around arithmetic; their wider source traversal remains unclosed. -/
+example :
+    let sourceField := surfaceField ["Root"] "Source"
+    checkedErrorOf
+        (AuthoredNumericExpr.extremumList .minimum sourceField
+          [.literal { value := 1, authoredScale := 0 },
+            .literal { value := 2, authoredScale := 0 }]) =
+          some .unsupportedExpression ∧
+      checkedErrorOf
+        (.round .halfUp omittedRoundingPlaces
+          (.binary .add sourceField
+            (.literal { value := 1, authoredScale := 0 }))) =
+          some .unsupportedExpression := by
   native_decide
 
 example :
