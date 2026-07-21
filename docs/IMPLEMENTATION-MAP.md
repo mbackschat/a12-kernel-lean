@@ -555,7 +555,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - One resolved String table composes that selector once with the existing expression/target/delta step
 - clean no-value, target rejection, and poison from the selected operation are terminal, a holding head makes every suffix irrelevant through operation evaluation, and common false/poison decides before guard or operation reads.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
-- The checked two-alternative literal-Number desugaring admits direct scalar-presence guards and keeps both mismatches below `FieldFilled(target)`. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
+- The checked two-alternative literal-Number desugaring admits an optional common condition plus direct scalar-presence alternative guards. Computation reuses the common-expansion selector, while generated validation places the common guard once below `FieldFilled(target)` and above the complete mismatch disjunction. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
@@ -567,7 +567,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - the producer-certified [direct-cascade bundle](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json) and typed [`StringCascadeProjection.lean`](../A12Kernel/Evidence/StringCascadeProjection.lean) retain five cascade observations.
 - The type-neutral V2 apply mechanism is source-grounded and triangulated by a12-dmkits IF126's String matrix.
 - The field-fill scan is source-grounded and separately exercised by maintained a12-dmkits dual-kernel-route differentials for all seven operators, but this repository retains no portable field-fill observation.
-- Kernel `CalculationUtils.expandCommonPrecondition` and a12-dmkits' direct common-first evaluator independently ground the common-guard lowering account; this repository retains no portable common-precondition observation.
+- Kernel `CalculationUtils.expandCommonPrecondition`, a12-dmkits' direct common-first evaluator, and its separate common-outside-disjunction generated-validation construction independently ground the common-guard account; this repository retains no portable common-precondition observation.
 - No retained project-local observation exercises direct presence/connectives, field-fill scans, alternative selection or selected-operation terminality, generated two-alternative validation, numeric expression/target/delta/application/dependency, mixed domain/poison order, or the newline family
 - those surfaces remain `external evidence pending`
 
@@ -577,14 +577,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - all seven field-fill predicates over a caller-supplied already-expanded ordered slot stream
 - first-match selection with resolved String selected-operation/target/delta integration
 - optional common-precondition expansion over that already-guarded table
-- an exact checked two-alternative literal-Number generated-rule fragment
+- an exact checked two-alternative literal-Number generated-rule fragment with an optional checked common precondition
 - one String target and direct cascade
 - and one already-resolved Number expression → stored form → ordinary fit-path target → delta → exact application → cause-free dependency chain.
 - Open:
   - General computation authoring and target self-reference checks
   - warning-suppressed assignment and runtime target checks
   - checked singleton/default/larger-table authoring
-  - checked common-precondition authoring and its generated-validation integration
+  - general checked common-precondition authoring beyond the exact two-literal fragment
   - expression-valued generated validation
   - comparison guards
   - field-fill stream construction/path/group/star/filter expansion and AST integration
@@ -626,7 +626,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Resolved group presence independently folds admission, error, and three-level relevance, then gives scalar predicates, fixed-list predicates, strict numeric count, and parent-requiredness their consumer-specific projections.
 - The reopened-star completeness boundary recursively derives structural tail missingness per actual parent and feeds the existing resolved-side disjunction without changing operator directions.
 - The checked resolved-rule boundary preserves silent distinctions and retains a structured message plan until a fired verdict renders and attaches exact address, error code, severity, polarity, and text.
-- The generated-computation fragment reuses that same post-fire boundary and the shared strict-or-tolerance numeric dispatch; ERROR severity does not fix message polarity, and tolerance metadata cannot affect computation selection.
+- The generated-computation fragment reuses that same post-fire boundary and the shared strict-or-tolerance numeric dispatch; its optional common condition sits once outside the mismatch disjunction, ERROR severity does not fix message polarity, and tolerance metadata cannot affect computation selection.
 - Flat partial evaluation first skips a rule marked as containing `Having`, then applies the separate error-field gate and relevance-aware leaf evaluator for unfiltered rules.
 
 #### Evidence
@@ -648,7 +648,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - known arithmetic and fixed-tolerance polarity
 - one same-group nonrepeatable two-expression comparison
 - one exact nonrepeatable structured-plan rule message rendered only after firing
-- one checked two-alternative literal-Number generated rule on the same message boundary
+- one checked two-alternative literal-Number generated rule with an optional common condition on the same message boundary
 - and one ordered nonrepeatable partial-validation filter gate, error-field gate, and relevance-aware leaf evaluator.
 - Open:
   - Checked group-instance/descendant enumeration and wildcardable relevance construction
