@@ -2,6 +2,8 @@
 
 This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), durable semantic conclusions in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), completed work narratives in the [July 2026 work log](archived/SEMANTIC-WORK-LOG-2026-07.md), and stable workflow rules in [`../CLAUDE.md`](../CLAUDE.md) and [`TESTING.md`](TESTING.md).
 
+**Priority invariant:** eventual 100% semantic conformance with kernel 30.8.1 is the primary project goal. Consumer adequacy is the co-equal representation test. A supported-fragment boundary may stage delivery or state current evidence honestly, but may not become a permanent reason to omit kernel behavior.
+
 ## Verified baseline
 
 - Semantic baseline: the versioned Europe/Berlin legacy-timezone profile in this revision, building on `5f11430` (`feat(time): add resolved time extrema`).
