@@ -22,6 +22,15 @@ private def flexibleScaleTwo : NumericTargetPolicy := target 2 0
 
 private def scaleTwo : NumericTargetPolicy := target 2 2
 
+private def constrainedTarget : NumericTargetPolicy :=
+  { target 2 2 with
+    maxIntegerDigits := some 3
+    zeroAllowed := false
+    minStoredLength := some 4
+    maxStoredLength := some 7
+    minimum := some (-100)
+    maximum := some 100 }
+
 /- Scale-19 store pre-rounding is observable in the retained attempted form. -/
 example : (target 19 0).check (.value (1 / 3)) =
     .supported (.rejected
@@ -62,6 +71,56 @@ example : (target 0 0 false).check (.value (-1)) =
     .supported (.rejected (stored (-1) 0) .negativeNotAllowed) := by
   native_decide
 
+/- The fitting-only constraint suffix follows the kernel format check order. -/
+example :
+    ({ constrainedTarget with maxIntegerDigits := some 2 }).check
+        (.value (12345 / 100)) =
+      .supported (.rejected (stored 12345 2) .integerDigitsTooLong) := by
+  native_decide
+
+example : constrainedTarget.check (.value 0) =
+    .supported (.rejected (stored 0 2) .zeroNotAllowed) := by
+  native_decide
+
+example :
+    ({ constrainedTarget with minStoredLength := some 5 }).check (.value 1) =
+      .supported (.rejected (stored 100 2) .storedTextTooShort) := by
+  native_decide
+
+example :
+    ({ constrainedTarget with maxStoredLength := some 4 }).check (.value (-1)) =
+      .supported (.rejected (stored (-100) 2) .storedTextTooLong) := by
+  native_decide
+
+example :
+    ({ constrainedTarget with minimum := some 2 }).check (.value 1) =
+      .supported (.rejected (stored 100 2) .belowMinimum) := by
+  native_decide
+
+example : constrainedTarget.check (.value 101) =
+    .supported (.rejected (stored 10100 2) .aboveMaximum) := by
+  native_decide
+
+/- Inclusive range and exact rendered-length boundaries are admitted. -/
+example : constrainedTarget.check (.value 100) =
+    .supported (.accepted (stored 10000 2)) := by
+  native_decide
+
+/- Earlier fitting constraints win when the same attempt also violates a later range bound. -/
+example :
+    ({ constrainedTarget with
+      maxIntegerDigits := some 2
+      maximum := some 50 }).check (.value 123) =
+      .supported (.rejected (stored 12300 2) .integerDigitsTooLong) := by
+  native_decide
+
+example :
+    ({ constrainedTarget with
+      minStoredLength := some 5
+      minimum := some 2 }).check (.value 1) =
+      .supported (.rejected (stored 100 2) .storedTextTooShort) := by
+  native_decide
+
 /- A fitting nonnegative value is accepted even when the target is unsigned. -/
 example : (target 2 2 false).check (.value (3 / 2)) =
     .supported (.accepted (stored 150 2)) := by
@@ -76,6 +135,16 @@ example : flexibleScaleTwo.check (.value (24723 / 10000)) =
 example :
     flexibleScaleTwo.checkWithScaleWarningSuppressed (.value (24723 / 10000)) =
       .supported (.rejected (stored 24723 4) .suppressedScaleMismatch) := by
+  native_decide
+
+/- A no-fit decimal-place failure precedes fitting-only zero/length/range constraints. -/
+example :
+    ({ target 2 0 with
+      maxIntegerDigits := some 0
+      minStoredLength := some 20
+      minimum := some 1 }).checkWithScaleWarningSuppressed
+        (.value (1 / 1000)) =
+      .supported (.rejected (stored 1 3) .suppressedScaleMismatch) := by
   native_decide
 
 /- A long no-fit value is bounded to 16 significant digits rather than rounded to the target's fractional scale. -/

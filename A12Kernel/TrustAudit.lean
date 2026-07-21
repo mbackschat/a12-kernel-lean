@@ -380,8 +380,8 @@ run_cmd do
 #print axioms A12Kernel.numericTarget_inheritedPoison_preservesCause
 #print axioms A12Kernel.numericTarget_noFit_failsClosed
 #print axioms A12Kernel.numericTarget_digitOverflow_retainsAttempt
-#print axioms A12Kernel.numericTarget_signedFit_accepts
-#print axioms A12Kernel.numericTarget_nonnegativeFit_accepts
+#print axioms A12Kernel.numericTarget_fittingAttempt_accepts
+#print axioms A12Kernel.numericTarget_fittingAttempt_rejectsFirstError
 #print axioms A12Kernel.numericTarget_suppressedFit_eq_check
 #print axioms A12Kernel.numericTarget_suppressedNoFit_rejects
 #print axioms A12Kernel.numericTarget_suppressedNoFit_specificErrorPrecedes

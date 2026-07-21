@@ -3,22 +3,34 @@ import A12Kernel.Semantics.NumericStoredNumber
 
 /-! # Numeric computed-target classification
 
-This capsule consumes one already-evaluated Number expression at one nonrepeatable target after separate static assignment-scale admission. It owns the first admitted target checks and change-only delta projection. Exact decimal conversion and placement-sensitive document application remain separate.
+This capsule consumes one already-evaluated Number expression at one nonrepeatable target after separate static assignment-scale admission. It owns the resolved reachable target checks and change-only delta projection. Exact decimal conversion, declaration-to-policy construction, and placement-sensitive document application remain separate.
 -/
 
 namespace A12Kernel
 
-/-- After separate assignment-scale admission, the runtime target policy checks signedness plus minimum/maximum fractional digits, with no range, zero, or integer-digit extension. Warning suppression selects an evaluator entry point rather than changing this policy. -/
+/-- Resolved Number target constraints consumed after separate assignment-scale admission. `none` means the corresponding declaration bound is absent. Warning suppression selects an evaluator entry point rather than changing this policy. -/
 structure NumericTargetPolicy where
   info : NumField
   minFractionalDigits : Nat
   minLeMax : minFractionalDigits ≤ info.scale
+  maxIntegerDigits : Option Nat := none
+  zeroAllowed : Bool := true
+  minStoredLength : Option Nat := none
+  maxStoredLength : Option Nat := none
+  minimum : Option Rat := none
+  maximum : Option Rat := none
   deriving Repr, DecidableEq
 
-/-- Target-check failures represented by the first admitted policy. The names correspond to the target's own formal-check class, not inherited operand invalidity. -/
+/-- Reachable computed-Number target failures. The names correspond to the target's own formal-check class, not inherited operand invalidity. -/
 inductive NumericTargetError where
   | totalDigitsTooLong
   | negativeNotAllowed
+  | integerDigitsTooLong
+  | zeroNotAllowed
+  | storedTextTooShort
+  | storedTextTooLong
+  | belowMinimum
+  | aboveMaximum
   | suppressedScaleMismatch
   deriving Repr, DecidableEq
 
@@ -47,7 +59,7 @@ inductive NumericTargetCheckResult where
   | unsupported (fault : NumericTargetCheckFault)
   deriving Repr, DecidableEq
 
-/-- The universal Number digit limit applied by the reduced computed-target format check. -/
+/-- The universal Number digit limit applied by the basic computed-target format check. -/
 def numericStoredDigitLimit : Nat := 15
 
 /-- Significant-digit budget of the warning-suppressed no-fit renderer. -/
@@ -55,7 +67,7 @@ def numericComputedNoFitPrecisionLimit : Nat := 16
 
 namespace NumericTargetPolicy
 
-/-- Return the first reduced formal-check failure shared by both stored-value branches. Digit overflow precedes signedness. -/
+/-- Return the formal-check prefix shared by fitting and warning-suppressed no-fit attempts. Universal digit overflow precedes signedness; a no-fit decimal-place error precedes every later constraint. -/
 def firstAttemptError? (policy : NumericTargetPolicy)
     (attempted : StoredNumber) : Option NumericTargetError :=
   if numericStoredDigitLimit < attempted.digitCount then
@@ -68,10 +80,64 @@ def firstAttemptError? (policy : NumericTargetPolicy)
   else
     none
 
-/-- Apply the reduced formal checks to one stored attempt. -/
+/-- Continue the fitting-value check after the shared prefix. Integer-digit capacity, zero prohibition, rendered length, and inclusive numeric bounds follow the kernel's first-error order. Canonical computed rendering cannot contain leading zeroes, so that intervening source check has no reachable failing branch here. -/
+def firstFittingAttemptError? (policy : NumericTargetPolicy)
+    (attempted : StoredNumber) : Option NumericTargetError :=
+  match policy.firstAttemptError? attempted with
+  | some cause => some cause
+  | none =>
+      match policy.maxIntegerDigits with
+      | some maximum =>
+          if maximum < attempted.integerDigitCount then
+            some .integerDigitsTooLong
+          else
+            fittingAfterInteger policy attempted
+      | none => fittingAfterInteger policy attempted
+where
+  fittingAfterInteger (policy : NumericTargetPolicy)
+      (attempted : StoredNumber) : Option NumericTargetError :=
+    if attempted.unscaled = 0 && !policy.zeroAllowed then
+      some .zeroNotAllowed
+    else
+      match policy.minStoredLength with
+      | some minimum =>
+          if attempted.render.length < minimum then
+            some .storedTextTooShort
+          else
+            fittingAfterMinLength policy attempted
+      | none => fittingAfterMinLength policy attempted
+  fittingAfterMinLength (policy : NumericTargetPolicy)
+      (attempted : StoredNumber) : Option NumericTargetError :=
+    match policy.maxStoredLength with
+    | some maximum =>
+        if maximum < attempted.render.length then
+          some .storedTextTooLong
+        else
+          fittingAfterMaxLength policy attempted
+    | none => fittingAfterMaxLength policy attempted
+  fittingAfterMaxLength (policy : NumericTargetPolicy)
+      (attempted : StoredNumber) : Option NumericTargetError :=
+    match policy.minimum with
+    | some minimum =>
+        if attempted.amount < minimum then
+          some .belowMinimum
+        else
+          fittingAfterMinimum policy attempted
+    | none => fittingAfterMinimum policy attempted
+  fittingAfterMinimum (policy : NumericTargetPolicy)
+      (attempted : StoredNumber) : Option NumericTargetError :=
+    match policy.maximum with
+    | some maximum =>
+        if maximum < attempted.amount then
+          some .aboveMaximum
+        else
+          none
+    | none => none
+
+/-- Apply every reachable fitting-value target check to one stored attempt. -/
 def checkAttempt (policy : NumericTargetPolicy)
     (attempted : StoredNumber) : NumericTargetOutcome :=
-  match policy.firstAttemptError? attempted with
+  match policy.firstFittingAttemptError? attempted with
   | some cause => .rejected attempted cause
   | none => .accepted attempted
 
@@ -91,7 +157,7 @@ def check (policy : NumericTargetPolicy) :
         .unsupported
           (.fractionalScaleDoesNotFit naturalScale policy.info.scale)
 
-/-- Classify one expression result when the computation explicitly suppresses the assignment-scale warning. Values that fit use the ordinary path unchanged. A no-fit value is rendered through the separate 16-significant-digit compatibility boundary and remains rejected even when the reduced target checks would accept it. -/
+/-- Classify one expression result when the computation explicitly suppresses the assignment-scale warning. Values that fit use the ordinary path unchanged. A no-fit value is rendered through the separate 16-significant-digit compatibility boundary; only the shared prefix can provide a more specific error before the decimal mismatch. -/
 def checkWithScaleWarningSuppressed (policy : NumericTargetPolicy) :
     NumericComputationResult → NumericTargetCheckResult
   | .domainFailure =>

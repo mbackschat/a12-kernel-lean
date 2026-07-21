@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `0aeddb1` (`feat(computation): route suppressed numeric targets`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,499-declaration trust audit passed.
+- Semantic baseline before the current capsule: `16ff14b` (`refactor(numbers): share scale warning admission`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,502-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Consolidate the exact-scale warning gate now that checked validation and checked computation are two completed consumers. Move only the shared `suppressed OR ordinary exact-scale admission` mechanism to the numeric-scale owner and preserve each consumer's distinct operator dispatch, certification, evaluation, and target behavior.
+Close the resolved computed-Number target's declared-constraint suffix without widening parsing or the flat model. Preserve one shared total-digit/signedness prefix, then apply effective integer digits, zero, rendered length, and inclusive numeric bounds only after a canonical attempt fits the target fractional interval.
 
-Success means the shared gate has universal true-suppressed and false-unsuppressed laws; validation ordering/tolerance remain unconditionally scale-exempt; equality/inequality and computation assignment use the same exact suppression primitive; and all existing checked rejection and runtime cases stay green. This is local rolling consolidation after the second real consumer, so it creates no spec or synchronization-ledger change.
+Success means each declared constraint has a focused boundary case, overlapping failures prove the source first-error order, a warning-suppressed no-fit case proves decimal mismatch precedes the fitting-only suffix, generic acceptance/rejection laws use the complete dispatch, and the existing accepted synchronization entry records that a12-dmkits is already aligned rather than creating a feedback-loop request.
 
 ## Frontier queue
 
@@ -30,7 +30,9 @@ Success means the shared gate has universal true-suppressed and false-unsuppress
 - **Satisfied — checked numeric computation operation:** `6cd756d` resolves and admits the plain nonrepeatable expression before its existing computation evaluator.
 - **Satisfied — warning-suppressed numeric no-fit:** `2a77643` adds the explicit bounded-storage target branch while preserving the ordinary fail-closed entry point.
 - **Satisfied — checked computation suppression:** `0aeddb1` retains the legal warning flag through admission and routes the evaluated result through the matching target entry point.
-- **Active — shared warning gate:** consolidate the common exact-scale suppression primitive at its numeric-scale owner after its second completed consumer.
+- **Satisfied — shared warning gate:** `16ff14b` consolidates the exact suppression primitive after its second completed consumer.
+- **Active — resolved Number target constraints:** close the fit-only integer-digit, zero, rendered-length, and inclusive-range suffix while preserving the no-fit decimal-error boundary.
+- **Ready after target closure — target-policy ownership:** remove caller choice at evaluation by retaining one resolved policy on the checked numeric operation; do not duplicate constraints in `NumField` or infer them from erased declaration data.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
