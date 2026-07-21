@@ -280,11 +280,13 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/DateTime.lean`](../A12Kernel/Semantics/DateTime.lean)
 - [`Semantics/DateTimeDifference.lean`](../A12Kernel/Semantics/DateTimeDifference.lean)
 - [`Semantics/DateTimeDayDifference.lean`](../A12Kernel/Semantics/DateTimeDayDifference.lean)
+- [`Semantics/DateShift.lean`](../A12Kernel/Semantics/DateShift.lean)
 - the matching modules under [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/)
 
 #### Implemented
 
 - `DateParts → CivilDate → FullDate` separates decoded components, positive-era Gregorian reality, and the inclusive 1583-10-16 value floor.
+- Stored/full-Date `AddMonths` and `AddYears` start after integer offset conversion, return only floor-admitted full Dates, and keep target-month clamping distinct from last-of-February preservation.
 - Resolved three-part construction preserves incomplete, calendar-rejected, and unavailable reasons before projecting `Valid`/`Invalid` verdicts.
 - Its direct day/month/year consumer reads supplied real parts, maps incomplete and unreal to equal amount zero with symmetric not-given versus fixed provenance, and maps cause-free unavailability to UNKNOWN.
 - Resolved Date-range overlap keeps supplied inversion explicit, uses closed intervals, preserves occurrence multiplicity, retains ordered skipped/kept operand slots, and implements separate any-pair reached-filter and scalar-versus-list matched-container polarity scans.
@@ -300,6 +302,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Evidence
 
 - Pinned kernel 30.8.1 format/check/decode/comparison/calendar-add/instant-difference/range-overlap source and focused a12-dmkits Date/DateTime implementation and differentials establish the source account and triangulation.
+- Maintained a12-dmkits `DateArithmeticDiffTest` separates ordinary month/year shifts, leap-aware month clamping, February 29 demotion, February 28 promotion into a leap year, and the non-end-of-February control across both kernel strategies and the peer interpreter.
 - Groovy-dynamic kernel differentials directly establish positive and reverse fractional sub-day truncation.
 - Selected whole-unit DST cases also agree through generated static Java, but that route does not separately cover the reverse-fraction discriminator.
 - At reviewed a12-dmkits revision `71775c9905b057831253348c31ce39e321e61889`, focused controls lock both Date-range polarity scans through both kernel routes plus the interpreter, and separately lock constructed-Date reason/calendar consumers and `DifferenceInDays` calendar-step separators.
@@ -308,10 +311,11 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Excluded / next
 
 - **Status:** implemented internally on narrow domains; external evidence partly pending.
-- Date coverage includes the unbounded positive-era account, resolved three-part construction classification, and the proved calendar-coordinate successor/strict-monotonicity bridge.
+- Date coverage includes the unbounded positive-era account, admitted full-Date month/year shifts, resolved three-part construction classification, and the proved calendar-coordinate successor/strict-monotonicity bridge.
 - Date-range coverage includes closed occurrence-preserving overlap truth, both resolved operator shapes, and their filter-derived polarity scans.
 - DateTime coverage includes the proved UTC local-order bridge, resolved `DifferenceInHours/Minutes/Seconds`, the finite Berlin 2024 transition profile, and resolved `DifferenceInDays` inside its consecutive spring slice.
-- The construction classification and direct numeric component projection are implemented, but they do not yet retain calendar identity, compose temporal no-value reasons beyond extraction, implement date differences, or implement legacy month/year operations.
+- The admitted full-Date shift deliberately covers only already-converted integer offsets whose result remains a stored/computed full Date. Numeric truncation and 32-bit conversion, below-floor intermediate expression values, partial formats, DateTime gates, target formatting, and cell effects remain outside.
+- The construction classification and direct numeric component projection are implemented, but they do not yet retain calendar identity, compose temporal no-value reasons beyond extraction, implement date differences, or implement legacy-hybrid month/year operations.
 - Date-range raw cell classification, actual filter evaluation, paths/stars, row gates, and checked lowering remain outside the resolved operator capsule.
 - Open:
   - Literal/field-format parsing and exact parser range
@@ -321,7 +325,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - DateTime difference operand/result checking and Number consumption
   - general Date/DateTime comparisons and checked integration
   - `DifferenceInDays` outside the finite spring profile and other calendar differences
-  - other date arithmetic
+  - `AddDays`, constructed-Date legacy-hybrid shifts, and other date arithmetic
   - full `Date(...)`/Time authoring
   - optional 1900 admission
   - fragments/range construction/Base Year

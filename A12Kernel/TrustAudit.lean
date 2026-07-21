@@ -134,6 +134,9 @@ run_cmd do
 #print axioms A12Kernel.berlin2024_resolve_autumn_at_or_after_two
 #print axioms A12Kernel.berlin2024_differenceInDays_self
 #print axioms A12Kernel.berlin2024_differenceInDays_swap
+#print axioms A12Kernel.fullDate_addMonths_addYears_february_separator
+#print axioms A12Kernel.fullDate_addMonths_januaryEnd_leapLanding
+#print axioms A12Kernel.fullDate_addMonths_belowFloor_none
 
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer

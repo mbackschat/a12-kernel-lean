@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `3d216ff` (`refactor(computation): retain numeric target policy`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,594-declaration trust audit passed.
+- Semantic baseline before the current capsule: `bf441bd` (`feat(computation): admit direct numeric value functions`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,589-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Admit the already-audited direct numeric value-function shapes at the checked computation boundary and make their authored-shape predicate genuinely shared with checked validation. Keep the fragment to direct-field `Round`/`Abs` and direct-field/at-most-one-constant `Min`/`Max`; do not extrapolate the unclosed general wrapper traversal.
+Close stored/full-Date month and year shifting after integer offset conversion and before broader temporal integration. Reuse the floor-certified Date type, clamp `AddMonths` to the target month's final day, preserve the last day of February for `AddYears`, and fail closed when the result leaves the admitted full-Date domain.
 
-Success means focused checked cases reach all three function families, a second extremum constant and a wrapper around arithmetic remain rejected, target self-reference is still found inside an admitted wrapper, validation behavior remains unchanged through the shared predicate, and the checked certificate proves every accepted computation has an admitted shape.
+Success means forward/backward month clamps and year rollover are executable, leap transitions distinguish `AddYears` from twelve `AddMonths`, the universal floor is reapplied to the result, and the capsule explicitly excludes numeric truncation/32-bit conversion, constructed-Date legacy-hybrid identity, partial dates, DateTime, formatting, and cell effects.
 
 ## Frontier queue
 
@@ -33,7 +33,8 @@ Success means focused checked cases reach all three function families, a second 
 - **Satisfied — shared warning gate:** `16ff14b` consolidates the exact suppression primitive after its second completed consumer.
 - **Satisfied — resolved Number target constraints:** `8714edb` closes the fit-only integer-digit, zero, rendered-length, and inclusive-range suffix while preserving the no-fit decimal-error boundary.
 - **Satisfied — target-policy ownership:** `3d216ff` retains one complete resolved policy on the checked numeric operation, rejects scale/signedness mismatch before evaluation, and removes caller policy choice from evaluation without duplicating constraints in `NumField` or inferring them from erased declaration data.
-- **Active — checked direct numeric value functions:** reuse one authored-shape predicate across validation and computation for direct-field `Round`/`Abs` and direct-field/one-constant `Min`/`Max`; keep general wrapper traversal fail-closed.
+- **Satisfied — checked direct numeric value functions:** `bf441bd` reuses one authored-shape predicate across validation and computation for direct-field `Round`/`Abs` and direct-field/one-constant `Min`/`Max`; general wrapper traversal remains fail-closed.
+- **Active — admitted full-Date month/year shifts:** implement post-conversion integer `AddMonths`/`AddYears` on stored/full Dates, retain their clamp-versus-February-end distinction, and reapply the universal Date floor without claiming constructed-Date legacy behavior.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
