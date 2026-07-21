@@ -10,6 +10,8 @@ The A12 Kernel is mgm technology partners' model-and-DSL engine for complex busi
 
 Lean makes every captured semantic clause explicit and executable, then lets selected consequences be stated with exact hypotheses and proved for all modeled inputs. It can also preserve checked counterexamples, prove elaborations and optimizations semantics-preserving, and eventually verify real rule models against independently stated business invariants. It does **not** make a chosen clause correct merely by typechecking it or prove the real kernel universally equivalent; corpus and differential evidence remain the empirical bridge. The project charter is [`docs/PROJECT-DESIGN.md`](docs/PROJECT-DESIGN.md), and the case studies, potential, proof boundaries, and working practices are in [`docs/LEAN-FORMALIZATION.md`](docs/LEAN-FORMALIZATION.md).
 
+The primary completion target is eventual **100% semantic conformance with A12 kernel 30.8.1** for its complete observable validation-and-computation language and required static legality. The currently supported fragment is an honest delivery stage, not a planned final subset. Consumer probes remain co-equal adequacy checks: complete semantics must also retain the distinctions real evaluators, translators, refactoring tools, analyzers, and verifiers need.
+
 ## How knowledge travels to other software
 
 Think of this repository as a **semantics factory**. It centralizes reusable A12 research, retains relevant kernel observations, states the chosen account precisely in Lean, checks useful laws and counterexamples, and packages the result as a small versioned **semantic shipment**. A downstream **consumer** receives that shipment instead of repeating the semantic archaeology.
