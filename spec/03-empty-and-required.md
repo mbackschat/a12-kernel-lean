@@ -59,7 +59,7 @@ The per-kind table is only the *default*. Several operators route an empty opera
 | the date/time **extractors** (`DayFromDate`, …) and date **differences** | read as the fillable **`0`** — the enclosing comparison is evaluated and can fire |
 | **value-list membership** | an empty subject makes membership **UNKNOWN** (neither the "included" nor the "not-included" form fires); an empty numeric list *entry* never matches (the `0` substitution does not apply to entries) |
 | the **count family** (`NumberOfFilledFields`, `NumberOfValueInFields`, …) | an empty cell is **never counted** (`NumberOfValueInFields(0 In …)` does *not* count an empty number as a match for `0`), but the count stays *growable* — a fired comparison types **OMISSION** |
-| operand-list **`Min([A],[B])` / `Max(…)`** | an empty **NUMBER** operand is substituted `0` and **competes in the fold** (the `0` can win); an empty **DATE** operand is **skipped** (the date-bearing side wins) |
+| operand-list **`Min([A],[B])` / `Max(…)`** | an empty **NUMBER** operand is substituted `0` and **competes in the fold** (the `0` can win); an empty **DATE** or full-component **DATETIME** operand is **skipped** (the temporal-value-bearing side wins) |
 | the field-list / starred aggregates **`Sum` / `MaxValue` / `MinValue`** | the empty cell is **dropped from the fold** — `MaxValue(-5, empty)` is `-5` (no `0` folded in); `Sum` reads it as `0`, which for a sum is the same thing |
 
 The last two rows are one design split seen from both sides, and they resolve the "min/max ignore empties" rider above: the **aggregates** `MaxValue`/`MinValue` drop empties; the **operand-list** `Min`/`Max` substitute. `0` is `Sum`'s neutral element but not min/max's, which is *why* the aggregates must drop empties where `Sum` may fold them.
@@ -69,7 +69,7 @@ The last two rows are one design split seen from both sides, and they resolve th
 "One operand empty" (A.2) and "the *whole* selection empty" are different questions. Each aggregate has a defined identity for the all-empty case:
 
 - **NUMBER aggregates fold to the both-directionally fillable `0`**, not "undefined": when no present value entered the fold, the identity can grow and shrink regardless of field signedness or whether the aggregate is `Sum`, `MaxValue`, or `MinValue`. Thus `MaxValue(A,B) == 0` fires with both empty; `MinValue(Items*/Count) == 0` fires on a group with *no rows at all*; and `Sum` over an all-empty list is likewise `0`. The ordinary per-combiner directions apply only after at least one present value has entered the fold.
-- **DATE `Min`/`Max` fold to *no value*:** a comparison against an all-empty date aggregate never fires; a *computation* of it CLEARS its target.
+- **DATE and full-component DATETIME `Min`/`Max` fold to *no value*:** a comparison against an all-empty temporal aggregate never fires; a *computation* of it CLEARS its target.
 - **`FirstFilledValue` follows its operand *kind*:** an all-empty selection yields the fillable `0` for a NUMBER operand, but *no value* (NOT-GIVEN) for a DATE or STRING operand.
 
 ⚠ This identity is treacherous because it hides under most thresholds: `0` and "not evaluated" produce the *same* non-fire for `MaxValue(…) > 3`, so a wrong mental model survives every such rule and only surfaces where `0` itself satisfies the comparison — `MinValue(…) < 10` is the shape that finally distinguishes them.
@@ -139,7 +139,7 @@ Because the engine generates both checks, a model must **not** also author the e
 - [ ] Operand reads separate `notEvaluated` from evaluated substitutions and carry consumer-appropriate provenance: a `given` bit only for symmetric clauses, directional `canGrow`/`canShrink` where required by [§12.4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
 - [ ] The primitive default tier is exactly Number→`0`, Confirm→`False`, and Boolean/String/Enumeration/Date/Time/DateTime→`notEvaluated`; other type families and operator deviations remain explicit clauses.
 - [ ] The per-operator overrides (concat, `Length`, patterns, extractors, value-list, counts, operand-list `Min`/`Max`, aggregates) each behave per A.2.
-- [ ] All-empty aggregate **identities** per kind (NUMBER→`0`, DATE min/max→no value, `FirstFilledValue`→by kind).
+- [ ] All-empty aggregate **identities** per kind (NUMBER→`0`, DATE/DATETIME min/max→no value, `FirstFilledValue`→by kind).
 - [ ] The **row gate**: substitutions only inside content-bearing instances; instantiated repeatable rows *are* content.
 - [ ] `required` desugars to the ancestor-decided generated rule; its group gate uses formally admitted content rather than raw placement, validation retains the message on base checked cells before adding the target's validation-scoped `.required` finding, and computation reads the cell empty.
 - [ ] `indexFieldName` desugars to mandatory + per-parent-row uniqueness (every duplicate flagged), and registers the join key.
