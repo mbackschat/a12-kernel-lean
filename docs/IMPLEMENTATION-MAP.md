@@ -754,6 +754,7 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 
 - This is internally complete at levels 1–2 and remains `external evidence pending`.
 - Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction for all three operators are represented, but group/star expansion must still construct per-source cells and uninstantiated signedness without losing declaration identity.
+- Enclosing checked comparison remains open: runtime operands compose with ordinary polarity, but the checked numeric expression tree has no aggregate node and must not be bypassed by a parallel aggregate-comparison wrapper.
 - The separate reopened-star capsule below can derive structural openness from a caller-supplied IF194 tree, but neither layer constructs the tree or ordered cell stream from authored paths and a `Document`.
 - The older checked-row `NumberFold` uses the homogeneous embedding and projects only amount or cause, preserving its existing truth-only API while deliberately erasing fillability.
 - The family does not share the prefix-terminating `FirstFilledValue` scan or operand-list empty substitution/fillability.

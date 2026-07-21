@@ -188,9 +188,15 @@ The post-String audit selected the narrow part of aggregate construction that cu
 
 This closes levels 1–2 for direct nonrepeatable Number `Sum`, `MinValue`, and `MaxValue` field lists. Group/star expansion, literal or filtered aggregate forms, partial relevance and row gates, enclosing comparison/rule lowering, computation aggregates, protocol exposure, consumer requalification, and local portable evidence remain outside. The only generalization was extracted after extrema became the second exact consumer; no spec, sync-ledger, dependency, or general aggregate framework was added.
 
-## Immediate next step: aggregate comparison-boundary audit
+## Completed risk audit: aggregate comparison boundary
 
-Audit whether one direct checked aggregate can enter an enclosing ordinary numeric comparison by composing the new field-list owner with the established comparison/polarity evaluator. Proceed only if the static scale contract and one-pass evaluation order can be represented without widening `AuthoredNumericExpr` or duplicating `CheckedNumericComparison`; otherwise record the exact representation gap and rotate to a stronger bounded seam. Do not generalize toward group/star/filter construction.
+Runtime composition is exact: checked aggregates return `NumericOperand`, which the established ordinary comparison/polarity evaluator already consumes. The pinned kernel parser source also derives `Sum`/`MinValue`/`MaxValue` result scale as the maximum declared fractional-digit count across expanded source fields, without constant-expansion privilege, so the current checked declarations retain enough facts for that static summary.
+
+The current checked numeric expression tree nevertheless has no aggregate node. Adding one only for this route would widen `AuthoredNumericExpr` and its authoring/lowering/evaluation proofs, while a separate aggregate-literal comparison object would duplicate `CheckedNumericComparison` and create a parallel static gate. Both violate this audit's bounded stop condition. No wrapper, evaluator, or speculative AST branch was added; enclosing comparison remains parked until the shared checked expression tree is deliberately extended for more than one concrete function-valued consumer.
+
+## Immediate next step: checked String target audit
+
+Audit whether the existing `CheckedStringExpr` and String computation store can close one decoded nonrepeatable String target assignment with exact target kind, model identity, and length policy. Proceed only if the current `FlatFieldDecl` retains every required target constraint and the existing computation result distinguishes store, clear, and poison without inventing scheduler state. Otherwise record the missing model fact and rotate.
 
 ## Likely next keystone rotation
 
@@ -214,7 +220,7 @@ These are not repository-wide blockers:
 - Authored message/whole-rule integration must still parse and check templates and construct display inputs from actual providers, document values, and exact format defaults; untested display routes and project-local portable evidence remain open.
 - Validation group presence now has a resolved admitted-content/error/relevance derivation and four consumer projections; checked group-instance enumeration and wildcardable `NONE`/`PARTIAL`/`FULL` relevance construction remain open.
 - Authored nested-star aggregate lowering must construct the proved reopened tree and ordered cell stream from checked paths, model repeatabilities, and scoped `Document` rows; resolved aggregate consumers do not perform that lowering themselves.
-- Direct nonrepeatable Sum now constructs per-source signedness at the checked boundary; repeatable group/star lowering must still construct signedness and structural omissions together.
+- Direct nonrepeatable Number aggregates now construct their shared field list and Sum-specific per-source signedness at the checked boundary; repeatable group/star lowering must still construct signedness and structural omissions together.
 - Many internally closed families remain `external evidence pending`; collect them into coherent future calibration batches rather than creating per-capsule capture work.
 - Public protocol expansion, semantic shipments, external prototypes, candidate qualification, and SMT dependencies require separate adoption or approval.
 
