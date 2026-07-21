@@ -951,6 +951,6 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 ## Trusted theorem surface
 
 - [`A12Kernel/Proofs.lean`](../A12Kernel/Proofs.lean) is the trusted theorem root.
-- [`scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh) checks proof-root completeness, the named theorem registry, source zones, forbidden dependency directions, and the elaborated logical environment through [`Trust/Environment.lean`](../A12Kernel/Trust/Environment.lean).
+- [`scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh) checks proof-root completeness, the named theorem registry, source zones, forbidden dependency directions, and the elaborated logical environment through [`Trust/Environment.lean`](../A12Kernel/Trust/Environment.lean); [`Trust/Adversarial.lean`](../A12Kernel/Trust/Adversarial.lean) exercises the rejection boundary in one nonlogical driver session.
 - That environment audit rejects project axioms, unsafe or unclassified opaque/partial definitions, compiler/foreign substitutions, and every axiom dependency except `propext`, `Classical.choice`, and `Quot.sound`
 - conformance remains a separate nontrusted executable-check lane.
