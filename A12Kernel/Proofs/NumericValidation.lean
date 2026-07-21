@@ -46,6 +46,25 @@ theorem numericArithmetic_values_delegate
       op.eval (.value left leftFill) (.value right rightFill) := by
   rfl
 
+/-- A reached checked-validation power node delegates value and directional metadata together to the shared power outcome. -/
+theorem numericValidation_power_values_delegate
+    (read : Atom → Except FormalCause NumericArithmeticOutcome)
+    (base exponent : LoweredNumericExpr Atom)
+    (baseValue exponentValue : Rat)
+    (baseFill exponentFill : NumericFillability)
+    (baseEvaluated :
+      base.evalPlainValidation? read =
+        some (.ok (.value baseValue baseFill)))
+    (exponentEvaluated :
+      exponent.evalPlainValidation? read =
+        some (.ok (.value exponentValue exponentFill))) :
+    (LoweredNumericExpr.power base exponent).evalPlainValidation? read =
+      some (.ok (NumericArithmeticOutcome.power
+        (.value baseValue baseFill) (.value exponentValue exponentFill))) := by
+  simp only [LoweredNumericExpr.evalPlainValidation?]
+  rw [baseEvaluated, exponentEvaluated]
+  rfl
+
 /-- The new closed dispatch leaves every ordinary operator's static-scale rule unchanged. -/
 theorem ordinaryNumericValidation_acceptsScales
     (op : NumericComparisonOp) (left right : NumericScaleSummary) :
@@ -136,7 +155,12 @@ private theorem authoredNumericLower_plain
       | multiply =>
           exact lowerMultiply_plain _ _
             (leftIh plain.1) (rightIh plain.2)
-  | power | abs | extremum | round =>
+  | power base exponent baseIh exponentIh =>
+      simp only [AuthoredNumericExpr.isPlainArithmetic, Bool.and_eq_true] at plain
+      simpa only [AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isPlainArithmetic, Bool.and_eq_true]
+        using And.intro (baseIh plain.1) (exponentIh plain.2)
+  | abs | extremum | round =>
       simp [AuthoredNumericExpr.isPlainArithmetic] at plain
 
 private theorem loweredPlainValidation_isSome
@@ -160,7 +184,19 @@ private theorem loweredPlainValidation_isSome
           | some rightOutcome =>
               simp [LoweredNumericExpr.evalPlainValidation?,
                 leftResult, rightResult]
-  | power | abs | extremum | round =>
+  | power base exponent baseIh exponentIh =>
+      simp only [LoweredNumericExpr.isPlainArithmetic, Bool.and_eq_true] at plain
+      have baseSome := baseIh plain.1
+      have exponentSome := exponentIh plain.2
+      cases baseResult : base.evalPlainValidation? read with
+      | none => simp [baseResult] at baseSome
+      | some baseOutcome =>
+          cases exponentResult : exponent.evalPlainValidation? read with
+          | none => simp [exponentResult] at exponentSome
+          | some exponentOutcome =>
+              simp [LoweredNumericExpr.evalPlainValidation?,
+                baseResult, exponentResult]
+  | abs | extremum | round =>
       simp [LoweredNumericExpr.isPlainArithmetic] at plain
 
 private theorem authoredNumericLower_directAtom
@@ -267,9 +303,9 @@ private theorem loweredAdmittedValidation_isSome
   | inl plain =>
       have plainSome := loweredPlainValidation_isSome expression read plain
       cases expression with
-      | atom | literal | binary =>
+      | atom | literal | binary | power =>
           simpa [LoweredNumericExpr.evalAdmittedValidation?] using plainSome
-      | power | abs | extremum | round =>
+      | abs | extremum | round =>
           simp [LoweredNumericExpr.isPlainArithmetic] at plain
   | inr direct =>
       cases expression with

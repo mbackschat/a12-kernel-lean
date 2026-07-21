@@ -220,9 +220,17 @@ The declaration-resolved numeric computation evaluator now traverses power subtr
 
 This closes levels 1–2 for an already-authored, declaration-resolved numeric computation expression and the existing target/dependency projection. Concrete computation syntax, exponent-scale/static authoring admission, checked target construction, scheduling/context overlay, generated validation, protocol exposure, and project-local portable evidence remain outside. The defensive fractional exponent arm stays total but is not claimed as a legal kernel runtime case. No new result type, target path, evidence mechanism, dependency, or harness was added.
 
+## Completed semantic unit: checked validation power
+
+The frontier reassessment found that checked validation power required no new representation. The authored numeric tree already retained grouping and literal scale, the static summary already rejected fractional/unknown-scale exponents, the authoring scan already enforced the direct-left nested-power rule, and the shared arithmetic outcome already coupled staged value evaluation with the full conservative fillability table. Only the checked plain-arithmetic classifier and evaluator stopped before the existing power node.
+
+The validator now admits power recursively on either comparison side and under both ordinary and tolerance operators. The red matrix distinguishes valid `2 ^ 2`, empty-base omission polarity, quiet `0 ^ -1` and exponent-`1001` domain failures, fractional-scale static rejection, ungrouped nested-power rejection versus grouped acceptance, tolerance reuse, and the equal-value/different-direction `0 ^ emptyUnsigned` versus `0 ^ emptySigned` separator. The generic checked certificate still proves that both evaluator fallbacks are unreachable, and a trusted law states exact reached-value delegation to the shared power outcome.
+
+This closes levels 1–2 for power inside the existing same-group nonrepeatable checked numeric validation consumer. Concrete syntax/decoder reachability, localized diagnostics, operation-valued wrappers, repeats, generated computation validation, protocol exposure, and project-local portable evidence remain outside. The canonical clauses and accepted power corrections already own this behavior, so no spec or sync-ledger change was needed.
+
 ## Immediate next step: semantic frontier reassessment
 
-Reassess the current implementation map and named consumer tasks after the power closure. Select one bounded checked consumer or high-risk discriminator whose representation is already sufficient and whose wrong account has an independent separator. Do not retry the parked aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing model facts or a second exact semantic user.
+Reassess the next checked-consumer or high-risk discriminator after both power consumers have closed. Do not retry the parked aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing model facts or a second exact semantic user.
 
 ## Likely next keystone rotation
 

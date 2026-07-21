@@ -204,7 +204,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - one already-resolved computation-expression consumer with distinct numeric value, domain failure, and inherited poison
 - a separately proved exact stored-decimal conversion
 - and one ordinary fit-path target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
-- The validation consumer resolves and checks two admitted expressions—plain arithmetic, exact direct-field root rounding/`Abs`, or one canonical direct-field Min/Max fold—before lowering each once, gates empty rows before reads, and preserves formal-invalid, domain-failure, value, and two-sided fillability distinctions.
+- The validation consumer resolves and checks two admitted expressions—plain arithmetic including power, exact direct-field root rounding/`Abs`, or one canonical direct-field Min/Max fold—before lowering each once, gates empty rows before reads, and preserves formal-invalid, domain-failure, value, and two-sided fillability distinctions. Power additionally consumes the existing exponent-scale, direct-left nesting, staged-value, and conservative-direction mechanisms.
 - The computation consumer reads empty and required-empty Number as zero, preserves domain failure through clean enclosing arithmetic, power, rounding, `Abs`, and Min/Max, follows source-established left-to-right poison order through one shared delayed-right evaluator, and structurally preflights every declaration before data reads. Valid power delegates to the shared staged evaluator; runtime-invalid integral power becomes the same target-invalidating domain failure as zero division.
 - Stored conversion universally preserves the scale-19 `HALF_UP` amount while retaining `{unscaled, scale}` form.
 - After separate assignment-scale admission, the target consumer pads to minimum fractional digits without capping a fit attempt, checks universal digit length before signedness, fails closed on the warning-suppressed no-fit branch, distinguishes no-result/accepted/rejected/domain-invalid/poison, and compares prior coefficient plus scale.
@@ -234,13 +234,13 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented narrowly; integrated validation and numeric computation remain external evidence pending:** the checked same-group, full-validation consumer accepts two admitted expressions with at least one resolved field—plain `+`/`−`/`×`/`÷` arithmetic, exact direct-field root rounding/`Abs`, or a canonical same-selector Min/Max fold over direct fields—and a closed choice of six ordinary operators or four fixed tolerance ranges.
+- **Implemented narrowly; integrated validation and numeric computation remain external evidence pending:** the checked same-group, full-validation consumer accepts two admitted expressions with at least one resolved field—plain `+`/`−`/`×`/`÷`/power arithmetic, exact direct-field root rounding/`Abs`, or a canonical same-selector Min/Max fold over direct fields—and a closed choice of six ordinary operators or four fixed tolerance ranges.
 - The separate computation expression accepts one already-resolved admitted arithmetic/power/rounding/`Abs`/Min/Max tree; it does not itself certify concrete power authoring or exponent-scale legality.
 - Stored conversion is exact after scale-19 pre-rounding
 - the target accepts only the ordinary scale-compatible path with signedness, minimum/maximum fractional digits, the universal 15-digit check, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation.
 - Open:
   - Checked concrete computation/target authoring
-  - checked power validation, concrete computation authoring, and result-empty provenance
+  - concrete computation power authoring and result-empty provenance
   - constant-bearing numeric Min/Max
   - concrete tie-origin retention
   - Date and aggregate Min/Max
@@ -652,7 +652,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
   - rule collections/order
   - general generated checks
   - custom-condition whole-rule integration
-  - checked power integration and result-empty provenance
+  - concrete computation power authoring and result-empty provenance
   - `BaseYear`
   - exact mixed-failure precedence
   - global/wildcard relevance
