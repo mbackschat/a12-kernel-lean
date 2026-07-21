@@ -150,6 +150,36 @@ theorem storedNumber_fromComputed_preserves_amount
   rw [signedAmount, restoreSignNatAbs]
   rfl
 
+/-- A canonical scale-19 result already within the significant-digit budget is retained exactly by bounded conversion. -/
+theorem storedNumber_fromComputedBounded_withinBudget
+    (amount : Rat) (significantDigits naturalScale : Nat)
+    (canonical : StoredNumber)
+    (rendered : StoredNumber.fromComputed amount 0 =
+      (naturalScale, canonical))
+    (withinBudget :
+      (toString canonical.unscaled.natAbs).length ≤ significantDigits) :
+    StoredNumber.fromComputedBounded amount significantDigits = canonical := by
+  change canonical.unscaled.natAbs.repr.length ≤ significantDigits at withinBudget
+  simp [StoredNumber.fromComputedBounded, rendered, withinBudget]
+
+/-- An over-budget conversion rounds the already scale-19-pre-rounded canonical amount at the greatest nonnegative scale allowed by the significant-digit budget. -/
+theorem storedNumber_fromComputedBounded_overBudget
+    (amount : Rat) (significantDigits naturalScale : Nat)
+    (canonical : StoredNumber)
+    (rendered : StoredNumber.fromComputed amount 0 =
+      (naturalScale, canonical))
+    (overBudget : significantDigits <
+      (toString canonical.unscaled.natAbs).length) :
+    StoredNumber.fromComputedBounded amount significantDigits =
+      { unscaled := rescaleHalfUpUnscaled canonical.amount
+          (naturalScale + significantDigits -
+            (toString canonical.unscaled.natAbs).length)
+        scale := naturalScale + significantDigits -
+          (toString canonical.unscaled.natAbs).length } := by
+  change significantDigits < canonical.unscaled.natAbs.repr.length at overBudget
+  simp [StoredNumber.fromComputedBounded, rendered,
+    Nat.not_le.mpr overBudget]
+
 /-- Equal numeric amount does not imply equal stored form: `7` and `7.00` remain observably different. -/
 theorem equalNumericAmount_doesNotImply_equalStoredForm :
     (StoredNumber.mk 7 0).amount =

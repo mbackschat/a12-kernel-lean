@@ -67,9 +67,45 @@ example : (target 2 2 false).check (.value (3 / 2)) =
     .supported (.accepted (stored 150 2)) := by
   native_decide
 
-/- The warning-suppressed runtime no-fit arm is a separate, fail-closed fragment. -/
+/- Without explicit warning suppression, the no-fit surface remains fail-closed. -/
 example : flexibleScaleTwo.check (.value (24723 / 10000)) =
     .unsupported (.fractionalScaleDoesNotFit 4 2) := by
+  native_decide
+
+/- Explicit warning suppression reaches the no-fit branch, retains a short canonical attempt, and reports it as an unconditional error. -/
+example :
+    flexibleScaleTwo.checkWithScaleWarningSuppressed (.value (24723 / 10000)) =
+      .supported (.rejected (stored 24723 4) .suppressedScaleMismatch) := by
+  native_decide
+
+/- A long no-fit value is bounded to 16 significant digits rather than rounded to the target's fractional scale. -/
+example :
+    flexibleScaleTwo.checkWithScaleWarningSuppressed
+        (.value (1234567890123456789 / 10000)) =
+      .supported (.rejected
+        (stored 1234567890123457 1) .totalDigitsTooLong) := by
+  native_decide
+
+/- Length bounding consumes the scale-19 pre-rounded value; directly rounding the raw rational to the derived scale would produce the lower neighbor. -/
+example :
+    flexibleScaleTwo.checkWithScaleWarningSuppressed
+        (.value (100000000000000049995 / (10 ^ 20 : Rat))) =
+      .supported (.rejected
+        (stored 1000000000000001 15) .totalDigitsTooLong) := by
+  native_decide
+
+/- When the integer part itself exceeds the renderer's budget, the reduced digit check supplies the more specific target cause. -/
+example :
+    (target 0 0).checkWithScaleWarningSuppressed
+        (.value (123456789012345671 / 10)) =
+      .supported (.rejected
+        (stored 12345678901234567 0) .totalDigitsTooLong) := by
+  native_decide
+
+/- Reduced signedness checking likewise takes precedence over the unconditional scale-mismatch cause. -/
+example :
+    (target 0 0 false).checkWithScaleWarningSuppressed (.value (-11 / 10)) =
+      .supported (.rejected (stored (-11) 1) .negativeNotAllowed) := by
   native_decide
 
 /- Arithmetic invalidity creates a target invalidity with no attempted stored value. -/

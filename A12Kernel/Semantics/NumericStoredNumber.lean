@@ -64,6 +64,17 @@ def fromComputed (amount : Rat) (minimumScale : Nat) : Nat × StoredNumber :=
     if scaled < 0 then -(storedMagnitude : Int) else storedMagnitude
   (naturalScale, { unscaled, scale := storedScale })
 
+/-- Apply the scale-19 store pre-round, then retain the canonical decimal when it already fits the significant-digit budget or `HALF_UP` round that pre-rounded value to the greatest fractional scale allowed by the budget. A large integer part can exceed the budget even at scale zero. -/
+def fromComputedBounded (amount : Rat) (significantDigits : Nat) : StoredNumber :=
+  let (naturalScale, canonical) := fromComputed amount 0
+  let precision := (toString canonical.unscaled.natAbs).length
+  if precision ≤ significantDigits then
+    canonical
+  else
+    let boundedScale := naturalScale + significantDigits - precision
+    { unscaled := rescaleHalfUpUnscaled canonical.amount boundedScale
+      scale := boundedScale }
+
 end StoredNumber
 
 end A12Kernel
