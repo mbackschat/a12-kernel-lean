@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `8714edb` (`feat(computation): enforce numeric target constraints`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,547-declaration trust audit passed.
+- Semantic baseline before the current capsule: `3d216ff` (`refactor(computation): retain numeric target policy`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,594-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Attach the complete externally resolved Number target policy once to the checked numeric computation operation without widening the flat model. Reject scale/signedness mismatch at that boundary, retain all other resolved constraints unchanged, and expose target evaluation only through the retained policy.
+Admit the already-audited direct numeric value-function shapes at the checked computation boundary and make their authored-shape predicate genuinely shared with checked validation. Keep the fragment to direct-field `Round`/`Abs` and direct-field/at-most-one-constant `Min`/`Max`; do not extrapolate the unclosed general wrapper traversal.
 
-Success means a mismatched policy is rejected before evaluation, a non-scale constraint proves the complete policy reaches target checking, a law exposes the retained coherence proof, and no evaluation API accepts another caller-selected policy. Declaration-owned policy construction remains explicit future work because `FlatFieldDecl` does not retain those constraints.
+Success means focused checked cases reach all three function families, a second extremum constant and a wrapper around arithmetic remain rejected, target self-reference is still found inside an admitted wrapper, validation behavior remains unchanged through the shared predicate, and the checked certificate proves every accepted computation has an admitted shape.
 
 ## Frontier queue
 
@@ -32,7 +32,9 @@ Success means a mismatched policy is rejected before evaluation, a non-scale con
 - **Satisfied — checked computation suppression:** `0aeddb1` retains the legal warning flag through admission and routes the evaluated result through the matching target entry point.
 - **Satisfied — shared warning gate:** `16ff14b` consolidates the exact suppression primitive after its second completed consumer.
 - **Satisfied — resolved Number target constraints:** `8714edb` closes the fit-only integer-digit, zero, rendered-length, and inclusive-range suffix while preserving the no-fit decimal-error boundary.
-- **Active — target-policy ownership:** retain one complete resolved policy on the checked numeric operation, reject scale/signedness mismatch before evaluation, and remove caller policy choice from evaluation without duplicating constraints in `NumField` or inferring them from erased declaration data.
+- **Satisfied — target-policy ownership:** `3d216ff` retains one complete resolved policy on the checked numeric operation, rejects scale/signedness mismatch before evaluation, and removes caller policy choice from evaluation without duplicating constraints in `NumField` or inferring them from erased declaration data.
+- **Active — checked direct numeric value functions:** reuse one authored-shape predicate across validation and computation for direct-field `Round`/`Abs` and direct-field/one-constant `Min`/`Max`; keep general wrapper traversal fail-closed.
+- **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.

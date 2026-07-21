@@ -183,6 +183,50 @@ def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringChe
       | true, true => .tooManyDivisionsAndDirectLeftNestedPower
   | none => .outsideFragment
 
+/-- Whether an authored tree uses only atoms, literals, grouping, ordinary binary arithmetic, and power. -/
+def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => true
+  | .group body => body.isPlainArithmetic
+  | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
+  | .power base exponent =>
+      base.isPlainArithmetic && exponent.isPlainArithmetic
+  | .abs _ | .extremum _ _ _ | .round _ _ _ => false
+
+/-- Recognize one canonical left-associated extremum operand list while tracking whether its single permitted direct constant has been consumed. `none` rejects mixed selectors, a second constant, wrappers, grouping, or a non-direct right operand. -/
+def directExtremumConstantUse?
+    (expected : NumericExtremumOp) :
+    AuthoredNumericExpr Atom → Option Bool
+  | .atom _ => some false
+  | .literal _ => some true
+  | .extremum actual left right =>
+      if actual != expected then none else do
+        let constantUsed ← left.directExtremumConstantUse? expected
+        match right with
+        | .atom _ => some constantUsed
+        | .literal _ => if constantUsed then none else some true
+        | _ => none
+  | _ => none
+
+def isDirectExtremumChain
+    (expected : NumericExtremumOp) (expression : AuthoredNumericExpr Atom) : Bool :=
+  (expression.directExtremumConstantUse? expected).isSome
+
+/-- The source-closed direct value-function shapes shared by checked scalar validation and computation: one root rounding or absolute-value operation over a direct Number field, or one canonical direct-operand Min/Max fold with at most one constant. -/
+def isDirectValueFunction : AuthoredNumericExpr Atom → Bool
+  | .abs (.atom _) => true
+  | .round _ _ (.atom _) => true
+  | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
+  | _ => false
+
+/-- The shared checked numeric-operation fragment is plain arithmetic plus independently audited direct root value functions. -/
+def isAdmittedNumericOperation (expression : AuthoredNumericExpr Atom) : Bool :=
+  expression.isPlainArithmetic || expression.isDirectValueFunction
+
+/-- General wrapper traversal remains unclosed; only the exact direct root functions bypass the plain-arithmetic authoring scan. -/
+def numericOperationAuthoringCheck
+    (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  if expression.isDirectValueFunction then .accepted else expression.authoringCheck
+
 end AuthoredNumericExpr
 
 namespace LoweredNumericExpr

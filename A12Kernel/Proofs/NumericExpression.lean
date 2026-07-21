@@ -166,4 +166,18 @@ theorem numericAuthoring_abs_is_outside_fragment
       NumericAuthoringCheck.outsideFragment := by
   rfl
 
+/-- Every independently audited direct root value function belongs to the shared checked numeric-operation fragment. -/
+theorem numericOperation_directValueFunction_admitted
+    (expression : AuthoredNumericExpr Atom)
+    (direct : expression.isDirectValueFunction = true) :
+    expression.isAdmittedNumericOperation = true := by
+  simp [AuthoredNumericExpr.isAdmittedNumericOperation, direct]
+
+/-- Direct root value functions bypass only the inapplicable plain-arithmetic scan. -/
+theorem numericOperation_directValueFunction_authoringAccepted
+    (expression : AuthoredNumericExpr Atom)
+    (direct : expression.isDirectValueFunction = true) :
+    expression.numericOperationAuthoringCheck = .accepted := by
+  simp [AuthoredNumericExpr.numericOperationAuthoringCheck, direct]
+
 end A12Kernel

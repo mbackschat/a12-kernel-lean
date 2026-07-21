@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable plain numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the existing plain-arithmetic authoring and result-scale gates, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, operation-valued wrappers, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct root value-function authoring fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -63,7 +63,8 @@ def NumericComputationOperation.wellFormedBool
     operation.expression.allAtoms model.admitsNumericComputationOperand &&
     !operation.expression.anyAtom (fun declaration =>
       declaration.id == operation.target.id) &&
-    operation.expression.authoringCheck == .accepted &&
+    operation.expression.isAdmittedNumericOperation &&
+    operation.expression.numericOperationAuthoringCheck == .accepted &&
     match operation.expression.summary? FlatFieldDecl.numericScaleSummary with
     | some summary =>
         exactNumericScaleComparisonAllowedWithSuppression
@@ -109,7 +110,7 @@ private def FlatModel.resolveNumericComputationExpression
     else
       throw (.operandNotNumber declaration.path)
 
-/-- Resolve and check one nonrepeatable plain numeric computation operation. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. Operation-valued wrappers, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
+/-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic or direct root value-function fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (expression : AuthoredNumericExpr SurfaceFieldPath)
@@ -124,7 +125,8 @@ def elaborateNumericComputationOperation
       let target ← model.resolveNumericComputationTarget targetField
       let resolved ← model.resolveNumericComputationExpression
         declaringGroup targetField expression
-      match resolved.authoringCheck with
+      if !resolved.isAdmittedNumericOperation then throw .unsupportedExpression
+      match resolved.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
       let summary ← match resolved.summary? FlatFieldDecl.numericScaleSummary with

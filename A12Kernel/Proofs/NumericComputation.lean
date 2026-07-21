@@ -13,7 +13,16 @@ theorem checkedNumericComputationOperation_noTargetReference
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
-  simpa using admitted.1.1.2
+  simpa using admitted.1.1.1.2
+
+/-- Every checked computation operation lies in the shared plain-arithmetic or direct root value-function fragment. -/
+theorem checkedNumericComputationOperation_admittedShape
+    (checked : CheckedNumericComputationOperation model) :
+    checked.core.expression.isAdmittedNumericOperation = true := by
+  have admitted := checked.wellFormed
+  simp only [NumericComputationOperation.WellFormed,
+    NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
+  exact admitted.1.1.2
 
 /-- Every checked operation either carries the explicit warning suppression or satisfies the ordinary exact result-scale gate. -/
 theorem checkedNumericComputationOperation_scaleGate

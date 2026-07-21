@@ -37,50 +37,6 @@ inductive NumericValidationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- Whether an authored tree uses only atoms, literals, grouping, ordinary binary arithmetic, and power. -/
-def AuthoredNumericExpr.isPlainArithmetic : AuthoredNumericExpr Atom → Bool
-  | .atom _ | .literal _ => true
-  | .group body => body.isPlainArithmetic
-  | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power base exponent =>
-      base.isPlainArithmetic && exponent.isPlainArithmetic
-  | .abs _ | .extremum _ _ _ | .round _ _ _ => false
-
-/-- Recognize one canonical left-associated extremum operand list while tracking whether its single permitted direct constant has been consumed. `none` rejects mixed selectors, a second constant, wrappers, grouping, or a non-direct right operand. -/
-def AuthoredNumericExpr.directExtremumConstantUse?
-    (expected : NumericExtremumOp) :
-    AuthoredNumericExpr Atom → Option Bool
-  | .atom _ => some false
-  | .literal _ => some true
-  | .extremum actual left right =>
-      if actual != expected then none else do
-        let constantUsed ← left.directExtremumConstantUse? expected
-        match right with
-        | .atom _ => some constantUsed
-        | .literal _ => if constantUsed then none else some true
-        | _ => none
-  | _ => none
-
-def AuthoredNumericExpr.isDirectExtremumChain
-    (expected : NumericExtremumOp) (expression : AuthoredNumericExpr Atom) : Bool :=
-  (expression.directExtremumConstantUse? expected).isSome
-
-/-- The checked value-function shapes: one root rounding or absolute-value operation over a direct Number field, or one canonical direct-operand Min/Max fold with at most one constant. Expression and `…Value` surface spellings normalize to these same semantic nodes. -/
-def AuthoredNumericExpr.isDirectValueFunction : AuthoredNumericExpr Atom → Bool
-  | .abs (.atom _) => true
-  | .round _ _ (.atom _) => true
-  | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
-  | _ => false
-
-/-- The checked validation fragment is plain arithmetic plus independently audited root value functions. -/
-def AuthoredNumericExpr.isAdmittedValidation : AuthoredNumericExpr Atom → Bool
-  | expression => expression.isPlainArithmetic || expression.isDirectValueFunction
-
-/-- General operation-wrapper traversal remains unclosed; only exact direct-field root functions bypass the plain-arithmetic authoring scan. -/
-def AuthoredNumericExpr.validationAuthoringCheck
-    (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  if expression.isDirectValueFunction then .accepted else expression.authoringCheck
-
 private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupPath)
     (field : FlatNumberField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -120,12 +76,12 @@ def NumericComparison.wellFormedBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
   (comparison.left.hasAtom || comparison.right.hasAtom) &&
-    comparison.left.isAdmittedValidation &&
-    comparison.right.isAdmittedValidation &&
+    comparison.left.isAdmittedNumericOperation &&
+    comparison.right.isAdmittedNumericOperation &&
     comparison.left.allAtoms (model.admitsNumberInGroup rowGroup) &&
     comparison.right.allAtoms (model.admitsNumberInGroup rowGroup) &&
-    comparison.left.validationAuthoringCheck == .accepted &&
-    comparison.right.validationAuthoringCheck == .accepted &&
+    comparison.left.numericOperationAuthoringCheck == .accepted &&
+    comparison.right.numericOperationAuthoringCheck == .accepted &&
     match
         comparison.left.summary? (fun field =>
           NumericScaleSummary.field field.info.scale),
@@ -172,12 +128,12 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
       let left ← resolveNumericExpression model rowGroup surface.left
       let right ← resolveNumericExpression model rowGroup surface.right
       if !(left.hasAtom || right.hasAtom) then throw .constantExpression
-      if !left.isAdmittedValidation then throw .unsupportedExpression
-      if !right.isAdmittedValidation then throw .unsupportedExpression
-      match left.validationAuthoringCheck with
+      if !left.isAdmittedNumericOperation then throw .unsupportedExpression
+      if !right.isAdmittedNumericOperation then throw .unsupportedExpression
+      match left.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
-      match right.validationAuthoringCheck with
+      match right.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
       let leftSummary ← match left.summary? (fun field =>
