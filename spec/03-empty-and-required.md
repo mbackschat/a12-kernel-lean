@@ -105,7 +105,7 @@ The **"Only if the Parent Group is filled"** option changes *which* group is ref
 | `F1` (in group `A`) | `FieldNotFilled(F1)` | `GroupFilled(A) And FieldNotFilled(F1)` |
 | `F5` (in group `C`, nested under `K`) | `GroupFilled(C) And FieldNotFilled(F5)` | `GroupFilled(K) And FieldNotFilled(F5)` |
 
-"The parent is filled" uses the *same* content notion as `GroupFilled` ([§9](07-repetition-and-iteration.md)): a **repeatable** parent counts a created-but-empty row (so a conditionally-required field can flag a row the user added but left blank); a **non-repeatable** parent counts a filled descendant — *including an instantiated repeatable descendant row*, not only a valued field.
+"The parent is filled" uses the *same formally admitted content* notion as `GroupFilled` ([§9](07-repetition-and-iteration.md)): a **repeatable** parent counts a created-but-empty row (so a conditionally-required field can flag a row the user added but left blank); a **non-repeatable** parent counts a formally admitted valued descendant or an instantiated repeatable descendant row. A malformed, custom-invalid, or constraint-invalid value that formal conversion rejects is not content and therefore does not activate an empty required sibling. A duplicate index value does activate it because the value is admitted before uniqueness marks the error; creating an over-limit repeat row likewise supplies structural ancestor content even though that row receives its separate structural diagnostic and ordinary-rule suppression.
 
 ### B.2 Required manifests as a *formal error*
 
@@ -130,7 +130,7 @@ A duplicate-flagged cell enters the third state ([§3](02-logic-and-formal-error
 
 Because the engine generates both checks, a model must **not** also author the equivalent rules — they would double up. (The index field is also the join key for parallel iteration and the semantic index; [§9](07-repetition-and-iteration.md).)
 
-> **Lean modelling note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3.B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). Concretely, a `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base `formalCheck` result, retains any hit/message, and only on a hit adds `.required` to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule, the per-parent-row uniqueness check (marking *all* duplicate participants `notCheckRelevant`), and registers the join key. Doing this as desugaring keeps the evaluator's core small and mirrors how the real engine treats these as generated, not special-cased.
+> **Lean modelling note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3.B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). Concretely, a `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base `formalCheck` result, derives the referenced group's admitted-content/error/relevance state, retains any hit/message, and only on a hit adds `.required` to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule, the per-parent-row uniqueness check (marking *all* duplicate participants `notCheckRelevant`), and registers the join key. Doing this as desugaring keeps the evaluator's core small and mirrors how the real engine treats these as generated, not special-cased.
 
 ---
 
@@ -141,5 +141,5 @@ Because the engine generates both checks, a model must **not** also author the e
 - [ ] The per-operator overrides (concat, `Length`, patterns, extractors, value-list, counts, operand-list `Min`/`Max`, aggregates) each behave per A.2.
 - [ ] All-empty aggregate **identities** per kind (NUMBER→`0`, DATE min/max→no value, `FirstFilledValue`→by kind).
 - [ ] The **row gate**: substitutions only inside content-bearing instances; instantiated repeatable rows *are* content.
-- [ ] `required` desugars to the ancestor-decided generated rule; validation evaluates and retains that rule's message on base checked cells before adding the target's validation-scoped `.required` finding, and computation reads the cell empty.
+- [ ] `required` desugars to the ancestor-decided generated rule; its group gate uses formally admitted content rather than raw placement, validation retains the message on base checked cells before adding the target's validation-scoped `.required` finding, and computation reads the cell empty.
 - [ ] `indexFieldName` desugars to mandatory + per-parent-row uniqueness (every duplicate flagged), and registers the join key.
