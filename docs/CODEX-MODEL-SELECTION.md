@@ -6,6 +6,8 @@ This document maps the stable BEST, REGULAR, and SIMPLE capability profiles in [
 
 Explicit selection is safer than naming only a profile because it removes ambiguity for the person or orchestrator starting an agent. It is not enforcement: prompt text cannot switch its own model. The model must be selected in the Codex surface or agent configuration before execution. If a subagent interface cannot enforce a requested model or reasoning level, the root must say so and must not claim that the requested selection ran.
 
+Agent execution on this branch is sequential. The root may delegate only one bounded read-only task at a time and must wait without performing parallel branch work until that subagent returns. Multiple useful audits run one after another, never concurrently; no worktree is created for them.
+
 ## Current GPT-5.6 mapping
 
 | Abstract profile | Work shape | Requested model | Requested reasoning |
