@@ -367,6 +367,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 #### Exact boundary
 
 - **Implemented narrowly; ingestion external evidence pending:** direct validation equality/inequality, `Length <`/`>=`, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, checked nonrepeatable copy/literal/concatenation lowering through String root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
+- Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Repeatable/parent-gated String requiredness, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.

@@ -194,9 +194,15 @@ Runtime composition is exact: checked aggregates return `NumericOperand`, which 
 
 The current checked numeric expression tree nevertheless has no aggregate node. Adding one only for this route would widen `AuthoredNumericExpr` and its authoring/lowering/evaluation proofs, while a separate aggregate-literal comparison object would duplicate `CheckedNumericComparison` and create a parallel static gate. Both violate this audit's bounded stop condition. No wrapper, evaluator, or speculative AST branch was added; enclosing comparison remains parked until the shared checked expression tree is deliberately extended for more than one concrete function-valued consumer.
 
-## Immediate next step: checked String target audit
+## Completed risk audit: checked String target construction
 
-Audit whether the existing `CheckedStringExpr` and String computation store can close one decoded nonrepeatable String target assignment with exact target kind, model identity, and length policy. Proceed only if the current `FlatFieldDecl` retains every required target constraint and the existing computation result distinguishes store, clear, and poison without inventing scheduler state. Otherwise record the missing model fact and rotate.
+The existing String expression and store/outcome types already distinguish produced value, quiet no-value, inherited poison, accepted target value, and payloadful target rejection. The checked model does not carry the other half of the composition: `FlatFieldDecl` retains scalar kind, Number metadata, path, and repeatable scope, but no String `minLength`/`maxLength` or preceding line-break permission. An unconstrained policy cannot be inferred from absence of those facts because the reduced declaration erased constrained and unconstrained targets alike.
+
+Adding target constraints to the flat model would widen a settled cross-family representation and require revisiting validation formal checking, model validation, and every declaration constructor. The bounded audit therefore added no default policy and no partial target step. Checked target construction remains parked until a concrete model-extension unit owns the full fact and its validation consumers.
+
+## Immediate next step: String Length operator-family audit
+
+Audit direct String `Length` comparison as one closed six-operator batch. Confirm from canonical clauses and pinned source that all six ordinary numeric operators share the existing UTF-16 length operand, empty-as-growable-zero rule, unavailable propagation, and fixed-literal polarity. If exact, replace the two-member proxy enum with the established `NumericComparisonOp`, add red/green separators for the four missing operators, and update only the owning String coverage records. Do not add String expressions, targets, or protocol exposure.
 
 ## Likely next keystone rotation
 
