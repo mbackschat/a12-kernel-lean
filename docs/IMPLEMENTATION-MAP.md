@@ -261,7 +261,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - warning-suppressed no-fit rendering
   - range/zero/integer-digit/other Number constraints
   - downstream context/read integration
-  - general tolerance/expression-valued generated implicit validation beyond the exact two-literal fragment
+  - expression-valued generated implicit validation beyond the guarded literal fragment
   - partial/repeatable evaluation
   - missing-ancestor creation
   - concrete parsing/diagnostics
@@ -555,7 +555,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - One resolved String table composes that selector once with the existing expression/target/delta step
 - clean no-value, target rejection, and poison from the selected operation are terminal, a holding head makes every suffix irrelevant through operation evaluation, and common false/poison decides before guard or operation reads.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
-- The checked two-alternative literal-Number desugaring admits an optional common condition plus direct scalar-presence alternative guards. Computation reuses the common-expansion selector, while generated validation places the common guard once below `FieldFilled(target)` and above the complete mismatch disjunction. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
+- The checked two-or-more guarded literal-Number desugaring admits an optional common condition plus direct scalar-presence alternative guards. Computation reuses the common-expansion selector, while generated validation left-folds every mismatch in declaration order and places the common guard once below `FieldFilled(target)` and above that complete disjunction. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
@@ -568,7 +568,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - The type-neutral V2 apply mechanism is source-grounded and triangulated by a12-dmkits IF126's String matrix.
 - The field-fill scan is source-grounded and separately exercised by maintained a12-dmkits dual-kernel-route differentials for all seven operators, but this repository retains no portable field-fill observation.
 - Kernel `CalculationUtils.expandCommonPrecondition`, a12-dmkits' direct common-first evaluator, and its separate common-outside-disjunction generated-validation construction independently ground the common-guard account; this repository retains no portable common-precondition observation.
-- No retained project-local observation exercises direct presence/connectives, field-fill scans, alternative selection or selected-operation terminality, generated two-alternative validation, numeric expression/target/delta/application/dependency, mixed domain/poison order, or the newline family
+- No retained project-local observation exercises direct presence/connectives, field-fill scans, alternative selection or selected-operation terminality, generated guarded-alternative validation, numeric expression/target/delta/application/dependency, mixed domain/poison order, or the newline family
 - those surfaces remain `external evidence pending`
 
 #### Excluded / next
@@ -577,14 +577,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - all seven field-fill predicates over a caller-supplied already-expanded ordered slot stream
 - first-match selection with resolved String selected-operation/target/delta integration
 - optional common-precondition expansion over that already-guarded table
-- an exact checked two-alternative literal-Number generated-rule fragment with an optional checked common precondition
+- a checked two-or-more guarded literal-Number generated-rule fragment with an optional checked common precondition
 - one String target and direct cascade
 - and one already-resolved Number expression → stored form → ordinary fit-path target → delta → exact application → cause-free dependency chain.
 - Open:
   - General computation authoring and target self-reference checks
   - warning-suppressed assignment and runtime target checks
-  - checked singleton/default/larger-table authoring
-  - general checked common-precondition authoring beyond the exact two-literal fragment
+  - checked zero/singleton/default authoring
+  - general checked common-precondition authoring beyond the guarded literal fragment
   - expression-valued generated validation
   - comparison guards
   - field-fill stream construction/path/group/star/filter expansion and AST integration
@@ -631,7 +631,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Evidence
 
-- Retained validation observations separate ordinary polarity and malformed connective outcomes but do not establish checked whole-rule assembly, generated two-alternative validation, error-code/severity independence, complete message rendering, hidden silent distinctions, or field-fill quantifiers.
+- Retained validation observations separate ordinary polarity and malformed connective outcomes but do not establish checked whole-rule assembly, generated guarded-alternative validation, error-code/severity independence, complete message rendering, hidden silent distinctions, or field-fill quantifiers.
 - Maintained a12-dmkits multi-route quantifier differentials ground the seven unfiltered formulas and broader filter behavior, but this repository retains no portable field-fill observation.
 - Direct ordering, arithmetic fillability, tolerance, partial relevance, integrated expression comparison, generated-rule details, and the label/value display refinements remain source/test anchored and project-locally `external evidence pending`.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` additionally triangulates IF193 group relevance/availability and IF194 nested-star aggregate polarity across both kernel strategies and the peer interpreter, without adding project-local portable evidence.
@@ -648,7 +648,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - known arithmetic and fixed-tolerance polarity
 - one same-group nonrepeatable two-expression comparison
 - one exact nonrepeatable structured-plan rule message rendered only after firing
-- one checked two-alternative literal-Number generated rule with an optional common condition on the same message boundary
+- one checked two-or-more guarded literal-Number generated rule with an optional common condition on the same message boundary
 - and one ordered nonrepeatable partial-validation filter gate, error-field gate, and relevance-aware leaf evaluator.
 - Open:
   - Checked group-instance/descendant enumeration and wildcardable relevance construction
