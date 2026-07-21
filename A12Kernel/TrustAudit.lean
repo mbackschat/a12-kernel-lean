@@ -476,6 +476,9 @@ run_cmd do
 #print axioms A12Kernel.numericSumAggregate_tail_signedness_separator
 #print axioms A12Kernel.numericSumAggregate_singleton_having
 #print axioms A12Kernel.numericSumAggregate_firstUnknown
+#print axioms A12Kernel.declaredNumericSum_explicitMissing
+#print axioms A12Kernel.declaredNumericSum_uninstantiatedMissing
+#print axioms A12Kernel.numericSumAggregate_homogeneousEmbedding
 #print axioms A12Kernel.reopenedStar_selectedLeaf_closed
 #print axioms A12Kernel.reopenedStar_unbounded_open
 #print axioms A12Kernel.reopenedStar_finite_closed_iff

@@ -15,6 +15,16 @@ private def side
     (hasHaving : Bool := false) : ResolvedValueListSide .number :=
   { cells, hasUninstantiatedTail, hasHaving }
 
+private def declaredCell (cell : ValueListCell .number)
+    (declarationSigned : Bool) : ResolvedNumericSumCell :=
+  { cell, declarationSigned }
+
+private def declaredSide
+    (cells : List ResolvedNumericSumCell)
+    (uninstantiatedSignedness : List Bool := [])
+    (hasHaving : Bool := false) : ResolvedNumericSumSide :=
+  { cells, uninstantiatedSignedness, hasHaving }
+
 private def belowComparisonResolution : Rat := 1 / 10 ^ 20
 private def tenPow50 : Rat := 10 ^ 50
 
@@ -138,6 +148,37 @@ example :
         .value 7 .both ∧
       evalNumericSumAggregate true (side [.present 7]) =
         .value 7 .fixed := by
+  native_decide
+
+/- Signedness belongs to each missing source, not to an arbitrary representative declaration. -/
+example :
+    evalDeclaredNumericSumAggregate
+      (declaredSide [declaredCell (.present 7) false, declaredCell .empty true]) =
+        .value 7 .both ∧
+      evalDeclaredNumericSumAggregate
+        (declaredSide [declaredCell (.present 7) true, declaredCell .empty false]) =
+        .value 7 .growOnly := by
+  native_decide
+
+/- Uninstantiated sources retain the same per-declaration direction independently of present sources. -/
+example :
+    evalDeclaredNumericSumAggregate
+      (declaredSide [declaredCell (.present 7) false] [true]) =
+        .value 7 .both ∧
+      evalDeclaredNumericSumAggregate
+        (declaredSide [declaredCell (.present 7) true] [false]) =
+        .value 7 .growOnly := by
+  native_decide
+
+/- All-empty identity and first-unavailable behavior remain independent of mixed declaration metadata. -/
+example :
+    evalDeclaredNumericSumAggregate
+      (declaredSide [declaredCell .empty false, declaredCell .empty true]) =
+        .value 0 .both ∧
+      evalDeclaredNumericSumAggregate
+        (declaredSide [declaredCell (.unknown .required) false,
+          declaredCell (.unknown .malformed) true]) =
+        .unknown .required := by
   native_decide
 
 /- A reached resolved `Having` marker escalates an otherwise fixed sum without changing its amount. -/
