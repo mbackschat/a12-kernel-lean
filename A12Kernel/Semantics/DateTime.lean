@@ -3,9 +3,9 @@ import A12Kernel.Document
 
 /-! # Decoded DateTime and selected instant semantics
 
-This module contains a post-parse, whole-second UTC baseline plus a finite Berlin 2024 transition profile. A local wall label and scalar instant identity are different types even though UTC resolves each admitted label deterministically. The runtime core of `AddHours` operates only on the instant, preserving the identity needed when two Berlin instants share one wall label.
+This module contains a post-parse, whole-second UTC baseline plus the local DateTime types used by timezone profiles. A local wall label and scalar instant identity are different types even though UTC resolves each admitted label deterministically. The runtime core of `AddHours` operates only on the instant, preserving the identity needed when two Berlin instants share one wall label.
 
-The definitions are original clean-room semantics for the decoded time, value-admission, UTC, instant-arithmetic, and finite Berlin 2024 transition clauses of `spec/05` §§2–5 and 9. Formats, numeric offset coercion, cells, general zone dispatch, rendering, and consumer-specific result admission belong to later capsules.
+The definitions are original clean-room semantics for the decoded time, value-admission, UTC, instant-arithmetic, and finite Berlin 2024 calendar-stepping clauses of `spec/05` §§2–5 and 9. Formats, numeric offset coercion, cells, general zone dispatch, rendering, and consumer-specific result admission belong to later capsules.
 -/
 
 namespace A12Kernel
@@ -82,7 +82,7 @@ def shiftHours (instant : Instant) (hours : Int) : Instant :=
 end Instant
 
 /-!
-`Berlin2024Profile` is a finite risk-isolation profile, not a general timezone implementation. It admits only 2024-03-29 through 2024-04-01 and the observed autumn transition date. Fresh spring-gap labels fail, fresh autumn-overlap labels select the later standard-side instant, and calendar-day stepping is exposed only inside the consecutive spring slice. A later general Berlin resolver should replace this profile rather than coexist with it as legacy behavior.
+`Berlin2024Profile` now owns only the finite calendar-day stepping risk slice over 2024-03-29 through 2024-04-01. Fresh-label resolution belongs to the versioned general Berlin profile; this namespace must not grow a parallel resolver.
 -/
 namespace Berlin2024Profile
 
@@ -95,16 +95,6 @@ def SpringSupported (dateTime : LocalDateTime) : Prop :=
       (dateTime.date.civil.parts.month = 4 ∧
         dateTime.date.civil.parts.day = 1))
 
-/-- The exact local-date domain of the selected autumn-overlap slice. -/
-def AutumnSupported (dateTime : LocalDateTime) : Prop :=
-  dateTime.date.civil.parts.year = 2024 ∧
-    dateTime.date.civil.parts.month = 10 ∧
-    dateTime.date.civil.parts.day = 27
-
-/-- The complete fresh-label domain of the finite profile. -/
-def Supported (dateTime : LocalDateTime) : Prop :=
-  SpringSupported dateTime ∨ AutumnSupported dateTime
-
 /-- The missing local hour on the selected 2024 spring-transition date. -/
 def SpringGap (dateTime : LocalDateTime) : Prop :=
   dateTime.date.civil.parts.year = 2024 ∧
@@ -116,34 +106,9 @@ instance (dateTime : LocalDateTime) : Decidable (SpringSupported dateTime) := by
   unfold SpringSupported
   infer_instance
 
-instance (dateTime : LocalDateTime) : Decidable (AutumnSupported dateTime) := by
-  unfold AutumnSupported
-  infer_instance
-
-instance (dateTime : LocalDateTime) : Decidable (Supported dateTime) := by
-  unfold Supported
-  infer_instance
-
 instance (dateTime : LocalDateTime) : Decidable (SpringGap dateTime) := by
   unfold SpringGap
   infer_instance
-
-/-- UTC shift for a supported, non-gap fresh label. -/
-def offsetHours (dateTime : LocalDateTime) : Int :=
-  if dateTime.date.civil.parts.month = 10 then
-    if dateTime.time.hour < 2 then -2 else -1
-  else if dateTime.date.civil.parts.month = 4 ∨
-      (dateTime.date.civil.parts.day = 31 ∧ 3 ≤ dateTime.time.hour) then
-    -2
-  else
-    -1
-
-/-- Resolve a freshly supplied local label in the finite Berlin profile. Spring `02:xx` labels fail; repeated autumn `02:xx` labels select standard time. Instant arithmetic and calendar stepping do not reparse their results. -/
-def resolveLocal? (dateTime : LocalDateTime) : Option Instant :=
-  if Supported dateTime ∧ ¬SpringGap dateTime then
-    some (dateTime.resolveUtc.shiftHours (offsetHours dateTime))
-  else
-    none
 
 /-- Rebuild a supported spring label on another profile date while retaining its current clock. -/
 private def onSpringDate? (dateTime : LocalDateTime)

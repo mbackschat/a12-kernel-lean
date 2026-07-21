@@ -178,10 +178,8 @@ run_cmd do
 #print axioms A12Kernel.instant_shiftHours_zero
 #print axioms A12Kernel.instant_shiftHours_add
 #print axioms A12Kernel.instant_shiftHours_inverse
-#print axioms A12Kernel.berlin2024_resolveLocal_isSome_iff
-#print axioms A12Kernel.berlin2024_resolve_spring_gap
-#print axioms A12Kernel.berlin2024_resolve_autumn_before_two
-#print axioms A12Kernel.berlin2024_resolve_autumn_at_or_after_two
+#print axioms A12Kernel.berlinLegacy_resolve_prefers_3600
+#print axioms A12Kernel.berlinLegacy_resolve_prefers_7200
 #print axioms A12Kernel.berlin2024_differenceInDays_self
 #print axioms A12Kernel.berlin2024_differenceInDays_swap
 #print axioms A12Kernel.fullDate_addDays_zero

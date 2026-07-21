@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.DateTime
+import A12Kernel.Semantics.BerlinLegacyTimeZone
 
 /-! # Finite Berlin 2024 calendar-day differences
 
@@ -16,7 +16,7 @@ private def countLandings : Nat → LocalDateTime → Instant → Nat
       match nextCalendarDay? current with
       | none => 0
       | some next =>
-          match resolveLocal? next with
+          match EuropeBerlinLegacyProfile.resolveLocal? next with
           | none => 0
           | some landing =>
               if landing.epochSecond ≤ later.epochSecond then
@@ -28,8 +28,8 @@ private def countLandings : Nat → LocalDateTime → Instant → Nat
 def differenceInDays? (first second : LocalDateTime) : Option Int :=
   if SpringSupported first ∧ SpringSupported second then
     do
-      let firstInstant ← resolveLocal? first
-      let secondInstant ← resolveLocal? second
+      let firstInstant ← EuropeBerlinLegacyProfile.resolveLocal? first
+      let secondInstant ← EuropeBerlinLegacyProfile.resolveLocal? second
       if firstInstant.epochSecond < secondInstant.epochSecond then
         pure (countLandings 3 first secondInstant : Int)
       else if secondInstant.epochSecond < firstInstant.epochSecond then

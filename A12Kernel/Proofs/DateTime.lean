@@ -428,44 +428,4 @@ theorem instant_shiftHours_inverse
     _ = instant.shiftHours 0 := by congr; omega
     _ = instant := instant_shiftHours_zero instant
 
-/-- The finite Berlin resolver succeeds exactly on supported labels outside the spring gap. -/
-theorem berlin2024_resolveLocal_isSome_iff
-    (dateTime : LocalDateTime) :
-    (Berlin2024Profile.resolveLocal? dateTime).isSome = true ↔
-      Berlin2024Profile.Supported dateTime ∧
-        ¬Berlin2024Profile.SpringGap dateTime := by
-  simp [Berlin2024Profile.resolveLocal?]
-
-/-- Every fresh label in the selected spring gap is rejected. -/
-theorem berlin2024_resolve_spring_gap
-    (dateTime : LocalDateTime)
-    (gap : Berlin2024Profile.SpringGap dateTime) :
-    Berlin2024Profile.resolveLocal? dateTime = none := by
-  simp [Berlin2024Profile.resolveLocal?, gap]
-
-/-- Fresh labels before the repeated autumn hour resolve with the daylight offset. -/
-theorem berlin2024_resolve_autumn_before_two
-    (dateTime : LocalDateTime)
-    (supported : Berlin2024Profile.AutumnSupported dateTime)
-    (beforeTwo : dateTime.time.hour < 2) :
-    Berlin2024Profile.resolveLocal? dateTime =
-      some (dateTime.resolveUtc.shiftHours (-2)) := by
-  rcases supported with ⟨year, month, day⟩
-  simp [Berlin2024Profile.resolveLocal?, Berlin2024Profile.Supported,
-    Berlin2024Profile.AutumnSupported, Berlin2024Profile.SpringGap,
-    Berlin2024Profile.offsetHours, year, month, day, beforeTwo]
-
-/-- Fresh labels from the repeated autumn hour onward resolve with the standard offset. -/
-theorem berlin2024_resolve_autumn_at_or_after_two
-    (dateTime : LocalDateTime)
-    (supported : Berlin2024Profile.AutumnSupported dateTime)
-    (atOrAfterTwo : 2 ≤ dateTime.time.hour) :
-    Berlin2024Profile.resolveLocal? dateTime =
-      some (dateTime.resolveUtc.shiftHours (-1)) := by
-  rcases supported with ⟨year, month, day⟩
-  simp [Berlin2024Profile.resolveLocal?, Berlin2024Profile.Supported,
-    Berlin2024Profile.AutumnSupported, Berlin2024Profile.SpringGap,
-    Berlin2024Profile.offsetHours, year, month, day,
-    show ¬dateTime.time.hour < 2 by omega]
-
 end A12Kernel
