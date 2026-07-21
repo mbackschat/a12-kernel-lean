@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.DateTimeComparison
+import A12Kernel.Semantics.Observation
 
 /-! # Resolved DateTime instant-comparison locks -/
 
@@ -8,6 +9,12 @@ open A12Kernel
 
 private def instant (epochSecond : Int) : Instant := { epochSecond }
 
+private def checkedInstant (value : Instant) : CheckedCell Instant :=
+  { rawPresent := true, parsed := some value, findings := [] }
+
+private def emptyInstant : CheckedCell Instant :=
+  { rawPresent := false, parsed := none, findings := [] }
+
 /- Every operator is separated on two distinct exact instants. -/
 example :
     TemporalComparisonOp.equal.holdsInstant (instant 100) (instant 101) = false ∧
@@ -16,6 +23,19 @@ example :
       TemporalComparisonOp.beforeOrEqual.holdsInstant (instant 100) (instant 101) = true ∧
       TemporalComparisonOp.after.holdsInstant (instant 100) (instant 101) = false ∧
       TemporalComparisonOp.afterOrEqual.holdsInstant (instant 100) (instant 101) = false := by
+  native_decide
+
+/- Typed checked DateTime observations reuse exact-instant comparison and preserve formal unavailability. -/
+example :
+    TemporalComparisonOp.before.evalInstantObserved
+        (observeCell .validation (checkedInstant (instant 100)))
+        (observeCell .validation (checkedInstant (instant 101))) = .fired .value ∧
+      TemporalComparisonOp.equal.evalInstantObserved
+        (observeCell .validation emptyInstant)
+        (observeCell .validation (checkedInstant (instant 101))) = .notFired ∧
+      TemporalComparisonOp.before.evalInstantObserved
+        (observeCell .validation (emptyInstant.withFinding .declaredConstraint))
+        (observeCell .validation emptyInstant) = .unknown := by
   native_decide
 
 /- Equality separates strict from inclusive instant ordering. -/
