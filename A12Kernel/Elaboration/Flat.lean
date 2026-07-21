@@ -48,6 +48,7 @@ inductive SurfaceScalarKind where
   | boolean
   | confirm
   | string
+  | temporal (kind : TemporalKind)
   deriving Repr, DecidableEq
 
 namespace SurfaceLiteral
@@ -88,7 +89,7 @@ def path (declaration : FlatFieldDecl) : List String :=
 def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   match declaration.policy.kind with
   | .number info => some { id := declaration.id, info }
-  | .boolean | .confirm | .string => none
+  | .boolean | .confirm | .string | .temporal _ _ => none
 
 def toPresenceField? (declaration : FlatFieldDecl) : Option FlatField :=
   match declaration.policy.kind with
@@ -96,6 +97,8 @@ def toPresenceField? (declaration : FlatFieldDecl) : Option FlatField :=
   | .boolean => some (.boolean { id := declaration.id })
   | .confirm => some (.confirm { id := declaration.id })
   | .string => some (.string { id := declaration.id })
+  | .temporal kind components =>
+      some (.temporal { id := declaration.id, kind, components })
 
 end FlatFieldDecl
 
@@ -368,6 +371,7 @@ def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .boolean => .boolean
   | .confirm => .confirm
   | .string => .string
+  | .temporal kind _ => .temporal kind
 
 private def SurfaceComparisonOp.toEquality? : SurfaceComparisonOp → Option EqualityOp
   | .equal => some .equal
@@ -500,6 +504,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
               pure (.compare (.string equality { id := declaration.id } expected))
           | literal =>
               throw (.literalKindMismatch declaration.path .string literal.kind)
+      | .temporal kind _ =>
+          throw (.literalKindMismatch declaration.path (.temporal kind) literal.kind)
   | .lengthCompare op reference expected => do
       let lengthOp ← match op.toStringLength? with
         | some lengthOp => pure lengthOp

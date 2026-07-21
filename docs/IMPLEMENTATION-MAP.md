@@ -67,7 +67,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded / next
 
-- **Implemented internally, partial; direct ordering external evidence pending:** all six nonrepeatable Number comparisons, Boolean/Confirm/String equality/inequality, and Number/Boolean/Confirm/String presence are executable.
+- **Implemented internally, partial; direct ordering external evidence pending:** all six nonrepeatable Number comparisons, Boolean/Confirm/String equality/inequality, and Number/Boolean/Confirm/String/Date/Time/DateTime presence are executable.
 - Direct String supports equality/inequality, plus all four String `Length` ordering operators
 - its empty observation retains absent versus present-empty placement at the checked-cell boundary.
 - String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; other String comparisons/functions remain rejected or unimplemented.
@@ -109,6 +109,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - No retained portable observation yet exercises CRLF/LF/lone-CR ingestion
 - Typed-cell generalization is an internal representation law with no new kernel-correspondence claim; concrete Date/Time/DateTime raw classification remains pending.
 - Typed raw-cell projection likewise begins after parsing and declaration admission; it adds no evidence or claim about concrete temporal text.
+- Temporal declaration admission retains the declared kind and component set, accepts only the matching tagged exact instant, and projects kind mismatch through the existing malformed/unknown path. This starts after temporal parsing and declared-format checks; it does not claim that arbitrary instants are parser-reachable.
 
 #### Excluded / next
 
@@ -347,14 +348,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Time coverage includes exact six-way decoded time-of-day comparison with classified validation polarity and resolved coordinate-based `Min`/`Max`. DateTime coverage includes exact six-way resolved-instant comparison with classified validation polarity, resolved exact-instant `Min`/`Max`, the proved UTC local-order bridge, resolved `DifferenceInHours/Minutes/Seconds`, the full versioned Berlin legacy offset/fresh-label profile, and resolved `DifferenceInDays` inside its consecutive spring slice.
 - The admitted full-Date shifts deliberately cover only already-converted integer offsets whose result remains a stored/computed full Date. The matching difference capsule starts with two such values and returns only the mathematical integer count. Numeric truncation and 32-bit conversion, below-floor intermediate expression values, partial formats, empty/formal reason projection, numeric result metadata, DateTime gates and wall-time behavior, target formatting, and cell effects remain outside.
 - The Date, Time, and DateTime comparison owners start after static component admission and after each operand has been classified as a present full Date, decoded time of day, or exact instant with symmetric missing provenance, no value, or formal unavailability. All three accept their matching typed validation observation directly. Literal typing/parsing, AM/PM decoding, partial-Date resolution, model-zone selection, raw temporal-cell classification, and declaration/path lowering remain outside.
-- Concrete declaration/path lowering now has one shared storage representation. The existing heterogeneous field-ID-indexed `Value` context carries `temporal TemporalKind Instant`, so Date, Time, and DateTime retain distinct tags over the same exact coordinate without per-kind contexts or a second temporal document store. Proof-bearing wall-label types remain resolved parser inputs rather than storage alternatives. The next step is declaration-owned component/format policy plus an admitted projection into the tagged payload.
+- Concrete declaration/path lowering now has one shared storage representation and checked presence path. The existing heterogeneous field-ID-indexed `Value` context carries `temporal TemporalKind Instant`; `FieldKind.temporal` retains declaration-owned components, formal checking admits only the matching tag, and `FlatTemporalField` reuses ordinary presence, requiredness, generated guards, and model-context construction. Proof-bearing wall-label types remain resolved parser inputs rather than storage alternatives. Typed temporal field-to-literal comparison stays fail-closed; the next step is field-to-field lowering through the existing component gates and resolved evaluators.
 - The shared temporal-extremum owner starts with classified stored/full-Date, decoded Time, or exact-instant operands plus resolved tail/`Having` markers. Path/star expansion, raw cells, computation target clearing/application, checked authoring, constructed-Date calendar identity, Time/DateTime parsing and zone resolution, and target rendering remain outside.
 - The construction classification and direct numeric component projection are implemented, but they do not yet retain calendar identity, compose temporal no-value reasons beyond extraction, implement date differences, or implement legacy-hybrid month/year operations.
 - Date-range raw cell classification, actual filter evaluation, paths/stars, row gates, and checked lowering remain outside the resolved operator capsule.
 - Open:
   - Literal/field-format parsing and exact parser range
   - numeric offset truncation/runtime bounds for additions
-  - empty/formal operands for other Date consumers and general `Value` integration
+  - empty/formal operands for other Date consumers and checked field-to-field `Value` integration
   - other operator gates and polarity
   - DateTime difference operand/result checking and Number consumption
   - Date and DateTime comparison raw-cell checking and checked integration
