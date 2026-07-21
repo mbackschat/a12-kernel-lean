@@ -40,6 +40,30 @@ theorem emptyStringLengthLess_fires_omission (context : FlatContext)
     StringLengthComparisonOp.toNumeric] using
       growOnlyLessFiring_is_omission 0 expected holds
 
+/-- Inclusive upper bounds have the same grow-only repair direction. -/
+theorem emptyStringLengthLessEqual_fires_omission (context : FlatContext)
+    (field : FlatStringField) (expected : Rat)
+    (empty : context.observeValidationAt field.id = .empty)
+    (holds : NumericComparisonOp.lessEqual.holds 0 expected = true) :
+    (FlatComparison.stringLength .lessEqual field expected).eval context =
+      .fired .omission := by
+  simp [FlatComparison.eval, FlatContext.resolveStringLengthOperand, empty,
+    StringLengthComparisonOp.toNumeric, NumericComparisonOp.evalFixedRight,
+    NumericComparisonOp.eval, holds, NumericComparisonOp.fillCanBreak,
+    NumericFillability.growOnly]
+
+/-- Strict lower bounds cannot be repaired by growing an already-satisfying grow-only Length. -/
+theorem emptyStringLengthGreater_fires_value (context : FlatContext)
+    (field : FlatStringField) (expected : Rat)
+    (empty : context.observeValidationAt field.id = .empty)
+    (holds : NumericComparisonOp.greater.holds 0 expected = true) :
+    (FlatComparison.stringLength .greater field expected).eval context =
+      .fired .value := by
+  simp [FlatComparison.eval, FlatContext.resolveStringLengthOperand, empty,
+    StringLengthComparisonOp.toNumeric, NumericComparisonOp.evalFixedRight,
+    NumericComparisonOp.eval, holds, NumericComparisonOp.fillCanBreak,
+    NumericFillability.growOnly, NumericFillability.fixed]
+
 /-- The grow-only zero cannot move downward, so any satisfied greater-or-equal comparison fires as value. -/
 theorem emptyStringLengthGreaterEqual_fires_value (context : FlatContext)
     (field : FlatStringField) (expected : Rat)

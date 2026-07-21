@@ -378,6 +378,8 @@ private def SurfaceComparisonOp.toNumeric? : SurfaceComparisonOp → Option Nume
 private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
     Option StringLengthComparisonOp
   | .less => some .less
+  | .lessEqual => some .lessEqual
+  | .greater => some .greater
   | .greaterEqual => some .greaterEqual
   | _ => none
 

@@ -200,9 +200,15 @@ The existing String expression and store/outcome types already distinguish produ
 
 Adding target constraints to the flat model would widen a settled cross-family representation and require revisiting validation formal checking, model validation, and every declaration constructor. The bounded audit therefore added no default policy and no partial target step. Checked target construction remains parked until a concrete model-extension unit owns the full fact and its validation consumers.
 
-## Immediate next step: String Length operator-family audit
+## Completed semantic unit: String Length ordering operators
 
-Audit direct String `Length` comparison as one closed six-operator batch. Confirm from canonical clauses and pinned source that all six ordinary numeric operators share the existing UTF-16 length operand, empty-as-growable-zero rule, unavailable propagation, and fixed-literal polarity. If exact, replace the two-member proxy enum with the established `NumericComparisonOp`, add red/green separators for the four missing operators, and update only the owning String coverage records. Do not add String expressions, targets, or protocol exposure.
+The six-operator hypothesis failed at the checked authoring boundary. Runtime `Length` is a scale-0 Number, but `==` and `!=` require the decoded literal's authored scale; `SurfaceCondition.lengthCompare` stores only `Rat`. Admitting exact comparisons there would therefore bypass the static scale gate. The safe closed family is the four scale-exempt ordering operators.
+
+`StringLengthComparisonOp` now contains `<`, `<=`, `>`, and `>=`, each delegating the shared UTF-16, empty-as-growable-zero operand to `NumericComparisonOp`. The red cases failed on absent `<=`/`>` core constructors and checked admission. The green matrix locks empty `<= 0` as OMISSION, empty `> -1` as VALUE, both new checked operators as accepted, and both exact operators as rejected. Trusted laws capture the two new polarity branches. No String expression, target, spec, sync-ledger, protocol, evidence, or dependency changed.
+
+## Immediate next step: direct Number ordering audit
+
+Audit the reduced direct Number field-to-literal surface for the same missing scale-exempt `<=` and `>` operators. Proceed only if it delegates unchanged to the existing `NumericComparisonOp`, preserves signed/unsigned empty fillability, and does not broaden the scale-erased exact-comparison contract. Add paired red/green polarity cases and keep equality/inequality behavior unchanged.
 
 ## Likely next keystone rotation
 

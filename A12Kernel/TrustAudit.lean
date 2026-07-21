@@ -586,6 +586,8 @@ run_cmd do
 #print axioms A12Kernel.directEmptyStringLiteral_notFired
 #print axioms A12Kernel.directEmptyStringLiteral_unknown
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
+#print axioms A12Kernel.emptyStringLengthLessEqual_fires_omission
+#print axioms A12Kernel.emptyStringLengthGreater_fires_value
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value
 #print axioms A12Kernel.emptyString_operatorDistinction
 

@@ -52,14 +52,18 @@ def id : FlatField → FieldId
 
 end FlatField
 
-/-- The two String `Length` comparisons closed by the current operator-sensitive capsule. -/
+/-- The scale-exempt String `Length` ordering comparisons admitted by the reduced flat surface. Exact equality and inequality need an authored-scale-preserving consumer. -/
 inductive StringLengthComparisonOp where
   | less
+  | lessEqual
+  | greater
   | greaterEqual
   deriving Repr, DecidableEq
 
 def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericComparisonOp
   | .less => .less
+  | .lessEqual => .lessEqual
+  | .greater => .greater
   | .greaterEqual => .greaterEqual
 
 /-- The typed comparison fragment. The reduced direct-Number route receives only a
