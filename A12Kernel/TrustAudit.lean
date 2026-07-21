@@ -256,6 +256,12 @@ run_cmd do
 #print axioms A12Kernel.Verdict.disj_distributes_over_conj
 
 #print axioms A12Kernel.formalCheck_wellFormed
+#print axioms A12Kernel.checkRawCellWith_wellFormed
+#print axioms A12Kernel.checkAdmittedRawCell_parsed
+#print axioms A12Kernel.checkAdmittedRawCell_wellFormed
+#print axioms A12Kernel.observeAdmittedRawCell_parsed
+#print axioms A12Kernel.observeAdmittedRawCell_rejected_validation
+#print axioms A12Kernel.observeAdmittedRawCell_rejected_computation
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty
 #print axioms A12Kernel.formalCheck_presentEmpty_preservesPlacement

@@ -48,6 +48,16 @@ example :
         (observeCell .validation (checkedDate later)) = .notFired := by
   native_decide
 
+/- An admitted typed parser result reaches the same Date comparison without a second value or verdict representation. -/
+example :
+    TemporalComparisonOp.before.evalObserved
+        (observeAdmittedRawCell .validation (.parsed earlier))
+        (observeAdmittedRawCell .validation (.parsed later)) = .fired .value ∧
+      TemporalComparisonOp.equal.evalObserved
+        (observeAdmittedRawCell .validation (.empty : RawCell FullDate))
+        (observeAdmittedRawCell .validation (.parsed later)) = .notFired := by
+  native_decide
+
 /- Formal unavailability remains UNKNOWN and dominates a valueless peer at the checked boundary. -/
 example :
     TemporalComparisonOp.before.evalObserved

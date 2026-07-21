@@ -82,4 +82,16 @@ example :
           (.poison .malformed : CellObservation Nat) := by
   decide
 
+/- An already-admitted typed parser result retains the same placement and rejection states as scalar ingestion. -/
+example :
+    checkAdmittedRawCell (.parsed 7 : RawCell Nat) =
+        ({ rawPresent := true, parsed := some 7, findings := [] } : CheckedCell Nat) ∧
+      checkAdmittedRawCell (.empty : RawCell Nat) =
+        ({ rawPresent := false, parsed := none, findings := [] } : CheckedCell Nat) ∧
+      checkAdmittedRawCell (.rejected .declaredConstraint : RawCell Nat) =
+        ({ rawPresent := true
+           parsed := none
+           findings := [.declaredConstraint] } : CheckedCell Nat) := by
+  decide
+
 end A12Kernel.Conformance.Observation
