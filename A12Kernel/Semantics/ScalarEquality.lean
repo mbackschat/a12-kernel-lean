@@ -20,6 +20,19 @@ inductive SimpleComparisonOperand (α : Type) where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
+namespace CellObservation
+
+/-- Classify a typed validation observation for a comparison whose empty rule is “not evaluated” and whose present direct value is fixed. A computation-only poison is preserved defensively as formal unavailability. -/
+def asValidationSimpleOperand (observation : CellObservation α) :
+    SimpleComparisonOperand α :=
+  match observation with
+  | @A12Kernel.CellObservation.empty _ => .notEvaluated
+  | @A12Kernel.CellObservation.value _ observed => .value observed true
+  | @A12Kernel.CellObservation.unknown _ cause => .unknown cause
+  | @A12Kernel.CellObservation.poison _ cause => .unknown cause
+
+end CellObservation
+
 /-- Evaluate two classified scalar operands with symmetric missing polarity. Formal unavailability dominates no value; a true comparison is omission-typed exactly when either present operand retains missing provenance. -/
 def evalSymmetricComparison (holds : α → α → Bool)
     (leftOperand rightOperand : SimpleComparisonOperand α) : Verdict :=

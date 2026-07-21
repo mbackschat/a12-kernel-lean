@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ScalarEquality
 
 /-! # Resolved temporal comparison operations and full-Date comparison
 
-This capsule evaluates the six ordinary comparison operators after both operands have been classified as admitted full Dates, no value, or formally unavailable. It compares present values by calendar identity and chronology rather than stored text, and it retains symmetric missing provenance for validation polarity. The operation enum and operand-exchange map are shared by the separate Time and DateTime consumers. Literal typing and parsing, checked lowering, and raw cells remain outside.
+This capsule evaluates the six ordinary comparison operators after both operands have been classified as admitted full Dates, no value, or formally unavailable. It compares present values by calendar identity and chronology rather than stored text, and it retains symmetric missing provenance for validation polarity. The operation enum and operand-exchange map are shared by the separate Time and DateTime consumers. Typed validation observations delegate to that same classified path; literal typing, parsing, raw-cell checking, and declaration/path lowering remain outside.
 -/
 
 namespace A12Kernel
@@ -42,5 +42,10 @@ def TemporalComparisonOp.holds (op : TemporalComparisonOp)
 def TemporalComparisonOp.eval (op : TemporalComparisonOp)
     (leftOperand rightOperand : SimpleComparisonOperand FullDate) : Verdict :=
   evalSymmetricComparison op.holds leftOperand rightOperand
+
+/-- Evaluate two typed full-Date validation observations through the already-classified comparison path. -/
+def TemporalComparisonOp.evalObserved (op : TemporalComparisonOp)
+    (left right : CellObservation FullDate) : Verdict :=
+  op.eval left.asValidationSimpleOperand right.asValidationSimpleOperand
 
 end A12Kernel

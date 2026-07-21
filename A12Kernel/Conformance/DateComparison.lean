@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.Observation
 
 /-! # Resolved full-Date comparison locks -/
 
@@ -21,6 +22,12 @@ private def earlier : FullDate := fullDate 2024 2 29 (by native_decide)
 
 private def later : FullDate := fullDate 2024 3 1 (by native_decide)
 
+private def checkedDate (value : FullDate) : CheckedCell FullDate :=
+  { rawPresent := true, parsed := some value, findings := [] }
+
+private def emptyDate : CheckedCell FullDate :=
+  { rawPresent := false, parsed := none, findings := [] }
+
 /- Every operator is separated on a strictly earlier pair. -/
 example :
     holds? .equal 2024 2 29 2024 3 1 = some false ∧
@@ -29,6 +36,23 @@ example :
       holds? .beforeOrEqual 2024 2 29 2024 3 1 = some true ∧
       holds? .after 2024 2 29 2024 3 1 = some false ∧
       holds? .afterOrEqual 2024 2 29 2024 3 1 = some false := by
+  native_decide
+
+/- Typed checked Date observations delegate to the existing resolved comparison and verdict path. -/
+example :
+    TemporalComparisonOp.before.evalObserved
+        (observeCell .validation (checkedDate earlier))
+        (observeCell .validation (checkedDate later)) = .fired .value ∧
+      TemporalComparisonOp.equal.evalObserved
+        (observeCell .validation emptyDate)
+        (observeCell .validation (checkedDate later)) = .notFired := by
+  native_decide
+
+/- Formal unavailability remains UNKNOWN and dominates a valueless peer at the checked boundary. -/
+example :
+    TemporalComparisonOp.before.evalObserved
+        (observeCell .validation (emptyDate.withFinding .malformed))
+        (observeCell .validation emptyDate) = .unknown := by
   native_decide
 
 /- Equality separates strict from inclusive ordering in both directions. -/
