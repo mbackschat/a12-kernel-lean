@@ -82,6 +82,9 @@ run_cmd do
 #print axioms A12Kernel.dateComparison_eval_fixed_firing
 #print axioms A12Kernel.dateComparison_eval_missing_firing
 #print axioms A12Kernel.dateComparison_eval_swapped
+#print axioms A12Kernel.dateComparison_evalObserved_clean_firing
+#print axioms A12Kernel.dateComparison_evalObserved_empty_left
+#print axioms A12Kernel.dateComparison_evalObserved_unknown_left
 #print axioms A12Kernel.temporalExtremum_empty
 #print axioms A12Kernel.temporalExtremum_unknown_head
 #print axioms A12Kernel.temporalExtremum_fixed_singleton

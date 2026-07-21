@@ -73,4 +73,22 @@ theorem dateComparison_eval_swapped (op : TemporalComparisonOp)
   exact evalSymmetricComparison_swapped op.holds op.swapped.holds
     (dateComparison_swapped op) left right
 
+/-- A true comparison over two clean typed observations delegates to the existing fixed-value verdict law. -/
+theorem dateComparison_evalObserved_clean_firing (op : TemporalComparisonOp)
+    (left right : FullDate) (holds : op.holds left right = true) :
+    op.evalObserved (.value left) (.value right) = .fired .value := by
+  exact dateComparison_eval_fixed_firing op left right holds
+
+/-- Typed validation emptiness retains the Date comparison's no-value behavior. -/
+theorem dateComparison_evalObserved_empty_left (op : TemporalComparisonOp)
+    (right : FullDate) :
+    op.evalObserved .empty (.value right) = .notFired := by
+  exact dateComparison_eval_noValue_left op right true
+
+/-- Typed validation unavailability retains its exact cause until the existing verdict projection hides it as UNKNOWN. -/
+theorem dateComparison_evalObserved_unknown_left (op : TemporalComparisonOp)
+    (cause : FormalCause) (right : CellObservation FullDate) :
+    op.evalObserved (.unknown cause) right = .unknown := by
+  exact dateComparison_eval_unknown_left op cause right.asValidationSimpleOperand
+
 end A12Kernel
