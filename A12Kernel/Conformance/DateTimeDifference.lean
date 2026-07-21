@@ -1,8 +1,9 @@
 import A12Kernel.Semantics.DateTimeDifference
+import A12Kernel.Semantics.BerlinLegacyTimeZone
 
 /-! # Resolved DateTime-difference executable locks
 
-These cases start after both DateTime operands have been resolved to exact instants. They lock authored argument order, truncation toward zero, physical elapsed time across the selected Berlin overlap, and the non-additivity introduced by per-operation truncation.
+These cases start after both DateTime operands have been resolved to exact instants. They lock authored argument order, truncation toward zero, physical elapsed time across the Berlin overlap, and the non-additivity introduced by per-operation truncation.
 -/
 
 namespace A12Kernel.Conformance.DateTimeDifference
@@ -46,9 +47,9 @@ example :
 /- The selected Berlin autumn endpoints are three physical hours apart despite two wall-clock hours. -/
 example :
     (do
-      let first ← Berlin2024Profile.resolveLocal?
+      let first ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← Berlin2024Profile.resolveLocal?
+      let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 3 30 0 (by native_decide))
       pure (first.difference .hours second)) =
         some 3 := by
@@ -57,9 +58,9 @@ example :
 /- A fresh ambiguous 02:30 selects the standard-side instant, 120 minutes after fresh 01:30. -/
 example :
     (do
-      let first ← Berlin2024Profile.resolveLocal?
+      let first ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← Berlin2024Profile.resolveLocal?
+      let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure (first.difference .minutes second)) =
         some 120 := by
@@ -68,9 +69,9 @@ example :
 /- Chained instant arithmetic reaches daylight-side 02:30, still 60 minutes before fresh standard-side 02:30. -/
 example :
     (do
-      let first ← Berlin2024Profile.resolveLocal?
+      let first ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← Berlin2024Profile.resolveLocal?
+      let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure ((first.shiftHours 1).difference .minutes second)) =
         some 60 := by

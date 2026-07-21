@@ -4,14 +4,14 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: `5f11430` (`feat(time): add resolved time extrema`), with the corrected three-family ownership wording at `1c4c48a`.
-- Its focused semantics/proof/conformance build, full 229-job `lake build`, 51/51 retained-observation replay, and trust audit over 737 theorem roots / 11,918 declarations / 134 logical modules passed.
+- Semantic baseline: the versioned Europe/Berlin legacy-timezone profile in this revision, building on `5f11430` (`feat(time): add resolved time extrema`).
+- Its focused semantics/proof/conformance builds, full 232-job `lake build`, 51/51 retained-observation replay, and trust audit over 735 theorem roots / 11,955 declarations / 136 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Replace the finite fresh-label `Berlin2024Profile` resolver with the versioned `europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1` profile already owned by [`spec/05-dates-and-time.md`](../spec/05-dates-and-time.md#51-versioned-europeberlin-legacy-profile). Implement exact historical-transition and post-1997 recurrence offset selection plus general fresh-label gap/overlap resolution, then route the still-bounded 2024 calendar-day consumer through that one resolver. Do not widen `DifferenceInDays`, general zone dispatch, parsing, checked cells, or public protocol in this capsule.
+Audit the checked temporal-lowering boundary before extending it. Determine the exact declaration facts, comparable component sets, model-zone selection, raw present/empty/malformed/non-relevant classification, and missing/formal-cause projections needed to lower Date, Time, and DateTime operands into the already resolved comparison/extremum semantics. Produce one decision table and identify the existing representation owner; implement only if the facts close without a second temporal value tree, aggregate scan, parser, or zone-dispatch mechanism.
 
 ## Frontier queue
 
@@ -44,8 +44,8 @@ Replace the finite fresh-label `Berlin2024Profile` resolver with the versioned `
 - **Satisfied — resolved Time comparison:** `2f8c08c` compares decoded times by seconds since midnight, shares one operation-neutral enum and classified verdict path across Date/Time/DateTime, and keeps format decoding plus checked lowering outside.
 - **Satisfied — resolved Time extrema:** `5f11430` reuses the temporal fold and decoded coordinate, preserves the common empty/formal/missing distinctions, and widens pending `SPEC-2026-07-21-07` plus its handoff instead of creating a duplicate peer request.
 - **Satisfied — resolved temporal consumer probe:** an isolated reader at documentation revision `1c4c48a` recovered the complete resolved evaluator, exact separating cases, swapped-comparison law, projection-sensitive transformations, exclusions, and assurance boundary without sibling or kernel research. Execute, Transform, and Explain pass only at that resolved boundary; no shipment or external implementation was started.
-- **Active — versioned Berlin legacy-timezone profile:** replace the finite fresh-label resolver with the canonical 62-transition table plus post-1997 recurrence, preserve gap rejection and smaller/after-offset overlap choice, and keep the finite calendar-day consumer as a downstream slice rather than a parallel resolver.
-- **Missing fact — checked temporal lowering:** foundational checked values and field declarations do not yet retain Date/DateTime values, comparable format components, or zone-resolution policy; do not widen them through an aggregate-only adapter.
+- **Satisfied — versioned Berlin legacy-timezone profile:** the current capsule implements the exact 62-entry table plus post-1997 recurrence, proves ascending-candidate smaller-offset selection, covers modern and CEMT gaps/overlaps, deletes the finite fresh-label resolver, and routes the bounded calendar-day consumer through the one general resolver.
+- **Active — checked temporal-lowering source audit:** establish the declaration, format-component, model-zone, raw-state, missingness, and formal-cause matrix before changing checked types. Do not widen through an aggregate-only adapter or duplicate the resolved temporal representations.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
@@ -57,7 +57,7 @@ Replace the finite fresh-label `Berlin2024Profile` resolver with the versioned `
 
 ## Parked boundaries
 
-- `DifferenceInDays` beyond the finite Berlin 2024 profile needs the versioned model-zone legacy-calendar account; proleptic `CivilDate` is not a substitute.
+- `DifferenceInDays` beyond the finite Berlin 2024 stepping slice needs a general model-zone legacy-calendar landing account; the now-complete Berlin offset/fresh-label profile and proleptic `CivilDate` are not substitutes.
 - Authored message integration still needs checked templates and real display providers.
 - Checked group-instance enumeration and wildcardable relevance construction remain outside resolved group-presence projections.
 - Public protocol expansion, semantic shipments, candidate qualification, SMT dependencies, and new evidence/process machinery require explicit adoption or approval.

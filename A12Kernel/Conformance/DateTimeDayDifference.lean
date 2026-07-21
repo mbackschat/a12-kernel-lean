@@ -25,7 +25,7 @@ example :
 
 /- A fresh local label in the spring gap is rejected. -/
 example :
-    Berlin2024Profile.resolveLocal?
+    EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 3 31 2 30 0 (by native_decide)) =
       none := by
   native_decide
@@ -47,9 +47,9 @@ example :
 
 example :
     (do
-      let first ← Berlin2024Profile.resolveLocal?
+      let first ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 3 30 2 30 0 (by native_decide))
-      let second ← Berlin2024Profile.resolveLocal?
+      let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 3 31 1 45 0 (by native_decide))
       pure ((second.epochSecond - first.epochSecond).tdiv 86400)) =
       some 0 := by

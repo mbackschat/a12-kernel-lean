@@ -33,43 +33,6 @@ end DateParts
 
 namespace CivilDate
 
-namespace DayShift
-
-/-- Locate a zero-based day inside one Gregorian year, scanning at most one complete 400-year era. -/
-private def locateYear : Nat → Int → Nat → Option (Int × Nat)
-  | 0, _, _ => none
-  | fuel + 1, year, remaining =>
-      let yearLength := if DateParts.isLeapYear year then 366 else 365
-      if remaining < yearLength then some (year, remaining)
-      else locateYear fuel (year + 1) (remaining - yearLength)
-
-/-- Locate a one-based month/day inside one already selected Gregorian year. -/
-private def locateMonth : Nat → Int → Nat → Nat → Option (Nat × Nat)
-  | 0, _, _, _ => none
-  | fuel + 1, year, month, remaining =>
-      match DateParts.daysInMonth? year month with
-      | none => none
-      | some monthLength =>
-          if remaining < monthLength then some (month, remaining + 1)
-          else locateMonth fuel year (month + 1) (remaining - monthLength)
-
-end DayShift
-
-/-- Invert the Gregorian day coordinate with at most 400 year steps and 12 month steps. Coordinates before the positive era fail closed. -/
-def ofUnixEpochDay? (epochDay : Int) : Option CivilDate :=
-  let absoluteDay := epochDay + 719162
-  if absoluteDay < 0 then
-    none
-  else
-    let era := absoluteDay / 146097
-    let dayInEra := Int.toNat (absoluteDay % 146097)
-    match DayShift.locateYear 400 (era * 400 + 1) dayInEra with
-    | none => none
-    | some (year, dayInYear) =>
-        match DayShift.locateMonth 12 year 1 dayInYear with
-        | none => none
-        | some (month, day) => CivilDate.ofYmd? year month day
-
 /-- Gregorian month shift with target-month day clamping. -/
 private def addMonths? (date : CivilDate) (offset : Int) : Option CivilDate :=
   let (targetYear, targetMonth) := date.parts.shiftedYearMonth offset
