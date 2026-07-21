@@ -2,7 +2,7 @@ import A12Kernel.Semantics.FlatValidation
 
 /-! # One flat validation-rule emission boundary
 
-This capsule attaches whole-rule metadata to the existing flat condition verdict. Its low-level input assumes an already-lowered condition, resolved error-field ID, nonrepeatable context, and already-resolved per-instance text. It also defines the one-pass renderer intended to produce that text after firing from parser-independent, already-resolved message parts. Checked post-fire integration and model assembly are separate; authored-template parsing and legality, field lookup, locale and display conversion, repeatable addressing, partial validation, rule collections, and orchestration remain outside.
+This capsule attaches whole-rule metadata to the existing flat condition verdict. Its low-level input assumes an already-lowered condition, resolved error-field ID, nonrepeatable context, and parser-independent structured message plan. The plan's provider/default selection and one-pass rendering occur only after the condition fires. Authored-template parsing and legality, field lookup, provider invocation, locale and display conversion, repeatable addressing, partial validation, rule collections, and orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -86,13 +86,13 @@ def render (plan : MessageRenderPlan) : ResolvedMessageText :=
 
 end MessageRenderPlan
 
-/-- One already-resolved flat rule instance. The checked layer proves the model, error-field, and nonrepeatable assumptions before using this semantic core. -/
+/-- One already-resolved flat rule instance. Message display inputs remain structured until a fired verdict reaches the renderer. The checked layer proves the model, error-field, and nonrepeatable assumptions before using this semantic core. -/
 structure ResolvedFlatRule where
   condition : FlatCondition
   errorField : FieldId
   errorCode : String
   severity : ValidationSeverity
-  resolvedText : ResolvedMessageText
+  messagePlan : MessageRenderPlan
   deriving Repr, DecidableEq
 
 /-- The message fields admitted by this flat capsule. Rule path, referenced fields, and fill-to-fix metadata remain outside. -/
@@ -136,7 +136,7 @@ end FlatRuleOutcome
 
 namespace ResolvedFlatRule
 
-/-- Evaluate the error condition exactly once and attach metadata only to a fired verdict. This fragment rejects repeatable error fields, hence the empty repetition path. -/
+/-- Evaluate the error condition exactly once, then render and attach message metadata only to a fired verdict. This fragment rejects repeatable error fields, hence the empty repetition path. -/
 def evalFull (rule : ResolvedFlatRule) (context : FlatContext)
     (hasContent : Bool) : FlatRuleOutcome :=
   match rule.condition.evalFull context hasContent with
@@ -147,7 +147,7 @@ def evalFull (rule : ResolvedFlatRule) (context : FlatContext)
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
-        text := rule.resolvedText
+        text := rule.messagePlan.render
       }
   | .unknown => .unknown
 

@@ -124,9 +124,21 @@ The reader reconstructed the complete admitted `Sum`/`MinValue`/`MaxValue` evalu
 
 The result passes consumer adequacy for the exact resolved homogeneous-signedness validation boundary it received. It correctly refused authored evaluation and source-level refactoring because checked path/star/filter lowering, partial relevance, mixed-declaration missingness, computation, messages, a source transformation relation, and external evidence were outside that artifact set. The later per-declaration capsule widens the resolved evaluator but was not part of this completed probe. [`USE-CASES.md`](USE-CASES.md#completed-probe-record-resolved-number-aggregates) owns the durable reader-facing result; no report artifact, shipment, protocol, runner, qualification campaign, or harness was added.
 
-## Immediate next step: computation transition risk audit
+## Completed risk audit: computation state transition
 
-Inventory the current computation alternative selection, dependency reads, target outcomes, exact application, and `Document` state boundaries against the scheduling/poison/clearing clauses. Select the smallest source-grounded transition capsule that serves at least two completed computation consumers and distinguishes declaration order, dependency poison, target clearing, and later reads without introducing an IO runner, scheduler framework, or general authored computation model. If no bounded transition is ready, rotate to checked message integration or the model-zone temporal profile rather than adding orchestration infrastructure.
+The transition audit found no faithful bounded common seam. String already has an explicit two-step outcome-to-checked-cell overlay and direct cascade; Number intentionally stops at a cause-free `NumericDependencyObservation`. Turning Number poison into the `CheckedCell` overlay required by the shared scalar context would invent a `FormalCause`, while abstracting both domains together would add the general scheduler/state framework this risk spike was meant to avoid. `Document` also retains raw cells and instantiated rows but no computation ordering, computed-field stripping policy, or typed target overlay.
+
+The existing mechanisms therefore remain separate and no duplicate cascade, generic transition type, or scheduler was added. A future transition unit first needs a source-grounded common poison carrier and at least two completed typed consumers, or checked model facts sufficient to build ordered target overlays.
+
+## Completed semantic unit: fired-only structured rule messages
+
+Checked flat rules now retain a `MessageRenderPlan` instead of pre-rendered text. The reused condition evaluator still runs exactly once; only its fired branch applies provider/default selection, preserves opaque replacement bytes including raw CRLF, renders the plan, and attaches metadata. `notFired` and `unknown` never inspect the plan and are universally independent of every alternative plan. The checked generated literal-Number computation-validation consumer uses the same corrected boundary.
+
+The red change supplied a plan to the existing checked assembler and failed at its pre-rendered-text parameter. The final cases distinguish both silent branches from a fired rule, exact scale-two default display, raw CRLF opacity, and different fired texts. Raw template parsing, token/path legality, actual provider invocation, document display lookup, exact-default construction, repeats, custom-condition integration, and protocol exposure remain outside. No canonical clause changed, so no synchronization-ledger entry was added.
+
+## Immediate next step: model-zone temporal profile risk audit
+
+Inventory the existing `FullDate`, `LocalDateTime`, `Instant`, fixed Berlin overlap, and DateTime difference boundaries against the `DifferenceInDays` calendar-step clause. Select the smallest explicit model-zone profile that proves day-step behavior for both ordinary days and a transition boundary without becoming a timezone database or calendar framework. If the required profile cannot be stated from current source-grounded facts, record the missing discriminator and rotate to another ready semantic keystone.
 
 ## Likely next keystone rotation
 
@@ -149,7 +161,7 @@ Choose the next unit by:
 These are not repository-wide blockers:
 
 - `DifferenceInDays` requires a profile-aware model-zone legacy-calendar step account; the zone-free proleptic `CivilDate` coordinate is not a valid substitute.
-- Authored message/whole-rule integration must preserve the accepted provider/default/raw-CRLF distinctions and the bounded modern `DocumentV2` dot-default profile; checked Lean integration, untested display routes, and project-local portable evidence remain open.
+- Authored message/whole-rule integration must still parse and check templates and construct display inputs from actual providers, document values, and exact format defaults; untested display routes and project-local portable evidence remain open.
 - Validation group presence now has a resolved admitted-content/error/relevance derivation and four consumer projections; checked group-instance enumeration and wildcardable `NONE`/`PARTIAL`/`FULL` relevance construction remain open.
 - Authored nested-star aggregate lowering must construct the proved reopened tree and ordered cell stream from checked paths, model repeatabilities, and scoped `Document` rows; resolved aggregate consumers do not perform that lowering themselves.
 - Mixed-declaration Sum now retains per-source missing signedness at the resolved boundary; checked authored lowering must still construct that metadata.

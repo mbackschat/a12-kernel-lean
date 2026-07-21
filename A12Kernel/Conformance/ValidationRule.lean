@@ -33,8 +33,19 @@ private def path (field : String) : SurfaceFieldPath :=
 private def amountNonnegative : SurfaceCondition :=
   .compare .greaterEqual (path "Amount") (.number 0)
 
+private def messagePlan : MessageRenderPlan :=
+  { parts := [
+      .text "Amount [",
+      .fieldValue { displayValue := none, defaultDisplay := "0.00" },
+      .text "] raw ",
+      .fieldValue { displayValue := some "A\r\nB", defaultDisplay := "" }
+    ] }
+
+private def alternateMessagePlan : MessageRenderPlan :=
+  { parts := [.text "alternate"] }
+
 private def resolvedText : ResolvedMessageText :=
-  { text := "$Amount.value$ stays opaque" }
+  messagePlan.render
 
 private def amountName : MessageNameInput :=
   { providerResult := none
@@ -67,13 +78,17 @@ private def rawBothFilled : RawFlatContext where
     else if id = acknowledged.id then .parsed (.bool true)
     else .empty
 
-private def assemble (condition : SurfaceCondition) (errorField : FieldId)
-    (severity : ValidationSeverity := .error) :
+private def assembleWithPlan (condition : SurfaceCondition) (errorField : FieldId)
+    (severity : ValidationSeverity) (plan : MessageRenderPlan) :
     Except (ElabError ⊕ FlatRuleAssemblyError)
       (CheckedResolvedFlatRule model) := do
   let checked ← (elaborate model ["Order"] condition).mapError Sum.inl
   (assembleResolvedFlatRule model checked errorField errorCode severity
-    resolvedText).mapError Sum.inr
+    plan).mapError Sum.inr
+
+private def assemble (condition : SurfaceCondition) (errorField : FieldId)
+    (severity : ValidationSeverity := .error) :=
+  assembleWithPlan condition errorField severity messagePlan
 
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
@@ -92,6 +107,12 @@ private def outcomeFor (condition : SurfaceCondition) (errorField : FieldId)
   | .error _ => none
   | .ok checked => some (checked.evalFull raw true)
 
+private def outcomeWithPlan (plan : MessageRenderPlan) (raw : RawFlatContext) :
+    Option FlatRuleOutcome :=
+  match assembleWithPlan amountNonnegative amount.id .error plan with
+  | .error _ => none
+  | .ok checked => some (checked.evalFull raw true)
+
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
   { errorAddress := { field := amount.id, path := [] }
@@ -106,6 +127,16 @@ example :
         some (.fired (expectedMessage .error .omission)) ∧
       outcomeOf .error (rawAmount (.parsed (.num 0))) =
         some (.fired (expectedMessage .error .value)) := by
+  native_decide
+
+/- A not-fired or unknown rule is independent of all message inputs, while a fired rule renders the selected structured plan. -/
+example :
+    outcomeWithPlan messagePlan (rawAmount (.parsed (.num (-1)))) =
+        outcomeWithPlan alternateMessagePlan (rawAmount (.parsed (.num (-1)))) ∧
+      outcomeWithPlan messagePlan (rawAmount (.rejected .malformed)) =
+        outcomeWithPlan alternateMessagePlan (rawAmount (.rejected .malformed)) ∧
+      outcomeWithPlan messagePlan (rawAmount (.parsed (.num 0))) ≠
+        outcomeWithPlan alternateMessagePlan (rawAmount (.parsed (.num 0))) := by
   native_decide
 
 /- False and unknown both emit nothing, but the whole-rule result preserves the distinction. -/

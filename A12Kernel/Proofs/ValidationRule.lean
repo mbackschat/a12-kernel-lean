@@ -64,7 +64,7 @@ theorem flatRule_eval_verdict (rule : ResolvedFlatRule)
     rule.condition.evalFull context hasContent = verdict
   cases verdict <;> simp only [FlatRuleOutcome.verdict]
 
-/-- A fired condition copies the exact resolved address and supplied metadata while deriving its message type from the verdict. -/
+/-- A fired condition copies the exact resolved address and supplied metadata, renders the structured plan, and derives its message type from the verdict. -/
 theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
     (context : FlatContext) (hasContent : Bool) (messageType : Polarity)
     (fires : rule.condition.evalFull context hasContent = .fired messageType) :
@@ -74,7 +74,7 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
-        text := rule.resolvedText
+        text := rule.messagePlan.render
       } := by
   simp only [ResolvedFlatRule.evalFull, fires]
 
@@ -82,12 +82,30 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
 theorem flatRule_metadata_doesNotChangeVerdict (rule : ResolvedFlatRule)
     (errorField : FieldId) (errorCode : String)
     (severity : ValidationSeverity)
-    (resolvedText : ResolvedMessageText)
+    (messagePlan : MessageRenderPlan)
     (context : FlatContext) (hasContent : Bool) :
-    (({ rule with errorField, errorCode, severity, resolvedText }).evalFull
+    (({ rule with errorField, errorCode, severity, messagePlan }).evalFull
         context hasContent).verdict =
       (rule.evalFull context hasContent).verdict := by
   rw [flatRule_eval_verdict, flatRule_eval_verdict]
+
+/-- A clean non-firing condition makes the whole-rule result independent of every structured message input. -/
+theorem flatRule_notFired_independentOfMessagePlan
+    (rule : ResolvedFlatRule) (otherPlan : MessageRenderPlan)
+    (context : FlatContext) (hasContent : Bool)
+    (notFired : rule.condition.evalFull context hasContent = .notFired) :
+    ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
+      rule.evalFull context hasContent := by
+  simp only [ResolvedFlatRule.evalFull, notFired]
+
+/-- An unavailable condition likewise suppresses message resolution rather than manufacturing text. -/
+theorem flatRule_unknown_independentOfMessagePlan
+    (rule : ResolvedFlatRule) (otherPlan : MessageRenderPlan)
+    (context : FlatContext) (hasContent : Bool)
+    (unknown : rule.condition.evalFull context hasContent = .unknown) :
+    ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
+      rule.evalFull context hasContent := by
+  simp only [ResolvedFlatRule.evalFull, unknown]
 
 /-- A rule carries a message exactly when the reused condition evaluator fired. -/
 theorem flatRule_hasMessage_iff_fired (rule : ResolvedFlatRule)
@@ -132,7 +150,7 @@ theorem checkedFlatRule_fired_message_exact
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
-        text := rule.resolvedText
+        text := rule.messagePlan.render
       } := by
   simpa only [CheckedResolvedFlatRule.evalFull,
     CheckedResolvedFlatRule.core] using
