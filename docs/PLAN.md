@@ -4,7 +4,7 @@ This file is the volatile continuation checkpoint. Stable purpose and delivery r
 
 ## Verified baseline
 
-The verified semantic baseline before the current correction was commit `8f0f029`. The current baseline is the introducing commit for the completed checked String presence/requiredness capsule below; its focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding semantic capsules passed the same proportional gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
+The verified semantic baseline before the current work was commit `8f0f029`. The current baseline includes the completed checked String presence/requiredness and direct String inequality capsules below; their focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding semantic capsules passed the same proportional gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
 
 The project currently has:
 
@@ -156,7 +156,7 @@ Implementing the narrower-sounding seam would therefore introduce the same gener
 
 Absolute nonrepeatable requiredness reuses that generic generated `FieldNotFilled` stage. A required present-empty String retains `rawPresent = true` when `.required` is attached, proving that evaluation emptiness does not erase physical placement. A universal separator law shows that absent and present-empty checked cells differ while both String presence predicates agree. The specialized generated two-alternative computation-validation consumer keeps its prior Number/Boolean/Confirm-only guard contract through an explicit closed-kind gate; generic presence support does not widen that unrelated capsule accidentally.
 
-This is an internal levels 1–2 downstream closure of accepted IF198. Repeatable/parent-gated requiredness, group-content derivation, generated-computation String guards, `Document` adaptation, protocol exposure, and local portable observations remain open. The canonical clause and accepted reconciliation already own the behavior, so no new sync-ledger entry was added.
+This is an internal levels 1–2 downstream closure of accepted IF198. Repeatable/parent-gated requiredness, group-content derivation, `Document` adaptation, protocol exposure, and local portable observations remain open. The bounded generated-computation String-guard consumer closes separately below. The canonical clause and accepted reconciliation already own the behavior, so no new sync-ledger entry was added.
 
 ## Completed semantic unit: direct String inequality
 
@@ -164,17 +164,23 @@ Direct String comparison now retains the closed `EqualityOp` in `FlatComparison`
 
 The red cases first failed on the absent core constructor and the checked `!=` rejection. The completed cases lock empty field, equal/distinct values, empty literal, malformed-before-empty-literal precedence, and checked admission. Trusted laws quantify empty-field suppression, clean empty-literal suppression, and unavailable precedence over both enum arms. The retained local evidence still covers only equality/Length, so inequality correspondence remains `external evidence pending`; no spec or ledger change was needed.
 
-## Immediate next step: generated computation String-guard audit
+## Completed semantic unit: generated-computation String presence guards
 
-Audit whether the existing two-alternative literal-Number computation and its generated validation may admit direct String `FieldFilled`/`FieldNotFilled` guards through the now-checked String presence boundary. Preserve the fragment's exact target, scale, alternative-count, and message limits; select it only if both computation-phase and validation-phase consumers already define the String guard without a new expression or scheduler representation.
+The audit confirmed that both existing consumers already define the complete behavior. Computation reads direct guards through kind-neutral checked-cell observation, while generated validation lowers the same syntax through checked scalar presence. The canonical String clause explicitly assigns absence testing to `FieldNotFilled`; no String expression, target, scheduler, or new representation was needed.
+
+The generated two-alternative literal-Number assembler now resolves nonrepeatable String guards alongside Number, Boolean, and Confirm. A nonempty String selects `FieldFilled` and can fire the corresponding generated mismatch; present-empty selects `FieldNotFilled` and preserves OMISSION behavior; malformed String poisons computation while the generated validation result remains UNKNOWN. Non-Number targets, repeatable guards and targets, exact literal scales, two-alternative shape, and message limits are unchanged. The obsolete `unsupportedGuardField` error was removed because every closed `FieldKind` is now admitted at this boundary.
+
+This is an internal levels 1–2 integration of already accepted String presence semantics. General computation authoring, String operations or targets, common preconditions, tolerance, repeatable evaluation, scheduling, protocol exposure, and local portable observations remain outside. No canonical clause or sync-ledger entry was needed.
+
+## Immediate next step: String operation frontier audit
+
+Reassess the remaining String clauses against the checked String field boundary. Prefer a bounded source-grounded discriminator that composes existing ingestion, presence, comparison, or `Length` semantics. Do not select pattern execution unless its exact regex contract can close without a new dependency, and do not broaden the generated-computation target or operation fragment by momentum.
 
 ## Likely next keystone rotation
 
 Reassess the frontier rather than continuing numeric operators by momentum.
 
-The leading candidate is generated computation String guards because both the computation-phase presence evaluator and validation-phase checked String presence now exist, while the specialized assembler still rejects that kind locally.
-
-If that family closes, reassess adjacent String functions only by independent discriminator and consumer payoff. Keep the repeatable operand-resolution seam parked until a source-owned model representation supplies star position, capacities, checked row reads, and per-source metadata; do not retry it under another adapter name.
+The leading candidates are checked admission for one existing String operation or a no-op finding that the remaining operations require a missing source-owned representation. Select by an independent discriminator and consumer payoff. Keep the repeatable operand-resolution seam parked until a source-owned model representation supplies star position, capacities, checked row reads, and per-source metadata; do not retry it under another adapter name.
 
 Choose the next unit by:
 

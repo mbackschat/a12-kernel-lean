@@ -4,7 +4,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked two-alternative literal-Number generated validation
 
-This capsule admits one nonrepeatable Number target and exactly two guarded literal operations. Computation consumes the guards with computation-phase first-match selection; the generated rule structurally translates the same guard syntax into ordinary validation conditions and retains both mismatch branches. Common preconditions, expression operations, tolerance, repeatable evaluation, warning-suppressed assignment legality, runtime target checks, and general computation authoring remain outside.
+This capsule admits one nonrepeatable Number target and exactly two guarded literal operations. Computation consumes direct scalar-presence guards with computation-phase first-match selection; the generated rule structurally translates the same guard syntax into ordinary validation conditions and retains both mismatch branches. Common preconditions, expression operations, tolerance, repeatable evaluation, warning-suppressed assignment legality, runtime target checks, and general computation authoring remain outside.
 -/
 
 namespace A12Kernel
@@ -30,7 +30,6 @@ end TwoAlternativeLiteralNumberComputation
 
 inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
-  | unsupportedGuardField (field : FieldId)
   | targetNotNumber (field : FieldId)
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
@@ -56,7 +55,7 @@ private def FlatModel.resolveGeneratedGuardField
   | .number info => pure (.number { id := declaration.id, info })
   | .boolean => pure (.boolean { id := declaration.id })
   | .confirm => pure (.confirm { id := declaration.id })
-  | .string => throw (.unsupportedGuardField field)
+  | .string => pure (.string { id := declaration.id })
 
 private def FlatModel.resolveGeneratedNumberTarget
     (model : FlatModel) (field : FieldId) :
