@@ -209,6 +209,44 @@ example : ComputationAlternative.selectFirst
     emptyProbePoisonBody = .poison .declaredConstraint := by
   rfl
 
+/- No common precondition leaves the guarded alternative table unchanged. -/
+example : ComputationAlternative.expandCommonPrecondition
+    none [alternative fieldNotFilled 1, alternative fieldFilled 2] =
+      [alternative fieldNotFilled 1, alternative fieldFilled 2] := by
+  rfl
+
+/- A common precondition is left-conjoined to every guarded alternative without changing operation order. -/
+example : ComputationAlternative.expandCommonPrecondition
+    (some fieldFilled)
+    [alternative fieldNotFilled 1, alternative (.fieldFilled bodyId) 2] =
+      [alternative (.and fieldFilled fieldNotFilled) 1,
+       alternative (.and fieldFilled (.fieldFilled bodyId)) 2] := by
+  native_decide
+
+/- A clean false common precondition suppresses every alternative guard, including a guard that would poison if reached. -/
+example : ComputationAlternative.selectFirst
+    (ComputationAlternative.expandCommonPrecondition
+      (some fieldFilled)
+      [alternative (.fieldFilled bodyId) 1, alternative fieldNotFilled 2])
+    emptyProbePoisonBody = .noMatch := by
+  native_decide
+
+/- A poisoned common precondition wins before a cleanly holding alternative guard. -/
+example : ComputationAlternative.selectFirst
+    (ComputationAlternative.expandCommonPrecondition
+      (some (.fieldFilled bodyId))
+      [alternative fieldNotFilled 1, alternative fieldNotFilled 2])
+    emptyProbePoisonBody = .poison .declaredConstraint := by
+  native_decide
+
+/- A holding common precondition preserves the original first-match result. -/
+example : ComputationAlternative.selectFirst
+    (ComputationAlternative.expandCommonPrecondition
+      (some fieldNotFilled)
+      [alternative fieldFilled 1, alternative fieldNotFilled 2])
+    emptyProbePoisonBody = .selected 2 := by
+  native_decide
+
 /- These admitted String operation payloads contain no target or prior-target state. Selection ends at the first holding expression without inspecting its later result. -/
 example : ComputationAlternative.selectFirst
     [alternative fieldNotFilled copyBody.expression,

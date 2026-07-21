@@ -3,7 +3,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.ComputationCondition — checked computation control
 
-This capsule admits direct, already-resolved field presence, ordered `And`/`Or`, and first-match alternative selection for one non-repeatable computation instance. It separates clean not-true and no-match from an invalid cell actually read as poison. Comparison and quantifier leaves, checked paths, operation evaluation, and model-level alternative legality remain separate clauses.
+This capsule admits direct, already-resolved field presence, ordered `And`/`Or`, optional common-precondition expansion over guarded alternatives, and first-match selection for one non-repeatable computation instance. It separates clean not-true and no-match from an invalid cell actually read as poison. Comparison and quantifier leaves, checked paths, operation evaluation, and model-level alternative legality remain separate clauses.
 -/
 
 namespace A12Kernel
@@ -88,6 +88,18 @@ inductive ComputationAlternativeSelection (Operation : Type) where
   deriving Repr, DecidableEq
 
 namespace ComputationAlternative
+
+/-- Expand an optional whole-computation precondition into the existing guarded alternative core. A present common guard is the left operand so clean false and poison decide before the alternative-specific guard. -/
+def expandCommonPrecondition
+    (commonPrecondition : Option ComputationCondition)
+    (alternatives : List (ComputationAlternative Operation)) :
+    List (ComputationAlternative Operation) :=
+  match commonPrecondition with
+  | none => alternatives
+  | some common =>
+      alternatives.map fun alternative => {
+        precondition := .and common alternative.precondition
+        operation := alternative.operation }
 
 /-- Select the first alternative whose precondition holds. Clean non-matches continue, while poison aborts without examining the remaining alternatives. -/
 def selectFirst (alternatives : List (ComputationAlternative Operation))

@@ -551,8 +551,9 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - trusted laws preserve the range fork, representative deciding-prefix equations, zero/one/two distinction, selected reached-poison separators, and observable read order.
 - The operation-neutral selector returns no-match, the first selected operation, or first reached poison
 - selection ends before operation evaluation.
+- An optional resolved common precondition lowers by left-conjoining it to every guarded alternative, preserving payload order; holding preserves selection, clean not-true yields no-match, and poison aborts before an alternative-specific guard.
 - One resolved String table composes that selector once with the existing expression/target/delta step
-- clean no-value, target rejection, and poison from the selected operation are terminal, and a holding head makes every suffix irrelevant through operation evaluation.
+- clean no-value, target rejection, and poison from the selected operation are terminal, a holding head makes every suffix irrelevant through operation evaluation, and common false/poison decides before guard or operation reads.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
 - The checked two-alternative literal-Number desugaring admits direct scalar-presence guards and keeps both mismatches below `FieldFilled(target)`. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
@@ -566,6 +567,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - the producer-certified [direct-cascade bundle](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json) and typed [`StringCascadeProjection.lean`](../A12Kernel/Evidence/StringCascadeProjection.lean) retain five cascade observations.
 - The type-neutral V2 apply mechanism is source-grounded and triangulated by a12-dmkits IF126's String matrix.
 - The field-fill scan is source-grounded and separately exercised by maintained a12-dmkits dual-kernel-route differentials for all seven operators, but this repository retains no portable field-fill observation.
+- Kernel `CalculationUtils.expandCommonPrecondition` and a12-dmkits' direct common-first evaluator independently ground the common-guard lowering account; this repository retains no portable common-precondition observation.
 - No retained project-local observation exercises direct presence/connectives, field-fill scans, alternative selection or selected-operation terminality, generated two-alternative validation, numeric expression/target/delta/application/dependency, mixed domain/poison order, or the newline family
 - those surfaces remain `external evidence pending`
 
@@ -574,6 +576,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - **Implemented narrowly and partially externally calibrated:** one nonrepeatable recursive direct-presence fragment
 - all seven field-fill predicates over a caller-supplied already-expanded ordered slot stream
 - first-match selection with resolved String selected-operation/target/delta integration
+- optional common-precondition expansion over that already-guarded table
 - an exact checked two-alternative literal-Number generated-rule fragment
 - one String target and direct cascade
 - and one already-resolved Number expression → stored form → ordinary fit-path target → delta → exact application → cause-free dependency chain.
@@ -581,7 +584,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - General computation authoring and target self-reference checks
   - warning-suppressed assignment and runtime target checks
   - checked singleton/default/larger-table authoring
-  - common preconditions
+  - checked common-precondition authoring and its generated-validation integration
   - expression-valued generated validation
   - comparison guards
   - field-fill stream construction/path/group/star/filter expansion and AST integration

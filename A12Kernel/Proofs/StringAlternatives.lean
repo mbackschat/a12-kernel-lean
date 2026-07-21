@@ -1,8 +1,9 @@
+import A12Kernel.Proofs.ComputationCondition
 import A12Kernel.Semantics.StringAlternatives
 
 /-! # A12Kernel.Proofs.StringAlternatives — terminal selected-operation laws
 
-These laws connect operation-neutral first-match selection to the existing String outcome evaluator. They establish that suffix alternatives are irrelevant once a head holds, including when the selected expression later produces no value. They do not assert model-level table legality, scheduling, or external kernel correspondence.
+These laws connect operation-neutral first-match selection and common-precondition expansion to the existing String outcome evaluator. They establish that suffix alternatives are irrelevant once a head holds, including when the selected expression later produces no value, and that a common guard decides before every alternative-specific guard. They do not assert model-level table legality, scheduling, or external kernel correspondence.
 -/
 
 namespace A12Kernel
@@ -83,5 +84,45 @@ theorem stringAlternatives_evaluate_of_outcome
       outcome
       delta := outcome.projectDelta computation.prior } := by
   simp only [StringAlternativeComputation.evaluate, evaluated]
+
+/-- A holding common precondition preserves the complete resolved String outcome because expansion leaves the first-match selection unchanged. -/
+theorem stringAlternatives_holdingCommon_preserves
+    (computation : StringAlternativeComputation)
+    (context : StringComputationContext) (common : ComputationCondition)
+    (commonHolds : common.eval context = .holds) :
+    (computation.withCommonPrecondition (some common)).evaluateOutcome context =
+      computation.evaluateOutcome context := by
+  simp only [StringAlternativeComputation.evaluateOutcome,
+    StringAlternativeComputation.withCommonPrecondition]
+  rw [alternativeSelection_holdingCommon_preserves context common
+    computation.alternatives commonHolds]
+  split <;> rfl
+
+/-- A clean non-holding common precondition produces quiet no-value for every guarded String table, before any alternative-specific guard or operation can contribute. -/
+theorem stringAlternatives_notTrueCommon_noValue
+    (computation : StringAlternativeComputation)
+    (context : StringComputationContext) (common : ComputationCondition)
+    (commonNotTrue : common.eval context = .notTrue) :
+    (computation.withCommonPrecondition (some common)).evaluateOutcome context =
+      .ok .noValue := by
+  simp only [StringAlternativeComputation.evaluateOutcome,
+    StringAlternativeComputation.withCommonPrecondition]
+  rw [alternativeSelection_notTrueCommon_noMatch context common
+    computation.alternatives commonNotTrue]
+
+/-- On a nonempty guarded String table, common-precondition poison becomes target poison before selection can reach an otherwise-safe operation. -/
+theorem stringAlternatives_poisonedCommon_preserves
+    (computation : StringAlternativeComputation)
+    (context : StringComputationContext) (common : ComputationCondition)
+    (head : ComputationAlternative StringExpr)
+    (remaining : List (ComputationAlternative StringExpr))
+    (cause : FormalCause)
+    (commonPoison : common.eval context = .poison cause) :
+    (({ computation with alternatives := head :: remaining }).withCommonPrecondition
+      (some common)).evaluateOutcome context = .ok (.poison cause) := by
+  simp only [StringAlternativeComputation.evaluateOutcome,
+    StringAlternativeComputation.withCommonPrecondition]
+  rw [alternativeSelection_poisonedCommon_aborts context common head remaining cause
+    commonPoison]
 
 end A12Kernel
