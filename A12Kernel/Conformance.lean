@@ -44,6 +44,7 @@ import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue
 import A12Kernel.Conformance.StarCompleteness
 import A12Kernel.Conformance.NumericAggregate
+import A12Kernel.Conformance.NumericAggregateElaboration
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.Enumeration
 import A12Kernel.Conformance.EnumerationComparability

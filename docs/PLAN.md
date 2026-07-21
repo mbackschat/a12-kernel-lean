@@ -180,9 +180,17 @@ The selected bounded seam reuses the existing copy/literal/concatenation runtime
 
 This closes levels 1–2 for decoded nonrepeatable String copy/literal/concatenation expressions only. Target declaration and length-policy checking, whole-computation authoring, alternatives, concrete syntax and date-shaped literal classification, repeatable reads, scheduling, protocol exposure, and new external observations remain outside. No spec, sync-ledger, dependency, or framework change was needed.
 
-## Immediate next step: post-String frontier reassessment
+## Completed semantic unit: checked nonrepeatable Number Sum
 
-Reassess adjacent computation or validation seams rather than extending String by momentum. Prefer an existing resolved semantic mechanism whose missing checked consumer can reuse current model facts. Keep pattern, charset, and raw-type work parked until their named representation gaps can be closed as the semantic root rather than approximated.
+The post-String audit selected the narrow part of aggregate construction that current model facts can express completely. A nonempty unfiltered list of nonrepeatable Number paths needs no repeatability capacity, reopened-star tree, filter provenance, or wildcardable relevance state.
+
+`CheckedNumericSum` resolves each source against one validated flat model in authored order, preserves each declaration's signedness, and checks raw cells with that same model. It constructs `ResolvedNumericSumSide` with exactly the classified explicit cells, no uninstantiated source, and no `Having`, then delegates to the existing per-declaration Sum evaluator. The red file initially failed only because the checked owner was absent. The green matrix distinguishes staged encounter order, signed-missing versus unsigned-missing polarity independently of present-field signedness, all-empty fillable zero, first formal unavailability, wrong declared kind, and repeatable rejection. Trusted laws prevent this subset from fabricating tail/filter metadata and lock exact evaluator delegation.
+
+This closes levels 1–2 for direct nonrepeatable Number `Sum` field lists. Group/star expansion, literal or filtered aggregate forms, partial relevance and row gates, enclosing comparison/rule lowering, computation aggregates, protocol exposure, consumer requalification, and local portable evidence remain outside. No spec, sync-ledger, dependency, or general aggregate framework was added.
+
+## Immediate next step: checked-consumer frontier reassessment
+
+Reassess whether direct nonrepeatable `MinValue`/`MaxValue` can reuse this exact construction boundary with operator-specific evaluation, or whether a different high-connectivity seam is stronger. Extend the checked aggregate owner only if the common path/raw classification is exact for a second completed consumer; do not generalize toward group/star/filter construction.
 
 ## Likely next keystone rotation
 
@@ -206,7 +214,7 @@ These are not repository-wide blockers:
 - Authored message/whole-rule integration must still parse and check templates and construct display inputs from actual providers, document values, and exact format defaults; untested display routes and project-local portable evidence remain open.
 - Validation group presence now has a resolved admitted-content/error/relevance derivation and four consumer projections; checked group-instance enumeration and wildcardable `NONE`/`PARTIAL`/`FULL` relevance construction remain open.
 - Authored nested-star aggregate lowering must construct the proved reopened tree and ordered cell stream from checked paths, model repeatabilities, and scoped `Document` rows; resolved aggregate consumers do not perform that lowering themselves.
-- Mixed-declaration Sum now retains per-source missing signedness at the resolved boundary; checked authored lowering must still construct that metadata.
+- Direct nonrepeatable Sum now constructs per-source signedness at the checked boundary; repeatable group/star lowering must still construct signedness and structural omissions together.
 - Many internally closed families remain `external evidence pending`; collect them into coherent future calibration batches rather than creating per-capsule capture work.
 - Public protocol expansion, semantic shipments, external prototypes, candidate qualification, and SMT dependencies require separate adoption or approval.
 
@@ -225,7 +233,6 @@ These are not repository-wide blockers:
 
 1. Read [`CLAUDE.md`](../CLAUDE.md), this checkpoint, [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and [`TESTING.md`](TESTING.md).
 2. Inspect `git status --short`, recent commits, and the complete current diff. Do not overwrite concurrent work.
-3. If `Sum` is unfinished, resume its red/green checklist above.
-4. If the aggregate consumer probe is not recorded, run it and feed back its findings.
-5. Otherwise perform the computation transition risk audit and select the next keystone capsule using the criteria above.
-6. End each capsule with its applicable gates, honest completion/evidence levels, minimal owner-document updates, a clean worktree, and no sibling changes.
+3. Resume the one active capsule named by the immediate next step; do not reopen a completed unit from the historical record.
+4. Reassess the frontier using the selection criteria above when that capsule closes or no-ops.
+5. End each capsule with its applicable gates, honest completion/evidence levels, minimal owner-document updates, a clean worktree, and no sibling changes.

@@ -46,6 +46,7 @@ import A12Kernel.Proofs.ValueList
 import A12Kernel.Proofs.FirstFilledValue
 import A12Kernel.Proofs.StarCompleteness
 import A12Kernel.Proofs.NumericAggregate
+import A12Kernel.Proofs.NumericAggregateElaboration
 import A12Kernel.Proofs.RepetitionNotUnique
 import A12Kernel.Proofs.Enumeration
 import A12Kernel.Proofs.EnumerationComparability
