@@ -6,7 +6,7 @@ namespace A12Kernel.Conformance.DateComparison
 
 open A12Kernel
 
-private def holds? (op : DateComparisonOp)
+private def holds? (op : TemporalComparisonOp)
     (leftYear : Int) (leftMonth leftDay : Nat)
     (rightYear : Int) (rightMonth rightDay : Nat) : Option Bool := do
   let left ← FullDate.ofYmd? leftYear leftMonth leftDay
@@ -49,31 +49,31 @@ example :
 
 /- Fixed present operands give VALUE on a true comparison and do not fire on a false one. -/
 example :
-    DateComparisonOp.before.eval
+    TemporalComparisonOp.before.eval
         (.value earlier true) (.value later true) = .fired .value ∧
-      DateComparisonOp.after.eval
+      TemporalComparisonOp.after.eval
         (.value earlier true) (.value later true) = .notFired := by
   native_decide
 
 /- Missing provenance is symmetric and changes only the polarity of a firing comparison. -/
 example :
-    DateComparisonOp.before.eval
+    TemporalComparisonOp.before.eval
         (.value earlier false) (.value later true) = .fired .omission ∧
-      DateComparisonOp.before.eval
+      TemporalComparisonOp.before.eval
         (.value earlier true) (.value later false) = .fired .omission ∧
-      DateComparisonOp.after.eval
+      TemporalComparisonOp.after.eval
         (.value earlier false) (.value later true) = .notFired := by
   native_decide
 
 /- A valueless Date makes every comparison not fire, while formal unavailability remains UNKNOWN and dominates a valueless peer. -/
 example :
-    DateComparisonOp.equal.eval
+    TemporalComparisonOp.equal.eval
         (.notEvaluated : SimpleComparisonOperand FullDate) (.value earlier true) = .notFired ∧
-      DateComparisonOp.notEqual.eval
+      TemporalComparisonOp.notEqual.eval
         (.value earlier true) (.notEvaluated : SimpleComparisonOperand FullDate) = .notFired ∧
-      DateComparisonOp.before.eval
+      TemporalComparisonOp.before.eval
         (.notEvaluated : SimpleComparisonOperand FullDate) (.unknown .malformed) = .unknown ∧
-      DateComparisonOp.before.eval
+      TemporalComparisonOp.before.eval
         (.unknown .declaredConstraint) (.notEvaluated : SimpleComparisonOperand FullDate) = .unknown := by
   native_decide
 

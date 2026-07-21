@@ -9,7 +9,7 @@ This capsule evaluates the six ordinary temporal comparison operators after both
 namespace A12Kernel
 
 /-- Evaluate one comparison over two resolved whole-second instants. -/
-def DateComparisonOp.holdsInstant (op : DateComparisonOp)
+def TemporalComparisonOp.holdsInstant (op : TemporalComparisonOp)
     (left right : Instant) : Bool :=
   match op with
   | .equal => left == right
@@ -20,7 +20,7 @@ def DateComparisonOp.holdsInstant (op : DateComparisonOp)
   | .afterOrEqual => decide (right.epochSecond ≤ left.epochSecond)
 
 /-- Evaluate two classified resolved DateTime instants through the shared symmetric scalar projection. -/
-def DateComparisonOp.evalInstant (op : DateComparisonOp)
+def TemporalComparisonOp.evalInstant (op : TemporalComparisonOp)
     (leftOperand rightOperand : SimpleComparisonOperand Instant) : Verdict :=
   evalSymmetricComparison op.holdsInstant leftOperand rightOperand
 

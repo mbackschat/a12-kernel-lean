@@ -14,9 +14,9 @@ namespace TemporalExtremumOp
 def selectInstant (op : TemporalExtremumOp) (left right : Instant) : Instant :=
   match op with
   | .minimum =>
-      if DateComparisonOp.before.holdsInstant right left then right else left
+      if TemporalComparisonOp.before.holdsInstant right left then right else left
   | .maximum =>
-      if DateComparisonOp.before.holdsInstant left right then right else left
+      if TemporalComparisonOp.before.holdsInstant left right then right else left
 
 end TemporalExtremumOp
 

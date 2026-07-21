@@ -1,15 +1,15 @@
 import A12Kernel.Semantics.FullDate
 import A12Kernel.Semantics.ScalarEquality
 
-/-! # Resolved full-Date comparison
+/-! # Resolved temporal comparison operations and full-Date comparison
 
-This capsule evaluates the six ordinary comparison operators after both operands have been classified as admitted full Dates, no value, or formally unavailable. It compares present values by calendar identity and chronology rather than stored text, and it retains symmetric missing provenance for validation polarity. Literal typing and parsing, DateTime instant comparison, checked lowering, and raw cells remain outside.
+This capsule evaluates the six ordinary comparison operators after both operands have been classified as admitted full Dates, no value, or formally unavailable. It compares present values by calendar identity and chronology rather than stored text, and it retains symmetric missing provenance for validation polarity. The operation enum and operand-exchange map are shared by the separate Time and DateTime consumers. Literal typing and parsing, checked lowering, and raw cells remain outside.
 -/
 
 namespace A12Kernel
 
-/-- The complete comparison family accepted for two resolved Date values. -/
-inductive DateComparisonOp where
+/-- The complete comparison family shared by two comparable resolved temporal values. -/
+inductive TemporalComparisonOp where
   | equal
   | notEqual
   | before
@@ -19,7 +19,7 @@ inductive DateComparisonOp where
   deriving Repr, DecidableEq
 
 /-- Operator obtained when the two authored operands exchange positions. -/
-def DateComparisonOp.swapped : DateComparisonOp → DateComparisonOp
+def TemporalComparisonOp.swapped : TemporalComparisonOp → TemporalComparisonOp
   | .equal => .equal
   | .notEqual => .notEqual
   | .before => .after
@@ -28,7 +28,7 @@ def DateComparisonOp.swapped : DateComparisonOp → DateComparisonOp
   | .afterOrEqual => .beforeOrEqual
 
 /-- Evaluate one comparison over two present full-Date values. -/
-def DateComparisonOp.holds (op : DateComparisonOp)
+def TemporalComparisonOp.holds (op : TemporalComparisonOp)
     (left right : FullDate) : Bool :=
   match op with
   | .equal => left == right
@@ -39,7 +39,7 @@ def DateComparisonOp.holds (op : DateComparisonOp)
   | .afterOrEqual => !left.before right
 
 /-- Evaluate two classified Date operands through the shared symmetric scalar projection. -/
-def DateComparisonOp.eval (op : DateComparisonOp)
+def TemporalComparisonOp.eval (op : TemporalComparisonOp)
     (leftOperand rightOperand : SimpleComparisonOperand FullDate) : Verdict :=
   evalSymmetricComparison op.holds leftOperand rightOperand
 

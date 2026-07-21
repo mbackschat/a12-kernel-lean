@@ -155,6 +155,13 @@ run_cmd do
 #print axioms A12Kernel.dateTimeExtremum_unknown_head
 #print axioms A12Kernel.dateTimeExtremum_fixed_singleton
 #print axioms A12Kernel.dateTimeExtremum_tail_comparison_firing
+#print axioms A12Kernel.timeOfDay_secondsSinceMidnight_injective
+#print axioms A12Kernel.timeComparison_equal_iff
+#print axioms A12Kernel.timeComparison_notEqual_iff
+#print axioms A12Kernel.timeComparison_equal_iff_sameCoordinate
+#print axioms A12Kernel.timeComparison_swapped
+#print axioms A12Kernel.timeComparison_before_excludes_after
+#print axioms A12Kernel.timeComparison_eval_swapped
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap

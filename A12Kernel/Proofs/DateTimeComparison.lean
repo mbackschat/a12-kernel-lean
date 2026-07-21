@@ -7,16 +7,16 @@ namespace A12Kernel
 
 /-- Resolved DateTime equality fires exactly on identical physical instants. -/
 theorem dateTimeComparison_equal_iff (left right : Instant) :
-    DateComparisonOp.equal.holdsInstant left right = true ↔ left = right := by
-  simp [DateComparisonOp.holdsInstant]
+    TemporalComparisonOp.equal.holdsInstant left right = true ↔ left = right := by
+  simp [TemporalComparisonOp.holdsInstant]
 
 /-- Resolved DateTime inequality fires exactly on distinct physical instants. -/
 theorem dateTimeComparison_notEqual_iff (left right : Instant) :
-    DateComparisonOp.notEqual.holdsInstant left right = true ↔ left ≠ right := by
-  simp [DateComparisonOp.holdsInstant]
+    TemporalComparisonOp.notEqual.holdsInstant left right = true ↔ left ≠ right := by
+  simp [TemporalComparisonOp.holdsInstant]
 
 /-- Exchanging instants and the directional operator preserves every resolved comparison result. -/
-theorem dateTimeComparison_swapped (op : DateComparisonOp)
+theorem dateTimeComparison_swapped (op : TemporalComparisonOp)
     (left right : Instant) :
     op.swapped.holdsInstant left right = op.holdsInstant right left := by
   cases op with
@@ -26,13 +26,13 @@ theorem dateTimeComparison_swapped (op : DateComparisonOp)
 
 /-- A strict instant comparison cannot hold in both directions. -/
 theorem dateTimeComparison_before_excludes_after (left right : Instant)
-    (before : DateComparisonOp.before.holdsInstant left right = true) :
-    DateComparisonOp.after.holdsInstant left right = false := by
-  simp [DateComparisonOp.holdsInstant] at before ⊢
+    (before : TemporalComparisonOp.before.holdsInstant left right = true) :
+    TemporalComparisonOp.after.holdsInstant left right = false := by
+  simp [TemporalComparisonOp.holdsInstant] at before ⊢
   omega
 
 /-- Operand exchange plus the matching directional operator preserves classified DateTime verdicts and polarity. -/
-theorem dateTimeComparison_eval_swapped (op : DateComparisonOp)
+theorem dateTimeComparison_eval_swapped (op : TemporalComparisonOp)
     (left right : SimpleComparisonOperand Instant) :
     op.swapped.evalInstant left right = op.evalInstant right left := by
   exact evalSymmetricComparison_swapped op.holdsInstant op.swapped.holdsInstant
