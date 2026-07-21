@@ -6,7 +6,7 @@ This document owns the test harness and working method for `a12-kernel-lean`. Th
 
 Pay only for the narrowest rung that can answer the current question:
 
-1. **Red/green loop:** elaborate the focused conformance or proof module, for example `lake env lean A12Kernel/Conformance/NumericValidation.lean`. Stay on this rung while changing the capsule.
+1. **Red/green loop:** build the focused Lake target, for example `lake build A12Kernel.Conformance.NumericValidation`. This refreshes changed imported modules before checking the consumer; direct `lake env lean` elaboration may otherwise read an older built dependency. Stay on this rung while changing the capsule.
 2. **Integrated semantic check:** run `lake build` once after the focused modules are green. This checks the complete library, proof root, conformance root, and default executable targets.
 3. **Retained evidence:** run `lake test` once for a completed Tier 1 semantic capsule. Add a family-specific replay only when the capsule belongs to an active Tier 2 calibration batch.
 4. **Pre-commit trust and hygiene:** run `./scripts/check-lean-trust.sh`, `git diff --check`, and the scoped/full status checks once after the integrated diff is stable.
