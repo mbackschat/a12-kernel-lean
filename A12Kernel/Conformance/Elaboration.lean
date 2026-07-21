@@ -208,19 +208,19 @@ example : coreOf (elaborate model ["Order"]
     some (.compare (.number .greaterEqual { id := 0, info := numberInfo } 0)) := by
   native_decide
 
-example : errorOf (elaborate model ["Order"]
+example : coreOf (elaborate model ["Order"]
     (compare .lessEqual (absolute ["Order"] "Quantity") (.number 10))) =
-    some (.unsupportedOperator .lessEqual) := by
+    some (.compare (.number .lessEqual { id := 0, info := numberInfo } 10)) := by
   native_decide
 
-example : errorOf (elaborate model ["Order"]
+example : coreOf (elaborate model ["Order"]
     (compare .greater (absolute ["Order"] "Quantity") (.number 10))) =
-    some (.unsupportedOperator .greater) := by
+    some (.compare (.number .greater { id := 0, info := numberInfo } 10)) := by
   native_decide
 
 example : errorOf (elaborate model ["Order"]
     (compare .lessEqual (absolute ["Order"] "Missing") (.number 10))) =
-    some (.unsupportedOperator .lessEqual) := by
+    some (.resolve (.invalidEntity (absolute ["Order"] "Missing"))) := by
   native_decide
 
 example : errorOf (elaborate model ["Order"]
