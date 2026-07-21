@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable plain numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the existing plain-arithmetic authoring and result-scale gates, and certifies model coherence. The one explicit scale-warning suppression bypasses only that result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, operation-valued wrappers, target-policy construction, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable plain numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the existing plain-arithmetic authoring and result-scale gates, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, operation-valued wrappers, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -23,6 +23,7 @@ inductive NumericComputationElabError where
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
   | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
+  | targetPolicyMismatch (target policy : NumField)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -79,6 +80,12 @@ structure CheckedNumericComputationOperation (model : FlatModel) where
   core : NumericComputationOperation
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model
+
+/-- A checked numeric operation paired once with its complete resolved target policy. Evaluation cannot substitute a different policy. -/
+structure CheckedNumericTargetComputationOperation (model : FlatModel) where
+  operation : CheckedNumericComputationOperation model
+  policy : NumericTargetPolicy
+  targetMatches : policy.info = operation.core.target.info
 
 private def FlatModel.resolveNumericComputationTarget
     (model : FlatModel) (target : FieldId) :
@@ -246,18 +253,30 @@ def evaluate (operation : CheckedNumericComputationOperation model)
     Except NumericComputationFault NumericComputationResult :=
   operation.core.expression.evaluateComputation context
 
-/-- Evaluate the checked expression and route it through the target branch certified by the retained warning-suppression choice. The equality proof prevents a caller from pairing the operation with another target's signedness or maximum scale; the target's minimum scale remains an explicit policy input because the current flat declaration does not retain it. -/
-def evaluateTarget (operation : CheckedNumericComputationOperation model)
-    (policy : NumericTargetPolicy)
-    (_targetMatches : policy.info = operation.core.target.info)
-    (context : ScalarComputationContext) :
-    Except NumericComputationFault NumericTargetCheckResult := do
-  let result ← operation.evaluate context
-  if operation.core.suppressExactScaleWarning then
-    pure (policy.checkWithScaleWarningSuppressed result)
+/-- Attach the complete resolved target policy once, rejecting scale/signedness drift from the already-resolved target. The remaining constraints are intentionally not inferred from `FlatFieldDecl`, which does not retain them. -/
+def attachTargetPolicy (operation : CheckedNumericComputationOperation model)
+    (policy : NumericTargetPolicy) :
+    Except NumericComputationElabError
+      (CheckedNumericTargetComputationOperation model) :=
+  if targetMatches : policy.info = operation.core.target.info then
+    pure { operation, policy, targetMatches }
   else
-    pure (policy.check result)
+    throw (.targetPolicyMismatch operation.core.target.info policy.info)
 
 end CheckedNumericComputationOperation
+
+namespace CheckedNumericTargetComputationOperation
+
+/-- Evaluate with the retained target policy and route solely by the checked operation's warning-suppression choice. -/
+def evaluate (operation : CheckedNumericTargetComputationOperation model)
+    (context : ScalarComputationContext) :
+    Except NumericComputationFault NumericTargetCheckResult := do
+  let result ← operation.operation.evaluate context
+  if operation.operation.core.suppressExactScaleWarning then
+    pure (operation.policy.checkWithScaleWarningSuppressed result)
+  else
+    pure (operation.policy.check result)
+
+end CheckedNumericTargetComputationOperation
 
 end A12Kernel

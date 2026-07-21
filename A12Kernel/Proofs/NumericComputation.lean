@@ -30,22 +30,36 @@ theorem checkedNumericComputationOperation_scaleGate
     summarized] at admitted
   exact admitted.2
 
-/-- Checked target evaluation dispatches solely by the certified suppression bit after preserving the exact expression result. -/
-theorem checkedNumericComputationOperation_evaluateTarget_routes
+/-- Attaching a target policy with a different scale/signedness summary is rejected before evaluation. -/
+theorem checkedNumericComputationOperation_attachTargetPolicy_rejectsMismatch
     (checked : CheckedNumericComputationOperation model)
     (policy : NumericTargetPolicy)
-    (targetMatches : policy.info = checked.core.target.info)
+    (mismatch : policy.info ≠ checked.core.target.info) :
+    checked.attachTargetPolicy policy =
+      .error (.targetPolicyMismatch checked.core.target.info policy.info) := by
+  simp [CheckedNumericComputationOperation.attachTargetPolicy, mismatch]
+  rfl
+
+/-- A target-attached checked operation retains a policy coherent with its already-resolved target. -/
+theorem checkedNumericTargetComputationOperation_policyMatches
+    (checked : CheckedNumericTargetComputationOperation model) :
+    checked.policy.info = checked.operation.core.target.info :=
+  checked.targetMatches
+
+/-- Target-attached evaluation dispatches solely by the certified suppression bit after preserving the exact expression result. -/
+theorem checkedNumericTargetComputationOperation_evaluate_routes
+    (checked : CheckedNumericTargetComputationOperation model)
     (context : ScalarComputationContext)
     (result : NumericComputationResult)
-    (evaluated : checked.evaluate context = .ok result) :
-    checked.evaluateTarget policy targetMatches context =
-      .ok (if checked.core.suppressExactScaleWarning then
-        policy.checkWithScaleWarningSuppressed result
+    (evaluated : checked.operation.evaluate context = .ok result) :
+    checked.evaluate context =
+      .ok (if checked.operation.core.suppressExactScaleWarning then
+        checked.policy.checkWithScaleWarningSuppressed result
       else
-        policy.check result) := by
-  simp only [CheckedNumericComputationOperation.evaluateTarget]
+        checked.policy.check result) := by
+  simp only [CheckedNumericTargetComputationOperation.evaluate]
   rw [evaluated]
-  cases checked.core.suppressExactScaleWarning <;> rfl
+  cases checked.operation.core.suppressExactScaleWarning <;> rfl
 
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero

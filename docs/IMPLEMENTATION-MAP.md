@@ -207,7 +207,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - precision-50 `+`/`−`/`×`/`÷`, staged power, rounding, absolute value, full-precision ordered extrema, arithmetic domain failure, and directional fillability including the conservative power and Min/Max tie tables
 - independent scale-19 normalization
 - a checked closed validation dispatch over all six direct ordinary comparison operators and four fixed tolerance ranges
-- one checked nonrepeatable plain computation-operation consumer with model-resolved target/operands, default-unsuppressed result-scale admission, explicit warning bypass, nested target-reference rejection, distinct numeric value/domain-failure/inherited-poison evaluation, and proof-coherent target dispatch
+- one checked nonrepeatable plain computation-operation consumer with model-resolved target/operands, default-unsuppressed result-scale admission, explicit warning bypass, nested target-reference rejection, distinct numeric value/domain-failure/inherited-poison evaluation, one-time complete target-policy attachment, and retained proof-coherent target dispatch
 - separately proved ordinary and significant-digit-bounded stored-decimal conversions
 - and one explicit two-branch target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
 - Checked validation resolves two same-group expressions, lowers each once, and gates empty rows before reads.
@@ -245,9 +245,9 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Excluded / next
 
 - **Implemented narrowly; external evidence pending.** Checked validation accepts two same-group expressions with at least one field, the admitted expression classes above, six ordinary operators, four tolerance ranges, and the exact-scale-warning bypass.
-- The checked computation operation resolves one nonrepeatable Number target and every nonrepeatable Number operand through the shared authored-tree traversal, accepts constant-only or field-bearing plain arithmetic and power after the existing authoring/summary checks, rejects the target at every nested operand position, and applies the exact result-scale gate unless the one explicit warning flag is present. The checked core retains that flag, delegates expression evaluation to the established numeric computation result consumer, and requires proof that the supplied target policy carries the resolved target's scale and signedness before choosing ordinary or suppressed classification. The lower-level evaluator still accepts already-resolved rounding/`Abs`/Min/Max trees without claiming their concrete authoring legality.
+- The checked computation operation resolves one nonrepeatable Number target and every nonrepeatable Number operand through the shared authored-tree traversal, accepts constant-only or field-bearing plain arithmetic and power after the existing authoring/summary checks, rejects the target at every nested operand position, and applies the exact result-scale gate unless the one explicit warning flag is present. A dedicated attachment boundary accepts the complete externally resolved target policy once, rejects scale/signedness drift from the resolved target, and returns a wrapper whose evaluation has no policy argument. The checked core retains the warning flag, while the wrapper retains every target constraint and delegates expression evaluation to the established numeric computation result consumer before choosing ordinary or suppressed classification. The lower-level evaluator still accepts already-resolved rounding/`Abs`/Min/Max trees without claiming their concrete authoring legality.
 - Stored conversion is exact after scale-19 pre-rounding; its warning-suppressed no-fit renderer is structurally locked to consume that pre-rounded value before 16-digit bounding.
-- The resolved target policy supports the ordinary scale-compatible path and the explicit warning-suppressed no-fit path with signedness, minimum/maximum fractional digits, the universal 15-digit check, effective integer-digit capacity, zero admission, rendered length, inclusive numeric range, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation. The checked operation still receives that resolved policy separately and proves only its scale/signedness coherence because `FlatFieldDecl` does not yet retain the remaining target constraints.
+- The resolved target policy supports the ordinary scale-compatible path and the explicit warning-suppressed no-fit path with signedness, minimum/maximum fractional digits, the universal 15-digit check, effective integer-digit capacity, zero admission, rendered length, inclusive numeric range, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation. The checked target-operation wrapper retains that complete policy after proving its scale/signedness coherence; construction of the resolved policy remains outside the flat declaration because `FlatFieldDecl` does not retain the remaining target constraints.
 - Open:
   - checked computation-table integration and concrete operation-valued wrapper authoring
   - concrete computation power authoring and result-empty provenance
@@ -258,7 +258,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - Date-shift projection
   - concrete arithmetic rendering
   - `BaseYear`
-  - declaration-owned construction and checked-operation retention of the resolved Number target policy
+  - declaration-owned construction of the resolved Number target policy
   - downstream context/read integration
   - expression-valued generated implicit validation beyond the literal fragment; the flat whole-rule condition currently has no checked numeric-expression leaf, so do not add a parallel condition tree
   - partial/repeatable evaluation

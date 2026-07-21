@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `16ff14b` (`refactor(numbers): share scale warning admission`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,502-declaration trust audit passed.
+- Semantic baseline before the current capsule: `8714edb` (`feat(computation): enforce numeric target constraints`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,547-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close the resolved computed-Number target's declared-constraint suffix without widening parsing or the flat model. Preserve one shared total-digit/signedness prefix, then apply effective integer digits, zero, rendered length, and inclusive numeric bounds only after a canonical attempt fits the target fractional interval.
+Attach the complete externally resolved Number target policy once to the checked numeric computation operation without widening the flat model. Reject scale/signedness mismatch at that boundary, retain all other resolved constraints unchanged, and expose target evaluation only through the retained policy.
 
-Success means each declared constraint has a focused boundary case, overlapping failures prove the source first-error order, a warning-suppressed no-fit case proves decimal mismatch precedes the fitting-only suffix, generic acceptance/rejection laws use the complete dispatch, and the existing accepted synchronization entry records that a12-dmkits is already aligned rather than creating a feedback-loop request.
+Success means a mismatched policy is rejected before evaluation, a non-scale constraint proves the complete policy reaches target checking, a law exposes the retained coherence proof, and no evaluation API accepts another caller-selected policy. Declaration-owned policy construction remains explicit future work because `FlatFieldDecl` does not retain those constraints.
 
 ## Frontier queue
 
@@ -31,8 +31,8 @@ Success means each declared constraint has a focused boundary case, overlapping 
 - **Satisfied — warning-suppressed numeric no-fit:** `2a77643` adds the explicit bounded-storage target branch while preserving the ordinary fail-closed entry point.
 - **Satisfied — checked computation suppression:** `0aeddb1` retains the legal warning flag through admission and routes the evaluated result through the matching target entry point.
 - **Satisfied — shared warning gate:** `16ff14b` consolidates the exact suppression primitive after its second completed consumer.
-- **Active — resolved Number target constraints:** close the fit-only integer-digit, zero, rendered-length, and inclusive-range suffix while preserving the no-fit decimal-error boundary.
-- **Ready after target closure — target-policy ownership:** remove caller choice at evaluation by retaining one resolved policy on the checked numeric operation; do not duplicate constraints in `NumField` or infer them from erased declaration data.
+- **Satisfied — resolved Number target constraints:** `8714edb` closes the fit-only integer-digit, zero, rendered-length, and inclusive-range suffix while preserving the no-fit decimal-error boundary.
+- **Active — target-policy ownership:** retain one complete resolved policy on the checked numeric operation, reject scale/signedness mismatch before evaluation, and remove caller policy choice from evaluation without duplicating constraints in `NumField` or inferring them from erased declaration data.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
