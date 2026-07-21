@@ -4,14 +4,14 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: resolved Time extrema in this revision, building on `2f8c08c` (`feat(time): add resolved time comparisons`).
+- Semantic baseline: `5f11430` (`feat(time): add resolved time extrema`), with the corrected three-family ownership wording at `1c4c48a`.
 - Its focused semantics/proof/conformance build, full 229-job `lake build`, 51/51 retained-observation replay, and trust audit over 737 theorem roots / 11,918 declarations / 134 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Run one bounded artifact-only resolved-temporal consumer probe covering Date/Time/DateTime comparison and extrema. Test whether the existing semantic shipment lets an independent Execute plus Transform/Explain consumer recover the operation domains, value identities, empty/formal/missing distinctions, and separating examples without source archaeology. This is a knowledge-transport probe, not authorization for a Rust/Python implementation, shipment, protocol expansion, qualification campaign, or new harness.
+Replace the finite fresh-label `Berlin2024Profile` resolver with the versioned `europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1` profile already owned by [`spec/05-dates-and-time.md`](../spec/05-dates-and-time.md#51-versioned-europeberlin-legacy-profile). Implement exact historical-transition and post-1997 recurrence offset selection plus general fresh-label gap/overlap resolution, then route the still-bounded 2024 calendar-day consumer through that one resolver. Do not widen `DifferenceInDays`, general zone dispatch, parsing, checked cells, or public protocol in this capsule.
 
 ## Frontier queue
 
@@ -42,8 +42,9 @@ Run one bounded artifact-only resolved-temporal consumer probe covering Date/Tim
 - **Satisfied — resolved DateTime instant comparison:** `c9d904a` compares exact whole-second instant identity/order through all six operators, reuses the shared classified scalar verdict path, and locks the equal-looking Berlin overlap separator without adding wall-label or zone-resolution machinery.
 - **Satisfied — resolved DateTime exact-instant extrema:** `53340f5` reuses the shared temporal fold at its second completed consumer, selects exact instants for `Min`/`Max`, retains empty/unavailable/missing behavior, and records the a12-dmkits adapter gap without adding another aggregate scan.
 - **Satisfied — resolved Time comparison:** `2f8c08c` compares decoded times by seconds since midnight, shares one operation-neutral enum and classified verdict path across Date/Time/DateTime, and keeps format decoding plus checked lowering outside.
-- **Satisfied — resolved Time extrema:** this revision reuses the temporal fold and decoded coordinate, preserves the common empty/formal/missing distinctions, and widens pending `SPEC-2026-07-21-07` plus its handoff instead of creating a duplicate peer request.
-- **Active — resolved temporal consumer probe:** run one isolated artifact-only Execute plus Transform/Explain readback over Date/Time/DateTime comparison and extrema. Do not start an external Rust/Python implementation or current-suite qualification without a separately adopted shipment boundary.
+- **Satisfied — resolved Time extrema:** `5f11430` reuses the temporal fold and decoded coordinate, preserves the common empty/formal/missing distinctions, and widens pending `SPEC-2026-07-21-07` plus its handoff instead of creating a duplicate peer request.
+- **Satisfied — resolved temporal consumer probe:** an isolated reader at documentation revision `1c4c48a` recovered the complete resolved evaluator, exact separating cases, swapped-comparison law, projection-sensitive transformations, exclusions, and assurance boundary without sibling or kernel research. Execute, Transform, and Explain pass only at that resolved boundary; no shipment or external implementation was started.
+- **Active — versioned Berlin legacy-timezone profile:** replace the finite fresh-label resolver with the canonical 62-transition table plus post-1997 recurrence, preserve gap rejection and smaller/after-offset overlap choice, and keep the finite calendar-day consumer as a downstream slice rather than a parallel resolver.
 - **Missing fact — checked temporal lowering:** foundational checked values and field declarations do not yet retain Date/DateTime values, comparable format components, or zone-resolution policy; do not widen them through an aggregate-only adapter.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
