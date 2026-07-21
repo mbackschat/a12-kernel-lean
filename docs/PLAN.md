@@ -212,9 +212,17 @@ The direct Number core and `NumericComparisonOp` already contained all six ordin
 
 The checked mapping is now exhaustive for Number while Boolean, Confirm, and String still reject ordering through their type-specific equality gates. Empty `<= 0` is omission-typed for either signedness because filling can grow the left operand. Empty `0 > -1` distinguishes unsigned VALUE from signed OMISSION because only the signed field may shrink. Trusted generic laws own both branches. Equality/inequality and their existing reduced scale limitation are unchanged; no spec, sync-ledger, protocol, evidence, or dependency changed.
 
-## Immediate next step: invalid-power computation projection audit
+## Completed semantic unit: invalid-power Number computation projection
 
-Audit whether the existing checked numeric computation expression and target outcome already retain enough information to project runtime-invalid integral power distinctly from clean no-value, just as the completed division path does. Proceed only from pinned computation/runtime source and a separating invalid-power case; reuse the existing domain-failure and target/dependency mechanisms rather than adding a new computation result type. If power authoring or lowering remains outside the checked computation subset, record that exact boundary and rotate.
+Pinned kernel `VkBigDecimal.power` returns the same invalid-number sentinel for `0` raised to a negative integral exponent and integral exponents outside inclusive `-1000..1000` that zero division returns. The generic Number target handler then marks that sentinel invalid and emits `berechnungsWertFehler`; the existing dependent-invalid read rule therefore predicts poison despite fresh silence or stale CLEARED at the lossy delta boundary. The current a12-dmkits implementation instead projects invalid power to clean `Unknown`, so `SPEC-2026-07-21-05` is a genuinely outbound correction rather than a reconciliation feedback loop.
+
+The declaration-resolved numeric computation evaluator now traverses power subtrees during its complete preflight, evaluates reached operands through the existing left-to-right delayed-right mechanism, delegates valid values to the shared staged power algorithm, and maps its partial failure arm to the existing operation-neutral `domainFailure`. The red matrix distinguishes valid `2 ^ 3`, invalid `0 ^ -1`, invalid `2 ^ 1001`, and a wrong-kind exponent hidden behind an earlier poison. A second end-to-end lock proves that invalid power reaches Number target calculation invalidity and the existing poisoned dependency observation. Trusted laws state exact reached-value delegation and the zero-to-negative computation result.
+
+This closes levels 1–2 for an already-authored, declaration-resolved numeric computation expression and the existing target/dependency projection. Concrete computation syntax, exponent-scale/static authoring admission, checked target construction, scheduling/context overlay, generated validation, protocol exposure, and project-local portable evidence remain outside. The defensive fractional exponent arm stays total but is not claimed as a legal kernel runtime case. No new result type, target path, evidence mechanism, dependency, or harness was added.
+
+## Immediate next step: semantic frontier reassessment
+
+Reassess the current implementation map and named consumer tasks after the power closure. Select one bounded checked consumer or high-risk discriminator whose representation is already sufficient and whose wrong account has an independent separator. Do not retry the parked aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing model facts or a second exact semantic user.
 
 ## Likely next keystone rotation
 

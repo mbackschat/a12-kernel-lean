@@ -34,6 +34,9 @@ private def roundedDivisionByZero : AuthoredNumericExpr FlatFieldDecl :=
   .round .halfUp ⟨2, by decide⟩
     (.binary .divide (.atom source) (literal 0))
 
+private def zeroToNegativePower : AuthoredNumericExpr FlatFieldDecl :=
+  .power (literal 0) (literal (-1))
+
 private def dependencyAfter
     (result : Except NumericComputationFault NumericComputationResult) :
     Option NumericDependencyObservation :=
@@ -76,6 +79,19 @@ example :
   · constructor
     · rfl
     · native_decide
+
+/- Runtime-invalid integral power uses the same target-invalidity and dependent-poison route as division, not clean no-value. -/
+example :
+    zeroToNegativePower.evaluateComputation context = .ok .domainFailure ∧
+      scaleTwo.check .domainFailure =
+        .supported (.invalidNoValue .calculationValue) ∧
+      dependencyAfter (zeroToNegativePower.evaluateComputation context) =
+        some .poisoned := by
+  constructor
+  · rfl
+  · constructor
+    · rfl
+    · rfl
 
 /- Over a stale target, clean no-result and calculation invalidity have the same CLEARED delta and exact empty application but different dependency meaning. -/
 example :

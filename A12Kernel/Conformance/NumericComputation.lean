@@ -237,16 +237,26 @@ example : faultOf
       some (.fieldKindMismatch laterId) := by
   native_decide
 
-/- Power's computation projection remains unaudited and fails closed at this boundary. -/
-example : faultOf (power (literal 2) (literal 3)) =
-    some .unsupportedPower := by
+/- Power shares the checked computation result boundary: valid values remain values. -/
+example : resultOf (power (literal 2) (literal 3)) =
+    some (.value 8) := by
   native_decide
 
-/- Unsupported structure is rejected before a reached poison can hide it. -/
+/- Both runtime-invalid integral power regions become arithmetic domain failure. -/
+example : resultOf (power (literal 0) (literal (-1))) =
+    some .domainFailure := by
+  native_decide
+
+example : resultOf (power (literal 2) (literal 1001)) =
+    some .domainFailure := by
+  native_decide
+
+/- Structural preflight still traverses power before a reached poison can hide a wrong-kind exponent. -/
 example : faultOf
-    (binary .add (field source) (power (literal 2) (literal 3)))
+    (binary .add (field source)
+      (power (literal 2) (field (stringDeclaration laterId "WrongLater"))))
     (context (checkedNumber (.rejected .malformed))) =
-      some .unsupportedPower := by
+      some (.fieldKindMismatch laterId) := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation
