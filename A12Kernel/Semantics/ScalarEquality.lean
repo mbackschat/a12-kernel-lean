@@ -20,6 +20,18 @@ inductive SimpleComparisonOperand (α : Type) where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- Evaluate two classified scalar operands with symmetric missing polarity. Formal unavailability dominates no value; a true comparison is omission-typed exactly when either present operand retains missing provenance. -/
+def evalSymmetricComparison (holds : α → α → Bool)
+    (leftOperand rightOperand : SimpleComparisonOperand α) : Verdict :=
+  match leftOperand, rightOperand with
+  | .unknown _, _ | _, .unknown _ => .unknown
+  | .notEvaluated, _ | _, .notEvaluated => .notFired
+  | .value left leftGiven, .value right rightGiven =>
+      if holds left right then
+        if leftGiven && rightGiven then .fired .value else .fired .omission
+      else
+        .notFired
+
 private def EqualityOp.holds (op : EqualityOp) (equivalent : Bool) : Bool :=
   match op with
   | .equal => equivalent

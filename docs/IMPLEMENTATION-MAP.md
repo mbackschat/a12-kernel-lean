@@ -282,6 +282,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/DateConstructionNumeric.lean`](../A12Kernel/Semantics/DateConstructionNumeric.lean)
 - [`Semantics/DateDifference.lean`](../A12Kernel/Semantics/DateDifference.lean)
 - [`Semantics/DateTime.lean`](../A12Kernel/Semantics/DateTime.lean)
+- [`Semantics/DateTimeComparison.lean`](../A12Kernel/Semantics/DateTimeComparison.lean)
 - [`Semantics/DateTimeDifference.lean`](../A12Kernel/Semantics/DateTimeDifference.lean)
 - [`Semantics/DateTimeDayDifference.lean`](../A12Kernel/Semantics/DateTimeDayDifference.lean)
 - [`Semantics/DateShift.lean`](../A12Kernel/Semantics/DateShift.lean)
@@ -298,6 +299,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Its direct day/month/year consumer reads supplied real parts, maps incomplete and unreal to equal amount zero with symmetric not-given versus fixed provenance, and maps cause-free unavailability to UNKNOWN.
 - Resolved Date-range overlap keeps supplied inversion explicit, uses closed intervals, preserves occurrence multiplicity, retains ordered skipped/kept operand slots, and implements separate any-pair reached-filter and scalar-versus-list matched-container polarity scans.
 - The separate whole-second baseline adds bounded `TimeOfDay`, admitted `LocalDateTime`, shared scalar `Instant`, executable UTC resolution, strict local chronology, and the already-truncated whole-hour shift core.
+- Resolved DateTime equality, inequality, strict order, and inclusive order compare exact whole-second `Instant` identities rather than wall labels. Date and DateTime now share one generic classified scalar verdict path: formal unavailability dominates, no value does not fire, and a true comparison fires OMISSION exactly when either present operand retains missing provenance. Generic and instant-specific laws preserve truth and polarity under operand/operator exchange.
 - The resolved sub-day difference computes `(second − first).tdiv unitSeconds` for a closed hours/minutes/seconds enum
 - laws establish positive divisors, self-zero, swap negation, exact seconds and exact-unit recovery, while cases separate reverse truncation toward zero from floor division.
 - `CivilDate.next?` uses checked construction
@@ -313,6 +315,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Maintained a12-dmkits `DateDifferenceDiffTest` separates ordinary and partial periods, clamped month ends, cross-year counts, reverse truncation toward zero, February 29 demotion, and February 28 promotion across both kernel strategies and the peer interpreter.
 - Maintained a12-dmkits `DateLiteralDiffTest` establishes that a typed Date literal is canonicalized before equality and ordering, so comparison follows date identity and chronology rather than stored text. Kernel `RuntimeController.vergleicheDATUM` and `VkDate` establish the separate non-relevant, null/no-value, and symmetric not-given verdict projection.
 - Maintained a12-dmkits `DateAggregateDiffTest` separates the Date combiner's no-value empty identity, empty skipping, formal-unavailability propagation, symmetric missing polarity, direct versus selected-stream shapes, and computation clearing across both kernel strategies and the peer interpreter.
+- Maintained a12-dmkits `DateTimeConstructDiffTest` locks resolved DateTime equality and ordering, while `DstTimeZoneDiffTest.chainedAddKeepsItsInstantIdentity` separates equal-looking Berlin overlap labels whose exact instants differ by one hour and locks the spring-gap equality control across both kernel routes plus the peer interpreter.
 - Groovy-dynamic kernel differentials directly establish positive and reverse fractional sub-day truncation.
 - Selected whole-unit DST cases also agree through generated static Java, but that route does not separately cover the reverse-fraction discriminator.
 - At reviewed a12-dmkits revision `71775c9905b057831253348c31ce39e321e61889`, focused controls lock both Date-range polarity scans through both kernel routes plus the interpreter, and separately lock constructed-Date reason/calendar consumers and `DifferenceInDays` calendar-step separators.
@@ -323,9 +326,9 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - **Status:** implemented internally on narrow domains; external evidence partly pending.
 - Date coverage includes the unbounded positive-era account, resolved six-way full-Date comparison with classified validation polarity, stored/full-Date `Min`/`Max`, admitted full-Date day/month/year shifts and signed completed-period differences, resolved three-part construction classification, and the proved calendar-coordinate successor/strict-monotonicity bridge.
 - Date-range coverage includes closed occurrence-preserving overlap truth, both resolved operator shapes, and their filter-derived polarity scans.
-- DateTime coverage includes the proved UTC local-order bridge, resolved `DifferenceInHours/Minutes/Seconds`, the finite Berlin 2024 transition profile, and resolved `DifferenceInDays` inside its consecutive spring slice.
+- DateTime coverage includes exact six-way resolved-instant comparison with classified validation polarity, the proved UTC local-order bridge, resolved `DifferenceInHours/Minutes/Seconds`, the finite Berlin 2024 transition profile, and resolved `DifferenceInDays` inside its consecutive spring slice.
 - The admitted full-Date shifts deliberately cover only already-converted integer offsets whose result remains a stored/computed full Date. The matching difference capsule starts with two such values and returns only the mathematical integer count. Numeric truncation and 32-bit conversion, below-floor intermediate expression values, partial formats, empty/formal reason projection, numeric result metadata, DateTime gates and wall-time behavior, target formatting, and cell effects remain outside.
-- The Date comparison owner starts after each operand has been classified as a present full Date with symmetric missing provenance, no value, or formal unavailability. Literal typing/parsing, partial-Date resolution, raw-cell classification, DateTime instant comparison, and checked model integration remain outside.
+- The Date and DateTime comparison owners start after each operand has been classified as a present full Date or exact instant with symmetric missing provenance, no value, or formal unavailability. Literal typing/parsing, partial-Date resolution, DateTime zone resolution, raw-cell classification, and checked model integration remain outside.
 - The Date extremum owner starts with stored/full-Date comparison operands plus resolved tail/`Having` markers. Path/star expansion, raw cells, computation target clearing/application, checked authoring, constructed-Date calendar identity, and DateTime instant selection remain outside.
 - The construction classification and direct numeric component projection are implemented, but they do not yet retain calendar identity, compose temporal no-value reasons beyond extraction, implement date differences, or implement legacy-hybrid month/year operations.
 - Date-range raw cell classification, actual filter evaluation, paths/stars, row gates, and checked lowering remain outside the resolved operator capsule.
@@ -335,7 +338,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - empty/formal operands for other Date consumers and general `Value` integration
   - other operator gates and polarity
   - DateTime difference operand/result checking and Number consumption
-  - Date comparison raw-cell checking and checked integration, plus DateTime instant comparison
+  - Date and DateTime comparison raw-cell checking and checked integration
   - `DifferenceInDays` outside the finite spring profile and constructed-Date legacy-hybrid month/year differences
   - constructed-Date legacy-hybrid shifts and other date arithmetic
   - full `Date(...)`/Time authoring

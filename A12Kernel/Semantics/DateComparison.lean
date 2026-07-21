@@ -38,16 +38,9 @@ def DateComparisonOp.holds (op : DateComparisonOp)
   | .after => right.before left
   | .afterOrEqual => !left.before right
 
-/-- Evaluate two classified Date operands. Formal unavailability dominates no value; a no-value operand makes comparison not fire; and a true comparison is omission-typed exactly when either present result retains missing provenance. -/
+/-- Evaluate two classified Date operands through the shared symmetric scalar projection. -/
 def DateComparisonOp.eval (op : DateComparisonOp)
     (leftOperand rightOperand : SimpleComparisonOperand FullDate) : Verdict :=
-  match leftOperand, rightOperand with
-  | .unknown _, _ | _, .unknown _ => .unknown
-  | .notEvaluated, _ | _, .notEvaluated => .notFired
-  | .value left leftGiven, .value right rightGiven =>
-      if op.holds left right then
-        if leftGiven && rightGiven then .fired .value else .fired .omission
-      else
-        .notFired
+  evalSymmetricComparison op.holds leftOperand rightOperand
 
 end A12Kernel

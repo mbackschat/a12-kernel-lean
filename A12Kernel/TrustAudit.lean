@@ -52,6 +52,12 @@ run_cmd do
 #print axioms A12Kernel.K.and_information_monotone
 #print axioms A12Kernel.K.or_information_monotone
 
+#print axioms A12Kernel.evalSymmetricComparison_unknown_left
+#print axioms A12Kernel.evalSymmetricComparison_noValue_left
+#print axioms A12Kernel.evalSymmetricComparison_fixed_firing
+#print axioms A12Kernel.evalSymmetricComparison_missing_firing
+#print axioms A12Kernel.evalSymmetricComparison_swapped
+
 #print axioms A12Kernel.dateParts_real_iff
 #print axioms A12Kernel.civilDate_ofParts_isSome_iff
 #print axioms A12Kernel.civilDate_is_real
@@ -134,6 +140,11 @@ run_cmd do
 #print axioms A12Kernel.localDateTime_resolveUtc_epochSecond
 #print axioms A12Kernel.localDateTime_before_resolveUtc
 #print axioms A12Kernel.localDateTime_sameDate_difference
+#print axioms A12Kernel.dateTimeComparison_equal_iff
+#print axioms A12Kernel.dateTimeComparison_notEqual_iff
+#print axioms A12Kernel.dateTimeComparison_swapped
+#print axioms A12Kernel.dateTimeComparison_before_excludes_after
+#print axioms A12Kernel.dateTimeComparison_eval_swapped
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap

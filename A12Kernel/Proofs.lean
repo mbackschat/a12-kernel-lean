@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.Information
+import A12Kernel.Proofs.ScalarEquality
 import A12Kernel.Proofs.FullDate
 import A12Kernel.Proofs.DateComparison
 import A12Kernel.Proofs.DateAggregate
@@ -8,6 +9,7 @@ import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateConstructionNumeric
 import A12Kernel.Proofs.DateDifference
 import A12Kernel.Proofs.DateTime
+import A12Kernel.Proofs.DateTimeComparison
 import A12Kernel.Proofs.DateTimeDifference
 import A12Kernel.Proofs.DateTimeDayDifference
 import A12Kernel.Proofs.DateShift
