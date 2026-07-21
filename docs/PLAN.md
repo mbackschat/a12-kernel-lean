@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `b1d3dec` (`feat(dates): add bounded full-date day shifts`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,643-declaration trust audit passed.
+- Semantic baseline: `eaec9e3` (`feat(dates): add resolved full-date comparisons`).
+- Its focused proof build, full 213-job `lake build`, 51/51 retained-observation replay, and 11,700-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close the six ordinary comparison operators over two already-resolved full Dates. Reuse the existing strict chronology and structural Date identity; keep parsing, literal typing, empty/formal classification, validation polarity, DateTime instant comparison, and checked lowering outside.
+Reduce the existing final trust gate's repetitive success output without changing its theorem roots, forbidden-declaration checks, or complete failure diagnostics. Do not add caching, a second audit harness, or a dependency.
 
-Success means strict and inclusive order, equality and inequality, equal operands, leap/year boundaries, operand/operator exchange, and strict-direction exclusion are executable or proved without adding a second chronology.
+Success means the ordinary successful command emits one compact summary, a failing audit still exposes the actionable Lean diagnostics, and the existing trust guarantee remains unchanged.
 
 ## Frontier queue
 
@@ -37,7 +37,9 @@ Success means strict and inclusive order, equality and inequality, equal operand
 - **Satisfied — admitted full-Date month/year shifts:** `e91a2cd` implements post-conversion integer `AddMonths`/`AddYears` on stored/full Dates, retains their clamp-versus-February-end distinction, and reapplies the universal Date floor without claiming constructed-Date legacy behavior.
 - **Satisfied — admitted full-Date month/year differences:** `aadcbc3` computes signed completed periods through the shared matching shift convention, proves self-zero and swap-negation, and keeps the February-end year boundary distinct from month counting without claiming reason-bearing or legacy-calendar operands.
 - **Satisfied — admitted full-Date day shift:** `b1d3dec` inverts the existing Gregorian day coordinate in bounded work, covers both signs and the value floor, and does not widen into DateTime wall-time or constructed-Date legacy-calendar behavior.
-- **Active — resolved full-Date comparisons:** close the six-operator truth family over two admitted values by reusing `FullDate.before`, without claiming literal typing, empty/formal polarity, DateTime instant comparison, or checked rule integration.
+- **Satisfied — resolved full-Date comparisons:** `eaec9e3` closes the six-operator truth family over two admitted values by reusing `FullDate.before`, without claiming literal typing, empty/formal polarity, DateTime instant comparison, or checked rule integration.
+- **Ready — classified full-Date comparison operands:** retain a present full Date with symmetric missing provenance separately from no value and formal unavailability, delegate truth to the existing six-operator family, and project only a true missing-bearing comparison to OMISSION. Do not add parsing, DateTime, checked paths, or a generic temporal framework.
+- **Ready after classified operands — stored/full-Date extrema:** make direct and resolved `Min`/`Max` the second consumer of that classification; skip empty inputs, propagate formal unavailability, preserve symmetric empty/tail/`Having` provenance on a selected result, and return no value for an all-empty fold. Keep constructed-Date calendar identity and DateTime instant aggregation outside rather than erasing them into `FullDate`.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
