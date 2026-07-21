@@ -60,7 +60,7 @@ The repository-level ratio is also a guard. Count `Core.lean`, `Cell.lean`, `Doc
 
 ## Long-lived feature-set sessions and agent profiles
 
-Use one long-lived root session per coherent semantic feature set. Prompts and work items execute sequentially in the shared checkout, without worktrees. The root is the sole writer and integrator; keep it warm across the family audit, high-risk discriminator, semantic implementation, generic proofs, separating matrix, commits, and closure. Start a new root session only at a feature-set boundary, after material context pollution, or when deliberate coldness is part of a consumer test. Before ending a feature-set session, update [`docs/PLAN.md`](docs/PLAN.md) with the verified revision, closed boundary, unresolved questions, and exact next candidate.
+Use one long-lived root session per coherent semantic feature set. Prompts and work items execute sequentially in the shared checkout, without worktrees. Exactly one agent may work against the branch at a time: when the root delegates one bounded task, it waits for that subagent to finish before doing other work or starting another agent. The root is the sole writer and integrator; keep it warm across the family audit, high-risk discriminator, semantic implementation, generic proofs, separating matrix, commits, and closure. Start a new root session only at a feature-set boundary, after material context pollution, or when deliberate coldness is part of a consumer test. Before ending a feature-set session, update [`docs/PLAN.md`](docs/PLAN.md) with the verified revision, closed boundary, unresolved questions, and exact next candidate.
 
 ### Stable capability profiles
 
@@ -82,7 +82,7 @@ Subagents are optional, bounded, and read-only. The root remains the sole writer
 
 - Use no subagent when the task depends heavily on the root's accumulated context or is quicker to execute directly.
 - Prefer one combined REGULAR subagent for a bounded read-heavy audit that would otherwise pollute the root context.
-- Use at most two REGULAR subagents only when two investigations are genuinely independent, such as source/spec evidence versus existing Lean reuse.
+- Never run subagents concurrently. If two independent REGULAR audits are genuinely needed, run them one after the other and integrate the first result before minting the second task.
 - Use a SIMPLE subagent only for mechanical work with an explicit input allowlist, output schema, and no semantic discretion.
 - Use one BEST subagent only for an independently valuable adversarial review, unresolved semantic conflict, or foundational design decision. Never launch several BEST agents to vote on an unclear question.
 - Run known builds and test commands directly; do not spawn an agent merely to execute them.
