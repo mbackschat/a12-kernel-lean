@@ -28,10 +28,10 @@ end DateTimeDifferenceUnit
 
 namespace Instant
 
-/-- Return `(second − first) / unit` with `Int.tdiv`, which truncates negative fractional results toward zero. -/
+/-- Return the exact epoch-millisecond delta divided by the selected unit, using `Int.tdiv` so negative fractional results truncate toward zero. -/
 def difference (first : Instant) (unit : DateTimeDifferenceUnit)
     (second : Instant) : Int :=
-  (second.epochSecond - first.epochSecond).tdiv unit.unitSeconds
+  (second.epochMillis - first.epochMillis).tdiv (unit.unitSeconds * 1000)
 
 end Instant
 

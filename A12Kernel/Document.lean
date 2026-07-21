@@ -45,11 +45,6 @@ structure Document where
     (`spec/07` §9 / `spec/08` §10) -/
 abbrev Env := List (RepeatableLevel × Nat)
 
-/-- Scalar whole-second instant identity. Calendar and zone resolution live in the date/time semantics. -/
-structure Instant where
-  epochSecond : Int
-  deriving Repr, DecidableEq
-
 /-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise
     read from ambient state, kept as explicit input so `eval` / `compute` stay pure (no
     `IO`; determinism given a clock). Model configuration selects a time zone; an explicit

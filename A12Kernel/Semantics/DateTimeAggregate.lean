@@ -3,7 +3,7 @@ import A12Kernel.Semantics.DateTimeComparison
 
 /-! # Resolved DateTime instant extrema
 
-This capsule applies the shared temporal extremum fold to already-classified whole-second DateTime instants. Selection follows physical instant chronology, never local wall-label order. Operand expansion, formats, parsing, zone resolution, checked lowering, computation targets, and subsecond values remain outside.
+This capsule applies the shared temporal extremum fold to already-classified exact DateTime instants. Selection follows physical instant chronology, never local wall-label order. Operand expansion, formats, parsing, zone resolution, checked lowering, and computation targets remain outside.
 -/
 
 namespace A12Kernel

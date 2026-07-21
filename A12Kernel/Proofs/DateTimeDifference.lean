@@ -24,30 +24,30 @@ theorem instant_difference_swap
     (first second : Instant) (unit : DateTimeDifferenceUnit) :
     second.difference unit first = -(first.difference unit second) := by
   have negated :
-      first.epochSecond - second.epochSecond =
-        -(second.epochSecond - first.epochSecond) := by
+      first.epochMillis - second.epochMillis =
+        -(second.epochMillis - first.epochMillis) := by
     omega
   simp only [Instant.difference, negated, Int.neg_tdiv]
 
-/-- Seconds expose the exact authored-order subtraction without truncation. -/
+/-- Seconds divide the exact authored-order millisecond subtraction and truncate toward zero. -/
 theorem instant_difference_seconds
     (first second : Instant) :
     first.difference .seconds second =
-      second.epochSecond - first.epochSecond := by
+      (second.epochMillis - first.epochMillis).tdiv 1000 := by
   simp [Instant.difference, DateTimeDifferenceUnit.unitSeconds]
 
 /-- Advancing by an exact whole number of selected units recovers that signed amount. -/
 theorem instant_difference_exactUnits
     (instant : Instant) (unit : DateTimeDifferenceUnit) (amount : Int) :
     instant.difference unit
-        { epochSecond :=
-            instant.epochSecond + amount * unit.unitSeconds } =
+        { epochMillis :=
+            instant.epochMillis + amount * (unit.unitSeconds * 1000) } =
       amount := by
   simp only [Instant.difference]
   have difference :
-      instant.epochSecond + amount * unit.unitSeconds -
-          instant.epochSecond =
-        amount * unit.unitSeconds := by
+      instant.epochMillis + amount * (unit.unitSeconds * 1000) -
+          instant.epochMillis =
+        amount * (unit.unitSeconds * 1000) := by
     omega
   rw [difference, Int.mul_tdiv_cancel amount]
   have positive := dateTimeDifferenceUnit_unitSeconds_pos unit
