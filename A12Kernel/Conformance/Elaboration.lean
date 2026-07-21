@@ -82,7 +82,8 @@ private def resolvedIdOf (result : Except ResolveError FlatFieldDecl) : Option F
 
 example : coreOf (elaborate model ["Order"]
     (compare .equal (absolute ["Order"] "Quantity") (.number 0))) =
-    some (.compare (.number .equal { id := 0, info := numberInfo } 0)) := by
+    some (.compare (.number (.ordinary .equal)
+      { id := 0, info := numberInfo } 0)) := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
@@ -109,7 +110,8 @@ example : coreOf (elaborate model ["Order"]
     (.and (.fieldFilled (absolute ["Order"] "ExpressShipping"))
       (compare .equal (absolute ["Order"] "Quantity") (.number 0)))) =
     some (.and (.fieldFilled (.boolean { id := 1 }))
-      (.compare (.number .equal { id := 0, info := numberInfo } 0))) := by
+      (.compare (.number (.ordinary .equal)
+        { id := 0, info := numberInfo } 0))) := by
   native_decide
 
 -- Bare resolution is declaring-group-first, then flag-gated unique model-wide.
@@ -200,22 +202,26 @@ example : errorOf (elaborate model ["Order"]
 
 example : coreOf (elaborate model ["Order"]
     (compare .less (absolute ["Order"] "Quantity") (.number 10))) =
-    some (.compare (.number .less { id := 0, info := numberInfo } 10)) := by
+    some (.compare (.number (.ordinary .less)
+      { id := 0, info := numberInfo } 10)) := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
     (compare .greaterEqual (absolute ["Order"] "Quantity") (.number 0))) =
-    some (.compare (.number .greaterEqual { id := 0, info := numberInfo } 0)) := by
+    some (.compare (.number (.ordinary .greaterEqual)
+      { id := 0, info := numberInfo } 0)) := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
     (compare .lessEqual (absolute ["Order"] "Quantity") (.number 10))) =
-    some (.compare (.number .lessEqual { id := 0, info := numberInfo } 10)) := by
+    some (.compare (.number (.ordinary .lessEqual)
+      { id := 0, info := numberInfo } 10)) := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
     (compare .greater (absolute ["Order"] "Quantity") (.number 10))) =
-    some (.compare (.number .greater { id := 0, info := numberInfo } 10)) := by
+    some (.compare (.number (.ordinary .greater)
+      { id := 0, info := numberInfo } 10)) := by
   native_decide
 
 example : errorOf (elaborate model ["Order"]

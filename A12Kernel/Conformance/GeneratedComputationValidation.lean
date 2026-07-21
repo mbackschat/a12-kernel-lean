@@ -50,7 +50,7 @@ private def literal (value : Rat) : DecodedNumericLiteral :=
   { value, authoredScale := 0 }
 
 private def alternative (precondition : ComputationCondition)
-    (operation : Rat) : ComputationAlternative DecodedNumericLiteral :=
+    (operation : Rat) : LiteralNumberComputationAlternative :=
   { precondition, operation := literal operation }
 
 private def computation (firstGuard : ComputationCondition) (firstValue : Rat)
@@ -117,6 +117,11 @@ private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
 private def bothHoldingDifferent : TwoAlternativeLiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
 
+private def tolerateFirst (range : NumericToleranceRange)
+    (candidate : TwoAlternativeLiteralNumberComputation) :
+    TwoAlternativeLiteralNumberComputation :=
+  { candidate with first := { candidate.first with tolerance := some range } }
+
 /- Computation selects the first holding operation, while generated validation retains the later holding mismatch. -/
 example :
     selectionOf bothHoldingDifferent
@@ -134,6 +139,28 @@ example :
         .selected (literal 1) ∧
       outcomeOf candidate (bothFilled (.parsed (.num 1))) =
         some .notFired := by
+  native_decide
+
+/- Per-alternative tolerance changes only the generated mismatch: computation still selects the literal operation, while interior and boundary differences stay quiet and a strict exterior fires. -/
+example :
+    let candidate := tolerateFirst .range1 <|
+      computation (.fieldFilled gate.id) 1 (.fieldNotFilled gate.id) 99
+    selectionOf candidate (bothFilled (.parsed (.num 2))) =
+        .selected (literal 1) ∧
+      outcomeOf candidate (bothFilled (.parsed (.num (3 / 2)))) =
+        some .notFired ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 2))) =
+        some .notFired ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 3))) =
+        some (.fired (expectedMessage .value)) := by
+  native_decide
+
+/- Tolerance is tier-local: a tolerant first mismatch does not soften a later strict alternative. -/
+example :
+    let candidate := tolerateFirst .range10 <|
+      computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 20
+    outcomeOf candidate (bothFilled (.parsed (.num 10))) =
+      some (.fired (expectedMessage .value)) := by
   native_decide
 
 /- A nonholding second guard cannot make its different operation reject the selected result. -/
@@ -215,6 +242,18 @@ example :
         some (.operationScaleMismatch 1 0 1) ∧
       assemblyErrorOf secondMismatch =
         some (.operationScaleMismatch 2 0 1) := by
+  native_decide
+
+/- A tolerance alternative bypasses the ordinary exact-comparison scale gate. -/
+example :
+    let firstMismatch :=
+      { bothHoldingDifferent with
+        first := {
+          precondition := .fieldFilled gate.id
+          operation := { value := 1, authoredScale := 1 }
+          tolerance := some .range1
+        } }
+    (assembleGeneratedLiteralNumberRule model firstMismatch).isOk = true := by
   native_decide
 
 /- String presence guards are consumed in both phases without widening the Number target or table shape. -/

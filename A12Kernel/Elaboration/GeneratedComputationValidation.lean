@@ -4,17 +4,23 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked two-alternative literal-Number generated validation
 
-This capsule admits one nonrepeatable Number target and exactly two guarded literal operations. Computation consumes direct scalar-presence guards with computation-phase first-match selection; the generated rule structurally translates the same guard syntax into ordinary validation conditions and retains both mismatch branches. Common preconditions, expression operations, tolerance, repeatable evaluation, warning-suppressed assignment legality, runtime target checks, and general computation authoring remain outside.
+This capsule admits one nonrepeatable Number target and exactly two guarded literal operations with optional per-alternative fixed tolerance. Computation consumes direct scalar-presence guards with computation-phase first-match selection; the generated rule structurally translates the same guard syntax into ordinary validation conditions and retains both mismatch branches. Common preconditions, expression operations, repeatable evaluation, warning-suppressed assignment legality, runtime target checks, and general computation authoring remain outside.
 -/
 
 namespace A12Kernel
+
+/-- One literal Number alternative with validation-only tolerance metadata. First-match computation selection deliberately consumes only the inherited precondition and operation. -/
+structure LiteralNumberComputationAlternative extends
+    ComputationAlternative DecodedNumericLiteral where
+  tolerance : Option NumericToleranceRange := none
+  deriving Repr, DecidableEq
 
 /-- The smallest table that separates first-match computation from all-alternatives validation. Decoded literals retain the authored scale until checked lowering; general computation authoring legality is an input assumption. -/
 structure TwoAlternativeLiteralNumberComputation where
   targetField : FieldId
   name : String
-  first : ComputationAlternative DecodedNumericLiteral
-  second : ComputationAlternative DecodedNumericLiteral
+  first : LiteralNumberComputationAlternative
+  second : LiteralNumberComputationAlternative
   messagePlan : MessageRenderPlan
   deriving Repr, DecidableEq
 
@@ -24,7 +30,9 @@ namespace TwoAlternativeLiteralNumberComputation
 def selectFirst (computation : TwoAlternativeLiteralNumberComputation)
     (context : ScalarComputationContext) :
     ComputationAlternativeSelection DecodedNumericLiteral :=
-  ComputationAlternative.selectFirst [computation.first, computation.second] context
+  ComputationAlternative.selectFirst
+    [computation.first.toComputationAlternative,
+      computation.second.toComputationAlternative] context
 
 end TwoAlternativeLiteralNumberComputation
 
@@ -86,31 +94,41 @@ private def lowerForGeneratedValidation (model : FlatModel) :
 
 end ComputationCondition
 
-/-- One guarded strict mismatch in the generated rule. The fixed-tolerance family is deliberately outside this capsule. -/
+/-- One guarded mismatch in the generated rule. Omitted metadata means strict inequality; a present band reuses the shared tolerance operator. -/
 def generatedLiteralNumberMismatch (target : FlatNumberField)
-    (guard : FlatCondition) (operation : Rat) : FlatCondition :=
-  .and guard (.compare (.number .notEqual target operation))
+    (guard : FlatCondition) (operation : Rat)
+    (tolerance : Option NumericToleranceRange) : FlatCondition :=
+  let mismatch := match tolerance with
+    | none => NumericValidationOp.ordinary .notEqual
+    | some range => .tolerance range
+  .and guard (.compare (.number mismatch target operation))
 
 /-- The exact admitted generated shape. Both alternatives remain present; this function never calls the first-match selector. -/
 def twoAlternativeGeneratedNumberCondition (target : FlatNumberField)
     (firstGuard : FlatCondition) (firstOperation : Rat)
-    (secondGuard : FlatCondition) (secondOperation : Rat) :
+    (firstTolerance : Option NumericToleranceRange)
+    (secondGuard : FlatCondition) (secondOperation : Rat)
+    (secondTolerance : Option NumericToleranceRange) :
     FlatCondition :=
   .and (.fieldFilled (.number target))
     (.or
-      (generatedLiteralNumberMismatch target firstGuard firstOperation)
-      (generatedLiteralNumberMismatch target secondGuard secondOperation))
+      (generatedLiteralNumberMismatch target firstGuard firstOperation firstTolerance)
+      (generatedLiteralNumberMismatch target secondGuard secondOperation secondTolerance))
 
 private def checkGeneratedOperationScale (target : FlatNumberField)
-    (alternative : Nat) (operation : DecodedNumericLiteral) :
+    (alternative : Nat) (operation : DecodedNumericLiteral)
+    (tolerance : Option NumericToleranceRange) :
     Except GeneratedComputationValidationError Unit :=
-  if exactNumericScaleComparisonAllowed
-      (NumericScaleSummary.field target.info.scale)
-      (NumericScaleSummary.constant operation.authoredScale) then
-    pure ()
-  else
-    throw (.operationScaleMismatch alternative target.info.scale
-      operation.authoredScale)
+  match tolerance with
+  | some _ => pure ()
+  | none =>
+      if exactNumericScaleComparisonAllowed
+          (NumericScaleSummary.field target.info.scale)
+          (NumericScaleSummary.constant operation.authoredScale) then
+        pure ()
+      else
+        throw (.operationScaleMismatch alternative target.info.scale
+          operation.authoredScale)
 
 /-- Check the model, target, guard fields, and unsuppressed exact-comparison scales before assembling the generated ERROR rule at the target. This does not claim general computation-table, assignment, or runtime target legality. -/
 def assembleGeneratedLiteralNumberRule (model : FlatModel)
@@ -122,14 +140,18 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
   | .ok () => do
       let target ← model.resolveGeneratedNumberTarget computation.targetField
       checkGeneratedOperationScale target 1 computation.first.operation
+        computation.first.tolerance
       checkGeneratedOperationScale target 2 computation.second.operation
+        computation.second.tolerance
       let firstGuard ←
         computation.first.precondition.lowerForGeneratedValidation model
       let secondGuard ←
         computation.second.precondition.lowerForGeneratedValidation model
       let core := twoAlternativeGeneratedNumberCondition target
         firstGuard computation.first.operation.value
+        computation.first.tolerance
         secondGuard computation.second.operation.value
+        computation.second.tolerance
       let checked ←
         (core.checkAgainstValidatedModel model hModel).mapError
           GeneratedComputationValidationError.condition

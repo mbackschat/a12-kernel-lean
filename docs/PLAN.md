@@ -240,9 +240,15 @@ The checked numeric-expression surface now carries an explicit default-off suppr
 
 The red matrix first failed because no suppression fact reached the checked core. The completed cases preserve the unsuppressed rejections, admit all three source-grounded scale classes, and prove that nested-division illegality is not suppressed. Trusted laws state universal scale admission when the flag is set, exact recovery of the original gate when it is absent, and runtime irrelevance of the flag after checking. This closes levels 1–2 for a structured input whose preceding decoder has already recognized the one legal directive; concrete directive syntax, rejection of other names, localized diagnostics, rule-level transport, public protocol exposure, and project-local portable evidence remain outside. The canonical specification already owns the behavior, so no spec or sync-ledger entry changed.
 
+## Completed semantic unit: per-alternative generated-computation tolerance
+
+The two-alternative literal-Number fragment now retains each alternative's optional fixed tolerance solely for implicit validation. Computation selection deliberately erases that metadata and still selects the first holding literal operation; generated validation independently lowers each retained mismatch to strict `!=` or the declared band through the existing `NumericValidationOp`. This makes flat fixed-right validation the second exact consumer of the shared ordinary-or-tolerance dispatch instead of introducing a computation-specific evaluator.
+
+The red matrix first failed because alternatives carried no tolerance. The completed cases distinguish interior, exact boundary, and exterior differences, prove that one tolerant tier does not soften a later strict tier, preserve selection of the same literal operation, and separate ordinary exact-scale rejection from tolerance scale bypass. Trusted laws lock both translations, validation-only metadata erasure, exact two-branch structure, and empty-target suppression. General computation-table authoring, singleton/default or larger tables, common preconditions, expression operations, runtime target behavior, repeats, scheduling, concrete syntax, protocol exposure, and project-local observations remain outside. The canonical clause and accepted a12-dmkits reconciliation already own this behavior, so no spec or sync-ledger entry changed.
+
 ## Immediate next step: semantic frontier reassessment
 
-Reassess the next checked consumer or high-risk discriminator after the scale-warning capsule closes. Do not retry the parked flat-literal-scale, aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing authorization, model facts, or a second exact semantic user.
+Reassess the next checked consumer or high-risk discriminator after the generated-computation tolerance capsule closes. Do not retry the parked flat-literal-scale, aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing authorization, model facts, or a second exact semantic user.
 
 ## Likely next keystone rotation
 

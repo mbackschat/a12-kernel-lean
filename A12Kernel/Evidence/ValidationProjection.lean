@@ -309,7 +309,7 @@ def replayIteration (input : Json) : Except String Json := do
   let star : SingleStar := {
     valueField
     having := filterEquals.map fun expected =>
-      .compare (.number .equal filterField expected) }
+      .compare (.number (.ordinary .equal) filterField expected) }
   pure (authoredObservation (star.evalSumEquality context .equal sumEquals))
 
 private def replayPrivateCase (family : ObservationBundle.Family)

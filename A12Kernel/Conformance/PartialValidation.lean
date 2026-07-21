@@ -51,7 +51,7 @@ private def numberField : FlatNumberField :=
 private def emptyNumberContext : FlatContext where
   read _ := formalCheck { kind := .number numberField.info } .empty
 private def emptyNumberIsZero : FlatCondition :=
-  .compare (.number .equal numberField 0)
+  .compare (.number (.ordinary .equal) numberField 0)
 
 /-! A relevant instance bypasses the ordinary full-validation content gate. -/
 example :

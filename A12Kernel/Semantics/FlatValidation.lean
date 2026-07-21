@@ -1,5 +1,5 @@
 import A12Kernel.Document
-import A12Kernel.Semantics.NumericComparison
+import A12Kernel.Semantics.NumericTolerance
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
@@ -7,8 +7,9 @@ import A12Kernel.Semantics.String
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
 A small core for resolved, non-repeatable field references. It covers the admitted
-direct Number comparisons, Boolean/Confirm equality and inequality, direct String
-equality, two observed String `Length` comparisons, presence predicates, and `And`/`Or`.
+direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
+direct String equality and inequality, four String `Length` ordering comparisons,
+presence predicates, and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -71,7 +72,7 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
     checked numeric-expression route retains that metadata. Confirm admits only the
     legal `True` literal, made implicit in its constructor. -/
 inductive FlatComparison where
-  | number (op : NumericComparisonOp) (field : FlatNumberField) (expected : Rat)
+  | number (op : NumericValidationOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   | string (op : EqualityOp) (field : FlatStringField) (expected : String)
