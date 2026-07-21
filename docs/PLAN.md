@@ -36,7 +36,7 @@ The completed capsule:
 8. Treat an omitted/uninstantiated tail after a present result as grow-only for an unsigned declaration and both-directionally fillable for a signed declaration.
 9. Escalate a reached resolved `Having` marker to both-directional fillability.
 10. Preserve the existing filter-before-consumer behavior and all current small exact `NumberFold` witnesses.
-11. Keep mixed-declaration signedness outside the admitted boundary until missing potential is represented per declaration rather than by one global bit.
+11. Retain each missing source's declaration signedness rather than selecting one representative global bit; the later per-declaration extension below closes this resolved boundary.
 
 ### Local consolidation
 
@@ -94,7 +94,7 @@ The IF194 risk audit found one bounded seam between first-star scope binding and
 
 The red shallow implementation checked only the first reopened level. It correctly caught a missing outer row and an unbounded level but falsely closed both a missing middle branch and a missing leaf branch. The corrected recursive mechanism passes outer, middle, leaf, complete, bound-ancestor, and unbounded separators. Trusted laws characterize finite closure, unbounded openness, open-child propagation, coordinate independence of the result, and exact composition with existing missing potential. A Sum case confirms that the derived bit reaches the existing operator-specific direction unchanged.
 
-This closes levels 1–2 only for a caller-supplied reopened tree and resolved cell stream. Authored path checking, first-star discovery, repeatability lookup, scoped `Document` enumeration, tree/cell construction, `Having`, partial relevance, mixed-declaration missingness, computation aggregates, protocol exposure, and project-local portable evidence remain open. No path framework, Cartesian enumerator, protocol, evidence mechanism, or dependency was added.
+This closes levels 1–2 only for a caller-supplied reopened tree and resolved cell stream. Authored path checking, first-star discovery, repeatability lookup, scoped `Document` enumeration, tree/cell construction, `Having`, partial relevance, per-source declaration-metadata construction, computation aggregates, protocol exposure, and project-local portable evidence remain open. No path framework, Cartesian enumerator, protocol, evidence mechanism, or dependency was added.
 
 ## Completed semantic unit: resolved validation group presence
 
@@ -104,17 +104,29 @@ The red matrix covered malformed-only, admitted-plus-malformed, duplicate-index 
 
 Trusted laws characterize both scalar firing regions, admitted row and duplicate sources, rejected scalar exclusion, exact list-tally partition, numeric error absorption, and the requiredness bridge. This closes levels 1–2 only for resolved inputs. Authored paths, group-instance and descendant enumeration, `Document` adaptation, `NONE`/`PARTIAL`/`FULL` relevance construction from wildcardable patterns, global fields, checked condition lowering, repeatable list expansion, generated required-rule orchestration, messages, protocol exposure, and project-local portable evidence remain open.
 
+## Completed risk audit: checked resolved-input construction
+
+The construction audit rejected both candidate routes at the present boundary. `FlatModel` owns exact paths and repeatable level identities but no repeatability capacities; `Document` owns instantiated row addresses and raw placements but no group ancestry or declaration policy; flat partial relevance is only `FieldId → Bool` and cannot express wildcardable groups, concrete repetitions, globals, or full coverage across deeper repeatable axes. Neither `ReopenedStarDomain` nor `ResolvedGroupPresenceInput` can therefore be constructed faithfully by one current owner.
+
+Adding those facts now would create the general model/path/relevance layer that the bounded capsule rule excludes. The audit made no code change and rotated to the already source-grounded per-declaration Sum discriminator.
+
+## Completed semantic unit: per-declaration Number Sum missingness
+
+[`NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean) now represents every selected Sum cell with its own declaration signedness and retains signedness separately for uninstantiated sources. The encounter-ordered arithmetic scan remains unchanged. After a present total, any missing source permits growth and exactly a missing signed source permits shrinkage; signedness on a present source is irrelevant to that decision. The all-empty identity, first-unavailable termination, and `Having` escalation remain unchanged.
+
+The red matrix separated unsigned-present/signed-missing from signed-present/unsigned-missing for both explicit empty cells and uninstantiated sources. Trusted laws state both per-source branches and prove that the former homogeneous API is exactly the constant-signedness embedding. This closes mixed-declaration resolved evaluation at levels 1–2. Checked authored field-list/group/star lowering, tree/stream construction, actual filtering, partial relevance, computation aggregates, protocol exposure, and project-local portable evidence remain open.
+
 ## Completed consumer checkpoint: artifact-only aggregate probe
 
 At revision `6670ce7`, one deliberately cold read-only consumer received only the aggregate clauses, Lean semantics, laws, executable separators, adjacent operator-family definitions, implementation boundary, and consumer guidance. It consulted no kernel, a12-dmkits, web, Git history, prior discussion, or unlisted source and changed no file.
 
 The reader reconstructed the complete admitted `Sum`/`MinValue`/`MaxValue` evaluator without semantic guessing, including order, staged precision, empty and unavailable cells, first cause, all-empty identity, tail, signedness, `Having`, and the distinctions from operand-list extrema and `FirstFilledValue`. It also classified a narrow set of resolved-stream rewrites and caught the non-obvious fact that inserting or deleting numeric zero is not universally safe because it can alter all-empty provenance or introduce another precision-50 step.
 
-The result passes consumer adequacy for the exact resolved homogeneous-signedness validation boundary. It correctly refuses authored evaluation and source-level refactoring because checked path/star/filter lowering, partial relevance, mixed-declaration missingness, computation, messages, a source transformation relation, and external evidence remain open. [`USE-CASES.md`](USE-CASES.md#completed-probe-record-resolved-number-aggregates) owns the durable reader-facing result; no report artifact, shipment, protocol, runner, qualification campaign, or harness was added.
+The result passes consumer adequacy for the exact resolved homogeneous-signedness validation boundary it received. It correctly refused authored evaluation and source-level refactoring because checked path/star/filter lowering, partial relevance, mixed-declaration missingness, computation, messages, a source transformation relation, and external evidence were outside that artifact set. The later per-declaration capsule widens the resolved evaluator but was not part of this completed probe. [`USE-CASES.md`](USE-CASES.md#completed-probe-record-resolved-number-aggregates) owns the durable reader-facing result; no report artifact, shipment, protocol, runner, qualification campaign, or harness was added.
 
-## Immediate next step: resolved-input construction risk audit
+## Immediate next step: computation transition risk audit
 
-Audit whether one bounded checked-construction seam can supply either of the new resolved inputs from existing source-owned structures: `ResolvedGroupPresenceInput` from a concrete group instance, or `ReopenedStarDomain` plus its ordered cell stream from an authored starred operand. Inventory the actual model/path representations first; `Document` alone carries addresses and placements but not group ancestry, repeatability, declarations, or wildcardable relevance patterns. Select a capsule only if the needed static facts already have one exact owner and at least two consumers; otherwise record the missing keystone and rotate to the ready per-declaration aggregate-missingness discriminator rather than introducing a path framework.
+Inventory the current computation alternative selection, dependency reads, target outcomes, exact application, and `Document` state boundaries against the scheduling/poison/clearing clauses. Select the smallest source-grounded transition capsule that serves at least two completed computation consumers and distinguishes declaration order, dependency poison, target clearing, and later reads without introducing an IO runner, scheduler framework, or general authored computation model. If no bounded transition is ready, rotate to checked message integration or the model-zone temporal profile rather than adding orchestration infrastructure.
 
 ## Likely next keystone rotation
 
@@ -140,7 +152,7 @@ These are not repository-wide blockers:
 - Authored message/whole-rule integration must preserve the accepted provider/default/raw-CRLF distinctions and the bounded modern `DocumentV2` dot-default profile; checked Lean integration, untested display routes, and project-local portable evidence remain open.
 - Validation group presence now has a resolved admitted-content/error/relevance derivation and four consumer projections; checked group-instance enumeration and wildcardable `NONE`/`PARTIAL`/`FULL` relevance construction remain open.
 - Authored nested-star aggregate lowering must construct the proved reopened tree and ordered cell stream from checked paths, model repeatabilities, and scoped `Document` rows; resolved aggregate consumers do not perform that lowering themselves.
-- Mixed-declaration aggregate signedness requires per-declaration missing-potential representation.
+- Mixed-declaration Sum now retains per-source missing signedness at the resolved boundary; checked authored lowering must still construct that metadata.
 - Many internally closed families remain `external evidence pending`; collect them into coherent future calibration batches rather than creating per-capsule capture work.
 - Public protocol expansion, semantic shipments, external prototypes, candidate qualification, and SMT dependencies require separate adoption or approval.
 
@@ -161,5 +173,5 @@ These are not repository-wide blockers:
 2. Inspect `git status --short`, recent commits, and the complete current diff. Do not overwrite concurrent work.
 3. If `Sum` is unfinished, resume its red/green checklist above.
 4. If the aggregate consumer probe is not recorded, run it and feed back its findings.
-5. Otherwise perform the resolved-input construction risk audit and select the next keystone capsule using the criteria above.
+5. Otherwise perform the computation transition risk audit and select the next keystone capsule using the criteria above.
 6. End each capsule with its applicable gates, honest completion/evidence levels, minimal owner-document updates, a clean worktree, and no sibling changes.

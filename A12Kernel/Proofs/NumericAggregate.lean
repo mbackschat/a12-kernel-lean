@@ -95,7 +95,10 @@ theorem numericSumAggregate_allEmpty
     evalNumericSumAggregate fieldSigned
       { cells, hasUninstantiatedTail, hasHaving } =
         .value 0 .both := by
-  unfold evalNumericSumAggregate scanNumericSumCells
+  unfold evalNumericSumAggregate evalDeclaredNumericSumAggregate
+    ResolvedValueListSide.toNumericSumSide ResolvedNumericSumSide.valueCells
+    scanNumericSumCells
+  simp only [List.map_map, Function.comp_def, List.map_id']
   rw [valueListCell_scanPresent_allEmpty numericSumStep cells none allEmpty]
   cases hasHaving with
   | false =>
@@ -106,7 +109,17 @@ theorem numericSumAggregate_allEmpty
               hasHaving := false }) = true := by
         simpa [ResolvedValueListSide.hasMissingPotential,
           ResolvedValueListSide.hasEmpty] using hasMissingOrHaving
-      simp [missingPotential]
+      have declaredMissingPotential :
+          (ResolvedNumericSumSide.hasMissingPotential
+            { cells := cells.map fun cell => { cell, declarationSigned := fieldSigned }
+              uninstantiatedSignedness :=
+                if hasUninstantiatedTail then [fieldSigned] else []
+              hasHaving := false }) = true := by
+        simpa [ResolvedNumericSumSide.hasMissingPotential,
+          ResolvedNumericSumSide.hasEmpty,
+          ResolvedValueListSide.hasMissingPotential,
+          ResolvedValueListSide.hasEmpty] using missingPotential
+      simp [declaredMissingPotential]
   | true => simp
 
 /-- A complete singleton sum is fixed, but its first value still passes through precision-50 addition from zero. -/
@@ -152,6 +165,37 @@ theorem numericSumAggregate_singleton_having
       .value (NumericArithmeticOp.add.eval 0 amount) .both := by
   cases fieldSigned <;> cases hasUninstantiatedTail <;> rfl
 
+/-- After a present value, an explicit empty source contributes its own declaration's
+    direction; the present source's signedness is irrelevant. -/
+theorem declaredNumericSum_explicitMissing
+    (presentSigned missingSigned : Bool) (amount : Rat) :
+    evalDeclaredNumericSumAggregate
+      { cells :=
+          [{ cell := .present amount, declarationSigned := presentSigned },
+           { cell := .empty, declarationSigned := missingSigned }]
+        uninstantiatedSignedness := []
+        hasHaving := false } =
+      .value (NumericArithmeticOp.add.eval 0 amount)
+        (NumericFillability.emptyNumber missingSigned) := by
+  cases presentSigned <;> cases missingSigned <;> rfl
+
+/-- Uninstantiated declarations retain the same per-source direction as explicit empties. -/
+theorem declaredNumericSum_uninstantiatedMissing
+    (presentSigned missingSigned : Bool) (amount : Rat) :
+    evalDeclaredNumericSumAggregate
+      { cells := [{ cell := .present amount, declarationSigned := presentSigned }]
+        uninstantiatedSignedness := [missingSigned]
+        hasHaving := false } =
+      .value (NumericArithmeticOp.add.eval 0 amount)
+        (NumericFillability.emptyNumber missingSigned) := by
+  cases presentSigned <;> cases missingSigned <;> rfl
+
+/-- The former homogeneous API is exactly the constant-signedness embedding. -/
+theorem numericSumAggregate_homogeneousEmbedding
+    (fieldSigned : Bool) (side : ResolvedValueListSide .number) :
+    evalNumericSumAggregate fieldSigned side =
+      evalDeclaredNumericSumAggregate (side.toNumericSumSide fieldSigned) := rfl
+
 /-- The first unavailable cell after a known prefix determines the internal suppression cause independently of every suffix cell and metadata flag. -/
 theorem numericSumAggregate_firstUnknown
     (fieldSigned hasUninstantiatedTail hasHaving : Bool)
@@ -162,7 +206,10 @@ theorem numericSumAggregate_firstUnknown
       { cells := before ++ .unknown cause :: after
         hasUninstantiatedTail
         hasHaving } = .unknown cause := by
-  unfold evalNumericSumAggregate scanNumericSumCells
+  unfold evalNumericSumAggregate evalDeclaredNumericSumAggregate
+    ResolvedValueListSide.toNumericSumSide ResolvedNumericSumSide.valueCells
+    scanNumericSumCells
+  simp only [List.map_map, Function.comp_def, List.map_id']
   rw [valueListCell_scanPresent_firstUnknown
     numericSumStep before after none cause beforeKnown]
 

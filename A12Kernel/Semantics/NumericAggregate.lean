@@ -37,6 +37,62 @@ def scanNumericSumCells (cells : List (ValueListCell .number)) :
     Except FormalCause (Option Rat) :=
   ValueListCell.scanPresent (kind := .number) numericSumStep cells none
 
+/-- One selected Sum cell with the signedness of its own declaration. The cell remains
+    in encounter order; signedness matters only when this source is empty. -/
+structure ResolvedNumericSumCell where
+  cell : ValueListCell .number
+  declarationSigned : Bool
+
+/-- A resolved Sum side that retains every selected source's missing direction.
+    Uninstantiated declarations contribute no cell but retain their own signedness. -/
+structure ResolvedNumericSumSide where
+  cells : List ResolvedNumericSumCell
+  uninstantiatedSignedness : List Bool
+  hasHaving : Bool
+
+namespace ResolvedNumericSumSide
+
+def valueCells (side : ResolvedNumericSumSide) : List (ValueListCell .number) :=
+  side.cells.map (·.cell)
+
+def hasEmpty (side : ResolvedNumericSumSide) : Bool :=
+  side.cells.any fun source => source.cell.isEmpty
+
+def hasMissingPotential (side : ResolvedNumericSumSide) : Bool :=
+  side.hasEmpty || !side.uninstantiatedSignedness.isEmpty
+
+/-- Whether any missing source can contribute a negative value after filling. -/
+def hasSignedMissing (side : ResolvedNumericSumSide) : Bool :=
+  side.cells.any (fun source => source.cell.isEmpty && source.declarationSigned) ||
+    side.uninstantiatedSignedness.any id
+
+end ResolvedNumericSumSide
+
+/-- Evaluate resolved Number `Sum` while retaining signedness per selected or
+    uninstantiated declaration. Present declarations do not affect missing directions. -/
+def evalDeclaredNumericSumAggregate (side : ResolvedNumericSumSide) : NumericOperand :=
+  match scanNumericSumCells side.valueCells with
+  | .error cause => .unknown cause
+  | .ok total =>
+      let amount := total.getD 0
+      let fillability :=
+        if side.hasHaving then
+          NumericFillability.both
+        else if side.hasMissingPotential then
+          match total with
+          | none => NumericFillability.both
+          | some _ => NumericFillability.emptyNumber side.hasSignedMissing
+        else
+          NumericFillability.fixed
+      .value amount fillability
+
+/-- Embed the former one-signedness profile into the per-declaration representation. -/
+def ResolvedValueListSide.toNumericSumSide (side : ResolvedValueListSide .number)
+    (fieldSigned : Bool) : ResolvedNumericSumSide :=
+  { cells := side.cells.map fun cell => { cell, declarationSigned := fieldSigned }
+    uninstantiatedSignedness := if side.hasUninstantiatedTail then [fieldSigned] else []
+    hasHaving := side.hasHaving }
+
 /-- Evaluate resolved Number `MinValue`/`MaxValue` as a validation operand. A resolved `Having` marker makes every available result both-directionally fillable. Without one, an incomplete fold with a present value uses the selector direction, while an all-empty authored selection yields the kernel's conservative both-directionally fillable zero. The no-cell/no-marker totality state is fixed zero and is not claimed authored-reachable. -/
 def evalNumericExtremumAggregate (op : NumericExtremumOp)
     (side : ResolvedValueListSide .number) : NumericOperand :=
@@ -55,22 +111,9 @@ def evalNumericExtremumAggregate (op : NumericExtremumOp)
           NumericFillability.fixed
       .value amount fillability
 
-/-- Evaluate resolved Number `Sum` as a validation operand for one declaration-signedness profile. A resolved `Having` marker makes every available result both-directionally fillable. Otherwise an incomplete sum with at least one present value grows and may shrink only when its omitted declaration is signed; an all-empty authored selection yields the conservative both-directionally fillable zero. Mixed-declaration missingness remains outside this boundary because it requires signedness per missing source, not one global flag. -/
+/-- Compatibility projection for one declaration-signedness profile. -/
 def evalNumericSumAggregate (fieldSigned : Bool)
     (side : ResolvedValueListSide .number) : NumericOperand :=
-  match scanNumericSumCells side.cells with
-  | .error cause => .unknown cause
-  | .ok total =>
-      let amount := total.getD 0
-      let fillability :=
-        if side.hasHaving then
-          NumericFillability.both
-        else if side.hasMissingPotential then
-          match total with
-          | none => NumericFillability.both
-          | some _ => NumericFillability.emptyNumber fieldSigned
-        else
-          NumericFillability.fixed
-      .value amount fillability
+  evalDeclaredNumericSumAggregate (side.toNumericSumSide fieldSigned)
 
 end A12Kernel
