@@ -486,9 +486,12 @@ run_cmd do
 #print axioms A12Kernel.declaredNumericSum_explicitMissing
 #print axioms A12Kernel.declaredNumericSum_uninstantiatedMissing
 #print axioms A12Kernel.numericSumAggregate_homogeneousEmbedding
-#print axioms A12Kernel.checkedNumericSum_noUninstantiated
-#print axioms A12Kernel.checkedNumericSum_noHaving
-#print axioms A12Kernel.checkedNumericSum_evaluate
+#print axioms A12Kernel.checkedNumericAggregate_sameCells
+#print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedTail
+#print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedSumSource
+#print axioms A12Kernel.checkedNumericAggregate_noHaving
+#print axioms A12Kernel.checkedNumericAggregate_evaluateSum
+#print axioms A12Kernel.checkedNumericAggregate_evaluateExtremum
 #print axioms A12Kernel.reopenedStar_selectedLeaf_closed
 #print axioms A12Kernel.reopenedStar_unbounded_open
 #print axioms A12Kernel.reopenedStar_finite_closed_iff

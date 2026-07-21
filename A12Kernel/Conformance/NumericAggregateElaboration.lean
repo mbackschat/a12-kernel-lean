@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.NumericAggregate
 
-/-! # Checked nonrepeatable Number Sum lowering locks -/
+/-! # Checked nonrepeatable Number aggregate lowering locks -/
 
 namespace A12Kernel.Conformance.NumericAggregateElaboration
 
@@ -38,7 +38,7 @@ private def absolute (groups : List String) (field : String) : SurfaceFieldPath 
   { base := .absolute, groups, field }
 
 private def sum (first : SurfaceFieldPath)
-    (rest : List SurfaceFieldPath) : SurfaceNumericSum :=
+    (rest : List SurfaceFieldPath) : SurfaceNumericAggregateFields :=
   { first, rest }
 
 private def raw (a b c : RawCell) : RawFlatContext where
@@ -48,14 +48,20 @@ private def raw (a b c : RawCell) : RawFlatContext where
     else if field = unsignedC.id then c
     else .empty
 
-private def operandOf (authored : SurfaceNumericSum)
+private def operandOf (authored : SurfaceNumericAggregateFields)
     (input : RawFlatContext) : Option NumericOperand :=
-  match elaborateNumericSum model ["Form"] authored with
+  match elaborateNumericAggregateFields model ["Form"] authored with
   | .error _ => none
-  | .ok checked => some (checked.evaluate input)
+  | .ok checked => some (checked.evaluateSum input)
 
-private def errorOf (authored : SurfaceNumericSum) : Option NumericSumElabError :=
-  match elaborateNumericSum model ["Form"] authored with
+private def extremumOperandOf (op : NumericExtremumOp)
+    (authored : SurfaceNumericAggregateFields) (input : RawFlatContext) : Option NumericOperand :=
+  match elaborateNumericAggregateFields model ["Form"] authored with
+  | .error _ => none
+  | .ok checked => some (checked.evaluateExtremum op input)
+
+private def errorOf (authored : SurfaceNumericAggregateFields) : Option NumericAggregateElabError :=
+  match elaborateNumericAggregateFields model ["Form"] authored with
   | .ok _ => none
   | .error error => some error
 
@@ -106,6 +112,31 @@ example :
         some (.fieldKindMismatch text.path .string) ∧
       errorOf (sum (absolute ["Form", "Rows"] "Amount") []) =
         some (.resolve (.repeatableReference repeated.path)) := by
+  native_decide
+
+/- Direct nonrepeatable extrema drop empty cells without substituting zero and retain their operator-specific missing direction. -/
+example :
+    extremumOperandOf .maximum
+        (sum (bare "UnsignedA") [bare "SignedB"])
+        (raw (.parsed (.num (-5))) .presentEmpty .empty) =
+        some (.value (-5) .growOnly) ∧
+      extremumOperandOf .minimum
+        (sum (bare "UnsignedA") [bare "SignedB"])
+        (raw (.parsed (.num 5)) .presentEmpty .empty) =
+        some (.value 5 .shrinkOnly) := by
+  native_decide
+
+/- The shared checked field-list boundary preserves the extrema all-empty identity and first-unavailable cause. -/
+example :
+    extremumOperandOf .maximum
+        (sum (bare "UnsignedA") [bare "SignedB"])
+        (raw .empty .presentEmpty .empty) =
+        some (.value 0 .both) ∧
+      extremumOperandOf .minimum
+        (sum (bare "UnsignedA") [bare "SignedB", bare "UnsignedC"])
+        (raw (.parsed (.num 7)) (.rejected .declaredConstraint)
+          (.rejected .malformed)) =
+        some (.unknown .declaredConstraint) := by
   native_decide
 
 end A12Kernel.Conformance.NumericAggregateElaboration
