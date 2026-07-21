@@ -4,17 +4,49 @@ import A12Kernel.Semantics.Observation
 
 namespace A12Kernel
 
+/-- Every parser-result projection satisfies the placement/value invariant independently of its admission policy. -/
+theorem checkRawCellWith_wellFormed (classify : α → Except BaseFormalCause (Option β))
+    (raw : RawCell α) : (checkRawCellWith classify raw).WellFormed := by
+  cases raw with
+  | empty | presentEmpty | rejected =>
+      simp [checkRawCellWith, CheckedCell.WellFormed]
+  | parsed value =>
+      cases classified : classify value <;>
+        simp [checkRawCellWith, classified, CheckedCell.WellFormed]
+
 theorem formalCheck_wellFormed (policy : FieldPolicy) (raw : RawCell) :
     (formalCheck policy raw).WellFormed := by
-  cases raw with
-  | empty => simp [formalCheck, CheckedCell.WellFormed]
-  | presentEmpty => simp [formalCheck, CheckedCell.WellFormed]
-  | parsed value =>
-      rcases policy with ⟨kind⟩
-      cases kind <;> cases value <;>
-        simp [formalCheck, CheckedCell.WellFormed, FieldKind.accepts] <;>
-        split <;> simp_all
-  | rejected cause => simp [formalCheck, CheckedCell.WellFormed]
+  exact checkRawCellWith_wellFormed _ raw
+
+/-- Identity admission for an already-decoded typed value retains that value exactly. -/
+theorem checkAdmittedRawCell_parsed (value : α) :
+    checkAdmittedRawCell (.parsed value) =
+      ({ rawPresent := true, parsed := some value, findings := [] } : CheckedCell α) := by
+  rfl
+
+/-- The admitted typed parser-result route satisfies the shared checked-cell invariant. -/
+theorem checkAdmittedRawCell_wellFormed (raw : RawCell α) :
+    (checkAdmittedRawCell raw).WellFormed := by
+  exact checkRawCellWith_wellFormed _ raw
+
+/-- Every phase reads an admitted typed value exactly; no scalar normalization or substitution is introduced. -/
+theorem observeAdmittedRawCell_parsed (phase : Phase) (value : α) :
+    observeAdmittedRawCell phase (.parsed value) = .value value := by
+  cases phase <;> rfl
+
+/-- Typed parser rejection preserves its cause as validation unavailability. -/
+theorem observeAdmittedRawCell_rejected_validation
+    (cause : BaseFormalCause) :
+    observeAdmittedRawCell .validation (.rejected cause : RawCell α) =
+      .unknown cause.toFormalCause := by
+  rfl
+
+/-- Typed parser rejection preserves its cause as computation poison. -/
+theorem observeAdmittedRawCell_rejected_computation
+    (cause : BaseFormalCause) :
+    observeAdmittedRawCell .computation (.rejected cause : RawCell α) =
+      .poison cause.toFormalCause := by
+  cases cause <;> rfl
 
 theorem withFinding_preserves_wellFormed {α : Type} (cell : CheckedCell α)
     (cause : FormalCause)
@@ -39,7 +71,7 @@ theorem formalCheck_presentEmpty_preservesPlacement (policy : FieldPolicy) :
 /-- Present-empty and absent remain different checked cells for every field policy. -/
 theorem formalCheck_presentEmpty_notAbsent (policy : FieldPolicy) :
     formalCheck policy .presentEmpty ≠ formalCheck policy .empty := by
-  simp [formalCheck]
+  simp [formalCheck, checkRawCellWith]
 
 /-- Present-empty supplies the same unspecified evaluation observation as absence; the
     consuming semantic clause still owns any kind- or operator-specific substitution. -/

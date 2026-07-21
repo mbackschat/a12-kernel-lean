@@ -92,6 +92,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Implemented
 
 - `CheckedCell α` and `CellObservation α` default to the scalar `Value` but retain any resolved semantic value type through the same placement, finding, and phase boundary. `CheckedCell.WellFormed`, preservation under staged findings, validation-unknown/computation-poison phase laws, and the required-only exception are generic in that value type.
+- `RawCell α` shares that default. `checkRawCellWith` projects placement and rejected causes once through a caller-owned admission function; scalar `formalCheck` retains kind checking and String normalization, while `checkAdmittedRawCell` and `observeAdmittedRawCell` carry only already-decoded, declaration-admitted typed values. Generic laws preserve well-formedness, exact parsed values, and rejected causes in both phases; a full-Date case reaches the existing comparison evaluator through this complete typed boundary.
 - `RawCell.presentEmpty` and a parsed empty String retain `rawPresent = true` with no parsed value or finding
 - generic laws distinguish that checked state from absence while proving that both phases observe it as empty.
 - Nonempty parsed String ingestion performs exactly one non-overlapping CRLF-to-LF pass before caching the evaluated value
@@ -107,6 +108,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - this repository retains no matching portable observation.
 - No retained portable observation yet exercises CRLF/LF/lone-CR ingestion
 - Typed-cell generalization is an internal representation law with no new kernel-correspondence claim; concrete Date/Time/DateTime raw classification remains pending.
+- Typed raw-cell projection likewise begins after parsing and declaration admission; it adds no evidence or claim about concrete temporal text.
 
 #### Excluded / next
 
