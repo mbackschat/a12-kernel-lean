@@ -42,7 +42,8 @@ theorem numericTarget_digitOverflow_retainsAttempt
     (tooLong : numericStoredDigitLimit < attempted.digitCount) :
     policy.check (.value amount) =
       .supported (.rejected attempted .totalDigitsTooLong) := by
-  simp [NumericTargetPolicy.check, rendered, fits, tooLong]
+  simp [NumericTargetPolicy.check, NumericTargetPolicy.checkAttempt,
+    NumericTargetPolicy.firstAttemptError?, rendered, fits, tooLong]
 
 /-- On a signed target, a fitting value within the universal digit limit is accepted in its exact stored form. -/
 theorem numericTarget_signedFit_accepts
@@ -56,7 +57,9 @@ theorem numericTarget_signedFit_accepts
     (signed : policy.info.signed = true) :
     policy.check (.value amount) =
       .supported (.accepted attempted) := by
-  simp [NumericTargetPolicy.check, rendered, fits, withinLimit, signed]
+  simp [NumericTargetPolicy.check, NumericTargetPolicy.checkAttempt,
+    NumericTargetPolicy.firstAttemptError?, rendered, fits, withinLimit,
+    signed]
 
 /-- A fitting nonnegative value within the universal digit limit is accepted independently of the target's signedness. -/
 theorem numericTarget_nonnegativeFit_accepts
@@ -70,7 +73,58 @@ theorem numericTarget_nonnegativeFit_accepts
     (nonnegative : ¬ attempted.unscaled < 0) :
     policy.check (.value amount) =
       .supported (.accepted attempted) := by
-  simp [NumericTargetPolicy.check, rendered, fits, withinLimit, nonnegative]
+  simp [NumericTargetPolicy.check, NumericTargetPolicy.checkAttempt,
+    NumericTargetPolicy.firstAttemptError?, rendered, fits, withinLimit,
+    nonnegative]
+
+/-- Warning suppression does not alter the ordinary branch when the scale-19 stored value fits the target maximum. -/
+theorem numericTarget_suppressedFit_eq_check
+    (policy : NumericTargetPolicy) (amount : Rat)
+    (naturalScale : Nat) (attempted : StoredNumber)
+    (rendered :
+      StoredNumber.fromComputed amount policy.minFractionalDigits =
+        (naturalScale, attempted))
+    (fits : naturalScale ≤ policy.info.scale) :
+    policy.checkWithScaleWarningSuppressed (.value amount) =
+      policy.check (.value amount) := by
+  simp [NumericTargetPolicy.checkWithScaleWarningSuppressed,
+    NumericTargetPolicy.check, rendered, fits]
+
+/-- A warning-suppressed no-fit attempt with no more specific reduced target error is nevertheless rejected for the scale mismatch. -/
+theorem numericTarget_suppressedNoFit_rejects
+    (policy : NumericTargetPolicy) (amount : Rat)
+    (naturalScale : Nat) (ordinaryAttempt boundedAttempt : StoredNumber)
+    (rendered :
+      StoredNumber.fromComputed amount policy.minFractionalDigits =
+        (naturalScale, ordinaryAttempt))
+    (doesNotFit : ¬ naturalScale ≤ policy.info.scale)
+    (bounded : StoredNumber.fromComputedBounded amount
+      numericComputedNoFitPrecisionLimit = boundedAttempt)
+    (noSpecificError :
+      policy.firstAttemptError? boundedAttempt = none) :
+    policy.checkWithScaleWarningSuppressed (.value amount) =
+      .supported
+        (.rejected boundedAttempt .suppressedScaleMismatch) := by
+  simp [NumericTargetPolicy.checkWithScaleWarningSuppressed, rendered,
+    doesNotFit, bounded, noSpecificError]
+
+/-- A reduced target error on the warning-suppressed no-fit attempt takes precedence over the generic scale-mismatch cause. -/
+theorem numericTarget_suppressedNoFit_specificErrorPrecedes
+    (policy : NumericTargetPolicy) (amount : Rat)
+    (naturalScale : Nat) (ordinaryAttempt boundedAttempt : StoredNumber)
+    (cause : NumericTargetError)
+    (rendered :
+      StoredNumber.fromComputed amount policy.minFractionalDigits =
+        (naturalScale, ordinaryAttempt))
+    (doesNotFit : ¬ naturalScale ≤ policy.info.scale)
+    (bounded : StoredNumber.fromComputedBounded amount
+      numericComputedNoFitPrecisionLimit = boundedAttempt)
+    (specificError :
+      policy.firstAttemptError? boundedAttempt = some cause) :
+    policy.checkWithScaleWarningSuppressed (.value amount) =
+      .supported (.rejected boundedAttempt cause) := by
+  simp [NumericTargetPolicy.checkWithScaleWarningSuppressed, rendered,
+    doesNotFit, bounded, specificError]
 
 /-- A newly accepted value always produces a VALUE delta carrying its exact stored form. -/
 theorem numericTarget_freshAccepted_reports (stored : StoredNumber) :

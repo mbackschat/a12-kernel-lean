@@ -208,15 +208,15 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - independent scale-19 normalization
 - a checked closed validation dispatch over all six direct ordinary comparison operators and four fixed tolerance ranges
 - one checked nonrepeatable plain computation-operation consumer with model-resolved target/operands, unsuppressed result-scale admission, nested target-reference rejection, and distinct numeric value/domain-failure/inherited-poison evaluation
-- a separately proved exact stored-decimal conversion
-- and one ordinary fit-path target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
+- separately proved ordinary and significant-digit-bounded stored-decimal conversions
+- and one explicit two-branch target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
 - Checked validation resolves two same-group expressions, lowers each once, and gates empty rows before reads.
 - Admitted expressions are plain arithmetic including power, direct-field root rounding/`Abs`, or canonical Min/Max over direct fields with at most one direct constant.
 - The runtime preserves formal invalidity, domain failure, values, and two-sided fillability. [`LF58`](LEAN-FINDINGS.md#lf58--numeric-operand-list-extrema-combine-exact-selection-with-directional-fillability) owns the extremum constant, selection, scale, and polarity details.
 - The explicit warning flag bypasses only equality/inequality scale admission and is runtime-irrelevant.
 - Computation reads empty Number as zero, preflights declarations before data, preserves domain failure through legal wrappers, and keeps left-to-right poison order. Valid power uses the staged evaluator; runtime-invalid integral power reaches the shared target-invalidating domain failure.
-- Stored conversion universally preserves the scale-19 `HALF_UP` amount while retaining `{unscaled, scale}` form.
-- After assignment-scale admission, the target consumer pads minimum fractional digits, checks digit length before signedness, fails closed on warning-suppressed no-fit, and distinguishes no-result, accepted, rejected, domain-invalid, and poison.
+- Ordinary stored conversion universally preserves the scale-19 `HALF_UP` amount while retaining `{unscaled, scale}` form. Bounded conversion consumes that pre-rounded canonical amount, preserves it within budget, and otherwise applies the 16-significant-digit scale formula.
+- After assignment-scale admission, the ordinary target entry point pads minimum fractional digits, checks digit length before signedness, and fails closed on no-fit. The explicit warning-suppressed entry point leaves fitting values unchanged, bounds no-fit attempts, reuses the reduced checks, and rejects every no-fit result.
 - Exact application preserves absent versus present-empty placement, yields accepted coefficient plus scale exactly, and makes the loss of cause/delta provenance explicit.
 - Dependency observation retains clean empty, exact accepted stored form, and poison even when application and delta agree.
 - Laws and executable separators cover the admitted summaries, authoring, lowering, arithmetic, extrema, validation, tolerance, expression-result, stored-form, target, delta, application, dependency, read-order, and fail-closed boundaries
@@ -246,8 +246,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - **Implemented narrowly; external evidence pending.** Checked validation accepts two same-group expressions with at least one field, the admitted expression classes above, six ordinary operators, four tolerance ranges, and the exact-scale-warning bypass.
 - The checked computation operation resolves one nonrepeatable Number target and every nonrepeatable Number operand through the shared authored-tree traversal, accepts constant-only or field-bearing plain arithmetic and power after the existing authoring/summary checks, rejects the target at every nested operand position, applies the unsuppressed exact result-scale gate, and delegates evaluation to the established numeric computation result consumer. The lower-level evaluator still accepts already-resolved rounding/`Abs`/Min/Max trees without claiming their concrete authoring legality.
-- Stored conversion is exact after scale-19 pre-rounding
-- the target accepts only the ordinary scale-compatible path with signedness, minimum/maximum fractional digits, the universal 15-digit check, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation.
+- Stored conversion is exact after scale-19 pre-rounding; its warning-suppressed no-fit renderer is structurally locked to consume that pre-rounded value before 16-digit bounding.
+- The target supports the ordinary scale-compatible path and the explicit warning-suppressed no-fit path with signedness, minimum/maximum fractional digits, the universal 15-digit check, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation.
 - Open:
   - checked computation-table integration and concrete operation-valued wrapper authoring
   - concrete computation power authoring and result-empty provenance
@@ -258,7 +258,6 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - Date-shift projection
   - concrete arithmetic rendering
   - `BaseYear`
-  - warning-suppressed no-fit rendering
   - range/zero/integer-digit/other Number constraints
   - downstream context/read integration
   - expression-valued generated implicit validation beyond the literal fragment; the flat whole-rule condition currently has no checked numeric-expression leaf, so do not add a parallel condition tree
@@ -580,10 +579,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - optional common-precondition expansion over that already-guarded table
 - a checked nonempty literal-Number generated-rule fragment with an optionally guarded singleton or guarded two-or-more table and an optional checked common precondition
 - one String target and direct cascade
-- and one already-resolved Number expression → stored form → ordinary fit-path target → delta → exact application → cause-free dependency chain.
+- and one already-resolved Number expression → ordinary-or-warning-suppressed stored form → target → delta → exact application → cause-free dependency chain.
 - Open:
   - General computation-table authoring and operation-side target self-reference checks beyond the checked plain numeric-operation fragment
-  - warning-suppressed assignment and runtime target checks
+  - checked warning-suppressed assignment admission and integration with the runtime target branch
   - checked zero/default authoring outside the structurally nonempty literal fragment
   - general checked common-precondition authoring beyond the guarded literal fragment
   - expression-valued generated validation

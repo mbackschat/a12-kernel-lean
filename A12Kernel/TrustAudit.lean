@@ -370,12 +370,17 @@ run_cmd do
 #print axioms A12Kernel.padFractionalScale_preserves_amount
 #print axioms A12Kernel.storedNumber_fromComputed_minScale
 #print axioms A12Kernel.storedNumber_fromComputed_preserves_amount
+#print axioms A12Kernel.storedNumber_fromComputedBounded_withinBudget
+#print axioms A12Kernel.storedNumber_fromComputedBounded_overBudget
 #print axioms A12Kernel.numericTarget_domainFailure_invalidNoValue
 #print axioms A12Kernel.numericTarget_inheritedPoison_preservesCause
 #print axioms A12Kernel.numericTarget_noFit_failsClosed
 #print axioms A12Kernel.numericTarget_digitOverflow_retainsAttempt
 #print axioms A12Kernel.numericTarget_signedFit_accepts
 #print axioms A12Kernel.numericTarget_nonnegativeFit_accepts
+#print axioms A12Kernel.numericTarget_suppressedFit_eq_check
+#print axioms A12Kernel.numericTarget_suppressedNoFit_rejects
+#print axioms A12Kernel.numericTarget_suppressedNoFit_specificErrorPrecedes
 #print axioms A12Kernel.numericTarget_freshAccepted_reports
 #print axioms A12Kernel.numericTarget_unchangedStored_silent
 #print axioms A12Kernel.numericTarget_changedStored_reports
