@@ -35,6 +35,12 @@ private def lengthLessThanFive : FlatCondition :=
 private def lengthGreaterOrEqualZero : FlatCondition :=
   .compare (.stringLength .greaterEqual stringField 0)
 
+private def lengthLessOrEqualZero : FlatCondition :=
+  .compare (.stringLength .lessEqual stringField 0)
+
+private def lengthGreaterThanMinusOne : FlatCondition :=
+  .compare (.stringLength .greater stringField (-1))
+
 example : directEqualsAbc.evalFull (context .empty) true = .notFired := by
   decide
 
@@ -42,6 +48,12 @@ example : lengthLessThanFive.evalFull (context .empty) true = .fired .omission :
   native_decide
 
 example : lengthGreaterOrEqualZero.evalFull (context .empty) true = .fired .value := by
+  native_decide
+
+/- Empty Length can grow: a true upper bound is omission-typed, while a true lower bound is value-typed. -/
+example :
+    lengthLessOrEqualZero.evalFull (context .empty) true = .fired .omission ∧
+      lengthGreaterThanMinusOne.evalFull (context .empty) true = .fired .value := by
   native_decide
 
 example : directEqualsAbc.evalFull (context (.parsed (.str ""))) true = .notFired := by
@@ -177,9 +189,21 @@ example : (elaborate productCodeModel ["Order"]
     (.compare .notEqual productCodePath (.string "ABC"))).isOk = true := by
   native_decide
 
-example : elaborationError? (elaborate productCodeModel ["Order"]
-    (.lengthCompare .greater productCodePath 0)) =
-    some (.unsupportedOperator .greater) := by
+example :
+    (elaborate productCodeModel ["Order"]
+      (.lengthCompare .lessEqual productCodePath 3)).isOk = true ∧
+      (elaborate productCodeModel ["Order"]
+        (.lengthCompare .greater productCodePath 2)).isOk = true := by
+  native_decide
+
+/- Equality remains outside the scale-erasing flat surface; both exact operators need the authored literal scale. -/
+example :
+    elaborationError? (elaborate productCodeModel ["Order"]
+        (.lengthCompare .equal productCodePath 3)) =
+        some (.unsupportedOperator .equal) ∧
+      elaborationError? (elaborate productCodeModel ["Order"]
+        (.lengthCompare .notEqual productCodePath 3)) =
+        some (.unsupportedOperator .notEqual) := by
   native_decide
 
 example : elaborationError? (elaborate numberModel ["Order"]
