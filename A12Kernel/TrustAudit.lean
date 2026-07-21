@@ -406,6 +406,9 @@ run_cmd do
 #print axioms A12Kernel.ordinaryNumericValidation_acceptsScales
 #print axioms A12Kernel.ordinaryNumericValidation_eval
 #print axioms A12Kernel.numericTolerance_acceptsScales
+#print axioms A12Kernel.numericValidation_scaleSuppression_accepts
+#print axioms A12Kernel.numericValidation_withoutScaleSuppression
+#print axioms A12Kernel.numericComparison_scaleSuppression_runtimeIrrelevant
 #print axioms A12Kernel.checkedNumericComparison_evaluations_areSome
 #print axioms A12Kernel.numericComparison_atom_literal_agrees_flat
 #print axioms A12Kernel.numericValidation_round_atom_literal_delegates

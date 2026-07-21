@@ -228,9 +228,21 @@ The validator now admits power recursively on either comparison side and under b
 
 This closes levels 1–2 for power inside the existing same-group nonrepeatable checked numeric validation consumer. Concrete syntax/decoder reachability, localized diagnostics, operation-valued wrappers, repeats, generated computation validation, protocol exposure, and project-local portable evidence remain outside. The canonical clauses and accepted power corrections already own this behavior, so no spec or sync-ledger change was needed.
 
+## Completed risk audit: authored literal scale at the reduced flat surface
+
+Direct Number exact-scale checking and String `Length ==`/`!=` share one real representation need: `SurfaceLiteral.number` and `SurfaceCondition.lengthCompare` currently erase authored scale. Moving the existing decoded-literal representation into that surface would also change the settled public reference protocol's scale-erasing Number input and require a new public diagnostic classification for exact-scale rejection. A second internal constructor or guessed scale would create the parallel or unsound gate that the audit was intended to prevent.
+
+The correction is therefore parked until protocol expansion is explicitly approved or the public boundary is deliberately versioned. No source type, protocol, diagnostic, or compatibility claim changed.
+
+## Completed semantic unit: exact-scale warning suppression
+
+The checked numeric-expression surface now carries an explicit default-off suppression for `MVK_INVALID_COMPARE_DEC_PLACES`, the kernel's only supported warning directive. It bypasses only the equality/inequality scale predicate, including mismatched field/literal and field/field scales plus unknown derived division scale; model validation, field resolution, scope, Number kind, expression admission, exponent legality, and the authoring-region check all still precede it.
+
+The red matrix first failed because no suppression fact reached the checked core. The completed cases preserve the unsuppressed rejections, admit all three source-grounded scale classes, and prove that nested-division illegality is not suppressed. Trusted laws state universal scale admission when the flag is set, exact recovery of the original gate when it is absent, and runtime irrelevance of the flag after checking. This closes levels 1–2 for a structured input whose preceding decoder has already recognized the one legal directive; concrete directive syntax, rejection of other names, localized diagnostics, rule-level transport, public protocol exposure, and project-local portable evidence remain outside. The canonical specification already owns the behavior, so no spec or sync-ledger entry changed.
+
 ## Immediate next step: semantic frontier reassessment
 
-Reassess the next checked-consumer or high-risk discriminator after both power consumers have closed. Do not retry the parked aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing model facts or a second exact semantic user.
+Reassess the next checked consumer or high-risk discriminator after the scale-warning capsule closes. Do not retry the parked flat-literal-scale, aggregate-expression, String-target, repeatable-resolution, or common computation-transition seams without the missing authorization, model facts, or a second exact semantic user.
 
 ## Likely next keystone rotation
 
