@@ -67,7 +67,7 @@ private def malformedFilterSource : SingleGroupValidationContext where
     | _ => source.read index fieldId
 
 private def weightIs (expected : Rat) : FlatCondition :=
-  .compare (.number .equal weight expected)
+  .compare (.number (.ordinary .equal) weight expected)
 
 private def filteredCounts (expected : Rat) : SingleStar :=
   { valueField := count, having := some (weightIs expected) }

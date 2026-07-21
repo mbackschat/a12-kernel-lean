@@ -543,7 +543,8 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - One resolved String table composes that selector once with the existing expression/target/delta step
 - clean no-value, target rejection, and poison from the selected operation are terminal, and a holding head makes every suffix irrelevant through operation evaluation.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
-- The checked two-alternative literal-Number desugaring admits direct Number/Boolean/Confirm/String presence guards, uses the same guard syntax but ordinary validation semantics, retains both guarded strict mismatches below `FieldFilled(target)`, preserves authored literal scale through exact-comparison admission, and emits through the resolved ERROR-rule boundary.
+- The checked two-alternative literal-Number desugaring admits direct Number/Boolean/Confirm/String presence guards, uses the same guard syntax but ordinary validation semantics, retains both guarded mismatches below `FieldFilled(target)`, and independently lowers each alternative to strict `!=` or its optional fixed tolerance band through the shared numeric-validation dispatch.
+- Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
 - The separate String and Number slices keep checked expression identity, expression result, stored form, target outcome, delta, exact application, and downstream dependency meaning distinct without claiming a scheduler or document mutator
@@ -570,7 +571,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
   - warning-suppressed assignment and runtime target checks
   - checked singleton/default/larger-table authoring
   - common preconditions
-  - tolerance/expression-valued generated validation
+  - expression-valued generated validation
   - comparison guards
   - field-fill stream construction/path/group/star/filter expansion and AST integration
   - scheduling
@@ -611,7 +612,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Resolved group presence independently folds admission, error, and three-level relevance, then gives scalar predicates, fixed-list predicates, strict numeric count, and parent-requiredness their consumer-specific projections.
 - The reopened-star completeness boundary recursively derives structural tail missingness per actual parent and feeds the existing resolved-side disjunction without changing operator directions.
 - The checked resolved-rule boundary preserves silent distinctions and retains a structured message plan until a fired verdict renders and attaches exact address, error code, severity, polarity, and text.
-- The generated-computation fragment reuses that same post-fire boundary and demonstrates that ERROR severity does not fix message polarity.
+- The generated-computation fragment reuses that same post-fire boundary and the shared strict-or-tolerance numeric dispatch; ERROR severity does not fix message polarity, and tolerance metadata cannot affect computation selection.
 - Flat partial evaluation remains a separate error-field/relevance consumer
 
 #### External evidence

@@ -53,6 +53,11 @@ def NumericValidationOp.eval (op : NumericValidationOp)
   | .ordinary comparison => comparison.eval left right
   | .tolerance range => range.eval left right
 
+/-- Specialize the shared closed dispatch to a fixed literal on the right. -/
+def NumericValidationOp.evalFixedRight (op : NumericValidationOp)
+    (left : NumericOperand) (expected : Rat) : Verdict :=
+  op.eval left (.value expected .fixed)
+
 /-- Shared validation projection: formal invalidity stays unknown and arithmetic domain failure stays quiet before operator dispatch. -/
 def NumericValidationOp.evalArithmetic (op : NumericValidationOp)
     (left right : Except FormalCause NumericArithmeticOutcome) : Verdict :=

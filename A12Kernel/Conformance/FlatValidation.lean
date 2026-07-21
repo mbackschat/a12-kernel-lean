@@ -67,7 +67,7 @@ private def stringContext (raw : RawCell) : FlatContext where
   read _ := checked .string raw
 
 private def numberIsZero : FlatCondition :=
-  .compare (.number .equal numberField 0)
+  .compare (.number (.ordinary .equal) numberField 0)
 
 private def booleanIsFalse : FlatCondition :=
   .compare (.boolean .equal booleanField false)
@@ -76,7 +76,7 @@ private def booleanIsNotFalse : FlatCondition :=
   .compare (.boolean .notEqual booleanField false)
 
 private def numberIsFive : FlatCondition :=
-  .compare (.number .equal numberField 5)
+  .compare (.number (.ordinary .equal) numberField 5)
 
 private def confirmIsTrue : FlatCondition :=
   .compare (.confirm .equal confirmField)
@@ -91,46 +91,46 @@ private def healthyFalse : FlatCondition :=
   .compare (.boolean .equal healthyField false)
 
 private def brokenIsZero : FlatCondition :=
-  .compare (.number .equal brokenField 0)
+  .compare (.number (.ordinary .equal) brokenField 0)
 
 private def numberIsNotZero : FlatCondition :=
-  .compare (.number .notEqual numberField 0)
+  .compare (.number (.ordinary .notEqual) numberField 0)
 
 private def unsignedNumberIsNotNegativeOne : FlatCondition :=
-  .compare (.number .notEqual numberField (-1))
+  .compare (.number (.ordinary .notEqual) numberField (-1))
 
 private def unsignedNumberIsNotNegativeTwo : FlatCondition :=
-  .compare (.number .notEqual numberField (-2))
+  .compare (.number (.ordinary .notEqual) numberField (-2))
 
 private def unsignedNumberIsNotOne : FlatCondition :=
-  .compare (.number .notEqual numberField 1)
+  .compare (.number (.ordinary .notEqual) numberField 1)
 
 private def signedNumberIsNotNegativeOne : FlatCondition :=
-  .compare (.number .notEqual signedNumberField (-1))
+  .compare (.number (.ordinary .notEqual) signedNumberField (-1))
 
 private def unsignedNumberIsLessThanOne : FlatCondition :=
-  .compare (.number .less numberField 1)
+  .compare (.number (.ordinary .less) numberField 1)
 
 private def signedNumberIsLessThanOne : FlatCondition :=
-  .compare (.number .less signedNumberField 1)
+  .compare (.number (.ordinary .less) signedNumberField 1)
 
 private def unsignedNumberIsGreaterEqualZero : FlatCondition :=
-  .compare (.number .greaterEqual numberField 0)
+  .compare (.number (.ordinary .greaterEqual) numberField 0)
 
 private def signedNumberIsGreaterEqualZero : FlatCondition :=
-  .compare (.number .greaterEqual signedNumberField 0)
+  .compare (.number (.ordinary .greaterEqual) signedNumberField 0)
 
 private def unsignedNumberIsLessEqualZero : FlatCondition :=
-  .compare (.number .lessEqual numberField 0)
+  .compare (.number (.ordinary .lessEqual) numberField 0)
 
 private def unsignedNumberIsGreaterThanNegativeOne : FlatCondition :=
-  .compare (.number .greater numberField (-1))
+  .compare (.number (.ordinary .greater) numberField (-1))
 
 private def signedNumberIsGreaterThanNegativeOne : FlatCondition :=
-  .compare (.number .greater signedNumberField (-1))
+  .compare (.number (.ordinary .greater) signedNumberField (-1))
 
 private def brokenNumberIsLessThanOne : FlatCondition :=
-  .compare (.number .less brokenField 1)
+  .compare (.number (.ordinary .less) brokenField 1)
 
 private def booleanNotFilled : FlatCondition :=
   .fieldNotFilled (.boolean booleanField)

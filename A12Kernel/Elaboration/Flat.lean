@@ -460,7 +460,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
             | none => throw (.unsupportedOperator op)
           match literal with
           | .number expected =>
-              pure (.compare (.number numeric { id := declaration.id, info } expected))
+              pure (.compare (.number (.ordinary numeric)
+                { id := declaration.id, info } expected))
           | literal =>
               throw (.literalKindMismatch declaration.path .number literal.kind)
       | .boolean => do

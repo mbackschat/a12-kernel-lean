@@ -385,7 +385,7 @@ theorem numericComparison_atom_literal_agrees_flat
     (right : DecodedNumericLiteral) (context : FlatContext) :
     ({ op := .ordinary op, left := .atom field, right := .literal right } :
       NumericComparison).evalSelected context =
-        (FlatComparison.number op field right.value).eval context := by
+        (FlatComparison.number (.ordinary op) field right.value).eval context := by
   cases observed : context.resolveNumberComparisonOperand field <;>
     simp only [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
@@ -393,7 +393,7 @@ theorem numericComparison_atom_literal_agrees_flat
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericArithmetic, FlatComparison.eval,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
-      NumericComparisonOp.evalFixedRight,
+      NumericValidationOp.evalFixedRight,
       NumericComparisonOp.eval, observed]
 
 /-- A rounded left atom against a literal delegates to the existing rounded-operand semantics for every mode and for both ordinary and tolerance consumers. -/
