@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.DateTimeComparison
 import A12Kernel.Semantics.DateTime
 
 /-! # Resolved time-of-day comparison

@@ -34,22 +34,11 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
       cases nonrepeatable : declaration.repeatableScope.isEmpty <;>
         cases matching : field.matchesDecl declaration <;> simp_all
 
-/-- A comparison admitted by the core well-formedness check has a unique model
-    declaration with the same operator-specific field representation and no repeatable scope. -/
-theorem admitsComparison_has_unique_matching_declaration (model : FlatModel)
+/-- Every field read by an admitted comparison independently passes the shared typed-field admission check. -/
+theorem admitsComparison_fields_admitted (model : FlatModel)
     (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
-    ∃ declaration,
-      model.lookupUniqueId comparison.fieldId = .ok declaration ∧
-      declaration.repeatableScope.isEmpty = true ∧
-      comparison.matchesDecl declaration = true := by
-  unfold FlatModel.admitsComparison at admitted
-  generalize lookupEq : model.lookupUniqueId comparison.fieldId = lookup at admitted
-  cases lookup with
-  | error error => simp at admitted
-  | ok declaration =>
-      refine ⟨declaration, rfl, ?_⟩
-      cases nonrepeatable : declaration.repeatableScope.isEmpty <;>
-        cases matching : comparison.matchesDecl declaration <;> simp_all
+    ∀ field, field ∈ comparison.fields → model.admitsField field = true := by
+  exact List.all_eq_true.mp admitted
 
 /-- Model-derived context construction checks a resolved cell with exactly the policy
     carried by its unique declaration. -/
@@ -74,20 +63,19 @@ theorem checkContext_admittedField_coherent (model : FlatModel) (raw : RawFlatCo
   exact ⟨declaration, lookup, nonrepeatable, matching,
     checkContext_lookup_coherent model raw field.id declaration lookup⟩
 
-/-- A core-admitted comparison therefore reads a cell checked by its unique compatible
-    declaration, including the String-only direct-equality and Length routes. -/
-theorem checkContext_admittedComparison_coherent (model : FlatModel) (raw : RawFlatContext)
-    (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
+/-- Every field read by a core-admitted comparison therefore receives the policy of its own unique compatible declaration. -/
+theorem checkContext_admittedComparison_field_coherent (model : FlatModel)
+    (raw : RawFlatContext) (comparison : FlatComparison)
+    (admitted : model.admitsComparison comparison = true)
+    (field : FlatField) (member : field ∈ comparison.fields) :
     ∃ declaration,
-      model.lookupUniqueId comparison.fieldId = .ok declaration ∧
+      model.lookupUniqueId field.id = .ok declaration ∧
       declaration.repeatableScope.isEmpty = true ∧
-      comparison.matchesDecl declaration = true ∧
-      (model.checkContext raw).read comparison.fieldId =
-        formalCheck declaration.policy (raw.read comparison.fieldId) := by
-  obtain ⟨declaration, lookup, nonrepeatable, matching⟩ :=
-    admitsComparison_has_unique_matching_declaration model comparison admitted
-  exact ⟨declaration, lookup, nonrepeatable, matching,
-    checkContext_lookup_coherent model raw comparison.fieldId declaration lookup⟩
+      field.matchesDecl declaration = true ∧
+      (model.checkContext raw).read field.id =
+        formalCheck declaration.policy (raw.read field.id) := by
+  exact checkContext_admittedField_coherent model raw field
+    (admitsComparison_fields_admitted model comparison admitted field member)
 
 /-- Missing or ambiguous identifiers fail closed at the raw-to-checked boundary. -/
 theorem checkContext_lookup_error_is_malformed (model : FlatModel) (raw : RawFlatContext)

@@ -58,15 +58,49 @@ theorem partialSelected_agreesOn
   | compare comparison =>
       simp only [FlatCondition.evalSelected]
       split
-      · have readEq := agreement comparison.fieldId (by assumption)
-        cases comparison <;>
-          simp_all [FlatComparison.fieldId, FlatComparison.eval,
-            FlatContext.resolveNumberComparisonOperand,
-            FlatContext.resolveBooleanComparisonOperand,
-            FlatContext.resolveConfirmComparisonOperand,
-            FlatContext.resolveDirectStringComparisonOperand,
-            FlatContext.resolveStringLengthOperand,
-            FlatContext.observeValidationAt]
+      · rename_i relevant
+        cases comparison with
+        | number op field expected =>
+            have readEq := agreement field.id (by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant)
+            simp_all [FlatComparison.eval, FlatContext.resolveNumberComparisonOperand,
+              FlatContext.observeValidationAt]
+        | boolean op field expected =>
+            have readEq := agreement field.id (by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant)
+            simp_all [FlatComparison.eval, FlatContext.resolveBooleanComparisonOperand,
+              FlatContext.observeValidationAt]
+        | confirm op field =>
+            have readEq := agreement field.id (by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant)
+            simp_all [FlatComparison.eval, FlatContext.resolveConfirmComparisonOperand,
+              FlatContext.observeValidationAt]
+        | string op field expected =>
+            have readEq := agreement field.id (by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant)
+            simp_all [FlatComparison.eval,
+              FlatContext.resolveDirectStringComparisonOperand,
+              FlatContext.observeValidationAt]
+        | stringLength op field expected =>
+            have readEq := agreement field.id (by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant)
+            simp_all [FlatComparison.eval, FlatContext.resolveStringLengthOperand,
+              FlatContext.observeValidationAt]
+        | temporal op leftField rightField =>
+            have bothRelevant :
+                isRelevant leftField.id = true ∧ isRelevant rightField.id = true := by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant
+            have leftReadEq := agreement leftField.id bothRelevant.left
+            have rightReadEq := agreement rightField.id bothRelevant.right
+            simp_all [FlatComparison.eval,
+              FlatContext.resolveTemporalComparisonOperand,
+              FlatContext.observeValidationAt]
       · rfl
   | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected]
@@ -89,7 +123,14 @@ private theorem partialSelected_truth_refines_full
       (Verdict.truth (condition.evalSelected context isRelevant))
       (Verdict.truth (condition.evalSelected context)) := by
   induction condition with
-  | compare comparison | fieldFilled field | fieldNotFilled field =>
+  | compare comparison =>
+      have fullRelevant : comparison.allRelevant (fun _ => true) = true := by
+        simp [FlatComparison.allRelevant]
+      simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
+      split
+      · exact K.informationRefines_refl _
+      · trivial
+  | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected]
       split
       · exact K.informationRefines_refl _

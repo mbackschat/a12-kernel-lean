@@ -1,31 +1,13 @@
 import A12Kernel.Semantics.FullDate
 import A12Kernel.Semantics.ScalarEquality
+import A12Kernel.Semantics.DateTimeComparison
 
 /-! # Resolved temporal comparison operations and full-Date comparison
 
-This capsule evaluates the six ordinary comparison operators after both operands have been classified as admitted full Dates, no value, or formally unavailable. It compares present values by calendar identity and chronology rather than stored text, and it retains symmetric missing provenance for validation polarity. The operation enum and operand-exchange map are shared by the separate Time and DateTime consumers. Typed validation observations delegate to that same classified path; literal typing, parsing, raw-cell checking, and declaration/path lowering remain outside.
+This capsule evaluates the shared six ordinary temporal comparison operators after both operands have been classified as admitted full Dates, no value, or formally unavailable. It compares present values by calendar identity and chronology rather than stored text, and it retains symmetric missing provenance for validation polarity. Typed validation observations delegate to that same classified path; literal typing, parsing, raw-cell checking, and declaration/path lowering remain outside.
 -/
 
 namespace A12Kernel
-
-/-- The complete comparison family shared by two comparable resolved temporal values. -/
-inductive TemporalComparisonOp where
-  | equal
-  | notEqual
-  | before
-  | beforeOrEqual
-  | after
-  | afterOrEqual
-  deriving Repr, DecidableEq
-
-/-- Operator obtained when the two authored operands exchange positions. -/
-def TemporalComparisonOp.swapped : TemporalComparisonOp → TemporalComparisonOp
-  | .equal => .equal
-  | .notEqual => .notEqual
-  | .before => .after
-  | .beforeOrEqual => .afterOrEqual
-  | .after => .before
-  | .afterOrEqual => .beforeOrEqual
 
 /-- Evaluate one comparison over two present full-Date values. -/
 def TemporalComparisonOp.holds (op : TemporalComparisonOp)

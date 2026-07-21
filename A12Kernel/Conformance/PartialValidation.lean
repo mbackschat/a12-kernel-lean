@@ -33,6 +33,36 @@ example :
         .evaluated (.fired .value) := by
   native_decide
 
+private def temporalComponents : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := false, minute := false, second := false }
+
+private def earlierDate : FlatTemporalField :=
+  { id := 3, kind := .date, components := temporalComponents }
+
+private def laterDate : FlatTemporalField :=
+  { id := 4, kind := .date, components := temporalComponents }
+
+private def temporalContext : FlatContext where
+  read id :=
+    if id = earlierDate.id then
+      formalCheck { kind := .temporal .date temporalComponents }
+        (.parsed (.temporal .date { epochMillis := 100999 }))
+    else if id = laterDate.id then
+      formalCheck { kind := .temporal .date temporalComponents }
+        (.parsed (.temporal .date { epochMillis := 101000 }))
+    else formalCheck { kind := .boolean } (.rejected .malformed)
+
+private def earlierBeforeLater : FlatCondition :=
+  .compare (.temporal .before earlierDate laterDate)
+
+/-! Both operands of a field-to-field comparison must be relevant; checking only the first read would expose an out-of-set value. -/
+example :
+    earlierBeforeLater.evalSelected temporalContext (only earlierDate.id) = .unknown ∧
+      earlierBeforeLater.evalSelected temporalContext
+        (fun id => id == earlierDate.id || id == laterDate.id) = .fired .value := by
+  native_decide
+
 /-! Masking alone would fire `Unknown Or True`; the independent error-field gate skips. -/
 example :
     eitherFilled.evalSelected filledContext (only otherField.id) = .fired .value ∧
