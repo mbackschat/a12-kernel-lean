@@ -737,7 +737,7 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 
 ### Resolved Number aggregates
 
-- [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Proofs/NumericAggregate.lean`](../A12Kernel/Proofs/NumericAggregate.lean), and [`Conformance/NumericAggregate.lean`](../A12Kernel/Conformance/NumericAggregate.lean) close validation-side Number `Sum`/`MinValue`/`MaxValue` after one side has already been expanded, filtered, and classified.
+- [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), and their [`Proofs/`](../A12Kernel/Proofs.lean) and [`Conformance/`](../A12Kernel/Conformance.lean) counterparts close resolved validation-side Number `Sum`/`MinValue`/`MaxValue` plus checked construction of one nonempty unfiltered nonrepeatable `Sum` field list.
 - The two completed consumers share only `ValueListCell.scanPresent`: it skips empty cells, stops at the first reached unavailable cell, and applies a caller-owned step to present cells from left to right.
 - Extrema select exact present amounts without a synthetic zero.
 - `Sum` starts at zero and applies precision-50 `HALF_UP` addition at every present term in encounter order, so exact accumulation, reassociation, and reordering are rejected by separate cases.
@@ -748,13 +748,14 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - Every all-empty route returns zero with both directions, while `Having` makes any available result both-directionally fillable.
 - Generic scan laws establish availability, all-empty preservation, and first-cause termination once
 - short operator laws specialize identity, fixed/tail results, per-source signedness, homogeneous embedding, metadata separation, and filter escalation.
+- `CheckedNumericSum` resolves a nonempty list of nonrepeatable Number paths in authored order, preserves each declaration's signedness, classifies raw cells through the same validated model, and constructs the exact no-tail/no-`Having` resolved subset.
 
 - This is internally complete at levels 1–2 and remains `external evidence pending`.
-- Mixed-declaration resolved Sum evaluation is represented, but authored field-list/group expansion must still construct the per-source cells and uninstantiated signedness without losing declaration identity.
+- Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction are represented, but group/star expansion must still construct per-source cells and uninstantiated signedness without losing declaration identity.
 - The separate reopened-star capsule below can derive structural openness from a caller-supplied IF194 tree, but neither layer constructs the tree or ordered cell stream from authored paths and a `Document`.
 - The older checked-row `NumberFold` uses the homogeneous embedding and projects only amount or cause, preserving its existing truth-only API while deliberately erasing fillability.
 - The family does not share the prefix-terminating `FirstFilledValue` scan or operand-list empty substitution/fillability.
-- Checked star/path lowering, actual filter execution, partial-validation relevance and row gating, computation aggregates, Date and other overloads, messages, protocol exposure, and project-local portable evidence remain open.
+- Checked repeatable/star lowering, actual filter execution, partial-validation relevance and row gating, computation aggregates, Date and other overloads, messages, protocol exposure, and project-local portable evidence remain open.
 - a12-dmkits revision `20230e403fa085c782534025f890669a975999a8` accepted the all-empty correction under [`SPEC-2026-07-20-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-15--all-empty-number-aggregate-identity-is-both-directionally-fillable) and encounter order, staged precision, and per-declaration missingness under [`SPEC-2026-07-21-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-02--number-sum-preserves-encounter-order-staged-precision-and-missing-declaration-polarity).
 
 ### Reopened-star structural completeness
