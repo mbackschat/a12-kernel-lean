@@ -70,7 +70,7 @@ inductive FlatComparison where
   | number (op : NumericComparisonOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
   | confirm (op : EqualityOp) (field : FlatConfirmField)
-  | stringEqual (field : FlatStringField) (expected : String)
+  | string (op : EqualityOp) (field : FlatStringField) (expected : String)
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
   deriving Repr, DecidableEq
 
@@ -81,7 +81,7 @@ def fieldId : FlatComparison → FieldId
   | .number _ field _ => field.id
   | .boolean _ field _ => field.id
   | .confirm _ field => field.id
-  | .stringEqual field _ => field.id
+  | .string _ field _ => field.id
   | .stringLength _ field _ => field.id
 
 end FlatComparison
@@ -166,14 +166,15 @@ def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : Flat
 
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/
-def SimpleComparisonOperand.evalDirectStringEqual
-    (operand : SimpleComparisonOperand String) (expected : String) : Verdict :=
+def SimpleComparisonOperand.evalDirectString
+    (operand : SimpleComparisonOperand String) (op : EqualityOp)
+    (expected : String) : Verdict :=
   match operand with
   | .unknown _ => .unknown
   | .notEvaluated => .notFired
   | .value actual given =>
       if expected.isEmpty then .notFired
-      else EqualityOp.equal.evalSimple (· == ·) (.value actual given) expected
+      else op.evalSimple (· == ·) (.value actual given) expected
 
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
@@ -183,8 +184,8 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       op.evalSimple (· == ·) (context.resolveBooleanComparisonOperand field) expected
   | .confirm op field =>
       op.evalSimple (· == ·) (context.resolveConfirmComparisonOperand field) true
-  | .stringEqual field expected =>
-      (context.resolveDirectStringComparisonOperand field).evalDirectStringEqual expected
+  | .string op field expected =>
+      (context.resolveDirectStringComparisonOperand field).evalDirectString op expected
   | .stringLength op field expected =>
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
 

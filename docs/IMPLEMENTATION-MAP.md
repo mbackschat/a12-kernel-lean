@@ -67,7 +67,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented internally, partial; direct ordering external evidence pending:** nonrepeatable Number equality/inequality/`<`/`>=`, Boolean/Confirm equality/inequality, and Number/Boolean/Confirm presence are executable.
+- **Implemented internally, partial; direct ordering external evidence pending:** nonrepeatable Number equality/inequality/`<`/`>=`, Boolean/Confirm/String equality/inequality, and Number/Boolean/Confirm/String presence are executable.
 - Direct String supports equality only, plus String `Length <`/`>=`
 - its empty observation retains absent versus present-empty placement at the checked-cell boundary.
 - String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; other String comparisons/functions remain rejected or unimplemented.
@@ -343,7 +343,8 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Parsed String ingestion performs one non-overlapping CRLF-to-LF pass and caches the evaluated text
 - LF and lone CR are preserved.
 - Direct comparison, `Length`, and computation share that cached value, and the exact overlap counterexample prevents a second pass.
-- Direct equality and `Length <`/`>=` have separate consuming clauses
+- Direct equality/inequality and `Length <`/`>=` have separate consuming clauses.
+- Both direct String equality operators suppress an empty field or empty literal after preserving malformed input as UNKNOWN; distinct nonempty values fire only inequality.
 - a parsed empty String retains present-empty placement while supplying the same clean-empty observation as absence
 - `FieldFilled`/`FieldNotFilled` consume that empty observation rather than physical placement, and checked flat lowering admits String presence.
 - Absolute String requiredness reuses the generated `FieldNotFilled` staging and preserves present-empty placement when attaching `.required`.
@@ -365,8 +366,8 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented narrowly; ingestion external evidence pending:** direct validation equality, `Length <`/`>=`, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, non-repeatable unconditional String computation through root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
-- Direct validation inequality, repeatable/parent-gated String requiredness, generated-computation String guards, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
+- **Implemented narrowly; ingestion external evidence pending:** direct validation equality/inequality, `Length <`/`>=`, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, non-repeatable unconditional String computation through root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
+- Repeatable/parent-gated String requiredness, generated-computation String guards, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.
 - The public normalized protocol and consumer capabilities have not been expanded to String

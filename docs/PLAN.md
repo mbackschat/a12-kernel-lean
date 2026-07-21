@@ -158,15 +158,21 @@ Absolute nonrepeatable requiredness reuses that generic generated `FieldNotFille
 
 This is an internal levels 1–2 downstream closure of accepted IF198. Repeatable/parent-gated requiredness, group-content derivation, generated-computation String guards, `Document` adaptation, protocol exposure, and local portable observations remain open. The canonical clause and accepted reconciliation already own the behavior, so no new sync-ledger entry was added.
 
-## Immediate next step: direct String inequality capsule
+## Completed semantic unit: direct String inequality
 
-Audit the existing direct String equality operand resolver against the canonical `!=` clause. Select the capsule only if the same empty-on-either-side suppression, malformed precedence, nonempty comparison, checked lowering, and row-gate behavior can be expressed by extending the closed equality operator without inventing a general String expression framework.
+Direct String comparison now retains the closed `EqualityOp` in `FlatComparison` instead of hard-coding equality. Equality and inequality share the existing validation operand resolver: an empty field suppresses either operator, an empty literal suppresses either operator after the field has been classified, malformed input therefore remains UNKNOWN, equal nonempty values suppress inequality, and distinct nonempty values fire VALUE. Checked flat lowering admits both operators without adding String expressions or a generic comparison layer.
+
+The red cases first failed on the absent core constructor and the checked `!=` rejection. The completed cases lock empty field, equal/distinct values, empty literal, malformed-before-empty-literal precedence, and checked admission. Trusted laws quantify empty-field suppression, clean empty-literal suppression, and unavailable precedence over both enum arms. The retained local evidence still covers only equality/Length, so inequality correspondence remains `external evidence pending`; no spec or ledger change was needed.
+
+## Immediate next step: generated computation String-guard audit
+
+Audit whether the existing two-alternative literal-Number computation and its generated validation may admit direct String `FieldFilled`/`FieldNotFilled` guards through the now-checked String presence boundary. Preserve the fragment's exact target, scale, alternative-count, and message limits; select it only if both computation-phase and validation-phase consumers already define the String guard without a new expression or scheduler representation.
 
 ## Likely next keystone rotation
 
 Reassess the frontier rather than continuing numeric operators by momentum.
 
-The leading candidate is direct String inequality because it shares the completed equality operand-resolution mechanism and has a source-grounded empty-operand discriminator without reopening path or expression infrastructure.
+The leading candidate is generated computation String guards because both the computation-phase presence evaluator and validation-phase checked String presence now exist, while the specialized assembler still rejects that kind locally.
 
 If that family closes, reassess adjacent String functions only by independent discriminator and consumer payoff. Keep the repeatable operand-resolution seam parked until a source-owned model representation supplies star position, capacities, checked row reads, and per-source metadata; do not retry it under another adapter name.
 
