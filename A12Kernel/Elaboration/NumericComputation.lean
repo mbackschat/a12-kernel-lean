@@ -13,7 +13,6 @@ namespace A12Kernel
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
   | fieldKindMismatch (field : FieldId)
-  | unsupportedPower
   deriving Repr, DecidableEq
 
 namespace ScalarComputationContext
@@ -33,10 +32,6 @@ def readNumeric (context : ScalarComputationContext) (declaration : FlatFieldDec
 end ScalarComputationContext
 
 namespace NumericComputationResult
-
-private def ofArithmetic : NumericArithmeticResult → NumericComputationResult
-  | .value amount => .value amount
-  | .notEvaluated => .domainFailure
 
 /-- Combine two already-reached arithmetic operands through the shared poison/domain/value table. -/
 def evalBinary (op : NumericScaleBinaryOp) :
@@ -63,7 +58,7 @@ end NumericComputationResult
 
 namespace LoweredNumericExpr
 
-/-- The first structural fault in the complete lowered tree. This pass runs before any context read, so a non-Number declaration or unsupported power cannot be hidden by data-dependent poison. -/
+/-- The first structural fault in the complete lowered tree. This pass runs before any context read, so a non-Number declaration cannot be hidden by data-dependent poison. -/
 def computationFault? : LoweredNumericExpr FlatFieldDecl →
     Option NumericComputationFault
   | .atom declaration =>
@@ -72,15 +67,14 @@ def computationFault? : LoweredNumericExpr FlatFieldDecl →
       else
         some (.fieldKindMismatch declaration.id)
   | .literal _ => none
-  | .binary _ left right | .extremum _ left right =>
+  | .binary _ left right | .power left right | .extremum _ left right =>
       match left.computationFault? with
       | some fault => some fault
       | none => right.computationFault?
-  | .power _ _ => some .unsupportedPower
   | .abs body => body.computationFault?
   | .round _ _ body => body.computationFault?
 
-/-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic. Power fails closed because its computation projection is not yet audited. -/
+/-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic, including runtime-invalid power. -/
 def evalComputation
     (read : Atom → Except NumericComputationFault NumericComputationResult) :
     LoweredNumericExpr Atom →
@@ -91,7 +85,10 @@ def evalComputation
       NumericComputationResult.evalOrdered
         (left.evalComputation read) (fun _ => right.evalComputation read)
         (NumericComputationResult.evalBinary op)
-  | .power _ _ => throw .unsupportedPower
+  | .power base exponent =>
+      NumericComputationResult.evalOrdered
+        (base.evalComputation read) (fun _ => exponent.evalComputation read)
+        NumericComputationResult.evalPower
   | .abs body => do
       pure ((← body.evalComputation read).absolute)
   | .extremum op left right =>

@@ -120,7 +120,7 @@ def divideNumeric (dividend divisor : Rat) : NumericArithmeticResult :=
   else
     .value (roundMathContext50 (dividend / divisor))
 
-/-- Defensive value-level admission for exactly integral exponents in the kernel's inclusive `-1000..1000` runtime range. Kernel authoring rejects fractional-scale or unknown-scale exponents; the current Lean checked consumers reject every power, while the authored scale summary records that gate for a future checked power consumer. -/
+/-- Defensive value-level admission for exactly integral exponents in the kernel's inclusive `-1000..1000` runtime range. Kernel authoring rejects fractional-scale or unknown-scale exponents; the checked computation consumer admits already-authored power while the checked validation consumer still excludes it. -/
 def checkedPowerExponent? (exponent : Rat) : Option Int :=
   if exponent.den = 1 then
     let integral := exponent.num

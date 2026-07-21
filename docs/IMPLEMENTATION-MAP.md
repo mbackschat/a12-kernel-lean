@@ -205,7 +205,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - a separately proved exact stored-decimal conversion
 - and one ordinary fit-path target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
 - The validation consumer resolves and checks two admitted expressions—plain arithmetic, exact direct-field root rounding/`Abs`, or one canonical direct-field Min/Max fold—before lowering each once, gates empty rows before reads, and preserves formal-invalid, domain-failure, value, and two-sided fillability distinctions.
-- The computation consumer reads empty and required-empty Number as zero, preserves domain failure through clean enclosing arithmetic, rounding, `Abs`, and Min/Max, follows source-established left-to-right poison order through one shared delayed-right evaluator, and rejects every structurally invalid or unaudited power subtree before data reads.
+- The computation consumer reads empty and required-empty Number as zero, preserves domain failure through clean enclosing arithmetic, power, rounding, `Abs`, and Min/Max, follows source-established left-to-right poison order through one shared delayed-right evaluator, and structurally preflights every declaration before data reads. Valid power delegates to the shared staged evaluator; runtime-invalid integral power becomes the same target-invalidating domain failure as zero division.
 - Stored conversion universally preserves the scale-19 `HALF_UP` amount while retaining `{unscaled, scale}` form.
 - After separate assignment-scale admission, the target consumer pads to minimum fractional digits without capping a fit attempt, checks universal digit length before signedness, fails closed on the warning-suppressed no-fit branch, distinguishes no-result/accepted/rejected/domain-invalid/poison, and compares prior coefficient plus scale.
 - Exact application preserves absent versus present-empty placement, yields accepted coefficient plus scale exactly, and makes the loss of cause/delta provenance explicit.
@@ -217,10 +217,10 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 - The compact validation record externally separates ordinary empty numeric polarity only.
 - Pinned parser/checker, transformer, code-generation, and runtime source establish the current clauses
-- a12-dmkits multi-route differentials also ground staged power/fillability, `Abs`, Min/Max computation-domain propagation, fit padding, full overflow retention, no-fit behavior, target rejection, delta granularity, and type-neutral exact application as triangulation.
+- a12-dmkits multi-route differentials also ground staged power/fillability, `Abs`, Min/Max division-domain propagation, fit padding, full overflow retention, no-fit behavior, target rejection, delta granularity, and type-neutral exact application as triangulation. Invalid-power computation target projection is kernel-source-grounded and awaiting the focused peer reconciliation in `SPEC-2026-07-21-05`.
 - No retained project-local observation exercises resolved power fillability, checked direct-field root rounding, `Abs`, or Min/Max, integrated arithmetic-expression comparison, checked tolerance, same-field alias, numeric expression result classes, mixed domain/poison read order, or numeric target/delta/application/dependency.
 - Mixed formal-invalid/domain-failure validation precedence is an explicit Lean refinement
-- mixed computation order and division target invalidity are source-grounded but portable evidence pending.
+- mixed computation order and division/power target invalidity are source-grounded but portable evidence pending.
 - Accepted a12-dmkits revisions now lock signed scale/constant expandability, grouping-preserving rendering, per-node precision, one-pass lowering, tolerance, division-domain consumer projections, and numeric storage:
   - [`SPEC-2026-07-19-08`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-08--every-arithmetic-node-uses-precision-50-half_up)
   - [`SPEC-2026-07-19-09`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-09--numeric-scale-gating-tracks-signed-scale-and-constant-expandability)
@@ -235,12 +235,12 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 #### Exact boundary
 
 - **Implemented narrowly; integrated validation and numeric computation remain external evidence pending:** the checked same-group, full-validation consumer accepts two admitted expressions with at least one resolved field—plain `+`/`−`/`×`/`÷` arithmetic, exact direct-field root rounding/`Abs`, or a canonical same-selector Min/Max fold over direct fields—and a closed choice of six ordinary operators or four fixed tolerance ranges.
-- The separate computation expression accepts one already-resolved admitted arithmetic/rounding/`Abs`/Min/Max tree.
+- The separate computation expression accepts one already-resolved admitted arithmetic/power/rounding/`Abs`/Min/Max tree; it does not itself certify concrete power authoring or exponent-scale legality.
 - Stored conversion is exact after scale-19 pre-rounding
 - the target accepts only the ordinary scale-compatible path with signedness, minimum/maximum fractional digits, the universal 15-digit check, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation.
 - Open:
   - Checked concrete computation/target authoring
-  - checked power consumers and result-empty provenance
+  - checked power validation, concrete computation authoring, and result-empty provenance
   - constant-bearing numeric Min/Max
   - concrete tie-origin retention
   - Date and aggregate Min/Max
@@ -721,7 +721,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ## Cross-clause implementation notes
 
-The §5/§11 numeric-computation entry is declaration-resolved rather than merely identified by `FieldId`: every atom retains its `FlatFieldDecl`, and the complete one-pass lowered tree rejects a non-Number declaration or unaudited power before any cell read. Its runtime then follows the lowered tree left-to-right, so a rewrite can change which of two poison causes is reached first; this source-grounded order and every numeric-computation outcome remain portable evidence pending.
+The §5/§11 numeric-computation entry is declaration-resolved rather than merely identified by `FieldId`: every atom retains its `FlatFieldDecl`, and the complete one-pass lowered tree rejects a non-Number declaration before any cell read. Its runtime then follows the lowered tree left-to-right, so a rewrite can change which of two poison causes is reached first. Power uses that same ordered evaluator, delegates valid values to the shared staged algorithm, and maps runtime-invalid integral cases to the operation-neutral domain failure consumed by the existing target/dependency path. Concrete authoring admission remains separate; this source-grounded order and every numeric-computation outcome remain portable evidence pending.
 
 ### Resolved Number `FirstFilledValue`
 

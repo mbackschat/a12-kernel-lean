@@ -66,6 +66,25 @@ theorem numericComputation_divideByZero_domainFailure
     LoweredNumericExpr.evalComputation]
   rfl
 
+/-- Reached numeric power operands delegate exactly to the shared partial power value semantics. -/
+theorem numericComputationResult_evalPower_values
+    (base exponent : Rat) :
+    NumericComputationResult.evalPower (.value base) (.value exponent) =
+      match powerNumeric base exponent with
+      | .value amount => .value amount
+      | .notEvaluated => .domainFailure := by
+  rfl
+
+/-- Zero raised to a negative integral exponent reaches computation-domain failure, not a structural fault or clean no-value. -/
+theorem numericComputation_zeroToNegativePower_domainFailure
+    (baseScale exponentScale : Int)
+    (context : ScalarComputationContext) :
+    (AuthoredNumericExpr.power
+      (.literal { value := 0, authoredScale := baseScale })
+      (.literal { value := -1, authoredScale := exponentScale })).evaluateComputation
+        context = .ok .domainFailure := by
+  rfl
+
 /-- Rounding preserves a domain-failed lowered child instead of manufacturing a numeric value. -/
 theorem numericComputation_round_preserves_domainFailure
     (read : FlatFieldDecl →

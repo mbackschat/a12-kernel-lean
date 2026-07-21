@@ -15,6 +15,12 @@ inductive NumericComputationResult where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- Project the shared partial arithmetic result into the computation-specific result domain. -/
+def NumericComputationResult.ofArithmetic :
+    NumericArithmeticResult → NumericComputationResult
+  | .value amount => .value amount
+  | .notEvaluated => .domainFailure
+
 /-- Transform only an available computation value; arithmetic failure and read poison keep their meanings. -/
 def NumericComputationResult.mapValue (result : NumericComputationResult)
     (transform : Rat → Rat) : NumericComputationResult :=
@@ -42,6 +48,16 @@ def NumericComputationResult.combineReached
   | .domainFailure, _ => .domainFailure
   | _, .domainFailure => .domainFailure
   | .value left, .value right => combineValues left right
+
+/-- Evaluate power over two already-reached computation operands. Runtime-invalid power uses the same arithmetic-domain result as invalid division. -/
+def NumericComputationResult.evalPower :
+    NumericComputationResult → NumericComputationResult →
+      NumericComputationResult
+  | left, right =>
+      NumericComputationResult.combineReached
+        (fun base exponent =>
+          NumericComputationResult.ofArithmetic (powerNumeric base exponent))
+        left right
 
 /-- Select two reached operand-list computation results through the shared poison/domain/value combiner. The evaluator is responsible for not reaching the right operand after a left poison. -/
 def NumericExtremumOp.selectComputationResult (op : NumericExtremumOp) :
