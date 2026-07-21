@@ -89,14 +89,18 @@ theorem numericTolerance_acceptsScales
 theorem numericValidation_scaleSuppression_accepts
     (op : NumericValidationOp) (left right : NumericScaleSummary) :
     op.acceptsScalesWithSuppression true left right = true := by
-  simp [NumericValidationOp.acceptsScalesWithSuppression]
+  cases op with
+  | ordinary comparison => cases comparison <;> rfl
+  | tolerance _ => rfl
 
 /-- Without the directive, the checked consumer retains the ordinary scale gate exactly. -/
 theorem numericValidation_withoutScaleSuppression
     (op : NumericValidationOp) (left right : NumericScaleSummary) :
     op.acceptsScalesWithSuppression false left right =
       op.acceptsScales left right := by
-  rfl
+  cases op with
+  | ordinary comparison => cases comparison <;> rfl
+  | tolerance _ => rfl
 
 /-- The parser warning directive affects admission only; once checked, it cannot change evaluation. -/
 theorem numericComparison_scaleSuppression_runtimeIrrelevant

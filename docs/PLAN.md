@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `2a77643` (`feat(computation): support suppressed numeric no-fit`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,492-declaration trust audit passed.
+- Semantic baseline before the current capsule: `0aeddb1` (`feat(computation): route suppressed numeric targets`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,499-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Carry the one legal exact-scale warning suppression through checked nonrepeatable numeric computation admission and target classification. Retain the flag in the certified operation, bypass only the static result-scale predicate, and dispatch the evaluated result through the already-separated ordinary or warning-suppressed target entry point.
+Consolidate the exact-scale warning gate now that checked validation and checked computation are two completed consumers. Move only the shared `suppressed OR ordinary exact-scale admission` mechanism to the numeric-scale owner and preserve each consumer's distinct operator dispatch, certification, evaluation, and target behavior.
 
-Success means unsuppressed mismatches retain their current rejection; explicit suppression admits the same otherwise-valid operation; authoring, model, kind, scope, and target-self-reference checks remain independent; a proof-backed target-policy coherence argument prevents mismatched target metadata; and the retained flag alone selects the runtime target branch. The semantic rules are already canonical in [`spec/09-computations.md`](../spec/09-computations.md) and accepted under [`SPEC-2026-07-19-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-15--computed-number-storage-has-distinct-fit-and-warning-suppressed-no-fit-branches), so this capsule creates no outbound ledger entry.
+Success means the shared gate has universal true-suppressed and false-unsuppressed laws; validation ordering/tolerance remain unconditionally scale-exempt; equality/inequality and computation assignment use the same exact suppression primitive; and all existing checked rejection and runtime cases stay green. This is local rolling consolidation after the second real consumer, so it creates no spec or synchronization-ledger change.
 
 ## Frontier queue
 
@@ -29,7 +29,8 @@ Success means unsuppressed mismatches retain their current rejection; explicit s
 - **Satisfied — nonempty literal table:** `3b7fea9` admits an optionally guarded singleton beside the guarded two-or-more table without manufacturing a true condition.
 - **Satisfied — checked numeric computation operation:** `6cd756d` resolves and admits the plain nonrepeatable expression before its existing computation evaluator.
 - **Satisfied — warning-suppressed numeric no-fit:** `2a77643` adds the explicit bounded-storage target branch while preserving the ordinary fail-closed entry point.
-- **Active — checked computation suppression:** retain the legal warning flag through admission and route the evaluated result through the matching target entry point.
+- **Satisfied — checked computation suppression:** `0aeddb1` retains the legal warning flag through admission and routes the evaluated result through the matching target entry point.
+- **Active — shared warning gate:** consolidate the common exact-scale suppression primitive at its numeric-scale owner after its second completed consumer.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.

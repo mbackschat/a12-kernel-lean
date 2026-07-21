@@ -21,9 +21,9 @@ theorem checkedNumericComputationOperation_scaleGate
     (summary : NumericScaleSummary)
     (summarized : checked.core.expression.summary?
       FlatFieldDecl.numericScaleSummary = some summary) :
-    (checked.core.suppressExactScaleWarning ||
-      exactNumericScaleComparisonAllowed
-        (NumericScaleSummary.field checked.core.target.info.scale) summary) = true := by
+    exactNumericScaleComparisonAllowedWithSuppression
+      checked.core.suppressExactScaleWarning
+      (NumericScaleSummary.field checked.core.target.info.scale) summary = true := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true,

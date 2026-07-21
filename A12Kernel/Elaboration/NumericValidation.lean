@@ -108,7 +108,13 @@ def NumericValidationOp.acceptsScales (op : NumericValidationOp)
 def NumericValidationOp.acceptsScalesWithSuppression
     (op : NumericValidationOp) (suppressExactScaleWarning : Bool)
     (left right : NumericScaleSummary) : Bool :=
-  suppressExactScaleWarning || op.acceptsScales left right
+  match op with
+  | .ordinary .equal | .ordinary .notEqual =>
+      exactNumericScaleComparisonAllowedWithSuppression
+        suppressExactScaleWarning left right
+  | .ordinary .less | .ordinary .lessEqual
+  | .ordinary .greater | .ordinary .greaterEqual
+  | .tolerance _ => true
 
 def NumericComparison.wellFormedBool
     (comparison : NumericComparison)

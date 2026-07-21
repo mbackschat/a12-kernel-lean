@@ -200,7 +200,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Implemented
 
-- Signed exact-or-unknown scale, constant expandability, and explicit suppression of the one supported exact-scale warning
+- Signed exact-or-unknown scale, constant expandability, and one shared explicit-suppression gate for the supported exact-scale warning
 - authored literals/grouping
 - plain authoring-region checks plus exact direct-field root rounding/`Abs` and canonical numeric operand-list `Min`/`Max` admission over direct fields with at most one direct constant
 - one order-sensitive division-lowering pass

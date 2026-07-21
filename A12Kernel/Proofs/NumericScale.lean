@@ -83,4 +83,17 @@ theorem exactNumericScaleComparisonAllowed_unknown_right
   | mk leftScale leftCanExpand =>
       cases leftScale <;> rfl
 
+/-- Explicit suppression admits every pair without changing either summary. -/
+theorem exactNumericScaleComparisonAllowedWithSuppression_true
+    (left right : NumericScaleSummary) :
+    exactNumericScaleComparisonAllowedWithSuppression true left right = true := by
+  rfl
+
+/-- Without suppression, the shared gate is exactly the ordinary exact-scale check. -/
+theorem exactNumericScaleComparisonAllowedWithSuppression_false
+    (left right : NumericScaleSummary) :
+    exactNumericScaleComparisonAllowedWithSuppression false left right =
+      exactNumericScaleComparisonAllowed left right := by
+  rfl
+
 end A12Kernel
