@@ -40,6 +40,7 @@ import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.NumericComputation
+import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.EnumerationComparability

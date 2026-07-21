@@ -366,7 +366,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented narrowly; ingestion external evidence pending:** direct validation equality/inequality, `Length <`/`>=`, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, non-repeatable unconditional String computation through root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
+- **Implemented narrowly; ingestion external evidence pending:** direct validation equality/inequality, `Length <`/`>=`, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, checked nonrepeatable copy/literal/concatenation lowering through String root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
 - Repeatable/parent-gated String requiredness, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.
@@ -527,6 +527,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Semantics/NumericApplication.lean`](../A12Kernel/Semantics/NumericApplication.lean)
 - [`Semantics/NumericDependency.lean`](../A12Kernel/Semantics/NumericDependency.lean)
 - [`Elaboration/NumericComputation.lean`](../A12Kernel/Elaboration/NumericComputation.lean)
+- [`Elaboration/StringComputation.lean`](../A12Kernel/Elaboration/StringComputation.lean)
 - [`Elaboration/GeneratedComputationValidation.lean`](../A12Kernel/Elaboration/GeneratedComputationValidation.lean)
 - their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean)
 
@@ -539,10 +540,11 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - selection ends before operation evaluation.
 - One resolved String table composes that selector once with the existing expression/target/delta step
 - clean no-value, target rejection, and poison from the selected operation are terminal, and a holding head makes every suffix irrelevant through operation evaluation.
+- Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
 - The checked two-alternative literal-Number desugaring admits direct Number/Boolean/Confirm/String presence guards, uses the same guard syntax but ordinary validation semantics, retains both guarded strict mismatches below `FieldFilled(target)`, preserves authored literal scale through exact-comparison admission, and emits through the resolved ERROR-rule boundary.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
-- The separate String and Number slices keep expression result, stored form, target outcome, delta, exact application, and downstream dependency meaning distinct without claiming a scheduler or document mutator
+- The separate String and Number slices keep checked expression identity, expression result, stored form, target outcome, delta, exact application, and downstream dependency meaning distinct without claiming a scheduler or document mutator
 
 #### External evidence
 
