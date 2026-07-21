@@ -67,6 +67,10 @@ run_cmd do
 #print axioms A12Kernel.fullDate_before_iff
 #print axioms A12Kernel.fullDate_before_irreflexive
 #print axioms A12Kernel.fullDate_before_transitive
+#print axioms A12Kernel.dateComparison_equal_iff
+#print axioms A12Kernel.dateComparison_notEqual_iff
+#print axioms A12Kernel.dateComparison_swapped
+#print axioms A12Kernel.dateComparison_before_excludes_after
 #print axioms A12Kernel.dateRange_direction_ordered_iff
 #print axioms A12Kernel.dateRange_overlaps_iff
 #print axioms A12Kernel.dateRange_overlap_symmetric

@@ -1,5 +1,6 @@
 import A12Kernel.Conformance.Elaboration
 import A12Kernel.Conformance.FullDate
+import A12Kernel.Conformance.DateComparison
 import A12Kernel.Conformance.DateRangeOverlap
 import A12Kernel.Conformance.DateRangeOverlapOperators
 import A12Kernel.Conformance.DateConstruction
