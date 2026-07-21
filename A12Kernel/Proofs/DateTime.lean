@@ -428,30 +428,44 @@ theorem instant_shiftHours_inverse
     _ = instant.shiftHours 0 := by congr; omega
     _ = instant := instant_shiftHours_zero instant
 
-/-- The narrow Berlin resolver succeeds exactly on its one declared transition date. -/
-theorem berlinAutumn2024_resolveLocal_isSome_iff
+/-- The finite Berlin resolver succeeds exactly on supported labels outside the spring gap. -/
+theorem berlin2024_resolveLocal_isSome_iff
     (dateTime : LocalDateTime) :
-    (BerlinAutumn2024.resolveLocal? dateTime).isSome = true ↔
-      BerlinAutumn2024.Supported dateTime := by
-  simp [BerlinAutumn2024.resolveLocal?]
+    (Berlin2024Profile.resolveLocal? dateTime).isSome = true ↔
+      Berlin2024Profile.Supported dateTime ∧
+        ¬Berlin2024Profile.SpringGap dateTime := by
+  simp [Berlin2024Profile.resolveLocal?]
 
-/-- Fresh labels before the repeated hour resolve with the daylight offset. -/
-theorem berlinAutumn2024_resolve_before_two
+/-- Every fresh label in the selected spring gap is rejected. -/
+theorem berlin2024_resolve_spring_gap
     (dateTime : LocalDateTime)
-    (supported : BerlinAutumn2024.Supported dateTime)
+    (gap : Berlin2024Profile.SpringGap dateTime) :
+    Berlin2024Profile.resolveLocal? dateTime = none := by
+  simp [Berlin2024Profile.resolveLocal?, gap]
+
+/-- Fresh labels before the repeated autumn hour resolve with the daylight offset. -/
+theorem berlin2024_resolve_autumn_before_two
+    (dateTime : LocalDateTime)
+    (supported : Berlin2024Profile.AutumnSupported dateTime)
     (beforeTwo : dateTime.time.hour < 2) :
-    BerlinAutumn2024.resolveLocal? dateTime =
+    Berlin2024Profile.resolveLocal? dateTime =
       some (dateTime.resolveUtc.shiftHours (-2)) := by
-  simp [BerlinAutumn2024.resolveLocal?, supported, beforeTwo]
+  rcases supported with ⟨year, month, day⟩
+  simp [Berlin2024Profile.resolveLocal?, Berlin2024Profile.Supported,
+    Berlin2024Profile.AutumnSupported, Berlin2024Profile.SpringGap,
+    Berlin2024Profile.offsetHours, year, month, day, beforeTwo]
 
-/-- Fresh labels from the repeated hour onward resolve with the standard offset. -/
-theorem berlinAutumn2024_resolve_at_or_after_two
+/-- Fresh labels from the repeated autumn hour onward resolve with the standard offset. -/
+theorem berlin2024_resolve_autumn_at_or_after_two
     (dateTime : LocalDateTime)
-    (supported : BerlinAutumn2024.Supported dateTime)
+    (supported : Berlin2024Profile.AutumnSupported dateTime)
     (atOrAfterTwo : 2 ≤ dateTime.time.hour) :
-    BerlinAutumn2024.resolveLocal? dateTime =
+    Berlin2024Profile.resolveLocal? dateTime =
       some (dateTime.resolveUtc.shiftHours (-1)) := by
-  simp [BerlinAutumn2024.resolveLocal?, supported,
+  rcases supported with ⟨year, month, day⟩
+  simp [Berlin2024Profile.resolveLocal?, Berlin2024Profile.Supported,
+    Berlin2024Profile.AutumnSupported, Berlin2024Profile.SpringGap,
+    Berlin2024Profile.offsetHours, year, month, day,
     show ¬dateTime.time.hour < 2 by omega]
 
 end A12Kernel

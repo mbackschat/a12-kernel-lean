@@ -46,9 +46,9 @@ example :
 /- The selected Berlin autumn endpoints are three physical hours apart despite two wall-clock hours. -/
 example :
     (do
-      let first ← BerlinAutumn2024.resolveLocal?
+      let first ← Berlin2024Profile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← BerlinAutumn2024.resolveLocal?
+      let second ← Berlin2024Profile.resolveLocal?
         (dateTime 2024 10 27 3 30 0 (by native_decide))
       pure (first.difference .hours second)) =
         some 3 := by
@@ -57,9 +57,9 @@ example :
 /- A fresh ambiguous 02:30 selects the standard-side instant, 120 minutes after fresh 01:30. -/
 example :
     (do
-      let first ← BerlinAutumn2024.resolveLocal?
+      let first ← Berlin2024Profile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← BerlinAutumn2024.resolveLocal?
+      let second ← Berlin2024Profile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure (first.difference .minutes second)) =
         some 120 := by
@@ -68,9 +68,9 @@ example :
 /- Chained instant arithmetic reaches daylight-side 02:30, still 60 minutes before fresh standard-side 02:30. -/
 example :
     (do
-      let first ← BerlinAutumn2024.resolveLocal?
+      let first ← Berlin2024Profile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← BerlinAutumn2024.resolveLocal?
+      let second ← Berlin2024Profile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure ((first.shiftHours 1).difference .minutes second)) =
         some 60 := by

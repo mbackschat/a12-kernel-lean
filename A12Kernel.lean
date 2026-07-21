@@ -18,6 +18,7 @@ import A12Kernel.Semantics.DateConstruction
 import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.DateTime
 import A12Kernel.Semantics.DateTimeDifference
+import A12Kernel.Semantics.DateTimeDayDifference
 import A12Kernel.Semantics.NumericStoredNumber
 import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericApplication
