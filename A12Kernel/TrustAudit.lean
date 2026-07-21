@@ -545,6 +545,9 @@ run_cmd do
 #print axioms A12Kernel.semanticIndex_unavailableNoMatch_phaseSplit
 #print axioms A12Kernel.semanticIndex_cleanNoMatch_numberOperand
 #print axioms A12Kernel.semanticIndex_cleanNoMatch_greaterEqual_polarity
+#print axioms A12Kernel.semanticIndex_cleanNoMatch_presence
+#print axioms A12Kernel.semanticIndex_validation_cleanMatch_presence_ignores_unavailableKey
+#print axioms A12Kernel.semanticIndex_computation_unavailableKey_presence
 #print axioms A12Kernel.enumerationCategory_lookup_head
 #print axioms A12Kernel.enumerationCategory_lookup_skip
 #print axioms A12Kernel.enumeration_stored_resolves_exactly

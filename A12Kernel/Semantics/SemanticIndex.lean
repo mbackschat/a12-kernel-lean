@@ -1,3 +1,5 @@
+import A12Kernel.Semantics.ComputationCondition
+import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.Observation
 
@@ -55,6 +57,26 @@ def lookupValue (column : ResolvedSemanticIndexColumn)
 def validationNumberOperand (column : ResolvedSemanticIndexColumn)
     (field : NumField) (token : String) : NumericOperand :=
   (column.lookupValue .validation token).asValidationNumericOperand field
+
+/-- Consume one resolved indexed read as validation `FieldFilled`. A clean no-match is therefore not fired rather than skipped or unknown. -/
+def validationFilled (column : ResolvedSemanticIndexColumn)
+    (token : String) : Verdict :=
+  (column.lookupValue .validation token).evalValidationFilled
+
+/-- Consume one resolved indexed read as validation `FieldNotFilled`. A clean no-match fires with omission polarity exactly like an empty target cell. -/
+def validationNotFilled (column : ResolvedSemanticIndexColumn)
+    (token : String) : Verdict :=
+  (column.lookupValue .validation token).evalValidationNotFilled
+
+/-- Consume one resolved indexed read as computation `FieldFilled`, preserving the lookup's column-first poison policy. -/
+def computationFilled (column : ResolvedSemanticIndexColumn)
+    (token : String) : ComputationConditionResult :=
+  (column.lookupValue .computation token).evalComputationFilled
+
+/-- Consume one resolved indexed read as computation `FieldNotFilled`, reversing only clean presence and preserving poison. -/
+def computationNotFilled (column : ResolvedSemanticIndexColumn)
+    (token : String) : ComputationConditionResult :=
+  (column.lookupValue .computation token).evalComputationNotFilled
 
 end ResolvedSemanticIndexColumn
 

@@ -27,16 +27,32 @@ inductive ComputationCondition where
   | or (left right : ComputationCondition)
   deriving Repr, DecidableEq
 
+namespace CellObservation
+
+/-- Consume one computation-phase observation as `FieldFilled`. The method is shared by direct fields and already-resolved indexed reads. -/
+@[simp]
+def evalComputationFilled : CellObservation → ComputationConditionResult
+  | .empty => .notTrue
+  | .value _ => .holds
+  | .unknown cause => .poison cause
+  | .poison cause => .poison cause
+
+/-- Consume one computation-phase observation as `FieldNotFilled`. Clean truth reverses, while a reached formal cause remains poison. -/
+@[simp]
+def evalComputationNotFilled : CellObservation → ComputationConditionResult
+  | .empty => .holds
+  | .value _ => .notTrue
+  | .unknown cause => .poison cause
+  | .poison cause => .poison cause
+
+end CellObservation
+
 namespace ComputationCondition
 
 /-- Evaluate `FieldFilled` for one resolved checked field. A clean value counts as filled regardless of its scalar value; ordinary formal invalidity is poison rather than filled or empty. -/
 def evalFieldFilled (context : ScalarComputationContext)
     (field : FieldId) : ComputationConditionResult :=
-  match observeCell .computation (context.read field) with
-  | .empty => .notTrue
-  | .value _ => .holds
-  | .unknown cause => .poison cause
-  | .poison cause => .poison cause
+  (observeCell .computation (context.read field)).evalComputationFilled
 
 /-- Evaluate a computation condition left-to-right. `And` stops on clean not-true, `Or` stops on clean holds, and a poison already read aborts without consulting the remaining operand. -/
 def eval (condition : ComputationCondition)
@@ -44,10 +60,7 @@ def eval (condition : ComputationCondition)
   match condition with
   | .fieldFilled field => evalFieldFilled context field
   | .fieldNotFilled field =>
-      match evalFieldFilled context field with
-      | .holds => .notTrue
-      | .notTrue => .holds
-      | .poison cause => .poison cause
+      (observeCell .computation (context.read field)).evalComputationNotFilled
   | .and left right =>
       match left.eval context with
       | .holds => right.eval context

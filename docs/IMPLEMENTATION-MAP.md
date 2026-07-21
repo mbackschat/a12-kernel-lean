@@ -498,7 +498,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Implemented
 
 - Resolved literal-key value lookup over unique canonical entries plus an unavailable-column marker
-- validation clean-match-before-column-invalidity, computation column-invalidity-before-match, clean no-match/matched-empty equivalence, selected-target phase observation, nonmatching-target irrelevance, and signedness-aware empty-Number polarity
+- validation clean-match-before-column-invalidity, computation column-invalidity-before-match, clean no-match/matched-empty equivalence, selected-target phase observation, nonmatching-target irrelevance, signedness-aware empty-Number polarity, and shared validation/computation `FieldFilled`/`FieldNotFilled` projections
 - model validation including field/group hierarchy separation and path-derived repeatable-scope coherence
 - order-independent unique ID/path lookup
 - shared parent walking
@@ -519,9 +519,9 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded / next
 
-- **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value read.
+- **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value consumer with kind-independent scalar presence.
 - Parent-relative and bare forms remain outside the public correlation operation.
-- Semantic-index key checking/normalization, presence/fill consumers, field-keyed indices, checked path integration, named labels, quoting, `RuleGroup`, concrete parser/renderer, nested/multi-star paths, and general repeatable lookup remain excluded
+- Semantic-index key checking/normalization, fill-quantifier consumers, field-keyed indices, checked path integration, named labels, quoting, `RuleGroup`, concrete parser/renderer, nested/multi-star paths, and general repeatable lookup remain excluded
 - not every excluded or rejected syntax has a retained diagnostic
 
 ### §11 — computations

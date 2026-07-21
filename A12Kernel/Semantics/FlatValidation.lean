@@ -200,19 +200,31 @@ def FlatField.observeValidation (context : FlatContext) : FlatField → CellObse
   | .confirm field => context.observeValidationAt field.id
   | .string field => context.observeValidationAt field.id
 
-def FlatField.evalFilled (field : FlatField) (context : FlatContext) : Verdict :=
-  match field.observeValidation context with
+namespace CellObservation
+
+/-- Consume one validation-phase observation as `FieldFilled`. The method is shared by direct fields and already-resolved indexed reads. -/
+@[simp]
+def evalValidationFilled : CellObservation → Verdict
   | .empty => .notFired
   | .value _ => .fired .value
   | .unknown _ => .unknown
   | .poison _ => .unknown
 
-def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdict :=
-  match field.observeValidation context with
+/-- Consume one validation-phase observation as `FieldNotFilled`. Only clean empty fires, with omission polarity; formal unavailability remains unknown. -/
+@[simp]
+def evalValidationNotFilled : CellObservation → Verdict
   | .empty => .fired .omission
   | .value _ => .notFired
   | .unknown _ => .unknown
   | .poison _ => .unknown
+
+end CellObservation
+
+def FlatField.evalFilled (field : FlatField) (context : FlatContext) : Verdict :=
+  (field.observeValidation context).evalValidationFilled
+
+def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdict :=
+  (field.observeValidation context).evalValidationNotFilled
 
 /-- Evaluate an already-selected context. The optional relevance predicate makes an
     out-of-set atomic read validation-unknown before `context.read`, so a per-call

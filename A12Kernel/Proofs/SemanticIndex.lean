@@ -94,4 +94,46 @@ theorem semanticIndex_cleanNoMatch_greaterEqual_polarity
   simpa [semanticIndex_cleanNoMatch_numberOperand] using
     emptyNumberGreaterEqualFiring_polarity field.signed expected holds
 
+/-- Presence makes the clean indexed no-match boundary explicit in both phases: the absent row behaves exactly like an empty target cell. -/
+theorem semanticIndex_cleanNoMatch_presence (token : String) :
+    let column : ResolvedSemanticIndexColumn :=
+      { entries := [], unavailableKey := none }
+    column.validationFilled token = .notFired ∧
+      column.validationNotFilled token = .fired .omission ∧
+      column.computationFilled token = .notTrue ∧
+      column.computationNotFilled token = .holds := by
+  simp [ResolvedSemanticIndexColumn.validationFilled,
+    ResolvedSemanticIndexColumn.validationNotFilled,
+    ResolvedSemanticIndexColumn.computationFilled,
+    ResolvedSemanticIndexColumn.computationNotFilled,
+    ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.targetFor?]
+
+/-- Validation presence preserves match-first lookup: both predicates consume the selected target even when another key made the column unavailable. -/
+theorem semanticIndex_validation_cleanMatch_presence_ignores_unavailableKey
+    (token : String) (target : CheckedCell)
+    (remaining : List ResolvedSemanticIndexEntry)
+    (cause : FormalCause) :
+    let column : ResolvedSemanticIndexColumn :=
+      { entries := resolvedIndexEntry token target :: remaining
+        unavailableKey := some cause }
+    column.validationFilled token =
+        (observeCell .validation target).evalValidationFilled ∧
+      column.validationNotFilled token =
+        (observeCell .validation target).evalValidationNotFilled := by
+  simp [ResolvedSemanticIndexColumn.validationFilled,
+    ResolvedSemanticIndexColumn.validationNotFilled,
+    ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry]
+
+/-- Computation presence preserves column-first lookup: either predicate returns the unavailable-key poison before a clean matching target can contribute. -/
+theorem semanticIndex_computation_unavailableKey_presence
+    (entries : List ResolvedSemanticIndexEntry) (cause : FormalCause)
+    (token : String) :
+    let column : ResolvedSemanticIndexColumn :=
+      { entries, unavailableKey := some cause }
+    column.computationFilled token = .poison cause ∧
+      column.computationNotFilled token = .poison cause := by
+  constructor <;> rfl
+
 end A12Kernel

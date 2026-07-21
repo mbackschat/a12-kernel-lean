@@ -4,22 +4,23 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current handoff capsule: `5e62217` (`feat(validation): admit extremum constants`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 10,968-declaration trust audit passed.
+- Semantic baseline before the current capsule: `426cdb6` (`fix(validation): skip filtered partial rules`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,000-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Reassess the next semantic frontier after closing the finalized handoff queue. IF202 now has a rule-level filter marker and universal early-skip law in the existing partial-validation owner; IF193 and IF194 were verified as already satisfied.
+Close resolved literal-key semantic-index presence without widening checked paths or index construction. Validation and computation must consume the existing phase-aware lookup through the same presence projections as direct fields, preserving match-first validation, column-first computation poison, and clean no-match-as-empty behavior.
 
-Success means each handoff has an exact disposition: implement a missing semantic capsule, update an existing owner without duplication, or record a verified no-op. Inbound facts go to [`SOURCES.md`](SOURCES.md) and existing owner records; they do not create new outbound ledger entries unless they answer an already-open entry.
+Success means the absent-row `FieldNotFilled` discriminator, matched/empty/invalid cases, both phase gates, and useful universal laws are green without a second lookup or presence mechanism. The canonical spec already owns this behavior, so no outbound ledger entry is created.
 
 ## Frontier queue
 
 - **Satisfied — IF202 partial validation:** the current capsule implements the method-entry filter skip before relevance or condition evaluation, preserves the unfiltered route, and adds presence/equality-shaped, ordering, and universal separators.
 - **Satisfied — IF193 group presence:** a12-dmkits `7f152509` matches the existing product state and consumer projections introduced by `d19f77e`; do not add another group-state representation.
 - **Satisfied — IF194 nested-star tails:** `7f152509` matches the hierarchical reopened-star mechanism and laws introduced by `d285cb5`; do not add a flat tail flag or parallel aggregate scan.
+- **Active — semantic-index presence:** reuse the resolved lookup and direct-field presence projections; retain value-only Number scope and exclude fill-quantifier/path construction.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
 - **Missing fact — String targets:** needs declaration-owned length and line-break policy; do not infer unconstrained policy from erased model facts.
