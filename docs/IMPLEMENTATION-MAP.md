@@ -70,7 +70,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - **Implemented internally, partial; direct ordering external evidence pending:** nonrepeatable Number equality/inequality/`<`/`>=`, Boolean/Confirm equality/inequality, and Number/Boolean/Confirm presence are executable.
 - Direct String supports equality only, plus String `Length <`/`>=`
 - its empty observation retains absent versus present-empty placement at the checked-cell boundary.
-- String presence/requiredness and every other String comparison/function are rejected or unimplemented.
+- String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; other String comparisons/functions remain rejected or unimplemented.
 - This is a consuming-clause baseline, not a kind-wide empty law
 - see [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function), [`LF10`](LEAN-FINDINGS.md#lf10--numeric-polarity-needs-directional-fillability-not-a-given-bit), and [`LF24`](LEAN-FINDINGS.md#lf24--direct-number-ordering-uses-the-same-directional-fixed-right-comparison)
 
@@ -108,7 +108,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 #### Exact boundary
 
 - **Implemented internally, partial; ingestion external evidence pending:** the reduced boundary distinguishes absent from present-empty before projecting either to the empty phase observation and owns evaluated-String CRLF normalization after scalar text decoding.
-- A general `Document → RawCell` bridge, public present-empty transport, String presence/requiredness, group-content derivation, and custom-validator invocation remain open
+- A general `Document → RawCell` bridge, public present-empty transport, group-content derivation, and custom-validator invocation remain open.
 - raw storage itself remains outside this reduced account.
 - The internal unknown/poison account still relies on source treatment and internal laws.
 - Computed String target checking admits only one positive minimum or maximum length over no-line-break text
@@ -128,6 +128,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Independently stated source outcome versus generated-rule evaluation
 - base-before-annotation ordering
 - computation-observation preservation
+- Number/Boolean/Confirm/String targets share the same presence rule; a required present-empty String retains physical placement when the finding is attached.
 
 #### External evidence
 
@@ -137,7 +138,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented internally, partial; focused external observations replayed:** absolute requiredness only.
+- **Implemented internally, partial; focused external observations replayed:** absolute requiredness for nonrepeatable Number/Boolean/Confirm/String fields.
 - Parent-filled requiredness remains open because Lean does not yet derive the admitted-content × error × relevance group state
 - repeatable ancestors, index generation, and generated rule identity also remain open
 
@@ -344,6 +345,8 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Direct comparison, `Length`, and computation share that cached value, and the exact overlap counterexample prevents a second pass.
 - Direct equality and `Length <`/`>=` have separate consuming clauses
 - a parsed empty String retains present-empty placement while supplying the same clean-empty observation as absence
+- `FieldFilled`/`FieldNotFilled` consume that empty observation rather than physical placement, and checked flat lowering admits String presence.
+- Absolute String requiredness reuses the generated `FieldNotFilled` staging and preserves present-empty placement when attaching `.required`.
 - shared String length counts UTF-16 code units.
 - The computation slice separately models empty contribution, evaluated text, root storage, target-length routing/outcome, and delta projection.
 - Strict violations, inclusive acceptance on both permitted sides, exact minimum/maximum boundaries, no-value/poison bypass, payload preservation, store/delta identity, and the nearest stronger term/application non-laws are proved
@@ -362,8 +365,8 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented narrowly; ingestion external evidence pending:** direct validation equality, `Length <`/`>=`, present-empty checked placement, exactly-once evaluated-String CRLF normalization, non-repeatable unconditional String computation through root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
-- Direct validation inequality, String presence/requiredness, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
+- **Implemented narrowly; ingestion external evidence pending:** direct validation equality, `Length <`/`>=`, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, non-repeatable unconditional String computation through root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
+- Direct validation inequality, repeatable/parent-gated String requiredness, generated-computation String guards, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.
 - The public normalized protocol and consumer capabilities have not been expanded to String

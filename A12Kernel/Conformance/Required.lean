@@ -35,6 +35,16 @@ private def requiredEmpty : AbsoluteRequiredResult :=
 private def requiredMalformed : AbsoluteRequiredResult :=
   applyAbsoluteRequired field (contextWith (formalCheck policy (.rejected .malformed)))
 
+private def stringField : FlatStringField :=
+  { id := 1 }
+
+private def stringPolicy : FieldPolicy :=
+  { kind := .string }
+
+private def requiredString (raw : RawCell) : AbsoluteRequiredResult :=
+  applyAbsoluteRequired (.string stringField)
+    (contextWith (formalCheck stringPolicy raw))
+
 example : declaration.evaluate emptyBaseContext =
     .mandatory mandatoryFieldMetadata := by
   decide
@@ -76,6 +86,20 @@ example : requiredMalformed.mandatoryVerdict = .unknown := by
 
 example : observeCell .computation
     (requiredMalformed.authoredContext.read numberField.id) = .poison .malformed := by
+  decide
+
+/- Requiredness consumes String evaluation emptiness while preserving placement. -/
+example : (requiredString .presentEmpty).mandatoryVerdict = .fired .omission := by
+  decide
+
+example : (requiredString (.parsed (.str ""))).mandatoryVerdict = .fired .omission := by
+  decide
+
+example : (requiredString .presentEmpty).authoredContext.read stringField.id =
+    { rawPresent := true, parsed := none, findings := [.required] } := by
+  decide
+
+example : (requiredString (.parsed (.str "A"))).mandatoryVerdict = .notFired := by
   decide
 
 end A12Kernel.Conformance.Required

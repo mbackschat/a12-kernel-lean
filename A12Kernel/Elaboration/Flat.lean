@@ -95,7 +95,7 @@ def toPresenceField? (declaration : FlatFieldDecl) : Option FlatField :=
   | .number info => some (.number { id := declaration.id, info })
   | .boolean => some (.boolean { id := declaration.id })
   | .confirm => some (.confirm { id := declaration.id })
-  | .string => none
+  | .string => some (.string { id := declaration.id })
 
 end FlatFieldDecl
 

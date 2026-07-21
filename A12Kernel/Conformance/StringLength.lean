@@ -164,9 +164,8 @@ example : elaborationError? (elaborate numberModel ["Order"]
     some (.lengthOperandKindMismatch ["Order", "Quantity"] .number) := by
   native_decide
 
-example : elaborationError? (elaborate productCodeModel ["Order"]
-    (.fieldNotFilled productCodePath)) =
-    some (.unsupportedPresenceKind ["Order", "ProductCode"] .string) := by
+example : (elaborate productCodeModel ["Order"]
+    (.fieldNotFilled productCodePath)).isOk = true := by
   native_decide
 
 end A12Kernel.Conformance.StringLength

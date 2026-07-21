@@ -32,6 +32,11 @@ theorem desugarAbsoluteRequired_preserves (declaration : AbsoluteRequiredDecl)
             desugarAbsoluteRequired, mandatoryFieldMetadata, FlatCondition.evalFull,
             FlatCondition.canFireOnEmpty, FlatCondition.evalSelected, FlatField.evalNotFilled]
           cases (FlatField.confirm field).observeValidation context <;> rfl
+      | string field =>
+          simp [AbsoluteRequiredRule.evaluate, AbsoluteRequiredDecl.evaluate,
+            desugarAbsoluteRequired, mandatoryFieldMetadata, FlatCondition.evalFull,
+            FlatCondition.canFireOnEmpty, FlatCondition.evalSelected, FlatField.evalNotFilled]
+          cases (FlatField.string field).observeValidation context <;> rfl
 /-- Required annotation is computation-inert, even when it follows an ordinary finding.
     This is the preservation property that lets requiredness share `CheckedCell` without
     turning compute-time empty substitution into poison. -/
@@ -75,5 +80,23 @@ theorem requiredFinding_empty_phase_split :
     observeCell .validation (base.withFinding .required) = .unknown .required ∧
       observeCell .computation (base.withFinding .required) = .empty := by
   apply And.intro <;> rfl
+
+/-- Absolute String requiredness consumes evaluation emptiness and keeps a present-empty placement while attaching the staged finding. -/
+theorem absoluteRequired_string_presentEmpty_preservesPlacement
+    (field : FlatStringField) :
+    let context : FlatContext :=
+      { read := fun _ => formalCheck { kind := .string } .presentEmpty }
+    let result := applyAbsoluteRequired (.string field) context
+    result.mandatoryVerdict = .fired .omission ∧
+      result.authoredContext.read field.id = {
+        rawPresent := true
+        parsed := none
+        findings := [.required] } := by
+  simp [applyAbsoluteRequired, desugarAbsoluteRequired,
+    FlatCondition.evalFull, FlatCondition.canFireOnEmpty,
+    FlatCondition.evalSelected, FlatField.evalNotFilled,
+    FlatField.id, FlatField.observeValidation, FlatContext.observeValidationAt,
+    FlatContext.withRequiredFindingAt, formalCheck,
+    CheckedCell.withFinding, observeCell]
 
 end A12Kernel
