@@ -372,8 +372,9 @@ private def SurfaceComparisonOp.toNumeric? : SurfaceComparisonOp → Option Nume
   | .equal => some .equal
   | .notEqual => some .notEqual
   | .less => some .less
+  | .lessEqual => some .lessEqual
+  | .greater => some .greater
   | .greaterEqual => some .greaterEqual
-  | _ => none
 
 private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
     Option StringLengthComparisonOp
@@ -451,9 +452,6 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       | some field => pure (.fieldNotFilled field)
       | none => throw (.unsupportedPresenceKind declaration.path declaration.policy.kind.surfaceKind)
   | .compare op reference literal => do
-      match op with
-      | .lessEqual | .greater => throw (.unsupportedOperator op)
-      | _ => pure ()
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.policy.kind with
       | .number info => do

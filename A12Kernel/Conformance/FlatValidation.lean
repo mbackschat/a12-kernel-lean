@@ -120,6 +120,15 @@ private def unsignedNumberIsGreaterEqualZero : FlatCondition :=
 private def signedNumberIsGreaterEqualZero : FlatCondition :=
   .compare (.number .greaterEqual signedNumberField 0)
 
+private def unsignedNumberIsLessEqualZero : FlatCondition :=
+  .compare (.number .lessEqual numberField 0)
+
+private def unsignedNumberIsGreaterThanNegativeOne : FlatCondition :=
+  .compare (.number .greater numberField (-1))
+
+private def signedNumberIsGreaterThanNegativeOne : FlatCondition :=
+  .compare (.number .greater signedNumberField (-1))
+
 private def brokenNumberIsLessThanOne : FlatCondition :=
   .compare (.number .less brokenField 1)
 
@@ -196,6 +205,15 @@ example : unsignedNumberIsGreaterEqualZero.evalSelected emptyContext = .fired .v
   native_decide
 
 example : signedNumberIsGreaterEqualZero.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+example : unsignedNumberIsLessEqualZero.evalSelected emptyContext = .fired .omission := by
+  native_decide
+
+/- A true strict lower bound distinguishes unsigned from signed empty-number shrinkability. -/
+example :
+    unsignedNumberIsGreaterThanNegativeOne.evalSelected emptyContext = .fired .value ∧
+      signedNumberIsGreaterThanNegativeOne.evalSelected emptyContext = .fired .omission := by
   native_decide
 
 example : unsignedNumberIsGreaterEqualZero.evalSelected filledZeroContext = .fired .value := by

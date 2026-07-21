@@ -115,6 +115,25 @@ theorem emptyNumberLessFiring_is_omission (signed : Bool) (expected : Rat)
   simp [NumericComparisonOp.evalFixedRight, NumericComparisonOp.eval, holds,
     NumericComparisonOp.fillCanBreak, NumericFillability.emptyNumber]
 
+/-- Inclusive upper bounds share the same grow-direction repair for either empty Number signedness. -/
+theorem emptyNumberLessEqualFiring_is_omission (signed : Bool) (expected : Rat)
+    (holds : NumericComparisonOp.lessEqual.holds 0 expected = true) :
+    NumericComparisonOp.lessEqual.evalFixedRight
+        (.value 0 (.emptyNumber signed)) expected = .fired .omission := by
+  simp [NumericComparisonOp.evalFixedRight, NumericComparisonOp.eval, holds,
+    NumericComparisonOp.fillCanBreak, NumericFillability.emptyNumber]
+
+/-- For a true strict lower bound over an empty Number, only a signed field can later shrink far enough to repair it. -/
+theorem emptyNumberGreaterFiring_polarity (signed : Bool) (expected : Rat)
+    (holds : NumericComparisonOp.greater.holds 0 expected = true) :
+    NumericComparisonOp.greater.evalFixedRight
+        (.value 0 (.emptyNumber signed)) expected =
+      .fired (if signed then .omission else .value) := by
+  cases signed <;>
+    simp [NumericComparisonOp.evalFixedRight, NumericComparisonOp.eval, holds,
+      NumericComparisonOp.fillCanBreak, NumericFillability.emptyNumber,
+      NumericFillability.fixed]
+
 /-- For a true greater-or-equal condition over an empty Number, only a signed field can later shrink below the fixed literal. -/
 theorem emptyNumberGreaterEqualFiring_polarity (signed : Bool) (expected : Rat)
     (holds : NumericComparisonOp.greaterEqual.holds 0 expected = true) :

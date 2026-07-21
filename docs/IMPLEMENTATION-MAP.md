@@ -54,7 +54,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Internal account
 
-- Executable Number/Boolean/Confirm empty laws, direct Number equality/inequality/`<`/`>=`, direct String equality, all four `Length` ordering operators, directional numeric polarity, row gates, checked surface lowering, and model-derived evaluation
+- Executable Number/Boolean/Confirm empty laws, all six direct Number comparisons, direct String equality/inequality, all four `Length` ordering operators, directional numeric polarity, row gates, checked surface lowering, and model-derived evaluation
 - parsed-empty String placement preservation plus operator-distinction and directional-fillability laws
 
 #### External evidence
@@ -67,7 +67,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 #### Exact boundary
 
-- **Implemented internally, partial; direct ordering external evidence pending:** nonrepeatable Number equality/inequality/`<`/`>=`, Boolean/Confirm/String equality/inequality, and Number/Boolean/Confirm/String presence are executable.
+- **Implemented internally, partial; direct ordering external evidence pending:** all six nonrepeatable Number comparisons, Boolean/Confirm/String equality/inequality, and Number/Boolean/Confirm/String presence are executable.
 - Direct String supports equality/inequality, plus all four String `Length` ordering operators
 - its empty observation retains absent versus present-empty placement at the checked-cell boundary.
 - String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; other String comparisons/functions remain rejected or unimplemented.
@@ -882,7 +882,7 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 
 - Empty semantics is not complete at field-kind granularity.
 - Coverage is clause-shaped and must record field kind, operator and operand position, enclosing consumer, selection/all-empty identity, model-derived field role, row eligibility, validation/computation phase, directional fillability, and observable polarity or store outcome.
-- The current §2/§7 validation capsule covers direct Number field-to-literal equality/inequality/`<`/`>=`, Boolean/Confirm equality/inequality, Number/Boolean/Confirm/String presence, direct String equality/inequality, and all four String `Length` ordering operators
+- The current §2/§7 validation capsule covers all six direct Number field-to-literal comparisons, Boolean/Confirm equality/inequality, Number/Boolean/Confirm/String presence, direct String equality/inequality, and all four String `Length` ordering operators
 - the pure §5 tolerance seam separately accepts two already-resolved numeric operands and their fillability
 - the §7/§11 computation capsules cover clean String reads in bare copy and concatenation, final storage, target-length classification, and prior-target delta projection.
 - Only the resolved semantic-index Number consumer reuses the direct-validation Number projection, and only after its phase-aware lookup has produced a `CellObservation`

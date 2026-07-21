@@ -206,9 +206,15 @@ The six-operator hypothesis failed at the checked authoring boundary. Runtime `L
 
 `StringLengthComparisonOp` now contains `<`, `<=`, `>`, and `>=`, each delegating the shared UTF-16, empty-as-growable-zero operand to `NumericComparisonOp`. The red cases failed on absent `<=`/`>` core constructors and checked admission. The green matrix locks empty `<= 0` as OMISSION, empty `> -1` as VALUE, both new checked operators as accepted, and both exact operators as rejected. Trusted laws capture the two new polarity branches. No String expression, target, spec, sync-ledger, protocol, evidence, or dependency changed.
 
-## Immediate next step: direct Number ordering audit
+## Completed semantic unit: direct Number ordering completion
 
-Audit the reduced direct Number field-to-literal surface for the same missing scale-exempt `<=` and `>` operators. Proceed only if it delegates unchanged to the existing `NumericComparisonOp`, preserves signed/unsigned empty fillability, and does not broaden the scale-erased exact-comparison contract. Add paired red/green polarity cases and keep equality/inequality behavior unchanged.
+The direct Number core and `NumericComparisonOp` already contained all six ordinary operators; only the reduced checked surface rejected `<=` and `>` through a blanket pre-resolution branch. The red cases failed at that branch and also predicted the second mechanism consequence: an unknown field under `<=` must report path resolution, not an unsupported operator.
+
+The checked mapping is now exhaustive for Number while Boolean, Confirm, and String still reject ordering through their type-specific equality gates. Empty `<= 0` is omission-typed for either signedness because filling can grow the left operand. Empty `0 > -1` distinguishes unsigned VALUE from signed OMISSION because only the signed field may shrink. Trusted generic laws own both branches. Equality/inequality and their existing reduced scale limitation are unchanged; no spec, sync-ledger, protocol, evidence, or dependency changed.
+
+## Immediate next step: invalid-power computation projection audit
+
+Audit whether the existing checked numeric computation expression and target outcome already retain enough information to project runtime-invalid integral power distinctly from clean no-value, just as the completed division path does. Proceed only from pinned computation/runtime source and a separating invalid-power case; reuse the existing domain-failure and target/dependency mechanisms rather than adding a new computation result type. If power authoring or lowering remains outside the checked computation subset, record that exact boundary and rotate.
 
 ## Likely next keystone rotation
 
