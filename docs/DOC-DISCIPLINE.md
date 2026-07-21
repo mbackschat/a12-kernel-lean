@@ -18,7 +18,7 @@ Exact live state belongs only in its volatile owner. [`IMPLEMENTATION-MAP.md`](I
 
 ## Finding lifecycle
 
-Record a non-obvious formalization or research conclusion in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) before relying on it across several changes. Give it a stable `LF<n>` identifier, the date, its semantic section(s), its evidence basis, the claim, its Lean treatment, and its limits. Findings are not deleted or renumbered; if later evidence corrects one, amend it visibly and link the correcting finding.
+Record a non-obvious formalization or research conclusion in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) before relying on it across several changes. Give it a stable `LF<n>` identifier, the date, its semantic section(s), its evidence basis, the claim, its Lean treatment, and its limits. Routine capsule closure, gate output, coverage status, and next steps are not findings. Findings are not deleted or renumbered; if later evidence corrects one, amend it visibly and link the correcting finding.
 
 Kernel-behavior discoveries are grounded in the real kernel, its documentation/source, retained observations, and a12-dmkits' findings and real-kernel differentials. Once verified, their language-neutral account is canonized in the relevant `spec/` clause and queued for a12-dmkits reconciliation in [`A12-DMKITS-SPEC-SYNC-LEDGER.md`](A12-DMKITS-SPEC-SYNC-LEDGER.md). [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) records the separate formalization consequence: what this project learned from those sources and how the Lean theory should represent or bound it.
 

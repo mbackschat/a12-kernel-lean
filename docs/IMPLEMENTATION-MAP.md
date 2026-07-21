@@ -1,8 +1,8 @@
 # Lean implementation and evidence map
 
-This is the live join from the project-owned [`spec/`](../spec/) taxonomy to executable Lean definitions, trusted theorems and checked counterexamples, external kernel evidence, and exact support boundaries. It follows the map/ledger principle used by a12-dmkits' [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md), but answers a different question: what has this Lean theory actually captured and justified?
+This is the sole detailed coverage index from the project-owned [`spec/`](../spec/) taxonomy to Lean owners, implemented behavior, evidence, and exclusions. Use a12-dmkits' [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) for its peer-project inventory.
 
-The target behavior version is kernel **30.8.1**. “Implemented” means the named Lean fragment executes. “Proved internally” means the theorem follows from the chosen Lean definitions. Neither means universal correspondence with the external kernel. A fragment remains **external evidence pending** until retained, versioned kernel observations for that fragment are portable and replayable in this repository.
+The target is kernel **30.8.1**. “Implemented” means executable Lean; “proved internally” means a theorem follows from the chosen definitions. Neither establishes universal kernel correspondence. **External evidence pending** means no retained kernel observation is replayed here.
 
 ## Evidence snapshot
 
@@ -14,34 +14,34 @@ The target behavior version is kernel **30.8.1**. “Implemented” means the na
 
 ## Taxonomy by clause
 
-For targeted work, open only the owning clause and any linked cross-clause note. Every clause uses the same four fields: Lean owners, internal account, external evidence, and exact boundary.
+Open only the owning clause and linked cross-clause note. Every clause uses the same compact shape: owners, implemented, evidence, and excluded / next.
 
 ### §1 — truth and verdict algebra
 
-#### Lean owners
+#### Owners
 
 - [`Core.lean`](../A12Kernel/Core.lean)
 - [`Proofs/Verdict.lean`](../A12Kernel/Proofs/Verdict.lean)
 - [`Proofs/Information.lean`](../A12Kernel/Proofs/Information.lean)
 
-#### Internal account
+#### Implemented
 
 - Commutativity, associativity, idempotence, identities, absorbers, absorption, distributivity, and strong-Kleene information monotonicity
 - checked non-laws retain the exact unknown/polarity limits
 
-#### External evidence
+#### Evidence
 
 - Canonical §1 sources
 - no focused portable observation
 
-#### Exact boundary
+#### Excluded / next
 
 - **Proved internally; external evidence pending** for the finite `K`/`Verdict` algebras
 - no generic negation
 
 ### §2 — empty scalar comparisons and row gate
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/NumericComparison.lean`](../A12Kernel/Semantics/NumericComparison.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
@@ -52,12 +52,12 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/Elaboration.lean`](../A12Kernel/Conformance/Elaboration.lean)
 
-#### Internal account
+#### Implemented
 
 - Executable Number/Boolean/Confirm empty laws, all six direct Number comparisons, direct String equality/inequality, all four `Length` ordering operators, directional numeric polarity, row gates, checked surface lowering, and model-derived evaluation
 - parsed-empty String placement preservation plus operator-distinction and directional-fillability laws
 
-#### External evidence
+#### Evidence
 
 - The compact [validation record](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json) binds the eight public empty-logic cases and one public directional witness to exact normalized requests and externally supported responses.
 - Its six private operator cases replay unsigned/signed empty Number inequality, filled-zero controls, direct String equality, `Length`, and the empty-row gate
@@ -65,18 +65,20 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Direct Number `<`/`>=` is anchored to pinned kernel source and focused a12-dmkits differentials but has no project-local portable observation.
 - Retired 0.2.0 provenance is [archived](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md)
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally, partial; direct ordering external evidence pending:** all six nonrepeatable Number comparisons, Boolean/Confirm/String equality/inequality, and Number/Boolean/Confirm/String presence are executable.
 - Direct String supports equality/inequality, plus all four String `Length` ordering operators
 - its empty observation retains absent versus present-empty placement at the checked-cell boundary.
 - String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; other String comparisons/functions remain rejected or unimplemented.
 - This is a consuming-clause baseline, not a kind-wide empty law
-- see [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function), [`LF10`](LEAN-FINDINGS.md#lf10--numeric-polarity-needs-directional-fillability-not-a-given-bit), and [`LF24`](LEAN-FINDINGS.md#lf24--direct-number-ordering-uses-the-same-directional-fixed-right-comparison)
+- Finding: [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function).
+- Finding: [`LF10`](LEAN-FINDINGS.md#lf10--numeric-polarity-needs-directional-fillability-not-a-given-bit).
+- Finding: [`LF24`](LEAN-FINDINGS.md#lf24--direct-number-ordering-uses-the-same-directional-fixed-right-comparison).
 
 ### §3 — formal checking and phase observation
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/Observation.lean`](../A12Kernel/Semantics/Observation.lean)
 - [`Semantics/StringComputation.lean`](../A12Kernel/Semantics/StringComputation.lean)
@@ -87,7 +89,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
 
-#### Internal account
+#### Implemented
 
 - `CheckedCell.WellFormed`, preservation under staged findings, validation-unknown/computation-poison phase laws, and the required-only exception.
 - `RawCell.presentEmpty` and a parsed empty String retain `rawPresent = true` with no parsed value or finding
@@ -96,16 +98,16 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - proofs connect the cached result to both phases, direct comparison, UTF-16 `Length`, and computation reads, while a checked counterexample refutes global idempotence.
 - The separate reduced String target pass classifies an admitted nonempty root write as accepted or payloadful `ERRORED`, proves no-value and poison bypass for every policy, and fails closed on produced CR/LF until target line-break permission is modeled
 
-#### External evidence
+#### Evidence
 
 - Retained malformed comparison and branch-combination cases check observable authored-message suppression/firing
 - the external output cannot distinguish internal `unknown` from `notFired`.
 - The nine-case [compact root-String record](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json) separately exposes accepted and errored rich computation results, including attempted value and `stringZuKurz`/`stringZuLang` cause.
-- Maintained a12-dmkits IF198 tests at accepted [`SPEC-2026-07-21-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-03--empty-string-ingestion-preserves-present-empty-placement) triangulate present-empty String ingestion, field/group presence, and requiredness across both kernel strategies plus JVM/Node
+- Accepted [`SPEC-2026-07-21-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-03--empty-string-ingestion-preserves-present-empty-placement) links the a12-dmkits IF198 tests for present-empty String ingestion, presence, and requiredness across both kernel strategies and JVM/Node.
 - this repository retains no matching portable observation.
 - No retained portable observation yet exercises CRLF/LF/lone-CR ingestion
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally, partial; ingestion external evidence pending:** the reduced boundary distinguishes absent from present-empty before projecting either to the empty phase observation and owns evaluated-String CRLF normalization after scalar text decoding.
 - A general `Document → RawCell` bridge, public present-empty transport, group-content derivation, and custom-validator invocation remain open.
@@ -117,34 +119,38 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §4 — required property
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/Required.lean`](../A12Kernel/Semantics/Required.lean)
+- [`Semantics/GroupPresence.lean`](../A12Kernel/Semantics/GroupPresence.lean)
 - [`Proofs/Required.lean`](../A12Kernel/Proofs/Required.lean)
+- [`Proofs/GroupPresence.lean`](../A12Kernel/Proofs/GroupPresence.lean)
 - [`Conformance/Required.lean`](../A12Kernel/Conformance/Required.lean)
+- [`Conformance/GroupPresence.lean`](../A12Kernel/Conformance/GroupPresence.lean)
 
-#### Internal account
+#### Implemented
 
 - Independently stated source outcome versus generated-rule evaluation
 - base-before-annotation ordering
 - computation-observation preservation
 - Number/Boolean/Confirm/String targets share the same presence rule; a required present-empty String retains physical placement when the finding is attached.
+- parent-filled requiredness consumes the resolved group's admitted-content × error × relevance state and requires positive admitted content.
 
-#### External evidence
+#### Evidence
 
 - The private compact validation projection replays empty, filled, and malformed absolute/non-repeatable Number cases and retains the empty case's `mandatoryField` code and pointer
 - [`RequirednessDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/RequirednessDiffTest.kt) remains broader provenance.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` adds dual-kernel/peer controls for IF193's admitted-content parent gate, but this repository retains no matching portable observation
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally, partial; focused external observations replayed:** absolute requiredness for nonrepeatable Number/Boolean/Confirm/String fields.
-- Parent-filled requiredness remains open because Lean does not yet derive the admitted-content × error × relevance group state
-- repeatable ancestors, index generation, and generated rule identity also remain open
+- The parent gate is implemented over an already-resolved group state; checked descendant/group-instance enumeration and wildcardable relevance construction remain open.
+- Repeatable ancestor orchestration, index generation, and generated rule identity remain open.
 
 ### §5 — numbers and decimals
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/NumericRounding.lean`](../A12Kernel/Semantics/NumericRounding.lean)
 - [`Semantics/NumericArithmetic.lean`](../A12Kernel/Semantics/NumericArithmetic.lean)
@@ -192,7 +198,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Conformance/Elaboration.lean`](../A12Kernel/Conformance/Elaboration.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
 
-#### Internal account
+#### Implemented
 
 - Signed exact-or-unknown scale, constant expandability, and explicit suppression of the one supported exact-scale warning
 - authored literals/grouping
@@ -204,21 +210,25 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - one already-resolved computation-expression consumer with distinct numeric value, domain failure, and inherited poison
 - a separately proved exact stored-decimal conversion
 - and one ordinary fit-path target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
-- The validation consumer resolves and checks two admitted expressions—plain arithmetic including power, exact direct-field root rounding/`Abs`, or one canonical Min/Max fold over direct fields with at most one direct constant—before lowering each once, gates empty rows before reads, and preserves formal-invalid, domain-failure, value, and two-sided fillability distinctions. The extremum recognizer preserves its one-constant state through lowering; the literal remains fixed and participates in exact selection and static scale. The explicit warning flag bypasses only the equality/inequality scale gate, including unknown derived scales, and is runtime-irrelevant; power additionally consumes the existing exponent-scale, direct-left nesting, staged-value, and conservative-direction mechanisms.
-- The computation consumer reads empty and required-empty Number as zero, preserves domain failure through clean enclosing arithmetic, power, rounding, `Abs`, and Min/Max, follows source-established left-to-right poison order through one shared delayed-right evaluator, and structurally preflights every declaration before data reads. Valid power delegates to the shared staged evaluator; runtime-invalid integral power becomes the same target-invalidating domain failure as zero division.
+- Checked validation resolves two same-group expressions, lowers each once, and gates empty rows before reads.
+- Admitted expressions are plain arithmetic including power, direct-field root rounding/`Abs`, or canonical Min/Max over direct fields with at most one direct constant.
+- The runtime preserves formal invalidity, domain failure, values, and two-sided fillability. [`LF58`](LEAN-FINDINGS.md#lf58--numeric-operand-list-extrema-combine-exact-selection-with-directional-fillability) owns the extremum constant, selection, scale, and polarity details.
+- The explicit warning flag bypasses only equality/inequality scale admission and is runtime-irrelevant.
+- Computation reads empty Number as zero, preflights declarations before data, preserves domain failure through legal wrappers, and keeps left-to-right poison order. Valid power uses the staged evaluator; runtime-invalid integral power reaches the shared target-invalidating domain failure.
 - Stored conversion universally preserves the scale-19 `HALF_UP` amount while retaining `{unscaled, scale}` form.
-- After separate assignment-scale admission, the target consumer pads to minimum fractional digits without capping a fit attempt, checks universal digit length before signedness, fails closed on the warning-suppressed no-fit branch, distinguishes no-result/accepted/rejected/domain-invalid/poison, and compares prior coefficient plus scale.
+- After assignment-scale admission, the target consumer pads minimum fractional digits, checks digit length before signedness, fails closed on warning-suppressed no-fit, and distinguishes no-result, accepted, rejected, domain-invalid, and poison.
 - Exact application preserves absent versus present-empty placement, yields accepted coefficient plus scale exactly, and makes the loss of cause/delta provenance explicit.
 - Dependency observation retains clean empty, exact accepted stored form, and poison even when application and delta agree.
 - Laws and executable separators cover the admitted summaries, authoring, lowering, arithmetic, extrema, validation, tolerance, expression-result, stored-form, target, delta, application, dependency, read-order, and fail-closed boundaries
 - [`LF57`](LEAN-FINDINGS.md#lf57--numeric-absolute-value-changes-directional-provenance-at-zero) owns the sign-sensitive `Abs` account and [`LF58`](LEAN-FINDINGS.md#lf58--numeric-operand-list-extrema-combine-exact-selection-with-directional-fillability) owns numeric Min/Max
 
-#### External evidence
+#### Evidence
 
 - The compact validation record externally separates ordinary empty numeric polarity only.
 - Pinned parser/checker, transformer, code-generation, and runtime source establish the current clauses
-- a12-dmkits multi-route differentials also ground staged power/fillability, `Abs`, Min/Max division-domain propagation, fit padding, full overflow retention, no-fit behavior, target rejection, delta granularity, and type-neutral exact application as triangulation. Invalid-power computation target projection is kernel-source-grounded and awaiting the focused peer reconciliation in `SPEC-2026-07-21-05`.
-- No retained project-local observation exercises resolved power fillability, checked direct-field root rounding, `Abs`, or Min/Max, scale-warning suppression, integrated arithmetic-expression comparison, checked tolerance, same-field alias, numeric expression result classes, mixed domain/poison read order, or numeric target/delta/application/dependency.
+- a12-dmkits differentials triangulate staged power/fillability, `Abs`, Min/Max domain propagation, target fit/rejection, delta granularity, and exact application.
+- Invalid-power target projection is kernel-source-grounded and awaits the focused `SPEC-2026-07-21-05` reconciliation.
+- No retained project-local observation covers checked numeric expressions, power fillability, value functions, suppression, tolerance, mixed domain/poison order, or target/application/dependency behavior.
 - Mixed formal-invalid/domain-failure validation precedence is an explicit Lean refinement
 - mixed computation order and division/power target invalidity are source-grounded but portable evidence pending.
 - Accepted a12-dmkits revisions now lock signed scale/constant expandability, grouping-preserving rendering, per-node precision, one-pass lowering, tolerance, division-domain consumer projections, and numeric storage:
@@ -232,9 +242,9 @@ For targeted work, open only the owning clause and any linked cross-clause note.
   - [`SPEC-2026-07-19-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-15--computed-number-storage-has-distinct-fit-and-warning-suppressed-no-fit-branches)
 - those peer controls do not become project-local portable evidence
 
-#### Exact boundary
+#### Excluded / next
 
-- **Implemented narrowly; integrated validation and numeric computation remain external evidence pending:** the checked same-group, full-validation consumer accepts two admitted expressions with at least one resolved field—plain `+`/`−`/`×`/`÷`/power arithmetic, exact direct-field root rounding/`Abs`, or a canonical same-selector Min/Max fold over direct fields with at most one direct constant—and a closed choice of six ordinary operators or four fixed tolerance ranges, with an explicit opt-in bypass for the one supported exact-scale warning.
+- **Implemented narrowly; external evidence pending.** Checked validation accepts two same-group expressions with at least one field, the admitted expression classes above, six ordinary operators, four tolerance ranges, and the exact-scale-warning bypass.
 - The separate computation expression accepts one already-resolved admitted arithmetic/power/rounding/`Abs`/Min/Max tree; it does not itself certify concrete power authoring or exponent-scale legality.
 - Stored conversion is exact after scale-19 pre-rounding
 - the target accepts only the ordinary scale-compatible path with signedness, minimum/maximum fractional digits, the universal 15-digit check, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation.
@@ -260,7 +270,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §6 — dates and time
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/FullDate.lean`](../A12Kernel/Semantics/FullDate.lean)
 - [`Semantics/DateRangeOverlap.lean`](../A12Kernel/Semantics/DateRangeOverlap.lean)
@@ -272,7 +282,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Semantics/DateTimeDayDifference.lean`](../A12Kernel/Semantics/DateTimeDayDifference.lean)
 - the matching modules under [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/)
 
-#### Internal account
+#### Implemented
 
 - `DateParts → CivilDate → FullDate` separates decoded components, positive-era Gregorian reality, and the inclusive 1583-10-16 value floor.
 - Resolved three-part construction preserves incomplete, calendar-rejected, and unavailable reasons before projecting `Valid`/`Invalid` verdicts.
@@ -287,7 +297,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Its spring-only calendar step changes a March 30 `02:xx` landing to March 31 `01:xx` and retains that adjusted clock on the next step.
 - The bounded `DifferenceInDays` core counts those stateful landings in authored order, rejects pairs outside the consecutive spring slice, and has universal self-zero and swap-negation laws.
 
-#### External evidence
+#### Evidence
 
 - Pinned kernel 30.8.1 format/check/decode/comparison/calendar-add/instant-difference/range-overlap source and focused a12-dmkits Date/DateTime implementation and differentials establish the source account and triangulation.
 - Groovy-dynamic kernel differentials directly establish positive and reverse fractional sub-day truncation.
@@ -295,7 +305,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - At reviewed a12-dmkits revision `71775c9905b057831253348c31ce39e321e61889`, focused controls lock both Date-range polarity scans through both kernel routes plus the interpreter, and separately lock constructed-Date reason/calendar consumers and `DifferenceInDays` calendar-step separators.
 - This repository retains no portable Date, DateTime, construction, or Date-range observation
 
-#### Exact boundary
+#### Excluded / next
 
 - **Status:** implemented internally on narrow domains; external evidence partly pending.
 - Date coverage includes the unbounded positive-era account, resolved three-part construction classification, and the proved calendar-coordinate successor/strict-monotonicity bridge.
@@ -325,7 +335,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §7 — strings and patterns
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/String.lean`](../A12Kernel/Semantics/String.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
@@ -338,7 +348,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
 
-#### Internal account
+#### Implemented
 
 - Parsed String ingestion performs one non-overlapping CRLF-to-LF pass and caches the evaluated text
 - LF and lone CR are preserved.
@@ -353,7 +363,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Strict violations, inclusive acceptance on both permitted sides, exact minimum/maximum boundaries, no-value/poison bypass, payload preservation, store/delta identity, and the nearest stronger term/application non-laws are proved
 - its target check fails closed on produced CR/LF
 
-#### External evidence
+#### Evidence
 
 - Four operator-sensitive validation cases separate empty-content, empty-row, `"ABC"`, and six-character direct-equality/Length outcomes.
 - The combined compact root-String record retains 13 copy/concatenation/root-storage cases and nine positive minimum/maximum target cases with exact boundaries, violations, absent/stale/equal priors, and padded blanks.
@@ -364,19 +374,19 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - the [archive](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns that detail.
 - The retained strings remain conservative ASCII and do not externally establish broader Unicode or line-break behavior
 
-#### Exact boundary
+#### Excluded / next
 
-- **Implemented narrowly; ingestion external evidence pending:** direct validation equality/inequality, all four `Length` ordering operators, checked String presence, absolute nonrepeatable String requiredness, present-empty checked placement, exactly-once evaluated-String CRLF normalization, checked nonrepeatable copy/literal/concatenation lowering through String root store/delta, and one positive `minLength` or `maxLength` target check with attempted-value `ERRORED` over no-line-break text.
+- **Implemented narrowly; ingestion external evidence pending.** Coverage includes direct equality/inequality, four `Length` orderings, presence, absolute requiredness, present-empty placement, CRLF normalization, checked scalar String expressions, and one positive target length bound.
 - `Length ==`/`!=` remain outside the reduced checked surface because their numeric scale gate needs the authored literal scale that `SurfaceCondition.lengthCompare` does not retain.
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
-- Repeatable/parent-gated String requiredness, a general document-ingestion bridge, group content, simultaneous or zero length bounds, patterns, enumerations, line-break permission, checked legal-charset definition/matching, registered custom-field validator context/result/message propagation, raw-type rule elimination, and general target-check ordering remain rejected or open.
+- Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, patterns, enumerations, legal-charsets, custom validators, raw-type rule elimination, and target-check ordering.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.
 - The public normalized protocol and consumer capabilities have not been expanded to String
 
 ### §8 — enumerations and value lists
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/ScalarEquality.lean`](../A12Kernel/Semantics/ScalarEquality.lean)
 - [`Semantics/Enumeration.lean`](../A12Kernel/Semantics/Enumeration.lean)
@@ -384,7 +394,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Semantics/ValueList.lean`](../A12Kernel/Semantics/ValueList.lean)
 - their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean)
 
-#### Internal account
+#### Implemented
 
 - Runtime Enumeration comparison uses a clean stored token or one lockstep positional category mapping
 - repeated category tokens are legal, empty is not evaluated, unavailable input stays UNKNOWN, and every firing is VALUE.
@@ -392,15 +402,15 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Trusted laws cover runtime projection, empty/unavailable/VALUE-only behavior, identity-label classification, pair/profile conflict symmetry, String admission, both rejection classes, and overall admission symmetry.
 - The separate type-indexed Number/canonical-token value-list capsule preserves explicit present/empty/unknown cells, declared-tail and `Having` metadata, and distinct `AtLeastOne`, `No`, and `NotAll` clauses
 
-#### External evidence
+#### Evidence
 
 - Canonical §8 prose and pinned kernel source choose the static and runtime accounts.
-- Maintained a12-dmkits Enum/category and comparability tests at revision `20230e403fa085c782534025f890669a975999a8` triangulate the broad classes plus identity labels, both conflict directions, identity participation in a display-bearing conflict, and compatible partial/disjoint mappings under accepted [`SPEC-2026-07-20-14`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-14--enumeration-direct-field-comparability-uses-effective-display-remapping).
+- Accepted [`SPEC-2026-07-20-14`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-14--enumeration-direct-field-comparability-uses-effective-display-remapping) records a12-dmkits revision `20230e40` and its identity-label, conflict-direction, and compatible-mapping controls.
 - The focused runtime matrix currently has one kernel route plus peer triangulation
 - a broader catalog smoke case exercises both kernel routes.
 - This repository retains no portable §8 observation
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally at two resolved runtime boundaries plus one independent static gate; external evidence pending:** runtime Enumeration begins after ordinary closed-domain/category/literal checks and validation observation
 - static comparability begins after valid ordinary declarations and direct equality/inequality field shape
@@ -409,7 +419,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §9 — repetition and iteration
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/Iteration.lean`](../A12Kernel/Semantics/Iteration.lean)
 - [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean)
@@ -433,13 +443,13 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Conformance/CrossLevelCorrelation.lean`](../A12Kernel/Conformance/CrossLevelCorrelation.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
 
-#### Internal account
+#### Implemented
 
 - Exact ordered selector ↔ relation bridges
 - filter-before-consumer laws
 - a shared full-environment correlated evaluator/relation bridge
 - captured-origin, exact named-level resolution, outer-reference stability, self-match/exclusion, scalar-collapse rejection, and one-group observation-footprint results.
-- The resolved RNU relation consumes caller-supplied ordered rows identified by complete repetition environments plus already-classified Number/token composite keys, excludes any UNKNOWN key, skips all-empty keys, matches optional empties within participating tuples, reuses scale-19 Number equality, retains complete firing clusters in scope order, and projects per-row UNKNOWN/not-fired/VALUE/OMISSION before ordinary verdict composition.
+- Resolved RNU consumes caller-supplied ordered rows with complete repetition environments and classified composite keys. It excludes unknown keys, skips all-empty keys, uses scale-19 Number equality, retains complete firing clusters in scope order, and projects per-row verdicts before composition.
 - Laws characterize exact cluster membership, firing, the internal false/unknown refinement, unique cluster identities, and the existence of a genuinely distinct matching peer.
 - The separate checked one-star lowering retains explicit group paths, path-derived repeatable ancestry, exact singleton scope, operator-specific scale legality, model-derived raw checking, fail-closed runtime references, and pre-evaluation 1-based/unique candidate validation.
 - The separate reopened-star domain recursively checks finite capacity under every actual parent, treats unbounded levels as open, validates positive sibling-unique coordinates, and bridges its structural result into resolved missing potential.
@@ -447,7 +457,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Checked-wrapper theorems eliminate structural certificates
 - they are not source-to-core semantic preservation
 
-#### External evidence
+#### Evidence
 
 - The compact validation record privately replays seven uncorrelated iteration observations and publicly binds 12 one-group captured-outer runtime cases plus four static authoring cases.
 - They separate selection, origin, malformed/empty filtering, consumer observation order, comparison and scale boundaries, and neighboring rejection classes.
@@ -461,18 +471,19 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - neither is retained as project-local portable evidence.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the exact retained inventory and observable support
 
-#### Exact boundary
+#### Excluded / next
 
-- **The admitted one-group runtime, checked-lowering, normalized firing-row, resolved RNU duplicate-relation, caller-supplied reopened-star completeness, and resolved group-presence/consumer slices are implemented; the wider cross-level and RNU additions remain external evidence pending:** the shared correlation core carries complete candidate/captured environments, while RNU defines one branch-independent relation and complete peer clusters before verdict composition.
+- **Implemented; wider cross-level and RNU additions remain external evidence pending.** Coverage includes one-group runtime/lowering, normalized firing rows, resolved RNU, caller-supplied reopened-star completeness, and resolved group-presence projections.
+- Correlation carries complete candidate/captured environments; RNU defines one branch-independent relation and complete peer clusters before verdict composition.
 - The RNU caller must supply the target in scope, unique complete repetition environments with canonical positive level coordinates, and one common declared key arity/order/kind schema
 - the low-level evaluator remains total outside those obligations without a kernel-correspondence claim.
 - Checked RNU scope/default or explicit `@From`, paths and key-schema validation, partial all-key relevance, one-RNU and negative/iteration/filter/parallel authoring restrictions, checked condition/whole-rule integration, error-field and peer-pointer projection, and protocol exposure remain open.
 - The checked correlation elaborator and public protocol remain one-group only
-- `Document` adaptation, checked group-instance/descendant enumeration and wildcardable relevance construction, checked construction of the reopened tree and ordered cell stream from model/path/document inputs, checked nested paths, multiple-star execution, joins, cross-group execution, general consumers, filtered-result polarity, optimization/refinement, computation, and partial validation over repeatable instances remain open
+- Open: `Document` adaptation, group-instance enumeration, wildcardable relevance, checked reopened-tree and cell-stream construction, nested or multiple stars, joins, cross-group execution, general consumers, filtered polarity, computation, and partial validation over repeats.
 
 ### §10 — paths and references
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/SemanticIndex.lean`](../A12Kernel/Semantics/SemanticIndex.lean)
 - [`Proofs/SemanticIndex.lean`](../A12Kernel/Proofs/SemanticIndex.lean)
@@ -484,7 +495,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Conformance/Elaboration.lean`](../A12Kernel/Conformance/Elaboration.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
 
-#### Internal account
+#### Implemented
 
 - Resolved literal-key value lookup over unique canonical entries plus an unavailable-column marker
 - validation clean-match-before-column-invalidity, computation column-invalidity-before-match, clean no-match/matched-empty equivalence, selected-target phase observation, nonmatching-target irrelevance, and signedness-aware empty-Number polarity
@@ -497,7 +508,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - ambiguity, wrong group/scope, nested false-singleton scope metadata, and unsupported surface forms fail closed
 - unique declaration and raw-policy coherence theorems
 
-#### External evidence
+#### Evidence
 
 - Maintained a12-dmkits indexed-read differentials at accepted revision `71775c9905b057831253348c31ce39e321e61889` establish match/no-match, phase precedence, selected-target invalidity, and presence as triangulation, but this repository retains no portable semantic-index observation.
 - The full invalid-column matrix is strongest for Number keys while the canonical-token generalization is source-grounded.
@@ -506,7 +517,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - acceptance does not establish runtime firing rows.
 - [`LF6`](LEAN-FINDINGS.md#lf6--bare-name-resolution-is-local-or-global-not-an-ancestor-walk) records the bare-name correction
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value read.
 - Parent-relative and bare forms remain outside the public correlation operation.
@@ -515,7 +526,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §11 — computations
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/ComputationCondition.lean`](../A12Kernel/Semantics/ComputationCondition.lean)
 - [`Semantics/ComputationFillQuantifier.lean`](../A12Kernel/Semantics/ComputationFillQuantifier.lean)
@@ -533,23 +544,23 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Elaboration/GeneratedComputationValidation.lean`](../A12Kernel/Elaboration/GeneratedComputationValidation.lean)
 - their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean)
 
-#### Internal account
+#### Implemented
 
 - Direct presence conditions distinguish clean not-true from exact-cause poison and evaluate recursive `And`/`Or` left-to-right.
-- The seven resolved field-fill quantifiers consume one caller-supplied `filled | empty | uninstantiated | poison cause` stream with exact declared/instantiated range selection, operator-specific final decisions, source-level two-stage composite scans, exact internal reached poison, and suffixes unread after the full predicate decides
+- The seven computation field-fill quantifiers consume one ordered `filled | empty | uninstantiated | poison cause` stream. They retain the range fork, operator-specific stopping, two-stage composites, exact reached poison, and unread suffixes.
 - trusted laws preserve the range fork, representative deciding-prefix equations, zero/one/two distinction, selected reached-poison separators, and observable read order.
 - The operation-neutral selector returns no-match, the first selected operation, or first reached poison
 - selection ends before operation evaluation.
 - One resolved String table composes that selector once with the existing expression/target/delta step
 - clean no-value, target rejection, and poison from the selected operation are terminal, and a holding head makes every suffix irrelevant through operation evaluation.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
-- The checked two-alternative literal-Number desugaring admits direct Number/Boolean/Confirm/String presence guards, uses the same guard syntax but ordinary validation semantics, retains both guarded mismatches below `FieldFilled(target)`, and independently lowers each alternative to strict `!=` or its optional fixed tolerance band through the shared numeric-validation dispatch.
+- The checked two-alternative literal-Number desugaring admits direct scalar-presence guards and keeps both mismatches below `FieldFilled(target)`. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
 - The separate String and Number slices keep checked expression identity, expression result, stored form, target outcome, delta, exact application, and downstream dependency meaning distinct without claiming a scheduler or document mutator
 
-#### External evidence
+#### Evidence
 
 - The project-reviewed [root-String compact bundle](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json) retains 22 clean/target-check observations
 - the producer-certified [direct-cascade bundle](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json) and typed [`StringCascadeProjection.lean`](../A12Kernel/Evidence/StringCascadeProjection.lean) retain five cascade observations.
@@ -558,7 +569,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - No retained project-local observation exercises direct presence/connectives, field-fill scans, alternative selection or selected-operation terminality, generated two-alternative validation, numeric expression/target/delta/application/dependency, mixed domain/poison order, or the newline family
 - those surfaces remain `external evidence pending`
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented narrowly and partially externally calibrated:** one nonrepeatable recursive direct-presence fragment
 - all seven field-fill predicates over a caller-supplied already-expanded ordered slot stream
@@ -585,7 +596,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §12 — validation and polarity
 
-#### Lean owners
+#### Owners
 
 - [`Core.lean`](../A12Kernel/Core.lean)
 - [`Semantics/FieldFillQuantifier.lean`](../A12Kernel/Semantics/FieldFillQuantifier.lean)
@@ -603,7 +614,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - [`Elaboration/GeneratedComputationValidation.lean`](../A12Kernel/Elaboration/GeneratedComputationValidation.lean)
 - their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean)
 
-#### Internal account
+#### Implemented
 
 - The verdict algebra preserves VALUE/OMISSION precedence and unknown
 - numeric fillability supplies directional polarity across direct comparisons, admitted arithmetic including resolved power, and fixed tolerance.
@@ -615,7 +626,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - The generated-computation fragment reuses that same post-fire boundary and the shared strict-or-tolerance numeric dispatch; ERROR severity does not fix message polarity, and tolerance metadata cannot affect computation selection.
 - Flat partial evaluation remains a separate error-field/relevance consumer
 
-#### External evidence
+#### Evidence
 
 - Retained validation observations separate ordinary polarity and malformed connective outcomes but do not establish checked whole-rule assembly, generated two-alternative validation, error-code/severity independence, complete message rendering, hidden silent distinctions, or field-fill quantifiers.
 - Maintained a12-dmkits multi-route quantifier differentials ground the seven unfiltered formulas and broader filter behavior, but this repository retains no portable field-fill observation.
@@ -624,7 +635,7 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - Same-field alias polarity is source-inferred
 - mixed formal-invalid/domain precedence is an explicit Lean refinement
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally for the named clauses:** all seven unfiltered field-fill operators over a caller-supplied resolved tally
 - resolved scalar/list/count/relative-required group-presence projections over caller-supplied group slices
@@ -664,13 +675,13 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 
 ### §13 — message interpolation
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/ValidationRule.lean`](../A12Kernel/Semantics/ValidationRule.lean)
 - [`Proofs/ValidationRule.lean`](../A12Kernel/Proofs/ValidationRule.lean)
 - [`Conformance/ValidationRule.lean`](../A12Kernel/Conformance/ValidationRule.lean)
 
-#### Internal account
+#### Implemented
 
 - One total one-pass renderer consumes ordered, already-decoded parts.
 - Plain text, resolved field-name input, and resolved field-value input remain separate constructors, so replacement bytes are never reparsed
@@ -682,51 +693,56 @@ For targeted work, open only the owning clause and any linked cross-clause note.
 - both silent verdicts are independent of every plan input.
 - Laws cover provider priority, empty fallback, append/order composition, opaque nonempty values, and post-fire gating
 
-#### External evidence
+#### Evidence
 
 - Maintained a12-dmkits controls at revision `20230e403fa085c782534025f890669a975999a8` make both kernel routes agree on the scale-two `DocumentV2` dot default under US/German locales and on raw-CRLF message display while evaluation reads normalized LF
 - JVM and Node lock the admitted provider/default/opacity policy.
 - Accepted [`SPEC-2026-07-21-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-04--message-format-default-follows-the-actual-documentv2-profile) records the correction to the earlier locale implication.
 - `$$`, repeated order, richer token families, untested presentation routes, and project-local portable observations remain source-derived or open, so correspondence remains `external evidence pending`
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally, narrow:** parser-independent rendering after reference/display resolution and fired-only integration for checked nonrepeatable flat rules plus generated literal-Number computation validation.
 - Raw `$...$` parsing, token/path/star/reference legality, lookup/provider invocation and locale/display conversion, repeatable/index/category/semantic-index/BaseYear tokens, field-owned format-error text, custom conditions, protocol exposure, and a complete §13 claim remain open
 
 ### §14 — custom conditions
 
-#### Lean owners
+#### Owners
 
 - [`Semantics/CustomCondition.lean`](../A12Kernel/Semantics/CustomCondition.lean)
 - [`Proofs/CustomCondition.lean`](../A12Kernel/Proofs/CustomCondition.lean)
 - [`Conformance/CustomCondition.lean`](../A12Kernel/Conformance/CustomCondition.lean)
 
-#### Internal account
+#### Implemented
 
 - A resolved invocation carries four abstract channels unchanged: effective data view, full-versus-partial relevant entities, the complete formal-invalid payload, and the current error pointer.
 - A pure total reached-leaf oracle maps true to fired VALUE and false to not-fired, never UNKNOWN or OMISSION
 - the leaf is empty-row eligible.
 - Trusted non-laws show that purity alone supplies neither data locality nor formal-invalid monotonicity
 
-#### External evidence
+#### Evidence
 
 - Kernel Java/TypeScript call paths, modern wrappers, and maintained a12-dmkits dual-route/JVM/Node controls establish the invocation and empty-eligibility account
 - no project-local portable observation
 
-#### Exact boundary
+#### Excluded / next
 
 - **Implemented internally, narrow:** one successfully registered, already-reached pure callback leaf.
-- Name resolution, missing registration, host exceptions/effects, call count/order, concrete data APIs, relevance/formal/pointer construction, parallel pointer precision, row/connective orchestration, static computation/`Having` rejection, message emission, checked lowering, protocol exposure, and full host-data fidelity remain open or explicitly outside the pure theory.
+- Open or outside the pure theory: registration and name resolution, host effects and call order, concrete data APIs, relevance/formal/pointer construction, orchestration, static restrictions, messages, checked lowering, protocol, and full host-data fidelity.
 - Correspondence remains `external evidence pending`
 
 ## Cross-clause implementation notes
 
-The §5/§11 numeric-computation entry is declaration-resolved rather than merely identified by `FieldId`: every atom retains its `FlatFieldDecl`, and the complete one-pass lowered tree rejects a non-Number declaration before any cell read. Its runtime then follows the lowered tree left-to-right, so a rewrite can change which of two poison causes is reached first. Power uses that same ordered evaluator, delegates valid values to the shared staged algorithm, and maps runtime-invalid integral cases to the operation-neutral domain failure consumed by the existing target/dependency path. Concrete authoring admission remains separate; this source-grounded order and every numeric-computation outcome remain portable evidence pending.
+The §5/§11 numeric-computation entry retains each atom's declaration and rejects non-Number declarations before reads.
+
+- Evaluation follows the lowered tree left-to-right, so rewriting may change the first poison reached.
+- Invalid integral power reaches the shared target/dependency domain-failure path.
+- Concrete authoring and portable evidence remain open.
 
 ### Resolved Number `FirstFilledValue`
 
-- [`Semantics/FirstFilledValue.lean`](../A12Kernel/Semantics/FirstFilledValue.lean), [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean), and [`Conformance/FirstFilledValue.lean`](../A12Kernel/Conformance/FirstFilledValue.lean) close one ordered Number-operand boundary shared by §3, §8, §10, and §11 after expansion, filtering, and partial-relevance classification.
+- Owners: [`Semantics/FirstFilledValue.lean`](../A12Kernel/Semantics/FirstFilledValue.lean), [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean), and [`Conformance/FirstFilledValue.lean`](../A12Kernel/Conformance/FirstFilledValue.lean).
+- Boundary: one ordered Number operand after expansion, filtering, and partial-relevance classification, shared by §3, §8, §10, and §11.
 - The scan stops at the first present value or first unavailable cell: an invalid prefix makes validation UNKNOWN and computation poison, an invalid suffix is unread, an empty prefix retains the amount but changes validation from fixed/VALUE to fillable/OMISSION, and an empty suffix is irrelevant.
 - An explicitly empty, marked-uninstantiated, or filtered-empty Number selection supplies the fillable zero
 - `Having` makes even a selected value fillable.
@@ -740,7 +756,8 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 
 ### Resolved Number aggregates
 
-- [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), and their [`Proofs/`](../A12Kernel/Proofs.lean) and [`Conformance/`](../A12Kernel/Conformance.lean) counterparts close resolved validation-side Number `Sum`/`MinValue`/`MaxValue` plus checked construction of their nonempty unfiltered nonrepeatable field lists.
+- Owners: [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), [`Proofs/`](../A12Kernel/Proofs.lean), and [`Conformance/`](../A12Kernel/Conformance.lean).
+- Boundary: resolved validation-side Number `Sum`/`MinValue`/`MaxValue` plus checked nonempty unfiltered nonrepeatable field lists.
 - The two completed consumers share only `ValueListCell.scanPresent`: it skips empty cells, stops at the first reached unavailable cell, and applies a caller-owned step to present cells from left to right.
 - Extrema select exact present amounts without a synthetic zero.
 - `Sum` starts at zero and applies precision-50 `HALF_UP` addition at every present term in encounter order, so exact accumulation, reassociation, and reordering are rejected by separate cases.
@@ -762,11 +779,13 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - The older checked-row `NumberFold` uses the homogeneous embedding and projects only amount or cause, preserving its existing truth-only API while deliberately erasing fillability.
 - The family does not share the prefix-terminating `FirstFilledValue` scan or operand-list empty substitution/fillability.
 - Checked repeatable/star lowering, actual filter execution, partial-validation relevance and row gating, computation aggregates, Date and other overloads, messages, protocol exposure, and project-local portable evidence remain open.
-- a12-dmkits revision `20230e403fa085c782534025f890669a975999a8` accepted the all-empty correction under [`SPEC-2026-07-20-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-15--all-empty-number-aggregate-identity-is-both-directionally-fillable) and encounter order, staged precision, and per-declaration missingness under [`SPEC-2026-07-21-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-02--number-sum-preserves-encounter-order-staged-precision-and-missing-declaration-polarity).
+- a12-dmkits revision `20230e40` accepted the all-empty correction in [`SPEC-2026-07-20-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-15--all-empty-number-aggregate-identity-is-both-directionally-fillable).
+- The same revision accepted Sum order, precision, and missing polarity in [`SPEC-2026-07-21-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-02--number-sum-preserves-encounter-order-staged-precision-and-missing-declaration-polarity).
 
 ### Reopened-star structural completeness
 
-- [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), and [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean) close IF194's structural decision after first-star binding.
+- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), and [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean).
+- Boundary: IF194's structural decision after first-star binding.
 - `ReopenedStarDomain` contains only reopened repeatable levels
 - every actual child row stays beneath its actual parent, carries its 1-based coordinate, and recursively owns the next reopened level or selected leaf.
 - Its executable well-formedness check requires positive, sibling-unique coordinates but permits over-limit rows.
@@ -788,7 +807,8 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 
 ### Resolved validation group presence
 
-- [`Semantics/GroupPresence.lean`](../A12Kernel/Semantics/GroupPresence.lean), [`Proofs/GroupPresence.lean`](../A12Kernel/Proofs/GroupPresence.lean), and [`Conformance/GroupPresence.lean`](../A12Kernel/Conformance/GroupPresence.lean) close IF193's product-state and consumer boundary after concrete descendant scope and group relevance have been resolved.
+- Owners: [`Semantics/GroupPresence.lean`](../A12Kernel/Semantics/GroupPresence.lean), [`Proofs/GroupPresence.lean`](../A12Kernel/Proofs/GroupPresence.lean), and [`Conformance/GroupPresence.lean`](../A12Kernel/Conformance/GroupPresence.lean).
+- Boundary: IF193's product state and consumer projections after descendant scope and relevance are resolved.
 - `ResolvedGroupPresenceInput` folds existing checked descendant cells, independently resolved instantiated-row content and structural-error facts, and `noneRelevant`/`partlyRelevant`/`fullyRelevant` coverage.
 - A parsed scalar with only duplicate-index marking remains admitted while every other formal cause rejects it as scalar content
 - any finding independently marks the group erroneous.
@@ -801,20 +821,21 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - Cases cover malformed-only, admitted-plus-malformed, duplicate index, created and over-limit rows, partial positive/empty, full empty, list availability, strict count availability, and requiredness activation.
 
 - This is internally complete at levels 1–2 only for resolved inputs.
-- It does not enumerate descendants from paths or a model, adapt `Document`, decide which concrete repeat row belongs to which group instance, construct wildcardable `NONE`/`PARTIAL`/`FULL` relevance, auto-add globals, expand starred group lists, lower checked conditions, or orchestrate the generated mandatory rule and staged required finding.
+- Open: descendant/model enumeration, `Document` adaptation, group-instance row assignment, wildcardable relevance, global augmentation, starred group expansion, checked lowering, and required-rule orchestration.
 - The a12-dmkits IF193 tri-engine matrix at revision `7f152509eea76822068955055b0d57d8ed930ca2` is focused external triangulation, but this repository retains no portable observation
 - correspondence remains `external evidence pending`.
 - Messages, protocol exposure, and wider validation orchestration remain open.
 
 ### Resolved Date-range overlap truth and operator scans
 
-- [`Semantics/DateRangeOverlap.lean`](../A12Kernel/Semantics/DateRangeOverlap.lean), [`Proofs/DateRangeOverlap.lean`](../A12Kernel/Proofs/DateRangeOverlap.lean), and [`Conformance/DateRangeOverlap.lean`](../A12Kernel/Conformance/DateRangeOverlap.lean) close the §6 primitive truth core over admitted `FullDate` endpoints and one flat occurrence stream.
+- Owners: [`Semantics/DateRangeOverlap.lean`](../A12Kernel/Semantics/DateRangeOverlap.lean), [`Proofs/DateRangeOverlap.lean`](../A12Kernel/Proofs/DateRangeOverlap.lean), and [`Conformance/DateRangeOverlap.lean`](../A12Kernel/Conformance/DateRangeOverlap.lean).
+- Boundary: the §6 primitive truth core over admitted `FullDate` endpoints and one flat occurrence stream.
 - `DateRangeDirection` keeps inversion explicit
 - primitive overlap is symmetric, rejects either inversion, and treats equal/shared endpoints as overlapping.
 - The flat any-pair scan preserves occurrences rather than deduplicating values, so a singleton does not pair with itself, two equal positions do, and an internal later pair can fire despite a disjoint head.
 - Trusted laws characterize direction and the closed relation, prove symmetry, self-overlap iff ordered, both invalid guards, strict separation, singleton/pair reduction, and duplicate occurrence behavior.
 
-- [`Semantics/DateRangeOverlapOperators.lean`](../A12Kernel/Semantics/DateRangeOverlapOperators.lean), [`Proofs/DateRangeOverlapOperators.lean`](../A12Kernel/Proofs/DateRangeOverlapOperators.lean), and [`Conformance/DateRangeOverlapOperators.lean`](../A12Kernel/Conformance/DateRangeOverlapOperators.lean) add the two resolved consuming scans over ordered operand groups.
+- The matching `DateRangeOverlapOperators` semantics/proofs/conformance modules own the two resolved ordered consuming scans.
 - Slots are already classified as skipped or kept
 - actual `Having` selection has already occurred, while filter presence remains attached to each operand.
 - Any-pair overlap makes that marker sticky only after a kept occurrence is reached and observes the updated marker before checking the current occurrence against the seen prefix.
@@ -826,13 +847,14 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - It begins after decoding, formal checking, partial-relevance classification, and actual filter selection
 - `skipped` intentionally forgets why a cell does not participate.
 - Stored inverted ranges are normally skipped by formal checking, while the pure relation's invalid guard remains a source-grounded total-function defense.
-- Kernel source and maintained a12-dmkits multi-route differentials establish truth and now lock the high-risk reached-scan polarity separators across both kernel routes plus the interpreter under accepted [`SPEC-2026-07-20-10`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-10--date-range-overlap-polarity-follows-the-reached-scan).
+- Accepted [`SPEC-2026-07-20-10`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-10--date-range-overlap-polarity-follows-the-reached-scan) links kernel source and a12-dmkits multi-route reached-scan polarity controls.
 - This repository still retains no portable Date-range observation, so correspondence remains `external evidence pending`
 - checked lowering, paths/stars, filter evaluation, cells, row gates, messages, equality/inequality, DateRange construction/extraction, protocol support, and project-local evidence remain open.
 
 ### Resolved three-part Date construction
 
-- [`Semantics/DateConstruction.lean`](../A12Kernel/Semantics/DateConstruction.lean), [`Semantics/DateConstructionNumeric.lean`](../A12Kernel/Semantics/DateConstructionNumeric.lean), their matching [`Proofs/`](../A12Kernel/Proofs/) modules, and their matching [`Conformance/`](../A12Kernel/Conformance/) modules close a §6/§12 reason-and-verdict boundary and its first direct numeric consumer, both narrower than the general `Date(...)` surface still listed as open above.
+- Owners: [`Semantics/DateConstruction.lean`](../A12Kernel/Semantics/DateConstruction.lean), [`Semantics/DateConstructionNumeric.lean`](../A12Kernel/Semantics/DateConstructionNumeric.lean), and their matching [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/) modules.
+- Boundary: a §6/§12 reason-and-verdict account and its first direct numeric consumer, narrower than general `Date(...)`.
 - After component authoring/checking and a separate all-present calendar decision, `classifyDateConstruction3` combines the three availability states with supplied real/unreal reality and returns real `DateParts`, incomplete, present-but-unreal, or formally unavailable.
 - Trusted laws characterize incomplete and UNKNOWN precedence, exact retention of supplied reality, both fired polarities, exact truth complementation, and the full-verdict non-law: `Valid` forgets the incomplete/unreal reason while `Invalid` preserves it.
 - The direct numeric component layer then selects supplied real day/month/year values without re-running calendar reality, returns not-given zero for incomplete, fixed zero for unreal, and cause-free unavailability for UNKNOWN.
@@ -863,13 +885,13 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 - The `a12-kernel-reference` executable exposes two disjoint intersections through the normalized [`PROTOCOL.md`](PROTOCOL.md) contract: the public §2/§3/§5/§10/§12 flat slice and the named §9 one-group captured-outer slice.
 - [`Reference/Protocol.lean`](../A12Kernel/Reference/Protocol.lean) decodes bounded operation-specific models, paths, conditions or correlated `Having`, sparse flat or row-addressed cells, and row gates/candidates.
 - [`Reference/Evaluator.lean`](../A12Kernel/Reference/Evaluator.lean) routes every admitted request through the corresponding existing checked elaborator and evaluator.
-- [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean) owns the current 0.3.0 identity, finite runtime classifiers, and generated schema-2 per-operation support, evidence boundaries, and diagnostic declaration mirrored in [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json).
+- [`Reference/Support.lean`](../A12Kernel/Reference/Support.lean) owns the 0.3.0 identity, finite runtime classifiers, and generated schema-2 support metadata mirrored in [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json).
 - Requests have no per-request semantics selector
 - the exact binary's `--manifest` plus a binary/release digest identifies the account.
 - The internal §7 String-validation and §11 String-computation capsules are deliberately absent from this protocol until separate public capabilities close their transport, diagnostics, checked lowering, and support manifests.
 
 - This process surface adds accessibility and fail-closed protocol assurance, not new kernel correspondence.
-- Its accepted semantic clauses inherit the external-evidence statuses in the clause records above, while [`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) locks transport behavior, deterministic output, diagnostics, exit codes, sample fixtures, current-manifest agreement, and current-suite controls.
+- Semantic clauses inherit the evidence statuses above. [`ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) locks transport, deterministic output, diagnostics, exits, fixtures, manifest agreement, and suite controls.
 - [`CandidateConformanceMain.lean`](../A12Kernel/CandidateConformanceMain.lean) runs one selected suite through the shared bounded relay but does not query a candidate manifest
 - neither suite execution nor agreement with Lean transfers proofs or expands evidence.
 - Exact current handover material and closure gaps live in the [flat](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [correlation](IMPLEMENTER-KIT-CORRELATION.md) kits.
@@ -909,6 +931,6 @@ The §5/§11 numeric-computation entry is declaration-resolved rather than merel
 ## Trusted theorem surface
 
 - [`A12Kernel/Proofs.lean`](../A12Kernel/Proofs.lean) is the trusted theorem root.
-- [`scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh) verifies that it imports every proof module, preserves the named human-readable theorem registry in [`A12Kernel/TrustAudit.lean`](../A12Kernel/TrustAudit.lean), rejects forbidden dependency directions, and uses [`A12Kernel/Trust/Environment.lean`](../A12Kernel/Trust/Environment.lean) to inspect every elaborated declaration in the trusted project modules.
+- [`scripts/check-lean-trust.sh`](../scripts/check-lean-trust.sh) checks proof-root completeness, the named theorem registry, source zones, forbidden dependency directions, and the elaborated logical environment through [`Trust/Environment.lean`](../A12Kernel/Trust/Environment.lean).
 - That environment audit rejects project axioms, unsafe or unclassified opaque/partial definitions, compiler/foreign substitutions, and every axiom dependency except `propext`, `Classical.choice`, and `Quot.sound`
 - conformance remains a separate nontrusted executable-check lane.
