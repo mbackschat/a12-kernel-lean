@@ -45,9 +45,16 @@ def selectFirst (computation : GuardedLiteralNumberComputation)
 
 end GuardedLiteralNumberComputation
 
+/-- Authored location of a computation guard. Alternative indices are one-based, matching source diagnostics. -/
+inductive GeneratedComputationGuardPosition where
+  | common
+  | alternative (index : Nat)
+  deriving Repr, DecidableEq
+
 inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
+  | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
   | condition (error : ElabError)
@@ -84,8 +91,15 @@ private def FlatModel.resolveGeneratedNumberTarget
 
 namespace ComputationCondition
 
+/-- Whether this condition mentions the computed target directly. The checked fragment has already resolved every path to a field ID. -/
+def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
+  match condition with
+  | .fieldFilled field | .fieldNotFilled field => field == target
+  | .and left right | .or left right =>
+      left.referencesField target || right.referencesField target
+
 /-- Translate guard syntax without evaluating it. Validation then applies its own phase observation, unknown handling, connective algebra, and polarity. -/
-private def lowerForGeneratedValidation (model : FlatModel) :
+private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
     ComputationCondition →
       Except GeneratedComputationValidationError FlatCondition
   | .fieldFilled field => do
@@ -94,12 +108,22 @@ private def lowerForGeneratedValidation (model : FlatModel) :
       pure (.fieldNotFilled (← model.resolveGeneratedGuardField field))
   | .and left right => do
       pure (.and
-        (← left.lowerForGeneratedValidation model)
-        (← right.lowerForGeneratedValidation model))
+        (← left.lowerForGeneratedValidationUnchecked model)
+        (← right.lowerForGeneratedValidationUnchecked model))
   | .or left right => do
       pure (.or
-        (← left.lowerForGeneratedValidation model)
-        (← right.lowerForGeneratedValidation model))
+        (← left.lowerForGeneratedValidationUnchecked model)
+        (← right.lowerForGeneratedValidationUnchecked model))
+
+/-- Reject a computed-target reference before translating the otherwise admitted guard syntax into validation phase. -/
+def lowerForGeneratedValidation (condition : ComputationCondition)
+    (model : FlatModel) (target : FieldId)
+    (position : GeneratedComputationGuardPosition) :
+    Except GeneratedComputationValidationError FlatCondition :=
+  if condition.referencesField target then
+    throw (.targetSelfReference position)
+  else
+    condition.lowerForGeneratedValidationUnchecked model
 
 end ComputationCondition
 
@@ -155,11 +179,25 @@ private def checkGeneratedOperationScales (target : FlatNumberField) :
 
 private def lowerGeneratedLiteralNumberMismatch (model : FlatModel)
     (target : FlatNumberField)
+    (alternativeIndex : Nat)
     (alternative : LiteralNumberComputationAlternative) :
     Except GeneratedComputationValidationError FlatCondition := do
   let guard ← alternative.precondition.lowerForGeneratedValidation model
+    target.id (.alternative alternativeIndex)
   pure (generatedLiteralNumberMismatch target guard alternative.operation.value
     alternative.tolerance)
+
+private def lowerGeneratedLiteralNumberMismatches (model : FlatModel)
+    (target : FlatNumberField) :
+    Nat → List LiteralNumberComputationAlternative →
+      Except GeneratedComputationValidationError (List FlatCondition)
+  | _, [] => pure []
+  | alternativeIndex, alternative :: remaining => do
+      let mismatch ← lowerGeneratedLiteralNumberMismatch model target
+        alternativeIndex alternative
+      let remainingMismatches ← lowerGeneratedLiteralNumberMismatches model target
+        (alternativeIndex + 1) remaining
+      pure (mismatch :: remainingMismatches)
 
 /-- Check the model, target, guard fields, and unsuppressed exact-comparison scales before assembling the generated ERROR rule at the target. This does not claim general computation-table, assignment, or runtime target legality. -/
 def assembleGeneratedLiteralNumberRule (model : FlatModel)
@@ -174,12 +212,12 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
       let commonGuard ← match computation.commonPrecondition with
         | none => pure none
         | some common =>
-            pure (some (← common.lowerForGeneratedValidation model))
+            pure (some (← common.lowerForGeneratedValidation model target.id .common))
       let firstMismatch ← lowerGeneratedLiteralNumberMismatch model target
-        computation.first
+        1 computation.first
       let remainingMismatches ←
-        (computation.second :: computation.remaining).mapM
-          (lowerGeneratedLiteralNumberMismatch model target)
+        lowerGeneratedLiteralNumberMismatches model target 2
+          (computation.second :: computation.remaining)
       let core := guardedGeneratedNumberCondition target commonGuard
         firstMismatch remainingMismatches
       let checked ←

@@ -658,3 +658,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** Both kernel routes and the interpreter agree on the two invalid integral power target/formal-error/dependent-poison separators, valid boundary controls remain values, illegal fractional/unknown-scale exponents remain authoring failures, canonical a12-dmkits prose removes the pending classification, and the handback supplies the exact reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending handback.
+
+### SPEC-2026-07-21-06 — computations reject references to their own target
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `3194c1f73005fbf2c88538e2c2d9899fc695e09a`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`09-computations.md` §5 and checklist](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join)
+- **Delta:** State the static authoring rule that the computed target field may not occur in the computation's common precondition, any alternative precondition, or any operation, including nested condition/filter syntax. This is `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`, not a runtime cycle or empty operand. References to other computed targets remain legal scheduling dependencies, and group-level constructs retain their separate legality rules.
+- **Basis:** Kernel `NormalisierteBerechnungsFormHelper.checkTeilBerechnung` combines each alternative's precondition parts with the common-precondition parts before `checkVorbedingungen`; that check traverses referenced entities and filter conditions against the computed/error field and reports `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`. `CalculationErrorType` and the localized error messages state the same prohibition for preconditions and calculation functions. At the a12-dmkits basis revision, the parsed/prepared computation routes retain the common guard, alternative guards, and operation references, but the read-only audit found no corresponding target-self-reference admission rejection or focused control.
+- **Requested a12-dmkits reconciliation:** Add the rule to the owning computation semantics/findings and the smallest existing model-legality or preparation boundary that can reject it once for both evaluation and generated validation. Cover direct and nested target references in the common precondition, an alternative precondition, and an operation, plus a neighboring reference to another computed field that remains accepted as a dependency. Reuse existing parsed reference traversal and diagnostics; do not add a second parser, dependency graph, or capture mechanism.
+- **Compatibility:** Previously accepted invalid models may now fail model preparation instead of reaching computation, generated validation, or scheduler behavior. Correct models and cross-computation dependencies are unchanged.
+- **Acceptance:** Both kernel strategies reject the target-reference cases through the maintained legality route; the clean-room model boundary rejects the same cases before evaluation; another-computed-field dependency remains accepted; canonical/public prose distinguishes direct target self-reference from ordinary dependencies and group constructs; and the handback supplies the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending handback.

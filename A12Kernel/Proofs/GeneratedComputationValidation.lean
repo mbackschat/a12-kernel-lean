@@ -8,6 +8,16 @@ These laws cover only declaration-order recovery, structural mismatch desugaring
 
 namespace A12Kernel
 
+/-- Every direct or nested reference to the computed target is rejected before guard lowering can produce a phase-specific condition. -/
+theorem generatedComputationGuard_targetSelfReference_rejected
+    (condition : ComputationCondition) (model : FlatModel)
+    (target : FieldId) (position : GeneratedComputationGuardPosition)
+    (references : condition.referencesField target = true) :
+    condition.lowerForGeneratedValidation model target position =
+      .error (.targetSelfReference position) := by
+  simp [ComputationCondition.lowerForGeneratedValidation, references]
+  rfl
+
 /-- Without a common precondition, a holding first guard delegates to the existing first-match selector and leaves every later row irrelevant. -/
 theorem guardedLiteralNumber_firstHolds_selects
     (computation : GuardedLiteralNumberComputation)
