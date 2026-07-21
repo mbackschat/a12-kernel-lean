@@ -386,7 +386,7 @@ def FlatComparison.matchesDecl (comparison : FlatComparison)
   | .number _ field _, .number info => field.id == declaration.id && field.info == info
   | .boolean _ field _, .boolean => field.id == declaration.id
   | .confirm _ field, .confirm => field.id == declaration.id
-  | .stringEqual field _, .string => field.id == declaration.id
+  | .string _ field _, .string => field.id == declaration.id
   | .stringLength _ field _, .string => field.id == declaration.id
   | _, _ => false
 
@@ -489,9 +489,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
             | none => throw (.unsupportedOperator op)
           match literal with
           | .string expected =>
-              match equality with
-              | .equal => pure (.compare (.stringEqual { id := declaration.id } expected))
-              | .notEqual => throw (.unsupportedOperator op)
+              pure (.compare (.string equality { id := declaration.id } expected))
           | literal =>
               throw (.literalKindMismatch declaration.path .string literal.kind)
   | .lengthCompare op reference expected => do

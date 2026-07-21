@@ -577,6 +577,8 @@ run_cmd do
 #print axioms A12Kernel.repetitionNotUnique_firing_has_distinct_peer
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
+#print axioms A12Kernel.directEmptyStringLiteral_notFired
+#print axioms A12Kernel.directEmptyStringLiteral_unknown
 #print axioms A12Kernel.emptyStringLengthLess_fires_omission
 #print axioms A12Kernel.emptyStringLengthGreaterEqual_fires_value
 #print axioms A12Kernel.emptyString_operatorDistinction

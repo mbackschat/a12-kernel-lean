@@ -19,7 +19,7 @@ private def context (raw : RawCell) : FlatContext where
   read _ := checked raw
 
 private def directEquals (expected : String) : FlatCondition :=
-  .compare (.stringEqual stringField expected)
+  .compare (.string .equal stringField expected)
 
 private def lengthLessThan (expected : Rat) : FlatCondition :=
   .compare (.stringLength .less stringField expected)

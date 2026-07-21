@@ -18,10 +18,16 @@ private def noncanonicalPresentEmptyContext : FlatContext where
   read _ := { rawPresent := true, parsed := some (.str ""), findings := [] }
 
 private def directEqualsAbc : FlatCondition :=
-  .compare (.stringEqual stringField "ABC")
+  .compare (.string .equal stringField "ABC")
 
 private def directEqualsEmpty : FlatCondition :=
-  .compare (.stringEqual stringField "")
+  .compare (.string .equal stringField "")
+
+private def directNotEqualsAbc : FlatCondition :=
+  .compare (.string .notEqual stringField "ABC")
+
+private def directNotEqualsEmpty : FlatCondition :=
+  .compare (.string .notEqual stringField "")
 
 private def lengthLessThanFive : FlatCondition :=
   .compare (.stringLength .less stringField 5)
@@ -77,6 +83,24 @@ example : lengthGreaterOrEqualZero.evalFull (context (.parsed (.str "ABCDEF"))) 
   native_decide
 
 example : directEqualsEmpty.evalFull (context (.parsed (.str "ABC"))) true = .notFired := by
+  decide
+
+example : directNotEqualsAbc.evalFull (context .empty) true = .notFired := by
+  decide
+
+example : directNotEqualsAbc.evalFull (context (.parsed (.str "ABC"))) true = .notFired := by
+  decide
+
+example : directNotEqualsAbc.evalFull (context (.parsed (.str "XYZ"))) true =
+    .fired .value := by
+  decide
+
+example : directNotEqualsEmpty.evalFull (context (.parsed (.str "ABC"))) true =
+    .notFired := by
+  decide
+
+example : directNotEqualsEmpty.evalFull (context (.rejected .malformed)) true =
+    .unknown := by
   decide
 
 example : directEqualsEmpty.evalFull (context (.rejected .malformed)) true = .unknown := by
@@ -149,9 +173,8 @@ example : (elaborate productCodeModel ["Order"]
     (.lengthCompare .greaterEqual productCodePath 0)).isOk = true := by
   native_decide
 
-example : elaborationError? (elaborate productCodeModel ["Order"]
-    (.compare .notEqual productCodePath (.string "ABC"))) =
-    some (.unsupportedOperator .notEqual) := by
+example : (elaborate productCodeModel ["Order"]
+    (.compare .notEqual productCodePath (.string "ABC"))).isOk = true := by
   native_decide
 
 example : elaborationError? (elaborate productCodeModel ["Order"]
