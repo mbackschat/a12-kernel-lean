@@ -7,7 +7,10 @@ namespace A12Kernel.Conformance.DateTimeComparison
 
 open A12Kernel
 
-private def instant (epochSecond : Int) : Instant := { epochSecond }
+private def instant (epochSecond : Int) : Instant :=
+  Instant.ofEpochSecond epochSecond
+
+private def instantMillis (epochMillis : Int) : Instant := { epochMillis }
 
 private def checkedInstant (value : Instant) : CheckedCell Instant :=
   { rawPresent := true, parsed := some value, findings := [] }
@@ -67,6 +70,14 @@ example :
     TemporalComparisonOp.equal.holdsInstant chainedDaylightSide freshStandardSide = false ∧
       TemporalComparisonOp.notEqual.holdsInstant chainedDaylightSide freshStandardSide = true ∧
       TemporalComparisonOp.before.holdsInstant chainedDaylightSide freshStandardSide = true := by
+  native_decide
+
+/- `Now` retains the validation clock's millisecond identity even though authored DateTime values have whole-second precision. -/
+example :
+    TemporalComparisonOp.equal.holdsInstant
+        (instantMillis 100000) (instantMillis 100999) = false ∧
+      TemporalComparisonOp.before.holdsInstant
+        (instantMillis 100000) (instantMillis 100999) = true := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeComparison

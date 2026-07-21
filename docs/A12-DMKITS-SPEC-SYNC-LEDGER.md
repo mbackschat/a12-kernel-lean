@@ -703,3 +703,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** Focused JVM/Node admission laws and maintained kernel-route controls separate `yyyy-MM` versus `yyyy-MM-dd`, Date versus DateTime ordering versus equality, `HH:mm` versus `HH:mm:ss`, Base Year supplementation, date-versus-time rejection, and exact aggregate rejection; canonical prose names both gates; `SPEC-2026-07-21-07` remains the sole aggregate-execution request; and the handback supplies the reviewed revision and per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending handback.
+
+### SPEC-2026-07-22-02 — `Now` retains exact epoch-millisecond identity
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `eec6f3ac5bcd1e403d64ba940b3d0daf9d44ed39`
+- **Kernel behavior:** 30.8.1
+- **Canonical clauses:** [`05-dates-and-time.md` §2](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected) and [§7](../spec/05-dates-and-time.md#7-the-point-in-time-and-reference-sources)
+- **Delta:** Correct the whole-second runtime boundary. Stored and constructed Date/Time/DateTime values remain whole-second, but `Now` preserves the injected or sampled validation clock's exact epoch-millisecond identity. Temporal equality/order compare that identity, sub-day differences divide the exact millisecond delta by the selected unit in milliseconds with truncation toward zero, and sub-day shifts preserve an input remainder.
+- **Basis:** Kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `RuntimeController` copies `ValidationMode.currentDateForTest()` into its zone-set validation calendar without clearing milliseconds, `getJetzt()` returns that exact `Date`, `VkDate` equality and ordering delegate to `Date`, and `BedingungsOperatorHelper` divides `getTimeInMillis()` deltas by unit milliseconds. The modern a12-dmkits `RuntimeLaws` path can pin an arbitrary `Date` into both kernel strategies, but the reviewed interpreter's `EvalClock.now`, `TemporalValue.exactInstant`, parser, shifts, and differences use whole-second strings/coordinates; its operator API proposal explicitly rejects non-zero milliseconds.
+- **Requested a12-dmkits reconciliation:** Replace the interpreter clock/instant coordinate's whole-second ceiling at its shared temporal root, while retaining whole-second field parsing and rendering. Use the existing clock-pinnable dynamic-Groovy and generated-static-Java paths to separate a pinned `.999` `Now` from the same rendered whole second under equality/order, lock `DifferenceInSeconds(field, Now)` at `999 ms → 0` and `1000 ms → 1` in both directions, and preserve the remainder through one legal sub-day shift if that source form is authorable. Run matching JVM/Node interpreter controls. Do not add a new capture or temporal framework.
+- **Compatibility:** A consumer that rounds or truncates `Now` on ingestion can make a whole-second field spuriously equal to the clock, lose strict ordering inside one second, and cross a difference quotient boundary at the wrong time. Widening the exact runtime coordinate does not change stored DateTime syntax or display precision.
+- **Acceptance:** Both kernel strategies and the JVM/Node interpreter agree on the same-second comparison, `999 ms`/`1000 ms` difference boundaries, reverse truncation, and any legal shift separator; the public clock contract accepts the exact coordinate without claiming fractional authored DateTime syntax; existing whole-second temporal controls remain green; and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending handback.

@@ -51,7 +51,7 @@ example :
         (dateTime 2024 3 30 2 30 0 (by native_decide))
       let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 3 31 1 45 0 (by native_decide))
-      pure ((second.epochSecond - first.epochSecond).tdiv 86400)) =
+      pure ((second.epochMillis - first.epochMillis).tdiv 86400000)) =
       some 0 := by
   native_decide
 

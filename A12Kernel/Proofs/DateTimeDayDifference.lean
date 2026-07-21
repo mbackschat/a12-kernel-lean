@@ -37,13 +37,13 @@ theorem berlin2024_differenceInDays_swap
               simp [Berlin2024Profile.differenceInDays?, firstSpring,
                 secondSpring, firstResolved, secondResolved]
           | some secondInstant =>
-              by_cases before : firstInstant.epochSecond < secondInstant.epochSecond
-              · have notAfter : ¬secondInstant.epochSecond < firstInstant.epochSecond := by
+              by_cases before : firstInstant.epochMillis < secondInstant.epochMillis
+              · have notAfter : ¬secondInstant.epochMillis < firstInstant.epochMillis := by
                   omega
                 simp [Berlin2024Profile.differenceInDays?, firstSpring,
                   secondSpring, firstResolved, secondResolved, before,
                   notAfter]
-              · by_cases after : secondInstant.epochSecond < firstInstant.epochSecond
+              · by_cases after : secondInstant.epochMillis < firstInstant.epochMillis
                 · simp [Berlin2024Profile.differenceInDays?, firstSpring,
                     secondSpring, firstResolved, secondResolved, before,
                     after]

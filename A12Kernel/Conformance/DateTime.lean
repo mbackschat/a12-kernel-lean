@@ -57,10 +57,10 @@ example : (LocalDateTime.ofYmdHms? 2024 1 1 24 0 0).isNone = true := by native_d
 
 /- UTC resolution uses the Unix epoch only as an origin for scalar instant identity. -/
 example :
-    (dateTime 1970 1 1 0 0 0 (by native_decide)).resolveUtc.epochSecond = 0 := by
+    (dateTime 1970 1 1 0 0 0 (by native_decide)).resolveUtc.epochMillis = 0 := by
   native_decide
 example :
-    (dateTime 1969 12 31 23 59 59 (by native_decide)).resolveUtc.epochSecond = -1 := by
+    (dateTime 1969 12 31 23 59 59 (by native_decide)).resolveUtc.epochMillis = -1000 := by
   native_decide
 
 /- Strict local chronology is preserved by UTC resolution across seconds, days, years, and leap days. -/
@@ -81,11 +81,16 @@ example :
       (dateTime 2024 1 1 0 0 0 (by native_decide)) := by
   native_decide
 example :
-    (dateTime 2023 12 31 23 59 59 (by native_decide)).resolveUtc.epochSecond <
-      (dateTime 2024 1 1 0 0 0 (by native_decide)).resolveUtc.epochSecond := by
+    (dateTime 2023 12 31 23 59 59 (by native_decide)).resolveUtc.epochMillis <
+      (dateTime 2024 1 1 0 0 0 (by native_decide)).resolveUtc.epochMillis := by
   native_decide
 
 /- Whole-hour shifting is instant-in/instant-out and carries over calendar boundaries. -/
+example :
+    Instant.shiftHours { epochMillis := 999 } 1 =
+      { epochMillis := 3600999 } := by
+  native_decide
+
 example :
     (dateTime 2009 1 30 23 0 0 (by native_decide)).resolveUtc.shiftHours 2 =
       (dateTime 2009 1 31 1 0 0 (by native_decide)).resolveUtc := by
@@ -142,8 +147,8 @@ example :
 /- Runtime shifting can cross below the value floor; a later consumer decides whether to admit the resulting instant as a field value. -/
 example :
     (dateTime 1583 10 16 0 0 0 (by native_decide)).resolveUtc.shiftHours (-1) =
-      { epochSecond :=
-          (dateTime 1583 10 16 0 0 0 (by native_decide)).resolveUtc.epochSecond - 3600 } := by
+      { epochMillis :=
+          (dateTime 1583 10 16 0 0 0 (by native_decide)).resolveUtc.epochMillis - 3600000 } := by
   native_decide
 
 end A12Kernel

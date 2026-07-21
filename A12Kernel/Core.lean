@@ -104,6 +104,19 @@ structure NumField where
   signed : Bool
   deriving Repr, DecidableEq
 
+/-- Exact runtime instant identity in epoch milliseconds. Authored Date, Time, and DateTime values are whole-second, but the injected `Now` clock may retain a sub-second remainder. Calendar and zone resolution live in the temporal semantics. -/
+structure Instant where
+  epochMillis : Int
+  deriving Repr, DecidableEq
+
+namespace Instant
+
+/-- Embed a whole-second temporal value into the exact runtime coordinate. -/
+def ofEpochSecond (epochSecond : Int) : Instant :=
+  { epochMillis := epochSecond * 1000 }
+
+end Instant
+
 /-- The **value domain** (expanded per kind in later stages). Numbers are exact rationals;
     the field's `scale` lives in `NumField`, and *stored-form / representation* equality
     (`7` vs `7.00`) is a separate rendered-string concern, not carried here. Arithmetic

@@ -121,15 +121,16 @@ private def recurringOffsetSecondsAt? (year epochSecond : Int) : Option Int := d
   pure (if springBoundary ≤ epochSecond ∧ epochSecond < autumnBoundary then
     7200 else 3600)
 
-/-- Offset in seconds at a UTC instant. The transition table applies through 1997; the recurring EU rule applies from 1998 onward. -/
+/-- Offset in seconds at an exact UTC instant. The transition table applies through 1997; the recurring EU rule applies from 1998 onward. -/
 def offsetSecondsAt? (instant : Instant) : Option Int :=
-  match CivilDate.ofUnixEpochDay? (instant.epochSecond / 86400) with
+  let epochSecond := instant.epochMillis / 1000
+  match CivilDate.ofUnixEpochDay? (epochSecond / 86400) with
   | none => none
   | some utcDate =>
       if utcDate.parts.year < 1998 then
-        historicalOffsetSecondsAt? transitions instant.epochSecond 3600
+        historicalOffsetSecondsAt? transitions epochSecond 3600
       else
-        recurringOffsetSecondsAt? utcDate.parts.year instant.epochSecond
+        recurringOffsetSecondsAt? utcDate.parts.year epochSecond
 
 /-- Every offset appearing in the pinned profile, ordered for overlap selection. -/
 def candidateOffsets : List Int := [3600, 7200, 10800]
@@ -137,7 +138,8 @@ def candidateOffsets : List Int := [3600, 7200, 10800]
 /-- Instant obtained by interpreting a wall label under one candidate offset. -/
 def candidateInstant (dateTime : LocalDateTime)
     (offsetSeconds : Int) : Instant :=
-  { epochSecond := dateTime.resolveUtc.epochSecond + -offsetSeconds }
+  { epochMillis :=
+      dateTime.resolveUtc.epochMillis + (-offsetSeconds * 1000) }
 
 /-- Smallest valid offset for a fresh local label. Ascending candidates implement the legacy smaller/after-offset overlap policy. -/
 def selectedOffset? (dateTime : LocalDateTime) : Option Int :=

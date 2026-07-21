@@ -144,7 +144,7 @@ run_cmd do
 #print axioms A12Kernel.timeOfDay_secondsSinceMidnight_lt
 #print axioms A12Kernel.localDateTime_ofDateHms_isSome_iff
 #print axioms A12Kernel.localDateTime_ofYmdHms_isSome_iff
-#print axioms A12Kernel.localDateTime_resolveUtc_epochSecond
+#print axioms A12Kernel.localDateTime_resolveUtc_epochMillis
 #print axioms A12Kernel.localDateTime_before_resolveUtc
 #print axioms A12Kernel.localDateTime_sameDate_difference
 #print axioms A12Kernel.dateTimeComparison_equal_iff
@@ -185,7 +185,7 @@ run_cmd do
 #print axioms A12Kernel.instant_difference_seconds
 #print axioms A12Kernel.instant_difference_exactUnits
 #print axioms A12Kernel.instant_difference_shiftHours
-#print axioms A12Kernel.instant_shiftHours_epochSecond
+#print axioms A12Kernel.instant_shiftHours_epochMillis
 #print axioms A12Kernel.instant_shiftHours_zero
 #print axioms A12Kernel.instant_shiftHours_add
 #print axioms A12Kernel.instant_shiftHours_inverse

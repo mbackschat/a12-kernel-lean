@@ -350,56 +350,56 @@ theorem localDateTime_ofYmdHms_isSome_iff
     simp [LocalDateTime.ofYmdHms?, dateEq, LocalDateTime.ofDateHms?,
       TimeOfDay.ofHms?]
 
-/-- UTC resolution is exactly civil-day coordinate plus seconds since midnight. -/
-theorem localDateTime_resolveUtc_epochSecond (dateTime : LocalDateTime) :
-    dateTime.resolveUtc.epochSecond =
-      dateTime.date.unixEpochDay * 86400 +
-        (dateTime.time.secondsSinceMidnight : Int) :=
+/-- UTC resolution embeds the civil-day coordinate plus seconds since midnight into exact epoch milliseconds. -/
+theorem localDateTime_resolveUtc_epochMillis (dateTime : LocalDateTime) :
+    dateTime.resolveUtc.epochMillis =
+      (dateTime.date.unixEpochDay * 86400 +
+        (dateTime.time.secondsSinceMidnight : Int)) * 1000 :=
   rfl
 
 /-- UTC resolution strictly preserves chronological order on admitted local wall labels. -/
 theorem localDateTime_before_resolveUtc
     (left right : LocalDateTime) (before : left.Before right) :
-    left.resolveUtc.epochSecond < right.resolveUtc.epochSecond := by
+    left.resolveUtc.epochMillis < right.resolveUtc.epochMillis := by
   have leftTime := timeOfDay_secondsSinceMidnight_lt left.time
   rcases before with dateBefore | ⟨sameDate, timeBefore⟩
   · have dayBefore :=
       civilDate_before_unixEpochDay left.date.civil right.date.civil
         dateBefore
     change
-      left.date.unixEpochDay * 86400 +
-          (left.time.secondsSinceMidnight : Int) <
-        right.date.unixEpochDay * 86400 +
-          (right.time.secondsSinceMidnight : Int)
+      (left.date.unixEpochDay * 86400 +
+          (left.time.secondsSinceMidnight : Int)) * 1000 <
+        (right.date.unixEpochDay * 86400 +
+          (right.time.secondsSinceMidnight : Int)) * 1000
     simp only [FullDate.unixEpochDay]
     omega
   · change
-      left.date.unixEpochDay * 86400 +
-          (left.time.secondsSinceMidnight : Int) <
-        right.date.unixEpochDay * 86400 +
-          (right.time.secondsSinceMidnight : Int)
+      (left.date.unixEpochDay * 86400 +
+          (left.time.secondsSinceMidnight : Int)) * 1000 <
+        (right.date.unixEpochDay * 86400 +
+          (right.time.secondsSinceMidnight : Int)) * 1000
     simp only [FullDate.unixEpochDay, sameDate]
     omega
 
 /-- For one local Date, UTC differences reduce exactly to time-of-day differences. -/
 theorem localDateTime_sameDate_difference
     (date : FullDate) (left right : TimeOfDay) :
-    (LocalDateTime.resolveUtc { date, time := right }).epochSecond -
-        (LocalDateTime.resolveUtc { date, time := left }).epochSecond =
-      (right.secondsSinceMidnight : Int) -
-        (left.secondsSinceMidnight : Int) := by
+    (LocalDateTime.resolveUtc { date, time := right }).epochMillis -
+        (LocalDateTime.resolveUtc { date, time := left }).epochMillis =
+      ((right.secondsSinceMidnight : Int) -
+        (left.secondsSinceMidnight : Int)) * 1000 := by
   change
-    (date.unixEpochDay * 86400 + (right.secondsSinceMidnight : Int)) -
-        (date.unixEpochDay * 86400 + (left.secondsSinceMidnight : Int)) =
-      (right.secondsSinceMidnight : Int) -
-        (left.secondsSinceMidnight : Int)
+    (date.unixEpochDay * 86400 + (right.secondsSinceMidnight : Int)) * 1000 -
+        (date.unixEpochDay * 86400 + (left.secondsSinceMidnight : Int)) * 1000 =
+      ((right.secondsSinceMidnight : Int) -
+        (left.secondsSinceMidnight : Int)) * 1000
   omega
 
 /-- The `AddHours` runtime core shifts scalar instant identity by exactly the requested number of whole hours. -/
-theorem instant_shiftHours_epochSecond
+theorem instant_shiftHours_epochMillis
     (instant : Instant) (hours : Int) :
-    (instant.shiftHours hours).epochSecond =
-      instant.epochSecond + hours * 3600 :=
+    (instant.shiftHours hours).epochMillis =
+      instant.epochMillis + hours * 3600000 :=
   rfl
 
 /-- Zero hours preserve the exact instant. -/

@@ -63,13 +63,11 @@ instance (left right : LocalDateTime) : Decidable (Before left right) := by
   unfold Before
   infer_instance
 
-/-- Resolve an admitted local DateTime in UTC. UTC has no gap, fold, or offset. -/
+/-- Resolve an admitted whole-second local DateTime in UTC. UTC has no gap, fold, or offset. -/
 def resolveUtc (dateTime : LocalDateTime) : Instant :=
-  {
-    epochSecond :=
-      dateTime.date.unixEpochDay * 86400 +
-        (dateTime.time.secondsSinceMidnight : Int)
-  }
+  Instant.ofEpochSecond
+    (dateTime.date.unixEpochDay * 86400 +
+      (dateTime.time.secondsSinceMidnight : Int))
 
 end LocalDateTime
 
@@ -77,7 +75,7 @@ namespace Instant
 
 /-- Shift an instant by an already-truncated whole-hour amount. This is the total runtime core after numeric conversion, not the complete authored `AddHours` operator. -/
 def shiftHours (instant : Instant) (hours : Int) : Instant :=
-  { epochSecond := instant.epochSecond + hours * 3600 }
+  { epochMillis := instant.epochMillis + hours * 3600000 }
 
 end Instant
 

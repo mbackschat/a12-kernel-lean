@@ -10,7 +10,10 @@ namespace A12Kernel.Conformance.DateTimeDifference
 
 open A12Kernel
 
-private def instant (epochSecond : Int) : Instant := { epochSecond }
+private def instant (epochSecond : Int) : Instant :=
+  Instant.ofEpochSecond epochSecond
+
+private def instantMillis (epochMillis : Int) : Instant := { epochMillis }
 
 private def dateTime (year : Int) (month day hour minute second : Nat)
     (admissible :
@@ -42,6 +45,13 @@ example :
 
 example :
     (instant 19815).difference .seconds (instant 0) = -19815 := by
+  native_decide
+
+/- The kernel divides the exact epoch-millisecond delta, so sub-second `Now` residuals truncate only at the selected operation. -/
+example :
+    (instantMillis 0).difference .seconds (instantMillis 999) = 0 ∧
+      (instantMillis 0).difference .seconds (instantMillis 1000) = 1 ∧
+      (instantMillis 1001).difference .seconds (instantMillis 0) = -1 := by
   native_decide
 
 /- The selected Berlin autumn endpoints are three physical hours apart despite two wall-clock hours. -/

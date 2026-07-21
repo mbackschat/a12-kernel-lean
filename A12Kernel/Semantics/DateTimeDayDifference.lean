@@ -19,7 +19,7 @@ private def countLandings : Nat → LocalDateTime → Instant → Nat
           match EuropeBerlinLegacyProfile.resolveLocal? next with
           | none => 0
           | some landing =>
-              if landing.epochSecond ≤ later.epochSecond then
+              if landing.epochMillis ≤ later.epochMillis then
                 1 + countLandings fuel next later
               else
                 0
@@ -30,9 +30,9 @@ def differenceInDays? (first second : LocalDateTime) : Option Int :=
     do
       let firstInstant ← EuropeBerlinLegacyProfile.resolveLocal? first
       let secondInstant ← EuropeBerlinLegacyProfile.resolveLocal? second
-      if firstInstant.epochSecond < secondInstant.epochSecond then
+      if firstInstant.epochMillis < secondInstant.epochMillis then
         pure (countLandings 3 first secondInstant : Int)
-      else if secondInstant.epochSecond < firstInstant.epochSecond then
+      else if secondInstant.epochMillis < firstInstant.epochMillis then
         pure (-(countLandings 3 second firstInstant : Int))
       else
         pure 0

@@ -6,7 +6,8 @@ namespace A12Kernel.Conformance.DateTimeAggregate
 
 open A12Kernel
 
-private def instant (epochSecond : Int) : Instant := { epochSecond }
+private def instant (epochSecond : Int) : Instant :=
+  Instant.ofEpochSecond epochSecond
 
 /- Both selectors use exact instant chronology and retain the left value on ties. -/
 example :
