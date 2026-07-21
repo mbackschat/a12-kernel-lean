@@ -91,14 +91,14 @@ def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   | .number info => some { id := declaration.id, info }
   | .boolean | .confirm | .string | .temporal _ _ => none
 
-def toPresenceField? (declaration : FlatFieldDecl) : Option FlatField :=
+def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   match declaration.policy.kind with
-  | .number info => some (.number { id := declaration.id, info })
-  | .boolean => some (.boolean { id := declaration.id })
-  | .confirm => some (.confirm { id := declaration.id })
-  | .string => some (.string { id := declaration.id })
+  | .number info => .number { id := declaration.id, info }
+  | .boolean => .boolean { id := declaration.id }
+  | .confirm => .confirm { id := declaration.id }
+  | .string => .string { id := declaration.id }
   | .temporal kind components =>
-      some (.temporal { id := declaration.id, kind, components })
+      .temporal { id := declaration.id, kind, components }
 
 end FlatFieldDecl
 
@@ -140,7 +140,6 @@ inductive ElabError where
   | unsupportedOperator (op : SurfaceComparisonOp)
   | literalKindMismatch (path : List String) (expected actual : SurfaceScalarKind)
   | illegalConfirmLiteral (path : List String)
-  | unsupportedPresenceKind (path : List String) (actual : SurfaceScalarKind)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -394,18 +393,8 @@ private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
   | .greaterEqual => some .greaterEqual
   | _ => none
 
-def FlatComparison.matchesDecl (comparison : FlatComparison)
-    (declaration : FlatFieldDecl) : Bool :=
-  match comparison, declaration.policy.kind with
-  | .number _ field _, .number info => field.id == declaration.id && field.info == info
-  | .boolean _ field _, .boolean => field.id == declaration.id
-  | .confirm _ field, .confirm => field.id == declaration.id
-  | .string _ field _, .string => field.id == declaration.id
-  | .stringLength _ field _, .string => field.id == declaration.id
-  | _, _ => false
-
 def FlatField.matchesDecl (field : FlatField) (declaration : FlatFieldDecl) : Bool :=
-  declaration.toPresenceField? == some field
+  declaration.toPresenceField == field
 
 def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -413,9 +402,7 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .error _ => false
 
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
-  match model.lookupUniqueId comparison.fieldId with
-  | .ok declaration => declaration.repeatableScope.isEmpty && comparison.matchesDecl declaration
-  | .error _ => false
+  comparison.fields.all model.admitsField
 
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
@@ -453,14 +440,10 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.toPresenceField? with
-      | some field => pure (.fieldFilled field)
-      | none => throw (.unsupportedPresenceKind declaration.path declaration.policy.kind.surfaceKind)
+      pure (.fieldFilled declaration.toPresenceField)
   | .fieldNotFilled reference => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.toPresenceField? with
-      | some field => pure (.fieldNotFilled field)
-      | none => throw (.unsupportedPresenceKind declaration.path declaration.policy.kind.surfaceKind)
+      pure (.fieldNotFilled declaration.toPresenceField)
   | .compare op reference literal => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.policy.kind with

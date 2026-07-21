@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.DateTimeComparison
 
 /-! # Temporal format-component admission
 

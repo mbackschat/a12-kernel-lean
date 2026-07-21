@@ -376,10 +376,10 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
-#print axioms A12Kernel.admitsComparison_has_unique_matching_declaration
+#print axioms A12Kernel.admitsComparison_fields_admitted
 #print axioms A12Kernel.checkContext_lookup_coherent
 #print axioms A12Kernel.checkContext_admittedField_coherent
-#print axioms A12Kernel.checkContext_admittedComparison_coherent
+#print axioms A12Kernel.checkContext_admittedComparison_field_coherent
 #print axioms A12Kernel.checkContext_lookup_error_is_malformed
 #print axioms A12Kernel.checkContext_lookup_error_observes_unknown
 

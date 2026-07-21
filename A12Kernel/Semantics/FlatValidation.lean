@@ -3,13 +3,14 @@ import A12Kernel.Semantics.NumericTolerance
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
+import A12Kernel.Semantics.DateTimeComparison
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
 A small core for resolved, non-repeatable field references. It covers the admitted
 direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
 direct String equality and inequality, four String `Length` ordering comparisons,
-presence predicates, and `And`/`Or`.
+resolved two-field temporal comparison, presence predicates, and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -85,17 +86,26 @@ inductive FlatComparison where
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   | string (op : EqualityOp) (field : FlatStringField) (expected : String)
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
+  | temporal (op : TemporalComparisonOp) (left right : FlatTemporalField)
   deriving Repr, DecidableEq
 
 namespace FlatComparison
 
-/-- The single resolved field read by every atomic comparison in the flat fragment. -/
-def fieldId : FlatComparison → FieldId
-  | .number _ field _ => field.id
-  | .boolean _ field _ => field.id
-  | .confirm _ field => field.id
-  | .string _ field _ => field.id
-  | .stringLength _ field _ => field.id
+/-- Every resolved field read by an atomic comparison, in authored operand order. -/
+def fields : FlatComparison → List FlatField
+  | .number _ field _ => [.number field]
+  | .boolean _ field _ => [.boolean field]
+  | .confirm _ field => [.confirm field]
+  | .string _ field _ => [.string field]
+  | .stringLength _ field _ => [.string field]
+  | .temporal _ left right => [.temporal left, .temporal right]
+
+def fieldIds (comparison : FlatComparison) : List FieldId :=
+  comparison.fields.map FlatField.id
+
+/-- Partial validation may expose a comparison only when every field it reads is relevant. -/
+def allRelevant (comparison : FlatComparison) (isRelevant : FieldId → Bool) : Bool :=
+  comparison.fieldIds.all isRelevant
 
 end FlatComparison
 
@@ -177,6 +187,17 @@ def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : Flat
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
+/-- Resolve one checked temporal field to the runtime's exact instant coordinate. The kind check is defensive for low-level callers; checked model contexts already enforce it during formal checking. -/
+def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
+    (field : FlatTemporalField) : SimpleComparisonOperand Instant :=
+  match context.observeValidationAt field.id with
+  | .empty => .notEvaluated
+  | .value (.temporal kind instant) =>
+      if kind == field.kind then .value instant true else .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/
 def SimpleComparisonOperand.evalDirectString
@@ -201,6 +222,9 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       (context.resolveDirectStringComparisonOperand field).evalDirectString op expected
   | .stringLength op field expected =>
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
+  | .temporal op left right =>
+      op.evalInstant (context.resolveTemporalComparisonOperand left)
+        (context.resolveTemporalComparisonOperand right)
 
 def FlatField.observeValidation (context : FlatContext) : FlatField → CellObservation
   | .number field => context.observeValidationAt field.id
@@ -244,7 +268,7 @@ def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdic
 def FlatCondition.evalSelected (context : FlatContext)
     (isRelevant : FlatRelevance := fun _ => true) : FlatCondition → Verdict
   | .compare comparison =>
-      if isRelevant comparison.fieldId then comparison.eval context else .unknown
+      if comparison.allRelevant isRelevant then comparison.eval context else .unknown
   | .fieldFilled field =>
       if isRelevant field.id then field.evalFilled context else .unknown
   | .fieldNotFilled field =>
