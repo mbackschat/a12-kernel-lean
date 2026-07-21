@@ -9,6 +9,21 @@ namespace A12Kernel
 
 namespace DateParts
 
+namespace Shift
+
+/-- Day selected by a month shift once the target month's length is known. -/
+def monthLandingDay (source : DateParts) (targetLastDay : Nat) : Nat :=
+  min source.day targetLastDay
+
+/-- Day selected by a year shift once both February-sensitive month lengths are known. -/
+def yearLandingDay (source : DateParts) (sourceLastDay targetLastDay : Nat) : Nat :=
+  let sourceIsFebruaryEnd :=
+    source.month == 2 && source.day == sourceLastDay
+  if sourceIsFebruaryEnd then targetLastDay
+  else monthLandingDay source targetLastDay
+
+end Shift
+
 /-- Shift a positive-era Gregorian year/month pair by an integer number of months using Euclidean division. Calendar reality remains the following constructor's responsibility. -/
 private def shiftedYearMonth (parts : DateParts) (offset : Int) : Int × Nat :=
   let totalMonths := parts.year * 12 + Int.ofNat parts.month - 1 + offset
@@ -25,7 +40,7 @@ private def addMonths? (date : CivilDate) (offset : Int) : Option CivilDate :=
   | none => none
   | some targetLastDay =>
       CivilDate.ofYmd? targetYear targetMonth
-        (min date.parts.day targetLastDay)
+        (DateParts.Shift.monthLandingDay date.parts targetLastDay)
 
 /-- Gregorian year shift with the kernel's distinct last-of-February preservation. Other days merely clamp to the target month's length. -/
 private def addYears? (date : CivilDate) (offset : Int) : Option CivilDate :=
@@ -34,12 +49,8 @@ private def addYears? (date : CivilDate) (offset : Int) : Option CivilDate :=
       DateParts.daysInMonth? date.parts.year date.parts.month,
       DateParts.daysInMonth? targetYear date.parts.month with
   | some sourceLastDay, some targetLastDay =>
-      let sourceIsFebruaryEnd :=
-        date.parts.month == 2 && date.parts.day == sourceLastDay
-      let targetDay :=
-        if sourceIsFebruaryEnd then targetLastDay
-        else min date.parts.day targetLastDay
-      CivilDate.ofYmd? targetYear date.parts.month targetDay
+      CivilDate.ofYmd? targetYear date.parts.month
+        (DateParts.Shift.yearLandingDay date.parts sourceLastDay targetLastDay)
   | _, _ => none
 
 end CivilDate
