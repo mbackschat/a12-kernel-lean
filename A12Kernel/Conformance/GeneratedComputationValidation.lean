@@ -349,6 +349,24 @@ example :
       some (.targetNotNumber broken.id) := by
   native_decide
 
+/- The computed target cannot appear in the common or any alternative precondition; diagnostics retain the authored guard position. -/
+example :
+    assemblyErrorOf
+        { bothHoldingDifferent with
+          commonPrecondition := some
+            (.and (.fieldFilled gate.id)
+              (.or (.fieldNotFilled broken.id) (.fieldFilled target.id))) } =
+        some (.targetSelfReference .common) ∧
+      assemblyErrorOf
+        { bothHoldingDifferent with
+          first := alternative (.fieldFilled target.id) 1 } =
+        some (.targetSelfReference (.alternative 1)) ∧
+      assemblyErrorOf
+        { bothHoldingDifferent with
+          remaining := [alternative (.fieldFilled target.id) 3] } =
+        some (.targetSelfReference (.alternative 3)) := by
+  native_decide
+
 /- The direct-ID route rejects repeatable guard and target declarations before constructing a flat rule. -/
 example :
     assemblyErrorIn repeatableModel

@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `1fc3050` (`feat(validation): integrate common computation guards`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,095-declaration trust audit passed.
+- Semantic baseline before the current capsule: `e2f0f4a` (`feat(validation): support guarded computation tables`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,110-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Generalize the existing checked generated-validation owner in place from exactly two to two-or-more guarded literal-Number alternatives. Preserve declaration order, per-alternative tolerance and diagnostic indices, the common guard, and distinct first-match versus all-alternatives consumers without adding a parallel table type.
+Reject computed-target self-reference in every common or alternative guard of the existing checked literal-Number fragment. Preserve nested syntax detection and guard position, and leave operation-side checking for the future expression-valued owner.
 
-Success means a reached third alternative participates in both consumers, the generated mismatch body is a left fold, every operation remains in declaration order, and scale errors keep one-based positions. Zero/singleton/default authoring remains excluded. The canonical spec already owns this behavior, so no outbound ledger entry is created.
+Success means common, first, and later alternative target references fail before phase lowering; a trusted law covers every admitted nested condition shape; and references to other fields remain unchanged. The newly found kernel authoring rule is canonicalized in `spec/09` and queued outbound as `SPEC-2026-07-21-06`.
 
 ## Frontier queue
 
@@ -24,7 +24,8 @@ Success means a reached third alternative participates in both consumers, the ge
 - **Satisfied — semantic-index field-fill operands:** `acdd384` reuses the resolved lookup plus extensional validation tally and ordered computation-slot owners.
 - **Satisfied — guarded-table common precondition:** `9894c86` left-conjoins the resolved common condition into every guarded alternative and carries the exact holding/not-true/poison laws through the resolved String consumer.
 - **Satisfied — generated-validation common precondition:** `1fc3050` carries one checked common condition through both phases and keeps validation's guard outside the complete mismatch disjunction.
-- **Active — guarded-table breadth:** widen the same checked literal owner to two-or-more alternatives with one declaration-ordered remainder; retain zero/singleton/default authoring as a separate boundary.
+- **Satisfied — guarded-table breadth:** `e2f0f4a` widens the same checked literal owner to two-or-more alternatives with one declaration-ordered remainder.
+- **Active — computed-target guard rejection:** reject the target ID in common and every alternative guard, with operation-side checking retained for expression-valued authoring.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
 - **Missing fact — String targets:** needs declaration-owned length and line-break policy; do not infer unconstrained policy from erased model facts.

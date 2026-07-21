@@ -271,6 +271,7 @@ run_cmd do
 #print axioms A12Kernel.stringAlternatives_holdingCommon_preserves
 #print axioms A12Kernel.stringAlternatives_notTrueCommon_noValue
 #print axioms A12Kernel.stringAlternatives_poisonedCommon_preserves
+#print axioms A12Kernel.generatedComputationGuard_targetSelfReference_rejected
 #print axioms A12Kernel.guardedLiteralNumber_firstHolds_selects
 #print axioms A12Kernel.guardedLiteralNumber_holdingCommon_firstHolds_selects
 #print axioms A12Kernel.minimumGuardedGeneratedNumberCondition_exact
