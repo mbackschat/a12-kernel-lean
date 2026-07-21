@@ -190,6 +190,7 @@ run_cmd do
 #print axioms A12Kernel.formalCheck_presentEmpty_observes_empty
 #print axioms A12Kernel.formalCheck_parsedEmptyString_eq_presentEmpty
 #print axioms A12Kernel.formalCheck_parsedEmptyString_observes_empty
+#print axioms A12Kernel.stringPresence_absent_presentEmpty_separator
 #print axioms A12Kernel.computation_observes_clean_value
 #print axioms A12Kernel.computation_observes_single_poison
 #print axioms A12Kernel.required_empty_observes_unknown_in_validation
@@ -268,6 +269,7 @@ run_cmd do
 #print axioms A12Kernel.withRequiredFinding_preserves_computation
 #print axioms A12Kernel.applyAbsoluteRequired_preserves_computation
 #print axioms A12Kernel.requiredFinding_empty_phase_split
+#print axioms A12Kernel.absoluteRequired_string_presentEmpty_preservesPlacement
 
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed

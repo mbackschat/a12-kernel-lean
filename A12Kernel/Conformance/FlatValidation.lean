@@ -24,6 +24,9 @@ private def brokenField : FlatNumberField :=
 private def signedNumberField : FlatNumberField :=
   { id := 5, info := { scale := 0, signed := true } }
 
+private def stringField : FlatStringField :=
+  { id := 6 }
+
 private def checked (kind : FieldKind) (raw : RawCell) : CheckedCell :=
   formalCheck { kind := kind } raw
 
@@ -59,6 +62,9 @@ private def omissionAndBrokenContext : FlatContext where
 
 private def malformedConfirmContext : FlatContext where
   read _ := checked .confirm (.parsed (.conf false))
+
+private def stringContext (raw : RawCell) : FlatContext where
+  read _ := checked .string raw
 
 private def numberIsZero : FlatCondition :=
   .compare (.number .equal numberField 0)
@@ -119,6 +125,12 @@ private def brokenNumberIsLessThanOne : FlatCondition :=
 
 private def booleanNotFilled : FlatCondition :=
   .fieldNotFilled (.boolean booleanField)
+
+private def stringFilled : FlatCondition :=
+  .fieldFilled (.string stringField)
+
+private def stringNotFilled : FlatCondition :=
+  .fieldNotFilled (.string stringField)
 
 private def brokenFilled : FlatCondition :=
   .fieldFilled (.number brokenField)
@@ -223,6 +235,27 @@ example : confirmIsTrue.evalSelected filledContext = Verdict.fired .value := by
   decide
 
 example : booleanNotFilled.evalSelected emptyContext = Verdict.fired .omission := by
+  decide
+
+/- String presence observes an evaluation value, not physical placement. -/
+example : stringFilled.evalSelected (stringContext .empty) = .notFired := by
+  decide
+
+example : stringFilled.evalSelected (stringContext .presentEmpty) = .notFired := by
+  decide
+
+example : stringFilled.evalSelected (stringContext (.parsed (.str ""))) = .notFired := by
+  decide
+
+example : stringNotFilled.evalSelected (stringContext .presentEmpty) =
+    .fired .omission := by
+  decide
+
+example : stringFilled.evalSelected (stringContext (.parsed (.str "A"))) =
+    .fired .value := by
+  decide
+
+example : stringFilled.evalSelected (stringContext (.rejected .malformed)) = .unknown := by
   decide
 
 example : brokenFilled.evalSelected branchingContext = Verdict.unknown := by

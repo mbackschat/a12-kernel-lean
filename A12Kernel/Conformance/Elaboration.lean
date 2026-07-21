@@ -37,12 +37,16 @@ private def repeatableCountDecl : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } },
     repeatableScope := [10] }
 
+private def noteDecl : FlatFieldDecl :=
+  { id := 7, groupPath := ["Order"], name := "Note",
+    policy := { kind := .string } }
+
 private def repeatableItems : RepeatableGroupDecl :=
   { level := 10, path := ["Order", "Items"] }
 
 private def model : FlatModel :=
   { fields := [quantityDecl, expressDecl, confirmDecl, ancestorLimitDecl,
-      localLimitDecl, externalCodeDecl, repeatableCountDecl],
+      localLimitDecl, externalCodeDecl, repeatableCountDecl, noteDecl],
     repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 
@@ -94,6 +98,11 @@ example : coreOf (elaborate model ["Order"]
 example : coreOf (elaborate model ["Order"]
     (.fieldNotFilled (absolute ["Order"] "Quantity"))) =
     some (.fieldNotFilled (.number { id := 0, info := numberInfo })) := by
+  native_decide
+
+example : coreOf (elaborate model ["Order"]
+    (.fieldFilled (absolute ["Order"] "Note"))) =
+    some (.fieldFilled (.string { id := 7 })) := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]

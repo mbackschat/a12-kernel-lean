@@ -52,9 +52,11 @@ private def FlatModel.resolveGeneratedGuardField
     (model : FlatModel) (field : FieldId) :
     Except GeneratedComputationValidationError FlatField := do
   let declaration ← model.resolveNonrepeatableDeclarationById field
-  match declaration.toPresenceField? with
-  | some resolved => pure resolved
-  | none => throw (.unsupportedGuardField field)
+  match declaration.policy.kind with
+  | .number info => pure (.number { id := declaration.id, info })
+  | .boolean => pure (.boolean { id := declaration.id })
+  | .confirm => pure (.confirm { id := declaration.id })
+  | .string => throw (.unsupportedGuardField field)
 
 private def FlatModel.resolveGeneratedNumberTarget
     (model : FlatModel) (field : FieldId) :

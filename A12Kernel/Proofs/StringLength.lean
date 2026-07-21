@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.NumericComparison
+import A12Kernel.Proofs.Observation
 import A12Kernel.Semantics.FlatValidation
 
 /-! # A12Kernel.Proofs.StringLength — exact operator-sensitive empty-String laws -/
@@ -46,5 +47,20 @@ theorem emptyString_operatorDistinction (context : FlatContext) (field : FlatStr
     emptyStringLengthLess_fires_omission context field lessThreshold empty lessHolds,
     emptyStringLengthGreaterEqual_fires_value context field greaterEqualThreshold empty
       greaterEqualHolds⟩
+
+/-- Physical String placement is not presence: absent and present-empty checked cells differ, while both presence predicates observe the same empty evaluation state. -/
+theorem stringPresence_absent_presentEmpty_separator (field : FlatStringField) :
+    let policy : FieldPolicy := { kind := .string }
+    let absent : FlatContext := { read := fun _ => formalCheck policy .empty }
+    let presentEmpty : FlatContext :=
+      { read := fun _ => formalCheck policy .presentEmpty }
+    formalCheck policy .empty ≠ formalCheck policy .presentEmpty ∧
+      (FlatField.string field).evalFilled absent =
+        (FlatField.string field).evalFilled presentEmpty ∧
+      (FlatField.string field).evalNotFilled absent =
+        (FlatField.string field).evalNotFilled presentEmpty := by
+  simp [FlatField.evalFilled, FlatField.evalNotFilled,
+    FlatField.observeValidation, FlatContext.observeValidationAt,
+    formalCheck, observeCell]
 
 end A12Kernel

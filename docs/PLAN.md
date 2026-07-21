@@ -4,7 +4,7 @@ This file is the volatile continuation checkpoint. Stable purpose and delivery r
 
 ## Verified baseline
 
-The verified semantic baseline before the current correction was commit `8f0f029`. The current baseline is the introducing commit for the completed finite Berlin 2024 calendar-day capsule below; its focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding semantic capsules passed the same proportional gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
+The verified semantic baseline before the current correction was commit `8f0f029`. The current baseline is the introducing commit for the completed checked String presence/requiredness capsule below; its focused elaboration, full build, retained-evidence replay, and trust audit passed. The preceding semantic capsules passed the same proportional gates, and the theory/support/evidence ratios remain within the permanent limits in [`CLAUDE.md`](../CLAUDE.md).
 
 The project currently has:
 
@@ -78,7 +78,7 @@ The IF198 handoff exposed a representation error at the existing scalar boundary
 
 The root correction adds an explicit present-empty parser-boundary state. Absence formal-checks to `rawPresent = false`; present-empty and a parsed empty String formal-check to `rawPresent = true, parsed = none`; all observe as ordinary empty in both phases. Generic laws now establish placement preservation, absent/present-empty inequality, equal empty observation, and parsed-empty-String normalization. The compact conformance cases distinguish the tempting `Option Value` collapse without adding another ingestion, document, or protocol layer.
 
-The canonical specification and accepted sync-ledger entry record a12-dmkits revision `f78f4fc864b7be05f94736070cd2da7bf95d04b3`. Whole-`Document` adaptation, String presence/requiredness, group-content derivation, custom-validator invocation, computation-applied copy behavior, and public transport remain explicit later consumers; maintained external controls establish the correction, while this repository retains no portable IF198 observation.
+The canonical specification and accepted sync-ledger entry record a12-dmkits revision `f78f4fc864b7be05f94736070cd2da7bf95d04b3`. Whole-`Document` adaptation, group-content derivation, custom-validator invocation, computation-applied copy behavior, and public transport remain explicit later consumers; the checked String presence/requiredness capsule below closes the first downstream consumer. Maintained external controls establish the correction, while this repository retains no portable IF198 observation.
 
 The introducing commit passed focused elaboration, `lake build`, `lake test`, `./scripts/check-lean-trust.sh`, `git diff --check`, worktree review, and a local Conventional Commit. It was not pushed.
 
@@ -144,17 +144,31 @@ The red matrix first failed because no day-difference module existed. The comple
 
 This closes levels 1–2 only for fresh resolved labels in the finite spring profile. Mixed Date/DateTime admission, empty/formal operands, polarity/fillability, constructed-Date legacy-calendar identity, other Berlin dates/years, other zones, checked lowering, and protocol exposure remain open. The canonical clause and a12-dmkits reconciliation were already accepted under `SPEC-2026-07-20-08`, so no new outbound ledger entry was created. No calendar framework, timezone database, support mechanism, dependency, or harness was added.
 
-## Immediate next step: repeatable operand-resolution risk audit
+## Completed follow-up audit: repeatable operand-resolution remains blocked at the same owner boundary
 
-Inventory the checked path/star/scope owners, `Document` row addresses, `ReopenedStarDomain`, correlation environment resolution, and resolved aggregate streams. Test the smallest high-risk seam that can turn one checked repeatable operand into an ordered resolved source without inventing the general model/path/relevance layer already rejected by the construction audit. Select a capsule only if current model facts can prove the source declaration, captured outer bindings, row order, and per-source missing metadata; otherwise record the exact missing owner and rotate.
+The proposed one-operand audit does not escape the earlier checked resolved-input construction blocker. `FlatModel` resolves declarations and repeatable ancestry but carries neither repeatability capacity nor a starred path position. `Document` preserves raw placement and row order but supplies no checked-cell view. `ReopenedStarDomain` deliberately begins after first-star splitting, capacity lookup, and hierarchical row construction, while `ResolvedNumericSumSide` additionally needs per-source signedness for empty and uninstantiated sources.
+
+Implementing the narrower-sounding seam would therefore introduce the same general starred-path/model-capacity/checked-read adapter already rejected by the completed construction audit. No duplicate audit record, partial adapter, or code change was added; the plan rotated.
+
+## Completed semantic unit: checked String presence and absolute requiredness
+
+`FlatField` now admits `FlatStringField`, so the existing phase observation and presence evaluator handle String without a kind-specific branch. Absent, present-empty, and parsed `""` inputs all make `FieldFilled` not fire and `FieldNotFilled` fire with OMISSION; a nonempty admitted String fires VALUE, and malformed input remains UNKNOWN. Checked flat lowering resolves nonrepeatable String declarations into the same typed presence boundary.
+
+Absolute nonrepeatable requiredness reuses that generic generated `FieldNotFilled` stage. A required present-empty String retains `rawPresent = true` when `.required` is attached, proving that evaluation emptiness does not erase physical placement. A universal separator law shows that absent and present-empty checked cells differ while both String presence predicates agree. The specialized generated two-alternative computation-validation consumer keeps its prior Number/Boolean/Confirm-only guard contract through an explicit closed-kind gate; generic presence support does not widen that unrelated capsule accidentally.
+
+This is an internal levels 1–2 downstream closure of accepted IF198. Repeatable/parent-gated requiredness, group-content derivation, generated-computation String guards, `Document` adaptation, protocol exposure, and local portable observations remain open. The canonical clause and accepted reconciliation already own the behavior, so no new sync-ledger entry was added.
+
+## Immediate next step: direct String inequality capsule
+
+Audit the existing direct String equality operand resolver against the canonical `!=` clause. Select the capsule only if the same empty-on-either-side suppression, malformed precedence, nonempty comparison, checked lowering, and row-gate behavior can be expressed by extending the closed equality operator without inventing a general String expression framework.
 
 ## Likely next keystone rotation
 
 Reassess the frontier rather than continuing numeric operators by momentum.
 
-The leading candidate is the repeatable operand-resolution and addressing seam that connects checked authored stars/scopes to already-resolved operand streams such as `ResolvedValueListSide`. It has high consumer payoff because current aggregate semantics are executable but still begin after expansion, filtering, scope resolution, and declaration-sensitive missingness. A correct seam would serve independent evaluators, import legality, refactoring preservation, and later multi-level correlation.
+The leading candidate is direct String inequality because it shares the completed equality operand-resolution mechanism and has a source-grounded empty-operand discriminator without reopening path or expression infrastructure.
 
-Select it only if a bounded source-grounded discriminator is ready. Start with the smallest high-risk question—likely multi-level captured outer scope or per-declaration missing-potential retention—rather than a general path framework. If that boundary is not evidence-ready, rotate to the highest-ready keystone among computation scheduling/state transition, the temporal model-zone profile, or checked message integration.
+If that family closes, reassess adjacent String functions only by independent discriminator and consumer payoff. Keep the repeatable operand-resolution seam parked until a source-owned model representation supplies star position, capacities, checked row reads, and per-source metadata; do not retry it under another adapter name.
 
 Choose the next unit by:
 

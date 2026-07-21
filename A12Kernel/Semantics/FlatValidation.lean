@@ -38,6 +38,7 @@ inductive FlatField where
   | number (field : FlatNumberField)
   | boolean (field : FlatBooleanField)
   | confirm (field : FlatConfirmField)
+  | string (field : FlatStringField)
   deriving Repr, DecidableEq
 
 namespace FlatField
@@ -47,6 +48,7 @@ def id : FlatField → FieldId
   | .number field => field.id
   | .boolean field => field.id
   | .confirm field => field.id
+  | .string field => field.id
 
 end FlatField
 
@@ -190,6 +192,7 @@ def FlatField.observeValidation (context : FlatContext) : FlatField → CellObse
   | .number field => context.observeValidationAt field.id
   | .boolean field => context.observeValidationAt field.id
   | .confirm field => context.observeValidationAt field.id
+  | .string field => context.observeValidationAt field.id
 
 def FlatField.evalFilled (field : FlatField) (context : FlatContext) : Verdict :=
   match field.observeValidation context with
