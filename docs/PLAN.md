@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `005efb2` (`feat(semantics): project indexed presence`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,046-declaration trust audit passed.
+- Semantic baseline before the current capsule: `acdd384` (`feat(semantics): classify indexed fill operands`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,083-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close resolved literal-key semantic-index operands inside the existing field-fill quantifier consumers without widening checked paths or index construction. Validation must classify and combine the indexed observation extensionally; computation must place the classified slot at authored order and preserve unread-poison suffix behavior.
+Close optional common-precondition semantics for an already-model-legal guarded computation table by reusing ordered `And`, first-match selection, and the resolved String target consumer. Follow the source-owned left-conjunction expansion and do not add a second selector or a general table authoring layer.
 
-Success means the maintained two-operand validation cases, matched/empty/invalid classifications, both phase gates, tally associativity, and computation poison-order separator are green without a second quantifier scan. The canonical spec already owns this behavior, so no outbound ledger entry is created.
+Success means absent-common identity, payload-order preservation, common holding/not-true/poison laws, alternative-guard suppression, and String target consumption are green. The canonical spec already owns this behavior, so no outbound ledger entry is created.
 
 ## Frontier queue
 
@@ -21,7 +21,8 @@ Success means the maintained two-operand validation cases, matched/empty/invalid
 - **Satisfied — IF193 group presence:** a12-dmkits `7f152509` matches the existing product state and consumer projections introduced by `d19f77e`; do not add another group-state representation.
 - **Satisfied — IF194 nested-star tails:** `7f152509` matches the hierarchical reopened-star mechanism and laws introduced by `d285cb5`; do not add a flat tail flag or parallel aggregate scan.
 - **Satisfied — semantic-index presence:** `005efb2` reuses the resolved lookup and direct-field presence projections across both phases.
-- **Active — semantic-index field-fill operands:** reuse the resolved lookup plus extensional validation tally and ordered computation-slot owners; retain value-only Number scope and exclude path/index construction.
+- **Satisfied — semantic-index field-fill operands:** `acdd384` reuses the resolved lookup plus extensional validation tally and ordered computation-slot owners.
+- **Active — guarded-table common precondition:** left-conjoin the resolved common condition into every guarded alternative; retain checked authoring and generated-validation integration as separate boundaries.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
 - **Missing fact — String targets:** needs declaration-owned length and line-break policy; do not infer unconstrained policy from erased model facts.

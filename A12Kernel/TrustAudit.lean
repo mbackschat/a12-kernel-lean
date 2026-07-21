@@ -225,6 +225,11 @@ run_cmd do
 #print axioms A12Kernel.alternativeSelection_noMatch_iff
 #print axioms A12Kernel.alternativeSelection_holdingOrderObservable
 #print axioms A12Kernel.alternativeSelection_holdingPoisonOrderObservable
+#print axioms A12Kernel.expandCommonPrecondition_none
+#print axioms A12Kernel.expandCommonPrecondition_preserves_operations
+#print axioms A12Kernel.alternativeSelection_holdingCommon_preserves
+#print axioms A12Kernel.alternativeSelection_notTrueCommon_noMatch
+#print axioms A12Kernel.alternativeSelection_poisonedCommon_aborts
 #print axioms A12Kernel.computationFillQuantifier_poisonHead_preserves
 #print axioms A12Kernel.allFieldsFilled_emptyHead_shortCircuits
 #print axioms A12Kernel.notAllFieldsFilled_emptyHead_shortCircuits
@@ -263,6 +268,9 @@ run_cmd do
 #print axioms A12Kernel.stringAlternatives_holdingHead_suffixIrrelevant
 #print axioms A12Kernel.stringAlternatives_selectedNoValue_doesNotFallThrough
 #print axioms A12Kernel.stringAlternatives_evaluate_of_outcome
+#print axioms A12Kernel.stringAlternatives_holdingCommon_preserves
+#print axioms A12Kernel.stringAlternatives_notTrueCommon_noValue
+#print axioms A12Kernel.stringAlternatives_poisonedCommon_preserves
 #print axioms A12Kernel.twoAlternativeLiteralNumber_firstHolds_selects
 #print axioms A12Kernel.twoAlternativeGeneratedNumberCondition_exact
 #print axioms A12Kernel.generatedLiteralNumberMismatch_withoutTolerance

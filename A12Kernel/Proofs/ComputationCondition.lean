@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # A12Kernel.Proofs.ComputationCondition — ordered computation-control laws
 
-These laws characterize presence after computation-phase observation, the complete left-to-right decision table for the admitted `And`/`Or` fragment, and operation-neutral first-match alternative selection. They do not claim that the external kernel exposes the internal `poison` cause or that this fragment covers comparison or quantifier leaves, checked paths, operation evaluation, or model-level alternative legality.
+These laws characterize presence after computation-phase observation, the complete left-to-right decision table for the admitted `And`/`Or` fragment, optional common-precondition expansion, and operation-neutral first-match alternative selection. They do not claim that the external kernel exposes the internal `poison` cause or that this fragment covers comparison or quantifier leaves, checked paths, operation evaluation, or model-level alternative legality.
 -/
 
 namespace A12Kernel
@@ -232,5 +232,72 @@ theorem alternativeSelection_holdingPoisonOrderObservable
   simp only [ComputationAlternative.selectFirst, holds, poisoned]
   intro impossible
   cases impossible
+
+/-- Omitting a common precondition is definitionally the identity on an already-guarded alternative table. -/
+theorem expandCommonPrecondition_none
+    (alternatives : List (ComputationAlternative Operation)) :
+    ComputationAlternative.expandCommonPrecondition none alternatives =
+      alternatives := by
+  rfl
+
+/-- Common-precondition expansion changes only guards; it preserves operation payloads and declaration order exactly. -/
+theorem expandCommonPrecondition_preserves_operations
+    (commonPrecondition : Option ComputationCondition)
+    (alternatives : List (ComputationAlternative Operation)) :
+    (ComputationAlternative.expandCommonPrecondition
+      commonPrecondition alternatives).map (fun alternative => alternative.operation) =
+        alternatives.map (fun alternative => alternative.operation) := by
+  cases commonPrecondition <;>
+    simp [ComputationAlternative.expandCommonPrecondition]
+
+/-- A holding common precondition leaves the existing first-match result unchanged for every guarded alternative table. -/
+theorem alternativeSelection_holdingCommon_preserves
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (alternatives : List (ComputationAlternative Operation))
+    (commonHolds : common.eval context = .holds) :
+    ComputationAlternative.selectFirst
+        (ComputationAlternative.expandCommonPrecondition
+          (some common) alternatives) context =
+      ComputationAlternative.selectFirst alternatives context := by
+  induction alternatives with
+  | nil => rfl
+  | cons head remaining inductionHypothesis =>
+      simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
+        ComputationAlternative.selectFirst, ComputationCondition.eval, commonHolds]
+      cases headResult : head.precondition.eval context with
+      | holds => rfl
+      | notTrue =>
+          simpa [ComputationAlternative.expandCommonPrecondition] using
+            inductionHypothesis
+      | poison cause => rfl
+
+/-- A clean non-holding common precondition makes every guarded table a clean no-match without evaluating any alternative-specific guard. -/
+theorem alternativeSelection_notTrueCommon_noMatch
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (alternatives : List (ComputationAlternative Operation))
+    (commonNotTrue : common.eval context = .notTrue) :
+    ComputationAlternative.selectFirst
+        (ComputationAlternative.expandCommonPrecondition
+          (some common) alternatives) context = .noMatch := by
+  induction alternatives with
+  | nil => rfl
+  | cons head remaining inductionHypothesis =>
+      simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
+        ComputationAlternative.selectFirst, ComputationCondition.eval, commonNotTrue]
+      simpa [ComputationAlternative.expandCommonPrecondition] using
+        inductionHypothesis
+
+/-- On a nonempty table, a poisoned common precondition aborts at the first expanded guard before its alternative-specific guard can contribute. -/
+theorem alternativeSelection_poisonedCommon_aborts
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (head : ComputationAlternative Operation)
+    (remaining : List (ComputationAlternative Operation))
+    (cause : FormalCause)
+    (commonPoison : common.eval context = .poison cause) :
+    ComputationAlternative.selectFirst
+        (ComputationAlternative.expandCommonPrecondition
+          (some common) (head :: remaining)) context = .poison cause := by
+  simp [ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.selectFirst, ComputationCondition.eval, commonPoison]
 
 end A12Kernel

@@ -2,7 +2,7 @@ import A12Kernel.Semantics.StringAlternatives
 
 /-! # Resolved String-alternative executable locks
 
-These cases compose the existing first-match selector with one already-resolved String target. They distinguish selection from a wrong scan that resumes after the selected operation produces no value, poison, or target rejection.
+These cases compose common-precondition expansion and the existing first-match selector with one already-resolved String target. They distinguish selection from a wrong scan that resumes after the selected operation produces no value, poison, or target rejection, and lock common-false/common-poison precedence.
 -/
 
 namespace A12Kernel.Conformance.StringAlternatives
@@ -120,6 +120,36 @@ example :
     valueOf ((computation [] .unconstrained (.filled storedSeed)).evaluate
       (context .empty .empty)) =
         some { outcome := .noValue, delta := some .cleared } := by
+  native_decide
+
+/- A clean false common precondition suppresses both a poisoning alternative guard and every operation, producing the ordinary no-match clear. -/
+example :
+    valueOf (((computation
+      [alternative poisonedGuard (.field sourceId),
+       alternative holding (.literal "FALLBACK")]
+      .unconstrained (.filled storedSeed)).withCommonPrecondition
+        (some notHolding)).evaluate
+          (context (.rejected .declaredConstraint) (.rejected .malformed))) =
+      some { outcome := .noValue, delta := some .cleared } := by
+  native_decide
+
+/- A poisoned common precondition aborts before a holding alternative can select its otherwise-safe literal. -/
+example :
+    valueOf (((computation
+      [alternative holding (.literal "FALLBACK")]).withCommonPrecondition
+        (some poisonedGuard)).evaluate
+          (context .empty (.rejected .malformed))) =
+      some { outcome := .poison .malformed, delta := none } := by
+  native_decide
+
+/- A holding common precondition preserves the selected String operation and target result. -/
+example :
+    valueOf (((computation
+      [alternative notHolding (.literal "IGNORED"),
+       alternative holding (.literal "FALLBACK")]).withCommonPrecondition
+        (some holding)).evaluate (context .empty .empty)) =
+      some { outcome := .accepted storedFallback,
+             delta := some (.value storedFallback) } := by
   native_decide
 
 end A12Kernel.Conformance.StringAlternatives
