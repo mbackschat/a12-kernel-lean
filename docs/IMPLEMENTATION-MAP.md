@@ -91,7 +91,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Implemented
 
-- `CheckedCell.WellFormed`, preservation under staged findings, validation-unknown/computation-poison phase laws, and the required-only exception.
+- `CheckedCell α` and `CellObservation α` default to the scalar `Value` but retain any resolved semantic value type through the same placement, finding, and phase boundary. `CheckedCell.WellFormed`, preservation under staged findings, validation-unknown/computation-poison phase laws, and the required-only exception are generic in that value type.
 - `RawCell.presentEmpty` and a parsed empty String retain `rawPresent = true` with no parsed value or finding
 - generic laws distinguish that checked state from absence while proving that both phases observe it as empty.
 - Nonempty parsed String ingestion performs exactly one non-overlapping CRLF-to-LF pass before caching the evaluated value
@@ -106,6 +106,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Accepted [`SPEC-2026-07-21-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-03--empty-string-ingestion-preserves-present-empty-placement) links the a12-dmkits IF198 tests for present-empty String ingestion, presence, and requiredness across both kernel strategies and JVM/Node.
 - this repository retains no matching portable observation.
 - No retained portable observation yet exercises CRLF/LF/lone-CR ingestion
+- Typed-cell generalization is an internal representation law with no new kernel-correspondence claim; concrete Date/Time/DateTime raw classification remains pending.
 
 #### Excluded / next
 

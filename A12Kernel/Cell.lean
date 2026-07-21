@@ -1,7 +1,7 @@
 /- # A12Kernel.Cell — the phase-sensitive cell model
 
 Implements `spec/13`'s phase-sensitive cell boundary as two levels: an invariant
-`CheckedCell` (raw placement + optional parsed value + formal findings), and a
+`CheckedCell` (raw placement + optional typed semantic value + formal findings), and a
 *phase-indexed* read producing a `CellObservation`, where the same formal invalidity
 surfaces as `unknown` in validation but `poison` in computation.
 
@@ -35,26 +35,26 @@ inductive Phase where
 /-- The invariant classification of a raw cell, before any phase reads it. `parsed` is
     `some` exactly when the placement supplies a checked semantic value; a clean
     present-empty placement carries neither a parsed value nor a finding. -/
-structure CheckedCell where
+structure CheckedCell (α : Type := Value) where
   /-- Whether the field has a physical placement. A present-empty cell keeps this true
       while carrying no parsed value. -/
   rawPresent : Bool
-  parsed     : Option Value
+  parsed     : Option α
   findings   : List FormalCause
   deriving Repr, DecidableEq
 
 /-- A phase read of a cell. `unknown` / `poison` are the validation / computation faces of
     formal invalidity; there is **no** empty-substitution here — the operator applies it. -/
-inductive CellObservation where
+inductive CellObservation (α : Type := Value) where
   | empty
-  | value   (v : Value)
+  | value   (v : α)
   | unknown (cause : FormalCause)   -- validation face of a formal error
   | poison  (cause : FormalCause)   -- computation face: aborts the computing instance
   deriving Repr, DecidableEq
 
 -- Implemented in `A12Kernel.Semantics.Observation` as the total functions
 --   formalCheck : FieldPolicy → RawCell → CheckedCell
---   observeCell : Phase → CheckedCell → CellObservation
+--   observeCell : Phase → CheckedCell α → CellObservation α
 -- neither of which may collapse the three states into `Option`.
 
 end A12Kernel

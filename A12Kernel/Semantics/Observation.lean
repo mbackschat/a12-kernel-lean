@@ -63,7 +63,7 @@ inductive RawCell where
     physical placement. A present placement may carry neither a parsed value nor a
     finding; that is the distinct present-empty state. A required finding may validly be
     attached to an absent cell in the later validation pass. -/
-def CheckedCell.WellFormed (cell : CheckedCell) : Prop :=
+def CheckedCell.WellFormed {α : Type} (cell : CheckedCell α) : Prop :=
   cell.rawPresent = false → cell.parsed = none
 
 /-- Whether a parsed value is legal for a field kind. A stored `false` Confirm is not
@@ -99,7 +99,8 @@ def formalCheck (policy : FieldPolicy) : RawCell → CheckedCell
 
 /-- Add a finding discovered after scalar formal checking. Requiredness uses this staged
     boundary only after its generated mandatory condition has been evaluated. -/
-def CheckedCell.withFinding (cell : CheckedCell) (cause : FormalCause) : CheckedCell :=
+def CheckedCell.withFinding {α : Type} (cell : CheckedCell α)
+    (cause : FormalCause) : CheckedCell α :=
   { cell with findings := cell.findings ++ [cause] }
 
 private def firstComputationFinding : List FormalCause → Option FormalCause
@@ -110,7 +111,8 @@ private def firstComputationFinding : List FormalCause → Option FormalCause
 /-- Read a checked cell in the requested phase. Validation exposes the first finding as
     unknown. Computation ignores the validation-scoped required finding but turns any
     ordinary formal invalidity it actually reads into poison. -/
-def observeCell (phase : Phase) (cell : CheckedCell) : CellObservation :=
+def observeCell {α : Type} (phase : Phase)
+    (cell : CheckedCell α) : CellObservation α :=
   let finding := match phase with
     | .validation => cell.findings.head?
     | .computation => firstComputationFinding cell.findings
