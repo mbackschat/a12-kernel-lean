@@ -4,16 +4,16 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline before the current capsule: `9894c86` (`feat(computation): expand common preconditions`).
-- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,094-declaration trust audit passed.
+- Semantic baseline before the current capsule: `1fc3050` (`feat(validation): integrate common computation guards`).
+- Its focused proof build, full `lake build`, 51/51 retained-observation replay, and 11,095-declaration trust audit passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Integrate the optional common precondition into the existing checked two-alternative literal-Number computation and generated-validation fragment. Reuse common expansion for computation, but keep one validation-phase common guard outside the all-alternatives mismatch disjunction.
+Generalize the existing checked generated-validation owner in place from exactly two to two-or-more guarded literal-Number alternatives. Preserve declaration order, per-alternative tolerance and diagnostic indices, the common guard, and distinct first-match versus all-alternatives consumers without adding a parallel table type.
 
-Success means absent-common compatibility, common holding/false/poison separators across both phases, exact generated-condition placement, and checked repeatable-reference rejection are green without widening the table, operation, or condition fragments. The canonical spec already owns this behavior, so no outbound ledger entry is created.
+Success means a reached third alternative participates in both consumers, the generated mismatch body is a left fold, every operation remains in declaration order, and scale errors keep one-based positions. Zero/singleton/default authoring remains excluded. The canonical spec already owns this behavior, so no outbound ledger entry is created.
 
 ## Frontier queue
 
@@ -23,7 +23,8 @@ Success means absent-common compatibility, common holding/false/poison separator
 - **Satisfied — semantic-index presence:** `005efb2` reuses the resolved lookup and direct-field presence projections across both phases.
 - **Satisfied — semantic-index field-fill operands:** `acdd384` reuses the resolved lookup plus extensional validation tally and ordered computation-slot owners.
 - **Satisfied — guarded-table common precondition:** `9894c86` left-conjoins the resolved common condition into every guarded alternative and carries the exact holding/not-true/poison laws through the resolved String consumer.
-- **Active — generated-validation common precondition:** reuse the checked two-literal owner and keep validation's common guard outside the mismatch disjunction; retain general table authoring as a separate boundary.
+- **Satisfied — generated-validation common precondition:** `1fc3050` carries one checked common condition through both phases and keeps validation's guard outside the complete mismatch disjunction.
+- **Active — guarded-table breadth:** widen the same checked literal owner to two-or-more alternatives with one declaration-ordered remainder; retain zero/singleton/default authoring as a separate boundary.
 - **Missing fact — repeatable operand lowering:** needs checked star positions, capacities, row reads, and per-source metadata from one source-owned model representation.
 - **Missing fact — aggregate expressions:** needs a shared checked expression-tree extension with more than one real consumer; do not add an aggregate-only comparison wrapper.
 - **Missing fact — String targets:** needs declaration-owned length and line-break policy; do not infer unconstrained policy from erased model facts.

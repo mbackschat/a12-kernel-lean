@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.GeneratedComputationValidation
 
-/-! # Two-alternative generated-computation validation locks -/
+/-! # Guarded generated-computation validation locks -/
 
 namespace A12Kernel.Conformance.GeneratedComputationValidation
 
@@ -55,7 +55,7 @@ private def alternative (precondition : ComputationCondition)
 
 private def computation (firstGuard : ComputationCondition) (firstValue : Rat)
     (secondGuard : ComputationCondition) (secondValue : Rat) :
-    TwoAlternativeLiteralNumberComputation :=
+    GuardedLiteralNumberComputation :=
   { targetField := target.id
     name := "computedTarget"
     first := alternative firstGuard firstValue
@@ -86,19 +86,19 @@ private def brokenAndHealthy : RawFlatContext where
     else if field = broken.id then .rejected .malformed
     else .empty
 
-private def selectionOf (candidate : TwoAlternativeLiteralNumberComputation)
+private def selectionOf (candidate : GuardedLiteralNumberComputation)
     (raw : RawFlatContext) :
     ComputationAlternativeSelection DecodedNumericLiteral :=
   candidate.selectFirst { read := (model.checkContext raw).read }
 
-private def outcomeOf (candidate : TwoAlternativeLiteralNumberComputation)
+private def outcomeOf (candidate : GuardedLiteralNumberComputation)
     (raw : RawFlatContext) : Option FlatRuleOutcome :=
   match assembleGeneratedLiteralNumberRule model candidate with
   | .error _ => none
   | .ok rule => some (rule.evalFull raw true)
 
 private def assemblyErrorIn (checkedModel : FlatModel)
-    (candidate : TwoAlternativeLiteralNumberComputation) :
+    (candidate : GuardedLiteralNumberComputation) :
     Option GeneratedComputationValidationError :=
   match assembleGeneratedLiteralNumberRule checkedModel candidate with
   | .ok _ => none
@@ -114,12 +114,12 @@ private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
     messageType
     text }
 
-private def bothHoldingDifferent : TwoAlternativeLiteralNumberComputation :=
+private def bothHoldingDifferent : GuardedLiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
 
 private def tolerateFirst (range : NumericToleranceRange)
-    (candidate : TwoAlternativeLiteralNumberComputation) :
-    TwoAlternativeLiteralNumberComputation :=
+    (candidate : GuardedLiteralNumberComputation) :
+    GuardedLiteralNumberComputation :=
   { candidate with first := { candidate.first with tolerance := some range } }
 
 /- Computation selects the first holding operation, while generated validation retains the later holding mismatch. -/
@@ -129,6 +129,18 @@ example :
       outcomeOf bothHoldingDifferent
         (bothFilled (.parsed (.num 1))) =
           some (.fired (expectedMessage .value)) := by
+  native_decide
+
+/- A third guarded alternative remains in declaration order for both first-match selection and all-alternatives validation. -/
+example :
+    let candidate :=
+      { computation (.fieldNotFilled gate.id) 90
+          (.fieldNotFilled gate.id) 91 with
+        remaining := [alternative (.fieldFilled gate.id) 3] }
+    selectionOf candidate (bothFilled (.parsed (.num 1))) =
+        .selected (literal 3) ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 1))) =
+        some (.fired (expectedMessage .value)) := by
   native_decide
 
 /- Equal results under the same overlapping guard do not create a mismatch. -/
@@ -268,10 +280,18 @@ example :
           precondition := .fieldFilled gate.id
           operation := { value := 2, authoredScale := 1 }
         } }
+    let thirdMismatch :=
+      { bothHoldingDifferent with
+        remaining := [{
+          precondition := .fieldFilled gate.id
+          operation := { value := 3, authoredScale := 1 }
+        }] }
     assemblyErrorOf firstMismatch =
         some (.operationScaleMismatch 1 0 1) ∧
       assemblyErrorOf secondMismatch =
-        some (.operationScaleMismatch 2 0 1) := by
+        some (.operationScaleMismatch 2 0 1) ∧
+      assemblyErrorOf thirdMismatch =
+        some (.operationScaleMismatch 3 0 1) := by
   native_decide
 
 /- A tolerance alternative bypasses the ordinary exact-comparison scale gate. -/
@@ -283,7 +303,15 @@ example :
           operation := { value := 1, authoredScale := 1 }
           tolerance := some .range1
         } }
-    (assembleGeneratedLiteralNumberRule model firstMismatch).isOk = true := by
+    let thirdMismatch :=
+      { bothHoldingDifferent with
+        remaining := [{
+          precondition := .fieldFilled gate.id
+          operation := { value := 3, authoredScale := 1 }
+          tolerance := some .range1
+        }] }
+    (assembleGeneratedLiteralNumberRule model firstMismatch).isOk = true ∧
+      (assembleGeneratedLiteralNumberRule model thirdMismatch).isOk = true := by
   native_decide
 
 /- String presence guards are consumed in both phases without widening the Number target or table shape. -/
@@ -333,6 +361,10 @@ example :
       assemblyErrorIn repeatableModel
         { bothHoldingDifferent with
           commonPrecondition := some (.fieldFilled repeatedGate.id) } =
+        some (.resolve (.repeatableReference repeatedGate.path)) ∧
+      assemblyErrorIn repeatableModel
+        { bothHoldingDifferent with
+          remaining := [alternative (.fieldFilled repeatedGate.id) 3] } =
         some (.resolve (.repeatableReference repeatedGate.path)) := by
   native_decide
 
