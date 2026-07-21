@@ -64,7 +64,7 @@ Use one long-lived root session per coherent semantic feature set. Prompts and w
 
 ### Stable capability profiles
 
-Use these stable capability profiles rather than persistent product or model names. Map them to the best currently available model and the lowest adequate reasoning effort when starting an agent:
+Use these stable capability profiles rather than persistent product or model names. [`docs/CODEX-MODEL-SELECTION.md`](docs/CODEX-MODEL-SELECTION.md) owns their current concrete mapping. Every minted root or subagent prompt must explicitly name the abstract profile, requested model, requested reasoning, and whether the active surface actually enforces that selection.
 
 - **BEST** — ambiguous, high-risk, or foundational work requiring deep semantic judgment, such as conflicting evidence, representation design, generic proof architecture, or adversarial review of a keystone mechanism. Use sparingly and increase reasoning only for the identified hard decision, not automatically for the whole feature set.
 - **REGULAR** — the default for bounded professional work: source and Lean audits, implementation from a closed decision table, ordinary theorem work, code review, structured synthesis, and cold consumer probes.
@@ -109,7 +109,11 @@ A cold consumer probe normally uses REGULAR rather than BEST so exceptional infe
 ### Delegation prompt template
 
 ```text
+Agent role: bounded subagent
 Agent profile: REGULAR
+Requested model: GPT-5.6 Terra
+Requested reasoning: Medium
+Selection enforcement: <enforced by spawning surface | advisory only; spawning surface cannot select>
 Mode: read-only
 Context: warm-bounded
 Worktree: shared checkout; do not create a worktree
@@ -158,6 +162,8 @@ Before spawning, the root must answer:
 5. What is the lowest adequate capability profile?
 
 If any of the first four answers is no, keep the work in the root session. Otherwise give the subagent one bounded objective, allowed and forbidden sources, the required result shape, and an explicit no-write instruction.
+
+Resolve the selected profile through [`docs/CODEX-MODEL-SELECTION.md`](docs/CODEX-MODEL-SELECTION.md) whenever minting a prompt. Prompt wording does not change the running model: select the requested model and reasoning through the active Codex surface when supported, and disclose when a subagent request is advisory because the spawning interface cannot enforce it.
 
 ## ⚠️ HARD RULE — clean-room reimplementation; never link, call, or transcribe the kernel
 
