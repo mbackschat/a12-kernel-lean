@@ -84,7 +84,7 @@ The introducing commit passed focused elaboration, `lake build`, `lake test`, `.
 
 ## Immediate next step: artifact-only aggregate consumer probe
 
-After the empty-String placement correction closes, run one bounded artifact-only consumer-adequacy probe before choosing the next family. This is a deliberately cold, read-only knowledge-transport check under the long-lived-session rules in [`CLAUDE.md`](../CLAUDE.md), not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
+After the empty-String placement correction closes, run one bounded artifact-only consumer-adequacy probe before choosing the next family. This is a deliberately cold, read-only knowledge-transport check, not a shipment, external implementation, protocol, qualification campaign, or permanent suite.
 
 Give an isolated reader only the canonical spec clauses, numeric aggregate Lean definitions, proofs, conformance cases, implementation-map boundary, and consumer guidance. Ask it to act as:
 
