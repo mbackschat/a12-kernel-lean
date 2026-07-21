@@ -476,6 +476,13 @@ run_cmd do
 #print axioms A12Kernel.numericSumAggregate_tail_signedness_separator
 #print axioms A12Kernel.numericSumAggregate_singleton_having
 #print axioms A12Kernel.numericSumAggregate_firstUnknown
+#print axioms A12Kernel.reopenedStar_selectedLeaf_closed
+#print axioms A12Kernel.reopenedStar_unbounded_open
+#print axioms A12Kernel.reopenedStar_finite_closed_iff
+#print axioms A12Kernel.reopenedStarRows_open_of_head
+#print axioms A12Kernel.reopenedStarRows_coordinate_irrelevant
+#print axioms A12Kernel.reopenedStar_toResolvedSide_tail
+#print axioms A12Kernel.reopenedStar_toResolvedSide_missingPotential
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_left
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_right
 #print axioms A12Kernel.numericArithmeticOutcome_divide_notEvaluated_left
