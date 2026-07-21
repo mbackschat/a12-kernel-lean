@@ -28,6 +28,7 @@ import A12Kernel.Semantics.StarCompleteness
 import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.ValidationFillQuantifier
+import A12Kernel.Semantics.GroupPresence
 import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.Enumeration
