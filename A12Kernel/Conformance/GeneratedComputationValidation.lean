@@ -173,6 +173,36 @@ example :
         some .notFired := by
   native_decide
 
+/- A cleanly false common precondition suppresses both computation selection and the complete generated mismatch disjunction. -/
+example :
+    let candidate :=
+      { bothHoldingDifferent with
+        commonPrecondition := some (.fieldNotFilled gate.id) }
+    selectionOf candidate (bothFilled (.parsed (.num 2))) = .noMatch ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 2))) =
+        some .notFired := by
+  native_decide
+
+/- A holding common precondition preserves first-match computation while generated validation still retains the later holding mismatch. -/
+example :
+    let candidate :=
+      { bothHoldingDifferent with
+        commonPrecondition := some (.fieldFilled gate.id) }
+    selectionOf candidate (bothFilled (.parsed (.num 1))) =
+        .selected (literal 1) ∧
+      outcomeOf candidate (bothFilled (.parsed (.num 1))) =
+        some (.fired (expectedMessage .value)) := by
+  native_decide
+
+/- A malformed common guard preserves the phase split before any alternative-specific guard contributes. -/
+example :
+    let candidate :=
+      { bothHoldingDifferent with
+        commonPrecondition := some (.fieldFilled broken.id) }
+    selectionOf candidate brokenAndHealthy = .poison .malformed ∧
+      outcomeOf candidate brokenAndHealthy = some .unknown := by
+  native_decide
+
 /- An authored conjunction remains a conjunction in generated validation; one false conjunct keeps the differing first row silent. -/
 example :
     let firstGuard :=
@@ -299,7 +329,11 @@ example :
         some (.resolve (.repeatableReference repeatedGate.path)) ∧
       assemblyErrorIn repeatableModel
         { bothHoldingDifferent with targetField := repeatedTarget.id } =
-        some (.resolve (.repeatableReference repeatedTarget.path)) := by
+        some (.resolve (.repeatableReference repeatedTarget.path)) ∧
+      assemblyErrorIn repeatableModel
+        { bothHoldingDifferent with
+          commonPrecondition := some (.fieldFilled repeatedGate.id) } =
+        some (.resolve (.repeatableReference repeatedGate.path)) := by
   native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation

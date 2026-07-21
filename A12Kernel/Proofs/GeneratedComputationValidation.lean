@@ -1,21 +1,38 @@
 import A12Kernel.Elaboration.GeneratedComputationValidation
+import A12Kernel.Proofs.ComputationCondition
 
 /-! # Two-alternative generated-computation validation laws
 
-These laws cover only the exact structural desugaring, first-match reuse, and target-filled gate of the admitted literal-Number capsule. They do not equate computation-phase guard evaluation with validation-phase evaluation.
+These laws cover only the exact structural desugaring, common-precondition placement, first-match reuse, and target-filled gate of the admitted literal-Number capsule. They do not equate computation-phase guard evaluation with validation-phase evaluation.
 -/
 
 namespace A12Kernel
 
-/-- A holding first guard delegates to the existing first-match selector and leaves the second row irrelevant. -/
+/-- Without a common precondition, a holding first guard delegates to the existing first-match selector and leaves the second row irrelevant. -/
 theorem twoAlternativeLiteralNumber_firstHolds_selects
     (computation : TwoAlternativeLiteralNumberComputation)
     (context : ScalarComputationContext)
+    (noCommon : computation.commonPrecondition = none)
     (holds : computation.first.precondition.eval context = .holds) :
     computation.selectFirst context =
       .selected computation.first.operation := by
   simp only [TwoAlternativeLiteralNumberComputation.selectFirst,
+    noCommon, ComputationAlternative.expandCommonPrecondition,
     ComputationAlternative.selectFirst, holds]
+
+/-- A holding common precondition preserves the ordinary first-holding-row selection for the checked two-alternative fragment. -/
+theorem twoAlternativeLiteralNumber_holdingCommon_firstHolds_selects
+    (computation : TwoAlternativeLiteralNumberComputation)
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (hasCommon : computation.commonPrecondition = some common)
+    (commonHolds : common.eval context = .holds)
+    (firstHolds : computation.first.precondition.eval context = .holds) :
+    computation.selectFirst context =
+      .selected computation.first.operation := by
+  simp [TwoAlternativeLiteralNumberComputation.selectFirst, hasCommon,
+    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.selectFirst, ComputationCondition.eval,
+    commonHolds, firstHolds]
 
 /-- The generated condition contains both guarded mismatches in declaration order; no first-match decision occurs in this desugaring. -/
 theorem twoAlternativeGeneratedNumberCondition_exact
@@ -32,6 +49,24 @@ theorem twoAlternativeGeneratedNumberCondition_exact
             firstTolerance)
           (generatedLiteralNumberMismatch target secondGuard secondOperation
             secondTolerance)) := by
+  rfl
+
+/-- A present common validation guard sits once outside the all-alternatives disjunction and inside the target-filled gate. -/
+theorem twoAlternativeGeneratedNumberCondition_withCommon_exact
+    (target : FlatNumberField) (common : FlatCondition)
+    (firstGuard secondGuard : FlatCondition)
+    (firstOperation secondOperation : Rat)
+    (firstTolerance secondTolerance : Option NumericToleranceRange) :
+    twoAlternativeGeneratedNumberCondition target
+        firstGuard firstOperation firstTolerance
+        secondGuard secondOperation secondTolerance (some common) =
+      .and (.fieldFilled (.number target))
+        (.and common
+          (.or
+            (generatedLiteralNumberMismatch target firstGuard firstOperation
+              firstTolerance)
+            (generatedLiteralNumberMismatch target secondGuard secondOperation
+              secondTolerance))) := by
   rfl
 
 /-- Omitted tolerance metadata produces the source-level strict mismatch branch. -/
