@@ -1,9 +1,9 @@
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Proofs.ComputationCondition
 
-/-! # Guarded generated-computation validation laws
+/-! # Literal generated-computation validation laws
 
-These laws cover only declaration-order recovery, structural mismatch desugaring, common-precondition placement, first-match reuse, and the target-filled gate of the admitted guarded literal-Number capsule. They do not equate computation-phase guard evaluation with validation-phase evaluation.
+These laws cover the singleton/guarded table split, declaration-order recovery, structural mismatch desugaring, common-precondition placement, first-match reuse, and the target-filled gate of the admitted literal-Number capsule. They do not equate computation-phase guard evaluation with validation-phase evaluation.
 -/
 
 namespace A12Kernel
@@ -20,37 +20,54 @@ theorem generatedComputationGuard_targetSelfReference_rejected
 
 /-- Without a common precondition, a holding first guard delegates to the existing first-match selector and leaves every later row irrelevant. -/
 theorem guardedLiteralNumber_firstHolds_selects
-    (computation : GuardedLiteralNumberComputation)
+    (alternatives : GuardedLiteralNumberAlternatives)
     (context : ScalarComputationContext)
-    (noCommon : computation.commonPrecondition = none)
-    (holds : computation.first.precondition.eval context = .holds) :
-    computation.selectFirst context =
-      .selected computation.first.operation := by
-  simp [GuardedLiteralNumberComputation.selectFirst,
-    GuardedLiteralNumberComputation.declaredAlternatives,
-    noCommon, ComputationAlternative.expandCommonPrecondition,
+    (holds : alternatives.first.precondition.eval context = .holds) :
+    alternatives.selectFirst none context =
+      .selected alternatives.first.operation := by
+  simp [GuardedLiteralNumberAlternatives.selectFirst,
+    GuardedLiteralNumberAlternatives.declaredAlternatives,
+    ComputationAlternative.expandCommonPrecondition,
     ComputationAlternative.selectFirst, holds]
 
 /-- A holding common precondition preserves the ordinary first-holding-row selection for the checked guarded fragment. -/
 theorem guardedLiteralNumber_holdingCommon_firstHolds_selects
-    (computation : GuardedLiteralNumberComputation)
+    (alternatives : GuardedLiteralNumberAlternatives)
     (context : ScalarComputationContext) (common : ComputationCondition)
-    (hasCommon : computation.commonPrecondition = some common)
     (commonHolds : common.eval context = .holds)
-    (firstHolds : computation.first.precondition.eval context = .holds) :
-    computation.selectFirst context =
-      .selected computation.first.operation := by
-  simp [GuardedLiteralNumberComputation.selectFirst,
-    GuardedLiteralNumberComputation.declaredAlternatives, hasCommon,
+    (firstHolds : alternatives.first.precondition.eval context = .holds) :
+    alternatives.selectFirst (some common) context =
+      .selected alternatives.first.operation := by
+  simp [GuardedLiteralNumberAlternatives.selectFirst,
+    GuardedLiteralNumberAlternatives.declaredAlternatives,
     ComputationAlternative.expandCommonPrecondition,
     ComputationAlternative.selectFirst, ComputationCondition.eval,
     commonHolds, firstHolds]
+
+/-- A singleton with no authored guard and no common precondition selects directly without inventing an always-true condition. -/
+theorem singleLiteralNumber_unconditional_selects
+    (alternative : SingleLiteralNumberComputationAlternative)
+    (context : ScalarComputationContext)
+    (unconditional : alternative.precondition = none) :
+    alternative.selectFirst none context = .selected alternative.operation := by
+  simp [SingleLiteralNumberComputationAlternative.selectFirst, unconditional]
+
+/-- A holding common precondition is the sole runtime guard for an otherwise-unconditional singleton. -/
+theorem singleLiteralNumber_holdingCommon_selects
+    (alternative : SingleLiteralNumberComputationAlternative)
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (unconditional : alternative.precondition = none)
+    (commonHolds : common.eval context = .holds) :
+    alternative.selectFirst (some common) context =
+      .selected alternative.operation := by
+  simp [SingleLiteralNumberComputationAlternative.selectFirst, unconditional,
+    ComputationAlternative.selectFirst, commonHolds]
 
 /-- The minimum two-branch table is a left-to-right disjunction below the target-filled gate; no first-match decision occurs in this desugaring. -/
 theorem minimumGuardedGeneratedNumberCondition_exact
     (target : FlatNumberField)
     (firstMismatch secondMismatch : FlatCondition) :
-    guardedGeneratedNumberCondition target none firstMismatch [secondMismatch] =
+    generatedNumberCondition target none firstMismatch [secondMismatch] =
       .and (.fieldFilled (.number target))
         (.or firstMismatch secondMismatch) := by
   rfl
@@ -59,7 +76,7 @@ theorem minimumGuardedGeneratedNumberCondition_exact
 theorem minimumGuardedGeneratedNumberCondition_withCommon_exact
     (target : FlatNumberField) (common : FlatCondition)
     (firstMismatch secondMismatch : FlatCondition) :
-    guardedGeneratedNumberCondition target (some common)
+    generatedNumberCondition target (some common)
         firstMismatch [secondMismatch] =
       .and (.fieldFilled (.number target))
         (.and common
@@ -76,11 +93,11 @@ theorem disjoinGeneratedNumberMismatches_append
 
 /-- The guarded source representation exposes every alternative in declaration order. -/
 theorem guardedLiteralNumber_declaredOperations_exact
-    (computation : GuardedLiteralNumberComputation) :
-    computation.declaredAlternatives.map (fun alternative => alternative.operation) =
-      computation.first.operation :: computation.second.operation ::
-        computation.remaining.map (fun alternative => alternative.operation) := by
-  simp [GuardedLiteralNumberComputation.declaredAlternatives]
+    (alternatives : GuardedLiteralNumberAlternatives) :
+    alternatives.declaredAlternatives.map (fun alternative => alternative.operation) =
+      alternatives.first.operation :: alternatives.second.operation ::
+        alternatives.remaining.map (fun alternative => alternative.operation) := by
+  simp [GuardedLiteralNumberAlternatives.declaredAlternatives]
 
 /-- Omitted tolerance metadata produces the source-level strict mismatch branch. -/
 theorem generatedLiteralNumberMismatch_withoutTolerance
@@ -105,6 +122,16 @@ theorem literalNumberAlternative_tolerance_selectionIrrelevant
       alternative.toComputationAlternative := by
   rfl
 
+/-- Singleton tolerance metadata is likewise invisible to its computation selector. -/
+theorem singleLiteralNumber_tolerance_selectionIrrelevant
+    (alternative : SingleLiteralNumberComputationAlternative)
+    (tolerance : Option NumericToleranceRange)
+    (common : Option ComputationCondition)
+    (context : ScalarComputationContext) :
+    ({ alternative with tolerance := tolerance }).selectFirst common context =
+      alternative.selectFirst common context := by
+  rfl
+
 /-- An empty target suppresses the complete generated mismatch table, independently of the target-instance content bit. -/
 theorem generatedNumberCondition_emptyTarget_notFired
     (target : FlatNumberField)
@@ -112,11 +139,11 @@ theorem generatedNumberCondition_emptyTarget_notFired
     (firstMismatch : FlatCondition) (remainingMismatches : List FlatCondition)
     (context : FlatContext) (targetHasContent : Bool)
     (empty : (FlatField.number target).observeValidation context = .empty) :
-    (guardedGeneratedNumberCondition target commonGuard
+    (generatedNumberCondition target commonGuard
       firstMismatch remainingMismatches).evalFull
         context targetHasContent = .notFired := by
   cases targetHasContent <;>
-    simp [guardedGeneratedNumberCondition,
+    simp [generatedNumberCondition,
       FlatCondition.evalFull, FlatCondition.canFireOnEmpty,
       FlatCondition.evalSelected, FlatField.evalFilled, empty]
 
