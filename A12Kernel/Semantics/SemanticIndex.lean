@@ -1,7 +1,9 @@
 import A12Kernel.Semantics.ComputationCondition
+import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.ValidationFillQuantifier
 
 /-! # Resolved literal-key semantic-index lookup
 
@@ -77,6 +79,16 @@ def computationFilled (column : ResolvedSemanticIndexColumn)
 def computationNotFilled (column : ResolvedSemanticIndexColumn)
     (token : String) : ComputationConditionResult :=
   (column.lookupValue .computation token).evalComputationNotFilled
+
+/-- Classify one resolved indexed validation operand for composition with the existing extensional field-fill tally. -/
+def validationFillTally (column : ResolvedSemanticIndexColumn)
+    (token : String) : ValidationFillTally :=
+  (column.lookupValue .validation token).asValidationFillTally
+
+/-- Classify one resolved indexed computation operand for insertion at its authored position in the existing ordered scan. -/
+def computationFillSlot (column : ResolvedSemanticIndexColumn)
+    (token : String) : ComputationFillSlot :=
+  (column.lookupValue .computation token).asComputationFillSlot
 
 end ResolvedSemanticIndexColumn
 

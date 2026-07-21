@@ -3,7 +3,7 @@ import A12Kernel.Semantics.FieldFillQuantifier
 
 /-! # Resolved computation field-fill quantifiers
 
-This capsule evaluates the seven field-fill quantifiers over an already-expanded ordered slot stream. It preserves the semantic difference between an instantiated empty cell and a declared-but-uninstantiated slot, and it stops at each operator's deciding cell so an unread invalid suffix cannot poison the computation. Path resolution, group expansion, repetition ordering, filtering, and validation-mode truth/polarity remain separate boundaries.
+This capsule classifies reached computation observations and evaluates the seven field-fill quantifiers over an already-expanded ordered slot stream. It preserves the semantic difference between an instantiated empty cell and a declared-but-uninstantiated slot, and it stops at each operator's deciding cell so an unread invalid suffix cannot poison the computation. Path resolution, group expansion, repetition ordering, filtering, and validation-mode truth/polarity remain separate boundaries.
 -/
 
 namespace A12Kernel
@@ -15,6 +15,18 @@ inductive ComputationFillSlot where
   | uninstantiated
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
+
+namespace CellObservation
+
+/-- Classify one reached computation read for an ordered field-fill scan. Either formal-unavailability face becomes the exact poison carried by the slot. -/
+@[simp]
+def asComputationFillSlot : CellObservation → ComputationFillSlot
+  | .empty => .empty
+  | .value _ => .filled
+  | .unknown cause => .poison cause
+  | .poison cause => .poison cause
+
+end CellObservation
 
 namespace FieldFillQuantifier
 

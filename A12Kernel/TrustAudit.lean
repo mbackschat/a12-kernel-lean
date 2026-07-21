@@ -242,6 +242,7 @@ run_cmd do
 #print axioms A12Kernel.fieldsNotCollectivelyFilled_filledThenPoison_preserves
 #print axioms A12Kernel.computationFillQuantifier_readOrderObservable
 #print axioms A12Kernel.validationAllFieldsFilled_cleanDeclaredRange_fires
+#print axioms A12Kernel.validationFillTally_combine_associative
 #print axioms A12Kernel.validationAllFieldsFilled_unknown_prevents
 #print axioms A12Kernel.validationNoFieldFilled_zeroKnownFilled_fires
 #print axioms A12Kernel.validationAtLeastOne_filledWitness_fires
@@ -548,6 +549,10 @@ run_cmd do
 #print axioms A12Kernel.semanticIndex_cleanNoMatch_presence
 #print axioms A12Kernel.semanticIndex_validation_cleanMatch_presence_ignores_unavailableKey
 #print axioms A12Kernel.semanticIndex_computation_unavailableKey_presence
+#print axioms A12Kernel.semanticIndex_cleanNoMatch_fillOperand
+#print axioms A12Kernel.semanticIndex_validation_cleanMatch_fillTally_ignores_unavailableKey
+#print axioms A12Kernel.semanticIndex_computation_unavailableKey_fillSlot
+#print axioms A12Kernel.semanticIndex_computationFillSlot_orderObservable
 #print axioms A12Kernel.enumerationCategory_lookup_head
 #print axioms A12Kernel.enumerationCategory_lookup_skip
 #print axioms A12Kernel.enumeration_stored_resolves_exactly

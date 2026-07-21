@@ -2,7 +2,7 @@ import A12Kernel.Semantics.SemanticIndex
 
 /-! # Resolved literal-key semantic-index conformance
 
-These cases separate validation's match-first policy from computation's column-strict policy. The input column is already normalized and checked: `entries` contains only uniquely resolvable keys, while `unavailableKey` records that at least one empty, duplicate, or malformed key was excluded.
+These cases separate validation's match-first policy from computation's column-strict policy across value, scalar-presence, and field-fill-operand consumers. The input column is already normalized and checked: `entries` contains only uniquely resolvable keys, while `unavailableKey` records that at least one empty, duplicate, or malformed key was excluded.
 -/
 
 namespace A12Kernel
@@ -150,6 +150,49 @@ example :
       invalidMatch.computationNotFilled "wanted" = .poison .declaredConstraint ∧
       unavailableMatch.computationFilled "wanted" = .poison .malformed ∧
       unavailableMatch.computationNotFilled "wanted" = .poison .malformed := by
+  native_decide
+
+/- An indexed operand contributes to the same extensional validation tally as an ordinary resolved cell. This locks the maintained two-operand `All`/`AtLeastOne`/`No` cases. -/
+example :
+    let matched := indexColumn [indexEntry "wanted" (numberCell 7)]
+    let noMatch := indexColumn [indexEntry "other" (numberCell 7)]
+    let filledOther : ValidationFillTally :=
+      { filled := 1, empty := 0, unknown := 0, uninstantiated := 0 }
+    let emptyOther : ValidationFillTally :=
+      { filled := 0, empty := 1, unknown := 0, uninstantiated := 0 }
+    FieldFillQuantifier.allFieldsFilled.evalValidation
+        ((matched.validationFillTally "wanted").combine filledOther) =
+          .fired .value ∧
+      FieldFillQuantifier.allFieldsFilled.evalValidation
+        ((noMatch.validationFillTally "wanted").combine filledOther) =
+          .falseOrUnknown ∧
+      FieldFillQuantifier.atLeastOneFieldFilled.evalValidation
+        ((matched.validationFillTally "wanted").combine emptyOther) =
+          .fired .value ∧
+      FieldFillQuantifier.atLeastOneFieldFilled.evalValidation
+        ((noMatch.validationFillTally "wanted").combine emptyOther) =
+          .falseOrUnknown ∧
+      FieldFillQuantifier.noFieldFilled.evalValidation
+        ((noMatch.validationFillTally "wanted").combine emptyOther) =
+          .fired .omission := by
+  native_decide
+
+/- The indexed computation slot preserves ordered scan behavior: a prior filled witness can decide before an unavailable column, while reaching that column first poisons. -/
+example :
+    let matched := indexColumn [indexEntry "wanted" (numberCell 7)]
+    let noMatch := indexColumn [indexEntry "other" (numberCell 7)]
+    let invalidMatch := indexColumn [indexEntry "wanted" invalidNumberCell]
+    let unavailableMatch := indexColumn
+      [indexEntry "wanted" (numberCell 7)] (some .malformed)
+    matched.computationFillSlot "wanted" = .filled ∧
+      noMatch.computationFillSlot "wanted" = .empty ∧
+      invalidMatch.computationFillSlot "wanted" = .poison .declaredConstraint ∧
+      unavailableMatch.computationFillSlot "wanted" = .poison .malformed ∧
+      FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
+        [.filled, unavailableMatch.computationFillSlot "wanted"] = .holds ∧
+      FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
+        [unavailableMatch.computationFillSlot "wanted", .filled] =
+          .poison .malformed := by
   native_decide
 
 end A12Kernel

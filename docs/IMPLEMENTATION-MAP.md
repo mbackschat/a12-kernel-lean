@@ -498,7 +498,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Implemented
 
 - Resolved literal-key value lookup over unique canonical entries plus an unavailable-column marker
-- validation clean-match-before-column-invalidity, computation column-invalidity-before-match, clean no-match/matched-empty equivalence, selected-target phase observation, nonmatching-target irrelevance, signedness-aware empty-Number polarity, and shared validation/computation `FieldFilled`/`FieldNotFilled` projections
+- validation clean-match-before-column-invalidity, computation column-invalidity-before-match, clean no-match/matched-empty equivalence, selected-target phase observation, nonmatching-target irrelevance, signedness-aware empty-Number polarity, shared validation/computation `FieldFilled`/`FieldNotFilled`, and indexed field-fill tally/ordered-slot projections
 - model validation including field/group hierarchy separation and path-derived repeatable-scope coherence
 - order-independent unique ID/path lookup
 - shared parent walking
@@ -519,9 +519,9 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded / next
 
-- **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value consumer with kind-independent scalar presence.
+- **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value consumer with kind-independent scalar presence and field-fill operands.
 - Parent-relative and bare forms remain outside the public correlation operation.
-- Semantic-index key checking/normalization, fill-quantifier consumers, field-keyed indices, checked path integration, named labels, quoting, `RuleGroup`, concrete parser/renderer, nested/multi-star paths, and general repeatable lookup remain excluded
+- Semantic-index key checking/normalization, field-keyed indices, checked path integration, named labels, quoting, `RuleGroup`, concrete parser/renderer, nested/multi-star paths, and general repeatable lookup remain excluded
 - not every excluded or rejected syntax has a retained diagnostic
 
 ### §11 — computations
@@ -618,7 +618,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - The verdict algebra preserves VALUE/OMISSION precedence and unknown
 - numeric fillability supplies directional polarity across direct comparisons, admitted arithmetic including resolved power, and fixed tolerance.
-- The seven resolved unfiltered field-fill quantifiers consume an extensional four-count tally, preserve declared/instantiated/mixed ranges, treat unavailable cells as neither filled nor empty, and expose fired polarity versus exact collapsed `FALSE_OR_UNKNOWN`
+- The seven resolved unfiltered field-fill quantifiers classify instantiated observations, combine adjacent ranges by count addition, preserve declared/instantiated/mixed ranges, treat unavailable cells as neither filled nor empty, and expose fired polarity versus exact collapsed `FALSE_OR_UNKNOWN`; semantic-index reads now supply both validation tallies and ordered computation slots through the same phase lookup
 - trusted laws separate the two `NotExactlyOne` firing regions, the mixed predicate from `NotAll`, and validation collapse from computation poison.
 - Resolved group presence independently folds admission, error, and three-level relevance, then gives scalar predicates, fixed-list predicates, strict numeric count, and parent-requiredness their consumer-specific projections.
 - The reopened-star completeness boundary recursively derives structural tail missingness per actual parent and feeds the existing resolved-side disjunction without changing operator directions.
@@ -638,7 +638,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded / next
 
-- **Implemented internally for the named clauses:** all seven unfiltered field-fill operators over a caller-supplied resolved tally
+- **Implemented internally for the named clauses:** all seven unfiltered field-fill operators over a caller-supplied resolved tally, with generic instantiated-observation classification, tally composition, and one resolved indexed-operand projection
 - resolved scalar/list/count/relative-required group-presence projections over caller-supplied group slices
 - hierarchical structural-tail derivation over a caller-supplied reopened tree
 - reduced fixed-right Number/String-Length validation
@@ -651,7 +651,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - Checked group-instance/descendant enumeration and wildcardable relevance construction
   - checked construction of reopened trees and ordered cell streams from authored/model/document inputs
   - field-fill authored expansion
-  - checked-cell/tally construction
+  - general checked-cell/tally and ordered-slot stream construction beyond the indexed operand
   - `Having` discovery, lowering, and evaluation
   - row eligibility
   - physical read traces

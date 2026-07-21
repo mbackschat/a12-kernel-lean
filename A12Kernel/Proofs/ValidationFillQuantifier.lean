@@ -12,6 +12,16 @@ private def validationTally
     (filled empty unknown uninstantiated : Nat) : ValidationFillTally :=
   { filled, empty, unknown, uninstantiated }
 
+/-- Extensional validation classification is independent of how adjacent resolved operand ranges are grouped. -/
+theorem validationFillTally_combine_associative
+    (first second third : ValidationFillTally) :
+    (first.combine second).combine third =
+      first.combine (second.combine third) := by
+  cases first
+  cases second
+  cases third
+  simp [ValidationFillTally.combine, Nat.add_assoc]
+
 /-- `AllFieldsFilled` fires exactly at the clean declared boundary, including a vacuous leaf range before any whole-condition row gate. -/
 theorem validationAllFieldsFilled_cleanDeclaredRange_fires
     (filled : Nat) :
