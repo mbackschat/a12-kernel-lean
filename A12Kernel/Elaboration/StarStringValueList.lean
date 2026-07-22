@@ -27,8 +27,7 @@ structure SurfaceStringValueListStarValuesSource where
 structure CheckedStarStringSource (model : FlatModel) where
   source : CheckedStarFieldPath model
   field : FlatStringField
-  fieldOwned : source.declaration.policy.kind = .string
-  fieldIdOwned : field.id = source.declaration.id
+  fieldOwned : source.declaration.toStringValueField? = some field
   declaringGroup : GroupPath
   filter : Option (CheckedStarHaving model source declaringGroup)
 
@@ -44,8 +43,7 @@ structure CheckedStringValueListStarValuesSource (model : FlatModel) where
   quantifier : ValueListQuantifier
   fieldDeclaration : FlatFieldDecl
   field : FlatStringField
-  fieldOwned : fieldDeclaration.policy.kind = .string
-  fieldIdOwned : field.id = fieldDeclaration.id
+  fieldOwned : fieldDeclaration.toStringValueField? = some field
   declarationOwned : model.fields.contains fieldDeclaration = true
   admitted : model.admitsField (.string field) = true
   values : CheckedStarStringSource model
@@ -53,6 +51,7 @@ structure CheckedStringValueListStarValuesSource (model : FlatModel) where
 inductive StarStringValueListElabError where
   | path (error : StarPathElabError)
   | fieldNotString (path : List String) (actual : SurfaceScalarKind)
+  | rawStringValue (path : List String)
   | having (error : CorrelationElabError)
   | emptyValues
   | incoherentCore
@@ -64,8 +63,8 @@ def elaborateStarStringSource (model : FlatModel) (declaringGroup : GroupPath)
     (having : Option SurfaceCorrelatedHaving := none) :
     Except StarStringValueListElabError (CheckedStarStringSource model) := do
   let source ← elaborateStarFieldPath model declaringGroup authored |>.mapError .path
-  match hKind : source.declaration.policy.kind with
-  | .string =>
+  match hField : source.declaration.toStringValueField? with
+  | some field =>
       let filter ← match having with
         | none => pure none
         | some authoredFilter =>
@@ -73,12 +72,16 @@ def elaborateStarStringSource (model : FlatModel) (declaringGroup : GroupPath)
               authoredFilter |>.mapError .having))
       pure {
         source
-        field := { id := source.declaration.id }
-        fieldOwned := hKind
-        fieldIdOwned := rfl
+        field
+        fieldOwned := hField
         declaringGroup
         filter }
-  | actual => throw (.fieldNotString source.declaration.path actual.surfaceKind)
+  | none =>
+      if source.declaration.isRawString then
+        throw (.rawStringValue source.declaration.path)
+      else
+        throw (.fieldNotString source.declaration.path
+          source.declaration.policy.kind.surfaceKind)
 
 /-- Reuse the general checked star path, then retain only an exact String declaration and a nonempty literal side. -/
 def elaborateStarStringValueListSource (model : FlatModel)
@@ -103,17 +106,15 @@ def elaborateStringValueListStarValuesSource (model : FlatModel)
   let values ← elaborateStarStringSource model declaringGroup authored.values authored.having
   let fieldDeclaration ← model.resolveNonrepeatableFieldUnchecked declaringGroup
     authored.field |>.mapError fun error => .path (.resolve error)
-  match hKind : fieldDeclaration.policy.kind with
-  | .string =>
-      let field : FlatStringField := { id := fieldDeclaration.id }
+  match hField : fieldDeclaration.toStringValueField? with
+  | some field =>
       if hOwned : model.fields.contains fieldDeclaration = true then
         if hAdmitted : model.admitsField (.string field) = true then
           pure {
             quantifier := authored.quantifier
             fieldDeclaration
             field
-            fieldOwned := hKind
-            fieldIdOwned := rfl
+            fieldOwned := hField
             declarationOwned := hOwned
             admitted := hAdmitted
             values }
@@ -121,14 +122,19 @@ def elaborateStringValueListStarValuesSource (model : FlatModel)
           throw .incoherentCore
       else
         throw .incoherentCore
-  | actual => throw (.fieldNotString fieldDeclaration.path actual.surfaceKind)
+  | none =>
+      if fieldDeclaration.isRawString then
+        throw (.rawStringValue fieldDeclaration.path)
+      else
+        throw (.fieldNotString fieldDeclaration.path
+          fieldDeclaration.policy.kind.surfaceKind)
 
 namespace CheckedStarStringSource
 
 /-- Classify one resolved leaf through declaration-owned String checking and the existing normalized token cell. -/
 def valueListCell (checked : CheckedStarStringSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .token :=
-  checked.source.stringValueListCell checked.fieldOwned read environment
+  checked.source.stringValueListCell checked.field checked.fieldOwned read environment
 
 /-- Resolve nested topology once and preserve canonical leaf order plus hierarchical omitted-tail state. -/
 def resolvedValueSide (checked : CheckedStarStringSource model)

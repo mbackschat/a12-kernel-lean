@@ -55,6 +55,14 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "customFieldTypeDeclaration"),
           ("path", toJson path), ("expected", toJson "string")])
+  | .rawValueModeRequiresString path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "rawStringValueMode"),
+          ("path", toJson path), ("expected", toJson "string")])
+  | .rawValueModeForbidsCustomType path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "rawStringValueMode"),
+          ("path", toJson path), ("expected", toJson "ordinaryString")])
   | .enumerationMetadataRequiresEnumeration _
   | .enumerationDeclarationRequired _
   | .invalidEnumerationDeclaration _ _ =>
@@ -100,6 +108,14 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
 
 private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .resolve error => pure (resolveDiagnosticAt "$.condition" error)
+  | .rawStringValue path =>
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "rawStringValue"),
+          ("path", toJson path)]))
+  | .rawStringLength path =>
+      pure (.make .operator "$.condition"
+        (Json.mkObj [("operator", toJson "rawStringLength"),
+          ("path", toJson path)]))
   | .unsupportedOperator operator =>
       let tag := Support.ComparisonOperator.ofSurface operator |>.tag
       pure (.make .operator "$.condition"

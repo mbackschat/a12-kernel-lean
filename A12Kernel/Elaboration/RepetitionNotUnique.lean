@@ -26,6 +26,7 @@ inductive RepetitionNotUniqueElabError where
   | duplicateKeyField (field : FieldId)
   | keyPathMismatch (expected actual : GroupPath)
   | unsupportedKeyKind (path : List String) (actual : SurfaceScalarKind)
+  | rawStringValue (path : List String)
   | customStringRequiresPreparedChecking (path : List String)
   | missingReferenceGroup (keyPath : List String)
   | referenceGroupDoesNotContainKey (referenceGroup keyGroup : GroupPath)
@@ -36,7 +37,8 @@ inductive RepetitionNotUniqueElabError where
 /-- One ordinary String key certified against the same star plan used by every component. Prepared custom Strings require SG1's checked-document overlay and are not admitted by this raw-cell route. -/
 structure CheckedRepetitionStringKey (model : FlatModel) where
   source : CheckedStarFieldPath model
-  fieldOwned : source.declaration.policy.kind = .string
+  field : FlatStringField
+  fieldOwned : source.declaration.toStringValueField? = some field
 
 /-- One direct stored-Enumeration key attached to the exact declaration-owned checked token domain. Category access is not part of RNU syntax. -/
 structure CheckedRepetitionEnumerationKey (model : FlatModel) where
@@ -87,7 +89,7 @@ def classify (key : CheckedRepetitionKey model)
       RepetitionKeyComponent.ofNumberValueListCell (key.valueListCell read keyEnvironment)
   | .string key =>
       RepetitionKeyComponent.ofTokenValueListCell
-        (key.source.stringValueListCell key.fieldOwned read keyEnvironment)
+        (key.source.stringValueListCell key.field key.fieldOwned read keyEnvironment)
   | .enumeration key =>
       key.projection.classifyRawKey
         (read keyEnvironment key.source.declaration.id)
@@ -221,12 +223,15 @@ private def certifyRepetitionKey (model : FlatModel)
           | some field => pure (.number { source, field, fieldOwned := hField })
           | none => throw .incoherentCore
       | .string =>
-          match declaration.customType with
-          | some _ => throw (.customStringRequiresPreparedChecking declaration.path)
-          | none =>
-              pure (.string {
-                source
-                fieldOwned := hKind })
+          if declaration.isRawString then
+            throw (.rawStringValue declaration.path)
+          else match declaration.customType with
+            | some _ => throw (.customStringRequiresPreparedChecking declaration.path)
+            | none =>
+                match hField : declaration.toStringValueField? with
+                | some field =>
+                    pure (.string { source, field, fieldOwned := hField })
+                | none => throw .incoherentCore
       | .enumeration =>
           match hEnumeration : declaration.enumeration with
           | none => throw .incoherentCore

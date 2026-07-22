@@ -80,6 +80,12 @@ inductive SurfaceScalarKind where
   | temporal (kind : TemporalKind)
   deriving Repr, DecidableEq
 
+/-- Whether a String declaration exposes an evaluation value. Raw Strings retain storage presence but close every checked value-reading route. -/
+inductive StringValueMode where
+  | evaluated
+  | raw
+  deriving Repr, DecidableEq
+
 namespace SurfaceLiteral
 
 def kind : SurfaceLiteral → SurfaceScalarKind
@@ -130,6 +136,7 @@ inductive SurfaceCondition where
   | enumerationFieldValueMembership (op : ValueListMembershipOp)
       (field : SurfaceTextFieldOperand) (values : List SurfaceTextFieldOperand)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
+  | literalCompareLength (literal : Rat) (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
   | and (left right : SurfaceCondition)
@@ -143,6 +150,7 @@ structure FlatFieldDecl where
   groupPath : GroupPath
   name : String
   policy : FieldPolicy
+  stringValueMode : StringValueMode := .evaluated
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
   repeatableScope : List RepeatableLevel := []
@@ -152,6 +160,15 @@ namespace FlatFieldDecl
 
 def path (declaration : FlatFieldDecl) : List String :=
   declaration.groupPath ++ [declaration.name]
+
+/-- The exact model-owned capability used by every checked String value consumer. Presence deliberately does not use this projection. -/
+def toStringValueField? (declaration : FlatFieldDecl) : Option FlatStringField :=
+  match declaration.policy.kind, declaration.stringValueMode with
+  | .string, .evaluated => some { id := declaration.id }
+  | _, _ => none
+
+def isRawString (declaration : FlatFieldDecl) : Bool :=
+  declaration.policy.kind == .string && declaration.stringValueMode == .raw
 
 /-- Convert one expanded declaration to the shared resolved Number-field representation. -/
 def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
@@ -199,10 +216,11 @@ def toEnumerationTextFieldComparison? (declaration : FlatFieldDecl)
 /-- Resolve one legal direct String/Enumeration declaration to its stored-value runtime operand and independent static-comparability profile. -/
 def toTextFieldComparison? (declaration : FlatFieldDecl) :
     Option (FlatTextFieldOperand × DirectComparableField) :=
-  match declaration.policy.kind, declaration.enumeration with
-  | .string, none => some (.string { id := declaration.id }, .plainString)
-  | .enumeration, some _ => declaration.toEnumerationTextFieldComparison? .stored
-  | _, _ => none
+  match declaration.toStringValueField?, declaration.policy.kind,
+      declaration.enumeration with
+  | some field, .string, none => some (.string field, .plainString)
+  | none, .enumeration, some _ => declaration.toEnumerationTextFieldComparison? .stored
+  | _, _, _ => none
 
 def textComparisonProfileFor? (declaration : FlatFieldDecl)
     (operand : FlatTextFieldOperand) : Option DirectComparableField :=
@@ -239,6 +257,8 @@ inductive ResolveError where
   | duplicateFieldId (id : FieldId)
   | duplicateEntityPath (path : List String)
   | customTypeRequiresString (path : List String)
+  | rawValueModeRequiresString (path : List String)
+  | rawValueModeForbidsCustomType (path : List String)
   | enumerationMetadataRequiresEnumeration (path : List String)
   | enumerationDeclarationRequired (path : List String)
   | invalidEnumerationDeclaration (path : List String)
@@ -273,6 +293,8 @@ inductive ElabError where
   | baseYearScaleMismatch (path : List String) (fieldScale : Nat)
   | temporalLiteralNeedsBaseYear (path : List String)
   | invalidTemporalLiteralComponents (path : List String)
+  | rawStringValue (path : List String)
+  | rawStringLength (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | textFieldOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
@@ -330,6 +352,17 @@ private def customTypeKindMismatch? : List FlatFieldDecl → Option (List String
       | none, _ => customTypeKindMismatch? rest
       | some _, .string => customTypeKindMismatch? rest
       | some _, _ => some declaration.path
+
+private def rawValueModeError? : List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      match declaration.stringValueMode, declaration.policy.kind,
+          declaration.customType with
+      | .evaluated, _, _ => rawValueModeError? rest
+      | .raw, .string, none => rawValueModeError? rest
+      | .raw, .string, some _ =>
+          some (.rawValueModeForbidsCustomType declaration.path)
+      | .raw, _, _ => some (.rawValueModeRequiresString declaration.path)
 
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
@@ -404,6 +437,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | none => pure ()
   match customTypeKindMismatch? model.fields with
   | some path => throw (.customTypeRequiresString path)
+  | none => pure ()
+  match rawValueModeError? model.fields with
+  | some error => throw error
   | none => pure ()
   match enumerationDeclarationError? model.fields with
   | some error => throw error
@@ -600,6 +636,15 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .ok declaration => declaration.repeatableScope.isEmpty && field.matchesDecl declaration
   | .error _ => false
 
+/-- Stronger than presence admission: the exact nonrepeatable declaration must expose an evaluated String value. -/
+def FlatModel.admitsStringValueField (model : FlatModel)
+    (field : FlatStringField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toStringValueField? == some field
+  | .error _ => false
+
 /-- Re-derive one direct textual operand's static profile from the exact model declaration retained by checked core admission. -/
 def FlatModel.directComparableFor? (model : FlatModel)
     (operand : FlatTextFieldOperand) : Option DirectComparableField :=
@@ -689,6 +734,8 @@ def FlatModel.admitsNumberOperandList (model : FlatModel)
 
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
+  | .string _ field _ | .stringLength _ field _ =>
+      model.admitsStringValueField field
   | .textFields _ left right =>
       match model.directComparableFor? left, model.directComparableFor? right with
       | some leftProfile, some rightProfile =>
@@ -888,6 +935,17 @@ private def elaborateEnumerationFieldValueSides (model : FlatModel)
 
 private abbrev ElaboratedStringValueListOperand := List String × FlatTextFieldOperand
 
+private def requireStringValueField (declaration : FlatFieldDecl) :
+    Except ElabError FlatStringField :=
+  match declaration.toStringValueField? with
+  | some field => pure field
+  | none =>
+      if declaration.isRawString then
+        throw (.rawStringValue declaration.path)
+      else
+        throw (.textFieldOperandKindMismatch declaration.path
+          declaration.policy.kind.surfaceKind)
+
 private def duplicateExactValueListOperand? {operand : Type} [BEq operand] :
     List (List String × operand) → Option (List String)
   | [] => none
@@ -902,11 +960,8 @@ private def elaborateStringValueListOperand (model : FlatModel)
     Except ElabError ElaboratedStringValueListOperand := do
   let declaration ←
     (model.resolveNonrepeatableFieldUnchecked declaringGroup surface).mapError .resolve
-  match declaration.toTextFieldComparison? with
-  | some (operand@(.string _), _) => pure (declaration.path, operand)
-  | _ =>
-      throw (.textFieldOperandKindMismatch declaration.path
-        declaration.policy.kind.surfaceKind)
+  let field ← requireStringValueField declaration
+  pure (declaration.path, .string field)
 
 private def elaborateStringLiteralList (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceFieldPath)
@@ -1008,7 +1063,12 @@ private def elaborateTextFieldOperand (model : FlatModel)
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.toTextFieldComparison? with
       | some (operand, profile) => pure (declaration.path, operand, profile)
-      | none => throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
+      | none =>
+          if declaration.isRawString then
+            throw (.rawStringValue declaration.path)
+          else
+            throw (.textFieldOperandKindMismatch declaration.path
+              declaration.policy.kind.surfaceKind)
   | surface@(.category _ _) => do
       let (path, _, operand) ←
         elaborateEnumerationFieldOperand model declaringGroup surface
@@ -1077,7 +1137,11 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve
-      match left.policy.kind, right.policy.kind with
+      if left.isRawString then
+        throw (.rawStringValue left.path)
+      else if right.isRawString then
+        throw (.rawStringValue right.path)
+      else match left.policy.kind, right.policy.kind with
       | .temporal leftKind leftComponents, .temporal rightKind rightComponents =>
           let comparison := op.toTemporal
           if comparison.admitsFormats model.hasBaseYear leftComponents rightComponents then
@@ -1264,12 +1328,13 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           | literal =>
               throw (.literalKindMismatch declaration.path .confirm literal.kind)
       | .string => do
+          let field ← requireStringValueField declaration
           let equality ← match op.toEquality? with
             | some equality => pure equality
             | none => throw (.unsupportedOperator op)
           match literal with
           | .string expected =>
-              pure (.compare (.string equality { id := declaration.id } expected))
+              pure (.compare (.string equality field expected))
           | literal =>
               throw (.literalKindMismatch declaration.path .string literal.kind)
       | .enumeration =>
@@ -1300,13 +1365,29 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           | literal =>
               throw (.literalKindMismatch declaration.path (.temporal kind) literal.kind)
   | .lengthCompare op reference expected => do
-      let lengthOp ← match op.toStringLength? with
-        | some lengthOp => pure lengthOp
-        | none => throw (.unsupportedOperator op)
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.policy.kind with
-      | .string => pure (.compare (.stringLength lengthOp { id := declaration.id } expected))
-      | fieldKind => throw (.lengthOperandKindMismatch declaration.path fieldKind.surfaceKind)
+      if declaration.isRawString then
+        throw (.rawStringLength declaration.path)
+      else
+        let lengthOp ← match op.toStringLength? with
+          | some lengthOp => pure lengthOp
+          | none => throw (.unsupportedOperator op)
+        match declaration.toStringValueField? with
+        | some field => pure (.compare (.stringLength lengthOp field expected))
+        | none => throw (.lengthOperandKindMismatch declaration.path
+            declaration.policy.kind.surfaceKind)
+  | .literalCompareLength expected op reference => do
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      if declaration.isRawString then
+        throw (.rawStringLength declaration.path)
+      else
+        let lengthOp ← match op.swapped.toStringLength? with
+          | some lengthOp => pure lengthOp
+          | none => throw (.unsupportedOperator op)
+        match declaration.toStringValueField? with
+        | some field => pure (.compare (.stringLength lengthOp field expected))
+        | none => throw (.lengthOperandKindMismatch declaration.path
+            declaration.policy.kind.surfaceKind)
   | .and left right => do
       pure (.and (← elaborateCore model declaringGroup left)
         (← elaborateCore model declaringGroup right))

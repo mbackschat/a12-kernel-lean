@@ -42,6 +42,7 @@ import A12Kernel.Proofs.NumericDependency
 import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.ValidationCondition
 import A12Kernel.Proofs.Elaboration
+import A12Kernel.Proofs.RawString
 import A12Kernel.Proofs.CustomFieldElaboration
 import A12Kernel.Proofs.CustomFieldContext
 import A12Kernel.Proofs.CustomFieldEvaluation

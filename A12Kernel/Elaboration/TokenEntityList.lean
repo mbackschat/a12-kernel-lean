@@ -80,6 +80,7 @@ end CheckedTokenEntitySource
 inductive TokenEntityElabError where
   | shape (error : FieldEntityShapeElabError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | rawStringValue (path : List String)
   | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -94,8 +95,11 @@ private def certifyDirectTokenOperand (model : FlatModel)
     Except TokenEntityElabError (CheckedTokenField model) :=
   match hOperand : checkedTokenOperand? declaration with
   | none =>
-      throw (.fieldKindMismatch declaration.path
-        declaration.policy.kind.surfaceKind)
+      if declaration.isRawString then
+        throw (.rawStringValue declaration.path)
+      else
+        throw (.fieldKindMismatch declaration.path
+          declaration.policy.kind.surfaceKind)
   | some (operand, profile) =>
       if hAdmitted : model.admitsField operand.field = true then
         pure {
@@ -114,8 +118,11 @@ private def certifyStarTokenOperand (declaringGroup : GroupPath)
       (CheckedTokenStarSource model) :=
   match hOperand : checkedTokenOperand? source.declaration with
   | none =>
-      throw (.fieldKindMismatch source.declaration.path
-        source.declaration.policy.kind.surfaceKind)
+      if source.declaration.isRawString then
+        throw (.rawStringValue source.declaration.path)
+      else
+        throw (.fieldKindMismatch source.declaration.path
+          source.declaration.policy.kind.surfaceKind)
   | some (operand, profile) => do
       let filter ← match having with
         | none => pure none

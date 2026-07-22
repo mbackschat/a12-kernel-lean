@@ -8,8 +8,12 @@ namespace A12Kernel
 /-- The checked star-specific String field is the terminal declaration's exact identifier, not a caller-selected lookalike. -/
 theorem checkedStarStringSource_fieldId_exact
     (checked : CheckedStarStringSource model) :
-    checked.field.id = checked.source.declaration.id :=
-  checked.fieldIdOwned
+    checked.field.id = checked.source.declaration.id := by
+  have fieldOwned := checked.fieldOwned
+  cases kindEq : checked.source.declaration.policy.kind <;>
+    cases modeEq : checked.source.declaration.stringValueMode
+  all_goals try simp_all [FlatFieldDecl.toStringValueField?]
+  exact (congrArg FlatStringField.id fieldOwned).symm
 
 /-- Any retained String-star filter is checked against the exact candidate and captured repetition environments of its typed source. -/
 theorem checkedStarStringSource_filter_wellFormed

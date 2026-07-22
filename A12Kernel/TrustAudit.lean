@@ -416,10 +416,15 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
 #print axioms A12Kernel.elaborate_checkedFlatCondition_rowGroup
+#print axioms A12Kernel.rawString_toStringValueField_none
+#print axioms A12Kernel.rawString_toPresenceField
+#print axioms A12Kernel.rawStringMaximumLength_noRuntime
+#print axioms A12Kernel.checkedRawStringMaximumLength_integral
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
 #print axioms A12Kernel.directComparableProfile_admitsField
 #print axioms A12Kernel.checkedEnumerationOperand_admitsField
 #print axioms A12Kernel.admitsComparison_fields_admitted
+#print axioms A12Kernel.admitsStringValueField_admitsField
 #print axioms A12Kernel.checkContext_lookup_coherent
 #print axioms A12Kernel.checkContext_admittedField_coherent
 #print axioms A12Kernel.checkContext_admittedComparison_field_coherent

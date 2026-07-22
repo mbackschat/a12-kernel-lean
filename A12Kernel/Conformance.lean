@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.Elaboration
+import A12Kernel.Conformance.RawString
 import A12Kernel.Conformance.CustomFieldElaboration
 import A12Kernel.Conformance.CustomFieldContext
 import A12Kernel.Conformance.CustomFieldEvaluation
