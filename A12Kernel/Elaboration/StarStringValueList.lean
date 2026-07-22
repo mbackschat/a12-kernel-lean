@@ -1,8 +1,8 @@
 import A12Kernel.Elaboration.StarPath
 
-/-! # Checked nested String-star literal value lists
+/-! # Checked nested String-star value lists
 
-This capsule admits one unfiltered general starred String field against a nonempty literal token list. Topology, declaration-owned cell checking, partial relevance, and quantifier behavior remain with their shared owners.
+This capsule admits one unfiltered general starred String field against a nonempty literal token list and the complementary one-direct-field/starred-values shape. Topology, declaration-owned cell checking, partial relevance, and quantifier behavior remain with their shared owners.
 -/
 
 namespace A12Kernel
@@ -14,11 +14,19 @@ structure SurfaceStarStringValueListSource where
   values : List String
   deriving Repr, DecidableEq
 
+/-- One direct nonrepeatable String field tested against a general starred String values column. -/
+structure SurfaceStringValueListStarValuesSource where
+  quantifier : ValueListQuantifier
+  field : SurfaceFieldPath
+  values : SurfaceStarFieldPath
+  deriving Repr, DecidableEq
+
 /-- One general starred field path certified as String-valued against its exact model declaration. -/
 structure CheckedStarStringSource (model : FlatModel) where
   source : CheckedStarFieldPath model
   field : FlatStringField
   fieldOwned : source.declaration.policy.kind = .string
+  fieldIdOwned : field.id = source.declaration.id
 
 /-- A checked nested String star and its nonempty literal side. -/
 structure CheckedStarStringValueListSource (model : FlatModel) where
@@ -27,33 +35,79 @@ structure CheckedStarStringValueListSource (model : FlatModel) where
   firstValue : String
   restValues : List String
 
+/-- A checked direct String field and general starred String values side. -/
+structure CheckedStringValueListStarValuesSource (model : FlatModel) where
+  quantifier : ValueListQuantifier
+  fieldDeclaration : FlatFieldDecl
+  field : FlatStringField
+  fieldOwned : fieldDeclaration.policy.kind = .string
+  fieldIdOwned : field.id = fieldDeclaration.id
+  declarationOwned : model.fields.contains fieldDeclaration = true
+  admitted : model.admitsField (.string field) = true
+  values : CheckedStarStringSource model
+
 inductive StarStringValueListElabError where
   | path (error : StarPathElabError)
   | fieldNotString (path : List String) (actual : SurfaceScalarKind)
   | emptyValues
+  | incoherentCore
   deriving Repr, DecidableEq
+
+/-- Reuse the general checked star path, then retain its exact String declaration. -/
+def elaborateStarStringSource (model : FlatModel) (declaringGroup : GroupPath)
+    (authored : SurfaceStarFieldPath) :
+    Except StarStringValueListElabError (CheckedStarStringSource model) := do
+  let source ← elaborateStarFieldPath model declaringGroup authored |>.mapError .path
+  match hKind : source.declaration.policy.kind with
+  | .string => pure {
+      source
+      field := { id := source.declaration.id }
+      fieldOwned := hKind
+      fieldIdOwned := rfl }
+  | actual => throw (.fieldNotString source.declaration.path actual.surfaceKind)
 
 /-- Reuse the general checked star path, then retain only an exact String declaration and a nonempty literal side. -/
 def elaborateStarStringValueListSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceStarStringValueListSource) :
     Except StarStringValueListElabError
       (CheckedStarStringValueListSource model) := do
-  let source ← elaborateStarFieldPath model declaringGroup authored.fields
-    |>.mapError .path
-  match hKind : source.declaration.policy.kind with
+  let fields ← elaborateStarStringSource model declaringGroup authored.fields
+  match authored.values with
+  | [] => throw .emptyValues
+  | firstValue :: restValues => pure {
+      quantifier := authored.quantifier
+      fields
+      firstValue
+      restValues }
+
+/-- Validate the model through the starred side, then resolve and certify the direct nonrepeatable String field against the same model. -/
+def elaborateStringValueListStarValuesSource (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceStringValueListStarValuesSource) :
+    Except StarStringValueListElabError
+      (CheckedStringValueListStarValuesSource model) := do
+  let values ← elaborateStarStringSource model declaringGroup authored.values
+  let fieldDeclaration ← model.resolveNonrepeatableFieldUnchecked declaringGroup
+    authored.field |>.mapError fun error => .path (.resolve error)
+  match hKind : fieldDeclaration.policy.kind with
   | .string =>
-      match authored.values with
-      | [] => throw .emptyValues
-      | firstValue :: restValues =>
+      let field : FlatStringField := { id := fieldDeclaration.id }
+      if hOwned : model.fields.contains fieldDeclaration = true then
+        if hAdmitted : model.admitsField (.string field) = true then
           pure {
             quantifier := authored.quantifier
-            fields := {
-              source
-              field := { id := source.declaration.id }
-              fieldOwned := hKind }
-            firstValue
-            restValues }
-  | actual => throw (.fieldNotString source.declaration.path actual.surfaceKind)
+            fieldDeclaration
+            field
+            fieldOwned := hKind
+            fieldIdOwned := rfl
+            declarationOwned := hOwned
+            admitted := hAdmitted
+            values }
+        else
+          throw .incoherentCore
+      else
+        throw .incoherentCore
+  | actual => throw (.fieldNotString fieldDeclaration.path actual.surfaceKind)
 
 namespace CheckedStarStringSource
 
@@ -107,5 +161,39 @@ def evaluatePartial (checked : CheckedStarStringValueListSource model)
     (.ofResolved checked.resolvedValuesSide))
 
 end CheckedStarStringValueListSource
+
+namespace CheckedStringValueListStarValuesSource
+
+/-- The direct fields side is checked by its model-owned declaration and contains no star metadata. -/
+def resolvedFieldsSide (checked : CheckedStringValueListStarValuesSource model)
+    (raw : RawFlatContext) : ResolvedValueListSide .token :=
+  flatTokenValueListSide [.string checked.field] (model.checkContext raw)
+
+/-- Partial validation classifies the direct subject before reading it and retains its ordinary per-cell masking fact. -/
+def resolvedPartialFieldsSide
+    (checked : CheckedStringValueListStarValuesSource model)
+    (scope : ValidationRelevanceScope) (raw : RawFlatContext) :
+    ResolvedValueListQuantifierSide .token :=
+  selectedFlatTokenValueListSide [.string checked.field] (model.checkContext raw)
+    (fun id => id == checked.field.id &&
+      scope.coversCell model checked.fieldDeclaration.path [])
+
+/-- Evaluate a direct String fields side against the canonical starred String values side. -/
+def evaluateFull (checked : CheckedStringValueListStarValuesSource model)
+    (document : Document) (outer : Env) (raw : RawFlatContext)
+    (read : Env → FieldId → RawCell) : Except StarAddressingError Verdict := do
+  let values ← checked.values.resolvedValueSide document outer read
+  pure (checked.quantifier.eval (checked.resolvedFieldsSide raw) values)
+
+/-- Partial evaluation preserves direct per-cell relevance and the starred values side's separate wildcard/ancestor extent fact before the common asymmetric dispatcher. -/
+def evaluatePartial (checked : CheckedStringValueListStarValuesSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (read : Env → FieldId → RawCell) :
+    Except StarAddressingError Verdict := do
+  let values ← checked.values.resolvedPartialValueSide document outer scope read
+  pure (checked.quantifier.evalClassified
+    (checked.resolvedPartialFieldsSide scope raw) values)
+
+end CheckedStringValueListStarValuesSource
 
 end A12Kernel
