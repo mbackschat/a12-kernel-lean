@@ -48,4 +48,24 @@ example :
       differenceInYears? 2024 2 29 2024 2 29 = some 0 := by
   native_decide
 
+/- Direct Base Year and its range start are the same date-difference source. -/
+example :
+    baseYearDateDifferenceInMonths 2024 .direct (.range .start) = 0 ∧
+      baseYearDateDifferenceInYears 2024 .direct (.range .start) = 0 := by
+  native_decide
+
+/- The selected end of Base Year's range is eleven whole months, but no whole year, after its direct January source. -/
+example :
+    baseYearDateDifferenceInMonths 2024 .direct (.range .finish) = 11 ∧
+      baseYearDateDifferenceInMonths 2024 (.range .finish) .direct = -11 ∧
+      baseYearDateDifferenceInYears 2024 .direct (.range .finish) = 0 ∧
+      baseYearDateDifferenceInYears 2024 (.range .finish) .direct = 0 := by
+  native_decide
+
+/- Configured Base-Year sources remain floor-free before the stored-Date boundary. -/
+example :
+    baseYearDateDifferenceInMonths 1500 .direct (.range .finish) = 11 ∧
+      baseYearDateDifferenceInYears 1500 .direct (.range .finish) = 0 := by
+  native_decide
+
 end A12Kernel.Conformance.DateDifference
