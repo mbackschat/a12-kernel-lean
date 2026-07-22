@@ -41,9 +41,9 @@ private def repetition (origin : HavingOrigin)
 
 private def diagonalCondition : CorrelatedHaving :=
   .and
-    (.compareRepetitions .equal
+    (CorrelatedHaving.compareRepetitions .equal
       (repetition .inner parentLevel) (repetition .outer parentLevel))
-    (.compareRepetitions .equal
+    (CorrelatedHaving.compareRepetitions .equal
       (repetition .inner parentLevel) (repetition .outer childLevel))
 
 private def diagonalHaving : OriginCheckedCorrelatedHaving :=

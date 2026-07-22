@@ -181,6 +181,25 @@ private def expectedShape : RepeatableGroupDecl × FlatNumberField ×
       { origin := .inner, field := { id := 0, info := { scale := 0, signed := false } } }
       { origin := .outer, field := { id := 0, info := { scale := 0, signed := false } } })
 
+private def forgedOrRule : ResolvedSingleCorrelatedRule :=
+  let count : FlatNumberField :=
+    { id := 0, info := { scale := 0, signed := false } }
+  let weight : FlatNumberField :=
+    { id := 1, info := { scale := 2, signed := false } }
+  let inner : HavingNumberRef := { origin := .inner, field := count }
+  let outer : HavingNumberRef := { origin := .outer, field := count }
+  let condition : CorrelatedHaving := .or
+    (CorrelatedHaving.compareNumbers .equal inner outer)
+    (CorrelatedHaving.compareNumbers .notEqual inner outer)
+  let having : OriginCheckedCorrelatedHaving :=
+    { condition, usesInner := by decide, usesOuter := by decide }
+  { group := items, errorField := count, guardField := count,
+    star := { valueField := weight, having } }
+
+/- Resolved `Or` remains executable, but cannot be presented as a checked result of the conjunction-only authored route. -/
+example : forgedOrRule.wellFormedBool model = false := by
+  native_decide
+
 -- Absolute and relative authoring forms lower to the same checked core.
 example : shapeOf (elaborateSingleCorrelatedRule model ["Order"]
     (absoluteRule (equalCount .inner .outer))) = some expectedShape := by

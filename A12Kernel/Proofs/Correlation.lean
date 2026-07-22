@@ -8,6 +8,10 @@ private theorem K.and_eq_tru_iff (left right : K) :
     K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
   cases left <;> cases right <;> decide
 
+private theorem K.or_eq_tru_iff (left right : K) :
+    K.or left right = .tru ↔ left = .tru ∨ right = .tru := by
+  cases left <;> cases right <;> decide
+
 private theorem anyFilledTruth_congr (field : FlatNumberField)
     (left right : SingleGroupValidationContext) (rows : List RowIndex)
     (agree : ∀ row, row ∈ rows →
@@ -74,21 +78,32 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
     condition.evalTruthIn context frame = .tru ↔
       condition.HoldsIn context frame := by
   induction condition with
-  | compareNumbers op left right =>
-      cases leftResolved : left.resolveIn context frame <;>
-        cases rightResolved : right.resolveIn context frame <;>
-        simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-          CorrelationComparisonOp.evalOperands, leftResolved, rightResolved]
-  | compareRepetitions op left right =>
-      cases leftResolved : frame.rowAt? left <;>
-        cases rightResolved : frame.rowAt? right <;>
-        simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-          CorrelationComparisonOp.evalRows, leftResolved, rightResolved]
+  | leaf leaf =>
+      cases leaf with
+      | compareNumbers op left right =>
+          cases leftResolved : left.resolveIn context frame <;>
+            cases rightResolved : right.resolveIn context frame <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelationComparisonOp.evalOperands, leftResolved, rightResolved]
+      | compareRepetitions op left right =>
+          cases leftResolved : frame.rowAt? left <;>
+            cases rightResolved : frame.rowAt? right <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelationComparisonOp.evalRows, leftResolved, rightResolved]
   | and left right leftInduction rightInduction =>
-      change K.and (left.evalTruthIn context frame) (right.evalTruthIn context frame) =
-          .tru ↔
-        left.HoldsIn context frame ∧ right.HoldsIn context frame
+      change K.and (CorrelatedHaving.evalTruthIn left context frame)
+          (CorrelatedHaving.evalTruthIn right context frame) = .tru ↔
+        CorrelatedHaving.HoldsIn left context frame ∧
+          CorrelatedHaving.HoldsIn right context frame
       rw [K.and_eq_tru_iff, leftInduction, rightInduction]
+  | or left right leftInduction rightInduction =>
+      change K.or (CorrelatedHaving.evalTruthIn left context frame)
+          (CorrelatedHaving.evalTruthIn right context frame) = .tru ↔
+        CorrelatedHaving.HoldsIn left context frame ∨
+          CorrelatedHaving.HoldsIn right context frame
+      rw [K.or_eq_tru_iff, leftInduction, rightInduction]
 
 /-- The established one-group wrapper inherits the shared evaluator/relation bridge. -/
 theorem correlatedHaving_truth_iff_holds (condition : CorrelatedHaving)
@@ -206,6 +221,7 @@ theorem currentRepetition_selfExclusion_false
       { origin := .outer, level := rows.group }).evalTruth rows
       { innerRow := outerRow, outerRow } = .fls := by
   simp [CorrelatedHaving.evalTruth, CorrelatedHaving.evalTruthIn,
+    CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
     CorrelationComparisonOp.evalRows, CorrelationFrame.rowAt?,
     CorrelationFrame.envAt, SingleGroupFilterFrame.toCorrelationFrame,
     SingleGroupValidationContext.envAt, Env.uniqueRowAt?,
@@ -217,12 +233,13 @@ theorem explicitSelfExclusion_drops_outer (star : SingleCorrelatedStar)
     (rows : SingleGroupValidationContext) (outerRow : RowIndex)
     (rest : CorrelatedHaving)
     (condition : star.having.condition =
-      .and (.compareRepetitions .notEqual
+      .and (CorrelatedHaving.compareRepetitions .notEqual
         { origin := .inner, level := rows.group }
         { origin := .outer, level := rows.group }) rest) :
     outerRow ∉ star.select { rows, outerRow } := by
   simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
     CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+    CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
     CorrelationComparisonOp.evalRows,
     CorrelationFrame.rowAt?, CorrelationFrame.envAt,
     SingleGroupValidationContext.envAt,
@@ -268,6 +285,7 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
     exact outerUsableIn
   simp [SingleCorrelatedStar.select, candidate, SingleCorrelatedStar.keeps, condition,
     CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+    CorrelatedHaving.compareNumbers, CorrelatedHavingLeaf.evalTruthIn,
     CorrelationComparisonOp.evalOperands,
     innerSelected, outerSelected,
     CorrelationComparisonOp.holdsRat, NumericComparisonOp.holds]

@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Iteration
 
 /-! # A12Kernel.Semantics.Correlation — captured outer `$` inside Having
@@ -82,15 +83,28 @@ def CapturedSingleGroupContext.frame (context : CapturedSingleGroupContext)
     (innerRow : RowIndex) : SingleGroupFilterFrame :=
   { innerRow, outerRow := context.outerRow }
 
-/-- Closed filter-only AST. An outer reference cannot escape into `FlatCondition` or any
-    ordinary rule expression through this type. -/
-inductive CorrelatedHaving where
+/-- Closed filter-only leaves. An outer reference cannot escape into an ordinary rule expression through this type; connective structure comes from the shared `ConditionTree`. -/
+inductive CorrelatedHavingLeaf where
   | compareNumbers (op : CorrelationComparisonOp)
       (left right : HavingNumberRef)
   | compareRepetitions (op : CorrelationComparisonOp)
       (left right : HavingRepetitionRef)
-  | and (left right : CorrelatedHaving)
   deriving Repr, DecidableEq
+
+/-- A correlated filter reuses the common connective tree while retaining its environment-sensitive leaf domain. -/
+abbrev CorrelatedHaving := ConditionTree CorrelatedHavingLeaf
+
+namespace CorrelatedHaving
+
+def compareNumbers (op : CorrelationComparisonOp)
+    (left right : HavingNumberRef) : CorrelatedHaving :=
+  .leaf (.compareNumbers op left right)
+
+def compareRepetitions (op : CorrelationComparisonOp)
+    (left right : HavingRepetitionRef) : CorrelatedHaving :=
+  .leaf (.compareRepetitions op left right)
+
+end CorrelatedHaving
 
 private def HavingOrigin.isInner : HavingOrigin → Bool
   | .inner => true
@@ -100,15 +114,19 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
   | .inner => false
   | .outer => true
 
-def CorrelatedHaving.usesInner : CorrelatedHaving → Bool
+private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .compareNumbers _ left right => left.origin.isInner || right.origin.isInner
   | .compareRepetitions _ left right => left.origin.isInner || right.origin.isInner
-  | .and left right => left.usesInner || right.usesInner
 
-def CorrelatedHaving.usesOuter : CorrelatedHaving → Bool
+private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .compareNumbers _ left right => left.origin.isOuter || right.origin.isOuter
   | .compareRepetitions _ left right => left.origin.isOuter || right.origin.isOuter
-  | .and left right => left.usesOuter || right.usesOuter
+
+def CorrelatedHaving.usesInner (condition : CorrelatedHaving) : Bool :=
+  condition.anyLeaf CorrelatedHavingLeaf.usesInner
+
+def CorrelatedHaving.usesOuter (condition : CorrelatedHaving) : Bool :=
+  condition.anyLeaf CorrelatedHavingLeaf.usesOuter
 
 /-- Proof that a filter genuinely uses both environments. This is only the origin check;
     field scope, path legality, and equality-scale legality belong to repeatable
@@ -199,17 +217,17 @@ def CorrelationComparisonOp.evalRows (op : CorrelationComparisonOp)
   | some left, some right => if op.holdsRow left right then .tru else .fls
   | _, _ => .unknown
 
-/-- Truth of a correlated filter. Numeric empty operands use the comparison-local zero
-    substitution; invalid operands are unknown; only the later selector decides that
-    unknown is not kept. -/
-def CorrelatedHaving.evalTruthIn (context : CorrelationContext)
-    (frame : CorrelationFrame) : CorrelatedHaving → K
+def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
+    (frame : CorrelationFrame) : CorrelatedHavingLeaf → K
   | .compareNumbers op left right =>
       op.evalOperands (left.resolveIn context frame) (right.resolveIn context frame)
   | .compareRepetitions op left right =>
       op.evalRows (frame.rowAt? left) (frame.rowAt? right)
-  | .and left right =>
-      K.and (left.evalTruthIn context frame) (right.evalTruthIn context frame)
+
+/-- Truth of a correlated filter. Numeric empty operands use the comparison-local zero substitution; invalid operands are unknown; only the later selector decides that unknown is not kept. Connectives use the shared strong-Kleene tree evaluator. -/
+def CorrelatedHaving.evalTruthIn (condition : CorrelatedHaving)
+    (context : CorrelationContext) (frame : CorrelationFrame) : K :=
+  condition.evalK (CorrelatedHavingLeaf.evalTruthIn context frame)
 
 /-- Keep one already-resolved candidate environment exactly when the filter is known true. The candidate and captured environments remain separate full repetition identities; false and UNKNOWN both drop the candidate. -/
 def CorrelatedHaving.keepsEnvironment (condition : CorrelatedHaving)
@@ -222,11 +240,8 @@ def CorrelatedHaving.selectEnvironments (condition : CorrelatedHaving)
     (candidates : List Env) : List Env :=
   candidates.filter (condition.keepsEnvironment context outerEnv)
 
-/-- Declarative truth predicate for the correlated filter. Atomic comparisons are
-    stated over resolved values/rows, independently of the executable `Bool`; `And`
-    remains structural. -/
-def CorrelatedHaving.HoldsIn (context : CorrelationContext)
-    (frame : CorrelationFrame) : CorrelatedHaving → Prop
+def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
+    (frame : CorrelationFrame) : CorrelatedHavingLeaf → Prop
   | .compareNumbers op left right =>
       ∃ leftValue rightValue,
         left.resolveIn context frame = .value leftValue ∧
@@ -237,7 +252,18 @@ def CorrelatedHaving.HoldsIn (context : CorrelationContext)
         frame.rowAt? left = some leftRow ∧
         frame.rowAt? right = some rightRow ∧
         op.holdsRow leftRow rightRow = true
-  | .and left right => left.HoldsIn context frame ∧ right.HoldsIn context frame
+
+/-- Declarative truth predicate for the correlated filter. Atomic comparisons are stated over resolved values/rows independently of the executable `Bool`; connective structure mirrors the shared tree. -/
+def CorrelatedHaving.HoldsIn (condition : CorrelatedHaving)
+    (context : CorrelationContext) (frame : CorrelationFrame) : Prop :=
+  match condition with
+  | .leaf leaf => leaf.HoldsIn context frame
+  | .and left right =>
+      CorrelatedHaving.HoldsIn left context frame ∧
+        CorrelatedHaving.HoldsIn right context frame
+  | .or left right =>
+      CorrelatedHaving.HoldsIn left context frame ∨
+        CorrelatedHaving.HoldsIn right context frame
 
 /-- One-group executable wrapper retained for the established public capsule. -/
 def CorrelatedHaving.evalTruth (context : SingleGroupValidationContext)

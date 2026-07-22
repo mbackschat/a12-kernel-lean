@@ -54,6 +54,12 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
       | .fired .value => .fired .value
       | _ => Verdict.disj leftVerdict (right.evalVerdict evalLeaf)
 
+/-- Evaluate leaves under the shared strong-Kleene connective algebra. This is the filter counterpart of `evalVerdict`; leaf families still own their observation and comparison rules. -/
+@[simp] def evalK (evalLeaf : Leaf → K) : ConditionTree Leaf → K
+  | .leaf value => evalLeaf value
+  | .and left right => K.and (left.evalK evalLeaf) (right.evalK evalLeaf)
+  | .or left right => K.or (left.evalK evalLeaf) (right.evalK evalLeaf)
+
 end ConditionTree
 
 end A12Kernel

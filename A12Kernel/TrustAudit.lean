@@ -260,6 +260,7 @@ run_cmd do
 
 #print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
 #print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed
+#print axioms A12Kernel.checkedSingleCorrelatedRule_conjunctive
 #print axioms A12Kernel.rawSingleGroupContext_validate_wellFormed
 #print axioms A12Kernel.admitsSingleGroupNumber_has_unique_matching_declaration
 #print axioms A12Kernel.checkSingleGroupContext_lookup_coherent
@@ -711,6 +712,10 @@ run_cmd do
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_partialSet_iff
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
+#print axioms A12Kernel.checkedStarNumberHavingSource_wellFormed
+#print axioms A12Kernel.checkedStarNumberHavingSource_conjunctive
+#print axioms A12Kernel.checkedStarNumberHavingSource_reachesReopenedLevel
+#print axioms A12Kernel.checkedStarNumberHavingSource_resolvedValueSide
 #print axioms A12Kernel.checkedStarNumberSource_overLimit
 #print axioms A12Kernel.checkedStarNumberSource_havingFlag
 #print axioms A12Kernel.checkedStarNumberSource_filterBeforeTarget

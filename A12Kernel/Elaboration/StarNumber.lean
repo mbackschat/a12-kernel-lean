@@ -1,5 +1,5 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.StarPath
-import A12Kernel.Semantics.Correlation
 
 /-! # Checked nested Number-star consumption -/
 
@@ -8,6 +8,7 @@ namespace A12Kernel
 inductive StarNumberElabError where
   | path (error : StarPathElabError)
   | fieldNotNumber (path : List String)
+  | having (error : CorrelationElabError)
   deriving Repr, DecidableEq
 
 /-- One general starred field path whose exact model declaration is Number-valued. -/
@@ -15,6 +16,20 @@ structure CheckedStarNumberSource (model : FlatModel) where
   source : CheckedStarFieldPath model
   field : FlatNumberField
   fieldOwned : source.declaration.toNumberField? = some field
+
+/-- One checked nested Number star paired with a checked filter over the exact candidate and captured repetition environments available at its authoring site. -/
+structure CheckedStarNumberHavingSource (model : FlatModel) where
+  source : CheckedStarNumberSource model
+  declaringGroup : GroupPath
+  filter : CheckedStarHaving model source.source declaringGroup
+
+def CheckedStarNumberHavingSource.having
+    (checked : CheckedStarNumberHavingSource model) : CorrelatedHaving :=
+  checked.filter.condition
+
+def CheckedStarNumberHavingSource.outerLevels
+    (checked : CheckedStarNumberHavingSource model) : List RepeatableLevel :=
+  model.repeatableScopeForGroupPath checked.declaringGroup
 
 /-- A checked all-rows Number-star source is either unavailable to partial validation as a whole or carries the ordinary resolved side unchanged. This is deliberately not the order-aware `FirstFilledValue` relevance result. -/
 inductive AllRowsValidationStarNumberSide where
@@ -29,6 +44,16 @@ def elaborateStarNumberSource (model : FlatModel) (declaringGroup : GroupPath)
   match hField : source.declaration.toNumberField? with
   | none => throw (.fieldNotNumber source.declaration.path)
   | some field => pure { source, field, fieldOwned := hField }
+
+/-- Resolve one general Number star and the narrow source-closed filter fragment against the same model-owned candidate/captured environment split. -/
+def elaborateStarNumberHavingSource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceStarFieldPath)
+    (having : SurfaceCorrelatedHaving) :
+    Except StarNumberElabError (CheckedStarNumberHavingSource model) := do
+  let source ← elaborateStarNumberSource model declaringGroup authored
+  let filter ← elaborateStarHavingCore model declaringGroup source.source having
+    |>.mapError .having
+  pure { source, declaringGroup, filter }
 
 namespace CheckedStarNumberSource
 
@@ -107,5 +132,18 @@ def resolvedValidationHavingValueSide (checked : CheckedStarNumberSource model)
   pure (checked.selectedValidationHavingValueSide resolved having filterRead outer read)
 
 end CheckedStarNumberSource
+
+namespace CheckedStarNumberHavingSource
+
+/-- Resolve topology, apply the checked filter with separate complete candidate/captured environments, and classify only retained Number targets. -/
+def resolvedValueSide (checked : CheckedStarNumberHavingSource model)
+    (document : Document) (outer : Env)
+    (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell) :
+    Except StarAddressingError (ResolvedValueListSide .number) :=
+  checked.source.resolvedValidationHavingValueSide document outer checked.having
+    filterRead read
+
+end CheckedStarNumberHavingSource
 
 end A12Kernel

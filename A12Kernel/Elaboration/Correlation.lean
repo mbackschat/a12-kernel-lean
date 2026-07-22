@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
 
-/-! # A12Kernel.Elaboration.Correlation — checked lowering for one correlated star
+/-! # A12Kernel.Elaboration.Correlation — checked lowering for repeatable filters
 
-This parser-independent capsule admits exactly one repeatable group, one starred direct-child Number field, an outer `FieldFilled` Number guard, and a correlated `Having` made from Number or `CurrentRepetition` comparisons and conjunction. It resolves authored paths against an expanded model before erasing them into the existing correlation core.
+The established whole-rule route admits exactly one repeatable group, one starred direct-child Number field, an outer `FieldFilled` Number guard, and a correlated `Having` made from Number or `CurrentRepetition` comparisons and conjunction. The general-star route reuses the same authored filter traversal after a checked star path has fixed the complete candidate environment. It accepts only references available from that candidate environment or the captured rule environment and requires an ordinary reference to reach a reopened level.
 -/
 
 namespace A12Kernel
@@ -43,7 +44,11 @@ inductive CorrelationElabError where
       (fieldPath expectedGroup : List String)
   | fieldScopeMismatch (fieldPath : List String)
       (expected actual : List RepeatableLevel)
+  | fieldOutsideEnvironment (origin : HavingOrigin) (fieldPath : List String)
+      (available actual : List RepeatableLevel)
   | repetitionGroupMismatch (expected actual : GroupPath)
+  | repetitionOutsideEnvironment (origin : HavingOrigin) (groupPath : GroupPath)
+      (available : List RepeatableLevel) (actual : RepeatableLevel)
   | equalityScaleMismatch (leftPath : List String) (leftScale : Nat)
       (rightPath : List String) (rightScale : Nat)
   | unsupportedOperator (op : SurfaceComparisonOp)
@@ -70,6 +75,34 @@ private structure ResolvedNumberRef where
   declaration : FlatFieldDecl
   core : HavingNumberRef
 
+/-- Whether a resolved filter uses only leaves and conjunction, exactly the connective subset exposed by `SurfaceCorrelatedHaving`. -/
+def CorrelatedHaving.isConjunctive (condition : CorrelatedHaving) : Bool :=
+  match condition with
+  | .leaf _ => true
+  | .and left right =>
+      CorrelatedHaving.isConjunctive left &&
+        CorrelatedHaving.isConjunctive right
+  | .or _ _ => false
+
+/-- A resolved filter whose connective shape is in the image of the narrow authored surface. -/
+structure ConjunctiveCorrelatedHaving where
+  condition : CorrelatedHaving
+  conjunctive : condition.isConjunctive = true
+
+private def repeatableScopeAvailable :
+    List RepeatableLevel → List RepeatableLevel → Bool
+  | [], _ => true
+  | _ :: _, [] => false
+  | required :: requiredRest, available :: availableRest =>
+      required == available &&
+        repeatableScopeAvailable requiredRest availableRest
+
+private def HavingOrigin.availableLevels (origin : HavingOrigin)
+    (candidateLevels outerLevels : List RepeatableLevel) : List RepeatableLevel :=
+  match origin with
+  | .inner => candidateLevels
+  | .outer => outerLevels
+
 private def CorrelationElabError.ofSingleGroup (origin : HavingOrigin) :
     SingleGroupElabError → CorrelationElabError
   | .resolve error => .resolve error
@@ -89,56 +122,197 @@ private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
     |>.mapError (.ofSingleGroup origin)
   pure { declaration, core := { origin, field } }
 
-private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
-    (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving →
-    Except CorrelationElabError CorrelatedHaving
+private def resolveHavingRepetitionInGroup
+    (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
+    (origin : HavingOrigin) (reference : SurfaceGroupPath) :
+    Except CorrelationElabError HavingRepetitionRef := do
+  let groupPath ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
+  if groupPath != group.path then
+    throw (.repetitionGroupMismatch group.path groupPath)
+  pure { origin, level := group.level }
+
+private def elaborateHavingCoreWith
+    (resolveNumber : HavingOrigin → SurfaceFieldPath →
+      Except CorrelationElabError ResolvedNumberRef)
+    (resolveRepetition : HavingOrigin → SurfaceGroupPath →
+      Except CorrelationElabError HavingRepetitionRef) :
+    SurfaceCorrelatedHaving →
+    Except CorrelationElabError ConjunctiveCorrelatedHaving
   | .compareNumbers op left right => do
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let leftResolved ← model.resolveHavingNumberInGroup declaringGroup group left.origin left.field
-      let rightResolved ← model.resolveHavingNumberInGroup declaringGroup group right.origin right.field
+      let leftResolved ← resolveNumber left.origin left.field
+      let rightResolved ← resolveNumber right.origin right.field
       if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale
           rightResolved.declaration.path rightResolved.core.field.info.scale)
-      pure (.compareNumbers coreOp leftResolved.core rightResolved.core)
+      pure {
+        condition := .compareNumbers coreOp leftResolved.core rightResolved.core
+        conjunctive := rfl }
   | .compareRepetitions op left right => do
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let leftGroup ← left.group.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup left.origin)
-      if leftGroup != group.path then
-        throw (.repetitionGroupMismatch group.path leftGroup)
-      let rightGroup ← right.group.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup right.origin)
-      if rightGroup != group.path then
-        throw (.repetitionGroupMismatch group.path rightGroup)
-      pure (.compareRepetitions coreOp
-        { origin := left.origin, level := group.level }
-        { origin := right.origin, level := group.level })
+      pure {
+        condition := .compareRepetitions coreOp
+          (← resolveRepetition left.origin left.group)
+          (← resolveRepetition right.origin right.group)
+        conjunctive := rfl }
   | .and left right => do
-      pure (.and (← elaborateHavingCore model declaringGroup group left)
-        (← elaborateHavingCore model declaringGroup group right))
+      let leftCore ← elaborateHavingCoreWith resolveNumber resolveRepetition left
+      let rightCore ← elaborateHavingCoreWith resolveNumber resolveRepetition right
+      pure {
+        condition := .and leftCore.condition rightCore.condition
+        conjunctive := by
+          simp [CorrelatedHaving.isConjunctive, leftCore.conjunctive,
+            rightCore.conjunctive] }
 
-/-- Operator-specific static scale law. Ordering is deliberately exempt. -/
-def CorrelatedHaving.equalityScalesAgree : CorrelatedHaving → Bool
+private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
+    (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
+    Except CorrelationElabError CorrelatedHaving := do
+  let checked ← elaborateHavingCoreWith
+    (model.resolveHavingNumberInGroup declaringGroup group)
+    (resolveHavingRepetitionInGroup declaringGroup group)
+    authored
+  pure checked.condition
+
+private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (origin : HavingOrigin) (reference : SurfaceFieldPath) :
+    Except CorrelationElabError ResolvedNumberRef := do
+  let declaration ←
+    (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
+  let field ← match declaration.toNumberField? with
+    | some field => pure field
+    | none => throw (.fieldNotNumber declaration.path)
+  let available := origin.availableLevels candidateLevels outerLevels
+  if !repeatableScopeAvailable declaration.repeatableScope available then
+    throw (.fieldOutsideEnvironment origin declaration.path available
+      declaration.repeatableScope)
+  pure { declaration, core := { origin, field } }
+
+private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
+    (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
+    (origin : HavingOrigin) (reference : SurfaceGroupPath) :
+    Except CorrelationElabError HavingRepetitionRef := do
+  let groupPath ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
+  let group ← (model.lookupUniqueRepeatablePath groupPath).mapError .resolve
+  let available := origin.availableLevels candidateLevels outerLevels
+  if !available.contains group.level then
+    throw (.repetitionOutsideEnvironment origin group.path available group.level)
+  pure { origin, level := group.level }
+
+/-- Operator-specific static scale law for one filter leaf. Ordering is deliberately exempt. -/
+def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
   | .compareNumbers op left right =>
       op.acceptsScales left.field right.field
   | .compareRepetitions _ _ _ => true
-  | .and left right => left.equalityScalesAgree && right.equalityScalesAgree
 
-def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
-    (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
-  match condition with
+/-- Every leaf under the shared connective tree satisfies the static scale law. -/
+def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
+  condition.allLeaves CorrelatedHavingLeaf.equalityScalesAgree
+
+def CorrelatedHavingLeaf.wellFormedForSingleGroup
+    (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .compareNumbers op left right =>
       model.admitsSingleGroupNumber group left.field &&
       model.admitsSingleGroupNumber group right.field &&
       op.acceptsScales left.field right.field
   | .compareRepetitions _ left right =>
       left.level == group.level && right.level == group.level
-  | .and left right =>
-      left.wellFormedForSingleGroup model group &&
-      right.wellFormedForSingleGroup model group
+
+def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
+    (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
+  condition.allLeaves fun leaf => leaf.wellFormedForSingleGroup model group
+
+private def FlatModel.admitsHavingNumberInEnvironment (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel)
+    (reference : HavingNumberRef) : Bool :=
+  match model.lookupUniqueId reference.field.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.toNumberField? == some reference.field &&
+        repeatableScopeAvailable declaration.repeatableScope
+          (reference.origin.availableLevels candidateLevels outerLevels)
+
+def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) :
+    CorrelatedHavingLeaf → Bool
+  | .compareNumbers op left right =>
+      model.admitsHavingNumberInEnvironment candidateLevels outerLevels left &&
+        model.admitsHavingNumberInEnvironment candidateLevels outerLevels right &&
+        op.acceptsScales left.field right.field
+  | .compareRepetitions _ left right =>
+      (left.origin.availableLevels candidateLevels outerLevels).contains left.level &&
+        (right.origin.availableLevels candidateLevels outerLevels).contains right.level
+
+/-- Static environment admission for a resolved filter tree. Candidate references must be available in every topology-produced candidate environment; `$` references must be available in the captured rule environment. -/
+def CorrelatedHaving.wellFormedForEnvironments (condition : CorrelatedHaving)
+    (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  condition.allLeaves fun leaf =>
+    leaf.wellFormedForEnvironments model candidateLevels outerLevels
+
+private def HavingNumberRef.reachesReopenedLevel (reference : HavingNumberRef)
+    (model : FlatModel) (reopenedLevels : List RepeatableLevel) : Bool :=
+  match reference.origin, model.lookupUniqueId reference.field.id with
+  | .inner, .ok declaration =>
+      declaration.repeatableScope.any reopenedLevels.contains
+  | _, _ => false
+
+def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
+    (reopenedLevels : List RepeatableLevel) : CorrelatedHavingLeaf → Bool
+  | .compareNumbers _ left right =>
+      left.reachesReopenedLevel model reopenedLevels ||
+        right.reachesReopenedLevel model reopenedLevels
+  | .compareRepetitions _ left right =>
+      (left.origin == .inner && reopenedLevels.contains left.level) ||
+        (right.origin == .inner && reopenedLevels.contains right.level)
+
+/-- A legal star filter must depend on at least one unmarked reference at a level actually reopened by that starred operand. Bound-only or `$`-only trees do not establish an iteration to filter. -/
+def CorrelatedHaving.reachesReopenedLevel (condition : CorrelatedHaving)
+    (model : FlatModel) (reopenedLevels : List RepeatableLevel) : Bool :=
+  condition.anyLeaf fun leaf => leaf.reachesReopenedLevel model reopenedLevels
+
+/-- One filter resolved and certified against the exact candidate/captured environments of a checked star path. -/
+structure CheckedStarHaving (model : FlatModel)
+    (source : CheckedStarFieldPath model) (declaringGroup : GroupPath) where
+  authored : ConjunctiveCorrelatedHaving
+  wellFormed : authored.condition.wellFormedForEnvironments model
+    (source.path.axes.map (·.level))
+    (model.repeatableScopeForGroupPath declaringGroup) = true
+  reachesReopenedLevel : authored.condition.reachesReopenedLevel model
+    ((source.path.axes.map (·.level)).drop source.path.firstStar) = true
+
+def CheckedStarHaving.condition
+    (checked : CheckedStarHaving model source declaringGroup) :
+    CorrelatedHaving :=
+  checked.authored.condition
+
+/-- Lower the source-closed Number/repetition-comparison filter fragment against one validated star plan. The result retains the shared filter tree and exact candidate/captured environment split; wider filter leaves remain outside this fragment. -/
+def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving) :
+    Except CorrelationElabError (CheckedStarHaving model source declaringGroup) := do
+  let candidateLevels := source.path.axes.map (·.level)
+  let reopenedLevels := candidateLevels.drop source.path.firstStar
+  let outerLevels := model.repeatableScopeForGroupPath declaringGroup
+  let checked ← elaborateHavingCoreWith
+    (model.resolveHavingNumberInEnvironment declaringGroup candidateLevels outerLevels)
+    (model.resolveHavingRepetitionInEnvironment declaringGroup candidateLevels outerLevels)
+    authored
+  let condition := checked.condition
+  if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
+    if hWellFormed :
+        condition.wellFormedForEnvironments model candidateLevels outerLevels = true then
+      pure {
+        authored := checked
+        wellFormed := hWellFormed
+        reachesReopenedLevel := hReopened }
+    else
+      throw .incoherentCore
+  else
+    throw .missingInner
 
 structure ResolvedSingleCorrelatedRule where
   group : RepeatableGroupDecl
@@ -153,6 +327,7 @@ def ResolvedSingleCorrelatedRule.wellFormedBool
     model.admitsSingleGroupNumber rule.group rule.guardField &&
     rule.errorField == rule.guardField &&
     model.admitsSingleGroupNumber rule.group rule.star.valueField &&
+    rule.star.having.condition.isConjunctive &&
     rule.star.having.condition.wellFormedForSingleGroup model rule.group
 
 def ResolvedSingleCorrelatedRule.WellFormed
