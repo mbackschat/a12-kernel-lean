@@ -273,9 +273,7 @@ example :
       verdictOf (comparison .greater (.abs fieldValueAsNumber) (-100))
         (enumerationRaw .empty) = some (.fired .value) ∧
       (elaborateNumericComparison model ["Order"]
-        (twoSided .equal (.abs fieldValueAsNumber) (atom "Scale2"))).isOk = true ∧
-      errorOf (comparison .equal (.abs (stringRange 1 2)) 0) =
-        some .unsupportedExpression := by
+        (twoSided .equal (.abs fieldValueAsNumber) (atom "Scale2"))).isOk = true := by
   native_decide
 
 /- `RangeAsNumber` parses only a complete ASCII digit slice; filled fallback zero is fixed. -/
@@ -296,6 +294,29 @@ example :
         (stringRaw .empty) = some (.fired .value) ∧
       verdictOf (comparison .less (stringRange 1 2) 100)
         (stringRaw (.parsed (.str "AB"))) = some (.fired .value) := by
+  native_decide
+
+/- Both operation-form wrappers admit the nonliteral number-like range source. Rounding and absolute value retain its grow-only missing zero, while ordinary filled selections remain fixed and nonnegative. -/
+example :
+    verdictOf (comparison .equal
+        (.round .halfUp omittedRoundingPlaces (stringRange 1 2)) 12)
+        (stringRaw (.parsed (.str "12X"))) = some (.fired .value) ∧
+      verdictOf (comparison .less
+        (.round .halfUp omittedRoundingPlaces (stringRange 1 2)) 100)
+        (stringRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greater
+        (.round .halfUp omittedRoundingPlaces (stringRange 1 2)) (-100))
+        (stringRaw .empty) = some (.fired .value) ∧
+      verdictOf (comparison .equal (.abs (stringRange 1 2)) 12)
+        (stringRaw (.parsed (.str "12X"))) = some (.fired .value) ∧
+      verdictOf (comparison .less (.abs (stringRange 1 2)) 100)
+        (stringRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greater (.abs (stringRange 1 2)) (-100))
+        (stringRaw .empty) = some (.fired .value) ∧
+      (elaborateNumericComparison model ["Order"]
+        (twoSided .equal
+          (.round .halfUp ⟨2, by decide⟩ (stringRange 1 2))
+          (atom "Scale2"))).isOk = true := by
   native_decide
 
 /- The checked String cache is normalized before slicing. -/
