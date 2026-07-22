@@ -56,6 +56,10 @@ def isStar : CheckedNumberEntityOperand model → Bool
   | .field _ => false
   | .star _ | .starHaving _ => true
 
+def hasHaving : CheckedNumberEntityOperand model → Bool
+  | .starHaving _ => true
+  | .field _ | .star _ => false
+
 def scaleSummary : CheckedNumberEntityOperand model → NumericScaleSummary
   | .field source => NumericScaleSummary.field source.field.info.scale
   | .star source => NumericScaleSummary.field source.field.info.scale
@@ -86,6 +90,10 @@ namespace CheckedNumberEntitySource
 def operands (checked : CheckedNumberEntitySource model) :
     List (CheckedNumberEntityOperand model) :=
   checked.first :: checked.rest
+
+/-- Whether this checked list contains a filtered wildcard slot. Partial validation uses this only as a rule-level early-skip discriminator; it never evaluates the filter. -/
+def hasHaving (checked : CheckedNumberEntitySource model) : Bool :=
+  checked.operands.any (fun operand => operand.hasHaving)
 
 /-- Number entity-list operations derive the union/max scale of every authored declaration and gain no literal expansion capability. -/
 def scaleSummary (checked : CheckedNumberEntitySource model) :
