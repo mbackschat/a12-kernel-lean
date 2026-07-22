@@ -735,6 +735,11 @@ run_cmd do
 #print axioms A12Kernel.checkedEnumeration_stored_rejected
 #print axioms A12Kernel.checkedEnumeration_evalRaw_present
 #print axioms A12Kernel.checkedEnumeration_evalRaw_outOfDomain
+#print axioms A12Kernel.enumerationValueList_empty
+#print axioms A12Kernel.enumerationValueList_unknown
+#print axioms A12Kernel.enumerationValueList_present
+#print axioms A12Kernel.checkedEnumerationValueList_outOfDomain
+#print axioms A12Kernel.checkedEnumerationValueList_sideCells
 #print axioms A12Kernel.evalReachedCustomCondition_fired_value_iff
 #print axioms A12Kernel.evalReachedCustomCondition_notFired_iff
 #print axioms A12Kernel.evalReachedCustomCondition_ne_unknown

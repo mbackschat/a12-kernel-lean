@@ -512,10 +512,11 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/ScalarEquality.lean`](../A12Kernel/Semantics/ScalarEquality.lean)
 - [`Semantics/Enumeration.lean`](../A12Kernel/Semantics/Enumeration.lean)
 - [`Semantics/CheckedEnumeration.lean`](../A12Kernel/Semantics/CheckedEnumeration.lean)
+- [`Semantics/EnumerationValueList.lean`](../A12Kernel/Semantics/EnumerationValueList.lean)
 - [`Elaboration/EnumerationComparability.lean`](../A12Kernel/Elaboration/EnumerationComparability.lean)
 - [`Elaboration/Enumeration.lean`](../A12Kernel/Elaboration/Enumeration.lean)
 - [`Semantics/ValueList.lean`](../A12Kernel/Semantics/ValueList.lean)
-- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean) and [`CheckedEnumeration.lean`](../A12Kernel/Proofs/CheckedEnumeration.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Conformance/EnumerationElaboration.lean) and [`CheckedEnumeration.lean`](../A12Kernel/Conformance/CheckedEnumeration.lean)
+- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean), [`CheckedEnumeration.lean`](../A12Kernel/Proofs/CheckedEnumeration.lean), and [`EnumerationValueList.lean`](../A12Kernel/Proofs/EnumerationValueList.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean), including the corresponding three modules
 
 #### Implemented
 
@@ -524,6 +525,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - The separate direct-field static gate classifies identity labels as effectively textless, rejects a String/display-class mismatch, and accepts two display-bearing ordinary Enumerations exactly when their common-locale stored/display relation has no forward or reverse conflict.
 - One checked ordinary closed declaration now owns the nonempty unique stored-token domain, complete per-locale stored/display facts with injective display text, and unique named positional category vectors with exact arity and nonempty tokens. Identity displays remain legal and effectively textless; repeated category tokens remain legal and many-to-one. Its projections reuse the existing runtime and comparability representations.
 - A proof-bearing literal comparison resolves the exact stored/category projection, admits the literal from that selected domain for either equality operator, and consumes one declaration-checked heterogeneous raw cell through the existing runtime evaluator. Empty values remain not evaluated, out-of-domain stored tokens become the declaration's formal constraint failure and therefore UNKNOWN, wrong runtime kinds become malformed UNKNOWN, and preceding raw failures retain UNKNOWN.
+- A checked stored/category value-list operand maps the existing resolved Enumeration classification directly into the existing token-domain `ValueListCell`: present projected token, empty, or exact-cause unknown. It builds an already-expanded side while retaining caller-supplied tail/`Having` facts, so the three existing quantifiers consume ordinary and many-to-one category values without a second token or poison mechanism.
 - Trusted laws cover runtime projection, empty/unavailable/VALUE-only behavior, identity-label classification, pair/profile conflict symmetry, String admission, both rejection classes, and overall admission symmetry.
 - The separate type-indexed Number/canonical-token value-list capsule preserves explicit present/empty/unknown cells, declared-tail and `Having` metadata, and distinct `AtLeastOne`, `No`, and `NotAll` clauses
 
@@ -533,6 +535,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Accepted [`SPEC-2026-07-20-14`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-14--enumeration-direct-field-comparability-uses-effective-display-remapping) records a12-dmkits revision `20230e40` and its identity-label, conflict-direction, and compatible-mapping controls.
 - Seventeen checked-declaration cases separate empty/duplicate stored domains, unknown/incomplete/duplicate localized mappings, category name/arity/token failures, complete multilingual and identity-label declarations, exact stored projection, exact category lookup, and many-to-one category output. Five laws retain validation, display, direct-comparability, stored-projection, and exact category-domain ownership.
 - Fourteen checked-observation cases separate both equality operators, stored/category literal admission, exact category names, checked construction, stored equality/mismatch, many-to-one category equality, physical/value emptiness, out-of-domain stored values, wrong kinds, and preceding raw rejection. Five laws preserve empty, accepted/rejected stored classification, exact present-value delegation, and pre-comparison UNKNOWN for an invalid stored token.
+- Twelve Enumeration value-list cases separate stored/category projection, both empty routes, out-of-domain and preceding formal causes, matching category/`No`/`NotAll` outcomes, and the three quantifiers' distinct response to an invalid member. Five laws prove exact empty, unknown, present, invalid-domain, and side-cell transport through the shared resolved classifier.
 - The focused runtime matrix currently has one kernel route plus peer triangulation
 - a broader catalog smoke case exercises both kernel routes.
 - This repository retains no portable §8 observation
@@ -542,7 +545,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - **Implemented internally through checked ordinary declaration, raw observation, literal admission, resolved runtime, and one independent static gate; external evidence pending:** runtime Enumeration now closes direct stored/category-to-literal equality and inequality before general flat integration
 - static comparability begins after valid ordinary declarations and direct equality/inequality field shape
 - value lists begin after expansion, comparability checking, and `Having` filtering.
-- Table/open/dynamic/partial declarations, document/field integration, category-to-field admission, checked flat-model integration, category use in lists/indices/paths, scalar value-list syntax, actual filtering, row gates, protocol exposure, and project-local portable evidence remain open
+- Table/open/dynamic/partial declarations, document/field integration, category-to-field admission, checked flat-model integration, category use in indices/paths, scalar value-list syntax, actual path/star expansion and filtering, row gates, protocol exposure, and project-local portable evidence remain open
 
 ### §9 — repetition and iteration
 
