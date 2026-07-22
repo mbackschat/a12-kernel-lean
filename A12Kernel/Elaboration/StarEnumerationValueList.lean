@@ -17,6 +17,15 @@ structure SurfaceStarEnumerationValueListSource where
   having : Option SurfaceCorrelatedHaving := none
   deriving Repr, DecidableEq
 
+/-- One direct nonrepeatable Enumeration projection tested against a general starred Enumeration values column. -/
+structure SurfaceEnumerationValueListStarValuesSource where
+  quantifier : ValueListQuantifier
+  field : SurfaceTextFieldOperand
+  values : SurfaceStarFieldPath
+  valuesProjectionRef : EnumerationProjectionRef := .stored
+  having : Option SurfaceCorrelatedHaving := none
+  deriving Repr, DecidableEq
+
 /-- One general starred field path certified as an exact checked Enumeration projection. -/
 structure CheckedStarEnumerationSource (model : FlatModel) where
   source : CheckedStarFieldPath model
@@ -36,12 +45,22 @@ structure CheckedStarEnumerationValueListSource (model : FlatModel) where
     (firstValue :: restValues).all
       (fields.operand.declaration.literalAllowed fields.operand.projection) = true
 
+/-- A checked direct Enumeration projection and one checked starred Enumeration values projection. -/
+structure CheckedEnumerationValueListStarValuesSource (model : FlatModel) where
+  quantifier : ValueListQuantifier
+  fieldPath : List String
+  field : CheckedEnumerationValueListOperand
+  fieldCore : FlatEnumerationOperand
+  fieldAdmitted : model.checkedEnumerationOperand? fieldCore = some field
+  values : CheckedStarEnumerationSource model
+
 inductive StarEnumerationValueListElabError where
   | path (error : StarPathElabError)
   | fieldNotEnumeration (path : List String) (actual : SurfaceScalarKind)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | having (error : CorrelationElabError)
   | emptyValues
+  | directField (error : ElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -121,6 +140,35 @@ def elaborateStarEnumerationValueListSource (model : FlatModel)
             throw (.enumerationOperand fields.source.declaration.path (.invalidLiteral value))
         | none => throw .incoherentCore
 
+private def StarEnumerationValueListElabError.ofDirectField : ElabError →
+    StarEnumerationValueListElabError
+  | ElabError.enumerationOperand fieldPath error =>
+      .enumerationOperand fieldPath error
+  | ElabError.textFieldOperandKindMismatch fieldPath actual =>
+      .fieldNotEnumeration fieldPath actual
+  | error => .directField error
+
+/-- Resolve the starred values projection and re-check the direct fields projection against the same model. No display or domain-containment gate is added. -/
+def elaborateEnumerationValueListStarValuesSource (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceEnumerationValueListStarValuesSource) :
+    Except StarEnumerationValueListElabError
+      (CheckedEnumerationValueListStarValuesSource model) := do
+  let values ← elaborateStarEnumerationSource model declaringGroup authored.values
+    authored.valuesProjectionRef authored.having
+  let (fieldPath, _, fieldCore) ←
+    elaborateEnumerationFieldOperand model declaringGroup authored.field
+      |>.mapError StarEnumerationValueListElabError.ofDirectField
+  match hAdmitted : model.checkedEnumerationOperand? fieldCore with
+  | none => throw .incoherentCore
+  | some field => pure {
+      quantifier := authored.quantifier
+      fieldPath
+      field
+      fieldCore
+      fieldAdmitted := hAdmitted
+      values }
+
 namespace CheckedStarEnumerationSource
 
 /-- Classify one resolved leaf through the exact declaration-owned check and selected stored/category projection. -/
@@ -178,5 +226,43 @@ def evaluatePartial (checked : CheckedStarEnumerationValueListSource model)
     pure .skippedHaving
 
 end CheckedStarEnumerationValueListSource
+
+namespace CheckedEnumerationValueListStarValuesSource
+
+/-- The direct fields side reuses the checked flat Enumeration projection and has no star metadata. -/
+def resolvedFieldsSide (checked : CheckedEnumerationValueListStarValuesSource model)
+    (raw : RawFlatContext) : ResolvedValueListSide .token :=
+  flatTokenValueListSide [.enumeration checked.fieldCore] (model.checkContext raw)
+
+/-- Partial validation applies direct-field relevance before the shared token classification. -/
+def resolvedPartialFieldsSide
+    (checked : CheckedEnumerationValueListStarValuesSource model)
+    (scope : ValidationRelevanceScope) (raw : RawFlatContext) :
+    ResolvedValueListQuantifierSide .token :=
+  selectedFlatTokenValueListSide [.enumeration checked.fieldCore]
+    (model.checkContext raw) fun id =>
+      id == checked.fieldCore.field.id && scope.coversCell model checked.fieldPath []
+
+/-- Evaluate the direct Enumeration fields side against the canonical starred Enumeration values side. -/
+def evaluateFull (checked : CheckedEnumerationValueListStarValuesSource model)
+    (document : Document) (outer : Env) (raw : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell) : Except StarAddressingError Verdict := do
+  let values ← checked.values.resolvedValueSide document outer filterRead read
+  pure (checked.quantifier.eval (checked.resolvedFieldsSide raw) values)
+
+/-- Partial evaluation retains direct per-cell relevance and the starred values side's separate extent fact. -/
+def evaluatePartial (checked : CheckedEnumerationValueListStarValuesSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (read : Env → FieldId → RawCell) :
+    Except StarAddressingError PartialHavingValueListResult :=
+  if hUnfiltered : checked.values.filter.isNone = true then do
+      let values ← checked.values.resolvedPartialValueSide document outer scope read hUnfiltered
+      pure (.evaluated (checked.quantifier.evalClassified
+        (checked.resolvedPartialFieldsSide scope raw) values))
+  else
+    pure .skippedHaving
+
+end CheckedEnumerationValueListStarValuesSource
 
 end A12Kernel
