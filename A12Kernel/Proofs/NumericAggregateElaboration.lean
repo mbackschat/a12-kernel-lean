@@ -47,6 +47,33 @@ theorem resolvedNumericAggregate_distinctCount_scaleSummary
       NumericScaleSummary.field 0 := by
   rfl
 
+/-- A checked product pair exposes one path identity; consumers never need to compare independently resolved row streams. -/
+theorem checkedNumericProductAggregate_samePath
+    (checked : CheckedNumericProductAggregate model) :
+    checked.left.source.path = checked.right.source.path :=
+  checked.samePath
+
+/-- The checked pair's result scale is exactly the existing multiplication summary of its two declaration scales. -/
+theorem checkedNumericProductAggregate_scaleSummary
+    (checked : CheckedNumericProductAggregate model) :
+    checked.scaleSummary = NumericScaleSummary.binary .multiply
+      (NumericScaleSummary.field checked.left.field.info.scale)
+      (NumericScaleSummary.field checked.right.field.info.scale) := by
+  rfl
+
+/-- Once the common path resolves, phase-specific checked evaluation delegates exactly to one shared-topology product side and the pure fold. -/
+theorem checkedNumericProductAggregate_evaluateAt_of_resolved
+    (checked : CheckedNumericProductAggregate model) (phase : Phase)
+    (document : Document) (outer : Env)
+    (read : Env → FieldId → CheckedCell) (resolved : ResolvedStarTopology)
+    (resolvedPath : checked.left.source.path.resolve document outer = .ok resolved) :
+    checked.evaluateAt phase document outer read =
+      .ok (evalNumericProductAggregate
+        (checked.selectedSideAt phase resolved read)) := by
+  unfold CheckedNumericProductAggregate.evaluateAt
+  rw [resolvedPath]
+  rfl
+
 /-- Both resolved views classify the same explicit cells in the same order. -/
 theorem checkedNumericAggregate_sameCells
     (checked : CheckedNumericAggregateFields model) (raw : RawFlatContext) :

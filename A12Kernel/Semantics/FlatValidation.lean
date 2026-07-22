@@ -440,15 +440,19 @@ def FlatTokenValueSide.allOperands (values : FlatTokenValueSide)
     (fields : List FlatTextFieldOperand) : List FlatTextFieldOperand :=
   fields ++ values.operands
 
-/-- Number value-list reads deliberately do not reuse direct comparison resolution: an empty member contributes no atom and is never substituted by zero. -/
-def FlatNumberField.valueListCell (field : FlatNumberField)
-    (context : FlatContext) : ValueListCell .number :=
-  match context.observeValidationAt field.id with
+/-- Classify a phase-indexed Number observation for a list consumer without applying that consumer's empty-value rule. Validation unknown and computation poison retain the same exact formal cause at this shared intermediate boundary. -/
+def CellObservation.asNumberValueListCell :
+    CellObservation Value → ValueListCell .number
   | .empty => .empty
   | .value (.num amount) => .present amount
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
+
+/-- Number value-list reads deliberately do not reuse direct comparison resolution: an empty member contributes no atom and is never substituted by zero. -/
+def FlatNumberField.valueListCell (field : FlatNumberField)
+    (context : FlatContext) : ValueListCell .number :=
+  (context.observeValidationAt field.id).asNumberValueListCell
 
 def flatNumberValueListSide (operands : List FlatNumberField)
     (context : FlatContext) : ResolvedValueListSide .number :=

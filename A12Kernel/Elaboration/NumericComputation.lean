@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared plain-arithmetic fragment, the direct scalar-field root functions, or the established direct aggregate-rounding form, checks the result scale, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, scheduling, and repeatable aggregates remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared plain-arithmetic fragment, the direct scalar-field root functions, or the established direct aggregate-rounding form, checks the result scale, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that repeatable source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -262,6 +262,17 @@ def elaborateNumericComputationOperation
 def NumericOperand.toComputationResult : NumericOperand → NumericComputationResult
   | .value amount _ => .value amount
   | .unknown cause => .poison cause
+
+namespace CheckedNumericProductAggregate
+
+/-- Project the checked paired-row fold through computation-phase reads. Required-only emptiness remains numeric zero; every other reached formal invalidity becomes poison. Whole-expression admission, target checking, and scheduling remain later consumers. -/
+def evaluateComputation (checked : CheckedNumericProductAggregate model)
+    (document : Document) (outer : Env)
+    (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericComputationResult := do
+  pure ((← checked.evaluateAt .computation document outer read).toComputationResult)
+
+end CheckedNumericProductAggregate
 
 namespace ScalarComputationContext
 

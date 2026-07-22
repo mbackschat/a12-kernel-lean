@@ -690,6 +690,9 @@ run_cmd do
 #print axioms A12Kernel.numericDistinctCount_allEmpty
 #print axioms A12Kernel.numericDistinctCount_having
 #print axioms A12Kernel.numericDistinctCount_firstUnknown
+#print axioms A12Kernel.numericProductAggregate_singleton_present
+#print axioms A12Kernel.numericProductAggregate_leftUnknown
+#print axioms A12Kernel.numericProductAggregate_singleton_tail
 #print axioms A12Kernel.checkedNumberEntitySource_requiredMultiplicity
 #print axioms A12Kernel.checkedNumberEntitySource_uniqueDirectOperands
 #print axioms A12Kernel.checkedNumberEntity_star_skipsDirectDuplicateGate
@@ -700,6 +703,9 @@ run_cmd do
 #print axioms A12Kernel.resolvedNumericAggregate_distinctCount_delegates
 #print axioms A12Kernel.resolvedNumericAggregate_pair_scaleSummary
 #print axioms A12Kernel.resolvedNumericAggregate_distinctCount_scaleSummary
+#print axioms A12Kernel.checkedNumericProductAggregate_samePath
+#print axioms A12Kernel.checkedNumericProductAggregate_scaleSummary
+#print axioms A12Kernel.checkedNumericProductAggregate_evaluateAt_of_resolved
 #print axioms A12Kernel.checkedNumericAggregate_sameCells
 #print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedTail
 #print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedSumSource

@@ -2,7 +2,7 @@ import A12Kernel.Semantics.ValueList
 
 /-! # Resolved Number aggregates
 
-This capsule starts after one Number field-list or star has been expanded, filtered, and classified. `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues` scan every selected cell, drop empty values from their folds, and retain aggregate-specific missingness for directional validation polarity. `Sum` additionally applies precision-50 arithmetic in encounter order, while distinct count reuses scale-19 Number equality. Path expansion, filter evaluation, partial relevance, and computation are outside this boundary.
+This capsule starts after one Number field-list or star has been expanded, filtered, and classified. `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues` scan every selected cell, drop empty values from their folds, and retain aggregate-specific missingness for directional validation polarity. `Sum` additionally applies precision-50 arithmetic in encounter order, while distinct count reuses scale-19 Number equality. `SumOfProducts` consumes a separately checked shared-topology stream of row pairs, substitutes empty Number cells with declaration-sensitive zero operands, and stages each multiplication and addition through the same arithmetic core. Path expansion, filtering, and partial relevance remain outside this boundary.
 -/
 
 namespace A12Kernel
@@ -144,5 +144,57 @@ def evalNumericDistinctCountAggregate
         else
           NumericFillability.fixed
       .value seen.length fillability
+
+/-- One row-aligned pair consumed by `SumOfProducts`. Empty cells remain explicit so each declaration can supply its own numeric missing direction before multiplication. -/
+structure ResolvedNumericProductRow where
+  left : ValueListCell .number
+  right : ValueListCell .number
+
+/-- The resolved `SumOfProducts` input. Its rows already share one canonical topology; the tail records an omitted row at any reopened level. -/
+structure ResolvedNumericProductSide where
+  rows : List ResolvedNumericProductRow
+  leftSigned : Bool
+  rightSigned : Bool
+  hasUninstantiatedTail : Bool
+
+def numericProductCell
+    (signed : Bool) : ValueListCell .number →
+      Except FormalCause (Rat × NumericFillability)
+  | .present amount => pure (amount, .fixed)
+  | .empty => pure (0, .emptyNumber signed)
+  | .unknown cause => throw cause
+
+def numericProductStep
+    (total left right : Rat × NumericFillability) :
+      Rat × NumericFillability :=
+  let productAmount := NumericArithmeticOp.multiply.eval left.1 right.1
+  let productFill := NumericArithmeticOp.multiply.fillability
+    left.1 left.2 right.1 right.2
+  (NumericArithmeticOp.add.eval total.1 productAmount,
+    NumericArithmeticOp.add.fillability total.1 total.2
+      productAmount productFill)
+
+def scanNumericProductRowsFrom (side : ResolvedNumericProductSide) :
+    List ResolvedNumericProductRow → Rat × NumericFillability →
+      Except FormalCause (Rat × NumericFillability)
+  | [], total => pure total
+  | row :: remaining, total => do
+      let left ← numericProductCell side.leftSigned row.left
+      let right ← numericProductCell side.rightSigned row.right
+      scanNumericProductRowsFrom side remaining
+        (numericProductStep total left right)
+
+/-- Scan row pairs in canonical order. Each multiplication and following addition crosses the existing precision-50 boundary; the left cell is reached before the right cell. -/
+def scanNumericProductRows (side : ResolvedNumericProductSide) :
+    Except FormalCause (Rat × NumericFillability) :=
+  scanNumericProductRowsFrom side side.rows (0, .fixed)
+
+/-- Evaluate row-aligned `SumOfProducts`. Empty cells substitute numeric zero with declaration-owned fillability, a first unavailable reached cell suppresses the result, and any omitted declared row makes a successful result movable in both directions. -/
+def evalNumericProductAggregate
+    (side : ResolvedNumericProductSide) : NumericOperand :=
+  match scanNumericProductRows side with
+  | .error cause => .unknown cause
+  | .ok (amount, fillability) =>
+      .value amount (if side.hasUninstantiatedTail then .both else fillability)
 
 end A12Kernel

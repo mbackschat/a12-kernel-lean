@@ -50,7 +50,8 @@ theorem checkedStarNumberSource_overLimit (checked : CheckedStarNumberSource mod
       checked.source.environmentOverLimit environment = true := by
     simpa [CheckedStarNumberSource.environmentOverLimit] using overLimit
   simp [CheckedStarNumberSource.checkedCell,
-    CheckedStarFieldPath.checkedCell, sourceOverLimit]
+    CheckedStarFieldPath.checkedCell, CheckedStarFieldPath.contextualizeCell,
+    sourceOverLimit]
 
 /-- A resolved `Having` is retained explicitly for downstream polarity even when it selects no candidate. -/
 @[simp] theorem checkedStarNumberSource_havingFlag
