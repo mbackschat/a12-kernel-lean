@@ -24,12 +24,27 @@ theorem resolvedNumericAggregate_extrema_delegate
           (source.resolvedValueSide observe) := by
   exact ⟨rfl, rfl⟩
 
+/-- The resolved Number distinct-count atom delegates to the shared scale-19 fold over the same classified cells. -/
+theorem resolvedNumericAggregate_distinctCount_delegates
+    (source : ResolvedNumericAggregateFields)
+    (observe : FieldId → CellObservation) :
+    source.evaluate .distinctCount observe =
+      evalNumericDistinctCountAggregate (source.resolvedValueSide observe) := by
+  rfl
+
 /-- A two-field aggregate derives exactly the union of its declaration scales. -/
 theorem resolvedNumericAggregate_pair_scaleSummary
     (first second : FlatNumberField) :
     ({ first, rest := [second] : ResolvedNumericAggregateFields }).scaleSummary =
       (NumericScaleSummary.field first.info.scale).union
         (NumericScaleSummary.field second.info.scale) := by
+  rfl
+
+/-- NumberOfDifferentValues has integral result scale independently of every contributing declaration scale. -/
+theorem resolvedNumericAggregate_distinctCount_scaleSummary
+    (source : ResolvedNumericAggregateFields) :
+    NumericAggregateOp.distinctCount.scaleSummary source =
+      NumericScaleSummary.field 0 := by
   rfl
 
 /-- Both resolved views classify the same explicit cells in the same order. -/

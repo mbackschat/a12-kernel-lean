@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells to the same aggregate folds. Group operands, partial repeatable relevance, whole-expression integration for repeatable sources, and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells to the same aggregate folds. Group operands, whole-expression/rule-level partial integration, computation-phase mixed consumption, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -73,6 +73,8 @@ def evaluate (source : ResolvedNumericAggregateFields) (op : NumericAggregateOp)
   | .minimum => evalNumericExtremumAggregate .minimum
       (source.resolvedValueSide observe)
   | .maximum => evalNumericExtremumAggregate .maximum
+      (source.resolvedValueSide observe)
+  | .distinctCount => evalNumericDistinctCountAggregate
       (source.resolvedValueSide observe)
 
 def referencesField (source : ResolvedNumericAggregateFields)
@@ -251,6 +253,7 @@ private def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
   | .sum => evalDeclaredNumericSumAggregate accumulated.sum
   | .minimum => evalNumericExtremumAggregate .minimum accumulated.values
   | .maximum => evalNumericExtremumAggregate .maximum accumulated.values
+  | .distinctCount => evalNumericDistinctCountAggregate accumulated.values
 
 end ResolvedNumberEntityAggregateSides
 

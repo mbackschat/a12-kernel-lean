@@ -213,4 +213,68 @@ theorem numericSumAggregate_firstUnknown
   rw [valueListCell_scanPresent_firstUnknown
     numericSumStep before after none cause beforeKnown]
 
+/-- A complete singleton distinct count is the fixed integral value one. -/
+theorem numericDistinctCount_singleton_fixed (amount : Rat) :
+    evalNumericDistinctCountAggregate
+      { cells := [.present amount]
+        hasUninstantiatedTail := false
+        hasHaving := false } =
+      .value 1 .fixed := by
+  rfl
+
+/-- A second value equal at the shared scale-19 boundary does not increase the distinct count. -/
+theorem numericDistinctCount_equal_pair
+    (left right : Rat)
+    (equal : ValueListAtom.equal (kind := .number) left right = true) :
+    evalNumericDistinctCountAggregate
+      { cells := [.present left, .present right]
+        hasUninstantiatedTail := false
+        hasHaving := false } =
+      .value 1 .fixed := by
+  simp [evalNumericDistinctCountAggregate, scanDistinctNumericCells,
+    ValueListCell.scanPresent, insertDistinctNumericValue, equal,
+    ResolvedValueListSide.hasMissingPotential,
+    ResolvedValueListSide.hasEmpty, ValueListCell.isEmpty]
+
+/-- An all-empty selected count has the grow-only zero identity whenever the checked source proves an explicit or declared missing cell. -/
+theorem numericDistinctCount_allEmpty
+    (cells : List (ValueListCell .number))
+    (hasUninstantiatedTail : Bool)
+    (allEmpty : cells.all ValueListCell.isEmpty = true)
+    (missing :
+      ResolvedValueListSide.hasMissingPotential
+        { cells, hasUninstantiatedTail, hasHaving := false } = true) :
+    evalNumericDistinctCountAggregate
+      { cells, hasUninstantiatedTail, hasHaving := false } =
+      .value 0 .growOnly := by
+  unfold evalNumericDistinctCountAggregate scanDistinctNumericCells
+  rw [valueListCell_scanPresent_allEmpty
+    insertDistinctNumericValue cells [] allEmpty]
+  simp [missing]
+
+/-- A reached filter makes an available distinct count both-directionally fillable independently of tail state. -/
+theorem numericDistinctCount_having
+    (cells : List (ValueListCell .number))
+    (seen : List Rat)
+    (hasUninstantiatedTail : Bool)
+    (scanned : scanDistinctNumericCells cells = .ok seen) :
+    evalNumericDistinctCountAggregate
+      { cells, hasUninstantiatedTail, hasHaving := true } =
+      .value seen.length .both := by
+  simp [evalNumericDistinctCountAggregate, scanned]
+
+/-- The first unavailable selected cell determines distinct-count suppression independently of every suffix cell and missingness flag. -/
+theorem numericDistinctCount_firstUnknown
+    (before after : List (ValueListCell .number))
+    (cause : FormalCause)
+    (hasUninstantiatedTail hasHaving : Bool)
+    (beforeKnown : before.any ValueListCell.isUnknown = false) :
+    evalNumericDistinctCountAggregate
+      { cells := before ++ .unknown cause :: after
+        hasUninstantiatedTail
+        hasHaving } = .unknown cause := by
+  unfold evalNumericDistinctCountAggregate scanDistinctNumericCells
+  rw [valueListCell_scanPresent_firstUnknown insertDistinctNumericValue
+    before after [] cause beforeKnown]
+
 end A12Kernel

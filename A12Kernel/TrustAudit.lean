@@ -685,6 +685,11 @@ run_cmd do
 #print axioms A12Kernel.declaredNumericSum_explicitMissing
 #print axioms A12Kernel.declaredNumericSum_uninstantiatedMissing
 #print axioms A12Kernel.numericSumAggregate_homogeneousEmbedding
+#print axioms A12Kernel.numericDistinctCount_singleton_fixed
+#print axioms A12Kernel.numericDistinctCount_equal_pair
+#print axioms A12Kernel.numericDistinctCount_allEmpty
+#print axioms A12Kernel.numericDistinctCount_having
+#print axioms A12Kernel.numericDistinctCount_firstUnknown
 #print axioms A12Kernel.checkedNumberEntitySource_requiredMultiplicity
 #print axioms A12Kernel.checkedNumberEntitySource_uniqueDirectOperands
 #print axioms A12Kernel.checkedNumberEntity_star_skipsDirectDuplicateGate
@@ -692,7 +697,9 @@ run_cmd do
 #print axioms A12Kernel.checkedNumberEntitySource_hasHaving_of_mem
 #print axioms A12Kernel.resolvedNumericAggregate_sum_delegates
 #print axioms A12Kernel.resolvedNumericAggregate_extrema_delegate
+#print axioms A12Kernel.resolvedNumericAggregate_distinctCount_delegates
 #print axioms A12Kernel.resolvedNumericAggregate_pair_scaleSummary
+#print axioms A12Kernel.resolvedNumericAggregate_distinctCount_scaleSummary
 #print axioms A12Kernel.checkedNumericAggregate_sameCells
 #print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedTail
 #print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedSumSource

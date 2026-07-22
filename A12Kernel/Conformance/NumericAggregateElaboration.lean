@@ -455,6 +455,42 @@ example :
       some (.value 4 .fixed) := by
   native_decide
 
+/- NumberOfDifferentValues consumes the same mixed checked stream but counts scale-normalized distinct filled values instead of folding every occurrence. -/
+example :
+    checkedAggregateOf .distinctCount
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num 5)) (.parsed (.num 6))
+        (.parsed (.num 5)) (raw (.parsed (.num 5)) .empty .empty) =
+      some (.value 2 .fixed) := by
+  native_decide
+
+/- Repeating a wildcard still consumes its values twice, but repeated equal occurrences do not inflate a value-distinct count. -/
+example :
+    checkedAggregateOf .distinctCount
+        (aggregateSource (.star aggregateStar) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num 5)) (.parsed (.num 6))
+        (.parsed (.num 5)) (raw .empty .empty .empty) =
+      some (.value 2 .fixed) := by
+  native_decide
+
+/- Distinct count retains its own grow-only missing polarity and filter-driven both-directional uncertainty. -/
+example :
+    checkedAggregateOf .distinctCount
+        (aggregateSource (.star aggregateStar) [])
+        [] .empty .empty .empty (raw .empty .empty .empty) =
+        some (.value 0 .growOnly) ∧
+      checkedAggregateOf .distinctCount
+        (aggregateSource (.star aggregateStar) [])
+        [1, 2] (.parsed (.num 5)) .presentEmpty .empty
+        (raw .empty .empty .empty) =
+        some (.value 1 .growOnly) ∧
+      checkedAggregateOf .distinctCount
+        (aggregateSource (.starHaving aggregateStar aggregateHaving) [])
+        [1, 2, 3] (.parsed (.num 5)) (.parsed (.num 5))
+        (.parsed (.num 5)) (raw .empty .empty .empty) =
+        some (.value 1 .both) := by
+  native_decide
+
 /- A reached unavailable direct head determines the result before malformed later star topology is resolved. -/
 example :
     checkedAggregateOf .maximum
@@ -489,6 +525,25 @@ example :
         (.parsed (.num 2)) (.parsed (.num 3)) (.parsed (.num 4))
         (raw (.parsed (.num 1)) .empty .empty) ancestor =
       some (.evaluated (.value 10 .fixed)) := by
+  native_decide
+
+/- NumberOfDifferentValues inherits the identical partial all-rows gate and evaluates only after wildcard/ancestor coverage. -/
+example :
+    let authored := aggregateSource (.star aggregateStar) []
+    let concreteAll := ValidationRelevanceScope.partialSet [
+      relevance repeated.path [.concrete 1, .concrete 1, .concrete 1],
+      relevance repeated.path [.concrete 1, .concrete 2, .concrete 1],
+      relevance repeated.path [.concrete 1, .concrete 3, .concrete 1]]
+    let wildcard := ValidationRelevanceScope.partialSet [
+      relevance repeated.path [.concrete 1, .all, .concrete 1]]
+    checkedPartialAggregateOf .distinctCount authored [1, 2, 3]
+        (.parsed (.num 5)) (.parsed (.num 6)) (.parsed (.num 5))
+        (raw .empty .empty .empty) concreteAll =
+      some .nonRelevant ∧
+    checkedPartialAggregateOf .distinctCount authored [1, 2, 3]
+        (.parsed (.num 5)) (.parsed (.num 6)) (.parsed (.num 5))
+        (raw .empty .empty .empty) wildcard =
+      some (.evaluated (.value 2 .fixed)) := by
   native_decide
 
 /- A relevant unavailable prefix terminates before a later nonrelevant malformed star topology, while a nonrelevant direct prefix also masks that topology. -/

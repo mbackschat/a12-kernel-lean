@@ -2,7 +2,7 @@ import A12Kernel.Semantics.ValueList
 
 /-! # Resolved Number aggregates
 
-This capsule starts after one Number field-list or star has been expanded, filtered, and classified. `Sum`, `MinValue`, and `MaxValue` scan every selected cell, drop empty values from their numeric folds, and retain aggregate-specific missingness for directional validation polarity. `Sum` additionally applies precision-50 arithmetic in encounter order. Path expansion, filter evaluation, partial relevance, and computation are outside this boundary.
+This capsule starts after one Number field-list or star has been expanded, filtered, and classified. `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues` scan every selected cell, drop empty values from their folds, and retain aggregate-specific missingness for directional validation polarity. `Sum` additionally applies precision-50 arithmetic in encounter order, while distinct count reuses scale-19 Number equality. Path expansion, filter evaluation, partial relevance, and computation are outside this boundary.
 -/
 
 namespace A12Kernel
@@ -115,5 +115,34 @@ def evalNumericExtremumAggregate (op : NumericExtremumOp)
 def evalNumericSumAggregate (fieldSigned : Bool)
     (side : ResolvedValueListSide .number) : NumericOperand :=
   evalDeclaredNumericSumAggregate (side.toNumericSumSide fieldSigned)
+
+/-- Insert a Number into the already-seen representatives exactly when no scale-19-equal representative exists. Representative order is internal and does not affect the count. -/
+def insertDistinctNumericValue (seen : List Rat) (value : Rat) : List Rat :=
+  if seen.any fun candidate =>
+      ValueListAtom.equal (kind := .number) candidate value then
+    seen
+  else
+    value :: seen
+
+/-- Scan one resolved Number aggregate side, skipping empty cells and stopping at the first formal unavailability. -/
+def scanDistinctNumericCells (cells : List (ValueListCell .number)) :
+    Except FormalCause (List Rat) :=
+  ValueListCell.scanPresent (kind := .number)
+    insertDistinctNumericValue cells []
+
+/-- Evaluate Number-valued `NumberOfDifferentValues`. Only distinct filled values count. Missing cells or a declared tail can only increase the current count; a reached filter can also remove currently selected values and is therefore both-directionally fillable. -/
+def evalNumericDistinctCountAggregate
+    (side : ResolvedValueListSide .number) : NumericOperand :=
+  match scanDistinctNumericCells side.cells with
+  | .error cause => .unknown cause
+  | .ok seen =>
+      let fillability :=
+        if side.hasHaving then
+          NumericFillability.both
+        else if side.hasMissingPotential then
+          NumericFillability.growOnly
+        else
+          NumericFillability.fixed
+      .value seen.length fillability
 
 end A12Kernel

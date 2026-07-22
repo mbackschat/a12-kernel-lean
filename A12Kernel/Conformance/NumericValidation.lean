@@ -866,6 +866,19 @@ example :
           (NumericScaleSummary.field 2) (NumericScaleSummary.field 0)) := by
   native_decide
 
+/- NumberOfDifferentValues is an integral aggregate independently of operand declarations, and its grow-only missing state reaches ordinary comparison polarity. -/
+example :
+    errorOf (twoSided .equal
+      (aggregate .distinctCount "U" ["Scale2"]) (atom "U")) = none ∧
+    verdictOf (comparison .equal
+      (aggregate .distinctCount "U" ["V"]) 1)
+      (raw (.parsed (.num 5)) (.parsed (.num 5))) =
+        some (.fired .value) ∧
+    verdictOf (comparison .less
+      (aggregate .distinctCount "U" ["V"]) 1) =
+        some (.fired .omission) := by
+  native_decide
+
 /- The aggregate owner retains wrong-kind and repeatable-source diagnostics rather than collapsing them into a generic expression rejection. -/
 example :
     errorOf (comparison .greater (aggregate .sum "U" ["Flag"]) 0) =
