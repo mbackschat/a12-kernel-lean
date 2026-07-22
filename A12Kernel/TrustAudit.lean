@@ -830,6 +830,14 @@ run_cmd do
 #print axioms A12Kernel.prepareCustomDeclarations_registered
 #print axioms A12Kernel.prepareFlatCustomFields_modelError
 #print axioms A12Kernel.prepareFlatCustomFields_model_exact
+#print axioms A12Kernel.customField_checkValueRaw_acceptance_exact
+#print axioms A12Kernel.customField_checkValueRaw_rejection_exact
+#print axioms A12Kernel.customField_checkValueRaw_empty
+#print axioms A12Kernel.customField_checkValueRaw_wrongKind
+#print axioms A12Kernel.preparedCustomContext_lookup_exact
+#print axioms A12Kernel.preparedCustomContext_ordinary_exact
+#print axioms A12Kernel.unpreparedCustomContext_failsClosed
+#print axioms A12Kernel.preparedCustomContext_unknownId
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal

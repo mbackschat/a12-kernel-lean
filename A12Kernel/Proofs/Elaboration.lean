@@ -46,7 +46,11 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
 theorem checkContext_lookup_coherent (model : FlatModel) (raw : RawFlatContext)
     (id : FieldId) (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId id = .ok declaration) :
-    (model.checkContext raw).read id = formalCheck declaration.policy (raw.read id) := by
+    (model.checkContext raw).read id =
+      if declaration.customType.isNone then
+        formalCheck declaration.policy (raw.read id)
+      else
+        malformedCheckedCell := by
   simp only [FlatModel.checkContext, lookup]
 
 /-- A core-admitted reference therefore reads a cell checked by a unique matching model
@@ -58,7 +62,10 @@ theorem checkContext_admittedField_coherent (model : FlatModel) (raw : RawFlatCo
       declaration.repeatableScope.isEmpty = true ∧
       field.matchesDecl declaration = true ∧
       (model.checkContext raw).read field.id =
-        formalCheck declaration.policy (raw.read field.id) := by
+        if declaration.customType.isNone then
+          formalCheck declaration.policy (raw.read field.id)
+        else
+          malformedCheckedCell := by
   obtain ⟨declaration, lookup, nonrepeatable, matching⟩ :=
     admitsField_has_unique_matching_declaration model field admitted
   exact ⟨declaration, lookup, nonrepeatable, matching,
@@ -74,7 +81,10 @@ theorem checkContext_admittedComparison_field_coherent (model : FlatModel)
       declaration.repeatableScope.isEmpty = true ∧
       field.matchesDecl declaration = true ∧
       (model.checkContext raw).read field.id =
-        formalCheck declaration.policy (raw.read field.id) := by
+        if declaration.customType.isNone then
+          formalCheck declaration.policy (raw.read field.id)
+        else
+          malformedCheckedCell := by
   exact checkContext_admittedField_coherent model raw field
     (admitsComparison_fields_admitted model comparison admitted field member)
 

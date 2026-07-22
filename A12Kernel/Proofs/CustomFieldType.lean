@@ -64,7 +64,8 @@ theorem customFieldType_rejection_exact (checked : CheckedCustomFieldType)
       parsed := none
       findings := [.registeredCustomValidation rejection]
     } := by
-  simp [CheckedCustomFieldType.checkRelevantRaw, nonempty, rejected,
+  simp [CheckedCustomFieldType.checkRelevantRaw,
+    CheckedCustomFieldType.classifyString, nonempty, rejected,
     BaseFormalCause.toFormalCause]
 
 theorem customFieldType_rejection_phase_projection

@@ -22,6 +22,33 @@ structure PreparedFlatCustomFields where
   model : FlatModel
   fields : List PreparedFlatCustomField
 
+namespace PreparedFlatCustomFields
+
+def lookup? (prepared : PreparedFlatCustomFields) (id : FieldId) :
+    Option PreparedFlatCustomField :=
+  prepared.fields.find? fun field => field.declaration.id == id
+
+/-- Compile heterogeneous raw cells through the exact prepared custom overlay. Ordinary declarations reuse `formalCheck`; any incoherent hand-built overlay fails closed. -/
+def checkContext (prepared : PreparedFlatCustomFields) (locale : String)
+    (raw : RawFlatContext) : FlatContext where
+  read id :=
+    match prepared.model.lookupUniqueId id with
+    | .error _ => malformedCheckedCell
+    | .ok declaration =>
+        match prepared.lookup? id with
+        | none =>
+            if declaration.customType.isNone then
+              formalCheck declaration.policy (raw.read id)
+            else
+              malformedCheckedCell
+        | some customField =>
+            if customField.declaration == declaration then
+              customField.customType.checkValueRaw locale (raw.read id)
+            else
+              malformedCheckedCell
+
+end PreparedFlatCustomFields
+
 def prepareCustomDeclarations (world : World) :
     List FlatFieldDecl →
       Except FlatCustomFieldPreparationError (List PreparedFlatCustomField)

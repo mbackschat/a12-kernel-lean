@@ -772,7 +772,11 @@ def malformedCheckedCell : CheckedCell :=
 def FlatModel.checkContext (model : FlatModel) (raw : RawFlatContext) : FlatContext where
   read id :=
     match model.lookupUniqueId id with
-    | .ok declaration => formalCheck declaration.policy (raw.read id)
+    | .ok declaration =>
+        if declaration.customType.isNone then
+          formalCheck declaration.policy (raw.read id)
+        else
+          malformedCheckedCell
     | .error _ => malformedCheckedCell
 
 def elaborateAndEvalFull (model : FlatModel) (world : World) (declaringGroup : GroupPath)
