@@ -15,6 +15,8 @@ def referencesField : FlatCondition → FieldId → Bool
   | .compare comparison, field => comparison.fieldIds.contains field
   | .tokenValueList _ operands values, field =>
       (values.allOperands operands).any fun operand => operand.field.id == field
+  | .numberValueList _ operands values, field =>
+      (values.allOperands operands).any fun operand => operand.id == field
   | .fieldFilled referenced, field
   | .fieldNotFilled referenced, field => referenced.id == field
   | .and left right, field

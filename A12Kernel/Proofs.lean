@@ -81,6 +81,7 @@ import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.EnumerationElaboration
 import A12Kernel.Proofs.CheckedEnumeration
 import A12Kernel.Proofs.EnumerationValueList
+import A12Kernel.Proofs.FlatNumberValueList
 import A12Kernel.Proofs.EnumerationRepetitionNotUnique
 import A12Kernel.Proofs.SemanticIndex
 import A12Kernel.Proofs.CustomCondition

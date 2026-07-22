@@ -754,6 +754,13 @@ run_cmd do
 #print axioms A12Kernel.flatTokenValueMembership_empty
 #print axioms A12Kernel.flatEnumerationValueList_no_empty
 #print axioms A12Kernel.flatEnumerationValueMembership_empty
+#print axioms A12Kernel.flatNumberValueListCell_empty
+#print axioms A12Kernel.flatNumberValueListCell_present
+#print axioms A12Kernel.flatNumberValueListCell_unknown
+#print axioms A12Kernel.flatNumberValueList_canFireOnEmpty
+#print axioms A12Kernel.flatNumberValueList_irrelevant_unknown
+#print axioms A12Kernel.flatNumberValueMembership_empty
+#print axioms A12Kernel.flatNumberValueList_no_empty
 #print axioms A12Kernel.enumerationRepetitionKey_empty
 #print axioms A12Kernel.enumerationRepetitionKey_unknown
 #print axioms A12Kernel.enumerationRepetitionKey_present
