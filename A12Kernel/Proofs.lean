@@ -40,6 +40,7 @@ import A12Kernel.Proofs.NumericApplication
 import A12Kernel.Proofs.NumericDependency
 import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.Elaboration
+import A12Kernel.Proofs.CustomFieldElaboration
 import A12Kernel.Proofs.ValidationRule
 import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.TemporalValue
