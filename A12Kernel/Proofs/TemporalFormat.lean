@@ -47,4 +47,22 @@ theorem temporalComparison_admitsNow_admitsFormats
   simp [TemporalComparisonOp.admitsNow] at admitted
   exact admitted.right
 
+/-- `Today` admission is exactly ordinary date-shaped direct-comparison admission. -/
+theorem temporalComparison_admitsToday_admitsFormats
+    (op : TemporalComparisonOp) (hasBaseYear : Bool)
+    (other : TemporalComponents)
+    (admitted : op.admitsToday hasBaseYear other = true) :
+    op.admitsFormats hasBaseYear other TemporalComponents.today = true := by
+  exact admitted
+
+/-- Equality with `Today` excludes a time-bearing counterpart; directional comparison retains the kernel's coarser date-class gate. -/
+theorem temporalEqual_admitsToday_hasNoTime
+    (hasBaseYear : Bool) (other : TemporalComponents)
+    (admitted : TemporalComparisonOp.equal.admitsToday hasBaseYear other = true) :
+    other.hasTime = false := by
+  cases hasBaseYear <;>
+    simp_all [TemporalComparisonOp.admitsToday, TemporalComparisonOp.admitsFormats,
+      TemporalComparisonOp.requiresSameTimePresence, TemporalComponents.today,
+      TemporalComponents.withBaseYear, TemporalComponents.hasTime]
+
 end A12Kernel

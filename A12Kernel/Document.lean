@@ -45,14 +45,17 @@ structure Document where
     (`spec/07` §9 / `spec/08` §10) -/
 abbrev Env := List (RepeatableLevel × Nat)
 
-/-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise
-    read from ambient state, kept as explicit input so `eval` / `compute` stay pure (no
-    `IO`; determinism given a clock). Model configuration selects a time zone; an explicit
-    timezone-rule version may later join the clock here. Custom-condition / validator
-    oracles and the label provider likewise belong to later custom stages. -/
+/-- A model-zone `Today` oracle maps the checked model's exact zone id and injected clock instant to midnight on that zone's local civil date. A complete kernel consumer supplies every model-legal legacy zone; a narrower consumer fails closed with `none` for every unsupported id. -/
+abbrev ModelZoneTodayOracle := String → Instant → Option Instant
+
+/-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise read from ambient state, kept as explicit input so `eval` / `compute` stay pure. The model-zone oracle is function-valued because the canonical legal zone-id domain is wider than this repository's concrete UTC/Berlin profiles. Custom-condition / validator oracles and the label provider likewise belong to later custom stages. -/
 structure World where
   now      : Instant
   baseYear : Option Int
-  deriving Repr, DecidableEq
+  modelZoneToday? : ModelZoneTodayOracle := fun _ _ => none
+
+/-- Resolve `Today` through the explicit profile selected for the checked model. -/
+def World.today? (world : World) (zoneId : String) : Option Instant :=
+  world.modelZoneToday? zoneId world.now
 
 end A12Kernel
