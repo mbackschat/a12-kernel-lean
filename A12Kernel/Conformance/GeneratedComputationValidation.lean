@@ -53,6 +53,10 @@ private def crossGroupExtra : FlatFieldDecl :=
   { id := 13, groupPath := ["Input"], name := "Extra",
     policy := { kind := .number { scale := 0, signed := false } } }
 
+private def crossGroupCode : FlatFieldDecl :=
+  { id := 24, groupPath := ["Input"], name := "Code",
+    policy := { kind := .string } }
+
 private def crossGroupTarget : FlatFieldDecl :=
   { id := 22, groupPath := ["Output"], name := "Target",
     policy := { kind := .number { scale := 0, signed := true } } }
@@ -63,7 +67,7 @@ private def crossGroupOtherTarget : FlatFieldDecl :=
 
 private def crossGroupModel : FlatModel :=
   { fields := [crossGroupSource, crossGroupDate, crossGroupExtra, crossGroupTarget,
-      crossGroupOtherTarget] }
+      crossGroupOtherTarget, crossGroupCode] }
 
 private def absolutePath (groups : List String) (field : String) :
     SurfaceFieldPath :=
@@ -106,6 +110,13 @@ private def crossGroupAggregateOperation :
     (.atom (.aggregate .sum {
       first := absolutePath ["Input"] "Source"
       rest := [absolutePath ["Input"] "Extra"] }))
+
+private def crossGroupStringRangeOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.stringRange (absolutePath ["Input"] "Code") 1 2))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -313,6 +324,26 @@ private def crossGroupAggregateTableOutcome (target : Rat) : Option FlatRuleOutc
   let rule ←
     (assembleGeneratedNumericOperationTableRule crossGroupModel table).toOption
   pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+
+private def crossGroupStringRangeOutcome (target : Rat)
+    (code : RawCell := .parsed (.str "12X")) : Option FlatRuleOutcome := do
+  let operation ← crossGroupStringRangeOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedRange" none messagePlan).toOption
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupCode.id then code
+      else if field = crossGroupTarget.id then .parsed (.num target)
+      else .empty }
+  pure (rule.evalFull evaluationWorld raw true)
+
+private def crossGroupStringRangeExpectedMessage
+    (messageType : Polarity) : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedRange"
+    severity := .error
+    messageType
+    text }
 
 private def aggregateExpectedMessage : FlatRuleMessage :=
   { errorAddress := { field := crossGroupTarget.id, path := [] }
@@ -708,6 +739,18 @@ example :
       crossGroupAggregateOutcome 4 = some (.fired aggregateExpectedMessage) ∧
       crossGroupAggregateTableOutcome 3 =
         some (.fired aggregateExpectedMessage) := by
+  native_decide
+
+/- Generated validation narrows the checked String range atom without rebuilding it and compares the same numeric result model-wide. -/
+example :
+    crossGroupStringRangeOutcome 12 = some .notFired ∧
+      crossGroupStringRangeOutcome 13 =
+        some (.fired (crossGroupStringRangeExpectedMessage .value)) ∧
+      crossGroupStringRangeOutcome 13 .empty =
+        some (.fired (crossGroupStringRangeExpectedMessage .omission)) ∧
+      crossGroupStringRangeOutcome 13 (.parsed (.str "AB")) =
+        some (.fired (crossGroupStringRangeExpectedMessage .value)) ∧
+      crossGroupStringRangeOperation.isOk = true := by
   native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation

@@ -32,6 +32,8 @@ inductive NumericValidationElabError where
   | resolve (error : ResolveError)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
+  | rangeOperandNotString (path : List String)
+  | invalidStringRange (start finish : Nat)
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
   | baseYearNotDeclared
@@ -67,6 +69,15 @@ private def FlatModel.admitsTemporalInGroup (model : FlatModel)
         declaration.toTemporalField? == some field
   | .error _ => false
 
+private def FlatModel.admitsStringInGroup (model : FlatModel)
+    (rowGroup : GroupPath) (field : FlatStringField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.groupPath == rowGroup &&
+        declaration.repeatableScope.isEmpty &&
+        declaration.toStringValueField? == some field
+  | .error _ => false
+
 private def FlatModel.admitsNumberModelWide (model : FlatModel)
     (field : FlatNumberField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -82,6 +93,10 @@ private def FlatModel.admitsTemporalModelWide (model : FlatModel)
       declaration.repeatableScope.isEmpty &&
         declaration.toTemporalField? == some field
   | .error _ => false
+
+private def FlatModel.admitsStringModelWide (model : FlatModel)
+    (field : FlatStringField) : Bool :=
+  model.admitsStringValueField field
 
 private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPath)
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
@@ -113,6 +128,11 @@ private def NumericValidationAtom.admitted
         | .sameGroup => model.admitsTemporalInGroup rowGroup source
         | .modelWideNonrepeatable => model.admitsTemporalModelWide source) &&
         part.admittedBy source model.hasBaseYear
+  | .stringRange source start finish =>
+      validStringRange start finish &&
+        match scope with
+        | .sameGroup => model.admitsStringInGroup rowGroup source
+        | .modelWideNonrepeatable => model.admitsStringModelWide source
   | .dateDifference unit left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
@@ -198,6 +218,7 @@ def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId �
   | .field source, field => source.id == field
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
+  | .stringRange source _ _, field => source.id == field
   | .dateDifference _ left right, field =>
       left.references field || right.references field
   | .aggregate _ source, field => source.referencesField field
@@ -209,6 +230,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .field source => isRelevant source.id
   | .baseYear _ | .baseYearDatePart _ _ _ => true
   | .temporalFieldPart source _ => isRelevant source.id
+  | .stringRange source _ _ => isRelevant source.id
   | .dateDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
@@ -262,6 +284,15 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       let field ← resolveTemporalNumericField model rowGroup reference
         (fun source => part.admittedBy source model.hasBaseYear)
       pure (.temporalFieldPart field part)
+  | .stringRange reference start finish => do
+      let declaration ← (model.resolveField rowGroup reference).mapError .resolve
+      if declaration.groupPath != rowGroup then
+        throw (.fieldOutsideRowGroup declaration.path rowGroup)
+      if !validStringRange start finish then
+        throw (.invalidStringRange start finish)
+      match declaration.toStringValueField? with
+      | some field => pure (.stringRange field start finish)
+      | none => throw (.rangeOperandNotString declaration.path)
   | .dateDifference unit left right => do
       let resolveOperand : SurfaceDateDifferenceOperand →
           Except NumericValidationElabError ResolvedDateDifferenceOperand
@@ -363,6 +394,13 @@ def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>
       (context.resolveTemporalNumericOperand field part).toValidationArithmetic
+  | .stringRange field start finish =>
+      match context.observeValidationAt field.id with
+      | .empty => .ok (.value 0 .growOnly)
+      | .value (.str value) =>
+          .ok (.value (utf16RangeAsNatural value start finish) .fixed)
+      | .value _ => .error .malformed
+      | .unknown cause | .poison cause => .error cause
   | .dateDifference unit left right =>
       match DateDifferenceOperand.evaluate unit
           (left.validationOperand context) (right.validationOperand context) with

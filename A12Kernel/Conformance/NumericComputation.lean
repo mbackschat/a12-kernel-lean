@@ -81,6 +81,10 @@ private def surfaceField (groups : List String) (name : String) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (surfacePath groups name))
 
+private def surfaceStringRange (start finish : Nat) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.stringRange (surfacePath ["Root"] "Wrong") start finish)
+
 private def surfaceAggregate (op : NumericAggregateOp) (first : String)
     (rest : List String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.aggregate op {
@@ -138,7 +142,8 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     (dateTime : CheckedCell :=
       checkedTemporal .dateTime dateTimeComponents .empty)
     (date : CheckedCell :=
-      checkedTemporal .date TemporalComponents.fullDate .empty) :
+      checkedTemporal .date TemporalComponents.fullDate .empty)
+    (code : CheckedCell := formalCheck { kind := .string } .empty) :
     ScalarComputationContext where
   read field :=
     if field == sourceId then source
@@ -146,6 +151,7 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     else if field == timeId then time
     else if field == dateTimeId then dateTime
     else if field == dateId then date
+    else if field == wrongId then code
     else checkedNumber .empty
 
 private def instant : Instant := { epochMillis := 1719292867000 }
@@ -208,6 +214,56 @@ private def targetPolicyAttachErrorOf (policy : NumericTargetPolicy) :
       match checked.attachTargetPolicy policy with
       | .error error => some error
       | .ok _ => none
+
+/- Numeric computation consumes the same digits-only normalized range and maps every clean fallback to zero. -/
+example :
+    checkedResultOf (surfaceStringRange 1 2)
+        (context (code := formalCheck { kind := .string }
+          (.parsed (.str "12X")))) = some (.value 12) ∧
+      checkedResultOf (surfaceStringRange 1 2)
+        (context (code := formalCheck { kind := .string }
+          (.parsed (.str "AB3")))) = some (.value 0) ∧
+      checkedResultOf (surfaceStringRange 1 2)
+        (context (code := formalCheck { kind := .string }
+          (.parsed (.str "A")))) = some (.value 0) ∧
+      checkedResultOf (surfaceStringRange 1 2) = some (.value 0) := by
+  native_decide
+
+/- Normalization precedes selection, and a malformed source preserves computation poison. -/
+example :
+    checkedResultOf (surfaceStringRange 3 3)
+        (context (code := formalCheck { kind := .string }
+          (.parsed (.str "1\r\n2")))) = some (.value 2) ∧
+      checkedResultOf (surfaceStringRange 2 2)
+        (context (code := formalCheck { kind := .string }
+          (.parsed (.str "A😀B")))) = some (.value 0) ∧
+      checkedResultOf (surfaceStringRange 1 1)
+        (context (code := formalCheck { kind := .string }
+          (.rejected .malformed))) = some (.poison .malformed) := by
+  native_decide
+
+/- The checked atom is an ordinary numeric-expression source and reaches the existing target checker without a range-specific write path. -/
+example :
+    let input := context
+      (checkedNumber (.parsed (.num 3)))
+      (code := formalCheck { kind := .string } (.parsed (.str "12X")))
+    checkedResultOf
+        (.binary .add (surfaceStringRange 1 2)
+          (surfaceField ["Root"] "Source")) input = some (.value 15) ∧
+      checkedTargetResultOf (surfaceStringRange 1 2) false targetPolicy input =
+        some (.supported (.accepted { unscaled := 12, scale := 0 })) := by
+  native_decide
+
+/- Static range diagnostics preserve field-shape → interval → String-kind precedence. -/
+example :
+    checkedErrorOf
+        (.atom (.stringRange (surfacePath ["Root"] "Missing") 0 2)) =
+      some (.resolve (.invalidEntity (surfacePath ["Root"] "Missing"))) ∧
+    checkedErrorOf (.atom (.stringRange (surfacePath ["Root"] "Source") 0 2)) =
+      some (.invalidStringRange 0 2) ∧
+    checkedErrorOf (.atom (.stringRange (surfacePath ["Root"] "Source") 1 2)) =
+      some (.rangeOperandNotString ["Root", "Source"]) := by
+  native_decide
 
 private def literal (value : Rat) (authoredScale : Int := 0) :
     AuthoredNumericExpr FlatFieldDecl :=

@@ -76,7 +76,7 @@ def eval (context : StringComputationContext) : StringExpr FieldId → Except St
   | StringExpr.field fieldId => context.readTerm fieldId
   | StringExpr.literal value => pure (.text value)
   | StringExpr.range fieldId start finish => do
-      if start < 1 || finish < start then
+      if !validStringRange start finish then
         throw (.invalidRange start finish)
       match ← context.readTerm fieldId with
       | .noValue => pure (.text "")

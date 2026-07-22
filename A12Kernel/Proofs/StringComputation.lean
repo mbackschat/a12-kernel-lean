@@ -18,8 +18,10 @@ theorem emptyStringRange_evaluates_emptyText (context : StringComputationContext
     (startPositive : 1 ≤ start) (ordered : start ≤ finish)
     (emptyRead : observeCell .computation (context.read field) = .empty) :
     (StringExpr.range field start finish).eval context = .ok (.text "") := by
-  simp [StringExpr.eval, StringComputationContext.readTerm, emptyRead,
-    Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered] <;> rfl
+  have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
+  have valid : validStringRange start finish = true := by
+    simp [validStringRange, positive, ordered]
+  simp [StringExpr.eval, StringComputationContext.readTerm, emptyRead, valid] <;> rfl
 
 /-- A formally invalid ranged source preserves its exact poison cause before any interval content decision. -/
 theorem poisonedStringRange_preserves_cause (context : StringComputationContext)
@@ -27,8 +29,10 @@ theorem poisonedStringRange_preserves_cause (context : StringComputationContext)
     (startPositive : 1 ≤ start) (ordered : start ≤ finish)
     (poisonedRead : observeCell .computation (context.read field) = .poison cause) :
     (StringExpr.range field start finish).eval context = .ok (.poison cause) := by
-  simp [StringExpr.eval, StringComputationContext.readTerm, poisonedRead,
-    Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered] <;> rfl
+  have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
+  have valid : validStringRange start finish = true := by
+    simp [validStringRange, positive, ordered]
+  simp [StringExpr.eval, StringComputationContext.readTerm, poisonedRead, valid] <;> rfl
 
 /-- An end beyond the normalized UTF-16 length returns empty text, never the available prefix. -/
 theorem overshootingStringRange_evaluates_emptyText (context : StringComputationContext)
@@ -38,8 +42,11 @@ theorem overshootingStringRange_evaluates_emptyText (context : StringComputation
     (overshoots : utf16CodeUnitLength text < finish)
     (valueRead : observeCell .computation (context.read field) = .value (.str text)) :
     (StringExpr.range field start finish).eval context = .ok (.text "") := by
+  have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
+  have valid : validStringRange start finish = true := by
+    simp [validStringRange, positive, ordered]
   simp [StringExpr.eval, StringComputationContext.readTerm, valueRead, nonempty,
-    Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered, overshoots] <;> rfl
+    valid, overshoots] <;> rfl
 
 /-- Concatenation consumes an empty field as `""`, so a non-empty literal still reaches the root store as its own value. -/
 theorem emptyStringField_concat_literal_stores_literal (context : StringComputationContext)

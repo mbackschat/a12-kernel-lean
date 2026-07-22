@@ -24,6 +24,32 @@ theorem numericValidationAggregate_evaluatesThroughSharedFold
       (source.evaluate op context.observeValidationAt).toValidationArithmetic := by
   rfl
 
+/-- A missing checked String source gives `RangeAsNumber` the real zero together with its one possible movement direction. -/
+theorem numericValidation_stringRange_empty_growOnly
+    (context : FlatContext) (field : FlatStringField) (start finish : Nat)
+    (observed : context.observeValidationAt field.id = .empty) :
+    context.resolveNumericValidationAtom (.stringRange field start finish) =
+      .ok (.value 0 .growOnly) := by
+  simp [FlatContext.resolveNumericValidationAtom, observed]
+
+/-- Once the String source is present, digits-only conversion or fallback zero is fixed; substring content does not itself carry omission potential. -/
+theorem numericValidation_stringRange_value_fixed
+    (context : FlatContext) (field : FlatStringField) (start finish : Nat)
+    (value : String)
+    (observed : context.observeValidationAt field.id = .value (.str value)) :
+    context.resolveNumericValidationAtom (.stringRange field start finish) =
+      .ok (.value (utf16RangeAsNatural value start finish) .fixed) := by
+  simp [FlatContext.resolveNumericValidationAtom, observed]
+
+/-- A reached formal cause survives the range conversion rather than becoming fallback zero. -/
+theorem numericValidation_stringRange_unknown_preservesCause
+    (context : FlatContext) (field : FlatStringField) (start finish : Nat)
+    (cause : FormalCause)
+    (observed : context.observeValidationAt field.id = .unknown cause) :
+    context.resolveNumericValidationAtom (.stringRange field start finish) =
+      .error cause := by
+  simp [FlatContext.resolveNumericValidationAtom, observed]
+
 theorem numericArithmetic_formalInvalid_left_is_unknown
     (op : NumericValidationOp) (cause : FormalCause)
     (right : Except FormalCause NumericArithmeticOutcome) :

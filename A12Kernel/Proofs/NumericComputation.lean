@@ -14,6 +14,37 @@ theorem numericComputationAggregate_evaluatesThroughSharedFold
         observeCell .computation (context.read field)).toComputationResult) := by
   rfl
 
+/-- Computation erases range fillability but keeps the missing String source's numeric zero value. -/
+theorem numericComputation_stringRange_empty_zero
+    (context : ScalarComputationContext) (field : FlatStringField)
+    (start finish : Nat)
+    (observed : observeCell .computation (context.read field.id) = .empty) :
+    context.readNumericComputationAtom (.stringRange field start finish) =
+      .ok (.value 0) := by
+  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  rfl
+
+/-- A present String source delegates once to the shared normalized UTF-16/digits-only conversion. -/
+theorem numericComputation_stringRange_value
+    (context : ScalarComputationContext) (field : FlatStringField)
+    (start finish : Nat) (value : String)
+    (observed : observeCell .computation (context.read field.id) =
+      .value (.str value)) :
+    context.readNumericComputationAtom (.stringRange field start finish) =
+      .ok (.value (utf16RangeAsNatural value start finish)) := by
+  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  rfl
+
+/-- A reached computation poison survives range conversion with its exact cause. -/
+theorem numericComputation_stringRange_poison_preservesCause
+    (context : ScalarComputationContext) (field : FlatStringField)
+    (start finish : Nat) (cause : FormalCause)
+    (observed : observeCell .computation (context.read field.id) = .poison cause) :
+    context.readNumericComputationAtom (.stringRange field start finish) =
+      .ok (.poison cause) := by
+  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  rfl
+
 /-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :

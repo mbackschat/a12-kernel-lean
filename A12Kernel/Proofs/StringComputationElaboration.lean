@@ -24,8 +24,10 @@ theorem elaborateStringExprCore_range (model : FlatModel)
       .ok (.range field start finish) := by
   unfold elaborateStringExprCore
   rw [resolved]
-  simp only [Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered,
-    decide_false, Bool.false_or]
+  have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
+  have valid : validStringRange start finish = true := by
+    simp [validStringRange, positive, ordered]
+  simp only [valid, Bool.not_true, Bool.false_eq_true, ↓reduceIte]
   change (do
     let value ← admitStringComputationValueField declaration
     pure (StringExpr.range value start finish)) =

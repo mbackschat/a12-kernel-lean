@@ -56,7 +56,7 @@ def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
       model.admitsStringComputationOperand fieldId
   | StringExpr.literal _ => true
   | StringExpr.range fieldId start finish =>
-      0 < start && start ≤ finish &&
+      validStringRange start finish &&
         model.admitsStringComputationOperand fieldId
   | StringExpr.concat left right =>
       left.wellFormedBool model && right.wellFormedBool model
@@ -110,7 +110,7 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
   | StringExpr.range reference start finish => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      if start < 1 || finish < start then
+      if !validStringRange start finish then
         throw (.invalidRange start finish)
       pure (.range (← admitStringComputationValueField declaration) start finish)
   | StringExpr.concat left right => do

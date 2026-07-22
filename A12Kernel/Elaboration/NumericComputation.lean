@@ -21,6 +21,8 @@ inductive NumericComputationElabError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
+  | rangeOperandNotString (path : List String)
+  | invalidStringRange (start finish : Nat)
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
   | baseYearNotDeclared
@@ -62,6 +64,8 @@ def FlatModel.admitsNumericComputationOperand
   | .temporalFieldPart source part =>
       model.admitsTemporalComputationOperand source
         (part.admittedBy source model.hasBaseYear)
+  | .stringRange source start finish =>
+      validStringRange start finish && model.admitsStringValueField source
   | .dateDifference unit left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
@@ -104,6 +108,7 @@ def NumericComputationAtom.references
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart source _ => source.id == field
+  | .stringRange source _ _ => source.id == field
   | .dateDifference _ left right =>
       left.references field || right.references field
   | .aggregate _ source => source.referencesField field
@@ -189,6 +194,17 @@ private def FlatModel.resolveNumericComputationExpression
           declaringGroup target reference
           (fun source => part.admittedBy source model.hasBaseYear)
         pure (.temporalFieldPart field part)
+    | .stringRange reference start finish => do
+        let declaration ←
+          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        if !validStringRange start finish then
+          throw (.invalidStringRange start finish)
+        match declaration.toStringValueField? with
+        | none => throw (.rangeOperandNotString declaration.path)
+        | some field =>
+            if declaration.id == target then
+              throw (.targetSelfReference target)
+            pure (.stringRange field start finish)
     | .dateDifference unit left right => do
         let resolveOperand : SurfaceDateDifferenceOperand →
             Except NumericComputationElabError ResolvedDateDifferenceOperand
@@ -319,6 +335,13 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
       pure (.value (baseYearDateSourceNumericPart year source part))
   | .temporalFieldPart field part =>
       context.readTemporalNumeric field part.project?
+  | .stringRange field start finish =>
+      match observeCell .computation (context.read field.id) with
+      | .empty => pure (.value 0)
+      | .value (.str value) =>
+          pure (.value (utf16RangeAsNatural value start finish))
+      | .value _ => throw (.fieldKindMismatch field.id)
+      | .unknown cause | .poison cause => pure (.poison cause)
   | .dateDifference unit left right =>
       match DateDifferenceOperand.evaluate unit
           (context.readDateDifferenceOperand left)
@@ -370,6 +393,7 @@ def NumericComputationAtom.numericComputationFault? :
   | .baseYear _ => none
   | .baseYearDatePart _ _ _ => none
   | .temporalFieldPart _ _ => none
+  | .stringRange _ _ _ => none
   | .dateDifference _ left right =>
       let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
         | .field source =>

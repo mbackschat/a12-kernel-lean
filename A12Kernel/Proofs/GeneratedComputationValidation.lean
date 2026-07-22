@@ -8,6 +8,14 @@ These laws cover the singleton/guarded table split, declaration-order recovery, 
 
 namespace A12Kernel
 
+/-- The generated-validation twin preserves the checked String range atom exactly instead of reconstructing surface syntax. -/
+theorem numericComputationAtom_stringRange_toValidationAtom
+    (source : FlatStringField) (start finish : Nat) :
+    NumericComputationAtom.toValidationAtom
+        (.stringRange source start finish) =
+      .ok (.stringRange source start finish) := by
+  rfl
+
 /-- Every direct or nested reference to the computed target is rejected before guard lowering can produce a phase-specific condition. -/
 theorem generatedComputationGuard_targetSelfReference_rejected
     (condition : ComputationCondition) (model : FlatModel)
