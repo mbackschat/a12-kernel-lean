@@ -802,7 +802,7 @@ example : verdictOf
     (raw (.rejected .malformed)) = some .unknown := by
   native_decide
 
-/- Nested wrapper/arithmetic authoring remains deliberately outside this checked fragment. -/
+/- A wrapper used inside enclosing arithmetic remains deliberately outside this checked fragment. -/
 example : errorOf
     (comparison .less
       (.binary .add
@@ -811,12 +811,53 @@ example : errorOf
       0) = some .unsupportedExpression := by
   native_decide
 
-/- Root rounding over arithmetic is the opposite unclosed nesting direction and must not be mistaken for direct-field rounding. -/
-example : errorOf
+/- A root operation-form rounding wrapper accepts an already-checked plain arithmetic body and preserves its directional fillability. -/
+example : verdictOf
     (comparison .less
       (.round .halfUp omittedRoundingPlaces
         (.binary .add (atom "U") (literal 1 0)))
-      0) = some .unsupportedExpression := by
+      100) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (comparison .greater
+      (.round .halfUp omittedRoundingPlaces
+        (.binary .add (atom "U") (literal 1 0)))
+      (-100)) = some (.fired .value) := by
+  native_decide
+
+/- Each grouped division is checked in its own region, and rounding applies the scale-19 pre-round before flooring the near-one sum. -/
+example :
+    let third := .group (.binary .divide (atom "U") (literal 3 0))
+    verdictOf
+      (comparison .equal
+        (.round .floor omittedRoundingPlaces
+          (.binary .add (.binary .add third third) third))
+        1)
+      (raw (.parsed (.num 1))) = some (.fired .value) := by
+  native_decide
+
+/- A grouped field is still nonconstant, while a grouped literal is the same immediate constant rejected by the wrapper checker. -/
+example : verdictOf
+    (comparison .equal
+      (.round .halfUp omittedRoundingPlaces (.group (atom "U"))) 2)
+    (raw (.parsed (.num 2))) = some (.fired .value) := by
+  native_decide
+
+example : errorOf
+    (twoSided .equal
+      (.round .halfUp omittedRoundingPlaces (.group (literal 1 0)))
+      (atom "U")) = some .unsupportedExpression := by
+  native_decide
+
+/- The wrapper opens no exemption for an illegal division region inside its body. -/
+example : errorOf
+    (comparison .less
+      (.round .halfUp omittedRoundingPlaces
+        (.binary .multiply
+          (.binary .divide (atom "U") (atom "V"))
+          (.binary .divide (atom "S") (atom "Scale2"))))
+      0) = some (.authoring .tooManyDivisions) := by
   native_decide
 
 /- Root absolute value is the second admitted numeric value function. Its sign-sensitive fillability is visible for signed empty input. -/
@@ -843,17 +884,23 @@ example : (elaborateNumericComparison model ["Order"]
     (twoSided .equal (.abs (atom "Scale2")) (atom "Scale2"))).isOk = true := by
   native_decide
 
-/- Both wrapper/arithmetic nesting directions remain outside the checked boundary. -/
+/- Absolute value inside enclosing arithmetic remains outside the checked boundary; the root-over-arithmetic direction is closed below. -/
 example : errorOf
     (comparison .less
       (.binary .add (.abs (atom "U")) (literal 1 0))
       0) = some .unsupportedExpression := by
   native_decide
 
-example : errorOf
+example : verdictOf
     (comparison .less
-      (.abs (.binary .add (atom "U") (literal 1 0)))
-      0) = some .unsupportedExpression := by
+      (.abs (.binary .subtract (atom "U") (atom "S")))
+      100) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf
+    (comparison .greater
+      (.abs (.binary .subtract (atom "U") (atom "S")))
+      (-100)) = some (.fired .value) := by
   native_decide
 
 /- Checked multi-operand Min/Max use one root over direct same-group Number fields. Empty Number remains a directional zero competitor. -/

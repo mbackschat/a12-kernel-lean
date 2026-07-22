@@ -413,6 +413,11 @@ example :
           (.literal { value := 2, authoredScale := 0 })))) =
         some (.targetSelfReference targetId) ∧
       checkedErrorOf (.abs (surfaceField ["Root"] "Target")) =
+        some (.targetSelfReference targetId) ∧
+      checkedErrorOf
+        (.round .halfUp omittedRoundingPlaces
+          (.binary .add (surfaceField ["Root"] "Target")
+            (.literal { value := 1, authoredScale := 0 }))) =
         some (.targetSelfReference targetId) := by
   native_decide
 
@@ -500,7 +505,7 @@ example :
       checkedErrorOf (.abs surfaceBaseYear) = some .unsupportedExpression := by
   native_decide
 
-/- The checked boundary admits the source-closed direct root value functions already shared with numeric validation. -/
+/- The checked boundary retains direct root functions as the smallest specialization of the root-over-plain route shared with numeric validation. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     let input := context (checkedNumber (.parsed (.num (5 / 2))))
@@ -514,7 +519,7 @@ example :
         some (.value 4) := by
   native_decide
 
-/- The narrow checked function fragment still rejects a second Min/Max constant and a wrapper around arithmetic; their wider source traversal remains unclosed. -/
+/- The checked function fragment still rejects a second Min/Max constant, while a root wrapper delegates to an admitted plain arithmetic body. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     checkedErrorOf
@@ -526,7 +531,22 @@ example :
         (.round .halfUp omittedRoundingPlaces
           (.binary .add sourceField
             (.literal { value := 1, authoredScale := 0 }))) =
-          some .unsupportedExpression := by
+          none ∧
+      checkedResultOf
+        (.round .halfUp omittedRoundingPlaces
+          (.binary .add sourceField
+            (.literal { value := 1, authoredScale := 0 })))
+        (context (checkedNumber (.parsed (.num 2)))) = some (.value 3) ∧
+      checkedResultOf
+        (.abs (.binary .subtract sourceField
+          (surfaceField ["Root"] "Later")))
+        (context (checkedNumber (.parsed (.num 2)))
+          (checkedNumber (.parsed (.num 5)))) = some (.value 3) ∧
+      checkedResultOf
+        (.round .halfUp omittedRoundingPlaces
+          (.binary .divide sourceField
+            (.literal { value := 0, authoredScale := 0 }))) =
+          some .domainFailure := by
   native_decide
 
 example :

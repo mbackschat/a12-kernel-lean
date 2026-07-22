@@ -100,9 +100,10 @@ private def crossGroupOffsetOperation :
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
-    (.binary .add
-      (.atom (.field (absolutePath ["Input"] "Source")))
-      (.literal { value := 1, authoredScale := 0 }))
+    (.round .halfUp omittedRoundingPlaces
+      (.binary .add
+        (.atom (.field (absolutePath ["Input"] "Source")))
+        (.literal { value := 1, authoredScale := 0 })))
 
 private def crossGroupOtherTargetOperation :
     Except NumericComputationElabError
@@ -778,7 +779,7 @@ example :
         some (.fired crossGroupDatePartExpectedMessage) := by
   native_decide
 
-/- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later mismatch, and tolerance remains validation-only. -/
+/- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later root-rounding/arithmetic mismatch, and tolerance remains validation-only. -/
 example :
     selectedCrossGroupExpression =
         crossGroupNumberOperation.toOption.map (fun operation => operation.core.expression) ∧

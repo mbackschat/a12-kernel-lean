@@ -489,6 +489,8 @@ run_cmd do
 #print axioms A12Kernel.numericAuthoring_abs_is_outside_fragment
 #print axioms A12Kernel.numericOperation_directValueFunction_admitted
 #print axioms A12Kernel.numericOperation_directValueFunction_authoringAccepted
+#print axioms A12Kernel.numericOperation_round_body_authoringCheck
+#print axioms A12Kernel.numericOperation_abs_body_authoringCheck
 #print axioms A12Kernel.emptyNumericField_evaluates_zero
 #print axioms A12Kernel.requiredEmptyNumericField_evaluates_zero
 #print axioms A12Kernel.poisonedNumericField_evaluates_poison
@@ -619,6 +621,8 @@ run_cmd do
 #print axioms A12Kernel.numericComparison_atom_literal_agrees_flat
 #print axioms A12Kernel.numericValidation_round_atom_literal_delegates
 #print axioms A12Kernel.numericValidation_abs_atom_literal_delegates
+#print axioms A12Kernel.numericValidation_round_plain_body_delegates
+#print axioms A12Kernel.numericValidation_abs_plain_body_delegates
 #print axioms A12Kernel.numericTolerance_atom_literal_delegates
 #print axioms A12Kernel.numericTolerance_field_baseYear_delegates
 #print axioms A12Kernel.numericTolerance_field_baseYearDatePart_delegates
