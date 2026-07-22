@@ -73,10 +73,9 @@ theorem flatEnumeration_checkRaw_exact (declaration : FlatFieldDecl)
 /-- Masking the one Enumeration leaf suppresses its checked comparison before projection or equality evaluation. -/
 @[simp]
 theorem flatEnumeration_irrelevant_unknown (op : EqualityOp)
-    (field : FlatEnumerationField) (projectionRef : EnumerationProjectionRef)
-    (projection : ResolvedEnumerationProjection) (expected : String)
+    (operand : FlatEnumerationOperand) (expected : String)
     (context : FlatContext) :
-    (FlatCondition.compare (.enumeration op field projectionRef projection expected)).evalSelected
+    (FlatCondition.compare (.enumeration op operand expected)).evalSelected
       context (fun _ => false) = .unknown := by
   simp [FlatCondition.evalSelected, FlatComparison.allRelevant,
     FlatComparison.fieldIds, FlatComparison.fields, FlatField.id]

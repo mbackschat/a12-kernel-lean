@@ -86,10 +86,11 @@ private theorem textFieldOperand_resolve_agreesOn
       simp_all [FlatTextFieldOperand.resolve,
         FlatContext.resolveDirectStringComparisonOperand,
         FlatContext.observeValidationAt]
-  | enumeration field =>
-      have readEq := agreement field.id (by
+  | enumeration operand =>
+      have readEq := agreement operand.field.id (by
         simpa [FlatTextFieldOperand.field, FlatField.id] using relevant)
-      simp_all [FlatTextFieldOperand.resolve, FlatContext.observeValidationAt]
+      simp_all [FlatTextFieldOperand.resolve, FlatEnumerationOperand.resolve,
+        FlatContext.observeValidationAt]
 
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
 theorem partialSelected_agreesOn
@@ -135,8 +136,8 @@ theorem partialSelected_agreesOn
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval, FlatContext.resolveStringLengthOperand,
               FlatContext.observeValidationAt]
-        | enumeration op field projectionRef projection expected =>
-            have readEq := agreement field.id (by
+        | enumeration op operand expected =>
+            have readEq := agreement operand.field.id (by
               simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval, FlatContext.observeValidationAt]
@@ -164,6 +165,13 @@ theorem partialSelected_agreesOn
               temporalOperand_resolve_agreesOn rightOperand left right isRelevant
                 worldAgreement agreement bothRelevant.right]
       · rfl
+  | enumerationValueList quantifier operand values =>
+      simp only [FlatCondition.evalSelected]
+      split
+      · have readEq := agreement operand.field.id (by assumption)
+        simp_all [FlatEnumerationOperand.valueListSide,
+          FlatContext.observeValidationAt]
+      · rfl
   | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected]
       split
@@ -189,6 +197,11 @@ private theorem partialSelected_truth_refines_full
       have fullRelevant : comparison.allRelevant (fun _ => true) = true := by
         simp [FlatComparison.allRelevant]
       simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
+      split
+      · exact K.informationRefines_refl _
+      · trivial
+  | enumerationValueList quantifier operand values =>
+      simp only [FlatCondition.evalSelected]
       split
       · exact K.informationRefines_refl _
       · trivial

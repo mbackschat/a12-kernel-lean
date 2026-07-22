@@ -411,6 +411,7 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
 #print axioms A12Kernel.directComparableProfile_admitsField
+#print axioms A12Kernel.checkedEnumerationOperand_admitsField
 #print axioms A12Kernel.admitsComparison_fields_admitted
 #print axioms A12Kernel.checkContext_lookup_coherent
 #print axioms A12Kernel.checkContext_admittedField_coherent
@@ -746,6 +747,9 @@ run_cmd do
 #print axioms A12Kernel.enumerationValueList_present
 #print axioms A12Kernel.checkedEnumerationValueList_outOfDomain
 #print axioms A12Kernel.checkedEnumerationValueList_sideCells
+#print axioms A12Kernel.flatEnumerationValueList_canFireOnEmpty
+#print axioms A12Kernel.flatEnumerationValueList_irrelevant_unknown
+#print axioms A12Kernel.flatEnumerationValueList_no_empty
 #print axioms A12Kernel.enumerationRepetitionKey_empty
 #print axioms A12Kernel.enumerationRepetitionKey_unknown
 #print axioms A12Kernel.enumerationRepetitionKey_present

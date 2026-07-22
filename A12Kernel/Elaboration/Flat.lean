@@ -96,6 +96,8 @@ inductive SurfaceCondition where
       (field : SurfaceFieldPath)
   | compareEnumeration (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (projection : EnumerationProjectionRef) (literal : String)
+  | enumerationValueList (quantifier : ValueListQuantifier)
+      (field : SurfaceTextFieldOperand) (values : List String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
@@ -155,7 +157,10 @@ def toEnumerationTextFieldComparison? (declaration : FlatFieldDecl)
               let profile := match projectionRef with
                 | .stored => checked.directComparableField
                 | .category _ => .category
-              some (.enumeration { id := declaration.id } projectionRef projection, profile)
+              some (.enumeration {
+                field := { id := declaration.id }
+                projectionRef
+                projection }, profile)
           | .error _ => none
       | .error _ => none
   | _, _ => none
@@ -172,8 +177,8 @@ def textComparisonProfileFor? (declaration : FlatFieldDecl)
     (operand : FlatTextFieldOperand) : Option DirectComparableField :=
   let resolved := match operand with
     | .string _ => declaration.toTextFieldComparison?
-    | .enumeration _ projectionRef _ =>
-        declaration.toEnumerationTextFieldComparison? projectionRef
+    | .enumeration operand =>
+        declaration.toEnumerationTextFieldComparison? operand.projectionRef
   resolved.bind fun (checkedOperand, profile) =>
     if checkedOperand == operand then some profile else none
 
@@ -238,6 +243,7 @@ inductive ElabError where
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | textFieldOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | emptyValueList (path : List String)
   | enumerationComparability (leftPath rightPath : List String)
       (error : EnumerationComparabilityError)
   | incoherentCore
@@ -567,6 +573,26 @@ def FlatModel.directComparableFor? (model : FlatModel)
       else
         none
 
+/-- Reconstruct the proof-bearing Enumeration projection retained by a flat operand from the exact model declaration. -/
+def FlatModel.checkedEnumerationOperand? (model : FlatModel)
+    (operand : FlatEnumerationOperand) : Option CheckedEnumerationProjection :=
+  match model.lookupUniqueId operand.field.id with
+  | .error _ => none
+  | .ok declaration =>
+      if declaration.repeatableScope.isEmpty &&
+          (FlatField.enumeration operand.field).matchesDecl declaration then
+        match declaration.policy.kind, declaration.enumeration with
+        | .enumeration, some source =>
+            match elaborateEnumeration source with
+            | .error _ => none
+            | .ok checked =>
+                match checkEnumerationProjection checked operand.projectionRef with
+                | .error _ => none
+                | .ok resolved => if resolved.projection == operand.projection then some resolved else none
+        | _, _ => none
+      else
+        none
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
   | .textFields _ left right =>
@@ -574,28 +600,23 @@ def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison)
       | some leftProfile, some rightProfile =>
           directFieldComparisonAllowed leftProfile rightProfile
       | _, _ => false
-  | .enumeration _ field projectionRef projection expected =>
-      match model.lookupUniqueId field.id with
-      | .error _ => false
-      | .ok declaration =>
-          declaration.repeatableScope.isEmpty &&
-            (FlatField.enumeration field).matchesDecl declaration &&
-            match declaration.policy.kind, declaration.enumeration with
-            | .enumeration, some source =>
-                match elaborateEnumeration source with
-                | .error _ => false
-                | .ok checked =>
-                    match checked.resolveProjection projectionRef with
-                    | .error _ => false
-                    | .ok resolved =>
-                        resolved == projection &&
-                          checked.literalAllowed projection expected
-            | _, _ => false
+  | .enumeration _ operand expected =>
+      match model.checkedEnumerationOperand? operand with
+      | some checked =>
+          checked.declaration.literalAllowed checked.projection expected
+      | none => false
   | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField
 
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
   | .compare comparison => model.admitsComparison comparison
+  | .enumerationValueList _ operand values =>
+      !values.isEmpty &&
+        match model.checkedEnumerationOperand? operand with
+        | some checked =>
+            values.all fun value =>
+              checked.declaration.literalAllowed checked.projection value
+        | none => false
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
   | .and left right => left.wellFormedBool model && right.wellFormedBool model
@@ -639,8 +660,10 @@ private def elaborateEnumerationCore (declaration : FlatFieldDecl)
           match classifyEnumerationLiteral checked projectionRef equality expected with
           | .rejected error => throw (.enumerationOperand declaration.path error)
           | .accepted projection =>
-              pure (.compare (.enumeration equality { id := declaration.id }
-                projectionRef projection expected))
+              pure (.compare (.enumeration equality {
+                field := { id := declaration.id }
+                projectionRef
+                projection } expected))
   | kind, _ =>
       throw (.literalKindMismatch declaration.path .enumeration kind.surfaceKind)
 
@@ -655,6 +678,32 @@ private def finishTextFieldComparison (op : SurfaceComparisonOp)
   | .accepted => pure (.compare (.textFields equality left.1 right.1))
   | .rejected error => throw (.enumerationComparability leftPath rightPath error)
 
+private def elaborateEnumerationFieldOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceTextFieldOperand) :
+    Except ElabError
+      (List String × CheckedEnumerationProjection × FlatEnumerationOperand) := do
+  let reference := match surface with
+    | .direct field | .category field _ => field
+  let projectionRef : EnumerationProjectionRef := match surface with
+    | .direct _ => .stored
+    | .category _ name => .category name
+  let declaration ←
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+  match declaration.policy.kind, declaration.enumeration with
+  | .enumeration, some source =>
+      match elaborateEnumeration source with
+      | .error _ => throw .incoherentCore
+      | .ok checked =>
+          match checkEnumerationProjection checked projectionRef with
+          | .error error => throw (.enumerationOperand declaration.path error)
+          | .ok projection =>
+              pure (declaration.path, projection, {
+                field := { id := declaration.id }
+                projectionRef := projection.projectionRef
+                projection := projection.projection })
+  | kind, _ =>
+      throw (.textFieldOperandKindMismatch declaration.path kind.surfaceKind)
+
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup : GroupPath) : SurfaceTextFieldOperand →
       Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
@@ -664,23 +713,10 @@ private def elaborateTextFieldOperand (model : FlatModel)
       match declaration.toTextFieldComparison? with
       | some (operand, profile) => pure (declaration.path, operand, profile)
       | none => throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
-  | .category reference name => do
-      let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.policy.kind, declaration.enumeration with
-      | .enumeration, some source =>
-          match elaborateEnumeration source with
-          | .error _ => throw .incoherentCore
-          | .ok checked =>
-              match checkEnumerationProjection checked (.category name) with
-              | .error error => throw (.enumerationOperand declaration.path error)
-              | .ok projection =>
-                  pure (declaration.path,
-                    .enumeration { id := declaration.id }
-                      projection.projectionRef projection.projection,
-                    .category)
-      | kind, _ =>
-          throw (.textFieldOperandKindMismatch declaration.path kind.surfaceKind)
+  | surface@(.category _ _) => do
+      let (path, _, operand) ←
+        elaborateEnumerationFieldOperand model declaringGroup surface
+      pure (path, .enumeration operand, .category)
 
 private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
@@ -697,6 +733,16 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
         elaborateTextFieldOperand model declaringGroup rightReference
       finishTextFieldComparison op leftPath rightPath
         (leftOperand, leftProfile) (rightOperand, rightProfile)
+  | .enumerationValueList quantifier surface values => do
+      let (path, checked, operand) ←
+        elaborateEnumerationFieldOperand model declaringGroup surface
+      if values.isEmpty then
+        throw (.emptyValueList path)
+      else
+        match values.find? fun value =>
+            !checked.declaration.literalAllowed checked.projection value with
+        | some value => throw (.enumerationOperand path (.invalidLiteral value))
+        | none => pure (.enumerationValueList quantifier operand values)
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve

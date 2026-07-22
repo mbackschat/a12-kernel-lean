@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.EnumerationValueList
+import A12Kernel.Semantics.FlatValidation
 
 /-! # A12Kernel.Proofs.EnumerationValueList — checked token-side laws -/
 
@@ -47,5 +47,37 @@ theorem checkedEnumerationValueList_sideCells
     (operand.classifyRawSide rawCells hasUninstantiatedTail hasHaving).cells =
       rawCells.map operand.classifyRaw := by
   rfl
+
+@[simp]
+theorem flatEnumerationValueList_canFireOnEmpty
+    (quantifier : ValueListQuantifier) (operand : FlatEnumerationOperand)
+    (values : List String) :
+    (FlatCondition.enumerationValueList quantifier operand values).canFireOnEmpty =
+      quantifier.canFireOnEmpty := by
+  rfl
+
+/-- The single flat Enumeration leaf remains relevance-gated before either value-list side is consumed. -/
+@[simp]
+theorem flatEnumerationValueList_irrelevant_unknown
+    (quantifier : ValueListQuantifier) (operand : FlatEnumerationOperand)
+    (values : List String) (context : FlatContext) :
+    (FlatCondition.enumerationValueList quantifier operand values).evalSelected
+      context (fun _ => false) = .unknown := by
+  simp [FlatCondition.evalSelected]
+
+/-- `No` is the one value-list quantifier structurally eligible on a blank row; the clean empty field makes that fire omission-typed. -/
+theorem flatEnumerationValueList_no_empty
+    (operand : FlatEnumerationOperand) (values : List String)
+    (context : FlatContext)
+    (empty : context.observeValidationAt operand.field.id = .empty) :
+    (FlatCondition.enumerationValueList .no operand values).evalFull context false =
+      .fired .omission := by
+  simp [FlatCondition.evalFull, FlatCondition.evalSelected,
+    FlatEnumerationOperand.valueListSide, literalTokenValueListSide,
+    ValueListQuantifier.eval, evalValueListNo,
+    ResolvedValueListSide.hasUnknown, ResolvedValueListSide.anyMatches,
+    ResolvedValueListSide.hasMissingPotential, ResolvedValueListSide.hasEmpty,
+    ResolvedValueListSide.contains, ValueListQuantifier.canFireOnEmpty,
+    ValueListCell.isUnknown, ValueListCell.isEmpty, empty]
 
 end A12Kernel

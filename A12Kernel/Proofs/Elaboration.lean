@@ -43,6 +43,23 @@ theorem directComparableProfile_admitsField (model : FlatModel)
   unfold FlatModel.admitsField
   split at resolved <;> simp_all
 
+/-- A reconstructed checked Enumeration operand necessarily passes the shared typed-field gate. -/
+theorem checkedEnumerationOperand_admitsField (model : FlatModel)
+    (operand : FlatEnumerationOperand) (checked : CheckedEnumerationProjection)
+    (resolved : model.checkedEnumerationOperand? operand = some checked) :
+    model.admitsField (.enumeration operand.field) = true := by
+  unfold FlatModel.checkedEnumerationOperand? at resolved
+  generalize lookupEq : model.lookupUniqueId operand.field.id = lookup at resolved
+  cases lookup with
+  | error error => simp at resolved
+  | ok declaration =>
+      generalize gateEq : (declaration.repeatableScope.isEmpty &&
+        (FlatField.enumeration operand.field).matchesDecl declaration) = gate at resolved
+      cases gate with
+      | false => simp [gateEq] at resolved
+      | true =>
+          simpa [FlatModel.admitsField, FlatField.id, lookupEq] using gateEq
+
 /-- Every field read by an admitted comparison independently passes the shared typed-field admission check. -/
 theorem admitsComparison_fields_admitted (model : FlatModel)
     (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
@@ -69,14 +86,14 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       rcases List.mem_singleton.mp member with rfl
       simpa [FlatModel.admitsComparison, FlatComparison.fields,
         List.all_eq_true] using admitted
-  | enumeration op target projectionRef projection expected =>
+  | enumeration op operand expected =>
       rcases List.mem_singleton.mp member with rfl
-      generalize lookupEq : model.lookupUniqueId target.id = lookup at admitted
-      cases lookup with
-      | error error => simp [FlatModel.admitsComparison, lookupEq] at admitted
-      | ok declaration =>
-          simp [FlatModel.admitsComparison, lookupEq] at admitted
-          simpa [FlatModel.admitsField, FlatField.id, lookupEq] using admitted.1
+      unfold FlatModel.admitsComparison at admitted
+      generalize resolved : model.checkedEnumerationOperand? operand = checked at admitted
+      cases checked with
+      | none => simp [resolved] at admitted
+      | some checked =>
+          exact checkedEnumerationOperand_admitsField model operand checked resolved
   | textFields op left right =>
       unfold FlatModel.admitsComparison at admitted
       generalize leftEq : model.directComparableFor? left = leftProfile at admitted
