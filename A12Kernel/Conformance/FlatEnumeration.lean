@@ -336,4 +336,30 @@ example : errorOf (elaborate fieldModel ["Order"]
     (.enumerationValueList .atLeastOne (.direct (fieldPath "Text")) ["A"])) =
     some (.textFieldOperandKindMismatch ["Order", "Text"] .string) := by native_decide
 
+private def storedIncluded : SurfaceCondition :=
+  .enumerationValueMembership .included (.direct (fieldPath "Code")) ["A"]
+
+example : coreOf (elaborate fieldModel ["Order"] storedIncluded) = some
+    (.enumerationValueList .atLeastOne
+      { field := { id := 20 }, projectionRef := .stored, projection := .stored }
+      ["A"]) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw (.parsed (.enum "A"))) true storedIncluded) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw (.parsed (.enum "B"))) true (.enumerationValueMembership .notIncluded
+      (.direct (fieldPath "Code")) ["A"])) = some (.fired .value) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw .empty) true storedIncluded) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+      (raw .empty) true (.enumerationValueMembership .notIncluded
+        (.direct (fieldPath "Code")) ["A"])) = some .notFired := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw (.parsed (.enum "B"))) true (.enumerationValueMembership .included
+      categoryCode ["Shared"])) = some (.fired .value) := by native_decide
+
 end A12Kernel.Conformance.FlatEnumeration

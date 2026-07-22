@@ -98,6 +98,8 @@ inductive SurfaceCondition where
       (projection : EnumerationProjectionRef) (literal : String)
   | enumerationValueList (quantifier : ValueListQuantifier)
       (field : SurfaceTextFieldOperand) (values : List String)
+  | enumerationValueMembership (op : ValueListMembershipOp)
+      (field : SurfaceTextFieldOperand) (values : List String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
@@ -704,6 +706,19 @@ private def elaborateEnumerationFieldOperand (model : FlatModel)
   | kind, _ =>
       throw (.textFieldOperandKindMismatch declaration.path kind.surfaceKind)
 
+private def elaborateEnumerationLiteralList (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceTextFieldOperand)
+    (values : List String) : Except ElabError FlatEnumerationOperand := do
+  let (path, checked, operand) ←
+    elaborateEnumerationFieldOperand model declaringGroup surface
+  if values.isEmpty then
+    throw (.emptyValueList path)
+  else
+    match values.find? fun value =>
+        !checked.declaration.literalAllowed checked.projection value with
+    | some value => throw (.enumerationOperand path (.invalidLiteral value))
+    | none => pure operand
+
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup : GroupPath) : SurfaceTextFieldOperand →
       Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
@@ -734,15 +749,13 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       finishTextFieldComparison op leftPath rightPath
         (leftOperand, leftProfile) (rightOperand, rightProfile)
   | .enumerationValueList quantifier surface values => do
-      let (path, checked, operand) ←
-        elaborateEnumerationFieldOperand model declaringGroup surface
-      if values.isEmpty then
-        throw (.emptyValueList path)
-      else
-        match values.find? fun value =>
-            !checked.declaration.literalAllowed checked.projection value with
-        | some value => throw (.enumerationOperand path (.invalidLiteral value))
-        | none => pure (.enumerationValueList quantifier operand values)
+      let operand ←
+        elaborateEnumerationLiteralList model declaringGroup surface values
+      pure (.enumerationValueList quantifier operand values)
+  | .enumerationValueMembership op surface values => do
+      let operand ←
+        elaborateEnumerationLiteralList model declaringGroup surface values
+      pure (.enumerationValueList op.quantifier operand values)
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve
