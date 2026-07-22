@@ -208,6 +208,8 @@ end FlatFieldDecl
 structure RepeatableGroupDecl where
   level : RepeatableLevel
   path : GroupPath
+  /-- Declared maximum row count when the staged model boundary retains it. -/
+  repeatability : Option Nat := none
   deriving Repr, DecidableEq
 
 structure FlatModel where

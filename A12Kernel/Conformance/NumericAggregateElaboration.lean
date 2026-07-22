@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.NumericAggregate
 
-/-! # Checked nonrepeatable Number aggregate lowering locks -/
+/-! # Checked Number aggregate lowering locks -/
 
 namespace A12Kernel.Conformance.NumericAggregateElaboration
 
@@ -27,9 +27,12 @@ private def repeated : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } },
     repeatableScope := [10] }
 
+private def rows : RepeatableGroupDecl :=
+  { level := 10, path := ["Form", "Rows"], repeatability := some 3 }
+
 private def model : FlatModel :=
   { fields := [unsignedA, signedB, unsignedC, text, repeated]
-    repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
+    repeatableGroups := [rows] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -66,6 +69,115 @@ private def errorOf (authored : SurfaceNumericAggregateFields) : Option NumericA
   | .error error => some error
 
 private def tenPow50 : Rat := 10 ^ 50
+
+private def starredAmount : SurfaceSingleStarFieldPath :=
+  { base := .absolute
+    groupsBeforeStar := ["Form"]
+    starredGroup := "Rows"
+    field := "Amount" }
+
+private def repeatedRaw (candidates : List RowIndex) (a b c : RawCell) :
+    RawSingleGroupContext where
+  candidates := candidates
+  read row field :=
+    if field != repeated.id then .empty
+    else match row with
+      | 1 => a
+      | 2 => b
+      | 3 => c
+      | _ => .empty
+
+private def starElabErrorOf (source : SurfaceSingleStarFieldPath)
+    (targetModel : FlatModel := model) : Option NumericStarAggregateElabError :=
+  match elaborateNumericStarAggregate targetModel ["Form"] source with
+  | .ok _ => none
+  | .error error => some error
+
+private def starSumOf (raw : RawSingleGroupContext) : Option NumericOperand :=
+  match elaborateNumericStarAggregate model ["Form"] starredAmount with
+  | .error _ => none
+  | .ok checked => match checked.evaluateSum raw with
+      | .ok operand => some operand
+      | .error _ => none
+
+private def starExtremumOf (op : NumericExtremumOp) (raw : RawSingleGroupContext) :
+    Option NumericOperand :=
+  match elaborateNumericStarAggregate model ["Form"] starredAmount with
+  | .error _ => none
+  | .ok checked => match checked.evaluateExtremum op raw with
+      | .ok operand => some operand
+      | .error _ => none
+
+private def starContextErrorOf (raw : RawSingleGroupContext) :
+    Option NumericStarContextError :=
+  match elaborateNumericStarAggregate model ["Form"] starredAmount with
+  | .error _ => none
+  | .ok checked => match checked.evaluateSum raw with
+      | .ok _ => none
+      | .error error => some error
+
+/- A partial instantiated prefix retains the model-owned omitted tail. -/
+example : starSumOf (repeatedRaw [1] (.parsed (.num 8)) .empty .empty) =
+    some (.value 8 .growOnly) := by
+  native_decide
+
+/- Exhausting the declared repetition removes the tail, while an explicit empty cell remains missing. -/
+example :
+    starSumOf (repeatedRaw [1, 2, 3] (.parsed (.num 8)) (.parsed (.num 9))
+        (.parsed (.num 10))) = some (.value 27 .fixed) ∧
+      starSumOf (repeatedRaw [1, 2, 3] (.parsed (.num 8)) .presentEmpty
+        (.parsed (.num 10))) = some (.value 18 .growOnly) := by
+  native_decide
+
+/- A zero-row authored star is not the low-level fixed-empty state: all declared rows are an omitted tail. -/
+example : starSumOf (repeatedRaw [] .empty .empty .empty) =
+    some (.value 0 .both) := by
+  native_decide
+
+example :
+    starExtremumOf .maximum
+        (repeatedRaw [1] (.parsed (.num (-8))) .empty .empty) =
+        some (.value (-8) .growOnly) ∧
+      starExtremumOf .minimum
+        (repeatedRaw [1] (.parsed (.num 8)) .empty .empty) =
+        some (.value 8 .shrinkOnly) := by
+  native_decide
+
+example :
+    starSumOf (repeatedRaw [1, 2, 3] (.parsed (.num tenPow50))
+        (.parsed (.num (-tenPow50))) (.parsed (.num (3 / 5)))) =
+      some (.value (3 / 5) .fixed) := by
+  native_decide
+
+example :
+    starSumOf (repeatedRaw [1, 2] (.parsed (.num 8))
+        (.rejected .declaredConstraint) .empty) =
+      some (.unknown .declaredConstraint) := by
+  native_decide
+
+/- The checked aggregate accepts only a valid document prefix within the declared capacity. -/
+example :
+    starContextErrorOf (repeatedRaw [2] (.parsed (.num 8)) .empty .empty) =
+        some (.noncontiguousCandidates [2]) ∧
+      starContextErrorOf (repeatedRaw [1, 2, 3, 4] (.parsed (.num 8)) .empty .empty) =
+        some (.exceedsRepeatability 4 3) := by
+  native_decide
+
+example :
+    starElabErrorOf starredAmount
+        ({ model with repeatableGroups := [{ rows with repeatability := none }] }) =
+        some (.repeatabilityUnavailable rows.path) ∧
+      starElabErrorOf starredAmount
+        ({ model with repeatableGroups := [{ rows with repeatability := some 0 }] }) =
+        some (.invalidRepeatability rows.path 0) := by
+  native_decide
+
+/- The declared domain must be positive; a finite one-row star is still a valid checked source. -/
+example :
+    starElabErrorOf starredAmount
+        ({ model with repeatableGroups := [{ rows with repeatability := some 1 }] }) =
+      none := by
+  native_decide
 
 /- Authored field order reaches the existing staged precision-50 sum unchanged. -/
 example :
