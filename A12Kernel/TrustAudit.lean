@@ -490,6 +490,7 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericTargetComputationOperation_evaluate_routes
 #print axioms A12Kernel.numericComputation_baseYear_evaluatesYear
 #print axioms A12Kernel.numericComputation_baseYearDatePart_evaluates
+#print axioms A12Kernel.numericComputationAggregate_evaluatesThroughSharedFold
 #print axioms A12Kernel.readTemporalNumeric_value
 #print axioms A12Kernel.readDateDifference_evaluated
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
@@ -575,6 +576,7 @@ run_cmd do
 #print axioms A12Kernel.numericArithmetic_domainFailure_right_is_notFired
 #print axioms A12Kernel.numericArithmetic_values_delegate
 #print axioms A12Kernel.numericValidation_power_values_delegate
+#print axioms A12Kernel.numericValidationAggregate_evaluatesThroughSharedFold
 #print axioms A12Kernel.ordinaryNumericValidation_acceptsScales
 #print axioms A12Kernel.ordinaryNumericValidation_eval
 #print axioms A12Kernel.conditionTree_evalVerdict_map
@@ -680,6 +682,9 @@ run_cmd do
 #print axioms A12Kernel.declaredNumericSum_explicitMissing
 #print axioms A12Kernel.declaredNumericSum_uninstantiatedMissing
 #print axioms A12Kernel.numericSumAggregate_homogeneousEmbedding
+#print axioms A12Kernel.resolvedNumericAggregate_sum_delegates
+#print axioms A12Kernel.resolvedNumericAggregate_extrema_delegate
+#print axioms A12Kernel.resolvedNumericAggregate_pair_scaleSummary
 #print axioms A12Kernel.checkedNumericAggregate_sameCells
 #print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedTail
 #print axioms A12Kernel.checkedNumericAggregate_noUninstantiatedSumSource

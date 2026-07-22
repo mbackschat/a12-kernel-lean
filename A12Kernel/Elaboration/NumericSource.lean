@@ -4,7 +4,7 @@ import A12Kernel.Semantics.DateDifference
 
 /-! # Shared checked numeric-expression sources
 
-Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, and Date-only month/year differences through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
+Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, Date-only month/year differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
 -/
 
 namespace A12Kernel
@@ -74,6 +74,54 @@ def validationOperand (context : FlatContext) :
 
 end ResolvedDateDifferenceOperand
 
+/-- The three Number field-list aggregate operations whose resolved folds already share one classified-cell owner. -/
+inductive NumericAggregateOp where
+  | sum
+  | minimum
+  | maximum
+  deriving Repr, DecidableEq
+
+/-- A parser-independent direct Number aggregate field list. Checked direct-list admission requires at least two entries; starred/group operands expand through separate owners. -/
+structure SurfaceNumericAggregateFields where
+  first : SurfaceFieldPath
+  rest : List SurfaceFieldPath
+  deriving Repr, DecidableEq
+
+/-- One nonempty resolved Number aggregate source in authored encounter order. -/
+structure ResolvedNumericAggregateFields where
+  first : FlatNumberField
+  rest : List FlatNumberField
+  deriving Repr, DecidableEq
+
+namespace ResolvedNumericAggregateFields
+
+def fields (source : ResolvedNumericAggregateFields) : List FlatNumberField :=
+  source.first :: source.rest
+
+def hasMultipleFields (source : ResolvedNumericAggregateFields) : Bool :=
+  !source.rest.isEmpty
+
+def firstDuplicateFieldId? : List FieldId → Option FieldId
+  | [] => none
+  | field :: remaining =>
+      if remaining.contains field then some field
+      else firstDuplicateFieldId? remaining
+
+def firstDuplicate? (source : ResolvedNumericAggregateFields) : Option FieldId :=
+  firstDuplicateFieldId? (source.fields.map (·.id))
+
+def hasUniqueFields (source : ResolvedNumericAggregateFields) : Bool :=
+  source.firstDuplicate?.isNone
+
+/-- Field-list aggregates derive the maximum contributing declaration scale and never gain literal expansion capability. -/
+def scaleSummary (source : ResolvedNumericAggregateFields) :
+    NumericScaleSummary :=
+  source.rest.foldl
+    (fun summary field => summary.union (NumericScaleSummary.field field.info.scale))
+    (NumericScaleSummary.field source.first.info.scale)
+
+end ResolvedNumericAggregateFields
+
 inductive SurfaceNumericAtom where
   | field (path : SurfaceFieldPath)
   | baseYear
@@ -81,6 +129,7 @@ inductive SurfaceNumericAtom where
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
+  | aggregate (op : NumericAggregateOp) (source : SurfaceNumericAggregateFields)
   deriving Repr, DecidableEq
 
 inductive ResolvedNumericAtom (Field : Type) where
@@ -91,6 +140,7 @@ inductive ResolvedNumericAtom (Field : Type) where
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
+  | aggregate (op : NumericAggregateOp) (source : ResolvedNumericAggregateFields)
   deriving Repr, DecidableEq
 
 namespace ResolvedNumericAtom
@@ -101,12 +151,14 @@ def isField : ResolvedNumericAtom Field → Bool
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
   | .dateDifference _ left right => left.isField || right.isField
+  | .aggregate _ _ => true
 
 def requiresPlainArithmetic : ResolvedNumericAtom Field → Bool
   | .field _ => false
   | .baseYear _ | .baseYearDatePart _ _ _
   | .temporalFieldPart _ _ => true
   | .dateDifference _ _ _ => true
+  | .aggregate _ _ => true
 
 def summary (fieldSummary : Field → NumericScaleSummary) :
     ResolvedNumericAtom Field → NumericScaleSummary
@@ -115,13 +167,22 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
+  | .aggregate _ source => source.scaleSummary
 
 end ResolvedNumericAtom
+
+/-- The checked aggregate grammar admits the established direct aggregate-rounding form without treating aggregates as ordinary scalar fields for every value function. -/
+def AuthoredNumericExpr.isDirectAggregateRound :
+    AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
+  | .round _ _ (.atom (.aggregate _ _)) => true
+  | _ => false
 
 /-- Source operations participate in the audited arithmetic grammar but do not implicitly widen separately checked direct Number-field value-function shapes. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
     (expression : AuthoredNumericExpr (ResolvedNumericAtom Field)) : Bool :=
-  if expression.anyAtom ResolvedNumericAtom.requiresPlainArithmetic then
+  if expression.isDirectAggregateRound then
+    true
+  else if expression.anyAtom ResolvedNumericAtom.requiresPlainArithmetic then
     expression.isPlainArithmetic
   else
     expression.isAdmittedNumericOperation

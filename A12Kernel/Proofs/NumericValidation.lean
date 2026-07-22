@@ -16,6 +16,14 @@ theorem checkedNumericComparison_wellFormed
     checked.core.WellFormedIn model checked.rowGroup checked.operandScope :=
   checked.wellFormed
 
+/-- A resolved validation aggregate atom consumes the shared aggregate fold and only then enters the existing arithmetic-outcome domain. -/
+theorem numericValidationAggregate_evaluatesThroughSharedFold
+    (context : FlatContext) (op : NumericAggregateOp)
+    (source : ResolvedNumericAggregateFields) :
+    context.resolveNumericValidationAtom (.aggregate op source) =
+      (source.evaluate op context.observeValidationAt).toValidationArithmetic := by
+  rfl
+
 theorem numericArithmetic_formalInvalid_left_is_unknown
     (op : NumericValidationOp) (cause : FormalCause)
     (right : Except FormalCause NumericArithmeticOutcome) :
@@ -296,16 +304,36 @@ private theorem authoredNumericLower_admittedValidation
       exact Or.inr
         (authoredNumericLower_directValueFunction expression direct)
 
+private theorem authoredNumericLower_directAggregateRound
+    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (direct : expression.isDirectAggregateRound = true) :
+    expression.lowerForEvaluation.isAdmittedValidation = true := by
+  cases expression with
+  | atom | literal | group | binary | power | abs | extremum =>
+      simp [AuthoredNumericExpr.isDirectAggregateRound] at direct
+  | round mode places body =>
+      cases body with
+      | atom atom =>
+          cases atom <;>
+            simp [AuthoredNumericExpr.isDirectAggregateRound,
+              AuthoredNumericExpr.lowerForEvaluation,
+              LoweredNumericExpr.isAdmittedValidation,
+              LoweredNumericExpr.isDirectValueFunction] at direct ⊢
+      | literal | group | binary | power | abs | extremum | round =>
+          simp [AuthoredNumericExpr.isDirectAggregateRound] at direct
+
 private theorem authoredNumericLower_admittedNumericValidation
     (expression : AuthoredNumericExpr NumericValidationAtom)
     (admitted : expression.isAdmittedResolvedNumericOperation = true) :
     expression.lowerForEvaluation.isAdmittedValidation = true := by
   unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
   split at admitted
-  · unfold LoweredNumericExpr.isAdmittedValidation
-    simp only [Bool.or_eq_true]
-    exact Or.inl (authoredNumericLower_plain expression admitted)
-  · exact authoredNumericLower_admittedValidation expression admitted
+  · exact authoredNumericLower_directAggregateRound expression (by assumption)
+  · split at admitted
+    · unfold LoweredNumericExpr.isAdmittedValidation
+      simp only [Bool.or_eq_true]
+      exact Or.inl (authoredNumericLower_plain expression admitted)
+    · exact authoredNumericLower_admittedValidation expression admitted
 
 private theorem loweredDirectExtremum_constantUse_preserved
     (expected : NumericExtremumOp)

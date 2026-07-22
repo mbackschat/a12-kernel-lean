@@ -5,6 +5,15 @@ import A12Kernel.Proofs.Observation
 
 namespace A12Kernel
 
+/-- A resolved computation aggregate atom consumes the same aggregate fold under computation-phase observation, then erases only validation fillability. -/
+theorem numericComputationAggregate_evaluatesThroughSharedFold
+    (context : ScalarComputationContext) (op : NumericAggregateOp)
+    (source : ResolvedNumericAggregateFields) :
+    context.readNumericComputationAtom (.aggregate op source) =
+      .ok ((source.evaluate op fun field =>
+        observeCell .computation (context.read field)).toComputationResult) := by
+  rfl
+
 /-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :
