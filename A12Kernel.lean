@@ -51,6 +51,7 @@ import A12Kernel.Semantics.Enumeration
 import A12Kernel.Semantics.SemanticIndex
 import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Semantics.StringAlternatives
+import A12Kernel.Semantics.StringPattern
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation

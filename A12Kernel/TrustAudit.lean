@@ -776,6 +776,11 @@ run_cmd do
 #print axioms A12Kernel.formalCheckString_cachesNormalized
 #print axioms A12Kernel.checkedString_phasesReadNormalized
 #print axioms A12Kernel.directStringOperand_readsNormalized
+#print axioms A12Kernel.resolvedStringPattern_readsNormalized
+#print axioms A12Kernel.stringPattern_evalResolved_fired_is_value
+#print axioms A12Kernel.stringPattern_evalResolved_notEvaluated
+#print axioms A12Kernel.stringPattern_evalResolved_unknown
+#print axioms A12Kernel.stringPattern_evalResolved_value_complement
 #print axioms A12Kernel.stringLengthOperand_readsNormalized
 #print axioms A12Kernel.stringComputationField_readsNormalized
 
