@@ -86,10 +86,17 @@ private def rawBothFilled : RawFlatContext where
     else if id = acknowledged.id then .parsed (.bool true)
     else .empty
 
+private def temporalDateParts : DateParts :=
+  { year := 2024, month := 6, day := 25 }
+
+private def temporalClock : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
+
 private def rawEventDateTime (millis : Int) : RawFlatContext where
   read id :=
     if id = eventDateTime.id then
-      .parsed (.temporal .dateTime { epochMillis := millis })
+      .parsed (.temporal (.dateTime { epochMillis := millis }
+        temporalDateParts temporalClock .storedGregorian))
     else .empty
 
 private def worldAt (millis : Int) : World :=

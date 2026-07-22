@@ -290,6 +290,8 @@ run_cmd do
 #print axioms A12Kernel.observeAdmittedRawCell_parsed
 #print axioms A12Kernel.observeAdmittedRawCell_rejected_validation
 #print axioms A12Kernel.observeAdmittedRawCell_rejected_computation
+#print axioms A12Kernel.flatTemporalDate_projects_instant_and_component
+#print axioms A12Kernel.flatTemporalDateTime_projects_all_consumers
 #print axioms A12Kernel.withFinding_preserves_wellFormed
 #print axioms A12Kernel.formalCheck_empty_observes_empty
 #print axioms A12Kernel.formalCheck_presentEmpty_preservesPlacement

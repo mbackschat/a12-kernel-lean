@@ -74,7 +74,7 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .boolean, .bool _ => true
   | .confirm, .conf true => true
   | .string, .str _ => true
-  | .temporal expected _, .temporal actual _ => expected == actual
+  | .temporal expected _, .temporal actual => expected == actual.kind
   | _, _ => false
 
 /-- Project a parser result through one caller-supplied value admission step. The parser owns text decoding and raw constraints; this function owns placement and formal-cause construction once. -/

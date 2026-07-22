@@ -42,6 +42,7 @@ import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.ValidationRule
 import A12Kernel.Proofs.Observation
+import A12Kernel.Proofs.TemporalValue
 import A12Kernel.Proofs.PartialValidation
 import A12Kernel.Proofs.ComputationCondition
 import A12Kernel.Proofs.ComputationFillQuantifier

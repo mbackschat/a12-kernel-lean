@@ -531,24 +531,39 @@ private def ordinaryRaw : RawFlatContext where
     else if id = 2 then .parsed (.conf true)
     else .empty
 
+private def temporalDateParts : DateParts :=
+  { year := 2024, month := 6, day := 25 }
+
+private def temporalClock : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
+
+private def temporalValue (kind : TemporalKind) (millis : Int) : Value :=
+  let instant : Instant := { epochMillis := millis }
+  match kind with
+  | .date => .temporal (.date instant temporalDateParts .storedGregorian)
+  | .time => .temporal (.time instant temporalClock)
+  | .dateTime =>
+      .temporal (.dateTime instant temporalDateParts temporalClock
+        .storedGregorian)
+
 private def temporalRaw (kind : TemporalKind) : RawFlatContext where
   read id :=
-    if id = 8 then .parsed (.temporal kind { epochMillis := 100999 })
+    if id = 8 then .parsed (temporalValue kind 100999)
     else .empty
 
 private def temporalComparisonRaw (leftKind : TemporalKind) (left : Int)
     (rightKind : TemporalKind) (right : Option Int) : RawFlatContext where
   read id :=
-    if id = 8 then .parsed (.temporal leftKind { epochMillis := left })
+    if id = 8 then .parsed (temporalValue leftKind left)
     else if id = 9 then
       match right with
-      | some millis => .parsed (.temporal rightKind { epochMillis := millis })
+      | some millis => .parsed (temporalValue rightKind millis)
       | none => .empty
     else .empty
 
 private def eventDateTimeRaw (millis : Int) : RawFlatContext where
   read id :=
-    if id = 11 then .parsed (.temporal .dateTime { epochMillis := millis })
+    if id = 11 then .parsed (temporalValue .dateTime millis)
     else .empty
 
 private def worldAt (millis : Int) : World :=
@@ -556,13 +571,13 @@ private def worldAt (millis : Int) : World :=
 
 private def dispatchDateRaw (millis : Int) : RawFlatContext where
   read id :=
-    if id = 8 then .parsed (.temporal .date { epochMillis := millis })
+    if id = 8 then .parsed (temporalValue .date millis)
     else .empty
 
 private def baseYearRaw (limit : Rat) (dispatchMillis : Int) : RawFlatContext where
   read id :=
     if id == 0 || id == 3 then .parsed (.num limit)
-    else if id = 8 then .parsed (.temporal .date { epochMillis := dispatchMillis })
+    else if id = 8 then .parsed (temporalValue .date dispatchMillis)
     else .empty
 
 private def utcInstant? (year : Int) (month day hour minute second : Nat) : Option Instant :=

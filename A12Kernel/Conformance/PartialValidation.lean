@@ -43,14 +43,18 @@ private def earlierDate : FlatTemporalField :=
 private def laterDate : FlatTemporalField :=
   { id := 4, kind := .date, components := temporalComponents }
 
+private def dateValue (millis : Int) : Value :=
+  .temporal (.date { epochMillis := millis }
+    { year := 2024, month := 6, day := 25 } .storedGregorian)
+
 private def temporalContext : FlatContext where
   read id :=
     if id = earlierDate.id then
       formalCheck { kind := .temporal .date temporalComponents }
-        (.parsed (.temporal .date { epochMillis := 100999 }))
+        (.parsed (dateValue 100999))
     else if id = laterDate.id then
       formalCheck { kind := .temporal .date temporalComponents }
-        (.parsed (.temporal .date { epochMillis := 101000 }))
+        (.parsed (dateValue 101000))
     else formalCheck { kind := .boolean } (.rejected .malformed)
 
 private def earlierBeforeLater : FlatCondition :=

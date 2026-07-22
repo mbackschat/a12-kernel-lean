@@ -1,3 +1,5 @@
+import A12Kernel.Core
+
 /-! # Full civil Date semantics
 
 This is the post-parse value boundary for a fully known calendar Date. It keeps decoded parts, calendar reality, and the kernel's always-on value floor as three separate stages, then exposes one strict chronological comparison. Declared formats, empty/formal cells, `Date(...)`, partial dates, DateTime, zones, and arithmetic belong to later capsules.
@@ -6,13 +8,6 @@ The definitions are original clean-room semantics for the decoded chronology, ca
 -/
 
 namespace A12Kernel
-
-/-- Decoded year/month/day components before calendar and A12 value admission. -/
-structure DateParts where
-  year : Int
-  month : Nat
-  day : Nat
-  deriving Repr, DecidableEq
 
 namespace DateParts
 
