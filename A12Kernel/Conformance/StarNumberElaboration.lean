@@ -94,6 +94,28 @@ private def havingCellsOf (outer : Env) :=
       | .ok side => some (side.cells.map snapshotCell,
           side.hasUninstantiatedTail, side.hasHaving)
 
+private def relevance (path : List String) (indices : List RelevanceIndex) :
+    RelevantEntityPattern :=
+  { path, indices }
+
+private inductive PartialSideSnapshot where
+  | nonRelevant
+  | relevant (cells : List NumberCellSnapshot) (hasUninstantiatedTail : Bool)
+  deriving Repr, DecidableEq
+
+private def partialCellsOf (scope : ValidationRelevanceScope) :=
+  match elaborateStarNumberSource model amount.groupPath (source) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.resolvedPartialAllRowsValueSide
+          (document standardRows) [] scope readAmount with
+      | .error _ => none
+      | .ok AllRowsValidationStarNumberSide.nonRelevant =>
+          some PartialSideSnapshot.nonRelevant
+      | .ok (AllRowsValidationStarNumberSide.relevant side) =>
+          some (PartialSideSnapshot.relevant
+          (side.cells.map snapshotCell) side.hasUninstantiatedTail)
+
 /- The checked consumer preserves canonical nested order, emptiness, and the hierarchical tail. -/
 example : cellsOf (source) standardRows = some (
     [.present 1, .empty, .present 3], true) := by
@@ -102,6 +124,35 @@ example : cellsOf (source) standardRows = some (
 /- An unstarred outer axis is bound by identity before the inner star reopens. -/
 example : cellsOf (source (outerStar := false)) standardRows [(10, 2)] =
     some ([.present 3], true) := by
+  native_decide
+
+/- All-rows aggregate relevance is a path-level wildcard gate: full validation, an exact fully-wildcarded field, and a nonrepeatable ancestor group admit the unchanged topology-produced stream. -/
+example :
+    partialCellsOf .full = some (.relevant [.present 1, .empty, .present 3] true) ∧
+    partialCellsOf (.partialSet [relevance amount.path
+      [.concrete 1, .all, .all, .concrete 1]]) =
+        some (.relevant [.present 1, .empty, .present 3] true) ∧
+    partialCellsOf (.partialSet [relevance ["Shop"] [.concrete 1]]) =
+        some (.relevant [.present 1, .empty, .present 3] true) := by
+  native_decide
+
+/- Enumerating every actual leaf concretely still does not make an all-rows star fully relevant; nor does wildcarding only its outer repeatable level. -/
+example :
+    partialCellsOf (.partialSet [
+      relevance amount.path [.concrete 1, .concrete 1, .concrete 1, .concrete 1],
+      relevance amount.path [.concrete 1, .concrete 1, .concrete 2, .concrete 1],
+      relevance amount.path [.concrete 1, .concrete 2, .concrete 1, .concrete 1]]) =
+        some .nonRelevant ∧
+    partialCellsOf (.partialSet [relevance amount.path
+      [.concrete 1, .all, .concrete 1, .concrete 1]]) = some .nonRelevant := by
+  native_decide
+
+/- Relevance does not guess structural alignment or widen a sibling field into an ancestor. -/
+example :
+    partialCellsOf (.partialSet [relevance amount.path [.all, .all]]) =
+        some .nonRelevant ∧
+    partialCellsOf (.partialSet [relevance note.path [.all, .all, .all, .all]]) =
+        some .nonRelevant := by
   native_decide
 
 /- `$` retains the complete captured environment: parent equality restricts the nested scan to the captured parent, while child order selects only earlier children. The malformed target values on every dropped leaf never enter the selected side. -/

@@ -43,4 +43,22 @@ theorem checkedStarNumberSource_filterBeforeTarget
   intro environment selected
   exact agree environment selected
 
+/-- A nonrelevant all-rows source is rejected before target classification, so changing every raw target remains unobservable. -/
+theorem checkedStarNumberSource_nonRelevantBeforeTarget
+    (checked : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
+    (scope : ValidationRelevanceScope) (left right : Env → FieldId → RawCell)
+    (nonRelevant : checked.source.allRowsRelevant scope = false) :
+    checked.selectedPartialAllRowsValueSide resolved scope left = .nonRelevant ∧
+      checked.selectedPartialAllRowsValueSide resolved scope right = .nonRelevant := by
+  simp [CheckedStarNumberSource.selectedPartialAllRowsValueSide, nonRelevant]
+
+/-- All-rows relevance leaves the topology-derived cells and hierarchical omitted-tail marker unchanged. -/
+theorem checkedStarNumberSource_relevantPreservesSide
+    (checked : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
+    (scope : ValidationRelevanceScope) (read : Env → FieldId → RawCell)
+    (relevant : checked.source.allRowsRelevant scope = true) :
+    checked.selectedPartialAllRowsValueSide resolved scope read =
+      .relevant (resolved.toResolvedSide (checked.valueListCell read)) := by
+  simp [CheckedStarNumberSource.selectedPartialAllRowsValueSide, relevant]
+
 end A12Kernel

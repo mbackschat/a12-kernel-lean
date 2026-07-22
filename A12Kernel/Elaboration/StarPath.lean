@@ -21,12 +21,62 @@ structure SurfaceStarFieldPath where
   field : String
   deriving Repr, DecidableEq
 
+/-- One path-segment selector from the partial-validation relevant-entity set. `all` is the public wildcard; a concrete selector cannot establish all-rows knowledge at a repeatable level. -/
+inductive RelevanceIndex where
+  | all
+  | concrete (index : Nat)
+  deriving Repr, DecidableEq
+
+/-- One already-decoded partial-validation relevant entity. Its index vector is aligned with every path segment, including nonrepeatable groups and the terminal field. -/
+structure RelevantEntityPattern where
+  path : List String
+  indices : List RelevanceIndex
+  deriving Repr, DecidableEq
+
+/-- Full validation has complete relevance by definition; partial validation retains the caller's wildcardable entity patterns. -/
+inductive ValidationRelevanceScope where
+  | full
+  | partialSet (entities : List RelevantEntityPattern)
+  deriving Repr, DecidableEq
+
 namespace SurfaceStarFieldPath
 
 def toFieldPath (source : SurfaceStarFieldPath) : SurfaceFieldPath :=
   { base := source.base, groups := source.groups.map (·.name), field := source.field }
 
 end SurfaceStarFieldPath
+
+namespace RelevantEntityPattern
+
+private def repeatablePrefixesCovered (model : FlatModel) :
+    GroupPath → List String → List RelevanceIndex → Bool
+  | _, [], [] => true
+  | pathPrefix, segment :: segments, index :: indices =>
+      let path := pathPrefix ++ [segment]
+      let currentCovered :=
+        !model.repeatableGroups.any (fun group => group.path == path) ||
+          index == .all
+      currentCovered && repeatablePrefixesCovered model path segments indices
+  | _, _, _ => false
+
+/-- Whether this one entity makes every row of the target field's starred ancestry relevant. The entity must be the target or an ancestor and must wildcard every repeatable level it names; group descent covers deeper levels. -/
+def coversAllRows (entity : RelevantEntityPattern) (model : FlatModel)
+    (targetPath : List String) : Bool :=
+  entity.path.isPrefixOf targetPath &&
+    repeatablePrefixesCovered model [] entity.path entity.indices
+
+end RelevantEntityPattern
+
+namespace ValidationRelevanceScope
+
+/-- All-rows aggregate relevance is an operator-level path fact. Enumerating every concrete row does not substitute for one wildcard-covering entity. -/
+def coversAllRows (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) : Bool :=
+  match scope with
+  | .full => true
+  | .partialSet entities => entities.any fun entity => entity.coversAllRows model targetPath
+
+end ValidationRelevanceScope
 
 inductive StarPathElabError where
   | resolve (error : ResolveError)
@@ -46,6 +96,11 @@ structure CheckedStarFieldPath (model : FlatModel) where
   ancestryOwned : path.axes.map (·.level) = declaration.repeatableScope
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
+
+/-- Whether this checked starred field is completely relevant for an all-rows validation consumer. This gate does not apply to order-aware `FirstFilledValue`. -/
+def CheckedStarFieldPath.allRowsRelevant (checked : CheckedStarFieldPath model)
+    (scope : ValidationRelevanceScope) : Bool :=
+  scope.coversAllRows model checked.declaration.path
 
 private structure MarkedStarAxis where
   path : GroupPath
