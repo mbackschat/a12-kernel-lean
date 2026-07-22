@@ -2,7 +2,7 @@
 
 This is the sole detailed coverage index from the project-owned [`spec/`](../spec/) taxonomy to Lean owners, implemented behavior, evidence, and exclusions. Use a12-dmkits' [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) for its peer-project inventory.
 
-The target is kernel **30.8.1**. “Implemented” means executable Lean; “proved internally” means a theorem follows from the chosen definitions. Neither establishes universal kernel correspondence. **External evidence pending** means no retained kernel observation is replayed here.
+The target is kernel **30.8.1**. “Implemented” means executable Lean; “proved internally” means a theorem follows from the chosen definitions. Neither establishes universal kernel correspondence. **External evidence pending** means no retained kernel observation is replayed here. This map states current boundaries and evidence; the open-only implementation and conformance backlog lives in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md).
 
 ## Evidence snapshot
 
@@ -14,7 +14,7 @@ The target is kernel **30.8.1**. “Implemented” means executable Lean; “pro
 
 ## Taxonomy by clause
 
-Open only the owning clause and linked cross-clause note. Every clause uses the same compact shape: owners, implemented, evidence, and excluded / next.
+Open only the owning clause and linked cross-clause note. Every clause uses the same compact shape: owners, implemented, evidence, and excluded boundary; live next-work detail is linked to [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) instead of repeated here.
 
 ### §1 — truth and verdict algebra
 
@@ -34,7 +34,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Canonical §1 sources
 - no focused portable observation
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Proved internally; external evidence pending** for the finite `K`/`Verdict` algebras
 - no generic negation
@@ -65,12 +65,12 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Direct Number `<`/`>=` is anchored to pinned kernel source and focused a12-dmkits differentials but has no project-local portable observation.
 - Retired 0.2.0 provenance is [archived](archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md)
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally, partial; direct ordering external evidence pending:** all six nonrepeatable Number comparisons, Boolean/Confirm/String equality/inequality, six-way temporal field-to-field, field-to-typed-Date-literal, field/`Today`, field/`Now`, and field/`BaseYear` comparison in either operand order, plus numeric field/`BaseYear` comparison and Number/Boolean/Confirm/String/Date/Time/DateTime presence, are executable.
 - Direct String supports equality/inequality, plus all four String `Length` ordering operators
 - its empty observation retains absent versus present-empty placement at the checked-cell boundary.
-- String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; other String comparisons/functions remain rejected or unimplemented.
+- String presence and absolute nonrepeatable requiredness reuse the generic presence/required staging; the remaining String family is indexed by [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion).
 - This is a consuming-clause baseline, not a kind-wide empty law
 - Finding: [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function).
 - Finding: [`LF10`](LEAN-FINDINGS.md#lf10--numeric-polarity-needs-directional-fillability-not-a-given-bit).
@@ -116,15 +116,15 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - `Today` carries the checked model's exact zone id through that operand core and resolves model-zone midnight from the injected clock through `World`'s explicit capability. Date equality and ordering plus DateTime ordering follow the ordinary date-shaped format gate; DateTime equality and Time comparison remain rejected. Unsupported concrete zones fail closed, while a consumer-supplied oracle can cover the wider kernel-legal zone domain without extending the AST.
 - `BaseYear` is checked as model configuration, not a clock read. Its direct Number role lowers to the fixed declared year under the shared exact-scale gate; its temporal role resolves model-zone January 1 through the same operand core and rejects Time before year supplementation. The world capability now groups `Today` and complete local-label resolution, and partial-context agreement is proved once per temporal operand rather than by enumerating every operand pair.
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally, partial; ingestion external evidence pending:** the reduced boundary distinguishes absent from present-empty before projecting either to the empty phase observation and owns evaluated-String CRLF normalization after scalar text decoding.
-- A general `Document → RawCell` bridge, public present-empty transport, group-content derivation, and custom-validator invocation remain open.
+- General `Document → RawCell`, placement/group-content, and validator construction obligations are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion).
 - raw storage itself remains outside this reduced account.
 - The internal unknown/poison account still relies on source treatment and internal laws.
 - Computed String target checking admits only one positive minimum or maximum length over no-line-break text
 - no-value/poison bypass, target line-break permission, and ingestion normalization are not externally exercised.
-- The rest of the reduced computed-result formal check and contextual findings beyond requiredness remain open
+- The remaining checked-input and transition obligations are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
 
 ### §4 — required property
 
@@ -151,11 +151,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`RequirednessDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/RequirednessDiffTest.kt) remains broader provenance.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` adds dual-kernel/peer controls for IF193's admitted-content parent gate, but this repository retains no matching portable observation
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally, partial; focused external observations replayed:** absolute requiredness for nonrepeatable Number/Boolean/Confirm/String fields.
-- The parent gate is implemented over an already-resolved group state; checked descendant/group-instance enumeration and wildcardable relevance construction remain open.
-- Repeatable ancestor orchestration, index generation, and generated rule identity remain open.
+- The parent gate is implemented over an already-resolved group state; general group/document construction and repeatable required-rule orchestration are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §5 — numbers and decimals
 
@@ -263,31 +262,13 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - [`SPEC-2026-07-19-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-15--computed-number-storage-has-distinct-fit-and-warning-suppressed-no-fit-branches)
 - those peer controls do not become project-local portable evidence
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented narrowly; external evidence pending.** Checked validation accepts two same-group expressions with at least one field, the admitted expression classes above, six ordinary operators, four tolerance ranges, and the exact-scale-warning bypass.
 - The checked computation operation resolves one nonrepeatable Number target and every nonrepeatable Number operand through the shared authored-tree traversal, accepts constant-only or field-bearing plain arithmetic and power after the existing authoring/summary checks, and shares validation's separately audited direct-root admission for `Round`/`Abs` over one field and canonical `Min`/`Max` over direct fields with at most one constant. It rejects the target at every nested operand position and applies the exact result-scale gate unless the one explicit warning flag is present. A dedicated attachment boundary accepts the complete externally resolved target policy once, rejects scale/signedness drift from the resolved target, and returns a wrapper whose evaluation has no policy argument. The checked core retains the warning flag, while the wrapper retains every target constraint and delegates expression evaluation to the established numeric computation result consumer before choosing ordinary or suppressed classification. General wrapper traversal, including a wrapper around arithmetic, remains fail-closed.
 - Stored conversion is exact after scale-19 pre-rounding; its warning-suppressed no-fit renderer is structurally locked to consume that pre-rounded value before 16-digit bounding.
 - The resolved target policy supports the ordinary scale-compatible path and the explicit warning-suppressed no-fit path with signedness, minimum/maximum fractional digits, the universal 15-digit check, effective integer-digit capacity, zero admission, rendered length, inclusive numeric range, exact stored form, prior-target delta, exact one-address final application, and cause-free dependency observation. The checked target-operation wrapper retains that complete policy after proving its scale/signedness coherence; construction of the resolved policy remains outside the flat declaration because `FlatFieldDecl` does not retain the remaining target constraints.
-- Open:
-  - checked computation-table integration after one shared numeric-expression condition leaf
-  - general operation-valued wrapper authoring beyond the admitted direct root functions
-  - concrete computation power authoring and result-empty provenance
-  - broader numeric Min/Max operands, including grouped constants and nested arithmetic or wrappers
-  - concrete tie-origin retention
-  - Date and aggregate Min/Max
-  - general value-function wrapper traversal
-  - Date-shift projection
-  - concrete arithmetic rendering
-  - Base-Year-bearing value-function wrappers beyond audited plain arithmetic
-  - declaration-owned construction of the resolved Number target policy
-  - downstream context/read integration
-  - expression-valued generated implicit validation beyond the literal fragment; the flat whole-rule condition currently has no checked numeric-expression leaf, so do not add a parallel condition tree
-  - partial/repeatable evaluation
-  - missing-ancestor creation
-  - concrete parsing/diagnostics
-  - public protocol
-  - portable rounding/`Abs`/Min/Max/tolerance/expression/target/application/dependency evidence
+- Remaining numeric tree/integration work is indexed by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree), [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), and [`SG5`](SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion); repeatable construction is [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), and retained correspondence is [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 ### §6 — dates and time
 
@@ -368,7 +349,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - At reviewed a12-dmkits revision `71775c9905b057831253348c31ce39e321e61889`, focused controls lock both Date-range polarity scans through both kernel routes plus the interpreter, and separately lock constructed-Date reason/calendar consumers and `DifferenceInDays` calendar-step separators.
 - This repository retains no portable Date, DateTime, construction, or Date-range observation
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Status:** implemented internally on narrow domains; external evidence partly pending.
 - Date coverage includes the unbounded positive-era account, resolved six-way full-Date comparison with classified validation polarity, stored/full-Date `Min`/`Max`, admitted full-Date day/month/year shifts and signed completed-period differences, resolved three-part construction classification, and the proved calendar-coordinate successor/strict-monotonicity bridge.
@@ -380,25 +361,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - The shared temporal-extremum owner starts with classified stored/full-Date, decoded Time, or exact-instant operands plus resolved tail/`Having` markers. Path/star expansion, raw cells, computation target clearing/application, checked authoring, constructed-Date calendar identity, Time/DateTime parsing and zone resolution, and target rendering remain outside.
 - Construction classification and its direct numeric component projection remain reason-bearing but do not yet retain calendar identity through checked lowering or implement legacy-hybrid month/year operations. Checked authored-expression lowering is closed for direct Date/DateTime Day/Month/Quarter/Year, Time/DateTime Hour/Minute/Second, and stored-Date/Base-Year month/year-difference sources in plain validation and Number-computation arithmetic. Partially-known Date declarations require earlier source-form metadata beyond the ordinary flat field, while constructed-Date differences and unaudited value-function wrappers remain outside.
 - Date-range raw cell classification, actual filter evaluation, paths/stars, row gates, and checked lowering remain outside the resolved operator capsule.
-- Open:
-  - Literal/field-format parsing, lexical Date-versus-String classification, model-zone/Base-Year decoding, and exact parser range
-  - numeric offset truncation/runtime bounds for additions
-  - empty/formal operands for other Date consumers and checked temporal expression integration beyond two fields
-  - other operator gates and polarity
-  - DateTime difference operand/result checking and Number consumption
-  - Date and DateTime comparison raw-cell checking and checked integration
-  - `DifferenceInDays` outside the finite spring profile and constructed-Date legacy-hybrid month/year differences
-  - constructed-Date legacy-hybrid shifts and other date arithmetic
-  - full `Date(...)`/Time authoring
-  - optional 1900 admission
-  - fragment and range construction, plus Base Year date extraction/range-source roles
-  - result admission/targets
-  - general model-zone dispatch
-  - spring-gap formal-error/cell integration
-  - other Berlin dates/transitions/history
-  - complete legacy-zone profiles for every kernel-legal id, pre-floor hybrid-calendar `Today`, and `Now` outside checked direct comparison
-  - checked rule lowering
-  - protocol exposure
+- Remaining temporal parsing, authoring, calendar, operator, target, and integration work is indexed by [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion); shared checked-expression and document/repeatable construction dependencies are [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree), [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction), and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §7 — strings and patterns
 
@@ -501,17 +464,17 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - the [archive](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns that detail.
 - The retained strings remain conservative ASCII and do not externally establish broader Unicode or line-break behavior
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented narrowly; ingestion and resolved-pattern consumption external evidence pending.** Coverage includes direct equality/inequality, four `Length` orderings, presence, absolute requiredness, present-empty placement, CRLF normalization, checked nonrepeatable literal and field-valued `AtLeastOne`/`No`/`NotAll`, scalar literal and field-valued Included/NotIncluded, resolved already-admitted pattern consumption, checked scalar String expressions, and one positive target length bound.
 - `Length ==`/`!=` remain outside the reduced checked surface because their numeric scale gate needs the authored literal scale that `SurfaceCondition.lengthCompare` does not retain.
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Java `Pattern` compilation and execution remain injected capabilities. The bounded kernel source gate is checked, but authored condition/declared-field lowering, association of a host matcher with the certified source, public exposure, and every undiscovered total-admission restriction remain outside; the certificate deliberately does not claim JavaScript portability.
 - Java-compatible grapheme clustering remains an injected admission-time capability rather than a reimplemented Unicode subsystem. Raw JSON decoding/model-slot wiring, project-level SPI selection, general scalar-parser composition, and retained local kernel observations remain outside; the runtime representation makes empty/unbounded atomic entries impossible and is not used by computed-target basic checks.
-- Registered custom validation is checked through relevance-first sampling and the ordinary cell root, one output retains that exact cell plus its optional formal message, supplied bytes render at an already-resolved label boundary, the explicit named validity pair reuses the same registry/context interface, resolved RNU consumes the same checked observation without resampling, and the flat checked full-evaluation entry point prepares and applies declaration-owned validators. The pure function-valued context guarantees extensionally stable reads but is not a document-addressed host cache; one physical validator call per relevant concrete cell, label/provider invocation, formal-message collection into general validation output, partial RNU row construction/topology, predefined declarative registry precedence, authored explicit-validity lowering into the general condition AST, and public protocol remain open.
-- Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, enumerations, custom validators, raw-type rule elimination, and target-check ordering.
+- Registered custom validation is checked through relevance-first sampling and the ordinary cell root, one output retains that exact cell plus its optional formal message, supplied bytes render at an already-resolved label boundary, the explicit named validity pair reuses the same registry/context interface, resolved RNU consumes the same checked observation without resampling, and the flat checked full-evaluation entry point prepares and applies declaration-owned validators. The pure function-valued context guarantees extensionally stable reads but is not yet the document-addressed host cache required by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction).
+- Remaining String, pattern, custom-field, requiredness, target, and repeated-consumer work is indexed by [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), with shared repeatable construction under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 - Input normalization does not grant a computed target permission to contain CR/LF.
-- Coercion, repeatable/filtered lists, general computation lowering/scheduling, and every other String function remain rejected or open.
+- Coercion, repeatable/filtered lists, general computation lowering/scheduling, and every other String function remain outside this boundary under [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) and [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
 - The public normalized protocol and consumer capabilities have not been expanded to String
 
 ### §8 — enumerations and value lists
@@ -583,12 +546,12 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - a broader catalog smoke case exercises both kernel routes.
 - This repository retains no portable §8 observation
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally through checked flat integration; external evidence pending:** ordinary stored/category-to-literal equality and inequality now run through the general nonrepeatable model, relevance, and full-evaluation boundary.
 - Direct-field static comparability and runtime equality are integrated for nonrepeatable ordinary String and closed Enumeration fields.
 - Multi-field String and Enumeration literal-token and field-valued `AtLeastOne`/`No`/`NotAll`, multi-field Number field-valued quantifiers, scalar String/Enumeration/Number literal Included/NotIncluded, and scalar String/Enumeration/Number field-valued membership are checked through the same flat model; the general value-list evaluator still begins after expansion and any `Having` filtering.
-- Table/open/dynamic/partial declarations, repeatable category access, actual path/star expansion and filtering, checked RNU scope/topology/`@From`/pointer messages, protocol exposure, and project-local portable evidence remain open. Number multi-field literal syntax is intentionally unrepresentable because the kernel checker rejects that form.
+- Remaining declaration profiles and kind/value-list consumers are indexed by [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion); repeatable expansion and checked RNU topology are [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), path/`@From` legality is [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and retained evidence is [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage). Number multi-field literal syntax is intentionally unrepresentable because the kernel checker rejects that form.
 
 ### §9 — repetition and iteration
 
@@ -657,15 +620,15 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - neither is retained as project-local portable evidence.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the exact retained inventory and observable support
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented; wider cross-level and RNU additions remain external evidence pending.** Coverage includes one-group runtime/lowering, normalized firing rows, resolved RNU, caller-supplied reopened-star completeness, and resolved group-presence projections.
 - Correlation carries complete candidate/captured environments; RNU defines one branch-independent relation and complete peer clusters before verdict composition.
 - The RNU caller must still construct rows, supply the target in scope, unique complete repetition environments with canonical positive level coordinates, one common declared key arity/order/kind schema, and relevance-filtered component presence; checked String cells now have one exact component adapter
 - the low-level evaluator remains total outside those obligations without a kernel-correspondence claim.
-- Checked RNU scope/default or explicit `@From`, paths and key-schema validation, partial all-key relevance, one-RNU and negative/iteration/filter/parallel authoring restrictions, checked condition/whole-rule integration, error-field and peer-pointer projection, and protocol exposure remain open.
+- Checked RNU scope/`@From`, key schema, partial relevance, authoring restrictions, whole-rule placement, and peer-pointer obligations are indexed by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 - The checked correlation elaborator and public protocol remain one-group only
-- Open: general `Document` adaptation and group-instance enumeration, wildcardable relevance, checked nested reopened-tree construction, multiple stars, joins, cross-group execution, filtered polarity, computation, and partial validation over repeats. The closed model-to-row consumers remain the unfiltered one-level Number aggregate and `FirstFilledValue` routes.
+- General document/group-instance construction and every wider repeated consumer are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). The closed model-to-row consumers remain the unfiltered one-level Number aggregate and `FirstFilledValue` routes.
 
 ### §10 — paths and references
 
@@ -705,12 +668,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - acceptance does not establish runtime firing rows.
 - [`LF6`](LEAN-FINDINGS.md#lf6--bare-name-resolution-is-local-or-global-not-an-ancestor-walk) records the bare-name correction
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value consumer with kind-independent scalar presence and field-fill operands.
-- Parent-relative and bare forms remain outside the public correlation operation.
-- Semantic-index key checking/normalization, field-keyed indices, checked path integration, named labels, quoting, `RuleGroup`, concrete parser/renderer, nested/multi-star paths, and general repeatable lookup remain excluded
-- not every excluded or rejected syntax has a retained diagnostic
+- Parent-relative and bare forms remain outside the public correlation operation. General path, index, parser/renderer, and static-diagnostic closure is indexed by [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), with repeatable lookup under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §11 — computations
 
@@ -744,7 +705,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - clean no-value, target rejection, and poison from the selected operation are terminal, a holding head makes every suffix irrelevant through operation evaluation, and common false/poison decides before guard or operation reads.
 - Checked String-expression lowering resolves nonrepeatable copy leaves against one validated flat model, rejects wrong-kind and repeatable operands, preserves literal/concatenation tree order, checks raw cells with the same model, and delegates evaluation to the existing runtime expression.
 - The checked literal-Number desugaring represents every nonempty table as either one optionally guarded alternative or two-or-more fully guarded alternatives, without fabricating a true guard. Computation selects a wholly unguarded singleton directly and otherwise reuses the common-expansion selector, while generated validation omits an absent singleton guard, left-folds wider mismatch tables in declaration order, and places the common guard once below `FieldFilled(target)` and above the complete mismatch body. Each alternative independently lowers to strict `!=` or its optional fixed tolerance through the shared numeric-validation dispatch.
-- The checked guard traversal rejects the exact computed target ID in common and every alternative condition before phase lowering, retaining common versus one-based alternative position. The separate checked numeric-operation boundary rejects the same target throughout a plain-arithmetic or admitted direct root value-function tree, retains the exact-scale warning choice, and routes its evaluated result through the matching target branch; expression-valued table integration remains open.
+- The checked guard traversal rejects the exact computed target ID in common and every alternative condition before phase lowering, retaining common versus one-based alternative position. The separate checked numeric-operation boundary rejects the same target throughout a plain-arithmetic or admitted direct root value-function tree, retains the exact-scale warning choice, and routes its evaluated result through the matching target branch; expression-valued table integration is indexed by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree).
 - Tolerance metadata is erased before first-match computation selection; strict alternatives retain exact-scale admission while tolerance alternatives use the established scale-gate bypass.
 - Its overlap case demonstrates that selecting the stored first result does not imply generated-validation silence
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
@@ -760,7 +721,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - No retained project-local observation exercises direct presence/connectives, field-fill scans, alternative selection or selected-operation terminality, generated guarded-alternative validation, numeric expression/target/delta/application/dependency, mixed domain/poison order, or the newline family
 - those surfaces remain `external evidence pending`
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented narrowly and partially externally calibrated:** one nonrepeatable recursive direct-presence fragment
 - all seven field-fill predicates over a caller-supplied already-expanded ordered slot stream
@@ -769,21 +730,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - a checked nonempty literal-Number generated-rule fragment with an optionally guarded singleton or guarded two-or-more table and an optional checked common precondition
 - one String target and direct cascade
 - and one already-resolved Number expression → ordinary-or-warning-suppressed stored form → target → delta → exact application → cause-free dependency chain.
-- Open:
-  - General computation-table authoring and operation-side target self-reference checks beyond the checked plain-arithmetic/direct-root numeric-operation fragment
-  - checked zero/default authoring outside the structurally nonempty literal fragment
-  - general checked common-precondition authoring beyond the guarded literal fragment
-  - expression-valued generated validation
-  - comparison guards
-  - field-fill stream construction/path/group/star/filter expansion and AST integration
-  - scheduling
-  - transitive graphs
-  - repeatable evaluation
-  - joins
-  - missing-ancestor creation
-  - other value kinds/functions
-  - public reference exposure
-  - portable evidence
+- Shared checked guards/generated validation are indexed by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree), scheduling/state/target breadth by [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), family-specific operations by [`SG5`](SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion), [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), and [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion), repeatable construction by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), and retained evidence by [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 ### §12 — validation and polarity
 
@@ -827,7 +774,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Same-field alias polarity is source-inferred
 - mixed formal-invalid/domain precedence is an explicit Lean refinement
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally for the named clauses:** all seven unfiltered field-fill operators over a caller-supplied resolved tally, with generic instantiated-observation classification, tally composition, and one resolved indexed-operand projection
 - resolved scalar/list/count/relative-required group-presence projections over caller-supplied group slices
@@ -838,32 +785,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - one exact nonrepeatable structured-plan rule message rendered only after firing
 - one checked nonempty literal-Number generated rule, split between an optionally guarded singleton and guarded two-or-more table, with an optional common condition on the same message boundary
 - and one ordered nonrepeatable partial-validation filter gate, error-field gate, and relevance-aware leaf evaluator.
-- Open:
-  - Checked group-instance/descendant enumeration and wildcardable relevance construction
-  - checked construction of reopened trees and ordered cell streams from authored/model/document inputs
-  - field-fill authored expansion
-  - general checked-cell/tally and ordered-slot stream construction beyond the indexed operand
-  - `Having` discovery, lowering, and evaluation
-  - row eligibility
-  - physical read traces
-  - hidden false/unknown refinement
-  - integration with conditions/connectives
-  - rule paths
-  - referenced-field/fill-to-fix metadata
-  - raw authored-template parsing and legality
-  - repeatable addresses
-  - row-content derivation
-  - rule collections/order
-  - general generated checks
-  - custom-condition whole-rule integration
-  - concrete computation power authoring and result-empty provenance
-  - `BaseYear`
-  - exact mixed-failure precedence
-  - global/wildcard relevance
-  - repeats/phantom rows
-  - aggregates
-  - uniqueness
-  - orchestration
+- General document/context construction is indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction), repeatable streams/relevance/rows by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), condition/generated-rule integration by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree), scheduling/orchestration by [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), messages by [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration), and custom-condition placement by [`SG11`](SEMANTICS-GAPS.md#sg11--custom-condition-checked-orchestration).
 
 ### §13 — message interpolation
 
@@ -892,10 +814,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Accepted [`SPEC-2026-07-21-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-04--message-format-default-follows-the-actual-documentv2-profile) records the correction to the earlier locale implication.
 - `$$`, repeated order, richer token families, untested presentation routes, and project-local portable observations remain source-derived or open, so correspondence remains `external evidence pending`
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally, narrow:** parser-independent rendering after reference/display resolution and fired-only integration for checked nonrepeatable flat rules plus generated literal-Number computation validation.
-- Raw `$...$` parsing, token/path/star/reference legality, lookup/provider invocation and locale/display conversion, repeatable/index/category/semantic-index/BaseYear tokens, field-owned format-error text, custom conditions, protocol exposure, and a complete §13 claim remain open
+- The remaining authored-token, lookup/provider, display/format, repeatable/index/category, custom-condition, and orchestration boundary is indexed by [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 
 ### §14 — custom conditions
 
@@ -917,10 +839,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Kernel Java/TypeScript call paths, modern wrappers, and maintained a12-dmkits dual-route/JVM/Node controls establish the invocation and empty-eligibility account
 - no project-local portable observation
 
-#### Excluded / next
+#### Excluded boundary and gap links
 
 - **Implemented internally, narrow:** one successfully registered, already-reached pure callback leaf.
-- Open or outside the pure theory: registration and name resolution, host effects and call order, concrete data APIs, relevance/formal/pointer construction, orchestration, static restrictions, messages, checked lowering, protocol, and full host-data fidelity.
+- Registration/name resolution, host call discipline, concrete invocation construction, checked lowering, messages, and whole-rule orchestration are indexed by [`SG11`](SEMANTICS-GAPS.md#sg11--custom-condition-checked-orchestration).
 - Correspondence remains `external evidence pending`
 
 ## Cross-clause implementation notes
@@ -929,7 +851,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 
 - Evaluation follows the lowered tree left-to-right, so rewriting may change the first poison reached.
 - Invalid integral power reaches the shared target/dependency domain-failure path.
-- Concrete authoring and portable evidence remain open.
+- Concrete authoring is indexed by [`SG5`](SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion), and portable evidence by [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 ### Resolved Number `FirstFilledValue`
 
@@ -944,7 +866,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - Trusted laws prove prefix/suffix termination, empty-prefix idempotence, empty identities, both projections, and the central non-law that computation forgets the empty-prefix distinction while validation preserves it.
 - A checked-consumer law proves exact delegation to that evaluator. Cases separate selected-value versus omitted-tail and invalid-suffix invisibility, empty-prefix retention, reached invalidity in both phases, and zero-row omitted-tail identity.
 - Kernel source and maintained a12-dmkits `FirstFilledValue` differentials establish the selected observable behavior, but this repository retains no portable observation, and exact formal-cause carriage is an internal refinement.
-- Multi-operand authoring, filters, partial relevance, nested/multiple stars, general `Document` adaptation, non-Number kinds, target application, whole-rule integration, protocol support, and project-local portable evidence remain open.
+- Multi-operand/repeated construction is indexed by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), non-Number consumers by their family gaps, target/whole-rule integration by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree) and [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), and retained evidence by [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 - Accepted [`SPEC-2026-07-20-09`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-09--firstfilledvalue-observes-only-filters-before-termination) records the peer encounter-order correction and focused locks.
 
 ### Resolved Number aggregates
@@ -969,11 +891,11 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 
 - This is internally complete at levels 1–2 for the resolved operators, direct nonrepeatable lists, and the unfiltered finite one-level Number star; correspondence remains `external evidence pending`.
 - Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction for all three operators are represented. Nested/multiple stars and mixed repeated declarations must still construct per-source cells and uninstantiated signedness without losing declaration identity.
-- Enclosing checked comparison remains open: runtime operands compose with ordinary polarity, but the checked numeric expression tree has no aggregate node and must not be bypassed by a parallel aggregate-comparison wrapper.
+- Enclosing checked comparison is indexed by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree): runtime operands compose with ordinary polarity, but the checked numeric expression tree has no aggregate node and must not be bypassed by a parallel aggregate-comparison wrapper.
 - The checked one-level star now constructs the shallow IF194 tree and ordered cells from its authored path plus a bounded raw one-group view. General nested construction and `Document` adaptation remain outside.
 - The older checked-row `NumberFold` uses the homogeneous embedding and projects only amount or cause, preserving its existing truth-only API while deliberately erasing fillability.
 - The family does not share the prefix-terminating `FirstFilledValue` scan or operand-list empty substitution/fillability.
-- Nested/multiple-star lowering, actual filter execution, partial-validation relevance and row gating, computation aggregates, Date and other overloads, messages, protocol exposure, and project-local portable evidence remain open.
+- Nested/filter/relevance construction is indexed by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), aggregate expression/operation breadth by [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree), [`SG5`](SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion), and [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), messages by [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration), and evidence by [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 - a12-dmkits revision `20230e40` accepted the all-empty correction in [`SPEC-2026-07-20-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-15--all-empty-number-aggregate-identity-is-both-directionally-fillable).
 - The same revision accepted Sum order, precision, and missing polarity in [`SPEC-2026-07-21-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-02--number-sum-preserves-encounter-order-staged-precision-and-missing-declaration-polarity).
 
@@ -1016,10 +938,10 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - Cases cover malformed-only, admitted-plus-malformed, duplicate index, created and over-limit rows, partial positive/empty, full empty, list availability, strict count availability, and requiredness activation.
 
 - This is internally complete at levels 1–2 only for resolved inputs.
-- Open: descendant/model enumeration, `Document` adaptation, group-instance row assignment, wildcardable relevance, global augmentation, starred group expansion, checked lowering, and required-rule orchestration.
+- Descendant/document/group-instance construction and required-rule orchestration are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 - The a12-dmkits IF193 tri-engine matrix at revision `7f152509eea76822068955055b0d57d8ed930ca2` is focused external triangulation, but this repository retains no portable observation
 - correspondence remains `external evidence pending`.
-- Messages, protocol exposure, and wider validation orchestration remain open.
+- Message and wider validation orchestration are indexed by [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration) and [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition).
 
 ### Resolved Date-range overlap truth and operator scans
 
@@ -1044,7 +966,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - Stored inverted ranges are normally skipped by formal checking, while the pure relation's invalid guard remains a source-grounded total-function defense.
 - Accepted [`SPEC-2026-07-20-10`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-10--date-range-overlap-polarity-follows-the-reached-scan) links kernel source and a12-dmkits multi-route reached-scan polarity controls.
 - This repository still retains no portable Date-range observation, so correspondence remains `external evidence pending`
-- checked lowering, paths/stars, filter evaluation, cells, row gates, messages, equality/inequality, DateRange construction/extraction, protocol support, and project-local evidence remain open.
+- Authored DateRange construction/consumption is indexed by [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), repeated/filter construction by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), messages by [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration), and retained evidence by [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 ### Resolved three-part Date construction and Base-Year Date sources
 
@@ -1062,9 +984,9 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - The maintained “all-empty” differential also fills an unrelated time field, so truly content-empty row eligibility is likewise source-established rather than independently isolated.
 - Kernel date-extraction source establishes the quarter formula and Base-Year January/December labels. Maintained a12-dmkits quarter and extraction differentials cover the component family, while its adapter reads Base-Year date/range sources; reviewed peer evaluation still routes range extraction only through a range-valued operand, so Base-Year range execution is an upstream gap rather than local evidence.
 - this repository retains no portable Date observation.
-- Exact formal causes, raw/checked date-component cells, two- and four-part forms, missing-Base-Year authoring rejection outside checked comparison/numeric-expression consumers, exact parser/component bounds, full-row gating, nested difference/addition consumers, stored/computed temporal target admission, and protocol exposure remain open.
+- Remaining construction forms, parser bounds, checked cells/gates, nested consumers, and temporal target admission are indexed by [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) with document integration under [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction).
 - Direct and range-selected Base-Year Day/Month/Quarter/Year extraction now feeds the shared checked scale-0 numeric atom in both validation and Number computation, preserving the validation constant-expression gate and computation's legal constant-only route.
-- Other date differences, compositional temporal no-value propagation, and legacy-calendar identity remain open.
+- Other date differences, compositional temporal no-value propagation, and legacy-calendar identity are indexed by [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion).
 - Concrete calendar resolution is deliberately not implemented: kernel 30.8.1 uses a zone-aware hybrid `GregorianCalendar`, while the reusable `CivilDate` account is zone-free and proleptic, and the two accounts have reachable cutover and zone-discontinuity separators.
 
 ### `DifferenceInDays` finite-profile closure
@@ -1075,7 +997,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - Accepted [`SPEC-2026-07-20-08`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-08--differenceindays-counts-model-zone-calendar-steps) records both kernel-route separators and the peer calendar-step reconciliation.
 - Lean now enforces the narrower option: the general versioned Berlin profile resolves fresh labels, `Berlin2024Profile` retains only stateful spring day stepping, and `DateTimeDayDifference` counts at most the three landings within that exact slice.
 - Ordinary, threshold, reverse-sign, retained-adjusted-clock, elapsed-seconds non-equivalence, and unsupported cross-slice cases form the separating matrix.
-- Empty/formal operand coercion, fillability/polarity, checked lowering, constructed-Date calendar identity, general wall-day landing, other zones, and protocol exposure remain later consumers rather than being inferred from this profile.
+- Empty/formal coercion, fillability/polarity, checked lowering, constructed-Date calendar identity, general wall-day landing, and other zones are indexed by [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) rather than inferred from this finite profile.
 
 ## Reference-process exposure
 
