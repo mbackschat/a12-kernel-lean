@@ -8,7 +8,8 @@ open A12Kernel
 
 private def source : FlatFieldDecl :=
   { id := 0, groupPath := ["Form"], name := "Source",
-    policy := { kind := .string } }
+    policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }
 
 private def suffix : FlatFieldDecl :=
   { id := 1, groupPath := ["Form"], name := "Suffix",

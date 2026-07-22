@@ -63,6 +63,15 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "rawStringValueMode"),
           ("path", toJson path), ("expected", toJson "ordinaryString")])
+  | .stringPolicyRequiresString path
+  | .stringPolicyForbidsCustomType path
+  | .rawStringRequiresLineBreakPermission path
+  | .rawStringForbidsMinimumLength path
+  | .stringMinimumExceedsMaximum path
+  | .lineBreakWithSingleCharacterMaximum path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "stringFieldPolicy"),
+          ("path", toJson path)])
   | .enumerationMetadataRequiresEnumeration _
   | .enumerationDeclarationRequired _
   | .invalidEnumerationDeclaration _ _ =>

@@ -55,7 +55,8 @@ example :
 
 private def directString : FlatFieldDecl :=
   { id := 1, groupPath := ["Form"], name := "Code",
-    policy := { kind := .string } }
+    policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }
 
 private def directEnumeration : FlatFieldDecl :=
   { id := 2, groupPath := ["Form"], name := "Priority",

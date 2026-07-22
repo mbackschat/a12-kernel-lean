@@ -7,10 +7,12 @@ namespace A12Kernel.Conformance.FlatStringValueList
 open A12Kernel
 
 private def textDecl : FlatFieldDecl :=
-  { id := 10, groupPath := ["Order"], name := "Text", policy := { kind := .string } }
+  { id := 10, groupPath := ["Order"], name := "Text", policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }
 
 private def peerDecl : FlatFieldDecl :=
-  { id := 11, groupPath := ["Order"], name := "Peer", policy := { kind := .string } }
+  { id := 11, groupPath := ["Order"], name := "Peer", policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }
 
 private def enumDecl : FlatFieldDecl :=
   { id := 20
