@@ -12,6 +12,35 @@ theorem emptyStringField_evaluates_noValue (context : StringComputationContext)
   (StringExpr.field field).eval context = .ok .noValue := by
   simp [StringExpr.eval, StringComputationContext.readTerm, emptyRead] <;> rfl
 
+/-- `RangeAsString` is an evaluated coercion: a clean missing field yields empty text rather than the bare field term's `noValue`. -/
+theorem emptyStringRange_evaluates_emptyText (context : StringComputationContext)
+    (field : FieldId) (start finish : Nat)
+    (startPositive : 1 ≤ start) (ordered : start ≤ finish)
+    (emptyRead : observeCell .computation (context.read field) = .empty) :
+    (StringExpr.range field start finish).eval context = .ok (.text "") := by
+  simp [StringExpr.eval, StringComputationContext.readTerm, emptyRead,
+    Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered] <;> rfl
+
+/-- A formally invalid ranged source preserves its exact poison cause before any interval content decision. -/
+theorem poisonedStringRange_preserves_cause (context : StringComputationContext)
+    (field : FieldId) (start finish : Nat) (cause : FormalCause)
+    (startPositive : 1 ≤ start) (ordered : start ≤ finish)
+    (poisonedRead : observeCell .computation (context.read field) = .poison cause) :
+    (StringExpr.range field start finish).eval context = .ok (.poison cause) := by
+  simp [StringExpr.eval, StringComputationContext.readTerm, poisonedRead,
+    Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered] <;> rfl
+
+/-- An end beyond the normalized UTF-16 length returns empty text, never the available prefix. -/
+theorem overshootingStringRange_evaluates_emptyText (context : StringComputationContext)
+    (field : FieldId) (start finish : Nat) (text : String)
+    (startPositive : 1 ≤ start) (ordered : start ≤ finish)
+    (nonempty : text.isEmpty = false)
+    (overshoots : utf16CodeUnitLength text < finish)
+    (valueRead : observeCell .computation (context.read field) = .value (.str text)) :
+    (StringExpr.range field start finish).eval context = .ok (.text "") := by
+  simp [StringExpr.eval, StringComputationContext.readTerm, valueRead, nonempty,
+    Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered, overshoots] <;> rfl
+
 /-- Concatenation consumes an empty field as `""`, so a non-empty literal still reaches the root store as its own value. -/
 theorem emptyStringField_concat_literal_stores_literal (context : StringComputationContext)
     (field : FieldId) (literal : String)

@@ -6,7 +6,7 @@ import A12Kernel.Document
 
 /-! # A12Kernel.Semantics.StringComputation — one-target-instance String computation
 
-This capsule implements the first non-repeatable, unconditional subset of `spec/09-computations.md` (§11): resolved String-field reads, String literals, concatenation, root storage, declaration-owned ordinary target checks, payloadful `ERRORED`, value-only application, and kernel-style delta projection. Expression evaluation, root storage, target checking, application, and delta reporting remain separate because each exposes a different semantic boundary.
+This capsule implements a non-repeatable, unconditional subset of `spec/09-computations.md` (§11): resolved String-field reads, String literals, concatenation, checked `RangeAsString`, root storage, declaration-owned ordinary target checks, payloadful `ERRORED`, value-only application, and kernel-style delta projection. Expression evaluation, root storage, target checking, application, and delta reporting remain separate because each exposes a different semantic boundary.
 -/
 
 namespace A12Kernel
@@ -40,6 +40,8 @@ end StringTerm
 /-- A malformed low-level context is outside the computation language. Ordinary formal invalidity is not a fault: it is represented by `StringTerm.poison`. -/
 inductive StringComputationFault where
   | fieldKindMismatch (field : FieldId)
+  | invalidRange (start finish : Nat)
+  | unalignedUtf16Range (field : FieldId) (start finish : Nat)
   deriving Repr, DecidableEq
 
 /-- The String fragment uses the common checked scalar-computation read boundary without adding a second context representation. -/
@@ -63,6 +65,7 @@ end StringComputationContext
 inductive StringExpr (Atom : Type := FieldId) where
   | field (field : Atom)
   | literal (value : String)
+  | range (field : Atom) (start finish : Nat)
   | concat (left right : StringExpr Atom)
   deriving Repr, DecidableEq
 
@@ -72,6 +75,19 @@ namespace StringExpr
 def eval (context : StringComputationContext) : StringExpr FieldId → Except StringComputationFault StringTerm
   | StringExpr.field fieldId => context.readTerm fieldId
   | StringExpr.literal value => pure (.text value)
+  | StringExpr.range fieldId start finish => do
+      if start < 1 || finish < start then
+        throw (.invalidRange start finish)
+      match ← context.readTerm fieldId with
+      | .noValue => pure (.text "")
+      | .poison cause => pure (.poison cause)
+      | .text value =>
+          if utf16CodeUnitLength value < finish then
+            pure (.text "")
+          else
+            match utf16CodeUnitSlice? value (start - 1) finish with
+            | some selected => pure (.text selected)
+            | none => throw (.unalignedUtf16Range fieldId start finish)
   | StringExpr.concat left right => do
       let leftResult ← left.eval context
       match leftResult with

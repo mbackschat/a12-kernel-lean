@@ -1064,6 +1064,9 @@ run_cmd do
 #print axioms A12Kernel.elaborateAndEvalCustomFull_success
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
+#print axioms A12Kernel.emptyStringRange_evaluates_emptyText
+#print axioms A12Kernel.poisonedStringRange_preserves_cause
+#print axioms A12Kernel.overshootingStringRange_evaluates_emptyText
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
 #print axioms A12Kernel.poisonedStringField_evaluates_poison
 #print axioms A12Kernel.poisonedLeftStringField_shortCircuits_concat
@@ -1095,6 +1098,7 @@ run_cmd do
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_delta
 
 #print axioms A12Kernel.elaborateStringExprCore_literal
+#print axioms A12Kernel.elaborateStringExprCore_range
 #print axioms A12Kernel.elaborateStringExprCore_concat
 #print axioms A12Kernel.checkedStringExpr_evaluate
 #print axioms A12Kernel.checkedStringComputation_target_admitted

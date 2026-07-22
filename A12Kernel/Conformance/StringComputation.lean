@@ -27,6 +27,7 @@ private def rawContext (source other : RawCell) : StringComputationContext :=
   context (checkedString source) (checkedString other)
 
 private def copySource : StringExpr := .field sourceId
+private def sourceRange : StringExpr := .range sourceId 2 4
 private def sourceThenSuffix : StringExpr := .concat (.field sourceId) (.literal "-X")
 private def prefixThenSource : StringExpr := .concat (.literal "X-") (.field sourceId)
 private def sourceThenOther : StringExpr := .concat (.field sourceId) (.field otherId)
@@ -40,6 +41,9 @@ private def delta (expression : StringExpr) (computationContext : StringComputat
 
 private def storedSeed : StoredString := ⟨"SEED", by decide⟩
 private def storedReference : StoredString := ⟨"REF-42", by decide⟩
+private def storedBcd : StoredString := ⟨"BCD", by decide⟩
+private def storedBLineC : StoredString := ⟨"B\nC", by decide⟩
+private def storedEmoji : StoredString := ⟨"😀", by decide⟩
 private def storedSuffix : StoredString := ⟨"-X", by decide⟩
 private def storedPrefix : StoredString := ⟨"X-", by decide⟩
 private def storedAbcd : StoredString := ⟨"ABCD", by decide⟩
@@ -63,6 +67,39 @@ example : valueOf (copySource.eval (rawContext (.parsed (.str "REF-42")) .empty)
 example : valueOf (copySource.evaluate (rawContext (.parsed (.str "REF-42")) .empty)) =
     some (.produced storedReference) := by
   decide
+
+/- `RangeAsString` uses 1-based inclusive UTF-16 bounds and keeps a one-character interval legal. -/
+example : valueOf (sourceRange.evaluate (rawContext (.parsed (.str "ABCDE")) .empty)) =
+    some (.produced storedBcd) := by
+  native_decide
+
+example : valueOf ((StringExpr.range sourceId 2 2).eval
+    (rawContext (.parsed (.str "ABCDE")) .empty)) = some (.text "B") := by
+  native_decide
+
+/- The source is formally normalized before the UTF-16 interval is selected. -/
+example : valueOf (sourceRange.evaluate
+    (rawContext (.parsed (.str "AB\r\nCD")) .empty)) =
+      some (.produced storedBLineC) := by
+  native_decide
+
+/- Missing and overshooting ranges are evaluated empty text, so the root store clears instead of retaining a partial substring. -/
+example : valueOf (sourceRange.eval (rawContext .empty .empty)) = some (.text "") := by
+  native_decide
+
+example : valueOf ((StringExpr.range sourceId 1 6).evaluate
+    (rawContext (.parsed (.str "ABCDE")) .empty)) = some .noValue := by
+  native_decide
+
+/- UTF-16 aligned supplementary slices preserve the scalar; a half-surrogate result cannot inhabit Lean `String` and fails closed. -/
+example : valueOf ((StringExpr.range sourceId 2 3).evaluate
+    (rawContext (.parsed (.str "A😀B")) .empty)) = some (.produced storedEmoji) := by
+  native_decide
+
+example : errorOf ((StringExpr.range sourceId 2 2).evaluate
+    (rawContext (.parsed (.str "A😀B")) .empty)) =
+      some (.unalignedUtf16Range sourceId 2 2) := by
+  native_decide
 
 example : valueOf (delta copySource (rawContext (.parsed (.str "REF-42")) .empty)
     (.filled storedSeed)) = some (some (.value storedReference)) := by
