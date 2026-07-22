@@ -3,7 +3,7 @@ import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/literal/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It admits only nonrepeatable String declarations from one validated flat model. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, patterns, raw/custom targets, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable String declarations from one validated flat model. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, patterns, raw/custom targets, and scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -13,6 +13,7 @@ inductive StringComputationElabError where
   | resolve (error : ResolveError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringValue (path : List String)
+  | invalidRange (start finish : Nat)
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
@@ -20,17 +21,43 @@ inductive StringComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+/-- Admit one already-resolved nonrepeatable declaration as a String-value computation leaf. -/
+def admitStringComputationValueField
+    (declaration : FlatFieldDecl) : Except StringComputationElabError FieldId :=
+  match declaration.toStringValueField? with
+  | some field => pure field.id
+  | none =>
+      if declaration.isRawString then
+        throw (.rawStringValue declaration.path)
+      else
+        throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
+
+/-- Resolve one legal nonrepeatable String-value field for scalar String computation syntax. -/
+def elaborateStringValueField (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Except StringComputationElabError FieldId := do
+  let declaration ←
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+  admitStringComputationValueField declaration
+
+/-- Whether one runtime leaf is the exact nonrepeatable String-value declaration in the model. -/
+private def FlatModel.admitsStringComputationOperand (model : FlatModel)
+    (fieldId : FieldId) : Bool :=
+  match model.lookupUniqueId fieldId with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toStringValueField? == some { id := fieldId }
+  | .error _ => false
+
 namespace StringExpr
 
 /-- Check that every runtime leaf names the exact nonrepeatable String declaration in one model. -/
 def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
   | StringExpr.field fieldId =>
-      match model.lookupUniqueId fieldId with
-      | .ok declaration =>
-          declaration.repeatableScope.isEmpty &&
-            declaration.toStringValueField? == some { id := fieldId }
-      | .error _ => false
+      model.admitsStringComputationOperand fieldId
   | StringExpr.literal _ => true
+  | StringExpr.range fieldId start finish =>
+      0 < start && start ≤ finish &&
+        model.admitsStringComputationOperand fieldId
   | StringExpr.concat left right =>
       left.wellFormedBool model && right.wellFormedBool model
 
@@ -41,6 +68,7 @@ def WellFormed (expression : StringExpr FieldId) (model : FlatModel) : Prop :=
 def referencesField (field : FieldId) : StringExpr FieldId → Bool
   | .field candidate => candidate == field
   | .literal _ => false
+  | .range candidate _ _ => candidate == field
   | .concat left right => left.referencesField field || right.referencesField field
 
 end StringExpr
@@ -77,17 +105,14 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
     StringExpr SurfaceFieldPath →
       Except StringComputationElabError (StringExpr FieldId)
   | StringExpr.field reference => do
+      pure (.field (← elaborateStringValueField model declaringGroup reference))
+  | StringExpr.literal value => pure (.literal value)
+  | StringExpr.range reference start finish => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.toStringValueField? with
-      | some field => pure (.field field.id)
-      | none =>
-          if declaration.isRawString then
-            throw (.rawStringValue declaration.path)
-          else
-            throw (.fieldKindMismatch declaration.path
-              declaration.policy.kind.surfaceKind)
-  | StringExpr.literal value => pure (.literal value)
+      if start < 1 || finish < start then
+        throw (.invalidRange start finish)
+      pure (.range (← admitStringComputationValueField declaration) start finish)
   | StringExpr.concat left right => do
       pure (.concat
         (← elaborateStringExprCore model declaringGroup left)

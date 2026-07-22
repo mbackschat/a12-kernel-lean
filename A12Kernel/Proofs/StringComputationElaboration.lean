@@ -11,6 +11,28 @@ theorem elaborateStringExprCore_literal (model : FlatModel)
       .ok (.literal value) := by
   rfl
 
+/-- A successfully lowered `RangeAsString` retains the exact authored interval around its resolved field leaf. -/
+theorem elaborateStringExprCore_range (model : FlatModel)
+    (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
+    (declaration : FlatFieldDecl) (field : FieldId) (start finish : Nat)
+    (startPositive : 1 ≤ start) (ordered : start ≤ finish)
+    (resolved :
+      (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+        StringComputationElabError.resolve = .ok declaration)
+    (admitted : admitStringComputationValueField declaration = .ok field) :
+    elaborateStringExprCore model declaringGroup (.range reference start finish) =
+      .ok (.range field start finish) := by
+  unfold elaborateStringExprCore
+  rw [resolved]
+  simp only [Nat.not_lt.mpr startPositive, Nat.not_lt.mpr ordered,
+    decide_false, Bool.false_or]
+  change (do
+    let value ← admitStringComputationValueField declaration
+    pure (StringExpr.range value start finish)) =
+      .ok (StringExpr.range field start finish)
+  rw [admitted]
+  rfl
+
 /-- Successful child lowering preserves the authored concatenation shape and order exactly. -/
 theorem elaborateStringExprCore_concat (model : FlatModel)
     (declaringGroup : GroupPath)

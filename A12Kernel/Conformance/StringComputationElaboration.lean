@@ -93,6 +93,9 @@ private def normalizedResult : StoredString :=
 private def rawCrLfResult : StoredString :=
   { text := "AB\r\nCD", nonempty := by decide }
 
+private def rangeResult : StoredString :=
+  { text := "BCD", nonempty := by decide }
+
 /- Copy, decoded literal, and concatenation lower structurally without changing encounter order. -/
 example :
     coreOf (elaborateStringExpr model ["Form"]
@@ -101,6 +104,37 @@ example :
         (.concat (.literal "-") (.field (bare "Suffix"))))) =
       some (.concat (.field source.id)
         (.concat (.literal "-") (.field suffix.id))) := by
+  native_decide
+
+/- A legal authored `RangeAsString` retains its 1-based inclusive bounds and resolves only its field leaf. -/
+example :
+    coreOf (elaborateStringExpr model ["Form"]
+      (.range (bare "Source") 2 4)) = some (.range source.id 2 4) := by
+  native_decide
+
+/- Field resolution and repeatable-shape rejection precede interval checking. -/
+example :
+    errorOf (elaborateStringExpr model ["Form"]
+      (.range (bare "Missing") 0 3)) =
+        some (.resolve (.invalidEntity (bare "Missing"))) ∧
+    errorOf (elaborateStringExpr model ["Form"]
+      (.range (absolute ["Form", "Rows"] "Text") 0 3)) =
+        some (.resolve (.repeatableReference repeatedText.path)) := by
+  native_decide
+
+/- Once the field shape resolves, malformed bounds precede String-kind admission. -/
+example :
+    errorOf (elaborateStringExpr model ["Form"]
+      (.range (bare "Amount") 0 3)) = some (.invalidRange 0 3) ∧
+    errorOf (elaborateStringExpr model ["Form"]
+      (.range (bare "Amount") 3 2)) = some (.invalidRange 3 2) := by
+  native_decide
+
+/- The range leaf uses the same declaration-owned String-value gate as a direct copy. -/
+example :
+    errorOf (elaborateStringExpr model ["Form"]
+      (.range (bare "Amount") 1 1)) =
+        some (.fieldKindMismatch amount.path .number) := by
   native_decide
 
 /- The checked expression delegates to the existing cached String evaluator. -/
@@ -142,10 +176,23 @@ example :
       operationOutcomeOf result (raw .empty .empty) = some (.accepted rawCrLfResult) := by
   native_decide
 
+/- The checked target operation consumes the range result without a parallel target path. -/
+example :
+    operationOutcomeOf
+      (elaborateStringComputationOperation model ["Form"] target.id
+        (.range (bare "Source") 2 4))
+      (raw (.parsed (.str "ABCDE")) .empty) = some (.accepted rangeResult) := by
+  native_decide
+
 /- The integrated checked operation rejects self-reference instead of leaving it to runtime evaluation. -/
 example :
     operationErrorOf (elaborateStringComputationOperation model ["Form"] target.id
       (.field (bare "Target"))) = some (.targetSelfReference target.id) := by
+  native_decide
+
+example :
+    operationErrorOf (elaborateStringComputationOperation model ["Form"] target.id
+      (.range (bare "Target") 1 1)) = some (.targetSelfReference target.id) := by
   native_decide
 
 /- A non-String target is rejected at the target boundary even when the operation itself is a String literal. -/
