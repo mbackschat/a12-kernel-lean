@@ -61,6 +61,15 @@ theorem stringValueListCell_readsNormalized (context : FlatContext)
     directStringOperand_readsNormalized context field text read nonempty]
   rfl
 
+/-- A checked empty String remains an empty token-list cell rather than a present empty token. -/
+theorem stringValueListCell_empty (context : FlatContext)
+    (field : FlatStringField)
+    (empty : context.observeValidationAt field.id = .empty) :
+    (FlatTextFieldOperand.string field).valueListCell context = .empty := by
+  simp [FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
+    FlatContext.resolveDirectStringComparisonOperand, empty,
+    SimpleComparisonOperand.asTokenValueListCell]
+
 /-- String `Length` counts the cached normalized text supplied by the checked read for its resolved field. -/
 theorem stringLengthOperand_readsNormalized (context : FlatContext)
     (field : FlatStringField) (text : String)

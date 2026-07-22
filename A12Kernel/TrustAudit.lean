@@ -751,6 +751,7 @@ run_cmd do
 #print axioms A12Kernel.flatTokenValueListSide_cells
 #print axioms A12Kernel.flatTokenValueSide_fields
 #print axioms A12Kernel.flatTokenValueList_irrelevant_unknown
+#print axioms A12Kernel.flatTokenValueMembership_empty
 #print axioms A12Kernel.flatEnumerationValueList_no_empty
 #print axioms A12Kernel.flatEnumerationValueMembership_empty
 #print axioms A12Kernel.enumerationRepetitionKey_empty
@@ -814,6 +815,7 @@ run_cmd do
 #print axioms A12Kernel.checkedString_phasesReadNormalized
 #print axioms A12Kernel.directStringOperand_readsNormalized
 #print axioms A12Kernel.stringValueListCell_readsNormalized
+#print axioms A12Kernel.stringValueListCell_empty
 #print axioms A12Kernel.resolvedStringPattern_readsNormalized
 #print axioms A12Kernel.stringPattern_evalResolved_fired_is_value
 #print axioms A12Kernel.stringPattern_evalResolved_notEvaluated

@@ -125,4 +125,45 @@ private def mixedCore : FlatCondition :=
 
 example : mixedCore.wellFormedBool model = false := by native_decide
 
+private def membership (op : ValueListMembershipOp) : SurfaceCondition :=
+  .stringValueMembership op (path "Text") ["AB\nCD", "Other"]
+
+example : coreOf (elaborate model ["Order"] (membership .included)) =
+    some (.tokenValueList .atLeastOne [.string { id := 10 }]
+      (.literals ["AB\nCD", "Other"])) ∧
+    coreOf (elaborate model ["Order"] (membership .notIncluded)) =
+      some (.tokenValueList .notAll [.string { id := 10 }]
+        (.literals ["AB\nCD", "Other"])) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull model world ["Order"]
+    (rawPair 10 (.parsed (.str "AB\r\nCD")) 11 .empty) true
+    (membership .included)) = some (.fired .value) ∧
+    verdictOf (elaborateAndEvalFull model world ["Order"]
+      (rawPair 10 (.parsed (.str "Miss")) 11 .empty) true
+      (membership .notIncluded)) = some (.fired .value) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull model world ["Order"]
+    (rawPair 10 (.parsed (.str "")) 11 .empty) true
+    (membership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull model world ["Order"]
+      (rawPair 10 (.parsed (.str "")) 11 .empty) true
+      (membership .notIncluded)) = some .notFired := by native_decide
+
+example : verdictOf (elaborateAndEvalFull model world ["Order"]
+    (rawPair 10 (.rejected .malformed) 11 .empty) true
+    (membership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull model world ["Order"]
+      (rawPair 10 (.rejected .malformed) 11 .empty) true
+      (membership .notIncluded)) = some .notFired := by native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (.stringValueMembership .included (path "Text") [])) =
+    some (.emptyValueList ["Order", "Text"]) := by native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (.stringValueMembership .included (path "Code") ["A"])) =
+    some (.textFieldOperandKindMismatch ["Order", "Code"] .enumeration) := by
+  native_decide
+
 end A12Kernel.Conformance.FlatStringValueList

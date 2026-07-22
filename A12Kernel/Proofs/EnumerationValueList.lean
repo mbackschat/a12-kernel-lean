@@ -80,6 +80,22 @@ theorem flatTokenValueList_irrelevant_unknown
       context (fun _ => false) = .unknown := by
   simp [FlatCondition.evalSelected, FlatTokenValueSide.allOperands]
 
+/-- Scalar membership is a one-field `AtLeastOne`/`NotAll` specialization: an empty subject makes either surface operator non-firing. -/
+theorem flatTokenValueMembership_empty
+    (op : ValueListMembershipOp) (operand : FlatTextFieldOperand)
+    (values : List String) (context : FlatContext)
+    (empty : operand.valueListCell context = .empty) :
+    (FlatCondition.tokenValueList op.quantifier [operand] (.literals values)).evalFull
+      context true = .notFired := by
+  cases op <;>
+    simp [ValueListMembershipOp.quantifier, FlatCondition.evalFull,
+      FlatCondition.evalSelected, FlatTokenValueSide.allOperands,
+      FlatTokenValueSide.operands, FlatTokenValueSide.resolve,
+      flatTokenValueListSide, literalTokenValueListSide,
+      ValueListQuantifier.eval, evalValueListAtLeastOne,
+      evalValueListNotAll, ResolvedValueListSide.anyMatches,
+      ResolvedValueListSide.hasPresent, empty]
+
 /-- `No` is the one value-list quantifier structurally eligible on a blank row; the clean empty field makes that fire omission-typed. -/
 theorem flatEnumerationValueList_no_empty
     (operand : FlatEnumerationOperand) (values : List String)
@@ -107,17 +123,9 @@ theorem flatEnumerationValueMembership_empty
     (empty : context.observeValidationAt operand.field.id = .empty) :
     (FlatCondition.tokenValueList op.quantifier [.enumeration operand] (.literals values)).evalFull
       context true = .notFired := by
-  cases op <;>
-    simp [ValueListMembershipOp.quantifier, FlatCondition.evalFull,
-      FlatCondition.evalSelected, FlatTokenValueSide.allOperands,
-      FlatTokenValueSide.operands, FlatTokenValueSide.resolve,
-      flatTokenValueListSide, FlatTextFieldOperand.valueListCell,
-      FlatTextFieldOperand.resolve, FlatEnumerationOperand.resolve,
-      SimpleComparisonOperand.asTokenValueListCell,
-      ResolvedEnumerationProjection.resolveOperand,
-      literalTokenValueListSide, ValueListQuantifier.eval,
-      evalValueListAtLeastOne, evalValueListNotAll,
-      ResolvedValueListSide.anyMatches, ResolvedValueListSide.hasPresent,
-      empty]
+  apply flatTokenValueMembership_empty
+  simp [FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
+    FlatEnumerationOperand.resolve, SimpleComparisonOperand.asTokenValueListCell,
+    ResolvedEnumerationProjection.resolveOperand, empty]
 
 end A12Kernel
