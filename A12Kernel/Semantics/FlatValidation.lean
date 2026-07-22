@@ -80,13 +80,27 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
     rational literal and therefore cannot enforce authored-scale compatibility; the
     checked numeric-expression route retains that metadata. Confirm admits only the
     legal `True` literal, made implicit in its constructor. -/
+inductive FlatTemporalOperand where
+  | fieldValue (field : FlatTemporalField)
+  | literalValue (instant : Instant)
+  deriving Repr, DecidableEq
+
+namespace FlatTemporalOperand
+
+def fields : FlatTemporalOperand → List FlatField
+  | .fieldValue field => [.temporal field]
+  | .literalValue _ => []
+
+end FlatTemporalOperand
+
 inductive FlatComparison where
   | number (op : NumericValidationOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   | string (op : EqualityOp) (field : FlatStringField) (expected : String)
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
-  | temporal (op : TemporalComparisonOp) (left right : FlatTemporalField)
+  | temporal (op : TemporalComparisonOp)
+      (left right : FlatTemporalOperand)
   deriving Repr, DecidableEq
 
 namespace FlatComparison
@@ -98,7 +112,7 @@ def fields : FlatComparison → List FlatField
   | .confirm _ field => [.confirm field]
   | .string _ field _ => [.string field]
   | .stringLength _ field _ => [.string field]
-  | .temporal _ left right => [.temporal left, .temporal right]
+  | .temporal _ left right => left.fields ++ right.fields
 
 def fieldIds (comparison : FlatComparison) : List FieldId :=
   comparison.fields.map FlatField.id
@@ -198,6 +212,11 @@ def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
+def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand →
+    SimpleComparisonOperand Instant
+  | .fieldValue field => context.resolveTemporalComparisonOperand field
+  | .literalValue instant => .value instant true
+
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/
 def SimpleComparisonOperand.evalDirectString
@@ -223,8 +242,7 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
   | .stringLength op field expected =>
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
   | .temporal op left right =>
-      op.evalInstant (context.resolveTemporalComparisonOperand left)
-        (context.resolveTemporalComparisonOperand right)
+      op.evalInstant (left.resolve context) (right.resolve context)
 
 def FlatField.observeValidation (context : FlatContext) : FlatField → CellObservation
   | .number field => context.observeValidationAt field.id

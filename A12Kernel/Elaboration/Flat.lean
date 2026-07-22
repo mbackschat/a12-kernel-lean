@@ -42,6 +42,7 @@ inductive SurfaceLiteral where
   | number (value : Rat)
   | boolean (value : Bool)
   | string (value : String)
+  | date (components : TemporalComponents) (instant : Instant)
   deriving Repr, DecidableEq
 
 inductive SurfaceScalarKind where
@@ -58,6 +59,7 @@ def kind : SurfaceLiteral → SurfaceScalarKind
   | .number _ => .number
   | .boolean _ => .boolean
   | .string _ => .string
+  | .date _ _ => .temporal .date
 
 end SurfaceLiteral
 
@@ -146,6 +148,8 @@ inductive ElabError where
   | temporalOperandKindMismatch (leftPath rightPath : List String)
       (leftKind rightKind : SurfaceScalarKind)
   | temporalFormatsIncompatible (leftPath rightPath : List String)
+  | temporalLiteralNeedsBaseYear (path : List String)
+  | invalidTemporalLiteralComponents (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -416,7 +420,7 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .error _ => false
 
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
-  comparison.fields.all model.admitsField
+  !comparison.fields.isEmpty && comparison.fields.all model.admitsField
 
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
@@ -466,8 +470,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           let comparison := op.toTemporal
           if comparison.admitsFormats model.hasBaseYear leftComponents rightComponents then
             pure (.compare (.temporal comparison
-              { id := left.id, kind := leftKind, components := leftComponents }
-              { id := right.id, kind := rightKind, components := rightComponents }))
+              (.fieldValue { id := left.id, kind := leftKind, components := leftComponents })
+              (.fieldValue { id := right.id, kind := rightKind, components := rightComponents })))
           else
             throw (.temporalFormatsIncompatible left.path right.path)
       | leftKind, rightKind =>
@@ -516,8 +520,28 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
               pure (.compare (.string equality { id := declaration.id } expected))
           | literal =>
               throw (.literalKindMismatch declaration.path .string literal.kind)
-      | .temporal kind _ =>
-          throw (.literalKindMismatch declaration.path (.temporal kind) literal.kind)
+      | .temporal kind components =>
+          match literal with
+          | .date literalComponents instant =>
+              let literalPath := ["<date-literal>"]
+              if !literalComponents.isDateLiteral then
+                throw (.invalidTemporalLiteralComponents literalPath)
+              else if !literalComponents.year && !model.hasBaseYear then
+                throw (.temporalLiteralNeedsBaseYear literalPath)
+              else
+                let comparison := op.toTemporal
+                if comparison.admitsFormats model.hasBaseYear
+                    components literalComponents then
+                  pure (.compare (.temporal comparison
+                    (.fieldValue {
+                      id := declaration.id
+                      kind := kind
+                      components := components })
+                    (.literalValue instant)))
+                else
+                  throw (.temporalFormatsIncompatible declaration.path literalPath)
+          | literal =>
+              throw (.literalKindMismatch declaration.path (.temporal kind) literal.kind)
   | .lengthCompare op reference expected => do
       let lengthOp ← match op.toStringLength? with
         | some lengthOp => pure lengthOp

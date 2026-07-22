@@ -54,7 +54,7 @@ private def temporalContext : FlatContext where
     else formalCheck { kind := .boolean } (.rejected .malformed)
 
 private def earlierBeforeLater : FlatCondition :=
-  .compare (.temporal .before earlierDate laterDate)
+  .compare (.temporal .before (.fieldValue earlierDate) (.fieldValue laterDate))
 
 /-! Both operands of a field-to-field comparison must be relevant; checking only the first read would expose an out-of-set value. -/
 example :
