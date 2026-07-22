@@ -747,10 +747,10 @@ run_cmd do
 #print axioms A12Kernel.enumerationValueList_present
 #print axioms A12Kernel.checkedEnumerationValueList_outOfDomain
 #print axioms A12Kernel.checkedEnumerationValueList_sideCells
-#print axioms A12Kernel.flatEnumerationValueList_canFireOnEmpty
-#print axioms A12Kernel.flatEnumerationValueListSide_cells
-#print axioms A12Kernel.flatEnumerationValueSide_fields
-#print axioms A12Kernel.flatEnumerationValueList_irrelevant_unknown
+#print axioms A12Kernel.flatTokenValueList_canFireOnEmpty
+#print axioms A12Kernel.flatTokenValueListSide_cells
+#print axioms A12Kernel.flatTokenValueSide_fields
+#print axioms A12Kernel.flatTokenValueList_irrelevant_unknown
 #print axioms A12Kernel.flatEnumerationValueList_no_empty
 #print axioms A12Kernel.flatEnumerationValueMembership_empty
 #print axioms A12Kernel.enumerationRepetitionKey_empty
@@ -813,6 +813,7 @@ run_cmd do
 #print axioms A12Kernel.formalCheckString_cachesNormalized
 #print axioms A12Kernel.checkedString_phasesReadNormalized
 #print axioms A12Kernel.directStringOperand_readsNormalized
+#print axioms A12Kernel.stringValueListCell_readsNormalized
 #print axioms A12Kernel.resolvedStringPattern_readsNormalized
 #print axioms A12Kernel.stringPattern_evalResolved_fired_is_value
 #print axioms A12Kernel.stringPattern_evalResolved_notEvaluated

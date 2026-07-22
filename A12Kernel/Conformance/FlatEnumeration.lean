@@ -290,8 +290,9 @@ private def storedValueList : SurfaceCondition :=
   .enumerationValueList .atLeastOne [(.direct (fieldPath "Code"))] ["A", "B"]
 
 private def storedValueListCore : FlatCondition :=
-  .enumerationValueList .atLeastOne
-    [{ field := { id := 20 }, projectionRef := .stored, projection := .stored }]
+  .tokenValueList .atLeastOne
+    [.enumeration {
+      field := { id := 20 }, projectionRef := .stored, projection := .stored }]
     (.literals ["A", "B"])
 
 example : coreOf (elaborate fieldModel ["Order"] storedValueList) =
@@ -340,8 +341,9 @@ private def storedIncluded : SurfaceCondition :=
   .enumerationValueMembership .included (.direct (fieldPath "Code")) ["A"]
 
 example : coreOf (elaborate fieldModel ["Order"] storedIncluded) = some
-    (.enumerationValueList .atLeastOne
-      [{ field := { id := 20 }, projectionRef := .stored, projection := .stored }]
+    (.tokenValueList .atLeastOne
+      [.enumeration {
+        field := { id := 20 }, projectionRef := .stored, projection := .stored }]
       (.literals ["A"])) := by native_decide
 
 example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
@@ -368,9 +370,11 @@ private def twoFieldValueList : SurfaceCondition :=
     ["A", "Other"]
 
 private def twoFieldValueListCore : FlatCondition :=
-  .enumerationValueList .atLeastOne [
-      { field := { id := 20 }, projectionRef := .stored, projection := .stored },
-      { field := { id := 25 }, projectionRef := .stored, projection := .stored }]
+  .tokenValueList .atLeastOne [
+      .enumeration {
+        field := { id := 20 }, projectionRef := .stored, projection := .stored },
+      .enumeration {
+        field := { id := 25 }, projectionRef := .stored, projection := .stored }]
       (.literals ["A", "Other"])
 
 example : coreOf (elaborate fieldModel ["Order"] twoFieldValueList) =
@@ -407,12 +411,14 @@ private def enumerationFieldValueList : SurfaceCondition :=
     [categoryCode] [(.direct (fieldPath "CategoryPeer"))]
 
 private def enumerationFieldValueListCore : FlatCondition :=
-  .enumerationValueList .atLeastOne
-    [{ field := { id := 20 }
-       projectionRef := .category "Kind"
-       projection := .category categoryMapping }]
+  .tokenValueList .atLeastOne
+    [.enumeration {
+      field := { id := 20 },
+      projectionRef := .category "Kind",
+      projection := .category categoryMapping }]
     (.fields [
-      { field := { id := 25 }, projectionRef := .stored, projection := .stored }])
+      .enumeration {
+        field := { id := 25 }, projectionRef := .stored, projection := .stored }])
 
 example : coreOf (elaborate fieldModel ["Order"] enumerationFieldValueList) =
     some enumerationFieldValueListCore := by native_decide

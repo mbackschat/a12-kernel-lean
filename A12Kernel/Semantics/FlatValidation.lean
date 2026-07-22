@@ -11,15 +11,9 @@ import A12Kernel.Semantics.EnumerationValueList
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
-A small core for resolved, non-repeatable field references. It covers the admitted
-direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
-direct String equality and inequality, four String `Length` ordering comparisons,
-checked Enumeration/category-to-literal equality and inequality, resolved temporal
-field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates,
-one-field Enumeration value-list quantifiers, and `And`/`Or`.
-It also exposes the leaf-relevance seam used by the separate flat partial-validation
-capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
-outside this capsule.
+A small core for resolved, non-repeatable field references. It covers the admitted direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality, direct String equality and inequality, four String `Length` ordering comparisons, checked Enumeration/category-to-literal equality and inequality, checked String/Enumeration literal and field-valued list quantifiers, resolved temporal field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates, and `And`/`Or`.
+
+It also exposes the leaf-relevance seam used by the separate flat partial-validation capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are outside this capsule.
 -/
 
 namespace A12Kernel
@@ -170,14 +164,13 @@ def allRelevant (comparison : FlatComparison) (isRelevant : FieldId → Bool) : 
 
 end FlatComparison
 
-/-- The two grammar-level value-side shapes retained by a checked Enumeration list quantifier. Field operands remain distinct from literals because empty and unavailable fields affect `No` and `NotAll` differently from an absent literal. -/
-inductive FlatEnumerationValueSide where
+/-- The two grammar-level value-side shapes retained by a checked textual list quantifier. Field operands remain distinct from literals because empty and unavailable fields affect `No` and `NotAll` differently from a literal token. -/
+inductive FlatTokenValueSide where
   | literals (values : List String)
-  | fields (operands : List FlatEnumerationOperand)
+  | fields (operands : List FlatTextFieldOperand)
   deriving Repr, DecidableEq
 
-def FlatEnumerationValueSide.operands : FlatEnumerationValueSide →
-    List FlatEnumerationOperand
+def FlatTokenValueSide.operands : FlatTokenValueSide → List FlatTextFieldOperand
   | .literals _ => []
   | .fields operands => operands
 
@@ -185,8 +178,8 @@ def FlatEnumerationValueSide.operands : FlatEnumerationValueSide →
     impossible to represent in this fragment. -/
 inductive FlatCondition where
   | compare (comparison : FlatComparison)
-  | enumerationValueList (quantifier : ValueListQuantifier)
-      (operands : List FlatEnumerationOperand) (values : FlatEnumerationValueSide)
+  | tokenValueList (quantifier : ValueListQuantifier)
+      (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide)
   | fieldFilled (field : FlatField)
   | fieldNotFilled (field : FlatField)
   | and (left right : FlatCondition)
@@ -211,7 +204,7 @@ abbrev FlatRelevance := FieldId → Bool
 /-- Whether an all-empty full-validation instance is eligible for this condition. -/
 def FlatCondition.canFireOnEmpty : FlatCondition → Bool
   | .compare _ => false
-  | .enumerationValueList quantifier _ _ => quantifier.canFireOnEmpty
+  | .tokenValueList quantifier _ _ => quantifier.canFireOnEmpty
   | .fieldFilled _ => false
   | .fieldNotFilled _ => true
   | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
@@ -355,12 +348,24 @@ def FlatEnumerationOperand.resolve (operand : FlatEnumerationOperand)
   operand.projection.resolveOperand
     (context.observeValidationAt operand.field.id)
 
-def FlatEnumerationOperand.valueListCell (operand : FlatEnumerationOperand)
-    (context : FlatContext) : ValueListCell .token :=
-  operand.projection.asValueListCell
-    (context.observeValidationAt operand.field.id)
+def FlatTextFieldOperand.resolve (operand : FlatTextFieldOperand)
+    (context : FlatContext) : SimpleComparisonOperand String :=
+  match operand with
+  | .string field => context.resolveDirectStringComparisonOperand field
+  | .enumeration operand => operand.resolve context
 
-def flatEnumerationValueListSide (operands : List FlatEnumerationOperand)
+def SimpleComparisonOperand.asTokenValueListCell
+    (operand : SimpleComparisonOperand String) : ValueListCell .token :=
+  match operand with
+  | .notEvaluated => .empty
+  | .value token _ => .present token
+  | .unknown cause => .unknown cause
+
+def FlatTextFieldOperand.valueListCell (operand : FlatTextFieldOperand)
+    (context : FlatContext) : ValueListCell .token :=
+  (operand.resolve context).asTokenValueListCell
+
+def flatTokenValueListSide (operands : List FlatTextFieldOperand)
     (context : FlatContext) : ResolvedValueListSide .token :=
   { cells := operands.map (·.valueListCell context)
     hasUninstantiatedTail := false
@@ -372,21 +377,15 @@ def literalTokenValueListSide (values : List String) :
     hasUninstantiatedTail := false
     hasHaving := false }
 
-def FlatEnumerationValueSide.resolve (side : FlatEnumerationValueSide)
+def FlatTokenValueSide.resolve (side : FlatTokenValueSide)
     (context : FlatContext) : ResolvedValueListSide .token :=
   match side with
   | .literals values => literalTokenValueListSide values
-  | .fields operands => flatEnumerationValueListSide operands context
+  | .fields operands => flatTokenValueListSide operands context
 
-def FlatEnumerationValueSide.allOperands (values : FlatEnumerationValueSide)
-    (fields : List FlatEnumerationOperand) : List FlatEnumerationOperand :=
+def FlatTokenValueSide.allOperands (values : FlatTokenValueSide)
+    (fields : List FlatTextFieldOperand) : List FlatTextFieldOperand :=
   fields ++ values.operands
-
-def FlatTextFieldOperand.resolve (operand : FlatTextFieldOperand)
-    (context : FlatContext) : SimpleComparisonOperand String :=
-  match operand with
-  | .string field => context.resolveDirectStringComparisonOperand field
-  | .enumeration operand => operand.resolve context
 
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
@@ -452,9 +451,9 @@ def FlatCondition.evalSelected (context : FlatContext)
     (isRelevant : FlatRelevance := fun _ => true) : FlatCondition → Verdict
   | .compare comparison =>
       if comparison.allRelevant isRelevant then comparison.eval context else .unknown
-  | .enumerationValueList quantifier operands values =>
+  | .tokenValueList quantifier operands values =>
       if values.allOperands operands |>.all fun operand => isRelevant operand.field.id then
-        quantifier.eval (flatEnumerationValueListSide operands context)
+        quantifier.eval (flatTokenValueListSide operands context)
           (values.resolve context)
       else
         .unknown
