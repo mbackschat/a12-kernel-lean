@@ -129,12 +129,16 @@ Three cross-cutting facts (detailed in [§11](09-computations.md)):
 Validation and computation are **separate operations**; `validateFull` does **not** compute first. The consumer (a form engine) composes the loop:
 
 ```
-compute(document)   →  a per-cell outcome map (VALUE / CLEARED / ERRORED)
-apply(...)          →  apply each outcome under its placement guard
-validate(document)  →  messages over the now-updated document
+compute(source, context)  →  a rich result with Kernel-compatible projections
+apply(result, destination) → an updated destination under placement guards
+validate(updated, context) → messages over the updated document
 ```
 
-For each target cell, a **VALUE** is written and creates the cell plus any missing ancestor rows when absent. A **CLEARED** outcome is produced only for an input-filled cell and empties that existing cell in place; clearing never removes the cell instance. An **ERRORED** outcome empties the target only when the target cell already exists, so an absent target remains absent rather than being created as present-empty. A computed-nothing outcome changes nothing: a present-empty target remains present-empty and an absent target remains absent. Untouched cells preserve their placement and raw stored text, including a stored CRLF pair; evaluation-side normalization never rewrites the document. Read-back therefore distinguishes **absent**, **present-empty**, and **present-value**.
+The V2 result preserves five observables rather than only a change delta: all successful non-clearing computed instances, including successes unchanged from the computation source; the source-relative changed subset of those successes; erroneous computed instances; cleared instances that were filled in the source; and formal operand errors collected eagerly as a separate channel. `noErrorOccurred` is true exactly when both the erroneous-instance and formal-operand-error channels are empty. Formal operand collection is not dependency evaluation: later skipping or poison remains read- and schedule-sensitive even though the formal errors were already inventoried. Public computed-instance collections are compared extensionally by pointer and payload; their iteration order is not an execution-schedule contract without separate evidence.
+
+The **VALUE / CLEARED / ERRORED** vocabulary describes the source-relative change/application actions, not the complete result. VALUE actions are the changed successful subset; CLEARED contains source-filled instances for which computation produced no applicable value; ERRORED is unconditional for an erroneous computed instance. A caller may apply the stable result to a model-compatible destination other than the computation source. Application uses the classifications already fixed relative to the source—it does not recompute change equality against the destination—and successful unchanged instances are not writes merely because they appear in the broader successful collection.
+
+For each action, a **VALUE** is written and creates the cell plus any missing ancestor rows when absent. A **CLEARED** action empties that existing cell in place; clearing never removes the cell instance. An **ERRORED** action empties the target only when the target cell already exists, so an absent target remains absent rather than being created as present-empty. A computed-nothing outcome changes nothing: a present-empty target remains present-empty and an absent target remains absent. Untouched cells preserve their placement and raw stored text, including a stored CRLF pair; evaluation-side normalization never rewrites the document. Read-back therefore distinguishes **absent**, **present-empty**, and **present-value**.
 
 a12-dmkits' dual-strategy [`AppliedCellStateDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/AppliedCellStateDiffTest.kt) (IF126) locks the target-cell cases inside an existing group—VALUE into absent/stale/equal, CLEARED over filled/empty/absent, ERRORED over filled/empty/absent, computed-nothing, and untouched CRLF storage. VALUE creating missing ancestor rows is separately source-characterized by the kernel's [`GroupDocCommonImpl.updateNested`](../../a12-kernel/kernel-md/kernel-md-document-v2/src/main/java/com/mgmtp/a12/kernel/md/document/internal/service/implV2/immutable/GroupDocCommonImpl.java); that ancestor-creation clause is not independently exercised by this differential.
 
@@ -144,11 +148,11 @@ This matters for reimplementation packaging: model **`compute`** and **`validate
 > ```lean
 > def validateFull : Model → World → Document → List Message
 > def validatePart : Model → World → Document → RelevantSet → List Message
-> def compute      : Model → World → Document → List (CellAddr × ComputeOutcome)
-> def apply        : Document → List (CellAddr × ComputeOutcome) → Document
+> def compute      : Model → World → Document → ComputeResult
+> def apply        : ComputeResult → Document → Document
 > ```
 > `World` supplies evaluation inputs that are neither model declarations nor document state: the injected clock, effective locale, a total named custom-field-validator map ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation)), and a versioned zone-rule oracle/profile capable of resolving every time-zone id admitted by the model checker. A deliberately narrower product may fail closed before evaluation for an unsupported legal id, but that product boundary does not narrow the canonical kernel legal-input domain.
-> Keeping `compute` as *outcome-producing* rather than *document-mutating* isolates the order-dependent poison ([§11](09-computations.md)) inside one function and lets `apply`/`validate` stay pure.
+> Keeping `compute` as *result-producing* rather than *document-mutating* isolates the order-dependent poison ([§11](09-computations.md)) inside one function and lets `apply`/`validate` stay pure. The pure signature expresses the immutable V2 behavioral boundary; deprecated V1 mutation and object aliasing are a separate API-compatibility claim rather than semantics that the result type should encode.
 
 ---
 

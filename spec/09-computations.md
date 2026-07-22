@@ -79,7 +79,9 @@ Both cascade read-rules reach **inside** a downstream computation's `Having` fil
 
 ### 3.3 What compute *reports*
 
-Compute reports a **delta against the input**, not a report-all: a **VALUE only on a typed change** (the computed value differs, by typed equality, from what was stored), **CLEARED only when the input cell was filled**, **ERRORED unconditionally**. (A reimplementation that reports *every* computed cell will disagree with the engine on the unchanged ones — project to changes before comparing.)
+The full V2 computation result is richer than a three-way change delta. It exposes all successful non-clearing computed instances, including successes unchanged from the computation source; the source-relative changed subset of those successes; erroneous computed instances; cleared instances that were filled in the source; and eagerly collected formal operand errors as a separate channel. `noErrorOccurred` is true exactly when both error channels—the erroneous computed instances and formal operand errors—are empty. The eager formal-error inventory does not replace dependency-sensitive execution: whether an invalid producer poisons a dependent remains determined by scheduling and whether that dependent actually reads it.
+
+The change projection remains exact: **VALUE only on a typed change** (the computed value differs, by typed equality, from what was stored in the computation source), **CLEARED only when the source cell was filled**, and **ERRORED unconditionally**. A report-all evaluator must project to this change boundary before differential comparison, but that projection must not erase successful unchanged instances from the full result. The public computed-instance collections are extensional by pointer and payload; no schedule-order promise follows from their collection iteration order.
 
 ---
 

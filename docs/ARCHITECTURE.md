@@ -10,6 +10,12 @@ Every public semantic meaning is version-scoped. [`A12Kernel/Basic.lean`](../A12
 
 The 2026-07-12 external PL-semantics spike is no longer a live input. Where it conflicted with A12 evidence—most visibly an intrinsically typed AST and a proposal to make every numeric value a `{coefficient, scale}` decimal—the A12 boundary won; expression values remain `Rat`, while exact decimal form exists only at the stored-target boundary. The resulting adopted and rejected choices are recorded below.
 
+### Whole-model computation execution keeps definition, activation, result, application, and validation separate
+
+The future SG4 boundary is governed by the accepted [`A12 Lean computation execution decision`](A12-LEAN-COMPUTATION-EXECUTION-PROPOSAL.md). A checked plan, model-coherent immutable checked input, explicit processing context, transient activation, rich dependency outcomes, Kernel-compatible result projection, application to a caller-supplied compatible destination, and later validation remain distinct. The current String and Number expression, target, delta, application, and dependency modules are narrow semantic owners that a whole-model implementation must specialize or compose; none is the future scheduler overlay or complete public result. Internal schedule order is not public collection order, source-relative change classification is not recomputed at application, eager formal-operand errors are not dependency poison, and semantic, V2-behavioral, and deprecated V1 mutation/alias compatibility remain separate claims.
+
+This adoption does not select SG4 or require a current module refactor. [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) remains blocked on the checked-document and repeatable-addressing prerequisites, an explicit processing-context boundary, and the proposal's bounded source audit.
+
 ## Core encoding decisions
 
 ### Extrinsic (untyped) AST, not an intrinsically-typed one
