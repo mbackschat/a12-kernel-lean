@@ -17,6 +17,17 @@ namespace A12Kernel
 
 abbrev GroupPath := List String
 
+namespace FieldId
+
+/-- Return the first authored field identifier whose same identifier occurs again later in the list. -/
+def firstDuplicate? : List FieldId → Option FieldId
+  | [] => none
+  | field :: remaining =>
+      if remaining.contains field then some field
+      else firstDuplicate? remaining
+
+end FieldId
+
 inductive PathBase where
   | absolute
   | relative (parents : Nat)
