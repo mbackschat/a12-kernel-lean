@@ -52,8 +52,10 @@ example :
       temporalAggregateFormatsCompatible true monthDay fullDate = true := by
   decide
 
-/- Time-only and date-containing formats remain different comparison classes. -/
-example : TemporalComparisonOp.before.admitsFormats false fullDate hoursMinutes = false := by
+/- Time-only and date-containing formats remain different comparison classes even when Base Year supplies missing years to date fragments. -/
+example :
+    TemporalComparisonOp.before.admitsFormats false fullDate hoursMinutes = false ∧
+      TemporalComparisonOp.before.admitsFormats true fullDate hoursMinutes = false := by
   decide
 
 /- `Now` adds a time-component requirement beyond ordinary directional format admission. -/

@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.ModelZone
+import A12Kernel.Semantics.FlatValidation
 
 /-! # Model-zone capability locks
 
@@ -21,6 +22,24 @@ example : (do
     let expected ← utcInstant? 2019 12 31 23 0 0
     pure (ModelZone.concreteResolveLocal? "Europe/Berlin" 2020 1 1 0 0 0 =
       some expected)) = some true := by
+  native_decide
+
+/- The injected capability receives the selected endpoint label directly, including a pre-floor configured year that the concrete stored-Date profile does not support. -/
+example :
+    let expected : Instant := { epochMillis := 15001231 }
+    let world : World :=
+      { now := { epochMillis := 0 },
+        modelZoneRules :=
+          { ModelZoneRules.unavailable with
+            resolveLocal? := fun zoneId year month day hour minute second =>
+              if zoneId == "Legacy" && year == 1500 && month == 12 && day == 31 &&
+                  hour == 0 && minute == 0 && second == 0 then
+                some expected
+              else none } }
+    (FlatTemporalOperand.baseYearRangeValue "Legacy" 1500 .finish).resolve
+      (({ read := fun _ =>
+          { rawPresent := false, parsed := none, findings := [] } } : FlatContext).withWorld world) =
+        .value expected true := by
   native_decide
 
 example : (do

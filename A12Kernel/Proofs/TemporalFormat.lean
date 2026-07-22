@@ -11,6 +11,15 @@ theorem temporalComparison_admitsFormats_symmetric (op : TemporalComparisonOp)
       op.admitsFormats hasBaseYear right left := by
   simp [TemporalComparisonOp.admitsFormats, Bool.beq_comm]
 
+/-- Base Year may equalize year presence, but direct comparison admission always preserves the operands' original date-versus-time class. -/
+theorem temporalComparison_admitsFormats_sameDateClass
+    (op : TemporalComparisonOp) (hasBaseYear : Bool)
+    (left right : TemporalComponents)
+    (admitted : op.admitsFormats hasBaseYear left right = true) :
+    left.hasDate = right.hasDate := by
+  simp [TemporalComparisonOp.admitsFormats] at admitted
+  exact admitted.1.2
+
 /-- Exact aggregate component compatibility is sufficient for every direct comparison operator. -/
 theorem temporalAggregateFormatsCompatible_implies_comparison
     (op : TemporalComparisonOp) (hasBaseYear : Bool)
@@ -18,7 +27,11 @@ theorem temporalAggregateFormatsCompatible_implies_comparison
     (compatible : temporalAggregateFormatsCompatible hasBaseYear left right = true) :
     op.admitsFormats hasBaseYear left right = true := by
   simp [temporalAggregateFormatsCompatible] at compatible
-  simp [TemporalComparisonOp.admitsFormats, compatible]
+  have timeEq : left.hasTime = right.hasTime := by
+    have componentTimeEq := congrArg TemporalComponents.hasTime compatible.right
+    cases hasBaseYear <;>
+      simpa [TemporalComponents.withBaseYear, TemporalComponents.hasTime] using componentTimeEq
+  simp [TemporalComparisonOp.admitsFormats, compatible, timeEq]
 
 /-- Equality admission is stricter than directional admission only by its time-presence check. -/
 theorem temporalEqualFormats_implies_beforeFormats
@@ -63,7 +76,8 @@ theorem temporalEqual_admitsToday_hasNoTime
   cases hasBaseYear <;>
     simp_all [TemporalComparisonOp.admitsToday, TemporalComparisonOp.admitsFormats,
       TemporalComparisonOp.requiresSameTimePresence, TemporalComponents.today,
-      TemporalComponents.withBaseYear, TemporalComponents.hasTime]
+      TemporalComponents.fullDate, TemporalComponents.withBaseYear,
+      TemporalComponents.hasTime]
 
 /-- Base Year cannot become comparable to a time-only operand merely because year supplementation runs later. -/
 theorem temporalComparison_admitsBaseYear_hasDate
