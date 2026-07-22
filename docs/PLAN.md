@@ -6,14 +6,14 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: multi-field comparison admission/relevance plus the resolved exact-instant temporal consumer, building on `01afde0` (`feat(temporal): admit checked field presence`).
-- Its focused red/green checks, full 236-job `lake build`, 51/51 retained-observation replay, and trust audit over 754 theorem roots / 12,149 declarations / 138 logical modules passed.
+- Semantic baseline: checked temporal field-to-field comparison over the multi-read flat core, building on `e584a9f` (`feat(validation): support multi-field comparisons`).
+- Its focused red/green checks, full 237-job `lake build`, 51/51 retained-observation replay, and trust audit over 754 theorem roots / 12,223 declarations / 138 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Connect checked temporal field-to-field comparison lowering to the now-multi-read flat comparison core, declaration policy, Base-Year-aware format gate, and shared exact-instant evaluator. Do not introduce per-kind contexts, a second temporal declaration tree, or another comparison evaluator.
+Add the typed temporal-literal operand boundary needed for Date field-to-literal comparison. Begin after lexical classification and model-zone/Base-Year decoding, retain the literal's own component set and exact instant, and generalize the checked temporal comparison operand only now that field and literal are two real consumers. Do not make ISO-looking Strings temporal, infer a literal from context, or widen the public protocol.
 
 ## Frontier queue
 
@@ -55,7 +55,8 @@ Connect checked temporal field-to-field comparison lowering to the now-multi-rea
 - **Satisfied — exact temporal runtime coordinate:** kernel source showed that `Now` retains a validation-clock millisecond remainder; `Instant` therefore moved to `Core` as exact epoch milliseconds, decoded temporal values embed through an explicit whole-second constructor, comparison/order/shift/difference/timezone/day consumers migrated, and `SPEC-2026-07-22-02` owns the peer whole-second gap.
 - **Satisfied — heterogeneous temporal model context:** the existing field-ID-indexed `Value` now carries one `temporal TemporalKind Instant` payload; Date, Time, and DateTime remain tag-distinct over the exact coordinate, while proof-bearing wall labels stay upstream and per-kind contexts remain excluded.
 - **Satisfied — temporal declaration admission and presence:** `TemporalComponents` is one shared static declaration fact, `FieldKind.temporal` admits only the matching tagged exact instant after parsing/format checks, and checked flat presence plus generated presence guards reuse `FlatTemporalField`, the shared context, and required staging. Temporal field-to-literal comparison remains fail-closed because no typed temporal literal surface exists.
-- **Ready — checked temporal field comparison:** the flat core now admits and masks every field read by one comparison, and its first two-field consumer delegates matching tagged values to the shared exact-instant evaluator. Add declaration/path resolution plus the existing Base-Year-aware format gate; do not duplicate the resolved `FullDate`/`TimeOfDay` projections.
+- **Satisfied — checked temporal field comparison:** kernel runtime routes admitted Date, Time, and DateTime operands through exact `java.util.Date` identity/order, so checked lowering applies the declaration-owned Base-Year-aware component gate and reuses the exact-`Instant` evaluator for all three tags. Both fields pass their own model admission and partial relevance checks; the resolved `FullDate`/`TimeOfDay` evaluators remain proof-bearing projections rather than parallel storage paths.
+- **Ready — typed temporal literal operand:** represent an already-lexed, already-decoded date constant with its own component set and exact instant, then reuse the same checked comparison operand/evaluator. Concrete token classification and zone/Base-Year decoding remain outside this parser-independent boundary; date-shaped String ambiguity must stay explicit.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.

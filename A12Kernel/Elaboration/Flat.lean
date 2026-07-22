@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.FlatValidation
+import A12Kernel.Semantics.TemporalFormat
 
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
 
@@ -63,6 +64,7 @@ end SurfaceLiteral
 inductive SurfaceCondition where
   | compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (literal : SurfaceLiteral)
+  | compareFields (op : SurfaceComparisonOp) (left right : SurfaceFieldPath)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
@@ -112,6 +114,7 @@ structure FlatModel where
   fields : List FlatFieldDecl
   repeatableGroups : List RepeatableGroupDecl := []
   fieldRefByShortNameAllowed : Bool := false
+  hasBaseYear : Bool := false
   deriving Repr, DecidableEq
 
 inductive ResolveError where
@@ -140,6 +143,9 @@ inductive ElabError where
   | unsupportedOperator (op : SurfaceComparisonOp)
   | literalKindMismatch (path : List String) (expected actual : SurfaceScalarKind)
   | illegalConfirmLiteral (path : List String)
+  | temporalOperandKindMismatch (leftPath rightPath : List String)
+      (leftKind rightKind : SurfaceScalarKind)
+  | temporalFormatsIncompatible (leftPath rightPath : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -393,6 +399,14 @@ private def SurfaceComparisonOp.toStringLength? : SurfaceComparisonOp →
   | .greaterEqual => some .greaterEqual
   | _ => none
 
+private def SurfaceComparisonOp.toTemporal : SurfaceComparisonOp → TemporalComparisonOp
+  | .equal => .equal
+  | .notEqual => .notEqual
+  | .less => .before
+  | .lessEqual => .beforeOrEqual
+  | .greater => .after
+  | .greaterEqual => .afterOrEqual
+
 def FlatField.matchesDecl (field : FlatField) (declaration : FlatFieldDecl) : Bool :=
   declaration.toPresenceField == field
 
@@ -444,6 +458,21 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
   | .fieldNotFilled reference => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       pure (.fieldNotFilled declaration.toPresenceField)
+  | .compareFields op leftReference rightReference => do
+      let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
+      let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve
+      match left.policy.kind, right.policy.kind with
+      | .temporal leftKind leftComponents, .temporal rightKind rightComponents =>
+          let comparison := op.toTemporal
+          if comparison.admitsFormats model.hasBaseYear leftComponents rightComponents then
+            pure (.compare (.temporal comparison
+              { id := left.id, kind := leftKind, components := leftComponents }
+              { id := right.id, kind := rightKind, components := rightComponents }))
+          else
+            throw (.temporalFormatsIncompatible left.path right.path)
+      | leftKind, rightKind =>
+          throw (.temporalOperandKindMismatch left.path right.path
+            leftKind.surfaceKind rightKind.surfaceKind)
   | .compare op reference literal => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.policy.kind with

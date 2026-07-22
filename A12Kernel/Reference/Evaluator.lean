@@ -101,6 +101,17 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .illegalConfirmLiteral path =>
       pure (.make .illegalConfirmLiteral "$.condition"
         (pathDetails path))
+  | .temporalOperandKindMismatch leftPath rightPath leftKind rightKind =>
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "temporalComparison"),
+          ("leftPath", toJson leftPath), ("rightPath", toJson rightPath),
+          ("leftKind", toJson (scalarKindTag leftKind)),
+          ("rightKind", toJson (scalarKindTag rightKind))]))
+  | .temporalFormatsIncompatible leftPath rightPath =>
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "temporalComparison"),
+          ("reason", toJson "incompatibleFormats"),
+          ("leftPath", toJson leftPath), ("rightPath", toJson rightPath)]))
   | .lengthOperandKindMismatch path actual =>
       pure (.make .fieldKindMismatch "$.condition"
         (Json.mkObj [("function", toJson "Length"), ("path", toJson path),
