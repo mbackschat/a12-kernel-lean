@@ -2,7 +2,7 @@
 
 Two mostly-manageable areas with a few sharp edges: Unicode length counting, legal-character definitions, custom field validation, Java-Pattern admission and execution, enum comparability rules, and the three-way value-list quantifiers (whose `No`-vs-`NotAll` poison asymmetry is the one genuinely tricky part).
 
-Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns not evaluated on empty; value-list membership UNKNOWN on empty) is in [§2](03-empty-and-required.md).
+Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns are not evaluated on empty) is in [§2](03-empty-and-required.md). Scalar `Included` and `NotIncluded` are both non-firing on an empty subject; the distinct empty and UNKNOWN rules for multi-cell value-list quantifiers are stated in [§B.3](#b3-the-value-list-quantifiers--per-cell-three-way-classification-).
 
 ---
 
