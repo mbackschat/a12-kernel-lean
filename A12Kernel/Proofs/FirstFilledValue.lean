@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.FirstFilledValue
+import A12Kernel.Proofs.NumberEntityList
 
 /-! # Resolved Number `FirstFilledValue` laws
 
@@ -196,12 +197,12 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
 theorem checkedFirstFilledNumberSource_requiredMultiplicity
     (checked : CheckedFirstFilledNumberSource model) :
     (checked.first.isStar || !checked.rest.isEmpty) = true :=
-  checked.requiredMultiplicity
+  checkedNumberEntitySource_requiredMultiplicity checked
 
 /-- Checked multi-operand authoring contains no repeated direct non-wildcard field reference. -/
 theorem checkedFirstFilledNumberSource_uniqueDirectOperands
     (checked : CheckedFirstFilledNumberSource model) :
     firstDuplicateDirectFirstFilledNumberField? checked.operands = none :=
-  checked.uniqueDirectOperands
+  checkedNumberEntitySource_uniqueDirectOperands checked
 
 end A12Kernel

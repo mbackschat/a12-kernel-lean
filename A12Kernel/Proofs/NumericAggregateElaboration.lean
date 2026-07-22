@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericAggregate
+import A12Kernel.Proofs.NumberEntityList
 
 /-! # Checked nonrepeatable Number aggregate lowering laws -/
 
@@ -96,5 +97,24 @@ theorem checkedNumericStarSource_evaluateExtremum_of_valid
   unfold CheckedNumericStarSource.evaluateExtremum
   rw [valid]
   rfl
+
+/-- Direct, plain-star, and filtered-star aggregate slots delegate to their established declaration, topology, and filter owners without another reader or selector. -/
+theorem checkedNumberEntityOperand_aggregateSide_delegates
+    (directSource : CheckedNumberEntityField model)
+    (starSource : CheckedStarNumberSource model)
+    (filteredSource : CheckedStarNumberHavingSource model)
+    (document : Document) (outer : Env) (context : FlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (starRead : Env → FieldId → RawCell) :
+    (CheckedNumberEntityOperand.field directSource).resolvedAggregateSide
+        document outer context filterRead starRead =
+        .ok (directSource.resolvedAggregateSide context) ∧
+      (CheckedNumberEntityOperand.star starSource).resolvedAggregateSide
+        document outer context filterRead starRead =
+        starSource.resolvedValueSide document outer starRead ∧
+      (CheckedNumberEntityOperand.starHaving filteredSource).resolvedAggregateSide
+        document outer context filterRead starRead =
+        filteredSource.resolvedValueSide document outer filterRead starRead := by
+  exact ⟨rfl, rfl, rfl⟩
 
 end A12Kernel

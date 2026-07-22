@@ -125,6 +125,56 @@ private def starFirstFilledOf (raw : RawSingleGroupContext) :
       | .ok result => some result
       | .error _ => none
 
+private def aggregateStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Rows", starred := true }]
+    field := "Amount" }
+
+private def aggregateHaving : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner, field := absolute ["Form", "Rows"] "Amount" }
+    { origin := .inner, field := absolute ["Form", "Rows"] "Amount" }
+
+private def aggregateSource (first : SurfaceNumberEntityOperand)
+    (rest : List SurfaceNumberEntityOperand) : SurfaceNumberEntitySource :=
+  { first, rest }
+
+private def aggregateDocument (rows : List RowIndex) : Document :=
+  { instantiatedRows := rows.map fun row => { group := 10, path := [row] }
+    rawCells := fun _ => none }
+
+private def aggregateStarRead (a b c : RawCell)
+    (environment : Env) (field : FieldId) : RawCell :=
+  if field != repeated.id then .empty
+  else match environment with
+    | [(10, 1)] => a
+    | [(10, 2)] => b
+    | [(10, 3)] => c
+    | _ => .empty
+
+private def aggregateFilterRead (a b c : RawCell)
+    (environment : Env) (field : FieldId) : CheckedCell :=
+  repeated.checkRaw (aggregateStarRead a b c environment field)
+
+private def checkedAggregateErrorOf (authored : SurfaceNumberEntitySource) :
+    Option NumberEntityElabError :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .ok _ => none
+  | .error error => some error
+
+private def checkedAggregateOf (op : NumericAggregateOp)
+    (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
+    (a b c : RawCell) (direct : RawFlatContext) : Option NumericOperand :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateAggregate op (aggregateDocument rows) [] direct
+          (aggregateFilterRead a b c) (aggregateStarRead a b c) with
+      | .ok result => some result
+      | .error _ => none
+
 /- A partial instantiated prefix retains the model-owned omitted tail. -/
 example : starSumOf (repeatedRaw [1] (.parsed (.num 8)) .empty .empty) =
     some (.value 8 .growOnly) := by
@@ -327,6 +377,74 @@ example :
         (raw (.parsed (.num 7)) (.rejected .declaredConstraint)
           (.rejected .malformed)) =
         some (.unknown .declaredConstraint) := by
+  native_decide
+
+/- Repeated plain and filtered wildcard slots are admitted, while a repeated direct field remains rejected even when a star separates its occurrences. -/
+example :
+    checkedAggregateErrorOf
+        (aggregateSource (.star aggregateStar) [.star aggregateStar]) = none ∧
+      checkedAggregateErrorOf
+        (aggregateSource (.starHaving aggregateStar aggregateHaving)
+          [.starHaving aggregateStar aggregateHaving]) = none ∧
+      checkedAggregateErrorOf
+        (aggregateSource (.star aggregateStar)
+          [.starHaving aggregateStar aggregateHaving]) = none ∧
+      checkedAggregateErrorOf
+        (aggregateSource (.field (bare "UnsignedA")) [
+          .star aggregateStar, .field (bare "UnsignedA")]) =
+        some (.duplicateOperand unsignedA.id) := by
+  native_decide
+
+/- Every authored wildcard occurrence is expanded and consumed again; a reached filter retains its conservative polarity. -/
+example :
+    checkedAggregateOf .sum
+        (aggregateSource (.star aggregateStar) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num 2)) (.parsed (.num 3))
+        (.parsed (.num 0)) (raw .empty .empty .empty) =
+      some (.value 10 .fixed) ∧
+    checkedAggregateOf .sum
+        (aggregateSource (.starHaving aggregateStar aggregateHaving)
+          [.starHaving aggregateStar aggregateHaving])
+        [1, 2, 3] (.parsed (.num 2)) (.parsed (.num 3))
+        (.parsed (.num 0)) (raw .empty .empty .empty) =
+      some (.value 10 .both) := by
+  native_decide
+
+/- Mixed direct/star slots retain authored encounter order across the existing staged precision-50 fold. -/
+example :
+    checkedAggregateOf .sum
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num (-tenPow50))) (.parsed (.num (3 / 5)))
+        (.parsed (.num 0)) (raw (.parsed (.num tenPow50)) .empty .empty) =
+      some (.value (3 / 5) .fixed) ∧
+    checkedAggregateOf .sum
+        (aggregateSource (.star aggregateStar) [.field (bare "UnsignedA")])
+        [1, 2, 3] (.parsed (.num (-tenPow50))) (.parsed (.num (3 / 5)))
+        (.parsed (.num 0)) (raw (.parsed (.num tenPow50)) .empty .empty) =
+      some (.value 1 .fixed) := by
+  native_decide
+
+/- The same mixed checked route reaches both established extrema selectors without changing slot expansion. -/
+example :
+    checkedAggregateOf .minimum
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num (-2))) (.parsed (.num 3))
+        (.parsed (.num 0)) (raw (.parsed (.num 4)) .empty .empty) =
+      some (.value (-2) .fixed) ∧
+    checkedAggregateOf .maximum
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num (-2))) (.parsed (.num 3))
+        (.parsed (.num 0)) (raw (.parsed (.num 4)) .empty .empty) =
+      some (.value 4 .fixed) := by
+  native_decide
+
+/- A reached unavailable direct head determines the result before malformed later star topology is resolved. -/
+example :
+    checkedAggregateOf .maximum
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [2] (.parsed (.num 9)) .empty .empty
+        (raw (.rejected .declaredConstraint) .empty .empty) =
+      some (.unknown .declaredConstraint) := by
   native_decide
 
 end A12Kernel.Conformance.NumericAggregateElaboration

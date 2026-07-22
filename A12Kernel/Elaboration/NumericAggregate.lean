@@ -1,10 +1,11 @@
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.NumericStar
+import A12Kernel.Elaboration.NumberEntityList
 import A12Kernel.Semantics.NumericAggregate
 
-/-! # Checked nonrepeatable Number aggregate lowering
+/-! # Checked Number aggregate lowering
 
-This capsule resolves one unfiltered list of at least two distinct nonrepeatable Number fields into one phase-parameterized source for the existing aggregate sides. It preserves authored encounter order and declaration signedness, classifies validation and computation observations through the same source, and supplies the aggregate atom used by checked numeric expressions. Stars, group expansion, `Having`, partial repeatable relevance, and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells to the same aggregate folds. Group operands, partial repeatable relevance, whole-expression integration for repeatable sources, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -202,5 +203,99 @@ def evaluateExtremum (checked : CheckedNumericStarSource model)
   pure (evalNumericExtremumAggregate op (checked.resolvedValueSide raw))
 
 end CheckedNumericStarSource
+
+private def appendNumericAggregateSide
+    (left right : ResolvedValueListSide .number) :
+    ResolvedValueListSide .number :=
+  { cells := left.cells ++ right.cells
+    hasUninstantiatedTail :=
+      left.hasUninstantiatedTail || right.hasUninstantiatedTail
+    hasHaving := left.hasHaving || right.hasHaving }
+
+private def appendNumericSumSide
+    (left right : ResolvedNumericSumSide) : ResolvedNumericSumSide :=
+  { cells := left.cells ++ right.cells
+    uninstantiatedSignedness :=
+      left.uninstantiatedSignedness ++ right.uninstantiatedSignedness
+    hasHaving := left.hasHaving || right.hasHaving }
+
+private def numericAggregateSideAvailable
+    (side : ResolvedValueListSide .number) : Except FormalCause Unit :=
+  ValueListCell.scanPresent (kind := .number) (fun _ _ => ()) side.cells ()
+
+namespace CheckedNumberEntityField
+
+/-- Classify one checked direct slot through the same declaration-owned Number reader used by every aggregate source. -/
+def resolvedAggregateSide (checked : CheckedNumberEntityField model)
+    (context : FlatContext) : ResolvedValueListSide .number :=
+  { cells := [checked.field.valueListCell context]
+    hasUninstantiatedTail := false
+    hasHaving := false }
+
+end CheckedNumberEntityField
+
+namespace CheckedNumberEntityOperand
+
+/-- Resolve exactly one authored slot. Plain and filtered stars reuse the general checked topology and filter owners; direct fields reuse the checked flat Number reader. -/
+def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
+    (document : Document) (outer : Env) (direct : FlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError (ResolvedValueListSide .number) :=
+  match checked with
+  | .field source => pure (source.resolvedAggregateSide direct)
+  | .star source => source.resolvedValueSide document outer starRead
+  | .starHaving source =>
+      source.resolvedValueSide document outer filterRead starRead
+
+end CheckedNumberEntityOperand
+
+namespace CheckedNumberEntitySource
+
+/-- Evaluate a checked ordinary Number entity-list aggregate in authored slot order. Each wildcard occurrence resolves independently. A formally unavailable reached cell returns immediately, so no later star topology, filter, or target reader is sampled. -/
+def evaluateAggregate (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : Document) (outer : Env)
+    (directRead : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError NumericOperand :=
+  let direct := model.checkContext directRead
+  let rec evaluateExtremum
+      (extremum : NumericExtremumOp)
+      (operands : List (CheckedNumberEntityOperand model))
+      (accumulated : ResolvedValueListSide .number) :
+      Except StarAddressingError NumericOperand := do
+    match operands with
+    | [] => pure (evalNumericExtremumAggregate extremum accumulated)
+    | operand :: remaining =>
+        let side ← operand.resolvedAggregateSide document outer direct
+          filterRead starRead
+        match numericAggregateSideAvailable side with
+        | .error cause => pure (NumericOperand.unknown cause)
+        | .ok () =>
+            evaluateExtremum extremum remaining (appendNumericAggregateSide accumulated side)
+  let rec evaluateSum
+      (operands : List (CheckedNumberEntityOperand model))
+      (accumulated : ResolvedNumericSumSide) :
+      Except StarAddressingError NumericOperand := do
+    match operands with
+    | [] => pure (evalDeclaredNumericSumAggregate accumulated)
+    | operand :: remaining =>
+        let side ← operand.resolvedAggregateSide document outer direct
+          filterRead starRead
+        match numericAggregateSideAvailable side with
+        | .error cause => pure (NumericOperand.unknown cause)
+        | .ok () =>
+            let declared := side.toNumericSumSide operand.declarationSigned
+            evaluateSum remaining (appendNumericSumSide accumulated declared)
+  match op with
+  | .sum => evaluateSum checked.operands {
+      cells := [], uninstantiatedSignedness := [], hasHaving := false }
+  | .minimum => evaluateExtremum .minimum checked.operands {
+      cells := [], hasUninstantiatedTail := false, hasHaving := false }
+  | .maximum => evaluateExtremum .maximum checked.operands {
+      cells := [], hasUninstantiatedTail := false, hasHaving := false }
+
+end CheckedNumberEntitySource
 
 end A12Kernel
