@@ -75,6 +75,7 @@ import A12Kernel.Conformance.NumericAggregateElaboration
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.Enumeration
 import A12Kernel.Conformance.EnumerationComparability
+import A12Kernel.Conformance.EnumerationElaboration
 import A12Kernel.Conformance.SemanticIndex
 import A12Kernel.Conformance.CustomCondition
 
