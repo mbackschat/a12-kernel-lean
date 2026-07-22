@@ -47,49 +47,24 @@ theorem checkedNumericAggregate_evaluateExtremum
       evalNumericExtremumAggregate op (checked.resolvedValueSide raw) := by
   rfl
 
-/-! ## Checked one-star laws -/
-
-@[simp] theorem numericStar_selectedRows_length (rows : List RowIndex) :
-    (CheckedNumericStarAggregate.selectedRows rows).length = rows.length := by
-  induction rows with
-  | nil => rfl
-  | cons row rest ih =>
-      simp [CheckedNumericStarAggregate.selectedRows, ReopenedStarRows.length, ih]
-
-@[simp] theorem numericStar_selectedRows_closed (rows : List RowIndex) :
-    (CheckedNumericStarAggregate.selectedRows rows).hasOpenTail = false := by
-  induction rows with
-  | nil => rfl
-  | cons row rest ih =>
-      simp [CheckedNumericStarAggregate.selectedRows, ReopenedStarRows.hasOpenTail, ih,
-        ReopenedStarDomain.hasOpenTail]
-
-/-- The checked one-level star reports an omitted source exactly while the instantiated prefix is shorter than the model-owned capacity. -/
-theorem checkedNumericStarAggregate_tail_iff
-    (checked : CheckedNumericStarAggregate model) (raw : RawSingleGroupContext) :
-    (checked.resolvedValueSide raw).hasUninstantiatedTail =
-      (raw.candidates.length < checked.repeatability) := by
-  simp [CheckedNumericStarAggregate.resolvedValueSide,
-    ReopenedStarDomain.toResolvedSide, ReopenedStarDomain.hasOpenTail]
-
 /-- Successful checked Sum evaluation is exactly the established one-declaration aggregate evaluator over the checked resolved side. -/
-theorem checkedNumericStarAggregate_evaluateSum_of_valid
-    (checked : CheckedNumericStarAggregate model) (raw : RawSingleGroupContext)
+theorem checkedNumericStarSource_evaluateSum_of_valid
+    (checked : CheckedNumericStarSource model) (raw : RawSingleGroupContext)
     (valid : checked.validateContext raw = .ok ()) :
     checked.evaluateSum raw =
       .ok (evalNumericSumAggregate checked.field.info.signed
         (checked.resolvedValueSide raw)) := by
-  unfold CheckedNumericStarAggregate.evaluateSum
+  unfold CheckedNumericStarSource.evaluateSum
   rw [valid]
   rfl
 
 /-- Successful checked extremum evaluation is exactly the established evaluator over the same checked resolved side. -/
-theorem checkedNumericStarAggregate_evaluateExtremum_of_valid
-    (checked : CheckedNumericStarAggregate model) (op : NumericExtremumOp)
+theorem checkedNumericStarSource_evaluateExtremum_of_valid
+    (checked : CheckedNumericStarSource model) (op : NumericExtremumOp)
     (raw : RawSingleGroupContext) (valid : checked.validateContext raw = .ok ()) :
     checked.evaluateExtremum op raw =
       .ok (evalNumericExtremumAggregate op (checked.resolvedValueSide raw)) := by
-  unfold CheckedNumericStarAggregate.evaluateExtremum
+  unfold CheckedNumericStarSource.evaluateExtremum
   rw [valid]
   rfl
 

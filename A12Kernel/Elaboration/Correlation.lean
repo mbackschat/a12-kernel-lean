@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.Correlation
 
 /-! # A12Kernel.Elaboration.Correlation — checked lowering for one correlated star
@@ -7,20 +7,6 @@ This parser-independent capsule admits exactly one repeatable group, one starred
 -/
 
 namespace A12Kernel
-
-/-- A structured group path after concrete syntax has decoded separators and quoting. -/
-structure SurfaceGroupPath where
-  base : PathBase
-  groups : List String
-  deriving Repr, DecidableEq
-
-/-- A direct-child field path with exactly one explicitly identified starred group segment. -/
-structure SurfaceSingleStarFieldPath where
-  base : PathBase
-  groupsBeforeStar : List String
-  starredGroup : String
-  field : String
-  deriving Repr, DecidableEq
 
 structure SurfaceHavingNumberRef where
   origin : HavingOrigin
@@ -67,37 +53,6 @@ inductive CorrelationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- Resolve one structured group reference against its declaring group. -/
-def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
-    (declaringGroup : GroupPath) : Except CorrelationElabError GroupPath := do
-  if !GroupPath.isValid declaringGroup then
-    throw (.resolve (.invalidRuleGroup declaringGroup))
-  if !reference.groups.all (!·.isEmpty) then
-    throw (.invalidGroupReference reference)
-  let path ← match reference.base with
-    | .absolute => pure reference.groups
-    | .relative parents =>
-        pure ((← GroupPath.walkUp declaringGroup parents |>.mapError .resolve) ++ reference.groups)
-  if GroupPath.isValid path then pure path else throw (.invalidGroupReference reference)
-
-/-- Validate one single-star field shape and recover its authored group reference. -/
-def SurfaceSingleStarFieldPath.groupReference
-    (reference : SurfaceSingleStarFieldPath) : Except CorrelationElabError SurfaceGroupPath := do
-  if !reference.groupsBeforeStar.all (!·.isEmpty) || reference.starredGroup.isEmpty ||
-      reference.field.isEmpty then
-    let groupReference : SurfaceGroupPath :=
-      { base := reference.base,
-        groups := reference.groupsBeforeStar ++ [reference.starredGroup] }
-    throw (.invalidGroupReference groupReference)
-  match reference.base with
-  | .relative parents =>
-      if parents > 0 then throw (.wildcardWithParentNavigation parents)
-  | .absolute => pure ()
-  let groupReference : SurfaceGroupPath :=
-    { base := reference.base,
-      groups := reference.groupsBeforeStar ++ [reference.starredGroup] }
-  pure groupReference
-
 private def SurfaceComparisonOp.toCorrelation? : SurfaceComparisonOp →
     Option CorrelationComparisonOp
   | .equal => some .equal
@@ -115,29 +70,24 @@ private structure ResolvedNumberRef where
   declaration : FlatFieldDecl
   core : HavingNumberRef
 
-private def FlatModel.resolveNumberInGroup (model : FlatModel)
+private def CorrelationElabError.ofSingleGroup (origin : HavingOrigin) :
+    SingleGroupElabError → CorrelationElabError
+  | .resolve error => .resolve error
+  | .invalidGroupReference reference => .invalidGroupReference reference
+  | .wildcardWithParentNavigation parents => .wildcardWithParentNavigation parents
+  | .fieldNotNumber path => .fieldNotNumber path
+  | .fieldOutsideGroup fieldPath expectedGroup =>
+      .fieldOutsideGroup origin fieldPath expectedGroup
+  | .fieldScopeMismatch fieldPath expected actual =>
+      .fieldScopeMismatch fieldPath expected actual
+
+private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
     Except CorrelationElabError ResolvedNumberRef := do
-  let declaration ←
-    (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .resolve
-  if declaration.groupPath != group.path then
-    throw (.fieldOutsideGroup origin declaration.path group.path)
-  let expectedScope := [group.level]
-  if declaration.repeatableScope != expectedScope then
-    throw (.fieldScopeMismatch declaration.path expectedScope declaration.repeatableScope)
-  let field ← match declaration.toNumberField? with
-    | some field => pure field
-    | none => throw (.fieldNotNumber declaration.path)
+  let (declaration, field) ← model.resolveNumberInGroup declaringGroup group reference
+    |>.mapError (.ofSingleGroup origin)
   pure { declaration, core := { origin, field } }
-
-/-- Resolve a Number field that must be a direct child of one exact repeatable group. -/
-def FlatModel.resolveNumberFieldInGroup (model : FlatModel)
-    (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
-    (reference : SurfaceFieldPath) :
-    Except CorrelationElabError (FlatFieldDecl × FlatNumberField) := do
-  let resolved ← model.resolveNumberInGroup declaringGroup group .inner reference
-  pure (resolved.declaration, resolved.core.field)
 
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving →
@@ -146,8 +96,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let leftResolved ← model.resolveNumberInGroup declaringGroup group left.origin left.field
-      let rightResolved ← model.resolveNumberInGroup declaringGroup group right.origin right.field
+      let leftResolved ← model.resolveHavingNumberInGroup declaringGroup group left.origin left.field
+      let rightResolved ← model.resolveHavingNumberInGroup declaringGroup group right.origin right.field
       if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale
@@ -157,10 +107,10 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let coreOp ← match op.toCorrelation? with
         | some coreOp => pure coreOp
         | none => throw (.unsupportedOperator op)
-      let leftGroup ← left.group.resolveAgainst declaringGroup
+      let leftGroup ← left.group.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup left.origin)
       if leftGroup != group.path then
         throw (.repetitionGroupMismatch group.path leftGroup)
-      let rightGroup ← right.group.resolveAgainst declaringGroup
+      let rightGroup ← right.group.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup right.origin)
       if rightGroup != group.path then
         throw (.repetitionGroupMismatch group.path rightGroup)
       pure (.compareRepetitions coreOp
@@ -169,16 +119,6 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   | .and left right => do
       pure (.and (← elaborateHavingCore model declaringGroup group left)
         (← elaborateHavingCore model declaringGroup group right))
-
-/-- A Number field is admitted only when its unique declaration is a direct child of the exact repeatable group, carries exactly that singleton scope, and has identical numeric metadata. -/
-def FlatModel.admitsSingleGroupNumber (model : FlatModel)
-    (group : RepeatableGroupDecl) (field : FlatNumberField) : Bool :=
-  match model.lookupUniqueId field.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.groupPath == group.path &&
-      declaration.repeatableScope == [group.level] &&
-      (FlatField.number field).matchesDecl declaration
 
 /-- Operator-specific static scale law. Ordering is deliberately exempt. -/
 def CorrelatedHaving.equalityScalesAgree : CorrelatedHaving → Bool
@@ -232,17 +172,17 @@ def elaborateSingleCorrelatedRule (model : FlatModel) (declaringGroup : GroupPat
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let groupReference ← rule.valueField.groupReference
-      let groupPath ← groupReference.resolveAgainst declaringGroup
+      let groupReference ← rule.valueField.groupReference |>.mapError (.ofSingleGroup .inner)
+      let groupPath ← groupReference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup .inner)
       let group ← (model.lookupUniqueRepeatablePath groupPath).mapError .resolve
       let valueReference : SurfaceFieldPath :=
         { base := .absolute, groups := group.path, field := rule.valueField.field }
       let (_, valueField) ←
-        model.resolveNumberFieldInGroup declaringGroup group valueReference
+        model.resolveNumberInGroup declaringGroup group valueReference |>.mapError (.ofSingleGroup .inner)
       let (errorDeclaration, errorField) ←
-        model.resolveNumberFieldInGroup declaringGroup group rule.errorField
+        model.resolveNumberInGroup declaringGroup group rule.errorField |>.mapError (.ofSingleGroup .inner)
       let (guardDeclaration, guardField) ←
-        model.resolveNumberFieldInGroup declaringGroup group rule.guardField
+        model.resolveNumberInGroup declaringGroup group rule.guardField |>.mapError (.ofSingleGroup .inner)
       if errorField != guardField then
         throw (.errorGuardMismatch errorDeclaration.path guardDeclaration.path)
       let condition ← elaborateHavingCore model declaringGroup group rule.having
@@ -262,41 +202,6 @@ def elaborateSingleCorrelatedRule (model : FlatModel) (declaringGroup : GroupPat
         }
       else
         throw .incoherentCore
-
-structure RawSingleGroupContext where
-  candidates : List RowIndex
-  read : RowIndex → FieldId → RawCell
-
-inductive SingleGroupContextError where
-  | zeroCandidate (row : RowIndex)
-  | duplicateCandidate (row : RowIndex)
-  deriving Repr, DecidableEq
-
-/-- Candidate row identities are 1-based and unique. Reject malformed topology before any cells are read or any rule is evaluated. -/
-def RawSingleGroupContext.validate (raw : RawSingleGroupContext) :
-    Except SingleGroupContextError Unit := do
-  match raw.candidates.find? (· == 0) with
-  | some row => throw (.zeroCandidate row)
-  | none => pure ()
-  match RowIndex.firstDuplicate? raw.candidates with
-  | some row => throw (.duplicateCandidate row)
-  | none => pure ()
-
-/-- Compile a raw one-group document view with the exact declarations used by elaboration. Cross-group, wrong-scope, missing, and ambiguous IDs fail closed as malformed. -/
-def FlatModel.checkSingleGroupContext (model : FlatModel)
-    (group : RepeatableGroupDecl) (raw : RawSingleGroupContext) :
-    SingleGroupValidationContext where
-  group := group.level
-  candidates := raw.candidates
-  read row id :=
-    match model.lookupUniqueId id with
-    | .ok declaration =>
-        if declaration.groupPath == group.path &&
-            declaration.repeatableScope == [group.level] then
-          formalCheck declaration.policy (raw.read row id)
-        else
-          malformedCheckedCell
-    | .error _ => malformedCheckedCell
 
 def CheckedSingleCorrelatedRule.firingRows
     (checked : CheckedSingleCorrelatedRule model) (raw : RawSingleGroupContext) :

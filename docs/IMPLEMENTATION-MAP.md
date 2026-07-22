@@ -178,7 +178,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Elaboration/NumericComputation.lean`](../A12Kernel/Elaboration/NumericComputation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
+- [`Elaboration/SingleGroup.lean`](../A12Kernel/Elaboration/SingleGroup.lean)
+- [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean)
 - [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean)
+- [`Elaboration/FirstFilledValue.lean`](../A12Kernel/Elaboration/FirstFilledValue.lean)
 - [`Proofs/NumericScale.lean`](../A12Kernel/Proofs/NumericScale.lean)
 - [`Proofs/NumericExpression.lean`](../A12Kernel/Proofs/NumericExpression.lean)
 - [`Proofs/NumericValidation.lean`](../A12Kernel/Proofs/NumericValidation.lean)
@@ -192,6 +195,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/NumericFillability.lean`](../A12Kernel/Proofs/NumericFillability.lean)
 - [`Proofs/NumericComparison.lean`](../A12Kernel/Proofs/NumericComparison.lean)
 - [`Proofs/NumericTolerance.lean`](../A12Kernel/Proofs/NumericTolerance.lean)
+- [`Proofs/SingleGroupElaboration.lean`](../A12Kernel/Proofs/SingleGroupElaboration.lean)
+- [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean)
+- [`Proofs/NumericAggregateElaboration.lean`](../A12Kernel/Proofs/NumericAggregateElaboration.lean)
+- [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean)
 - [`Conformance/NumericScale.lean`](../A12Kernel/Conformance/NumericScale.lean)
 - [`Conformance/NumericExpression.lean`](../A12Kernel/Conformance/NumericExpression.lean)
 - [`Conformance/NumericValidation.lean`](../A12Kernel/Conformance/NumericValidation.lean)
@@ -207,6 +214,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/FlatValidation.lean`](../A12Kernel/Conformance/FlatValidation.lean)
 - [`Conformance/Elaboration.lean`](../A12Kernel/Conformance/Elaboration.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
+- [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean)
 
 #### Implemented
 
@@ -592,15 +600,22 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/RepetitionNotUnique.lean`](../A12Kernel/Semantics/RepetitionNotUnique.lean)
 - [`Semantics/Correlation.lean`](../A12Kernel/Semantics/Correlation.lean)
 - [`Semantics/CrossLevelCorrelation.lean`](../A12Kernel/Semantics/CrossLevelCorrelation.lean)
+- [`Elaboration/SingleGroup.lean`](../A12Kernel/Elaboration/SingleGroup.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
+- [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean)
+- [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean)
+- [`Elaboration/FirstFilledValue.lean`](../A12Kernel/Elaboration/FirstFilledValue.lean)
 - [`Proofs/Iteration.lean`](../A12Kernel/Proofs/Iteration.lean)
 - [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean)
 - [`Proofs/GroupPresence.lean`](../A12Kernel/Proofs/GroupPresence.lean)
 - [`Proofs/RepetitionNotUnique.lean`](../A12Kernel/Proofs/RepetitionNotUnique.lean)
 - [`Proofs/Correlation.lean`](../A12Kernel/Proofs/Correlation.lean)
 - [`Proofs/CrossLevelCorrelation.lean`](../A12Kernel/Proofs/CrossLevelCorrelation.lean)
+- [`Proofs/SingleGroupElaboration.lean`](../A12Kernel/Proofs/SingleGroupElaboration.lean)
 - [`Proofs/CorrelationElaboration.lean`](../A12Kernel/Proofs/CorrelationElaboration.lean)
+- [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean)
 - [`Proofs/NumericAggregateElaboration.lean`](../A12Kernel/Proofs/NumericAggregateElaboration.lean)
+- [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean)
 - [`Conformance/Iteration.lean`](../A12Kernel/Conformance/Iteration.lean)
 - [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean)
 - [`Conformance/GroupPresence.lean`](../A12Kernel/Conformance/GroupPresence.lean)
@@ -614,8 +629,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - Exact ordered selector ↔ relation bridges
 - filter-before-consumer laws
-- The one-group Number aggregate now classifies each selected row through the same `FlatNumberField.valueListCell` owner used by checked nonrepeatable Number lists. Empty, present Number, wrong-kind, and exact-cause unavailable cells therefore cannot drift between flat membership and repeatable aggregation; selection and the aggregate scan remain separate.
-- The checked unfiltered one-level Number star retains a model-owned positive capacity, binds one exact starred group and direct-child field through the shared one-star resolver, requires the runtime rows to be a contiguous 1-based prefix within that capacity, and constructs the ordered classified cell stream plus omitted-tail state before delegating to the existing `Sum` and extrema evaluators.
+- The checked one-group Number-star source classifies each selected row through the same `FlatNumberField.valueListCell` owner used by checked nonrepeatable Number lists. Empty, present Number, wrong-kind, and exact-cause unavailable cells therefore cannot drift between flat membership and repeatable consumers; source construction and consumer scans remain separate.
+- The checked unfiltered one-level Number star retains a model-owned positive capacity, binds one exact starred group and direct-child field through the shared one-star resolver, requires the runtime rows to be a contiguous 1-based prefix within that capacity, and constructs the ordered classified cell stream plus omitted-tail state before delegating separately to the existing `Sum`/extrema or prefix-terminating `FirstFilledValue` evaluator.
 - a shared full-environment correlated evaluator/relation bridge
 - captured-origin, exact named-level resolution, outer-reference stability, self-match/exclusion, scalar-collapse rejection, and one-group observation-footprint results.
 - Resolved RNU consumes caller-supplied ordered rows with complete repetition environments and classified composite keys. It excludes unknown keys, skips all-empty keys, uses scale-19 Number equality, retains complete firing clusters in scope order, and projects per-row verdicts before composition.
@@ -650,7 +665,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - the low-level evaluator remains total outside those obligations without a kernel-correspondence claim.
 - Checked RNU scope/default or explicit `@From`, paths and key-schema validation, partial all-key relevance, one-RNU and negative/iteration/filter/parallel authoring restrictions, checked condition/whole-rule integration, error-field and peer-pointer projection, and protocol exposure remain open.
 - The checked correlation elaborator and public protocol remain one-group only
-- Open: general `Document` adaptation and group-instance enumeration, wildcardable relevance, checked nested reopened-tree construction, multiple stars, joins, cross-group execution, filtered polarity, computation, and partial validation over repeats. The checked unfiltered one-level Number aggregate is the sole model-to-row consumer currently closed.
+- Open: general `Document` adaptation and group-instance enumeration, wildcardable relevance, checked nested reopened-tree construction, multiple stars, joins, cross-group execution, filtered polarity, computation, and partial validation over repeats. The closed model-to-row consumers remain the unfiltered one-level Number aggregate and `FirstFilledValue` routes.
 
 ### §10 — paths and references
 
@@ -660,8 +675,10 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/SemanticIndex.lean`](../A12Kernel/Proofs/SemanticIndex.lean)
 - [`Conformance/SemanticIndex.lean`](../A12Kernel/Conformance/SemanticIndex.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
+- [`Elaboration/SingleGroup.lean`](../A12Kernel/Elaboration/SingleGroup.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
 - [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean)
+- [`Proofs/SingleGroupElaboration.lean`](../A12Kernel/Proofs/SingleGroupElaboration.lean)
 - [`Proofs/CorrelationElaboration.lean`](../A12Kernel/Proofs/CorrelationElaboration.lean)
 - [`Conformance/Elaboration.lean`](../A12Kernel/Conformance/Elaboration.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
@@ -916,17 +933,18 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 
 ### Resolved Number `FirstFilledValue`
 
-- Owners: [`Semantics/FirstFilledValue.lean`](../A12Kernel/Semantics/FirstFilledValue.lean), [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean), and [`Conformance/FirstFilledValue.lean`](../A12Kernel/Conformance/FirstFilledValue.lean).
-- Boundary: one ordered Number operand after expansion, filtering, and partial-relevance classification, shared by §3, §8, §10, and §11.
+- Owners: [`Semantics/FirstFilledValue.lean`](../A12Kernel/Semantics/FirstFilledValue.lean), [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean), [`Elaboration/FirstFilledValue.lean`](../A12Kernel/Elaboration/FirstFilledValue.lean), [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean), [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean), [`Conformance/FirstFilledValue.lean`](../A12Kernel/Conformance/FirstFilledValue.lean), and [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean).
+- Boundary: one ordered resolved Number operand plus checked construction of one unfiltered finite one-level Number star, shared by §3, §8, §10, and §11.
 - The scan stops at the first present value or first unavailable cell: an invalid prefix makes validation UNKNOWN and computation poison, an invalid suffix is unread, an empty prefix retains the amount but changes validation from fixed/VALUE to fillable/OMISSION, and an empty suffix is irrelevant.
 - An explicitly empty, marked-uninstantiated, or filtered-empty Number selection supplies the fillable zero
 - `Having` makes even a selected value fillable.
 - The global filter bit belongs only to the admitted sole operand
 - later authored operand slots and their position-sensitive filter encounter order are excluded.
-- Checked authored lowering must mark a no-row star as uninstantiated because the total unmarked `[]` state is fixed zero.
+- `CheckedNumericStarSource` reuses the neutral single-group path, direct-child Number, raw-topology, and checked-context owner before adding positive capacity and contiguous-prefix obligations; it classifies cells through the shared model owner and marks a no-row star as uninstantiated rather than using the low-level fixed `[]` state.
 - Trusted laws prove prefix/suffix termination, empty-prefix idempotence, empty identities, both projections, and the central non-law that computation forgets the empty-prefix distinction while validation preserves it.
+- A checked-consumer law proves exact delegation to that evaluator. Cases separate selected-value versus omitted-tail and invalid-suffix invisibility, empty-prefix retention, reached invalidity in both phases, and zero-row omitted-tail identity.
 - Kernel source and maintained a12-dmkits `FirstFilledValue` differentials establish the selected observable behavior, but this repository retains no portable observation, and exact formal-cause carriage is an internal refinement.
-- Multi-operand authoring, path/star expansion, actual filter evaluation, partial relevance, model/static checking, non-Number kinds, row gating, target application, whole-rule integration, protocol support, and project-local portable evidence remain open.
+- Multi-operand authoring, filters, partial relevance, nested/multiple stars, general `Document` adaptation, non-Number kinds, target application, whole-rule integration, protocol support, and project-local portable evidence remain open.
 - Accepted [`SPEC-2026-07-20-09`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-09--firstfilledvalue-observes-only-filters-before-termination) records the peer encounter-order correction and focused locks.
 
 ### Resolved Number aggregates
@@ -946,7 +964,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - `CheckedNumericAggregateFields` resolves the shared nonrepeatable Number source list once, classifies raw cells through the same validated model, and constructs exact no-tail/no-`Having` views for `Sum` and extrema.
 - A trusted equality locks both views to the same classified cells in authored order
 - only the Sum view adds each declaration's signedness.
-- `CheckedNumericStarAggregate` resolves one exact star through the existing group/path owner, requires the staged declaration's positive capacity, rejects zero, duplicate, noncontiguous, and over-capacity runtime rows, and maps the valid instantiated prefix through the same checked Number-cell classifier.
+- The shared `CheckedNumericStarSource` resolves one exact star through the existing group/path owner, requires the staged declaration's positive capacity, rejects zero, duplicate, noncontiguous, and over-capacity runtime rows, and maps the valid instantiated prefix through the same checked Number-cell classifier.
 - Its structural-tail theorem states that the resolved side is open exactly when the instantiated prefix is shorter than the declared capacity. Cases lock zero rows, partial/full prefixes, explicit emptiness, one-row capacity, first formal cause, precision-sensitive order, extrema direction, and malformed topology.
 
 - This is internally complete at levels 1–2 for the resolved operators, direct nonrepeatable lists, and the unfiltered finite one-level Number star; correspondence remains `external evidence pending`.
@@ -961,7 +979,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 
 ### Reopened-star structural completeness
 
-- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), [`Proofs/NumericAggregateElaboration.lean`](../A12Kernel/Proofs/NumericAggregateElaboration.lean), [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean), and [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean).
+- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean), [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean), and [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean).
 - Boundary: IF194's structural decision after first-star binding.
 - `ReopenedStarDomain` contains only reopened repeatable levels
 - every actual child row stays beneath its actual parent, carries its 1-based coordinate, and recursively owns the next reopened level or selected leaf.
