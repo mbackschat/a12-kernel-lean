@@ -22,7 +22,7 @@ import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.DateDifference
 import A12Kernel.Semantics.DateTime
 import A12Kernel.Semantics.BerlinLegacyTimeZone
-import A12Kernel.Semantics.ModelZoneToday
+import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.DateTimeComparison
 import A12Kernel.Semantics.DateTimeAggregate
 import A12Kernel.Semantics.DateTimeDifference

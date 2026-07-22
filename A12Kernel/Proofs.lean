@@ -10,7 +10,7 @@ import A12Kernel.Proofs.DateConstructionNumeric
 import A12Kernel.Proofs.DateDifference
 import A12Kernel.Proofs.DateTime
 import A12Kernel.Proofs.BerlinLegacyTimeZone
-import A12Kernel.Proofs.ModelZoneToday
+import A12Kernel.Proofs.ModelZone
 import A12Kernel.Proofs.DateTimeComparison
 import A12Kernel.Proofs.DateTimeAggregate
 import A12Kernel.Proofs.DateTimeDifference

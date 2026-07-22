@@ -46,13 +46,6 @@ private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupP
         declaration.toNumberField? == some field
   | .error _ => false
 
-/-- Ordering is scale-exempt; unsuppressed equality and inequality use the exact authored-scale gate. -/
-def NumericComparisonOp.acceptsScales (op : NumericComparisonOp)
-    (left right : NumericScaleSummary) : Bool :=
-  match op with
-  | .equal | .notEqual => exactNumericScaleComparisonAllowed left right
-  | .less | .lessEqual | .greater | .greaterEqual => true
-
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
     (left right : NumericScaleSummary) : Bool :=

@@ -48,6 +48,23 @@ private theorem selectedOr_eq_disj (left right : FlatCondition)
   | unknown => rfl
   | fired polarity => cases polarity <;> rfl
 
+private theorem temporalOperand_resolve_agreesOn
+    (operand : FlatTemporalOperand) (left right : FlatContext)
+    (isRelevant : FlatRelevance) (worldAgreement : left.world = right.world)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
+    (relevant : (operand.fields.map FlatField.id).all isRelevant = true) :
+    operand.resolve left = operand.resolve right := by
+  cases operand with
+  | fieldValue field =>
+      have readEq := agreement field.id (by
+        simpa [FlatTemporalOperand.fields, FlatField.id] using relevant)
+      simp_all [FlatTemporalOperand.resolve,
+        FlatContext.resolveTemporalComparisonOperand,
+        FlatContext.observeValidationAt]
+  | literalValue instant => rfl
+  | todayValue zoneId | baseYearValue zoneId year | nowValue =>
+      simp [FlatTemporalOperand.resolve, worldAgreement]
+
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
 theorem partialSelected_agreesOn
     (condition : FlatCondition) (left right : FlatContext)
@@ -93,93 +110,16 @@ theorem partialSelected_agreesOn
             simp_all [FlatComparison.eval, FlatContext.resolveStringLengthOperand,
               FlatContext.observeValidationAt]
         | temporal op leftOperand rightOperand =>
-            cases leftOperand with
-            | literalValue leftInstant =>
-                cases rightOperand with
-                | literalValue rightInstant => rfl
-                | nowValue =>
-                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      worldAgreement]
-                | todayValue zoneId =>
-                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      worldAgreement]
-                | fieldValue rightField =>
-                    have rightReadEq := agreement rightField.id (by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant)
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
-            | nowValue =>
-                cases rightOperand with
-                | literalValue rightInstant | nowValue =>
-                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      worldAgreement]
-                | todayValue zoneId =>
-                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      worldAgreement]
-                | fieldValue rightField =>
-                    have rightReadEq := agreement rightField.id (by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant)
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
-            | todayValue leftZoneId =>
-                cases rightOperand with
-                | literalValue rightInstant | nowValue =>
-                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      worldAgreement]
-                | todayValue rightZoneId =>
-                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      worldAgreement]
-                | fieldValue rightField =>
-                    have rightReadEq := agreement rightField.id (by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant)
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
-            | fieldValue leftField =>
-                cases rightOperand with
-                | literalValue rightInstant =>
-                    have leftReadEq := agreement leftField.id (by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant)
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
-                | nowValue =>
-                    have leftReadEq := agreement leftField.id (by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant)
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
-                | todayValue zoneId =>
-                    have leftReadEq := agreement leftField.id (by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant)
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
-                | fieldValue rightField =>
-                    have bothRelevant : isRelevant leftField.id = true ∧
-                        isRelevant rightField.id = true := by
-                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
-                        FlatComparison.fields, FlatTemporalOperand.fields,
-                        FlatField.id] using relevant
-                    have leftReadEq := agreement leftField.id bothRelevant.left
-                    have rightReadEq := agreement rightField.id bothRelevant.right
-                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
-                      FlatContext.resolveTemporalComparisonOperand,
-                      FlatContext.observeValidationAt]
+            have bothRelevant :
+                (leftOperand.fields.map FlatField.id).all isRelevant = true ∧
+                (rightOperand.fields.map FlatField.id).all isRelevant = true := by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields] using relevant
+            simp only [FlatComparison.eval]
+            rw [temporalOperand_resolve_agreesOn leftOperand left right isRelevant
+                worldAgreement agreement bothRelevant.left,
+              temporalOperand_resolve_agreesOn rightOperand left right isRelevant
+                worldAgreement agreement bothRelevant.right]
       · rfl
   | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected]

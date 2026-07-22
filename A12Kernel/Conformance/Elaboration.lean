@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.Flat
-import A12Kernel.Semantics.ModelZoneToday
+import A12Kernel.Semantics.ModelZone
 
 /-! # Checked flat-elaboration conformance locks -/
 
@@ -89,7 +89,7 @@ private def model : FlatModel :=
     repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 
-private def baseYearModel : FlatModel := { model with hasBaseYear := true }
+private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
 
 private def absolute (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
@@ -116,11 +116,16 @@ private def compareToday (op : SurfaceComparisonOp) (position : SurfacePointInTi
     (field : String) : SurfaceCondition :=
   .compareToday op position (absolute ["Order"] field)
 
+private def compareBaseYear (op : SurfaceComparisonOp)
+    (position : SurfacePointInTimePosition) (field : String) : SurfaceCondition :=
+  .compareBaseYear op position (absolute ["Order"] field)
+
 private def dateLiteral (components : TemporalComponents) (millis : Int) :
     SurfaceLiteral :=
   .date components { epochMillis := millis }
 
-private def coreOf (result : Except ElabError (CheckedFlatCondition model)) :
+private def coreOf {checkedModel : FlatModel}
+    (result : Except ElabError (CheckedFlatCondition checkedModel)) :
     Option FlatCondition :=
   match result with
   | .ok checked => some checked.core
@@ -273,6 +278,37 @@ example :
       errorOf (elaborate model ["Order"]
         (compareToday .less .right "EventTime")) =
           some (.temporalFormatsIncompatible ["Order", "EventTime"] ["<Today>"]) := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compareBaseYear .equal .right "DispatchDate")) =
+        some .baseYearNotDeclared ∧
+      coreOf (elaborate baseYearModel ["Order"]
+        (compareBaseYear .equal .right "Limit")) =
+          some (.compare (.number (.ordinary .equal)
+            { id := 3, info := { scale := 0, signed := true } } 2020)) ∧
+      errorOf (elaborate baseYearModel ["Order"]
+        (compareBaseYear .equal .right "Quantity")) =
+          some (.baseYearScaleMismatch ["Order", "Quantity"] 2) := by
+  native_decide
+
+example :
+    coreOf (elaborate baseYearModel ["Order"]
+      (compareBaseYear .equal .right "DispatchDate")) =
+        some (.compare (.temporal .equal
+          (.fieldValue { id := 8, kind := .date, components := dispatchDateComponents })
+          (.baseYearValue "UTC" 2020))) ∧
+      coreOf (elaborate baseYearModel ["Order"]
+        (compareBaseYear .less .left "EventDateTime")) =
+          some (.compare (.temporal .before (.baseYearValue "UTC" 2020)
+            (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) ∧
+      errorOf (elaborate baseYearModel ["Order"]
+        (compareBaseYear .equal .right "EventDateTime")) =
+          some (.temporalFormatsIncompatible ["Order", "EventDateTime"] ["<BaseYear>"]) ∧
+      errorOf (elaborate baseYearModel ["Order"]
+        (compareBaseYear .less .right "EventTime")) =
+          some (.temporalFormatsIncompatible ["Order", "EventTime"] ["<BaseYear>"]) := by
   native_decide
 
 example :
@@ -465,11 +501,17 @@ private def eventDateTimeRaw (millis : Int) : RawFlatContext where
     else .empty
 
 private def worldAt (millis : Int) : World :=
-  { now := { epochMillis := millis }, baseYear := none }
+  { now := { epochMillis := millis } }
 
 private def dispatchDateRaw (millis : Int) : RawFlatContext where
   read id :=
     if id = 8 then .parsed (.temporal .date { epochMillis := millis })
+    else .empty
+
+private def baseYearRaw (limit : Rat) (dispatchMillis : Int) : RawFlatContext where
+  read id :=
+    if id == 0 || id == 3 then .parsed (.num limit)
+    else if id = 8 then .parsed (.temporal .date { epochMillis := dispatchMillis })
     else .empty
 
 private def utcInstant? (year : Int) (month day hour minute second : Nat) : Option Instant :=
@@ -552,10 +594,26 @@ example : (do
     let now ← utcInstant? 2024 3 31 12 0 0
     let midnight ← utcInstant? 2024 3 31 0 0 0
     let world : World :=
-      { now, baseYear := none, modelZoneToday? := ModelZoneToday.concreteOracle }
+      { now, modelZoneRules := ModelZone.concreteRules }
     pure (valueOf (elaborateAndEvalFull model world ["Order"]
       (dispatchDateRaw midnight.epochMillis) true
       (compareToday .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
+  native_decide
+
+example : (do
+    let start ← utcInstant? 2020 1 1 0 0 0
+    let world : World :=
+      { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
+    pure (
+      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+        (baseYearRaw 2020 start.epochMillis) true
+        (compareBaseYear .equal .right "Limit")) = some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+        (baseYearRaw 2021 start.epochMillis) true
+        (compareBaseYear .less .left "Quantity")) = some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+        (baseYearRaw 2020 start.epochMillis) true
+        (compareBaseYear .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
   native_decide
 
 example : (do
@@ -563,11 +621,13 @@ example : (do
     let midnight ← utcInstant? 2024 3 31 0 0 0
     let apiaModel : FlatModel := { model with timeZoneId := "Pacific/Apia" }
     let narrowWorld : World :=
-      { now, baseYear := none, modelZoneToday? := ModelZoneToday.concreteOracle }
+      { now, modelZoneRules := ModelZone.concreteRules }
     let suppliedWorld : World :=
-      { now, baseYear := none,
-        modelZoneToday? := fun zoneId _ =>
-          if zoneId == "Pacific/Apia" then some midnight else none }
+      { now,
+        modelZoneRules :=
+          { ModelZoneRules.unavailable with
+            today? := fun zoneId _ =>
+              if zoneId == "Pacific/Apia" then some midnight else none } }
     pure (
       valueOf (elaborateAndEvalFull apiaModel narrowWorld ["Order"]
         (dispatchDateRaw midnight.epochMillis) true

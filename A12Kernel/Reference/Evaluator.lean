@@ -125,6 +125,15 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
         (Json.mkObj [("operation", toJson "temporalComparison"),
           ("reason", toJson "invalidDateLiteralComponents"),
           ("path", toJson path)]))
+  | .baseYearNotDeclared =>
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "baseYear"),
+          ("reason", toJson "notDeclared")]))
+  | .baseYearScaleMismatch path scale =>
+      pure (.make .equalityScaleMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "baseYear"),
+          ("path", toJson path), ("fieldScale", toJson scale),
+          ("baseYearScale", toJson 0)]))
   | .lengthOperandKindMismatch path actual =>
       pure (.make .fieldKindMismatch "$.condition"
         (Json.mkObj [("function", toJson "Length"), ("path", toJson path),

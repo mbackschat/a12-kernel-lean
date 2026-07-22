@@ -65,4 +65,12 @@ theorem temporalEqual_admitsToday_hasNoTime
       TemporalComparisonOp.requiresSameTimePresence, TemporalComponents.today,
       TemporalComponents.withBaseYear, TemporalComponents.hasTime]
 
+/-- Base Year cannot become comparable to a time-only operand merely because year supplementation runs later. -/
+theorem temporalComparison_admitsBaseYear_hasDate
+    (op : TemporalComparisonOp) (other : TemporalComponents)
+    (admitted : op.admitsBaseYear other = true) :
+    other.hasDate = true := by
+  simp [TemporalComparisonOp.admitsBaseYear] at admitted
+  exact admitted.left
+
 end A12Kernel

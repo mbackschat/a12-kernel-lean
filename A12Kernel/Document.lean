@@ -45,17 +45,27 @@ structure Document where
     (`spec/07` §9 / `spec/08` §10) -/
 abbrev Env := List (RepeatableLevel × Nat)
 
-/-- A model-zone `Today` oracle maps the checked model's exact zone id and injected clock instant to midnight on that zone's local civil date. A complete kernel consumer supplies every model-legal legacy zone; a narrower consumer fails closed with `none` for every unsupported id. -/
-abbrev ModelZoneTodayOracle := String → Instant → Option Instant
+/-- Capability projection of one versioned legacy model-zone account. `Today` clears the local clock at an exact instant; local-label resolution supports stored values, Base Year, and later calendar consumers. A complete kernel consumer supplies every model-legal id; a narrower consumer returns `none` for every unsupported id. -/
+structure ModelZoneRules where
+  today? : String → Instant → Option Instant
+  resolveLocal? : String → Int → Nat → Nat → Nat → Nat → Nat → Option Instant
+
+def ModelZoneRules.unavailable : ModelZoneRules where
+  today? := fun _ _ => none
+  resolveLocal? := fun _ _ _ _ _ _ _ => none
 
 /-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise read from ambient state, kept as explicit input so `eval` / `compute` stay pure. The model-zone oracle is function-valued because the canonical legal zone-id domain is wider than this repository's concrete UTC/Berlin profiles. Custom-condition / validator oracles and the label provider likewise belong to later custom stages. -/
 structure World where
   now      : Instant
-  baseYear : Option Int
-  modelZoneToday? : ModelZoneTodayOracle := fun _ _ => none
+  modelZoneRules : ModelZoneRules := ModelZoneRules.unavailable
 
 /-- Resolve `Today` through the explicit profile selected for the checked model. -/
 def World.today? (world : World) (zoneId : String) : Option Instant :=
-  world.modelZoneToday? zoneId world.now
+  world.modelZoneRules.today? zoneId world.now
+
+/-- Resolve one complete local wall label through the same model-zone account used by `Today`. -/
+def World.resolveLocal? (world : World) (zoneId : String)
+    (year : Int) (month day hour minute second : Nat) : Option Instant :=
+  world.modelZoneRules.resolveLocal? zoneId year month day hour minute second
 
 end A12Kernel

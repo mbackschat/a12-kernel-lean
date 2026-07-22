@@ -208,7 +208,7 @@ private def numberRules : List OperatorRule := [
   }]
 
 private def replayWorld : World :=
-  { now := { epochMillis := 0 }, baseYear := none }
+  { now := { epochMillis := 0 } }
 
 private def operatorMessage (rule : OperatorRule) (polarity : Polarity) : Json :=
   Json.mkObj [

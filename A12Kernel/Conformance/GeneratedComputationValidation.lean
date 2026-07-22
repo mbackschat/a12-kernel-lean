@@ -104,7 +104,7 @@ private def brokenAndHealthy : RawFlatContext where
     else .empty
 
 private def evaluationWorld : World :=
-  { now := { epochMillis := 0 }, baseYear := none }
+  { now := { epochMillis := 0 } }
 
 private def selectionOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) :
