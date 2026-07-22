@@ -512,14 +512,16 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/ScalarEquality.lean`](../A12Kernel/Semantics/ScalarEquality.lean)
 - [`Semantics/Enumeration.lean`](../A12Kernel/Semantics/Enumeration.lean)
 - [`Elaboration/EnumerationComparability.lean`](../A12Kernel/Elaboration/EnumerationComparability.lean)
+- [`Elaboration/Enumeration.lean`](../A12Kernel/Elaboration/Enumeration.lean)
 - [`Semantics/ValueList.lean`](../A12Kernel/Semantics/ValueList.lean)
-- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean)
+- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Conformance/EnumerationElaboration.lean)
 
 #### Implemented
 
 - Runtime Enumeration comparison uses a clean stored token or one lockstep positional category mapping
 - repeated category tokens are legal, empty is not evaluated, unavailable input stays UNKNOWN, and every firing is VALUE.
 - The separate direct-field static gate classifies identity labels as effectively textless, rejects a String/display-class mismatch, and accepts two display-bearing ordinary Enumerations exactly when their common-locale stored/display relation has no forward or reverse conflict.
+- One checked ordinary closed declaration now owns the nonempty unique stored-token domain, complete per-locale stored/display facts with injective display text, and unique named positional category vectors with exact arity and nonempty tokens. Identity displays remain legal and effectively textless; repeated category tokens remain legal and many-to-one. Its projections reuse the existing runtime and comparability representations.
 - Trusted laws cover runtime projection, empty/unavailable/VALUE-only behavior, identity-label classification, pair/profile conflict symmetry, String admission, both rejection classes, and overall admission symmetry.
 - The separate type-indexed Number/canonical-token value-list capsule preserves explicit present/empty/unknown cells, declared-tail and `Having` metadata, and distinct `AtLeastOne`, `No`, and `NotAll` clauses
 
@@ -527,16 +529,17 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - Canonical §8 prose and pinned kernel source choose the static and runtime accounts.
 - Accepted [`SPEC-2026-07-20-14`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-14--enumeration-direct-field-comparability-uses-effective-display-remapping) records a12-dmkits revision `20230e40` and its identity-label, conflict-direction, and compatible-mapping controls.
+- Seventeen checked-declaration cases separate empty/duplicate stored domains, unknown/incomplete/duplicate localized mappings, category name/arity/token failures, complete multilingual and identity-label declarations, exact stored projection, exact category lookup, and many-to-one category output. Five laws retain validation, display, direct-comparability, stored-projection, and exact category-domain ownership.
 - The focused runtime matrix currently has one kernel route plus peer triangulation
 - a broader catalog smoke case exercises both kernel routes.
 - This repository retains no portable §8 observation
 
 #### Excluded / next
 
-- **Implemented internally at two resolved runtime boundaries plus one independent static gate; external evidence pending:** runtime Enumeration begins after ordinary closed-domain/category/literal checks and validation observation
+- **Implemented internally at two resolved runtime boundaries, one checked ordinary declaration, and one static gate; external evidence pending:** runtime Enumeration still begins after literal admission and validation observation
 - static comparability begins after valid ordinary declarations and direct equality/inequality field shape
 - value lists begin after expansion, comparability checking, and `Having` filtering.
-- Table/open/dynamic/partial/duplicate-display declarations, literal and category-field admission, checked model integration, category use in lists/indices/paths, scalar value-list syntax, actual filtering, row gates, protocol exposure, and project-local portable evidence remain open
+- Table/open/dynamic/partial declarations, field/raw-cell integration, literal and category-field admission, checked flat-model integration, category use in lists/indices/paths, scalar value-list syntax, actual filtering, row gates, protocol exposure, and project-local portable evidence remain open
 
 ### §9 — repetition and iteration
 

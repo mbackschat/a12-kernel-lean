@@ -725,6 +725,11 @@ run_cmd do
 #print axioms A12Kernel.enumeration_mixedDisplayClass_rejected
 #print axioms A12Kernel.enumeration_sharedDisplayMapConflict_rejected
 #print axioms A12Kernel.directFieldComparisonAllowed_comm
+#print axioms A12Kernel.checkedEnumeration_wellFormed
+#print axioms A12Kernel.checkedEnumeration_displayFacts_exact
+#print axioms A12Kernel.checkedEnumeration_directComparableField_exact
+#print axioms A12Kernel.checkedEnumeration_storedProjection_exact
+#print axioms A12Kernel.checkedEnumeration_categoryProjection_exact
 #print axioms A12Kernel.evalReachedCustomCondition_fired_value_iff
 #print axioms A12Kernel.evalReachedCustomCondition_notFired_iff
 #print axioms A12Kernel.evalReachedCustomCondition_ne_unknown
