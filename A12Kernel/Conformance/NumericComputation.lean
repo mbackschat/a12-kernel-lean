@@ -491,10 +491,13 @@ example :
       checkedResultOf directYear = some (.value 2020) ∧
       checkedResultOf finishDay = some (.value 31) ∧
       checkedResultOf finishQuarter = some (.value 4) ∧
+      checkedResultOf (.abs finishDay) = some (.value 31) ∧
+      checkedResultOf (.round .halfUp omittedRoundingPlaces finishDay) =
+        some (.value 31) ∧
       checkedResultOf (.binary .add finishDay
         (surfaceField ["Root"] "Source"))
         (context (checkedNumber (.parsed (.num 1)))) = some (.value 32) ∧
-      checkedErrorOf (.abs finishDay) = some .unsupportedExpression := by
+      checkedErrorOf (.abs surfaceBaseYear) = some .unsupportedExpression := by
   native_decide
 
 /- The checked boundary admits the source-closed direct root value functions already shared with numeric validation. -/
@@ -561,16 +564,27 @@ example : resultOf (field source)
       some (.value 0) := by
   rfl
 
-/- Checked computation shares the temporal component source seam: DateTime supplies either half, empty contributes zero, and formal invalidity stays poison. -/
+/- Checked computation shares the temporal component source seam and admits both direct operation-form wrappers. -/
 example :
     checkedResultOf (surfaceDateFieldPart "DateTime" .day)
         (context (dateTime := checkedTemporal .dateTime dateTimeComponents
           (.parsed dateTimeValue))) = some (.value 25) ∧
+      checkedResultOf (.abs (surfaceDateFieldPart "DateTime" .day))
+        (context (dateTime := checkedTemporal .dateTime dateTimeComponents
+          (.parsed dateTimeValue))) = some (.value 25) ∧
+      checkedResultOf
+        (.round .floor omittedRoundingPlaces
+          (surfaceTimeFieldPart "DateTime" .second))
+        (context (dateTime := checkedTemporal .dateTime dateTimeComponents
+          (.parsed dateTimeValue))) = some (.value 7) ∧
       checkedResultOf (surfaceTimeFieldPart "DateTime" .second)
         (context (dateTime := checkedTemporal .dateTime dateTimeComponents
           (.parsed dateTimeValue))) = some (.value 7) ∧
       checkedResultOf (surfaceTimeFieldPart "Time" .hour) = some (.value 0) ∧
-      checkedResultOf (surfaceDateFieldPart "DateTime" .year)
+      checkedResultOf (.abs (surfaceTimeFieldPart "Time" .hour)) =
+        some (.value 0) ∧
+      checkedResultOf (.round .halfUp omittedRoundingPlaces
+        (surfaceDateFieldPart "DateTime" .year))
         (context (dateTime := checkedTemporal .dateTime dateTimeComponents
           (.rejected .malformed))) = some (.poison .malformed) := by
   native_decide
@@ -579,11 +593,20 @@ example :
 example :
     let mixedMonths := surfaceDateDifference .months
       (.baseYear .direct) (surfaceDateOperand "Date")
+    let reverseMonths := surfaceDateDifference .months
+      (surfaceDateOperand "Date") (.baseYear .direct)
     checkedResultOf mixedMonths (context
         (date := checkedTemporal .date TemporalComponents.fullDate
           (.parsed (dateValue 2020 2 29)))) = some (.value 1) ∧
+      checkedResultOf (.abs reverseMonths) (context
+        (date := checkedTemporal .date TemporalComponents.fullDate
+          (.parsed (dateValue 2020 2 29)))) = some (.value 1) ∧
+      checkedResultOf (.round .halfUp omittedRoundingPlaces mixedMonths) (context
+        (date := checkedTemporal .date TemporalComponents.fullDate
+          (.parsed (dateValue 2020 2 29)))) = some (.value 1) ∧
       checkedResultOf mixedMonths = some (.value 0) ∧
-      checkedResultOf mixedMonths
+      checkedResultOf (.abs mixedMonths) = some (.value 0) ∧
+      checkedResultOf (.abs mixedMonths)
         (context (date := checkedTemporal .date TemporalComponents.fullDate
           (.rejected .malformed))) = some (.poison .malformed) := by
   native_decide
@@ -601,11 +624,11 @@ example :
           some .unsupportedDateCalendar := by
   native_decide
 
-/- Checked source admission rejects the wrong temporal family and unaudited value-function wrapping. -/
+/- Checked source admission rejects the wrong temporal family and the immediate `BaseYear` constant while admitting nonliteral temporal numeric operations. -/
 example :
     checkedErrorOf (surfaceDateFieldPart "Time" .day) =
         some (.incompatibleTemporalSource ["Root", "Time"]) ∧
-      checkedErrorOf (.abs (surfaceDateFieldPart "DateTime" .day)) =
+      checkedErrorOf (.round .halfUp omittedRoundingPlaces surfaceBaseYear) =
         some .unsupportedExpression := by
   native_decide
 

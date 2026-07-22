@@ -35,6 +35,8 @@ The literal is typed **by its own syntax, not by context**:
 DifferenceInMonths("31.01.2010", "30.03.2010")   -- returns 1, not 2
 ```
 
+Direct Day/Month/Quarter/Year and Hour/Minute/Second extraction, plus Date-only `DifferenceInMonths`/`DifferenceInYears`, each produces a non-expandable scale-0 Number operation. Operation-form `RoundDown`/`RoundUp`/`RoundAccounting` and `Abs` therefore accept those results directly, including a component extracted from direct or range-selected `BaseYear`. Numeric `BaseYear` without an enclosing extraction is still an immediate constant and is rejected by either wrapper. An empty temporal field or empty difference operand yields symmetric fillable zero in validation: rounding preserves both movement directions, while `Abs(0)` retains only possible magnitude growth. Base-Year-derived components are fixed, and formal unavailability remains UNKNOWN in validation or poison in computation through either wrapper.
+
 And addition is not the inverse of difference:
 
 - **`AddYears`** maps the last day of February to the last day of February: `AddYears("28.02.2023", 1) = 29.02.2024`. More precisely it *corrects into* a leap year: `28.02.1999 + 1 year = 29.02.2000` (not the plain `28.02.2000`).
@@ -264,6 +266,7 @@ The date **extractors** (`DayFromDate`, …) accept a DateTime operand and see i
 - [ ] Literal kind (`dateConst` vs `strConst`) resolved at **lex/type** time by shape; ISO always a string; omitted-year needs a Base Year.
 - [ ] `AddMonths` (day-preserving + end-of-month clamp) vs `AddYears` (last-of-Feb-preserving, corrects into leap years) — **different** conventions; fractional offsets truncated. Preserve a constructed Date's legacy hybrid-calendar identity through legal month/year addition and difference rather than erasing it into a separately modeled ordinary-date function.
 - [ ] Sub-day diffs = epoch-seconds `/ unit`, **truncated toward zero**, order `b − a`.
+- [ ] Direct temporal components, Base-Year-derived components, and Date-only month/year differences are scale-0 Number operations admitted beneath operation-form rounding/`Abs`; direct numeric `BaseYear` remains an immediate-constant rejection; preserve symmetric empty rounding versus grow-only empty magnitude and exact formal propagation.
 - [ ] `DifferenceInDays` = signed legacy model-zone `Calendar.DAY_OF_MONTH` stepping, time-of-day aware; Δ wall-seconds `/ 86 400` is not generally equivalent around special-hour landings or skipped whole dates.
 - [ ] `Valid`/`Invalid(Date(...))` have strong-Kleene-complementary truth but distinct full verdict projections; malformed makes both UNKNOWN; `Invalid` distinguishes unreal VALUE from incomplete OMISSION and fires on all-empty. Direct numeric extractors/differences project both unreal and incomplete to amount `0`, but retain fixed versus fillable provenance; malformed/non-relevant projects to UNKNOWN.
 - [ ] `Date(...)` reality uses non-lenient legacy `GregorianCalendar` in the model zone: hybrid cutover and zone-skipped local dates matter; a zone-free proleptic replacement is not equivalent. Preserve both calendar identity and no-value reason through legal `DateTime`, extraction, shift, difference, and direct date `Min`/`Max` composition.

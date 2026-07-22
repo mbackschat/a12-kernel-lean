@@ -313,23 +313,19 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
 
 end ResolvedNumericAtom
 
-/-- Whether one resolved numeric source is source-confirmed for the direct operation-form rounding wrapper. Each accepted source has an independently audited parser and runtime route for this shape. -/
-def ResolvedNumericAtom.admitsDirectRound : ResolvedNumericAtom Field → Bool
-  | .field _ | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ => true
-  | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .dateDifference _ _ _ => false
-
-/-- Whether one resolved numeric source is source-confirmed for the direct operation-form absolute-value wrapper. The remaining scalar operations do not inherit this admission. -/
-def ResolvedNumericAtom.admitsDirectAbsolute : ResolvedNumericAtom Field → Bool
-  | .field _ | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ => true
-  | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .dateDifference _ _ _ => false
+/-- Whether one resolved numeric source is source-confirmed for a direct operation-form rounding or absolute-value wrapper. Both kernel checkers impose the same immediate-child admission; their result-scale and value transforms remain separate. -/
+def ResolvedNumericAtom.admitsDirectUnaryValueFunction :
+    ResolvedNumericAtom Field → Bool
+  | .field _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
+  | .stringRange _ _ _ | .fieldValueAsNumber _ | .dateDifference _ _ _
+  | .aggregate _ _ => true
+  | .baseYear _ => false
 
 /-- The source-specific direct unary wrapper matrix shared by checked validation and computation. This deliberately does not infer general wrapper composition. -/
 def AuthoredNumericExpr.isDirectResolvedUnaryValueFunction :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
-  | .round _ _ (.atom source) => source.admitsDirectRound
-  | .abs (.atom source) => source.admitsDirectAbsolute
+  | .round _ _ (.atom source) | .abs (.atom source) =>
+      source.admitsDirectUnaryValueFunction
   | _ => false
 
 /-- Source operations participate in the audited arithmetic grammar but do not implicitly widen the separately audited direct-source value-function matrix. -/

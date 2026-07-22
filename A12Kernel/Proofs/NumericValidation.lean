@@ -370,7 +370,7 @@ private theorem authoredNumericLower_directResolvedUnaryValueFunction
       | atom atom =>
           cases atom <;>
             simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction,
-              ResolvedNumericAtom.admitsDirectAbsolute,
+              ResolvedNumericAtom.admitsDirectUnaryValueFunction,
               AuthoredNumericExpr.lowerForEvaluation,
               LoweredNumericExpr.isAdmittedValidation,
               LoweredNumericExpr.isDirectValueFunction] at direct ⊢
@@ -381,7 +381,7 @@ private theorem authoredNumericLower_directResolvedUnaryValueFunction
       | atom atom =>
           cases atom <;>
             simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction,
-              ResolvedNumericAtom.admitsDirectRound,
+              ResolvedNumericAtom.admitsDirectUnaryValueFunction,
               AuthoredNumericExpr.lowerForEvaluation,
               LoweredNumericExpr.isAdmittedValidation,
               LoweredNumericExpr.isDirectValueFunction] at direct ⊢
