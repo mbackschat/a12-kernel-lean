@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.RepetitionNotUnique
+import A12Kernel.Semantics.CustomFieldType
 
 /-! # Resolved `RepetitionNotUnique` separating cases
 
@@ -138,6 +139,46 @@ example :
       (evalRepetitionNotUniqueRow
         [row 2 [token "A"]] (row 2 [token "A"])).verdict =
         .notFired := by
+  native_decide
+
+private def customRejection : RegisteredCustomRejection where
+  projectCode := "PROJECT_CODE_INVALID"
+  messageTemplate := some "Invalid $<fieldName>$"
+
+private def customValidator : RegisteredCustomFieldValidator := fun value _ =>
+  if value == "accepted" then none else some customRejection
+
+private def customWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "Observed" then some customValidator else none
+
+private def customKey (relevant : Bool) (raw : RawCell String) :
+    Option RepetitionKeyComponent :=
+  match elaborateCustomFieldType customWorld { name := "Observed" } with
+  | .error _ => none
+  | .ok checked =>
+      (checked.checkRelevantRaw "en_US" relevant raw).map
+        RepetitionKeyComponent.ofCheckedTokenCell
+
+/- The existing resolved key component consumes the one checked custom observation; it never calls the validator itself. -/
+example : customKey true (.parsed "accepted") =
+    some (.present (.token "accepted")) := by
+  native_decide
+
+example : customKey true (.parsed "rejected") =
+    some (.unknown (.registeredCustomValidation customRejection)) := by
+  native_decide
+
+example : customKey true .empty = some .empty := by
+  native_decide
+
+example : customKey true (.rejected .malformed) =
+    some (.unknown .malformed) := by
+  native_decide
+
+/- Relevance exclusion happens before checking, so no key component exists for RNU. -/
+example : customKey false (.parsed "rejected") = none := by
   native_decide
 
 end A12Kernel.Conformance.RepetitionNotUnique

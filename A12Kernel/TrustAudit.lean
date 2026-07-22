@@ -754,6 +754,10 @@ run_cmd do
 #print axioms A12Kernel.firstFilledNumber_unavailable_projections
 #print axioms A12Kernel.firstFilledNumber_empty_prefix_projection_separator
 #print axioms A12Kernel.repetitionKey_number_equal_iff_normalized_eq
+#print axioms A12Kernel.repetitionKey_checkedToken_value_exact
+#print axioms A12Kernel.repetitionKey_checkedToken_empty_exact
+#print axioms A12Kernel.repetitionKey_checkedToken_rejection_exact
+#print axioms A12Kernel.repetitionKey_registeredCustomRejection_exact
 #print axioms A12Kernel.mem_repetitionDuplicateCluster_iff
 #print axioms A12Kernel.repetitionNotUnique_refinedUnknown_iff
 #print axioms A12Kernel.repetitionNotUnique_allEmpty_notFired
