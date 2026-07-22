@@ -766,7 +766,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-22-06 — `FirstFilledValue` keeps omitted tail distinct from an empty prefix
 
-- **Status:** pending
+- **Status:** handed-off
 - **Local revision:** `657334dc9674dc5027bfb6c42ca772587c244a00`
 - **a12-dmkits basis revision:** `ec2e82cbaef2a274baa0b091e86919458fe732c6`
 - **Kernel behavior:** 30.8.1
@@ -779,7 +779,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-22-07 — ordinary aggregate duplicate checking skips wildcarded operands
 
-- **Status:** pending
+- **Status:** handed-off
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `132bf3bd984615b4373d3d6bd18c67746cc5673b`
 - **Kernel behavior:** 30.8.1
