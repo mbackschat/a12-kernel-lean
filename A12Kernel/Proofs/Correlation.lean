@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.Correlation
+import A12Kernel.Elaboration.Correlation
 
 /-! # Proofs for explicit inner/outer Having correlation -/
 
@@ -131,6 +131,32 @@ theorem correlatedHaving_mem_selectEnvironments_iff
         condition.HoldsIn context { innerEnv, outerEnv } := by
   simp [CorrelatedHaving.selectEnvironments,
     correlatedHaving_keepsEnvironment_iff_holdsIn]
+
+/-- Every checked filtered-star value-list side records the filter encounter independently of what the filter retains. -/
+@[simp] theorem checkedStarFieldPath_havingValueListSide_hasHaving
+    (checked : CheckedStarFieldPath model) (resolved : ResolvedStarTopology)
+    (having : CorrelatedHaving) (filterRead : Env → FieldId → CheckedCell)
+    (outer : Env) (classify : Env → ValueListCell kind) :
+    (checked.selectedValidationHavingValueListSide resolved having filterRead outer
+      classify).hasHaving = true := by
+  rfl
+
+/-- A checked filtered star invokes its kind-specific classifier only on retained environments. -/
+theorem checkedStarFieldPath_havingBeforeClassification
+    (checked : CheckedStarFieldPath model) (resolved : ResolvedStarTopology)
+    (having : CorrelatedHaving) (filterRead : Env → FieldId → CheckedCell)
+    (outer : Env) (left right : Env → ValueListCell kind)
+    (agree : ∀ environment,
+      environment ∈ having.selectEnvironments { read := filterRead } outer
+        resolved.environments →
+      left environment = right environment) :
+    checked.selectedValidationHavingValueListSide resolved having filterRead outer left =
+      checked.selectedValidationHavingValueListSide resolved having filterRead outer right := by
+  simp only [CheckedStarFieldPath.selectedValidationHavingValueListSide]
+  congr 1
+  apply List.map_congr_left
+  intro environment selected
+  exact agree environment selected
 
 private theorem correlatedKeeps_eq_true_iff (star : SingleCorrelatedStar)
     (context : CapturedSingleGroupContext) (row : RowIndex) :

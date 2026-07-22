@@ -314,6 +314,36 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   else
     throw .missingInner
 
+namespace CheckedStarFieldPath
+
+/-- Apply one checked validation `Having` to topology-produced leaves before invoking the kind-specific cell classifier. Every filtered star consumer shares this order and the retained filter marker. -/
+def selectedValidationHavingValueListSide (_checked : CheckedStarFieldPath model)
+    (resolved : ResolvedStarTopology) (having : CorrelatedHaving)
+    (filterRead : Env → FieldId → CheckedCell) (outer : Env)
+    (classify : Env → ValueListCell kind) : ResolvedValueListSide kind :=
+  let filterContext : CorrelationContext := { read := filterRead }
+  let selected := having.selectEnvironments filterContext outer resolved.environments
+  { cells := selected.map classify
+    hasUninstantiatedTail := resolved.domain.hasOpenTail
+    hasHaving := true }
+
+/-- Resolve nested topology once, filter every candidate against its complete candidate/captured environments, and classify only retained leaves. -/
+def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
+    (document : Document) (outer : Env) (having : CorrelatedHaving)
+    (filterRead : Env → FieldId → CheckedCell)
+    (classify : Env → ValueListCell kind) :
+    Except StarAddressingError (ResolvedValueListSide kind) := do
+  let resolved ← checked.path.resolve document outer
+  pure (checked.selectedValidationHavingValueListSide resolved having filterRead outer classify)
+
+end CheckedStarFieldPath
+
+/-- Partial validation skips a complete rule containing `Having` before topology or operand reads; otherwise it returns the evaluated value-list verdict. -/
+inductive PartialHavingValueListResult where
+  | skippedHaving
+  | evaluated (verdict : Verdict)
+  deriving Repr, DecidableEq
+
 structure ResolvedSingleCorrelatedRule where
   group : RepeatableGroupDecl
   errorField : FlatNumberField

@@ -43,17 +43,19 @@ private def starPath (field : String := "Sku") : SurfaceStarFieldPath :=
     field }
 
 private def authored (quantifier : ValueListQuantifier)
-    (values : List String := ["A"]) (field : String := "Sku") :
+    (values : List String := ["A"]) (field : String := "Sku")
+    (having : Option SurfaceCorrelatedHaving := none) :
     SurfaceStarStringValueListSource :=
-  { quantifier, fields := starPath field, values }
+  { quantifier, fields := starPath field, values, having }
 
 private def fieldPath (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups := ["Shop"], field }
 
 private def starValuesAuthored (quantifier : ValueListQuantifier)
-    (field : String := "Product") (values : String := "Sku") :
+    (field : String := "Product") (values : String := "Sku")
+    (having : Option SurfaceCorrelatedHaving := none) :
     SurfaceStringValueListStarValuesSource :=
-  { quantifier, field := fieldPath field, values := starPath values }
+  { quantifier, field := fieldPath field, values := starPath values, having }
 
 private def document (rows : List RowAddr) : Document :=
   { instantiatedRows := rows, rawCells := fun _ => none }
@@ -70,48 +72,68 @@ private def firstThen (first rest : RawCell) (environment : Env)
     (_ : FieldId) : RawCell :=
   if environment == [(10, 1), (20, 1)] then first else rest
 
+private def unusedFilterRead (_ : Env) (_ : FieldId) : CheckedCell :=
+  malformedCheckedCell
+
 private def verdictOf (surface : SurfaceStarStringValueListSource)
-    (rows : List RowAddr) (read : Env → FieldId → RawCell) : Option Verdict :=
+    (rows : List RowAddr) (read : Env → FieldId → RawCell)
+    (outer : Env := []) : Option Verdict :=
   match elaborateStarStringValueListSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluateFull (document rows) [] read with
+      match checked.evaluateFull (document rows) outer unusedFilterRead read with
       | .error _ => none
       | .ok verdict => some verdict
 
-private def partialVerdictOf (surface : SurfaceStarStringValueListSource)
+private def partialResultOf (surface : SurfaceStarStringValueListSource)
     (rows : List RowAddr) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) : Option Verdict :=
+    (read : Env → FieldId → RawCell) : Option PartialHavingValueListResult :=
   match elaborateStarStringValueListSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
       match checked.evaluatePartial (document rows) [] scope read with
       | .error _ => none
-      | .ok verdict => some verdict
+      | .ok result => some result
+
+private def partialVerdictOf (surface : SurfaceStarStringValueListSource)
+    (rows : List RowAddr) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) : Option Verdict :=
+  match partialResultOf surface rows scope read with
+  | some (.evaluated verdict) => some verdict
+  | _ => none
 
 private def directRead (raw : RawCell) : RawFlatContext where
   read id := if id == product.id then raw else .empty
 
 private def starValuesVerdictOf (surface : SurfaceStringValueListStarValuesSource)
     (rows : List RowAddr) (direct : RawFlatContext)
-    (read : Env → FieldId → RawCell) : Option Verdict :=
+    (read : Env → FieldId → RawCell) (outer : Env := []) : Option Verdict :=
   match elaborateStringValueListStarValuesSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluateFull (document rows) [] direct read with
+      match checked.evaluateFull (document rows) outer direct unusedFilterRead read with
       | .error _ => none
       | .ok verdict => some verdict
 
-private def partialStarValuesVerdictOf
+private def partialStarValuesResultOf
     (surface : SurfaceStringValueListStarValuesSource)
     (rows : List RowAddr) (scope : ValidationRelevanceScope)
-    (direct : RawFlatContext) (read : Env → FieldId → RawCell) : Option Verdict :=
+    (direct : RawFlatContext) (read : Env → FieldId → RawCell) :
+    Option PartialHavingValueListResult :=
   match elaborateStringValueListStarValuesSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
       match checked.evaluatePartial (document rows) [] scope direct read with
       | .error _ => none
-      | .ok verdict => some verdict
+      | .ok result => some result
+
+private def partialStarValuesVerdictOf
+    (surface : SurfaceStringValueListStarValuesSource)
+    (rows : List RowAddr) (scope : ValidationRelevanceScope)
+    (direct : RawFlatContext) (read : Env → FieldId → RawCell) : Option Verdict :=
+  match partialStarValuesResultOf surface rows scope direct read with
+  | some (.evaluated verdict) => some verdict
+  | _ => none
 
 private def starValuesErrorOf (surface : SurfaceStringValueListStarValuesSource) :
     Option StarStringValueListElabError :=
@@ -125,11 +147,51 @@ private def errorOf (surface : SurfaceStarStringValueListSource) :
   | .ok _ => none
   | .error error => some error
 
+private def repetition (origin : HavingOrigin) (groups : List String) :
+    SurfaceHavingRepetitionRef :=
+  { origin, group := { base := .absolute, groups } }
+
+private def earlierSibling : SurfaceCorrelatedHaving :=
+  .and
+    (.compareRepetitions .equal
+      (repetition .inner ["Shop", "Sections"])
+      (repetition .outer ["Shop", "Sections"]))
+    (.compareRepetitions .less
+      (repetition .inner ["Shop", "Sections", "Items"])
+      (repetition .outer ["Shop", "Sections", "Items"]))
+
+private def selectedStringOnly (environment : Env) (_ : FieldId) : RawCell :=
+  if environment == [(10, 1), (20, 1)] then .parsed (.str "A")
+  else .rejected .malformed
+
 /- Starred String cells reuse evaluated-cache CRLF normalization before literal membership. -/
 example :
     verdictOf (authored .atLeastOne ["A\nB"]) fullRows
       (firstThen (.parsed (.str "A\r\nB")) .empty) =
         some (.fired .value) := by
+  native_decide
+
+/- Partial validation skips a rule containing `Having` before malformed topology or either String reader. -/
+example :
+    partialResultOf (authored .atLeastOne (having := some earlierSibling))
+        [{ group := 20, path := [1, 1] }] .full selectedStringOnly =
+      some .skippedHaving ∧
+    partialStarValuesResultOf
+        (starValuesAuthored .atLeastOne (having := some earlierSibling))
+        [{ group := 20, path := [1, 1] }] .full
+        (directRead (.rejected .malformed)) selectedStringOnly =
+      some .skippedHaving := by
+  native_decide
+
+/- A checked `Having` filters before String classification and escalates a firing on either quantifier side. -/
+example :
+    verdictOf (authored .atLeastOne (having := some earlierSibling)) fullRows
+        selectedStringOnly [(10, 1), (20, 2)] = some (.fired .omission) ∧
+    starValuesVerdictOf
+        (starValuesAuthored .atLeastOne (having := some earlierSibling)) fullRows
+        (directRead (.parsed (.str "A"))) selectedStringOnly
+        [(10, 1), (20, 2)] =
+      some (.fired .omission) := by
   native_decide
 
 /- A direct String subject consumes the expanded starred member set through the same three quantifiers. -/
