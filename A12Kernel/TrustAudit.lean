@@ -683,6 +683,9 @@ run_cmd do
 #print axioms A12Kernel.reopenedStarRows_coordinate_irrelevant
 #print axioms A12Kernel.reopenedStar_toResolvedSide_tail
 #print axioms A12Kernel.reopenedStar_toResolvedSide_missingPotential
+#print axioms A12Kernel.starPath_firstAxis_reopens
+#print axioms A12Kernel.resolvedStarTopology_cells
+#print axioms A12Kernel.resolvedStarTopology_tail
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
 #print axioms A12Kernel.groupPresence_rowContent_admitted

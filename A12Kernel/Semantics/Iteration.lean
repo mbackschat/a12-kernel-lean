@@ -14,10 +14,7 @@ namespace A12Kernel
 
 abbrev RowIndex := Nat
 
-/-- The validation view of one repeatable group. Candidates are explicit instantiated
-    rows in document order; they are not inferred from filled cells and do not include a
-    declared-but-uninstantiated tail. Every candidate is an instantiated repeat row, so
-    its row-local `Having` condition passes the full-validation content gate. -/
+/-- The validation view of one repeatable group. Candidates are explicit instantiated rows in semantic repetition order; they are not inferred from filled cells and do not include a declared-but-uninstantiated tail. Checked constructors must establish that order—the finite one-level boundary requires the exact `1 … n` prefix, while general nested construction is owned by `StarAddressing`. Every candidate is an instantiated repeat row, so its row-local `Having` condition passes the full-validation content gate. -/
 structure SingleGroupValidationContext where
   group : RepeatableLevel
   candidates : List RowIndex
@@ -91,8 +88,7 @@ inductive SelectRows (star : SingleStar) (context : SingleGroupValidationContext
       (tail : SelectRows star context rows selected) :
       SelectRows star context (row :: rows) selected
 
-/-- Select rows before any aggregate operand is observed. `List.filter` preserves the
-    candidates' document order and multiplicity. -/
+/-- Select rows before any aggregate operand is observed. `List.filter` preserves the candidates' checked semantic order and multiplicity. -/
 def SingleStar.select (star : SingleStar)
     (context : SingleGroupValidationContext) : List RowIndex :=
   context.candidates.filter (star.keeps context)
