@@ -319,11 +319,11 @@ def ResolvedNumericAtom.admitsDirectRound : ResolvedNumericAtom Field → Bool
   | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
   | .dateDifference _ _ _ => false
 
-/-- Whether one resolved numeric source is source-confirmed for the direct operation-form absolute-value wrapper. Aggregates and the remaining scalar operations do not inherit this admission. -/
+/-- Whether one resolved numeric source is source-confirmed for the direct operation-form absolute-value wrapper. The remaining scalar operations do not inherit this admission. -/
 def ResolvedNumericAtom.admitsDirectAbsolute : ResolvedNumericAtom Field → Bool
-  | .field _ | .stringRange _ _ _ | .fieldValueAsNumber _ => true
+  | .field _ | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ => true
   | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .dateDifference _ _ _ | .aggregate _ _ => false
+  | .dateDifference _ _ _ => false
 
 /-- The source-specific direct unary wrapper matrix shared by checked validation and computation. This deliberately does not infer general wrapper composition. -/
 def AuthoredNumericExpr.isDirectResolvedUnaryValueFunction :
