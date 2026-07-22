@@ -277,9 +277,7 @@ example :
       checkedResultOf absolute
         (context (choice := formalCheck { kind := .enumeration }
           (.rejected .declaredConstraint))) =
-        some (.poison .declaredConstraint) ∧
-      checkedErrorOf (.abs (surfaceStringRange 1 2)) =
-        some .unsupportedExpression := by
+        some (.poison .declaredConstraint) := by
   native_decide
 
 /- Conversion diagnostics preserve resolved source identity and exact category rejection; unchecked String pattern assumptions stay outside the checked core. -/
@@ -324,6 +322,22 @@ example :
       checkedResultOf (surfaceStringRange 1 1)
         (context (code := formalCheck { kind := .string }
           (.rejected .malformed))) = some (.poison .malformed) := by
+  native_decide
+
+/- Direct rounding and absolute value reuse the range source and ordinary numeric wrapper evaluator, including clean missing zero and exact poison. -/
+example :
+    let rounded := .round .halfUp omittedRoundingPlaces (surfaceStringRange 1 2)
+    let absolute := .abs (surfaceStringRange 1 2)
+    let filled := context (code := formalCheck { kind := .string }
+      (.parsed (.str "12X")))
+    let malformed := context (code := formalCheck { kind := .string }
+      (.rejected .malformed))
+    checkedResultOf rounded filled = some (.value 12) ∧
+      checkedResultOf absolute filled = some (.value 12) ∧
+      checkedResultOf rounded = some (.value 0) ∧
+      checkedResultOf absolute = some (.value 0) ∧
+      checkedResultOf rounded malformed = some (.poison .malformed) ∧
+      checkedResultOf absolute malformed = some (.poison .malformed) := by
   native_decide
 
 /- The checked atom is an ordinary numeric-expression source and reaches the existing target checker without a range-specific write path. -/

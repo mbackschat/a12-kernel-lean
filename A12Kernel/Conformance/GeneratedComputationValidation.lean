@@ -123,7 +123,7 @@ private def crossGroupStringRangeOperation :
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
-    (.atom (.stringRange (absolutePath ["Input"] "Code") 1 2))
+    (.abs (.atom (.stringRange (absolutePath ["Input"] "Code") 1 2)))
 
 private def crossGroupFieldValueAsNumberOperation :
     Except NumericComputationElabError
@@ -777,7 +777,7 @@ example :
         some (.fired aggregateExpectedMessage) := by
   native_decide
 
-/- Generated validation narrows the checked String range atom without rebuilding it and compares the same numeric result model-wide. -/
+/- Generated validation narrows the checked absolute-value/String-range tree without rebuilding either layer and compares the same nonnegative result model-wide. -/
 example :
     crossGroupStringRangeOutcome 12 = some .notFired ∧
       crossGroupStringRangeOutcome 13 =

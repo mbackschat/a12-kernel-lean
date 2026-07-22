@@ -313,17 +313,17 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
 
 end ResolvedNumericAtom
 
-/-- Whether one resolved numeric source is source-confirmed for the direct operation-form rounding wrapper. Number fields, `FieldValueAsNumber`, and aggregates have independently audited parser routes for this shape. -/
+/-- Whether one resolved numeric source is source-confirmed for the direct operation-form rounding wrapper. Each accepted source has an independently audited parser and runtime route for this shape. -/
 def ResolvedNumericAtom.admitsDirectRound : ResolvedNumericAtom Field → Bool
-  | .field _ | .fieldValueAsNumber _ | .aggregate _ _ => true
+  | .field _ | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ => true
   | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .stringRange _ _ _ | .dateDifference _ _ _ => false
+  | .dateDifference _ _ _ => false
 
 /-- Whether one resolved numeric source is source-confirmed for the direct operation-form absolute-value wrapper. Aggregates and the remaining scalar operations do not inherit this admission. -/
 def ResolvedNumericAtom.admitsDirectAbsolute : ResolvedNumericAtom Field → Bool
-  | .field _ | .fieldValueAsNumber _ => true
+  | .field _ | .stringRange _ _ _ | .fieldValueAsNumber _ => true
   | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .stringRange _ _ _ | .dateDifference _ _ _ | .aggregate _ _ => false
+  | .dateDifference _ _ _ | .aggregate _ _ => false
 
 /-- The source-specific direct unary wrapper matrix shared by checked validation and computation. This deliberately does not infer general wrapper composition. -/
 def AuthoredNumericExpr.isDirectResolvedUnaryValueFunction :
