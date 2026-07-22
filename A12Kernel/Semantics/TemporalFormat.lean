@@ -11,6 +11,11 @@ namespace A12Kernel
 def TemporalComponents.isDateLiteral (components : TemporalComponents) : Bool :=
   components.month && components.day && !components.hasTime
 
+/-- Static component identity carried by `Now`: a full date and time, independent of its exact millisecond runtime value. -/
+def TemporalComponents.now : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := true, minute := true, second := true }
+
 /-- Equality and inequality, unlike directional comparisons, require both formats to agree on whether they expose a time component. -/
 def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Bool
   | .equal | .notEqual => true
@@ -24,6 +29,11 @@ def TemporalComparisonOp.admitsFormats (op : TemporalComparisonOp)
   (left.year == right.year) &&
     (left.hasDate == right.hasDate) &&
     (!op.requiresSameTimePresence || (left.hasTime == right.hasTime))
+
+/-- `Now` obeys ordinary direct-comparison compatibility and the additional generated-code restriction that the other operand expose a time component. -/
+def TemporalComparisonOp.admitsNow (op : TemporalComparisonOp)
+    (hasBaseYear : Bool) (other : TemporalComponents) : Bool :=
+  other.hasTime && op.admitsFormats hasBaseYear other TemporalComponents.now
 
 /-- Static admission shared by temporal operand-list and field-list extrema: component sets must agree exactly after Base Year supplementation. -/
 def temporalAggregateFormatsCompatible (hasBaseYear : Bool)

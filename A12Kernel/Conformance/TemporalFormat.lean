@@ -24,6 +24,9 @@ private def hoursMinutes : TemporalComponents :=
 private def hoursMinutesSeconds : TemporalComponents :=
   { year := false, month := false, day := false, hour := true, minute := true, second := true }
 
+private def monthDayTime : TemporalComponents :=
+  { year := false, month := true, day := true, hour := true, minute := true, second := true }
+
 /- Direct ordering admits unequal date component sets; aggregate admission does not. -/
 example :
     TemporalComparisonOp.before.admitsFormats false yearMonth fullDate = true ∧
@@ -51,6 +54,20 @@ example :
 
 /- Time-only and date-containing formats remain different comparison classes. -/
 example : TemporalComparisonOp.before.admitsFormats false fullDate hoursMinutes = false := by
+  decide
+
+/- `Now` adds a time-component requirement beyond ordinary directional format admission. -/
+example :
+    TemporalComparisonOp.before.admitsFormats false fullDate TemporalComponents.now = true ∧
+      TemporalComparisonOp.before.admitsNow false fullDate = false ∧
+      TemporalComparisonOp.before.admitsNow false fullDateTime = true := by
+  decide
+
+/- Ordinary compatibility still rejects a time-only operand, and Base Year controls a yearless DateTime operand. -/
+example :
+    TemporalComparisonOp.before.admitsNow false hoursMinutesSeconds = false ∧
+      TemporalComparisonOp.before.admitsNow false monthDayTime = false ∧
+      TemporalComparisonOp.before.admitsNow true monthDayTime = true := by
   decide
 
 /- Full DateTime aggregate admission requires all six components. -/

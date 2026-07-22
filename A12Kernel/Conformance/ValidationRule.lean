@@ -23,8 +23,16 @@ private def repeatedAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } },
     repeatableScope := [10] }
 
+private def dateTimeComponents : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := true, minute := true, second := true }
+
+private def eventDateTime : FlatFieldDecl :=
+  { id := 4, groupPath := ["Order"], name := "EventDateTime",
+    policy := { kind := .temporal .dateTime dateTimeComponents } }
+
 private def model : FlatModel :=
-  { fields := [amount, acknowledged, unattached, repeatedAmount]
+  { fields := [amount, acknowledged, unattached, repeatedAmount, eventDateTime]
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def path (field : String) : SurfaceFieldPath :=
@@ -78,6 +86,17 @@ private def rawBothFilled : RawFlatContext where
     else if id = acknowledged.id then .parsed (.bool true)
     else .empty
 
+private def rawEventDateTime (millis : Int) : RawFlatContext where
+  read id :=
+    if id = eventDateTime.id then
+      .parsed (.temporal .dateTime { epochMillis := millis })
+    else .empty
+
+private def worldAt (millis : Int) : World :=
+  { now := { epochMillis := millis }, baseYear := none }
+
+private def defaultWorld : World := worldAt 0
+
 private def assembleWithPlan (condition : SurfaceCondition) (errorField : FieldId)
     (severity : ValidationSeverity) (plan : MessageRenderPlan) :
     Except (ElabError ⊕ FlatRuleAssemblyError)
@@ -99,19 +118,25 @@ private def outcomeOf (severity : ValidationSeverity) (raw : RawFlatContext)
   match assemble amountNonnegative amount.id severity with
   | .error _ => none
   | .ok checked =>
-      some (checked.evalFull raw hasContent)
+      some (checked.evalFull defaultWorld raw hasContent)
 
 private def outcomeFor (condition : SurfaceCondition) (errorField : FieldId)
     (raw : RawFlatContext) : Option FlatRuleOutcome :=
   match assemble condition errorField with
   | .error _ => none
-  | .ok checked => some (checked.evalFull raw true)
+  | .ok checked => some (checked.evalFull defaultWorld raw true)
+
+private def outcomeForAt (world : World) (condition : SurfaceCondition)
+    (errorField : FieldId) (raw : RawFlatContext) : Option FlatRuleOutcome :=
+  match assemble condition errorField with
+  | .error _ => none
+  | .ok checked => some (checked.evalFull world raw true)
 
 private def outcomeWithPlan (plan : MessageRenderPlan) (raw : RawFlatContext) :
     Option FlatRuleOutcome :=
   match assembleWithPlan amountNonnegative amount.id .error plan with
   | .error _ => none
-  | .ok checked => some (checked.evalFull raw true)
+  | .ok checked => some (checked.evalFull defaultWorld raw true)
 
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
@@ -127,6 +152,20 @@ example :
         some (.fired (expectedMessage .error .omission)) ∧
       outcomeOf .error (rawAmount (.parsed (.num 0))) =
         some (.fired (expectedMessage .error .value)) := by
+  native_decide
+
+/- Whole-rule evaluation carries the explicit world through the checked condition, so `Now` observes the supplied millisecond instant before message construction. -/
+example :
+    outcomeForAt (worldAt 100999)
+      (.compareNow .greater .left (path "EventDateTime"))
+      eventDateTime.id (rawEventDateTime 100000) =
+        some (.fired {
+          errorAddress := { field := eventDateTime.id, path := [] }
+          severity := .error
+          messageType := .value
+          errorCode
+          text := resolvedText
+        }) := by
   native_decide
 
 /- A not-fired or unknown rule is independent of all message inputs, while a fired rule renders the selected structured plan. -/

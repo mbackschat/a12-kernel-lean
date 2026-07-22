@@ -6,14 +6,14 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 
 ## Verified baseline
 
-- Semantic baseline: checked temporal field-to-field and field-to-typed-Date-literal comparison over one shared exact-instant operand core, building on `90e7bc8` (`feat(temporal): lower checked field comparisons`).
-- Its focused red/green checks, full 237-job `lake build`, 51/51 retained-observation replay, and trust audit over 754 theorem roots / 12,250 declarations / 138 logical modules passed.
+- Semantic baseline: checked temporal field-to-field, field-to-typed-Date-literal, and field/`Now` comparison over one shared exact-instant operand core, building on `e9a582a` (`feat(temporal): admit typed date literals`).
+- Its focused red/green checks, full 237-job `lake build`, 51/51 retained-observation replay, and trust audit over 756 theorem roots / 12,331 declarations / 138 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Add the checked `Now` temporal-comparison operand over the existing exact-millisecond `World.now` coordinate. Preserve the kernel's static requirement that the other operand carry a time component, reuse the shared temporal operand evaluator, and keep `Today` parked until model-zone midnight resolution is implemented. Do not add parsing, a public-protocol operation, or another clock/instant representation.
+Spike the smallest truthful `Today` boundary by auditing the existing UTC and versioned Berlin instant-to-local-date capabilities against the kernel's accepted model-zone domain. Implement checked comparison only if the current timezone owners can derive model-zone midnight without a duplicate calendar/zone mechanism; otherwise record the missing semantic fact and immediately select the next source-ready kernel seam.
 
 ## Frontier queue
 
@@ -57,7 +57,8 @@ Add the checked `Now` temporal-comparison operand over the existing exact-millis
 - **Satisfied — temporal declaration admission and presence:** `TemporalComponents` is one shared static declaration fact, `FieldKind.temporal` admits only the matching tagged exact instant after parsing/format checks, and checked flat presence plus generated presence guards reuse `FlatTemporalField`, the shared context, and required staging.
 - **Satisfied — checked temporal field comparison:** kernel runtime routes admitted Date, Time, and DateTime operands through exact `java.util.Date` identity/order, so checked lowering applies the declaration-owned Base-Year-aware component gate and reuses the exact-`Instant` evaluator for all three tags. Both fields pass their own model admission and partial relevance checks; the resolved `FullDate`/`TimeOfDay` evaluators remain proof-bearing projections rather than parallel storage paths.
 - **Satisfied — typed temporal literal operand:** an already-lexed and decoded Date constant retains its own component set and exact instant, omitted-year shape requires Base Year, and field/literal comparison reuses the same operand/evaluator as field/field. Core admission requires at least one field and therefore rejects constant/constant comparison; concrete token classification and zone/Base-Year decoding remain outside this parser-independent boundary.
-- **Ready — checked `Now` comparison operand:** inject `World.now` as a dynamic fixed temporal operand only after the other side passes the source-owned time-component gate. Plain Date versus `Now` remains rejected; `Today` remains separate because it needs model-zone midnight resolution.
+- **Satisfied — checked `Now` comparison operand:** `World.now` is a dynamic fixed temporal operand in either authored position after the opposite format passes the source-owned time-component and ordinary compatibility gates. Immediate and assembled whole-rule evaluation require the explicit world, exact millisecond identity is preserved, plain Date remains rejected, and partial-context agreement includes world equality.
+- **Researching — checked `Today` comparison operand:** determine whether the existing UTC/Berlin profiles can support truthful instant-to-model-zone-midnight resolution without inventing a second timezone layer. The kernel's wider recognized legacy-zone-id domain must remain explicit; a narrow profile is not 100% conformance.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.

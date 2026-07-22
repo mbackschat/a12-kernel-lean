@@ -112,6 +112,10 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
         (Json.mkObj [("operation", toJson "temporalComparison"),
           ("reason", toJson "incompatibleFormats"),
           ("leftPath", toJson leftPath), ("rightPath", toJson rightPath)]))
+  | .temporalNowRequiresTime path =>
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "temporalComparison"),
+          ("reason", toJson "nowRequiresTime"), ("path", toJson path)]))
   | .temporalLiteralNeedsBaseYear path =>
       pure (.make .fieldKindMismatch "$.condition"
         (Json.mkObj [("operation", toJson "temporalComparison"),

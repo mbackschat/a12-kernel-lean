@@ -10,7 +10,7 @@ import A12Kernel.Semantics.DateTimeComparison
 A small core for resolved, non-repeatable field references. It covers the admitted
 direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
 direct String equality and inequality, four String `Length` ordering comparisons,
-resolved two-field temporal comparison, presence predicates, and `And`/`Or`.
+resolved temporal field/literal/`Now` comparison, presence predicates, and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -83,6 +83,7 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
 inductive FlatTemporalOperand where
   | fieldValue (field : FlatTemporalField)
   | literalValue (instant : Instant)
+  | nowValue
   deriving Repr, DecidableEq
 
 namespace FlatTemporalOperand
@@ -90,6 +91,7 @@ namespace FlatTemporalOperand
 def fields : FlatTemporalOperand → List FlatField
   | .fieldValue field => [.temporal field]
   | .literalValue _ => []
+  | .nowValue => []
 
 end FlatTemporalOperand
 
@@ -138,6 +140,11 @@ inductive FlatCondition where
     still treats an inconsistent value kind defensively as malformed. -/
 structure FlatContext where
   read : FieldId → CheckedCell
+  world : Option World := none
+
+/-- Supply the explicit evaluation world only to consumers that support clock-dependent operands. -/
+def FlatContext.withWorld (context : FlatContext) (world : World) : FlatContext :=
+  { context with world := some world }
 
 /-- Per-field relevance for the nonrepeatable flat fragment. This is not the eventual
     wildcardable, row-addressed partial-validation relevant set. -/
@@ -216,6 +223,10 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand �
     SimpleComparisonOperand Instant
   | .fieldValue field => context.resolveTemporalComparisonOperand field
   | .literalValue instant => .value instant true
+  | .nowValue =>
+      match context.world with
+      | some world => .value world.now true
+      | none => .unknown .malformed
 
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/
