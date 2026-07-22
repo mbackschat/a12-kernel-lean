@@ -183,8 +183,11 @@ run_cmd do
 #print axioms A12Kernel.temporalComparison_admitsNow_admitsFormats
 #print axioms A12Kernel.temporalComparison_admitsToday_admitsFormats
 #print axioms A12Kernel.temporalEqual_admitsToday_hasNoTime
+#print axioms A12Kernel.temporalComparison_admitsBaseYear_hasDate
 #print axioms A12Kernel.todayOperand_resolves_exact
 #print axioms A12Kernel.todayOperand_unsupported
+#print axioms A12Kernel.baseYearOperand_resolves_exact
+#print axioms A12Kernel.baseYearOperand_unsupported
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap

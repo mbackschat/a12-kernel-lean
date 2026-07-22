@@ -84,6 +84,7 @@ inductive FlatTemporalOperand where
   | fieldValue (field : FlatTemporalField)
   | literalValue (instant : Instant)
   | todayValue (zoneId : String)
+  | baseYearValue (zoneId : String) (year : Int)
   | nowValue
   deriving Repr, DecidableEq
 
@@ -93,6 +94,7 @@ def fields : FlatTemporalOperand → List FlatField
   | .fieldValue field => [.temporal field]
   | .literalValue _ => []
   | .todayValue _ => []
+  | .baseYearValue _ _ => []
   | .nowValue => []
 
 end FlatTemporalOperand
@@ -227,6 +229,11 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand �
   | .literalValue instant => .value instant true
   | .todayValue zoneId =>
       match context.world.bind (·.today? zoneId) with
+      | some instant => .value instant true
+      | none => .unknown .malformed
+  | .baseYearValue zoneId year =>
+      match context.world.bind (fun world =>
+        world.resolveLocal? zoneId year 1 1 0 0 0) with
       | some instant => .value instant true
       | none => .unknown .malformed
   | .nowValue =>

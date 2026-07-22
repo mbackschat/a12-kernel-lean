@@ -1,4 +1,4 @@
-import A12Kernel.Core
+import A12Kernel.Semantics.NumericComparison
 
 /-! # Static numeric-scale summaries
 
@@ -93,5 +93,12 @@ def exactNumericScaleComparisonAllowedWithSuppression
     (suppressExactScaleWarning : Bool)
     (left right : NumericScaleSummary) : Bool :=
   suppressExactScaleWarning || exactNumericScaleComparisonAllowed left right
+
+/-- Ordering is scale-exempt; unsuppressed equality and inequality use the exact authored-scale gate. This dispatch is shared by checked expression comparison and the polymorphic numeric Base Year constant. -/
+def NumericComparisonOp.acceptsScales (op : NumericComparisonOp)
+    (left right : NumericScaleSummary) : Bool :=
+  match op with
+  | .equal | .notEqual => exactNumericScaleComparisonAllowed left right
+  | .less | .lessEqual | .greater | .greaterEqual => true
 
 end A12Kernel

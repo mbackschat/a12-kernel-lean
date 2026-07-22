@@ -93,7 +93,7 @@ private def rawEventDateTime (millis : Int) : RawFlatContext where
     else .empty
 
 private def worldAt (millis : Int) : World :=
-  { now := { epochMillis := millis }, baseYear := none }
+  { now := { epochMillis := millis } }
 
 private def defaultWorld : World := worldAt 0
 

@@ -19,4 +19,20 @@ theorem todayOperand_unsupported (context : FlatContext) (world : World)
   unfold World.today? at unsupported
   simp [FlatTemporalOperand.resolve, World.today?, unsupported]
 
+theorem baseYearOperand_resolves_exact (context : FlatContext) (world : World)
+    (zoneId : String) (year : Int) (start : Instant)
+    (resolved : world.resolveLocal? zoneId year 1 1 0 0 0 = some start) :
+    (FlatTemporalOperand.baseYearValue zoneId year).resolve
+      { context with world := some world } = .value start true := by
+  unfold World.resolveLocal? at resolved
+  simp [FlatTemporalOperand.resolve, World.resolveLocal?, resolved]
+
+theorem baseYearOperand_unsupported (context : FlatContext) (world : World)
+    (zoneId : String) (year : Int)
+    (unsupported : world.resolveLocal? zoneId year 1 1 0 0 0 = none) :
+    (FlatTemporalOperand.baseYearValue zoneId year).resolve
+      { context with world := some world } = .unknown .malformed := by
+  unfold World.resolveLocal? at unsupported
+  simp [FlatTemporalOperand.resolve, World.resolveLocal?, unsupported]
+
 end A12Kernel
