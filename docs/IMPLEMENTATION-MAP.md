@@ -610,6 +610,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - Exact ordered selector ↔ relation bridges
 - filter-before-consumer laws
+- The one-group Number aggregate now classifies each selected row through the same `FlatNumberField.valueListCell` owner used by checked nonrepeatable Number lists. Empty, present Number, wrong-kind, and exact-cause unavailable cells therefore cannot drift between flat membership and repeatable aggregation; selection and the aggregate scan remain separate.
 - a shared full-environment correlated evaluator/relation bridge
 - captured-origin, exact named-level resolution, outer-reference stability, self-match/exclusion, scalar-collapse rejection, and one-group observation-footprint results.
 - Resolved RNU consumes caller-supplied ordered rows with complete repetition environments and classified composite keys. It excludes unknown keys, skips all-empty keys, uses scale-19 Number equality, retains complete firing clusters in scope order, and projects per-row verdicts before composition.

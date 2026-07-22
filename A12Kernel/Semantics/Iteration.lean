@@ -109,11 +109,7 @@ inductive NumberFold where
 /-- Classify one selected checked-row read for the shared resolved Number aggregate scan. -/
 def NumberFold.classifyRow (context : SingleGroupValidationContext)
     (field : FlatNumberField) (row : RowIndex) : ValueListCell .number :=
-  match observeCell .validation (context.read row field.id) with
-  | .empty => .empty
-  | .value (.num amount) => .present amount
-  | .value _ => .unknown .malformed
-  | .unknown cause | .poison cause => .unknown cause
+  field.valueListCell (context.atRow row)
 
 /-- Project the shared encounter-ordered precision-50 Number sum to the older amount-or-cause result used by the one-group iteration boundary. -/
 def NumberFold.sumRows (context : SingleGroupValidationContext)
