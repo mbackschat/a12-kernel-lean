@@ -41,6 +41,11 @@ private def path (field : String) : SurfaceFieldPath :=
 private def amountNonnegative : SurfaceCondition :=
   .compare .greaterEqual (path "Amount") (.number 0)
 
+private def amountPositive : SurfaceNumericComparison :=
+  { op := .ordinary .greater
+    left := .atom (.field (path "Amount"))
+    right := .literal { value := 0, authoredScale := 0 } }
+
 private def messagePlan : MessageRenderPlan :=
   { parts := [
       .text "Amount [",
@@ -86,6 +91,12 @@ private def rawBothFilled : RawFlatContext where
     else if id = acknowledged.id then .parsed (.bool true)
     else .empty
 
+private def rawPositiveAcknowledged : RawFlatContext where
+  read id :=
+    if id = amount.id then .parsed (.num 1)
+    else if id = acknowledged.id then .parsed (.bool true)
+    else .empty
+
 private def temporalDateParts : DateParts :=
   { year := 2024, month := 6, day := 25 }
 
@@ -116,6 +127,16 @@ private def assemble (condition : SurfaceCondition) (errorField : FieldId)
     (severity : ValidationSeverity := .error) :=
   assembleWithPlan condition errorField severity messagePlan
 
+private def assembleMixed? : Option (CheckedResolvedValidationRule model) := do
+  let flat ← (elaborate model ["Order"]
+    (.fieldFilled (path "Acknowledged"))).toOption
+  let numeric ← (elaborateNumericComparison model ["Order"] amountPositive).toOption
+  let flatCondition ← (CheckedValidationCondition.fromFlat flat).toOption
+  let numericCondition ← (CheckedValidationCondition.fromNumeric numeric).toOption
+  let condition ← (flatCondition.and numericCondition).toOption
+  (assembleResolvedValidationRule model condition amount.id errorCode .error
+    messagePlan).toOption
+
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
@@ -145,6 +166,10 @@ private def outcomeWithPlan (plan : MessageRenderPlan) (raw : RawFlatContext) :
   | .error _ => none
   | .ok checked => some (checked.evalFull defaultWorld raw true)
 
+private def mixedOutcome (raw : RawFlatContext) : Option FlatRuleOutcome := do
+  let rule ← assembleMixed?
+  pure (rule.evalFull defaultWorld raw true)
+
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
   { errorAddress := { field := amount.id, path := [] }
@@ -159,6 +184,13 @@ example :
         some (.fired (expectedMessage .error .omission)) ∧
       outcomeOf .error (rawAmount (.parsed (.num 0))) =
         some (.fired (expectedMessage .error .value)) := by
+  native_decide
+
+/- Mixed checked whole-rule assembly discovers an error field referenced only by the numeric leaf and reuses the existing message outcome. -/
+example :
+    mixedOutcome rawPositiveAcknowledged =
+        some (.fired (expectedMessage .error .value)) ∧
+      mixedOutcome (rawAmount (.rejected .malformed)) = some .notFired := by
   native_decide
 
 /- Whole-rule evaluation carries the explicit world through the checked condition, so `Now` observes the supplied millisecond instant before message construction. -/

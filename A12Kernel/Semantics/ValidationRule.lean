@@ -86,14 +86,16 @@ def render (plan : MessageRenderPlan) : ResolvedMessageText :=
 
 end MessageRenderPlan
 
-/-- One already-resolved flat rule instance. Message display inputs remain structured until a fired verdict reaches the renderer. The checked layer proves the model, error-field, and nonrepeatable assumptions before using this semantic core. -/
-structure ResolvedFlatRule where
-  condition : FlatCondition
+/-- One already-resolved rule instance, parametric only in its condition representation. Message display inputs remain structured until a fired verdict reaches the renderer. -/
+structure ResolvedRule (Condition : Type) where
+  condition : Condition
   errorField : FieldId
   errorCode : String
   severity : ValidationSeverity
   messagePlan : MessageRenderPlan
   deriving Repr, DecidableEq
+
+abbrev ResolvedFlatRule := ResolvedRule FlatCondition
 
 /-- The message fields admitted by this flat capsule. Rule path, referenced fields, and fill-to-fix metadata remain outside. -/
 structure FlatRuleMessage where
@@ -134,12 +136,11 @@ def message? : FlatRuleOutcome → Option FlatRuleMessage
 
 end FlatRuleOutcome
 
-namespace ResolvedFlatRule
+namespace ResolvedRule
 
-/-- Evaluate the error condition exactly once, then render and attach message metadata only to a fired verdict. This fragment rejects repeatable error fields, hence the empty repetition path. -/
-def evalFull (rule : ResolvedFlatRule) (context : FlatContext)
-    (hasContent : Bool) : FlatRuleOutcome :=
-  match rule.condition.evalFull context hasContent with
+/-- Attach metadata to one already-computed verdict. Every condition family reuses this sole post-verdict boundary. -/
+def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :=
+  match verdict with
   | .notFired => .notFired
   | .fired messageType =>
       .fired {
@@ -151,6 +152,16 @@ def evalFull (rule : ResolvedFlatRule) (context : FlatContext)
       }
   | .unknown => .unknown
 
-end ResolvedFlatRule
+/-- Evaluate a condition exactly once, then pass only its verdict to the shared emitter. -/
+def evalWith (rule : ResolvedRule Condition)
+    (evaluate : Condition → Verdict) : FlatRuleOutcome :=
+  rule.emit (evaluate rule.condition)
+
+/-- The established flat specialization. Keeping it on the underlying generic structure preserves dot notation after record updates. -/
+def evalFull (rule : ResolvedRule FlatCondition) (context : FlatContext)
+    (hasContent : Bool) : FlatRuleOutcome :=
+  rule.evalWith fun condition => condition.evalFull context hasContent
+
+end ResolvedRule
 
 end A12Kernel
