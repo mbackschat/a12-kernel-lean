@@ -20,6 +20,31 @@ The accepted evidence consolidation divides work into three tiers. Tier 1 is the
 
 An unavailable external observation no longer blocks unrelated internal semantics or theorem work. Mark the capsule `external evidence pending`, keep the claim narrow, and schedule the smallest useful family calibration. It still blocks a kernel-correspondence-complete or shipment-ready claim.
 
+## Same-context capsule closure assessment
+
+After the focused and integrated implementation is stable, the agent that performed the source audit and capsule work must assess the completed unit before the final trust/hygiene gate and commit. Apply the same rule proportionally to every approved substantive architecture, harness, process, or documentation unit. This is deliberately an in-context review: the agent must use its knowledge of rejected accounts, failed red cases, source discriminators, assumptions, measurements, and implementation tradeoffs rather than delegating the retrospective to a cold reviewer.
+
+The assessment covers:
+
+- **Semantic root:** whether the mechanism and a second predicted instance are fixed, or only the reported symptom.
+- **Scope and claim integrity:** whether the supported fragment, exclusions, and kernel-correspondence claim remain exact rather than silently widening.
+- **Architecture:** reuse, duplication, dependency direction, ownership, coupling, and whether every extracted abstraction has at least two real completed consumers.
+- **Tests and proofs:** missing boundary cases, realistic wrong accounts, mutation seams, false generalizations, weak hypotheses, missing non-laws, and trust-root registration.
+- **Harness and executable cost:** measured latency, repeated/noisy gates, poor diagnostics, unnecessary scans, termination structure, and support code outweighing semantic code.
+- **Consumer adequacy:** distinctions required by one named task, the supported decision or preservation procedure, and unsafe transformations that must remain representable.
+- **Evidence and calibration:** exact external status, provenance strength, claim limits, and whether the unit belongs in an existing coherent calibration batch.
+- **Cross-project directionality:** inbound handback versus outbound request, exact revision provenance, owner overlap, and feedback-loop risk.
+- **Documentation and resumption:** changed architecture or source routes, stale exclusions, duplicated status, and whether the next maintainer can find the owner and discriminator without archaeology.
+- **Consolidation and hygiene:** code smells, obsolete mechanisms, live-value failures, line/estate pressure, sibling cleanliness, temporary artifacts, and the highest-connectivity ready frontier.
+
+Fix a same-capsule defect before committing. Record a genuinely open semantic obligation only in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md); route a durable formalization lesson to [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), implemented/evidence state to [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and immediate sequencing to [`PLAN.md`](PLAN.md). A routine assessment with no concrete finding creates no repository report. Infrastructure, protocol, dependency, shipment, or governance work found by the assessment remains a proposal subject to its existing approval rule.
+
+If the assessment changes code, proofs, executable cases, or a gate-consumed artifact, rerun the affected focused check and every later applicable rung before commit. Documentation-only corrections do not restart unrelated semantic gates.
+
+### Trigger-based cold review
+
+A cold reviewer supplements rather than replaces the same-context assessment. Run a bounded artifact-only review after a reusable family closes, a major addressing/computation boundary changes, a public protocol or shipment changes, a capsule is unusually large or risky, or before making a consumer-adequacy or compatibility claim. The cold task tests consumer discoverability, hidden assumptions, public-contract clarity, and independent implementation feasibility; it does not edit or redesign the capsule independently. The original in-context agent reconciles every cold finding against the actual source evidence and owners before changing the representation or opening a gap. Do not pay for a cold review after every routine capsule.
+
 ## The six harness layers
 
 - **Focused executable locks:** [`Conformance/`](../A12Kernel/Conformance/) checks concrete Lean results and rejections. It does not prove universal correctness or kernel agreement.
