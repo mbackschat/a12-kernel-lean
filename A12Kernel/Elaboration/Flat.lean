@@ -97,7 +97,7 @@ inductive SurfaceCondition where
   | compareEnumeration (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (projection : EnumerationProjectionRef) (literal : String)
   | enumerationValueList (quantifier : ValueListQuantifier)
-      (field : SurfaceTextFieldOperand) (values : List String)
+      (fields : List SurfaceTextFieldOperand) (values : List String)
   | enumerationValueMembership (op : ValueListMembershipOp)
       (field : SurfaceTextFieldOperand) (values : List String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
@@ -246,6 +246,9 @@ inductive ElabError where
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | textFieldOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | emptyValueList (path : List String)
+  | emptyValueListFields
+  | duplicateValueListField (path : List String)
+      (projectionRef : EnumerationProjectionRef)
   | enumerationComparability (leftPath rightPath : List String)
       (error : EnumerationComparabilityError)
   | incoherentCore
@@ -595,6 +598,19 @@ def FlatModel.checkedEnumerationOperand? (model : FlatModel)
       else
         none
 
+def enumerationOperandListHasDuplicate : List FlatEnumerationOperand → Bool
+  | [] => false
+  | operand :: remaining =>
+      remaining.contains operand || enumerationOperandListHasDuplicate remaining
+
+def FlatModel.enumerationLiteralAllowedByAny (model : FlatModel)
+    (operands : List FlatEnumerationOperand) (value : String) : Bool :=
+  operands.any fun operand =>
+    match model.checkedEnumerationOperand? operand with
+    | some checked =>
+        checked.declaration.literalAllowed checked.projection value
+    | none => false
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
   | .textFields _ left right =>
@@ -612,13 +628,10 @@ def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison)
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
   | .compare comparison => model.admitsComparison comparison
-  | .enumerationValueList _ operand values =>
-      !values.isEmpty &&
-        match model.checkedEnumerationOperand? operand with
-        | some checked =>
-            values.all fun value =>
-              checked.declaration.literalAllowed checked.projection value
-        | none => false
+  | .enumerationValueList _ operands values =>
+      !operands.isEmpty && !enumerationOperandListHasDuplicate operands &&
+        operands.all (fun operand => (model.checkedEnumerationOperand? operand).isSome) &&
+        !values.isEmpty && values.all (model.enumerationLiteralAllowedByAny operands)
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
   | .and left right => left.wellFormedBool model && right.wellFormedBool model
@@ -719,6 +732,41 @@ private def elaborateEnumerationLiteralList (model : FlatModel)
     | some value => throw (.enumerationOperand path (.invalidLiteral value))
     | none => pure operand
 
+private def duplicateElaboratedEnumerationOperand? :
+    List (List String × CheckedEnumerationProjection × FlatEnumerationOperand) →
+      Option (List String × EnumerationProjectionRef)
+  | [] => none
+  | current :: remaining =>
+      if remaining.any fun candidate => candidate.2.2 == current.2.2 then
+        some (current.1, current.2.2.projectionRef)
+      else
+        duplicateElaboratedEnumerationOperand? remaining
+
+private def elaborateEnumerationFieldList (model : FlatModel)
+    (declaringGroup : GroupPath) (surfaces : List SurfaceTextFieldOperand)
+    (values : List String) : Except ElabError (List FlatEnumerationOperand) := do
+  if surfaces.isEmpty then
+    throw .emptyValueListFields
+  let resolved ← surfaces.mapM
+    (elaborateEnumerationFieldOperand model declaringGroup)
+  match resolved with
+  | [] => throw .emptyValueListFields
+  | first :: remaining =>
+      match duplicateElaboratedEnumerationOperand? resolved with
+      | some (path, projectionRef) =>
+          throw (.duplicateValueListField path projectionRef)
+      | none =>
+          if values.isEmpty then
+            throw (.emptyValueList first.1)
+          else
+            match values.find? fun value =>
+                !resolved.any fun entry =>
+                  entry.2.1.declaration.literalAllowed
+                    entry.2.1.projection value with
+            | some value =>
+                throw (.enumerationOperand first.1 (.invalidLiteral value))
+            | none => pure ((first :: remaining).map (·.2.2))
+
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup : GroupPath) : SurfaceTextFieldOperand →
       Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
@@ -748,14 +796,14 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
         elaborateTextFieldOperand model declaringGroup rightReference
       finishTextFieldComparison op leftPath rightPath
         (leftOperand, leftProfile) (rightOperand, rightProfile)
-  | .enumerationValueList quantifier surface values => do
-      let operand ←
-        elaborateEnumerationLiteralList model declaringGroup surface values
-      pure (.enumerationValueList quantifier operand values)
+  | .enumerationValueList quantifier surfaces values => do
+      let operands ←
+        elaborateEnumerationFieldList model declaringGroup surfaces values
+      pure (.enumerationValueList quantifier operands values)
   | .enumerationValueMembership op surface values => do
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup surface values
-      pure (.enumerationValueList op.quantifier operand values)
+      pure (.enumerationValueList op.quantifier [operand] values)
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve

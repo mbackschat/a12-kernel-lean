@@ -92,6 +92,23 @@ private theorem textFieldOperand_resolve_agreesOn
       simp_all [FlatTextFieldOperand.resolve, FlatEnumerationOperand.resolve,
         FlatContext.observeValidationAt]
 
+private theorem enumerationValueListSide_agreesOn
+    (operands : List FlatEnumerationOperand) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
+    (relevant : operands.all (fun operand => isRelevant operand.field.id) = true) :
+    flatEnumerationValueListSide operands left =
+      flatEnumerationValueListSide operands right := by
+  unfold flatEnumerationValueListSide
+  congr 1
+  apply List.map_congr_left
+  intro operand member
+  have relevantOperand : isRelevant operand.field.id = true := by
+    exact List.all_eq_true.mp relevant operand member
+  have readEq := agreement operand.field.id relevantOperand
+  simp [FlatEnumerationOperand.valueListCell,
+    FlatContext.observeValidationAt, readEq]
+
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
 theorem partialSelected_agreesOn
     (condition : FlatCondition) (left right : FlatContext)
@@ -165,12 +182,12 @@ theorem partialSelected_agreesOn
               temporalOperand_resolve_agreesOn rightOperand left right isRelevant
                 worldAgreement agreement bothRelevant.right]
       · rfl
-  | enumerationValueList quantifier operand values =>
+  | enumerationValueList quantifier operands values =>
       simp only [FlatCondition.evalSelected]
       split
-      · have readEq := agreement operand.field.id (by assumption)
-        simp_all [FlatEnumerationOperand.valueListSide,
-          FlatContext.observeValidationAt]
+      · rename_i relevant
+        rw [enumerationValueListSide_agreesOn operands left right isRelevant
+          agreement relevant]
       · rfl
   | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected]
@@ -200,8 +217,9 @@ private theorem partialSelected_truth_refines_full
       split
       · exact K.informationRefines_refl _
       · trivial
-  | enumerationValueList quantifier operand values =>
-      simp only [FlatCondition.evalSelected]
+  | enumerationValueList quantifier operands values =>
+      have fullRelevant : operands.all (fun _ => true) = true := by simp
+      simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
       split
       · exact K.informationRefines_refl _
       · trivial

@@ -50,18 +50,26 @@ theorem checkedEnumerationValueList_sideCells
 
 @[simp]
 theorem flatEnumerationValueList_canFireOnEmpty
-    (quantifier : ValueListQuantifier) (operand : FlatEnumerationOperand)
+    (quantifier : ValueListQuantifier) (operands : List FlatEnumerationOperand)
     (values : List String) :
-    (FlatCondition.enumerationValueList quantifier operand values).canFireOnEmpty =
+    (FlatCondition.enumerationValueList quantifier operands values).canFireOnEmpty =
       quantifier.canFireOnEmpty := by
+  rfl
+
+@[simp]
+theorem flatEnumerationValueListSide_cells
+    (operands : List FlatEnumerationOperand) (context : FlatContext) :
+    (flatEnumerationValueListSide operands context).cells =
+      operands.map (·.valueListCell context) := by
   rfl
 
 /-- The single flat Enumeration leaf remains relevance-gated before either value-list side is consumed. -/
 @[simp]
 theorem flatEnumerationValueList_irrelevant_unknown
     (quantifier : ValueListQuantifier) (operand : FlatEnumerationOperand)
+    (remaining : List FlatEnumerationOperand)
     (values : List String) (context : FlatContext) :
-    (FlatCondition.enumerationValueList quantifier operand values).evalSelected
+    (FlatCondition.enumerationValueList quantifier (operand :: remaining) values).evalSelected
       context (fun _ => false) = .unknown := by
   simp [FlatCondition.evalSelected]
 
@@ -70,10 +78,11 @@ theorem flatEnumerationValueList_no_empty
     (operand : FlatEnumerationOperand) (values : List String)
     (context : FlatContext)
     (empty : context.observeValidationAt operand.field.id = .empty) :
-    (FlatCondition.enumerationValueList .no operand values).evalFull context false =
+    (FlatCondition.enumerationValueList .no [operand] values).evalFull context false =
       .fired .omission := by
   simp [FlatCondition.evalFull, FlatCondition.evalSelected,
-    FlatEnumerationOperand.valueListSide, literalTokenValueListSide,
+    flatEnumerationValueListSide, FlatEnumerationOperand.valueListCell,
+    literalTokenValueListSide,
     ValueListQuantifier.eval, evalValueListNo,
     ResolvedValueListSide.hasUnknown, ResolvedValueListSide.anyMatches,
     ResolvedValueListSide.hasMissingPotential, ResolvedValueListSide.hasEmpty,
@@ -85,11 +94,12 @@ theorem flatEnumerationValueMembership_empty
     (op : ValueListMembershipOp) (operand : FlatEnumerationOperand)
     (values : List String) (context : FlatContext)
     (empty : context.observeValidationAt operand.field.id = .empty) :
-    (FlatCondition.enumerationValueList op.quantifier operand values).evalFull
+    (FlatCondition.enumerationValueList op.quantifier [operand] values).evalFull
       context true = .notFired := by
   cases op <;>
     simp [ValueListMembershipOp.quantifier, FlatCondition.evalFull,
-      FlatCondition.evalSelected, FlatEnumerationOperand.valueListSide,
+      FlatCondition.evalSelected, flatEnumerationValueListSide,
+      FlatEnumerationOperand.valueListCell,
       literalTokenValueListSide, ValueListQuantifier.eval,
       evalValueListAtLeastOne, evalValueListNotAll,
       ResolvedValueListSide.anyMatches, ResolvedValueListSide.hasPresent,
