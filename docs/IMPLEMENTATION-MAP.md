@@ -397,15 +397,18 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - [`Semantics/String.lean`](../A12Kernel/Semantics/String.lean)
 - [`Semantics/StringPattern.lean`](../A12Kernel/Semantics/StringPattern.lean)
+- [`Semantics/LegalCharset.lean`](../A12Kernel/Semantics/LegalCharset.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Semantics/StringComputation.lean`](../A12Kernel/Semantics/StringComputation.lean)
 - [`Proofs/StringIngestion.lean`](../A12Kernel/Proofs/StringIngestion.lean)
 - [`Proofs/StringPattern.lean`](../A12Kernel/Proofs/StringPattern.lean)
+- [`Proofs/LegalCharset.lean`](../A12Kernel/Proofs/LegalCharset.lean)
 - [`Proofs/StringLength.lean`](../A12Kernel/Proofs/StringLength.lean)
 - [`Proofs/StringComputation.lean`](../A12Kernel/Proofs/StringComputation.lean)
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
 - [`Conformance/StringPattern.lean`](../A12Kernel/Conformance/StringPattern.lean)
+- [`Conformance/LegalCharset.lean`](../A12Kernel/Conformance/LegalCharset.lean)
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
 
@@ -416,6 +419,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Direct comparison, `Length`, and computation share that cached value, and the exact overlap counterexample prevents a second pass.
 - Direct equality/inequality and the four scale-exempt `Length` ordering operators have separate consuming clauses.
 - Resolved `PatternMatched`/`PatternViolated` consume an injected already-admitted whole-value matcher through the same normalized checked String read. Empty is not evaluated, formal unavailability remains UNKNOWN, the two operators are exact complements on present input, and every firing is VALUE-typed.
+- The admitted legal-charset runtime has a distinct default non-supplementary BMP policy plus explicit inclusive BMP ranges and bounded two/three-character atomic entries. It scans left-to-right, chooses the longest complete atomic prefix, falls back to exactly one range character, and emits the shared `unsupportedCharacter` cause only at the full-input check boundary.
 - Both direct String equality operators suppress an empty field or empty literal after preserving malformed input as UNKNOWN; distinct nonempty values fire only inequality.
 - a parsed empty String retains present-empty placement while supplying the same clean-empty observation as absence
 - `FieldFilled`/`FieldNotFilled` consume that empty observation rather than physical placement, and checked flat lowering admits String presence.
@@ -433,6 +437,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Maintained a12-dmkits IF198 tests separately establish the present-empty placement and downstream field/group/required outcomes across both kernel strategies plus JVM/Node.
 - Strict permitted-side acceptance, no-value/poison bypass, and CRLF/LF/lone-CR ingestion are internal Lean laws not separately exercised by retained local cases.
 - Eight resolved pattern cases separate normalized match/nonmatch, both operator polarities, empty suppression, and formal unavailability; generic laws prove complement and exclude OMISSION firing.
+- Twelve legal-charset runtime cases separate default BMP, supplementary input, range/atomic composition, component leakage, reversal/repetition, shared prefixes, longest terminal-prefix selection, empty progress, and the exact formal cause. Generic laws lock bounded progress, exact accepted payload retention, and validation-UNKNOWN/computation-poison projection.
 - Historical a12-dmkits triangulation had three final-empty-store mismatches and agreed with all nine target cases at projected delta and stored-value application granularity
 - the [archive](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns that detail.
 - The retained strings remain conservative ASCII and do not externally establish broader Unicode or line-break behavior
@@ -443,6 +448,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - `Length ==`/`!=` remain outside the reduced checked surface because their numeric scale gate needs the authored literal scale that `SurfaceCondition.lengthCompare` does not retain.
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Pattern compilation, Java `Pattern` syntax/execution, the kernel's bounded admission gate, authored checked-pattern lowering, and public exposure remain outside; the injected function is deliberately only the post-admission whole-value matcher boundary.
+- Legal-charset definition parsing, Java-compatible grapheme clustering, and the narrow overlap gate remain outside this runtime capsule; the runtime representation makes empty/unbounded atomic entries impossible and is not used by computed-target basic checks.
 - Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, enumerations, legal-charsets, custom validators, raw-type rule elimination, and target-check ordering.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.

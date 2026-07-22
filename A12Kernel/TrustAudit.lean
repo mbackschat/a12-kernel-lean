@@ -783,6 +783,13 @@ run_cmd do
 #print axioms A12Kernel.stringPattern_evalResolved_value_complement
 #print axioms A12Kernel.stringLengthOperand_readsNormalized
 #print axioms A12Kernel.stringComputationField_readsNormalized
+#print axioms A12Kernel.legalCharset_defaultBmp_accepts_iff
+#print axioms A12Kernel.legalCharset_accepts_empty
+#print axioms A12Kernel.legalCharAtom_length_positive
+#print axioms A12Kernel.legalCharAtom_character_length
+#print axioms A12Kernel.legalCharset_checkRawText_accepts
+#print axioms A12Kernel.legalCharset_checkRawText_rejects
+#print axioms A12Kernel.legalCharset_rejection_phase_projection
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
