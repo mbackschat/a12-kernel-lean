@@ -54,6 +54,7 @@ import A12Kernel.Conformance.NumericTolerance
 import A12Kernel.Conformance.StringLength
 import A12Kernel.Conformance.StringIngestion
 import A12Kernel.Conformance.StringPattern
+import A12Kernel.Conformance.PatternAdmission
 import A12Kernel.Conformance.LegalCharset
 import A12Kernel.Conformance.LegalCharsetElaboration
 import A12Kernel.Conformance.CustomFieldCause

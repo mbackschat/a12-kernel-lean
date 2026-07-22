@@ -785,6 +785,10 @@ run_cmd do
 #print axioms A12Kernel.stringPattern_evalResolved_notEvaluated
 #print axioms A12Kernel.stringPattern_evalResolved_unknown
 #print axioms A12Kernel.stringPattern_evalResolved_value_complement
+#print axioms A12Kernel.classifyStringPattern_java_rejected
+#print axioms A12Kernel.classifyStringPattern_admitted_iff
+#print axioms A12Kernel.evalAdmittedStringPattern_success
+#print axioms A12Kernel.admittedStringPattern_fired_is_value
 #print axioms A12Kernel.stringLengthOperand_readsNormalized
 #print axioms A12Kernel.stringComputationField_readsNormalized
 #print axioms A12Kernel.legalCharset_defaultBmp_accepts_iff

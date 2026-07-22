@@ -398,6 +398,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Cell.lean`](../A12Kernel/Cell.lean)
 - [`Semantics/String.lean`](../A12Kernel/Semantics/String.lean)
 - [`Semantics/StringPattern.lean`](../A12Kernel/Semantics/StringPattern.lean)
+- [`Elaboration/StringPattern.lean`](../A12Kernel/Elaboration/StringPattern.lean)
 - [`Semantics/LegalCharset.lean`](../A12Kernel/Semantics/LegalCharset.lean)
 - [`Semantics/CustomFieldType.lean`](../A12Kernel/Semantics/CustomFieldType.lean)
 - [`Semantics/CustomFieldMessage.lean`](../A12Kernel/Semantics/CustomFieldMessage.lean)
@@ -410,6 +411,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/StringComputation.lean`](../A12Kernel/Semantics/StringComputation.lean)
 - [`Proofs/StringIngestion.lean`](../A12Kernel/Proofs/StringIngestion.lean)
 - [`Proofs/StringPattern.lean`](../A12Kernel/Proofs/StringPattern.lean)
+- [`Proofs/PatternAdmission.lean`](../A12Kernel/Proofs/PatternAdmission.lean)
 - [`Proofs/LegalCharset.lean`](../A12Kernel/Proofs/LegalCharset.lean)
 - [`Proofs/LegalCharsetElaboration.lean`](../A12Kernel/Proofs/LegalCharsetElaboration.lean)
 - [`Proofs/CustomFieldCause.lean`](../A12Kernel/Proofs/CustomFieldCause.lean)
@@ -423,6 +425,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/StringComputation.lean`](../A12Kernel/Proofs/StringComputation.lean)
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
 - [`Conformance/StringPattern.lean`](../A12Kernel/Conformance/StringPattern.lean)
+- [`Conformance/PatternAdmission.lean`](../A12Kernel/Conformance/PatternAdmission.lean)
 - [`Conformance/LegalCharset.lean`](../A12Kernel/Conformance/LegalCharset.lean)
 - [`Conformance/LegalCharsetElaboration.lean`](../A12Kernel/Conformance/LegalCharsetElaboration.lean)
 - [`Conformance/CustomFieldCause.lean`](../A12Kernel/Conformance/CustomFieldCause.lean)
@@ -442,6 +445,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Direct comparison, `Length`, and computation share that cached value, and the exact overlap counterexample prevents a second pass.
 - Direct equality/inequality and the four scale-exempt `Length` ordering operators have separate consuming clauses.
 - Resolved `PatternMatched`/`PatternViolated` consume an injected already-admitted whole-value matcher through the same normalized checked String read. Empty is not evaluated, formal unavailability remains UNKNOWN, the two operators are exact complements on present input, and every firing is VALUE-typed.
+- Checked pattern admission separates an injected Java-compilation decision from an independently written character scan over the finite documented kernel exclusions and the separately observed uppercase-`\P` exclusion. A successful source carries both proof facts and delegates only to the existing resolved whole-value matcher; admission makes no JavaScript-portability claim.
 - The admitted legal-charset runtime has a distinct default non-supplementary BMP policy plus explicit inclusive BMP ranges and bounded two/three-character atomic entries. It scans left-to-right, chooses the longest complete atomic prefix, falls back to exactly one range character, and emits the shared `unsupportedCharacter` cause only at the full-input check boundary.
 - Checked `supportedCharacters` lowering injects only Java-compatible grapheme clustering, distinguishes an empty definition from an empty entry, rejects supplementary/surrogate-bearing, overlong, plain multi-character, reversed-range, and narrowly ambiguous-overlap shapes, and retains legal shared and terminal prefixes in the bounded runtime representation.
 - Registered custom field-type rejection has its own formal cause carrying the exact project code and optional message template. It remains structurally distinct from the fixed declarative `customValidation` fallback and survives unchanged as validation UNKNOWN or computation poison.
@@ -471,6 +475,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Maintained a12-dmkits IF198 tests separately establish the present-empty placement and downstream field/group/required outcomes across both kernel strategies plus JVM/Node.
 - Strict permitted-side acceptance, no-value/poison bypass, and CRLF/LF/lone-CR ingestion are internal Lean laws not separately exercised by retained local cases.
 - Eight resolved pattern cases separate normalized match/nonmatch, both operator polarities, empty suppression, and formal unavailability; generic laws prove complement and exclude OMISSION firing.
+- Thirteen pattern-admission declarations distinguish Java-syntax precedence, all four possessive suffixes, lookbehind/named/atomic group prefixes, every documented forbidden escape, uppercase `\P`, nested versus escaped/sequential class opens, admitted lookahead/flags/Java escapes, and successful versus rejected runtime delegation. Four laws characterize compiler rejection, successful two-stage classification/delegation, and inherited VALUE-only firing.
 - Twelve legal-charset runtime cases separate default BMP, supplementary input, range/atomic composition, component leakage, reversal/repetition, shared prefixes, longest terminal-prefix selection, empty progress, and the exact formal cause. Generic laws lock bounded progress, exact accepted payload retention, and validation-UNKNOWN/computation-poison projection.
 - Eleven definition-admission cases cover the default, accepted range/atom composition, shared and terminal prefixes, and every bounded malformed discriminator against an injected cluster corpus; empty-list and empty-entry laws lock the critical default distinction.
 - Four cause cases and three generic laws distinguish registered versus fixed fallback failure and preserve the complete project rejection through both checked phases.
@@ -492,7 +497,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - **Implemented narrowly; ingestion and resolved-pattern consumption external evidence pending.** Coverage includes direct equality/inequality, four `Length` orderings, presence, absolute requiredness, present-empty placement, CRLF normalization, resolved already-admitted pattern consumption, checked scalar String expressions, and one positive target length bound.
 - `Length ==`/`!=` remain outside the reduced checked surface because their numeric scale gate needs the authored literal scale that `SurfaceCondition.lengthCompare` does not retain.
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
-- Pattern compilation, Java `Pattern` syntax/execution, the kernel's bounded admission gate, authored checked-pattern lowering, and public exposure remain outside; the injected function is deliberately only the post-admission whole-value matcher boundary.
+- Java `Pattern` compilation and execution remain injected capabilities. The bounded kernel source gate is checked, but authored condition/declared-field lowering, association of a host matcher with the certified source, public exposure, and every undiscovered total-admission restriction remain outside; the certificate deliberately does not claim JavaScript portability.
 - Java-compatible grapheme clustering remains an injected admission-time capability rather than a reimplemented Unicode subsystem. Raw JSON decoding/model-slot wiring, project-level SPI selection, general scalar-parser composition, and retained local kernel observations remain outside; the runtime representation makes empty/unbounded atomic entries impossible and is not used by computed-target basic checks.
 - Registered custom validation is checked through relevance-first sampling and the ordinary cell root, one output retains that exact cell plus its optional formal message, supplied bytes render at an already-resolved label boundary, the explicit named validity pair reuses the same registry/context interface, resolved RNU consumes the same checked observation without resampling, and the flat checked full-evaluation entry point prepares and applies declaration-owned validators. The pure function-valued context guarantees extensionally stable reads but is not a document-addressed host cache; one physical validator call per relevant concrete cell, label/provider invocation, formal-message collection into general validation output, partial RNU row construction/topology, predefined declarative registry precedence, authored explicit-validity lowering into the general condition AST, and public protocol remain open.
 - Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, enumerations, custom validators, raw-type rule elimination, and target-check ordering.
