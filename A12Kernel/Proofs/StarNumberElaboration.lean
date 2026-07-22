@@ -16,4 +16,31 @@ theorem checkedStarNumberSource_overLimit (checked : CheckedStarNumberSource mod
       (checked.checkedCell read environment).findings = [.overRepetition] := by
   simp [CheckedStarNumberSource.checkedCell, overLimit]
 
+/-- A resolved `Having` is retained explicitly for downstream polarity even when it selects no candidate. -/
+@[simp] theorem checkedStarNumberSource_havingFlag
+    (checked : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
+    (having : CorrelatedHaving) (filterRead : Env → FieldId → CheckedCell)
+    (outer : Env) (read : Env → FieldId → RawCell) :
+    (checked.selectedValidationHavingValueSide resolved having filterRead outer read).hasHaving =
+      true := by
+  rfl
+
+/-- Target classification is local to environments already selected by `Having`; changing a dropped target cannot change the resolved side. -/
+theorem checkedStarNumberSource_filterBeforeTarget
+    (checked : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
+    (having : CorrelatedHaving) (filterRead : Env → FieldId → CheckedCell)
+    (outer : Env) (left right : Env → FieldId → RawCell)
+    (agree : ∀ environment,
+      environment ∈ having.selectEnvironments { read := filterRead } outer
+        resolved.environments →
+      checked.valueListCell left environment =
+        checked.valueListCell right environment) :
+    checked.selectedValidationHavingValueSide resolved having filterRead outer left =
+      checked.selectedValidationHavingValueSide resolved having filterRead outer right := by
+  simp only [CheckedStarNumberSource.selectedValidationHavingValueSide]
+  congr 1
+  apply List.map_congr_left
+  intro environment selected
+  exact agree environment selected
+
 end A12Kernel

@@ -211,6 +211,17 @@ def CorrelatedHaving.evalTruthIn (context : CorrelationContext)
   | .and left right =>
       K.and (left.evalTruthIn context frame) (right.evalTruthIn context frame)
 
+/-- Keep one already-resolved candidate environment exactly when the filter is known true. The candidate and captured environments remain separate full repetition identities; false and UNKNOWN both drop the candidate. -/
+def CorrelatedHaving.keepsEnvironment (condition : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv innerEnv : Env) : Bool :=
+  condition.evalTruthIn context { innerEnv, outerEnv } == .tru
+
+/-- Select resolved candidate environments in their supplied semantic order before a consumer reads any target cell. -/
+def CorrelatedHaving.selectEnvironments (condition : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv : Env)
+    (candidates : List Env) : List Env :=
+  candidates.filter (condition.keepsEnvironment context outerEnv)
+
 /-- Declarative truth predicate for the correlated filter. Atomic comparisons are
     stated over resolved values/rows, independently of the executable `Bool`; `And`
     remains structural. -/
@@ -244,7 +255,8 @@ structure SingleCorrelatedStar where
 
 def SingleCorrelatedStar.keeps (star : SingleCorrelatedStar)
     (context : CapturedSingleGroupContext) (innerRow : RowIndex) : Bool :=
-  star.having.condition.evalTruth context.rows (context.frame innerRow) == .tru
+  star.having.condition.keepsEnvironment context.rows.asCorrelationContext
+    (context.rows.envAt context.outerRow) (context.rows.envAt innerRow)
 
 /-- Naive reference meaning: for one captured outer row, scan every same-group candidate
     in document order. No self-exclusion and no hash-join optimization are implicit. -/

@@ -248,6 +248,8 @@ run_cmd do
 #print axioms A12Kernel.inner_number_reference_local
 #print axioms A12Kernel.correlatedHaving_truthIn_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds
+#print axioms A12Kernel.correlatedHaving_keepsEnvironment_iff_holdsIn
+#print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
 #print axioms A12Kernel.selectCorrelatedRows_iff
 #print axioms A12Kernel.evalGuardedAnyFilledOn_filter_before_consumer
 #print axioms A12Kernel.currentRepetition_selfExclusion_false
@@ -690,6 +692,8 @@ run_cmd do
 #print axioms A12Kernel.checkedStarFieldPath_firstStar_lt
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
 #print axioms A12Kernel.checkedStarNumberSource_overLimit
+#print axioms A12Kernel.checkedStarNumberSource_havingFlag
+#print axioms A12Kernel.checkedStarNumberSource_filterBeforeTarget
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
 #print axioms A12Kernel.groupPresence_rowContent_admitted
