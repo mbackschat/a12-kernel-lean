@@ -71,6 +71,7 @@ import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.NumericStar
 import A12Kernel.Elaboration.StarPath
+import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StarNumber
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.FirstFilledValue

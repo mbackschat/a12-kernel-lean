@@ -134,6 +134,12 @@ structure CheckedStarFieldPath (model : FlatModel) where
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
 
+/-- A model-derived star plan with the structural obligations required by every checked field or group consumer. -/
+structure CheckedStarPlan where
+  path : StarPath
+  firstStarWithin : path.firstStar < path.axes.length
+  pathValid : path.validate.isOk = true
+
 /-- Whether this checked starred field is completely relevant for an all-rows validation consumer. This gate does not apply to order-aware `FirstFilledValue`. -/
 def CheckedStarFieldPath.allRowsRelevant (checked : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) : Bool :=
@@ -182,6 +188,32 @@ private def firstUnstarredAxis? : List MarkedStarAxis → Option GroupPath
   | [] => none
   | axis :: rest => if axis.starred then firstUnstarredAxis? rest else some axis.path
 
+/-- Derive the one shared checked star plan after the caller has resolved the terminal field or group. A relative base is supplied separately so its named repeatable ancestors remain fixed before the first authored star. -/
+def elaborateStarPathPlan (model : FlatModel) (basePath : GroupPath)
+    (groups : List SurfaceStarGroupSegment) (targetPath : List String) :
+    Except StarPathElabError CheckedStarPlan := do
+  match firstInvalidWildcard? model basePath groups with
+  | some path => throw (.wildcardOnNonrepeatable path)
+  | none => pure ()
+  let baseSegments := basePath.map fun name => ({ name } : SurfaceStarGroupSegment)
+  let marked := markedAxes model [] (baseSegments ++ groups)
+  let firstStar ← match firstStarredAxis? marked 0 with
+    | none => throw (.missingWildcard targetPath)
+    | some index => pure index
+  match firstUnstarredAxis? (marked.drop firstStar) with
+  | some path => throw (.iterationBelowWildcard path)
+  | none => pure ()
+  let path : StarPath := { axes := marked.map (·.axis), firstStar }
+  if hFirstStar : path.firstStar < path.axes.length then
+    match hPath : path.validate with
+    | .error error => throw (.addressing error)
+    | .ok () => pure {
+        path
+        firstStarWithin := hFirstStar
+        pathValid := by rw [hPath]; rfl }
+  else
+    throw .incoherentCore
+
 /-- Resolve a legal starred field path into the exact model-owned ancestry consumed by `StarAddressing`. A relative turning point may precede later stars; the first star and every deeper repeatable level must be explicitly starred. -/
 def elaborateStarFieldPath (model : FlatModel) (declaringGroup : GroupPath)
     (source : SurfaceStarFieldPath) :
@@ -194,37 +226,20 @@ def elaborateStarFieldPath (model : FlatModel) (declaringGroup : GroupPath)
       let basePath ← match source.base with
         | .absolute => pure []
         | .relative parents => GroupPath.walkUp declaringGroup parents |>.mapError .resolve
-      match firstInvalidWildcard? model basePath source.groups with
-      | some path => throw (.wildcardOnNonrepeatable path)
-      | none => pure ()
-      let baseSegments := basePath.map fun name => ({ name } : SurfaceStarGroupSegment)
-      let marked := markedAxes model [] (baseSegments ++ source.groups)
-      let firstStar ← match firstStarredAxis? marked 0 with
-        | none => throw (.missingWildcard declaration.path)
-        | some index => pure index
-      match firstUnstarredAxis? (marked.drop firstStar) with
-      | some path => throw (.iterationBelowWildcard path)
-      | none => pure ()
-      let path : StarPath := { axes := marked.map (·.axis), firstStar }
-      if hFirstStar : path.firstStar < path.axes.length then
-        match hPath : path.validate with
-        | .error error => throw (.addressing error)
-        | .ok () =>
-            if hDeclaration : model.fields.contains declaration = true then
-              if hAncestry : path.axes.map (·.level) = declaration.repeatableScope then
-                pure {
-                  declaration
-                  path
-                  modelWellFormed := by rw [hModel]; rfl
-                  declarationOwned := hDeclaration
-                  ancestryOwned := hAncestry
-                  firstStarWithin := hFirstStar
-                  pathValid := by rw [hPath]; rfl
-                }
-              else
-                throw .incoherentCore
-            else
-              throw .incoherentCore
+      let plan ← elaborateStarPathPlan model basePath source.groups declaration.path
+      if hDeclaration : model.fields.contains declaration = true then
+        if hAncestry : plan.path.axes.map (·.level) = declaration.repeatableScope then
+          pure {
+            declaration
+            path := plan.path
+            modelWellFormed := by rw [hModel]; rfl
+            declarationOwned := hDeclaration
+            ancestryOwned := hAncestry
+            firstStarWithin := plan.firstStarWithin
+            pathValid := plan.pathValid
+          }
+        else
+          throw .incoherentCore
       else
         throw .incoherentCore
 
