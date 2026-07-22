@@ -232,8 +232,8 @@ theorem numericDistinctCount_equal_pair
         hasUninstantiatedTail := false
         hasHaving := false } =
       .value 1 .fixed := by
-  simp [evalNumericDistinctCountAggregate, scanDistinctNumericCells,
-    ValueListCell.scanPresent, insertDistinctNumericValue, equal,
+  simp [evalDistinctCountAggregate, scanDistinctCells,
+    ValueListCell.scanPresent, insertDistinctValue, equal,
     ResolvedValueListSide.hasMissingPotential,
     ResolvedValueListSide.hasEmpty, ValueListCell.isEmpty]
 
@@ -248,9 +248,12 @@ theorem numericDistinctCount_allEmpty
     evalNumericDistinctCountAggregate
       { cells, hasUninstantiatedTail, hasHaving := false } =
       .value 0 .growOnly := by
-  unfold evalNumericDistinctCountAggregate scanDistinctNumericCells
+  change evalDistinctCountAggregate
+      { cells, hasUninstantiatedTail, hasHaving := false } =
+    .value 0 .growOnly
+  unfold evalDistinctCountAggregate scanDistinctCells
   rw [valueListCell_scanPresent_allEmpty
-    insertDistinctNumericValue cells [] allEmpty]
+    (insertDistinctValue (kind := .number)) cells [] allEmpty]
   simp [missing]
 
 /-- A reached filter makes an available distinct count both-directionally fillable independently of tail state. -/
@@ -262,7 +265,8 @@ theorem numericDistinctCount_having
     evalNumericDistinctCountAggregate
       { cells, hasUninstantiatedTail, hasHaving := true } =
       .value seen.length .both := by
-  simp [evalNumericDistinctCountAggregate, scanned]
+  change scanDistinctCells (kind := .number) cells = .ok seen at scanned
+  simp [evalDistinctCountAggregate, scanned]
 
 /-- The first unavailable selected cell determines distinct-count suppression independently of every suffix cell and missingness flag. -/
 theorem numericDistinctCount_firstUnknown
@@ -274,8 +278,13 @@ theorem numericDistinctCount_firstUnknown
       { cells := before ++ .unknown cause :: after
         hasUninstantiatedTail
         hasHaving } = .unknown cause := by
-  unfold evalNumericDistinctCountAggregate scanDistinctNumericCells
-  rw [valueListCell_scanPresent_firstUnknown insertDistinctNumericValue
+  change evalDistinctCountAggregate
+      { cells := before ++ .unknown cause :: after
+        hasUninstantiatedTail
+        hasHaving } = .unknown cause
+  unfold evalDistinctCountAggregate scanDistinctCells
+  rw [valueListCell_scanPresent_firstUnknown
+    (insertDistinctValue (kind := .number))
     before after [] cause beforeKnown]
 
 /-- One complete present pair is exactly one staged multiplication followed by the fold's zero-seeded addition, with no missing direction. -/

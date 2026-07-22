@@ -13,6 +13,13 @@ inductive ValueListKind where
   | token
   deriving Repr, DecidableEq
 
+/-- Partial all-rows aggregate evaluation distinguishes the kernel's rule-level filtered skip, a relevance failure, and an evaluated numeric result. Nonrelevance is not forged into a formal cell cause. -/
+inductive PartialValidationAggregateResult where
+  | skippedHaving
+  | nonRelevant
+  | evaluated (operand : NumericOperand)
+  deriving Repr, DecidableEq
+
 /-- Type-indexed atoms make a mixed Number/token value list unrepresentable at this boundary. -/
 abbrev ValueListAtom : ValueListKind → Type
   | .number => Rat
@@ -63,6 +70,18 @@ end ValueListAtom
 
 namespace ResolvedValueListSide
 
+/-- Concatenate two already-resolved occurrences while preserving every source's tail and filter uncertainty. Authored operand order remains cell order. -/
+def append (left right : ResolvedValueListSide kind) :
+    ResolvedValueListSide kind :=
+  { cells := left.cells ++ right.cells
+    hasUninstantiatedTail :=
+      left.hasUninstantiatedTail || right.hasUninstantiatedTail
+    hasHaving := left.hasHaving || right.hasHaving }
+
+/-- Check whether every reached cell is available, stopping at the first formal cause. -/
+def available (side : ResolvedValueListSide kind) : Except FormalCause Unit :=
+  ValueListCell.scanPresent (fun _ _ => ()) side.cells ()
+
 def hasEmpty (side : ResolvedValueListSide kind) : Bool :=
   side.cells.any ValueListCell.isEmpty
 
@@ -99,6 +118,24 @@ def anyOutside (fields values : ResolvedValueListSide kind) : Bool :=
     | .empty | .unknown _ => false
 
 end ResolvedValueListSide
+
+/-- Resolve authored operands lazily from left to right. A consumer-selected terminal result or the first unavailable resolved cell stops before any later operand is resolved. The caller supplies the accumulator update because some consumers retain declaration metadata in addition to the common value side. -/
+def scanResolvedValueListOperands {operand state terminal error : Type}
+    {kind : ValueListKind}
+    (resolve : operand → Except error (Sum (ResolvedValueListSide kind) terminal))
+    (onUnavailable : FormalCause → terminal)
+    (append : state → operand → ResolvedValueListSide kind → state) :
+    List operand → state → Except error (Sum state terminal)
+  | [], accumulated => pure (.inl accumulated)
+  | operand :: remaining, accumulated => do
+      match ← resolve operand with
+      | .inr result => pure (.inr result)
+      | .inl side =>
+          match side.available with
+          | .error cause => pure (.inr (onUnavailable cause))
+          | .ok () =>
+              scanResolvedValueListOperands resolve onUnavailable append remaining
+                (append accumulated operand side)
 
 /-- The quantifier-specific view of one resolved side. Partial validation removes nonrelevant cells before classification but retains their existence because `No` and values-side `NotAll` treat them as UNKNOWN. The ordinary resolved side remains unchanged for aggregates and other consumers. -/
 structure ResolvedValueListQuantifierSide (kind : ValueListKind) where

@@ -78,6 +78,7 @@ import A12Kernel.Elaboration.StarStringValueList
 import A12Kernel.Elaboration.StarEnumerationValueList
 import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.NumericAggregate
+import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.StringComputation
