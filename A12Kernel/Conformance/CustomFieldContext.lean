@@ -34,7 +34,8 @@ private def customCode : FlatFieldDecl :=
 
 private def ordinaryNote : FlatFieldDecl :=
   { id := 2, groupPath := ["Order"], name := "Note",
-    policy := { kind := .string } }
+    policy := { kind := .string },
+    stringPolicy := { lineBreaksPermitted := true } }
 
 private def count : FlatFieldDecl :=
   { id := 3, groupPath := ["Order"], name := "Count",

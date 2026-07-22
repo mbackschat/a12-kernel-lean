@@ -15,7 +15,8 @@ private def rawNote : FlatFieldDecl :=
     groupPath := ["Claim"]
     name := "IncidentNote"
     policy := { kind := .string }
-    stringValueMode := .raw }
+    stringValueMode := .raw
+    stringPolicy := { lineBreaksPermitted := true } }
 
 private def other : FlatFieldDecl :=
   { id := 2
@@ -29,6 +30,7 @@ private def rawBlob : FlatFieldDecl :=
     name := "Blob"
     policy := { kind := .string }
     stringValueMode := .raw
+    stringPolicy := { lineBreaksPermitted := true }
     repeatableScope := [10] }
 
 private def model : FlatModel :=

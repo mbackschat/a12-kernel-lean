@@ -33,7 +33,7 @@ def lookup? (prepared : PreparedFlatCustomFields) (id : FieldId) :
     Option PreparedFlatCustomField :=
   prepared.fields.find? fun field => field.declaration.id == id
 
-/-- Compile heterogeneous raw cells through the exact prepared custom overlay. Ordinary declarations reuse `formalCheck`; any incoherent hand-built overlay fails closed. -/
+/-- Compile heterogeneous raw cells through the exact prepared custom overlay. Ordinary declarations reuse their declaration-owned checker; any incoherent hand-built overlay fails closed. -/
 def checkContext (prepared : PreparedFlatCustomFields) (locale : String)
     (raw : RawFlatContext) : FlatContext where
   read id :=

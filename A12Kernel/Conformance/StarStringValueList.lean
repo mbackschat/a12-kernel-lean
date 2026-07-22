@@ -11,13 +11,15 @@ private def sku : FlatFieldDecl :=
     groupPath := ["Shop", "Sections", "Items"]
     name := "Sku"
     policy := { kind := .string }
+    stringPolicy := { lineBreaksPermitted := true }
     repeatableScope := [10, 20] }
 
 private def amount : FlatFieldDecl :=
   { sku with
     id := 8
     name := "Amount"
-    policy := { kind := .number { scale := 0, signed := false } } }
+    policy := { kind := .number { scale := 0, signed := false } }
+    stringPolicy := {} }
 
 private def product : FlatFieldDecl :=
   { id := 1, groupPath := ["Shop"], name := "Product",
@@ -27,7 +29,8 @@ private def quantity : FlatFieldDecl :=
   { product with
     id := 2
     name := "Quantity"
-    policy := { kind := .number { scale := 0, signed := false } } }
+    policy := { kind := .number { scale := 0, signed := false } }
+    stringPolicy := {} }
 
 private def model : FlatModel :=
   { fields := [sku, amount, product, quantity]

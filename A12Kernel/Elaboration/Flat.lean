@@ -2,6 +2,7 @@ import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.CustomFieldType
 import A12Kernel.Semantics.CheckedEnumeration
+import A12Kernel.Semantics.StringFieldPolicy
 import A12Kernel.Elaboration.NumericScale
 
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
@@ -151,6 +152,7 @@ structure FlatFieldDecl where
   name : String
   policy : FieldPolicy
   stringValueMode : StringValueMode := .evaluated
+  stringPolicy : StringFieldPolicy := {}
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
   repeatableScope : List RepeatableLevel := []
@@ -259,6 +261,12 @@ inductive ResolveError where
   | customTypeRequiresString (path : List String)
   | rawValueModeRequiresString (path : List String)
   | rawValueModeForbidsCustomType (path : List String)
+  | stringPolicyRequiresString (path : List String)
+  | stringPolicyForbidsCustomType (path : List String)
+  | rawStringRequiresLineBreakPermission (path : List String)
+  | rawStringForbidsMinimumLength (path : List String)
+  | stringMinimumExceedsMaximum (path : List String)
+  | lineBreakWithSingleCharacterMaximum (path : List String)
   | enumerationMetadataRequiresEnumeration (path : List String)
   | enumerationDeclarationRequired (path : List String)
   | invalidEnumerationDeclaration (path : List String)
@@ -364,6 +372,29 @@ private def rawValueModeError? : List FlatFieldDecl → Option ResolveError
           some (.rawValueModeForbidsCustomType declaration.path)
       | .raw, _, _ => some (.rawValueModeRequiresString declaration.path)
 
+private def stringPolicyError? : List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      let policy := declaration.stringPolicy
+      match declaration.policy.kind, declaration.customType with
+      | .string, some _ =>
+          if policy == {} then stringPolicyError? rest
+          else some (.stringPolicyForbidsCustomType declaration.path)
+      | .string, none =>
+          if declaration.stringValueMode == .raw && !policy.lineBreaksPermitted then
+            some (.rawStringRequiresLineBreakPermission declaration.path)
+          else if declaration.stringValueMode == .raw && policy.minLength.isSome then
+            some (.rawStringForbidsMinimumLength declaration.path)
+          else if policy.minimumExceedsMaximum then
+            some (.stringMinimumExceedsMaximum declaration.path)
+          else if policy.lineBreakMaximumInvalid then
+            some (.lineBreakWithSingleCharacterMaximum declaration.path)
+          else
+            stringPolicyError? rest
+      | _, _ =>
+          if policy == {} then stringPolicyError? rest
+          else some (.stringPolicyRequiresString declaration.path)
+
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
   | [] => none
@@ -439,6 +470,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | some path => throw (.customTypeRequiresString path)
   | none => pure ()
   match rawValueModeError? model.fields with
+  | some error => throw error
+  | none => pure ()
+  match stringPolicyError? model.fields with
   | some error => throw error
   | none => pure ()
   match enumerationDeclarationError? model.fields with
@@ -1411,7 +1445,7 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
-/-- Compile one raw cell through declaration-owned scalar or ordinary closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
+/-- Compile one raw cell through declaration-owned scalar, ordinary String-policy, or closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
 def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : CheckedCell :=
   match declaration.customType, declaration.policy.kind, declaration.enumeration with
   | some _, _, _ => malformedCheckedCell
@@ -1420,6 +1454,11 @@ def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : Check
       | .ok checked => checked.checkRaw raw
       | .error _ => malformedCheckedCell
   | none, .enumeration, none => malformedCheckedCell
+  | none, .string, none =>
+      if declaration.stringValueMode == .raw then
+        formalCheck declaration.policy raw
+      else
+        declaration.stringPolicy.checkRaw raw
   | none, _, some _ => malformedCheckedCell
   | none, _, none => formalCheck declaration.policy raw
 

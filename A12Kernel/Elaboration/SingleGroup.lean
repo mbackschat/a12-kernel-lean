@@ -118,7 +118,7 @@ def FlatModel.checkSingleGroupContext (model : FlatModel)
     | .ok declaration =>
         if declaration.groupPath == group.path &&
             declaration.repeatableScope == [group.level] then
-          formalCheck declaration.policy (raw.read row id)
+          declaration.checkRaw (raw.read row id)
         else
           malformedCheckedCell
     | .error _ => malformedCheckedCell

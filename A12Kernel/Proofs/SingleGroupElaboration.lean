@@ -67,7 +67,7 @@ theorem checkSingleGroupContext_lookup_coherent
     (sameGroup : declaration.groupPath = group.path)
     (sameScope : declaration.repeatableScope = [group.level]) :
     (model.checkSingleGroupContext group raw).read row id =
-      formalCheck declaration.policy (raw.read row id) := by
+      declaration.checkRaw (raw.read row id) := by
   simp [FlatModel.checkSingleGroupContext, lookup, sameGroup, sameScope]
 
 /-- Missing or ambiguous identifiers fail closed at the repeatable raw-to-checked boundary. -/
@@ -108,7 +108,7 @@ theorem checkSingleGroupContext_admittedNumber_coherent
       declaration.repeatableScope = [group.level] ∧
       (FlatField.number field).matchesDecl declaration = true ∧
       (model.checkSingleGroupContext group raw).read row field.id =
-        formalCheck declaration.policy (raw.read row field.id) := by
+        declaration.checkRaw (raw.read row field.id) := by
   obtain ⟨declaration, lookup, sameGroup, sameScope, matching⟩ :=
     admitsSingleGroupNumber_has_unique_matching_declaration model group field admitted
   exact ⟨declaration, lookup, sameGroup, sameScope, matching,
