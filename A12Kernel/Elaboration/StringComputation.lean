@@ -25,7 +25,7 @@ def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
           declaration.repeatableScope.isEmpty &&
             match declaration.policy.kind with
             | .string => true
-            | .number _ | .boolean | .confirm | .temporal _ _ => false
+            | .number _ | .boolean | .confirm | .enumeration | .temporal _ _ => false
       | .error _ => false
   | StringExpr.literal _ => true
   | StringExpr.concat left right =>

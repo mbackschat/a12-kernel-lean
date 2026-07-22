@@ -7,13 +7,16 @@ import A12Kernel.Semantics.DateTimeComparison
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.TimeNumeric
+import A12Kernel.Semantics.CheckedEnumeration
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
 A small core for resolved, non-repeatable field references. It covers the admitted
 direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
 direct String equality and inequality, four String `Length` ordering comparisons,
-resolved temporal field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates, and `And`/`Or`.
+checked Enumeration/category-to-literal equality and inequality, resolved temporal
+field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates,
+and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -38,6 +41,10 @@ structure FlatStringField where
   id : FieldId
   deriving Repr, DecidableEq
 
+structure FlatEnumerationField where
+  id : FieldId
+  deriving Repr, DecidableEq
+
 structure FlatTemporalField where
   id : FieldId
   kind : TemporalKind
@@ -50,6 +57,7 @@ inductive FlatField where
   | boolean (field : FlatBooleanField)
   | confirm (field : FlatConfirmField)
   | string (field : FlatStringField)
+  | enumeration (field : FlatEnumerationField)
   | temporal (field : FlatTemporalField)
   deriving Repr, DecidableEq
 
@@ -61,6 +69,7 @@ def id : FlatField → FieldId
   | .boolean field => field.id
   | .confirm field => field.id
   | .string field => field.id
+  | .enumeration field => field.id
   | .temporal field => field.id
 
 end FlatField
@@ -111,6 +120,9 @@ inductive FlatComparison where
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   | string (op : EqualityOp) (field : FlatStringField) (expected : String)
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
+  | enumeration (op : EqualityOp) (field : FlatEnumerationField)
+      (projectionRef : EnumerationProjectionRef)
+      (projection : ResolvedEnumerationProjection) (expected : String)
   | temporal (op : TemporalComparisonOp)
       (left right : FlatTemporalOperand)
   deriving Repr, DecidableEq
@@ -124,6 +136,7 @@ def fields : FlatComparison → List FlatField
   | .confirm _ field => [.confirm field]
   | .string _ field _ => [.string field]
   | .stringLength _ field _ => [.string field]
+  | .enumeration _ field _ _ _ => [.enumeration field]
   | .temporal _ left right => left.fields ++ right.fields
 
 def fieldIds (comparison : FlatComparison) : List FieldId :=
@@ -313,6 +326,8 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       (context.resolveDirectStringComparisonOperand field).evalDirectString op expected
   | .stringLength op field expected =>
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
+  | .enumeration op field _ projection expected =>
+      projection.evalLiteral op (context.observeValidationAt field.id) expected
   | .temporal op left right =>
       op.evalInstant (left.resolve context) (right.resolve context)
 
@@ -321,6 +336,7 @@ def FlatField.observeValidation (context : FlatContext) : FlatField → CellObse
   | .boolean field => context.observeValidationAt field.id
   | .confirm field => context.observeValidationAt field.id
   | .string field => context.observeValidationAt field.id
+  | .enumeration field => context.observeValidationAt field.id
   | .temporal field => context.observeValidationAt field.id
 
 namespace CellObservation

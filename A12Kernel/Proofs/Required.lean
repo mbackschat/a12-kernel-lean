@@ -37,6 +37,11 @@ theorem desugarAbsoluteRequired_preserves (declaration : AbsoluteRequiredDecl)
             desugarAbsoluteRequired, mandatoryFieldMetadata, FlatCondition.evalFull,
             FlatCondition.canFireOnEmpty, FlatCondition.evalSelected, FlatField.evalNotFilled]
           cases (FlatField.string field).observeValidation context <;> rfl
+      | enumeration field =>
+          simp [AbsoluteRequiredRule.evaluate, AbsoluteRequiredDecl.evaluate,
+            desugarAbsoluteRequired, mandatoryFieldMetadata, FlatCondition.evalFull,
+            FlatCondition.canFireOnEmpty, FlatCondition.evalSelected, FlatField.evalNotFilled]
+          cases (FlatField.enumeration field).observeValidation context <;> rfl
       | temporal field =>
           simp [AbsoluteRequiredRule.evaluate, AbsoluteRequiredDecl.evaluate,
             desugarAbsoluteRequired, mandatoryFieldMetadata, FlatCondition.evalFull,

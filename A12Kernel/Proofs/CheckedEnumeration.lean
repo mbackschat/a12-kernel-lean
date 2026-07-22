@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.CheckedEnumeration
+import A12Kernel.Elaboration.Flat
 
 /-! # A12Kernel.Proofs.CheckedEnumeration — checked observation laws -/
 
@@ -58,5 +58,26 @@ theorem checkedEnumeration_evalRaw_outOfDomain
     ResolvedEnumerationProjection.evalLiteral,
     ResolvedEnumerationProjection.resolveOperand,
     EqualityOp.evalSimple, BaseFormalCause.toFormalCause]
+
+/-- A flat Enumeration declaration delegates raw admission to the exact checked source retained by that declaration. -/
+theorem flatEnumeration_checkRaw_exact (declaration : FlatFieldDecl)
+    (source : EnumerationDeclaration) (checked : CheckedEnumerationDeclaration)
+    (raw : RawCell) (ordinary : declaration.customType = none)
+    (kind : declaration.policy.kind = .enumeration)
+    (metadata : declaration.enumeration = some source)
+    (accepted : elaborateEnumeration source = .ok checked) :
+    declaration.checkRaw raw = checked.checkRaw raw := by
+  simp [FlatFieldDecl.checkRaw, ordinary, kind, metadata, accepted]
+
+/-- Masking the one Enumeration leaf suppresses its checked comparison before projection or equality evaluation. -/
+@[simp]
+theorem flatEnumeration_irrelevant_unknown (op : EqualityOp)
+    (field : FlatEnumerationField) (projectionRef : EnumerationProjectionRef)
+    (projection : ResolvedEnumerationProjection) (expected : String)
+    (context : FlatContext) :
+    (FlatCondition.compare (.enumeration op field projectionRef projection expected)).evalSelected
+      context (fun _ => false) = .unknown := by
+  simp [FlatCondition.evalSelected, FlatComparison.allRelevant,
+    FlatComparison.fieldIds, FlatComparison.fields, FlatField.id]
 
 end A12Kernel
