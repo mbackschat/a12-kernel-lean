@@ -43,7 +43,10 @@ private def model : FlatModel :=
       { id := 9, groupPath := ["Order"], name := "DateTime",
         policy := { kind := .temporal .dateTime dateTimeComponents } },
       { id := 11, groupPath := ["Order"], name := "NoYear",
-        policy := { kind := .temporal .date monthDayComponents } }],
+        policy := { kind := .temporal .date monthDayComponents } },
+      { id := 12, groupPath := ["Order"], name := "Code",
+        policy := { kind := .string },
+        stringPolicy := { lineBreaksPermitted := true } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
@@ -72,6 +75,10 @@ private def dateDifference (unit : DateDifferenceUnit)
     (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateDifference unit left right)
+
+private def stringRange (start finish : Nat) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.stringRange (path ["Order"] "Code") start finish)
 
 private def dateOperand (name : String) : SurfaceDateDifferenceOperand :=
   .field (path ["Order"] name)
@@ -104,6 +111,9 @@ private def raw (u v s scale2Value : RawCell := .empty) : RawFlatContext where
 
 private def temporalRaw (id : FieldId) (cell : RawCell) : RawFlatContext where
   read actual := if actual == id then cell else .empty
+
+private def stringRaw (cell : RawCell) : RawFlatContext where
+  read actual := if actual == 12 then cell else .empty
 
 private def instant : Instant := { epochMillis := 1719292867000 }
 
@@ -142,6 +152,51 @@ private def tolerance (range : NumericToleranceRange)
 
 private def dividedThird : AuthoredNumericExpr SurfaceNumericAtom :=
   .group (.binary .divide (literal 3 0) (literal 3 0))
+
+/- `RangeAsNumber` parses only a complete ASCII digit slice; filled fallback zero is fixed. -/
+example :
+    verdictOf (comparison .equal (stringRange 1 2) 12)
+        (stringRaw (.parsed (.str "12X"))) = some (.fired .value) ∧
+      verdictOf (comparison .equal (stringRange 1 2) 0)
+        (stringRaw (.parsed (.str "AB3"))) = some (.fired .value) ∧
+      verdictOf (comparison .equal (stringRange 1 2) 0)
+        (stringRaw (.parsed (.str "A"))) = some (.fired .value) := by
+  native_decide
+
+/- Only an absent source makes the nonnegative result growable; a present non-digit zero is fixed. -/
+example :
+    verdictOf (comparison .less (stringRange 1 2) 100)
+        (stringRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greater (stringRange 1 2) (-100))
+        (stringRaw .empty) = some (.fired .value) ∧
+      verdictOf (comparison .less (stringRange 1 2) 100)
+        (stringRaw (.parsed (.str "AB"))) = some (.fired .value) := by
+  native_decide
+
+/- The checked String cache is normalized before slicing. -/
+example :
+    verdictOf (comparison .equal (stringRange 3 3) 2)
+      (stringRaw (.parsed (.str "1\r\n2"))) = some (.fired .value) := by
+  native_decide
+
+/- A JVM half-surrogate slice has no scalar String representation in Lean and therefore follows the operation's ordinary numeric-zero fallback. -/
+example :
+    verdictOf (comparison .equal (stringRange 2 2) 0)
+      (stringRaw (.parsed (.str "A😀B"))) = some (.fired .value) := by
+  native_decide
+
+/- Field shape resolves before the interval; the interval precedes kind admission. -/
+example :
+    errorOf (comparison .equal
+      (.atom (.stringRange (path ["Order"] "Missing") 0 2)) 0) =
+        some (.resolve (.invalidEntity (path ["Order"] "Missing"))) ∧
+      errorOf (comparison .equal
+        (.atom (.stringRange (path ["Order"] "U") 0 2)) 0) =
+        some (.invalidStringRange 0 2) ∧
+      errorOf (comparison .equal
+        (.atom (.stringRange (path ["Order"] "U") 1 2)) 0) =
+        some (.rangeOperandNotString ["Order", "U"]) := by
+  native_decide
 
 /- Checked tolerance bypasses exact-comparison scale agreement and preserves directional arithmetic fillability. -/
 example : (elaborateNumericComparison model ["Order"]

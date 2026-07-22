@@ -46,6 +46,35 @@ def utf16CodeUnitSlice? (value : String) (start finish : Nat) : Option String :=
   else
     none
 
+/-- Whether authored 1-based inclusive String-range bounds form the statically legal interval consumed by both range operations. -/
+def validStringRange (start finish : Nat) : Bool :=
+  0 < start && start ≤ finish
+
+/-- Parse one nonempty ASCII digit sequence as an unbounded natural number. This is deliberately narrower than locale or signed decimal parsing. -/
+private def parseAsciiNaturalAux (accumulator : Nat) : List Char → Option Nat
+  | [] => some accumulator
+  | character :: rest =>
+      let code := character.toNat
+      if _digit : 48 ≤ code ∧ code ≤ 57 then
+        parseAsciiNaturalAux (accumulator * 10 + (code - 48)) rest
+      else
+        none
+
+/-- Parse exactly Java/TypeScript `\d+`'s ASCII subset used by the range-to-Number operation. Empty, signed, fractional, and otherwise non-digit text fails. -/
+def parseAsciiNatural? (value : String) : Option Nat :=
+  match value.toList with
+  | [] => none
+  | characters => parseAsciiNaturalAux 0 characters
+
+/-- Apply the checked operation's 1-based inclusive UTF-16 range and digits-only numeric conversion. Invalid bounds, overshoot, non-digits, and an unrepresentable half-surrogate slice all yield zero; checked lowering separately makes invalid bounds unreachable. -/
+def utf16RangeAsNatural (value : String) (start finish : Nat) : Nat :=
+  if !validStringRange start finish || utf16CodeUnitLength value < finish then
+    0
+  else
+    match utf16CodeUnitSlice? value (start - 1) finish with
+    | some selected => (parseAsciiNatural? selected).getD 0
+    | none => 0
+
 /-- Whether a String contains a CR or LF code point. Declaration-owned formal and computed-target checking consume this before normalization and length measurement. -/
 def containsLineBreak (value : String) : Bool :=
   value.any fun character => character == '\r' || character == '\n'

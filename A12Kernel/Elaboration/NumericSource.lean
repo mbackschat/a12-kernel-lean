@@ -136,6 +136,7 @@ inductive SurfaceNumericAtom where
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
+  | stringRange (path : SurfaceFieldPath) (start finish : Nat)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : SurfaceNumericAggregateFields)
@@ -147,6 +148,7 @@ inductive ResolvedNumericAtom (Field : Type) where
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
+  | stringRange (source : FlatStringField) (start finish : Nat)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : ResolvedNumericAggregateFields)
@@ -159,6 +161,7 @@ def isField : ResolvedNumericAtom Field → Bool
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
+  | .stringRange _ _ _ => true
   | .dateDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
 
@@ -166,6 +169,7 @@ def requiresPlainArithmetic : ResolvedNumericAtom Field → Bool
   | .field _ => false
   | .baseYear _ | .baseYearDatePart _ _ _
   | .temporalFieldPart _ _ => true
+  | .stringRange _ _ _ => true
   | .dateDifference _ _ _ => true
   | .aggregate _ _ => true
 
@@ -175,6 +179,7 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
+  | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
   | .aggregate op source => op.scaleSummary source
 
