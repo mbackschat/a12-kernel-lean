@@ -30,7 +30,8 @@ theorem checkedStarStringSource_filtered_delegates
     checked.resolvedValueSide document outer filterRead read =
       checked.source.resolvedValidationHavingValueListSide document outer
         filter.condition filterRead (checked.valueListCell read) := by
-  simp [CheckedStarStringSource.resolvedValueSide, owned]
+  simp [CheckedStarStringSource.resolvedValueSide,
+    CheckedStarFieldPath.resolvedOptionalValidationHavingValueListSide, owned]
 
 /-- Checked authoring always retains a nonempty literal token side. -/
 theorem checkedStarStringValueList_values_nonempty

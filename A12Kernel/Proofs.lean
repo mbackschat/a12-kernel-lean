@@ -81,6 +81,7 @@ import A12Kernel.Proofs.StarGroupElaboration
 import A12Kernel.Proofs.StarNumberElaboration
 import A12Kernel.Proofs.StarNumberValueList
 import A12Kernel.Proofs.StarStringValueList
+import A12Kernel.Proofs.StarEnumerationValueList
 import A12Kernel.Proofs.NumericStarElaboration
 import A12Kernel.Proofs.NumericAggregate
 import A12Kernel.Proofs.NumericAggregateElaboration
