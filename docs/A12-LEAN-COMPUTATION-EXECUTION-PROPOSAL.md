@@ -2,9 +2,9 @@
 
 ## Status
 
-This is an architectural proposal for the future computation-scheduling and document-transition boundary of the A12 Lean mechanized semantics. It does not request an immediate implementation, does not change the currently active semantic unit, and does not introduce a new dependency, harness, protocol, or public product.
+Accepted on 2026-07-22 as the binding architectural decision for the future computation-scheduling and document-transition boundary of the A12 Lean mechanized semantics.
 
-The decision proposed here is intended to be adopted before the general computation scheduler is designed, while the project is still early enough to preserve the correct semantic layers without a costly migration.
+Adoption does not authorize immediate implementation, change the currently active semantic unit, or introduce a dependency, harness, protocol, or public product. At adoption, SG4 remains unselected: general repeatable addressing and checked-document construction are still open, the complete processing-context boundary is not yet represented, and the bounded source-audit gate in §17 is not closed.
 
 ## Decision summary
 
