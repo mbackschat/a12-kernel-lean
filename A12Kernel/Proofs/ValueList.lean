@@ -123,6 +123,24 @@ theorem valueListNotAll_prependUnknownField
   simp [evalValueListNotAll, ResolvedValueListSide.hasPresent,
     ResolvedValueListSide.anyOutside]
 
+/-- A present scalar subject cannot match a single empty field-valued member. -/
+theorem valueListAtLeastOne_present_emptyMember
+    (value : ValueListAtom kind) :
+    evalValueListAtLeastOne
+      { cells := [.present value], hasUninstantiatedTail := false, hasHaving := false }
+      { cells := [.empty], hasUninstantiatedTail := false, hasHaving := false } =
+        .notFired := by
+  rfl
+
+/-- The same empty member makes a present scalar outside the currently known set, but its fillability makes the NotIncluded fire omission-typed. -/
+theorem valueListNotAll_present_emptyMember
+    (value : ValueListAtom kind) :
+    evalValueListNotAll
+      { cells := [.present value], hasUninstantiatedTail := false, hasHaving := false }
+      { cells := [.empty], hasUninstantiatedTail := false, hasHaving := false } =
+        .fired .omission := by
+  rfl
+
 /-- A matching `AtLeastOne` with `Having` metadata fires as OMISSION. -/
 theorem valueListAtLeastOne_having_fires_omission
     (fields values : ResolvedValueListSide kind)

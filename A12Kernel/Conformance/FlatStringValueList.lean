@@ -166,4 +166,44 @@ example : errorOf (elaborate model ["Order"]
     some (.textFieldOperandKindMismatch ["Order", "Code"] .enumeration) := by
   native_decide
 
+private def fieldMembership (op : ValueListMembershipOp) : SurfaceCondition :=
+  .stringFieldValueMembership op (path "Text") [path "Peer"]
+
+example : coreOf (elaborate model ["Order"] (fieldMembership .included)) =
+    some (.tokenValueList .atLeastOne [.string { id := 10 }]
+      (.fields [.string { id := 11 }])) ∧
+    coreOf (elaborate model ["Order"] (fieldMembership .notIncluded)) =
+      some (.tokenValueList .notAll [.string { id := 10 }]
+        (.fields [.string { id := 11 }])) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull model world ["Order"]
+    (rawPair 10 (.parsed (.str "AB\r\nCD")) 11 (.parsed (.str "AB\nCD"))) true
+    (fieldMembership .included)) = some (.fired .value) ∧
+    verdictOf (elaborateAndEvalFull model world ["Order"]
+      (rawPair 10 (.parsed (.str "Miss")) 11 (.parsed (.str "Other"))) true
+      (fieldMembership .notIncluded)) = some (.fired .value) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull model world ["Order"]
+    (rawPair 10 (.parsed (.str "A")) 11 .empty) true
+    (fieldMembership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull model world ["Order"]
+      (rawPair 10 (.parsed (.str "A")) 11 .empty) true
+      (fieldMembership .notIncluded)) = some (.fired .omission) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull model world ["Order"]
+    (rawPair 10 (.parsed (.str "A")) 11 (.rejected .malformed)) true
+    (fieldMembership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull model world ["Order"]
+      (rawPair 10 (.parsed (.str "A")) 11 (.rejected .malformed)) true
+      (fieldMembership .notIncluded)) = some .unknown := by native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (.stringFieldValueMembership .included (path "Text") [])) =
+    some .emptyValueListValueFields := by native_decide
+
+example : errorOf (elaborate model ["Order"]
+    (.stringFieldValueMembership .included (path "Text") [path "Text"])) =
+    some (.duplicateStringValueListField ["Order", "Text"]) := by native_decide
+
 end A12Kernel.Conformance.FlatStringValueList

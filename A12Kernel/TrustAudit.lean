@@ -774,6 +774,8 @@ run_cmd do
 #print axioms A12Kernel.valueListNotAll_noPresent_notFired
 #print axioms A12Kernel.valueListNotAll_unknown_iff_of_present
 #print axioms A12Kernel.valueListNotAll_prependUnknownField
+#print axioms A12Kernel.valueListAtLeastOne_present_emptyMember
+#print axioms A12Kernel.valueListNotAll_present_emptyMember
 #print axioms A12Kernel.valueListAtLeastOne_having_fires_omission
 #print axioms A12Kernel.valueListNo_having_fires_omission
 #print axioms A12Kernel.valueListNotAll_having_fires_omission
