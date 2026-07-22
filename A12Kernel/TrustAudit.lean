@@ -225,6 +225,8 @@ run_cmd do
 #print axioms A12Kernel.fullDate_differenceInMonths_swap
 #print axioms A12Kernel.fullDate_differenceInYears_swap
 #print axioms A12Kernel.fullDate_differenceInYears_februaryEnd_boundary
+#print axioms A12Kernel.baseYearDateDifference_direct_start_zero
+#print axioms A12Kernel.baseYearDateDifference_finish_boundary
 
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer

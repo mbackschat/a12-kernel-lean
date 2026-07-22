@@ -9,6 +9,8 @@ namespace A12Kernel
 theorem fullDate_wholeMonthsForward_self (date : FullDate) :
     FullDate.Difference.wholeMonthsForward date date = 0 := by
   simp [FullDate.Difference.wholeMonthsForward,
+    DateParts.Difference.wholeMonthsForward,
+    DateParts.Difference.monthCoordinate,
     DateParts.Shift.monthLandingDay]
   exact Nat.min_le_left _ _
 
@@ -16,6 +18,7 @@ theorem fullDate_wholeMonthsForward_self (date : FullDate) :
 theorem fullDate_wholeYearsForward_self (date : FullDate) :
     FullDate.Difference.wholeYearsForward date date = 0 := by
   simp [FullDate.Difference.wholeYearsForward,
+    DateParts.Difference.wholeYearsForward,
     DateParts.Shift.yearLandingDay, DateParts.Shift.monthLandingDay]
   split
   · simp_all
@@ -101,5 +104,41 @@ theorem fullDate_differenceInYears_februaryEnd_boundary :
     (FullDate.ofYmd? 1999 2 28).bind (fun first =>
       (FullDate.ofYmd? 2000 2 29).map first.differenceInYears) = some 1 := by
   decide
+
+/-- Direct Base Year and its range start denote the same date for both completed-period units. -/
+theorem baseYearDateDifference_direct_start_zero (year : Int) :
+    baseYearDateDifferenceInMonths year .direct (.range .start) = 0 ∧
+      baseYearDateDifferenceInYears year .direct (.range .start) = 0 := by
+  have sameNotBefore :
+      ¬({ year, month := 1, day := 1 } : DateParts).Before
+        { year, month := 1, day := 1 } := by
+    simp [DateParts.Before]
+  simp [baseYearDateDifferenceInMonths, baseYearDateDifferenceInYears,
+    BaseYearDateSource.parts, DateParts.Difference.signedWholePeriods,
+    DateParts.Difference.wholeMonthsForward,
+    DateParts.Difference.wholeYearsForward,
+    DateParts.Difference.monthCoordinate,
+    DateParts.Difference.monthLastDay,
+    DateParts.daysInMonth?,
+    DateParts.Shift.monthLandingDay,
+    DateParts.Shift.yearLandingDay, sameNotBefore]
+
+/-- Selecting the opposite end of one configured Base Year yields eleven whole months but no whole year. -/
+theorem baseYearDateDifference_finish_boundary (year : Int) :
+    baseYearDateDifferenceInMonths year .direct (.range .finish) = 11 ∧
+      baseYearDateDifferenceInYears year .direct (.range .finish) = 0 := by
+  have before :
+      ({ year, month := 1, day := 1 } : DateParts).Before
+        { year, month := 12, day := 31 } := by
+    simp [DateParts.Before]
+  simp [baseYearDateDifferenceInMonths, baseYearDateDifferenceInYears,
+    BaseYearDateSource.parts, DateParts.Difference.signedWholePeriods,
+    DateParts.Difference.wholeMonthsForward,
+    DateParts.Difference.wholeYearsForward,
+    DateParts.Difference.monthCoordinate,
+    DateParts.Difference.monthLastDay,
+    DateParts.daysInMonth?,
+    DateParts.Shift.monthLandingDay, before]
+  omega
 
 end A12Kernel
