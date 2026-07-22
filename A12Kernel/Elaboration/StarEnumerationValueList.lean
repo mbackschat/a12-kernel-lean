@@ -64,16 +64,6 @@ inductive StarEnumerationValueListElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-private theorem elaborateEnumeration_declaration_exact
-    (source : EnumerationDeclaration) (checked : CheckedEnumerationDeclaration)
-    (elaborated : elaborateEnumeration source = .ok checked) :
-    checked.declaration = source := by
-  unfold elaborateEnumeration at elaborated
-  split at elaborated
-  · cases elaborated
-    rfl
-  · contradiction
-
 /-- Reuse the general checked star path, then retain its exact checked stored/category projection. -/
 def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceStarFieldPath) (projectionRef : EnumerationProjectionRef)
@@ -106,7 +96,7 @@ def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPa
                 operand
                 fieldOwned := hKind
                 enumerationOwned := by
-                  rw [elaborateEnumeration_declaration_exact declaration checked hChecked]
+                  rw [elaborateEnumeration_declaration_eq declaration checked hChecked]
                   exact hEnumeration
                 declaringGroup
                 filter }
