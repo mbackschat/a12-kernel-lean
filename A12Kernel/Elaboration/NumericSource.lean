@@ -313,16 +313,29 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
 
 end ResolvedNumericAtom
 
-/-- The checked aggregate grammar admits the established direct aggregate-rounding form without treating aggregates as ordinary scalar fields for every value function. -/
-def AuthoredNumericExpr.isDirectAggregateRound :
+/-- Whether one resolved numeric source is source-confirmed for the direct operation-form rounding wrapper. Number fields, `FieldValueAsNumber`, and aggregates have independently audited parser routes for this shape. -/
+def ResolvedNumericAtom.admitsDirectRound : ResolvedNumericAtom Field → Bool
+  | .field _ | .fieldValueAsNumber _ | .aggregate _ _ => true
+  | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
+  | .stringRange _ _ _ | .dateDifference _ _ _ => false
+
+/-- Whether one resolved numeric source is source-confirmed for the direct operation-form absolute-value wrapper. Aggregates and the remaining scalar operations do not inherit this admission. -/
+def ResolvedNumericAtom.admitsDirectAbsolute : ResolvedNumericAtom Field → Bool
+  | .field _ | .fieldValueAsNumber _ => true
+  | .baseYear _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
+  | .stringRange _ _ _ | .dateDifference _ _ _ | .aggregate _ _ => false
+
+/-- The source-specific direct unary wrapper matrix shared by checked validation and computation. This deliberately does not infer general wrapper composition. -/
+def AuthoredNumericExpr.isDirectResolvedUnaryValueFunction :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
-  | .round _ _ (.atom (.aggregate _ _)) => true
+  | .round _ _ (.atom source) => source.admitsDirectRound
+  | .abs (.atom source) => source.admitsDirectAbsolute
   | _ => false
 
-/-- Source operations participate in the audited arithmetic grammar but do not implicitly widen separately checked direct Number-field value-function shapes. -/
+/-- Source operations participate in the audited arithmetic grammar but do not implicitly widen the separately audited direct-source value-function matrix. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
     (expression : AuthoredNumericExpr (ResolvedNumericAtom Field)) : Bool :=
-  if expression.isDirectAggregateRound then
+  if expression.isDirectResolvedUnaryValueFunction then
     true
   else if expression.anyAtom ResolvedNumericAtom.requiresPlainArithmetic then
     expression.isPlainArithmetic

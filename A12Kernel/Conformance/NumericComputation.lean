@@ -75,7 +75,9 @@ private def model : FlatModel :=
         policy := { kind := .enumeration }
         enumeration := some {
           storedTokens := ["-150", "2", "03"]
-          categories := [{ name := "Factor", tokens := ["5", "225", "3"] }] } }]
+          categories := [
+            { name := "Factor", tokens := ["5", "225", "3"] },
+            { name := "Fraction", tokens := [".5", "2.25", "3"] }] } }]
     repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }]
     baseYear := some 2020 }
 
@@ -256,6 +258,28 @@ example :
           (surfaceField ["Root"] "Source")) input = some (.value 5) ∧
       checkedTargetResultOf (surfaceFieldValueAsNumber) false targetPolicy input =
         some (.supported (.accepted { unscaled := 2, scale := 0 })) := by
+  native_decide
+
+/- The checked operation-form wrappers consume the converted source through the shared numeric evaluator. Rounding uses the selected category token; absolute value and both wrappers preserve clean zero or exact poison. -/
+example :
+    let rounded := .round .halfUp omittedRoundingPlaces
+      (surfaceFieldValueAsNumber (.category
+        (surfacePath ["Root"] "NumericChoice") "Fraction"))
+    let absolute := .abs surfaceFieldValueAsNumber
+    checkedResultOf rounded
+        (context (choice := formalCheck { kind := .enumeration }
+          (.parsed (.enum "-150")))) = some (.value 1) ∧
+      checkedResultOf absolute
+        (context (choice := formalCheck { kind := .enumeration }
+          (.parsed (.enum "-150")))) = some (.value 150) ∧
+      checkedResultOf rounded = some (.value 0) ∧
+      checkedResultOf absolute = some (.value 0) ∧
+      checkedResultOf absolute
+        (context (choice := formalCheck { kind := .enumeration }
+          (.rejected .declaredConstraint))) =
+        some (.poison .declaredConstraint) ∧
+      checkedErrorOf (.abs (surfaceStringRange 1 2)) =
+        some .unsupportedExpression := by
   native_decide
 
 /- Conversion diagnostics preserve resolved source identity and exact category rejection; unchecked String pattern assumptions stay outside the checked core. -/

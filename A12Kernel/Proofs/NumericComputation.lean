@@ -272,12 +272,10 @@ theorem numericComputation_zeroToNegativePower_domainFailure
 
 /-- Rounding preserves a domain-failed lowered child instead of manufacturing a numeric value. -/
 theorem numericComputation_round_preserves_domainFailure
-    (read : FlatFieldDecl →
+    (read : Atom →
       Except NumericComputationFault NumericComputationResult)
     (mode : DecimalRoundingMode) (places : RoundingPlaces)
-    (body : LoweredNumericExpr FlatFieldDecl)
-    (_admitted :
-      (LoweredNumericExpr.round mode places body).computationFault? = none)
+    (body : LoweredNumericExpr Atom)
     (failed : body.evalComputation read = .ok .domainFailure) :
     (LoweredNumericExpr.round mode places body).evalComputation read =
       .ok .domainFailure := by
@@ -287,9 +285,9 @@ theorem numericComputation_round_preserves_domainFailure
 
 /-- Absolute value delegates every evaluated child result to the shared value-only transformation. -/
 theorem numericComputation_abs_delegates
-    (read : FlatFieldDecl →
+    (read : Atom →
       Except NumericComputationFault NumericComputationResult)
-    (body : LoweredNumericExpr FlatFieldDecl)
+    (body : LoweredNumericExpr Atom)
     (result : NumericComputationResult)
     (evaluated : body.evalComputation read = .ok result) :
     (LoweredNumericExpr.abs body).evalComputation read =

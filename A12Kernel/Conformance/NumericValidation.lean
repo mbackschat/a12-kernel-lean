@@ -245,6 +245,39 @@ example :
           (.unknownCategory "Missing")) := by
   native_decide
 
+/- The operation-form rounding wrapper is legal over the converted numeric atom, uses the selected category token, replaces its static scale with the authored places, and preserves symmetric missing fillability. -/
+example :
+    verdictOf (comparison .equal
+        (.round .halfUp omittedRoundingPlaces
+          (fieldValueAsNumber (.category
+            (path ["Order"] "NumericChoice") "Factor"))) 1)
+        (enumerationRaw (.parsed (.enum "-1.50"))) = some (.fired .value) ∧
+      verdictOf (comparison .less
+        (.round .halfUp omittedRoundingPlaces fieldValueAsNumber) 100)
+        (enumerationRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greater
+        (.round .halfUp omittedRoundingPlaces fieldValueAsNumber) (-100))
+        (enumerationRaw .empty) = some (.fired .omission) ∧
+      (elaborateNumericComparison model ["Order"]
+        (twoSided .equal
+          (.round .halfUp omittedRoundingPlaces fieldValueAsNumber)
+          (atom "U"))).isOk = true := by
+  native_decide
+
+/- Absolute value is independently legal over the conversion. It preserves the selected source scale, but at missing numeric zero it collapses the impossible shrinking-magnitude direction instead of copying symmetric source fillability. -/
+example :
+    verdictOf (comparison .equal (.abs fieldValueAsNumber) (3 / 2) 2)
+        (enumerationRaw (.parsed (.enum "-1.50"))) = some (.fired .value) ∧
+      verdictOf (comparison .less (.abs fieldValueAsNumber) 100)
+        (enumerationRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greater (.abs fieldValueAsNumber) (-100))
+        (enumerationRaw .empty) = some (.fired .value) ∧
+      (elaborateNumericComparison model ["Order"]
+        (twoSided .equal (.abs fieldValueAsNumber) (atom "Scale2"))).isOk = true ∧
+      errorOf (comparison .equal (.abs (stringRange 1 2)) 0) =
+        some .unsupportedExpression := by
+  native_decide
+
 /- `RangeAsNumber` parses only a complete ASCII digit slice; filled fallback zero is fixed. -/
 example :
     verdictOf (comparison .equal (stringRange 1 2) 12)
