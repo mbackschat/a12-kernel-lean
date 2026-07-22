@@ -73,6 +73,24 @@ private theorem temporalOperand_resolve_agreesOn
   | nowValue =>
       simp [FlatTemporalOperand.resolve, worldAgreement]
 
+private theorem textFieldOperand_resolve_agreesOn
+    (operand : FlatTextFieldOperand) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
+    (relevant : isRelevant operand.field.id = true) :
+    operand.resolve left = operand.resolve right := by
+  cases operand with
+  | string field =>
+      have readEq := agreement field.id (by
+        simpa [FlatTextFieldOperand.field, FlatField.id] using relevant)
+      simp_all [FlatTextFieldOperand.resolve,
+        FlatContext.resolveDirectStringComparisonOperand,
+        FlatContext.observeValidationAt]
+  | enumeration field =>
+      have readEq := agreement field.id (by
+        simpa [FlatTextFieldOperand.field, FlatField.id] using relevant)
+      simp_all [FlatTextFieldOperand.resolve, FlatContext.observeValidationAt]
+
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
 theorem partialSelected_agreesOn
     (condition : FlatCondition) (left right : FlatContext)
@@ -122,6 +140,18 @@ theorem partialSelected_agreesOn
               simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval, FlatContext.observeValidationAt]
+        | textFields op leftOperand rightOperand =>
+            have bothRelevant :
+                isRelevant leftOperand.field.id = true ∧
+                isRelevant rightOperand.field.id = true := by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatTextFieldOperand.field,
+                FlatField.id] using relevant
+            simp only [FlatComparison.eval]
+            rw [textFieldOperand_resolve_agreesOn leftOperand left right isRelevant
+                agreement bothRelevant.left,
+              textFieldOperand_resolve_agreesOn rightOperand left right isRelevant
+                agreement bothRelevant.right]
         | temporal op leftOperand rightOperand =>
             have bothRelevant :
                 (leftOperand.fields.map FlatField.id).all isRelevant = true ∧

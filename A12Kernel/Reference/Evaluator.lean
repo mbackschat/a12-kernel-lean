@@ -150,6 +150,14 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
           ("expected", toJson (scalarKindTag .string)),
           ("actual", toJson (scalarKindTag actual))]))
   | .enumerationOperand _ _ => throw .incoherentCore
+  | .enumerationComparability leftPath rightPath error =>
+      let reason := match error with
+        | .displayClassMismatch => "displayClassMismatch"
+        | .displayMapConflict => "displayMapConflict"
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "directFieldComparison"),
+          ("leftPath", toJson leftPath), ("rightPath", toJson rightPath),
+          ("reason", toJson reason)]))
   | .incoherentCore => throw .incoherentCore
 
 private def correlationElaborationResult : CorrelationElabError →

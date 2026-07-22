@@ -134,6 +134,17 @@ def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   | .temporal kind components =>
       .temporal { id := declaration.id, kind, components }
 
+/-- Resolve one legal direct String/Enumeration declaration to its runtime operand and independent static-comparability profile. -/
+def toTextFieldComparison? (declaration : FlatFieldDecl) :
+    Option (FlatTextFieldOperand × DirectComparableField) :=
+  match declaration.policy.kind, declaration.enumeration with
+  | .string, none => some (.string { id := declaration.id }, .plainString)
+  | .enumeration, some source =>
+      match elaborateEnumeration source with
+      | .ok checked => some (.enumeration { id := declaration.id }, checked.directComparableField)
+      | .error _ => none
+  | _, _ => none
+
 end FlatFieldDecl
 
 /-- One repeatable model level with the exact group path on which `*` may be written. A field's `repeatableScope` alone cannot identify that path segment. -/
@@ -194,6 +205,8 @@ inductive ElabError where
   | invalidTemporalLiteralComponents (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
+  | enumerationComparability (leftPath rightPath : List String)
+      (error : EnumerationComparabilityError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -509,8 +522,25 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .ok declaration => declaration.repeatableScope.isEmpty && field.matchesDecl declaration
   | .error _ => false
 
+/-- Re-derive one direct textual operand's static profile from the exact model declaration retained by checked core admission. -/
+def FlatModel.directComparableFor? (model : FlatModel)
+    (operand : FlatTextFieldOperand) : Option DirectComparableField :=
+  match model.lookupUniqueId operand.field.id with
+  | .error _ => none
+  | .ok declaration =>
+      if declaration.repeatableScope.isEmpty &&
+          operand.field.matchesDecl declaration then
+        declaration.toTextFieldComparison?.map Prod.snd
+      else
+        none
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
+  | .textFields _ left right =>
+      match model.directComparableFor? left, model.directComparableFor? right with
+      | some leftProfile, some rightProfile =>
+          directFieldComparisonAllowed leftProfile rightProfile
+      | _, _ => false
   | .enumeration _ field projectionRef projection expected =>
       match model.lookupUniqueId field.id with
       | .error _ => false
@@ -602,8 +632,18 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           else
             throw (.temporalFormatsIncompatible left.path right.path)
       | leftKind, rightKind =>
-          throw (.temporalOperandKindMismatch left.path right.path
-            leftKind.surfaceKind rightKind.surfaceKind)
+          match left.toTextFieldComparison?, right.toTextFieldComparison? with
+          | some (leftOperand, leftProfile), some (rightOperand, rightProfile) =>
+              let equality ← match op.toEquality? with
+                | some equality => pure equality
+                | none => throw (.unsupportedOperator op)
+              match classifyDirectFieldComparison leftProfile rightProfile with
+              | .accepted => pure (.compare (.textFields equality leftOperand rightOperand))
+              | .rejected error =>
+                  throw (.enumerationComparability left.path right.path error)
+          | _, _ =>
+              throw (.temporalOperandKindMismatch left.path right.path
+                leftKind.surfaceKind rightKind.surfaceKind)
   | .compareToday op position reference => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve

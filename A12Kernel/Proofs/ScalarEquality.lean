@@ -43,4 +43,19 @@ theorem evalSymmetricComparison_swapped
   cases left <;> cases right <;>
     simp [evalSymmetricComparison, reverseHolds, Bool.and_comm]
 
+namespace EqualityOp
+
+/-- Equality and inequality over a symmetric equivalence relation are invariant under exchanging the classified operands. -/
+theorem evalSymmetric_swapped (op : EqualityOp)
+    (equivalent : α → α → Bool)
+    (symmetric : ∀ left right, equivalent left right = equivalent right left)
+    (left right : SimpleComparisonOperand α) :
+    op.evalSymmetric equivalent left right =
+      op.evalSymmetric equivalent right left := by
+  cases op <;> cases left <;> cases right <;>
+    simp [EqualityOp.evalSymmetric, evalSymmetricComparison,
+      symmetric, Bool.and_comm]
+
+end EqualityOp
+
 end A12Kernel

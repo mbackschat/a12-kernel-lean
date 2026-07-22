@@ -22,7 +22,8 @@ private def model : FlatModel := { fields := [enumDecl] }
 private def path : SurfaceFieldPath :=
   { base := .absolute, groups := ["Order"], field := "Code" }
 
-private def coreOf (result : Except ElabError (CheckedFlatCondition model)) :
+private def coreOf {model : FlatModel}
+    (result : Except ElabError (CheckedFlatCondition model)) :
     Option FlatCondition :=
   match result with
   | .ok checked => some checked.core
@@ -114,5 +115,104 @@ private def invalidDeclarationModel : FlatModel :=
 
 example : resolveErrorOf invalidDeclarationModel.validate =
     some (.invalidEnumerationDeclaration ["Order", "Code"] .emptyStoredDomain) := by native_decide
+
+private def stringDecl : FlatFieldDecl :=
+  { id := 10, groupPath := ["Order"], name := "Text", policy := { kind := .string } }
+
+private def identityEnumDecl : FlatFieldDecl :=
+  { enumDecl with id := 21, name := "Identity", enumeration := some {
+      storedTokens := ["A", "B"]
+      displayFacts := [
+        { locale := "en", stored := "A", display := "A" },
+        { locale := "en", stored := "B", display := "B" }] } }
+
+private def displayEnumDecl : FlatFieldDecl :=
+  { enumDecl with id := 22, name := "Display", enumeration := some {
+      storedTokens := ["A", "B"]
+      displayFacts := [
+        { locale := "en", stored := "A", display := "Alpha" },
+        { locale := "en", stored := "B", display := "Beta" }] } }
+
+private def compatibleEnumDecl : FlatFieldDecl :=
+  { enumDecl with id := 23, name := "Compatible", enumeration := some {
+      storedTokens := ["A", "C"]
+      displayFacts := [
+        { locale := "en", stored := "A", display := "Alpha" },
+        { locale := "en", stored := "C", display := "Gamma" }] } }
+
+private def conflictingEnumDecl : FlatFieldDecl :=
+  { enumDecl with id := 24, name := "Conflict", enumeration := some {
+      storedTokens := ["A", "C"]
+      displayFacts := [
+        { locale := "en", stored := "A", display := "Another" },
+        { locale := "en", stored := "C", display := "Gamma" }] } }
+
+private def fieldModel : FlatModel :=
+  { fields := [stringDecl, enumDecl, identityEnumDecl, displayEnumDecl,
+      compatibleEnumDecl, conflictingEnumDecl] }
+
+private def fieldPath (name : String) : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Order"], field := name }
+
+private def rawPair (leftId : FieldId) (left : RawCell)
+    (rightId : FieldId) (right : RawCell) : RawFlatContext where
+  read id := if id == leftId then left else if id == rightId then right else .empty
+
+private def textEnumCore : FlatCondition :=
+  .compare (.textFields .equal (.string { id := 10 }) (.enumeration { id := 20 }))
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Text") (fieldPath "Code"))) = some textEnumCore := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Text") (fieldPath "Text"))) = some
+      (.compare (.textFields .equal (.string { id := 10 }) (.string { id := 10 }))) := by
+  native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .notEqual
+    (fieldPath "Code") (fieldPath "Identity"))) = some
+      (.compare (.textFields .notEqual (.enumeration { id := 20 })
+        (.enumeration { id := 21 }))) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "A"))) true
+    (.compareFields .equal (fieldPath "Text") (fieldPath "Code"))) =
+    some (.fired .value) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 (.parsed (.enum "A")) 21 (.parsed (.enum "B"))) true
+    (.compareFields .notEqual (fieldPath "Code") (fieldPath "Identity"))) =
+    some (.fired .value) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "C"))) true
+    (.compareFields .equal (fieldPath "Text") (fieldPath "Code"))) =
+    some .unknown := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 10 (.parsed (.str "A")) 20 .empty) true
+    (.compareFields .notEqual (fieldPath "Text") (fieldPath "Code"))) =
+    some .notFired := by native_decide
+
+example : textEnumCore.evalSelected
+    (fieldModel.checkContext (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "A"))))
+    (fun id => id == 10) = .unknown := by native_decide
+
+example : (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Display") (fieldPath "Compatible"))).isOk = true := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Text") (fieldPath "Display"))) = some
+      (.enumerationComparability ["Order", "Text"] ["Order", "Display"]
+        .displayClassMismatch) := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Display") (fieldPath "Conflict"))) = some
+      (.enumerationComparability ["Order", "Display"] ["Order", "Conflict"]
+        .displayMapConflict) := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"] (.compareFields .less
+    (fieldPath "Text") (fieldPath "Code"))) = some (.unsupportedOperator .less) := by
+  native_decide
 
 end A12Kernel.Conformance.FlatEnumeration
