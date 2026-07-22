@@ -116,24 +116,26 @@ def evalNumericSumAggregate (fieldSigned : Bool)
     (side : ResolvedValueListSide .number) : NumericOperand :=
   evalDeclaredNumericSumAggregate (side.toNumericSumSide fieldSigned)
 
-/-- Insert a Number into the already-seen representatives exactly when no scale-19-equal representative exists. Representative order is internal and does not affect the count. -/
-def insertDistinctNumericValue (seen : List Rat) (value : Rat) : List Rat :=
+/-- Insert one comparable atom into the already-seen representatives exactly when no kind-specific equal representative exists. Representative order is internal and does not affect the count. -/
+def insertDistinctValue {kind : ValueListKind}
+    (seen : List (ValueListAtom kind)) (value : ValueListAtom kind) :
+    List (ValueListAtom kind) :=
   if seen.any fun candidate =>
-      ValueListAtom.equal (kind := .number) candidate value then
+      ValueListAtom.equal candidate value then
     seen
   else
     value :: seen
 
-/-- Scan one resolved Number aggregate side, skipping empty cells and stopping at the first formal unavailability. -/
-def scanDistinctNumericCells (cells : List (ValueListCell .number)) :
-    Except FormalCause (List Rat) :=
-  ValueListCell.scanPresent (kind := .number)
-    insertDistinctNumericValue cells []
+/-- Scan one homogeneous comparable side, skipping empty cells and stopping at the first formal unavailability. -/
+def scanDistinctCells {kind : ValueListKind}
+    (cells : List (ValueListCell kind)) :
+    Except FormalCause (List (ValueListAtom kind)) :=
+  ValueListCell.scanPresent insertDistinctValue cells []
 
-/-- Evaluate Number-valued `NumberOfDifferentValues`. Only distinct filled values count. Missing cells or a declared tail can only increase the current count; a reached filter can also remove currently selected values and is therefore both-directionally fillable. -/
-def evalNumericDistinctCountAggregate
-    (side : ResolvedValueListSide .number) : NumericOperand :=
-  match scanDistinctNumericCells side.cells with
+/-- Evaluate Number-valued `NumberOfDifferentValues` over one statically homogeneous comparable family. Only distinct filled values count. Missing cells or a declared tail can only increase the current count; a reached filter can also remove currently selected values and is therefore both-directionally fillable. -/
+def evalDistinctCountAggregate
+    (side : ResolvedValueListSide kind) : NumericOperand :=
+  match scanDistinctCells side.cells with
   | .error cause => .unknown cause
   | .ok seen =>
       let fillability :=
@@ -144,6 +146,20 @@ def evalNumericDistinctCountAggregate
         else
           NumericFillability.fixed
       .value seen.length fillability
+
+/-- Compatibility name for the Number specialization. -/
+abbrev insertDistinctNumericValue (seen : List Rat) (value : Rat) : List Rat :=
+  insertDistinctValue (kind := .number) seen value
+
+/-- Compatibility name for the Number specialization. -/
+abbrev scanDistinctNumericCells (cells : List (ValueListCell .number)) :
+    Except FormalCause (List Rat) :=
+  scanDistinctCells (kind := .number) cells
+
+/-- Compatibility name for the Number specialization. -/
+abbrev evalNumericDistinctCountAggregate
+    (side : ResolvedValueListSide .number) : NumericOperand :=
+  evalDistinctCountAggregate side
 
 /-- One row-aligned pair consumed by `SumOfProducts`. Empty cells remain explicit so each declaration can supply its own numeric missing direction before multiplication. -/
 structure ResolvedNumericProductRow where

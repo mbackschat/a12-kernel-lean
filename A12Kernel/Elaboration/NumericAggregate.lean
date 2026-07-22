@@ -19,12 +19,9 @@ inductive NumericAggregateElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- Partial aggregate evaluation distinguishes the kernel's rule-level filtered skip, an all-rows relevance failure, and an evaluated numeric operand. Nonrelevance is not forged into a formal cell cause. -/
-inductive PartialValidationNumberAggregateResult where
-  | skippedHaving
-  | nonRelevant
-  | evaluated (operand : NumericOperand)
-  deriving Repr, DecidableEq
+/-- Compatibility name for the shared partial all-rows aggregate result. -/
+abbrev PartialValidationNumberAggregateResult :=
+  PartialValidationAggregateResult
 
 /-- A parser-independent `SumOfProducts` pair. Its two operands are fields, not ordinary entity-list slots: filters, groups, and direct fields are unrepresentable here. -/
 structure SurfaceNumericProductAggregate where
@@ -330,24 +327,12 @@ def evaluateExtremum (checked : CheckedNumericStarSource model)
 
 end CheckedNumericStarSource
 
-private def appendNumericAggregateSide
-    (left right : ResolvedValueListSide .number) :
-    ResolvedValueListSide .number :=
-  { cells := left.cells ++ right.cells
-    hasUninstantiatedTail :=
-      left.hasUninstantiatedTail || right.hasUninstantiatedTail
-    hasHaving := left.hasHaving || right.hasHaving }
-
 private def appendNumericSumSide
     (left right : ResolvedNumericSumSide) : ResolvedNumericSumSide :=
   { cells := left.cells ++ right.cells
     uninstantiatedSignedness :=
       left.uninstantiatedSignedness ++ right.uninstantiatedSignedness
     hasHaving := left.hasHaving || right.hasHaving }
-
-private def numericAggregateSideAvailable
-    (side : ResolvedValueListSide .number) : Except FormalCause Unit :=
-  ValueListCell.scanPresent (kind := .number) (fun _ _ => ()) side.cells ()
 
 private structure ResolvedNumberEntityAggregateSides where
   values : ResolvedValueListSide .number := {
@@ -360,7 +345,7 @@ namespace ResolvedNumberEntityAggregateSides
 private def append (accumulated : ResolvedNumberEntityAggregateSides)
     (declarationSigned : Bool) (side : ResolvedValueListSide .number) :
     ResolvedNumberEntityAggregateSides :=
-  { values := appendNumericAggregateSide accumulated.values side
+  { values := accumulated.values.append side
     sum := appendNumericSumSide accumulated.sum
       (side.toNumericSumSide declarationSigned) }
 
@@ -373,27 +358,6 @@ private def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
   | .distinctCount => evalNumericDistinctCountAggregate accumulated.values
 
 end ResolvedNumberEntityAggregateSides
-
-/-- Resolve aggregate slots lazily in authored order. A consumer-selected terminal result stops before later topology or readers; a formal failure in a resolved slot becomes the consumer's terminal result before the next slot. -/
-private def scanNumberEntityAggregateSides {terminal : Type}
-    (resolve : CheckedNumberEntityOperand model →
-      Except StarAddressingError
-        (Sum (ResolvedValueListSide .number) terminal))
-    (onUnavailable : FormalCause → terminal) :
-    List (CheckedNumberEntityOperand model) →
-      ResolvedNumberEntityAggregateSides →
-      Except StarAddressingError
-        (Sum ResolvedNumberEntityAggregateSides terminal)
-  | [], accumulated => pure (.inl accumulated)
-  | operand :: remaining, accumulated => do
-      match ← resolve operand with
-      | .inr result => pure (.inr result)
-      | .inl side =>
-          match numericAggregateSideAvailable side with
-          | .error cause => pure (.inr (onUnavailable cause))
-          | .ok () =>
-              scanNumberEntityAggregateSides resolve onUnavailable remaining
-                (accumulated.append operand.declarationSigned side)
 
 namespace CheckedNumberEntityField
 
@@ -452,12 +416,16 @@ def evaluateAggregate (checked : CheckedNumberEntitySource model)
     Except StarAddressingError NumericOperand :=
   let direct := model.checkContext directRead
   do
-    match ← scanNumberEntityAggregateSides
+    match ← scanResolvedValueListOperands
+        (state := ResolvedNumberEntityAggregateSides)
         (terminal := NumericOperand)
         (fun operand => do
           pure (.inl (← operand.resolvedAggregateSide document outer direct
             filterRead starRead)))
-        (fun cause => .unknown cause) checked.operands {} with
+        (fun cause => .unknown cause)
+        (fun accumulated operand side =>
+          accumulated.append operand.declarationSigned side)
+        checked.operands {} with
     | .inl accumulated => pure (accumulated.evaluate op)
     | .inr result => pure result
 
@@ -472,11 +440,15 @@ def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
   else
     let direct := model.checkContext directRead
     do
-      match ← scanNumberEntityAggregateSides
+      match ← scanResolvedValueListOperands
+          (state := ResolvedNumberEntityAggregateSides)
           (terminal := PartialValidationNumberAggregateResult)
           (fun operand => operand.resolvedPartialAggregateSide document outer scope
             direct starRead)
-          (fun cause => .evaluated (.unknown cause)) checked.operands {} with
+          (fun cause => .evaluated (.unknown cause))
+          (fun accumulated operand side =>
+            accumulated.append operand.declarationSigned side)
+          checked.operands {} with
       | .inl accumulated => pure (.evaluated (accumulated.evaluate op))
       | .inr result => pure result
 

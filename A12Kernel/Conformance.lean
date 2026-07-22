@@ -81,6 +81,7 @@ import A12Kernel.Conformance.StarStringValueList
 import A12Kernel.Conformance.StarEnumerationValueList
 import A12Kernel.Conformance.NumericAggregate
 import A12Kernel.Conformance.NumericAggregateElaboration
+import A12Kernel.Conformance.TokenDistinctCount
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.RepetitionNotUniqueElaboration
 import A12Kernel.Conformance.Enumeration
