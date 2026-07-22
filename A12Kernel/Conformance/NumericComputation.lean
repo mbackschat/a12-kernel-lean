@@ -634,6 +634,20 @@ example :
         some (.poison .declaredConstraint) := by
   native_decide
 
+/- NumberOfDifferentValues uses the same checked computation atom, drops empty cells, and preserves formal poison while exposing only the integral value. -/
+example :
+    checkedResultOf (surfaceAggregate .distinctCount "Source" ["Later"])
+        (context (checkedNumber (.parsed (.num 5)))
+          (checkedNumber (.parsed (.num 5)))) = some (.value 1) ∧
+      checkedResultOf (surfaceAggregate .distinctCount "Source" ["Later"])
+        (context (checkedNumber .empty)
+          (checkedNumber (.parsed (.num 5)))) = some (.value 1) ∧
+      checkedResultOf (surfaceAggregate .distinctCount "Source" ["Later"])
+        (context (checkedNumber (.rejected .declaredConstraint))
+          (checkedNumber (.parsed (.num 5)))) =
+        some (.poison .declaredConstraint) := by
+  native_decide
+
 /- Aggregate atoms compose through plain arithmetic and the kernel-established direct rounding route while retaining their derived scale. -/
 example :
     checkedResultOf

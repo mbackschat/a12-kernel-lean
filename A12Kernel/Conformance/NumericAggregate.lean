@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Resolved Number aggregate executable locks
 
-These cases begin after one Number field-list or star has been expanded, filtered, and classified. They distinguish aggregate `Sum`/`MinValue`/`MaxValue` from operand-list arithmetic without adding path lowering, row selection, partial relevance, or computation.
+These cases begin after one Number field-list or star has been expanded, filtered, and classified. They distinguish aggregate `Sum`/`MinValue`/`MaxValue`/`NumberOfDifferentValues` from operand-list arithmetic without adding path lowering, row selection, partial relevance, or computation.
 -/
 
 namespace A12Kernel.Conformance.NumericAggregate
@@ -185,6 +185,37 @@ example :
 example :
     evalNumericSumAggregate false (side [.present 7] false true) =
       .value 7 .both := by
+  native_decide
+
+/- Distinct count uses the shared scale-19 equality rather than exact rational identity. -/
+example :
+    evalNumericDistinctCountAggregate
+        (side [.present 0, .present belowComparisonResolution, .present 1]) =
+      .value 2 .fixed := by
+  native_decide
+
+/- Empty cells are not distinct values. They leave the integral count grow-only, including the all-empty zero identity. -/
+example :
+    evalNumericDistinctCountAggregate
+        (side [.present 5, .empty, .present 5]) =
+        .value 1 .growOnly ∧
+      evalNumericDistinctCountAggregate (side [.empty]) =
+        .value 0 .growOnly := by
+  native_decide
+
+/- An omitted declared tail can add a distinct value but cannot remove an existing one. -/
+example :
+    evalNumericDistinctCountAggregate (side [.present 5, .present 5] true) =
+      .value 1 .growOnly := by
+  native_decide
+
+/- A reached filter can alter membership in either direction, while the first formally unavailable selected cell suppresses the count. -/
+example :
+    evalNumericDistinctCountAggregate (side [.present 5] false true) =
+        .value 1 .both ∧
+      evalNumericDistinctCountAggregate
+        (side [.present 5, .unknown .required, .unknown .malformed]) =
+        .unknown .required := by
   native_decide
 
 end A12Kernel.Conformance.NumericAggregate

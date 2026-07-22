@@ -74,11 +74,12 @@ def validationOperand (context : FlatContext) :
 
 end ResolvedDateDifferenceOperand
 
-/-- The three Number field-list aggregate operations whose resolved folds already share one classified-cell owner. -/
+/-- The Number-valued field-list aggregate operations whose resolved folds share one classified-cell owner. -/
 inductive NumericAggregateOp where
   | sum
   | minimum
   | maximum
+  | distinctCount
   deriving Repr, DecidableEq
 
 /-- A parser-independent direct Number aggregate field list. Checked direct-list admission requires at least two entries; starred/group operands expand through separate owners. -/
@@ -118,6 +119,17 @@ def scaleSummary (source : ResolvedNumericAggregateFields) :
     (NumericScaleSummary.field source.first.info.scale)
 
 end ResolvedNumericAggregateFields
+
+namespace NumericAggregateOp
+
+/-- Ordinary value aggregates retain the union of contributing declaration scales; a distinct count is an integral result independently of operand scale. -/
+def scaleSummary (op : NumericAggregateOp)
+    (source : ResolvedNumericAggregateFields) : NumericScaleSummary :=
+  match op with
+  | .sum | .minimum | .maximum => source.scaleSummary
+  | .distinctCount => NumericScaleSummary.field 0
+
+end NumericAggregateOp
 
 inductive SurfaceNumericAtom where
   | field (path : SurfaceFieldPath)
@@ -164,7 +176,7 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
-  | .aggregate _ source => source.scaleSummary
+  | .aggregate op source => op.scaleSummary source
 
 end ResolvedNumericAtom
 
