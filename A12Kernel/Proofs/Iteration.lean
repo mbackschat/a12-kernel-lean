@@ -74,7 +74,9 @@ private theorem NumberFold.classifyRows_congr
       have headClassified :
           NumberFold.classifyRow left field row =
             NumberFold.classifyRow right field row := by
-        unfold NumberFold.classifyRow
+        unfold NumberFold.classifyRow FlatNumberField.valueListCell
+          SingleGroupValidationContext.atRow FlatContext.observeValidationAt
+        simp only
         rw [headAgree]
       rw [List.map_cons, List.map_cons, headClassified, tail tailAgree]
 
