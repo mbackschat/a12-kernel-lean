@@ -49,7 +49,7 @@ def scanPartialValidationFirstFilledState (checked : CheckedStarNumberSource mod
         | .continue next =>
             scanPartialValidationFirstFilledState checked scope read
               environments next
-        | .done result => .inr (.evaluated result)
+        | .done result => .inr (.evaluated result.asNumber)
       else
         .inr .nonRelevant
 
@@ -92,7 +92,7 @@ private def scanCheckedFirstFilledNumberOperand
       if relevant then
         match state.step (source.field.valueListCell direct) with
         | .continue next => pure (.inl next)
-        | .done result => pure (.inr (.evaluated result))
+        | .done result => pure (.inr (.evaluated result.asNumber))
       else
         pure (.inr .nonRelevant)
   | .star source => do

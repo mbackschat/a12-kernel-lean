@@ -80,6 +80,7 @@ import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.FirstFilledValue
+import A12Kernel.Elaboration.TokenFirstFilledValue
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.NumericValidation

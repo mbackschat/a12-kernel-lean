@@ -150,7 +150,7 @@ private def evaluatedOf (authored : SurfaceTokenDistinctCountSource)
   match elaborateTokenDistinctCountSource model ["Form"] authored with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluateValidation (document rows) []
+      match checked.evaluateDistinctValidation (document rows) []
           (directRead stringCell enumerationCell)
           (starRead stringCells enumerationCells numberCells) with
       | .ok result => some result
@@ -163,7 +163,7 @@ private def partialOf (authored : SurfaceTokenDistinctCountSource)
   match elaborateTokenDistinctCountSource model ["Form"] authored with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluatePartialValidation (document rows) [] scope
+      match checked.evaluatePartialDistinctValidation (document rows) [] scope
           (directRead .empty .empty)
           (starRead stringCells enumerationCells numberCells) with
       | .ok result => some result
@@ -271,7 +271,7 @@ example : evaluatedOf
 /- The result scale is exactly integral 0. -/
 example :
     (match elaborateTokenDistinctCountSource model ["Form"] directMixed with
-    | .ok checked => checked.scaleSummary
+    | .ok checked => checked.distinctScaleSummary
     | .error _ => { scale := .unknown, canExpandScale := false }) =
       { scale := .exact 0, canExpandScale := false } := by
   native_decide

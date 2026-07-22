@@ -189,9 +189,9 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilledState, relevant,
-    leftPresent, rightPresent, FirstFilledNumberScanState.enterSelection,
-    FirstFilledNumberScanState.enter,
-    FirstFilledNumberScanState.step]
+    leftPresent, rightPresent, FirstFilledScanState.enterSelection,
+    FirstFilledScanState.enter, FirstFilledScanState.step,
+    FirstFilledScanResult.asNumber]
 
 /-- Checked multi-operand authoring always retains either a starred first source or a genuine trailing operand. -/
 theorem checkedFirstFilledNumberSource_requiredMultiplicity
