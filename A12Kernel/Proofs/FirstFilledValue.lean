@@ -128,4 +128,35 @@ theorem checkedNumericStarSource_evaluateFirstFilled_of_valid
   rw [valid]
   rfl
 
+/-- A reached nonrelevant head terminates before either target reader is sampled. -/
+theorem checkedStarNumberSource_nonRelevantFirstFilledHeadBeforeRead
+    (checked : CheckedStarNumberSource model) (domain : ReopenedStarDomain)
+    (environment : Env) (environments : List Env)
+    (scope : ValidationRelevanceScope) (left right : Env → FieldId → RawCell)
+    (nonRelevant : checked.source.cellRelevant scope environment = false) :
+    checked.selectedPartialValidationFirstFilled
+        { domain, environments := environment :: environments } scope left = .nonRelevant ∧
+      checked.selectedPartialValidationFirstFilled
+        { domain, environments := environment :: environments } scope right = .nonRelevant := by
+  simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
+    CheckedStarNumberSource.scanPartialValidationFirstFilled, nonRelevant]
+
+/-- A relevant present head selects its value and hides every suffix; arbitrary readers need agree only on that reached classification. -/
+theorem checkedStarNumberSource_presentFirstFilledHeadStops
+    (checked : CheckedStarNumberSource model) (domain : ReopenedStarDomain)
+    (environment : Env) (environments : List Env)
+    (scope : ValidationRelevanceScope) (left right : Env → FieldId → RawCell)
+    (amount : Rat) (relevant : checked.source.cellRelevant scope environment = true)
+    (leftPresent : checked.valueListCell left environment = .present amount)
+    (rightPresent : checked.valueListCell right environment = .present amount) :
+    checked.selectedPartialValidationFirstFilled
+        { domain, environments := environment :: environments } scope left =
+          .evaluated (.value amount false) ∧
+      checked.selectedPartialValidationFirstFilled
+        { domain, environments := environment :: environments } scope right =
+          .evaluated (.value amount false) := by
+  simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
+    CheckedStarNumberSource.scanPartialValidationFirstFilled, relevant,
+    leftPresent, rightPresent, FirstFilledNumberScanState.step]
+
 end A12Kernel
