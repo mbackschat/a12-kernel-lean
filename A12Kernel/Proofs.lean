@@ -7,6 +7,7 @@ import A12Kernel.Proofs.DateRangeOverlap
 import A12Kernel.Proofs.DateRangeOverlapOperators
 import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateConstructionNumeric
+import A12Kernel.Proofs.BaseYearDateSource
 import A12Kernel.Proofs.DateDifference
 import A12Kernel.Proofs.DateTime
 import A12Kernel.Proofs.BerlinLegacyTimeZone

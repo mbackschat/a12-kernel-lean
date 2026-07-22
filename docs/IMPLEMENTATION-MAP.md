@@ -904,22 +904,24 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - This repository still retains no portable Date-range observation, so correspondence remains `external evidence pending`
 - checked lowering, paths/stars, filter evaluation, cells, row gates, messages, equality/inequality, DateRange construction/extraction, protocol support, and project-local evidence remain open.
 
-### Resolved three-part Date construction
+### Resolved three-part Date construction and Base-Year Date sources
 
-- Owners: [`Semantics/DateConstruction.lean`](../A12Kernel/Semantics/DateConstruction.lean), [`Semantics/DateConstructionNumeric.lean`](../A12Kernel/Semantics/DateConstructionNumeric.lean), and their matching [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/) modules.
-- Boundary: a §6/§12 reason-and-verdict account and its first direct numeric consumer, narrower than general `Date(...)`.
+- Owners: [`Semantics/DateConstruction.lean`](../A12Kernel/Semantics/DateConstruction.lean), [`Semantics/DateConstructionNumeric.lean`](../A12Kernel/Semantics/DateConstructionNumeric.lean), [`Semantics/BaseYearDateSource.lean`](../A12Kernel/Semantics/BaseYearDateSource.lean), and their matching [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/) modules.
+- Boundary: a §6/§12 reason-and-verdict account, its direct numeric consumer, and the floor-free decoded labels used when configured Base Year is consumed by direct date or date-range extraction; this remains narrower than general `Date(...)`.
 - After component authoring/checking and a separate all-present calendar decision, `classifyDateConstruction3` combines the three availability states with supplied real/unreal reality and returns real `DateParts`, incomplete, present-but-unreal, or formally unavailable.
 - Trusted laws characterize incomplete and UNKNOWN precedence, exact retention of supplied reality, both fired polarities, exact truth complementation, and the full-verdict non-law: `Valid` forgets the incomplete/unreal reason while `Invalid` preserves it.
-- The direct numeric component layer then selects supplied real day/month/year values without re-running calendar reality, returns not-given zero for incomplete, fixed zero for unreal, and cause-free unavailability for UNKNOWN.
-- Trusted laws establish exact selection, same-zero/distinct-provenance, unavailable-to-UNKNOWN behavior, and true-comparison polarity for all six fixed-right operators
-- executable cases additionally lock one false comparison and separate symmetric Date missingness from the tempting grow-only encoding.
+- The direct numeric component layer selects supplied real day/month/quarter/year values without re-running calendar reality, returns not-given zero for incomplete, fixed zero for unreal, and cause-free unavailability for UNKNOWN. Quarter uses the one-based three-month partition while preserving a zero sentinel.
+- Configured Base Year projects to January 1 for direct date/component consumption and to January 1 or December 31 according to range endpoint position. These are decoded `DateParts`, not stored `FullDate` values, so a pre-floor configured year is not incorrectly rejected by the unrelated value floor.
+- Trusted laws establish exact component selection, same-zero/distinct-provenance, unavailable-to-UNKNOWN behavior, true-comparison polarity for all six fixed-right operators, exact Base-Year endpoints, and the endpoint non-collapse law
+- executable cases additionally lock one false comparison, Q2 selection, both zero provenances, and a pre-floor Base-Year label.
 
 - Kernel 30.8.1 construction/validity and empty-row eligibility source plus maintained a12-dmkits Date-construction differentials establish the four classifications and selected externally visible outcomes
 - the malformed `Valid` and malformed-plus-empty precedence branches are source-established rather than separately differential.
-- The maintained “all-empty” differential also fills an unrelated time field, so truly content-empty row eligibility is likewise source-established rather than independently isolated
+- The maintained “all-empty” differential also fills an unrelated time field, so truly content-empty row eligibility is likewise source-established rather than independently isolated.
+- Kernel date-extraction source establishes the quarter formula and Base-Year January/December labels. Maintained a12-dmkits quarter and extraction differentials cover the component family, while its adapter reads Base-Year date/range sources; reviewed peer evaluation still routes range extraction only through a range-valued operand, so Base-Year range execution is an upstream gap rather than local evidence.
 - this repository retains no portable Date observation.
-- Exact component values/causes, raw/checked cells, two- and four-part forms, Base Year, constant-only authoring rejection, exact parser/component bounds, full-row gating, stored/computed target admission, checked lowering, and protocol exposure remain open.
-- The current Lean result stops after direct day/month/year validation projection
+- Exact formal causes, raw/checked date-component cells, two- and four-part forms, missing-Base-Year authoring rejection for these source positions, constant-only authoring rejection, exact parser/component bounds, full-row gating, stored/computed target admission, checked lowering, and protocol exposure remain open.
+- The current Lean result stops after direct day/month/quarter/year validation projection and resolved Base-Year source labels
 - computation consumption, date differences, compositional temporal no-value propagation, and legacy-calendar identity remain open.
 - Concrete calendar resolution is deliberately not implemented: kernel 30.8.1 uses a zone-aware hybrid `GregorianCalendar`, while the reusable `CivilDate` account is zone-free and proleptic, and the two accounts have reachable cutover and zone-discontinuity separators.
 

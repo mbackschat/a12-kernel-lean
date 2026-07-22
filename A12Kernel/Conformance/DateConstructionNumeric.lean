@@ -2,7 +2,7 @@ import A12Kernel.Semantics.DateConstructionNumeric
 
 /-! # Constructed-Date numeric component executable locks
 
-These cases start with an already-classified three-part `Date(...)` result. They lock only the resolved `DayFromDate`, `MonthFromDate`, and `YearFromDate` numeric projection and its fixed-literal validation behavior. Calendar resolution, DateTime composition, date differences, authored lowering, and target application remain outside this boundary.
+These cases start with an already-classified three-part `Date(...)` result. They lock only the resolved `DayFromDate`, `MonthFromDate`, `QuarterFromDate`, and `YearFromDate` numeric projection and its fixed-literal validation behavior. Calendar resolution, DateTime composition, date differences, authored lowering, and target application remain outside this boundary.
 -/
 
 namespace A12Kernel.Conformance.DateConstructionNumeric
@@ -18,6 +18,8 @@ example :
         .value 15 false ∧
       (DateConstructionResult.real realParts).numericPart .month =
         .value 6 false ∧
+      (DateConstructionResult.real realParts).numericPart .quarter =
+        .value 2 false ∧
       (DateConstructionResult.real realParts).numericPart .year =
         .value 2024 false := by
   native_decide
@@ -28,6 +30,8 @@ example :
         .value 0 true ∧
       DateConstructionResult.incomplete.numericPart .month =
         .value 0 true ∧
+      DateConstructionResult.incomplete.numericPart .quarter =
+        .value 0 true ∧
       DateConstructionResult.incomplete.numericPart .year =
         .value 0 true := by
   native_decide
@@ -37,6 +41,8 @@ example :
     DateConstructionResult.unreal.numericPart .day =
         .value 0 false ∧
       DateConstructionResult.unreal.numericPart .month =
+        .value 0 false ∧
+      DateConstructionResult.unreal.numericPart .quarter =
         .value 0 false ∧
       DateConstructionResult.unreal.numericPart .year =
         .value 0 false := by

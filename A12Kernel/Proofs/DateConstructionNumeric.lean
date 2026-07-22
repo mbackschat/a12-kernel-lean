@@ -7,10 +7,13 @@ These laws characterize the cause-free numeric projection of an already-classifi
 
 namespace A12Kernel
 
-/-- The closed selector exposes exactly the supplied day, month, and year components. -/
+/-- The closed selector exposes exactly the supplied direct components, including the month-derived quarter. -/
 theorem dateNumericPart_extracts_components (parts : DateParts) :
     DateNumericPart.day.extract parts = parts.day ∧
       DateNumericPart.month.extract parts = parts.month ∧
+      DateNumericPart.quarter.extract parts =
+        (if parts.month = 0 then 0
+          else (((parts.month - 1) / 3 + 1 : Nat) : Rat)) ∧
       DateNumericPart.year.extract parts = parts.year := by
   simp [DateNumericPart.extract]
 

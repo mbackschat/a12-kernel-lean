@@ -138,6 +138,9 @@ run_cmd do
 #print axioms A12Kernel.dateConstruction_numericPart_same_zero_distinct_provenance
 #print axioms A12Kernel.dateConstruction_numericPart_unavailable_comparison
 #print axioms A12Kernel.dateConstruction_numericPart_true_comparison_polarity
+#print axioms A12Kernel.baseYearDateSource_components
+#print axioms A12Kernel.baseYearRangeParts_endpoints
+#print axioms A12Kernel.baseYearRangeParts_start_ne_finish
 #print axioms A12Kernel.civilDate_next_unixEpochDay
 #print axioms A12Kernel.civilDate_before_unixEpochDay
 #print axioms A12Kernel.timeOfDay_ofHms_isSome_iff

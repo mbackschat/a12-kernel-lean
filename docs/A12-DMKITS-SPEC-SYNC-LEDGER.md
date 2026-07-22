@@ -733,3 +733,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits canonical prose states the numeric arithmetic role; JVM and Node evaluate the named numeric expressions to the declared year through the existing arithmetic mechanism; missing configuration and date-role controls remain unchanged; any maintained kernel computation differential agrees or its absence is explicitly reported; and the handback supplies the reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending handback.
+
+### SPEC-2026-07-22-04 — quarter extraction is the fourth direct date-component projection
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `565333e36805b2beda1ae100ad095f6ad137e86f`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`05-dates-and-time.md` §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)
+- **Delta:** Name `QuarterFromDate` as the fourth member of the direct numeric date-component family. A real month maps to `((month - 1) / 3) + 1` using integer division. The existing incomplete/unreal projection remains numeric zero, including the quarter path, while preserving fillable versus fixed provenance; formal unavailability remains UNKNOWN.
+- **Basis:** Kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `BedingungsOperatorHelper.getQuartalAusDatum` obtains the month through the shared date-component helper, preserves its zero sentinel, and otherwise applies the one-based three-month partition. `DatumExtractOpCreator` and the extraction checker place Quarter beside Day/Month/Year while requiring the Month component on partial dates. At the a12-dmkits basis revision, `ExprEval` already applies the same formula through the shared `dateComponent` path, and maintained empty-operand, Date-construction, DateTime-source, and kernel differential tests already include Quarter controls.
+- **Requested a12-dmkits reconciliation:** Verify that the canonical semantics prose names the four-member family, the one-based quarter formula, and zero/UNKNOWN projection consistently. Reuse the existing evaluator and tests; no new code or duplicate test route is requested if the reviewed basis already covers every branch. Report the exact reviewed revision and whether this is documentation-only or already fully satisfied.
+- **Compatibility:** Omitting Quarter from a consumer shipment or calculating it from a zero sentinel with the ordinary one-based formula can respectively reject a legal rule or turn the required zero projection into quarter one. The correction does not widen date-source authoring or partial-date precision gates.
+- **Acceptance:** a12-dmkits canonical prose and implementation agree on the four-member family; retained tests distinguish a real second-quarter month, incomplete/unreal zero with their existing provenance, and formal suppression; no redundant mechanism is added; and the handback supplies the reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending handback.
