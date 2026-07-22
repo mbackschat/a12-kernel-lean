@@ -23,8 +23,17 @@ private def amount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     enumeration := none }
 
+private def service : FlatFieldDecl :=
+  { id := 9
+    groupPath := ["Shop"]
+    name := "Service"
+    policy := { kind := .enumeration }
+    enumeration := some {
+      storedTokens := ["NEXT_DAY", "ECONOMY"]
+      categories := [{ name := "ServiceClass", tokens := ["FAST", "SLOW"] }] } }
+
 private def model : FlatModel :=
-  { fields := [priority, amount]
+  { fields := [priority, amount, service]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
       { level := 10, path := ["Shop", "Sections"], repeatability := some 2 }] }
@@ -43,6 +52,26 @@ private def authored (quantifier : ValueListQuantifier)
     (having : Option SurfaceCorrelatedHaving := none) :
     SurfaceStarEnumerationValueListSource :=
   { quantifier, fields := starPath field, projectionRef, values, having }
+
+private def fieldPath (field : String) : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Shop"], field }
+
+private def directOperand (field : String := "Service")
+    (projectionRef : EnumerationProjectionRef := .stored) : SurfaceTextFieldOperand :=
+  match projectionRef with
+  | .stored => .direct (fieldPath field)
+  | .category name => .category (fieldPath field) name
+
+private def starValuesAuthored (quantifier : ValueListQuantifier)
+    (fieldProjection : EnumerationProjectionRef := .stored)
+    (valuesProjection : EnumerationProjectionRef := .stored)
+    (having : Option SurfaceCorrelatedHaving := none) :
+    SurfaceEnumerationValueListStarValuesSource :=
+  { quantifier
+    field := directOperand "Service" fieldProjection
+    values := starPath
+    valuesProjectionRef := valuesProjection
+    having }
 
 private def document (rows : List RowAddr) : Document :=
   { instantiatedRows := rows, rawCells := fun _ => none }
@@ -72,6 +101,32 @@ private def verdictOf (surface : SurfaceStarEnumerationValueListSource)
       | .error _ => none
       | .ok verdict => some verdict
 
+private def directRead (raw : RawCell) : RawFlatContext where
+  read id := if id == service.id then raw else .empty
+
+private def starValuesVerdictOf
+    (surface : SurfaceEnumerationValueListStarValuesSource)
+    (rows : List RowAddr) (direct : RawFlatContext)
+    (read : Env → FieldId → RawCell) (outer : Env := []) : Option Verdict :=
+  match elaborateEnumerationValueListStarValuesSource model priority.groupPath surface with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateFull (document rows) outer direct unusedFilterRead read with
+      | .error _ => none
+      | .ok verdict => some verdict
+
+private def partialStarValuesResultOf
+    (surface : SurfaceEnumerationValueListStarValuesSource)
+    (rows : List RowAddr) (scope : ValidationRelevanceScope)
+    (direct : RawFlatContext) (read : Env → FieldId → RawCell) :
+    Option PartialHavingValueListResult :=
+  match elaborateEnumerationValueListStarValuesSource model priority.groupPath surface with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluatePartial (document rows) [] scope direct read with
+      | .ok result => some result
+      | .error _ => none
+
 private def partialResultOf (surface : SurfaceStarEnumerationValueListSource)
     (rows : List RowAddr) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : Option PartialHavingValueListResult :=
@@ -92,6 +147,13 @@ private def partialVerdictOf (surface : SurfaceStarEnumerationValueListSource)
 private def errorOf (surface : SurfaceStarEnumerationValueListSource) :
     Option StarEnumerationValueListElabError :=
   match elaborateStarEnumerationValueListSource model priority.groupPath surface with
+  | .ok _ => none
+  | .error error => some error
+
+private def starValuesErrorOf
+    (surface : SurfaceEnumerationValueListStarValuesSource) :
+    Option StarEnumerationValueListElabError :=
+  match elaborateEnumerationValueListStarValuesSource model priority.groupPath surface with
   | .ok _ => none
   | .error error => some error
 
@@ -148,6 +210,34 @@ example :
         [(10, 1), (20, 2)] = some (.fired .omission) := by
   native_decide
 
+/- Direct and starred category projections compare their projected tokens without a domain-containment gate. -/
+example :
+    starValuesVerdictOf
+        (starValuesAuthored .atLeastOne (.category "ServiceClass")
+          (.category "SpeedClass")) fullRows
+        (directRead (.parsed (.enum "NEXT_DAY")))
+        (firstThen (.parsed (.enum "EXPRESS")) (.parsed (.enum "STANDARD"))) =
+      some (.fired .value) := by
+  native_decide
+
+/- Empty starred values retain the values-side `No`/`NotAll` OMISSION polarity. -/
+example :
+    starValuesVerdictOf (starValuesAuthored .no) sparseRows
+        (directRead (.parsed (.enum "NEXT_DAY"))) (firstThen .empty .empty) =
+      some (.fired .omission) ∧
+    starValuesVerdictOf (starValuesAuthored .notAll) sparseRows
+        (directRead (.parsed (.enum "NEXT_DAY"))) (firstThen .empty .empty) =
+      some (.fired .omission) := by
+  native_decide
+
+/- An invalid stored value on the starred values side poisons `NotAll`. -/
+example :
+    starValuesVerdictOf (starValuesAuthored .notAll) fullRows
+        (directRead (.parsed (.enum "NEXT_DAY")))
+        (firstThen (.parsed (.enum "INVALID")) (.parsed (.enum "STANDARD"))) =
+      some .unknown := by
+  native_decide
+
 /- Partial validation skips a checked filter before malformed topology or Enumeration reads. -/
 example :
     partialResultOf
@@ -163,6 +253,12 @@ private def firstPriorityOnly : ValidationRelevanceScope :=
     path := priority.path
     indices := [.concrete 1, .concrete 1, .concrete 1, .concrete 1] }]
 
+private def firstPriorityAndService : ValidationRelevanceScope :=
+  .partialSet [
+    { path := service.path, indices := [.concrete 1, .concrete 1] },
+    { path := priority.path,
+      indices := [.concrete 1, .concrete 1, .concrete 1, .concrete 1] }]
+
 /- Partial validation projects only relevant cells; masked invalid tokens are never checked. -/
 example :
     partialVerdictOf
@@ -170,6 +266,33 @@ example :
         fullRows firstPriorityOnly
         (firstThen (.parsed (.enum "EXPRESS")) (.parsed (.enum "INVALID"))) =
       some (.fired .value) := by
+  native_decide
+
+/- A concrete relevant starred member can witness `AtLeastOne`, while its unknown extent suppresses `NotAll`. -/
+example :
+    partialStarValuesResultOf
+        (starValuesAuthored .atLeastOne (.category "ServiceClass")
+          (.category "SpeedClass")) fullRows firstPriorityAndService
+        (directRead (.parsed (.enum "NEXT_DAY")))
+        (firstThen (.parsed (.enum "EXPRESS")) (.parsed (.enum "INVALID"))) =
+      some (.evaluated (.fired .value)) ∧
+    partialStarValuesResultOf
+        (starValuesAuthored .notAll (.category "ServiceClass")
+          (.category "SpeedClass")) fullRows firstPriorityAndService
+        (directRead (.parsed (.enum "ECONOMY")))
+        (firstThen (.parsed (.enum "EXPRESS")) (.parsed (.enum "INVALID"))) =
+      some (.evaluated .unknown) := by
+  native_decide
+
+/- A values-side filter skips partial validation before the direct field, topology, or projected reads. -/
+example :
+    partialStarValuesResultOf
+        (starValuesAuthored .atLeastOne (.category "ServiceClass")
+          (.category "SpeedClass") (some earlierSibling))
+        [{ group := 20, path := [1, 1] }] .full
+        (directRead (.parsed (.enum "INVALID")))
+        (firstThen (.parsed (.enum "INVALID")) (.rejected .malformed)) =
+      some .skippedHaving := by
   native_decide
 
 /- Static admission is projection-specific and rejects the wrong kind. -/
@@ -181,6 +304,13 @@ example :
       some (.enumerationOperand priority.path (.unknownCategory "Unknown")) ∧
     errorOf (authored .atLeastOne .stored ["1"] "Amount") =
       some (.fieldNotEnumeration amount.path .number) := by
+  native_decide
+
+/- Both projections are checked against their own exact declarations. -/
+example :
+    starValuesErrorOf
+        (starValuesAuthored .atLeastOne (.category "SpeedClass")) =
+      some (.enumerationOperand service.path (.unknownCategory "SpeedClass")) := by
   native_decide
 
 end A12Kernel.Conformance.StarEnumerationValueList

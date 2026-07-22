@@ -789,7 +789,8 @@ private def finishTextFieldComparison (op : SurfaceComparisonOp)
   | .accepted => pure (.compare (.textFields equality left.1 right.1))
   | .rejected error => throw (.enumerationComparability leftPath rightPath error)
 
-private def elaborateEnumerationFieldOperand (model : FlatModel)
+/-- Resolve one direct nonrepeatable stored/category Enumeration operand with its exact checked projection and runtime core. -/
+def elaborateEnumerationFieldOperand (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceTextFieldOperand) :
     Except ElabError
       (List String × CheckedEnumerationProjection × FlatEnumerationOperand) := do

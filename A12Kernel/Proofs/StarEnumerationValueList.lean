@@ -74,4 +74,51 @@ theorem checkedStarEnumerationValueList_partialHaving_skips
   simp [CheckedStarEnumerationValueListSource.evaluatePartial, owned]
   rfl
 
+/-- The direct Enumeration projection is re-admitted against the exact model before it can be paired with starred values. -/
+theorem checkedEnumerationValueListStarValues_field_admitted
+    (checked : CheckedEnumerationValueListStarValuesSource model) :
+    model.checkedEnumerationOperand? checked.fieldCore = some checked.field :=
+  checked.fieldAdmitted
+
+/-- Once the starred values side resolves, full evaluation delegates exactly to the common token-list dispatcher. -/
+theorem checkedEnumerationValueListStarValues_evaluateFull_of_resolved
+    (checked : CheckedEnumerationValueListStarValuesSource model)
+    (document : Document) (outer : Env) (raw : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell) (values : ResolvedValueListSide .token)
+    (resolved : checked.values.resolvedValueSide document outer filterRead read =
+      .ok values) :
+    checked.evaluateFull document outer raw filterRead read =
+      .ok (checked.quantifier.eval (checked.resolvedFieldsSide raw) values) := by
+  simp [CheckedEnumerationValueListStarValuesSource.evaluateFull, resolved]
+  rfl
+
+/-- Once partial star resolution succeeds, both classified sides enter the sole asymmetric dispatcher unchanged. -/
+theorem checkedEnumerationValueListStarValues_evaluatePartial_of_resolved
+    (checked : CheckedEnumerationValueListStarValuesSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (read : Env → FieldId → RawCell)
+    (values : ResolvedValueListQuantifierSide .token)
+    (unfiltered : checked.values.filter.isNone = true)
+    (resolved : checked.values.resolvedPartialValueSide document outer scope read
+      unfiltered = .ok values) :
+    checked.evaluatePartial document outer scope raw read =
+      .ok (.evaluated (checked.quantifier.evalClassified
+        (checked.resolvedPartialFieldsSide scope raw) values)) := by
+  simp [CheckedEnumerationValueListStarValuesSource.evaluatePartial, unfiltered,
+    resolved]
+  rfl
+
+/-- A checked values-side `Having` skips partial validation before direct-field, topology, or Enumeration reads. -/
+theorem checkedEnumerationValueListStarValues_partialHaving_skips
+    (checked : CheckedEnumerationValueListStarValuesSource model)
+    (filter : CheckedStarHaving model checked.values.source
+      checked.values.declaringGroup)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (read : Env → FieldId → RawCell)
+    (owned : checked.values.filter = some filter) :
+    checked.evaluatePartial document outer scope raw read = .ok .skippedHaving := by
+  simp [CheckedEnumerationValueListStarValuesSource.evaluatePartial, owned]
+  rfl
+
 end A12Kernel
