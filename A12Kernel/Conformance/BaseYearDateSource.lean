@@ -18,6 +18,15 @@ example :
       baseYearNumericPart 2020 .year = 2020 := by
   native_decide
 
+/- Nested extraction observes the selected range endpoint rather than the direct January 1 meaning. -/
+example :
+    baseYearRangeNumericPart 2020 .start .day = 1 ∧
+      baseYearRangeNumericPart 2020 .finish .day = 31 ∧
+      baseYearRangeNumericPart 2020 .finish .month = 12 ∧
+      baseYearRangeNumericPart 2020 .finish .quarter = 4 ∧
+      baseYearRangeNumericPart 2020 .finish .year = 2020 := by
+  native_decide
+
 /- Range extraction chooses the first and final day of the configured year. -/
 example :
     baseYearRangeParts 2020 .start =

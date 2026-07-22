@@ -15,17 +15,42 @@ inductive BaseYearRangeEndpoint where
   | finish
   deriving Repr, DecidableEq
 
+/-- The two authored source shapes from which a direct numeric date component may be extracted. -/
+inductive BaseYearDateSource where
+  | direct
+  | range (endpoint : BaseYearRangeEndpoint)
+  deriving Repr, DecidableEq
+
+namespace BaseYearDateSource
+
+/-- Select the floor-free calendar label denoted by an already-checked Base-Year source. -/
+def parts (year : Int) : BaseYearDateSource → DateParts
+  | .direct => { year, month := 1, day := 1 }
+  | .range .start => { year, month := 1, day := 1 }
+  | .range .finish => { year, month := 12, day := 31 }
+
+end BaseYearDateSource
+
 /-- Resolve Base Year as the January 1 calendar label used by direct date consumers. -/
 def baseYearDateParts (year : Int) : DateParts :=
-  { year, month := 1, day := 1 }
+  BaseYearDateSource.direct.parts year
 
 /-- Resolve Base Year as the full-year endpoint selected by a range extraction. -/
 def baseYearRangeParts (year : Int) : BaseYearRangeEndpoint → DateParts
-  | .start => baseYearDateParts year
-  | .finish => { year, month := 12, day := 31 }
+  | endpoint => (BaseYearDateSource.range endpoint).parts year
+
+/-- Apply one direct numeric date-component extractor after selecting its Base-Year source label. -/
+def baseYearDateSourceNumericPart (year : Int) (source : BaseYearDateSource)
+    (part : DateNumericPart) : Rat :=
+  part.extract (source.parts year)
 
 /-- Apply one direct date component extractor to the Base-Year date source. -/
 def baseYearNumericPart (year : Int) (part : DateNumericPart) : Rat :=
-  part.extract (baseYearDateParts year)
+  baseYearDateSourceNumericPart year .direct part
+
+/-- Apply one direct numeric date-component extractor to a selected Base-Year range endpoint. -/
+def baseYearRangeNumericPart (year : Int) (endpoint : BaseYearRangeEndpoint)
+    (part : DateNumericPart) : Rat :=
+  baseYearDateSourceNumericPart year (.range endpoint) part
 
 end A12Kernel

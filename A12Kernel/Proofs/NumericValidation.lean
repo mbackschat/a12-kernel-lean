@@ -546,6 +546,26 @@ theorem numericTolerance_field_baseYear_delegates
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
 
+/-- A direct Base-Year date-component atom is the selected fixed scale-0 amount inside the same checked tolerance evaluator. -/
+theorem numericTolerance_field_baseYearDatePart_delegates
+    (range : NumericToleranceRange) (field : FlatNumberField)
+    (year : Int) (source : BaseYearDateSource) (part : DateNumericPart)
+    (context : FlatContext) :
+    ({ op := .tolerance range, left := .atom (.field field),
+        right := .atom (.baseYearDatePart year source part) } :
+      NumericComparison).evalSelected context =
+      range.eval (context.resolveNumberComparisonOperand field)
+        (.value (baseYearDateSourceNumericPart year source part) .fixed) := by
+  cases observed : context.resolveNumberComparisonOperand field <;>
+    simp only [NumericComparison.evalSelected,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
+      FlatContext.resolveNumericArithmetic,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericToleranceRange.eval, observed]
+
 /-- Full validation gates a checked numeric condition before any empty-Number substitution can fire. -/
 theorem checkedNumericComparison_emptyRow_notFired
     (checked : CheckedNumericComparison model)

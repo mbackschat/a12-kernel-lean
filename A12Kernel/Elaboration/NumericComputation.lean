@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field and numeric-`BaseYear` sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, and Base-Year date-component sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -46,6 +46,7 @@ def FlatModel.admitsNumericComputationOperand
             declaration.toNumberField?.isSome
       | .error _ => false
   | .baseYear year => model.baseYear == some year
+  | .baseYearDatePart year _ _ => model.baseYear == some year
 
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
@@ -69,6 +70,7 @@ def NumericComputationAtom.references
     (field : FieldId) : NumericComputationAtom → Bool
   | .field declaration => declaration.id == field
   | .baseYear _ => false
+  | .baseYearDatePart _ _ _ => false
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
@@ -127,6 +129,10 @@ private def FlatModel.resolveNumericComputationExpression
     | .baseYear =>
         match model.baseYear with
         | some year => pure (.baseYear year)
+        | none => throw .baseYearNotDeclared
+    | .baseYearDatePart source part =>
+        match model.baseYear with
+        | some year => pure (.baseYearDatePart year source part)
         | none => throw .baseYearNotDeclared
 
 /-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic or direct root value-function fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
@@ -190,6 +196,8 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
       Except NumericComputationFault NumericComputationResult
   | .field declaration => context.readNumeric declaration
   | .baseYear year => pure (.value year)
+  | .baseYearDatePart year source part =>
+      pure (.value (baseYearDateSourceNumericPart year source part))
 
 end ScalarComputationContext
 
@@ -229,6 +237,7 @@ private def NumericComputationAtom.numericComputationFault? :
     NumericComputationAtom → Option NumericComputationFault
   | .field declaration => declaration.numericComputationFault?
   | .baseYear _ => none
+  | .baseYearDatePart _ _ _ => none
 
 namespace LoweredNumericExpr
 

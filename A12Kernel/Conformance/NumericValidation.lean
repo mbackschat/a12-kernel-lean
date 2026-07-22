@@ -38,6 +38,10 @@ private def atom (name : String) : AuthoredNumericExpr SurfaceNumericAtom :=
 
 private def baseYear : AuthoredNumericExpr SurfaceNumericAtom := .atom .baseYear
 
+private def baseYearDatePart (source : BaseYearDateSource)
+    (part : DateNumericPart) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.baseYearDatePart source part)
+
 private def literal (value : Rat) (authoredScale : Int) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .literal { value, authoredScale }
@@ -111,6 +115,34 @@ example :
 
 example : errorOf (twoSided .equal baseYear (literal 2020 0)) baseYearModel =
     some .constantExpression := by
+  native_decide
+
+example :
+    let directYear := baseYearDatePart .direct .year
+    let finishDay := baseYearDatePart (.range .finish) .day
+    let finishQuarter := baseYearDatePart (.range .finish) .quarter
+    errorOf (twoSided .equal (atom "U") finishDay) =
+        some .baseYearNotDeclared ∧
+      verdictOf (twoSided .equal (atom "U") directYear)
+        (raw (.parsed (.num 2020))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal (atom "U") finishDay)
+        (raw (.parsed (.num 31))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal (atom "U") finishQuarter)
+        (raw (.parsed (.num 4))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal
+        (.binary .add (atom "U") finishDay) (literal 32 0))
+        (raw (.parsed (.num 1))) true baseYearModel = some (.fired .value) := by
+  native_decide
+
+example :
+    let finishDay := baseYearDatePart (.range .finish) .day
+    errorOf (twoSided .equal finishDay (literal 31 0)) baseYearModel =
+        some .constantExpression ∧
+      errorOf (twoSided .equal (.abs finishDay) (atom "U")) baseYearModel =
+        some .unsupportedExpression ∧
+      errorOf (twoSided .equal (atom "Scale2") finishDay) baseYearModel =
+        some (.exactScaleMismatch
+          (NumericScaleSummary.field 2) (NumericScaleSummary.field 0)) := by
   native_decide
 
 example : verdictOf

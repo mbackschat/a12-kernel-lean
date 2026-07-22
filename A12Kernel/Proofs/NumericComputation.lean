@@ -78,6 +78,15 @@ theorem numericComputation_baseYear_evaluatesYear
         .ok (.value year) := by
   rfl
 
+/-- A Base-Year date-component source is a fixed context-free Number in checked computation expressions. -/
+theorem numericComputation_baseYearDatePart_evaluates
+    (context : ScalarComputationContext) (year : Int)
+    (source : BaseYearDateSource) (part : DateNumericPart) :
+    (AuthoredNumericExpr.atom (.baseYearDatePart year source part) :
+      AuthoredNumericExpr NumericComputationAtom).evaluateResolvedComputation context =
+        .ok (.value (baseYearDateSourceNumericPart year source part)) := by
+  rfl
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)

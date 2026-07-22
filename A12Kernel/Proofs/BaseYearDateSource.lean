@@ -14,17 +14,35 @@ theorem baseYearDateSource_components (year : Int) :
       baseYearNumericPart year .month = 1 ∧
       baseYearNumericPart year .quarter = 1 ∧
       baseYearNumericPart year .year = year := by
-  simp [baseYearDateParts, baseYearNumericPart, DateNumericPart.extract]
+  simp [baseYearDateParts, baseYearNumericPart,
+    BaseYearDateSource.parts, baseYearDateSourceNumericPart,
+    DateNumericPart.extract]
 
 /-- Range extraction exposes the exact first and final calendar labels of the configured year. -/
 theorem baseYearRangeParts_endpoints (year : Int) :
     baseYearRangeParts year .start = { year, month := 1, day := 1 } ∧
       baseYearRangeParts year .finish = { year, month := 12, day := 31 } := by
-  simp [baseYearRangeParts, baseYearDateParts]
+  simp [baseYearRangeParts, BaseYearDateSource.parts]
 
 /-- Start and finish remain distinct; a consumer must not collapse both range positions to the direct January 1 source. -/
 theorem baseYearRangeParts_start_ne_finish (year : Int) :
     baseYearRangeParts year .start ≠ baseYearRangeParts year .finish := by
-  simp [baseYearRangeParts, baseYearDateParts]
+  simp [baseYearRangeParts, BaseYearDateSource.parts]
+
+/-- Selecting the range start before numeric extraction is extensionally the direct January 1 Base-Year source for every component. -/
+theorem baseYearRangeNumericPart_start_eq_direct
+    (year : Int) (part : DateNumericPart) :
+    baseYearRangeNumericPart year .start part =
+      baseYearNumericPart year part := by
+  rfl
+
+/-- The selected finish label exposes the final day, month, quarter, and configured year. -/
+theorem baseYearRangeFinish_numericParts (year : Int) :
+    baseYearRangeNumericPart year .finish .day = 31 ∧
+      baseYearRangeNumericPart year .finish .month = 12 ∧
+      baseYearRangeNumericPart year .finish .quarter = 4 ∧
+      baseYearRangeNumericPart year .finish .year = year := by
+  simp [baseYearRangeNumericPart, baseYearDateSourceNumericPart,
+    BaseYearDateSource.parts, DateNumericPart.extract]
 
 end A12Kernel
