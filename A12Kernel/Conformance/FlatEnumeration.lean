@@ -312,6 +312,14 @@ example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
       [(.direct (fieldPath "Code"))] ["A"])) = some .notFired := by native_decide
 
 example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw .empty) false (.enumerationValueList .no
+      [categoryCode] ["Shared"])) = some (.fired .omission) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw .empty) false (.enumerationValueList .notAll
+      [categoryCode] ["Shared"])) = some .notFired := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
     (raw (.parsed (.enum "B"))) true (.enumerationValueList .atLeastOne
       [categoryCode] ["Shared"])) = some (.fired .value) := by native_decide
 

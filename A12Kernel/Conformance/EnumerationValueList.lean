@@ -43,6 +43,8 @@ example : tokenCellEquals (categoryOperand.classifyRaw (.parsed (.enum "B")))
 
 example : tokenCellEquals (storedOperand.classifyRaw .empty) .empty := by native_decide
 
+example : tokenCellEquals (categoryOperand.classifyRaw .empty) .empty := by native_decide
+
 example : tokenCellEquals (storedOperand.classifyRaw (.parsed (.enum ""))) .empty := by native_decide
 
 example : tokenCellEquals (storedOperand.classifyRaw (.parsed (.enum "C")))
