@@ -27,4 +27,20 @@ theorem checkedStarFieldPath_allRowsRelevant_partialSet_iff
   simp [CheckedStarFieldPath.allRowsRelevant,
     ValidationRelevanceScope.coversAllRows]
 
+/-- Full validation makes every concrete instance of a checked star relevant. -/
+@[simp] theorem checkedStarFieldPath_cellRelevant_full
+    (checked : CheckedStarFieldPath model) (environment : Env) :
+    checked.cellRelevant .full environment = true := by
+  rfl
+
+/-- Partial per-cell relevance is ordinary existential coverage; unlike the all-rows gate, separate concrete entities may cover separate instances. -/
+theorem checkedStarFieldPath_cellRelevant_partialSet_iff
+    (checked : CheckedStarFieldPath model) (entities : List RelevantEntityPattern)
+    (environment : Env) :
+    checked.cellRelevant (.partialSet entities) environment = true ↔
+      ∃ entity ∈ entities,
+        entity.coversCell model checked.declaration.path environment = true := by
+  simp [CheckedStarFieldPath.cellRelevant,
+    ValidationRelevanceScope.coversCell]
+
 end A12Kernel

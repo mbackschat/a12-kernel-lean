@@ -48,6 +48,29 @@ end SurfaceStarFieldPath
 
 namespace RelevantEntityPattern
 
+private def actualIndex? (model : FlatModel) (environment : Env)
+    (path : GroupPath) : Option Nat :=
+  match model.repeatableGroups.find? fun group => group.path == path with
+  | none => some 1
+  | some group =>
+      match environment.find? fun binding => binding.1 == group.level with
+      | none => none
+      | some binding => some binding.2
+
+private def cellPrefixMatches (model : FlatModel) (environment : Env) :
+    GroupPath → List String → List RelevanceIndex → Bool
+  | _, [], [] => true
+  | pathPrefix, segment :: segments, index :: indices =>
+      let path := pathPrefix ++ [segment]
+      match actualIndex? model environment path with
+      | none => false
+      | some actual =>
+          let currentMatches := match index with
+            | .all => true
+            | .concrete expected => expected == actual
+          currentMatches && cellPrefixMatches model environment path segments indices
+  | _, _, _ => false
+
 private def repeatablePrefixesCovered (model : FlatModel) :
     GroupPath → List String → List RelevanceIndex → Bool
   | _, [], [] => true
@@ -65,6 +88,12 @@ def coversAllRows (entity : RelevantEntityPattern) (model : FlatModel)
   entity.path.isPrefixOf targetPath &&
     repeatablePrefixesCovered model [] entity.path entity.indices
 
+/-- Whether this one entity covers a concrete target instance. Exact fields and ancestor groups share the same prefix/index rule; wildcard indices match any concrete coordinate. -/
+def coversCell (entity : RelevantEntityPattern) (model : FlatModel)
+    (targetPath : List String) (environment : Env) : Bool :=
+  entity.path.isPrefixOf targetPath &&
+    cellPrefixMatches model environment [] entity.path entity.indices
+
 end RelevantEntityPattern
 
 namespace ValidationRelevanceScope
@@ -75,6 +104,14 @@ def coversAllRows (scope : ValidationRelevanceScope) (model : FlatModel)
   match scope with
   | .full => true
   | .partialSet entities => entities.any fun entity => entity.coversAllRows model targetPath
+
+/-- Per-cell relevance retains concrete row identity and ancestor descent. Unlike all-rows relevance, different concrete entities may cover different reached cells. -/
+def coversCell (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) (environment : Env) : Bool :=
+  match scope with
+  | .full => true
+  | .partialSet entities =>
+      entities.any fun entity => entity.coversCell model targetPath environment
 
 end ValidationRelevanceScope
 
@@ -101,6 +138,11 @@ structure CheckedStarFieldPath (model : FlatModel) where
 def CheckedStarFieldPath.allRowsRelevant (checked : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) : Bool :=
   scope.coversAllRows model checked.declaration.path
+
+/-- Whether one topology-produced concrete field instance is relevant to this validation call. -/
+def CheckedStarFieldPath.cellRelevant (checked : CheckedStarFieldPath model)
+    (scope : ValidationRelevanceScope) (environment : Env) : Bool :=
+  scope.coversCell model checked.declaration.path environment
 
 private structure MarkedStarAxis where
   path : GroupPath

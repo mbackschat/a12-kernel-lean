@@ -698,6 +698,8 @@ run_cmd do
 #print axioms A12Kernel.checkedStarNumberSource_filterBeforeTarget
 #print axioms A12Kernel.checkedStarNumberSource_nonRelevantBeforeTarget
 #print axioms A12Kernel.checkedStarNumberSource_relevantPreservesSide
+#print axioms A12Kernel.checkedStarFieldPath_cellRelevant_full
+#print axioms A12Kernel.checkedStarFieldPath_cellRelevant_partialSet_iff
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
 #print axioms A12Kernel.groupPresence_rowContent_admitted
@@ -816,6 +818,8 @@ run_cmd do
 #print axioms A12Kernel.firstFilledNumber_validation_projection
 #print axioms A12Kernel.firstFilledNumber_unavailable_projections
 #print axioms A12Kernel.firstFilledNumber_empty_prefix_projection_separator
+#print axioms A12Kernel.checkedStarNumberSource_nonRelevantFirstFilledHeadBeforeRead
+#print axioms A12Kernel.checkedStarNumberSource_presentFirstFilledHeadStops
 #print axioms A12Kernel.checkedNumericStarSource_evaluateFirstFilled_of_valid
 #print axioms A12Kernel.repetitionKey_number_equal_iff_normalized_eq
 #print axioms A12Kernel.repetitionKey_checkedToken_value_exact

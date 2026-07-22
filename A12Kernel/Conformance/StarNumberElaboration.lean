@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Elaboration.FirstFilledValue
 
 /-! # Checked nested Number-star consumption locks -/
 
@@ -116,6 +116,16 @@ private def partialCellsOf (scope : ValidationRelevanceScope) :=
           some (PartialSideSnapshot.relevant
           (side.cells.map snapshotCell) side.hasUninstantiatedTail)
 
+private def partialFirstFilledOf (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell := readAmount) :=
+  match elaborateStarNumberSource model amount.groupPath (source) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.resolvedPartialValidationFirstFilled
+          (document standardRows) [] scope read with
+      | .error _ => none
+      | .ok result => some result
+
 /- The checked consumer preserves canonical nested order, emptiness, and the hierarchical tail. -/
 example : cellsOf (source) standardRows = some (
     [.present 1, .empty, .present 3], true) := by
@@ -136,6 +146,16 @@ example :
         some (.relevant [.present 1, .empty, .present 3] true) := by
   native_decide
 
+/- A relevant formally unavailable head is also terminal, so a later nonrelevant cell cannot replace its exact cause. -/
+example :
+    let malformedHead : Env → FieldId → RawCell := fun environment _ =>
+      if environment == [(10, 1), (20, 1)] then .rejected .declaredConstraint
+      else .parsed (.num 7)
+    partialFirstFilledOf (.partialSet [relevance amount.path
+      [.concrete 1, .concrete 1, .concrete 1, .concrete 1]]) malformedHead =
+        some (.evaluated (.unavailable .declaredConstraint)) := by
+  native_decide
+
 /- Enumerating every actual leaf concretely still does not make an all-rows star fully relevant; nor does wildcarding only its outer repeatable level. -/
 example :
     partialCellsOf (.partialSet [
@@ -153,6 +173,34 @@ example :
         some .nonRelevant ∧
     partialCellsOf (.partialSet [relevance note.path [.all, .all, .all, .all]]) =
         some .nonRelevant := by
+  native_decide
+
+/- `FirstFilledValue` tests relevance only when a cell is reached: a relevant present head hides every later nonrelevant cell, while a nonrelevant head suppresses before a later present value. -/
+example :
+    partialFirstFilledOf (.partialSet [relevance amount.path
+      [.concrete 1, .concrete 1, .concrete 1, .concrete 1]]) =
+        some (.evaluated (.value 1 false)) ∧
+    partialFirstFilledOf (.partialSet [relevance amount.path
+      [.concrete 1, .concrete 1, .concrete 2, .concrete 1]]) =
+        some .nonRelevant := by
+  native_decide
+
+/- A reached relevant empty prefix does not permit skipping the next relevance decision. If that next cell is relevant and present, the ordinary empty-prefix OMISSION polarity survives and the still-later nonrelevant cell remains invisible. -/
+example :
+    let emptyThenSeven : Env → FieldId → RawCell := fun environment _ =>
+      match environment with
+      | [(10, 1), (20, 1)] => .presentEmpty
+      | [(10, 1), (20, 2)] => .parsed (.num 7)
+      | _ => .rejected .malformed
+    partialFirstFilledOf (.partialSet [relevance amount.path
+      [.concrete 1, .concrete 1, .concrete 1, .concrete 1]]) emptyThenSeven =
+        some .nonRelevant ∧
+    partialFirstFilledOf (.partialSet [
+      relevance amount.path
+        [.concrete 1, .concrete 1, .concrete 1, .concrete 1],
+      relevance amount.path
+        [.concrete 1, .concrete 1, .concrete 2, .concrete 1]]) emptyThenSeven =
+        some (.evaluated (.value 7 true)) := by
   native_decide
 
 /- `$` retains the complete captured environment: parent equality restricts the nested scan to the captured parent, while child order selects only earlier children. The malformed target values on every dropped leaf never enter the selected side. -/
