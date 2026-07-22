@@ -175,7 +175,7 @@ end FlatComparison
 inductive FlatCondition where
   | compare (comparison : FlatComparison)
   | enumerationValueList (quantifier : ValueListQuantifier)
-      (operand : FlatEnumerationOperand) (values : List String)
+      (operands : List FlatEnumerationOperand) (values : List String)
   | fieldFilled (field : FlatField)
   | fieldNotFilled (field : FlatField)
   | and (left right : FlatCondition)
@@ -344,10 +344,14 @@ def FlatEnumerationOperand.resolve (operand : FlatEnumerationOperand)
   operand.projection.resolveOperand
     (context.observeValidationAt operand.field.id)
 
-def FlatEnumerationOperand.valueListSide (operand : FlatEnumerationOperand)
+def FlatEnumerationOperand.valueListCell (operand : FlatEnumerationOperand)
+    (context : FlatContext) : ValueListCell .token :=
+  operand.projection.asValueListCell
+    (context.observeValidationAt operand.field.id)
+
+def flatEnumerationValueListSide (operands : List FlatEnumerationOperand)
     (context : FlatContext) : ResolvedValueListSide .token :=
-  { cells := [operand.projection.asValueListCell
-      (context.observeValidationAt operand.field.id)]
+  { cells := operands.map (·.valueListCell context)
     hasUninstantiatedTail := false
     hasHaving := false }
 
@@ -427,9 +431,9 @@ def FlatCondition.evalSelected (context : FlatContext)
     (isRelevant : FlatRelevance := fun _ => true) : FlatCondition → Verdict
   | .compare comparison =>
       if comparison.allRelevant isRelevant then comparison.eval context else .unknown
-  | .enumerationValueList quantifier operand values =>
-      if isRelevant operand.field.id then
-        quantifier.eval (operand.valueListSide context)
+  | .enumerationValueList quantifier operands values =>
+      if operands.all fun operand => isRelevant operand.field.id then
+        quantifier.eval (flatEnumerationValueListSide operands context)
           (literalTokenValueListSide values)
       else
         .unknown

@@ -748,3 +748,18 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Acceptance:** a12-dmkits canonical prose and implementation agree on the four-member family; retained tests distinguish a real second-quarter month, incomplete/unreal zero with their existing provenance, and formal suppression; no redundant mechanism is added; and the handback supplies the reviewed revision plus per-surface disposition.
 - **a12-dmkits revision:** pending
 - **Disposition:** pending handback.
+
+### SPEC-2026-07-22-05 — Enumeration field-list literals use the union of selected domains
+
+- **Status:** pending
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `9c8da06e5692eb6016f44f6b8179bd68f2588bc9`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`06-strings-and-enumerations.md` §B.3](../spec/06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-)
+- **Delta:** For a literal-valued `AtLeastOne`/`No`/`NotAll` field-list quantifier over ordinary Enumerations and category accesses, admit each literal when it belongs to the union of the selected projected domains. A literal need not belong to every listed Enumeration. Preserve authored field order, reject an exact repeated reference, and treat direct stored access and named category access on the same physical field as distinct references.
+- **Basis:** Kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `CheckFeldListeUndWerteListenBedingungImpl.checkEnumValuesForAllFields` collects the distinct stored tokens of every direct Enumeration reference and the category tokens of every selected category reference into two sets, then `CheckWerteListenUtils.checkEnumValues` accepts a literal present in either set. `CheckEntityListenUtils.checkParamsReferencedOnlyOnce` rejects duplicate complete `EntityRef`s, whose equality includes the category name. At the a12-dmkits basis revision, `Dsl.enumListQuantifier` instead calls `checkedLiteral` for every literal against every `EnumRef`, enforcing an intersection and erasing category projections when it constructs the field operands.
+- **Requested a12-dmkits reconciliation:** Correct the existing typed Enumeration field-list authoring path to validate each literal against the union of all selected stored/category domains and retain each exact projection in the rendered condition. Reuse the current `FieldListValueListCondition`, `EnumRef`, `CategoryRef`, renderer, parser, and evaluator; do not add another quantifier AST or evaluator. Keep scalar `EnumRef.in`/`notIn` admission declaration-local.
+- **Compatibility:** Intersection checking rejects legal rules whose literal list intentionally combines tokens from disjoint Enumeration declarations. Erasing category access can render a literal illegal or compare the stored token instead of its category token. Weakening admission beyond the union would defer an authoring error to runtime.
+- **Acceptance:** Typed authoring accepts two direct Enumeration fields with disjoint domains when the literal list contains one token from each; a runtime match from either field fires through both kernel strategies and the JVM/Node interpreter; a literal absent from the union is rejected; an exact duplicate reference is rejected; direct stored and category access on the same field remain distinct and legal; stored/category union admission and many-to-one category evaluation are locked; existing String, Number, scalar Enumeration, star, and `Having` controls remain green; canonical prose is updated; and the handback supplies the committed revision and per-surface disposition.
+- **a12-dmkits revision:** pending
+- **Disposition:** pending handback.
