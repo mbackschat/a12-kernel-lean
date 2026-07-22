@@ -646,7 +646,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-21-05 — runtime-invalid integral power poisons a Number computation target
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `62d9fbd91cb14e73a9fa37375ca1c77cc67a9947`
 - **Kernel behavior:** 30.8.1
@@ -656,12 +656,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Fix the shared invalid-power expression projection so legal numeric computations return `Val.DomainFailure`, not `Val.Unknown`, for `0` to a negative integral exponent and integral exponents outside `-1000..1000`. Reuse the existing division-domain target/dependency mechanism; do not add a power-specific result or target path. Through existing differential and multiplatform facilities, lock `RoundAccounting(0 ^ -1, 2)` and `RoundAccounting(2 ^ 1001, 2)` as fresh no-value/stale CLEARED deltas with target `berechnungsWertFehler` and dependent poison against both kernel strategies and the interpreter. Retain valid `0 ^ 0` and boundary `±1000` controls, and retain fractional/unknown-scale rejection at authoring rather than runtime.
 - **Compatibility:** The current peer result preserves the public no-value/CLEARED delta but incorrectly exposes the target as clean empty to dependents and omits its formal calculation error. The correction changes downstream computation behavior and invalid-field reporting for the two legal runtime-invalid integral power regions without changing validation-comparison quietness or valid power arithmetic.
 - **Acceptance:** Both kernel routes and the interpreter agree on the two invalid integral power target/formal-error/dependent-poison separators, valid boundary controls remain values, illegal fractional/unknown-scale exponents remain authoring failures, canonical a12-dmkits prose removes the pending classification, and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `4382416861a1a67342b3e53d9bedaa0016eefab3`
+- **Disposition:** accepted — implementation commit `dde8ce79` routes both runtime-invalid integral regions through the existing `Val.DomainFailure` mechanism; focused tri-route controls retain wrapper propagation, target invalidity, dependent poison, quiet rule comparisons, and the valid `0 ^ 0`/`±1000` boundaries. The final reviewed revision registers IF203 and the maintained locks; no further a12-dmkits change is requested.
 
 ### SPEC-2026-07-21-06 — computations reject references to their own target
 
-- **Status:** pending
+- **Status:** superseded
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `3194c1f73005fbf2c88538e2c2d9899fc695e09a`
 - **Kernel behavior:** 30.8.1
@@ -671,12 +671,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Add the rule to the owning computation semantics/findings and the smallest existing model-legality or preparation boundary that can reject it once for both evaluation and generated validation. Cover direct and nested target references in the common precondition, an alternative precondition, and an operation, plus a neighboring reference to another computed field that remains accepted as a dependency. Reuse existing parsed reference traversal and diagnostics; do not add a second parser, dependency graph, or capture mechanism.
 - **Compatibility:** Previously accepted invalid models may now fail model preparation instead of reaching computation, generated validation, or scheduler behavior. Correct models and cross-computation dependencies are unchanged.
 - **Acceptance:** Both kernel strategies reject the target-reference cases through the maintained legality route; the clean-room model boundary rejects the same cases before evaluation; another-computed-field dependency remains accepted; canonical/public prose distinguishes direct target self-reference from ordinary dependencies and group constructs; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `4382416861a1a67342b3e53d9bedaa0016eefab3`
+- **Disposition:** superseded — the outbound request's audit premise was stale. Read-only review confirmed that basis revision `3194c1f73005fbf2c88538e2c2d9899fc695e09a` already rejects the exact target in the operation, every alternative precondition, and the common precondition through the recursive `ConditionReferences.referencesField` traversal; exact-field membership leaves other computed-field dependencies and group guards legal. The final reviewed revision confirms the existing implementation and documentation, so no a12-dmkits change is requested.
 
 ### SPEC-2026-07-21-07 — Time and DateTime extrema preserve resolved temporal order
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `a0844919fceafae636436a881d96a76e43172985`
 - **Kernel behavior:** 30.8.1
@@ -686,12 +686,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Extend the existing aggregate conversion boundary to preserve TIME and DATETIME kinds, decoded times, and exact resolved instants instead of routing only `ValueKind.DATE`/`DateOperand`; reuse the existing interpreter temporal fold and do not add another aggregate framework. Through existing differential and multiplatform facilities, distinguish Time minimum/maximum at one-second separation, DateTime ordinary exact-instant minimum/maximum, all-empty no value, empty skipping with missing polarity, non-relevant poisoning, and the equal-looking Berlin overlap pair under both kernel strategies plus the JVM/Node interpreter. Retain comparable-format rejection and neighboring Date controls.
 - **Compatibility:** The peer interpreter's resolved temporal fold is already aligned, but authored Time and DateTime aggregates may currently be rejected or misrouted by the adapter's Date-only conversion path. A consumer that compares rendered labels can erase a seconds-level Time distinction or select the wrong DateTime overlap-side instant even when its displayed result looks unchanged.
 - **Acceptance:** Both kernel routes and the interpreter agree on the named Time and DateTime aggregate separators; adapter lowering preserves TIME/DATETIME kind plus decoded time or exact instant identity; incompatible component formats still fail authoring; existing Date aggregate controls remain green; canonical a12-dmkits prose records the common temporal fold without claiming general zone support; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `4382416861a1a67342b3e53d9bedaa0016eefab3`
+- **Disposition:** accepted — runtime commit `bae06439` folds TIME operand-list extrema by decoded time-of-day and DATE/DATETIME by exact instant, including the Berlin overlap separator; adapter/API commit `126d6672` preserves TIME and DATETIME through star-extremum authoring and readback. The final reviewed revision registers IF204 and the maintained kernel/interpreter locks. The pre-existing temporal operand-list adapter read/roundtrip gap is explicitly parked as DG15 by `7ab6dd28`; evaluation is unaffected and that separate consumer gap does not reopen this request.
 
 ### SPEC-2026-07-22-01 — direct temporal comparison and extrema use different format gates
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `3b9584602f5d7a7ed8b241d963aa37870fb1288c`
 - **Kernel behavior:** 30.8.1
@@ -701,8 +701,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Record both gates in the canonical temporal semantics and enforce them at their existing authoring/admission owners. Reuse the current temporal kind and format representations. Do not change the resolved aggregate evaluator requested by `SPEC-2026-07-21-07`, add another parser, or turn the coarse direct gate into exact component equality.
 - **Compatibility:** A checker that applies exact equality everywhere rejects legal direct comparisons; one that applies the coarse gate to extrema admits operands whose resolved precision/component contract is incompatible. The correction affects authoring admission, not resolved chronology or aggregate folding.
 - **Acceptance:** Focused JVM/Node admission laws and maintained kernel-route controls separate `yyyy-MM` versus `yyyy-MM-dd`, Date versus DateTime ordering versus equality, `HH:mm` versus `HH:mm:ss`, Base Year supplementation, date-versus-time rejection, and exact aggregate rejection; canonical prose names both gates; `SPEC-2026-07-21-07` remains the sole aggregate-execution request; and the handback supplies the reviewed revision and per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `4382416861a1a67342b3e53d9bedaa0016eefab3`
+- **Disposition:** accepted — documentation/admission commit `3fc5e979` records the coarse direct-comparison gate and exact extremum gate and adds maintained real-kernel separators for partial component sets, ordering-versus-equality, date-versus-time rejection, and Base Year supplementation. a12-dmkits correctly leaves evaluator code unchanged because this admission is kernel-delegated; the final reviewed revision registers the JVM kernel-route law. No additional Node-local admission mechanism is warranted.
 
 ### SPEC-2026-07-22-02 — `Now` retains exact epoch-millisecond identity
 
