@@ -27,7 +27,7 @@ theorem baseYearOperand_resolves_exact (context : FlatContext) (world : World)
   unfold World.resolveLocal? at resolved
   simp [FlatTemporalOperand.resolve,
     FlatContext.resolveLocalDateComparisonOperand, baseYearDateParts,
-    World.resolveLocal?, resolved]
+    BaseYearDateSource.parts, World.resolveLocal?, resolved]
 
 theorem baseYearOperand_unsupported (context : FlatContext) (world : World)
     (zoneId : String) (year : Int)
@@ -37,7 +37,7 @@ theorem baseYearOperand_unsupported (context : FlatContext) (world : World)
   unfold World.resolveLocal? at unsupported
   simp [FlatTemporalOperand.resolve,
     FlatContext.resolveLocalDateComparisonOperand, baseYearDateParts,
-    World.resolveLocal?, unsupported]
+    BaseYearDateSource.parts, World.resolveLocal?, unsupported]
 
 /-- Selecting the range start does not create another Base-Year date meaning: both checked operands resolve the same January 1 label. -/
 theorem baseYearRangeStartOperand_eq_baseYearOperand
@@ -56,7 +56,7 @@ theorem baseYearRangeFinishOperand_resolves_exact
   unfold World.resolveLocal? at resolved
   simp [FlatTemporalOperand.resolve,
     FlatContext.resolveLocalDateComparisonOperand, baseYearRangeParts,
-    World.resolveLocal?, resolved]
+    BaseYearDateSource.parts, World.resolveLocal?, resolved]
 
 /-- An unsupported selected range endpoint fails closed instead of falling back to the direct January 1 Base-Year meaning. -/
 theorem baseYearRangeOperand_unsupported

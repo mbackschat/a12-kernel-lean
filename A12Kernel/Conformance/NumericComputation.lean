@@ -63,6 +63,10 @@ private def surfaceField (groups : List String) (name : String) :
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
 
+private def surfaceBaseYearDatePart (source : BaseYearDateSource)
+    (part : DateNumericPart) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.baseYearDatePart source part)
+
 private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (target : FieldId := targetId)
     (suppressExactScaleWarning : Bool := false) :
@@ -244,6 +248,20 @@ example :
         some (.operationScaleMismatch 0
           ((NumericScaleSummary.field 0).union
             (NumericScaleSummary.constant 2))) := by
+  native_decide
+
+example :
+    let directYear := surfaceBaseYearDatePart .direct .year
+    let finishDay := surfaceBaseYearDatePart (.range .finish) .day
+    let finishQuarter := surfaceBaseYearDatePart (.range .finish) .quarter
+    noBaseYearErrorOf finishDay = some .baseYearNotDeclared ∧
+      checkedResultOf directYear = some (.value 2020) ∧
+      checkedResultOf finishDay = some (.value 31) ∧
+      checkedResultOf finishQuarter = some (.value 4) ∧
+      checkedResultOf (.binary .add finishDay
+        (surfaceField ["Root"] "Source"))
+        (context (checkedNumber (.parsed (.num 1)))) = some (.value 32) ∧
+      checkedErrorOf (.abs finishDay) = some .unsupportedExpression := by
   native_decide
 
 /- The checked boundary admits the source-closed direct root value functions already shared with numeric validation. -/
