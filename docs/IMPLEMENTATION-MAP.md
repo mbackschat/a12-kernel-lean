@@ -401,6 +401,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/LegalCharset.lean`](../A12Kernel/Semantics/LegalCharset.lean)
 - [`Semantics/CustomFieldType.lean`](../A12Kernel/Semantics/CustomFieldType.lean)
 - [`Semantics/CustomFieldMessage.lean`](../A12Kernel/Semantics/CustomFieldMessage.lean)
+- [`Semantics/CustomFieldFormalMessage.lean`](../A12Kernel/Semantics/CustomFieldFormalMessage.lean)
 - [`Elaboration/LegalCharset.lean`](../A12Kernel/Elaboration/LegalCharset.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
@@ -412,6 +413,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/CustomFieldCause.lean`](../A12Kernel/Proofs/CustomFieldCause.lean)
 - [`Proofs/CustomFieldType.lean`](../A12Kernel/Proofs/CustomFieldType.lean)
 - [`Proofs/CustomFieldMessage.lean`](../A12Kernel/Proofs/CustomFieldMessage.lean)
+- [`Proofs/CustomFieldFormalMessage.lean`](../A12Kernel/Proofs/CustomFieldFormalMessage.lean)
 - [`Proofs/StringLength.lean`](../A12Kernel/Proofs/StringLength.lean)
 - [`Proofs/StringComputation.lean`](../A12Kernel/Proofs/StringComputation.lean)
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
@@ -421,6 +423,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/CustomFieldCause.lean`](../A12Kernel/Conformance/CustomFieldCause.lean)
 - [`Conformance/CustomFieldType.lean`](../A12Kernel/Conformance/CustomFieldType.lean)
 - [`Conformance/CustomFieldMessage.lean`](../A12Kernel/Conformance/CustomFieldMessage.lean)
+- [`Conformance/CustomFieldFormalMessage.lean`](../A12Kernel/Conformance/CustomFieldFormalMessage.lean)
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
 
@@ -436,6 +439,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Registered custom field-type rejection has its own formal cause carrying the exact project code and optional message template. It remains structurally distinct from the fixed declarative `customValidation` fallback and survives unchanged as validation UNKNOWN or computation poison.
 - A custom field-type declaration retains raw optional bounds; checked construction resolves its exact named pure validator from `World` or rejects the model. Relevant nonempty parsed values receive locale, effective `1`/`999` defaults, and stored-value mode `false`; nonrelevant, empty, and previously rejected cells bypass sampling. The one returned ordinary checked cell reuses the exact registered rejection across both phases.
 - A supplied registered rejection template is rendered once at the resolved-label boundary. Every exact case-sensitive `$<fieldName>$` token is replaced, other bytes stay ordered, inserted label bytes are opaque, and absent text remains distinct from an explicitly supplied empty message so the caller retains fallback ownership.
+- A registered rejection projects to a distinct custom formal-message payload using the caller's exact cell address, resolved label, and already-localized fallback. The project code is preserved, ERROR severity and VALUE polarity are fixed, a supplied template wins even when empty, and fallback bytes remain opaque.
 - Both direct String equality operators suppress an empty field or empty literal after preserving malformed input as UNKNOWN; distinct nonempty values fire only inequality.
 - a parsed empty String retains present-empty placement while supplying the same clean-empty observation as absence
 - `FieldFilled`/`FieldNotFilled` consume that empty observation rather than physical placement, and checked flat lowering admits String presence.
@@ -458,6 +462,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Four cause cases and three generic laws distinguish registered versus fixed fallback failure and preserve the complete project rejection through both checked phases.
 - Eight registered-validator cases and eight laws separate authored/defaulted context, relevance, semantic emptiness, prior parser failure, acceptance, exact project rejection, missing registration, and shared phase projection.
 - Six supplied-message cases and three laws separate absent versus supplied-empty text, repeated exact replacement, near misses, empty labels, opaque replacement bytes, and project-code independence.
+- Four formal-message cases and three laws lock exact address/code metadata, fixed ERROR/VALUE classification, supplied-empty priority, fallback selection, and fallback opacity.
 - Historical a12-dmkits triangulation had three final-empty-store mismatches and agreed with all nine target cases at projected delta and stored-value application granularity
 - the [archive](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns that detail.
 - The retained strings remain conservative ASCII and do not externally establish broader Unicode or line-break behavior
@@ -469,7 +474,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Pattern compilation, Java `Pattern` syntax/execution, the kernel's bounded admission gate, authored checked-pattern lowering, and public exposure remain outside; the injected function is deliberately only the post-admission whole-value matcher boundary.
 - Java-compatible grapheme clustering remains an injected admission-time capability rather than a reimplemented Unicode subsystem. Raw JSON decoding/model-slot wiring, project-level SPI selection, general scalar-parser composition, and retained local kernel observations remain outside; the runtime representation makes empty/unbounded atomic entries impossible and is not used by computed-target basic checks.
-- Registered custom validation is checked through relevance-first sampling and the ordinary cell root, and supplied message bytes render at an already-resolved label boundary. Label resolution, caller fallback selection, formal-message emission, explicit `Valid(field, "Name")`, repetition-key filtering, checked field-declaration integration, partial row construction, and public protocol remain open.
+- Registered custom validation is checked through relevance-first sampling and the ordinary cell root, supplied message bytes render at an already-resolved label boundary, and one formal-message projector owns project code, supplied-versus-fallback text, address, and fixed ERROR/VALUE metadata. Label resolution/provider invocation, integration into a full validation result, explicit `Valid(field, "Name")`, repetition-key filtering, checked field-declaration integration, partial row construction, and public protocol remain open.
 - Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, enumerations, custom validators, raw-type rule elimination, and target-check ordering.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.
