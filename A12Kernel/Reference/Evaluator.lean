@@ -150,6 +150,10 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
           ("expected", toJson (scalarKindTag .string)),
           ("actual", toJson (scalarKindTag actual))]))
   | .enumerationOperand _ _ => throw .incoherentCore
+  | .textFieldOperandKindMismatch path actual =>
+      pure (.make .fieldKindMismatch "$.condition"
+        (Json.mkObj [("operation", toJson "textFieldComparison"),
+          ("path", toJson path), ("actual", toJson (scalarKindTag actual))]))
   | .enumerationComparability leftPath rightPath error =>
       let reason := match error with
         | .displayClassMismatch => "displayClassMismatch"

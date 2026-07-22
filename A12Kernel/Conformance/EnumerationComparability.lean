@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.EnumerationComparability
 
 /-! # Ordinary Enumeration direct-field comparability locks
 
-These examples begin after every Enumeration operand is a legal ordinary closed declaration, every String operand is an admitted ordinary plain value-readable field, and equality/inequality plus direct-field operand shape have already been checked. Identity display labels are retained because their classification is the main discriminator; table, dynamic, partial, duplicate-display, category, literal, and arbitrary String-expression cases remain outside this capsule.
+These examples begin after every Enumeration operand is a legal ordinary closed declaration, every category name is resolved exactly, every String operand is an admitted ordinary plain value-readable field, and equality/inequality plus direct-field operand shape have already been checked. Identity display labels and category exemption are retained because they are the main discriminators; table, dynamic, partial, duplicate-display, literal, and arbitrary String-expression cases remain outside this capsule.
 -/
 
 namespace A12Kernel
@@ -16,6 +16,8 @@ private def enum (facts : List EnumerationDisplayFact) :
 
 private def plainString : DirectComparableField := .plainString
 
+private def category : DirectComparableField := .category
+
 /- No labels and authored identity labels are both effectively textless. -/
 example :
     classifyDirectFieldComparison plainString (enum []) = .accepted ∧
@@ -23,6 +25,15 @@ example :
         (enum [fact "en" "A" "A", fact "de" "A" "A"]) = .accepted ∧
       classifyDirectFieldComparison
         (enum [fact "en" "A" "A"]) (enum []) = .accepted := by
+  native_decide
+
+/- Category access bypasses the direct-field display-remapping gate in either operand position. -/
+example :
+    classifyDirectFieldComparison category plainString = .accepted ∧
+    classifyDirectFieldComparison plainString category = .accepted ∧
+    classifyDirectFieldComparison category (enum [fact "en" "A" "Alpha"]) = .accepted ∧
+    classifyDirectFieldComparison (enum [fact "en" "A" "Alpha"]) category = .accepted ∧
+    classifyDirectFieldComparison category category = .accepted := by
   native_decide
 
 /- One genuine display remapping makes an Enumeration incompatible with a direct String field in either operand order. -/

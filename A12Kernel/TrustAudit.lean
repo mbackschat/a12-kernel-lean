@@ -729,6 +729,7 @@ run_cmd do
 #print axioms A12Kernel.stringEnumeration_allowed_iff_textless
 #print axioms A12Kernel.enumeration_mixedDisplayClass_rejected
 #print axioms A12Kernel.enumeration_sharedDisplayMapConflict_rejected
+#print axioms A12Kernel.categoryComparison_allowed
 #print axioms A12Kernel.directFieldComparisonAllowed_comm
 #print axioms A12Kernel.checkedEnumeration_wellFormed
 #print axioms A12Kernel.checkedEnumeration_displayFacts_exact

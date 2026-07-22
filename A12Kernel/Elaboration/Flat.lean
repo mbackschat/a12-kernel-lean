@@ -32,6 +32,12 @@ structure SurfaceFieldPath where
   field : String
   deriving Repr, DecidableEq
 
+/-- A direct textual field operand or one exact Enumeration category access after concrete syntax has decoded `->`. -/
+inductive SurfaceTextFieldOperand where
+  | direct (field : SurfaceFieldPath)
+  | category (field : SurfaceFieldPath) (name : String)
+  deriving Repr, DecidableEq
+
 inductive SurfaceComparisonOp where
   | equal
   | notEqual
@@ -77,6 +83,8 @@ inductive SurfaceCondition where
   | compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (literal : SurfaceLiteral)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceFieldPath)
+  | compareTextFields (op : SurfaceComparisonOp)
+      (left right : SurfaceTextFieldOperand)
   | compareToday (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
       (field : SurfaceFieldPath)
   | compareBaseYear (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
@@ -134,16 +142,40 @@ def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   | .temporal kind components =>
       .temporal { id := declaration.id, kind, components }
 
-/-- Resolve one legal direct String/Enumeration declaration to its runtime operand and independent static-comparability profile. -/
+/-- Resolve one exact stored/category projection from a legal Enumeration declaration for direct textual comparison. Category access is statically exempt from display-remapping compatibility. -/
+def toEnumerationTextFieldComparison? (declaration : FlatFieldDecl)
+    (projectionRef : EnumerationProjectionRef) :
+    Option (FlatTextFieldOperand × DirectComparableField) :=
+  match declaration.policy.kind, declaration.enumeration with
+  | .enumeration, some source =>
+      match elaborateEnumeration source with
+      | .ok checked =>
+          match checked.resolveProjection projectionRef with
+          | .ok projection =>
+              let profile := match projectionRef with
+                | .stored => checked.directComparableField
+                | .category _ => .category
+              some (.enumeration { id := declaration.id } projectionRef projection, profile)
+          | .error _ => none
+      | .error _ => none
+  | _, _ => none
+
+/-- Resolve one legal direct String/Enumeration declaration to its stored-value runtime operand and independent static-comparability profile. -/
 def toTextFieldComparison? (declaration : FlatFieldDecl) :
     Option (FlatTextFieldOperand × DirectComparableField) :=
   match declaration.policy.kind, declaration.enumeration with
   | .string, none => some (.string { id := declaration.id }, .plainString)
-  | .enumeration, some source =>
-      match elaborateEnumeration source with
-      | .ok checked => some (.enumeration { id := declaration.id }, checked.directComparableField)
-      | .error _ => none
+  | .enumeration, some _ => declaration.toEnumerationTextFieldComparison? .stored
   | _, _ => none
+
+def textComparisonProfileFor? (declaration : FlatFieldDecl)
+    (operand : FlatTextFieldOperand) : Option DirectComparableField :=
+  let resolved := match operand with
+    | .string _ => declaration.toTextFieldComparison?
+    | .enumeration _ projectionRef _ =>
+        declaration.toEnumerationTextFieldComparison? projectionRef
+  resolved.bind fun (checkedOperand, profile) =>
+    if checkedOperand == operand then some profile else none
 
 end FlatFieldDecl
 
@@ -205,6 +237,7 @@ inductive ElabError where
   | invalidTemporalLiteralComponents (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | enumerationOperand (path : List String) (error : EnumerationOperandError)
+  | textFieldOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | enumerationComparability (leftPath rightPath : List String)
       (error : EnumerationComparabilityError)
   | incoherentCore
@@ -530,7 +563,7 @@ def FlatModel.directComparableFor? (model : FlatModel)
   | .ok declaration =>
       if declaration.repeatableScope.isEmpty &&
           operand.field.matchesDecl declaration then
-        declaration.toTextFieldComparison?.map Prod.snd
+        declaration.textComparisonProfileFor? operand
       else
         none
 
@@ -611,6 +644,44 @@ private def elaborateEnumerationCore (declaration : FlatFieldDecl)
   | kind, _ =>
       throw (.literalKindMismatch declaration.path .enumeration kind.surfaceKind)
 
+private def finishTextFieldComparison (op : SurfaceComparisonOp)
+    (leftPath rightPath : List String)
+    (left right : FlatTextFieldOperand × DirectComparableField) :
+    Except ElabError FlatCondition := do
+  let equality ← match op.toEquality? with
+    | some equality => pure equality
+    | none => throw (.unsupportedOperator op)
+  match classifyDirectFieldComparison left.2 right.2 with
+  | .accepted => pure (.compare (.textFields equality left.1 right.1))
+  | .rejected error => throw (.enumerationComparability leftPath rightPath error)
+
+private def elaborateTextFieldOperand (model : FlatModel)
+    (declaringGroup : GroupPath) : SurfaceTextFieldOperand →
+      Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
+  | .direct reference => do
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      match declaration.toTextFieldComparison? with
+      | some (operand, profile) => pure (declaration.path, operand, profile)
+      | none => throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
+  | .category reference name => do
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      match declaration.policy.kind, declaration.enumeration with
+      | .enumeration, some source =>
+          match elaborateEnumeration source with
+          | .error _ => throw .incoherentCore
+          | .ok checked =>
+              match checkEnumerationProjection checked (.category name) with
+              | .error error => throw (.enumerationOperand declaration.path error)
+              | .ok projection =>
+                  pure (declaration.path,
+                    .enumeration { id := declaration.id }
+                      projection.projectionRef projection.projection,
+                    .category)
+      | kind, _ =>
+          throw (.textFieldOperandKindMismatch declaration.path kind.surfaceKind)
+
 private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
   | .fieldFilled reference => do
@@ -619,6 +690,13 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
   | .fieldNotFilled reference => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       pure (.fieldNotFilled declaration.toPresenceField)
+  | .compareTextFields op leftReference rightReference => do
+      let (leftPath, leftOperand, leftProfile) ←
+        elaborateTextFieldOperand model declaringGroup leftReference
+      let (rightPath, rightOperand, rightProfile) ←
+        elaborateTextFieldOperand model declaringGroup rightReference
+      finishTextFieldComparison op leftPath rightPath
+        (leftOperand, leftProfile) (rightOperand, rightProfile)
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve
@@ -634,13 +712,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       | leftKind, rightKind =>
           match left.toTextFieldComparison?, right.toTextFieldComparison? with
           | some (leftOperand, leftProfile), some (rightOperand, rightProfile) =>
-              let equality ← match op.toEquality? with
-                | some equality => pure equality
-                | none => throw (.unsupportedOperator op)
-              match classifyDirectFieldComparison leftProfile rightProfile with
-              | .accepted => pure (.compare (.textFields equality leftOperand rightOperand))
-              | .rejected error =>
-                  throw (.enumerationComparability left.path right.path error)
+              finishTextFieldComparison op left.path right.path
+                (leftOperand, leftProfile) (rightOperand, rightProfile)
           | _, _ =>
               throw (.temporalOperandKindMismatch left.path right.path
                 leftKind.surfaceKind rightKind.surfaceKind)

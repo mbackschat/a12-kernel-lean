@@ -82,6 +82,7 @@ a12-dmkits' [`CustomFieldTypeContextDiffTest`](../../a12-rulekit/adapter/src/tes
 - A direct plain-String field can be compared with an effectively textless enumeration field, but not with an effectively display-bearing one. Likewise, two enumeration fields are rejected when exactly one is effectively display-bearing.
 - Two effectively display-bearing enumeration fields need not have identical declarations. For every locale common to both, a shared stored value must have the same display and a shared display must denote the same stored value. Disjoint mappings and non-overlapping locale sets are accepted.
 - This direct-field gate is shared by `==` and `!=`. A String literal that is a valid stored or selected-category token and an already-checked category access follow their separate domain and projection rules rather than this field-to-field display gate.
+- If either Enumeration operand is an already-checked category access, the display-remapping gate is bypassed. Its projected category token can be compared by `==`/`!=` with a direct String value, another category token, or a plain Enumeration's stored token.
 
 ### B.2 Categories via `->`
 

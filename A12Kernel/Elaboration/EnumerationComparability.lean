@@ -2,7 +2,7 @@
 
 This static capsule begins after equality/inequality and direct-field operand shape have been checked. Every Enumeration operand is a resolved legal ordinary closed declaration, and every String operand is an already-admitted ordinary plain value-readable String field. Its facts use canonical locale keys and complete display maps with unique stored tokens and injective display text per locale. Those declaration and field-kind checks are preceding obligations, not reconstructed here.
 
-An Enumeration is effectively display-bearing only when at least one localized display differs from its stored token. Two display-bearing Enumerations need only form one consistent partial bijection in every shared locale; unshared tokens, display texts, and locales are irrelevant. Table, open/dynamic, partial, duplicate-display, category, literal, and arbitrary String-expression cases are deliberately outside this boundary.
+An Enumeration is effectively display-bearing only when at least one localized display differs from its stored token. Two display-bearing Enumerations need only form one consistent partial bijection in every shared locale; unshared tokens, display texts, and locales are irrelevant. Exact category access bypasses this display-remapping gate and is comparable with any other textual field operand. Table, open/dynamic, partial, duplicate-display, literal, and arbitrary String-expression cases are deliberately outside this boundary.
 -/
 
 namespace A12Kernel
@@ -46,10 +46,11 @@ def conflictsWith (left right : ResolvedEnumerationDisplay) : Bool :=
 
 end ResolvedEnumerationDisplay
 
-/-- The two already-resolved direct field kinds admitted by this static gate. -/
+/-- The already-resolved textual operand classes admitted by this static gate. Category retains no display profile because its exact projection bypasses remapping compatibility. -/
 inductive DirectComparableField where
   | plainString
   | enumeration (display : ResolvedEnumerationDisplay)
+  | category
   deriving Repr, DecidableEq
 
 /-- Closed rejection classes at this boundary. Both map-conflict directions correspond to the same outward kernel diagnostic family. -/
@@ -76,6 +77,7 @@ end EnumerationComparisonAdmission
 def classifyDirectFieldComparison :
     DirectComparableField → DirectComparableField →
       EnumerationComparisonAdmission
+  | .category, _ | _, .category => .accepted
   | .plainString, .plainString => .accepted
   | .plainString, .enumeration profile
   | .enumeration profile, .plainString =>
