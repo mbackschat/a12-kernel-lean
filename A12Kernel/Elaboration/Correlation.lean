@@ -336,6 +336,19 @@ def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
   let resolved ← checked.path.resolve document outer
   pure (checked.selectedValidationHavingValueListSide resolved having filterRead outer classify)
 
+/-- Dispatch one optional checked validation filter without duplicating the filter-before-classification branch in each scalar-kind adapter. -/
+def resolvedOptionalValidationHavingValueListSide
+    (checked : CheckedStarFieldPath model) (document : Document) (outer : Env)
+    (filter : Option (CheckedStarHaving model checked declaringGroup))
+    (filterRead : Env → FieldId → CheckedCell)
+    (classify : Env → ValueListCell kind) :
+    Except StarAddressingError (ResolvedValueListSide kind) :=
+  match filter with
+  | none => checked.resolvedValueListSide document outer classify
+  | some having =>
+      checked.resolvedValidationHavingValueListSide document outer
+        having.condition filterRead classify
+
 end CheckedStarFieldPath
 
 /-- Partial validation skips a complete rule containing `Having` before topology or operand reads; otherwise it returns the evaluated value-list verdict. -/

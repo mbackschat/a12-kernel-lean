@@ -78,6 +78,7 @@ import A12Kernel.Conformance.StarGroupElaboration
 import A12Kernel.Conformance.StarNumberElaboration
 import A12Kernel.Conformance.StarNumberValueList
 import A12Kernel.Conformance.StarStringValueList
+import A12Kernel.Conformance.StarEnumerationValueList
 import A12Kernel.Conformance.NumericAggregate
 import A12Kernel.Conformance.NumericAggregateElaboration
 import A12Kernel.Conformance.RepetitionNotUnique

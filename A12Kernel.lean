@@ -75,6 +75,7 @@ import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StarNumber
 import A12Kernel.Elaboration.StarNumberValueList
 import A12Kernel.Elaboration.StarStringValueList
+import A12Kernel.Elaboration.StarEnumerationValueList
 import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.FirstFilledValue

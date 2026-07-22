@@ -140,12 +140,8 @@ def resolvedValueSide (checked : CheckedStarStringSource model)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
-  match checked.filter with
-  | none =>
-      checked.source.resolvedValueListSide document outer (checked.valueListCell read)
-  | some filter =>
-      checked.source.resolvedValidationHavingValueListSide document outer
-        filter.condition filterRead (checked.valueListCell read)
+  checked.source.resolvedOptionalValidationHavingValueListSide document outer
+    checked.filter filterRead (checked.valueListCell read)
 
 /-- Resolve nested topology once, remove nonrelevant leaves before String checking, and retain the separate wildcard/ancestor extent fact. -/
 def resolvedPartialValueSide (checked : CheckedStarStringSource model)
