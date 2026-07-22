@@ -12,6 +12,12 @@ import A12Kernel.Core
 
 namespace A12Kernel
 
+/-- The exact consumer-owned failure returned by a registered custom field validator. This is distinct from the fixed declarative predefined-type fallback. -/
+structure RegisteredCustomRejection where
+  projectCode : String
+  messageTemplate : Option String := none
+  deriving Repr, DecidableEq
+
 /-- Why a cell is formally invalid (the "five+ invalidity sources" of `spec/02` §3, routed
     through a single `formalCheck`). Puts the cell in the not-check-relevant state, uses a
     fixed non-authorable message, and blocks the field from all author rules. -/
@@ -23,7 +29,8 @@ inductive FormalCause where
   | required                 -- required-and-empty
   | duplicateIndex           -- index field not unique across its column
   | overRepetition           -- rows beyond declared repeatability
-  | customValidation         -- a registered custom field-type validator rejected it
+  | customValidation         -- fixed declarative predefined-type fallback
+  | registeredCustomValidation (rejection : RegisteredCustomRejection)
   deriving Repr, DecidableEq
 
 /-- The evaluation phase; the *same* formal invalidity reads differently per phase. -/
