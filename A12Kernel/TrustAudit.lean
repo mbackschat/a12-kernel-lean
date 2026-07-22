@@ -721,6 +721,11 @@ run_cmd do
 #print axioms A12Kernel.checkedStarNumberSource_filterBeforeTarget
 #print axioms A12Kernel.checkedStarNumberSource_nonRelevantBeforeTarget
 #print axioms A12Kernel.checkedStarNumberSource_relevantPreservesSide
+#print axioms A12Kernel.checkedStarNumberValueList_uniqueValueFields
+#print axioms A12Kernel.checkedStarNumberValueList_valuesSide_shape
+#print axioms A12Kernel.checkedStarNumberValueList_plainFields_delegates
+#print axioms A12Kernel.checkedStarNumberValueList_havingFields_delegates
+#print axioms A12Kernel.checkedStarNumberValueList_evaluateFull_of_resolved
 #print axioms A12Kernel.checkedStarFieldPath_cellRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_cellRelevant_partialSet_iff
 #print axioms A12Kernel.groupFilled_fired_iff

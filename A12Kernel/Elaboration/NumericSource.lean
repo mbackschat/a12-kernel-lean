@@ -101,11 +101,8 @@ def fields (source : ResolvedNumericAggregateFields) : List FlatNumberField :=
 def hasMultipleFields (source : ResolvedNumericAggregateFields) : Bool :=
   !source.rest.isEmpty
 
-def firstDuplicateFieldId? : List FieldId → Option FieldId
-  | [] => none
-  | field :: remaining =>
-      if remaining.contains field then some field
-      else firstDuplicateFieldId? remaining
+def firstDuplicateFieldId? : List FieldId → Option FieldId :=
+  FieldId.firstDuplicate?
 
 def firstDuplicate? (source : ResolvedNumericAggregateFields) : Option FieldId :=
   firstDuplicateFieldId? (source.fields.map (·.id))
