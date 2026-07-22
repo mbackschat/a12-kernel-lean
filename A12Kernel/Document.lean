@@ -4,7 +4,7 @@ The document must represent **instantiated rows independently of cell values**: 
 blank-but-instantiated repeat row is observable content, so `GroupFilled`, requiredness,
 the row-gate, and repeatable-group quantifiers all misbehave if row existence is inferred
 from non-empty cells. (`spec/01`, `spec/07`; see [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md).) -/
-import A12Kernel.Core
+import A12Kernel.Cell
 
 namespace A12Kernel
 
@@ -54,10 +54,23 @@ def ModelZoneRules.unavailable : ModelZoneRules where
   today? := fun _ _ => none
   resolveLocal? := fun _ _ _ _ _ _ _ => none
 
+/-- Exact arguments supplied to one registered custom field-type validator. Bounds are already defaulted by the checked declaration consumer. -/
+structure CustomFieldValidationContext where
+  locale : String
+  minLength : Nat
+  maxLength : Nat
+  isDisplayValue : Bool
+  deriving Repr, DecidableEq
+
+/-- A pure registered custom field validator. Acceptance is `none`; rejection retains the consumer-owned project payload. -/
+abbrev RegisteredCustomFieldValidator :=
+  String → CustomFieldValidationContext → Option RegisteredCustomRejection
+
 /-- The evaluation **world** — everything `Today` / `Now` / custom hooks would otherwise read from ambient state, kept as explicit input so `eval` / `compute` stay pure. The model-zone oracle is function-valued because the canonical legal zone-id domain is wider than this repository's concrete UTC/Berlin profiles. Custom-condition / validator oracles and the label provider likewise belong to later custom stages. -/
 structure World where
   now      : Instant
   modelZoneRules : ModelZoneRules := ModelZoneRules.unavailable
+  customFieldValidator? : String → Option RegisteredCustomFieldValidator := fun _ => none
 
 /-- Resolve `Today` through the explicit profile selected for the checked model. -/
 def World.today? (world : World) (zoneId : String) : Option Instant :=
@@ -67,5 +80,10 @@ def World.today? (world : World) (zoneId : String) : Option Instant :=
 def World.resolveLocal? (world : World) (zoneId : String)
     (year : Int) (month day hour minute second : Nat) : Option Instant :=
   world.modelZoneRules.resolveLocal? zoneId year month day hour minute second
+
+/-- Resolve a registered validator by the exact authored custom type name. -/
+def World.resolveCustomFieldValidator? (world : World) (name : String) :
+    Option RegisteredCustomFieldValidator :=
+  world.customFieldValidator? name
 
 end A12Kernel

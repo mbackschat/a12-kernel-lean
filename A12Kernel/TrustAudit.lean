@@ -795,6 +795,14 @@ run_cmd do
 #print axioms A12Kernel.registeredCustomValidation_ne_fixedFallback
 #print axioms A12Kernel.registeredCustomValidation_toFormalCause
 #print axioms A12Kernel.registeredCustomValidation_phase_projection
+#print axioms A12Kernel.customFieldValidationContext_defaults
+#print axioms A12Kernel.elaborateCustomFieldType_missing
+#print axioms A12Kernel.elaborateCustomFieldType_resolved
+#print axioms A12Kernel.customFieldType_nonrelevant_is_unsampled
+#print axioms A12Kernel.customFieldType_empty_bypasses_validator
+#print axioms A12Kernel.customFieldType_parsedEmpty_bypasses_validator
+#print axioms A12Kernel.customFieldType_rejection_exact
+#print axioms A12Kernel.customFieldType_rejection_phase_projection
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
