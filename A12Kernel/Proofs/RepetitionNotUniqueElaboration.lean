@@ -38,6 +38,16 @@ theorem repetitionKey_tokenValueList_unknown (cause : FormalCause) :
       .unknown cause := by
   rfl
 
+/-- An authored Enumeration key projects the deepest row to its own declared ancestry, then delegates unchanged to the established checked stored-token classifier. -/
+theorem checkedRepetitionEnumerationKey_classify
+    (key : CheckedRepetitionEnumerationKey model)
+    (read : Env → FieldId → RawCell) (environment : Env) :
+    (CheckedRepetitionKey.enumeration key).classify read environment =
+      key.projection.classifyRawKey
+        (read (environment.take key.source.path.axes.length)
+          key.source.declaration.id) := by
+  rfl
+
 /-- Checked composite keys contain no repeated direct field identifier. -/
 theorem checkedRepetitionNotUnique_uniqueKeyFields
     (checked : CheckedRepetitionNotUniqueSource model) :

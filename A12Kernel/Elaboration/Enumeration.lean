@@ -124,6 +124,17 @@ def elaborateEnumeration (declaration : EnumerationDeclaration) :
   | .ok () => .ok { declaration, wellFormed := valid }
   | .error error => .error error
 
+/-- Successful declaration checking preserves the exact authored declaration. This small bridge is shared by every model-owned consumer that attaches the checked Enumeration to a resolved field. -/
+theorem elaborateEnumeration_declaration_eq
+    (source : EnumerationDeclaration) (checked : CheckedEnumerationDeclaration)
+    (elaborated : elaborateEnumeration source = .ok checked) :
+    checked.declaration = source := by
+  unfold elaborateEnumeration at elaborated
+  split at elaborated
+  · cases elaborated
+    rfl
+  · contradiction
+
 def CheckedEnumerationDeclaration.displayProfile
     (checked : CheckedEnumerationDeclaration) : ResolvedEnumerationDisplay :=
   { facts := checked.declaration.displayFacts }

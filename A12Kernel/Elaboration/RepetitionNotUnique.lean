@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Semantics.EnumerationRepetitionNotUnique
 import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` construction
 
-This capsule resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number and ordinary String components are admitted here; temporal, Enumeration, and prepared custom-String keys remain separate. Whole-rule composition and message-pointer projection also remain separate.
+This capsule resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are admitted here; temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys remain separate. Whole-rule composition and message-pointer projection also remain separate.
 -/
 
 namespace A12Kernel
@@ -37,16 +38,38 @@ structure CheckedRepetitionStringKey (model : FlatModel) where
   source : CheckedStarFieldPath model
   fieldOwned : source.declaration.policy.kind = .string
 
-/-- One typed key component. This sum is the extension point for source-verified temporal and Enumeration RNU keys; it prevents a second homogeneous-key construction path. -/
+/-- One direct stored-Enumeration key attached to the exact declaration-owned checked token domain. Category access is not part of RNU syntax. -/
+structure CheckedRepetitionEnumerationKey (model : FlatModel) where
+  source : CheckedStarFieldPath model
+  declaration : CheckedEnumerationDeclaration
+  fieldOwned : source.declaration.policy.kind = .enumeration
+  enumerationOwned :
+    source.declaration.enumeration = some declaration.declaration
+
+namespace CheckedRepetitionEnumerationKey
+
+/-- RNU always reads the stored token; its plain-field syntax cannot select a category projection. -/
+def projection (key : CheckedRepetitionEnumerationKey model) :
+    CheckedEnumerationProjection :=
+  { declaration := key.declaration
+    projectionRef := .stored
+    projection := .stored
+    projectionChecked := by rfl }
+
+end CheckedRepetitionEnumerationKey
+
+/-- One typed key component. This sum is the extension point for source-verified remaining RNU kinds; it prevents a second homogeneous-key construction path. -/
 inductive CheckedRepetitionKey (model : FlatModel) where
   | number (key : CheckedStarNumberSource model)
   | string (key : CheckedRepetitionStringKey model)
+  | enumeration (key : CheckedRepetitionEnumerationKey model)
 
 namespace CheckedRepetitionKey
 
 def source : CheckedRepetitionKey model → CheckedStarFieldPath model
   | .number key => key.source
   | .string key => key.source
+  | .enumeration key => key.source
 
 def fieldId (key : CheckedRepetitionKey model) : FieldId :=
   key.source.declaration.id
@@ -65,6 +88,9 @@ def classify (key : CheckedRepetitionKey model)
   | .string key =>
       RepetitionKeyComponent.ofTokenValueListCell
         (key.source.stringValueListCell key.fieldOwned read keyEnvironment)
+  | .enumeration key =>
+      key.projection.classifyRawKey
+        (read keyEnvironment key.source.declaration.id)
 
 end CheckedRepetitionKey
 
@@ -201,6 +227,20 @@ private def certifyRepetitionKey (model : FlatModel)
               pure (.string {
                 source
                 fieldOwned := hKind })
+      | .enumeration =>
+          match hEnumeration : declaration.enumeration with
+          | none => throw .incoherentCore
+          | some enumeration =>
+              match hChecked : elaborateEnumeration enumeration with
+              | .error _ => throw .incoherentCore
+              | .ok checked =>
+                  pure (.enumeration {
+                    source
+                    declaration := checked
+                    fieldOwned := hKind
+                    enumerationOwned := by
+                      rw [elaborateEnumeration_declaration_eq enumeration checked hChecked]
+                      exact hEnumeration })
       | actual => throw (.unsupportedKeyKind declaration.path actual.surfaceKind)
     else
       throw .incoherentCore

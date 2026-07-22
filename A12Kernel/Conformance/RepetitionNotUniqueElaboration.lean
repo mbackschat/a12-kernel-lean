@@ -33,8 +33,20 @@ private def reviewScore : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [30] }
 
+private def status : FlatFieldDecl :=
+  { id := 8
+    groupPath := ["Project", "Milestones", "Tasks"]
+    name := "Status"
+    policy := { kind := .enumeration }
+    enumeration := some {
+      storedTokens := ["OPEN", "CLOSED", "WAITING", "DONE"]
+      categories := [{
+        name := "Bucket"
+        tokens := ["ACTIVE", "ACTIVE", "ACTIVE", "ACTIVE"] }] }
+    repeatableScope := [10, 20] }
+
 private def model : FlatModel :=
-  { fields := [effort, estimate, text, phase, reviewScore]
+  { fields := [effort, estimate, text, phase, reviewScore, status]
     repeatableGroups := [
       { level := 20, path := ["Project", "Milestones", "Tasks"], repeatability := some 2 },
       { level := 10, path := ["Project", "Milestones"], repeatability := some 2 },
@@ -89,6 +101,36 @@ private def crossMilestoneRead (environment : Env) (field : FieldId) : RawCell :
 
 private def samePhaseRead (environment : Env) (field : FieldId) : RawCell :=
   if field == phase.id then rawNumber 1 else crossMilestoneRead environment field
+
+private def enumerationDuplicateRead (environment : Env)
+    (field : FieldId) : RawCell :=
+  if field == status.id then
+    match environment with
+    | [(10, 1), (20, 1)] | [(10, 2), (20, 1)] => .parsed (.enum "OPEN")
+    | _ => .parsed (.enum "CLOSED")
+  else
+    crossMilestoneRead environment field
+
+private def enumerationDistinctRead (environment : Env)
+    (field : FieldId) : RawCell :=
+  if field == status.id then
+    match environment with
+    | [(10, 1), (20, 1)] => .parsed (.enum "OPEN")
+    | [(10, 1), (20, 2)] => .parsed (.enum "CLOSED")
+    | [(10, 2), (20, 1)] => .parsed (.enum "WAITING")
+    | _ => .parsed (.enum "DONE")
+  else
+    crossMilestoneRead environment field
+
+private def enumerationInvalidRead (environment : Env)
+    (field : FieldId) : RawCell :=
+  if field == status.id then
+    match environment with
+    | [(10, 1), (20, 1)] => .parsed (.enum "OPEN")
+    | [(10, 2), (20, 1)] => .parsed (.enum "OUTSIDE")
+    | _ => .parsed (.enum "CLOSED")
+  else
+    crossMilestoneRead environment field
 
 private def withinFirstMilestoneRead (environment : Env)
     (field : FieldId) : RawCell :=
@@ -224,6 +266,42 @@ example :
       ([(10, 1), (20, 1)], .notFired),
       ([(10, 1), (20, 2)], .notFired),
       ([(10, 2), (20, 1)], .unknown),
+      ([(10, 2), (20, 2)], .notFired)] := by
+  native_decide
+
+/- Direct Enumeration keys retain exact checked stored tokens rather than applying a category projection. -/
+example :
+    verdictsOf (authored (firstKey := keyPath "Status")) [] .full
+      enumerationDuplicateRead = some [
+        ([(10, 1), (20, 1)], .fired .value),
+        ([(10, 1), (20, 2)], .fired .value),
+        ([(10, 2), (20, 1)], .fired .value),
+        ([(10, 2), (20, 2)], .fired .value)] ∧
+    verdictsOf (authored (firstKey := keyPath "Status")) [] .full
+      enumerationDistinctRead = some [
+        ([(10, 1), (20, 1)], .notFired),
+        ([(10, 1), (20, 2)], .notFired),
+        ([(10, 2), (20, 1)], .notFired),
+        ([(10, 2), (20, 2)], .notFired)] := by
+  native_decide
+
+/- Enumeration domain checking happens before the established duplicate relation. -/
+example :
+    verdictsOf (authored (firstKey := keyPath "Status")) [] .full
+      enumerationInvalidRead = some [
+        ([(10, 1), (20, 1)], .notFired),
+        ([(10, 1), (20, 2)], .fired .value),
+        ([(10, 2), (20, 1)], .unknown),
+        ([(10, 2), (20, 2)], .fired .value)] := by
+  native_decide
+
+/- Enumeration components compose with Number components through the same typed key list. -/
+example :
+    verdictsOf (authored (firstKey := keyPath "Status")
+        (restKeys := [keyPath])) [] .full enumerationDuplicateRead = some [
+      ([(10, 1), (20, 1)], .fired .value),
+      ([(10, 1), (20, 2)], .notFired),
+      ([(10, 2), (20, 1)], .fired .value),
       ([(10, 2), (20, 2)], .notFired)] := by
   native_decide
 
