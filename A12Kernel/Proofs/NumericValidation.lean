@@ -50,6 +50,34 @@ theorem numericValidation_stringRange_unknown_preservesCause
       .error cause := by
   simp [FlatContext.resolveNumericValidationAtom, observed]
 
+/-- Missing admitted Enumeration/category conversion is numeric zero with both possible movement directions. -/
+theorem numericValidation_fieldValueAsNumber_empty_both
+    (context : FlatContext) (source : ResolvedFieldValueAsNumberSource)
+    (observed : context.observeValidationAt source.fieldId = .empty) :
+    context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
+      .ok (.value 0 .both) := by
+  simp [FlatContext.resolveNumericValidationAtom, observed]
+
+/-- A present admitted stored token is projected and parsed once; the resulting value is fixed. -/
+theorem numericValidation_fieldValueAsNumber_value_fixed
+    (context : FlatContext) (source : ResolvedFieldValueAsNumberSource)
+    (stored : String) (amount : Rat)
+    (observed : context.observeValidationAt source.fieldId =
+      .value (.enum stored))
+    (converted : source.valueForStored? stored = some amount) :
+    context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
+      .ok (.value amount .fixed) := by
+  simp [FlatContext.resolveNumericValidationAtom, observed, converted]
+
+/-- A reached formal cause survives Enumeration/category conversion unchanged. -/
+theorem numericValidation_fieldValueAsNumber_unknown_preservesCause
+    (context : FlatContext) (source : ResolvedFieldValueAsNumberSource)
+    (cause : FormalCause)
+    (observed : context.observeValidationAt source.fieldId = .unknown cause) :
+    context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
+      .error cause := by
+  simp [FlatContext.resolveNumericValidationAtom, observed]
+
 theorem numericArithmetic_formalInvalid_left_is_unknown
     (op : NumericValidationOp) (cause : FormalCause)
     (right : Except FormalCause NumericArithmeticOutcome) :

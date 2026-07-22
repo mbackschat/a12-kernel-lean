@@ -45,6 +45,40 @@ theorem numericComputation_stringRange_poison_preservesCause
   simp [ScalarComputationContext.readNumericComputationAtom, observed]
   rfl
 
+/-- Computation erases conversion fillability but keeps the missing Enumeration/category source's numeric zero. -/
+theorem numericComputation_fieldValueAsNumber_empty_zero
+    (context : ScalarComputationContext)
+    (source : ResolvedFieldValueAsNumberSource)
+    (observed : observeCell .computation (context.read source.fieldId) = .empty) :
+    context.readNumericComputationAtom (.fieldValueAsNumber source) =
+      .ok (.value 0) := by
+  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  rfl
+
+/-- A present admitted stored token projects to the same exact rational amount in computation. -/
+theorem numericComputation_fieldValueAsNumber_value
+    (context : ScalarComputationContext)
+    (source : ResolvedFieldValueAsNumberSource) (stored : String) (amount : Rat)
+    (observed : observeCell .computation (context.read source.fieldId) =
+      .value (.enum stored))
+    (converted : source.valueForStored? stored = some amount) :
+    context.readNumericComputationAtom (.fieldValueAsNumber source) =
+      .ok (.value amount) := by
+  simp [ScalarComputationContext.readNumericComputationAtom,
+    observed, converted]
+  rfl
+
+/-- A reached computation poison survives Enumeration/category conversion with its exact cause. -/
+theorem numericComputation_fieldValueAsNumber_poison_preservesCause
+    (context : ScalarComputationContext)
+    (source : ResolvedFieldValueAsNumberSource) (cause : FormalCause)
+    (observed : observeCell .computation (context.read source.fieldId) =
+      .poison cause) :
+    context.readNumericComputationAtom (.fieldValueAsNumber source) =
+      .ok (.poison cause) := by
+  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  rfl
+
 /-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :

@@ -37,6 +37,7 @@ private def repeatedId : FieldId := 4
 private def timeId : FieldId := 5
 private def dateTimeId : FieldId := 6
 private def dateId : FieldId := 7
+private def enumerationId : FieldId := 8
 
 private def timeComponents : TemporalComponents :=
   { year := false, month := false, day := false,
@@ -67,7 +68,14 @@ private def model : FlatModel :=
   { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated,
       temporalDeclaration timeId "Time" .time timeComponents,
       temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents,
-      temporalDeclaration dateId "Date" .date TemporalComponents.fullDate]
+      temporalDeclaration dateId "Date" .date TemporalComponents.fullDate,
+      { id := enumerationId
+        groupPath := ["Root"]
+        name := "NumericChoice"
+        policy := { kind := .enumeration }
+        enumeration := some {
+          storedTokens := ["-150", "2", "03"]
+          categories := [{ name := "Factor", tokens := ["5", "225", "3"] }] } }]
     repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }]
     baseYear := some 2020 }
 
@@ -84,6 +92,12 @@ private def surfaceField (groups : List String) (name : String) :
 private def surfaceStringRange (start finish : Nat) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.stringRange (surfacePath ["Root"] "Wrong") start finish)
+
+private def surfaceFieldValueAsNumber
+    (source : SurfaceTextFieldOperand :=
+      .direct (surfacePath ["Root"] "NumericChoice")) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.fieldValueAsNumber source)
 
 private def surfaceAggregate (op : NumericAggregateOp) (first : String)
     (rest : List String) : AuthoredNumericExpr SurfaceNumericAtom :=
@@ -143,7 +157,8 @@ private def context (source later : CheckedCell := checkedNumber .empty)
       checkedTemporal .dateTime dateTimeComponents .empty)
     (date : CheckedCell :=
       checkedTemporal .date TemporalComponents.fullDate .empty)
-    (code : CheckedCell := formalCheck { kind := .string } .empty) :
+    (code : CheckedCell := formalCheck { kind := .string } .empty)
+    (choice : CheckedCell := formalCheck { kind := .enumeration } .empty) :
     ScalarComputationContext where
   read field :=
     if field == sourceId then source
@@ -152,6 +167,7 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     else if field == dateTimeId then dateTime
     else if field == dateId then date
     else if field == wrongId then code
+    else if field == enumerationId then choice
     else checkedNumber .empty
 
 private def instant : Instant := { epochMillis := 1719292867000 }
@@ -214,6 +230,50 @@ private def targetPolicyAttachErrorOf (policy : NumericTargetPolicy) :
       match checked.attachTargetPolicy policy with
       | .error error => some error
       | .ok _ => none
+
+/- `FieldValueAsNumber` uses the checked stored/category projection in computation, preserves exact values, and maps clean absence to zero. -/
+example :
+    checkedResultOf (surfaceFieldValueAsNumber)
+        (context (choice := formalCheck { kind := .enumeration }
+          (.parsed (.enum "2")))) = some (.value 2) ∧
+      checkedResultOf
+        (surfaceFieldValueAsNumber (.category
+          (surfacePath ["Root"] "NumericChoice") "Factor"))
+        (context (choice := formalCheck { kind := .enumeration }
+          (.parsed (.enum "-150")))) = some (.value 5) ∧
+      checkedResultOf (surfaceFieldValueAsNumber) = some (.value 0) ∧
+      checkedResultOf (surfaceFieldValueAsNumber)
+        (context (choice := formalCheck { kind := .enumeration }
+          (.rejected .declaredConstraint))) = some (.poison .declaredConstraint) := by
+  native_decide
+
+/- The converted atom composes through shared arithmetic and target checking without a conversion-specific write path. -/
+example :
+    let input := context (checkedNumber (.parsed (.num 3)))
+      (choice := formalCheck { kind := .enumeration } (.parsed (.enum "2")))
+    checkedResultOf
+        (.binary .add (surfaceFieldValueAsNumber)
+          (surfaceField ["Root"] "Source")) input = some (.value 5) ∧
+      checkedTargetResultOf (surfaceFieldValueAsNumber) false targetPolicy input =
+        some (.supported (.accepted { unscaled := 2, scale := 0 })) := by
+  native_decide
+
+/- Conversion diagnostics preserve resolved source identity and exact category rejection; unchecked String pattern assumptions stay outside the checked core. -/
+example :
+    checkedErrorOf
+        (surfaceFieldValueAsNumber (.direct
+          (surfacePath ["Root"] "Missing"))) =
+      some (.resolve (.invalidEntity (surfacePath ["Root"] "Missing"))) ∧
+    checkedErrorOf
+        (surfaceFieldValueAsNumber (.direct
+          (surfacePath ["Root"] "Wrong"))) =
+      some (.fieldValueAsNumberNotConvertible ["Root", "Wrong"]) ∧
+    checkedErrorOf
+        (surfaceFieldValueAsNumber (.category
+          (surfacePath ["Root"] "NumericChoice") "Missing")) =
+      some (.fieldValueAsNumberEnumeration ["Root", "NumericChoice"]
+        (.unknownCategory "Missing")) := by
+  native_decide
 
 /- Numeric computation consumes the same digits-only normalized range and maps every clean fallback to zero. -/
 example :

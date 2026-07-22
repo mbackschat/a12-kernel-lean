@@ -3,7 +3,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, Date-only month/year differences, and direct Number field-list aggregates share plain arithmetic. Separately audited root value functions remain Number-field-only, except for the established direct aggregate-rounding form; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, checked ordinary Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share plain arithmetic. Separately audited root value functions remain Number-field-only, except for the established direct aggregate-rounding form; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -34,6 +34,9 @@ inductive NumericValidationElabError where
   | fieldNotNumber (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
+  | fieldValueAsNumberNotConvertible (path : List String)
+  | fieldValueAsNumberEnumeration (path : List String)
+      (error : EnumerationOperandError)
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
   | baseYearNotDeclared
@@ -98,6 +101,14 @@ private def FlatModel.admitsStringModelWide (model : FlatModel)
     (field : FlatStringField) : Bool :=
   model.admitsStringValueField field
 
+private def FlatModel.admitsFieldValueAsNumberInGroup (model : FlatModel)
+    (rowGroup : GroupPath) (source : ResolvedFieldValueAsNumberSource) : Bool :=
+  match model.lookupUniqueId source.fieldId with
+  | .ok declaration =>
+      declaration.groupPath == rowGroup &&
+        model.admitsFieldValueAsNumberSource source
+  | .error _ => false
+
 private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPath)
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
     Except NumericValidationElabError FlatTemporalField := do
@@ -133,6 +144,10 @@ private def NumericValidationAtom.admitted
         match scope with
         | .sameGroup => model.admitsStringInGroup rowGroup source
         | .modelWideNonrepeatable => model.admitsStringModelWide source
+  | .fieldValueAsNumber source =>
+      match scope with
+      | .sameGroup => model.admitsFieldValueAsNumberInGroup rowGroup source
+      | .modelWideNonrepeatable => model.admitsFieldValueAsNumberSource source
   | .dateDifference unit left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
@@ -219,6 +234,7 @@ def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId �
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
   | .stringRange source _ _, field => source.id == field
+  | .fieldValueAsNumber source, field => source.fieldId == field
   | .dateDifference _ left right, field =>
       left.references field || right.references field
   | .aggregate _ source, field => source.referencesField field
@@ -231,6 +247,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .baseYear _ | .baseYearDatePart _ _ _ => true
   | .temporalFieldPart source _ => isRelevant source.id
   | .stringRange source _ _ => isRelevant source.id
+  | .fieldValueAsNumber source => isRelevant source.fieldId
   | .dateDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
@@ -293,6 +310,18 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       match declaration.toStringValueField? with
       | some field => pure (.stringRange field start finish)
       | none => throw (.rangeOperandNotString declaration.path)
+  | .fieldValueAsNumber surface => do
+      let declaration ←
+        (model.resolveField rowGroup surface.reference).mapError .resolve
+      if declaration.groupPath != rowGroup then
+        throw (.fieldOutsideRowGroup declaration.path rowGroup)
+      match declaration.resolveFieldValueAsNumberSource surface.projectionRef with
+      | .ok source => pure (.fieldValueAsNumber source)
+      | .error .notConvertible =>
+          throw (.fieldValueAsNumberNotConvertible declaration.path)
+      | .error (.enumeration error) =>
+          throw (.fieldValueAsNumberEnumeration declaration.path error)
+      | .error .incoherentEnumeration => throw .incoherentCore
   | .dateDifference unit left right => do
       let resolveOperand : SurfaceDateDifferenceOperand →
           Except NumericValidationElabError ResolvedDateDifferenceOperand
@@ -399,6 +428,15 @@ def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
       | .empty => .ok (.value 0 .growOnly)
       | .value (.str value) =>
           .ok (.value (utf16RangeAsNatural value start finish) .fixed)
+      | .value _ => .error .malformed
+      | .unknown cause | .poison cause => .error cause
+  | .fieldValueAsNumber source =>
+      match context.observeValidationAt source.fieldId with
+      | .empty => .ok (.value 0 .both)
+      | .value (.enum stored) =>
+          match source.valueForStored? stored with
+          | some amount => .ok (.value amount .fixed)
+          | none => .error .malformed
       | .value _ => .error .malformed
       | .unknown cause | .poison cause => .error cause
   | .dateDifference unit left right =>
