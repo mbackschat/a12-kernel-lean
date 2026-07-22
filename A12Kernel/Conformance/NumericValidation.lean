@@ -28,24 +28,28 @@ private def model : FlatModel :=
         policy := { kind := .number signed } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
+private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
+
 private def path (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
 
-private def atom (name : String) : AuthoredNumericExpr SurfaceFieldPath :=
-  .atom (path ["Order"] name)
+private def atom (name : String) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.field (path ["Order"] name))
+
+private def baseYear : AuthoredNumericExpr SurfaceNumericAtom := .atom .baseYear
 
 private def literal (value : Rat) (authoredScale : Int) :
-    AuthoredNumericExpr SurfaceFieldPath :=
+    AuthoredNumericExpr SurfaceNumericAtom :=
   .literal { value, authoredScale }
 
 private def comparison (op : NumericComparisonOp)
-    (left : AuthoredNumericExpr SurfaceFieldPath)
+    (left : AuthoredNumericExpr SurfaceNumericAtom)
     (rightValue : Rat) (rightScale : Int := 0) :
     SurfaceNumericComparison :=
   { op := .ordinary op, left, right := literal rightValue rightScale }
 
 private def twoSided (op : NumericComparisonOp)
-    (left right : AuthoredNumericExpr SurfaceFieldPath) :
+    (left right : AuthoredNumericExpr SurfaceNumericAtom) :
     SurfaceNumericComparison :=
   { op := .ordinary op, left, right }
 
@@ -55,12 +59,14 @@ private def raw (u v s scale2Value : RawCell := .empty) : RawFlatContext where
       else if id == 6 then s else .empty
 
 private def verdictOf (surface : SurfaceNumericComparison)
-    (context : RawFlatContext := raw) (hasContent : Bool := true) : Option Verdict :=
-  (elaborateAndEvalNumericComparison model ["Order"] context hasContent surface).toOption
+    (context : RawFlatContext := raw) (hasContent : Bool := true)
+    (sourceModel : FlatModel := model) : Option Verdict :=
+  (elaborateAndEvalNumericComparison sourceModel ["Order"] context hasContent surface).toOption
 
-private def errorOf (surface : SurfaceNumericComparison) :
+private def errorOf (surface : SurfaceNumericComparison)
+    (sourceModel : FlatModel := model) :
     Option NumericValidationElabError :=
-  match elaborateNumericComparison model ["Order"] surface with
+  match elaborateNumericComparison sourceModel ["Order"] surface with
   | .ok _ => none
   | .error error => some error
 
@@ -69,16 +75,42 @@ private def suppressScaleWarning
   { surface with suppressExactScaleWarning := true }
 
 private def tolerance (range : NumericToleranceRange)
-    (left right : AuthoredNumericExpr SurfaceFieldPath) :
+    (left right : AuthoredNumericExpr SurfaceNumericAtom) :
     SurfaceNumericComparison :=
   { op := .tolerance range, left, right }
 
-private def dividedThird : AuthoredNumericExpr SurfaceFieldPath :=
+private def dividedThird : AuthoredNumericExpr SurfaceNumericAtom :=
   .group (.binary .divide (literal 3 0) (literal 3 0))
 
 /- Checked tolerance bypasses exact-comparison scale agreement and preserves directional arithmetic fillability. -/
 example : (elaborateNumericComparison model ["Order"]
     (tolerance .range1 (atom "U") (atom "Scale2"))).isOk = true := by
+  native_decide
+
+example :
+    errorOf (twoSided .equal (atom "U") baseYear) =
+      some .baseYearNotDeclared ∧
+    errorOf (twoSided .equal (atom "Scale2") baseYear) baseYearModel =
+      some (.exactScaleMismatch
+        (NumericScaleSummary.field 2) (NumericScaleSummary.field 0)) ∧
+    (elaborateNumericComparison baseYearModel ["Order"]
+      (tolerance .range1 (atom "Scale2") baseYear)).isOk = true ∧
+    errorOf (twoSided .equal (.abs baseYear) (atom "U")) baseYearModel =
+      some .unsupportedExpression := by
+  native_decide
+
+example :
+    verdictOf (tolerance .range1 (atom "U") baseYear)
+        (raw (.parsed (.num 2022))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal (atom "U") baseYear)
+        (raw (.parsed (.num 2020))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal
+        (.binary .add baseYear (atom "U")) (literal 2021 0))
+        (raw (.parsed (.num 1))) true baseYearModel = some (.fired .value) := by
+  native_decide
+
+example : errorOf (twoSided .equal baseYear (literal 2020 0)) baseYearModel =
+    some .constantExpression := by
   native_decide
 
 example : verdictOf
@@ -199,7 +231,7 @@ example : verdictOf
 
 private def precisionAmplifier : Rat := 10 ^ 31
 
-private def amplifiedThird : AuthoredNumericExpr SurfaceFieldPath :=
+private def amplifiedThird : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .multiply
     (.binary .multiply
       (atom "U")
@@ -648,12 +680,12 @@ example : errorOf (twoSided .equal (atom "U") (atom "Flag")) =
   native_decide
 
 example : errorOf
-    (comparison .equal (.atom (path ["Order", "Items"] "Item")) 0) =
+    (comparison .equal (.atom (.field (path ["Order", "Items"] "Item"))) 0) =
       some (.resolve (.repeatableReference ["Order", "Items", "Item"])) := by
   native_decide
 
 example : errorOf
-    (comparison .equal (.atom (path ["Reference"] "Other")) 0) =
+    (comparison .equal (.atom (.field (path ["Reference"] "Other"))) 0) =
       some (.fieldOutsideRowGroup ["Reference", "Other"] ["Order"]) := by
   native_decide
 

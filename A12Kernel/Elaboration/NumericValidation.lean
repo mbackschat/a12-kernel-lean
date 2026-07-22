@@ -4,24 +4,36 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable Number expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. It admits plain arithmetic plus separately audited root value functions in the evaluated row group; operand-list extrema may contain direct fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Number fields and numeric `BaseYear` share plain arithmetic, while separately audited root value functions remain field-only; operand-list extrema may contain direct fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
 
+/-- Source atoms admitted by the checked numeric-validation consumer. -/
+inductive SurfaceNumericAtom where
+  | field (path : SurfaceFieldPath)
+  | baseYear
+  deriving Repr, DecidableEq
+
+/-- Model-resolved numeric-validation atoms. Base Year remains a non-expandable scale-0 source rather than becoming an authored literal. -/
+inductive NumericValidationAtom where
+  | field (field : FlatNumberField)
+  | baseYear (year : Int)
+  deriving Repr, DecidableEq
+
 /-- Parser-independent input to the checked numeric consumer. -/
 structure SurfaceNumericComparison where
   op : NumericValidationOp
-  left : AuthoredNumericExpr SurfaceFieldPath
-  right : AuthoredNumericExpr SurfaceFieldPath
+  left : AuthoredNumericExpr SurfaceNumericAtom
+  right : AuthoredNumericExpr SurfaceNumericAtom
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
 /-- Resolved runtime representation; static guarantees belong to `CheckedNumericComparison`. -/
 structure NumericComparison where
   op : NumericValidationOp
-  left : AuthoredNumericExpr FlatNumberField
-  right : AuthoredNumericExpr FlatNumberField
+  left : AuthoredNumericExpr NumericValidationAtom
+  right : AuthoredNumericExpr NumericValidationAtom
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
@@ -30,6 +42,7 @@ inductive NumericValidationElabError where
   | resolve (error : ResolveError)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
+  | baseYearNotDeclared
   | constantExpression
   | unsupportedExpression
   | authoring (result : NumericAuthoringCheck)
@@ -45,6 +58,31 @@ private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupP
         declaration.repeatableScope.isEmpty &&
         declaration.toNumberField? == some field
   | .error _ => false
+
+def NumericValidationAtom.isField : NumericValidationAtom → Bool
+  | NumericValidationAtom.field _ => true
+  | NumericValidationAtom.baseYear _ => false
+
+def NumericValidationAtom.isBaseYear : NumericValidationAtom → Bool
+  | NumericValidationAtom.field _ => false
+  | NumericValidationAtom.baseYear _ => true
+
+def NumericValidationAtom.summary : NumericValidationAtom → NumericScaleSummary
+  | NumericValidationAtom.field source => NumericScaleSummary.field source.info.scale
+  | NumericValidationAtom.baseYear _ => NumericScaleSummary.field 0
+
+private def NumericValidationAtom.admitted
+    (model : FlatModel) (rowGroup : GroupPath) : NumericValidationAtom → Bool
+  | NumericValidationAtom.field source => model.admitsNumberInGroup rowGroup source
+  | NumericValidationAtom.baseYear year => model.baseYear == some year
+
+/-- Base Year participates in the audited arithmetic grammar but does not implicitly widen the separately checked direct value-function shapes. -/
+def AuthoredNumericExpr.isAdmittedNumericValidationOperation
+    (expression : AuthoredNumericExpr NumericValidationAtom) : Bool :=
+  if expression.anyAtom NumericValidationAtom.isBaseYear then
+    expression.isPlainArithmetic
+  else
+    expression.isAdmittedNumericOperation
 
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
@@ -68,18 +106,17 @@ def NumericValidationOp.acceptsScalesWithSuppression
 def NumericComparison.wellFormedBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
-  (comparison.left.hasAtom || comparison.right.hasAtom) &&
-    comparison.left.isAdmittedNumericOperation &&
-    comparison.right.isAdmittedNumericOperation &&
-    comparison.left.allAtoms (model.admitsNumberInGroup rowGroup) &&
-    comparison.right.allAtoms (model.admitsNumberInGroup rowGroup) &&
+  (comparison.left.anyAtom NumericValidationAtom.isField ||
+      comparison.right.anyAtom NumericValidationAtom.isField) &&
+    comparison.left.isAdmittedNumericValidationOperation &&
+    comparison.right.isAdmittedNumericValidationOperation &&
+    comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup) &&
+    comparison.right.allAtoms (NumericValidationAtom.admitted model rowGroup) &&
     comparison.left.numericOperationAuthoringCheck == .accepted &&
     comparison.right.numericOperationAuthoringCheck == .accepted &&
     match
-        comparison.left.summary? (fun field =>
-          NumericScaleSummary.field field.info.scale),
-        comparison.right.summary? (fun field =>
-          NumericScaleSummary.field field.info.scale) with
+        comparison.left.summary? NumericValidationAtom.summary,
+        comparison.right.summary? NumericValidationAtom.summary with
     | some leftSummary, some rightSummary =>
         comparison.op.acceptsScalesWithSuppression
           comparison.suppressExactScaleWarning leftSummary rightSummary
@@ -97,17 +134,26 @@ structure CheckedNumericComparison (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model rowGroup
 
-private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
-    AuthoredNumericExpr SurfaceFieldPath →
-      Except NumericValidationElabError (AuthoredNumericExpr FlatNumberField) :=
-  AuthoredNumericExpr.mapM fun reference => do
+private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
+    SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
+  | .field reference => do
       let declaration ←
         (model.resolveField rowGroup reference).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toNumberField? with
-      | some field => pure field
+      | some field => pure (.field field)
       | none => throw (.fieldNotNumber declaration.path)
+  | .baseYear =>
+      match model.baseYear with
+      | some year => pure (.baseYear year)
+      | none => throw .baseYearNotDeclared
+
+private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
+    AuthoredNumericExpr SurfaceNumericAtom →
+      Except NumericValidationElabError
+        (AuthoredNumericExpr NumericValidationAtom) :=
+  AuthoredNumericExpr.mapM (resolveNumericAtom model rowGroup)
 
 /-- Resolve and check both operands before performing their one-pass lowering at evaluation time. -/
 def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
@@ -120,21 +166,23 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
         throw (.resolve (.invalidRuleGroup rowGroup))
       let left ← resolveNumericExpression model rowGroup surface.left
       let right ← resolveNumericExpression model rowGroup surface.right
-      if !(left.hasAtom || right.hasAtom) then throw .constantExpression
-      if !left.isAdmittedNumericOperation then throw .unsupportedExpression
-      if !right.isAdmittedNumericOperation then throw .unsupportedExpression
+      if !(left.anyAtom NumericValidationAtom.isField ||
+          right.anyAtom NumericValidationAtom.isField) then
+        throw .constantExpression
+      if !left.isAdmittedNumericValidationOperation then
+        throw .unsupportedExpression
+      if !right.isAdmittedNumericValidationOperation then
+        throw .unsupportedExpression
       match left.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
       match right.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
-      let leftSummary ← match left.summary? (fun field =>
-          NumericScaleSummary.field field.info.scale) with
+      let leftSummary ← match left.summary? NumericValidationAtom.summary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
-      let rightSummary ← match right.summary? (fun field =>
-          NumericScaleSummary.field field.info.scale) with
+      let rightSummary ← match right.summary? NumericValidationAtom.summary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
       if !surface.op.acceptsScalesWithSuppression
@@ -163,6 +211,11 @@ def FlatContext.resolveNumericArithmetic (context : FlatContext)
   match context.resolveNumberComparisonOperand field with
   | .value amount fillability => .ok (.value amount fillability)
   | .unknown cause => .error cause
+
+def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
+    NumericValidationAtom → Except FormalCause NumericArithmeticOutcome
+  | .field field => context.resolveNumericArithmetic field
+  | .baseYear year => .ok (.value year .fixed)
 
 private def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
@@ -300,9 +353,9 @@ def NumericComparison.evalSelected
     (comparison : NumericComparison) (context : FlatContext) : Verdict :=
   match
       comparison.left.lowerForEvaluation.evalAdmittedValidation?
-        context.resolveNumericArithmetic,
+        context.resolveNumericValidationAtom,
       comparison.right.lowerForEvaluation.evalAdmittedValidation?
-        context.resolveNumericArithmetic with
+        context.resolveNumericValidationAtom with
   | some left, some right => comparison.op.evalArithmetic left right
   | _, _ => .unknown
 
