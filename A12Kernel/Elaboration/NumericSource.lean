@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Semantics.DateDifference
 
 /-! # Shared checked numeric-expression sources
 
-Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, and direct Date/Time/DateTime field-component sources through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
+Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, and Date-only month/year differences through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
 -/
 
 namespace A12Kernel
@@ -41,11 +42,45 @@ def FlatContext.resolveTemporalNumericOperand (context : FlatContext)
   | .date part => context.resolveDateNumericOperand field part
   | .time part => context.resolveTimeNumericOperand field part
 
+inductive SurfaceDateDifferenceOperand where
+  | field (path : SurfaceFieldPath)
+  | baseYear (source : BaseYearDateSource)
+  deriving Repr, DecidableEq
+
+inductive ResolvedDateDifferenceOperand where
+  | field (source : FlatTemporalField)
+  | baseYear (year : Int) (source : BaseYearDateSource)
+  deriving Repr, DecidableEq
+
+namespace ResolvedDateDifferenceOperand
+
+def isField : ResolvedDateDifferenceOperand → Bool
+  | .field _ => true
+  | .baseYear _ _ => false
+
+def components : ResolvedDateDifferenceOperand → TemporalComponents
+  | .field source => source.components
+  | .baseYear _ _ => TemporalComponents.baseYear
+
+def references (field : FieldId) : ResolvedDateDifferenceOperand → Bool
+  | .field source => source.id == field
+  | .baseYear _ _ => false
+
+def validationOperand (context : FlatContext) :
+    ResolvedDateDifferenceOperand → DateDifferenceOperand
+  | .field source => DateDifferenceOperand.ofObservation
+      (context.observeValidationAt source.id)
+  | .baseYear year source => .value (source.parts year)
+
+end ResolvedDateDifferenceOperand
+
 inductive SurfaceNumericAtom where
   | field (path : SurfaceFieldPath)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
+  | dateDifference (unit : DateDifferenceUnit)
+      (left right : SurfaceDateDifferenceOperand)
   deriving Repr, DecidableEq
 
 inductive ResolvedNumericAtom (Field : Type) where
@@ -54,6 +89,8 @@ inductive ResolvedNumericAtom (Field : Type) where
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
+  | dateDifference (unit : DateDifferenceUnit)
+      (left right : ResolvedDateDifferenceOperand)
   deriving Repr, DecidableEq
 
 namespace ResolvedNumericAtom
@@ -63,11 +100,13 @@ def isField : ResolvedNumericAtom Field → Bool
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
+  | .dateDifference _ left right => left.isField || right.isField
 
 def requiresPlainArithmetic : ResolvedNumericAtom Field → Bool
   | .field _ => false
   | .baseYear _ | .baseYearDatePart _ _ _
   | .temporalFieldPart _ _ => true
+  | .dateDifference _ _ _ => true
 
 def summary (fieldSummary : Field → NumericScaleSummary) :
     ResolvedNumericAtom Field → NumericScaleSummary
@@ -75,6 +114,7 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
+  | .dateDifference _ _ _ => NumericScaleSummary.field 0
 
 end ResolvedNumericAtom
 

@@ -36,6 +36,7 @@ private def wrongId : FieldId := 3
 private def repeatedId : FieldId := 4
 private def timeId : FieldId := 5
 private def dateTimeId : FieldId := 6
+private def dateId : FieldId := 7
 
 private def timeComponents : TemporalComponents :=
   { year := false, month := false, day := false,
@@ -65,7 +66,8 @@ private def repeated : FlatFieldDecl :=
 private def model : FlatModel :=
   { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated,
       temporalDeclaration timeId "Time" .time timeComponents,
-      temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents]
+      temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents,
+      temporalDeclaration dateId "Date" .date TemporalComponents.fullDate]
     repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }]
     baseYear := some 2020 }
 
@@ -94,6 +96,14 @@ private def surfaceTimeFieldPart (name : String) (part : TimeNumericPart) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.temporalFieldPart (surfacePath ["Root"] name) (.time part))
 
+private def surfaceDateDifference (unit : DateDifferenceUnit)
+    (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.dateDifference unit left right)
+
+private def surfaceDateOperand (name : String) : SurfaceDateDifferenceOperand :=
+  .field (surfacePath ["Root"] name)
+
 private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (target : FieldId := targetId)
     (suppressExactScaleWarning : Bool := false) :
@@ -120,13 +130,16 @@ private def checkedTemporal (kind : TemporalKind) (components : TemporalComponen
 private def context (source later : CheckedCell := checkedNumber .empty)
     (time : CheckedCell := checkedTemporal .time timeComponents .empty)
     (dateTime : CheckedCell :=
-      checkedTemporal .dateTime dateTimeComponents .empty) :
+      checkedTemporal .dateTime dateTimeComponents .empty)
+    (date : CheckedCell :=
+      checkedTemporal .date TemporalComponents.fullDate .empty) :
     ScalarComputationContext where
   read field :=
     if field == sourceId then source
     else if field == laterId then later
     else if field == timeId then time
     else if field == dateTimeId then dateTime
+    else if field == dateId then date
     else checkedNumber .empty
 
 private def instant : Instant := { epochMillis := 1719292867000 }
@@ -139,6 +152,10 @@ private def clock : TimeOfDay :=
 private def dateTimeValue : Value :=
   .temporal (.dateTime instant dateParts clock .storedGregorian)
 
+private def dateValue (year : Int) (month day : Nat)
+    (basis : DateCalendarBasis := .storedGregorian) : Value :=
+  .temporal (.date instant { year, month, day } basis)
+
 private def checkedResultOf
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (input : ScalarComputationContext := context) :
@@ -146,6 +163,16 @@ private def checkedResultOf
   match elaborateNumericComputationOperation model ["Root"] targetId expression with
   | .error _ => none
   | .ok checked => checked.evaluate input |>.toOption
+
+private def checkedFaultOf
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (input : ScalarComputationContext := context) : Option NumericComputationFault :=
+  match elaborateNumericComputationOperation model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluate input with
+      | .ok _ => none
+      | .error fault => some fault
 
 private def targetPolicy : NumericTargetPolicy where
   info := numberInfo
@@ -386,6 +413,32 @@ example :
       checkedResultOf (surfaceDateFieldPart "DateTime" .year)
         (context (dateTime := checkedTemporal .dateTime dateTimeComponents
           (.rejected .malformed))) = some (.poison .malformed) := by
+  native_decide
+
+/- Checked computation consumes the same mixed date-difference source: filled fields produce scale-0 values, empty is zero, and formal invalidity remains poison. -/
+example :
+    let mixedMonths := surfaceDateDifference .months
+      (.baseYear .direct) (surfaceDateOperand "Date")
+    checkedResultOf mixedMonths (context
+        (date := checkedTemporal .date TemporalComponents.fullDate
+          (.parsed (dateValue 2020 2 29)))) = some (.value 1) ∧
+      checkedResultOf mixedMonths = some (.value 0) ∧
+      checkedResultOf mixedMonths
+        (context (date := checkedTemporal .date TemporalComponents.fullDate
+          (.rejected .malformed))) = some (.poison .malformed) := by
+  native_decide
+
+/- Month/year differences reject DateTime statically and a legacy-hybrid field payload dynamically instead of applying the proleptic decoded-parts core. -/
+example :
+    checkedErrorOf (surfaceDateDifference .years
+      (surfaceDateOperand "DateTime") (.baseYear .direct)) =
+        some (.incompatibleTemporalSource ["Root", "DateTime"]) ∧
+      checkedFaultOf
+        (surfaceDateDifference .months
+          (.baseYear .direct) (surfaceDateOperand "Date"))
+        (context (date := checkedTemporal .date TemporalComponents.fullDate
+          (.parsed (dateValue 2020 2 29 .legacyHybrid)))) =
+          some .unsupportedDateCalendar := by
   native_decide
 
 /- Checked source admission rejects the wrong temporal family and unaudited value-function wrapping. -/

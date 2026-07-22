@@ -593,6 +593,29 @@ theorem numericValidation_temporalFieldPart_literal_delegates
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericComparisonOp.eval, NumericToleranceRange.eval, observed]
 
+/-- A supported checked date-difference atom delegates its phase-observed numeric operand to the ordinary or tolerance evaluator without a second arithmetic path. -/
+theorem numericValidation_dateDifference_literal_delegates
+    (op : NumericValidationOp) (unit : DateDifferenceUnit)
+    (left right : ResolvedDateDifferenceOperand)
+    (literal : DecodedNumericLiteral) (context : FlatContext)
+    (operand : NumericOperand)
+    (evaluated : DateDifferenceOperand.evaluate unit
+      (left.validationOperand context) (right.validationOperand context) =
+        .ok operand) :
+    ({ op, left := .atom (.dateDifference unit left right),
+        right := .literal literal } : NumericComparison).evalSelected context =
+      op.eval operand (.value literal.value .fixed) := by
+  cases op <;>
+    cases operand <;>
+    simp [NumericComparison.evalSelected,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
+      NumericOperand.toValidationArithmetic,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericComparisonOp.eval, NumericToleranceRange.eval, evaluated]
+
 /-- Full validation gates a checked numeric condition before any empty-Number substitution can fire. -/
 theorem checkedNumericComparison_emptyRow_notFired
     (checked : CheckedNumericComparison model)
