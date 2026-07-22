@@ -49,13 +49,42 @@ private def dispatchDateDecl : FlatFieldDecl :=
   { id := 8, groupPath := ["Order"], name := "DispatchDate",
     policy := { kind := .temporal .date dispatchDateComponents } }
 
+private def arrivalDateDecl : FlatFieldDecl :=
+  { id := 9, groupPath := ["Order"], name := "ArrivalDate",
+    policy := { kind := .temporal .date dispatchDateComponents } }
+
+private def timeComponents : TemporalComponents :=
+  { year := false, month := false, day := false,
+    hour := true, minute := true, second := true }
+
+private def eventTimeDecl : FlatFieldDecl :=
+  { id := 10, groupPath := ["Order"], name := "EventTime",
+    policy := { kind := .temporal .time timeComponents } }
+
+private def dateTimeComponents : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := true, minute := true, second := true }
+
+private def eventDateTimeDecl : FlatFieldDecl :=
+  { id := 11, groupPath := ["Order"], name := "EventDateTime",
+    policy := { kind := .temporal .dateTime dateTimeComponents } }
+
+private def monthDayComponents : TemporalComponents :=
+  { year := false, month := true, day := true,
+    hour := false, minute := false, second := false }
+
+private def recurringDateDecl : FlatFieldDecl :=
+  { id := 12, groupPath := ["Order"], name := "RecurringDate",
+    policy := { kind := .temporal .date monthDayComponents } }
+
 private def repeatableItems : RepeatableGroupDecl :=
   { level := 10, path := ["Order", "Items"] }
 
 private def model : FlatModel :=
   { fields := [quantityDecl, expressDecl, confirmDecl, ancestorLimitDecl,
       localLimitDecl, externalCodeDecl, repeatableCountDecl, noteDecl,
-      dispatchDateDecl],
+      dispatchDateDecl, arrivalDateDecl, eventTimeDecl, eventDateTimeDecl,
+      recurringDateDecl],
     repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 
@@ -71,6 +100,10 @@ private def bare (field : String) : SurfaceFieldPath := relative 0 [] field
 private def compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
     (literal : SurfaceLiteral) : SurfaceCondition :=
   .compare op field literal
+
+private def compareFields (op : SurfaceComparisonOp) (left right : String) :
+    SurfaceCondition :=
+  .compareFields op (absolute ["Order"] left) (absolute ["Order"] right)
 
 private def coreOf (result : Except ElabError (CheckedFlatCondition model)) :
     Option FlatCondition :=
@@ -119,6 +152,48 @@ example : coreOf (elaborate model ["Order"]
     (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
     some (.fieldFilled (.temporal
       { id := 8, kind := .date, components := dispatchDateComponents })) := by
+  native_decide
+
+example : coreOf (elaborate model ["Order"]
+    (compareFields .less "DispatchDate" "ArrivalDate")) =
+    some (.compare (.temporal .before
+      { id := 8, kind := .date, components := dispatchDateComponents }
+      { id := 9, kind := .date, components := dispatchDateComponents })) := by
+  native_decide
+
+example :
+    coreOf (elaborate model ["Order"]
+      (compareFields .less "DispatchDate" "EventDateTime")) =
+        some (.compare (.temporal .before
+          { id := 8, kind := .date, components := dispatchDateComponents }
+          { id := 11, kind := .dateTime, components := dateTimeComponents })) ∧
+      errorOf (elaborate model ["Order"]
+        (compareFields .equal "DispatchDate" "EventDateTime")) =
+          some (.temporalFormatsIncompatible
+            ["Order", "DispatchDate"] ["Order", "EventDateTime"]) := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compareFields .less "DispatchDate" "EventTime")) =
+        some (.temporalFormatsIncompatible
+          ["Order", "DispatchDate"] ["Order", "EventTime"]) ∧
+      errorOf (elaborate model ["Order"]
+        (compareFields .equal "DispatchDate" "ExpressShipping")) =
+          some (.temporalOperandKindMismatch
+            ["Order", "DispatchDate"] ["Order", "ExpressShipping"]
+            (.temporal .date) .boolean) := by
+  native_decide
+
+private def baseYearModel : FlatModel := { model with hasBaseYear := true }
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compareFields .less "RecurringDate" "DispatchDate")) =
+        some (.temporalFormatsIncompatible
+          ["Order", "RecurringDate"] ["Order", "DispatchDate"]) ∧
+      (elaborate baseYearModel ["Order"]
+        (compareFields .less "RecurringDate" "DispatchDate")).isOk = true := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
@@ -274,6 +349,16 @@ private def temporalRaw (kind : TemporalKind) : RawFlatContext where
     if id = 8 then .parsed (.temporal kind { epochMillis := 100999 })
     else .empty
 
+private def temporalComparisonRaw (leftKind : TemporalKind) (left : Int)
+    (rightKind : TemporalKind) (right : Option Int) : RawFlatContext where
+  read id :=
+    if id = 8 then .parsed (.temporal leftKind { epochMillis := left })
+    else if id = 9 then
+      match right with
+      | some millis => .parsed (.temporal rightKind { epochMillis := millis })
+      | none => .empty
+    else .empty
+
 example : valueOf (elaborateAndEvalFull model ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 5))) =
     some (.fired .value) := by
@@ -300,6 +385,21 @@ example :
         some (.fired .value) ∧
       valueOf (elaborateAndEvalFull model ["Order"] (temporalRaw .dateTime) true
         (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
+          some .unknown := by
+  native_decide
+
+example :
+    valueOf (elaborateAndEvalFull model ["Order"]
+      (temporalComparisonRaw .date 100000 .date (some 101000)) true
+      (compareFields .less "DispatchDate" "ArrivalDate")) =
+        some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull model ["Order"]
+        (temporalComparisonRaw .date 100000 .date none) true
+        (compareFields .less "DispatchDate" "ArrivalDate")) =
+          some .notFired ∧
+      valueOf (elaborateAndEvalFull model ["Order"]
+        (temporalComparisonRaw .date 100000 .dateTime (some 101000)) true
+        (compareFields .less "DispatchDate" "ArrivalDate")) =
           some .unknown := by
   native_decide
 
