@@ -20,8 +20,8 @@ private def declaration (minimum maximum : Option Nat) :
 private def expectedContext (locale : String) (minimum maximum : Nat) :
     CustomFieldValidationContext where
   locale := locale
-  minLength := minimum
-  maxLength := maximum
+  minLength := some minimum
+  maxLength := some maximum
   isDisplayValue := false
 
 private def validatorExpecting (expected : CustomFieldValidationContext) :

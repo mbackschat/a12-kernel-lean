@@ -59,6 +59,7 @@ import A12Kernel.Proofs.CustomFieldCause
 import A12Kernel.Proofs.CustomFieldType
 import A12Kernel.Proofs.CustomFieldMessage
 import A12Kernel.Proofs.CustomFieldFormalMessage
+import A12Kernel.Proofs.CustomFieldValidity
 import A12Kernel.Proofs.StringCascade
 import A12Kernel.Proofs.StringAlternatives
 import A12Kernel.Proofs.StringComputation

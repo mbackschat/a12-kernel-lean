@@ -57,8 +57,8 @@ def ModelZoneRules.unavailable : ModelZoneRules where
 /-- Exact arguments supplied to one registered custom field-type validator. Bounds are already defaulted by the checked declaration consumer. -/
 structure CustomFieldValidationContext where
   locale : String
-  minLength : Nat
-  maxLength : Nat
+  minLength : Option Nat
+  maxLength : Option Nat
   isDisplayValue : Bool
   deriving Repr, DecidableEq
 
