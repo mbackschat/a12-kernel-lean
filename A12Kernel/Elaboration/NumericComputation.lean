@@ -1,14 +1,15 @@
-import A12Kernel.Elaboration.Flat
-import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target and operands, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct root value-function authoring fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field and numeric-`BaseYear` sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
+
+abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
@@ -19,6 +20,7 @@ inductive NumericComputationElabError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
+  | baseYearNotDeclared
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
@@ -30,18 +32,20 @@ inductive NumericComputationElabError where
 /-- One resolved numeric operation before target storage, retaining whether its result-scale warning was explicitly suppressed. -/
 structure NumericComputationOperation where
   target : FlatNumberField
-  expression : AuthoredNumericExpr FlatFieldDecl
+  expression : AuthoredNumericExpr NumericComputationAtom
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
 def FlatModel.admitsNumericComputationOperand
-    (model : FlatModel) (declaration : FlatFieldDecl) : Bool :=
-  match model.lookupUniqueId declaration.id with
-  | .ok admitted =>
-      admitted == declaration &&
-        declaration.repeatableScope.isEmpty &&
-        declaration.toNumberField?.isSome
-  | .error _ => false
+    (model : FlatModel) : NumericComputationAtom → Bool
+  | .field declaration =>
+      match model.lookupUniqueId declaration.id with
+      | .ok admitted =>
+          admitted == declaration &&
+            declaration.repeatableScope.isEmpty &&
+            declaration.toNumberField?.isSome
+      | .error _ => false
+  | .baseYear year => model.baseYear == some year
 
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
@@ -57,15 +61,24 @@ def FlatFieldDecl.numericScaleSummary
   | some field => NumericScaleSummary.field field.info.scale
   | none => { scale := .unknown, canExpandScale := false }
 
+def NumericComputationAtom.numericScaleSummary
+    (atom : NumericComputationAtom) : NumericScaleSummary :=
+  atom.summary FlatFieldDecl.numericScaleSummary
+
+def NumericComputationAtom.references
+    (field : FieldId) : NumericComputationAtom → Bool
+  | .field declaration => declaration.id == field
+  | .baseYear _ => false
+
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
   model.admitsNumericComputationTarget operation.target &&
     operation.expression.allAtoms model.admitsNumericComputationOperand &&
-    !operation.expression.anyAtom (fun declaration =>
-      declaration.id == operation.target.id) &&
-    operation.expression.isAdmittedNumericOperation &&
+    !operation.expression.anyAtom
+      (NumericComputationAtom.references operation.target.id) &&
+    operation.expression.isAdmittedResolvedNumericOperation &&
     operation.expression.numericOperationAuthoringCheck == .accepted &&
-    match operation.expression.summary? FlatFieldDecl.numericScaleSummary with
+    match operation.expression.summary? NumericComputationAtom.numericScaleSummary with
     | some summary =>
         exactNumericScaleComparisonAllowedWithSuppression
           operation.suppressExactScaleWarning
@@ -98,22 +111,28 @@ private def FlatModel.resolveNumericComputationTarget
 
 private def FlatModel.resolveNumericComputationExpression
     (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
-    (expression : AuthoredNumericExpr SurfaceFieldPath) :
-    Except NumericComputationElabError (AuthoredNumericExpr FlatFieldDecl) :=
-  expression.mapM fun reference => do
-    let declaration ←
-      (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-    if declaration.id == target then
-      throw (.targetSelfReference target)
-    else if declaration.toNumberField?.isSome then
-      pure declaration
-    else
-      throw (.operandNotNumber declaration.path)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except NumericComputationElabError
+      (AuthoredNumericExpr NumericComputationAtom) :=
+  expression.mapM fun
+    | .field reference => do
+        let declaration ←
+          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        if declaration.id == target then
+          throw (.targetSelfReference target)
+        else if declaration.toNumberField?.isSome then
+          pure (.field declaration)
+        else
+          throw (.operandNotNumber declaration.path)
+    | .baseYear =>
+        match model.baseYear with
+        | some year => pure (.baseYear year)
+        | none => throw .baseYearNotDeclared
 
 /-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic or direct root value-function fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (suppressExactScaleWarning : Bool := false) :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation model) := do
@@ -125,11 +144,13 @@ def elaborateNumericComputationOperation
       let target ← model.resolveNumericComputationTarget targetField
       let resolved ← model.resolveNumericComputationExpression
         declaringGroup targetField expression
-      if !resolved.isAdmittedNumericOperation then throw .unsupportedExpression
+      if !resolved.isAdmittedResolvedNumericOperation then
+        throw .unsupportedExpression
       match resolved.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
-      let summary ← match resolved.summary? FlatFieldDecl.numericScaleSummary with
+      let summary ← match resolved.summary?
+          NumericComputationAtom.numericScaleSummary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
       if !exactNumericScaleComparisonAllowedWithSuppression
@@ -164,6 +185,12 @@ def readNumeric (context : ScalarComputationContext) (declaration : FlatFieldDec
       | .value _ => throw (.fieldKindMismatch field.id)
       | .unknown cause | .poison cause => pure (.poison cause)
 
+def readNumericComputationAtom (context : ScalarComputationContext) :
+    NumericComputationAtom →
+      Except NumericComputationFault NumericComputationResult
+  | .field declaration => context.readNumeric declaration
+  | .baseYear year => pure (.value year)
+
 end ScalarComputationContext
 
 namespace NumericComputationResult
@@ -191,23 +218,36 @@ def evalOrdered
 
 end NumericComputationResult
 
+def FlatFieldDecl.numericComputationFault?
+    (declaration : FlatFieldDecl) : Option NumericComputationFault :=
+  if declaration.toNumberField?.isSome then
+    none
+  else
+    some (.fieldKindMismatch declaration.id)
+
+private def NumericComputationAtom.numericComputationFault? :
+    NumericComputationAtom → Option NumericComputationFault
+  | .field declaration => declaration.numericComputationFault?
+  | .baseYear _ => none
+
 namespace LoweredNumericExpr
 
-/-- The first structural fault in the complete lowered tree. This pass runs before any context read, so a non-Number declaration cannot be hidden by data-dependent poison. -/
-def computationFault? : LoweredNumericExpr FlatFieldDecl →
-    Option NumericComputationFault
-  | .atom declaration =>
-      if declaration.toNumberField?.isSome then
-        none
-      else
-        some (.fieldKindMismatch declaration.id)
+/-- The first structural fault in the complete lowered tree. This pass runs before any context read, so a bad atom cannot be hidden by data-dependent poison. -/
+def computationFaultWith?
+    (fault? : Atom → Option NumericComputationFault) :
+    LoweredNumericExpr Atom → Option NumericComputationFault
+  | .atom sourceAtom => fault? sourceAtom
   | .literal _ => none
   | .binary _ left right | .power left right | .extremum _ left right =>
-      match left.computationFault? with
+      match left.computationFaultWith? fault? with
       | some fault => some fault
-      | none => right.computationFault?
-  | .abs body => body.computationFault?
-  | .round _ _ body => body.computationFault?
+      | none => right.computationFaultWith? fault?
+  | .abs body => body.computationFaultWith? fault?
+  | .round _ _ body => body.computationFaultWith? fault?
+
+def computationFault? (expression : LoweredNumericExpr FlatFieldDecl) :
+    Option NumericComputationFault :=
+  expression.computationFaultWith? FlatFieldDecl.numericComputationFault?
 
 /-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic, including runtime-invalid power. -/
 def evalComputation
@@ -246,6 +286,16 @@ def evaluateComputation (expression : AuthoredNumericExpr FlatFieldDecl)
   | some fault => .error fault
   | none => lowered.evalComputation context.readNumeric
 
+def evaluateResolvedComputation
+    (expression : AuthoredNumericExpr NumericComputationAtom)
+    (context : ScalarComputationContext) :
+    Except NumericComputationFault NumericComputationResult :=
+  let lowered := expression.lowerForEvaluation
+  match lowered.computationFaultWith?
+      NumericComputationAtom.numericComputationFault? with
+  | some fault => .error fault
+  | none => lowered.evalComputation context.readNumericComputationAtom
+
 end AuthoredNumericExpr
 
 namespace CheckedNumericComputationOperation
@@ -253,7 +303,7 @@ namespace CheckedNumericComputationOperation
 def evaluate (operation : CheckedNumericComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericComputationResult :=
-  operation.core.expression.evaluateComputation context
+  operation.core.expression.evaluateResolvedComputation context
 
 /-- Attach the complete resolved target policy once, rejecting scale/signedness drift from the already-resolved target. The remaining constraints are intentionally not inferred from `FlatFieldDecl`, which does not retain them. -/
 def attachTargetPolicy (operation : CheckedNumericComputationOperation model)

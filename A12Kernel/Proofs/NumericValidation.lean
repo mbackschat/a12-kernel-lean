@@ -298,9 +298,9 @@ private theorem authoredNumericLower_admittedValidation
 
 private theorem authoredNumericLower_admittedNumericValidation
     (expression : AuthoredNumericExpr NumericValidationAtom)
-    (admitted : expression.isAdmittedNumericValidationOperation = true) :
+    (admitted : expression.isAdmittedResolvedNumericOperation = true) :
     expression.lowerForEvaluation.isAdmittedValidation = true := by
-  unfold AuthoredNumericExpr.isAdmittedNumericValidationOperation at admitted
+  unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
   split at admitted
   · unfold LoweredNumericExpr.isAdmittedValidation
     simp only [Bool.or_eq_true]
@@ -390,8 +390,8 @@ private theorem loweredAdmittedValidation_isSome
 private theorem numericComparison_wellFormed_sidesAdmitted
     (comparison : NumericComparison)
     (wellFormed : comparison.WellFormed model rowGroup) :
-    comparison.left.isAdmittedNumericValidationOperation = true ∧
-      comparison.right.isAdmittedNumericValidationOperation = true := by
+    comparison.left.isAdmittedResolvedNumericOperation = true ∧
+      comparison.right.isAdmittedResolvedNumericOperation = true := by
   simp only [NumericComparison.WellFormed,
     NumericComparison.wellFormedBool, Bool.and_eq_true] at wellFormed
   exact ⟨wellFormed.1.1.1.1.1.1.2, wellFormed.1.1.1.1.1.2⟩
