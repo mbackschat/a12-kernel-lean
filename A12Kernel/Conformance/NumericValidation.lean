@@ -396,8 +396,12 @@ example :
     let finishDay := baseYearDatePart (.range .finish) .day
     errorOf (twoSided .equal finishDay (literal 31 0)) baseYearModel =
         some .constantExpression ∧
-      errorOf (twoSided .equal (.abs finishDay) (atom "U")) baseYearModel =
-        some .unsupportedExpression ∧
+      verdictOf (twoSided .equal (.abs finishDay) (atom "U"))
+        (raw (.parsed (.num 31))) true baseYearModel = some (.fired .value) ∧
+      (elaborateNumericComparison baseYearModel ["Order"]
+        (twoSided .equal
+          (.round .halfUp ⟨2, by decide⟩ finishDay)
+          (atom "Scale2"))).isOk = true ∧
       errorOf (twoSided .equal (atom "Scale2") finishDay) baseYearModel =
         some (.exactScaleMismatch
           (NumericScaleSummary.field 2) (NumericScaleSummary.field 0)) := by
@@ -993,10 +997,26 @@ example :
         baseYearModel = none := by
   native_decide
 
-/- Temporal component sources are field-bearing plain-arithmetic atoms; unsupported value-function wrappers stay fail-closed. -/
+/- Direct temporal components admit both numeric operation-form wrappers. Rounding preserves symmetric missingness, while `Abs` makes missing zero unable to shrink. -/
 example :
-    errorOf (comparison .equal (.abs (dateFieldPart "DateTime" .day)) 25) =
-        some .unsupportedExpression ∧
+    verdictOf (comparison .equal (.abs (dateFieldPart "DateTime" .day)) 25)
+        (temporalRaw 9 (.parsed dateTimeValue)) = some (.fired .value) ∧
+      verdictOf (comparison .greaterEqual
+        (.round .halfUp omittedRoundingPlaces
+          (dateFieldPart "DateTime" .day)) 0)
+        (temporalRaw 9 .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greaterEqual
+        (.abs (dateFieldPart "DateTime" .day)) 0)
+        (temporalRaw 9 .empty) = some (.fired .value) ∧
+      verdictOf (comparison .less
+        (.round .floor omittedRoundingPlaces
+          (dateFieldPart "DateTime" .day)) 1)
+        (temporalRaw 9 (.rejected .malformed)) = some .unknown ∧
+      (elaborateNumericComparison model ["Order"]
+        (twoSided .equal
+          (.round .halfUp ⟨2, by decide⟩
+            (dateFieldPart "DateTime" .day))
+          (atom "Scale2"))).isOk = true ∧
       verdictOf (comparison .equal
         (.binary .add (dateFieldPart "DateTime" .day) (atom "U")) 26)
         (let context := temporalRaw 9 (.parsed dateTimeValue)
@@ -1004,25 +1024,34 @@ example :
         some (.fired .value) := by
   native_decide
 
-/- Field/Base-Year differences reuse the decoded Date payload and preserve symmetric empty-zero polarity; DateTime, legacy-hybrid payloads, and wrappers stay fail-closed. -/
+/- Field/Base-Year differences reuse the decoded Date payload and admit both scale-0 wrappers. DateTime and legacy-hybrid payloads stay fail-closed. -/
 example :
     let mixed := dateDifference .months (.baseYear .direct) (dateOperand "NoYear")
+    let reverse := dateDifference .months (dateOperand "NoYear") (.baseYear .direct)
     errorOf (comparison .equal mixed 1) = some .baseYearNotDeclared ∧
       verdictOf (comparison .equal mixed 1)
         (temporalRaw 11 (.parsed (dateValue 2020 2 29))) true baseYearModel =
           some (.fired .value) ∧
+      verdictOf (comparison .equal (.abs reverse) 1)
+        (temporalRaw 11 (.parsed (dateValue 2020 2 29))) true baseYearModel =
+          some (.fired .value) ∧
       verdictOf (comparison .less mixed 3)
         (temporalRaw 11 .empty) true baseYearModel = some (.fired .omission) ∧
+      verdictOf (comparison .greaterEqual
+        (.round .halfUp omittedRoundingPlaces mixed) 0)
+        (temporalRaw 11 .empty) true baseYearModel = some (.fired .omission) ∧
+      verdictOf (comparison .greaterEqual (.abs mixed) 0)
+        (temporalRaw 11 .empty) true baseYearModel = some (.fired .value) ∧
       verdictOf (comparison .less mixed 3)
+        (temporalRaw 11 (.rejected .malformed)) true baseYearModel = some .unknown ∧
+      verdictOf (comparison .less (.abs mixed) 3)
         (temporalRaw 11 (.rejected .malformed)) true baseYearModel = some .unknown ∧
       errorOf (comparison .equal
         (dateDifference .years (dateOperand "DateTime") (.baseYear .direct)) 0)
         baseYearModel = some (.incompatibleTemporalSource ["Order", "DateTime"]) ∧
       verdictOf (comparison .equal mixed 1)
         (temporalRaw 11 (.parsed (dateValue 2020 2 29 .legacyHybrid))) true
-        baseYearModel = some .unknown ∧
-      errorOf (comparison .equal (.abs mixed) 1) baseYearModel =
-        some .unsupportedExpression := by
+        baseYearModel = some .unknown := by
   native_decide
 
 example : errorOf

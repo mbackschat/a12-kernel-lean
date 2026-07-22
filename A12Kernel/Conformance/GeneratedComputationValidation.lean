@@ -91,7 +91,9 @@ private def crossGroupDatePartOperation :
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
-    (.atom (.temporalFieldPart (absolutePath ["Input"] "StartDate") (.date .year)))
+    (.abs
+      (.atom (.temporalFieldPart
+        (absolutePath ["Input"] "StartDate") (.date .year))))
 
 private def crossGroupOffsetOperation :
     Except NumericComputationElabError
@@ -248,6 +250,19 @@ private def crossGroupOutcome (source target : Rat) : Option FlatRuleOutcome := 
     "computedCrossGroup" none messagePlan).toOption
   pure (rule.evalFull evaluationWorld (crossGroupRaw source target) true)
 
+private def crossGroupDatePartOutcome (target : Rat) : Option FlatRuleOutcome := do
+  let operation ← crossGroupDatePartOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedDatePart" none messagePlan).toOption
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupDate.id then
+        .parsed (.temporal (.date { epochMillis := 1719292867000 }
+          { year := 2024, month := 6, day := 25 } .storedGregorian))
+      else if field = crossGroupTarget.id then .parsed (.num target)
+      else .empty }
+  pure (rule.evalFull evaluationWorld raw true)
+
 private def crossGroupGeneratedBoundary :
     Option (GroupPath × NumericOperandScope) := do
   let operation ← crossGroupNumberOperation.toOption
@@ -265,6 +280,13 @@ private def crossGroupOrdinaryError : Option NumericValidationElabError :=
 private def crossGroupExpectedMessage : FlatRuleMessage :=
   { errorAddress := { field := crossGroupTarget.id, path := [] }
     errorCode := "computedCrossGroup"
+    severity := .error
+    messageType := .value
+    text }
+
+private def crossGroupDatePartExpectedMessage : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedDatePart"
     severity := .error
     messageType := .value
     text }
@@ -744,13 +766,16 @@ example :
         some (.fieldOutsideRowGroup ["Input", "Source"] ["Output"]) := by
   native_decide
 
-/- The model-wide generated route is source-generic rather than a direct-Number exception. -/
+/- The model-wide generated route traverses the same admitted temporal-component wrapper tree rather than treating direct Number as a special case. -/
 example :
     (match crossGroupDatePartOperation with
     | .error _ => false
     | .ok operation =>
         (assembleGeneratedNumericOperationRule crossGroupModel operation
-          "computedDatePart" none messagePlan).isOk) = true := by
+          "computedDatePart" none messagePlan).isOk) = true ∧
+      crossGroupDatePartOutcome 2024 = some .notFired ∧
+      crossGroupDatePartOutcome 2023 =
+        some (.fired crossGroupDatePartExpectedMessage) := by
   native_decide
 
 /- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later mismatch, and tolerance remains validation-only. -/
