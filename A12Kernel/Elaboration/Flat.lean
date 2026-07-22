@@ -728,16 +728,19 @@ def FlatCondition.WellFormed (condition : FlatCondition) (model : FlatModel) : P
 
 /-- The only source-to-core result accepted by later stages. -/
 structure CheckedFlatCondition (model : FlatModel) where
+  rowGroup : GroupPath
   core : FlatCondition
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model
 
 /-- Certify a constructed core condition against an already-validated model. This is the shared boundary for ordinary surface lowering and semantic desugarings. -/
 def FlatCondition.checkAgainstValidatedModel (condition : FlatCondition)
-    (model : FlatModel) (modelValid : model.validate = .ok ()) :
+    (model : FlatModel) (rowGroup : GroupPath)
+    (modelValid : model.validate = .ok ()) :
     Except ElabError (CheckedFlatCondition model) :=
   if hCore : condition.wellFormedBool model = true then
     .ok {
+      rowGroup
       core := condition
       modelWellFormed := by
         rw [modelValid]
@@ -1311,7 +1314,7 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
   | .error error => .error (.resolve error)
   | .ok () => do
       let core ← elaborateCore model declaringGroup condition
-      core.checkAgainstValidatedModel model hModel
+      core.checkAgainstValidatedModel model declaringGroup hModel
 
 structure RawFlatContext where
   read : FieldId → RawCell

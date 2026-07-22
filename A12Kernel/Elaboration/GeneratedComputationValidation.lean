@@ -121,11 +121,12 @@ private def FlatModel.resolveGeneratedGuardField
 
 private def FlatModel.resolveGeneratedNumberTarget
     (model : FlatModel) (field : FieldId) :
-    Except GeneratedComputationValidationError FlatNumberField := do
+    Except GeneratedComputationValidationError
+      (FlatFieldDecl × FlatNumberField) := do
   let declaration ← (model.resolveNonrepeatableDeclarationById field).mapError
     GeneratedComputationValidationError.resolve
   match declaration.toNumberField? with
-  | some target => pure target
+  | some target => pure (declaration, target)
   | none => throw (.targetNotNumber field)
 
 namespace ComputationCondition
@@ -289,7 +290,8 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
-      let target ← model.resolveGeneratedNumberTarget computation.targetField
+      let (targetDeclaration, target) ←
+        model.resolveGeneratedNumberTarget computation.targetField
       checkLiteralNumberAlternativeScales target computation.alternatives
       let commonGuard ← match computation.commonPrecondition with
         | none => pure none
@@ -300,7 +302,7 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
       let core := generatedNumberCondition target commonGuard
         firstMismatch remainingMismatches
       let checked ←
-        (core.checkAgainstValidatedModel model hModel).mapError
+        (core.checkAgainstValidatedModel model targetDeclaration.groupPath hModel).mapError
           GeneratedComputationValidationError.condition
       (assembleResolvedFlatRule model checked computation.targetField
         computation.name .error computation.messagePlan).mapError

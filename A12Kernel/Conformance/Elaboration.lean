@@ -136,6 +136,13 @@ private def coreOf {checkedModel : FlatModel}
   | .ok checked => some checked.core
   | .error _ => none
 
+private def rowGroupOf {checkedModel : FlatModel}
+    (result : Except ElabError (CheckedFlatCondition checkedModel)) :
+    Option GroupPath :=
+  match result with
+  | .ok checked => some checked.rowGroup
+  | .error _ => none
+
 private def valueOf : Except ε α → Option α
   | .ok value => some value
   | .error _ => none
@@ -151,6 +158,11 @@ example : coreOf (elaborate model ["Order"]
     (compare .equal (absolute ["Order"] "Quantity") (.number 0))) =
     some (.compare (.number (.ordinary .equal)
       { id := 0, info := numberInfo } 0)) := by
+  native_decide
+
+/- The checked flat certificate retains the exact declaring group needed for later mixed-condition composition. -/
+example : rowGroupOf (elaborate model ["Order"]
+    (.fieldFilled (absolute ["Order"] "Quantity"))) = some ["Order"] := by
   native_decide
 
 example : coreOf (elaborate model ["Order"]
