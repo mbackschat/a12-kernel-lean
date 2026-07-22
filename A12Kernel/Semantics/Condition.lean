@@ -28,6 +28,12 @@ def anyLeaf (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
   | .and left right | .or left right =>
       left.anyLeaf predicate || right.anyLeaf predicate
 
+/-- Whether every leaf satisfies a predicate. Connective shape does not weaken static admission. -/
+def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
+  | .leaf value => predicate value
+  | .and left right | .or left right =>
+      left.allLeaves predicate && right.allLeaves predicate
+
 /-- Fold Boolean leaf properties through the tree's `And`/`Or` structure. -/
 @[simp] def evalBool (evalLeaf : Leaf → Bool) : ConditionTree Leaf → Bool
   | .leaf value => evalLeaf value

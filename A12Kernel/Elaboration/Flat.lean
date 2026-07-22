@@ -717,11 +717,7 @@ def FlatConditionLeaf.wellFormedBool (condition : FlatConditionLeaf) (model : Fl
   | .fieldNotFilled field => model.admitsField field
 
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
-  match condition with
-  | .leaf value => value.wellFormedBool model
-  | .and left right | .or left right =>
-      FlatCondition.wellFormedBool left model &&
-        FlatCondition.wellFormedBool right model
+  condition.allLeaves fun leaf => leaf.wellFormedBool model
 
 def FlatCondition.WellFormed (condition : FlatCondition) (model : FlatModel) : Prop :=
   condition.wellFormedBool model = true

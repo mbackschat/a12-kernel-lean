@@ -29,6 +29,16 @@ theorem conditionTree_anyLeaf_map (condition : ConditionTree Source)
   | and left right leftIH rightIH | or left right leftIH rightIH =>
       simp only [ConditionTree.map, ConditionTree.anyLeaf, leftIH, rightIH]
 
+@[simp]
+theorem conditionTree_allLeaves_map (condition : ConditionTree Source)
+    (transform : Source → Target) (predicate : Target → Bool) :
+    (condition.map transform).allLeaves predicate =
+      condition.allLeaves (fun leaf => predicate (transform leaf)) := by
+  induction condition with
+  | leaf leaf => rfl
+  | and left right leftIH rightIH | or left right leftIH rightIH =>
+      simp only [ConditionTree.map, ConditionTree.allLeaves, leftIH, rightIH]
+
 /-- Reusing the shared connective representation does not change any established flat verdict. -/
 @[simp]
 theorem validationCondition_flat_evalSelected
@@ -58,5 +68,12 @@ theorem validationCondition_numeric_evalSelected_of_relevant
       comparison.evalSelected context := by
   simp [ValidationCondition.numeric, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, relevant]
+
+/-- The checked mixed wrapper carries one model and exact row-group certificate for its complete resolved core. -/
+theorem checkedValidationCondition_coherent
+    (condition : CheckedValidationCondition model) :
+    model.validate.isOk = true ∧
+      condition.core.wellFormedBool model condition.rowGroup = true :=
+  ⟨condition.modelWellFormed, condition.wellFormed⟩
 
 end A12Kernel

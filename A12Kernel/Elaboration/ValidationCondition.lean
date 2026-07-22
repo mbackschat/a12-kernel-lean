@@ -38,6 +38,12 @@ def referencesField : ValidationConditionLeaf → FieldId → Bool
   | .flat condition, field => condition.referencesField field
   | .numeric comparison, field => comparison.referencesField field
 
+/-- Static admission reuses each leaf family's existing checked core predicate. -/
+def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
+    ValidationConditionLeaf → Bool
+  | .flat condition => condition.wellFormedBool model
+  | .numeric comparison => comparison.wellFormedBool model rowGroup
+
 /-- Evaluate one reached leaf with its own relevance rule. Numeric expressions require every field atom, while flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : FlatContext) (isRelevant : FlatRelevance) :
     ValidationConditionLeaf → Verdict
@@ -56,6 +62,10 @@ def canFireOnEmpty (condition : ValidationCondition) : Bool :=
 def referencesField (condition : ValidationCondition) (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
 
+def wellFormedBool (condition : ValidationCondition)
+    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
+  condition.allLeaves fun leaf => leaf.wellFormedBool model rowGroup
+
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
 def evalSelected (condition : ValidationCondition) (context : FlatContext)
     (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
@@ -68,5 +78,58 @@ def evalFull (condition : ValidationCondition) (context : FlatContext)
   else .notFired
 
 end ValidationCondition
+
+inductive ValidationConditionAssemblyError where
+  | rowGroupMismatch (left right : GroupPath)
+  | incoherentCore
+  deriving Repr, DecidableEq
+
+/-- A mixed resolved tree certified against one validated model and one exact rule-instance group. -/
+structure CheckedValidationCondition (model : FlatModel) where
+  rowGroup : GroupPath
+  core : ValidationCondition
+  modelWellFormed : model.validate.isOk = true
+  wellFormed : core.wellFormedBool model rowGroup = true
+
+namespace CheckedValidationCondition
+
+private def checkCore (model : FlatModel) (rowGroup : GroupPath)
+    (core : ValidationCondition) (modelWellFormed : model.validate.isOk = true) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  if hCore : core.wellFormedBool model rowGroup = true then
+    .ok { rowGroup, core, modelWellFormed, wellFormed := hCore }
+  else
+    .error .incoherentCore
+
+/-- Lift a checked flat tree without nesting or changing its connective shape. -/
+def fromFlat (condition : CheckedFlatCondition model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model condition.rowGroup (ValidationCondition.flat condition.core)
+    condition.modelWellFormed
+
+/-- Lift one checked numeric comparison at its certified rule-instance group. -/
+def fromNumeric (comparison : CheckedNumericComparison model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model comparison.rowGroup (ValidationCondition.numeric comparison.core)
+    comparison.modelWellFormed
+
+private def combine (constructor : ValidationCondition → ValidationCondition →
+    ValidationCondition) (left right : CheckedValidationCondition model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  if left.rowGroup == right.rowGroup then
+    checkCore model left.rowGroup (constructor left.core right.core)
+      left.modelWellFormed
+  else
+    .error (.rowGroupMismatch left.rowGroup right.rowGroup)
+
+def and (left right : CheckedValidationCondition model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  combine .and left right
+
+def or (left right : CheckedValidationCondition model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  combine .or left right
+
+end CheckedValidationCondition
 
 end A12Kernel

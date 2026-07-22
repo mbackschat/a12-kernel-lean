@@ -574,9 +574,11 @@ run_cmd do
 #print axioms A12Kernel.ordinaryNumericValidation_eval
 #print axioms A12Kernel.conditionTree_evalVerdict_map
 #print axioms A12Kernel.conditionTree_anyLeaf_map
+#print axioms A12Kernel.conditionTree_allLeaves_map
 #print axioms A12Kernel.validationCondition_flat_evalSelected
 #print axioms A12Kernel.validationCondition_flat_referencesField
 #print axioms A12Kernel.validationCondition_numeric_evalSelected_of_relevant
+#print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.numericValidation_scaleSuppression_accepts
 #print axioms A12Kernel.numericValidation_withoutScaleSuppression
