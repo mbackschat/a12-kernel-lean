@@ -7,6 +7,10 @@ This capsule owns the static component facts shared by direct temporal compariso
 
 namespace A12Kernel
 
+/-- Parser-independent component shape of the two legal Date constants: `DD.MM.YYYY` and the Base-Year-dependent `DD.MM.` form. Lexical spelling and decoding are earlier responsibilities. -/
+def TemporalComponents.isDateLiteral (components : TemporalComponents) : Bool :=
+  components.month && components.day && !components.hasTime
+
 /-- Equality and inequality, unlike directional comparisons, require both formats to agree on whether they expose a time component. -/
 def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Bool
   | .equal | .notEqual => true

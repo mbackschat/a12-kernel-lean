@@ -88,6 +88,8 @@ private def model : FlatModel :=
     repeatableGroups := [repeatableItems],
     fieldRefByShortNameAllowed := true }
 
+private def baseYearModel : FlatModel := { model with hasBaseYear := true }
+
 private def absolute (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
 
@@ -104,6 +106,10 @@ private def compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
 private def compareFields (op : SurfaceComparisonOp) (left right : String) :
     SurfaceCondition :=
   .compareFields op (absolute ["Order"] left) (absolute ["Order"] right)
+
+private def dateLiteral (components : TemporalComponents) (millis : Int) :
+    SurfaceLiteral :=
+  .date components { epochMillis := millis }
 
 private def coreOf (result : Except ElabError (CheckedFlatCondition model)) :
     Option FlatCondition :=
@@ -157,20 +163,68 @@ example : coreOf (elaborate model ["Order"]
 example : coreOf (elaborate model ["Order"]
     (compareFields .less "DispatchDate" "ArrivalDate")) =
     some (.compare (.temporal .before
-      { id := 8, kind := .date, components := dispatchDateComponents }
-      { id := 9, kind := .date, components := dispatchDateComponents })) := by
+      (.fieldValue { id := 8, kind := .date, components := dispatchDateComponents })
+      (.fieldValue { id := 9, kind := .date, components := dispatchDateComponents }))) := by
   native_decide
 
 example :
     coreOf (elaborate model ["Order"]
       (compareFields .less "DispatchDate" "EventDateTime")) =
         some (.compare (.temporal .before
-          { id := 8, kind := .date, components := dispatchDateComponents }
-          { id := 11, kind := .dateTime, components := dateTimeComponents })) ∧
+          (.fieldValue { id := 8, kind := .date, components := dispatchDateComponents })
+          (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) ∧
       errorOf (elaborate model ["Order"]
         (compareFields .equal "DispatchDate" "EventDateTime")) =
           some (.temporalFormatsIncompatible
             ["Order", "DispatchDate"] ["Order", "EventDateTime"]) := by
+  native_decide
+
+/-! The core admits field/literal in either operand position for later expression lowering, but never the kernel-forbidden constant/constant comparison. -/
+example : model.admitsComparison
+    (.temporal .equal
+      (.literalValue { epochMillis := 100000 })
+      (.literalValue { epochMillis := 100000 })) = false := by
+  native_decide
+
+example :
+    coreOf (elaborate model ["Order"]
+      (compare .less (absolute ["Order"] "DispatchDate")
+        (dateLiteral dispatchDateComponents 101000))) =
+      some (.compare (.temporal .before
+        (.fieldValue { id := 8, kind := .date, components := dispatchDateComponents })
+        (.literalValue { epochMillis := 101000 }))) := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compare .equal (absolute ["Order"] "EventDateTime")
+        (dateLiteral dispatchDateComponents 101000))) =
+        some (.temporalFormatsIncompatible
+          ["Order", "EventDateTime"] ["<date-literal>"]) ∧
+      (elaborate model ["Order"]
+        (compare .less (absolute ["Order"] "EventDateTime")
+          (dateLiteral dispatchDateComponents 101000))).isOk = true := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compare .less (absolute ["Order"] "RecurringDate")
+        (dateLiteral monthDayComponents 101000))) =
+        some (.temporalLiteralNeedsBaseYear ["<date-literal>"]) ∧
+      (elaborate baseYearModel ["Order"]
+        (compare .less (absolute ["Order"] "RecurringDate")
+          (dateLiteral monthDayComponents 101000))).isOk = true := by
+  native_decide
+
+private def invalidDateLiteralComponents : TemporalComponents :=
+  { year := true, month := false, day := true,
+    hour := false, minute := false, second := false }
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compare .equal (absolute ["Order"] "DispatchDate")
+        (dateLiteral invalidDateLiteralComponents 101000))) =
+      some (.invalidTemporalLiteralComponents ["<date-literal>"]) := by
   native_decide
 
 example :
@@ -184,8 +238,6 @@ example :
             ["Order", "DispatchDate"] ["Order", "ExpressShipping"]
             (.temporal .date) .boolean) := by
   native_decide
-
-private def baseYearModel : FlatModel := { model with hasBaseYear := true }
 
 example :
     errorOf (elaborate model ["Order"]
@@ -401,6 +453,19 @@ example :
         (temporalComparisonRaw .date 100000 .dateTime (some 101000)) true
         (compareFields .less "DispatchDate" "ArrivalDate")) =
           some .unknown := by
+  native_decide
+
+example :
+    valueOf (elaborateAndEvalFull model ["Order"]
+      (temporalComparisonRaw .date 100000 .date none) true
+      (compare .less (absolute ["Order"] "DispatchDate")
+        (dateLiteral dispatchDateComponents 101000))) =
+        some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull model ["Order"]
+        (temporalComparisonRaw .date 100000 .date none) true
+        (compare .greater (absolute ["Order"] "DispatchDate")
+          (dateLiteral dispatchDateComponents 101000))) =
+          some .notFired := by
   native_decide
 
 -- Model-derived formal checking prevents an inconsistent runtime kind from entering eval.

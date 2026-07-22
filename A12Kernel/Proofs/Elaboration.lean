@@ -38,7 +38,8 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
 theorem admitsComparison_fields_admitted (model : FlatModel)
     (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
     ∀ field, field ∈ comparison.fields → model.admitsField field = true := by
-  exact List.all_eq_true.mp admitted
+  simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
+  exact admitted.right
 
 /-- Model-derived context construction checks a resolved cell with exactly the policy
     carried by its unique declaration. -/
