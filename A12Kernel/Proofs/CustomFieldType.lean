@@ -7,8 +7,8 @@ namespace A12Kernel
 theorem customFieldValidationContext_defaults (name locale : String) :
     ({ name } : CustomFieldTypeDeclaration).validationContext locale = {
       locale
-      minLength := 1
-      maxLength := 999
+      minLength := some 1
+      maxLength := some 999
       isDisplayValue := false
     } := by
   rfl
@@ -18,7 +18,7 @@ theorem elaborateCustomFieldType_missing (world : World)
     (missing : world.resolveCustomFieldValidator? declaration.name = none) :
     elaborateCustomFieldType world declaration =
       .error (.missingValidator declaration.name) := by
-  simp [elaborateCustomFieldType, missing]
+  simp [elaborateCustomFieldType, requireCustomFieldValidator, missing] <;> rfl
 
 theorem elaborateCustomFieldType_resolved (world : World)
     (declaration : CustomFieldTypeDeclaration)
@@ -26,7 +26,7 @@ theorem elaborateCustomFieldType_resolved (world : World)
     (resolved : world.resolveCustomFieldValidator? declaration.name = some validator) :
     elaborateCustomFieldType world declaration =
       .ok { declaration, validator } := by
-  simp [elaborateCustomFieldType, resolved]
+  simp [elaborateCustomFieldType, requireCustomFieldValidator, resolved] <;> rfl
 
 @[simp]
 theorem customFieldType_nonrelevant_is_unsampled

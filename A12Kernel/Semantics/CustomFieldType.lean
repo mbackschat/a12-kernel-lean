@@ -28,17 +28,23 @@ def CustomFieldTypeDeclaration.validationContext
     (declaration : CustomFieldTypeDeclaration) (locale : String) :
     CustomFieldValidationContext where
   locale := locale
-  minLength := declaration.minLength.getD 1
-  maxLength := declaration.maxLength.getD 999
+  minLength := some (declaration.minLength.getD 1)
+  maxLength := some (declaration.maxLength.getD 999)
   isDisplayValue := false
+
+/-- Resolve the one shared registered-validator interface for any checked consumer. -/
+def requireCustomFieldValidator (world : World) (name : String) :
+    Except CustomFieldTypeElabError RegisteredCustomFieldValidator :=
+  match world.resolveCustomFieldValidator? name with
+  | none => .error (.missingValidator name)
+  | some validator => .ok validator
 
 /-- Reject an unregistered name during checked construction rather than failing during evaluation or inventing a generic rejection. -/
 def elaborateCustomFieldType (world : World)
     (declaration : CustomFieldTypeDeclaration) :
-    Except CustomFieldTypeElabError CheckedCustomFieldType :=
-  match world.resolveCustomFieldValidator? declaration.name with
-  | none => .error (.missingValidator declaration.name)
-  | some validator => .ok { declaration, validator }
+    Except CustomFieldTypeElabError CheckedCustomFieldType := do
+  let validator ← requireCustomFieldValidator world declaration.name
+  pure { declaration, validator }
 
 /-- Sample the checked validator for one relevant concrete stored value. Nonrelevance returns no observation; physical/semantic emptiness and preceding parser rejection bypass the validator. A nonempty parsed value produces one ordinary checked cell that every later consumer can share. -/
 def CheckedCustomFieldType.checkRelevantRaw (checked : CheckedCustomFieldType)

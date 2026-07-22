@@ -57,6 +57,7 @@ import A12Kernel.Conformance.CustomFieldCause
 import A12Kernel.Conformance.CustomFieldType
 import A12Kernel.Conformance.CustomFieldMessage
 import A12Kernel.Conformance.CustomFieldFormalMessage
+import A12Kernel.Conformance.CustomFieldValidity
 import A12Kernel.Conformance.StringCascade
 import A12Kernel.Conformance.StringAlternatives
 import A12Kernel.Conformance.StringComputation
