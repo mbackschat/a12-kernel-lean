@@ -123,6 +123,7 @@ theorem customFieldValidationOutput_acceptance_exact
     } := by
   simp [CheckedCustomFieldType.checkRelevantWithMessage,
     CheckedCustomFieldType.checkRelevantRaw, nonempty, accepted,
+    CheckedCustomFieldType.classifyString,
     CheckedCell.registeredCustomRejection?, observeCell]
 
 end A12Kernel

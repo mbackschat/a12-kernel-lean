@@ -1,5 +1,6 @@
 import A12Kernel.Conformance.Elaboration
 import A12Kernel.Conformance.CustomFieldElaboration
+import A12Kernel.Conformance.CustomFieldContext
 import A12Kernel.Conformance.FullDate
 import A12Kernel.Conformance.DateComparison
 import A12Kernel.Conformance.DateAggregate
