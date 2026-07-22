@@ -7,6 +7,43 @@ These laws cover duplicate construction and per-row verdicts after scope selecti
 
 namespace A12Kernel
 
+@[simp]
+theorem repetitionKey_checkedToken_value_exact (value : String) :
+    RepetitionKeyComponent.ofCheckedTokenCell {
+      rawPresent := true
+      parsed := some value
+      findings := []
+    } = .present (.token value) := by
+  rfl
+
+@[simp]
+theorem repetitionKey_checkedToken_empty_exact (rawPresent : Bool) :
+    RepetitionKeyComponent.ofCheckedTokenCell {
+      rawPresent
+      parsed := none
+      findings := []
+    } = .empty := by
+  rfl
+
+@[simp]
+theorem repetitionKey_checkedToken_rejection_exact (cause : FormalCause) :
+    RepetitionKeyComponent.ofCheckedTokenCell {
+      rawPresent := true
+      parsed := (none : Option String)
+      findings := [cause]
+    } = .unknown cause := by
+  rfl
+
+/-- A custom validator's complete project rejection survives key classification, making the row ineligible without collapsing the cause to a generic invalid-key marker. -/
+theorem repetitionKey_registeredCustomRejection_exact
+    (rejection : RegisteredCustomRejection) :
+    RepetitionKeyComponent.ofCheckedTokenCell {
+      rawPresent := true
+      parsed := (none : Option String)
+      findings := [.registeredCustomValidation rejection]
+    } = .unknown (.registeredCustomValidation rejection) := by
+  rfl
+
 /-- Numeric key equality is exactly equality after the shared scale-19 normalization. -/
 theorem repetitionKey_number_equal_iff_normalized_eq (left right : Rat) :
     RepetitionKeyAtom.equal (.number left) (.number right) = true ↔

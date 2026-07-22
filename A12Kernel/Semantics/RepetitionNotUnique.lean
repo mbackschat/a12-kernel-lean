@@ -38,6 +38,17 @@ inductive RepetitionKeyComponent where
 
 namespace RepetitionKeyComponent
 
+/-- Classify one validation-phase String observation as an RNU token component. Formal unavailability preserves its exact cause; optional empty remains a matchable empty component. -/
+def ofTokenObservation : CellObservation String → RepetitionKeyComponent
+  | .value value => .present (.token value)
+  | .empty => .empty
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+/-- Project an already-checked String cell into a key component without repeating formal or custom validation. -/
+def ofCheckedTokenCell (cell : CheckedCell String) : RepetitionKeyComponent :=
+  ofTokenObservation (observeCell .validation cell)
+
 def isPresent : RepetitionKeyComponent → Bool
   | .present _ => true
   | .empty | .unknown _ => false
