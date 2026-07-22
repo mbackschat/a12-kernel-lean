@@ -55,14 +55,29 @@ theorem messageValue_present_isOpaque (value defaultDisplay : String)
   simp [MessageRenderPart.render, MessageValueInput.resolve, nonempty]
 
 /-- Forgetting emitted metadata recovers exactly the verdict of the reused condition evaluator. -/
+theorem resolvedRule_evalWith_verdict (rule : ResolvedRule Condition)
+    (evaluate : Condition → Verdict) :
+    (rule.evalWith evaluate).verdict = evaluate rule.condition := by
+  unfold ResolvedRule.evalWith
+  generalize verdictEq : evaluate rule.condition = verdict
+  cases verdict <;>
+    simp [ResolvedRule.emit, FlatRuleOutcome.verdict]
+
+/-- Forgetting emitted metadata recovers exactly the verdict of the reused flat condition evaluator. -/
 theorem flatRule_eval_verdict (rule : ResolvedFlatRule)
     (context : FlatContext) (hasContent : Bool) :
     (rule.evalFull context hasContent).verdict =
       rule.condition.evalFull context hasContent := by
-  unfold ResolvedFlatRule.evalFull
-  generalize verdictEq :
-    rule.condition.evalFull context hasContent = verdict
-  cases verdict <;> simp only [FlatRuleOutcome.verdict]
+  exact resolvedRule_evalWith_verdict rule
+    (fun condition => condition.evalFull context hasContent)
+
+/-- The mixed specialization uses the same post-verdict boundary without changing its condition result. -/
+theorem validationRule_eval_verdict (rule : ResolvedValidationRule)
+    (context : FlatContext) (hasContent : Bool) :
+    (ResolvedValidationRule.evalFull rule context hasContent).verdict =
+      rule.condition.evalFull context hasContent := by
+  exact resolvedRule_evalWith_verdict rule
+    (fun condition => condition.evalFull context hasContent)
 
 /-- A fired condition copies the exact resolved address and supplied metadata, renders the structured plan, and derives its message type from the verdict. -/
 theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
@@ -76,7 +91,8 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
         messageType
         text := rule.messagePlan.render
       } := by
-  simp only [ResolvedFlatRule.evalFull, fires]
+  simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
+    ResolvedRule.emit, fires]
 
 /-- Error address, code, severity, and already-resolved text cannot change firing or polarity. -/
 theorem flatRule_metadata_doesNotChangeVerdict (rule : ResolvedFlatRule)
@@ -96,7 +112,8 @@ theorem flatRule_notFired_independentOfMessagePlan
     (notFired : rule.condition.evalFull context hasContent = .notFired) :
     ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
       rule.evalFull context hasContent := by
-  simp only [ResolvedFlatRule.evalFull, notFired]
+  simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
+    ResolvedRule.emit, notFired]
 
 /-- An unavailable condition likewise suppresses message resolution rather than manufacturing text. -/
 theorem flatRule_unknown_independentOfMessagePlan
@@ -105,7 +122,8 @@ theorem flatRule_unknown_independentOfMessagePlan
     (unknown : rule.condition.evalFull context hasContent = .unknown) :
     ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
       rule.evalFull context hasContent := by
-  simp only [ResolvedFlatRule.evalFull, unknown]
+  simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
+    ResolvedRule.emit, unknown]
 
 /-- A rule carries a message exactly when the reused condition evaluator fired. -/
 theorem flatRule_hasMessage_iff_fired (rule : ResolvedFlatRule)
@@ -137,6 +155,15 @@ theorem checkedFlatRule_errorField_coherent
   ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
     rule.errorFieldReferenced⟩
 
+/-- Mixed checked assembly uses the shared traversal to certify the exact error declaration. -/
+theorem checkedValidationRule_errorField_coherent
+    (rule : CheckedResolvedValidationRule model) :
+    model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
+      rule.errorDeclaration.repeatableScope.isEmpty = true ∧
+      rule.condition.core.referencesField rule.errorField = true :=
+  ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
+    rule.errorFieldReferenced⟩
+
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
     (rule : CheckedResolvedFlatRule model) (world : World) (raw : RawFlatContext)
@@ -156,5 +183,24 @@ theorem checkedFlatRule_fired_message_exact
     CheckedResolvedFlatRule.core] using
     flatRule_fired_message_exact rule.core ((model.checkContext raw).withWorld world)
       hasContent messageType fires
+
+/-- Checked mixed assembly preserves the same exact fired-message contract. -/
+theorem checkedValidationRule_fired_message_exact
+    (rule : CheckedResolvedValidationRule model) (world : World)
+    (raw : RawFlatContext) (hasContent : Bool) (messageType : Polarity)
+    (fires :
+      rule.condition.core.evalFull ((model.checkContext raw).withWorld world) hasContent =
+        .fired messageType) :
+    rule.evalFull world raw hasContent =
+      .fired {
+        errorAddress := { field := rule.errorField, path := [] }
+        errorCode := rule.errorCode
+        severity := rule.severity
+        messageType
+        text := rule.messagePlan.render
+      } := by
+  simp [CheckedResolvedValidationRule.evalFull,
+    CheckedResolvedValidationRule.core, ResolvedValidationRule.evalFull,
+    ResolvedRule.evalWith, ResolvedRule.emit, fires]
 
 end A12Kernel

@@ -553,6 +553,8 @@ run_cmd do
 #print axioms A12Kernel.messageRenderText_append
 #print axioms A12Kernel.messageValue_present_isOpaque
 #print axioms A12Kernel.flatRule_eval_verdict
+#print axioms A12Kernel.resolvedRule_evalWith_verdict
+#print axioms A12Kernel.validationRule_eval_verdict
 #print axioms A12Kernel.flatRule_fired_message_exact
 #print axioms A12Kernel.flatRule_metadata_doesNotChangeVerdict
 #print axioms A12Kernel.flatRule_notFired_independentOfMessagePlan
@@ -561,7 +563,9 @@ run_cmd do
 #print axioms A12Kernel.flatRuleMessage_invalidates_iff_error
 #print axioms A12Kernel.equal_flatRuleSilence_doesNotImply_equalVerdict
 #print axioms A12Kernel.checkedFlatRule_errorField_coherent
+#print axioms A12Kernel.checkedValidationRule_errorField_coherent
 #print axioms A12Kernel.checkedFlatRule_fired_message_exact
+#print axioms A12Kernel.checkedValidationRule_fired_message_exact
 #print axioms A12Kernel.checkedNumericComparison_modelWellFormed
 #print axioms A12Kernel.checkedNumericComparison_wellFormed
 #print axioms A12Kernel.numericArithmetic_formalInvalid_left_is_unknown
