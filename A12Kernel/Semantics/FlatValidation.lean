@@ -4,13 +4,14 @@ import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
 import A12Kernel.Semantics.DateTimeComparison
+import A12Kernel.Semantics.BaseYearDateSource
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
 A small core for resolved, non-repeatable field references. It covers the admitted
 direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
 direct String equality and inequality, four String `Length` ordering comparisons,
-resolved temporal field/literal/`Today`/`Now` comparison, presence predicates, and `And`/`Or`.
+resolved temporal field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates, and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -85,6 +86,8 @@ inductive FlatTemporalOperand where
   | literalValue (instant : Instant)
   | todayValue (zoneId : String)
   | baseYearValue (zoneId : String) (year : Int)
+  | baseYearRangeValue (zoneId : String) (year : Int)
+      (endpoint : BaseYearRangeEndpoint)
   | nowValue
   deriving Repr, DecidableEq
 
@@ -95,6 +98,7 @@ def fields : FlatTemporalOperand → List FlatField
   | .literalValue _ => []
   | .todayValue _ => []
   | .baseYearValue _ _ => []
+  | .baseYearRangeValue _ _ _ => []
   | .nowValue => []
 
 end FlatTemporalOperand
@@ -223,6 +227,15 @@ def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
+/-- Resolve one already-selected local calendar label through the injected model-zone capability without imposing stored-Date admission. -/
+def FlatContext.resolveLocalDateComparisonOperand
+    (context : FlatContext) (zoneId : String) (parts : DateParts) :
+    SimpleComparisonOperand Instant :=
+  match context.world.bind (fun world =>
+    world.resolveLocal? zoneId parts.year parts.month parts.day 0 0 0) with
+  | some instant => .value instant true
+  | none => .unknown .malformed
+
 def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand →
     SimpleComparisonOperand Instant
   | .fieldValue field => context.resolveTemporalComparisonOperand field
@@ -232,10 +245,10 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand �
       | some instant => .value instant true
       | none => .unknown .malformed
   | .baseYearValue zoneId year =>
-      match context.world.bind (fun world =>
-        world.resolveLocal? zoneId year 1 1 0 0 0) with
-      | some instant => .value instant true
-      | none => .unknown .malformed
+      context.resolveLocalDateComparisonOperand zoneId (baseYearDateParts year)
+  | .baseYearRangeValue zoneId year endpoint =>
+      context.resolveLocalDateComparisonOperand zoneId
+        (baseYearRangeParts year endpoint)
   | .nowValue =>
       match context.world with
       | some world => .value world.now true

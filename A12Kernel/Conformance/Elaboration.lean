@@ -120,6 +120,11 @@ private def compareBaseYear (op : SurfaceComparisonOp)
     (position : SurfacePointInTimePosition) (field : String) : SurfaceCondition :=
   .compareBaseYear op position (absolute ["Order"] field)
 
+private def compareBaseYearRange (op : SurfaceComparisonOp)
+    (position : SurfacePointInTimePosition) (endpoint : BaseYearRangeEndpoint)
+    (field : String) : SurfaceCondition :=
+  .compareBaseYearRange op position endpoint (absolute ["Order"] field)
+
 private def dateLiteral (components : TemporalComponents) (millis : Int) :
     SurfaceLiteral :=
   .date components { epochMillis := millis }
@@ -309,6 +314,52 @@ example :
       errorOf (elaborate baseYearModel ["Order"]
         (compareBaseYear .less .right "EventTime")) =
           some (.temporalFormatsIncompatible ["Order", "EventTime"] ["<BaseYear>"]) := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compareBaseYearRange .equal .right .start "DispatchDate")) =
+        some .baseYearNotDeclared ∧
+      coreOf (elaborate baseYearModel ["Order"]
+        (compareBaseYearRange .equal .right .start "DispatchDate")) =
+          some (.compare (.temporal .equal
+            (.fieldValue { id := 8, kind := .date, components := dispatchDateComponents })
+            (.baseYearRangeValue "UTC" 2020 .start))) ∧
+      coreOf (elaborate baseYearModel ["Order"]
+        (compareBaseYearRange .less .left .finish "EventDateTime")) =
+          some (.compare (.temporal .before
+            (.baseYearRangeValue "UTC" 2020 .finish)
+            (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) := by
+  native_decide
+
+example :
+    errorOf (elaborate baseYearModel ["Order"]
+      (compareBaseYearRange .equal .right .finish "EventDateTime")) =
+      some (.temporalFormatsIncompatible
+        ["Order", "EventDateTime"] ["<EndOfDateRange(BaseYear)>"]) := by
+  native_decide
+
+example :
+    errorOf (elaborate baseYearModel ["Order"]
+      (compareBaseYearRange .less .right .start "EventTime")) =
+      some (.temporalFormatsIncompatible
+        ["Order", "EventTime"] ["<StartOfDateRange(BaseYear)>"]) := by
+  native_decide
+
+/- Base Year can supply a missing year to a date fragment, but cannot turn a Time field into a date-bearing operand. -/
+example :
+    errorOf (elaborate baseYearModel ["Order"]
+      (compareFields .less "DispatchDate" "EventTime")) =
+      some (.temporalFormatsIncompatible
+        ["Order", "DispatchDate"] ["Order", "EventTime"]) := by
+  native_decide
+
+example :
+    errorOf (elaborate baseYearModel ["Order"]
+      (compareBaseYearRange .equal .right .start "Limit")) =
+      some (.temporalOperandKindMismatch
+        ["Order", "Limit"] ["<StartOfDateRange(BaseYear)>"]
+        .number (.temporal .date)) := by
   native_decide
 
 example :
@@ -614,6 +665,26 @@ example : (do
       valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
         (baseYearRaw 2020 start.epochMillis) true
         (compareBaseYear .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
+  native_decide
+
+example : (do
+    let start ← utcInstant? 2020 1 1 0 0 0
+    let finish ← utcInstant? 2020 12 31 0 0 0
+    let world : World :=
+      { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
+    pure (
+      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+        (dispatchDateRaw start.epochMillis) true
+        (compareBaseYearRange .equal .right .start "DispatchDate")) =
+          some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+        (dispatchDateRaw finish.epochMillis) true
+        (compareBaseYearRange .equal .right .finish "DispatchDate")) =
+          some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+        (dispatchDateRaw start.epochMillis) true
+        (compareBaseYearRange .equal .right .finish "DispatchDate")) =
+          some .notFired)) = some true := by
   native_decide
 
 example : (do

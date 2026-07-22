@@ -2,7 +2,7 @@ import A12Kernel.Semantics.DateTimeComparison
 
 /-! # Temporal format-component admission
 
-This capsule owns the static component facts shared by direct temporal comparisons and temporal extrema. Direct comparisons use the kernel's coarse year/date-class test and require matching time presence only for equality/inequality. Aggregate admission is stricter: after an optional Base Year supplies `YEAR`, the complete component sets must match. Text parsing, format spelling, operand classification, and resolved value evaluation remain separate.
+This capsule owns the static component facts shared by direct temporal comparisons and temporal extrema. Direct comparisons preserve the original date-versus-time class, compare year presence after optional Base Year supplementation, and require matching time presence only for equality/inequality. Aggregate admission preserves that original class and additionally requires the complete supplemented component sets to match. Text parsing, format spelling, operand classification, and resolved value evaluation remain separate.
 -/
 
 namespace A12Kernel
@@ -16,12 +16,15 @@ def TemporalComponents.now : TemporalComponents :=
   { year := true, month := true, day := true,
     hour := true, minute := true, second := true }
 
-/-- Static component identity carried by `Today`: a complete calendar date with no time component. -/
-def TemporalComponents.today : TemporalComponents :=
+/-- Static identity of a complete calendar date with no time component. -/
+def TemporalComponents.fullDate : TemporalComponents :=
   { year := true, month := true, day := true,
     hour := false, minute := false, second := false }
 
-def TemporalComponents.baseYear : TemporalComponents := TemporalComponents.today
+/-- Static component identity carried by `Today`. -/
+def TemporalComponents.today : TemporalComponents := TemporalComponents.fullDate
+
+def TemporalComponents.baseYear : TemporalComponents := TemporalComponents.fullDate
 
 /-- Equality and inequality, unlike directional comparisons, require both formats to agree on whether they expose a time component. -/
 def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Bool
@@ -31,9 +34,9 @@ def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Boo
 /-- Static admission for a direct temporal comparison. This intentionally does not require equal component sets. -/
 def TemporalComparisonOp.admitsFormats (op : TemporalComparisonOp)
     (hasBaseYear : Bool) (left right : TemporalComponents) : Bool :=
-  let left := left.withBaseYear hasBaseYear
-  let right := right.withBaseYear hasBaseYear
-  (left.year == right.year) &&
+  let leftWithYear := left.withBaseYear hasBaseYear
+  let rightWithYear := right.withBaseYear hasBaseYear
+  (leftWithYear.year == rightWithYear.year) &&
     (left.hasDate == right.hasDate) &&
     (!op.requiresSameTimePresence || (left.hasTime == right.hasTime))
 
@@ -52,9 +55,10 @@ def TemporalComparisonOp.admitsBaseYear (op : TemporalComparisonOp)
     (other : TemporalComponents) : Bool :=
   other.hasDate && op.admitsFormats true other TemporalComponents.baseYear
 
-/-- Static admission shared by temporal operand-list and field-list extrema: component sets must agree exactly after Base Year supplementation. -/
+/-- Static admission shared by temporal operand-list and field-list extrema: the original date class must agree and component sets must agree exactly after Base Year supplementation. -/
 def temporalAggregateFormatsCompatible (hasBaseYear : Bool)
     (left right : TemporalComponents) : Bool :=
-  left.withBaseYear hasBaseYear == right.withBaseYear hasBaseYear
+  (left.hasDate == right.hasDate) &&
+    (left.withBaseYear hasBaseYear == right.withBaseYear hasBaseYear)
 
 end A12Kernel

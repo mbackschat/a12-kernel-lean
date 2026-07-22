@@ -78,6 +78,9 @@ inductive SurfaceCondition where
       (field : SurfaceFieldPath)
   | compareBaseYear (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
       (field : SurfaceFieldPath)
+  | compareBaseYearRange (op : SurfaceComparisonOp)
+      (position : SurfacePointInTimePosition) (endpoint : BaseYearRangeEndpoint)
+      (field : SurfaceFieldPath)
   | compareNow (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
       (field : SurfaceFieldPath)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
@@ -446,6 +449,10 @@ private def temporalPointComparison (comparison : TemporalComparisonOp)
   | .left => .compare (.temporal comparison point field)
   | .right => .compare (.temporal comparison field point)
 
+private def BaseYearRangeEndpoint.surfacePath : BaseYearRangeEndpoint → List String
+  | .start => ["<StartOfDateRange(BaseYear)>"]
+  | .finish => ["<EndOfDateRange(BaseYear)>"]
+
 def FlatField.matchesDecl (field : FlatField) (declaration : FlatFieldDecl) : Bool :=
   declaration.toPresenceField == field
 
@@ -582,6 +589,37 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
                 (.temporal .date) kind.surfaceKind)
           | .right =>
               throw (.temporalOperandKindMismatch declaration.path ["<BaseYear>"]
+                kind.surfaceKind (.temporal .date))
+  | .compareBaseYearRange op position endpoint reference => do
+      let year ← match model.baseYear with
+        | some year => pure year
+        | none => throw .baseYearNotDeclared
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      let sourcePath := endpoint.surfacePath
+      match declaration.policy.kind with
+      | .temporal kind components =>
+          let comparison := op.toTemporal
+          if comparison.admitsFormats true components TemporalComponents.fullDate then
+            let field : FlatTemporalOperand :=
+              .fieldValue {
+                id := declaration.id
+                kind := kind
+                components := components }
+            let source : FlatTemporalOperand :=
+              .baseYearRangeValue model.timeZoneId year endpoint
+            pure (temporalPointComparison comparison position source field)
+          else
+            match position with
+            | .left => throw (.temporalFormatsIncompatible sourcePath declaration.path)
+            | .right => throw (.temporalFormatsIncompatible declaration.path sourcePath)
+      | kind =>
+          match position with
+          | .left =>
+              throw (.temporalOperandKindMismatch sourcePath declaration.path
+                (.temporal .date) kind.surfaceKind)
+          | .right =>
+              throw (.temporalOperandKindMismatch declaration.path sourcePath
                 kind.surfaceKind (.temporal .date))
   | .compareNow op position reference => do
       let declaration ←

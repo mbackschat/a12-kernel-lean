@@ -62,7 +62,15 @@ private theorem temporalOperand_resolve_agreesOn
         FlatContext.resolveTemporalComparisonOperand,
         FlatContext.observeValidationAt]
   | literalValue instant => rfl
-  | todayValue zoneId | baseYearValue zoneId year | nowValue =>
+  | todayValue zoneId =>
+      simp [FlatTemporalOperand.resolve, worldAgreement]
+  | baseYearValue zoneId year =>
+      simp [FlatTemporalOperand.resolve,
+        FlatContext.resolveLocalDateComparisonOperand, worldAgreement]
+  | baseYearRangeValue zoneId year endpoint =>
+      simp [FlatTemporalOperand.resolve,
+        FlatContext.resolveLocalDateComparisonOperand, worldAgreement]
+  | nowValue =>
       simp [FlatTemporalOperand.resolve, worldAgreement]
 
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/

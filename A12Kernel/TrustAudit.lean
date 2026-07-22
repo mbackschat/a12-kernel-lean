@@ -180,6 +180,7 @@ run_cmd do
 #print axioms A12Kernel.timeExtremum_fixed_singleton
 #print axioms A12Kernel.timeExtremum_tail_comparison_firing
 #print axioms A12Kernel.temporalComparison_admitsFormats_symmetric
+#print axioms A12Kernel.temporalComparison_admitsFormats_sameDateClass
 #print axioms A12Kernel.temporalAggregateFormatsCompatible_implies_comparison
 #print axioms A12Kernel.temporalEqualFormats_implies_beforeFormats
 #print axioms A12Kernel.temporalComparison_admitsNow_hasTime
@@ -191,6 +192,9 @@ run_cmd do
 #print axioms A12Kernel.todayOperand_unsupported
 #print axioms A12Kernel.baseYearOperand_resolves_exact
 #print axioms A12Kernel.baseYearOperand_unsupported
+#print axioms A12Kernel.baseYearRangeStartOperand_eq_baseYearOperand
+#print axioms A12Kernel.baseYearRangeFinishOperand_resolves_exact
+#print axioms A12Kernel.baseYearRangeOperand_unsupported
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap
