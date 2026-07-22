@@ -146,6 +146,17 @@ inductive ValueListQuantifier where
   | notAll
   deriving Repr, DecidableEq
 
+/-- The scalar membership pair specializes the resolved list quantifiers without introducing boolean negation. -/
+inductive ValueListMembershipOp where
+  | included
+  | notIncluded
+  deriving Repr, DecidableEq
+
+/-- Literal-only scalar Included is one-field `AtLeastOne`; NotIncluded is one-field `NotAll`, preserving the shared empty/UNKNOWN no-fire behavior. -/
+def ValueListMembershipOp.quantifier : ValueListMembershipOp → ValueListQuantifier
+  | .included => .atLeastOne
+  | .notIncluded => .notAll
+
 /-- Only `No` can fire when expansion yields no present field cells. -/
 def ValueListQuantifier.canFireOnEmpty : ValueListQuantifier → Bool
   | .no => true

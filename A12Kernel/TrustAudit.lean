@@ -750,6 +750,7 @@ run_cmd do
 #print axioms A12Kernel.flatEnumerationValueList_canFireOnEmpty
 #print axioms A12Kernel.flatEnumerationValueList_irrelevant_unknown
 #print axioms A12Kernel.flatEnumerationValueList_no_empty
+#print axioms A12Kernel.flatEnumerationValueMembership_empty
 #print axioms A12Kernel.enumerationRepetitionKey_empty
 #print axioms A12Kernel.enumerationRepetitionKey_unknown
 #print axioms A12Kernel.enumerationRepetitionKey_present

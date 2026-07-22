@@ -80,4 +80,19 @@ theorem flatEnumerationValueList_no_empty
     ResolvedValueListSide.contains, ValueListQuantifier.canFireOnEmpty,
     ValueListCell.isUnknown, ValueListCell.isEmpty, empty]
 
+/-- Both scalar membership operators remain ineligible on an empty subject; NotIncluded deliberately specializes `NotAll`, not empty-firing `No`. -/
+theorem flatEnumerationValueMembership_empty
+    (op : ValueListMembershipOp) (operand : FlatEnumerationOperand)
+    (values : List String) (context : FlatContext)
+    (empty : context.observeValidationAt operand.field.id = .empty) :
+    (FlatCondition.enumerationValueList op.quantifier operand values).evalFull
+      context true = .notFired := by
+  cases op <;>
+    simp [ValueListMembershipOp.quantifier, FlatCondition.evalFull,
+      FlatCondition.evalSelected, FlatEnumerationOperand.valueListSide,
+      literalTokenValueListSide, ValueListQuantifier.eval,
+      evalValueListAtLeastOne, evalValueListNotAll,
+      ResolvedValueListSide.anyMatches, ResolvedValueListSide.hasPresent,
+      empty]
+
 end A12Kernel
