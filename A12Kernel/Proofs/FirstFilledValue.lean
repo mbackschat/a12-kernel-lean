@@ -118,6 +118,35 @@ theorem firstFilledNumber_empty_prefix_projection_separator
           equal
     cases growEqual
 
+/-- A terminal first operand makes every later operand, including its filter marker, unobservable. -/
+theorem firstFilledNumberOperands_first_present_hides_rest
+    (amount : Rat) (tail : List (ValueListCell .number))
+    (later : List (ResolvedValueListSide .number)) :
+    evalFirstFilledNumberOperands {
+      first := firstFilledSide (.present amount :: tail)
+      rest := later } = .value amount false := by
+  rfl
+
+/-- A reached filter survives an empty operand boundary and marks a value selected from the next operand fillable. -/
+theorem firstFilledNumberOperands_reached_filter_marks_later_value
+    (amount : Rat) (tail : List (ValueListCell .number)) :
+    evalFirstFilledNumberOperands {
+      first := firstFilledSide [] false true
+      rest := [firstFilledSide (.present amount :: tail)] } =
+      .value amount true := by
+  rfl
+
+/-- An omitted declared tail is used by the all-exhausted identity but, unlike an instantiated empty cell, does not mark a later selected value fillable. -/
+theorem firstFilledNumberOperands_omitted_tail_is_not_empty_prefix
+    (amount : Rat) :
+    evalFirstFilledNumberOperands {
+      first := firstFilledSide [] true
+      rest := [firstFilledSide [.present amount]] } = .value amount false ∧
+    evalFirstFilledNumberOperands {
+      first := firstFilledSide [] true
+      rest := [firstFilledSide []] } = .value 0 true := by
+  constructor <;> rfl
+
 /-- Successful checked-star evaluation is exactly the established prefix-terminating consumer over the shared checked resolved side. -/
 theorem checkedNumericStarSource_evaluateFirstFilled_of_valid
     (checked : CheckedNumericStarSource model) (raw : RawSingleGroupContext)
@@ -157,6 +186,7 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
           .evaluated (.value amount false) := by
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilled, relevant,
-    leftPresent, rightPresent, FirstFilledNumberScanState.step]
+    leftPresent, rightPresent, FirstFilledNumberScanState.enter,
+    FirstFilledNumberScanState.step]
 
 end A12Kernel
