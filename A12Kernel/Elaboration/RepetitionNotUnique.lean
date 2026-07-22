@@ -3,7 +3,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` construction
 
-This capsule resolves one nonempty typed composite key on a common repeatable field path, chooses the default or explicit reference group, constructs one canonical selected scope through the existing star topology, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number and ordinary String components are admitted here; ancestor-path, temporal, Enumeration, and prepared custom-String keys remain separate. Whole-rule composition and message-pointer projection also remain separate.
+This capsule resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number and ordinary String components are admitted here; temporal, Enumeration, and prepared custom-String keys remain separate. Whole-rule composition and message-pointer projection also remain separate.
 -/
 
 namespace A12Kernel
@@ -51,34 +51,47 @@ def source : CheckedRepetitionKey model → CheckedStarFieldPath model
 def fieldId (key : CheckedRepetitionKey model) : FieldId :=
   key.source.declaration.id
 
+/-- Project one deepest-row environment to the exact repeatable ancestry owned by this key declaration. -/
+def environmentPrefix (key : CheckedRepetitionKey model) (environment : Env) : Env :=
+  environment.take key.source.path.axes.length
+
 /-- Classify one component through its existing typed star reader. -/
 def classify (key : CheckedRepetitionKey model)
     (read : Env → FieldId → RawCell) (environment : Env) : RepetitionKeyComponent :=
+  let keyEnvironment := key.environmentPrefix environment
   match key with
   | .number key =>
-      RepetitionKeyComponent.ofNumberValueListCell (key.valueListCell read environment)
+      RepetitionKeyComponent.ofNumberValueListCell (key.valueListCell read keyEnvironment)
   | .string key =>
       RepetitionKeyComponent.ofTokenValueListCell
-        (key.source.stringValueListCell key.fieldOwned read environment)
+        (key.source.stringValueListCell key.fieldOwned read keyEnvironment)
 
 end CheckedRepetitionKey
 
 /-- A checked RNU source retains one typed star-classifiable owner per key field. Every owner shares the exact topology plan stored by `firstKey`. -/
 structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
   referenceGroup : RepeatableGroupDecl
+  terminalGroup : GroupPath
+  topology : CheckedStarPlan
   firstKey : CheckedRepetitionKey model
   restKeys : List (CheckedRepetitionKey model)
   modelWellFormed : model.validate.isOk = true
   referenceGroupOwned : model.repeatableGroups.contains referenceGroup = true
   uniqueKeyFields :
     FieldId.firstDuplicate? ((firstKey :: restKeys).map (·.fieldId)) = none
-  commonKeyPath :
-    restKeys.all (fun key =>
-      key.source.declaration.groupPath == firstKey.source.declaration.groupPath) = true
-  commonStarPath :
-    restKeys.all (fun key => key.source.path == firstKey.source.path) = true
+  terminalGroupOwned :
+    (firstKey :: restKeys).any (fun key =>
+      key.source.declaration.groupPath == terminalGroup) = true
+  keyGroupsOnBranch :
+    (firstKey :: restKeys).all (fun key =>
+      key.source.declaration.groupPath.isPrefixOf terminalGroup) = true
+  keyPathsWithinTopology :
+    (firstKey :: restKeys).all (fun key =>
+      key.source.path.axes == topology.path.axes.take key.source.path.axes.length) = true
+  topologyLevelsOwned :
+    topology.path.axes.map (·.level) = model.repeatableScopeForGroupPath terminalGroup
   referenceLevelOwned :
-    ((firstKey.source.path.axes.drop firstKey.source.path.firstStar).head?.map
+    ((topology.path.axes.drop topology.path.firstStar).head?.map
       (·.level)) = some referenceGroup.level
 
 private def resolveRepetitionKeyDeclarations (model : FlatModel)
@@ -91,14 +104,16 @@ private def resolveRepetitionKeyDeclarations (model : FlatModel)
       pure (declaration ::
         (← resolveRepetitionKeyDeclarations model declaringGroup remaining))
 
-private def firstMismatchingKeyPath? (expected : GroupPath) :
-    List FlatFieldDecl → Option GroupPath
-  | [] => none
+private def deepestKeyDeclaration (current : FlatFieldDecl) :
+    List FlatFieldDecl → Except RepetitionNotUniqueElabError FlatFieldDecl
+  | [] => pure current
   | declaration :: remaining =>
-      if declaration.groupPath == expected then
-        firstMismatchingKeyPath? expected remaining
+      if current.groupPath.isPrefixOf declaration.groupPath then
+        deepestKeyDeclaration declaration remaining
+      else if declaration.groupPath.isPrefixOf current.groupPath then
+        deepestKeyDeclaration current remaining
       else
-        some declaration.groupPath
+        throw (.keyPathMismatch current.groupPath declaration.groupPath)
 
 private def FlatModel.defaultRepetitionReferenceGroup?
     (model : FlatModel) (declaringGroup keyGroup : GroupPath) :
@@ -112,21 +127,35 @@ private def FlatModel.defaultRepetitionReferenceGroup?
   else
     none
 
+private def firstKeyGroupOutside? (referenceGroup : GroupPath) :
+    List FlatFieldDecl → Option GroupPath
+  | [] => none
+  | declaration :: remaining =>
+      if referenceGroup.isPrefixOf declaration.groupPath then
+        firstKeyGroupOutside? referenceGroup remaining
+      else
+        some declaration.groupPath
+
 private def resolveRepetitionReferenceGroup (model : FlatModel)
-    (declaringGroup keyGroup keyPath : GroupPath) :
+    (declaringGroup terminalGroup keyPath : GroupPath)
+    (declarations : List FlatFieldDecl) :
     SurfaceRepetitionNotUniqueScope →
       Except RepetitionNotUniqueElabError RepeatableGroupDecl
   | .default =>
-      match model.defaultRepetitionReferenceGroup? declaringGroup keyGroup with
+      match model.defaultRepetitionReferenceGroup? declaringGroup terminalGroup with
       | none => throw (.missingReferenceGroup keyPath)
-      | some group => pure group
+      | some group =>
+          match firstKeyGroupOutside? group.path declarations with
+          | none => pure group
+          | some keyGroup =>
+              throw (.referenceGroupDoesNotContainKey group.path keyGroup)
   | .from surface => do
       let path ← surface.resolveAgainst declaringGroup |>.mapError .scope
       let group ← model.lookupUniqueRepeatablePath path |>.mapError .resolve
-      if group.path.isPrefixOf keyGroup then
-        pure group
-      else
-        throw (.referenceGroupDoesNotContainKey group.path keyGroup)
+      match firstKeyGroupOutside? group.path declarations with
+      | none => pure group
+      | some keyGroup =>
+          throw (.referenceGroupDoesNotContainKey group.path keyGroup)
 
 private def repetitionStarSegments (model : FlatModel)
     (referenceGroup : GroupPath) : GroupPath → GroupPath →
@@ -137,6 +166,13 @@ private def repetitionStarSegments (model : FlatModel)
       let repeatable := model.repeatableGroups.any fun group => group.path == path
       { name, starred := repeatable && referenceGroup.isPrefixOf path } ::
         repetitionStarSegments model referenceGroup path remaining
+
+private def elaborateRepetitionKeyPlan (model : FlatModel)
+    (referenceGroup : GroupPath) (declaration : FlatFieldDecl) :
+    Except RepetitionNotUniqueElabError CheckedStarPlan :=
+  elaborateStarPathPlan model []
+    (repetitionStarSegments model referenceGroup [] declaration.groupPath)
+    declaration.path |>.mapError .path
 
 /-- Certify one currently supported RNU key kind without changing its declaration-owned checking. -/
 private def certifyRepetitionKey (model : FlatModel)
@@ -173,15 +209,16 @@ private def certifyRepetitionKey (model : FlatModel)
 
 private def certifyRepetitionKeys (model : FlatModel)
     (modelWellFormed : model.validate.isOk = true)
-    (plan : CheckedStarPlan) : List FlatFieldDecl →
+    (referenceGroup : GroupPath) : List FlatFieldDecl →
       Except RepetitionNotUniqueElabError
         (List (CheckedRepetitionKey model))
   | [] => pure []
   | declaration :: remaining => do
+      let plan ← elaborateRepetitionKeyPlan model referenceGroup declaration
       pure ((← certifyRepetitionKey model modelWellFormed plan declaration) ::
-        (← certifyRepetitionKeys model modelWellFormed plan remaining))
+        (← certifyRepetitionKeys model modelWellFormed referenceGroup remaining))
 
-/-- Resolve a common typed-key path, select its kernel-defined reference group, and derive one shared star plan whose bound prefix is supplied by the caller's selected outer scope. -/
+/-- Resolve one typed-key branch, select its kernel-defined reference group, and derive the deepest-row topology whose bound prefix is supplied by the caller's selected outer scope. -/
 def elaborateRepetitionNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceRepetitionNotUniqueSource) :
     Except RepetitionNotUniqueElabError
@@ -198,46 +235,56 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
           ((firstDeclaration :: restDeclarations).map (·.id)) with
       | some field => throw (.duplicateKeyField field)
       | none => do
-          match firstMismatchingKeyPath? firstDeclaration.groupPath restDeclarations with
-          | some path => throw (.keyPathMismatch firstDeclaration.groupPath path)
-          | none => do
-              let referenceGroup ← resolveRepetitionReferenceGroup model declaringGroup
-                firstDeclaration.groupPath firstDeclaration.path authored.scope
-              let segments := repetitionStarSegments model referenceGroup.path []
-                firstDeclaration.groupPath
-              let plan ← elaborateStarPathPlan model [] segments firstDeclaration.path
-                |>.mapError .path
-              let firstKey ← certifyRepetitionKey model modelWellFormed plan firstDeclaration
-              let restKeys ← certifyRepetitionKeys model modelWellFormed plan restDeclarations
-              if hReference :
-                  ((firstKey.source.path.axes.drop firstKey.source.path.firstStar).head?.map
-                    (·.level)) = some referenceGroup.level then
-                match hUnique :
-                    FieldId.firstDuplicate? ((firstKey :: restKeys).map (·.fieldId)) with
-                | some _ => throw .incoherentCore
-                | none =>
-                    if hPath : restKeys.all (fun key =>
-                        key.source.declaration.groupPath ==
-                          firstKey.source.declaration.groupPath) = true then
-                      if hStar : restKeys.all (fun key =>
-                          key.source.path == firstKey.source.path) = true then
+          let declarations := firstDeclaration :: restDeclarations
+          let terminalDeclaration ← deepestKeyDeclaration firstDeclaration restDeclarations
+          let referenceGroup ← resolveRepetitionReferenceGroup model declaringGroup
+            terminalDeclaration.groupPath terminalDeclaration.path declarations authored.scope
+          let topology ← elaborateRepetitionKeyPlan model referenceGroup.path terminalDeclaration
+          let firstPlan ← elaborateRepetitionKeyPlan model referenceGroup.path firstDeclaration
+          let firstKey ← certifyRepetitionKey model modelWellFormed firstPlan firstDeclaration
+          let restKeys ← certifyRepetitionKeys model modelWellFormed referenceGroup.path
+            restDeclarations
+          let keys := firstKey :: restKeys
+          if hReference :
+              ((topology.path.axes.drop topology.path.firstStar).head?.map
+                (·.level)) = some referenceGroup.level then
+            match hUnique : FieldId.firstDuplicate? (keys.map (·.fieldId)) with
+            | some _ => throw .incoherentCore
+            | none =>
+                if hTerminal : keys.any (fun key =>
+                    key.source.declaration.groupPath ==
+                      terminalDeclaration.groupPath) = true then
+                  if hBranch : keys.all (fun key =>
+                      key.source.declaration.groupPath.isPrefixOf
+                        terminalDeclaration.groupPath) = true then
+                    if hWithin : keys.all (fun key =>
+                        key.source.path.axes ==
+                          topology.path.axes.take key.source.path.axes.length) = true then
+                      if hTopologyLevels : topology.path.axes.map (·.level) =
+                          model.repeatableScopeForGroupPath terminalDeclaration.groupPath then
                         if hReferenceOwned :
                             model.repeatableGroups.contains referenceGroup = true then
                           pure {
                             referenceGroup
+                            terminalGroup := terminalDeclaration.groupPath
+                            topology
                             firstKey
                             restKeys
                             modelWellFormed
                             referenceGroupOwned := hReferenceOwned
                             uniqueKeyFields := hUnique
-                            commonKeyPath := hPath
-                            commonStarPath := hStar
+                            terminalGroupOwned := hTerminal
+                            keyGroupsOnBranch := hBranch
+                            keyPathsWithinTopology := hWithin
+                            topologyLevelsOwned := hTopologyLevels
                             referenceLevelOwned := hReference }
                         else throw .incoherentCore
                       else throw .incoherentCore
                     else throw .incoherentCore
-              else
-                throw .incoherentCore
+                  else throw .incoherentCore
+                else throw .incoherentCore
+          else
+            throw .incoherentCore
 
 namespace CheckedRepetitionNotUniqueSource
 
@@ -262,7 +309,7 @@ def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError (List ResolvedRepetitionKeyRow) := do
-  let topology ← checked.firstKey.source.path.resolve document outer
+  let topology ← checked.topology.path.resolve document outer
   pure ((topology.environments.filter (checked.rowRelevant scope)).map
     (checked.resolvedRow read))
 
