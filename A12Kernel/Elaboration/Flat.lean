@@ -116,6 +116,8 @@ inductive SurfaceCondition where
       (fields values : List SurfaceFieldPath)
   | enumerationValueMembership (op : ValueListMembershipOp)
       (field : SurfaceTextFieldOperand) (values : List String)
+  | enumerationFieldValueMembership (op : ValueListMembershipOp)
+      (field : SurfaceTextFieldOperand) (values : List SurfaceTextFieldOperand)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
@@ -1049,6 +1051,11 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup surface values
       pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
+  | .enumerationFieldValueMembership op surface valueSurfaces => do
+      let (fields, values) ←
+        elaborateEnumerationFieldValueSides model declaringGroup [surface] valueSurfaces
+      pure (.tokenValueList op.quantifier (fields.map .enumeration)
+        (.fields (values.map .enumeration)))
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve
