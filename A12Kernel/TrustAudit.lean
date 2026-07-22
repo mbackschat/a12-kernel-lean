@@ -825,6 +825,11 @@ run_cmd do
 #print axioms A12Kernel.customFieldValidity_unavailable_unknown
 #print axioms A12Kernel.customFieldValidity_present_complement
 #print axioms A12Kernel.customFieldValidity_rejection_fires_invalid
+#print axioms A12Kernel.prepareCustomDeclarations_empty
+#print axioms A12Kernel.prepareCustomDeclarations_ordinary
+#print axioms A12Kernel.prepareCustomDeclarations_registered
+#print axioms A12Kernel.prepareFlatCustomFields_modelError
+#print axioms A12Kernel.prepareFlatCustomFields_model_exact
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal

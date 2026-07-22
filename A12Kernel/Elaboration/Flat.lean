@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.TemporalFormat
+import A12Kernel.Semantics.CustomFieldType
 import A12Kernel.Elaboration.NumericScale
 
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
@@ -97,6 +98,7 @@ structure FlatFieldDecl where
   groupPath : GroupPath
   name : String
   policy : FieldPolicy
+  customType : Option CustomFieldTypeDeclaration := none
   repeatableScope : List RepeatableLevel := []
   deriving Repr, DecidableEq
 
@@ -149,6 +151,7 @@ inductive ResolveError where
   | invalidModelPath (path : List String)
   | duplicateFieldId (id : FieldId)
   | duplicateEntityPath (path : List String)
+  | customTypeRequiresString (path : List String)
   | invalidRepeatableGroupPath (path : GroupPath)
   | duplicateRepeatableGroupPath (path : GroupPath)
   | duplicateRepeatableLevel (level : RepeatableLevel)
@@ -218,6 +221,14 @@ private def duplicatePath? : List FlatFieldDecl → Option (List String)
       else
         duplicatePath? rest
 
+private def customTypeKindMismatch? : List FlatFieldDecl → Option (List String)
+  | [] => none
+  | declaration :: rest =>
+      match declaration.customType, declaration.policy.kind with
+      | none, _ => customTypeKindMismatch? rest
+      | some _, .string => customTypeKindMismatch? rest
+      | some _, _ => some declaration.path
+
 private def invalidRepeatableGroupPath? : List RepeatableGroupDecl → Option GroupPath
   | [] => none
   | group :: rest =>
@@ -275,6 +286,9 @@ private def repeatableScopeMismatch? (model : FlatModel) :
 def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   match invalidDeclPath? model.fields with
   | some path => throw (.invalidModelPath path)
+  | none => pure ()
+  match customTypeKindMismatch? model.fields with
+  | some path => throw (.customTypeRequiresString path)
   | none => pure ()
   match duplicateId? model.fields with
   | some id => throw (.duplicateFieldId id)

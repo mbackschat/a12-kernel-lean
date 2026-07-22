@@ -59,6 +59,7 @@ import A12Kernel.Semantics.CustomFieldFormalMessage
 import A12Kernel.Semantics.CustomFieldValidity
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.NumericAggregate

@@ -50,6 +50,10 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
         (Json.mkObj [("fieldId", toJson id)])
   | .duplicateEntityPath path =>
       .make .duplicateEntityPath "$.model" (pathDetails path)
+  | .customTypeRequiresString path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "customFieldTypeDeclaration"),
+          ("path", toJson path), ("expected", toJson "string")])
   | .invalidRepeatableGroupPath path =>
       .make .invalidRepeatableGroupPath "$.model" (pathDetails path)
   | .duplicateRepeatableGroupPath path =>

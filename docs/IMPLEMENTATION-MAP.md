@@ -403,6 +403,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/CustomFieldMessage.lean`](../A12Kernel/Semantics/CustomFieldMessage.lean)
 - [`Semantics/CustomFieldFormalMessage.lean`](../A12Kernel/Semantics/CustomFieldFormalMessage.lean)
 - [`Semantics/CustomFieldValidity.lean`](../A12Kernel/Semantics/CustomFieldValidity.lean)
+- [`Elaboration/CustomField.lean`](../A12Kernel/Elaboration/CustomField.lean)
 - [`Elaboration/LegalCharset.lean`](../A12Kernel/Elaboration/LegalCharset.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
@@ -416,6 +417,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/CustomFieldMessage.lean`](../A12Kernel/Proofs/CustomFieldMessage.lean)
 - [`Proofs/CustomFieldFormalMessage.lean`](../A12Kernel/Proofs/CustomFieldFormalMessage.lean)
 - [`Proofs/CustomFieldValidity.lean`](../A12Kernel/Proofs/CustomFieldValidity.lean)
+- [`Proofs/CustomFieldElaboration.lean`](../A12Kernel/Proofs/CustomFieldElaboration.lean)
 - [`Proofs/StringLength.lean`](../A12Kernel/Proofs/StringLength.lean)
 - [`Proofs/StringComputation.lean`](../A12Kernel/Proofs/StringComputation.lean)
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
@@ -427,6 +429,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/CustomFieldMessage.lean`](../A12Kernel/Conformance/CustomFieldMessage.lean)
 - [`Conformance/CustomFieldFormalMessage.lean`](../A12Kernel/Conformance/CustomFieldFormalMessage.lean)
 - [`Conformance/CustomFieldValidity.lean`](../A12Kernel/Conformance/CustomFieldValidity.lean)
+- [`Conformance/CustomFieldElaboration.lean`](../A12Kernel/Conformance/CustomFieldElaboration.lean)
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
 
@@ -445,6 +448,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - A registered rejection projects to a distinct custom formal-message payload using the caller's exact cell address, resolved label, and already-localized fallback. The project code is preserved, ERROR severity and VALUE polarity are fixed, a supplied template wins even when empty, and fallback bytes remain opaque.
 - One relevance-gated custom validation output now pairs the exact reusable checked cell with its optional registered formal message. Only the leading registered custom cause projects a message; acceptance, semantic empty, preceding noncustom rejection, and nonrelevance cannot manufacture one, and the validator result is not sampled again.
 - Explicit registered `Valid(field, "Name")` / `Invalid(field, "Name")` resolve their exact validator name through the same checked registry boundary as declared custom fields. One shared optional-bound context distinguishes declared effective bounds from the predicate's absent bounds; the explicit path supplies fixed `de_DE`, absent bounds, and stored-value mode. Empty and formal unavailability are UNKNOWN, while present nonempty acceptance/rejection are exact VALUE-only complements.
+- Flat String declarations may retain optional custom-type metadata. Ordinary model validation rejects that metadata on non-String kinds; the checked custom overlay then validates the original model, resolves each declared validator once in declaration order, and retains exact source declaration/model identity without changing ordinary declarations or raw-context semantics.
 - An already-checked String cell projects directly into the existing resolved RNU token/empty/unknown component. The adapter reads the validation observation once, preserves an exact registered custom rejection as the unknown cause, and leaves nonrelevance outside so excluded cells produce no component rather than a second validator call.
 - Both direct String equality operators suppress an empty field or empty literal after preserving malformed input as UNKNOWN; distinct nonempty values fire only inequality.
 - a parsed empty String retains present-empty placement while supplying the same clean-empty observation as absence
@@ -470,6 +474,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Six supplied-message cases and three laws separate absent versus supplied-empty text, repeated exact replacement, near misses, empty labels, opaque replacement bytes, and project-code independence.
 - Nine formal-message/output cases and eight laws lock exact address/code metadata, fixed ERROR/VALUE classification, supplied-empty priority, fallback selection/opacity, leading-cause selection, accepted/empty/malformed silence, exact rejected-cell reuse, and relevance exclusion.
 - Nine explicit-validity cases and seven laws separate fixed context, declared-versus-absent bounds, exact-name resolution, empty/formal/defensive-empty UNKNOWN, acceptance/rejection, VALUE-only complement, and project-payload non-observation.
+- Four checked-declaration cases and five laws separate ordinary-empty overlay, ordered multi-custom preparation, exact case-sensitive absence, non-String rejection, registered singleton identity, exact model-error propagation, and source-model preservation.
 - Five custom-key cases and four generic checked-token laws separate accepted token, semantic empty, preceding parser failure, exact registered rejection, and relevance exclusion before component construction.
 - Historical a12-dmkits triangulation had three final-empty-store mismatches and agreed with all nine target cases at projected delta and stored-value application granularity
 - the [archive](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns that detail.
@@ -482,7 +487,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Pattern compilation, Java `Pattern` syntax/execution, the kernel's bounded admission gate, authored checked-pattern lowering, and public exposure remain outside; the injected function is deliberately only the post-admission whole-value matcher boundary.
 - Java-compatible grapheme clustering remains an injected admission-time capability rather than a reimplemented Unicode subsystem. Raw JSON decoding/model-slot wiring, project-level SPI selection, general scalar-parser composition, and retained local kernel observations remain outside; the runtime representation makes empty/unbounded atomic entries impossible and is not used by computed-target basic checks.
-- Registered custom validation is checked through relevance-first sampling and the ordinary cell root, one output retains that exact cell plus its optional formal message, supplied bytes render at an already-resolved label boundary, the explicit named validity pair reuses the same registry/context interface, and resolved RNU consumes the same checked observation without resampling. Label resolution/provider invocation, general validation orchestration or checked condition integration, checked field-declaration/model integration, partial RNU row construction/topology, predefined declarative registry precedence, and public protocol remain open.
+- Registered custom validation is checked through relevance-first sampling and the ordinary cell root, one output retains that exact cell plus its optional formal message, supplied bytes render at an already-resolved label boundary, the explicit named validity pair reuses the same registry/context interface, resolved RNU consumes the same checked observation without resampling, and flat-model preparation resolves declaration-owned custom validators once. Label resolution/provider invocation, prepared raw-context application, general validation orchestration or checked condition integration, partial RNU row construction/topology, predefined declarative registry precedence, and public protocol remain open.
 - Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, enumerations, custom validators, raw-type rule elimination, and target-check ordering.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.
