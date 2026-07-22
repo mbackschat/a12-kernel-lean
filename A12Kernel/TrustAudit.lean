@@ -813,6 +813,11 @@ run_cmd do
 #print axioms A12Kernel.customFieldFormalMessage_absent_exact
 #print axioms A12Kernel.customFieldFormalMessage_supplied_exact
 #print axioms A12Kernel.customFieldFormalMessage_metadata_exact
+#print axioms A12Kernel.checkedCell_registeredCustomRejection_head
+#print axioms A12Kernel.checkedCell_nonCustomCause_hasNoRegisteredRejection
+#print axioms A12Kernel.customFieldValidationOutput_nonrelevant
+#print axioms A12Kernel.customFieldValidationOutput_rejection_exact
+#print axioms A12Kernel.customFieldValidationOutput_acceptance_exact
 #print axioms A12Kernel.explicitCustomFieldValidationContext_exact
 #print axioms A12Kernel.elaborateCustomFieldValidity_missing
 #print axioms A12Kernel.elaborateCustomFieldValidity_resolved
