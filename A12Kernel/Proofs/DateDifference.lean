@@ -141,4 +141,26 @@ theorem baseYearDateDifference_finish_boundary (year : Int) :
     DateParts.Shift.monthLandingDay, before]
   omega
 
+/-- A left formal cause wins before any empty/default or unsupported-calendar branch is considered. -/
+theorem dateDifferenceOperand_unavailable_left
+    (unit : DateDifferenceUnit) (cause : FormalCause)
+    (right : DateDifferenceOperand) :
+    DateDifferenceOperand.evaluate unit (.unavailable cause) right =
+      .ok (.unknown cause) := by
+  rfl
+
+/-- Empty supplies symmetric numeric zero even when the other present operand uses a calendar outside the decoded-parts core. -/
+theorem dateDifferenceOperand_empty_unsupported_zero
+    (unit : DateDifferenceUnit) :
+    DateDifferenceOperand.evaluate unit .empty .unsupportedCalendar =
+      .ok (.value 0 .both) := by
+  rfl
+
+/-- Two supported decoded values delegate exactly to the selected completed-period counter. -/
+theorem dateDifferenceOperand_values_delegate
+    (unit : DateDifferenceUnit) (first second : DateParts) :
+    DateDifferenceOperand.evaluate unit (.value first) (.value second) =
+      .ok (.value (unit.between first second) .fixed) := by
+  rfl
+
 end A12Kernel

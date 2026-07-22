@@ -1,14 +1,39 @@
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateShift
+import A12Kernel.Semantics.NumericComparison
 
 /-! # Date-only month/year differences
 
-This capsule computes the signed count of completed calendar months or years over decoded date parts, then exposes that mechanism through stored/full Dates and direct or range-selected Base-Year sources. It orders the operands, tests the direct candidate period against the later date using the matching shift convention, and restores the original sign.
+This capsule computes the signed count of completed calendar months or years over decoded date parts, then exposes that mechanism through stored/full Dates, direct or range-selected Base-Year sources, and one phase-observed numeric operand boundary. It orders the operands, tests the direct candidate period against the later date using the matching shift convention, and restores the original sign.
 
-The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. Empty or formally unavailable operands, constructed `Date(...)` legacy-hybrid identity, DateTime admission, numeric-result provenance and scale, checked field lowering, and cell effects remain outside.
+The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance while refusing legacy-hybrid values. Checked field/Base-Year lowering, static Date-only/component gates, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` legacy-hybrid execution, DateTime, and temporal targets remain outside.
 -/
 
 namespace A12Kernel
+
+/-- The two date-only completed-period units whose result is a scale-0 Number. -/
+inductive DateDifferenceUnit where
+  | months
+  | years
+  deriving Repr, DecidableEq
+
+namespace DateDifferenceUnit
+
+/-- Static component admission after the separate ordinary-Date and partially-known checks. -/
+def admittedBy (unit : DateDifferenceUnit) (hasBaseYear : Bool)
+    (components : TemporalComponents) : Bool :=
+  !components.hasTime && components.hasDate &&
+    match unit with
+    | .months => components.month
+    | .years => components.year || hasBaseYear
+
+/-- The checker permits unlike year presence only when the model supplies Base Year. -/
+def compatible (unit : DateDifferenceUnit) (hasBaseYear : Bool)
+    (left right : TemporalComponents) : Bool :=
+  unit.admittedBy hasBaseYear left && unit.admittedBy hasBaseYear right &&
+    (hasBaseYear || left.year == right.year)
+
+end DateDifferenceUnit
 
 namespace DateParts
 
@@ -52,6 +77,50 @@ def signedWholePeriods
 end Difference
 
 end DateParts
+
+namespace DateDifferenceUnit
+
+/-- Apply the selected completed-period core to two already-admitted decoded dates. -/
+def between (unit : DateDifferenceUnit) (first second : DateParts) : Int :=
+  match unit with
+  | .months =>
+      DateParts.Difference.signedWholePeriods
+        DateParts.Difference.wholeMonthsForward first second
+  | .years =>
+      DateParts.Difference.signedWholePeriods
+        DateParts.Difference.wholeYearsForward first second
+
+end DateDifferenceUnit
+
+/-- One runtime date-difference operand after phase observation. Legacy-hybrid values stay explicit because the decoded Gregorian core is not valid for their cutover cases. -/
+inductive DateDifferenceOperand where
+  | empty
+  | value (parts : DateParts)
+  | unavailable (cause : FormalCause)
+  | unsupportedCalendar
+  deriving Repr, DecidableEq
+
+namespace DateDifferenceOperand
+
+/-- Project one observed scalar Date. Static admission has already rejected DateTime. -/
+def ofObservation : CellObservation Value → DateDifferenceOperand
+  | .empty => .empty
+  | .value (.temporal (.date _ parts .storedGregorian)) => .value parts
+  | .value (.temporal (.date _ _ .legacyHybrid)) => .unsupportedCalendar
+  | .value _ => .unavailable .malformed
+  | .unknown cause | .poison cause => .unavailable cause
+
+/-- Formal unavailability dominates emptiness; emptiness then yields the kernel's symmetric zero without inspecting the other present operand's calendar. -/
+def evaluate (unit : DateDifferenceUnit)
+    (left right : DateDifferenceOperand) : Except Unit NumericOperand :=
+  match left, right with
+  | .unavailable cause, _ => pure (.unknown cause)
+  | _, .unavailable cause => pure (.unknown cause)
+  | .empty, _ | _, .empty => pure (.value 0 .both)
+  | .unsupportedCalendar, _ | _, .unsupportedCalendar => throw ()
+  | .value first, .value second => pure (.value (unit.between first second) .fixed)
+
+end DateDifferenceOperand
 
 namespace FullDate
 

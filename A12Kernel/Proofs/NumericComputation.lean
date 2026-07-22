@@ -99,6 +99,19 @@ theorem readTemporalNumeric_value
   simp [ScalarComputationContext.readTemporalNumeric,
     observed, kind, projected] <;> rfl
 
+/-- A supported date-difference source uses the same phase reads and maps its exact numeric/fault provenance once into computation outcome space. -/
+theorem readDateDifference_evaluated
+    (context : ScalarComputationContext) (unit : DateDifferenceUnit)
+    (left right : ResolvedDateDifferenceOperand) (operand : NumericOperand)
+    (evaluated : DateDifferenceOperand.evaluate unit
+      (context.readDateDifferenceOperand left)
+      (context.readDateDifferenceOperand right) = .ok operand) :
+    context.readNumericComputationAtom (.dateDifference unit left right) =
+      .ok operand.toComputationResult := by
+  simp only [ScalarComputationContext.readNumericComputationAtom]
+  rw [evaluated]
+  rfl
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)

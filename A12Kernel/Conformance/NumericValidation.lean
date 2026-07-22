@@ -68,6 +68,14 @@ private def timeFieldPart (name : String) (part : TimeNumericPart) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.temporalFieldPart (path ["Order"] name) (.time part))
 
+private def dateDifference (unit : DateDifferenceUnit)
+    (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.dateDifference unit left right)
+
+private def dateOperand (name : String) : SurfaceDateDifferenceOperand :=
+  .field (path ["Order"] name)
+
 private def literal (value : Rat) (authoredScale : Int) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .literal { value, authoredScale }
@@ -100,6 +108,10 @@ private def clock : TimeOfDay :=
 
 private def dateTimeValue : Value :=
   .temporal (.dateTime instant dateParts clock .storedGregorian)
+
+private def dateValue (year : Int) (month day : Nat)
+    (basis : DateCalendarBasis := .storedGregorian) : Value :=
+  .temporal (.date instant { year, month, day } basis)
 
 private def verdictOf (surface : SurfaceNumericComparison)
     (context : RawFlatContext := raw) (hasContent : Bool := true)
@@ -783,6 +795,27 @@ example :
         (let context := temporalRaw 9 (.parsed dateTimeValue)
          { read := fun id => if id == 0 then .parsed (.num 1) else context.read id }) =
         some (.fired .value) := by
+  native_decide
+
+/- Field/Base-Year differences reuse the decoded Date payload and preserve symmetric empty-zero polarity; DateTime, legacy-hybrid payloads, and wrappers stay fail-closed. -/
+example :
+    let mixed := dateDifference .months (.baseYear .direct) (dateOperand "NoYear")
+    errorOf (comparison .equal mixed 1) = some .baseYearNotDeclared ∧
+      verdictOf (comparison .equal mixed 1)
+        (temporalRaw 11 (.parsed (dateValue 2020 2 29))) true baseYearModel =
+          some (.fired .value) ∧
+      verdictOf (comparison .less mixed 3)
+        (temporalRaw 11 .empty) true baseYearModel = some (.fired .omission) ∧
+      verdictOf (comparison .less mixed 3)
+        (temporalRaw 11 (.rejected .malformed)) true baseYearModel = some .unknown ∧
+      errorOf (comparison .equal
+        (dateDifference .years (dateOperand "DateTime") (.baseYear .direct)) 0)
+        baseYearModel = some (.incompatibleTemporalSource ["Order", "DateTime"]) ∧
+      verdictOf (comparison .equal mixed 1)
+        (temporalRaw 11 (.parsed (dateValue 2020 2 29 .legacyHybrid))) true
+        baseYearModel = some .unknown ∧
+      errorOf (comparison .equal (.abs mixed) 1) baseYearModel =
+        some .unsupportedExpression := by
   native_decide
 
 example : errorOf

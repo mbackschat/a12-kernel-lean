@@ -3,7 +3,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Number fields, numeric `BaseYear`, Base-Year date-component extraction, and direct temporal field-component sources share plain arithmetic, while separately audited root value functions remain Number-field-only; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partial-known Date policy, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, and Date-only month/year differences share plain arithmetic, while separately audited root value functions remain Number-field-only; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -33,6 +33,7 @@ inductive NumericValidationElabError where
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
   | incompatibleTemporalSource (path : List String)
+  | incompatibleDateDifference
   | baseYearNotDeclared
   | constantExpression
   | unsupportedExpression
@@ -83,6 +84,13 @@ private def NumericValidationAtom.admitted
   | .temporalFieldPart source part =>
       model.admitsTemporalInGroup rowGroup source &&
         part.admittedBy source model.hasBaseYear
+  | .dateDifference unit left right =>
+      let admitted : ResolvedDateDifferenceOperand → Bool
+        | .field source =>
+            source.kind == .date && model.admitsTemporalInGroup rowGroup source
+        | .baseYear year _ => model.baseYear == some year
+      admitted left && admitted right &&
+        unit.compatible model.hasBaseYear left.components right.components
 
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
@@ -156,6 +164,25 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       let field ← resolveTemporalNumericField model rowGroup reference
         (fun source => part.admittedBy source model.hasBaseYear)
       pure (.temporalFieldPart field part)
+  | .dateDifference unit left right => do
+      let resolveOperand : SurfaceDateDifferenceOperand →
+          Except NumericValidationElabError ResolvedDateDifferenceOperand
+        | .field reference => do
+            let field ← resolveTemporalNumericField model rowGroup reference
+              (fun source => source.kind == .date &&
+                unit.admittedBy model.hasBaseYear source.components)
+            pure (.field field)
+        | .baseYear source =>
+            match model.baseYear with
+            | some year => pure (.baseYear year source)
+            | none => throw .baseYearNotDeclared
+      let resolvedLeft ← resolveOperand left
+      let resolvedRight ← resolveOperand right
+      if unit.compatible model.hasBaseYear
+          resolvedLeft.components resolvedRight.components then
+        pure (.dateDifference unit resolvedLeft resolvedRight)
+      else
+        throw .incompatibleDateDifference
 
 private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
     AuthoredNumericExpr SurfaceNumericAtom →
@@ -233,6 +260,11 @@ def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>
       (context.resolveTemporalNumericOperand field part).toValidationArithmetic
+  | .dateDifference unit left right =>
+      match DateDifferenceOperand.evaluate unit
+          (left.validationOperand context) (right.validationOperand context) with
+      | .ok operand => operand.toValidationArithmetic
+      | .error _ => .error .malformed
 
 private def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →

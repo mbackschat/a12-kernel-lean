@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, and direct temporal field-component sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct Number-field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, partial-known Date policy, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, and Date-only month/year-difference sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct Number-field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -14,6 +14,7 @@ abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
   | fieldKindMismatch (field : FieldId)
+  | unsupportedDateCalendar
   deriving Repr, DecidableEq
 
 inductive NumericComputationElabError where
@@ -21,6 +22,7 @@ inductive NumericComputationElabError where
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
   | incompatibleTemporalSource (path : List String)
+  | incompatibleDateDifference
   | baseYearNotDeclared
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
@@ -59,6 +61,15 @@ def FlatModel.admitsNumericComputationOperand
   | .temporalFieldPart source part =>
       model.admitsTemporalComputationOperand source
         (part.admittedBy source model.hasBaseYear)
+  | .dateDifference unit left right =>
+      let admitted : ResolvedDateDifferenceOperand → Bool
+        | .field source =>
+            source.kind == .date &&
+              model.admitsTemporalComputationOperand source
+                (unit.admittedBy model.hasBaseYear source.components)
+        | .baseYear year _ => model.baseYear == some year
+      admitted left && admitted right &&
+        unit.compatible model.hasBaseYear left.components right.components
 
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
@@ -84,6 +95,8 @@ def NumericComputationAtom.references
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart source _ => source.id == field
+  | .dateDifference _ left right =>
+      left.references field || right.references field
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
@@ -166,6 +179,26 @@ private def FlatModel.resolveNumericComputationExpression
           declaringGroup target reference
           (fun source => part.admittedBy source model.hasBaseYear)
         pure (.temporalFieldPart field part)
+    | .dateDifference unit left right => do
+        let resolveOperand : SurfaceDateDifferenceOperand →
+            Except NumericComputationElabError ResolvedDateDifferenceOperand
+          | .field reference => do
+              let field ← model.resolveTemporalNumericComputationField
+                declaringGroup target reference
+                (fun source => source.kind == .date &&
+                  unit.admittedBy model.hasBaseYear source.components)
+              pure (.field field)
+          | .baseYear source =>
+              match model.baseYear with
+              | some year => pure (.baseYear year source)
+              | none => throw .baseYearNotDeclared
+        let resolvedLeft ← resolveOperand left
+        let resolvedRight ← resolveOperand right
+        if unit.compatible model.hasBaseYear
+            resolvedLeft.components resolvedRight.components then
+          pure (.dateDifference unit resolvedLeft resolvedRight)
+        else
+          throw .incompatibleDateDifference
 
 /-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic or direct root value-function fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
@@ -209,6 +242,10 @@ def elaborateNumericComputationOperation
       else
         throw .incoherentCore
 
+def NumericOperand.toComputationResult : NumericOperand → NumericComputationResult
+  | .value amount _ => .value amount
+  | .unknown cause => .poison cause
+
 namespace ScalarComputationContext
 
 /-- Read one already-resolved declaration in computation phase. A non-Number declaration is a structural fault even when its cell is empty; required-only Number emptiness remains zero and ordinary formal invalidity remains poison. -/
@@ -239,6 +276,12 @@ def readTemporalNumeric (context : ScalarComputationContext)
   | .value _ => throw (.fieldKindMismatch field.id)
   | .unknown cause | .poison cause => pure (.poison cause)
 
+def readDateDifferenceOperand (context : ScalarComputationContext) :
+    ResolvedDateDifferenceOperand → DateDifferenceOperand
+  | .field source => DateDifferenceOperand.ofObservation
+      (observeCell .computation (context.read source.id))
+  | .baseYear year source => .value (source.parts year)
+
 def readNumericComputationAtom (context : ScalarComputationContext) :
     NumericComputationAtom →
       Except NumericComputationFault NumericComputationResult
@@ -248,6 +291,12 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
       pure (.value (baseYearDateSourceNumericPart year source part))
   | .temporalFieldPart field part =>
       context.readTemporalNumeric field part.project?
+  | .dateDifference unit left right =>
+      match DateDifferenceOperand.evaluate unit
+          (context.readDateDifferenceOperand left)
+          (context.readDateDifferenceOperand right) with
+      | .error _ => throw .unsupportedDateCalendar
+      | .ok operand => pure operand.toComputationResult
 
 end ScalarComputationContext
 
@@ -290,6 +339,15 @@ def NumericComputationAtom.numericComputationFault? :
   | .baseYear _ => none
   | .baseYearDatePart _ _ _ => none
   | .temporalFieldPart _ _ => none
+  | .dateDifference _ left right =>
+      let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
+        | .field source =>
+            if source.kind == .date then none
+            else some (.fieldKindMismatch source.id)
+        | .baseYear _ _ => none
+      match fault? left with
+      | some fault => some fault
+      | none => fault? right
 
 namespace LoweredNumericExpr
 
