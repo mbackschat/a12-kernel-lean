@@ -7,17 +7,17 @@ This is the minimal continuation checkpoint. Detailed coverage belongs in [`IMPL
 ## Verified baseline
 
 - The current theory closes substantial checked nonrepeatable validation/computation, temporal, String, Enumeration, custom-field, resolved repeatable, message, and target fragments. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) is the sole detailed capability/proof/evidence inventory.
-- The latest repeatable capsule derives a canonical nested reopened tree and deepest-level-fastest leaf environment stream from explicit document rows after a checked star plan, while the preceding checked one-level Number route delegates that same structural account separately to `Sum`/extrema and prefix-terminating `FirstFilledValue` semantics.
-- Focused checks, a 322-job `lake build`, 51/51 retained-observation replay, and the trust audit over 917 theorem roots / 16,251 declarations / 183 logical modules passed at commit `13c70d5`.
+- The latest repeatable work derives general group-star plans from validated model ancestry and feeds a canonical nested reopened tree plus deepest-level-fastest leaf environment stream from explicit document rows, while the preceding checked one-level Number route delegates its shallow structural account separately to `Sum`/extrema and prefix-terminating `FirstFilledValue` semantics.
+- Focused checks, a 328-job `lake build`, 51/51 retained-observation replay, and the trust audit over 922 theorem roots / 16,717 declarations / 187 logical modules passed for the checked general star-path capsule.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites. Internally closed but uncalibrated families remain explicitly `external evidence pending`; coherent calibration work is indexed by [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 ## Active unit
 
-[`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) continues at model-owned `StarPath` elaboration: resolve a field's canonical repeatable ancestry and authored first-star position into exact axes/capacities before any `Document` rows are read. The completed topology resolver is the sole runtime target; no second row tree or aggregate scan is permitted.
+[`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) continues at the first concrete nested Number reader: combine the checked general star path with the completed topology stream and the existing formal Number-cell classifier. No second row tree, cell parser, or aggregate scan is permitted.
 
 ## Immediate frontier
 
-1. **Implementation ready — [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction):** check general nested star plans against `FlatModel`, then adapt the first concrete repeated cell consumer to the completed `ResolvedStarTopology` stream. This is the highest-connectivity continuation for aggregates, value lists, `FirstFilledValue`, RNU, group presence, partial relevance, and nested correlation.
+1. **Implementation ready — [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction):** adapt the first concrete nested Number cell consumer to the checked general path and completed `ResolvedStarTopology` stream. This is the highest-connectivity continuation for aggregates, value lists, `FirstFilledValue`, RNU, group presence, partial relevance, and nested correlation.
 2. **Representation audit next — [`SG3`](SEMANTICS-GAPS.md#sg3--shared-checked-condition-and-expression-tree):** reconcile flat whole-rule conditions, numeric expressions, generated validation, and aggregate nodes before computation-table integration. Do not create an aggregate-only comparison wrapper or parallel condition tree.
 3. **Missing source facts — [`SG6`](SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion) and [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion):** temporal targets need declaration-owned format/rendering/value admission; String targets need declaration-owned length and line-break policy.
 4. **Milestone calibration — [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage):** batch external evidence only after a coherent family closes. Do not create one producer or harness per capsule.
