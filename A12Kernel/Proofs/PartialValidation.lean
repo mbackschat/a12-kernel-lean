@@ -109,6 +109,18 @@ private theorem enumerationValueListSide_agreesOn
   simp [FlatEnumerationOperand.valueListCell,
     FlatContext.observeValidationAt, readEq]
 
+private theorem enumerationValueSide_agreesOn
+    (values : FlatEnumerationValueSide) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
+    (relevant : values.operands.all (fun operand => isRelevant operand.field.id) = true) :
+    values.resolve left = values.resolve right := by
+  cases values with
+  | literals literals => rfl
+  | fields operands =>
+      exact enumerationValueListSide_agreesOn operands left right isRelevant
+        agreement relevant
+
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
 theorem partialSelected_agreesOn
     (condition : FlatCondition) (left right : FlatContext)
@@ -186,8 +198,14 @@ theorem partialSelected_agreesOn
       simp only [FlatCondition.evalSelected]
       split
       · rename_i relevant
+        have bothRelevant :
+            operands.all (fun operand => isRelevant operand.field.id) = true ∧
+            values.operands.all (fun operand => isRelevant operand.field.id) = true := by
+          simpa [FlatEnumerationValueSide.allOperands] using relevant
         rw [enumerationValueListSide_agreesOn operands left right isRelevant
-          agreement relevant]
+            agreement bothRelevant.left,
+          enumerationValueSide_agreesOn values left right isRelevant
+            agreement bothRelevant.right]
       · rfl
   | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected]
@@ -218,7 +236,8 @@ private theorem partialSelected_truth_refines_full
       · exact K.informationRefines_refl _
       · trivial
   | enumerationValueList quantifier operands values =>
-      have fullRelevant : operands.all (fun _ => true) = true := by simp
+      have fullRelevant :
+          (values.allOperands operands).all (fun _ => true) = true := by simp
       simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
       split
       · exact K.informationRefines_refl _
