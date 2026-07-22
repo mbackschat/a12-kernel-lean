@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat
+import A12Kernel.Proofs.ScalarEquality
 
 /-! # A12Kernel.Proofs.CheckedEnumeration — checked observation laws -/
 
@@ -79,5 +80,13 @@ theorem flatEnumeration_irrelevant_unknown (op : EqualityOp)
       context (fun _ => false) = .unknown := by
   simp [FlatCondition.evalSelected, FlatComparison.allRelevant,
     FlatComparison.fieldIds, FlatComparison.fields, FlatField.id]
+
+/-- Direct String/Enumeration equality is operand-order invariant after both checked field reads have been resolved. -/
+theorem flatTextFields_swapped (op : EqualityOp)
+    (left right : FlatTextFieldOperand) (context : FlatContext) :
+    (FlatComparison.textFields op left right).eval context =
+      (FlatComparison.textFields op right left).eval context := by
+  simp [FlatComparison.eval, EqualityOp.evalSymmetric_swapped,
+    Bool.beq_comm]
 
 end A12Kernel

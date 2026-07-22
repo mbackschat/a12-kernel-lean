@@ -62,4 +62,9 @@ def EqualityOp.evalSimple (op : EqualityOp) (equivalent : α → α → Bool)
       else
         .notFired
 
+/-- Evaluate equality or inequality between two already-classified operands. Formal unavailability and no-value suppression remain owned by the shared symmetric comparison. -/
+def EqualityOp.evalSymmetric (op : EqualityOp) (equivalent : α → α → Bool)
+    (left right : SimpleComparisonOperand α) : Verdict :=
+  evalSymmetricComparison (fun left right => op.holds (equivalent left right)) left right
+
 end A12Kernel

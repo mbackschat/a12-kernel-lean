@@ -57,6 +57,7 @@ run_cmd do
 #print axioms A12Kernel.evalSymmetricComparison_fixed_firing
 #print axioms A12Kernel.evalSymmetricComparison_missing_firing
 #print axioms A12Kernel.evalSymmetricComparison_swapped
+#print axioms A12Kernel.EqualityOp.evalSymmetric_swapped
 
 #print axioms A12Kernel.dateParts_real_iff
 #print axioms A12Kernel.civilDate_ofParts_isSome_iff
@@ -409,6 +410,7 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
+#print axioms A12Kernel.directComparableProfile_admitsField
 #print axioms A12Kernel.admitsComparison_fields_admitted
 #print axioms A12Kernel.checkContext_lookup_coherent
 #print axioms A12Kernel.checkContext_admittedField_coherent
@@ -417,6 +419,7 @@ run_cmd do
 #print axioms A12Kernel.checkContext_lookup_error_observes_unknown
 #print axioms A12Kernel.flatEnumeration_checkRaw_exact
 #print axioms A12Kernel.flatEnumeration_irrelevant_unknown
+#print axioms A12Kernel.flatTextFields_swapped
 
 #print axioms A12Kernel.fixedNumericFiring_is_value
 #print axioms A12Kernel.symmetricValidationNumericOperand_empty

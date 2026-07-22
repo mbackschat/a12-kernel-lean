@@ -114,6 +114,20 @@ def fields : FlatTemporalOperand → List FlatField
 
 end FlatTemporalOperand
 
+/-- One direct field whose checked value participates in String/Enumeration equality. Enumeration operands project their stored token; category access is a distinct authored form. -/
+inductive FlatTextFieldOperand where
+  | string (field : FlatStringField)
+  | enumeration (field : FlatEnumerationField)
+  deriving Repr, DecidableEq
+
+namespace FlatTextFieldOperand
+
+def field : FlatTextFieldOperand → FlatField
+  | .string field => .string field
+  | .enumeration field => .enumeration field
+
+end FlatTextFieldOperand
+
 inductive FlatComparison where
   | number (op : NumericValidationOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
@@ -123,6 +137,7 @@ inductive FlatComparison where
   | enumeration (op : EqualityOp) (field : FlatEnumerationField)
       (projectionRef : EnumerationProjectionRef)
       (projection : ResolvedEnumerationProjection) (expected : String)
+  | textFields (op : EqualityOp) (left right : FlatTextFieldOperand)
   | temporal (op : TemporalComparisonOp)
       (left right : FlatTemporalOperand)
   deriving Repr, DecidableEq
@@ -137,6 +152,7 @@ def fields : FlatComparison → List FlatField
   | .string _ field _ => [.string field]
   | .stringLength _ field _ => [.string field]
   | .enumeration _ field _ _ _ => [.enumeration field]
+  | .textFields _ left right => [left.field, right.field]
   | .temporal _ left right => left.fields ++ right.fields
 
 def fieldIds (comparison : FlatComparison) : List FieldId :=
@@ -314,6 +330,14 @@ def SimpleComparisonOperand.evalDirectString
       if expected.isEmpty then .notFired
       else op.evalSimple (· == ·) (.value actual given) expected
 
+def FlatTextFieldOperand.resolve (operand : FlatTextFieldOperand)
+    (context : FlatContext) : SimpleComparisonOperand String :=
+  match operand with
+  | .string field => context.resolveDirectStringComparisonOperand field
+  | .enumeration field =>
+      ResolvedEnumerationProjection.stored.resolveOperand
+        (context.observeValidationAt field.id)
+
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
   | .number op field expected =>
@@ -328,6 +352,8 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
   | .enumeration op field _ projection expected =>
       projection.evalLiteral op (context.observeValidationAt field.id) expected
+  | .textFields op left right =>
+      op.evalSymmetric (· == ·) (left.resolve context) (right.resolve context)
   | .temporal op left right =>
       op.evalInstant (left.resolve context) (right.resolve context)
 

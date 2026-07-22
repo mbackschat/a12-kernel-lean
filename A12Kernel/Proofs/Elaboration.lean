@@ -34,6 +34,15 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
       cases nonrepeatable : declaration.repeatableScope.isEmpty <;>
         cases matching : field.matchesDecl declaration <;> simp_all
 
+/-- A resolved direct textual profile is available only for a field admitted by the shared typed-field gate. -/
+theorem directComparableProfile_admitsField (model : FlatModel)
+    (operand : FlatTextFieldOperand) (profile : DirectComparableField)
+    (resolved : model.directComparableFor? operand = some profile) :
+    model.admitsField operand.field = true := by
+  unfold FlatModel.directComparableFor? at resolved
+  unfold FlatModel.admitsField
+  split at resolved <;> simp_all
+
 /-- Every field read by an admitted comparison independently passes the shared typed-field admission check. -/
 theorem admitsComparison_fields_admitted (model : FlatModel)
     (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
@@ -68,6 +77,15 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       | ok declaration =>
           simp [FlatModel.admitsComparison, lookupEq] at admitted
           simpa [FlatModel.admitsField, FlatField.id, lookupEq] using admitted.1
+  | textFields op left right =>
+      unfold FlatModel.admitsComparison at admitted
+      generalize leftEq : model.directComparableFor? left = leftProfile at admitted
+      generalize rightEq : model.directComparableFor? right = rightProfile at admitted
+      cases leftProfile <;> cases rightProfile <;> simp_all
+      simp [FlatComparison.fields] at member
+      rcases member with rfl | rfl
+      · exact directComparableProfile_admitsField model left _ leftEq
+      · exact directComparableProfile_admitsField model right _ rightEq
   | temporal op left right =>
       simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
       exact admitted.2 field member
