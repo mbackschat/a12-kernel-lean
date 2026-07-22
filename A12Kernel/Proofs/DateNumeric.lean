@@ -30,20 +30,4 @@ theorem dateNumericPart_unavailable
       part.fromDateTimeObservation (.unknown cause) = .unknown cause := by
   constructor <;> rfl
 
-/-- Whenever the substituted empty-source zero satisfies a comparison, symmetric date fillability makes the verdict omission-typed for both Date and DateTime. -/
-theorem dateNumericPart_empty_true_comparison_omission
-    (part : DateNumericPart) (op : NumericComparisonOp) (expected : Rat)
-    (holds : op.holds 0 expected = true) :
-    op.evalFixedRight (part.fromFullDateObservation .empty) expected =
-        .fired .omission ∧
-      op.evalFixedRight (part.fromDateTimeObservation .empty) expected =
-        .fired .omission := by
-  cases op <;>
-    simp_all [DateNumericPart.fromFullDateObservation,
-      DateNumericPart.fromDateTimeObservation,
-      DateNumericPart.fromObservation,
-      NumericComparisonOp.evalFixedRight, NumericComparisonOp.eval,
-      NumericComparisonOp.fillCanBreak, numericDifferenceFillCanClose,
-      NumericFillability.both]
-
 end A12Kernel

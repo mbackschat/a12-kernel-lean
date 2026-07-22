@@ -4,6 +4,40 @@ import A12Kernel.Semantics.NumericComparison
 
 namespace A12Kernel
 
+/-- Every symmetric temporal numeric consumer maps an empty typed observation to bidirectionally fillable zero. -/
+theorem symmetricValidationNumericOperand_empty
+    (project : α → Rat) :
+    symmetricValidationNumericOperand project (.empty : CellObservation α) =
+      .value 0 .both := by
+  rfl
+
+/-- Every present value projected through the symmetric temporal numeric seam is fixed. -/
+theorem symmetricValidationNumericOperand_value
+    (project : α → Rat) (value : α) :
+    symmetricValidationNumericOperand project (.value value) =
+      .value (project value) .fixed := by
+  rfl
+
+/-- The symmetric temporal numeric seam preserves the exact formal-unavailability cause. -/
+theorem symmetricValidationNumericOperand_unknown
+    (project : α → Rat) (cause : FormalCause) :
+    symmetricValidationNumericOperand project
+        (.unknown cause : CellObservation α) = .unknown cause := by
+  rfl
+
+/-- Whenever substituted symmetric zero satisfies a fixed-right comparison, either filling direction can break the result and the verdict is omission-typed. -/
+theorem symmetricValidationNumericOperand_true_comparison_omission
+    (project : α → Rat) (op : NumericComparisonOp) (expected : Rat)
+    (holds : op.holds 0 expected = true) :
+    op.evalFixedRight
+        (symmetricValidationNumericOperand project
+          (.empty : CellObservation α)) expected = .fired .omission := by
+  cases op <;>
+    simp_all [symmetricValidationNumericOperand,
+      NumericComparisonOp.evalFixedRight, NumericComparisonOp.eval,
+      NumericComparisonOp.fillCanBreak, numericDifferenceFillCanClose,
+      NumericFillability.both]
+
 /-- A value transformation cannot hide or replace the exact invalid operand cause. -/
 theorem numericOperand_mapValue_unknown
     (cause : FormalCause)

@@ -38,6 +38,15 @@ def asValidationNumericOperand (field : NumField) :
 
 end CellObservation
 
+/-- Apply the symmetric empty-to-zero rule shared by temporal numeric component consumers. Present projected values are fixed; exact unavailability causes remain available to later verdict projection. -/
+def symmetricValidationNumericOperand (project : α → Rat)
+    (observation : CellObservation α) : NumericOperand :=
+  match observation with
+  | .empty => NumericOperand.value 0 .both
+  | .value value => NumericOperand.value (project value) .fixed
+  | .unknown cause => NumericOperand.unknown cause
+  | .poison cause => NumericOperand.unknown cause
+
 /-- Transform only a known amount and its directional metadata; preserve the exact invalid cause. -/
 def NumericOperand.mapValue (operand : NumericOperand)
     (transform : Rat → NumericFillability → Rat × NumericFillability) : NumericOperand :=

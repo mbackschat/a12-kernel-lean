@@ -15,11 +15,9 @@ namespace DateNumericPart
 
 /-- Apply the shared validation-phase empty/unavailable projection before selecting a date component. The caller supplies the already-admitted value's calendar parts. -/
 def fromObservation (part : DateNumericPart) (partsOf : α → DateParts) :
-    CellObservation α → NumericOperand
-  | .empty => .value 0 .both
-  | .value value => .value (part.extract (partsOf value)) .fixed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+    CellObservation α → NumericOperand :=
+  symmetricValidationNumericOperand
+    (fun value => part.extract (partsOf value))
 
 /-- Select a numeric component from a typed full-Date validation observation. -/
 def fromFullDateObservation (part : DateNumericPart) :
