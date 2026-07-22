@@ -143,8 +143,10 @@ private def selfExcluded : SingleCorrelatedStar :=
   { valueField := count
     having := checkedHaving
       (.and
-        (.compareRepetitions .notEqual (repetition .inner) (repetition .outer))
-        (.compareNumbers .equal innerCount outerCount)) (by decide) (by decide) }
+        (CorrelatedHaving.compareRepetitions .notEqual
+          (repetition .inner) (repetition .outer))
+        (CorrelatedHaving.compareNumbers .equal innerCount outerCount))
+      (by decide) (by decide) }
 
 private def selfExcludedPayload : SingleCorrelatedStar :=
   { valueField := payload, having := selfExcluded.having }
@@ -170,6 +172,14 @@ private def smallerInner : SingleCorrelatedStar :=
   { valueField := count
     having := checkedHaving
       (.compareNumbers .lessThan innerCount outerCount) (by decide) (by decide) }
+
+private def smallerOrEqualInner : SingleCorrelatedStar :=
+  { valueField := count
+    having := checkedHaving
+      (.or
+        (CorrelatedHaving.compareNumbers .lessThan innerCount outerCount)
+        (CorrelatedHaving.compareNumbers .equal innerCount outerCount))
+      (by decide) (by decide) }
 
 private def captured (rows : SingleGroupValidationContext) (outerRow : RowIndex) :
     CapturedSingleGroupContext :=
@@ -353,6 +363,10 @@ example : smallerInner.select (captured distinct 2) = [1] := by
   native_decide
 
 example : smallerInner.select (captured distinct 3) = [1, 2] := by
+  native_decide
+
+/- Correlated filters reuse the shared connective tree: `Or` retains both the ordered predecessor and reflexive branches. -/
+example : smallerOrEqualInner.select (captured distinct 2) = [1, 2] := by
   native_decide
 
 example : smallerInner.firingRows distinct = [2, 3] := by

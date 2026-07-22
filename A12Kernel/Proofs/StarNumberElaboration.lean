@@ -8,6 +8,37 @@ namespace A12Kernel
       checked.source.declaration.repeatableScope :=
   checked.source.ancestryOwned
 
+/-- Checked authored filter lowering certifies every Number/repetition leaf against the exact candidate and captured environment levels. -/
+theorem checkedStarNumberHavingSource_wellFormed
+    (checked : CheckedStarNumberHavingSource model) :
+    checked.having.wellFormedForEnvironments model
+      (checked.source.source.path.axes.map (·.level)) checked.outerLevels = true :=
+  checked.filter.wellFormed
+
+/-- A checked authored filter remains inside the conjunction-only surface fragment even though the resolved filter core also supports `Or`. -/
+theorem checkedStarNumberHavingSource_conjunctive
+    (checked : CheckedStarNumberHavingSource model) :
+    checked.having.isConjunctive = true :=
+  checked.filter.authored.conjunctive
+
+/-- A checked authored filter depends on at least one unmarked reference at a level actually reopened by its star. -/
+theorem checkedStarNumberHavingSource_reachesReopenedLevel
+    (checked : CheckedStarNumberHavingSource model) :
+    checked.having.reachesReopenedLevel model
+      ((checked.source.source.path.axes.map (·.level)).drop
+        checked.source.source.path.firstStar) = true :=
+  checked.filter.reachesReopenedLevel
+
+/-- The checked authored wrapper delegates runtime selection to the established resolved environment filter without changing its topology or target classification. -/
+theorem checkedStarNumberHavingSource_resolvedValueSide
+    (checked : CheckedStarNumberHavingSource model) (document : Document)
+    (outer : Env) (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell) :
+    checked.resolvedValueSide document outer filterRead read =
+      checked.source.resolvedValidationHavingValueSide document outer
+        checked.having filterRead read := by
+  rfl
+
 /-- Structural over-repetition replaces ordinary scalar findings at the checked cell boundary. -/
 theorem checkedStarNumberSource_overLimit (checked : CheckedStarNumberSource model)
     (read : Env → FieldId → RawCell) (environment : Env)

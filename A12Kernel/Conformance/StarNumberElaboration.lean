@@ -16,11 +16,26 @@ private def amount : FlatFieldDecl :=
 private def note : FlatFieldDecl :=
   { amount with id := 8, name := "Note", policy := { kind := .string } }
 
+private def sectionLimit : FlatFieldDecl :=
+  { id := 9
+    groupPath := ["Shop", "Sections"]
+    name := "Limit"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [10] }
+
+private def otherAmount : FlatFieldDecl :=
+  { id := 10
+    groupPath := ["Shop", "Other"]
+    name := "Amount"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [30] }
+
 private def model : FlatModel :=
-  { fields := [amount, note]
+  { fields := [amount, note, sectionLimit, otherAmount]
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
-      { level := 10, path := ["Shop", "Sections"], repeatability := some 2 }] }
+      { level := 10, path := ["Shop", "Sections"], repeatability := some 2 },
+      { level := 30, path := ["Shop", "Other"], repeatability := some 2 }] }
 
 private def source (field : String := "Amount") (outerStar : Bool := true) :
     SurfaceStarFieldPath :=
@@ -68,15 +83,60 @@ private def repetition (origin : HavingOrigin)
     (level : RepeatableLevel) : HavingRepetitionRef :=
   { origin, level }
 
-private def sameParentEarlierChild : CorrelatedHaving :=
+private def absoluteField (groups : List String) (field : String) : SurfaceFieldPath :=
+  { base := .absolute, groups, field }
+
+private def absoluteGroup (groups : List String) : SurfaceGroupPath :=
+  { base := .absolute, groups }
+
+private def surfaceNumber (origin : HavingOrigin) (groups : List String)
+    (field : String) : SurfaceHavingNumberRef :=
+  { origin, field := absoluteField groups field }
+
+private def surfaceRepetition (origin : HavingOrigin)
+    (groups : List String) : SurfaceHavingRepetitionRef :=
+  { origin, group := absoluteGroup groups }
+
+private def surfaceSameParentEarlierChild : SurfaceCorrelatedHaving :=
   .and
     (.compareRepetitions .equal
+      (surfaceRepetition .inner ["Shop", "Sections"])
+      (surfaceRepetition .outer ["Shop", "Sections"]))
+    (.compareRepetitions .less
+      (surfaceRepetition .inner ["Shop", "Sections", "Items"])
+      (surfaceRepetition .outer ["Shop", "Sections", "Items"]))
+
+private def surfaceEarlierThanCapturedLimit : SurfaceCorrelatedHaving :=
+  .compareNumbers .less
+    (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
+    (surfaceNumber .outer ["Shop", "Sections"] "Limit")
+
+private def sameParentEarlierChild : CorrelatedHaving :=
+  .and
+    (CorrelatedHaving.compareRepetitions .equal
       (repetition .inner 10) (repetition .outer 10))
-    (.compareRepetitions .lessThan
+    (CorrelatedHaving.compareRepetitions .lessThan
       (repetition .inner 20) (repetition .outer 20))
 
 private def unusedFilterRead (_ : Env) (_ : FieldId) : CheckedCell :=
   formalCheck { kind := .number { scale := 0, signed := false } } .empty
+
+private def numberFilterRead (environment : Env) (fieldId : FieldId) : CheckedCell :=
+  let raw :=
+    if fieldId == amount.id then
+      match environment with
+      | [(10, 1), (20, 1)] => .parsed (.num 1)
+      | [(10, 1), (20, 2)] => .parsed (.num 2)
+      | [(10, 2), (20, 1)] => .parsed (.num 3)
+      | _ => .empty
+    else if fieldId == sectionLimit.id then
+      match environment with
+      | (10, 1) :: _ => .parsed (.num 2)
+      | (10, 2) :: _ => .parsed (.num 4)
+      | _ => .empty
+    else
+      .rejected .malformed
+  formalCheck { kind := .number { scale := 0, signed := false } } raw
 
 private def readSelectedOnly (environment : Env) (_ : FieldId) : RawCell :=
   match environment with
@@ -93,6 +153,34 @@ private def havingCellsOf (outer : Env) :=
       | .error _ => none
       | .ok side => some (side.cells.map snapshotCell,
           side.hasUninstantiatedTail, side.hasHaving)
+
+private def authoredHavingCellsOf (outer : Env) :=
+  match elaborateStarNumberHavingSource model amount.groupPath (source)
+      surfaceSameParentEarlierChild with
+  | .error _ => none
+  | .ok checked =>
+      match checked.resolvedValueSide (document standardRows) outer
+          unusedFilterRead readSelectedOnly with
+      | .error _ => none
+      | .ok side => some (side.cells.map snapshotCell,
+          side.hasUninstantiatedTail, side.hasHaving)
+
+private def authoredNumberHavingCellsOf (outer : Env) :=
+  match elaborateStarNumberHavingSource model amount.groupPath (source)
+      surfaceEarlierThanCapturedLimit with
+  | .error _ => none
+  | .ok checked =>
+      match checked.resolvedValueSide (document standardRows) outer
+          numberFilterRead readSelectedOnly with
+      | .error _ => none
+      | .ok side => some (side.cells.map snapshotCell,
+          side.hasUninstantiatedTail, side.hasHaving)
+
+private def havingErrorOf (declaringGroup : GroupPath)
+    (authoredSource : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving) :=
+  match elaborateStarNumberHavingSource model declaringGroup authoredSource having with
+  | .ok _ => none
+  | .error error => some error
 
 private def relevance (path : List String) (indices : List RelevanceIndex) :
     RelevantEntityPattern :=
@@ -207,7 +295,64 @@ example :
 example :
     havingCellsOf [(10, 1), (20, 2)] = some ([.present 1], true, true) ∧
     havingCellsOf [(10, 2), (20, 2)] = some ([.present 3], true, true) ∧
-    havingCellsOf [(10, 1), (20, 1)] = some ([], true, true) := by
+      havingCellsOf [(10, 1), (20, 1)] = some ([], true, true) := by
+  native_decide
+
+/- Checked authored lowering reaches that same resolved filter without accepting a caller-forged core. -/
+example :
+    authoredHavingCellsOf [(10, 1), (20, 2)] =
+        some ([.present 1], true, true) ∧
+      authoredHavingCellsOf [(10, 2), (20, 2)] =
+        some ([.present 3], true, true) := by
+  native_decide
+
+/- Number references route independently: the candidate Amount reads each leaf, while the captured ancestor Limit remains fixed for the outer rule row. -/
+example :
+    authoredNumberHavingCellsOf [(10, 1), (20, 2)] =
+      some ([.present 1], true, true) := by
+  native_decide
+
+/- An uncorrelated filter is legal when an inner reference reaches a reopened level. -/
+example :
+    (elaborateStarNumberHavingSource model amount.groupPath (source)
+      (.compareRepetitions .less
+        (surfaceRepetition .inner ["Shop", "Sections", "Items"])
+        (surfaceRepetition .inner ["Shop", "Sections", "Items"]))).isOk = true := by
+  native_decide
+
+/- The same general lowering admits a reopened candidate Number against an ancestor value available from the complete captured environment. -/
+example :
+    (elaborateStarNumberHavingSource model amount.groupPath (source)
+      (.compareNumbers .less
+        (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
+        (surfaceNumber .outer ["Shop", "Sections"] "Limit"))).isOk = true := by
+  native_decide
+
+/- `$`-only/bound-only filters and references requiring unavailable candidate or captured bindings fail before runtime. -/
+example :
+    havingErrorOf amount.groupPath (source (outerStar := false))
+        (.compareNumbers .equal
+          (surfaceNumber .inner ["Shop", "Sections"] "Limit")
+          (surfaceNumber .outer ["Shop", "Sections"] "Limit")) =
+        some (.having .missingInner) ∧
+      havingErrorOf amount.groupPath (source)
+        (.compareNumbers .equal
+          (surfaceNumber .inner ["Shop", "Other"] "Amount")
+          (surfaceNumber .outer ["Shop", "Sections", "Items"] "Amount")) =
+        some (.having (.fieldOutsideEnvironment .inner otherAmount.path
+          [10, 20] [30])) ∧
+      havingErrorOf ["Shop", "Sections"] (source)
+        (.compareNumbers .equal
+          (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
+          (surfaceNumber .outer ["Shop", "Sections", "Items"] "Amount")) =
+        some (.having (.fieldOutsideEnvironment .outer amount.path
+          [10] [10, 20])) ∧
+      havingErrorOf amount.groupPath (source)
+        (.compareRepetitions .equal
+          (surfaceRepetition .inner ["Shop", "Sections", "Items"])
+          (surfaceRepetition .outer ["Shop", "Other"])) =
+        some (.having (.repetitionOutsideEnvironment .outer ["Shop", "Other"]
+          [10, 20] 30)) := by
   native_decide
 
 /- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/
