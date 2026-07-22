@@ -766,7 +766,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-22-06 — `FirstFilledValue` keeps omitted tail distinct from an empty prefix
 
-- **Status:** handed-off
+- **Status:** rejected — runtime premise disproved; Lean corrected
 - **Local revision:** `657334dc9674dc5027bfb6c42ca772587c244a00`
 - **a12-dmkits basis revision:** `ec2e82cbaef2a274baa0b091e86919458fe732c6`
 - **Kernel behavior:** 30.8.1
@@ -776,10 +776,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** At the existing ordered `firstFilledScan` root, keep omitted declared capacity separate from actual encountered emptiness. Use the current multi-operand typed surface and differential facilities to compare four Number cases: no-row first star then filled direct fallback → VALUE; one instantiated empty star row then the same fallback → OMISSION; no-row first star with no later value → fillable-zero OMISSION; and a reached filtered no-row first star then filled fallback → OMISSION. Keep the selected amount and computation result unchanged, preserve later-slot invisibility, and do not add a second scan or aggregate state.
 - **Compatibility:** The correction can change only VALUE versus OMISSION for a firing that selects a later operand after an earlier unfiltered star contributes omitted capacity but no concrete cell. It does not change the selected Number, all-exhausted zero, actual-empty prefix, reached-filter escalation, formal-error termination, or computation value.
 - **Acceptance:** Both kernel strategies and the interpreter distinguish omitted capacity from an instantiated empty prefix before the same later fallback, preserve the all-exhausted and reached-filter controls, update canonical a12-dmkits prose at the existing `FirstFilledValue` owner, and return the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `83dd514f9283b9f62dbe6ee6f238e5c67a00e9c6`
+- **Disposition:** rejected with contrary kernel evidence. A flat star with no instantiated row and a nested star whose instantiated outer row has no inner row both reach the wrapper's not-given value path before a later fallback, so both firings are OMISSION rather than the requested VALUE. The same maintained differential retains instantiated-empty OMISSION and selected-star VALUE controls. The peer evaluator was already correct. Lean's shared scan entry, canonical clause, source account, laws, and flat/nested separators were corrected in the introducing commit; the lower-level combiner's separate `omittedTail` state remains real but does not bypass the wrapper's preceding no-row observation.
 
 ### SPEC-2026-07-22-07 — ordinary aggregate duplicate checking skips wildcarded operands
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `132bf3bd984615b4373d3d6bd18c67746cc5673b`
 - **Kernel behavior:** 30.8.1
@@ -789,6 +791,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Correct the existing aggregate duplicate-admission owner so `FieldListRef` operands are excluded from direct duplicate rejection for `FirstFilledValue`, `Sum`, `MaxValue`, and `MinValue`, while repeated direct fields remain rejected. Reuse the existing field-operand identities and constructors; do not add another aggregate AST or checker. Add focused authoring/read controls for a repeated plain star, a repeated filtered star, a plain plus filtered reference to the same star, a non-adjacent repeated direct field separated by a star, and an indirect group/field overlap if the typed surface supports it. Through an existing runtime route, lock that two identical starred slots in `Sum` are consumed twice rather than deduplicated; retain kind, cardinality, ordering, filter, and HModel boundaries.
 - **Compatibility:** The current peer rejects kernel-legal repeated wildcard operands. A correction can change model admission and, for non-idempotent aggregates such as `Sum`, the result because every authored occurrence contributes independently. It must not admit repeated direct fields or silently collapse repeated star slots.
 - **Acceptance:** Both kernel strategies and a12-dmkits admit the named repeated-wildcard controls, reject direct and indirect duplicates at their existing diagnostics, preserve every authored star occurrence at runtime, and keep existing aggregate and `FirstFilledValue` behavior green. The handback supplies the exact committed revision and per-surface disposition.
+- **a12-dmkits revision:** `d82260d87de0c3e4576895b665819d205756f857`
+- **Disposition:** accepted — the existing aggregate constructors now exclude wildcarded `FieldListRef` operands from direct duplicate rejection while preserving direct-field rejection and authored occurrence order. Typed authoring locks repeated plain, repeated filtered, and plain-plus-filtered stars plus non-adjacent direct duplicates; kernel admission locks the direct and indirect diagnostics; and the maintained differential confirms that repeating a starred `Sum` slot consumes its values twice rather than deduplicating them. The typed surface still cannot express a group/descendant overlap, so that existing kernel-only control remains a static boundary rather than a new AST.
 
 ### SPEC-2026-07-22-08 — computation results retain rich V2 projections beyond the change delta
 

@@ -258,7 +258,8 @@ def selectedPartialValidationFirstFilled (checked : CheckedStarNumberSource mode
     (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : PartialValidationFirstFilledNumberResult :=
   scanPartialValidationFirstFilled checked scope read resolved.environments
-    (({} : FirstFilledNumberScanState).enter resolved.domain.hasOpenTail false)
+    (({} : FirstFilledNumberScanState).enterSelection
+      resolved.environments.isEmpty resolved.domain.hasOpenTail false)
 
 /-- Resolve the canonical nested topology once, then run the order-aware partial-validation first-filled scan. -/
 def resolvedPartialValidationFirstFilled (checked : CheckedStarNumberSource model)
@@ -288,13 +289,14 @@ private def scanCheckedFirstFilledNumberOperand
   | .star source => do
       let resolved ← source.source.path.resolve document outer
       pure (source.scanPartialValidationFirstFilledState scope starRead
-        resolved.environments (state.enter resolved.domain.hasOpenTail false))
+        resolved.environments (state.enterSelection resolved.environments.isEmpty
+          resolved.domain.hasOpenTail false))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolve document outer
       let selected := source.having.selectEnvironments { read := filterRead } outer
         resolved.environments
       pure (source.source.scanPartialValidationFirstFilledState scope starRead selected
-        (state.enter resolved.domain.hasOpenTail true))
+        (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail true))
 
 private def scanCheckedFirstFilledNumberOperands
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
