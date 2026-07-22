@@ -2,7 +2,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Resolved Number `FirstFilledValue` executable locks
 
-These cases start with one operand after ordered expansion and `Having` filtering. They lock the prefix-sensitive scan and its two consumers without adding paths, iteration, multi-operand authoring, filter evaluation, target application, or whole-rule orchestration.
+These cases start after ordered expansion and `Having` filtering. They lock the prefix-sensitive single- and multi-slot scan plus its two projections without adding paths, authored lowering, filter evaluation, target application, or whole-rule orchestration.
 -/
 
 namespace A12Kernel.Conformance.FirstFilledValue

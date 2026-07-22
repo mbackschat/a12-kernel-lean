@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.FirstFilledValue
 
 /-! # Resolved Number `FirstFilledValue` laws
 
-These laws characterize only one ordered, already-expanded and filtered Number operand plus its two projections. They do not prove path expansion, `Having` evaluation, partial relevance, multi-operand authoring, authored lowering, target application, or external kernel equivalence.
+These laws characterize the ordered resolved Number scan, its two projections, checked-star partial relevance, and the static multiplicity/direct-uniqueness certificates of checked mixed authoring. They do not prove complete path/tree correspondence, `Having` semantic preservation, the general document/result boundary, target application, or external kernel equivalence.
 -/
 
 namespace A12Kernel
@@ -168,7 +168,8 @@ theorem checkedStarNumberSource_nonRelevantFirstFilledHeadBeforeRead
       checked.selectedPartialValidationFirstFilled
         { domain, environments := environment :: environments } scope right = .nonRelevant := by
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
-    CheckedStarNumberSource.scanPartialValidationFirstFilled, nonRelevant]
+    CheckedStarNumberSource.scanPartialValidationFirstFilled,
+    CheckedStarNumberSource.scanPartialValidationFirstFilledState, nonRelevant]
 
 /-- A relevant present head selects its value and hides every suffix; arbitrary readers need agree only on that reached classification. -/
 theorem checkedStarNumberSource_presentFirstFilledHeadStops
@@ -185,8 +186,21 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
         { domain, environments := environment :: environments } scope right =
           .evaluated (.value amount false) := by
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
-    CheckedStarNumberSource.scanPartialValidationFirstFilled, relevant,
+    CheckedStarNumberSource.scanPartialValidationFirstFilled,
+    CheckedStarNumberSource.scanPartialValidationFirstFilledState, relevant,
     leftPresent, rightPresent, FirstFilledNumberScanState.enter,
     FirstFilledNumberScanState.step]
+
+/-- Checked multi-operand authoring always retains either a starred first source or a genuine trailing operand. -/
+theorem checkedFirstFilledNumberSource_requiredMultiplicity
+    (checked : CheckedFirstFilledNumberSource model) :
+    (checked.first.isStar || !checked.rest.isEmpty) = true :=
+  checked.requiredMultiplicity
+
+/-- Checked multi-operand authoring contains no repeated direct non-wildcard field reference. -/
+theorem checkedFirstFilledNumberSource_uniqueDirectOperands
+    (checked : CheckedFirstFilledNumberSource model) :
+    firstDuplicateDirectFirstFilledNumberField? checked.operands = none :=
+  checked.uniqueDirectOperands
 
 end A12Kernel
