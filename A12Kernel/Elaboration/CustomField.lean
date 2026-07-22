@@ -12,6 +12,11 @@ inductive FlatCustomFieldPreparationError where
   | custom (error : CustomFieldTypeElabError)
   deriving Repr, DecidableEq
 
+inductive FlatCustomFieldEvaluationError where
+  | preparation (error : FlatCustomFieldPreparationError)
+  | condition (error : ElabError)
+  deriving Repr, DecidableEq
+
 /-- One flat String declaration paired with its checked registered custom type. -/
 structure PreparedFlatCustomField where
   declaration : FlatFieldDecl
@@ -71,5 +76,15 @@ def prepareFlatCustomFields (world : World) (model : FlatModel) :
       match prepareCustomDeclarations world model.fields with
       | .error error => .error error
       | .ok fields => .ok { model, fields }
+
+/-- Prepare custom declarations, elaborate against the exact same model, and evaluate through the prepared locale-aware context. -/
+def elaborateAndEvalCustomFull (model : FlatModel) (world : World)
+    (locale : String) (declaringGroup : GroupPath) (raw : RawFlatContext)
+    (hasContent : Bool) (condition : SurfaceCondition) :
+    Except FlatCustomFieldEvaluationError Verdict := do
+  let prepared ← (prepareFlatCustomFields world model).mapError .preparation
+  let checked ← (elaborate model declaringGroup condition).mapError .condition
+  pure (checked.core.evalFull
+    ((prepared.checkContext locale raw).withWorld world) hasContent)
 
 end A12Kernel
