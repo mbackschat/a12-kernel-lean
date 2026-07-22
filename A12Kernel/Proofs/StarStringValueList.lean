@@ -4,6 +4,12 @@ import A12Kernel.Elaboration.StarStringValueList
 
 namespace A12Kernel
 
+/-- The checked star-specific String field is the terminal declaration's exact identifier, not a caller-selected lookalike. -/
+theorem checkedStarStringSource_fieldId_exact
+    (checked : CheckedStarStringSource model) :
+    checked.field.id = checked.source.declaration.id :=
+  checked.fieldIdOwned
+
 /-- Checked authoring always retains a nonempty literal token side. -/
 theorem checkedStarStringValueList_values_nonempty
     (checked : CheckedStarStringValueListSource model) :
@@ -84,6 +90,49 @@ theorem checkedStarStringValueList_evaluatePartial_of_resolved
       .ok (checked.quantifier.evalClassified fields
         (.ofResolved checked.resolvedValuesSide)) := by
   simp [CheckedStarStringValueListSource.evaluatePartial, resolved]
+  rfl
+
+/-- The direct fields-side operand is re-admitted against the exact model before it can be paired with a starred values side. -/
+theorem checkedStringValueListStarValues_field_admitted
+    (checked : CheckedStringValueListStarValuesSource model) :
+    model.admitsField (.string checked.field) = true :=
+  checked.admitted
+
+/-- The direct fields side contains exactly one model-checked String cell and no star metadata. -/
+theorem checkedStringValueListStarValues_fieldsSide_shape
+    (checked : CheckedStringValueListStarValuesSource model)
+    (raw : RawFlatContext) :
+    checked.resolvedFieldsSide raw = {
+      cells := [
+        (FlatTextFieldOperand.string checked.field).valueListCell
+          (model.checkContext raw)]
+      hasUninstantiatedTail := false
+      hasHaving := false } := by
+  rfl
+
+/-- Once the starred values side resolves, full evaluation delegates exactly to the common token-list dispatcher. -/
+theorem checkedStringValueListStarValues_evaluateFull_of_resolved
+    (checked : CheckedStringValueListStarValuesSource model)
+    (document : Document) (outer : Env) (raw : RawFlatContext)
+    (read : Env → FieldId → RawCell) (values : ResolvedValueListSide .token)
+    (resolved : checked.values.resolvedValueSide document outer read = .ok values) :
+    checked.evaluateFull document outer raw read =
+      .ok (checked.quantifier.eval (checked.resolvedFieldsSide raw) values) := by
+  simp [CheckedStringValueListStarValuesSource.evaluateFull, resolved]
+  rfl
+
+/-- Once partial star resolution succeeds, both classified sides enter the sole asymmetric dispatcher unchanged. -/
+theorem checkedStringValueListStarValues_evaluatePartial_of_resolved
+    (checked : CheckedStringValueListStarValuesSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (read : Env → FieldId → RawCell)
+    (values : ResolvedValueListQuantifierSide .token)
+    (resolved : checked.values.resolvedPartialValueSide document outer scope read =
+      .ok values) :
+    checked.evaluatePartial document outer scope raw read =
+      .ok (checked.quantifier.evalClassified
+        (checked.resolvedPartialFieldsSide scope raw) values) := by
+  simp [CheckedStringValueListStarValuesSource.evaluatePartial, resolved]
   rfl
 
 end A12Kernel
