@@ -364,6 +364,91 @@ example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
     (raw (.parsed (.enum "B"))) true (.enumerationValueMembership .included
       categoryCode ["Shared"])) = some (.fired .value) := by native_decide
 
+private def enumerationFieldMembership (op : ValueListMembershipOp) : SurfaceCondition :=
+  .enumerationFieldValueMembership op categoryCode
+    [(.direct (fieldPath "CategoryPeer"))]
+
+example : coreOf (elaborate fieldModel ["Order"]
+    (enumerationFieldMembership .included)) = some
+      (.tokenValueList .atLeastOne
+        [.enumeration {
+          field := { id := 20 }
+          projectionRef := .category "Kind"
+          projection := .category categoryMapping }]
+        (.fields [.enumeration {
+          field := { id := 25 }, projectionRef := .stored, projection := .stored }])) ∧
+    coreOf (elaborate fieldModel ["Order"]
+      (enumerationFieldMembership .notIncluded)) = some
+        (.tokenValueList .notAll
+          [.enumeration {
+            field := { id := 20 }
+            projectionRef := .category "Kind"
+            projection := .category categoryMapping }]
+          (.fields [.enumeration {
+            field := { id := 25 }, projectionRef := .stored, projection := .stored }])) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Shared"))) true
+    (enumerationFieldMembership .included)) = some (.fired .value) ∧
+    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+      (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Other"))) true
+      (enumerationFieldMembership .notIncluded)) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 .empty 25 (.parsed (.enum "Shared"))) true
+    (enumerationFieldMembership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+      (rawPair 20 .empty 25 (.parsed (.enum "Shared"))) true
+      (enumerationFieldMembership .notIncluded)) = some .notFired := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 (.rejected .malformed) 25 (.parsed (.enum "Shared"))) true
+    (enumerationFieldMembership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+      (rawPair 20 (.rejected .malformed) 25 (.parsed (.enum "Shared"))) true
+      (enumerationFieldMembership .notIncluded)) = some .notFired := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
+    (enumerationFieldMembership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+      (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
+      (enumerationFieldMembership .notIncluded)) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 (.parsed (.enum "A")) 25 (.rejected .malformed)) true
+    (enumerationFieldMembership .included)) = some .notFired ∧
+    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+      (rawPair 20 (.parsed (.enum "A")) 25 (.rejected .malformed)) true
+      (enumerationFieldMembership .notIncluded)) = some .unknown := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationFieldValueMembership .included categoryCode [])) =
+    some .emptyValueListValueFields := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationFieldValueMembership .included
+      (.direct (fieldPath "Code")) [(.direct (fieldPath "Code"))])) =
+    some (.duplicateValueListField ["Order", "Code"] .stored) := by native_decide
+
+example : (elaborate fieldModel ["Order"]
+    (.enumerationFieldValueMembership .included categoryCode
+      [(.direct (fieldPath "Code"))])).isOk = true := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 25 (.parsed (.enum "Shared")) 20 (.parsed (.enum "A"))) true
+    (.enumerationFieldValueMembership .included
+      (.direct (fieldPath "CategoryPeer")) [categoryCode])) =
+    some (.fired .value) := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationFieldValueMembership .included categoryCode
+      [(.direct (fieldPath "Text"))])) =
+    some (.textFieldOperandKindMismatch ["Order", "Text"] .string) := by native_decide
+
 private def twoFieldValueList : SurfaceCondition :=
   .enumerationValueList .atLeastOne
     [(.direct (fieldPath "Code")), (.direct (fieldPath "CategoryPeer"))]
