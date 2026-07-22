@@ -76,6 +76,7 @@ import A12Kernel.Proofs.FirstFilledValue
 import A12Kernel.Proofs.StarCompleteness
 import A12Kernel.Proofs.StarAddressing
 import A12Kernel.Proofs.StarPathElaboration
+import A12Kernel.Proofs.StarNumberElaboration
 import A12Kernel.Proofs.NumericStarElaboration
 import A12Kernel.Proofs.NumericAggregate
 import A12Kernel.Proofs.NumericAggregateElaboration
