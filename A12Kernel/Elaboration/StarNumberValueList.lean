@@ -143,6 +143,38 @@ def resolvedValueSide (checked : CheckedStarNumberValueListFields model)
 
 end CheckedStarNumberValueListFields
 
+/-- Partial validation distinguishes a rule-level `Having` skip from an evaluated value-list verdict. A containing whole condition must still report filters from every branch before invoking this leaf route. -/
+inductive PartialStarNumberValueListResult where
+  | skippedHaving
+  | evaluated (verdict : Verdict)
+  deriving Repr, DecidableEq
+
+namespace CheckedStarNumberSource
+
+/-- Retain only relevant concrete cells for present-value search while recording whether any topology-produced cell was masked. The filter is evaluated before the declaration-owned reader. -/
+def selectedPartialValueListSide (checked : CheckedStarNumberSource model)
+    (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) :
+    ResolvedValueListQuantifierSide .number :=
+  let relevant := resolved.environments.filter fun environment =>
+    checked.source.cellRelevant scope environment
+  { side := {
+      cells := relevant.map (checked.valueListCell read)
+      hasUninstantiatedTail := resolved.domain.hasOpenTail
+      hasHaving := false }
+    hasNonRelevant := resolved.environments.any fun environment =>
+      !checked.source.cellRelevant scope environment }
+
+/-- Resolve canonical nested topology once, then construct the partial quantifier side without reading masked cells. -/
+def resolvedPartialValueListSide (checked : CheckedStarNumberSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) :
+    Except StarAddressingError (ResolvedValueListQuantifierSide .number) := do
+  let resolved ← checked.source.path.resolve document outer
+  pure (checked.selectedPartialValueListSide resolved scope read)
+
+end CheckedStarNumberSource
+
 namespace CheckedStarNumberValueListSource
 
 def values (checked : CheckedStarNumberValueListSource model) :
@@ -158,6 +190,20 @@ def resolvedValuesSide (checked : CheckedStarNumberValueListSource model)
     hasUninstantiatedTail := false
     hasHaving := false }
 
+/-- Direct values-side fields use the same relevance-before-read classification as starred fields. Nonrelevance remains distinct from a formal failure while reaching the one shared quantifier evaluator through its classified-side view. -/
+def resolvedPartialValuesSide (checked : CheckedStarNumberValueListSource model)
+    (scope : ValidationRelevanceScope) (raw : RawFlatContext) :
+    ResolvedValueListQuantifierSide .number :=
+  let relevant := checked.values.filter fun value =>
+    scope.coversCell model value.declaration.path []
+  let context := model.checkContext raw
+  { side := {
+      cells := relevant.map fun value => value.field.valueListCell context
+      hasUninstantiatedTail := false
+      hasHaving := false }
+    hasNonRelevant := checked.values.any fun value =>
+      !scope.coversCell model value.declaration.path [] }
+
 /-- Evaluate the supported full-validation fragment through the existing checked star
 and resolved value-list quantifier boundaries. Whole-rule content, metadata, and message
 emission remain with the later general checked validation owner. -/
@@ -168,6 +214,18 @@ def evaluateFull (checked : CheckedStarNumberValueListSource model)
     Except StarAddressingError Verdict := do
   let fields ← checked.fields.resolvedValueSide document outer filterRead starRead
   pure (checked.quantifier.eval fields (checked.resolvedValuesSide raw))
+
+/-- Evaluate the unfiltered partial-validation leaf after its containing rule's independent error-field gate. A locally visible `Having` skips before topology, relevance, or either value reader; otherwise both sides classify nonrelevance per cell and delegate to the shared asymmetric quantifier core. -/
+def evaluatePartial (checked : CheckedStarNumberValueListSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError PartialStarNumberValueListResult :=
+  match checked.fields with
+  | .star source => do
+      let fields ← source.resolvedPartialValueListSide document outer scope starRead
+      pure (.evaluated (checked.quantifier.evalClassified fields
+        (checked.resolvedPartialValuesSide scope raw)))
+  | .starHaving _ => pure .skippedHaving
 
 end CheckedStarNumberValueListSource
 

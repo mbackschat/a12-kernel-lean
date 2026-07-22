@@ -725,7 +725,12 @@ run_cmd do
 #print axioms A12Kernel.checkedStarNumberValueList_valuesSide_shape
 #print axioms A12Kernel.checkedStarNumberValueList_plainFields_delegates
 #print axioms A12Kernel.checkedStarNumberValueList_havingFields_delegates
+#print axioms A12Kernel.checkedStarNumberValueList_partialFields_shape
+#print axioms A12Kernel.checkedStarNumberValueList_partialFields_agreeOnRelevant
+#print axioms A12Kernel.checkedStarNumberValueList_partialValues_shape
 #print axioms A12Kernel.checkedStarNumberValueList_evaluateFull_of_resolved
+#print axioms A12Kernel.checkedStarNumberValueList_evaluatePartial_of_resolved
+#print axioms A12Kernel.checkedStarNumberValueList_partialHaving_skips
 #print axioms A12Kernel.checkedStarFieldPath_cellRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_cellRelevant_partialSet_iff
 #print axioms A12Kernel.groupFilled_fired_iff
@@ -800,7 +805,9 @@ run_cmd do
 #print axioms A12Kernel.flatTokenValueList_canFireOnEmpty
 #print axioms A12Kernel.flatTokenValueListSide_cells
 #print axioms A12Kernel.flatTokenValueSide_fields
-#print axioms A12Kernel.flatTokenValueList_irrelevant_unknown
+#print axioms A12Kernel.selectedFlatTokenValueListSide_full
+#print axioms A12Kernel.flatTokenValueSide_resolveSelected_full
+#print axioms A12Kernel.flatTokenValueList_allIrrelevant
 #print axioms A12Kernel.flatTokenValueMembership_empty
 #print axioms A12Kernel.flatEnumerationValueList_no_empty
 #print axioms A12Kernel.flatEnumerationValueMembership_empty
@@ -808,7 +815,9 @@ run_cmd do
 #print axioms A12Kernel.flatNumberValueListCell_present
 #print axioms A12Kernel.flatNumberValueListCell_unknown
 #print axioms A12Kernel.flatNumberValueList_canFireOnEmpty
-#print axioms A12Kernel.flatNumberValueList_irrelevant_unknown
+#print axioms A12Kernel.selectedFlatNumberValueListSide_full
+#print axioms A12Kernel.flatNumberValueSide_resolveSelected_full
+#print axioms A12Kernel.flatNumberValueList_allIrrelevant
 #print axioms A12Kernel.flatNumberValueMembership_empty
 #print axioms A12Kernel.flatNumberValueList_no_empty
 #print axioms A12Kernel.enumerationRepetitionKey_empty
@@ -836,6 +845,12 @@ run_cmd do
 #print axioms A12Kernel.valueListAtLeastOne_having_fires_omission
 #print axioms A12Kernel.valueListNo_having_fires_omission
 #print axioms A12Kernel.valueListNotAll_having_fires_omission
+#print axioms A12Kernel.resolvedValueList_contains_of_cells_sublist
+#print axioms A12Kernel.resolvedValueList_anyMatches_of_cells_sublist
+#print axioms A12Kernel.resolvedValueList_anyOutside_of_fields_sublist
+#print axioms A12Kernel.resolvedValueList_hasPresent_of_anyOutside
+#print axioms A12Kernel.valueList_evalClassified_noNonRelevant
+#print axioms A12Kernel.valueList_classified_fired_implies_resolved_fired
 #print axioms A12Kernel.firstFilledNumber_present_head
 #print axioms A12Kernel.firstFilledNumber_unknown_head
 #print axioms A12Kernel.firstFilledNumber_empty_then_present

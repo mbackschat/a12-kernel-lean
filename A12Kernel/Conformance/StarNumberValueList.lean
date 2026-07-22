@@ -86,6 +86,17 @@ private def verdictOf (surface : SurfaceStarNumberValueListSource)
       | .error _ => none
       | .ok verdict => some verdict
 
+private def partialResultOf (surface : SurfaceStarNumberValueListSource)
+    (rows : List RowAddr) (scope : ValidationRelevanceScope)
+    (direct : RawFlatContext) (starRead : Env → FieldId → RawCell)
+    (outer : Env := []) : Option PartialStarNumberValueListResult :=
+  match elaborateStarNumberValueListSource model amount.groupPath surface with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluatePartial (document rows) outer scope direct starRead with
+      | .error _ => none
+      | .ok result => some result
+
 private def errorOf (surface : SurfaceStarNumberValueListSource) :
     Option StarNumberValueListElabError :=
   match elaborateStarNumberValueListSource model amount.groupPath surface with
@@ -103,6 +114,55 @@ example :
     verdictOf (authored .notAll) fullRows
       (directRead (.parsed (.num 5)) .empty) malformedThenFive =
         some .notFired := by
+  native_decide
+
+private def entity (path : List String) (indices : List RelevanceIndex) :
+    RelevantEntityPattern :=
+  { path, indices }
+
+private def firstAmountAndNeedle : ValidationRelevanceScope :=
+  .partialSet [
+    entity amount.path [.concrete 1, .concrete 1, .concrete 1, .concrete 1],
+    entity needle.path [.concrete 1, .concrete 1]]
+
+/- Nonrelevant fields cells are absent from the present search: a relevant witness still decides the two existential quantifiers, while `No` retains UNKNOWN poison. -/
+example :
+    partialResultOf (authored .atLeastOne) fullRows firstAmountAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
+        (constantStarRead (.parsed (.num 5))) =
+      some (.evaluated (.fired .value)) ∧
+    partialResultOf (authored .notAll) fullRows firstAmountAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated (.fired .value)) ∧
+    partialResultOf (authored .no) fullRows firstAmountAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated .unknown) := by
+  native_decide
+
+private def allAmountsAndSpare : ValidationRelevanceScope :=
+  .partialSet [
+    entity amount.path [.concrete 1, .all, .all, .concrete 1],
+    entity spare.path [.concrete 1, .concrete 1]]
+
+/- Direct values-side nonrelevance uses the same classification: `AtLeastOne` can use another relevant member, while `No` and `NotAll` are poisoned. -/
+example :
+    partialResultOf (authored .atLeastOne (restValues := ["Spare"]))
+        fullRows allAmountsAndSpare
+        (directRead (.rejected .malformed) (.parsed (.num 7)))
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated (.fired .value)) ∧
+    partialResultOf (authored .no (restValues := ["Spare"]))
+        fullRows allAmountsAndSpare
+        (directRead (.rejected .malformed) (.parsed (.num 9)))
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated .unknown) ∧
+    partialResultOf (authored .notAll (restValues := ["Spare"]))
+        fullRows allAmountsAndSpare
+        (directRead (.rejected .malformed) (.parsed (.num 9)))
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated .unknown) := by
   native_decide
 
 /- A fields-side omitted tail types `No` as OMISSION, but never taints `NotAll`. -/
@@ -155,6 +215,16 @@ example :
       (.starHaving (starPath) earlierSibling)) fullRows
       (directRead (.parsed (.num 5)) .empty) selectedOnly
       [(10, 1), (20, 2)] = some (.fired .omission) := by
+  native_decide
+
+/- Partial validation skips a `Having`-bearing source before malformed topology or either value reader is reached. -/
+example :
+    partialResultOf (authored .atLeastOne
+        (.starHaving (starPath) earlierSibling))
+      [{ group := 20, path := [1, 1] }] .full
+      (directRead (.rejected .malformed) .empty)
+      (constantStarRead (.rejected .malformed)) =
+        some .skippedHaving := by
   native_decide
 
 /- Static admission resolves duplicates before Number certification and retains the star's exact kind gate. -/
