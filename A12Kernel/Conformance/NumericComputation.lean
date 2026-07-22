@@ -816,10 +816,28 @@ example :
           (checkedNumber (.parsed (.num 6)))) = some (.value 10) := by
   native_decide
 
-/- Direct aggregate rounding does not widen every scalar-only value-function shape to aggregate operands. -/
+/- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. Operand-list extrema remain a distinct unsupported wrapper shape. -/
 example :
     let aggregate := surfaceAggregate .sum "Source" ["Later"]
-    checkedErrorOf (.abs aggregate) = some .unsupportedExpression ∧
+    checkedResultOf (.abs aggregate)
+        (context (checkedNumber (.parsed (.num (-10))))
+          (checkedNumber (.parsed (.num 4)))) = some (.value 6) ∧
+      checkedResultOf (.abs aggregate) = some (.value 0) ∧
+      checkedResultOf (.abs aggregate)
+        (context (checkedNumber (.rejected .declaredConstraint))) =
+          some (.poison .declaredConstraint) ∧
+      checkedResultOf
+        (.abs (surfaceAggregate .minimum "Source" ["Later"]))
+        (context (checkedNumber (.parsed (.num (-10))))
+          (checkedNumber (.parsed (.num 4)))) = some (.value 10) ∧
+      checkedResultOf
+        (.abs (surfaceAggregate .maximum "Source" ["Later"]))
+        (context (checkedNumber (.parsed (.num (-10))))
+          (checkedNumber (.parsed (.num 4)))) = some (.value 4) ∧
+      checkedResultOf
+        (.abs (surfaceAggregate .distinctCount "Source" ["Later"]))
+        (context (checkedNumber (.parsed (.num 5)))
+          (checkedNumber (.parsed (.num 5)))) = some (.value 1) ∧
       checkedErrorOf
         (AuthoredNumericExpr.extremumList .minimum aggregate
           [surfaceField ["Root"] "Source"]) = some .unsupportedExpression := by

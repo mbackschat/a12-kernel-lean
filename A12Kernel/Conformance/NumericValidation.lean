@@ -1067,6 +1067,37 @@ example :
           (NumericScaleSummary.field 2) (NumericScaleSummary.field 0)) := by
   native_decide
 
+/- Direct aggregate `Abs` applies after the shared fold: a negative total changes sign, all-empty bidirectional zero becomes grow-only magnitude, formal failure stays unknown, and the aggregate scale is retained. -/
+example :
+    verdictOf (comparison .equal (.abs (aggregate .sum "S" ["U"])) 3)
+        (raw (.parsed (.num 2)) .empty (.parsed (.num (-5)))) =
+      some (.fired .value) ∧
+    verdictOf (comparison .less (.abs (aggregate .sum "S" ["U"])) 10) =
+      some (.fired .omission) ∧
+    verdictOf (comparison .greater (.abs (aggregate .sum "S" ["U"])) (-10)) =
+      some (.fired .value) ∧
+    verdictOf (comparison .equal (.abs (aggregate .sum "S" ["U"])) 0)
+        (raw (.rejected .declaredConstraint)) = some .unknown ∧
+    verdictOf (comparison .equal (.abs (aggregate .minimum "S" ["U"])) 5)
+        (raw (.parsed (.num 2)) .empty (.parsed (.num (-5)))) =
+      some (.fired .value) ∧
+    verdictOf (comparison .equal (.abs (aggregate .maximum "S" ["U"])) 2)
+        (raw (.parsed (.num 2)) .empty (.parsed (.num (-5)))) =
+      some (.fired .value) ∧
+    verdictOf (comparison .equal
+        (.abs (aggregate .distinctCount "U" ["V"])) 1)
+        (raw (.parsed (.num 5)) (.parsed (.num 5))) = some (.fired .value) ∧
+    verdictOf (comparison .less
+        (.abs (aggregate .distinctCount "U" ["V"])) 1) =
+      some (.fired .omission) ∧
+    verdictOf (comparison .greater
+        (.abs (aggregate .distinctCount "U" ["V"])) (-1)) =
+      some (.fired .value) ∧
+    (elaborateNumericComparison model ["Order"]
+      (twoSided .equal (.abs (aggregate .sum "U" ["Scale2"]))
+        (atom "Scale2"))).isOk = true := by
+  native_decide
+
 /- NumberOfDifferentValues is an integral aggregate independently of operand declarations, and its grow-only missing state reaches ordinary comparison polarity. -/
 example :
     errorOf (twoSided .equal
