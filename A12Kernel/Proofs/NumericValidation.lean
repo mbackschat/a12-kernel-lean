@@ -459,7 +459,8 @@ theorem numericComparison_atom_literal_agrees_flat
       LoweredNumericExpr.evalAdmittedValidation?,
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericValidationAtom,
-      FlatContext.resolveNumericArithmetic, FlatComparison.eval,
+      FlatContext.resolveNumericArithmetic,
+      NumericOperand.toValidationArithmetic, FlatComparison.eval,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericValidationOp.evalFixedRight,
       NumericComparisonOp.eval, observed]
@@ -482,6 +483,7 @@ theorem numericValidation_round_atom_literal_delegates
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
+      NumericOperand.toValidationArithmetic,
       NumericArithmeticOutcome.round, NumericArithmeticOutcome.mapValue,
       NumericOperand.round, NumericOperand.mapValue,
       NumericValidationOp.evalArithmetic,
@@ -504,6 +506,7 @@ theorem numericValidation_abs_atom_literal_delegates
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
+      NumericOperand.toValidationArithmetic,
       NumericArithmeticOutcome.absolute, NumericArithmeticOutcome.mapValue,
       NumericOperand.absolute, NumericOperand.mapValue,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
@@ -525,6 +528,7 @@ theorem numericTolerance_atom_literal_delegates
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
+      NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
 
@@ -543,6 +547,7 @@ theorem numericTolerance_field_baseYear_delegates
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
+      NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
 
@@ -563,8 +568,30 @@ theorem numericTolerance_field_baseYearDatePart_delegates
       LoweredNumericExpr.evalPlainValidation?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
+      NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
+
+/-- Every direct Date/Time/DateTime component atom delegates to its unified flat payload projection before the ordinary or tolerance evaluator. -/
+theorem numericValidation_temporalFieldPart_literal_delegates
+    (op : NumericValidationOp) (field : FlatTemporalField)
+    (part : TemporalNumericPart) (right : DecodedNumericLiteral)
+    (context : FlatContext) :
+    ({ op, left := .atom (.temporalFieldPart field part),
+        right := .literal right } :
+      NumericComparison).evalSelected context =
+        op.eval (context.resolveTemporalNumericOperand field part)
+          (.value right.value .fixed) := by
+  cases op <;>
+    cases observed : context.resolveTemporalNumericOperand field part <;>
+    simp [NumericComparison.evalSelected,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
+      NumericOperand.toValidationArithmetic,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericComparisonOp.eval, NumericToleranceRange.eval, observed]
 
 /-- Full validation gates a checked numeric condition before any empty-Number substitution can fire. -/
 theorem checkedNumericComparison_emptyRow_notFired

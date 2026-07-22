@@ -19,6 +19,13 @@ inductive TimeNumericPart where
 
 namespace TimeNumericPart
 
+/-- Static format admission for one direct time-component extractor. -/
+def admittedBy (part : TimeNumericPart) (components : TemporalComponents) : Bool :=
+  match part with
+  | .hour => components.hour
+  | .minute => components.minute
+  | .second => components.second
+
 /-- Select the named numeric component from an already-decoded time of day. -/
 def extract (part : TimeNumericPart) (time : TimeOfDay) : Rat :=
   match part with

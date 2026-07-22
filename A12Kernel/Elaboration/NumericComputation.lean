@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, and Base-Year date-component sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, and direct temporal field-component sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct Number-field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, and inherited computation-read poison as three distinct results. Concrete parsing, partial-known Date policy, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -20,6 +20,7 @@ inductive NumericComputationElabError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
+  | incompatibleTemporalSource (path : List String)
   | baseYearNotDeclared
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
@@ -36,6 +37,14 @@ structure NumericComputationOperation where
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
+private def FlatModel.admitsTemporalComputationOperand
+    (model : FlatModel) (source : FlatTemporalField) (accepts : Bool) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toTemporalField? == some source && accepts
+  | .error _ => false
+
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) : NumericComputationAtom → Bool
   | .field declaration =>
@@ -47,6 +56,9 @@ def FlatModel.admitsNumericComputationOperand
       | .error _ => false
   | .baseYear year => model.baseYear == some year
   | .baseYearDatePart year _ _ => model.baseYear == some year
+  | .temporalFieldPart source part =>
+      model.admitsTemporalComputationOperand source
+        (part.admittedBy source model.hasBaseYear)
 
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
@@ -71,6 +83,7 @@ def NumericComputationAtom.references
   | .field declaration => declaration.id == field
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
+  | .temporalFieldPart source _ => source.id == field
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
@@ -111,6 +124,20 @@ private def FlatModel.resolveNumericComputationTarget
   | some field => pure field
   | none => throw (.targetNotNumber target)
 
+private def FlatModel.resolveTemporalNumericComputationField
+    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
+    (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
+    Except NumericComputationElabError FlatTemporalField := do
+  let declaration ←
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+  if declaration.id == target then
+    throw (.targetSelfReference target)
+  match declaration.toTemporalField? with
+  | some field =>
+      if accepts field then pure field
+      else throw (.incompatibleTemporalSource declaration.path)
+  | none => throw (.incompatibleTemporalSource declaration.path)
+
 private def FlatModel.resolveNumericComputationExpression
     (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom) :
@@ -134,6 +161,11 @@ private def FlatModel.resolveNumericComputationExpression
         match model.baseYear with
         | some year => pure (.baseYearDatePart year source part)
         | none => throw .baseYearNotDeclared
+    | .temporalFieldPart reference part => do
+        let field ← model.resolveTemporalNumericComputationField
+          declaringGroup target reference
+          (fun source => part.admittedBy source model.hasBaseYear)
+        pure (.temporalFieldPart field part)
 
 /-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic or direct root value-function fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
@@ -191,6 +223,22 @@ def readNumeric (context : ScalarComputationContext) (declaration : FlatFieldDec
       | .value _ => throw (.fieldKindMismatch field.id)
       | .unknown cause | .poison cause => pure (.poison cause)
 
+/-- Read either direct temporal component family through one computation-phase empty/value/poison and kind-checking boundary. -/
+def readTemporalNumeric (context : ScalarComputationContext)
+    (field : FlatTemporalField) (project : TemporalValue → Option Rat) :
+    Except NumericComputationFault NumericComputationResult :=
+  match observeCell .computation (context.read field.id) with
+  | .empty => pure (.value 0)
+  | .value (.temporal value) =>
+      if value.kind != field.kind then
+        throw (.fieldKindMismatch field.id)
+      else
+        match project value with
+        | some amount => pure (.value amount)
+        | none => throw (.fieldKindMismatch field.id)
+  | .value _ => throw (.fieldKindMismatch field.id)
+  | .unknown cause | .poison cause => pure (.poison cause)
+
 def readNumericComputationAtom (context : ScalarComputationContext) :
     NumericComputationAtom →
       Except NumericComputationFault NumericComputationResult
@@ -198,6 +246,8 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
   | .baseYear year => pure (.value year)
   | .baseYearDatePart year source part =>
       pure (.value (baseYearDateSourceNumericPart year source part))
+  | .temporalFieldPart field part =>
+      context.readTemporalNumeric field part.project?
 
 end ScalarComputationContext
 
@@ -233,11 +283,13 @@ def FlatFieldDecl.numericComputationFault?
   else
     some (.fieldKindMismatch declaration.id)
 
-private def NumericComputationAtom.numericComputationFault? :
+/-- Preflight one resolved source atom. Checked temporal component atoms already retain their kind, while a forged direct declaration can still carry a non-Number kind. -/
+def NumericComputationAtom.numericComputationFault? :
     NumericComputationAtom → Option NumericComputationFault
   | .field declaration => declaration.numericComputationFault?
   | .baseYear _ => none
   | .baseYearDatePart _ _ _ => none
+  | .temporalFieldPart _ _ => none
 
 namespace LoweredNumericExpr
 

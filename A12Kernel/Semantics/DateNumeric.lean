@@ -13,6 +13,14 @@ namespace A12Kernel
 
 namespace DateNumericPart
 
+/-- Static format admission for one direct date-component extractor. Base Year supplements only the year component. Partial-known Date policy is an earlier model fact outside this flat declaration fragment. -/
+def admittedBy (part : DateNumericPart) (hasBaseYear : Bool)
+    (components : TemporalComponents) : Bool :=
+  match part with
+  | .day => components.day
+  | .month | .quarter => components.month
+  | .year => components.year || hasBaseYear
+
 /-- Apply the shared validation-phase empty/unavailable projection before selecting a date component. The caller supplies the already-admitted value's calendar parts. -/
 def fromObservation (part : DateNumericPart) (partsOf : α → DateParts) :
     CellObservation α → NumericOperand :=

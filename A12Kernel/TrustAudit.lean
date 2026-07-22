@@ -477,6 +477,7 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericTargetComputationOperation_evaluate_routes
 #print axioms A12Kernel.numericComputation_baseYear_evaluatesYear
 #print axioms A12Kernel.numericComputation_baseYearDatePart_evaluates
+#print axioms A12Kernel.readTemporalNumeric_value
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
 #print axioms A12Kernel.numericComputationResult_evalPower_values
 #print axioms A12Kernel.numericComputation_zeroToNegativePower_domainFailure
@@ -572,6 +573,7 @@ run_cmd do
 #print axioms A12Kernel.numericTolerance_atom_literal_delegates
 #print axioms A12Kernel.numericTolerance_field_baseYear_delegates
 #print axioms A12Kernel.numericTolerance_field_baseYearDatePart_delegates
+#print axioms A12Kernel.numericValidation_temporalFieldPart_literal_delegates
 #print axioms A12Kernel.checkedNumericComparison_emptyRow_notFired
 #print axioms A12Kernel.numericTolerance_threshold_pos
 #print axioms A12Kernel.normalizedNumericDifference_comm
