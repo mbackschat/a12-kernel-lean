@@ -44,7 +44,7 @@ theorem checkedStarNumberValueList_havingFields_delegates
       source.resolvedValueSide document outer filterRead read := by
   rfl
 
-/-- Partial star selection preserves canonical order and hierarchical tail state, filters before every target classification, and records whether any topology-produced cell was masked. -/
+/-- Partial star selection preserves canonical order and hierarchical tail state, filters before every target classification, and separately records whether wildcard/ancestor coverage establishes the star's complete extent. -/
 theorem checkedStarNumberValueList_partialFields_shape
     (source : CheckedStarNumberSource model) (resolved : ResolvedStarTopology)
     (scope : ValidationRelevanceScope) (read : Env → FieldId → RawCell) :
@@ -55,8 +55,7 @@ theorem checkedStarNumberValueList_partialFields_shape
       (source.selectedPartialValueListSide resolved scope read).side.hasUninstantiatedTail =
         resolved.domain.hasOpenTail ∧
       (source.selectedPartialValueListSide resolved scope read).hasNonRelevant =
-        (resolved.environments.any fun environment =>
-          !source.source.cellRelevant scope environment) := by
+        !source.source.allRowsRelevant scope := by
   exact ⟨rfl, rfl, rfl⟩
 
 /-- Masked topology cells are not read: two readers that classify every retained environment identically produce the same partial side. -/
@@ -69,12 +68,19 @@ theorem checkedStarNumberValueList_partialFields_agreeOnRelevant
       source.valueListCell left environment = source.valueListCell right environment) :
     source.selectedPartialValueListSide resolved scope left =
       source.selectedPartialValueListSide resolved scope right := by
-  simp only [CheckedStarNumberSource.selectedPartialValueListSide]
-  congr 1
-  congr 1
-  apply List.map_congr_left
-  intro environment selected
-  exact agree environment selected
+  have cellsEqual :
+      (resolved.environments.filter fun candidate =>
+          source.source.cellRelevant scope candidate).map
+          (source.valueListCell left) =
+        (resolved.environments.filter fun candidate =>
+          source.source.cellRelevant scope candidate).map
+          (source.valueListCell right) := by
+    apply List.map_congr_left
+    intro environment selected
+    exact agree environment selected
+  simp only [CheckedStarNumberSource.selectedPartialValueListSide,
+    CheckedStarFieldPath.selectedPartialValueListSide]
+  rw [cellsEqual]
 
 /-- Partial direct values preserve authored order among relevant fields and record values-side masking independently of formal cell causes. -/
 theorem checkedStarNumberValueList_partialValues_shape
