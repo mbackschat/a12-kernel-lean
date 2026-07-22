@@ -803,6 +803,9 @@ run_cmd do
 #print axioms A12Kernel.customFieldType_parsedEmpty_bypasses_validator
 #print axioms A12Kernel.customFieldType_rejection_exact
 #print axioms A12Kernel.customFieldType_rejection_phase_projection
+#print axioms A12Kernel.customFieldMessage_absent
+#print axioms A12Kernel.customFieldMessage_supplied_exact
+#print axioms A12Kernel.customFieldMessage_projectCode_irrelevant
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal

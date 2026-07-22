@@ -7,13 +7,13 @@ This is the minimal continuation checkpoint. Current coverage belongs in [`IMPLE
 ## Verified baseline
 
 - Semantic baseline: checked temporal field-to-field, field-to-typed-Date-literal, field/`Today`, field/`Now`, field/temporal-`BaseYear`, and field/Base-Year-range-endpoint comparison over one shared exact-instant operand core; numeric `BaseYear`, direct/range-selected Base-Year date components, admitted direct Date/Time/DateTime field components, and stored-Date/Base-Year month/year differences as fixed scale-0 sources in checked validation arithmetic and Number computation; floor-free Base-Year calendar labels for direct date/component and range-endpoint extraction; and one closed checked temporal payload retaining exact instant identity, decoded component halves, and date calendar provenance. `Today` and temporal Base-Year sources share an explicit model-zone capability; UTC and the versioned Berlin profile are concrete instances without becoming the canonical zone ceiling.
-- Its focused red/green checks, full 275-job `lake build`, 51/51 retained-observation replay, and trust audit over 824 theorem roots / 13,782 declarations / 157 logical modules passed.
+- Its focused red/green checks, full 278-job `lake build`, 51/51 retained-observation replay, and trust audit over 827 theorem roots / 13,787 declarations / 159 logical modules passed.
 - Reference semantics remains 0.3.0 with the V2 flat-validation and one-group-correlation suites.
 - Internally closed but externally uncalibrated families remain `external evidence pending`; no per-capsule evidence machinery is planned.
 
 ## Active unit
 
-Close supplied custom-rejection message rendering at the resolved label boundary. Replace every literal `$<fieldName>$` token in an optional consumer template, keep other bytes unchanged, make replacement text opaque, and preserve absence for the caller-owned fallback without reopening general rule-template parsing or label-provider invocation.
+Close registered custom formal-message projection over an already-produced rejection. The caller supplies the exact cell address, resolved label, and fixed fallback text; preserve the project code, force ERROR/VALUE formal-message metadata, let a supplied template win even when empty, and keep validation firing, label-provider invocation, and general rule-template parsing outside.
 
 ## Frontier queue
 
@@ -76,6 +76,7 @@ Close supplied custom-rejection message rendering at the resolved label boundary
 - **Satisfied — checked legal-charset definitions:** one injected Java-compatible cluster classifier now lowers empty/default, singleton/range, and bounded combined entries into the runtime scanner; malformed empty, supplementary, overlong, plain, reversed, and narrowly ambiguous shapes fail before evaluation, while shared and terminal prefixes remain legal.
 - **Satisfied — registered custom rejection identity:** the formal-cause algebra now distinguishes the fixed predefined fallback from a registered validator rejection carrying project code and optional message. The complete payload survives validation UNKNOWN and computation poison; the public reference schema remains unchanged and does not yet expose this family.
 - **Satisfied — registered custom field-type observation:** checked construction resolves an exact named validator from `World`; declarations retain optional bounds while calls receive effective `1`/`999`, locale, and stored mode. Nonrelevant/empty/prerejected cells bypass sampling, and one ordinary checked cell supplies acceptance or the exact registered rejection to both phases.
+- **Satisfied — supplied custom rejection text:** optional validator text now renders exactly once at the resolved-label boundary. Every literal `$<fieldName>$` is replaced, near misses remain literal, inserted bytes are opaque, and absent versus supplied-empty text stays distinguishable for the caller-owned fallback.
 - **Missing fact — temporal computation targets:** Date/DateTime target application needs declaration-owned format/rendering and value-admission policy; do not infer it from exact-instant result semantics.
 - **Blocked — checked computation-table integration:** runtime first-match selection alone is insufficient because the mandatory all-alternatives generated rule cannot yet represent checked numeric-expression leaves; share one condition representation before admitting expression-valued tables.
 - **Missing approved shared refactor — expression-valued generated validation:** `CheckedResolvedFlatRule` consumes only `FlatCondition`, while checked numeric expressions have a separate evaluator. Integrating them requires one bounded shared-condition refactor across flat rule assembly and numeric comparison; do not add a parallel condition tree.
