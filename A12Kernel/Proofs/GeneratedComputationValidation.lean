@@ -16,6 +16,13 @@ theorem numericComputationAtom_stringRange_toValidationAtom
       .ok (.stringRange source start finish) := by
   rfl
 
+/-- The generated-validation twin preserves the checked Enumeration/category conversion source and derived scale exactly. -/
+theorem numericComputationAtom_fieldValueAsNumber_toValidationAtom
+    (source : ResolvedFieldValueAsNumberSource) :
+    NumericComputationAtom.toValidationAtom (.fieldValueAsNumber source) =
+      .ok (.fieldValueAsNumber source) := by
+  rfl
+
 /-- Every direct or nested reference to the computed target is rejected before guard lowering can produce a phase-specific condition. -/
 theorem generatedComputationGuard_targetSelfReference_rejected
     (condition : ComputationCondition) (model : FlatModel)

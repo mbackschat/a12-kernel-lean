@@ -46,7 +46,23 @@ private def model : FlatModel :=
         policy := { kind := .temporal .date monthDayComponents } },
       { id := 12, groupPath := ["Order"], name := "Code",
         policy := { kind := .string },
-        stringPolicy := { lineBreaksPermitted := true } }],
+        stringPolicy := { lineBreaksPermitted := true } },
+      { id := 13, groupPath := ["Order"], name := "NumericChoice",
+        policy := { kind := .enumeration },
+        enumeration := some {
+          storedTokens := ["-1.50", "2", "03"]
+          categories := [
+            { name := "Factor", tokens := [".5", "2.25", "3"] },
+            { name := "Whole", tokens := ["5", "225", "3"] }] } },
+      { id := 14, groupPath := ["Order"], name := "MixedChoice",
+        policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["1", "X"] } },
+      { id := 15, groupPath := ["Order"], name := "BoundaryChoice",
+        policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["-12345678901234.5"] } },
+      { id := 16, groupPath := ["Order"], name := "WideChoice",
+        policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["1234567890123456"] } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
@@ -79,6 +95,11 @@ private def dateDifference (unit : DateDifferenceUnit)
 private def stringRange (start finish : Nat) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.stringRange (path ["Order"] "Code") start finish)
+
+private def fieldValueAsNumber
+    (source : SurfaceTextFieldOperand := .direct (path ["Order"] "NumericChoice")) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.fieldValueAsNumber source)
 
 private def dateOperand (name : String) : SurfaceDateDifferenceOperand :=
   .field (path ["Order"] name)
@@ -114,6 +135,9 @@ private def temporalRaw (id : FieldId) (cell : RawCell) : RawFlatContext where
 
 private def stringRaw (cell : RawCell) : RawFlatContext where
   read actual := if actual == 12 then cell else .empty
+
+private def enumerationRaw (cell : RawCell) : RawFlatContext where
+  read actual := if actual == 13 then cell else .empty
 
 private def instant : Instant := { epochMillis := 1719292867000 }
 
@@ -152,6 +176,74 @@ private def tolerance (range : NumericToleranceRange)
 
 private def dividedThird : AuthoredNumericExpr SurfaceNumericAtom :=
   .group (.binary .divide (literal 3 0) (literal 3 0))
+
+/- The checked decimal-token parser preserves the admitted ASCII subset without accepting a leading plus, exponent syntax, trailing dots, or whitespace beyond the kernel source grammar. -/
+example :
+    (parseAsciiDecimalToken? "-1.50").map
+        (fun token => (token.value, token.scale, token.digitCount)) =
+      some ((-3 / 2 : Rat), 2, 3) ∧
+    (parseAsciiDecimalToken? ".5").map (fun token => token.value) =
+      some (1 / 2 : Rat) ∧
+    parseAsciiDecimalToken? "1." = none ∧
+    parseAsciiDecimalToken? "+1" = none ∧
+    parseAsciiDecimalToken? "1e2" = none ∧
+    parseAsciiDecimalToken? " 1" = none := by
+  native_decide
+
+/- `FieldValueAsNumber` projects stored or category tokens before exact rational conversion; a filled result is fixed. -/
+example :
+    verdictOf (comparison .equal (fieldValueAsNumber) 2 2)
+        (enumerationRaw (.parsed (.enum "2"))) = some (.fired .value) ∧
+      verdictOf (comparison .equal
+        (fieldValueAsNumber (.category
+          (path ["Order"] "NumericChoice") "Factor")) (1 / 2) 2)
+        (enumerationRaw (.parsed (.enum "-1.50"))) = some (.fired .value) ∧
+      verdictOf (comparison .equal (fieldValueAsNumber) 3 2)
+        (enumerationRaw (.parsed (.enum "03"))) = some (.fired .value) ∧
+      verdictOf (comparison .less (fieldValueAsNumber) 100)
+        (enumerationRaw (.parsed (.enum "2"))) = some (.fired .value) := by
+  native_decide
+
+/- An absent convertible source denotes zero with both directional fill possibilities, while a reached formal cause remains unknown. -/
+example :
+    verdictOf (comparison .less (fieldValueAsNumber) 100)
+        (enumerationRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .greater (fieldValueAsNumber) (-100))
+        (enumerationRaw .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .equal (fieldValueAsNumber) 0 2)
+        (enumerationRaw (.rejected .declaredConstraint)) = some .unknown := by
+  native_decide
+
+/- Admission derives the selected-domain scale and preserves field resolution, category, and convertibility diagnostics. String conversion remains fail-closed until its exact pattern fact has a checked owner. -/
+example :
+    (elaborateNumericComparison model ["Order"]
+      (twoSided .equal (fieldValueAsNumber) (atom "Scale2"))).isOk = true ∧
+    (elaborateNumericComparison model ["Order"]
+      (twoSided .equal
+        (fieldValueAsNumber (.category
+          (path ["Order"] "NumericChoice") "Whole")) (atom "U"))).isOk = true ∧
+    (elaborateNumericComparison model ["Order"]
+      (comparison .greater
+        (fieldValueAsNumber (.direct
+          (path ["Order"] "BoundaryChoice"))) 0)).isOk = true ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "Missing"))) 0) =
+        some (.resolve (.invalidEntity (path ["Order"] "Missing"))) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "Code"))) 0) =
+        some (.fieldValueAsNumberNotConvertible ["Order", "Code"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "MixedChoice"))) 0) =
+        some (.fieldValueAsNumberNotConvertible ["Order", "MixedChoice"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "WideChoice"))) 0) =
+        some (.fieldValueAsNumberNotConvertible ["Order", "WideChoice"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.category
+        (path ["Order"] "NumericChoice") "Missing")) 0) =
+        some (.fieldValueAsNumberEnumeration ["Order", "NumericChoice"]
+          (.unknownCategory "Missing")) := by
+  native_decide
 
 /- `RangeAsNumber` parses only a complete ASCII digit slice; filled fallback zero is fixed. -/
 example :

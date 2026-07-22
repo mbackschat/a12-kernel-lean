@@ -351,6 +351,8 @@ def NumericComputationAtom.toValidationAtom :
       pure (.temporalFieldPart source part)
   | .stringRange source start finish =>
       pure (.stringRange source start finish)
+  | .fieldValueAsNumber source =>
+      pure (.fieldValueAsNumber source)
   | .dateDifference unit left right =>
       pure (.dateDifference unit left right)
   | .aggregate op source => pure (.aggregate op source)

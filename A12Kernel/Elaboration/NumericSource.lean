@@ -1,13 +1,136 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Semantics.DateDifference
+import A12Kernel.Semantics.String
 
 /-! # Shared checked numeric-expression sources
 
-Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, Date-only month/year differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
+Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary Enumeration/category conversion, Date-only month/year differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
 -/
 
 namespace A12Kernel
+
+/-- Kernel 30.8.1's authored Number digit budget for String/Enumeration conversion. Dot and leading minus do not consume the budget. -/
+def maxFieldValueAsNumberDigits : Nat := 15
+
+/-- One exactly parsed ASCII decimal token together with the static facts used by `FieldValueAsNumber` admission. Leading zeros and negative zero are retained only through digit count/scale; numeric evaluation observes their exact rational amount. -/
+structure ParsedAsciiDecimalToken where
+  value : Rat
+  scale : Nat
+  digitCount : Nat
+  deriving Repr, DecidableEq
+
+private def parseAsciiDigitsAllowEmpty (characters : List Char) : Option Nat :=
+  if characters.isEmpty then some 0
+  else parseAsciiNatural? (String.ofList characters)
+
+/-- Parse the ASCII subset of Java `NumberUtils.isParsable` consumed by ordinary numeric Enumeration values: optional leading minus, at most one dot, at least one digit, and no trailing dot. A leading dot is legal. Digit-budget admission remains a separate model check. -/
+def parseAsciiDecimalToken? (input : String) : Option ParsedAsciiDecimalToken := do
+  let (negative, characters) := match input.toList with
+    | '-' :: rest => (true, rest)
+    | rest => (false, rest)
+  let (wholeCharacters, suffix) := characters.span (· != '.')
+  let (fractionCharacters, scale) ← match suffix with
+    | [] => some ([], 0)
+    | '.' :: fraction =>
+        if fraction.isEmpty then none else some (fraction, fraction.length)
+    | _ => none
+  if wholeCharacters.isEmpty && fractionCharacters.isEmpty then
+    none
+  else
+    let whole ← parseAsciiDigitsAllowEmpty wholeCharacters
+    let fraction ← parseAsciiDigitsAllowEmpty fractionCharacters
+    let factor := 10 ^ scale
+    let magnitude : Rat := whole + (fraction : Rat) / factor
+    some {
+      value := if negative then -magnitude else magnitude
+      scale
+      digitCount := wholeCharacters.length + fractionCharacters.length }
+
+/-- The exact selected stored/category token domain of one already-checked Enumeration projection. -/
+def CheckedEnumerationProjection.selectedTokens
+    (checked : CheckedEnumerationProjection) : List String :=
+  match checked.projection with
+  | .stored => checked.declaration.declaration.storedTokens
+  | .category mapping => mapping.categoryTokens
+
+/-- Derive the conversion result scale only when every selected token belongs to the currently supported ASCII subset and stays within the kernel digit budget. -/
+def CheckedEnumerationProjection.numericAsciiScale?
+    (checked : CheckedEnumerationProjection) : Option Nat := do
+  let parsed ← checked.selectedTokens.mapM parseAsciiDecimalToken?
+  if parsed.all (fun token => token.digitCount ≤ maxFieldValueAsNumberDigits) then
+    some (parsed.foldl (fun scale token => max scale token.scale) 0)
+  else
+    none
+
+/-- One ordinary closed Enumeration/category source statically certified for the implemented `FieldValueAsNumber` subset. The source keeps the shared runtime projection and its derived non-expandable scale together. -/
+structure ResolvedFieldValueAsNumberSource where
+  operand : FlatEnumerationOperand
+  scale : Nat
+  deriving Repr, DecidableEq
+
+namespace ResolvedFieldValueAsNumberSource
+
+def fieldId (source : ResolvedFieldValueAsNumberSource) : FieldId :=
+  source.operand.field.id
+
+def valueForStored? (source : ResolvedFieldValueAsNumberSource)
+    (stored : String) : Option Rat := do
+  let token ← source.operand.projection.tokenFor? stored
+  let parsed ← parseAsciiDecimalToken? token
+  pure parsed.value
+
+end ResolvedFieldValueAsNumberSource
+
+inductive FieldValueAsNumberSourceError where
+  | notConvertible
+  | enumeration (error : EnumerationOperandError)
+  | incoherentEnumeration
+  deriving Repr, DecidableEq
+
+namespace SurfaceTextFieldOperand
+
+def reference : SurfaceTextFieldOperand → SurfaceFieldPath
+  | .direct field | .category field _ => field
+
+def projectionRef : SurfaceTextFieldOperand → EnumerationProjectionRef
+  | .direct _ => .stored
+  | .category _ name => .category name
+
+end SurfaceTextFieldOperand
+
+/-- Admit the ordinary closed-Enumeration ASCII subset after field/path resolution. Numeric String declarations remain fail-closed because the current flat model deliberately does not retain their exact `[0-9]+` pattern fact. -/
+def FlatFieldDecl.resolveFieldValueAsNumberSource
+    (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
+    Except FieldValueAsNumberSourceError ResolvedFieldValueAsNumberSource :=
+  match declaration.policy.kind, declaration.enumeration with
+  | .enumeration, some source =>
+      match elaborateEnumeration source with
+      | .error _ => .error .incoherentEnumeration
+      | .ok checked =>
+          match checkEnumerationProjection checked projectionRef with
+          | .error error => .error (.enumeration error)
+          | .ok projection =>
+              match projection.numericAsciiScale? with
+              | none => .error .notConvertible
+              | some scale => .ok {
+                  operand := {
+                    field := { id := declaration.id }
+                    projectionRef := projection.projectionRef
+                    projection := projection.projection }
+                  scale }
+  | _, _ => .error .notConvertible
+
+/-- Re-derive one resolved conversion source from the same model declaration. This keeps forged nonnumeric domains and scale summaries outside checked validation/computation cores. -/
+def FlatModel.admitsFieldValueAsNumberSource (model : FlatModel)
+    (source : ResolvedFieldValueAsNumberSource) : Bool :=
+  match model.lookupUniqueId source.fieldId with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        match declaration.resolveFieldValueAsNumberSource source.operand.projectionRef with
+        | .error _ => false
+        | .ok resolved => decide (resolved = source)
 
 /-- The seven direct scalar temporal component functions, grouped by the source half they project. -/
 inductive TemporalNumericPart where
@@ -137,6 +260,7 @@ inductive SurfaceNumericAtom where
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
   | stringRange (path : SurfaceFieldPath) (start finish : Nat)
+  | fieldValueAsNumber (source : SurfaceTextFieldOperand)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : SurfaceNumericAggregateFields)
@@ -149,6 +273,7 @@ inductive ResolvedNumericAtom (Field : Type) where
       (part : DateNumericPart)
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
   | stringRange (source : FlatStringField) (start finish : Nat)
+  | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : ResolvedNumericAggregateFields)
@@ -162,6 +287,7 @@ def isField : ResolvedNumericAtom Field → Bool
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
   | .stringRange _ _ _ => true
+  | .fieldValueAsNumber _ => true
   | .dateDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
 
@@ -170,6 +296,7 @@ def requiresPlainArithmetic : ResolvedNumericAtom Field → Bool
   | .baseYear _ | .baseYearDatePart _ _ _
   | .temporalFieldPart _ _ => true
   | .stringRange _ _ _ => true
+  | .fieldValueAsNumber _ => true
   | .dateDifference _ _ _ => true
   | .aggregate _ _ => true
 
@@ -180,6 +307,7 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
   | .stringRange _ _ _ => NumericScaleSummary.field 0
+  | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
   | .aggregate op source => op.scaleSummary source
 

@@ -142,15 +142,16 @@ The generated rule **anchors at the computed field**: its error entity is the ta
 
 ## Checklist for §11
 
-- [ ] `compute` returns an **outcome map** (VALUE/CLEARED/ERRORED), not a mutated document; `apply` is a separate step.
+- [ ] V2 `compute` returns a rich immutable result, not a mutated document: all successful non-clearing instances including unchanged successes, their source-relative changed subset, erroneous instances, cleared source-filled instances, and eager formal-operand errors. VALUE/CLEARED/ERRORED is the narrower change/application projection; `apply` is separate.
 - [ ] Operand-state table (empty/required-empty/invalid × NUMBER/DATE/STRING-concat) reproduced; bare string copy CLEARS on empty (no stored `""`).
 - [ ] **Empty cascade** via pre-stripping computed inputs; **poison** via throw-on-read with short-circuiting `And`/`Or`, stop-at-deciding-cell scans over the canonical bare-group expansion order, `FirstFilledValue` stop-at-first, and left-to-right evaluation of the one-pass lowered numeric tree.
 - [ ] Cascades reach into downstream `Having`/preconditions.
-- [ ] Reporting is a **delta** (VALUE on typed change, CLEARED on filled-input, ERRORED always).
+- [ ] The change projection is a **delta** (VALUE on typed change, CLEARED on filled-input, ERRORED always), but it is not the complete computation result.
 - [ ] **Stored form**: scale-19 pre-round; ordinary fit branch padded to `minFractionalDigits` with no length cap ⇒ over-long full attempt ERRORED, then effective integer digits → zero → rendered min/max length → inclusive min/max value; warning-suppressed no-fit branch length-bounded at 16 significant digits where possible and unconditionally ERRORED after total-digit/signedness prefix → decimal mismatch; always plain dot-decimal with no exponent notation; reduced formal check (no charset/blank baseline); downstream reads the stored string with scale-sensitive equality.
 - [ ] **Ordinary String target**: final empty bypasses the basic check; forbidden line breaks precede a temporary CRLF-normalized pattern/min/max view; zero bounds are inactive; combined positive bounds remain active; accepted and ERRORED results retain the exact attempted String.
 - [ ] **`RangeAsString`**: value-validating String-like field only; no category/wildcard; 1-based inclusive ordered bounds over evaluated UTF-16; empty/overshoot yields empty rather than a partial prefix; formal unavailability poisons; root storage and target checking remain separate.
 - [ ] **`RangeAsNumber`**: reuse the same checked UTF-16 selection; digits-only conversion; clean mismatch/empty/overshoot → real zero; formal unavailability → poison; ordinary arithmetic, generated validation, and Number target paths remain shared.
+- [ ] **`FieldValueAsNumber`**: reuse the checked selected-domain conversion from §5; empty → real zero, exact projected token → Number, formal unavailability → poison; ordinary arithmetic, generated validation, and Number target paths remain shared.
 - [ ] Scope = computed field's repetition scope; alternatives select the first known-true precondition and stop even when its operation produces no value; poison aborts; no match clears; a multi-alternative table has no unconditional default; multi-computation first-non-empty-wins remains separate.
 - [ ] Computed-target self-reference is rejected across common/alternative preconditions and operations before evaluation or scheduling.
 - [ ] Parallel join by index value; invalid index in any joined group clears **every** instance; semantic index **column-strict** in compute.

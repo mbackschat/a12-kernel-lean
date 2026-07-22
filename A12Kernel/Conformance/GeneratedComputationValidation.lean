@@ -57,6 +57,13 @@ private def crossGroupCode : FlatFieldDecl :=
   { id := 24, groupPath := ["Input"], name := "Code",
     policy := { kind := .string } }
 
+private def crossGroupNumericChoice : FlatFieldDecl :=
+  { id := 25, groupPath := ["Input"], name := "NumericChoice",
+    policy := { kind := .enumeration },
+    enumeration := some {
+      storedTokens := ["1", "2", "3"]
+      categories := [{ name := "Factor", tokens := ["10", "20", "30"] }] } }
+
 private def crossGroupTarget : FlatFieldDecl :=
   { id := 22, groupPath := ["Output"], name := "Target",
     policy := { kind := .number { scale := 0, signed := true } } }
@@ -67,7 +74,7 @@ private def crossGroupOtherTarget : FlatFieldDecl :=
 
 private def crossGroupModel : FlatModel :=
   { fields := [crossGroupSource, crossGroupDate, crossGroupExtra, crossGroupTarget,
-      crossGroupOtherTarget, crossGroupCode] }
+      crossGroupOtherTarget, crossGroupCode, crossGroupNumericChoice] }
 
 private def absolutePath (groups : List String) (field : String) :
     SurfaceFieldPath :=
@@ -117,6 +124,14 @@ private def crossGroupStringRangeOperation :
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
     (.atom (.stringRange (absolutePath ["Input"] "Code") 1 2))
+
+private def crossGroupFieldValueAsNumberOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.fieldValueAsNumber
+      (.category (absolutePath ["Input"] "NumericChoice") "Factor")))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -341,6 +356,26 @@ private def crossGroupStringRangeExpectedMessage
     (messageType : Polarity) : FlatRuleMessage :=
   { errorAddress := { field := crossGroupTarget.id, path := [] }
     errorCode := "computedRange"
+    severity := .error
+    messageType
+    text }
+
+private def crossGroupFieldValueAsNumberOutcome (target : Rat)
+    (source : RawCell := .parsed (.enum "2")) : Option FlatRuleOutcome := do
+  let operation ← crossGroupFieldValueAsNumberOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedNumericChoice" none messagePlan).toOption
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupNumericChoice.id then source
+      else if field = crossGroupTarget.id then .parsed (.num target)
+      else .empty }
+  pure (rule.evalFull evaluationWorld raw true)
+
+private def crossGroupFieldValueAsNumberExpectedMessage
+    (messageType : Polarity) : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedNumericChoice"
     severity := .error
     messageType
     text }
@@ -751,6 +786,16 @@ example :
       crossGroupStringRangeOutcome 13 (.parsed (.str "AB")) =
         some (.fired (crossGroupStringRangeExpectedMessage .value)) ∧
       crossGroupStringRangeOperation.isOk = true := by
+  native_decide
+
+/- Generated validation narrows the same checked Enumeration/category conversion atom, preserving its projection and missing-source polarity across the computation boundary. -/
+example :
+    crossGroupFieldValueAsNumberOutcome 20 = some .notFired ∧
+      crossGroupFieldValueAsNumberOutcome 21 =
+        some (.fired (crossGroupFieldValueAsNumberExpectedMessage .value)) ∧
+      crossGroupFieldValueAsNumberOutcome 21 .empty =
+        some (.fired (crossGroupFieldValueAsNumberExpectedMessage .omission)) ∧
+      crossGroupFieldValueAsNumberOperation.isOk = true := by
   native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation

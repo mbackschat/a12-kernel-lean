@@ -394,6 +394,7 @@ run_cmd do
 #print axioms A12Kernel.generatedComputationGuard_targetSelfReference_rejected
 #print axioms A12Kernel.guardedGeneratedComputation_firstHolds_selects
 #print axioms A12Kernel.numericComputationAtom_stringRange_toValidationAtom
+#print axioms A12Kernel.numericComputationAtom_fieldValueAsNumber_toValidationAtom
 #print axioms A12Kernel.guardedGeneratedComputation_holdingCommon_firstHolds_selects
 #print axioms A12Kernel.singleGeneratedComputation_unconditional_selects
 #print axioms A12Kernel.singleGeneratedComputation_holdingCommon_selects
@@ -503,6 +504,9 @@ run_cmd do
 #print axioms A12Kernel.numericComputation_stringRange_empty_zero
 #print axioms A12Kernel.numericComputation_stringRange_value
 #print axioms A12Kernel.numericComputation_stringRange_poison_preservesCause
+#print axioms A12Kernel.numericComputation_fieldValueAsNumber_empty_zero
+#print axioms A12Kernel.numericComputation_fieldValueAsNumber_value
+#print axioms A12Kernel.numericComputation_fieldValueAsNumber_poison_preservesCause
 #print axioms A12Kernel.readTemporalNumeric_value
 #print axioms A12Kernel.readDateDifference_evaluated
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
@@ -592,6 +596,9 @@ run_cmd do
 #print axioms A12Kernel.numericValidation_stringRange_empty_growOnly
 #print axioms A12Kernel.numericValidation_stringRange_value_fixed
 #print axioms A12Kernel.numericValidation_stringRange_unknown_preservesCause
+#print axioms A12Kernel.numericValidation_fieldValueAsNumber_empty_both
+#print axioms A12Kernel.numericValidation_fieldValueAsNumber_value_fixed
+#print axioms A12Kernel.numericValidation_fieldValueAsNumber_unknown_preservesCause
 #print axioms A12Kernel.ordinaryNumericValidation_acceptsScales
 #print axioms A12Kernel.ordinaryNumericValidation_eval
 #print axioms A12Kernel.conditionTree_evalVerdict_map
