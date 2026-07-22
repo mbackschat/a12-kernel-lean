@@ -27,15 +27,14 @@ namespace CheckedStarNumberSource
 /-- Shared recursive worker for order-aware partial-validation Number first-filled evaluation. -/
 def scanPartialValidationFirstFilled (checked : CheckedStarNumberSource model)
     (scope : ValidationRelevanceScope) (read : Env → FieldId → RawCell)
-    (hasUninstantiatedTail : Bool) :
-    List Env → FirstFilledNumberScanState → PartialValidationFirstFilledNumberResult
-  | [], state => .evaluated (state.finish hasUninstantiatedTail false)
+    : List Env → FirstFilledNumberScanState → PartialValidationFirstFilledNumberResult
+  | [], state => .evaluated state.finish
   | environment :: environments, state =>
       if checked.source.cellRelevant scope environment then
-        match state.step false (checked.valueListCell read environment) with
+        match state.step (checked.valueListCell read environment) with
         | .continue next =>
             scanPartialValidationFirstFilled checked scope read
-              hasUninstantiatedTail environments next
+              environments next
         | .done result => .evaluated result
       else
         .nonRelevant
@@ -44,8 +43,8 @@ def scanPartialValidationFirstFilled (checked : CheckedStarNumberSource model)
 def selectedPartialValidationFirstFilled (checked : CheckedStarNumberSource model)
     (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : PartialValidationFirstFilledNumberResult :=
-  scanPartialValidationFirstFilled checked scope read resolved.domain.hasOpenTail
-    resolved.environments {}
+  scanPartialValidationFirstFilled checked scope read resolved.environments
+    (({} : FirstFilledNumberScanState).enter resolved.domain.hasOpenTail false)
 
 /-- Resolve the canonical nested topology once, then run the order-aware partial-validation first-filled scan. -/
 def resolvedPartialValidationFirstFilled (checked : CheckedStarNumberSource model)

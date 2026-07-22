@@ -117,7 +117,7 @@ The `!=` and tolerance arms are directional rather than “any operand is fillab
 Because the type is computed from data, **one rule legitimately fires OMISSION on one document and VALUE on another**:
 
 - `NotExactlyOneFieldFilled(A, B)` fired at **0 filled** is OMISSION (filling one reaches exactly one) but at **2 filled** is VALUE (no fill gets back to one).
-- `FirstFilledValue` types OMISSION only when no row is filled, an instantiated empty row *precedes* the first filled one, or an encountered operand slot carries `Having` (empties *after* the first value are irrelevant). It is prefix-sensitive generally: operands after the first filled one are never read, so a formal error or filter there is invisible; a formal error before it suppresses the rule.
+- `FirstFilledValue` types OMISSION when the complete scan exhausts with missing declared capacity, an instantiated empty cell *precedes* the first filled one, or an encountered operand slot carries `Having` (empties *after* the first value are irrelevant). Missing declared capacity is not an encountered empty cell: an omitted tail in an earlier operand does not make a value selected from a later operand fillable, although that same tail makes the all-exhausted identity fillable. The operator is prefix-sensitive generally: operands after the first filled one are never read, so a formal error or filter there is invisible; a formal error before it suppresses the rule.
 - `CurrentRepetition` is a structural row index no fill can change — a fired comparison against it is **always VALUE**.
 
 ---

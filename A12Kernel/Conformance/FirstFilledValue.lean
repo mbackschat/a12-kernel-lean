@@ -15,6 +15,11 @@ private def side
     (hasHaving : Bool := false) : ResolvedValueListSide .number :=
   { cells, hasUninstantiatedTail, hasHaving }
 
+private def operands
+    (first : ResolvedValueListSide .number)
+    (rest : List (ResolvedValueListSide .number)) : FirstFilledNumberOperands :=
+  { first, rest }
+
 /- The first present Number wins and makes every later cell invisible. -/
 example :
     evalFirstFilledNumber
@@ -117,6 +122,38 @@ example :
 example :
     evalFirstFilledNumber (side []) =
       .value 0 false := by
+  native_decide
+
+/- Operand boundaries are semantically observable: a terminal first slot hides every later filter and cell. -/
+example :
+    evalFirstFilledNumberOperands
+      (operands (side [.present 9]) [side [.unknown .malformed] false true]) =
+        .value 9 false := by
+  native_decide
+
+/- A reached filter remains visible when its empty slot falls through to a later value. -/
+example :
+    evalFirstFilledNumberOperands
+      (operands (side [] false true) [side [.present 9]]) =
+        .value 9 true := by
+  native_decide
+
+/- An actual empty cell before a later value is fillable, but an omitted declared tail alone affects only an all-exhausted result. -/
+example :
+    evalFirstFilledNumberOperands
+        (operands (side [.empty]) [side [.present 9]]) = .value 9 true ∧
+      evalFirstFilledNumberOperands
+        (operands (side [] true) [side [.present 9]]) = .value 9 false ∧
+      evalFirstFilledNumberOperands
+        (operands (side [] true) [side []]) = .value 0 true := by
+  native_decide
+
+/- Formal unavailability in a reached slot terminates before every later operand. -/
+example :
+    evalFirstFilledNumberOperands
+      (operands (side [.unknown .declaredConstraint])
+        [side [.present 9] false true]) =
+      .unavailable .declaredConstraint := by
   native_decide
 
 end A12Kernel.Conformance.FirstFilledValue
