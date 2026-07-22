@@ -790,6 +790,8 @@ run_cmd do
 #print axioms A12Kernel.legalCharset_checkRawText_accepts
 #print axioms A12Kernel.legalCharset_checkRawText_rejects
 #print axioms A12Kernel.legalCharset_rejection_phase_projection
+#print axioms A12Kernel.admitSupportedCharacters_empty
+#print axioms A12Kernel.admitSupportedCharacters_emptyEntry
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
