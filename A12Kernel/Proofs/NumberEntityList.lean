@@ -32,4 +32,14 @@ theorem checkedNumberEntity_starHaving_skipsDirectDuplicateGate
       firstDuplicateDirectNumberEntityField? remaining := by
   rfl
 
+/-- Filter presence is an existential property of the complete authored list, not only its first slot. -/
+theorem checkedNumberEntitySource_hasHaving_of_mem
+    (checked : CheckedNumberEntitySource model)
+    (operand : CheckedNumberEntityOperand model)
+    (member : operand ∈ checked.operands)
+    (hasHaving : operand.hasHaving = true) :
+    checked.hasHaving = true := by
+  simp [CheckedNumberEntitySource.hasHaving, List.any_eq_true]
+  exact ⟨operand, member, hasHaving⟩
+
 end A12Kernel

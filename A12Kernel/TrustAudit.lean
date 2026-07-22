@@ -689,6 +689,7 @@ run_cmd do
 #print axioms A12Kernel.checkedNumberEntitySource_uniqueDirectOperands
 #print axioms A12Kernel.checkedNumberEntity_star_skipsDirectDuplicateGate
 #print axioms A12Kernel.checkedNumberEntity_starHaving_skipsDirectDuplicateGate
+#print axioms A12Kernel.checkedNumberEntitySource_hasHaving_of_mem
 #print axioms A12Kernel.resolvedNumericAggregate_sum_delegates
 #print axioms A12Kernel.resolvedNumericAggregate_extrema_delegate
 #print axioms A12Kernel.resolvedNumericAggregate_pair_scaleSummary
@@ -704,6 +705,9 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericStarSource_evaluateSum_of_valid
 #print axioms A12Kernel.checkedNumericStarSource_evaluateExtremum_of_valid
 #print axioms A12Kernel.checkedNumberEntityOperand_aggregateSide_delegates
+#print axioms A12Kernel.checkedNumberEntityField_partialAggregate_relevance
+#print axioms A12Kernel.checkedNumberEntityStar_partialAggregate_nonRelevant
+#print axioms A12Kernel.checkedNumberEntitySource_partialAggregate_skipsHaving
 #print axioms A12Kernel.reopenedStar_selectedLeaf_closed
 #print axioms A12Kernel.reopenedStar_unbounded_open
 #print axioms A12Kernel.reopenedStar_finite_closed_iff

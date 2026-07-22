@@ -175,6 +175,23 @@ private def checkedAggregateOf (op : NumericAggregateOp)
       | .ok result => some result
       | .error _ => none
 
+private def relevance (path : List String) (indices : List RelevanceIndex) :
+    RelevantEntityPattern :=
+  { path, indices }
+
+private def checkedPartialAggregateOf (op : NumericAggregateOp)
+    (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
+    (a b c : RawCell) (direct : RawFlatContext)
+    (scope : ValidationRelevanceScope) :
+    Option PartialValidationNumberAggregateResult :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluatePartialAggregate op (aggregateDocument rows) [] scope
+          direct (aggregateStarRead a b c) with
+      | .ok result => some result
+      | .error _ => none
+
 /- A partial instantiated prefix retains the model-owned omitted tail. -/
 example : starSumOf (repeatedRaw [1] (.parsed (.num 8)) .empty .empty) =
     some (.value 8 .growOnly) := by
@@ -445,6 +462,58 @@ example :
         [2] (.parsed (.num 9)) .empty .empty
         (raw (.rejected .declaredConstraint) .empty .empty) =
       some (.unknown .declaredConstraint) := by
+  native_decide
+
+/- Partial all-rows aggregates require wildcard or ancestor coverage; enumerating every current row concretely is insufficient. -/
+example :
+    let authored := aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar]
+    let concreteAll := ValidationRelevanceScope.partialSet [
+      relevance unsignedA.path [.concrete 1, .concrete 1],
+      relevance repeated.path [.concrete 1, .concrete 1, .concrete 1],
+      relevance repeated.path [.concrete 1, .concrete 2, .concrete 1],
+      relevance repeated.path [.concrete 1, .concrete 3, .concrete 1]]
+    let wildcard := ValidationRelevanceScope.partialSet [
+      relevance unsignedA.path [.concrete 1, .concrete 1],
+      relevance repeated.path [.concrete 1, .all, .concrete 1]]
+    let ancestor := ValidationRelevanceScope.partialSet [
+      relevance ["Form"] [.concrete 1]]
+    checkedPartialAggregateOf .sum authored [1, 2, 3]
+        (.parsed (.num 2)) (.parsed (.num 3)) (.parsed (.num 4))
+        (raw (.parsed (.num 1)) .empty .empty) concreteAll =
+      some .nonRelevant ∧
+    checkedPartialAggregateOf .sum authored [1, 2, 3]
+        (.parsed (.num 2)) (.parsed (.num 3)) (.parsed (.num 4))
+        (raw (.parsed (.num 1)) .empty .empty) wildcard =
+      some (.evaluated (.value 10 .fixed)) ∧
+    checkedPartialAggregateOf .sum authored [1, 2, 3]
+        (.parsed (.num 2)) (.parsed (.num 3)) (.parsed (.num 4))
+        (raw (.parsed (.num 1)) .empty .empty) ancestor =
+      some (.evaluated (.value 10 .fixed)) := by
+  native_decide
+
+/- A relevant unavailable prefix terminates before a later nonrelevant malformed star topology, while a nonrelevant direct prefix also masks that topology. -/
+example :
+    let authored := aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar]
+    let directOnly := ValidationRelevanceScope.partialSet [
+      relevance unsignedA.path [.concrete 1, .concrete 1]]
+    checkedPartialAggregateOf .maximum authored [2]
+        (.parsed (.num 9)) .empty .empty
+        (raw (.rejected .declaredConstraint) .empty .empty) directOnly =
+      some (.evaluated (.unknown .declaredConstraint)) ∧
+    checkedPartialAggregateOf .maximum authored [2]
+        (.parsed (.num 9)) .empty .empty
+        (raw (.parsed (.num 7)) .empty .empty) (.partialSet []) =
+      some .nonRelevant := by
+  native_decide
+
+/- Any locally visible filtered slot skips the partial rule before direct classification or malformed star topology. -/
+example :
+    checkedPartialAggregateOf .minimum
+        (aggregateSource (.field (bare "UnsignedA")) [
+          .starHaving aggregateStar aggregateHaving])
+        [2] (.rejected .malformed) .empty .empty
+        (raw (.rejected .declaredConstraint) .empty .empty) (.partialSet []) =
+      some .skippedHaving := by
   native_decide
 
 end A12Kernel.Conformance.NumericAggregateElaboration

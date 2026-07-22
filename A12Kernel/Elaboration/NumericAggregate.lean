@@ -223,6 +223,58 @@ private def numericAggregateSideAvailable
     (side : ResolvedValueListSide .number) : Except FormalCause Unit :=
   ValueListCell.scanPresent (kind := .number) (fun _ _ => ()) side.cells ()
 
+/-- Partial aggregate evaluation distinguishes the kernel's rule-level filtered skip, an all-rows relevance failure, and an evaluated numeric operand. Nonrelevance is not forged into a formal cell cause. -/
+inductive PartialValidationNumberAggregateResult where
+  | skippedHaving
+  | nonRelevant
+  | evaluated (operand : NumericOperand)
+  deriving Repr, DecidableEq
+
+private structure ResolvedNumberEntityAggregateSides where
+  values : ResolvedValueListSide .number := {
+    cells := [], hasUninstantiatedTail := false, hasHaving := false }
+  sum : ResolvedNumericSumSide := {
+    cells := [], uninstantiatedSignedness := [], hasHaving := false }
+
+namespace ResolvedNumberEntityAggregateSides
+
+private def append (accumulated : ResolvedNumberEntityAggregateSides)
+    (declarationSigned : Bool) (side : ResolvedValueListSide .number) :
+    ResolvedNumberEntityAggregateSides :=
+  { values := appendNumericAggregateSide accumulated.values side
+    sum := appendNumericSumSide accumulated.sum
+      (side.toNumericSumSide declarationSigned) }
+
+private def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
+    (op : NumericAggregateOp) : NumericOperand :=
+  match op with
+  | .sum => evalDeclaredNumericSumAggregate accumulated.sum
+  | .minimum => evalNumericExtremumAggregate .minimum accumulated.values
+  | .maximum => evalNumericExtremumAggregate .maximum accumulated.values
+
+end ResolvedNumberEntityAggregateSides
+
+/-- Resolve aggregate slots lazily in authored order. A consumer-selected terminal result stops before later topology or readers; a formal failure in a resolved slot becomes the consumer's terminal result before the next slot. -/
+private def scanNumberEntityAggregateSides {terminal : Type}
+    (resolve : CheckedNumberEntityOperand model →
+      Except StarAddressingError
+        (Sum (ResolvedValueListSide .number) terminal))
+    (onUnavailable : FormalCause → terminal) :
+    List (CheckedNumberEntityOperand model) →
+      ResolvedNumberEntityAggregateSides →
+      Except StarAddressingError
+        (Sum ResolvedNumberEntityAggregateSides terminal)
+  | [], accumulated => pure (.inl accumulated)
+  | operand :: remaining, accumulated => do
+      match ← resolve operand with
+      | .inr result => pure (.inr result)
+      | .inl side =>
+          match numericAggregateSideAvailable side with
+          | .error cause => pure (.inr (onUnavailable cause))
+          | .ok () =>
+              scanNumberEntityAggregateSides resolve onUnavailable remaining
+                (accumulated.append operand.declarationSigned side)
+
 namespace CheckedNumberEntityField
 
 /-- Classify one checked direct slot through the same declaration-owned Number reader used by every aggregate source. -/
@@ -248,6 +300,25 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
   | .starHaving source =>
       source.resolvedValueSide document outer filterRead starRead
 
+/-- Resolve one partial-validation aggregate slot. Direct fields require their concrete cell; ordinary stars require complete wildcard/ancestor coverage and retain the established topology-produced side unchanged. Filtered slots return the rule-level skip marker without evaluating their filter. -/
+def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (direct : FlatContext) (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then
+        pure (.inl (source.resolvedAggregateSide direct))
+      else
+        pure (.inr .nonRelevant)
+  | .star source => do
+      match ← source.resolvedPartialAllRowsValueSide document outer scope starRead with
+      | .nonRelevant => pure (.inr .nonRelevant)
+      | .relevant side => pure (.inl side)
+  | .starHaving _ => pure (.inr .skippedHaving)
+
 end CheckedNumberEntityOperand
 
 namespace CheckedNumberEntitySource
@@ -260,41 +331,34 @@ def evaluateAggregate (checked : CheckedNumberEntitySource model)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError NumericOperand :=
   let direct := model.checkContext directRead
-  let rec evaluateExtremum
-      (extremum : NumericExtremumOp)
-      (operands : List (CheckedNumberEntityOperand model))
-      (accumulated : ResolvedValueListSide .number) :
-      Except StarAddressingError NumericOperand := do
-    match operands with
-    | [] => pure (evalNumericExtremumAggregate extremum accumulated)
-    | operand :: remaining =>
-        let side ← operand.resolvedAggregateSide document outer direct
-          filterRead starRead
-        match numericAggregateSideAvailable side with
-        | .error cause => pure (NumericOperand.unknown cause)
-        | .ok () =>
-            evaluateExtremum extremum remaining (appendNumericAggregateSide accumulated side)
-  let rec evaluateSum
-      (operands : List (CheckedNumberEntityOperand model))
-      (accumulated : ResolvedNumericSumSide) :
-      Except StarAddressingError NumericOperand := do
-    match operands with
-    | [] => pure (evalDeclaredNumericSumAggregate accumulated)
-    | operand :: remaining =>
-        let side ← operand.resolvedAggregateSide document outer direct
-          filterRead starRead
-        match numericAggregateSideAvailable side with
-        | .error cause => pure (NumericOperand.unknown cause)
-        | .ok () =>
-            let declared := side.toNumericSumSide operand.declarationSigned
-            evaluateSum remaining (appendNumericSumSide accumulated declared)
-  match op with
-  | .sum => evaluateSum checked.operands {
-      cells := [], uninstantiatedSignedness := [], hasHaving := false }
-  | .minimum => evaluateExtremum .minimum checked.operands {
-      cells := [], hasUninstantiatedTail := false, hasHaving := false }
-  | .maximum => evaluateExtremum .maximum checked.operands {
-      cells := [], hasUninstantiatedTail := false, hasHaving := false }
+  do
+    match ← scanNumberEntityAggregateSides
+        (terminal := NumericOperand)
+        (fun operand => do
+          pure (.inl (← operand.resolvedAggregateSide document outer direct
+            filterRead starRead)))
+        (fun cause => .unknown cause) checked.operands {} with
+    | .inl accumulated => pure (accumulated.evaluate op)
+    | .inr result => pure result
+
+/-- Evaluate an unfiltered checked Number aggregate under partial validation. A locally visible `Having` skips the rule before topology, relevance, or reads. Otherwise direct slots use concrete relevance and every star uses the established all-rows wildcard/ancestor gate, with the same authored-order early termination as full validation. A containing whole condition must still discover filters across every branch before invoking any leaf. -/
+def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : Document) (outer : Env)
+    (scope : ValidationRelevanceScope) (directRead : RawFlatContext)
+    (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError PartialValidationNumberAggregateResult :=
+  if checked.hasHaving then
+    pure .skippedHaving
+  else
+    let direct := model.checkContext directRead
+    do
+      match ← scanNumberEntityAggregateSides
+          (terminal := PartialValidationNumberAggregateResult)
+          (fun operand => operand.resolvedPartialAggregateSide document outer scope
+            direct starRead)
+          (fun cause => .evaluated (.unknown cause)) checked.operands {} with
+      | .inl accumulated => pure (.evaluated (accumulated.evaluate op))
+      | .inr result => pure result
 
 end CheckedNumberEntitySource
 

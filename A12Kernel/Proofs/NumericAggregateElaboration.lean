@@ -117,4 +117,47 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
+/-- A relevant direct partial aggregate slot delegates to the same declaration-owned side, while a nonrelevant one is rejected before its checked value is inspected. -/
+theorem checkedNumberEntityField_partialAggregate_relevance
+    (source : CheckedNumberEntityField model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (direct : FlatContext) (starRead : Env → FieldId → RawCell) :
+    (scope.coversCell model source.declaration.path [] = true →
+      (CheckedNumberEntityOperand.field source).resolvedPartialAggregateSide
+          document outer scope direct starRead =
+        .ok (.inl (source.resolvedAggregateSide direct))) ∧
+    (scope.coversCell model source.declaration.path [] = false →
+      (CheckedNumberEntityOperand.field source).resolvedPartialAggregateSide
+          document outer scope direct starRead =
+        .ok (.inr .nonRelevant)) := by
+  constructor <;> intro relevant <;>
+    simp [CheckedNumberEntityOperand.resolvedPartialAggregateSide, relevant] <;>
+    rfl
+
+/-- A checked all-rows star that fails wildcard/ancestor coverage returns nonrelevance after topology resolution but before any target classification. -/
+theorem checkedNumberEntityStar_partialAggregate_nonRelevant
+    (source : CheckedStarNumberSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (direct : FlatContext) (starRead : Env → FieldId → RawCell)
+    (resolved : ResolvedStarTopology)
+    (resolvedPath : source.source.path.resolve document outer = .ok resolved)
+    (nonRelevant : source.source.allRowsRelevant scope = false) :
+    (CheckedNumberEntityOperand.star source).resolvedPartialAggregateSide
+        document outer scope direct starRead = .ok (.inr .nonRelevant) := by
+  simp [CheckedNumberEntityOperand.resolvedPartialAggregateSide,
+    CheckedStarNumberSource.resolvedPartialAllRowsValueSide, resolvedPath,
+    CheckedStarNumberSource.selectedPartialAllRowsValueSide, nonRelevant]
+  rfl
+
+/-- Any checked filter in the local aggregate source skips partial evaluation before topology, relevance, direct reads, or target reads. -/
+theorem checkedNumberEntitySource_partialAggregate_skipsHaving
+    (checked : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (directRead : RawFlatContext) (starRead : Env → FieldId → RawCell)
+    (hasHaving : checked.hasHaving = true) :
+    checked.evaluatePartialAggregate op document outer scope directRead starRead =
+      .ok .skippedHaving := by
+  simp [CheckedNumberEntitySource.evaluatePartialAggregate, hasHaving]
+  rfl
+
 end A12Kernel
