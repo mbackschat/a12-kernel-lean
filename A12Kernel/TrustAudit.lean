@@ -138,6 +138,11 @@ run_cmd do
 #print axioms A12Kernel.dateConstruction_numericPart_same_zero_distinct_provenance
 #print axioms A12Kernel.dateConstruction_numericPart_unavailable_comparison
 #print axioms A12Kernel.dateConstruction_numericPart_true_comparison_polarity
+#print axioms A12Kernel.dateNumericPart_fullDate_empty
+#print axioms A12Kernel.dateNumericPart_fullDate_value
+#print axioms A12Kernel.dateNumericPart_dateTime_uses_date
+#print axioms A12Kernel.dateNumericPart_unavailable
+#print axioms A12Kernel.dateNumericPart_empty_true_comparison_omission
 #print axioms A12Kernel.baseYearDateSource_components
 #print axioms A12Kernel.baseYearRangeParts_endpoints
 #print axioms A12Kernel.baseYearRangeParts_start_ne_finish
