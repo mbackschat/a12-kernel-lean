@@ -1,8 +1,10 @@
-# A12 Lean computation execution semantics proposal
+# Archived A12 Lean computation execution semantics decision
 
 ## Status
 
-Accepted on 2026-07-22 as the binding architectural decision for the future computation-scheduling and document-transition boundary of the A12 Lean mechanized semantics.
+Accepted on 2026-07-22 as the binding architectural decision for the future computation-scheduling and document-transition boundary of the A12 Lean mechanized semantics, then archived after its live obligations were promoted to their permanent owners.
+
+Kernel-observable behavior is owned by [`spec/01`](../../spec/01-data-model.md) and [`spec/09`](../../spec/09-computations.md). The binding Lean representation constraints are owned by [`ARCHITECTURE.md`](../ARCHITECTURE.md#whole-model-computation-execution-keeps-definition-activation-result-application-and-validation-separate), and the open prerequisites, source-audit categories, and completion gate are owned by [`SG4`](../SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition). This archived record preserves the accepted rationale, rejected alternatives, detailed audit questions, and adoption point; it is not a live implementation-status or sequencing owner.
 
 Adoption does not authorize immediate implementation, change the currently active semantic unit, or introduce a dependency, harness, protocol, or public product. At adoption, SG4 remains unselected: general repeatable addressing and checked-document construction are still open, the complete processing-context boundary is not yet represented, and the bounded source-audit gate in §17 is not closed.
 
