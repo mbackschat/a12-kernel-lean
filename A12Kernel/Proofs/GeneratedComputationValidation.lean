@@ -19,48 +19,51 @@ theorem generatedComputationGuard_targetSelfReference_rejected
   rfl
 
 /-- Without a common precondition, a holding first guard delegates to the existing first-match selector and leaves every later row irrelevant. -/
-theorem guardedLiteralNumber_firstHolds_selects
-    (alternatives : GuardedLiteralNumberAlternatives)
+theorem guardedGeneratedComputation_firstHolds_selects
+    (alternatives : GuardedGeneratedComputationAlternatives Operation)
     (context : ScalarComputationContext)
     (holds : alternatives.first.precondition.eval context = .holds) :
-    alternatives.selectFirst none context =
+    GuardedGeneratedComputationAlternatives.selectFirst alternatives none context =
       .selected alternatives.first.operation := by
-  simp [GuardedLiteralNumberAlternatives.selectFirst,
-    GuardedLiteralNumberAlternatives.declaredAlternatives,
+  simp [GuardedGeneratedComputationAlternatives.selectFirst,
+    GuardedGeneratedComputationAlternatives.declaredAlternatives,
     ComputationAlternative.expandCommonPrecondition,
     ComputationAlternative.selectFirst, holds]
 
 /-- A holding common precondition preserves the ordinary first-holding-row selection for the checked guarded fragment. -/
-theorem guardedLiteralNumber_holdingCommon_firstHolds_selects
-    (alternatives : GuardedLiteralNumberAlternatives)
+theorem guardedGeneratedComputation_holdingCommon_firstHolds_selects
+    (alternatives : GuardedGeneratedComputationAlternatives Operation)
     (context : ScalarComputationContext) (common : ComputationCondition)
     (commonHolds : common.eval context = .holds)
     (firstHolds : alternatives.first.precondition.eval context = .holds) :
-    alternatives.selectFirst (some common) context =
+    GuardedGeneratedComputationAlternatives.selectFirst alternatives
+      (some common) context =
       .selected alternatives.first.operation := by
-  simp [GuardedLiteralNumberAlternatives.selectFirst,
-    GuardedLiteralNumberAlternatives.declaredAlternatives,
+  simp [GuardedGeneratedComputationAlternatives.selectFirst,
+    GuardedGeneratedComputationAlternatives.declaredAlternatives,
     ComputationAlternative.expandCommonPrecondition,
     ComputationAlternative.selectFirst, ComputationCondition.eval,
     commonHolds, firstHolds]
 
 /-- A singleton with no authored guard and no common precondition selects directly without inventing an always-true condition. -/
-theorem singleLiteralNumber_unconditional_selects
-    (alternative : SingleLiteralNumberComputationAlternative)
+theorem singleGeneratedComputation_unconditional_selects
+    (alternative : SingleGeneratedComputationAlternative Operation)
     (context : ScalarComputationContext)
     (unconditional : alternative.precondition = none) :
-    alternative.selectFirst none context = .selected alternative.operation := by
-  simp [SingleLiteralNumberComputationAlternative.selectFirst, unconditional]
+    SingleGeneratedComputationAlternative.selectFirst alternative none context =
+      .selected alternative.operation := by
+  simp [SingleGeneratedComputationAlternative.selectFirst, unconditional]
 
 /-- A holding common precondition is the sole runtime guard for an otherwise-unconditional singleton. -/
-theorem singleLiteralNumber_holdingCommon_selects
-    (alternative : SingleLiteralNumberComputationAlternative)
+theorem singleGeneratedComputation_holdingCommon_selects
+    (alternative : SingleGeneratedComputationAlternative Operation)
     (context : ScalarComputationContext) (common : ComputationCondition)
     (unconditional : alternative.precondition = none)
     (commonHolds : common.eval context = .holds) :
-    alternative.selectFirst (some common) context =
+    SingleGeneratedComputationAlternative.selectFirst alternative
+      (some common) context =
       .selected alternative.operation := by
-  simp [SingleLiteralNumberComputationAlternative.selectFirst, unconditional,
+  simp [SingleGeneratedComputationAlternative.selectFirst, unconditional,
     ComputationAlternative.selectFirst, commonHolds]
 
 /-- The minimum two-branch table is a left-to-right disjunction below the target-filled gate; no first-match decision occurs in this desugaring. -/
@@ -72,15 +75,11 @@ theorem minimumGuardedGeneratedNumberCondition_exact
         (.or firstMismatch secondMismatch) := by
   rfl
 
-/-- A present common validation guard sits once outside the all-alternatives disjunction and inside the target-filled gate. -/
-theorem minimumGuardedGeneratedNumberCondition_withCommon_exact
-    (target : FlatNumberField) (common : FlatCondition)
-    (firstMismatch secondMismatch : FlatCondition) :
-    generatedNumberCondition target (some common)
-        firstMismatch [secondMismatch] =
-      .and (FlatCondition.fieldFilled (.number target))
-        (.and common
-          (.or firstMismatch secondMismatch)) := by
+/-- A present common validation guard sits once outside any already-built alternative body and inside the target-filled gate. -/
+theorem generatedConditionWithGate_withCommon_exact
+    (gate common alternatives : ConditionTree Leaf) :
+    generatedConditionWithGate gate (some common) alternatives =
+      .and gate (.and common alternatives) := by
   rfl
 
 /-- Appending a mismatch branch extends the source-shaped left fold at the right without reordering or dropping an earlier branch. -/
@@ -92,12 +91,12 @@ theorem disjoinGeneratedNumberMismatches_append
   simp [disjoinGeneratedNumberMismatches, List.foldl_append]
 
 /-- The guarded source representation exposes every alternative in declaration order. -/
-theorem guardedLiteralNumber_declaredOperations_exact
-    (alternatives : GuardedLiteralNumberAlternatives) :
+theorem guardedGeneratedComputation_declaredOperations_exact
+    (alternatives : GuardedGeneratedComputationAlternatives Operation) :
     alternatives.declaredAlternatives.map (fun alternative => alternative.operation) =
       alternatives.first.operation :: alternatives.second.operation ::
         alternatives.remaining.map (fun alternative => alternative.operation) := by
-  simp [GuardedLiteralNumberAlternatives.declaredAlternatives]
+  simp [GuardedGeneratedComputationAlternatives.declaredAlternatives]
 
 /-- Omitted tolerance metadata produces the source-level strict mismatch branch. -/
 theorem generatedLiteralNumberMismatch_withoutTolerance
@@ -117,21 +116,22 @@ theorem generatedLiteralNumberMismatch_withTolerance
   rfl
 
 /-- Tolerance metadata is validation-only and erases from every alternative before first-match computation selection. -/
-theorem literalNumberAlternative_tolerance_selectionIrrelevant
-    (alternative : LiteralNumberComputationAlternative)
+theorem generatedComputationAlternative_tolerance_selectionIrrelevant
+    (alternative : GeneratedComputationAlternative Operation)
     (tolerance : Option NumericToleranceRange) :
     ({ alternative with tolerance := tolerance }).toComputationAlternative =
       alternative.toComputationAlternative := by
   rfl
 
 /-- Singleton tolerance metadata is likewise invisible to its computation selector. -/
-theorem singleLiteralNumber_tolerance_selectionIrrelevant
-    (alternative : SingleLiteralNumberComputationAlternative)
+theorem singleGeneratedComputation_tolerance_selectionIrrelevant
+    (alternative : SingleGeneratedComputationAlternative Operation)
     (tolerance : Option NumericToleranceRange)
     (common : Option ComputationCondition)
     (context : ScalarComputationContext) :
-    ({ alternative with tolerance := tolerance }).selectFirst common context =
-      alternative.selectFirst common context := by
+    SingleGeneratedComputationAlternative.selectFirst
+        { alternative with tolerance := tolerance } common context =
+      SingleGeneratedComputationAlternative.selectFirst alternative common context := by
   rfl
 
 /-- An empty target suppresses the complete generated mismatch table, independently of the target-instance content bit. -/
@@ -146,6 +146,7 @@ theorem generatedNumberCondition_emptyTarget_notFired
         context targetHasContent = .notFired := by
   cases targetHasContent <;>
     simp [generatedNumberCondition,
+      generatedConditionWithGate,
       FlatCondition.evalFull, FlatCondition.canFireOnEmpty,
       FlatCondition.evalSelected, FlatField.evalFilled, empty]
 

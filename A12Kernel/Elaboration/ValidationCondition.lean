@@ -99,7 +99,8 @@ structure CheckedValidationCondition (model : FlatModel) where
 
 namespace CheckedValidationCondition
 
-private def checkCore (model : FlatModel) (rowGroup : GroupPath)
+/-- Certify a resolved mixed core once after a semantic desugaring has assembled its complete tree. -/
+def checkCore (model : FlatModel) (rowGroup : GroupPath)
     (core : ValidationCondition) (modelWellFormed : model.validate.isOk = true) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   if hCore : core.wellFormedBool model rowGroup = true then

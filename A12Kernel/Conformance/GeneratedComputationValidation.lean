@@ -53,8 +53,13 @@ private def crossGroupTarget : FlatFieldDecl :=
   { id := 22, groupPath := ["Output"], name := "Target",
     policy := { kind := .number { scale := 0, signed := true } } }
 
+private def crossGroupOtherTarget : FlatFieldDecl :=
+  { id := 23, groupPath := ["Output"], name := "OtherTarget",
+    policy := { kind := .number { scale := 0, signed := true } } }
+
 private def crossGroupModel : FlatModel :=
-  { fields := [crossGroupSource, crossGroupDate, crossGroupTarget] }
+  { fields := [crossGroupSource, crossGroupDate, crossGroupTarget,
+      crossGroupOtherTarget] }
 
 private def absolutePath (groups : List String) (field : String) :
     SurfaceFieldPath :=
@@ -72,6 +77,22 @@ private def crossGroupDatePartOperation :
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
     (.atom (.temporalFieldPart (absolutePath ["Input"] "StartDate") (.date .year)))
+
+private def crossGroupOffsetOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.binary .add
+      (.atom (.field (absolutePath ["Input"] "Source")))
+      (.literal { value := 1, authoredScale := 0 }))
+
+private def crossGroupOtherTargetOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupOtherTarget.id
+    (.atom (.field (absolutePath ["Input"] "Source")))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -142,7 +163,8 @@ private def evaluationWorld : World :=
 private def selectionOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) :
     ComputationAlternativeSelection DecodedNumericLiteral :=
-  candidate.selectFirst { read := (model.checkContext raw).read }
+  GeneratedComputationTable.selectFirst candidate
+    { read := (model.checkContext raw).read }
 
 private def outcomeOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) : Option FlatRuleOutcome :=
@@ -205,6 +227,76 @@ private def crossGroupExpectedMessage : FlatRuleMessage :=
     severity := .error
     messageType := .value
     text }
+
+private def crossGroupExpressionTable
+    (secondTolerance : Option NumericToleranceRange := none) :
+    Option (GeneratedComputationTable
+      (CheckedNumericComputationOperation crossGroupModel)) := do
+  let first ← crossGroupNumberOperation.toOption
+  let second ← crossGroupOffsetOperation.toOption
+  pure {
+    targetField := crossGroupTarget.id
+    name := "computedExpressionTable"
+    alternatives := .guarded {
+      first := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := first }
+      second := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := second
+        tolerance := secondTolerance } }
+    messagePlan }
+
+private def selectedCrossGroupExpression :
+    Option (AuthoredNumericExpr NumericComputationAtom) := do
+  let table ← crossGroupExpressionTable
+  match table.selectFirst {
+      read := (crossGroupModel.checkContext (crossGroupRaw 3 3)).read } with
+  | .selected operation => some operation.core.expression
+  | .noMatch | .poison _ => none
+
+private def crossGroupExpressionTableOutcome
+    (secondTolerance : Option NumericToleranceRange := none)
+    (common : Option ComputationCondition := none) : Option FlatRuleOutcome := do
+  let table ← crossGroupExpressionTable secondTolerance
+  let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
+    { table with commonPrecondition := common }).toOption
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 3) true)
+
+private def crossGroupExpressionSingletonOutcome
+    (target : Rat) : Option FlatRuleOutcome := do
+  let operation ← crossGroupNumberOperation.toOption
+  let table : GeneratedComputationTable
+      (CheckedNumericComputationOperation crossGroupModel) := {
+    targetField := crossGroupTarget.id
+    name := "computedExpressionTable"
+    alternatives := .singleton { operation }
+    messagePlan }
+  let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel table).toOption
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+
+private def expressionTableExpectedMessage : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedExpressionTable"
+    severity := .error
+    messageType := .value
+    text }
+
+private def crossGroupExpressionTargetMismatch :
+    Option GeneratedComputationValidationError := do
+  let first ← crossGroupNumberOperation.toOption
+  let second ← crossGroupOtherTargetOperation.toOption
+  let table : GeneratedComputationTable
+      (CheckedNumericComputationOperation crossGroupModel) := {
+    targetField := crossGroupTarget.id
+    name := "mismatchedTargets"
+    alternatives := .guarded {
+      first := { precondition := .fieldFilled crossGroupSource.id, operation := first }
+      second := { precondition := .fieldFilled crossGroupSource.id, operation := second } }
+    messagePlan }
+  match assembleGeneratedNumericOperationTableRule crossGroupModel table with
+  | .ok _ => none
+  | .error error => some error
 
 private def bothHoldingDifferent : LiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
@@ -546,6 +638,22 @@ example :
     | .ok operation =>
         (assembleGeneratedNumericOperationRule crossGroupModel operation
           "computedDatePart" none messagePlan).isOk) = true := by
+  native_decide
+
+/- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later mismatch, and tolerance remains validation-only. -/
+example :
+    selectedCrossGroupExpression =
+        crossGroupNumberOperation.toOption.map (fun operation => operation.core.expression) ∧
+      crossGroupExpressionTableOutcome =
+        some (.fired expressionTableExpectedMessage) ∧
+      crossGroupExpressionTableOutcome (some .range1) = some .notFired ∧
+      crossGroupExpressionSingletonOutcome 3 = some .notFired ∧
+      crossGroupExpressionSingletonOutcome 4 =
+        some (.fired expressionTableExpectedMessage) ∧
+      crossGroupExpressionTableOutcome none
+        (some (.fieldFilled crossGroupDate.id)) = some .notFired ∧
+      crossGroupExpressionTargetMismatch = some (.operationTargetMismatch 2
+        crossGroupTarget.id crossGroupOtherTarget.id) := by
   native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation

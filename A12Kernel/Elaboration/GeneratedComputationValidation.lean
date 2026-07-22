@@ -5,58 +5,59 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty literal table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. It also admits the generated validation twin of one already-checked unconditional numeric operation, retaining computation's model-wide nonrepeatable operand scope while reusing the shared mixed condition and whole-rule boundary. Computation lowers every present guard through the shared first-match mechanism; the generated rule structurally translates the same guard syntax into validation conditions, places the common guard outside the alternatives' declaration-ordered disjunction, and retains every mismatch branch. General expression-valued tables, repeatable evaluation, runtime target checks, and general computation authoring remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. Repeatable evaluation, runtime target checks, and general computation authoring remain outside.
 -/
 
 namespace A12Kernel
 
-/-- One literal Number alternative with validation-only tolerance metadata. First-match computation selection deliberately consumes only the inherited precondition and operation. -/
-structure LiteralNumberComputationAlternative extends
-    ComputationAlternative DecodedNumericLiteral where
+/-- One computation alternative with validation-only tolerance metadata. First-match computation selection deliberately consumes only the inherited precondition and operation. -/
+structure GeneratedComputationAlternative (Operation : Type) extends
+    ComputationAlternative Operation where
   tolerance : Option NumericToleranceRange := none
   deriving Repr, DecidableEq
 
 /-- The sole source alternative may omit its precondition. It remains distinct from a guarded row so the semantic core never fabricates an always-true condition. -/
-structure SingleLiteralNumberComputationAlternative where
+structure SingleGeneratedComputationAlternative (Operation : Type) where
   precondition : Option ComputationCondition := none
-  operation : DecodedNumericLiteral
+  operation : Operation
   tolerance : Option NumericToleranceRange := none
   deriving Repr, DecidableEq
 
 /-- A guarded table with at least two alternatives. -/
-structure GuardedLiteralNumberAlternatives where
-  first : LiteralNumberComputationAlternative
-  second : LiteralNumberComputationAlternative
-  remaining : List LiteralNumberComputationAlternative := []
+structure GuardedGeneratedComputationAlternatives (Operation : Type) where
+  first : GeneratedComputationAlternative Operation
+  second : GeneratedComputationAlternative Operation
+  remaining : List (GeneratedComputationAlternative Operation) := []
   deriving Repr, DecidableEq
 
-namespace GuardedLiteralNumberAlternatives
+namespace GuardedGeneratedComputationAlternatives
 
 /-- Recover the complete authored alternative order. The two leading fields make an empty or singleton table unrepresentable in this fragment. -/
-def declaredAlternatives (alternatives : GuardedLiteralNumberAlternatives) :
-    List LiteralNumberComputationAlternative :=
+def declaredAlternatives
+    (alternatives : GuardedGeneratedComputationAlternatives Operation) :
+    List (GeneratedComputationAlternative Operation) :=
   alternatives.first :: alternatives.second :: alternatives.remaining
 
 /-- Computation consumes every guarded row in declaration order and stops at the first holding row. -/
-def selectFirst (alternatives : GuardedLiteralNumberAlternatives)
+def selectFirst (alternatives : GuardedGeneratedComputationAlternatives Operation)
     (commonPrecondition : Option ComputationCondition)
     (context : ScalarComputationContext) :
-    ComputationAlternativeSelection DecodedNumericLiteral :=
+    ComputationAlternativeSelection Operation :=
   ComputationAlternative.selectFirst
     (ComputationAlternative.expandCommonPrecondition
       commonPrecondition
       (alternatives.declaredAlternatives.map
-        LiteralNumberComputationAlternative.toComputationAlternative)) context
+        GeneratedComputationAlternative.toComputationAlternative)) context
 
-end GuardedLiteralNumberAlternatives
+end GuardedGeneratedComputationAlternatives
 
-namespace SingleLiteralNumberComputationAlternative
+namespace SingleGeneratedComputationAlternative
 
 /-- Select the sole operation directly only when both source guards are absent. Every present guard still uses the shared ordered selector and common-precondition expansion. -/
-def selectFirst (alternative : SingleLiteralNumberComputationAlternative)
+def selectFirst (alternative : SingleGeneratedComputationAlternative Operation)
     (commonPrecondition : Option ComputationCondition)
     (context : ScalarComputationContext) :
-    ComputationAlternativeSelection DecodedNumericLiteral :=
+    ComputationAlternativeSelection Operation :=
   match alternative.precondition, commonPrecondition with
   | none, none => .selected alternative.operation
   | none, some common =>
@@ -67,35 +68,52 @@ def selectFirst (alternative : SingleLiteralNumberComputationAlternative)
         (ComputationAlternative.expandCommonPrecondition common
           [{ precondition, operation := alternative.operation }]) context
 
-end SingleLiteralNumberComputationAlternative
+end SingleGeneratedComputationAlternative
 
-/-- The complete nonempty literal table fragment: either one optionally guarded row or at least two fully guarded rows. -/
-inductive LiteralNumberComputationAlternatives where
-  | singleton (alternative : SingleLiteralNumberComputationAlternative)
-  | guarded (alternatives : GuardedLiteralNumberAlternatives)
+/-- The complete nonempty generated-validation table: either one optionally guarded row or at least two fully guarded rows. -/
+inductive GeneratedComputationAlternatives (Operation : Type) where
+  | singleton (alternative : SingleGeneratedComputationAlternative Operation)
+  | guarded (alternatives : GuardedGeneratedComputationAlternatives Operation)
   deriving Repr, DecidableEq
 
-/-- One checked literal-Number computation shell shared by runtime selection and generated validation. -/
-structure LiteralNumberComputation where
+/-- One computation shell shared by runtime selection and generated validation. -/
+structure GeneratedComputationTable (Operation : Type) where
   targetField : FieldId
   name : String
   commonPrecondition : Option ComputationCondition := none
-  alternatives : LiteralNumberComputationAlternatives
+  alternatives : GeneratedComputationAlternatives Operation
   messagePlan : MessageRenderPlan
   deriving Repr, DecidableEq
 
-namespace LiteralNumberComputation
+namespace GeneratedComputationTable
 
-def selectFirst (computation : LiteralNumberComputation)
+def selectFirst (computation : GeneratedComputationTable Operation)
     (context : ScalarComputationContext) :
-    ComputationAlternativeSelection DecodedNumericLiteral :=
+    ComputationAlternativeSelection Operation :=
   match computation.alternatives with
   | .singleton alternative =>
-      alternative.selectFirst computation.commonPrecondition context
+      SingleGeneratedComputationAlternative.selectFirst alternative
+        computation.commonPrecondition context
   | .guarded alternatives =>
-      alternatives.selectFirst computation.commonPrecondition context
+      GuardedGeneratedComputationAlternatives.selectFirst alternatives
+        computation.commonPrecondition context
 
-end LiteralNumberComputation
+end GeneratedComputationTable
+
+abbrev LiteralNumberComputationAlternative :=
+  GeneratedComputationAlternative DecodedNumericLiteral
+
+abbrev SingleLiteralNumberComputationAlternative :=
+  SingleGeneratedComputationAlternative DecodedNumericLiteral
+
+abbrev GuardedLiteralNumberAlternatives :=
+  GuardedGeneratedComputationAlternatives DecodedNumericLiteral
+
+abbrev LiteralNumberComputationAlternatives :=
+  GeneratedComputationAlternatives DecodedNumericLiteral
+
+abbrev LiteralNumberComputation :=
+  GeneratedComputationTable DecodedNumericLiteral
 
 /-- Authored location of a computation guard. Alternative indices are one-based, matching source diagnostics. -/
 inductive GeneratedComputationGuardPosition where
@@ -109,6 +127,8 @@ inductive GeneratedComputationValidationError where
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
+  | operationTargetMismatch (alternative : Nat)
+      (expected actual : FieldId)
   | condition (error : ElabError)
   | conditionAssembly (error : ValidationConditionAssemblyError)
   | rule (error : FlatRuleAssemblyError)
@@ -189,6 +209,14 @@ def disjoinGeneratedNumberMismatches (first : FlatCondition)
     (remaining : List FlatCondition) : FlatCondition :=
   remaining.foldl .or first
 
+/-- Place one already-built mismatch body below its target-filled gate and optional common guard. Flat literal and mixed expression tables share this exact source shape. -/
+def generatedConditionWithGate (gate : ConditionTree Leaf)
+    (commonGuard : Option (ConditionTree Leaf))
+    (alternatives : ConditionTree Leaf) : ConditionTree Leaf :=
+  .and gate (match commonGuard with
+    | none => alternatives
+    | some common => .and common alternatives)
+
 /-- The admitted generated shape. Every supplied mismatch remains below one target-filled gate and optional common guard; this function never calls the first-match selector. -/
 def generatedNumberCondition (target : FlatNumberField)
     (commonGuard : Option FlatCondition) (firstMismatch : FlatCondition)
@@ -196,10 +224,8 @@ def generatedNumberCondition (target : FlatNumberField)
     FlatCondition :=
   let alternatives := disjoinGeneratedNumberMismatches
     firstMismatch remainingMismatches
-  .and (FlatCondition.fieldFilled (.number target))
-    (match commonGuard with
-    | none => alternatives
-    | some common => .and common alternatives)
+  generatedConditionWithGate
+    (FlatCondition.fieldFilled (.number target)) commonGuard alternatives
 
 private def checkGeneratedOperationScale (target : FlatNumberField)
     (alternative : Nat) (operation : DecodedNumericLiteral)
@@ -233,7 +259,8 @@ private def checkLiteralNumberAlternativeScales (target : FlatNumberField) :
       checkGeneratedOperationScale target 1 alternative.operation
         alternative.tolerance
   | .guarded alternatives =>
-      checkGeneratedOperationScales target 1 alternatives.declaredAlternatives
+      checkGeneratedOperationScales target 1
+        (GuardedGeneratedComputationAlternatives.declaredAlternatives alternatives)
 
 private def lowerGeneratedLiteralNumberMismatch (model : FlatModel)
     (target : FlatNumberField)
@@ -359,32 +386,114 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
   else
     throw (.conditionAssembly .incoherentCore)
 
-/-- Assemble the generated validation twin of one checked unconditional numeric operation. The target-filled gate and expression mismatch meet only through the shared checked mixed tree, then reuse the ordinary whole-rule message boundary. Guarded tables remain with the table desugaring owner. -/
+private def generatedGuardCondition (model : FlatModel) (target : FieldId)
+    (position : GeneratedComputationGuardPosition)
+    (condition : ComputationCondition) :
+    Except GeneratedComputationValidationError ValidationCondition := do
+  let lowered ← condition.lowerForGeneratedValidation model target position
+  pure (ValidationCondition.flat lowered)
+
+private def generatedNumericOperationMismatchCondition (target : FlatNumberField)
+    (alternativeIndex : Nat)
+    (operation : CheckedNumericComputationOperation model)
+    (tolerance : Option NumericToleranceRange) :
+    Except GeneratedComputationValidationError ValidationCondition := do
+  if operation.core.target != target then
+    throw (.operationTargetMismatch alternativeIndex target.id
+      operation.core.target.id)
+  let mismatch ← operation.generatedMismatchComparison tolerance
+  pure (ValidationCondition.numericIn mismatch.operandScope mismatch.core)
+
+private def generatedNumericMismatch (model : FlatModel)
+    (target : FlatNumberField) (alternativeIndex : Nat)
+    (alternative : GeneratedComputationAlternative
+      (CheckedNumericComputationOperation model)) :
+    Except GeneratedComputationValidationError ValidationCondition := do
+  let guard ← generatedGuardCondition model target.id
+    (.alternative alternativeIndex) alternative.precondition
+  let mismatch ← generatedNumericOperationMismatchCondition target
+    alternativeIndex alternative.operation alternative.tolerance
+  pure (.and guard mismatch)
+
+private def generatedNumericMismatches (model : FlatModel)
+    (target : FlatNumberField) :
+    Nat → List (GeneratedComputationAlternative
+      (CheckedNumericComputationOperation model)) →
+      Except GeneratedComputationValidationError
+        (List ValidationCondition)
+  | _, [] => pure []
+  | alternativeIndex, alternative :: remaining => do
+      let first ← generatedNumericMismatch model target alternativeIndex alternative
+      let rest ← generatedNumericMismatches model target
+        (alternativeIndex + 1) remaining
+      pure (first :: rest)
+
+private def singleGeneratedNumericMismatch (model : FlatModel)
+    (target : FlatNumberField)
+    (alternative : SingleGeneratedComputationAlternative
+      (CheckedNumericComputationOperation model)) :
+    Except GeneratedComputationValidationError ValidationCondition := do
+  let mismatch ← generatedNumericOperationMismatchCondition target 1
+    alternative.operation alternative.tolerance
+  match alternative.precondition with
+  | none => pure mismatch
+  | some precondition => do
+      let guard ← generatedGuardCondition model target.id
+        (.alternative 1) precondition
+      pure (.and guard mismatch)
+
+private def generatedNumericAlternatives (model : FlatModel)
+    (target : FlatNumberField) :
+    GeneratedComputationAlternatives
+      (CheckedNumericComputationOperation model) →
+      Except GeneratedComputationValidationError ValidationCondition
+  | .singleton alternative =>
+      singleGeneratedNumericMismatch model target alternative
+  | .guarded alternatives => do
+      let first ← generatedNumericMismatch model target 1 alternatives.first
+      let remaining ← generatedNumericMismatches model target 2
+        (alternatives.second :: alternatives.remaining)
+      pure (remaining.foldl .or first)
+
+/-- Assemble the complete generated validation twin of a nonempty table whose payloads are already-checked numeric operations. Computation selection remains the generic first-match scan; this route retains every guarded mismatch in declaration order under one optional common guard and target-filled gate. -/
+def assembleGeneratedNumericOperationTableRule (model : FlatModel)
+    (computation : GeneratedComputationTable
+      (CheckedNumericComputationOperation model)) :
+    Except GeneratedComputationValidationError
+      (CheckedResolvedValidationRule model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => do
+      let (targetDeclaration, target) ←
+        model.resolveGeneratedNumberTarget computation.targetField
+      let alternatives ← generatedNumericAlternatives model target
+        computation.alternatives
+      let commonGuard ← match computation.commonPrecondition with
+        | none => pure none
+        | some common => do
+            let checkedCommon ← generatedGuardCondition model target.id .common common
+            pure (some checkedCommon)
+      let core := generatedConditionWithGate
+        (ValidationCondition.flat (.fieldFilled (.number target)))
+        commonGuard alternatives
+      let condition ← (CheckedValidationCondition.checkCore model
+        targetDeclaration.groupPath core (by rw [hModel]; rfl)).mapError
+          GeneratedComputationValidationError.conditionAssembly
+      (assembleResolvedValidationRule model condition computation.targetField
+        computation.name .error computation.messagePlan).mapError
+          GeneratedComputationValidationError.rule
+
+/-- Assemble the generated validation twin of one checked unconditional numeric operation through the same singleton-table route used by guarded operations. -/
 def assembleGeneratedNumericOperationRule (model : FlatModel)
     (operation : CheckedNumericComputationOperation model)
     (name : String) (tolerance : Option NumericToleranceRange)
     (messagePlan : MessageRenderPlan) :
     Except GeneratedComputationValidationError
       (CheckedResolvedValidationRule model) :=
-  match hModel : model.validate with
-  | .error error => .error (.resolve error)
-  | .ok () => do
-      let mismatch ← operation.generatedMismatchComparison tolerance
-      let gateCore := FlatCondition.fieldFilled (.number operation.core.target)
-      let gate ←
-        (gateCore.checkAgainstValidatedModel model mismatch.rowGroup hModel).mapError
-          GeneratedComputationValidationError.condition
-      let gateCondition ←
-        (CheckedValidationCondition.fromFlat gate).mapError
-          GeneratedComputationValidationError.conditionAssembly
-      let mismatchCondition ←
-        (CheckedValidationCondition.fromNumeric mismatch).mapError
-          GeneratedComputationValidationError.conditionAssembly
-      let condition ←
-        (gateCondition.and mismatchCondition).mapError
-          GeneratedComputationValidationError.conditionAssembly
-      (assembleResolvedValidationRule model condition operation.core.target.id
-        name .error messagePlan).mapError
-          GeneratedComputationValidationError.rule
+  assembleGeneratedNumericOperationTableRule model {
+    targetField := operation.core.target.id
+    name
+    alternatives := .singleton { operation, tolerance }
+    messagePlan }
 
 end A12Kernel
