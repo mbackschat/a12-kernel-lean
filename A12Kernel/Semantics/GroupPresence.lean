@@ -101,11 +101,9 @@ def GroupPresenceTally.ofStates : List GroupPresenceState → GroupPresenceTally
       else if state.definitelyEmpty then { tally with empty := tally.empty + 1 }
       else { tally with unavailable := tally.unavailable + 1 }
 
-/-- Group-list validation retains the same collapsed non-fire observable as field-list
-    validation. Independent filled or empty witnesses may decide despite unavailable peers. -/
-def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
-    (states : List GroupPresenceState) : ValidationFillOutcome :=
-  let tally := GroupPresenceTally.ofStates states
+/-- Evaluate the shared group-presence tally. Resolved fixed lists and starred structural row counts supply different classifications to this one operator table. -/
+def GroupFillQuantifier.evalTally (operator : GroupFillQuantifier)
+    (tally : GroupPresenceTally) : ValidationFillOutcome :=
   match operator with
   | .allGroupsFilled =>
       if tally.empty == 0 && tally.unavailable == 0 then .fired .value else .falseOrUnknown
@@ -117,6 +115,11 @@ def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
       if 0 < tally.empty then .fired .omission else .falseOrUnknown
   | .groupsNotCollectivelyFilled =>
       if 0 < tally.filled && 0 < tally.empty then .fired .omission else .falseOrUnknown
+
+/-- Group-list validation retains the same collapsed non-fire observable as field-list validation. Independent filled or empty witnesses may decide despite unavailable peers. -/
+def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
+    (states : List GroupPresenceState) : ValidationFillOutcome :=
+  operator.evalTally (GroupPresenceTally.ofStates states)
 
 /-- The plain multi-group numeric count is unavailable unless every operand group is
     fully relevant and error-free; unlike group-list predicates it cannot skip unknowns. -/

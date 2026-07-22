@@ -74,6 +74,7 @@ import A12Kernel.Conformance.FirstFilledValueElaboration
 import A12Kernel.Conformance.StarCompleteness
 import A12Kernel.Conformance.StarAddressing
 import A12Kernel.Conformance.StarPathElaboration
+import A12Kernel.Conformance.StarGroupElaboration
 import A12Kernel.Conformance.StarNumberElaboration
 import A12Kernel.Conformance.NumericAggregate
 import A12Kernel.Conformance.NumericAggregateElaboration
