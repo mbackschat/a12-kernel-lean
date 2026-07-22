@@ -56,6 +56,7 @@ import A12Kernel.Proofs.StringPattern
 import A12Kernel.Proofs.LegalCharset
 import A12Kernel.Proofs.LegalCharsetElaboration
 import A12Kernel.Proofs.CustomFieldCause
+import A12Kernel.Proofs.CustomFieldType
 import A12Kernel.Proofs.StringCascade
 import A12Kernel.Proofs.StringAlternatives
 import A12Kernel.Proofs.StringComputation

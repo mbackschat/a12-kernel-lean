@@ -53,6 +53,7 @@ import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Semantics.StringAlternatives
 import A12Kernel.Semantics.StringPattern
 import A12Kernel.Semantics.LegalCharset
+import A12Kernel.Semantics.CustomFieldType
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.ValidationRule
