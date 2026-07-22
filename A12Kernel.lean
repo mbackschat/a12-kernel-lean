@@ -50,6 +50,7 @@ import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.Enumeration
 import A12Kernel.Semantics.CheckedEnumeration
 import A12Kernel.Semantics.EnumerationValueList
+import A12Kernel.Semantics.EnumerationRepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
 import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Semantics.StringAlternatives

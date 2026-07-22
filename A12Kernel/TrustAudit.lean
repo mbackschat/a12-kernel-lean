@@ -740,6 +740,11 @@ run_cmd do
 #print axioms A12Kernel.enumerationValueList_present
 #print axioms A12Kernel.checkedEnumerationValueList_outOfDomain
 #print axioms A12Kernel.checkedEnumerationValueList_sideCells
+#print axioms A12Kernel.enumerationRepetitionKey_empty
+#print axioms A12Kernel.enumerationRepetitionKey_unknown
+#print axioms A12Kernel.enumerationRepetitionKey_present
+#print axioms A12Kernel.enumerationRepetitionKey_sameProjectedToken
+#print axioms A12Kernel.checkedEnumerationRepetitionKey_outOfDomain
 #print axioms A12Kernel.evalReachedCustomCondition_fired_value_iff
 #print axioms A12Kernel.evalReachedCustomCondition_notFired_iff
 #print axioms A12Kernel.evalReachedCustomCondition_ne_unknown

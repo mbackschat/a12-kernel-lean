@@ -30,11 +30,11 @@ theorem checkedEnumeration_stored_rejected
 theorem checkedEnumeration_evalRaw_present
     (comparison : CheckedEnumerationLiteralComparison) (stored : String)
     (nonempty : stored.isEmpty = false)
-    (member : comparison.declaration.declaration.storedTokens.contains stored = true) :
+    (member : comparison.operand.declaration.declaration.storedTokens.contains stored = true) :
     comparison.evalRaw (.parsed (.enum stored)) =
-      comparison.projection.evalLiteral comparison.op
+      comparison.operand.projection.evalLiteral comparison.op
         (.value (.enum stored)) comparison.expected := by
-  have member' : stored ∈ comparison.declaration.declaration.storedTokens := by
+  have member' : stored ∈ comparison.operand.declaration.declaration.storedTokens := by
     simpa using member
   simp [CheckedEnumerationLiteralComparison.evalRaw,
     CheckedEnumerationLiteralComparison.evalCheckedCell,
@@ -46,9 +46,9 @@ theorem checkedEnumeration_evalRaw_present
 theorem checkedEnumeration_evalRaw_outOfDomain
     (comparison : CheckedEnumerationLiteralComparison) (stored : String)
     (nonempty : stored.isEmpty = false)
-    (absent : comparison.declaration.declaration.storedTokens.contains stored = false) :
+    (absent : comparison.operand.declaration.declaration.storedTokens.contains stored = false) :
     comparison.evalRaw (.parsed (.enum stored)) = .unknown := by
-  have absent' : stored ∉ comparison.declaration.declaration.storedTokens := by
+  have absent' : stored ∉ comparison.operand.declaration.declaration.storedTokens := by
     simpa using absent
   simp [CheckedEnumerationLiteralComparison.evalRaw,
     CheckedEnumerationLiteralComparison.evalCheckedCell,

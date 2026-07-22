@@ -17,24 +17,13 @@ def ResolvedEnumerationProjection.asValueListCell
   | .notEvaluated => .empty
   | .unknown cause => .unknown cause
 
-/-- A checked stored/category projection ready to classify Enumeration value-list operands. -/
-structure CheckedEnumerationValueListOperand where
-  declaration : CheckedEnumerationDeclaration
-  projectionRef : EnumerationProjectionRef
-  projection : ResolvedEnumerationProjection
-  projectionChecked : declaration.resolveProjection projectionRef = .ok projection
+/-- Value lists consume the shared checked stored/category selection without another wrapper. -/
+abbrev CheckedEnumerationValueListOperand := CheckedEnumerationProjection
 
 def checkEnumerationValueListOperand (checked : CheckedEnumerationDeclaration)
     (projectionRef : EnumerationProjectionRef) :
     Except EnumerationOperandError CheckedEnumerationValueListOperand :=
-  match resolved : checked.resolveProjection projectionRef with
-  | .error error => .error error
-  | .ok projection =>
-      .ok {
-        declaration := checked
-        projectionRef
-        projection
-        projectionChecked := resolved }
+  checkEnumerationProjection checked projectionRef
 
 /-- Check one raw Enumeration value once, then project the resulting validation observation into the token-domain list cell. -/
 def CheckedEnumerationValueListOperand.classifyRaw
