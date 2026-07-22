@@ -79,6 +79,7 @@ import A12Kernel.Proofs.RepetitionNotUnique
 import A12Kernel.Proofs.Enumeration
 import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.EnumerationElaboration
+import A12Kernel.Proofs.CheckedEnumeration
 import A12Kernel.Proofs.SemanticIndex
 import A12Kernel.Proofs.CustomCondition
 
