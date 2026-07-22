@@ -161,6 +161,10 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
   | .emptyValueListFields =>
       pure (.make .conditionForm "$.condition"
         (Json.mkObj [("operation", toJson "enumerationValueList")]))
+  | .emptyValueListValueFields =>
+      pure (.make .conditionForm "$.condition"
+        (Json.mkObj [("operation", toJson "enumerationFieldValueList"),
+          ("side", toJson "values")]))
   | .duplicateValueListField path projectionRef =>
       let projection := match projectionRef with
         | .stored => "stored"

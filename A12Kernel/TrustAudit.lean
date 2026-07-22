@@ -749,6 +749,7 @@ run_cmd do
 #print axioms A12Kernel.checkedEnumerationValueList_sideCells
 #print axioms A12Kernel.flatEnumerationValueList_canFireOnEmpty
 #print axioms A12Kernel.flatEnumerationValueListSide_cells
+#print axioms A12Kernel.flatEnumerationValueSide_fields
 #print axioms A12Kernel.flatEnumerationValueList_irrelevant_unknown
 #print axioms A12Kernel.flatEnumerationValueList_no_empty
 #print axioms A12Kernel.flatEnumerationValueMembership_empty
