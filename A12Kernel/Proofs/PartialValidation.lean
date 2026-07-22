@@ -92,25 +92,25 @@ private theorem textFieldOperand_resolve_agreesOn
       simp_all [FlatTextFieldOperand.resolve, FlatEnumerationOperand.resolve,
         FlatContext.observeValidationAt]
 
-private theorem enumerationValueListSide_agreesOn
-    (operands : List FlatEnumerationOperand) (left right : FlatContext)
+private theorem tokenValueListSide_agreesOn
+    (operands : List FlatTextFieldOperand) (left right : FlatContext)
     (isRelevant : FlatRelevance)
     (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
     (relevant : operands.all (fun operand => isRelevant operand.field.id) = true) :
-    flatEnumerationValueListSide operands left =
-      flatEnumerationValueListSide operands right := by
-  unfold flatEnumerationValueListSide
+    flatTokenValueListSide operands left =
+      flatTokenValueListSide operands right := by
+  unfold flatTokenValueListSide
   congr 1
   apply List.map_congr_left
   intro operand member
   have relevantOperand : isRelevant operand.field.id = true := by
     exact List.all_eq_true.mp relevant operand member
-  have readEq := agreement operand.field.id relevantOperand
-  simp [FlatEnumerationOperand.valueListCell,
-    FlatContext.observeValidationAt, readEq]
+  simp only [FlatTextFieldOperand.valueListCell]
+  rw [textFieldOperand_resolve_agreesOn operand left right isRelevant
+    agreement relevantOperand]
 
-private theorem enumerationValueSide_agreesOn
-    (values : FlatEnumerationValueSide) (left right : FlatContext)
+private theorem tokenValueSide_agreesOn
+    (values : FlatTokenValueSide) (left right : FlatContext)
     (isRelevant : FlatRelevance)
     (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
     (relevant : values.operands.all (fun operand => isRelevant operand.field.id) = true) :
@@ -118,7 +118,7 @@ private theorem enumerationValueSide_agreesOn
   cases values with
   | literals literals => rfl
   | fields operands =>
-      exact enumerationValueListSide_agreesOn operands left right isRelevant
+      exact tokenValueListSide_agreesOn operands left right isRelevant
         agreement relevant
 
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
@@ -194,17 +194,17 @@ theorem partialSelected_agreesOn
               temporalOperand_resolve_agreesOn rightOperand left right isRelevant
                 worldAgreement agreement bothRelevant.right]
       · rfl
-  | enumerationValueList quantifier operands values =>
+  | tokenValueList quantifier operands values =>
       simp only [FlatCondition.evalSelected]
       split
       · rename_i relevant
         have bothRelevant :
             operands.all (fun operand => isRelevant operand.field.id) = true ∧
             values.operands.all (fun operand => isRelevant operand.field.id) = true := by
-          simpa [FlatEnumerationValueSide.allOperands] using relevant
-        rw [enumerationValueListSide_agreesOn operands left right isRelevant
+          simpa [FlatTokenValueSide.allOperands] using relevant
+        rw [tokenValueListSide_agreesOn operands left right isRelevant
             agreement bothRelevant.left,
-          enumerationValueSide_agreesOn values left right isRelevant
+          tokenValueSide_agreesOn values left right isRelevant
             agreement bothRelevant.right]
       · rfl
   | fieldFilled field | fieldNotFilled field =>
@@ -235,7 +235,7 @@ private theorem partialSelected_truth_refines_full
       split
       · exact K.informationRefines_refl _
       · trivial
-  | enumerationValueList quantifier operands values =>
+  | tokenValueList quantifier operands values =>
       have fullRelevant :
           (values.allOperands operands).all (fun _ => true) = true := by simp
       simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]

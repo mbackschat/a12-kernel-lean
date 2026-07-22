@@ -100,6 +100,10 @@ inductive SurfaceCondition where
       (fields : List SurfaceTextFieldOperand) (values : List String)
   | enumerationFieldValueList (quantifier : ValueListQuantifier)
       (fields values : List SurfaceTextFieldOperand)
+  | stringValueList (quantifier : ValueListQuantifier)
+      (fields : List SurfaceFieldPath) (values : List String)
+  | stringFieldValueList (quantifier : ValueListQuantifier)
+      (fields values : List SurfaceFieldPath)
   | enumerationValueMembership (op : ValueListMembershipOp)
       (field : SurfaceTextFieldOperand) (values : List String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
@@ -252,6 +256,7 @@ inductive ElabError where
   | emptyValueListValueFields
   | duplicateValueListField (path : List String)
       (projectionRef : EnumerationProjectionRef)
+  | duplicateStringValueListField (path : List String)
   | enumerationComparability (leftPath rightPath : List String)
       (error : EnumerationComparabilityError)
   | incoherentCore
@@ -601,23 +606,50 @@ def FlatModel.checkedEnumerationOperand? (model : FlatModel)
       else
         none
 
-def enumerationOperandListHasDuplicate : List FlatEnumerationOperand → Bool
+def FlatModel.enumerationLiteralAllowedByAny (model : FlatModel)
+    (operands : List FlatTextFieldOperand) (value : String) : Bool :=
+  operands.any fun operand =>
+    match operand with
+    | .enumeration enumeration =>
+      match model.checkedEnumerationOperand? enumeration with
+      | some checked =>
+        checked.declaration.literalAllowed checked.projection value
+      | none => false
+    | .string _ => false
+
+inductive FlatTokenOperandKind where
+  | string
+  | enumeration
+  deriving Repr, DecidableEq
+
+def FlatModel.tokenOperandKind? (model : FlatModel) :
+    FlatTextFieldOperand → Option FlatTokenOperandKind
+  | operand@(.string _) =>
+      match model.directComparableFor? operand with
+      | some .plainString => some .string
+      | _ => none
+  | .enumeration operand =>
+      if (model.checkedEnumerationOperand? operand).isSome then
+        some .enumeration
+      else
+        none
+
+def tokenOperandListHasDuplicate : List FlatTextFieldOperand → Bool
   | [] => false
   | operand :: remaining =>
-      remaining.contains operand || enumerationOperandListHasDuplicate remaining
+      remaining.contains operand || tokenOperandListHasDuplicate remaining
 
-def FlatModel.enumerationLiteralAllowedByAny (model : FlatModel)
-    (operands : List FlatEnumerationOperand) (value : String) : Bool :=
-  operands.any fun operand =>
-    match model.checkedEnumerationOperand? operand with
-    | some checked =>
-        checked.declaration.literalAllowed checked.projection value
-    | none => false
-
-def FlatModel.admitsEnumerationOperandList (model : FlatModel)
-    (operands : List FlatEnumerationOperand) : Bool :=
-  !operands.isEmpty && !enumerationOperandListHasDuplicate operands &&
-    operands.all (fun operand => (model.checkedEnumerationOperand? operand).isSome)
+def FlatModel.tokenOperandListKind? (model : FlatModel)
+    (operands : List FlatTextFieldOperand) : Option FlatTokenOperandKind :=
+  match operands with
+  | [] => none
+  | first :: remaining => do
+      let kind ← model.tokenOperandKind? first
+      if !tokenOperandListHasDuplicate operands &&
+          remaining.all (fun operand => model.tokenOperandKind? operand == some kind) then
+        some kind
+      else
+        none
 
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
@@ -636,13 +668,19 @@ def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison)
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
   | .compare comparison => model.admitsComparison comparison
-  | .enumerationValueList _ operands (.literals values) =>
-      model.admitsEnumerationOperandList operands && !values.isEmpty &&
-        values.all (model.enumerationLiteralAllowedByAny operands)
-  | .enumerationValueList _ operands (.fields valueOperands) =>
-      model.admitsEnumerationOperandList operands &&
-        model.admitsEnumerationOperandList valueOperands &&
-        !enumerationOperandListHasDuplicate (operands ++ valueOperands)
+  | .tokenValueList _ operands (.literals values) =>
+      !values.isEmpty && match model.tokenOperandListKind? operands with
+        | some .string => true
+        | some .enumeration =>
+            values.all (model.enumerationLiteralAllowedByAny operands)
+        | none => false
+  | .tokenValueList _ operands (.fields valueOperands) =>
+      match model.tokenOperandListKind? operands,
+          model.tokenOperandListKind? valueOperands with
+      | some fieldKind, some valueKind =>
+          fieldKind == valueKind &&
+            !tokenOperandListHasDuplicate (operands ++ valueOperands)
+      | _, _ => false
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
   | .and left right => left.wellFormedBool model && right.wellFormedBool model
@@ -800,6 +838,65 @@ private def elaborateEnumerationFieldValueSides (model : FlatModel)
   rejectDuplicateEnumerationOperands (fields ++ values)
   pure (fields.map (·.2.2), values.map (·.2.2))
 
+private abbrev ElaboratedStringValueListOperand := List String × FlatTextFieldOperand
+
+private def elaborateStringValueListOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceFieldPath) :
+    Except ElabError ElaboratedStringValueListOperand := do
+  let declaration ←
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface).mapError .resolve
+  match declaration.toTextFieldComparison? with
+  | some (operand@(.string _), _) => pure (declaration.path, operand)
+  | _ =>
+      throw (.textFieldOperandKindMismatch declaration.path
+        declaration.policy.kind.surfaceKind)
+
+private def duplicateElaboratedStringValueListOperand? :
+    List ElaboratedStringValueListOperand → Option (List String)
+  | [] => none
+  | current :: remaining =>
+      if remaining.any fun candidate => candidate.2 == current.2 then
+        some current.1
+      else
+        duplicateElaboratedStringValueListOperand? remaining
+
+private def elaborateStringValueListOperands (model : FlatModel)
+    (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
+    (emptyError : ElabError) : Except ElabError (List ElaboratedStringValueListOperand) := do
+  if surfaces.isEmpty then
+    throw emptyError
+  surfaces.mapM (elaborateStringValueListOperand model declaringGroup)
+
+private def rejectDuplicateStringValueListOperands
+    (resolved : List ElaboratedStringValueListOperand) : Except ElabError Unit :=
+  match duplicateElaboratedStringValueListOperand? resolved with
+  | some path => throw (.duplicateStringValueListField path)
+  | none => pure ()
+
+private def elaborateStringLiteralFieldList (model : FlatModel)
+    (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
+    (values : List String) : Except ElabError (List FlatTextFieldOperand) := do
+  let resolved ← elaborateStringValueListOperands model declaringGroup surfaces
+    .emptyValueListFields
+  rejectDuplicateStringValueListOperands resolved
+  match resolved with
+  | [] => throw .emptyValueListFields
+  | first :: remaining =>
+      if values.isEmpty then
+        throw (.emptyValueList first.1)
+      else
+        pure ((first :: remaining).map (·.2))
+
+private def elaborateStringFieldValueSides (model : FlatModel)
+    (declaringGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
+    Except ElabError (List FlatTextFieldOperand × List FlatTextFieldOperand) := do
+  let fields ← elaborateStringValueListOperands model declaringGroup fieldSurfaces
+    .emptyValueListFields
+  let values ← elaborateStringValueListOperands model declaringGroup valueSurfaces
+    .emptyValueListValueFields
+  rejectDuplicateStringValueListOperands (fields ++ values)
+  pure (fields.map (·.2), values.map (·.2))
+
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup : GroupPath) : SurfaceTextFieldOperand →
       Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
@@ -832,15 +929,24 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
   | .enumerationValueList quantifier surfaces values => do
       let operands ←
         elaborateEnumerationLiteralFieldList model declaringGroup surfaces values
-      pure (.enumerationValueList quantifier operands (.literals values))
+      pure (.tokenValueList quantifier (operands.map .enumeration) (.literals values))
   | .enumerationFieldValueList quantifier fieldSurfaces valueSurfaces => do
       let (fields, values) ←
         elaborateEnumerationFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
-      pure (.enumerationValueList quantifier fields (.fields values))
+      pure (.tokenValueList quantifier (fields.map .enumeration)
+        (.fields (values.map .enumeration)))
+  | .stringValueList quantifier surfaces values => do
+      let operands ←
+        elaborateStringLiteralFieldList model declaringGroup surfaces values
+      pure (.tokenValueList quantifier operands (.literals values))
+  | .stringFieldValueList quantifier fieldSurfaces valueSurfaces => do
+      let (fields, values) ←
+        elaborateStringFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
+      pure (.tokenValueList quantifier fields (.fields values))
   | .enumerationValueMembership op surface values => do
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup surface values
-      pure (.enumerationValueList op.quantifier [operand] (.literals values))
+      pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
   | .compareFields op leftReference rightReference => do
       let left ← (model.resolveNonrepeatableFieldUnchecked declaringGroup leftReference).mapError .resolve
       let right ← (model.resolveNonrepeatableFieldUnchecked declaringGroup rightReference).mapError .resolve

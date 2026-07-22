@@ -172,6 +172,10 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
       pure (.make .conditionForm "$.condition"
         (Json.mkObj [("operation", toJson "enumerationValueList"),
           ("path", toJson path), ("projection", toJson projection)]))
+  | .duplicateStringValueListField path =>
+      pure (.make .conditionForm "$.condition"
+        (Json.mkObj [("operation", toJson "stringValueList"),
+          ("path", toJson path)]))
   | .enumerationComparability leftPath rightPath error =>
       let reason := match error with
         | .displayClassMismatch => "displayClassMismatch"
