@@ -11,7 +11,7 @@ import A12Kernel.Semantics.EnumerationValueList
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
-A small core for resolved, non-repeatable field references. It covers the admitted direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality, direct String equality and inequality, four String `Length` ordering comparisons, checked Enumeration/category-to-literal equality and inequality, checked String/Enumeration literal and field-valued list quantifiers, resolved temporal field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates, and `And`/`Or`.
+A small core for resolved, non-repeatable field references. It covers the admitted direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality, direct String equality and inequality, four String `Length` ordering comparisons, checked Enumeration/category-to-literal equality and inequality, checked Number/String/Enumeration literal and field-valued list quantifiers, resolved temporal field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates, and `And`/`Or`.
 
 It also exposes the leaf-relevance seam used by the separate flat partial-validation capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are outside this capsule.
 -/
@@ -174,12 +174,24 @@ def FlatTokenValueSide.operands : FlatTokenValueSide → List FlatTextFieldOpera
   | .literals _ => []
   | .fields operands => operands
 
+/-- The two grammar-level Number value-side shapes. Literal atoms are already checked integral values; field operands retain empty and unavailable observations without the direct-comparison empty-as-zero substitution. -/
+inductive FlatNumberValueSide where
+  | literals (values : List Rat)
+  | fields (operands : List FlatNumberField)
+  deriving Repr, DecidableEq
+
+def FlatNumberValueSide.operands : FlatNumberValueSide → List FlatNumberField
+  | .literals _ => []
+  | .fields operands => operands
+
 /-- Flat core conditions. The closed constructors make unsupported operations
     impossible to represent in this fragment. -/
 inductive FlatCondition where
   | compare (comparison : FlatComparison)
   | tokenValueList (quantifier : ValueListQuantifier)
       (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide)
+  | numberValueList (quantifier : ValueListQuantifier)
+      (operands : List FlatNumberField) (values : FlatNumberValueSide)
   | fieldFilled (field : FlatField)
   | fieldNotFilled (field : FlatField)
   | and (left right : FlatCondition)
@@ -205,6 +217,7 @@ abbrev FlatRelevance := FieldId → Bool
 def FlatCondition.canFireOnEmpty : FlatCondition → Bool
   | .compare _ => false
   | .tokenValueList quantifier _ _ => quantifier.canFireOnEmpty
+  | .numberValueList quantifier _ _ => quantifier.canFireOnEmpty
   | .fieldFilled _ => false
   | .fieldNotFilled _ => true
   | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
@@ -387,6 +400,38 @@ def FlatTokenValueSide.allOperands (values : FlatTokenValueSide)
     (fields : List FlatTextFieldOperand) : List FlatTextFieldOperand :=
   fields ++ values.operands
 
+/-- Number value-list reads deliberately do not reuse direct comparison resolution: an empty member contributes no atom and is never substituted by zero. -/
+def FlatNumberField.valueListCell (field : FlatNumberField)
+    (context : FlatContext) : ValueListCell .number :=
+  match context.observeValidationAt field.id with
+  | .empty => .empty
+  | .value (.num amount) => .present amount
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+def flatNumberValueListSide (operands : List FlatNumberField)
+    (context : FlatContext) : ResolvedValueListSide .number :=
+  { cells := operands.map (·.valueListCell context)
+    hasUninstantiatedTail := false
+    hasHaving := false }
+
+def literalNumberValueListSide (values : List Rat) :
+    ResolvedValueListSide .number :=
+  { cells := values.map .present
+    hasUninstantiatedTail := false
+    hasHaving := false }
+
+def FlatNumberValueSide.resolve (side : FlatNumberValueSide)
+    (context : FlatContext) : ResolvedValueListSide .number :=
+  match side with
+  | .literals values => literalNumberValueListSide values
+  | .fields operands => flatNumberValueListSide operands context
+
+def FlatNumberValueSide.allOperands (values : FlatNumberValueSide)
+    (fields : List FlatNumberField) : List FlatNumberField :=
+  fields ++ values.operands
+
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
   | .number op field expected =>
@@ -454,6 +499,12 @@ def FlatCondition.evalSelected (context : FlatContext)
   | .tokenValueList quantifier operands values =>
       if values.allOperands operands |>.all fun operand => isRelevant operand.field.id then
         quantifier.eval (flatTokenValueListSide operands context)
+          (values.resolve context)
+      else
+        .unknown
+  | .numberValueList quantifier operands values =>
+      if values.allOperands operands |>.all fun operand => isRelevant operand.id then
+        quantifier.eval (flatNumberValueListSide operands context)
           (values.resolve context)
       else
         .unknown

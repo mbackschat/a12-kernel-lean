@@ -108,6 +108,12 @@ inductive SurfaceCondition where
       (field : SurfaceFieldPath) (values : List String)
   | stringFieldValueMembership (op : ValueListMembershipOp)
       (field : SurfaceFieldPath) (values : List SurfaceFieldPath)
+  | numberValueMembership (op : ValueListMembershipOp)
+      (field : SurfaceFieldPath) (values : List Int)
+  | numberFieldValueMembership (op : ValueListMembershipOp)
+      (field : SurfaceFieldPath) (values : List SurfaceFieldPath)
+  | numberFieldValueList (quantifier : ValueListQuantifier)
+      (fields values : List SurfaceFieldPath)
   | enumerationValueMembership (op : ValueListMembershipOp)
       (field : SurfaceTextFieldOperand) (values : List String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
@@ -261,6 +267,7 @@ inductive ElabError where
   | duplicateValueListField (path : List String)
       (projectionRef : EnumerationProjectionRef)
   | duplicateStringValueListField (path : List String)
+  | duplicateNumberValueListField (path : List String)
   | enumerationComparability (leftPath rightPath : List String)
       (error : EnumerationComparabilityError)
   | incoherentCore
@@ -655,6 +662,16 @@ def FlatModel.tokenOperandListKind? (model : FlatModel)
       else
         none
 
+def numberOperandListHasDuplicate : List FlatNumberField → Bool
+  | [] => false
+  | operand :: remaining =>
+      remaining.contains operand || numberOperandListHasDuplicate remaining
+
+def FlatModel.admitsNumberOperandList (model : FlatModel)
+    (operands : List FlatNumberField) : Bool :=
+  !operands.isEmpty && !numberOperandListHasDuplicate operands &&
+    operands.all fun operand => model.admitsField (.number operand)
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
   | .textFields _ left right =>
@@ -685,6 +702,13 @@ def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel)
           fieldKind == valueKind &&
             !tokenOperandListHasDuplicate (operands ++ valueOperands)
       | _, _ => false
+  | .numberValueList _ operands (.literals values) =>
+      operands.length == 1 && model.admitsNumberOperandList operands && !values.isEmpty &&
+        values.all fun value => value.den == 1
+  | .numberValueList _ operands (.fields valueOperands) =>
+      model.admitsNumberOperandList operands &&
+        model.admitsNumberOperandList valueOperands &&
+        !numberOperandListHasDuplicate (operands ++ valueOperands)
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
   | .and left right => left.wellFormedBool model && right.wellFormedBool model
@@ -844,6 +868,15 @@ private def elaborateEnumerationFieldValueSides (model : FlatModel)
 
 private abbrev ElaboratedStringValueListOperand := List String × FlatTextFieldOperand
 
+private def duplicateExactValueListOperand? {operand : Type} [BEq operand] :
+    List (List String × operand) → Option (List String)
+  | [] => none
+  | current :: remaining =>
+      if remaining.any fun candidate => candidate.2 == current.2 then
+        some current.1
+      else
+        duplicateExactValueListOperand? remaining
+
 private def elaborateStringValueListOperand (model : FlatModel)
     (declaringGroup : GroupPath) (surface : SurfaceFieldPath) :
     Except ElabError ElaboratedStringValueListOperand := do
@@ -865,15 +898,6 @@ private def elaborateStringLiteralList (model : FlatModel)
   else
     pure operand
 
-private def duplicateElaboratedStringValueListOperand? :
-    List ElaboratedStringValueListOperand → Option (List String)
-  | [] => none
-  | current :: remaining =>
-      if remaining.any fun candidate => candidate.2 == current.2 then
-        some current.1
-      else
-        duplicateElaboratedStringValueListOperand? remaining
-
 private def elaborateStringValueListOperands (model : FlatModel)
     (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
     (emptyError : ElabError) : Except ElabError (List ElaboratedStringValueListOperand) := do
@@ -883,7 +907,7 @@ private def elaborateStringValueListOperands (model : FlatModel)
 
 private def rejectDuplicateStringValueListOperands
     (resolved : List ElaboratedStringValueListOperand) : Except ElabError Unit :=
-  match duplicateElaboratedStringValueListOperand? resolved with
+  match duplicateExactValueListOperand? resolved with
   | some path => throw (.duplicateStringValueListField path)
   | none => pure ()
 
@@ -909,6 +933,51 @@ private def elaborateStringFieldValueSides (model : FlatModel)
   let values ← elaborateStringValueListOperands model declaringGroup valueSurfaces
     .emptyValueListValueFields
   rejectDuplicateStringValueListOperands (fields ++ values)
+  pure (fields.map (·.2), values.map (·.2))
+
+private abbrev ElaboratedNumberValueListOperand := List String × FlatNumberField
+
+private def elaborateNumberValueListOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceFieldPath) :
+    Except ElabError ElaboratedNumberValueListOperand := do
+  let declaration ←
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup surface).mapError .resolve
+  match declaration.toNumberField? with
+  | some operand => pure (declaration.path, operand)
+  | none =>
+      throw (.literalKindMismatch declaration.path .number
+        declaration.policy.kind.surfaceKind)
+
+private def elaborateNumberValueListOperands (model : FlatModel)
+    (declaringGroup : GroupPath) (surfaces : List SurfaceFieldPath)
+    (emptyError : ElabError) : Except ElabError (List ElaboratedNumberValueListOperand) := do
+  if surfaces.isEmpty then
+    throw emptyError
+  surfaces.mapM (elaborateNumberValueListOperand model declaringGroup)
+
+private def rejectDuplicateNumberValueListOperands
+    (resolved : List ElaboratedNumberValueListOperand) : Except ElabError Unit :=
+  match duplicateExactValueListOperand? resolved with
+  | some path => throw (.duplicateNumberValueListField path)
+  | none => pure ()
+
+private def elaborateNumberLiteralMembership (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceFieldPath)
+    (values : List Int) : Except ElabError (FlatNumberField × List Rat) := do
+  let (path, operand) ←
+    elaborateNumberValueListOperand model declaringGroup surface
+  if values.isEmpty then
+    throw (.emptyValueList path)
+  pure (operand, values.map Rat.ofInt)
+
+private def elaborateNumberFieldValueSides (model : FlatModel)
+    (declaringGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
+    Except ElabError (List FlatNumberField × List FlatNumberField) := do
+  let fields ← elaborateNumberValueListOperands model declaringGroup fieldSurfaces
+    .emptyValueListFields
+  let values ← elaborateNumberValueListOperands model declaringGroup valueSurfaces
+    .emptyValueListValueFields
+  rejectDuplicateNumberValueListOperands (fields ++ values)
   pure (fields.map (·.2), values.map (·.2))
 
 private def elaborateTextFieldOperand (model : FlatModel)
@@ -964,6 +1033,18 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       let (fields, values) ←
         elaborateStringFieldValueSides model declaringGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier fields (.fields values))
+  | .numberValueMembership op surface values => do
+      let (operand, values) ←
+        elaborateNumberLiteralMembership model declaringGroup surface values
+      pure (.numberValueList op.quantifier [operand] (.literals values))
+  | .numberFieldValueMembership op surface valueSurfaces => do
+      let (fields, values) ←
+        elaborateNumberFieldValueSides model declaringGroup [surface] valueSurfaces
+      pure (.numberValueList op.quantifier fields (.fields values))
+  | .numberFieldValueList quantifier fieldSurfaces valueSurfaces => do
+      let (fields, values) ←
+        elaborateNumberFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
+      pure (.numberValueList quantifier fields (.fields values))
   | .enumerationValueMembership op surface values => do
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup surface values
