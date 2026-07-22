@@ -146,6 +146,14 @@ private def allAmountsAndSpare : ValidationRelevanceScope :=
     entity amount.path [.concrete 1, .all, .all, .concrete 1],
     entity spare.path [.concrete 1, .concrete 1]]
 
+private def allConcreteAmountsAndNeedle : ValidationRelevanceScope :=
+  .partialSet [
+    entity amount.path [.concrete 1, .concrete 1, .concrete 1, .concrete 1],
+    entity amount.path [.concrete 1, .concrete 1, .concrete 2, .concrete 1],
+    entity amount.path [.concrete 1, .concrete 2, .concrete 1, .concrete 1],
+    entity amount.path [.concrete 1, .concrete 2, .concrete 2, .concrete 1],
+    entity needle.path [.concrete 1, .concrete 1]]
+
 /- Direct values-side nonrelevance uses the same classification: `AtLeastOne` can use another relevant member, while `No` and `NotAll` are poisoned. -/
 example :
     partialResultOf (authored .atLeastOne (restValues := ["Spare"]))
@@ -161,6 +169,22 @@ example :
     partialResultOf (authored .notAll (restValues := ["Spare"]))
         fullRows allAmountsAndSpare
         (directRead (.rejected .malformed) (.parsed (.num 9)))
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated .unknown) := by
+  native_decide
+
+/- Concrete coverage of every instantiated Number row still leaves the star's extent unknown to `No`; fields-side `AtLeastOne` and `NotAll` retain their per-cell witnesses. -/
+example :
+    partialResultOf (authored .atLeastOne) fullRows allConcreteAmountsAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
+        (constantStarRead (.parsed (.num 5))) =
+      some (.evaluated (.fired .value)) ∧
+    partialResultOf (authored .notAll) fullRows allConcreteAmountsAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
+        (constantStarRead (.parsed (.num 7))) =
+      some (.evaluated (.fired .value)) ∧
+    partialResultOf (authored .no) fullRows allConcreteAmountsAndNeedle
+        (directRead (.parsed (.num 5)) .empty)
         (constantStarRead (.parsed (.num 7))) =
       some (.evaluated .unknown) := by
   native_decide

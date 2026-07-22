@@ -151,27 +151,21 @@ inductive PartialStarNumberValueListResult where
 
 namespace CheckedStarNumberSource
 
-/-- Retain only relevant concrete cells for present-value search while recording whether any topology-produced cell was masked. The filter is evaluated before the declaration-owned reader. -/
+/-- Retain only relevant concrete cells for present-value search while recording whether wildcard/ancestor coverage establishes the star's complete extent. Relevance is applied before the declaration-owned reader. -/
 def selectedPartialValueListSide (checked : CheckedStarNumberSource model)
     (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     ResolvedValueListQuantifierSide .number :=
-  let relevant := resolved.environments.filter fun environment =>
-    checked.source.cellRelevant scope environment
-  { side := {
-      cells := relevant.map (checked.valueListCell read)
-      hasUninstantiatedTail := resolved.domain.hasOpenTail
-      hasHaving := false }
-    hasNonRelevant := resolved.environments.any fun environment =>
-      !checked.source.cellRelevant scope environment }
+  checked.source.selectedPartialValueListSide resolved scope
+    (checked.valueListCell read)
 
 /-- Resolve canonical nested topology once, then construct the partial quantifier side without reading masked cells. -/
 def resolvedPartialValueListSide (checked : CheckedStarNumberSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
-    Except StarAddressingError (ResolvedValueListQuantifierSide .number) := do
-  let resolved ← checked.source.path.resolve document outer
-  pure (checked.selectedPartialValueListSide resolved scope read)
+    Except StarAddressingError (ResolvedValueListQuantifierSide .number) :=
+  checked.source.resolvedPartialValueListSide document outer scope
+    (checked.valueListCell read)
 
 end CheckedStarNumberSource
 

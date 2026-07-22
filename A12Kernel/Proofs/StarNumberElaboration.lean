@@ -45,7 +45,11 @@ theorem checkedStarNumberSource_overLimit (checked : CheckedStarNumberSource mod
     (overLimit : checked.environmentOverLimit environment = true) :
     (checked.checkedCell read environment).parsed = none ∧
       (checked.checkedCell read environment).findings = [.overRepetition] := by
-  simp [CheckedStarNumberSource.checkedCell, overLimit]
+  have sourceOverLimit :
+      checked.source.environmentOverLimit environment = true := by
+    simpa [CheckedStarNumberSource.environmentOverLimit] using overLimit
+  simp [CheckedStarNumberSource.checkedCell,
+    CheckedStarFieldPath.checkedCell, sourceOverLimit]
 
 /-- A resolved `Having` is retained explicitly for downstream polarity even when it selects no candidate. -/
 @[simp] theorem checkedStarNumberSource_havingFlag

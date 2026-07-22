@@ -150,6 +150,60 @@ def CheckedStarFieldPath.cellRelevant (checked : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) (environment : Env) : Bool :=
   scope.coversCell model checked.declaration.path environment
 
+namespace CheckedStarFieldPath
+
+private def bindingOverLimit (axis : StarAxis)
+    (binding : RepeatableLevel × Nat) : Bool :=
+  axis.level == binding.1 && match axis.repeatability with
+    | none => false
+    | some limit => binding.2 > limit
+
+/-- Whether one topology-produced leaf environment lies under any over-capacity repeatable ancestor. This structural check is independent of the terminal field kind. -/
+def environmentOverLimit (checked : CheckedStarFieldPath model)
+    (environment : Env) : Bool :=
+  (checked.path.axes.zip environment).any fun binding =>
+    bindingOverLimit binding.1 binding.2
+
+/-- Apply the declaration-owned scalar checker unless structural over-repetition is the sole formal cause. Every typed star consumer shares this checked-cell boundary. -/
+def checkedCell (checked : CheckedStarFieldPath model)
+    (read : Env → FieldId → RawCell) (environment : Env) : CheckedCell :=
+  let scalar := checked.declaration.checkRaw
+    (read environment checked.declaration.id)
+  if checked.environmentOverLimit environment then
+    { scalar with parsed := none, findings := [.overRepetition] }
+  else
+    scalar
+
+/-- Resolve canonical topology once and classify every leaf in its established order. -/
+def resolvedValueListSide (checked : CheckedStarFieldPath model)
+    (document : Document) (outer : Env) (classify : Env → ValueListCell kind) :
+    Except StarAddressingError (ResolvedValueListSide kind) := do
+  let resolved ← checked.path.resolve document outer
+  pure (resolved.toResolvedSide classify)
+
+/-- Retain only relevant concrete cells before invoking the kind-specific classifier, while recording whether the star's complete extent is wildcard-covered. Concrete enumeration of every current row does not establish that future/absent rows are relevant. -/
+def selectedPartialValueListSide (checked : CheckedStarFieldPath model)
+    (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
+    (classify : Env → ValueListCell kind) :
+    ResolvedValueListQuantifierSide kind :=
+  let relevant := resolved.environments.filter fun environment =>
+    checked.cellRelevant scope environment
+  { side := {
+      cells := relevant.map classify
+      hasUninstantiatedTail := resolved.domain.hasOpenTail
+      hasHaving := false }
+    hasNonRelevant := !checked.allRowsRelevant scope }
+
+/-- Resolve canonical topology once, then apply per-cell relevance before kind-specific classification. -/
+def resolvedPartialValueListSide (checked : CheckedStarFieldPath model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (classify : Env → ValueListCell kind) :
+    Except StarAddressingError (ResolvedValueListQuantifierSide kind) := do
+  let resolved ← checked.path.resolve document outer
+  pure (checked.selectedPartialValueListSide resolved scope classify)
+
+end CheckedStarFieldPath
+
 private structure MarkedStarAxis where
   path : GroupPath
   axis : StarAxis
