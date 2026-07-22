@@ -13,6 +13,7 @@ namespace FlatCondition
 /-- Whether this already-resolved condition references one field ID. Error-field legality is checked after path resolution, never by authored path spelling. -/
 def referencesField : FlatCondition → FieldId → Bool
   | .compare comparison, field => comparison.fieldIds.contains field
+  | .enumerationValueList _ operand _, field => operand.field.id == field
   | .fieldFilled referenced, field
   | .fieldNotFilled referenced, field => referenced.id == field
   | .and left right, field

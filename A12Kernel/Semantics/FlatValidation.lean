@@ -7,7 +7,7 @@ import A12Kernel.Semantics.DateTimeComparison
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.TimeNumeric
-import A12Kernel.Semantics.CheckedEnumeration
+import A12Kernel.Semantics.EnumerationValueList
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
@@ -16,7 +16,7 @@ direct Number comparisons and fixed tolerance, Boolean/Confirm equality and ineq
 direct String equality and inequality, four String `Length` ordering comparisons,
 checked Enumeration/category-to-literal equality and inequality, resolved temporal
 field/literal/`Today`/`Now`/Base-Year range-endpoint comparison, presence predicates,
-and `And`/`Or`.
+one-field Enumeration value-list quantifiers, and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -114,19 +114,24 @@ def fields : FlatTemporalOperand → List FlatField
 
 end FlatTemporalOperand
 
-/-- One direct field whose checked value participates in String/Enumeration equality. An Enumeration operand retains the exact stored/category projection checked from its declaration. -/
+/-- One resolved Enumeration field and its exact declaration-checked stored/category projection, shared by scalar comparison and value-list consumers. -/
+structure FlatEnumerationOperand where
+  field : FlatEnumerationField
+  projectionRef : EnumerationProjectionRef
+  projection : ResolvedEnumerationProjection
+  deriving Repr, DecidableEq
+
+/-- One direct field whose checked value participates in String/Enumeration equality. -/
 inductive FlatTextFieldOperand where
   | string (field : FlatStringField)
-  | enumeration (field : FlatEnumerationField)
-      (projectionRef : EnumerationProjectionRef)
-      (projection : ResolvedEnumerationProjection)
+  | enumeration (operand : FlatEnumerationOperand)
   deriving Repr, DecidableEq
 
 namespace FlatTextFieldOperand
 
 def field : FlatTextFieldOperand → FlatField
   | .string field => .string field
-  | .enumeration field _ _ => .enumeration field
+  | .enumeration operand => .enumeration operand.field
 
 end FlatTextFieldOperand
 
@@ -136,9 +141,8 @@ inductive FlatComparison where
   | confirm (op : EqualityOp) (field : FlatConfirmField)
   | string (op : EqualityOp) (field : FlatStringField) (expected : String)
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
-  | enumeration (op : EqualityOp) (field : FlatEnumerationField)
-      (projectionRef : EnumerationProjectionRef)
-      (projection : ResolvedEnumerationProjection) (expected : String)
+  | enumeration (op : EqualityOp) (operand : FlatEnumerationOperand)
+      (expected : String)
   | textFields (op : EqualityOp) (left right : FlatTextFieldOperand)
   | temporal (op : TemporalComparisonOp)
       (left right : FlatTemporalOperand)
@@ -153,7 +157,7 @@ def fields : FlatComparison → List FlatField
   | .confirm _ field => [.confirm field]
   | .string _ field _ => [.string field]
   | .stringLength _ field _ => [.string field]
-  | .enumeration _ field _ _ _ => [.enumeration field]
+  | .enumeration _ operand _ => [.enumeration operand.field]
   | .textFields _ left right => [left.field, right.field]
   | .temporal _ left right => left.fields ++ right.fields
 
@@ -170,6 +174,8 @@ end FlatComparison
     impossible to represent in this fragment. -/
 inductive FlatCondition where
   | compare (comparison : FlatComparison)
+  | enumerationValueList (quantifier : ValueListQuantifier)
+      (operand : FlatEnumerationOperand) (values : List String)
   | fieldFilled (field : FlatField)
   | fieldNotFilled (field : FlatField)
   | and (left right : FlatCondition)
@@ -194,6 +200,7 @@ abbrev FlatRelevance := FieldId → Bool
 /-- Whether an all-empty full-validation instance is eligible for this condition. -/
 def FlatCondition.canFireOnEmpty : FlatCondition → Bool
   | .compare _ => false
+  | .enumerationValueList quantifier _ _ => quantifier.canFireOnEmpty
   | .fieldFilled _ => false
   | .fieldNotFilled _ => true
   | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
@@ -332,12 +339,29 @@ def SimpleComparisonOperand.evalDirectString
       if expected.isEmpty then .notFired
       else op.evalSimple (· == ·) (.value actual given) expected
 
+def FlatEnumerationOperand.resolve (operand : FlatEnumerationOperand)
+    (context : FlatContext) : SimpleComparisonOperand String :=
+  operand.projection.resolveOperand
+    (context.observeValidationAt operand.field.id)
+
+def FlatEnumerationOperand.valueListSide (operand : FlatEnumerationOperand)
+    (context : FlatContext) : ResolvedValueListSide .token :=
+  { cells := [operand.projection.asValueListCell
+      (context.observeValidationAt operand.field.id)]
+    hasUninstantiatedTail := false
+    hasHaving := false }
+
+def literalTokenValueListSide (values : List String) :
+    ResolvedValueListSide .token :=
+  { cells := values.map .present
+    hasUninstantiatedTail := false
+    hasHaving := false }
+
 def FlatTextFieldOperand.resolve (operand : FlatTextFieldOperand)
     (context : FlatContext) : SimpleComparisonOperand String :=
   match operand with
   | .string field => context.resolveDirectStringComparisonOperand field
-  | .enumeration field _ projection =>
-      projection.resolveOperand (context.observeValidationAt field.id)
+  | .enumeration operand => operand.resolve context
 
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
@@ -351,8 +375,9 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       (context.resolveDirectStringComparisonOperand field).evalDirectString op expected
   | .stringLength op field expected =>
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
-  | .enumeration op field _ projection expected =>
-      projection.evalLiteral op (context.observeValidationAt field.id) expected
+  | .enumeration op operand expected =>
+      operand.projection.evalLiteral op
+        (context.observeValidationAt operand.field.id) expected
   | .textFields op left right =>
       op.evalSymmetric (· == ·) (left.resolve context) (right.resolve context)
   | .temporal op left right =>
@@ -402,6 +427,12 @@ def FlatCondition.evalSelected (context : FlatContext)
     (isRelevant : FlatRelevance := fun _ => true) : FlatCondition → Verdict
   | .compare comparison =>
       if comparison.allRelevant isRelevant then comparison.eval context else .unknown
+  | .enumerationValueList quantifier operand values =>
+      if isRelevant operand.field.id then
+        quantifier.eval (operand.valueListSide context)
+          (literalTokenValueListSide values)
+      else
+        .unknown
   | .fieldFilled field =>
       if isRelevant field.id then field.evalFilled context else .unknown
   | .fieldNotFilled field =>

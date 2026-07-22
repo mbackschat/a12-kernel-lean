@@ -45,14 +45,17 @@ private def resolveErrorOf (result : Except ResolveError Unit) : Option ResolveE
   | .error error => some error
 
 private def storedCore : FlatCondition :=
-  .compare (.enumeration .equal { id := 20 } .stored .stored "A")
+  .compare (.enumeration .equal
+    { field := { id := 20 }, projectionRef := .stored, projection := .stored } "A")
 
 private def categoryMapping : ResolvedEnumerationCategory :=
   { storedTokens := ["A", "B"], categoryTokens := ["Shared", "Shared"] }
 
 private def categoryCore : FlatCondition :=
-  .compare (.enumeration .equal { id := 20 } (.category "Kind")
-    (.category categoryMapping) "Shared")
+  .compare (.enumeration .equal {
+    field := { id := 20 }
+    projectionRef := .category "Kind"
+    projection := .category categoryMapping } "Shared")
 
 example : coreOf (elaborate model ["Order"] (.compare .equal path (.string "A"))) =
     some storedCore := by native_decide
@@ -168,7 +171,8 @@ private def rawPair (leftId : FieldId) (left : RawCell)
 
 private def textEnumCore : FlatCondition :=
   .compare (.textFields .equal (.string { id := 10 })
-    (.enumeration { id := 20 } .stored .stored))
+    (.enumeration {
+      field := { id := 20 }, projectionRef := .stored, projection := .stored }))
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
     (fieldPath "Text") (fieldPath "Code"))) = some textEnumCore := by native_decide
@@ -180,8 +184,11 @@ example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareFields .notEqual
     (fieldPath "Code") (fieldPath "Identity"))) = some
-      (.compare (.textFields .notEqual (.enumeration { id := 20 } .stored .stored)
-        (.enumeration { id := 21 } .stored .stored))) := by native_decide
+      (.compare (.textFields .notEqual (.enumeration {
+          field := { id := 20 }, projectionRef := .stored, projection := .stored })
+        (.enumeration {
+          field := { id := 21 }, projectionRef := .stored, projection := .stored }))) := by
+  native_decide
 
 example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
     (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "A"))) true
@@ -232,8 +239,13 @@ private def directCategoryPeer : SurfaceTextFieldOperand :=
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     categoryCode directCategoryPeer)) = some (.compare (.textFields .equal
-      (.enumeration { id := 20 } (.category "Kind") (.category categoryMapping))
-      (.enumeration { id := 25 } .stored .stored))) := by native_decide
+      (.enumeration {
+        field := { id := 20 }
+        projectionRef := .category "Kind"
+        projection := .category categoryMapping })
+      (.enumeration {
+        field := { id := 25 }, projectionRef := .stored, projection := .stored }))) := by
+  native_decide
 
 example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "B")) 25 (.parsed (.enum "Shared"))) true
@@ -245,7 +257,10 @@ example : (elaborate fieldModel ["Order"] (.compareFields .equal
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     categoryCode (.direct (fieldPath "Text")))) = some (.compare (.textFields .equal
-      (.enumeration { id := 20 } (.category "Kind") (.category categoryMapping))
+      (.enumeration {
+        field := { id := 20 }
+        projectionRef := .category "Kind"
+        projection := .category categoryMapping })
       (.string { id := 10 }))) := by native_decide
 
 example : (elaborate fieldModel ["Order"] (.compareTextFields .equal
@@ -262,9 +277,63 @@ example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
 
 private def incoherentCategoryCore : FlatCondition :=
   .compare (.textFields .equal
-    (.enumeration { id := 20 } (.category "Kind") .stored)
-    (.enumeration { id := 25 } .stored .stored))
+    (.enumeration {
+      field := { id := 20 }
+      projectionRef := .category "Kind"
+      projection := .stored })
+    (.enumeration {
+      field := { id := 25 }, projectionRef := .stored, projection := .stored }))
 
 example : incoherentCategoryCore.wellFormedBool fieldModel = false := by native_decide
+
+private def storedValueList : SurfaceCondition :=
+  .enumerationValueList .atLeastOne (.direct (fieldPath "Code")) ["A", "B"]
+
+private def storedValueListCore : FlatCondition :=
+  .enumerationValueList .atLeastOne
+    { field := { id := 20 }, projectionRef := .stored, projection := .stored }
+    ["A", "B"]
+
+example : coreOf (elaborate fieldModel ["Order"] storedValueList) =
+    some storedValueListCore := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw (.parsed (.enum "B"))) true storedValueList) =
+    some (.fired .value) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw .empty) false (.enumerationValueList .no
+      (.direct (fieldPath "Code")) ["A"])) = some (.fired .omission) := by
+  native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw .empty) false (.enumerationValueList .notAll
+      (.direct (fieldPath "Code")) ["A"])) = some .notFired := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (raw (.parsed (.enum "B"))) true (.enumerationValueList .atLeastOne
+      categoryCode ["Shared"])) = some (.fired .value) := by native_decide
+
+example : storedValueListCore.evalSelected
+    (fieldModel.checkContext (raw (.parsed (.enum "A")))) (fun _ => false) =
+    .unknown := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationValueList .atLeastOne (.direct (fieldPath "Code")) ["Shared"])) =
+    some (.enumerationOperand ["Order", "Code"] (.invalidLiteral "Shared")) := by
+  native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationValueList .atLeastOne categoryCode ["A"])) =
+    some (.enumerationOperand ["Order", "Code"] (.invalidLiteral "A")) := by
+  native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationValueList .atLeastOne (.direct (fieldPath "Code")) [])) =
+    some (.emptyValueList ["Order", "Code"]) := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"]
+    (.enumerationValueList .atLeastOne (.direct (fieldPath "Text")) ["A"])) =
+    some (.textFieldOperandKindMismatch ["Order", "Text"] .string) := by native_decide
 
 end A12Kernel.Conformance.FlatEnumeration
