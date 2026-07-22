@@ -796,7 +796,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-22-08 — computation results retain rich V2 projections beyond the change delta
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `21d52c1f65b8284f03c2b560e854e9f211c9a56d`
 - **Kernel behavior:** 30.8.1
@@ -806,10 +806,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Correct the existing canonical and comparison-facing prose so the Kernel's full V2 result is not equated with the narrower change projection. Name the successful-unchanged, changed-subset, erroneous, cleared, formal-operand-error, and exact `noErrorOccurred` observables; preserve the interpreter's report-all public contract and the existing change projection used for differentials. Do not introduce a scheduler, result framework, protocol, or new harness for this documentation correction.
 - **Compatibility:** This widens the documented Kernel-observable result envelope without changing the established VALUE/CLEARED/ERRORED differential projection or a12-dmkits interpreter behavior. A consumer that retains only the delta cannot claim full V2 result compatibility; semantic compatibility, current V2 behavioral compatibility, and deprecated V1 mutation/alias compatibility remain separate claims.
 - **Acceptance:** a12-dmkits canonical semantics and conformance documentation distinguish the full V2 result from the change projection, state all five observables and the exact error predicate, preserve the report-all interpreter and existing differential projection unchanged, add no duplicate result or scheduling mechanism, and return the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted as documentation and evidence only — commits `ba7df05a` and corrective follow-up `e3db6c30` distinguish the five-channel V2 result from the VALUE/CLEARED/ERRORED change projection, including unchanged successes, the changed subset, erroneous and cleared instances, formal operand errors, and the exact `noErrorOccurred` predicate. Source-relative classification remains stable when applied to a model-compatible destination; the report-all interpreter and differential projection are unchanged.
 
 ### SPEC-2026-07-22-09 — partial starred value-list extent requires wildcard coverage
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `83dd514f9283b9f62dbe6ee6f238e5c67a00e9c6`
 - **Kernel behavior:** 30.8.1
@@ -819,10 +821,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Extend the existing value-list side classification with the already established wildcard star-relevance fact; do not add another evaluator or relevance model. Preserve per-cell filtering and formal-cell classification. Apply extent UNKNOWN through the existing operator/side asymmetry, and keep full validation unchanged. Through the maintained partial-validation and value-list differential routes, distinguish two instantiated rows covered by one wildcard from the same two rows listed concretely for String-literal fields-side and, if the current typed surface permits it, starred field-valued values-side controls; retain `AtLeastOne`, `No`, and `NotAll` separators plus a direct nonrepeatable control.
 - **Compatibility:** The current peer can report `No` or values-side `NotAll` from an incompletely known star when every current row happens to be concrete-relevant. The correction suppresses only those partial-validation results; it does not change full validation, selected cell values, omitted-tail polarity, or per-cell formal-invalidity handling.
 - **Acceptance:** Both kernel strategies and the JVM/Node interpreter agree that concrete enumeration of every current row does not establish star extent, wildcard/ancestor coverage does, and the extent fact follows the three operators' side-specific UNKNOWN table. Existing full-validation starred value-list, malformed-cell, index-field, `Having`, and aggregate-relevance controls remain green; canonical a12-dmkits prose records the distinction; and the handback supplies the exact reviewed revision and per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted with an interpreter correction — commit `affde9e4`, strengthened by `e3db6c30`, carries complete starred extent through the existing `starRelevant` seam. Incomplete extent suppresses `No` on either side and values-side `NotAll`; `AtLeastOne` and fields-side `NotAll` retain their established behavior. Full validation is unchanged, and wildcard, concrete-row, relevant-ancestor, side, strategy, JVM, and Node controls are locked.
 
 ### SPEC-2026-07-22-10 — `RepetitionNotUnique` compares every non-Number key by stored text
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `83dd514f9283b9f62dbe6ee6f238e5c67a00e9c6`
 - **Kernel behavior:** 30.8.1
@@ -832,10 +836,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Review the existing typed RNU authoring and evaluator against the complete direct-field admission contract, correct only any actual admission gap, and update the canonical §9 owner. Reuse the existing `RepetitionNotUniqueCondition`, field references, formal-cell gate, and two-branch `KeyAtom` mechanism. Add focused authoring and maintained dual-kernel-route cases for a direct Enumeration key, a category-collision control proving stored-token identity, and a temporal pair that separates equal parsed/instant meaning from different stored text where the model surface permits it; retain Number normalization, String exactness, Boolean/Confirm admission, formal-invalid exclusion, optional-empty polarity, and category/wildcard/semantic-index/no-value-validation rejections. Do not add a second evaluator, generic raw-value framework, protocol, or harness.
 - **Compatibility:** Restricting RNU to Number/String rejects legal models. Reusing Enumeration category projection, display equality, or ordinary temporal instant equality merges rows the kernel keeps distinct; conversely, parsing every non-Number to a semantic value can erase a stored-spelling distinction. The correction must not weaken formal key validation or change Number normalization.
 - **Acceptance:** Both kernel strategies and the JVM/Node interpreter admit the verified direct non-Number kinds, compare Enumeration and temporal witnesses by exact stored text, preserve Number scale-19 equality and existing empty/invalid/polarity/cluster behavior, reject the forbidden reference shapes at the existing static boundary, update canonical documentation, and return the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted; implementation already satisfied — commit `92e1c712`, audited by `e3db6c30`, documents and locks direct value-validating admission for every supported kind, scale-19 Number equality, and exact stored-text equality for every non-Number kind. Enumeration token identity is represented directly. Fixed-width temporal formats provide no authorable same-instant/different-spelling witness, so temporal stored-text identity is documented structurally instead of with a fabricated firing case.
 
 ### SPEC-2026-07-22-11 — processing context retains every observable `DocumentProcessingConfig` input
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `83dd514f9283b9f62dbe6ee6f238e5c67a00e9c6`
 - **Kernel behavior:** 30.8.1
@@ -845,23 +851,27 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Reconcile the canonical processing-context description and compatibility claims with the complete 30.8.1 input set. Existing separate `EvalClock`, custom-condition, custom-field-type, locale, and model-zone carriers may remain separate when their semantics are coherent; do not add a generic context framework solely to mirror the Java object. State any intentionally unsupported legacy additional-information behavior as a compatibility exclusion rather than silently dropping it. Add or change implementation/tests only if the review finds an actual observable gap.
 - **Compatibility:** This primarily completes the semantic compatibility envelope. It does not require Java factory objects in a clean-room interpreter, but a product that omits a supported configuration input cannot claim the corresponding complete V2 behavior. Deprecated V1 or legacy-host compatibility remains a separate claim.
 - **Acceptance:** Canonical a12-dmkits documentation names every observable processing input or explicitly excludes it from the claimed product fragment, preserves deterministic injected clock and custom-semantic behavior, introduces no duplicate runtime context or ambient host lookup, and returns the exact reviewed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted as documentation-only compatibility-envelope reconciliation — commit `e3db6c30` names locale, deterministic clock/current-date override, custom-condition semantics, custom-field-type semantics, and model-owned time-zone rules. Deprecated `additionalInformation` is explicitly excluded from the claimed clean-room compatibility fragment; no generic context framework was introduced.
 
 ### SPEC-2026-07-22-12 — computation eagerly validates formal operands without globally aborting
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `83dd514f9283b9f62dbe6ee6f238e5c67a00e9c6`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`01-data-model.md` §4.3](../spec/01-data-model.md#43-the-compute--apply--validate-flow), [`09-computations.md` §3.3](../spec/09-computations.md#33-what-compute-reports), and the [`SEMANTICS-MAP.md` §11 summary](../spec/SEMANTICS-MAP.md#3-the-taxonomy)
-- **Delta:** Before scheduling, V2 computation formally validates every non-computed field in the source-defined computation-operand set. Invalid filled values are reported; ordinary required-empty omission errors are not reported in this prepass; empty or non-unique index fields are reported. Processing continues after collection, and the eager public inventory remains separate from dependency-sensitive skipping or reached-read poison. A represented erroneous computed instance is removed from the source-filled residual and reports through the computed-instance-error channel instead of also appearing as CLEARED; only remaining source-filled instances become cleared.
+- **Delta:** Before ordinary computation processing, V2 computation formally validates every non-computed field in the source-defined computation-operand set. Invalid filled values are reported; ordinary required-empty omission errors are not reported in this prepass; empty or non-unique index fields are reported. Processing continues after collection, and the eager public inventory remains separate from dependency-sensitive skipping or reached-read poison. A represented erroneous computed instance is removed from the source-filled residual and reports through the computed-instance-error channel instead of also appearing as CLEARED; only remaining source-filled instances become cleared.
 - **Basis:** Kernel revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`: [`IDocumentRtService.compute`](../../a12-kernel/kernel-md/kernel-md-runtime-api/src/main/java/com/mgmtp/a12/kernel/md/rt/api/IDocumentRtService.java) documents the prepass cases, continued processing, and separate result channel. [`IDocumentComputationResult`](../../a12-kernel/kernel-md/kernel-md-runtime-api/src/main/java/com/mgmtp/a12/kernel/md/rt/api/IDocumentComputationResult.java) distinguishes erroneous, cleared, and formal-operand channels. [`DocumentComputationResultImpl`](../../a12-kernel/kernel-md/kernel-md-runtime-service/src/main/java/com/mgmtp/a12/kernel/md/rt/a12internal/service/DocumentComputationResultImpl.java) removes a represented computed pointer from the originally filled map before branching on its error, then projects residual pointers to cleared and unmatched messages to formal operand errors. The exact operand extraction boundary and the reachability/classification of an error paired with an empty computed payload remain SG4 audit questions rather than facts inferred from this construction.
 - **Requested a12-dmkits reconciliation:** Reconcile this follow-up after [`SPEC-2026-07-22-08`](#spec-2026-07-22-08--computation-results-retain-rich-v2-projections-beyond-the-change-delta) so the eager-prepass account reuses the settled result-channel terminology. Document its invalid/required-empty/index cases in the canonical computation owner, preserving its separation from runtime reachability and the report-all interpreter contract. Review the existing compute preparation and result projection for an actual behavior gap; reuse those owners and existing differential routes if a correction is needed. Do not introduce a scheduler, second validation pass, result framework, protocol, or new harness.
 - **Compatibility:** Treating every required empty as a formal operand error, globally aborting on any collected error, folding operand errors into computed-target errors, or reporting one represented erroneous target as both ERRORED and CLEARED changes observable V2 behavior. The exact dependency response remains a separate scheduling claim and is not settled by the service Javadoc's broad skip wording.
 - **Acceptance:** a12-dmkits canonical semantics states the complete eager-prepass contract and the three distinct error/cleared channels, its current implementation boundary is honest, focused maintained controls distinguish required-empty silence, invalid-value reporting, index errors, continued unrelated computation, and ERRORED-versus-CLEARED ownership where supported, no duplicate mechanism is added, and the handback supplies the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted with wording correction; implementation was already folded in — commit `f765936e`, corrected by `e3db6c30`, locks invalid filled operands, silent ordinary required-empty operands, empty/non-unique index errors, continued computation processing, and ERRORED-versus-CLEARED ownership. The source proves an eager source-defined operand inventory before ordinary computation processing, not a separately observable dependency-scheduling contract.
 
 ### SPEC-2026-07-22-13 — `FieldValueAsNumber` checks the complete selected source domain
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `affde9e49b17e1d82812e106676613fad4b94ff1`
 - **Kernel behavior:** 30.8.1
@@ -871,10 +881,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Preserve the existing AST, evaluator, `MVK_NO_CONVERT_IN_NUMBER` delegation, and maintained coercion differential. Extend the canonical §5 account with the complete admission/result-scale contract and audit the typed authoring plus JVM/Node decimal parser against stored and category domains. Add focused controls for a legal category projection, leading point/minus, 15-versus-16 digits, rejected trailing point/plus/exponent/whitespace/comma, the exact String pattern/maximum-length gate, derived fractional scale, symmetric missing polarity, and one non-ASCII decimal-digit witness. Change implementation only for an observed peer divergence; do not add another numeric AST, parser framework, or harness.
 - **Compatibility:** An ASCII-only parser, stored-domain check applied before category selection, permissive free-text String admission, wrong result scale, or one-directional empty fillability can change authoring, exact-scale comparison, firing polarity, generated validation, and computation results. The current Lean capsule deliberately implements only the ordinary closed Enumeration/category ASCII subset and leaves String plus non-ASCII digits open pending their checked representation and focused evidence.
 - **Acceptance:** Both kernel strategies and the JVM/Node peer agree on the lexical, domain-selection, digit-budget, result-scale, empty-polarity, and formal-propagation separators; canonical prose records the full contract; existing basic coercion controls remain green; no duplicate conversion mechanism is added; and the handback supplies the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted with authoring and runtime fixes — commit `e3db6c30` validates the complete selected stored/category domain, enforces the String pattern and finite-length contract, derives scale from that domain, accepts the kernel's host decimal-digit grammar including non-ASCII decimal digits, retains the 15-digit budget, and preserves missing-value and formal-poison behavior. The existing AST and evaluator remain the owners; previously rejected kernel-legal inputs now succeed.
 
 ### SPEC-2026-07-23-01 — direct numeric wrappers admit `FieldValueAsNumber` sources
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `affde9e49b17e1d82812e106676613fad4b94ff1`
 - **Kernel behavior:** 30.8.1
@@ -884,10 +896,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Reuse the existing numeric AST, wrapper evaluator, authoring checker, and `FieldValueAsNumber` implementation. Confirm that both wrapper forms accept the conversion directly in validation and computation, retain the stated scale/fillability/poison projections, and add the smallest maintained cross-product controls if the combination is not already locked. Correct documentation or implementation only for an observed divergence. Do not introduce a wrapper-specific conversion node, second numeric dispatch, new harness, or recursively stronger constant prohibition.
 - **Compatibility:** Rejecting the direct combination, copying symmetric missing fillability through `Abs`, retaining the source scale after rounding, recursively rejecting a legal child merely because its wider subtree contains a constant, or erasing formal poison changes authoring, exact-scale gates, validation polarity, and computed results.
 - **Acceptance:** Both kernel strategies and the JVM/Node peer agree on direct rounding/`Abs` admission over stored and category `FieldValueAsNumber`, authored versus omitted rounding scale, missing-source polarity for both wrappers, exact present values, and formal poison; existing standalone conversion and wrapper controls remain green; no duplicate semantic mechanism is added; and the handback supplies the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted; the shared conversion fixes were sufficient — commit `e3db6c30` adds cross-product tests and documentation for direct rounding and `Abs` over stored/category `FieldValueAsNumber`, including authored/default scale, missing polarity, present values, poison, both kernel strategies, and JVM/Node execution. No wrapper-specific runtime change was needed.
 
 ### SPEC-2026-07-23-02 — direct numeric wrappers admit `RangeAsNumber` sources
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `affde9e49b17e1d82812e106676613fad4b94ff1`
 - **Kernel behavior:** 30.8.1
@@ -897,10 +911,12 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Reuse the existing `RangeAsNumber`, numeric wrapper, authoring, and generated-validation owners. Confirm both direct wrapper forms in validation and computation, including omitted/authored rounding scale, nonnegative `Abs` identity, grow-only missing zero, fixed filled fallback zero, and formal poison. Add the smallest maintained cross-product controls if absent and change implementation only for an observed divergence. Do not add a range-wrapper AST, duplicate evaluator, new harness, or recursively stronger literal prohibition.
 - **Compatibility:** Rejecting the direct combination, changing missing zero to symmetric or fixed, changing a filled fallback zero to missing, retaining source scale after explicit rounding, or erasing formal poison changes authoring, exact-scale gates, validation polarity, generated validation, and computation results.
 - **Acceptance:** Both kernel strategies and the JVM/Node peer agree on direct rounding/`Abs` admission, omitted and explicit rounding scale, filled selection and fallback values, grow-only missing polarity, and formal poison; existing standalone range and wrapper controls remain green; no duplicate mechanism is added; and the handback supplies the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted; implementation already satisfied — commit `308a8f0a` locks selected and fallback values, grow-only missing zero, authored/default scale, poison, both kernel strategies, and JVM/Node execution. Stored integral results canonicalize as `125`; authored scale is a static/result-type contract and does not promise stored text `125.00`.
 
 ### SPEC-2026-07-23-03 — direct `Abs` admits numeric field-list aggregates
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `affde9e49b17e1d82812e106676613fad4b94ff1`
 - **Kernel behavior:** 30.8.1
@@ -910,6 +926,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Reuse the existing numeric aggregate source, ordered fold, `Abs` evaluator, authoring checker, and generated-validation route. Confirm direct `Abs` over each numeric aggregate family in validation and computation, with at least one negative Sum, the all-empty Sum/extremum and distinct-count polarity distinction, derived-scale retention, formal poison, and generated validation. Change implementation only for an observed divergence. Do not add an aggregate-specific absolute-value node, fold, comparison, generated rule, or harness.
 - **Compatibility:** Rejecting direct aggregate `Abs`, applying absolute value per operand before folding, losing derived scale, copying bidirectional zero fillability unchanged, treating distinct-count zero as bidirectional, or erasing formal poison changes authoring, exact-scale gates, validation polarity, and computation results.
 - **Acceptance:** Both kernel strategies and the JVM/Node peer agree on direct admission, fold-before-`Abs` order, negative and all-empty results, Sum/extremum versus distinct-count zero polarity, derived scale, poison, and generated validation; existing aggregate and wrapper controls remain green; no duplicate mechanism is added; and the handback supplies the exact committed revision plus per-surface disposition.
+- **a12-dmkits revision:** `27afb555aae29d3acd4ed04e3aea4772ae85505a`
+- **Disposition:** accepted; implementation already satisfied — commit `32c7b657` locks direct `Abs` over Sum, MinValue, MaxValue, and numeric NumberOfDifferentValues, including fold-before-absolute order, negative sums, all-empty polarity, derived scale, generated validation, formal poison, both kernel strategies, and JVM/Node execution.
 
 ### SPEC-2026-07-23-04 — direct numeric wrappers admit temporal-derived Number sources
 
