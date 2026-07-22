@@ -17,21 +17,23 @@ private def categoryMapping : ResolvedEnumerationCategory :=
   { storedTokens := ["A", "B"], categoryTokens := ["Shared", "Shared"] }
 
 private def storedEqualsA : CheckedEnumerationLiteralComparison :=
-  { declaration := checked
-    projectionRef := .stored
-    projection := .stored
+  { operand := {
+      declaration := checked
+      projectionRef := .stored
+      projection := .stored
+      projectionChecked := by rfl }
     op := .equal
     expected := "A"
-    projectionChecked := by rfl
     literalChecked := by rfl }
 
 private def categoryEqualsShared : CheckedEnumerationLiteralComparison :=
-  { declaration := checked
-    projectionRef := .category "Kind"
-    projection := .category categoryMapping
+  { operand := {
+      declaration := checked
+      projectionRef := .category "Kind"
+      projection := .category categoryMapping
+      projectionChecked := by rfl }
     op := .equal
     expected := "Shared"
-    projectionChecked := by rfl
     literalChecked := by rfl }
 
 example : classifyEnumerationLiteral checked .stored .equal "A" =

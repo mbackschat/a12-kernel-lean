@@ -513,10 +513,11 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/Enumeration.lean`](../A12Kernel/Semantics/Enumeration.lean)
 - [`Semantics/CheckedEnumeration.lean`](../A12Kernel/Semantics/CheckedEnumeration.lean)
 - [`Semantics/EnumerationValueList.lean`](../A12Kernel/Semantics/EnumerationValueList.lean)
+- [`Semantics/EnumerationRepetitionNotUnique.lean`](../A12Kernel/Semantics/EnumerationRepetitionNotUnique.lean)
 - [`Elaboration/EnumerationComparability.lean`](../A12Kernel/Elaboration/EnumerationComparability.lean)
 - [`Elaboration/Enumeration.lean`](../A12Kernel/Elaboration/Enumeration.lean)
 - [`Semantics/ValueList.lean`](../A12Kernel/Semantics/ValueList.lean)
-- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean), [`CheckedEnumeration.lean`](../A12Kernel/Proofs/CheckedEnumeration.lean), and [`EnumerationValueList.lean`](../A12Kernel/Proofs/EnumerationValueList.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean), including the corresponding three modules
+- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean), [`CheckedEnumeration.lean`](../A12Kernel/Proofs/CheckedEnumeration.lean), [`EnumerationValueList.lean`](../A12Kernel/Proofs/EnumerationValueList.lean), and [`EnumerationRepetitionNotUnique.lean`](../A12Kernel/Proofs/EnumerationRepetitionNotUnique.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean), including the corresponding four modules
 
 #### Implemented
 
@@ -526,6 +527,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - One checked ordinary closed declaration now owns the nonempty unique stored-token domain, complete per-locale stored/display facts with injective display text, and unique named positional category vectors with exact arity and nonempty tokens. Identity displays remain legal and effectively textless; repeated category tokens remain legal and many-to-one. Its projections reuse the existing runtime and comparability representations.
 - A proof-bearing literal comparison resolves the exact stored/category projection, admits the literal from that selected domain for either equality operator, and consumes one declaration-checked heterogeneous raw cell through the existing runtime evaluator. Empty values remain not evaluated, out-of-domain stored tokens become the declaration's formal constraint failure and therefore UNKNOWN, wrong runtime kinds become malformed UNKNOWN, and preceding raw failures retain UNKNOWN.
 - A checked stored/category value-list operand maps the existing resolved Enumeration classification directly into the existing token-domain `ValueListCell`: present projected token, empty, or exact-cause unknown. It builds an already-expanded side while retaining caller-supplied tail/`Having` facts, so the three existing quantifiers consume ordinary and many-to-one category values without a second token or poison mechanism.
+- The same checked stored/category projection now maps directly into the existing RNU key component. Present projected tokens, optional empty, and exact-cause unknown retain the settled eligibility, tuple equality, cluster, and polarity behavior. Literal, value-list, and RNU consumers share one proof-bearing projection owner; extending the family removed the former value-list-only wrapper rather than creating a third checked type.
 - Trusted laws cover runtime projection, empty/unavailable/VALUE-only behavior, identity-label classification, pair/profile conflict symmetry, String admission, both rejection classes, and overall admission symmetry.
 - The separate type-indexed Number/canonical-token value-list capsule preserves explicit present/empty/unknown cells, declared-tail and `Having` metadata, and distinct `AtLeastOne`, `No`, and `NotAll` clauses
 
@@ -536,6 +538,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Seventeen checked-declaration cases separate empty/duplicate stored domains, unknown/incomplete/duplicate localized mappings, category name/arity/token failures, complete multilingual and identity-label declarations, exact stored projection, exact category lookup, and many-to-one category output. Five laws retain validation, display, direct-comparability, stored-projection, and exact category-domain ownership.
 - Fourteen checked-observation cases separate both equality operators, stored/category literal admission, exact category names, checked construction, stored equality/mismatch, many-to-one category equality, physical/value emptiness, out-of-domain stored values, wrong kinds, and preceding raw rejection. Five laws preserve empty, accepted/rejected stored classification, exact present-value delegation, and pre-comparison UNKNOWN for an invalid stored token.
 - Twelve Enumeration value-list cases separate stored/category projection, both empty routes, out-of-domain and preceding formal causes, matching category/`No`/`NotAll` outcomes, and the three quantifiers' distinct response to an invalid member. Five laws prove exact empty, unknown, present, invalid-domain, and side-cell transport through the shared resolved classifier.
+- Ten checked Enumeration RNU cases separate stored/category components, empty and exact causes, many-to-one VALUE clusters and deterministic peers, optional-empty OMISSION, invalid-row exclusion/UNKNOWN, and distinct stored-token non-duplicates. Five laws preserve empty, unknown, present, same-projected-token, and invalid-domain transport through the shared classifier.
 - The focused runtime matrix currently has one kernel route plus peer triangulation
 - a broader catalog smoke case exercises both kernel routes.
 - This repository retains no portable §8 observation
@@ -545,7 +548,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - **Implemented internally through checked ordinary declaration, raw observation, literal admission, resolved runtime, and one independent static gate; external evidence pending:** runtime Enumeration now closes direct stored/category-to-literal equality and inequality before general flat integration
 - static comparability begins after valid ordinary declarations and direct equality/inequality field shape
 - value lists begin after expansion, comparability checking, and `Having` filtering.
-- Table/open/dynamic/partial declarations, document/field integration, category-to-field admission, checked flat-model integration, category use in indices/paths, scalar value-list syntax, actual path/star expansion and filtering, row gates, protocol exposure, and project-local portable evidence remain open
+- Table/open/dynamic/partial declarations, document/field integration, category-to-field admission, checked flat-model integration, category use in indices/paths, scalar value-list syntax, actual path/star expansion and filtering, checked RNU scope/topology/`@From`/pointer messages, row gates, protocol exposure, and project-local portable evidence remain open
 
 ### §9 — repetition and iteration
 

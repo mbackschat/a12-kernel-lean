@@ -78,6 +78,7 @@ import A12Kernel.Conformance.EnumerationComparability
 import A12Kernel.Conformance.EnumerationElaboration
 import A12Kernel.Conformance.CheckedEnumeration
 import A12Kernel.Conformance.EnumerationValueList
+import A12Kernel.Conformance.EnumerationRepetitionNotUnique
 import A12Kernel.Conformance.SemanticIndex
 import A12Kernel.Conformance.CustomCondition
 

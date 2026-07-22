@@ -50,31 +50,44 @@ def classifyEnumerationLiteral (checked : CheckedEnumerationDeclaration)
       if checked.literalAllowed projection literal then .accepted projection
       else .rejected (.invalidLiteral literal)
 
-/-- A proof-bearing direct Enumeration/category comparison with an admitted literal. -/
-structure CheckedEnumerationLiteralComparison where
+/-- One checked stored/category selection shared by literal, value-list, and repetition-key consumers. -/
+structure CheckedEnumerationProjection where
   declaration : CheckedEnumerationDeclaration
   projectionRef : EnumerationProjectionRef
   projection : ResolvedEnumerationProjection
+  projectionChecked : declaration.resolveProjection projectionRef = .ok projection
+
+def checkEnumerationProjection (checked : CheckedEnumerationDeclaration)
+    (projectionRef : EnumerationProjectionRef) :
+    Except EnumerationOperandError CheckedEnumerationProjection :=
+  match resolved : checked.resolveProjection projectionRef with
+  | .error error => .error error
+  | .ok projection =>
+      .ok {
+        declaration := checked
+        projectionRef
+        projection
+        projectionChecked := resolved }
+
+/-- A proof-bearing direct Enumeration/category comparison with an admitted literal. -/
+structure CheckedEnumerationLiteralComparison where
+  operand : CheckedEnumerationProjection
   op : EqualityOp
   expected : String
-  projectionChecked : declaration.resolveProjection projectionRef = .ok projection
-  literalChecked : declaration.literalAllowed projection expected = true
+  literalChecked : operand.declaration.literalAllowed operand.projection expected = true
 
 def checkEnumerationLiteralComparison (checked : CheckedEnumerationDeclaration)
     (projectionRef : EnumerationProjectionRef) (op : EqualityOp)
     (literal : String) :
     Except EnumerationOperandError CheckedEnumerationLiteralComparison :=
-  match resolved : checked.resolveProjection projectionRef with
+  match checkEnumerationProjection checked projectionRef with
   | .error error => .error error
-  | .ok projection =>
-      if allowed : checked.literalAllowed projection literal = true then
+  | .ok operand =>
+      if allowed : operand.declaration.literalAllowed operand.projection literal = true then
         .ok {
-          declaration := checked
-          projectionRef
-          projection
+          operand
           op
           expected := literal
-          projectionChecked := resolved
           literalChecked := allowed }
       else
         .error (.invalidLiteral literal)
@@ -100,12 +113,12 @@ def CheckedEnumerationDeclaration.checkRaw
 def CheckedEnumerationLiteralComparison.evalCheckedCell
     (comparison : CheckedEnumerationLiteralComparison)
     (cell : CheckedCell) : Verdict :=
-  comparison.projection.evalLiteral comparison.op
+  comparison.operand.projection.evalLiteral comparison.op
     (observeCell .validation cell) comparison.expected
 
 /-- Convenience boundary joining raw admission and literal evaluation without changing either owner. -/
 def CheckedEnumerationLiteralComparison.evalRaw
     (comparison : CheckedEnumerationLiteralComparison) (raw : RawCell) : Verdict :=
-  comparison.evalCheckedCell (comparison.declaration.checkRaw raw)
+  comparison.evalCheckedCell (comparison.operand.declaration.checkRaw raw)
 
 end A12Kernel
