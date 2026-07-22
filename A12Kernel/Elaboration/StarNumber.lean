@@ -67,14 +67,26 @@ def checkedCell (checked : CheckedStarNumberSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : CheckedCell :=
   checked.source.checkedCell read environment
 
-/-- Classify one resolved leaf through the existing checked Number value-list reader. -/
+/-- Classify one caller-supplied checked leaf in the requested phase after applying the path-owned over-repetition overlay. This is the boundary required by computation consumers and eventual checked-document construction. -/
+def checkedValueListCellAt (checked : CheckedStarNumberSource model)
+    (phase : Phase) (read : Env → FieldId → CheckedCell)
+    (environment : Env) : ValueListCell .number :=
+  (observeCell phase (checked.source.contextualizeCell environment
+    (read environment checked.field.id))).asNumberValueListCell
+
+/-- Classify one raw leaf in the requested phase through declaration-owned scalar checking and the common checked-cell route. -/
+def valueListCellAt (checked : CheckedStarNumberSource model) (phase : Phase)
+    (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .number :=
+  checked.checkedValueListCellAt phase (fun candidate id =>
+    if id == checked.field.id then
+      checked.source.declaration.checkRaw (read candidate id)
+    else
+      malformedCheckedCell) environment
+
+/-- Classify one resolved validation leaf through the existing checked Number value-list reader. -/
 def valueListCell (checked : CheckedStarNumberSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .number :=
-  let context : FlatContext := {
-    read := fun id =>
-      if id == checked.field.id then checked.checkedCell read environment
-      else malformedCheckedCell }
-  checked.field.valueListCell context
+  checked.valueListCellAt .validation read environment
 
 /-- Apply one resolved validation `Having` to topology-produced leaves before classifying any selected target cell. The filter reads validation-checked cells from candidate/outer environments; the target read remains a separate declaration-owned raw channel. -/
 def selectedValidationHavingValueSide (checked : CheckedStarNumberSource model)

@@ -164,15 +164,19 @@ def environmentOverLimit (checked : CheckedStarFieldPath model)
   (checked.path.axes.zip environment).any fun binding =>
     bindingOverLimit binding.1 binding.2
 
-/-- Apply the declaration-owned scalar checker unless structural over-repetition is the sole formal cause. Every typed star consumer shares this checked-cell boundary. -/
-def checkedCell (checked : CheckedStarFieldPath model)
-    (read : Env → FieldId → RawCell) (environment : Env) : CheckedCell :=
-  let scalar := checked.declaration.checkRaw
-    (read environment checked.declaration.id)
+/-- Overlay the path-owned over-repetition finding on an already checked cell. This is the common seam for raw-validation readers and future checked-document consumers. -/
+def contextualizeCell (checked : CheckedStarFieldPath model)
+    (environment : Env) (scalar : CheckedCell) : CheckedCell :=
   if checked.environmentOverLimit environment then
     { scalar with parsed := none, findings := [.overRepetition] }
   else
     scalar
+
+/-- Apply the declaration-owned scalar checker and then the shared structural overlay. Every raw typed-star consumer shares this checked-cell boundary. -/
+def checkedCell (checked : CheckedStarFieldPath model)
+    (read : Env → FieldId → RawCell) (environment : Env) : CheckedCell :=
+  checked.contextualizeCell environment
+    (checked.declaration.checkRaw (read environment checked.declaration.id))
 
 /-- Classify a declaration-certified String leaf through the common normalized token reader. This is shared by starred value lists and heterogeneous repetition keys. -/
 def stringValueListCell (checked : CheckedStarFieldPath model)

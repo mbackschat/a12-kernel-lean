@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells to the same aggregate folds. Group operands, whole-expression/rule-level partial integration, computation-phase mixed consumption, and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells to the same aggregate folds. `SumOfProducts` instead checks exactly two same-group Number stars at the lowest repeatable level, resolves their shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. Group operands, whole-expression/rule-level partial integration, computation-phase mixed entity lists, target integration, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -18,6 +18,130 @@ inductive NumericAggregateElabError where
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | incoherentCore
   deriving Repr, DecidableEq
+
+/-- Partial aggregate evaluation distinguishes the kernel's rule-level filtered skip, an all-rows relevance failure, and an evaluated numeric operand. Nonrelevance is not forged into a formal cell cause. -/
+inductive PartialValidationNumberAggregateResult where
+  | skippedHaving
+  | nonRelevant
+  | evaluated (operand : NumericOperand)
+  deriving Repr, DecidableEq
+
+/-- A parser-independent `SumOfProducts` pair. Its two operands are fields, not ordinary entity-list slots: filters, groups, and direct fields are unrepresentable here. -/
+structure SurfaceNumericProductAggregate where
+  left : SurfaceStarFieldPath
+  right : SurfaceStarFieldPath
+  deriving Repr, DecidableEq
+
+/-- Fail-closed errors specific to the paired-row aggregate boundary. -/
+inductive NumericProductAggregateElabError where
+  | source (error : StarNumberElabError)
+  | differentGroups (left right : GroupPath)
+  | wildcardNotLowest (path : List String)
+  | incompatibleTopology
+  deriving Repr, DecidableEq
+
+/-- Two Number-star declarations certified against one model and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
+structure CheckedNumericProductAggregate (model : FlatModel) where
+  left : CheckedStarNumberSource model
+  right : CheckedStarNumberSource model
+  sameGroup : left.source.declaration.groupPath = right.source.declaration.groupPath
+  lowestStar : left.source.path.firstStar + 1 = left.source.path.axes.length
+  samePath : left.source.path = right.source.path
+
+private def CheckedStarNumberSource.starsOnlyLowest
+    (checked : CheckedStarNumberSource model) : Bool :=
+  checked.source.path.firstStar + 1 == checked.source.path.axes.length
+
+/-- Check both fields through the established Number-star owner, then require the Kernel's same-group and lowest-star pair shape. One validated model supplies the common model-zone and non-starred ancestors are supplied once by the later outer environment. -/
+def elaborateNumericProductAggregate (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate) :
+    Except NumericProductAggregateElabError
+      (CheckedNumericProductAggregate model) := do
+  let left ← elaborateStarNumberSource model declaringGroup authored.left
+    |>.mapError .source
+  let right ← elaborateStarNumberSource model declaringGroup authored.right
+    |>.mapError .source
+  if hGroup : left.source.declaration.groupPath =
+      right.source.declaration.groupPath then
+    if hLeft : left.starsOnlyLowest then
+      if hRight : right.starsOnlyLowest then
+        if hPath : left.source.path = right.source.path then
+          pure {
+            left
+            right
+            sameGroup := hGroup
+            lowestStar := by simpa [CheckedStarNumberSource.starsOnlyLowest] using hLeft
+            samePath := hPath }
+        else
+          throw .incompatibleTopology
+      else
+        throw (.wildcardNotLowest right.source.declaration.path)
+    else
+      throw (.wildcardNotLowest left.source.declaration.path)
+  else
+    throw (.differentGroups left.source.declaration.groupPath
+      right.source.declaration.groupPath)
+
+namespace CheckedNumericProductAggregate
+
+/-- `SumOfProducts` adds the two exact declaration scales, exactly like one checked multiplication. -/
+def scaleSummary (checked : CheckedNumericProductAggregate model) :
+    NumericScaleSummary :=
+  NumericScaleSummary.binary .multiply
+    (NumericScaleSummary.field checked.left.field.info.scale)
+    (NumericScaleSummary.field checked.right.field.info.scale)
+
+/-- Classify both declarations at each environment of the one shared canonical topology. -/
+def selectedSideAt (checked : CheckedNumericProductAggregate model)
+    (phase : Phase) (resolved : ResolvedStarTopology)
+    (read : Env → FieldId → CheckedCell) : ResolvedNumericProductSide :=
+  { rows := resolved.environments.map fun environment => {
+      left := checked.left.checkedValueListCellAt phase read environment
+      right := checked.right.checkedValueListCellAt phase read environment }
+    leftSigned := checked.left.field.info.signed
+    rightSigned := checked.right.field.info.signed
+    hasUninstantiatedTail := resolved.domain.hasOpenTail }
+
+/-- Resolve the common topology once and evaluate the paired-row fold in the requested phase. -/
+def evaluateAt (checked : CheckedNumericProductAggregate model)
+    (phase : Phase) (document : Document) (outer : Env)
+    (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericOperand := do
+  let resolved ← checked.left.source.path.resolve document outer
+  pure (evalNumericProductAggregate (checked.selectedSideAt phase resolved read))
+
+/-- Check either owned declaration from raw storage without inventing a third policy. -/
+private def checkedRawCell (checked : CheckedNumericProductAggregate model)
+    (read : Env → FieldId → RawCell) (environment : Env)
+    (field : FieldId) : CheckedCell :=
+  if field == checked.left.field.id then
+    checked.left.source.declaration.checkRaw (read environment field)
+  else if field == checked.right.field.id then
+    checked.right.source.declaration.checkRaw (read environment field)
+  else
+    malformedCheckedCell
+
+/-- Full validation checks raw cells through the two certified declarations and uses the validation face of formal invalidity. -/
+def evaluateValidation (checked : CheckedNumericProductAggregate model)
+    (document : Document) (outer : Env)
+    (read : Env → FieldId → RawCell) :
+    Except StarAddressingError NumericOperand :=
+  checked.evaluateAt .validation document outer (checked.checkedRawCell read)
+
+/-- Partial validation requires wildcard or ancestor coverage for both fields before either declaration is read. -/
+def evaluatePartial (checked : CheckedNumericProductAggregate model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) :
+    Except StarAddressingError PartialValidationNumberAggregateResult := do
+  let resolved ← checked.left.source.path.resolve document outer
+  if checked.left.source.allRowsRelevant scope &&
+      checked.right.source.allRowsRelevant scope then
+    pure (.evaluated (evalNumericProductAggregate
+      (checked.selectedSideAt .validation resolved (checked.checkedRawCell read))))
+  else
+    pure .nonRelevant
+
+end CheckedNumericProductAggregate
 
 /-- A nonempty resolved field list certified against one flat model. -/
 structure CheckedNumericAggregateFields (model : FlatModel) where
@@ -224,13 +348,6 @@ private def appendNumericSumSide
 private def numericAggregateSideAvailable
     (side : ResolvedValueListSide .number) : Except FormalCause Unit :=
   ValueListCell.scanPresent (kind := .number) (fun _ _ => ()) side.cells ()
-
-/-- Partial aggregate evaluation distinguishes the kernel's rule-level filtered skip, an all-rows relevance failure, and an evaluated numeric operand. Nonrelevance is not forged into a formal cell cause. -/
-inductive PartialValidationNumberAggregateResult where
-  | skippedHaving
-  | nonRelevant
-  | evaluated (operand : NumericOperand)
-  deriving Repr, DecidableEq
 
 private structure ResolvedNumberEntityAggregateSides where
   values : ResolvedValueListSide .number := {

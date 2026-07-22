@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Proofs.ValueList
+import A12Kernel.Proofs.NumericFillability
 
 /-! # Resolved Number aggregate laws
 
@@ -276,5 +277,42 @@ theorem numericDistinctCount_firstUnknown
   unfold evalNumericDistinctCountAggregate scanDistinctNumericCells
   rw [valueListCell_scanPresent_firstUnknown insertDistinctNumericValue
     before after [] cause beforeKnown]
+
+/-- One complete present pair is exactly one staged multiplication followed by the fold's zero-seeded addition, with no missing direction. -/
+theorem numericProductAggregate_singleton_present (left right : Rat) :
+    evalNumericProductAggregate {
+      rows := [{ left := .present left, right := .present right }]
+      leftSigned := false
+      rightSigned := false
+      hasUninstantiatedTail := false } =
+    .value (NumericArithmeticOp.add.eval 0
+      (NumericArithmeticOp.multiply.eval left right)) .fixed := by
+  simp [evalNumericProductAggregate, scanNumericProductRows,
+    scanNumericProductRowsFrom, numericProductCell, numericProductStep,
+    numericArithmetic_fixed_fillability, pure, bind, Except.pure, Except.bind]
+
+/-- An unavailable left cell suppresses its row before the right cell and every later row, retaining the exact first cause. -/
+theorem numericProductAggregate_leftUnknown
+    (cause : FormalCause) (right : ValueListCell .number)
+    (remaining : List ResolvedNumericProductRow)
+    (leftSigned rightSigned hasUninstantiatedTail : Bool) :
+    evalNumericProductAggregate {
+      rows := { left := .unknown cause, right } :: remaining
+      leftSigned
+      rightSigned
+      hasUninstantiatedTail } = .unknown cause := by
+  rfl
+
+/-- A declared omitted row dominates the successful pair fold's arithmetic direction without changing its amount. -/
+theorem numericProductAggregate_singleton_tail
+    (left right : Rat) (leftSigned rightSigned : Bool) :
+    evalNumericProductAggregate {
+      rows := [{ left := .present left, right := .present right }]
+      leftSigned
+      rightSigned
+      hasUninstantiatedTail := true } =
+    .value (NumericArithmeticOp.add.eval 0
+      (NumericArithmeticOp.multiply.eval left right)) .both := by
+  cases leftSigned <;> cases rightSigned <;> rfl
 
 end A12Kernel

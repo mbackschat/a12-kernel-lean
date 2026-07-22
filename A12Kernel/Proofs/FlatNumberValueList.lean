@@ -18,21 +18,21 @@ theorem flatNumberValueListCell_empty
     (field : FlatNumberField) (context : FlatContext)
     (empty : context.observeValidationAt field.id = .empty) :
     field.valueListCell context = .empty := by
-  simp [FlatNumberField.valueListCell, empty]
+  simp [FlatNumberField.valueListCell, CellObservation.asNumberValueListCell, empty]
 
 @[simp]
 theorem flatNumberValueListCell_present
     (field : FlatNumberField) (context : FlatContext) (value : Rat)
     (present : context.observeValidationAt field.id = .value (.num value)) :
     field.valueListCell context = .present value := by
-  simp [FlatNumberField.valueListCell, present]
+  simp [FlatNumberField.valueListCell, CellObservation.asNumberValueListCell, present]
 
 @[simp]
 theorem flatNumberValueListCell_unknown
     (field : FlatNumberField) (context : FlatContext) (cause : FormalCause)
     (unknown : context.observeValidationAt field.id = .unknown cause) :
     field.valueListCell context = .unknown cause := by
-  simp [FlatNumberField.valueListCell, unknown]
+  simp [FlatNumberField.valueListCell, CellObservation.asNumberValueListCell, unknown]
 
 @[simp]
 theorem flatNumberValueList_canFireOnEmpty
