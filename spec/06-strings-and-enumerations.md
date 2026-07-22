@@ -2,7 +2,7 @@
 
 Two mostly-manageable areas with a few sharp edges: Unicode length counting, legal-character definitions, custom field validation, Java-Pattern admission and execution, enum comparability rules, and the three-way value-list quantifiers (whose `No`-vs-`NotAll` poison asymmetry is the one genuinely tricky part).
 
-Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns are not evaluated on empty) is in [§2](03-empty-and-required.md). Scalar `Included` and `NotIncluded` are both non-firing on an empty subject; the distinct empty and UNKNOWN rules for multi-cell value-list quantifiers are stated in [§B.3](#b3-the-value-list-quantifiers--per-cell-three-way-classification-).
+Empty behaviour (`== ""` never holds; `Length(empty) = 0`; patterns are not evaluated on empty) is in [§2](03-empty-and-required.md). Scalar `Included`/`NotIncluded` semantics are stated in [§B.4](#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-), and the distinct multi-cell empty and UNKNOWN rules are stated in [§B.3](#b3-the-value-list-quantifiers--per-cell-three-way-classification-).
 
 ---
 
@@ -100,14 +100,25 @@ The category mapping is **positional** (`values[i]` categorizes enum value *i*) 
 
 `AtLeastOne` / `No` / `NotAll` `…FieldValue(s)IncludedInValueList(f1, f2 In v1, v2, …)` expand **both** sides per cell (a starred entry contributes one cell per instantiated row) and classify each cell by the three-way state (filled / empty / not-check-relevant = UNKNOWN, [§3](02-logic-and-formal-errors.md)):
 
+- The multi-field family admits only String, Enumeration, or Number fields. A literal right side is available for String and Enumeration fields: plain String literals are unrestricted decoded String tokens, while Enumeration literals follow the selected stored/category union rule below. A multi-field Number form has no literal-list shape and requires a nonempty field-valued right side. Field-valued forms require the same base type on both sides.
 - When the values side is a literal String list and the fields side contains ordinary Enumerations or category accesses, static admission uses the **union** of the selected domains: every literal must be a stored token of at least one direct Enumeration operand or a category token of at least one category operand, but need not belong to every listed declaration. The fields side is nonempty, preserves authored order, and rejects an exact repeated reference; direct stored access and named category access on the same physical field are distinct references.
-- When the values side is another field list, both sides are nonempty and preserve authored order, every expanded field has the same String/Enumeration/Number base type, and no exact reference may occur twice across the combined lists. Enumeration declarations need not share or contain each other's stored/category domains; runtime compares the selected projected tokens actually present in the two sides.
+- When the values side is another field list, both sides are nonempty and preserve authored order, and no exact reference may occur twice across the combined lists. Enumeration declarations need not share or contain each other's stored/category domains; runtime compares the selected projected tokens actually present in the two sides.
 - **`AtLeastOne`** fires iff **some filled cell's value is in the set**. Empty and UNKNOWN cells and members are skipped outright; an empty value *set* → no fire. Fired polarity **VALUE**.
 - **`No`** fires iff **no filled cell's value is in the set** — *including when nothing is filled at all* (the sole member that can fire on emptiness). An **UNKNOWN fields-cell OR an UNKNOWN values member poisons it** (no fire). Fired polarity **OMISSION** on any empty fields-cell, un-instantiated declared tail, or empty values member — else VALUE.
 - **`NotAll`** needs a filled fields-cell and fires iff **some filled cell's value is *not* in the set**. An UNKNOWN **values** member poisons; an UNKNOWN **fields**-cell is merely skipped — this is the **`No`-vs-`NotAll` asymmetry**. OMISSION only on the values side's account.
 - An empty **values member** contributes nothing to the set (never a substituted `0`) but flags a fired `No`/`NotAll` as **OMISSION**. A `Having` filter is accepted on either side, drops rows **before** the per-cell classification, and escalates a fired result to **OMISSION unconditionally** ([§12](10-validation-and-polarity.md)).
 
 > **Lean modelling note.** Model each quantifier as a fold over phase-appropriate `CellObservation`s (or a smaller operator-specific classification derived from them) and return `Verdict`, retaining `unknown` explicitly. The asymmetry is the crux: `No` becomes unknown on an UNKNOWN in *either* position, while `NotAll` does so only on an UNKNOWN *member*. Write the two folds separately, prove their actual clauses, and property-test them on shared inputs—they look like duals but are not.
+
+### B.4 Scalar membership is a singleton specialization, not Boolean negation ⚠
+
+`FieldValueIncludedInValueList(subject, members…)` lowers to one-subject `AtLeastOne`; `FieldValueNotIncludedInValueList(subject, members…)` lowers to one-subject `NotAll`, never to empty-firing `No`. An empty or formally unavailable subject therefore makes **both** scalar forms non-firing. With a present subject, `Included` fires **VALUE** iff at least one present member equals it, while `NotIncluded` fires iff no present member equals it. An empty field-valued member contributes no atom; if `NotIncluded` otherwise fires, that missing member makes the fire **OMISSION**. A formally unavailable member is skipped by `Included` but poisons `NotIncluded`. A fire against an all-literal member list is **VALUE**.
+
+The subject and member list admit only the String, Enumeration, and Number families, and the member list is nonempty. Literal members must match the subject family: String literals are unrestricted decoded strings, Enumeration literals must belong to the selected stored or category projection's domain, and Number literals are grammar-level integers with an optional leading minus. A field-valued member list is nonempty, has the same base type as the subject, and rejects an exact reference repeated anywhere across the subject plus members. Enumeration stored access and named category access on one physical field are distinct references; category identity is retained, and no cross-declaration domain-containment or display-remapping gate is added.
+
+Runtime equality follows the family's ordinary value boundary: normalized evaluated text for String, the selected stored/category token for Enumeration, and numeric equality after the ordinary scale-19 normalization for Number. Empty numeric member fields contribute no zero atom.
+
+> **Lean modelling note.** Reuse the resolved value-list quantifiers: `Included → AtLeastOne`, `NotIncluded → NotAll`. Do not introduce Boolean negation or a second membership evaluator; those shortcuts lose the empty-subject and UNKNOWN-member asymmetries.
 
 ---
 
@@ -121,4 +132,5 @@ The category mapping is **positional** (`values[i]` categorizes enum value *i*) 
 - [ ] `+` dispatches numeric-add vs string-concat by operand kind; date-shaped literals are dates, not concatenable strings.
 - [ ] Enums compare **stored values**; direct-field comparability uses effective display remapping, treats identity labels as textless, and requires a consistent common-locale partial bijection between two display-bearing enums.
 - [ ] `->` category read is **positional, many-to-one**.
-- [ ] Value-list quantifiers classify each cell three-way; `No` poisons on UNKNOWN cell **or** member, `NotAll` only on UNKNOWN **member**; `Having` escalates a fire to OMISSION.
+- [ ] Multi-field value lists admit only String/Enumeration literals or same-base field-valued sides; Number has no multi-field literal form; Enumeration literals use the selected-domain union; exact references are unique across field-valued sides.
+- [ ] Value-list quantifiers classify each cell three-way; `No` poisons on UNKNOWN cell **or** member, `NotAll` only on UNKNOWN **member**; `Having` escalates a fire to OMISSION. Scalar `Included` is singleton `AtLeastOne`, scalar `NotIncluded` is singleton `NotAll`, and neither fires on an empty or unavailable subject.
