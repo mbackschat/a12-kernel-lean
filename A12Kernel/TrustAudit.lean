@@ -142,7 +142,10 @@ run_cmd do
 #print axioms A12Kernel.dateNumericPart_fullDate_value
 #print axioms A12Kernel.dateNumericPart_dateTime_uses_date
 #print axioms A12Kernel.dateNumericPart_unavailable
-#print axioms A12Kernel.dateNumericPart_empty_true_comparison_omission
+#print axioms A12Kernel.timeNumericPart_extracts_components
+#print axioms A12Kernel.timeNumericPart_time_value
+#print axioms A12Kernel.timeNumericPart_dateTime_uses_time
+#print axioms A12Kernel.timeNumericPart_unavailable
 #print axioms A12Kernel.baseYearDateSource_components
 #print axioms A12Kernel.baseYearRangeParts_endpoints
 #print axioms A12Kernel.baseYearRangeParts_start_ne_finish
@@ -409,6 +412,10 @@ run_cmd do
 #print axioms A12Kernel.checkContext_lookup_error_observes_unknown
 
 #print axioms A12Kernel.fixedNumericFiring_is_value
+#print axioms A12Kernel.symmetricValidationNumericOperand_empty
+#print axioms A12Kernel.symmetricValidationNumericOperand_value
+#print axioms A12Kernel.symmetricValidationNumericOperand_unknown
+#print axioms A12Kernel.symmetricValidationNumericOperand_true_comparison_omission
 #print axioms A12Kernel.numericEval_fixedRight
 #print axioms A12Kernel.numericEqual_eval_comm
 #print axioms A12Kernel.numericNotEqual_eval_comm
