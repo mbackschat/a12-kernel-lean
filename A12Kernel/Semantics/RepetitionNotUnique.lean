@@ -49,6 +49,12 @@ def ofTokenObservation : CellObservation String → RepetitionKeyComponent
 def ofCheckedTokenCell (cell : CheckedCell String) : RepetitionKeyComponent :=
   ofTokenObservation (observeCell .validation cell)
 
+/-- Reuse the checked Number value-list classification when constructing a typed RNU key. Number emptiness stays an optional empty tuple component rather than becoming zero. -/
+def ofNumberValueListCell : ValueListCell .number → RepetitionKeyComponent
+  | .present value => .present (.number value)
+  | .empty => .empty
+  | .unknown cause => .unknown cause
+
 def isPresent : RepetitionKeyComponent → Bool
   | .present _ => true
   | .empty | .unknown _ => false
