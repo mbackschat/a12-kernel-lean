@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ValueList
 
 /-! # Resolved Number `FirstFilledValue`
 
-This capsule scans one or more resolved Number field-list operands in authored order after expansion and `Having` filtering. It stops at the first present Number or first unavailable cell, enters each operand's filter only when that slot is reached, and keeps actual empty prefixes distinct from omitted declared tails. Its enter/step/finalize interface lets checked adapters interleave operator-specific relevance before each reached cell without duplicating the prefix scan.
+This capsule scans one or more resolved Number field-list operands in authored order after expansion and `Having` filtering. It stops at the first present Number or first unavailable cell and enters each operand's filter only when that slot is reached. A reached selection with no concrete cell is observed as a not-given prefix before a later operand; the combiner's separate omitted-tail flag still affects only its all-exhausted identity. Its enter/step/finalize interface lets checked adapters interleave operator-specific relevance before each reached cell without duplicating the prefix scan.
 -/
 
 namespace A12Kernel
@@ -36,10 +36,18 @@ def enter (state : FirstFilledNumberScanState)
     encounteredHaving := state.encounteredHaving || hasHaving
     omittedTailSeen := state.omittedTailSeen || hasUninstantiatedTail }
 
+/-- Enter one reached resolved selection. The runtime wrapper presents a selection with no concrete cell as a not-given prefix before continuing to a later authored operand; this remains distinct from the combiner's omitted-tail flag. -/
+def enterSelection (state : FirstFilledNumberScanState)
+    (selectionEmpty hasUninstantiatedTail hasHaving : Bool) :
+    FirstFilledNumberScanState :=
+  let entered := state.enter hasUninstantiatedTail hasHaving
+  { entered with emptyBefore := entered.emptyBefore || selectionEmpty }
+
 /-- Enter one resolved operand before inspecting its cells. -/
 def enterOperand (state : FirstFilledNumberScanState)
     (side : ResolvedValueListSide .number) : FirstFilledNumberScanState :=
-  state.enter side.hasUninstantiatedTail side.hasHaving
+  state.enterSelection side.cells.isEmpty
+    side.hasUninstantiatedTail side.hasHaving
 
 /-- Consume one reached, relevant cell. Later consumers may place their own gates before invoking this step. -/
 def step (state : FirstFilledNumberScanState) :
@@ -83,7 +91,7 @@ def evalFirstFilledNumberOperands
     (operands : FirstFilledNumberOperands) : FirstFilledNumberResult :=
   scanFirstFilledNumberOperands (operands.first :: operands.rest) {}
 
-/-- Select the first usable Number from one resolved operand. An explicit or uninstantiated empty selection contributes zero; the operand's resolved `Having` clause makes any selected value fillable. A checked adapter must mark an authored no-row star with `hasUninstantiatedTail`; the total state with no cells and neither missingness marker returns fixed zero but is not claimed authored-reachable. -/
+/-- Select the first usable Number from one resolved operand. An explicit, uninstantiated, or otherwise cell-free reached selection contributes fillable zero; the operand's resolved `Having` clause also makes any selected value fillable. -/
 def evalFirstFilledNumber
     (side : ResolvedValueListSide .number) : FirstFilledNumberResult :=
   evalFirstFilledNumberOperands { first := side, rest := [] }

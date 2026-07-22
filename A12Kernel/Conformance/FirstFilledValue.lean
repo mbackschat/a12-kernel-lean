@@ -118,10 +118,10 @@ example :
         .fired .omission := by
   native_decide
 
-/- The total low-level state without cells or missingness metadata is fixed zero; checked authored lowering must not use it for a no-row star. -/
+/- A reached resolved selection with no concrete cell is a not-given zero even when no separate tail marker is available. -/
 example :
     evalFirstFilledNumber (side []) =
-      .value 0 false := by
+      .value 0 true := by
   native_decide
 
 /- Operand boundaries are semantically observable: a terminal first slot hides every later filter and cell. -/
@@ -138,12 +138,12 @@ example :
         .value 9 true := by
   native_decide
 
-/- An actual empty cell before a later value is fillable, but an omitted declared tail alone affects only an all-exhausted result. -/
+/- A reached no-row star is observed as a not-given prefix before a later value, just like an instantiated empty cell. -/
 example :
     evalFirstFilledNumberOperands
         (operands (side [.empty]) [side [.present 9]]) = .value 9 true ∧
       evalFirstFilledNumberOperands
-        (operands (side [] true) [side [.present 9]]) = .value 9 false ∧
+        (operands (side [] true) [side [.present 9]]) = .value 9 true ∧
       evalFirstFilledNumberOperands
         (operands (side [] true) [side []]) = .value 0 true := by
   native_decide

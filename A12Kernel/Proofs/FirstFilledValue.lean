@@ -136,12 +136,12 @@ theorem firstFilledNumberOperands_reached_filter_marks_later_value
       .value amount true := by
   rfl
 
-/-- An omitted declared tail is used by the all-exhausted identity but, unlike an instantiated empty cell, does not mark a later selected value fillable. -/
-theorem firstFilledNumberOperands_omitted_tail_is_not_empty_prefix
+/-- The runtime wrapper turns a reached selection with no concrete cell into a not-given prefix before a later operand; the separate omitted-tail flag still contributes to the all-exhausted zero identity. -/
+theorem firstFilledNumberOperands_no_row_selection_is_empty_prefix
     (amount : Rat) :
     evalFirstFilledNumberOperands {
       first := firstFilledSide [] true
-      rest := [firstFilledSide [.present amount]] } = .value amount false ∧
+      rest := [firstFilledSide [.present amount]] } = .value amount true ∧
     evalFirstFilledNumberOperands {
       first := firstFilledSide [] true
       rest := [firstFilledSide []] } = .value 0 true := by
@@ -188,7 +188,8 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilledState, relevant,
-    leftPresent, rightPresent, FirstFilledNumberScanState.enter,
+    leftPresent, rightPresent, FirstFilledNumberScanState.enterSelection,
+    FirstFilledNumberScanState.enter,
     FirstFilledNumberScanState.step]
 
 /-- Checked multi-operand authoring always retains either a starred first source or a genuine trailing operand. -/

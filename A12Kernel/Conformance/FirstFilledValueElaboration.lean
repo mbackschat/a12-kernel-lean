@@ -24,11 +24,17 @@ private def secondary : FlatFieldDecl :=
     policy := { kind := .number { scale := 1, signed := true } }
     repeatableScope := [20] }
 
+private def nested : FlatFieldDecl :=
+  { id := 5, groupPath := ["Form", "Primary", "Nested"], name := "Amount"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [10, 30] }
+
 private def model : FlatModel :=
-  { fields := [fallback, note, primary, secondary]
+  { fields := [fallback, note, primary, secondary, nested]
     repeatableGroups := [
       { level := 10, path := ["Form", "Primary"], repeatability := some 2 },
-      { level := 20, path := ["Form", "Secondary"], repeatability := some 2 }] }
+      { level := 20, path := ["Form", "Secondary"], repeatability := some 2 },
+      { level := 30, path := ["Form", "Primary", "Nested"], repeatability := some 2 }] }
 
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
@@ -36,6 +42,14 @@ private def bare (field : String) : SurfaceFieldPath :=
 private def star (group : String) : SurfaceStarFieldPath :=
   { base := .absolute
     groups := [{ name := "Form" }, { name := group, starred := true }]
+    field := "Amount" }
+
+private def nestedStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Primary", starred := true },
+      { name := "Nested", starred := true }]
     field := "Amount" }
 
 private def groupPath (group : String) : SurfaceGroupPath :=
@@ -146,14 +160,21 @@ example :
         .presentEmpty = .error := by
   native_decide
 
-/- Omitted capacity in an exhausted first star does not taint a later direct value; an actual empty cell does. -/
+/- A reached no-row star and an instantiated empty star cell both taint a later direct value. -/
 example :
     snapshot (source (.star (star "Primary")) [.field (bare "Fallback")])
         [] .empty .empty (.parsed (.num 9)) =
-        .result (.evaluated (.value 9 false)) ∧
+        .result (.evaluated (.value 9 true)) ∧
       snapshot (source (.star (star "Primary")) [.field (bare "Fallback")])
         [{ group := 10, path := [1] }] .presentEmpty .empty
         (.parsed (.num 9)) = .result (.evaluated (.value 9 true)) := by
+  native_decide
+
+/- The same wrapper rule applies at a reopened nested level: an actual outer row with no inner row still contributes a not-given prefix. -/
+example :
+    snapshot (source (.star nestedStar) [.field (bare "Fallback")])
+      [{ group := 10, path := [1] }] .empty .empty (.parsed (.num 9)) =
+      .result (.evaluated (.value 9 true)) := by
   native_decide
 
 /- A reached filtered slot is retained even when it selects no row before the direct fallback. -/
