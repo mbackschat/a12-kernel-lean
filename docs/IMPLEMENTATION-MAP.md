@@ -581,6 +581,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Elaboration/StarPath.lean`](../A12Kernel/Elaboration/StarPath.lean)
 - [`Elaboration/StarGroup.lean`](../A12Kernel/Elaboration/StarGroup.lean)
 - [`Elaboration/StarNumber.lean`](../A12Kernel/Elaboration/StarNumber.lean)
+- [`Elaboration/RepetitionNotUnique.lean`](../A12Kernel/Elaboration/RepetitionNotUnique.lean)
 - [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean)
 - [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean)
 - [`Elaboration/FirstFilledValue.lean`](../A12Kernel/Elaboration/FirstFilledValue.lean)
@@ -596,6 +597,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/StarPathElaboration.lean`](../A12Kernel/Proofs/StarPathElaboration.lean)
 - [`Proofs/StarGroupElaboration.lean`](../A12Kernel/Proofs/StarGroupElaboration.lean)
 - [`Proofs/StarNumberElaboration.lean`](../A12Kernel/Proofs/StarNumberElaboration.lean)
+- [`Proofs/RepetitionNotUniqueElaboration.lean`](../A12Kernel/Proofs/RepetitionNotUniqueElaboration.lean)
 - [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean)
 - [`Proofs/NumericAggregateElaboration.lean`](../A12Kernel/Proofs/NumericAggregateElaboration.lean)
 - [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean)
@@ -610,6 +612,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/StarPathElaboration.lean`](../A12Kernel/Conformance/StarPathElaboration.lean)
 - [`Conformance/StarGroupElaboration.lean`](../A12Kernel/Conformance/StarGroupElaboration.lean)
 - [`Conformance/StarNumberElaboration.lean`](../A12Kernel/Conformance/StarNumberElaboration.lean)
+- [`Conformance/RepetitionNotUniqueElaboration.lean`](../A12Kernel/Conformance/RepetitionNotUniqueElaboration.lean)
 - [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean)
 
 #### Implemented
@@ -622,6 +625,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - a shared full-environment correlated evaluator/relation bridge
 - captured-origin, exact named-level resolution, outer-reference stability, self-match/exclusion, scalar-collapse rejection, and one-group observation-footprint results.
 - Resolved RNU consumes caller-supplied ordered rows with complete repetition environments and classified composite keys. It excludes unknown keys, skips all-empty keys, uses scale-19 Number equality, retains complete firing clusters in scope order, and projects per-row verdicts before composition.
+- Checked nested Number RNU now constructs those rows from one validated model and the common star topology. A nonempty authored-order composite key must use distinct Number fields on one exact group path; the default scope reopens the first repeatable group below the rule group, while explicit `@From` selects a containing repeatable group and leaves higher bindings to the caller's outer environment. Runtime resolves canonical rows once, filters a row unless every key cell is relevant, classifies the retained cells through the existing checked Number value-list owner, and delegates unchanged to the resolved RNU relation.
 - Its checked-token adapter maps a shared validation observation to present token, optional empty, or exact-cause unknown. Registered custom field rejection therefore excludes the key without losing its project payload or invoking the validator again; relevance exclusion still precedes component construction.
 - Laws characterize exact cluster membership, firing, the internal false/unknown refinement, unique cluster identities, and the existence of a genuinely distinct matching peer.
 - The separate checked one-star lowering retains explicit group paths, path-derived repeatable ancestry, exact singleton scope, operator-specific scale legality, model-derived raw checking, fail-closed runtime references, and pre-evaluation 1-based/unique candidate validation.
@@ -643,6 +647,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Kernel source establishes the complete captured index vector
 - maintained a12-dmkits RNU dual-route differentials establish duplicate outcomes, invalid exclusion, optional-empty polarity, typed equality, ordinary composition, and peer clusters as triangulation.
 - Five local custom-key cases plus four generic laws lock the accepted, empty, malformed, registered-rejected, and nonrelevant bridge into the existing resolved relation.
+- Five checked nested Number runtime examples separate default cross-level scope, explicit per-parent `@From`, complete-key partial relevance, optional-empty composite polarity, and formally invalid key exclusion. Five neighboring static failures lock duplicate-key, common-path, Number-kind, containing-reference, and missing-default-reference admission. Ten laws expose the typed Number adapter, checked key/path/scope certificates, canonical row construction, and exact resolved-evaluator delegation.
 - This repository retains neither an RNU observation nor the cross-level diagonal/off-diagonal separator
 - kernel `FALSE_OR_UNKNOWN` intrinsically collapses invalid versus clean nonfiring RNU leaf truth.
 - Accepted [`SPEC-2026-07-19-16`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-19-16---correlation-captures-every-named-outer-repetition-level) records the peer diagonal/off-diagonal complete-capture lock
@@ -657,13 +662,12 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded boundary and gap links
 
-- **Implemented; wider cross-level and RNU additions remain external evidence pending.** Coverage includes one-group runtime/lowering, normalized firing rows, resolved RNU, document-derived general star topology after checked path planning, reopened-star completeness, and resolved group-presence projections.
+- **Implemented; wider cross-level and RNU additions remain external evidence pending.** Coverage includes one-group runtime/lowering, normalized firing rows, resolved RNU, checked nested Number RNU construction, document-derived general star topology after checked path planning, reopened-star completeness, and resolved group-presence projections.
 - Correlation carries complete candidate/captured environments; RNU defines one branch-independent relation and complete peer clusters before verdict composition.
-- The RNU caller must still construct rows, supply the target in scope, unique complete repetition environments with canonical positive level coordinates, one common declared key arity/order/kind schema, and relevance-filtered component presence; checked String cells now have one exact component adapter
-- the low-level evaluator remains total outside those obligations without a kernel-correspondence claim.
-- Checked RNU scope/`@From`, key schema, partial relevance, authoring restrictions, whole-rule placement, and peer-pointer obligations are indexed by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
+- The low-level RNU evaluator remains total over caller-supplied rows outside the checked Number route without a kernel-correspondence claim. Checked String and Enumeration components exist, but their repeated authored key construction is not yet integrated.
+- Other RNU key kinds and mixed-kind schema legality, the one-leaf-per-condition restriction, whole-rule placement, branch-associated references, and peer-pointer/message projection are indexed by [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 - The checked whole-rule correlation elaborator and public protocol remain one-group only; both it and the internal general-star filter surface admit only Number/`CurrentRepetition` comparisons and conjunction. Resolved `CorrelatedHaving` supports `Or`, but authored `Or` remains outside this capsule.
-- Wider filter leaves, broader partial relevance beyond the checked Number `FirstFilledValue` route, checked RNU construction, nonrepeatable terminal groups below a star, mixed starred/plain group operand lists, descendant-based group presence, and every wider repeated consumer remain indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). The shared checked condition/expression tree, narrow authored nested-Number filter, mixed direct/plain-star/filtered-star Number `FirstFilledValue`, and sole terminal-repeatable group-star count consumers are closed.
+- Wider filter leaves, partial relevance outside the checked per-cell Number `FirstFilledValue` and RNU routes, nonrepeatable terminal groups below a star, mixed starred/plain group operand lists, descendant-based group presence, and every wider repeated consumer remain indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). The shared checked condition/expression tree, narrow authored nested-Number filter, mixed direct/plain-star/filtered-star Number `FirstFilledValue`, nested Number RNU, and sole terminal-repeatable group-star count consumers are closed.
 - `CheckedStarNumberHavingSource.resolvedValueSide` still receives the runtime captured `Env` from its caller. Static legality names every level that environment may supply, and missing or duplicate bindings fail closed, but construction of one complete runtime rule environment belongs to the reserved general checked-document/result boundary under [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §10 — paths and references

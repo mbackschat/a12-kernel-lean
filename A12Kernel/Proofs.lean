@@ -84,6 +84,7 @@ import A12Kernel.Proofs.NumericStarElaboration
 import A12Kernel.Proofs.NumericAggregate
 import A12Kernel.Proofs.NumericAggregateElaboration
 import A12Kernel.Proofs.RepetitionNotUnique
+import A12Kernel.Proofs.RepetitionNotUniqueElaboration
 import A12Kernel.Proofs.Enumeration
 import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.EnumerationElaboration

@@ -80,6 +80,7 @@ import A12Kernel.Conformance.StarNumberValueList
 import A12Kernel.Conformance.NumericAggregate
 import A12Kernel.Conformance.NumericAggregateElaboration
 import A12Kernel.Conformance.RepetitionNotUnique
+import A12Kernel.Conformance.RepetitionNotUniqueElaboration
 import A12Kernel.Conformance.Enumeration
 import A12Kernel.Conformance.EnumerationComparability
 import A12Kernel.Conformance.EnumerationElaboration
