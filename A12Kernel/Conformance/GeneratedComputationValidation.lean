@@ -127,6 +127,12 @@ private def assemblyErrorIn (checkedModel : FlatModel)
 private def assemblyErrorOf :=
   assemblyErrorIn model
 
+private def generatedRowGroupOf (candidate : LiteralNumberComputation) :
+    Option GroupPath :=
+  match assembleGeneratedLiteralNumberRule model candidate with
+  | .ok rule => some rule.condition.rowGroup
+  | .error _ => none
+
 private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
   { errorAddress := { field := target.id, path := [] }
     errorCode := "computedTarget"
@@ -136,6 +142,10 @@ private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
 
 private def bothHoldingDifferent : LiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
+
+/- Semantic desugaring derives the checked condition's row group from the resolved computation target declaration. -/
+example : generatedRowGroupOf bothHoldingDifferent = some ["Form"] := by
+  native_decide
 
 private def tolerateFirst (range : NumericToleranceRange)
     (candidate : LiteralNumberComputation) : LiteralNumberComputation :=

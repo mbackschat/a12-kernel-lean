@@ -17,6 +17,24 @@ theorem checkedFlatCondition_modelWellFormed (checked : CheckedFlatCondition mod
     model.validate.isOk = true :=
   checked.modelWellFormed
 
+/-- Surface elaboration retains its exact declaring group in the checked certificate. -/
+theorem elaborate_checkedFlatCondition_rowGroup
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (condition : SurfaceCondition) (checked : CheckedFlatCondition model)
+    (elaborated : elaborate model declaringGroup condition = .ok checked) :
+    checked.rowGroup = declaringGroup := by
+  unfold elaborate at elaborated
+  split at elaborated
+  · contradiction
+  · simp only [bind, Except.bind] at elaborated
+    split at elaborated
+    · contradiction
+    · unfold FlatCondition.checkAgainstValidatedModel at elaborated
+      split at elaborated
+      · cases elaborated
+        rfl
+      · contradiction
+
 /-- A field admitted by the core well-formedness check has a unique model declaration
     with the same typed field representation and no repeatable scope. -/
 theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field : FlatField)

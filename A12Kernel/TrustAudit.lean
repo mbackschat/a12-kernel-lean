@@ -411,6 +411,7 @@ run_cmd do
 
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
+#print axioms A12Kernel.elaborate_checkedFlatCondition_rowGroup
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
 #print axioms A12Kernel.directComparableProfile_admitsField
 #print axioms A12Kernel.checkedEnumerationOperand_admitsField
