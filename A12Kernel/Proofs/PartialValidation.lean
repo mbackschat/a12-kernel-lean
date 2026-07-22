@@ -29,24 +29,29 @@ private theorem Verdict.truth_disj (left right : Verdict) :
 
 private theorem selectedAnd_eq_conj (left right : FlatCondition)
     (context : FlatContext) (isRelevant : FlatRelevance) :
-    (FlatCondition.and left right).evalSelected context isRelevant =
+    FlatCondition.evalSelected context isRelevant (.and left right) =
       Verdict.conj (left.evalSelected context isRelevant)
         (right.evalSelected context isRelevant) := by
-  simp only [FlatCondition.evalSelected]
-  generalize leftEq : left.evalSelected context isRelevant = leftVerdict
+  unfold FlatCondition.evalSelected
+  rw [ConditionTree.evalVerdict]
+  generalize leftEq :
+    left.evalVerdict (fun leaf => leaf.evalSelected context isRelevant) = leftVerdict
   cases leftVerdict <;> rfl
 
 private theorem selectedOr_eq_disj (left right : FlatCondition)
     (context : FlatContext) (isRelevant : FlatRelevance) :
-    (FlatCondition.or left right).evalSelected context isRelevant =
+    FlatCondition.evalSelected context isRelevant (.or left right) =
       Verdict.disj (left.evalSelected context isRelevant)
         (right.evalSelected context isRelevant) := by
-  simp only [FlatCondition.evalSelected]
-  generalize leftEq : left.evalSelected context isRelevant = leftVerdict
+  unfold FlatCondition.evalSelected
+  rw [ConditionTree.evalVerdict]
+  generalize leftEq :
+    left.evalVerdict (fun leaf => leaf.evalSelected context isRelevant) = leftVerdict
   cases leftVerdict with
   | notFired => rfl
   | unknown => rfl
-  | fired polarity => cases polarity <;> rfl
+  | fired polarity =>
+      cases polarity <;> rfl
 
 private theorem temporalOperand_resolve_agreesOn
     (operand : FlatTemporalOperand) (left right : FlatContext)
@@ -157,8 +162,11 @@ theorem partialSelected_agreesOn
       condition.evalSelected right isRelevant := by
   rcases agreement with ⟨worldAgreement, agreement⟩
   induction condition with
-  | compare comparison =>
-      simp only [FlatCondition.evalSelected]
+  | leaf leaf =>
+    cases leaf with
+    | compare comparison =>
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected]
       split
       · rename_i relevant
         cases comparison with
@@ -222,8 +230,9 @@ theorem partialSelected_agreesOn
               temporalOperand_resolve_agreesOn rightOperand left right isRelevant
                 worldAgreement agreement bothRelevant.right]
       · rfl
-  | tokenValueList quantifier operands values =>
-      simp only [FlatCondition.evalSelected]
+    | tokenValueList quantifier operands values =>
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected]
       split
       · rename_i relevant
         have bothRelevant :
@@ -235,8 +244,9 @@ theorem partialSelected_agreesOn
           tokenValueSide_agreesOn values left right isRelevant
             agreement bothRelevant.right]
       · rfl
-  | numberValueList quantifier operands values =>
-      simp only [FlatCondition.evalSelected]
+    | numberValueList quantifier operands values =>
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected]
       split
       · rename_i relevant
         have bothRelevant :
@@ -248,16 +258,21 @@ theorem partialSelected_agreesOn
           numberValueSide_agreesOn values left right isRelevant
             agreement bothRelevant.right]
       · rfl
-  | fieldFilled field | fieldNotFilled field =>
-      simp only [FlatCondition.evalSelected]
+    | fieldFilled field | fieldNotFilled field =>
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected]
       split
       · have readEq := agreement field.id (by assumption)
         cases field <;>
           simp_all [FlatField.id, FlatField.evalFilled, FlatField.evalNotFilled,
             FlatField.observeValidation, FlatContext.observeValidationAt]
       · rfl
-  | and left right leftIH rightIH | or left right leftIH rightIH =>
-      simp only [FlatCondition.evalSelected]
+  | and leftTree rightTree leftIH rightIH | or leftTree rightTree leftIH rightIH =>
+      change leftTree.evalVerdict (fun leaf => leaf.evalSelected left isRelevant) =
+        leftTree.evalVerdict (fun leaf => leaf.evalSelected right isRelevant) at leftIH
+      change rightTree.evalVerdict (fun leaf => leaf.evalSelected left isRelevant) =
+        rightTree.evalVerdict (fun leaf => leaf.evalSelected right isRelevant) at rightIH
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict]
       rw [leftIH]
       split
       · rfl
@@ -269,29 +284,35 @@ private theorem partialSelected_truth_refines_full
       (Verdict.truth (condition.evalSelected context isRelevant))
       (Verdict.truth (condition.evalSelected context)) := by
   induction condition with
-  | compare comparison =>
+  | leaf leaf =>
+    cases leaf with
+    | compare comparison =>
       have fullRelevant : comparison.allRelevant (fun _ => true) = true := by
         simp [FlatComparison.allRelevant]
-      simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected, fullRelevant, ↓reduceIte]
       split
       · exact K.informationRefines_refl _
       · trivial
-  | tokenValueList quantifier operands values =>
+    | tokenValueList quantifier operands values =>
       have fullRelevant :
           (values.allOperands operands).all (fun _ => true) = true := by simp
-      simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected, fullRelevant, ↓reduceIte]
       split
       · exact K.informationRefines_refl _
       · trivial
-  | numberValueList quantifier operands values =>
+    | numberValueList quantifier operands values =>
       have fullRelevant :
           (values.allOperands operands).all (fun _ => true) = true := by simp
-      simp only [FlatCondition.evalSelected, fullRelevant, ↓reduceIte]
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected, fullRelevant, ↓reduceIte]
       split
       · exact K.informationRefines_refl _
       · trivial
-  | fieldFilled field | fieldNotFilled field =>
-      simp only [FlatCondition.evalSelected]
+    | fieldFilled field | fieldNotFilled field =>
+      simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
+        FlatConditionLeaf.evalSelected]
       split
       · exact K.informationRefines_refl _
       · trivial

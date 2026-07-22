@@ -386,8 +386,8 @@ example :
 example : coreOf (elaborate model ["Order"]
     (.and (.fieldFilled (absolute ["Order"] "ExpressShipping"))
       (compare .equal (absolute ["Order"] "Quantity") (.number 0)))) =
-    some (.and (.fieldFilled (.boolean { id := 1 }))
-      (.compare (.number (.ordinary .equal)
+    some (.and (FlatCondition.fieldFilled (.boolean { id := 1 }))
+      (FlatCondition.compare (.number (.ordinary .equal)
         { id := 0, info := numberInfo } 0))) := by
   native_decide
 

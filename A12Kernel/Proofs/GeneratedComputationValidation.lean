@@ -68,7 +68,7 @@ theorem minimumGuardedGeneratedNumberCondition_exact
     (target : FlatNumberField)
     (firstMismatch secondMismatch : FlatCondition) :
     generatedNumberCondition target none firstMismatch [secondMismatch] =
-      .and (.fieldFilled (.number target))
+      .and (FlatCondition.fieldFilled (.number target))
         (.or firstMismatch secondMismatch) := by
   rfl
 
@@ -78,7 +78,7 @@ theorem minimumGuardedGeneratedNumberCondition_withCommon_exact
     (firstMismatch secondMismatch : FlatCondition) :
     generatedNumberCondition target (some common)
         firstMismatch [secondMismatch] =
-      .and (.fieldFilled (.number target))
+      .and (FlatCondition.fieldFilled (.number target))
         (.and common
           (.or firstMismatch secondMismatch)) := by
   rfl
@@ -103,7 +103,8 @@ theorem guardedLiteralNumber_declaredOperations_exact
 theorem generatedLiteralNumberMismatch_withoutTolerance
     (target : FlatNumberField) (guard : FlatCondition) (operation : Rat) :
     generatedLiteralNumberMismatch target guard operation none =
-      .and guard (.compare (.number (.ordinary .notEqual) target operation)) := by
+      .and guard
+        (FlatCondition.compare (.number (.ordinary .notEqual) target operation)) := by
   rfl
 
 /-- Present tolerance metadata produces that alternative's source-level tolerance branch. -/
@@ -111,7 +112,8 @@ theorem generatedLiteralNumberMismatch_withTolerance
     (target : FlatNumberField) (guard : FlatCondition) (operation : Rat)
     (range : NumericToleranceRange) :
     generatedLiteralNumberMismatch target guard operation (some range) =
-      .and guard (.compare (.number (.tolerance range) target operation)) := by
+      .and guard
+        (FlatCondition.compare (.number (.tolerance range) target operation)) := by
   rfl
 
 /-- Tolerance metadata is validation-only and erases from every alternative before first-match computation selection. -/

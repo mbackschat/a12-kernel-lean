@@ -690,7 +690,7 @@ def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison)
       | none => false
   | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField
 
-def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
+def FlatConditionLeaf.wellFormedBool (condition : FlatConditionLeaf) (model : FlatModel) : Bool :=
   match condition with
   | .compare comparison => model.admitsComparison comparison
   | .tokenValueList _ operands (.literals values) =>
@@ -715,8 +715,13 @@ def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel)
         !numberOperandListHasDuplicate (operands ++ valueOperands)
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
-  | .and left right => left.wellFormedBool model && right.wellFormedBool model
-  | .or left right => left.wellFormedBool model && right.wellFormedBool model
+
+def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
+  match condition with
+  | .leaf value => value.wellFormedBool model
+  | .and left right | .or left right =>
+      FlatCondition.wellFormedBool left model &&
+        FlatCondition.wellFormedBool right model
 
 def FlatCondition.WellFormed (condition : FlatCondition) (model : FlatModel) : Prop :=
   condition.wellFormedBool model = true

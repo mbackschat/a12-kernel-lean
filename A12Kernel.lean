@@ -38,6 +38,7 @@ import A12Kernel.Semantics.NumericStoredNumber
 import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
+import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.ValueList
 import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.StarCompleteness
@@ -76,6 +77,7 @@ import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.NumericValidation
+import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.EnumerationComparability
 import A12Kernel.Elaboration.Enumeration

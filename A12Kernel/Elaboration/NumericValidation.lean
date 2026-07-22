@@ -142,6 +142,39 @@ structure CheckedNumericComparison (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model rowGroup
 
+/-- Whether one resolved validation atom references a field ID. Context-free Base-Year sources contribute no reference. -/
+def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId → Bool
+  | .field source, field => source.id == field
+  | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
+  | .temporalFieldPart source _, field => source.id == field
+  | .dateDifference _ left right, field =>
+      left.references field || right.references field
+
+/-- Whether every field read by one resolved validation atom is relevant. -/
+def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
+    (isRelevant : FlatRelevance) : Bool :=
+  match atom with
+  | .field source => isRelevant source.id
+  | .baseYear _ | .baseYearDatePart _ _ _ => true
+  | .temporalFieldPart source _ => isRelevant source.id
+  | .dateDifference _ left right =>
+      let operandRelevant : ResolvedDateDifferenceOperand → Bool
+        | .field source => isRelevant source.id
+        | .baseYear _ _ => true
+      operandRelevant left && operandRelevant right
+
+/-- Reference membership traverses both authored operands without erasing expression shape. -/
+def NumericComparison.referencesField (comparison : NumericComparison)
+    (field : FieldId) : Bool :=
+  comparison.left.anyAtom (·.referencesField field) ||
+    comparison.right.anyAtom (·.referencesField field)
+
+/-- Partial relevance covers every field atom across both operands. -/
+def NumericComparison.allRelevant (comparison : NumericComparison)
+    (isRelevant : FlatRelevance) : Bool :=
+  comparison.left.allAtoms (·.allRelevant isRelevant) &&
+    comparison.right.allAtoms (·.allRelevant isRelevant)
+
 private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
   | .field reference => do

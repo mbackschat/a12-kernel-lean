@@ -170,10 +170,12 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/NumericTarget.lean`](../A12Kernel/Semantics/NumericTarget.lean)
 - [`Semantics/NumericApplication.lean`](../A12Kernel/Semantics/NumericApplication.lean)
 - [`Semantics/NumericDependency.lean`](../A12Kernel/Semantics/NumericDependency.lean)
+- [`Semantics/Condition.lean`](../A12Kernel/Semantics/Condition.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Elaboration/NumericScale.lean`](../A12Kernel/Elaboration/NumericScale.lean)
 - [`Elaboration/NumericExpression.lean`](../A12Kernel/Elaboration/NumericExpression.lean)
 - [`Elaboration/NumericValidation.lean`](../A12Kernel/Elaboration/NumericValidation.lean)
+- [`Elaboration/ValidationCondition.lean`](../A12Kernel/Elaboration/ValidationCondition.lean)
 - [`Elaboration/NumericComputation.lean`](../A12Kernel/Elaboration/NumericComputation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
@@ -184,6 +186,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/NumericScale.lean`](../A12Kernel/Proofs/NumericScale.lean)
 - [`Proofs/NumericExpression.lean`](../A12Kernel/Proofs/NumericExpression.lean)
 - [`Proofs/NumericValidation.lean`](../A12Kernel/Proofs/NumericValidation.lean)
+- [`Proofs/ValidationCondition.lean`](../A12Kernel/Proofs/ValidationCondition.lean)
 - [`Proofs/NumericComputation.lean`](../A12Kernel/Proofs/NumericComputation.lean)
 - [`Proofs/NumericStoredNumber.lean`](../A12Kernel/Proofs/NumericStoredNumber.lean)
 - [`Proofs/NumericTarget.lean`](../A12Kernel/Proofs/NumericTarget.lean)
@@ -201,6 +204,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/NumericScale.lean`](../A12Kernel/Conformance/NumericScale.lean)
 - [`Conformance/NumericExpression.lean`](../A12Kernel/Conformance/NumericExpression.lean)
 - [`Conformance/NumericValidation.lean`](../A12Kernel/Conformance/NumericValidation.lean)
+- [`Conformance/ValidationCondition.lean`](../A12Kernel/Conformance/ValidationCondition.lean)
 - [`Conformance/NumericComputation.lean`](../A12Kernel/Conformance/NumericComputation.lean)
 - [`Conformance/NumericStoredNumber.lean`](../A12Kernel/Conformance/NumericStoredNumber.lean)
 - [`Conformance/NumericTarget.lean`](../A12Kernel/Conformance/NumericTarget.lean)
@@ -228,6 +232,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - separately proved ordinary and significant-digit-bounded stored-decimal conversions
 - and one explicit two-branch target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
 - Checked validation resolves two same-group expressions over Number fields, numeric `BaseYear`, direct numeric component extraction from direct or range-selected Base-Year date sources, direct Date/DateTime or Time/DateTime field-component sources, and Date-only month/year differences over field or Base-Year operands, lowers each once, and gates empty rows before reads. At least one actual field remains mandatory, so every source-only or literal-only condition retains the constant-expression rejection.
+- One generic `ConditionTree` now owns connective shape, Boolean empty-row eligibility, field-reference traversal support, and verdict-aware short-circuit evaluation. `ValidationCondition` embeds the existing flat tree without a nested condition representation and admits resolved numeric comparisons as sibling leaves, requiring every numeric field atom to be relevant before a reached leaf evaluates. Preservation laws show that flat verdicts and references are unchanged; mixed cases lock firing, short-circuit, reached nonrelevance, and cross-family reference discovery.
 - Admitted expressions are plain arithmetic including power, direct-field root rounding/`Abs`, or canonical Min/Max over direct fields with at most one direct constant.
 - The runtime preserves formal invalidity, domain failure, values, and two-sided fillability. [`LF58`](LEAN-FINDINGS.md#lf58--numeric-operand-list-extrema-combine-exact-selection-with-directional-fillability) owns the extremum constant, selection, scale, and polarity details.
 - The explicit warning flag bypasses only equality/inequality scale admission and is runtime-irrelevant.
@@ -752,10 +757,12 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/NumericFillability.lean`](../A12Kernel/Semantics/NumericFillability.lean)
 - [`Semantics/NumericComparison.lean`](../A12Kernel/Semantics/NumericComparison.lean)
 - [`Semantics/NumericTolerance.lean`](../A12Kernel/Semantics/NumericTolerance.lean)
+- [`Semantics/Condition.lean`](../A12Kernel/Semantics/Condition.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Semantics/ValidationRule.lean`](../A12Kernel/Semantics/ValidationRule.lean)
 - [`Semantics/PartialValidation.lean`](../A12Kernel/Semantics/PartialValidation.lean)
 - [`Elaboration/NumericValidation.lean`](../A12Kernel/Elaboration/NumericValidation.lean)
+- [`Elaboration/ValidationCondition.lean`](../A12Kernel/Elaboration/ValidationCondition.lean)
 - [`Elaboration/ValidationRule.lean`](../A12Kernel/Elaboration/ValidationRule.lean)
 - [`Elaboration/GeneratedComputationValidation.lean`](../A12Kernel/Elaboration/GeneratedComputationValidation.lean)
 - their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean)
@@ -763,6 +770,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Implemented
 
 - The verdict algebra preserves VALUE/OMISSION precedence and unknown
+- Flat and numeric-expression validation leaves now share one resolved connective tree, Boolean empty-row fold, field-reference traversal, and exact left-to-right short-circuit evaluator. Existing flat conditions remain a type alias over their atomic leaves, and universal preservation laws prevent the shared embedding from changing their verdict or references.
 - numeric fillability supplies directional polarity across direct comparisons, admitted arithmetic including resolved power, and fixed tolerance.
 - The seven resolved unfiltered field-fill quantifiers classify instantiated observations, combine adjacent ranges by count addition, preserve declared/instantiated/mixed ranges, treat unavailable cells as neither filled nor empty, and expose fired polarity versus exact collapsed `FALSE_OR_UNKNOWN`; semantic-index reads now supply both validation tallies and ordered computation slots through the same phase lookup
 - trusted laws separate the two `NotExactlyOne` firing regions, the mixed predicate from `NotAll`, and validation collapse from computation poison.
@@ -776,7 +784,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - Retained validation observations separate ordinary polarity and malformed connective outcomes but do not establish checked whole-rule assembly, generated guarded-alternative validation, error-code/severity independence, complete message rendering, hidden silent distinctions, or field-fill quantifiers.
 - Maintained a12-dmkits multi-route quantifier differentials ground the seven unfiltered formulas and broader filter behavior, but this repository retains no portable field-fill observation.
-- Direct ordering, arithmetic fillability, tolerance, partial relevance, integrated expression comparison, generated-rule details, and the label/value display refinements remain source/test anchored and project-locally `external evidence pending`.
+- Direct ordering, arithmetic fillability, tolerance, partial relevance, mixed flat/numeric condition integration, generated-rule details, and the label/value display refinements remain source/test anchored and project-locally `external evidence pending`.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` additionally triangulates IF193 group relevance/availability and IF194 nested-star aggregate polarity across both kernel strategies and the peer interpreter, without adding project-local portable evidence.
 - a12-dmkits revision `6039fd3e` and the three kernel code-generation templates ground IF202's method-entry skip for filtered partial rules; this repository retains no portable filtered-rule observation.
 - Same-field alias polarity is source-inferred
@@ -789,7 +797,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - hierarchical structural-tail derivation over a caller-supplied reopened tree
 - reduced fixed-right Number/String-Length validation
 - known arithmetic and fixed-tolerance polarity
-- one same-group nonrepeatable two-expression comparison
+- one same-group nonrepeatable two-expression comparison and one resolved mixed flat/numeric connective tree after checked leaf elaboration
 - one exact nonrepeatable structured-plan rule message rendered only after firing
 - one checked nonempty literal-Number generated rule, split between an optionally guarded singleton and guarded two-or-more table, with an optional common condition on the same message boundary
 - and one ordered nonrepeatable partial-validation filter gate, error-field gate, and relevance-aware leaf evaluator.

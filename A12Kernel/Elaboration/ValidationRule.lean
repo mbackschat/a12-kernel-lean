@@ -8,23 +8,6 @@ This boundary consumes an existing checked flat condition and a resolved error-f
 
 namespace A12Kernel
 
-namespace FlatCondition
-
-/-- Whether this already-resolved condition references one field ID. Error-field legality is checked after path resolution, never by authored path spelling. -/
-def referencesField : FlatCondition → FieldId → Bool
-  | .compare comparison, field => comparison.fieldIds.contains field
-  | .tokenValueList _ operands values, field =>
-      (values.allOperands operands).any fun operand => operand.field.id == field
-  | .numberValueList _ operands values, field =>
-      (values.allOperands operands).any fun operand => operand.id == field
-  | .fieldFilled referenced, field
-  | .fieldNotFilled referenced, field => referenced.id == field
-  | .and left right, field
-  | .or left right, field =>
-      left.referencesField field || right.referencesField field
-
-end FlatCondition
-
 inductive FlatRuleAssemblyError where
   | errorField (error : ResolveError)
   | repeatableErrorField (field : FieldId)

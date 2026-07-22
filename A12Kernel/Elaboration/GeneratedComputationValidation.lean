@@ -193,7 +193,7 @@ def generatedNumberCondition (target : FlatNumberField)
     FlatCondition :=
   let alternatives := disjoinGeneratedNumberMismatches
     firstMismatch remainingMismatches
-  .and (.fieldFilled (.number target))
+  .and (FlatCondition.fieldFilled (.number target))
     (match commonGuard with
     | none => alternatives
     | some common => .and common alternatives)
