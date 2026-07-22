@@ -38,6 +38,7 @@ private def scalarKindTag : SurfaceScalarKind → String
   | .boolean => "boolean"
   | .confirm => "confirm"
   | .string => "string"
+  | .enumeration => "enumeration"
   | .temporal .date => "date"
   | .temporal .time => "time"
   | .temporal .dateTime => "dateTime"
@@ -54,6 +55,11 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "customFieldTypeDeclaration"),
           ("path", toJson path), ("expected", toJson "string")])
+  | .enumerationMetadataRequiresEnumeration _
+  | .enumerationDeclarationRequired _
+  | .invalidEnumerationDeclaration _ _ =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "enumerationDeclaration")])
   | .invalidRepeatableGroupPath path =>
       .make .invalidRepeatableGroupPath "$.model" (pathDetails path)
   | .duplicateRepeatableGroupPath path =>
@@ -143,6 +149,7 @@ private def elaborationResult : ElabError → Except InternalFailure Diagnostic
         (Json.mkObj [("function", toJson "Length"), ("path", toJson path),
           ("expected", toJson (scalarKindTag .string)),
           ("actual", toJson (scalarKindTag actual))]))
+  | .enumerationOperand _ _ => throw .incoherentCore
   | .incoherentCore => throw .incoherentCore
 
 private def correlationElaborationResult : CorrelationElabError →

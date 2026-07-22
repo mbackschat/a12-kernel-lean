@@ -18,6 +18,7 @@ inductive FieldKind where
   | boolean
   | confirm
   | string
+  | enumeration
   | temporal (kind : TemporalKind) (components : TemporalComponents)
   deriving Repr, DecidableEq
 
@@ -77,6 +78,7 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .boolean, .bool _ => true
   | .confirm, .conf true => true
   | .string, .str _ => true
+  | .enumeration, .enum _ => true
   | .temporal expected _, .temporal actual => expected == actual.kind
   | _, _ => false
 

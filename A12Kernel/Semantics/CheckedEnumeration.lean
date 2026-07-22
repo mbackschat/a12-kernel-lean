@@ -3,7 +3,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.CheckedEnumeration — checked literal evaluation
 
-This capsule connects one admitted ordinary closed Enumeration declaration to heterogeneous raw-cell checking and the existing stored/category token evaluator. It retains literal admission as a checked construction step and does not add Enumeration to the general flat condition AST.
+This capsule connects one admitted ordinary closed Enumeration declaration to heterogeneous raw-cell checking and the existing stored/category token evaluator. It retains literal admission as a checked construction step; the general flat condition spine consumes the resulting checked projection without adding another Enumeration evaluator.
 -/
 
 namespace A12Kernel

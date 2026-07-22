@@ -38,19 +38,46 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
 theorem admitsComparison_fields_admitted (model : FlatModel)
     (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
     ∀ field, field ∈ comparison.fields → model.admitsField field = true := by
-  simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
-  exact admitted.right
+  intro field member
+  cases comparison with
+  | number op target expected =>
+      rcases List.mem_singleton.mp member with rfl
+      simpa [FlatModel.admitsComparison, FlatComparison.fields,
+        List.all_eq_true] using admitted
+  | boolean op target expected =>
+      rcases List.mem_singleton.mp member with rfl
+      simpa [FlatModel.admitsComparison, FlatComparison.fields,
+        List.all_eq_true] using admitted
+  | string op target expected =>
+      rcases List.mem_singleton.mp member with rfl
+      simpa [FlatModel.admitsComparison, FlatComparison.fields,
+        List.all_eq_true] using admitted
+  | stringLength op target expected =>
+      rcases List.mem_singleton.mp member with rfl
+      simpa [FlatModel.admitsComparison, FlatComparison.fields,
+        List.all_eq_true] using admitted
+  | confirm op target =>
+      rcases List.mem_singleton.mp member with rfl
+      simpa [FlatModel.admitsComparison, FlatComparison.fields,
+        List.all_eq_true] using admitted
+  | enumeration op target projectionRef projection expected =>
+      rcases List.mem_singleton.mp member with rfl
+      generalize lookupEq : model.lookupUniqueId target.id = lookup at admitted
+      cases lookup with
+      | error error => simp [FlatModel.admitsComparison, lookupEq] at admitted
+      | ok declaration =>
+          simp [FlatModel.admitsComparison, lookupEq] at admitted
+          simpa [FlatModel.admitsField, FlatField.id, lookupEq] using admitted.1
+  | temporal op left right =>
+      simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
+      exact admitted.2 field member
 
 /-- Model-derived context construction checks a resolved cell with exactly the policy
     carried by its unique declaration. -/
 theorem checkContext_lookup_coherent (model : FlatModel) (raw : RawFlatContext)
     (id : FieldId) (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId id = .ok declaration) :
-    (model.checkContext raw).read id =
-      if declaration.customType.isNone then
-        formalCheck declaration.policy (raw.read id)
-      else
-        malformedCheckedCell := by
+    (model.checkContext raw).read id = declaration.checkRaw (raw.read id) := by
   simp only [FlatModel.checkContext, lookup]
 
 /-- A core-admitted reference therefore reads a cell checked by a unique matching model
@@ -61,11 +88,7 @@ theorem checkContext_admittedField_coherent (model : FlatModel) (raw : RawFlatCo
       model.lookupUniqueId field.id = .ok declaration ∧
       declaration.repeatableScope.isEmpty = true ∧
       field.matchesDecl declaration = true ∧
-      (model.checkContext raw).read field.id =
-        if declaration.customType.isNone then
-          formalCheck declaration.policy (raw.read field.id)
-        else
-          malformedCheckedCell := by
+      (model.checkContext raw).read field.id = declaration.checkRaw (raw.read field.id) := by
   obtain ⟨declaration, lookup, nonrepeatable, matching⟩ :=
     admitsField_has_unique_matching_declaration model field admitted
   exact ⟨declaration, lookup, nonrepeatable, matching,
@@ -80,11 +103,7 @@ theorem checkContext_admittedComparison_field_coherent (model : FlatModel)
       model.lookupUniqueId field.id = .ok declaration ∧
       declaration.repeatableScope.isEmpty = true ∧
       field.matchesDecl declaration = true ∧
-      (model.checkContext raw).read field.id =
-        if declaration.customType.isNone then
-          formalCheck declaration.policy (raw.read field.id)
-        else
-          malformedCheckedCell := by
+      (model.checkContext raw).read field.id = declaration.checkRaw (raw.read field.id) := by
   exact checkContext_admittedField_coherent model raw field
     (admitsComparison_fields_admitted model comparison admitted field member)
 

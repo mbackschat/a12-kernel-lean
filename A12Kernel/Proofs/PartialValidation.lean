@@ -117,6 +117,11 @@ theorem partialSelected_agreesOn
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval, FlatContext.resolveStringLengthOperand,
               FlatContext.observeValidationAt]
+        | enumeration op field projectionRef projection expected =>
+            have readEq := agreement field.id (by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant)
+            simp_all [FlatComparison.eval, FlatContext.observeValidationAt]
         | temporal op leftOperand rightOperand =>
             have bothRelevant :
                 (leftOperand.fields.map FlatField.id).all isRelevant = true ∧

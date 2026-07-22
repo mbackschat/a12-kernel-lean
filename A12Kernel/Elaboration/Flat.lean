@@ -1,6 +1,7 @@
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.CustomFieldType
+import A12Kernel.Semantics.CheckedEnumeration
 import A12Kernel.Elaboration.NumericScale
 
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
@@ -58,6 +59,7 @@ inductive SurfaceScalarKind where
   | boolean
   | confirm
   | string
+  | enumeration
   | temporal (kind : TemporalKind)
   deriving Repr, DecidableEq
 
@@ -84,6 +86,8 @@ inductive SurfaceCondition where
       (field : SurfaceFieldPath)
   | compareNow (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
       (field : SurfaceFieldPath)
+  | compareEnumeration (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
+      (projection : EnumerationProjectionRef) (literal : String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
@@ -99,6 +103,7 @@ structure FlatFieldDecl where
   name : String
   policy : FieldPolicy
   customType : Option CustomFieldTypeDeclaration := none
+  enumeration : Option EnumerationDeclaration := none
   repeatableScope : List RepeatableLevel := []
   deriving Repr, DecidableEq
 
@@ -111,13 +116,13 @@ def path (declaration : FlatFieldDecl) : List String :=
 def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   match declaration.policy.kind with
   | .number info => some { id := declaration.id, info }
-  | .boolean | .confirm | .string | .temporal _ _ => none
+  | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
 
 /-- Convert one expanded declaration to the shared resolved temporal-field representation. -/
 def toTemporalField? (declaration : FlatFieldDecl) : Option FlatTemporalField :=
   match declaration.policy.kind with
   | .temporal kind components => some { id := declaration.id, kind, components }
-  | .number _ | .boolean | .confirm | .string => none
+  | .number _ | .boolean | .confirm | .string | .enumeration => none
 
 def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   match declaration.policy.kind with
@@ -125,6 +130,7 @@ def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   | .boolean => .boolean { id := declaration.id }
   | .confirm => .confirm { id := declaration.id }
   | .string => .string { id := declaration.id }
+  | .enumeration => .enumeration { id := declaration.id }
   | .temporal kind components =>
       .temporal { id := declaration.id, kind, components }
 
@@ -152,6 +158,10 @@ inductive ResolveError where
   | duplicateFieldId (id : FieldId)
   | duplicateEntityPath (path : List String)
   | customTypeRequiresString (path : List String)
+  | enumerationMetadataRequiresEnumeration (path : List String)
+  | enumerationDeclarationRequired (path : List String)
+  | invalidEnumerationDeclaration (path : List String)
+      (error : EnumerationDeclarationError)
   | invalidRepeatableGroupPath (path : GroupPath)
   | duplicateRepeatableGroupPath (path : GroupPath)
   | duplicateRepeatableLevel (level : RepeatableLevel)
@@ -183,6 +193,7 @@ inductive ElabError where
   | temporalLiteralNeedsBaseYear (path : List String)
   | invalidTemporalLiteralComponents (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -228,6 +239,19 @@ private def customTypeKindMismatch? : List FlatFieldDecl → Option (List String
       | none, _ => customTypeKindMismatch? rest
       | some _, .string => customTypeKindMismatch? rest
       | some _, _ => some declaration.path
+
+private def enumerationDeclarationError? :
+    List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      match declaration.policy.kind, declaration.enumeration with
+      | .enumeration, none => some (.enumerationDeclarationRequired declaration.path)
+      | .enumeration, some source =>
+          match source.validate with
+          | .error error => some (.invalidEnumerationDeclaration declaration.path error)
+          | .ok () => enumerationDeclarationError? rest
+      | _, some _ => some (.enumerationMetadataRequiresEnumeration declaration.path)
+      | _, none => enumerationDeclarationError? rest
 
 private def invalidRepeatableGroupPath? : List RepeatableGroupDecl → Option GroupPath
   | [] => none
@@ -289,6 +313,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | none => pure ()
   match customTypeKindMismatch? model.fields with
   | some path => throw (.customTypeRequiresString path)
+  | none => pure ()
+  match enumerationDeclarationError? model.fields with
+  | some error => throw error
   | none => pure ()
   match duplicateId? model.fields with
   | some id => throw (.duplicateFieldId id)
@@ -423,6 +450,7 @@ def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .boolean => .boolean
   | .confirm => .confirm
   | .string => .string
+  | .enumeration => .enumeration
   | .temporal kind _ => .temporal kind
 
 private def SurfaceComparisonOp.toEquality? : SurfaceComparisonOp → Option EqualityOp
@@ -482,7 +510,25 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .error _ => false
 
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
-  !comparison.fields.isEmpty && comparison.fields.all model.admitsField
+  match comparison with
+  | .enumeration _ field projectionRef projection expected =>
+      match model.lookupUniqueId field.id with
+      | .error _ => false
+      | .ok declaration =>
+          declaration.repeatableScope.isEmpty &&
+            (FlatField.enumeration field).matchesDecl declaration &&
+            match declaration.policy.kind, declaration.enumeration with
+            | .enumeration, some source =>
+                match elaborateEnumeration source with
+                | .error _ => false
+                | .ok checked =>
+                    match checked.resolveProjection projectionRef with
+                    | .error _ => false
+                    | .ok resolved =>
+                        resolved == projection &&
+                          checked.literalAllowed projection expected
+            | _, _ => false
+  | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField
 
 def FlatCondition.wellFormedBool (condition : FlatCondition) (model : FlatModel) : Bool :=
   match condition with
@@ -515,6 +561,25 @@ def FlatCondition.checkAgainstValidatedModel (condition : FlatCondition)
     }
   else
     .error .incoherentCore
+
+private def elaborateEnumerationCore (declaration : FlatFieldDecl)
+    (op : SurfaceComparisonOp) (projectionRef : EnumerationProjectionRef)
+    (expected : String) : Except ElabError FlatCondition := do
+  let equality ← match op.toEquality? with
+    | some equality => pure equality
+    | none => throw (.unsupportedOperator op)
+  match declaration.policy.kind, declaration.enumeration with
+  | .enumeration, some source =>
+      match elaborateEnumeration source with
+      | .error _ => throw .incoherentCore
+      | .ok checked =>
+          match classifyEnumerationLiteral checked projectionRef equality expected with
+          | .rejected error => throw (.enumerationOperand declaration.path error)
+          | .accepted projection =>
+              pure (.compare (.enumeration equality { id := declaration.id }
+                projectionRef projection expected))
+  | kind, _ =>
+      throw (.literalKindMismatch declaration.path .enumeration kind.surfaceKind)
 
 private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
@@ -670,6 +735,10 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           | .right =>
               throw (.temporalOperandKindMismatch declaration.path ["<Now>"]
                 kind.surfaceKind (.temporal .dateTime))
+  | .compareEnumeration op reference projectionRef expected => do
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      elaborateEnumerationCore declaration op projectionRef expected
   | .compare op reference literal => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.policy.kind with
@@ -711,6 +780,11 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
           match literal with
           | .string expected =>
               pure (.compare (.string equality { id := declaration.id } expected))
+          | literal =>
+              throw (.literalKindMismatch declaration.path .string literal.kind)
+      | .enumeration =>
+          match literal with
+          | .string expected => elaborateEnumerationCore declaration op .stored expected
           | literal =>
               throw (.literalKindMismatch declaration.path .string literal.kind)
       | .temporal kind components =>
@@ -766,17 +840,25 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
+/-- Compile one raw cell through declaration-owned scalar or ordinary closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
+def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : CheckedCell :=
+  match declaration.customType, declaration.policy.kind, declaration.enumeration with
+  | some _, _, _ => malformedCheckedCell
+  | none, .enumeration, some source =>
+      match elaborateEnumeration source with
+      | .ok checked => checked.checkRaw raw
+      | .error _ => malformedCheckedCell
+  | none, .enumeration, none => malformedCheckedCell
+  | none, _, some _ => malformedCheckedCell
+  | none, _, none => formalCheck declaration.policy raw
+
 /-- Compile raw cells with the same unique declaration and policy used by elaboration.
     An invalid/unresolved identifier becomes malformed rather than acquiring a guessed
     default policy. -/
 def FlatModel.checkContext (model : FlatModel) (raw : RawFlatContext) : FlatContext where
   read id :=
     match model.lookupUniqueId id with
-    | .ok declaration =>
-        if declaration.customType.isNone then
-          formalCheck declaration.policy (raw.read id)
-        else
-          malformedCheckedCell
+    | .ok declaration => declaration.checkRaw (raw.read id)
     | .error _ => malformedCheckedCell
 
 def elaborateAndEvalFull (model : FlatModel) (world : World) (declaringGroup : GroupPath)

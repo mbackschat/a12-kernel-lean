@@ -66,16 +66,15 @@ theorem preparedCustomContext_lookup_exact
       customField.customType.checkValueRaw locale (raw.read id) := by
   simp [PreparedFlatCustomFields.checkContext, modelLookup, customLookup, matching]
 
-/-- An ordinary declaration with no overlay entry retains the existing formal checker exactly. -/
-theorem preparedCustomContext_ordinary_exact
+/-- A declaration with no overlay entry retains its declaration-owned checker exactly. -/
+theorem preparedCustomContext_noOverlay_exact
     (prepared : PreparedFlatCustomFields) (locale : String)
     (raw : RawFlatContext) (id : FieldId) (declaration : FlatFieldDecl)
     (modelLookup : prepared.model.lookupUniqueId id = .ok declaration)
-    (customLookup : prepared.lookup? id = none)
-    (ordinary : declaration.customType = none) :
+    (customLookup : prepared.lookup? id = none) :
     (prepared.checkContext locale raw).read id =
-      formalCheck declaration.policy (raw.read id) := by
-  simp [PreparedFlatCustomFields.checkContext, modelLookup, customLookup, ordinary]
+      declaration.checkRaw (raw.read id) := by
+  simp [PreparedFlatCustomFields.checkContext, modelLookup, customLookup]
 
 /-- The unprepared legacy context cannot silently treat a declared custom field as an ordinary String. -/
 theorem unpreparedCustomContext_failsClosed
@@ -86,8 +85,8 @@ theorem unpreparedCustomContext_failsClosed
     (model.checkContext raw).read id = malformedCheckedCell := by
   cases customType : declaration.customType with
   | none => simp [customType] at custom
-  | some declaration =>
-      simp [FlatModel.checkContext, modelLookup, customType]
+  | some customDeclaration =>
+      simp [FlatModel.checkContext, modelLookup, FlatFieldDecl.checkRaw, customType]
 
 @[simp]
 theorem preparedCustomContext_unknownId

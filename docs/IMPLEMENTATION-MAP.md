@@ -514,10 +514,12 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Semantics/CheckedEnumeration.lean`](../A12Kernel/Semantics/CheckedEnumeration.lean)
 - [`Semantics/EnumerationValueList.lean`](../A12Kernel/Semantics/EnumerationValueList.lean)
 - [`Semantics/EnumerationRepetitionNotUnique.lean`](../A12Kernel/Semantics/EnumerationRepetitionNotUnique.lean)
+- [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Elaboration/EnumerationComparability.lean`](../A12Kernel/Elaboration/EnumerationComparability.lean)
 - [`Elaboration/Enumeration.lean`](../A12Kernel/Elaboration/Enumeration.lean)
+- [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Semantics/ValueList.lean`](../A12Kernel/Semantics/ValueList.lean)
-- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean), [`CheckedEnumeration.lean`](../A12Kernel/Proofs/CheckedEnumeration.lean), [`EnumerationValueList.lean`](../A12Kernel/Proofs/EnumerationValueList.lean), and [`EnumerationRepetitionNotUnique.lean`](../A12Kernel/Proofs/EnumerationRepetitionNotUnique.lean), and their counterparts under [`Conformance/`](../A12Kernel/Conformance.lean), including the corresponding four modules
+- their counterparts under [`Proofs/`](../A12Kernel/Proofs.lean), including [`EnumerationElaboration.lean`](../A12Kernel/Proofs/EnumerationElaboration.lean), [`CheckedEnumeration.lean`](../A12Kernel/Proofs/CheckedEnumeration.lean), [`EnumerationValueList.lean`](../A12Kernel/Proofs/EnumerationValueList.lean), and [`EnumerationRepetitionNotUnique.lean`](../A12Kernel/Proofs/EnumerationRepetitionNotUnique.lean), and under [`Conformance/`](../A12Kernel/Conformance.lean), including [`FlatEnumeration.lean`](../A12Kernel/Conformance/FlatEnumeration.lean)
 
 #### Implemented
 
@@ -528,6 +530,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - A proof-bearing literal comparison resolves the exact stored/category projection, admits the literal from that selected domain for either equality operator, and consumes one declaration-checked heterogeneous raw cell through the existing runtime evaluator. Empty values remain not evaluated, out-of-domain stored tokens become the declaration's formal constraint failure and therefore UNKNOWN, wrong runtime kinds become malformed UNKNOWN, and preceding raw failures retain UNKNOWN.
 - A checked stored/category value-list operand maps the existing resolved Enumeration classification directly into the existing token-domain `ValueListCell`: present projected token, empty, or exact-cause unknown. It builds an already-expanded side while retaining caller-supplied tail/`Having` facts, so the three existing quantifiers consume ordinary and many-to-one category values without a second token or poison mechanism.
 - The same checked stored/category projection now maps directly into the existing RNU key component. Present projected tokens, optional empty, and exact-cause unknown retain the settled eligibility, tuple equality, cluster, and polarity behavior. Literal, value-list, and RNU consumers share one proof-bearing projection owner; extending the family removed the former value-list-only wrapper rather than creating a third checked type.
+- Ordinary closed Enumeration declarations are now part of the shared nonrepeatable flat model, presence, relevance, elaboration, and full-evaluation spine. Stored-token syntax and explicit category syntax both retain the exact checked projection in the core; declaration-owned raw checking rejects invalid stored tokens and wrong runtime kinds before the existing evaluator. The prepared custom-field context delegates non-custom reads to the same declaration-owned checker, so it does not bypass Enumeration admission.
 - Trusted laws cover runtime projection, empty/unavailable/VALUE-only behavior, identity-label classification, pair/profile conflict symmetry, String admission, both rejection classes, and overall admission symmetry.
 - The separate type-indexed Number/canonical-token value-list capsule preserves explicit present/empty/unknown cells, declared-tail and `Having` metadata, and distinct `AtLeastOne`, `No`, and `NotAll` clauses
 
@@ -539,16 +542,18 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Fourteen checked-observation cases separate both equality operators, stored/category literal admission, exact category names, checked construction, stored equality/mismatch, many-to-one category equality, physical/value emptiness, out-of-domain stored values, wrong kinds, and preceding raw rejection. Five laws preserve empty, accepted/rejected stored classification, exact present-value delegation, and pre-comparison UNKNOWN for an invalid stored token.
 - Twelve Enumeration value-list cases separate stored/category projection, both empty routes, out-of-domain and preceding formal causes, matching category/`No`/`NotAll` outcomes, and the three quantifiers' distinct response to an invalid member. Five laws prove exact empty, unknown, present, invalid-domain, and side-cell transport through the shared resolved classifier.
 - Ten checked Enumeration RNU cases separate stored/category components, empty and exact causes, many-to-one VALUE clusters and deterministic peers, optional-empty OMISSION, invalid-row exclusion/UNKNOWN, and distinct stored-token non-duplicates. Five laws preserve empty, unknown, present, same-projected-token, and invalid-domain transport through the shared classifier.
+- Fourteen flat-integration cases separate stored and category lowering, stored equality and mismatch, category many-to-one firing, invalid stored and wrong-kind UNKNOWN, empty presence, relevance masking, bad literal/category/operator rejection, and missing or invalid model metadata. Declaration-owned raw admission and irrelevant-leaf suppression have direct laws, while the general elaboration laws retain exact model/field ownership.
+- This compile-closed field-kind integration adds 277 nonblank Lean lines, slightly above the preferred capsule target: the new closed constructors require exhaustive updates across the existing flat, requiredness, partial-relevance, custom-context, String-admission, reference-adapter, proof, and conformance owners. Splitting those updates would leave a non-exhaustive or bypassable raw-checking boundary; no new AST, evaluator, module family, protocol surface, or infrastructure was introduced.
 - The focused runtime matrix currently has one kernel route plus peer triangulation
 - a broader catalog smoke case exercises both kernel routes.
 - This repository retains no portable §8 observation
 
 #### Excluded / next
 
-- **Implemented internally through checked ordinary declaration, raw observation, literal admission, resolved runtime, and one independent static gate; external evidence pending:** runtime Enumeration now closes direct stored/category-to-literal equality and inequality before general flat integration
+- **Implemented internally through checked flat integration; external evidence pending:** ordinary stored/category-to-literal equality and inequality now run through the general nonrepeatable model, relevance, and full-evaluation boundary.
 - static comparability begins after valid ordinary declarations and direct equality/inequality field shape
 - value lists begin after expansion, comparability checking, and `Having` filtering.
-- Table/open/dynamic/partial declarations, document/field integration, category-to-field admission, checked flat-model integration, category use in indices/paths, scalar value-list syntax, actual path/star expansion and filtering, checked RNU scope/topology/`@From`/pointer messages, row gates, protocol exposure, and project-local portable evidence remain open
+- Table/open/dynamic/partial declarations, direct field-to-field and category-to-field admission, repeatable/category path integration, scalar value-list syntax, actual path/star expansion and filtering, checked RNU scope/topology/`@From`/pointer messages, row gates, protocol exposure, and project-local portable evidence remain open
 
 ### §9 — repetition and iteration
 

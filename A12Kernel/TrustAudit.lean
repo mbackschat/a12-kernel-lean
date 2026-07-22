@@ -415,6 +415,8 @@ run_cmd do
 #print axioms A12Kernel.checkContext_admittedComparison_field_coherent
 #print axioms A12Kernel.checkContext_lookup_error_is_malformed
 #print axioms A12Kernel.checkContext_lookup_error_observes_unknown
+#print axioms A12Kernel.flatEnumeration_checkRaw_exact
+#print axioms A12Kernel.flatEnumeration_irrelevant_unknown
 
 #print axioms A12Kernel.fixedNumericFiring_is_value
 #print axioms A12Kernel.symmetricValidationNumericOperand_empty
@@ -859,7 +861,7 @@ run_cmd do
 #print axioms A12Kernel.customField_checkValueRaw_empty
 #print axioms A12Kernel.customField_checkValueRaw_wrongKind
 #print axioms A12Kernel.preparedCustomContext_lookup_exact
-#print axioms A12Kernel.preparedCustomContext_ordinary_exact
+#print axioms A12Kernel.preparedCustomContext_noOverlay_exact
 #print axioms A12Kernel.unpreparedCustomContext_failsClosed
 #print axioms A12Kernel.preparedCustomContext_unknownId
 #print axioms A12Kernel.elaborateAndEvalCustomFull_preparationError

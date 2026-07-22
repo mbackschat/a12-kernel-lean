@@ -41,11 +41,7 @@ def checkContext (prepared : PreparedFlatCustomFields) (locale : String)
     | .error _ => malformedCheckedCell
     | .ok declaration =>
         match prepared.lookup? id with
-        | none =>
-            if declaration.customType.isNone then
-              formalCheck declaration.policy (raw.read id)
-            else
-              malformedCheckedCell
+        | none => declaration.checkRaw (raw.read id)
         | some customField =>
             if customField.declaration == declaration then
               customField.customType.checkValueRaw locale (raw.read id)
