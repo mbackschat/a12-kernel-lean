@@ -12,6 +12,7 @@ namespace A12Kernel
 inductive StringComputationElabError where
   | resolve (error : ResolveError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | rawStringValue (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -23,9 +24,7 @@ def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
       match model.lookupUniqueId fieldId with
       | .ok declaration =>
           declaration.repeatableScope.isEmpty &&
-            match declaration.policy.kind with
-            | .string => true
-            | .number _ | .boolean | .confirm | .enumeration | .temporal _ _ => false
+            declaration.toStringValueField? == some { id := fieldId }
       | .error _ => false
   | StringExpr.literal _ => true
   | StringExpr.concat left right =>
@@ -49,10 +48,14 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
   | StringExpr.field reference => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
-      match declaration.policy.kind with
-      | .string => pure (.field declaration.id)
-      | fieldKind =>
-          throw (.fieldKindMismatch declaration.path fieldKind.surfaceKind)
+      match declaration.toStringValueField? with
+      | some field => pure (.field field.id)
+      | none =>
+          if declaration.isRawString then
+            throw (.rawStringValue declaration.path)
+          else
+            throw (.fieldKindMismatch declaration.path
+              declaration.policy.kind.surfaceKind)
   | StringExpr.literal value => pure (.literal value)
   | StringExpr.concat left right => do
       pure (.concat

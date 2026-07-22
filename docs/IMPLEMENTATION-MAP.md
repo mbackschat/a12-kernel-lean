@@ -389,6 +389,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Elaboration/LegalCharset.lean`](../A12Kernel/Elaboration/LegalCharset.lean)
 - [`Semantics/FlatValidation.lean`](../A12Kernel/Semantics/FlatValidation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
+- [`Elaboration/RawString.lean`](../A12Kernel/Elaboration/RawString.lean)
 - [`Semantics/StringComputation.lean`](../A12Kernel/Semantics/StringComputation.lean)
 - [`Proofs/StringIngestion.lean`](../A12Kernel/Proofs/StringIngestion.lean)
 - [`Proofs/StringPattern.lean`](../A12Kernel/Proofs/StringPattern.lean)
@@ -404,6 +405,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/CustomFieldContext.lean`](../A12Kernel/Proofs/CustomFieldContext.lean)
 - [`Proofs/StringLength.lean`](../A12Kernel/Proofs/StringLength.lean)
 - [`Proofs/StringComputation.lean`](../A12Kernel/Proofs/StringComputation.lean)
+- [`Proofs/RawString.lean`](../A12Kernel/Proofs/RawString.lean)
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
 - [`Conformance/StringPattern.lean`](../A12Kernel/Conformance/StringPattern.lean)
 - [`Conformance/PatternAdmission.lean`](../A12Kernel/Conformance/PatternAdmission.lean)
@@ -418,12 +420,15 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/CustomFieldContext.lean`](../A12Kernel/Conformance/CustomFieldContext.lean)
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
+- [`Conformance/RawString.lean`](../A12Kernel/Conformance/RawString.lean)
 
 #### Implemented
 
 - Parsed String ingestion performs one non-overlapping CRLF-to-LF pass and caches the evaluated text
 - LF and lone CR are preserved.
 - Direct comparison, `Length`, and computation share that cached value, and the exact overlap counterexample prevents a second pass.
+- `FlatFieldDecl` retains evaluated-versus-raw String mode. One declaration-owned `toStringValueField?` capability now gates checked direct comparisons, flat and starred value lists, String expressions, token aggregate sources, and String RNU keys; checked-core admission independently re-derives that gate, while presence continues through `toPresenceField`.
+- The whole-rule boundary recognizes only strict `Length(raw) > integer` and mirrored `integer < Length(raw)`, retains the exact field and bound as max-length metadata, and exposes no runtime condition. Ordinary condition lowering rejects the same shape so it cannot accidentally execute; non-strict, nested, nonintegral, and computation uses fail closed.
 - Direct equality/inequality and the four scale-exempt `Length` ordering operators have separate consuming clauses.
 - Resolved `PatternMatched`/`PatternViolated` consume an injected already-admitted whole-value matcher through the same normalized checked String read. Empty is not evaluated, formal unavailability remains UNKNOWN, the two operators are exact complements on present input, and every firing is VALUE-typed.
 - Checked pattern admission separates an injected Java-compilation decision from an independently written character scan over the finite documented kernel exclusions and the separately observed uppercase-`\P` exclusion. A successful source carries both proof facts and delegates only to the existing resolved whole-value matcher; admission makes no JavaScript-portability claim.
@@ -453,6 +458,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Four operator-sensitive validation cases separate empty-content, empty-row, `"ABC"`, and six-character direct-equality/Length outcomes.
 - The combined compact root-String record retains 13 copy/concatenation/root-storage cases and nine positive minimum/maximum target cases with exact boundaries, violations, absent/stale/equal priors, and padded blanks.
 - Both kernel strategies agreed throughout before one-time compaction.
+- The raw-String boundary is source-grounded in the parser's value-read gate and whole-condition analyzer plus the shared validation generator's rule-removal step. Maintained a12-dmkits `NvvRawTypeLawsTest`, `NvvRawTypeDiffTest`, and `NvvEliminatedLengthRuleTest` lock exact acceptance, both kernel strategies, full/partial non-firing, and unchanged presence; Lean retains no separate portable observation.
 - Maintained a12-dmkits IF198 tests separately establish the present-empty placement and downstream field/group/required outcomes across both kernel strategies plus JVM/Node.
 - Strict permitted-side acceptance, no-value/poison bypass, and CRLF/LF/lone-CR ingestion are internal Lean laws not separately exercised by retained local cases.
 - Eight resolved pattern cases separate normalized match/nonmatch, both operator polarities, empty suppression, and formal unavailability; generic laws prove complement and exclude OMISSION firing.
@@ -475,7 +481,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded boundary and gap links
 
-- **Implemented narrowly; ingestion and resolved-pattern consumption external evidence pending.** Coverage includes direct equality/inequality, four `Length` orderings, presence, absolute requiredness, present-empty placement, CRLF normalization, checked nonrepeatable literal and field-valued `AtLeastOne`/`No`/`NotAll`, scalar literal and field-valued Included/NotIncluded, resolved already-admitted pattern consumption, checked scalar String expressions, and one positive target length bound.
+- **Implemented narrowly; ingestion and resolved-pattern consumption external evidence pending.** Coverage includes direct equality/inequality, four `Length` orderings, presence, absolute requiredness, present-empty placement, CRLF normalization, checked nonrepeatable literal and field-valued `AtLeastOne`/`No`/`NotAll`, scalar literal and field-valued Included/NotIncluded, resolved already-admitted pattern consumption, checked scalar String expressions, the raw-String value-read gate and eliminated maximum-length declaration, and one positive target length bound.
+- Raw mode is currently checked only on the represented declaration and consumer surfaces. The flat model cannot yet validate the kernel's line-break co-requirement or its permitted/forbidden String-constraint combinations because it does not retain those policies; checked message-template value interpolation and not-yet-authored String operators remain open under [`SG7`](SEMANTICS-GAPS.md#sg7--string-pattern-and-custom-field-completion) and [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 - `Length ==`/`!=` remain outside the reduced checked surface because their numeric scale gate needs the authored literal scale that `SurfaceCondition.lengthCompare` does not retain.
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Java `Pattern` compilation and execution remain injected capabilities. The bounded kernel source gate is checked, but authored condition/declared-field lowering, association of a host matcher with the certified source, public exposure, and every undiscovered total-admission restriction remain outside; the certificate deliberately does not claim JavaScript portability.

@@ -78,6 +78,22 @@ theorem checkedEnumerationOperand_admitsField (model : FlatModel)
       | true =>
           simpa [FlatModel.admitsField, FlatField.id, lookupEq] using gateEq
 
+/-- Value-reading admission strengthens, rather than replaces, ordinary String presence admission. -/
+theorem admitsStringValueField_admitsField (model : FlatModel)
+    (field : FlatStringField)
+    (admitted : model.admitsStringValueField field = true) :
+    model.admitsField (.string field) = true := by
+  unfold FlatModel.admitsStringValueField at admitted
+  unfold FlatModel.admitsField
+  generalize lookupEq : model.lookupUniqueId field.id = lookup at admitted ⊢
+  cases lookup with
+  | error error => simp at admitted
+  | ok declaration =>
+      cases kindEq : declaration.policy.kind <;>
+        cases modeEq : declaration.stringValueMode
+      all_goals try simp_all [FlatFieldDecl.toStringValueField?,
+        FlatFieldDecl.toPresenceField, FlatField.matchesDecl, FlatField.id]
+
 /-- Every field read by an admitted comparison independently passes the shared typed-field admission check. -/
 theorem admitsComparison_fields_admitted (model : FlatModel)
     (comparison : FlatComparison) (admitted : model.admitsComparison comparison = true) :
@@ -94,12 +110,12 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
         List.all_eq_true] using admitted
   | string op target expected =>
       rcases List.mem_singleton.mp member with rfl
-      simpa [FlatModel.admitsComparison, FlatComparison.fields,
-        List.all_eq_true] using admitted
+      exact admitsStringValueField_admitsField model target (by
+        simpa [FlatModel.admitsComparison] using admitted)
   | stringLength op target expected =>
       rcases List.mem_singleton.mp member with rfl
-      simpa [FlatModel.admitsComparison, FlatComparison.fields,
-        List.all_eq_true] using admitted
+      exact admitsStringValueField_admitsField model target (by
+        simpa [FlatModel.admitsComparison] using admitted)
   | confirm op target =>
       rcases List.mem_singleton.mp member with rfl
       simpa [FlatModel.admitsComparison, FlatComparison.fields,
