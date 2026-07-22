@@ -26,6 +26,19 @@ private def fullDateComponents : TemporalComponents :=
 private def date : FieldPolicy :=
   { kind := .temporal .date fullDateComponents }
 
+private def dateParts : DateParts :=
+  { year := 2024, month := 6, day := 25 }
+
+private def clock : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
+
+private def temporalValue (kind : TemporalKind) (instant : Instant) : Value :=
+  match kind with
+  | .date => .temporal (.date instant dateParts .storedGregorian)
+  | .time => .temporal (.time instant clock)
+  | .dateTime =>
+      .temporal (.dateTime instant dateParts clock .storedGregorian)
+
 private def requiredEmpty : CheckedCell :=
   (formalCheck optionalNumber .empty).withFinding .required
 
@@ -75,11 +88,11 @@ example : formalCheck confirm (.parsed (.conf false)) =
 /- An already-decoded temporal payload is admitted only under the matching declaration kind. -/
 example :
     let instant : Instant := { epochMillis := 100999 }
-    formalCheck date (.parsed (.temporal .date instant)) =
+    formalCheck date (.parsed (temporalValue .date instant)) =
         { rawPresent := true
-          parsed := some (.temporal .date instant)
+          parsed := some (temporalValue .date instant)
           findings := [] } ∧
-      formalCheck date (.parsed (.temporal .dateTime instant)) =
+      formalCheck date (.parsed (temporalValue .dateTime instant)) =
         { rawPresent := true
           parsed := none
           findings := [.malformed] } := by
@@ -88,11 +101,11 @@ example :
 /- One heterogeneous runtime domain retains temporal kind independently of exact instant identity. -/
 example :
     let instant : Instant := { epochMillis := 100999 }
-    (Value.temporal .date instant != Value.temporal .time instant) ∧
-      (Value.temporal .date instant != Value.temporal .dateTime instant) ∧
-      (Value.temporal .time instant != Value.temporal .dateTime instant) ∧
-      (Value.temporal .date instant =
-        Value.temporal .date { epochMillis := 100999 }) := by
+    (temporalValue .date instant != temporalValue .time instant) ∧
+      (temporalValue .date instant != temporalValue .dateTime instant) ∧
+      (temporalValue .time instant != temporalValue .dateTime instant) ∧
+      (temporalValue .date instant =
+        temporalValue .date { epochMillis := 100999 }) := by
   decide
 
 /- The shared checked boundary remains generic for proof-bearing parser values before their admitted runtime projection into `Value`. -/

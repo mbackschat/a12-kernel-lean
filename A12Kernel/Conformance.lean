@@ -28,6 +28,7 @@ import A12Kernel.Conformance.Correlation
 import A12Kernel.Conformance.CrossLevelCorrelation
 import A12Kernel.Conformance.Iteration
 import A12Kernel.Conformance.Observation
+import A12Kernel.Conformance.TemporalValue
 import A12Kernel.Conformance.PartialValidation
 import A12Kernel.Conformance.ComputationCondition
 import A12Kernel.Conformance.ComputationFillQuantifier

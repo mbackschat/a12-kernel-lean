@@ -5,6 +5,8 @@ import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
 import A12Kernel.Semantics.DateTimeComparison
 import A12Kernel.Semantics.BaseYearDateSource
+import A12Kernel.Semantics.DateNumeric
+import A12Kernel.Semantics.TimeNumeric
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
@@ -221,8 +223,41 @@ def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
     (field : FlatTemporalField) : SimpleComparisonOperand Instant :=
   match context.observeValidationAt field.id with
   | .empty => .notEvaluated
-  | .value (.temporal kind instant) =>
-      if kind == field.kind then .value instant true else .unknown .malformed
+  | .value (.temporal value) =>
+      if value.kind == field.kind then .value value.instant true
+      else .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+/-- Resolve one checked Date or DateTime field for direct numeric date-component extraction. The kind check is defensive; checked authoring separately excludes Time. -/
+def FlatContext.resolveDateNumericOperand (context : FlatContext)
+    (field : FlatTemporalField) (part : DateNumericPart) : NumericOperand :=
+  match context.observeValidationAt field.id with
+  | .empty => .value 0 .both
+  | .value (.temporal value) =>
+      if value.kind == field.kind then
+        match value.dateParts? with
+        | some parts => .value (part.extract parts) .fixed
+        | none => .unknown .malformed
+      else
+        .unknown .malformed
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
+/-- Resolve one checked Time or DateTime field for direct numeric clock-component extraction. The kind check is defensive; checked authoring separately excludes Date. -/
+def FlatContext.resolveTimeNumericOperand (context : FlatContext)
+    (field : FlatTemporalField) (part : TimeNumericPart) : NumericOperand :=
+  match context.observeValidationAt field.id with
+  | .empty => .value 0 .both
+  | .value (.temporal value) =>
+      if value.kind == field.kind then
+        match value.time? with
+        | some clock => .value (part.extract clock) .fixed
+        | none => .unknown .malformed
+      else
+        .unknown .malformed
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause

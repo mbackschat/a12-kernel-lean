@@ -10,29 +10,6 @@ The definitions are original clean-room semantics for the decoded time, value-ad
 
 namespace A12Kernel
 
-/-- A decoded whole-second wall-clock time. -/
-structure TimeOfDay where
-  hour : Nat
-  minute : Nat
-  second : Nat
-  valid : hour < 24 ∧ minute < 60 ∧ second < 60
-  deriving Repr, DecidableEq
-
-namespace TimeOfDay
-
-/-- Construct a whole-second time exactly when every component is in range. -/
-def ofHms? (hour minute second : Nat) : Option TimeOfDay :=
-  if valid : hour < 24 ∧ minute < 60 ∧ second < 60 then
-    some { hour, minute, second, valid }
-  else
-    none
-
-/-- Elapsed whole seconds since local midnight. -/
-def secondsSinceMidnight (time : TimeOfDay) : Nat :=
-  time.hour * 3600 + time.minute * 60 + time.second
-
-end TimeOfDay
-
 /-- An admitted full local DateTime wall label, not yet an instant. -/
 structure LocalDateTime where
   date : FullDate
