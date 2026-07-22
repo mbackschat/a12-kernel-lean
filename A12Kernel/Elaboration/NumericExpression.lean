@@ -222,10 +222,12 @@ def isDirectValueFunction : AuthoredNumericExpr Atom → Bool
 def isAdmittedNumericOperation (expression : AuthoredNumericExpr Atom) : Bool :=
   expression.isPlainArithmetic || expression.isDirectValueFunction
 
-/-- General wrapper traversal remains unclosed; only the exact direct root functions bypass the plain-arithmetic authoring scan. -/
+/-- A root rounding or absolute-value operation delegates its static arithmetic checks to the operation child that the wrapper checker has already typed. Other value functions retain their separately audited direct admission. This does not make a wrapper transparent to an enclosing arithmetic region. -/
 def numericOperationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  if expression.isDirectValueFunction then .accepted else expression.authoringCheck
+  match expression with
+  | .round _ _ body | .abs body => body.authoringCheck
+  | _ => if expression.isDirectValueFunction then .accepted else expression.authoringCheck
 
 end AuthoredNumericExpr
 

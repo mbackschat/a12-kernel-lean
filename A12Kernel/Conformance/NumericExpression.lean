@@ -256,13 +256,23 @@ example : (.binary .add
       Expr).authoringCheck = .tooManyDivisionsAndDirectLeftNestedPower := by
   native_decide
 
-/- Operation-valued wrappers are deliberately outside this first compositional checker. -/
+/- Operation-valued wrappers stay outside the plain compositional checker. The operation-level checker delegates root unary wrappers to that complete body and preserves its exact local failure. -/
 example : (.round .halfUp omittedRoundingPlaces
     (quotient (source 0) (source 1)) : Expr).authoringCheck = .outsideFragment := by
   native_decide
 
+example : (.round .halfUp omittedRoundingPlaces
+    (quotient (source 0) (source 1)) : Expr).numericOperationAuthoringCheck =
+      .accepted := by
+  native_decide
+
 example : (.abs (quotient (source 0) (source 1)) : Expr).authoringCheck =
     .outsideFragment := by
+  native_decide
+
+example : (.abs
+    (quotient (quotient (source 0) (source 1)) (source 2)) : Expr).numericOperationAuthoringCheck =
+      .tooManyDivisions := by
   native_decide
 
 example : (.extremum .minimum (source 0) (source 1) : Expr).authoringCheck =

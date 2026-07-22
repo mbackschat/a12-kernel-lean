@@ -313,25 +313,24 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
 
 end ResolvedNumericAtom
 
-/-- Whether one resolved numeric source is source-confirmed for a direct operation-form rounding or absolute-value wrapper. Both kernel checkers impose the same immediate-child admission; their result-scale and value transforms remain separate. -/
-def ResolvedNumericAtom.admitsDirectUnaryValueFunction :
-    ResolvedNumericAtom Field → Bool
-  | .field _ | .baseYearDatePart _ _ _ | .temporalFieldPart _ _
-  | .stringRange _ _ _ | .fieldValueAsNumber _ | .dateDifference _ _ _
-  | .aggregate _ _ => true
-  | .baseYear _ => false
-
-/-- The source-specific direct unary wrapper matrix shared by checked validation and computation. This deliberately does not infer general wrapper composition. -/
-def AuthoredNumericExpr.isDirectResolvedUnaryValueFunction :
+/-- The wrapper checker rejects only an immediate literal-like child. Numeric `BaseYear` is represented as an atom so it can participate in plain arithmetic, but it retains that source-level constant classification here; grouping does not hide either kind of immediate constant. -/
+def AuthoredNumericExpr.isImmediateResolvedNumericConstant :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
-  | .round _ _ (.atom source) | .abs (.atom source) =>
-      source.admitsDirectUnaryValueFunction
+  | .literal _ | .atom (.baseYear _) => true
+  | .group body => body.isImmediateResolvedNumericConstant
   | _ => false
 
-/-- Source operations participate in the audited arithmetic grammar but do not implicitly widen the separately audited direct-source value-function matrix. -/
+/-- Root operation-form rounding and absolute value accept one already-checked plain-arithmetic child unless that complete child is an immediate literal-like constant. The wrapper delegates its body-local division and power checks; this predicate deliberately says nothing about a wrapper nested inside an enclosing arithmetic region. -/
+def AuthoredNumericExpr.isRootResolvedUnaryValueFunction :
+    AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
+  | .round _ _ body | .abs body =>
+      body.isPlainArithmetic && !body.isImmediateResolvedNumericConstant
+  | _ => false
+
+/-- Source operations participate in the audited arithmetic grammar, and one root unary wrapper may consume that complete plain-arithmetic tree. Enclosing arithmetic around a wrapper remains fail-closed until its legacy traversal is characterized separately. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
     (expression : AuthoredNumericExpr (ResolvedNumericAtom Field)) : Bool :=
-  if expression.isDirectResolvedUnaryValueFunction then
+  if expression.isRootResolvedUnaryValueFunction then
     true
   else if expression.anyAtom ResolvedNumericAtom.requiresPlainArithmetic then
     expression.isPlainArithmetic

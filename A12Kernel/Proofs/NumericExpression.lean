@@ -178,6 +178,34 @@ theorem numericOperation_directValueFunction_authoringAccepted
     (expression : AuthoredNumericExpr Atom)
     (direct : expression.isDirectValueFunction = true) :
     expression.numericOperationAuthoringCheck = .accepted := by
-  simp [AuthoredNumericExpr.numericOperationAuthoringCheck, direct]
+  cases expression with
+  | atom | literal | group | binary | power =>
+      simp [AuthoredNumericExpr.isDirectValueFunction] at direct
+  | abs body =>
+      cases body with
+      | atom => rfl
+      | literal | group | binary | power | abs | extremum | round =>
+          simp [AuthoredNumericExpr.isDirectValueFunction] at direct
+  | round mode places body =>
+      cases body with
+      | atom => rfl
+      | literal | group | binary | power | abs | extremum | round =>
+          simp [AuthoredNumericExpr.isDirectValueFunction] at direct
+  | extremum op left right =>
+      simp [AuthoredNumericExpr.numericOperationAuthoringCheck, direct]
+
+/-- A root unary wrapper delegates the division/power authoring result of its complete plain-arithmetic body. -/
+theorem numericOperation_round_body_authoringCheck
+    (mode : DecimalRoundingMode) (places : RoundingPlaces)
+    (body : AuthoredNumericExpr Atom) :
+    (AuthoredNumericExpr.round mode places body).numericOperationAuthoringCheck =
+      body.authoringCheck := by
+  rfl
+
+theorem numericOperation_abs_body_authoringCheck
+    (body : AuthoredNumericExpr Atom) :
+    (AuthoredNumericExpr.abs body).numericOperationAuthoringCheck =
+      body.authoringCheck := by
+  rfl
 
 end A12Kernel
