@@ -409,6 +409,14 @@ def flatTokenValueListSide (operands : List FlatTextFieldOperand)
     hasUninstantiatedTail := false
     hasHaving := false }
 
+/-- Classify only relevant flat textual operands, retaining whether any operand was masked so the shared quantifier core can apply its operator-specific UNKNOWN rule. Filtering precedes every field read. -/
+def selectedFlatTokenValueListSide (operands : List FlatTextFieldOperand)
+    (context : FlatContext) (isRelevant : FlatRelevance) :
+    ResolvedValueListQuantifierSide .token :=
+  { side := flatTokenValueListSide
+      (operands.filter fun operand => isRelevant operand.field.id) context
+    hasNonRelevant := operands.any fun operand => !isRelevant operand.field.id }
+
 def literalTokenValueListSide (values : List String) :
     ResolvedValueListSide .token :=
   { cells := values.map .present
@@ -420,6 +428,13 @@ def FlatTokenValueSide.resolve (side : FlatTokenValueSide)
   match side with
   | .literals values => literalTokenValueListSide values
   | .fields operands => flatTokenValueListSide operands context
+
+def FlatTokenValueSide.resolveSelected (side : FlatTokenValueSide)
+    (context : FlatContext) (isRelevant : FlatRelevance) :
+    ResolvedValueListQuantifierSide .token :=
+  match side with
+  | .literals values => .ofResolved (literalTokenValueListSide values)
+  | .fields operands => selectedFlatTokenValueListSide operands context isRelevant
 
 def FlatTokenValueSide.allOperands (values : FlatTokenValueSide)
     (fields : List FlatTextFieldOperand) : List FlatTextFieldOperand :=
@@ -441,6 +456,14 @@ def flatNumberValueListSide (operands : List FlatNumberField)
     hasUninstantiatedTail := false
     hasHaving := false }
 
+/-- Number operands use the same relevance-before-read construction as textual operands; the distinction is retained outside `ValueListCell` so formal causes and partial nonrelevance cannot be conflated. -/
+def selectedFlatNumberValueListSide (operands : List FlatNumberField)
+    (context : FlatContext) (isRelevant : FlatRelevance) :
+    ResolvedValueListQuantifierSide .number :=
+  { side := flatNumberValueListSide
+      (operands.filter fun operand => isRelevant operand.id) context
+    hasNonRelevant := operands.any fun operand => !isRelevant operand.id }
+
 def literalNumberValueListSide (values : List Rat) :
     ResolvedValueListSide .number :=
   { cells := values.map .present
@@ -452,6 +475,13 @@ def FlatNumberValueSide.resolve (side : FlatNumberValueSide)
   match side with
   | .literals values => literalNumberValueListSide values
   | .fields operands => flatNumberValueListSide operands context
+
+def FlatNumberValueSide.resolveSelected (side : FlatNumberValueSide)
+    (context : FlatContext) (isRelevant : FlatRelevance) :
+    ResolvedValueListQuantifierSide .number :=
+  match side with
+  | .literals values => .ofResolved (literalNumberValueListSide values)
+  | .fields operands => selectedFlatNumberValueListSide operands context isRelevant
 
 def FlatNumberValueSide.allOperands (values : FlatNumberValueSide)
     (fields : List FlatNumberField) : List FlatNumberField :=
@@ -525,23 +555,19 @@ def FlatField.evalFilled (field : FlatField) (context : FlatContext) : Verdict :
 def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdict :=
   (field.observeValidation context).evalValidationNotFilled
 
-/-- Evaluate one atomic flat condition. Out-of-set reads become validation-unknown before `context.read`; connective evaluation remains in `ConditionTree.evalVerdict`. -/
+/-- Evaluate one atomic flat condition. Out-of-set scalar reads become validation-unknown before `context.read`; value-list operands retain nonrelevance separately for their operator-specific per-cell rules. Connective evaluation remains in `ConditionTree.evalVerdict`. -/
 @[simp] def FlatConditionLeaf.evalSelected (context : FlatContext)
     (isRelevant : FlatRelevance := fun _ => true) : FlatConditionLeaf → Verdict
   | .compare comparison =>
       if comparison.allRelevant isRelevant then comparison.eval context else .unknown
   | .tokenValueList quantifier operands values =>
-      if values.allOperands operands |>.all fun operand => isRelevant operand.field.id then
-        quantifier.eval (flatTokenValueListSide operands context)
-          (values.resolve context)
-      else
-        .unknown
+      quantifier.evalClassified
+        (selectedFlatTokenValueListSide operands context isRelevant)
+        (values.resolveSelected context isRelevant)
   | .numberValueList quantifier operands values =>
-      if values.allOperands operands |>.all fun operand => isRelevant operand.id then
-        quantifier.eval (flatNumberValueListSide operands context)
-          (values.resolve context)
-      else
-        .unknown
+      quantifier.evalClassified
+        (selectedFlatNumberValueListSide operands context isRelevant)
+        (values.resolveSelected context isRelevant)
   | .fieldFilled field =>
       if isRelevant field.id then field.evalFilled context else .unknown
   | .fieldNotFilled field =>

@@ -1,4 +1,6 @@
-import A12Kernel.Proofs.Information
+import A12Kernel.Proofs.EnumerationValueList
+import A12Kernel.Proofs.FlatNumberValueList
+import A12Kernel.Proofs.ValueList
 import A12Kernel.Semantics.PartialValidation
 
 /-! # A12Kernel.Proofs.PartialValidation — flat relevance laws
@@ -25,7 +27,32 @@ private theorem Verdict.truth_disj (left right : Verdict) :
   case notFired.fired polarity | fired.notFired polarity |
       fired.unknown polarity | unknown.fired polarity => cases polarity <;> rfl
   case fired.fired leftPolarity rightPolarity =>
-    cases leftPolarity <;> cases rightPolarity <;> rfl
+      cases leftPolarity <;> cases rightPolarity <;> rfl
+
+private theorem Verdict.truth_eq_tru_iff (verdict : Verdict) :
+    truth verdict = .tru ↔ ∃ polarity, verdict = .fired polarity := by
+  cases verdict <;> simp [truth]
+
+private theorem K.and_eq_tru_iff (left right : K) :
+    K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
+  cases left <;> cases right <;> decide
+
+private theorem K.or_eq_tru_iff (left right : K) :
+    K.or left right = .tru ↔ left = .tru ∨ right = .tru := by
+  cases left <;> cases right <;> decide
+
+private theorem filter_eq_self_of_any_not_false (items : List α)
+    (predicate : α → Bool)
+    (complete : (items.any fun item => !predicate item) = false) :
+    items.filter predicate = items := by
+  apply List.filter_eq_self.mpr
+  intro item member
+  have itemComplete := List.any_eq_false.mp complete item member
+  cases equation : predicate item with
+  | false =>
+      exfalso
+      exact itemComplete (by simp [equation])
+  | true => rfl
 
 private theorem selectedAnd_eq_conj (left right : FlatCondition)
     (context : FlatContext) (isRelevant : FlatRelevance) :
@@ -126,6 +153,32 @@ private theorem tokenValueSide_agreesOn
       exact tokenValueListSide_agreesOn operands left right isRelevant
         agreement relevant
 
+private theorem selectedTokenValueListSide_agreesOn
+    (operands : List FlatTextFieldOperand) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field) :
+    selectedFlatTokenValueListSide operands left isRelevant =
+      selectedFlatTokenValueListSide operands right isRelevant := by
+  unfold selectedFlatTokenValueListSide
+  congr 1
+  apply tokenValueListSide_agreesOn
+  · exact agreement
+  · apply List.all_eq_true.mpr
+    intro operand member
+    exact (List.mem_filter.mp member).2
+
+private theorem selectedTokenValueSide_agreesOn
+    (values : FlatTokenValueSide) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field) :
+    values.resolveSelected left isRelevant =
+      values.resolveSelected right isRelevant := by
+  cases values with
+  | literals literals => rfl
+  | fields operands =>
+      exact selectedTokenValueListSide_agreesOn operands left right isRelevant
+        agreement
+
 private theorem numberValueListSide_agreesOn
     (operands : List FlatNumberField) (left right : FlatContext)
     (isRelevant : FlatRelevance)
@@ -153,6 +206,144 @@ private theorem numberValueSide_agreesOn
   | fields operands =>
       exact numberValueListSide_agreesOn operands left right isRelevant
         agreement relevant
+
+private theorem selectedNumberValueListSide_agreesOn
+    (operands : List FlatNumberField) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field) :
+    selectedFlatNumberValueListSide operands left isRelevant =
+      selectedFlatNumberValueListSide operands right isRelevant := by
+  unfold selectedFlatNumberValueListSide
+  congr 1
+  apply numberValueListSide_agreesOn
+  · exact agreement
+  · apply List.all_eq_true.mpr
+    intro operand member
+    exact (List.mem_filter.mp member).2
+
+private theorem selectedNumberValueSide_agreesOn
+    (values : FlatNumberValueSide) (left right : FlatContext)
+    (isRelevant : FlatRelevance)
+    (agreement : ∀ field, isRelevant field = true → left.read field = right.read field) :
+    values.resolveSelected left isRelevant =
+      values.resolveSelected right isRelevant := by
+  cases values with
+  | literals literals => rfl
+  | fields operands =>
+      exact selectedNumberValueListSide_agreesOn operands left right isRelevant
+        agreement
+
+private theorem selectedTokenValueListSide_cells_sublist
+    (operands : List FlatTextFieldOperand) (context : FlatContext)
+    (isRelevant : FlatRelevance) :
+    (selectedFlatTokenValueListSide operands context isRelevant).side.cells.Sublist
+      (flatTokenValueListSide operands context).cells := by
+  change ((operands.filter fun operand => isRelevant operand.field.id).map
+      (fun operand => operand.valueListCell context)).Sublist
+    (operands.map fun operand => operand.valueListCell context)
+  exact List.filter_sublist.map _
+
+private theorem selectedTokenValueListSide_complete
+    (operands : List FlatTextFieldOperand) (context : FlatContext)
+    (isRelevant : FlatRelevance)
+    (complete :
+      (selectedFlatTokenValueListSide operands context isRelevant).hasNonRelevant = false) :
+    (selectedFlatTokenValueListSide operands context isRelevant).side =
+      flatTokenValueListSide operands context := by
+  change (operands.any fun operand => !isRelevant operand.field.id) = false at complete
+  change flatTokenValueListSide
+      (operands.filter fun operand => isRelevant operand.field.id) context =
+    flatTokenValueListSide operands context
+  rw [filter_eq_self_of_any_not_false operands
+    (fun operand => isRelevant operand.field.id) complete]
+
+private theorem selectedTokenValueSide_cells_sublist
+    (values : FlatTokenValueSide) (context : FlatContext)
+    (isRelevant : FlatRelevance) :
+    (values.resolveSelected context isRelevant).side.cells.Sublist
+      (values.resolve context).cells := by
+  cases values with
+  | literals literals => exact List.Sublist.refl _
+  | fields operands =>
+      exact selectedTokenValueListSide_cells_sublist operands context isRelevant
+
+private theorem selectedTokenValueSide_complete
+    (values : FlatTokenValueSide) (context : FlatContext)
+    (isRelevant : FlatRelevance)
+    (complete : (values.resolveSelected context isRelevant).hasNonRelevant = false) :
+    (values.resolveSelected context isRelevant).side = values.resolve context := by
+  cases values with
+  | literals literals => rfl
+  | fields operands =>
+      exact selectedTokenValueListSide_complete operands context isRelevant complete
+
+private theorem selectedNumberValueListSide_cells_sublist
+    (operands : List FlatNumberField) (context : FlatContext)
+    (isRelevant : FlatRelevance) :
+    (selectedFlatNumberValueListSide operands context isRelevant).side.cells.Sublist
+      (flatNumberValueListSide operands context).cells := by
+  change ((operands.filter fun operand => isRelevant operand.id).map
+      (fun operand => operand.valueListCell context)).Sublist
+    (operands.map fun operand => operand.valueListCell context)
+  exact List.filter_sublist.map _
+
+private theorem selectedNumberValueListSide_complete
+    (operands : List FlatNumberField) (context : FlatContext)
+    (isRelevant : FlatRelevance)
+    (complete :
+      (selectedFlatNumberValueListSide operands context isRelevant).hasNonRelevant = false) :
+    (selectedFlatNumberValueListSide operands context isRelevant).side =
+      flatNumberValueListSide operands context := by
+  change (operands.any fun operand => !isRelevant operand.id) = false at complete
+  change flatNumberValueListSide
+      (operands.filter fun operand => isRelevant operand.id) context =
+    flatNumberValueListSide operands context
+  rw [filter_eq_self_of_any_not_false operands
+    (fun operand => isRelevant operand.id) complete]
+
+private theorem selectedNumberValueSide_cells_sublist
+    (values : FlatNumberValueSide) (context : FlatContext)
+    (isRelevant : FlatRelevance) :
+    (values.resolveSelected context isRelevant).side.cells.Sublist
+      (values.resolve context).cells := by
+  cases values with
+  | literals literals => exact List.Sublist.refl _
+  | fields operands =>
+      exact selectedNumberValueListSide_cells_sublist operands context isRelevant
+
+private theorem selectedNumberValueSide_complete
+    (values : FlatNumberValueSide) (context : FlatContext)
+    (isRelevant : FlatRelevance)
+    (complete : (values.resolveSelected context isRelevant).hasNonRelevant = false) :
+    (values.resolveSelected context isRelevant).side = values.resolve context := by
+  cases values with
+  | literals literals => rfl
+  | fields operands =>
+      exact selectedNumberValueListSide_complete operands context isRelevant complete
+
+private theorem fullTokenValueList_eval
+    (quantifier : ValueListQuantifier) (operands : List FlatTextFieldOperand)
+    (values : FlatTokenValueSide) (context : FlatContext) :
+    quantifier.evalClassified
+        (selectedFlatTokenValueListSide operands context fun _ => true)
+        (values.resolveSelected context fun _ => true) =
+      quantifier.eval (flatTokenValueListSide operands context)
+        (values.resolve context) := by
+  rw [selectedFlatTokenValueListSide_full,
+    flatTokenValueSide_resolveSelected_full]
+  rfl
+
+private theorem fullNumberValueList_eval
+    (quantifier : ValueListQuantifier) (operands : List FlatNumberField)
+    (values : FlatNumberValueSide) (context : FlatContext) :
+    quantifier.evalClassified
+        (selectedFlatNumberValueListSide operands context fun _ => true)
+        (values.resolveSelected context fun _ => true) =
+      quantifier.eval (flatNumberValueListSide operands context)
+        (values.resolve context) := by
+  rw [selectedFlatNumberValueListSide_full,
+    flatNumberValueSide_resolveSelected_full]
+  rfl
 
 /-- Masked partial evaluation depends only on the flat fields marked relevant. -/
 theorem partialSelected_agreesOn
@@ -233,31 +424,15 @@ theorem partialSelected_agreesOn
     | tokenValueList quantifier operands values =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected]
-      split
-      · rename_i relevant
-        have bothRelevant :
-            operands.all (fun operand => isRelevant operand.field.id) = true ∧
-            values.operands.all (fun operand => isRelevant operand.field.id) = true := by
-          simpa [FlatTokenValueSide.allOperands] using relevant
-        rw [tokenValueListSide_agreesOn operands left right isRelevant
-            agreement bothRelevant.left,
-          tokenValueSide_agreesOn values left right isRelevant
-            agreement bothRelevant.right]
-      · rfl
+      rw [selectedTokenValueListSide_agreesOn operands left right isRelevant
+          agreement,
+        selectedTokenValueSide_agreesOn values left right isRelevant agreement]
     | numberValueList quantifier operands values =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected]
-      split
-      · rename_i relevant
-        have bothRelevant :
-            operands.all (fun operand => isRelevant operand.id) = true ∧
-            values.operands.all (fun operand => isRelevant operand.id) = true := by
-          simpa [FlatNumberValueSide.allOperands] using relevant
-        rw [numberValueListSide_agreesOn operands left right isRelevant
-            agreement bothRelevant.left,
-          numberValueSide_agreesOn values left right isRelevant
-            agreement bothRelevant.right]
-      · rfl
+      rw [selectedNumberValueListSide_agreesOn operands left right isRelevant
+          agreement,
+        selectedNumberValueSide_agreesOn values left right isRelevant agreement]
     | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected]
@@ -278,54 +453,77 @@ theorem partialSelected_agreesOn
       · rfl
       · rw [rightIH]
 
-private theorem partialSelected_truth_refines_full
-    (condition : FlatCondition) (context : FlatContext) (isRelevant : FlatRelevance) :
-    K.InformationRefines
-      (Verdict.truth (condition.evalSelected context isRelevant))
-      (Verdict.truth (condition.evalSelected context)) := by
+private theorem partialSelected_true_persists_full
+    (condition : FlatCondition) (context : FlatContext) (isRelevant : FlatRelevance)
+    (partialTrue : Verdict.truth (condition.evalSelected context isRelevant) = .tru) :
+    Verdict.truth (condition.evalSelected context) = .tru := by
   induction condition with
   | leaf leaf =>
     cases leaf with
     | compare comparison =>
-      have fullRelevant : comparison.allRelevant (fun _ => true) = true := by
-        simp [FlatComparison.allRelevant]
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
-        FlatConditionLeaf.evalSelected, fullRelevant, ↓reduceIte]
-      split
-      · exact K.informationRefines_refl _
-      · trivial
+        FlatConditionLeaf.evalSelected] at partialTrue ⊢
+      split at partialTrue
+      · simpa [FlatComparison.allRelevant] using partialTrue
+      · simp [Verdict.truth] at partialTrue
     | tokenValueList quantifier operands values =>
-      have fullRelevant :
-          (values.allOperands operands).all (fun _ => true) = true := by simp
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
-        FlatConditionLeaf.evalSelected, fullRelevant, ↓reduceIte]
-      split
-      · exact K.informationRefines_refl _
-      · trivial
+        FlatConditionLeaf.evalSelected] at partialTrue ⊢
+      rcases (Verdict.truth_eq_tru_iff _).1 partialTrue with
+        ⟨partialPolarity, partialFired⟩
+      rcases valueList_classified_fired_implies_resolved_fired quantifier
+          (selectedFlatTokenValueListSide operands context isRelevant)
+          (values.resolveSelected context isRelevant)
+          (flatTokenValueListSide operands context) (values.resolve context)
+          (selectedTokenValueListSide_cells_sublist operands context isRelevant)
+          (selectedTokenValueSide_cells_sublist values context isRelevant)
+          (selectedTokenValueListSide_complete operands context isRelevant)
+          (selectedTokenValueSide_complete values context isRelevant)
+          partialPolarity partialFired with ⟨fullPolarity, fullFired⟩
+      apply (Verdict.truth_eq_tru_iff _).2
+      exact ⟨fullPolarity, by
+        rw [fullTokenValueList_eval]
+        exact fullFired⟩
     | numberValueList quantifier operands values =>
-      have fullRelevant :
-          (values.allOperands operands).all (fun _ => true) = true := by simp
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
-        FlatConditionLeaf.evalSelected, fullRelevant, ↓reduceIte]
-      split
-      · exact K.informationRefines_refl _
-      · trivial
+        FlatConditionLeaf.evalSelected] at partialTrue ⊢
+      rcases (Verdict.truth_eq_tru_iff _).1 partialTrue with
+        ⟨partialPolarity, partialFired⟩
+      rcases valueList_classified_fired_implies_resolved_fired quantifier
+          (selectedFlatNumberValueListSide operands context isRelevant)
+          (values.resolveSelected context isRelevant)
+          (flatNumberValueListSide operands context) (values.resolve context)
+          (selectedNumberValueListSide_cells_sublist operands context isRelevant)
+          (selectedNumberValueSide_cells_sublist values context isRelevant)
+          (selectedNumberValueListSide_complete operands context isRelevant)
+          (selectedNumberValueSide_complete values context isRelevant)
+          partialPolarity partialFired with ⟨fullPolarity, fullFired⟩
+      apply (Verdict.truth_eq_tru_iff _).2
+      exact ⟨fullPolarity, by
+        rw [fullNumberValueList_eval]
+        exact fullFired⟩
     | fieldFilled field | fieldNotFilled field =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
-        FlatConditionLeaf.evalSelected]
-      split
-      · exact K.informationRefines_refl _
-      · trivial
+        FlatConditionLeaf.evalSelected] at partialTrue ⊢
+      split at partialTrue
+      · simpa using partialTrue
+      · simp [Verdict.truth] at partialTrue
   | and left right leftIH rightIH =>
       rw [selectedAnd_eq_conj left right context isRelevant,
-        selectedAnd_eq_conj left right context (fun _ => true),
-        Verdict.truth_conj, Verdict.truth_conj]
-      exact K.and_information_monotone leftIH rightIH
+        Verdict.truth_conj] at partialTrue
+      rw [selectedAnd_eq_conj left right context (fun _ => true),
+        Verdict.truth_conj]
+      rw [K.and_eq_tru_iff] at partialTrue ⊢
+      exact ⟨leftIH partialTrue.1, rightIH partialTrue.2⟩
   | or left right leftIH rightIH =>
       rw [selectedOr_eq_disj left right context isRelevant,
-        selectedOr_eq_disj left right context (fun _ => true),
-        Verdict.truth_disj, Verdict.truth_disj]
-      exact K.or_information_monotone leftIH rightIH
+        Verdict.truth_disj] at partialTrue
+      rw [selectedOr_eq_disj left right context (fun _ => true),
+        Verdict.truth_disj]
+      rw [K.or_eq_tru_iff] at partialTrue ⊢
+      cases partialTrue with
+      | inl leftTrue => exact .inl (leftIH leftTrue)
+      | inr rightTrue => exact .inr (rightIH rightTrue)
 
 /-- Kernel 30.8.1's rule-level filter gate precedes error-field relevance and every condition read. -/
 theorem partialFilteredRule_skipped
@@ -346,17 +544,14 @@ theorem partialRule_fired_implies_fullWithContent_fired_of_agreesOn
         .evaluated (.fired partialPolarity)) :
     ∃ fullPolarity,
       condition.evalFull completionContext true = .fired fullPolarity := by
-  have refinement := partialSelected_truth_refines_full condition completionContext isRelevant
-  rw [show condition.evalSelected completionContext isRelevant = .fired partialPolarity by
+  have partialSelectedFired :
+      condition.evalSelected completionContext isRelevant = .fired partialPolarity := by
     rw [← partialSelected_agreesOn condition partialContext completionContext
       isRelevant agreement]
-    simpa [FlatCondition.evalPartial, relevant] using partialFired] at refinement
-  generalize fullEq : condition.evalSelected completionContext = fullVerdict at refinement
-  cases fullVerdict with
-  | notFired => contradiction
-  | unknown => contradiction
-  | fired fullPolarity =>
-      exact ⟨fullPolarity, by
-        simpa [FlatCondition.evalFull] using fullEq⟩
+    simpa [FlatCondition.evalPartial, relevant] using partialFired
+  have fullTrue := partialSelected_true_persists_full condition completionContext
+    isRelevant (by simp [partialSelectedFired, Verdict.truth])
+  rcases (Verdict.truth_eq_tru_iff _).1 fullTrue with ⟨fullPolarity, fullFired⟩
+  exact ⟨fullPolarity, by simpa [FlatCondition.evalFull] using fullFired⟩
 
 end A12Kernel

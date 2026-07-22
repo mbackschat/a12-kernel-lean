@@ -4,6 +4,15 @@ import A12Kernel.Semantics.FlatValidation
 
 namespace A12Kernel
 
+private theorem filter_const_true (items : List α) :
+    items.filter (fun _ => true) = items := by
+  apply List.filter_eq_self.mpr
+  simp
+
+private theorem filter_const_false (items : List α) :
+    items.filter (fun _ => false) = [] := by
+  induction items <;> simp [*]
+
 @[simp]
 theorem enumerationValueList_empty
     (projection : ResolvedEnumerationProjection) :
@@ -70,15 +79,47 @@ theorem flatTokenValueSide_fields
       flatTokenValueListSide operands context := by
   rfl
 
-/-- The single flat Enumeration leaf remains relevance-gated before either value-list side is consumed. -/
+/-- Full relevance constructs exactly the ordinary resolved token side. -/
 @[simp]
-theorem flatTokenValueList_irrelevant_unknown
+theorem selectedFlatTokenValueListSide_full
+    (operands : List FlatTextFieldOperand) (context : FlatContext) :
+    selectedFlatTokenValueListSide operands context (fun _ => true) =
+      .ofResolved (flatTokenValueListSide operands context) := by
+  simp [selectedFlatTokenValueListSide,
+    ResolvedValueListQuantifierSide.ofResolved, filter_const_true]
+
+/-- Full relevance constructs exactly the ordinary resolved token values side. -/
+@[simp]
+theorem flatTokenValueSide_resolveSelected_full
+    (values : FlatTokenValueSide) (context : FlatContext) :
+    values.resolveSelected context (fun _ => true) =
+      .ofResolved (values.resolve context) := by
+  cases values with
+  | literals values => rfl
+  | fields operands => exact selectedFlatTokenValueListSide_full operands context
+
+/-- With every token operand masked, the quantifiers retain their distinct per-cell relevance rules: only `No` becomes UNKNOWN. -/
+@[simp]
+theorem flatTokenValueList_allIrrelevant
     (quantifier : ValueListQuantifier) (operand : FlatTextFieldOperand)
     (remaining : List FlatTextFieldOperand)
     (values : FlatTokenValueSide) (context : FlatContext) :
     (FlatCondition.tokenValueList quantifier (operand :: remaining) values).evalSelected
-      context (fun _ => false) = .unknown := by
-  simp [FlatCondition.evalSelected, FlatTokenValueSide.allOperands]
+      context (fun _ => false) =
+        match quantifier with
+        | .atLeastOne => .notFired
+        | .no => .unknown
+        | .notAll => .notFired := by
+  cases quantifier <;> cases values <;>
+    simp [FlatCondition.evalSelected, selectedFlatTokenValueListSide,
+      FlatTokenValueSide.resolveSelected, ValueListQuantifier.evalClassified,
+      evalClassifiedValueListAtLeastOne, evalClassifiedValueListNo,
+      evalClassifiedValueListNotAll, ResolvedValueListQuantifierSide.hasUnknown,
+      ResolvedValueListQuantifierSide.hasPresent,
+      ResolvedValueListQuantifierSide.anyMatches, flatTokenValueListSide,
+      literalTokenValueListSide, ResolvedValueListSide.hasUnknown,
+      ResolvedValueListSide.hasPresent, ResolvedValueListSide.anyMatches,
+      ResolvedValueListSide.contains, filter_const_false]
 
 /-- Scalar membership is a one-field `AtLeastOne`/`NotAll` specialization: an empty subject makes either surface operator non-firing. -/
 theorem flatTokenValueMembership_empty
@@ -87,14 +128,20 @@ theorem flatTokenValueMembership_empty
     (empty : operand.valueListCell context = .empty) :
     (FlatCondition.tokenValueList op.quantifier [operand] (.literals values)).evalFull
       context true = .notFired := by
+  simp only [FlatCondition.evalFull, Bool.true_or, ↓reduceIte,
+    FlatCondition.evalSelected, ConditionTree.evalVerdict,
+    FlatConditionLeaf.evalSelected]
+  rw [selectedFlatTokenValueListSide_full,
+    flatTokenValueSide_resolveSelected_full]
   cases op <;>
-    simp [ValueListMembershipOp.quantifier, FlatCondition.evalFull,
-      FlatCondition.evalSelected, FlatTokenValueSide.allOperands,
-      FlatTokenValueSide.operands, FlatTokenValueSide.resolve,
-      flatTokenValueListSide, literalTokenValueListSide,
-      ValueListQuantifier.eval, evalValueListAtLeastOne,
-      evalValueListNotAll, ResolvedValueListSide.anyMatches,
-      ResolvedValueListSide.hasPresent, empty]
+    simp [ValueListMembershipOp.quantifier,
+      ValueListQuantifier.evalClassified, evalClassifiedValueListAtLeastOne,
+      evalClassifiedValueListNotAll,
+      ResolvedValueListQuantifierSide.hasPresent,
+      ResolvedValueListQuantifierSide.anyMatches,
+      FlatTokenValueSide.resolve, flatTokenValueListSide,
+      literalTokenValueListSide, ResolvedValueListSide.anyMatches,
+      ResolvedValueListSide.hasPresent, ResolvedValueListSide.contains, empty]
 
 /-- `No` is the one value-list quantifier structurally eligible on a blank row; the clean empty field makes that fire omission-typed. -/
 theorem flatEnumerationValueList_no_empty
@@ -103,18 +150,24 @@ theorem flatEnumerationValueList_no_empty
     (empty : context.observeValidationAt operand.field.id = .empty) :
     (FlatCondition.tokenValueList .no [.enumeration operand] (.literals values)).evalFull context false =
       .fired .omission := by
-  simp [FlatCondition.evalFull, FlatCondition.evalSelected,
-    FlatTokenValueSide.allOperands, FlatTokenValueSide.operands,
+  simp only [FlatCondition.evalFull, FlatCondition.canFireOnEmpty,
+    ConditionTree.evalBool, FlatConditionLeaf.canFireOnEmpty,
+    ValueListQuantifier.canFireOnEmpty, Bool.false_or, ↓reduceIte,
+    FlatCondition.evalSelected, ConditionTree.evalVerdict,
+    FlatConditionLeaf.evalSelected]
+  rw [selectedFlatTokenValueListSide_full,
+    flatTokenValueSide_resolveSelected_full]
+  simp [ValueListQuantifier.evalClassified, evalClassifiedValueListNo,
+    ResolvedValueListQuantifierSide.hasUnknown,
+    ResolvedValueListQuantifierSide.anyMatches,
     FlatTokenValueSide.resolve, flatTokenValueListSide,
     FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
     FlatEnumerationOperand.resolve, SimpleComparisonOperand.asTokenValueListCell,
-    ResolvedEnumerationProjection.resolveOperand,
-    literalTokenValueListSide,
-    ValueListQuantifier.eval, evalValueListNo,
+    ResolvedEnumerationProjection.resolveOperand, literalTokenValueListSide,
     ResolvedValueListSide.hasUnknown, ResolvedValueListSide.anyMatches,
     ResolvedValueListSide.hasMissingPotential, ResolvedValueListSide.hasEmpty,
-    ResolvedValueListSide.contains, ValueListQuantifier.canFireOnEmpty,
-    ValueListCell.isUnknown, ValueListCell.isEmpty, empty]
+    ResolvedValueListSide.contains, ValueListCell.isUnknown,
+    ValueListCell.isEmpty, empty]
 
 /-- Both scalar membership operators remain ineligible on an empty subject; NotIncluded deliberately specializes `NotAll`, not empty-firing `No`. -/
 theorem flatEnumerationValueMembership_empty

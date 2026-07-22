@@ -96,10 +96,16 @@ example : verdictOf (elaborateAndEvalFull model world ["Order"]
       (rawPair 10 (.parsed (.str "A")) 11 (.rejected .malformed)) true
       (fieldList .notAll)) = some .unknown := by native_decide
 
+/- Partial relevance removes masked cells before reads: a masked member is skipped, while a relevant matching subject still survives a masked subject sibling. -/
 example : fieldListCore.evalSelected
-    (model.checkContext
-      (rawPair 10 (.parsed (.str "A")) 11 (.parsed (.str "A"))))
-    (fun id => id == 10) = .unknown := by native_decide
+      (model.checkContext
+        (rawPair 10 (.parsed (.str "A")) 11 (.parsed (.str "A"))))
+      (fun id => id == 10) = .notFired ∧
+    literalListCore.evalSelected
+      (model.checkContext
+        (rawPair 10 (.parsed (.str "AB\r\nCD")) 11 (.rejected .malformed)))
+      (fun id => id == 10) = .fired .value := by
+  native_decide
 
 example : errorOf (elaborate model ["Order"]
     (.stringValueList .atLeastOne [] ["A"])) =

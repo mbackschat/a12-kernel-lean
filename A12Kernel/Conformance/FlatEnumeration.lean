@@ -325,7 +325,7 @@ example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
 
 example : storedValueListCore.evalSelected
     (fieldModel.checkContext (raw (.parsed (.enum "A")))) (fun _ => false) =
-    .unknown := by native_decide
+    .notFired := by native_decide
 
 example : errorOf (elaborate fieldModel ["Order"]
     (.enumerationValueList .atLeastOne [(.direct (fieldPath "Code"))] ["Shared"])) =
@@ -480,7 +480,7 @@ example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
 example : twoFieldValueListCore.evalSelected
     (fieldModel.checkContext
       (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Other"))))
-    (fun id => id == 20) = .unknown := by native_decide
+    (fun id => id == 20) = .fired .value := by native_decide
 
 example : (elaborate fieldModel ["Order"] (.enumerationValueList .atLeastOne
     [(.direct (fieldPath "Code")), categoryCode] ["A", "Shared"])).isOk = true := by
@@ -541,7 +541,7 @@ example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
 example : enumerationFieldValueListCore.evalSelected
     (fieldModel.checkContext
       (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Shared"))))
-    (fun id => id == 20) = .unknown := by native_decide
+    (fun id => id == 20) = .notFired := by native_decide
 
 example : errorOf (elaborate fieldModel ["Order"]
     (.enumerationFieldValueList .atLeastOne

@@ -154,11 +154,31 @@ example : verdictOf (elaborateAndEvalFull model world ["Order"]
       (rawTriple 1 (numberRaw 7) 2 .empty 3 (numberRaw 9)) true
       (fieldList .notAll)) = some (.fired .value) := by native_decide
 
+/- Partial validation classifies nonrelevance per cell before applying the ordinary asymmetric quantifier. A nonrelevant values member is skipped by `AtLeastOne`, rather than suppressing the whole leaf. -/
 example : (fieldListCore .atLeastOne).evalSelected
     (model.checkContext
       (rawTriple 1 (numberRaw 7) 2 (numberRaw 9)
         3 (numberRaw 9)))
-    (fun id => id != 3) = .unknown := by native_decide
+    (fun id => id != 3) = .notFired := by native_decide
+
+/- A relevant witness survives a nonrelevant fields sibling for the existential operators, while `No` retains its UNKNOWN poison. -/
+example :
+    (fieldListCore .atLeastOne).evalSelected
+        (model.checkContext
+          (rawTriple 1 (numberRaw 7) 2 (numberRaw 9)
+            3 (numberRaw 7)))
+        (fun id => id != 2) = .fired .value ∧
+      (fieldListCore .notAll).evalSelected
+        (model.checkContext
+          (rawTriple 1 (numberRaw 7) 2 (numberRaw 9)
+            3 (numberRaw 5)))
+        (fun id => id != 2) = .fired .value ∧
+      (fieldListCore .no).evalSelected
+        (model.checkContext
+          (rawTriple 1 (numberRaw 7) 2 (numberRaw 9)
+            3 (numberRaw 5)))
+        (fun id => id != 2) = .unknown := by
+  native_decide
 
 example : errorOf (elaborate model ["Order"]
     (.numberFieldValueList .atLeastOne [] [path "Other"])) =
