@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StarPath
+import A12Kernel.Semantics.Correlation
 
 /-! # Checked nested Number-star consumption -/
 
@@ -56,12 +57,32 @@ def valueListCell (checked : CheckedStarNumberSource model)
       else malformedCheckedCell }
   checked.field.valueListCell context
 
+/-- Apply one resolved validation `Having` to topology-produced leaves before classifying any selected target cell. The filter reads validation-checked cells from candidate/outer environments; the target read remains a separate declaration-owned raw channel. -/
+def selectedValidationHavingValueSide (checked : CheckedStarNumberSource model)
+    (resolved : ResolvedStarTopology) (having : CorrelatedHaving)
+    (filterRead : Env → FieldId → CheckedCell) (outer : Env)
+    (read : Env → FieldId → RawCell) : ResolvedValueListSide .number :=
+  let filterContext : CorrelationContext := { read := filterRead }
+  let selected := having.selectEnvironments filterContext outer resolved.environments
+  { cells := selected.map (checked.valueListCell read)
+    hasUninstantiatedTail := resolved.domain.hasOpenTail
+    hasHaving := true }
+
 /-- Resolve nested rows once and classify every canonical leaf through the declaration-owned Number boundary. -/
 def resolvedValueSide (checked : CheckedStarNumberSource model)
     (document : Document) (outer : Env) (read : Env → FieldId → RawCell) :
     Except StarAddressingError (ResolvedValueListSide .number) := do
   let resolved ← checked.source.path.resolve document outer
   pure (resolved.toResolvedSide (checked.valueListCell read))
+
+/-- Resolve general nested topology once, evaluate the validation `Having` over every candidate environment with the complete captured outer environment, then read only selected Number targets. -/
+def resolvedValidationHavingValueSide (checked : CheckedStarNumberSource model)
+    (document : Document) (outer : Env) (having : CorrelatedHaving)
+    (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell) :
+    Except StarAddressingError (ResolvedValueListSide .number) := do
+  let resolved ← checked.source.path.resolve document outer
+  pure (checked.selectedValidationHavingValueSide resolved having filterRead outer read)
 
 end CheckedStarNumberSource
 

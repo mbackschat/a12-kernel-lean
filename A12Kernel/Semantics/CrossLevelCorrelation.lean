@@ -48,8 +48,8 @@ def CapturedTwoLevelOuterStarContext.frame
 
 def SingleCorrelatedStar.keepsCrossLevel (star : SingleCorrelatedStar)
     (context : CapturedTwoLevelOuterStarContext) (innerRow : RowIndex) : Bool :=
-  star.having.condition.evalTruthIn context.rows.asCorrelationContext
-    (context.frame innerRow) == .tru
+  star.having.condition.keepsEnvironment context.rows.asCorrelationContext
+    context.outerEnv (context.rows.candidateEnv innerRow)
 
 /-- Straightforward reference meaning: scan the one starred level in document order and
     keep only candidates whose filter is known true. -/

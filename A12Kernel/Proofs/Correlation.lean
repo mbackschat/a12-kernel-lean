@@ -97,13 +97,36 @@ theorem correlatedHaving_truth_iff_holds (condition : CorrelatedHaving)
   exact correlatedHaving_truthIn_iff_holdsIn condition rows.asCorrelationContext
     (frame.toCorrelationFrame rows)
 
+/-- The environment selector keeps exactly the candidates satisfying the independent filter predicate. -/
+theorem correlatedHaving_keepsEnvironment_iff_holdsIn
+    (condition : CorrelatedHaving) (context : CorrelationContext)
+    (outerEnv innerEnv : Env) :
+    condition.keepsEnvironment context outerEnv innerEnv = true ↔
+      condition.HoldsIn context { innerEnv, outerEnv } := by
+  rw [← correlatedHaving_truthIn_iff_holdsIn]
+  unfold CorrelatedHaving.keepsEnvironment
+  cases condition.evalTruthIn context { innerEnv, outerEnv } <;> decide
+
+/-- Ordered environment selection is membership plus the semantic `Having` predicate; false and UNKNOWN are excluded by the same clause. -/
+theorem correlatedHaving_mem_selectEnvironments_iff
+    (condition : CorrelatedHaving) (context : CorrelationContext)
+    (outerEnv innerEnv : Env) (candidates : List Env) :
+    innerEnv ∈ condition.selectEnvironments context outerEnv candidates ↔
+      innerEnv ∈ candidates ∧
+        condition.HoldsIn context { innerEnv, outerEnv } := by
+  simp [CorrelatedHaving.selectEnvironments,
+    correlatedHaving_keepsEnvironment_iff_holdsIn]
+
 private theorem correlatedKeeps_eq_true_iff (star : SingleCorrelatedStar)
     (context : CapturedSingleGroupContext) (row : RowIndex) :
     star.keeps context row = true ↔
       star.having.condition.Holds context.rows (context.frame row) := by
-  simp only [SingleCorrelatedStar.keeps]
-  rw [← correlatedHaving_truth_iff_holds]
-  cases star.having.condition.evalTruth context.rows (context.frame row) <;> decide
+  simpa [SingleCorrelatedStar.keeps, CorrelatedHaving.Holds,
+    CapturedSingleGroupContext.frame,
+    SingleGroupFilterFrame.toCorrelationFrame] using
+      correlatedHaving_keepsEnvironment_iff_holdsIn star.having.condition
+        context.rows.asCorrelationContext (context.rows.envAt context.outerRow)
+        (context.rows.envAt row)
 
 private theorem selectCorrelatedRows_sound_on (star : SingleCorrelatedStar)
     (context : CapturedSingleGroupContext) (rows : List RowIndex) :
@@ -199,10 +222,10 @@ theorem explicitSelfExclusion_drops_outer (star : SingleCorrelatedStar)
         { origin := .outer, level := rows.group }) rest) :
     outerRow ∉ star.select { rows, outerRow } := by
   simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
-    CapturedSingleGroupContext.frame, CorrelatedHaving.evalTruth,
-    CorrelatedHaving.evalTruthIn, CorrelationComparisonOp.evalRows,
+    CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+    CorrelationComparisonOp.evalRows,
     CorrelationFrame.rowAt?, CorrelationFrame.envAt,
-    SingleGroupFilterFrame.toCorrelationFrame, SingleGroupValidationContext.envAt,
+    SingleGroupValidationContext.envAt,
     Env.uniqueRowAt?, CorrelationComparisonOp.holdsRow, K.and]
 
 /-- A candidate with a usable numeric cell is selected by reflexive inner/outer field
@@ -230,13 +253,23 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
   have outerUsableIn :
       ({ origin := HavingOrigin.outer, field } : HavingNumberRef).resolveIn
         rows.asCorrelationContext
-        (({ innerRow := row, outerRow := row } :
+      (({ innerRow := row, outerRow := row } :
           SingleGroupFilterFrame).toCorrelationFrame rows) = .value value := by
     exact outerUsable
+  have innerSelected :
+      ({ origin := HavingOrigin.inner, field } : HavingNumberRef).resolveIn
+        rows.asCorrelationContext
+        { innerEnv := rows.envAt row, outerEnv := rows.envAt row } = .value value := by
+    exact innerUsableIn
+  have outerSelected :
+      ({ origin := HavingOrigin.outer, field } : HavingNumberRef).resolveIn
+        rows.asCorrelationContext
+        { innerEnv := rows.envAt row, outerEnv := rows.envAt row } = .value value := by
+    exact outerUsableIn
   simp [SingleCorrelatedStar.select, candidate, SingleCorrelatedStar.keeps, condition,
-    CapturedSingleGroupContext.frame, CorrelatedHaving.evalTruth,
-    CorrelatedHaving.evalTruthIn, CorrelationComparisonOp.evalOperands,
-    innerUsableIn, outerUsableIn,
+    CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+    CorrelationComparisonOp.evalOperands,
+    innerSelected, outerSelected,
     CorrelationComparisonOp.holdsRat, NumericComparisonOp.holds]
 
 end A12Kernel

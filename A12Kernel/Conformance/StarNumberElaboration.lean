@@ -64,6 +64,36 @@ private def cellsOf (authored : SurfaceStarFieldPath) (rows : List RowAddr)
       | .error _ => none
       | .ok side => some (side.cells.map snapshotCell, side.hasUninstantiatedTail)
 
+private def repetition (origin : HavingOrigin)
+    (level : RepeatableLevel) : HavingRepetitionRef :=
+  { origin, level }
+
+private def sameParentEarlierChild : CorrelatedHaving :=
+  .and
+    (.compareRepetitions .equal
+      (repetition .inner 10) (repetition .outer 10))
+    (.compareRepetitions .lessThan
+      (repetition .inner 20) (repetition .outer 20))
+
+private def unusedFilterRead (_ : Env) (_ : FieldId) : CheckedCell :=
+  formalCheck { kind := .number { scale := 0, signed := false } } .empty
+
+private def readSelectedOnly (environment : Env) (_ : FieldId) : RawCell :=
+  match environment with
+  | [(10, 1), (20, 1)] => .parsed (.num 1)
+  | [(10, 2), (20, 1)] => .parsed (.num 3)
+  | _ => .rejected .malformed
+
+private def havingCellsOf (outer : Env) :=
+  match elaborateStarNumberSource model amount.groupPath (source) with
+  | .error _ => none
+  | .ok checked =>
+      match checked.resolvedValidationHavingValueSide (document standardRows) outer
+          sameParentEarlierChild unusedFilterRead readSelectedOnly with
+      | .error _ => none
+      | .ok side => some (side.cells.map snapshotCell,
+          side.hasUninstantiatedTail, side.hasHaving)
+
 /- The checked consumer preserves canonical nested order, emptiness, and the hierarchical tail. -/
 example : cellsOf (source) standardRows = some (
     [.present 1, .empty, .present 3], true) := by
@@ -72,6 +102,13 @@ example : cellsOf (source) standardRows = some (
 /- An unstarred outer axis is bound by identity before the inner star reopens. -/
 example : cellsOf (source (outerStar := false)) standardRows [(10, 2)] =
     some ([.present 3], true) := by
+  native_decide
+
+/- `$` retains the complete captured environment: parent equality restricts the nested scan to the captured parent, while child order selects only earlier children. The malformed target values on every dropped leaf never enter the selected side. -/
+example :
+    havingCellsOf [(10, 1), (20, 2)] = some ([.present 1], true, true) ∧
+    havingCellsOf [(10, 2), (20, 2)] = some ([.present 3], true, true) ∧
+    havingCellsOf [(10, 1), (20, 1)] = some ([], true, true) := by
   native_decide
 
 /- Either an inner or outer over-capacity coordinate makes the selected Number cell formally unavailable. -/
