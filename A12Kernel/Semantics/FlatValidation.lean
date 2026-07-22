@@ -8,6 +8,7 @@ import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.TimeNumeric
 import A12Kernel.Semantics.EnumerationValueList
+import A12Kernel.Semantics.Condition
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
@@ -184,9 +185,8 @@ def FlatNumberValueSide.operands : FlatNumberValueSide → List FlatNumberField
   | .literals _ => []
   | .fields operands => operands
 
-/-- Flat core conditions. The closed constructors make unsupported operations
-    impossible to represent in this fragment. -/
-inductive FlatCondition where
+/-- Atomic flat conditions. Connectives live in `ConditionTree`, allowing another resolved leaf family to reuse their exact evaluation without wrapping a second complete condition tree. -/
+inductive FlatConditionLeaf where
   | compare (comparison : FlatComparison)
   | tokenValueList (quantifier : ValueListQuantifier)
       (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide)
@@ -194,9 +194,33 @@ inductive FlatCondition where
       (operands : List FlatNumberField) (values : FlatNumberValueSide)
   | fieldFilled (field : FlatField)
   | fieldNotFilled (field : FlatField)
-  | and (left right : FlatCondition)
-  | or (left right : FlatCondition)
   deriving Repr, DecidableEq
+
+/-- The established flat condition is the shared connective tree over only flat leaves. -/
+abbrev FlatCondition := ConditionTree FlatConditionLeaf
+
+namespace FlatCondition
+
+abbrev compare (comparison : FlatComparison) : FlatCondition :=
+  .leaf (.compare comparison)
+
+abbrev tokenValueList (quantifier : ValueListQuantifier)
+    (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide) :
+    FlatCondition :=
+  .leaf (.tokenValueList quantifier operands values)
+
+abbrev numberValueList (quantifier : ValueListQuantifier)
+    (operands : List FlatNumberField) (values : FlatNumberValueSide) :
+    FlatCondition :=
+  .leaf (.numberValueList quantifier operands values)
+
+abbrev fieldFilled (field : FlatField) : FlatCondition :=
+  .leaf (.fieldFilled field)
+
+abbrev fieldNotFilled (field : FlatField) : FlatCondition :=
+  .leaf (.fieldNotFilled field)
+
+end FlatCondition
 
 /-- Lookup for already-resolved field references. The checked surface route constructs
     this context from the same model policies used by elaboration; the low-level evaluator
@@ -213,15 +237,16 @@ def FlatContext.withWorld (context : FlatContext) (world : World) : FlatContext 
     wildcardable, row-addressed partial-validation relevant set. -/
 abbrev FlatRelevance := FieldId → Bool
 
-/-- Whether an all-empty full-validation instance is eligible for this condition. -/
-def FlatCondition.canFireOnEmpty : FlatCondition → Bool
+@[simp] def FlatConditionLeaf.canFireOnEmpty : FlatConditionLeaf → Bool
   | .compare _ => false
   | .tokenValueList quantifier _ _ => quantifier.canFireOnEmpty
   | .numberValueList quantifier _ _ => quantifier.canFireOnEmpty
   | .fieldFilled _ => false
   | .fieldNotFilled _ => true
-  | .and left right => left.canFireOnEmpty && right.canFireOnEmpty
-  | .or left right => left.canFireOnEmpty || right.canFireOnEmpty
+
+/-- Whether an all-empty full-validation instance is eligible for this condition. -/
+def FlatCondition.canFireOnEmpty (condition : FlatCondition) : Bool :=
+  condition.evalBool FlatConditionLeaf.canFireOnEmpty
 
 def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : CellObservation :=
   observeCell .validation (context.read id)
@@ -432,6 +457,20 @@ def FlatNumberValueSide.allOperands (values : FlatNumberValueSide)
     (fields : List FlatNumberField) : List FlatNumberField :=
   fields ++ values.operands
 
+/-- Whether one atomic flat condition references a field ID. -/
+def FlatConditionLeaf.referencesField : FlatConditionLeaf → FieldId → Bool
+  | .compare comparison, field => comparison.fieldIds.contains field
+  | .tokenValueList _ operands values, field =>
+      (values.allOperands operands).any fun operand => operand.field.id == field
+  | .numberValueList _ operands values, field =>
+      (values.allOperands operands).any fun operand => operand.id == field
+  | .fieldFilled referenced, field
+  | .fieldNotFilled referenced, field => referenced.id == field
+
+/-- Reference traversal ignores connective shape and checks both branches. -/
+def FlatCondition.referencesField (condition : FlatCondition) (field : FieldId) : Bool :=
+  condition.anyLeaf fun leaf => leaf.referencesField field
+
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
   | .number op field expected =>
@@ -486,14 +525,9 @@ def FlatField.evalFilled (field : FlatField) (context : FlatContext) : Verdict :
 def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdict :=
   (field.observeValidation context).evalValidationNotFilled
 
-/-- Evaluate an already-selected context. The optional relevance predicate makes an
-    out-of-set atomic read validation-unknown before `context.read`, so a per-call
-    partial-validation exclusion is never misrepresented as a formal finding. Full
-    validation uses the all-relevant default. `And` may skip only after `notFired`; `Or`
-    may skip only after `fired value`, because any other verdict can still change when
-    the right-hand polarity is combined. -/
-def FlatCondition.evalSelected (context : FlatContext)
-    (isRelevant : FlatRelevance := fun _ => true) : FlatCondition → Verdict
+/-- Evaluate one atomic flat condition. Out-of-set reads become validation-unknown before `context.read`; connective evaluation remains in `ConditionTree.evalVerdict`. -/
+@[simp] def FlatConditionLeaf.evalSelected (context : FlatContext)
+    (isRelevant : FlatRelevance := fun _ => true) : FlatConditionLeaf → Verdict
   | .compare comparison =>
       if comparison.allRelevant isRelevant then comparison.eval context else .unknown
   | .tokenValueList quantifier operands values =>
@@ -512,16 +546,11 @@ def FlatCondition.evalSelected (context : FlatContext)
       if isRelevant field.id then field.evalFilled context else .unknown
   | .fieldNotFilled field =>
       if isRelevant field.id then field.evalNotFilled context else .unknown
-  | .and left right =>
-      let leftVerdict := left.evalSelected context isRelevant
-      match leftVerdict with
-      | .notFired => .notFired
-      | _ => Verdict.conj leftVerdict (right.evalSelected context isRelevant)
-  | .or left right =>
-      let leftVerdict := left.evalSelected context isRelevant
-      match leftVerdict with
-      | .fired .value => .fired .value
-      | _ => Verdict.disj leftVerdict (right.evalSelected context isRelevant)
+
+/-- Evaluate an already-selected flat tree through the shared connective evaluator. -/
+def FlatCondition.evalSelected (context : FlatContext)
+    (isRelevant : FlatRelevance := fun _ => true) (condition : FlatCondition) : Verdict :=
+  condition.evalVerdict fun leaf => leaf.evalSelected context isRelevant
 
 /-- Full-validation row gate. Instantiated/content-bearing status is supplied by the
     document/iteration layer and remains independent of cell values. -/

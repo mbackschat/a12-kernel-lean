@@ -68,7 +68,7 @@ private def expectRejection
 
 run_cmd do
   let env ← getEnv
-  let some (.defnInfo template) := env.find? `A12Kernel.FlatCondition.evalSelected._unsafe_rec
+  let some (.defnInfo template) := env.find? `A12Kernel.ConditionTree.evalVerdict._unsafe_rec
     | throwError "missing partial helper template"
   for (name, type) in #[
       (`TrustFixture.unsafeParent._unsafe_rec, mkConst ``Nat),

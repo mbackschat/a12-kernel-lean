@@ -172,7 +172,7 @@ private def twoNegativePredicates : FlatCondition :=
   .and numberNotFilled booleanNotFilled
 
 private def positiveOrComparison : FlatCondition :=
-  .or (.fieldFilled (.number numberField)) numberIsZero
+  .or (FlatCondition.fieldFilled (.number numberField)) numberIsZero
 
 example : numberIsZero.evalSelected emptyContext = .fired .omission := by
   native_decide
