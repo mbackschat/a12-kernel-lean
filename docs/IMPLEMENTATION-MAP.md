@@ -395,6 +395,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Owners
 
+- [`Cell.lean`](../A12Kernel/Cell.lean)
 - [`Semantics/String.lean`](../A12Kernel/Semantics/String.lean)
 - [`Semantics/StringPattern.lean`](../A12Kernel/Semantics/StringPattern.lean)
 - [`Semantics/LegalCharset.lean`](../A12Kernel/Semantics/LegalCharset.lean)
@@ -406,12 +407,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/StringPattern.lean`](../A12Kernel/Proofs/StringPattern.lean)
 - [`Proofs/LegalCharset.lean`](../A12Kernel/Proofs/LegalCharset.lean)
 - [`Proofs/LegalCharsetElaboration.lean`](../A12Kernel/Proofs/LegalCharsetElaboration.lean)
+- [`Proofs/CustomFieldCause.lean`](../A12Kernel/Proofs/CustomFieldCause.lean)
 - [`Proofs/StringLength.lean`](../A12Kernel/Proofs/StringLength.lean)
 - [`Proofs/StringComputation.lean`](../A12Kernel/Proofs/StringComputation.lean)
 - [`Conformance/StringIngestion.lean`](../A12Kernel/Conformance/StringIngestion.lean)
 - [`Conformance/StringPattern.lean`](../A12Kernel/Conformance/StringPattern.lean)
 - [`Conformance/LegalCharset.lean`](../A12Kernel/Conformance/LegalCharset.lean)
 - [`Conformance/LegalCharsetElaboration.lean`](../A12Kernel/Conformance/LegalCharsetElaboration.lean)
+- [`Conformance/CustomFieldCause.lean`](../A12Kernel/Conformance/CustomFieldCause.lean)
 - [`Conformance/StringLength.lean`](../A12Kernel/Conformance/StringLength.lean)
 - [`Conformance/StringComputation.lean`](../A12Kernel/Conformance/StringComputation.lean)
 
@@ -424,6 +427,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Resolved `PatternMatched`/`PatternViolated` consume an injected already-admitted whole-value matcher through the same normalized checked String read. Empty is not evaluated, formal unavailability remains UNKNOWN, the two operators are exact complements on present input, and every firing is VALUE-typed.
 - The admitted legal-charset runtime has a distinct default non-supplementary BMP policy plus explicit inclusive BMP ranges and bounded two/three-character atomic entries. It scans left-to-right, chooses the longest complete atomic prefix, falls back to exactly one range character, and emits the shared `unsupportedCharacter` cause only at the full-input check boundary.
 - Checked `supportedCharacters` lowering injects only Java-compatible grapheme clustering, distinguishes an empty definition from an empty entry, rejects supplementary/surrogate-bearing, overlong, plain multi-character, reversed-range, and narrowly ambiguous-overlap shapes, and retains legal shared and terminal prefixes in the bounded runtime representation.
+- Registered custom field-type rejection has its own formal cause carrying the exact project code and optional message template. It remains structurally distinct from the fixed declarative `customValidation` fallback and survives unchanged as validation UNKNOWN or computation poison.
 - Both direct String equality operators suppress an empty field or empty literal after preserving malformed input as UNKNOWN; distinct nonempty values fire only inequality.
 - a parsed empty String retains present-empty placement while supplying the same clean-empty observation as absence
 - `FieldFilled`/`FieldNotFilled` consume that empty observation rather than physical placement, and checked flat lowering admits String presence.
@@ -443,6 +447,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Eight resolved pattern cases separate normalized match/nonmatch, both operator polarities, empty suppression, and formal unavailability; generic laws prove complement and exclude OMISSION firing.
 - Twelve legal-charset runtime cases separate default BMP, supplementary input, range/atomic composition, component leakage, reversal/repetition, shared prefixes, longest terminal-prefix selection, empty progress, and the exact formal cause. Generic laws lock bounded progress, exact accepted payload retention, and validation-UNKNOWN/computation-poison projection.
 - Eleven definition-admission cases cover the default, accepted range/atom composition, shared and terminal prefixes, and every bounded malformed discriminator against an injected cluster corpus; empty-list and empty-entry laws lock the critical default distinction.
+- Four cause cases and three generic laws distinguish registered versus fixed fallback failure and preserve the complete project rejection through both checked phases.
 - Historical a12-dmkits triangulation had three final-empty-store mismatches and agreed with all nine target cases at projected delta and stored-value application granularity
 - the [archive](archived/STRING-COMPUTATION-RAW-EVIDENCE.md) owns that detail.
 - The retained strings remain conservative ASCII and do not externally establish broader Unicode or line-break behavior
@@ -454,6 +459,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Checked expression lowering does not yet construct a target computation step: `FlatFieldDecl` retains neither String length constraints nor line-break permission, so it cannot distinguish an unconstrained target from a constrained one.
 - Pattern compilation, Java `Pattern` syntax/execution, the kernel's bounded admission gate, authored checked-pattern lowering, and public exposure remain outside; the injected function is deliberately only the post-admission whole-value matcher boundary.
 - Java-compatible grapheme clustering remains an injected admission-time capability rather than a reimplemented Unicode subsystem. Raw JSON decoding/model-slot wiring, project-level SPI selection, general scalar-parser composition, and retained local kernel observations remain outside; the runtime representation makes empty/unbounded atomic entries impossible and is not used by computed-target basic checks.
+- Registered custom rejection identity is implemented at the checked-cell root; declaration/context construction, registry well-formedness, relevance-first sampling, optional message rendering, and downstream suppression/message consumers remain open.
 - Open: repeatable or parent-gated String requiredness, general document ingestion, group content, full target policies, enumerations, custom validators, raw-type rule elimination, and target-check ordering.
 - Input normalization does not grant a computed target permission to contain CR/LF.
 - Coercion, lists, general computation lowering/scheduling, and every other String function remain rejected or open.

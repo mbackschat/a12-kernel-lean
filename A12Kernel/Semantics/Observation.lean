@@ -38,6 +38,7 @@ inductive BaseFormalCause where
   | unsupportedCharacter
   | leadingOrTrailingSpace
   | customValidation
+  | registeredCustomValidation (rejection : RegisteredCustomRejection)
   deriving Repr, DecidableEq
 
 def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
@@ -46,6 +47,8 @@ def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .unsupportedCharacter => .unsupportedCharacter
   | .leadingOrTrailingSpace => .leadingOrTrailingSpace
   | .customValidation => .customValidation
+  | .registeredCustomValidation rejection =>
+      .registeredCustomValidation rejection
 
 /-- Scalar-parser output at the formal-check boundary. `empty` means that no field
     placement exists; `presentEmpty` represents a physical placement with no raw value.
