@@ -38,7 +38,7 @@ private def storedAbcX : StoredString := ⟨"ABC-X", by decide⟩
 private def storedDashX : StoredString := ⟨"-X", by decide⟩
 private def storedOldX : StoredString := ⟨"OLD-X", by decide⟩
 
-private def maxThree : StringTargetLengthPolicy := .maximum ⟨3, by decide⟩
+private def maxThree : A12Kernel.StringFieldPolicy := { maxLength := some 3 }
 
 private def cascade (midPrior outPrior : PriorStringTarget) : StringDirectCascade where
   producer := {
@@ -49,7 +49,7 @@ private def cascade (midPrior outPrior : PriorStringTarget) : StringDirectCascad
   consumer := {
     targetField := outId
     expression := .concat (.field midId) (.literal "-X")
-    targetPolicy := .unconstrained
+    targetPolicy := {}
     prior := outPrior }
 
 private def expected (producerOutcome : StringTargetOutcome)

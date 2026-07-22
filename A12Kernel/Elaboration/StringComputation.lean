@@ -3,7 +3,7 @@ import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/literal/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It admits only nonrepeatable String declarations from one validated flat model. Target policy, computations and alternatives, concrete syntax, repeatable reads, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/literal/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It admits only nonrepeatable String declarations from one validated flat model. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, patterns, raw/custom targets, and scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -13,6 +13,10 @@ inductive StringComputationElabError where
   | resolve (error : ResolveError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringValue (path : List String)
+  | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
+  | rawStringTarget (path : List String)
+  | customStringTarget (path : List String)
+  | targetSelfReference (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -33,6 +37,12 @@ def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
 def WellFormed (expression : StringExpr FieldId) (model : FlatModel) : Prop :=
   expression.wellFormedBool model = true
 
+/-- Whether the resolved expression contains the named field anywhere in its authored tree. -/
+def referencesField (field : FieldId) : StringExpr FieldId → Bool
+  | .field candidate => candidate == field
+  | .literal _ => false
+  | .concat left right => left.referencesField field || right.referencesField field
+
 end StringExpr
 
 /-- A lowered String expression certified against the same model used to resolve all of its leaves. -/
@@ -40,6 +50,27 @@ structure CheckedStringExpr (model : FlatModel) where
   core : StringExpr FieldId
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model
+
+/-- The exact ordinary nonrepeatable String target/policy relation retained by checked computation lowering. -/
+def FlatModel.admitsStringComputationTarget (model : FlatModel)
+    (field : FieldId) (policy : StringFieldPolicy) : Bool :=
+  match model.lookupUniqueId field with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.policy.kind == .string &&
+        declaration.stringValueMode == .evaluated &&
+        declaration.customType.isNone &&
+        declaration.enumeration.isNone &&
+        declaration.stringPolicy == policy
+  | .error _ => false
+
+/-- One ordinary String target and expression certified against the same validated model. Target policy cannot be substituted after elaboration. -/
+structure CheckedStringComputationOperation (model : FlatModel) where
+  expression : CheckedStringExpr model
+  targetField : FieldId
+  targetPolicy : StringFieldPolicy
+  targetAdmitted : model.admitsStringComputationTarget targetField targetPolicy = true
+  targetNotReferenced : expression.core.referencesField targetField = false
 
 /-- Resolve one authored String-expression tree without evaluating or reordering it. The caller supplies a validated model; each field still passes through the shared nonrepeatable path resolver. -/
 def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
@@ -62,6 +93,20 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
         (← elaborateStringExprCore model declaringGroup left)
         (← elaborateStringExprCore model declaringGroup right))
 
+private def certifyStringExpr (model : FlatModel)
+    (hModel : model.validate = .ok ()) (core : StringExpr FieldId) :
+    Except StringComputationElabError (CheckedStringExpr model) :=
+  if hCore : core.wellFormedBool model = true then
+    pure {
+      core
+      modelWellFormed := by
+        rw [hModel]
+        rfl
+      wellFormed := hCore
+    }
+  else
+    throw .incoherentCore
+
 /-- Validate the flat model once, preserve the authored expression tree exactly, and certify every resolved runtime leaf before returning it to computation evaluation. -/
 def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
     (expression : StringExpr SurfaceFieldPath) :
@@ -70,16 +115,44 @@ def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
   | .error error => .error (.resolve error)
   | .ok () => do
       let core ← elaborateStringExprCore model declaringGroup expression
-      if hCore : core.wellFormedBool model = true then
-        pure {
-          core
-          modelWellFormed := by
-            rw [hModel]
-            rfl
-          wellFormed := hCore
-        }
+      certifyStringExpr model hModel core
+
+/-- Resolve one ordinary nonrepeatable String target and expression together. The declaration supplies the complete basic target policy, and direct self-reference is rejected before a runtime operation exists. -/
+def elaborateStringComputationOperation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression : StringExpr SurfaceFieldPath) :
+    Except StringComputationElabError (CheckedStringComputationOperation model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => do
+      let declaration ←
+        (model.resolveNonrepeatableDeclarationById targetField).mapError .resolve
+      match declaration.policy.kind with
+      | .string => pure ()
+      | actual => throw (.targetKindMismatch declaration.path actual.surfaceKind)
+      if declaration.stringValueMode == .raw then
+        throw (.rawStringTarget declaration.path)
+      if declaration.customType.isSome then
+        throw (.customStringTarget declaration.path)
+      let core ← elaborateStringExprCore model declaringGroup expression
+      let checked ← certifyStringExpr model hModel core
+      if hReference : checked.core.referencesField targetField = true then
+        throw (.targetSelfReference targetField)
       else
-        throw .incoherentCore
+        if hTarget : model.admitsStringComputationTarget
+            targetField declaration.stringPolicy = true then
+          pure {
+            expression := checked
+            targetField
+            targetPolicy := declaration.stringPolicy
+            targetAdmitted := hTarget
+            targetNotReferenced := by
+              cases hValue : checked.core.referencesField targetField with
+              | false => rfl
+              | true => exact False.elim (hReference hValue)
+          }
+        else
+          throw .incoherentCore
 
 namespace CheckedStringExpr
 
@@ -90,5 +163,14 @@ def evaluate (expression : CheckedStringExpr model)
   expression.core.evaluate { read := (model.checkContext raw).read }
 
 end CheckedStringExpr
+
+namespace CheckedStringComputationOperation
+
+/-- Check raw cells with the model that certified both expression and target, then apply the retained declaration policy to the exact root write attempt. -/
+def evaluateOutcome (operation : CheckedStringComputationOperation model)
+    (raw : RawFlatContext) : Except StringComputationFault StringTargetOutcome := do
+  pure (operation.targetPolicy.checkTarget (← operation.expression.evaluate raw))
+
+end CheckedStringComputationOperation
 
 end A12Kernel

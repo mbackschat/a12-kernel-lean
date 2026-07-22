@@ -13,7 +13,7 @@ namespace A12Kernel
 structure StringAlternativeComputation where
   targetField : FieldId
   alternatives : List (ComputationAlternative StringExpr)
-  targetPolicy : StringTargetLengthPolicy
+  targetPolicy : StringFieldPolicy
   prior : PriorStringTarget
   deriving Repr, DecidableEq
 
@@ -38,7 +38,7 @@ def selectedStep (computation : StringAlternativeComputation)
 /-- Select once, then evaluate only the selected expression. An operation outcome is never fed back into the alternative scan. -/
 def evaluateOutcome (computation : StringAlternativeComputation)
     (context : StringComputationContext) :
-    Except StringComputationStepFault StringTargetOutcome :=
+    Except StringComputationFault StringTargetOutcome :=
   match ComputationAlternative.selectFirst computation.alternatives context with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.poison cause)
@@ -47,7 +47,7 @@ def evaluateOutcome (computation : StringAlternativeComputation)
 /-- Evaluate the resolved table through the shared target check and existing change-only delta projection without mutating a document. -/
 def evaluate (computation : StringAlternativeComputation)
     (context : StringComputationContext) :
-    Except StringComputationStepFault StringComputationStepResult :=
+    Except StringComputationFault StringComputationStepResult :=
   match computation.evaluateOutcome context with
   | .error fault => .error fault
   | .ok outcome => .ok {

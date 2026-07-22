@@ -208,12 +208,12 @@ private def cascade (input : Input) : StringDirectCascade := {
     producer := {
       targetField := 2
       expression := .field 1
-      targetPolicy := .maximum { value := 3, positive := by decide }
+      targetPolicy := { maxLength := some 3 }
       prior := input.priorMid }
     consumer := {
       targetField := 3
       expression := .concat (.field 2) (.literal "-X")
-      targetPolicy := .unconstrained
+      targetPolicy := {}
       prior := input.priorOut } }
 
 private def clean (target : Target) : StringTargetOutcome → List ValueObservation

@@ -150,7 +150,7 @@ theorem poisonedStringPrecondition_preserves_cause
 /-- Once the common precondition holds, a consumed formally invalid String operand poisons the target instead of becoming quiet no-value. -/
 theorem holdingStringPrecondition_consumedInvalidField_poisons
     (context : StringComputationContext) (operand target : FieldId)
-    (cause : FormalCause) (policy : StringTargetLengthPolicy)
+    (cause : FormalCause) (policy : StringFieldPolicy)
     (prior : PriorStringTarget)
     (poisonedRead : observeCell .computation (context.read operand) = .poison cause) :
     ({ targetField := target
@@ -161,7 +161,7 @@ theorem holdingStringPrecondition_consumedInvalidField_poisons
   simp only [StringComputationStep.evaluateOutcomeWhen,
     StringComputationStep.evaluateOutcome,
     poisonedStringField_evaluates_poison context operand cause poisonedRead,
-    StringTargetLengthPolicy.check]
+    StringFieldPolicy.checkTarget]
 
 /-- Equal immediate deltas do not imply equal dependency states. Clean no-value and malformed poison both clear the same prior target, but their consumer reads remain different. -/
 theorem same_delta_does_not_imply_same_dependency

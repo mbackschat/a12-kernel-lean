@@ -1083,18 +1083,12 @@ run_cmd do
 #print axioms A12Kernel.poison_is_not_noValue
 #print axioms A12Kernel.unchangedString_has_no_delta
 #print axioms A12Kernel.changedString_has_value_delta
-#print axioms A12Kernel.belowMinimumStringTarget_is_errored
-#print axioms A12Kernel.aboveMaximumStringTarget_is_errored
-#print axioms A12Kernel.minimumStringTarget_at_or_above_is_accepted
-#print axioms A12Kernel.maximumStringTarget_at_or_below_is_accepted
-#print axioms A12Kernel.minimumStringTarget_boundary_is_accepted
-#print axioms A12Kernel.maximumStringTarget_boundary_is_accepted
-#print axioms A12Kernel.lineBreakStringTarget_is_unsupported
-#print axioms A12Kernel.noValue_bypassesStringTargetLength
-#print axioms A12Kernel.poison_bypassesStringTargetLength
-#print axioms A12Kernel.acceptedStringTarget_preserves_unconstrained_delta
-#print axioms A12Kernel.unconstrainedStringTarget_preserves_store_delta
+#print axioms A12Kernel.acceptedStringTarget_preserves_attempt
 #print axioms A12Kernel.rejectedStringTarget_preserves_attempt
+#print axioms A12Kernel.forbiddenLineBreakStringTarget_is_errored
+#print axioms A12Kernel.noValue_bypassesStringTargetPolicy
+#print axioms A12Kernel.poison_bypassesStringTargetPolicy
+#print axioms A12Kernel.acceptedStringTarget_preserves_store_delta
 #print axioms A12Kernel.erroredStringTarget_reports_unconditionally
 #print axioms A12Kernel.erroredStringTarget_has_no_appliedValue
 #print axioms A12Kernel.acceptedStringTarget_applies_value
@@ -1103,6 +1097,9 @@ run_cmd do
 #print axioms A12Kernel.elaborateStringExprCore_literal
 #print axioms A12Kernel.elaborateStringExprCore_concat
 #print axioms A12Kernel.checkedStringExpr_evaluate
+#print axioms A12Kernel.checkedStringComputation_target_admitted
+#print axioms A12Kernel.checkedStringComputation_excludes_target_reference
+#print axioms A12Kernel.checkedStringComputation_evaluateOutcome
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic

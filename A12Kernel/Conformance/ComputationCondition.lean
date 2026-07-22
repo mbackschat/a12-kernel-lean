@@ -36,7 +36,7 @@ private def filledProbePoisonBody : StringComputationContext :=
 private def copyBody : StringComputationStep where
   targetField := targetId
   expression := .field bodyId
-  targetPolicy := .unconstrained
+  targetPolicy := {}
   prior := .empty
 
 private def alternative (precondition : ComputationCondition)
