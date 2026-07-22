@@ -296,6 +296,17 @@ private theorem authoredNumericLower_admittedValidation
       exact Or.inr
         (authoredNumericLower_directValueFunction expression direct)
 
+private theorem authoredNumericLower_admittedNumericValidation
+    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (admitted : expression.isAdmittedNumericValidationOperation = true) :
+    expression.lowerForEvaluation.isAdmittedValidation = true := by
+  unfold AuthoredNumericExpr.isAdmittedNumericValidationOperation at admitted
+  split at admitted
+  · unfold LoweredNumericExpr.isAdmittedValidation
+    simp only [Bool.or_eq_true]
+    exact Or.inl (authoredNumericLower_plain expression admitted)
+  · exact authoredNumericLower_admittedValidation expression admitted
+
 private theorem loweredDirectExtremum_constantUse_preserved
     (expected : NumericExtremumOp)
     (expression : LoweredNumericExpr Atom)
@@ -379,8 +390,8 @@ private theorem loweredAdmittedValidation_isSome
 private theorem numericComparison_wellFormed_sidesAdmitted
     (comparison : NumericComparison)
     (wellFormed : comparison.WellFormed model rowGroup) :
-    comparison.left.isAdmittedNumericOperation = true ∧
-      comparison.right.isAdmittedNumericOperation = true := by
+    comparison.left.isAdmittedNumericValidationOperation = true ∧
+      comparison.right.isAdmittedNumericValidationOperation = true := by
   simp only [NumericComparison.WellFormed,
     NumericComparison.wellFormedBool, Bool.and_eq_true] at wellFormed
   exact ⟨wellFormed.1.1.1.1.1.1.2, wellFormed.1.1.1.1.1.2⟩
@@ -390,16 +401,16 @@ theorem checkedNumericComparison_evaluations_areSome
     (checked : CheckedNumericComparison model)
     (context : FlatContext) :
     (checked.core.left.lowerForEvaluation.evalAdmittedValidation?
-        context.resolveNumericArithmetic).isSome = true ∧
+        context.resolveNumericValidationAtom).isSome = true ∧
       (checked.core.right.lowerForEvaluation.evalAdmittedValidation?
-        context.resolveNumericArithmetic).isSome = true := by
+        context.resolveNumericValidationAtom).isSome = true := by
   have admitted :=
     numericComparison_wellFormed_sidesAdmitted checked.core checked.wellFormed
   exact ⟨
     loweredAdmittedValidation_isSome _ _
-      (authoredNumericLower_admittedValidation _ admitted.1),
+      (authoredNumericLower_admittedNumericValidation _ admitted.1),
     loweredAdmittedValidation_isSome _ _
-      (authoredNumericLower_admittedValidation _ admitted.2)⟩
+      (authoredNumericLower_admittedNumericValidation _ admitted.2)⟩
 
 /-- One direct constant is admitted on either side of the first extremum node. -/
 theorem numericValidation_extremum_singleConstant_admitted
@@ -439,7 +450,7 @@ theorem numericValidation_extremum_twoConstants_rejected
 theorem numericComparison_atom_literal_agrees_flat
     (op : NumericComparisonOp) (field : FlatNumberField)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op := .ordinary op, left := .atom field, right := .literal right } :
+    ({ op := .ordinary op, left := .atom (.field field), right := .literal right } :
       NumericComparison).evalSelected context =
         (FlatComparison.number (.ordinary op) field right.value).eval context := by
   cases observed : context.resolveNumberComparisonOperand field <;>
@@ -447,6 +458,7 @@ theorem numericComparison_atom_literal_agrees_flat
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic, FlatComparison.eval,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericValidationOp.evalFixedRight,
@@ -457,7 +469,8 @@ theorem numericValidation_round_atom_literal_delegates
     (op : NumericValidationOp) (mode : DecimalRoundingMode)
     (places : RoundingPlaces) (field : FlatNumberField)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op, left := .round mode places (.atom field), right := .literal right } :
+    ({ op, left := .round mode places (.atom (.field field)),
+        right := .literal right } :
       NumericComparison).evalSelected context =
         op.eval ((context.resolveNumberComparisonOperand field).round mode places)
           (.value right.value .fixed) := by
@@ -467,6 +480,7 @@ theorem numericValidation_round_atom_literal_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericArithmeticOutcome.round, NumericArithmeticOutcome.mapValue,
       NumericOperand.round, NumericOperand.mapValue,
@@ -478,7 +492,7 @@ theorem numericValidation_round_atom_literal_delegates
 theorem numericValidation_abs_atom_literal_delegates
     (op : NumericValidationOp) (field : FlatNumberField)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op, left := .abs (.atom field), right := .literal right } :
+    ({ op, left := .abs (.atom (.field field)), right := .literal right } :
       NumericComparison).evalSelected context =
         op.eval (context.resolveNumberComparisonOperand field).absolute
           (.value right.value .fixed) := by
@@ -488,6 +502,7 @@ theorem numericValidation_abs_atom_literal_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericArithmeticOutcome.absolute, NumericArithmeticOutcome.mapValue,
       NumericOperand.absolute, NumericOperand.mapValue,
@@ -498,7 +513,8 @@ theorem numericValidation_abs_atom_literal_delegates
 theorem numericTolerance_atom_literal_delegates
     (range : NumericToleranceRange) (field : FlatNumberField)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op := .tolerance range, left := .atom field, right := .literal right } :
+    ({ op := .tolerance range, left := .atom (.field field),
+        right := .literal right } :
       NumericComparison).evalSelected context =
         range.eval (context.resolveNumberComparisonOperand field)
           (.value right.value .fixed) := by
@@ -507,6 +523,25 @@ theorem numericTolerance_atom_literal_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
+      FlatContext.resolveNumericArithmetic,
+      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericToleranceRange.eval, observed]
+
+/-- Numeric Base Year is a fixed scale-0 operand inside the same checked tolerance evaluator used for Number fields. -/
+theorem numericTolerance_field_baseYear_delegates
+    (range : NumericToleranceRange) (field : FlatNumberField)
+    (year : Int) (context : FlatContext) :
+    ({ op := .tolerance range, left := .atom (.field field),
+        right := .atom (.baseYear year) } : NumericComparison).evalSelected context =
+      range.eval (context.resolveNumberComparisonOperand field)
+        (.value year .fixed) := by
+  cases observed : context.resolveNumberComparisonOperand field <;>
+    simp only [NumericComparison.evalSelected,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalPlainValidation?,
+      FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]

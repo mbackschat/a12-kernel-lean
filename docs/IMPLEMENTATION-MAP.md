@@ -215,14 +215,15 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - one order-sensitive division-lowering pass
 - precision-50 `+`/`−`/`×`/`÷`, staged power, rounding, absolute value, full-precision ordered extrema, arithmetic domain failure, and directional fillability including the conservative power and Min/Max tie tables
 - independent scale-19 normalization
-- a checked closed validation dispatch over all six direct ordinary comparison operators and four fixed tolerance ranges
+- a checked closed validation dispatch over all six direct ordinary comparison operators and four fixed tolerance ranges, with numeric `BaseYear` admitted as a fixed scale-0 source in plain arithmetic
 - one checked nonrepeatable computation-operation consumer with model-resolved target/operands, shared admission of plain arithmetic plus direct-field `Round`/`Abs` and direct-field/one-constant `Min`/`Max`, default-unsuppressed result-scale admission, explicit warning bypass, nested target-reference rejection, distinct numeric value/domain-failure/inherited-poison evaluation, one-time complete target-policy attachment, and retained proof-coherent target dispatch
 - separately proved ordinary and significant-digit-bounded stored-decimal conversions
 - and one explicit two-branch target consumer with target classification, change-only delta, exact one-address final application, and cause-free dependency observation.
-- Checked validation resolves two same-group expressions, lowers each once, and gates empty rows before reads.
+- Checked validation resolves two same-group expressions over Number fields and the model-declared numeric `BaseYear`, lowers each once, and gates empty rows before reads. At least one actual field remains mandatory, so Base-Year/literal and Base-Year/Base-Year conditions retain the constant-only rejection.
 - Admitted expressions are plain arithmetic including power, direct-field root rounding/`Abs`, or canonical Min/Max over direct fields with at most one direct constant.
 - The runtime preserves formal invalidity, domain failure, values, and two-sided fillability. [`LF58`](LEAN-FINDINGS.md#lf58--numeric-operand-list-extrema-combine-exact-selection-with-directional-fillability) owns the extremum constant, selection, scale, and polarity details.
 - The explicit warning flag bypasses only equality/inequality scale admission and is runtime-irrelevant.
+- Numeric `BaseYear` retains a non-expandable scale-0 summary and fixed runtime fillability. It participates in the existing plain arithmetic and tolerance evaluator; tolerance deliberately bypasses the scale gate, while un-audited Base-Year-bearing `Round`/`Abs`/Min/Max shapes remain fail-closed rather than inheriting field-only admission accidentally.
 - Computation reads empty Number as zero, preflights declarations before data, preserves domain failure through legal wrappers, and keeps left-to-right poison order. Valid power uses the staged evaluator; runtime-invalid integral power reaches the shared target-invalidating domain failure. The retained warning flag bypasses only result-scale admission and selects the corresponding target branch after evaluation.
 - Ordinary stored conversion universally preserves the scale-19 `HALF_UP` amount while retaining `{unscaled, scale}` form. Bounded conversion consumes that pre-rounded canonical amount, preserves it within budget, and otherwise applies the 16-significant-digit scale formula.
 - After assignment-scale admission, the ordinary target entry point pads minimum fractional digits and applies the reachable basic Number checks in source order: total digits, signedness, effective integer digits, zero, rendered minimum/maximum length, and inclusive numeric bounds. Canonical rendering makes leading-zero failure unreachable. The explicit warning-suppressed entry point leaves fitting values unchanged, bounds no-fit attempts, applies only the shared total-digit/signedness prefix before the inevitable decimal mismatch, and rejects every no-fit result.
@@ -235,7 +236,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - The compact validation record externally separates ordinary empty numeric polarity only.
 - Pinned parser/checker, transformer, code-generation, and runtime source establish the current clauses
-- a12-dmkits differentials triangulate staged power/fillability, `Abs`, Min/Max domain propagation, target fit/rejection, delta granularity, and exact application.
+- a12-dmkits differentials triangulate staged power/fillability, `Abs`, Min/Max domain propagation, target fit/rejection, delta granularity, exact application, and numeric-`BaseYear` tolerance admission and fixed-band evaluation.
 - Accepted [`SPEC-2026-07-21-05`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-05--runtime-invalid-integral-power-poisons-a-number-computation-target) records a12-dmkits revision `43824168`: both runtime-invalid integral regions now reuse the division-domain target/dependency mechanism, with wrapper, quiet-comparison, and valid-boundary controls.
 - No retained project-local observation covers checked numeric expressions, power fillability, value functions, suppression, tolerance, mixed domain/poison order, or target/application/dependency behavior.
 - Mixed formal-invalid/domain-failure validation precedence is an explicit Lean refinement
@@ -267,7 +268,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
   - general value-function wrapper traversal
   - Date-shift projection
   - concrete arithmetic rendering
-  - numeric `BaseYear` inside the general expression/tolerance route beyond the checked direct comparison
+  - numeric `BaseYear` inside checked computation operations
+  - Base-Year-bearing value-function wrappers beyond audited plain arithmetic
   - declaration-owned construction of the resolved Number target policy
   - downstream context/read integration
   - expression-valued generated implicit validation beyond the literal fragment; the flat whole-rule condition currently has no checked numeric-expression leaf, so do not add a parallel condition tree
