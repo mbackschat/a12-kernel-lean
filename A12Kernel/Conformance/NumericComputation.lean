@@ -81,6 +81,12 @@ private def surfaceField (groups : List String) (name : String) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (surfacePath groups name))
 
+private def surfaceAggregate (op : NumericAggregateOp) (first : String)
+    (rest : List String) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.aggregate op {
+    first := surfacePath ["Root"] first
+    rest := rest.map (surfacePath ["Root"]) })
+
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
 
@@ -611,6 +617,52 @@ example : faultOf
       (power (literal 2) (field (stringDeclaration laterId "WrongLater"))))
     (context (checkedNumber (.rejected .malformed))) =
       some (.fieldKindMismatch laterId) := by
+  native_decide
+
+/- Computation consumes the same resolved aggregate source and fold: empties are skipped, all-empty is zero, and reached formal invalidity poisons. -/
+example :
+    checkedResultOf (surfaceAggregate .sum "Source" ["Later"])
+        (context (checkedNumber (.parsed (.num 4)))
+          (checkedNumber (.parsed (.num 6)))) = some (.value 10) ∧
+      checkedResultOf (surfaceAggregate .sum "Source" ["Later"]) =
+        some (.value 0) ∧
+      checkedResultOf (surfaceAggregate .minimum "Source" ["Later"])
+        (context (checkedNumber (.parsed (.num 20)))) = some (.value 20) ∧
+      checkedResultOf (surfaceAggregate .maximum "Source" ["Later"])
+        (context (checkedNumber (.parsed (.num 20)))
+          (checkedNumber (.rejected .declaredConstraint))) =
+        some (.poison .declaredConstraint) := by
+  native_decide
+
+/- Aggregate atoms compose through plain arithmetic and the kernel-established direct rounding route while retaining their derived scale. -/
+example :
+    checkedResultOf
+      (.binary .add (surfaceAggregate .sum "Source" ["Later"])
+        (.literal { value := 1, authoredScale := 0 }))
+      (context (checkedNumber (.parsed (.num 4)))
+        (checkedNumber (.parsed (.num 6)))) = some (.value 11) ∧
+      checkedResultOf
+        (.round .halfUp omittedRoundingPlaces
+          (surfaceAggregate .sum "Source" ["Later"]))
+        (context (checkedNumber (.parsed (.num 4)))
+          (checkedNumber (.parsed (.num 6)))) = some (.value 10) := by
+  native_decide
+
+/- Direct aggregate rounding does not widen every scalar-only value-function shape to aggregate operands. -/
+example :
+    let aggregate := surfaceAggregate .sum "Source" ["Later"]
+    checkedErrorOf (.abs aggregate) = some .unsupportedExpression ∧
+      checkedErrorOf
+        (AuthoredNumericExpr.extremumList .minimum aggregate
+          [surfaceField ["Root"] "Source"]) = some .unsupportedExpression := by
+  native_decide
+
+/- Shared aggregate lowering preserves its diagnostic owner and computation's nested target-reference rejection. -/
+example :
+    checkedErrorOf (surfaceAggregate .sum "Source" ["Wrong"]) =
+        some (.aggregate (.fieldKindMismatch ["Root", "Wrong"] .string)) ∧
+      checkedErrorOf (surfaceAggregate .sum "Source" ["Target"]) =
+        some (.targetSelfReference targetId) := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation

@@ -1,9 +1,9 @@
-import A12Kernel.Elaboration.NumericSource
+import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, and Date-only month/year differences share plain arithmetic, while separately audited root value functions remain Number-field-only; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, Date-only month/year differences, and direct Number field-list aggregates share plain arithmetic. Separately audited root value functions remain Number-field-only, except for the established direct aggregate-rounding form; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -35,6 +35,7 @@ inductive NumericValidationElabError where
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
   | baseYearNotDeclared
+  | aggregate (error : NumericAggregateElabError)
   | constantExpression
   | unsupportedExpression
   | authoring (result : NumericAuthoringCheck)
@@ -122,6 +123,12 @@ private def NumericValidationAtom.admitted
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
+  | .aggregate _ source =>
+      source.hasMultipleFields && source.hasUniqueFields &&
+        source.fields.all fun field =>
+          match scope with
+          | .sameGroup => model.admitsNumberInGroup rowGroup field
+          | .modelWideNonrepeatable => model.admitsNumberModelWide field
 
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
@@ -193,6 +200,7 @@ def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId �
   | .temporalFieldPart source _, field => source.id == field
   | .dateDifference _ left right, field =>
       left.references field || right.references field
+  | .aggregate _ source, field => source.referencesField field
 
 /-- Whether every field read by one resolved validation atom is relevant. -/
 def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
@@ -206,6 +214,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
         | .field source => isRelevant source.id
         | .baseYear _ _ => true
       operandRelevant left && operandRelevant right
+  | .aggregate _ source => source.allRelevant isRelevant
 
 /-- Reference membership traverses both authored operands without erasing expression shape. -/
 def NumericComparison.referencesField (comparison : NumericComparison)
@@ -218,6 +227,18 @@ def NumericComparison.allRelevant (comparison : NumericComparison)
     (isRelevant : FlatRelevance) : Bool :=
   comparison.left.allAtoms (·.allRelevant isRelevant) &&
     comparison.right.allAtoms (·.allRelevant isRelevant)
+
+private def FlatModel.ensureNumericAggregateRowGroup (model : FlatModel)
+    (rowGroup : GroupPath) :
+    List FlatNumberField → Except NumericValidationElabError Unit
+  | [] => pure ()
+  | field :: remaining =>
+      match model.lookupUniqueId field.id with
+      | .error _ => throw .incoherentCore
+      | .ok declaration => do
+          if declaration.groupPath != rowGroup then
+            throw (.fieldOutsideRowGroup declaration.path rowGroup)
+          model.ensureNumericAggregateRowGroup rowGroup remaining
 
 private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
@@ -260,6 +281,11 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         pure (.dateDifference unit resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
+  | .aggregate op source => do
+      let checked ← (elaborateNumericAggregateFields model rowGroup source).mapError
+        NumericValidationElabError.aggregate
+      model.ensureNumericAggregateRowGroup rowGroup checked.fields
+      pure (.aggregate op checked.resolvedFields)
 
 private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
     AuthoredNumericExpr SurfaceNumericAtom →
@@ -342,6 +368,8 @@ def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
           (left.validationOperand context) (right.validationOperand context) with
       | .ok operand => operand.toValidationArithmetic
       | .error _ => .error .malformed
+  | .aggregate op source =>
+      (source.evaluate op context.observeValidationAt).toValidationArithmetic
 
 private def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
@@ -458,7 +486,7 @@ def LoweredNumericExpr.evalDirectExtremum?
     Option (Except FormalCause NumericArithmeticOutcome) :=
   (expression.evalDirectExtremumWithConstantUse? expected read).map Prod.fst
 
-/-- Evaluate exactly the checked runtime fragment. Value functions are admitted only at the root over a direct field; their result-domain maps preserve formal invalidity and arithmetic domain failure. -/
+/-- Evaluate exactly the checked runtime fragment. Scalar value functions are admitted only at the root over a direct field, while direct aggregate rounding retains the same result-domain map; formal invalidity and arithmetic domain failure are preserved. -/
 def LoweredNumericExpr.evalAdmittedValidation?
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
     LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)

@@ -31,8 +31,13 @@ private def eventDateTime : FlatFieldDecl :=
   { id := 4, groupPath := ["Order"], name := "EventDateTime",
     policy := { kind := .temporal .dateTime dateTimeComponents } }
 
+private def adjustment : FlatFieldDecl :=
+  { id := 5, groupPath := ["Order"], name := "Adjustment",
+    policy := { kind := .number { scale := 0, signed := true } } }
+
 private def model : FlatModel :=
-  { fields := [amount, acknowledged, unattached, repeatedAmount, eventDateTime]
+  { fields := [amount, acknowledged, unattached, repeatedAmount, eventDateTime,
+      adjustment]
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def path (field : String) : SurfaceFieldPath :=
@@ -45,6 +50,13 @@ private def amountPositive : SurfaceNumericComparison :=
   { op := .ordinary .greater
     left := .atom (.field (path "Amount"))
     right := .literal { value := 0, authoredScale := 0 } }
+
+private def aggregatePositive : SurfaceNumericComparison :=
+  { op := .ordinary .greater
+    left := .atom (.aggregate .sum {
+      first := path "Amount"
+      rest := [path "Adjustment"] })
+    right := .literal { value := 4, authoredScale := 0 } }
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [
@@ -97,6 +109,12 @@ private def rawPositiveAcknowledged : RawFlatContext where
     else if id = acknowledged.id then .parsed (.bool true)
     else .empty
 
+private def rawAggregate : RawFlatContext where
+  read id :=
+    if id = amount.id then .parsed (.num 2)
+    else if id = adjustment.id then .parsed (.num 3)
+    else .empty
+
 private def temporalDateParts : DateParts :=
   { year := 2024, month := 6, day := 25 }
 
@@ -137,6 +155,13 @@ private def assembleMixed? : Option (CheckedResolvedValidationRule model) := do
   (assembleResolvedValidationRule model condition amount.id errorCode .error
     messagePlan).toOption
 
+private def assembleAggregate? : Option (CheckedResolvedValidationRule model) := do
+  let numeric ←
+    (elaborateNumericComparison model ["Order"] aggregatePositive).toOption
+  let condition ← (CheckedValidationCondition.fromNumeric numeric).toOption
+  (assembleResolvedValidationRule model condition amount.id errorCode .error
+    messagePlan).toOption
+
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
@@ -170,6 +195,10 @@ private def mixedOutcome (raw : RawFlatContext) : Option FlatRuleOutcome := do
   let rule ← assembleMixed?
   pure (rule.evalFull defaultWorld raw true)
 
+private def aggregateOutcome : Option FlatRuleOutcome := do
+  let rule ← assembleAggregate?
+  pure (rule.evalFull defaultWorld rawAggregate true)
+
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
   { errorAddress := { field := amount.id, path := [] }
@@ -191,6 +220,11 @@ example :
     mixedOutcome rawPositiveAcknowledged =
         some (.fired (expectedMessage .error .value)) ∧
       mixedOutcome (rawAmount (.rejected .malformed)) = some .notFired := by
+  native_decide
+
+/- A direct aggregate remains a numeric-expression atom through ordinary checked whole-rule assembly and the sole message emitter. -/
+example : aggregateOutcome =
+    some (.fired (expectedMessage .error .value)) := by
   native_decide
 
 /- Whole-rule evaluation carries the explicit world through the checked condition, so `Now` observes the supplied millisecond instant before message construction. -/

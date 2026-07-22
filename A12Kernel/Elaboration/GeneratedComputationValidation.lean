@@ -351,6 +351,7 @@ def NumericComputationAtom.toValidationAtom :
       pure (.temporalFieldPart source part)
   | .dateDifference unit left right =>
       pure (.dateDifference unit left right)
+  | .aggregate op source => pure (.aggregate op source)
 
 /-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
 def generatedNumericOperationMismatch (operation : NumericComputationOperation)

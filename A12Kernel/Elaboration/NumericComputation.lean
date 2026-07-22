@@ -1,10 +1,10 @@
-import A12Kernel.Elaboration.NumericSource
+import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, and Date-only month/year-difference sources, rejects nested direct target self-reference, applies the shared plain-arithmetic or direct Number-field-root value-function fragment and result-scale gate, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, table integration, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared plain-arithmetic fragment, the direct scalar-field root functions, or the established direct aggregate-rounding form, checks the result scale, and certifies model coherence. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, general operation-valued wrapper traversal, application, delta projection, scheduling, and repeatable aggregates remain outside this module.
 -/
 
 namespace A12Kernel
@@ -24,6 +24,7 @@ inductive NumericComputationElabError where
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
   | baseYearNotDeclared
+  | aggregate (error : NumericAggregateElabError)
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
@@ -70,6 +71,14 @@ def FlatModel.admitsNumericComputationOperand
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
+  | .aggregate _ source =>
+      source.hasMultipleFields && source.hasUniqueFields &&
+        source.fields.all fun field =>
+          match model.lookupUniqueId field.id with
+          | .ok declaration =>
+              declaration.repeatableScope.isEmpty &&
+                declaration.toNumberField? == some field
+          | .error _ => false
 
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
@@ -97,6 +106,7 @@ def NumericComputationAtom.references
   | .temporalFieldPart source _ => source.id == field
   | .dateDifference _ left right =>
       left.references field || right.references field
+  | .aggregate _ source => source.referencesField field
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
@@ -199,8 +209,15 @@ private def FlatModel.resolveNumericComputationExpression
           pure (.dateDifference unit resolvedLeft resolvedRight)
         else
           throw .incompatibleDateDifference
+    | .aggregate op source => do
+        let checked ←
+          (elaborateNumericAggregateFields model declaringGroup source).mapError
+            NumericComputationElabError.aggregate
+        if checked.resolvedFields.referencesField target then
+          throw (.targetSelfReference target)
+        pure (.aggregate op checked.resolvedFields)
 
-/-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic or direct root value-function fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
+/-- Resolve and check one nonrepeatable numeric computation operation in the shared plain-arithmetic, direct scalar-root, or direct aggregate-rounding fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. General wrapper traversal, repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
@@ -297,6 +314,9 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
           (context.readDateDifferenceOperand right) with
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
+  | .aggregate op source =>
+      pure ((source.evaluate op fun field =>
+        observeCell .computation (context.read field)).toComputationResult)
 
 end ScalarComputationContext
 
@@ -348,6 +368,7 @@ def NumericComputationAtom.numericComputationFault? :
       match fault? left with
       | some fault => some fault
       | none => fault? right
+  | .aggregate _ _ => none
 
 namespace LoweredNumericExpr
 

@@ -4,6 +4,33 @@ import A12Kernel.Elaboration.NumericAggregate
 
 namespace A12Kernel
 
+/-- The shared resolved Sum atom is definitionally the established declaration-aware aggregate fold. -/
+theorem resolvedNumericAggregate_sum_delegates
+    (source : ResolvedNumericAggregateFields)
+    (observe : FieldId → CellObservation) :
+    source.evaluate .sum observe =
+      evalDeclaredNumericSumAggregate (source.resolvedSumSide observe) := by
+  rfl
+
+/-- Both shared resolved extrema atoms delegate to the established exact selector over the same classified cells. -/
+theorem resolvedNumericAggregate_extrema_delegate
+    (source : ResolvedNumericAggregateFields)
+    (observe : FieldId → CellObservation) :
+    source.evaluate .minimum observe =
+        evalNumericExtremumAggregate .minimum (source.resolvedValueSide observe) ∧
+      source.evaluate .maximum observe =
+        evalNumericExtremumAggregate .maximum
+          (source.resolvedValueSide observe) := by
+  exact ⟨rfl, rfl⟩
+
+/-- A two-field aggregate derives exactly the union of its declaration scales. -/
+theorem resolvedNumericAggregate_pair_scaleSummary
+    (first second : FlatNumberField) :
+    ({ first, rest := [second] : ResolvedNumericAggregateFields }).scaleSummary =
+      (NumericScaleSummary.field first.info.scale).union
+        (NumericScaleSummary.field second.info.scale) := by
+  rfl
+
 /-- Both resolved views classify the same explicit cells in the same order. -/
 theorem checkedNumericAggregate_sameCells
     (checked : CheckedNumericAggregateFields model) (raw : RawFlatContext) :
@@ -11,6 +38,8 @@ theorem checkedNumericAggregate_sameCells
       (checked.resolvedValueSide raw).cells := by
   simp [CheckedNumericAggregateFields.resolvedSumSide,
     CheckedNumericAggregateFields.resolvedValueSide,
+    ResolvedNumericAggregateFields.resolvedSumSide,
+    ResolvedNumericAggregateFields.resolvedValueSide,
     ResolvedNumericSumSide.valueCells]
 
 /-- This checked subset never invents an uninstantiated extremum source. -/
@@ -45,7 +74,7 @@ theorem checkedNumericAggregate_evaluateExtremum
     (raw : RawFlatContext) :
     checked.evaluateExtremum op raw =
       evalNumericExtremumAggregate op (checked.resolvedValueSide raw) := by
-  rfl
+  cases op <;> rfl
 
 /-- Successful checked Sum evaluation is exactly the established one-declaration aggregate evaluator over the checked resolved side. -/
 theorem checkedNumericStarSource_evaluateSum_of_valid

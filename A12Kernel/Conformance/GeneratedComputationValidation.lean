@@ -49,6 +49,10 @@ private def crossGroupDate : FlatFieldDecl :=
   { id := 21, groupPath := ["Input"], name := "StartDate",
     policy := { kind := .temporal .date TemporalComponents.fullDate } }
 
+private def crossGroupExtra : FlatFieldDecl :=
+  { id := 13, groupPath := ["Input"], name := "Extra",
+    policy := { kind := .number { scale := 0, signed := false } } }
+
 private def crossGroupTarget : FlatFieldDecl :=
   { id := 22, groupPath := ["Output"], name := "Target",
     policy := { kind := .number { scale := 0, signed := true } } }
@@ -58,7 +62,7 @@ private def crossGroupOtherTarget : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } } }
 
 private def crossGroupModel : FlatModel :=
-  { fields := [crossGroupSource, crossGroupDate, crossGroupTarget,
+  { fields := [crossGroupSource, crossGroupDate, crossGroupExtra, crossGroupTarget,
       crossGroupOtherTarget] }
 
 private def absolutePath (groups : List String) (field : String) :
@@ -93,6 +97,15 @@ private def crossGroupOtherTargetOperation :
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupOtherTarget.id
     (.atom (.field (absolutePath ["Input"] "Source")))
+
+private def crossGroupAggregateOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.aggregate .sum {
+      first := absolutePath ["Input"] "Source"
+      rest := [absolutePath ["Input"] "Extra"] }))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -198,6 +211,7 @@ private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
 private def crossGroupRaw (source target : Rat) : RawFlatContext where
   read field :=
     if field = crossGroupSource.id then .parsed (.num source)
+    else if field = crossGroupExtra.id then .parsed (.num 2)
     else if field = crossGroupTarget.id then .parsed (.num target)
     else .empty
 
@@ -274,6 +288,38 @@ private def crossGroupExpressionSingletonOutcome
     messagePlan }
   let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel table).toOption
   pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+
+private def crossGroupAggregateOutcome (target : Rat) : Option FlatRuleOutcome := do
+  let operation ← crossGroupAggregateOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedAggregate" none messagePlan).toOption
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+
+private def crossGroupAggregateTableOutcome (target : Rat) : Option FlatRuleOutcome := do
+  let first ← crossGroupNumberOperation.toOption
+  let second ← crossGroupAggregateOperation.toOption
+  let table : GeneratedComputationTable
+      (CheckedNumericComputationOperation crossGroupModel) := {
+    targetField := crossGroupTarget.id
+    name := "computedAggregate"
+    alternatives := .guarded {
+      first := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := first }
+      second := {
+        precondition := .fieldFilled crossGroupSource.id
+        operation := second } }
+    messagePlan }
+  let rule ←
+    (assembleGeneratedNumericOperationTableRule crossGroupModel table).toOption
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+
+private def aggregateExpectedMessage : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedAggregate"
+    severity := .error
+    messageType := .value
+    text }
 
 private def expressionTableExpectedMessage : FlatRuleMessage :=
   { errorAddress := { field := crossGroupTarget.id, path := [] }
@@ -654,6 +700,14 @@ example :
         (some (.fieldFilled crossGroupDate.id)) = some .notFired ∧
       crossGroupExpressionTargetMismatch = some (.operationTargetMismatch 2
         crossGroupTarget.id crossGroupOtherTarget.id) := by
+  native_decide
+
+/- A checked aggregate operation reaches both singleton and guarded all-alternative validation through the same expression narrowing; the later aggregate mismatch remains observable without an aggregate-specific comparison wrapper. -/
+example :
+    crossGroupAggregateOutcome 5 = some .notFired ∧
+      crossGroupAggregateOutcome 4 = some (.fired aggregateExpectedMessage) ∧
+      crossGroupAggregateTableOutcome 3 =
+        some (.fired aggregateExpectedMessage) := by
   native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation

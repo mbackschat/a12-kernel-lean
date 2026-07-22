@@ -280,10 +280,28 @@ example :
 
 /- Wrong declared kinds and repeatable sources fail before a resolved side exists. -/
 example :
-    errorOf (sum (bare "Text") []) =
+    errorOf (sum (bare "Text") [bare "UnsignedA"]) =
         some (.fieldKindMismatch text.path .string) ∧
-      errorOf (sum (absolute ["Form", "Rows"] "Amount") []) =
+      errorOf (sum (absolute ["Form", "Rows"] "Amount") [bare "UnsignedA"]) =
         some (.resolve (.repeatableReference repeated.path)) := by
+  native_decide
+
+/- A singleton plain field is not a legal direct field-list aggregate; single starred/group operands belong to their expansion owners. -/
+example : errorOf (sum (bare "UnsignedA") []) = some .tooFewFields := by
+  native_decide
+
+/- Duplicate rejection is global over declaration order rather than adjacent-only. -/
+example :
+    errorOf (sum (bare "UnsignedA") [bare "UnsignedA"]) =
+        some (.duplicateField unsignedA.id) ∧
+      errorOf
+        (sum (bare "UnsignedA") [bare "SignedB", bare "UnsignedA"]) =
+        some (.duplicateField unsignedA.id) := by
+  native_decide
+
+/- Duplicate detection precedes aggregate type checking, including when the repeated declaration has the wrong kind. -/
+example : errorOf (sum (bare "Text") [bare "Text"]) =
+    some (.duplicateField text.id) := by
   native_decide
 
 /- Direct nonrepeatable extrema drop empty cells without substituting zero and retain their operator-specific missing direction. -/

@@ -80,6 +80,12 @@ private def literal (value : Rat) (authoredScale : Int) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .literal { value, authoredScale }
 
+private def aggregate (op : NumericAggregateOp) (first : String)
+    (rest : List String) : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.aggregate op {
+    first := path ["Order"] first
+    rest := rest.map (path ["Order"]) })
+
 private def comparison (op : NumericComparisonOp)
     (left : AuthoredNumericExpr SurfaceNumericAtom)
     (rightValue : Rat) (rightScale : Int := 0) :
@@ -826,6 +832,72 @@ example : errorOf
 example : errorOf
     (comparison .equal (.atom (.field (path ["Reference"] "Other"))) 0) =
       some (.fieldOutsideRowGroup ["Reference", "Other"] ["Order"]) := by
+  native_decide
+
+/- Direct field-list aggregates are ordinary numeric-expression atoms: arithmetic and comparison polarity reuse the existing expression and aggregate evaluators. -/
+example : verdictOf
+    (comparison .greater
+      (.binary .add (aggregate .sum "U" ["V"]) (literal 1 0)) 10)
+    (raw (.parsed (.num 4)) (.parsed (.num 6))) =
+      some (.fired .value) := by
+  native_decide
+
+example :
+    verdictOf (comparison .less (aggregate .sum "U" ["V"]) 10)
+        (raw (.parsed (.num 4))) = some (.fired .omission) ∧
+      verdictOf (comparison .less (aggregate .sum "U" ["V"]) 1) =
+        some (.fired .omission) ∧
+      verdictOf (comparison .greater (aggregate .minimum "U" ["V"]) 10)
+        (raw (.parsed (.num 20))) = some (.fired .omission) ∧
+      verdictOf (comparison .less (aggregate .minimum "U" ["V"]) 10)
+        (raw (.parsed (.num 20))) = some .notFired ∧
+      verdictOf (comparison .greater (aggregate .maximum "U" ["V"]) 10)
+        (raw (.parsed (.num 20)) (.rejected .declaredConstraint)) =
+        some .unknown := by
+  native_decide
+
+/- Aggregate scale is the maximum declaration scale, without literal expansion capability. -/
+example :
+    (elaborateNumericComparison model ["Order"]
+      (twoSided .equal (aggregate .sum "U" ["Scale2"])
+        (atom "Scale2"))).isOk = true ∧
+      errorOf (twoSided .equal (aggregate .sum "U" ["Scale2"])
+        (atom "U")) = some (.exactScaleMismatch
+          (NumericScaleSummary.field 2) (NumericScaleSummary.field 0)) := by
+  native_decide
+
+/- The aggregate owner retains wrong-kind and repeatable-source diagnostics rather than collapsing them into a generic expression rejection. -/
+example :
+    errorOf (comparison .greater (aggregate .sum "U" ["Flag"]) 0) =
+        some (.aggregate (.fieldKindMismatch ["Order", "Flag"] .boolean)) := by
+  native_decide
+
+example :
+    errorOf (comparison .greater
+      (.atom (.aggregate .sum {
+        first := path ["Order"] "U"
+        rest := [path ["Reference"] "Other"] })) 0) =
+      some (.fieldOutsideRowGroup ["Reference", "Other"] ["Order"]) := by
+  native_decide
+
+example :
+    errorOf (comparison .greater
+      (.atom (.aggregate .sum {
+        first := path ["Order"] "U"
+        rest := [path ["Order", "Items"] "Item"] })) 0) =
+      some (.aggregate (.resolve (.repeatableReference
+        ["Order", "Items", "Item"]))) := by
+  native_decide
+
+private def aggregateTraversal : Option (Bool × Bool × Bool × Bool) := do
+  let checked ← (elaborateNumericComparison model ["Order"]
+    (comparison .greater (aggregate .sum "U" ["V"]) 0)).toOption
+  pure (checked.core.referencesField 0,
+    checked.core.referencesField 1,
+    checked.core.allRelevant (fun field => field == 0),
+    checked.core.allRelevant (fun field => field == 0 || field == 1))
+
+example : aggregateTraversal = some (true, true, false, true) := by
   native_decide
 
 end A12Kernel.Conformance.NumericValidation
