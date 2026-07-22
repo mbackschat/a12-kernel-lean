@@ -104,6 +104,8 @@ inductive SurfaceCondition where
       (fields : List SurfaceFieldPath) (values : List String)
   | stringFieldValueList (quantifier : ValueListQuantifier)
       (fields values : List SurfaceFieldPath)
+  | stringValueMembership (op : ValueListMembershipOp)
+      (field : SurfaceFieldPath) (values : List String)
   | enumerationValueMembership (op : ValueListMembershipOp)
       (field : SurfaceTextFieldOperand) (values : List String)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
@@ -851,6 +853,16 @@ private def elaborateStringValueListOperand (model : FlatModel)
       throw (.textFieldOperandKindMismatch declaration.path
         declaration.policy.kind.surfaceKind)
 
+private def elaborateStringLiteralList (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceFieldPath)
+    (values : List String) : Except ElabError FlatTextFieldOperand := do
+  let (path, operand) ←
+    elaborateStringValueListOperand model declaringGroup surface
+  if values.isEmpty then
+    throw (.emptyValueList path)
+  else
+    pure operand
+
 private def duplicateElaboratedStringValueListOperand? :
     List ElaboratedStringValueListOperand → Option (List String)
   | [] => none
@@ -943,6 +955,9 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       let (fields, values) ←
         elaborateStringFieldValueSides model declaringGroup fieldSurfaces valueSurfaces
       pure (.tokenValueList quantifier fields (.fields values))
+  | .stringValueMembership op surface values => do
+      let operand ← elaborateStringLiteralList model declaringGroup surface values
+      pure (.tokenValueList op.quantifier [operand] (.literals values))
   | .enumerationValueMembership op surface values => do
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup surface values
