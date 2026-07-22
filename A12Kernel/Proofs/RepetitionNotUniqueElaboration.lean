@@ -44,26 +44,40 @@ theorem checkedRepetitionNotUnique_uniqueKeyFields
     FieldId.firstDuplicate? (checked.keys.map (·.fieldId)) = none :=
   checked.uniqueKeyFields
 
-/-- Every checked key uses the same exact group path as the first key. -/
-theorem checkedRepetitionNotUnique_commonKeyPath
+/-- Every checked key group is an ancestor-or-equal prefix of the selected terminal group. -/
+theorem checkedRepetitionNotUnique_keyGroupsOnBranch
     (checked : CheckedRepetitionNotUniqueSource model) :
-    checked.restKeys.all (fun key =>
-      key.source.declaration.groupPath ==
-        checked.firstKey.source.declaration.groupPath) = true :=
-  checked.commonKeyPath
+    checked.keys.all (fun key =>
+      key.source.declaration.groupPath.isPrefixOf checked.terminalGroup) = true :=
+  checked.keyGroupsOnBranch
 
-/-- Every checked key uses the same topology plan as the first key. -/
-theorem checkedRepetitionNotUnique_commonStarPath
+/-- At least one checked key owns the selected terminal group. -/
+theorem checkedRepetitionNotUnique_terminalGroupOwned
     (checked : CheckedRepetitionNotUniqueSource model) :
-    checked.restKeys.all (fun key =>
-      key.source.path == checked.firstKey.source.path) = true :=
-  checked.commonStarPath
+    checked.keys.any (fun key =>
+      key.source.declaration.groupPath == checked.terminalGroup) = true :=
+  checked.terminalGroupOwned
+
+/-- Every component path is an exact repeatable-axis prefix of the deepest-row topology. -/
+theorem checkedRepetitionNotUnique_keyPathsWithinTopology
+    (checked : CheckedRepetitionNotUniqueSource model) :
+    checked.keys.all (fun key =>
+      key.source.path.axes ==
+        checked.topology.path.axes.take key.source.path.axes.length) = true :=
+  checked.keyPathsWithinTopology
+
+/-- The deepest-row topology carries exactly the terminal key group's model-owned repeatable ancestry. -/
+theorem checkedRepetitionNotUnique_topologyLevels
+    (checked : CheckedRepetitionNotUniqueSource model) :
+    checked.topology.path.axes.map (·.level) =
+      model.repeatableScopeForGroupPath checked.terminalGroup :=
+  checked.topologyLevelsOwned
 
 /-- The first reopened level is exactly the selected default or explicit reference group. -/
 theorem checkedRepetitionNotUnique_referenceLevel
     (checked : CheckedRepetitionNotUniqueSource model) :
-    ((checked.firstKey.source.path.axes.drop
-      checked.firstKey.source.path.firstStar).head?.map (·.level)) =
+    ((checked.topology.path.axes.drop
+      checked.topology.path.firstStar).head?.map (·.level)) =
         some checked.referenceGroup.level :=
   checked.referenceLevelOwned
 
@@ -81,7 +95,7 @@ theorem checkedRepetitionNotUnique_resolvedRows_of_topology
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) (topology : ResolvedStarTopology)
-    (resolved : checked.firstKey.source.path.resolve document outer = .ok topology) :
+    (resolved : checked.topology.path.resolve document outer = .ok topology) :
     checked.resolvedRows document outer scope read =
       .ok ((topology.environments.filter (checked.rowRelevant scope)).map
         (checked.resolvedRow read)) := by

@@ -26,8 +26,15 @@ private def phase : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } }
     repeatableScope := [10] }
 
+private def reviewScore : FlatFieldDecl :=
+  { id := 5
+    groupPath := ["Project", "Reviews"]
+    name := "Score"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [30] }
+
 private def model : FlatModel :=
-  { fields := [effort, estimate, text, phase]
+  { fields := [effort, estimate, text, phase, reviewScore]
     repeatableGroups := [
       { level := 20, path := ["Project", "Milestones", "Tasks"], repeatability := some 2 },
       { level := 10, path := ["Project", "Milestones"], repeatability := some 2 },
@@ -38,6 +45,9 @@ private def keyPath (field : String := "Effort") : SurfaceFieldPath :=
 
 private def phasePath : SurfaceFieldPath :=
   { base := .absolute, groups := ["Project", "Milestones"], field := "Phase" }
+
+private def reviewPath : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Project", "Reviews"], field := "Score" }
 
 private def fromGroup (groups : List String) : SurfaceRepetitionNotUniqueScope :=
   .from { base := .absolute, groups }
@@ -60,7 +70,11 @@ private def rawNumber (value : Nat) : RawCell :=
   .parsed (.num value)
 
 private def crossMilestoneRead (environment : Env) (field : FieldId) : RawCell :=
-  if field == text.id then
+  if field == phase.id then
+    match environment with
+    | [(10, repetition)] => rawNumber repetition
+    | _ => .rejected .malformed
+  else if field == text.id then
     match environment with
     | [(10, 1), (20, 1)] | [(10, 2), (20, 1)] => .parsed (.str "A")
     | _ => .parsed (.str "B")
@@ -72,6 +86,9 @@ private def crossMilestoneRead (environment : Env) (field : FieldId) : RawCell :
     | [(10, 2), (20, 1)] => rawNumber 5
     | [(10, 2), (20, 2)] => rawNumber 9
     | _ => .empty
+
+private def samePhaseRead (environment : Env) (field : FieldId) : RawCell :=
+  if field == phase.id then rawNumber 1 else crossMilestoneRead environment field
 
 private def withinFirstMilestoneRead (environment : Env)
     (field : FieldId) : RawCell :=
@@ -180,6 +197,22 @@ example :
         ([(10, 2), (20, 2)], .notFired)] := by
   native_decide
 
+/- An ancestor key is read at its own repetition prefix for every deepest-row instance. -/
+example :
+    verdictsOf (authored (firstKey := phasePath) (restKeys := [keyPath])) [] .full
+      crossMilestoneRead = some [
+        ([(10, 1), (20, 1)], .notFired),
+        ([(10, 1), (20, 2)], .notFired),
+        ([(10, 2), (20, 1)], .notFired),
+        ([(10, 2), (20, 2)], .notFired)] ∧
+    verdictsOf (authored (firstKey := phasePath) (restKeys := [keyPath])) [] .full
+      samePhaseRead = some [
+        ([(10, 1), (20, 1)], .fired .value),
+        ([(10, 1), (20, 2)], .notFired),
+        ([(10, 2), (20, 1)], .fired .value),
+        ([(10, 2), (20, 2)], .notFired)] := by
+  native_decide
+
 private def malformedDuplicate (environment : Env) (field : FieldId) : RawCell :=
   if field == estimate.id then .empty
   else if environment == [(10, 2), (20, 1)] then .rejected .malformed
@@ -195,13 +228,13 @@ example :
   native_decide
 
 private def flag : FlatFieldDecl :=
-  { effort with id := 5, name := "Flag", policy := { kind := .boolean } }
+  { effort with id := 6, name := "Flag", policy := { kind := .boolean } }
 
 private def modelWithFlag : FlatModel :=
   { model with fields := flag :: model.fields }
 
 private def customText : FlatFieldDecl :=
-  { id := 6
+  { id := 7
     groupPath := text.groupPath
     name := "CustomText"
     policy := text.policy
@@ -227,12 +260,16 @@ private def customTextError : Option RepetitionNotUniqueElabError :=
 example :
     errorOf (authored (restKeys := [keyPath])) =
         some (.duplicateKeyField effort.id) ∧
-    errorOf (authored (restKeys := [phasePath])) =
-        some (.keyPathMismatch effort.groupPath phase.groupPath) ∧
+    errorOf (authored (restKeys := [reviewPath])) =
+        some (.keyPathMismatch effort.groupPath reviewScore.groupPath) ∧
     unsupportedError =
         some (.unsupportedKeyKind flag.path .boolean) ∧
     customTextError =
         some (.customStringRequiresPreparedChecking customText.path) ∧
+    errorOf (authored (fromGroup ["Project", "Milestones", "Tasks"])
+        phasePath [keyPath]) =
+        some (.referenceGroupDoesNotContainKey
+          ["Project", "Milestones", "Tasks"] phase.groupPath) ∧
     errorOf (authored (fromGroup ["Project", "Reviews"])) =
         some (.referenceGroupDoesNotContainKey
           ["Project", "Reviews"] effort.groupPath) ∧

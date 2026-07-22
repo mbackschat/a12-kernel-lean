@@ -923,8 +923,10 @@ run_cmd do
 #print axioms A12Kernel.repetitionKey_tokenValueList_empty
 #print axioms A12Kernel.repetitionKey_tokenValueList_unknown
 #print axioms A12Kernel.checkedRepetitionNotUnique_uniqueKeyFields
-#print axioms A12Kernel.checkedRepetitionNotUnique_commonKeyPath
-#print axioms A12Kernel.checkedRepetitionNotUnique_commonStarPath
+#print axioms A12Kernel.checkedRepetitionNotUnique_keyGroupsOnBranch
+#print axioms A12Kernel.checkedRepetitionNotUnique_terminalGroupOwned
+#print axioms A12Kernel.checkedRepetitionNotUnique_keyPathsWithinTopology
+#print axioms A12Kernel.checkedRepetitionNotUnique_topologyLevels
 #print axioms A12Kernel.checkedRepetitionNotUnique_referenceLevel
 #print axioms A12Kernel.checkedRepetitionNotUnique_resolvedRow_shape
 #print axioms A12Kernel.checkedRepetitionNotUnique_resolvedRows_of_topology
