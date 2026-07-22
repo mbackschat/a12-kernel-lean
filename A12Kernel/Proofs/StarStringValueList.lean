@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StarStringValueList
+import A12Kernel.Proofs.Correlation
 
 /-! # Checked nested String-star literal value-list laws -/
 
@@ -9,6 +10,27 @@ theorem checkedStarStringSource_fieldId_exact
     (checked : CheckedStarStringSource model) :
     checked.field.id = checked.source.declaration.id :=
   checked.fieldIdOwned
+
+/-- Any retained String-star filter is checked against the exact candidate and captured repetition environments of its typed source. -/
+theorem checkedStarStringSource_filter_wellFormed
+    (checked : CheckedStarStringSource model)
+    (filter : CheckedStarHaving model checked.source checked.declaringGroup) :
+    filter.condition.wellFormedForEnvironments model
+      (checked.source.path.axes.map (·.level))
+      (model.repeatableScopeForGroupPath checked.declaringGroup) = true :=
+  filter.wellFormed
+
+/-- A filtered String star delegates selection and classification to the shared kind-neutral checked-star route. -/
+theorem checkedStarStringSource_filtered_delegates
+    (checked : CheckedStarStringSource model)
+    (filter : CheckedStarHaving model checked.source checked.declaringGroup)
+    (document : Document) (outer : Env)
+    (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell) (owned : checked.filter = some filter) :
+    checked.resolvedValueSide document outer filterRead read =
+      checked.source.resolvedValidationHavingValueListSide document outer
+        filter.condition filterRead (checked.valueListCell read) := by
+  simp [CheckedStarStringSource.resolvedValueSide, owned]
 
 /-- Checked authoring always retains a nonempty literal token side. -/
 theorem checkedStarStringValueList_values_nonempty
@@ -70,10 +92,12 @@ theorem checkedStarStringValueList_partialFields_agreeOnRelevant
 /-- Once topology resolution succeeds, full evaluation is exactly the common token-list dispatcher over the checked String side and literal side. -/
 theorem checkedStarStringValueList_evaluateFull_of_resolved
     (checked : CheckedStarStringValueListSource model)
-    (document : Document) (outer : Env) (read : Env → FieldId → RawCell)
+    (document : Document) (outer : Env)
+    (filterRead : Env → FieldId → CheckedCell)
+    (read : Env → FieldId → RawCell)
     (fields : ResolvedValueListSide .token)
-    (resolved : checked.fields.resolvedValueSide document outer read = .ok fields) :
-    checked.evaluateFull document outer read =
+    (resolved : checked.fields.resolvedValueSide document outer filterRead read = .ok fields) :
+    checked.evaluateFull document outer filterRead read =
       .ok (checked.quantifier.eval fields checked.resolvedValuesSide) := by
   simp [CheckedStarStringValueListSource.evaluateFull, resolved]
   rfl
@@ -84,12 +108,24 @@ theorem checkedStarStringValueList_evaluatePartial_of_resolved
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell)
     (fields : ResolvedValueListQuantifierSide .token)
-    (resolved : checked.fields.resolvedPartialValueSide document outer scope read =
-      .ok fields) :
+    (unfiltered : checked.fields.filter.isNone = true)
+    (resolved : checked.fields.resolvedPartialValueSide document outer scope read
+      unfiltered = .ok fields) :
     checked.evaluatePartial document outer scope read =
-      .ok (checked.quantifier.evalClassified fields
-        (.ofResolved checked.resolvedValuesSide)) := by
-  simp [CheckedStarStringValueListSource.evaluatePartial, resolved]
+      .ok (.evaluated (checked.quantifier.evalClassified fields
+        (.ofResolved checked.resolvedValuesSide))) := by
+  simp [CheckedStarStringValueListSource.evaluatePartial, unfiltered, resolved]
+  rfl
+
+/-- A checked fields-side `Having` skips partial validation before topology or String reads. -/
+theorem checkedStarStringValueList_partialHaving_skips
+    (checked : CheckedStarStringValueListSource model)
+    (filter : CheckedStarHaving model checked.fields.source checked.fields.declaringGroup)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell)
+    (owned : checked.fields.filter = some filter) :
+    checked.evaluatePartial document outer scope read = .ok .skippedHaving := by
+  simp [CheckedStarStringValueListSource.evaluatePartial, owned]
   rfl
 
 /-- The direct fields-side operand is re-admitted against the exact model before it can be paired with a starred values side. -/
@@ -114,9 +150,11 @@ theorem checkedStringValueListStarValues_fieldsSide_shape
 theorem checkedStringValueListStarValues_evaluateFull_of_resolved
     (checked : CheckedStringValueListStarValuesSource model)
     (document : Document) (outer : Env) (raw : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) (values : ResolvedValueListSide .token)
-    (resolved : checked.values.resolvedValueSide document outer read = .ok values) :
-    checked.evaluateFull document outer raw read =
+    (resolved : checked.values.resolvedValueSide document outer filterRead read =
+      .ok values) :
+    checked.evaluateFull document outer raw filterRead read =
       .ok (checked.quantifier.eval (checked.resolvedFieldsSide raw) values) := by
   simp [CheckedStringValueListStarValuesSource.evaluateFull, resolved]
   rfl
@@ -127,12 +165,24 @@ theorem checkedStringValueListStarValues_evaluatePartial_of_resolved
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (raw : RawFlatContext) (read : Env → FieldId → RawCell)
     (values : ResolvedValueListQuantifierSide .token)
-    (resolved : checked.values.resolvedPartialValueSide document outer scope read =
-      .ok values) :
+    (unfiltered : checked.values.filter.isNone = true)
+    (resolved : checked.values.resolvedPartialValueSide document outer scope read
+      unfiltered = .ok values) :
     checked.evaluatePartial document outer scope raw read =
-      .ok (checked.quantifier.evalClassified
-        (checked.resolvedPartialFieldsSide scope raw) values) := by
-  simp [CheckedStringValueListStarValuesSource.evaluatePartial, resolved]
+      .ok (.evaluated (checked.quantifier.evalClassified
+        (checked.resolvedPartialFieldsSide scope raw) values)) := by
+  simp [CheckedStringValueListStarValuesSource.evaluatePartial, unfiltered, resolved]
+  rfl
+
+/-- A checked values-side `Having` skips partial validation before direct-field, topology, or String reads. -/
+theorem checkedStringValueListStarValues_partialHaving_skips
+    (checked : CheckedStringValueListStarValuesSource model)
+    (filter : CheckedStarHaving model checked.values.source checked.values.declaringGroup)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (raw : RawFlatContext) (read : Env → FieldId → RawCell)
+    (owned : checked.values.filter = some filter) :
+    checked.evaluatePartial document outer scope raw read = .ok .skippedHaving := by
+  simp [CheckedStringValueListStarValuesSource.evaluatePartial, owned]
   rfl
 
 end A12Kernel

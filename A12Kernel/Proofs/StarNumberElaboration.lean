@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Proofs.Correlation
 
 namespace A12Kernel
 
@@ -72,11 +73,8 @@ theorem checkedStarNumberSource_filterBeforeTarget
         checked.valueListCell right environment) :
     checked.selectedValidationHavingValueSide resolved having filterRead outer left =
       checked.selectedValidationHavingValueSide resolved having filterRead outer right := by
-  simp only [CheckedStarNumberSource.selectedValidationHavingValueSide]
-  congr 1
-  apply List.map_congr_left
-  intro environment selected
-  exact agree environment selected
+  apply checkedStarFieldPath_havingBeforeClassification
+  exact agree
 
 /-- A nonrelevant all-rows source is rejected before target classification, so changing every raw target remains unobservable. -/
 theorem checkedStarNumberSource_nonRelevantBeforeTarget

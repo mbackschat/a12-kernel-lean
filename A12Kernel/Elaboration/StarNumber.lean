@@ -81,11 +81,8 @@ def selectedValidationHavingValueSide (checked : CheckedStarNumberSource model)
     (resolved : ResolvedStarTopology) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell) (outer : Env)
     (read : Env → FieldId → RawCell) : ResolvedValueListSide .number :=
-  let filterContext : CorrelationContext := { read := filterRead }
-  let selected := having.selectEnvironments filterContext outer resolved.environments
-  { cells := selected.map (checked.valueListCell read)
-    hasUninstantiatedTail := resolved.domain.hasOpenTail
-    hasHaving := true }
+  checked.source.selectedValidationHavingValueListSide resolved having filterRead
+    outer (checked.valueListCell read)
 
 /-- Resolve nested rows once and classify every canonical leaf through the declaration-owned Number boundary. -/
 def resolvedValueSide (checked : CheckedStarNumberSource model)
@@ -115,9 +112,9 @@ def resolvedValidationHavingValueSide (checked : CheckedStarNumberSource model)
     (document : Document) (outer : Env) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) :
-    Except StarAddressingError (ResolvedValueListSide .number) := do
-  let resolved ← checked.source.path.resolve document outer
-  pure (checked.selectedValidationHavingValueSide resolved having filterRead outer read)
+    Except StarAddressingError (ResolvedValueListSide .number) :=
+  checked.source.resolvedValidationHavingValueListSide document outer having
+    filterRead (checked.valueListCell read)
 
 end CheckedStarNumberSource
 

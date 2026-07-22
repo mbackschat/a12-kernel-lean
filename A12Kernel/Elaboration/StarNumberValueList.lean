@@ -144,10 +144,7 @@ def resolvedValueSide (checked : CheckedStarNumberValueListFields model)
 end CheckedStarNumberValueListFields
 
 /-- Partial validation distinguishes a rule-level `Having` skip from an evaluated value-list verdict. A containing whole condition must still report filters from every branch before invoking this leaf route. -/
-inductive PartialStarNumberValueListResult where
-  | skippedHaving
-  | evaluated (verdict : Verdict)
-  deriving Repr, DecidableEq
+abbrev PartialStarNumberValueListResult := PartialHavingValueListResult
 
 namespace CheckedStarNumberSource
 
