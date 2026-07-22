@@ -559,6 +559,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - [`Semantics/Iteration.lean`](../A12Kernel/Semantics/Iteration.lean)
 - [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean)
+- [`Semantics/StarAddressing.lean`](../A12Kernel/Semantics/StarAddressing.lean)
 - [`Semantics/GroupPresence.lean`](../A12Kernel/Semantics/GroupPresence.lean)
 - [`Semantics/RepetitionNotUnique.lean`](../A12Kernel/Semantics/RepetitionNotUnique.lean)
 - [`Semantics/Correlation.lean`](../A12Kernel/Semantics/Correlation.lean)
@@ -570,6 +571,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Elaboration/FirstFilledValue.lean`](../A12Kernel/Elaboration/FirstFilledValue.lean)
 - [`Proofs/Iteration.lean`](../A12Kernel/Proofs/Iteration.lean)
 - [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean)
+- [`Proofs/StarAddressing.lean`](../A12Kernel/Proofs/StarAddressing.lean)
 - [`Proofs/GroupPresence.lean`](../A12Kernel/Proofs/GroupPresence.lean)
 - [`Proofs/RepetitionNotUnique.lean`](../A12Kernel/Proofs/RepetitionNotUnique.lean)
 - [`Proofs/Correlation.lean`](../A12Kernel/Proofs/Correlation.lean)
@@ -581,6 +583,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/FirstFilledValue.lean`](../A12Kernel/Proofs/FirstFilledValue.lean)
 - [`Conformance/Iteration.lean`](../A12Kernel/Conformance/Iteration.lean)
 - [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean)
+- [`Conformance/StarAddressing.lean`](../A12Kernel/Conformance/StarAddressing.lean)
 - [`Conformance/GroupPresence.lean`](../A12Kernel/Conformance/GroupPresence.lean)
 - [`Conformance/RepetitionNotUnique.lean`](../A12Kernel/Conformance/RepetitionNotUnique.lean)
 - [`Conformance/Correlation.lean`](../A12Kernel/Conformance/Correlation.lean)
@@ -601,6 +604,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Laws characterize exact cluster membership, firing, the internal false/unknown refinement, unique cluster identities, and the existence of a genuinely distinct matching peer.
 - The separate checked one-star lowering retains explicit group paths, path-derived repeatable ancestry, exact singleton scope, operator-specific scale legality, model-derived raw checking, fail-closed runtime references, and pre-evaluation 1-based/unique candidate validation.
 - The separate reopened-star domain recursively checks finite capacity under every actual parent, treats unbounded levels as open, validates positive sibling-unique coordinates, and bridges its structural result into resolved missing potential.
+- The general star-topology resolver binds only exact named outer levels above the first star, validates path depth and parent existence across an explicit `Document`, canonicalizes every actual sibling set to its 1-based coordinate prefix independently of storage order, and constructs the existing reopened tree and deepest-level-fastest leaf `Env` stream together. Gaps and duplicates fail closed; over-limit rows stay addressable for later formal classification.
+- Every kind-indexed value-list consumer can classify that one resolved leaf stream through `ResolvedStarTopology.toResolvedSide`; generic laws keep its cells and hierarchical tail projection tied to the same topology.
 - The resolved group-presence state independently folds admitted content, error, and three-level relevance, then supplies scalar predicates, fixed-list tallies, strict numeric count availability, and parent-filled requiredness.
 - Checked-wrapper theorems eliminate structural certificates
 - they are not source-to-core semantic preservation
@@ -618,17 +623,18 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - it does not become project-local portable evidence.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` adds dual-kernel/peer IF193 group-state and IF194 nested-tail separators
 - neither is retained as project-local portable evidence.
+- Local nested-addressing cases separate shuffled storage from canonical repetition order, outer-level binding from same-level reopening, complete from missing per-parent capacity, named-level binding from positional reuse, valid over-limit retention, gaps, orphan rows, and stream/tree order agreement.
 - [`EVIDENCE.md`](EVIDENCE.md) owns the exact retained inventory and observable support
 
 #### Excluded boundary and gap links
 
-- **Implemented; wider cross-level and RNU additions remain external evidence pending.** Coverage includes one-group runtime/lowering, normalized firing rows, resolved RNU, caller-supplied reopened-star completeness, and resolved group-presence projections.
+- **Implemented; wider cross-level and RNU additions remain external evidence pending.** Coverage includes one-group runtime/lowering, normalized firing rows, resolved RNU, document-derived general star topology after checked path planning, reopened-star completeness, and resolved group-presence projections.
 - Correlation carries complete candidate/captured environments; RNU defines one branch-independent relation and complete peer clusters before verdict composition.
 - The RNU caller must still construct rows, supply the target in scope, unique complete repetition environments with canonical positive level coordinates, one common declared key arity/order/kind schema, and relevance-filtered component presence; checked String cells now have one exact component adapter
 - the low-level evaluator remains total outside those obligations without a kernel-correspondence claim.
 - Checked RNU scope/`@From`, key schema, partial relevance, authoring restrictions, whole-rule placement, and peer-pointer obligations are indexed by [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction), [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and [`SG10`](SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 - The checked correlation elaborator and public protocol remain one-group only
-- General document/group-instance construction and every wider repeated consumer are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). The closed model-to-row consumers remain the unfiltered one-level Number aggregate and `FirstFilledValue` routes.
+- Model-owned construction of the general `StarPath`, field-cell classification, `Having`, partial relevance, RNU/group-presence adaptation, and every wider repeated consumer remain indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). The closed model-to-operator consumers remain the unfiltered one-level Number aggregate and `FirstFilledValue` routes.
 
 ### §10 — paths and references
 
@@ -899,16 +905,17 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - a12-dmkits revision `20230e40` accepted the all-empty correction in [`SPEC-2026-07-20-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-15--all-empty-number-aggregate-identity-is-both-directionally-fillable).
 - The same revision accepted Sum order, precision, and missing polarity in [`SPEC-2026-07-21-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-02--number-sum-preserves-encounter-order-staged-precision-and-missing-declaration-polarity).
 
-### Reopened-star structural completeness
+### Reopened-star structural completeness and addressing
 
-- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean), [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean), and [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean).
-- Boundary: IF194's structural decision after first-star binding.
+- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Semantics/StarAddressing.lean`](../A12Kernel/Semantics/StarAddressing.lean), [`Elaboration/NumericStar.lean`](../A12Kernel/Elaboration/NumericStar.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), [`Proofs/StarAddressing.lean`](../A12Kernel/Proofs/StarAddressing.lean), [`Proofs/NumericStarElaboration.lean`](../A12Kernel/Proofs/NumericStarElaboration.lean), [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean), [`Conformance/StarAddressing.lean`](../A12Kernel/Conformance/StarAddressing.lean), and [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean).
+- Boundary: IF194's structural decision and general document-topology construction after model/path lowering has identified the repeatable ancestry and first star.
 - `ReopenedStarDomain` contains only reopened repeatable levels
 - every actual child row stays beneath its actual parent, carries its 1-based coordinate, and recursively owns the next reopened level or selected leaf.
 - Its executable well-formedness check requires positive, sibling-unique coordinates but permits over-limit rows.
 - A finite level is structurally closed exactly when its actual count reaches the cap and every actual child subtree is closed
 - an absent cap is unbounded and always open.
 - The traversal is linear in the supplied tree and never constructs the declared Cartesian domain.
+- `StarPath.resolve` derives that tree from `Document.instantiatedRows`, validates exact row depth, parent existence, positive contiguous sibling prefixes, and named outer bindings, then emits leaf environments in ascending lexicographic repetition order with the deepest level changing fastest. Storage encounter order is unobservable at this boundary; valid over-limit rows remain in the stream.
 
 - The bridge writes this structural result to `ResolvedValueListSide.hasUninstantiatedTail`
 - selected-cell emptiness remains in `cells`, so existing `hasMissingPotential` combines the two without duplicating leaf state.
@@ -916,8 +923,8 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - Cases separate outer, middle, and leaf omissions, full closure, a bound level above the first star, an unbounded level, invalid coordinate inputs, empty-cell composition, and an unchanged unsigned Sum consumer.
 - The first shallow-count implementation failed the middle and leaf cases before recursive correction.
 
-- This is internally complete at levels 1–2 for a caller-supplied well-formed reopened tree and resolved cell stream, plus checked construction of the finite unfiltered one-level Number-star case.
-- It does not construct nested reopened trees, enumerate general scoped `Document` rows, evaluate `Having`, or prove a general nested tree/stream correspondence. The one-level checked aggregate does bind the first star, read its positive capacity, validate a contiguous bounded row prefix, classify its cells, and prove the shallow tail equation.
+- This is internally complete at levels 1–2 for model-independent nested topology resolution and its common tree/stream bridge, plus checked model-owned construction of the finite unfiltered one-level Number-star case.
+- General `StarPath` elaboration still must recover exact axes/capacities from the model-owned field path; cell classification, `Having`, partial relevance, and checked consumers beyond the one-level Number routes remain open. The resolver's construction-by-design and bridge laws tie leaves to the stream, while a stronger inductive tree/environment correspondence theorem remains part of [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 - The a12-dmkits IF194 tri-engine matrix at revision `7f152509eea76822068955055b0d57d8ed930ca2` is focused external triangulation, but this repository retains no portable observation
 - correspondence remains `external evidence pending`.
 - Aggregate directions, computation, partial relevance, per-source declaration-metadata construction, messages, and protocol exposure retain their existing boundaries.
