@@ -174,6 +174,20 @@ def checkedCell (checked : CheckedStarFieldPath model)
   else
     scalar
 
+/-- Classify a declaration-certified String leaf through the common normalized token reader. This is shared by starred value lists and heterogeneous repetition keys. -/
+def stringValueListCell (checked : CheckedStarFieldPath model)
+    (fieldOwned : checked.declaration.policy.kind = .string)
+    (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .token :=
+  if hKind : checked.declaration.policy.kind = .string then
+    let field : FlatStringField := { id := checked.declaration.id }
+    let context : FlatContext := {
+      read := fun id =>
+        if id == field.id then checked.checkedCell read environment
+        else malformedCheckedCell }
+    (FlatTextFieldOperand.string field).valueListCell context
+  else
+    False.elim (hKind fieldOwned)
+
 /-- Resolve canonical topology once and classify every leaf in its established order. -/
 def resolvedValueListSide (checked : CheckedStarFieldPath model)
     (document : Document) (outer : Env) (classify : Env → ValueListCell kind) :

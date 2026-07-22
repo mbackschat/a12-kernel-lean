@@ -128,11 +128,7 @@ namespace CheckedStarStringSource
 /-- Classify one resolved leaf through declaration-owned String checking and the existing normalized token cell. -/
 def valueListCell (checked : CheckedStarStringSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .token :=
-  let context : FlatContext := {
-    read := fun id =>
-      if id == checked.field.id then checked.source.checkedCell read environment
-      else malformedCheckedCell }
-  (FlatTextFieldOperand.string checked.field).valueListCell context
+  checked.source.stringValueListCell checked.fieldOwned read environment
 
 /-- Resolve nested topology once and preserve canonical leaf order plus hierarchical omitted-tail state. -/
 def resolvedValueSide (checked : CheckedStarStringSource model)
