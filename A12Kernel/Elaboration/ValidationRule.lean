@@ -51,9 +51,9 @@ def core (rule : CheckedResolvedFlatRule model) : ResolvedFlatRule :=
     severity := rule.severity
     messagePlan := rule.messagePlan }
 
-def evalFull (rule : CheckedResolvedFlatRule model) (raw : RawFlatContext)
+def evalFull (rule : CheckedResolvedFlatRule model) (world : World) (raw : RawFlatContext)
     (hasContent : Bool) : FlatRuleOutcome :=
-  rule.core.evalFull (model.checkContext raw) hasContent
+  rule.core.evalFull ((model.checkContext raw).withWorld world) hasContent
 
 end CheckedResolvedFlatRule
 

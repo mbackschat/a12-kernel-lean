@@ -103,6 +103,9 @@ private def brokenAndHealthy : RawFlatContext where
     else if field = broken.id then .rejected .malformed
     else .empty
 
+private def evaluationWorld : World :=
+  { now := { epochMillis := 0 }, baseYear := none }
+
 private def selectionOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) :
     ComputationAlternativeSelection DecodedNumericLiteral :=
@@ -112,7 +115,7 @@ private def outcomeOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) : Option FlatRuleOutcome :=
   match assembleGeneratedLiteralNumberRule model candidate with
   | .error _ => none
-  | .ok rule => some (rule.evalFull raw true)
+  | .ok rule => some (rule.evalFull evaluationWorld raw true)
 
 private def assemblyErrorIn (checkedModel : FlatModel)
     (candidate : LiteralNumberComputation) :

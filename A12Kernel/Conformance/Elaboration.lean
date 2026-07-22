@@ -107,6 +107,10 @@ private def compareFields (op : SurfaceComparisonOp) (left right : String) :
     SurfaceCondition :=
   .compareFields op (absolute ["Order"] left) (absolute ["Order"] right)
 
+private def compareNow (op : SurfaceComparisonOp) (position : SurfaceNowPosition)
+    (field : String) : SurfaceCondition :=
+  .compareNow op position (absolute ["Order"] field)
+
 private def dateLiteral (components : TemporalComponents) (millis : Int) :
     SurfaceLiteral :=
   .date components { epochMillis := millis }
@@ -225,6 +229,24 @@ example :
       (compare .equal (absolute ["Order"] "DispatchDate")
         (dateLiteral invalidDateLiteralComponents 101000))) =
       some (.invalidTemporalLiteralComponents ["<date-literal>"]) := by
+  native_decide
+
+example :
+    coreOf (elaborate model ["Order"]
+      (compareNow .less .right "EventDateTime")) =
+        some (.compare (.temporal .before
+          (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents })
+          .nowValue)) ∧
+      coreOf (elaborate model ["Order"]
+        (compareNow .greater .left "EventDateTime")) =
+          some (.compare (.temporal .after .nowValue
+            (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compareNow .less .right "DispatchDate")) =
+        some (.temporalNowRequiresTime ["Order", "DispatchDate"]) := by
   native_decide
 
 example :
@@ -411,72 +433,95 @@ private def temporalComparisonRaw (leftKind : TemporalKind) (left : Int)
       | none => .empty
     else .empty
 
-example : valueOf (elaborateAndEvalFull model ["Order"] ordinaryRaw true
+private def eventDateTimeRaw (millis : Int) : RawFlatContext where
+  read id :=
+    if id = 11 then .parsed (.temporal .dateTime { epochMillis := millis })
+    else .empty
+
+private def worldAt (millis : Int) : World :=
+  { now := { epochMillis := millis }, baseYear := none }
+
+example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 5))) =
     some (.fired .value) := by
   native_decide
 
-example : valueOf (elaborateAndEvalFull model ["Order"] ordinaryRaw true
+example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "ExpressShipping") (.boolean false))) =
     some (.fired .value) := by
   native_decide
 
-example : valueOf (elaborateAndEvalFull model ["Order"] ordinaryRaw true
+example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .notEqual (absolute ["Order"] "TermsConfirmed") (.boolean true))) =
     some .notFired := by
   native_decide
 
-example : valueOf (elaborateAndEvalFull model ["Order"] { read := fun _ => .empty } false
+example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] { read := fun _ => .empty } false
     (.fieldNotFilled (absolute ["Order"] "Quantity"))) =
     some (.fired .omission) := by
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model ["Order"] (temporalRaw .date) true
+    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] (temporalRaw .date) true
       (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
         some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model ["Order"] (temporalRaw .dateTime) true
+      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] (temporalRaw .dateTime) true
         (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
           some .unknown := by
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model ["Order"]
+    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
       (temporalComparisonRaw .date 100000 .date (some 101000)) true
       (compareFields .less "DispatchDate" "ArrivalDate")) =
         some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model ["Order"]
+      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
         (temporalComparisonRaw .date 100000 .date none) true
         (compareFields .less "DispatchDate" "ArrivalDate")) =
           some .notFired ∧
-      valueOf (elaborateAndEvalFull model ["Order"]
+      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
         (temporalComparisonRaw .date 100000 .dateTime (some 101000)) true
         (compareFields .less "DispatchDate" "ArrivalDate")) =
           some .unknown := by
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model ["Order"]
+    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
       (temporalComparisonRaw .date 100000 .date none) true
       (compare .less (absolute ["Order"] "DispatchDate")
         (dateLiteral dispatchDateComponents 101000))) =
         some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model ["Order"]
+      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
         (temporalComparisonRaw .date 100000 .date none) true
         (compare .greater (absolute ["Order"] "DispatchDate")
           (dateLiteral dispatchDateComponents 101000))) =
           some .notFired := by
   native_decide
 
+example :
+    valueOf (elaborateAndEvalFull model (worldAt 100999) ["Order"]
+      (eventDateTimeRaw 100000) true
+      (compareNow .equal .right "EventDateTime")) =
+        some .notFired ∧
+      valueOf (elaborateAndEvalFull model (worldAt 100999) ["Order"]
+        (eventDateTimeRaw 100000) true
+        (compareNow .less .right "EventDateTime")) =
+          some (.fired .value) ∧
+      valueOf (elaborateAndEvalFull model (worldAt 100999) ["Order"]
+        (eventDateTimeRaw 100000) true
+        (compareNow .greater .left "EventDateTime")) =
+          some (.fired .value) := by
+  native_decide
+
 -- Model-derived formal checking prevents an inconsistent runtime kind from entering eval.
-example : valueOf (elaborateAndEvalFull model ["Order"] wrongKindRaw true
+example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] wrongKindRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 0))) = some .unknown := by
   native_decide
 
 -- Static success does not imply a definite runtime verdict: malformed data remains unknown.
 example : (elaborate model ["Order"]
     (compare .equal (absolute ["Order"] "Quantity") (.number 0))).isOk = true ∧
-    valueOf (elaborateAndEvalFull model ["Order"] wrongKindRaw true
+    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] wrongKindRaw true
       (compare .equal (absolute ["Order"] "Quantity") (.number 0))) = some .unknown := by
   native_decide
 

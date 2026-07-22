@@ -139,12 +139,12 @@ theorem checkedFlatRule_errorField_coherent
 
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
-    (rule : CheckedResolvedFlatRule model) (raw : RawFlatContext)
+    (rule : CheckedResolvedFlatRule model) (world : World) (raw : RawFlatContext)
     (hasContent : Bool) (messageType : Polarity)
     (fires :
-      rule.condition.core.evalFull (model.checkContext raw) hasContent =
+      rule.condition.core.evalFull ((model.checkContext raw).withWorld world) hasContent =
         .fired messageType) :
-    rule.evalFull raw hasContent =
+    rule.evalFull world raw hasContent =
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
         errorCode := rule.errorCode
@@ -154,7 +154,7 @@ theorem checkedFlatRule_fired_message_exact
       } := by
   simpa only [CheckedResolvedFlatRule.evalFull,
     CheckedResolvedFlatRule.core] using
-    flatRule_fired_message_exact rule.core (model.checkContext raw)
+    flatRule_fired_message_exact rule.core ((model.checkContext raw).withWorld world)
       hasContent messageType fires
 
 end A12Kernel

@@ -54,6 +54,7 @@ theorem partialSelected_agreesOn
     (isRelevant : FlatRelevance) (agreement : left.AgreesOn right isRelevant) :
     condition.evalSelected left isRelevant =
       condition.evalSelected right isRelevant := by
+  rcases agreement with ⟨worldAgreement, agreement⟩
   induction condition with
   | compare comparison =>
       simp only [FlatCondition.evalSelected]
@@ -96,6 +97,22 @@ theorem partialSelected_agreesOn
             | literalValue leftInstant =>
                 cases rightOperand with
                 | literalValue rightInstant => rfl
+                | nowValue =>
+                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      worldAgreement]
+                | fieldValue rightField =>
+                    have rightReadEq := agreement rightField.id (by
+                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                        FlatComparison.fields, FlatTemporalOperand.fields,
+                        FlatField.id] using relevant)
+                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      FlatContext.resolveTemporalComparisonOperand,
+                      FlatContext.observeValidationAt]
+            | nowValue =>
+                cases rightOperand with
+                | literalValue rightInstant | nowValue =>
+                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      worldAgreement]
                 | fieldValue rightField =>
                     have rightReadEq := agreement rightField.id (by
                       simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
@@ -107,6 +124,14 @@ theorem partialSelected_agreesOn
             | fieldValue leftField =>
                 cases rightOperand with
                 | literalValue rightInstant =>
+                    have leftReadEq := agreement leftField.id (by
+                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                        FlatComparison.fields, FlatTemporalOperand.fields,
+                        FlatField.id] using relevant)
+                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      FlatContext.resolveTemporalComparisonOperand,
+                      FlatContext.observeValidationAt]
+                | nowValue =>
                     have leftReadEq := agreement leftField.id (by
                       simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
                         FlatComparison.fields, FlatTemporalOperand.fields,

@@ -179,6 +179,8 @@ run_cmd do
 #print axioms A12Kernel.temporalComparison_admitsFormats_symmetric
 #print axioms A12Kernel.temporalAggregateFormatsCompatible_implies_comparison
 #print axioms A12Kernel.temporalEqualFormats_implies_beforeFormats
+#print axioms A12Kernel.temporalComparison_admitsNow_hasTime
+#print axioms A12Kernel.temporalComparison_admitsNow_admitsFormats
 #print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
 #print axioms A12Kernel.instant_difference_self
 #print axioms A12Kernel.instant_difference_swap

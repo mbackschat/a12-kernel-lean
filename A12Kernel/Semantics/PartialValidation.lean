@@ -7,11 +7,11 @@ This capsule implements the resolved nonrepeatable subset of [`spec/10` §5](../
 
 namespace A12Kernel
 
-/-- Two flat contexts agree on every field made concrete by this partial-validation
-    call. Values outside the predicate may differ arbitrarily. -/
+/-- Two flat contexts agree on the explicit evaluation world and every field made concrete by this partial-validation call. Values outside the predicate may differ arbitrarily. -/
 def FlatContext.AgreesOn (left right : FlatContext)
     (isRelevant : FlatRelevance) : Prop :=
-  ∀ field, isRelevant field = true → left.read field = right.read field
+  left.world = right.world ∧
+    ∀ field, isRelevant field = true → left.read field = right.read field
 
 /-- Whether the flat partial-validation rule was skipped by its error-field gate or
     evaluated to the ordinary four-state condition verdict. `skipped` remains distinct

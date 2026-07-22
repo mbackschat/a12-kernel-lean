@@ -207,6 +207,9 @@ private def numberRules : List OperatorRule := [
     condition := .compare .notEqual (absolute "StockOnHand") (.number 1)
   }]
 
+private def replayWorld : World :=
+  { now := { epochMillis := 0 }, baseYear := none }
+
 private def operatorMessage (rule : OperatorRule) (polarity : Polarity) : Json :=
   Json.mkObj [
     ("rule", toJson rule.code),
@@ -217,7 +220,7 @@ private def replayRules (model : FlatModel) (raw : RawFlatContext)
     (hasContent : Bool) (rules : List OperatorRule) : Except String Json := do
   let mut messages := []
   for rule in rules do
-    match elaborateAndEvalFull model ["Order"] raw hasContent rule.condition with
+    match elaborateAndEvalFull model replayWorld ["Order"] raw hasContent rule.condition with
     | .error error => throw s!"operator compact case left the admitted fragment: {repr error}"
     | .ok (.fired polarity) =>
         messages := messages ++ [operatorMessage rule polarity]

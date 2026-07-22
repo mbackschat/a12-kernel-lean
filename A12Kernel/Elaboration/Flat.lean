@@ -38,6 +38,12 @@ inductive SurfaceComparisonOp where
   | greaterEqual
   deriving Repr, DecidableEq
 
+/-- Authored operand position of the `Now` point-in-time source. Comparison syntax permits either side. -/
+inductive SurfaceNowPosition where
+  | left
+  | right
+  deriving Repr, DecidableEq
+
 inductive SurfaceLiteral where
   | number (value : Rat)
   | boolean (value : Bool)
@@ -67,6 +73,8 @@ inductive SurfaceCondition where
   | compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (literal : SurfaceLiteral)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceFieldPath)
+  | compareNow (op : SurfaceComparisonOp) (position : SurfaceNowPosition)
+      (field : SurfaceFieldPath)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
@@ -148,6 +156,7 @@ inductive ElabError where
   | temporalOperandKindMismatch (leftPath rightPath : List String)
       (leftKind rightKind : SurfaceScalarKind)
   | temporalFormatsIncompatible (leftPath rightPath : List String)
+  | temporalNowRequiresTime (path : List String)
   | temporalLiteralNeedsBaseYear (path : List String)
   | invalidTemporalLiteralComponents (path : List String)
   | lengthOperandKindMismatch (path : List String) (actual : SurfaceScalarKind)
@@ -477,6 +486,37 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       | leftKind, rightKind =>
           throw (.temporalOperandKindMismatch left.path right.path
             leftKind.surfaceKind rightKind.surfaceKind)
+  | .compareNow op position reference => do
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      match declaration.policy.kind with
+      | .temporal kind components =>
+          let comparison := op.toTemporal
+          if !components.hasTime then
+            throw (.temporalNowRequiresTime declaration.path)
+          else if !comparison.admitsNow model.hasBaseYear components then
+            match position with
+            | .left =>
+                throw (.temporalFormatsIncompatible ["<Now>"] declaration.path)
+            | .right =>
+                throw (.temporalFormatsIncompatible declaration.path ["<Now>"])
+          else
+            let field : FlatTemporalOperand :=
+              .fieldValue {
+                id := declaration.id
+                kind := kind
+                components := components }
+            match position with
+            | .left => pure (.compare (.temporal comparison .nowValue field))
+            | .right => pure (.compare (.temporal comparison field .nowValue))
+      | kind =>
+          match position with
+          | .left =>
+              throw (.temporalOperandKindMismatch ["<Now>"] declaration.path
+                (.temporal .dateTime) kind.surfaceKind)
+          | .right =>
+              throw (.temporalOperandKindMismatch declaration.path ["<Now>"]
+                kind.surfaceKind (.temporal .dateTime))
   | .compare op reference literal => do
       let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
       match declaration.policy.kind with
@@ -582,10 +622,10 @@ def FlatModel.checkContext (model : FlatModel) (raw : RawFlatContext) : FlatCont
     | .ok declaration => formalCheck declaration.policy (raw.read id)
     | .error _ => malformedCheckedCell
 
-def elaborateAndEvalFull (model : FlatModel) (declaringGroup : GroupPath)
+def elaborateAndEvalFull (model : FlatModel) (world : World) (declaringGroup : GroupPath)
     (raw : RawFlatContext) (hasContent : Bool) (condition : SurfaceCondition) :
     Except ElabError Verdict := do
   let checked ← elaborate model declaringGroup condition
-  pure (checked.core.evalFull (model.checkContext raw) hasContent)
+  pure (checked.core.evalFull ((model.checkContext raw).withWorld world) hasContent)
 
 end A12Kernel
