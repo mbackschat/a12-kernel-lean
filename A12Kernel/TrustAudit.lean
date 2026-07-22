@@ -621,8 +621,8 @@ run_cmd do
 #print axioms A12Kernel.numericComparison_atom_literal_agrees_flat
 #print axioms A12Kernel.numericValidation_round_atom_literal_delegates
 #print axioms A12Kernel.numericValidation_abs_atom_literal_delegates
-#print axioms A12Kernel.numericValidation_round_plain_body_delegates
-#print axioms A12Kernel.numericValidation_abs_plain_body_delegates
+#print axioms A12Kernel.numericValidation_round_body_delegates
+#print axioms A12Kernel.numericValidation_abs_body_delegates
 #print axioms A12Kernel.numericTolerance_atom_literal_delegates
 #print axioms A12Kernel.numericTolerance_field_baseYear_delegates
 #print axioms A12Kernel.numericTolerance_field_baseYearDatePart_delegates

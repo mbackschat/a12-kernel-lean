@@ -143,14 +143,15 @@ private structure AuthoringScan where
   tooManyDivisions : Bool
   directLeftNestedPower : Bool
 
-private def authoringScan? : AuthoredNumericExpr Atom → Option AuthoringScan
+private def authoringScan? (allowUnaryWrappers : Bool) :
+    AuthoredNumericExpr Atom → Option AuthoringScan
   | .atom _ | .literal _ => some ⟨0, false, false⟩
   | .group body => do
-      let bodyScan ← body.authoringScan?
+      let bodyScan ← body.authoringScan? allowUnaryWrappers
       pure ⟨0, bodyScan.tooManyDivisions, bodyScan.directLeftNestedPower⟩
   | .binary op left right => do
-      let leftScan ← left.authoringScan?
-      let rightScan ← right.authoringScan?
+      let leftScan ← left.authoringScan? allowUnaryWrappers
+      let rightScan ← right.authoringScan? allowUnaryWrappers
       let divisionViolation :=
         leftScan.tooManyDivisions || rightScan.tooManyDivisions
       let powerViolation :=
@@ -163,18 +164,18 @@ private def authoringScan? : AuthoredNumericExpr Atom → Option AuthoringScan
             leftScan.exposedDivisions + rightScan.exposedDivisions + ownDivision
           pure ⟨exposed, divisionViolation || decide (1 < exposed), powerViolation⟩
   | .power base exponent => do
-      let baseScan ← base.authoringScan?
-      let exponentScan ← exponent.authoringScan?
+      let baseScan ← base.authoringScan? allowUnaryWrappers
+      let exponentScan ← exponent.authoringScan? allowUnaryWrappers
       pure ⟨0,
         baseScan.tooManyDivisions || exponentScan.tooManyDivisions,
         base.isDirectPower ||
           baseScan.directLeftNestedPower ||
           exponentScan.directLeftNestedPower⟩
-  | .abs _ | .extremum _ _ _ | .round _ _ _ => none
+  | .abs body | .round _ _ body =>
+      if allowUnaryWrappers then body.authoringScan? true else none
+  | .extremum _ _ _ => none
 
-/-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Operation-valued wrappers fail closed because the kernel's legacy function traversal is not a compositional region rule. -/
-def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
-  match expression.authoringScan? with
+private def authoringResult : Option AuthoringScan → NumericAuthoringCheck
   | some scan =>
       match scan.tooManyDivisions, scan.directLeftNestedPower with
       | false, false => .accepted
@@ -182,6 +183,10 @@ def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringChe
       | false, true => .directLeftNestedPower
       | true, true => .tooManyDivisionsAndDirectLeftNestedPower
   | none => .outsideFragment
+
+/-- Check the exact plain arithmetic fragment: multiplication/division regions contain at most one division, and a power may not have an ungrouped power as its direct left operand. Addition, subtraction, power, and grouping reset the division contribution. Operation-valued wrappers fail closed because the kernel's legacy function traversal is not a compositional region rule. -/
+def authoringCheck (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  authoringResult (expression.authoringScan? false)
 
 /-- Whether an authored tree uses only atoms, literals, grouping, ordinary binary arithmetic, and power. -/
 def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
@@ -191,6 +196,22 @@ def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .power base exponent =>
       base.isPlainArithmetic && exponent.isPlainArithmetic
   | .abs _ | .extremum _ _ _ | .round _ _ _ => false
+
+/-- Arithmetic whose ordinary operands may themselves contain rounding or absolute-value nodes. This runtime-capable shape is deliberately broader than checked wrapper-over-wrapper authoring; source admission supplies that narrower gate. -/
+def isUnaryArithmetic : AuthoredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => true
+  | .group body => body.isUnaryArithmetic
+  | .binary _ left right | .power left right =>
+      left.isUnaryArithmetic && right.isUnaryArithmetic
+  | .abs body | .round _ _ body => body.isUnaryArithmetic
+  | .extremum _ _ _ => false
+
+def hasUnaryValueFunction : AuthoredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => false
+  | .group body => body.hasUnaryValueFunction
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.hasUnaryValueFunction || right.hasUnaryValueFunction
+  | .abs _ | .round _ _ _ => true
 
 /-- Recognize one canonical left-associated extremum operand list while tracking whether its single permitted direct constant has been consumed. `none` rejects mixed selectors, a second constant, wrappers, grouping, or a non-direct right operand. -/
 def directExtremumConstantUse?
@@ -211,23 +232,27 @@ def isDirectExtremumChain
     (expected : NumericExtremumOp) (expression : AuthoredNumericExpr Atom) : Bool :=
   (expression.directExtremumConstantUse? expected).isSome
 
-/-- The source-closed direct value-function shapes shared by checked scalar validation and computation: one root rounding or absolute-value operation over a direct Number field, or one canonical direct-operand Min/Max fold with at most one constant. -/
+/-- The separately checked direct value-function shape not covered by unary arithmetic: one canonical direct-operand Min/Max fold with at most one constant. -/
 def isDirectValueFunction : AuthoredNumericExpr Atom → Bool
-  | .abs (.atom _) => true
-  | .round _ _ (.atom _) => true
   | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
   | _ => false
 
-/-- The shared checked numeric-operation fragment is plain arithmetic plus independently audited direct root value functions. -/
+/-- The shared checked numeric-operation shape is unary arithmetic plus independently audited direct extrema. Source-specific wrapper admission remains a separate gate. -/
 def isAdmittedNumericOperation (expression : AuthoredNumericExpr Atom) : Bool :=
-  expression.isPlainArithmetic || expression.isDirectValueFunction
+  expression.isUnaryArithmetic || expression.isDirectValueFunction
 
-/-- A root rounding or absolute-value operation delegates its static arithmetic checks to the operation child that the wrapper checker has already typed. Other value functions retain their separately audited direct admission. This does not make a wrapper transparent to an enclosing arithmetic region. -/
+/-- A root rounding or absolute-value operation delegates its static checks to its complete plain-arithmetic child. Enclosing arithmetic follows the legacy walk through each admitted unary wrapper: division contributions cross the wrapper, while the wrapper structurally separates an outer direct-left power relation. Other value functions retain their separately audited direct admission. -/
 def numericOperationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   match expression with
   | .round _ _ body | .abs body => body.authoringCheck
-  | _ => if expression.isDirectValueFunction then .accepted else expression.authoringCheck
+  | _ =>
+      if expression.isDirectValueFunction then
+        .accepted
+      else if expression.hasUnaryValueFunction then
+        authoringResult (expression.authoringScan? true)
+      else
+        expression.authoringCheck
 
 end AuthoredNumericExpr
 

@@ -115,15 +115,15 @@ theorem numericValidation_power_values_delegate
     (baseValue exponentValue : Rat)
     (baseFill exponentFill : NumericFillability)
     (baseEvaluated :
-      base.evalPlainValidation? read =
+      base.evalUnaryArithmetic? read =
         some (.ok (.value baseValue baseFill)))
     (exponentEvaluated :
-      exponent.evalPlainValidation? read =
+      exponent.evalUnaryArithmetic? read =
         some (.ok (.value exponentValue exponentFill))) :
-    (LoweredNumericExpr.power base exponent).evalPlainValidation? read =
+    (LoweredNumericExpr.power base exponent).evalUnaryArithmetic? read =
       some (.ok (NumericArithmeticOutcome.power
         (.value baseValue baseFill) (.value exponentValue exponentFill))) := by
-  simp only [LoweredNumericExpr.evalPlainValidation?]
+  simp only [LoweredNumericExpr.evalUnaryArithmetic?]
   rw [baseEvaluated, exponentEvaluated]
   rfl
 
@@ -171,57 +171,86 @@ theorem numericComparison_scaleSuppression_runtimeIrrelevant
       comparison.evalSelected context := by
   rfl
 
-private theorem rootDivision_plain
-    (expression numerator denominator : LoweredNumericExpr Atom)
-    (plain : expression.isPlainArithmetic = true)
-    (division : expression.rootDivision? = some (numerator, denominator)) :
-    numerator.isPlainArithmetic = true ∧
-      denominator.isPlainArithmetic = true := by
-  cases expression with
-  | atom | literal | power | abs | extremum | round =>
-      simp [LoweredNumericExpr.rootDivision?] at division
-  | binary op left right =>
-      cases op <;>
-        simp_all [LoweredNumericExpr.rootDivision?,
-          LoweredNumericExpr.isPlainArithmetic, Bool.and_eq_true]
+private theorem lowerMultiply_preserves
+    (shape : LoweredNumericExpr Atom → Bool)
+    (binaryClosed : ∀ op left right,
+      shape left = true → shape right = true →
+        shape (.binary op left right) = true)
+    (divisionParts : ∀ numerator denominator,
+      shape (.binary .divide numerator denominator) = true →
+        shape numerator = true ∧ shape denominator = true)
+    (left right : LoweredNumericExpr Atom)
+    (leftShape : shape left = true)
+    (rightShape : shape right = true) :
+    shape (LoweredNumericExpr.lowerMultiply left right) = true := by
+  have rootParts (expression numerator denominator : LoweredNumericExpr Atom)
+      (expressionShape : shape expression = true)
+      (division : expression.rootDivision? = some (numerator, denominator)) :
+      shape numerator = true ∧ shape denominator = true := by
+    cases expression with
+    | atom | literal | power | abs | extremum | round =>
+        simp [LoweredNumericExpr.rootDivision?] at division
+    | binary op actualNumerator actualDenominator =>
+        cases op with
+        | add | subtract | multiply =>
+            simp [LoweredNumericExpr.rootDivision?] at division
+        | divide =>
+            simp only [LoweredNumericExpr.rootDivision?] at division
+            cases division
+            exact divisionParts numerator denominator expressionShape
+  cases leftDivision : left.rootDivision? with
+  | none =>
+      cases rightDivision : right.rootDivision? with
+      | none =>
+          simp only [LoweredNumericExpr.lowerMultiply, leftDivision,
+            rightDivision]
+          exact binaryClosed .multiply left right leftShape rightShape
+      | some rightPair =>
+          obtain ⟨rightNumerator, rightDenominator⟩ := rightPair
+          have rightParts := rootParts right rightNumerator rightDenominator
+            rightShape rightDivision
+          simp only [LoweredNumericExpr.lowerMultiply, leftDivision,
+            rightDivision]
+          exact binaryClosed .divide _ _
+            (binaryClosed .multiply left rightNumerator
+              leftShape rightParts.1)
+            rightParts.2
+  | some leftPair =>
+      obtain ⟨leftNumerator, leftDenominator⟩ := leftPair
+      have leftParts := rootParts left leftNumerator leftDenominator
+        leftShape leftDivision
+      cases rightDivision : right.rootDivision? with
+      | none =>
+          simp only [LoweredNumericExpr.lowerMultiply, leftDivision,
+            rightDivision]
+          exact binaryClosed .divide _ _
+            (binaryClosed .multiply right leftNumerator
+              rightShape leftParts.1)
+            leftParts.2
+      | some rightPair =>
+          obtain ⟨rightNumerator, rightDenominator⟩ := rightPair
+          have rightParts := rootParts right rightNumerator rightDenominator
+            rightShape rightDivision
+          simp only [LoweredNumericExpr.lowerMultiply, leftDivision,
+            rightDivision]
+          exact binaryClosed .divide _ _
+            (binaryClosed .multiply leftNumerator rightNumerator
+              leftParts.1 rightParts.1)
+            (binaryClosed .multiply leftDenominator rightDenominator
+              leftParts.2 rightParts.2)
 
 private theorem lowerMultiply_plain
     (left right : LoweredNumericExpr Atom)
     (leftPlain : left.isPlainArithmetic = true)
     (rightPlain : right.isPlainArithmetic = true) :
     (LoweredNumericExpr.lowerMultiply left right).isPlainArithmetic = true := by
-  cases leftDivision : left.rootDivision? with
-  | none =>
-      cases rightDivision : right.rootDivision? with
-      | none =>
-          simp [LoweredNumericExpr.lowerMultiply, leftDivision, rightDivision,
-            LoweredNumericExpr.isPlainArithmetic, leftPlain, rightPlain]
-      | some rightPair =>
-          obtain ⟨rightNumerator, rightDenominator⟩ := rightPair
-          have rightParts :=
-            rootDivision_plain right rightNumerator rightDenominator
-              rightPlain rightDivision
-          simp [LoweredNumericExpr.lowerMultiply, leftDivision, rightDivision,
-            LoweredNumericExpr.isPlainArithmetic, leftPlain,
-            rightParts.1, rightParts.2]
-  | some leftPair =>
-      obtain ⟨leftNumerator, leftDenominator⟩ := leftPair
-      have leftParts :=
-        rootDivision_plain left leftNumerator leftDenominator
-          leftPlain leftDivision
-      cases rightDivision : right.rootDivision? with
-      | none =>
-          simp [LoweredNumericExpr.lowerMultiply, leftDivision, rightDivision,
-            LoweredNumericExpr.isPlainArithmetic, rightPlain,
-            leftParts.1, leftParts.2]
-      | some rightPair =>
-          obtain ⟨rightNumerator, rightDenominator⟩ := rightPair
-          have rightParts :=
-            rootDivision_plain right rightNumerator rightDenominator
-              rightPlain rightDivision
-          simp [LoweredNumericExpr.lowerMultiply, leftDivision, rightDivision,
-            LoweredNumericExpr.isPlainArithmetic,
-            leftParts.1, leftParts.2, rightParts.1, rightParts.2]
+  apply lowerMultiply_preserves LoweredNumericExpr.isPlainArithmetic
+    (fun _ _ _ leftShape rightShape => by
+      simpa [LoweredNumericExpr.isPlainArithmetic] using
+        And.intro leftShape rightShape)
+    (fun _ _ shape => by
+      simpa [LoweredNumericExpr.isPlainArithmetic] using shape)
+    left right leftPlain rightPlain
 
 private theorem authoredNumericLower_plain
     (expression : AuthoredNumericExpr Atom)
@@ -249,41 +278,121 @@ private theorem authoredNumericLower_plain
   | abs | extremum | round =>
       simp [AuthoredNumericExpr.isPlainArithmetic] at plain
 
-private theorem loweredPlainValidation_isSome
+private theorem authoredPlain_isUnary
+    (expression : AuthoredNumericExpr Atom)
+    (plain : expression.isPlainArithmetic = true) :
+    expression.isUnaryArithmetic = true := by
+  induction expression with
+  | atom | literal => rfl
+  | group body ih => exact ih plain
+  | binary op left right leftIh rightIh =>
+      simp only [AuthoredNumericExpr.isPlainArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at plain ⊢
+      exact ⟨leftIh plain.1, rightIh plain.2⟩
+  | power left right leftIh rightIh =>
+      simp only [AuthoredNumericExpr.isPlainArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at plain ⊢
+      exact ⟨leftIh plain.1, rightIh plain.2⟩
+  | abs | extremum | round =>
+      simp [AuthoredNumericExpr.isPlainArithmetic] at plain
+
+private theorem lowerMultiply_unary
+    (left right : LoweredNumericExpr Atom)
+    (leftUnary : left.isUnaryArithmetic = true)
+    (rightUnary : right.isUnaryArithmetic = true) :
+    (LoweredNumericExpr.lowerMultiply left right).isUnaryArithmetic = true := by
+  apply lowerMultiply_preserves LoweredNumericExpr.isUnaryArithmetic
+    (fun _ _ _ leftShape rightShape => by
+      simpa [LoweredNumericExpr.isUnaryArithmetic] using
+        And.intro leftShape rightShape)
+    (fun _ _ shape => by
+      simpa [LoweredNumericExpr.isUnaryArithmetic] using shape)
+    left right leftUnary rightUnary
+
+private theorem authoredNumericLower_unary
+    (expression : AuthoredNumericExpr Atom)
+    (unary : expression.isUnaryArithmetic = true) :
+    expression.lowerForEvaluation.isUnaryArithmetic = true := by
+  induction expression with
+  | atom | literal => rfl
+  | group body ih => exact ih unary
+  | binary op left right leftIh rightIh =>
+      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+        Bool.and_eq_true] at unary
+      cases op with
+      | add | subtract | divide =>
+          simpa only [AuthoredNumericExpr.lowerForEvaluation,
+            LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
+            using And.intro (leftIh unary.1) (rightIh unary.2)
+      | multiply =>
+          exact lowerMultiply_unary _ _
+            (leftIh unary.1) (rightIh unary.2)
+  | power base exponent baseIh exponentIh =>
+      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+        Bool.and_eq_true] at unary
+      simpa only [AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
+        using And.intro (baseIh unary.1) (exponentIh unary.2)
+  | abs body ih =>
+      simpa only [AuthoredNumericExpr.isUnaryArithmetic,
+        AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isUnaryArithmetic] using ih unary
+  | round mode places body ih =>
+      simpa only [AuthoredNumericExpr.isUnaryArithmetic,
+        AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isUnaryArithmetic] using ih unary
+  | extremum =>
+      simp [AuthoredNumericExpr.isUnaryArithmetic] at unary
+
+private theorem loweredUnaryValidation_isSome
     (expression : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
-    (plain : expression.isPlainArithmetic = true) :
-    (expression.evalPlainValidation? read).isSome = true := by
+    (unary : expression.isUnaryArithmetic = true) :
+    (expression.evalUnaryArithmetic? read).isSome = true := by
   induction expression with
   | atom | literal => rfl
   | binary op left right leftIh rightIh =>
-      simp only [LoweredNumericExpr.isPlainArithmetic, Bool.and_eq_true] at plain
-      have leftSome := leftIh plain.1
-      have rightSome := rightIh plain.2
-      cases leftResult : left.evalPlainValidation? read with
+      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
+      have leftSome := leftIh unary.1
+      have rightSome := rightIh unary.2
+      cases leftResult : left.evalUnaryArithmetic? read with
       | none =>
           simp [leftResult] at leftSome
       | some leftOutcome =>
-          cases rightResult : right.evalPlainValidation? read with
+          cases rightResult : right.evalUnaryArithmetic? read with
           | none =>
               simp [rightResult] at rightSome
           | some rightOutcome =>
-              simp [LoweredNumericExpr.evalPlainValidation?,
+              simp [LoweredNumericExpr.evalUnaryArithmetic?,
                 leftResult, rightResult]
   | power base exponent baseIh exponentIh =>
-      simp only [LoweredNumericExpr.isPlainArithmetic, Bool.and_eq_true] at plain
-      have baseSome := baseIh plain.1
-      have exponentSome := exponentIh plain.2
-      cases baseResult : base.evalPlainValidation? read with
+      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
+      have baseSome := baseIh unary.1
+      have exponentSome := exponentIh unary.2
+      cases baseResult : base.evalUnaryArithmetic? read with
       | none => simp [baseResult] at baseSome
       | some baseOutcome =>
-          cases exponentResult : exponent.evalPlainValidation? read with
+          cases exponentResult : exponent.evalUnaryArithmetic? read with
           | none => simp [exponentResult] at exponentSome
           | some exponentOutcome =>
-              simp [LoweredNumericExpr.evalPlainValidation?,
+              simp [LoweredNumericExpr.evalUnaryArithmetic?,
                 baseResult, exponentResult]
-  | abs | extremum | round =>
-      simp [LoweredNumericExpr.isPlainArithmetic] at plain
+  | abs body ih =>
+      have bodySome := ih (by
+        simpa [LoweredNumericExpr.isUnaryArithmetic] using unary)
+      cases evaluated : body.evalUnaryArithmetic? read with
+      | none => simp [evaluated] at bodySome
+      | some outcome =>
+          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
+  | round mode places body ih =>
+      have bodySome := ih (by
+        simpa [LoweredNumericExpr.isUnaryArithmetic] using unary)
+      cases evaluated : body.evalUnaryArithmetic? read with
+      | none => simp [evaluated] at bodySome
+      | some outcome =>
+          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
+  | extremum =>
+      simp [LoweredNumericExpr.isUnaryArithmetic] at unary
 
 private theorem authoredNumericLower_directExtremumChain
     (expected : NumericExtremumOp)
@@ -321,18 +430,8 @@ private theorem authoredNumericLower_directValueFunction
     (direct : expression.isDirectValueFunction = true) :
     expression.lowerForEvaluation.isDirectValueFunction = true := by
   cases expression with
-  | atom | literal | group | binary | power =>
+  | atom | literal | group | binary | power | abs | round =>
       simp [AuthoredNumericExpr.isDirectValueFunction] at direct
-  | abs body =>
-      cases body <;>
-        simp [AuthoredNumericExpr.isDirectValueFunction,
-          AuthoredNumericExpr.lowerForEvaluation,
-          LoweredNumericExpr.isDirectValueFunction] at direct ⊢
-  | round mode places body =>
-      cases body <;>
-        simp [AuthoredNumericExpr.isDirectValueFunction,
-          AuthoredNumericExpr.lowerForEvaluation,
-          LoweredNumericExpr.isDirectValueFunction] at direct ⊢
   | extremum op left right =>
       have preserved := authoredNumericLower_directExtremumChain op
         (.extremum op left right) direct
@@ -353,37 +452,39 @@ private theorem authoredNumericLower_admittedValidation
     Bool.or_eq_true] at admitted
   simp only [LoweredNumericExpr.isAdmittedValidation, Bool.or_eq_true]
   cases admitted with
-  | inl plain =>
-      exact Or.inl (Or.inl (authoredNumericLower_plain expression plain))
+  | inl unary =>
+      exact Or.inl (authoredNumericLower_unary expression unary)
   | inr direct =>
-      exact Or.inl (Or.inr
-        (authoredNumericLower_directValueFunction expression direct))
+      exact Or.inr
+        (authoredNumericLower_directValueFunction expression direct)
 
-private theorem authoredNumericLower_rootResolvedUnaryValueFunction
+private theorem admittedResolvedUnary_isUnary
     (expression : AuthoredNumericExpr NumericValidationAtom)
-    (root : expression.isRootResolvedUnaryValueFunction = true) :
-    expression.lowerForEvaluation.isAdmittedValidation = true := by
-  cases expression with
-  | atom | literal | group | binary | power | extremum =>
-      simp [AuthoredNumericExpr.isRootResolvedUnaryValueFunction] at root
-  | abs body =>
-      have bodyPlain : body.isPlainArithmetic = true := by
-        simp only [AuthoredNumericExpr.isRootResolvedUnaryValueFunction,
-          Bool.and_eq_true] at root
-        exact root.1
-      have loweredPlain := authoredNumericLower_plain body bodyPlain
-      simp [AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isAdmittedValidation,
-        LoweredNumericExpr.isRootUnaryValueFunction, loweredPlain]
-  | round mode places body =>
-      have bodyPlain : body.isPlainArithmetic = true := by
-        simp only [AuthoredNumericExpr.isRootResolvedUnaryValueFunction,
-          Bool.and_eq_true] at root
-        exact root.1
-      have loweredPlain := authoredNumericLower_plain body bodyPlain
-      simp [AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isAdmittedValidation,
-        LoweredNumericExpr.isRootUnaryValueFunction, loweredPlain]
+    (admitted : expression.isAdmittedResolvedUnaryArithmetic = true) :
+    expression.isUnaryArithmetic = true := by
+  induction expression with
+  | atom | literal => rfl
+  | group body ih => exact ih admitted
+  | binary op left right leftIh rightIh =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
+      exact ⟨leftIh admitted.1, rightIh admitted.2⟩
+  | power base exponent baseIh exponentIh =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
+      exact ⟨baseIh admitted.1, exponentIh admitted.2⟩
+  | abs body ih =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        Bool.and_eq_true] at admitted
+      simpa only [AuthoredNumericExpr.isUnaryArithmetic] using
+        authoredPlain_isUnary body admitted.1
+  | round mode places body ih =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        Bool.and_eq_true] at admitted
+      simpa only [AuthoredNumericExpr.isUnaryArithmetic] using
+        authoredPlain_isUnary body admitted.1
+  | extremum =>
+      simp [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic] at admitted
 
 private theorem authoredNumericLower_admittedNumericValidation
     (expression : AuthoredNumericExpr NumericValidationAtom)
@@ -391,10 +492,13 @@ private theorem authoredNumericLower_admittedNumericValidation
     expression.lowerForEvaluation.isAdmittedValidation = true := by
   unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
   split at admitted
-  · exact authoredNumericLower_rootResolvedUnaryValueFunction expression (by assumption)
+  · have authoredUnary := admittedResolvedUnary_isUnary expression admitted
+    have loweredUnary := authoredNumericLower_unary expression authoredUnary
+    simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
   · split at admitted
-    · have loweredPlain := authoredNumericLower_plain expression admitted
-      simp [LoweredNumericExpr.isAdmittedValidation, loweredPlain]
+    · have authoredUnary := authoredPlain_isUnary expression admitted
+      have loweredUnary := authoredNumericLower_unary expression authoredUnary
+      simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
     · exact authoredNumericLower_admittedValidation expression admitted
 
 private theorem loweredDirectExtremum_constantUse_preserved
@@ -453,53 +557,21 @@ private theorem loweredAdmittedValidation_isSome
   simp only [LoweredNumericExpr.isAdmittedValidation,
     Bool.or_eq_true] at admitted
   cases admitted with
-  | inl plainOrDirect =>
-      cases plainOrDirect with
-      | inl plain =>
-          have plainSome := loweredPlainValidation_isSome expression read plain
-          cases expression with
-          | atom | literal | binary | power =>
-              simpa [LoweredNumericExpr.evalAdmittedValidation?] using plainSome
-          | abs | extremum | round =>
-              simp [LoweredNumericExpr.isPlainArithmetic] at plain
-      | inr direct =>
-          cases expression with
-          | atom | literal | binary | power =>
-              simp [LoweredNumericExpr.isDirectValueFunction] at direct
-          | abs body =>
-              cases body <;>
-                simp [LoweredNumericExpr.isDirectValueFunction,
-                  LoweredNumericExpr.evalAdmittedValidation?,
-                  LoweredNumericExpr.evalPlainValidation?] at direct ⊢
-          | round mode places body =>
-              cases body <;>
-                simp [LoweredNumericExpr.isDirectValueFunction,
-                  LoweredNumericExpr.evalAdmittedValidation?,
-                  LoweredNumericExpr.evalPlainValidation?] at direct ⊢
-          | extremum op left right =>
-              have evaluated := loweredDirectExtremum_isSome op
-                (.extremum op left right) read direct
-              simpa [LoweredNumericExpr.evalAdmittedValidation?] using evaluated
-  | inr root =>
+  | inl unary =>
+      have evaluated := loweredUnaryValidation_isSome expression read unary
       cases expression with
-      | atom | literal | binary | power | extremum =>
-          simp [LoweredNumericExpr.isRootUnaryValueFunction] at root
-      | abs body =>
-          have bodyPlain : body.isPlainArithmetic = true := by
-            simpa [LoweredNumericExpr.isRootUnaryValueFunction] using root
-          have bodySome := loweredPlainValidation_isSome body read bodyPlain
-          cases evaluated : body.evalPlainValidation? read with
-          | none => simp [evaluated] at bodySome
-          | some outcome =>
-              simp [LoweredNumericExpr.evalAdmittedValidation?, evaluated]
-      | round mode places body =>
-          have bodyPlain : body.isPlainArithmetic = true := by
-            simpa [LoweredNumericExpr.isRootUnaryValueFunction] using root
-          have bodySome := loweredPlainValidation_isSome body read bodyPlain
-          cases evaluated : body.evalPlainValidation? read with
-          | none => simp [evaluated] at bodySome
-          | some outcome =>
-              simp [LoweredNumericExpr.evalAdmittedValidation?, evaluated]
+      | atom | literal | binary | power | abs | round =>
+          simpa [LoweredNumericExpr.evalAdmittedValidation?] using evaluated
+      | extremum =>
+          simp [LoweredNumericExpr.isUnaryArithmetic] at unary
+  | inr direct =>
+      cases expression with
+      | atom | literal | binary | power | abs | round =>
+          simp [LoweredNumericExpr.isDirectValueFunction] at direct
+      | extremum op left right =>
+          have evaluated := loweredDirectExtremum_isSome op
+            (.extremum op left right) read direct
+          simpa [LoweredNumericExpr.evalAdmittedValidation?] using evaluated
 
 private theorem numericComparison_wellFormed_sidesAdmitted
     (comparison : NumericComparison)
@@ -571,7 +643,7 @@ theorem numericComparison_atom_literal_agrees_flat
     simp only [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic, FlatComparison.eval,
@@ -597,7 +669,7 @@ theorem numericValidation_round_atom_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?, observed]
+      LoweredNumericExpr.evalUnaryArithmetic?, observed]
 
 /-- An absolute-valued left atom against a literal delegates to the shared operand transformation for every ordinary and tolerance consumer. -/
 theorem numericValidation_abs_atom_literal_delegates
@@ -615,34 +687,36 @@ theorem numericValidation_abs_atom_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?, observed]
+      LoweredNumericExpr.evalUnaryArithmetic?, observed]
 
-/-- Root rounding maps the complete result of one admitted plain-arithmetic body; it neither rereads atoms nor changes the body's formal-cause priority. -/
-theorem numericValidation_round_plain_body_delegates
+/-- Rounding maps the complete result of its evaluated body; it neither rereads atoms nor changes the body's formal-cause priority. -/
+theorem numericValidation_round_body_delegates
     (mode : DecimalRoundingMode) (places : RoundingPlaces)
     (body : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
     (bodyOutcome : Except FormalCause NumericArithmeticOutcome)
-    (evaluated : body.evalPlainValidation? read = some bodyOutcome) :
+    (evaluated : body.evalUnaryArithmetic? read = some bodyOutcome) :
     (LoweredNumericExpr.round mode places body).evalAdmittedValidation? read =
       some (match bodyOutcome with
         | .ok outcome => .ok (outcome.round mode places)
         | .error cause => .error cause) := by
   cases bodyOutcome <;>
-    simp [LoweredNumericExpr.evalAdmittedValidation?, evaluated]
+    simp [LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
 
-/-- Root absolute value transforms the complete arithmetic outcome only after its admitted body has finished. -/
-theorem numericValidation_abs_plain_body_delegates
+/-- Absolute value transforms the complete arithmetic outcome only after its evaluated body has finished. -/
+theorem numericValidation_abs_body_delegates
     (body : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
     (bodyOutcome : Except FormalCause NumericArithmeticOutcome)
-    (evaluated : body.evalPlainValidation? read = some bodyOutcome) :
+    (evaluated : body.evalUnaryArithmetic? read = some bodyOutcome) :
     (LoweredNumericExpr.abs body).evalAdmittedValidation? read =
       some (match bodyOutcome with
         | .ok outcome => .ok outcome.absolute
         | .error cause => .error cause) := by
   cases bodyOutcome <;>
-    simp [LoweredNumericExpr.evalAdmittedValidation?, evaluated]
+    simp [LoweredNumericExpr.evalAdmittedValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
 
 /-- A direct tolerance core atom/literal pair delegates to the existing pure tolerance seam. -/
 theorem numericTolerance_atom_literal_delegates
@@ -657,7 +731,7 @@ theorem numericTolerance_atom_literal_delegates
     simp only [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
@@ -676,7 +750,7 @@ theorem numericTolerance_field_baseYear_delegates
     simp only [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
@@ -697,7 +771,7 @@ theorem numericTolerance_field_baseYearDatePart_delegates
     simp only [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
@@ -719,7 +793,7 @@ theorem numericValidation_temporalFieldPart_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
@@ -742,7 +816,7 @@ theorem numericValidation_dateDifference_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
+      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,

@@ -100,10 +100,12 @@ private def crossGroupOffsetOperation :
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
-    (.round .halfUp omittedRoundingPlaces
-      (.binary .add
-        (.atom (.field (absolutePath ["Input"] "Source")))
-        (.literal { value := 1, authoredScale := 0 })))
+    (.binary .add
+      (.round .halfUp omittedRoundingPlaces
+        (.binary .add
+          (.atom (.field (absolutePath ["Input"] "Source")))
+          (.literal { value := 1, authoredScale := 0 })))
+      (.literal { value := 0, authoredScale := 0 }))
 
 private def crossGroupOtherTargetOperation :
     Except NumericComputationElabError

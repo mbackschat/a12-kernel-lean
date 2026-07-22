@@ -313,25 +313,30 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
 
 end ResolvedNumericAtom
 
-/-- The wrapper checker rejects only an immediate literal-like child. Numeric `BaseYear` is represented as an atom so it can participate in plain arithmetic, but it retains that source-level constant classification here; grouping does not hide either kind of immediate constant. -/
-def AuthoredNumericExpr.isImmediateResolvedNumericConstant :
+/-- The wrapper checker rejects only an immediate numeric literal or its grouped form. Semantically fixed sources such as numeric `BaseYear` remain distinct syntax and are admitted. -/
+def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
-  | .literal _ | .atom (.baseYear _) => true
-  | .group body => body.isImmediateResolvedNumericConstant
+  | .literal _ => true
+  | .group body => body.isImmediateResolvedNumericLiteral
   | _ => false
 
-/-- Root operation-form rounding and absolute value accept one already-checked plain-arithmetic child unless that complete child is an immediate literal-like constant. The wrapper delegates its body-local division and power checks; this predicate deliberately says nothing about a wrapper nested inside an enclosing arithmetic region. -/
-def AuthoredNumericExpr.isRootResolvedUnaryValueFunction :
+/-- Admit unary wrappers wherever ordinary arithmetic may consume a numeric operand. Each wrapper's complete child must remain plain arithmetic and nonconstant, so this closes enclosing arithmetic without silently admitting wrapper-over-wrapper or wrapper-over-extrema forms. -/
+def AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
   | .round _ _ body | .abs body =>
-      body.isPlainArithmetic && !body.isImmediateResolvedNumericConstant
-  | _ => false
+      body.isPlainArithmetic && !body.isImmediateResolvedNumericLiteral
+  | .atom _ | .literal _ => true
+  | .group body => body.isAdmittedResolvedUnaryArithmetic
+  | .binary _ left right | .power left right =>
+      left.isAdmittedResolvedUnaryArithmetic &&
+        right.isAdmittedResolvedUnaryArithmetic
+  | .extremum _ _ _ => false
 
-/-- Source operations participate in the audited arithmetic grammar, and one root unary wrapper may consume that complete plain-arithmetic tree. Enclosing arithmetic around a wrapper remains fail-closed until its legacy traversal is characterized separately. -/
+/-- Source operations participate in the audited arithmetic grammar. A wrapper-bearing tree uses the source-aware unary-arithmetic gate so an immediate literal cannot escape rejection merely because another arithmetic operand is a field. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
     (expression : AuthoredNumericExpr (ResolvedNumericAtom Field)) : Bool :=
-  if expression.isRootResolvedUnaryValueFunction then
-    true
+  if expression.hasUnaryValueFunction then
+    expression.isAdmittedResolvedUnaryArithmetic
   else if expression.anyAtom ResolvedNumericAtom.requiresPlainArithmetic then
     expression.isPlainArithmetic
   else
