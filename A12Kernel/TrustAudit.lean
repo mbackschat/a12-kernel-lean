@@ -838,6 +838,9 @@ run_cmd do
 #print axioms A12Kernel.preparedCustomContext_ordinary_exact
 #print axioms A12Kernel.unpreparedCustomContext_failsClosed
 #print axioms A12Kernel.preparedCustomContext_unknownId
+#print axioms A12Kernel.elaborateAndEvalCustomFull_preparationError
+#print axioms A12Kernel.elaborateAndEvalCustomFull_conditionError
+#print axioms A12Kernel.elaborateAndEvalCustomFull_success
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringField_concat_literal_stores_literal
