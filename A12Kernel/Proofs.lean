@@ -24,6 +24,7 @@ import A12Kernel.Proofs.TimeAggregate
 import A12Kernel.Proofs.TemporalFormat
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.CrossLevelCorrelation
+import A12Kernel.Proofs.SingleGroupElaboration
 import A12Kernel.Proofs.CorrelationElaboration
 import A12Kernel.Proofs.Iteration
 import A12Kernel.Proofs.NumericComparison
@@ -73,6 +74,7 @@ import A12Kernel.Proofs.Verdict
 import A12Kernel.Proofs.ValueList
 import A12Kernel.Proofs.FirstFilledValue
 import A12Kernel.Proofs.StarCompleteness
+import A12Kernel.Proofs.NumericStarElaboration
 import A12Kernel.Proofs.NumericAggregate
 import A12Kernel.Proofs.NumericAggregateElaboration
 import A12Kernel.Proofs.RepetitionNotUnique

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.NumericAggregate
+import A12Kernel.Elaboration.FirstFilledValue
 
-/-! # Checked Number aggregate lowering locks -/
+/-! # Checked Number-list and finite-star lowering locks -/
 
 namespace A12Kernel.Conformance.NumericAggregateElaboration
 
@@ -88,13 +89,13 @@ private def repeatedRaw (candidates : List RowIndex) (a b c : RawCell) :
       | _ => .empty
 
 private def starElabErrorOf (source : SurfaceSingleStarFieldPath)
-    (targetModel : FlatModel := model) : Option NumericStarAggregateElabError :=
-  match elaborateNumericStarAggregate targetModel ["Form"] source with
+    (targetModel : FlatModel := model) : Option NumericStarElabError :=
+  match elaborateNumericStarSource targetModel ["Form"] source with
   | .ok _ => none
   | .error error => some error
 
 private def starSumOf (raw : RawSingleGroupContext) : Option NumericOperand :=
-  match elaborateNumericStarAggregate model ["Form"] starredAmount with
+  match elaborateNumericStarSource model ["Form"] starredAmount with
   | .error _ => none
   | .ok checked => match checked.evaluateSum raw with
       | .ok operand => some operand
@@ -102,7 +103,7 @@ private def starSumOf (raw : RawSingleGroupContext) : Option NumericOperand :=
 
 private def starExtremumOf (op : NumericExtremumOp) (raw : RawSingleGroupContext) :
     Option NumericOperand :=
-  match elaborateNumericStarAggregate model ["Form"] starredAmount with
+  match elaborateNumericStarSource model ["Form"] starredAmount with
   | .error _ => none
   | .ok checked => match checked.evaluateExtremum op raw with
       | .ok operand => some operand
@@ -110,11 +111,19 @@ private def starExtremumOf (op : NumericExtremumOp) (raw : RawSingleGroupContext
 
 private def starContextErrorOf (raw : RawSingleGroupContext) :
     Option NumericStarContextError :=
-  match elaborateNumericStarAggregate model ["Form"] starredAmount with
+  match elaborateNumericStarSource model ["Form"] starredAmount with
   | .error _ => none
   | .ok checked => match checked.evaluateSum raw with
       | .ok _ => none
       | .error error => some error
+
+private def starFirstFilledOf (raw : RawSingleGroupContext) :
+    Option FirstFilledNumberResult :=
+  match elaborateNumericStarSource model ["Form"] starredAmount with
+  | .error _ => none
+  | .ok checked => match checked.evaluateFirstFilled raw with
+      | .ok result => some result
+      | .error _ => none
 
 /- A partial instantiated prefix retains the model-owned omitted tail. -/
 example : starSumOf (repeatedRaw [1] (.parsed (.num 8)) .empty .empty) =
@@ -170,6 +179,57 @@ example :
       starElabErrorOf starredAmount
         ({ model with repeatableGroups := [{ rows with repeatability := some 0 }] }) =
         some (.invalidRepeatability rows.path 0) := by
+  native_decide
+
+/- A selected first value makes a later omitted tail and invalid suffix invisible to both consumers. -/
+example :
+    starFirstFilledOf (repeatedRaw [1] (.parsed (.num 8)) .empty .empty) =
+        some (.value 8 false) ∧
+      starFirstFilledOf (repeatedRaw [1, 2, 3] (.parsed (.num 8))
+        (.rejected .declaredConstraint) .presentEmpty) =
+        some (.value 8 false) := by
+  native_decide
+
+/- An empty prefix is retained after selection in validation and erased by computation. -/
+example :
+    starFirstFilledOf (repeatedRaw [1, 2, 3] .presentEmpty
+        (.parsed (.num 7)) (.rejected .declaredConstraint)) =
+        some (.value 7 true) ∧
+      (starFirstFilledOf (repeatedRaw [1, 2, 3] .presentEmpty
+        (.parsed (.num 7)) (.rejected .declaredConstraint))).map
+          FirstFilledNumberResult.asValidationOperand =
+        some (.value 7 .both) ∧
+      (starFirstFilledOf (repeatedRaw [1, 2, 3] .presentEmpty
+        (.parsed (.num 7)) (.rejected .declaredConstraint))).map
+          FirstFilledNumberResult.asComputationResult =
+        some (.value 7) := by
+  native_decide
+
+/- A reached formal failure stops before a later value and keeps its exact cause in each phase. -/
+example :
+    starFirstFilledOf (repeatedRaw [1, 2] .presentEmpty
+        (.rejected .declaredConstraint) .empty) =
+        some (.unavailable .declaredConstraint) ∧
+      (starFirstFilledOf (repeatedRaw [1, 2] .presentEmpty
+        (.rejected .declaredConstraint) .empty)).map
+          FirstFilledNumberResult.asValidationOperand =
+        some (.unknown .declaredConstraint) ∧
+      (starFirstFilledOf (repeatedRaw [1, 2] .presentEmpty
+        (.rejected .declaredConstraint) .empty)).map
+          FirstFilledNumberResult.asComputationResult =
+        some (.poison .declaredConstraint) := by
+  native_decide
+
+/- No instantiated row reaches the model-owned omitted tail and therefore yields fillable zero only in validation. -/
+example :
+    starFirstFilledOf (repeatedRaw [] .empty .empty .empty) =
+        some (.value 0 true) ∧
+      (starFirstFilledOf (repeatedRaw [] .empty .empty .empty)).map
+          FirstFilledNumberResult.asValidationOperand =
+        some (.value 0 .both) ∧
+      (starFirstFilledOf (repeatedRaw [] .empty .empty .empty)).map
+          FirstFilledNumberResult.asComputationResult =
+        some (.value 0) := by
   native_decide
 
 /- The declared domain must be positive; a finite one-row star is still a valid checked source. -/

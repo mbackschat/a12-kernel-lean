@@ -673,9 +673,9 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericAggregate_evaluateExtremum
 #print axioms A12Kernel.numericStar_selectedRows_length
 #print axioms A12Kernel.numericStar_selectedRows_closed
-#print axioms A12Kernel.checkedNumericStarAggregate_tail_iff
-#print axioms A12Kernel.checkedNumericStarAggregate_evaluateSum_of_valid
-#print axioms A12Kernel.checkedNumericStarAggregate_evaluateExtremum_of_valid
+#print axioms A12Kernel.checkedNumericStarSource_tail_iff
+#print axioms A12Kernel.checkedNumericStarSource_evaluateSum_of_valid
+#print axioms A12Kernel.checkedNumericStarSource_evaluateExtremum_of_valid
 #print axioms A12Kernel.reopenedStar_selectedLeaf_closed
 #print axioms A12Kernel.reopenedStar_unbounded_open
 #print axioms A12Kernel.reopenedStar_finite_closed_iff
@@ -801,6 +801,7 @@ run_cmd do
 #print axioms A12Kernel.firstFilledNumber_validation_projection
 #print axioms A12Kernel.firstFilledNumber_unavailable_projections
 #print axioms A12Kernel.firstFilledNumber_empty_prefix_projection_separator
+#print axioms A12Kernel.checkedNumericStarSource_evaluateFirstFilled_of_valid
 #print axioms A12Kernel.repetitionKey_number_equal_iff_normalized_eq
 #print axioms A12Kernel.repetitionKey_checkedToken_value_exact
 #print axioms A12Kernel.repetitionKey_checkedToken_empty_exact

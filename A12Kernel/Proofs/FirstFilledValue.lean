@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.FirstFilledValue
+import A12Kernel.Elaboration.FirstFilledValue
 
 /-! # Resolved Number `FirstFilledValue` laws
 
@@ -117,5 +117,15 @@ theorem firstFilledNumber_empty_prefix_projection_separator
             | .unknown _ => false)
           equal
     cases growEqual
+
+/-- Successful checked-star evaluation is exactly the established prefix-terminating consumer over the shared checked resolved side. -/
+theorem checkedNumericStarSource_evaluateFirstFilled_of_valid
+    (checked : CheckedNumericStarSource model) (raw : RawSingleGroupContext)
+    (valid : checked.validateContext raw = .ok ()) :
+    checked.evaluateFirstFilled raw =
+      .ok (evalFirstFilledNumber (checked.resolvedValueSide raw)) := by
+  unfold CheckedNumericStarSource.evaluateFirstFilled
+  rw [valid]
+  rfl
 
 end A12Kernel
