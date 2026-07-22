@@ -358,7 +358,7 @@ example :
     (elaborateNumericComparison baseYearModel ["Order"]
       (tolerance .range1 (atom "Scale2") baseYear)).isOk = true ∧
     errorOf (twoSided .equal (.abs baseYear) (atom "U")) baseYearModel =
-      some .unsupportedExpression := by
+      none := by
   native_decide
 
 example :
@@ -368,6 +368,14 @@ example :
         (raw (.parsed (.num 2020))) true baseYearModel = some (.fired .value) ∧
       verdictOf (twoSided .equal
         (.binary .add baseYear (atom "U")) (literal 2021 0))
+        (raw (.parsed (.num 1))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal (.abs baseYear) (atom "U"))
+        (raw (.parsed (.num 2020))) true baseYearModel = some (.fired .value) ∧
+      verdictOf (twoSided .equal
+        (.binary .add
+          (.round .floor omittedRoundingPlaces (.group baseYear))
+          (atom "U"))
+        (literal 2021 0))
         (raw (.parsed (.num 1))) true baseYearModel = some (.fired .value) := by
   native_decide
 
@@ -769,7 +777,7 @@ example : verdictOf
     (raw (.parsed (.num 2))) = some (.fired .value) := by
   native_decide
 
-/- A source-confirmed root rounding operation is admitted without widening the unclosed wrapper traversal. -/
+/- A source-confirmed rounding operation is admitted through the shared unary-arithmetic route. -/
 example : verdictOf
     (comparison .less (.round .halfUp omittedRoundingPlaces (atom "U")) 1) =
       some (.fired .omission) := by
@@ -802,13 +810,13 @@ example : verdictOf
     (raw (.rejected .malformed)) = some .unknown := by
   native_decide
 
-/- A wrapper used inside enclosing arithmetic remains deliberately outside this checked fragment. -/
-example : errorOf
+/- Enclosing arithmetic accepts a checked unary wrapper and continues to preserve its directional result. -/
+example : verdictOf
     (comparison .less
       (.binary .add
         (.round .halfUp omittedRoundingPlaces (atom "U"))
         (literal 1 0))
-      0) = some .unsupportedExpression := by
+      100) = some (.fired .omission) := by
   native_decide
 
 /- A root operation-form rounding wrapper accepts an already-checked plain arithmetic body and preserves its directional fillability. -/
@@ -850,6 +858,30 @@ example : errorOf
       (atom "U")) = some .unsupportedExpression := by
   native_decide
 
+/- Enclosing arithmetic does not let a wrapper evade its own source gate: immediate constants, another wrapper, and extrema remain rejected wrapper bodies. -/
+example :
+    errorOf
+        (comparison .less
+          (.binary .add
+            (.round .halfUp omittedRoundingPlaces (literal 1 0))
+            (atom "U"))
+          0) = some .unsupportedExpression ∧
+      errorOf
+        (comparison .less
+          (.binary .add
+            (.round .halfUp omittedRoundingPlaces (.abs (atom "U")))
+            (literal 1 0))
+          0) = some .unsupportedExpression ∧
+      errorOf
+        (comparison .less
+          (.binary .add
+            (.round .halfUp omittedRoundingPlaces
+              (AuthoredNumericExpr.extremumList .minimum
+                (atom "U") [atom "V"]))
+            (literal 1 0))
+          0) = some .unsupportedExpression := by
+  native_decide
+
 /- The wrapper opens no exemption for an illegal division region inside its body. -/
 example : errorOf
     (comparison .less
@@ -884,11 +916,10 @@ example : (elaborateNumericComparison model ["Order"]
     (twoSided .equal (.abs (atom "Scale2")) (atom "Scale2"))).isOk = true := by
   native_decide
 
-/- Absolute value inside enclosing arithmetic remains outside the checked boundary; the root-over-arithmetic direction is closed below. -/
-example : errorOf
+example : verdictOf
     (comparison .less
       (.binary .add (.abs (atom "U")) (literal 1 0))
-      0) = some .unsupportedExpression := by
+      100) = some (.fired .omission) := by
   native_decide
 
 example : verdictOf
@@ -901,6 +932,51 @@ example : verdictOf
     (comparison .greater
       (.abs (.binary .subtract (atom "U") (atom "S")))
       (-100)) = some (.fired .value) := by
+  native_decide
+
+/- A wrapper body division contributes to the enclosing multiplication/division region, while an addition inside the wrapper resets that contribution. -/
+example : errorOf
+    (comparison .less
+      (.binary .divide
+        (.binary .multiply
+          (.round .halfUp omittedRoundingPlaces
+            (.binary .divide (atom "U") (atom "V")))
+          (atom "S"))
+        (atom "Scale2"))
+      0) = some (.authoring .tooManyDivisions) := by
+  native_decide
+
+example : verdictOf
+    (suppressScaleWarning
+      (comparison .equal
+        (.binary .divide
+          (.binary .multiply
+            (.round .halfUp omittedRoundingPlaces
+              (.binary .add (atom "U") (literal 1 0)))
+            (atom "V"))
+          (atom "Scale2"))
+        3))
+    (raw (.parsed (.num 2)) (.parsed (.num 3)) .empty
+      (.parsed (.num 3))) = some (.fired .value) := by
+  native_decide
+
+/- The wrapper is a structural power separator, but its body still undergoes the ordinary direct-left power check. -/
+example : verdictOf
+    (comparison .equal
+      (.power
+        (.round .halfUp omittedRoundingPlaces
+          (.power (atom "U") (literal 2 0)))
+        (literal 2 0))
+      16)
+    (raw (.parsed (.num 2))) = some (.fired .value) := by
+  native_decide
+
+example : errorOf
+    (comparison .less
+      (.binary .add
+        (.abs (.power (.power (atom "U") (literal 2 0)) (literal 3 0)))
+        (literal 1 0))
+      100) = some (.authoring .directLeftNestedPower) := by
   native_decide
 
 /- Checked multi-operand Min/Max use one root over direct same-group Number fields. Empty Number remains a directional zero competitor. -/
@@ -938,7 +1014,7 @@ example : (elaborateNumericComparison model ["Order"]
       (atom "Scale2"))).isOk = true := by
   native_decide
 
-/- The checked root remains deliberately narrower than general wrapper traversal in either direction. -/
+/- Direct extrema remain deliberately separate from ordinary arithmetic in either direction. -/
 example : errorOf
     (comparison .less
       (.binary .add

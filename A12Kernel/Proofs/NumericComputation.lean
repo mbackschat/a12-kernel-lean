@@ -89,7 +89,7 @@ theorem checkedNumericComputationOperation_noTargetReference
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
   simpa using admitted.1.1.1.2
 
-/-- Every checked computation operation lies in the shared plain-arithmetic, root unary-over-plain, or direct-extrema fragment. -/
+/-- Every checked computation operation lies in the shared unary-arithmetic or direct-extrema fragment. -/
 theorem checkedNumericComputationOperation_admittedShape
     (checked : CheckedNumericComputationOperation model) :
     checked.core.expression.isAdmittedResolvedNumericOperation = true := by

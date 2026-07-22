@@ -418,6 +418,12 @@ example :
         (.round .halfUp omittedRoundingPlaces
           (.binary .add (surfaceField ["Root"] "Target")
             (.literal { value := 1, authoredScale := 0 }))) =
+        some (.targetSelfReference targetId) ∧
+      checkedErrorOf
+        (.binary .multiply
+          (.round .halfUp omittedRoundingPlaces
+            (surfaceField ["Root"] "Target"))
+          (.literal { value := 2, authoredScale := 0 })) =
         some (.targetSelfReference targetId) := by
   native_decide
 
@@ -502,10 +508,13 @@ example :
       checkedResultOf (.binary .add finishDay
         (surfaceField ["Root"] "Source"))
         (context (checkedNumber (.parsed (.num 1)))) = some (.value 32) ∧
-      checkedErrorOf (.abs surfaceBaseYear) = some .unsupportedExpression := by
+      checkedResultOf (.abs surfaceBaseYear) = some (.value 2020) ∧
+      checkedResultOf
+        (.round .floor omittedRoundingPlaces (.group surfaceBaseYear)) =
+          some (.value 2020) := by
   native_decide
 
-/- The checked boundary retains direct root functions as the smallest specialization of the root-over-plain route shared with numeric validation. -/
+/- Direct functions are the smallest specialization of the unary-arithmetic route shared with numeric validation. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     let input := context (checkedNumber (.parsed (.num (5 / 2))))
@@ -519,7 +528,7 @@ example :
         some (.value 4) := by
   native_decide
 
-/- The checked function fragment still rejects a second Min/Max constant, while a root wrapper delegates to an admitted plain arithmetic body. -/
+/- The checked function fragment still rejects a second Min/Max constant, while each unary wrapper delegates to an admitted plain-arithmetic body. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     checkedErrorOf
@@ -546,6 +555,13 @@ example :
         (.round .halfUp omittedRoundingPlaces
           (.binary .divide sourceField
             (.literal { value := 0, authoredScale := 0 }))) =
+          some .domainFailure ∧
+      checkedResultOf
+        (.binary .add
+          (.round .halfUp omittedRoundingPlaces
+            (.binary .divide sourceField
+              (.literal { value := 0, authoredScale := 0 })))
+          (.literal { value := 1, authoredScale := 0 })) =
           some .domainFailure := by
   native_decide
 
@@ -644,12 +660,12 @@ example :
           some .unsupportedDateCalendar := by
   native_decide
 
-/- Checked source admission rejects the wrong temporal family and the immediate `BaseYear` constant while admitting nonliteral temporal numeric operations. -/
+/- Checked source admission rejects the wrong temporal family while admitting numeric `BaseYear` under the ordinary wrappers. -/
 example :
     checkedErrorOf (surfaceDateFieldPart "Time" .day) =
         some (.incompatibleTemporalSource ["Root", "Time"]) ∧
-      checkedErrorOf (.round .halfUp omittedRoundingPlaces surfaceBaseYear) =
-        some .unsupportedExpression := by
+      checkedResultOf (.round .halfUp omittedRoundingPlaces surfaceBaseYear) =
+        some (.value 2020) := by
   native_decide
 
 example : resultOf (divide (literal 6) (literal 3)) = some (.value 2) := by

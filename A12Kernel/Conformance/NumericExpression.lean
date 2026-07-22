@@ -256,7 +256,7 @@ example : (.binary .add
       Expr).authoringCheck = .tooManyDivisionsAndDirectLeftNestedPower := by
   native_decide
 
-/- Operation-valued wrappers stay outside the plain compositional checker. The operation-level checker delegates root unary wrappers to that complete body and preserves its exact local failure. -/
+/- Operation-valued wrappers stay outside the plain compositional checker. The operation-level checker delegates a root wrapper to its complete body and separately walks an admitted wrapper inside enclosing arithmetic. -/
 example : (.round .halfUp omittedRoundingPlaces
     (quotient (source 0) (source 1)) : Expr).authoringCheck = .outsideFragment := by
   native_decide
@@ -273,6 +273,37 @@ example : (.abs (quotient (source 0) (source 1)) : Expr).authoringCheck =
 example : (.abs
     (quotient (quotient (source 0) (source 1)) (source 2)) : Expr).numericOperationAuthoringCheck =
       .tooManyDivisions := by
+  native_decide
+
+/- Enclosing arithmetic sees through a unary wrapper for division-region checking. The wrapped addition retains its ordinary region reset. -/
+example : (.binary .divide
+    (.binary .multiply
+      (.round .halfUp omittedRoundingPlaces
+        (quotient (source 0) (source 1)))
+      (source 2))
+    (source 3) : Expr).numericOperationAuthoringCheck =
+      .tooManyDivisions := by
+  native_decide
+
+example : (.binary .divide
+    (.binary .multiply
+      (.round .halfUp omittedRoundingPlaces
+        (.binary .add (source 0) (source 1)))
+      (source 2))
+    (source 3) : Expr).numericOperationAuthoringCheck = .accepted := by
+  native_decide
+
+/- A wrapper separates powers structurally but does not hide an illegal power inside its own body. -/
+example : (.power
+    (.round .halfUp omittedRoundingPlaces
+      (.power (source 0) (source 1)))
+    (source 2) : Expr).numericOperationAuthoringCheck = .accepted := by
+  native_decide
+
+example : (.binary .add
+    (.abs (.power (.power (source 0) (source 1)) (source 2)))
+    (source 3) : Expr).numericOperationAuthoringCheck =
+      .directLeftNestedPower := by
   native_decide
 
 example : (.extremum .minimum (source 0) (source 1) : Expr).authoringCheck =

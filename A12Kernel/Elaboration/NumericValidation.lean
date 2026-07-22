@@ -3,7 +3,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, checked ordinary Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share plain arithmetic. A root operation-form rounding or absolute-value wrapper may consume that complete plain-arithmetic fragment after the wrapper's immediate-constant check; operand-list extrema may contain direct Number fields and at most one top-level constant. Wrappers nested inside enclosing arithmetic and wrapper-over-wrapper traversal remain excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, checked ordinary Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. An operation-form rounding or absolute-value wrapper may appear at any ordinary arithmetic operand position when its complete child is plain arithmetic and not an immediate numeric literal; operand-list extrema may contain direct Number fields and at most one top-level constant. Wrapper-over-wrapper and wrapper-over-extrema authoring remain excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -496,38 +496,49 @@ def LoweredNumericExpr.isDirectExtremumChain
     (expected : NumericExtremumOp) (expression : LoweredNumericExpr Atom) : Bool :=
   (expression.directExtremumConstantUse? expected).isSome
 
-/-- Lowering preserves the checked direct root-function shapes exactly. -/
+/-- Lowering preserves the checked direct-extrema shape exactly. -/
 def LoweredNumericExpr.isDirectValueFunction : LoweredNumericExpr Atom → Bool
-  | .abs (.atom _) => true
-  | .round _ _ (.atom _) => true
   | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
   | _ => false
 
-/-- Runtime-shape mirror of one root unary wrapper whose complete body is plain arithmetic. Source-level immediate-constant rejection has already happened before lowering. -/
-def LoweredNumericExpr.isRootUnaryValueFunction : LoweredNumericExpr Atom → Bool
-  | .abs body | .round _ _ body => body.isPlainArithmetic
-  | _ => false
+/-- Runtime-capable arithmetic shape after grouping erasure. Checked source admission separately prevents wrapper-over-wrapper and wrapper-over-extrema authoring. -/
+def LoweredNumericExpr.isUnaryArithmetic : LoweredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => true
+  | .binary _ left right | .power left right =>
+      left.isUnaryArithmetic && right.isUnaryArithmetic
+  | .abs body | .round _ _ body => body.isUnaryArithmetic
+  | .extremum _ _ _ => false
 
 def LoweredNumericExpr.isAdmittedValidation : LoweredNumericExpr Atom → Bool
-  | expression => expression.isPlainArithmetic ||
-      expression.isDirectValueFunction || expression.isRootUnaryValueFunction
+  | expression =>
+      expression.isUnaryArithmetic || expression.isDirectValueFunction
 
-/-- Evaluate the plain validation subset; `none` marks a wrapper outside this helper's responsibility. -/
-def LoweredNumericExpr.evalPlainValidation?
+/-- Evaluate unary arithmetic recursively. `none` marks the separately checked extrema shape. -/
+def LoweredNumericExpr.evalUnaryArithmetic?
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
     LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
   | .atom sourceAtom => some (read sourceAtom)
   | .literal amount => some (.ok (.value amount .fixed))
   | .binary op left right => do
-      let leftOutcome ← left.evalPlainValidation? read
-      let rightOutcome ← right.evalPlainValidation? read
+      let leftOutcome ← left.evalUnaryArithmetic? read
+      let rightOutcome ← right.evalUnaryArithmetic? read
       pure (evalPlainBinary op leftOutcome rightOutcome)
   | .power base exponent => do
-      let baseOutcome ← base.evalPlainValidation? read
-      let exponentOutcome ← exponent.evalPlainValidation? read
+      let baseOutcome ← base.evalUnaryArithmetic? read
+      let exponentOutcome ← exponent.evalUnaryArithmetic? read
       pure (combineNumericValidationOutcomes NumericArithmeticOutcome.power
         baseOutcome exponentOutcome)
-  | .abs _ | .extremum _ _ _ | .round _ _ _ => none
+  | .abs body => do
+      let bodyOutcome ← body.evalUnaryArithmetic? read
+      pure <| match bodyOutcome with
+        | .ok outcome => .ok outcome.absolute
+        | .error cause => .error cause
+  | .round mode places body => do
+      let bodyOutcome ← body.evalUnaryArithmetic? read
+      pure <| match bodyOutcome with
+        | .ok outcome => .ok (outcome.round mode places)
+        | .error cause => .error cause
+  | .extremum _ _ _ => none
 
 /-- Preserve the first formal cause across exact extremum selection of two reached validation outcomes. -/
 def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
@@ -568,23 +579,13 @@ def LoweredNumericExpr.evalDirectExtremum?
     Option (Except FormalCause NumericArithmeticOutcome) :=
   (expression.evalDirectExtremumWithConstantUse? expected read).map Prod.fst
 
-/-- Evaluate exactly the checked runtime fragment. A root unary wrapper delegates once to its already-checked plain-arithmetic body; direct extrema retain their canonical fold. Formal invalidity and arithmetic domain failure are preserved. -/
+/-- Evaluate exactly the checked runtime fragment. Unary wrappers compose recursively with arithmetic, while direct extrema retain their canonical fold. Formal invalidity and arithmetic domain failure are preserved. -/
 def LoweredNumericExpr.evalAdmittedValidation?
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
     LoweredNumericExpr Atom → Option (Except FormalCause NumericArithmeticOutcome)
-  | .round mode places body => do
-      let bodyOutcome ← body.evalPlainValidation? read
-      pure <| match bodyOutcome with
-        | .ok outcome => .ok (outcome.round mode places)
-        | .error cause => .error cause
-  | .abs body => do
-      let bodyOutcome ← body.evalPlainValidation? read
-      pure <| match bodyOutcome with
-        | .ok outcome => .ok outcome.absolute
-        | .error cause => .error cause
   | expression@(.extremum op _ _) =>
       expression.evalDirectExtremum? op read
-  | expression => expression.evalPlainValidation? read
+  | expression => expression.evalUnaryArithmetic? read
 
 /-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/
 def NumericComparison.evalSelected
