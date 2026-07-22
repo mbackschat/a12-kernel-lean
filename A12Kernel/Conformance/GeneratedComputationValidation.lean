@@ -130,8 +130,9 @@ private def crossGroupFieldValueAsNumberOperation :
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
-    (.atom (.fieldValueAsNumber
-      (.category (absolutePath ["Input"] "NumericChoice") "Factor")))
+    (.round .halfUp omittedRoundingPlaces
+      (.atom (.fieldValueAsNumber
+        (.category (absolutePath ["Input"] "NumericChoice") "Factor"))))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -788,7 +789,7 @@ example :
       crossGroupStringRangeOperation.isOk = true := by
   native_decide
 
-/- Generated validation narrows the same checked Enumeration/category conversion atom, preserving its projection and missing-source polarity across the computation boundary. -/
+/- Generated validation narrows the checked rounding/conversion tree without rebuilding either layer, preserving its category projection and missing-source polarity across the computation boundary. -/
 example :
     crossGroupFieldValueAsNumberOutcome 20 = some .notFired ∧
       crossGroupFieldValueAsNumberOutcome 21 =

@@ -358,23 +358,35 @@ private theorem authoredNumericLower_admittedValidation
       exact Or.inr
         (authoredNumericLower_directValueFunction expression direct)
 
-private theorem authoredNumericLower_directAggregateRound
+private theorem authoredNumericLower_directResolvedUnaryValueFunction
     (expression : AuthoredNumericExpr NumericValidationAtom)
-    (direct : expression.isDirectAggregateRound = true) :
+    (direct : expression.isDirectResolvedUnaryValueFunction = true) :
     expression.lowerForEvaluation.isAdmittedValidation = true := by
   cases expression with
-  | atom | literal | group | binary | power | abs | extremum =>
-      simp [AuthoredNumericExpr.isDirectAggregateRound] at direct
-  | round mode places body =>
+  | atom | literal | group | binary | power | extremum =>
+      simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction] at direct
+  | abs body =>
       cases body with
       | atom atom =>
           cases atom <;>
-            simp [AuthoredNumericExpr.isDirectAggregateRound,
+            simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction,
+              ResolvedNumericAtom.admitsDirectAbsolute,
               AuthoredNumericExpr.lowerForEvaluation,
               LoweredNumericExpr.isAdmittedValidation,
               LoweredNumericExpr.isDirectValueFunction] at direct ⊢
       | literal | group | binary | power | abs | extremum | round =>
-          simp [AuthoredNumericExpr.isDirectAggregateRound] at direct
+          simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction] at direct
+  | round mode places body =>
+      cases body with
+      | atom atom =>
+          cases atom <;>
+            simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction,
+              ResolvedNumericAtom.admitsDirectRound,
+              AuthoredNumericExpr.lowerForEvaluation,
+              LoweredNumericExpr.isAdmittedValidation,
+              LoweredNumericExpr.isDirectValueFunction] at direct ⊢
+      | literal | group | binary | power | abs | extremum | round =>
+          simp [AuthoredNumericExpr.isDirectResolvedUnaryValueFunction] at direct
 
 private theorem authoredNumericLower_admittedNumericValidation
     (expression : AuthoredNumericExpr NumericValidationAtom)
@@ -382,7 +394,7 @@ private theorem authoredNumericLower_admittedNumericValidation
     expression.lowerForEvaluation.isAdmittedValidation = true := by
   unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
   split at admitted
-  · exact authoredNumericLower_directAggregateRound expression (by assumption)
+  · exact authoredNumericLower_directResolvedUnaryValueFunction expression (by assumption)
   · split at admitted
     · unfold LoweredNumericExpr.isAdmittedValidation
       simp only [Bool.or_eq_true]
@@ -550,49 +562,40 @@ theorem numericComparison_atom_literal_agrees_flat
 /-- A rounded left atom against a literal delegates to the existing rounded-operand semantics for every mode and for both ordinary and tolerance consumers. -/
 theorem numericValidation_round_atom_literal_delegates
     (op : NumericValidationOp) (mode : DecimalRoundingMode)
-    (places : RoundingPlaces) (field : FlatNumberField)
+    (places : RoundingPlaces) (atom : NumericValidationAtom)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op, left := .round mode places (.atom (.field field)),
+    ({ op, left := .round mode places (.atom atom),
         right := .literal right } :
       NumericComparison).evalSelected context =
-        op.eval ((context.resolveNumberComparisonOperand field).round mode places)
-          (.value right.value .fixed) := by
+        op.evalArithmetic
+          (match context.resolveNumericValidationAtom atom with
+          | .ok outcome => .ok (outcome.round mode places)
+          | .error cause => .error cause)
+          (.ok (.value right.value .fixed)) := by
   cases op <;>
-    cases observed : context.resolveNumberComparisonOperand field <;>
+    cases observed : context.resolveNumericValidationAtom atom <;>
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
-      FlatContext.resolveNumericValidationAtom,
-      FlatContext.resolveNumericArithmetic,
-      NumericOperand.toValidationArithmetic,
-      NumericArithmeticOutcome.round, NumericArithmeticOutcome.mapValue,
-      NumericOperand.round, NumericOperand.mapValue,
-      NumericValidationOp.evalArithmetic,
-      NumericValidationOp.eval, NumericComparisonOp.eval,
-      NumericToleranceRange.eval, observed]
+      LoweredNumericExpr.evalPlainValidation?, observed]
 
 /-- An absolute-valued left atom against a literal delegates to the shared operand transformation for every ordinary and tolerance consumer. -/
 theorem numericValidation_abs_atom_literal_delegates
-    (op : NumericValidationOp) (field : FlatNumberField)
+    (op : NumericValidationOp) (atom : NumericValidationAtom)
     (right : DecodedNumericLiteral) (context : FlatContext) :
-    ({ op, left := .abs (.atom (.field field)), right := .literal right } :
+    ({ op, left := .abs (.atom atom), right := .literal right } :
       NumericComparison).evalSelected context =
-        op.eval (context.resolveNumberComparisonOperand field).absolute
-          (.value right.value .fixed) := by
+        op.evalArithmetic
+          (match context.resolveNumericValidationAtom atom with
+          | .ok outcome => .ok outcome.absolute
+          | .error cause => .error cause)
+          (.ok (.value right.value .fixed)) := by
   cases op <;>
-    cases observed : context.resolveNumberComparisonOperand field <;>
+    cases observed : context.resolveNumericValidationAtom atom <;>
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalPlainValidation?,
-      FlatContext.resolveNumericValidationAtom,
-      FlatContext.resolveNumericArithmetic,
-      NumericOperand.toValidationArithmetic,
-      NumericArithmeticOutcome.absolute, NumericArithmeticOutcome.mapValue,
-      NumericOperand.absolute, NumericOperand.mapValue,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
-      NumericComparisonOp.eval, NumericToleranceRange.eval, observed]
+      LoweredNumericExpr.evalPlainValidation?, observed]
 
 /-- A direct tolerance core atom/literal pair delegates to the existing pure tolerance seam. -/
 theorem numericTolerance_atom_literal_delegates
