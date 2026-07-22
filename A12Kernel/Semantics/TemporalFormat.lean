@@ -16,6 +16,11 @@ def TemporalComponents.now : TemporalComponents :=
   { year := true, month := true, day := true,
     hour := true, minute := true, second := true }
 
+/-- Static component identity carried by `Today`: a complete calendar date with no time component. -/
+def TemporalComponents.today : TemporalComponents :=
+  { year := true, month := true, day := true,
+    hour := false, minute := false, second := false }
+
 /-- Equality and inequality, unlike directional comparisons, require both formats to agree on whether they expose a time component. -/
 def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Bool
   | .equal | .notEqual => true
@@ -34,6 +39,11 @@ def TemporalComparisonOp.admitsFormats (op : TemporalComparisonOp)
 def TemporalComparisonOp.admitsNow (op : TemporalComparisonOp)
     (hasBaseYear : Bool) (other : TemporalComponents) : Bool :=
   other.hasTime && op.admitsFormats hasBaseYear other TemporalComponents.now
+
+/-- `Today` is admitted exactly as a complete date-shaped operand through the ordinary direct-comparison gate. -/
+def TemporalComparisonOp.admitsToday (op : TemporalComparisonOp)
+    (hasBaseYear : Bool) (other : TemporalComponents) : Bool :=
+  op.admitsFormats hasBaseYear other TemporalComponents.today
 
 /-- Static admission shared by temporal operand-list and field-list extrema: component sets must agree exactly after Base Year supplementation. -/
 def temporalAggregateFormatsCompatible (hasBaseYear : Bool)

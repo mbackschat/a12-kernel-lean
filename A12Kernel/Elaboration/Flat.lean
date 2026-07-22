@@ -38,8 +38,8 @@ inductive SurfaceComparisonOp where
   | greaterEqual
   deriving Repr, DecidableEq
 
-/-- Authored operand position of the `Now` point-in-time source. Comparison syntax permits either side. -/
-inductive SurfaceNowPosition where
+/-- Authored operand position of a point-in-time source. `Today` and `Now` comparison syntax permit either side. -/
+inductive SurfacePointInTimePosition where
   | left
   | right
   deriving Repr, DecidableEq
@@ -73,7 +73,9 @@ inductive SurfaceCondition where
   | compare (op : SurfaceComparisonOp) (field : SurfaceFieldPath)
       (literal : SurfaceLiteral)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceFieldPath)
-  | compareNow (op : SurfaceComparisonOp) (position : SurfaceNowPosition)
+  | compareToday (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
+      (field : SurfaceFieldPath)
+  | compareNow (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
       (field : SurfaceFieldPath)
   | lengthCompare (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (literal : Rat)
   | fieldFilled (field : SurfaceFieldPath)
@@ -125,6 +127,8 @@ structure FlatModel where
   repeatableGroups : List RepeatableGroupDecl := []
   fieldRefByShortNameAllowed : Bool := false
   hasBaseYear : Bool := false
+  /-- Exact legacy zone id already admitted by the upstream model checker. Absent model configuration is normalized to UTC. -/
+  timeZoneId : String := "UTC"
   deriving Repr, DecidableEq
 
 inductive ResolveError where
@@ -420,6 +424,13 @@ private def SurfaceComparisonOp.toTemporal : SurfaceComparisonOp → TemporalCom
   | .greater => .after
   | .greaterEqual => .afterOrEqual
 
+private def temporalPointComparison (comparison : TemporalComparisonOp)
+    (position : SurfacePointInTimePosition) (point field : FlatTemporalOperand) :
+    FlatCondition :=
+  match position with
+  | .left => .compare (.temporal comparison point field)
+  | .right => .compare (.temporal comparison field point)
+
 def FlatField.matchesDecl (field : FlatField) (declaration : FlatFieldDecl) : Bool :=
   declaration.toPresenceField == field
 
@@ -486,6 +497,34 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
       | leftKind, rightKind =>
           throw (.temporalOperandKindMismatch left.path right.path
             leftKind.surfaceKind rightKind.surfaceKind)
+  | .compareToday op position reference => do
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+      match declaration.policy.kind with
+      | .temporal kind components =>
+          let comparison := op.toTemporal
+          if comparison.admitsToday model.hasBaseYear components then
+            let field : FlatTemporalOperand :=
+              .fieldValue {
+                id := declaration.id
+                kind := kind
+                components := components }
+            let today := FlatTemporalOperand.todayValue model.timeZoneId
+            pure (temporalPointComparison comparison position today field)
+          else
+            match position with
+            | .left =>
+                throw (.temporalFormatsIncompatible ["<Today>"] declaration.path)
+            | .right =>
+                throw (.temporalFormatsIncompatible declaration.path ["<Today>"])
+      | kind =>
+          match position with
+          | .left =>
+              throw (.temporalOperandKindMismatch ["<Today>"] declaration.path
+                (.temporal .date) kind.surfaceKind)
+          | .right =>
+              throw (.temporalOperandKindMismatch declaration.path ["<Today>"]
+                kind.surfaceKind (.temporal .date))
   | .compareNow op position reference => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
@@ -506,9 +545,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup : GroupPath) :
                 id := declaration.id
                 kind := kind
                 components := components }
-            match position with
-            | .left => pure (.compare (.temporal comparison .nowValue field))
-            | .right => pure (.compare (.temporal comparison field .nowValue))
+            pure (temporalPointComparison comparison position .nowValue field)
       | kind =>
           match position with
           | .left =>

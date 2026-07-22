@@ -10,7 +10,7 @@ import A12Kernel.Semantics.DateTimeComparison
 A small core for resolved, non-repeatable field references. It covers the admitted
 direct Number comparisons and fixed tolerance, Boolean/Confirm equality and inequality,
 direct String equality and inequality, four String `Length` ordering comparisons,
-resolved temporal field/literal/`Now` comparison, presence predicates, and `And`/`Or`.
+resolved temporal field/literal/`Today`/`Now` comparison, presence predicates, and `And`/`Or`.
 It also exposes the leaf-relevance seam used by the separate flat partial-validation
 capsule. Paths, iteration, arithmetic, repeatable relevance, and concrete syntax are
 outside this capsule.
@@ -83,6 +83,7 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
 inductive FlatTemporalOperand where
   | fieldValue (field : FlatTemporalField)
   | literalValue (instant : Instant)
+  | todayValue (zoneId : String)
   | nowValue
   deriving Repr, DecidableEq
 
@@ -91,6 +92,7 @@ namespace FlatTemporalOperand
 def fields : FlatTemporalOperand → List FlatField
   | .fieldValue field => [.temporal field]
   | .literalValue _ => []
+  | .todayValue _ => []
   | .nowValue => []
 
 end FlatTemporalOperand
@@ -223,6 +225,10 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand �
     SimpleComparisonOperand Instant
   | .fieldValue field => context.resolveTemporalComparisonOperand field
   | .literalValue instant => .value instant true
+  | .todayValue zoneId =>
+      match context.world.bind (·.today? zoneId) with
+      | some instant => .value instant true
+      | none => .unknown .malformed
   | .nowValue =>
       match context.world with
       | some world => .value world.now true

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat
+import A12Kernel.Semantics.ModelZoneToday
 
 /-! # Checked flat-elaboration conformance locks -/
 
@@ -107,9 +108,13 @@ private def compareFields (op : SurfaceComparisonOp) (left right : String) :
     SurfaceCondition :=
   .compareFields op (absolute ["Order"] left) (absolute ["Order"] right)
 
-private def compareNow (op : SurfaceComparisonOp) (position : SurfaceNowPosition)
+private def compareNow (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
     (field : String) : SurfaceCondition :=
   .compareNow op position (absolute ["Order"] field)
+
+private def compareToday (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
+    (field : String) : SurfaceCondition :=
+  .compareToday op position (absolute ["Order"] field)
 
 private def dateLiteral (components : TemporalComponents) (millis : Int) :
     SurfaceLiteral :=
@@ -247,6 +252,27 @@ example :
     errorOf (elaborate model ["Order"]
       (compareNow .less .right "DispatchDate")) =
         some (.temporalNowRequiresTime ["Order", "DispatchDate"]) := by
+  native_decide
+
+example :
+    coreOf (elaborate model ["Order"]
+      (compareToday .equal .right "DispatchDate")) =
+        some (.compare (.temporal .equal
+          (.fieldValue { id := 8, kind := .date, components := dispatchDateComponents })
+          (.todayValue "UTC"))) ∧
+      coreOf (elaborate model ["Order"]
+        (compareToday .less .left "EventDateTime")) =
+          some (.compare (.temporal .before (.todayValue "UTC")
+            (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) := by
+  native_decide
+
+example :
+    errorOf (elaborate model ["Order"]
+      (compareToday .equal .right "EventDateTime")) =
+        some (.temporalFormatsIncompatible ["Order", "EventDateTime"] ["<Today>"]) ∧
+      errorOf (elaborate model ["Order"]
+        (compareToday .less .right "EventTime")) =
+          some (.temporalFormatsIncompatible ["Order", "EventTime"] ["<Today>"]) := by
   native_decide
 
 example :
@@ -441,6 +467,15 @@ private def eventDateTimeRaw (millis : Int) : RawFlatContext where
 private def worldAt (millis : Int) : World :=
   { now := { epochMillis := millis }, baseYear := none }
 
+private def dispatchDateRaw (millis : Int) : RawFlatContext where
+  read id :=
+    if id = 8 then .parsed (.temporal .date { epochMillis := millis })
+    else .empty
+
+private def utcInstant? (year : Int) (month day hour minute second : Nat) : Option Instant :=
+  (LocalDateTime.ofYmdHms? year month day hour minute second).map
+    LocalDateTime.resolveUtc
+
 example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 5))) =
     some (.fired .value) := by
@@ -511,6 +546,35 @@ example :
         (eventDateTimeRaw 100000) true
         (compareNow .greater .left "EventDateTime")) =
           some (.fired .value) := by
+  native_decide
+
+example : (do
+    let now ← utcInstant? 2024 3 31 12 0 0
+    let midnight ← utcInstant? 2024 3 31 0 0 0
+    let world : World :=
+      { now, baseYear := none, modelZoneToday? := ModelZoneToday.concreteOracle }
+    pure (valueOf (elaborateAndEvalFull model world ["Order"]
+      (dispatchDateRaw midnight.epochMillis) true
+      (compareToday .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
+  native_decide
+
+example : (do
+    let now ← utcInstant? 2024 3 31 12 0 0
+    let midnight ← utcInstant? 2024 3 31 0 0 0
+    let apiaModel : FlatModel := { model with timeZoneId := "Pacific/Apia" }
+    let narrowWorld : World :=
+      { now, baseYear := none, modelZoneToday? := ModelZoneToday.concreteOracle }
+    let suppliedWorld : World :=
+      { now, baseYear := none,
+        modelZoneToday? := fun zoneId _ =>
+          if zoneId == "Pacific/Apia" then some midnight else none }
+    pure (
+      valueOf (elaborateAndEvalFull apiaModel narrowWorld ["Order"]
+        (dispatchDateRaw midnight.epochMillis) true
+        (compareToday .equal .right "DispatchDate")) = some .unknown ∧
+      valueOf (elaborateAndEvalFull apiaModel suppliedWorld ["Order"]
+        (dispatchDateRaw midnight.epochMillis) true
+        (compareToday .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
   native_decide
 
 -- Model-derived formal checking prevents an inconsistent runtime kind from entering eval.

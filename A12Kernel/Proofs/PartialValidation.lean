@@ -100,6 +100,9 @@ theorem partialSelected_agreesOn
                 | nowValue =>
                     simp [FlatComparison.eval, FlatTemporalOperand.resolve,
                       worldAgreement]
+                | todayValue zoneId =>
+                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      worldAgreement]
                 | fieldValue rightField =>
                     have rightReadEq := agreement rightField.id (by
                       simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
@@ -111,6 +114,25 @@ theorem partialSelected_agreesOn
             | nowValue =>
                 cases rightOperand with
                 | literalValue rightInstant | nowValue =>
+                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      worldAgreement]
+                | todayValue zoneId =>
+                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      worldAgreement]
+                | fieldValue rightField =>
+                    have rightReadEq := agreement rightField.id (by
+                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                        FlatComparison.fields, FlatTemporalOperand.fields,
+                        FlatField.id] using relevant)
+                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      FlatContext.resolveTemporalComparisonOperand,
+                      FlatContext.observeValidationAt]
+            | todayValue leftZoneId =>
+                cases rightOperand with
+                | literalValue rightInstant | nowValue =>
+                    simp [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      worldAgreement]
+                | todayValue rightZoneId =>
                     simp [FlatComparison.eval, FlatTemporalOperand.resolve,
                       worldAgreement]
                 | fieldValue rightField =>
@@ -132,6 +154,14 @@ theorem partialSelected_agreesOn
                       FlatContext.resolveTemporalComparisonOperand,
                       FlatContext.observeValidationAt]
                 | nowValue =>
+                    have leftReadEq := agreement leftField.id (by
+                      simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                        FlatComparison.fields, FlatTemporalOperand.fields,
+                        FlatField.id] using relevant)
+                    simp_all [FlatComparison.eval, FlatTemporalOperand.resolve,
+                      FlatContext.resolveTemporalComparisonOperand,
+                      FlatContext.observeValidationAt]
+                | todayValue zoneId =>
                     have leftReadEq := agreement leftField.id (by
                       simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
                         FlatComparison.fields, FlatTemporalOperand.fields,
