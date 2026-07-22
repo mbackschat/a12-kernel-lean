@@ -39,7 +39,7 @@ theorem checkedTokenDistinctSource_uniqueDirectOperands
 /-- Token distinct count always reports the exact integral result scale. -/
 theorem checkedTokenDistinctSource_scaleSummary
     (checked : CheckedTokenDistinctSource model) :
-    checked.scaleSummary = NumericScaleSummary.field 0 := by
+    checked.distinctScaleSummary = NumericScaleSummary.field 0 := by
   rfl
 
 /-- A direct checked token slot contributes exactly one phase-indexed classified cell and no structural uncertainty. -/
@@ -70,15 +70,15 @@ theorem checkedTokenDistinctField_partial_relevance
     (directRead : FieldId → CheckedCell)
     (starRead : Env → FieldId → CheckedCell) :
     (scope.coversCell model source.declaration.path [] = true →
-      (CheckedTokenDistinctOperand.field source).resolvedPartialValidationSide
+      (CheckedTokenEntityOperand.field source).resolvedPartialDistinctValidationSide
         document outer scope directRead starRead =
           .ok (.inl (source.resolvedSideAt .validation directRead))) ∧
     (scope.coversCell model source.declaration.path [] = false →
-      (CheckedTokenDistinctOperand.field source).resolvedPartialValidationSide
+      (CheckedTokenEntityOperand.field source).resolvedPartialDistinctValidationSide
         document outer scope directRead starRead =
           .ok (.inr .nonRelevant)) := by
   constructor <;> intro relevant <;>
-    simp [CheckedTokenDistinctOperand.resolvedPartialValidationSide, relevant] <;>
+    simp [CheckedTokenEntityOperand.resolvedPartialDistinctValidationSide, relevant] <;>
     rfl
 
 end A12Kernel
