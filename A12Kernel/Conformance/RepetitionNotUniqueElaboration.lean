@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.RepetitionNotUnique
 
-/-! # Checked nested Number `RepetitionNotUnique` locks -/
+/-! # Checked nested heterogeneous `RepetitionNotUnique` locks -/
 
 namespace A12Kernel.Conformance.RepetitionNotUniqueElaboration
 
@@ -39,13 +39,13 @@ private def keyPath (field : String := "Effort") : SurfaceFieldPath :=
 private def phasePath : SurfaceFieldPath :=
   { base := .absolute, groups := ["Project", "Milestones"], field := "Phase" }
 
-private def fromGroup (groups : List String) : SurfaceNumberRepetitionNotUniqueScope :=
+private def fromGroup (groups : List String) : SurfaceRepetitionNotUniqueScope :=
   .from { base := .absolute, groups }
 
-private def authored (scope : SurfaceNumberRepetitionNotUniqueScope := .default)
+private def authored (scope : SurfaceRepetitionNotUniqueScope := .default)
     (firstKey : SurfaceFieldPath := keyPath)
     (restKeys : List SurfaceFieldPath := []) :
-    SurfaceNumberRepetitionNotUniqueSource :=
+    SurfaceRepetitionNotUniqueSource :=
   { firstKey, restKeys, scope }
 
 private def rows : List RowAddr := [
@@ -60,7 +60,11 @@ private def rawNumber (value : Nat) : RawCell :=
   .parsed (.num value)
 
 private def crossMilestoneRead (environment : Env) (field : FieldId) : RawCell :=
-  if field == estimate.id then .empty
+  if field == text.id then
+    match environment with
+    | [(10, 1), (20, 1)] | [(10, 2), (20, 1)] => .parsed (.str "A")
+    | _ => .parsed (.str "B")
+  else if field == estimate.id then .empty
   else
     match environment with
     | [(10, 1), (20, 1)] => rawNumber 5
@@ -77,17 +81,17 @@ private def withinFirstMilestoneRead (environment : Env)
     | [(10, 1), (20, _)] => rawNumber 5
     | _ => rawNumber 9
 
-private def errorOf (surface : SurfaceNumberRepetitionNotUniqueSource)
+private def errorOf (surface : SurfaceRepetitionNotUniqueSource)
     (declaringGroup : GroupPath := ["Project"]) :
-    Option NumberRepetitionNotUniqueElabError :=
-  match elaborateNumberRepetitionNotUniqueSource model declaringGroup surface with
+    Option RepetitionNotUniqueElabError :=
+  match elaborateRepetitionNotUniqueSource model declaringGroup surface with
   | .ok _ => none
   | .error error => some error
 
-private def verdictsOf (surface : SurfaceNumberRepetitionNotUniqueSource)
+private def verdictsOf (surface : SurfaceRepetitionNotUniqueSource)
     (outer : Env) (relevance : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : Option (List (Env × Verdict)) :=
-  match elaborateNumberRepetitionNotUniqueSource model ["Project"] surface with
+  match elaborateRepetitionNotUniqueSource model ["Project"] surface with
   | .error _ => none
   | .ok checked =>
       match checked.evaluate document outer relevance read with
@@ -136,6 +140,46 @@ example :
         ([(10, 2), (20, 2)], .notFired)] := by
   native_decide
 
+/- String keys preserve exact normalized token identity instead of acquiring Number equality. -/
+example :
+    verdictsOf (authored (firstKey := keyPath "Text")) [] .full
+      crossMilestoneRead = some [
+        ([(10, 1), (20, 1)], .fired .value),
+        ([(10, 1), (20, 2)], .fired .value),
+        ([(10, 2), (20, 1)], .fired .value),
+        ([(10, 2), (20, 2)], .fired .value)] := by
+  native_decide
+
+private def numericLookingStringRead (environment : Env) (field : FieldId) : RawCell :=
+  if field == text.id then
+    match environment with
+    | [(10, 1), (20, 1)] => .parsed (.str "5")
+    | [(10, 1), (20, 2)] => .parsed (.str "X")
+    | [(10, 2), (20, 1)] => .parsed (.str "5.00")
+    | _ => .parsed (.str "Y")
+  else
+    crossMilestoneRead environment field
+
+/- Numeric-looking String spellings remain distinct, unlike Number components. -/
+example :
+    verdictsOf (authored (firstKey := keyPath "Text")) [] .full
+      numericLookingStringRead = some [
+        ([(10, 1), (20, 1)], .notFired),
+        ([(10, 1), (20, 2)], .notFired),
+        ([(10, 2), (20, 1)], .notFired),
+        ([(10, 2), (20, 2)], .notFired)] := by
+  native_decide
+
+/- Mixed Number/String composite keys retain authored component order and typed equality. -/
+example :
+    verdictsOf (authored (restKeys := [keyPath "Text"])) [] .full
+      crossMilestoneRead = some [
+        ([(10, 1), (20, 1)], .fired .value),
+        ([(10, 1), (20, 2)], .notFired),
+        ([(10, 2), (20, 1)], .fired .value),
+        ([(10, 2), (20, 2)], .notFired)] := by
+  native_decide
+
 private def malformedDuplicate (environment : Env) (field : FieldId) : RawCell :=
   if field == estimate.id then .empty
   else if environment == [(10, 2), (20, 1)] then .rejected .malformed
@@ -150,14 +194,45 @@ example :
       ([(10, 2), (20, 2)], .notFired)] := by
   native_decide
 
-/- Static lowering fixes direct-key uniqueness, one exact key path and Number kind, a containing reference group, and a repeatable level below the rule group. -/
+private def flag : FlatFieldDecl :=
+  { effort with id := 5, name := "Flag", policy := { kind := .boolean } }
+
+private def modelWithFlag : FlatModel :=
+  { model with fields := flag :: model.fields }
+
+private def customText : FlatFieldDecl :=
+  { id := 6
+    groupPath := text.groupPath
+    name := "CustomText"
+    policy := text.policy
+    customType := some { name := "ProjectCode" }
+    repeatableScope := text.repeatableScope }
+
+private def modelWithCustomText : FlatModel :=
+  { model with fields := customText :: model.fields }
+
+private def unsupportedError : Option RepetitionNotUniqueElabError :=
+  match elaborateRepetitionNotUniqueSource modelWithFlag ["Project"]
+      (authored (firstKey := keyPath "Flag")) with
+  | .ok _ => none
+  | .error error => some error
+
+private def customTextError : Option RepetitionNotUniqueElabError :=
+  match elaborateRepetitionNotUniqueSource modelWithCustomText ["Project"]
+      (authored (firstKey := keyPath "CustomText")) with
+  | .ok _ => none
+  | .error error => some error
+
+/- Static lowering fixes direct-key uniqueness, one exact key path and a supported typed component, a containing reference group, and a repeatable level below the rule group. -/
 example :
     errorOf (authored (restKeys := [keyPath])) =
         some (.duplicateKeyField effort.id) ∧
     errorOf (authored (restKeys := [phasePath])) =
         some (.keyPathMismatch effort.groupPath phase.groupPath) ∧
-    errorOf (authored (firstKey := keyPath "Text")) =
-        some (.keyNotNumber text.path .string) ∧
+    unsupportedError =
+        some (.unsupportedKeyKind flag.path .boolean) ∧
+    customTextError =
+        some (.customStringRequiresPreparedChecking customText.path) ∧
     errorOf (authored (fromGroup ["Project", "Reviews"])) =
         some (.referenceGroupDoesNotContainKey
           ["Project", "Reviews"] effort.groupPath) ∧
