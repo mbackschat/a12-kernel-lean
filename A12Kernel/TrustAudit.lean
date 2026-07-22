@@ -690,10 +690,14 @@ run_cmd do
 #print axioms A12Kernel.resolvedStarTopology_tail
 #print axioms A12Kernel.checkedStarFieldPath_ancestry
 #print axioms A12Kernel.checkedStarFieldPath_firstStar_lt
+#print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_full
+#print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_partialSet_iff
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
 #print axioms A12Kernel.checkedStarNumberSource_overLimit
 #print axioms A12Kernel.checkedStarNumberSource_havingFlag
 #print axioms A12Kernel.checkedStarNumberSource_filterBeforeTarget
+#print axioms A12Kernel.checkedStarNumberSource_nonRelevantBeforeTarget
+#print axioms A12Kernel.checkedStarNumberSource_relevantPreservesSide
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
 #print axioms A12Kernel.groupPresence_rowContent_admitted

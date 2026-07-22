@@ -16,6 +16,11 @@ structure CheckedStarNumberSource (model : FlatModel) where
   field : FlatNumberField
   fieldOwned : source.declaration.toNumberField? = some field
 
+/-- A checked all-rows Number-star source is either unavailable to partial validation as a whole or carries the ordinary resolved side unchanged. This is deliberately not the order-aware `FirstFilledValue` relevance result. -/
+inductive AllRowsValidationStarNumberSide where
+  | nonRelevant
+  | relevant (side : ResolvedValueListSide .number)
+
 /-- Reuse general checked star-path lowering, then retain the declaration's exact Number metadata. -/
 def elaborateStarNumberSource (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceStarFieldPath) :
@@ -74,6 +79,23 @@ def resolvedValueSide (checked : CheckedStarNumberSource model)
     Except StarAddressingError (ResolvedValueListSide .number) := do
   let resolved ← checked.source.path.resolve document outer
   pure (resolved.toResolvedSide (checked.valueListCell read))
+
+/-- Apply the full/partial all-rows relevance gate to one already-resolved topology. A nonrelevant source is rejected before any selected target cell is classified; relevance leaves cells and hierarchical omitted-tail state unchanged. -/
+def selectedPartialAllRowsValueSide (checked : CheckedStarNumberSource model)
+    (resolved : ResolvedStarTopology) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) : AllRowsValidationStarNumberSide :=
+  if checked.source.allRowsRelevant scope then
+    .relevant (resolved.toResolvedSide (checked.valueListCell read))
+  else
+    .nonRelevant
+
+/-- Resolve the nested topology once, then apply the all-rows validation relevance gate without pruning candidate identities or changing cell classification. -/
+def resolvedPartialAllRowsValueSide (checked : CheckedStarNumberSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → RawCell) :
+    Except StarAddressingError AllRowsValidationStarNumberSide := do
+  let resolved ← checked.source.path.resolve document outer
+  pure (checked.selectedPartialAllRowsValueSide resolved scope read)
 
 /-- Resolve general nested topology once, evaluate the validation `Having` over every candidate environment with the complete captured outer environment, then read only selected Number targets. -/
 def resolvedValidationHavingValueSide (checked : CheckedStarNumberSource model)
