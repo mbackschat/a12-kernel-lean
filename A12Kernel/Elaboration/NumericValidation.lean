@@ -1,5 +1,4 @@
-import A12Kernel.Elaboration.Flat
-import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
@@ -9,17 +8,8 @@ This capsule connects two model-resolved nonrepeatable numeric expressions to th
 
 namespace A12Kernel
 
-/-- Source atoms admitted by the checked numeric-validation consumer. -/
-inductive SurfaceNumericAtom where
-  | field (path : SurfaceFieldPath)
-  | baseYear
-  deriving Repr, DecidableEq
-
 /-- Model-resolved numeric-validation atoms. Base Year remains a non-expandable scale-0 source rather than becoming an authored literal. -/
-inductive NumericValidationAtom where
-  | field (field : FlatNumberField)
-  | baseYear (year : Int)
-  deriving Repr, DecidableEq
+abbrev NumericValidationAtom := ResolvedNumericAtom FlatNumberField
 
 /-- Parser-independent input to the checked numeric consumer. -/
 structure SurfaceNumericComparison where
@@ -59,30 +49,14 @@ private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupP
         declaration.toNumberField? == some field
   | .error _ => false
 
-def NumericValidationAtom.isField : NumericValidationAtom → Bool
-  | NumericValidationAtom.field _ => true
-  | NumericValidationAtom.baseYear _ => false
-
-def NumericValidationAtom.isBaseYear : NumericValidationAtom → Bool
-  | NumericValidationAtom.field _ => false
-  | NumericValidationAtom.baseYear _ => true
-
-def NumericValidationAtom.summary : NumericValidationAtom → NumericScaleSummary
-  | NumericValidationAtom.field source => NumericScaleSummary.field source.info.scale
-  | NumericValidationAtom.baseYear _ => NumericScaleSummary.field 0
+private def numericValidationSummary (atom : NumericValidationAtom) :
+    NumericScaleSummary :=
+  atom.summary fun source => NumericScaleSummary.field source.info.scale
 
 private def NumericValidationAtom.admitted
     (model : FlatModel) (rowGroup : GroupPath) : NumericValidationAtom → Bool
-  | NumericValidationAtom.field source => model.admitsNumberInGroup rowGroup source
-  | NumericValidationAtom.baseYear year => model.baseYear == some year
-
-/-- Base Year participates in the audited arithmetic grammar but does not implicitly widen the separately checked direct value-function shapes. -/
-def AuthoredNumericExpr.isAdmittedNumericValidationOperation
-    (expression : AuthoredNumericExpr NumericValidationAtom) : Bool :=
-  if expression.anyAtom NumericValidationAtom.isBaseYear then
-    expression.isPlainArithmetic
-  else
-    expression.isAdmittedNumericOperation
+  | .field source => model.admitsNumberInGroup rowGroup source
+  | .baseYear year => model.baseYear == some year
 
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
@@ -106,17 +80,17 @@ def NumericValidationOp.acceptsScalesWithSuppression
 def NumericComparison.wellFormedBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
-  (comparison.left.anyAtom NumericValidationAtom.isField ||
-      comparison.right.anyAtom NumericValidationAtom.isField) &&
-    comparison.left.isAdmittedNumericValidationOperation &&
-    comparison.right.isAdmittedNumericValidationOperation &&
+  (comparison.left.anyAtom ResolvedNumericAtom.isField ||
+      comparison.right.anyAtom ResolvedNumericAtom.isField) &&
+    comparison.left.isAdmittedResolvedNumericOperation &&
+    comparison.right.isAdmittedResolvedNumericOperation &&
     comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup) &&
     comparison.right.allAtoms (NumericValidationAtom.admitted model rowGroup) &&
     comparison.left.numericOperationAuthoringCheck == .accepted &&
     comparison.right.numericOperationAuthoringCheck == .accepted &&
     match
-        comparison.left.summary? NumericValidationAtom.summary,
-        comparison.right.summary? NumericValidationAtom.summary with
+        comparison.left.summary? numericValidationSummary,
+        comparison.right.summary? numericValidationSummary with
     | some leftSummary, some rightSummary =>
         comparison.op.acceptsScalesWithSuppression
           comparison.suppressExactScaleWarning leftSummary rightSummary
@@ -166,12 +140,12 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
         throw (.resolve (.invalidRuleGroup rowGroup))
       let left ← resolveNumericExpression model rowGroup surface.left
       let right ← resolveNumericExpression model rowGroup surface.right
-      if !(left.anyAtom NumericValidationAtom.isField ||
-          right.anyAtom NumericValidationAtom.isField) then
+      if !(left.anyAtom ResolvedNumericAtom.isField ||
+          right.anyAtom ResolvedNumericAtom.isField) then
         throw .constantExpression
-      if !left.isAdmittedNumericValidationOperation then
+      if !left.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
-      if !right.isAdmittedNumericValidationOperation then
+      if !right.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
       match left.numericOperationAuthoringCheck with
       | .accepted => pure ()
@@ -179,10 +153,10 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
       match right.numericOperationAuthoringCheck with
       | .accepted => pure ()
       | result => throw (.authoring result)
-      let leftSummary ← match left.summary? NumericValidationAtom.summary with
+      let leftSummary ← match left.summary? numericValidationSummary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
-      let rightSummary ← match right.summary? NumericValidationAtom.summary with
+      let rightSummary ← match right.summary? numericValidationSummary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
       if !surface.op.acceptsScalesWithSuppression

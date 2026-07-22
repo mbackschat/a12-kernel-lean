@@ -47,22 +47,35 @@ private def repeated : FlatFieldDecl :=
 
 private def model : FlatModel :=
   { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated]
-    repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }] }
+    repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }]
+    baseYear := some 2020 }
+
+private def noBaseYearModel : FlatModel := { model with baseYear := none }
 
 private def surfacePath (groups : List String) (name : String) :
     SurfaceFieldPath :=
   { base := .absolute, groups, field := name }
 
 private def surfaceField (groups : List String) (name : String) :
-    AuthoredNumericExpr SurfaceFieldPath :=
-  .atom (surfacePath groups name)
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.field (surfacePath groups name))
 
-private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceFieldPath)
+private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom .baseYear
+
+private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (target : FieldId := targetId)
     (suppressExactScaleWarning : Bool := false) :
     Option NumericComputationElabError :=
   match elaborateNumericComputationOperation model ["Root"] target expression
       suppressExactScaleWarning with
+  | .ok _ => none
+  | .error error => some error
+
+private def noBaseYearErrorOf (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation noBaseYearModel ["Root"] targetId
+      expression with
   | .ok _ => none
   | .error error => some error
 
@@ -77,7 +90,7 @@ private def context (source later : CheckedCell := checkedNumber .empty) :
     else checkedNumber .empty
 
 private def checkedResultOf
-    (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (input : ScalarComputationContext := context) :
     Option NumericComputationResult :=
   match elaborateNumericComputationOperation model ["Root"] targetId expression with
@@ -90,7 +103,7 @@ private def targetPolicy : NumericTargetPolicy where
   minLeMax := by decide
 
 private def checkedTargetResultOf
-    (expression : AuthoredNumericExpr SurfaceFieldPath)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (suppressExactScaleWarning : Bool)
     (policy : NumericTargetPolicy := targetPolicy)
     (input : ScalarComputationContext := context) :
@@ -189,7 +202,7 @@ example :
 example :
     let scaleOne :=
       AuthoredNumericExpr.literal
-        (Atom := SurfaceFieldPath) { value := 11 / 10, authoredScale := 1 }
+        (Atom := SurfaceNumericAtom) { value := 11 / 10, authoredScale := 1 }
     checkedErrorOf scaleOne =
         some (.operationScaleMismatch 0 (NumericScaleSummary.constant 1)) ∧
       checkedErrorOf scaleOne (suppressExactScaleWarning := true) = none ∧
@@ -218,6 +231,19 @@ example :
         (context (checkedNumber (.parsed (.num 3)))) = some (.value 5) ∧
       checkedResultOf (.literal { value := 7, authoredScale := 0 }) =
         some (.value 7) := by
+  native_decide
+
+example :
+    noBaseYearErrorOf surfaceBaseYear = some .baseYearNotDeclared ∧
+    checkedResultOf surfaceBaseYear = some (.value 2020) ∧
+    checkedResultOf (.binary .add surfaceBaseYear
+      (surfaceField ["Root"] "Source"))
+      (context (checkedNumber (.parsed (.num 1)))) = some (.value 2021) ∧
+    checkedErrorOf (.binary .add surfaceBaseYear
+      (.literal { value := 0, authoredScale := 2 })) =
+        some (.operationScaleMismatch 0
+          ((NumericScaleSummary.field 0).union
+            (NumericScaleSummary.constant 2))) := by
   native_decide
 
 /- The checked boundary admits the source-closed direct root value functions already shared with numeric validation. -/

@@ -8,8 +8,8 @@ namespace A12Kernel
 /-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :
-    checked.core.expression.anyAtom (fun declaration =>
-      declaration.id == checked.core.target.id) = false := by
+    checked.core.expression.anyAtom
+      (NumericComputationAtom.references checked.core.target.id) = false := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
@@ -18,7 +18,7 @@ theorem checkedNumericComputationOperation_noTargetReference
 /-- Every checked computation operation lies in the shared plain-arithmetic or direct root value-function fragment. -/
 theorem checkedNumericComputationOperation_admittedShape
     (checked : CheckedNumericComputationOperation model) :
-    checked.core.expression.isAdmittedNumericOperation = true := by
+    checked.core.expression.isAdmittedResolvedNumericOperation = true := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
@@ -29,7 +29,7 @@ theorem checkedNumericComputationOperation_scaleGate
     (checked : CheckedNumericComputationOperation model)
     (summary : NumericScaleSummary)
     (summarized : checked.core.expression.summary?
-      FlatFieldDecl.numericScaleSummary = some summary) :
+      NumericComputationAtom.numericScaleSummary = some summary) :
     exactNumericScaleComparisonAllowedWithSuppression
       checked.core.suppressExactScaleWarning
       (NumericScaleSummary.field checked.core.target.info.scale) summary = true := by
@@ -70,6 +70,14 @@ theorem checkedNumericTargetComputationOperation_evaluate_routes
   rw [evaluated]
   cases checked.operation.core.suppressExactScaleWarning <;> rfl
 
+/-- Numeric Base Year is the fixed declared year and performs no context read in a checked computation expression. -/
+theorem numericComputation_baseYear_evaluatesYear
+    (context : ScalarComputationContext) (year : Int) :
+    (AuthoredNumericExpr.atom (.baseYear year) :
+      AuthoredNumericExpr NumericComputationAtom).evaluateResolvedComputation context =
+        .ok (.value year) := by
+  rfl
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)
@@ -81,6 +89,8 @@ theorem emptyNumericField_evaluates_zero
   simp [AuthoredNumericExpr.evaluateComputation,
     AuthoredNumericExpr.lowerForEvaluation,
     LoweredNumericExpr.computationFault?,
+    LoweredNumericExpr.computationFaultWith?,
+    FlatFieldDecl.numericComputationFault?,
     LoweredNumericExpr.evalComputation,
     ScalarComputationContext.readNumeric, resolved, emptyRead]
   rfl
@@ -113,6 +123,8 @@ theorem poisonedNumericField_evaluates_poison
   simp [AuthoredNumericExpr.evaluateComputation,
     AuthoredNumericExpr.lowerForEvaluation,
     LoweredNumericExpr.computationFault?,
+    LoweredNumericExpr.computationFaultWith?,
+    FlatFieldDecl.numericComputationFault?,
     LoweredNumericExpr.evalComputation,
     ScalarComputationContext.readNumeric, resolved, poisonedRead]
   rfl
