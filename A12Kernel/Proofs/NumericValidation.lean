@@ -13,7 +13,7 @@ theorem checkedNumericComparison_modelWellFormed
 /-- Eliminate the core static-legality certificate carried by a checked comparison. -/
 theorem checkedNumericComparison_wellFormed
     (checked : CheckedNumericComparison model) :
-    checked.core.WellFormed model checked.rowGroup :=
+    checked.core.WellFormedIn model checked.rowGroup checked.operandScope :=
   checked.wellFormed
 
 theorem numericArithmetic_formalInvalid_left_is_unknown
@@ -389,11 +389,11 @@ private theorem loweredAdmittedValidation_isSome
 
 private theorem numericComparison_wellFormed_sidesAdmitted
     (comparison : NumericComparison)
-    (wellFormed : comparison.WellFormed model rowGroup) :
+    (wellFormed : comparison.WellFormedIn model rowGroup scope) :
     comparison.left.isAdmittedResolvedNumericOperation = true ∧
       comparison.right.isAdmittedResolvedNumericOperation = true := by
-  simp only [NumericComparison.WellFormed,
-    NumericComparison.wellFormedBool, Bool.and_eq_true] at wellFormed
+  simp only [NumericComparison.WellFormedIn,
+    NumericComparison.wellFormedInBool, Bool.and_eq_true] at wellFormed
   exact ⟨wellFormed.1.1.1.1.1.1.2, wellFormed.1.1.1.1.1.2⟩
 
 /-- The checked certificate makes both evaluator unsupported-shape fallbacks unreachable. -/

@@ -1,9 +1,9 @@
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Proofs.ComputationCondition
 
-/-! # Literal generated-computation validation laws
+/-! # Generated-computation validation laws
 
-These laws cover the singleton/guarded table split, declaration-order recovery, structural mismatch desugaring, common-precondition placement, first-match reuse, and the target-filled gate of the admitted literal-Number capsule. They do not equate computation-phase guard evaluation with validation-phase evaluation.
+These laws cover the singleton/guarded table split, declaration-order recovery, structural mismatch desugaring, common-precondition placement, first-match reuse, the target-filled gate of the admitted literal-Number capsule, and the model-wide checked scope of an expression-valued mismatch. They do not equate computation-phase guard evaluation with validation-phase evaluation.
 -/
 
 namespace A12Kernel
@@ -148,5 +148,17 @@ theorem generatedNumberCondition_emptyTarget_notFired
     simp [generatedNumberCondition,
       FlatCondition.evalFull, FlatCondition.canFireOnEmpty,
       FlatCondition.evalSelected, FlatField.evalFilled, empty]
+
+/-- Generated mismatch construction preserves the already-checked expression exactly, fixes the stored target on the left, and carries warning suppression only as static comparison metadata. -/
+theorem generatedNumericOperationMismatch_preservesBoundary
+    (operation : NumericComputationOperation)
+    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (tolerance : Option NumericToleranceRange) :
+    let comparison :=
+      generatedNumericOperationMismatch operation expression tolerance
+    comparison.left = .atom (.field operation.target) ∧
+      comparison.right = expression ∧
+      comparison.suppressExactScaleWarning = operation.suppressExactScaleWarning := by
+  cases tolerance <;> simp [generatedNumericOperationMismatch]
 
 end A12Kernel

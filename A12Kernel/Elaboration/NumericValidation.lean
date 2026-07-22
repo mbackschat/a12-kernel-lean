@@ -3,7 +3,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, and Date-only month/year differences share plain arithmetic, while separately audited root value functions remain Number-field-only; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, and Date-only month/year differences share plain arithmetic, while separately audited root value functions remain Number-field-only; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -42,6 +42,12 @@ inductive NumericValidationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+/-- Static field-admission policy for one resolved numeric comparison. Ordinary rules keep their exact rule group; generated computation validation preserves the computation's already-checked model-wide nonrepeatable operand scope. -/
+inductive NumericOperandScope where
+  | sameGroup
+  | modelWideNonrepeatable
+  deriving Repr, DecidableEq
+
 private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupPath)
     (field : FlatNumberField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -57,6 +63,22 @@ private def FlatModel.admitsTemporalInGroup (model : FlatModel)
   | .ok declaration =>
       declaration.groupPath == rowGroup &&
         declaration.repeatableScope.isEmpty &&
+        declaration.toTemporalField? == some field
+  | .error _ => false
+
+private def FlatModel.admitsNumberModelWide (model : FlatModel)
+    (field : FlatNumberField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toNumberField? == some field
+  | .error _ => false
+
+private def FlatModel.admitsTemporalModelWide (model : FlatModel)
+    (field : FlatTemporalField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
         declaration.toTemporalField? == some field
   | .error _ => false
 
@@ -77,17 +99,26 @@ private def numericValidationSummary (atom : NumericValidationAtom) :
   atom.summary fun source => NumericScaleSummary.field source.info.scale
 
 private def NumericValidationAtom.admitted
-    (model : FlatModel) (rowGroup : GroupPath) : NumericValidationAtom → Bool
-  | .field source => model.admitsNumberInGroup rowGroup source
+    (model : FlatModel) (rowGroup : GroupPath) (scope : NumericOperandScope) :
+    NumericValidationAtom → Bool
+  | .field source =>
+      match scope with
+      | .sameGroup => model.admitsNumberInGroup rowGroup source
+      | .modelWideNonrepeatable => model.admitsNumberModelWide source
   | .baseYear year => model.baseYear == some year
   | .baseYearDatePart year _ _ => model.baseYear == some year
   | .temporalFieldPart source part =>
-      model.admitsTemporalInGroup rowGroup source &&
+      (match scope with
+        | .sameGroup => model.admitsTemporalInGroup rowGroup source
+        | .modelWideNonrepeatable => model.admitsTemporalModelWide source) &&
         part.admittedBy source model.hasBaseYear
   | .dateDifference unit left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
-            source.kind == .date && model.admitsTemporalInGroup rowGroup source
+            source.kind == .date &&
+              match scope with
+              | .sameGroup => model.admitsTemporalInGroup rowGroup source
+              | .modelWideNonrepeatable => model.admitsTemporalModelWide source
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
@@ -111,15 +142,16 @@ def NumericValidationOp.acceptsScalesWithSuppression
   | .ordinary .greater | .ordinary .greaterEqual
   | .tolerance _ => true
 
-def NumericComparison.wellFormedBool
+def NumericComparison.wellFormedInBool
     (comparison : NumericComparison)
-    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
+    (model : FlatModel) (rowGroup : GroupPath)
+    (scope : NumericOperandScope) : Bool :=
   (comparison.left.anyAtom ResolvedNumericAtom.isField ||
       comparison.right.anyAtom ResolvedNumericAtom.isField) &&
     comparison.left.isAdmittedResolvedNumericOperation &&
     comparison.right.isAdmittedResolvedNumericOperation &&
-    comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup) &&
-    comparison.right.allAtoms (NumericValidationAtom.admitted model rowGroup) &&
+    comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&
+    comparison.right.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&
     comparison.left.numericOperationAuthoringCheck == .accepted &&
     comparison.right.numericOperationAuthoringCheck == .accepted &&
     match
@@ -130,6 +162,17 @@ def NumericComparison.wellFormedBool
           comparison.suppressExactScaleWarning leftSummary rightSummary
     | _, _ => false
 
+def NumericComparison.wellFormedBool
+    (comparison : NumericComparison)
+    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
+  comparison.wellFormedInBool model rowGroup .sameGroup
+
+def NumericComparison.WellFormedIn
+    (comparison : NumericComparison)
+    (model : FlatModel) (rowGroup : GroupPath)
+    (scope : NumericOperandScope) : Prop :=
+  comparison.wellFormedInBool model rowGroup scope = true
+
 def NumericComparison.WellFormed
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Prop :=
@@ -138,9 +181,10 @@ def NumericComparison.WellFormed
 /-- A model-coherent numeric comparison produced only after every static stage succeeds. -/
 structure CheckedNumericComparison (model : FlatModel) where
   rowGroup : GroupPath
+  operandScope : NumericOperandScope := .sameGroup
   core : NumericComparison
   modelWellFormed : model.validate.isOk = true
-  wellFormed : core.WellFormed model rowGroup
+  wellFormed : core.WellFormedIn model rowGroup operandScope
 
 /-- Whether one resolved validation atom references a field ID. Context-free Base-Year sources contribute no reference. -/
 def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId → Bool

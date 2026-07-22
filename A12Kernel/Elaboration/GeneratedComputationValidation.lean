@@ -1,10 +1,11 @@
 import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Semantics.ComputationCondition
 
-/-! # Checked literal-Number generated validation
+/-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty literal table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Computation lowers every present guard through the shared first-match mechanism; the generated rule structurally translates the same guard syntax into ordinary validation conditions, places the common guard outside the alternatives' declaration-ordered disjunction, and retains every mismatch branch. Zero/default authoring, expression operations, repeatable evaluation, warning-suppressed assignment legality, runtime target checks, and general computation authoring remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty literal table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. It also admits the generated validation twin of one already-checked unconditional numeric operation, retaining computation's model-wide nonrepeatable operand scope while reusing the shared mixed condition and whole-rule boundary. Computation lowers every present guard through the shared first-match mechanism; the generated rule structurally translates the same guard syntax into validation conditions, places the common guard outside the alternatives' declaration-ordered disjunction, and retains every mismatch branch. General expression-valued tables, repeatable evaluation, runtime target checks, and general computation authoring remain outside.
 -/
 
 namespace A12Kernel
@@ -109,6 +110,7 @@ inductive GeneratedComputationValidationError where
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
   | condition (error : ElabError)
+  | conditionAssembly (error : ValidationConditionAssemblyError)
   | rule (error : FlatRuleAssemblyError)
   deriving Repr, DecidableEq
 
@@ -306,6 +308,83 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
           GeneratedComputationValidationError.condition
       (assembleResolvedFlatRule model checked computation.targetField
         computation.name .error computation.messagePlan).mapError
+          GeneratedComputationValidationError.rule
+
+def NumericComputationAtom.toValidationAtom :
+    NumericComputationAtom →
+      Except GeneratedComputationValidationError NumericValidationAtom
+  | .field declaration =>
+      match declaration.toNumberField? with
+      | some field => pure (.field field)
+      | none => throw (.conditionAssembly .incoherentCore)
+  | .baseYear year => pure (.baseYear year)
+  | .baseYearDatePart year source part =>
+      pure (.baseYearDatePart year source part)
+  | .temporalFieldPart source part =>
+      pure (.temporalFieldPart source part)
+  | .dateDifference unit left right =>
+      pure (.dateDifference unit left right)
+
+/-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
+def generatedNumericOperationMismatch (operation : NumericComputationOperation)
+    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (tolerance : Option NumericToleranceRange) : NumericComparison :=
+  { op := match tolerance with
+      | none => .ordinary .notEqual
+      | some range => .tolerance range
+    left := .atom (.field operation.target)
+    right := expression
+    suppressExactScaleWarning := operation.suppressExactScaleWarning }
+
+/-- Reuse one checked computation expression as the right side of its generated validation mismatch. The authored tree is traversed only to narrow already-certified direct declarations to Number fields; no surface syntax is reconstructed or re-elaborated. -/
+def CheckedNumericComputationOperation.generatedMismatchComparison
+    (operation : CheckedNumericComputationOperation model)
+    (tolerance : Option NumericToleranceRange) :
+    Except GeneratedComputationValidationError
+      (CheckedNumericComparison model) := do
+  let targetDeclaration ←
+    (model.lookupUniqueId operation.core.target.id).mapError
+      GeneratedComputationValidationError.resolve
+  let expression ← operation.core.expression.mapM
+    NumericComputationAtom.toValidationAtom
+  let comparison := generatedNumericOperationMismatch operation.core expression tolerance
+  if hCore : comparison.wellFormedInBool model targetDeclaration.groupPath
+      .modelWideNonrepeatable = true then
+    pure {
+      rowGroup := targetDeclaration.groupPath
+      operandScope := .modelWideNonrepeatable
+      core := comparison
+      modelWellFormed := operation.modelWellFormed
+      wellFormed := hCore }
+  else
+    throw (.conditionAssembly .incoherentCore)
+
+/-- Assemble the generated validation twin of one checked unconditional numeric operation. The target-filled gate and expression mismatch meet only through the shared checked mixed tree, then reuse the ordinary whole-rule message boundary. Guarded tables remain with the table desugaring owner. -/
+def assembleGeneratedNumericOperationRule (model : FlatModel)
+    (operation : CheckedNumericComputationOperation model)
+    (name : String) (tolerance : Option NumericToleranceRange)
+    (messagePlan : MessageRenderPlan) :
+    Except GeneratedComputationValidationError
+      (CheckedResolvedValidationRule model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => do
+      let mismatch ← operation.generatedMismatchComparison tolerance
+      let gateCore := FlatCondition.fieldFilled (.number operation.core.target)
+      let gate ←
+        (gateCore.checkAgainstValidatedModel model mismatch.rowGroup hModel).mapError
+          GeneratedComputationValidationError.condition
+      let gateCondition ←
+        (CheckedValidationCondition.fromFlat gate).mapError
+          GeneratedComputationValidationError.conditionAssembly
+      let mismatchCondition ←
+        (CheckedValidationCondition.fromNumeric mismatch).mapError
+          GeneratedComputationValidationError.conditionAssembly
+      let condition ←
+        (gateCondition.and mismatchCondition).mapError
+          GeneratedComputationValidationError.conditionAssembly
+      (assembleResolvedValidationRule model condition operation.core.target.id
+        name .error messagePlan).mapError
           GeneratedComputationValidationError.rule
 
 end A12Kernel
