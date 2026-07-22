@@ -10,6 +10,18 @@ private def unsigned : NumField := { scale := 0, signed := false }
 private def signed : NumField := { scale := 0, signed := true }
 private def scaleTwo : NumField := { scale := 2, signed := false }
 
+private def timeComponents : TemporalComponents :=
+  { year := false, month := false, day := false,
+    hour := true, minute := true, second := true }
+
+private def dateTimeComponents : TemporalComponents :=
+  { TemporalComponents.fullDate with
+    hour := true, minute := true, second := true }
+
+private def monthDayComponents : TemporalComponents :=
+  { year := false, month := true, day := true,
+    hour := false, minute := false, second := false }
+
 private def model : FlatModel :=
   { fields := [
       { id := 0, groupPath := ["Order"], name := "U",
@@ -25,7 +37,13 @@ private def model : FlatModel :=
       { id := 5, groupPath := ["Order", "Items"], name := "Item",
         policy := { kind := .number unsigned }, repeatableScope := [10] },
       { id := 6, groupPath := ["Order"], name := "S",
-        policy := { kind := .number signed } }],
+        policy := { kind := .number signed } },
+      { id := 8, groupPath := ["Order"], name := "Time",
+        policy := { kind := .temporal .time timeComponents } },
+      { id := 9, groupPath := ["Order"], name := "DateTime",
+        policy := { kind := .temporal .dateTime dateTimeComponents } },
+      { id := 11, groupPath := ["Order"], name := "NoYear",
+        policy := { kind := .temporal .date monthDayComponents } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
@@ -41,6 +59,14 @@ private def baseYear : AuthoredNumericExpr SurfaceNumericAtom := .atom .baseYear
 private def baseYearDatePart (source : BaseYearDateSource)
     (part : DateNumericPart) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.baseYearDatePart source part)
+
+private def dateFieldPart (name : String) (part : DateNumericPart) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.temporalFieldPart (path ["Order"] name) (.date part))
+
+private def timeFieldPart (name : String) (part : TimeNumericPart) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.temporalFieldPart (path ["Order"] name) (.time part))
 
 private def literal (value : Rat) (authoredScale : Int) :
     AuthoredNumericExpr SurfaceNumericAtom :=
@@ -61,6 +87,19 @@ private def raw (u v s scale2Value : RawCell := .empty) : RawFlatContext where
   read id :=
     if id == 0 then u else if id == 1 then v else if id == 2 then scale2Value
       else if id == 6 then s else .empty
+
+private def temporalRaw (id : FieldId) (cell : RawCell) : RawFlatContext where
+  read actual := if actual == id then cell else .empty
+
+private def instant : Instant := { epochMillis := 1719292867000 }
+
+private def dateParts : DateParts := { year := 2024, month := 6, day := 25 }
+
+private def clock : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
+
+private def dateTimeValue : Value :=
+  .temporal (.dateTime instant dateParts clock .storedGregorian)
 
 private def verdictOf (surface : SurfaceNumericComparison)
     (context : RawFlatContext := raw) (hasContent : Bool := true)
@@ -709,6 +748,41 @@ example : errorOf (comparison .equal (atom "Flag") 0) =
 
 example : errorOf (twoSided .equal (atom "U") (atom "Flag")) =
     some (.fieldNotNumber ["Order", "Flag"]) := by
+  native_decide
+
+/- Direct temporal component functions enter the same checked scale-0 numeric tree. DateTime supplies either half, while empty remains the symmetric numeric zero. -/
+example :
+    verdictOf (comparison .equal (dateFieldPart "DateTime" .day) 25)
+        (temporalRaw 9 (.parsed dateTimeValue)) = some (.fired .value) ∧
+      verdictOf (comparison .equal (dateFieldPart "DateTime" .quarter) 2)
+        (temporalRaw 9 (.parsed dateTimeValue)) = some (.fired .value) ∧
+      verdictOf (comparison .equal (timeFieldPart "DateTime" .minute) 21)
+        (temporalRaw 9 (.parsed dateTimeValue)) = some (.fired .value) ∧
+      verdictOf (comparison .less (timeFieldPart "Time" .hour) 3)
+        (temporalRaw 8 .empty) = some (.fired .omission) := by
+  native_decide
+
+/- Component presence, family compatibility, and the Base-Year year supplement are checked before runtime reads. -/
+example :
+    errorOf (comparison .equal (dateFieldPart "Time" .day) 1) =
+        some (.incompatibleTemporalSource ["Order", "Time"]) ∧
+      errorOf (comparison .equal (timeFieldPart "NoYear" .hour) 1) =
+        some (.incompatibleTemporalSource ["Order", "NoYear"]) ∧
+      errorOf (comparison .equal (dateFieldPart "NoYear" .year) 2024) =
+        some (.incompatibleTemporalSource ["Order", "NoYear"]) ∧
+      errorOf (comparison .equal (dateFieldPart "NoYear" .year) 2024)
+        baseYearModel = none := by
+  native_decide
+
+/- Temporal component sources are field-bearing plain-arithmetic atoms; unsupported value-function wrappers stay fail-closed. -/
+example :
+    errorOf (comparison .equal (.abs (dateFieldPart "DateTime" .day)) 25) =
+        some .unsupportedExpression ∧
+      verdictOf (comparison .equal
+        (.binary .add (dateFieldPart "DateTime" .day) (atom "U")) 26)
+        (let context := temporalRaw 9 (.parsed dateTimeValue)
+         { read := fun id => if id == 0 then .parsed (.num 1) else context.read id }) =
+        some (.fired .value) := by
   native_decide
 
 example : errorOf

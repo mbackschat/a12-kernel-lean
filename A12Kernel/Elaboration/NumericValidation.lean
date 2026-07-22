@@ -3,12 +3,12 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Number fields, numeric `BaseYear`, and Base-Year date-component extraction share plain arithmetic, while separately audited root value functions remain field-only; operand-list extrema may contain direct fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Number fields, numeric `BaseYear`, Base-Year date-component extraction, and direct temporal field-component sources share plain arithmetic, while separately audited root value functions remain Number-field-only; operand-list extrema may contain direct Number fields and at most one top-level constant. General operation-wrapper traversal remains excluded. Its structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partial-known Date policy, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
 
-/-- Model-resolved numeric-validation atoms. Numeric and date-component Base-Year sources remain non-expandable scale-0 atoms rather than becoming authored literals. -/
+/-- Model-resolved numeric-validation atoms. Numeric Base Year and component sources remain non-expandable scale-0 atoms rather than becoming authored literals. -/
 abbrev NumericValidationAtom := ResolvedNumericAtom FlatNumberField
 
 /-- Parser-independent input to the checked numeric consumer. -/
@@ -32,6 +32,7 @@ inductive NumericValidationElabError where
   | resolve (error : ResolveError)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
+  | incompatibleTemporalSource (path : List String)
   | baseYearNotDeclared
   | constantExpression
   | unsupportedExpression
@@ -49,6 +50,27 @@ private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupP
         declaration.toNumberField? == some field
   | .error _ => false
 
+private def FlatModel.admitsTemporalInGroup (model : FlatModel)
+    (rowGroup : GroupPath) (field : FlatTemporalField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.groupPath == rowGroup &&
+        declaration.repeatableScope.isEmpty &&
+        declaration.toTemporalField? == some field
+  | .error _ => false
+
+private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPath)
+    (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
+    Except NumericValidationElabError FlatTemporalField := do
+  let declaration ← (model.resolveField rowGroup reference).mapError .resolve
+  if declaration.groupPath != rowGroup then
+    throw (.fieldOutsideRowGroup declaration.path rowGroup)
+  match declaration.toTemporalField? with
+  | some field =>
+      if accepts field then pure field
+      else throw (.incompatibleTemporalSource declaration.path)
+  | none => throw (.incompatibleTemporalSource declaration.path)
+
 private def numericValidationSummary (atom : NumericValidationAtom) :
     NumericScaleSummary :=
   atom.summary fun source => NumericScaleSummary.field source.info.scale
@@ -58,6 +80,9 @@ private def NumericValidationAtom.admitted
   | .field source => model.admitsNumberInGroup rowGroup source
   | .baseYear year => model.baseYear == some year
   | .baseYearDatePart year _ _ => model.baseYear == some year
+  | .temporalFieldPart source part =>
+      model.admitsTemporalInGroup rowGroup source &&
+        part.admittedBy source model.hasBaseYear
 
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
@@ -127,6 +152,10 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       match model.baseYear with
       | some year => pure (.baseYearDatePart year source part)
       | none => throw .baseYearNotDeclared
+  | .temporalFieldPart reference part => do
+      let field ← resolveTemporalNumericField model rowGroup reference
+        (fun source => part.admittedBy source model.hasBaseYear)
+      pure (.temporalFieldPart field part)
 
 private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
     AuthoredNumericExpr SurfaceNumericAtom →
@@ -184,12 +213,17 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
       else
         throw .incoherentCore
 
+/-- Lift one already-classified validation numeric operand into the arithmetic outcome domain. Number and temporal component reads share this exact boundary. -/
+def NumericOperand.toValidationArithmetic
+    (operand : NumericOperand) : Except FormalCause NumericArithmeticOutcome :=
+  match operand with
+  | .value amount fillability => .ok (.value amount fillability)
+  | .unknown cause => .error cause
+
 /-- Lift the existing validation-phase Number read into the arithmetic outcome domain. -/
 def FlatContext.resolveNumericArithmetic (context : FlatContext)
     (field : FlatNumberField) : Except FormalCause NumericArithmeticOutcome :=
-  match context.resolveNumberComparisonOperand field with
-  | .value amount fillability => .ok (.value amount fillability)
-  | .unknown cause => .error cause
+  (context.resolveNumberComparisonOperand field).toValidationArithmetic
 
 def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
     NumericValidationAtom → Except FormalCause NumericArithmeticOutcome
@@ -197,6 +231,8 @@ def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
   | .baseYear year => .ok (.value year .fixed)
   | .baseYearDatePart year source part =>
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
+  | .temporalFieldPart field part =>
+      (context.resolveTemporalNumericOperand field part).toValidationArithmetic
 
 private def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →

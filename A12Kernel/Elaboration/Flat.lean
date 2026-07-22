@@ -111,6 +111,12 @@ def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   | .number info => some { id := declaration.id, info }
   | .boolean | .confirm | .string | .temporal _ _ => none
 
+/-- Convert one expanded declaration to the shared resolved temporal-field representation. -/
+def toTemporalField? (declaration : FlatFieldDecl) : Option FlatTemporalField :=
+  match declaration.policy.kind with
+  | .temporal kind components => some { id := declaration.id, kind, components }
+  | .number _ | .boolean | .confirm | .string => none
+
 def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   match declaration.policy.kind with
   | .number info => .number { id := declaration.id, info }

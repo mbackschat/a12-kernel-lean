@@ -87,6 +87,18 @@ theorem numericComputation_baseYearDatePart_evaluates
         .ok (.value (baseYearDateSourceNumericPart year source part)) := by
   rfl
 
+/-- Every clean temporal component projection shares one computation-phase value path; Date and Time specialization is supplied only by the projection function. -/
+theorem readTemporalNumeric_value
+    (context : ScalarComputationContext) (field : FlatTemporalField)
+    (project : TemporalValue → Option Rat) (value : TemporalValue) (amount : Rat)
+    (kind : value.kind = field.kind)
+    (projected : project value = some amount)
+    (observed : observeCell .computation (context.read field.id) =
+      .value (.temporal value)) :
+    context.readTemporalNumeric field project = .ok (.value amount) := by
+  simp [ScalarComputationContext.readTemporalNumeric,
+    observed, kind, projected] <;> rfl
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)

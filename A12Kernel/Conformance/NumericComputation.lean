@@ -34,6 +34,23 @@ private def later : FlatFieldDecl :=
 private def targetId : FieldId := 2
 private def wrongId : FieldId := 3
 private def repeatedId : FieldId := 4
+private def timeId : FieldId := 5
+private def dateTimeId : FieldId := 6
+
+private def timeComponents : TemporalComponents :=
+  { year := false, month := false, day := false,
+    hour := true, minute := true, second := true }
+
+private def dateTimeComponents : TemporalComponents :=
+  { TemporalComponents.fullDate with
+    hour := true, minute := true, second := true }
+
+private def temporalDeclaration (id : FieldId) (name : String)
+    (kind : TemporalKind) (components : TemporalComponents) : FlatFieldDecl where
+  id
+  groupPath := ["Root"]
+  name
+  policy := { kind := .temporal kind components }
 
 private def wrong : FlatFieldDecl :=
   stringDeclaration wrongId "Wrong"
@@ -46,7 +63,9 @@ private def repeated : FlatFieldDecl :=
     repeatableScope := [10] }
 
 private def model : FlatModel :=
-  { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated]
+  { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated,
+      temporalDeclaration timeId "Time" .time timeComponents,
+      temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents]
     repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }]
     baseYear := some 2020 }
 
@@ -67,6 +86,14 @@ private def surfaceBaseYearDatePart (source : BaseYearDateSource)
     (part : DateNumericPart) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.baseYearDatePart source part)
 
+private def surfaceDateFieldPart (name : String) (part : DateNumericPart) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.temporalFieldPart (surfacePath ["Root"] name) (.date part))
+
+private def surfaceTimeFieldPart (name : String) (part : TimeNumericPart) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.temporalFieldPart (surfacePath ["Root"] name) (.time part))
+
 private def checkedErrorOf (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (target : FieldId := targetId)
     (suppressExactScaleWarning : Bool := false) :
@@ -86,12 +113,31 @@ private def noBaseYearErrorOf (expression : AuthoredNumericExpr SurfaceNumericAt
 private def checkedNumber (raw : RawCell) : CheckedCell :=
   formalCheck { kind := .number numberInfo } raw
 
-private def context (source later : CheckedCell := checkedNumber .empty) :
+private def checkedTemporal (kind : TemporalKind) (components : TemporalComponents)
+    (raw : RawCell) : CheckedCell :=
+  formalCheck { kind := .temporal kind components } raw
+
+private def context (source later : CheckedCell := checkedNumber .empty)
+    (time : CheckedCell := checkedTemporal .time timeComponents .empty)
+    (dateTime : CheckedCell :=
+      checkedTemporal .dateTime dateTimeComponents .empty) :
     ScalarComputationContext where
   read field :=
     if field == sourceId then source
     else if field == laterId then later
+    else if field == timeId then time
+    else if field == dateTimeId then dateTime
     else checkedNumber .empty
+
+private def instant : Instant := { epochMillis := 1719292867000 }
+
+private def dateParts : DateParts := { year := 2024, month := 6, day := 25 }
+
+private def clock : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
+
+private def dateTimeValue : Value :=
+  .temporal (.dateTime instant dateParts clock .storedGregorian)
 
 private def checkedResultOf
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
@@ -327,6 +373,28 @@ example : resultOf (field source)
     (context ((checkedNumber .empty).withFinding .required)) =
       some (.value 0) := by
   rfl
+
+/- Checked computation shares the temporal component source seam: DateTime supplies either half, empty contributes zero, and formal invalidity stays poison. -/
+example :
+    checkedResultOf (surfaceDateFieldPart "DateTime" .day)
+        (context (dateTime := checkedTemporal .dateTime dateTimeComponents
+          (.parsed dateTimeValue))) = some (.value 25) ∧
+      checkedResultOf (surfaceTimeFieldPart "DateTime" .second)
+        (context (dateTime := checkedTemporal .dateTime dateTimeComponents
+          (.parsed dateTimeValue))) = some (.value 7) ∧
+      checkedResultOf (surfaceTimeFieldPart "Time" .hour) = some (.value 0) ∧
+      checkedResultOf (surfaceDateFieldPart "DateTime" .year)
+        (context (dateTime := checkedTemporal .dateTime dateTimeComponents
+          (.rejected .malformed))) = some (.poison .malformed) := by
+  native_decide
+
+/- Checked source admission rejects the wrong temporal family and unaudited value-function wrapping. -/
+example :
+    checkedErrorOf (surfaceDateFieldPart "Time" .day) =
+        some (.incompatibleTemporalSource ["Root", "Time"]) ∧
+      checkedErrorOf (.abs (surfaceDateFieldPart "DateTime" .day)) =
+        some .unsupportedExpression := by
+  native_decide
 
 example : resultOf (divide (literal 6) (literal 3)) = some (.value 2) := by
   native_decide
