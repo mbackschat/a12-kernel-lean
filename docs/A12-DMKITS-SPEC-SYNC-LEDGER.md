@@ -706,8 +706,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-22-02 — `Now` retains exact epoch-millisecond identity
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** accepted
+- **Local revision:** `964af3a9fc4887acf7dcfed641e370794980e4dc`
 - **a12-dmkits basis revision:** `eec6f3ac5bcd1e403d64ba940b3d0daf9d44ed39`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`05-dates-and-time.md` §2](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected) and [§7](../spec/05-dates-and-time.md#7-the-point-in-time-and-reference-sources)
@@ -716,13 +716,13 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Replace the interpreter clock/instant coordinate's whole-second ceiling at its shared temporal root, while retaining whole-second field parsing and rendering. Use the existing clock-pinnable dynamic-Groovy and generated-static-Java paths to separate a pinned `.999` `Now` from the same rendered whole second under equality/order, lock `DifferenceInSeconds(field, Now)` at `999 ms → 0` and `1000 ms → 1` in both directions, and preserve the remainder through one legal sub-day shift if that source form is authorable. Run matching JVM/Node interpreter controls. Do not add a new capture or temporal framework.
 - **Compatibility:** A consumer that rounds or truncates `Now` on ingestion can make a whole-second field spuriously equal to the clock, lose strict ordering inside one second, and cross a difference quotient boundary at the wrong time. Widening the exact runtime coordinate does not change stored DateTime syntax or display precision.
 - **Acceptance:** Both kernel strategies and the JVM/Node interpreter agree on the same-second comparison, `999 ms`/`1000 ms` difference boundaries, reverse truncation, and any legal shift separator; the public clock contract accepts the exact coordinate without claiming fractional authored DateTime syntax; existing whole-second temporal controls remain green; and the handback supplies the reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `9c8da06e5692eb6016f44f6b8179bd68f2588bc9`
+- **Disposition:** accepted — IF206 replaces the peer interpreter's whole-second runtime coordinate with exact epoch milliseconds while keeping authored/stored rendering whole-second. `NowMillisecondIdentityDiffTest` pins one `.999` clock through dynamic Groovy and generated Java and compares same-rendered-second equality/order, both `999 ms` difference directions, and a remainder-preserving `1000 ms` shift with the interpreter; `NowMillisecondIdentityTest` locks the same root on JVM and Node. The public `EvalClock.now` contract accepts either whole seconds or exact `.SSS`. The reviewed revision also confirms the pre-existing kernel fact that `Now` is legal but unstable as a computation result; the linked local canonical clauses incorporate that inbound correction without opening a feedback entry.
 
 ### SPEC-2026-07-22-03 — numeric `BaseYear` remains number-like inside computation arithmetic
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** accepted
+- **Local revision:** `5853847752ef6ee1157ee8b43c310b247235cbb2`
 - **a12-dmkits basis revision:** `565333e36805b2beda1ae100ad095f6ad137e86f`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`04-numbers-and-decimals.md` §4](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints)
@@ -731,13 +731,13 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Correct the existing expression-evaluation type context so `BaseYear` resolves through `baseYearNumber()` when consumed by numeric arithmetic or a Number computation, while preserving its date role in direct date comparison, extraction, range, and other explicitly date-typed consumers. Reuse the existing constant, decimal, arithmetic, and model-configuration mechanisms; do not add another AST or generic typing framework. Through existing JVM/Node facilities, lock direct numeric `BaseYear`, `BaseYear + 1`, a field-plus-`BaseYear` operation, missing-model rejection, and a date-role control. Add a kernel differential computation control if the maintained route can express it without new capture machinery; otherwise report that external evidence remains pending.
 - **Compatibility:** A context-free date default makes legal Number computations unsupported or type-mismatched even though direct comparisons pass. Treating `BaseYear` as an expandable literal can also admit a result-scale combination that the kernel rejects. The correction must not turn date-typed Base Year sources into numbers.
 - **Acceptance:** a12-dmkits canonical prose states the numeric arithmetic role; JVM and Node evaluate the named numeric expressions to the declared year through the existing arithmetic mechanism; missing configuration and date-role controls remain unchanged; any maintained kernel computation differential agrees or its absence is explicitly reported; and the handback supplies the reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `9c8da06e5692eb6016f44f6b8179bd68f2588bc9`
+- **Disposition:** accepted — IF207 makes the context-free interpreter constant numeric and lets explicitly temporal consumers opt into the date role. `BaseYearArithmeticDiffTest` tri-checks direct `BaseYear`, `BaseYear + 1`, and field-plus-`BaseYear` Number computations through dynamic Groovy, generated Java, and the interpreter; `BaseYearComputationTest` locks JVM/Node evaluation; `BaseYearArithmeticLawsTest` retains the real-kernel `MVK_NO_BASE_YEAR` rejection; and the existing date-role controls remain in place. The typed public API keeps `BaseYear.kind() = DATE` for compatibility and admits only its existing numeric wrapper as the kernel-defined polymorphic exception at a Number computation target.
 
 ### SPEC-2026-07-22-04 — quarter extraction is the fourth direct date-component projection
 
-- **Status:** pending
-- **Local revision:** introducing commit
+- **Status:** accepted
+- **Local revision:** `a4ba930604c0f4c1b165b9c52ec83feb4f2c34da`
 - **a12-dmkits basis revision:** `565333e36805b2beda1ae100ad095f6ad137e86f`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`05-dates-and-time.md` §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)
@@ -746,8 +746,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Verify that the canonical semantics prose names the four-member family, the one-based quarter formula, and zero/UNKNOWN projection consistently. Reuse the existing evaluator and tests; no new code or duplicate test route is requested if the reviewed basis already covers every branch. Report the exact reviewed revision and whether this is documentation-only or already fully satisfied.
 - **Compatibility:** Omitting Quarter from a consumer shipment or calculating it from a zero sentinel with the ordinary one-based formula can respectively reject a legal rule or turn the required zero projection into quarter one. The correction does not widen date-source authoring or partial-date precision gates.
 - **Acceptance:** a12-dmkits canonical prose and implementation agree on the four-member family; retained tests distinguish a real second-quarter month, incomplete/unreal zero with their existing provenance, and formal suppression; no redundant mechanism is added; and the handback supplies the reviewed revision plus per-surface disposition.
-- **a12-dmkits revision:** pending
-- **Disposition:** pending handback.
+- **a12-dmkits revision:** `9c8da06e5692eb6016f44f6b8179bd68f2588bc9`
+- **Disposition:** accepted — the evaluator was already aligned. The reviewed revision adds Quarter to the canonical four-component family and extends `ConstructedDateCalendarDiffTest` plus `ConstructedDateCalendarTest` with explicit unreal/incomplete zero and malformed/UNKNOWN separators, while the existing real-quarter and empty-source controls retain the ordinary branch. No duplicate evaluator or test route was added.
 
 ### SPEC-2026-07-22-05 — Enumeration field-list literals use the union of selected domains
 
