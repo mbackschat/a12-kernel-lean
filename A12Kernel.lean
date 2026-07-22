@@ -58,6 +58,7 @@ import A12Kernel.Semantics.CustomFieldMessage
 import A12Kernel.Semantics.CustomFieldFormalMessage
 import A12Kernel.Semantics.CustomFieldValidity
 import A12Kernel.Elaboration.LegalCharset
+import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.ValidationRule
