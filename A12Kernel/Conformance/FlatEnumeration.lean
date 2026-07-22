@@ -147,9 +147,17 @@ private def conflictingEnumDecl : FlatFieldDecl :=
         { locale := "en", stored := "A", display := "Another" },
         { locale := "en", stored := "C", display := "Gamma" }] } }
 
+private def categoryPeerDecl : FlatFieldDecl :=
+  { enumDecl with id := 25, name := "CategoryPeer", enumeration := some {
+      storedTokens := ["Shared", "Other"]
+      displayFacts := [
+        { locale := "en", stored := "Shared", display := "Gemeinsam" },
+        { locale := "en", stored := "Other", display := "Anders" }]
+      categories := [{ name := "Kind", tokens := ["Shared", "Other"] }] } }
+
 private def fieldModel : FlatModel :=
   { fields := [stringDecl, enumDecl, identityEnumDecl, displayEnumDecl,
-      compatibleEnumDecl, conflictingEnumDecl] }
+      compatibleEnumDecl, conflictingEnumDecl, categoryPeerDecl] }
 
 private def fieldPath (name : String) : SurfaceFieldPath :=
   { base := .absolute, groups := ["Order"], field := name }
@@ -159,7 +167,8 @@ private def rawPair (leftId : FieldId) (left : RawCell)
   read id := if id == leftId then left else if id == rightId then right else .empty
 
 private def textEnumCore : FlatCondition :=
-  .compare (.textFields .equal (.string { id := 10 }) (.enumeration { id := 20 }))
+  .compare (.textFields .equal (.string { id := 10 })
+    (.enumeration { id := 20 } .stored .stored))
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
     (fieldPath "Text") (fieldPath "Code"))) = some textEnumCore := by native_decide
@@ -171,8 +180,8 @@ example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareFields .notEqual
     (fieldPath "Code") (fieldPath "Identity"))) = some
-      (.compare (.textFields .notEqual (.enumeration { id := 20 })
-        (.enumeration { id := 21 }))) := by native_decide
+      (.compare (.textFields .notEqual (.enumeration { id := 20 } .stored .stored)
+        (.enumeration { id := 21 } .stored .stored))) := by native_decide
 
 example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
     (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "A"))) true
@@ -214,5 +223,48 @@ example : errorOf (elaborate fieldModel ["Order"] (.compareFields .equal
 example : errorOf (elaborate fieldModel ["Order"] (.compareFields .less
     (fieldPath "Text") (fieldPath "Code"))) = some (.unsupportedOperator .less) := by
   native_decide
+
+private def categoryCode : SurfaceTextFieldOperand :=
+  .category (fieldPath "Code") "Kind"
+
+private def directCategoryPeer : SurfaceTextFieldOperand :=
+  .direct (fieldPath "CategoryPeer")
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    categoryCode directCategoryPeer)) = some (.compare (.textFields .equal
+      (.enumeration { id := 20 } (.category "Kind") (.category categoryMapping))
+      (.enumeration { id := 25 } .stored .stored))) := by native_decide
+
+example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    (rawPair 20 (.parsed (.enum "B")) 25 (.parsed (.enum "Shared"))) true
+    (.compareTextFields .equal categoryCode directCategoryPeer)) =
+    some (.fired .value) := by native_decide
+
+example : (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Code") (fieldPath "CategoryPeer"))).isOk = false := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    categoryCode (.direct (fieldPath "Text")))) = some (.compare (.textFields .equal
+      (.enumeration { id := 20 } (.category "Kind") (.category categoryMapping))
+      (.string { id := 10 }))) := by native_decide
+
+example : (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    categoryCode (.category (fieldPath "CategoryPeer") "Kind"))).isOk = true := by
+  native_decide
+
+example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    (.category (fieldPath "Code") "kind") directCategoryPeer)) = some
+      (.enumerationOperand ["Order", "Code"] (.unknownCategory "kind")) := by native_decide
+
+example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    (.category (fieldPath "Text") "Kind") directCategoryPeer)) = some
+      (.textFieldOperandKindMismatch ["Order", "Text"] .string) := by native_decide
+
+private def incoherentCategoryCore : FlatCondition :=
+  .compare (.textFields .equal
+    (.enumeration { id := 20 } (.category "Kind") .stored)
+    (.enumeration { id := 25 } .stored .stored))
+
+example : incoherentCategoryCore.wellFormedBool fieldModel = false := by native_decide
 
 end A12Kernel.Conformance.FlatEnumeration

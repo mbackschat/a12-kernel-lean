@@ -68,6 +68,12 @@ theorem enumeration_sharedDisplayMapConflict_rejected
   simp [classifyDirectFieldComparison, leftEffective,
     rightEffective, conflict]
 
+/-- Once either operand is an exact category access, direct-field display remapping does not constrain textual equality admission. -/
+theorem categoryComparison_allowed (other : DirectComparableField) :
+    directFieldComparisonAllowed .category other = true ∧
+      directFieldComparisonAllowed other .category = true := by
+  cases other <;> constructor <;> rfl
+
 /-- Direct-field admission is symmetric. Error payload order never affects whether a comparison is legal. -/
 theorem directFieldComparisonAllowed_comm
     (left right : DirectComparableField) :
@@ -93,5 +99,8 @@ theorem directFieldComparisonAllowed_comm
           cases leftProfile.hasEffectiveDisplay <;>
             cases rightProfile.hasEffectiveDisplay <;>
               simp
+      | category => rfl
+  | category =>
+      cases right <;> rfl
 
 end A12Kernel

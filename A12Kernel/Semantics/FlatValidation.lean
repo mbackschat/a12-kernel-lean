@@ -114,17 +114,19 @@ def fields : FlatTemporalOperand → List FlatField
 
 end FlatTemporalOperand
 
-/-- One direct field whose checked value participates in String/Enumeration equality. Enumeration operands project their stored token; category access is a distinct authored form. -/
+/-- One direct field whose checked value participates in String/Enumeration equality. An Enumeration operand retains the exact stored/category projection checked from its declaration. -/
 inductive FlatTextFieldOperand where
   | string (field : FlatStringField)
   | enumeration (field : FlatEnumerationField)
+      (projectionRef : EnumerationProjectionRef)
+      (projection : ResolvedEnumerationProjection)
   deriving Repr, DecidableEq
 
 namespace FlatTextFieldOperand
 
 def field : FlatTextFieldOperand → FlatField
   | .string field => .string field
-  | .enumeration field => .enumeration field
+  | .enumeration field _ _ => .enumeration field
 
 end FlatTextFieldOperand
 
@@ -334,9 +336,8 @@ def FlatTextFieldOperand.resolve (operand : FlatTextFieldOperand)
     (context : FlatContext) : SimpleComparisonOperand String :=
   match operand with
   | .string field => context.resolveDirectStringComparisonOperand field
-  | .enumeration field =>
-      ResolvedEnumerationProjection.stored.resolveOperand
-        (context.observeValidationAt field.id)
+  | .enumeration field _ projection =>
+      projection.resolveOperand (context.observeValidationAt field.id)
 
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
