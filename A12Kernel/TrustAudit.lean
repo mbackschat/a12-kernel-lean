@@ -671,6 +671,11 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericAggregate_noHaving
 #print axioms A12Kernel.checkedNumericAggregate_evaluateSum
 #print axioms A12Kernel.checkedNumericAggregate_evaluateExtremum
+#print axioms A12Kernel.numericStar_selectedRows_length
+#print axioms A12Kernel.numericStar_selectedRows_closed
+#print axioms A12Kernel.checkedNumericStarAggregate_tail_iff
+#print axioms A12Kernel.checkedNumericStarAggregate_evaluateSum_of_valid
+#print axioms A12Kernel.checkedNumericStarAggregate_evaluateExtremum_of_valid
 #print axioms A12Kernel.reopenedStar_selectedLeaf_closed
 #print axioms A12Kernel.reopenedStar_unbounded_open
 #print axioms A12Kernel.reopenedStar_finite_closed_iff

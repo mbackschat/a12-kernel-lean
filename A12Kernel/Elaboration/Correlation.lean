@@ -67,7 +67,8 @@ inductive CorrelationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-private def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
+/-- Resolve one structured group reference against its declaring group. -/
+def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
     (declaringGroup : GroupPath) : Except CorrelationElabError GroupPath := do
   if !GroupPath.isValid declaringGroup then
     throw (.resolve (.invalidRuleGroup declaringGroup))
@@ -79,7 +80,8 @@ private def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
         pure ((← GroupPath.walkUp declaringGroup parents |>.mapError .resolve) ++ reference.groups)
   if GroupPath.isValid path then pure path else throw (.invalidGroupReference reference)
 
-private def SurfaceSingleStarFieldPath.groupReference
+/-- Validate one single-star field shape and recover its authored group reference. -/
+def SurfaceSingleStarFieldPath.groupReference
     (reference : SurfaceSingleStarFieldPath) : Except CorrelationElabError SurfaceGroupPath := do
   if !reference.groupsBeforeStar.all (!·.isEmpty) || reference.starredGroup.isEmpty ||
       reference.field.isEmpty then
@@ -129,7 +131,8 @@ private def FlatModel.resolveNumberInGroup (model : FlatModel)
     | none => throw (.fieldNotNumber declaration.path)
   pure { declaration, core := { origin, field } }
 
-private def FlatModel.resolveNumberFieldInGroup (model : FlatModel)
+/-- Resolve a Number field that must be a direct child of one exact repeatable group. -/
+def FlatModel.resolveNumberFieldInGroup (model : FlatModel)
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
     (reference : SurfaceFieldPath) :
     Except CorrelationElabError (FlatFieldDecl × FlatNumberField) := do

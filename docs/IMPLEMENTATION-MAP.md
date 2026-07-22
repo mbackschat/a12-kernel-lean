@@ -178,6 +178,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Elaboration/NumericComputation.lean`](../A12Kernel/Elaboration/NumericComputation.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
+- [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean)
 - [`Proofs/NumericScale.lean`](../A12Kernel/Proofs/NumericScale.lean)
 - [`Proofs/NumericExpression.lean`](../A12Kernel/Proofs/NumericExpression.lean)
 - [`Proofs/NumericValidation.lean`](../A12Kernel/Proofs/NumericValidation.lean)
@@ -599,6 +600,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Proofs/Correlation.lean`](../A12Kernel/Proofs/Correlation.lean)
 - [`Proofs/CrossLevelCorrelation.lean`](../A12Kernel/Proofs/CrossLevelCorrelation.lean)
 - [`Proofs/CorrelationElaboration.lean`](../A12Kernel/Proofs/CorrelationElaboration.lean)
+- [`Proofs/NumericAggregateElaboration.lean`](../A12Kernel/Proofs/NumericAggregateElaboration.lean)
 - [`Conformance/Iteration.lean`](../A12Kernel/Conformance/Iteration.lean)
 - [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean)
 - [`Conformance/GroupPresence.lean`](../A12Kernel/Conformance/GroupPresence.lean)
@@ -606,12 +608,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Conformance/Correlation.lean`](../A12Kernel/Conformance/Correlation.lean)
 - [`Conformance/CrossLevelCorrelation.lean`](../A12Kernel/Conformance/CrossLevelCorrelation.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
+- [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean)
 
 #### Implemented
 
 - Exact ordered selector ↔ relation bridges
 - filter-before-consumer laws
 - The one-group Number aggregate now classifies each selected row through the same `FlatNumberField.valueListCell` owner used by checked nonrepeatable Number lists. Empty, present Number, wrong-kind, and exact-cause unavailable cells therefore cannot drift between flat membership and repeatable aggregation; selection and the aggregate scan remain separate.
+- The checked unfiltered one-level Number star retains a model-owned positive capacity, binds one exact starred group and direct-child field through the shared one-star resolver, requires the runtime rows to be a contiguous 1-based prefix within that capacity, and constructs the ordered classified cell stream plus omitted-tail state before delegating to the existing `Sum` and extrema evaluators.
 - a shared full-environment correlated evaluator/relation bridge
 - captured-origin, exact named-level resolution, outer-reference stability, self-match/exclusion, scalar-collapse rejection, and one-group observation-footprint results.
 - Resolved RNU consumes caller-supplied ordered rows with complete repetition environments and classified composite keys. It excludes unknown keys, skips all-empty keys, uses scale-19 Number equality, retains complete firing clusters in scope order, and projects per-row verdicts before composition.
@@ -646,7 +650,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - the low-level evaluator remains total outside those obligations without a kernel-correspondence claim.
 - Checked RNU scope/default or explicit `@From`, paths and key-schema validation, partial all-key relevance, one-RNU and negative/iteration/filter/parallel authoring restrictions, checked condition/whole-rule integration, error-field and peer-pointer projection, and protocol exposure remain open.
 - The checked correlation elaborator and public protocol remain one-group only
-- Open: `Document` adaptation, group-instance enumeration, wildcardable relevance, checked reopened-tree and cell-stream construction, nested or multiple stars, joins, cross-group execution, general consumers, filtered polarity, computation, and partial validation over repeats.
+- Open: general `Document` adaptation and group-instance enumeration, wildcardable relevance, checked nested reopened-tree construction, multiple stars, joins, cross-group execution, filtered polarity, computation, and partial validation over repeats. The checked unfiltered one-level Number aggregate is the sole model-to-row consumer currently closed.
 
 ### §10 — paths and references
 
@@ -928,7 +932,7 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 ### Resolved Number aggregates
 
 - Owners: [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), [`Proofs/`](../A12Kernel/Proofs.lean), and [`Conformance/`](../A12Kernel/Conformance.lean).
-- Boundary: resolved validation-side Number `Sum`/`MinValue`/`MaxValue` plus checked nonempty unfiltered nonrepeatable field lists.
+- Boundary: resolved validation-side Number `Sum`/`MinValue`/`MaxValue`, checked nonempty unfiltered nonrepeatable field lists, and one checked unfiltered finite one-level Number star.
 - The two completed consumers share only `ValueListCell.scanPresent`: it skips empty cells, stops at the first reached unavailable cell, and applies a caller-owned step to present cells from left to right.
 - Extrema select exact present amounts without a synthetic zero.
 - `Sum` starts at zero and applies precision-50 `HALF_UP` addition at every present term in encounter order, so exact accumulation, reassociation, and reordering are rejected by separate cases.
@@ -942,20 +946,22 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - `CheckedNumericAggregateFields` resolves the shared nonrepeatable Number source list once, classifies raw cells through the same validated model, and constructs exact no-tail/no-`Having` views for `Sum` and extrema.
 - A trusted equality locks both views to the same classified cells in authored order
 - only the Sum view adds each declaration's signedness.
+- `CheckedNumericStarAggregate` resolves one exact star through the existing group/path owner, requires the staged declaration's positive capacity, rejects zero, duplicate, noncontiguous, and over-capacity runtime rows, and maps the valid instantiated prefix through the same checked Number-cell classifier.
+- Its structural-tail theorem states that the resolved side is open exactly when the instantiated prefix is shorter than the declared capacity. Cases lock zero rows, partial/full prefixes, explicit emptiness, one-row capacity, first formal cause, precision-sensitive order, extrema direction, and malformed topology.
 
-- This is internally complete at levels 1–2 and remains `external evidence pending`.
-- Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction for all three operators are represented, but group/star expansion must still construct per-source cells and uninstantiated signedness without losing declaration identity.
+- This is internally complete at levels 1–2 for the resolved operators, direct nonrepeatable lists, and the unfiltered finite one-level Number star; correspondence remains `external evidence pending`.
+- Mixed-declaration resolved Sum evaluation and direct nonrepeatable field-list construction for all three operators are represented. Nested/multiple stars and mixed repeated declarations must still construct per-source cells and uninstantiated signedness without losing declaration identity.
 - Enclosing checked comparison remains open: runtime operands compose with ordinary polarity, but the checked numeric expression tree has no aggregate node and must not be bypassed by a parallel aggregate-comparison wrapper.
-- The separate reopened-star capsule below can derive structural openness from a caller-supplied IF194 tree, but neither layer constructs the tree or ordered cell stream from authored paths and a `Document`.
+- The checked one-level star now constructs the shallow IF194 tree and ordered cells from its authored path plus a bounded raw one-group view. General nested construction and `Document` adaptation remain outside.
 - The older checked-row `NumberFold` uses the homogeneous embedding and projects only amount or cause, preserving its existing truth-only API while deliberately erasing fillability.
 - The family does not share the prefix-terminating `FirstFilledValue` scan or operand-list empty substitution/fillability.
-- Checked repeatable/star lowering, actual filter execution, partial-validation relevance and row gating, computation aggregates, Date and other overloads, messages, protocol exposure, and project-local portable evidence remain open.
+- Nested/multiple-star lowering, actual filter execution, partial-validation relevance and row gating, computation aggregates, Date and other overloads, messages, protocol exposure, and project-local portable evidence remain open.
 - a12-dmkits revision `20230e40` accepted the all-empty correction in [`SPEC-2026-07-20-15`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-20-15--all-empty-number-aggregate-identity-is-both-directionally-fillable).
 - The same revision accepted Sum order, precision, and missing polarity in [`SPEC-2026-07-21-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-21-02--number-sum-preserves-encounter-order-staged-precision-and-missing-declaration-polarity).
 
 ### Reopened-star structural completeness
 
-- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), and [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean).
+- Owners: [`Semantics/StarCompleteness.lean`](../A12Kernel/Semantics/StarCompleteness.lean), [`Elaboration/NumericAggregate.lean`](../A12Kernel/Elaboration/NumericAggregate.lean), [`Proofs/StarCompleteness.lean`](../A12Kernel/Proofs/StarCompleteness.lean), [`Proofs/NumericAggregateElaboration.lean`](../A12Kernel/Proofs/NumericAggregateElaboration.lean), [`Conformance/StarCompleteness.lean`](../A12Kernel/Conformance/StarCompleteness.lean), and [`Conformance/NumericAggregateElaboration.lean`](../A12Kernel/Conformance/NumericAggregateElaboration.lean).
 - Boundary: IF194's structural decision after first-star binding.
 - `ReopenedStarDomain` contains only reopened repeatable levels
 - every actual child row stays beneath its actual parent, carries its 1-based coordinate, and recursively owns the next reopened level or selected leaf.
@@ -970,8 +976,8 @@ The §5/§11 numeric-computation entry retains each atom's declaration and rejec
 - Cases separate outer, middle, and leaf omissions, full closure, a bound level above the first star, an unbounded level, invalid coordinate inputs, empty-cell composition, and an unchanged unsigned Sum consumer.
 - The first shallow-count implementation failed the middle and leaf cases before recursive correction.
 
-- This is internally complete at levels 1–2 for a caller-supplied well-formed reopened tree and resolved cell stream.
-- It does not parse paths, identify the first star, read model repeatabilities, enumerate scoped `Document` rows, classify cells, evaluate `Having`, or prove tree/stream construction correct.
+- This is internally complete at levels 1–2 for a caller-supplied well-formed reopened tree and resolved cell stream, plus checked construction of the finite unfiltered one-level Number-star case.
+- It does not construct nested reopened trees, enumerate general scoped `Document` rows, evaluate `Having`, or prove a general nested tree/stream correspondence. The one-level checked aggregate does bind the first star, read its positive capacity, validate a contiguous bounded row prefix, classify its cells, and prove the shallow tail equation.
 - The a12-dmkits IF194 tri-engine matrix at revision `7f152509eea76822068955055b0d57d8ed930ca2` is focused external triangulation, but this repository retains no portable observation
 - correspondence remains `external evidence pending`.
 - Aggregate directions, computation, partial relevance, per-source declaration-metadata construction, messages, and protocol exposure retain their existing boundaries.
