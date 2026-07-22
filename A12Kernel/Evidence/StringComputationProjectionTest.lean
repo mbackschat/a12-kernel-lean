@@ -18,16 +18,15 @@ private def storeCoercedEmpty : StringTerm → StringStore
   | .text "" => .produced coercedEmptySentinel
   | term => term.store
 
-private def acceptProduced (_ : StringTargetLengthPolicy) : StringStore → StringTargetCheckResult
-  | .produced value => .supported (.accepted value)
-  | .noValue => .supported .noValue
-  | .poison cause => .supported (.poison cause)
+private def acceptProduced (_ : StringFieldPolicy) : StringStore → StringTargetOutcome
+  | .produced value => .accepted value
+  | .noValue => .noValue
+  | .poison cause => .poison cause
 
-private def flipTooLong (policy : StringTargetLengthPolicy)
-    (store : StringStore) : StringTargetCheckResult :=
-  match policy.check store with
-  | .supported (.errored attempted .tooLong) =>
-      .supported (.errored attempted .tooShort)
+private def flipTooLong (policy : StringFieldPolicy)
+    (store : StringStore) : StringTargetOutcome :=
+  match policy.checkTarget store with
+  | .errored attempted .tooLong => .errored attempted .tooShort
   | result => result
 
 private def reportEqual (outcome : StringTargetOutcome)

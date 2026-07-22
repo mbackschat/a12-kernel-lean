@@ -1,11 +1,12 @@
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.String
+import A12Kernel.Semantics.StringFieldPolicy
 import A12Kernel.Document
 
 /-! # A12Kernel.Semantics.StringComputation — one-target-instance String computation
 
-This capsule implements the first non-repeatable, unconditional subset of `spec/09-computations.md` (§11): resolved String-field reads, String literals, concatenation, root storage, positive target-length checks, payloadful `ERRORED`, value-only application, and kernel-style delta projection. Expression evaluation, root storage, target checking, application, and delta reporting remain separate because each exposes a different semantic boundary.
+This capsule implements the first non-repeatable, unconditional subset of `spec/09-computations.md` (§11): resolved String-field reads, String literals, concatenation, root storage, declaration-owned ordinary target checks, payloadful `ERRORED`, value-only application, and kernel-style delta projection. Expression evaluation, root storage, target checking, application, and delta reporting remain separate because each exposes a different semantic boundary.
 -/
 
 namespace A12Kernel
@@ -109,31 +110,10 @@ def evaluate (expression : StringExpr FieldId) (context : StringComputationConte
 
 end StringExpr
 
-/-- A positive declared String-length bound. The current checked projection deliberately rejects nonpositive declarations until their separate runtime treatment is differentially closed. -/
-structure PositiveStringLength where
-  value : Nat
-  positive : 0 < value
-  deriving Repr, DecidableEq
+/-- Language-neutral first-failure cause for ordinary computed-String target checking. It is shared with the declaration-owned scalar policy because both use the same basic format clauses. -/
+abbrev StringTargetError := StringFieldError
 
-/-- The closed target-length fragment. A model declaring both bounds remains outside this first separating capsule. -/
-inductive StringTargetLengthPolicy where
-  | unconstrained
-  | minimum (bound : PositiveStringLength)
-  | maximum (bound : PositiveStringLength)
-  deriving Repr, DecidableEq
-
-/-- Language-neutral first-failure cause for the admitted String target-length checks. -/
-inductive StringTargetError where
-  | tooShort
-  | tooLong
-  deriving Repr, DecidableEq
-
-/-- A value that needs an earlier reduced-target clause which this length-only capsule does not yet model. This is fail-closed fragment routing, not a kernel computation outcome. -/
-inductive StringTargetCheckFault where
-  | unsupportedLineBreak
-  deriving Repr, DecidableEq
-
-/-- Result after the root write attempt has passed through the admitted target-length policy. Target rejection is an ordinary payloadful result, not a computation fault or poison. -/
+/-- Result after the root write attempt has passed through the ordinary target policy. Target rejection is an ordinary payloadful result, not a computation fault or poison. -/
 inductive StringTargetOutcome where
   | noValue
   | accepted (value : StoredString)
@@ -141,39 +121,14 @@ inductive StringTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Result of routing a root write through the admitted target-check fragment. `unsupported` is a fail-closed model boundary, not an external computation result. -/
-inductive StringTargetCheckResult where
-  | supported (outcome : StringTargetOutcome)
-  | unsupported (fault : StringTargetCheckFault)
-  deriving Repr, DecidableEq
-
-namespace StringTargetLengthPolicy
-
-/-- Classify the sole admitted target-length violation after the preceding line-break clause has been excluded. Combined policies and their order remain outside this capsule. -/
-def admittedViolation (policy : StringTargetLengthPolicy) (attempted : StoredString)
-    (_noLineBreak : containsLineBreak attempted.text = false) : Option StringTargetError :=
-  match policy with
-  | .unconstrained => none
-  | .minimum bound =>
-      let length := utf16CodeUnitLength attempted.text
-      if length < bound.value then some .tooShort else none
-  | .maximum bound =>
-      let length := utf16CodeUnitLength attempted.text
-      if bound.value < length then some .tooLong else none
-
-/-- Apply only the admitted target-length validation to a root write attempt. No-value and poison bypass target validation and remain distinguishable; a produced value outside the length-only fragment fails closed. -/
-def check (policy : StringTargetLengthPolicy) : StringStore → StringTargetCheckResult
-  | .noValue => .supported .noValue
-  | .poison cause => .supported (.poison cause)
+/-- Apply the declaration-owned basic String clauses to a root write attempt. Checking may normalize CRLF for length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
+def StringFieldPolicy.checkTarget (policy : StringFieldPolicy) : StringStore → StringTargetOutcome
+  | .noValue => .noValue
+  | .poison cause => .poison cause
   | .produced attempted =>
-      if noLineBreak : containsLineBreak attempted.text = false then
-        match policy.admittedViolation attempted noLineBreak with
-        | none => .supported (.accepted attempted)
-        | some cause => .supported (.errored attempted cause)
-      else
-        .unsupported .unsupportedLineBreak
-
-end StringTargetLengthPolicy
+      match policy.checkText attempted.text with
+      | .ok _ => .accepted attempted
+      | .error cause => .errored attempted cause
 
 /-- Prior state used by the library delta projector. The target cannot contain an empty stored String by construction. -/
 inductive PriorStringTarget where
@@ -218,15 +173,6 @@ def appliedValue : StringTargetOutcome → Option StoredString
   | .noValue | .errored _ _ | .poison _ => none
 
 end StringTargetOutcome
-
-namespace StringTargetCheckResult
-
-/-- Apply a projection only to a supported target outcome. The outer `none` preserves fragment rejection separately from any `none` returned by the projection itself. -/
-def mapOutcome (f : StringTargetOutcome → α) : StringTargetCheckResult → Option α
-  | .supported outcome => some (f outcome)
-  | .unsupported _ => none
-
-end StringTargetCheckResult
 
 namespace StringStore
 

@@ -23,8 +23,16 @@ private def repeatedText : FlatFieldDecl :=
   { id := 3, groupPath := ["Form", "Rows"], name := "Text",
     policy := { kind := .string }, repeatableScope := [10] }
 
+private def target : FlatFieldDecl :=
+  { id := 4, groupPath := ["Form"], name := "Target",
+    policy := { kind := .string },
+    stringPolicy := {
+      lineBreaksPermitted := true
+      minLength := some 2
+      maxLength := some 5 } }
+
 private def model : FlatModel :=
-  { fields := [source, suffix, amount, repeatedText]
+  { fields := [source, suffix, amount, repeatedText, target]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
 private def absolute (groups : List String) (field : String) : SurfaceFieldPath :=
@@ -45,6 +53,28 @@ private def errorOf
   | .ok _ => none
   | .error error => some error
 
+private def operationPolicyOf
+    (result : Except StringComputationElabError
+      (CheckedStringComputationOperation model)) : Option A12Kernel.StringFieldPolicy :=
+  match result with
+  | .ok checked => some checked.targetPolicy
+  | .error _ => none
+
+private def operationOutcomeOf
+    (result : Except StringComputationElabError
+      (CheckedStringComputationOperation model))
+    (input : RawFlatContext) : Option StringTargetOutcome :=
+  match result with
+  | .ok checked => (checked.evaluateOutcome input).toOption
+  | .error _ => none
+
+private def operationErrorOf {candidateModel : FlatModel}
+    (result : Except StringComputationElabError
+      (CheckedStringComputationOperation candidateModel)) : Option StringComputationElabError :=
+  match result with
+  | .ok _ => none
+  | .error error => some error
+
 private def raw (sourceCell suffixCell : RawCell) : RawFlatContext where
   read field :=
     if field = source.id then sourceCell
@@ -59,6 +89,9 @@ private def storeOf (expression : StringExpr SurfaceFieldPath)
 
 private def normalizedResult : StoredString :=
   { text := "A\nB!", nonempty := by decide }
+
+private def rawCrLfResult : StoredString :=
+  { text := "AB\r\nCD", nonempty := by decide }
 
 /- Copy, decoded literal, and concatenation lower structurally without changing encounter order. -/
 example :
@@ -99,6 +132,48 @@ example :
       errorOf (elaborateStringExpr model ["Form"]
         (.field (absolute ["Form", "Rows"] "Text"))) =
         some (.resolve (.repeatableReference repeatedText.path)) := by
+  native_decide
+
+/- Target lowering retains the exact declaration-owned policy, and target checking measures normalized CRLF while preserving the attempted literal payload. -/
+example :
+    let result := elaborateStringComputationOperation model ["Form"] target.id
+      (.literal "AB\r\nCD")
+    operationPolicyOf result = some target.stringPolicy ∧
+      operationOutcomeOf result (raw .empty .empty) = some (.accepted rawCrLfResult) := by
+  native_decide
+
+/- The integrated checked operation rejects self-reference instead of leaving it to runtime evaluation. -/
+example :
+    operationErrorOf (elaborateStringComputationOperation model ["Form"] target.id
+      (.field (bare "Target"))) = some (.targetSelfReference target.id) := by
+  native_decide
+
+/- A non-String target is rejected at the target boundary even when the operation itself is a String literal. -/
+example :
+    operationErrorOf (elaborateStringComputationOperation model ["Form"] amount.id
+      (.literal "TEXT")) = some (.targetKindMismatch amount.path .number) := by
+  native_decide
+
+/- Raw and registered-custom String targets require their own target semantics and fail before the ordinary target operation is constructed. -/
+example :
+    let rawTarget := { target with
+      stringValueMode := StringValueMode.raw
+      stringPolicy := {
+        lineBreaksPermitted := true
+        maxLength := some 5 } }
+    let rawModel : FlatModel := { fields := [rawTarget] }
+    operationErrorOf (elaborateStringComputationOperation rawModel ["Form"]
+      rawTarget.id (.literal "TEXT")) = some (.rawStringTarget rawTarget.path) := by
+  native_decide
+
+example :
+    let customTarget := { target with
+      stringPolicy := {}
+      customType := some { name := "Code" } }
+    let customModel : FlatModel := { fields := [customTarget] }
+    operationErrorOf (elaborateStringComputationOperation customModel ["Form"]
+      customTarget.id (.literal "TEXT")) =
+        some (.customStringTarget customTarget.path) := by
   native_decide
 
 end A12Kernel.Conformance.StringComputationElaboration

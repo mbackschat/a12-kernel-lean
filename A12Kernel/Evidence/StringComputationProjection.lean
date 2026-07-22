@@ -38,7 +38,7 @@ structure Input where
   other : Option String
   prior : StringTargetState
   rowHasContent : Bool
-  policy : StringTargetLengthPolicy
+  policy : StringFieldPolicy
   deriving Repr, DecidableEq
 
 structure Observation where
@@ -82,18 +82,20 @@ private def Operation.toCore : Operation → StringExpr
   | .padded => .concat (.concat (.literal " ") (.field 1)) (.literal " ")
 
 private def parsePolicy (json : Json) (context : String) :
-    Except String StringTargetLengthPolicy := do
+    Except String StringFieldPolicy := do
   let tag : String ← Decode.required json "tag" context
   match tag with
   | "unconstrained" =>
       Decode.requireObject json ["tag"] context
-      pure .unconstrained
+      pure {}
   | "minimum" | "maximum" =>
       Decode.requireObject json ["tag", "bound"] context
       let bound : Nat ← Decode.required json "bound" context
-      if positive : 0 < bound then
-        let value : PositiveStringLength := { value := bound, positive }
-        pure <| if tag == "minimum" then .minimum value else .maximum value
+      if 0 < bound then
+        pure <| if tag == "minimum" then
+          { minLength := some bound }
+        else
+          { maxLength := some bound }
       else throw s!"{context}: length bound must be positive"
   | other => throw s!"{context}: unsupported policy '{other}'"
 
@@ -161,18 +163,21 @@ private def Input.fromJson (mode : Mode) (caseId : String) (json : Json) : Excep
     prior := ← parsePrior (← Decode.requiredJson json "prior" context) s!"{context}.prior"
     rowHasContent := ← Decode.required json "rowHasContent" context
     policy := ← parsePolicy (← Decode.requiredJson json "policy" context) s!"{context}.policy" }
-  match mode, input.operation, input.policy, input.source, input.other with
-  | .deltaOnly, .copy, .unconstrained, _, none
-  | .deltaOnly, .suffix, .unconstrained, _, none
-  | .deltaOnly, .appendFields, .unconstrained, _, _
-  | .targetChecked, .copy, .minimum _, some _, none
-  | .targetChecked, .copy, .maximum _, some _, none
-  | .targetChecked, .padded, .minimum _, some _, none
-  | .targetChecked, .padded, .maximum _, some _, none =>
+  match mode, input.operation, input.source, input.other with
+  | .deltaOnly, .copy, _, none
+  | .deltaOnly, .suffix, _, none
+  | .deltaOnly, .appendFields, _, _ =>
+      if input.policy != ({} : StringFieldPolicy) then
+        throw s!"{context}: delta-only cases require the unconstrained target policy"
+      pure input
+  | .targetChecked, .copy, some _, none
+  | .targetChecked, .padded, some _, none =>
+      if input.policy == ({} : StringFieldPolicy) then
+        throw s!"{context}: target-check cases require one retained positive bound"
       if mode == .targetChecked && !input.rowHasContent then
         throw s!"{context}: target-check cases require a content-bearing row"
       pure input
-  | _, _, _, _, _ => throw s!"{context}: operation, policy, and cell shape leave the closed projection"
+  | _, _, _, _ => throw s!"{context}: operation, policy, and cell shape leave the closed projection"
 
 private def Observation.fromJson (mode : Mode) (caseId : String)
     (json : Json) : Except String Observation := do
@@ -250,14 +255,14 @@ private def Input.context (input : Input) : StringComputationContext where
 structure Runner where
   evaluateRow : Bool → Bool
   store : StringTerm → StringStore
-  check : StringTargetLengthPolicy → StringStore → StringTargetCheckResult
+  check : StringFieldPolicy → StringStore → StringTargetOutcome
   project : StringTargetOutcome → PriorStringTarget → Option StringDelta
   apply : StringTargetOutcome → StringTargetState → StringTargetState
 
 def naturalRunner : Runner where
   evaluateRow _ := true
   store := StringTerm.store
-  check := StringTargetLengthPolicy.check
+  check := StringFieldPolicy.checkTarget
   project := StringTargetOutcome.projectDelta
   apply := StringTargetOutcome.applyTo
 
@@ -270,9 +275,7 @@ def replayWith (runner : Runner) (case : Case) : Except String Observation := do
   let term ← match case.input.operation.toCore.eval case.input.context with
     | .ok term => pure term
     | .error fault => throw s!"{case.id}: String expression left the admitted fragment: {repr fault}"
-  let outcome ← match runner.check case.input.policy (runner.store term) with
-    | .supported outcome => pure outcome
-    | .unsupported fault => throw s!"{case.id}: String target check left the admitted fragment: {repr fault}"
+  let outcome := runner.check case.input.policy (runner.store term)
   pure {
     outcome := if case.mode == .targetChecked then some outcome else none
     delta := runner.project outcome case.input.prior.toDeltaPrior

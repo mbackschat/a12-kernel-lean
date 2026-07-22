@@ -9,7 +9,7 @@ namespace A12Kernel
 
 /-- A target error is formal invalidity when a later computation reads that target. The attempted payload is intentionally not carried into the dependency cell. -/
 def StringTargetError.dependencyCause : StringTargetError → FormalCause
-  | .tooShort | .tooLong => .declaredConstraint
+  | .lineBreak | .tooShort | .tooLong => .declaredConstraint
 
 /-- A validation-scoped required finding cannot represent computation poison because computation reads deliberately ignore that finding. -/
 inductive StringDependencyFault where
@@ -74,7 +74,7 @@ end StringComputationContext
 structure StringComputationStep where
   targetField : FieldId
   expression : StringExpr
-  targetPolicy : StringTargetLengthPolicy
+  targetPolicy : StringFieldPolicy
   prior : PriorStringTarget
   deriving Repr, DecidableEq
 
@@ -84,29 +84,20 @@ structure StringComputationStepResult where
   delta : Option StringDelta
   deriving Repr, DecidableEq
 
-/-- A step can fail only outside the admitted expression or target-check fragment. Ordinary target rejection remains a payloadful outcome. -/
-inductive StringComputationStepFault where
-  | computation (fault : StringComputationFault)
-  | targetCheck (fault : StringTargetCheckFault)
-  deriving Repr, DecidableEq
-
 namespace StringComputationStep
 
-/-- Evaluate through target checking without consulting prior target state. This is the semantic result supplied to a later dependency edge. -/
+/-- Evaluate through declaration-owned target checking without consulting prior target state. This is the semantic result supplied to a later dependency edge. -/
 def evaluateOutcome (step : StringComputationStep) (context : StringComputationContext) :
-    Except StringComputationStepFault StringTargetOutcome :=
+    Except StringComputationFault StringTargetOutcome :=
   match step.expression.evaluate context with
-  | .error fault => .error (.computation fault)
-  | .ok store =>
-      match step.targetPolicy.check store with
-      | .supported outcome => .ok outcome
-      | .unsupported fault => .error (.targetCheck fault)
+  | .error fault => .error fault
+  | .ok store => .ok (step.targetPolicy.checkTarget store)
 
 /-- Consume an already-evaluated computation condition before the body. Clean not-true yields quiet no-value, while poison is preserved as an invalid target outcome; both return before the body can read an operand. -/
 def evaluateOutcomeWhen (step : StringComputationStep)
     (conditionResult : ComputationConditionResult)
     (context : StringComputationContext) :
-    Except StringComputationStepFault StringTargetOutcome :=
+    Except StringComputationFault StringTargetOutcome :=
   match conditionResult with
   | .notTrue => .ok .noValue
   | .holds => step.evaluateOutcome context
@@ -114,7 +105,7 @@ def evaluateOutcomeWhen (step : StringComputationStep)
 
 /-- Evaluate, store, target-check, and project one explicit step without mutating a document. -/
 def evaluate (step : StringComputationStep) (context : StringComputationContext) :
-    Except StringComputationStepFault StringComputationStepResult :=
+    Except StringComputationFault StringComputationStepResult :=
   match step.evaluateOutcome context with
   | .error fault => .error fault
   | .ok outcome => .ok {
@@ -135,9 +126,9 @@ structure StringDirectCascadeResult where
   deriving Repr, DecidableEq
 
 inductive StringDirectCascadeFault where
-  | producer (fault : StringComputationStepFault)
+  | producer (fault : StringComputationFault)
   | dependency (fault : StringDependencyFault)
-  | consumer (fault : StringComputationStepFault)
+  | consumer (fault : StringComputationFault)
   deriving Repr, DecidableEq
 
 namespace StringDirectCascade
