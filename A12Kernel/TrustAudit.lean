@@ -402,6 +402,7 @@ run_cmd do
 #print axioms A12Kernel.literalNumberAlternative_tolerance_selectionIrrelevant
 #print axioms A12Kernel.singleLiteralNumber_tolerance_selectionIrrelevant
 #print axioms A12Kernel.generatedNumberCondition_emptyTarget_notFired
+#print axioms A12Kernel.generatedNumericOperationMismatch_preservesBoundary
 
 #print axioms A12Kernel.desugarAbsoluteRequired_preserves
 #print axioms A12Kernel.withRequiredFinding_preserves_computation

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.GeneratedComputationValidation
+import A12Kernel.Elaboration.NumericComputation
 
-/-! # Literal generated-computation validation locks -/
+/-! # Generated-computation validation locks -/
 
 namespace A12Kernel.Conformance.GeneratedComputationValidation
 
@@ -39,6 +40,38 @@ private def repeatableModel : FlatModel :=
   { fields := [
       gate, target, broken, textGuard, repeatedGate, repeatedTarget]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
+
+private def crossGroupSource : FlatFieldDecl :=
+  { id := 20, groupPath := ["Input"], name := "Source",
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+private def crossGroupDate : FlatFieldDecl :=
+  { id := 21, groupPath := ["Input"], name := "StartDate",
+    policy := { kind := .temporal .date TemporalComponents.fullDate } }
+
+private def crossGroupTarget : FlatFieldDecl :=
+  { id := 22, groupPath := ["Output"], name := "Target",
+    policy := { kind := .number { scale := 0, signed := true } } }
+
+private def crossGroupModel : FlatModel :=
+  { fields := [crossGroupSource, crossGroupDate, crossGroupTarget] }
+
+private def absolutePath (groups : List String) (field : String) :
+    SurfaceFieldPath :=
+  { base := .absolute, groups, field }
+
+private def crossGroupNumberOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id (.atom (.field (absolutePath ["Input"] "Source")))
+
+private def crossGroupDatePartOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.temporalFieldPart (absolutePath ["Input"] "StartDate") (.date .year)))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -138,6 +171,39 @@ private def expectedMessage (messageType : Polarity) : FlatRuleMessage :=
     errorCode := "computedTarget"
     severity := .error
     messageType
+    text }
+
+private def crossGroupRaw (source target : Rat) : RawFlatContext where
+  read field :=
+    if field = crossGroupSource.id then .parsed (.num source)
+    else if field = crossGroupTarget.id then .parsed (.num target)
+    else .empty
+
+private def crossGroupOutcome (source target : Rat) : Option FlatRuleOutcome := do
+  let operation ← crossGroupNumberOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedCrossGroup" none messagePlan).toOption
+  pure (rule.evalFull evaluationWorld (crossGroupRaw source target) true)
+
+private def crossGroupGeneratedBoundary :
+    Option (GroupPath × NumericOperandScope) := do
+  let operation ← crossGroupNumberOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (comparison.rowGroup, comparison.operandScope)
+
+private def crossGroupOrdinaryError : Option NumericValidationElabError :=
+  match elaborateNumericComparison crossGroupModel ["Output"] {
+      op := .ordinary .notEqual
+      left := .atom (.field (absolutePath ["Output"] "Target"))
+      right := .atom (.field (absolutePath ["Input"] "Source")) } with
+  | .ok _ => none
+  | .error error => some error
+
+private def crossGroupExpectedMessage : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedCrossGroup"
+    severity := .error
+    messageType := .value
     text }
 
 private def bothHoldingDifferent : LiteralNumberComputation :=
@@ -461,6 +527,25 @@ example :
           (alternative (.fieldFilled gate.id) 2)
           [alternative (.fieldFilled repeatedGate.id) 3]) =
         some (.resolve (.repeatableReference repeatedGate.path)) := by
+  native_decide
+
+/- Generated expression validation preserves computation's model-wide nonrepeatable operand scope; ordinary target-group validation still rejects the same cross-group reference. -/
+example :
+    crossGroupOutcome 3 3 = some .notFired ∧
+      crossGroupOutcome 3 4 = some (.fired crossGroupExpectedMessage) ∧
+      crossGroupGeneratedBoundary =
+        some (["Output"], .modelWideNonrepeatable) ∧
+      crossGroupOrdinaryError =
+        some (.fieldOutsideRowGroup ["Input", "Source"] ["Output"]) := by
+  native_decide
+
+/- The model-wide generated route is source-generic rather than a direct-Number exception. -/
+example :
+    (match crossGroupDatePartOperation with
+    | .error _ => false
+    | .ok operation =>
+        (assembleGeneratedNumericOperationRule crossGroupModel operation
+          "computedDatePart" none messagePlan).isOk) = true := by
   native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation

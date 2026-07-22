@@ -10,7 +10,7 @@ namespace A12Kernel
 /-- The two currently resolved validation leaf families. -/
 inductive ValidationConditionLeaf where
   | flat (condition : FlatConditionLeaf)
-  | numeric (comparison : NumericComparison)
+  | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
   deriving Repr, DecidableEq
 
 /-- One connective tree whose leaves may be ordinary flat clauses or resolved numeric-expression comparisons. -/
@@ -24,7 +24,12 @@ def flat (condition : FlatCondition) : ValidationCondition :=
 
 /-- Admit one resolved numeric comparison as a leaf. Checked construction remains with `CheckedNumericComparison`. -/
 def numeric (comparison : NumericComparison) : ValidationCondition :=
-  .leaf (.numeric comparison)
+  .leaf (.numeric .sameGroup comparison)
+
+/-- Preserve the checked operand policy when embedding a numeric comparison. -/
+def numericIn (scope : NumericOperandScope)
+    (comparison : NumericComparison) : ValidationCondition :=
+  .leaf (.numeric scope comparison)
 
 end ValidationCondition
 
@@ -32,23 +37,24 @@ namespace ValidationConditionLeaf
 
 def canFireOnEmpty : ValidationConditionLeaf → Bool
   | .flat condition => condition.canFireOnEmpty
-  | .numeric _ => false
+  | .numeric _ _ => false
 
 def referencesField : ValidationConditionLeaf → FieldId → Bool
   | .flat condition, field => condition.referencesField field
-  | .numeric comparison, field => comparison.referencesField field
+  | .numeric _ comparison, field => comparison.referencesField field
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
     ValidationConditionLeaf → Bool
   | .flat condition => condition.wellFormedBool model
-  | .numeric comparison => comparison.wellFormedBool model rowGroup
+  | .numeric scope comparison =>
+      comparison.wellFormedInBool model rowGroup scope
 
 /-- Evaluate one reached leaf with its own relevance rule. Numeric expressions require every field atom, while flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : FlatContext) (isRelevant : FlatRelevance) :
     ValidationConditionLeaf → Verdict
   | .flat condition => condition.evalSelected context isRelevant
-  | .numeric comparison =>
+  | .numeric _ comparison =>
       if comparison.allRelevant isRelevant then comparison.evalSelected context
       else .unknown
 
@@ -110,7 +116,8 @@ def fromFlat (condition : CheckedFlatCondition model) :
 /-- Lift one checked numeric comparison at its certified rule-instance group. -/
 def fromNumeric (comparison : CheckedNumericComparison model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  checkCore model comparison.rowGroup (ValidationCondition.numeric comparison.core)
+  checkCore model comparison.rowGroup
+    (ValidationCondition.numericIn comparison.operandScope comparison.core)
     comparison.modelWellFormed
 
 private def combine (constructor : ValidationCondition → ValidationCondition →
