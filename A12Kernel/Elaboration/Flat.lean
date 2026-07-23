@@ -153,6 +153,8 @@ structure FlatFieldDecl where
   policy : FieldPolicy
   stringValueMode : StringValueMode := .evaluated
   stringPolicy : StringFieldPolicy := {}
+  /-- Exact declared pattern source retained independently of condition-pattern execution. Checked String-value lowering currently executes only `asciiDigitsPatternSource`; other sources remain model-valid but fail closed as value operands. -/
+  stringPatternSource : Option String := none
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
   repeatableScope : List RepeatableLevel := []
@@ -166,7 +168,12 @@ def path (declaration : FlatFieldDecl) : List String :=
 /-- The exact model-owned capability used by every checked String value consumer. Presence deliberately does not use this projection. -/
 def toStringValueField? (declaration : FlatFieldDecl) : Option FlatStringField :=
   match declaration.policy.kind, declaration.stringValueMode with
-  | .string, .evaluated => some { id := declaration.id }
+  | .string, .evaluated =>
+      if declaration.stringPatternSource.isNone ||
+          declaration.stringPatternSource == some asciiDigitsPatternSource then
+        some { id := declaration.id }
+      else
+        none
   | _, _ => none
 
 def isRawString (declaration : FlatFieldDecl) : Bool :=
@@ -263,6 +270,7 @@ inductive ResolveError where
   | rawValueModeForbidsCustomType (path : List String)
   | stringPolicyRequiresString (path : List String)
   | stringPolicyForbidsCustomType (path : List String)
+  | stringPatternRequiresString (path : List String)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
   | stringMinimumExceedsMaximum (path : List String)
@@ -395,6 +403,14 @@ private def stringPolicyError? : List FlatFieldDecl → Option ResolveError
           if policy == {} then stringPolicyError? rest
           else some (.stringPolicyRequiresString declaration.path)
 
+private def stringPatternError? : List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      match declaration.stringPatternSource, declaration.policy.kind with
+      | none, _ => stringPatternError? rest
+      | some _, .string => stringPatternError? rest
+      | some _, _ => some (.stringPatternRequiresString declaration.path)
+
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
   | [] => none
@@ -473,6 +489,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | some error => throw error
   | none => pure ()
   match stringPolicyError? model.fields with
+  | some error => throw error
+  | none => pure ()
+  match stringPatternError? model.fields with
   | some error => throw error
   | none => pure ()
   match enumerationDeclarationError? model.fields with
@@ -1445,7 +1464,21 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
-/-- Compile one raw cell through declaration-owned scalar, ordinary String-policy, or closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
+/-- Enforce the one declaration-pattern profile with a locally executable whole-value meaning. Line-break normalization and intrinsic length checks have already occurred in the declaration policy; all failures share the public declared-constraint cause. -/
+private def FlatFieldDecl.checkExecutableStringPattern
+    (declaration : FlatFieldDecl) (checked : CheckedCell) : CheckedCell :=
+  if declaration.stringPatternSource == some asciiDigitsPatternSource then
+    match checked.parsed with
+    | some (.str text) =>
+        if matchesAsciiDigitsPattern text then
+          checked
+        else
+          { checked with parsed := none, findings := [.declaredConstraint] }
+    | _ => checked
+  else
+    checked
+
+/-- Compile one raw cell through declaration-owned scalar, ordinary String-policy, locally executable declared-pattern, or closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
 def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : CheckedCell :=
   match declaration.customType, declaration.policy.kind, declaration.enumeration with
   | some _, _, _ => malformedCheckedCell
@@ -1458,7 +1491,8 @@ def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : Check
       if declaration.stringValueMode == .raw then
         formalCheck declaration.policy raw
       else
-        declaration.stringPolicy.checkRaw raw
+        declaration.checkExecutableStringPattern
+          (declaration.stringPolicy.checkRaw raw)
   | none, _, some _ => malformedCheckedCell
   | none, _, none => formalCheck declaration.policy raw
 

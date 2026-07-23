@@ -5,7 +5,7 @@ import A12Kernel.Semantics.String
 
 /-! # Shared checked numeric-expression sources
 
-Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary Enumeration/category conversion, Date-only month/year differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
+Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary String/Enumeration/category conversion, Date-only month/year differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
 -/
 
 namespace A12Kernel
@@ -13,19 +13,47 @@ namespace A12Kernel
 /-- Kernel 30.8.1's authored Number digit budget for String/Enumeration conversion. Dot and leading minus do not consume the budget. -/
 def maxFieldValueAsNumberDigits : Nat := 15
 
-/-- One exactly parsed ASCII decimal token together with the static facts used by `FieldValueAsNumber` admission. Leading zeros and negative zero are retained only through digit count/scale; numeric evaluation observes their exact rational amount. -/
-structure ParsedAsciiDecimalToken where
+/-- One exactly parsed Java-host decimal token together with the static facts used by `FieldValueAsNumber` admission. Leading zeros and negative zero are retained only through digit count/scale; numeric evaluation observes their exact rational amount. -/
+structure ParsedJavaDecimalToken where
   value : Rat
   scale : Nat
   digitCount : Nat
   deriving Repr, DecidableEq
 
-private def parseAsciiDigitsAllowEmpty (characters : List Char) : Option Nat :=
-  if characters.isEmpty then some 0
-  else parseAsciiNatural? (String.ofList characters)
+/-- Starts of the ten-code-point BMP decimal blocks accepted by Java 21's `Character.isDigit(char)`. Commons Lang 3.20.0 iterates UTF-16 `char`, so supplementary-plane decimal code points are deliberately absent. -/
+private def java21BmpDecimalDigitStarts : List Nat :=
+  [0x0030, 0x0660, 0x06F0, 0x07C0, 0x0966, 0x09E6, 0x0A66, 0x0AE6,
+   0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66, 0x0DE6, 0x0E50, 0x0ED0,
+   0x0F20, 0x1040, 0x1090, 0x17E0, 0x1810, 0x1946, 0x19D0, 0x1A80,
+   0x1A90, 0x1B50, 0x1BB0, 0x1C40, 0x1C50, 0xA620, 0xA8D0, 0xA900,
+   0xA9D0, 0xA9F0, 0xAA50, 0xABF0, 0xFF10]
 
-/-- Parse the ASCII subset of Java `NumberUtils.isParsable` consumed by ordinary numeric Enumeration values: optional leading minus, at most one dot, at least one digit, and no trailing dot. A leading dot is legal. Digit-budget admission remains a separate model check. -/
-def parseAsciiDecimalToken? (input : String) : Option ParsedAsciiDecimalToken := do
+private def java21DecimalDigitValueFrom? (code : Nat) : List Nat → Option Nat
+  | [] => none
+  | start :: rest =>
+      if start ≤ code ∧ code < start + 10 then
+        some (code - start)
+      else
+        java21DecimalDigitValueFrom? code rest
+
+/-- Decimal value under the exact Java 21 UTF-16 `Character.isDigit(char)` profile used by the pinned kernel's Commons Lang parser. -/
+def java21DecimalDigitValue? (character : Char) : Option Nat :=
+  java21DecimalDigitValueFrom? character.toNat java21BmpDecimalDigitStarts
+
+private def parseJavaDecimalDigitsAux (accumulator : Nat) :
+    List Char → Option Nat
+  | [] => some accumulator
+  | character :: rest => do
+      let digit ← java21DecimalDigitValue? character
+      parseJavaDecimalDigitsAux (accumulator * 10 + digit) rest
+
+private def parseJavaDecimalDigitsAllowEmpty
+    (characters : List Char) : Option Nat :=
+  if characters.isEmpty then some 0
+  else parseJavaDecimalDigitsAux 0 characters
+
+/-- Parse exactly the Java 21 `NumberUtils.isParsable` decimal fragment consumed by ordinary numeric Enumeration values: optional leading minus, at most one dot, at least one digit, and no trailing dot. A leading dot is legal. Digit-budget admission remains a separate model check. -/
+def parseJavaDecimalToken? (input : String) : Option ParsedJavaDecimalToken := do
   let (negative, characters) := match input.toList with
     | '-' :: rest => (true, rest)
     | rest => (false, rest)
@@ -38,8 +66,8 @@ def parseAsciiDecimalToken? (input : String) : Option ParsedAsciiDecimalToken :=
   if wholeCharacters.isEmpty && fractionCharacters.isEmpty then
     none
   else
-    let whole ← parseAsciiDigitsAllowEmpty wholeCharacters
-    let fraction ← parseAsciiDigitsAllowEmpty fractionCharacters
+    let whole ← parseJavaDecimalDigitsAllowEmpty wholeCharacters
+    let fraction ← parseJavaDecimalDigitsAllowEmpty fractionCharacters
     let factor := 10 ^ scale
     let magnitude : Rat := whole + (fraction : Rat) / factor
     some {
@@ -54,18 +82,18 @@ def CheckedEnumerationProjection.selectedTokens
   | .stored => checked.declaration.declaration.storedTokens
   | .category mapping => mapping.categoryTokens
 
-/-- Derive the conversion result scale only when every selected token belongs to the currently supported ASCII subset and stays within the kernel digit budget. -/
-def CheckedEnumerationProjection.numericAsciiScale?
+/-- Derive the conversion result scale only when every selected token belongs to the pinned Java-host decimal profile and stays within the kernel digit budget. -/
+def CheckedEnumerationProjection.numericScale?
     (checked : CheckedEnumerationProjection) : Option Nat := do
-  let parsed ← checked.selectedTokens.mapM parseAsciiDecimalToken?
+  let parsed ← checked.selectedTokens.mapM parseJavaDecimalToken?
   if parsed.all (fun token => token.digitCount ≤ maxFieldValueAsNumberDigits) then
     some (parsed.foldl (fun scale token => max scale token.scale) 0)
   else
     none
 
-/-- One ordinary closed Enumeration/category source statically certified for the implemented `FieldValueAsNumber` subset. The source keeps the shared runtime projection and its derived non-expandable scale together. -/
+/-- One ordinary String or closed Enumeration/category source statically certified for `FieldValueAsNumber`. The source reuses the shared textual operand and keeps its derived non-expandable scale alongside it. -/
 structure ResolvedFieldValueAsNumberSource where
-  operand : FlatEnumerationOperand
+  operand : FlatTextFieldOperand
   scale : Nat
   deriving Repr, DecidableEq
 
@@ -74,10 +102,30 @@ namespace ResolvedFieldValueAsNumberSource
 def fieldId (source : ResolvedFieldValueAsNumberSource) : FieldId :=
   source.operand.field.id
 
-def valueForStored? (source : ResolvedFieldValueAsNumberSource)
-    (stored : String) : Option Rat := do
-  let token ← source.operand.projection.tokenFor? stored
-  let parsed ← parseAsciiDecimalToken? token
+def projectionRef (source : ResolvedFieldValueAsNumberSource) :
+    EnumerationProjectionRef :=
+  match source.operand with
+  | .string _ => .stored
+  | .enumeration operand => operand.projectionRef
+
+/-- Project the exact checked String or stored/category Enumeration token without introducing a conversion-specific text operand. -/
+def tokenForValue? (source : ResolvedFieldValueAsNumberSource) :
+    Value → Option String
+  | .str token =>
+      match source.operand with
+      | .string _ =>
+          if matchesAsciiDigitsPattern token then some token else none
+      | .enumeration _ => none
+  | .enum stored =>
+      match source.operand with
+      | .string _ => none
+      | .enumeration operand => operand.projection.tokenFor? stored
+  | _ => none
+
+def valueFor? (source : ResolvedFieldValueAsNumberSource)
+    (value : Value) : Option Rat := do
+  let token ← source.tokenForValue? value
+  let parsed ← parseJavaDecimalToken? token
   pure parsed.value
 
 end ResolvedFieldValueAsNumberSource
@@ -99,27 +147,38 @@ def projectionRef : SurfaceTextFieldOperand → EnumerationProjectionRef
 
 end SurfaceTextFieldOperand
 
-/-- Admit the ordinary closed-Enumeration ASCII subset after field/path resolution. Numeric String declarations remain fail-closed because the current flat model deliberately does not retain their exact `[0-9]+` pattern fact. -/
+/-- Admit one exact bounded value-validating String or ordinary closed Enumeration/category source after field/path resolution. -/
 def FlatFieldDecl.resolveFieldValueAsNumberSource
     (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
     Except FieldValueAsNumberSourceError ResolvedFieldValueAsNumberSource :=
-  match declaration.policy.kind, declaration.enumeration with
-  | .enumeration, some source =>
+  match declaration.policy.kind, declaration.enumeration, projectionRef with
+  | .string, none, .stored =>
+      match declaration.toStringValueField?, declaration.stringPatternSource,
+          declaration.stringPolicy.maxLength with
+      | some field, some pattern, some maximum =>
+          if declaration.customType.isNone &&
+              pattern == asciiDigitsPatternSource &&
+              maximum ≤ maxFieldValueAsNumberDigits then
+            .ok { operand := .string field, scale := 0 }
+          else
+            .error .notConvertible
+      | _, _, _ => .error .notConvertible
+  | .enumeration, some source, _ =>
       match elaborateEnumeration source with
       | .error _ => .error .incoherentEnumeration
       | .ok checked =>
           match checkEnumerationProjection checked projectionRef with
           | .error error => .error (.enumeration error)
           | .ok projection =>
-              match projection.numericAsciiScale? with
+              match projection.numericScale? with
               | none => .error .notConvertible
               | some scale => .ok {
-                  operand := {
+                  operand := .enumeration {
                     field := { id := declaration.id }
                     projectionRef := projection.projectionRef
                     projection := projection.projection }
                   scale }
-  | _, _ => .error .notConvertible
+  | _, _, _ => .error .notConvertible
 
 /-- Re-derive one resolved conversion source from the same model declaration. This keeps forged nonnumeric domains and scale summaries outside checked validation/computation cores. -/
 def FlatModel.admitsFieldValueAsNumberSource (model : FlatModel)
@@ -128,7 +187,7 @@ def FlatModel.admitsFieldValueAsNumberSource (model : FlatModel)
   | .error _ => false
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
-        match declaration.resolveFieldValueAsNumberSource source.operand.projectionRef with
+        match declaration.resolveFieldValueAsNumberSource source.projectionRef with
         | .error _ => false
         | .ok resolved => decide (resolved = source)
 

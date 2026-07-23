@@ -201,7 +201,7 @@ example :
       (.literal "TEXT")) = some (.targetKindMismatch amount.path .number) := by
   native_decide
 
-/- Raw and registered-custom String targets require their own target semantics and fail before the ordinary target operation is constructed. -/
+/- Raw, registered-custom, and pattern-bearing String targets require their own target semantics and fail before the ordinary target operation is constructed. -/
 example :
     let rawTarget := { target with
       stringValueMode := StringValueMode.raw
@@ -221,6 +221,15 @@ example :
     operationErrorOf (elaborateStringComputationOperation customModel ["Form"]
       customTarget.id (.literal "TEXT")) =
         some (.customStringTarget customTarget.path) := by
+  native_decide
+
+example :
+    let patternTarget := { target with
+      stringPatternSource := some "[0-9]+" }
+    let patternModel : FlatModel := { fields := [patternTarget] }
+    operationErrorOf (elaborateStringComputationOperation patternModel ["Form"]
+      patternTarget.id (.literal "123")) =
+        some (.patternStringTarget patternTarget.path) := by
   native_decide
 
 end A12Kernel.Conformance.StringComputationElaboration

@@ -66,6 +66,17 @@ def parseAsciiNatural? (value : String) : Option Nat :=
   | [] => none
   | characters => parseAsciiNaturalAux 0 characters
 
+/-- The exact declared Java-pattern source whose complete runtime language is already executable without embedding a regex engine. This is model metadata, not a `FieldValueAsNumber` eligibility flag. -/
+def asciiDigitsPatternSource : String := "[0-9]+"
+
+/-- Execute the one declaration-pattern profile whose Java whole-value meaning is a nonempty sequence of ASCII decimal characters. This predicate deliberately avoids constructing an unbounded number merely to classify a String. Other admitted Java patterns remain behind the injected pattern capability and fail closed at checked String-value lowering. -/
+def matchesAsciiDigitsPattern (value : String) : Bool :=
+  match value.toList with
+  | [] => false
+  | characters => characters.all fun character =>
+      let code := character.toNat
+      48 ≤ code && code ≤ 57
+
 /-- Apply the checked operation's 1-based inclusive UTF-16 range and digits-only numeric conversion. Invalid bounds, overshoot, non-digits, and an unrepresentable half-surrogate slice all yield zero; checked lowering separately makes invalid bounds unreachable. -/
 def utf16RangeAsNatural (value : String) (start finish : Nat) : Nat :=
   if !validStringRange start finish || utf16CodeUnitLength value < finish then

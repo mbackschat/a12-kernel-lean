@@ -17,6 +17,7 @@ inductive StringComputationElabError where
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
+  | patternStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -88,6 +89,7 @@ def FlatModel.admitsStringComputationTarget (model : FlatModel)
         declaration.policy.kind == .string &&
         declaration.stringValueMode == .evaluated &&
         declaration.customType.isNone &&
+        declaration.stringPatternSource.isNone &&
         declaration.enumeration.isNone &&
         declaration.stringPolicy == policy
   | .error _ => false
@@ -159,6 +161,8 @@ def elaborateStringComputationOperation
         throw (.rawStringTarget declaration.path)
       if declaration.customType.isSome then
         throw (.customStringTarget declaration.path)
+      if declaration.stringPatternSource.isSome then
+        throw (.patternStringTarget declaration.path)
       let core ← elaborateStringExprCore model declaringGroup expression
       let checked ← certifyStringExpr model hModel core
       if hReference : checked.core.referencesField targetField = true then

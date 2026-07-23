@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, checked ordinary Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared arithmetic fragment with composable rounding, absolute value, and expression-valued Min/Max calls, checks the result scale, and certifies model coherence. Each Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that repeatable source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared arithmetic fragment with composable rounding, absolute value, and expression-valued Min/Max calls, checks the result scale, and certifies model coherence. Each Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that repeatable source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -364,11 +364,10 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
   | .fieldValueAsNumber source =>
       match observeCell .computation (context.read source.fieldId) with
       | .empty => pure (.value 0)
-      | .value (.enum stored) =>
-          match source.valueForStored? stored with
+      | .value value =>
+          match source.valueFor? value with
           | some amount => pure (.value amount)
           | none => throw (.fieldKindMismatch source.fieldId)
-      | .value _ => throw (.fieldKindMismatch source.fieldId)
       | .unknown cause | .poison cause => pure (.poison cause)
   | .dateDifference unit left right =>
       match DateDifferenceOperand.evaluate unit
