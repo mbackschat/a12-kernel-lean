@@ -16,7 +16,7 @@ structure SurfaceHavingNumberRef where
 
 structure SurfaceHavingRepetitionRef where
   origin : HavingOrigin
-  group : SurfaceGroupPath
+  group : SurfaceGroupReference
   deriving Repr, DecidableEq
 
 inductive SurfaceCorrelatedHaving where
@@ -38,6 +38,7 @@ structure SurfaceSingleCorrelatedRule where
 inductive CorrelationElabError where
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceGroupPath)
+  | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
   | fieldNotNumber (path : List String)
   | fieldOutsideGroup (origin : HavingOrigin)
@@ -107,6 +108,7 @@ private def CorrelationElabError.ofSingleGroup (origin : HavingOrigin) :
     SingleGroupElabError → CorrelationElabError
   | .resolve error => .resolve error
   | .invalidGroupReference reference => .invalidGroupReference reference
+  | .wildcardOnRuleGroup => .wildcardOnRuleGroup
   | .wildcardWithParentNavigation parents => .wildcardWithParentNavigation parents
   | .fieldNotNumber path => .fieldNotNumber path
   | .fieldOutsideGroup fieldPath expectedGroup =>
@@ -124,17 +126,17 @@ private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
 
 private def resolveHavingRepetitionInGroup
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
-    (origin : HavingOrigin) (reference : SurfaceGroupPath) :
+    (origin : HavingOrigin) (reference : SurfaceGroupReference) :
     Except CorrelationElabError HavingRepetitionRef := do
-  let groupPath ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
-  if groupPath != group.path then
-    throw (.repetitionGroupMismatch group.path groupPath)
+  let resolved ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
+  if resolved.path != group.path then
+    throw (.repetitionGroupMismatch group.path resolved.path)
   pure { origin, level := group.level }
 
 private def elaborateHavingCoreWith
     (resolveNumber : HavingOrigin → SurfaceFieldPath →
       Except CorrelationElabError ResolvedNumberRef)
-    (resolveRepetition : HavingOrigin → SurfaceGroupPath →
+    (resolveRepetition : HavingOrigin → SurfaceGroupReference →
       Except CorrelationElabError HavingRepetitionRef) :
     SurfaceCorrelatedHaving →
     Except CorrelationElabError ConjunctiveCorrelatedHaving
@@ -195,10 +197,10 @@ private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
 
 private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels outerLevels : List RepeatableLevel)
-    (origin : HavingOrigin) (reference : SurfaceGroupPath) :
+    (origin : HavingOrigin) (reference : SurfaceGroupReference) :
     Except CorrelationElabError HavingRepetitionRef := do
-  let groupPath ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
-  let group ← (model.lookupUniqueRepeatablePath groupPath).mapError .resolve
+  let resolved ← reference.resolveAgainst declaringGroup |>.mapError (.ofSingleGroup origin)
+  let group ← (model.lookupUniqueRepeatablePath resolved.path).mapError .resolve
   let available := origin.availableLevels candidateLevels outerLevels
   if !available.contains group.level then
     throw (.repetitionOutsideEnvironment origin group.path available group.level)

@@ -570,6 +570,12 @@ def FlatModel.lookupUniqueRepeatablePath (model : FlatModel) (path : GroupPath) 
   | [group] => .ok group
   | _ => .error (.duplicateRepeatableGroupPath path)
 
+/-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration. Empty nonrepeatable groups are rejected by the kernel and therefore need no representation here. -/
+def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=
+  GroupPath.isValid path &&
+    ((model.fields.any fun declaration => path.isPrefixOf declaration.groupPath) ||
+      model.repeatableGroups.any fun group => group.path == path)
+
 private def FlatModel.lookupPath? (model : FlatModel) (path : List String) :
     Except ResolveError (Option FlatFieldDecl) :=
   match model.fields.filter (fun declaration => declaration.path == path) with

@@ -159,7 +159,7 @@ private def starValuesErrorOf
 
 private def repetition (origin : HavingOrigin) (groups : List String) :
     SurfaceHavingRepetitionRef :=
-  { origin, group := { base := .absolute, groups } }
+  { origin, group := .path { base := .absolute, groups } }
 
 private def earlierSibling : SurfaceCorrelatedHaving :=
   .and

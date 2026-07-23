@@ -225,6 +225,9 @@ private def correlationElaborationResult : CorrelationElabError →
   | .invalidGroupReference reference =>
       pure (.make .invalidGroupReference "$.rule"
         (Json.mkObj [("group", groupReferenceJson reference)]))
+  | .wildcardOnRuleGroup =>
+      pure (.make .pathForm "$.rule.having"
+        (Json.mkObj [("form", toJson "wildcardOnRuleGroup")]))
   | .wildcardWithParentNavigation parents =>
       pure (.make .pathForm "$.rule.valueField"
         (Json.mkObj [("form", toJson "parentNavigatingStar"),

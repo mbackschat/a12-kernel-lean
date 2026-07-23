@@ -95,7 +95,7 @@ private def surfaceNumber (origin : HavingOrigin) (groups : List String)
 
 private def surfaceRepetition (origin : HavingOrigin)
     (groups : List String) : SurfaceHavingRepetitionRef :=
-  { origin, group := absoluteGroup groups }
+  { origin, group := .path (absoluteGroup groups) }
 
 private def surfaceSameParentEarlierChild : SurfaceCorrelatedHaving :=
   .and

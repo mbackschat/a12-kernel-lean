@@ -57,8 +57,8 @@ private def groupPath (group : String) : SurfaceGroupPath :=
 
 private def falseHaving (group : String) : SurfaceCorrelatedHaving :=
   .compareRepetitions .less
-    { origin := .inner, group := groupPath group }
-    { origin := .inner, group := groupPath group }
+    { origin := .inner, group := .path (groupPath group) }
+    { origin := .inner, group := .path (groupPath group) }
 
 private def source (first : SurfaceFirstFilledNumberOperand)
     (rest : List SurfaceFirstFilledNumberOperand) : SurfaceFirstFilledNumberSource :=

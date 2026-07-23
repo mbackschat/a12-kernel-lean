@@ -11,7 +11,7 @@ namespace A12Kernel
 
 inductive SurfaceRepetitionNotUniqueScope where
   | default
-  | from (group : SurfaceGroupPath)
+  | from (group : SurfaceGroupReference)
   deriving Repr, DecidableEq
 
 structure SurfaceRepetitionNotUniqueSource where
@@ -29,6 +29,7 @@ inductive RepetitionNotUniqueElabError where
   | rawStringValue (path : List String)
   | customStringRequiresPreparedChecking (path : List String)
   | missingReferenceGroup (keyPath : List String)
+  | referenceGroupNotRepeatable (path : GroupPath)
   | referenceGroupDoesNotContainKey (referenceGroup keyGroup : GroupPath)
   | path (error : StarPathElabError)
   | incoherentCore
@@ -178,8 +179,15 @@ private def resolveRepetitionReferenceGroup (model : FlatModel)
           | some keyGroup =>
               throw (.referenceGroupDoesNotContainKey group.path keyGroup)
   | .from surface => do
-      let path ← surface.resolveAgainst declaringGroup |>.mapError .scope
-      let group ← model.lookupUniqueRepeatablePath path |>.mapError .resolve
+      let resolved ← surface.resolveAgainst declaringGroup |>.mapError .scope
+      let group ← match model.lookupUniqueRepeatablePath resolved.path with
+        | .ok group => pure group
+        | .error (.unknownRepeatableGroup _) =>
+            if model.hasGroupPath resolved.path then
+              throw (.referenceGroupNotRepeatable resolved.path)
+            else
+              throw (.resolve (.unknownRepeatableGroup resolved.path))
+        | .error error => throw (.resolve error)
       match firstKeyGroupOutside? group.path declarations with
       | none => pure group
       | some keyGroup =>

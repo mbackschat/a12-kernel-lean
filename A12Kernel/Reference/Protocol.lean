@@ -523,8 +523,8 @@ private def parseHavingRepetitionRef (json : Json) (location : String) :
   requireObject json location ["origin", "group"]
   pure {
     origin := ← parseHavingOrigin json location
-    group := ← parseCorrelationGroupPath (← requiredJson json location "group")
-      (child location "group") }
+    group := .path (← parseCorrelationGroupPath
+      (← requiredJson json location "group") (child location "group")) }
 
 private def parseCorrelatedHaving : Nat → Json → String →
     Except Diagnostic (SurfaceCorrelatedHaving × Nat)
