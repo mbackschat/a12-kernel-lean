@@ -32,6 +32,11 @@ private def later : FlatFieldDecl :=
   numberDeclaration laterId "Later"
 
 private def targetId : FieldId := 2
+
+private def target : FlatFieldDecl :=
+  { numberDeclaration targetId "Target" with
+    numericTargetConstraints := { zeroAllowed := false } }
+
 private def wrongId : FieldId := 3
 private def repeatedId : FieldId := 4
 private def timeId : FieldId := 5
@@ -80,7 +85,7 @@ private def productRight : FlatFieldDecl :=
     repeatableScope := [10] }
 
 private def model : FlatModel :=
-  { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated,
+  { fields := [source, later, target, wrong, repeated,
       temporalDeclaration timeId "Time" .time timeComponents,
       temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents,
       temporalDeclaration dateId "Date" .date TemporalComponents.fullDate,
@@ -103,6 +108,24 @@ private def model : FlatModel :=
     baseYear := some 2020 }
 
 private def noBaseYearModel : FlatModel := { model with baseYear := none }
+
+private def boundedScaleTwoTargetId : FieldId := 20
+
+private def boundedScaleTwoTarget : FlatFieldDecl :=
+  { id := boundedScaleTwoTargetId
+    groupPath := ["Root"]
+    name := "BoundedScaleTwoTarget"
+    policy := { kind := .number { scale := 2, signed := true } }
+    numericTargetConstraints := {
+      minFractionalDigits := 2
+      maximum := some 5 } }
+
+private def boundedScaleTwoModel : FlatModel :=
+  { fields := [boundedScaleTwoTarget] }
+
+private def errorOf : Except ε α → Option ε
+  | .ok _ => none
+  | .error error => some error
 
 private def surfacePath (groups : List String) (name : String) :
     SurfaceFieldPath :=
@@ -322,6 +345,23 @@ private def checkedTargetResultOf
       | .error _ => none
       | .ok targetChecked => targetChecked.evaluate input |>.toOption
 
+private def checkedDeclaredTargetResultOf
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (input : ScalarComputationContext := context) :
+    Option NumericTargetCheckResult :=
+  match elaborateNumericTargetComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => checked.evaluate input |>.toOption
+
+private def checkedBoundedScaleTwoTargetResultOf
+    (value : Rat) : Option NumericTargetCheckResult :=
+  match elaborateNumericTargetComputationOperation
+      boundedScaleTwoModel ["Root"] boundedScaleTwoTargetId
+      (.literal { value, authoredScale := 2 }) with
+  | .error _ => none
+  | .ok checked => checked.evaluate context |>.toOption
+
 private def checkedRepeatableResultOf
     (expression :
       AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
@@ -363,13 +403,10 @@ private def checkedRepeatableTargetResultOf
       AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
     (input : NumericComputationEvaluationContext) :
     Option NumericTargetCheckResult :=
-  match elaborateNumberEntityComputationOperation
+  match elaborateNumberEntityTargetComputationOperation
       model ["Root"] targetId expression with
   | .error _ => none
-  | .ok checked =>
-      match checked.attachTargetPolicy targetPolicy with
-      | .error _ => none
-      | .ok targetChecked => targetChecked.evaluateIn input |>.toOption
+  | .ok checked => checked.evaluateIn input |>.toOption
 
 private def checkedRepeatableErrorOf
     (expression :
@@ -416,13 +453,10 @@ private def checkedProductTargetResultOf
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
     (input : NumericComputationEvaluationContext) :
     Option NumericTargetCheckResult :=
-  match elaborateCompleteNumericComputationOperation
+  match elaborateCompleteNumericTargetComputationOperation
       model ["Root"] targetId expression with
   | .error _ => none
-  | .ok checked =>
-      match checked.attachTargetPolicy targetPolicy with
-      | .error _ => none
-      | .ok targetChecked => targetChecked.evaluateIn input |>.toOption
+  | .ok checked => checked.evaluateIn input |>.toOption
 
 private def targetPolicyAttachErrorOf (policy : NumericTargetPolicy) :
     Option NumericComputationElabError :=
@@ -708,6 +742,57 @@ example :
       false zeroForbidden =
         some (.supported (.rejected
           { unscaled := 0, scale := 0 } .zeroNotAllowed)) := by
+  native_decide
+
+/- The ordinary checked target route constructs and retains the target policy from the validated declaration; no caller policy argument can override the zero constraint. -/
+example :
+    checkedDeclaredTargetResultOf
+        (.literal { value := 0, authoredScale := 0 }) =
+      some (.supported (.rejected
+        { unscaled := 0, scale := 0 } .zeroNotAllowed)) ∧
+    checkedDeclaredTargetResultOf
+        (.literal { value := 3, authoredScale := 0 }) =
+      some (.supported (.accepted { unscaled := 3, scale := 0 })) := by
+  native_decide
+
+/- A second declaration-owned constraint class is integrated through the same construction: minimum scale controls stored identity and the inclusive maximum remains the later target check. -/
+example :
+    checkedBoundedScaleTwoTargetResultOf 5 =
+        some (.supported (.accepted { unscaled := 500, scale := 2 })) ∧
+      checkedBoundedScaleTwoTargetResultOf 6 =
+        some (.supported (.rejected
+          { unscaled := 600, scale := 2 } .aboveMaximum)) := by
+  native_decide
+
+/- Number target constraints cannot be attached to another kind. -/
+example :
+    let nonNumber := { wrong with
+      numericTargetConstraints := { zeroAllowed := false } }
+    errorOf
+      ({ model with fields := model.fields.map fun (declaration : FlatFieldDecl) =>
+        if declaration.id == wrongId then nonNumber else declaration }).validate =
+      some (.numericTargetConstraintsRequireNumber nonNumber.path) := by
+  native_decide
+
+/- Required fractional digits cannot exceed the existing Number scale. -/
+example :
+    let excessiveMinimum := { target with
+      numericTargetConstraints := { minFractionalDigits := 1 } }
+    errorOf
+      ({ model with fields := model.fields.map fun (declaration : FlatFieldDecl) =>
+        if declaration.id == targetId then excessiveMinimum else declaration }).validate =
+      some (.numericMinimumFractionalDigitsExceedMaximum
+        excessiveMinimum.path 1 0) := by
+  native_decide
+
+/- A present effective integer-digit capacity is positive. -/
+example :
+    let zeroCapacity := { target with
+      numericTargetConstraints := { maxIntegerDigits := some 0 } }
+    errorOf
+      ({ model with fields := model.fields.map fun (declaration : FlatFieldDecl) =>
+        if declaration.id == targetId then zeroCapacity else declaration }).validate =
+      some (.numericMaximumIntegerDigitsZero zeroCapacity.path) := by
   native_decide
 
 /- The one legal warning suppression bypasses only the result-scale gate and selects the no-fit target branch carried by the checked operation. -/

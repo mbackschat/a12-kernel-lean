@@ -502,6 +502,7 @@ run_cmd do
 #print axioms A12Kernel.numericAuthoring_right_power_requires_parser_shape_boundary
 #print axioms A12Kernel.numericAuthoring_round_is_outside_fragment
 #print axioms A12Kernel.numericAuthoring_abs_is_outside_fragment
+#print axioms A12Kernel.numericTargetConstraints_policyConstruction_retains
 #print axioms A12Kernel.numericOperation_extremumCall_admitted
 #print axioms A12Kernel.numericOperation_extremumCall_authoringAccepted
 #print axioms A12Kernel.numericOperation_round_body_authoringCheck

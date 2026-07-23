@@ -4,6 +4,26 @@ import A12Kernel.Semantics.NumericTarget
 
 namespace A12Kernel
 
+/-- Declaration construction retains every reachable constraint and cannot change the shared scale/signedness summary. -/
+theorem numericTargetConstraints_policyConstruction_retains
+    (constraints : NumericTargetConstraints) (info : NumField)
+    (policy : NumericTargetPolicy)
+    (built : constraints.toPolicy? info = some policy) :
+    policy.info = info ∧
+      policy.minFractionalDigits = constraints.minFractionalDigits ∧
+      policy.maxIntegerDigits = constraints.maxIntegerDigits ∧
+      policy.zeroAllowed = constraints.zeroAllowed ∧
+      policy.minStoredLength = constraints.minStoredLength ∧
+      policy.maxStoredLength = constraints.maxStoredLength ∧
+      policy.minimum = constraints.minimum ∧
+      policy.maximum = constraints.maximum := by
+  unfold NumericTargetConstraints.toPolicy? at built
+  split at built
+  · simp only [Option.some.injEq] at built
+    subst policy
+    simp
+  · simp at built
+
 /-- Arithmetic domain failure becomes the target's own no-value calculation invalidity, not an inherited operand cause. -/
 theorem numericTarget_domainFailure_invalidNoValue
     (policy : NumericTargetPolicy) :

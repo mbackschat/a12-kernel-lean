@@ -75,6 +75,21 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "stringFieldPolicy"),
           ("path", toJson path)])
+  | .numericTargetConstraintsRequireNumber path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "numericTargetPolicy"),
+          ("path", toJson path), ("expected", toJson "number")])
+  | .numericMinimumFractionalDigitsExceedMaximum path minimum maximum =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "numericTargetPolicy"),
+          ("reason", toJson "minimumFractionalDigitsExceedMaximum"),
+          ("path", toJson path), ("minimum", toJson minimum),
+          ("maximum", toJson maximum)])
+  | .numericMaximumIntegerDigitsZero path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "numericTargetPolicy"),
+          ("reason", toJson "maximumIntegerDigitsMustBePositive"),
+          ("path", toJson path)])
   | .enumerationMetadataRequiresEnumeration _
   | .enumerationDeclarationRequired _
   | .invalidEnumerationDeclaration _ _ =>

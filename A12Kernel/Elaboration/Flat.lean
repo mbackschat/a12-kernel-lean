@@ -3,6 +3,7 @@ import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.CustomFieldType
 import A12Kernel.Semantics.CheckedEnumeration
 import A12Kernel.Semantics.StringFieldPolicy
+import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Elaboration.NumericScale
 
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
@@ -183,6 +184,9 @@ structure FlatFieldDecl where
   stringPatternSource : Option String := none
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
+  /-- Resolved Number constraints reachable from computed-target checking. Scale and signedness remain in `policy.kind`. -/
+  numericTargetConstraints : NumericTargetConstraints :=
+    NumericTargetConstraints.unconstrained
   repeatableScope : List RepeatableLevel := []
   deriving Repr, DecidableEq
 
@@ -204,6 +208,13 @@ def isRawString (declaration : FlatFieldDecl) : Bool :=
 def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   match declaration.policy.kind with
   | .number info => some { id := declaration.id, info }
+  | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
+
+/-- Construct the complete computed-Number target policy from this declaration without accepting caller-supplied constraints. -/
+def toNumericTargetPolicy? (declaration : FlatFieldDecl) :
+    Option NumericTargetPolicy :=
+  match declaration.policy.kind with
+  | .number info => declaration.numericTargetConstraints.toPolicy? info
   | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
 
 /-- Convert one expanded declaration to the shared resolved temporal-field representation. -/
@@ -295,6 +306,10 @@ inductive ResolveError where
   | stringPolicyForbidsCustomType (path : List String)
   | stringPatternRequiresString (path : List String)
   | stringPatternForbidsCustomType (path : List String)
+  | numericTargetConstraintsRequireNumber (path : List String)
+  | numericMinimumFractionalDigitsExceedMaximum (path : List String)
+      (minimum maximum : Nat)
+  | numericMaximumIntegerDigitsZero (path : List String)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
   | rawStringForbidsPattern (path : List String)
@@ -447,6 +462,25 @@ private def stringPatternError? : List FlatFieldDecl → Option ResolveError
       | some _, .string, .evaluated, none => stringPatternError? rest
       | some _, _, _, _ => some (.stringPatternRequiresString declaration.path)
 
+private def numericTargetConstraintsError? :
+    List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      let constraints := declaration.numericTargetConstraints
+      match declaration.policy.kind with
+      | .number info =>
+          if info.scale < constraints.minFractionalDigits then
+            some (.numericMinimumFractionalDigitsExceedMaximum declaration.path
+              constraints.minFractionalDigits info.scale)
+          else
+            match constraints.maxIntegerDigits with
+            | some 0 => some (.numericMaximumIntegerDigitsZero declaration.path)
+            | some _ | none => numericTargetConstraintsError? rest
+      | .boolean | .confirm | .string | .enumeration | .temporal _ _ =>
+          if constraints == NumericTargetConstraints.unconstrained then
+            numericTargetConstraintsError? rest
+          else some (.numericTargetConstraintsRequireNumber declaration.path)
+
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
   | [] => none
@@ -545,6 +579,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | some error => throw error
   | none => pure ()
   match stringPatternError? model.fields with
+  | some error => throw error
+  | none => pure ()
+  match numericTargetConstraintsError? model.fields with
   | some error => throw error
   | none => pure ()
   match enumerationDeclarationError? model.fields with
