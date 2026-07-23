@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 
-/-! # Full-validation checked index preliminary locks -/
+/-! # Full and partial checked generated-preliminary locks -/
 
 namespace A12Kernel.Conformance.CheckedIndexPreliminary
 
@@ -53,6 +53,22 @@ private def preliminaryErrorFor (candidate : FlatModel) (data : DocumentData) :
     Option CheckedIndexPreliminaryError := do
   let checked ← checkedFor candidate data
   match checked.applyFullIndexPreliminary with
+  | .ok _ => none
+  | .error error => some error
+
+private def partialFor (candidate : FlatModel) (data : DocumentData)
+    (relevant : List RelevantEntityPattern)
+    (absoluteRequiredFields : List FieldId := []) :
+    Option (CheckedPartialPreliminary candidate) := do
+  let checked ← checkedFor candidate data
+  (checked.applyPartialGeneratedPreliminary relevant
+    absoluteRequiredFields).toOption
+
+private def partialErrorFor (candidate : FlatModel) (data : DocumentData)
+    (relevant : List RelevantEntityPattern) :
+    Option CheckedIndexPreliminaryError := do
+  let checked ← checkedFor candidate data
+  match checked.applyPartialGeneratedPreliminary relevant [] with
   | .ok _ => none
   | .error error => some error
 
@@ -151,6 +167,138 @@ example :
           (preliminary.findingKindAt? { field := 1, path := [1, 1] },
             preliminary.findingKindAt? { field := 1, path := [1, 2] })) =
       some (some .unique, some .unique) := by
+  native_decide
+
+private def relevantKey (sectionIndex item : Nat) : RelevantEntityPattern :=
+  { path := key.path
+    indices := [.concrete 1, .concrete sectionIndex, .concrete item, .concrete 1] }
+
+private def relevantItems (sectionIndex : Nat) : RelevantEntityPattern :=
+  { path := items.path
+    indices := [.concrete 1, .concrete sectionIndex, .all] }
+
+/- Partial uniqueness is rebuilt from relevant physical candidates. Both partners are marked when both are relevant; reusing the full finding list would incorrectly mark the one-partner control. -/
+example :
+    (partialFor model duplicateData [relevantKey 1 1, relevantKey 1 2]).map
+        (fun view =>
+          (view.index.findingKindAt? { field := 1, path := [1, 1] },
+            view.index.findingKindAt? { field := 1, path := [1, 2] })) =
+      some (some .unique, some .unique) ∧
+    (partialFor model duplicateData [relevantKey 1 1]).map
+        (fun view => view.index.findings.isEmpty) = some true ∧
+    (partialFor model duplicateData [relevantItems 1]).map
+        (fun view => view.index.findings.length) = some 2 := by
+  native_decide
+
+/- A relevant instantiated empty index receives mandatory, but a relevant pointer to an absent in-cap row neither creates topology nor a generated finding. -/
+example :
+    (partialFor model emptyAndInvalidData [relevantKey 1 1]).map
+        (fun view =>
+          view.index.findingKindAt? { field := 1, path := [1, 1] }) =
+      some (some .mandatory) ∧
+    ((partialFor model duplicateData [relevantKey 1 3]).bind fun view => do
+      let presence ←
+        (view.groupPresenceInput ["Order", "Sections", "Items"]
+          [(10, 1), (20, 3)] .partlyRelevant false).toOption
+      pure (view.index.findings.isEmpty &&
+        presence.derive ==
+          { content := false, erroneous := false,
+            relevance := .partlyRelevant })) = some true := by
+  native_decide
+
+/- A selected cell that already failed scalar checking remains malformed and receives no generated index finding. -/
+example : ((partialFor model emptyAndInvalidData [relevantKey 1 3]).bind fun view =>
+    (view.readAuthoredValidation { field := 1, path := [1, 3] }).toOption.map
+      fun cell =>
+        (view.index.findings.isEmpty, observeCell .validation cell)) =
+    some (true, .unknown .malformed) := by
+  native_decide
+
+/- The call-local view cannot expose a nonrelevant scalar or let its formal error contaminate a relevant ancestor-group slice. -/
+example :
+    let checked := checkedFor model emptyAndInvalidData
+    checked.bind (fun document => do
+      let view ←
+        (document.applyPartialGeneratedPreliminary [relevantKey 1 2] []).toOption
+      let readError :=
+        match view.readAuthoredValidation { field := 1, path := [1, 3] } with
+        | .ok _ => none
+        | .error error => some error
+      let presence ←
+        (view.groupPresenceInput ["Order", "Sections"]
+          [(10, 1)] .partlyRelevant false).toOption
+      pure (readError, presence.derive.erroneous)) =
+      some (some (.nonRelevantAddress { field := 1, path := [1, 3] }), false) := by
+  native_decide
+
+/- A concrete selector beyond declared capacity is ignored rather than turning an over-limit physical row into a partial generated finding. -/
+example :
+    (partialFor model emptyAndInvalidData [relevantKey 1 4]).map
+        (fun view => view.index.findings.isEmpty) = some true := by
+  native_decide
+
+private def requiredField : FlatFieldDecl :=
+  { id := 2
+    groupPath := ["Order"]
+    name := "Required"
+    policy := { kind := .string } }
+
+private def requiredModel : FlatModel := { fields := [requiredField] }
+
+private def relevantRequired : RelevantEntityPattern :=
+  { path := requiredField.path, indices := [.concrete 1, .concrete 1] }
+
+/- Absolute nonrepeatable requiredness still targets its canonical absent cell when relevant, without making the root group physically filled. Its generated role stays separate from the index channel. -/
+example : ((partialFor requiredModel
+    { instantiatedRows := [], cells := [] }
+    [relevantRequired] [requiredField.id]).bind fun view => do
+      let authored ←
+        (view.readAuthoredValidation
+          { field := requiredField.id, path := [] }).toOption
+      let presence ←
+        (view.groupPresenceInput ["Order"] [] .partlyRelevant false).toOption
+      pure (
+        view.requiredVerdictAt? { field := requiredField.id, path := [] } ==
+          some (.fired .omission) &&
+        view.index.findings.isEmpty &&
+        observeCell .validation authored == .unknown .required &&
+        observeCell .computation authored == .empty &&
+        presence.derive ==
+          { content := false, erroneous := true,
+            relevance := .partlyRelevant })) = some true := by
+  native_decide
+
+/- The same absent absolute field is not readable when its error field is outside the call-local relevant set. -/
+example :
+    let address : CellAddr := { field := requiredField.id, path := [] }
+    let checked := checkedFor requiredModel
+      { instantiatedRows := [], cells := [] }
+    checked.bind (fun document => do
+      let view ←
+        (document.applyPartialGeneratedPreliminary [] [requiredField.id]).toOption
+      match view.readAuthoredValidation address with
+      | .ok _ => none
+      | .error error => some error) =
+      some (.nonRelevantAddress address) := by
+  native_decide
+
+/- Unknown, misaligned, and zero-index relevant entities fail explicitly; none is silently interpreted as an empty relevant set. -/
+example :
+    let unknown : RelevantEntityPattern :=
+      { path := ["Order", "Missing"], indices := [.all, .all] }
+    let misaligned : RelevantEntityPattern :=
+      { path := key.path, indices := [.all] }
+    let zero : RelevantEntityPattern :=
+      { path := key.path
+        indices := [.concrete 1, .concrete 1, .concrete 0, .concrete 1] }
+    partialErrorFor requiredModel
+        { instantiatedRows := [], cells := [] } [unknown] =
+      some (.unknownRelevantEntity unknown.path) ∧
+    partialErrorFor model duplicateData [misaligned] =
+      some (.relevantIndexArity misaligned.path
+        misaligned.path.length misaligned.indices.length) ∧
+    partialErrorFor model duplicateData [zero] =
+      some (.zeroRelevantIndex zero.path 2) := by
   native_decide
 
 /- A model-valid but source-unclosed index kind returns explicit insufficient information instead of borrowing String token semantics. -/

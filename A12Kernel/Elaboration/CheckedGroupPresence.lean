@@ -59,25 +59,25 @@ private def hasOverLimitRowWithin (model : FlatModel) (groupPath : GroupPath)
       else
         hasOverLimitRowWithin model groupPath addressPrefix rows
 
-private def resolveGroupPresenceScope (checked : CheckedDocument model)
-    (groupPath : GroupPath) (environment : Env) :
+private def resolveGroupPresenceScope (model : FlatModel)
+    (rows : List RowAddr) (groupPath : GroupPath) (environment : Env) :
     Except CheckedGroupPresenceError (List Nat × Bool) := do
   let addressPrefix ←
     pathForScope environment (model.repeatableScopeForGroupPath groupPath)
   let overLimitRow ← hasOverLimitRowWithin model groupPath addressPrefix
-    checked.source.instantiatedRows
+    rows
   pure (addressPrefix, overLimitRow)
 
-/-- Derive one resolved validation-group slice using a later checked-cell placement view over the same immutable document. The supplied placements must retain the base addresses and may add model-owned absent-cell findings. -/
-def groupPresenceInputFromCells (checked : CheckedDocument model)
-    (cells : List CheckedCellPlacement)
+/-- Derive one resolved validation-group slice using call-selected rows and a later checked-cell placement view over the same immutable document. The supplied slice must retain base addresses and may add model-owned absent-cell findings. -/
+def groupPresenceInputFromSlice (_checked : CheckedDocument model)
+    (rows : List RowAddr) (cells : List CheckedCellPlacement)
     (groupPath : GroupPath) (environment : Env)
     (relevance : GroupRelevance) (structuralError : Bool) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
   if !model.hasGroupPath groupPath then
     .error (.unknownGroup groupPath)
   else
-    match resolveGroupPresenceScope checked groupPath environment with
+    match resolveGroupPresenceScope model rows groupPath environment with
     | .error error => .error error
     | .ok (addressPrefix, overLimitRow) =>
         let descendantCells := cells.filterMap fun placement =>
@@ -91,11 +91,20 @@ def groupPresenceInputFromCells (checked : CheckedDocument model)
           | .error _ => none
         .ok {
           descendantCells
-          hasInstantiatedRow := checked.source.instantiatedRows.any
+          hasInstantiatedRow := rows.any
             (rowWithinGroup model groupPath addressPrefix)
           structuralError := structuralError || overLimitRow
           relevance
         }
+
+/-- Derive one resolved validation-group slice using a later checked-cell placement view and every immutable source row. Full-validation and source-complete later views use this specialization. -/
+def groupPresenceInputFromCells (checked : CheckedDocument model)
+    (cells : List CheckedCellPlacement)
+    (groupPath : GroupPath) (environment : Env)
+    (relevance : GroupRelevance) (structuralError : Bool) :
+    Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
+  checked.groupPresenceInputFromSlice checked.source.instantiatedRows cells
+    groupPath environment relevance structuralError
 
 /-- Derive one resolved validation-group slice from the base checked document. Relevance and later structural findings remain explicit phase inputs; base over-repetition is derived from immutable row topology. -/
 def groupPresenceInput (checked : CheckedDocument model)
