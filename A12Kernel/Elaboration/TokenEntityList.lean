@@ -3,7 +3,7 @@ import A12Kernel.Semantics.EnumerationValueList
 
 /-! # Checked String/Enumeration entity lists
 
-This boundary certifies the shared field entity-list shape as the Kernel's String/ordinary stored-Enumeration family. String and Enumeration may mix, category projection is unrepresentable, and caller-supplied checked cells let a prepared custom String participate without resampling its validator. Individual consumers retain their own evaluation, relevance, empty-result, and phase-projection rules.
+This boundary certifies the shared field entity-list shape as the Kernel's String/Enumeration token family. The common stored-only surface remains shared by distinct count and first-filled consumers, while the checked field/star representation can retain an exact category projection for a consumer whose syntax admits one. Caller-supplied checked cells let a prepared custom String participate without resampling its validator. Individual consumers retain their own authoring, evaluation, relevance, empty-result, and phase-projection rules.
 -/
 
 namespace A12Kernel
@@ -14,20 +14,34 @@ abbrev SurfaceTokenEntityOperand := SurfaceFieldEntityOperand
 /-- A nonempty authored token-family entity-list source. -/
 abbrev SurfaceTokenEntitySource := SurfaceFieldEntitySource
 
-/-- One direct nonrepeatable String or stored-Enumeration declaration. -/
+/-- Resolve the exact stored/category token projection selected by a token-family consumer. String supports only the stored/default selection. -/
+def FlatFieldDecl.toTokenFieldComparison? (declaration : FlatFieldDecl)
+    (projectionRef : EnumerationProjectionRef) :
+    Option (FlatTextFieldOperand × DirectComparableField) :=
+  match projectionRef with
+  | .stored => declaration.toTextFieldComparison?
+  | .category _ =>
+      declaration.toEnumerationTextFieldComparison? projectionRef
+
+/-- One direct nonrepeatable String or stored/category Enumeration declaration. -/
 structure CheckedTokenField (model : FlatModel) where
   declaration : FlatFieldDecl
+  projectionRef : EnumerationProjectionRef
   operand : FlatTextFieldOperand
   profile : DirectComparableField
-  operandOwned : declaration.toTextFieldComparison? = some (operand, profile)
+  operandOwned :
+    declaration.toTokenFieldComparison? projectionRef = some (operand, profile)
   admitted : model.admitsField operand.field = true
 
-/-- One starred String or stored-Enumeration declaration with its exact optional checked filter. -/
+/-- One starred String or stored/category Enumeration declaration with its exact optional checked filter. -/
 structure CheckedTokenStarSource (model : FlatModel) where
   source : CheckedStarFieldPath model
+  projectionRef : EnumerationProjectionRef
   operand : FlatTextFieldOperand
   profile : DirectComparableField
-  operandOwned : source.declaration.toTextFieldComparison? = some (operand, profile)
+  operandOwned :
+    source.declaration.toTokenFieldComparison? projectionRef =
+      some (operand, profile)
   declaringGroup : GroupPath
   filter : Option (CheckedStarHaving model source declaringGroup)
 
@@ -38,8 +52,19 @@ inductive CheckedTokenEntityOperand (model : FlatModel) where
 
 namespace CheckedTokenEntityOperand
 
-def directFieldId? : CheckedTokenEntityOperand model → Option FieldId
-  | .field source => some source.operand.field.id
+structure DirectReference where
+  field : FieldId
+  projection : Option EnumerationProjectionRef
+  deriving Repr, DecidableEq
+
+def directReference? : CheckedTokenEntityOperand model →
+    Option DirectReference
+  | .field source =>
+      some {
+        field := source.operand.field.id
+        projection := match source.operand with
+          | .string _ => none
+          | .enumeration operand => some operand.projectionRef }
   | .star _ => none
 
 def isStar : CheckedTokenEntityOperand model → Bool
@@ -62,10 +87,26 @@ def referencesField (checked : CheckedTokenEntityOperand model)
 
 end CheckedTokenEntityOperand
 
+private def firstDuplicateDirectTokenReference? :
+    List (CheckedTokenEntityOperand model) →
+      Option CheckedTokenEntityOperand.DirectReference
+  | [] => none
+  | operand :: remaining =>
+      match operand.directReference? with
+      | none => firstDuplicateDirectTokenReference? remaining
+      | some reference =>
+          if remaining.any fun candidate =>
+              candidate.directReference? == some reference then
+            some reference
+          else
+            firstDuplicateDirectTokenReference? remaining
+
 def firstDuplicateDirectTokenField? :
     List (CheckedTokenEntityOperand model) → Option FieldId
-  | operands => firstDuplicateDirectField?
-      (fun operand => operand.directFieldId?) operands
+  | operands =>
+      match firstDuplicateDirectTokenReference? operands with
+      | some duplicate => some duplicate.field
+      | none => none
 
 /-- A checked homogeneous token-family list. Wildcard occurrences remain independent; only repeated direct references are excluded. -/
 structure CheckedTokenEntitySource (model : FlatModel) where
@@ -95,29 +136,36 @@ inductive TokenEntityElabError where
   | shape (error : FieldEntityShapeElabError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringValue (path : List String)
+  | enumerationOperand (path : List String) (error : EnumerationOperandError)
   | having (error : CorrelationElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
-private def checkedTokenOperand?
-    (declaration : FlatFieldDecl) :
+private def checkedTokenOperand? (declaration : FlatFieldDecl)
+    (projectionRef : EnumerationProjectionRef) :
     Option (FlatTextFieldOperand × DirectComparableField) :=
-  declaration.toTextFieldComparison?
+  declaration.toTokenFieldComparison? projectionRef
 
-private def certifyDirectTokenOperand (model : FlatModel)
-    (declaration : FlatFieldDecl) :
+def certifyDirectTokenOperand (model : FlatModel)
+    (declaration : FlatFieldDecl)
+    (projectionRef : EnumerationProjectionRef := .stored) :
     Except TokenEntityElabError (CheckedTokenField model) :=
-  match hOperand : checkedTokenOperand? declaration with
+  match hOperand : checkedTokenOperand? declaration projectionRef with
   | none =>
-      if declaration.isRawString then
-        throw (.rawStringValue declaration.path)
-      else
-        throw (.fieldKindMismatch declaration.path
-          declaration.policy.kind.surfaceKind)
+      match declaration.policy.kind, projectionRef with
+      | .enumeration, .category name =>
+          throw (.enumerationOperand declaration.path (.unknownCategory name))
+      | _, _ =>
+          if declaration.isRawString then
+            throw (.rawStringValue declaration.path)
+          else
+            throw (.fieldKindMismatch declaration.path
+              declaration.policy.kind.surfaceKind)
   | some (operand, profile) =>
       if hAdmitted : model.admitsField operand.field = true then
         pure {
           declaration
+          projectionRef
           operand
           profile
           operandOwned := hOperand
@@ -125,18 +173,24 @@ private def certifyDirectTokenOperand (model : FlatModel)
       else
         throw .incoherentCore
 
-private def certifyStarTokenOperand (declaringGroup : GroupPath)
+def certifyStarTokenOperand (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model)
-    (having : Option SurfaceCorrelatedHaving) :
+    (having : Option SurfaceCorrelatedHaving)
+    (projectionRef : EnumerationProjectionRef := .stored) :
     Except TokenEntityElabError
       (CheckedTokenStarSource model) :=
-  match hOperand : checkedTokenOperand? source.declaration with
+  match hOperand : checkedTokenOperand? source.declaration projectionRef with
   | none =>
-      if source.declaration.isRawString then
-        throw (.rawStringValue source.declaration.path)
-      else
-        throw (.fieldKindMismatch source.declaration.path
-          source.declaration.policy.kind.surfaceKind)
+      match source.declaration.policy.kind, projectionRef with
+      | .enumeration, .category name =>
+          throw (.enumerationOperand source.declaration.path
+            (.unknownCategory name))
+      | _, _ =>
+          if source.declaration.isRawString then
+            throw (.rawStringValue source.declaration.path)
+          else
+            throw (.fieldKindMismatch source.declaration.path
+              source.declaration.policy.kind.surfaceKind)
   | some (operand, profile) => do
       let filter ← match having with
         | none => pure none
@@ -145,6 +199,7 @@ private def certifyStarTokenOperand (declaringGroup : GroupPath)
               |>.mapError .having))
       pure {
         source
+        projectionRef
         operand
         profile
         operandOwned := hOperand
@@ -170,6 +225,25 @@ private def certifyTokenEntityOperands (model : FlatModel)
       pure ((← certifyTokenEntityOperand model declaringGroup operand) ::
         (← certifyTokenEntityOperands model declaringGroup remaining))
 
+/-- Finish one checked token entity list after its consumer has resolved and certified every slot. Exact direct-reference identity retains category selection, while wildcard occurrences remain independent. -/
+def assembleTokenEntitySource
+    (modelWellFormed : model.validate.isOk = true)
+    (first : CheckedTokenEntityOperand model)
+    (rest : List (CheckedTokenEntityOperand model)) :
+    Except TokenEntityElabError (CheckedTokenEntitySource model) :=
+  if hMultiplicity : (first.isStar || !rest.isEmpty) = true then
+    match hDuplicate :
+        firstDuplicateDirectTokenField? (first :: rest) with
+    | some field => throw (.shape (.duplicateOperand field))
+    | none => pure {
+        first
+        rest
+        modelWellFormed
+        requiredMultiplicity := hMultiplicity
+        uniqueDirectOperands := hDuplicate }
+  else
+    throw (.shape .tooFewFields)
+
 /-- Resolve duplicate/cardinality shape before certifying the complete list as String/ordinary stored-Enumeration. -/
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource) :
@@ -178,18 +252,7 @@ def elaborateTokenEntitySource (model : FlatModel)
     |>.mapError .shape
   let first ← certifyTokenEntityOperand model declaringGroup shape.first
   let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
-  if hMultiplicity : (first.isStar || !rest.isEmpty) = true then
-    match hDuplicate :
-        firstDuplicateDirectTokenField? (first :: rest) with
-    | some _ => throw .incoherentCore
-    | none => pure {
-        first
-        rest
-        modelWellFormed := shape.modelWellFormed
-        requiredMultiplicity := hMultiplicity
-        uniqueDirectOperands := hDuplicate }
-  else
-    throw .incoherentCore
+  assembleTokenEntitySource shape.modelWellFormed first rest
 
 namespace CheckedTokenField
 
@@ -209,7 +272,7 @@ end CheckedTokenField
 
 namespace CheckedTokenStarSource
 
-/-- Apply path-owned over-repetition to one caller-supplied checked leaf, then project its exact String/stored-Enumeration token. -/
+/-- Apply path-owned over-repetition to one caller-supplied checked leaf, then project its exact String/stored-or-category Enumeration token. -/
 def valueListCellAt (checked : CheckedTokenStarSource model)
     (phase : Phase) (read : Env → FieldId → CheckedCell)
     (environment : Env) : ValueListCell .token :=

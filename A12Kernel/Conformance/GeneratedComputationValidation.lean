@@ -102,7 +102,8 @@ private def repeatableTokenValueCountOperation :
       (CheckedNumericComputationOperation repeatableModel) :=
   elaborateCompleteNumericComputationOperation repeatableModel ["Form"] target.id
     (.atom (.tokenValueCount "A" {
-      first := .starHaving repeatedCodeStar repeatableFirstFilledHaving
+      first := .starHaving repeatedCodeStar .stored
+        repeatableFirstFilledHaving
       rest := [] }))
 
 private def productAggregateOperation :
@@ -238,6 +239,17 @@ private def crossGroupFieldValueAsNumberOperation :
     (.round .halfUp omittedRoundingPlaces
       (.atom (.fieldValueAsNumber
         (.category (absolutePath ["Input"] "NumericChoice") "Factor"))))
+
+private def crossGroupTokenCategoryCountOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateCompleteNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.tokenValueCount "10" {
+      first := .field (.category
+        (absolutePath ["Input"] "NumericChoice") "Factor")
+      rest := [
+        .field (.direct (absolutePath ["Input"] "Code"))] }))
 
 private def messagePlan : MessageRenderPlan :=
   { parts := [.text "Target disagrees with the computation table"] }
@@ -630,6 +642,16 @@ private def crossGroupGeneratedBoundary :
   let operation ← crossGroupNumberOperation.toOption
   let comparison ← (operation.generatedMismatchComparison none).toOption
   pure (comparison.rowGroup, comparison.operandScope)
+
+private def crossGroupTokenCategoryCountReferences :
+    Option (Bool × Bool × Bool × NumericOperandScope) := do
+  let operation ← crossGroupTokenCategoryCountOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (
+    comparison.core.referencesField crossGroupTarget.id,
+    comparison.core.referencesField crossGroupNumericChoice.id,
+    comparison.core.referencesField crossGroupCode.id,
+    comparison.operandScope)
 
 private def crossGroupFirstFilledVerdict
     (source extra target : RawCell) (isRelevant : FlatRelevance) :
@@ -1245,6 +1267,13 @@ example :
       crossGroupAggregateOutcome 5 = some (.fired aggregateExpectedMessage) ∧
       crossGroupAggregateTableOutcome 3 =
         some (.fired aggregateExpectedMessage) := by
+  native_decide
+
+/- A category-projected value count reaches generated validation as the same checked numeric atom, retaining both selected dependencies and its scalar scope. -/
+example :
+    crossGroupTokenCategoryCountOperation.isOk = true ∧
+      crossGroupTokenCategoryCountReferences =
+        some (true, true, true, .modelWideNonrepeatable) := by
   native_decide
 
 /- Every checked repeatable numeric source retains its address through generated-validation assembly rather than being flattened into scalar fields. -/

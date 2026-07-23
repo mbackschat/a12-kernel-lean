@@ -234,7 +234,8 @@ private def surfaceRepeatableTokenValueCount
     (expected : String) (outerField : String := "Source") :
     AuthoredNumericExpr SurfaceNumericComputationAtom :=
   surfaceTokenValueCount expected
-    (.starHaving repeatedTokenStarPath (repeatedAggregateHaving outerField)) []
+    (.starHaving repeatedTokenStarPath .stored
+      (repeatedAggregateHaving outerField)) []
 
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
@@ -1577,8 +1578,16 @@ example :
         (surfaceRepeatableTokenValueCount "A")
         (.literal { value := 1, authoredScale := 0 })
     let directExpression := surfaceTokenValueCount "2"
-      (.field (surfacePath ["Root"] "Wrong"))
-      [.field (surfacePath ["Root"] "NumericChoice")]
+      (.field (.direct (surfacePath ["Root"] "Wrong")))
+      [.field (.direct (surfacePath ["Root"] "NumericChoice"))]
+    let categoryExpression := surfaceTokenValueCount "5"
+      (.field (.category
+        (surfacePath ["Root"] "NumericChoice") "Factor"))
+      [.field (.direct (surfacePath ["Root"] "Wrong"))]
+    let categoryScalar := context
+      (code := formalCheck { kind := .string } (.parsed (.str "5")))
+      (choice := formalCheck { kind := .enumeration }
+        (.parsed (.enum "-150")))
     let malformedDocument : Document := {
       instantiatedRows := [{ group := 10, path := [1, 2] }]
       rawCells := fun _ => none }
@@ -1591,6 +1600,11 @@ example :
           (choice := formalCheck { kind := .enumeration }
             (.parsed (.enum "2")))) =
         some (.value 2) ∧
+      checkedCompleteScalarResultOf categoryExpression categoryScalar =
+        some (.value 2) ∧
+      checkedCompleteTargetResultOf categoryExpression
+        { input with scalar := categoryScalar } =
+        some (.supported (.accepted { unscaled := 2, scale := 0 })) ∧
       checkedCompleteScalarFaultOf
         (surfaceRepeatableTokenValueCount "A") =
         some .repeatableContextRequired ∧
@@ -1599,8 +1613,8 @@ example :
         some (.repeatableAddressing (.invalidRowDepth 10 [1, 2] 1)) ∧
       checkedCompleteErrorOf
         (surfaceTokenValueCount "missing"
-          (.field (surfacePath ["Root"] "Wrong"))
-          [.field (surfacePath ["Root"] "NumericChoice")]) =
+          (.field (.direct (surfacePath ["Root"] "Wrong")))
+          [.field (.direct (surfacePath ["Root"] "NumericChoice"))]) =
         some (.tokenValueCount
           (.literalOutsideEnumerationDomain
             ["Root", "NumericChoice"] "missing")) := by

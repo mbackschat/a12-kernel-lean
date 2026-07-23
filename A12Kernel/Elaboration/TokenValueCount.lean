@@ -2,24 +2,40 @@ import A12Kernel.Elaboration.TokenDistinctCount
 
 /-! # Checked String/Enumeration value counts
 
-This consumer applies the common checked String/ordinary stored-Enumeration entity list to `NumberOfValueInFields`. The decoded String constant is unrestricted for String fields and must belong to every selected Enumeration's stored-token domain. Category projection remains a separate authoring shape. The generic value-count fold owns exact token equality and filter-sensitive movement; this module owns only static token-family admission and phase-specific entity-list traversal.
+This consumer applies the common checked String/Enumeration entity list to `NumberOfValueInFields`. Its authored slots retain direct stored/category identity, while the decoded String constant is unrestricted for String fields and must belong to every selected Enumeration projection's exact domain. The generic value-count fold owns exact token equality and filter-sensitive movement; this module owns only its projection-bearing surface, static token-family admission, and phase-specific entity-list traversal.
 -/
 
 namespace A12Kernel
 
-abbrev SurfaceTokenValueCountOperand := SurfaceTokenEntityOperand
-abbrev SurfaceTokenValueCountSource := SurfaceTokenEntitySource
+/-- One value-count slot retains the exact stored/category projection selected by its direct or starred field reference. -/
+inductive SurfaceTokenValueCountOperand where
+  | field (source : SurfaceTextFieldOperand)
+  | star (source : SurfaceStarFieldPath)
+      (projectionRef : EnumerationProjectionRef)
+  | starHaving (source : SurfaceStarFieldPath)
+      (projectionRef : EnumerationProjectionRef)
+      (having : SurfaceCorrelatedHaving)
+  deriving Repr, DecidableEq
+
+/-- A nonempty projection-bearing token value-count entity list. -/
+structure SurfaceTokenValueCountSource where
+  first : SurfaceTokenValueCountOperand
+  rest : List SurfaceTokenValueCountOperand
+  deriving Repr, DecidableEq
 
 namespace CheckedTokenField
 
-/-- String accepts every decoded literal; an ordinary Enumeration requires exact stored-token membership. -/
+/-- String accepts every decoded literal; Enumeration requires membership in its exact selected stored/category domain. -/
 def allowsValueCountLiteral (checked : CheckedTokenField model)
     (expected : String) : Bool :=
   match checked.operand with
   | .string _ => true
-  | .enumeration _ =>
+  | .enumeration source =>
       match checked.declaration.enumeration with
-      | some declaration => declaration.storedTokens.contains expected
+      | some declaration =>
+          match source.projection with
+          | .stored => declaration.storedTokens.contains expected
+          | .category mapping => mapping.categoryTokens.contains expected
       | none => false
 
 end CheckedTokenField
@@ -31,9 +47,12 @@ def allowsValueCountLiteral (checked : CheckedTokenStarSource model)
     (expected : String) : Bool :=
   match checked.operand with
   | .string _ => true
-  | .enumeration _ =>
+  | .enumeration source =>
       match checked.source.declaration.enumeration with
-      | some declaration => declaration.storedTokens.contains expected
+      | some declaration =>
+          match source.projection with
+          | .stored => declaration.storedTokens.contains expected
+          | .category mapping => mapping.categoryTokens.contains expected
       | none => false
 
 end CheckedTokenStarSource
@@ -70,6 +89,115 @@ def directFields? (checked : CheckedTokenEntitySource model) :
 
 end CheckedTokenEntitySource
 
+private inductive ResolvedTokenValueCountOperand (model : FlatModel) where
+  | field (declaration : FlatFieldDecl)
+      (projectionRef : EnumerationProjectionRef)
+  | star (source : CheckedStarFieldPath model)
+      (projectionRef : EnumerationProjectionRef)
+      (having : Option SurfaceCorrelatedHaving)
+
+namespace ResolvedTokenValueCountOperand
+
+def isStar : ResolvedTokenValueCountOperand model → Bool
+  | .field _ _ => false
+  | .star _ _ _ => true
+
+def directReference? : ResolvedTokenValueCountOperand model →
+    Option (FieldId × EnumerationProjectionRef)
+  | .field declaration projectionRef => some (declaration.id, projectionRef)
+  | .star _ _ _ => none
+
+end ResolvedTokenValueCountOperand
+
+private def resolveTokenValueCountOperand (model : FlatModel)
+    (declaringGroup : GroupPath) : SurfaceTokenValueCountOperand →
+      Except TokenEntityElabError (ResolvedTokenValueCountOperand model)
+  | .field source => do
+      let reference := match source with
+        | .direct field | .category field _ => field
+      let projectionRef := match source with
+        | .direct _ => EnumerationProjectionRef.stored
+        | .category _ name => .category name
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+          (fun error => .shape (.resolve error))
+      pure (.field declaration projectionRef)
+  | .star source projectionRef => do
+      let checked ← elaborateStarFieldPath model declaringGroup source
+        |>.mapError (fun error => .shape (.starPath error))
+      pure (.star checked projectionRef none)
+  | .starHaving source projectionRef having => do
+      let checked ← elaborateStarFieldPath model declaringGroup source
+        |>.mapError (fun error => .shape (.starPath error))
+      pure (.star checked projectionRef (some having))
+
+private def resolveTokenValueCountOperands (model : FlatModel)
+    (declaringGroup : GroupPath) : List SurfaceTokenValueCountOperand →
+      Except TokenEntityElabError
+        (List (ResolvedTokenValueCountOperand model))
+  | [] => pure []
+  | operand :: remaining => do
+      pure ((← resolveTokenValueCountOperand model declaringGroup operand) ::
+        (← resolveTokenValueCountOperands model declaringGroup remaining))
+
+private def firstDuplicateResolvedTokenValueCountField? :
+    List (ResolvedTokenValueCountOperand model) → Option FieldId
+  | [] => none
+  | operand :: remaining =>
+      match operand.directReference? with
+      | none => firstDuplicateResolvedTokenValueCountField? remaining
+      | some reference =>
+          if remaining.any fun candidate =>
+              candidate.directReference? == some reference then
+            some reference.1
+          else
+            firstDuplicateResolvedTokenValueCountField? remaining
+
+private def certifyTokenValueCountOperand (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    ResolvedTokenValueCountOperand model →
+      Except TokenEntityElabError (CheckedTokenEntityOperand model)
+  | .field declaration projectionRef => do
+      pure (.field
+        (← certifyDirectTokenOperand model declaration projectionRef))
+  | .star source projectionRef having => do
+      pure (.star
+        (← certifyStarTokenOperand declaringGroup source having projectionRef))
+
+private def certifyTokenValueCountOperands (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    List (ResolvedTokenValueCountOperand model) →
+      Except TokenEntityElabError
+        (List (CheckedTokenEntityOperand model))
+  | [] => pure []
+  | operand :: remaining => do
+      pure ((← certifyTokenValueCountOperand model declaringGroup operand) ::
+        (← certifyTokenValueCountOperands model declaringGroup remaining))
+
+/-- Resolve every path before exact-reference duplication and cardinality, then certify kind, category, and `Having` in authored order. -/
+private def elaborateTokenValueCountEntitySource (model : FlatModel)
+    (declaringGroup : GroupPath) (authored : SurfaceTokenValueCountSource) :
+    Except TokenEntityElabError (CheckedTokenEntitySource model) :=
+  match hModel : model.validate with
+  | .error error => .error (.shape (.resolve error))
+  | .ok () => do
+      let first ←
+        resolveTokenValueCountOperand model declaringGroup authored.first
+      let rest ←
+        resolveTokenValueCountOperands model declaringGroup authored.rest
+      match firstDuplicateResolvedTokenValueCountField? (first :: rest) with
+      | some field => throw (.shape (.duplicateOperand field))
+      | none =>
+          if first.isStar || !rest.isEmpty then
+            let checkedFirst ←
+              certifyTokenValueCountOperand model declaringGroup first
+            let checkedRest ←
+              certifyTokenValueCountOperands model declaringGroup rest
+            assembleTokenEntitySource (by rw [hModel]; rfl)
+              checkedFirst checkedRest
+          else
+            throw (.shape .tooFewFields)
+
 inductive TokenValueCountElabError where
   | source (error : TokenEntityElabError)
   | literalOutsideEnumerationDomain (path : List String) (literal : String)
@@ -95,12 +223,12 @@ def referencesField (checked : CheckedTokenValueCountSource model)
 
 end CheckedTokenValueCountSource
 
-/-- Resolve the common entity-list shape, certify String/stored-Enumeration membership, and reject the first Enumeration domain mismatch in authored order. -/
+/-- Resolve the projection-bearing entity-list shape, certify String/Enumeration membership, and reject the first selected-domain mismatch in authored order. -/
 def elaborateTokenValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountSource) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
-  let source ← elaborateTokenEntitySource model declaringGroup authored
+  let source ← elaborateTokenValueCountEntitySource model declaringGroup authored
     |>.mapError .source
   if hAllowed : source.allowsValueCountLiteral expected = true then
     pure { expected, source, expectedAllowed := hAllowed }
