@@ -26,6 +26,24 @@ theorem scanFirstFilledItems_unknown_head
       .inr (.unavailable cause) := by
   simp [scanFirstFilledItems, FirstFilledScanState.step, unknown]
 
+/-- The shared filtered first-filled adapter preserves the iterator's successor-before-current order: a poison while locating the successor wins without sampling the pending target classifier. -/
+theorem filteredComputationFirstFilled_poisonedSuccessor_precedesCurrent
+    (condition : CorrelatedHaving) (filterContext : CorrelationContext)
+    (outer first second : Env) (hasUninstantiatedTail : Bool)
+    (cell : Env → ValueListCell kind) (state : FirstFilledScanState)
+    (cause : FormalCause)
+    (firstHolds : condition.evalComputationIn filterContext
+      { innerEnv := first, outerEnv := outer } = .holds)
+    (secondPoisons : condition.evalComputationIn filterContext
+      { innerEnv := second, outerEnv := outer } = .poison cause) :
+    scanFilteredComputationFirstFilled condition filterContext outer cell
+      [first, second] hasUninstantiatedTail state =
+        .inr (.unavailable cause) := by
+  simp [scanFilteredComputationFirstFilled,
+    CorrelatedHaving.scanComputation,
+    CorrelatedHaving.scanComputationCandidates,
+    firstHolds, secondPoisons]
+
 private def firstFilledSide
     (cells : List (ValueListCell .number))
     (hasUninstantiatedTail : Bool := false)

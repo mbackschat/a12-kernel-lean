@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericComputationResult
+import A12Kernel.Semantics.Correlation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.ValueList
 
@@ -104,6 +105,24 @@ def scanFirstFilledItems (cell : α → ValueListCell kind) :
       match state.step (cell item) with
       | .continue next => scanFirstFilledItems cell items next
       | .done result => .inr result
+
+/-- Apply the computation iterator's one-kept-successor traversal to any first-filled target classifier. The filter owns candidate order and poison timing; the supplied classifier owns only the current kept target. -/
+def scanFilteredComputationFirstFilled
+    (condition : CorrelatedHaving) (filterContext : CorrelationContext)
+    (outer : Env) (cell : Env → ValueListCell kind)
+    (environments : List Env) (hasUninstantiatedTail : Bool)
+    (state : FirstFilledScanState) :
+    FirstFilledScanState ⊕ FirstFilledScanResult kind :=
+  let entered := state.enter hasUninstantiatedTail true
+  let consume := fun current environment =>
+    match current.step (cell environment) with
+    | .continue next => .inl next
+    | .done result => .inr result
+  match condition.scanComputation filterContext outer consume
+      environments entered with
+  | .exhausted next => .inl next
+  | .terminated result => .inr result
+  | .poison cause => .inr (.unavailable cause)
 
 private def scanFirstFilledCells
     (cells : List (ValueListCell kind)) (state : FirstFilledScanState) :

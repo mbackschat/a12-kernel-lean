@@ -259,18 +259,12 @@ private def scanFilteredEnumerationFirstFilledStar
     (starRead : Env → FieldId → RawCell) (outer : Env)
     (resolved : ResolvedStarTopology) (state : FirstFilledScanState) :
     FirstFilledScanState ⊕ FirstFilledTokenResult :=
-  let filterContext : CorrelationContext := { read := filterRead }
-  let entered := state.enter resolved.domain.hasOpenTail true
-  let consume := fun current environment =>
-    match current.step
-        (source.valueListCellAt .computation starRead environment) with
-    | .continue next => .inl next
-    | .done result => .inr result.asToken
-  match having.condition.scanComputation filterContext outer consume
-      resolved.environments entered with
-  | .exhausted next => .inl next
-  | .terminated result => .inr result
-  | .poison cause => .inr (.unavailable cause)
+  match scanFilteredComputationFirstFilled having.condition
+      { read := filterRead } outer
+      (source.valueListCellAt .computation starRead)
+      resolved.environments resolved.domain.hasOpenTail state with
+  | .inl next => .inl next
+  | .inr result => .inr result.asToken
 
 private def scanEnumerationFirstFilledOperand
     (document : Document) (outer : Env) (direct : FlatContext)

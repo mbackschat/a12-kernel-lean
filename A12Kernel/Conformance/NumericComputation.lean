@@ -167,6 +167,12 @@ private def surfaceProductAggregate :
     left := repeatedStarPath
     right := productRightStarPath })
 
+private def surfaceFirstFilled
+    (first : SurfaceNumberEntityOperand)
+    (rest : List SurfaceNumberEntityOperand) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.firstFilled { first, rest })
+
 private def repeatedAggregateHaving (outerField : String := "Source") :
     SurfaceCorrelatedHaving :=
   .compareNumbers .equal
@@ -181,6 +187,12 @@ private def surfaceRepeatableAggregate (op : NumericAggregateOp)
   .atom (.aggregate op {
     first := .starHaving repeatedStarPath (repeatedAggregateHaving outerField)
     rest := [] })
+
+private def surfaceRepeatableFirstFilled
+    (outerField : String := "Source") :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  surfaceFirstFilled
+    (.starHaving repeatedStarPath (repeatedAggregateHaving outerField)) []
 
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
@@ -286,6 +298,12 @@ private def cells3 (first second third : CheckedCell) : RowIndex → CheckedCell
   | 3 => third
   | _ => checkedNumber .empty
 
+private def numberCells3 (first second third : RawCell) : RowIndex → CheckedCell :=
+  cells3 (checkedNumber first) (checkedNumber second) (checkedNumber third)
+
+private def emptyNumberRows : RowIndex → CheckedCell :=
+  numberCells3 .empty .empty .empty
+
 private def repeatableContext (root : CheckedCell)
     (rows : RowIndex → CheckedCell) : NumericComputationEvaluationContext :=
   { scalar := context root
@@ -293,6 +311,17 @@ private def repeatableContext (root : CheckedCell)
     outer := []
     filterRead := repeatableCheckedRead root rows
     starRead := repeatableCheckedRead root rows }
+
+private def firstFilledContext (root : CheckedCell)
+    (filterRows targetRows : RowIndex → CheckedCell)
+    (later : CheckedCell := checkedNumber .empty)
+    (rows : List RowIndex := [1, 2, 3]) :
+    NumericComputationEvaluationContext :=
+  { scalar := context root later
+    document := repeatableDocument rows
+    outer := []
+    filterRead := repeatableCheckedRead root filterRows
+    starRead := repeatableCheckedRead root targetRows }
 
 private def instant : Instant := { epochMillis := 1719292867000 }
 
@@ -417,7 +446,7 @@ private def checkedRepeatableErrorOf
   | .ok _ => none
   | .error error => some error
 
-private def checkedProductResultOf
+private def checkedCompleteResultOf
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
     (input : NumericComputationEvaluationContext) :
     Option NumericComputationResult :=
@@ -426,7 +455,24 @@ private def checkedProductResultOf
   | .error _ => none
   | .ok checked => checked.evaluateIn input |>.toOption
 
-private def checkedProductFaultOf
+private def checkedCompleteScalarResultOf
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
+    (input : ScalarComputationContext := context) :
+    Option NumericComputationResult :=
+  match elaborateCompleteNumericComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => checked.evaluate input |>.toOption
+
+private def checkedCompleteErrorOf
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Option NumericComputationElabError :=
+  match elaborateCompleteNumericComputationOperation
+      model ["Root"] targetId expression with
+  | .ok _ => none
+  | .error error => some error
+
+private def checkedCompleteFaultOf
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
     (input : NumericComputationEvaluationContext) :
     Option NumericComputationFault :=
@@ -438,7 +484,7 @@ private def checkedProductFaultOf
       | .ok _ => none
       | .error fault => some fault
 
-private def checkedProductScalarFaultOf
+private def checkedCompleteScalarFaultOf
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Option NumericComputationFault :=
   match elaborateCompleteNumericComputationOperation
@@ -449,7 +495,7 @@ private def checkedProductScalarFaultOf
       | .ok _ => none
       | .error fault => some fault
 
-private def checkedProductTargetResultOf
+private def checkedCompleteTargetResultOf
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
     (input : NumericComputationEvaluationContext) :
     Option NumericTargetCheckResult :=
@@ -495,17 +541,17 @@ example :
       (checkedNumber (.parsed (.num (-3))))
       (checkedNumber (.parsed (.num (-5))))
     let input := repeatableContext (checkedNumber .empty) rows
-    checkedProductResultOf
+    checkedCompleteResultOf
         (.binary .add surfaceProductAggregate
           (.literal { value := 1, authoredScale := 0 }))
         input =
         some (.value 45) ∧
-      checkedProductTargetResultOf
+      checkedCompleteTargetResultOf
         (.binary .add surfaceProductAggregate
           (.literal { value := 1, authoredScale := 0 }))
         input =
         some (.supported (.accepted { unscaled := 45, scale := 0 })) ∧
-      checkedProductResultOf (.abs surfaceProductAggregate)
+      checkedCompleteResultOf (.abs surfaceProductAggregate)
         (repeatableContext (checkedNumber .empty) negativeRows) =
         some (.value 44) := by
   native_decide
@@ -519,9 +565,9 @@ example :
       repeatableContext (checkedNumber .empty)
         (fun _ => checkedNumber .empty) with
       document := malformedDocument }
-    checkedProductScalarFaultOf surfaceProductAggregate =
+    checkedCompleteScalarFaultOf surfaceProductAggregate =
         some .repeatableContextRequired ∧
-      checkedProductFaultOf surfaceProductAggregate input =
+      checkedCompleteFaultOf surfaceProductAggregate input =
         some (.repeatableAddressing (.invalidRowDepth 10 [1, 2] 1)) := by
   native_decide
 
@@ -1231,6 +1277,85 @@ example :
         (context (checkedNumber (.parsed (.num 20)))
           (checkedNumber (.rejected .declaredConstraint))) =
         some (.poison .declaredConstraint) := by
+  native_decide
+
+/- Direct Number `FirstFilledValue` becomes one ordinary numeric atom: prefix value/poison, exhaustion, arithmetic, and declaration-owned target checking retain their established meanings. -/
+example :
+    let expression := surfaceFirstFilled
+      (.field (surfacePath ["Root"] "Source"))
+      [.field (surfacePath ["Root"] "Later")]
+    checkedCompleteScalarResultOf expression
+        (context (checkedNumber .empty)
+          (checkedNumber (.parsed (.num 7)))) = some (.value 7) ∧
+      checkedCompleteScalarResultOf expression = some (.value 0) ∧
+      checkedCompleteScalarResultOf expression
+        (context (checkedNumber (.rejected .malformed))
+          (checkedNumber (.parsed (.num 7)))) = some (.poison .malformed) ∧
+      checkedCompleteScalarResultOf
+        (.binary .add expression (.literal { value := 2, authoredScale := 0 }))
+        (context (checkedNumber .empty)
+          (checkedNumber (.parsed (.num 7)))) = some (.value 9) ∧
+      checkedCompleteTargetResultOf expression
+        (firstFilledContext (checkedNumber .empty)
+          emptyNumberRows emptyNumberRows) =
+        some (.supported (.rejected
+          { unscaled := 0, scale := 0 } .zeroNotAllowed)) := by
+  native_decide
+
+/- Plain-star no-row selection falls through to a direct fallback, while a sole exhausted star remains Number zero. -/
+example :
+    let input := firstFilledContext (checkedNumber .empty)
+      emptyNumberRows emptyNumberRows
+      (checkedNumber (.parsed (.num 7))) []
+    checkedCompleteResultOf
+        (surfaceFirstFilled (.star repeatedStarPath)
+          [.field (surfacePath ["Root"] "Later")]) input = some (.value 7) ∧
+      checkedCompleteResultOf
+        (surfaceFirstFilled (.star repeatedStarPath) []) input = some (.value 0) := by
+  native_decide
+
+/- The shared kept-successor traversal exposes an invalid immediate successor filter before the current target, but hides a third filter after one successor and hides the complete later slot after a direct terminal value. -/
+example :
+    let current := numberCells3 (.parsed (.num 5)) .empty .empty
+    let immediatePoison := firstFilledContext
+      (checkedNumber (.parsed (.num 1)))
+      (numberCells3 (.parsed (.num 1)) (.rejected .malformed) .empty) current
+    let hiddenThird := firstFilledContext
+      (checkedNumber (.parsed (.num 1)))
+      (numberCells3 (.parsed (.num 1)) (.parsed (.num 1))
+        (.rejected .declaredConstraint)) current
+    let directFirst := surfaceFirstFilled
+      (.field (surfacePath ["Root"] "Source"))
+      [.starHaving repeatedStarPath (repeatedAggregateHaving "Source")]
+    checkedCompleteResultOf surfaceRepeatableFirstFilled immediatePoison =
+        some (.poison .malformed) ∧
+      checkedCompleteResultOf surfaceRepeatableFirstFilled hiddenThird =
+        some (.value 5) ∧
+      checkedCompleteResultOf directFirst
+        (firstFilledContext (checkedNumber (.parsed (.num 9)))
+          (numberCells3 (.rejected .malformed) .empty .empty)
+          (numberCells3 (.rejected .declaredConstraint) .empty .empty)) =
+        some (.value 9) := by
+  native_decide
+
+/- Repeatable evaluation remains addressed and target references are traversed through both selected fields and `Having`. -/
+example :
+    let malformed : NumericComputationEvaluationContext := {
+      firstFilledContext (checkedNumber (.parsed (.num 1)))
+        emptyNumberRows emptyNumberRows with
+      document := {
+        instantiatedRows := [{ group := 10, path := [1, 2] }]
+        rawCells := fun _ => none } }
+    checkedCompleteScalarFaultOf surfaceRepeatableFirstFilled =
+        some .repeatableContextRequired ∧
+      checkedCompleteFaultOf surfaceRepeatableFirstFilled malformed =
+        some (.repeatableAddressing (.invalidRowDepth 10 [1, 2] 1)) ∧
+      checkedCompleteErrorOf
+        (surfaceFirstFilled (.field (surfacePath ["Root"] "Target"))
+          [.field (surfacePath ["Root"] "Source")]) =
+        some (.targetSelfReference targetId) ∧
+      checkedCompleteErrorOf (surfaceRepeatableFirstFilled "Target") =
+        some (.targetSelfReference targetId) := by
   native_decide
 
 /- A filtered repeatable aggregate is one ordinary numeric atom: it composes with arithmetic and reaches the existing target checker without a top-level special path. -/
