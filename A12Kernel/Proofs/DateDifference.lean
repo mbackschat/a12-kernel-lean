@@ -163,4 +163,32 @@ theorem dateDifferenceOperand_values_delegate
       .ok (.value (unit.between first second) .fixed) := by
   rfl
 
+/-- A left formal cause wins before day-difference empty substitution or calendar support is consulted. -/
+theorem calendarDayDifferenceOperand_unavailable_left
+    (profile : ModelZone.ConcreteProfile) (cause : FormalCause)
+    (right : CalendarDayDifferenceOperand) :
+    CalendarDayDifferenceOperand.evaluate profile (.unavailable cause) right =
+      .ok (.unknown cause) := by
+  rfl
+
+/-- Empty supplies symmetric zero even when the other day operand lies outside the current concrete calendar fragment. -/
+theorem calendarDayDifferenceOperand_empty_unsupported_zero
+    (profile : ModelZone.ConcreteProfile) :
+    CalendarDayDifferenceOperand.evaluate profile .empty .unsupportedCalendar =
+      .ok (.value 0 .both) := by
+  rfl
+
+/-- Two resolved day operands delegate exactly to the selected profile without re-resolving either local label. -/
+theorem calendarDayDifferenceOperand_values_delegate
+    (profile : ModelZone.ConcreteProfile)
+    (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) (days : Int)
+    (evaluated : profile.differenceResolvedInDays?
+      first firstInstant second secondInstant = some days) :
+    CalendarDayDifferenceOperand.evaluate profile
+        (.value first firstInstant) (.value second secondInstant) =
+      .ok (.value days .fixed) := by
+  simp only [CalendarDayDifferenceOperand.evaluate, evaluated]
+  rfl
+
 end A12Kernel

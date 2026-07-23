@@ -248,6 +248,14 @@ def validationOperand (context : FlatContext) :
       (context.observeValidationAt source.id)
   | .baseYear year source => .value (source.parts year)
 
+def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
+    (context : FlatContext) :
+    ResolvedDateDifferenceOperand → CalendarDayDifferenceOperand
+  | .field source => CalendarDayDifferenceOperand.ofObservation
+      (context.observeValidationAt source.id)
+  | .baseYear year source =>
+      CalendarDayDifferenceOperand.ofBaseYear profile year source
+
 end ResolvedDateDifferenceOperand
 
 /-- The Number-valued field-list aggregate operations whose resolved folds share one classified-cell owner. -/
@@ -318,6 +326,7 @@ inductive SurfaceNumericAtom
   | fieldValueAsNumber (source : SurfaceTextFieldOperand)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
+  | dayDifference (left right : SurfaceDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
   | filledGroupCount (groups : List SurfaceGroupReference)
   deriving Repr, DecidableEq
@@ -334,6 +343,8 @@ inductive ResolvedNumericAtom (Field : Type)
   | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
+  | dayDifference (profile : ModelZone.ConcreteProfile)
+      (left right : ResolvedDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
   | filledGroupCount (groups : List ResolvedGroupReference)
   deriving Repr, DecidableEq
@@ -349,6 +360,7 @@ def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .stringRange _ _ _ => true
   | .fieldValueAsNumber _ => true
   | .dateDifference _ left right => left.isField || right.isField
+  | .dayDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
   | .filledGroupCount _ => true
 
@@ -363,6 +375,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
   | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
+  | .dayDifference _ _ _ => NumericScaleSummary.field 0
   | .aggregate op source => aggregateSummary op source
   | .filledGroupCount _ => NumericScaleSummary.field 0
 

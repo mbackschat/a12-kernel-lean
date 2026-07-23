@@ -285,6 +285,21 @@ theorem readDateDifference_evaluated
   rw [evaluated]
   rfl
 
+/-- A supported checked calendar-day source preserves its exact resolved instants and maps the selected profile result once into computation outcome space. -/
+theorem readCalendarDayDifference_evaluated
+    (context : ScalarComputationContext)
+    (profile : ModelZone.ConcreteProfile)
+    (left right : ResolvedDateDifferenceOperand) (operand : NumericOperand)
+    (evaluated : CalendarDayDifferenceOperand.evaluate profile
+      (context.readCalendarDayDifferenceOperand profile left)
+      (context.readCalendarDayDifferenceOperand profile right) = .ok operand) :
+    context.readNumericComputationAtom (.dayDifference profile left right) =
+      .ok operand.toComputationResult := by
+  simp only [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith]
+  rw [evaluated]
+  rfl
+
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero
     (context : ScalarComputationContext) (declaration : FlatFieldDecl)

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation
+import A12Kernel.Semantics.DateTimeDayDifference
 
 /-! # Numeric computation-expression outcome locks -/
 
@@ -46,6 +47,7 @@ private def enumerationId : FieldId := 8
 private def numericStringId : FieldId := 9
 private def hostDigitEnumerationId : FieldId := 11
 private def productRightId : FieldId := 12
+private def laterDateTimeId : FieldId := 13
 
 private def timeComponents : TemporalComponents :=
   { year := false, month := false, day := false,
@@ -89,6 +91,8 @@ private def model : FlatModel :=
       temporalDeclaration timeId "Time" .time timeComponents,
       temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents,
       temporalDeclaration dateId "Date" .date TemporalComponents.fullDate,
+      temporalDeclaration laterDateTimeId "LaterDateTime" .dateTime
+        dateTimeComponents,
       numericString, productRight,
       { id := enumerationId
         groupPath := ["Root"]
@@ -108,6 +112,9 @@ private def model : FlatModel :=
     baseYear := some 2020 }
 
 private def noBaseYearModel : FlatModel := { model with baseYear := none }
+private def berlinModel : FlatModel := { model with timeZoneId := "Europe/Berlin" }
+private def unsupportedZoneModel : FlatModel :=
+  { model with timeZoneId := "Pacific/Apia" }
 
 private def boundedScaleTwoTargetId : FieldId := 20
 
@@ -220,6 +227,11 @@ private def surfaceDateDifference (unit : DateDifferenceUnit)
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateDifference unit left right)
 
+private def surfaceDayDifference
+    (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.dayDifference left right)
+
 private def surfaceDateOperand (name : String) : SurfaceDateDifferenceOperand :=
   .field (surfacePath ["Root"] name)
 
@@ -256,7 +268,9 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     (choice : CheckedCell := formalCheck { kind := .enumeration } .empty)
     (numericCode : CheckedCell := numericString.checkRaw .empty)
     (hostDigitChoice : CheckedCell :=
-      formalCheck { kind := .enumeration } .empty) :
+      formalCheck { kind := .enumeration } .empty)
+    (laterDateTime : CheckedCell :=
+      checkedTemporal .dateTime dateTimeComponents .empty) :
     ScalarComputationContext where
   read field :=
     if field == sourceId then source
@@ -268,6 +282,7 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     else if field == enumerationId then choice
     else if field == numericStringId then numericCode
     else if field == hostDigitEnumerationId then hostDigitChoice
+    else if field == laterDateTimeId then laterDateTime
     else checkedNumber .empty
 
 private def repeatableDocument (rows : List RowIndex) : Document :=
@@ -333,6 +348,35 @@ private def clock : TimeOfDay :=
 private def dateTimeValue : Value :=
   .temporal (.dateTime instant dateParts clock .storedGregorian)
 
+private def localDateTime (year : Int) (month day hour minute second : Nat)
+    (admissible :
+      (LocalDateTime.ofYmdHms? year month day hour minute second).isSome) :
+    LocalDateTime :=
+  (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
+
+private def berlinDateTimeValue
+    (year : Int) (month day hour minute second : Nat)
+    (admissible :
+      (LocalDateTime.ofYmdHms? year month day hour minute second).isSome)
+    (resolved :
+      (EuropeBerlinLegacyProfile.resolveLocal?
+        (localDateTime year month day hour minute second admissible)).isSome) :
+    Value :=
+  let point := localDateTime year month day hour minute second admissible
+  .temporal (.dateTime
+    ((EuropeBerlinLegacyProfile.resolveLocal?
+      (localDateTime year month day hour minute second admissible)).get resolved)
+    point.date.civil.parts point.time .storedGregorian)
+
+private def berlinDaylightFoldValue : Value :=
+  let point := localDateTime 2024 10 27 2 15 0 (by native_decide)
+  let beforeFold := localDateTime 2024 10 27 1 15 0 (by native_decide)
+  let daylightInstant :=
+    (EuropeBerlinLegacyProfile.resolveLocal? beforeFold).get
+      (by native_decide) |>.shiftHours 1
+  .temporal (.dateTime daylightInstant point.date.civil.parts point.time
+    .storedGregorian)
+
 private def dateValue (year : Int) (month day : Nat)
     (basis : DateCalendarBasis := .storedGregorian) : Value :=
   .temporal (.date instant { year, month, day } basis)
@@ -344,6 +388,25 @@ private def checkedResultOf
   match elaborateNumericComputationOperation model ["Root"] targetId expression with
   | .error _ => none
   | .ok checked => checked.evaluate input |>.toOption
+
+private def checkedResultOfIn
+    (sourceModel : FlatModel)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (input : ScalarComputationContext := context) :
+    Option NumericComputationResult :=
+  match elaborateNumericComputationOperation
+      sourceModel ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => checked.evaluate input |>.toOption
+
+private def checkedErrorOfIn
+    (sourceModel : FlatModel)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    Option NumericComputationElabError :=
+  match elaborateNumericComputationOperation
+      sourceModel ["Root"] targetId expression with
+  | .ok _ => none
+  | .error error => some error
 
 private def checkedFaultOf
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
@@ -1090,6 +1153,58 @@ example :
         (context (date := checkedTemporal .date TemporalComponents.fullDate
           (.parsed (dateValue 2020 2 29 .legacyHybrid)))) =
           some .unsupportedDateCalendar := by
+  native_decide
+
+/- Checked calendar-day computation preserves exact overlap identity and concrete model-zone selection through the shared numeric tree. -/
+example :
+    let spring := surfaceDayDifference
+      (surfaceDateOperand "DateTime") (surfaceDateOperand "LaterDateTime")
+    let springInput := context
+      (dateTime := checkedTemporal .dateTime dateTimeComponents
+        (.parsed (berlinDateTimeValue 2024 3 30 2 30 0
+          (by native_decide) (by native_decide))))
+      (laterDateTime := checkedTemporal .dateTime dateTimeComponents
+        (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+          (by native_decide) (by native_decide))))
+    checkedResultOfIn berlinModel spring springInput = some (.value 1) ∧
+      checkedResultOf spring springInput = some (.value 0) ∧
+      checkedResultOfIn berlinModel spring
+        (context
+          (dateTime := checkedTemporal .dateTime dateTimeComponents
+            (.parsed (berlinDateTimeValue 2024 10 26 2 30 0
+              (by native_decide) (by native_decide))))
+          (laterDateTime := checkedTemporal .dateTime dateTimeComponents
+            (.parsed berlinDaylightFoldValue))) = some (.value 0) ∧
+      checkedResultOfIn berlinModel spring
+        (context
+          (dateTime := checkedTemporal .dateTime dateTimeComponents .empty)
+          (laterDateTime := checkedTemporal .dateTime dateTimeComponents
+            (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+              (by native_decide) (by native_decide))))) = some (.value 0) ∧
+      checkedResultOfIn berlinModel spring
+        (context
+          (dateTime := checkedTemporal .dateTime dateTimeComponents
+            (.rejected .malformed))
+          (laterDateTime := checkedTemporal .dateTime dateTimeComponents
+            (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+              (by native_decide) (by native_decide))))) =
+        some (.poison .malformed) := by
+  native_decide
+
+/- Day admission accepts Date/DateTime mixing, rejects Time, and reports unsupported profile selection before runtime. -/
+example :
+    let mixed := surfaceDayDifference
+      (.baseYear .direct) (surfaceDateOperand "DateTime")
+    checkedErrorOfIn berlinModel mixed = none ∧
+      checkedErrorOfIn model
+        (surfaceDayDifference
+          (surfaceDateOperand "Time") (surfaceDateOperand "DateTime")) =
+          some (.incompatibleTemporalSource ["Root", "Time"]) ∧
+      checkedErrorOfIn unsupportedZoneModel
+        (surfaceDayDifference
+          (surfaceDateOperand "DateTime")
+          (surfaceDateOperand "LaterDateTime")) =
+          some (.unsupportedCalendarProfile "Pacific/Apia") := by
   native_decide
 
 /- Checked source admission rejects the wrong temporal family while admitting numeric `BaseYear` under the ordinary wrappers. -/

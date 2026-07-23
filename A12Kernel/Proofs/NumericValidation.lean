@@ -758,6 +758,29 @@ theorem numericValidation_dateDifference_literal_delegates
       NumericValidationOp.eval,
       NumericComparisonOp.eval, NumericToleranceRange.eval, evaluated]
 
+/-- A supported checked calendar-day atom delegates its exact-instant, profile-selected operand through the same numeric validator without a second comparison path. -/
+theorem numericValidation_dayDifference_literal_delegates
+    (op : NumericValidationOp) (profile : ModelZone.ConcreteProfile)
+    (left right : ResolvedDateDifferenceOperand)
+    (literal : DecodedNumericLiteral) (context : FlatContext)
+    (operand : NumericOperand)
+    (evaluated : CalendarDayDifferenceOperand.evaluate profile
+      (left.calendarDayValidationOperand profile context)
+      (right.calendarDayValidationOperand profile context) = .ok operand) :
+    ({ op, left := .atom (.dayDifference profile left right),
+        right := .literal literal } : NumericComparison).evalSelected context =
+      op.eval operand (.value literal.value .fixed) := by
+  cases op <;>
+    cases operand <;>
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
+      NumericOperand.toValidationArithmetic,
+      NumericValidationOp.eval,
+      NumericComparisonOp.eval, NumericToleranceRange.eval, evaluated]
+
 /-- Full validation gates a checked numeric condition before any empty-Number substitution can fire. -/
 theorem checkedNumericComparison_emptyRow_notFired
     (checked : CheckedNumericComparison model)

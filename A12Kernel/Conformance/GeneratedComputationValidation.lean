@@ -121,7 +121,9 @@ private def crossGroupOtherTarget : FlatFieldDecl :=
 
 private def crossGroupModel : FlatModel :=
   { fields := [crossGroupSource, crossGroupDate, crossGroupExtra, crossGroupTarget,
-      crossGroupOtherTarget, crossGroupCode, crossGroupNumericChoice] }
+      crossGroupOtherTarget, crossGroupCode, crossGroupNumericChoice]
+    baseYear := some 2024
+    timeZoneId := "Europe/Berlin" }
 
 private def absolutePath (groups : List String) (field : String) :
     SurfaceFieldPath :=
@@ -141,6 +143,14 @@ private def crossGroupDatePartOperation :
     (.abs
       (.atom (.temporalFieldPart
         (absolutePath ["Input"] "StartDate") (.date .year))))
+
+private def crossGroupDayDifferenceOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.dayDifference (.baseYear .direct)
+      (.field (absolutePath ["Input"] "StartDate"))))
 
 private def crossGroupOffsetOperation :
     Except NumericComputationElabError
@@ -533,6 +543,24 @@ private def crossGroupDatePartOutcome (target : Rat) : Option FlatRuleOutcome :=
   evalValidationRule? crossGroupModel rule raw
     GroupPresenceContext.unavailable true
 
+private def crossGroupDayDifferenceOutcome
+    (target : Rat) : Option FlatRuleOutcome := do
+  let operation ← crossGroupDayDifferenceOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedDayDifference" none messagePlan).toOption
+  let instant :=
+    (ModelZone.concreteResolveLocal? "Europe/Berlin" 2024 1 2 0 0 0).get
+      (by native_decide)
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupDate.id then
+        .parsed (.temporal (.date instant
+          { year := 2024, month := 1, day := 2 } .storedGregorian))
+      else if field = crossGroupTarget.id then .parsed (.num target)
+      else .empty }
+  evalValidationRule? crossGroupModel rule raw
+    GroupPresenceContext.unavailable true
+
 private def crossGroupGeneratedBoundary :
     Option (GroupPath × NumericOperandScope) := do
   let operation ← crossGroupNumberOperation.toOption
@@ -575,6 +603,13 @@ private def crossGroupExpectedMessage : FlatRuleMessage :=
 private def crossGroupDatePartExpectedMessage : FlatRuleMessage :=
   { errorAddress := { field := crossGroupTarget.id, path := [] }
     errorCode := "computedDatePart"
+    severity := .error
+    messageType := .value
+    text }
+
+private def crossGroupDayDifferenceExpectedMessage : FlatRuleMessage :=
+  { errorAddress := { field := crossGroupTarget.id, path := [] }
+    errorCode := "computedDayDifference"
     severity := .error
     messageType := .value
     text }
@@ -1102,6 +1137,14 @@ example :
       crossGroupDatePartOutcome 2024 = some .notFired ∧
       crossGroupDatePartOutcome 2023 =
         some (.fired crossGroupDatePartExpectedMessage) := by
+  native_decide
+
+/- Generated validation preserves the checked profile-selected calendar-day atom and compares its scale-0 result without rebuilding temporal syntax. -/
+example :
+    crossGroupDayDifferenceOperation.isOk = true ∧
+      crossGroupDayDifferenceOutcome 1 = some .notFired ∧
+      crossGroupDayDifferenceOutcome 0 =
+        some (.fired crossGroupDayDifferenceExpectedMessage) := by
   native_decide
 
 /- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later root-rounding/arithmetic mismatch, and tolerance remains validation-only. -/

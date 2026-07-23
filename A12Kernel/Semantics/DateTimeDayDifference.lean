@@ -102,17 +102,21 @@ private def forwardDifferenceInDays? (earlier : LocalDateTime)
     countResidualLandings fuel seeded seededInstant laterInstant
   pure (seedDays + residual)
 
+/-- Signed stateful calendar-day count for two already resolved Berlin values. The exact instants are authoritative in overlaps; their decoded local labels drive calendar landings. -/
+def differenceResolvedInDays? (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
+  if firstInstant.epochMillis < secondInstant.epochMillis then
+    forwardDifferenceInDays? first firstInstant second secondInstant
+  else if secondInstant.epochMillis < firstInstant.epochMillis then
+    (forwardDifferenceInDays? second secondInstant first firstInstant).map (-·)
+  else
+    some 0
+
 /-- Signed stateful calendar-day count after both fresh labels resolve under the pinned Berlin profile. -/
-def differenceInDays? (first second : LocalDateTime) : Option Int :=
-  do
-    let firstInstant ← resolveLocal? first
-    let secondInstant ← resolveLocal? second
-    if firstInstant.epochMillis < secondInstant.epochMillis then
-      forwardDifferenceInDays? first firstInstant second secondInstant
-    else if secondInstant.epochMillis < firstInstant.epochMillis then
-      (forwardDifferenceInDays? second secondInstant first firstInstant).map (-·)
-    else
-      pure 0
+def differenceInDays? (first second : LocalDateTime) : Option Int := do
+  let firstInstant ← resolveLocal? first
+  let secondInstant ← resolveLocal? second
+  differenceResolvedInDays? first firstInstant second secondInstant
 
 end A12Kernel.EuropeBerlinLegacyProfile
 
@@ -124,13 +128,23 @@ def utcDifferenceInDays (first second : LocalDateTime) : Int :=
 
 namespace ConcreteProfile
 
+/-- Evaluate day difference from exact instants plus their already decoded local labels. UTC needs only instant identity; Berlin preserves the local state required by calendar stepping. -/
+def differenceResolvedInDays? (profile : ConcreteProfile)
+    (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
+  match profile with
+  | .utc =>
+      some ((secondInstant.epochMillis - firstInstant.epochMillis).tdiv 86400000)
+  | .europeBerlin =>
+      EuropeBerlinLegacyProfile.differenceResolvedInDays?
+        first firstInstant second secondInstant
+
 /-- Evaluate day difference after the caller has selected one of the concrete profiles. Fresh-label or internal profile failure remains distinct from unsupported id selection. -/
 def differenceInDays? (profile : ConcreteProfile)
-    (first second : LocalDateTime) : Option Int :=
-  match profile with
-  | .utc => some (utcDifferenceInDays first second)
-  | .europeBerlin =>
-      EuropeBerlinLegacyProfile.differenceInDays? first second
+    (first second : LocalDateTime) : Option Int := do
+  let firstInstant ← profile.resolveLocal? first
+  let secondInstant ← profile.resolveLocal? second
+  profile.differenceResolvedInDays? first firstInstant second secondInstant
 
 end ConcreteProfile
 

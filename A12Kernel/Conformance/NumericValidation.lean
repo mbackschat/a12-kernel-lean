@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation
+import A12Kernel.Semantics.DateTimeDayDifference
 
 /-! # Checked numeric-validation integration locks -/
 
@@ -83,10 +84,15 @@ private def model : FlatModel :=
         enumeration := some { storedTokens := ["١٢.٥", "-３"] } },
       { id := 22, groupPath := ["Order"], name := "SupplementaryDigitChoice",
         policy := { kind := .enumeration },
-        enumeration := some { storedTokens := ["𐒠"] } }],
+        enumeration := some { storedTokens := ["𐒠"] } },
+      { id := 23, groupPath := ["Order"], name := "LaterDateTime",
+        policy := { kind := .temporal .dateTime dateTimeComponents } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
+private def berlinModel : FlatModel := { model with timeZoneId := "Europe/Berlin" }
+private def unsupportedZoneModel : FlatModel :=
+  { model with timeZoneId := "Pacific/Apia" }
 
 private def path (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
@@ -112,6 +118,11 @@ private def dateDifference (unit : DateDifferenceUnit)
     (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateDifference unit left right)
+
+private def dayDifference
+    (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.dayDifference left right)
 
 private def stringRange (start finish : Nat) :
     AuthoredNumericExpr SurfaceNumericAtom :=
@@ -173,9 +184,44 @@ private def clock : TimeOfDay :=
 private def dateTimeValue : Value :=
   .temporal (.dateTime instant dateParts clock .storedGregorian)
 
+private def localDateTime (year : Int) (month day hour minute second : Nat)
+    (admissible :
+      (LocalDateTime.ofYmdHms? year month day hour minute second).isSome) :
+    LocalDateTime :=
+  (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
+
+private def berlinDateTimeValue
+    (year : Int) (month day hour minute second : Nat)
+    (admissible :
+      (LocalDateTime.ofYmdHms? year month day hour minute second).isSome)
+    (resolved :
+      (EuropeBerlinLegacyProfile.resolveLocal?
+        (localDateTime year month day hour minute second admissible)).isSome) :
+    Value :=
+  let point := localDateTime year month day hour minute second admissible
+  .temporal (.dateTime
+    ((EuropeBerlinLegacyProfile.resolveLocal?
+      (localDateTime year month day hour minute second admissible)).get resolved)
+    point.date.civil.parts point.time .storedGregorian)
+
+private def berlinDaylightFoldValue : Value :=
+  let point := localDateTime 2024 10 27 2 15 0 (by native_decide)
+  let beforeFold := localDateTime 2024 10 27 1 15 0 (by native_decide)
+  let daylightInstant :=
+    (EuropeBerlinLegacyProfile.resolveLocal? beforeFold).get
+      (by native_decide) |>.shiftHours 1
+  .temporal (.dateTime daylightInstant point.date.civil.parts point.time
+    .storedGregorian)
+
 private def dateValue (year : Int) (month day : Nat)
     (basis : DateCalendarBasis := .storedGregorian) : Value :=
   .temporal (.date instant { year, month, day } basis)
+
+private def temporalPairRaw (first second : RawCell) : RawFlatContext where
+  read id :=
+    if id == 9 then first
+    else if id == 23 then second
+    else .empty
 
 private def compileValidationPattern : StringPatternCompiler := fun source =>
   if source == asciiDigitsPatternSource then
@@ -1317,6 +1363,50 @@ example :
       verdictOf (comparison .equal mixed 1)
         (temporalRaw 11 (.parsed (dateValue 2020 2 29 .legacyHybrid))) true
         baseYearModel = some .unknown := by
+  native_decide
+
+/- Checked calendar-day differences retain exact instants and model-zone selection instead of reusing Date-only periods or elapsed-time division. -/
+example :
+    let spring := dayDifference
+      (dateOperand "DateTime") (dateOperand "LaterDateTime")
+    let springInput := temporalPairRaw
+      (.parsed (berlinDateTimeValue 2024 3 30 2 30 0
+        (by native_decide) (by native_decide)))
+      (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+        (by native_decide) (by native_decide)))
+    verdictOf (comparison .equal spring 1) springInput true berlinModel =
+        some (.fired .value) ∧
+      verdictOf (comparison .equal spring 0) springInput =
+        some (.fired .value) ∧
+      verdictOf (comparison .equal spring 0)
+        (temporalPairRaw
+          (.parsed (berlinDateTimeValue 2024 10 26 2 30 0
+            (by native_decide) (by native_decide)))
+          (.parsed berlinDaylightFoldValue))
+        true berlinModel = some (.fired .value) ∧
+      verdictOf (comparison .less spring 2)
+        (temporalPairRaw .empty
+          (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+            (by native_decide) (by native_decide))))
+        true berlinModel = some (.fired .omission) ∧
+      verdictOf (comparison .equal spring 0)
+        (temporalPairRaw (.rejected .malformed)
+          (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+            (by native_decide) (by native_decide))))
+        true berlinModel = some .unknown := by
+  native_decide
+
+/- Day admission permits mixed Date/DateTime and rejects Time or an unavailable concrete profile before evaluation. -/
+example :
+    let mixed := dayDifference (.baseYear .direct) (dateOperand "DateTime")
+    errorOf (comparison .equal mixed 0) baseYearModel = none ∧
+      errorOf (comparison .equal
+        (dayDifference (dateOperand "Time") (dateOperand "DateTime")) 0) =
+          some (.incompatibleTemporalSource ["Order", "Time"]) ∧
+      errorOf (comparison .equal
+        (dayDifference (dateOperand "DateTime")
+          (dateOperand "LaterDateTime")) 0) unsupportedZoneModel =
+          some (.unsupportedCalendarProfile "Pacific/Apia") := by
   native_decide
 
 example : errorOf
