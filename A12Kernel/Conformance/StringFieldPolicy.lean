@@ -96,7 +96,7 @@ example : (stringDeclaration { maxLength := some 3 }).checkRaw
       findings := [.declaredConstraint] } := by
   native_decide
 
-/- The declaration retains pattern source independently of condition-pattern execution. The exact numeric profile is checked at ordinary String ingestion and every other declared pattern remains fail-closed for value consumers until the injected matcher is integrated. -/
+/- The declaration retains pattern source independently of condition-pattern execution. The exact numeric profile is checked by the unprepared ingestion route. -/
 example :
     let declaration := {
       (stringDeclaration { maxLength := some 15 }) with
@@ -116,7 +116,8 @@ example :
     let declaration := {
       (stringDeclaration { maxLength := some 15 }) with
       stringPatternSource := some "[0-9]*" }
-    declaration.toStringValueField? = none := by
+    declaration.toStringValueField? = some { id := 1 } ∧
+      declaration.checkRaw (.parsed (.str "123")) = malformedCheckedCell := by
   native_decide
 
 example :

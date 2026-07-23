@@ -206,6 +206,15 @@ private def preparedRuleVerdict (pattern custom : String) : Option Verdict := do
     "preparedRule" .error { parts := [] }).toOption
   pure (rule.evalFull prepared "en_US" (preparedRaw pattern custom) true).verdict
 
+private def preparedPatternLengthVerdict (pattern : String) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext preparedWorld preparedCompiler preparedModel).toOption
+  let checked ← (elaborate preparedModel ["Order"]
+    (.lengthCompare .lessEqual (path "PatternCode") 3)).toOption
+  let rule ← (assembleResolvedFlatRule preparedModel checked preparedPattern.id
+    "preparedPatternLength" .error { parts := [] }).toOption
+  pure (rule.evalFull prepared "en_US" (preparedRaw pattern "accepted") true).verdict
+
 private def assembleWithPlan (condition : SurfaceCondition) (errorField : FieldId)
     (severity : ValidationSeverity) (plan : MessageRenderPlan) :
     Except (ElabError ⊕ FlatRuleAssemblyError)
@@ -348,6 +357,13 @@ example :
     preparedRuleVerdict "AAA" "accepted" = some (.fired .value) ∧
       preparedRuleVerdict "BBB" "accepted" = some .unknown ∧
       preparedRuleVerdict "AAA" "rejected" = some .unknown := by
+  native_decide
+
+/- An arbitrary prepared declaration pattern admits an ordinary String-value consumer; accepted values retain their normalized length and rejected values remain formally unavailable. -/
+example :
+    preparedPatternLengthVerdict "AAA" = some (.fired .value) ∧
+      preparedPatternLengthVerdict "AAAA" = some .notFired ∧
+      preparedPatternLengthVerdict "BBB" = some .unknown := by
   native_decide
 
 /- Mixed checked whole-rule assembly discovers an error field referenced only by the numeric leaf and reuses the existing message outcome. -/
