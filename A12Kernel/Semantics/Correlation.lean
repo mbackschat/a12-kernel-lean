@@ -18,16 +18,9 @@ inductive HavingOrigin where
   | outer
   deriving Repr, DecidableEq
 
-/-- Resolve exactly one binding for a repeatable level. Missing and duplicate bindings
-    both fail closed; correlation must never guess a first row or substitute row zero. -/
+/-- Resolve exactly one positive binding for a repeatable level. Missing, duplicate, and zero bindings fail closed; correlation must never guess a first row or substitute row zero. -/
 def Env.uniqueRowAt? (env : Env) (level : RepeatableLevel) : Option RowIndex :=
-  match env with
-  | [] => none
-  | (boundLevel, row) :: rest =>
-      if boundLevel == level then
-        if rest.any (fun binding => binding.1 == level) then none else some row
-      else
-        Env.uniqueRowAt? rest level
+  (env.bindingAt level).toOption
 
 /-- The comparison subset needed to separate inner/outer routing and self-exclusion. -/
 inductive CorrelationComparisonOp where

@@ -255,6 +255,7 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds
 #print axioms A12Kernel.correlatedHaving_keepsEnvironment_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
+#print axioms A12Kernel.env_uniqueRowAt_zero
 #print axioms A12Kernel.checkedStarFieldPath_havingValueListSide_hasHaving
 #print axioms A12Kernel.checkedStarFieldPath_havingBeforeClassification
 #print axioms A12Kernel.selectCorrelatedRows_iff
@@ -831,6 +832,8 @@ run_cmd do
 #print axioms A12Kernel.reopenedStarRows_coordinate_irrelevant
 #print axioms A12Kernel.reopenedStar_toResolvedSide_tail
 #print axioms A12Kernel.reopenedStar_toResolvedSide_missingPotential
+#print axioms A12Kernel.env_pathForScope_length
+#print axioms A12Kernel.env_pathForScope_singleton
 #print axioms A12Kernel.starPath_firstAxis_reopens
 #print axioms A12Kernel.resolvedStarTopology_cells
 #print axioms A12Kernel.resolvedStarTopology_tail

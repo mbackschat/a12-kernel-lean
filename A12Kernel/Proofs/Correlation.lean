@@ -4,6 +4,12 @@ import A12Kernel.Elaboration.Correlation
 
 namespace A12Kernel
 
+/-- Row zero is not a concrete repetition binding and cannot enter a correlated comparison. -/
+@[simp]
+theorem env_uniqueRowAt_zero (level : RepeatableLevel) :
+    Env.uniqueRowAt? [(level, 0)] level = none := by
+  simp [Env.uniqueRowAt?, Env.bindingAt, Except.toOption]
+
 private theorem K.and_eq_tru_iff (left right : K) :
     K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
   cases left <;> cases right <;> decide
@@ -241,7 +247,8 @@ theorem evalGuardedAnyFilledOn_filter_before_consumer
 /-- `CurrentRepetition(inner) != CurrentRepetition($outer)` is false on the outer row
     itself. Self-exclusion is therefore explicit and structural. -/
 theorem currentRepetition_selfExclusion_false
-    (rows : SingleGroupValidationContext) (outerRow : RowIndex) :
+    (rows : SingleGroupValidationContext) (outerRow : RowIndex)
+    (positive : outerRow ≠ 0) :
     (CorrelatedHaving.compareRepetitions .notEqual
       { origin := .inner, level := rows.group }
       { origin := .outer, level := rows.group }).evalTruth rows
@@ -250,7 +257,8 @@ theorem currentRepetition_selfExclusion_false
     CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
     CorrelationComparisonOp.evalRows, CorrelationFrame.rowAt?,
     CorrelationFrame.envAt, SingleGroupFilterFrame.toCorrelationFrame,
-    SingleGroupValidationContext.envAt, Env.uniqueRowAt?,
+    SingleGroupValidationContext.envAt, Env.uniqueRowAt?, Env.bindingAt,
+    Except.toOption, positive,
     CorrelationComparisonOp.holdsRow]
 
 /-- A poison found while prefetching the successor of the first kept candidate wins before the consumer can inspect that candidate. -/
@@ -294,13 +302,28 @@ theorem explicitSelfExclusion_drops_outer (star : SingleCorrelatedStar)
         { origin := .inner, level := rows.group }
         { origin := .outer, level := rows.group }) rest) :
     outerRow ∉ star.select { rows, outerRow } := by
-  simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
-    CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
-    CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
-    CorrelationComparisonOp.evalRows,
-    CorrelationFrame.rowAt?, CorrelationFrame.envAt,
-    SingleGroupValidationContext.envAt,
-    Env.uniqueRowAt?, CorrelationComparisonOp.holdsRow, K.and]
+  by_cases positive : outerRow ≠ 0
+  · simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
+      CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+      CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
+      CorrelationComparisonOp.evalRows,
+      CorrelationFrame.rowAt?, CorrelationFrame.envAt,
+      SingleGroupValidationContext.envAt,
+      Env.uniqueRowAt?, Env.bindingAt, Except.toOption, positive,
+      CorrelationComparisonOp.holdsRow, K.and]
+  · have zero : outerRow = 0 := Classical.byContradiction positive
+    subst outerRow
+    simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
+      CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
+      CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
+      CorrelationComparisonOp.evalRows,
+      CorrelationFrame.rowAt?, CorrelationFrame.envAt,
+      SingleGroupValidationContext.envAt,
+      Env.uniqueRowAt?, Env.bindingAt, Except.toOption,
+      K.and]
+    cases evaluation : rest.evalTruthIn rows.asCorrelationContext
+        { innerEnv := [(rows.group, 0)], outerEnv := [(rows.group, 0)] } <;>
+      simp_all [CorrelatedHaving.evalTruthIn]
 
 /-- A candidate with a usable numeric cell is selected by reflexive inner/outer field
     equality. No implicit exclusion is present. -/

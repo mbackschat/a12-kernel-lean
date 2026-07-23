@@ -89,4 +89,9 @@ example :
     diagonalCondition.evalTruthIn rows.asCorrelationContext duplicate = .unknown := by
   native_decide
 
+/- Row zero is not a concrete captured repetition and therefore fails the same named lookup rather than participating in a comparison. -/
+example :
+    Env.uniqueRowAt? [(parentLevel, 0)] parentLevel = none := by
+  native_decide
+
 end A12Kernel.Conformance.CrossLevelCorrelation

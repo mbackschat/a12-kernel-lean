@@ -10,6 +10,7 @@ namespace A12Kernel
 
 inductive CheckedStarDocumentError where
   | addressing (cause : StarAddressingError)
+  | environment (cause : EnvBindingError)
   | document (cause : CheckedDocumentError)
   deriving Repr, DecidableEq
 
@@ -32,9 +33,12 @@ namespace CheckedStarFieldPath
 private def addressedCell (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model) (environment : Env) :
     Except CheckedStarDocumentError CheckedAddressedCell := do
+  let path ←
+    (environment.pathForScope source.declaration.repeatableScope)
+      |>.mapError .environment
   let address : CellAddr := {
     field := source.declaration.id
-    path := environment.map (·.2)
+    path
   }
   let cell ← (checked.read address).mapError .document
   pure {

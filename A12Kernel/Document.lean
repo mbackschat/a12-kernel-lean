@@ -45,6 +45,33 @@ structure Document where
     (`spec/07` §9 / `spec/08` §10) -/
 abbrev Env := List (RepeatableLevel × Nat)
 
+inductive EnvBindingError where
+  | missingBinding (level : RepeatableLevel)
+  | duplicateBinding (level : RepeatableLevel)
+  | zeroBinding (level : RepeatableLevel)
+  deriving Repr, DecidableEq
+
+namespace Env
+
+/-- Resolve exactly one positive coordinate for a named repeatable level. Environment order is irrelevant, while missing, duplicate, and zero bindings stay distinct structural failures. -/
+def bindingAt (environment : Env) (level : RepeatableLevel) :
+    Except EnvBindingError Nat :=
+  match environment.filter fun binding => binding.1 == level with
+  | [] => .error (.missingBinding level)
+  | [(_, coordinate)] =>
+      if coordinate == 0 then .error (.zeroBinding level) else .ok coordinate
+  | _ => .error (.duplicateBinding level)
+
+/-- Project a complete environment to one model-owned repeatable scope in scope order. Extra bindings belong to deeper or sibling consumers and are not copied into the address. -/
+def pathForScope (environment : Env) :
+    List RepeatableLevel → Except EnvBindingError (List Nat)
+  | [] => pure []
+  | level :: levels => do
+      let coordinate ← environment.bindingAt level
+      pure (coordinate :: (← environment.pathForScope levels))
+
+end Env
+
 /-- Capability projection of one versioned legacy model-zone account. `Today` clears the local clock at an exact instant; local-label resolution supports stored values, Base Year, and later calendar consumers. A complete kernel consumer supplies every model-legal id; a narrower consumer returns `none` for every unsupported id. -/
 structure ModelZoneRules where
   today? : String → Instant → Option Instant
