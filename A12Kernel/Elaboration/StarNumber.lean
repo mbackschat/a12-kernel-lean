@@ -67,7 +67,7 @@ def checkedCell (checked : CheckedStarNumberSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : CheckedCell :=
   checked.source.checkedCell read environment
 
-/-- Classify one caller-supplied checked leaf in the requested phase after applying the path-owned over-repetition overlay. This is the boundary required by computation consumers and eventual checked-document construction. -/
+/-- Classify one caller-supplied checked leaf in the requested phase after applying the path-owned over-repetition overlay. SG2 must derive this low-level reader from the closed checked document for whole-rule consumers. -/
 def checkedValueListCellAt (checked : CheckedStarNumberSource model)
     (phase : Phase) (read : Env → FieldId → CheckedCell)
     (environment : Env) : ValueListCell .number :=

@@ -120,4 +120,11 @@ theorem checkedPartialPreliminary_silent_read
   simp [CheckedPartialPreliminary.readAuthoredValidation, relevant, member]
   rfl
 
+/-- Every cause-free unavailable address belongs to the normalized partial relevance set; excluded defaults cannot leak into group state through this channel. -/
+theorem checkedPartialPreliminary_silent_is_relevant
+    (view : CheckedPartialPreliminary model) (address : CellAddr)
+    (silent : address ∈ view.silentlyUnavailable) :
+    view.isAddressRelevant address = true :=
+  view.silentRelevant address silent
+
 end A12Kernel

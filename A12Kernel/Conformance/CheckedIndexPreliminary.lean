@@ -57,20 +57,16 @@ private def preliminaryFor (candidate : FlatModel) (data : DocumentData) :
   (checked.applyFullIndexPreliminary).toOption
 
 private def partialFor (candidate : FlatModel) (data : DocumentData)
-    (relevant : List RelevantEntityPattern)
-    (absoluteRequiredFields : List FieldId := []) :
+    (relevant : List RelevantEntityPattern) :
     Option (CheckedPartialPreliminary candidate) := do
   let checked ← checkedFor candidate data
-  (checked.applyPartialGeneratedPreliminary relevant
-    absoluteRequiredFields).toOption
+  (checked.applyPartialGeneratedPreliminary relevant).toOption
 
 private def partialErrorFor (candidate : FlatModel) (data : DocumentData)
-    (relevant : List RelevantEntityPattern)
-    (absoluteRequiredFields : List FieldId := []) :
+    (relevant : List RelevantEntityPattern) :
     Option CheckedIndexPreliminaryError := do
   let checked ← checkedFor candidate data
-  match checked.applyPartialGeneratedPreliminary relevant
-      absoluteRequiredFields with
+  match checked.applyPartialGeneratedPreliminary relevant with
   | .ok _ => none
   | .error error => some error
 
@@ -250,6 +246,26 @@ example :
       some true := by
   native_decide
 
+/- Default suppression is relevance-local: an excluded eligible default cannot contaminate a queried relevant ancestor group. -/
+example :
+    let selectedData : DocumentData := {
+      instantiatedRows := [
+        row 10 [1], row 20 [1, 1],
+        row 10 [2], row 20 [2, 1]]
+      cells := [cell [1, 1] "A" (.parsed (.enum "A"))]
+    }
+    ((partialFor defaultModel selectedData [relevantKey 1 1]).bind fun view => do
+      let presence ←
+        (view.groupPresenceInput ["Order"] []
+          .partlyRelevant false).toOption
+      pure (
+        view.silentlyUnavailable.isEmpty &&
+        presence.derive ==
+          { content := true, erroneous := false,
+            relevance := .partlyRelevant })) =
+      some true := by
+  native_decide
+
 /- Eligibility remains source-grounded: two sibling rows, explicit requiredness, an admitted explicit value, a non-Enumeration index, and no physical row cannot manufacture a default. -/
 example :
     let twoRows : DocumentData :=
@@ -340,7 +356,7 @@ example :
     let checked := checkedFor model emptyAndInvalidData
     checked.bind (fun document => do
       let view ←
-        (document.applyPartialGeneratedPreliminary [relevantKey 1 2] []).toOption
+        (document.applyPartialGeneratedPreliminary [relevantKey 1 2]).toOption
       let readError :=
         match view.readAuthoredValidation { field := 1, path := [1, 3] } with
         | .ok _ => none
@@ -373,7 +389,7 @@ private def relevantRequired : RelevantEntityPattern :=
 /- Absolute nonrepeatable requiredness still targets its canonical absent cell when relevant, without making the root group physically filled. Its generated role stays separate from the index channel. -/
 example : ((partialFor requiredModel
     { instantiatedRows := [], cells := [] }
-    [relevantRequired] [requiredField.id]).bind fun view => do
+    [relevantRequired]).bind fun view => do
       let authored ←
         (view.readAuthoredValidation
           { field := requiredField.id, path := [] }).toOption
@@ -393,28 +409,44 @@ example : ((partialFor requiredModel
                 relevance := .partlyRelevant })) = some true := by
   native_decide
 
+/- The model, not a caller inventory, supplies every relevant absolute-required generated rule. -/
+example :
+    let address : CellAddr := { field := requiredField.id, path := [] }
+    (partialFor requiredModel
+      { instantiatedRows := [], cells := [] }
+      [relevantRequired]).map
+        (fun view => view.requiredVerdictAt? address) =
+      some (some (.fired .omission)) := by
+  native_decide
+
 /- The same absent absolute field is not readable when its error field is outside the call-local relevant set. -/
 example :
     let address : CellAddr := { field := requiredField.id, path := [] }
     let checked := checkedFor requiredModel
       { instantiatedRows := [], cells := [] }
     checked.bind (fun document => do
-      let view ←
-        (document.applyPartialGeneratedPreliminary [] [requiredField.id]).toOption
+      let view ← (document.applyPartialGeneratedPreliminary []).toOption
       match view.readAuthoredValidation address with
       | .ok _ => none
       | .error error => some error) =
       some (.nonRelevantAddress address) := by
   native_decide
 
-/- A caller-provided field list cannot manufacture requiredness absent from the checked model declaration. -/
+/- Optional and group-gated declarations are ignored by model-derived absolute staging rather than becoming mandatory. -/
 example :
     let optionalField := { requiredField with requiredness := none }
     let optionalModel : FlatModel := { fields := [optionalField] }
-    partialErrorFor optionalModel
+    let parentField := {
+      requiredField with requiredness := some .relativeToParent }
+    let parentModel : FlatModel := { fields := [parentField] }
+    (partialFor optionalModel
         { instantiatedRows := [], cells := [] }
-        [relevantRequired] [optionalField.id] =
-      some (.required (.notRequired optionalField.path)) := by
+        [relevantRequired]).map (fun view => view.required.isEmpty) =
+      some true ∧
+    (partialFor parentModel
+        { instantiatedRows := [], cells := [] }
+        [relevantRequired]).map (fun view => view.required.isEmpty) =
+      some true := by
   native_decide
 
 /- Unknown, misaligned, and zero-index relevant entities fail explicitly; none is silently interpreted as an empty relevant set. -/
