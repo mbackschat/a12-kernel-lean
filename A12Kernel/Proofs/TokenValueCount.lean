@@ -17,7 +17,7 @@ theorem tokenValueCount_singleton_match_fixed (expected : String) :
   simp [evalValueCountAggregate, scanValueCountCells,
     ValueListAtom.equal, pure, Except.pure, NumericFillability.fixed]
 
-/-- A checked typed token count retains the proof that every Enumeration source admits its exact stored-token literal. -/
+/-- A checked typed token count retains the proof that every Enumeration source admits its exact selected stored/category literal. -/
 theorem checkedTokenValueCount_expectedAllowed
     (checked : CheckedTokenValueCountSource model) :
     checked.source.allowsValueCountLiteral checked.expected = true :=

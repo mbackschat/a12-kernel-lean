@@ -16,7 +16,11 @@ private def directEnumeration : FlatFieldDecl :=
     groupPath := ["Form"]
     name := "Priority"
     policy := { kind := .enumeration }
-    enumeration := some { storedTokens := ["A", "B", "A\nB"] } }
+    enumeration := some {
+      storedTokens := ["A", "B", "A\nB"]
+      categories := [
+        { name := "Band", tokens := ["A", "A", "B"] },
+        { name := "Tier", tokens := ["A", "B", "A"] }] } }
 
 private def directString2 : FlatFieldDecl :=
   { id := 3
@@ -55,13 +59,13 @@ private def model : FlatModel :=
 private def directPath (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups := ["Form"], field }
 
-private def mixedDirectSource : SurfaceTokenEntitySource :=
-  { first := .field (directPath "Code")
-    rest := [.field (directPath "Priority")] }
+private def mixedDirectSource : SurfaceTokenValueCountSource :=
+  { first := .field (.direct (directPath "Code"))
+    rest := [.field (.direct (directPath "Priority"))] }
 
-private def directStringsSource : SurfaceTokenEntitySource :=
-  { first := .field (directPath "Code")
-    rest := [.field (directPath "OtherCode")] }
+private def directStringsSource : SurfaceTokenValueCountSource :=
+  { first := .field (.direct (directPath "Code"))
+    rest := [.field (.direct (directPath "OtherCode"))] }
 
 private def starPath (field : String) : SurfaceStarFieldPath :=
   { base := .absolute
@@ -77,14 +81,38 @@ private def selfFilter : SurfaceCorrelatedHaving :=
     { origin := .inner, field := repeatedPath "Guard" }
 
 private def stringStar (having : Option SurfaceCorrelatedHaving := none) :
-    SurfaceTokenEntitySource :=
+    SurfaceTokenValueCountSource :=
   match having with
-  | none => { first := .star (starPath "Label"), rest := [] }
+  | none => { first := .star (starPath "Label") .stored, rest := [] }
   | some filter =>
-      { first := .starHaving (starPath "Label") filter, rest := [] }
+      { first := .starHaving (starPath "Label") .stored filter, rest := [] }
 
-private def enumerationStar : SurfaceTokenEntitySource :=
-  { first := .star (starPath "Kind"), rest := [] }
+private def enumerationStar : SurfaceTokenValueCountSource :=
+  { first := .star (starPath "Kind") .stored, rest := [] }
+
+private def storedAndCategorySource : SurfaceTokenValueCountSource :=
+  { first := .field (.direct (directPath "Priority"))
+    rest := [
+      .field (.category (directPath "Priority") "Band")] }
+
+private def categoryStar : SurfaceTokenValueCountSource :=
+  { first := .star (starPath "Kind") (.category "Band")
+    rest := [] }
+
+private def unknownCategorySource : SurfaceTokenValueCountSource :=
+  { first := .field (.category (directPath "Priority") "Missing")
+    rest := [
+      .field (.direct (directPath "Code"))] }
+
+private def differentCategoriesSource : SurfaceTokenValueCountSource :=
+  { first := .field (.category (directPath "Priority") "Band")
+    rest := [
+      .field (.category (directPath "Priority") "Tier")] }
+
+private def duplicateCategorySource : SurfaceTokenValueCountSource :=
+  { first := .field (.category (directPath "Priority") "Band")
+    rest := [
+      .field (.category (directPath "Priority") "Band")] }
 
 private def checkedError (expected : String) :
     Option TokenValueCountElabError :=
@@ -196,6 +224,31 @@ private def evaluatedPartialOf (expected : String)
           (starRead stringCells enumerationCells guardCells) with
       | .ok result => some result
       | .error _ => none
+
+/- Stored and category accesses on one physical Enumeration are distinct exact references, and the selected category domain owns literal admission. -/
+example :
+    sourceError "A" storedAndCategorySource = none ∧
+      evaluatedValidationOf "A" storedAndCategorySource []
+        .empty (.parsed (.enum "A")) .empty
+        emptyCells emptyCells emptyCells =
+          some (.value 2 .fixed) ∧
+      evaluatedValidationOf "A" storedAndCategorySource []
+        .empty (.parsed (.enum "B")) .empty
+        emptyCells emptyCells emptyCells =
+          some (.value 1 .fixed) ∧
+      sourceError "C" storedAndCategorySource =
+        some (.literalOutsideEnumerationDomain directEnumeration.path "C") ∧
+      sourceError "A" unknownCategorySource =
+        some (.source (.enumerationOperand directEnumeration.path
+          (.unknownCategory "Missing"))) ∧
+      sourceError "A" differentCategoriesSource = none ∧
+      evaluatedValidationOf "A" differentCategoriesSource []
+        .empty (.parsed (.enum "A")) .empty
+        emptyCells emptyCells emptyCells =
+          some (.value 2 .fixed) ∧
+      sourceError "A" duplicateCategorySource =
+        some (.source (.shape (.duplicateOperand directEnumeration.id))) := by
+  native_decide
 
 /- String and ordinary Enumeration share exact runtime token identity after declaration-owned checking. -/
 example :
@@ -313,6 +366,17 @@ example :
           (.parsed (.enum "A"))) emptyCells =
       some (.value 2 .fixed) ∧
     sourceError "C" enumerationStar =
+      some (.literalOutsideEnumerationDomain repeatedEnumeration.path "C") := by
+  native_decide
+
+/- A repeated category projects positionally before counting, so two stored values may contribute the same selected token. -/
+example :
+    evaluatedValidationOf "A" categoryStar [1, 2, 3]
+        .empty .empty .empty emptyCells
+        ((.parsed (.enum "A")), (.parsed (.enum "B")),
+          (.parsed (.enum "A\nB"))) emptyCells =
+      some (.value 2 .fixed) ∧
+    sourceError "C" categoryStar =
       some (.literalOutsideEnumerationDomain repeatedEnumeration.path "C") := by
   native_decide
 
