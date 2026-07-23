@@ -4,6 +4,40 @@ import A12Kernel.Proofs.PatternAdmission
 
 namespace A12Kernel
 
+/-- Prepared declaration checking delegates exactly once to the declaration policy and the compiler-associated optional matcher. -/
+@[simp]
+theorem preparedDeclaredStringField_checkRaw
+    (prepared : PreparedDeclaredStringField model compilePattern)
+    (raw : RawCell) :
+    prepared.checkRaw raw =
+      prepared.declaration.stringPolicy.checkRawWithPattern
+        (prepared.pattern.map (·.wholeValueMatches)) raw := by
+  rfl
+
+/-- The one-field prepared overlay replaces exactly its certified field and leaves model-owned checking for every other identifier. -/
+@[simp]
+theorem preparedDeclaredStringField_checkContext_own
+    (prepared : PreparedDeclaredStringField model compilePattern)
+    (raw : RawFlatContext) :
+    (prepared.checkContext raw).read prepared.field =
+      prepared.checkRaw (raw.read prepared.field) := by
+  simp [PreparedDeclaredStringField.checkContext]
+
+/-- Every different identifier continues through the ordinary model-owned checked context. -/
+theorem preparedDeclaredStringField_checkContext_other
+    (prepared : PreparedDeclaredStringField model compilePattern)
+    (raw : RawFlatContext) (field : FieldId)
+    (different : field ≠ prepared.field) :
+    (prepared.checkContext raw).read field =
+      (model.checkContext raw).read field := by
+  simp [PreparedDeclaredStringField.checkContext, different]
+
+/-- A prepared declaration can never detach its matcher from the exact effective source retained by the declaration. -/
+theorem preparedDeclaredStringField_source_coherent
+    (prepared : PreparedDeclaredStringField model compilePattern) :
+    DeclaredStringPatternCoherent prepared.declaration prepared.pattern :=
+  prepared.patternCoherent
+
 /-- A checked authored pattern condition delegates its reached read to the exact matcher returned for its admitted source. -/
 @[simp]
 theorem checkedStringPattern_evalSelected

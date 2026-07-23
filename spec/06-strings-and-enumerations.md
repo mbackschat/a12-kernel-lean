@@ -26,6 +26,8 @@ an unescaped [ nested after an earlier unescaped [ before its closing ]
 
 Ordinary positive and negative lookahead (`(?=...)` / `(?!...)`) are not categorically blacklisted. Nor does passing kernel admission imply JavaScript portability: known legal separators include inline flag forms, `\R` / `\h`, Unicode `\s`, dot/code-point differences, unmatched backreferences, non-nested class intersections, `\x{…}`, `\N{…}`, `\X`, and `\b{g}`. Generated static-Java agrees with the normative Java runtime on the exercised cases. The kernel TypeScript target instead wraps the raw source as `new RegExp("^(?:" + p + ")$")`; any resulting difference is a characterized strategy split and is never adopted over the Groovy-dynamic result.
 
+For a nonempty ordinary STRING input, the declaration-owned formal check applies its first-failure clauses in this order: forbidden CR/LF on the raw text; CRLF→LF normalization when line breaks are permitted; the effective declared pattern against the complete normalized value; positive minimum length; positive maximum length. Pattern failure therefore wins over either simultaneous length failure. An absent or explicitly empty declared pattern source constructs no runtime matcher at this declaration locus; this is distinct from using the empty source as an authored `PatternMatched`/`PatternViolated` condition. Empty input bypasses the pattern and length clauses through the ordinary empty-value boundary, and every declared-format failure makes later value consumers observe formal unavailability.
+
 ### A.1 Raw-type Strings (`noValueValidation`)
 
 The String-only `noValueValidation` option declares a **raw type**. Its value remains in the document but is never interned for evaluation. Model validation closes every value window:

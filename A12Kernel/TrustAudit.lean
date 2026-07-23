@@ -1037,7 +1037,11 @@ run_cmd do
 #print axioms A12Kernel.formalCheckString_cachesNormalized
 #print axioms A12Kernel.checkedString_phasesReadNormalized
 #print axioms A12Kernel.stringFieldPolicy_checkText_empty
+#print axioms A12Kernel.stringFieldPolicy_checkTextWithPattern_empty
 #print axioms A12Kernel.stringFieldPolicy_forbiddenLineBreak_preemptsLength
+#print axioms A12Kernel.stringFieldPolicy_pattern_preemptsLength
+#print axioms A12Kernel.stringFieldPolicy_checkRawWithPattern_success_exact
+#print axioms A12Kernel.stringFieldPolicy_checkRawWithPattern_failure_exact
 #print axioms A12Kernel.stringFieldPolicy_checkRaw_success_exact
 #print axioms A12Kernel.stringFieldPolicy_checkRaw_failure_exact
 #print axioms A12Kernel.directStringOperand_readsNormalized
@@ -1052,6 +1056,10 @@ run_cmd do
 #print axioms A12Kernel.classifyStringPattern_admitted_iff
 #print axioms A12Kernel.evalAdmittedStringPattern_success
 #print axioms A12Kernel.admittedStringPattern_fired_is_value
+#print axioms A12Kernel.preparedDeclaredStringField_checkRaw
+#print axioms A12Kernel.preparedDeclaredStringField_checkContext_own
+#print axioms A12Kernel.preparedDeclaredStringField_checkContext_other
+#print axioms A12Kernel.preparedDeclaredStringField_source_coherent
 #print axioms A12Kernel.checkedStringPattern_evalSelected
 #print axioms A12Kernel.checkedStringPattern_emptyRow_notFired
 #print axioms A12Kernel.checkedStringPattern_fired_is_value

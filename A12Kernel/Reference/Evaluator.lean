@@ -68,6 +68,7 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   | .stringPatternRequiresString path
   | .rawStringRequiresLineBreakPermission path
   | .rawStringForbidsMinimumLength path
+  | .rawStringForbidsPattern path
   | .stringMinimumExceedsMaximum path
   | .lineBreakWithSingleCharacterMaximum path =>
       .make .fieldKindMismatch "$.model"

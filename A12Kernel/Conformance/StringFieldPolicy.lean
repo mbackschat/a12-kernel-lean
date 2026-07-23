@@ -54,6 +54,35 @@ example : isCheckedText none
     (({ minLength := some 3 } : StringFieldPolicy).checkText "") = true := by
   native_decide
 
+/- A declared pattern is checked after raw-line-break handling and normalization, but before either length bound. These paired cases distinguish the shared clause-order mechanism from a short-only patch. -/
+example :
+    let rejectsEverything : Option (String → Bool) := some fun _ => false
+    isStringFieldError .pattern
+        (({ minLength := some 3 } : StringFieldPolicy).checkTextWithPattern
+          rejectsEverything "A") = true ∧
+      isStringFieldError .pattern
+        (({ maxLength := some 1 } : StringFieldPolicy).checkTextWithPattern
+          rejectsEverything "AB") = true := by
+  native_decide
+
+/- The raw line-break gate still wins before pattern matching, while a permitted CRLF is normalized before the matcher and then reaches length checking. -/
+example :
+    let matchesNormalized : Option (String → Bool) :=
+      some fun value => value == "AB\nCD"
+    isStringFieldError .lineBreak
+        (({} : StringFieldPolicy).checkTextWithPattern
+          (some fun _ => false) "AB\r\nCD") = true ∧
+      isStringFieldError .tooShort
+        (({ lineBreaksPermitted := true, minLength := some 6 } :
+          StringFieldPolicy).checkTextWithPattern matchesNormalized "AB\r\nCD") = true := by
+  native_decide
+
+/- Empty text bypasses the declared matcher as well as both length bounds. -/
+example : isCheckedText none
+    (({ minLength := some 3 } : StringFieldPolicy).checkTextWithPattern
+      (some fun _ => false) "") = true := by
+  native_decide
+
 /- An explicit zero maximum follows the runtime's disabled-bound convention. -/
 example : isCheckedText (some "A")
     (({ maxLength := some 0 } : StringFieldPolicy).checkText "A") = true := by
@@ -164,6 +193,14 @@ example : errorOf ({ fields := [{ (stringDeclaration) with
       policy := { kind := .boolean }
       stringPatternSource := some "[0-9]+" }] } : FlatModel).validate =
     some (.stringPatternRequiresString ["Claim", "Note"]) := by
+  native_decide
+
+example : errorOf ({ fields := [{
+      (stringDeclaration {
+        lineBreaksPermitted := true }) with
+      stringValueMode := .raw
+      stringPatternSource := some "[0-9]+" }] } : FlatModel).validate =
+    some (.rawStringForbidsPattern ["Claim", "Note"]) := by
   native_decide
 
 example : errorOf ({ fields := [{ (stringDeclaration {
