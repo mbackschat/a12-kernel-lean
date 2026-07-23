@@ -7,12 +7,7 @@ import A12Kernel.Elaboration.NumericScale
 
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
 
-This capsule starts from structured, parser-independent surface paths and conditions. It
-resolves absolute, parent-relative including explicit turning-point labels, and bare field
-references against an expanded flat model, rejects unsupported or ambiguous input, and
-lowers accepted conditions into the existing typed non-repeatable core. Quoting, stars,
-semantic indices, concrete EN/DE syntax, and repeatable evaluation remain outside this
-fragment.
+This capsule starts from structured, parser-independent surface paths and conditions. It resolves absolute, parent-relative including explicit turning-point labels, and bare field references against an expanded flat model, rejects unsupported or ambiguous input, and lowers accepted conditions into the existing typed non-repeatable core. A quote-aware structured adapter retains whether each field/group name was single-quoted, validates collisions against an injected exact-language keyword profile, erases only the accepted quote syntax, and then delegates to the same resolver. Concrete EN/DE text parsing, stars, semantic indices, and repeatable evaluation remain outside this fragment.
 -/
 
 namespace A12Kernel
@@ -50,6 +45,29 @@ structure SurfaceFieldPath where
   turningPoint : Option String := none
   groups : List String
   field : String
+  deriving Repr, DecidableEq
+
+/-- The exact selected condition language's terminal spellings. Membership is deliberately case-sensitive; callers derive this finite profile from the language version they support. -/
+structure PathKeywordProfile where
+  reserved : List String
+  deriving Repr, DecidableEq
+
+/-- One already-tokenized entity name, retaining whether the author used the grammar's single-quote escape. -/
+structure AuthoredPathName where
+  text : String
+  quoted : Bool := false
+  deriving Repr, DecidableEq
+
+/-- A structured field path before keyword-quote validation. Path separators and parent counts have already been decoded, but quote provenance remains available to the checked boundary. -/
+structure AuthoredFieldPath where
+  base : PathBase
+  turningPoint : Option AuthoredPathName := none
+  groups : List AuthoredPathName
+  field : AuthoredPathName
+  deriving Repr, DecidableEq
+
+inductive PathSyntaxError where
+  | unquotedKeyword (name : String)
   deriving Repr, DecidableEq
 
 /-- A direct textual field operand or one exact Enumeration category access after concrete syntax has decoded `->`. -/
@@ -305,6 +323,11 @@ inductive ResolveError where
   | ambiguousEntity (path : List String)
   | shortNameNotUnique (name : String)
   | repeatableReference (path : List String)
+  deriving Repr, DecidableEq
+
+inductive AuthoredFieldPathError where
+  | syntax (error : PathSyntaxError)
+  | resolve (error : ResolveError)
   deriving Repr, DecidableEq
 
 inductive ElabError where
@@ -591,6 +614,59 @@ private def SurfaceFieldPath.hasValidShape (reference : SurfaceFieldPath) : Bool
     | .absolute => !reference.groups.isEmpty
     | .relative _ => true
 
+def PathKeywordProfile.requiresQuote (profile : PathKeywordProfile)
+    (name : String) : Bool :=
+  profile.reserved.contains name
+
+namespace AuthoredPathName
+
+/-- Validate one exact-case keyword collision and erase accepted quote syntax before semantic name lookup. Unnecessary quotes are legal and become semantically transparent. -/
+def lower (name : AuthoredPathName) (profile : PathKeywordProfile) :
+    Except PathSyntaxError String :=
+  if profile.requiresQuote name.text && !name.quoted then
+    .error (.unquotedKeyword name.text)
+  else
+    .ok name.text
+
+end AuthoredPathName
+
+namespace PathKeywordProfile
+
+/-- Canonical structured rendering quotes exactly the names that collide with the selected language's terminal set. -/
+def reifyName (profile : PathKeywordProfile) (name : String) :
+    AuthoredPathName :=
+  { text := name, quoted := profile.requiresQuote name }
+
+end PathKeywordProfile
+
+namespace AuthoredFieldPath
+
+/-- Validate quote provenance in every name-bearing position, then erase it into the sole existing structured field-path representation. -/
+def lower (path : AuthoredFieldPath) (profile : PathKeywordProfile) :
+    Except PathSyntaxError SurfaceFieldPath := do
+  let turningPoint ← match path.turningPoint with
+    | none => pure none
+    | some name => pure (some (← name.lower profile))
+  let groups ← path.groups.mapM (·.lower profile)
+  let field ← path.field.lower profile
+  pure { base := path.base, turningPoint, groups, field }
+
+end AuthoredFieldPath
+
+namespace SurfaceFieldPath
+
+/-- Reintroduce canonical quote provenance without changing the semantic path identity. -/
+def reifyQuotes (path : SurfaceFieldPath) (profile : PathKeywordProfile) :
+    AuthoredFieldPath :=
+  {
+    base := path.base
+    turningPoint := path.turningPoint.map profile.reifyName
+    groups := path.groups.map profile.reifyName
+    field := profile.reifyName path.field
+  }
+
+end SurfaceFieldPath
+
 def GroupPath.walkUp (group : GroupPath) (parents : Nat) : Except ResolveError GroupPath :=
   if parents < group.length then
     .ok (group.take (group.length - parents))
@@ -673,6 +749,14 @@ def FlatModel.resolveField (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl := do
   model.validate
   model.resolveNonrepeatableFieldUnchecked declaringGroup reference
+
+/-- Validate selected-language quote provenance and then reuse the sole checked nonrepeatable field resolver. -/
+def FlatModel.resolveAuthoredField (model : FlatModel)
+    (profile : PathKeywordProfile) (declaringGroup : GroupPath)
+    (reference : AuthoredFieldPath) :
+    Except AuthoredFieldPathError FlatFieldDecl := do
+  let path ← (reference.lower profile).mapError .syntax
+  (model.resolveField declaringGroup path).mapError .resolve
 
 def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .number _ => .number

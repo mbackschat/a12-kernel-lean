@@ -22,6 +22,62 @@ theorem groupPath_matchingTurningPoint_is_transparent
       group.matchesTurningPoint none := by
   simp [GroupPath.matchesTurningPoint, matching]
 
+/-- Canonical quote reification is accepted for one exact name and erases only its syntax marker. -/
+theorem authoredPathName_reified_lower
+    (profile : PathKeywordProfile) (name : String) :
+    (profile.reifyName name).lower profile = .ok name := by
+  unfold PathKeywordProfile.reifyName AuthoredPathName.lower
+  cases profile.requiresQuote name <;> rfl
+
+private theorem authoredPathNames_reified_lower
+    (profile : PathKeywordProfile) (names : List String) :
+    (names.map profile.reifyName).mapM (·.lower profile) = .ok names := by
+  induction names with
+  | nil => rfl
+  | cons name remaining inductionHypothesis =>
+      simp only [List.map_cons, List.mapM_cons]
+      rw [authoredPathName_reified_lower, inductionHypothesis]
+      rfl
+
+/-- Canonical quote reification and quote validation form a left inverse on every structured field path. -/
+theorem surfaceFieldPath_reifyQuotes_lower
+    (profile : PathKeywordProfile) (path : SurfaceFieldPath) :
+    (path.reifyQuotes profile).lower profile = .ok path := by
+  cases path with
+  | mk base turningPoint groups field =>
+      cases turningPoint with
+      | none =>
+          unfold SurfaceFieldPath.reifyQuotes AuthoredFieldPath.lower
+          rw [authoredPathNames_reified_lower,
+            authoredPathName_reified_lower]
+          rfl
+      | some turningPoint =>
+          simp only [SurfaceFieldPath.reifyQuotes, Option.map_some,
+            AuthoredFieldPath.lower]
+          rw [authoredPathName_reified_lower,
+            authoredPathNames_reified_lower,
+            authoredPathName_reified_lower]
+          rfl
+
+/-- An exact selected-language keyword without the grammar's quote marker fails before name lookup. -/
+theorem authoredPathName_unquoted_reserved
+    (profile : PathKeywordProfile) (name : String)
+    (reserved : profile.requiresQuote name = true) :
+    ({ text := name } : AuthoredPathName).lower profile =
+      .error (.unquotedKeyword name) := by
+  simp [AuthoredPathName.lower, reserved]
+
+/-- Canonically reified quote syntax delegates to the existing resolver without changing path identity or diagnostics. -/
+theorem resolveAuthoredField_reified_delegates
+    (model : FlatModel) (profile : PathKeywordProfile)
+    (declaringGroup : GroupPath) (path : SurfaceFieldPath) :
+    model.resolveAuthoredField profile declaringGroup
+      (path.reifyQuotes profile) =
+        (model.resolveField declaringGroup path).mapError .resolve := by
+  unfold FlatModel.resolveAuthoredField
+  rw [surfaceFieldPath_reifyQuotes_lower]
+  rfl
+
 /-- Eliminate the core static-legality certificate carried by a checked flat condition. -/
 theorem checkedFlatCondition_wellFormed (checked : CheckedFlatCondition model) :
     checked.core.WellFormed model :=
