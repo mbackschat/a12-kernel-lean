@@ -177,22 +177,6 @@ def elaborateTokenEntitySource (model : FlatModel)
   else
     throw .incoherentCore
 
-private def stringObservationAsToken :
-    CellObservation → ValueListCell .token
-  | .empty => .empty
-  | .value (.str value) =>
-      if value.isEmpty then .empty else .present value
-  | .value _ => .unknown .malformed
-  | .unknown cause | .poison cause => .unknown cause
-
-private def FlatTextFieldOperand.checkedValueListCellAt
-    (operand : FlatTextFieldOperand) (phase : Phase) (cell : CheckedCell) :
-    ValueListCell .token :=
-  match operand with
-  | .string _ => stringObservationAsToken (observeCell phase cell)
-  | FlatTextFieldOperand.enumeration enumOperand =>
-      enumOperand.projection.asValueListCell (observeCell phase cell)
-
 namespace CheckedTokenField
 
 /-- Classify one caller-supplied checked direct cell; this permits prepared custom String checking without moving that host concern into the aggregate. -/
