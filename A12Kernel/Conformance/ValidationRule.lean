@@ -274,7 +274,7 @@ private def evalValidationRule? (rule : CheckedResolvedValidationRule model)
     (world : World) (raw : RawFlatContext) (groups : GroupPresenceContext)
     (hasContent : Bool) : Option FlatRuleOutcome := do
   let prepared ← preparedContext? world
-  pure (rule.evalFull prepared "en_US" raw groups hasContent)
+  (rule.evalFull prepared "en_US" raw groups hasContent).toOption
 
 private def ruleGroupOutcome (state : GroupPresenceState) : Option FlatRuleOutcome := do
   let rule ← assembleRuleGroup? amount.id

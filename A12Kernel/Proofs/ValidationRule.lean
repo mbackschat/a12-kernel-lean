@@ -164,6 +164,17 @@ theorem checkedValidationRule_errorField_coherent
   ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
     rule.errorFieldReferenced⟩
 
+/-- The scalar checked entry point reports missing addressed context before evaluating a repeatable condition; it cannot manufacture semantic UNKNOWN. -/
+theorem checkedValidationRule_scalar_rejects_addressed
+    (rule : CheckedResolvedValidationRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
+    (hasContent : Bool)
+    (addressed : rule.requiresAddressedValidation = true) :
+    rule.evalFull prepared locale raw groups hasContent =
+      .error .addressedContextRequired := by
+  simp [CheckedResolvedValidationRule.evalFull, addressed]
+
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
     (rule : CheckedResolvedFlatRule model)
@@ -194,6 +205,7 @@ theorem checkedValidationRule_fired_message_exact
     (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
     (hasContent : Bool) (messageType : Polarity)
+    (scalar : rule.requiresAddressedValidation = false)
     (fires :
       rule.condition.core.evalFull {
         fields := (prepared.checkContext locale raw).withWorld prepared.world
@@ -201,15 +213,15 @@ theorem checkedValidationRule_fired_message_exact
       } hasContent =
         .fired messageType) :
     rule.evalFull prepared locale raw groups hasContent =
-      .fired {
+      .ok (.fired {
         errorAddress := { field := rule.errorField, path := [] }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
         text := rule.messagePlan.render
-      } := by
+      }) := by
   simp [CheckedResolvedValidationRule.evalFull,
     CheckedResolvedValidationRule.core, ResolvedValidationRule.evalFull,
-    ResolvedRule.evalWith, ResolvedRule.emit, fires]
+    ResolvedRule.evalWith, ResolvedRule.emit, scalar, fires]
 
 end A12Kernel

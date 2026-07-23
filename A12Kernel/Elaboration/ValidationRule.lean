@@ -15,6 +15,11 @@ inductive FlatRuleAssemblyError where
   | errorFieldNotReferenced (field : FieldId)
   deriving Repr, DecidableEq
 
+/-- A checked mixed rule cannot be evaluated from a scalar context when its condition retains an addressed source. This is missing execution context, not a semantic validation result. -/
+inductive ValidationEvaluationError where
+  | addressedContextRequired
+  deriving Repr, DecidableEq
+
 /-- A complete resolved rule whose condition and explicit error field are certified against the same validated model. The condition projection and reference traversal are parameters so flat and mixed rules share one metadata certificate. -/
 structure CheckedResolvedRule (model : FlatModel)
     (CheckedCondition CoreCondition : Type)
@@ -81,6 +86,10 @@ end ResolvedValidationRule
 
 namespace CheckedResolvedValidationRule
 
+def requiresAddressedValidation
+    (rule : CheckedResolvedValidationRule model) : Bool :=
+  rule.condition.core.requiresAddressedValidation
+
 def core (rule : CheckedResolvedValidationRule model) :
     ResolvedValidationRule model :=
   { condition := rule.condition.core
@@ -92,10 +101,14 @@ def core (rule : CheckedResolvedValidationRule model) :
 def evalFull (rule : CheckedResolvedValidationRule model)
     (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
-    (hasContent : Bool) : FlatRuleOutcome :=
-  ResolvedValidationRule.evalFull rule.core
-    { fields := (prepared.checkContext locale raw).withWorld prepared.world, groups }
-    hasContent
+    (hasContent : Bool) :
+    Except ValidationEvaluationError FlatRuleOutcome :=
+  if rule.requiresAddressedValidation then
+    .error .addressedContextRequired
+  else
+    .ok (ResolvedValidationRule.evalFull rule.core
+      { fields := (prepared.checkContext locale raw).withWorld prepared.world, groups }
+      hasContent)
 
 /-- Evaluate a model-certified addressed rule through the same checked core and message emitter. The caller must supply one coherent prepared scalar/repeatable view; SG1 remains responsible for constructing that view from a general document. -/
 def evalAddressedFull (rule : CheckedResolvedValidationRule model)

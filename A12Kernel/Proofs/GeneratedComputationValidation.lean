@@ -43,22 +43,22 @@ theorem checkedNumericComputationAtom_directAggregate_toValidationAtom
   simp [CheckedNumericComputationAtom.toValidationAtom, narrowed]
   rfl
 
-/-- A repeatable entity-list aggregate cannot be flattened into the current nonrepeatable generated-validation context. -/
-theorem checkedNumericComputationAtom_repeatableAggregate_rejectedByGeneratedValidation
+/-- A repeatable entity-list aggregate retains its complete checked source for addressed generated validation. -/
+theorem checkedNumericComputationAtom_repeatableAggregate_preservedForGeneratedValidation
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
     (repeatable : source.directAggregateFields? = none) :
     CheckedNumericComputationAtom.toValidationAtom
         (.numeric (.aggregate op source)) =
-      .error .repeatableAggregateRequiresAddressedValidation := by
+      .ok (.aggregate op source) := by
   simp [CheckedNumericComputationAtom.toValidationAtom, repeatable]
   rfl
 
-/-- A checked `SumOfProducts` atom cannot be flattened into the current nonrepeatable generated-validation context. -/
-theorem checkedNumericComputationAtom_product_rejectedByGeneratedValidation
+/-- A checked `SumOfProducts` atom retains its row-paired source for addressed generated validation. -/
+theorem checkedNumericComputationAtom_product_preservedForGeneratedValidation
     (source : CheckedNumericProductAggregate model) :
     CheckedNumericComputationAtom.toValidationAtom
         (.sumOfProducts source) =
-      .error .repeatableAggregateRequiresAddressedValidation := by
+      .ok (.sumOfProducts source) := by
   rfl
 
 /-- Every direct or nested reference to the computed target is rejected before guard lowering can produce a phase-specific condition. -/

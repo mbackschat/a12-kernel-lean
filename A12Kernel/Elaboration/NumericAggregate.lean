@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells to the same aggregate folds. `SumOfProducts` instead checks exactly two same-group Number stars at the lowest repeatable level, resolves their shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. Group operands, rule-level partial integration, addressed generated validation, and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two same-group Number stars at the lowest repeatable level, resolves their shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context. Group operands, rule-level partial integration, wider whole-rule addressed orchestration, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -389,6 +389,24 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
   | .starHaving source =>
       source.resolvedValueSide document outer filterRead starRead
 
+/-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. -/
+def resolvedValidationAggregateSideIn
+    (checked : CheckedNumberEntityOperand model)
+    (document : Document) (outer : Env) (direct : FlatContext)
+    (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError (ResolvedValueListSide .number) :=
+  match checked with
+  | .field source =>
+      pure (source.resolvedAggregateSideAt .validation direct)
+  | .star source => do
+      let resolved ← source.source.path.resolve document outer
+      pure (resolved.toResolvedSide
+        (source.checkedValueListCellAt .validation read))
+  | .starHaving source =>
+      source.source.source.resolvedValidationHavingValueListSide
+        document outer source.having read
+        (source.source.checkedValueListCellAt .validation read)
+
 /-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. -/
 def resolvedComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
@@ -444,6 +462,24 @@ end CheckedNumberEntityOperand
 
 namespace CheckedNumberEntitySource
 
+/-- Run the sole authored-order aggregate scan after the caller selects the phase-specific operand resolver. Validation and computation therefore share termination, declaration metadata, accumulation, and final operator dispatch. -/
+private def evaluateAggregateWith (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp)
+    (resolve : CheckedNumberEntityOperand model →
+      Except StarAddressingError
+        (Sum (ResolvedValueListSide .number) NumericOperand)) :
+    Except StarAddressingError NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedNumberEntityAggregateSides)
+      (terminal := NumericOperand)
+      resolve
+      (fun cause => .unknown cause)
+      (fun accumulated operand side =>
+        accumulated.append operand.declarationSigned side)
+      checked.operands {} with
+  | .inl accumulated => pure (accumulated.evaluate op)
+  | .inr result => pure result
+
 /-- Evaluate a checked ordinary Number entity-list aggregate in authored slot order. Each wildcard occurrence resolves independently. A formally unavailable reached cell returns immediately, so no later star topology, filter, or target reader is sampled. -/
 def evaluateAggregate (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : Document) (outer : Env)
@@ -452,19 +488,18 @@ def evaluateAggregate (checked : CheckedNumberEntitySource model)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError NumericOperand :=
   let direct := model.checkContext directRead
-  do
-    match ← scanResolvedValueListOperands
-        (state := ResolvedNumberEntityAggregateSides)
-        (terminal := NumericOperand)
-        (fun operand => do
-          pure (.inl (← operand.resolvedAggregateSide document outer direct
-            filterRead starRead)))
-        (fun cause => .unknown cause)
-        (fun accumulated operand side =>
-          accumulated.append operand.declarationSigned side)
-        checked.operands {} with
-    | .inl accumulated => pure (accumulated.evaluate op)
-    | .inr result => pure result
+  checked.evaluateAggregateWith op fun operand => do
+    pure (.inl (← operand.resolvedAggregateSide document outer direct
+      filterRead starRead))
+
+/-- Evaluate the same full-validation fold over one caller-prepared checked scalar/repeatable view. Every slot preserves authored order, validation-phase UNKNOWN, declaration-specific missing polarity, and structural address failure. -/
+def evaluateValidationAggregateIn (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : Document) (outer : Env)
+    (direct : FlatContext) (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericOperand := do
+  checked.evaluateAggregateWith op fun operand => do
+    pure (.inl (← operand.resolvedValidationAggregateSideIn
+      document outer direct read))
 
 /-- Evaluate a checked ordinary Number entity-list aggregate at computation phase. Operand slots remain authored-order lazy, and each filtered star delegates to the shared one-kept-successor iterator rather than selecting its complete row set eagerly. -/
 def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
@@ -473,19 +508,9 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
     (filterRead starRead : Env → FieldId → CheckedCell) :
     Except StarAddressingError NumericOperand :=
   let direct : FlatContext := { read := directRead }
-  do
-    match ← scanResolvedValueListOperands
-        (state := ResolvedNumberEntityAggregateSides)
-        (terminal := NumericOperand)
-        (fun operand =>
-          operand.resolvedComputationAggregateSide document outer direct
-            filterRead starRead)
-        (fun cause => .unknown cause)
-        (fun accumulated operand side =>
-          accumulated.append operand.declarationSigned side)
-        checked.operands {} with
-    | .inl accumulated => pure (accumulated.evaluate op)
-    | .inr result => pure result
+  checked.evaluateAggregateWith op fun operand =>
+    operand.resolvedComputationAggregateSide document outer direct
+      filterRead starRead
 
 /-- Evaluate an unfiltered checked Number aggregate under partial validation. A locally visible `Having` skips the rule before topology, relevance, or reads. Otherwise direct slots use concrete relevance and every star uses the established all-rows wildcard/ancestor gate, with the same authored-order early termination as full validation. A containing whole condition must still discover filters across every branch before invoking any leaf. -/
 def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)

@@ -167,6 +167,12 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField model field
 
+/-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
+def requiresAddressedValidation : ValidationConditionLeaf model → Bool
+  | .orderedNumeric _ comparison =>
+      comparison.requiresAddressedValidation
+  | _ => false
+
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
@@ -215,6 +221,11 @@ def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
+
+/-- Public execution-mode query for checked consumers. A true result requires the full addressed evaluator; choosing the scalar route is an explicit context error rather than semantic UNKNOWN. -/
+def requiresAddressedValidation
+    (condition : ValidationCondition model) : Bool :=
+  condition.anyLeaf ValidationConditionLeaf.requiresAddressedValidation
 
 def wellFormedBool (condition : ValidationCondition model)
     (rowGroup : GroupPath) : Bool :=
