@@ -11,7 +11,7 @@ Path resolution reads a cell *relative to the current repetition context* ([`01-
 - **Keyword-named fields must be quoted.** A field or group named like a keyword (`And`, `Date`, `Today`, …) is single-quoted in a path: `FieldFilled(Order/'Date')`.
 - **`RuleGroup`** references the rule's own containing group as an entity: `GroupFilled(RuleGroup)` validates and **counts as referencing the error field** ([§9](07-repetition-and-iteration.md)); a `*` on it is rejected.
 - Paths are **absolute** (`/Order/Quantity`) or **relative** (`../Other`). Relative paths within a rule's group are shorter and survive the group being moved.
-- **The one combination that *requires* absolute:** a relative `..` up-navigation may **not** be combined with `*` (`MVK_INVALID_WILDCARD_REL` — "use the absolute path notation"). So reaching **upward *and* across all repetitions** must be written absolutely (e.g. `/A*/F`).
+- **The one combination that *requires* absolute:** the `*` may not be attached to a relative `..` step (`MVK_INVALID_WILDCARD_REL`). A named segment reached after walking upward may still be starred, so `../Items*/Count` is legal; `..*/Budget`, which tries to reopen the ancestor step itself, must instead use an absolute path such as `/Project/Milestones*/Budget`.
 - A field may be referenced by a **bare short name** (`[Quantity]`). Direct lookup under the declaring group is always attempted; the model-wide fallback requires `fieldRefByShortNameAllowed`, whose kernel default is off.
 
 ---
@@ -75,7 +75,7 @@ Index-key identity belongs to the declared index field. For a **Number** index f
 ## Checklist for §10
 
 - [ ] Keyword-named segments quoted; `RuleGroup` = the rule's group and counts as an error-field reference; no `*` on it.
-- [ ] `..` + `*` together is rejected (`MVK_INVALID_WILDCARD_REL`) — force absolute.
+- [ ] A star on a `..` step is rejected (`MVK_INVALID_WILDCARD_REL`) — force absolute for that ancestor repetition; a later named segment after `../` may be starred.
 - [ ] Bare-name resolution: declaring group → flag-gated model-wide unique field lookup (distinct not-unique error, never a silent pick), with no implicit ancestor walk; `..Name` name is a validation label only.
 - [ ] `*` flatten requires every lower repeatable level to also `*`.
 - [ ] **No positional row addressing**; `CurrentRepetition` compares only and reads the named level from the selected candidate/outer environment; semantic index `[Field For key]` is the sole row selector, with its unsupported-combination restrictions.
