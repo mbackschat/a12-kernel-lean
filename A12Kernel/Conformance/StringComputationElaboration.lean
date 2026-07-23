@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringComputation
+import A12Kernel.Elaboration.StringContext
 
 /-! # Checked String-computation expression lowering locks -/
 
@@ -35,6 +36,55 @@ private def model : FlatModel :=
   { fields := [source, suffix, amount, repeatedText, target]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
+private def digitSource : FlatFieldDecl :=
+  {
+    id := 10
+    groupPath := ["Form"]
+    name := "DigitSource"
+    policy := { kind := .string }
+    stringPatternSource := some asciiDigitsPatternSource
+  }
+
+private def customSource : FlatFieldDecl :=
+  {
+    id := 11
+    groupPath := ["Form"]
+    name := "CustomSource"
+    policy := { kind := .string }
+    customType := some { name := "ProjectCode" }
+  }
+
+private def preparedModel : FlatModel :=
+  { fields := [digitSource, customSource] }
+
+private def preparedRejection : RegisteredCustomRejection where
+  projectCode := "PROJECT_CODE_INVALID"
+
+private def preparedValidator : RegisteredCustomFieldValidator := fun value _ =>
+  if value == "accepted" then none else some preparedRejection
+
+private def preparedWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProjectCode" then some preparedValidator else none
+
+private def preparedRaw (field : FieldId) (value : String) : RawFlatContext where
+  read id := if id == field then .parsed (.str value) else .empty
+
+private def preparedStore (field : FlatFieldDecl) (value : String) :
+    Option StringStore := do
+  let prepared ←
+    (prepareFlatStringContext preparedWorld builtinStringPatternCompiler
+      preparedModel).toOption
+  let expression ←
+    (elaborateStringExpr preparedModel ["Form"]
+      (.field {
+        base := .absolute
+        groups := ["Form"]
+        field := field.name
+      })).toOption
+  (expression.evaluate prepared "en_US" (preparedRaw field.id value)).toOption
+
 private def absolute (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
 
@@ -63,10 +113,12 @@ private def operationPolicyOf
 private def operationOutcomeOf
     (result : Except StringComputationElabError
       (CheckedStringComputationOperation model))
-    (input : RawFlatContext) : Option StringTargetOutcome :=
-  match result with
-  | .ok checked => (checked.evaluateOutcome input).toOption
-  | .error _ => none
+    (input : RawFlatContext) : Option StringTargetOutcome := do
+  let checked ← result.toOption
+  let prepared ←
+    (prepareFlatStringContext preparedWorld builtinStringPatternCompiler
+      model).toOption
+  (checked.evaluateOutcome prepared "en_US" input).toOption
 
 private def operationErrorOf {candidateModel : FlatModel}
     (result : Except StringComputationElabError
@@ -82,10 +134,12 @@ private def raw (sourceCell suffixCell : RawCell) : RawFlatContext where
     else .empty
 
 private def storeOf (expression : StringExpr SurfaceFieldPath)
-    (input : RawFlatContext) : Option StringStore :=
-  match elaborateStringExpr model ["Form"] expression with
-  | .error _ => none
-  | .ok checked => (checked.evaluate input).toOption
+    (input : RawFlatContext) : Option StringStore := do
+  let checked ← (elaborateStringExpr model ["Form"] expression).toOption
+  let prepared ←
+    (prepareFlatStringContext preparedWorld builtinStringPatternCompiler
+      model).toOption
+  (checked.evaluate prepared "en_US" input).toOption
 
 private def normalizedResult : StoredString :=
   { text := "A\nB!", nonempty := by decide }
@@ -95,6 +149,12 @@ private def rawCrLfResult : StoredString :=
 
 private def rangeResult : StoredString :=
   { text := "BCD", nonempty := by decide }
+
+private def digitsResult : StoredString :=
+  { text := "123", nonempty := by decide }
+
+private def acceptedResult : StoredString :=
+  { text := "accepted", nonempty := by decide }
 
 /- Copy, decoded literal, and concatenation lower structurally without changing encounter order. -/
 example :
@@ -143,6 +203,15 @@ example :
       (.concat (.field (bare "Source")) (.literal "!"))
       (raw (.parsed (.str "A\r\nB")) .empty) =
       some (.produced normalizedResult) := by
+  native_decide
+
+/- Checked String computation consumes both legal prepared source profiles before the existing expression evaluator. -/
+example :
+    preparedStore digitSource "123" = some (.produced digitsResult) ∧
+      preparedStore digitSource "12A" = some (.poison .declaredConstraint) ∧
+      preparedStore customSource "accepted" = some (.produced acceptedResult) ∧
+      preparedStore customSource "rejected" =
+        some (.poison (.registeredCustomValidation preparedRejection)) := by
   native_decide
 
 /- Two empty field contributions remain an evaluated empty concatenation until the root store clears it. -/

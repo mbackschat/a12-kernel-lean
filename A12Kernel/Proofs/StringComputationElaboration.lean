@@ -50,9 +50,12 @@ theorem elaborateStringExprCore_concat (model : FlatModel)
 
 /-- The checked wrapper adds no evaluator: it delegates to the established runtime tree. -/
 theorem checkedStringExpr_evaluate (expression : CheckedStringExpr model)
-    (raw : RawFlatContext) :
-    expression.evaluate raw =
-      expression.core.evaluate { read := (model.checkContext raw).read } := by
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) :
+    expression.evaluate prepared locale raw =
+      expression.core.evaluate {
+        read := (prepared.checkContext locale raw).read
+      } := by
   rfl
 
 /-- A checked ordinary String operation retains the exact declaration-owned target relation. -/
@@ -70,9 +73,11 @@ theorem checkedStringComputation_excludes_target_reference
 
 /-- The checked wrapper adds no second target evaluator: it composes the established expression evaluation with the shared declaration-owned target check. -/
 theorem checkedStringComputation_evaluateOutcome
-    (operation : CheckedStringComputationOperation model) (raw : RawFlatContext) :
-    operation.evaluateOutcome raw = (do
-      let store ← operation.expression.evaluate raw
+    (operation : CheckedStringComputationOperation model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) :
+    operation.evaluateOutcome prepared locale raw = (do
+      let store ← operation.expression.evaluate prepared locale raw
       pure (operation.targetPolicy.checkTarget store)) := by
   rfl
 
