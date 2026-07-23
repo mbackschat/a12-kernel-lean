@@ -325,6 +325,19 @@ def evaluateComputation (checked : CheckedNumericProductAggregate model)
 
 end CheckedNumericProductAggregate
 
+namespace CheckedNumberEntitySource
+
+/-- Project the checked mixed direct/star Number aggregate through computation-phase reads, preserving the first reached filter or target poison and erasing only validation fillability from a successful numeric fold. Whole-expression and target integration remain later consumers. -/
+def evaluateComputation (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericComputationResult := do
+  pure ((← checked.evaluateComputationAggregate op document outer directRead
+    filterRead starRead).toComputationResult)
+
+end CheckedNumberEntitySource
+
 namespace ScalarComputationContext
 
 /-- Read one already-resolved declaration in computation phase. A non-Number declaration is a structural fault even when its cell is empty; required-only Number emptiness remains zero and ordinary formal invalidity remains poison. -/
