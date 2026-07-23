@@ -1280,3 +1280,4 @@ run_cmd do
 #print axioms A12Kernel.checkedIndexPreliminary_default_read
 #print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedPartialPreliminary_silent_read
+#print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant

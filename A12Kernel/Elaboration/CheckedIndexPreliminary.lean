@@ -358,6 +358,14 @@ inductive PartialValidationCellRead where
   | silentlyUnavailable
   deriving Repr, DecidableEq
 
+private def partialAddressRelevant (model : FlatModel)
+    (relevance : ValidationRelevanceScope) (address : CellAddr) : Bool :=
+  match model.lookupUniqueId address.field with
+  | .error _ => false
+  | .ok declaration =>
+      relevance.coversCell model declaration.path
+        (declaration.repeatableScope.zip address.path)
+
 /-- One call-local partial generated-preliminary view. Silent default suppression, index findings, and ordinary-required outcomes remain separate while sharing the same immutable checked input. -/
 structure CheckedPartialPreliminary (model : FlatModel) where
   private mk ::
@@ -365,17 +373,15 @@ structure CheckedPartialPreliminary (model : FlatModel) where
   index : CheckedIndexPreliminary model
   silentlyUnavailable : List CellAddr
   required : List PartialRequiredEvaluation
+  silentRelevant : ∀ address, address ∈ silentlyUnavailable →
+    partialAddressRelevant model relevance address = true
 
 namespace CheckedPartialPreliminary
 
 /-- Whether the normalized call-local relevance set covers one exact model address. Structural validity remains checked separately by the base read. -/
 def isAddressRelevant (view : CheckedPartialPreliminary model)
     (address : CellAddr) : Bool :=
-  match model.lookupUniqueId address.field with
-  | .error _ => false
-  | .ok declaration =>
-      view.relevance.coversCell model declaration.path
-        (declaration.repeatableScope.zip address.path)
+  partialAddressRelevant model view.relevance address
 
 def requiredVerdictAt? (view : CheckedPartialPreliminary model)
     (address : CellAddr) : Option Verdict :=
@@ -460,31 +466,33 @@ namespace CheckedDocument
 
 private def partialRequiredEvaluations (checked : CheckedDocument model)
     (relevance : ValidationRelevanceScope) :
-    List FieldId →
+    List FlatFieldDecl →
       Except CheckedIndexPreliminaryError (List PartialRequiredEvaluation)
   | [] => pure []
-  | field :: fields => do
-      let rest ← checked.partialRequiredEvaluations relevance fields
-      if fields.contains field then
-        pure rest
-      else
-        let declaration ← model.lookupUniqueId field |>.mapError .model
-        let address : CellAddr := { field, path := [] }
-        if relevance.coversCell model declaration.path [] then
-          let result ← checked.applyAbsoluteRequiredAt field |>.mapError .required
-          pure ({ address, verdict := result.mandatoryVerdict } :: rest)
-        else
-          pure rest
+  | declaration :: declarations => do
+      let rest ← checked.partialRequiredEvaluations relevance declarations
+      let scope ← model.requirednessScopeFor declaration |>.mapError .model
+      match scope with
+      | some .absolute =>
+          let address : CellAddr := { field := declaration.id, path := [] }
+          if relevance.coversCell model declaration.path [] then
+            let result ← checked.applyAbsoluteRequiredAt declaration.id
+              |>.mapError .required
+            pure ({ address, verdict := result.mandatoryVerdict } :: rest)
+          else
+            pure rest
+      | none | some (.relativeTo _) => pure rest
 
 /-- Build the no-default partial generated-preliminary view from normalized relevant entity patterns. Over-capacity concrete selectors are ignored as the public API requires; malformed or unknown patterns fail explicitly. -/
 def applyPartialGeneratedPreliminary (checked : CheckedDocument model)
-    (relevantEntities : List RelevantEntityPattern)
-    (absoluteRequiredFields : List FieldId) :
+    (relevantEntities : List RelevantEntityPattern) :
     Except CheckedIndexPreliminaryError (CheckedPartialPreliminary model) := do
   let normalized ← model.normalizeRelevantEntities relevantEntities
   let relevance := ValidationRelevanceScope.partialSet normalized
-  let silentlyUnavailable := checked.indexDefaults model.repeatableGroups
-    |>.map (·.address)
+  let silentlyUnavailable :=
+    checked.indexDefaults model.repeatableGroups
+      |>.map (·.address)
+      |>.filter (partialAddressRelevant model relevance)
   let index : CheckedIndexPreliminary model := {
     base := checked
     defaulted := []
@@ -495,8 +503,10 @@ def applyPartialGeneratedPreliminary (checked : CheckedDocument model)
     relevance
     index
     silentlyUnavailable
-    required := ← checked.partialRequiredEvaluations relevance
-      absoluteRequiredFields
+    required := ← checked.partialRequiredEvaluations relevance model.fields
+    silentRelevant := by
+      intro address member
+      simpa using (List.mem_filter.mp member).2
   }
 
 end CheckedDocument
