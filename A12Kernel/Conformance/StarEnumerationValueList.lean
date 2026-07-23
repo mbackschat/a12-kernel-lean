@@ -101,12 +101,14 @@ private def verdictOf (surface : SurfaceStarEnumerationValueListSource)
       | .error _ => none
       | .ok verdict => some verdict
 
-private def directRead (raw : RawCell) : RawFlatContext where
-  read id := if id == service.id then raw else .empty
+private def directRead (raw : RawCell) : FlatContext :=
+  model.checkContext {
+    read := fun id => if id == service.id then raw else .empty
+  }
 
 private def starValuesVerdictOf
     (surface : SurfaceEnumerationValueListStarValuesSource)
-    (rows : List RowAddr) (direct : RawFlatContext)
+    (rows : List RowAddr) (direct : FlatContext)
     (read : Env → FieldId → RawCell) (outer : Env := []) : Option Verdict :=
   match elaborateEnumerationValueListStarValuesSource model priority.groupPath surface with
   | .error _ => none
@@ -118,7 +120,7 @@ private def starValuesVerdictOf
 private def partialStarValuesResultOf
     (surface : SurfaceEnumerationValueListStarValuesSource)
     (rows : List RowAddr) (scope : ValidationRelevanceScope)
-    (direct : RawFlatContext) (read : Env → FieldId → RawCell) :
+    (direct : FlatContext) (read : Env → FieldId → RawCell) :
     Option PartialHavingValueListResult :=
   match elaborateEnumerationValueListStarValuesSource model priority.groupPath surface with
   | .error _ => none

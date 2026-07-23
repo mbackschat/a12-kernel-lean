@@ -219,37 +219,37 @@ end CheckedStarEnumerationValueListSource
 
 namespace CheckedEnumerationValueListStarValuesSource
 
-/-- The direct fields side reuses the checked flat Enumeration projection and has no star metadata. -/
+/-- The direct fields side reuses its caller-owned checked flat Enumeration projection and has no star metadata. -/
 def resolvedFieldsSide (checked : CheckedEnumerationValueListStarValuesSource model)
-    (raw : RawFlatContext) : ResolvedValueListSide .token :=
-  flatTokenValueListSide [.enumeration checked.fieldCore] (model.checkContext raw)
+    (context : FlatContext) : ResolvedValueListSide .token :=
+  flatTokenValueListSide [.enumeration checked.fieldCore] context
 
 /-- Partial validation applies direct-field relevance before the shared token classification. -/
 def resolvedPartialFieldsSide
     (checked : CheckedEnumerationValueListStarValuesSource model)
-    (scope : ValidationRelevanceScope) (raw : RawFlatContext) :
+    (scope : ValidationRelevanceScope) (context : FlatContext) :
     ResolvedValueListQuantifierSide .token :=
   selectedFlatTokenValueListSide [.enumeration checked.fieldCore]
-    (model.checkContext raw) fun id =>
+    context fun id =>
       id == checked.fieldCore.field.id && scope.coversCell model checked.fieldPath []
 
 /-- Evaluate the direct Enumeration fields side against the canonical starred Enumeration values side. -/
 def evaluateFull (checked : CheckedEnumerationValueListStarValuesSource model)
-    (document : Document) (outer : Env) (raw : RawFlatContext)
+    (document : Document) (outer : Env) (context : FlatContext)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) : Except StarAddressingError Verdict := do
   let values ← checked.values.resolvedValueSide document outer filterRead read
-  pure (checked.quantifier.eval (checked.resolvedFieldsSide raw) values)
+  pure (checked.quantifier.eval (checked.resolvedFieldsSide context) values)
 
 /-- Partial evaluation retains direct per-cell relevance and the starred values side's separate extent fact. -/
 def evaluatePartial (checked : CheckedEnumerationValueListStarValuesSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (raw : RawFlatContext) (read : Env → FieldId → RawCell) :
+    (context : FlatContext) (read : Env → FieldId → RawCell) :
     Except StarAddressingError PartialHavingValueListResult :=
   if hUnfiltered : checked.values.filter.isNone = true then do
       let values ← checked.values.resolvedPartialValueSide document outer scope read hUnfiltered
       pure (.evaluated (checked.quantifier.evalClassified
-        (checked.resolvedPartialFieldsSide scope raw) values))
+        (checked.resolvedPartialFieldsSide scope context) values))
   else
     pure .skippedHaving
 
