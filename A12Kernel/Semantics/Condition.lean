@@ -86,6 +86,17 @@ def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict) :
   | .and left right => K.and (left.evalK evalLeaf) (right.evalK evalLeaf)
   | .or left right => K.or (left.evalK evalLeaf) (right.evalK evalLeaf)
 
+/-- Evaluate the same strong-Kleene algebra while preserving a caller-owned structural failure channel. Both branches remain observable because neither strong-Kleene truth value alone makes the other branch structurally unreachable. -/
+def evalKExcept (evalLeaf : Leaf → Except Error K) :
+    ConditionTree Leaf → Except Error K
+  | .leaf value => evalLeaf value
+  | .and left right => do
+      pure (K.and (← left.evalKExcept evalLeaf)
+        (← right.evalKExcept evalLeaf))
+  | .or left right => do
+      pure (K.or (← left.evalKExcept evalLeaf)
+        (← right.evalKExcept evalLeaf))
+
 /-- Evaluate computation leaves left-to-right. Clean false decides `And`, clean true decides `Or`, and the first reached poison aborts either connective. -/
 @[simp] def evalComputation
     (evalLeaf : Leaf → ComputationConditionResult) :
@@ -101,6 +112,22 @@ def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict) :
       | .holds => .holds
       | .notTrue => right.evalComputation evalLeaf
       | .poison cause => .poison cause
+
+/-- Evaluate the computation connective algebra while preserving a caller-owned structural failure channel. Decisive clean branches retain the ordinary short-circuit boundary and hide an unreachable effectful leaf. -/
+def evalComputationExcept
+    (evalLeaf : Leaf → Except Error ComputationConditionResult) :
+    ConditionTree Leaf → Except Error ComputationConditionResult
+  | .leaf value => evalLeaf value
+  | .and left right => do
+      match ← left.evalComputationExcept evalLeaf with
+      | .holds => right.evalComputationExcept evalLeaf
+      | .notTrue => pure .notTrue
+      | .poison cause => pure (.poison cause)
+  | .or left right => do
+      match ← left.evalComputationExcept evalLeaf with
+      | .holds => pure .holds
+      | .notTrue => right.evalComputationExcept evalLeaf
+      | .poison cause => pure (.poison cause)
 
 end ConditionTree
 

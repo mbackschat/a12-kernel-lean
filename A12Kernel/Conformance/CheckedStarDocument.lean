@@ -55,6 +55,32 @@ private def checked? : Option (CheckedDocument model) := do
     (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   (checkDocument prepared "en_US" data).toOption
 
+/- One checked-document query resolves the selected field's model-owned scope rather than trusting environment order or copying an unrelated deeper binding. -/
+example : (do
+    let checked ← checked?
+    let addressed ←
+      (checked.addressedCell [(20, 2), (30, 9), (10, 1)] 7).toOption
+    pure (addressed.address, addressed.stored,
+      observeCell .validation addressed.cell)) =
+    some ({ field := 7, path := [1, 2] }, some "", .empty) := by
+  native_decide
+
+private def addressedError : Except CheckedStarDocumentError
+    CheckedAddressedCell → Option CheckedStarDocumentError
+  | .ok _ => none
+  | .error cause => some cause
+
+/- Unknown fields and incomplete environments remain structural addressed-read failures. -/
+example : (do
+    let checked ← checked?
+    pure (
+      addressedError (checked.addressedCell [] 99),
+      addressedError (checked.addressedCell [(10, 1)] 7))) =
+    some (
+      some (.field 99 (.unknownFieldId 99)),
+      some (.environment (.missingBinding 20))) := by
+  native_decide
+
 private structure CellSnapshot where
   environment : Env
   address : CellAddr

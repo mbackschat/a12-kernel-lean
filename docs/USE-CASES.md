@@ -175,6 +175,12 @@ An Execute/Transform probe resolved one nested starred Number field directly fro
 
 The probe rejects reconstructing an address from environment order or only the terminal coordinate, choosing the first duplicate, treating row zero as concrete, inferring rows from cells, normalizing away stored spelling, or converting address failure to semantic UNKNOWN. It passes for the one-field checked-input boundary but deliberately returns insufficient information about authored multi-slot order, per-slot declaration metadata, relevance, and which filters a short-circuiting consumer reaches. It is therefore a same-context SG2 sub-capability check, not the cold qualification of the future canonical stream.
 
+## Completed same-context probe record: addressed filter failure
+
+An Execute/Transform probe asked the immutable checked document for an ancestor field from a complete out-of-order environment containing an unrelated deeper binding. The public addressed query selected the declaration-owned scope, preserved exact stored and checked payload, and returned explicit unknown-field or missing-binding errors instead of a synthetic cell. The same document supplies a resolving `Having` context over the shared condition tree.
+
+The negative control used one false Number comparison followed by a structurally failing comparison. Validation's strong-Kleene evaluation reached and returned the right structural failure; computation's clean-false `And` stopped before it and returned clean non-holding. A missing `CurrentRepetition` coordinate used the same structural channel. Mapping any of these failures to validation UNKNOWN or computation poison, eagerly preflighting the computation suffix, or adding another filter tree would fail the probe. It passes for addressed reads and filter-tree timing but returns insufficient information about multi-slot checked-document composition and the two-sided value-list matrix, so it is not the SG2 cold milestone.
+
 ## Completed probe record: immutable checked document
 
 A fresh artifact-only reader received the checked-document architecture and gap contract, canonical document/formal/required/group/repetition clauses, checked construction and consumer owners, laws, and executable separators. It could not inspect the kernel, a12-dmkits, the web, Git history, prior reports, or unlisted files, did not run Lean, and changed no file.
