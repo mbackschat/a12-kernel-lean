@@ -361,12 +361,17 @@ end ResolvedNumberEntityAggregateSides
 
 namespace CheckedNumberEntityField
 
-/-- Classify one checked direct slot through the same declaration-owned Number reader used by every aggregate source. -/
-def resolvedAggregateSide (checked : CheckedNumberEntityField model)
-    (context : FlatContext) : ResolvedValueListSide .number :=
-  { cells := [checked.field.valueListCell context]
+/-- Classify one checked direct slot through the declaration-owned Number reader at the caller's phase. -/
+def resolvedAggregateSideAt (checked : CheckedNumberEntityField model)
+    (phase : Phase) (context : FlatContext) : ResolvedValueListSide .number :=
+  { cells := [checked.field.valueListCellAt phase context]
     hasUninstantiatedTail := false
     hasHaving := false }
+
+/-- Validation specialization retained for established aggregate consumers. -/
+def resolvedAggregateSide (checked : CheckedNumberEntityField model)
+    (context : FlatContext) : ResolvedValueListSide .number :=
+  checked.resolvedAggregateSideAt .validation context
 
 end CheckedNumberEntityField
 
@@ -383,6 +388,38 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
   | .star source => source.resolvedValueSide document outer starRead
   | .starHaving source =>
       source.resolvedValueSide document outer filterRead starRead
+
+/-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. -/
+def resolvedComputationAggregateSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : Document) (outer : Env) (direct : FlatContext)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .number) NumericOperand) :=
+  match checked with
+  | .field source =>
+      pure (.inl (source.resolvedAggregateSideAt .computation direct))
+  | .star source => do
+      let resolved ← source.source.path.resolve document outer
+      pure (.inl (resolved.toResolvedSide
+        (source.checkedValueListCellAt .computation starRead)))
+  | .starHaving source => do
+      let resolved ← source.source.source.path.resolve document outer
+      let filterContext : CorrelationContext := { read := filterRead }
+      let consume := fun cells environment =>
+        match source.source.checkedValueListCellAt .computation
+            starRead environment with
+        | .unknown cause => .inr cause
+        | cell => .inl (cell :: cells)
+      match source.having.scanComputation filterContext outer consume
+          resolved.environments [] with
+      | .exhausted reversed =>
+          pure (.inl {
+            cells := reversed.reverse
+            hasUninstantiatedTail := resolved.domain.hasOpenTail
+            hasHaving := true })
+      | .terminated cause | .poison cause =>
+          pure (.inr (.unknown cause))
 
 /-- Resolve one partial-validation aggregate slot. Direct fields require their concrete cell; ordinary stars require complete wildcard/ancestor coverage and retain the established topology-produced side unchanged. Filtered slots return the rule-level skip marker without evaluating their filter. -/
 def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
@@ -422,6 +459,27 @@ def evaluateAggregate (checked : CheckedNumberEntitySource model)
         (fun operand => do
           pure (.inl (← operand.resolvedAggregateSide document outer direct
             filterRead starRead)))
+        (fun cause => .unknown cause)
+        (fun accumulated operand side =>
+          accumulated.append operand.declarationSigned side)
+        checked.operands {} with
+    | .inl accumulated => pure (accumulated.evaluate op)
+    | .inr result => pure result
+
+/-- Evaluate a checked ordinary Number entity-list aggregate at computation phase. Operand slots remain authored-order lazy, and each filtered star delegates to the shared one-kept-successor iterator rather than selecting its complete row set eagerly. -/
+def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericOperand :=
+  let direct : FlatContext := { read := directRead }
+  do
+    match ← scanResolvedValueListOperands
+        (state := ResolvedNumberEntityAggregateSides)
+        (terminal := NumericOperand)
+        (fun operand =>
+          operand.resolvedComputationAggregateSide document outer direct
+            filterRead starRead)
         (fun cause => .unknown cause)
         (fun accumulated operand side =>
           accumulated.append operand.declarationSigned side)

@@ -193,7 +193,8 @@ private theorem numberValueListSide_agreesOn
   have relevantOperand : isRelevant operand.id = true := by
     exact List.all_eq_true.mp relevant operand member
   have readEq := agreement operand.id relevantOperand
-  simp_all [FlatNumberField.valueListCell, FlatContext.observeValidationAt]
+  simp_all [FlatNumberField.valueListCell, FlatNumberField.valueListCellAt,
+    FlatContext.observeAt]
 
 private theorem numberValueSide_agreesOn
     (values : FlatNumberValueSide) (left right : FlatContext)

@@ -48,6 +48,16 @@ private def nestedRepeated : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := false } },
     repeatableScope := [10, 30] }
 
+private def filterLeft : FlatFieldDecl :=
+  { id := 9, groupPath := ["Form", "Rows"], name := "FilterLeft",
+    policy := { kind := .number { scale := 0, signed := false } },
+    repeatableScope := [10] }
+
+private def filterRight : FlatFieldDecl :=
+  { id := 10, groupPath := ["Form", "Rows"], name := "FilterRight",
+    policy := { kind := .number { scale := 0, signed := false } },
+    repeatableScope := [10] }
+
 private def rows : RepeatableGroupDecl :=
   { level := 10, path := ["Form", "Rows"], repeatability := some 3 }
 
@@ -58,7 +68,8 @@ private def detailRows : RepeatableGroupDecl :=
   { level := 30, path := ["Form", "Rows", "Details"], repeatability := some 2 }
 
 private def model : FlatModel :=
-  { fields := [unsignedA, signedB, unsignedC, text, repeated]
+  { fields := [unsignedA, signedB, unsignedC, text, repeated, filterLeft,
+      filterRight]
     repeatableGroups := [rows] }
 
 private def productModel : FlatModel :=
@@ -392,6 +403,11 @@ private def aggregateHaving : SurfaceCorrelatedHaving :=
     { origin := .inner, field := absolute ["Form", "Rows"] "Amount" }
     { origin := .inner, field := absolute ["Form", "Rows"] "Amount" }
 
+private def computationAggregateHaving : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner, field := absolute ["Form", "Rows"] "FilterLeft" }
+    { origin := .inner, field := absolute ["Form", "Rows"] "FilterRight" }
+
 private def aggregateSource (first : SurfaceNumberEntityOperand)
     (rest : List SurfaceNumberEntityOperand) : SurfaceNumberEntitySource :=
   { first, rest }
@@ -413,6 +429,20 @@ private def aggregateFilterRead (a b c : RawCell)
     (environment : Env) (field : FieldId) : CheckedCell :=
   repeated.checkRaw (aggregateStarRead a b c environment field)
 
+private def aggregateComputationFilterRead
+    (left right : RowIndex → RawCell)
+    (environment : Env) (field : FieldId) : CheckedCell :=
+  let row := match environment with
+    | [(10, current)] => current
+    | _ => 0
+  if field == filterLeft.id then filterLeft.checkRaw (left row)
+  else if field == filterRight.id then filterRight.checkRaw (right row)
+  else malformedCheckedCell
+
+private def aggregateComputationTargetRead (a b c : RawCell)
+    (environment : Env) (field : FieldId) : CheckedCell :=
+  repeated.checkRaw (aggregateStarRead a b c environment field)
+
 private def checkedAggregateErrorOf (authored : SurfaceNumberEntitySource) :
     Option NumberEntityElabError :=
   match elaborateNumberEntitySource model ["Form"] authored with
@@ -427,6 +457,21 @@ private def checkedAggregateOf (op : NumericAggregateOp)
   | .ok checked =>
       match checked.evaluateAggregate op (aggregateDocument rows) [] direct
           (aggregateFilterRead a b c) (aggregateStarRead a b c) with
+      | .ok result => some result
+      | .error _ => none
+
+private def checkedComputationAggregateOf (op : NumericAggregateOp)
+    (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
+    (a b c : RawCell) (direct : RawFlatContext)
+    (leftFilter rightFilter : RowIndex → RawCell) :
+    Option NumericComputationResult :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateComputation op (aggregateDocument rows) []
+          (model.checkContext direct).read
+          (aggregateComputationFilterRead leftFilter rightFilter)
+          (aggregateComputationTargetRead a b c) with
       | .ok result => some result
       | .error _ => none
 
@@ -680,6 +725,76 @@ example :
         [1, 2, 3] (.parsed (.num 2)) (.parsed (.num 3))
         (.parsed (.num 0)) (raw .empty .empty .empty) =
       some (.value 10 .both) := by
+  native_decide
+
+/- Computation prefetches one kept successor before consuming the current aggregate target, so an invalid successor filter precedes an invalid current target. -/
+example :
+    checkedComputationAggregateOf .sum
+        (aggregateSource
+          (.starHaving aggregateStar computationAggregateHaving) [])
+        [1, 2] (.rejected .declaredConstraint) (.parsed (.num 7)) .empty
+        (raw .empty .empty .empty)
+        (cells3 (.parsed (.num 1)) (.rejected .malformed) .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 1)) .empty) =
+      some (.poison .malformed) := by
+  native_decide
+
+/- Once one successor is kept, an invalid current target terminates before any later filter is reached. -/
+example :
+    checkedComputationAggregateOf .sum
+        (aggregateSource
+          (.starHaving aggregateStar computationAggregateHaving) [])
+        [1, 2, 3] (.rejected .declaredConstraint) (.parsed (.num 7))
+        (.parsed (.num 9)) (raw .empty .empty .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) (.rejected .malformed))
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) (.parsed (.num 3))) =
+      some (.poison .declaredConstraint) := by
+  native_decide
+
+/- A false row remains part of successor search, so poison after it still precedes the pending current target. -/
+example :
+    checkedComputationAggregateOf .sum
+        (aggregateSource
+          (.starHaving aggregateStar computationAggregateHaving) [])
+        [1, 2, 3] (.rejected .declaredConstraint) (.parsed (.num 7))
+        (.parsed (.num 9)) (raw .empty .empty .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) (.rejected .malformed))
+        (cells3 (.parsed (.num 1)) (.parsed (.num 8)) (.parsed (.num 3))) =
+      some (.poison .malformed) := by
+  native_decide
+
+/- Successful filtered computation retains ordinary aggregate accumulation rather than FirstFilledValue prefix termination. -/
+example :
+    checkedComputationAggregateOf .sum
+        (aggregateSource
+          (.starHaving aggregateStar computationAggregateHaving) [])
+        [1, 2, 3] (.parsed (.num 2)) (.parsed (.num 3)) (.parsed (.num 100))
+        (raw .empty .empty .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) (.parsed (.num 3)))
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) (.parsed (.num 9))) =
+      some (.value 5) := by
+  native_decide
+
+/- The unfiltered branch uses the same computation-phase checked-cell projection and still combines direct and starred slots in authored order. -/
+example :
+    checkedComputationAggregateOf .sum
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [1, 2] (.parsed (.num 3)) (.parsed (.num 4)) .empty
+        (raw (.parsed (.num 2)) .empty .empty)
+        (cells3 .empty .empty .empty) (cells3 .empty .empty .empty) =
+      some (.value 9) := by
+  native_decide
+
+/- A terminal direct operand remains stronger than later-slot filter lookahead. -/
+example :
+    checkedComputationAggregateOf .maximum
+        (aggregateSource (.field (bare "UnsignedA")) [
+          .starHaving aggregateStar computationAggregateHaving])
+        [1, 2] (.parsed (.num 7)) (.parsed (.num 9)) .empty
+        (raw (.rejected .declaredConstraint) .empty .empty)
+        (cells3 (.rejected .malformed) (.parsed (.num 1)) .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 1)) .empty) =
+      some (.poison .declaredConstraint) := by
   native_decide
 
 /- Mixed direct/star slots retain authored encounter order across the existing staged precision-50 fold. -/

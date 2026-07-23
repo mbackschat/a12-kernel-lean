@@ -481,10 +481,15 @@ def CellObservation.asNumberValueListCell :
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-/-- Number value-list reads deliberately do not reuse direct comparison resolution: an empty member contributes no atom and is never substituted by zero. -/
+/-- Classify one direct Number list cell at the caller's phase without applying an aggregate-specific empty rule. -/
+def FlatNumberField.valueListCellAt (field : FlatNumberField)
+    (phase : Phase) (context : FlatContext) : ValueListCell .number :=
+  (context.observeAt phase field.id).asNumberValueListCell
+
+/-- Validation specialization retained for established list consumers. Number value-list reads deliberately do not reuse direct comparison resolution: an empty member contributes no atom and is never substituted by zero. -/
 def FlatNumberField.valueListCell (field : FlatNumberField)
     (context : FlatContext) : ValueListCell .number :=
-  (context.observeValidationAt field.id).asNumberValueListCell
+  field.valueListCellAt .validation context
 
 def flatNumberValueListSide (operands : List FlatNumberField)
     (context : FlatContext) : ResolvedValueListSide .number :=

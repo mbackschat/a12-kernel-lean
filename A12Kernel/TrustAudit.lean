@@ -515,6 +515,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputation_baseYear_evaluatesYear
 #print axioms A12Kernel.numericComputation_baseYearDatePart_evaluates
 #print axioms A12Kernel.numericComputationAggregate_evaluatesThroughSharedFold
+#print axioms A12Kernel.checkedNumberEntitySource_computation_delegates
 #print axioms A12Kernel.numericComputation_stringLength_delegates
 #print axioms A12Kernel.numericComputation_stringRange_empty_zero
 #print axioms A12Kernel.numericComputation_stringRange_value

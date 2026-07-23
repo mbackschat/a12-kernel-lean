@@ -14,6 +14,19 @@ theorem numericComputationAggregate_evaluatesThroughSharedFold
         observeCell .computation (context.read field)).toComputationResult) := by
   rfl
 
+/-- A checked mixed direct/star computation aggregate delegates to the phase-specific entity-list traversal and erases only validation fillability after that traversal and the established fold succeed. -/
+theorem checkedNumberEntitySource_computation_delegates
+    (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    checked.evaluateComputation op document outer directRead filterRead starRead =
+      (do
+        let operand ← checked.evaluateComputationAggregate op document outer
+          directRead filterRead starRead
+        pure operand.toComputationResult) := by
+  rfl
+
 /-- Computation selects its own phase observation before reusing the shared String-length projection. -/
 theorem numericComputation_stringLength_delegates
     (context : ScalarComputationContext) (field : FlatStringField) :

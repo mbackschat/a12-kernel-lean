@@ -75,7 +75,8 @@ private theorem NumberFold.classifyRows_congr
           NumberFold.classifyRow left field row =
             NumberFold.classifyRow right field row := by
         unfold NumberFold.classifyRow FlatNumberField.valueListCell
-          SingleGroupValidationContext.atRow FlatContext.observeValidationAt FlatContext.observeAt
+          FlatNumberField.valueListCellAt
+          SingleGroupValidationContext.atRow FlatContext.observeAt
         change
           (observeCell .validation (left.read row field.id)).asNumberValueListCell =
             (observeCell .validation (right.read row field.id)).asNumberValueListCell
