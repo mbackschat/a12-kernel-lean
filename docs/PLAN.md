@@ -23,19 +23,20 @@ The detailed readiness fields live only in those gap entries. Same-context consu
 
 ## Active capsule
 
-Continue [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) by closing the declaration facts required to extend the shared preliminary route: exact Boolean/Confirm/temporal stored-key admission and the model-owned index-default payload/conversion contract. Do not add those profiles until one bounded kernel packet and decision matrix identify the declaration certificate, equality projection, default eligibility, and phase-specific full-injected versus partial-unavailable state. Computation's operand-index prepass remains a later source packet.
+Continue [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) with the source-closed all-scalar index-identity capsule. Admit every current value-validating `FlatFieldDecl` kind through the existing preliminary route: Number keeps normalized numeric identity, while Boolean, Confirm, String/custom String, Enumeration, Date, Time, and DateTime use the existing exact `DocumentData.stored` token after ordinary formal admission. Do not add per-kind key metadata or infer identity from semantic `Bool`/instant/display values.
 
-Consumer hypothesis: an Execute/Analyze consumer must distinguish an explicit stored index, a model-defaulted index visible during full validation, and the same physically missing index made silently unavailable during partial validation, while recovering the exact identity relation for every admitted scalar kind. Guessing stored identity from a semantic `Bool`, temporal instant, or display value, injecting defaults into the immutable source, or representing partial suppression as a generated/formal finding is the unsafe control; absent declaration-owned storage/default facts are explicit insufficient information.
+Consumer hypothesis: an Execute/Analyze consumer must classify generated uniqueness for any legal A12 index kind through one relation and retain exact stored identity for every non-Number kind. Dispatching Boolean by `Bool`, temporal values by instant, or String-like values by display text is the unsafe control; a missing stored token is explicit insufficient information, not a semantic fallback.
 
 ## Immediate frontier
 
-1. Complete one bounded kernel source packet and separating matrix for Boolean/Confirm/temporal index identity plus model-owned stored defaults; inspect the existing declaration, checked-document, preliminary, phase, and peer owners before proposing a representation change.
-2. If the packet closes against existing model-owned facts, write the red matrix for explicit/defaulted/missing values under full and partial validation and extend the existing preliminary route once. If a declaration fact is absent, record the exact SG1 blocker rather than guessing or adding an interpreter-shaped cache.
-3. Source-audit computation's eager operand-index preliminary subset only after the validation profiles close; keep it separate from generated validation findings and SG4 scheduling.
-4. Then compose the next repeatable/partial consumer through the same checked route. SG1 remains open until its completion gate is met; a reusable-boundary cold probe runs only when that milestone closes.
-5. Enter SG2 only through the SG1 output and SG2 readiness gate. Do not introduce the general stream while row identity, phantom/omitted extent, rule-wide `Having`, or mixed filter encounter remains unresolved.
-6. Keep SG4 prohibited until SG1, SG2, the explicit processing context, and every SG4 source-audit category close. SG6, SG9, and SG10 likewise require their named source packets before a high-connectivity extension.
-7. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix; request one bounded upstream observation capability only when no existing a12-dmkits route fits.
+1. Extend the existing index component dispatcher to every current value-validating scalar kind, retaining Number normalization and exact stored text for every other kind; add no second key or duplicate scan.
+2. Close one matrix over equal stored Boolean/Confirm/Date/Time/DateTime/custom String controls plus explicit refusal when a present non-Number value lacks stored transport. Do not fabricate same-semantic/different-stored witnesses that a fixed legal field declaration cannot author.
+3. Then source-audit and introduce the missing model-owned requiredness plus Enumeration S-value certificates as one declaration prerequisite before default staging. The default matrix must separate one eligible row from multiple rows, explicit mandatory, explicit value, and non-Enumeration controls under full and partial validation.
+4. Source-audit computation's eager operand-index preliminary subset only after the validation profiles close; keep it separate from generated validation findings and SG4 scheduling.
+5. Then compose the next repeatable/partial consumer through the same checked route. SG1 remains open until its completion gate is met; a reusable-boundary cold probe runs only when that milestone closes.
+6. Enter SG2 only through the SG1 output and SG2 readiness gate. Do not introduce the general stream while row identity, phantom/omitted extent, rule-wide `Having`, or mixed filter encounter remains unresolved.
+7. Keep SG4 prohibited until SG1, SG2, the explicit processing context, and every SG4 source-audit category close. SG6, SG9, and SG10 likewise require their named source packets before a high-connectivity extension.
+8. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix; request one bounded upstream observation capability only when no existing a12-dmkits route fits.
 
 ## Parked boundaries
 

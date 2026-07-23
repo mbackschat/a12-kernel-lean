@@ -15,6 +15,10 @@ A **document model** is a static declaration — a tree:
 
 A group's direct children form an ordered declaration sequence. Groups nest arbitrarily; a repeatable group may contain repeatable subgroups, giving multi-dimensional arrays. Recursive expansion to descendant fields preserves model declaration order: a child field is visited when reached, while a child group's descendant fields are visited recursively before the next sibling.
 
+A repeatable A12 group may designate at most one direct value-validating child as its **index field**; table-backed Enumeration and no-value-validation profiles are not legal index declarations. Generated validation requires that field when the group row is present and requires its stored value to be unique among sibling rows under the same parent. Every admitted non-Number scalar kind uses exact stored-text identity for that uniqueness relation, while Number uses normalized numeric equality.
+
+An ordinary closed Enumeration may additionally designate one stored token as its **S-value**. This is a model-owned index default, not a document value: the validation call may transiently supply it only under the eligibility rules in [§12](10-validation-and-polarity.md#5-full-vs-partial-validation).
+
 A Custom field names a registered validator and preserves whether its optional length bounds were declared; the exact formal-check contract is in [§7](06-strings-and-enumerations.md#a3-custom-field-type-validation).
 
 ```
