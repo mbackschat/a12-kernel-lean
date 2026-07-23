@@ -104,6 +104,12 @@ def compareRepetitions (op : CorrelationComparisonOp)
     (left right : HavingRepetitionRef) : CorrelatedHaving :=
   .leaf (.compareRepetitions op left right)
 
+def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
+  condition.anyLeaf fun
+    | .compareNumbers _ left right =>
+        left.field.id == field || right.field.id == field
+    | .compareRepetitions _ _ _ => false
+
 end CorrelatedHaving
 
 private def HavingOrigin.isInner : HavingOrigin → Bool

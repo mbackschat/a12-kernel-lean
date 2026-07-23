@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericScale
+import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.StarNumber
 
@@ -34,6 +35,11 @@ def directFieldId? : CheckedNumberEntityOperand model → Option FieldId
   | .field source => some source.field.id
   | .star _ | .starHaving _ => none
 
+def directField? :
+    CheckedNumberEntityOperand model → Option FlatNumberField
+  | .field source => some source.field
+  | .star _ | .starHaving _ => none
+
 def isStar : CheckedNumberEntityOperand model → Bool
   | .field _ => false
   | .star _ | .starHaving _ => true
@@ -51,6 +57,14 @@ def declarationSigned : CheckedNumberEntityOperand model → Bool
   | .field source => source.field.info.signed
   | .star source => source.field.info.signed
   | .starHaving source => source.source.field.info.signed
+
+def referencesField (field : FieldId) :
+    CheckedNumberEntityOperand model → Bool
+  | .field source => source.field.id == field
+  | .star source => source.field.id == field
+  | .starHaving source =>
+      source.source.field.id == field ||
+        source.having.referencesField field
 
 end CheckedNumberEntityOperand
 
@@ -83,6 +97,29 @@ def scaleSummary (checked : CheckedNumberEntitySource model) :
   checked.rest.foldl
     (fun summary operand => summary.union operand.scaleSummary)
     checked.first.scaleSummary
+
+def aggregateScaleSummary (op : NumericAggregateOp)
+    (checked : CheckedNumberEntitySource model) : NumericScaleSummary :=
+  match op with
+  | .sum | .minimum | .maximum => checked.scaleSummary
+  | .distinctCount => NumericScaleSummary.field 0
+
+def referencesField (checked : CheckedNumberEntitySource model)
+    (field : FieldId) : Bool :=
+  checked.operands.any (·.referencesField field)
+
+def directFields? (checked : CheckedNumberEntitySource model) :
+    Option (FlatNumberField × List FlatNumberField) := do
+  let first ← checked.first.directField?
+  let rest ← checked.rest.mapM CheckedNumberEntityOperand.directField?
+  pure (first, rest)
+
+/-- Recover the legacy direct aggregate payload exactly when every checked entity-list operand is nonrepeatable. Scalar computation and generated validation share this narrowing rather than reconstructing or rechecking source syntax. -/
+def directAggregateFields?
+    (checked : CheckedNumberEntitySource model) :
+    Option ResolvedNumericAggregateFields := do
+  let (first, rest) ← checked.directFields?
+  pure { first, rest }
 
 end CheckedNumberEntitySource
 

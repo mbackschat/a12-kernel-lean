@@ -456,7 +456,8 @@ example :
         quantityDecl.id checkedLengthAtom with
       | .ok operation =>
           operation.core.expression.anyAtom
-            (NumericComputationAtom.references checkedLengthModel stringField.id)
+            (CheckedNumericComputationAtom.references
+              checkedLengthModel stringField.id)
       | .error _ => false) = true := by
   native_decide
 

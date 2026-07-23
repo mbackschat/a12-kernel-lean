@@ -41,6 +41,21 @@ private def repeatableModel : FlatModel :=
       gate, target, broken, textGuard, repeatedGate, repeatedTarget]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
+private def repeatedGateStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Rows", starred := true }]
+    field := "Gate" }
+
+private def repeatableAggregateOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel) :=
+  elaborateNumberEntityComputationOperation repeatableModel ["Form"] target.id
+    (.atom (.aggregate .sum {
+      first := .star repeatedGateStar
+      rest := [] }))
+
 private def crossGroupSource : FlatFieldDecl :=
   { id := 20, groupPath := ["Input"], name := "Source",
     policy := { kind := .number { scale := 0, signed := true } } }
@@ -342,7 +357,8 @@ private def crossGroupExpressionTable
     messagePlan }
 
 private def selectedCrossGroupExpression :
-    Option (AuthoredNumericExpr NumericComputationAtom) := do
+    Option (AuthoredNumericExpr
+      (CheckedNumericComputationAtom crossGroupModel)) := do
   let table ← crossGroupExpressionTable
   match table.selectFirst {
       read := (crossGroupModel.checkContext (crossGroupRaw 3 3)).read } with
@@ -467,6 +483,13 @@ private def crossGroupExpressionTargetMismatch :
       second := { precondition := .fieldFilled crossGroupSource.id, operation := second } }
     messagePlan }
   match assembleGeneratedNumericOperationTableRule crossGroupModel table with
+  | .ok _ => none
+  | .error error => some error
+
+private def repeatableAggregateGeneratedError :
+    Option GeneratedComputationValidationError := do
+  let operation ← repeatableAggregateOperation.toOption
+  match operation.generatedMismatchComparison none with
   | .ok _ => none
   | .error error => some error
 
@@ -818,8 +841,12 @@ example :
 /- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later root-rounding/arithmetic mismatch, and tolerance remains validation-only. -/
 example :
     selectedCrossGroupExpression =
-        crossGroupNumberOperation.toOption.map (fun operation => operation.core.expression) ∧
-      crossGroupExpressionTableOutcome =
+      crossGroupNumberOperation.toOption.map
+        (fun operation => operation.core.expression) := by
+  rfl
+
+example :
+    crossGroupExpressionTableOutcome =
         some (.fired expressionTableExpectedMessage) ∧
       crossGroupExpressionTableOutcome (some .range1) = some .notFired ∧
       crossGroupExpressionSingletonOutcome 3 = some .notFired ∧
@@ -837,6 +864,12 @@ example :
       crossGroupAggregateOutcome 5 = some (.fired aggregateExpectedMessage) ∧
       crossGroupAggregateTableOutcome 3 =
         some (.fired aggregateExpectedMessage) := by
+  native_decide
+
+/- The computation expression may contain a checked repeatable aggregate, but the current generated-validation context is deliberately flat-only and fails explicitly instead of erasing its address. -/
+example :
+    repeatableAggregateGeneratedError =
+      some .repeatableAggregateRequiresAddressedValidation := by
   native_decide
 
 /- Generated validation narrows the checked absolute-value/String-range tree without rebuilding either layer and compares the same nonnegative result model-wide. -/

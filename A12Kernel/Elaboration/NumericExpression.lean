@@ -58,6 +58,23 @@ inductive NumericAuthoringCheck where
 
 namespace AuthoredNumericExpr
 
+/-- Transform every atom while preserving the complete authored expression shape and syntax metadata. -/
+def map (transform : SourceAtom → TargetAtom) :
+    AuthoredNumericExpr SourceAtom → AuthoredNumericExpr TargetAtom
+  | .atom sourceAtom => .atom (transform sourceAtom)
+  | .literal decoded => .literal decoded
+  | .group body => .group (body.map transform)
+  | .binary op left right =>
+      .binary op (left.map transform) (right.map transform)
+  | .power base exponent =>
+      .power (base.map transform) (exponent.map transform)
+  | .abs body => .abs (body.map transform)
+  | .extremum op left right =>
+      .extremum op (left.map transform) (right.map transform)
+  | .extremumCall op body => .extremumCall op (body.map transform)
+  | .round mode places body =>
+      .round mode places (body.map transform)
+
 /-- Traverse every atom from left to right while preserving the authored expression shape and all syntax metadata. This is the shared path-resolution seam for checked validation and computation consumers. -/
 def mapM {SourceAtom TargetAtom Error : Type}
     (resolve : SourceAtom → Except Error TargetAtom) :

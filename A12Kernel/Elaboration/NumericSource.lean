@@ -307,7 +307,8 @@ def scaleSummary (op : NumericAggregateOp)
 
 end NumericAggregateOp
 
-inductive SurfaceNumericAtom where
+inductive SurfaceNumericAtom
+    (Aggregate : Type := SurfaceNumericAggregateFields) where
   | field (path : SurfaceFieldPath)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
@@ -317,11 +318,12 @@ inductive SurfaceNumericAtom where
   | fieldValueAsNumber (source : SurfaceTextFieldOperand)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
-  | aggregate (op : NumericAggregateOp) (source : SurfaceNumericAggregateFields)
+  | aggregate (op : NumericAggregateOp) (source : Aggregate)
   | filledGroupCount (groups : List SurfaceGroupReference)
   deriving Repr, DecidableEq
 
-inductive ResolvedNumericAtom (Field : Type) where
+inductive ResolvedNumericAtom (Field : Type)
+    (Aggregate : Type := ResolvedNumericAggregateFields) where
   | field (source : Field)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
@@ -332,13 +334,13 @@ inductive ResolvedNumericAtom (Field : Type) where
   | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
-  | aggregate (op : NumericAggregateOp) (source : ResolvedNumericAggregateFields)
+  | aggregate (op : NumericAggregateOp) (source : Aggregate)
   | filledGroupCount (groups : List ResolvedGroupReference)
   deriving Repr, DecidableEq
 
 namespace ResolvedNumericAtom
 
-def isDataDependent : ResolvedNumericAtom Field → Bool
+def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .field _ => true
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
@@ -350,8 +352,9 @@ def isDataDependent : ResolvedNumericAtom Field → Bool
   | .aggregate _ _ => true
   | .filledGroupCount _ => true
 
-def summary (fieldSummary : Field → NumericScaleSummary) :
-    ResolvedNumericAtom Field → NumericScaleSummary
+def summaryWith (fieldSummary : Field → NumericScaleSummary)
+    (aggregateSummary : NumericAggregateOp → Aggregate → NumericScaleSummary) :
+    ResolvedNumericAtom Field Aggregate → NumericScaleSummary
   | .field source => fieldSummary source
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
@@ -360,21 +363,25 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
-  | .aggregate op source => op.scaleSummary source
+  | .aggregate op source => aggregateSummary op source
   | .filledGroupCount _ => NumericScaleSummary.field 0
+
+def summary (fieldSummary : Field → NumericScaleSummary) :
+    ResolvedNumericAtom Field → NumericScaleSummary :=
+  summaryWith fieldSummary NumericAggregateOp.scaleSummary
 
 end ResolvedNumericAtom
 
 /-- The wrapper checker rejects only an immediate numeric literal or its grouped form. Semantically fixed sources such as numeric `BaseYear` remain distinct syntax and are admitted. -/
 def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
-    AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
+    AuthoredNumericExpr (ResolvedNumericAtom Field Aggregate) → Bool
   | .literal _ => true
   | .group body => body.isImmediateResolvedNumericLiteral
   | _ => false
 
 /-- Check the source-specific immediate-literal prohibition at every rounding/absolute-value boundary while traversing the complete numeric operation tree, including operand-list calls and their normalized folds. -/
 def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
-    AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
+    AuthoredNumericExpr (ResolvedNumericAtom Field Aggregate) → Bool
   | .round _ _ body | .abs body =>
       !body.isImmediateResolvedNumericLiteral &&
         body.respectsResolvedWrapperLiteralBoundary
@@ -387,7 +394,8 @@ def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
 
 /-- A resolved numeric operation must satisfy the shared authored shape and the source-specific wrapper boundary at every depth. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
-    (expression : AuthoredNumericExpr (ResolvedNumericAtom Field)) : Bool :=
+    (expression :
+      AuthoredNumericExpr (ResolvedNumericAtom Field Aggregate)) : Bool :=
   expression.isAdmittedNumericOperation &&
     expression.respectsResolvedWrapperLiteralBoundary
 
