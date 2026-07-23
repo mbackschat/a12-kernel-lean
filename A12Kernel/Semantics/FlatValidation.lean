@@ -408,6 +408,21 @@ def FlatTextFieldOperand.valueListCell (operand : FlatTextFieldOperand)
     (context : FlatContext) : ValueListCell .token :=
   (operand.resolve context).asTokenValueListCell
 
+/-- Project one already checked String or Enumeration cell through the selected phase without rebuilding a raw context. This is the shared row-reader seam for token entity lists and starred String value lists. -/
+def FlatTextFieldOperand.checkedValueListCellAt
+    (operand : FlatTextFieldOperand) (phase : Phase) (cell : CheckedCell) :
+    ValueListCell .token :=
+  match operand with
+  | .string _ =>
+      match observeCell phase cell with
+      | .empty => .empty
+      | .value (.str value) =>
+          if value.isEmpty then .empty else .present value
+      | .value _ => .unknown .malformed
+      | .unknown cause | .poison cause => .unknown cause
+  | FlatTextFieldOperand.enumeration enumOperand =>
+      enumOperand.projection.asValueListCell (observeCell phase cell)
+
 def flatTokenValueListSide (operands : List FlatTextFieldOperand)
     (context : FlatContext) : ResolvedValueListSide .token :=
   { cells := operands.map (·.valueListCell context)

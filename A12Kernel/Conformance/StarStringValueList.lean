@@ -45,6 +45,14 @@ private def customProduct : FlatFieldDecl :=
 private def customModel : FlatModel :=
   { model with fields := [sku, amount, customProduct, quantity] }
 
+private def customSku : FlatFieldDecl :=
+  { sku with
+    stringPolicy := {}
+    customType := some { name := "ProductCode" } }
+
+private def customStarModel : FlatModel :=
+  { model with fields := [customSku, amount, product, quantity] }
+
 private def customRejection : RegisteredCustomRejection where
   projectCode := "PRODUCT_CODE_INVALID"
 
@@ -96,13 +104,23 @@ private def firstThen (first rest : RawCell) (environment : Env)
 private def unusedFilterRead (_ : Env) (_ : FieldId) : CheckedCell :=
   malformedCheckedCell
 
+private def checkedStarReadFor (sourceModel : FlatModel)
+    (read : Env → FieldId → RawCell) : Env → FieldId → CheckedCell :=
+  fun environment id =>
+    (sourceModel.checkContext { read := read environment }).read id
+
+private def checkedStarRead
+    (read : Env → FieldId → RawCell) : Env → FieldId → CheckedCell :=
+  checkedStarReadFor model read
+
 private def verdictOf (surface : SurfaceStarStringValueListSource)
     (rows : List RowAddr) (read : Env → FieldId → RawCell)
     (outer : Env := []) : Option Verdict :=
   match elaborateStarStringValueListSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluateFull (document rows) outer unusedFilterRead read with
+      match checked.evaluateFull (document rows) outer unusedFilterRead
+          (checkedStarRead read) with
       | .error _ => none
       | .ok verdict => some verdict
 
@@ -112,7 +130,8 @@ private def partialResultOf (surface : SurfaceStarStringValueListSource)
   match elaborateStarStringValueListSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluatePartial (document rows) [] scope read with
+      match checked.evaluatePartial (document rows) [] scope
+          (checkedStarRead read) with
       | .error _ => none
       | .ok result => some result
 
@@ -135,7 +154,8 @@ private def starValuesVerdictOf (surface : SurfaceStringValueListStarValuesSourc
   match elaborateStringValueListStarValuesSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluateFull (document rows) outer direct unusedFilterRead read with
+      match checked.evaluateFull (document rows) outer direct unusedFilterRead
+          (checkedStarRead read) with
       | .error _ => none
       | .ok verdict => some verdict
 
@@ -147,7 +167,8 @@ private def partialStarValuesResultOf
   match elaborateStringValueListStarValuesSource model sku.groupPath surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluatePartial (document rows) [] scope direct read with
+      match checked.evaluatePartial (document rows) [] scope direct
+          (checkedStarRead read) with
       | .error _ => none
       | .ok result => some result
 
@@ -184,7 +205,53 @@ private def customStarValuesVerdictOf
     (elaborateStringValueListStarValuesSource customModel sku.groupPath
       (starValuesAuthored quantifier)).toOption
   (checked.evaluateFull (document fullRows) []
-    context unusedFilterRead read).toOption
+    context unusedFilterRead (checkedStarReadFor customModel read)).toOption
+
+private def customCheckedStarRead
+    (prepared :
+      PreparedFlatStringContext customStarModel builtinStringPatternCompiler)
+    (raw : Env → FieldId → RawCell) : Env → FieldId → CheckedCell :=
+  fun environment id =>
+    (prepared.checkContext "en_US" { read := raw environment }).read id
+
+private def customFieldsStarVerdictOf
+    (quantifier : ValueListQuantifier)
+    (read : Env → FieldId → RawCell) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext customWorld builtinStringPatternCompiler
+      customStarModel).toOption
+  let checked ←
+    (elaborateStarStringValueListSource customStarModel customSku.groupPath
+      (authored quantifier ["accepted"])).toOption
+  (checked.evaluateFull (document fullRows) [] unusedFilterRead
+    (customCheckedStarRead prepared read)).toOption
+
+private def customStarCell (value : String) : Option (String ⊕ FormalCause) := do
+  let prepared ←
+    (prepareFlatStringContext customWorld builtinStringPatternCompiler
+      customStarModel).toOption
+  let checked ←
+    (elaborateStarStringValueListSource customStarModel customSku.groupPath
+      (authored .no ["accepted"])).toOption
+  let read := customCheckedStarRead prepared
+    (firstThen (.parsed (.str value)) (.parsed (.str "other")))
+  match checked.fields.valueListCell read [(10, 1), (20, 1)] with
+  | .present token => some (.inl token)
+  | .unknown cause => some (.inr cause)
+  | .empty => none
+
+private def customValuesStarVerdictOf
+    (quantifier : ValueListQuantifier) (direct : RawCell)
+    (read : Env → FieldId → RawCell) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext customWorld builtinStringPatternCompiler
+      customStarModel).toOption
+  let checked ←
+    (elaborateStringValueListStarValuesSource customStarModel customSku.groupPath
+      (starValuesAuthored quantifier)).toOption
+  (checked.evaluateFull (document fullRows) []
+    (prepared.checkContext "en_US" (directRaw direct)) unusedFilterRead
+    (customCheckedStarRead prepared read)).toOption
 
 private def starValuesErrorOf (surface : SurfaceStringValueListStarValuesSource) :
     Option StarStringValueListElabError :=
@@ -271,6 +338,25 @@ example :
       some .notFired ∧
     customStarValuesVerdictOf .no "rejected"
         (firstThen (.parsed (.str "accepted")) (.parsed (.str "other"))) =
+      some .unknown := by
+  native_decide
+
+/- Both String-star directions consume the same caller-prepared checked rows; accepted custom tokens remain values and exact rejections remain unavailable. -/
+example :
+    customStarCell "accepted" = some (.inl "accepted") ∧
+    customStarCell "rejected" =
+      some (.inr (.registeredCustomValidation customRejection)) ∧
+    customFieldsStarVerdictOf .atLeastOne
+        (firstThen (.parsed (.str "accepted")) (.parsed (.str "other"))) =
+      some (.fired .value) ∧
+    customFieldsStarVerdictOf .no
+        (firstThen (.parsed (.str "rejected")) (.parsed (.str "accepted"))) =
+      some .unknown ∧
+    customValuesStarVerdictOf .atLeastOne (.parsed (.str "accepted"))
+        (firstThen (.parsed (.str "accepted")) (.parsed (.str "other"))) =
+      some (.fired .value) ∧
+    customValuesStarVerdictOf .notAll (.parsed (.str "accepted"))
+        (firstThen (.parsed (.str "rejected")) (.parsed (.str "accepted"))) =
       some .unknown := by
   native_decide
 

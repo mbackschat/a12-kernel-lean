@@ -131,16 +131,18 @@ def elaborateStringValueListStarValuesSource (model : FlatModel)
 
 namespace CheckedStarStringSource
 
-/-- Classify one resolved leaf through declaration-owned String checking and the existing normalized token cell. -/
+/-- Classify one caller-checked resolved leaf through the shared phase-indexed token projector after applying path-owned over-repetition. -/
 def valueListCell (checked : CheckedStarStringSource model)
-    (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .token :=
-  checked.source.stringValueListCell checked.field checked.fieldOwned read environment
+    (read : Env → FieldId → CheckedCell) (environment : Env) : ValueListCell .token :=
+  (FlatTextFieldOperand.string checked.field).checkedValueListCellAt .validation
+    (checked.source.contextualizeCell environment
+      (read environment checked.field.id))
 
 /-- Resolve nested topology once and preserve canonical leaf order plus hierarchical omitted-tail state. -/
 def resolvedValueSide (checked : CheckedStarStringSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
   checked.source.resolvedOptionalValidationHavingValueListSide document outer
     checked.filter filterRead (checked.valueListCell read)
@@ -148,7 +150,8 @@ def resolvedValueSide (checked : CheckedStarStringSource model)
 /-- Resolve nested topology once, remove nonrelevant leaves before String checking, and retain the separate wildcard/ancestor extent fact. -/
 def resolvedPartialValueSide (checked : CheckedStarStringSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) (_unfiltered : checked.filter.isNone = true) :
+    (read : Env → FieldId → CheckedCell)
+    (_unfiltered : checked.filter.isNone = true) :
     Except StarAddressingError (ResolvedValueListQuantifierSide .token) :=
   checked.source.resolvedPartialValueListSide document outer scope
     (checked.valueListCell read)
@@ -168,7 +171,7 @@ def resolvedValuesSide (checked : CheckedStarStringValueListSource model) :
 def evaluateFull (checked : CheckedStarStringValueListSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError Verdict := do
   let fields ← checked.fields.resolvedValueSide document outer filterRead read
   pure (checked.quantifier.eval fields checked.resolvedValuesSide)
@@ -176,7 +179,7 @@ def evaluateFull (checked : CheckedStarStringValueListSource model)
 /-- Skip a filtered rule before topology or target reads; otherwise classify relevance per expanded cell and keep literal members always relevant. -/
 def evaluatePartial (checked : CheckedStarStringValueListSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError PartialHavingValueListResult :=
   if hUnfiltered : checked.fields.filter.isNone = true then do
       let fields ← checked.fields.resolvedPartialValueSide document outer scope read hUnfiltered
@@ -207,14 +210,14 @@ def resolvedPartialFieldsSide
 def evaluateFull (checked : CheckedStringValueListStarValuesSource model)
     (document : Document) (outer : Env) (context : FlatContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) : Except StarAddressingError Verdict := do
+    (read : Env → FieldId → CheckedCell) : Except StarAddressingError Verdict := do
   let values ← checked.values.resolvedValueSide document outer filterRead read
   pure (checked.quantifier.eval (checked.resolvedFieldsSide context) values)
 
 /-- Partial evaluation preserves direct per-cell relevance and the starred values side's separate wildcard/ancestor extent fact before the common asymmetric dispatcher. -/
 def evaluatePartial (checked : CheckedStringValueListStarValuesSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (context : FlatContext) (read : Env → FieldId → RawCell) :
+    (context : FlatContext) (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError PartialHavingValueListResult :=
   if hUnfiltered : checked.values.filter.isNone = true then do
       let values ← checked.values.resolvedPartialValueSide document outer scope read hUnfiltered
