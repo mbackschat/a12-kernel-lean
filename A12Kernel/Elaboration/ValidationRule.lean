@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Semantics.ValidationRule
 
@@ -53,10 +53,12 @@ def core (rule : CheckedResolvedFlatRule model) : ResolvedFlatRule :=
     severity := rule.severity
     messagePlan := rule.messagePlan }
 
-def evalFull (rule : CheckedResolvedFlatRule model) (world : World) (raw : RawFlatContext)
-    (hasContent : Bool) : FlatRuleOutcome :=
+def evalFull (rule : CheckedResolvedFlatRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (hasContent : Bool) :
+    FlatRuleOutcome :=
   ResolvedRule.evalFull rule.core
-    ((model.checkContext raw).withWorld world) hasContent
+    ((prepared.checkContext locale raw).withWorld prepared.world) hasContent
 
 end CheckedResolvedFlatRule
 
@@ -78,11 +80,13 @@ def core (rule : CheckedResolvedValidationRule model) : ResolvedValidationRule :
     severity := rule.severity
     messagePlan := rule.messagePlan }
 
-def evalFull (rule : CheckedResolvedValidationRule model) (world : World)
-    (raw : RawFlatContext) (groups : GroupPresenceContext)
+def evalFull (rule : CheckedResolvedValidationRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
     (hasContent : Bool) : FlatRuleOutcome :=
   ResolvedValidationRule.evalFull rule.core
-    { fields := (model.checkContext raw).withWorld world, groups } hasContent
+    { fields := (prepared.checkContext locale raw).withWorld prepared.world, groups }
+    hasContent
 
 end CheckedResolvedValidationRule
 

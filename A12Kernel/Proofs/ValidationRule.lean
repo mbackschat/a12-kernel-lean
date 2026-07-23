@@ -166,12 +166,15 @@ theorem checkedValidationRule_errorField_coherent
 
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
-    (rule : CheckedResolvedFlatRule model) (world : World) (raw : RawFlatContext)
-    (hasContent : Bool) (messageType : Polarity)
+    (rule : CheckedResolvedFlatRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (hasContent : Bool)
+    (messageType : Polarity)
     (fires :
-      rule.condition.core.evalFull ((model.checkContext raw).withWorld world) hasContent =
+      rule.condition.core.evalFull
+        ((prepared.checkContext locale raw).withWorld prepared.world) hasContent =
         .fired messageType) :
-    rule.evalFull world raw hasContent =
+    rule.evalFull prepared locale raw hasContent =
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
         errorCode := rule.errorCode
@@ -181,21 +184,23 @@ theorem checkedFlatRule_fired_message_exact
       } := by
   simpa only [CheckedResolvedFlatRule.evalFull,
     CheckedResolvedFlatRule.core] using
-    flatRule_fired_message_exact rule.core ((model.checkContext raw).withWorld world)
+    flatRule_fired_message_exact rule.core
+      ((prepared.checkContext locale raw).withWorld prepared.world)
       hasContent messageType fires
 
 /-- Checked mixed assembly preserves the same exact fired-message contract. -/
 theorem checkedValidationRule_fired_message_exact
-    (rule : CheckedResolvedValidationRule model) (world : World)
-    (raw : RawFlatContext) (groups : GroupPresenceContext)
+    (rule : CheckedResolvedValidationRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
     (hasContent : Bool) (messageType : Polarity)
     (fires :
       rule.condition.core.evalFull {
-        fields := (model.checkContext raw).withWorld world
+        fields := (prepared.checkContext locale raw).withWorld prepared.world
         groups
       } hasContent =
         .fired messageType) :
-    rule.evalFull world raw groups hasContent =
+    rule.evalFull prepared locale raw groups hasContent =
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
         errorCode := rule.errorCode

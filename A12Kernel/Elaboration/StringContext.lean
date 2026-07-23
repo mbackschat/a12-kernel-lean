@@ -26,6 +26,7 @@ inductive FlatStringContextEvaluationError where
 /-- The two mutually exclusive prepared String capabilities for one validated flat model. -/
 structure PreparedFlatStringContext (model : FlatModel)
     (compilePattern : StringPatternCompiler) where
+  world : World
   patterns : PreparedFlatStringPatterns model compilePattern
   customFields : PreparedFlatCustomFields model
 
@@ -58,6 +59,7 @@ def prepareFlatStringContext (world : World)
                 rw [hModel]
                 rfl
               .ok {
+                world
                 patterns := { fields := patterns, modelWellFormed }
                 customFields := { fields := customFields }
               }

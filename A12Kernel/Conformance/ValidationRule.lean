@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationRule
 
 /-! # Checked flat whole-rule conformance locks -/
@@ -141,6 +142,70 @@ private def worldAt (millis : Int) : World :=
 
 private def defaultWorld : World := worldAt 0
 
+private def preparedPattern : FlatFieldDecl :=
+  {
+    id := 20
+    groupPath := ["Order"]
+    name := "PatternCode"
+    policy := { kind := .string }
+    stringPatternSource := some "A+"
+  }
+
+private def preparedCustom : FlatFieldDecl :=
+  {
+    id := 21
+    groupPath := ["Order"]
+    name := "CustomCode"
+    policy := { kind := .string }
+    customType := some { name := "ProjectCode" }
+  }
+
+private def preparedModel : FlatModel :=
+  { fields := [preparedPattern, preparedCustom] }
+
+private def preparedCompiler : StringPatternCompiler := fun source =>
+  if source == "A+" then
+    some fun value =>
+      !value.isEmpty && value.toList.all fun character => character == 'A'
+  else
+    none
+
+private def preparedRejection : RegisteredCustomRejection where
+  projectCode := "PROJECT_CODE_INVALID"
+
+private def preparedValidator : RegisteredCustomFieldValidator := fun value _ =>
+  if value == "accepted" then none else some preparedRejection
+
+private def preparedWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProjectCode" then some preparedValidator else none
+
+private def preparedRaw (pattern custom : String) : RawFlatContext where
+  read id :=
+    if id == preparedPattern.id then .parsed (.str pattern)
+    else if id == preparedCustom.id then .parsed (.str custom)
+    else .empty
+
+private def preparedRuleVerdict (pattern custom : String) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext preparedWorld preparedCompiler preparedModel).toOption
+  let checked ← (elaborate preparedModel ["Order"]
+    (.and
+      (.fieldFilled {
+        base := .absolute
+        groups := ["Order"]
+        field := "PatternCode"
+      })
+      (.fieldFilled {
+        base := .absolute
+        groups := ["Order"]
+        field := "CustomCode"
+      }))).toOption
+  let rule ← (assembleResolvedFlatRule preparedModel checked preparedPattern.id
+    "preparedRule" .error { parts := [] }).toOption
+  pure (rule.evalFull prepared "en_US" (preparedRaw pattern custom) true).verdict
+
 private def assembleWithPlan (condition : SurfaceCondition) (errorField : FieldId)
     (severity : ValidationSeverity) (plan : MessageRenderPlan) :
     Except (ElabError ⊕ FlatRuleAssemblyError)
@@ -186,10 +251,26 @@ private def ruleGroupAssemblyError? (errorField : FieldId) :
   | .ok _ => none
   | .error error => some error
 
+private def preparedContext? (world : World) :
+    Option (PreparedFlatStringContext model builtinStringPatternCompiler) :=
+  (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+
+private def evalFlatRule? (rule : CheckedResolvedFlatRule model)
+    (world : World) (raw : RawFlatContext) (hasContent : Bool) :
+    Option FlatRuleOutcome := do
+  let prepared ← preparedContext? world
+  pure (rule.evalFull prepared "en_US" raw hasContent)
+
+private def evalValidationRule? (rule : CheckedResolvedValidationRule model)
+    (world : World) (raw : RawFlatContext) (groups : GroupPresenceContext)
+    (hasContent : Bool) : Option FlatRuleOutcome := do
+  let prepared ← preparedContext? world
+  pure (rule.evalFull prepared "en_US" raw groups hasContent)
+
 private def ruleGroupOutcome (state : GroupPresenceState) : Option FlatRuleOutcome := do
   let rule ← assembleRuleGroup? amount.id
-  pure (rule.evalFull defaultWorld (rawAmount .empty)
-    (fun path => if path == ["Order"] then some state else none) false)
+  evalValidationRule? rule defaultWorld (rawAmount .empty)
+    (fun path => if path == ["Order"] then some state else none) false
 
 private def assembleGroupList? : Option (CheckedResolvedValidationRule model) := do
   let condition ← (CheckedValidationCondition.fromGroupList model ["Order"]
@@ -205,9 +286,9 @@ private def assembleGroupList? : Option (CheckedResolvedValidationRule model) :=
 private def groupListOutcome (amountCell : RawCell)
     (detailsState : GroupPresenceState) : Option FlatRuleOutcome := do
   let rule ← assembleGroupList?
-  pure (rule.evalFull defaultWorld (rawAmount amountCell)
+  evalValidationRule? rule defaultWorld (rawAmount amountCell)
     (fun path =>
-      if path == ["Order", "Details"] then some detailsState else none) true)
+      if path == ["Order", "Details"] then some detailsState else none) true
 
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
@@ -217,34 +298,34 @@ private def outcomeOf (severity : ValidationSeverity) (raw : RawFlatContext)
     (hasContent : Bool := true) : Option FlatRuleOutcome :=
   match assemble amountNonnegative amount.id severity with
   | .error _ => none
-  | .ok checked =>
-      some (checked.evalFull defaultWorld raw hasContent)
+  | .ok checked => evalFlatRule? checked defaultWorld raw hasContent
 
 private def outcomeFor (condition : SurfaceCondition) (errorField : FieldId)
     (raw : RawFlatContext) : Option FlatRuleOutcome :=
   match assemble condition errorField with
   | .error _ => none
-  | .ok checked => some (checked.evalFull defaultWorld raw true)
+  | .ok checked => evalFlatRule? checked defaultWorld raw true
 
 private def outcomeForAt (world : World) (condition : SurfaceCondition)
     (errorField : FieldId) (raw : RawFlatContext) : Option FlatRuleOutcome :=
   match assemble condition errorField with
   | .error _ => none
-  | .ok checked => some (checked.evalFull world raw true)
+  | .ok checked => evalFlatRule? checked world raw true
 
 private def outcomeWithPlan (plan : MessageRenderPlan) (raw : RawFlatContext) :
     Option FlatRuleOutcome :=
   match assembleWithPlan amountNonnegative amount.id .error plan with
   | .error _ => none
-  | .ok checked => some (checked.evalFull defaultWorld raw true)
+  | .ok checked => evalFlatRule? checked defaultWorld raw true
 
 private def mixedOutcome (raw : RawFlatContext) : Option FlatRuleOutcome := do
   let rule ← assembleMixed?
-  pure (rule.evalFull defaultWorld raw GroupPresenceContext.unavailable true)
+  evalValidationRule? rule defaultWorld raw GroupPresenceContext.unavailable true
 
 private def aggregateOutcome : Option FlatRuleOutcome := do
   let rule ← assembleAggregate?
-  pure (rule.evalFull defaultWorld rawAggregate GroupPresenceContext.unavailable true)
+  evalValidationRule? rule defaultWorld rawAggregate
+    GroupPresenceContext.unavailable true
 
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
@@ -260,6 +341,13 @@ example :
         some (.fired (expectedMessage .error .omission)) ∧
       outcomeOf .error (rawAmount (.parsed (.num 0))) =
         some (.fired (expectedMessage .error .value)) := by
+  native_decide
+
+/- Whole-rule execution consumes the prepared pattern and custom-validator context rather than reconstructing an unprepared model context. -/
+example :
+    preparedRuleVerdict "AAA" "accepted" = some (.fired .value) ∧
+      preparedRuleVerdict "BBB" "accepted" = some .unknown ∧
+      preparedRuleVerdict "AAA" "rejected" = some .unknown := by
   native_decide
 
 /- Mixed checked whole-rule assembly discovers an error field referenced only by the numeric leaf and reuses the existing message outcome. -/
