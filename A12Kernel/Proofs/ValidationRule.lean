@@ -73,7 +73,7 @@ theorem flatRule_eval_verdict (rule : ResolvedFlatRule)
 
 /-- The mixed specialization uses the same post-verdict boundary without changing its condition result. -/
 theorem validationRule_eval_verdict (rule : ResolvedValidationRule)
-    (context : FlatContext) (hasContent : Bool) :
+    (context : ValidationEvaluationContext) (hasContent : Bool) :
     (ResolvedValidationRule.evalFull rule context hasContent).verdict =
       rule.condition.evalFull context hasContent := by
   exact resolvedRule_evalWith_verdict rule
@@ -160,7 +160,7 @@ theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
       rule.errorDeclaration.repeatableScope.isEmpty = true ∧
-      rule.condition.core.referencesField rule.errorField = true :=
+      rule.condition.core.referencesField model rule.errorField = true :=
   ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
     rule.errorFieldReferenced⟩
 
@@ -187,11 +187,15 @@ theorem checkedFlatRule_fired_message_exact
 /-- Checked mixed assembly preserves the same exact fired-message contract. -/
 theorem checkedValidationRule_fired_message_exact
     (rule : CheckedResolvedValidationRule model) (world : World)
-    (raw : RawFlatContext) (hasContent : Bool) (messageType : Polarity)
+    (raw : RawFlatContext) (groups : GroupPresenceContext)
+    (hasContent : Bool) (messageType : Polarity)
     (fires :
-      rule.condition.core.evalFull ((model.checkContext raw).withWorld world) hasContent =
+      rule.condition.core.evalFull {
+        fields := (model.checkContext raw).withWorld world
+        groups
+      } hasContent =
         .fired messageType) :
-    rule.evalFull world raw hasContent =
+    rule.evalFull world raw groups hasContent =
       .fired {
         errorAddress := { field := rule.errorField, path := [] }
         errorCode := rule.errorCode

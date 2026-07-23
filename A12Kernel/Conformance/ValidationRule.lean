@@ -35,9 +35,13 @@ private def adjustment : FlatFieldDecl :=
   { id := 5, groupPath := ["Order"], name := "Adjustment",
     policy := { kind := .number { scale := 0, signed := true } } }
 
+private def outsider : FlatFieldDecl :=
+  { id := 6, groupPath := ["Other"], name := "Outside",
+    policy := { kind := .confirm } }
+
 private def model : FlatModel :=
   { fields := [amount, acknowledged, unattached, repeatedAmount, eventDateTime,
-      adjustment]
+      adjustment, outsider]
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def path (field : String) : SurfaceFieldPath :=
@@ -162,6 +166,27 @@ private def assembleAggregate? : Option (CheckedResolvedValidationRule model) :=
   (assembleResolvedValidationRule model condition amount.id errorCode .error
     messagePlan).toOption
 
+private def assembleRuleGroup? (errorField : FieldId) :
+    Option (CheckedResolvedValidationRule model) := do
+  let condition ← (CheckedValidationCondition.fromGroupPresence model ["Order"]
+    (.ruleGroup false) .notFilled).toOption
+  (assembleResolvedValidationRule model condition errorField errorCode .error
+    messagePlan).toOption
+
+private def ruleGroupAssemblyError? (errorField : FieldId) :
+    Option FlatRuleAssemblyError := do
+  let condition ← (CheckedValidationCondition.fromGroupPresence model ["Order"]
+    (.ruleGroup false) .notFilled).toOption
+  match assembleResolvedValidationRule model condition errorField errorCode .error
+      messagePlan with
+  | .ok _ => none
+  | .error error => some error
+
+private def ruleGroupOutcome (state : GroupPresenceState) : Option FlatRuleOutcome := do
+  let rule ← assembleRuleGroup? amount.id
+  pure (rule.evalFull defaultWorld (rawAmount .empty)
+    (fun path => if path == ["Order"] then some state else none) false)
+
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
@@ -193,11 +218,11 @@ private def outcomeWithPlan (plan : MessageRenderPlan) (raw : RawFlatContext) :
 
 private def mixedOutcome (raw : RawFlatContext) : Option FlatRuleOutcome := do
   let rule ← assembleMixed?
-  pure (rule.evalFull defaultWorld raw true)
+  pure (rule.evalFull defaultWorld raw GroupPresenceContext.unavailable true)
 
 private def aggregateOutcome : Option FlatRuleOutcome := do
   let rule ← assembleAggregate?
-  pure (rule.evalFull defaultWorld rawAggregate true)
+  pure (rule.evalFull defaultWorld rawAggregate GroupPresenceContext.unavailable true)
 
 private def expectedMessage (severity : ValidationSeverity)
     (messageType : Polarity) : FlatRuleMessage :=
@@ -225,6 +250,23 @@ example :
 /- A direct aggregate remains a numeric-expression atom through ordinary checked whole-rule assembly and the sole message emitter. -/
 example : aggregateOutcome =
     some (.fired (expectedMessage .error .value)) := by
+  native_decide
+
+/- A group-presence leaf makes every descendant field a legal error field through the shared checked rule, and clean-empty omission reaches the existing message projection. -/
+example :
+    ruleGroupOutcome ({
+      content := false
+      erroneous := false
+      relevance := .fullyRelevant
+    } : GroupPresenceState) =
+        some (.fired (expectedMessage .error .omission)) ∧
+      (assembleRuleGroup? unattached.id).isSome = true := by
+  native_decide
+
+/- A sibling field is not referenced by `RuleGroup`, so checked rule assembly rejects it instead of treating group presence as a global reference. -/
+example :
+    ruleGroupAssemblyError? outsider.id =
+      some (.errorFieldNotReferenced outsider.id) := by
   native_decide
 
 /- Whole-rule evaluation carries the explicit world through the checked condition, so `Now` observes the supplied millisecond instant before message construction. -/

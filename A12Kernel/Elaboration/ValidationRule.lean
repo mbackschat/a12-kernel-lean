@@ -41,7 +41,8 @@ abbrev ResolvedValidationRule := ResolvedRule ValidationCondition
 
 abbrev CheckedResolvedValidationRule (model : FlatModel) :=
   CheckedResolvedRule model (CheckedValidationCondition model) ValidationCondition
-    (fun condition => condition.core) ValidationCondition.referencesField
+    (fun condition => condition.core)
+    (fun condition field => condition.referencesField model field)
 
 namespace CheckedResolvedFlatRule
 
@@ -61,7 +62,8 @@ end CheckedResolvedFlatRule
 
 namespace ResolvedValidationRule
 
-def evalFull (rule : ResolvedValidationRule) (context : FlatContext)
+def evalFull (rule : ResolvedValidationRule)
+    (context : ValidationEvaluationContext)
     (hasContent : Bool) : FlatRuleOutcome :=
   rule.evalWith fun condition => condition.evalFull context hasContent
 
@@ -77,9 +79,10 @@ def core (rule : CheckedResolvedValidationRule model) : ResolvedValidationRule :
     messagePlan := rule.messagePlan }
 
 def evalFull (rule : CheckedResolvedValidationRule model) (world : World)
-    (raw : RawFlatContext) (hasContent : Bool) : FlatRuleOutcome :=
+    (raw : RawFlatContext) (groups : GroupPresenceContext)
+    (hasContent : Bool) : FlatRuleOutcome :=
   ResolvedValidationRule.evalFull rule.core
-    ((model.checkContext raw).withWorld world) hasContent
+    { fields := (model.checkContext raw).withWorld world, groups } hasContent
 
 end CheckedResolvedValidationRule
 
@@ -132,6 +135,7 @@ def assembleResolvedValidationRule (model : FlatModel)
     (messagePlan : MessageRenderPlan) :
     Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
   assembleResolvedRule model (fun checked => checked.core)
-    ValidationCondition.referencesField condition errorField errorCode severity messagePlan
+    (fun core field => core.referencesField model field)
+    condition errorField errorCode severity messagePlan
 
 end A12Kernel
