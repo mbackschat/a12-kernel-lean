@@ -88,23 +88,20 @@ inductive EnumerationComputationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked ordinary Enumeration computation. The target and every field source are re-derived from the same validated model, while compatibility and self-reference remain proof-bearing static obligations. -/
-structure CheckedEnumerationComputationOperation (model : FlatModel) where
-  targetField : FieldId
+/-- The exact ordinary closed-Enumeration target shared by every checked source form. -/
+structure CheckedEnumerationComputationTarget (model : FlatModel) where
+  field : FieldId
+  path : List String
   targetOperand : FlatEnumerationOperand
-  target : CheckedEnumerationProjection
-  targetOwned : model.checkedEnumerationOperand? targetOperand = some target
-  source : CheckedEnumerationComputationSource model
+  projection : CheckedEnumerationProjection
+  targetOwned : model.checkedEnumerationOperand? targetOperand = some projection
   modelWellFormed : model.validate.isOk = true
-  sourceAllowed : source.allowedFor target = true
-  targetNotReferenced : source.referencesField targetField = false
 
-/-- Check one ordinary closed-Enumeration target together with a literal or direct stored/category source. General String expressions cannot inhabit this surface. -/
-def elaborateEnumerationComputation
-    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceEnumerationComputationSource) :
+/-- Resolve and certify an ordinary nonrepeatable closed-Enumeration computation target once. -/
+def elaborateEnumerationComputationTarget
+    (model : FlatModel) (targetField : FieldId) :
     Except EnumerationComputationElabError
-      (CheckedEnumerationComputationOperation model) :=
+      (CheckedEnumerationComputationTarget model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
@@ -122,45 +119,65 @@ def elaborateEnumerationComputation
           }
           match hTargetOwned : model.checkedEnumerationOperand? targetOperand with
           | none => throw .incoherentCore
-          | some target =>
-              let source ← match authored with
-                | .literal token =>
-                    pure (.literal token)
-                | .field surface =>
-                    let (path, _, operand) ←
-                      elaborateEnumerationFieldOperand model declaringGroup surface
-                        |>.mapError .source
-                    match hSourceOwned :
-                        model.checkedEnumerationOperand? operand with
-                    | none => throw .incoherentCore
-                    | some checked =>
-                        pure (.field path operand checked hSourceOwned)
-              if hReference : source.referencesField targetField = true then
-                throw (.targetSelfReference targetField)
-              else if hAllowed : source.allowedFor target = true then
-                pure {
-                  targetField
-                  targetOperand
-                  target
-                  targetOwned := hTargetOwned
-                  source
-                  modelWellFormed := by
-                    rw [hModel]
-                    rfl
-                  sourceAllowed := hAllowed
-                  targetNotReferenced := by
-                    cases hValue : source.referencesField targetField with
-                    | false => rfl
-                    | true => exact False.elim (hReference hValue)
-                }
-              else
-                match source with
-                | .literal token =>
-                    throw (.literalOutsideTarget targetDeclaration.path token)
-                | .field sourcePath _ _ _ =>
-                    throw (.sourceIncompatible sourcePath targetDeclaration.path)
+          | some projection =>
+              pure {
+                field := targetField
+                path := targetDeclaration.path
+                targetOperand
+                projection
+                targetOwned := hTargetOwned
+                modelWellFormed := by
+                  rw [hModel]
+                  rfl
+              }
       | actual, _ =>
           throw (.targetKindMismatch targetDeclaration.path actual.surfaceKind)
+
+/-- One checked ordinary Enumeration computation. The target and every field source are re-derived from the same validated model, while compatibility and self-reference remain proof-bearing static obligations. -/
+structure CheckedEnumerationComputationOperation (model : FlatModel) where
+  target : CheckedEnumerationComputationTarget model
+  source : CheckedEnumerationComputationSource model
+  sourceAllowed : source.allowedFor target.projection = true
+  targetNotReferenced : source.referencesField target.field = false
+
+/-- Check one ordinary closed-Enumeration target together with a literal or direct stored/category source. General String expressions cannot inhabit this surface. -/
+def elaborateEnumerationComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceEnumerationComputationSource) :
+    Except EnumerationComputationElabError
+      (CheckedEnumerationComputationOperation model) :=
+  do
+    let target ← elaborateEnumerationComputationTarget model targetField
+    let source ← match authored with
+      | .literal token =>
+          pure (.literal token)
+      | .field surface =>
+          let (path, _, operand) ←
+            elaborateEnumerationFieldOperand model declaringGroup surface
+              |>.mapError .source
+          match hSourceOwned :
+              model.checkedEnumerationOperand? operand with
+          | none => throw .incoherentCore
+          | some checked =>
+              pure (.field path operand checked hSourceOwned)
+    if hReference : source.referencesField target.field = true then
+      throw (.targetSelfReference target.field)
+    else if hAllowed : source.allowedFor target.projection = true then
+      pure {
+        target
+        source
+        sourceAllowed := hAllowed
+        targetNotReferenced := by
+          cases hValue : source.referencesField target.field with
+          | false => rfl
+          | true => exact False.elim (hReference hValue)
+      }
+    else
+      match source with
+      | .literal token =>
+          throw (.literalOutsideTarget target.path token)
+      | .field sourcePath _ _ _ =>
+          throw (.sourceIncompatible sourcePath target.path)
 
 namespace CheckedEnumerationComputationOperation
 

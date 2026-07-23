@@ -8,6 +8,24 @@ These laws characterize the ordered resolved Number scan, its two projections, c
 
 namespace A12Kernel
 
+/-- The generic lazy scan terminates on a present head without projecting any suffix item. -/
+theorem scanFirstFilledItems_present_head
+    (cell : α → ValueListCell kind) (head : α) (tail : List α)
+    (state : FirstFilledScanState) (atom : ValueListAtom kind)
+    (present : cell head = .present atom) :
+    scanFirstFilledItems cell (head :: tail) state =
+      .inr (.value atom (state.emptyBefore || state.encounteredHaving)) := by
+  simp [scanFirstFilledItems, FirstFilledScanState.step, present]
+
+/-- The generic lazy scan likewise terminates on a formally unavailable head without projecting its suffix. -/
+theorem scanFirstFilledItems_unknown_head
+    (cell : α → ValueListCell kind) (head : α) (tail : List α)
+    (state : FirstFilledScanState) (cause : FormalCause)
+    (unknown : cell head = .unknown cause) :
+    scanFirstFilledItems cell (head :: tail) state =
+      .inr (.unavailable cause) := by
+  simp [scanFirstFilledItems, FirstFilledScanState.step, unknown]
+
 private def firstFilledSide
     (cells : List (ValueListCell .number))
     (hasUninstantiatedTail : Bool := false)

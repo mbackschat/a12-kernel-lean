@@ -89,6 +89,7 @@ import A12Kernel.Elaboration.TokenFirstFilledValue
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.EnumerationComputation
+import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Elaboration.Correlation

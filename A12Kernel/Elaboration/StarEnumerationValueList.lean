@@ -64,13 +64,12 @@ inductive StarEnumerationValueListElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- Reuse the general checked star path, then retain its exact checked stored/category projection. -/
-def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceStarFieldPath) (projectionRef : EnumerationProjectionRef)
+/-- Certify an already-resolved general star path as an exact checked stored/category Enumeration projection. -/
+def certifyStarEnumerationSource (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (projectionRef : EnumerationProjectionRef)
     (having : Option SurfaceCorrelatedHaving := none) :
     Except StarEnumerationValueListElabError
       (CheckedStarEnumerationSource model) := do
-  let source ← elaborateStarFieldPath model declaringGroup authored |>.mapError .path
   match hKind : source.declaration.policy.kind,
       hEnumeration : source.declaration.enumeration with
   | .enumeration, some declaration =>
@@ -102,6 +101,15 @@ def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPa
                 filter }
   | actual, _ =>
       throw (.fieldNotEnumeration source.declaration.path actual.surfaceKind)
+
+/-- Reuse the general checked star path, then retain its exact checked stored/category projection. -/
+def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPath)
+    (authored : SurfaceStarFieldPath) (projectionRef : EnumerationProjectionRef)
+    (having : Option SurfaceCorrelatedHaving := none) :
+    Except StarEnumerationValueListElabError
+      (CheckedStarEnumerationSource model) := do
+  let source ← elaborateStarFieldPath model declaringGroup authored |>.mapError .path
+  certifyStarEnumerationSource declaringGroup source projectionRef having
 
 /-- Check projection-specific literal admission after the exact starred Enumeration operand has been resolved. -/
 def elaborateStarEnumerationValueListSource (model : FlatModel)
@@ -161,11 +169,17 @@ def elaborateEnumerationValueListStarValuesSource (model : FlatModel)
 
 namespace CheckedStarEnumerationSource
 
-/-- Classify one resolved leaf through the exact declaration-owned check and selected stored/category projection. -/
+/-- Classify one resolved leaf at the caller's phase through the exact declaration-owned check and selected stored/category projection. -/
+def valueListCellAt (checked : CheckedStarEnumerationSource model)
+    (phase : Phase) (read : Env → FieldId → RawCell)
+    (environment : Env) : ValueListCell .token :=
+  checked.operand.projection.asValueListCell
+    (observeCell phase (checked.source.checkedCell read environment))
+
+/-- Validation specialization retained for existing value-list consumers. -/
 def valueListCell (checked : CheckedStarEnumerationSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : ValueListCell .token :=
-  checked.operand.projection.asValueListCell
-    (observeCell .validation (checked.source.checkedCell read environment))
+  checked.valueListCellAt .validation read environment
 
 /-- Resolve nested topology once, optionally filter before projection, and retain hierarchical omitted-tail state. -/
 def resolvedValueSide (checked : CheckedStarEnumerationSource model)

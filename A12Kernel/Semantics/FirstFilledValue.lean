@@ -95,14 +95,20 @@ def FirstFilledScanResult.asToken :
   | .value token notGiven => .value token notGiven
   | .unavailable cause => .unavailable cause
 
-private def scanFirstFilledCells :
-    List (ValueListCell kind) → FirstFilledScanState →
+/-- Lazily scan caller-owned items through one cell projection. A terminal value or unavailability prevents the projection from being applied to the suffix. -/
+def scanFirstFilledItems (cell : α → ValueListCell kind) :
+    List α → FirstFilledScanState →
       FirstFilledScanState ⊕ FirstFilledScanResult kind
   | [], state => .inl state
-  | cell :: cells, state =>
-      match state.step cell with
-      | .continue next => scanFirstFilledCells cells next
+  | item :: items, state =>
+      match state.step (cell item) with
+      | .continue next => scanFirstFilledItems cell items next
       | .done result => .inr result
+
+private def scanFirstFilledCells
+    (cells : List (ValueListCell kind)) (state : FirstFilledScanState) :
+    FirstFilledScanState ⊕ FirstFilledScanResult kind :=
+  scanFirstFilledItems id cells state
 
 /-- A nonempty homogeneous resolved operand list in authored encounter order. -/
 structure FirstFilledOperands (kind : ValueListKind) where
