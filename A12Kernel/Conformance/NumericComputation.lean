@@ -38,6 +38,8 @@ private def timeId : FieldId := 5
 private def dateTimeId : FieldId := 6
 private def dateId : FieldId := 7
 private def enumerationId : FieldId := 8
+private def numericStringId : FieldId := 9
+private def hostDigitEnumerationId : FieldId := 11
 
 private def timeComponents : TemporalComponents :=
   { year := false, month := false, day := false,
@@ -57,6 +59,11 @@ private def temporalDeclaration (id : FieldId) (name : String)
 private def wrong : FlatFieldDecl :=
   stringDeclaration wrongId "Wrong"
 
+private def numericString : FlatFieldDecl :=
+  { (stringDeclaration numericStringId "NumericCode") with
+    stringPatternSource := some "[0-9]+"
+    stringPolicy := { maxLength := some 15 } }
+
 private def repeated : FlatFieldDecl :=
   { id := repeatedId
     groupPath := ["Root", "Rows"]
@@ -69,6 +76,7 @@ private def model : FlatModel :=
       temporalDeclaration timeId "Time" .time timeComponents,
       temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents,
       temporalDeclaration dateId "Date" .date TemporalComponents.fullDate,
+      numericString,
       { id := enumerationId
         groupPath := ["Root"]
         name := "NumericChoice"
@@ -77,7 +85,12 @@ private def model : FlatModel :=
           storedTokens := ["-150", "2", "03"]
           categories := [
             { name := "Factor", tokens := ["5", "225", "3"] },
-            { name := "Fraction", tokens := [".5", "2.25", "3"] }] } }]
+            { name := "Fraction", tokens := [".5", "2.25", "3"] }] } },
+      { id := hostDigitEnumerationId
+        groupPath := ["Root"]
+        name := "HostDigitChoice"
+        policy := { kind := .enumeration }
+        enumeration := some { storedTokens := ["１２", "-３"] } }]
     repeatableGroups := [{ level := 10, path := ["Root", "Rows"] }]
     baseYear := some 2020 }
 
@@ -160,7 +173,10 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     (date : CheckedCell :=
       checkedTemporal .date TemporalComponents.fullDate .empty)
     (code : CheckedCell := formalCheck { kind := .string } .empty)
-    (choice : CheckedCell := formalCheck { kind := .enumeration } .empty) :
+    (choice : CheckedCell := formalCheck { kind := .enumeration } .empty)
+    (numericCode : CheckedCell := numericString.checkRaw .empty)
+    (hostDigitChoice : CheckedCell :=
+      formalCheck { kind := .enumeration } .empty) :
     ScalarComputationContext where
   read field :=
     if field == sourceId then source
@@ -170,6 +186,8 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     else if field == dateId then date
     else if field == wrongId then code
     else if field == enumerationId then choice
+    else if field == numericStringId then numericCode
+    else if field == hostDigitEnumerationId then hostDigitChoice
     else checkedNumber .empty
 
 private def instant : Instant := { epochMillis := 1719292867000 }
@@ -249,6 +267,25 @@ example :
           (.rejected .declaredConstraint))) = some (.poison .declaredConstraint) := by
   native_decide
 
+/- String and non-ASCII host-decimal sources enter the same checked computation atom and preserve exact pattern poison. -/
+example :
+    checkedResultOf
+        (surfaceFieldValueAsNumber (.direct
+          (surfacePath ["Root"] "NumericCode")))
+        (context (numericCode := numericString.checkRaw
+          (.parsed (.str "123")))) = some (.value 123) ∧
+      checkedResultOf
+        (surfaceFieldValueAsNumber (.direct
+          (surfacePath ["Root"] "NumericCode")))
+        (context (numericCode := numericString.checkRaw
+          (.parsed (.str "12A")))) = some (.poison .declaredConstraint) ∧
+      checkedResultOf
+        (surfaceFieldValueAsNumber (.direct
+          (surfacePath ["Root"] "HostDigitChoice")))
+        (context (hostDigitChoice := formalCheck { kind := .enumeration }
+          (.parsed (.enum "-３")))) = some (.value (-3)) := by
+  native_decide
+
 /- The converted atom composes through shared arithmetic and target checking without a conversion-specific write path. -/
 example :
     let input := context (checkedNumber (.parsed (.num 3)))
@@ -280,7 +317,7 @@ example :
         some (.poison .declaredConstraint) := by
   native_decide
 
-/- Conversion diagnostics preserve resolved source identity and exact category rejection; unchecked String pattern assumptions stay outside the checked core. -/
+/- Conversion diagnostics preserve resolved source identity and exact category rejection. -/
 example :
     checkedErrorOf
         (surfaceFieldValueAsNumber (.direct
@@ -290,6 +327,9 @@ example :
         (surfaceFieldValueAsNumber (.direct
           (surfacePath ["Root"] "Wrong"))) =
       some (.fieldValueAsNumberNotConvertible ["Root", "Wrong"]) ∧
+    checkedErrorOf
+        (surfaceFieldValueAsNumber (.direct
+          (surfacePath ["Root"] "NumericCode"))) = none ∧
     checkedErrorOf
         (surfaceFieldValueAsNumber (.category
           (surfacePath ["Root"] "NumericChoice") "Missing")) =

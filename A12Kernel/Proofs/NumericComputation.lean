@@ -45,7 +45,7 @@ theorem numericComputation_stringRange_poison_preservesCause
   simp [ScalarComputationContext.readNumericComputationAtom, observed]
   rfl
 
-/-- Computation erases conversion fillability but keeps the missing Enumeration/category source's numeric zero. -/
+/-- Computation erases conversion fillability but keeps the missing String or Enumeration/category source's numeric zero. -/
 theorem numericComputation_fieldValueAsNumber_empty_zero
     (context : ScalarComputationContext)
     (source : ResolvedFieldValueAsNumberSource)
@@ -55,20 +55,20 @@ theorem numericComputation_fieldValueAsNumber_empty_zero
   simp [ScalarComputationContext.readNumericComputationAtom, observed]
   rfl
 
-/-- A present admitted stored token projects to the same exact rational amount in computation. -/
+/-- A present admitted String or Enumeration value projects to the same exact rational amount in computation. -/
 theorem numericComputation_fieldValueAsNumber_value
     (context : ScalarComputationContext)
-    (source : ResolvedFieldValueAsNumberSource) (stored : String) (amount : Rat)
+    (source : ResolvedFieldValueAsNumberSource) (value : Value) (amount : Rat)
     (observed : observeCell .computation (context.read source.fieldId) =
-      .value (.enum stored))
-    (converted : source.valueForStored? stored = some amount) :
+      .value value)
+    (converted : source.valueFor? value = some amount) :
     context.readNumericComputationAtom (.fieldValueAsNumber source) =
       .ok (.value amount) := by
   simp [ScalarComputationContext.readNumericComputationAtom,
     observed, converted]
   rfl
 
-/-- A reached computation poison survives Enumeration/category conversion with its exact cause. -/
+/-- A reached computation poison survives String or Enumeration/category conversion with its exact cause. -/
 theorem numericComputation_fieldValueAsNumber_poison_preservesCause
     (context : ScalarComputationContext)
     (source : ResolvedFieldValueAsNumberSource) (cause : FormalCause)

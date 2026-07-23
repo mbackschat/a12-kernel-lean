@@ -65,6 +65,7 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
           ("path", toJson path), ("expected", toJson "ordinaryString")])
   | .stringPolicyRequiresString path
   | .stringPolicyForbidsCustomType path
+  | .stringPatternRequiresString path
   | .rawStringRequiresLineBreakPermission path
   | .rawStringForbidsMinimumLength path
   | .stringMinimumExceedsMaximum path

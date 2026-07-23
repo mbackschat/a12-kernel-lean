@@ -62,7 +62,28 @@ private def model : FlatModel :=
         enumeration := some { storedTokens := ["-12345678901234.5"] } },
       { id := 16, groupPath := ["Order"], name := "WideChoice",
         policy := { kind := .enumeration },
-        enumeration := some { storedTokens := ["1234567890123456"] } }],
+        enumeration := some { storedTokens := ["1234567890123456"] } },
+      { id := 17, groupPath := ["Order"], name := "NumericCode",
+        policy := { kind := .string },
+        stringPatternSource := some "[0-9]+",
+        stringPolicy := { maxLength := some 15 } },
+      { id := 18, groupPath := ["Order"], name := "WrongPatternCode",
+        policy := { kind := .string },
+        stringPatternSource := some "[0-9]*",
+        stringPolicy := { maxLength := some 15 } },
+      { id := 19, groupPath := ["Order"], name := "UnboundedCode",
+        policy := { kind := .string },
+        stringPatternSource := some "[0-9]+" },
+      { id := 20, groupPath := ["Order"], name := "WideCode",
+        policy := { kind := .string },
+        stringPatternSource := some "[0-9]+",
+        stringPolicy := { maxLength := some 16 } },
+      { id := 21, groupPath := ["Order"], name := "HostDigitChoice",
+        policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["١٢.٥", "-３"] } },
+      { id := 22, groupPath := ["Order"], name := "SupplementaryDigitChoice",
+        policy := { kind := .enumeration },
+        enumeration := some { storedTokens := ["𐒠"] } }],
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def baseYearModel : FlatModel := { model with baseYear := some 2020 }
@@ -139,6 +160,9 @@ private def stringRaw (cell : RawCell) : RawFlatContext where
 private def enumerationRaw (cell : RawCell) : RawFlatContext where
   read actual := if actual == 13 then cell else .empty
 
+private def fieldRaw (id : FieldId) (cell : RawCell) : RawFlatContext where
+  read actual := if actual == id then cell else .empty
+
 private def instant : Instant := { epochMillis := 1719292867000 }
 
 private def dateParts : DateParts := { year := 2024, month := 6, day := 25 }
@@ -177,17 +201,23 @@ private def tolerance (range : NumericToleranceRange)
 private def dividedThird : AuthoredNumericExpr SurfaceNumericAtom :=
   .group (.binary .divide (literal 3 0) (literal 3 0))
 
-/- The checked decimal-token parser preserves the admitted ASCII subset without accepting a leading plus, exponent syntax, trailing dots, or whitespace beyond the kernel source grammar. -/
+/- The checked decimal-token parser follows Java 21's UTF-16 `Character.isDigit(char)` profile without widening it to supplementary-plane decimal code points. -/
 example :
-    (parseAsciiDecimalToken? "-1.50").map
+    (parseJavaDecimalToken? "-1.50").map
         (fun token => (token.value, token.scale, token.digitCount)) =
       some ((-3 / 2 : Rat), 2, 3) ∧
-    (parseAsciiDecimalToken? ".5").map (fun token => token.value) =
+    (parseJavaDecimalToken? ".5").map (fun token => token.value) =
       some (1 / 2 : Rat) ∧
-    parseAsciiDecimalToken? "1." = none ∧
-    parseAsciiDecimalToken? "+1" = none ∧
-    parseAsciiDecimalToken? "1e2" = none ∧
-    parseAsciiDecimalToken? " 1" = none := by
+    (parseJavaDecimalToken? "١٢.٥").map
+        (fun token => (token.value, token.scale, token.digitCount)) =
+      some ((25 / 2 : Rat), 1, 3) ∧
+    (parseJavaDecimalToken? "-３").map (fun token => token.value) =
+      some (-3 : Rat) ∧
+    parseJavaDecimalToken? "𐒠" = none ∧
+    parseJavaDecimalToken? "1." = none ∧
+    parseJavaDecimalToken? "+1" = none ∧
+    parseJavaDecimalToken? "1e2" = none ∧
+    parseJavaDecimalToken? " 1" = none := by
   native_decide
 
 /- `FieldValueAsNumber` projects stored or category tokens before exact rational conversion; a filled result is fixed. -/
@@ -204,6 +234,26 @@ example :
         (enumerationRaw (.parsed (.enum "2"))) = some (.fired .value) := by
   native_decide
 
+/- The same checked conversion accepts the exact bounded value-validating String profile and the host-decimal Enumeration domain. -/
+example :
+    verdictOf (comparison .equal
+        (fieldValueAsNumber (.direct (path ["Order"] "NumericCode"))) 123)
+        (fieldRaw 17 (.parsed (.str "123"))) = some (.fired .value) ∧
+      verdictOf (comparison .less
+        (fieldValueAsNumber (.direct (path ["Order"] "NumericCode"))) 100)
+        (fieldRaw 17 .empty) = some (.fired .omission) ∧
+      verdictOf (comparison .equal
+        (fieldValueAsNumber (.direct (path ["Order"] "NumericCode"))) 0)
+        (fieldRaw 17 (.parsed (.str "12A"))) = some .unknown ∧
+      verdictOf (comparison .equal
+        (fieldValueAsNumber (.direct (path ["Order"] "NumericCode"))) 12)
+        (fieldRaw 17 (.parsed (.str "١٢"))) = some .unknown ∧
+      verdictOf (comparison .equal
+        (fieldValueAsNumber (.direct (path ["Order"] "HostDigitChoice")))
+        (25 / 2) 1)
+        (fieldRaw 21 (.parsed (.enum "١٢.٥"))) = some (.fired .value) := by
+  native_decide
+
 /- An absent convertible source denotes zero with both directional fill possibilities, while a reached formal cause remains unknown. -/
 example :
     verdictOf (comparison .less (fieldValueAsNumber) 100)
@@ -214,7 +264,7 @@ example :
         (enumerationRaw (.rejected .declaredConstraint)) = some .unknown := by
   native_decide
 
-/- Admission derives the selected-domain scale and preserves field resolution, category, and convertibility diagnostics. String conversion remains fail-closed until its exact pattern fact has a checked owner. -/
+/- Admission derives the selected-domain scale and preserves the exact String pattern/length and Enumeration-domain gates. -/
 example :
     (elaborateNumericComparison model ["Order"]
       (twoSided .equal (fieldValueAsNumber) (atom "Scale2"))).isOk = true ∧
@@ -226,6 +276,14 @@ example :
       (comparison .greater
         (fieldValueAsNumber (.direct
           (path ["Order"] "BoundaryChoice"))) 0)).isOk = true ∧
+    (elaborateNumericComparison model ["Order"]
+      (comparison .greater
+        (fieldValueAsNumber (.direct
+          (path ["Order"] "NumericCode"))) 0)).isOk = true ∧
+    (elaborateNumericComparison model ["Order"]
+      (comparison .equal
+        (fieldValueAsNumber (.direct
+          (path ["Order"] "HostDigitChoice"))) (25 / 2) 1)).isOk = true ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "Missing"))) 0) =
         some (.resolve (.invalidEntity (path ["Order"] "Missing"))) ∧
@@ -238,6 +296,20 @@ example :
     errorOf (comparison .equal
       (fieldValueAsNumber (.direct (path ["Order"] "WideChoice"))) 0) =
         some (.fieldValueAsNumberNotConvertible ["Order", "WideChoice"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "WrongPatternCode"))) 0) =
+        some (.fieldValueAsNumberNotConvertible ["Order", "WrongPatternCode"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "UnboundedCode"))) 0) =
+        some (.fieldValueAsNumberNotConvertible ["Order", "UnboundedCode"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct (path ["Order"] "WideCode"))) 0) =
+        some (.fieldValueAsNumberNotConvertible ["Order", "WideCode"]) ∧
+    errorOf (comparison .equal
+      (fieldValueAsNumber (.direct
+        (path ["Order"] "SupplementaryDigitChoice"))) 0) =
+        some (.fieldValueAsNumberNotConvertible
+          ["Order", "SupplementaryDigitChoice"]) ∧
     errorOf (comparison .equal
       (fieldValueAsNumber (.category
         (path ["Order"] "NumericChoice") "Missing")) 0) =
