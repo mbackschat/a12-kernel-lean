@@ -263,6 +263,9 @@ run_cmd do
 #print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
 #print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed
 #print axioms A12Kernel.checkedSingleCorrelatedRule_conjunctive
+#print axioms A12Kernel.ruleGroupReference_resolves
+#print axioms A12Kernel.starredRuleGroupReference_rejected
+#print axioms A12Kernel.resolvedGroupReference_referencesField
 #print axioms A12Kernel.rawSingleGroupContext_validate_wellFormed
 #print axioms A12Kernel.admitsSingleGroupNumber_has_unique_matching_declaration
 #print axioms A12Kernel.checkSingleGroupContext_lookup_coherent

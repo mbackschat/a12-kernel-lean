@@ -62,7 +62,11 @@ private def reviewPath : SurfaceFieldPath :=
   { base := .absolute, groups := ["Project", "Reviews"], field := "Score" }
 
 private def fromGroup (groups : List String) : SurfaceRepetitionNotUniqueScope :=
-  .from { base := .absolute, groups }
+  .from (.path { base := .absolute, groups })
+
+private def fromRuleGroup (starred : Bool := false) :
+    SurfaceRepetitionNotUniqueScope :=
+  .from (.ruleGroup starred)
 
 private def authored (scope : SurfaceRepetitionNotUniqueScope := .default)
     (firstKey : SurfaceFieldPath := keyPath)
@@ -147,6 +151,12 @@ private def errorOf (surface : SurfaceRepetitionNotUniqueSource)
   | .ok _ => none
   | .error error => some error
 
+private def referenceGroupOf (surface : SurfaceRepetitionNotUniqueSource)
+    (declaringGroup : GroupPath) : Option RepeatableGroupDecl :=
+  match elaborateRepetitionNotUniqueSource model declaringGroup surface with
+  | .ok checked => some checked.referenceGroup
+  | .error _ => none
+
 private def verdictsOf (surface : SurfaceRepetitionNotUniqueSource)
     (outer : Env) (relevance : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : Option (List (Env × Verdict)) :=
@@ -176,6 +186,22 @@ example :
       [(10, 1)] .full withinFirstMilestoneRead = some [
         ([(10, 1), (20, 1)], .fired .value),
         ([(10, 1), (20, 2)], .fired .value)] := by
+  native_decide
+
+/- `@From RuleGroup` resolves to the declaring repeatable group rather than a child named `RuleGroup`. -/
+example : referenceGroupOf (authored (fromRuleGroup))
+    ["Project", "Milestones"] = some {
+      level := 10, path := ["Project", "Milestones"], repeatability := some 2 } := by
+  native_decide
+
+/- The keyword's own wildcard error and a real but nonrepeatable rule group remain distinct. -/
+example :
+    errorOf (authored (fromRuleGroup true)) ["Project", "Milestones"] =
+        some (.scope .wildcardOnRuleGroup) ∧
+    errorOf (authored (fromRuleGroup)) ["Project"] =
+        some (.referenceGroupNotRepeatable ["Project"]) ∧
+    errorOf (authored (fromGroup ["Project"])) ["Project"] =
+        some (.referenceGroupNotRepeatable ["Project"]) := by
   native_decide
 
 private def firstTaskOnly : ValidationRelevanceScope :=

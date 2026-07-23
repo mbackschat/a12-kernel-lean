@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Semantics.Iteration
 
-/-! # Shared checked one-group Number boundaries -/
+/-! # Shared checked group-reference and one-group Number boundaries -/
 
 namespace A12Kernel
 
@@ -11,6 +11,23 @@ structure SurfaceGroupPath where
   /-- Optional explicit name of the group reached by a positive parent count. -/
   turningPoint : Option String := none
   groups : List String
+  deriving Repr, DecidableEq
+
+/-- A group-valued entity after concrete syntax has distinguished an ordinary path from the reserved `RuleGroup` keyword. The keyword is not a path base and cannot carry descent segments. Its wildcard bit is retained solely so checked lowering can report the kernel-specific error. -/
+inductive SurfaceGroupReference where
+  | path (reference : SurfaceGroupPath)
+  | ruleGroup (starred : Bool)
+  deriving Repr, DecidableEq
+
+inductive GroupReferenceOrigin where
+  | path
+  | ruleGroup
+  deriving Repr, DecidableEq
+
+/-- A resolved group keeps authored origin for stable Transform/Explain consumers instead of erasing `RuleGroup` into an ordinary path. -/
+structure ResolvedGroupReference where
+  path : GroupPath
+  origin : GroupReferenceOrigin
   deriving Repr, DecidableEq
 
 /-- A direct-child field path with exactly one explicitly identified starred group segment. -/
@@ -27,6 +44,7 @@ structure SurfaceSingleStarFieldPath where
 inductive SingleGroupElabError where
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceGroupPath)
+  | wildcardOnRuleGroup
   | wildcardWithParentNavigation (parents : Nat)
   | fieldNotNumber (path : List String)
   | fieldOutsideGroup (fieldPath expectedGroup : List String)
@@ -52,6 +70,30 @@ def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
         else
           pure (base ++ reference.groups)
   if GroupPath.isValid path then pure path else throw (.invalidGroupReference reference)
+
+/-- Resolve either an ordinary group path or the non-prefix `RuleGroup` keyword. -/
+def SurfaceGroupReference.resolveAgainst (reference : SurfaceGroupReference)
+    (declaringGroup : GroupPath) : Except SingleGroupElabError ResolvedGroupReference := do
+  match reference with
+  | SurfaceGroupReference.path groupPath =>
+      let resolvedPath ← groupPath.resolveAgainst declaringGroup
+      pure { path := resolvedPath, origin := .path }
+  | SurfaceGroupReference.ruleGroup starred =>
+      if !GroupPath.isValid declaringGroup then
+        throw (.resolve (.invalidRuleGroup declaringGroup))
+      if starred then throw .wildcardOnRuleGroup
+      pure { path := declaringGroup, origin := .ruleGroup }
+
+namespace ResolvedGroupReference
+
+/-- Group-valued conditions reference every field in the resolved group subtree. In particular, `RuleGroup` therefore satisfies the error-field reference gate for a field in its own rule group. -/
+def referencesField (reference : ResolvedGroupReference)
+    (model : FlatModel) (field : FieldId) : Bool :=
+  match model.lookupUniqueId field with
+  | .ok declaration => reference.path.isPrefixOf declaration.groupPath
+  | .error _ => false
+
+end ResolvedGroupReference
 
 /-- Validate one single-star field shape and recover its authored group reference. -/
 def SurfaceSingleStarFieldPath.groupReference

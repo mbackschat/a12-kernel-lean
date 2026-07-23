@@ -722,11 +722,13 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Elaboration/SingleGroup.lean`](../A12Kernel/Elaboration/SingleGroup.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
+- [`Elaboration/RepetitionNotUnique.lean`](../A12Kernel/Elaboration/RepetitionNotUnique.lean)
 - [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean)
 - [`Proofs/SingleGroupElaboration.lean`](../A12Kernel/Proofs/SingleGroupElaboration.lean)
 - [`Proofs/CorrelationElaboration.lean`](../A12Kernel/Proofs/CorrelationElaboration.lean)
 - [`Conformance/Elaboration.lean`](../A12Kernel/Conformance/Elaboration.lean)
 - [`Conformance/CorrelationElaboration.lean`](../A12Kernel/Conformance/CorrelationElaboration.lean)
+- [`Conformance/RepetitionNotUniqueElaboration.lean`](../A12Kernel/Conformance/RepetitionNotUniqueElaboration.lean)
 
 #### Implemented
 
@@ -737,6 +739,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - order-independent unique ID/path lookup
 - shared parent walking
 - explicit named parent turning points across field, group, and later-star paths; the authored label checks only the group reached by the `..` count and never searches another ancestor
+- `RuleGroup` as a distinct non-prefix group entity that resolves to the declaring group, retains keyword origin, rejects `*`, projects same/descendant field-reference membership, and is consumed by checked repeatable `CurrentRepetition` filters plus RNU `@From`; an existing nonrepeatable RNU scope remains distinct from an unknown group
 - corrected bare declaring-group → flag-gated model-wide unique resolution
 - explicit repeatable-group path declarations
 - exact one-star binding
@@ -748,6 +751,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Maintained a12-dmkits indexed-read differentials at accepted revision `71775c9905b057831253348c31ce39e321e61889` establish match/no-match, phase precedence, selected-target invalidity, and presence as triangulation, but this repository retains no portable semantic-index observation.
 - Kernel `IndexFieldCache.normalizeValue` establishes Number-value versus non-Number exact-stored-text key identity. Pending [`SPEC-2026-07-23-08`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-23-08--semantic-index-number-keys-compare-by-normalized-numeric-value) requests the missing a12-dmkits Number-spelling separator; the checked Lean route is internally closed but remains external evidence pending.
 - Kernel `CheckRelativeUpImpl` and maintained a12-dmkits `NamedAncestorPathDiffTest` establish that a matching explicit turning-point name is semantically transparent, while a mismatch is `MVK_INVALID_ENTITY`; Lean locks the corresponding flat-field, later-star, and group-valued routes but retains no local portable path observation.
+- Kernel `CheckRegelKontextLenientEntityImpl`, `CheckRegelKontextEntityImpl`, `CheckGroupOpImpl`, and `CheckWiederholungBedingungImpl` establish the distinct declaring-group entity, keyword-specific wildcard rejection, `CurrentRepetition` admission, and repeatable RNU `@From` gate. Maintained a12-dmkits `RuleGroupSelfReferenceDiffTest` and IF63 at revision `30bdce600fad00ef68a68f64fadace3146c0e54a` establish the repeatable and nonrepeatable group-presence behavior; Lean currently consumes the checked reference only for repeatable `CurrentRepetition`, RNU scope, and static field coverage, with no local portable observation.
 - The full invalid-column matrix is strongest for Number keys while the canonical-token generalization is source-grounded.
 - The compact validation record privately replays parent-relative, absolute, local-precedence, model-wide fallback, and ambiguity cases.
 - Its four public static correlation associations retain code/class pairs for missing inner iteration, equality-scale mismatch, and a sibling-group reference plus acceptance for the ordering control
@@ -756,8 +760,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded boundary and gap links
 
-- **Implemented for four narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, one checked single-group literal-Number semantic-index construction route, and resolved semantic-index Number value/kind-independent presence/fill consumers.
-- Parent-relative and bare forms remain outside the public correlation operation. Non-Number raw-key construction needs a storage-text owner; field-valued keys, nested/multiple index levels, general path/parser/renderer, and static-diagnostic closure remain indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and repeatable lookup under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
+- **Implemented for five narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, the `RuleGroup` reference used by repeatable `CurrentRepetition` and RNU scope, one checked single-group literal-Number semantic-index construction route, and resolved semantic-index Number value/kind-independent presence/fill consumers.
+- Parent-relative and bare forms remain outside the public correlation operation. `GroupFilled(RuleGroup)`/`GroupNotFilled(RuleGroup)` checked-tree and document-state integration, nonrepeatable `CurrentRepetition`, non-Number raw-key construction, field-valued keys, nested/multiple index levels, general path/parser/renderer, and static-diagnostic closure remain indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and repeatable lookup under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §11 — computations
 

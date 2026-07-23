@@ -4,6 +4,31 @@ import A12Kernel.Elaboration.SingleGroup
 
 namespace A12Kernel
 
+/-- An unstarred `RuleGroup` is definitionally the valid declaring group while preserving keyword origin. -/
+theorem ruleGroupReference_resolves (declaringGroup : GroupPath)
+    (valid : GroupPath.isValid declaringGroup = true) :
+    ((.ruleGroup false : SurfaceGroupReference).resolveAgainst declaringGroup) =
+      .ok { path := declaringGroup, origin := .ruleGroup } := by
+  simp [SurfaceGroupReference.resolveAgainst, valid]
+  rfl
+
+/-- A star on `RuleGroup` reaches its dedicated static diagnostic after the caller group itself has been validated. -/
+theorem starredRuleGroupReference_rejected (declaringGroup : GroupPath)
+    (valid : GroupPath.isValid declaringGroup = true) :
+    ((.ruleGroup true : SurfaceGroupReference).resolveAgainst declaringGroup) =
+      .error .wildcardOnRuleGroup := by
+  simp [SurfaceGroupReference.resolveAgainst, valid]
+  rfl
+
+/-- The shared resolved-group projection establishes error-field reference membership for every declaration in the represented subtree. -/
+theorem resolvedGroupReference_referencesField
+    (reference : ResolvedGroupReference) (model : FlatModel)
+    (field : FieldId) (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId field = .ok declaration)
+    (within : reference.path.isPrefixOf declaration.groupPath = true) :
+    reference.referencesField model field = true := by
+  simp [ResolvedGroupReference.referencesField, lookup, within]
+
 private theorem all_positive_of_find_zero_none (rows : List RowIndex)
     (noZero : rows.find? (· == 0) = none) :
     rows.all (0 < ·) = true := by

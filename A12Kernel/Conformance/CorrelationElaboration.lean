@@ -115,7 +115,11 @@ private def numberRef (origin : HavingOrigin) (field : SurfaceFieldPath) :
     SurfaceHavingNumberRef := { origin, field }
 
 private def repetitionRef (origin : HavingOrigin) (group : SurfaceGroupPath) :
-    SurfaceHavingRepetitionRef := { origin, group }
+    SurfaceHavingRepetitionRef := { origin, group := .path group }
+
+private def ruleGroupRef (origin : HavingOrigin) (starred : Bool := false) :
+    SurfaceHavingRepetitionRef :=
+  { origin, group := .ruleGroup starred }
 
 private def absoluteRule (having : SurfaceCorrelatedHaving) : SurfaceSingleCorrelatedRule :=
   { errorField := absolute items.path "Count"
@@ -164,6 +168,15 @@ private def namedParentGroup : SurfaceGroupPath :=
 private def mismatchedParentGroup : SurfaceGroupPath :=
   { namedParentGroup with turningPoint := some "Other" }
 
+private def ruleGroupSnapshot :
+    Option (GroupReferenceOrigin × GroupPath × Bool × Bool × Bool) := do
+  let resolved ← ((.ruleGroup false : SurfaceGroupReference).resolveAgainst
+    items.path).toOption
+  pure (resolved.origin, resolved.path,
+    resolved.referencesField model countDecl.id,
+    resolved.referencesField model nestedCountDecl.id,
+    resolved.referencesField model otherCountDecl.id)
+
 /- Group-valued references use the same named-turning-point account as field references. -/
 example : resolvedGroupOf
     (namedParentGroup.resolveAgainst ["Order", "Details"]) =
@@ -172,6 +185,11 @@ example : resolvedGroupOf
 
 example : errorOf (mismatchedParentGroup.resolveAgainst ["Order", "Details"]) =
     some (.invalidGroupReference mismatchedParentGroup) := by
+  native_decide
+
+/- The checked keyword retains its origin and counts same-group or descendant fields, but not a sibling field, as referenced. -/
+example : ruleGroupSnapshot = some
+    (.ruleGroup, items.path, true, true, false) := by
   native_decide
 
 example : errorOf nestedFalseSingletonModel.validate =
@@ -238,6 +256,22 @@ example : havingOf (elaborateSingleCorrelatedRule model ["Order"]
     some (.compareRepetitions .equal
       { origin := .inner, level := items.level }
       { origin := .outer, level := items.level }) := by
+  native_decide
+
+/- `RuleGroup` retains its keyword origin while both current-repetition operands resolve to the rule's own repeatable level. -/
+example : havingOf (elaborateSingleCorrelatedRule model items.path
+    (absoluteRule (.compareRepetitions .notEqual
+      (ruleGroupRef .inner) (ruleGroupRef .outer)))) =
+    some (.compareRepetitions .notEqual
+      { origin := .inner, level := items.level }
+      { origin := .outer, level := items.level }) := by
+  native_decide
+
+/- A star written on `RuleGroup` reaches the keyword-specific diagnostic before repetition matching. -/
+example : errorOf (elaborateSingleCorrelatedRule model items.path
+    (absoluteRule (.compareRepetitions .equal
+      (ruleGroupRef .inner true) (ruleGroupRef .outer)))) =
+    some .wildcardOnRuleGroup := by
   native_decide
 
 -- Equality and inequality are scale-gated; ordering over the same pair is not.
