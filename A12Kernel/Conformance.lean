@@ -97,6 +97,7 @@ import A12Kernel.Conformance.FlatEnumeration
 import A12Kernel.Conformance.FlatStringValueList
 import A12Kernel.Conformance.FlatNumberValueList
 import A12Kernel.Conformance.SemanticIndex
+import A12Kernel.Conformance.SemanticIndexElaboration
 import A12Kernel.Conformance.CustomCondition
 
 /-! Executable semantic locks built with the default library target. -/

@@ -256,6 +256,8 @@ structure RepeatableGroupDecl where
   path : GroupPath
   /-- Declared maximum row count when the staged model boundary retains it. -/
   repeatability : Option Nat := none
+  /-- The unique direct-child field used for semantic row selection, when declared. -/
+  indexField : Option FieldId := none
   deriving Repr, DecidableEq
 
 structure FlatModel where
@@ -290,6 +292,7 @@ inductive ResolveError where
   | invalidRepeatableGroupPath (path : GroupPath)
   | duplicateRepeatableGroupPath (path : GroupPath)
   | duplicateRepeatableLevel (level : RepeatableLevel)
+  | invalidIndexField (groupPath : GroupPath) (field : FieldId)
   | entityHierarchyCollision (fieldPath groupPath : GroupPath)
   | repeatableScopeMismatch (path : List String)
       (expected actual : List RepeatableLevel)
@@ -453,6 +456,23 @@ private def duplicateRepeatableLevel? : List RepeatableGroupDecl → Option Repe
       else
         duplicateRepeatableLevel? rest
 
+/-- An index-field declaration must identify one direct child of its group with an evaluation value. General repeatable-scope coherence is checked separately; individual consumers may support a narrower scope. -/
+private def invalidIndexField? (fields : List FlatFieldDecl) :
+    List RepeatableGroupDecl → Option (GroupPath × FieldId)
+  | [] => none
+  | group :: rest =>
+      match group.indexField with
+      | none => invalidIndexField? fields rest
+      | some field =>
+          match fields.filter (fun declaration => declaration.id == field) with
+          | [declaration] =>
+              if declaration.groupPath == group.path &&
+                  !declaration.isRawString then
+                invalidIndexField? fields rest
+              else
+                some (group.path, field)
+          | _ => some (group.path, field)
+
 private def prefixedGroupPath? (fieldPath : GroupPath) :
     List GroupPath → Option GroupPath
   | [] => none
@@ -528,6 +548,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   match repeatableScopeMismatch? model model.fields with
   | some (path, expected, actual) =>
       throw (.repeatableScopeMismatch path expected actual)
+  | none => pure ()
+  match invalidIndexField? model.fields model.repeatableGroups with
+  | some (groupPath, field) => throw (.invalidIndexField groupPath field)
   | none => pure ()
 
 /-- Unique lookup is intentionally order-independent: ambiguity is an error, never a

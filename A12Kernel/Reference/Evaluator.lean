@@ -85,6 +85,9 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   | .duplicateRepeatableLevel level =>
       .make .duplicateRepeatableLevel "$.model"
         (Json.mkObj [("level", toJson level)])
+  | .invalidIndexField groupPath field =>
+      .make .invalidPath "$.model"
+        (Json.mkObj [("groupPath", toJson groupPath), ("fieldId", toJson field)])
   | .entityHierarchyCollision fieldPath groupPath =>
       .make .hierarchyCollision "$.model"
         (Json.mkObj [("fieldPath", toJson fieldPath), ("groupPath", toJson groupPath)])

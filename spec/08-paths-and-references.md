@@ -54,6 +54,8 @@ The language has **no positional row addressing** — no `[Field At n]`, no neig
 
 The semantic index is **unsupported** in several combinations: multiple repetition layers, several index fields, under an asterisk, and with certain predicates.
 
+Index-key identity belongs to the declared index field. For a **Number** index field, both each admitted stored key and the requested literal or field-valued key are normalized numerically before lookup, so decimal spellings such as `5` and `5.00` select the same row. For every non-Number index field, lookup uses exact internally stored text instead; a String key that visibly resembles a Number is not numerically normalized. Empty and formally invalid index keys do not become selectable entries, and duplicate participants are unavailable rather than resolved by row order.
+
 ### 4.1 What a semantic-index read yields
 
 - A **matched, filled cell** reads its value.
