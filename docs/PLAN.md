@@ -23,18 +23,19 @@ The detailed readiness fields live only in those gap entries. Same-context consu
 
 ## Active capsule
 
-Continue [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) with a bounded partial-validation generated-finding source packet. Establish whether index mandatory/uniqueness and ordinary required annotations are constructed from the full document, the relevant slice, defaults, or a staged combination; separate physically absent relevant rows from present empty rows and keep computation's operand-index prepass outside this packet.
+Continue [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) with the source-closed no-default partial-validation generated-finding capsule. Derive Number/String/Enumeration index mandatory and uniqueness findings from relevant physical candidates rather than reusing the full finding list, compose the existing absolute nonrepeatable required result through the same call-local view, and retain relevant-but-absent repeatable rows as non-content. Keep model-default injection/suppression and computation's operand-index prepass outside this capsule because their prerequisite certificates are not yet represented.
 
-Consumer hypothesis: an Execute/Analyze consumer must request one partial relevant set and recover exactly the generated findings and group state visible to that call without mutating or globally annotating the immutable base. Reusing the full-validation finding list unchanged, inferring relevance from current cells, or turning a phantom relevant row into physical content is the unsafe control; unresolved default/relevance ordering remains explicit insufficient information.
+Consumer hypothesis: an Execute/Analyze consumer must request one partial relevant set and recover exactly the generated findings and group state visible to that call without mutating or globally annotating the immutable base. Reusing the full-validation finding list, allowing a nonrelevant duplicate partner to participate, or turning a phantom relevant row into physical content is the unsafe control; a model-declared index default is explicit insufficient information until its checked declaration payload exists.
 
 ## Immediate frontier
 
-1. Audit partial-validation generated-finding selection, defaults, and phantom-row behavior before changing the checked view; do not reuse full findings globally or merge computation's formal-operand prepass into validation.
-2. Source-audit the remaining Boolean/Confirm/temporal index admission profiles as one bounded stored-token family before widening the explicit unsupported branch.
-3. Then compose the next repeatable/partial consumer through the same checked route. SG1 remains open until its completion gate is met; a reusable-boundary cold probe runs only when that milestone closes.
-4. Enter SG2 only through the SG1 output and SG2 readiness gate. Do not introduce the general stream while row identity, phantom/omitted extent, rule-wide `Having`, or mixed filter encounter remains unresolved.
-5. Keep SG4 prohibited until SG1, SG2, the explicit processing context, and every SG4 source-audit category close. SG6, SG9, and SG10 likewise require their named source packets before a high-connectivity extension.
-6. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix; request one bounded upstream observation capability only when no existing a12-dmkits route fits.
+1. Implement the no-default partial generated-finding view from the checked document, existing relevance patterns, required staging, and existing RNU relation; preserve the immutable base and addressed role.
+2. Close the matrix separating both-versus-one relevant duplicate partners, relevant instantiated empty index, absent repeatable phantom, canonical absent absolute required, parent scope, earlier scalar invalidity, and group state.
+3. Source-audit the remaining Boolean/Confirm/temporal index identity profiles and model-owned index-default payload before extending preliminary admission; do not infer stored keys from semantic values.
+4. Then compose the next repeatable/partial consumer through the same checked route. SG1 remains open until its completion gate is met; a reusable-boundary cold probe runs only when that milestone closes.
+5. Enter SG2 only through the SG1 output and SG2 readiness gate. Do not introduce the general stream while row identity, phantom/omitted extent, rule-wide `Having`, or mixed filter encounter remains unresolved.
+6. Keep SG4 prohibited until SG1, SG2, the explicit processing context, and every SG4 source-audit category close. SG6, SG9, and SG10 likewise require their named source packets before a high-connectivity extension.
+7. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix; request one bounded upstream observation capability only when no existing a12-dmkits route fits.
 
 ## Parked boundaries
 
