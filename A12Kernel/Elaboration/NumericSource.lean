@@ -291,15 +291,6 @@ def isField : ResolvedNumericAtom Field → Bool
   | .dateDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
 
-def requiresPlainArithmetic : ResolvedNumericAtom Field → Bool
-  | .field _ => false
-  | .baseYear _ | .baseYearDatePart _ _ _
-  | .temporalFieldPart _ _ => true
-  | .stringRange _ _ _ => true
-  | .fieldValueAsNumber _ => true
-  | .dateDifference _ _ _ => true
-  | .aggregate _ _ => true
-
 def summary (fieldSummary : Field → NumericScaleSummary) :
     ResolvedNumericAtom Field → NumericScaleSummary
   | .field source => fieldSummary source
@@ -320,27 +311,23 @@ def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
   | .group body => body.isImmediateResolvedNumericLiteral
   | _ => false
 
-/-- Admit unary wrappers wherever ordinary arithmetic may consume a numeric operand. A wrapper child may be recursively unary arithmetic or the separately checked direct-extremum form, but an immediate/grouped literal remains illegal. -/
-def AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic :
+/-- Check the source-specific immediate-literal prohibition at every rounding/absolute-value boundary while traversing the complete numeric operation tree, including operand-list calls and their normalized folds. -/
+def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
   | .round _ _ body | .abs body =>
       !body.isImmediateResolvedNumericLiteral &&
-        (body.isAdmittedResolvedUnaryArithmetic || body.isDirectValueFunction)
+        body.respectsResolvedWrapperLiteralBoundary
   | .atom _ | .literal _ => true
-  | .group body => body.isAdmittedResolvedUnaryArithmetic
-  | .binary _ left right | .power left right =>
-      left.isAdmittedResolvedUnaryArithmetic &&
-        right.isAdmittedResolvedUnaryArithmetic
-  | .extremum _ _ _ => false
+  | .group body => body.respectsResolvedWrapperLiteralBoundary
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.respectsResolvedWrapperLiteralBoundary &&
+        right.respectsResolvedWrapperLiteralBoundary
+  | .extremumCall _ body => body.respectsResolvedWrapperLiteralBoundary
 
-/-- Source operations participate in the audited arithmetic grammar. A wrapper-bearing tree uses the source-aware unary-arithmetic gate so an immediate literal cannot escape rejection merely because another arithmetic operand is a field. -/
+/-- A resolved numeric operation must satisfy the shared authored shape and the source-specific wrapper boundary at every depth. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
     (expression : AuthoredNumericExpr (ResolvedNumericAtom Field)) : Bool :=
-  if expression.hasUnaryValueFunction then
-    expression.isAdmittedResolvedUnaryArithmetic
-  else if expression.anyAtom ResolvedNumericAtom.requiresPlainArithmetic then
-    expression.isPlainArithmetic
-  else
-    expression.isAdmittedNumericOperation
+  expression.isAdmittedNumericOperation &&
+    expression.respectsResolvedWrapperLiteralBoundary
 
 end A12Kernel

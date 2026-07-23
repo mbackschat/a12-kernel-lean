@@ -514,7 +514,7 @@ example :
           some (.value 2020) := by
   native_decide
 
-/- Direct functions are the smallest specialization of the unary-arithmetic route shared with numeric validation. -/
+/- Direct functions are the smallest specialization of the complete numeric-operation route shared with numeric validation. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     let input := context (checkedNumber (.parsed (.num (5 / 2))))
@@ -528,7 +528,31 @@ example :
         some (.value 4) := by
   native_decide
 
-/- The checked function fragment still rejects a second Min/Max constant, while unary wrappers compose in authored order and may consume the checked direct-extremum result. -/
+/- Checked computation retains each operand-list call boundary while admitting complete numeric operands and surrounding arithmetic. -/
+example :
+    let sourceField := surfaceField ["Root"] "Source"
+    let input := context (checkedNumber (.parsed (.num 5)))
+    checkedResultOf
+        (AuthoredNumericExpr.extremumList .minimum
+          (AuthoredNumericExpr.extremumList .maximum sourceField
+            [.literal { value := 1, authoredScale := 0 }])
+          [.literal { value := 2, authoredScale := 0 }]) input =
+        some (.value 2) ∧
+      checkedResultOf
+        (AuthoredNumericExpr.extremumList .minimum
+          (.binary .add sourceField
+            (.literal { value := 1, authoredScale := 0 }))
+          [.group (.literal { value := 2, authoredScale := 0 })]) input =
+        some (.value 2) ∧
+      checkedResultOf
+        (.binary .add
+          (AuthoredNumericExpr.extremumList .minimum sourceField
+            [.literal { value := 2, authoredScale := 0 }])
+          (.literal { value := 1, authoredScale := 0 })) input =
+        some (.value 3) := by
+  native_decide
+
+/- Each checked Min/Max call still rejects a second immediate constant, while unary wrappers compose in authored order around the completed call. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     checkedErrorOf
@@ -888,7 +912,7 @@ example :
           (checkedNumber (.parsed (.num 6)))) = some (.value 10) := by
   native_decide
 
-/- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. A wrapper may also consume the separately checked direct operand-list extremum. -/
+/- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. A wrapper may also consume a checked operand-list extremum. -/
 example :
     let aggregate := surfaceAggregate .sum "Source" ["Later"]
     checkedResultOf (.abs aggregate)

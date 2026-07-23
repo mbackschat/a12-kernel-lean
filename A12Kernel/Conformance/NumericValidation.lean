@@ -777,7 +777,7 @@ example : verdictOf
     (raw (.parsed (.num 2))) = some (.fired .value) := by
   native_decide
 
-/- A source-confirmed rounding operation is admitted through the shared unary-arithmetic route. -/
+/- A source-confirmed rounding operation is admitted through the shared complete numeric-operation route. -/
 example : verdictOf
     (comparison .less (.round .halfUp omittedRoundingPlaces (atom "U")) 1) =
       some (.fired .omission) := by
@@ -858,7 +858,7 @@ example : errorOf
       (atom "U")) = some .unsupportedExpression := by
   native_decide
 
-/- Enclosing arithmetic does not let a wrapper evade the immediate-literal gate. Nested wrappers remain ordered transformations, and a direct operand-list extremum is another nonliteral numeric child. -/
+/- Enclosing arithmetic does not let a wrapper evade the immediate-literal gate. Nested wrappers remain ordered transformations, and a checked operand-list extremum is another nonliteral numeric child. -/
 example :
     errorOf
         (comparison .less
@@ -1022,13 +1022,13 @@ example : (elaborateNumericComparison model ["Order"]
       (atom "Scale2"))).isOk = true := by
   native_decide
 
-/- Direct extrema remain deliberately separate from ordinary arithmetic in either direction. -/
+/- An admitted operand-list call composes with surrounding arithmetic, and every list member may itself be an admitted numeric operation. -/
 example : errorOf
     (comparison .less
       (.binary .add
         (AuthoredNumericExpr.extremumList .minimum (atom "U") [atom "V"])
         (literal 1 0))
-      0) = some .unsupportedExpression := by
+      0) = none := by
   native_decide
 
 example : errorOf
@@ -1036,7 +1036,7 @@ example : errorOf
       (AuthoredNumericExpr.extremumList .minimum
         (.binary .add (atom "U") (literal 1 0))
         [atom "V"])
-      0) = some .unsupportedExpression := by
+      0) = none := by
   native_decide
 
 /- One direct top-level constant may occur at any position in the canonical operand list. -/
@@ -1062,7 +1062,7 @@ example : (elaborateNumericComparison model ["Order"]
       (atom "Scale2"))).isOk = true := by
   native_decide
 
-/- Two constants, a grouped constant, and a noncanonical right-nested fold remain outside the admitted source shape. -/
+/- Two direct constants in one operand-list call remain illegal. A nested call gets its own constant budget, and grouping does not hide or forbid one literal. -/
 example : errorOf
     (comparison .less
       (AuthoredNumericExpr.extremumList .minimum
@@ -1070,11 +1070,60 @@ example : errorOf
       0) = some .unsupportedExpression := by
   native_decide
 
-example : errorOf
+example : verdictOf
     (comparison .less
       (AuthoredNumericExpr.extremumList .minimum
         (atom "U") [.group (literal 1 0)])
-      0) = some .unsupportedExpression := by
+      2)
+    (raw (.parsed (.num 5))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (AuthoredNumericExpr.extremumList .minimum
+          (atom "U") [literal 1 0])
+        [literal 2 0])
+      2)
+    (raw (.parsed (.num 5))) = some (.fired .value) := by
+  native_decide
+
+/- Each operand is a complete numeric operation. A literal nested inside arithmetic is not a direct list constant. -/
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (.binary .add (atom "U") (literal 1 0))
+        [literal 2 0])
+      3)
+    (raw (.parsed (.num 5))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less
+      (.binary .add
+        (AuthoredNumericExpr.extremumList .minimum
+          (atom "U") [literal 2 0])
+        (literal 1 0))
+      4)
+    (raw (.parsed (.num 5))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (.abs (atom "U")) [literal 2 0])
+      3)
+    (raw (.parsed (.num 5))) = some (.fired .value) := by
+  native_decide
+
+example : verdictOf
+    (comparison .less
+      (AuthoredNumericExpr.extremumList .minimum
+        (AuthoredNumericExpr.extremumList .maximum
+          (atom "U") [literal 1 0])
+        [literal 2 0])
+      3)
+    (raw (.parsed (.num 5))) = some (.fired .value) := by
   native_decide
 
 example : errorOf

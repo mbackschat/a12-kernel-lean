@@ -4,6 +4,16 @@ import A12Kernel.Elaboration.NumericValidation
 
 namespace A12Kernel
 
+attribute [local simp]
+  LoweredNumericExpr.isNumericOperation
+  LoweredNumericExpr.isExtremumCall
+  LoweredNumericExpr.isAdmittedValidation
+  LoweredNumericExpr.evalNumericOperationTree
+  LoweredNumericExpr.evalNumericOperation?
+  LoweredNumericExpr.evalAdmittedValidation?
+  combineNumericValidationOutcomes
+  evalPlainBinary
+
 /-- Eliminate the model-validity certificate carried by a checked comparison. -/
 theorem checkedNumericComparison_modelWellFormed
     (checked : CheckedNumericComparison model) :
@@ -115,17 +125,24 @@ theorem numericValidation_power_values_delegate
     (baseValue exponentValue : Rat)
     (baseFill exponentFill : NumericFillability)
     (baseEvaluated :
-      base.evalUnaryArithmetic? read =
+      base.evalNumericOperation? read =
         some (.ok (.value baseValue baseFill)))
     (exponentEvaluated :
-      exponent.evalUnaryArithmetic? read =
+      exponent.evalNumericOperation? read =
         some (.ok (.value exponentValue exponentFill))) :
-    (LoweredNumericExpr.power base exponent).evalUnaryArithmetic? read =
+    (LoweredNumericExpr.power base exponent).evalNumericOperation? read =
       some (.ok (NumericArithmeticOutcome.power
         (.value baseValue baseFill) (.value exponentValue exponentFill))) := by
-  simp only [LoweredNumericExpr.evalUnaryArithmetic?]
-  rw [baseEvaluated, exponentEvaluated]
-  rfl
+  by_cases baseAdmitted : base.isNumericOperation = true
+  · simp [LoweredNumericExpr.evalNumericOperation?, baseAdmitted] at baseEvaluated
+    by_cases exponentAdmitted : exponent.isNumericOperation = true
+    · simp [LoweredNumericExpr.evalNumericOperation?, exponentAdmitted] at exponentEvaluated
+      simp [LoweredNumericExpr.evalNumericOperation?,
+        LoweredNumericExpr.isNumericOperation, baseAdmitted, exponentAdmitted,
+        LoweredNumericExpr.evalNumericOperationTree,
+        baseEvaluated, exponentEvaluated]
+    · simp [LoweredNumericExpr.evalNumericOperation?, exponentAdmitted] at exponentEvaluated
+  · simp [LoweredNumericExpr.evalNumericOperation?, baseAdmitted] at baseEvaluated
 
 /-- The new closed dispatch leaves every ordinary operator's static-scale rule unchanged. -/
 theorem ordinaryNumericValidation_acceptsScales
@@ -188,7 +205,7 @@ private theorem lowerMultiply_preserves
       (division : expression.rootDivision? = some (numerator, denominator)) :
       shape numerator = true ∧ shape denominator = true := by
     cases expression with
-    | atom | literal | power | abs | extremum | round =>
+    | atom | literal | power | abs | extremum | extremumCall | round =>
         simp [LoweredNumericExpr.rootDivision?] at division
     | binary op actualNumerator actualDenominator =>
         cases op with
@@ -275,341 +292,103 @@ private theorem authoredNumericLower_plain
       simpa only [AuthoredNumericExpr.lowerForEvaluation,
         LoweredNumericExpr.isPlainArithmetic, Bool.and_eq_true]
         using And.intro (baseIh plain.1) (exponentIh plain.2)
-  | abs | extremum | round =>
+  | abs | extremum | extremumCall | round =>
       simp [AuthoredNumericExpr.isPlainArithmetic] at plain
 
-private theorem authoredPlain_isUnary
-    (expression : AuthoredNumericExpr Atom)
-    (plain : expression.isPlainArithmetic = true) :
-    expression.isUnaryArithmetic = true := by
-  induction expression with
-  | atom | literal => rfl
-  | group body ih => exact ih plain
-  | binary op left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isPlainArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at plain ⊢
-      exact ⟨leftIh plain.1, rightIh plain.2⟩
-  | power left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isPlainArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at plain ⊢
-      exact ⟨leftIh plain.1, rightIh plain.2⟩
-  | abs | extremum | round =>
-      simp [AuthoredNumericExpr.isPlainArithmetic] at plain
-
-private theorem lowerMultiply_unary
+private theorem lowerMultiply_numericOperation
     (left right : LoweredNumericExpr Atom)
-    (leftUnary : left.isUnaryArithmetic = true)
-    (rightUnary : right.isUnaryArithmetic = true) :
-    (LoweredNumericExpr.lowerMultiply left right).isUnaryArithmetic = true := by
-  apply lowerMultiply_preserves LoweredNumericExpr.isUnaryArithmetic
+    (leftAdmitted : left.isNumericOperation = true)
+    (rightAdmitted : right.isNumericOperation = true) :
+    (LoweredNumericExpr.lowerMultiply left right).isNumericOperation = true := by
+  apply lowerMultiply_preserves LoweredNumericExpr.isNumericOperation
     (fun _ _ _ leftShape rightShape => by
-      simpa [LoweredNumericExpr.isUnaryArithmetic] using
+      simpa [LoweredNumericExpr.isNumericOperation] using
         And.intro leftShape rightShape)
     (fun _ _ shape => by
-      simpa [LoweredNumericExpr.isUnaryArithmetic] using shape)
-    left right leftUnary rightUnary
+      simpa [LoweredNumericExpr.isNumericOperation] using shape)
+    left right leftAdmitted rightAdmitted
 
-private theorem authoredNumericLower_directExtremumChain
-    (expected : NumericExtremumOp)
+private theorem authoredNumericLower_extremumCall
     (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectExtremumChain expected = true) :
-    expression.lowerForEvaluation.directExtremumConstantUse? expected =
-      expression.directExtremumConstantUse? expected := by
+    (direct : expression.isExtremumCall = true) :
+    expression.lowerForEvaluation.isExtremumCall = true := by
+  induction expression with
+  | group body ih => exact ih direct
+  | extremumCall op body ih =>
+      simpa [AuthoredNumericExpr.isExtremumCall,
+        AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isExtremumCall] using direct
+  | atom | literal | binary | power | abs | extremum | round =>
+      simp [AuthoredNumericExpr.isExtremumCall] at direct
+
+private theorem authoredNumericLower_numericOperation
+    (expression : AuthoredNumericExpr Atom)
+    (admitted : expression.isNumericOperation = true) :
+    expression.lowerForEvaluation.isNumericOperation = true := by
   induction expression with
   | atom | literal => rfl
-  | extremum actual left right leftIh rightIh =>
-      by_cases same : actual = expected
-      · subst actual
-        cases leftUse : left.directExtremumConstantUse? expected with
-        | none =>
-            simp [AuthoredNumericExpr.isDirectExtremumChain,
-              AuthoredNumericExpr.directExtremumConstantUse?, leftUse] at direct
-        | some constantUsed =>
-            have leftDirect : left.isDirectExtremumChain expected = true := by
-              simp [AuthoredNumericExpr.isDirectExtremumChain, leftUse]
-            have leftPreserved := leftIh leftDirect
-            cases right <;>
-              simp [AuthoredNumericExpr.isDirectExtremumChain,
-                AuthoredNumericExpr.directExtremumConstantUse?,
-                LoweredNumericExpr.directExtremumConstantUse?,
-                AuthoredNumericExpr.lowerForEvaluation,
-                leftUse, leftPreserved] at direct ⊢
-      · simp [AuthoredNumericExpr.isDirectExtremumChain,
-          AuthoredNumericExpr.directExtremumConstantUse?, same] at direct
-  | group | binary | power | abs | round =>
-      simp [AuthoredNumericExpr.isDirectExtremumChain,
-        AuthoredNumericExpr.directExtremumConstantUse?] at direct
-
-private theorem authoredNumericLower_directValueFunction
-    (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectValueFunction = true) :
-    expression.lowerForEvaluation.isDirectValueFunction = true := by
-  cases expression with
-  | atom | literal | group | binary | power | abs | round =>
-      simp [AuthoredNumericExpr.isDirectValueFunction] at direct
-  | extremum op left right =>
-      have preserved := authoredNumericLower_directExtremumChain op
-        (.extremum op left right) direct
-      simp only [AuthoredNumericExpr.isDirectValueFunction] at direct
-      unfold AuthoredNumericExpr.isDirectExtremumChain at direct
-      unfold LoweredNumericExpr.isDirectValueFunction
-      unfold LoweredNumericExpr.isDirectExtremumChain
-      simp only [AuthoredNumericExpr.lowerForEvaluation]
-      simp only [AuthoredNumericExpr.lowerForEvaluation] at preserved
-      rw [preserved]
-      exact direct
-
-private theorem authoredNumericLower_unary
-    (expression : AuthoredNumericExpr Atom)
-    (unary : expression.isUnaryArithmetic = true) :
-    expression.lowerForEvaluation.isUnaryArithmetic = true := by
-  induction expression with
-  | atom | literal => rfl
-  | group body ih => exact ih unary
+  | group body ih => exact ih admitted
   | binary op left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isUnaryArithmetic,
-        Bool.and_eq_true] at unary
+      simp only [AuthoredNumericExpr.isNumericOperation,
+        Bool.and_eq_true] at admitted
       cases op with
       | add | subtract | divide =>
           simpa only [AuthoredNumericExpr.lowerForEvaluation,
-            LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
-            using And.intro (leftIh unary.1) (rightIh unary.2)
+            LoweredNumericExpr.isNumericOperation, Bool.and_eq_true]
+            using And.intro (leftIh admitted.1) (rightIh admitted.2)
       | multiply =>
-          exact lowerMultiply_unary _ _
-            (leftIh unary.1) (rightIh unary.2)
+          exact lowerMultiply_numericOperation _ _
+            (leftIh admitted.1) (rightIh admitted.2)
   | power base exponent baseIh exponentIh =>
-      simp only [AuthoredNumericExpr.isUnaryArithmetic,
-        Bool.and_eq_true] at unary
+      simp only [AuthoredNumericExpr.isNumericOperation,
+        Bool.and_eq_true] at admitted
       simpa only [AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
-        using And.intro (baseIh unary.1) (exponentIh unary.2)
+        LoweredNumericExpr.isNumericOperation, Bool.and_eq_true]
+        using And.intro (baseIh admitted.1) (exponentIh admitted.2)
   | abs body ih =>
-      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+      simp only [AuthoredNumericExpr.isNumericOperation,
         AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isUnaryArithmetic, Bool.or_eq_true] at unary ⊢
-      cases unary with
-      | inl bodyUnary =>
-          exact Or.inl (ih bodyUnary)
-      | inr bodyDirect =>
-          exact Or.inr
-            (authoredNumericLower_directValueFunction body bodyDirect)
+        LoweredNumericExpr.isNumericOperation] at admitted ⊢
+      exact ih admitted
   | round mode places body ih =>
-      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+      simp only [AuthoredNumericExpr.isNumericOperation,
         AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isUnaryArithmetic, Bool.or_eq_true] at unary ⊢
-      cases unary with
-      | inl bodyUnary =>
-          exact Or.inl (ih bodyUnary)
-      | inr bodyDirect =>
-          exact Or.inr
-            (authoredNumericLower_directValueFunction body bodyDirect)
+        LoweredNumericExpr.isNumericOperation] at admitted ⊢
+      exact ih admitted
   | extremum =>
-      simp [AuthoredNumericExpr.isUnaryArithmetic] at unary
-
-private theorem loweredDirectExtremum_constantUse_preserved
-    (expected : NumericExtremumOp)
-    (expression : LoweredNumericExpr Atom)
-    (read : Atom → Except FormalCause NumericArithmeticOutcome) :
-    (expression.evalDirectExtremumWithConstantUse? expected read).map Prod.snd =
-      expression.directExtremumConstantUse? expected := by
-  induction expression with
-  | atom | literal => rfl
-  | extremum actual left right leftIh rightIh =>
-      by_cases same : actual = expected
-      · subst actual
-        cases evaluated : left.evalDirectExtremumWithConstantUse? expected read with
-        | none =>
-            have leftUse : left.directExtremumConstantUse? expected = none := by
-              simpa [evaluated] using leftIh.symm
-            simp [LoweredNumericExpr.evalDirectExtremumWithConstantUse?,
-              LoweredNumericExpr.directExtremumConstantUse?, evaluated, leftUse]
-        | some result =>
-            rcases result with ⟨leftOutcome, constantUsed⟩
-            have leftUse :
-                left.directExtremumConstantUse? expected = some constantUsed := by
-              simpa [evaluated] using leftIh.symm
-            cases right <;> cases constantUsed <;>
-              simp [LoweredNumericExpr.evalDirectExtremumWithConstantUse?,
-                LoweredNumericExpr.directExtremumConstantUse?,
-                evaluated, leftUse]
-      · simp [LoweredNumericExpr.evalDirectExtremumWithConstantUse?,
-          LoweredNumericExpr.directExtremumConstantUse?, same]
-  | binary | power | abs | round => rfl
-
-private theorem loweredDirectExtremum_isSome
-    (expected : NumericExtremumOp)
-    (expression : LoweredNumericExpr Atom)
-    (read : Atom → Except FormalCause NumericArithmeticOutcome)
-    (direct : expression.isDirectExtremumChain expected = true) :
-    (expression.evalDirectExtremum? expected read).isSome = true := by
-  have preserved :=
-    loweredDirectExtremum_constantUse_preserved expected expression read
-  cases evaluated : expression.evalDirectExtremumWithConstantUse? expected read with
-  | none =>
-      rw [evaluated] at preserved
-      simp only [Option.map_none] at preserved
-      unfold LoweredNumericExpr.isDirectExtremumChain at direct
-      rw [← preserved] at direct
-      simp at direct
-  | some result =>
-      simp [LoweredNumericExpr.evalDirectExtremum?, evaluated]
-
-private theorem loweredUnaryValidation_isSome
-    (expression : LoweredNumericExpr Atom)
-    (read : Atom → Except FormalCause NumericArithmeticOutcome)
-    (unary : expression.isUnaryArithmetic = true) :
-    (expression.evalUnaryArithmetic? read).isSome = true := by
-  induction expression with
-  | atom | literal => rfl
-  | binary op left right leftIh rightIh =>
-      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
-      have leftSome := leftIh unary.1
-      have rightSome := rightIh unary.2
-      cases leftResult : left.evalUnaryArithmetic? read with
-      | none =>
-          simp [leftResult] at leftSome
-      | some leftOutcome =>
-          cases rightResult : right.evalUnaryArithmetic? read with
-          | none =>
-              simp [rightResult] at rightSome
-          | some rightOutcome =>
-              simp [LoweredNumericExpr.evalUnaryArithmetic?,
-                leftResult, rightResult]
-  | power base exponent baseIh exponentIh =>
-      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
-      have baseSome := baseIh unary.1
-      have exponentSome := exponentIh unary.2
-      cases baseResult : base.evalUnaryArithmetic? read with
-      | none => simp [baseResult] at baseSome
-      | some baseOutcome =>
-          cases exponentResult : exponent.evalUnaryArithmetic? read with
-          | none => simp [exponentResult] at exponentSome
-          | some exponentOutcome =>
-              simp [LoweredNumericExpr.evalUnaryArithmetic?,
-                baseResult, exponentResult]
-  | abs body ih =>
-      have bodySome : (body.evalUnaryArithmetic? read).isSome = true := by
-        simp only [LoweredNumericExpr.isUnaryArithmetic,
-          Bool.or_eq_true] at unary
-        cases unary with
-        | inl bodyUnary => exact ih bodyUnary
-        | inr bodyDirect =>
-            cases body with
-            | extremum op left right =>
-                simpa [LoweredNumericExpr.evalUnaryArithmetic?] using
-                  loweredDirectExtremum_isSome op
-                    (.extremum op left right) read bodyDirect
-            | atom | literal | binary | power | abs | round =>
-                simp [LoweredNumericExpr.isDirectValueFunction] at bodyDirect
-      cases evaluated : body.evalUnaryArithmetic? read with
-      | none => simp [evaluated] at bodySome
-      | some outcome =>
-          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
-  | round mode places body ih =>
-      have bodySome : (body.evalUnaryArithmetic? read).isSome = true := by
-        simp only [LoweredNumericExpr.isUnaryArithmetic,
-          Bool.or_eq_true] at unary
-        cases unary with
-        | inl bodyUnary => exact ih bodyUnary
-        | inr bodyDirect =>
-            cases body with
-            | extremum op left right =>
-                simpa [LoweredNumericExpr.evalUnaryArithmetic?] using
-                  loweredDirectExtremum_isSome op
-                    (.extremum op left right) read bodyDirect
-            | atom | literal | binary | power | abs | round =>
-                simp [LoweredNumericExpr.isDirectValueFunction] at bodyDirect
-      cases evaluated : body.evalUnaryArithmetic? read with
-      | none => simp [evaluated] at bodySome
-      | some outcome =>
-          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
-  | extremum =>
-      simp [LoweredNumericExpr.isUnaryArithmetic] at unary
+      simp [AuthoredNumericExpr.isNumericOperation] at admitted
+  | extremumCall op body ih =>
+      apply authoredNumericLower_extremumCall
+        (.extremumCall op body)
+      simpa [AuthoredNumericExpr.isNumericOperation,
+        AuthoredNumericExpr.isExtremumCall,
+        AuthoredNumericExpr.extremumCallConstantUse?] using admitted
 
 private theorem authoredNumericLower_admittedValidation
     (expression : AuthoredNumericExpr Atom)
     (admitted : expression.isAdmittedNumericOperation = true) :
     expression.lowerForEvaluation.isAdmittedValidation = true := by
-  simp only [AuthoredNumericExpr.isAdmittedNumericOperation,
-    Bool.or_eq_true] at admitted
-  simp only [LoweredNumericExpr.isAdmittedValidation, Bool.or_eq_true]
-  cases admitted with
-  | inl unary =>
-      exact Or.inl (authoredNumericLower_unary expression unary)
-  | inr direct =>
-      exact Or.inr
-        (authoredNumericLower_directValueFunction expression direct)
-
-private theorem admittedResolvedUnary_isUnary
-    (expression : AuthoredNumericExpr NumericValidationAtom)
-    (admitted : expression.isAdmittedResolvedUnaryArithmetic = true) :
-    expression.isUnaryArithmetic = true := by
-  induction expression with
-  | atom | literal => rfl
-  | group body ih => exact ih admitted
-  | binary op left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
-      exact ⟨leftIh admitted.1, rightIh admitted.2⟩
-  | power base exponent baseIh exponentIh =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
-      exact ⟨baseIh admitted.1, exponentIh admitted.2⟩
-  | abs body ih =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true,
-        Bool.or_eq_true] at admitted ⊢
-      cases admitted.2 with
-      | inl bodyAdmitted => exact Or.inl (ih bodyAdmitted)
-      | inr bodyDirect => exact Or.inr bodyDirect
-  | round mode places body ih =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true,
-        Bool.or_eq_true] at admitted ⊢
-      cases admitted.2 with
-      | inl bodyAdmitted => exact Or.inl (ih bodyAdmitted)
-      | inr bodyDirect => exact Or.inr bodyDirect
-  | extremum =>
-      simp [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic] at admitted
+  change expression.lowerForEvaluation.isNumericOperation = true
+  exact authoredNumericLower_numericOperation expression admitted
 
 private theorem authoredNumericLower_admittedNumericValidation
     (expression : AuthoredNumericExpr NumericValidationAtom)
     (admitted : expression.isAdmittedResolvedNumericOperation = true) :
     expression.lowerForEvaluation.isAdmittedValidation = true := by
-  unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
-  split at admitted
-  · have authoredUnary := admittedResolvedUnary_isUnary expression admitted
-    have loweredUnary := authoredNumericLower_unary expression authoredUnary
-    simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
-  · split at admitted
-    · have authoredUnary := authoredPlain_isUnary expression admitted
-      have loweredUnary := authoredNumericLower_unary expression authoredUnary
-      simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
-    · exact authoredNumericLower_admittedValidation expression admitted
+  simp only [AuthoredNumericExpr.isAdmittedResolvedNumericOperation,
+    Bool.and_eq_true] at admitted
+  exact authoredNumericLower_admittedValidation expression admitted.1
 
 private theorem loweredAdmittedValidation_isSome
     (expression : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
     (admitted : expression.isAdmittedValidation = true) :
     (expression.evalAdmittedValidation? read).isSome = true := by
-  simp only [LoweredNumericExpr.isAdmittedValidation,
-    Bool.or_eq_true] at admitted
-  cases admitted with
-  | inl unary =>
-      have evaluated := loweredUnaryValidation_isSome expression read unary
-      cases expression with
-      | atom | literal | binary | power | abs | round =>
-          simpa [LoweredNumericExpr.evalAdmittedValidation?] using evaluated
-      | extremum =>
-          simp [LoweredNumericExpr.isUnaryArithmetic] at unary
-  | inr direct =>
-      cases expression with
-      | atom | literal | binary | power | abs | round =>
-          simp [LoweredNumericExpr.isDirectValueFunction] at direct
-      | extremum op left right =>
-          have evaluated := loweredDirectExtremum_isSome op
-            (.extremum op left right) read direct
-          simpa [LoweredNumericExpr.evalAdmittedValidation?] using evaluated
+  unfold LoweredNumericExpr.isAdmittedValidation at admitted
+  unfold LoweredNumericExpr.evalAdmittedValidation?
+  unfold LoweredNumericExpr.evalNumericOperation?
+  rw [admitted]
+  rfl
 
 private theorem numericComparison_wellFormed_sidesAdmitted
     (comparison : NumericComparison)
@@ -640,35 +419,53 @@ theorem checkedNumericComparison_evaluations_areSome
 theorem numericValidation_extremum_singleConstant_admitted
     (op : NumericExtremumOp) (atom : Atom)
     (constant : DecodedNumericLiteral) :
-    (AuthoredNumericExpr.extremum op (.atom atom)
-        (.literal constant)).isDirectValueFunction = true ∧
-      (AuthoredNumericExpr.extremum op (.literal constant)
-        (.atom atom)).isDirectValueFunction = true := by
-  simp [AuthoredNumericExpr.isDirectValueFunction,
-    AuthoredNumericExpr.isDirectExtremumChain,
-    AuthoredNumericExpr.directExtremumConstantUse?]
+    (AuthoredNumericExpr.extremumCall op
+      (.extremum op (.atom atom)
+        (.literal constant))).isExtremumCall = true ∧
+      (AuthoredNumericExpr.extremumCall op
+        (.extremum op (.literal constant)
+          (.atom atom))).isExtremumCall = true := by
+  cases op <;> constructor <;> rfl
+
+/-- Lowering preserves the source-derived per-call constant certificate even when arithmetic lowering changes the operand topology. -/
+theorem numericValidation_extremumCall_lowering_preservesConstantUse
+    (op : NumericExtremumOp) (body : AuthoredNumericExpr Atom) :
+    LoweredNumericExpr.extremumCallConstantUse? op
+        (AuthoredNumericExpr.extremumCall op body).lowerForEvaluation =
+      (AuthoredNumericExpr.extremumCall op body).extremumCallConstantUse? op := by
+  cases op <;> rfl
+
+/-- Nested calls own independent immediate-constant budgets; flattening the same two constants into one call remains rejected. -/
+theorem numericValidation_extremum_nestedConstantBudgets
+    (op : NumericExtremumOp) (atom : Atom)
+    (first second : DecodedNumericLiteral) :
+    (AuthoredNumericExpr.extremumList op
+      (AuthoredNumericExpr.extremumList op (.atom atom) [.literal first])
+      [.literal second]).isExtremumCall = true ∧
+    (AuthoredNumericExpr.extremumList op (.atom atom)
+      [.literal first, .literal second]).isExtremumCall = false := by
+  cases op <;> constructor <;> rfl
 
 /-- A direct constant reaches the existing exact extremum selector as a fixed operand. -/
 theorem numericValidation_extremum_atom_constant_delegates
     (op : NumericExtremumOp) (atom : Atom) (constant : Rat)
     (read : Atom → Except FormalCause NumericArithmeticOutcome) :
-    (LoweredNumericExpr.extremum op (.atom atom)
-      (.literal constant)).evalDirectExtremum? op read =
+    (LoweredNumericExpr.extremumCall op (some true)
+      (.extremum op (.atom atom)
+        (.literal constant))).evalNumericOperation? read =
         some (op.selectValidationOutcome (read atom)
           (.ok (.value constant .fixed))) := by
-  simp [LoweredNumericExpr.evalDirectExtremum?,
-    LoweredNumericExpr.evalDirectExtremumWithConstantUse?]
+  cases op <;> rfl
 
 /-- A second direct constant is rejected rather than silently widening the authored list contract. -/
 theorem numericValidation_extremum_twoConstants_rejected
     (op : NumericExtremumOp) (atom : Atom)
     (first second : DecodedNumericLiteral) :
-    (AuthoredNumericExpr.extremum op
-      (.extremum op (.atom atom) (.literal first))
-      (.literal second)).isDirectValueFunction = false := by
-  simp [AuthoredNumericExpr.isDirectValueFunction,
-    AuthoredNumericExpr.isDirectExtremumChain,
-    AuthoredNumericExpr.directExtremumConstantUse?]
+    (AuthoredNumericExpr.extremumCall op
+      (.extremum op
+        (.extremum op (.atom atom) (.literal first))
+        (.literal second))).isExtremumCall = false := by
+  cases op <;> rfl
 
 /-- A direct atom and literal evaluate exactly like the shared low-level Number-field evaluator. -/
 theorem numericComparison_atom_literal_agrees_flat
@@ -678,10 +475,9 @@ theorem numericComparison_atom_literal_agrees_flat
       NumericComparison).evalSelected context =
         (FlatComparison.number (.ordinary op) field right.value).eval context := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp only [NumericComparison.evalSelected,
+    simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic, FlatComparison.eval,
@@ -707,7 +503,7 @@ theorem numericValidation_round_atom_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?, observed]
+      observed]
 
 /-- An absolute-valued left atom against a literal delegates to the shared operand transformation for every ordinary and tolerance consumer. -/
 theorem numericValidation_abs_atom_literal_delegates
@@ -725,7 +521,7 @@ theorem numericValidation_abs_atom_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?, observed]
+      observed]
 
 /-- Rounding maps the complete result of its evaluated body; it neither rereads atoms nor changes the body's formal-cause priority. -/
 theorem numericValidation_round_body_delegates
@@ -733,28 +529,42 @@ theorem numericValidation_round_body_delegates
     (body : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
     (bodyOutcome : Except FormalCause NumericArithmeticOutcome)
-    (evaluated : body.evalUnaryArithmetic? read = some bodyOutcome) :
+    (evaluated : body.evalNumericOperation? read = some bodyOutcome) :
     (LoweredNumericExpr.round mode places body).evalAdmittedValidation? read =
       some (match bodyOutcome with
         | .ok outcome => .ok (outcome.round mode places)
         | .error cause => .error cause) := by
-  cases bodyOutcome <;>
-    simp [LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
+  by_cases bodyAdmitted : body.isNumericOperation = true
+  · have treeEvaluated :
+        body.evalNumericOperationTree read = bodyOutcome := by
+      simpa [LoweredNumericExpr.evalNumericOperation?, bodyAdmitted] using evaluated
+    cases bodyOutcome <;>
+      simp [LoweredNumericExpr.evalAdmittedValidation?,
+        LoweredNumericExpr.isNumericOperation,
+        LoweredNumericExpr.evalNumericOperationTree,
+        bodyAdmitted, treeEvaluated]
+  · simp [LoweredNumericExpr.evalNumericOperation?, bodyAdmitted] at evaluated
 
 /-- Absolute value transforms the complete arithmetic outcome only after its evaluated body has finished. -/
 theorem numericValidation_abs_body_delegates
     (body : LoweredNumericExpr Atom)
     (read : Atom → Except FormalCause NumericArithmeticOutcome)
     (bodyOutcome : Except FormalCause NumericArithmeticOutcome)
-    (evaluated : body.evalUnaryArithmetic? read = some bodyOutcome) :
+    (evaluated : body.evalNumericOperation? read = some bodyOutcome) :
     (LoweredNumericExpr.abs body).evalAdmittedValidation? read =
       some (match bodyOutcome with
         | .ok outcome => .ok outcome.absolute
         | .error cause => .error cause) := by
-  cases bodyOutcome <;>
-    simp [LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
+  by_cases bodyAdmitted : body.isNumericOperation = true
+  · have treeEvaluated :
+        body.evalNumericOperationTree read = bodyOutcome := by
+      simpa [LoweredNumericExpr.evalNumericOperation?, bodyAdmitted] using evaluated
+    cases bodyOutcome <;>
+      simp [LoweredNumericExpr.evalAdmittedValidation?,
+        LoweredNumericExpr.isNumericOperation,
+        LoweredNumericExpr.evalNumericOperationTree,
+        bodyAdmitted, treeEvaluated]
+  · simp [LoweredNumericExpr.evalNumericOperation?, bodyAdmitted] at evaluated
 
 /-- A direct tolerance core atom/literal pair delegates to the existing pure tolerance seam. -/
 theorem numericTolerance_atom_literal_delegates
@@ -766,10 +576,9 @@ theorem numericTolerance_atom_literal_delegates
         range.eval (context.resolveNumberComparisonOperand field)
           (.value right.value .fixed) := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp only [NumericComparison.evalSelected,
+    simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
@@ -785,10 +594,9 @@ theorem numericTolerance_field_baseYear_delegates
       range.eval (context.resolveNumberComparisonOperand field)
         (.value year .fixed) := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp only [NumericComparison.evalSelected,
+    simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
@@ -806,10 +614,9 @@ theorem numericTolerance_field_baseYearDatePart_delegates
       range.eval (context.resolveNumberComparisonOperand field)
         (.value (baseYearDateSourceNumericPart year source part) .fixed) := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp only [NumericComparison.evalSelected,
+    simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
@@ -831,7 +638,6 @@ theorem numericValidation_temporalFieldPart_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
@@ -854,7 +660,6 @@ theorem numericValidation_dateDifference_literal_delegates
     simp [NumericComparison.evalSelected,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
-      LoweredNumericExpr.evalUnaryArithmetic?,
       FlatContext.resolveNumericValidationAtom,
       NumericOperand.toValidationArithmetic,
       NumericValidationOp.evalArithmetic, NumericValidationOp.eval,

@@ -25,11 +25,13 @@ inductive AuthoredNumericExpr (Atom : Type) where
   | abs (body : AuthoredNumericExpr Atom)
   | extremum (op : NumericExtremumOp)
       (left right : AuthoredNumericExpr Atom)
+  | extremumCall (op : NumericExtremumOp)
+      (body : AuthoredNumericExpr Atom)
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
       (body : AuthoredNumericExpr Atom)
   deriving Repr, DecidableEq
 
-/-- Runtime arithmetic tree after the source-ordered division rewrite. It deliberately has no static-summary API: authoring checks consume `AuthoredNumericExpr` before lowering. -/
+/-- Runtime arithmetic tree after the source-ordered division rewrite. Each extrema call retains only its source-derived direct-constant result because ordinary lowering may change operand topology but cannot change that per-call authoring fact. -/
 inductive LoweredNumericExpr (Atom : Type) where
   | atom (atom : Atom)
   | literal (value : Rat)
@@ -39,6 +41,8 @@ inductive LoweredNumericExpr (Atom : Type) where
   | abs (body : LoweredNumericExpr Atom)
   | extremum (op : NumericExtremumOp)
       (left right : LoweredNumericExpr Atom)
+  | extremumCall (op : NumericExtremumOp) (constantUse : Option Bool)
+      (body : LoweredNumericExpr Atom)
   | round (mode : DecimalRoundingMode) (places : RoundingPlaces)
       (body : LoweredNumericExpr Atom)
   deriving Repr, DecidableEq
@@ -68,6 +72,8 @@ def mapM {SourceAtom TargetAtom Error : Type}
   | .abs body => (body.mapM resolve).map .abs
   | .extremum op left right => do
       pure (.extremum op (← left.mapM resolve) (← right.mapM resolve))
+  | .extremumCall op body =>
+      (body.mapM resolve).map (.extremumCall op)
   | .round mode places body =>
       (body.mapM resolve).map (.round mode places)
 
@@ -77,7 +83,7 @@ def hasAtom : AuthoredNumericExpr Atom → Bool
   | .group body => body.hasAtom
   | .binary _ left right | .power left right | .extremum _ left right =>
       left.hasAtom || right.hasAtom
-  | .abs body => body.hasAtom
+  | .abs body | .extremumCall _ body => body.hasAtom
   | .round _ _ body => body.hasAtom
 
 /-- Check one predicate against every atom without erasing authored tree structure. -/
@@ -87,7 +93,7 @@ def allAtoms (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
   | .group body => body.allAtoms predicate
   | .binary _ left right | .power left right | .extremum _ left right =>
       left.allAtoms predicate && right.allAtoms predicate
-  | .abs body => body.allAtoms predicate
+  | .abs body | .extremumCall _ body => body.allAtoms predicate
   | .round _ _ body => body.allAtoms predicate
 
 def anyAtom (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
@@ -96,14 +102,15 @@ def anyAtom (predicate : Atom → Bool) : AuthoredNumericExpr Atom → Bool
   | .group body => body.anyAtom predicate
   | .binary _ left right | .power left right | .extremum _ left right =>
       left.anyAtom predicate || right.anyAtom predicate
-  | .abs body => body.anyAtom predicate
+  | .abs body | .extremumCall _ body => body.anyAtom predicate
   | .round _ _ body => body.anyAtom predicate
 
-/-- Normalize one source-level nonempty numeric operand list to the shared left-associated expression tree. A singleton keeps the operand unchanged rather than introducing a synthetic seed. -/
+/-- Preserve one source-level nonempty numeric operand-list call. The explicit list boundary keeps the per-call constant budget distinct from a nested call. -/
 def extremumList (op : NumericExtremumOp)
     (first : AuthoredNumericExpr Atom)
     (rest : List (AuthoredNumericExpr Atom)) : AuthoredNumericExpr Atom :=
-  rest.foldl (fun result operand => .extremum op result operand) first
+  .extremumCall op
+    (rest.foldl (fun result operand => .extremum op result operand) first)
 
 /-- The narrow power-scale exception recognizes only an ungrouped, nonnegative numeric literal. Runtime exponent legality is checked separately. -/
 def isSimpleNonnegativeConstant : AuthoredNumericExpr Atom → Bool
@@ -130,6 +137,7 @@ def summary? (atomSummary : Atom → NumericScaleSummary) :
       let leftSummary ← left.summary? atomSummary
       let rightSummary ← right.summary? atomSummary
       pure (leftSummary.union rightSummary)
+  | .extremumCall _ body => body.summary? atomSummary
   | .round _ places body => do
       let _ ← body.summary? atomSummary
       pure (NumericScaleSummary.rounded places.val)
@@ -183,6 +191,8 @@ private def authoringScan? (allowUnaryWrappers : Bool) :
             decide (1 < exposed),
           leftScan.directLeftNestedPower || rightScan.directLeftNestedPower⟩
       else none
+  | .extremumCall _ body =>
+      if allowUnaryWrappers then body.authoringScan? true else none
 
 private def authoringResult : Option AuthoringScan → NumericAuthoringCheck
   | some scan =>
@@ -204,65 +214,100 @@ def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
   | .power base exponent =>
       base.isPlainArithmetic && exponent.isPlainArithmetic
-  | .abs _ | .extremum _ _ _ | .round _ _ _ => false
+  | .abs _ | .extremum _ _ _ | .extremumCall _ _ | .round _ _ _ => false
 
 def hasUnaryValueFunction : AuthoredNumericExpr Atom → Bool
   | .atom _ | .literal _ => false
   | .group body => body.hasUnaryValueFunction
   | .binary _ left right | .power left right | .extremum _ left right =>
       left.hasUnaryValueFunction || right.hasUnaryValueFunction
-  | .abs _ | .round _ _ _ => true
+  | .extremumCall _ _ | .abs _ | .round _ _ _ => true
 
-/-- Recognize one canonical left-associated extremum operand list while tracking whether its single permitted direct constant has been consumed. `none` rejects mixed selectors, a second constant, wrappers, grouping, or a non-direct right operand. -/
-def directExtremumConstantUse?
-    (expected : NumericExtremumOp) :
+mutual
+
+  /-- Complete numeric operations after source-level Min/Max calls have retained their call boundaries. The raw `extremum` constructor is only an internal list fold and is never admitted without its enclosing call marker. -/
+  def isNumericOperation : AuthoredNumericExpr Atom → Bool
+    | .atom _ | .literal _ => true
+    | .group body => body.isNumericOperation
+    | .binary _ left right | .power left right =>
+        left.isNumericOperation && right.isNumericOperation
+    | .abs body | .round _ _ body => body.isNumericOperation
+    | .extremumCall op body => (body.extremumFoldConstantUse? op).isSome
+    | .extremum _ _ _ => false
+
+  /-- Classify one immediate Min/Max operand as a direct/grouped literal or a complete nonconstant numeric operation. -/
+  private def extremumOperandConstant? :
+      AuthoredNumericExpr Atom → Option Bool
+    | .atom _ => some false
+    | .literal _ => some true
+    | .group body => body.extremumOperandConstant?
+    | .binary _ left right | .power left right =>
+        if left.isNumericOperation && right.isNumericOperation then
+          some false
+        else none
+    | .abs body | .round _ _ body =>
+        if body.isNumericOperation then some false else none
+    | .extremumCall op body => do
+        let _ ← body.extremumFoldConstantUse? op
+        pure false
+    | .extremum _ _ _ => none
+
+  /-- Validate the left-associated internal fold of one authored Min/Max call and report whether that call—not any nested call—uses its single permitted immediate/grouped constant. -/
+  private def extremumFoldConstantUse? (expected : NumericExtremumOp) :
+      AuthoredNumericExpr Atom → Option Bool
+    | .atom _ => some false
+    | .literal _ => some true
+    | .group body => body.extremumFoldConstantUse? expected
+    | .binary _ left right | .power left right =>
+        if left.isNumericOperation && right.isNumericOperation then
+          some false
+        else none
+    | .abs body | .round _ _ body =>
+        if body.isNumericOperation then some false else none
+    | .extremum actual left right => do
+        if actual != expected then none else
+          let leftConstantUsed ← left.extremumFoldConstantUse? expected
+          let rightIsConstant ← right.extremumOperandConstant?
+          if leftConstantUsed && rightIsConstant then none
+          else pure (leftConstantUsed || rightIsConstant)
+    | .extremumCall op body => do
+        let _ ← body.extremumFoldConstantUse? op
+        pure false
+
+end
+
+/-- Recognize one authored numeric operand-list call and report whether that call—not its nested calls—uses its single permitted immediate/grouped constant. -/
+def extremumCallConstantUse? (expected : NumericExtremumOp) :
     AuthoredNumericExpr Atom → Option Bool
-  | .atom _ => some false
-  | .literal _ => some true
-  | .extremum actual left right =>
-      if actual != expected then none else do
-        let constantUsed ← left.directExtremumConstantUse? expected
-        match right with
-        | .atom _ => some constantUsed
-        | .literal _ => if constantUsed then none else some true
-        | _ => none
+  | .group body => body.extremumCallConstantUse? expected
+  | .extremumCall actual body =>
+      if actual != expected then none
+      else body.extremumFoldConstantUse? expected
   | _ => none
 
-def isDirectExtremumChain
-    (expected : NumericExtremumOp) (expression : AuthoredNumericExpr Atom) : Bool :=
-  (expression.directExtremumConstantUse? expected).isSome
-
-/-- The separately checked direct value-function shape not covered by unary arithmetic: one canonical direct-operand Min/Max fold with at most one constant. -/
-def isDirectValueFunction : AuthoredNumericExpr Atom → Bool
-  | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
+/-- Recognize one complete Min/Max operand-list call whose arbitrary numeric operands satisfy the per-call immediate-constant budget. -/
+def isExtremumCall : AuthoredNumericExpr Atom → Bool
+  | expression@(.extremumCall op _) =>
+      (expression.extremumCallConstantUse? op).isSome
+  | .group body => body.isExtremumCall
   | _ => false
 
-/-- Arithmetic whose ordinary operands may themselves contain rounding or absolute-value nodes. A wrapper may consume a separately checked direct extremum, but the extremum itself remains outside ordinary arithmetic unless reached through that wrapper boundary. -/
-def isUnaryArithmetic : AuthoredNumericExpr Atom → Bool
-  | .atom _ | .literal _ => true
-  | .group body => body.isUnaryArithmetic
-  | .binary _ left right | .power left right =>
-      left.isUnaryArithmetic && right.isUnaryArithmetic
-  | .abs body | .round _ _ body =>
-      body.isUnaryArithmetic || body.isDirectValueFunction
-  | .extremum _ _ _ => false
-
-/-- The shared checked numeric-operation shape is unary arithmetic plus independently audited direct extrema. Source-specific wrapper admission remains a separate gate. -/
+/-- The shared checked numeric-operation shape. Source-specific operand restrictions remain a separate gate. -/
 def isAdmittedNumericOperation (expression : AuthoredNumericExpr Atom) : Bool :=
-  expression.isUnaryArithmetic || expression.isDirectValueFunction
+  expression.isNumericOperation
 
 /-- Check the complete child of an operation-form rounding or absolute-value node, descending through every reached numeric value function. -/
 def numericWrapperBodyAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   authoringResult (expression.authoringScan? true)
 
-/-- Rounding and absolute-value operations delegate their static checks through nested wrappers and separately admitted direct extrema. Enclosing arithmetic follows the legacy walk through each reached value-function subtree: division contributions cross it, while each function node structurally separates an outer direct-left power relation. -/
+/-- Rounding and absolute-value operations delegate their static checks through nested value functions. Enclosing arithmetic follows the legacy walk through each reached value-function subtree: division contributions cross it, while each function node structurally separates an outer direct-left power relation. -/
 def numericOperationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   match expression with
   | .round _ _ body | .abs body => body.numericWrapperBodyAuthoringCheck
   | _ =>
-      if expression.isDirectValueFunction then
+      if expression.isExtremumCall then
         .accepted
       else if expression.hasUnaryValueFunction then
         authoringResult (expression.authoringScan? true)
@@ -329,6 +374,7 @@ def evalValue (read : Atom → NumericArithmeticResult) :
   | .abs body => (body.evalValue read).absolute
   | .extremum op left right =>
       op.selectArithmeticResult (left.evalValue read) (right.evalValue read)
+  | .extremumCall _ _ body => body.evalValue read
   | .round mode places body =>
       (body.evalValue read).round mode places
 
@@ -354,6 +400,10 @@ def lowerForEvaluation : AuthoredNumericExpr Atom → LoweredNumericExpr Atom
   | .abs body => .abs body.lowerForEvaluation
   | .extremum op left right =>
       .extremum op left.lowerForEvaluation right.lowerForEvaluation
+  | .extremumCall op body =>
+      .extremumCall op
+        ((AuthoredNumericExpr.extremumCall op body).extremumCallConstantUse? op)
+        body.lowerForEvaluation
   | .round mode places body =>
       .round mode places body.lowerForEvaluation
 

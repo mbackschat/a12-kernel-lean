@@ -120,11 +120,17 @@ private def crossGroupAggregateOperation :
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
     (.round .floor omittedRoundingPlaces
-      (.abs (.extremum .minimum
-        (.atom (.aggregate .sum {
-          first := absolutePath ["Input"] "Source"
-          rest := [absolutePath ["Input"] "Extra"] }))
-        (.literal { value := -4, authoredScale := 0 }))))
+      (.abs (.binary .add
+        (AuthoredNumericExpr.extremumList .minimum
+          (AuthoredNumericExpr.extremumList .maximum
+            (.binary .add
+              (.atom (.aggregate .sum {
+                first := absolutePath ["Input"] "Source"
+                rest := [absolutePath ["Input"] "Extra"] }))
+              (.literal { value := 0, authoredScale := 0 }))
+            [.literal { value := -5, authoredScale := 0 }])
+          [.literal { value := -4, authoredScale := 0 }])
+        (.literal { value := 0, authoredScale := 0 }))))
 
 private def crossGroupStringRangeOperation :
     Except NumericComputationElabError
