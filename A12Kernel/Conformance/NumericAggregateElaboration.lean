@@ -549,6 +549,27 @@ private def checkedDocumentFilteredAggregateSnapshot
     | .ok operand => .result operand
     | .error cause => .error cause)
 
+private def checkedDocumentValueCountSnapshot
+    (computation filtered : Bool) :
+    Option CheckedDocumentAggregateSnapshot := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ← (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let authored :=
+    if filtered then
+      aggregateSource
+        (.starHaving aggregateStar computationAggregateHaving) []
+    else
+      aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar]
+  let source ← (elaborateNumberEntitySource model ["Form"] authored).toOption
+  pure (match if computation then
+      source.evaluateCheckedDocumentValueCountComputation 2 document []
+    else
+      source.evaluateCheckedDocumentValueCountValidation 2 document [] with
+    | .ok operand => .result operand
+    | .error cause => .error cause)
+
 /- Both phases accumulate the same authored direct/star source from one immutable checked document. -/
 example :
     checkedDocumentAggregateSnapshot false =
@@ -575,6 +596,18 @@ example :
       some (.result (.value 9 .both)) ∧
     checkedDocumentFilteredAggregateSnapshot true =
       some (.result (.value 9 .both)) := by
+  native_decide
+
+/- Value count reuses the same checked operand route while retaining selected-match provenance for filtered cells. -/
+example :
+    checkedDocumentValueCountSnapshot false false =
+      some (.result (.value 1 .fixed)) ∧
+    checkedDocumentValueCountSnapshot true false =
+      some (.result (.value 1 .fixed)) ∧
+    checkedDocumentValueCountSnapshot false true =
+      some (.result (.value 1 .both)) ∧
+    checkedDocumentValueCountSnapshot true true =
+      some (.result (.value 1 .both)) := by
   native_decide
 
 private def checkedComputationAggregateOf (op : NumericAggregateOp)
