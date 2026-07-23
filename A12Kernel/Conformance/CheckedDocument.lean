@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.CheckedGroupPresence
 
 /-! # A12Kernel.Conformance.CheckedDocument — immutable checked-document boundary -/
 
@@ -79,6 +79,39 @@ example : ((checked? classified).map fun checked =>
       (checked.read { field := 2, path := [] }).toOption.map (·.rawPresent),
       (checked.read { field := 4, path := [] }).toOption.map (·.rawPresent))) =
     some (.unknown (.registeredCustomValidation rejection), some true, some false) := by
+  native_decide
+
+/- An instantiated empty repeat row remains group content even with no cell placement. -/
+example : ((checked? classified).bind fun checked =>
+    (checked.groupPresenceInput ["Order", "Items"] [(10, 1)]
+      .fullyRelevant false).toOption.map (·.derive)) =
+    some { content := true, erroneous := false, relevance := .fullyRelevant } := by
+  native_decide
+
+/- The otherwise identical absent-row input remains cleanly empty. -/
+example : ((checked? { classified with instantiatedRows := [] }).bind fun checked =>
+    (checked.groupPresenceInput ["Order", "Items"] [(10, 1)]
+      .fullyRelevant false).toOption.map (·.derive)) =
+    some { content := false, erroneous := false, relevance := .fullyRelevant } := by
+  native_decide
+
+/- Prepared formal rejection is error without admitted group content. -/
+example : ((checked? classified).bind fun checked =>
+    (checked.groupPresenceInput ["Order", "Details"] []
+      .fullyRelevant false).toOption.map (·.derive)) =
+    some { content := false, erroneous := true, relevance := .fullyRelevant } := by
+  native_decide
+
+/- Missing scope and unknown group identity are explicit construction failures, not group UNKNOWN. -/
+example : ((checked? classified).map fun checked =>
+    (match checked.groupPresenceInput ["Order", "Items"] []
+        .fullyRelevant false with
+      | .error (.missingBinding 10) => true
+      | _ => false,
+    match checked.groupPresenceInput ["Order", "Missing"] []
+        .fullyRelevant false with
+      | .error (.unknownGroup ["Order", "Missing"]) => true
+      | _ => false)) = some (true, true) := by
   native_decide
 
 /- Structural addressing failure remains separate from semantic UNKNOWN. -/

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.CheckedGroupPresence
 
 /-! # A12Kernel.Proofs.Elaboration — checked flat-elaboration invariants
 
@@ -275,6 +275,27 @@ theorem model_is_well_formed
     (checked : CheckedDocument model) :
     model.validate.isOk = true :=
   checked.modelWellFormed
+
+theorem groupPresenceInput_preserves_phase_inputs
+    (checked : CheckedDocument model) (groupPath : GroupPath)
+    (environment : Env) (relevance : GroupRelevance)
+    (structuralError : Bool) :
+    (checked.groupPresenceInput groupPath environment relevance structuralError).map
+        (fun input => (input.relevance, input.structuralError)) =
+      (checked.groupPresenceInput groupPath environment relevance structuralError).map
+        (fun _ => (relevance, structuralError)) := by
+  cases result : checked.groupPresenceInput groupPath environment relevance structuralError with
+  | error error => rfl
+  | ok input =>
+      simp only [Except.map]
+      unfold CheckedDocument.groupPresenceInput at result
+      split at result
+      · contradiction
+      · split at result
+        · contradiction
+        · injection result with result
+          subst input
+          rfl
 
 end CheckedDocument
 

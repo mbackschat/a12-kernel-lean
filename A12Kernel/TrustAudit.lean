@@ -1263,3 +1263,4 @@ run_cmd do
 
 #print axioms A12Kernel.DocumentData.toDocument_instantiatedRows
 #print axioms A12Kernel.CheckedDocument.model_is_well_formed
+#print axioms A12Kernel.CheckedDocument.groupPresenceInput_preserves_phase_inputs

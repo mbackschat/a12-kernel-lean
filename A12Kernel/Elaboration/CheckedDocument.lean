@@ -50,8 +50,9 @@ structure CheckedCellPlacement where
   cell : CheckedCell
   deriving Repr, DecidableEq
 
-/-- One exact-model checked input. The source placement remains immutable and every placed cell has one cached base formal-check result. -/
+/-- One exact-model checked input. Only `checkDocument` can construct the certificate; the source placement remains immutable and every placed cell has one cached base formal-check result. -/
 structure CheckedDocument (model : FlatModel) where
+  private mk ::
   source : DocumentData
   checkedCells : List CheckedCellPlacement
   modelWellFormed : model.validate.isOk = true
@@ -69,7 +70,8 @@ private def firstDuplicateCell? : List ClassifiedCellInput → Option CellAddr
       else
         firstDuplicateCell? rest
 
-private def FlatModel.repeatableGroupAtLevel? (model : FlatModel)
+/-- Resolve one repeatable level after model validation has established unique level identity. -/
+def FlatModel.repeatableGroupAtLevel? (model : FlatModel)
     (level : RepeatableLevel) : Option RepeatableGroupDecl :=
   model.repeatableGroups.find? fun group => group.level == level
 
