@@ -653,9 +653,9 @@ def evaluateDirectValueCountAt? (checked : CheckedNumberEntitySource model)
 private def evaluateValueCountWith (checked : CheckedNumberEntitySource model)
     (expected : Rat)
     (resolve : CheckedNumberEntityOperand model →
-      Except StarAddressingError
+      Except Error
         (Sum (ResolvedValueListSide .number) NumericOperand)) :
-    Except StarAddressingError NumericOperand := do
+    Except Error NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueCountSide .number)
       (terminal := NumericOperand)
@@ -685,6 +685,22 @@ def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
       filterRead starRead
+
+/-- Evaluate validation-phase numeric value count through the checked-document aggregate resolver, retaining per-selected-cell filter provenance. -/
+def evaluateCheckedDocumentValueCountValidation
+    (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand :=
+  checked.evaluateValueCountWith expected fun operand =>
+    operand.resolvedCheckedDocumentValidationAggregateSide document outer
+
+/-- Evaluate computation-phase numeric value count through the same resolver and its one-kept-successor filter traversal. -/
+def evaluateCheckedDocumentValueCountComputation
+    (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand :=
+  checked.evaluateValueCountWith expected fun operand =>
+    operand.resolvedCheckedDocumentComputationAggregateSide document outer
 
 /-- Evaluate the unfiltered numeric value count under partial validation. A locally visible filter skips the rule before topology, relevance, or target reads, matching the other entity-list aggregate leaves. -/
 def evaluatePartialValueCount (checked : CheckedNumberEntitySource model)
