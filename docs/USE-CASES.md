@@ -169,6 +169,12 @@ A Transform/Compile probe asked one checked generated-validation rule whether Ke
 
 The probe passes for the static partial-entry decision without reconstructing computation sources or adding a second rule tree. It deliberately cannot answer which filters a full addressed scan encounters after an earlier terminal operand; that remains explicit insufficient information under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). This is a same-context closure probe, not an SG2 milestone, cold artifact qualification, public compiler, or new harness.
 
+## Completed same-context probe record: checked starred-field projection
+
+An Execute/Transform probe resolved one nested starred Number field directly from the immutable checked document. The query returned complete environments and derived addresses in canonical topology order despite scrambled source-row order, preserved stored `"01"` alongside parsed numeric `1`, distinguished present-empty `some ""` from absent `none`, retained the open hierarchical tail, and reported a missing fixed outer binding as structural addressing failure. Equal inner coordinate `1` beneath outer rows `1` and `2` remained distinct.
+
+The probe rejects reconstructing an address from only the terminal coordinate, inferring rows from cells, normalizing away stored spelling, or converting address failure to semantic UNKNOWN. It passes for the one-field checked-input boundary but deliberately returns insufficient information about authored multi-slot order, per-slot declaration metadata, relevance, and which filters a short-circuiting consumer reaches. It is therefore a same-context SG2 sub-capability check, not the cold qualification of the future canonical stream.
+
 ## Completed probe record: immutable checked document
 
 A fresh artifact-only reader received the checked-document architecture and gap contract, canonical document/formal/required/group/repetition clauses, checked construction and consumer owners, laws, and executable separators. It could not inspect the kernel, a12-dmkits, the web, Git history, prior reports, or unlisted files, did not run Lean, and changed no file.

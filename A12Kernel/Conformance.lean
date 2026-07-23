@@ -78,6 +78,7 @@ import A12Kernel.Conformance.TokenFirstFilledValue
 import A12Kernel.Conformance.StarCompleteness
 import A12Kernel.Conformance.StarAddressing
 import A12Kernel.Conformance.StarPathElaboration
+import A12Kernel.Conformance.CheckedStarDocument
 import A12Kernel.Conformance.StarGroupElaboration
 import A12Kernel.Conformance.StarNumberElaboration
 import A12Kernel.Conformance.StarNumberValueList
