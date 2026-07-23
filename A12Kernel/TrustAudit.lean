@@ -762,6 +762,11 @@ run_cmd do
 #print axioms A12Kernel.numericDistinctCount_allEmpty
 #print axioms A12Kernel.numericDistinctCount_having
 #print axioms A12Kernel.numericDistinctCount_firstUnknown
+#print axioms A12Kernel.numericValueCount_singleton_match_fixed
+#print axioms A12Kernel.numericValueCount_empty_zero
+#print axioms A12Kernel.numericValueCount_filtered_match
+#print axioms A12Kernel.valueCount_filtered_nonmatch
+#print axioms A12Kernel.valueCount_leadingUnknown
 #print axioms A12Kernel.numericProductAggregate_singleton_present
 #print axioms A12Kernel.numericProductAggregate_leftUnknown
 #print axioms A12Kernel.numericProductAggregate_singleton_tail

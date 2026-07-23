@@ -218,4 +218,48 @@ example :
         .unknown .required := by
   native_decide
 
+private def countedNumber
+    (cell : ValueListCell .number) (selectedByHaving : Bool := false) :
+    ResolvedValueCountCell .number :=
+  { cell, selectedByHaving }
+
+private def numberCountSide
+    (cells : List (ResolvedValueCountCell .number))
+    (hasUninstantiatedTail : Bool := false)
+    (hasHaving : Bool := false) : ResolvedValueCountSide .number :=
+  { cells, hasUninstantiatedTail, hasHaving }
+
+/- `NumberOfValueInFields` never substitutes numeric zero for an empty field. -/
+example :
+    evalValueCountAggregate 0
+      (numberCountSide [countedNumber (.present 0), countedNumber .empty]) =
+        .value 1 .growOnly := by
+  native_decide
+
+/- Numeric matching crosses the same scale-19 equality boundary as ordinary membership. -/
+example :
+    evalValueCountAggregate 0
+      (numberCountSide [countedNumber (.present belowComparisonResolution),
+        countedNumber (.present 1)]) =
+        .value 1 .fixed := by
+  native_decide
+
+/- A filtered selected match may disappear, but a filtered non-match can only become a future match. -/
+example :
+    evalValueCountAggregate 5
+        (numberCountSide [countedNumber (.present 5) true] false true) =
+        .value 1 .both ∧
+      evalValueCountAggregate 5
+        (numberCountSide [countedNumber (.present 7) true] false true) =
+        .value 0 .growOnly := by
+  native_decide
+
+/- The first reached unavailable field owns the result cause before any later match. -/
+example :
+    evalValueCountAggregate 5
+      (numberCountSide [countedNumber (.unknown .required),
+        countedNumber (.present 5), countedNumber (.unknown .malformed)]) =
+        .unknown .required := by
+  native_decide
+
 end A12Kernel.Conformance.NumericAggregate

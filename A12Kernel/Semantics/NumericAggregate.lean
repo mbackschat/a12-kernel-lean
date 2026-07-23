@@ -161,6 +161,71 @@ abbrev evalNumericDistinctCountAggregate
     (side : ResolvedValueListSide .number) : NumericOperand :=
   evalDistinctCountAggregate side
 
+/-- One reached `NumberOfValueInFields` cell together with whether a `Having` selected it. The per-cell bit is essential: only a matching selected value may later disappear and shrink the count; a selected non-match can only become an additional match. -/
+structure ResolvedValueCountCell (kind : ValueListKind) where
+  cell : ValueListCell kind
+  selectedByHaving : Bool
+
+/-- The already-expanded input to `NumberOfValueInFields`. A reached filter and an omitted tail may add a match even when no currently selected cell matches. -/
+structure ResolvedValueCountSide (kind : ValueListKind) where
+  cells : List (ResolvedValueCountCell kind)
+  hasUninstantiatedTail : Bool
+  hasHaving : Bool
+
+namespace ResolvedValueCountSide
+
+def empty : ResolvedValueCountSide kind :=
+  { cells := [], hasUninstantiatedTail := false, hasHaving := false }
+
+/-- Append one independently resolved authored slot. Every cell selected by that slot's filter retains its provenance; plain cells remain unfiltered. -/
+def appendResolved (accumulated : ResolvedValueCountSide kind)
+    (side : ResolvedValueListSide kind) : ResolvedValueCountSide kind :=
+  { cells := accumulated.cells ++ side.cells.map fun cell =>
+      { cell, selectedByHaving := side.hasHaving }
+    hasUninstantiatedTail :=
+      accumulated.hasUninstantiatedTail || side.hasUninstantiatedTail
+    hasHaving := accumulated.hasHaving || side.hasHaving }
+
+end ResolvedValueCountSide
+
+/-- Internal fold facts that determine the current count and its directional movement. Kept explicit so proofs and Explain consumers can distinguish empty growth from filtered-match shrinkage. -/
+structure ValueCountScanState where
+  count : Nat := 0
+  hasEmpty : Bool := false
+  hasMatchingFilteredValue : Bool := false
+
+/-- Scan value-count cells in encounter order, stopping at the first formal cause. -/
+def scanValueCountCells (expected : ValueListAtom kind) :
+    List (ResolvedValueCountCell kind) → ValueCountScanState →
+      Except FormalCause ValueCountScanState
+  | [], state => pure state
+  | source :: remaining, state =>
+      match source.cell with
+      | .unknown cause => throw cause
+      | .empty =>
+          scanValueCountCells expected remaining
+            { state with hasEmpty := true }
+      | .present value =>
+          if ValueListAtom.equal value expected then
+            scanValueCountCells expected remaining {
+              count := state.count + 1
+              hasEmpty := state.hasEmpty
+              hasMatchingFilteredValue :=
+                state.hasMatchingFilteredValue || source.selectedByHaving }
+          else
+            scanValueCountCells expected remaining state
+
+/-- Count exactly the filled cells equal to the authored constant. Empty cells never substitute a value, the first formal unavailability owns the result, and filter-sensitive movement distinguishes a selected match from a selected non-match. -/
+def evalValueCountAggregate (expected : ValueListAtom kind)
+    (side : ResolvedValueCountSide kind) : NumericOperand :=
+  match scanValueCountCells expected side.cells {} with
+  | .error cause => .unknown cause
+  | .ok state =>
+      .value state.count {
+        canGrow :=
+          state.hasEmpty || side.hasUninstantiatedTail || side.hasHaving
+        canShrink := state.hasMatchingFilteredValue }
+
 /-- One row-aligned pair consumed by `SumOfProducts`. Empty cells remain explicit so each declaration can supply its own numeric missing direction before multiplication. -/
 structure ResolvedNumericProductRow where
   left : ValueListCell .number

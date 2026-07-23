@@ -460,6 +460,18 @@ private def checkedAggregateOf (op : NumericAggregateOp)
       | .ok result => some result
       | .error _ => none
 
+private def checkedValueCountOf (expected : Rat)
+    (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
+    (a b c : RawCell) (direct : RawFlatContext) : Option NumericOperand :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateValueCountValidationIn expected
+          (aggregateDocument rows) [] (model.checkContext direct)
+          (aggregateFilterRead a b c) with
+      | .ok result => some result
+      | .error _ => none
+
 private def checkedComputationAggregateOf (op : NumericAggregateOp)
     (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
     (a b c : RawCell) (direct : RawFlatContext)
@@ -470,6 +482,21 @@ private def checkedComputationAggregateOf (op : NumericAggregateOp)
   | .ok checked =>
       match checked.evaluateComputation op (aggregateDocument rows) []
           (model.checkContext direct).read
+          (aggregateComputationFilterRead leftFilter rightFilter)
+          (aggregateComputationTargetRead a b c) with
+      | .ok result => some result
+      | .error _ => none
+
+private def checkedComputationValueCountOf (expected : Rat)
+    (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
+    (a b c : RawCell) (direct : RawFlatContext)
+    (leftFilter rightFilter : RowIndex → RawCell) :
+    Option NumericOperand :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateValueCountComputation expected
+          (aggregateDocument rows) [] (model.checkContext direct).read
           (aggregateComputationFilterRead leftFilter rightFilter)
           (aggregateComputationTargetRead a b c) with
       | .ok result => some result
@@ -489,6 +516,20 @@ private def checkedPartialAggregateOf (op : NumericAggregateOp)
   | .ok checked =>
       match checked.evaluatePartialAggregate op (aggregateDocument rows) [] scope
           direct (aggregateStarRead a b c) with
+      | .ok result => some result
+      | .error _ => none
+
+private def checkedPartialValueCountOf (expected : Rat)
+    (authored : SurfaceNumberEntitySource) (rows : List RowIndex)
+    (a b c : RawCell) (direct : RawFlatContext)
+    (scope : ValidationRelevanceScope) :
+    Option PartialValidationNumberAggregateResult :=
+  match elaborateNumberEntitySource model ["Form"] authored with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluatePartialValueCount expected
+          (aggregateDocument rows) [] scope direct
+          (aggregateStarRead a b c) with
       | .ok result => some result
       | .error _ => none
 
@@ -859,6 +900,63 @@ example :
         [1, 2, 3] (.parsed (.num 5)) (.parsed (.num 5))
         (.parsed (.num 5)) (raw .empty .empty .empty) =
         some (.value 1 .both) := by
+  native_decide
+
+/- Numeric `NumberOfValueInFields` shares the checked entity-list expansion, but counts only filled scale-19-equal cells. -/
+example :
+    checkedValueCountOf 5
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [1, 2, 3] (.parsed (.num 5)) .presentEmpty
+        (.parsed (.num 6)) (raw (.parsed (.num 5)) .empty .empty) =
+      some (.value 2 .growOnly) := by
+  native_decide
+
+/- Filter provenance is retained per selected cell: a current match may disappear, while a selected non-match can only add a future match. -/
+example :
+    checkedValueCountOf 5
+        (aggregateSource (.starHaving aggregateStar aggregateHaving) [])
+        [1] (.parsed (.num 5)) .empty .empty
+        (raw .empty .empty .empty) =
+        some (.value 1 .both) ∧
+      checkedValueCountOf 5
+        (aggregateSource (.starHaving aggregateStar aggregateHaving) [])
+        [1] (.parsed (.num 7)) .empty .empty
+        (raw .empty .empty .empty) =
+        some (.value 0 .growOnly) := by
+  native_decide
+
+/- Computation preserves the same selected-match distinction and the first reached formal cause. -/
+example :
+    checkedComputationValueCountOf 5
+        (aggregateSource (.starHaving aggregateStar computationAggregateHaving) [])
+        [1, 2] (.parsed (.num 5)) (.parsed (.num 7)) .empty
+        (raw .empty .empty .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) .empty)
+        (cells3 (.parsed (.num 1)) (.parsed (.num 2)) .empty) =
+        some (.value 1 .both) ∧
+      checkedComputationValueCountOf 5
+        (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])
+        [2] (.parsed (.num 5)) .empty .empty
+        (raw (.rejected .declaredConstraint) .empty .empty)
+        (cells3 .empty .empty .empty) (cells3 .empty .empty .empty) =
+        some (.unknown .declaredConstraint) := by
+  native_decide
+
+/- Partial validation reuses the aggregate all-rows gate and skips a locally visible filter before any reads. -/
+example :
+    let plain := aggregateSource (.star aggregateStar) []
+    let filtered := aggregateSource
+      (.starHaving aggregateStar aggregateHaving) []
+    let wildcard := ValidationRelevanceScope.partialSet [
+      relevance repeated.path [.concrete 1, .all, .concrete 1]]
+    checkedPartialValueCountOf 5 plain [1, 2]
+        (.parsed (.num 5)) (.parsed (.num 7)) .empty
+        (raw .empty .empty .empty) wildcard =
+        some (.evaluated (.value 1 .growOnly)) ∧
+      checkedPartialValueCountOf 5 filtered [2]
+        (.rejected .malformed) .empty .empty
+        (raw .empty .empty .empty) (.partialSet []) =
+        some .skippedHaving := by
   native_decide
 
 /- A reached unavailable direct head determines the result before malformed later star topology is resolved. -/
