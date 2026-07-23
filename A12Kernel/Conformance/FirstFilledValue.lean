@@ -20,6 +20,39 @@ private def operands
     (rest : List (ResolvedValueListSide .number)) : FirstFilledNumberOperands :=
   { first, rest }
 
+private inductive ResolvingScanError where
+  | reachedSuffix
+  deriving Repr, DecidableEq
+
+private inductive ResolvingScanSnapshot where
+  | state (state : FirstFilledScanState)
+  | result (result : FirstFilledNumberResult)
+  | error (cause : ResolvingScanError)
+  deriving Repr, DecidableEq
+
+private def resolvingScanSnapshot :
+    Except ResolvingScanError
+      (FirstFilledScanState ⊕ FirstFilledScanResult .number) →
+        ResolvingScanSnapshot
+  | .ok (.inl state) => .state state
+  | .ok (.inr result) => .result result.asNumber
+  | .error cause => .error cause
+
+/- A terminal present head hides a structurally failing suffix, while an empty head reaches that failure. -/
+example :
+    let cell : Nat →
+        Except ResolvingScanError (ValueListCell .number)
+      | 0 => .ok .empty
+      | 1 => .ok (.present 9)
+      | _ => .error .reachedSuffix
+    resolvingScanSnapshot
+        (scanFirstFilledItemsResolving cell [1, 2] {}) =
+      .result (.value 9 false) ∧
+    resolvingScanSnapshot
+        (scanFirstFilledItemsResolving cell [0, 2] {}) =
+      .error .reachedSuffix := by
+  native_decide
+
 /- The first present Number wins and makes every later cell invisible. -/
 example :
     evalFirstFilledNumber
