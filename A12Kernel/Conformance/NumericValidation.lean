@@ -177,10 +177,23 @@ private def dateValue (year : Int) (month day : Nat)
     (basis : DateCalendarBasis := .storedGregorian) : Value :=
   .temporal (.date instant { year, month, day } basis)
 
+private def compileValidationPattern : StringPatternCompiler := fun source =>
+  if source == asciiDigitsPatternSource then
+    locallyExecutableStringPatternMatcher? source
+  else if source == "[0-9]*" then
+    some fun value =>
+      value.toList.all fun character => '0' ≤ character && character ≤ '9'
+  else
+    none
+
 private def verdictOf (surface : SurfaceNumericComparison)
     (context : RawFlatContext := raw) (hasContent : Bool := true)
-    (sourceModel : FlatModel := model) : Option Verdict :=
-  (elaborateAndEvalNumericComparison sourceModel ["Order"] context hasContent surface).toOption
+    (sourceModel : FlatModel := model) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      compileValidationPattern sourceModel).toOption
+  (elaborateAndEvalNumericComparison prepared "en_US" ["Order"]
+    context hasContent surface).toOption
 
 private def errorOf (surface : SurfaceNumericComparison)
     (sourceModel : FlatModel := model) :

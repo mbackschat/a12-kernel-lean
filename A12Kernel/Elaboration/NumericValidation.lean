@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericAggregate
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Semantics.NumericTolerance
 
@@ -686,12 +687,14 @@ def CheckedNumericComparison.evalFull
     (context : FlatContext) (hasContent : Bool) : Verdict :=
   if hasContent then checked.evalSelected context else .notFired
 
-/-- Check a surface comparison and evaluate it against model-derived cells under full validation. -/
-def elaborateAndEvalNumericComparison (model : FlatModel) (rowGroup : GroupPath)
-    (raw : RawFlatContext) (hasContent : Bool)
+/-- Check a surface comparison and evaluate it against one model-indexed prepared String context under full validation. -/
+def elaborateAndEvalNumericComparison
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (rowGroup : GroupPath) (raw : RawFlatContext)
+    (hasContent : Bool)
     (surface : SurfaceNumericComparison) :
     Except NumericValidationElabError Verdict := do
   let checked ← elaborateNumericComparison model rowGroup surface
-  pure (checked.evalFull (model.checkContext raw) hasContent)
+  pure (checked.evalFull (prepared.checkContext locale raw) hasContent)
 
 end A12Kernel
