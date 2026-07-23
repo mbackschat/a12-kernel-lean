@@ -222,6 +222,57 @@ private def scaleTwoTargetDecl : FlatFieldDecl :=
 private def checkedLengthModel : FlatModel :=
   { fields := [productCodeDecl, quantityDecl, scaleTwoTargetDecl] }
 
+private def digitCodeDecl : FlatFieldDecl :=
+  {
+    id := 10
+    groupPath := ["Order"]
+    name := "DigitCode"
+    policy := { kind := .string }
+    stringPatternSource := some asciiDigitsPatternSource
+  }
+
+private def customCodeDecl : FlatFieldDecl :=
+  {
+    id := 11
+    groupPath := ["Order"]
+    name := "CustomCode"
+    policy := { kind := .string }
+    customType := some { name := "ProjectCode" }
+  }
+
+private def preparedLengthModel : FlatModel :=
+  { fields := [digitCodeDecl, customCodeDecl] }
+
+private def customLengthRejection : RegisteredCustomRejection where
+  projectCode := "PROJECT_CODE_INVALID"
+
+private def customLengthValidator : RegisteredCustomFieldValidator := fun value _ =>
+  if value == "accepted" then none else some customLengthRejection
+
+private def preparedLengthWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProjectCode" then some customLengthValidator else none
+
+private def preparedLengthPath (name : String) : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Order"], field := name }
+
+private def preparedLengthRaw (field : FieldId) (source : String) :
+    RawFlatContext where
+  read id := if id == field then .parsed (.str source) else .empty
+
+private def preparedLengthVerdict (name : String) (field : FieldId)
+    (source : String) (expected : Rat) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext preparedLengthWorld builtinStringPatternCompiler
+      preparedLengthModel).toOption
+  (elaborateAndEvalNumericComparison prepared "en_US" ["Order"]
+    (preparedLengthRaw field source) true {
+      op := .ordinary .equal
+      left := .atom (.stringLength (preparedLengthPath name))
+      right := .literal { value := expected, authoredScale := 0 }
+    }).toOption
+
 private def checkedLengthAtom : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.stringLength productCodePath)
 
@@ -243,8 +294,11 @@ private def checkedLengthRaw (source : RawCell) (target : RawCell := .empty) :
     else .empty
 
 private def checkedLengthVerdict (surface : SurfaceNumericComparison)
-    (source : RawCell) : Option Verdict :=
-  (elaborateAndEvalNumericComparison checkedLengthModel ["Order"]
+    (source : RawCell) : Option Verdict := do
+  let prepared ←
+    (prepareFlatStringContext preparedLengthWorld builtinStringPatternCompiler
+      checkedLengthModel).toOption
+  (elaborateAndEvalNumericComparison prepared "en_US" ["Order"]
     (checkedLengthRaw source) true surface).toOption
 
 private def checkedLengthError (surface : SurfaceNumericComparison) :
@@ -265,6 +319,18 @@ example :
     (elaborateNumericComparison checkedLengthModel ["Order"]
       { (checkedLengthComparison .equal 3 2) with
         suppressExactScaleWarning := true }).isOk = true := by
+  native_decide
+
+/- Standalone numeric evaluation consumes both legal prepared String profiles before measuring Length. -/
+example :
+    preparedLengthVerdict "DigitCode" digitCodeDecl.id "123" 3 =
+        some (.fired .value) ∧
+      preparedLengthVerdict "DigitCode" digitCodeDecl.id "12A" 3 =
+        some .unknown ∧
+      preparedLengthVerdict "CustomCode" customCodeDecl.id "accepted" 8 =
+        some (.fired .value) ∧
+      preparedLengthVerdict "CustomCode" customCodeDecl.id "rejected" 8 =
+        some .unknown := by
   native_decide
 
 /- The common numeric evaluator preserves UTF-16 measurement, grow-only empty zero, formal unavailability, arithmetic, and wrapper composition. -/
