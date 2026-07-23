@@ -14,6 +14,14 @@ theorem numericComputationAggregate_evaluatesThroughSharedFold
         observeCell .computation (context.read field)).toComputationResult) := by
   rfl
 
+/-- Computation selects its own phase observation before reusing the shared String-length projection. -/
+theorem numericComputation_stringLength_delegates
+    (context : ScalarComputationContext) (field : FlatStringField) :
+    context.readNumericComputationAtom (.stringLength field) =
+      .ok ((observeCell .computation
+        (context.read field.id)).asStringLengthOperand.toComputationResult) := by
+  rfl
+
 /-- Computation erases range fillability but keeps the missing String source's numeric zero value. -/
 theorem numericComputation_stringRange_empty_zero
     (context : ScalarComputationContext) (field : FlatStringField)
