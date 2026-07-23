@@ -70,15 +70,15 @@ theorem checkedTokenDistinctField_partial_relevance
     (directRead : FieldId → CheckedCell)
     (starRead : Env → FieldId → CheckedCell) :
     (scope.coversCell model source.declaration.path [] = true →
-      (CheckedTokenEntityOperand.field source).resolvedPartialDistinctValidationSide
+      (CheckedTokenEntityOperand.field source).resolvedPartialValidationSide
         document outer scope directRead starRead =
           .ok (.inl (source.resolvedSideAt .validation directRead))) ∧
     (scope.coversCell model source.declaration.path [] = false →
-      (CheckedTokenEntityOperand.field source).resolvedPartialDistinctValidationSide
+      (CheckedTokenEntityOperand.field source).resolvedPartialValidationSide
         document outer scope directRead starRead =
           .ok (.inr .nonRelevant)) := by
   constructor <;> intro relevant <;>
-    simp [CheckedTokenEntityOperand.resolvedPartialDistinctValidationSide, relevant] <;>
+    simp [CheckedTokenEntityOperand.resolvedPartialValidationSide, relevant] <;>
     rfl
 
 end A12Kernel

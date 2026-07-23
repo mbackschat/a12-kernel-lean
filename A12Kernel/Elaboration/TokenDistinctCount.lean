@@ -31,69 +31,6 @@ def distinctScaleSummary (_checked : CheckedTokenEntitySource model) :
 
 end CheckedTokenEntitySource
 
-namespace CheckedTokenStarSource
-
-/-- Full validation resolves topology and its optional checked filter before classifying selected target cells. -/
-def resolvedDistinctValidationSide (checked : CheckedTokenStarSource model)
-    (document : Document) (outer : Env)
-    (read : Env → FieldId → CheckedCell) :
-    Except StarAddressingError (ResolvedValueListSide .token) :=
-  checked.source.resolvedOptionalValidationHavingValueListSide document outer
-    checked.filter read (checked.valueListCellAt .validation read)
-
-/-- Partial all-rows validation checks wildcard/ancestor extent before reading any selected target. -/
-def resolvedPartialDistinctValidationSide
-    (checked : CheckedTokenStarSource model)
-    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → CheckedCell)
-    (_unfiltered : checked.filter.isNone = true) :
-    Except StarAddressingError
-      (Sum (ResolvedValueListSide .token) Unit) := do
-  let resolved ← checked.source.path.resolve document outer
-  if checked.source.allRowsRelevant scope then
-    pure (.inl (resolved.toResolvedSide
-      (checked.valueListCellAt .validation read)))
-  else
-    pure (.inr ())
-
-end CheckedTokenStarSource
-
-namespace CheckedTokenEntityOperand
-
-def resolvedDistinctValidationSide (checked : CheckedTokenEntityOperand model)
-    (document : Document) (outer : Env)
-    (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
-    Except StarAddressingError (ResolvedValueListSide .token) :=
-  match checked with
-  | .field source => pure (source.resolvedSideAt .validation directRead)
-  | .star source =>
-      source.resolvedDistinctValidationSide document outer starRead
-
-def resolvedPartialDistinctValidationSide
-    (checked : CheckedTokenEntityOperand model)
-    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
-    Except StarAddressingError
-      (Sum (ResolvedValueListSide .token) PartialValidationAggregateResult) :=
-  match checked with
-  | .field source =>
-      if scope.coversCell model source.declaration.path [] then
-        pure (.inl (source.resolvedSideAt .validation directRead))
-      else
-        pure (.inr .nonRelevant)
-  | .star source =>
-      if hUnfiltered : source.filter.isNone = true then do
-        match ← source.resolvedPartialDistinctValidationSide document outer scope
-            starRead hUnfiltered with
-        | .inl side => pure (.inl side)
-        | .inr () => pure (.inr .nonRelevant)
-      else
-        pure (.inr .skippedHaving)
-
-end CheckedTokenEntityOperand
-
 namespace CheckedTokenEntitySource
 
 private def emptySide : ResolvedValueListSide .token :=
@@ -108,7 +45,7 @@ def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
       (fun operand => do
-        pure (.inl (← operand.resolvedDistinctValidationSide document outer
+        pure (.inl (← operand.resolvedValidationSide document outer
           directRead starRead)))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
@@ -128,7 +65,7 @@ def evaluatePartialDistinctValidation (checked : CheckedTokenEntitySource model)
     match ← scanResolvedValueListOperands
         (state := ResolvedValueListSide .token)
         (terminal := PartialValidationAggregateResult)
-        (fun operand => operand.resolvedPartialDistinctValidationSide document outer scope
+        (fun operand => operand.resolvedPartialValidationSide document outer scope
           directRead starRead)
         (fun cause => .evaluated (.unknown cause))
         (fun accumulated _ side => accumulated.append side)
