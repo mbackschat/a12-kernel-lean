@@ -1057,11 +1057,13 @@ run_cmd do
 #print axioms A12Kernel.evalAdmittedStringPattern_success
 #print axioms A12Kernel.admittedStringPattern_fired_is_value
 #print axioms A12Kernel.preparedDeclaredStringField_checkRaw
-#print axioms A12Kernel.preparedDeclaredStringField_checkContext_own
-#print axioms A12Kernel.preparedDeclaredStringField_checkContext_other
 #print axioms A12Kernel.preparedDeclaredStringField_source_coherent
+#print axioms A12Kernel.preparedFlatStringPatterns_checkContext_prepared
+#print axioms A12Kernel.preparedFlatStringPatterns_missingPattern_is_malformed
+#print axioms A12Kernel.preparedFlatStringPatterns_noPattern_delegates
 #print axioms A12Kernel.checkedStringPattern_evalSelected
 #print axioms A12Kernel.checkedStringPattern_emptyRow_notFired
+#print axioms A12Kernel.checkedStringPattern_full_delegates
 #print axioms A12Kernel.checkedStringPattern_fired_is_value
 #print axioms A12Kernel.checkedStringPattern_referencesField
 #print axioms A12Kernel.stringLengthOperand_readsNormalized

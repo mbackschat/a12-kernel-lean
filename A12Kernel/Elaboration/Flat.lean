@@ -299,6 +299,7 @@ inductive ResolveError where
   | stringPolicyRequiresString (path : List String)
   | stringPolicyForbidsCustomType (path : List String)
   | stringPatternRequiresString (path : List String)
+  | stringPatternForbidsCustomType (path : List String)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
   | rawStringForbidsPattern (path : List String)
@@ -442,12 +443,14 @@ private def stringPatternError? : List FlatFieldDecl → Option ResolveError
   | [] => none
   | declaration :: rest =>
       match declaration.stringPatternSource, declaration.policy.kind,
-          declaration.stringValueMode with
-      | none, _, _ => stringPatternError? rest
-      | some _, .string, .raw =>
+          declaration.stringValueMode, declaration.customType with
+      | none, _, _, _ => stringPatternError? rest
+      | some _, .string, .raw, _ =>
           some (.rawStringForbidsPattern declaration.path)
-      | some _, .string, .evaluated => stringPatternError? rest
-      | some _, _, _ => some (.stringPatternRequiresString declaration.path)
+      | some _, .string, .evaluated, some _ =>
+          some (.stringPatternForbidsCustomType declaration.path)
+      | some _, .string, .evaluated, none => stringPatternError? rest
+      | some _, _, _, _ => some (.stringPatternRequiresString declaration.path)
 
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError

@@ -7,36 +7,57 @@ namespace A12Kernel
 /-- Prepared declaration checking delegates exactly once to the declaration policy and the compiler-associated optional matcher. -/
 @[simp]
 theorem preparedDeclaredStringField_checkRaw
-    (prepared : PreparedDeclaredStringField model compilePattern)
+    (prepared : PreparedDeclaredStringField compilePattern)
     (raw : RawCell) :
     prepared.checkRaw raw =
       prepared.declaration.stringPolicy.checkRawWithPattern
         (prepared.pattern.map (·.wholeValueMatches)) raw := by
   rfl
 
-/-- The one-field prepared overlay replaces exactly its certified field and leaves model-owned checking for every other identifier. -/
-@[simp]
-theorem preparedDeclaredStringField_checkContext_own
-    (prepared : PreparedDeclaredStringField model compilePattern)
-    (raw : RawFlatContext) :
-    (prepared.checkContext raw).read prepared.field =
-      prepared.checkRaw (raw.read prepared.field) := by
-  simp [PreparedDeclaredStringField.checkContext]
-
-/-- Every different identifier continues through the ordinary model-owned checked context. -/
-theorem preparedDeclaredStringField_checkContext_other
-    (prepared : PreparedDeclaredStringField model compilePattern)
-    (raw : RawFlatContext) (field : FieldId)
-    (different : field ≠ prepared.field) :
-    (prepared.checkContext raw).read field =
-      (model.checkContext raw).read field := by
-  simp [PreparedDeclaredStringField.checkContext, different]
-
 /-- A prepared declaration can never detach its matcher from the exact effective source retained by the declaration. -/
 theorem preparedDeclaredStringField_source_coherent
-    (prepared : PreparedDeclaredStringField model compilePattern) :
+    (prepared : PreparedDeclaredStringField compilePattern) :
     DeclaredStringPatternCoherent prepared.declaration prepared.pattern :=
   prepared.patternCoherent
+
+/-- An exact prepared declaration replaces its model-owned raw read. -/
+theorem preparedFlatStringPatterns_checkContext_prepared
+    (prepared : PreparedFlatStringPatterns model compilePattern)
+    (raw : RawFlatContext) (field : FieldId)
+    (declaration : FlatFieldDecl)
+    (preparedField : PreparedDeclaredStringField compilePattern)
+    (modelLookup : model.lookupUniqueId field = .ok declaration)
+    (preparedLookup : prepared.lookup? field = some preparedField)
+    (matching : preparedField.declaration = declaration) :
+    (prepared.checkContext raw).read field =
+      preparedField.checkRaw (raw.read field) := by
+  simp [PreparedFlatStringPatterns.checkContext, modelLookup, preparedLookup,
+    matching]
+
+/-- A missing entry for an effective declared pattern fails closed rather than bypassing the matcher. -/
+theorem preparedFlatStringPatterns_missingPattern_is_malformed
+    (prepared : PreparedFlatStringPatterns model compilePattern)
+    (raw : RawFlatContext) (field : FieldId)
+    (declaration : FlatFieldDecl)
+    (modelLookup : model.lookupUniqueId field = .ok declaration)
+    (preparedLookup : prepared.lookup? field = none)
+    (required : declaration.effectiveStringPatternSource.isSome = true) :
+    (prepared.checkContext raw).read field = malformedCheckedCell := by
+  simp [PreparedFlatStringPatterns.checkContext, modelLookup, preparedLookup,
+    required]
+
+/-- A declaration without an effective pattern retains the ordinary model-owned checked read. -/
+theorem preparedFlatStringPatterns_noPattern_delegates
+    (prepared : PreparedFlatStringPatterns model compilePattern)
+    (raw : RawFlatContext) (field : FieldId)
+    (declaration : FlatFieldDecl)
+    (modelLookup : model.lookupUniqueId field = .ok declaration)
+    (preparedLookup : prepared.lookup? field = none)
+    (inactive : declaration.effectiveStringPatternSource = none) :
+    (prepared.checkContext raw).read field =
+      (model.checkContext raw).read field := by
+  simp [PreparedFlatStringPatterns.checkContext, modelLookup, preparedLookup,
+    inactive]
 
 /-- A checked authored pattern condition delegates its reached read to the exact matcher returned for its admitted source. -/
 @[simp]
@@ -52,8 +73,19 @@ theorem checkedStringPattern_evalSelected
 @[simp]
 theorem checkedStringPattern_emptyRow_notFired
     (checked : CheckedStringPatternCondition model compilePattern)
+    (prepared : PreparedFlatStringPatterns model compilePattern)
     (raw : RawFlatContext) :
-    checked.evalFull raw false = .notFired := by
+    checked.evalFull prepared raw false = .notFired := by
+  rfl
+
+/-- A content-bearing row evaluates through exactly the model-complete prepared context. -/
+@[simp]
+theorem checkedStringPattern_full_delegates
+    (checked : CheckedStringPatternCondition model compilePattern)
+    (prepared : PreparedFlatStringPatterns model compilePattern)
+    (raw : RawFlatContext) :
+    checked.evalFull prepared raw true =
+      checked.evalSelected (prepared.checkContext raw) := by
   rfl
 
 /-- Any firing from the checked authored route retains the resolved pattern family's VALUE-only polarity. -/
