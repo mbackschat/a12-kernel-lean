@@ -36,25 +36,25 @@ private def cell (path : List Nat) (stored : String) (raw : RawCell) :
     ClassifiedCellInput :=
   { address := { field := key.id, path }, stored, raw }
 
+private def world : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "IndexCustom" then
+      some (fun _ _ => none)
+    else
+      none
+
 private def checkedFor (candidate : FlatModel) (data : DocumentData) :
     Option (CheckedDocument candidate) := do
   let prepared ←
     (prepareFlatStringContext
-      ({ now := { epochMillis := 0 } } : World)
-      builtinStringPatternCompiler candidate).toOption
+      world builtinStringPatternCompiler candidate).toOption
   (checkDocument prepared "en_US" data).toOption
 
 private def preliminaryFor (candidate : FlatModel) (data : DocumentData) :
     Option (CheckedIndexPreliminary candidate) := do
   let checked ← checkedFor candidate data
   (checked.applyFullIndexPreliminary).toOption
-
-private def preliminaryErrorFor (candidate : FlatModel) (data : DocumentData) :
-    Option CheckedIndexPreliminaryError := do
-  let checked ← checkedFor candidate data
-  match checked.applyFullIndexPreliminary with
-  | .ok _ => none
-  | .error error => some error
 
 private def partialFor (candidate : FlatModel) (data : DocumentData)
     (relevant : List RelevantEntityPattern)
@@ -69,6 +69,11 @@ private def partialErrorFor (candidate : FlatModel) (data : DocumentData)
     Option CheckedIndexPreliminaryError := do
   let checked ← checkedFor candidate data
   match checked.applyPartialGeneratedPreliminary relevant [] with
+  | .ok _ => none
+  | .error error => some error
+
+private def resolveErrorOf {value : Type} :
+    Except ResolveError value → Option ResolveError
   | .ok _ => none
   | .error error => some error
 
@@ -301,12 +306,78 @@ example :
       some (.zeroRelevantIndex zero.path 2) := by
   native_decide
 
-/- A model-valid but source-unclosed index kind returns explicit insufficient information instead of borrowing String token semantics. -/
+private def duplicateDataFor (stored : String) (raw : RawCell) : DocumentData :=
+  { instantiatedRows := rows.take 3
+    cells := [cell [1, 1] stored raw, cell [1, 2] stored raw] }
+
+private def duplicatesFor (declaration : FlatFieldDecl)
+    (stored : String) (raw : RawCell) : Bool :=
+  let candidate := { model with fields := [declaration] }
+  match preliminaryFor candidate (duplicateDataFor stored raw) with
+  | none => false
+  | some preliminary => preliminary.findings.length == 2
+
+private def dateComponents : TemporalComponents :=
+  { year := true, month := true, day := true
+    hour := false, minute := false, second := false }
+
+private def timeComponents : TemporalComponents :=
+  { year := false, month := false, day := false
+    hour := true, minute := true, second := true }
+
+private def dateTimeComponents : TemporalComponents :=
+  { year := true, month := true, day := true
+    hour := true, minute := true, second := true }
+
+private def instant : Instant := { epochMillis := 1719292867000 }
+
+private def dateParts : DateParts :=
+  { year := 2024, month := 6, day := 25 }
+
+private def clock : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
+
+/- Every legal scalar index kind uses the one duplicate relation: Number remains numeric, while all other kinds compare their exact stored token after formal admission. -/
 example :
-    let booleanKey := { key with policy := { kind := .boolean } }
-    let booleanModel := { model with fields := [booleanKey] }
-    preliminaryErrorFor booleanModel { instantiatedRows := rows.take 3, cells := [] } =
-      some (.unsupportedIndexKind booleanKey.path .boolean) := by
+    duplicatesFor { key with policy := { kind := .boolean } }
+      "Y" (.parsed (.bool true)) &&
+    duplicatesFor { key with policy := { kind := .confirm } }
+      "Y" (.parsed (.conf true)) &&
+    duplicatesFor {
+        key with
+        policy := { kind := .string }
+        customType := some { name := "IndexCustom" } }
+      "A" (.parsed (.str "A")) &&
+    duplicatesFor {
+        key with
+        policy := { kind := .enumeration }
+        enumeration := some { storedTokens := ["A"] } }
+      "A" (.parsed (.enum "A")) &&
+    duplicatesFor {
+        key with policy := { kind := .temporal .date dateComponents } }
+      "2024-06-25"
+      (.parsed (.temporal (.date instant dateParts .storedGregorian))) &&
+    duplicatesFor {
+        key with policy := { kind := .temporal .time timeComponents } }
+      "05:21:07" (.parsed (.temporal (.time instant clock))) &&
+    duplicatesFor {
+        key with
+        policy := { kind := .temporal .dateTime dateTimeComponents } }
+      "2024-06-25T05:21:07"
+      (.parsed (.temporal
+        (.dateTime instant dateParts clock .storedGregorian))) = true := by
+  native_decide
+
+/- The shared model certificate rejects a raw/no-value String index before preliminary dispatch. -/
+example :
+    let rawKey := {
+      key with
+      policy := { kind := .string }
+      stringValueMode := .raw
+      stringPolicy := { lineBreaksPermitted := true }
+    }
+    resolveErrorOf ({ model with fields := [rawKey] }).validate =
+      some (.invalidIndexField items.path rawKey.id) := by
   native_decide
 
 end A12Kernel.Conformance.CheckedIndexPreliminary

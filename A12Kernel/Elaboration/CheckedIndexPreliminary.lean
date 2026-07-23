@@ -43,7 +43,6 @@ inductive CheckedIndexPreliminaryError where
   | relevantIndexArity (path : List String) (expected actual : Nat)
   | zeroRelevantIndex (path : List String) (position : Nat)
   | nonRelevantAddress (address : CellAddr)
-  | unsupportedIndexKind (path : List String) (actual : SurfaceScalarKind)
   | missingStoredValue (address : CellAddr)
   | incoherentValueKind (address : CellAddr)
   deriving Repr, DecidableEq
@@ -130,11 +129,10 @@ private def CheckedDocument.indexFindings
         | some field => do
             let declaration ← model.lookupUniqueId field |>.mapError .model
             match declaration.policy.kind with
-            | .number _ | .string | .enumeration =>
+            | .number _ | .boolean | .confirm | .string | .enumeration
+            | .temporal _ _ =>
                 pure (indexFindingsForGroup
                   (← checked.indexCandidates group declaration relevance))
-            | actual =>
-                throw (.unsupportedIndexKind declaration.path actual.surfaceKind)
       pure (current ++ (← checked.indexFindings relevance groups))
 
 namespace CheckedIndexPreliminary
