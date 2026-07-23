@@ -255,6 +255,7 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_truth_iff_holds
 #print axioms A12Kernel.correlatedHaving_keepsEnvironment_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
+#print axioms A12Kernel.correlatedHaving_selectResolving_headError
 #print axioms A12Kernel.env_uniqueRowAt_zero
 #print axioms A12Kernel.correlationFrame_rowAtResolving_error
 #print axioms A12Kernel.checkedStarFieldPath_havingValueListSide_hasHaving
@@ -264,6 +265,8 @@ run_cmd do
 #print axioms A12Kernel.currentRepetition_selfExclusion_false
 #print axioms A12Kernel.computationHavingScan_poisonedSuccessor_precedesCurrent
 #print axioms A12Kernel.computationHavingScan_terminalCurrent_hidesAfterSuccessor
+#print axioms A12Kernel.computationHavingResolvingScan_failedSuccessor_precedesCurrent
+#print axioms A12Kernel.computationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
 #print axioms A12Kernel.explicitSelfExclusion_drops_outer
 #print axioms A12Kernel.sameFieldEquality_selfMatches
 #print axioms A12Kernel.crossLevelCorrelation_outer_levels_resolve

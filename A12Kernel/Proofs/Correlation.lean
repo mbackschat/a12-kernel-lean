@@ -149,6 +149,18 @@ theorem correlatedHaving_mem_selectEnvironments_iff
   simp [CorrelatedHaving.selectEnvironments,
     correlatedHaving_keepsEnvironment_iff_holdsIn]
 
+/-- Validation selection preserves the first reached structural filter failure instead of returning a partial semantic selection. -/
+theorem correlatedHaving_selectResolving_headError
+    (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error)
+    (outer candidate : Env) (remaining : List Env) (cause : Error)
+    (failed : condition.evalTruthInResolving context
+      { innerEnv := candidate, outerEnv := outer } = .error cause) :
+    condition.selectEnvironmentsResolving context outer
+        (candidate :: remaining) = .error cause := by
+  rw [CorrelatedHaving.selectEnvironmentsResolving, failed]
+  rfl
+
 /-- Every checked filtered-star value-list side records the filter encounter independently of what the filter retains. -/
 @[simp] theorem checkedStarFieldPath_havingValueListSide_hasHaving
     (checked : CheckedStarFieldPath model) (resolved : ResolvedStarTopology)
@@ -302,6 +314,46 @@ theorem computationHavingScan_terminalCurrent_hidesAfterSuccessor
   simp [CorrelatedHaving.scanComputation,
     CorrelatedHaving.scanComputationCandidates, firstHolds, secondHolds,
     currentTerminates]
+
+/-- Addressed computation preserves a structural failure found while prefetching the successor before it can consume the current target. -/
+theorem computationHavingResolvingScan_failedSuccessor_precedesCurrent
+    (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error)
+    (outer first second : Env)
+    (consume : State → Env → Except Error (State ⊕ Result))
+    (initial : State) (cause : Error)
+    (firstHolds : condition.evalComputationInResolving context
+      { innerEnv := first, outerEnv := outer } = .ok .holds)
+    (secondFails : condition.evalComputationInResolving context
+      { innerEnv := second, outerEnv := outer } = .error cause) :
+    condition.scanComputationResolving context outer consume
+        [first, second] initial = .error cause := by
+  rw [CorrelatedHaving.scanComputationResolving,
+    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds]
+  simp only [bind, Except.bind]
+  rw [CorrelatedHaving.scanComputationCandidatesResolving, secondFails]
+  rfl
+
+/-- After a clean successor is prefetched, a terminal addressed target hides all later filters and structural failures. -/
+theorem computationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
+    (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error)
+    (outer first second third : Env)
+    (consume : State → Env → Except Error (State ⊕ Result))
+    (initial : State) (result : Result)
+    (firstHolds : condition.evalComputationInResolving context
+      { innerEnv := first, outerEnv := outer } = .ok .holds)
+    (secondHolds : condition.evalComputationInResolving context
+      { innerEnv := second, outerEnv := outer } = .ok .holds)
+    (currentTerminates : consume initial first = .ok (.inr result)) :
+    condition.scanComputationResolving context outer consume
+        [first, second, third] initial = .ok (.terminated result) := by
+  rw [CorrelatedHaving.scanComputationResolving,
+    CorrelatedHaving.scanComputationCandidatesResolving, firstHolds]
+  simp only [bind, Except.bind]
+  rw [CorrelatedHaving.scanComputationCandidatesResolving, secondHolds,
+    currentTerminates]
+  rfl
 
 /-- Adding explicit repetition inequality in front of any rest condition removes the
     captured outer row from the executable selection. -/
