@@ -287,6 +287,71 @@ theorem numericDistinctCount_firstUnknown
     (insertDistinctValue (kind := .number))
     before after [] cause beforeKnown]
 
+/-- One filled numeric field equal to the authored constant contributes exactly one fixed count. -/
+theorem numericValueCount_singleton_match_fixed (expected : Rat) :
+    evalValueCountAggregate (kind := .number) expected {
+      cells := [{
+        cell := .present expected
+        selectedByHaving := false }]
+      hasUninstantiatedTail := false
+      hasHaving := false } =
+    .value 1 .fixed := by
+  simp [evalValueCountAggregate, scanValueCountCells,
+    ValueListAtom.equal, NumericComparisonOp.holds,
+    pure, Except.pure, NumericFillability.fixed]
+
+/-- An empty Number field is not substituted with numeric zero; it contributes only future growth. -/
+theorem numericValueCount_empty_zero :
+    evalValueCountAggregate (kind := .number) 0 {
+      cells := [{
+        cell := .empty
+        selectedByHaving := false }]
+      hasUninstantiatedTail := false
+      hasHaving := false } =
+    .value 0 .growOnly := by
+  rfl
+
+/-- A filtered current match may disappear as well as gain peers, so its successful count is both-directionally fillable. -/
+theorem numericValueCount_filtered_match (expected : Rat) :
+    evalValueCountAggregate (kind := .number) expected {
+      cells := [{
+        cell := .present expected
+        selectedByHaving := true }]
+      hasUninstantiatedTail := false
+      hasHaving := true } =
+    .value 1 .both := by
+  simp [evalValueCountAggregate, scanValueCountCells,
+    ValueListAtom.equal, NumericComparisonOp.holds,
+    pure, Except.pure, NumericFillability.both]
+
+/-- A filtered non-match cannot remove the current zero count; it only preserves the possibility of a later match. -/
+theorem valueCount_filtered_nonmatch
+    (expected actual : ValueListAtom kind)
+    (different : ValueListAtom.equal actual expected = false) :
+    evalValueCountAggregate expected {
+      cells := [{
+        cell := .present actual
+        selectedByHaving := true }]
+      hasUninstantiatedTail := false
+      hasHaving := true } =
+    .value 0 .growOnly := by
+  simp [evalValueCountAggregate, scanValueCountCells, different,
+    pure, Except.pure, NumericFillability.growOnly]
+
+/-- A leading formal failure owns the value-count result independently of every later cell and missingness marker. -/
+theorem valueCount_leadingUnknown
+    (expected : ValueListAtom kind) (cause : FormalCause)
+    (remaining : List (ResolvedValueCountCell kind))
+    (hasUninstantiatedTail hasHaving selectedByHaving : Bool) :
+    evalValueCountAggregate expected {
+      cells := {
+        cell := .unknown cause
+        selectedByHaving } :: remaining
+      hasUninstantiatedTail
+      hasHaving } =
+    .unknown cause := by
+  rfl
+
 /-- One complete present pair is exactly one staged multiplication followed by the fold's zero-seeded addition, with no missing direction. -/
 theorem numericProductAggregate_singleton_present (left right : Rat) :
     evalNumericProductAggregate {

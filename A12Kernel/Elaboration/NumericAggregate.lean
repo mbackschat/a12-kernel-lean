@@ -535,6 +535,66 @@ def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
       | .inl accumulated => pure (.evaluated (accumulated.evaluate op))
       | .inr result => pure result
 
+/-- Run `NumberOfValueInFields` over the existing checked Number entity-list route. Unlike the other aggregate folds, this accumulator retains whether each matching cell came through a filter because only such a current match can later disappear. -/
+private def evaluateValueCountWith (checked : CheckedNumberEntitySource model)
+    (expected : Rat)
+    (resolve : CheckedNumberEntityOperand model →
+      Except StarAddressingError
+        (Sum (ResolvedValueListSide .number) NumericOperand)) :
+    Except StarAddressingError NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueCountSide .number)
+      (terminal := NumericOperand)
+      resolve
+      (fun cause => .unknown cause)
+      (fun accumulated _ side => accumulated.appendResolved side)
+      checked.operands ResolvedValueCountSide.empty with
+  | .inl accumulated => pure (evalValueCountAggregate expected accumulated)
+  | .inr result => pure result
+
+/-- Evaluate numeric `NumberOfValueInFields` in full validation from one already-prepared checked scalar/repeatable view. -/
+def evaluateValueCountValidationIn (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (document : Document) (outer : Env)
+    (direct : FlatContext) (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericOperand :=
+  checked.evaluateValueCountWith expected fun operand => do
+    pure (.inl (← operand.resolvedValidationAggregateSideIn
+      document outer direct read))
+
+/-- Evaluate numeric `NumberOfValueInFields` at computation phase. Filtered slots retain the existing one-kept-successor scan and propagate the first reached filter or target cause. -/
+def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericOperand :=
+  let direct : FlatContext := { read := directRead }
+  checked.evaluateValueCountWith expected fun operand =>
+    operand.resolvedComputationAggregateSide document outer direct
+      filterRead starRead
+
+/-- Evaluate the unfiltered numeric value count under partial validation. A locally visible filter skips the rule before topology, relevance, or target reads, matching the other entity-list aggregate leaves. -/
+def evaluatePartialValueCount (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (document : Document) (outer : Env)
+    (scope : ValidationRelevanceScope) (directRead : RawFlatContext)
+    (starRead : Env → FieldId → RawCell) :
+    Except StarAddressingError PartialValidationNumberAggregateResult :=
+  if checked.hasHaving then
+    pure .skippedHaving
+  else
+    let direct := model.checkContext directRead
+    do
+      match ← scanResolvedValueListOperands
+          (state := ResolvedValueCountSide .number)
+          (terminal := PartialValidationNumberAggregateResult)
+          (fun operand => operand.resolvedPartialAggregateSide document outer scope
+            direct starRead)
+          (fun cause => .evaluated (.unknown cause))
+          (fun accumulated _ side => accumulated.appendResolved side)
+          checked.operands ResolvedValueCountSide.empty with
+      | .inl accumulated =>
+          pure (.evaluated (evalValueCountAggregate expected accumulated))
+      | .inr result => pure result
+
 end CheckedNumberEntitySource
 
 end A12Kernel
