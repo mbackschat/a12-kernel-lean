@@ -22,26 +22,30 @@ private def customCode : FlatFieldDecl :=
     groupPath := ["Order", "Details"]
     name := "Code"
     policy := { kind := .string }
-    customType := some { name := "ProjectCode" } }
+    customType := some { name := "ProjectCode" }
+    requiredness := some .absoluteOrNearestRepeatableAncestor }
 
 private def note : FlatFieldDecl :=
   { id := 2
     groupPath := ["Order", "Details"]
     name := "Note"
-    policy := { kind := .string } }
+    policy := { kind := .string }
+    requiredness := some .relativeToParent }
 
 private def itemText : FlatFieldDecl :=
   { id := 3
     groupPath := ["Order", "Items"]
     name := "Text"
     policy := { kind := .string }
+    requiredness := some .absoluteOrNearestRepeatableAncestor
     repeatableScope := [10] }
 
 private def count : FlatFieldDecl :=
   { id := 4
     groupPath := ["Order", "Details"]
     name := "Count"
-    policy := { kind := .number { scale := 0, signed := true } } }
+    policy := { kind := .number { scale := 0, signed := true } }
+    requiredness := some .absoluteOrNearestRepeatableAncestor }
 
 private def lineText : FlatFieldDecl :=
   { id := 5
@@ -200,10 +204,29 @@ example : ((checked? classified).bind fun checked =>
       .poison (.registeredCustomValidation rejection)) := by
   native_decide
 
-/- Absolute-required construction rejects a repeatable target instead of erasing its scope. -/
+/- The default requiredness mode gates a repeatable target on its nearest repeatable ancestor rather than erasing its scope. -/
 example : ((checked? classified).map fun checked =>
     match checked.applyAbsoluteRequiredAt 3 with
-    | .error (.repeatableReference path) => path == ["Order", "Items", "Text"]
+    | .error (.requiresGroupGate path gate) =>
+        path == ["Order", "Items", "Text"] &&
+          gate == ["Order", "Items"]
+    | _ => false) = some true := by
+  native_decide
+
+/- Parent-relative requiredness is not misclassified as absolute merely because the field itself is nonrepeatable. -/
+example : ((checked? classified).map fun checked =>
+    match checked.applyAbsoluteRequiredAt 2 with
+    | .error (.requiresGroupGate path gate) =>
+        path == ["Order", "Details", "Note"] &&
+          gate == ["Order", "Details"]
+    | _ => false) = some true := by
+  native_decide
+
+/- A field without model-owned requiredness cannot be made mandatory by a caller-supplied ID. -/
+example : ((checked? classified).map fun checked =>
+    match checked.applyAbsoluteRequiredAt 5 with
+    | .error (.notRequired path) =>
+        path == ["Order", "Items", "Lines", "Text"]
     | _ => false) = some true := by
   native_decide
 

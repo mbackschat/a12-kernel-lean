@@ -65,10 +65,12 @@ private def partialFor (candidate : FlatModel) (data : DocumentData)
     absoluteRequiredFields).toOption
 
 private def partialErrorFor (candidate : FlatModel) (data : DocumentData)
-    (relevant : List RelevantEntityPattern) :
+    (relevant : List RelevantEntityPattern)
+    (absoluteRequiredFields : List FieldId := []) :
     Option CheckedIndexPreliminaryError := do
   let checked ← checkedFor candidate data
-  match checked.applyPartialGeneratedPreliminary relevant [] with
+  match checked.applyPartialGeneratedPreliminary relevant
+      absoluteRequiredFields with
   | .ok _ => none
   | .error error => some error
 
@@ -246,7 +248,8 @@ private def requiredField : FlatFieldDecl :=
   { id := 2
     groupPath := ["Order"]
     name := "Required"
-    policy := { kind := .string } }
+    policy := { kind := .string }
+    requiredness := some .absoluteOrNearestRepeatableAncestor }
 
 private def requiredModel : FlatModel := { fields := [requiredField] }
 
@@ -285,6 +288,16 @@ example :
       | .ok _ => none
       | .error error => some error) =
       some (.nonRelevantAddress address) := by
+  native_decide
+
+/- A caller-provided field list cannot manufacture requiredness absent from the checked model declaration. -/
+example :
+    let optionalField := { requiredField with requiredness := none }
+    let optionalModel : FlatModel := { fields := [optionalField] }
+    partialErrorFor optionalModel
+        { instantiatedRows := [], cells := [] }
+        [relevantRequired] [optionalField.id] =
+      some (.required (.notRequired optionalField.path)) := by
   native_decide
 
 /- Unknown, misaligned, and zero-index relevant entities fail explicitly; none is silently interpreted as an empty relevant set. -/

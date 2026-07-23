@@ -39,6 +39,7 @@ structure IndexPreliminaryFinding where
 inductive CheckedIndexPreliminaryError where
   | document (error : CheckedDocumentError)
   | model (error : ResolveError)
+  | required (error : CheckedRequiredError)
   | unknownRelevantEntity (path : List String)
   | relevantIndexArity (path : List String) (expected actual : Nat)
   | zeroRelevantIndex (path : List String) (position : Nat)
@@ -354,12 +355,10 @@ private def partialRequiredEvaluations (checked : CheckedDocument model)
       if fields.contains field then
         pure rest
       else
-        let declaration ←
-          model.resolveNonrepeatableDeclarationById field |>.mapError .model
+        let declaration ← model.lookupUniqueId field |>.mapError .model
         let address : CellAddr := { field, path := [] }
         if relevance.coversCell model declaration.path [] then
-          let result :=
-            applyAbsoluteRequired declaration.toPresenceField checked.flatContext
+          let result ← checked.applyAbsoluteRequiredAt field |>.mapError .required
           pure ({ address, verdict := result.mandatoryVerdict } :: rest)
         else
           pure rest

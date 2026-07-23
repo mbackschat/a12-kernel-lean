@@ -114,6 +114,12 @@ inductive StringValueMode where
   | raw
   deriving Repr, DecidableEq
 
+/-- The two model-owned requiredness policies. The first is absolute only without a repeatable ancestor; otherwise it is gated by the nearest repeatable ancestor. -/
+inductive RequirednessMode where
+  | absoluteOrNearestRepeatableAncestor
+  | relativeToParent
+  deriving Repr, DecidableEq
+
 namespace SurfaceLiteral
 
 def kind : SurfaceLiteral → SurfaceScalarKind
@@ -184,6 +190,8 @@ structure FlatFieldDecl where
   stringPatternSource : Option String := none
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
+  /-- Absence means that this field has no model-declared generated mandatory rule. -/
+  requiredness : Option RequirednessMode := none
   /-- Resolved Number constraints reachable from computed-target checking. Scale and signedness remain in `policy.kind`. -/
   numericTargetConstraints : NumericTargetConstraints :=
     NumericTargetConstraints.unconstrained
@@ -294,6 +302,12 @@ structure FlatModel where
   deriving Repr, DecidableEq
 
 def FlatModel.hasBaseYear (model : FlatModel) : Bool := model.baseYear.isSome
+
+/-- The resolved gate of a model-declared required field. -/
+inductive RequirednessScope where
+  | absolute
+  | relativeTo (groupPath : GroupPath)
+  deriving Repr, DecidableEq
 
 inductive ResolveError where
   | invalidModelPath (path : List String)
@@ -631,6 +645,30 @@ def FlatModel.lookupUniqueRepeatablePath (model : FlatModel) (path : GroupPath) 
   | [] => .error (.unknownRepeatableGroup path)
   | [group] => .ok group
   | _ => .error (.duplicateRepeatableGroupPath path)
+
+/-- Resolve one repeatable level after model validation has established unique level identity. -/
+def FlatModel.repeatableGroupAtLevel? (model : FlatModel)
+    (level : RepeatableLevel) : Option RepeatableGroupDecl :=
+  model.repeatableGroups.find? fun group => group.level == level
+
+/-- Resolve a field's model-owned requiredness policy without erasing the group that gates it. A checked model makes the incoherent-scope error unreachable. -/
+def FlatModel.requirednessScopeFor (model : FlatModel)
+    (declaration : FlatFieldDecl) :
+    Except ResolveError (Option RequirednessScope) :=
+  match declaration.requiredness with
+  | none => .ok none
+  | some .relativeToParent =>
+      .ok (some (.relativeTo declaration.groupPath))
+  | some .absoluteOrNearestRepeatableAncestor =>
+      match declaration.repeatableScope.getLast? with
+      | none => .ok (some .absolute)
+      | some level =>
+          match model.repeatableGroupAtLevel? level with
+          | some group => .ok (some (.relativeTo group.path))
+          | none =>
+              .error (.repeatableScopeMismatch declaration.path
+                (model.repeatableScopeForGroupPath declaration.groupPath)
+                declaration.repeatableScope)
 
 /-- A group is present in the flattened namespace when it owns or contains a declared field, or has its own repeatable declaration. Empty nonrepeatable groups are rejected by the kernel and therefore need no representation here. -/
 def FlatModel.hasGroupPath (model : FlatModel) (path : GroupPath) : Bool :=

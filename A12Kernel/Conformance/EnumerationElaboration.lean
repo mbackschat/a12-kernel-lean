@@ -34,6 +34,18 @@ example : rejectsWith (declaration [""]) (.emptyStoredToken 0) := by native_deci
 
 example : rejectsWith (declaration ["A", "A"]) (.duplicateStoredToken "A") := by native_decide
 
+example : isAccepted {
+    storedTokens := ["A", "B"]
+    defaultStoredToken := some "B"
+  } := by
+  native_decide
+
+example : rejectsWith {
+    storedTokens := ["A", "B"]
+    defaultStoredToken := some "C"
+  } (.unknownDefaultStoredToken "C") := by
+  native_decide
+
 example : rejectsWith (declaration ["A"] [display "en" "B" "Bee"])
     (.unknownDisplayStoredToken "en" "B") := by native_decide
 

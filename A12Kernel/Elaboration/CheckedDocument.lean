@@ -72,11 +72,6 @@ private def firstDuplicateCell? : List ClassifiedCellInput → Option CellAddr
       else
         firstDuplicateCell? rest
 
-/-- Resolve one repeatable level after model validation has established unique level identity. -/
-def FlatModel.repeatableGroupAtLevel? (model : FlatModel)
-    (level : RepeatableLevel) : Option RepeatableGroupDecl :=
-  model.repeatableGroups.find? fun group => group.level == level
-
 /-- Resolve one validated field or group scope to the shared structural axes. A checked model makes failure unreachable; retaining `Option` keeps malformed internal callers explicit. -/
 def FlatModel.repeatableAxesForScope? (model : FlatModel) :
     List RepeatableLevel → Option (List StarAxis)
