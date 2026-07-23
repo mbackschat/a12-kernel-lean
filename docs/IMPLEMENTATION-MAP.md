@@ -2,11 +2,23 @@
 
 This is the sole detailed coverage index from the project-owned [`spec/`](../spec/) taxonomy to Lean owners, implemented behavior, evidence, and exclusions. Use a12-dmkits' [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) for its peer-project inventory.
 
-The target is kernel **30.8.1**. “Implemented” means executable Lean; “proved internally” means a theorem follows from the chosen definitions. Neither establishes universal kernel correspondence. **External evidence pending** means no retained kernel observation is replayed here. This map states current boundaries and evidence; the open-only implementation and conformance backlog lives in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md).
+The target is kernel **30.8.1**. This map reports five independent dimensions: executable, proof-closed, kernel-calibrated, publicly exposed, and consumer-qualified. No dimension implies another, and none alone establishes complete kernel correspondence. **Kernel calibration pending** means no retained kernel observation is replayed for the named slice. The open-only implementation and conformance backlog lives in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md).
 
 ## Query contract
 
-Do not read this map front to back. Start from the canonical `§n` heading, search for the exact operator or Lean type, and follow only the linked cross-clause mechanism when the clause entry points there. Clause sections use `Owners`, `Implemented`, `Evidence`, and `Excluded boundary and gap links`; cross-clause mechanisms use the equivalent `Owners`, `Boundary`/`Implemented`, `Proofs and cases`, `Evidence`, and `Excluded/next` labels. Search headings with `rg -n '^### ' docs/IMPLEMENTATION-MAP.md` and status fields with `rg -n '^(#### |\\- (Owners|Boundary|Implemented|Proofs and cases|Evidence|Excluded/next):)' docs/IMPLEMENTATION-MAP.md`.
+Do not read this map front to back. Start from the canonical `§n` heading, search for the exact operator or Lean type, and follow only the linked cross-clause mechanism when the clause entry points there. Clause sections use `Owners`, `Implemented`, `Coverage`, `Evidence`, and `Excluded boundary and gap links`; cross-clause mechanisms use the equivalent `Owners`, `Boundary`/`Implemented`, `Proofs and cases`, `Evidence`, and `Excluded/next` labels. Search headings with `rg -n '^### ' docs/IMPLEMENTATION-MAP.md`, top-level coverage with `rg -n '^- (Executable|Proof-closed|Kernel-calibrated|Publicly exposed|Consumer-qualified):' docs/IMPLEMENTATION-MAP.md`, and mechanism status with `rg -n '^(#### |\\- (Owners|Boundary|Implemented|Proofs and cases|Evidence|Excluded/next):)' docs/IMPLEMENTATION-MAP.md`.
+
+## Coverage dimensions
+
+Every top-level clause has one compact five-dimensional record. `none` means the map identifies no current capability in that dimension; `partial` means at least one named slice is closed but the clause's excluded boundary remains nonempty; `closed` means the complete currently canonical clause is closed in that dimension. A status is always scoped by the clause's `Implemented`, `Evidence`, and `Excluded boundary and gap links` sections; it is not a line-count or theorem-count metric.
+
+- **Executable:** checked Lean definitions and executable separators exist for the named behavior.
+- **Proof-closed:** the chosen account has its required proof spine, payoff-selected laws, and nearest checked non-law for the named behavior.
+- **Kernel-calibrated:** retained versioned kernel observations replay through a typed project-local projection for the named behavior. Source reading and a12-dmkits agreement are provenance, not this status.
+- **Publicly exposed:** the named behavior is reachable through the versioned normalized reference process with its support declaration and process controls.
+- **Consumer-qualified:** a completed same-context or milestone-triggered artifact-only probe has demonstrated the named consumer decision without renewed kernel archaeology.
+
+Never collapse these dimensions into one completion flag. A percentage may be reported only against an explicit named capability inventory and weighting rule; repository size, theorem count, top-level clause count, peer agreement, and a green build are not denominators. When a capsule changes a dimension, update the owning clause's `Coverage` record and the exact supporting detail in the same change.
 
 ## Evidence snapshot
 
@@ -32,6 +44,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - Commutativity, associativity, idempotence, identities, absorbers, absorption, distributivity, and strong-Kleene information monotonicity
 - checked non-laws retain the exact unknown/polarity limits
+
+#### Coverage
+
+- Executable: closed
+- Proof-closed: closed
+- Kernel-calibrated: none
+- Publicly exposed: none
+- Consumer-qualified: none
 
 #### Evidence
 
@@ -62,6 +82,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - Executable Number/Boolean/Confirm empty laws, all six direct Number comparisons, direct String equality/inequality, all six checked numeric `Length` comparisons plus the reduced flat four-ordering projection, directional numeric polarity, row gates, checked surface lowering, and model-derived evaluation
 - parsed-empty String placement preservation plus operator-distinction and directional-fillability laws
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: partial
+- Consumer-qualified: none
 
 #### Evidence
 
@@ -104,6 +132,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Nonempty parsed String ingestion performs exactly one non-overlapping CRLF-to-LF pass before caching the evaluated value
 - proofs connect the cached result to both phases, direct comparison, UTF-16 `Length`, and computation reads, while a checked counterexample refutes global idempotence.
 - The separate reduced String target pass classifies an admitted nonempty root write as accepted or payloadful `ERRORED`, proves no-value and poison bypass for every policy, applies declaration-owned line-break permission plus an optional exact prepared pattern matcher, and preserves the exact attempt while checking the normalized view.
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: partial
+- Consumer-qualified: none
 
 #### Evidence
 
@@ -150,6 +186,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - computation-observation preservation
 - Number/Boolean/Confirm/String targets share the same presence rule; a required present-empty String retains physical placement when the finding is attached.
 - parent-filled requiredness consumes the resolved group's admitted-content × error × relevance state and requires positive admitted content.
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: none
+- Consumer-qualified: none
 
 #### Evidence
 
@@ -260,6 +304,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Laws and executable separators cover the admitted summaries, authoring, lowering, arithmetic, extrema, validation, tolerance, expression-result, stored-form, target, delta, application, dependency, read-order, and fail-closed boundaries
 - [`LF57`](LEAN-FINDINGS.md#lf57--numeric-absolute-value-changes-directional-provenance-at-zero) owns the sign-sensitive `Abs` account and [`LF58`](LEAN-FINDINGS.md#lf58--numeric-operand-list-extrema-combine-exact-selection-with-directional-fillability) owns numeric Min/Max
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: partial
+- Consumer-qualified: partial
+
 #### Evidence
 
 - The compact validation record externally separates ordinary empty numeric polarity only.
@@ -351,6 +403,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - `ModelZone.resolve?` derives `Today`'s local civil date with the offset at the exact validation instant and then resolves that date's midnight independently. The shared `ModelZoneRules` also resolves complete local labels for temporal `BaseYear` and its selected range endpoint, whose checked operands use January 1 or December 31 midnight in the model zone. UTC and the pinned Berlin profile are concrete consumers; wider consumers inject other admitted zone ids and pre-floor legacy labels without a stored-Date check. Laws preserve exact supplied resolution, January-1 source identity, selected December-31 resolution, and fail-closed unsupported-zone behavior.
 - The versioned Berlin day-difference profile adds stateful calendar days through the complete retained transition account. A forward gap landing uses the new offset and therefore reaches the earlier pre-gap wall clock; a forward overlap landing chooses the larger offset and earlier instant. The resulting wall clock becomes the source of the next step.
 - One enum-based `ModelZone.ConcreteProfile` selector owns UTC/GMT/Berlin dispatch for `Today`, fresh-label resolution, and day difference. The typed `DifferenceInDays` boundary accepts either fresh labels or already-resolved local/exact pairs, counts Berlin landings in authored order across arbitrary post-floor dates, separates unsupported profile selection from supported-profile evaluation failure, and has universal Berlin self-zero and swap-negation laws. The checked numeric route uses the exact-input form so an ambiguous stored DateTime is not re-resolved; existing String APIs remain compatibility wrappers.
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: none
+- Publicly exposed: none
+- Consumer-qualified: partial
 
 #### Evidence
 
@@ -482,6 +542,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Checked operation lowering binds one nonrepeatable ordinary String target and its exact declaration policy to the checked expression under the same validated model. A pattern-bearing target recovers the exact matcher already certified by model-complete preparation; a missing or substituted required entry fails closed before expression evaluation. Direct target self-reference, raw targets, registered-custom targets, wrong kinds, and repeatable targets fail before runtime evaluation.
 - Exact accepted/rejected attempt preservation with or without a prepared pattern, forbidden-break and pattern-before-length precedence, no-value/poison bypass, store/delta identity, target admission/self-reference exclusion, exact prepared-evaluator delegation, missing-preparation failure, and the nearest stronger term/application non-laws are proved.
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: none
+- Consumer-qualified: partial
+
 #### Evidence
 
 - Four operator-sensitive validation cases separate empty-content, empty-row, `"ABC"`, and six-character direct-equality/Length outcomes.
@@ -576,6 +644,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Full and partial flat and nested-star routes share one `ResolvedValueListQuantifierSide` and `ValueListQuantifier.evalClassified` mechanism. `AtLeastOne` skips nonrelevance on both sides, `No` treats either side as UNKNOWN, and `NotAll` skips fields-side nonrelevance but treats values-side nonrelevance as UNKNOWN after a present subject exists. Formal causes remain in `ValueListCell`; nonrelevance is retained separately so downstream aggregate and scan consumers cannot accidentally inherit validation-only poison.
 - Trusted laws cover runtime projection, empty/unavailable/VALUE-only behavior, identity-label classification, pair/profile conflict symmetry, String admission, both rejection classes, and overall admission symmetry.
 - The separate type-indexed Number/canonical-token value-list capsule preserves explicit present/empty/unknown cells, declared-tail and `Having` metadata, and distinct `AtLeastOne`, `No`, and `NotAll` clauses
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: none
+- Publicly exposed: none
+- Consumer-qualified: partial
 
 #### Evidence
 
@@ -700,6 +776,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Checked-wrapper theorems eliminate structural certificates
 - they are not source-to-core semantic preservation
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: partial
+- Consumer-qualified: partial
+
 #### Evidence
 
 - The compact validation record privately replays seven uncorrelated iteration observations and publicly binds 12 one-group captured-outer runtime cases plus four static authoring cases.
@@ -771,6 +855,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - ambiguity, wrong group/scope, nested false-singleton scope metadata, and unsupported surface forms fail closed
 - unique declaration and raw-policy coherence theorems
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: partial
+- Consumer-qualified: partial
+
 #### Evidence
 
 - Maintained a12-dmkits indexed-read differentials at accepted revision `71775c9905b057831253348c31ce39e321e61889` establish match/no-match, phase precedence, selected-target invalidity, and presence as triangulation, but this repository retains no portable semantic-index observation.
@@ -833,6 +925,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - phase-specific poison/unknown, String empty/nonempty presence, and data-derived polarity remain visible.
 - The separate String and Number slices keep checked expression identity, expression result, stored form, target outcome, delta, exact application, and downstream dependency meaning distinct without claiming a scheduler or document mutator
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: none
+- Consumer-qualified: partial
+
 #### Evidence
 
 - The project-reviewed [root-String compact bundle](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json) retains 22 clean/target-check observations
@@ -893,6 +993,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Generated-computation validation and mixed ordinary whole rules reuse the same prepared field context, post-fire boundary, and outcome. One generic nonempty table carries literal or checked-expression payloads; its optional common condition sits once outside the complete mismatch disjunction, guards and operations reject direct computed-target self-reference, ERROR severity does not fix message polarity, and tolerance metadata cannot affect computation selection. Scalar expression mismatches use model-wide nonrepeatable admission; checked Number `FirstFilledValue`, repeatable entity-list aggregates, and row-paired products keep their model certificates and run through the same tree under the bounded addressed context.
 - Flat partial evaluation first skips a rule marked as containing `Having`, then applies the separate error-field gate and relevance-aware leaf evaluator for unfiltered rules.
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: partial
+- Consumer-qualified: partial
+
 #### Evidence
 
 - Retained validation observations separate ordinary polarity and malformed connective outcomes but do not establish checked whole-rule assembly, generated guarded-alternative validation, error-code/severity independence, complete message rendering, hidden silent distinctions, or field-fill quantifiers.
@@ -936,6 +1044,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - both silent verdicts are independent of every plan input.
 - Laws cover provider priority, empty fallback, append/order composition, opaque nonempty values, and post-fire gating
 
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: partial
+- Publicly exposed: none
+- Consumer-qualified: partial
+
 #### Evidence
 
 - Maintained a12-dmkits controls at revision `20230e403fa085c782534025f890669a975999a8` make both kernel routes agree on the scale-two `DocumentV2` dot default under US/German locales and on raw-CRLF message display while evaluation reads normalized LF
@@ -962,6 +1078,14 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - A pure total reached-leaf oracle maps true to fired VALUE and false to not-fired, never UNKNOWN or OMISSION
 - the leaf is empty-row eligible.
 - Trusted non-laws show that purity alone supplies neither data locality nor formal-invalid monotonicity
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: none
+- Publicly exposed: none
+- Consumer-qualified: partial
 
 #### Evidence
 
