@@ -28,6 +28,7 @@ theorem semanticIndex_validation_cleanMatch_ignores_unavailableKey
       ResolvedSemanticIndexColumn).lookupValue .validation token =
         observeCell .validation target := by
   simp [ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.lookupKey,
     ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry]
 
 /-- On a clean column, a selected target is observed by the requested phase without an index-specific reinterpretation. -/
@@ -39,6 +40,7 @@ theorem semanticIndex_cleanMatch_observes_target
       ResolvedSemanticIndexColumn).lookupValue phase token =
         observeCell phase target := by
   cases phase <;> simp [ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.lookupKey,
     ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry]
 
 /-- A nonmatching entry cannot affect an indexed value read, irrespective of its target state. -/
@@ -54,6 +56,7 @@ theorem semanticIndex_nonmatchingEntry_irrelevant
       ResolvedSemanticIndexColumn).lookupValue phase requested := by
   cases phase <;> cases unavailableKey <;>
     simp [ResolvedSemanticIndexColumn.lookupValue,
+      ResolvedSemanticIndexColumn.lookupKey,
       ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry, notMatch]
 
 /-- A clean column with no entry returns the empty observation in either phase. -/
@@ -107,6 +110,7 @@ theorem semanticIndex_cleanNoMatch_presence (token : String) :
     ResolvedSemanticIndexColumn.computationFilled,
     ResolvedSemanticIndexColumn.computationNotFilled,
     ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.lookupKey,
     ResolvedSemanticIndexColumn.targetFor?]
 
 /-- Validation presence preserves match-first lookup: both predicates consume the selected target even when another key made the column unavailable. -/
@@ -124,6 +128,7 @@ theorem semanticIndex_validation_cleanMatch_presence_ignores_unavailableKey
   simp [ResolvedSemanticIndexColumn.validationFilled,
     ResolvedSemanticIndexColumn.validationNotFilled,
     ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.lookupKey,
     ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry]
 
 /-- Computation presence preserves column-first lookup: either predicate returns the unavailable-key poison before a clean matching target can contribute. -/
@@ -156,6 +161,7 @@ theorem semanticIndex_validation_cleanMatch_fillTally_ignores_unavailableKey
         (observeCell .validation target).asValidationFillTally := by
   simp [ResolvedSemanticIndexColumn.validationFillTally,
     ResolvedSemanticIndexColumn.lookupValue,
+    ResolvedSemanticIndexColumn.lookupKey,
     ResolvedSemanticIndexColumn.targetFor?, resolvedIndexEntry]
 
 /-- Computation's column-first gate likewise becomes an exact poison slot before any quantifier scan consumes the indexed operand. -/

@@ -100,6 +100,7 @@ import A12Kernel.Proofs.EnumerationValueList
 import A12Kernel.Proofs.FlatNumberValueList
 import A12Kernel.Proofs.EnumerationRepetitionNotUnique
 import A12Kernel.Proofs.SemanticIndex
+import A12Kernel.Proofs.SemanticIndexElaboration
 import A12Kernel.Proofs.CustomCondition
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/

@@ -71,6 +71,7 @@ import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.NumericStar
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Elaboration.StarGroup

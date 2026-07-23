@@ -714,8 +714,11 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Owners
 
 - [`Semantics/SemanticIndex.lean`](../A12Kernel/Semantics/SemanticIndex.lean)
+- [`Elaboration/SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean)
 - [`Proofs/SemanticIndex.lean`](../A12Kernel/Proofs/SemanticIndex.lean)
+- [`Proofs/SemanticIndexElaboration.lean`](../A12Kernel/Proofs/SemanticIndexElaboration.lean)
 - [`Conformance/SemanticIndex.lean`](../A12Kernel/Conformance/SemanticIndex.lean)
+- [`Conformance/SemanticIndexElaboration.lean`](../A12Kernel/Conformance/SemanticIndexElaboration.lean)
 - [`Elaboration/Flat.lean`](../A12Kernel/Elaboration/Flat.lean)
 - [`Elaboration/SingleGroup.lean`](../A12Kernel/Elaboration/SingleGroup.lean)
 - [`Elaboration/Correlation.lean`](../A12Kernel/Elaboration/Correlation.lean)
@@ -727,8 +730,9 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Implemented
 
-- Resolved literal-key value lookup over unique canonical entries plus an unavailable-column marker
+- Resolved exact-text or normalized-Number key lookup over unique canonical entries plus an unavailable-column marker
 - validation clean-match-before-column-invalidity, computation column-invalidity-before-match, clean no-match/matched-empty equivalence, selected-target phase observation, nonmatching-target irrelevance, signedness-aware empty-Number polarity, shared validation/computation `FieldFilled`/`FieldNotFilled`, and indexed field-fill tally/ordered-slot projections
+- checked one-group literal-Number key/Number target construction from the group's declared direct-child Number index field and unique positive raw rows; declaration-owned formal checking, empty-key requiredness, all-participant duplicate exclusion, numeric-value identity, exact-text non-collapse, and phase delegation share the existing owners
 - model validation including field/group hierarchy separation and path-derived repeatable-scope coherence
 - order-independent unique ID/path lookup
 - shared parent walking
@@ -742,6 +746,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Evidence
 
 - Maintained a12-dmkits indexed-read differentials at accepted revision `71775c9905b057831253348c31ce39e321e61889` establish match/no-match, phase precedence, selected-target invalidity, and presence as triangulation, but this repository retains no portable semantic-index observation.
+- Kernel `IndexFieldCache.normalizeValue` establishes Number-value versus non-Number exact-stored-text key identity. Pending [`SPEC-2026-07-23-08`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-23-08--semantic-index-number-keys-compare-by-normalized-numeric-value) requests the missing a12-dmkits Number-spelling separator; the checked Lean route is internally closed but remains external evidence pending.
 - Kernel `CheckRelativeUpImpl` and maintained a12-dmkits `NamedAncestorPathDiffTest` establish that a matching explicit turning-point name is semantically transparent, while a mismatch is `MVK_INVALID_ENTITY`; Lean locks the corresponding flat-field, later-star, and group-valued routes but retains no local portable path observation.
 - The full invalid-column matrix is strongest for Number keys while the canonical-token generalization is source-grounded.
 - The compact validation record privately replays parent-relative, absolute, local-precedence, model-wide fallback, and ambiguity cases.
@@ -751,8 +756,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 #### Excluded boundary and gap links
 
-- **Implemented for three narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, and one already-resolved literal-key semantic-index Number value consumer with kind-independent scalar presence and field-fill operands.
-- Parent-relative and bare forms remain outside the public correlation operation. General path, index, parser/renderer, and static-diagnostic closure is indexed by [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), with repeatable lookup under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
+- **Implemented for four narrow structured/resolved subsets:** non-repeatable flat paths, one absolute-or-direct-child-relative group-qualified star/correlation shape, one checked single-group literal-Number semantic-index construction route, and resolved semantic-index Number value/kind-independent presence/fill consumers.
+- Parent-relative and bare forms remain outside the public correlation operation. Non-Number raw-key construction needs a storage-text owner; field-valued keys, nested/multiple index levels, general path/parser/renderer, and static-diagnostic closure remain indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction), [`SG9`](SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), and repeatable lookup under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §11 — computations
 

@@ -14,9 +14,35 @@ Validation and computation deliberately consume that same resolved column differ
 
 namespace A12Kernel
 
+/-- A canonical semantic-index key after declaration-owned admission and normalization. Number keys compare by numeric value; every other admitted kind remains represented by its exact stored token. -/
+inductive SemanticIndexKey where
+  | text (token : String)
+  | number (value : Rat)
+  deriving Repr, BEq, DecidableEq
+
+instance : Coe String SemanticIndexKey := ⟨SemanticIndexKey.text⟩
+
+@[simp] theorem SemanticIndexKey.text_beq (left right : String) :
+    ((SemanticIndexKey.text left == SemanticIndexKey.text right) : Bool) =
+      (left == right) := by
+  rfl
+
+@[simp] theorem SemanticIndexKey.number_beq (left right : Rat) :
+    ((SemanticIndexKey.number left == SemanticIndexKey.number right) : Bool) =
+      (left == right) := by
+  rfl
+
+@[simp] theorem SemanticIndexKey.text_number_beq (text : String) (value : Rat) :
+    ((SemanticIndexKey.text text == SemanticIndexKey.number value) : Bool) = false := by
+  rfl
+
+@[simp] theorem SemanticIndexKey.number_text_beq (value : Rat) (text : String) :
+    ((SemanticIndexKey.number value == SemanticIndexKey.text text) : Bool) = false := by
+  rfl
+
 /-- One uniquely addressable row after canonical index-key normalization and index-field checking. -/
 structure ResolvedSemanticIndexEntry where
-  token : String
+  token : SemanticIndexKey
   target : CheckedCell
   deriving Repr, DecidableEq
 
@@ -29,16 +55,16 @@ structure ResolvedSemanticIndexColumn where
 namespace ResolvedSemanticIndexColumn
 
 /-- Deterministic reference lookup over the preceding unique-entry contract. The first-match totality behavior is outside the claimed fragment when callers violate uniqueness. -/
-def targetFor? (token : String) :
+def targetFor? (token : SemanticIndexKey) :
     List ResolvedSemanticIndexEntry → Option CheckedCell
   | [] => none
   | entry :: remaining =>
       if entry.token == token then some entry.target
       else targetFor? token remaining
 
-/-- Read one literal-key semantic-index value under the phase-specific lookup policy. Inputs that violate the preceding unique-key contract are outside the claimed fragment; this total function chooses the first supplied clean match. Presence and field-fill consumers remain separate projections of the resulting observation. -/
-def lookupValue (column : ResolvedSemanticIndexColumn)
-    (phase : Phase) (token : String) : CellObservation :=
+/-- Read one already-normalized semantic-index key under the phase-specific lookup policy. Inputs that violate the preceding unique-key contract are outside the claimed fragment; this total function chooses the first supplied clean match. Presence and field-fill consumers remain separate projections of the resulting observation. -/
+def lookupKey (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) (token : SemanticIndexKey) : CellObservation :=
   match phase with
   | .validation =>
       match targetFor? token column.entries with
@@ -54,6 +80,21 @@ def lookupValue (column : ResolvedSemanticIndexColumn)
           match targetFor? token column.entries with
           | some target => observeCell .computation target
           | none => .empty
+
+/-- Preserve the original exact-text literal-key surface as a thin projection into the common canonical-key lookup. -/
+def lookupValue (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) (token : String) : CellObservation :=
+  column.lookupKey phase (.text token)
+
+/-- Read one admitted Number key by numeric value, independent of its authored or stored decimal spelling. -/
+def lookupNumberValue (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) (value : Rat) : CellObservation :=
+  column.lookupKey phase (.number value)
+
+/-- Feed one resolved numeric-key validation lookup into the same direct-comparison empty and polarity rule as the exact-text entry point. -/
+def validationNumberKeyOperand (column : ResolvedSemanticIndexColumn)
+    (field : NumField) (value : Rat) : NumericOperand :=
+  (column.lookupNumberValue .validation value).asValidationNumericOperand field
 
 /-- Feed one resolved validation-side Number lookup into the shared direct-comparison empty and polarity rule. -/
 def validationNumberOperand (column : ResolvedSemanticIndexColumn)
