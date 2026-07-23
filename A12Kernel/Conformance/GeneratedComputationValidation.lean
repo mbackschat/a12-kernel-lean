@@ -366,6 +366,24 @@ private def repeatableGeneratedScalarCapability
     rule.evalFull prepared "en_US" (repeatableRaw .empty (.parsed (.num 0)))
       GroupPresenceContext.unavailable true)
 
+private inductive PartialCompileDecision where
+  | emitHavingSkip
+  | evaluate
+  deriving Repr, DecidableEq
+
+/-- Same-context Transform/Compile probe: the consumer asks the checked whole rule whether Kernel 30.8.1 partial validation must return before relevance and execution. It does not inspect a reached branch or reconstruct the computation source. -/
+private def partialCompileDecision
+    (rule : CheckedResolvedValidationRule checkedModel) :
+    PartialCompileDecision :=
+  if rule.hasHaving then .emitHavingSkip else .evaluate
+
+private def repeatablePartialCompileDecision
+    (operationResult : Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel))
+    (errorCode : String) : Option PartialCompileDecision := do
+  let rule ← repeatableGeneratedRule? operationResult errorCode
+  pure (partialCompileDecision rule)
+
 private def hasAddressedScalarRejection
     (capability :
       Option (Bool × Except ValidationEvaluationError FlatRuleOutcome)) : Bool :=
@@ -1299,6 +1317,25 @@ example :
       hasAddressedScalarRejection
           (repeatableGeneratedScalarCapability productAggregateOperation
             "computedProductAggregate") = true := by
+  native_decide
+
+/- A Transform/Compile consumer discovers a filtered source through the complete shared condition tree, even though it is nested inside the generated mismatch branch. The unfiltered aggregate is the negative control. -/
+example :
+    repeatablePartialCompileDecision repeatableFirstFilledOperation
+        "computedRepeatableFirstFilled" =
+      some .emitHavingSkip ∧
+    repeatablePartialCompileDecision repeatableValueCountOperation
+        "computedRepeatableValueCount" =
+      some .emitHavingSkip ∧
+    repeatablePartialCompileDecision repeatableTokenValueCountOperation
+        "computedRepeatableTokenValueCount" =
+      some .emitHavingSkip ∧
+    repeatablePartialCompileDecision repeatableAggregateOperation
+        "computedRepeatableAggregate" =
+      some .evaluate ∧
+    repeatablePartialCompileDecision productAggregateOperation
+        "computedProductAggregate" =
+      some .evaluate := by
   native_decide
 
 /- Token value-count generated validation exposes the selected String source and its `Having` dependencies while preserving selected-match polarity through the one checked numeric tree. -/

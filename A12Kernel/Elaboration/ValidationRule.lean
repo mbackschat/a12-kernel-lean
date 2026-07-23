@@ -86,6 +86,11 @@ end ResolvedValidationRule
 
 namespace CheckedResolvedValidationRule
 
+/-- Whether the complete checked rule contains a `Having` filter anywhere in its condition. A partial-validation compiler or executor must query this before relevance, iteration, or branch evaluation. -/
+def hasHaving
+    (rule : CheckedResolvedValidationRule model) : Bool :=
+  rule.condition.hasHaving
+
 def requiresAddressedValidation
     (rule : CheckedResolvedValidationRule model) : Bool :=
   rule.condition.core.requiresAddressedValidation

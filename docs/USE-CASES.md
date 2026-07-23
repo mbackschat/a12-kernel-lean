@@ -163,6 +163,12 @@ The Transform readback found one explicitly proved full-verdict rewrite: swap th
 
 The probe passes for bounded checked-nonrepeatable **Execute**, narrow **Transform**, and **Explain**. It does not establish a complete authored evaluator or shipment: table/open/dynamic/partial declarations, repeatable category access, star/path expansion, actual Having and row construction, concrete parsing, complete document adaptation, physical read traces, protocol exposure, portable §8 evidence, and a checked source-transformation or explanation API remain open. The pending a12-dmkits reconciliation for union admission also means the family is not shipment-research-closed. No protocol, runner, external implementation, qualification campaign, evidence mechanism, or harness was added.
 
+## Completed same-context probe record: rule-wide `Having` discovery
+
+A Transform/Compile probe asked one checked generated-validation rule whether Kernel 30.8.1 partial validation must emit its early `Having` return. Filtered Number `FirstFilledValue`, Number value count, and String/Enumeration token value count were each nested inside a generated mismatch branch; the one shared checked condition tree reported every filter, while unfiltered aggregate and `SumOfProducts` controls remained clear. Reached-branch discovery is the unsafe alternative because the Kernel decision precedes relevance, iteration, and condition evaluation.
+
+The probe passes for the static partial-entry decision without reconstructing computation sources or adding a second rule tree. It deliberately cannot answer which filters a full addressed scan encounters after an earlier terminal operand; that remains explicit insufficient information under [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). This is a same-context closure probe, not an SG2 milestone, cold artifact qualification, public compiler, or new harness.
+
 ## Completed probe record: immutable checked document
 
 A fresh artifact-only reader received the checked-document architecture and gap contract, canonical document/formal/required/group/repetition clauses, checked construction and consumer owners, laws, and executable separators. It could not inspect the kernel, a12-dmkits, the web, Git history, prior reports, or unlisted files, did not run Lean, and changed no file.

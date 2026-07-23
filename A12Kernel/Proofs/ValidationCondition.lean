@@ -80,6 +80,35 @@ theorem validationCondition_flat_referencesField
   simp [ValidationCondition.flat, ValidationCondition.referencesField,
     FlatCondition.referencesField, ValidationConditionLeaf.referencesField]
 
+/-- An embedded flat tree cannot acquire a synthetic filter marker. -/
+@[simp]
+theorem validationCondition_flat_hasHaving
+    (condition : FlatCondition) (model : FlatModel) :
+    (ValidationCondition.flat (model := model) condition).hasHaving = false := by
+  induction condition with
+  | leaf leaf =>
+      simp [ValidationCondition.flat, ValidationCondition.hasHaving,
+        ValidationConditionLeaf.hasHaving, ConditionTree.map,
+        ConditionTree.anyLeaf]
+  | and left right leftIH rightIH | or left right leftIH rightIH =>
+      simp_all [ValidationCondition.flat, ValidationCondition.hasHaving,
+        ConditionTree.map, ConditionTree.anyLeaf]
+
+/-- Rule-wide filter discovery is structural and therefore traverses both sides of either connective, independently of runtime short-circuiting. -/
+@[simp]
+theorem validationCondition_hasHaving_and
+    (left right : ValidationCondition model) :
+    ValidationCondition.hasHaving (.and left right) =
+      (left.hasHaving || right.hasHaving) := by
+  rfl
+
+@[simp]
+theorem validationCondition_hasHaving_or
+    (left right : ValidationCondition model) :
+    ValidationCondition.hasHaving (.or left right) =
+      (left.hasHaving || right.hasHaving) := by
+  rfl
+
 /-- A relevant checked numeric comparison evaluates exactly as its existing resolved core. -/
 @[simp]
 theorem validationCondition_numeric_evalSelected_of_relevant
