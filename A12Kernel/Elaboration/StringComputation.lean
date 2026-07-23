@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
@@ -185,20 +185,24 @@ def elaborateStringComputationOperation
 
 namespace CheckedStringExpr
 
-/-- Check raw cells with the same model that certified the expression, then run only the established String evaluator. -/
+/-- Read raw cells through the prepared context for the model that certified the expression, then run only the established String evaluator. -/
 def evaluate (expression : CheckedStringExpr model)
-    (raw : RawFlatContext) :
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) :
     Except StringComputationFault StringStore :=
-  expression.core.evaluate { read := (model.checkContext raw).read }
+  expression.core.evaluate { read := (prepared.checkContext locale raw).read }
 
 end CheckedStringExpr
 
 namespace CheckedStringComputationOperation
 
-/-- Check raw cells with the model that certified both expression and target, then apply the retained declaration policy to the exact root write attempt. -/
+/-- Read through the prepared model context, then apply the retained declaration policy to the exact root write attempt. -/
 def evaluateOutcome (operation : CheckedStringComputationOperation model)
-    (raw : RawFlatContext) : Except StringComputationFault StringTargetOutcome := do
-  pure (operation.targetPolicy.checkTarget (← operation.expression.evaluate raw))
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) :
+    Except StringComputationFault StringTargetOutcome := do
+  pure (operation.targetPolicy.checkTarget
+    (← operation.expression.evaluate prepared locale raw))
 
 end CheckedStringComputationOperation
 
