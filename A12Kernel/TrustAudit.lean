@@ -218,8 +218,8 @@ run_cmd do
 #print axioms A12Kernel.instant_shiftHours_inverse
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_3600
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_7200
-#print axioms A12Kernel.berlin2024_differenceInDays_self
-#print axioms A12Kernel.berlin2024_differenceInDays_swap
+#print axioms A12Kernel.berlin_differenceInDays_self
+#print axioms A12Kernel.berlin_differenceInDays_swap
 #print axioms A12Kernel.fullDate_addDays_zero
 #print axioms A12Kernel.fullDate_addDays_gregorianEra
 #print axioms A12Kernel.fullDate_addDays_belowFloor_none

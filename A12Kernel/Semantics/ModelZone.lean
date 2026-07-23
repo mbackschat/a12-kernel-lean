@@ -11,9 +11,7 @@ namespace A12Kernel.ModelZone
 
 /-- Recover the admitted local civil date at one instant using the profile's offset at that instant. -/
 def localDateAtOffset? (instant : Instant) (offsetSeconds : Int) : Option FullDate :=
-  let localEpochDay :=
-    (instant.epochMillis + offsetSeconds * 1000) / 86400000
-  (CivilDate.ofUnixEpochDay? localEpochDay).bind FullDate.ofCivil?
+  (LocalDateTime.atOffset? instant offsetSeconds).map (·.date)
 
 /-- Resolve `Today` for an arbitrary already-selected zone profile. Offset selection at `instant` chooses the local date; fresh-label resolution separately chooses the offset at that date's midnight. -/
 def resolve? (offsetSecondsAt? : Instant → Option Int)
@@ -32,16 +30,42 @@ def europeBerlinToday? (instant : Instant) : Option Instant :=
   resolve? EuropeBerlinLegacyProfile.offsetSecondsAt?
     EuropeBerlinLegacyProfile.resolveLocal? instant
 
+/-- The two model-zone profiles concretely implemented by this theory. This is a bounded selector, not the kernel's complete legal zone-id domain. -/
+inductive ConcreteProfile where
+  | utc
+  | europeBerlin
+  deriving Repr, DecidableEq
+
+namespace ConcreteProfile
+
+/-- Select one concrete profile. UTC and GMT are aliases; every other legal or illegal id remains outside this bounded capability. -/
+def ofId? : String → Option ConcreteProfile
+  | "UTC" | "GMT" => some .utc
+  | "Europe/Berlin" => some .europeBerlin
+  | _ => none
+
+def today? (profile : ConcreteProfile) (instant : Instant) :
+    Option Instant :=
+  match profile with
+  | .utc => utcToday? instant
+  | .europeBerlin => europeBerlinToday? instant
+
+def resolveLocal? (profile : ConcreteProfile) (dateTime : LocalDateTime) :
+    Option Instant :=
+  match profile with
+  | .utc => some dateTime.resolveUtc
+  | .europeBerlin => EuropeBerlinLegacyProfile.resolveLocal? dateTime
+
+end ConcreteProfile
+
 def concreteToday? (zoneId : String) (instant : Instant) : Option Instant :=
-  if zoneId == "UTC" || zoneId == "GMT" then utcToday? instant
-  else if zoneId == "Europe/Berlin" then europeBerlinToday? instant else none
+  (ConcreteProfile.ofId? zoneId).bind (·.today? instant)
 
 def concreteResolveLocal? (zoneId : String) (year : Int)
     (month day hour minute second : Nat) : Option Instant := do
+  let profile ← ConcreteProfile.ofId? zoneId
   let dateTime ← LocalDateTime.ofYmdHms? year month day hour minute second
-  if zoneId == "UTC" || zoneId == "GMT" then some dateTime.resolveUtc
-  else if zoneId == "Europe/Berlin" then EuropeBerlinLegacyProfile.resolveLocal? dateTime
-  else none
+  profile.resolveLocal? dateTime
 
 def concreteRules : ModelZoneRules where
   today? := concreteToday?
