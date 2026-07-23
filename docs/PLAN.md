@@ -23,17 +23,18 @@ The detailed readiness fields live only in those gap entries. Same-context consu
 
 ## Active capsule
 
-Continue [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) with a bounded source packet for the second annotation consumer: generated index and over-repetition findings. Establish exact ownership, order, scope, and phase behavior before deciding whether the existing one-field authored context warrants a shared immutable validation-view representation.
+Continue [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) with the now-closed checked structural/preliminary source packet. First share the existing star-path over-capacity predicate with the base checked document and preserve over-limit row content separately from unavailable descendant reads. Then use index mandatory/uniqueness as the actual second later annotation consumer before deciding whether a shared immutable validation-view representation is warranted.
 
-Consumer hypothesis: an Execute/Explain consumer must retain admitted duplicate-index content, flag every duplicate participant within its parent scope, distinguish empty-index mandatory errors from duplicates, and mark over-limit rows structurally without changing the immutable source document. A global duplicate set, all-but-first marking, or eager mutation of computation input is the unsafe control; unresolved ordering or scope is explicit insufficient information.
+Consumer hypothesis: an Execute/Explain consumer must report an over-limit row as structural content plus structural error while every descendant read is unavailable, then retain admitted duplicate-index content, flag every duplicate participant within its parent scope, and distinguish empty-index mandatory errors from duplicates. A later-only over-repetition overlay, global duplicate set, all-but-first marking, or eager mutation of computation input is the unsafe control; unsupported key profiles remain explicit insufficient information.
 
 ## Immediate frontier
 
-1. Audit generated index and over-repetition findings as the second annotation consumer; produce a bounded source packet and separating matrix before implementation, and do not generalize the validation view from requiredness alone.
-2. Then compose the source-grounded annotation owner and audit repeatable/partial consumers against the same checked route. SG1 remains open until its completion gate is met; a reusable-boundary cold probe runs only when that milestone closes.
-3. Enter SG2 only through the SG1 output and SG2 readiness gate. Do not introduce the general stream while row identity, phantom/omitted extent, rule-wide `Having`, or mixed filter encounter remains unresolved.
-4. Keep SG4 prohibited until SG1, SG2, the explicit processing context, and every SG4 source-audit category close. SG6, SG9, and SG10 likewise require their named source packets before a high-connectivity extension.
-5. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix; request one bounded upstream observation capability only when no existing a12-dmkits route fits.
+1. Extract the existing over-capacity decision from the checked star-path owner into its smallest shared semantic seam and apply it during checked-document construction; do not duplicate the predicate or infer row content from cells.
+2. Implement the full-validation index mandatory/uniqueness matrix as the second later annotation consumer, reusing the existing RNU relation and exact stored text retained by `DocumentData`; do not broaden unsupported profiles or generalize the view before this consumer exists.
+3. Then audit repeatable/partial consumers against the same checked route. SG1 remains open until its completion gate is met; a reusable-boundary cold probe runs only when that milestone closes.
+4. Enter SG2 only through the SG1 output and SG2 readiness gate. Do not introduce the general stream while row identity, phantom/omitted extent, rule-wide `Having`, or mixed filter encounter remains unresolved.
+5. Keep SG4 prohibited until SG1, SG2, the explicit processing context, and every SG4 source-audit category close. SG6, SG9, and SG10 likewise require their named source packets before a high-connectivity extension.
+6. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix; request one bounded upstream observation capability only when no existing a12-dmkits route fits.
 
 ## Parked boundaries
 
