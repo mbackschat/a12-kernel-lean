@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StarStringValueList
+import A12Kernel.Elaboration.StringContext
 
 /-! # Checked nested String-star literal value-list locks -/
 
@@ -37,6 +38,23 @@ private def model : FlatModel :=
     repeatableGroups := [
       { level := 20, path := ["Shop", "Sections", "Items"], repeatability := some 2 },
       { level := 10, path := ["Shop", "Sections"], repeatability := some 2 }] }
+
+private def customProduct : FlatFieldDecl :=
+  { product with customType := some { name := "ProductCode" } }
+
+private def customModel : FlatModel :=
+  { model with fields := [sku, amount, customProduct, quantity] }
+
+private def customRejection : RegisteredCustomRejection where
+  projectCode := "PRODUCT_CODE_INVALID"
+
+private def customValidator : RegisteredCustomFieldValidator := fun value _ =>
+  if value == "accepted" then none else some customRejection
+
+private def customWorld : World where
+  now := { epochMillis := 0 }
+  customFieldValidator? := fun name =>
+    if name == "ProductCode" then some customValidator else none
 
 private def starPath (field : String := "Sku") : SurfaceStarFieldPath :=
   { base := .absolute
@@ -105,11 +123,14 @@ private def partialVerdictOf (surface : SurfaceStarStringValueListSource)
   | some (.evaluated verdict) => some verdict
   | _ => none
 
-private def directRead (raw : RawCell) : RawFlatContext where
+private def directRaw (raw : RawCell) : RawFlatContext where
   read id := if id == product.id then raw else .empty
 
+private def directRead (raw : RawCell) : FlatContext :=
+  model.checkContext (directRaw raw)
+
 private def starValuesVerdictOf (surface : SurfaceStringValueListStarValuesSource)
-    (rows : List RowAddr) (direct : RawFlatContext)
+    (rows : List RowAddr) (direct : FlatContext)
     (read : Env → FieldId → RawCell) (outer : Env := []) : Option Verdict :=
   match elaborateStringValueListStarValuesSource model sku.groupPath surface with
   | .error _ => none
@@ -121,7 +142,7 @@ private def starValuesVerdictOf (surface : SurfaceStringValueListStarValuesSourc
 private def partialStarValuesResultOf
     (surface : SurfaceStringValueListStarValuesSource)
     (rows : List RowAddr) (scope : ValidationRelevanceScope)
-    (direct : RawFlatContext) (read : Env → FieldId → RawCell) :
+    (direct : FlatContext) (read : Env → FieldId → RawCell) :
     Option PartialHavingValueListResult :=
   match elaborateStringValueListStarValuesSource model sku.groupPath surface with
   | .error _ => none
@@ -133,10 +154,37 @@ private def partialStarValuesResultOf
 private def partialStarValuesVerdictOf
     (surface : SurfaceStringValueListStarValuesSource)
     (rows : List RowAddr) (scope : ValidationRelevanceScope)
-    (direct : RawFlatContext) (read : Env → FieldId → RawCell) : Option Verdict :=
+    (direct : FlatContext) (read : Env → FieldId → RawCell) : Option Verdict :=
   match partialStarValuesResultOf surface rows scope direct read with
   | some (.evaluated verdict) => some verdict
   | _ => none
+
+private def customDirectContext (direct : String) : Option FlatContext := do
+  let prepared ←
+    (prepareFlatStringContext customWorld builtinStringPatternCompiler
+      customModel).toOption
+  pure (prepared.checkContext "en_US"
+    (directRaw (.parsed (.str direct))))
+
+private def customFieldsCell (direct : String) : Option (String ⊕ FormalCause) := do
+  let context ← customDirectContext direct
+  let checked ←
+    (elaborateStringValueListStarValuesSource customModel sku.groupPath
+      (starValuesAuthored .no)).toOption
+  match (checked.resolvedFieldsSide context).cells with
+  | [.present value] => some (.inl value)
+  | [.unknown cause] => some (.inr cause)
+  | _ => none
+
+private def customStarValuesVerdictOf
+    (quantifier : ValueListQuantifier) (direct : String)
+    (read : Env → FieldId → RawCell) : Option Verdict := do
+  let context ← customDirectContext direct
+  let checked ←
+    (elaborateStringValueListStarValuesSource customModel sku.groupPath
+      (starValuesAuthored quantifier)).toOption
+  (checked.evaluateFull (document fullRows) []
+    context unusedFilterRead read).toOption
 
 private def starValuesErrorOf (surface : SurfaceStringValueListStarValuesSource) :
     Option StarStringValueListElabError :=
@@ -211,6 +259,19 @@ example :
         (directRead (.parsed (.str "C")))
         (firstThen (.parsed (.str "A")) (.parsed (.str "B"))) =
       some (.fired .value) := by
+  native_decide
+
+/- A caller-prepared direct custom String remains distinguishable from its registered rejection instead of being resampled through the ordinary fail-closed checker. -/
+example :
+    customFieldsCell "accepted" = some (.inl "accepted") ∧
+    customFieldsCell "rejected" =
+      some (.inr (.registeredCustomValidation customRejection)) ∧
+    customStarValuesVerdictOf .no "accepted"
+        (firstThen (.parsed (.str "accepted")) (.parsed (.str "other"))) =
+      some .notFired ∧
+    customStarValuesVerdictOf .no "rejected"
+        (firstThen (.parsed (.str "accepted")) (.parsed (.str "other"))) =
+      some .unknown := by
   native_decide
 
 /- Empty and malformed starred members retain values-side omission and poison rather than becoming literal tokens. -/

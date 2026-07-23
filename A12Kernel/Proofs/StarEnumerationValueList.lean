@@ -83,13 +83,13 @@ theorem checkedEnumerationValueListStarValues_field_admitted
 /-- Once the starred values side resolves, full evaluation delegates exactly to the common token-list dispatcher. -/
 theorem checkedEnumerationValueListStarValues_evaluateFull_of_resolved
     (checked : CheckedEnumerationValueListStarValuesSource model)
-    (document : Document) (outer : Env) (raw : RawFlatContext)
+    (document : Document) (outer : Env) (context : FlatContext)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) (values : ResolvedValueListSide .token)
     (resolved : checked.values.resolvedValueSide document outer filterRead read =
       .ok values) :
-    checked.evaluateFull document outer raw filterRead read =
-      .ok (checked.quantifier.eval (checked.resolvedFieldsSide raw) values) := by
+    checked.evaluateFull document outer context filterRead read =
+      .ok (checked.quantifier.eval (checked.resolvedFieldsSide context) values) := by
   simp [CheckedEnumerationValueListStarValuesSource.evaluateFull, resolved]
   rfl
 
@@ -97,14 +97,14 @@ theorem checkedEnumerationValueListStarValues_evaluateFull_of_resolved
 theorem checkedEnumerationValueListStarValues_evaluatePartial_of_resolved
     (checked : CheckedEnumerationValueListStarValuesSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (raw : RawFlatContext) (read : Env → FieldId → RawCell)
+    (context : FlatContext) (read : Env → FieldId → RawCell)
     (values : ResolvedValueListQuantifierSide .token)
     (unfiltered : checked.values.filter.isNone = true)
     (resolved : checked.values.resolvedPartialValueSide document outer scope read
       unfiltered = .ok values) :
-    checked.evaluatePartial document outer scope raw read =
+    checked.evaluatePartial document outer scope context read =
       .ok (.evaluated (checked.quantifier.evalClassified
-        (checked.resolvedPartialFieldsSide scope raw) values)) := by
+        (checked.resolvedPartialFieldsSide scope context) values)) := by
   simp [CheckedEnumerationValueListStarValuesSource.evaluatePartial, unfiltered,
     resolved]
   rfl
@@ -115,9 +115,9 @@ theorem checkedEnumerationValueListStarValues_partialHaving_skips
     (filter : CheckedStarHaving model checked.values.source
       checked.values.declaringGroup)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (raw : RawFlatContext) (read : Env → FieldId → RawCell)
+    (context : FlatContext) (read : Env → FieldId → RawCell)
     (owned : checked.values.filter = some filter) :
-    checked.evaluatePartial document outer scope raw read = .ok .skippedHaving := by
+    checked.evaluatePartial document outer scope context read = .ok .skippedHaving := by
   simp [CheckedEnumerationValueListStarValuesSource.evaluatePartial, owned]
   rfl
 
