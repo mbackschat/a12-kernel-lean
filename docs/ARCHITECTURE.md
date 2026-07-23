@@ -20,6 +20,14 @@ The future SG4 boundary follows this binding architecture; the accepted rational
 
 This adoption does not select SG4 or require a current module refactor. [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) remains blocked on the checked-document and repeatable-addressing prerequisites, an explicit processing-context boundary, and its bounded source audit.
 
+### The whole-model critical path shares one checked document and one addressed operand stream
+
+The binding construction order is **SG1 → SG2 → SG4**. SG1 alone owns the future immutable model-certified checked document: model identity, instantiated-row identity, physical cell placement, admitted values and formal findings, and phase-projectable checked observations belong to that input boundary, while the processing context, generated findings, computation activation, result, and applied destination remain separate. Existing `Document`, `CheckedCell`, flat-model/context, prepared String/custom, and resolved group-state owners are inputs to this composition rather than competing document models.
+
+SG2 alone owns the future canonical addressed operand stream over that checked document and existing checked plans. The stream must retain complete ordered environments, hierarchical instantiated-versus-omitted extent, per-source declaration metadata, relevance, filter encounter, and structural addressing failure. Individual conditions, aggregates, RNU, semantic indices, messages, and computations consume or specialize that stream; they do not rebuild topology, flatten nested row identity, infer rows from cells, or translate address failure into semantic UNKNOWN.
+
+SG4 consumes the checked computation plan, explicit processing context, SG1 checked input, and SG2 addressed stream without redefining any of them. Its transient dependency overlay remains private execution state and cannot be replaced by a change delta, applied document, public result collection, or schedule-ordered API. These responsibilities are binding architecture but do not authorize a concrete type before each gap's bounded source packet, separating matrix, prerequisite owners, and entry gate are satisfied.
+
 ## Core encoding decisions
 
 ### Extrinsic (untyped) AST, not an intrinsically-typed one
