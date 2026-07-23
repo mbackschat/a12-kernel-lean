@@ -35,6 +35,7 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 - [`Document.lean`](../A12Kernel/Document.lean)
 - [`Elaboration/CheckedDocument.lean`](../A12Kernel/Elaboration/CheckedDocument.lean)
 - [`Elaboration/CheckedGroupPresence.lean`](../A12Kernel/Elaboration/CheckedGroupPresence.lean)
+- [`Elaboration/CheckedRequired.lean`](../A12Kernel/Elaboration/CheckedRequired.lean)
 - [`Elaboration/StringContext.lean`](../A12Kernel/Elaboration/StringContext.lean)
 - [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean)
 - [`Conformance/CheckedDocument.lean`](../A12Kernel/Conformance/CheckedDocument.lean)
@@ -45,6 +46,7 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 - `checkDocument` validates model-relative row topology, 1-based contiguous row identity, cell scope, duplicate placement, and stored-empty/classification coherence, then caches each placed cell through the exact prepared String/pattern/custom context. `CheckedDocument model` has a private constructor, retains the exact validated model certificate, and carries no processing context.
 - `CheckedDocument.read` distinguishes absent cells, present-empty cells, checked values/formal findings, and structural addressing failure. `flatContext` is the first existing consumer and cannot resample prepared validators.
 - `groupPresenceInput` is the second consumer: it selects cached descendants by exact model group/scope, derives structural row content independently of cells, and keeps partial relevance plus later structural findings as explicit inputs.
+- `applyAbsoluteRequiredAt` is the third consumer: it resolves one nonrepeatable target from the certified model, evaluates the existing generated mandatory rule against the immutable base context, and returns its separate authored-validation context without changing computation input.
 
 #### Coverage
 
@@ -57,13 +59,13 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 #### Evidence
 
 - The source packet covers immutable `DocumentV2` topology and field placement, `DocumentAbstractRtService` model selection, `ValidationData` traversal/display conversion, `CheckCommand` formal ingestion, and the separate mutable `ValidationCache`.
-- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, incoherent empty classification, absent versus instantiated-empty group rows, invalid-only group state, and explicit missing-scope/model diagnostics. Same-context Execute/Explain queries use `flatContext` and `groupPresenceInput`.
-- The projection law proves that resolved group construction preserves the caller's separate relevance and structural-error inputs; existing group-presence laws then own admitted-content/error interpretation.
+- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, incoherent empty classification, absent versus instantiated-empty group rows, invalid-only group state, explicit missing-scope/model diagnostics, base-before-required annotation, and repeatable-target rejection. Same-context Execute/Explain queries use `flatContext`, `groupPresenceInput`, and `applyAbsoluteRequiredAt`.
+- Projection laws prove that resolved group construction preserves the caller's separate relevance and structural-error inputs and that model-certified required staging preserves every computation observation; existing group-presence and requiredness laws own their semantic interpretations.
 - No project-local retained kernel observation covers the general construction route; kernel calibration remains pending under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 #### Excluded/next
 
-- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. Flat/custom and resolved group-presence consumers now share the checked input; required/generated findings, wider repeatable consumers, partial relevance, computation activation, result projection, and application remain later phases.
+- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. Flat/custom, resolved group-presence, and absolute-required consumers now share the checked input; index/repetition findings, wider repeatable consumers, partial relevance, computation activation, result projection, and application remain later phases.
 - Concrete scalar parsing remains an explicitly named preclassified trust boundary. The constructor does not introduce a parser, second address type, processing context inside the document, scheduler overlay, protocol, or harness.
 - This first slice adds 274 nonblank Lean lines after separating the group-presence consumer into the next capsule. The 24-line Tier 1 excess keeps row/cell topology validation and its duplicate/coherence guards atomic with the certificate-producing constructor; splitting again would temporarily expose a `CheckedDocument` that could certify malformed source placement.
 
@@ -213,6 +215,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 
 - [`Semantics/Required.lean`](../A12Kernel/Semantics/Required.lean)
 - [`Semantics/GroupPresence.lean`](../A12Kernel/Semantics/GroupPresence.lean)
+- [`Elaboration/CheckedRequired.lean`](../A12Kernel/Elaboration/CheckedRequired.lean)
 - [`Proofs/Required.lean`](../A12Kernel/Proofs/Required.lean)
 - [`Proofs/GroupPresence.lean`](../A12Kernel/Proofs/GroupPresence.lean)
 - [`Conformance/Required.lean`](../A12Kernel/Conformance/Required.lean)
@@ -223,7 +226,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Independently stated source outcome versus generated-rule evaluation
 - base-before-annotation ordering
 - computation-observation preservation
-- Number/Boolean/Confirm/String targets share the same presence rule; a required present-empty String retains physical placement when the finding is attached.
+- All six scalar target constructors share the same presence rule. The model-certified adapter rejects repeatable targets, and a required present-empty String retains physical placement when the finding is attached.
 - parent-filled requiredness consumes the resolved group's admitted-content × error × relevance state and requires positive admitted content.
 
 #### Coverage
@@ -237,12 +240,13 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Evidence
 
 - The private compact validation projection replays empty, filled, and malformed absolute/non-repeatable Number cases and retains the empty case's `mandatoryField` code and pointer
+- Checked-document cases connect that existing rule to the exact model and immutable base context, separate validation annotation from computation reads, retain an earlier custom rejection, and reject repeatable targets.
 - [`RequirednessDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/RequirednessDiffTest.kt) remains broader provenance.
 - a12-dmkits revision `7f152509eea76822068955055b0d57d8ed930ca2` adds dual-kernel/peer controls for IF193's admitted-content parent gate, but this repository retains no matching portable observation
 
 #### Excluded boundary and gap links
 
-- **Implemented internally, partial; focused external observations replayed:** absolute requiredness for nonrepeatable Number/Boolean/Confirm/String fields.
+- **Implemented internally, partial; focused external observations replayed:** model-certified absolute requiredness for nonrepeatable scalar fields; retained external observations cover the narrower Number/Boolean/Confirm/String subset.
 - The parent gate is implemented over an already-resolved group state; general group/document construction and repeatable required-rule orchestration are indexed by [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) and [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
 
 ### §5 — numbers and decimals

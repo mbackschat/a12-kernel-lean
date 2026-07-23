@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedGroupPresence
+import A12Kernel.Elaboration.CheckedRequired
 
 /-! # A12Kernel.Conformance.CheckedDocument — immutable checked-document boundary -/
 
@@ -118,6 +118,34 @@ example : ((checked? classified).map fun checked =>
 example : ((checked? classified).map fun checked =>
     match checked.read { field := 3, path := [2] } with
     | .error (.missingRow row) => row == { group := 10, path := [2] }
+    | _ => false) = some true := by
+  native_decide
+
+/- Requiredness annotates a later validation view while computation retains the base empty observation. -/
+example : ((checked? classified).bind fun checked =>
+    (checked.applyAbsoluteRequiredAt 4).toOption.map fun result =>
+      (result.mandatoryVerdict,
+        observeCell .validation (result.authoredContext.read 4),
+        observeCell .computation (result.authoredContext.read 4),
+        observeCell .computation (checked.flatContext.read 4))) =
+    some (.fired .omission, .unknown .required, .empty, .empty) := by
+  native_decide
+
+/- Existing formal rejection is retained and is not relabelled as required. -/
+example : ((checked? classified).bind fun checked =>
+    (checked.applyAbsoluteRequiredAt 1).toOption.map fun result =>
+      (result.mandatoryVerdict,
+        observeCell .validation (result.authoredContext.read 1),
+        observeCell .computation (result.authoredContext.read 1))) =
+    some (.unknown,
+      .unknown (.registeredCustomValidation rejection),
+      .poison (.registeredCustomValidation rejection)) := by
+  native_decide
+
+/- Absolute-required construction rejects a repeatable target instead of erasing its scope. -/
+example : ((checked? classified).map fun checked =>
+    match checked.applyAbsoluteRequiredAt 3 with
+    | .error (.repeatableReference path) => path == ["Order", "Items", "Text"]
     | _ => false) = some true := by
   native_decide
 
