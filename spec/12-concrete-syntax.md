@@ -41,7 +41,7 @@ Key structural laws baked into the grammar:
 
 - **No mixed `And`/`Or` without brackets**, and **at most three parts per bracket level** — `A And B And C` is fine, `A And B Or C` is a parse error ([§1](02-logic-and-formal-errors.md)).
 - **At most one division per calculation without grouping braces** `{ … }`; powers `^` cannot be nested without brackets ([§5](04-numbers-and-decimals.md)).
-- A **`..` up-navigation may not be combined with `*`** ([§10](08-paths-and-references.md)).
+- A **`..` step itself may not carry `*`**; a named segment after the upward walk may carry it ([§10](08-paths-and-references.md)).
 
 ```ebnf
 (* ---- entry ---- *)
@@ -81,7 +81,7 @@ braceGroup       = "{" , operand , "}" ;
 (* ---- names, paths, specifiers ---- *)
 fieldValue       = "[" , path , [ semanticIndex ] , "]" ;
 path             = [ "/" ] , segment , { "/" , segment }             (* leading "/" = absolute *)
-                 | { "../" } , segment , { "/" , segment }           (* relative; ".." not combinable with "*" *)
+                 | { "../" } , segment , { "/" , segment }           (* relative; a ".." step itself is never starred *)
                  | shortName ;                                       (* bare [Name] when fieldRefByShortNameAllowed *)
 segment          = ( identifier | "'" , identifier , "'" ) , [ "*" ] ; (* per-segment star; lower levels must also star *)
 havingFilter     = "Having" , condition ;                            (* filters a *-path before an aggregate *)
@@ -93,7 +93,7 @@ valueListIntro   = "In" ;                                            (* separate
 
 *(Predicate/function argument shapes—how many operands and whether a `Having` or `$` form is allowed—vary per operator; consult the operator inventory in §5 and the semantics files for each family's operands. Those operator-specific attachments remain leaves in this sketch. The ordinary bracketed `fieldValue` production explicitly includes its optional literal- or field-keyed semantic index.)*
 
-> **Lean modelling note.** Parse to a single `inductive Ast` with constructors mirroring `simpleCondition`/`operand`/`function`. Encode the structural laws as *parser* rules (reject mixed And/Or, reject `..`+`*`, reject a second unbraced `/`) rather than as post-hoc validation—they are genuinely syntactic. Keep `Having` and `For` as path modifiers and `$` as a correlated path form, since they modify how a path resolves ([§9](07-repetition-and-iteration.md)/[§10](08-paths-and-references.md)) rather than being operators in their own right.
+> **Lean modelling note.** Parse to a single `inductive Ast` with constructors mirroring `simpleCondition`/`operand`/`function`. Encode the structural laws as *parser* rules (reject mixed And/Or, reject a star attached to a `..` step, reject a second unbraced `/`) rather than as post-hoc validation—they are genuinely syntactic. Keep `Having` and `For` as path modifiers and `$` as a correlated path form, since they modify how a path resolves ([§9](07-repetition-and-iteration.md)/[§10](08-paths-and-references.md)) rather than being operators in their own right.
 
 ---
 
