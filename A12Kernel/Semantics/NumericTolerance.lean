@@ -58,13 +58,18 @@ def NumericValidationOp.evalFixedRight (op : NumericValidationOp)
     (left : NumericOperand) (expected : Rat) : Verdict :=
   op.eval left (.value expected .fixed)
 
-/-- Shared validation projection: formal invalidity stays unknown and arithmetic domain failure stays quiet before operator dispatch. -/
-def NumericValidationOp.evalArithmetic (op : NumericValidationOp)
-    (left right : Except FormalCause NumericArithmeticOutcome) : Verdict :=
+/-- Shared validation projection: source unavailability stays unknown and arithmetic domain failure stays quiet before operator dispatch. The error type remains abstract so formal cell causes and cause-free group-state unavailability can share the evaluator without being conflated. -/
+def NumericValidationOp.evalArithmeticWith (op : NumericValidationOp)
+    (left right : Except Error NumericArithmeticOutcome) : Verdict :=
   match left, right with
   | .error _, _ | _, .error _ => .unknown
   | .ok .notEvaluated, _ | _, .ok .notEvaluated => .notFired
   | .ok (.value left leftFill), .ok (.value right rightFill) =>
       op.eval (.value left leftFill) (.value right rightFill)
+
+/-- Preserve the established formal-cell specialization for low-level callers. -/
+def NumericValidationOp.evalArithmetic (op : NumericValidationOp)
+    (left right : Except FormalCause NumericArithmeticOutcome) : Verdict :=
+  op.evalArithmeticWith left right
 
 end A12Kernel

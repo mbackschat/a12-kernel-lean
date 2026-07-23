@@ -83,7 +83,7 @@ theorem numericComputation_fieldValueAsNumber_poison_preservesCause
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :
     checked.core.expression.anyAtom
-      (NumericComputationAtom.references checked.core.target.id) = false := by
+      (NumericComputationAtom.references model checked.core.target.id) = false := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted

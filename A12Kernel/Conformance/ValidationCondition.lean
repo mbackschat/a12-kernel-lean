@@ -87,6 +87,43 @@ private def groupContext (path : GroupPath) (state : GroupPresenceState) :
     GroupPresenceContext :=
   fun candidate => if candidate == path then some state else none
 
+private def twoGroupContext
+    (firstPath : GroupPath) (firstState : GroupPresenceState)
+    (secondPath : GroupPath) (secondState : GroupPresenceState) :
+    GroupPresenceContext :=
+  fun candidate =>
+    if candidate == firstPath then some firstState
+    else if candidate == secondPath then some secondState
+    else none
+
+private def fixedGroupCount
+    (groups : List GroupPath := [
+      ["Order", "Details"], ["Order", "Preferences"]]) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.filledGroupCount (groups.map fun path =>
+    .path { base := .absolute, groups := path }))
+
+private def groupCountComparison
+    (groups : List GroupPath := [
+      ["Order", "Details"], ["Order", "Preferences"]])
+    (op : NumericComparisonOp := .greater)
+    (expected : Rat := 0) : SurfaceNumericComparison :=
+  { op := .ordinary op
+    left := fixedGroupCount groups
+    right := .literal { value := expected, authoredScale := 0 } }
+
+private def checkedGroupCount?
+    (surface : SurfaceNumericComparison := groupCountComparison) :
+    Option (CheckedValidationCondition model) := do
+  let numeric ← (elaborateNumericComparison model ["Order"] surface).toOption
+  (CheckedValidationCondition.fromNumeric numeric).toOption
+
+private def groupCountError?
+    (surface : SurfaceNumericComparison) : Option NumericValidationElabError :=
+  match elaborateNumericComparison model ["Order"] surface with
+  | .ok _ => none
+  | .error error => some error
+
 private def checkedRuleGroup? (operator : GroupPresenceOperator) :
     Option (CheckedValidationCondition model) :=
   (CheckedValidationCondition.fromGroupPresence model ["Order"]
@@ -312,6 +349,97 @@ example :
       groupOperand ["Order", "Items"],
       groupOperand ["Order", "Details"]] =
       some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
+  native_decide
+
+/- The plain fixed group count is a scale-0 numeric source in the shared checked expression tree. It counts admitted content only after every operand is fully relevant and error-free, and composes with ordinary arithmetic. -/
+example : checkedGroupCount?.map (fun checked =>
+    (checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState true false)
+        ["Order", "Preferences"] (groupState false false)
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState true false)
+        ["Order", "Preferences"] (groupState true false)
+    })) = some (.fired .value, .fired .value) ∧
+  (checkedGroupCount? (groupCountComparison
+      (op := .equal) (expected := 2))).map (fun checked =>
+    checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState true false)
+        ["Order", "Preferences"] (groupState true false)
+    }) = some (.fired .value) ∧
+  (checkedGroupCount? {
+      op := .ordinary .equal
+      left := .binary .add fixedGroupCount
+        (.literal { value := 1, authoredScale := 0 })
+      right := .literal { value := 2, authoredScale := 0 }
+    }).map (fun checked =>
+      checked.core.evalSelected {
+        fields := model.checkContext (raw .empty .empty)
+        groups := twoGroupContext
+          ["Order", "Details"] (groupState true false)
+          ["Order", "Preferences"] (groupState false false)
+      }) = some (.fired .omission) := by
+  native_decide
+
+/- Zero is a real count, not numeric absence. Because either clean-empty group may later fill, `0 < 1` is a firing whose error is repairable by filling. -/
+example : (checkedGroupCount? (groupCountComparison
+    (op := .less) (expected := 1))).map (fun checked =>
+  checked.core.evalSelected {
+    fields := model.checkContext (raw .empty .empty)
+    groups := twoGroupContext
+      ["Order", "Details"] (groupState false false)
+      ["Order", "Preferences"] (groupState false false)
+  }) = some (.fired .omission) := by
+  native_decide
+
+/- A formal group error, partial relevance, or missing resolved state makes the complete numeric source unavailable rather than inventing a partial count or a `FormalCause`. -/
+example : checkedGroupCount?.map (fun checked =>
+    (checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState true true)
+        ["Order", "Preferences"] (groupState true false)
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := twoGroupContext
+        ["Order", "Details"] (groupState true false .partlyRelevant)
+        ["Order", "Preferences"] (groupState true false)
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw .empty .empty)
+      groups := groupContext
+        ["Order", "Details"] (groupState true false)
+    })) = some (.unknown, .unknown, .unknown) := by
+  native_decide
+
+/- Fixed group counts require at least two distinct non-root, nonrepeatable groups. The checked source also retains each group subtree for whole-rule reference validation. -/
+example :
+    groupCountError? (groupCountComparison
+      [["Order", "Details"]]) = some .groupCountNeedsMultipleOperands ∧
+    groupCountError? (groupCountComparison
+      [["Other"], ["Order", "Details"]]) =
+        some (.rootGroupInGroupCount ["Other"]) ∧
+    groupCountError? (groupCountComparison
+      [["Order", "Details"], ["Order", "Details"]]) =
+        some (.overlappingGroupCountOperands
+          ["Order", "Details"] ["Order", "Details"]) ∧
+    groupCountError? (groupCountComparison
+      [["Order", "Items"], ["Order", "Details"]]) =
+        some (.repeatableGroupCountRequiresStar ["Order", "Items"]) ∧
+    groupCountError? (groupCountComparison
+      [["Order", "Missing"], ["Order", "Details"]]) =
+        some (.unknownGroupInCount ["Order", "Missing"]) ∧
+    checkedGroupCount?.map (fun checked =>
+      checked.core.referencesField model d.id &&
+        checked.core.referencesField model p.id &&
+        !checked.core.referencesField model u.id) = some true := by
   native_decide
 
 end A12Kernel.Conformance.ValidationCondition

@@ -123,6 +123,12 @@ private def surfaceAggregate (op : NumericAggregateOp) (first : String)
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
 
+private def surfaceFixedGroupCount :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.filledGroupCount [
+    .path { base := .absolute, groups := ["Root", "Details"] },
+    .path { base := .absolute, groups := ["Root", "Preferences"] }])
+
 private def surfaceBaseYearDatePart (source : BaseYearDateSource)
     (part : DateNumericPart) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.baseYearDatePart source part)
@@ -950,6 +956,10 @@ example :
           (surfaceAggregate .sum "Source" ["Later"]))
         (context (checkedNumber (.parsed (.num 4)))
           (checkedNumber (.parsed (.num 6)))) = some (.value 10) := by
+  native_decide
+
+/- Fixed group counts remain validation-only until checked computation scheduling owns group-state dependencies and clearing. -/
+example : checkedErrorOf surfaceFixedGroupCount = some .unsupportedExpression := by
   native_decide
 
 /- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. A wrapper may also consume a checked operand-list extremum. -/

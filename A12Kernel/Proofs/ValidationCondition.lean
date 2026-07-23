@@ -65,7 +65,7 @@ theorem validationCondition_numeric_evalSelected_of_relevant
     (isRelevant : FlatRelevance)
     (relevant : comparison.allRelevant isRelevant = true) :
     (ValidationCondition.numeric comparison).evalSelected context isRelevant =
-      comparison.evalSelected context.fields := by
+      comparison.evalSelectedWithGroups context := by
   simp [ValidationCondition.numeric, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, relevant]
 

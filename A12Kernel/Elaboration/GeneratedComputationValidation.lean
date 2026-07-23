@@ -356,6 +356,7 @@ def NumericComputationAtom.toValidationAtom :
   | .dateDifference unit left right =>
       pure (.dateDifference unit left right)
   | .aggregate op source => pure (.aggregate op source)
+  | .filledGroupCount _ => throw (.conditionAssembly .incoherentCore)
 
 /-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
 def generatedNumericOperationMismatch (operation : NumericComputationOperation)

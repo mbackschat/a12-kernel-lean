@@ -1418,8 +1418,8 @@ example :
 private def aggregateTraversal : Option (Bool × Bool × Bool × Bool) := do
   let checked ← (elaborateNumericComparison model ["Order"]
     (comparison .greater (aggregate .sum "U" ["V"]) 0)).toOption
-  pure (checked.core.referencesField 0,
-    checked.core.referencesField 1,
+  pure (checked.core.referencesField model 0,
+    checked.core.referencesField model 1,
     checked.core.allRelevant (fun field => field == 0),
     checked.core.allRelevant (fun field => field == 0 || field == 1))
 

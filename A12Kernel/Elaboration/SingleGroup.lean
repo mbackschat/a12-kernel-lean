@@ -93,7 +93,63 @@ def referencesField (reference : ResolvedGroupReference)
   | .ok declaration => reference.path.isPrefixOf declaration.groupPath
   | .error _ => false
 
+/-- Whether a resolved group denotes a model root. Operator-specific admission decides whether that root is legal. -/
+def isRoot (reference : ResolvedGroupReference) : Bool :=
+  reference.path.length == 1
+
+/-- Ordinary paths are fixed only outside every repeatable scope; `RuleGroup` binds the already-selected rule instance even when that instance belongs to a repeatable group. -/
+def fixedWellFormedBool (reference : ResolvedGroupReference)
+    (model : FlatModel) (declaringGroup : GroupPath) : Bool :=
+  model.hasGroupPath reference.path &&
+    match reference.origin with
+    | .path => (model.repeatableScopeForGroupPath reference.path).isEmpty
+    | .ruleGroup => reference.path == declaringGroup
+
+/-- Two group-valued operands overlap when either denotes the other or one of its descendants. -/
+def overlaps (left right : ResolvedGroupReference) : Bool :=
+  left.path.isPrefixOf right.path || right.path.isPrefixOf left.path
+
 end ResolvedGroupReference
+
+/-- Shared failures while resolving one group reference that must denote either a nonrepeatable ordinary group or the already-selected `RuleGroup` instance. -/
+inductive FixedGroupReferenceError where
+  | reference (error : SingleGroupElabError)
+  | unknownGroup (path : GroupPath)
+  | repeatableGroupRequiresAddress (path : GroupPath)
+  deriving Repr, DecidableEq
+
+/-- Resolve one fixed group operand without applying an operator-specific root, arity, duplicate, or overlap rule. -/
+def FlatModel.resolveFixedGroupReference (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference) :
+    Except FixedGroupReferenceError ResolvedGroupReference := do
+  let resolved ← surface.resolveAgainst declaringGroup |>.mapError .reference
+  if !model.hasGroupPath resolved.path then
+    throw (.unknownGroup resolved.path)
+  match resolved.origin with
+  | .path =>
+      if (model.repeatableScopeForGroupPath resolved.path).isEmpty then
+        pure resolved
+      else
+        throw (.repeatableGroupRequiresAddress resolved.path)
+  | .ruleGroup => pure resolved
+
+namespace ResolvedGroupReferences
+
+/-- Find the first declaration-ordered duplicate or ancestor/descendant overlap. -/
+def firstOverlap? : List ResolvedGroupReference →
+    Option (GroupPath × GroupPath)
+  | [] => none
+  | first :: rest =>
+      match rest.find? (first.overlaps ·) with
+      | some overlapping => some (first.path, overlapping.path)
+      | none => firstOverlap? rest
+
+/-- All fixed group references remain coherent with the same validated model and declaring rule instance. -/
+def wellFormedBool (references : List ResolvedGroupReference)
+    (model : FlatModel) (declaringGroup : GroupPath) : Bool :=
+  references.all (·.fixedWellFormedBool model declaringGroup)
+
+end ResolvedGroupReferences
 
 /-- Validate one single-star field shape and recover its authored group reference. -/
 def SurfaceSingleStarFieldPath.groupReference

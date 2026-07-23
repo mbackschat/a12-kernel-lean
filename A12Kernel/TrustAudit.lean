@@ -600,6 +600,9 @@ run_cmd do
 #print axioms A12Kernel.numericArithmetic_values_delegate
 #print axioms A12Kernel.numericValidation_power_values_delegate
 #print axioms A12Kernel.numericValidationAggregate_evaluatesThroughSharedFold
+#print axioms A12Kernel.numericValidation_filledGroupCount_value
+#print axioms A12Kernel.numericValidation_filledGroupCount_unknown
+#print axioms A12Kernel.numericValidation_filledGroupCount_missing
 #print axioms A12Kernel.numericValidation_stringRange_empty_growOnly
 #print axioms A12Kernel.numericValidation_stringRange_value_fixed
 #print axioms A12Kernel.numericValidation_stringRange_unknown_preservesCause

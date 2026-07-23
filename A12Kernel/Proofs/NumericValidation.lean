@@ -13,6 +13,9 @@ attribute [local simp]
   LoweredNumericExpr.evalAdmittedValidation?
   combineNumericValidationOutcomes
   evalPlainBinary
+  NumericComparison.evalWith
+  NumericComparison.evalSelectedWithGroups
+  NumericValidationOp.evalArithmeticWith
 
 /-- Eliminate the model-validity certificate carried by a checked comparison. -/
 theorem checkedNumericComparison_modelWellFormed
@@ -34,22 +37,58 @@ theorem numericValidationAggregate_evaluatesThroughSharedFold
       (source.evaluate op context.observeValidationAt).toValidationArithmetic := by
   rfl
 
+/-- A complete clean fixed group source enters ordinary arithmetic as its exact count, with grow-only movement until every listed group is filled. -/
+theorem numericValidation_filledGroupCount_value
+    (context : ValidationEvaluationContext)
+    (groups : List ResolvedGroupReference)
+    (states : List GroupPresenceState) (count : Nat)
+    (resolved : context.groups.resolveAll groups = some states)
+    (counted : numberOfFilledGroups states = .value count) :
+    context.resolveNumericValidationAtom (.filledGroupCount groups) =
+      .ok (.value count
+        (if count < groups.length then .growOnly else .fixed)) := by
+  simp [ValidationEvaluationContext.resolveNumericValidationAtom,
+    resolved, counted]
+
+/-- An erroneous or not-fully-relevant group makes the whole fixed count cause-free unavailable; it is never rewritten to a fabricated formal cell cause. -/
+theorem numericValidation_filledGroupCount_unknown
+    (context : ValidationEvaluationContext)
+    (groups : List ResolvedGroupReference)
+    (states : List GroupPresenceState)
+    (resolved : context.groups.resolveAll groups = some states)
+    (counted : numberOfFilledGroups states = .unknown) :
+    context.resolveNumericValidationAtom (.filledGroupCount groups) =
+      .error .groupState := by
+  simp [ValidationEvaluationContext.resolveNumericValidationAtom,
+    resolved, counted]
+
+/-- Missing checked-document group state is the same explicit cause-free unavailability as an unresolved product state. -/
+theorem numericValidation_filledGroupCount_missing
+    (context : ValidationEvaluationContext)
+    (groups : List ResolvedGroupReference)
+    (missing : context.groups.resolveAll groups = none) :
+    context.resolveNumericValidationAtom (.filledGroupCount groups) =
+      .error .groupState := by
+  simp [ValidationEvaluationContext.resolveNumericValidationAtom, missing]
+
 /-- A missing checked String source gives `RangeAsNumber` the real zero together with its one possible movement direction. -/
 theorem numericValidation_stringRange_empty_growOnly
     (context : FlatContext) (field : FlatStringField) (start finish : Nat)
     (observed : context.observeValidationAt field.id = .empty) :
-    context.resolveNumericValidationAtom (.stringRange field start finish) =
+  context.resolveNumericValidationAtom (.stringRange field start finish) =
       .ok (.value 0 .growOnly) := by
-  simp [FlatContext.resolveNumericValidationAtom, observed]
+  simp [FlatContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
 
 /-- Once the String source is present, digits-only conversion or fallback zero is fixed; substring content does not itself carry omission potential. -/
 theorem numericValidation_stringRange_value_fixed
     (context : FlatContext) (field : FlatStringField) (start finish : Nat)
     (value : String)
     (observed : context.observeValidationAt field.id = .value (.str value)) :
-    context.resolveNumericValidationAtom (.stringRange field start finish) =
+  context.resolveNumericValidationAtom (.stringRange field start finish) =
       .ok (.value (utf16RangeAsNatural value start finish) .fixed) := by
-  simp [FlatContext.resolveNumericValidationAtom, observed]
+  simp [FlatContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
 
 /-- A reached formal cause survives the range conversion rather than becoming fallback zero. -/
 theorem numericValidation_stringRange_unknown_preservesCause
@@ -57,16 +96,18 @@ theorem numericValidation_stringRange_unknown_preservesCause
     (cause : FormalCause)
     (observed : context.observeValidationAt field.id = .unknown cause) :
     context.resolveNumericValidationAtom (.stringRange field start finish) =
-      .error cause := by
-  simp [FlatContext.resolveNumericValidationAtom, observed]
+      .error (.formal cause) := by
+  simp [FlatContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
 
 /-- Missing admitted String or Enumeration/category conversion is numeric zero with both possible movement directions. -/
 theorem numericValidation_fieldValueAsNumber_empty_both
     (context : FlatContext) (source : ResolvedFieldValueAsNumberSource)
     (observed : context.observeValidationAt source.fieldId = .empty) :
-    context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
+  context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
       .ok (.value 0 .both) := by
-  simp [FlatContext.resolveNumericValidationAtom, observed]
+  simp [FlatContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
 
 /-- A present admitted String or Enumeration value is projected and parsed once; the resulting value is fixed. -/
 theorem numericValidation_fieldValueAsNumber_value_fixed
@@ -75,9 +116,11 @@ theorem numericValidation_fieldValueAsNumber_value_fixed
     (observed : context.observeValidationAt source.fieldId =
       .value value)
     (converted : source.valueFor? value = some amount) :
-    context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
+  context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
       .ok (.value amount .fixed) := by
-  simp [FlatContext.resolveNumericValidationAtom, observed, converted]
+  simp [FlatContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom,
+    observed, converted]
 
 /-- A reached formal cause survives String or Enumeration/category conversion unchanged. -/
 theorem numericValidation_fieldValueAsNumber_unknown_preservesCause
@@ -85,8 +128,9 @@ theorem numericValidation_fieldValueAsNumber_unknown_preservesCause
     (cause : FormalCause)
     (observed : context.observeValidationAt source.fieldId = .unknown cause) :
     context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
-      .error cause := by
-  simp [FlatContext.resolveNumericValidationAtom, observed]
+      .error (.formal cause) := by
+  simp [FlatContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
 
 theorem numericArithmetic_formalInvalid_left_is_unknown
     (op : NumericValidationOp) (cause : FormalCause)
@@ -381,7 +425,7 @@ private theorem authoredNumericLower_admittedNumericValidation
 
 private theorem loweredAdmittedValidation_isSome
     (expression : LoweredNumericExpr Atom)
-    (read : Atom → Except FormalCause NumericArithmeticOutcome)
+    (read : Atom → Except Error NumericArithmeticOutcome)
     (admitted : expression.isAdmittedValidation = true) :
     (expression.evalAdmittedValidation? read).isSome = true := by
   unfold LoweredNumericExpr.isAdmittedValidation at admitted
@@ -479,9 +523,10 @@ theorem numericComparison_atom_literal_agrees_flat
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic, FlatComparison.eval,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericValidationOp.eval,
       NumericValidationOp.evalFixedRight,
       NumericComparisonOp.eval, observed]
 
@@ -493,7 +538,7 @@ theorem numericValidation_round_atom_literal_delegates
     ({ op, left := .round mode places (.atom atom),
         right := .literal right } :
       NumericComparison).evalSelected context =
-        op.evalArithmetic
+        op.evalArithmeticWith
           (match context.resolveNumericValidationAtom atom with
           | .ok outcome => .ok (outcome.round mode places)
           | .error cause => .error cause)
@@ -511,7 +556,7 @@ theorem numericValidation_abs_atom_literal_delegates
     (right : DecodedNumericLiteral) (context : FlatContext) :
     ({ op, left := .abs (.atom atom), right := .literal right } :
       NumericComparison).evalSelected context =
-        op.evalArithmetic
+        op.evalArithmeticWith
           (match context.resolveNumericValidationAtom atom with
           | .ok outcome => .ok outcome.absolute
           | .error cause => .error cause)
@@ -580,9 +625,10 @@ theorem numericTolerance_atom_literal_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
 
 /-- Numeric Base Year is a fixed scale-0 operand inside the same checked tolerance evaluator used for Number fields. -/
@@ -598,9 +644,10 @@ theorem numericTolerance_field_baseYear_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
 
 /-- A direct Base-Year date-component atom is the selected fixed scale-0 amount inside the same checked tolerance evaluator. -/
@@ -618,9 +665,10 @@ theorem numericTolerance_field_baseYearDatePart_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
       FlatContext.resolveNumericArithmetic,
       NumericOperand.toValidationArithmetic,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericValidationOp.eval,
       NumericToleranceRange.eval, observed]
 
 /-- Every direct Date/Time/DateTime component atom delegates to its unified flat payload projection before the ordinary or tolerance evaluator. -/
@@ -639,8 +687,9 @@ theorem numericValidation_temporalFieldPart_literal_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
       NumericOperand.toValidationArithmetic,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericValidationOp.eval,
       NumericComparisonOp.eval, NumericToleranceRange.eval, observed]
 
 /-- A supported checked date-difference atom delegates its phase-observed numeric operand to the ordinary or tolerance evaluator without a second arithmetic path. -/
@@ -661,8 +710,9 @@ theorem numericValidation_dateDifference_literal_delegates
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
       NumericOperand.toValidationArithmetic,
-      NumericValidationOp.evalArithmetic, NumericValidationOp.eval,
+      NumericValidationOp.eval,
       NumericComparisonOp.eval, NumericToleranceRange.eval, evaluated]
 
 /-- Full validation gates a checked numeric condition before any empty-Number substitution can fire. -/
