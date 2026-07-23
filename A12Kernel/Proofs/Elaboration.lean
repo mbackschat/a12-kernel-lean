@@ -291,6 +291,7 @@ theorem groupPresenceInput_preserves_relevance
   | ok input =>
       simp only [Except.map]
       unfold CheckedDocument.groupPresenceInput at result
+      unfold CheckedDocument.groupPresenceInputFromCells at result
       split at result
       · contradiction
       · split at result

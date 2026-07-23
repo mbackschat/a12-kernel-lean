@@ -1270,3 +1270,6 @@ run_cmd do
 #print axioms A12Kernel.CheckedDocument.model_is_well_formed
 #print axioms A12Kernel.CheckedDocument.groupPresenceInput_preserves_relevance
 #print axioms A12Kernel.CheckedDocument.applyAbsoluteRequiredAt_preserves_computation
+#print axioms A12Kernel.indexPreliminary_mandatory_contract
+#print axioms A12Kernel.indexPreliminary_unique_contract
+#print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed

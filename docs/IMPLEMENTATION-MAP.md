@@ -34,14 +34,19 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 
 - [`Document.lean`](../A12Kernel/Document.lean)
 - [`Semantics/StarAddressing.lean`](../A12Kernel/Semantics/StarAddressing.lean)
+- [`Semantics/RepetitionNotUnique.lean`](../A12Kernel/Semantics/RepetitionNotUnique.lean)
 - [`Elaboration/CheckedDocument.lean`](../A12Kernel/Elaboration/CheckedDocument.lean)
 - [`Elaboration/CheckedGroupPresence.lean`](../A12Kernel/Elaboration/CheckedGroupPresence.lean)
+- [`Elaboration/CheckedIndexPreliminary.lean`](../A12Kernel/Elaboration/CheckedIndexPreliminary.lean)
 - [`Elaboration/CheckedRequired.lean`](../A12Kernel/Elaboration/CheckedRequired.lean)
+- [`Elaboration/SemanticIndex.lean`](../A12Kernel/Elaboration/SemanticIndex.lean)
 - [`Elaboration/StarPath.lean`](../A12Kernel/Elaboration/StarPath.lean)
 - [`Elaboration/StringContext.lean`](../A12Kernel/Elaboration/StringContext.lean)
 - [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean)
+- [`Proofs/CheckedIndexPreliminary.lean`](../A12Kernel/Proofs/CheckedIndexPreliminary.lean)
 - [`Proofs/StarAddressing.lean`](../A12Kernel/Proofs/StarAddressing.lean)
 - [`Conformance/CheckedDocument.lean`](../A12Kernel/Conformance/CheckedDocument.lean)
+- [`Conformance/CheckedIndexPreliminary.lean`](../A12Kernel/Conformance/CheckedIndexPreliminary.lean)
 
 #### Implemented
 
@@ -50,6 +55,9 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 - `CheckedDocument.read` distinguishes absent cells, present-empty cells, checked values/formal findings, and structural addressing failure. Every placed or absent descendant under any over-limit ancestor reads as validation `.unknown .overRepetition` and computation `.poison .overRepetition`; an in-cap sibling remains ordinary. `flatContext` is the first existing consumer and cannot resample prepared validators.
 - `groupPresenceInput` is the second consumer: it selects cached descendants by exact model group/scope, derives structural row content independently of cells, adds a structural error for any in-slice over-limit row, and keeps partial relevance plus later structural findings as explicit inputs.
 - `applyAbsoluteRequiredAt` is the third consumer: it resolves one nonrepeatable target from the certified model, evaluates the existing generated mandatory rule against the immutable base context, and returns its separate authored-validation context without changing computation input.
+- `applyFullIndexPreliminary` is the first document-wide later annotation pass. It partitions each model-declared index by exact parent address, classifies Number through normalized numeric identity and source-closed String/Enumeration through exact stored text, delegates duplicate identity to `evalRepetitionNotUnique`, and returns addressed `mandatoryField`/`uniqueIndex` roles plus a separate authored-validation view. The immutable base remains unchanged; the finding role remains inspectable because index mandatory is not the computation meaning of an ordinary `.required` cell.
+- `groupPresenceInputFromCells` is the single group-scope fold for both base and later annotated placements. The index view uses it to retain admitted duplicate content and to include absent mandatory index cells as group errors without cloning group traversal.
+- The earlier one-group Number semantic-index materializer now delegates duplicate identity to the same `evalRepetitionNotUnique` relation instead of retaining its own equal-candidate counter; its separate validation-match-first/computation-column-first lookup policy is unchanged.
 
 #### Coverage
 
@@ -61,16 +69,17 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 
 #### Evidence
 
-- The source packet covers immutable `DocumentV2` topology and field placement, `DocumentAbstractRtService` model selection, `ValidationData` traversal/display conversion, `CheckCommand` formal ingestion, `FormalChecker.checkIndices` address-formal ordering, and the separate mutable `ValidationCache`.
-- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, incoherent empty classification, absent versus instantiated-empty group rows, invalid-only group state, explicit missing-scope/model diagnostics, in-cap versus over-limit reads, absent and valued over-limit descendants, nested outer over-capacity, structural content/error preservation, base-before-required annotation, and repeatable-target rejection. Same-context Execute/Explain queries use `flatContext`, `groupPresenceInput`, and `applyAbsoluteRequiredAt`.
-- Laws prove that the shared over-repetition overlay replaces scalar results, preserves checked-cell well-formedness, has the exact phase faces, resolved group construction preserves caller relevance, and model-certified required staging preserves every computation observation; existing group-presence and requiredness laws own their semantic interpretations.
+- The source packet covers immutable `DocumentV2` topology and field placement, `DocumentAbstractRtService` model selection, `ValidationData` traversal/display conversion, `CheckCommand` formal ingestion, `FormalChecker.checkIndices` address-formal ordering, `AutogeneratedRulesService` index rules, preliminary-rule ordering/marking, and the separate mutable `ValidationCache`.
+- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, incoherent empty classification, absent versus instantiated-empty group rows, invalid-only group state, explicit missing-scope/model diagnostics, in-cap versus over-limit reads, absent and valued over-limit descendants, nested outer over-capacity, structural content/error preservation, base-before-required annotation, repeatable-target rejection, all duplicate index participants, per-parent isolation, empty-versus-filled and all-empty mandatory separation, earlier scalar failure, Number normalization, exact stored String tokens, absent-index group error, and explicit unsupported-kind refusal. Same-context Execute/Explain queries use the base and preliminary views without resampling.
+- Laws prove that the shared over-repetition overlay replaces scalar results, preserves checked-cell well-formedness, has the exact phase faces, resolved group construction preserves caller relevance, model-certified required staging preserves every computation observation, each index finding has its exact code/polarity/cause contract, and preliminary annotation preserves parsed payload. Existing group-presence, requiredness, RNU, and semantic-index laws own their semantic interpretations.
 - No project-local retained kernel observation covers the general construction route; kernel calibration remains pending under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 #### Excluded/next
 
-- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. Flat/custom, over-repetition, resolved group-presence, and absolute-required consumers now share the checked input; generated index findings, wider repeatable consumers, partial relevance, computation activation, result projection, and application remain later phases.
+- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. Flat/custom, over-repetition, resolved group-presence, absolute-required, and full-validation Number/String/Enumeration index consumers now share the checked input. Partial-validation generated-rule selection, source closure for Boolean/Confirm/temporal index profiles, wider repeatable consumers, computation activation, result projection, and application remain later phases.
 - Concrete scalar parsing remains an explicitly named preclassified trust boundary. The constructor does not introduce a parser, second address type, processing context inside the document, scheduler overlay, protocol, or harness.
 - This first slice adds 274 nonblank Lean lines after separating the group-presence consumer into the next capsule. The 24-line Tier 1 excess keeps row/cell topology validation and its duplicate/coherence guards atomic with the certificate-producing constructor; splitting again would temporarily expose a `CheckedDocument` that could certify malformed source placement.
+- The index-preliminary trio adds 327 nonblank Lean lines. The Tier 1 excess keeps one parent-scoped Number/stored-token materializer, its addressed role-preserving view, absent-cell group projection, matrix, and proof contract atomic; it also removes the older semantic-index duplicate detector in the same unit. Splitting by file responsibility is already explicit, and compressing the matrix would hide the dangerous parent/empty/scalar/stored-token separators.
 
 ## Taxonomy by clause
 
