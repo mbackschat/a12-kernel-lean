@@ -179,7 +179,7 @@ structure FlatFieldDecl where
   policy : FieldPolicy
   stringValueMode : StringValueMode := .evaluated
   stringPolicy : StringFieldPolicy := {}
-  /-- Exact declared pattern source retained independently of condition-pattern execution. Checked String-value lowering currently executes only `asciiDigitsPatternSource`; other sources remain model-valid but fail closed as value operands. -/
+  /-- Exact declared pattern source retained independently of condition-pattern execution. String-value consumers receive the declaration capability here and rely on their prepared or caller-checked context for pattern execution. -/
   stringPatternSource : Option String := none
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
@@ -194,12 +194,7 @@ def path (declaration : FlatFieldDecl) : List String :=
 /-- The exact model-owned capability used by every checked String value consumer. Presence deliberately does not use this projection. -/
 def toStringValueField? (declaration : FlatFieldDecl) : Option FlatStringField :=
   match declaration.policy.kind, declaration.stringValueMode with
-  | .string, .evaluated =>
-      if declaration.stringPatternSource.isNone ||
-          declaration.stringPatternSource == some asciiDigitsPatternSource then
-        some { id := declaration.id }
-      else
-        none
+  | .string, .evaluated => some { id := declaration.id }
   | _, _ => none
 
 def isRawString (declaration : FlatFieldDecl) : Bool :=

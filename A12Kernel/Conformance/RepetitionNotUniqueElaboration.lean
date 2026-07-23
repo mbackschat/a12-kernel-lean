@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.RepetitionNotUnique
+import A12Kernel.Elaboration.StringContext
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` locks -/
 
@@ -51,6 +52,23 @@ private def model : FlatModel :=
       { level := 20, path := ["Project", "Milestones", "Tasks"], repeatability := some 2 },
       { level := 10, path := ["Project", "Milestones"], repeatability := some 2 },
       { level := 30, path := ["Project", "Reviews"], repeatability := some 2 }] }
+
+private def patternText : FlatFieldDecl :=
+  { text with stringPatternSource := some "A+" }
+
+private def patternModel : FlatModel :=
+  { model with
+    fields := [effort, estimate, patternText, phase, reviewScore, status] }
+
+private def patternCompiler : StringPatternCompiler := fun source =>
+  if source == "A+" then
+    some fun value =>
+      !value.isEmpty && value.toList.all fun character => character == 'A'
+  else
+    none
+
+private def patternWorld : World :=
+  { now := { epochMillis := 0 } }
 
 private def keyPath (field : String := "Effort") : SurfaceFieldPath :=
   { base := .absolute, groups := ["Project", "Milestones", "Tasks"], field }
@@ -174,6 +192,17 @@ private def verdictsOf (surface : SurfaceRepetitionNotUniqueSource)
       | .error _ => none
       | .ok results => some (results.map fun result => (result.row, result.verdict))
 
+private def patternVerdictsOf
+    (read : Env → FieldId → RawCell) : Option (List (Env × Verdict)) := do
+  let prepared ←
+    (prepareFlatStringContext patternWorld patternCompiler patternModel).toOption
+  let checked ←
+    (elaborateRepetitionNotUniqueSource patternModel ["Project"]
+      (authored (firstKey := keyPath "Text"))).toOption
+  let results ← (checked.evaluate document [] .full fun environment id =>
+    (prepared.checkContext "en_US" { read := read environment }).read id).toOption
+  pure (results.map fun result => (result.row, result.verdict))
+
 /- The default first-repeatable scope compares all nested task rows across milestones. -/
 example :
     verdictsOf (authored) [] .full crossMilestoneRead = some [
@@ -240,6 +269,15 @@ example :
         ([(10, 1), (20, 2)], .fired .value),
         ([(10, 2), (20, 1)], .fired .value),
         ([(10, 2), (20, 2)], .fired .value)] := by
+  native_decide
+
+/- Caller-prepared pattern checking remains authoritative for repeated String keys: accepted equal tokens participate in RNU, while rejected rows stay formally unavailable. -/
+example :
+    patternVerdictsOf crossMilestoneRead = some [
+      ([(10, 1), (20, 1)], .fired .value),
+      ([(10, 1), (20, 2)], .unknown),
+      ([(10, 2), (20, 1)], .fired .value),
+      ([(10, 2), (20, 2)], .unknown)] := by
   native_decide
 
 private def numericLookingStringRead (environment : Env) (field : FieldId) : RawCell :=

@@ -13,7 +13,7 @@ theorem checkedStarStringSource_fieldId_exact
   cases kindEq : checked.source.declaration.policy.kind <;>
     cases modeEq : checked.source.declaration.stringValueMode
   all_goals try simp_all [FlatFieldDecl.toStringValueField?]
-  exact (congrArg FlatStringField.id fieldOwned.2).symm
+  exact (congrArg FlatStringField.id fieldOwned).symm
 
 /-- Any retained String-star filter is checked against the exact candidate and captured repetition environments of its typed source. -/
 theorem checkedStarStringSource_filter_wellFormed
