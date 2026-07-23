@@ -1,4 +1,5 @@
-import A12Kernel.Elaboration.CheckedGroupPresence
+import A12Kernel.Elaboration.CheckedRequired
+import A12Kernel.Proofs.Required
 
 /-! # A12Kernel.Proofs.Elaboration — checked flat-elaboration invariants
 
@@ -296,6 +297,25 @@ theorem groupPresenceInput_preserves_phase_inputs
         · injection result with result
           subst input
           rfl
+
+/-- The model-certified required adapter preserves the base computation observation while returning its separate authored-validation view. -/
+theorem applyAbsoluteRequiredAt_preserves_computation
+    (checked : CheckedDocument model) (field id : FieldId) :
+    (checked.applyAbsoluteRequiredAt field).map
+        (fun result =>
+          observeCell .computation (result.authoredContext.read id)) =
+      (checked.applyAbsoluteRequiredAt field).map
+        (fun _ => observeCell .computation (checked.flatContext.read id)) := by
+  unfold CheckedDocument.applyAbsoluteRequiredAt
+  generalize declarationEq :
+    model.resolveNonrepeatableDeclarationById field = declarationResult
+  cases declarationResult with
+  | error error => rfl
+  | ok declaration =>
+      simp only [bind, Except.bind, Except.map]
+      exact congrArg Except.ok
+        (applyAbsoluteRequired_preserves_computation
+          declaration.toPresenceField checked.flatContext id)
 
 end CheckedDocument
 

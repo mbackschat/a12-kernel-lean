@@ -71,6 +71,7 @@ import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.CheckedGroupPresence
+import A12Kernel.Elaboration.CheckedRequired
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.SingleGroup
