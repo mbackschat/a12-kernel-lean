@@ -19,12 +19,15 @@ structure EnumerationDeclaration where
   storedTokens : List String
   displayFacts : List EnumerationDisplayFact := []
   categories : List EnumerationCategoryDeclaration := []
+  /-- The optional model-owned stored token used by eligible index-default staging. -/
+  defaultStoredToken : Option String := none
   deriving Repr, DecidableEq
 
 inductive EnumerationDeclarationError where
   | emptyStoredDomain
   | emptyStoredToken (index : Nat)
   | duplicateStoredToken (token : String)
+  | unknownDefaultStoredToken (token : String)
   | emptyDisplayLocale (stored : String)
   | emptyDisplayText (locale stored : String)
   | unknownDisplayStoredToken (locale stored : String)
@@ -46,6 +49,13 @@ private def firstDuplicate? : List String → Option String
   | [] => none
   | value :: remaining =>
       if remaining.contains value then some value else firstDuplicate? remaining
+
+private def invalidDefaultStoredToken? (storedTokens : List String) :
+    Option String → Option EnumerationDeclarationError
+  | none => none
+  | some token =>
+      if storedTokens.contains token then none
+      else some (.unknownDefaultStoredToken token)
 
 private def invalidDisplayFact? (storedTokens : List String) :
     List EnumerationDisplayFact → Option EnumerationDeclarationError
@@ -102,16 +112,20 @@ def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
         match firstDuplicate? declaration.storedTokens with
         | some token => .error (.duplicateStoredToken token)
         | none =>
-            match invalidDisplayFact? declaration.storedTokens declaration.displayFacts with
+            match invalidDefaultStoredToken? declaration.storedTokens
+                declaration.defaultStoredToken with
             | some error => .error error
             | none =>
-                let locales := declaration.displayFacts.map (·.locale) |>.eraseDups
-                match incompleteDisplay? declaration.displayFacts declaration.storedTokens locales with
+                match invalidDisplayFact? declaration.storedTokens declaration.displayFacts with
                 | some error => .error error
                 | none =>
-                    match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
+                    let locales := declaration.displayFacts.map (·.locale) |>.eraseDups
+                    match incompleteDisplay? declaration.displayFacts declaration.storedTokens locales with
                     | some error => .error error
-                    | none => .ok ()
+                    | none =>
+                        match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
+                        | some error => .error error
+                        | none => .ok ()
 
 /-- The proof-bearing declaration consumed by the existing resolved Enumeration boundaries. -/
 structure CheckedEnumerationDeclaration where
@@ -134,6 +148,23 @@ theorem elaborateEnumeration_declaration_eq
   · cases elaborated
     rfl
   · contradiction
+
+/-- A checked S-value is an admitted stored token of that exact Enumeration declaration. -/
+theorem CheckedEnumerationDeclaration.defaultStoredToken_admitted
+    (checked : CheckedEnumerationDeclaration) (token : String)
+    (selected : checked.declaration.defaultStoredToken = some token) :
+    token ∈ checked.declaration.storedTokens := by
+  by_cases admitted : token ∈ checked.declaration.storedTokens
+  · exact admitted
+  have valid := checked.wellFormed
+  unfold EnumerationDeclaration.validate at valid
+  rw [selected] at valid
+  simp [invalidDefaultStoredToken?, admitted] at valid
+  split at valid
+  · contradiction
+  · split at valid
+    · contradiction
+    · split at valid <;> contradiction
 
 def CheckedEnumerationDeclaration.displayProfile
     (checked : CheckedEnumerationDeclaration) : ResolvedEnumerationDisplay :=

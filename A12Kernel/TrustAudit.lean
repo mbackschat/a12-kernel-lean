@@ -1269,6 +1269,9 @@ run_cmd do
 #print axioms A12Kernel.DocumentData.toDocument_instantiatedRows
 #print axioms A12Kernel.CheckedDocument.model_is_well_formed
 #print axioms A12Kernel.CheckedDocument.groupPresenceInput_preserves_relevance
+#print axioms A12Kernel.CheckedDocument.requirednessScopeFor_relativeToParent
+#print axioms A12Kernel.CheckedDocument.requirednessScopeFor_absolute
+#print axioms A12Kernel.CheckedDocument.requirednessScopeFor_nearestRepeatable
 #print axioms A12Kernel.CheckedDocument.applyAbsoluteRequiredAt_preserves_computation
 #print axioms A12Kernel.indexPreliminary_mandatory_contract
 #print axioms A12Kernel.indexPreliminary_unique_contract

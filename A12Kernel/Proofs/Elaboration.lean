@@ -301,6 +301,36 @@ theorem groupPresenceInput_preserves_relevance
           subst input
           rfl
 
+/-- Parent-relative requiredness retains the exact declared parent group as its gate. -/
+@[simp] theorem requirednessScopeFor_relativeToParent
+    (model : FlatModel) (declaration : FlatFieldDecl) :
+    model.requirednessScopeFor {
+      declaration with requiredness := some .relativeToParent
+    } = .ok (some (.relativeTo declaration.groupPath)) := by
+  rfl
+
+/-- The default requiredness mode is genuinely absolute when no repeatable ancestor exists. -/
+theorem requirednessScopeFor_absolute
+    (model : FlatModel) (declaration : FlatFieldDecl)
+    (nonrepeatable : declaration.repeatableScope = []) :
+    model.requirednessScopeFor {
+      declaration with
+      requiredness := some .absoluteOrNearestRepeatableAncestor
+    } = .ok (some .absolute) := by
+  simp [FlatModel.requirednessScopeFor, nonrepeatable]
+
+/-- The same default mode retains the nearest repeatable ancestor rather than collapsing a repeatable field to an unsupported reference. -/
+theorem requirednessScopeFor_nearestRepeatable
+    (model : FlatModel) (declaration : FlatFieldDecl)
+    (level : RepeatableLevel) (group : RepeatableGroupDecl)
+    (nearest : declaration.repeatableScope.getLast? = some level)
+    (resolved : model.repeatableGroupAtLevel? level = some group) :
+    model.requirednessScopeFor {
+      declaration with
+      requiredness := some .absoluteOrNearestRepeatableAncestor
+    } = .ok (some (.relativeTo group.path)) := by
+  simp [FlatModel.requirednessScopeFor, nearest, resolved]
+
 /-- The model-certified required adapter preserves the base computation observation while returning its separate authored-validation view. -/
 theorem applyAbsoluteRequiredAt_preserves_computation
     (checked : CheckedDocument model) (field id : FieldId) :
@@ -310,15 +340,26 @@ theorem applyAbsoluteRequiredAt_preserves_computation
       (checked.applyAbsoluteRequiredAt field).map
         (fun _ => observeCell .computation (checked.flatContext.read id)) := by
   unfold CheckedDocument.applyAbsoluteRequiredAt
-  generalize declarationEq :
-    model.resolveNonrepeatableDeclarationById field = declarationResult
+  generalize declarationEq : model.lookupUniqueId field = declarationResult
   cases declarationResult with
   | error error => rfl
   | ok declaration =>
-      simp only [bind, Except.bind, Except.map]
-      exact congrArg Except.ok
-        (applyAbsoluteRequired_preserves_computation
-          declaration.toPresenceField checked.flatContext id)
+      simp only [Except.mapError, bind, Except.bind]
+      generalize scopeEq :
+        model.requirednessScopeFor declaration = scopeResult
+      cases scopeResult with
+      | error error => rfl
+      | ok scope =>
+          cases scope with
+          | none => rfl
+          | some scope =>
+              cases scope with
+              | absolute =>
+                  simp only [Except.map]
+                  exact congrArg Except.ok
+                    (applyAbsoluteRequired_preserves_computation
+                      declaration.toPresenceField checked.flatContext id)
+              | relativeTo groupPath => rfl
 
 end CheckedDocument
 
