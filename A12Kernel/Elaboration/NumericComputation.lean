@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, checked direct/plain-star/filtered-star Number entity-list aggregates, and the distinct row-aligned `SumOfProducts` pair through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected aggregate fields, every `Having` reference, and both product fields; scale checking uses the aggregate declarations' union, integral distinct-count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar evaluation remains available for direct-only sources and rejects repeatable atoms explicitly. Addressed evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct aggregate payloads back into its existing nonrepeatable atom and rejects repeatable entity-list and product payloads until an addressed validation context exists. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, whole-rule repeatable generated validation, and scheduling remain outside this module.
+This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, checked direct/plain-star/filtered-star Number entity-list aggregates, and the distinct row-aligned `SumOfProducts` pair through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected aggregate fields, every `Having` reference, and both product fields; scale checking uses the aggregate declarations' union, integral distinct-count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar evaluation remains available for direct-only sources and rejects repeatable atoms explicitly. Addressed evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct aggregate payloads back into its existing nonrepeatable atom and rejects repeatable entity-list and product payloads until an addressed validation context exists. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, whole-rule repeatable generated validation, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -713,6 +713,51 @@ def attachTargetPolicy (operation : CheckedNumericComputationOperation model)
     throw (.targetPolicyMismatch operation.core.target.info policy.info)
 
 end CheckedNumericComputationOperation
+
+private def FlatModel.resolveNumericComputationTargetPolicy
+    (model : FlatModel) (target : FieldId) :
+    Except NumericComputationElabError NumericTargetPolicy := do
+  let declaration ← model.lookupUniqueId target |>.mapError .resolve
+  match declaration.policy.kind, declaration.toNumericTargetPolicy? with
+  | .number _, some policy => pure policy
+  | .number _, none => throw .incoherentCore
+  | _, _ => throw (.targetNotNumber target)
+
+/-- Resolve the complete computation surface and attach the target declaration's complete Number policy in one checked construction. -/
+def elaborateCompleteNumericTargetComputationOperation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationElabError
+      (CheckedNumericTargetComputationOperation model) := do
+  let operation ← elaborateCompleteNumericComputationOperation
+    model declaringGroup targetField expression suppressExactScaleWarning
+  operation.attachTargetPolicy
+    (← model.resolveNumericComputationTargetPolicy targetField)
+
+/-- Resolve a direct/plain-star/filtered-star entity-list computation and retain the target declaration's complete Number policy. -/
+def elaborateNumberEntityTargetComputationOperation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationElabError
+      (CheckedNumericTargetComputationOperation model) :=
+  elaborateCompleteNumericTargetComputationOperation model declaringGroup
+    targetField (expression.map SurfaceNumericComputationAtom.numeric)
+    suppressExactScaleWarning
+
+/-- Backwards-compatible direct-field aggregate surface whose checked target policy comes solely from the validated declaration. -/
+def elaborateNumericTargetComputationOperation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationElabError
+      (CheckedNumericTargetComputationOperation model) :=
+  elaborateNumberEntityTargetComputationOperation model declaringGroup
+    targetField
+    (expression.map SurfaceNumericAtom.toNumberEntityComputationAtom)
+    suppressExactScaleWarning
 
 namespace CheckedNumericTargetComputationOperation
 

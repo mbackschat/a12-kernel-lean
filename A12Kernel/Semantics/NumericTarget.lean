@@ -3,16 +3,14 @@ import A12Kernel.Semantics.NumericStoredNumber
 
 /-! # Numeric computed-target classification
 
-This capsule consumes one already-evaluated Number expression at one nonrepeatable target after separate static assignment-scale admission. It owns the resolved reachable target checks and change-only delta projection. Exact decimal conversion, declaration-to-policy construction, and placement-sensitive document application remain separate.
+This capsule consumes one already-evaluated Number expression at one nonrepeatable target after separate static assignment-scale admission. It owns the resolved declaration constraints, their proof-bearing target-policy construction, the reachable target checks, and change-only delta projection. Exact decimal conversion and placement-sensitive document application remain separate.
 -/
 
 namespace A12Kernel
 
-/-- Resolved Number target constraints consumed after separate assignment-scale admission. `none` means the corresponding declaration bound is absent. Warning suppression selects an evaluator entry point rather than changing this policy. -/
-structure NumericTargetPolicy where
-  info : NumField
-  minFractionalDigits : Nat
-  minLeMax : minFractionalDigits ≤ info.scale
+/-- Resolved Number declaration constraints that remain reachable from canonical computed rendering. Scale and signedness stay in the shared `NumField`; leading-zero policy is omitted because computed rendering cannot reach it. -/
+structure NumericTargetConstraints where
+  minFractionalDigits : Nat := 0
   maxIntegerDigits : Option Nat := none
   zeroAllowed : Bool := true
   minStoredLength : Option Nat := none
@@ -20,6 +18,37 @@ structure NumericTargetPolicy where
   minimum : Option Rat := none
   maximum : Option Rat := none
   deriving Repr, DecidableEq
+
+/-- Resolved Number target constraints consumed after separate assignment-scale admission. The declaration data is retained structurally rather than copied into a parallel policy shape. Warning suppression selects an evaluator entry point rather than changing this policy. -/
+structure NumericTargetPolicy extends NumericTargetConstraints where
+  info : NumField
+  minLeMax : minFractionalDigits ≤ info.scale
+  deriving Repr, DecidableEq
+
+namespace NumericTargetConstraints
+
+/-- Default Number declaration constraints. This named value keeps declaration defaults and legality checks in one owner. -/
+def unconstrained : NumericTargetConstraints :=
+  { minFractionalDigits := 0 }
+
+/-- Construct the complete checked target policy from one resolved declaration. The only dependent fact is the declaration's required fractional digits fitting its existing maximum scale. -/
+def toPolicy? (constraints : NumericTargetConstraints)
+    (info : NumField) : Option NumericTargetPolicy :=
+  if admitted : constraints.minFractionalDigits ≤ info.scale then
+    some {
+      info
+      minFractionalDigits := constraints.minFractionalDigits
+      minLeMax := admitted
+      maxIntegerDigits := constraints.maxIntegerDigits
+      zeroAllowed := constraints.zeroAllowed
+      minStoredLength := constraints.minStoredLength
+      maxStoredLength := constraints.maxStoredLength
+      minimum := constraints.minimum
+      maximum := constraints.maximum }
+  else
+    none
+
+end NumericTargetConstraints
 
 /-- Reachable computed-Number target failures. The names correspond to the target's own formal-check class, not inherited operand invalidity. -/
 inductive NumericTargetError where
