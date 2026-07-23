@@ -22,10 +22,11 @@ theorem checkedEnumerationFirstFilled_excludes_target_reference
 theorem checkedEnumerationFirstFilled_evaluate
     (operation : CheckedEnumerationFirstFilledComputationOperation model)
     (document : Document) (outer : Env) (directRead : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) :
-    operation.evaluate document outer directRead starRead = (do
+    operation.evaluate document outer directRead filterRead starRead = (do
       let selected ←
-        operation.source.evaluate document outer directRead starRead
+        operation.source.evaluate document outer directRead filterRead starRead
       pure selected.asComputationResult.asEnumerationTargetOutcome) := by
   rfl
 

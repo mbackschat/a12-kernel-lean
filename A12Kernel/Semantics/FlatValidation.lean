@@ -248,12 +248,24 @@ abbrev FlatRelevance := FieldId → Bool
 def FlatCondition.canFireOnEmpty (condition : FlatCondition) : Bool :=
   condition.evalBool FlatConditionLeaf.canFireOnEmpty
 
-def FlatContext.observeValidationAt (context : FlatContext) (id : FieldId) : CellObservation :=
-  observeCell .validation (context.read id)
+/-- Observe one checked direct field at the caller's phase. -/
+@[simp] def FlatContext.observeAt (context : FlatContext) (phase : Phase)
+    (id : FieldId) : CellObservation :=
+  observeCell phase (context.read id)
+
+/-- Validation specialization retained for established direct-field consumers. -/
+def FlatContext.observeValidationAt (context : FlatContext)
+    (id : FieldId) : CellObservation :=
+  context.observeAt .validation id
+
+/-- Resolve the direct-comparison Number operand after the caller has selected validation or computation observation. -/
+def FlatContext.resolveNumberComparisonOperandAt (context : FlatContext)
+    (phase : Phase) (field : FlatNumberField) : NumericOperand :=
+  (context.observeAt phase field.id).asDirectNumericComparisonOperand field.info
 
 def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
     (field : FlatNumberField) : NumericOperand :=
-  (context.observeValidationAt field.id).asValidationNumericOperand field.info
+  context.resolveNumberComparisonOperandAt .validation field
 
 /-- Resolve a Boolean field for direct comparison. Empty Boolean is not evaluated. -/
 def FlatContext.resolveBooleanComparisonOperand

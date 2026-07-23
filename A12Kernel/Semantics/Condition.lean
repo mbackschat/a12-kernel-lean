@@ -1,4 +1,4 @@
-import A12Kernel.Core
+import A12Kernel.Cell
 
 /-! # Shared condition-tree structure
 
@@ -6,6 +6,13 @@ The generic tree owns validation connective shape, verdict-aware short-circuit e
 -/
 
 namespace A12Kernel
+
+/-- Computation conditions retain clean non-holding separately from the first formally invalid read. -/
+inductive ComputationConditionResult where
+  | holds
+  | notTrue
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
 
 /-- A connective tree shared by resolved validation leaf families. -/
 inductive ConditionTree (Leaf : Type) where
@@ -59,6 +66,22 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
   | .leaf value => evalLeaf value
   | .and left right => K.and (left.evalK evalLeaf) (right.evalK evalLeaf)
   | .or left right => K.or (left.evalK evalLeaf) (right.evalK evalLeaf)
+
+/-- Evaluate computation leaves left-to-right. Clean false decides `And`, clean true decides `Or`, and the first reached poison aborts either connective. -/
+@[simp] def evalComputation
+    (evalLeaf : Leaf → ComputationConditionResult) :
+    ConditionTree Leaf → ComputationConditionResult
+  | .leaf value => evalLeaf value
+  | .and left right =>
+      match left.evalComputation evalLeaf with
+      | .holds => right.evalComputation evalLeaf
+      | .notTrue => .notTrue
+      | .poison cause => .poison cause
+  | .or left right =>
+      match left.evalComputation evalLeaf with
+      | .holds => .holds
+      | .notTrue => right.evalComputation evalLeaf
+      | .poison cause => .poison cause
 
 end ConditionTree
 

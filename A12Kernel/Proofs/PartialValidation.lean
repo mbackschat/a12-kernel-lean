@@ -366,7 +366,7 @@ theorem partialSelected_agreesOn
               simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval, FlatContext.resolveNumberComparisonOperand,
-              FlatContext.observeValidationAt]
+              FlatContext.resolveNumberComparisonOperandAt, FlatContext.observeAt]
         | boolean op field expected =>
             have readEq := agreement field.id (by
               simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,

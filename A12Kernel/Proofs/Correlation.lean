@@ -253,6 +253,37 @@ theorem currentRepetition_selfExclusion_false
     SingleGroupValidationContext.envAt, Env.uniqueRowAt?,
     CorrelationComparisonOp.holdsRow]
 
+/-- A poison found while prefetching the successor of the first kept candidate wins before the consumer can inspect that candidate. -/
+theorem computationHavingScan_poisonedSuccessor_precedesCurrent
+    (condition : CorrelatedHaving) (context : CorrelationContext)
+    (outer first second : Env) (consume : State → Env → State ⊕ Result)
+    (initial : State) (cause : FormalCause)
+    (firstHolds : condition.evalComputationIn context
+      { innerEnv := first, outerEnv := outer } = .holds)
+    (secondPoisons : condition.evalComputationIn context
+      { innerEnv := second, outerEnv := outer } = .poison cause) :
+    condition.scanComputation context outer consume [first, second] initial =
+      .poison cause := by
+  simp [CorrelatedHaving.scanComputation,
+    CorrelatedHaving.scanComputationCandidates, firstHolds, secondPoisons]
+
+/-- After one successor has been kept, a terminal current target hides every later filter. This separates one-candidate lookahead from eager whole-selection filtering. -/
+theorem computationHavingScan_terminalCurrent_hidesAfterSuccessor
+    (condition : CorrelatedHaving) (context : CorrelationContext)
+    (outer first second third : Env)
+    (consume : State → Env → State ⊕ Result) (initial : State)
+    (result : Result)
+    (firstHolds : condition.evalComputationIn context
+      { innerEnv := first, outerEnv := outer } = .holds)
+    (secondHolds : condition.evalComputationIn context
+      { innerEnv := second, outerEnv := outer } = .holds)
+    (currentTerminates : consume initial first = .inr result) :
+    condition.scanComputation context outer consume
+        [first, second, third] initial = .terminated result := by
+  simp [CorrelatedHaving.scanComputation,
+    CorrelatedHaving.scanComputationCandidates, firstHolds, secondHolds,
+    currentTerminates]
+
 /-- Adding explicit repetition inequality in front of any rest condition removes the
     captured outer row from the executable selection. -/
 theorem explicitSelfExclusion_drops_outer (star : SingleCorrelatedStar)
@@ -292,6 +323,7 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
       ({ origin := HavingOrigin.outer, field } : HavingNumberRef).resolve rows
         { innerRow := row, outerRow := row } = .value value := by
     simpa [HavingNumberRef.resolve, HavingNumberRef.resolveIn,
+      HavingNumberRef.resolveInAt,
       SingleGroupFilterFrame.toCorrelationFrame, CorrelationFrame.envAt] using usable
   have outerUsableIn :
       ({ origin := HavingOrigin.outer, field } : HavingNumberRef).resolveIn

@@ -1,4 +1,5 @@
 import A12Kernel.Document
+import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.ComputationCondition — checked computation control
@@ -12,20 +13,14 @@ namespace A12Kernel
 structure ScalarComputationContext where
   read : FieldId → CheckedCell
 
-/-- A computation-specific condition result. Unlike validation `Verdict`, it carries no message polarity; `notTrue` is the clean non-holding result of the admitted clauses, while poison from a field actually read remains explicit. -/
-inductive ComputationConditionResult where
-  | holds
-  | notTrue
-  | poison (cause : FormalCause)
-  deriving Repr, DecidableEq
-
-/-- The parser-independent computation-condition fragment: direct presence and ordered binary connectives over resolved fields. -/
-inductive ComputationCondition where
+/-- Atomic leaves of the parser-independent computation-condition fragment. -/
+inductive ComputationConditionLeaf where
   | fieldFilled (field : FieldId)
   | fieldNotFilled (field : FieldId)
-  | and (left right : ComputationCondition)
-  | or (left right : ComputationCondition)
   deriving Repr, DecidableEq
+
+/-- Computation control reuses the common checked connective tree; only its phase-specific leaves and result projection differ from validation. -/
+abbrev ComputationCondition := ConditionTree ComputationConditionLeaf
 
 namespace CellObservation
 
@@ -49,28 +44,65 @@ end CellObservation
 
 namespace ComputationCondition
 
+abbrev fieldFilled (field : FieldId) : ComputationCondition :=
+  .leaf (.fieldFilled field)
+
+abbrev fieldNotFilled (field : FieldId) : ComputationCondition :=
+  .leaf (.fieldNotFilled field)
+
+abbrev and (left right : ComputationCondition) : ComputationCondition :=
+  ConditionTree.and left right
+
+abbrev or (left right : ComputationCondition) : ComputationCondition :=
+  ConditionTree.or left right
+
 /-- Evaluate `FieldFilled` for one resolved checked field. A clean value counts as filled regardless of its scalar value; ordinary formal invalidity is poison rather than filled or empty. -/
 def evalFieldFilled (context : ScalarComputationContext)
     (field : FieldId) : ComputationConditionResult :=
   (observeCell .computation (context.read field)).evalComputationFilled
 
-/-- Evaluate a computation condition left-to-right. `And` stops on clean not-true, `Or` stops on clean holds, and a poison already read aborts without consulting the remaining operand. -/
-def eval (condition : ComputationCondition)
-    (context : ScalarComputationContext) : ComputationConditionResult :=
-  match condition with
+/-- Evaluate one computation presence leaf through its checked computation-phase observation. -/
+def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
+    ComputationConditionLeaf → ComputationConditionResult
   | .fieldFilled field => evalFieldFilled context field
   | .fieldNotFilled field =>
       (observeCell .computation (context.read field)).evalComputationNotFilled
-  | .and left right =>
+
+/-- Evaluate a computation condition left-to-right. `And` stops on clean not-true, `Or` stops on clean holds, and a poison already read aborts without consulting the remaining operand. -/
+def eval (condition : ComputationCondition)
+    (context : ScalarComputationContext) : ComputationConditionResult :=
+  condition.evalComputation (ComputationConditionLeaf.eval context)
+
+@[simp]
+theorem eval_fieldFilled (context : ScalarComputationContext) (field : FieldId) :
+    (fieldFilled field).eval context = evalFieldFilled context field := by
+  rfl
+
+@[simp]
+theorem eval_fieldNotFilled (context : ScalarComputationContext) (field : FieldId) :
+    (fieldNotFilled field).eval context =
+      (observeCell .computation (context.read field)).evalComputationNotFilled := by
+  rfl
+
+@[simp]
+theorem eval_and (context : ScalarComputationContext)
+    (left right : ComputationCondition) :
+    (and left right).eval context =
       match left.eval context with
       | .holds => right.eval context
       | .notTrue => .notTrue
-      | .poison cause => .poison cause
-  | .or left right =>
+      | .poison cause => .poison cause := by
+  rfl
+
+@[simp]
+theorem eval_or (context : ScalarComputationContext)
+    (left right : ComputationCondition) :
+    (or left right).eval context =
       match left.eval context with
       | .holds => .holds
       | .notTrue => right.eval context
-      | .poison cause => .poison cause
+      | .poison cause => .poison cause := by
+  rfl
 
 end ComputationCondition
 
