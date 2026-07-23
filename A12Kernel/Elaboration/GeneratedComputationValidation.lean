@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; a repeatable payload fails explicitly because this generated-validation context has no addressed document/relevance inputs. Direct `FirstFilledValue` narrows into the relevance-aware numeric atom and preserves prefix relevance before the same arithmetic evaluator. Addressed generated validation, runtime target checks, and general computation scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; repeatable aggregate and product payloads still fail explicitly. Number `FirstFilledValue` instead retains its complete checked direct/plain-star/filtered-star source and evaluates through the bounded addressed leaf context without flattening its model certificates. Runtime target checks, wider addressed leaves and whole-rule orchestration, and general computation scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -340,11 +340,10 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
 
 def CheckedNumericComputationAtom.toValidationAtom :
     CheckedNumericComputationAtom model →
-      Except GeneratedComputationValidationError OrderedNumericValidationAtom
+      Except GeneratedComputationValidationError
+        (OrderedNumericValidationAtom model)
   | .firstFilled source =>
-      match source.directResolvedFields? with
-      | some direct => pure (.firstFilled direct)
-      | none => throw .repeatableAggregateRequiresAddressedValidation
+      pure (.firstFilled source)
   | .sumOfProducts _ =>
       throw .repeatableAggregateRequiresAddressedValidation
   | .numeric (.field declaration) =>
@@ -373,8 +372,9 @@ def CheckedNumericComputationAtom.toValidationAtom :
 /-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
 def generatedNumericOperationMismatch
     (operation : NumericComputationOperation model)
-    (expression : AuthoredNumericExpr OrderedNumericValidationAtom)
-    (tolerance : Option NumericToleranceRange) : OrderedNumericComparison :=
+    (expression : AuthoredNumericExpr (OrderedNumericValidationAtom model))
+    (tolerance : Option NumericToleranceRange) :
+    OrderedNumericComparison model :=
   { op := match tolerance with
       | none => .ordinary .notEqual
       | some range => .tolerance range
@@ -382,7 +382,7 @@ def generatedNumericOperationMismatch
     right := expression
     suppressExactScaleWarning := operation.suppressExactScaleWarning }
 
-/-- Reuse one checked computation expression as the right side of its generated validation mismatch. The authored tree is traversed only to narrow already-certified direct declarations to Number fields; no surface syntax is reconstructed or re-elaborated. -/
+/-- Reuse one checked computation expression as the right side of its generated validation mismatch. The authored tree narrows scalar declarations while retaining any model-certified first-filled source; no surface syntax is reconstructed or re-elaborated. -/
 def CheckedNumericComputationOperation.generatedMismatchComparison
     (operation : CheckedNumericComputationOperation model)
     (tolerance : Option NumericToleranceRange) :
@@ -394,11 +394,16 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
   let expression ← operation.core.expression.mapM
     CheckedNumericComputationAtom.toValidationAtom
   let comparison := generatedNumericOperationMismatch operation.core expression tolerance
-  if hCore : comparison.wellFormedInBool model targetDeclaration.groupPath
-      .modelWideNonrepeatable = true then
+  let operandScope :=
+    if comparison.requiresAddressedValidation then
+      NumericOperandScope.modelWideCheckedComputation
+    else
+      NumericOperandScope.modelWideNonrepeatable
+  if hCore : comparison.wellFormedInBool targetDeclaration.groupPath
+      operandScope = true then
     pure {
       rowGroup := targetDeclaration.groupPath
-      operandScope := .modelWideNonrepeatable
+      operandScope
       core := comparison
       modelWellFormed := operation.modelWellFormed
       wellFormed := hCore }
@@ -408,7 +413,7 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
 private def generatedGuardCondition (model : FlatModel) (target : FieldId)
     (position : GeneratedComputationGuardPosition)
     (condition : ComputationCondition) :
-    Except GeneratedComputationValidationError ValidationCondition := do
+    Except GeneratedComputationValidationError (ValidationCondition model) := do
   let lowered ← condition.lowerForGeneratedValidation model target position
   pure (ValidationCondition.flat lowered)
 
@@ -416,7 +421,7 @@ private def generatedNumericOperationMismatchCondition (target : FlatNumberField
     (alternativeIndex : Nat)
     (operation : CheckedNumericComputationOperation model)
     (tolerance : Option NumericToleranceRange) :
-    Except GeneratedComputationValidationError ValidationCondition := do
+    Except GeneratedComputationValidationError (ValidationCondition model) := do
   if operation.core.target != target then
     throw (.operationTargetMismatch alternativeIndex target.id
       operation.core.target.id)
@@ -428,7 +433,7 @@ private def generatedNumericMismatch (model : FlatModel)
     (target : FlatNumberField) (alternativeIndex : Nat)
     (alternative : GeneratedComputationAlternative
       (CheckedNumericComputationOperation model)) :
-    Except GeneratedComputationValidationError ValidationCondition := do
+    Except GeneratedComputationValidationError (ValidationCondition model) := do
   let guard ← generatedGuardCondition model target.id
     (.alternative alternativeIndex) alternative.precondition
   let mismatch ← generatedNumericOperationMismatchCondition target
@@ -440,7 +445,7 @@ private def generatedNumericMismatches (model : FlatModel)
     Nat → List (GeneratedComputationAlternative
       (CheckedNumericComputationOperation model)) →
       Except GeneratedComputationValidationError
-        (List ValidationCondition)
+        (List (ValidationCondition model))
   | _, [] => pure []
   | alternativeIndex, alternative :: remaining => do
       let first ← generatedNumericMismatch model target alternativeIndex alternative
@@ -452,7 +457,7 @@ private def singleGeneratedNumericMismatch (model : FlatModel)
     (target : FlatNumberField)
     (alternative : SingleGeneratedComputationAlternative
       (CheckedNumericComputationOperation model)) :
-    Except GeneratedComputationValidationError ValidationCondition := do
+    Except GeneratedComputationValidationError (ValidationCondition model) := do
   let mismatch ← generatedNumericOperationMismatchCondition target 1
     alternative.operation alternative.tolerance
   match alternative.precondition with
@@ -466,7 +471,7 @@ private def generatedNumericAlternatives (model : FlatModel)
     (target : FlatNumberField) :
     GeneratedComputationAlternatives
       (CheckedNumericComputationOperation model) →
-      Except GeneratedComputationValidationError ValidationCondition
+      Except GeneratedComputationValidationError (ValidationCondition model)
   | .singleton alternative =>
       singleGeneratedNumericMismatch model target alternative
   | .guarded alternatives => do

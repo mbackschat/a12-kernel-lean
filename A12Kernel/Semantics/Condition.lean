@@ -61,6 +61,25 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
       | .fired .value => .fired .value
       | _ => Verdict.disj leftVerdict (right.evalVerdict evalLeaf)
 
+/-- Evaluate the same verdict algebra while preserving a caller-owned structural failure channel. Decisive left branches retain the exact ordinary short-circuit boundary and therefore do not sample an unreachable effectful leaf. -/
+def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict) :
+    ConditionTree Leaf → Except Error Verdict
+  | .leaf value => evalLeaf value
+  | .and left right => do
+      let leftVerdict ← left.evalVerdictExcept evalLeaf
+      match leftVerdict with
+      | .notFired => pure .notFired
+      | _ =>
+          pure (Verdict.conj leftVerdict
+            (← right.evalVerdictExcept evalLeaf))
+  | .or left right => do
+      let leftVerdict ← left.evalVerdictExcept evalLeaf
+      match leftVerdict with
+      | .fired .value => pure (.fired .value)
+      | _ =>
+          pure (Verdict.disj leftVerdict
+            (← right.evalVerdictExcept evalLeaf))
+
 /-- Evaluate leaves under the shared strong-Kleene connective algebra. This is the filter counterpart of `evalVerdict`; leaf families still own their observation and comparison rules. -/
 @[simp] def evalK (evalLeaf : Leaf → K) : ConditionTree Leaf → K
   | .leaf value => evalLeaf value

@@ -635,6 +635,8 @@ run_cmd do
 #print axioms A12Kernel.conditionTree_evalVerdict_map
 #print axioms A12Kernel.conditionTree_anyLeaf_map
 #print axioms A12Kernel.conditionTree_allLeaves_map
+#print axioms A12Kernel.conditionTree_evalVerdictExcept_and_notFired_hidesRight
+#print axioms A12Kernel.conditionTree_evalVerdictExcept_or_value_hidesRight
 #print axioms A12Kernel.validationCondition_flat_evalSelected
 #print axioms A12Kernel.validationCondition_flat_referencesField
 #print axioms A12Kernel.validationCondition_numeric_evalSelected_of_relevant

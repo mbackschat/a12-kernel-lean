@@ -72,7 +72,7 @@ theorem flatRule_eval_verdict (rule : ResolvedFlatRule)
     (fun condition => condition.evalFull context hasContent)
 
 /-- The mixed specialization uses the same post-verdict boundary without changing its condition result. -/
-theorem validationRule_eval_verdict (rule : ResolvedValidationRule)
+theorem validationRule_eval_verdict (rule : ResolvedValidationRule model)
     (context : ValidationEvaluationContext) (hasContent : Bool) :
     (ResolvedValidationRule.evalFull rule context hasContent).verdict =
       rule.condition.evalFull context hasContent := by
@@ -160,7 +160,7 @@ theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
       rule.errorDeclaration.repeatableScope.isEmpty = true ∧
-      rule.condition.core.referencesField model rule.errorField = true :=
+      rule.condition.core.referencesField rule.errorField = true :=
   ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
     rule.errorFieldReferenced⟩
 

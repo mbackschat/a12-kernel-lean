@@ -206,7 +206,7 @@ theorem generatedNumberCondition_emptyTarget_notFired
 /-- Generated mismatch construction preserves the already-checked expression exactly, fixes the stored target on the left, and carries warning suppression only as static comparison metadata. -/
 theorem generatedNumericOperationMismatch_preservesBoundary
     (operation : NumericComputationOperation model)
-    (expression : AuthoredNumericExpr OrderedNumericValidationAtom)
+    (expression : AuthoredNumericExpr (OrderedNumericValidationAtom model))
     (tolerance : Option NumericToleranceRange) :
     let comparison :=
       generatedNumericOperationMismatch operation expression tolerance

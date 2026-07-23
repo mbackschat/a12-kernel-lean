@@ -37,12 +37,14 @@ abbrev CheckedResolvedFlatRule (model : FlatModel) :=
   CheckedResolvedRule model (CheckedFlatCondition model) FlatCondition
     (fun condition => condition.core) FlatCondition.referencesField
 
-abbrev ResolvedValidationRule := ResolvedRule ValidationCondition
+abbrev ResolvedValidationRule (model : FlatModel) :=
+  ResolvedRule (ValidationCondition model)
 
 abbrev CheckedResolvedValidationRule (model : FlatModel) :=
-  CheckedResolvedRule model (CheckedValidationCondition model) ValidationCondition
+  CheckedResolvedRule model (CheckedValidationCondition model)
+    (ValidationCondition model)
     (fun condition => condition.core)
-    (fun condition field => condition.referencesField model field)
+    (fun condition field => condition.referencesField field)
 
 namespace CheckedResolvedFlatRule
 
@@ -64,16 +66,23 @@ end CheckedResolvedFlatRule
 
 namespace ResolvedValidationRule
 
-def evalFull (rule : ResolvedValidationRule)
+def evalFull (rule : ResolvedValidationRule model)
     (context : ValidationEvaluationContext)
     (hasContent : Bool) : FlatRuleOutcome :=
   rule.evalWith fun condition => condition.evalFull context hasContent
+
+/-- Emit through the sole rule-message boundary after effectful addressed condition evaluation. Structural addressing failure remains an outer error and therefore cannot manufacture UNKNOWN or a message. -/
+def evalAddressedFull (rule : ResolvedValidationRule model)
+    (context : AddressedValidationEvaluationContext model)
+    (hasContent : Bool) : Except StarAddressingError FlatRuleOutcome := do
+  pure (rule.emit (← rule.condition.evalAddressedFull context hasContent))
 
 end ResolvedValidationRule
 
 namespace CheckedResolvedValidationRule
 
-def core (rule : CheckedResolvedValidationRule model) : ResolvedValidationRule :=
+def core (rule : CheckedResolvedValidationRule model) :
+    ResolvedValidationRule model :=
   { condition := rule.condition.core
     errorField := rule.errorField
     errorCode := rule.errorCode
@@ -87,6 +96,12 @@ def evalFull (rule : CheckedResolvedValidationRule model)
   ResolvedValidationRule.evalFull rule.core
     { fields := (prepared.checkContext locale raw).withWorld prepared.world, groups }
     hasContent
+
+/-- Evaluate a model-certified addressed rule through the same checked core and message emitter. The caller must supply one coherent prepared scalar/repeatable view; SG1 remains responsible for constructing that view from a general document. -/
+def evalAddressedFull (rule : CheckedResolvedValidationRule model)
+    (context : AddressedValidationEvaluationContext model)
+    (hasContent : Bool) : Except StarAddressingError FlatRuleOutcome :=
+  rule.core.evalAddressedFull context hasContent
 
 end CheckedResolvedValidationRule
 
@@ -139,7 +154,7 @@ def assembleResolvedValidationRule (model : FlatModel)
     (messagePlan : MessageRenderPlan) :
     Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
   assembleResolvedRule model (fun checked => checked.core)
-    (fun core field => core.referencesField model field)
+    (fun core field => core.referencesField field)
     condition errorField errorCode severity messagePlan
 
 end A12Kernel

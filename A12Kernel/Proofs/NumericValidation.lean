@@ -35,11 +35,10 @@ theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) (amount : Rat)
     (relevant : isRelevant source.first.id = true)
     (present : source.first.valueListCell context.fields = .present amount) :
-    (.firstFilled source : OrderedNumericValidationAtom).resolve
-        context isRelevant =
+    OrderedNumericValidationAtom.resolveFirstFilledFields
+        context isRelevant source.fields {} =
       .ok (.value amount .fixed) := by
-  simp [OrderedNumericValidationAtom.resolve,
-    OrderedNumericValidationAtom.resolveFirstFilledFields,
+  simp [OrderedNumericValidationAtom.resolveFirstFilledFields,
     ResolvedNumericAggregateFields.fields, relevant, present,
     FirstFilledScanState.step, FirstFilledScanResult.asNumber,
     FirstFilledNumberResult.asValidationOperand,

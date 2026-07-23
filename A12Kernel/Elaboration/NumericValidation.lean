@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericAggregate
+import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Semantics.FirstFilledValue
@@ -6,7 +7,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. The atom-parameterized comparison carrier also lets generated validation retain a checked direct `FirstFilledValue` source whose relevance is resolved in prefix order, without adding another arithmetic tree or evaluator. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for a source that retains repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. The atom-parameterized comparison carrier lets generated validation retain a checked direct/plain-star/filtered-star `FirstFilledValue` source whose relevance is resolved in prefix order, without adding another arithmetic tree or evaluator. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -20,6 +21,14 @@ inductive NumericValidationUnavailable where
   | groupState
   | nonRelevant
   deriving Repr, DecidableEq
+
+/-- The bounded checked inputs needed when one validation numeric leaf retains a repeatable computation source. This is an addressed leaf context, not a general checked document, scheduler, or result boundary. -/
+structure AddressedValidationEvaluationContext (model : FlatModel) where
+  scalar : ValidationEvaluationContext
+  document : Document
+  outer : Env
+  relevance : ValidationRelevanceScope := .full
+  read : Env → FieldId → CheckedCell
 
 /-- Parser-independent input to the checked numeric consumer. -/
 structure SurfaceNumericComparison where
@@ -40,15 +49,14 @@ structure NumericComparisonOf (Atom : Type) where
 /-- Ordinary resolved numeric comparisons retain their established atom type and API. -/
 abbrev NumericComparison := NumericComparisonOf NumericValidationAtom
 
-/-- A relevance-aware numeric leaf either delegates one established atom unchanged or retains one checked direct field list whose prefix consumer must gate each reached source separately. -/
-inductive OrderedNumericValidationAtom where
+/-- A relevance-aware numeric leaf either delegates one established atom unchanged or retains one model-certified Number entity list whose prefix consumer must preserve addressing and gate each reached source separately. -/
+inductive OrderedNumericValidationAtom (model : FlatModel) where
   | ordinary (source : NumericValidationAtom)
-  | firstFilled (source : ResolvedDirectNumberEntityFields)
-  deriving Repr, DecidableEq
+  | firstFilled (source : CheckedNumberEntitySource model)
 
-/-- One numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing. -/
-abbrev OrderedNumericComparison :=
-  NumericComparisonOf OrderedNumericValidationAtom
+/-- One model-indexed numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing and addressed-source selection. -/
+abbrev OrderedNumericComparison (model : FlatModel) :=
+  NumericComparisonOf (OrderedNumericValidationAtom model)
 
 /-- Closed rejection classes for this deliberately narrow consumer, not kernel diagnostic codes. -/
 inductive NumericValidationElabError where
@@ -78,10 +86,11 @@ inductive NumericValidationElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- Static field-admission policy for one resolved numeric comparison. Ordinary rules keep their exact rule group; generated computation validation preserves the computation's already-checked model-wide nonrepeatable operand scope. -/
+/-- Static field-admission policy for one resolved numeric comparison. Ordinary rules keep their exact rule group; generated computation validation either retains the legacy nonrepeatable scope or carries a model-certified repeatable computation source. -/
 inductive NumericOperandScope where
   | sameGroup
   | modelWideNonrepeatable
+  | modelWideCheckedComputation
   deriving Repr, DecidableEq
 
 private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupPath)
@@ -161,34 +170,40 @@ private def NumericValidationAtom.admitted
   | .field source =>
       match scope with
       | .sameGroup => model.admitsNumberInGroup rowGroup source
-      | .modelWideNonrepeatable => model.admitsNumberModelWide source
+      | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+          model.admitsNumberModelWide source
   | .baseYear year => model.baseYear == some year
   | .baseYearDatePart year _ _ => model.baseYear == some year
   | .temporalFieldPart source part =>
       (match scope with
         | .sameGroup => model.admitsTemporalInGroup rowGroup source
-        | .modelWideNonrepeatable => model.admitsTemporalModelWide source) &&
+        | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+            model.admitsTemporalModelWide source) &&
         part.admittedBy source model.hasBaseYear
   | .stringLength source =>
       match scope with
       | .sameGroup => model.admitsStringInGroup rowGroup source
-      | .modelWideNonrepeatable => model.admitsStringModelWide source
+      | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+          model.admitsStringModelWide source
   | .stringRange source start finish =>
       validStringRange start finish &&
         match scope with
         | .sameGroup => model.admitsStringInGroup rowGroup source
-        | .modelWideNonrepeatable => model.admitsStringModelWide source
+        | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+            model.admitsStringModelWide source
   | .fieldValueAsNumber source =>
       match scope with
       | .sameGroup => model.admitsFieldValueAsNumberInGroup rowGroup source
-      | .modelWideNonrepeatable => model.admitsFieldValueAsNumberSource source
+      | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+          model.admitsFieldValueAsNumberSource source
   | .dateDifference unit left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
             source.kind == .date &&
               match scope with
               | .sameGroup => model.admitsTemporalInGroup rowGroup source
-              | .modelWideNonrepeatable => model.admitsTemporalModelWide source
+              | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+                  model.admitsTemporalModelWide source
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
@@ -197,7 +212,8 @@ private def NumericValidationAtom.admitted
         source.fields.all fun field =>
           match scope with
           | .sameGroup => model.admitsNumberInGroup rowGroup field
-          | .modelWideNonrepeatable => model.admitsNumberModelWide field
+          | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+              model.admitsNumberModelWide field
   | .filledGroupCount groups =>
       1 < groups.length &&
         !groups.any ResolvedGroupReference.isRoot &&
@@ -314,28 +330,41 @@ def NumericComparison.allRelevant (comparison : NumericComparison)
 
 namespace OrderedNumericValidationAtom
 
-def isDataDependent : OrderedNumericValidationAtom → Bool
+def isDataDependent : OrderedNumericValidationAtom model → Bool
   | .ordinary source => source.isDataDependent
   | .firstFilled _ => true
 
-def summary : OrderedNumericValidationAtom → NumericScaleSummary
+def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
 
-def admitted (atom : OrderedNumericValidationAtom)
-    (model : FlatModel) (rowGroup : GroupPath)
+/-- Only a source with at least one repeated slot needs the addressed generated-validation input. Direct first-filled and ordinary atoms retain the established scalar scope. -/
+def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
+  | .ordinary _ => false
+  | .firstFilled source => source.directResolvedFields?.isNone
+
+def admitted (atom : OrderedNumericValidationAtom model)
+    (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
   match atom with
   | .ordinary source => source.admitted model rowGroup scope
   | .firstFilled source =>
-      source.hasMultipleFields && source.hasUniqueFields &&
-        source.fields.all fun field =>
-          match scope with
-          | .sameGroup => model.admitsNumberInGroup rowGroup field
-          | .modelWideNonrepeatable => model.admitsNumberModelWide field
+      match scope with
+      | .modelWideCheckedComputation => true
+      | .sameGroup | .modelWideNonrepeatable =>
+          match source.directResolvedFields? with
+          | none => false
+          | some direct =>
+              direct.hasMultipleFields && direct.hasUniqueFields &&
+                direct.fields.all fun field =>
+                  match scope with
+                  | .sameGroup => model.admitsNumberInGroup rowGroup field
+                  | .modelWideNonrepeatable =>
+                      model.admitsNumberModelWide field
+                  | .modelWideCheckedComputation => true
 
-def referencesField (atom : OrderedNumericValidationAtom)
-    (model : FlatModel) (field : FieldId) : Bool :=
+def referencesField (atom : OrderedNumericValidationAtom model)
+    (field : FieldId) : Bool :=
   match atom with
   | .ordinary source => source.referencesField model field
   | .firstFilled source => source.referencesField field
@@ -344,15 +373,15 @@ end OrderedNumericValidationAtom
 
 /-- Static admission for the relevance-aware numeric leaf reuses the complete authored-operation checks and delegates only atom-specific model coherence. -/
 def OrderedNumericComparison.wellFormedInBool
-    (comparison : OrderedNumericComparison)
-    (model : FlatModel) (rowGroup : GroupPath)
+    (comparison : OrderedNumericComparison model)
+    (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
   (comparison.left.anyAtom OrderedNumericValidationAtom.isDataDependent ||
       comparison.right.anyAtom OrderedNumericValidationAtom.isDataDependent) &&
     comparison.left.isAdmittedResolvedNumericOperation &&
     comparison.right.isAdmittedResolvedNumericOperation &&
-    comparison.left.allAtoms (·.admitted model rowGroup scope) &&
-    comparison.right.allAtoms (·.admitted model rowGroup scope) &&
+    comparison.left.allAtoms (·.admitted rowGroup scope) &&
+    comparison.right.allAtoms (·.admitted rowGroup scope) &&
     comparison.left.numericOperationAuthoringCheck == .accepted &&
     comparison.right.numericOperationAuthoringCheck == .accepted &&
     match
@@ -364,17 +393,22 @@ def OrderedNumericComparison.wellFormedInBool
     | _, _ => false
 
 def OrderedNumericComparison.referencesField
-    (comparison : OrderedNumericComparison)
-    (model : FlatModel) (field : FieldId) : Bool :=
-  comparison.left.anyAtom (·.referencesField model field) ||
-    comparison.right.anyAtom (·.referencesField model field)
+    (comparison : OrderedNumericComparison model)
+    (field : FieldId) : Bool :=
+  comparison.left.anyAtom (·.referencesField field) ||
+    comparison.right.anyAtom (·.referencesField field)
+
+def OrderedNumericComparison.requiresAddressedValidation
+    (comparison : OrderedNumericComparison model) : Bool :=
+  comparison.left.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation ||
+    comparison.right.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation
 
 structure CheckedOrderedNumericComparison (model : FlatModel) where
   rowGroup : GroupPath
   operandScope : NumericOperandScope := .sameGroup
-  core : OrderedNumericComparison
+  core : OrderedNumericComparison model
   modelWellFormed : model.validate.isOk = true
-  wellFormed : core.wellFormedInBool model rowGroup operandScope = true
+  wellFormed : core.wellFormedInBool rowGroup operandScope = true
 
 private def FlatModel.ensureNumericAggregateRowGroup (model : FlatModel)
     (rowGroup : GroupPath) :
@@ -640,7 +674,7 @@ def resolveFirstFilledFields
         .error .nonRelevant
 
 /-- Resolve one reached atom with its own relevance rule. Ordinary atoms preserve the previous all-fields gate; direct `FirstFilledValue` checks each source immediately before its declaration-owned read and hides the suffix after a terminal value or formal failure. -/
-def resolve (atom : OrderedNumericValidationAtom)
+def resolve (atom : OrderedNumericValidationAtom model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
     Except NumericValidationUnavailable NumericArithmeticOutcome :=
   match atom with
@@ -650,9 +684,44 @@ def resolve (atom : OrderedNumericValidationAtom)
       else
         .error .nonRelevant
   | .firstFilled source =>
-      resolveFirstFilledFields context isRelevant source.fields {}
+      match source.directResolvedFields? with
+      | some direct =>
+          resolveFirstFilledFields context isRelevant direct.fields {}
+      | none => .error .groupState
+
+/-- Project the addressed relevance scope onto one direct field ID without inventing a separate flat relevance set. A missing declaration is nonrelevant at this already-checked boundary. -/
+def addressedDirectRelevant
+    (context : AddressedValidationEvaluationContext model) :
+    FlatRelevance := fun field =>
+  match model.lookupUniqueId field with
+  | .ok declaration =>
+      context.relevance.coversCell model declaration.path []
+  | .error _ => false
+
+/-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
+def resolveAddressed (atom : OrderedNumericValidationAtom model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except StarAddressingError
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  match atom with
+  | .ordinary source =>
+      if source.allRelevant (addressedDirectRelevant context) then
+        pure (context.scalar.resolveNumericValidationAtom source)
+      else
+        pure (.error .nonRelevant)
+  | .firstFilled source =>
+      match ← source.evaluateValidationIn context.document context.outer
+          context.relevance context.scalar.fields context.read with
+      | .nonRelevant => pure (.error .nonRelevant)
+      | .evaluated result =>
+          pure result.asValidationOperand.toValidationArithmetic
 
 end OrderedNumericValidationAtom
+
+/-- The direct-field relevance view induced by one addressed validation scope. -/
+def AddressedValidationEvaluationContext.directRelevant
+    (context : AddressedValidationEvaluationContext model) : FlatRelevance :=
+  OrderedNumericValidationAtom.addressedDirectRelevant context
 
 def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
@@ -821,16 +890,37 @@ def CheckedNumericComparison.evalFull
 
 /-- Evaluate a reached relevance-aware numeric comparison through the one generic arithmetic evaluator. -/
 def OrderedNumericComparison.evalSelected
-    (comparison : OrderedNumericComparison)
+    (comparison : OrderedNumericComparison model)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) : Verdict :=
   comparison.evalWith fun atom => atom.resolve context isRelevant
+
+/-- Resolve every atom in one reached numeric leaf against the addressed checked inputs, then delegate the complete arithmetic and comparison result to the sole generic evaluator. Structural addressing failure remains an outer error and cannot be confused with validation UNKNOWN. -/
+def OrderedNumericComparison.evalAddressed
+    (comparison : OrderedNumericComparison model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except StarAddressingError Verdict := do
+  let left ← comparison.left.mapM (·.resolveAddressed context)
+  let right ← comparison.right.mapM (·.resolveAddressed context)
+  let resolved : NumericComparisonOf
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := {
+    op := comparison.op
+    left
+    right
+    suppressExactScaleWarning := comparison.suppressExactScaleWarning }
+  pure (resolved.evalWith id)
 
 def CheckedOrderedNumericComparison.evalSelected
     (checked : CheckedOrderedNumericComparison model)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) : Verdict :=
   checked.core.evalSelected context isRelevant
+
+def CheckedOrderedNumericComparison.evalAddressed
+    (checked : CheckedOrderedNumericComparison model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except StarAddressingError Verdict :=
+  checked.core.evalAddressed context
 
 /-- Full validation supplies universal relevance and the established unavailable group projection. -/
 def CheckedOrderedNumericComparison.evalFull

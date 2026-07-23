@@ -51,12 +51,33 @@ private def repeatedGateStar : SurfaceStarFieldPath :=
 private def repeatedTargetStar : SurfaceStarFieldPath :=
   { repeatedGateStar with field := "Target" }
 
+private def repeatableFirstFilledHaving : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner
+      field := {
+        base := .absolute
+        groups := ["Form", "Rows"]
+        field := "Gate" } }
+    { origin := .outer
+      field := {
+        base := .absolute
+        groups := ["Form"]
+        field := "Gate" } }
+
 private def repeatableAggregateOperation :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation repeatableModel) :=
   elaborateNumberEntityComputationOperation repeatableModel ["Form"] target.id
     (.atom (.aggregate .sum {
       first := .star repeatedGateStar
+      rest := [] }))
+
+private def repeatableFirstFilledOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel) :=
+  elaborateCompleteNumericComputationOperation repeatableModel ["Form"] target.id
+    (.atom (.firstFilled {
+      first := .starHaving repeatedTargetStar repeatableFirstFilledHaving
       rest := [] }))
 
 private def productAggregateOperation :
@@ -248,6 +269,90 @@ private def brokenAndHealthy : RawFlatContext where
 
 private def evaluationWorld : World :=
   { now := { epochMillis := 0 } }
+
+private def repeatableDocument (rows : List RowIndex) : Document :=
+  { instantiatedRows := rows.map fun row => { group := 10, path := [row] }
+    rawCells := fun _ => none }
+
+private def checkedNumber (raw : RawCell) : CheckedCell :=
+  formalCheck { kind := .number { scale := 0, signed := true } } raw
+
+private def repeatableRead (outerGate : CheckedCell)
+    (filterRows targetRows : RowIndex → CheckedCell)
+    (environment : Env) (field : FieldId) : CheckedCell :=
+  if field == gate.id then outerGate
+  else
+    match environment with
+    | [(10, row)] =>
+        if field == repeatedGate.id then filterRows row
+        else if field == repeatedTarget.id then targetRows row
+        else malformedCheckedCell
+    | _ => malformedCheckedCell
+
+private def repeatableRaw (outerGate targetCell : RawCell) : RawFlatContext where
+  read field :=
+    if field == gate.id then outerGate
+    else if field == target.id then targetCell
+    else .empty
+
+private def repeatableFirstFilledRule? :
+    Option (CheckedResolvedValidationRule repeatableModel) := do
+  let operation ← repeatableFirstFilledOperation.toOption
+  (assembleGeneratedNumericOperationRule repeatableModel operation
+    "computedRepeatableFirstFilled" none messagePlan).toOption
+
+private def repeatableFirstFilledReferences :
+    Option (Bool × Bool × Bool × NumericOperandScope) := do
+  let operation ← repeatableFirstFilledOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (
+    comparison.core.referencesField target.id,
+    comparison.core.referencesField repeatedTarget.id,
+    comparison.core.referencesField repeatedGate.id &&
+      comparison.core.referencesField gate.id,
+    comparison.operandScope)
+
+private def repeatableFirstFilledAddressedOutcome
+    (document : Document) (outerGate targetCell : RawCell)
+    (filterRows targetRows : RowIndex → CheckedCell) :
+    Option (Except StarAddressingError FlatRuleOutcome) := do
+  let rule ← repeatableFirstFilledRule?
+  let prepared ←
+    (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+      repeatableModel).toOption
+  let fields :=
+    (prepared.checkContext "en_US" (repeatableRaw outerGate targetCell)).withWorld
+      prepared.world
+  pure (rule.evalAddressedFull {
+    scalar := {
+      fields
+      groups := GroupPresenceContext.unavailable }
+    document
+    outer := []
+    relevance := .full
+    read := repeatableRead (fields.read gate.id) filterRows targetRows
+  } true)
+
+private def repeatableFirstFilledExpectedMessage : FlatRuleMessage :=
+  { errorAddress := { field := target.id, path := [] }
+    errorCode := "computedRepeatableFirstFilled"
+    severity := .error
+    messageType := .omission
+    text }
+
+private def hasAddressedOutcome
+    (result : Option (Except StarAddressingError FlatRuleOutcome))
+    (expected : FlatRuleOutcome) : Bool :=
+  match result with
+  | some (.ok actual) => decide (actual = expected)
+  | _ => false
+
+private def hasAddressingError
+    (result : Option (Except StarAddressingError FlatRuleOutcome))
+    (expected : StarAddressingError) : Bool :=
+  match result with
+  | some (.error actual) => decide (actual = expected)
+  | _ => false
 
 private def evalFlatRule? (checkedModel : FlatModel)
     (rule : CheckedResolvedFlatRule checkedModel) (raw : RawFlatContext)
@@ -544,6 +649,15 @@ private def productAggregateGeneratedError :
 private def firstFilledGeneratedError :
     Option GeneratedComputationValidationError :=
   generatedOperationError crossGroupFirstFilledOperation
+
+private def firstFilledGeneratedScope : Option NumericOperandScope := do
+  let operation ← crossGroupFirstFilledOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure comparison.operandScope
+
+private def repeatableFirstFilledGeneratedError :
+    Option GeneratedComputationValidationError :=
+  generatedOperationError repeatableFirstFilledOperation
 
 private def bothHoldingDifferent : LiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
@@ -918,12 +1032,40 @@ example :
         some (.fired aggregateExpectedMessage) := by
   native_decide
 
-/- The computation expression may contain a checked repeatable aggregate, but the current generated-validation context is deliberately flat-only and fails explicitly instead of erasing its address. -/
+/- The checked prefix source retains its repeatable address through generated-validation assembly. Aggregate and product consumers remain explicit until their addressed validation semantics join the same checked leaf. -/
 example :
-    repeatableAggregateGeneratedError =
+    repeatableFirstFilledGeneratedError = none ∧
+      repeatableAggregateGeneratedError =
         some .repeatableAggregateRequiresAddressedValidation ∧
       productAggregateGeneratedError =
         some .repeatableAggregateRequiresAddressedValidation := by
+  native_decide
+
+/- The model-indexed leaf exposes the target, selected repeatable field, and both `Having` dependencies to Analyze/Transform consumers, then executes through the sole checked tree. Structural address failure remains outside semantic UNKNOWN. -/
+example :
+    let filterRows : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 0))
+      | 2 => checkedNumber (.parsed (.num 1))
+      | _ => checkedNumber .empty
+    let targetRows : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 9))
+      | 2 => checkedNumber (.parsed (.num 5))
+      | _ => checkedNumber .empty
+    let malformed : Document := {
+      instantiatedRows := [{ group := 10, path := [1, 2] }]
+      rawCells := fun _ => none }
+    repeatableFirstFilledReferences =
+        some (true, true, true, .modelWideCheckedComputation) ∧
+      hasAddressedOutcome (repeatableFirstFilledAddressedOutcome
+        (repeatableDocument [1, 2]) (.parsed (.num 1))
+        (.parsed (.num 5)) filterRows targetRows) .notFired ∧
+      hasAddressedOutcome (repeatableFirstFilledAddressedOutcome
+        (repeatableDocument [1, 2]) (.parsed (.num 1))
+        (.parsed (.num 6)) filterRows targetRows)
+          (.fired repeatableFirstFilledExpectedMessage) ∧
+      hasAddressingError (repeatableFirstFilledAddressedOutcome malformed
+        (.parsed (.num 1)) (.parsed (.num 5)) filterRows targetRows)
+          (.invalidRowDepth 10 [1, 2] 1) := by
   native_decide
 
 /- Direct generated `FirstFilledValue` checks relevance in source order: a present head hides a nonrelevant suffix, while an empty head reaches that suffix. -/
@@ -931,6 +1073,7 @@ example :
     let sourceAndTarget := fun field =>
       field == crossGroupSource.id || field == crossGroupTarget.id
     firstFilledGeneratedError = none ∧
+      firstFilledGeneratedScope = some .modelWideNonrepeatable ∧
       crossGroupFirstFilledVerdict
         (.parsed (.num 3)) (.rejected .malformed) (.parsed (.num 3))
         sourceAndTarget = some .notFired ∧

@@ -37,21 +37,28 @@ end CheckedNumericStarSource
 
 namespace CheckedStarNumberSource
 
-/-- Shared continuation-capable worker for one reached star slot. Falling through returns the accumulated scan state; a present, unavailable, or nonrelevant cell returns the terminal result. -/
-def scanPartialValidationFirstFilledState (checked : CheckedStarNumberSource model)
-    (scope : ValidationRelevanceScope) (read : Env → FieldId → RawCell)
+/-- Shared continuation-capable worker for one reached star slot. The caller supplies the already phase-correct Number classifier, so raw checked validation and a prepared addressed consumer share the same relevance and prefix scan. -/
+def scanPartialValidationFirstFilledStateWith
+    (checked : CheckedStarNumberSource model)
+    (scope : ValidationRelevanceScope) (classify : Env → ValueListCell .number)
     : List Env → FirstFilledNumberScanState →
       FirstFilledNumberScanState ⊕ PartialValidationFirstFilledNumberResult
   | [], state => .inl state
   | environment :: environments, state =>
       if checked.source.cellRelevant scope environment then
-        match state.step (checked.valueListCell read environment) with
+        match state.step (classify environment) with
         | .continue next =>
-            scanPartialValidationFirstFilledState checked scope read
+            scanPartialValidationFirstFilledStateWith checked scope classify
               environments next
         | .done result => .inr (.evaluated result.asNumber)
       else
         .inr .nonRelevant
+
+/-- Raw-cell compatibility wrapper for established partial-validation consumers. -/
+def scanPartialValidationFirstFilledState (checked : CheckedStarNumberSource model)
+    (scope : ValidationRelevanceScope) (read : Env → FieldId → RawCell) :=
+  checked.scanPartialValidationFirstFilledStateWith scope
+    (checked.valueListCell read)
 
 /-- Finish one resolved star as a standalone partial-validation `FirstFilledValue` operand. -/
 def scanPartialValidationFirstFilled (checked : CheckedStarNumberSource model)
@@ -80,10 +87,11 @@ def resolvedPartialValidationFirstFilled (checked : CheckedStarNumberSource mode
 
 end CheckedStarNumberSource
 
-private def scanCheckedFirstFilledNumberOperand
+private def scanCheckedFirstFilledNumberOperandWith
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (direct : FlatContext) (filterRead : Env → FieldId → CheckedCell)
-    (starRead : Env → FieldId → RawCell) (state : FirstFilledNumberScanState) :
+    (classifyStar : CheckedStarNumberSource model → Env → ValueListCell .number)
+    (state : FirstFilledNumberScanState) :
     CheckedFirstFilledNumberOperand model →
       Except StarAddressingError
         (FirstFilledNumberScanState ⊕ PartialValidationFirstFilledNumberResult)
@@ -97,29 +105,31 @@ private def scanCheckedFirstFilledNumberOperand
         pure (.inr .nonRelevant)
   | .star source => do
       let resolved ← source.source.path.resolve document outer
-      pure (source.scanPartialValidationFirstFilledState scope starRead
+      pure (source.scanPartialValidationFirstFilledStateWith scope
+        (classifyStar source)
         resolved.environments (state.enterSelection resolved.environments.isEmpty
           resolved.domain.hasOpenTail false))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolve document outer
       let selected := source.having.selectEnvironments { read := filterRead } outer
         resolved.environments
-      pure (source.source.scanPartialValidationFirstFilledState scope starRead selected
+      pure (source.source.scanPartialValidationFirstFilledStateWith scope
+        (classifyStar source.source) selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail true))
 
-private def scanCheckedFirstFilledNumberOperands
+private def scanCheckedFirstFilledNumberOperandsWith
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (direct : FlatContext) (filterRead : Env → FieldId → CheckedCell)
-    (starRead : Env → FieldId → RawCell) :
+    (classifyStar : CheckedStarNumberSource model → Env → ValueListCell .number) :
     List (CheckedFirstFilledNumberOperand model) → FirstFilledNumberScanState →
       Except StarAddressingError PartialValidationFirstFilledNumberResult
   | [], state => pure (.evaluated state.finish)
   | operand :: remaining, state => do
-      match ← scanCheckedFirstFilledNumberOperand document outer scope direct
-          filterRead starRead state operand with
+      match ← scanCheckedFirstFilledNumberOperandWith document outer scope direct
+          filterRead classifyStar state operand with
       | .inl next =>
-          scanCheckedFirstFilledNumberOperands document outer scope direct
-            filterRead starRead remaining next
+          scanCheckedFirstFilledNumberOperandsWith document outer scope direct
+            filterRead classifyStar remaining next
       | .inr result => pure result
 
 namespace CheckedNumberEntitySource
@@ -130,8 +140,18 @@ def evaluatePartialValidation (checked : CheckedNumberEntitySource model)
     (directRead : RawFlatContext) (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationFirstFilledNumberResult :=
-  scanCheckedFirstFilledNumberOperands document outer scope
-    (model.checkContext directRead) filterRead starRead checked.operands {}
+  scanCheckedFirstFilledNumberOperandsWith document outer scope
+    (model.checkContext directRead) filterRead
+    (fun source => source.valueListCell starRead) checked.operands {}
+
+/-- Evaluate the same addressed validation prefix over one caller-prepared checked context. Direct and repeated cells therefore come from a coherent checked-document view, and structural addressing failure remains outside the semantic UNKNOWN channel. -/
+def evaluateValidationIn (checked : CheckedNumberEntitySource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (direct : FlatContext) (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError PartialValidationFirstFilledNumberResult :=
+  scanCheckedFirstFilledNumberOperandsWith document outer scope direct read
+    (fun source => source.checkedValueListCellAt .validation read)
+    checked.operands {}
 
 /-- Evaluate the scalar computation fragment exactly when every checked operand is direct. The original source order and the shared stop-at-first scan are retained; no empty synthetic document is constructed for a repeated source. -/
 def evaluateDirectComputationFirstFilled?

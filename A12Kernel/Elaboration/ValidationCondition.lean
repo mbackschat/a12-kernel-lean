@@ -81,49 +81,49 @@ def wellFormedBool (operands : List ResolvedGroupListOperand)
 
 end ResolvedGroupListOperands
 
-/-- The currently resolved validation leaf families. -/
-inductive ValidationConditionLeaf where
+/-- The currently resolved validation leaf families, indexed by the one checked model that owns every retained source certificate. -/
+inductive ValidationConditionLeaf (model : FlatModel) where
   | flat (condition : FlatConditionLeaf)
   | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
   | orderedNumeric (scope : NumericOperandScope)
-      (comparison : OrderedNumericComparison)
+      (comparison : OrderedNumericComparison model)
   | groupPresence (operator : GroupPresenceOperator)
       (reference : ResolvedGroupReference)
   | groupList (operator : GroupFillQuantifier)
       (operands : List ResolvedGroupListOperand)
-  deriving Repr, DecidableEq
 
-/-- One connective tree whose leaves may be ordinary flat clauses or resolved numeric-expression comparisons. -/
-abbrev ValidationCondition := ConditionTree ValidationConditionLeaf
+/-- One connective tree whose leaves may be ordinary flat clauses or model-certified resolved numeric-expression comparisons. -/
+abbrev ValidationCondition (model : FlatModel) :=
+  ConditionTree (ValidationConditionLeaf model)
 
 namespace ValidationCondition
 
 /-- Embed an established flat tree without retaining a nested connective tree. -/
-def flat (condition : FlatCondition) : ValidationCondition :=
+def flat (condition : FlatCondition) : ValidationCondition model :=
   condition.map .flat
 
 /-- Admit one resolved numeric comparison as a leaf. Checked construction remains with `CheckedNumericComparison`. -/
-def numeric (comparison : NumericComparison) : ValidationCondition :=
+def numeric (comparison : NumericComparison) : ValidationCondition model :=
   .leaf (.numeric .sameGroup comparison)
 
 /-- Preserve the checked operand policy when embedding a numeric comparison. -/
 def numericIn (scope : NumericOperandScope)
-    (comparison : NumericComparison) : ValidationCondition :=
+    (comparison : NumericComparison) : ValidationCondition model :=
   .leaf (.numeric scope comparison)
 
 /-- Embed a numeric comparison whose checked atoms own relevance timing. -/
 def orderedNumericIn (scope : NumericOperandScope)
-    (comparison : OrderedNumericComparison) : ValidationCondition :=
+    (comparison : OrderedNumericComparison model) : ValidationCondition model :=
   .leaf (.orderedNumeric scope comparison)
 
 /-- Embed one resolved scalar group-presence predicate without re-traversing document state. -/
 def groupPresence (operator : GroupPresenceOperator)
-    (reference : ResolvedGroupReference) : ValidationCondition :=
+    (reference : ResolvedGroupReference) : ValidationCondition model :=
   .leaf (.groupPresence operator reference)
 
 /-- Embed one fixed checked field/group presence list without expanding it into a parallel connective tree. -/
 def groupList (operator : GroupFillQuantifier)
-    (operands : List ResolvedGroupListOperand) : ValidationCondition :=
+    (operands : List ResolvedGroupListOperand) : ValidationCondition model :=
   .leaf (.groupList operator operands)
 
 end ValidationCondition
@@ -152,29 +152,29 @@ def ResolvedGroupListOperand.evalPresence
 
 namespace ValidationConditionLeaf
 
-def canFireOnEmpty : ValidationConditionLeaf → Bool
+def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .flat condition => condition.canFireOnEmpty
   | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
 
-def referencesField (model : FlatModel) : ValidationConditionLeaf → FieldId → Bool
+def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
   | .numeric _ comparison, field => comparison.referencesField model field
   | .orderedNumeric _ comparison, field =>
-      comparison.referencesField model field
+      comparison.referencesField field
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField model field
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
-def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
-    ValidationConditionLeaf → Bool
+def wellFormedBool (rowGroup : GroupPath) :
+    ValidationConditionLeaf model → Bool
   | .flat condition => condition.wellFormedBool model
   | .numeric scope comparison =>
       comparison.wellFormedInBool model rowGroup scope
   | .orderedNumeric scope comparison =>
-      comparison.wellFormedInBool model rowGroup scope
+      comparison.wellFormedInBool rowGroup scope
   | .groupPresence _ reference =>
       reference.scalarPresenceWellFormedBool model rowGroup
   | .groupList _ operands =>
@@ -183,7 +183,7 @@ def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
 /-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
-    ValidationConditionLeaf → Verdict
+    ValidationConditionLeaf model → Verdict
   | .flat condition => condition.evalSelected context.fields isRelevant
   | .numeric _ comparison =>
       if comparison.allRelevant isRelevant then
@@ -199,33 +199,52 @@ def evalSelected (context : ValidationEvaluationContext)
       (operator.evalPresence
         (operands.map fun operand => operand.evalPresence context isRelevant)).asConservativeVerdict
 
+/-- Evaluate one addressed leaf through the same relevance rules. Only the model-indexed ordered numeric branch can produce a structural addressing error; every existing scalar/group leaf remains the exact pure evaluator lifted into that channel. -/
+def evalAddressed (context : AddressedValidationEvaluationContext model) :
+    ValidationConditionLeaf model → Except StarAddressingError Verdict
+  | .orderedNumeric _ comparison => comparison.evalAddressed context
+  | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
+
 end ValidationConditionLeaf
 
 namespace ValidationCondition
 
-def canFireOnEmpty (condition : ValidationCondition) : Bool :=
+def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
   condition.evalBool ValidationConditionLeaf.canFireOnEmpty
 
-def referencesField (condition : ValidationCondition) (model : FlatModel)
+def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
-  condition.anyLeaf fun leaf => leaf.referencesField model field
+  condition.anyLeaf fun leaf => leaf.referencesField field
 
-def wellFormedBool (condition : ValidationCondition)
-    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
-  condition.allLeaves fun leaf => leaf.wellFormedBool model rowGroup
+def wellFormedBool (condition : ValidationCondition model)
+    (rowGroup : GroupPath) : Bool :=
+  condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup
 
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
-def evalSelected (condition : ValidationCondition)
+def evalSelected (condition : ValidationCondition model)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
   condition.evalVerdict fun leaf => leaf.evalSelected context isRelevant
 
 /-- Apply the ordinary full-validation content gate to a mixed resolved tree. -/
-def evalFull (condition : ValidationCondition)
+def evalFull (condition : ValidationCondition model)
     (context : ValidationEvaluationContext)
     (hasContent : Bool) : Verdict :=
   if hasContent || condition.canFireOnEmpty then condition.evalSelected context
   else .notFired
+
+/-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. The generic effectful connective fold preserves the ordinary decisive-left short-circuit boundary. -/
+def evalAddressed (condition : ValidationCondition model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except StarAddressingError Verdict :=
+  condition.evalVerdictExcept fun leaf => leaf.evalAddressed context
+
+/-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
+def evalAddressedFull (condition : ValidationCondition model)
+    (context : AddressedValidationEvaluationContext model)
+    (hasContent : Bool) : Except StarAddressingError Verdict :=
+  if hasContent || condition.canFireOnEmpty then condition.evalAddressed context
+  else pure .notFired
 
 end ValidationCondition
 
@@ -247,9 +266,9 @@ inductive ValidationConditionAssemblyError where
 /-- A mixed resolved tree certified against one validated model and one exact rule-instance group. -/
 structure CheckedValidationCondition (model : FlatModel) where
   rowGroup : GroupPath
-  core : ValidationCondition
+  core : ValidationCondition model
   modelWellFormed : model.validate.isOk = true
-  wellFormed : core.wellFormedBool model rowGroup = true
+  wellFormed : core.wellFormedBool rowGroup = true
 
 private def ValidationConditionAssemblyError.ofFixedGroupReferenceError :
     FixedGroupReferenceError → ValidationConditionAssemblyError
@@ -262,9 +281,9 @@ namespace CheckedValidationCondition
 
 /-- Certify a resolved mixed core once after a semantic desugaring has assembled its complete tree. -/
 def checkCore (model : FlatModel) (rowGroup : GroupPath)
-    (core : ValidationCondition) (modelWellFormed : model.validate.isOk = true) :
+    (core : ValidationCondition model) (modelWellFormed : model.validate.isOk = true) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  if hCore : core.wellFormedBool model rowGroup = true then
+  if hCore : core.wellFormedBool rowGroup = true then
     .ok { rowGroup, core, modelWellFormed, wellFormed := hCore }
   else
     .error .incoherentCore
@@ -317,7 +336,7 @@ private def resolveGroupListOperands (model : FlatModel) (rowGroup : GroupPath) 
 
 /-- Fixed singletons have an existing checked scalar owner. Keeping them out of the list leaf prevents a second representation of field or group presence. -/
 private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
-    ResolvedGroupListOperand → Option ValidationCondition
+    ResolvedGroupListOperand → Option (ValidationCondition model)
   | .field declaration =>
       match operator with
       | .atLeastOneGroupFilled =>
@@ -368,8 +387,9 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
           checkCore model rowGroup (ValidationCondition.groupList operator resolved)
             (by rw [hModel]; rfl)
 
-private def combine (constructor : ValidationCondition → ValidationCondition →
-    ValidationCondition) (left right : CheckedValidationCondition model) :
+private def combine (constructor : ValidationCondition model →
+    ValidationCondition model → ValidationCondition model)
+    (left right : CheckedValidationCondition model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   if left.rowGroup == right.rowGroup then
     checkCore model left.rowGroup (constructor left.core right.core)

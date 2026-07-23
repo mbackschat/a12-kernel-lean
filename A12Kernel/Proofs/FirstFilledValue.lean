@@ -206,7 +206,9 @@ theorem checkedStarNumberSource_nonRelevantFirstFilledHeadBeforeRead
         { domain, environments := environment :: environments } scope right = .nonRelevant := by
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilled,
-    CheckedStarNumberSource.scanPartialValidationFirstFilledState, nonRelevant]
+    CheckedStarNumberSource.scanPartialValidationFirstFilledState,
+    CheckedStarNumberSource.scanPartialValidationFirstFilledStateWith,
+    nonRelevant]
 
 /-- A relevant present head selects its value and hides every suffix; arbitrary readers need agree only on that reached classification. -/
 theorem checkedStarNumberSource_presentFirstFilledHeadStops
@@ -224,8 +226,9 @@ theorem checkedStarNumberSource_presentFirstFilledHeadStops
           .evaluated (.value amount false) := by
   simp [CheckedStarNumberSource.selectedPartialValidationFirstFilled,
     CheckedStarNumberSource.scanPartialValidationFirstFilled,
-    CheckedStarNumberSource.scanPartialValidationFirstFilledState, relevant,
-    leftPresent, rightPresent, FirstFilledScanState.enterSelection,
+    CheckedStarNumberSource.scanPartialValidationFirstFilledState,
+    CheckedStarNumberSource.scanPartialValidationFirstFilledStateWith,
+    relevant, leftPresent, rightPresent, FirstFilledScanState.enterSelection,
     FirstFilledScanState.enter, FirstFilledScanState.step,
     FirstFilledScanResult.asNumber]
 
