@@ -528,7 +528,7 @@ example :
         some (.value 4) := by
   native_decide
 
-/- The checked function fragment still rejects a second Min/Max constant, while each unary wrapper delegates to an admitted plain-arithmetic body. -/
+/- The checked function fragment still rejects a second Min/Max constant, while unary wrappers compose in authored order and may consume the checked direct-extremum result. -/
 example :
     let sourceField := surfaceField ["Root"] "Source"
     checkedErrorOf
@@ -562,7 +562,20 @@ example :
             (.binary .divide sourceField
               (.literal { value := 0, authoredScale := 0 })))
           (.literal { value := 1, authoredScale := 0 })) =
-          some .domainFailure := by
+          some .domainFailure ∧
+      checkedResultOf
+        (.round .floor omittedRoundingPlaces (.abs sourceField))
+        (context (checkedNumber (.parsed (.num ((-14 : Rat) / 10))))) =
+          some (.value 1) ∧
+      checkedResultOf
+        (.abs (.round .floor omittedRoundingPlaces sourceField))
+        (context (checkedNumber (.parsed (.num ((-14 : Rat) / 10))))) =
+          some (.value 2) ∧
+      checkedResultOf
+        (.abs (AuthoredNumericExpr.extremumList .minimum sourceField
+          [surfaceField ["Root"] "Later"]))
+        (context (checkedNumber (.parsed (.num (-3))))
+          (checkedNumber (.parsed (.num 2)))) = some (.value 3) := by
   native_decide
 
 example :
@@ -875,7 +888,7 @@ example :
           (checkedNumber (.parsed (.num 6)))) = some (.value 10) := by
   native_decide
 
-/- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. Operand-list extrema remain a distinct unsupported wrapper shape. -/
+/- Direct aggregate `Abs` runs after the shared fold, including negative totals, all-empty zero, and exact poison. A wrapper may also consume the separately checked direct operand-list extremum. -/
 example :
     let aggregate := surfaceAggregate .sum "Source" ["Later"]
     checkedResultOf (.abs aggregate)
@@ -897,9 +910,11 @@ example :
         (.abs (surfaceAggregate .distinctCount "Source" ["Later"]))
         (context (checkedNumber (.parsed (.num 5)))
           (checkedNumber (.parsed (.num 5)))) = some (.value 1) ∧
-      checkedErrorOf
-        (AuthoredNumericExpr.extremumList .minimum aggregate
-          [surfaceField ["Root"] "Source"]) = some .unsupportedExpression := by
+      checkedResultOf
+        (.abs (AuthoredNumericExpr.extremumList .minimum aggregate
+          [surfaceField ["Root"] "Source"]))
+        (context (checkedNumber (.parsed (.num (-10))))
+          (checkedNumber (.parsed (.num 4)))) = some (.value 10) := by
   native_decide
 
 /- Shared aggregate lowering preserves its diagnostic owner and computation's nested target-reference rejection. -/

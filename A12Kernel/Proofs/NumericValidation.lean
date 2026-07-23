@@ -309,91 +309,6 @@ private theorem lowerMultiply_unary
       simpa [LoweredNumericExpr.isUnaryArithmetic] using shape)
     left right leftUnary rightUnary
 
-private theorem authoredNumericLower_unary
-    (expression : AuthoredNumericExpr Atom)
-    (unary : expression.isUnaryArithmetic = true) :
-    expression.lowerForEvaluation.isUnaryArithmetic = true := by
-  induction expression with
-  | atom | literal => rfl
-  | group body ih => exact ih unary
-  | binary op left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isUnaryArithmetic,
-        Bool.and_eq_true] at unary
-      cases op with
-      | add | subtract | divide =>
-          simpa only [AuthoredNumericExpr.lowerForEvaluation,
-            LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
-            using And.intro (leftIh unary.1) (rightIh unary.2)
-      | multiply =>
-          exact lowerMultiply_unary _ _
-            (leftIh unary.1) (rightIh unary.2)
-  | power base exponent baseIh exponentIh =>
-      simp only [AuthoredNumericExpr.isUnaryArithmetic,
-        Bool.and_eq_true] at unary
-      simpa only [AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
-        using And.intro (baseIh unary.1) (exponentIh unary.2)
-  | abs body ih =>
-      simpa only [AuthoredNumericExpr.isUnaryArithmetic,
-        AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isUnaryArithmetic] using ih unary
-  | round mode places body ih =>
-      simpa only [AuthoredNumericExpr.isUnaryArithmetic,
-        AuthoredNumericExpr.lowerForEvaluation,
-        LoweredNumericExpr.isUnaryArithmetic] using ih unary
-  | extremum =>
-      simp [AuthoredNumericExpr.isUnaryArithmetic] at unary
-
-private theorem loweredUnaryValidation_isSome
-    (expression : LoweredNumericExpr Atom)
-    (read : Atom → Except FormalCause NumericArithmeticOutcome)
-    (unary : expression.isUnaryArithmetic = true) :
-    (expression.evalUnaryArithmetic? read).isSome = true := by
-  induction expression with
-  | atom | literal => rfl
-  | binary op left right leftIh rightIh =>
-      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
-      have leftSome := leftIh unary.1
-      have rightSome := rightIh unary.2
-      cases leftResult : left.evalUnaryArithmetic? read with
-      | none =>
-          simp [leftResult] at leftSome
-      | some leftOutcome =>
-          cases rightResult : right.evalUnaryArithmetic? read with
-          | none =>
-              simp [rightResult] at rightSome
-          | some rightOutcome =>
-              simp [LoweredNumericExpr.evalUnaryArithmetic?,
-                leftResult, rightResult]
-  | power base exponent baseIh exponentIh =>
-      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
-      have baseSome := baseIh unary.1
-      have exponentSome := exponentIh unary.2
-      cases baseResult : base.evalUnaryArithmetic? read with
-      | none => simp [baseResult] at baseSome
-      | some baseOutcome =>
-          cases exponentResult : exponent.evalUnaryArithmetic? read with
-          | none => simp [exponentResult] at exponentSome
-          | some exponentOutcome =>
-              simp [LoweredNumericExpr.evalUnaryArithmetic?,
-                baseResult, exponentResult]
-  | abs body ih =>
-      have bodySome := ih (by
-        simpa [LoweredNumericExpr.isUnaryArithmetic] using unary)
-      cases evaluated : body.evalUnaryArithmetic? read with
-      | none => simp [evaluated] at bodySome
-      | some outcome =>
-          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
-  | round mode places body ih =>
-      have bodySome := ih (by
-        simpa [LoweredNumericExpr.isUnaryArithmetic] using unary)
-      cases evaluated : body.evalUnaryArithmetic? read with
-      | none => simp [evaluated] at bodySome
-      | some outcome =>
-          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
-  | extremum =>
-      simp [LoweredNumericExpr.isUnaryArithmetic] at unary
-
 private theorem authoredNumericLower_directExtremumChain
     (expected : NumericExtremumOp)
     (expression : AuthoredNumericExpr Atom)
@@ -444,62 +359,52 @@ private theorem authoredNumericLower_directValueFunction
       rw [preserved]
       exact direct
 
-private theorem authoredNumericLower_admittedValidation
+private theorem authoredNumericLower_unary
     (expression : AuthoredNumericExpr Atom)
-    (admitted : expression.isAdmittedNumericOperation = true) :
-    expression.lowerForEvaluation.isAdmittedValidation = true := by
-  simp only [AuthoredNumericExpr.isAdmittedNumericOperation,
-    Bool.or_eq_true] at admitted
-  simp only [LoweredNumericExpr.isAdmittedValidation, Bool.or_eq_true]
-  cases admitted with
-  | inl unary =>
-      exact Or.inl (authoredNumericLower_unary expression unary)
-  | inr direct =>
-      exact Or.inr
-        (authoredNumericLower_directValueFunction expression direct)
-
-private theorem admittedResolvedUnary_isUnary
-    (expression : AuthoredNumericExpr NumericValidationAtom)
-    (admitted : expression.isAdmittedResolvedUnaryArithmetic = true) :
-    expression.isUnaryArithmetic = true := by
+    (unary : expression.isUnaryArithmetic = true) :
+    expression.lowerForEvaluation.isUnaryArithmetic = true := by
   induction expression with
   | atom | literal => rfl
-  | group body ih => exact ih admitted
+  | group body ih => exact ih unary
   | binary op left right leftIh rightIh =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
-      exact ⟨leftIh admitted.1, rightIh admitted.2⟩
+      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+        Bool.and_eq_true] at unary
+      cases op with
+      | add | subtract | divide =>
+          simpa only [AuthoredNumericExpr.lowerForEvaluation,
+            LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
+            using And.intro (leftIh unary.1) (rightIh unary.2)
+      | multiply =>
+          exact lowerMultiply_unary _ _
+            (leftIh unary.1) (rightIh unary.2)
   | power base exponent baseIh exponentIh =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
-      exact ⟨baseIh admitted.1, exponentIh admitted.2⟩
+      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+        Bool.and_eq_true] at unary
+      simpa only [AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true]
+        using And.intro (baseIh unary.1) (exponentIh unary.2)
   | abs body ih =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        Bool.and_eq_true] at admitted
-      simpa only [AuthoredNumericExpr.isUnaryArithmetic] using
-        authoredPlain_isUnary body admitted.1
+      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+        AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isUnaryArithmetic, Bool.or_eq_true] at unary ⊢
+      cases unary with
+      | inl bodyUnary =>
+          exact Or.inl (ih bodyUnary)
+      | inr bodyDirect =>
+          exact Or.inr
+            (authoredNumericLower_directValueFunction body bodyDirect)
   | round mode places body ih =>
-      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
-        Bool.and_eq_true] at admitted
-      simpa only [AuthoredNumericExpr.isUnaryArithmetic] using
-        authoredPlain_isUnary body admitted.1
+      simp only [AuthoredNumericExpr.isUnaryArithmetic,
+        AuthoredNumericExpr.lowerForEvaluation,
+        LoweredNumericExpr.isUnaryArithmetic, Bool.or_eq_true] at unary ⊢
+      cases unary with
+      | inl bodyUnary =>
+          exact Or.inl (ih bodyUnary)
+      | inr bodyDirect =>
+          exact Or.inr
+            (authoredNumericLower_directValueFunction body bodyDirect)
   | extremum =>
-      simp [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic] at admitted
-
-private theorem authoredNumericLower_admittedNumericValidation
-    (expression : AuthoredNumericExpr NumericValidationAtom)
-    (admitted : expression.isAdmittedResolvedNumericOperation = true) :
-    expression.lowerForEvaluation.isAdmittedValidation = true := by
-  unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
-  split at admitted
-  · have authoredUnary := admittedResolvedUnary_isUnary expression admitted
-    have loweredUnary := authoredNumericLower_unary expression authoredUnary
-    simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
-  · split at admitted
-    · have authoredUnary := authoredPlain_isUnary expression admitted
-      have loweredUnary := authoredNumericLower_unary expression authoredUnary
-      simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
-    · exact authoredNumericLower_admittedValidation expression admitted
+      simp [AuthoredNumericExpr.isUnaryArithmetic] at unary
 
 private theorem loweredDirectExtremum_constantUse_preserved
     (expected : NumericExtremumOp)
@@ -548,6 +453,139 @@ private theorem loweredDirectExtremum_isSome
       simp at direct
   | some result =>
       simp [LoweredNumericExpr.evalDirectExtremum?, evaluated]
+
+private theorem loweredUnaryValidation_isSome
+    (expression : LoweredNumericExpr Atom)
+    (read : Atom → Except FormalCause NumericArithmeticOutcome)
+    (unary : expression.isUnaryArithmetic = true) :
+    (expression.evalUnaryArithmetic? read).isSome = true := by
+  induction expression with
+  | atom | literal => rfl
+  | binary op left right leftIh rightIh =>
+      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
+      have leftSome := leftIh unary.1
+      have rightSome := rightIh unary.2
+      cases leftResult : left.evalUnaryArithmetic? read with
+      | none =>
+          simp [leftResult] at leftSome
+      | some leftOutcome =>
+          cases rightResult : right.evalUnaryArithmetic? read with
+          | none =>
+              simp [rightResult] at rightSome
+          | some rightOutcome =>
+              simp [LoweredNumericExpr.evalUnaryArithmetic?,
+                leftResult, rightResult]
+  | power base exponent baseIh exponentIh =>
+      simp only [LoweredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at unary
+      have baseSome := baseIh unary.1
+      have exponentSome := exponentIh unary.2
+      cases baseResult : base.evalUnaryArithmetic? read with
+      | none => simp [baseResult] at baseSome
+      | some baseOutcome =>
+          cases exponentResult : exponent.evalUnaryArithmetic? read with
+          | none => simp [exponentResult] at exponentSome
+          | some exponentOutcome =>
+              simp [LoweredNumericExpr.evalUnaryArithmetic?,
+                baseResult, exponentResult]
+  | abs body ih =>
+      have bodySome : (body.evalUnaryArithmetic? read).isSome = true := by
+        simp only [LoweredNumericExpr.isUnaryArithmetic,
+          Bool.or_eq_true] at unary
+        cases unary with
+        | inl bodyUnary => exact ih bodyUnary
+        | inr bodyDirect =>
+            cases body with
+            | extremum op left right =>
+                simpa [LoweredNumericExpr.evalUnaryArithmetic?] using
+                  loweredDirectExtremum_isSome op
+                    (.extremum op left right) read bodyDirect
+            | atom | literal | binary | power | abs | round =>
+                simp [LoweredNumericExpr.isDirectValueFunction] at bodyDirect
+      cases evaluated : body.evalUnaryArithmetic? read with
+      | none => simp [evaluated] at bodySome
+      | some outcome =>
+          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
+  | round mode places body ih =>
+      have bodySome : (body.evalUnaryArithmetic? read).isSome = true := by
+        simp only [LoweredNumericExpr.isUnaryArithmetic,
+          Bool.or_eq_true] at unary
+        cases unary with
+        | inl bodyUnary => exact ih bodyUnary
+        | inr bodyDirect =>
+            cases body with
+            | extremum op left right =>
+                simpa [LoweredNumericExpr.evalUnaryArithmetic?] using
+                  loweredDirectExtremum_isSome op
+                    (.extremum op left right) read bodyDirect
+            | atom | literal | binary | power | abs | round =>
+                simp [LoweredNumericExpr.isDirectValueFunction] at bodyDirect
+      cases evaluated : body.evalUnaryArithmetic? read with
+      | none => simp [evaluated] at bodySome
+      | some outcome =>
+          simp [LoweredNumericExpr.evalUnaryArithmetic?, evaluated]
+  | extremum =>
+      simp [LoweredNumericExpr.isUnaryArithmetic] at unary
+
+private theorem authoredNumericLower_admittedValidation
+    (expression : AuthoredNumericExpr Atom)
+    (admitted : expression.isAdmittedNumericOperation = true) :
+    expression.lowerForEvaluation.isAdmittedValidation = true := by
+  simp only [AuthoredNumericExpr.isAdmittedNumericOperation,
+    Bool.or_eq_true] at admitted
+  simp only [LoweredNumericExpr.isAdmittedValidation, Bool.or_eq_true]
+  cases admitted with
+  | inl unary =>
+      exact Or.inl (authoredNumericLower_unary expression unary)
+  | inr direct =>
+      exact Or.inr
+        (authoredNumericLower_directValueFunction expression direct)
+
+private theorem admittedResolvedUnary_isUnary
+    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (admitted : expression.isAdmittedResolvedUnaryArithmetic = true) :
+    expression.isUnaryArithmetic = true := by
+  induction expression with
+  | atom | literal => rfl
+  | group body ih => exact ih admitted
+  | binary op left right leftIh rightIh =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
+      exact ⟨leftIh admitted.1, rightIh admitted.2⟩
+  | power base exponent baseIh exponentIh =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true] at admitted ⊢
+      exact ⟨baseIh admitted.1, exponentIh admitted.2⟩
+  | abs body ih =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true,
+        Bool.or_eq_true] at admitted ⊢
+      cases admitted.2 with
+      | inl bodyAdmitted => exact Or.inl (ih bodyAdmitted)
+      | inr bodyDirect => exact Or.inr bodyDirect
+  | round mode places body ih =>
+      simp only [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic,
+        AuthoredNumericExpr.isUnaryArithmetic, Bool.and_eq_true,
+        Bool.or_eq_true] at admitted ⊢
+      cases admitted.2 with
+      | inl bodyAdmitted => exact Or.inl (ih bodyAdmitted)
+      | inr bodyDirect => exact Or.inr bodyDirect
+  | extremum =>
+      simp [AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic] at admitted
+
+private theorem authoredNumericLower_admittedNumericValidation
+    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (admitted : expression.isAdmittedResolvedNumericOperation = true) :
+    expression.lowerForEvaluation.isAdmittedValidation = true := by
+  unfold AuthoredNumericExpr.isAdmittedResolvedNumericOperation at admitted
+  split at admitted
+  · have authoredUnary := admittedResolvedUnary_isUnary expression admitted
+    have loweredUnary := authoredNumericLower_unary expression authoredUnary
+    simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
+  · split at admitted
+    · have authoredUnary := authoredPlain_isUnary expression admitted
+      have loweredUnary := authoredNumericLower_unary expression authoredUnary
+      simp [LoweredNumericExpr.isAdmittedValidation, loweredUnary]
+    · exact authoredNumericLower_admittedValidation expression admitted
 
 private theorem loweredAdmittedValidation_isSome
     (expression : LoweredNumericExpr Atom)

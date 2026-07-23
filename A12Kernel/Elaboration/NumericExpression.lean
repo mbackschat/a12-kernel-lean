@@ -173,7 +173,16 @@ private def authoringScan? (allowUnaryWrappers : Bool) :
           exponentScan.directLeftNestedPower⟩
   | .abs body | .round _ _ body =>
       if allowUnaryWrappers then body.authoringScan? true else none
-  | .extremum _ _ _ => none
+  | .extremum _ left right =>
+      if allowUnaryWrappers then do
+        let leftScan ← left.authoringScan? true
+        let rightScan ← right.authoringScan? true
+        let exposed := leftScan.exposedDivisions + rightScan.exposedDivisions
+        pure ⟨exposed,
+          leftScan.tooManyDivisions || rightScan.tooManyDivisions ||
+            decide (1 < exposed),
+          leftScan.directLeftNestedPower || rightScan.directLeftNestedPower⟩
+      else none
 
 private def authoringResult : Option AuthoringScan → NumericAuthoringCheck
   | some scan =>
@@ -196,15 +205,6 @@ def isPlainArithmetic : AuthoredNumericExpr Atom → Bool
   | .power base exponent =>
       base.isPlainArithmetic && exponent.isPlainArithmetic
   | .abs _ | .extremum _ _ _ | .round _ _ _ => false
-
-/-- Arithmetic whose ordinary operands may themselves contain rounding or absolute-value nodes. This runtime-capable shape is deliberately broader than checked wrapper-over-wrapper authoring; source admission supplies that narrower gate. -/
-def isUnaryArithmetic : AuthoredNumericExpr Atom → Bool
-  | .atom _ | .literal _ => true
-  | .group body => body.isUnaryArithmetic
-  | .binary _ left right | .power left right =>
-      left.isUnaryArithmetic && right.isUnaryArithmetic
-  | .abs body | .round _ _ body => body.isUnaryArithmetic
-  | .extremum _ _ _ => false
 
 def hasUnaryValueFunction : AuthoredNumericExpr Atom → Bool
   | .atom _ | .literal _ => false
@@ -237,15 +237,30 @@ def isDirectValueFunction : AuthoredNumericExpr Atom → Bool
   | expression@(.extremum op _ _) => expression.isDirectExtremumChain op
   | _ => false
 
+/-- Arithmetic whose ordinary operands may themselves contain rounding or absolute-value nodes. A wrapper may consume a separately checked direct extremum, but the extremum itself remains outside ordinary arithmetic unless reached through that wrapper boundary. -/
+def isUnaryArithmetic : AuthoredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => true
+  | .group body => body.isUnaryArithmetic
+  | .binary _ left right | .power left right =>
+      left.isUnaryArithmetic && right.isUnaryArithmetic
+  | .abs body | .round _ _ body =>
+      body.isUnaryArithmetic || body.isDirectValueFunction
+  | .extremum _ _ _ => false
+
 /-- The shared checked numeric-operation shape is unary arithmetic plus independently audited direct extrema. Source-specific wrapper admission remains a separate gate. -/
 def isAdmittedNumericOperation (expression : AuthoredNumericExpr Atom) : Bool :=
   expression.isUnaryArithmetic || expression.isDirectValueFunction
 
-/-- A root rounding or absolute-value operation delegates its static checks to its complete plain-arithmetic child. Enclosing arithmetic follows the legacy walk through each admitted unary wrapper: division contributions cross the wrapper, while the wrapper structurally separates an outer direct-left power relation. Other value functions retain their separately audited direct admission. -/
+/-- Check the complete child of an operation-form rounding or absolute-value node, descending through every reached numeric value function. -/
+def numericWrapperBodyAuthoringCheck
+    (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
+  authoringResult (expression.authoringScan? true)
+
+/-- Rounding and absolute-value operations delegate their static checks through nested wrappers and separately admitted direct extrema. Enclosing arithmetic follows the legacy walk through each reached value-function subtree: division contributions cross it, while each function node structurally separates an outer direct-left power relation. -/
 def numericOperationAuthoringCheck
     (expression : AuthoredNumericExpr Atom) : NumericAuthoringCheck :=
   match expression with
-  | .round _ _ body | .abs body => body.authoringCheck
+  | .round _ _ body | .abs body => body.numericWrapperBodyAuthoringCheck
   | _ =>
       if expression.isDirectValueFunction then
         .accepted

@@ -119,9 +119,12 @@ private def crossGroupAggregateOperation :
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id
-    (.abs (.atom (.aggregate .sum {
-      first := absolutePath ["Input"] "Source"
-      rest := [absolutePath ["Input"] "Extra"] })))
+    (.round .floor omittedRoundingPlaces
+      (.abs (.extremum .minimum
+        (.atom (.aggregate .sum {
+          first := absolutePath ["Input"] "Source"
+          rest := [absolutePath ["Input"] "Extra"] }))
+        (.literal { value := -4, authoredScale := 0 }))))
 
 private def crossGroupStringRangeOperation :
     Except NumericComputationElabError
@@ -797,10 +800,10 @@ example :
         crossGroupTarget.id crossGroupOtherTarget.id) := by
   native_decide
 
-/- A checked absolute-value/aggregate tree reaches both singleton and guarded all-alternative validation through the same expression narrowing; the later aggregate mismatch remains observable without an aggregate-specific comparison wrapper. -/
+/- A checked round/absolute/extremum/aggregate tree reaches both singleton and guarded all-alternative validation through the same expression narrowing; the later aggregate mismatch remains observable without a source-specific comparison wrapper. -/
 example :
-    crossGroupAggregateOutcome 5 = some .notFired ∧
-      crossGroupAggregateOutcome 4 = some (.fired aggregateExpectedMessage) ∧
+    crossGroupAggregateOutcome 4 = some .notFired ∧
+      crossGroupAggregateOutcome 5 = some (.fired aggregateExpectedMessage) ∧
       crossGroupAggregateTableOutcome 3 =
         some (.fired aggregateExpectedMessage) := by
   native_decide
