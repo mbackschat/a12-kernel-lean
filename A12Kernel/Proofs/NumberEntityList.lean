@@ -4,6 +4,18 @@ import A12Kernel.Elaboration.NumberEntityList
 
 namespace A12Kernel
 
+/-- The shared checked Number query changes only the requested phase observation; address identity and structural failure remain owned by `CheckedDocument.addressedCell`. -/
+theorem checkedDocument_numberValueListCellAt_delegates
+    (document : CheckedDocument model) (phase : Phase)
+    (environment : Env) (field : FlatNumberField)
+    (addressed : CheckedAddressedCell)
+    (resolved : document.addressedCell environment field.id = .ok addressed) :
+    document.numberValueListCellAt phase environment field =
+      .ok ((observeCell phase addressed.cell).asNumberValueListCell) := by
+  unfold CheckedDocument.numberValueListCellAt
+  rw [resolved]
+  rfl
+
 /-- Every checked Number entity list has either a starred first slot or at least one trailing slot. -/
 theorem checkedNumberEntitySource_requiredMultiplicity
     (checked : CheckedNumberEntitySource model) :

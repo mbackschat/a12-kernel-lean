@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericComputation
+import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Checked Number-list and finite-star lowering locks -/
 
@@ -471,6 +472,110 @@ private def checkedValueCountOf (expected : Rat)
           (aggregateFilterRead a b c) with
       | .ok result => some result
       | .error _ => none
+
+private def aggregateWorld : World :=
+  { now := { epochMillis := 0 } }
+
+private def checkedAggregateData : DocumentData :=
+  { instantiatedRows := [1, 2, 3].map fun row =>
+      { group := 10, path := [row] }
+    cells := [
+      { address := { field := unsignedA.id, path := [] }
+        stored := "1", raw := .parsed (.num 1) },
+      { address := { field := repeated.id, path := [1] }
+        stored := "2", raw := .parsed (.num 2) },
+      { address := { field := repeated.id, path := [2] }
+        stored := "3", raw := .parsed (.num 3) },
+      { address := { field := repeated.id, path := [3] }
+        stored := "4", raw := .parsed (.num 4) }] }
+
+private inductive CheckedDocumentAggregateSnapshot where
+  | result (operand : NumericOperand)
+  | error (cause : CheckedAddressingError)
+  deriving Repr, DecidableEq
+
+private def checkedDocumentAggregateSnapshot (computation : Bool) :
+    Option CheckedDocumentAggregateSnapshot := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ← (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar])).toOption
+  pure (match if computation then
+      source.evaluateCheckedDocumentComputationAggregate .sum document []
+    else
+      source.evaluateCheckedDocumentValidationAggregate .sum document [] with
+    | .ok operand => .result operand
+    | .error cause => .error cause)
+
+private def checkedDocumentAggregateStructuralSnapshot
+    (computation directFailure : Bool) :
+    Option CheckedDocumentAggregateSnapshot := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      productModel).toOption
+  let data : DocumentData := {
+    instantiatedRows := []
+    cells := if directFailure then [{
+      address := { field := unsignedA.id, path := [] }
+      stored := "bad", raw := .rejected .declaredConstraint
+    }] else []
+  }
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let source ← (elaborateNumberEntitySource productModel ["Form"]
+    (aggregateSource (.field (bare "UnsignedA"))
+      [.star (nestedProductStar false)])).toOption
+  pure (match if computation then
+      source.evaluateCheckedDocumentComputationAggregate .sum document []
+    else
+      source.evaluateCheckedDocumentValidationAggregate .sum document [] with
+    | .ok operand => .result operand
+    | .error cause => .error cause)
+
+private def checkedDocumentFilteredAggregateSnapshot
+    (computation : Bool) : Option CheckedDocumentAggregateSnapshot := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ← (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let source ← (elaborateNumberEntitySource model ["Form"]
+    (aggregateSource
+      (.starHaving aggregateStar computationAggregateHaving) [])).toOption
+  pure (match if computation then
+      source.evaluateCheckedDocumentComputationAggregate .sum document []
+    else
+      source.evaluateCheckedDocumentValidationAggregate .sum document [] with
+    | .ok operand => .result operand
+    | .error cause => .error cause)
+
+/- Both phases accumulate the same authored direct/star source from one immutable checked document. -/
+example :
+    checkedDocumentAggregateSnapshot false =
+      some (.result (.value 10 .fixed)) ∧
+    checkedDocumentAggregateSnapshot true =
+      some (.result (.value 10 .fixed)) := by
+  native_decide
+
+/- A formal direct prefix hides later missing star scope, while an empty prefix reaches that topology and keeps its failure structural in both phases. -/
+example :
+    checkedDocumentAggregateStructuralSnapshot false true =
+      some (.result (.unknown .declaredConstraint)) ∧
+    checkedDocumentAggregateStructuralSnapshot true true =
+      some (.result (.unknown .declaredConstraint)) ∧
+    checkedDocumentAggregateStructuralSnapshot false false =
+      some (.error (.addressing (.missingBinding 10))) ∧
+    checkedDocumentAggregateStructuralSnapshot true false =
+      some (.error (.addressing (.missingBinding 10))) := by
+  native_decide
+
+/- The checked resolving context feeds both phase-specific filter traversals; empty filter cells compare as zero, so all repeated targets contribute and the reached filter keeps both-directional polarity. -/
+example :
+    checkedDocumentFilteredAggregateSnapshot false =
+      some (.result (.value 9 .both)) ∧
+    checkedDocumentFilteredAggregateSnapshot true =
+      some (.result (.value 9 .both)) := by
+  native_decide
 
 private def checkedComputationAggregateOf (op : NumericAggregateOp)
     (authored : SurfaceNumberEntitySource) (rows : List RowIndex)

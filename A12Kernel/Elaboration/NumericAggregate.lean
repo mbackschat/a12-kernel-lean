@@ -377,6 +377,31 @@ end CheckedNumberEntityField
 
 namespace CheckedNumberEntityOperand
 
+private def resolveCheckedDocumentNumberCells
+    (document : CheckedDocument model) (phase : Phase)
+    (field : FlatNumberField) :
+    List Env → List (ValueListCell .number) →
+      Except CheckedAddressingError
+        (Sum (List (ValueListCell .number)) NumericOperand)
+  | [], reversed => pure (.inl reversed.reverse)
+  | environment :: remaining, reversed => do
+      match ← document.numberValueListCellAt phase environment field with
+      | .unknown cause => pure (.inr (.unknown cause))
+      | cell =>
+          resolveCheckedDocumentNumberCells document phase field
+            remaining (cell :: reversed)
+
+private def resolvedCheckedDocumentSide
+    (document : CheckedDocument model) (phase : Phase)
+    (field : FlatNumberField)
+    (environments : List Env) (hasUninstantiatedTail hasHaving : Bool) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number) NumericOperand) := do
+  match ← resolveCheckedDocumentNumberCells document phase field
+      environments [] with
+  | .inl cells => pure (.inl { cells, hasUninstantiatedTail, hasHaving })
+  | .inr result => pure (.inr result)
+
 /-- Resolve exactly one authored slot. Plain and filtered stars reuse the general checked topology and filter owners; direct fields reuse the checked flat Number reader. -/
 def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -439,6 +464,67 @@ def resolvedComputationAggregateSide
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
 
+/-- Resolve one validation aggregate slot from the immutable checked document. Validation filters evaluate every candidate before the first target classification; target reads then stop at the first formal cause. -/
+def resolvedCheckedDocumentValidationAggregateSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number) NumericOperand) :=
+  match checked with
+  | .field source =>
+      resolvedCheckedDocumentSide document .validation source.field
+        [[]] false false
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      resolvedCheckedDocumentSide document .validation source.field
+        resolved.environments resolved.domain.hasOpenTail false
+  | .starHaving source => do
+      let resolved ←
+        (source.source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      let selected ← source.having.selectEnvironmentsResolving
+        document.resolvingCorrelationContext outer resolved.environments
+      resolvedCheckedDocumentSide document .validation source.source.field
+        selected resolved.domain.hasOpenTail true
+
+/-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison. -/
+def resolvedCheckedDocumentComputationAggregateSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number) NumericOperand) :=
+  match checked with
+  | .field source =>
+      resolvedCheckedDocumentSide document .computation source.field
+        [[]] false false
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      resolvedCheckedDocumentSide document .computation source.field
+        resolved.environments resolved.domain.hasOpenTail false
+  | .starHaving source => do
+      let resolved ←
+        (source.source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      let consume := fun cells environment => do
+        match ← document.numberValueListCellAt .computation environment
+            source.source.field with
+        | .unknown cause => pure (.inr cause)
+        | cell => pure (.inl (cell :: cells))
+      match ← source.having.scanComputationResolving
+          document.resolvingCorrelationContext outer consume
+          resolved.environments [] with
+      | .exhausted reversed =>
+          pure (.inl {
+            cells := reversed.reverse
+            hasUninstantiatedTail := resolved.domain.hasOpenTail
+            hasHaving := true })
+      | .terminated cause | .poison cause =>
+          pure (.inr (.unknown cause))
+
 /-- Resolve one partial-validation aggregate slot. Direct fields require their concrete cell; ordinary stars require complete wildcard/ancestor coverage and retain the established topology-produced side unchanged. Filtered slots return the rule-level skip marker without evaluating their filter. -/
 def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
@@ -466,9 +552,9 @@ namespace CheckedNumberEntitySource
 private def evaluateAggregateWith (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp)
     (resolve : CheckedNumberEntityOperand model →
-      Except StarAddressingError
+      Except Error
         (Sum (ResolvedValueListSide .number) NumericOperand)) :
-    Except StarAddressingError NumericOperand := do
+    Except Error NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedNumberEntityAggregateSides)
       (terminal := NumericOperand)
@@ -511,6 +597,22 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
   checked.evaluateAggregateWith op fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
       filterRead starRead
+
+/-- Evaluate validation-phase aggregate accumulation from one immutable model-certified checked document. -/
+def evaluateCheckedDocumentValidationAggregate
+    (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : CheckedDocument model)
+    (outer : Env) : Except CheckedAddressingError NumericOperand :=
+  checked.evaluateAggregateWith op fun operand =>
+    operand.resolvedCheckedDocumentValidationAggregateSide document outer
+
+/-- Evaluate computation-phase aggregate accumulation from the same checked document without changing filter or poison timing. -/
+def evaluateCheckedDocumentComputationAggregate
+    (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : CheckedDocument model)
+    (outer : Env) : Except CheckedAddressingError NumericOperand :=
+  checked.evaluateAggregateWith op fun operand =>
+    operand.resolvedCheckedDocumentComputationAggregateSide document outer
 
 /-- Evaluate an unfiltered checked Number aggregate under partial validation. A locally visible `Having` skips the rule before topology, relevance, or reads. Otherwise direct slots use concrete relevance and every star uses the established all-rows wildcard/ancestor gate, with the same authored-order early termination as full validation. A containing whole condition must still discover filters across every branch before invoking any leaf. -/
 def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
