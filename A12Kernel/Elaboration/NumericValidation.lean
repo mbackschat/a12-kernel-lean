@@ -438,6 +438,13 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .sumOfProducts source =>
       source.left.field.id == field || source.right.field.id == field
 
+/-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
+def hasHaving : OrderedNumericValidationAtom model → Bool
+  | .firstFilled source | .valueCount _ source | .aggregate _ source =>
+      source.hasHaving
+  | .tokenValueCount source => source.source.hasHaving
+  | .ordinary _ | .sumOfProducts _ => false
+
 end OrderedNumericValidationAtom
 
 /-- Static admission for the relevance-aware numeric leaf reuses the complete authored-operation checks and delegates only atom-specific model coherence. -/
@@ -466,6 +473,12 @@ def OrderedNumericComparison.referencesField
     (field : FieldId) : Bool :=
   comparison.left.anyAtom (·.referencesField field) ||
     comparison.right.anyAtom (·.referencesField field)
+
+/-- Discover `Having` across both complete authored operands without evaluating or lowering away their expression shape. -/
+def OrderedNumericComparison.hasHaving
+    (comparison : OrderedNumericComparison model) : Bool :=
+  comparison.left.anyAtom OrderedNumericValidationAtom.hasHaving ||
+    comparison.right.anyAtom OrderedNumericValidationAtom.hasHaving
 
 def OrderedNumericComparison.requiresAddressedValidation
     (comparison : OrderedNumericComparison model) : Bool :=

@@ -167,6 +167,11 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField model field
 
+/-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
+def hasHaving : ValidationConditionLeaf model → Bool
+  | .orderedNumeric _ comparison => comparison.hasHaving
+  | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _ => false
+
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison =>
@@ -221,6 +226,10 @@ def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
+
+/-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
+def hasHaving (condition : ValidationCondition model) : Bool :=
+  condition.anyLeaf ValidationConditionLeaf.hasHaving
 
 /-- Public execution-mode query for checked consumers. A true result requires the full addressed evaluator; choosing the scalar route is an explicit context error rather than semantic UNKNOWN. -/
 def requiresAddressedValidation
@@ -289,6 +298,10 @@ private def ValidationConditionAssemblyError.ofFixedGroupReferenceError :
       .repeatableGroupRequiresAddress path
 
 namespace CheckedValidationCondition
+
+/-- Public checked-tree query used by Kernel 30.8.1 partial-validation consumers before relevance or execution. -/
+def hasHaving (condition : CheckedValidationCondition model) : Bool :=
+  condition.core.hasHaving
 
 /-- Certify a resolved mixed core once after a semantic desugaring has assembled its complete tree. -/
 def checkCore (model : FlatModel) (rowGroup : GroupPath)
