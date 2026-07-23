@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumberEntityList
 import A12Kernel.Elaboration.NumericStar
+import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked Number entity-list `FirstFilledValue` -/
@@ -53,6 +54,25 @@ def scanPartialValidationFirstFilledStateWith
         | .done result => .inr (.evaluated result.asNumber)
       else
         .inr .nonRelevant
+
+/-- Effectful checked-document lift of the same relevance-before-cell prefix scan. -/
+def scanPartialValidationFirstFilledStateResolvingWith
+    (checked : CheckedStarNumberSource model)
+    (scope : ValidationRelevanceScope)
+    (classify : Env → Except Error (ValueListCell .number)) :
+    List Env → FirstFilledNumberScanState →
+      Except Error
+        (FirstFilledNumberScanState ⊕ PartialValidationFirstFilledNumberResult)
+  | [], state => pure (.inl state)
+  | environment :: environments, state =>
+      if checked.source.cellRelevant scope environment then do
+        match state.step (← classify environment) with
+        | .continue next =>
+            checked.scanPartialValidationFirstFilledStateResolvingWith scope
+              classify environments next
+        | .done result => pure (.inr (.evaluated result.asNumber))
+      else
+        pure (.inr .nonRelevant)
 
 /-- Raw-cell compatibility wrapper for established partial-validation consumers. -/
 def scanPartialValidationFirstFilledState (checked : CheckedStarNumberSource model)
@@ -220,6 +240,129 @@ def evaluateComputationFirstFilled
     Except StarAddressingError FirstFilledNumberResult :=
   scanComputationFirstFilledNumberOperands document outer
     { read := directRead } filterRead starRead checked.operands {}
+
+private def checkedDocumentNumberCellAt
+    (document : CheckedDocument model) (phase : Phase)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError (ValueListCell .number) := do
+  let addressed ← document.addressedCell environment field
+  pure (observeCell phase addressed.cell).asNumberValueListCell
+
+private def scanCheckedDocumentValidationOperand
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) (state : FirstFilledScanState) :
+    CheckedFirstFilledNumberOperand model →
+      Except CheckedAddressingError
+        (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then do
+        match state.step
+            (← checkedDocumentNumberCellAt document .validation [] source.field.id) with
+        | .continue next => pure (.inl next)
+        | .done result => pure (.inr (.evaluated result.asNumber))
+      else
+        pure (.inr .nonRelevant)
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      source.scanPartialValidationFirstFilledStateResolvingWith scope
+        (fun environment =>
+          checkedDocumentNumberCellAt document .validation environment
+            source.field.id)
+        resolved.environments
+        (state.enterSelection resolved.environments.isEmpty
+          resolved.domain.hasOpenTail false)
+  | .starHaving source => do
+      let resolved ←
+        (source.source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      let selected ← source.having.selectEnvironmentsResolving
+        document.resolvingCorrelationContext outer resolved.environments
+      source.source.scanPartialValidationFirstFilledStateResolvingWith scope
+        (fun environment =>
+          checkedDocumentNumberCellAt document .validation environment
+            source.source.field.id)
+        selected (state.enterSelection selected.isEmpty
+          resolved.domain.hasOpenTail true)
+
+private def scanCheckedDocumentValidationOperands
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
+      Except CheckedAddressingError PartialValidationFirstFilledNumberResult
+  | [], state => pure (.evaluated state.finish)
+  | operand :: remaining, state => do
+      match ← scanCheckedDocumentValidationOperand document outer scope
+          state operand with
+      | .inl next =>
+          scanCheckedDocumentValidationOperands document outer scope
+            remaining next
+      | .inr result => pure result
+
+/-- Evaluate validation-phase `FirstFilledValue` against one immutable model-certified checked document. Target reads remain prefix-lazy, while validation filters retain their all-candidate structural footprint. -/
+def evaluateCheckedDocumentValidation
+    (checked : CheckedNumberEntitySource model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError PartialValidationFirstFilledNumberResult :=
+  scanCheckedDocumentValidationOperands document outer scope
+    checked.operands {}
+
+private def scanCheckedDocumentComputationOperand
+    (document : CheckedDocument model) (outer : Env)
+    (state : FirstFilledScanState) :
+    CheckedFirstFilledNumberOperand model →
+      Except CheckedAddressingError
+        (FirstFilledScanState ⊕ FirstFilledNumberResult)
+  | .field source => do
+      match state.step
+          (← checkedDocumentNumberCellAt document .computation [] source.field.id) with
+      | .continue next => pure (.inl next)
+      | .done result => pure (.inr result.asNumber)
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      match ← scanFirstFilledItemsResolving
+          (fun environment =>
+            checkedDocumentNumberCellAt document .computation environment
+              source.field.id)
+          resolved.environments
+          (state.enterSelection resolved.environments.isEmpty
+            resolved.domain.hasOpenTail false) with
+      | .inl next => pure (.inl next)
+      | .inr result => pure (.inr result.asNumber)
+  | .starHaving source => do
+      let resolved ←
+        (source.source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      match ← scanFilteredComputationFirstFilledResolving source.having
+          document.resolvingCorrelationContext outer
+          (fun environment =>
+            checkedDocumentNumberCellAt document .computation environment
+              source.source.field.id)
+          resolved.environments resolved.domain.hasOpenTail state with
+      | .inl next => pure (.inl next)
+      | .inr result => pure (.inr result.asNumber)
+
+private def scanCheckedDocumentComputationOperands
+    (document : CheckedDocument model) (outer : Env) :
+    List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
+      Except CheckedAddressingError FirstFilledNumberResult
+  | [], state => pure state.finish
+  | operand :: remaining, state => do
+      match ← scanCheckedDocumentComputationOperand document outer state operand with
+      | .inl next =>
+          scanCheckedDocumentComputationOperands document outer remaining next
+      | .inr result => pure result
+
+/-- Evaluate computation-phase `FirstFilledValue` against the same checked document. The shared successor scan preserves filter poison and structural-failure timing. -/
+def evaluateCheckedDocumentComputation
+    (checked : CheckedNumberEntitySource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError FirstFilledNumberResult :=
+  scanCheckedDocumentComputationOperands document outer checked.operands {}
 
 end CheckedNumberEntitySource
 

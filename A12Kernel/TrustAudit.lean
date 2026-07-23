@@ -1038,6 +1038,7 @@ run_cmd do
 #print axioms A12Kernel.scanFirstFilledItems_present_head
 #print axioms A12Kernel.scanFirstFilledItems_unknown_head
 #print axioms A12Kernel.scanFirstFilledItemsResolving_present_head
+#print axioms A12Kernel.checkedStarNumberSource_scanResolving_structuralFailure
 #print axioms A12Kernel.filteredComputationFirstFilled_poisonedSuccessor_precedesCurrent
 #print axioms A12Kernel.firstFilledNumber_present_head
 #print axioms A12Kernel.firstFilledNumber_unknown_head
