@@ -1273,3 +1273,4 @@ run_cmd do
 #print axioms A12Kernel.indexPreliminary_mandatory_contract
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed
+#print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
