@@ -24,9 +24,10 @@ private theorem Except.map_after_mapError
   simp [IndexPreliminaryKind.cause, IndexPreliminaryKind.verdict,
     IndexPreliminaryKind.errorCode]
 
-/-- Preliminary findings alter only the addressed finding list; the base parsed payload remains available for duplicate-index content. -/
+/-- Away from an injected default, preliminary findings alter only the addressed finding list; the base parsed payload remains available for duplicate-index content. -/
 theorem checkedIndexPreliminary_preserves_parsed
-    (preliminary : CheckedIndexPreliminary model) (address : CellAddr) :
+    (preliminary : CheckedIndexPreliminary model) (address : CellAddr)
+    (notDefaulted : preliminary.defaultStoredAt? address = none) :
     (preliminary.readAuthoredValidation address).map (·.parsed) =
       (preliminary.base.read address).map (·.parsed) := by
   unfold CheckedIndexPreliminary.readAuthoredValidation
@@ -34,20 +35,50 @@ theorem checkedIndexPreliminary_preserves_parsed
   | error error => rfl
   | ok cell =>
       simp only [bind, Except.bind, Except.map]
+      unfold CheckedIndexPreliminary.stagedCell
+      have noDefault :
+          preliminary.defaulted.find? (fun defaulted =>
+            defaulted.address == address) = none := by
+        simpa [CheckedIndexPreliminary.defaultStoredAt?] using notDefaulted
+      rw [noDefault]
       unfold CheckedIndexPreliminary.annotateCell
       cases preliminary.findingAt? address <;> rfl
 
+/-- A selected injected default reads as its exact stored Enumeration token when no independent finding shadows it. -/
+theorem checkedIndexPreliminary_default_read
+    (preliminary : CheckedIndexPreliminary model) (address : CellAddr)
+    (defaulted : CheckedIndexDefault) (base : CheckedCell)
+    (selected : preliminary.defaulted.find? (fun candidate =>
+      candidate.address == address) = some defaulted)
+    (baseRead : preliminary.base.read address = .ok base)
+    (noFinding : preliminary.findingAt? address = none) :
+    preliminary.readAuthoredValidation address =
+      .ok (checkAdmittedRawCell (.parsed (.enum defaulted.stored))) := by
+  unfold CheckedIndexPreliminary.readAuthoredValidation
+  rw [baseRead]
+  simp only [bind, Except.bind]
+  unfold CheckedIndexPreliminary.stagedCell
+  rw [selected]
+  unfold CheckedIndexPreliminary.annotateCell
+  rw [noFinding]
+  rfl
+
 private theorem checkedPartialPreliminary_annotation_preserves_parsed
     (view : CheckedPartialPreliminary model) (address : CellAddr)
-    (relevant : view.isAddressRelevant address = true) :
-    (view.readAuthoredValidation address).map (·.parsed) =
+    (relevant : view.isAddressRelevant address = true)
+    (available : view.silentlyUnavailable.contains address = false) :
+    (view.readAuthoredValidation address).map
+        (fun read => match read with
+          | .checked cell => cell.parsed
+          | .silentlyUnavailable => none) =
       (view.index.readAuthoredValidation address |>.mapError
         CheckedIndexPreliminaryError.document).map (·.parsed) := by
   unfold CheckedPartialPreliminary.readAuthoredValidation
+  simp only [relevant, available]
   cases readResult : view.index.readAuthoredValidation address with
   | error error => rfl
   | ok cell =>
-      simp only [Except.mapError, relevant, ↓reduceIte, Except.map]
+      simp only [Except.mapError, Except.map]
       unfold CheckedPartialPreliminary.annotateRequiredCell
       cases verdictResult : view.requiredVerdictAt? address with
       | none => rfl
@@ -58,19 +89,35 @@ private theorem checkedPartialPreliminary_annotation_preserves_parsed
           | fired polarity =>
               cases polarity <;> rfl
 
-/-- The partial preliminary view changes only addressed findings. Neither relevance selection nor either generated channel can replace a parsed base payload. -/
+/-- At an available relevant address, the partial preliminary view changes only addressed findings. Relevance selection and both generated channels preserve the parsed base payload. -/
 theorem checkedPartialPreliminary_preserves_parsed
     (view : CheckedPartialPreliminary model) (address : CellAddr)
-    (relevant : view.isAddressRelevant address = true) :
-    (view.readAuthoredValidation address).map (·.parsed) =
+    (relevant : view.isAddressRelevant address = true)
+    (available : view.silentlyUnavailable.contains address = false)
+    (notDefaulted : view.index.defaultStoredAt? address = none) :
+    (view.readAuthoredValidation address).map
+        (fun read => match read with
+          | .checked cell => cell.parsed
+          | .silentlyUnavailable => none) =
       (view.index.base.read address |>.mapError
         CheckedIndexPreliminaryError.document).map (·.parsed) := by
   rw [checkedPartialPreliminary_annotation_preserves_parsed
-    view address relevant]
+    view address relevant available]
   rw [Except.map_after_mapError, Except.map_after_mapError]
   exact congrArg
     (fun result =>
       result.mapError CheckedIndexPreliminaryError.document)
-    (checkedIndexPreliminary_preserves_parsed view.index address)
+    (checkedIndexPreliminary_preserves_parsed view.index address notDefaulted)
+
+/-- Silent default suppression is a distinct call-local read outcome, not a fabricated formal cause. -/
+theorem checkedPartialPreliminary_silent_read
+    (view : CheckedPartialPreliminary model) (address : CellAddr)
+    (relevant : view.isAddressRelevant address = true)
+    (silent : view.silentlyUnavailable.contains address = true) :
+    view.readAuthoredValidation address = .ok .silentlyUnavailable := by
+  have member : address ∈ view.silentlyUnavailable := by
+    simpa using silent
+  simp [CheckedPartialPreliminary.readAuthoredValidation, relevant, member]
+  rfl
 
 end A12Kernel

@@ -23,6 +23,13 @@ theorem groupPresence_rowContent_admitted (input : ResolvedGroupPresenceInput)
     (row : input.hasInstantiatedRow = true) : input.derive.content = true := by
   simp [ResolvedGroupPresenceInput.derive, row]
 
+/-- A call-local silent field failure contributes to group error without requiring a fabricated checked-cell finding. -/
+theorem groupPresence_silentError_erroneous
+    (input : ResolvedGroupPresenceInput)
+    (silent : input.silentError = true) :
+    input.derive.erroneous = true := by
+  simp [ResolvedGroupPresenceInput.derive, silent]
+
 theorem checkedCell_duplicate_preservesGroupAdmission (cell : CheckedCell)
     (parsed : cell.parsed.isSome = true)
     (findings : cell.findings = [.duplicateIndex]) : cell.admitsGroupContent = true := by
