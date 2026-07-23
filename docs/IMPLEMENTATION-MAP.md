@@ -28,6 +28,42 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 - These two gates complement each other but are not one 49-case replay.
 - Together with the 22 root-String and five direct-cascade private replays, the current `lake test` evidence total is 51.
 
+### Immutable checked-document construction
+
+#### Owners
+
+- [`Document.lean`](../A12Kernel/Document.lean)
+- [`Elaboration/CheckedDocument.lean`](../A12Kernel/Elaboration/CheckedDocument.lean)
+- [`Elaboration/StringContext.lean`](../A12Kernel/Elaboration/StringContext.lean)
+- [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean)
+- [`Conformance/CheckedDocument.lean`](../A12Kernel/Conformance/CheckedDocument.lean)
+
+#### Implemented
+
+- `DocumentData` is the finite scalar-parser-boundary input: instantiated rows remain independent of physically placed cells, and each placed cell retains its stored text plus an explicit `RawCell` classification. It compiles to the existing functional `Document` view rather than replacing addressing semantics.
+- `checkDocument` validates model-relative row topology, 1-based contiguous row identity, cell scope, duplicate placement, and stored-empty/classification coherence, then caches each placed cell through the exact prepared String/pattern/custom context. `CheckedDocument model` retains the exact validated model certificate and no processing context.
+- `CheckedDocument.read` distinguishes absent cells, present-empty cells, checked values/formal findings, and structural addressing failure. `flatContext` is the first existing consumer and cannot resample prepared validators.
+
+#### Coverage
+
+- Executable: partial
+- Proof-closed: partial
+- Kernel-calibrated: none
+- Publicly exposed: none
+- Consumer-qualified: partial
+
+#### Evidence
+
+- The source packet covers immutable `DocumentV2` topology and field placement, `DocumentAbstractRtService` model selection, `ValidationData` traversal/display conversion, `CheckCommand` formal ingestion, and the separate mutable `ValidationCache`.
+- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, and incoherent empty classification. The same-context Execute/Explain query uses `flatContext`.
+- No project-local retained kernel observation covers the general construction route; kernel calibration remains pending under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
+
+#### Excluded/next
+
+- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. The next consumer is resolved group presence over the same cached cells and independent row topology; required/generated findings, partial relevance, computation activation, result projection, and application remain later phases.
+- Concrete scalar parsing remains an explicitly named preclassified trust boundary. The constructor does not introduce a parser, second address type, processing context inside the document, scheduler overlay, protocol, or harness.
+- This first slice adds 274 nonblank Lean lines after separating the group-presence consumer into the next capsule. The 24-line Tier 1 excess keeps row/cell topology validation and its duplicate/coherence guards atomic with the certificate-producing constructor; splitting again would temporarily expose a `CheckedDocument` that could certify malformed source placement.
+
 ## Taxonomy by clause
 
 Open only the owning clause and linked cross-clause note. Every clause uses the same compact shape: owners, implemented, evidence, and excluded boundary; live next-work detail is linked to [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) instead of repeated here.

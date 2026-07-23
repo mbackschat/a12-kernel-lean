@@ -1260,3 +1260,6 @@ run_cmd do
 #print axioms A12Kernel.same_delta_does_not_imply_same_dependency
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_dependency
 #print axioms A12Kernel.same_exact_application_does_not_imply_same_dependency_read
+
+#print axioms A12Kernel.DocumentData.toDocument_instantiatedRows
+#print axioms A12Kernel.CheckedDocument.model_is_well_formed
