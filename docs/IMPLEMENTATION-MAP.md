@@ -33,19 +33,22 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 #### Owners
 
 - [`Document.lean`](../A12Kernel/Document.lean)
+- [`Semantics/StarAddressing.lean`](../A12Kernel/Semantics/StarAddressing.lean)
 - [`Elaboration/CheckedDocument.lean`](../A12Kernel/Elaboration/CheckedDocument.lean)
 - [`Elaboration/CheckedGroupPresence.lean`](../A12Kernel/Elaboration/CheckedGroupPresence.lean)
 - [`Elaboration/CheckedRequired.lean`](../A12Kernel/Elaboration/CheckedRequired.lean)
+- [`Elaboration/StarPath.lean`](../A12Kernel/Elaboration/StarPath.lean)
 - [`Elaboration/StringContext.lean`](../A12Kernel/Elaboration/StringContext.lean)
 - [`Proofs/Elaboration.lean`](../A12Kernel/Proofs/Elaboration.lean)
+- [`Proofs/StarAddressing.lean`](../A12Kernel/Proofs/StarAddressing.lean)
 - [`Conformance/CheckedDocument.lean`](../A12Kernel/Conformance/CheckedDocument.lean)
 
 #### Implemented
 
 - `DocumentData` is the finite scalar-parser-boundary input: instantiated rows remain independent of physically placed cells, and each placed cell retains its stored text plus an explicit `RawCell` classification. It compiles to the existing functional `Document` view rather than replacing addressing semantics.
-- `checkDocument` validates model-relative row topology, 1-based contiguous row identity, cell scope, duplicate placement, and stored-empty/classification coherence, then caches each placed cell through the exact prepared String/pattern/custom context. `CheckedDocument model` has a private constructor, retains the exact validated model certificate, and carries no processing context.
-- `CheckedDocument.read` distinguishes absent cells, present-empty cells, checked values/formal findings, and structural addressing failure. `flatContext` is the first existing consumer and cannot resample prepared validators.
-- `groupPresenceInput` is the second consumer: it selects cached descendants by exact model group/scope, derives structural row content independently of cells, and keeps partial relevance plus later structural findings as explicit inputs.
+- `checkDocument` validates model-relative row topology, 1-based contiguous row identity, cell scope, duplicate placement, and stored-empty/classification coherence. It shares `StarAxes.environmentOverLimit` and `CheckedCell.withOverRepetitionIf` with checked star paths, applies that address-formal decision before the prepared scalar/custom checker, and caches every placed cell in the one checked view. `CheckedDocument model` has a private constructor, retains the exact validated model certificate, and carries no processing context.
+- `CheckedDocument.read` distinguishes absent cells, present-empty cells, checked values/formal findings, and structural addressing failure. Every placed or absent descendant under any over-limit ancestor reads as validation `.unknown .overRepetition` and computation `.poison .overRepetition`; an in-cap sibling remains ordinary. `flatContext` is the first existing consumer and cannot resample prepared validators.
+- `groupPresenceInput` is the second consumer: it selects cached descendants by exact model group/scope, derives structural row content independently of cells, adds a structural error for any in-slice over-limit row, and keeps partial relevance plus later structural findings as explicit inputs.
 - `applyAbsoluteRequiredAt` is the third consumer: it resolves one nonrepeatable target from the certified model, evaluates the existing generated mandatory rule against the immutable base context, and returns its separate authored-validation context without changing computation input.
 
 #### Coverage
@@ -58,14 +61,14 @@ Never collapse these dimensions into one completion flag. A percentage may be re
 
 #### Evidence
 
-- The source packet covers immutable `DocumentV2` topology and field placement, `DocumentAbstractRtService` model selection, `ValidationData` traversal/display conversion, `CheckCommand` formal ingestion, and the separate mutable `ValidationCache`.
-- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, incoherent empty classification, absent versus instantiated-empty group rows, invalid-only group state, explicit missing-scope/model diagnostics, base-before-required annotation, and repeatable-target rejection. Same-context Execute/Explain queries use `flatContext`, `groupPresenceInput`, and `applyAbsoluteRequiredAt`.
-- Projection laws prove that resolved group construction preserves the caller's separate relevance and structural-error inputs and that model-certified required staging preserves every computation observation; existing group-presence and requiredness laws own their semantic interpretations.
+- The source packet covers immutable `DocumentV2` topology and field placement, `DocumentAbstractRtService` model selection, `ValidationData` traversal/display conversion, `CheckCommand` formal ingestion, `FormalChecker.checkIndices` address-formal ordering, and the separate mutable `ValidationCache`.
+- Conformance separators cover finite-to-functional projection, prepared custom rejection, absent versus present-empty placement, missing-row structural failure, duplicate cells, incoherent empty classification, absent versus instantiated-empty group rows, invalid-only group state, explicit missing-scope/model diagnostics, in-cap versus over-limit reads, absent and valued over-limit descendants, nested outer over-capacity, structural content/error preservation, base-before-required annotation, and repeatable-target rejection. Same-context Execute/Explain queries use `flatContext`, `groupPresenceInput`, and `applyAbsoluteRequiredAt`.
+- Laws prove that the shared over-repetition overlay replaces scalar results, preserves checked-cell well-formedness, has the exact phase faces, resolved group construction preserves caller relevance, and model-certified required staging preserves every computation observation; existing group-presence and requiredness laws own their semantic interpretations.
 - No project-local retained kernel observation covers the general construction route; kernel calibration remains pending under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage).
 
 #### Excluded/next
 
-- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. Flat/custom, resolved group-presence, and absolute-required consumers now share the checked input; index/repetition findings, wider repeatable consumers, partial relevance, computation activation, result projection, and application remain later phases.
+- [`SG1`](SEMANTICS-GAPS.md#sg1--general-checked-document-construction) remains open. Flat/custom, over-repetition, resolved group-presence, and absolute-required consumers now share the checked input; generated index findings, wider repeatable consumers, partial relevance, computation activation, result projection, and application remain later phases.
 - Concrete scalar parsing remains an explicitly named preclassified trust boundary. The constructor does not introduce a parser, second address type, processing context inside the document, scheduler overlay, protocol, or harness.
 - This first slice adds 274 nonblank Lean lines after separating the group-presence consumer into the next capsule. The 24-line Tier 1 excess keeps row/cell topology validation and its duplicate/coherence guards atomic with the certificate-producing constructor; splitting again would temporarily expose a `CheckedDocument` that could certify malformed source placement.
 

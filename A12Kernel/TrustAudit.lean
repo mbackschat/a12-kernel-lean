@@ -831,6 +831,11 @@ run_cmd do
 #print axioms A12Kernel.starPath_firstAxis_reopens
 #print axioms A12Kernel.resolvedStarTopology_cells
 #print axioms A12Kernel.resolvedStarTopology_tail
+#print axioms A12Kernel.withOverRepetitionIf_true
+#print axioms A12Kernel.withOverRepetitionIf_false
+#print axioms A12Kernel.withOverRepetitionIf_preserves_wellFormed
+#print axioms A12Kernel.observe_withOverRepetition_validation
+#print axioms A12Kernel.observe_withOverRepetition_computation
 #print axioms A12Kernel.checkedStarFieldPath_ancestry
 #print axioms A12Kernel.checkedStarFieldPath_firstStar_lt
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_full
@@ -1263,5 +1268,5 @@ run_cmd do
 
 #print axioms A12Kernel.DocumentData.toDocument_instantiatedRows
 #print axioms A12Kernel.CheckedDocument.model_is_well_formed
-#print axioms A12Kernel.CheckedDocument.groupPresenceInput_preserves_phase_inputs
+#print axioms A12Kernel.CheckedDocument.groupPresenceInput_preserves_relevance
 #print axioms A12Kernel.CheckedDocument.applyAbsoluteRequiredAt_preserves_computation

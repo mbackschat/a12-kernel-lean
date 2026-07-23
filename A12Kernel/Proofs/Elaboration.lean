@@ -277,15 +277,16 @@ theorem model_is_well_formed
     model.validate.isOk = true :=
   checked.modelWellFormed
 
-theorem groupPresenceInput_preserves_phase_inputs
+theorem groupPresenceInput_preserves_relevance
     (checked : CheckedDocument model) (groupPath : GroupPath)
     (environment : Env) (relevance : GroupRelevance)
     (structuralError : Bool) :
     (checked.groupPresenceInput groupPath environment relevance structuralError).map
-        (fun input => (input.relevance, input.structuralError)) =
+        (fun input => input.relevance) =
       (checked.groupPresenceInput groupPath environment relevance structuralError).map
-        (fun _ => (relevance, structuralError)) := by
-  cases result : checked.groupPresenceInput groupPath environment relevance structuralError with
+        (fun _ => relevance) := by
+  cases result :
+      checked.groupPresenceInput groupPath environment relevance structuralError with
   | error error => rfl
   | ok input =>
       simp only [Except.map]

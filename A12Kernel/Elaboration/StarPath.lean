@@ -157,25 +157,15 @@ def CheckedStarFieldPath.cellRelevant (checked : CheckedStarFieldPath model)
 
 namespace CheckedStarFieldPath
 
-private def bindingOverLimit (axis : StarAxis)
-    (binding : RepeatableLevel × Nat) : Bool :=
-  axis.level == binding.1 && match axis.repeatability with
-    | none => false
-    | some limit => binding.2 > limit
-
 /-- Whether one topology-produced leaf environment lies under any over-capacity repeatable ancestor. This structural check is independent of the terminal field kind. -/
 def environmentOverLimit (checked : CheckedStarFieldPath model)
     (environment : Env) : Bool :=
-  (checked.path.axes.zip environment).any fun binding =>
-    bindingOverLimit binding.1 binding.2
+  StarAxes.environmentOverLimit checked.path.axes environment
 
 /-- Overlay the path-owned over-repetition finding on an already checked cell. This is the common seam for raw-validation readers and future checked-document consumers. -/
 def contextualizeCell (checked : CheckedStarFieldPath model)
     (environment : Env) (scalar : CheckedCell) : CheckedCell :=
-  if checked.environmentOverLimit environment then
-    { scalar with parsed := none, findings := [.overRepetition] }
-  else
-    scalar
+  scalar.withOverRepetitionIf (checked.environmentOverLimit environment)
 
 /-- Apply the declaration-owned scalar checker and then the shared structural overlay. Every raw typed-star consumer shares this checked-cell boundary. -/
 def checkedCell (checked : CheckedStarFieldPath model)

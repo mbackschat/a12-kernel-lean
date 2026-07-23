@@ -14,6 +14,34 @@ structure StarAxis where
   repeatability : Option Nat
   deriving Repr, DecidableEq
 
+namespace StarAxis
+
+/-- Whether one binding exceeds this exact axis's declared capacity. A missing capacity is unbounded; level mismatches are not silently treated as the same axis. -/
+def bindingOverLimit (axis : StarAxis)
+    (binding : RepeatableLevel × Nat) : Bool :=
+  axis.level == binding.1 && match axis.repeatability with
+    | none => false
+    | some limit => binding.2 > limit
+
+end StarAxis
+
+namespace StarAxes
+
+/-- Whether aligned outer-to-inner axes and bindings contain any over-capacity coordinate. Address-shape validation remains the caller's responsibility. -/
+def environmentOverLimit (axes : List StarAxis) (environment : Env) : Bool :=
+  (axes.zip environment).any fun binding =>
+    binding.1.bindingOverLimit binding.2
+
+end StarAxes
+
+/-- Replace scalar admission with the path-owned over-repetition result when an address exceeds any declared repeatability. Structural row existence remains outside the cell. -/
+def CheckedCell.withOverRepetitionIf {α : Type} (cell : CheckedCell α)
+    (overLimit : Bool) : CheckedCell α :=
+  if overLimit then
+    { cell with parsed := none, findings := [.overRepetition] }
+  else
+    cell
+
 /-- A resolved repeatable ancestry plus the zero-based position of its first star. -/
 structure StarPath where
   axes : List StarAxis

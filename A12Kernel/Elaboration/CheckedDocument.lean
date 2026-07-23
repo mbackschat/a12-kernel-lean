@@ -1,8 +1,9 @@
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Semantics.StarAddressing
 
 /-! # Immutable model-certified checked documents
 
-This module starts at the theory's established scalar-parser boundary. A finite input retains physical rows, placed stored text, and the corresponding preclassified scalar input. Construction validates finite topology and placement once, applies the already prepared model-owned checkers once per placed cell, and produces one immutable checked view shared by existing consumers. Processing context, generated findings, relevance, scheduling, and application remain separate.
+This module starts at the theory's established scalar-parser boundary. A finite input retains physical rows, placed stored text, and the corresponding preclassified scalar input. Construction validates finite topology and placement once, applies the shared address-formal over-repetition gate, runs the already prepared model-owned checker once for every address-admissible placed cell, and produces one immutable checked view shared by existing consumers. Processing context, generated preliminary findings, relevance, scheduling, and application remain separate.
 -/
 
 namespace A12Kernel
@@ -43,6 +44,7 @@ inductive CheckedDocumentError where
   | invalidCellDepth (address : CellAddr) (expected : Nat)
   | zeroCellIndex (address : CellAddr)
   | missingRow (row : RowAddr)
+  | incoherentRepeatableScope (scope : List RepeatableLevel)
   deriving Repr, DecidableEq
 
 structure CheckedCellPlacement where
@@ -74,6 +76,21 @@ private def firstDuplicateCell? : List ClassifiedCellInput → Option CellAddr
 def FlatModel.repeatableGroupAtLevel? (model : FlatModel)
     (level : RepeatableLevel) : Option RepeatableGroupDecl :=
   model.repeatableGroups.find? fun group => group.level == level
+
+/-- Resolve one validated field or group scope to the shared structural axes. A checked model makes failure unreachable; retaining `Option` keeps malformed internal callers explicit. -/
+def FlatModel.repeatableAxesForScope? (model : FlatModel) :
+    List RepeatableLevel → Option (List StarAxis)
+  | [] => some []
+  | level :: levels => do
+      let group ← model.repeatableGroupAtLevel? level
+      let remaining ← model.repeatableAxesForScope? levels
+      pure ({ level, repeatability := group.repeatability } :: remaining)
+
+/-- Apply the shared over-capacity decision to one exact model scope and coordinate path. Address depth and zero-coordinate checks remain owned by placement validation. -/
+def FlatModel.addressOverLimit? (model : FlatModel)
+    (scope : List RepeatableLevel) (path : List Nat) : Option Bool := do
+  let axes ← model.repeatableAxesForScope? scope
+  pure (StarAxes.environmentOverLimit axes (scope.zip path))
 
 private def parentRow? (scope : List RepeatableLevel) (row : RowAddr) :
     Option RowAddr :=
@@ -148,16 +165,25 @@ private def checkPlacedCell
     (input : ClassifiedCellInput) :
     Except CheckedDocumentError CheckedCellPlacement := do
   if !input.coherent then throw (.incoherentCell input.address)
-  let _ ← validateCellAddress model rows input.address
+  let declaration ← validateCellAddress model rows input.address
+  let overLimit ← match model.addressOverLimit?
+      declaration.repeatableScope input.address.path with
+    | some overLimit => pure overLimit
+    | none => throw (.incoherentRepeatableScope declaration.repeatableScope)
   let raw : RawFlatContext := {
     read := fun field => if field == input.address.field then input.raw else .empty
   }
+  let base :=
+    if overLimit then
+      checkAdmittedRawCell input.raw
+    else
+      (prepared.checkContext locale raw).read input.address.field
   pure {
     address := input.address
-    cell := (prepared.checkContext locale raw).read input.address.field
+    cell := base.withOverRepetitionIf overLimit
   }
 
-/-- Validate finite placement and cache every placed cell through the exact prepared model context. -/
+/-- Validate finite placement, suppress scalar checking beneath over-limit ancestry, and cache every placed cell in one exact checked view. -/
 def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (source : DocumentData) :
     Except CheckedDocumentError (CheckedDocument model) := do
@@ -175,13 +201,17 @@ def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
 
 namespace CheckedDocument
 
-/-- Query one model-legal address. Absence is a clean empty checked cell; malformed addressing remains an explicit structural error. -/
+/-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
 def read (checked : CheckedDocument model) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell := do
-  let _ ← validateCellAddress model checked.source.instantiatedRows address
+  let declaration ← validateCellAddress model checked.source.instantiatedRows address
+  let overLimit ← match model.addressOverLimit?
+      declaration.repeatableScope address.path with
+    | some overLimit => pure overLimit
+    | none => throw (.incoherentRepeatableScope declaration.repeatableScope)
   match checked.checkedCells.find? fun placement => placement.address == address with
   | some placement => pure placement.cell
-  | none => pure (checkAdmittedRawCell .empty)
+  | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
 
 /-- Existing nonrepeatable evaluators consume the same checked cells. Their checked plans cannot request repeatable fields; a forged request fails closed. -/
 def flatContext (checked : CheckedDocument model) : FlatContext where
