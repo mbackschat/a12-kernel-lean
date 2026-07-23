@@ -43,7 +43,7 @@ private def numericSurfaceIn (group field : String) : SurfaceNumericComparison :
   { numericSurface with left := .atom (.field {
       base := .absolute, groups := [group], field }) }
 
-private def condition? : Option ValidationCondition := do
+private def condition? : Option (ValidationCondition model) := do
   let checked ← (elaborateNumericComparison model ["Order"] numericSurface).toOption
   pure (.and
     (ValidationCondition.flat (.fieldFilled (.number u)))
@@ -185,14 +185,14 @@ example :
 
 /- One reference traversal sees both leaf families. -/
 example : condition?.map (fun condition =>
-    condition.referencesField model u.id &&
-      condition.referencesField model v.id) = some true := by
+    condition.referencesField u.id &&
+      condition.referencesField v.id) = some true := by
   native_decide
 
 /- Checked composition retains both certificates and the exact common row group. -/
 example : checkedMixed?.map (fun checked =>
-    (checked.rowGroup, checked.core.referencesField model u.id,
-      checked.core.referencesField model v.id)) =
+    (checked.rowGroup, checked.core.referencesField u.id,
+      checked.core.referencesField v.id)) =
     some (["Order"], true, true) := by
   native_decide
 
@@ -207,9 +207,9 @@ example : (checkedRuleGroup? .filled).map (fun checked =>
     | .leaf (.groupPresence operator reference) =>
         operator == .filled && reference.origin == .ruleGroup &&
           reference.path == ["Order"] &&
-          checked.core.referencesField model u.id &&
-          checked.core.referencesField model v.id &&
-          !checked.core.referencesField model w.id
+          checked.core.referencesField u.id &&
+          checked.core.referencesField v.id &&
+          !checked.core.referencesField w.id
     | _ => false) = some true := by
   native_decide
 
@@ -260,9 +260,9 @@ example : repeatablePathError? =
 
 /- Fixed group-list conditions accept fields and groups through one resolved entity-presence tally. The error-field traversal retains the exact field operand and every field in the group subtree. -/
 example : mixedGroupList?.map (fun checked =>
-    checked.core.referencesField model u.id &&
-      checked.core.referencesField model d.id &&
-      !checked.core.referencesField model p.id) = some true := by
+    checked.core.referencesField u.id &&
+      checked.core.referencesField d.id &&
+      !checked.core.referencesField p.id) = some true := by
   native_decide
 
 /- A filled field and a clean-empty group establish the mixed predicate. Replacing the field by a formal error leaves it unavailable and therefore cannot establish either required bucket. -/
@@ -297,7 +297,8 @@ example : positiveGroupList?.map (fun checked =>
 /- A collapsed non-fire embeds as least-information `unknown`; an independent VALUE branch in the existing positive tree still decides the complete `Or`. -/
 example : mixedGroupList?.map (fun checked =>
     ValidationCondition.evalSelected (ConditionTree.or checked.core
-      (ValidationCondition.flat (.fieldFilled (.number v)))) {
+      (ValidationCondition.flat (model := model)
+        (.fieldFilled (.number v)))) {
         fields := model.checkContext (raw (.rejected .malformed) (.parsed (.num 2)))
         groups := groupContext ["Order", "Details"] (groupState false false)
       }) = some (Verdict.fired .value) := by
@@ -320,8 +321,9 @@ example :
 example :
     (groupList? .atLeastOneGroupFilled [
       .field (fieldPath "U")]).map (fun checked =>
-        checked.core ==
-          ValidationCondition.flat (.fieldFilled (.number u))) = some true ∧
+        match checked.core with
+        | .leaf (.flat (.fieldFilled (.number field))) => field == u
+        | _ => false) = some true ∧
     (groupList? .noGroupFilled [
       groupOperand ["Other"]]).map (fun checked =>
         match checked.core with
@@ -437,9 +439,9 @@ example :
       [["Order", "Missing"], ["Order", "Details"]]) =
         some (.unknownGroupInCount ["Order", "Missing"]) ∧
     checkedGroupCount?.map (fun checked =>
-      checked.core.referencesField model d.id &&
-        checked.core.referencesField model p.id &&
-        !checked.core.referencesField model u.id) = some true := by
+      checked.core.referencesField d.id &&
+        checked.core.referencesField p.id &&
+        !checked.core.referencesField u.id) = some true := by
   native_decide
 
 end A12Kernel.Conformance.ValidationCondition

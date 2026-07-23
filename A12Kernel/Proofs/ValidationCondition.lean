@@ -39,12 +39,34 @@ theorem conditionTree_allLeaves_map (condition : ConditionTree Source)
   | and left right leftIH rightIH | or left right leftIH rightIH =>
       simp only [ConditionTree.map, ConditionTree.allLeaves, leftIH, rightIH]
 
+/-- A decisive left non-fire keeps an unreachable structural failure on the right outside the addressed result. -/
+theorem conditionTree_evalVerdictExcept_and_notFired_hidesRight
+    (left right : ConditionTree Source)
+    (evalLeaf : Source → Except Error Verdict)
+    (leftResult : left.evalVerdictExcept evalLeaf = .ok .notFired) :
+    (ConditionTree.and left right).evalVerdictExcept evalLeaf =
+      Except.ok .notFired := by
+  rw [ConditionTree.evalVerdictExcept, leftResult]
+  rfl
+
+/-- A decisive left VALUE firing likewise keeps an unreachable structural failure on the right outside the addressed result. -/
+theorem conditionTree_evalVerdictExcept_or_value_hidesRight
+    (left right : ConditionTree Source)
+    (evalLeaf : Source → Except Error Verdict)
+    (leftResult : left.evalVerdictExcept evalLeaf = .ok (.fired .value)) :
+    (ConditionTree.or left right).evalVerdictExcept evalLeaf =
+      Except.ok (.fired .value) := by
+  rw [ConditionTree.evalVerdictExcept, leftResult]
+  rfl
+
 /-- Reusing the shared connective representation does not change any established flat verdict. -/
 @[simp]
 theorem validationCondition_flat_evalSelected
-    (condition : FlatCondition) (context : ValidationEvaluationContext)
+    (model : FlatModel) (condition : FlatCondition)
+    (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
-    (ValidationCondition.flat condition).evalSelected context isRelevant =
+    (ValidationCondition.flat (model := model) condition).evalSelected
+        context isRelevant =
       condition.evalSelected context.fields isRelevant := by
   simp [ValidationCondition.flat, ValidationCondition.evalSelected,
     FlatCondition.evalSelected, ValidationConditionLeaf.evalSelected]
@@ -53,7 +75,7 @@ theorem validationCondition_flat_evalSelected
 @[simp]
 theorem validationCondition_flat_referencesField
     (condition : FlatCondition) (model : FlatModel) (field : FieldId) :
-    (ValidationCondition.flat condition).referencesField model field =
+    (ValidationCondition.flat (model := model) condition).referencesField field =
       condition.referencesField field := by
   simp [ValidationCondition.flat, ValidationCondition.referencesField,
     FlatCondition.referencesField, ValidationConditionLeaf.referencesField]
@@ -61,10 +83,12 @@ theorem validationCondition_flat_referencesField
 /-- A relevant checked numeric comparison evaluates exactly as its existing resolved core. -/
 @[simp]
 theorem validationCondition_numeric_evalSelected_of_relevant
-    (comparison : NumericComparison) (context : ValidationEvaluationContext)
+    (model : FlatModel) (comparison : NumericComparison)
+    (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance)
     (relevant : comparison.allRelevant isRelevant = true) :
-    (ValidationCondition.numeric comparison).evalSelected context isRelevant =
+    (ValidationCondition.numeric (model := model) comparison).evalSelected
+        context isRelevant =
       comparison.evalSelectedWithGroups context := by
   simp [ValidationCondition.numeric, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, relevant]
@@ -72,11 +96,13 @@ theorem validationCondition_numeric_evalSelected_of_relevant
 /-- A reached resolved group leaf delegates exactly to the established product-state operator. -/
 @[simp]
 theorem validationCondition_groupPresence_evalSelected
-    (operator : GroupPresenceOperator) (reference : ResolvedGroupReference)
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference)
     (context : ValidationEvaluationContext) (state : GroupPresenceState)
     (resolved : context.groups reference.path = some state)
     (isRelevant : FlatRelevance) :
-    (ValidationCondition.groupPresence operator reference).evalSelected
+    (ValidationCondition.groupPresence (model := model)
+        operator reference).evalSelected
         context isRelevant = operator.eval state := by
   simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, resolved]
@@ -84,11 +110,13 @@ theorem validationCondition_groupPresence_evalSelected
 /-- Missing checked-document group state is explicit semantic unavailability. -/
 @[simp]
 theorem validationCondition_groupPresence_missing_isUnknown
-    (operator : GroupPresenceOperator) (reference : ResolvedGroupReference)
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference)
     (context : ValidationEvaluationContext)
     (missing : context.groups reference.path = none)
     (isRelevant : FlatRelevance) :
-    (ValidationCondition.groupPresence operator reference).evalSelected
+    (ValidationCondition.groupPresence (model := model)
+        operator reference).evalSelected
         context isRelevant = .unknown := by
   simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, missing]
@@ -96,11 +124,12 @@ theorem validationCondition_groupPresence_missing_isUnknown
 /-- A reached fixed field/group list delegates once to the shared entity-presence tally and preserves its conservative collapsed-result embedding. -/
 @[simp]
 theorem validationCondition_groupList_evalSelected
-    (operator : GroupFillQuantifier)
+    (model : FlatModel) (operator : GroupFillQuantifier)
     (operands : List ResolvedGroupListOperand)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
-    (ValidationCondition.groupList operator operands).evalSelected
+    (ValidationCondition.groupList (model := model)
+        operator operands).evalSelected
         context isRelevant =
       (operator.evalPresence
         (operands.map fun operand =>
@@ -109,17 +138,18 @@ theorem validationCondition_groupList_evalSelected
 
 /-- The conservative embedding loses only the unobservable false/unknown distinction; it preserves every fired result and its exact polarity. -/
 theorem validationCondition_groupList_fired_iff
-    (operator : GroupFillQuantifier)
+    (model : FlatModel) (operator : GroupFillQuantifier)
     (operands : List ResolvedGroupListOperand)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance)
     (polarity : Polarity) :
-    (ValidationCondition.groupList operator operands).evalSelected
+    (ValidationCondition.groupList (model := model)
+        operator operands).evalSelected
         context isRelevant = .fired polarity ↔
       operator.evalPresence
         (operands.map fun operand =>
           operand.evalPresence context isRelevant) = .fired polarity := by
-  rw [validationCondition_groupList_evalSelected]
+  rw [validationCondition_groupList_evalSelected model]
   generalize operator.evalPresence
       (List.map (fun operand =>
         operand.evalPresence context isRelevant) operands) = outcome
@@ -129,7 +159,7 @@ theorem validationCondition_groupList_fired_iff
 theorem checkedValidationCondition_coherent
     (condition : CheckedValidationCondition model) :
     model.validate.isOk = true ∧
-      condition.core.wellFormedBool model condition.rowGroup = true :=
+      condition.core.wellFormedBool condition.rowGroup = true :=
   ⟨condition.modelWellFormed, condition.wellFormed⟩
 
 end A12Kernel
