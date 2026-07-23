@@ -4,6 +4,10 @@ This is the sole detailed coverage index from the project-owned [`spec/`](../spe
 
 The target is kernel **30.8.1**. “Implemented” means executable Lean; “proved internally” means a theorem follows from the chosen definitions. Neither establishes universal kernel correspondence. **External evidence pending** means no retained kernel observation is replayed here. This map states current boundaries and evidence; the open-only implementation and conformance backlog lives in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md).
 
+## Query contract
+
+Do not read this map front to back. Start from the canonical `§n` heading, search for the exact operator or Lean type, and follow only the linked cross-clause mechanism when the clause entry points there. Clause sections use `Owners`, `Implemented`, `Evidence`, and `Excluded boundary and gap links`; cross-clause mechanisms use the equivalent `Owners`, `Boundary`/`Implemented`, `Proofs and cases`, `Evidence`, and `Excluded/next` labels. Search headings with `rg -n '^### ' docs/IMPLEMENTATION-MAP.md` and status fields with `rg -n '^(#### |\\- (Owners|Boundary|Implemented|Proofs and cases|Evidence|Excluded/next):)' docs/IMPLEMENTATION-MAP.md`.
+
 ## Evidence snapshot
 
 - The compact validation record has 49 records for 48 distinct external observations because one directional Number witness is intentionally shared across its public and private halves.
@@ -971,6 +975,8 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - Correspondence remains `external evidence pending`
 
 ## Cross-clause implementation notes
+
+These entries exist only for mechanisms shared by multiple canonical clauses. Keep their labels parallel to the clause schema and keep live sequencing in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) and [`PLAN.md`](PLAN.md).
 
 The §5/§11 numeric-computation entry retains each atom's declaration and rejects non-Number declarations before reads.
 

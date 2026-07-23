@@ -2,6 +2,10 @@
 
 This is the open-only work index for convergence toward complete semantic conformance with A12 kernel 30.8.1. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) remains the detailed owner of implemented, proved, externally calibrated, protocol-exposed, and consumer-probed coverage; [`PLAN.md`](PLAN.md) selects the immediate unit from this index.
 
+## Query contract
+
+Open only the selected `SG<n>` entry. Every gap states the missing invariant, current boundary, prerequisite, completion gate, and consumer/evidence need; detailed implemented facts stay behind its [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) links. Search headings with `rg -n '^### SG' docs/SEMANTICS-GAPS.md`. Do not reproduce an SG in [`PLAN.md`](PLAN.md): the plan names the selected capsule and links back here.
+
 ## Lifecycle
 
 - A gap exists here only while a kernel behavior, required static legality rule, checked construction, or conformance obligation remains open. Completed gaps are deleted in the completing commit; Git records when they closed, while the resulting capability and evidence status remain in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
