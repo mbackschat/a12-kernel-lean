@@ -74,7 +74,7 @@ This is the single most important runtime structure to model well, because *iter
 
 Two edge shapes matter:
 
-- An instantiated row **beyond** the group's declared `repeatability` is itself a formal error on that row (`zuGrosseZeile` / `zuGrosseKontextnummer`, a VALUE error), and that row's ordinary checks are suppressed. ([§9](07-repetition-and-iteration.md))
+- An instantiated row **beyond** the group's declared `repeatability` is itself a formal error on that row (`zuGrosseZeile` / `zuGrosseKontextnummer`, a VALUE error). This address-formal gate runs before scalar conversion, suppresses that row's ordinary checks, and leaves the immutable physical row instantiated. ([§3](02-logic-and-formal-errors.md), [§9](07-repetition-and-iteration.md))
 - Under **partial** validation only, the relevant set can name a row that does **not** physically exist — a **phantom row** — and it is still evaluated. Full validation never does this. ([§12](10-validation-and-polarity.md))
 
 ---

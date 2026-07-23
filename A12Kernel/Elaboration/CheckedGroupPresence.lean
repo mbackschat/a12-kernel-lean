@@ -10,6 +10,7 @@ inductive CheckedGroupPresenceError where
   | missingBinding (level : RepeatableLevel)
   | duplicateBinding (level : RepeatableLevel)
   | zeroBinding (level : RepeatableLevel)
+  | incoherentRepeatableScope (scope : List RepeatableLevel)
   deriving Repr, DecidableEq
 
 namespace CheckedDocument
@@ -41,7 +42,33 @@ private def rowWithinGroup (model : FlatModel) (groupPath : GroupPath)
   | some group =>
       groupPath.isPrefixOf group.path && addressPrefix.isPrefixOf row.path
 
-/-- Derive one resolved validation-group slice from the checked document. Relevance and later structural findings remain explicit phase inputs. -/
+private def hasOverLimitRowWithin (model : FlatModel) (groupPath : GroupPath)
+    (addressPrefix : List Nat) : List RowAddr →
+    Except CheckedGroupPresenceError Bool
+  | [] => pure false
+  | row :: rows =>
+      if rowWithinGroup model groupPath addressPrefix row then
+        match model.repeatableGroupAtLevel? row.group with
+        | none => throw (.incoherentRepeatableScope [row.group])
+        | some group =>
+            let scope := model.repeatableScopeForGroupPath group.path
+            match model.addressOverLimit? scope row.path with
+            | none => throw (.incoherentRepeatableScope scope)
+            | some true => pure true
+            | some false => hasOverLimitRowWithin model groupPath addressPrefix rows
+      else
+        hasOverLimitRowWithin model groupPath addressPrefix rows
+
+private def resolveGroupPresenceScope (checked : CheckedDocument model)
+    (groupPath : GroupPath) (environment : Env) :
+    Except CheckedGroupPresenceError (List Nat × Bool) := do
+  let addressPrefix ←
+    pathForScope environment (model.repeatableScopeForGroupPath groupPath)
+  let overLimitRow ← hasOverLimitRowWithin model groupPath addressPrefix
+    checked.source.instantiatedRows
+  pure (addressPrefix, overLimitRow)
+
+/-- Derive one resolved validation-group slice from the checked document. Relevance and later structural findings remain explicit phase inputs; base over-repetition is derived from immutable row topology. -/
 def groupPresenceInput (checked : CheckedDocument model)
     (groupPath : GroupPath) (environment : Env)
     (relevance : GroupRelevance) (structuralError : Bool) :
@@ -49,9 +76,9 @@ def groupPresenceInput (checked : CheckedDocument model)
   if !model.hasGroupPath groupPath then
     .error (.unknownGroup groupPath)
   else
-    match pathForScope environment (model.repeatableScopeForGroupPath groupPath) with
+    match resolveGroupPresenceScope checked groupPath environment with
     | .error error => .error error
-    | .ok addressPrefix =>
+    | .ok (addressPrefix, overLimitRow) =>
         let descendantCells := checked.checkedCells.filterMap fun placement =>
           match model.lookupUniqueId placement.address.field with
           | .ok declaration =>
@@ -65,7 +92,7 @@ def groupPresenceInput (checked : CheckedDocument model)
           descendantCells
           hasInstantiatedRow := checked.source.instantiatedRows.any
             (rowWithinGroup model groupPath addressPrefix)
-          structuralError
+          structuralError := structuralError || overLimitRow
           relevance
         }
 
