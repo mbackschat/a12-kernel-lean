@@ -38,6 +38,20 @@ theorem scanFirstFilledItemsResolving_present_head
   simp [scanFirstFilledItemsResolving, FirstFilledScanState.step,
     present, bind, Except.bind, pure, Except.pure]
 
+/-- A structural failure from the first relevant checked star cell stays outside semantic nonrelevance and unavailability. -/
+theorem checkedStarNumberSource_scanResolving_structuralFailure
+    (source : CheckedStarNumberSource model)
+    (scope : ValidationRelevanceScope)
+    (classify : Env → Except Error (ValueListCell .number))
+    (environment : Env) (remaining : List Env)
+    (state : FirstFilledNumberScanState) (cause : Error)
+    (relevant : source.source.cellRelevant scope environment = true)
+    (failed : classify environment = .error cause) :
+    source.scanPartialValidationFirstFilledStateResolvingWith scope classify
+        (environment :: remaining) state = .error cause := by
+  simp [CheckedStarNumberSource.scanPartialValidationFirstFilledStateResolvingWith,
+    relevant, failed, bind, Except.bind]
+
 /-- The shared filtered first-filled adapter preserves the iterator's successor-before-current order: a poison while locating the successor wins without sampling the pending target classifier. -/
 theorem filteredComputationFirstFilled_poisonedSuccessor_precedesCurrent
     (condition : CorrelatedHaving) (filterContext : CorrelationContext)

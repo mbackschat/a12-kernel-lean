@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.FirstFilledValue
+import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Checked multi-operand Number `FirstFilledValue` locks -/
 
@@ -36,6 +37,9 @@ private def model : FlatModel :=
       { level := 20, path := ["Form", "Secondary"], repeatability := some 2 },
       { level := 30, path := ["Form", "Primary", "Nested"], repeatability := some 2 }] }
 
+private def world : World :=
+  { now := { epochMillis := 0 } }
+
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
@@ -49,6 +53,14 @@ private def nestedStar : SurfaceStarFieldPath :=
     groups := [
       { name := "Form" },
       { name := "Primary", starred := true },
+      { name := "Nested", starred := true }]
+    field := "Amount" }
+
+private def nestedChildStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Primary" },
       { name := "Nested", starred := true }]
     field := "Amount" }
 
@@ -122,6 +134,104 @@ private def errorOf (authored : SurfaceFirstFilledNumberSource) :
 private def relevance (path : List String) (indices : List RelevanceIndex) :
     RelevantEntityPattern :=
   { path, indices }
+
+private def checkedDocument? (data : DocumentData) :
+    Option (CheckedDocument model) := do
+  let prepared ←
+    (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  (checkDocument prepared "en_US" data).toOption
+
+private def directPresentData : DocumentData :=
+  { instantiatedRows := []
+    cells := [{
+      address := { field := fallback.id, path := [] }
+      stored := "9"
+      raw := .parsed (.num 9)
+    }] }
+
+private def primaryPresentData : DocumentData :=
+  { instantiatedRows := [{ group := 10, path := [1] }]
+    cells := [{
+      address := { field := primary.id, path := [1] }
+      stored := "7"
+      raw := .parsed (.num 7)
+    }] }
+
+private def primaryAndFallbackData : DocumentData :=
+  { primaryPresentData with
+    cells := primaryPresentData.cells ++ directPresentData.cells }
+
+private inductive CheckedEvaluationSnapshot where
+  | validation (result : PartialValidationFirstFilledNumberResult)
+  | computation (result : FirstFilledNumberResult)
+  | error (cause : CheckedAddressingError)
+  deriving Repr, DecidableEq
+
+private def checkedValidationSnapshot
+    (authored : SurfaceFirstFilledNumberSource) (data : DocumentData)
+    (outer : Env := []) : Option CheckedEvaluationSnapshot := do
+  let checkedDocument ← checkedDocument? data
+  let checkedSource ←
+    (elaborateFirstFilledNumberSource model ["Form"] authored).toOption
+  pure (match checkedSource.evaluateCheckedDocumentValidation
+      checkedDocument outer .full with
+    | .ok result => .validation result
+    | .error cause => .error cause)
+
+private def checkedComputationSnapshot
+    (authored : SurfaceFirstFilledNumberSource) (data : DocumentData)
+    (outer : Env := []) : Option CheckedEvaluationSnapshot := do
+  let checkedDocument ← checkedDocument? data
+  let checkedSource ←
+    (elaborateFirstFilledNumberSource model ["Form"] authored).toOption
+  pure (match checkedSource.evaluateCheckedDocumentComputation
+      checkedDocument outer with
+    | .ok result => .computation result
+    | .error cause => .error cause)
+
+/- The immutable checked document supplies both direct and repeated cells without changing authored prefix order or missing polarity. -/
+example :
+    checkedValidationSnapshot
+        (source (.field (bare "Fallback")) [.star (star "Primary")])
+        primaryPresentData =
+      some (.validation (.evaluated (.value 7 true))) ∧
+    checkedComputationSnapshot
+        (source (.field (bare "Fallback")) [.star (star "Primary")])
+        primaryPresentData =
+      some (.computation (.value 7 true)) := by
+  native_decide
+
+/- A reached false filter uses the checked document's resolving context in both phases and carries its slot into the direct fallback's missing polarity. -/
+example :
+    checkedValidationSnapshot
+        (source (.starHaving (star "Primary") (falseHaving "Primary"))
+          [.field (bare "Fallback")]) primaryAndFallbackData =
+      some (.validation (.evaluated (.value 9 true))) ∧
+    checkedComputationSnapshot
+        (source (.starHaving (star "Primary") (falseHaving "Primary"))
+          [.field (bare "Fallback")]) primaryAndFallbackData =
+      some (.computation (.value 9 true)) := by
+  native_decide
+
+/- A terminal direct value prevents the checked route from resolving a later star with an unavailable fixed outer binding. Empty direct input reaches the same star and reports structural addressing rather than semantic unavailability. -/
+example :
+    checkedValidationSnapshot
+        (source (.field (bare "Fallback")) [.star nestedChildStar])
+        directPresentData =
+      some (.validation (.evaluated (.value 9 false))) ∧
+    checkedComputationSnapshot
+        (source (.field (bare "Fallback")) [.star nestedChildStar])
+        directPresentData =
+      some (.computation (.value 9 false)) ∧
+    checkedValidationSnapshot
+        (source (.field (bare "Fallback")) [.star nestedChildStar])
+        { instantiatedRows := [], cells := [] } =
+      some (.error (.addressing (.missingBinding 10))) ∧
+    checkedComputationSnapshot
+        (source (.field (bare "Fallback")) [.star nestedChildStar])
+        { instantiatedRows := [], cells := [] } =
+      some (.error (.addressing (.missingBinding 10))) := by
+  native_decide
 
 /- Mixed star/direct declarations retain authored order and the maximum declaration scale. -/
 example :
