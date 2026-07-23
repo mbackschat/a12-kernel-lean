@@ -39,6 +39,19 @@ private def compilePattern (source : String) : Option (String → Bool) :=
 private def compileNormalized (source : String) : Option (String → Bool) :=
   if source == "AB\\sCD" then some fun value => value == "AB\nCD" else none
 
+private def compileDeclared (source : String) : Option (String → Bool) :=
+  if source == "[A-Z]+" then
+    some fun value => !value.isEmpty && value.toList.all (fun character =>
+      'A' ≤ character && character ≤ 'Z')
+  else if source == "[0-9]+" then
+    some matchesAsciiDigitsPattern
+  else if source == "A" then
+    some fun value => value == "A"
+  else if source == "B" then
+    some fun value => value == "B"
+  else
+    none
+
 private def condition (source : String := "[A-Z]{3}")
     (op : StringPatternOp := .matched) : SurfaceStringPatternCondition :=
   { op, field := fieldPath "Code", source }
@@ -131,6 +144,125 @@ example :
     errorOf (elaborateStringPatternCondition compilePattern
       repeatableModel ["Claim", "Items"] (condition)) =
         some (.fieldReference (.repeatableReference ["Claim", "Items", "Code"])) := by
+  native_decide
+
+private def preparedCell (model : FlatModel) (field : FieldId)
+    (raw : RawCell) : Option CheckedCell :=
+  match prepareDeclaredStringField compileDeclared model field with
+  | .error _ => none
+  | .ok prepared => some (prepared.checkRaw raw)
+
+private def declaredPatternErrorOf :
+    Except DeclaredStringPatternElabError α →
+      Option DeclaredStringPatternElabError
+  | .ok _ => none
+  | .error error => some error
+
+/- Arbitrary admitted declaration patterns now have one compiler-associated formal-check route. Pattern mismatch wins before both length directions. -/
+example :
+    let declaration := {
+      stringDeclaration with
+      stringPolicy := { minLength := some 3, maxLength := some 5 }
+      stringPatternSource := some "[A-Z]+" }
+    let declaredModel : FlatModel := { fields := [declaration] }
+    preparedCell declaredModel 1 (.parsed (.str "ABC")) =
+        some {
+          rawPresent := true
+          parsed := some (.str "ABC")
+          findings := [] } ∧
+      preparedCell declaredModel 1 (.parsed (.str "a")) =
+        some {
+          rawPresent := true
+          parsed := none
+          findings := [.declaredConstraint] } ∧
+      preparedCell declaredModel 1 (.parsed (.str "abcdef")) =
+        some {
+          rawPresent := true
+          parsed := none
+          findings := [.declaredConstraint] } := by
+  native_decide
+
+/- Exact source association prevents the matcher prepared for one declaration from validating the other. -/
+example :
+    let declarationA := {
+      stringDeclaration with
+      stringPatternSource := some "A" }
+    let declarationB := {
+      stringDeclaration with
+      id := 3
+      name := "OtherCode"
+      stringPatternSource := some "B" }
+    let declaredModel : FlatModel := {
+      fields := [declarationA, declarationB] }
+    preparedCell declaredModel 1 (.parsed (.str "A")) =
+        some {
+          rawPresent := true
+          parsed := some (.str "A")
+          findings := [] } ∧
+      preparedCell declaredModel 1 (.parsed (.str "B")) =
+        some {
+          rawPresent := true
+          parsed := none
+          findings := [.declaredConstraint] } ∧
+      preparedCell declaredModel 3 (.parsed (.str "B")) =
+        some {
+          rawPresent := true
+          parsed := some (.str "B")
+          findings := [] } := by
+  native_decide
+
+/- An absent or empty declared source is an inactive field pattern. In particular, the empty declaration source does not invoke the injected compiler. -/
+example :
+    let plainModel : FlatModel := { fields := [stringDeclaration] }
+    let emptyPatternModel : FlatModel := {
+      fields := [{
+        stringDeclaration with stringPatternSource := some "" }] }
+    preparedCell plainModel 1 (.parsed (.str "anything")) =
+        some {
+          rawPresent := true
+          parsed := some (.str "anything")
+          findings := [] } ∧
+      preparedCell emptyPatternModel 1 (.parsed (.str "anything")) =
+        some {
+          rawPresent := true
+          parsed := some (.str "anything")
+          findings := [] } := by
+  native_decide
+
+/- Model legality precedes compiler admission; valid ordinary fields retain the exact failed compiler/admission stage. -/
+example :
+    let rawPattern := {
+      stringDeclaration with
+      stringValueMode := .raw
+      stringPolicy := { lineBreaksPermitted := true }
+      stringPatternSource := some "A" }
+    let invalidSource := {
+      stringDeclaration with stringPatternSource := some "(" }
+    let restrictedSource := {
+      stringDeclaration with stringPatternSource := some "a++" }
+    declaredPatternErrorOf
+        (prepareDeclaredStringField compileDeclared
+          { fields := [rawPattern] } 1) =
+          some (.model (.rawStringForbidsPattern ["Claim", "Code"])) ∧
+      declaredPatternErrorOf
+        (prepareDeclaredStringField compileDeclared
+          { fields := [invalidSource] } 1) =
+          some (.pattern .javaSyntax) ∧
+      declaredPatternErrorOf
+        (prepareDeclaredStringField (fun _ => some fun _ => false)
+          { fields := [restrictedSource] } 1) =
+          some (.pattern .kernelRestriction) := by
+  native_decide
+
+/- The existing executable numeric specialization and the prepared general route agree on accepted and rejected cells. -/
+example :
+    let declaration := {
+      stringDeclaration with stringPatternSource := some "[0-9]+" }
+    let declaredModel : FlatModel := { fields := [declaration] }
+    preparedCell declaredModel 1 (.parsed (.str "123")) =
+        some (declaration.checkRaw (.parsed (.str "123"))) ∧
+      preparedCell declaredModel 1 (.parsed (.str "12A")) =
+        some (declaration.checkRaw (.parsed (.str "12A"))) := by
   native_decide
 
 end A12Kernel.Conformance.StringPatternElaboration

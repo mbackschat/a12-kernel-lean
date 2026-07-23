@@ -301,6 +301,7 @@ inductive ResolveError where
   | stringPatternRequiresString (path : List String)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
+  | rawStringForbidsPattern (path : List String)
   | stringMinimumExceedsMaximum (path : List String)
   | lineBreakWithSingleCharacterMaximum (path : List String)
   | enumerationMetadataRequiresEnumeration (path : List String)
@@ -440,10 +441,13 @@ private def stringPolicyError? : List FlatFieldDecl → Option ResolveError
 private def stringPatternError? : List FlatFieldDecl → Option ResolveError
   | [] => none
   | declaration :: rest =>
-      match declaration.stringPatternSource, declaration.policy.kind with
-      | none, _ => stringPatternError? rest
-      | some _, .string => stringPatternError? rest
-      | some _, _ => some (.stringPatternRequiresString declaration.path)
+      match declaration.stringPatternSource, declaration.policy.kind,
+          declaration.stringValueMode with
+      | none, _, _ => stringPatternError? rest
+      | some _, .string, .raw =>
+          some (.rawStringForbidsPattern declaration.path)
+      | some _, .string, .evaluated => stringPatternError? rest
+      | some _, _, _ => some (.stringPatternRequiresString declaration.path)
 
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
@@ -1597,19 +1601,13 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
-/-- Enforce the one declaration-pattern profile with a locally executable whole-value meaning. Line-break normalization and intrinsic length checks have already occurred in the declaration policy; all failures share the public declared-constraint cause. -/
-private def FlatFieldDecl.checkExecutableStringPattern
-    (declaration : FlatFieldDecl) (checked : CheckedCell) : CheckedCell :=
+/-- Return the one declaration matcher whose meaning is already implemented without an injected host compiler. Every wider admitted source remains available only through the prepared pattern capability. -/
+private def FlatFieldDecl.executableStringPatternMatcher?
+    (declaration : FlatFieldDecl) : Option (String → Bool) :=
   if declaration.stringPatternSource == some asciiDigitsPatternSource then
-    match checked.parsed with
-    | some (.str text) =>
-        if matchesAsciiDigitsPattern text then
-          checked
-        else
-          { checked with parsed := none, findings := [.declaredConstraint] }
-    | _ => checked
+    some matchesAsciiDigitsPattern
   else
-    checked
+    none
 
 /-- Compile one raw cell through declaration-owned scalar, ordinary String-policy, locally executable declared-pattern, or closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
 def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : CheckedCell :=
@@ -1624,8 +1622,8 @@ def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : Check
       if declaration.stringValueMode == .raw then
         formalCheck declaration.policy raw
       else
-        declaration.checkExecutableStringPattern
-          (declaration.stringPolicy.checkRaw raw)
+        declaration.stringPolicy.checkRawWithPattern
+          declaration.executableStringPatternMatcher? raw
   | none, _, some _ => malformedCheckedCell
   | none, _, none => formalCheck declaration.policy raw
 

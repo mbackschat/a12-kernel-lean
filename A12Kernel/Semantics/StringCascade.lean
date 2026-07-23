@@ -9,7 +9,7 @@ namespace A12Kernel
 
 /-- A target error is formal invalidity when a later computation reads that target. The attempted payload is intentionally not carried into the dependency cell. -/
 def StringTargetError.dependencyCause : StringTargetError → FormalCause
-  | .lineBreak | .tooShort | .tooLong => .declaredConstraint
+  | .lineBreak | .pattern | .tooShort | .tooLong => .declaredConstraint
 
 /-- A validation-scoped required finding cannot represent computation poison because computation reads deliberately ignore that finding. -/
 inductive StringDependencyFault where
