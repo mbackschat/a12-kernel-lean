@@ -4,6 +4,10 @@ This is the durable findings ledger for `a12-kernel-lean`, adapted from a12-dmki
 
 Each finding has a stable `LF<n>` identifier, date, semantic section, evidence basis, Lean treatment, and explicit limit. Admit a finding only when a durable non-obvious mechanism, representation choice, semantic surprise, or rejected stronger account will affect later work. Routine capsule closure, gate results, coverage status, and next steps belong in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), [`PLAN.md`](PLAN.md), or Git history. Findings are not deleted or renumbered; later corrections amend the existing record visibly.
 
+## Query contract
+
+Do not cold-read this ledger. Search the stable `LF<n>` heading when another owner cites it, search `Sections:` for a canonical `§n`, or search the mechanism name and then read only the complete matching finding. Useful forms are `rg -n '^## LF|Sections:.*§5' docs/LEAN-FINDINGS.md` and `rg -n -i 'fillability|reopened-star|processing context' docs/LEAN-FINDINGS.md`. The metadata line is the index; a second topic table would duplicate it and drift as findings are amended.
+
 ## LF1 — differential evidence and proofs answer different questions
 
 > Date: 2026-07-13. Sections: cross-cutting. Basis: project decision; Cedar-style executable-spec/production-engine separation; the local a12-dmkits (`a12-rulekit/`) corpus and differential architecture.

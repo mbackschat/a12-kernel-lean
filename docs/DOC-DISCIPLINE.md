@@ -56,3 +56,5 @@ The mandatory same-context capsule assessment in [`TESTING.md`](TESTING.md#same-
 ## Markdown and links
 
 Write one Markdown paragraph per line and do not hard-wrap prose. Link every referenced Markdown document with a regular relative Markdown link. Prefer stable document anchors and theorem names over copied prose, and avoid duplicating a detailed inventory that already has one owning surface.
+
+Large technical owners must expose a query contract near the top and use stable semantic, finding, or mechanism headings. Agents should query the owning section and its links rather than reading these files front to back. Do not add a second manually maintained topic index merely to summarize an already structured owner; improve the owner's headings, metadata, and drill routes instead.
