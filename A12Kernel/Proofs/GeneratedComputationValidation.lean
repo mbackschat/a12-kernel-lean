@@ -64,7 +64,7 @@ theorem guardedGeneratedComputation_holdingCommon_firstHolds_selects
   simp [GuardedGeneratedComputationAlternatives.selectFirst,
     GuardedGeneratedComputationAlternatives.declaredAlternatives,
     ComputationAlternative.expandCommonPrecondition,
-    ComputationAlternative.selectFirst, ComputationCondition.eval,
+    ComputationAlternative.selectFirst, ComputationCondition.eval_and,
     commonHolds, firstHolds]
 
 /-- A singleton with no authored guard and no common precondition selects directly without inventing an always-true condition. -/

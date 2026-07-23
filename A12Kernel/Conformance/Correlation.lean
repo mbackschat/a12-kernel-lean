@@ -221,6 +221,18 @@ example : selfIncluded.select (captured malformedSecond 1) = [1] := by
 example : selfIncluded.select (captured malformedSecond 2) = [] := by
   native_decide
 
+/-- Computation traversal locates the first kept row, then evaluates enough filters to
+    prefetch its successor before yielding that row to the consuming operation. -/
+example :
+    selfIncluded.having.condition.scanComputation
+        malformedSecond.asCorrelationContext
+        (malformedSecond.envAt 1)
+        (fun count _ => .inl (count + 1))
+        (malformedSecond.candidates.map malformedSecond.envAt) 0 =
+      (ComputationHavingScanResult.poison .malformed :
+        ComputationHavingScanResult Nat Nat) := by
+  native_decide
+
 /-- Self-exclusion is authored, not inferred by the evaluator. -/
 example : selfIncluded.select (captured distinct 2) ≠ [] := by
   native_decide

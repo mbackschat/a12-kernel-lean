@@ -156,7 +156,7 @@ namespace ComputationCondition
 /-- Whether this condition mentions the computed target directly. The checked fragment has already resolved every path to a field ID. -/
 def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
   match condition with
-  | .fieldFilled field | .fieldNotFilled field => field == target
+  | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
   | .and left right | .or left right =>
       left.referencesField target || right.referencesField target
 
@@ -164,9 +164,9 @@ def referencesField (condition : ComputationCondition) (target : FieldId) : Bool
 private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
     ComputationCondition →
       Except GeneratedComputationValidationError FlatCondition
-  | .fieldFilled field => do
+  | .leaf (.fieldFilled field) => do
       pure (.fieldFilled (← model.resolveGeneratedGuardField field))
-  | .fieldNotFilled field => do
+  | .leaf (.fieldNotFilled field) => do
       pure (.fieldNotFilled (← model.resolveGeneratedGuardField field))
   | .and left right => do
       pure (.and

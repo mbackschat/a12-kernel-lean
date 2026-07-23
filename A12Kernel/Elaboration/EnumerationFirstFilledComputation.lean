@@ -5,16 +5,17 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked Enumeration-target `FirstFilledValue`
 
-This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and direct-duplicate precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns lazy value, empty, and poison behavior. Filtered computation sources remain outside until the computation-specific `Having` poison boundary is checked.
+This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and direct-duplicate precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead.
 -/
 
 namespace A12Kernel
 
-/-- One direct or unfiltered starred Enumeration/category source in an Enumeration-target `FirstFilledValue`. -/
+/-- One direct or optionally filtered starred Enumeration/category source in an Enumeration-target `FirstFilledValue`. -/
 inductive SurfaceEnumerationFirstFilledOperand where
   | field (operand : SurfaceTextFieldOperand)
   | star (path : SurfaceStarFieldPath)
       (projectionRef : EnumerationProjectionRef := .stored)
+      (having : Option SurfaceCorrelatedHaving := none)
   deriving Repr, DecidableEq
 
 /-- A nonempty authored Enumeration/category `FirstFilledValue` source. -/
@@ -28,7 +29,8 @@ namespace SurfaceEnumerationFirstFilledOperand
 def toFieldEntityOperand : SurfaceEnumerationFirstFilledOperand →
     SurfaceFieldEntityOperand
   | .field (.direct path) | .field (.category path _) => .field path
-  | .star path _ => .star path
+  | .star path _ none => .star path
+  | .star path _ (some having) => .starHaving path having
 
 end SurfaceEnumerationFirstFilledOperand
 
@@ -159,9 +161,12 @@ private def certifyEnumerationFirstFilledOperand
         | .direct _ => .stored
         | .category _ category => .category category
       certifyDirectEnumerationFirstFilledOperand model declaration projectionRef
-  | .star source, .star _ projectionRef =>
+  | .star source, .star _ projectionRef _ =>
       do pure (.star (← certifyStarEnumerationSource declaringGroup source
         projectionRef none |>.mapError .starSource))
+  | .starHaving source having, .star _ projectionRef _ =>
+      do pure (.star (← certifyStarEnumerationSource declaringGroup source
+        projectionRef (some having) |>.mapError .starSource))
   | _, _ => throw .incoherentCore
 
 private def certifyEnumerationFirstFilledOperands
@@ -246,8 +251,30 @@ private def scanEnumerationFirstFilledStar
   | .inl next => .inl next
   | .inr result => .inr result.asToken
 
+/-- Consume a filtered star through the computation iterator's one-kept-candidate lookahead. Filter poison is terminal; target classification remains stop-at-first. -/
+private def scanFilteredEnumerationFirstFilledStar
+    (source : CheckedStarEnumerationSource model)
+    (having : CheckedStarHaving model source.source source.declaringGroup)
+    (filterRead : Env → FieldId → CheckedCell)
+    (starRead : Env → FieldId → RawCell) (outer : Env)
+    (resolved : ResolvedStarTopology) (state : FirstFilledScanState) :
+    FirstFilledScanState ⊕ FirstFilledTokenResult :=
+  let filterContext : CorrelationContext := { read := filterRead }
+  let entered := state.enter resolved.domain.hasOpenTail true
+  let consume := fun current environment =>
+    match current.step
+        (source.valueListCellAt .computation starRead environment) with
+    | .continue next => .inl next
+    | .done result => .inr result.asToken
+  match having.condition.scanComputation filterContext outer consume
+      resolved.environments entered with
+  | .exhausted next => .inl next
+  | .terminated result => .inr result
+  | .poison cause => .inr (.unavailable cause)
+
 private def scanEnumerationFirstFilledOperand
     (document : Document) (outer : Env) (direct : FlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) (state : FirstFilledScanState) :
     CheckedEnumerationFirstFilledOperand model →
       Except StarAddressingError
@@ -259,21 +286,27 @@ private def scanEnumerationFirstFilledOperand
       | .done result => pure (.inr result.asToken)
   | .star source => do
       let resolved ← source.source.path.resolve document outer
-      pure (scanEnumerationFirstFilledStar source starRead resolved.environments
-        (state.enterSelection resolved.environments.isEmpty
-          resolved.domain.hasOpenTail false))
+      match source.filter with
+      | none =>
+          pure (scanEnumerationFirstFilledStar source starRead resolved.environments
+            (state.enterSelection resolved.environments.isEmpty
+              resolved.domain.hasOpenTail false))
+      | some having =>
+          pure (scanFilteredEnumerationFirstFilledStar source having filterRead
+            starRead outer resolved state)
 
 private def scanEnumerationFirstFilledOperands
     (document : Document) (outer : Env) (direct : FlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) :
     List (CheckedEnumerationFirstFilledOperand model) → FirstFilledScanState →
       Except StarAddressingError FirstFilledTokenResult
   | [], _ => pure .noValue
   | operand :: remaining, state => do
-      match ← scanEnumerationFirstFilledOperand document outer direct starRead
-          state operand with
+      match ← scanEnumerationFirstFilledOperand document outer direct filterRead
+          starRead state operand with
       | .inl next =>
-          scanEnumerationFirstFilledOperands document outer direct starRead
+          scanEnumerationFirstFilledOperands document outer direct filterRead starRead
             remaining next
       | .inr result => pure result
 
@@ -282,10 +315,11 @@ namespace CheckedEnumerationFirstFilledSource
 /-- Lazily resolve and scan checked operands in authored order at computation phase. -/
 def evaluate (source : CheckedEnumerationFirstFilledSource model)
     (document : Document) (outer : Env) (directRead : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError FirstFilledTokenResult :=
   scanEnumerationFirstFilledOperands document outer (model.checkContext directRead)
-    starRead source.operands {}
+    filterRead starRead source.operands {}
 
 end CheckedEnumerationFirstFilledSource
 
@@ -294,9 +328,11 @@ namespace CheckedEnumerationFirstFilledComputationOperation
 /-- Project the shared first-filled computation result into the common Enumeration target result. -/
 def evaluate (operation : CheckedEnumerationFirstFilledComputationOperation model)
     (document : Document) (outer : Env) (directRead : RawFlatContext)
+    (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError StringTargetOutcome := do
-  let selected ← operation.source.evaluate document outer directRead starRead
+  let selected ← operation.source.evaluate document outer directRead
+    filterRead starRead
   pure selected.asComputationResult.asEnumerationTargetOutcome
 
 end CheckedEnumerationFirstFilledComputationOperation

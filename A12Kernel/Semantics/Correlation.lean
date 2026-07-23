@@ -164,16 +164,21 @@ inductive CorrelatedNumberOperand where
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
 
-/-- Resolve one numeric filter reference through the selected environment. Empty-to-zero
-    is local to numeric comparison; formal invalidity remains explicit. -/
-def HavingNumberRef.resolveIn (reference : HavingNumberRef)
+/-- Resolve one numeric filter reference through the selected environment and caller-selected phase. Empty-to-zero is local to numeric comparison; formal invalidity retains its cause for the consuming phase projection. -/
+def HavingNumberRef.resolveInAt (reference : HavingNumberRef) (phase : Phase)
     (context : CorrelationContext) (frame : CorrelationFrame) :
     CorrelatedNumberOperand :=
   let rowContext : FlatContext :=
     { read := context.read (frame.envAt reference.origin) }
-  match rowContext.resolveNumberComparisonOperand reference.field with
+  match rowContext.resolveNumberComparisonOperandAt phase reference.field with
   | .value amount _ => .value amount
   | .unknown cause => .unknown cause
+
+/-- Validation specialization retained for established filter consumers. -/
+def HavingNumberRef.resolveIn (reference : HavingNumberRef)
+    (context : CorrelationContext) (frame : CorrelationFrame) :
+    CorrelatedNumberOperand :=
+  reference.resolveInAt .validation context frame
 
 private def malformedCorrelationCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
@@ -229,6 +234,34 @@ def CorrelatedHaving.evalTruthIn (condition : CorrelatedHaving)
     (context : CorrelationContext) (frame : CorrelationFrame) : K :=
   condition.evalK (CorrelatedHavingLeaf.evalTruthIn context frame)
 
+/-- Evaluate one filter leaf during computation. Numeric reads are explicitly left-to-right: a poisoned left operand prevents the right read, while a clean missing repetition comparison merely fails to keep its candidate. -/
+def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
+    (frame : CorrelationFrame) : CorrelatedHavingLeaf →
+      ComputationConditionResult
+  | .compareNumbers op left right =>
+      match left.resolveInAt .computation context frame with
+      | .unknown cause => .poison cause
+      | .value leftValue =>
+          match right.resolveInAt .computation context frame with
+          | .unknown cause => .poison cause
+          | .value rightValue =>
+              if op.holdsRat leftValue rightValue then .holds else .notTrue
+  | .compareRepetitions op left right =>
+      match frame.rowAt? left with
+      | none => .notTrue
+      | some leftRow =>
+          match frame.rowAt? right with
+          | none => .notTrue
+          | some rightRow =>
+              if op.holdsRow leftRow rightRow then .holds else .notTrue
+
+/-- Computation filters reuse the common connective tree but preserve first reached poison instead of validation's unknown-as-drop projection. -/
+def CorrelatedHaving.evalComputationIn (condition : CorrelatedHaving)
+    (context : CorrelationContext) (frame : CorrelationFrame) :
+    ComputationConditionResult :=
+  condition.evalComputation
+    (CorrelatedHavingLeaf.evalComputationIn context frame)
+
 /-- Keep one already-resolved candidate environment exactly when the filter is known true. The candidate and captured environments remain separate full repetition identities; false and UNKNOWN both drop the candidate. -/
 def CorrelatedHaving.keepsEnvironment (condition : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv innerEnv : Env) : Bool :=
@@ -239,6 +272,51 @@ def CorrelatedHaving.selectEnvironments (condition : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv : Env)
     (candidates : List Env) : List Env :=
   candidates.filter (condition.keepsEnvironment context outerEnv)
+
+/-- Result of a computation-phase filtered scan. The consumer may terminate on a selected target, exhaust with accumulated state, or abort at the first filter poison. -/
+inductive ComputationHavingScanResult (State Result : Type) where
+  | exhausted (state : State)
+  | terminated (result : Result)
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Scan candidates with the runtime iterator's one-kept-candidate lookahead. A holding filter becomes pending; finding its next kept successor happens before the pending target is consumed. Thus a poison while searching for that successor wins over the current target read, while filters after the prefetched successor remain unread if the consumer terminates. -/
+def CorrelatedHaving.scanComputationCandidates
+    (condition : CorrelatedHaving) (context : CorrelationContext)
+    (outerEnv : Env) (consume : State → Env → State ⊕ Result) :
+    List Env → Option Env → State → ComputationHavingScanResult State Result
+  | [], none, state => .exhausted state
+  | [], some pending, state =>
+      match consume state pending with
+      | .inl next => .exhausted next
+      | .inr result => .terminated result
+  | candidate :: remaining, pending, state =>
+      match condition.evalComputationIn context
+          { innerEnv := candidate, outerEnv } with
+      | .notTrue =>
+          condition.scanComputationCandidates context outerEnv consume
+            remaining pending state
+      | .poison cause => .poison cause
+      | .holds =>
+          match pending with
+          | none =>
+              condition.scanComputationCandidates context outerEnv consume
+                remaining (some candidate) state
+          | some current =>
+              match consume state current with
+              | .inr result => .terminated result
+              | .inl next =>
+                  condition.scanComputationCandidates context outerEnv consume
+                    remaining (some candidate) next
+
+/-- Start one computation-phase filtered scan with no prefetched candidate. -/
+def CorrelatedHaving.scanComputation (condition : CorrelatedHaving)
+    (context : CorrelationContext) (outerEnv : Env)
+    (consume : State → Env → State ⊕ Result)
+    (candidates : List Env) (initial : State) :
+    ComputationHavingScanResult State Result :=
+  condition.scanComputationCandidates context outerEnv consume
+    candidates none initial
 
 def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → Prop
