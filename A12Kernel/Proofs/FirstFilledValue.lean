@@ -26,6 +26,18 @@ theorem scanFirstFilledItems_unknown_head
       .inr (.unavailable cause) := by
   simp [scanFirstFilledItems, FirstFilledScanState.step, unknown]
 
+/-- A present head in the failure-preserving scan returns before any suffix projection and keeps structural failure outside the semantic result. -/
+theorem scanFirstFilledItemsResolving_present_head
+    (cell : α → Except Error (ValueListCell kind))
+    (head : α) (tail : List α) (state : FirstFilledScanState)
+    (atom : ValueListAtom kind)
+    (present : cell head = .ok (.present atom)) :
+    scanFirstFilledItemsResolving cell (head :: tail) state =
+      .ok (.inr (.value atom
+        (state.emptyBefore || state.encounteredHaving))) := by
+  simp [scanFirstFilledItemsResolving, FirstFilledScanState.step,
+    present, bind, Except.bind, pure, Except.pure]
+
 /-- The shared filtered first-filled adapter preserves the iterator's successor-before-current order: a poison while locating the successor wins without sampling the pending target classifier. -/
 theorem filteredComputationFirstFilled_poisonedSuccessor_precedesCurrent
     (condition : CorrelatedHaving) (filterContext : CorrelationContext)

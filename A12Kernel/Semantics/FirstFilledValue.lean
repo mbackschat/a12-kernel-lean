@@ -106,6 +106,18 @@ def scanFirstFilledItems (cell : α → ValueListCell kind) :
       | .continue next => scanFirstFilledItems cell items next
       | .done result => .inr result
 
+/-- The same prefix scan over a structurally failing cell projection. A terminal semantic result prevents every suffix projection, while a reached structural failure stays outside semantic unavailability. -/
+def scanFirstFilledItemsResolving
+    (cell : α → Except Error (ValueListCell kind)) :
+    List α → FirstFilledScanState →
+      Except Error (FirstFilledScanState ⊕ FirstFilledScanResult kind)
+  | [], state => pure (.inl state)
+  | item :: items, state => do
+      match state.step (← cell item) with
+      | .continue next =>
+          scanFirstFilledItemsResolving cell items next
+      | .done result => pure (.inr result)
+
 /-- Apply the computation iterator's one-kept-successor traversal to any first-filled target classifier. The filter owns candidate order and poison timing; the supplied classifier owns only the current kept target. -/
 def scanFilteredComputationFirstFilled
     (condition : CorrelatedHaving) (filterContext : CorrelationContext)
@@ -123,6 +135,25 @@ def scanFilteredComputationFirstFilled
   | .exhausted next => .inl next
   | .terminated result => .inr result
   | .poison cause => .inr (.unavailable cause)
+
+/-- Addressed filtered computation delegates filter and target failure timing to the shared one-kept-successor scan. Structural failures stay in `Except`; formal poison remains semantic unavailability. -/
+def scanFilteredComputationFirstFilledResolving
+    (condition : CorrelatedHaving)
+    (filterContext : ResolvingCorrelationContext Error)
+    (outer : Env) (cell : Env → Except Error (ValueListCell kind))
+    (environments : List Env) (hasUninstantiatedTail : Bool)
+    (state : FirstFilledScanState) :
+    Except Error (FirstFilledScanState ⊕ FirstFilledScanResult kind) := do
+  let entered := state.enter hasUninstantiatedTail true
+  let consume := fun current environment => do
+    match current.step (← cell environment) with
+    | .continue next => pure (.inl next)
+    | .done result => pure (.inr result)
+  match ← condition.scanComputationResolving filterContext outer consume
+      environments entered with
+  | .exhausted next => pure (.inl next)
+  | .terminated result => pure (.inr result)
+  | .poison cause => pure (.inr (.unavailable cause))
 
 private def scanFirstFilledCells
     (cells : List (ValueListCell kind)) (state : FirstFilledScanState) :
