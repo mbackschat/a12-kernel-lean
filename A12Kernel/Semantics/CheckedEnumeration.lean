@@ -57,6 +57,16 @@ structure CheckedEnumerationProjection where
   projection : ResolvedEnumerationProjection
   projectionChecked : declaration.resolveProjection projectionRef = .ok projection
 
+namespace CheckedEnumerationProjection
+
+/-- The exact selected stored/category token domain shared by every checked whole-domain consumer. -/
+def selectedTokens (checked : CheckedEnumerationProjection) : List String :=
+  match checked.projection with
+  | .stored => checked.declaration.declaration.storedTokens
+  | .category mapping => mapping.categoryTokens
+
+end CheckedEnumerationProjection
+
 def checkEnumerationProjection (checked : CheckedEnumerationDeclaration)
     (projectionRef : EnumerationProjectionRef) :
     Except EnumerationOperandError CheckedEnumerationProjection :=
