@@ -70,6 +70,14 @@ theorem checkedNumericComputationAtom_valueCount_preservedForGeneratedValidation
       .ok (.valueCount expected source) := by
   rfl
 
+/-- Generated validation retains a token count's literal, every Enumeration-domain certificate, selected fields, and filter dependencies as one checked source. -/
+theorem checkedNumericComputationAtom_tokenValueCount_preservedForGeneratedValidation
+    (source : CheckedTokenValueCountSource model) :
+    CheckedNumericComputationAtom.toValidationAtom
+        (.tokenValueCount source) =
+      .ok (.tokenValueCount source) := by
+  rfl
+
 /-- A checked `SumOfProducts` atom retains its row-paired source for addressed generated validation. -/
 theorem checkedNumericComputationAtom_product_preservedForGeneratedValidation
     (source : CheckedNumericProductAggregate model) :

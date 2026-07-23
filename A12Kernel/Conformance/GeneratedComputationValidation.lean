@@ -33,12 +33,18 @@ private def repeatedTarget : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } },
     repeatableScope := [10] }
 
+private def repeatedCode : FlatFieldDecl :=
+  { id := 6, groupPath := ["Form", "Rows"], name := "Code",
+    policy := { kind := .string },
+    repeatableScope := [10] }
+
 private def model : FlatModel :=
   { fields := [gate, target, broken, textGuard] }
 
 private def repeatableModel : FlatModel :=
   { fields := [
-      gate, target, broken, textGuard, repeatedGate, repeatedTarget]
+      gate, target, broken, textGuard, repeatedGate, repeatedTarget,
+      repeatedCode]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"] }] }
 
 private def repeatedGateStar : SurfaceStarFieldPath :=
@@ -50,6 +56,9 @@ private def repeatedGateStar : SurfaceStarFieldPath :=
 
 private def repeatedTargetStar : SurfaceStarFieldPath :=
   { repeatedGateStar with field := "Target" }
+
+private def repeatedCodeStar : SurfaceStarFieldPath :=
+  { repeatedGateStar with field := "Code" }
 
 private def repeatableFirstFilledHaving : SurfaceCorrelatedHaving :=
   .compareNumbers .equal
@@ -86,6 +95,14 @@ private def repeatableValueCountOperation :
   elaborateCompleteNumericComputationOperation repeatableModel ["Form"] target.id
     (.atom (.valueCount 5 {
       first := .starHaving repeatedTargetStar repeatableFirstFilledHaving
+      rest := [] }))
+
+private def repeatableTokenValueCountOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel) :=
+  elaborateCompleteNumericComputationOperation repeatableModel ["Form"] target.id
+    (.atom (.tokenValueCount "A" {
+      first := .starHaving repeatedCodeStar repeatableFirstFilledHaving
       rest := [] }))
 
 private def productAggregateOperation :
@@ -302,8 +319,9 @@ private def repeatableRead (outerGate : CheckedCell)
   else
     match environment with
     | [(10, row)] =>
-        if field == repeatedGate.id then filterRows row
-        else if field == repeatedTarget.id then targetRows row
+      if field == repeatedGate.id then filterRows row
+        else if field == repeatedTarget.id || field == repeatedCode.id then
+          targetRows row
         else malformedCheckedCell
     | _ => malformedCheckedCell
 
@@ -382,6 +400,17 @@ private def repeatableValueCountReferences :
       comparison.core.referencesField gate.id,
     comparison.operandScope)
 
+private def repeatableTokenValueCountReferences :
+    Option (Bool × Bool × Bool × NumericOperandScope) := do
+  let operation ← repeatableTokenValueCountOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (
+    comparison.core.referencesField target.id,
+    comparison.core.referencesField repeatedCode.id,
+    comparison.core.referencesField repeatedGate.id &&
+      comparison.core.referencesField gate.id,
+    comparison.operandScope)
+
 private def productAggregateReferences :
     Option (Bool × Bool × Bool × NumericOperandScope) := do
   let operation ← productAggregateOperation.toOption
@@ -437,6 +466,14 @@ private def repeatableValueCountAddressedOutcome
     Option (Except StarAddressingError FlatRuleOutcome) :=
   repeatableGeneratedAddressedOutcome repeatableValueCountOperation
     "computedRepeatableValueCount" document (.parsed (.num 1)) targetCell
+    filterRows targetRows
+
+private def repeatableTokenValueCountAddressedOutcome
+    (document : Document) (targetCell : RawCell)
+    (filterRows targetRows : RowIndex → CheckedCell) :
+    Option (Except StarAddressingError FlatRuleOutcome) :=
+  repeatableGeneratedAddressedOutcome repeatableTokenValueCountOperation
+    "computedRepeatableTokenValueCount" document (.parsed (.num 1)) targetCell
     filterRows targetRows
 
 private def productAggregateAddressedOutcome
@@ -806,6 +843,10 @@ private def repeatableAggregateGeneratedError :
 private def repeatableValueCountGeneratedError :
     Option GeneratedComputationValidationError :=
   generatedOperationError repeatableValueCountOperation
+
+private def repeatableTokenValueCountGeneratedError :
+    Option GeneratedComputationValidationError :=
+  generatedOperationError repeatableTokenValueCountOperation
 
 private def productAggregateGeneratedError :
     Option GeneratedComputationValidationError :=
@@ -1211,6 +1252,7 @@ example :
     repeatableFirstFilledGeneratedError = none ∧
       repeatableAggregateGeneratedError = none ∧
       repeatableValueCountGeneratedError = none ∧
+      repeatableTokenValueCountGeneratedError = none ∧
       productAggregateGeneratedError = none ∧
       hasAddressedScalarRejection
           (repeatableGeneratedScalarCapability repeatableFirstFilledOperation
@@ -1222,8 +1264,38 @@ example :
           (repeatableGeneratedScalarCapability repeatableValueCountOperation
             "computedRepeatableValueCount") = true ∧
       hasAddressedScalarRejection
+          (repeatableGeneratedScalarCapability
+            repeatableTokenValueCountOperation
+            "computedRepeatableTokenValueCount") = true ∧
+      hasAddressedScalarRejection
           (repeatableGeneratedScalarCapability productAggregateOperation
             "computedProductAggregate") = true := by
+  native_decide
+
+/- Token value-count generated validation exposes the selected String source and its `Having` dependencies while preserving selected-match polarity through the one checked numeric tree. -/
+example :
+    let selected : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 1))
+      | _ => checkedNumber .empty
+    let matching : RowIndex → CheckedCell
+      | 1 => formalCheck { kind := .string } (.parsed (.str "A"))
+      | _ => formalCheck { kind := .string } .empty
+    let nonmatching : RowIndex → CheckedCell
+      | 1 => formalCheck { kind := .string } (.parsed (.str "B"))
+      | _ => formalCheck { kind := .string } .empty
+    let document := repeatableDocument [1]
+    repeatableTokenValueCountReferences =
+        some (true, true, true, .modelWideCheckedComputation) ∧
+      hasAddressedOutcome
+        (repeatableTokenValueCountAddressedOutcome document
+          (.parsed (.num (-1))) selected matching)
+        (.fired (repeatableExpectedMessage
+          "computedRepeatableTokenValueCount" .omission)) ∧
+      hasAddressedOutcome
+        (repeatableTokenValueCountAddressedOutcome document
+          (.parsed (.num (-1))) selected nonmatching)
+        (.fired (repeatableExpectedMessage
+          "computedRepeatableTokenValueCount" .value)) := by
   native_decide
 
 /- Value-count generated validation preserves source and filter dependencies plus the current matching-filter witness. Flattening to aggregate-wide filter presence would incorrectly make the selected non-match shrinkable. -/

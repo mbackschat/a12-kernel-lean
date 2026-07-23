@@ -48,6 +48,7 @@ private def numericStringId : FieldId := 9
 private def hostDigitEnumerationId : FieldId := 11
 private def productRightId : FieldId := 12
 private def laterDateTimeId : FieldId := 13
+private def repeatedTokenId : FieldId := 14
 
 private def timeComponents : TemporalComponents :=
   { year := false, month := false, day := false,
@@ -86,6 +87,13 @@ private def productRight : FlatFieldDecl :=
     policy := { kind := .number numberInfo }
     repeatableScope := [10] }
 
+private def repeatedToken : FlatFieldDecl :=
+  { id := repeatedTokenId
+    groupPath := ["Root", "Rows"]
+    name := "Token"
+    policy := { kind := .string }
+    repeatableScope := [10] }
+
 private def model : FlatModel :=
   { fields := [source, later, target, wrong, repeated,
       temporalDeclaration timeId "Time" .time timeComponents,
@@ -93,7 +101,7 @@ private def model : FlatModel :=
       temporalDeclaration dateId "Date" .date TemporalComponents.fullDate,
       temporalDeclaration laterDateTimeId "LaterDateTime" .dateTime
         dateTimeComponents,
-      numericString, productRight,
+      numericString, productRight, repeatedToken,
       { id := enumerationId
         groupPath := ["Root"]
         name := "NumericChoice"
@@ -213,6 +221,21 @@ private def surfaceRepeatableValueCount (expected : Rat)
   surfaceValueCount expected
     (.starHaving repeatedStarPath (repeatedAggregateHaving outerField)) []
 
+private def repeatedTokenStarPath : SurfaceStarFieldPath :=
+  { repeatedStarPath with field := "Token" }
+
+private def surfaceTokenValueCount (expected : String)
+    (first : SurfaceTokenValueCountOperand)
+    (rest : List SurfaceTokenValueCountOperand) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.tokenValueCount expected { first, rest })
+
+private def surfaceRepeatableTokenValueCount
+    (expected : String) (outerField : String := "Source") :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  surfaceTokenValueCount expected
+    (.starHaving repeatedTokenStarPath (repeatedAggregateHaving outerField)) []
+
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
 
@@ -315,6 +338,10 @@ private def repeatableCheckedRead (root : CheckedCell)
     | [(10, 2)] => checkedNumber (.parsed (.num 4))
     | [(10, 3)] => checkedNumber (.parsed (.num 6))
     | [(10, _)] => checkedNumber .empty
+    | _ => malformedCheckedCell
+  else if field == repeatedTokenId then
+    match environment with
+    | [(10, row)] => rows row
     | _ => malformedCheckedCell
   else
     malformedCheckedCell
@@ -1531,6 +1558,52 @@ example :
           (.field (surfacePath ["Root"] "Target"))
           [.field (surfacePath ["Root"] "Source")]) =
         some (.targetSelfReference targetId) := by
+  native_decide
+
+/- String/stored-Enumeration value count enters the same numeric expression and Number-target path while retaining exact token-domain and addressed-filter certificates. -/
+example :
+    let filterRows := cells3
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 5)))
+    let tokenRows := cells3
+      (formalCheck { kind := .string } (.parsed (.str "A")))
+      (formalCheck { kind := .string } (.parsed (.str "B")))
+      (formalCheck { kind := .string } (.parsed (.str "A")))
+    let input := firstFilledContext
+      (checkedNumber (.parsed (.num 3))) filterRows tokenRows
+    let repeatedExpression :=
+      AuthoredNumericExpr.binary .add
+        (surfaceRepeatableTokenValueCount "A")
+        (.literal { value := 1, authoredScale := 0 })
+    let directExpression := surfaceTokenValueCount "2"
+      (.field (surfacePath ["Root"] "Wrong"))
+      [.field (surfacePath ["Root"] "NumericChoice")]
+    let malformedDocument : Document := {
+      instantiatedRows := [{ group := 10, path := [1, 2] }]
+      rawCells := fun _ => none }
+    checkedCompleteResultOf repeatedExpression input = some (.value 2) ∧
+      checkedCompleteTargetResultOf repeatedExpression input =
+        some (.supported (.accepted { unscaled := 2, scale := 0 })) ∧
+      checkedCompleteScalarResultOf directExpression
+        (context
+          (code := formalCheck { kind := .string } (.parsed (.str "2")))
+          (choice := formalCheck { kind := .enumeration }
+            (.parsed (.enum "2")))) =
+        some (.value 2) ∧
+      checkedCompleteScalarFaultOf
+        (surfaceRepeatableTokenValueCount "A") =
+        some .repeatableContextRequired ∧
+      checkedCompleteFaultOf repeatedExpression
+        { input with document := malformedDocument } =
+        some (.repeatableAddressing (.invalidRowDepth 10 [1, 2] 1)) ∧
+      checkedCompleteErrorOf
+        (surfaceTokenValueCount "missing"
+          (.field (surfacePath ["Root"] "Wrong"))
+          [.field (surfacePath ["Root"] "NumericChoice")]) =
+        some (.tokenValueCount
+          (.literalOutsideEnumerationDomain
+            ["Root", "NumericChoice"] "missing")) := by
   native_decide
 
 /- A repeatable aggregate never degrades into a scalar empty-document result, and malformed row topology stays an explicit addressing fault. -/
