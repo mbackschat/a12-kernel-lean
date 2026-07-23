@@ -5,7 +5,7 @@ import A12Kernel.Document
 
 This module contains a post-parse, whole-second UTC baseline plus the local DateTime types used by timezone profiles. A local wall label and scalar instant identity are different types even though UTC resolves each admitted label deterministically. The runtime core of `AddHours` operates only on the instant, preserving the identity needed when two Berlin instants share one wall label.
 
-The definitions are original clean-room semantics for the decoded time, value-admission, UTC, instant-arithmetic, and finite Berlin 2024 calendar-stepping clauses of `spec/05` §§2–5 and 9. Formats, numeric offset coercion, cells, general zone dispatch, rendering, and consumer-specific result admission belong to later capsules.
+The definitions are original clean-room semantics for the decoded time, value-admission, UTC, and instant-arithmetic clauses of `spec/05` §§2–5 and 9. Formats, numeric offset coercion, cells, general zone dispatch, rendering, and consumer-specific result admission belong to later capsules.
 -/
 
 namespace A12Kernel
@@ -46,6 +46,19 @@ def resolveUtc (dateTime : LocalDateTime) : Instant :=
     (dateTime.date.unixEpochDay * 86400 +
       (dateTime.time.secondsSinceMidnight : Int))
 
+/-- Decode an exact instant under an already selected whole-second offset. This is the inverse boundary used by concrete zone profiles after they choose the offset at the instant. -/
+def atOffset? (instant : Instant) (offsetSeconds : Int) :
+    Option LocalDateTime := do
+  let localEpochSecond := instant.epochMillis / 1000 + offsetSeconds
+  let civil ← CivilDate.ofUnixEpochDay? (localEpochSecond / 86400)
+  let date ← FullDate.ofCivil? civil
+  let secondOfDay := Int.toNat (localEpochSecond % 86400)
+  let time ← TimeOfDay.ofHms?
+    (secondOfDay / 3600)
+    ((secondOfDay % 3600) / 60)
+    (secondOfDay % 60)
+  pure { date, time }
+
 end LocalDateTime
 
 namespace Instant
@@ -55,56 +68,5 @@ def shiftHours (instant : Instant) (hours : Int) : Instant :=
   { epochMillis := instant.epochMillis + hours * 3600000 }
 
 end Instant
-
-/-!
-`Berlin2024Profile` now owns only the finite calendar-day stepping risk slice over 2024-03-29 through 2024-04-01. Fresh-label resolution belongs to the versioned general Berlin profile; this namespace must not grow a parallel resolver.
--/
-namespace Berlin2024Profile
-
-/-- The consecutive local-date domain used by the selected spring-transition and calendar-day slice. -/
-def SpringSupported (dateTime : LocalDateTime) : Prop :=
-  dateTime.date.civil.parts.year = 2024 ∧
-    ((dateTime.date.civil.parts.month = 3 ∧
-        29 ≤ dateTime.date.civil.parts.day ∧
-        dateTime.date.civil.parts.day ≤ 31) ∨
-      (dateTime.date.civil.parts.month = 4 ∧
-        dateTime.date.civil.parts.day = 1))
-
-/-- The missing local hour on the selected 2024 spring-transition date. -/
-def SpringGap (dateTime : LocalDateTime) : Prop :=
-  dateTime.date.civil.parts.year = 2024 ∧
-    dateTime.date.civil.parts.month = 3 ∧
-    dateTime.date.civil.parts.day = 31 ∧
-    dateTime.time.hour = 2
-
-instance (dateTime : LocalDateTime) : Decidable (SpringSupported dateTime) := by
-  unfold SpringSupported
-  infer_instance
-
-instance (dateTime : LocalDateTime) : Decidable (SpringGap dateTime) := by
-  unfold SpringGap
-  infer_instance
-
-/-- Rebuild a supported spring label on another profile date while retaining its current clock. -/
-private def onSpringDate? (dateTime : LocalDateTime)
-    (month day hour : Nat) : Option LocalDateTime :=
-  LocalDateTime.ofYmdHms? 2024 month day hour
-    dateTime.time.minute dateTime.time.second
-
-/-- Add one stateful calendar day inside the finite spring slice. A landing in the missing `02:xx` hour moves to `01:xx`, and later steps retain that adjusted clock. -/
-def nextCalendarDay? (dateTime : LocalDateTime) : Option LocalDateTime :=
-  if SpringSupported dateTime ∧ ¬SpringGap dateTime then
-    match dateTime.date.civil.parts.month,
-        dateTime.date.civil.parts.day with
-    | 3, 29 => onSpringDate? dateTime 3 30 dateTime.time.hour
-    | 3, 30 =>
-        onSpringDate? dateTime 3 31
-          (if dateTime.time.hour = 2 then 1 else dateTime.time.hour)
-    | 3, 31 => onSpringDate? dateTime 4 1 dateTime.time.hour
-    | _, _ => none
-  else
-    none
-
-end Berlin2024Profile
 
 end A12Kernel
