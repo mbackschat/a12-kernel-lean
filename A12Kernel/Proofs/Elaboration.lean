@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.CheckedDocument
 
 /-! # A12Kernel.Proofs.Elaboration — checked flat-elaboration invariants
 
@@ -261,5 +261,21 @@ theorem checkContext_lookup_error_observes_unknown (model : FlatModel)
     (model.checkContext raw).observeValidationAt id = .unknown .malformed := by
   simp [FlatContext.observeValidationAt, checkContext_lookup_error_is_malformed,
     lookup, malformedCheckedCell, observeCell]
+
+namespace DocumentData
+
+@[simp] theorem toDocument_instantiatedRows (data : DocumentData) :
+    data.toDocument.instantiatedRows = data.instantiatedRows := rfl
+
+end DocumentData
+
+namespace CheckedDocument
+
+theorem model_is_well_formed
+    (checked : CheckedDocument model) :
+    model.validate.isOk = true :=
+  checked.modelWellFormed
+
+end CheckedDocument
 
 end A12Kernel
