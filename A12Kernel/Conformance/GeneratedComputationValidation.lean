@@ -295,11 +295,43 @@ private def repeatableRaw (outerGate targetCell : RawCell) : RawFlatContext wher
     else if field == target.id then targetCell
     else .empty
 
-private def repeatableFirstFilledRule? :
+private def repeatableGeneratedRule?
+    (operationResult : Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel))
+    (errorCode : String) :
     Option (CheckedResolvedValidationRule repeatableModel) := do
-  let operation ← repeatableFirstFilledOperation.toOption
+  let operation ← operationResult.toOption
   (assembleGeneratedNumericOperationRule repeatableModel operation
-    "computedRepeatableFirstFilled" none messagePlan).toOption
+    errorCode none messagePlan).toOption
+
+private def repeatableGeneratedScalarCapability
+    (operationResult : Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel))
+    (errorCode : String) :
+    Option (Bool × Except ValidationEvaluationError FlatRuleOutcome) := do
+  let rule ← repeatableGeneratedRule? operationResult errorCode
+  let prepared ←
+    (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+      repeatableModel).toOption
+  pure (
+    rule.requiresAddressedValidation,
+    rule.evalFull prepared "en_US" (repeatableRaw .empty (.parsed (.num 0)))
+      GroupPresenceContext.unavailable true)
+
+private def hasAddressedScalarRejection
+    (capability :
+      Option (Bool × Except ValidationEvaluationError FlatRuleOutcome)) : Bool :=
+  match capability with
+  | some (true, .error .addressedContextRequired) => true
+  | _ => false
+
+private def hasScalarOutcome
+    (capability :
+      Option (Bool × Except ValidationEvaluationError FlatRuleOutcome))
+    (expected : FlatRuleOutcome) : Bool :=
+  match capability with
+  | some (false, .ok actual) => decide (actual = expected)
+  | _ => false
 
 private def repeatableFirstFilledReferences :
     Option (Bool × Bool × Bool × NumericOperandScope) := do
@@ -312,11 +344,33 @@ private def repeatableFirstFilledReferences :
       comparison.core.referencesField gate.id,
     comparison.operandScope)
 
-private def repeatableFirstFilledAddressedOutcome
+private def repeatableAggregateReferences :
+    Option (Bool × Bool × NumericOperandScope) := do
+  let operation ← repeatableAggregateOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (
+    comparison.core.referencesField target.id,
+    comparison.core.referencesField repeatedGate.id,
+    comparison.operandScope)
+
+private def productAggregateReferences :
+    Option (Bool × Bool × Bool × NumericOperandScope) := do
+  let operation ← productAggregateOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (
+    comparison.core.referencesField target.id,
+    comparison.core.referencesField repeatedGate.id,
+    comparison.core.referencesField repeatedTarget.id,
+    comparison.operandScope)
+
+private def repeatableGeneratedAddressedOutcome
+    (operationResult : Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel))
+    (errorCode : String)
     (document : Document) (outerGate targetCell : RawCell)
     (filterRows targetRows : RowIndex → CheckedCell) :
     Option (Except StarAddressingError FlatRuleOutcome) := do
-  let rule ← repeatableFirstFilledRule?
+  let rule ← repeatableGeneratedRule? operationResult errorCode
   let prepared ←
     (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
       repeatableModel).toOption
@@ -329,16 +383,48 @@ private def repeatableFirstFilledAddressedOutcome
       groups := GroupPresenceContext.unavailable }
     document
     outer := []
-    relevance := .full
     read := repeatableRead (fields.read gate.id) filterRows targetRows
   } true)
 
-private def repeatableFirstFilledExpectedMessage : FlatRuleMessage :=
+private def repeatableFirstFilledAddressedOutcome
+    (document : Document) (outerGate targetCell : RawCell)
+    (filterRows targetRows : RowIndex → CheckedCell) :
+    Option (Except StarAddressingError FlatRuleOutcome) :=
+  repeatableGeneratedAddressedOutcome repeatableFirstFilledOperation
+    "computedRepeatableFirstFilled" document outerGate targetCell
+    filterRows targetRows
+
+private def repeatableAggregateAddressedOutcome
+    (document : Document) (targetCell : RawCell)
+    (sourceRows : RowIndex → CheckedCell) :
+    Option (Except StarAddressingError FlatRuleOutcome) :=
+  repeatableGeneratedAddressedOutcome repeatableAggregateOperation
+    "computedRepeatableAggregate" document .empty targetCell
+    sourceRows (fun _ => checkedNumber .empty)
+
+private def productAggregateAddressedOutcome
+    (document : Document) (targetCell : RawCell)
+    (leftRows rightRows : RowIndex → CheckedCell) :
+    Option (Except StarAddressingError FlatRuleOutcome) :=
+  repeatableGeneratedAddressedOutcome productAggregateOperation
+    "computedProductAggregate" document .empty targetCell leftRows rightRows
+
+private def repeatableExpectedMessage
+    (errorCode : String) (messageType : Polarity) : FlatRuleMessage :=
   { errorAddress := { field := target.id, path := [] }
-    errorCode := "computedRepeatableFirstFilled"
+    errorCode
     severity := .error
-    messageType := .omission
+    messageType
     text }
+
+private def repeatableFirstFilledExpectedMessage : FlatRuleMessage :=
+  repeatableExpectedMessage "computedRepeatableFirstFilled" .omission
+
+private def repeatableAggregateExpectedMessage : FlatRuleMessage :=
+  repeatableExpectedMessage "computedRepeatableAggregate" .omission
+
+private def productAggregateExpectedMessage : FlatRuleMessage :=
+  repeatableExpectedMessage "computedProductAggregate" .omission
 
 private def hasAddressedOutcome
     (result : Option (Except StarAddressingError FlatRuleOutcome))
@@ -369,7 +455,7 @@ private def evalValidationRule? (checkedModel : FlatModel)
   let prepared ←
     (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
       checkedModel).toOption
-  pure (rule.evalFull prepared "en_US" raw groups hasContent)
+  (rule.evalFull prepared "en_US" raw groups hasContent).toOption
 
 private def selectionOf (candidate : LiteralNumberComputation)
     (raw : RawFlatContext) :
@@ -412,6 +498,19 @@ private def crossGroupRaw (source target : Rat) : RawFlatContext where
     else if field = crossGroupExtra.id then .parsed (.num 2)
     else if field = crossGroupTarget.id then .parsed (.num target)
     else .empty
+
+private def crossGroupScalarCapability :
+    Option (Bool × Except ValidationEvaluationError FlatRuleOutcome) := do
+  let operation ← crossGroupNumberOperation.toOption
+  let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
+    "computedCrossGroup" none messagePlan).toOption
+  let prepared ←
+    (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+      crossGroupModel).toOption
+  pure (
+    rule.requiresAddressedValidation,
+    rule.evalFull prepared "en_US" (crossGroupRaw 3 3)
+      GroupPresenceContext.unavailable true)
 
 private def crossGroupOutcome (source target : Rat) : Option FlatRuleOutcome := do
   let operation ← crossGroupNumberOperation.toOption
@@ -984,7 +1083,8 @@ example :
 
 /- Generated expression validation preserves computation's model-wide nonrepeatable operand scope; ordinary target-group validation still rejects the same cross-group reference. -/
 example :
-    crossGroupOutcome 3 3 = some .notFired ∧
+    hasScalarOutcome crossGroupScalarCapability .notFired = true ∧
+      crossGroupOutcome 3 3 = some .notFired ∧
       crossGroupOutcome 3 4 = some (.fired crossGroupExpectedMessage) ∧
       crossGroupGeneratedBoundary =
         some (["Output"], .modelWideNonrepeatable) ∧
@@ -1032,13 +1132,20 @@ example :
         some (.fired aggregateExpectedMessage) := by
   native_decide
 
-/- The checked prefix source retains its repeatable address through generated-validation assembly. Aggregate and product consumers remain explicit until their addressed validation semantics join the same checked leaf. -/
+/- Every checked repeatable numeric source retains its address through generated-validation assembly rather than being flattened into scalar fields. -/
 example :
     repeatableFirstFilledGeneratedError = none ∧
-      repeatableAggregateGeneratedError =
-        some .repeatableAggregateRequiresAddressedValidation ∧
-      productAggregateGeneratedError =
-        some .repeatableAggregateRequiresAddressedValidation := by
+      repeatableAggregateGeneratedError = none ∧
+      productAggregateGeneratedError = none ∧
+      hasAddressedScalarRejection
+          (repeatableGeneratedScalarCapability repeatableFirstFilledOperation
+            "computedRepeatableFirstFilled") = true ∧
+      hasAddressedScalarRejection
+          (repeatableGeneratedScalarCapability repeatableAggregateOperation
+            "computedRepeatableAggregate") = true ∧
+      hasAddressedScalarRejection
+          (repeatableGeneratedScalarCapability productAggregateOperation
+            "computedProductAggregate") = true := by
   native_decide
 
 /- The model-indexed leaf exposes the target, selected repeatable field, and both `Having` dependencies to Analyze/Transform consumers, then executes through the sole checked tree. Structural address failure remains outside semantic UNKNOWN. -/
@@ -1065,6 +1172,50 @@ example :
           (.fired repeatableFirstFilledExpectedMessage) ∧
       hasAddressingError (repeatableFirstFilledAddressedOutcome malformed
         (.parsed (.num 1)) (.parsed (.num 5)) filterRows targetRows)
+          (.invalidRowDepth 10 [1, 2] 1) := by
+  native_decide
+
+/- Analyze sees each checked dependency while Execute preserves full aggregate folding versus row-aligned products. The 9/75 results reject first-filled flattening and Cartesian multiplication; malformed topology remains structural insufficient information. -/
+example :
+    let leftRows : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 2))
+      | 2 => checkedNumber (.parsed (.num 3))
+      | 3 => checkedNumber (.parsed (.num 4))
+      | _ => checkedNumber .empty
+    let rightRows : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 5))
+      | 2 => checkedNumber (.parsed (.num 7))
+      | 3 => checkedNumber (.parsed (.num 11))
+      | _ => checkedNumber .empty
+    let complete := repeatableDocument [1, 2, 3]
+    let malformed : Document := {
+      instantiatedRows := [{ group := 10, path := [1, 2] }]
+      rawCells := fun _ => none }
+    repeatableAggregateReferences =
+        some (true, true, .modelWideCheckedComputation) ∧
+      productAggregateReferences =
+        some (true, true, true, .modelWideCheckedComputation) ∧
+      hasAddressedOutcome
+        (repeatableAggregateAddressedOutcome complete
+          (.parsed (.num 9)) leftRows) .notFired ∧
+      hasAddressedOutcome
+        (repeatableAggregateAddressedOutcome complete
+          (.parsed (.num 10)) leftRows)
+          (.fired repeatableAggregateExpectedMessage) ∧
+      hasAddressedOutcome
+        (productAggregateAddressedOutcome complete
+          (.parsed (.num 75)) leftRows rightRows) .notFired ∧
+      hasAddressedOutcome
+        (productAggregateAddressedOutcome complete
+          (.parsed (.num 76)) leftRows rightRows)
+          (.fired productAggregateExpectedMessage) ∧
+      hasAddressingError
+        (repeatableAggregateAddressedOutcome malformed
+          (.parsed (.num 9)) leftRows)
+          (.invalidRowDepth 10 [1, 2] 1) ∧
+      hasAddressingError
+        (productAggregateAddressedOutcome malformed
+          (.parsed (.num 75)) leftRows rightRows)
           (.invalidRowDepth 10 [1, 2] 1) := by
   native_decide
 

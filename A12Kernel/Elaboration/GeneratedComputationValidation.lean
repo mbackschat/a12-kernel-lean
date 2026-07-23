@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; repeatable aggregate and product payloads still fail explicitly. Number `FirstFilledValue` instead retains its complete checked direct/plain-star/filtered-star source and evaluates through the bounded addressed leaf context without flattening its model certificates. Runtime target checks, wider addressed leaves and whole-rule orchestration, and general computation scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Runtime target checks, wider addressed leaves and whole-rule orchestration, and general computation scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -125,7 +125,6 @@ inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
-  | repeatableAggregateRequiresAddressedValidation
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
   | operationTargetMismatch (alternative : Nat)
@@ -344,8 +343,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
         (OrderedNumericValidationAtom model)
   | .firstFilled source =>
       pure (.firstFilled source)
-  | .sumOfProducts _ =>
-      throw .repeatableAggregateRequiresAddressedValidation
+  | .sumOfProducts source =>
+      pure (.sumOfProducts source)
   | .numeric (.field declaration) =>
       match declaration.toNumberField? with
       | some field => pure (.ordinary (.field field))
@@ -365,7 +364,7 @@ def CheckedNumericComputationAtom.toValidationAtom :
   | .numeric (.aggregate op source) =>
       match source.directAggregateFields? with
       | some direct => pure (.ordinary (.aggregate op direct))
-      | none => throw .repeatableAggregateRequiresAddressedValidation
+      | none => pure (.aggregate op source)
   | .numeric (.filledGroupCount _) =>
       throw (.conditionAssembly .incoherentCore)
 
@@ -382,7 +381,7 @@ def generatedNumericOperationMismatch
     right := expression
     suppressExactScaleWarning := operation.suppressExactScaleWarning }
 
-/-- Reuse one checked computation expression as the right side of its generated validation mismatch. The authored tree narrows scalar declarations while retaining any model-certified first-filled source; no surface syntax is reconstructed or re-elaborated. -/
+/-- Reuse one checked computation expression as the right side of its generated validation mismatch. The authored tree narrows scalar declarations while retaining every model-certified addressed first-filled, entity-list aggregate, or row-product source; no surface syntax is reconstructed or re-elaborated. -/
 def CheckedNumericComputationOperation.generatedMismatchComparison
     (operation : CheckedNumericComputationOperation model)
     (tolerance : Option NumericToleranceRange) :

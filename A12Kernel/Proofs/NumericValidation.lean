@@ -44,6 +44,27 @@ theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
     FirstFilledNumberResult.asValidationOperand,
     NumericOperand.toValidationArithmetic]
 
+/-- Addressed generated validation delegates an entity-list aggregate to the sole checked validation-phase fold and changes only its numeric-domain projection. -/
+theorem orderedNumericValidationAtom_aggregate_addressed_delegates
+    (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (context : AddressedValidationEvaluationContext model) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.aggregate op source) context =
+      (source.evaluateValidationAggregateIn op context.document context.outer
+        context.scalar.fields context.read).map
+          NumericOperand.toValidationArithmetic := by
+  rfl
+
+/-- Addressed generated validation delegates `SumOfProducts` to the sole checked row-paired fold and changes only its numeric-domain projection. -/
+theorem orderedNumericValidationAtom_sumOfProducts_addressed_delegates
+    (source : CheckedNumericProductAggregate model)
+    (context : AddressedValidationEvaluationContext model) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.sumOfProducts source) context =
+      (source.evaluateAt .validation context.document context.outer
+        context.read).map NumericOperand.toValidationArithmetic := by
+  rfl
+
 /-- A resolved validation aggregate atom consumes the shared aggregate fold and only then enters the existing arithmetic-outcome domain. -/
 theorem numericValidationAggregate_evaluatesThroughSharedFold
     (context : FlatContext) (op : NumericAggregateOp)
