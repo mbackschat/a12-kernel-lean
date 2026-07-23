@@ -163,6 +163,11 @@ inductive CorrelatedNumberOperand where
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
 
+/-- The addressed counterpart of `CorrelationContext`. It preserves caller-owned field-read failures and maps invalid repetition bindings into that same structural channel. -/
+structure ResolvingCorrelationContext (Error : Type) where
+  read : Env → FieldId → Except Error CheckedCell
+  bindingError : EnvBindingError → Error
+
 /-- Resolve one numeric filter reference through the selected environment and caller-selected phase. Empty-to-zero is local to numeric comparison; formal invalidity retains its cause for the consuming phase projection. -/
 def HavingNumberRef.resolveInAt (reference : HavingNumberRef) (phase : Phase)
     (context : CorrelationContext) (frame : CorrelationFrame) :
@@ -172,6 +177,23 @@ def HavingNumberRef.resolveInAt (reference : HavingNumberRef) (phase : Phase)
   match rowContext.resolveNumberComparisonOperandAt phase reference.field with
   | .value amount _ => .value amount
   | .unknown cause => .unknown cause
+
+/-- Resolve the same numeric reference without collapsing a structural addressed-read failure into a formal cell observation. -/
+def HavingNumberRef.resolveInAtResolving (reference : HavingNumberRef)
+    (phase : Phase) (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) : Except Error CorrelatedNumberOperand := do
+  let cell ← context.read (frame.envAt reference.origin) reference.field.id
+  let rowContext : FlatContext := { read := fun _ => cell }
+  pure (match rowContext.resolveNumberComparisonOperandAt phase reference.field with
+    | .value amount _ => .value amount
+    | .unknown cause => .unknown cause)
+
+/-- Resolve one repetition reference through the structural addressed channel. -/
+def CorrelationFrame.rowAtResolving (frame : CorrelationFrame)
+    (context : ResolvingCorrelationContext Error)
+    (reference : HavingRepetitionRef) : Except Error RowIndex :=
+  (frame.envAt reference.origin).bindingAt reference.level
+    |>.mapError context.bindingError
 
 /-- Validation specialization retained for established filter consumers. -/
 def HavingNumberRef.resolveIn (reference : HavingNumberRef)
@@ -233,6 +255,26 @@ def CorrelatedHaving.evalTruthIn (condition : CorrelatedHaving)
     (context : CorrelationContext) (frame : CorrelationFrame) : K :=
   condition.evalK (CorrelatedHavingLeaf.evalTruthIn context frame)
 
+/-- Validation filter evaluation over an addressed reader. Strong-Kleene connectives retain both structural read footprints while ordinary formal invalidity remains semantic UNKNOWN. -/
+def CorrelatedHavingLeaf.evalTruthInResolving
+    (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) : CorrelatedHavingLeaf → Except Error K
+  | .compareNumbers op left right => do
+      pure (op.evalOperands
+        (← left.resolveInAtResolving .validation context frame)
+        (← right.resolveInAtResolving .validation context frame))
+  | .compareRepetitions op left right => do
+      pure (op.evalRows
+        (some (← frame.rowAtResolving context left))
+        (some (← frame.rowAtResolving context right)))
+
+/-- Evaluate one validation filter tree without converting addressed failure to UNKNOWN. -/
+def CorrelatedHaving.evalTruthInResolving (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) : Except Error K :=
+  condition.evalKExcept
+    (CorrelatedHavingLeaf.evalTruthInResolving context frame)
+
 /-- Evaluate one filter leaf during computation. Numeric reads are explicitly left-to-right: a poisoned left operand prevents the right read, while a clean missing repetition comparison merely fails to keep its candidate. -/
 def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf →
@@ -260,6 +302,33 @@ def CorrelatedHaving.evalComputationIn (condition : CorrelatedHaving)
     ComputationConditionResult :=
   condition.evalComputation
     (CorrelatedHavingLeaf.evalComputationIn context frame)
+
+/-- Computation filter evaluation over an addressed reader. Structural failures are distinct from poison, while numeric poison and connective short-circuiting retain their established order. -/
+def CorrelatedHavingLeaf.evalComputationInResolving
+    (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) : CorrelatedHavingLeaf →
+      Except Error ComputationConditionResult
+  | .compareNumbers op left right => do
+      match ← left.resolveInAtResolving .computation context frame with
+      | .unknown cause => pure (.poison cause)
+      | .value leftValue =>
+          match ← right.resolveInAtResolving .computation context frame with
+          | .unknown cause => pure (.poison cause)
+          | .value rightValue =>
+              pure (if op.holdsRat leftValue rightValue then .holds else .notTrue)
+  | .compareRepetitions op left right => do
+      let leftRow ← frame.rowAtResolving context left
+      let rightRow ← frame.rowAtResolving context right
+      pure (if op.holdsRow leftRow rightRow then .holds else .notTrue)
+
+/-- Evaluate one computation filter tree without converting addressed failure to poison or clean non-holding. -/
+def CorrelatedHaving.evalComputationInResolving
+    (condition : CorrelatedHaving)
+    (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) :
+      Except Error ComputationConditionResult :=
+  condition.evalComputationExcept
+    (CorrelatedHavingLeaf.evalComputationInResolving context frame)
 
 /-- Keep one already-resolved candidate environment exactly when the filter is known true. The candidate and captured environments remain separate full repetition identities; false and UNKNOWN both drop the candidate. -/
 def CorrelatedHaving.keepsEnvironment (condition : CorrelatedHaving)

@@ -10,6 +10,17 @@ theorem env_uniqueRowAt_zero (level : RepeatableLevel) :
     Env.uniqueRowAt? [(level, 0)] level = none := by
   simp [Env.uniqueRowAt?, Env.bindingAt, Except.toOption]
 
+/-- A resolving correlation frame preserves an invalid named binding in its caller-owned structural channel. -/
+theorem correlationFrame_rowAtResolving_error
+    (frame : CorrelationFrame) (context : ResolvingCorrelationContext Error)
+    (reference : HavingRepetitionRef) (cause : EnvBindingError)
+    (failed :
+      (frame.envAt reference.origin).bindingAt reference.level =
+        .error cause) :
+    frame.rowAtResolving context reference =
+      .error (context.bindingError cause) := by
+  simp [CorrelationFrame.rowAtResolving, failed, Except.mapError]
+
 private theorem K.and_eq_tru_iff (left right : K) :
     K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
   cases left <;> cases right <;> decide

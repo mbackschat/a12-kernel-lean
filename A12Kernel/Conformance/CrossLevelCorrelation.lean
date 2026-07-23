@@ -94,4 +94,71 @@ example :
     Env.uniqueRowAt? [(parentLevel, 0)] parentLevel = none := by
   native_decide
 
+private inductive ResolvingProbeError where
+  | read (field : FieldId)
+  | binding (cause : EnvBindingError)
+  deriving Repr, DecidableEq
+
+private def resolvingCell : CheckedCell :=
+  { rawPresent := true, parsed := some (.num 1), findings := [] }
+
+private def resolvingContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read _ field :=
+    if field == 2 then .error (.read field) else .ok resolvingCell
+  bindingError := .binding
+
+private def resolvingFrame : CorrelationFrame :=
+  { innerEnv := [(parentLevel, 1)]
+    outerEnv := [(parentLevel, 1)] }
+
+private def resolvingNumber (field : FieldId) : HavingNumberRef :=
+  { origin := .inner, field := { id := field, info := probe.info } }
+
+private def falseThenBadRead : CorrelatedHaving :=
+  .and
+    (CorrelatedHaving.compareNumbers .notEqual
+      (resolvingNumber 1) (resolvingNumber 1))
+    (CorrelatedHaving.compareNumbers .equal
+      (resolvingNumber 2) (resolvingNumber 1))
+
+private inductive ResolvingTruthSnapshot where
+  | truth (value : K)
+  | computation (value : ComputationConditionResult)
+  | error (cause : ResolvingProbeError)
+  deriving Repr, DecidableEq
+
+private def truthSnapshot : Except ResolvingProbeError K → ResolvingTruthSnapshot
+  | .ok value => .truth value
+  | .error cause => .error cause
+
+private def computationSnapshot : Except ResolvingProbeError
+    ComputationConditionResult → ResolvingTruthSnapshot
+  | .ok value => .computation value
+  | .error cause => .error cause
+
+/- Validation's strong-Kleene connective still reaches the right leaf, so structural failure cannot be collapsed into UNKNOWN or hidden by a false left truth. -/
+example :
+    truthSnapshot
+      (falseThenBadRead.evalTruthInResolving resolvingContext resolvingFrame) =
+        .error (.read 2) := by
+  native_decide
+
+/- Computation retains its distinct left-to-right short circuit: clean false decides And before the structurally failing right leaf is reached. -/
+example :
+    computationSnapshot
+      (falseThenBadRead.evalComputationInResolving resolvingContext
+        resolvingFrame) = .computation .notTrue := by
+  native_decide
+
+/- A missing repetition binding is the same explicit structural channel, not a semantic UNKNOWN. -/
+example :
+    truthSnapshot (
+      (CorrelatedHaving.compareRepetitions .equal
+        { origin := .inner, level := childLevel }
+        { origin := .outer, level := parentLevel }).evalTruthInResolving
+          resolvingContext resolvingFrame) =
+        .error (.binding (.missingBinding childLevel)) := by
+  native_decide
+
 end A12Kernel.Conformance.CrossLevelCorrelation

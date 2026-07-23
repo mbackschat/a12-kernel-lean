@@ -256,6 +256,7 @@ run_cmd do
 #print axioms A12Kernel.correlatedHaving_keepsEnvironment_iff_holdsIn
 #print axioms A12Kernel.correlatedHaving_mem_selectEnvironments_iff
 #print axioms A12Kernel.env_uniqueRowAt_zero
+#print axioms A12Kernel.correlationFrame_rowAtResolving_error
 #print axioms A12Kernel.checkedStarFieldPath_havingValueListSide_hasHaving
 #print axioms A12Kernel.checkedStarFieldPath_havingBeforeClassification
 #print axioms A12Kernel.selectCorrelatedRows_iff
@@ -654,6 +655,8 @@ run_cmd do
 #print axioms A12Kernel.conditionTree_allLeaves_map
 #print axioms A12Kernel.conditionTree_evalVerdictExcept_and_notFired_hidesRight
 #print axioms A12Kernel.conditionTree_evalVerdictExcept_or_value_hidesRight
+#print axioms A12Kernel.conditionTree_evalKExcept_and_right_error
+#print axioms A12Kernel.conditionTree_evalComputationExcept_and_notTrue_hidesRight
 #print axioms A12Kernel.validationCondition_flat_evalSelected
 #print axioms A12Kernel.validationCondition_flat_referencesField
 #print axioms A12Kernel.validationCondition_flat_hasHaving
@@ -1280,6 +1283,8 @@ run_cmd do
 #print axioms A12Kernel.CheckedDocument.requirednessScopeFor_absolute
 #print axioms A12Kernel.CheckedDocument.requirednessScopeFor_nearestRepeatable
 #print axioms A12Kernel.CheckedDocument.applyAbsoluteRequiredAt_preserves_computation
+#print axioms A12Kernel.checkedDocument_addressedCell_field_error
+#print axioms A12Kernel.checkedDocument_addressedCell_environment_error
 #print axioms A12Kernel.resolveCheckedField_addressing_error
 #print axioms A12Kernel.resolveCheckedField_empty_topology
 #print axioms A12Kernel.indexPreliminary_mandatory_contract

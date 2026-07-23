@@ -2,6 +2,32 @@ import A12Kernel.Elaboration.CheckedStarDocument
 
 namespace A12Kernel
 
+/-- An unknown field remains a field-resolution failure before any environment or document read. -/
+theorem checkedDocument_addressedCell_field_error
+    (checked : CheckedDocument model) (environment : Env)
+    (field : FieldId) (cause : ResolveError)
+    (failed : model.lookupUniqueId field = .error cause) :
+    checked.addressedCell environment field =
+      .error (.field field cause) := by
+  unfold CheckedDocument.addressedCell
+  rw [failed]
+  simp only [Except.mapError, bind, Except.bind]
+
+/-- A model-owned field with an incomplete environment retains the exact binding failure before any document read. -/
+theorem checkedDocument_addressedCell_environment_error
+    (checked : CheckedDocument model) (environment : Env)
+    (field : FieldId) (declaration : FlatFieldDecl)
+    (cause : EnvBindingError)
+    (lookup : model.lookupUniqueId field = .ok declaration)
+    (failed :
+      environment.pathForScope declaration.repeatableScope = .error cause) :
+    checked.addressedCell environment field =
+      .error (.environment cause) := by
+  unfold CheckedDocument.addressedCell
+  rw [lookup]
+  simp only [Except.mapError, bind, Except.bind]
+  rw [failed]
+
 /-- A topology failure is preserved exactly and prevents every checked-document read. -/
 theorem resolveCheckedField_addressing_error
     (source : CheckedStarFieldPath model) (checked : CheckedDocument model)

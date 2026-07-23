@@ -59,6 +59,28 @@ theorem conditionTree_evalVerdictExcept_or_value_hidesRight
   rw [ConditionTree.evalVerdictExcept, leftResult]
   rfl
 
+/-- Strong-Kleene validation preserves a structural failure from the right branch for every clean left truth, including false. -/
+theorem conditionTree_evalKExcept_and_right_error
+    (left right : ConditionTree Source)
+    (evalLeaf : Source → Except Error K) (leftValue : K)
+    (leftResult : left.evalKExcept evalLeaf = .ok leftValue)
+    (rightResult : right.evalKExcept evalLeaf = .error cause) :
+    (ConditionTree.and left right).evalKExcept evalLeaf =
+      Except.error cause := by
+  rw [ConditionTree.evalKExcept, leftResult, rightResult]
+  rfl
+
+/-- Computation's decisive clean false keeps an unreachable structural failure on the right outside the addressed result. -/
+theorem conditionTree_evalComputationExcept_and_notTrue_hidesRight
+    (left right : ConditionTree Source)
+    (evalLeaf : Source → Except Error ComputationConditionResult)
+    (leftResult :
+      left.evalComputationExcept evalLeaf = .ok .notTrue) :
+    (ConditionTree.and left right).evalComputationExcept evalLeaf =
+      Except.ok .notTrue := by
+  rw [ConditionTree.evalComputationExcept, leftResult]
+  rfl
+
 /-- Reusing the shared connective representation does not change any established flat verdict. -/
 @[simp]
 theorem validationCondition_flat_evalSelected
