@@ -1,6 +1,7 @@
 import A12Kernel.Evidence.ObservationBundle
 import A12Kernel.Process.Sha256
 import A12Kernel.Reference.Evaluator
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Semantics.Iteration
 import A12Kernel.Semantics.Required
 
@@ -220,7 +221,7 @@ private def replayRules (model : FlatModel) (raw : RawFlatContext)
     (hasContent : Bool) (rules : List OperatorRule) : Except String Json := do
   let mut messages := []
   for rule in rules do
-    match elaborateAndEvalFull model replayWorld ["Order"] raw hasContent rule.condition with
+    match elaborateAndEvalFull builtinStringPatternCompiler "en_US" model replayWorld ["Order"] raw hasContent rule.condition with
     | .error error => throw s!"operator compact case left the admitted fragment: {repr error}"
     | .ok (.fired polarity) =>
         messages := messages ++ [operatorMessage rule polarity]

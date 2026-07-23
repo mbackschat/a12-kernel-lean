@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.Conformance.FlatNumberValueList — checked nonrepeatable Number list locks -/
 
@@ -56,7 +56,7 @@ private def errorOf (result : Except ElabError α) : Option ElabError :=
   | .ok _ => none
   | .error error => some error
 
-private def verdictOf (result : Except ElabError Verdict) : Option Verdict :=
+private def verdictOf (result : Except ε Verdict) : Option Verdict :=
   match result with
   | .ok verdict => some verdict
   | .error _ => none
@@ -74,23 +74,23 @@ example : coreOf (elaborate model ["Order"] (literalMembership .included)) =
       some (.numberValueList .notAll [countOperand] (.literals [5, -2])) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawPair 1 (numberRaw 5) 2 .empty) true
     (literalMembership .included)) = some (.fired .value) ∧
-    verdictOf (elaborateAndEvalFull model world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (rawPair 1 (numberRaw 7) 2 .empty) true
       (literalMembership .notIncluded)) = some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawPair 1 .empty 2 .empty) true (literalMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull model world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (rawPair 1 .empty 2 .empty) true (literalMembership .notIncluded)) =
         some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawPair 1 (.rejected .malformed) 2 .empty) true
     (literalMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull model world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (rawPair 1 (.rejected .malformed) 2 .empty) true
       (literalMembership .notIncluded)) = some .notFired := by native_decide
 
@@ -111,17 +111,17 @@ example : coreOf (elaborate model ["Order"] (fieldMembership .included)) =
       some (.numberValueList .notAll [countOperand] (.fields [peerOperand])) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawPair 1 (numberRaw (1 / 3)) 2 (numberRaw (1 / 3))) true
     (fieldMembership .included)) = some (.fired .value) ∧
-    verdictOf (elaborateAndEvalFull model world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (rawPair 1 (numberRaw 5) 2 (numberRaw 7)) true
       (fieldMembership .notIncluded)) = some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawPair 1 (numberRaw 0) 2 .empty) true
     (fieldMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull model world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (rawPair 1 (numberRaw 0) 2 .empty) true
       (fieldMembership .notIncluded)) = some (.fired .omission) := by native_decide
 
@@ -142,15 +142,15 @@ private def fieldListCore (quantifier : ValueListQuantifier) : FlatCondition :=
 example : coreOf (elaborate model ["Order"] (fieldList .atLeastOne)) =
     some (fieldListCore .atLeastOne) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawTriple 1 (numberRaw 7) 2 (numberRaw 9)
       3 (numberRaw 9)) true
     (fieldList .atLeastOne)) = some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (rawTriple 1 .empty 2 .empty 3 .empty) false
     (fieldList .no)) = some (.fired .omission) ∧
-    verdictOf (elaborateAndEvalFull model world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (rawTriple 1 (numberRaw 7) 2 .empty 3 (numberRaw 9)) true
       (fieldList .notAll)) = some (.fired .value) := by native_decide
 

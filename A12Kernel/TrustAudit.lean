@@ -1123,9 +1123,9 @@ run_cmd do
 #print axioms A12Kernel.preparedFlatStringContext_custom_exact
 #print axioms A12Kernel.unpreparedCustomContext_failsClosed
 #print axioms A12Kernel.preparedCustomContext_unknownId
-#print axioms A12Kernel.elaborateAndEvalStringContextFull_preparationError
-#print axioms A12Kernel.elaborateAndEvalStringContextFull_conditionError
-#print axioms A12Kernel.elaborateAndEvalStringContextFull_success
+#print axioms A12Kernel.elaborateAndEvalFull_preparationError
+#print axioms A12Kernel.elaborateAndEvalFull_conditionError
+#print axioms A12Kernel.elaborateAndEvalFull_success
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringRange_evaluates_emptyText

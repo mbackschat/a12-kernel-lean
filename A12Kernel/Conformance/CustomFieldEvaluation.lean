@@ -74,7 +74,7 @@ private def rawPair (leftId : FieldId) (left : RawCell)
 private def outcome (model : FlatModel) (world : World) (locale : String)
     (raw : RawFlatContext) (condition : SurfaceCondition) :
     Except FlatStringContextEvaluationError Verdict :=
-  elaborateAndEvalStringContextFull compilePattern model world locale
+  elaborateAndEvalFull compilePattern locale model world
     ["Order"] raw true condition
 
 private def verdictOf (model : FlatModel) (world : World) (locale : String)
@@ -92,7 +92,7 @@ private def errorOf (model : FlatModel) (world : World) (locale : String)
 
 private def unpreparedVerdict (model : FlatModel) (world : World)
     (raw : RawFlatContext) (condition : SurfaceCondition) : Option Verdict :=
-  match elaborateAndEvalFull model world ["Order"] raw true condition with
+  match elaborateAndEvalUnpreparedFull model world ["Order"] raw true condition with
   | .ok verdict => some verdict
   | .error _ => none
 

@@ -8,6 +8,10 @@ Ordinary declared patterns and registered custom validators are mutually exclusi
 
 namespace A12Kernel
 
+/-- The explicit compiler for the sole declared pattern whose matcher is implemented without a host regex capability. -/
+def builtinStringPatternCompiler : StringPatternCompiler :=
+  locallyExecutableStringPatternMatcher?
+
 inductive FlatStringContextPreparationError where
   | model (error : ResolveError)
   | pattern (error : DeclaredStringPatternElabError)
@@ -59,9 +63,9 @@ def prepareFlatStringContext (world : World)
               }
 
 /-- Prepare both String capability families, elaborate against the same model, and evaluate through their one shared checked context. -/
-def elaborateAndEvalStringContextFull
-    (compilePattern : StringPatternCompiler) (model : FlatModel)
-    (world : World) (locale : String) (declaringGroup : GroupPath)
+def elaborateAndEvalFull
+    (compilePattern : StringPatternCompiler) (locale : String)
+    (model : FlatModel) (world : World) (declaringGroup : GroupPath)
     (raw : RawFlatContext) (hasContent : Bool)
     (condition : SurfaceCondition) :
     Except FlatStringContextEvaluationError Verdict := do
