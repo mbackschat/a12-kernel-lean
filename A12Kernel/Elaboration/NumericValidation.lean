@@ -8,6 +8,8 @@ import A12Kernel.Semantics.NumericTolerance
 /-! # Checked numeric validation
 
 This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, concrete-profile Date/DateTime day differences, and direct Number field-list aggregates share arithmetic. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator. Its bounded addressed context is full-validation-only; partial filter/relevance orchestration remains separate, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+
+The distinct numeric value-count atom retains the same checked entity-list source and its per-cell selected-match provenance; scalar validation accepts only its direct subset, while repeatable evaluation requires the bounded addressed context.
 -/
 
 namespace A12Kernel
@@ -52,6 +54,7 @@ abbrev NumericComparison := NumericComparisonOf NumericValidationAtom
 inductive OrderedNumericValidationAtom (model : FlatModel) where
   | ordinary (source : NumericValidationAtom)
   | firstFilled (source : CheckedNumberEntitySource model)
+  | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
   | aggregate (op : NumericAggregateOp)
       (source : CheckedNumberEntitySource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
@@ -353,13 +356,31 @@ def NumericComparison.allRelevant (comparison : NumericComparison)
 
 namespace OrderedNumericValidationAtom
 
+private def checkedNumberEntitySourceAdmittedIn
+    (source : CheckedNumberEntitySource model)
+    (rowGroup : GroupPath) (scope : NumericOperandScope) : Bool :=
+  match scope with
+  | .modelWideCheckedComputation => true
+  | .sameGroup | .modelWideNonrepeatable =>
+      match source.directResolvedFields? with
+      | none => false
+      | some direct =>
+          direct.hasMultipleFields && direct.hasUniqueFields &&
+            direct.fields.all fun field =>
+              match scope with
+              | .sameGroup => model.admitsNumberInGroup rowGroup field
+              | .modelWideNonrepeatable => model.admitsNumberModelWide field
+              | .modelWideCheckedComputation => true
+
 def isDataDependent : OrderedNumericValidationAtom model → Bool
   | .ordinary source => source.isDataDependent
-  | .firstFilled _ | .aggregate _ _ | .sumOfProducts _ => true
+  | .firstFilled _ | .valueCount _ _ | .aggregate _ _
+  | .sumOfProducts _ => true
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
+  | .valueCount _ _ => NumericScaleSummary.field 0
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
 
@@ -367,6 +388,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .ordinary _ => false
   | .firstFilled source => source.directResolvedFields?.isNone
+  | .valueCount _ source => source.directResolvedFields?.isNone
   | .aggregate _ _ | .sumOfProducts _ => true
 
 def admitted (atom : OrderedNumericValidationAtom model)
@@ -375,19 +397,9 @@ def admitted (atom : OrderedNumericValidationAtom model)
   match atom with
   | .ordinary source => source.admitted model rowGroup scope
   | .firstFilled source =>
-      match scope with
-      | .modelWideCheckedComputation => true
-      | .sameGroup | .modelWideNonrepeatable =>
-          match source.directResolvedFields? with
-          | none => false
-          | some direct =>
-              direct.hasMultipleFields && direct.hasUniqueFields &&
-                direct.fields.all fun field =>
-                  match scope with
-                  | .sameGroup => model.admitsNumberInGroup rowGroup field
-                  | .modelWideNonrepeatable =>
-                      model.admitsNumberModelWide field
-                  | .modelWideCheckedComputation => true
+      checkedNumberEntitySourceAdmittedIn source rowGroup scope
+  | .valueCount _ source =>
+      checkedNumberEntitySourceAdmittedIn source rowGroup scope
   | .aggregate _ source =>
       scope == .modelWideCheckedComputation &&
         source.directAggregateFields?.isNone
@@ -399,6 +411,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   match atom with
   | .ordinary source => source.referencesField model field
   | .firstFilled source => source.referencesField field
+  | .valueCount _ source => source.referencesField field
   | .aggregate _ source => source.referencesField field
   | .sumOfProducts source =>
       source.left.field.id == field || source.right.field.id == field
@@ -751,6 +764,17 @@ def resolve (atom : OrderedNumericValidationAtom model)
       | some direct =>
           resolveFirstFilledFields context isRelevant direct.fields {}
       | none => .error .groupState
+  | .valueCount expected source =>
+      match source.directResolvedFields? with
+      | some direct =>
+          if direct.fields.all fun field => isRelevant field.id then
+            match source.evaluateDirectValueCountAt? expected .validation
+                context.fields with
+            | some result => result.toValidationArithmetic
+            | none => .error .groupState
+          else
+            .error .nonRelevant
+      | none => .error .groupState
   | .aggregate _ _ | .sumOfProducts _ => .error .groupState
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
@@ -775,6 +799,9 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
       | .nonRelevant => pure (.error .nonRelevant)
       | .evaluated result =>
           pure result.asValidationOperand.toValidationArithmetic
+  | .valueCount expected source =>
+      pure ((← source.evaluateValueCountValidationIn expected context.document
+        context.outer context.scalar.fields context.read).toValidationArithmetic)
   | .aggregate op source =>
       pure ((← source.evaluateValidationAggregateIn op context.document
         context.outer context.scalar.fields context.read).toValidationArithmetic)

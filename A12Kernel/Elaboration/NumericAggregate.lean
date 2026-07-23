@@ -535,6 +535,18 @@ def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
       | .inl accumulated => pure (.evaluated (accumulated.evaluate op))
       | .inr result => pure result
 
+/-- Evaluate numeric `NumberOfValueInFields` without an addressed document exactly when every checked operand is direct. This scalar compatibility path never invents topology for a repeatable source. -/
+def evaluateDirectValueCountAt? (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (phase : Phase) (context : FlatContext) :
+    Option NumericOperand := do
+  let (first, rest) ← checked.directFields?
+  pure (evalValueCountAggregate expected {
+    cells := (first :: rest).map fun field => {
+      cell := field.valueListCellAt phase context
+      selectedByHaving := false }
+    hasUninstantiatedTail := false
+    hasHaving := false })
+
 /-- Run `NumberOfValueInFields` over the existing checked Number entity-list route. Unlike the other aggregate folds, this accumulator retains whether each matching cell came through a filter because only such a current match can later disappear. -/
 private def evaluateValueCountWith (checked : CheckedNumberEntitySource model)
     (expected : Rat)
