@@ -86,16 +86,53 @@ theorem valueListAtLeastOne_never_unknown
   unfold evalValueListAtLeastOne evalClassifiedValueListAtLeastOne
   split <;> simp
 
-/-- `No` returns UNKNOWN exactly when either already-classified side contains UNKNOWN. This test precedes membership. -/
-theorem valueListNo_unknown_iff
-    (fields values : ResolvedValueListSide kind) :
-    evalValueListNo fields values = .unknown ↔
-      (fields.hasUnknown || values.hasUnknown) = true := by
-  cases fieldsUnknown : fields.hasUnknown <;>
-    cases valuesUnknown : values.hasUnknown <;>
+/-- A fields-side match terminates `No` before a later unavailable cell. -/
+theorem valueListNo_match_before_unknown
+    (value : ValueListAtom kind) (cause : FormalCause) :
+    evalValueListNo
+      { cells := [.present value, .unknown cause]
+        hasUninstantiatedTail := false, hasHaving := false }
+      { cells := [.present value]
+        hasUninstantiatedTail := false, hasHaving := false } =
+      .notFired := by
+  cases kind <;>
     simp [evalValueListNo, evalClassifiedValueListNo,
-      fieldsUnknown, valuesUnknown] <;>
-    split <;> simp
+      scanValueListNoCells, valueListMembersContain,
+      ResolvedValueListSide.presentValues, ResolvedValueListSide.hasUnknown,
+      ValueListCell.isUnknown, ValueListAtom.equal, NumericComparisonOp.holds]
+
+/-- Reversing the same fields cells exposes the unavailable cell before the match. -/
+theorem valueListNo_unknown_before_match
+    (value : ValueListAtom kind) (cause : FormalCause) :
+    evalValueListNo
+      { cells := [.unknown cause, .present value]
+        hasUninstantiatedTail := false, hasHaving := false }
+      { cells := [.present value]
+        hasUninstantiatedTail := false, hasHaving := false } =
+      .unknown := by
+  rfl
+
+/-- Values-side unavailability is consumed before the fields scan and therefore poisons even an immediate fields match. -/
+theorem valueListNo_unknownMember_before_fields
+    (value : ValueListAtom kind) (cause : FormalCause) :
+    ValueListQuantifier.evalOrdered .no
+      [{ cells := [.present value]
+         hasUninstantiatedTail := false, hasHaving := false }]
+      [{ cells := [.present value, .unknown cause]
+         hasUninstantiatedTail := false, hasHaving := false }] =
+      .unknown := by
+  rfl
+
+/-- `NotAll`'s ordered presence prepass leaves an unknown values member unread when no present field exists. -/
+theorem valueListNotAll_noPresent_before_unknownMember
+    (cause : FormalCause) :
+    ValueListQuantifier.evalOrdered (kind := .token) .notAll
+      [{ cells := [.empty]
+         hasUninstantiatedTail := false, hasHaving := false }]
+      [{ cells := [.unknown cause]
+         hasUninstantiatedTail := false, hasHaving := false }] =
+      .notFired := by
+  rfl
 
 /-- `NotAll` needs a present field before an unknown values member can poison it. -/
 theorem valueListNotAll_noPresent_notFired
@@ -153,16 +190,15 @@ theorem valueListAtLeastOne_having_fires_omission
   simp [evalValueListAtLeastOne, evalClassifiedValueListAtLeastOne,
     having, hasMatch]
 
-/-- A clean nonmatching `No` with `Having` metadata fires as OMISSION. -/
-theorem valueListNo_having_fires_omission
-    (fields values : ResolvedValueListSide kind)
-    (having : (fields.hasHaving || values.hasHaving) = true)
-    (fieldsKnown : fields.hasUnknown = false)
-    (valuesKnown : values.hasUnknown = false)
-    (noMatch : fields.anyMatches values = false) :
-    evalValueListNo fields values = .fired .omission := by
-  simp [evalValueListNo, evalClassifiedValueListNo,
-    having, fieldsKnown, valuesKnown, noMatch]
+/-- A reached filtered fields operand makes an exhausted ordered `No` scan omission-typed. -/
+theorem valueListNo_filtered_nonmatch
+    : ValueListQuantifier.evalOrdered (kind := .token) .no
+      [{ cells := [.present "B"]
+         hasUninstantiatedTail := false, hasHaving := true }]
+      [{ cells := [.present "A"]
+         hasUninstantiatedTail := false, hasHaving := false }] =
+      .fired .omission := by
+  rfl
 
 /-- A known `NotAll` witness with `Having` metadata fires as OMISSION. -/
 theorem valueListNotAll_having_fires_omission

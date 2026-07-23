@@ -158,16 +158,15 @@ theorem flatEnumerationValueList_no_empty
   rw [selectedFlatTokenValueListSide_full,
     flatTokenValueSide_resolveSelected_full]
   simp [ValueListQuantifier.evalClassified, evalClassifiedValueListNo,
+    scanValueListNoCells,
     ResolvedValueListQuantifierSide.hasUnknown,
-    ResolvedValueListQuantifierSide.anyMatches,
     FlatTokenValueSide.resolve, flatTokenValueListSide,
     FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
     FlatEnumerationOperand.resolve, SimpleComparisonOperand.asTokenValueListCell,
     ResolvedEnumerationProjection.resolveOperand, literalTokenValueListSide,
-    ResolvedValueListSide.hasUnknown, ResolvedValueListSide.anyMatches,
+    ResolvedValueListSide.hasUnknown,
     ResolvedValueListSide.hasMissingPotential, ResolvedValueListSide.hasEmpty,
-    ResolvedValueListSide.contains, ValueListCell.isUnknown,
-    ValueListCell.isEmpty, empty]
+    ValueListCell.isUnknown, empty]
 
 /-- Both scalar membership operators remain ineligible on an empty subject; NotIncluded deliberately specializes `NotAll`, not empty-firing `No`. -/
 theorem flatEnumerationValueMembership_empty
