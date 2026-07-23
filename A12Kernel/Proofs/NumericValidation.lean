@@ -29,6 +29,22 @@ theorem checkedNumericComparison_wellFormed
     checked.core.WellFormedIn model checked.rowGroup checked.operandScope :=
   checked.wellFormed
 
+/-- A relevant present first source terminates direct `FirstFilledValue` before any suffix relevance decision. -/
+theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
+    (source : ResolvedNumericAggregateFields)
+    (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) (amount : Rat)
+    (relevant : isRelevant source.first.id = true)
+    (present : source.first.valueListCell context.fields = .present amount) :
+    (.firstFilled source : OrderedNumericValidationAtom).resolve
+        context isRelevant =
+      .ok (.value amount .fixed) := by
+  simp [OrderedNumericValidationAtom.resolve,
+    OrderedNumericValidationAtom.resolveFirstFilledFields,
+    ResolvedNumericAggregateFields.fields, relevant, present,
+    FirstFilledScanState.step, FirstFilledScanResult.asNumber,
+    FirstFilledNumberResult.asValidationOperand,
+    NumericOperand.toValidationArithmetic]
+
 /-- A resolved validation aggregate atom consumes the shared aggregate fold and only then enters the existing arithmetic-outcome domain. -/
 theorem numericValidationAggregate_evaluatesThroughSharedFold
     (context : FlatContext) (op : NumericAggregateOp)
@@ -526,7 +542,7 @@ theorem numericComparison_atom_literal_agrees_flat
       NumericComparison).evalSelected context =
         (FlatComparison.number (.ordinary op) field right.value).eval context := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
@@ -552,7 +568,7 @@ theorem numericValidation_round_atom_literal_delegates
           (.ok (.value right.value .fixed)) := by
   cases op <;>
     cases observed : context.resolveNumericValidationAtom atom <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       observed]
@@ -570,7 +586,7 @@ theorem numericValidation_abs_atom_literal_delegates
           (.ok (.value right.value .fixed)) := by
   cases op <;>
     cases observed : context.resolveNumericValidationAtom atom <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       observed]
@@ -628,7 +644,7 @@ theorem numericTolerance_atom_literal_delegates
         range.eval (context.resolveNumberComparisonOperand field)
           (.value right.value .fixed) := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
@@ -647,7 +663,7 @@ theorem numericTolerance_field_baseYear_delegates
       range.eval (context.resolveNumberComparisonOperand field)
         (.value year .fixed) := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
@@ -668,7 +684,7 @@ theorem numericTolerance_field_baseYearDatePart_delegates
       range.eval (context.resolveNumberComparisonOperand field)
         (.value (baseYearDateSourceNumericPart year source part) .fixed) := by
   cases observed : context.resolveNumberComparisonOperand field <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
@@ -690,7 +706,7 @@ theorem numericValidation_temporalFieldPart_literal_delegates
           (.value right.value .fixed) := by
   cases op <;>
     cases observed : context.resolveTemporalNumericOperand field part <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,
@@ -713,7 +729,7 @@ theorem numericValidation_dateDifference_literal_delegates
       op.eval operand (.value literal.value .fixed) := by
   cases op <;>
     cases operand <;>
-    simp [NumericComparison.evalSelected,
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,
       FlatContext.resolveNumericValidationAtom,

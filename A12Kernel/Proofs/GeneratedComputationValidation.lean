@@ -13,7 +13,7 @@ theorem numericComputationAtom_stringLength_toValidationAtom
     (model : FlatModel) (source : FlatStringField) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.numeric (.stringLength source)) =
-      .ok (.stringLength source) := by
+      .ok (.ordinary (.stringLength source)) := by
   rfl
 
 /-- The generated-validation twin preserves the checked String range atom exactly instead of reconstructing surface syntax. -/
@@ -21,7 +21,7 @@ theorem numericComputationAtom_stringRange_toValidationAtom
     (model : FlatModel) (source : FlatStringField) (start finish : Nat) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.numeric (.stringRange source start finish)) =
-      .ok (.stringRange source start finish) := by
+      .ok (.ordinary (.stringRange source start finish)) := by
   rfl
 
 /-- The generated-validation twin preserves the checked Enumeration/category conversion source and derived scale exactly. -/
@@ -29,7 +29,7 @@ theorem numericComputationAtom_fieldValueAsNumber_toValidationAtom
     (model : FlatModel) (source : ResolvedFieldValueAsNumberSource) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.numeric (.fieldValueAsNumber source)) =
-      .ok (.fieldValueAsNumber source) := by
+      .ok (.ordinary (.fieldValueAsNumber source)) := by
   rfl
 
 /-- A checked entity-list aggregate narrows to the existing validation atom exactly when every source is direct. -/
@@ -39,7 +39,7 @@ theorem checkedNumericComputationAtom_directAggregate_toValidationAtom
     (narrowed : source.directAggregateFields? = some direct) :
     CheckedNumericComputationAtom.toValidationAtom
         (.numeric (.aggregate op source)) =
-      .ok (.aggregate op direct) := by
+      .ok (.ordinary (.aggregate op direct)) := by
   simp [CheckedNumericComputationAtom.toValidationAtom, narrowed]
   rfl
 
@@ -206,11 +206,11 @@ theorem generatedNumberCondition_emptyTarget_notFired
 /-- Generated mismatch construction preserves the already-checked expression exactly, fixes the stored target on the left, and carries warning suppression only as static comparison metadata. -/
 theorem generatedNumericOperationMismatch_preservesBoundary
     (operation : NumericComputationOperation model)
-    (expression : AuthoredNumericExpr NumericValidationAtom)
+    (expression : AuthoredNumericExpr OrderedNumericValidationAtom)
     (tolerance : Option NumericToleranceRange) :
     let comparison :=
       generatedNumericOperationMismatch operation expression tolerance
-    comparison.left = .atom (.field operation.target) ∧
+    comparison.left = .atom (.ordinary (.field operation.target)) ∧
       comparison.right = expression ∧
       comparison.suppressExactScaleWarning = operation.suppressExactScaleWarning := by
   cases tolerance <;> simp [generatedNumericOperationMismatch]

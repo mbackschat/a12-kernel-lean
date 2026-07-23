@@ -85,6 +85,8 @@ end ResolvedGroupListOperands
 inductive ValidationConditionLeaf where
   | flat (condition : FlatConditionLeaf)
   | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
+  | orderedNumeric (scope : NumericOperandScope)
+      (comparison : OrderedNumericComparison)
   | groupPresence (operator : GroupPresenceOperator)
       (reference : ResolvedGroupReference)
   | groupList (operator : GroupFillQuantifier)
@@ -108,6 +110,11 @@ def numeric (comparison : NumericComparison) : ValidationCondition :=
 def numericIn (scope : NumericOperandScope)
     (comparison : NumericComparison) : ValidationCondition :=
   .leaf (.numeric scope comparison)
+
+/-- Embed a numeric comparison whose checked atoms own relevance timing. -/
+def orderedNumericIn (scope : NumericOperandScope)
+    (comparison : OrderedNumericComparison) : ValidationCondition :=
+  .leaf (.orderedNumeric scope comparison)
 
 /-- Embed one resolved scalar group-presence predicate without re-traversing document state. -/
 def groupPresence (operator : GroupPresenceOperator)
@@ -147,13 +154,15 @@ namespace ValidationConditionLeaf
 
 def canFireOnEmpty : ValidationConditionLeaf → Bool
   | .flat condition => condition.canFireOnEmpty
-  | .numeric _ _ => false
+  | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
 
 def referencesField (model : FlatModel) : ValidationConditionLeaf → FieldId → Bool
   | .flat condition, field => condition.referencesField field
   | .numeric _ comparison, field => comparison.referencesField model field
+  | .orderedNumeric _ comparison, field =>
+      comparison.referencesField model field
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField model field
@@ -164,12 +173,14 @@ def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
   | .flat condition => condition.wellFormedBool model
   | .numeric scope comparison =>
       comparison.wellFormedInBool model rowGroup scope
+  | .orderedNumeric scope comparison =>
+      comparison.wellFormedInBool model rowGroup scope
   | .groupPresence _ reference =>
       reference.scalarPresenceWellFormedBool model rowGroup
   | .groupList _ operands =>
       ResolvedGroupListOperands.wellFormedBool operands model rowGroup
 
-/-- Evaluate one reached leaf with its own relevance rule. Numeric expressions require every field atom, while flat leaf rules retain their existing operator-specific checks. -/
+/-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
     ValidationConditionLeaf → Verdict
@@ -178,6 +189,8 @@ def evalSelected (context : ValidationEvaluationContext)
       if comparison.allRelevant isRelevant then
         comparison.evalSelectedWithGroups context
       else .unknown
+  | .orderedNumeric _ comparison =>
+      comparison.evalSelected context isRelevant
   | .groupPresence operator reference =>
       match context.groups reference.path with
       | some state => operator.eval state
