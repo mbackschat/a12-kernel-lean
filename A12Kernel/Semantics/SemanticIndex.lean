@@ -5,11 +5,13 @@ import A12Kernel.Semantics.NumericComparison
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ValidationFillQuantifier
 
-/-! # Resolved literal-key semantic-index lookup
+/-! # Resolved semantic-index lookup
 
-This capsule starts after path resolution, literal-token nonemptiness, key normalization, and generated index-field checks. Each entry therefore carries one uniquely resolvable canonical token and its target cell. Empty, duplicate, or malformed key rows are excluded from `entries`; `unavailableKey` retains one formal cause establishing that the column is not fully resolvable. Selecting that retained cause is an internal refinement, not an externally observed priority claim.
+This capsule starts after path resolution, key admission and normalization, and generated index-field checks. Each entry therefore carries one uniquely resolvable canonical token and its target cell. Empty, duplicate, or malformed key rows are excluded from `entries`; `unavailableKey` retains one formal cause establishing that the column is not fully resolvable. Selecting that retained cause is an internal refinement, not an externally observed priority claim.
 
 Validation and computation deliberately consume that same resolved column differently. Validation accepts a clean unique match despite an unrelated unavailable key and consults column invalidity only after no match. Computation checks column invalidity before lookup, so any unavailable key poisons every indexed read. No match over a clean column and a matched empty target both return `CellObservation.empty`.
+
+A field-valued Number key reaches this boundary as its phase-indexed observation. A present Number delegates to the same normalized lookup as a literal; an empty key performs a no-match while retaining the column policy; formal unavailability remains validation-unknown or computation-poison.
 -/
 
 namespace A12Kernel
@@ -62,6 +64,13 @@ def targetFor? (token : SemanticIndexKey) :
       if entry.token == token then some entry.target
       else targetFor? token remaining
 
+@[simp] private def noMatch (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) : CellObservation :=
+  match phase, column.unavailableKey with
+  | .validation, some cause => .unknown cause
+  | .computation, some cause => .poison cause
+  | _, none => .empty
+
 /-- Read one already-normalized semantic-index key under the phase-specific lookup policy. Inputs that violate the preceding unique-key contract are outside the claimed fragment; this total function chooses the first supplied clean match. Presence and field-fill consumers remain separate projections of the resulting observation. -/
 def lookupKey (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (token : SemanticIndexKey) : CellObservation :=
@@ -69,17 +78,14 @@ def lookupKey (column : ResolvedSemanticIndexColumn)
   | .validation =>
       match targetFor? token column.entries with
       | some target => observeCell .validation target
-      | none =>
-          match column.unavailableKey with
-          | some cause => .unknown cause
-          | none => .empty
+      | none => column.noMatch .validation
   | .computation =>
       match column.unavailableKey with
       | some cause => .poison cause
       | none =>
           match targetFor? token column.entries with
           | some target => observeCell .computation target
-          | none => .empty
+          | none => column.noMatch .computation
 
 /-- Preserve the original exact-text literal-key surface as a thin projection into the common canonical-key lookup. -/
 def lookupValue (column : ResolvedSemanticIndexColumn)
@@ -91,10 +97,31 @@ def lookupNumberValue (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (value : Rat) : CellObservation :=
   column.lookupKey phase (.number value)
 
+private def unavailableNumberKey (phase : Phase)
+    (cause : FormalCause) : CellObservation :=
+  match phase with
+  | .validation => .unknown cause
+  | .computation => .poison cause
+
+/-- Resolve one phase-indexed Number key observation through the same canonical column. Empty means a genuine no-match, not an unavailable key; the column's match/no-match phase policy still applies. -/
+def lookupNumberObservation (column : ResolvedSemanticIndexColumn)
+    (phase : Phase) (key : CellObservation) : CellObservation :=
+  match key with
+  | .empty => column.noMatch phase
+  | .value (.num value) => column.lookupNumberValue phase value
+  | .unknown cause | .poison cause => unavailableNumberKey phase cause
+  | .value _ => unavailableNumberKey phase .malformed
+
 /-- Feed one resolved numeric-key validation lookup into the same direct-comparison empty and polarity rule as the exact-text entry point. -/
 def validationNumberKeyOperand (column : ResolvedSemanticIndexColumn)
     (field : NumField) (value : Rat) : NumericOperand :=
-  (column.lookupNumberValue .validation value).asValidationNumericOperand field
+  (column.lookupNumberObservation .validation
+    (.value (.num value))).asValidationNumericOperand field
+
+/-- Feed one resolved field-valued Number key observation into the same direct-comparison empty and polarity rule as the literal-key entry point. -/
+def validationNumberObservedKeyOperand (column : ResolvedSemanticIndexColumn)
+    (field : NumField) (key : CellObservation) : NumericOperand :=
+  (column.lookupNumberObservation .validation key).asValidationNumericOperand field
 
 /-- Feed one resolved validation-side Number lookup into the shared direct-comparison empty and polarity rule. -/
 def validationNumberOperand (column : ResolvedSemanticIndexColumn)
