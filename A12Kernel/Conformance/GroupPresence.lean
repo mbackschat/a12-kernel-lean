@@ -51,7 +51,7 @@ example : (state [empty] false false .partlyRelevant).groupNotFilled = .unknown 
 example : cleanEmpty.groupNotFilled = .fired .omission := by native_decide
 
 -- Group-list predicates skip unavailable groups but retain independent decisive buckets.
-example : GroupPresenceTally.ofStates [malformedOnly, cleanEmpty] =
+example : GroupListPresenceTally.ofGroupStates [malformedOnly, cleanEmpty] =
     { filled := 0, empty := 1, unavailable := 1 } := by native_decide
 example : GroupFillQuantifier.noGroupFilled.evalValidation [malformedOnly, cleanEmpty] =
     .falseOrUnknown := by native_decide
@@ -59,6 +59,20 @@ example : GroupFillQuantifier.notAllGroupsFilled.evalValidation [malformedOnly, 
     .fired .omission := by native_decide
 example : GroupFillQuantifier.allGroupsFilled.evalValidation [admittedAndErroneous, cleanFilled] =
     .fired .value := by native_decide
+
+-- Field and group operands enter one shared presence classification without treating formal unavailability as empty.
+example : (observeCell .validation valid).asGroupListPresence = .filled := by native_decide
+example : (observeCell .validation empty).asGroupListPresence = .empty := by native_decide
+example : (observeCell .validation malformed).asGroupListPresence = .unavailable := by native_decide
+example :
+    (GroupFillQuantifier.allGroupsFilled.evalPresence [.filled, .filled],
+      GroupFillQuantifier.noGroupFilled.evalPresence [.empty, .empty],
+      GroupFillQuantifier.atLeastOneGroupFilled.evalPresence [.unavailable, .filled],
+      GroupFillQuantifier.notAllGroupsFilled.evalPresence [.unavailable, .empty],
+      GroupFillQuantifier.groupsNotCollectivelyFilled.evalPresence [.filled, .empty]) =
+    (.fired .value, .fired .omission, .fired .value,
+      .fired .omission, .fired .omission) := by
+  native_decide
 
 -- The plain numeric count is stricter than the list tally.
 example : numberOfFilledGroups [admittedAndErroneous, cleanFilled] = .unknown := by native_decide

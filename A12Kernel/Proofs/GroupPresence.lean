@@ -33,17 +33,29 @@ theorem checkedCell_rejected_notGroupContent (cause : BaseFormalCause) :
       (.rejected cause)).admitsGroupContent = false := by
   cases cause <;> rfl
 
-theorem groupPresenceTally_partition (states : List GroupPresenceState) :
-    let tally := GroupPresenceTally.ofStates states
+theorem groupListPresenceTally_partition
+    (states : List GroupListPresenceState) :
+    let tally := GroupListPresenceTally.ofStates states
     tally.filled + tally.empty + tally.unavailable = states.length := by
   induction states with
   | nil => rfl
   | cons state rest ih =>
-      simp only [GroupPresenceTally.ofStates]
-      split
-      · simp at *
+      cases state <;>
+        simp [GroupListPresenceTally.ofStates] at * <;>
         omega
-      · split <;> simp at * <;> omega
+
+theorem groupPresenceTally_partition (states : List GroupPresenceState) :
+    let tally := GroupListPresenceTally.ofGroupStates states
+    tally.filled + tally.empty + tally.unavailable = states.length := by
+  simpa [GroupListPresenceTally.ofGroupStates] using
+    groupListPresenceTally_partition
+      (states.map GroupPresenceState.asGroupListPresence)
+
+theorem validationFillOutcome_conservative_fired_iff
+    (outcome : ValidationFillOutcome) (polarity : Polarity) :
+    outcome.asConservativeVerdict = .fired polarity ↔
+      outcome = .fired polarity := by
+  cases outcome <;> simp [ValidationFillOutcome.asConservativeVerdict]
 
 theorem erroneousHead_makesFilledGroupCountUnknown
     (state : GroupPresenceState) (rest : List GroupPresenceState)

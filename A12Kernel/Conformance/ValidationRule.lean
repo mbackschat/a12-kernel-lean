@@ -39,9 +39,13 @@ private def outsider : FlatFieldDecl :=
   { id := 6, groupPath := ["Other"], name := "Outside",
     policy := { kind := .confirm } }
 
+private def detailsValue : FlatFieldDecl :=
+  { id := 7, groupPath := ["Order", "Details"], name := "Value",
+    policy := { kind := .number { scale := 0, signed := true } } }
+
 private def model : FlatModel :=
   { fields := [amount, acknowledged, unattached, repeatedAmount, eventDateTime,
-      adjustment, outsider]
+      adjustment, outsider, detailsValue]
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def path (field : String) : SurfaceFieldPath :=
@@ -187,6 +191,24 @@ private def ruleGroupOutcome (state : GroupPresenceState) : Option FlatRuleOutco
   pure (rule.evalFull defaultWorld (rawAmount .empty)
     (fun path => if path == ["Order"] then some state else none) false)
 
+private def assembleGroupList? : Option (CheckedResolvedValidationRule model) := do
+  let condition ← (CheckedValidationCondition.fromGroupList model ["Order"]
+    .groupsNotCollectivelyFilled [
+      .field (path "Amount"),
+      .group (.path {
+        base := .absolute
+        groups := ["Order", "Details"]
+      })]).toOption
+  (assembleResolvedValidationRule model condition amount.id errorCode .error
+    messagePlan).toOption
+
+private def groupListOutcome (amountCell : RawCell)
+    (detailsState : GroupPresenceState) : Option FlatRuleOutcome := do
+  let rule ← assembleGroupList?
+  pure (rule.evalFull defaultWorld (rawAmount amountCell)
+    (fun path =>
+      if path == ["Order", "Details"] then some detailsState else none) true)
+
 private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
@@ -261,6 +283,20 @@ example :
     } : GroupPresenceState) =
         some (.fired (expectedMessage .error .omission)) ∧
       (assembleRuleGroup? unattached.id).isSome = true := by
+  native_decide
+
+/- A checked fixed field/group list reaches the sole whole-rule message boundary with its exact omission polarity; a formally unavailable field keeps the collapsed non-fire silent. -/
+example :
+    groupListOutcome (.parsed (.num 1)) {
+      content := false
+      erroneous := false
+      relevance := .fullyRelevant
+    } = some (.fired (expectedMessage .error .omission)) ∧
+    groupListOutcome (.rejected .malformed) {
+      content := false
+      erroneous := false
+      relevance := .fullyRelevant
+    } = some .unknown := by
   native_decide
 
 /- A sibling field is not referenced by `RuleGroup`, so checked rule assembly rejects it instead of treating group presence as a global reference. -/

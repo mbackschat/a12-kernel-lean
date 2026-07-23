@@ -616,6 +616,8 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_numeric_evalSelected_of_relevant
 #print axioms A12Kernel.validationCondition_groupPresence_evalSelected
 #print axioms A12Kernel.validationCondition_groupPresence_missing_isUnknown
+#print axioms A12Kernel.validationCondition_groupList_evalSelected
+#print axioms A12Kernel.validationCondition_groupList_fired_iff
 #print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.numericValidation_scaleSuppression_accepts
@@ -827,7 +829,9 @@ run_cmd do
 #print axioms A12Kernel.groupPresence_rowContent_admitted
 #print axioms A12Kernel.checkedCell_duplicate_preservesGroupAdmission
 #print axioms A12Kernel.checkedCell_rejected_notGroupContent
+#print axioms A12Kernel.groupListPresenceTally_partition
 #print axioms A12Kernel.groupPresenceTally_partition
+#print axioms A12Kernel.validationFillOutcome_conservative_fired_iff
 #print axioms A12Kernel.erroneousHead_makesFilledGroupCountUnknown
 #print axioms A12Kernel.relativeRequiredness_uses_positivePresence
 #print axioms A12Kernel.numericArithmeticOutcome_eval_notEvaluated_left

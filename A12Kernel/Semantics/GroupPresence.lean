@@ -102,24 +102,62 @@ inductive GroupFillQuantifier where
   | groupsNotCollectivelyFilled
   deriving Repr, DecidableEq
 
-/-- Extensional group-list classification. An unavailable group is neither filled nor empty. -/
-structure GroupPresenceTally where
+def GroupFillQuantifier.requiresMultipleOperands : GroupFillQuantifier → Bool
+  | .allGroupsFilled | .notAllGroupsFilled | .groupsNotCollectivelyFilled => true
+  | .noGroupFilled | .atLeastOneGroupFilled => false
+
+def GroupFillQuantifier.canFireOnEmpty : GroupFillQuantifier → Bool
+  | .noGroupFilled | .notAllGroupsFilled => true
+  | .allGroupsFilled | .atLeastOneGroupFilled
+  | .groupsNotCollectivelyFilled => false
+
+/-- One resolved operand of a group-list predicate after either a field observation or a group product state has supplied its presence classification. -/
+inductive GroupListPresenceState where
+  | filled
+  | empty
+  | unavailable
+  deriving Repr, DecidableEq
+
+namespace CellObservation
+
+/-- A field operand contributes to the same three buckets as a group operand. Formal unavailability is neither filled nor empty. -/
+def asGroupListPresence : CellObservation → GroupListPresenceState
+  | .empty => .empty
+  | .value _ => .filled
+  | .unknown _ | .poison _ => .unavailable
+
+end CellObservation
+
+def GroupPresenceState.asGroupListPresence
+    (state : GroupPresenceState) : GroupListPresenceState :=
+  if state.definitelyFilled then .filled
+  else if state.definitelyEmpty then .empty
+  else .unavailable
+
+/-- Extensional group-list classification. Unavailable field or group operands are neither filled nor empty. -/
+structure GroupListPresenceTally where
   filled : Nat
   empty : Nat
   unavailable : Nat
   deriving Repr, DecidableEq
 
-def GroupPresenceTally.ofStates : List GroupPresenceState → GroupPresenceTally
+def GroupListPresenceTally.ofStates :
+    List GroupListPresenceState → GroupListPresenceTally
   | [] => { filled := 0, empty := 0, unavailable := 0 }
   | state :: rest =>
       let tally := ofStates rest
-      if state.definitelyFilled then { tally with filled := tally.filled + 1 }
-      else if state.definitelyEmpty then { tally with empty := tally.empty + 1 }
-      else { tally with unavailable := tally.unavailable + 1 }
+      match state with
+      | .filled => { tally with filled := tally.filled + 1 }
+      | .empty => { tally with empty := tally.empty + 1 }
+      | .unavailable => { tally with unavailable := tally.unavailable + 1 }
+
+def GroupListPresenceTally.ofGroupStates (states : List GroupPresenceState) :
+    GroupListPresenceTally :=
+  ofStates (states.map GroupPresenceState.asGroupListPresence)
 
 /-- Evaluate the shared group-presence tally. Resolved fixed lists and starred structural row counts supply different classifications to this one operator table. -/
 def GroupFillQuantifier.evalTally (operator : GroupFillQuantifier)
-    (tally : GroupPresenceTally) : ValidationFillOutcome :=
+    (tally : GroupListPresenceTally) : ValidationFillOutcome :=
   match operator with
   | .allGroupsFilled =>
       if tally.empty == 0 && tally.unavailable == 0 then .fired .value else .falseOrUnknown
@@ -133,9 +171,14 @@ def GroupFillQuantifier.evalTally (operator : GroupFillQuantifier)
       if 0 < tally.filled && 0 < tally.empty then .fired .omission else .falseOrUnknown
 
 /-- Group-list validation retains the same collapsed non-fire observable as field-list validation. Independent filled or empty witnesses may decide despite unavailable peers. -/
+def GroupFillQuantifier.evalPresence (operator : GroupFillQuantifier)
+    (states : List GroupListPresenceState) : ValidationFillOutcome :=
+  operator.evalTally (GroupListPresenceTally.ofStates states)
+
+/-- Preserve the established group-only resolved entry point as a specialization of the field/group presence classifier. -/
 def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
     (states : List GroupPresenceState) : ValidationFillOutcome :=
-  operator.evalTally (GroupPresenceTally.ofStates states)
+  operator.evalPresence (states.map GroupPresenceState.asGroupListPresence)
 
 /-- The plain multi-group numeric count is unavailable unless every operand group is
     fully relevant and error-free; unlike group-list predicates it cannot skip unknowns. -/

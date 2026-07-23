@@ -15,6 +15,15 @@ inductive ValidationFillOutcome where
   | falseOrUnknown
   deriving Repr, DecidableEq
 
+namespace ValidationFillOutcome
+
+/-- Embed the kernel-visible three-way result in the richer checked-condition result without inventing a definite false branch. The collapsed member is the least-information `unknown`; positive `And`/`Or` consumers can still be decided by an independent fired branch. -/
+def asConservativeVerdict : ValidationFillOutcome → Verdict
+  | .fired polarity => .fired polarity
+  | .falseOrUnknown => .unknown
+
+end ValidationFillOutcome
+
 /-- Extensional classification of one already-resolved, unfiltered field range. Unknown cells count in the range but are neither filled nor empty. -/
 structure ValidationFillTally where
   filled : Nat

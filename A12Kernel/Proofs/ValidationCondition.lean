@@ -93,6 +93,38 @@ theorem validationCondition_groupPresence_missing_isUnknown
   simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, missing]
 
+/-- A reached fixed field/group list delegates once to the shared entity-presence tally and preserves its conservative collapsed-result embedding. -/
+@[simp]
+theorem validationCondition_groupList_evalSelected
+    (operator : GroupFillQuantifier)
+    (operands : List ResolvedGroupListOperand)
+    (context : ValidationEvaluationContext)
+    (isRelevant : FlatRelevance) :
+    (ValidationCondition.groupList operator operands).evalSelected
+        context isRelevant =
+      (operator.evalPresence
+        (operands.map fun operand =>
+          operand.evalPresence context isRelevant)).asConservativeVerdict := by
+  rfl
+
+/-- The conservative embedding loses only the unobservable false/unknown distinction; it preserves every fired result and its exact polarity. -/
+theorem validationCondition_groupList_fired_iff
+    (operator : GroupFillQuantifier)
+    (operands : List ResolvedGroupListOperand)
+    (context : ValidationEvaluationContext)
+    (isRelevant : FlatRelevance)
+    (polarity : Polarity) :
+    (ValidationCondition.groupList operator operands).evalSelected
+        context isRelevant = .fired polarity ↔
+      operator.evalPresence
+        (operands.map fun operand =>
+          operand.evalPresence context isRelevant) = .fired polarity := by
+  rw [validationCondition_groupList_evalSelected]
+  generalize operator.evalPresence
+      (List.map (fun operand =>
+        operand.evalPresence context isRelevant) operands) = outcome
+  cases outcome <;> simp [ValidationFillOutcome.asConservativeVerdict]
+
 /-- The checked mixed wrapper carries one model and exact row-group certificate for its complete resolved core. -/
 theorem checkedValidationCondition_coherent
     (condition : CheckedValidationCondition model) :

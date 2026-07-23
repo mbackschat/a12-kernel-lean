@@ -12,6 +12,8 @@ private def u : FlatNumberField := { id := 1, info := unsigned }
 private def v : FlatNumberField := { id := 2, info := unsigned }
 private def w : FlatNumberField := { id := 3, info := unsigned }
 private def x : FlatNumberField := { id := 4, info := unsigned }
+private def d : FlatNumberField := { id := 5, info := unsigned }
+private def p : FlatNumberField := { id := 6, info := unsigned }
 
 private def model : FlatModel :=
   { fields := [
@@ -22,7 +24,11 @@ private def model : FlatModel :=
       { id := w.id, groupPath := ["Other"], name := "W",
         policy := { kind := .number unsigned } },
       { id := x.id, groupPath := ["Order", "Items"], name := "X",
-        policy := { kind := .number unsigned }, repeatableScope := [10] }]
+        policy := { kind := .number unsigned }, repeatableScope := [10] },
+      { id := d.id, groupPath := ["Order", "Details"], name := "D",
+        policy := { kind := .number unsigned } },
+      { id := p.id, groupPath := ["Order", "Preferences"], name := "P",
+        policy := { kind := .number unsigned } }]
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
 private def fieldPath (name : String) : SurfaceFieldPath :=
@@ -99,6 +105,31 @@ private def wildcardRuleGroupError? : Option ValidationConditionAssemblyError :=
 private def repeatablePathError? : Option ValidationConditionAssemblyError :=
   match CheckedValidationCondition.fromGroupPresence model ["Order"]
       (.path { base := .absolute, groups := ["Order", "Items"] }) .filled with
+  | .ok _ => none
+  | .error error => some error
+
+private def groupOperand (groups : GroupPath) : SurfaceGroupListOperand :=
+  .group (.path { base := .absolute, groups })
+
+private def groupList? (operator : GroupFillQuantifier)
+    (operands : List SurfaceGroupListOperand) :
+    Option (CheckedValidationCondition model) :=
+  (CheckedValidationCondition.fromGroupList model ["Order"] operator operands).toOption
+
+private def mixedGroupList? : Option (CheckedValidationCondition model) :=
+  groupList? .groupsNotCollectivelyFilled [
+    .field (fieldPath "U"),
+    groupOperand ["Order", "Details"]]
+
+private def positiveGroupList? : Option (CheckedValidationCondition model) :=
+  groupList? .atLeastOneGroupFilled [
+    .field (fieldPath "U"),
+    groupOperand ["Order", "Details"]]
+
+private def groupListError? (operator : GroupFillQuantifier)
+    (operands : List SurfaceGroupListOperand) :
+    Option ValidationConditionAssemblyError :=
+  match CheckedValidationCondition.fromGroupList model ["Order"] operator operands with
   | .ok _ => none
   | .error error => some error
 
@@ -188,6 +219,99 @@ example : wildcardRuleGroupError? =
 /- An ordinary repeatable path has no concrete row at this boundary; only `RuleGroup` may consume the already-selected rule instance. -/
 example : repeatablePathError? =
     some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
+  native_decide
+
+/- Fixed group-list conditions accept fields and groups through one resolved entity-presence tally. The error-field traversal retains the exact field operand and every field in the group subtree. -/
+example : mixedGroupList?.map (fun checked =>
+    checked.core.referencesField model u.id &&
+      checked.core.referencesField model d.id &&
+      !checked.core.referencesField model p.id) = some true := by
+  native_decide
+
+/- A filled field and a clean-empty group establish the mixed predicate. Replacing the field by a formal error leaves it unavailable and therefore cannot establish either required bucket. -/
+example : mixedGroupList?.map (fun checked =>
+    (checked.core.evalSelected {
+      fields := model.checkContext (raw (.parsed (.num 1)) .empty)
+      groups := groupContext ["Order", "Details"] (groupState false false)
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw (.rejected .malformed) .empty)
+      groups := groupContext ["Order", "Details"] (groupState false false)
+    })) = some (.fired .omission, .unknown) := by
+  native_decide
+
+/- Field relevance and group-state availability are classified independently. Either known filled operand decides `AtLeastOneGroupFilled`; when both operands are unavailable, the collapsed leaf remains unknown. -/
+example : positiveGroupList?.map (fun checked =>
+    (checked.core.evalSelected {
+      fields := model.checkContext (raw (.rejected .malformed) .empty)
+      groups := groupContext ["Order", "Details"] (groupState true false)
+    } (fun id => id != u.id),
+    checked.core.evalSelected {
+      fields := model.checkContext (raw (.parsed (.num 1)) .empty)
+      groups := GroupPresenceContext.unavailable
+    },
+    checked.core.evalSelected {
+      fields := model.checkContext (raw (.rejected .malformed) .empty)
+      groups := GroupPresenceContext.unavailable
+    } (fun id => id != u.id))) =
+      some (.fired .value, .fired .value, .unknown) := by
+  native_decide
+
+/- A collapsed non-fire embeds as least-information `unknown`; an independent VALUE branch in the existing positive tree still decides the complete `Or`. -/
+example : mixedGroupList?.map (fun checked =>
+    ValidationCondition.evalSelected (ConditionTree.or checked.core
+      (ValidationCondition.flat (.fieldFilled (.number v)))) {
+        fields := model.checkContext (raw (.rejected .malformed) (.parsed (.num 2)))
+        groups := groupContext ["Order", "Details"] (groupState false false)
+      }) = some (Verdict.fired .value) := by
+  native_decide
+
+/- The three multi-entity operators require at least two operands and reject every root-group operand. The count-zero/count-positive pair permits a sole root but no root beside another entity. -/
+example :
+    groupListError? .allGroupsFilled [groupOperand ["Order", "Details"]] =
+      some .groupListNeedsMultipleOperands ∧
+    groupListError? .notAllGroupsFilled [
+      groupOperand ["Other"], groupOperand ["Order", "Details"]] =
+      some (.rootGroupInGroupList ["Other"]) ∧
+    groupListError? .atLeastOneGroupFilled [
+      groupOperand ["Other"], .field (fieldPath "U")] =
+      some (.rootGroupRequiresSoleOperand ["Other"]) ∧
+    (groupList? .noGroupFilled [groupOperand ["Other"]]).isSome = true := by
+  native_decide
+
+/- Fixed singletons reuse the existing scalar owners, so checked construction cannot create a second representation of the same field/group presence predicate. -/
+example :
+    (groupList? .atLeastOneGroupFilled [
+      .field (fieldPath "U")]).map (fun checked =>
+        checked.core ==
+          ValidationCondition.flat (.fieldFilled (.number u))) = some true ∧
+    (groupList? .noGroupFilled [
+      groupOperand ["Other"]]).map (fun checked =>
+        match checked.core with
+        | .leaf (.groupPresence .notFilled reference) =>
+            reference.path == ["Other"]
+        | _ => false) = some true := by
+  native_decide
+
+/- Direct duplicates and group/descendant overlaps are rejected before they can be counted twice. -/
+example :
+    groupListError? .atLeastOneGroupFilled [
+      .field (fieldPath "U"), .field (fieldPath "U")] =
+      some (.overlappingGroupListOperands ["Order", "U"] ["Order", "U"]) ∧
+    groupListError? .groupsNotCollectivelyFilled [
+      groupOperand ["Order", "Details"],
+      .field { base := .absolute, groups := ["Order", "Details"], field := "D" }] =
+      some (.overlappingGroupListOperands
+        ["Order", "Details"] ["Order", "Details", "D"]) := by
+  native_decide
+
+/- Empty and unaddressed ordinary-repeatable operand lists fail before a core leaf exists. -/
+example :
+    groupListError? .noGroupFilled [] = some .emptyGroupList ∧
+    groupListError? .atLeastOneGroupFilled [
+      groupOperand ["Order", "Items"],
+      groupOperand ["Order", "Details"]] =
+      some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
   native_decide
 
 end A12Kernel.Conformance.ValidationCondition
