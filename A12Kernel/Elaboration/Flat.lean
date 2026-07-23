@@ -1604,13 +1604,18 @@ structure RawFlatContext where
 def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
-/-- Return the one declaration matcher whose meaning is already implemented without an injected host compiler. Every wider admitted source remains available only through the prepared pattern capability. -/
-def FlatFieldDecl.executableStringPatternMatcher?
-    (declaration : FlatFieldDecl) : Option (String → Bool) :=
-  if declaration.stringPatternSource == some asciiDigitsPatternSource then
+/-- Return the one source matcher whose meaning is already implemented without an injected host compiler. -/
+def locallyExecutableStringPatternMatcher? (source : String) :
+    Option (String → Bool) :=
+  if source == asciiDigitsPatternSource then
     some matchesAsciiDigitsPattern
   else
     none
+
+/-- Return the one declaration matcher whose meaning is already implemented without an injected host compiler. Every wider admitted source remains available only through the prepared pattern capability. -/
+def FlatFieldDecl.executableStringPatternMatcher?
+    (declaration : FlatFieldDecl) : Option (String → Bool) :=
+  declaration.stringPatternSource.bind locallyExecutableStringPatternMatcher?
 
 /-- Compile one raw cell through declaration-owned scalar, ordinary String-policy, locally executable declared-pattern, or closed-Enumeration admission. Registered custom Strings require their prepared overlay and fail closed here. -/
 def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : CheckedCell :=
@@ -1649,7 +1654,8 @@ def FlatModel.checkContext (model : FlatModel) (raw : RawFlatContext) : FlatCont
     | .ok declaration => declaration.checkRaw (raw.read id)
     | .error _ => malformedCheckedCell
 
-def elaborateAndEvalFull (model : FlatModel) (world : World) (declaringGroup : GroupPath)
+def elaborateAndEvalUnpreparedFull (model : FlatModel) (world : World)
+    (declaringGroup : GroupPath)
     (raw : RawFlatContext) (hasContent : Bool) (condition : SurfaceCondition) :
     Except ElabError Verdict := do
   let checked ← elaborate model declaringGroup condition

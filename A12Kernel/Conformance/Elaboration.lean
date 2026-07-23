@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Semantics.ModelZone
 
 /-! # Checked flat-elaboration conformance locks -/
@@ -690,57 +690,57 @@ private def utcInstant? (year : Int) (month day hour minute second : Nat) : Opti
   (LocalDateTime.ofYmdHms? year month day hour minute second).map
     LocalDateTime.resolveUtc
 
-example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
+example : valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 5))) =
     some (.fired .value) := by
   native_decide
 
-example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
+example : valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .equal (absolute ["Order"] "ExpressShipping") (.boolean false))) =
     some (.fired .value) := by
   native_decide
 
-example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] ordinaryRaw true
+example : valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] ordinaryRaw true
     (compare .notEqual (absolute ["Order"] "TermsConfirmed") (.boolean true))) =
     some .notFired := by
   native_decide
 
-example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] { read := fun _ => .empty } false
+example : valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] { read := fun _ => .empty } false
     (.fieldNotFilled (absolute ["Order"] "Quantity"))) =
     some (.fired .omission) := by
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] (temporalRaw .date) true
+    valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] (temporalRaw .date) true
       (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
         some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] (temporalRaw .dateTime) true
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] (temporalRaw .dateTime) true
         (.fieldFilled (absolute ["Order"] "DispatchDate"))) =
           some .unknown := by
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
+    valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"]
       (temporalComparisonRaw .date 100000 .date (some 101000)) true
       (compareFields .less "DispatchDate" "ArrivalDate")) =
         some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"]
         (temporalComparisonRaw .date 100000 .date none) true
         (compareFields .less "DispatchDate" "ArrivalDate")) =
           some .notFired ∧
-      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"]
         (temporalComparisonRaw .date 100000 .dateTime (some 101000)) true
         (compareFields .less "DispatchDate" "ArrivalDate")) =
           some .unknown := by
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
+    valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"]
       (temporalComparisonRaw .date 100000 .date none) true
       (compare .less (absolute ["Order"] "DispatchDate")
         (dateLiteral dispatchDateComponents 101000))) =
         some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"]
         (temporalComparisonRaw .date 100000 .date none) true
         (compare .greater (absolute ["Order"] "DispatchDate")
           (dateLiteral dispatchDateComponents 101000))) =
@@ -748,15 +748,15 @@ example :
   native_decide
 
 example :
-    valueOf (elaborateAndEvalFull model (worldAt 100999) ["Order"]
+    valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 100999) ["Order"]
       (eventDateTimeRaw 100000) true
       (compareNow .equal .right "EventDateTime")) =
         some .notFired ∧
-      valueOf (elaborateAndEvalFull model (worldAt 100999) ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 100999) ["Order"]
         (eventDateTimeRaw 100000) true
         (compareNow .less .right "EventDateTime")) =
           some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull model (worldAt 100999) ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 100999) ["Order"]
         (eventDateTimeRaw 100000) true
         (compareNow .greater .left "EventDateTime")) =
           some (.fired .value) := by
@@ -767,7 +767,7 @@ example : (do
     let midnight ← utcInstant? 2024 3 31 0 0 0
     let world : World :=
       { now, modelZoneRules := ModelZone.concreteRules }
-    pure (valueOf (elaborateAndEvalFull model world ["Order"]
+    pure (valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
       (dispatchDateRaw midnight.epochMillis) true
       (compareToday .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
   native_decide
@@ -777,13 +777,13 @@ example : (do
     let world : World :=
       { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
     pure (
-      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" baseYearModel world ["Order"]
         (baseYearRaw 2020 start.epochMillis) true
         (compareBaseYear .equal .right "Limit")) = some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" baseYearModel world ["Order"]
         (baseYearRaw 2021 start.epochMillis) true
         (compareBaseYear .less .left "Quantity")) = some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" baseYearModel world ["Order"]
         (baseYearRaw 2020 start.epochMillis) true
         (compareBaseYear .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
   native_decide
@@ -794,15 +794,15 @@ example : (do
     let world : World :=
       { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
     pure (
-      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" baseYearModel world ["Order"]
         (dispatchDateRaw start.epochMillis) true
         (compareBaseYearRange .equal .right .start "DispatchDate")) =
           some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" baseYearModel world ["Order"]
         (dispatchDateRaw finish.epochMillis) true
         (compareBaseYearRange .equal .right .finish "DispatchDate")) =
           some (.fired .value) ∧
-      valueOf (elaborateAndEvalFull baseYearModel world ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" baseYearModel world ["Order"]
         (dispatchDateRaw start.epochMillis) true
         (compareBaseYearRange .equal .right .finish "DispatchDate")) =
           some .notFired)) = some true := by
@@ -821,23 +821,23 @@ example : (do
             today? := fun zoneId _ =>
               if zoneId == "Pacific/Apia" then some midnight else none } }
     pure (
-      valueOf (elaborateAndEvalFull apiaModel narrowWorld ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" apiaModel narrowWorld ["Order"]
         (dispatchDateRaw midnight.epochMillis) true
         (compareToday .equal .right "DispatchDate")) = some .unknown ∧
-      valueOf (elaborateAndEvalFull apiaModel suppliedWorld ["Order"]
+      valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" apiaModel suppliedWorld ["Order"]
         (dispatchDateRaw midnight.epochMillis) true
         (compareToday .equal .right "DispatchDate")) = some (.fired .value))) = some true := by
   native_decide
 
 -- Model-derived formal checking prevents an inconsistent runtime kind from entering eval.
-example : valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] wrongKindRaw true
+example : valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] wrongKindRaw true
     (compare .equal (absolute ["Order"] "Quantity") (.number 0))) = some .unknown := by
   native_decide
 
 -- Static success does not imply a definite runtime verdict: malformed data remains unknown.
 example : (elaborate model ["Order"]
     (compare .equal (absolute ["Order"] "Quantity") (.number 0))).isOk = true ∧
-    valueOf (elaborateAndEvalFull model (worldAt 0) ["Order"] wrongKindRaw true
+    valueOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model (worldAt 0) ["Order"] wrongKindRaw true
       (compare .equal (absolute ["Order"] "Quantity") (.number 0))) = some .unknown := by
   native_decide
 

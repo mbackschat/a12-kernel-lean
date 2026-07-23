@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.Conformance.FlatEnumeration — checked nonrepeatable integration locks -/
 
@@ -34,7 +34,7 @@ private def errorOf (result : Except ElabError α) : Option ElabError :=
   | .ok _ => none
   | .error error => some error
 
-private def verdictOf (result : Except ElabError Verdict) : Option Verdict :=
+private def verdictOf (result : Except ε Verdict) : Option Verdict :=
   match result with
   | .ok verdict => some verdict
   | .error _ => none
@@ -69,28 +69,28 @@ private def raw (value : RawCell) : RawFlatContext where
 
 private def world : World := { now := { epochMillis := 0 } }
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (raw (.parsed (.enum "A"))) true (.compare .equal path (.string "A"))) =
     some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (raw (.parsed (.enum "B"))) true (.compare .equal path (.string "A"))) =
     some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (raw (.parsed (.enum "B"))) true
       (.compareEnumeration .equal path (.category "Kind") "Shared")) =
     some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (raw (.parsed (.enum "C"))) true (.compare .equal path (.string "A"))) =
     some .unknown := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (raw (.parsed (.str "A"))) true (.compare .equal path (.string "A"))) =
     some .unknown := by native_decide
 
-example : verdictOf (elaborateAndEvalFull model world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
     (raw .empty) true (.fieldNotFilled path)) = some (.fired .omission) := by native_decide
 
 example : storedCore.evalSelected (model.checkContext (raw (.parsed (.enum "A"))))
@@ -190,22 +190,22 @@ example : coreOf (elaborate fieldModel ["Order"] (.compareFields .notEqual
           field := { id := 21 }, projectionRef := .stored, projection := .stored }))) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "A"))) true
     (.compareFields .equal (fieldPath "Text") (fieldPath "Code"))) =
     some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 21 (.parsed (.enum "B"))) true
     (.compareFields .notEqual (fieldPath "Code") (fieldPath "Identity"))) =
     some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 10 (.parsed (.str "A")) 20 (.parsed (.enum "C"))) true
     (.compareFields .equal (fieldPath "Text") (fieldPath "Code"))) =
     some .unknown := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 10 (.parsed (.str "A")) 20 .empty) true
     (.compareFields .notEqual (fieldPath "Text") (fieldPath "Code"))) =
     some .notFired := by native_decide
@@ -247,7 +247,7 @@ example : coreOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
         field := { id := 25 }, projectionRef := .stored, projection := .stored }))) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "B")) 25 (.parsed (.enum "Shared"))) true
     (.compareTextFields .equal categoryCode directCategoryPeer)) =
     some (.fired .value) := by native_decide
@@ -298,28 +298,28 @@ private def storedValueListCore : FlatCondition :=
 example : coreOf (elaborate fieldModel ["Order"] storedValueList) =
     some storedValueListCore := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw (.parsed (.enum "B"))) true storedValueList) =
     some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw .empty) false (.enumerationValueList .no
       [(.direct (fieldPath "Code"))] ["A"])) = some (.fired .omission) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw .empty) false (.enumerationValueList .notAll
       [(.direct (fieldPath "Code"))] ["A"])) = some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw .empty) false (.enumerationValueList .no
       [categoryCode] ["Shared"])) = some (.fired .omission) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw .empty) false (.enumerationValueList .notAll
       [categoryCode] ["Shared"])) = some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw (.parsed (.enum "B"))) true (.enumerationValueList .atLeastOne
       [categoryCode] ["Shared"])) = some (.fired .value) := by native_decide
 
@@ -354,21 +354,21 @@ example : coreOf (elaborate fieldModel ["Order"] storedIncluded) = some
         field := { id := 20 }, projectionRef := .stored, projection := .stored }]
       (.literals ["A"])) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw (.parsed (.enum "A"))) true storedIncluded) = some (.fired .value) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw (.parsed (.enum "B"))) true (.enumerationValueMembership .notIncluded
       (.direct (fieldPath "Code")) ["A"])) = some (.fired .value) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw .empty) true storedIncluded) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (raw .empty) true (.enumerationValueMembership .notIncluded
         (.direct (fieldPath "Code")) ["A"])) = some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw (.parsed (.enum "B"))) true (.enumerationValueMembership .included
       categoryCode ["Shared"])) = some (.fired .value) := by native_decide
 
@@ -396,40 +396,40 @@ example : coreOf (elaborate fieldModel ["Order"]
             field := { id := 25 }, projectionRef := .stored, projection := .stored }])) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Shared"))) true
     (enumerationFieldMembership .included)) = some (.fired .value) ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Other"))) true
       (enumerationFieldMembership .notIncluded)) = some (.fired .value) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 .empty 25 (.parsed (.enum "Shared"))) true
     (enumerationFieldMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 .empty 25 (.parsed (.enum "Shared"))) true
       (enumerationFieldMembership .notIncluded)) = some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.rejected .malformed) 25 (.parsed (.enum "Shared"))) true
     (enumerationFieldMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 (.rejected .malformed) 25 (.parsed (.enum "Shared"))) true
       (enumerationFieldMembership .notIncluded)) = some .notFired := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
     (enumerationFieldMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
       (enumerationFieldMembership .notIncluded)) = some (.fired .omission) := by
   native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 25 (.rejected .malformed)) true
     (enumerationFieldMembership .included)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 (.parsed (.enum "A")) 25 (.rejected .malformed)) true
       (enumerationFieldMembership .notIncluded)) = some .unknown := by native_decide
 
@@ -446,7 +446,7 @@ example : (elaborate fieldModel ["Order"]
     (.enumerationFieldValueMembership .included categoryCode
       [(.direct (fieldPath "Code"))])).isOk = true := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 25 (.parsed (.enum "Shared")) 20 (.parsed (.enum "A"))) true
     (.enumerationFieldValueMembership .included
       (.direct (fieldPath "CategoryPeer")) [categoryCode])) =
@@ -473,7 +473,7 @@ private def twoFieldValueListCore : FlatCondition :=
 example : coreOf (elaborate fieldModel ["Order"] twoFieldValueList) =
     some twoFieldValueListCore := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "B")) 25 (.parsed (.enum "Other"))) true
     twoFieldValueList) = some (.fired .value) := by native_decide
 
@@ -516,7 +516,7 @@ private def enumerationFieldValueListCore : FlatCondition :=
 example : coreOf (elaborate fieldModel ["Order"] enumerationFieldValueList) =
     some enumerationFieldValueListCore := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 25 (.parsed (.enum "Shared"))) true
     enumerationFieldValueList) = some (.fired .value) := by native_decide
 
@@ -524,17 +524,17 @@ private def fieldValued (quantifier : ValueListQuantifier) : SurfaceCondition :=
   .enumerationFieldValueList quantifier
     [(.direct (fieldPath "Code"))] [(.direct (fieldPath "CategoryPeer"))]
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
     (fieldValued .atLeastOne)) = some .notFired ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
       (fieldValued .no)) = some (.fired .omission) ∧
-    verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+    verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
       (rawPair 20 (.parsed (.enum "A")) 25 .empty) true
       (fieldValued .notAll)) = some (.fired .omission) := by native_decide
 
-example : verdictOf (elaborateAndEvalFull fieldModel world ["Order"]
+example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (rawPair 20 (.parsed (.enum "A")) 25 (.rejected .malformed)) true
     (fieldValued .no)) = some .unknown := by native_decide
 
