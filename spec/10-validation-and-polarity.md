@@ -51,6 +51,8 @@ Because empty operands participate in so many firings ([§2](03-empty-and-requir
 > ```
 > The explicit tables live in [`../A12Kernel/Core.lean`](../A12Kernel/Core.lean). A suppressed branch contributes `unknown`, not `notFired`; strong-Kleene dominance then explains why a fired `Or` can decide despite an unknown sibling while a fired `And` cannot.
 
+The public validation finding projection emits a message only for `fired`; both `notFired` and `unknown` yield no finding. Their distinction remains part of the executable semantics because enclosing `And`/`Or` consumers can distinguish them, but a terminal leaf result with no such consumer is not independently message-observable.
+
 ---
 
 ## 4. The directional-fill machinery behind the typing
