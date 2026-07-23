@@ -102,7 +102,7 @@ Fourteen numbered areas cover the language. This is the same `§n` numbering the
 
 | § | Area | In one line | Difficulty | Deep-dive file |
 |---|---|---|---|---|
-| §1 | Truth values & logical evaluation | Two-valued connectives over data that can be "unknown"; no generic `Not`; explicit parens required | ★★★☆☆ | [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) |
+| §1 | Truth values & logical evaluation | Two-valued connectives over data that can be "unknown"; no generic `Not`; explicit parens required; fixed group-list predicates share one field/group presence tally | ★★★☆☆ | [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) |
 | §2 | Non-specified (empty) values | Per-kind treatment of empty operands; empty-as-`0` vs not-evaluated; aggregate identities; the row gate | ★★★★☆ | [`03-empty-and-required.md`](03-empty-and-required.md) |
 | §3 | Formal errors & the "unknown" state | The **third** cell state (filled-but-invalid); makes operands UNKNOWN; branch-scoped suppression | ★★★★★ | [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) |
 | §4 | The "required" property | Expands to a generated rule; manifests as a formal error; index-field auto-checks (mandatory + unique) | ★★★☆☆ | [`03-empty-and-required.md`](03-empty-and-required.md) |
