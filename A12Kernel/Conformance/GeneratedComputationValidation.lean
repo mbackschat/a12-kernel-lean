@@ -335,6 +335,24 @@ private def crossGroupGeneratedBoundary :
   let comparison ← (operation.generatedMismatchComparison none).toOption
   pure (comparison.rowGroup, comparison.operandScope)
 
+private def crossGroupFirstFilledVerdict
+    (source extra target : RawCell) (isRelevant : FlatRelevance) :
+    Option Verdict := do
+  let operation ← crossGroupFirstFilledOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  let prepared ←
+    (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
+      crossGroupModel).toOption
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupSource.id then source
+      else if field = crossGroupExtra.id then extra
+      else if field = crossGroupTarget.id then target
+      else .empty }
+  pure (comparison.evalSelected {
+    fields := prepared.checkContext "en_US" raw
+    groups := GroupPresenceContext.unavailable } isRelevant)
+
 private def crossGroupOrdinaryError : Option NumericValidationElabError :=
   match elaborateNumericComparison crossGroupModel ["Output"] {
       op := .ordinary .notEqual
@@ -908,10 +926,20 @@ example :
         some .repeatableAggregateRequiresAddressedValidation := by
   native_decide
 
-/- Even a direct checked `FirstFilledValue` fails closed here: generated partial validation still has one global numeric-leaf relevance gate and cannot preserve the source's ordered prefix relevance without a dedicated checked resolver. -/
+/- Direct generated `FirstFilledValue` checks relevance in source order: a present head hides a nonrelevant suffix, while an empty head reaches that suffix. -/
 example :
-    firstFilledGeneratedError =
-      some .firstFilledRequiresOrderedValidation := by
+    let sourceAndTarget := fun field =>
+      field == crossGroupSource.id || field == crossGroupTarget.id
+    firstFilledGeneratedError = none ∧
+      crossGroupFirstFilledVerdict
+        (.parsed (.num 3)) (.rejected .malformed) (.parsed (.num 3))
+        sourceAndTarget = some .notFired ∧
+      crossGroupFirstFilledVerdict
+        .empty (.parsed (.num 2)) (.parsed (.num 2))
+        sourceAndTarget = some .unknown ∧
+      crossGroupFirstFilledVerdict
+        .empty (.parsed (.num 2)) (.parsed (.num 2))
+        (fun _ => true) = some .notFired := by
   native_decide
 
 /- Generated validation narrows the checked absolute-value/String-range tree without rebuilding either layer and compares the same nonnegative result model-wide. -/

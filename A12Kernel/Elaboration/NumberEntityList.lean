@@ -10,11 +10,14 @@ This boundary owns the common authoring contract for Number-valued entity lists 
 
 namespace A12Kernel
 
-/-- Number aggregate authors use the shared kind-independent entity-list syntax. -/
+/-- Number entity-list authors use the shared kind-independent syntax. -/
 abbrev SurfaceNumberEntityOperand := SurfaceFieldEntityOperand
 
-/-- Number aggregate authors use the shared nonempty entity-list source shape. -/
+/-- Number entity-list authors use the shared nonempty source shape. -/
 abbrev SurfaceNumberEntitySource := SurfaceFieldEntitySource
+
+/-- Consumer-neutral name for the established direct nonempty Number field-list payload. -/
+abbrev ResolvedDirectNumberEntityFields := ResolvedNumericAggregateFields
 
 /-- One direct nonrepeatable Number declaration certified against the source model. -/
 structure CheckedNumberEntityField (model : FlatModel) where
@@ -115,11 +118,17 @@ def directFields? (checked : CheckedNumberEntitySource model) :
   pure (first, rest)
 
 /-- Recover the legacy direct aggregate payload exactly when every checked entity-list operand is nonrepeatable. Scalar computation and generated validation share this narrowing rather than reconstructing or rechecking source syntax. -/
-def directAggregateFields?
+def directResolvedFields?
     (checked : CheckedNumberEntitySource model) :
-    Option ResolvedNumericAggregateFields := do
+    Option ResolvedDirectNumberEntityFields := do
   let (first, rest) ← checked.directFields?
   pure { first, rest }
+
+/-- Compatibility name for aggregate consumers of the common direct field-list narrowing. -/
+def directAggregateFields?
+    (checked : CheckedNumberEntitySource model) :
+    Option ResolvedNumericAggregateFields :=
+  checked.directResolvedFields?
 
 end CheckedNumberEntitySource
 

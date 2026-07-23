@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; a repeatable payload fails explicitly because this generated-validation context has no addressed document/relevance inputs. `FirstFilledValue` also fails explicitly even for direct sources because its reached-prefix relevance cannot be represented by the current leaf-wide all-atoms gate. Addressed and ordered-relevance-aware generated validation, runtime target checks, and general computation scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; a repeatable payload fails explicitly because this generated-validation context has no addressed document/relevance inputs. Direct `FirstFilledValue` narrows into the relevance-aware numeric atom and preserves prefix relevance before the same arithmetic evaluator. Addressed generated validation, runtime target checks, and general computation scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -126,7 +126,6 @@ inductive GeneratedComputationValidationError where
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | repeatableAggregateRequiresAddressedValidation
-  | firstFilledRequiresOrderedValidation
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
   | operationTargetMismatch (alternative : Nat)
@@ -341,30 +340,32 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
 
 def CheckedNumericComputationAtom.toValidationAtom :
     CheckedNumericComputationAtom model →
-      Except GeneratedComputationValidationError NumericValidationAtom
-  | .firstFilled _ =>
-      throw .firstFilledRequiresOrderedValidation
+      Except GeneratedComputationValidationError OrderedNumericValidationAtom
+  | .firstFilled source =>
+      match source.directResolvedFields? with
+      | some direct => pure (.firstFilled direct)
+      | none => throw .repeatableAggregateRequiresAddressedValidation
   | .sumOfProducts _ =>
       throw .repeatableAggregateRequiresAddressedValidation
   | .numeric (.field declaration) =>
       match declaration.toNumberField? with
-      | some field => pure (.field field)
+      | some field => pure (.ordinary (.field field))
       | none => throw (.conditionAssembly .incoherentCore)
-  | .numeric (.baseYear year) => pure (.baseYear year)
+  | .numeric (.baseYear year) => pure (.ordinary (.baseYear year))
   | .numeric (.baseYearDatePart year source part) =>
-      pure (.baseYearDatePart year source part)
+      pure (.ordinary (.baseYearDatePart year source part))
   | .numeric (.temporalFieldPart source part) =>
-      pure (.temporalFieldPart source part)
-  | .numeric (.stringLength source) => pure (.stringLength source)
+      pure (.ordinary (.temporalFieldPart source part))
+  | .numeric (.stringLength source) => pure (.ordinary (.stringLength source))
   | .numeric (.stringRange source start finish) =>
-      pure (.stringRange source start finish)
+      pure (.ordinary (.stringRange source start finish))
   | .numeric (.fieldValueAsNumber source) =>
-      pure (.fieldValueAsNumber source)
+      pure (.ordinary (.fieldValueAsNumber source))
   | .numeric (.dateDifference unit left right) =>
-      pure (.dateDifference unit left right)
+      pure (.ordinary (.dateDifference unit left right))
   | .numeric (.aggregate op source) =>
       match source.directAggregateFields? with
-      | some direct => pure (.aggregate op direct)
+      | some direct => pure (.ordinary (.aggregate op direct))
       | none => throw .repeatableAggregateRequiresAddressedValidation
   | .numeric (.filledGroupCount _) =>
       throw (.conditionAssembly .incoherentCore)
@@ -372,12 +373,12 @@ def CheckedNumericComputationAtom.toValidationAtom :
 /-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
 def generatedNumericOperationMismatch
     (operation : NumericComputationOperation model)
-    (expression : AuthoredNumericExpr NumericValidationAtom)
-    (tolerance : Option NumericToleranceRange) : NumericComparison :=
+    (expression : AuthoredNumericExpr OrderedNumericValidationAtom)
+    (tolerance : Option NumericToleranceRange) : OrderedNumericComparison :=
   { op := match tolerance with
       | none => .ordinary .notEqual
       | some range => .tolerance range
-    left := .atom (.field operation.target)
+    left := .atom (.ordinary (.field operation.target))
     right := expression
     suppressExactScaleWarning := operation.suppressExactScaleWarning }
 
@@ -386,7 +387,7 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
     (operation : CheckedNumericComputationOperation model)
     (tolerance : Option NumericToleranceRange) :
     Except GeneratedComputationValidationError
-      (CheckedNumericComparison model) := do
+      (CheckedOrderedNumericComparison model) := do
   let targetDeclaration ←
     (model.lookupUniqueId operation.core.target.id).mapError
       GeneratedComputationValidationError.resolve
@@ -420,7 +421,8 @@ private def generatedNumericOperationMismatchCondition (target : FlatNumberField
     throw (.operationTargetMismatch alternativeIndex target.id
       operation.core.target.id)
   let mismatch ← operation.generatedMismatchComparison tolerance
-  pure (ValidationCondition.numericIn mismatch.operandScope mismatch.core)
+  pure (ValidationCondition.orderedNumericIn
+    mismatch.operandScope mismatch.core)
 
 private def generatedNumericMismatch (model : FlatModel)
     (target : FlatNumberField) (alternativeIndex : Nat)

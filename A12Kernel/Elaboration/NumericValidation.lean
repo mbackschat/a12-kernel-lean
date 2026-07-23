@@ -1,11 +1,12 @@
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationContext
+import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. The atom-parameterized comparison carrier also lets generated validation retain a checked direct `FirstFilledValue` source whose relevance is resolved in prefix order, without adding another arithmetic tree or evaluator. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -17,6 +18,7 @@ abbrev NumericValidationAtom := ResolvedNumericAtom FlatNumberField
 inductive NumericValidationUnavailable where
   | formal (cause : FormalCause)
   | groupState
+  | nonRelevant
   deriving Repr, DecidableEq
 
 /-- Parser-independent input to the checked numeric consumer. -/
@@ -27,13 +29,26 @@ structure SurfaceNumericComparison where
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
-/-- Resolved runtime representation; static guarantees belong to `CheckedNumericComparison`. -/
-structure NumericComparison where
+/-- Resolved runtime representation parameterized only at the checked numeric-source boundary. -/
+structure NumericComparisonOf (Atom : Type) where
   op : NumericValidationOp
-  left : AuthoredNumericExpr NumericValidationAtom
-  right : AuthoredNumericExpr NumericValidationAtom
+  left : AuthoredNumericExpr Atom
+  right : AuthoredNumericExpr Atom
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
+
+/-- Ordinary resolved numeric comparisons retain their established atom type and API. -/
+abbrev NumericComparison := NumericComparisonOf NumericValidationAtom
+
+/-- A relevance-aware numeric leaf either delegates one established atom unchanged or retains one checked direct field list whose prefix consumer must gate each reached source separately. -/
+inductive OrderedNumericValidationAtom where
+  | ordinary (source : NumericValidationAtom)
+  | firstFilled (source : ResolvedDirectNumberEntityFields)
+  deriving Repr, DecidableEq
+
+/-- One numeric comparison whose atom resolver, rather than the containing leaf, owns relevance timing. -/
+abbrev OrderedNumericComparison :=
+  NumericComparisonOf OrderedNumericValidationAtom
 
 /-- Closed rejection classes for this deliberately narrow consumer, not kernel diagnostic codes. -/
 inductive NumericValidationElabError where
@@ -297,6 +312,70 @@ def NumericComparison.allRelevant (comparison : NumericComparison)
   comparison.left.allAtoms (·.allRelevant isRelevant) &&
     comparison.right.allAtoms (·.allRelevant isRelevant)
 
+namespace OrderedNumericValidationAtom
+
+def isDataDependent : OrderedNumericValidationAtom → Bool
+  | .ordinary source => source.isDataDependent
+  | .firstFilled _ => true
+
+def summary : OrderedNumericValidationAtom → NumericScaleSummary
+  | .ordinary source => numericValidationSummary source
+  | .firstFilled source => source.scaleSummary
+
+def admitted (atom : OrderedNumericValidationAtom)
+    (model : FlatModel) (rowGroup : GroupPath)
+    (scope : NumericOperandScope) : Bool :=
+  match atom with
+  | .ordinary source => source.admitted model rowGroup scope
+  | .firstFilled source =>
+      source.hasMultipleFields && source.hasUniqueFields &&
+        source.fields.all fun field =>
+          match scope with
+          | .sameGroup => model.admitsNumberInGroup rowGroup field
+          | .modelWideNonrepeatable => model.admitsNumberModelWide field
+
+def referencesField (atom : OrderedNumericValidationAtom)
+    (model : FlatModel) (field : FieldId) : Bool :=
+  match atom with
+  | .ordinary source => source.referencesField model field
+  | .firstFilled source => source.referencesField field
+
+end OrderedNumericValidationAtom
+
+/-- Static admission for the relevance-aware numeric leaf reuses the complete authored-operation checks and delegates only atom-specific model coherence. -/
+def OrderedNumericComparison.wellFormedInBool
+    (comparison : OrderedNumericComparison)
+    (model : FlatModel) (rowGroup : GroupPath)
+    (scope : NumericOperandScope) : Bool :=
+  (comparison.left.anyAtom OrderedNumericValidationAtom.isDataDependent ||
+      comparison.right.anyAtom OrderedNumericValidationAtom.isDataDependent) &&
+    comparison.left.isAdmittedResolvedNumericOperation &&
+    comparison.right.isAdmittedResolvedNumericOperation &&
+    comparison.left.allAtoms (·.admitted model rowGroup scope) &&
+    comparison.right.allAtoms (·.admitted model rowGroup scope) &&
+    comparison.left.numericOperationAuthoringCheck == .accepted &&
+    comparison.right.numericOperationAuthoringCheck == .accepted &&
+    match
+        comparison.left.summary? OrderedNumericValidationAtom.summary,
+        comparison.right.summary? OrderedNumericValidationAtom.summary with
+    | some leftSummary, some rightSummary =>
+        comparison.op.acceptsScalesWithSuppression
+          comparison.suppressExactScaleWarning leftSummary rightSummary
+    | _, _ => false
+
+def OrderedNumericComparison.referencesField
+    (comparison : OrderedNumericComparison)
+    (model : FlatModel) (field : FieldId) : Bool :=
+  comparison.left.anyAtom (·.referencesField model field) ||
+    comparison.right.anyAtom (·.referencesField model field)
+
+structure CheckedOrderedNumericComparison (model : FlatModel) where
+  rowGroup : GroupPath
+  operandScope : NumericOperandScope := .sameGroup
+  core : OrderedNumericComparison
+  modelWellFormed : model.validate.isOk = true
+  wellFormed : core.wellFormedInBool model rowGroup operandScope = true
+
 private def FlatModel.ensureNumericAggregateRowGroup (model : FlatModel)
     (rowGroup : GroupPath) :
     List FlatNumberField → Except NumericValidationElabError Unit
@@ -542,6 +621,39 @@ theorem ValidationEvaluationContext.resolveNumericValidationAtom_withoutGroups
         fields.resolveNumericValidationAtom atom := by
   rfl
 
+namespace OrderedNumericValidationAtom
+
+/-- Resolve one nonempty direct Number field list in order, gating each reached source before its checked validation read. This proof-visible worker is used only by the relevance-aware numeric atom. -/
+def resolveFirstFilledFields
+    (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
+    List FlatNumberField → FirstFilledScanState →
+      Except NumericValidationUnavailable NumericArithmeticOutcome
+  | [], state => state.finish.asValidationOperand.toValidationArithmetic
+  | field :: remaining, state =>
+      if isRelevant field.id then
+        match state.step (field.valueListCell context.fields) with
+        | .continue next =>
+            resolveFirstFilledFields context isRelevant remaining next
+        | .done result =>
+            result.asNumber.asValidationOperand.toValidationArithmetic
+      else
+        .error .nonRelevant
+
+/-- Resolve one reached atom with its own relevance rule. Ordinary atoms preserve the previous all-fields gate; direct `FirstFilledValue` checks each source immediately before its declaration-owned read and hides the suffix after a terminal value or formal failure. -/
+def resolve (atom : OrderedNumericValidationAtom)
+    (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome :=
+  match atom with
+  | .ordinary source =>
+      if source.allRelevant isRelevant then
+        context.resolveNumericValidationAtom source
+      else
+        .error .nonRelevant
+  | .firstFilled source =>
+      resolveFirstFilledFields context isRelevant source.fields {}
+
+end OrderedNumericValidationAtom
+
 def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
       NumericArithmeticOutcome)
@@ -650,11 +762,11 @@ def LoweredNumericExpr.evalAdmittedValidation?
       Option (Except Error NumericArithmeticOutcome) :=
   expression.evalNumericOperation? read
 
-/-- Evaluate a raw core through one supplied numeric-source resolver. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/
-def NumericComparison.evalWith
-    (comparison : NumericComparison)
+/-- Evaluate a raw core through one supplied numeric-source resolver. The unknown fallback fails closed for a forged unsupported operand and is unreachable through every checked specialization. -/
+def NumericComparisonOf.evalWith
+    (comparison : NumericComparisonOf Atom)
     (resolve :
-      NumericValidationAtom →
+      Atom →
         Except NumericValidationUnavailable NumericArithmeticOutcome) : Verdict :=
   match
       comparison.left.lowerForEvaluation.evalAdmittedValidation?
@@ -663,6 +775,26 @@ def NumericComparison.evalWith
         resolve with
   | some left, some right => comparison.op.evalArithmeticWith left right
   | _, _ => .unknown
+
+/-- Compatibility wrapper for the established ordinary numeric comparison. -/
+def NumericComparison.evalWith
+    (comparison : NumericComparison)
+    (resolve :
+      NumericValidationAtom →
+        Except NumericValidationUnavailable NumericArithmeticOutcome) : Verdict :=
+  NumericComparisonOf.evalWith comparison resolve
+
+/-- Dot-notation compatibility for ordinary comparisons after extracting the atom-parameterized carrier. -/
+def NumericComparisonOf.evalSelectedWithGroups
+    (comparison : NumericComparisonOf NumericValidationAtom)
+    (context : ValidationEvaluationContext) : Verdict :=
+  comparison.evalWith context.resolveNumericValidationAtom
+
+/-- Dot-notation compatibility for the established field-only entry point. -/
+def NumericComparisonOf.evalSelected
+    (comparison : NumericComparisonOf NumericValidationAtom)
+    (context : FlatContext) : Verdict :=
+  comparison.evalWith context.resolveNumericValidationAtom
 
 /-- Evaluate against resolved field and group state. -/
 def NumericComparison.evalSelectedWithGroups
@@ -686,6 +818,30 @@ def CheckedNumericComparison.evalFull
     (checked : CheckedNumericComparison model)
     (context : FlatContext) (hasContent : Bool) : Verdict :=
   if hasContent then checked.evalSelected context else .notFired
+
+/-- Evaluate a reached relevance-aware numeric comparison through the one generic arithmetic evaluator. -/
+def OrderedNumericComparison.evalSelected
+    (comparison : OrderedNumericComparison)
+    (context : ValidationEvaluationContext)
+    (isRelevant : FlatRelevance) : Verdict :=
+  comparison.evalWith fun atom => atom.resolve context isRelevant
+
+def CheckedOrderedNumericComparison.evalSelected
+    (checked : CheckedOrderedNumericComparison model)
+    (context : ValidationEvaluationContext)
+    (isRelevant : FlatRelevance) : Verdict :=
+  checked.core.evalSelected context isRelevant
+
+/-- Full validation supplies universal relevance and the established unavailable group projection. -/
+def CheckedOrderedNumericComparison.evalFull
+    (checked : CheckedOrderedNumericComparison model)
+    (context : FlatContext) (hasContent : Bool) : Verdict :=
+  if hasContent then
+    checked.evalSelected
+      { fields := context, groups := GroupPresenceContext.unavailable }
+      (fun _ => true)
+  else
+    .notFired
 
 /-- Check a surface comparison and evaluate it against one model-indexed prepared String context under full validation. -/
 def elaborateAndEvalNumericComparison
