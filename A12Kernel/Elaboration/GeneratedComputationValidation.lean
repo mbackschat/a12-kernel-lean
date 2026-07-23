@@ -7,7 +7,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Runtime target checks, wider addressed leaves and whole-rule orchestration, and general computation scheduling remain outside.
 
-Numeric value count also retains its exact checked source so generated validation cannot collapse per-cell filter-match provenance into one aggregate-wide flag.
+Numeric and typed String/stored-Enumeration value counts retain their exact checked sources so generated validation cannot collapse per-cell filter-match provenance into one aggregate-wide flag or discard literal-domain certificates.
 -/
 
 namespace A12Kernel
@@ -347,6 +347,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       pure (.firstFilled source)
   | .valueCount expected source =>
       pure (.valueCount expected source)
+  | .tokenValueCount source =>
+      pure (.tokenValueCount source)
   | .sumOfProducts source =>
       pure (.sumOfProducts source)
   | .numeric (.field declaration) =>

@@ -48,6 +48,17 @@ theorem numericComputationEvaluationContext_valueCount_delegates
           NumericComputationFault.repeatableAddressing := by
   rfl
 
+/-- The full computation context preserves a checked token count's domain certificate, addressed readers, and structural-failure channel exactly. -/
+theorem numericComputationEvaluationContext_tokenValueCount_delegates
+    (context : NumericComputationEvaluationContext)
+    (source : CheckedTokenValueCountSource model) :
+    context.readCheckedNumericComputationAtom (.tokenValueCount source) =
+      ((source.evaluateComputation context.document context.outer
+        context.scalar.read context.filterRead context.starRead).map
+          NumericOperand.toComputationResult).mapError
+            NumericComputationFault.repeatableAddressing := by
+  rfl
+
 /-- The scalar compatibility evaluator cannot erase repeatable addressing by inventing an empty document. -/
 theorem scalarComputationContext_repeatableAggregate_requiresContext
     (context : ScalarComputationContext)
@@ -70,11 +81,30 @@ theorem scalarComputationContext_repeatableValueCount_requiresContext
     CheckedNumberEntitySource.evaluateDirectValueCountAt?, repeatable]
   rfl
 
+/-- Scalar computation cannot erase a repeatable token count's topology, filter provenance, or Enumeration-domain certificate. -/
+theorem scalarComputationContext_repeatableTokenValueCount_requiresContext
+    (context : ScalarComputationContext)
+    (source : CheckedTokenValueCountSource model)
+    (repeatable : source.source.directFields? = none) :
+    context.readCheckedNumericComputationAtom (.tokenValueCount source) =
+      .error .repeatableContextRequired := by
+  simp [ScalarComputationContext.readCheckedNumericComputationAtom,
+    CheckedTokenValueCountSource.evaluateDirectAt?, repeatable]
+  rfl
+
 /-- A value-count atom has integral scale independently of its selected Number declarations. -/
 theorem checkedNumericComputationAtom_valueCount_scaleSummary
     (source : CheckedNumberEntitySource model) (expected : Rat) :
     CheckedNumericComputationAtom.numericScaleSummary
         (.valueCount expected source) =
+      NumericScaleSummary.field 0 := by
+  rfl
+
+/-- A String/stored-Enumeration value count retains its checked source while exposing the same fixed integral scale. -/
+theorem checkedNumericComputationAtom_tokenValueCount_scaleSummary
+    (source : CheckedTokenValueCountSource model) :
+    CheckedNumericComputationAtom.numericScaleSummary
+        (.tokenValueCount source) =
       NumericScaleSummary.field 0 := by
   rfl
 

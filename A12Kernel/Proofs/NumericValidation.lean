@@ -66,6 +66,17 @@ theorem orderedNumericValidationAtom_valueCount_addressed_delegates
           NumericOperand.toValidationArithmetic := by
   rfl
 
+/-- Addressed generated validation preserves the complete checked token source and delegates to its sole validation-phase traversal. -/
+theorem orderedNumericValidationAtom_tokenValueCount_addressed_delegates
+    (source : CheckedTokenValueCountSource model)
+    (context : AddressedValidationEvaluationContext model) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.tokenValueCount source) context =
+      (source.evaluateValidation context.document context.outer
+        context.scalar.fields.read context.read).map
+          NumericOperand.toValidationArithmetic := by
+  rfl
+
 /-- Addressed generated validation delegates `SumOfProducts` to the sole checked row-paired fold and changes only its numeric-domain projection. -/
 theorem orderedNumericValidationAtom_sumOfProducts_addressed_delegates
     (source : CheckedNumericProductAggregate model)
