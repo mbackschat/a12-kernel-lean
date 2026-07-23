@@ -42,6 +42,7 @@ inductive StringComputationFault where
   | fieldKindMismatch (field : FieldId)
   | invalidRange (start finish : Nat)
   | unalignedUtf16Range (field : FieldId) (start finish : Nat)
+  | targetPatternUnavailable (field : FieldId)
   deriving Repr, DecidableEq
 
 /-- The String fragment uses the common checked scalar-computation read boundary without adding a second context representation. -/
@@ -137,14 +138,21 @@ inductive StringTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Apply the declaration-owned basic String clauses to a root write attempt. Checking may normalize CRLF for length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
-def StringFieldPolicy.checkTarget (policy : StringFieldPolicy) : StringStore → StringTargetOutcome
+/-- Apply the declaration-owned basic String clauses and optional prepared matcher to a root write attempt. Checking may normalize CRLF for pattern and length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
+def StringFieldPolicy.checkTargetWithPattern (policy : StringFieldPolicy)
+    (wholeValueMatches? : Option (String → Bool)) :
+    StringStore → StringTargetOutcome
   | .noValue => .noValue
   | .poison cause => .poison cause
   | .produced attempted =>
-      match policy.checkText attempted.text with
+      match policy.checkTextWithPattern wholeValueMatches? attempted.text with
       | .ok _ => .accepted attempted
       | .error cause => .errored attempted cause
+
+/-- The ordinary no-pattern target specialization retained by the resolved computation and evidence boundaries. -/
+def StringFieldPolicy.checkTarget (policy : StringFieldPolicy) :
+    StringStore → StringTargetOutcome :=
+  policy.checkTargetWithPattern none
 
 /-- Prior state used by the library delta projector. The target cannot contain an empty stored String by construction. -/
 inductive PriorStringTarget where
