@@ -415,6 +415,8 @@ run_cmd do
 #print axioms A12Kernel.requiredFinding_empty_phase_split
 #print axioms A12Kernel.absoluteRequired_string_presentEmpty_preservesPlacement
 
+#print axioms A12Kernel.groupPath_matchesTurningPoint_some_iff
+#print axioms A12Kernel.groupPath_matchingTurningPoint_is_transparent
 #print axioms A12Kernel.checkedFlatCondition_wellFormed
 #print axioms A12Kernel.checkedFlatCondition_modelWellFormed
 #print axioms A12Kernel.elaborate_checkedFlatCondition_rowGroup

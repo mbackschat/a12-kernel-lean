@@ -8,12 +8,16 @@ namespace A12Kernel
 /-- A structured group path after concrete syntax has decoded separators and quoting. -/
 structure SurfaceGroupPath where
   base : PathBase
+  /-- Optional explicit name of the group reached by a positive parent count. -/
+  turningPoint : Option String := none
   groups : List String
   deriving Repr, DecidableEq
 
 /-- A direct-child field path with exactly one explicitly identified starred group segment. -/
 structure SurfaceSingleStarFieldPath where
   base : PathBase
+  /-- Optional explicit name of the parent-walk turning point. Parent navigation remains illegal for this one-star shape. -/
+  turningPoint : Option String := none
   groupsBeforeStar : List String
   starredGroup : String
   field : String
@@ -35,12 +39,18 @@ def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
     (declaringGroup : GroupPath) : Except SingleGroupElabError GroupPath := do
   if !GroupPath.isValid declaringGroup then
     throw (.resolve (.invalidRuleGroup declaringGroup))
-  if !reference.groups.all (!·.isEmpty) then
+  if !reference.groups.all (!·.isEmpty) ||
+      !reference.turningPoint.all (!·.isEmpty) ||
+      !reference.base.allowsTurningPoint reference.turningPoint then
     throw (.invalidGroupReference reference)
   let path ← match reference.base with
     | .absolute => pure reference.groups
     | .relative parents =>
-        pure ((← GroupPath.walkUp declaringGroup parents |>.mapError .resolve) ++ reference.groups)
+        let base ← GroupPath.walkUp declaringGroup parents |>.mapError .resolve
+        if !base.matchesTurningPoint reference.turningPoint then
+          throw (.invalidGroupReference reference)
+        else
+          pure (base ++ reference.groups)
   if GroupPath.isValid path then pure path else throw (.invalidGroupReference reference)
 
 /-- Validate one single-star field shape and recover its authored group reference. -/
@@ -50,6 +60,7 @@ def SurfaceSingleStarFieldPath.groupReference
       reference.field.isEmpty then
     let groupReference : SurfaceGroupPath :=
       { base := reference.base,
+        turningPoint := reference.turningPoint
         groups := reference.groupsBeforeStar ++ [reference.starredGroup] }
     throw (.invalidGroupReference groupReference)
   match reference.base with
@@ -58,6 +69,7 @@ def SurfaceSingleStarFieldPath.groupReference
   | .absolute => pure ()
   pure {
     base := reference.base
+    turningPoint := reference.turningPoint
     groups := reference.groupsBeforeStar ++ [reference.starredGroup]
   }
 

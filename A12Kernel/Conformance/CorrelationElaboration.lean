@@ -154,6 +154,26 @@ private def errorOf : Except ε α → Option ε
   | .ok _ => none
   | .error error => some error
 
+private def resolvedGroupOf : Except SingleGroupElabError GroupPath → Option GroupPath
+  | .ok path => some path
+  | .error _ => none
+
+private def namedParentGroup : SurfaceGroupPath :=
+  { base := .relative 1, turningPoint := some "Order", groups := ["Items"] }
+
+private def mismatchedParentGroup : SurfaceGroupPath :=
+  { namedParentGroup with turningPoint := some "Other" }
+
+/- Group-valued references use the same named-turning-point account as field references. -/
+example : resolvedGroupOf
+    (namedParentGroup.resolveAgainst ["Order", "Details"]) =
+      some ["Order", "Items"] := by
+  native_decide
+
+example : errorOf (mismatchedParentGroup.resolveAgainst ["Order", "Details"]) =
+    some (.invalidGroupReference mismatchedParentGroup) := by
+  native_decide
+
 example : errorOf nestedFalseSingletonModel.validate =
     some (.repeatableScopeMismatch nestedFalseSingletonDecl.path
       [items.level, nestedItems.level] [nestedItems.level]) := by

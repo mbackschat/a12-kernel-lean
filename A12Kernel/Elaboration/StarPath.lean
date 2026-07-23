@@ -17,6 +17,8 @@ structure SurfaceStarGroupSegment where
 /-- A decoded field path whose group segments retain their individual wildcard markers. Parent navigation itself is never wildcardable. -/
 structure SurfaceStarFieldPath where
   base : PathBase
+  /-- Optional explicit name of the parent-walk turning point. -/
+  turningPoint : Option String := none
   groups : List SurfaceStarGroupSegment
   field : String
   deriving Repr, DecidableEq
@@ -42,7 +44,10 @@ inductive ValidationRelevanceScope where
 namespace SurfaceStarFieldPath
 
 def toFieldPath (source : SurfaceStarFieldPath) : SurfaceFieldPath :=
-  { base := source.base, groups := source.groups.map (·.name), field := source.field }
+  { base := source.base
+    turningPoint := source.turningPoint
+    groups := source.groups.map (·.name)
+    field := source.field }
 
 end SurfaceStarFieldPath
 
