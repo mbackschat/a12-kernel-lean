@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared arithmetic fragment with composable rounding, absolute value, and expression-valued Min/Max calls, checks the result scale, and certifies model coherence. Each Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that repeatable source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, and scheduling remain outside this module.
+This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared arithmetic fragment with composable rounding, absolute value, and expression-valued Min/Max calls, checks the result scale, and certifies model coherence. Each Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that repeatable source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -22,6 +22,7 @@ inductive NumericComputationElabError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | operandNotNumber (path : List String)
+  | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
   | fieldValueAsNumberNotConvertible (path : List String)
@@ -68,6 +69,7 @@ def FlatModel.admitsNumericComputationOperand
   | .temporalFieldPart source part =>
       model.admitsTemporalComputationOperand source
         (part.admittedBy source model.hasBaseYear)
+  | .stringLength source => model.admitsStringValueField source
   | .stringRange source start finish =>
       validStringRange start finish && model.admitsStringValueField source
   | .fieldValueAsNumber source =>
@@ -115,6 +117,7 @@ def NumericComputationAtom.references
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart source _ => source.id == field
+  | .stringLength source => source.id == field
   | .stringRange source _ _ => source.id == field
   | .fieldValueAsNumber source => source.fieldId == field
   | .dateDifference _ left right =>
@@ -204,6 +207,14 @@ private def FlatModel.resolveNumericComputationExpression
           declaringGroup target reference
           (fun source => part.admittedBy source model.hasBaseYear)
         pure (.temporalFieldPart field part)
+    | .stringLength reference => do
+        let declaration ←
+          (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+        if declaration.id == target then
+          throw (.targetSelfReference target)
+        match declaration.toStringValueField? with
+        | some field => pure (.stringLength field)
+        | none => throw (.lengthOperandNotEvaluatedString declaration.path)
     | .stringRange reference start finish => do
         let declaration ←
           (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
@@ -359,6 +370,9 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
       pure (.value (baseYearDateSourceNumericPart year source part))
   | .temporalFieldPart field part =>
       context.readTemporalNumeric field part.project?
+  | .stringLength field =>
+      pure ((observeCell .computation
+        (context.read field.id)).asStringLengthOperand.toComputationResult)
   | .stringRange field start finish =>
       match observeCell .computation (context.read field.id) with
       | .empty => pure (.value 0)
@@ -426,6 +440,7 @@ def NumericComputationAtom.numericComputationFault? :
   | .baseYear _ => none
   | .baseYearDatePart _ _ _ => none
   | .temporalFieldPart _ _ => none
+  | .stringLength _ => none
   | .stringRange _ _ _ => none
   | .fieldValueAsNumber _ => none
   | .dateDifference _ left right =>

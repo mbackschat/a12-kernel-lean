@@ -319,6 +319,7 @@ inductive SurfaceNumericAtom where
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | temporalFieldPart (path : SurfaceFieldPath) (part : TemporalNumericPart)
+  | stringLength (path : SurfaceFieldPath)
   | stringRange (path : SurfaceFieldPath) (start finish : Nat)
   | fieldValueAsNumber (source : SurfaceTextFieldOperand)
   | dateDifference (unit : DateDifferenceUnit)
@@ -333,6 +334,7 @@ inductive ResolvedNumericAtom (Field : Type) where
   | baseYearDatePart (year : Int) (source : BaseYearDateSource)
       (part : DateNumericPart)
   | temporalFieldPart (source : FlatTemporalField) (part : TemporalNumericPart)
+  | stringLength (source : FlatStringField)
   | stringRange (source : FlatStringField) (start finish : Nat)
   | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
   | dateDifference (unit : DateDifferenceUnit)
@@ -348,6 +350,7 @@ def isDataDependent : ResolvedNumericAtom Field → Bool
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
   | .temporalFieldPart _ _ => true
+  | .stringLength _ => true
   | .stringRange _ _ _ => true
   | .fieldValueAsNumber _ => true
   | .dateDifference _ left right => left.isField || right.isField
@@ -360,6 +363,7 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .baseYear _ => NumericScaleSummary.field 0
   | .baseYearDatePart _ _ _ => NumericScaleSummary.field 0
   | .temporalFieldPart _ _ => NumericScaleSummary.field 0
+  | .stringLength _ => NumericScaleSummary.field 0
   | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
   | .dateDifference _ _ _ => NumericScaleSummary.field 0

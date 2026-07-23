@@ -71,6 +71,13 @@ theorem numericValidation_filledGroupCount_missing
       .error .groupState := by
   simp [ValidationEvaluationContext.resolveNumericValidationAtom, missing]
 
+/-- A checked `Length` atom enters the shared arithmetic domain only through the common phase-selected String-length projection. -/
+theorem numericValidation_stringLength_delegates
+    (context : FlatContext) (field : FlatStringField) :
+    context.resolveNumericValidationAtom (.stringLength field) =
+      (context.resolveStringLengthOperand field).toValidationArithmetic := by
+  rfl
+
 /-- A missing checked String source gives `RangeAsNumber` the real zero together with its one possible movement direction. -/
 theorem numericValidation_stringRange_empty_growOnly
     (context : FlatContext) (field : FlatStringField) (start finish : Nat)

@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects two model-resolved nonrepeatable numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation explicitly selects model-wide nonrepeatable admission for its already-checked operation. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -39,6 +39,7 @@ inductive NumericValidationElabError where
   | resolve (error : ResolveError)
   | fieldOutsideRowGroup (path : List String) (rowGroup : GroupPath)
   | fieldNotNumber (path : List String)
+  | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
   | fieldValueAsNumberNotConvertible (path : List String)
@@ -152,6 +153,10 @@ private def NumericValidationAtom.admitted
         | .sameGroup => model.admitsTemporalInGroup rowGroup source
         | .modelWideNonrepeatable => model.admitsTemporalModelWide source) &&
         part.admittedBy source model.hasBaseYear
+  | .stringLength source =>
+      match scope with
+      | .sameGroup => model.admitsStringInGroup rowGroup source
+      | .modelWideNonrepeatable => model.admitsStringModelWide source
   | .stringRange source start finish =>
       validStringRange start finish &&
         match scope with
@@ -252,6 +257,7 @@ def NumericValidationAtom.referencesField (model : FlatModel) :
   | .field source, field => source.id == field
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
+  | .stringLength source, field => source.id == field
   | .stringRange source _ _, field => source.id == field
   | .fieldValueAsNumber source, field => source.fieldId == field
   | .dateDifference _ left right, field =>
@@ -267,6 +273,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .field source => isRelevant source.id
   | .baseYear _ | .baseYearDatePart _ _ _ => true
   | .temporalFieldPart source _ => isRelevant source.id
+  | .stringLength source => isRelevant source.id
   | .stringRange source _ _ => isRelevant source.id
   | .fieldValueAsNumber source => isRelevant source.fieldId
   | .dateDifference _ left right =>
@@ -340,6 +347,13 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       let field ← resolveTemporalNumericField model rowGroup reference
         (fun source => part.admittedBy source model.hasBaseYear)
       pure (.temporalFieldPart field part)
+  | .stringLength reference => do
+      let declaration ← (model.resolveField rowGroup reference).mapError .resolve
+      if declaration.groupPath != rowGroup then
+        throw (.fieldOutsideRowGroup declaration.path rowGroup)
+      match declaration.toStringValueField? with
+      | some field => pure (.stringLength field)
+      | none => throw (.lengthOperandNotEvaluatedString declaration.path)
   | .stringRange reference start finish => do
       let declaration ← (model.resolveField rowGroup reference).mapError .resolve
       if declaration.groupPath != rowGroup then
@@ -477,6 +491,8 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>
       (context.fields.resolveTemporalNumericOperand field part).toValidationArithmetic
+  | .stringLength field =>
+      (context.fields.resolveStringLengthOperand field).toValidationArithmetic
   | .stringRange field start finish =>
       match context.fields.observeValidationAt field.id with
       | .empty => .ok (.value 0 .growOnly)

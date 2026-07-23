@@ -8,6 +8,13 @@ These laws cover the singleton/guarded table split, declaration-order recovery, 
 
 namespace A12Kernel
 
+/-- The generated-validation twin preserves the checked String-length source exactly instead of reconstructing scale-erasing flat syntax. -/
+theorem numericComputationAtom_stringLength_toValidationAtom
+    (source : FlatStringField) :
+    NumericComputationAtom.toValidationAtom (.stringLength source) =
+      .ok (.stringLength source) := by
+  rfl
+
 /-- The generated-validation twin preserves the checked String range atom exactly instead of reconstructing surface syntax. -/
 theorem numericComputationAtom_stringRange_toValidationAtom
     (source : FlatStringField) (start finish : Nat) :

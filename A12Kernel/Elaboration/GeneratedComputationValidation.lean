@@ -349,6 +349,7 @@ def NumericComputationAtom.toValidationAtom :
       pure (.baseYearDatePart year source part)
   | .temporalFieldPart source part =>
       pure (.temporalFieldPart source part)
+  | .stringLength source => pure (.stringLength source)
   | .stringRange source start finish =>
       pure (.stringRange source start finish)
   | .fieldValueAsNumber source =>

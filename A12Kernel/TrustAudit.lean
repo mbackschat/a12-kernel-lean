@@ -397,6 +397,7 @@ run_cmd do
 #print axioms A12Kernel.generatedComputationGuard_targetSelfReference_rejected
 #print axioms A12Kernel.guardedGeneratedComputation_firstHolds_selects
 #print axioms A12Kernel.numericComputationAtom_stringRange_toValidationAtom
+#print axioms A12Kernel.numericComputationAtom_stringLength_toValidationAtom
 #print axioms A12Kernel.numericComputationAtom_fieldValueAsNumber_toValidationAtom
 #print axioms A12Kernel.guardedGeneratedComputation_holdingCommon_firstHolds_selects
 #print axioms A12Kernel.singleGeneratedComputation_unconditional_selects
@@ -508,6 +509,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputation_baseYear_evaluatesYear
 #print axioms A12Kernel.numericComputation_baseYearDatePart_evaluates
 #print axioms A12Kernel.numericComputationAggregate_evaluatesThroughSharedFold
+#print axioms A12Kernel.numericComputation_stringLength_delegates
 #print axioms A12Kernel.numericComputation_stringRange_empty_zero
 #print axioms A12Kernel.numericComputation_stringRange_value
 #print axioms A12Kernel.numericComputation_stringRange_poison_preservesCause
@@ -603,6 +605,7 @@ run_cmd do
 #print axioms A12Kernel.numericValidation_filledGroupCount_value
 #print axioms A12Kernel.numericValidation_filledGroupCount_unknown
 #print axioms A12Kernel.numericValidation_filledGroupCount_missing
+#print axioms A12Kernel.numericValidation_stringLength_delegates
 #print axioms A12Kernel.numericValidation_stringRange_empty_growOnly
 #print axioms A12Kernel.numericValidation_stringRange_value_fixed
 #print axioms A12Kernel.numericValidation_stringRange_unknown_preservesCause

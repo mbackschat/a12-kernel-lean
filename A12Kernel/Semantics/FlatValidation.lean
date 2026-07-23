@@ -287,16 +287,21 @@ def FlatContext.resolveDirectStringComparisonOperand (context : FlatContext)
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
-def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : FlatStringField) :
-    NumericOperand :=
-  match context.observeValidationAt field.id with
+/-- Read one already-checked evaluated String as its UTF-16 numeric length. Both validation and computation reuse this projection after selecting their own phase observation. -/
+@[simp]
+def CellObservation.asStringLengthOperand :
+    CellObservation Value → NumericOperand
   | .empty => .value 0 .growOnly
-  | .value (.str value) =>
-      if value.isEmpty then .value 0 .growOnly
-      else .value (utf16CodeUnitLength value) .fixed
+  | .value (.str text) =>
+      if text.isEmpty then .value 0 .growOnly
+      else .value (utf16CodeUnitLength text) .fixed
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
+
+def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : FlatStringField) :
+    NumericOperand :=
+  (context.observeValidationAt field.id).asStringLengthOperand
 
 /-- Resolve one checked temporal field to the runtime's exact instant coordinate. The kind check is defensive for low-level callers; checked model contexts already enforce it during formal checking. -/
 def FlatContext.resolveTemporalComparisonOperand (context : FlatContext)
