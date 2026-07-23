@@ -422,6 +422,28 @@ example : resolvedIdOf (model.resolveField ["Order", "Details"]
     (relative 1 [] "Quantity")) = some 0 := by
   native_decide
 
+/- An explicit turning-point name validates the group reached by the authored `..` count without changing the resolved target. -/
+example :
+    let namedParent : SurfaceFieldPath :=
+      { base := .relative 1, turningPoint := some "Order",
+        groups := [], field := "Quantity" }
+    let wrongName : SurfaceFieldPath :=
+      { namedParent with turningPoint := some "Details" }
+    let namedAbsolute : SurfaceFieldPath :=
+      { base := .absolute, turningPoint := some "Order",
+        groups := ["Order"], field := "Quantity" }
+    let namedWithoutParent : SurfaceFieldPath :=
+      { base := .relative 0, turningPoint := some "Order",
+        groups := [], field := "Quantity" }
+    resolvedIdOf (model.resolveField ["Order", "Details"] namedParent) = some 0 ∧
+      errorOf (model.resolveField ["Order", "Details"] wrongName) =
+        some (.invalidEntity wrongName) ∧
+      errorOf (model.resolveField ["Order", "Details"] namedAbsolute) =
+        some (.invalidReference namedAbsolute) ∧
+      errorOf (model.resolveField ["Order", "Details"] namedWithoutParent) =
+        some (.invalidReference namedWithoutParent) := by
+  native_decide
+
 example : errorOf (model.resolveField ["Order", "Details"]
     (relative 2 [] "Quantity")) = some (.aboveRoot 2) := by
   native_decide

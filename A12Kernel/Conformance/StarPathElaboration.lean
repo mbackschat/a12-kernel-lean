@@ -53,6 +53,15 @@ example :
           { level := 20, repeatability := some 3 }], firstStar := 1 }) := by
   native_decide
 
+/- A named parent turning point is checked before the later star plan is derived and is otherwise semantically transparent. -/
+example :
+    let named := { relativeSource false true with
+      turningPoint := some "Catalog" }
+    let mismatched := { named with turningPoint := some "Shop" }
+    resultOf named = resultOf (relativeSource false true) ∧
+      errorOf mismatched = some (.resolve (.invalidEntity mismatched.toFieldPath)) := by
+  native_decide
+
 /- Starring both nested repeatable groups reopens the whole ancestry. -/
 example :
     resultOf (relativeSource true true) = some (7,

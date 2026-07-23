@@ -732,6 +732,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 - model validation including field/group hierarchy separation and path-derived repeatable-scope coherence
 - order-independent unique ID/path lookup
 - shared parent walking
+- explicit named parent turning points across field, group, and later-star paths; the authored label checks only the group reached by the `..` count and never searches another ancestor
 - corrected bare declaring-group → flag-gated model-wide unique resolution
 - explicit repeatable-group path declarations
 - exact one-star binding
@@ -741,6 +742,7 @@ Open only the owning clause and linked cross-clause note. Every clause uses the 
 #### Evidence
 
 - Maintained a12-dmkits indexed-read differentials at accepted revision `71775c9905b057831253348c31ce39e321e61889` establish match/no-match, phase precedence, selected-target invalidity, and presence as triangulation, but this repository retains no portable semantic-index observation.
+- Kernel `CheckRelativeUpImpl` and maintained a12-dmkits `NamedAncestorPathDiffTest` establish that a matching explicit turning-point name is semantically transparent, while a mismatch is `MVK_INVALID_ENTITY`; Lean locks the corresponding flat-field, later-star, and group-valued routes but retains no local portable path observation.
 - The full invalid-column matrix is strongest for Number keys while the canonical-token generalization is source-grounded.
 - The compact validation record privately replays parent-relative, absolute, local-precedence, model-wide fallback, and ambiguity cases.
 - Its four public static correlation associations retain code/class pairs for missing inner iteration, equality-scale mismatch, and a sibling-group reference plus acceptance for the ordering control

@@ -7,6 +7,21 @@ These theorems eliminate certificates carried by checked values and connect the 
 
 namespace A12Kernel
 
+/-- An explicit turning-point label contributes exactly one equality guard on the group reached by parent walking; it cannot search another ancestor or alter the path. -/
+theorem groupPath_matchesTurningPoint_some_iff
+    (group : GroupPath) (name : String) :
+    group.matchesTurningPoint (some name) = true ↔
+      group.getLast? = some name := by
+  simp [GroupPath.matchesTurningPoint]
+
+/-- Once that equality guard is established, retaining or erasing the authored label has the same resolution-side observation. -/
+theorem groupPath_matchingTurningPoint_is_transparent
+    (group : GroupPath) (name : String)
+    (matching : group.getLast? = some name) :
+    group.matchesTurningPoint (some name) =
+      group.matchesTurningPoint none := by
+  simp [GroupPath.matchesTurningPoint, matching]
+
 /-- Eliminate the core static-legality certificate carried by a checked flat condition. -/
 theorem checkedFlatCondition_wellFormed (checked : CheckedFlatCondition model) :
     checked.core.WellFormed model :=

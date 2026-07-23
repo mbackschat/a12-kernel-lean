@@ -8,10 +8,11 @@ import A12Kernel.Elaboration.NumericScale
 /-! # A12Kernel.Elaboration.Flat — checked lowering into the flat core
 
 This capsule starts from structured, parser-independent surface paths and conditions. It
-resolves absolute, parent-relative, and bare field references against an expanded flat
-model, rejects unsupported or ambiguous input, and lowers accepted conditions into the
-existing typed non-repeatable core. Quoting, named-ancestor labels, stars, semantic
-indices, concrete EN/DE syntax, and repeatable evaluation remain outside this fragment.
+resolves absolute, parent-relative including explicit turning-point labels, and bare field
+references against an expanded flat model, rejects unsupported or ambiguous input, and
+lowers accepted conditions into the existing typed non-repeatable core. Quoting, stars,
+semantic indices, concrete EN/DE syntax, and repeatable evaluation remain outside this
+fragment.
 -/
 
 namespace A12Kernel
@@ -34,12 +35,19 @@ inductive PathBase where
   | relative (parents : Nat)
   deriving Repr, DecidableEq
 
+/-- A turning-point label belongs only to a positive relative parent walk. -/
+def PathBase.allowsTurningPoint : PathBase → Option String → Bool
+  | .absolute, turningPoint => turningPoint.isNone
+  | .relative parents, turningPoint => parents > 0 || turningPoint.isNone
+
 /-- A field path after concrete syntax has decoded quoting and path separators. For a
     relative path, `parents = 0`, `groups = []` is the bare-name form and therefore uses
     the documented declaring-group → flag-gated model-wide lookup order. There is no
     implicit ancestor walk; parent lookup requires an explicit `parents > 0`. -/
 structure SurfaceFieldPath where
   base : PathBase
+  /-- Optional authored name of the group reached by a positive parent count. It validates that turning point but never changes how many levels are crossed. -/
+  turningPoint : Option String := none
   groups : List String
   field : String
   deriving Repr, DecidableEq
@@ -548,6 +556,8 @@ private def FlatModel.lookupPath? (model : FlatModel) (path : List String) :
 
 private def SurfaceFieldPath.hasValidShape (reference : SurfaceFieldPath) : Bool :=
   validName reference.field && reference.groups.all validName &&
+    reference.turningPoint.all validName &&
+    reference.base.allowsTurningPoint reference.turningPoint &&
     match reference.base with
     | .absolute => !reference.groups.isEmpty
     | .relative _ => true
@@ -557,6 +567,13 @@ def GroupPath.walkUp (group : GroupPath) (parents : Nat) : Except ResolveError G
     .ok (group.take (group.length - parents))
   else
     .error (.aboveRoot parents)
+
+/-- Check an optional explicit turning-point label against the group reached by parent walking. The label is a guard, never an alternative ancestor search. -/
+def GroupPath.matchesTurningPoint (group : GroupPath)
+    (turningPoint : Option String) : Bool :=
+  match turningPoint with
+  | none => true
+  | some expected => group.getLast? == some expected
 
 def FlatFieldDecl.requireNonrepeatable (declaration : FlatFieldDecl) :
     Except ResolveError FlatFieldDecl :=
@@ -603,9 +620,12 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
         model.resolveBareDeclaration declaringGroup reference
       else
         let base ← GroupPath.walkUp declaringGroup parents
-        match ← model.lookupPath? (base ++ reference.groups ++ [reference.field]) with
-        | some declaration => pure declaration
-        | none => throw (.invalidEntity reference)
+        if !base.matchesTurningPoint reference.turningPoint then
+          throw (.invalidEntity reference)
+        else
+          match ← model.lookupPath? (base ++ reference.groups ++ [reference.field]) with
+          | some declaration => pure declaration
+          | none => throw (.invalidEntity reference)
 
 /-- Resolve a nonrepeatable declaration after a caller has validated the model. This is shared by checked condition and computation-expression lowering. -/
 def FlatModel.resolveNonrepeatableFieldUnchecked (model : FlatModel)
