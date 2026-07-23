@@ -117,6 +117,12 @@ def anyOutside (fields values : ResolvedValueListSide kind) : Bool :=
     | .present value => !values.contains value
     | .empty | .unknown _ => false
 
+def presentValues (side : ResolvedValueListSide kind) :
+    List (ValueListAtom kind) :=
+  side.cells.filterMap fun
+    | .present value => some value
+    | .empty | .unknown _ => none
+
 end ResolvedValueListSide
 
 /-- Resolve authored operands lazily from left to right. A consumer-selected terminal result or the first unavailable resolved cell stops before any later operand is resolved. The caller supplies the accumulator update because some consumers retain declaration metadata in addition to the common value side. -/
@@ -202,20 +208,43 @@ def evalClassifiedValueListAtLeastOne
   else
     .notFired
 
-/-- Shared `No` core: formal unavailability or partial nonrelevance on either side poisons the absence claim. -/
+/-- The observable stop of the fields-side `No` scan. A match and an unavailable cell are distinct terminals; exhaustion retains omission polarity. -/
+inductive ValueListNoFieldsResult where
+  | matched
+  | unknown
+  | exhausted (omission : Bool)
+
+def valueListMembersContain (members : List (ValueListAtom kind))
+    (candidate : ValueListAtom kind) : Bool :=
+  members.any (ValueListAtom.equal candidate)
+
+/-- Scan fields-side `No` cells in encounter order. A match wins over every later cell; an unavailable cell wins over every later match. -/
+def scanValueListNoCells (members : List (ValueListAtom kind)) :
+    List (ValueListCell kind) → Bool → ValueListNoFieldsResult
+  | [], omission => .exhausted omission
+  | .present value :: remaining, omission =>
+      if valueListMembersContain members value then
+        .matched
+      else
+        scanValueListNoCells members remaining omission
+  | .empty :: remaining, _ =>
+      scanValueListNoCells members remaining true
+  | .unknown _ :: _, _ => .unknown
+
+/-- Shared `No` core: the values side is poison-checked before fields, while a fields-side match terminates before a later formal failure. Partial extent/nonrelevance remains a side-wide prerequisite because the older classified side does not retain its cell position. -/
 def evalClassifiedValueListNo
     (fields values : ResolvedValueListQuantifierSide kind) : Verdict :=
-  if fields.hasUnknown || values.hasUnknown then
+  if values.hasUnknown || fields.hasNonRelevant then
     .unknown
-  else if fields.anyMatches values then
-    .notFired
   else
-    .fired
-      (if fields.side.hasHaving || values.side.hasHaving ||
-          fields.side.hasMissingPotential || values.side.hasMissingPotential then
-        .omission
-      else
-        .value)
+    match scanValueListNoCells values.side.presentValues fields.side.cells
+        (fields.side.hasHaving || values.side.hasHaving ||
+          fields.side.hasUninstantiatedTail ||
+          values.side.hasMissingPotential) with
+    | .matched => .notFired
+    | .unknown => .unknown
+    | .exhausted omission =>
+        .fired (if omission then .omission else .value)
 
 /-- Shared `NotAll` core: fields-side unavailability is skipped, values-side unavailability poisons after a present subject exists. -/
 def evalClassifiedValueListNotAll
@@ -254,6 +283,96 @@ inductive ValueListQuantifier where
   | no
   | notAll
   deriving Repr, DecidableEq
+
+private def collectAtLeastOneValueListMembers :
+    List (ResolvedValueListSide kind) → List (ValueListAtom kind) × Bool
+  | [] => ([], false)
+  | side :: remaining =>
+      let (members, filteredPresent) :=
+        collectAtLeastOneValueListMembers remaining
+      (side.presentValues ++ members,
+        (side.hasHaving && side.hasPresent) || filteredPresent)
+
+private inductive PoisoningValueListMembers (kind : ValueListKind) where
+  | unknown
+  | known (members : List (ValueListAtom kind)) (omission : Bool)
+
+private def collectPoisoningValueListMembers :
+    List (ResolvedValueListSide kind) → PoisoningValueListMembers kind
+  | [] => .known [] false
+  | side :: remaining =>
+      if side.hasUnknown then
+        .unknown
+      else
+        match collectPoisoningValueListMembers remaining with
+        | .unknown => .unknown
+        | .known members omission =>
+            .known (side.presentValues ++ members)
+              (side.hasHaving || side.hasMissingPotential || omission)
+
+private def scanValueListAtLeastOneFields
+    (members : List (ValueListAtom kind)) (filteredPresent : Bool) :
+    List (ResolvedValueListSide kind) → Verdict
+  | [] => .notFired
+  | side :: remaining =>
+      if side.presentValues.any (valueListMembersContain members) then
+        .fired (if side.hasHaving || filteredPresent then .omission else .value)
+      else
+        scanValueListAtLeastOneFields members filteredPresent remaining
+
+private def scanValueListNoFields
+    (members : List (ValueListAtom kind)) :
+    List (ResolvedValueListSide kind) → Bool → Verdict
+  | [], omission => .fired (if omission then .omission else .value)
+  | side :: remaining, omission =>
+      match scanValueListNoCells members side.cells
+          (omission || side.hasHaving || side.hasUninstantiatedTail) with
+      | .matched => .notFired
+      | .unknown => .unknown
+      | .exhausted nextOmission =>
+          scanValueListNoFields members remaining nextOmission
+
+private def orderedValueListFieldsHavePresent :
+    List (ResolvedValueListSide kind) → Bool
+  | [] => false
+  | side :: remaining =>
+      side.hasPresent || orderedValueListFieldsHavePresent remaining
+
+private def scanValueListNotAllFields
+    (members : List (ValueListAtom kind)) (valuesOmission : Bool) :
+    List (ResolvedValueListSide kind) → Verdict
+  | [] => .notFired
+  | side :: remaining =>
+      if side.presentValues.any fun value =>
+          !valueListMembersContain members value then
+        .fired (if valuesOmission || side.hasHaving then .omission else .value)
+      else
+        scanValueListNotAllFields members valuesOmission remaining
+
+/-- Evaluate full-validation value-list operands without erasing authored operand boundaries. Values are resolved before fields for `AtLeastOne` and `No`; `NotAll` first checks for any present field, then resolves values, then restarts its fields scan. Filter polarity follows the matching/outside fields operand, while `AtLeastOne` retains a values-side filter only when that operand selected a present member. -/
+def ValueListQuantifier.evalOrdered (quantifier : ValueListQuantifier)
+    (fields values : List (ResolvedValueListSide kind)) : Verdict :=
+  match quantifier with
+  | .atLeastOne =>
+      let (members, filteredPresent) :=
+        collectAtLeastOneValueListMembers values
+      if members.isEmpty then
+        .notFired
+      else
+        scanValueListAtLeastOneFields members filteredPresent fields
+  | .no =>
+      match collectPoisoningValueListMembers values with
+      | .unknown => .unknown
+      | .known members omission =>
+          scanValueListNoFields members fields omission
+  | .notAll =>
+      if orderedValueListFieldsHavePresent fields then
+        match collectPoisoningValueListMembers values with
+        | .unknown => .unknown
+        | .known members omission =>
+            scanValueListNotAllFields members omission fields
+      else
+        .notFired
 
 /-- The scalar membership pair specializes the resolved list quantifiers without introducing boolean negation. -/
 inductive ValueListMembershipOp where

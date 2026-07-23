@@ -132,13 +132,13 @@ theorem flatNumberValueList_no_empty
     flatNumberValueSide_resolveSelected_full]
   simp [ValueListQuantifier.evalClassified,
     evalClassifiedValueListNo,
+    scanValueListNoCells,
     ResolvedValueListQuantifierSide.hasUnknown,
-    ResolvedValueListQuantifierSide.anyMatches,
     FlatNumberValueSide.resolve, flatNumberValueListSide,
     literalNumberValueListSide,
     ResolvedValueListSide.hasUnknown,
-    ResolvedValueListSide.anyMatches, ResolvedValueListSide.hasMissingPotential,
-    ResolvedValueListSide.hasEmpty, ResolvedValueListSide.contains,
-    ValueListCell.isUnknown, ValueListCell.isEmpty, empty]
+    ResolvedValueListSide.hasMissingPotential,
+    ResolvedValueListSide.hasEmpty,
+    ValueListCell.isUnknown, empty]
 
 end A12Kernel
