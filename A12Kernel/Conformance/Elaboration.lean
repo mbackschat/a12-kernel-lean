@@ -480,6 +480,78 @@ example : errorOf (model.resolveField ["Order"]
     some (.invalidEntity (absolute ["Order"] "Missing")) := by
   native_decide
 
+private def keywordProfile : PathKeywordProfile :=
+  { reserved := ["And", "Date", "Today"] }
+
+private def pathName (text : String) (quoted : Bool := false) :
+    AuthoredPathName :=
+  { text, quoted }
+
+private def keywordFieldModel : FlatModel :=
+  { fields := [
+      { id := 20, groupPath := ["Order"], name := "Date",
+        policy := { kind := .string } },
+      { id := 22, groupPath := ["Order"], name := "date",
+        policy := { kind := .string } },
+      { id := 21, groupPath := ["Order", "And"], name := "Value",
+        policy := { kind := .boolean } }] }
+
+/- A reserved field name reaches ordinary lookup only when the authored path retained its single quotes. -/
+example :
+    let unquoted : AuthoredFieldPath := {
+      base := .absolute
+      groups := [pathName "Order"]
+      field := pathName "Date"
+    }
+    let quoted : AuthoredFieldPath := {
+      unquoted with field := pathName "Date" true
+    }
+    errorOf (keywordFieldModel.resolveAuthoredField
+      keywordProfile ["Order"] unquoted) =
+        some (.syntax (.unquotedKeyword "Date")) ∧
+      (valueOf (keywordFieldModel.resolveAuthoredField
+        keywordProfile ["Order"] quoted)).map (·.id) = some 20 ∧
+      (valueOf (keywordFieldModel.resolveAuthoredField
+        keywordProfile ["Order"] {
+          unquoted with field := pathName "date"
+        })).map (·.id) = some 22 := by
+  native_decide
+
+/- The same quote gate applies to group names, not only the terminal field segment. -/
+example :
+    let unquoted : AuthoredFieldPath := {
+      base := .absolute
+      groups := [pathName "Order", pathName "And"]
+      field := pathName "Value"
+    }
+    let quoted : AuthoredFieldPath := {
+      unquoted with
+        groups := [pathName "Order", pathName "And" true]
+    }
+    let unnecessarilyQuoted : AuthoredFieldPath := {
+      quoted with field := pathName "Value" true
+    }
+    errorOf (keywordFieldModel.resolveAuthoredField
+      keywordProfile ["Order"] unquoted) =
+        some (.syntax (.unquotedKeyword "And")) ∧
+      (valueOf (keywordFieldModel.resolveAuthoredField
+        keywordProfile ["Order"] quoted)).map (·.id) = some 21 ∧
+      (valueOf (keywordFieldModel.resolveAuthoredField
+        keywordProfile ["Order"] unnecessarilyQuoted)).map (·.id) = some 21 := by
+  native_decide
+
+/- Canonical reification quotes only exact keyword collisions and lowers back to the same structured path. -/
+example :
+    let path := absolute ["Order"] "Date"
+    path.reifyQuotes keywordProfile = {
+      base := .absolute
+      groups := [pathName "Order"]
+      field := pathName "Date" true
+    } ∧
+      valueOf ((path.reifyQuotes keywordProfile).lower keywordProfile) =
+        some path := by
+  constructor <;> native_decide
+
 private def duplicateIdModel : FlatModel :=
   { fields := [quantityDecl, { expressDecl with id := 0 }] }
 
