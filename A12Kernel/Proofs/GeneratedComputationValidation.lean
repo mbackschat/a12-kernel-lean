@@ -10,24 +10,47 @@ namespace A12Kernel
 
 /-- The generated-validation twin preserves the checked String-length source exactly instead of reconstructing scale-erasing flat syntax. -/
 theorem numericComputationAtom_stringLength_toValidationAtom
-    (source : FlatStringField) :
-    NumericComputationAtom.toValidationAtom (.stringLength source) =
+    (model : FlatModel) (source : FlatStringField) :
+    CheckedNumericComputationAtom.toValidationAtom (model := model)
+        (.stringLength source) =
       .ok (.stringLength source) := by
   rfl
 
 /-- The generated-validation twin preserves the checked String range atom exactly instead of reconstructing surface syntax. -/
 theorem numericComputationAtom_stringRange_toValidationAtom
-    (source : FlatStringField) (start finish : Nat) :
-    NumericComputationAtom.toValidationAtom
+    (model : FlatModel) (source : FlatStringField) (start finish : Nat) :
+    CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.stringRange source start finish) =
       .ok (.stringRange source start finish) := by
   rfl
 
 /-- The generated-validation twin preserves the checked Enumeration/category conversion source and derived scale exactly. -/
 theorem numericComputationAtom_fieldValueAsNumber_toValidationAtom
-    (source : ResolvedFieldValueAsNumberSource) :
-    NumericComputationAtom.toValidationAtom (.fieldValueAsNumber source) =
+    (model : FlatModel) (source : ResolvedFieldValueAsNumberSource) :
+    CheckedNumericComputationAtom.toValidationAtom (model := model)
+        (.fieldValueAsNumber source) =
       .ok (.fieldValueAsNumber source) := by
+  rfl
+
+/-- A checked entity-list aggregate narrows to the existing validation atom exactly when every source is direct. -/
+theorem checkedNumericComputationAtom_directAggregate_toValidationAtom
+    (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (direct : ResolvedNumericAggregateFields)
+    (narrowed : source.directAggregateFields? = some direct) :
+    CheckedNumericComputationAtom.toValidationAtom
+        (.aggregate op source) =
+      .ok (.aggregate op direct) := by
+  simp [CheckedNumericComputationAtom.toValidationAtom, narrowed]
+  rfl
+
+/-- A repeatable entity-list aggregate cannot be flattened into the current nonrepeatable generated-validation context. -/
+theorem checkedNumericComputationAtom_repeatableAggregate_rejectedByGeneratedValidation
+    (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (repeatable : source.directAggregateFields? = none) :
+    CheckedNumericComputationAtom.toValidationAtom
+        (.aggregate op source) =
+      .error .repeatableAggregateRequiresAddressedValidation := by
+  simp [CheckedNumericComputationAtom.toValidationAtom, repeatable]
   rfl
 
 /-- Every direct or nested reference to the computed target is rejected before guard lowering can produce a phase-specific condition. -/
@@ -174,7 +197,7 @@ theorem generatedNumberCondition_emptyTarget_notFired
 
 /-- Generated mismatch construction preserves the already-checked expression exactly, fixes the stored target on the left, and carries warning suppression only as static comparison metadata. -/
 theorem generatedNumericOperationMismatch_preservesBoundary
-    (operation : NumericComputationOperation)
+    (operation : NumericComputationOperation model)
     (expression : AuthoredNumericExpr NumericValidationAtom)
     (tolerance : Option NumericToleranceRange) :
     let comparison :=

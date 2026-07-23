@@ -27,6 +27,27 @@ theorem checkedNumberEntitySource_computation_delegates
         pure operand.toComputationResult) := by
   rfl
 
+/-- The full computation context preserves the checked aggregate's document, outer environment, and both readers exactly, mapping only structural addressing failure into the expression fault domain. -/
+theorem numericComputationEvaluationContext_aggregate_delegates
+    (context : NumericComputationEvaluationContext)
+    (source : CheckedNumberEntitySource model) (op : NumericAggregateOp) :
+    context.readCheckedNumericComputationAtom (.aggregate op source) =
+      (source.evaluateComputation op context.document context.outer
+        context.scalar.read context.filterRead context.starRead).mapError
+          NumericComputationFault.repeatableAddressing := by
+  rfl
+
+/-- The scalar compatibility evaluator cannot erase repeatable addressing by inventing an empty document. -/
+theorem scalarComputationContext_repeatableAggregate_requiresContext
+    (context : ScalarComputationContext)
+    (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (repeatable : source.directAggregateFields? = none) :
+    context.readCheckedNumericComputationAtom (.aggregate op source) =
+      .error .repeatableContextRequired := by
+  simp [ScalarComputationContext.readCheckedNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith, repeatable]
+  rfl
+
 /-- Computation selects its own phase observation before reusing the shared String-length projection. -/
 theorem numericComputation_stringLength_delegates
     (context : ScalarComputationContext) (field : FlatStringField) :
@@ -42,7 +63,8 @@ theorem numericComputation_stringRange_empty_zero
     (observed : observeCell .computation (context.read field.id) = .empty) :
     context.readNumericComputationAtom (.stringRange field start finish) =
       .ok (.value 0) := by
-  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  simp [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith, observed]
   rfl
 
 /-- A present String source delegates once to the shared normalized UTF-16/digits-only conversion. -/
@@ -53,7 +75,8 @@ theorem numericComputation_stringRange_value
       .value (.str value)) :
     context.readNumericComputationAtom (.stringRange field start finish) =
       .ok (.value (utf16RangeAsNatural value start finish)) := by
-  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  simp [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith, observed]
   rfl
 
 /-- A reached computation poison survives range conversion with its exact cause. -/
@@ -63,7 +86,8 @@ theorem numericComputation_stringRange_poison_preservesCause
     (observed : observeCell .computation (context.read field.id) = .poison cause) :
     context.readNumericComputationAtom (.stringRange field start finish) =
       .ok (.poison cause) := by
-  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  simp [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith, observed]
   rfl
 
 /-- Computation erases conversion fillability but keeps the missing String or Enumeration/category source's numeric zero. -/
@@ -73,7 +97,8 @@ theorem numericComputation_fieldValueAsNumber_empty_zero
     (observed : observeCell .computation (context.read source.fieldId) = .empty) :
     context.readNumericComputationAtom (.fieldValueAsNumber source) =
       .ok (.value 0) := by
-  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  simp [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith, observed]
   rfl
 
 /-- A present admitted String or Enumeration value projects to the same exact rational amount in computation. -/
@@ -86,6 +111,7 @@ theorem numericComputation_fieldValueAsNumber_value
     context.readNumericComputationAtom (.fieldValueAsNumber source) =
       .ok (.value amount) := by
   simp [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith,
     observed, converted]
   rfl
 
@@ -97,14 +123,16 @@ theorem numericComputation_fieldValueAsNumber_poison_preservesCause
       .poison cause) :
     context.readNumericComputationAtom (.fieldValueAsNumber source) =
       .ok (.poison cause) := by
-  simp [ScalarComputationContext.readNumericComputationAtom, observed]
+  simp [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith, observed]
   rfl
 
 /-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
 theorem checkedNumericComputationOperation_noTargetReference
     (checked : CheckedNumericComputationOperation model) :
     checked.core.expression.anyAtom
-      (NumericComputationAtom.references model checked.core.target.id) = false := by
+      (CheckedNumericComputationAtom.references model
+        checked.core.target.id) = false := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true] at admitted
@@ -124,7 +152,7 @@ theorem checkedNumericComputationOperation_scaleGate
     (checked : CheckedNumericComputationOperation model)
     (summary : NumericScaleSummary)
     (summarized : checked.core.expression.summary?
-      NumericComputationAtom.numericScaleSummary = some summary) :
+      CheckedNumericComputationAtom.numericScaleSummary = some summary) :
     exactNumericScaleComparisonAllowedWithSuppression
       checked.core.suppressExactScaleWarning
       (NumericScaleSummary.field checked.core.target.info.scale) summary = true := by
@@ -162,6 +190,21 @@ theorem checkedNumericTargetComputationOperation_evaluate_routes
       else
         checked.policy.check result) := by
   simp only [CheckedNumericTargetComputationOperation.evaluate]
+  rw [evaluated]
+  cases checked.operation.core.suppressExactScaleWarning <;> rfl
+
+/-- Target-attached addressed evaluation preserves the same certified suppression dispatch after the unified expression has consumed its repeatable inputs. -/
+theorem checkedNumericTargetComputationOperation_evaluateIn_routes
+    (checked : CheckedNumericTargetComputationOperation model)
+    (context : NumericComputationEvaluationContext)
+    (result : NumericComputationResult)
+    (evaluated : checked.operation.evaluateIn context = .ok result) :
+    checked.evaluateIn context =
+      .ok (if checked.operation.core.suppressExactScaleWarning then
+        checked.policy.checkWithScaleWarningSuppressed result
+      else
+        checked.policy.check result) := by
+  simp only [CheckedNumericTargetComputationOperation.evaluateIn]
   rw [evaluated]
   cases checked.operation.core.suppressExactScaleWarning <;> rfl
 
@@ -203,7 +246,8 @@ theorem readDateDifference_evaluated
       (context.readDateDifferenceOperand right) = .ok operand) :
     context.readNumericComputationAtom (.dateDifference unit left right) =
       .ok operand.toComputationResult := by
-  simp only [ScalarComputationContext.readNumericComputationAtom]
+  simp only [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith]
   rw [evaluated]
   rfl
 

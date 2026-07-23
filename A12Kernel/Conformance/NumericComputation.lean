@@ -120,6 +120,28 @@ private def surfaceAggregate (op : NumericAggregateOp) (first : String)
     first := surfacePath ["Root"] first
     rest := rest.map (surfacePath ["Root"]) })
 
+private def repeatedStarPath : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Root" },
+      { name := "Rows", starred := true }]
+    field := "Repeated" }
+
+private def repeatedAggregateHaving (outerField : String := "Source") :
+    SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner
+      field := surfacePath ["Root", "Rows"] "Repeated" }
+    { origin := .outer
+      field := surfacePath ["Root"] outerField }
+
+private def surfaceRepeatableAggregate (op : NumericAggregateOp)
+    (outerField : String := "Source") :
+    AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource) :=
+  .atom (.aggregate op {
+    first := .starHaving repeatedStarPath (repeatedAggregateHaving outerField)
+    rest := [] })
+
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom .baseYear
 
@@ -196,6 +218,35 @@ private def context (source later : CheckedCell := checkedNumber .empty)
     else if field == hostDigitEnumerationId then hostDigitChoice
     else checkedNumber .empty
 
+private def repeatableDocument (rows : List RowIndex) : Document :=
+  { instantiatedRows := rows.map fun row => { group := 10, path := [row] }
+    rawCells := fun _ => none }
+
+private def repeatableCheckedRead (root : CheckedCell)
+    (rows : RowIndex → CheckedCell) (environment : Env)
+    (field : FieldId) : CheckedCell :=
+  if field == sourceId then root
+  else if field == repeatedId then
+    match environment with
+    | [(10, row)] => rows row
+    | _ => malformedCheckedCell
+  else
+    malformedCheckedCell
+
+private def cells3 (first second third : CheckedCell) : RowIndex → CheckedCell
+  | 1 => first
+  | 2 => second
+  | 3 => third
+  | _ => checkedNumber .empty
+
+private def repeatableContext (root : CheckedCell)
+    (rows : RowIndex → CheckedCell) : NumericComputationEvaluationContext :=
+  { scalar := context root
+    document := repeatableDocument [1, 2, 3]
+    outer := []
+    filterRead := repeatableCheckedRead root rows
+    starRead := repeatableCheckedRead root rows }
+
 private def instant : Instant := { epochMillis := 1719292867000 }
 
 private def dateParts : DateParts := { year := 2024, month := 6, day := 25 }
@@ -246,6 +297,64 @@ private def checkedTargetResultOf
       match checked.attachTargetPolicy policy with
       | .error _ => none
       | .ok targetChecked => targetChecked.evaluate input |>.toOption
+
+private def checkedRepeatableResultOf
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
+    (input : NumericComputationEvaluationContext) :
+    Option NumericComputationResult :=
+  match elaborateNumberEntityComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => checked.evaluateIn input |>.toOption
+
+private def checkedRepeatableFaultOf
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
+    (input : NumericComputationEvaluationContext) :
+    Option NumericComputationFault :=
+  match elaborateNumberEntityComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateIn input with
+      | .ok _ => none
+      | .error fault => some fault
+
+private def checkedRepeatableScalarFaultOf
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
+    (input : ScalarComputationContext := context) :
+    Option NumericComputationFault :=
+  match elaborateNumberEntityComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluate input with
+      | .ok _ => none
+      | .error fault => some fault
+
+private def checkedRepeatableTargetResultOf
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
+    (input : NumericComputationEvaluationContext) :
+    Option NumericTargetCheckResult :=
+  match elaborateNumberEntityComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.attachTargetPolicy targetPolicy with
+      | .error _ => none
+      | .ok targetChecked => targetChecked.evaluateIn input |>.toOption
+
+private def checkedRepeatableErrorOf
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource)) :
+    Option NumericComputationElabError :=
+  match elaborateNumberEntityComputationOperation
+      model ["Root"] targetId expression with
+  | .ok _ => none
+  | .error error => some error
 
 private def targetPolicyAttachErrorOf (policy : NumericTargetPolicy) :
     Option NumericComputationElabError :=
@@ -928,6 +1037,57 @@ example :
         (context (checkedNumber (.parsed (.num 20)))
           (checkedNumber (.rejected .declaredConstraint))) =
         some (.poison .declaredConstraint) := by
+  native_decide
+
+/- A filtered repeatable aggregate is one ordinary numeric atom: it composes with arithmetic and reaches the existing target checker without a top-level special path. -/
+example :
+    let rows := cells3
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 5)))
+    let input := repeatableContext
+      (checkedNumber (.parsed (.num 3))) rows
+    let expression :=
+      AuthoredNumericExpr.binary .add
+        (surfaceRepeatableAggregate .sum)
+        (.literal { value := 1, authoredScale := 0 })
+    checkedRepeatableResultOf expression input = some (.value 7) ∧
+      checkedRepeatableTargetResultOf expression input =
+        some (.supported (.accepted { unscaled := 7, scale := 0 })) := by
+  native_decide
+
+/- A repeatable aggregate never degrades into a scalar empty-document result, and malformed row topology stays an explicit addressing fault. -/
+example :
+    let rows := cells3
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 5)))
+    let input := repeatableContext
+      (checkedNumber (.parsed (.num 3))) rows
+    let malformedDocument : Document := {
+      instantiatedRows := [{ group := 10, path := [1, 2] }]
+      rawCells := fun _ => none }
+    checkedRepeatableScalarFaultOf
+        (surfaceRepeatableAggregate .sum) =
+      some .repeatableContextRequired ∧
+    checkedRepeatableFaultOf
+        (surfaceRepeatableAggregate .sum)
+        { input with document := malformedDocument } =
+      some (.repeatableAddressing (.invalidRowDepth 10 [1, 2] 1)) := by
+  native_decide
+
+/- Computation target self-reference traverses both the entity-list targets and the `Having` filter tree. -/
+example :
+    let directTarget :
+        AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource) :=
+      .atom (.aggregate .sum {
+        first := .field (surfacePath ["Root"] "Target")
+        rest := [.star repeatedStarPath] })
+    checkedRepeatableErrorOf directTarget =
+        some (.targetSelfReference targetId) ∧
+      checkedRepeatableErrorOf
+        (surfaceRepeatableAggregate .sum "Target") =
+        some (.targetSelfReference targetId) := by
   native_decide
 
 /- NumberOfDifferentValues uses the same checked computation atom, drops empty cells, and preserves formal poison while exposing only the integral value. -/

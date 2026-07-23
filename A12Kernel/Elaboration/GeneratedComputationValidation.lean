@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. Repeatable evaluation, runtime target checks, and general computation authoring remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; a repeatable payload fails explicitly because this generated-validation context has no addressed document/relevance inputs. Addressed generated validation, runtime target checks, and general computation scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -125,6 +125,7 @@ inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
+  | repeatableAggregateRequiresAddressedValidation
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
   | operationTargetMismatch (alternative : Nat)
@@ -337,8 +338,8 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
         computation.name .error computation.messagePlan).mapError
           GeneratedComputationValidationError.rule
 
-def NumericComputationAtom.toValidationAtom :
-    NumericComputationAtom →
+def CheckedNumericComputationAtom.toValidationAtom :
+    CheckedNumericComputationAtom model →
       Except GeneratedComputationValidationError NumericValidationAtom
   | .field declaration =>
       match declaration.toNumberField? with
@@ -356,11 +357,15 @@ def NumericComputationAtom.toValidationAtom :
       pure (.fieldValueAsNumber source)
   | .dateDifference unit left right =>
       pure (.dateDifference unit left right)
-  | .aggregate op source => pure (.aggregate op source)
+  | .aggregate op source =>
+      match source.directAggregateFields? with
+      | some direct => pure (.aggregate op direct)
+      | none => throw .repeatableAggregateRequiresAddressedValidation
   | .filledGroupCount _ => throw (.conditionAssembly .incoherentCore)
 
 /-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
-def generatedNumericOperationMismatch (operation : NumericComputationOperation)
+def generatedNumericOperationMismatch
+    (operation : NumericComputationOperation model)
     (expression : AuthoredNumericExpr NumericValidationAtom)
     (tolerance : Option NumericToleranceRange) : NumericComparison :=
   { op := match tolerance with
@@ -380,7 +385,7 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
     (model.lookupUniqueId operation.core.target.id).mapError
       GeneratedComputationValidationError.resolve
   let expression ← operation.core.expression.mapM
-    NumericComputationAtom.toValidationAtom
+    CheckedNumericComputationAtom.toValidationAtom
   let comparison := generatedNumericOperationMismatch operation.core expression tolerance
   if hCore : comparison.wellFormedInBool model targetDeclaration.groupPath
       .modelWideNonrepeatable = true then

@@ -4,19 +4,33 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent, nonrepeatable numeric operation against a validated model and then evaluates the resolved expression. Admission resolves the Number target plus Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, and direct Number field-list aggregate sources, rejects nested direct target self-reference, applies the shared arithmetic fragment with composable rounding, absolute value, and expression-valued Min/Max calls, checks the result scale, and certifies model coherence. Each Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Evaluation preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that repeatable source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, and scheduling remain outside this module.
+This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, and checked direct/plain-star/filtered-star Number entity-list aggregate sources through one shared numeric atom tree. The direct aggregate surface maps into that sole checked entity-list payload. Target self-reference traversal reaches selected aggregate fields and every `Having` reference; scale checking uses the aggregate declarations' union or integral distinct-count result. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The complete externally resolved target policy attaches once to that checked operation after its scale and signedness have been matched, so evaluation cannot substitute another policy. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar evaluation remains available for direct-only sources and rejects a repeatable aggregate explicitly. Addressed evaluation accepts the document, outer environment, and checked filter/target readers required by the existing entity-list traversal, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct aggregate payloads back into its existing nonrepeatable atom and rejects a repeatable payload until an addressed validation context exists. A standalone checked `SumOfProducts` pair additionally projects its phase-sensitive checked-cell fold to value or poison; whole-expression admission and target integration for that distinct row-aligned source remain outside. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, target-policy construction from declarations, application, delta projection, whole-rule repeatable generated validation, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
 
 abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 
+/-- The checked computation atom replaces the direct-only aggregate payload with the model-certified entity-list source while retaining the one shared numeric expression tree. -/
+abbrev CheckedNumericComputationAtom (model : FlatModel) :=
+  ResolvedNumericAtom FlatFieldDecl (CheckedNumberEntitySource model)
+
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
   | fieldKindMismatch (field : FieldId)
   | unsupportedDateCalendar
   | unsupportedGroupCount
+  | repeatableContextRequired
+  | repeatableAddressing (error : StarAddressingError)
   deriving Repr, DecidableEq
+
+/-- The bounded runtime inputs needed when one checked numeric expression contains repeatable entity-list atoms. This is an expression evaluator context, not a document scheduler or dependency overlay. -/
+structure NumericComputationEvaluationContext where
+  scalar : ScalarComputationContext
+  document : Document
+  outer : Env
+  filterRead : Env → FieldId → CheckedCell
+  starRead : Env → FieldId → CheckedCell
 
 inductive NumericComputationElabError where
   | resolve (error : ResolveError)
@@ -31,7 +45,7 @@ inductive NumericComputationElabError where
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
   | baseYearNotDeclared
-  | aggregate (error : NumericAggregateElabError)
+  | aggregate (error : NumberEntityElabError)
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
   | unsupportedExpression
@@ -41,11 +55,10 @@ inductive NumericComputationElabError where
   deriving Repr, DecidableEq
 
 /-- One resolved numeric operation before target storage, retaining whether its result-scale warning was explicitly suppressed. -/
-structure NumericComputationOperation where
+structure NumericComputationOperation (model : FlatModel) where
   target : FlatNumberField
-  expression : AuthoredNumericExpr NumericComputationAtom
+  expression : AuthoredNumericExpr (CheckedNumericComputationAtom model)
   suppressExactScaleWarning : Bool := false
-  deriving Repr, DecidableEq
 
 private def FlatModel.admitsTemporalComputationOperand
     (model : FlatModel) (source : FlatTemporalField) (accepts : Bool) : Bool :=
@@ -56,7 +69,7 @@ private def FlatModel.admitsTemporalComputationOperand
   | .error _ => false
 
 def FlatModel.admitsNumericComputationOperand
-    (model : FlatModel) : NumericComputationAtom → Bool
+    (model : FlatModel) : CheckedNumericComputationAtom model → Bool
   | .field declaration =>
       match model.lookupUniqueId declaration.id with
       | .ok admitted =>
@@ -83,14 +96,7 @@ def FlatModel.admitsNumericComputationOperand
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
-  | .aggregate _ source =>
-      source.hasMultipleFields && source.hasUniqueFields &&
-        source.fields.all fun field =>
-          match model.lookupUniqueId field.id with
-          | .ok declaration =>
-              declaration.repeatableScope.isEmpty &&
-                declaration.toNumberField? == some field
-          | .error _ => false
+  | .aggregate _ _ => true
   | .filledGroupCount _ => false
 
 def FlatModel.admitsNumericComputationTarget
@@ -107,12 +113,14 @@ def FlatFieldDecl.numericScaleSummary
   | some field => NumericScaleSummary.field field.info.scale
   | none => { scale := .unknown, canExpandScale := false }
 
-def NumericComputationAtom.numericScaleSummary
-    (atom : NumericComputationAtom) : NumericScaleSummary :=
-  atom.summary FlatFieldDecl.numericScaleSummary
+def CheckedNumericComputationAtom.numericScaleSummary
+    (atom : CheckedNumericComputationAtom model) : NumericScaleSummary :=
+  atom.summaryWith FlatFieldDecl.numericScaleSummary
+    CheckedNumberEntitySource.aggregateScaleSummary
 
-def NumericComputationAtom.references
-    (model : FlatModel) (field : FieldId) : NumericComputationAtom → Bool
+def CheckedNumericComputationAtom.references
+    (model : FlatModel) (field : FieldId) :
+    CheckedNumericComputationAtom model → Bool
   | .field declaration => declaration.id == field
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
@@ -127,14 +135,15 @@ def NumericComputationAtom.references
       groups.any fun group => group.referencesField model field
 
 def NumericComputationOperation.wellFormedBool
-    (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
+    (operation : NumericComputationOperation model) : Bool :=
   model.admitsNumericComputationTarget operation.target &&
     operation.expression.allAtoms model.admitsNumericComputationOperand &&
     !operation.expression.anyAtom
-      (NumericComputationAtom.references model operation.target.id) &&
+      (CheckedNumericComputationAtom.references model operation.target.id) &&
     operation.expression.isAdmittedResolvedNumericOperation &&
     operation.expression.numericOperationAuthoringCheck == .accepted &&
-    match operation.expression.summary? NumericComputationAtom.numericScaleSummary with
+    match operation.expression.summary?
+        CheckedNumericComputationAtom.numericScaleSummary with
     | some summary =>
         exactNumericScaleComparisonAllowedWithSuppression
           operation.suppressExactScaleWarning
@@ -142,14 +151,14 @@ def NumericComputationOperation.wellFormedBool
     | none => false
 
 def NumericComputationOperation.WellFormed
-    (operation : NumericComputationOperation) (model : FlatModel) : Prop :=
-  operation.wellFormedBool model = true
+    (operation : NumericComputationOperation model) : Prop :=
+  operation.wellFormedBool = true
 
 /-- A model-coherent operation produced only after target, operands, authoring shape, self-reference, and result scale have been checked. -/
 structure CheckedNumericComputationOperation (model : FlatModel) where
-  core : NumericComputationOperation
+  core : NumericComputationOperation model
   modelWellFormed : model.validate.isOk = true
-  wellFormed : core.WellFormed model
+  wellFormed : core.WellFormed
 
 /-- A checked numeric operation paired once with its complete resolved target policy. Evaluation cannot substitute a different policy. -/
 structure CheckedNumericTargetComputationOperation (model : FlatModel) where
@@ -164,6 +173,25 @@ private def FlatModel.resolveNumericComputationTarget
   match declaration.toNumberField? with
   | some field => pure field
   | none => throw (.targetNotNumber target)
+
+def SurfaceNumericAggregateFields.toNumberEntitySource
+    (source : SurfaceNumericAggregateFields) : SurfaceNumberEntitySource :=
+  { first := .field source.first
+    rest := source.rest.map SurfaceFieldEntityOperand.field }
+
+def SurfaceNumericAtom.toNumberEntityComputationAtom :
+    SurfaceNumericAtom →
+      SurfaceNumericAtom SurfaceNumberEntitySource
+  | .field path => .field path
+  | .baseYear => .baseYear
+  | .baseYearDatePart source part => .baseYearDatePart source part
+  | .temporalFieldPart path part => .temporalFieldPart path part
+  | .stringLength path => .stringLength path
+  | .stringRange path start finish => .stringRange path start finish
+  | .fieldValueAsNumber source => .fieldValueAsNumber source
+  | .dateDifference unit left right => .dateDifference unit left right
+  | .aggregate op source => .aggregate op source.toNumberEntitySource
+  | .filledGroupCount groups => .filledGroupCount groups
 
 private def FlatModel.resolveTemporalNumericComputationField
     (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
@@ -181,9 +209,10 @@ private def FlatModel.resolveTemporalNumericComputationField
 
 private def FlatModel.resolveNumericComputationExpression
     (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId)
-    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource)) :
     Except NumericComputationElabError
-      (AuthoredNumericExpr NumericComputationAtom) :=
+      (AuthoredNumericExpr (CheckedNumericComputationAtom model)) :=
   expression.mapM fun
     | .field reference => do
         let declaration ←
@@ -261,17 +290,18 @@ private def FlatModel.resolveNumericComputationExpression
           throw .incompatibleDateDifference
     | .aggregate op source => do
         let checked ←
-          (elaborateNumericAggregateFields model declaringGroup source).mapError
+          (elaborateNumberEntitySource model declaringGroup source).mapError
             NumericComputationElabError.aggregate
-        if checked.resolvedFields.referencesField target then
+        if checked.referencesField target then
           throw (.targetSelfReference target)
-        pure (.aggregate op checked.resolvedFields)
+        pure (.aggregate op checked)
     | .filledGroupCount _ => throw .unsupportedExpression
 
-/-- Resolve and check one nonrepeatable numeric computation operation in the shared complete numeric-operation fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. Repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
-def elaborateNumericComputationOperation
+/-- Resolve and check a numeric computation operation whose entity-list atoms may contain direct, starred, and filtered-star Number sources. The expression remains the shared numeric tree; only its aggregate payload is strengthened to the checked model-owned entity list. -/
+def elaborateNumberEntityComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (expression :
+      AuthoredNumericExpr (SurfaceNumericAtom SurfaceNumberEntitySource))
     (suppressExactScaleWarning : Bool := false) :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation model) := do
@@ -289,18 +319,18 @@ def elaborateNumericComputationOperation
       | .accepted => pure ()
       | result => throw (.authoring result)
       let summary ← match resolved.summary?
-          NumericComputationAtom.numericScaleSummary with
+          CheckedNumericComputationAtom.numericScaleSummary with
         | some summary => pure summary
         | none => throw .unsupportedExpression
       if !exactNumericScaleComparisonAllowedWithSuppression
           suppressExactScaleWarning
           (NumericScaleSummary.field target.info.scale) summary then
         throw (.operationScaleMismatch target.info.scale summary)
-      let core : NumericComputationOperation := {
+      let core : NumericComputationOperation model := {
         target
         expression := resolved
         suppressExactScaleWarning }
-      if hCore : core.wellFormedBool model = true then
+      if hCore : core.wellFormedBool = true then
         pure {
           core
           modelWellFormed := by
@@ -309,6 +339,17 @@ def elaborateNumericComputationOperation
           wellFormed := hCore }
       else
         throw .incoherentCore
+
+/-- Backwards-compatible direct-field aggregate surface. It maps its aggregate payload into the sole checked entity-list representation before using the complete computation elaborator. -/
+def elaborateNumericComputationOperation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
+    (suppressExactScaleWarning : Bool := false) :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation model) :=
+  elaborateNumberEntityComputationOperation model declaringGroup targetField
+    (expression.map SurfaceNumericAtom.toNumberEntityComputationAtom)
+    suppressExactScaleWarning
 
 def NumericOperand.toComputationResult : NumericOperand → NumericComputationResult
   | .value amount _ => .value amount
@@ -374,8 +415,12 @@ def readDateDifferenceOperand (context : ScalarComputationContext) :
       (observeCell .computation (context.read source.id))
   | .baseYear year source => .value (source.parts year)
 
-def readNumericComputationAtom (context : ScalarComputationContext) :
-    NumericComputationAtom →
+/-- Share every non-aggregate computation atom branch while allowing the direct and addressed evaluators to supply their own aggregate projection. -/
+def readNumericComputationAtomWith
+    (context : ScalarComputationContext)
+    (readAggregate : NumericAggregateOp → Aggregate →
+      Except NumericComputationFault NumericComputationResult) :
+    ResolvedNumericAtom FlatFieldDecl Aggregate →
       Except NumericComputationFault NumericComputationResult
   | .field declaration => context.readNumeric declaration
   | .baseYear year => pure (.value year)
@@ -407,12 +452,43 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
           (context.readDateDifferenceOperand right) with
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
-  | .aggregate op source =>
-      pure ((source.evaluate op fun field =>
-        observeCell .computation (context.read field)).toComputationResult)
+  | .aggregate op source => readAggregate op source
   | .filledGroupCount _ => throw .unsupportedGroupCount
 
+/-- Preserve the direct-only resolved evaluator used by low-level proofs and callers. -/
+def readNumericComputationAtom (context : ScalarComputationContext) :
+    NumericComputationAtom →
+      Except NumericComputationFault NumericComputationResult :=
+  context.readNumericComputationAtomWith fun op source =>
+    pure ((source.evaluate op fun field =>
+      observeCell .computation (context.read field)).toComputationResult)
+
+/-- Evaluate a checked computation atom without a repeatable document only when its entity-list payload narrows exactly to direct fields. A repeatable operand fails explicitly rather than silently observing an empty synthetic document. -/
+def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
+    CheckedNumericComputationAtom model →
+      Except NumericComputationFault NumericComputationResult :=
+  context.readNumericComputationAtomWith fun op source =>
+    match source.directAggregateFields? with
+    | some direct =>
+        pure ((direct.evaluate op fun field =>
+          observeCell .computation (context.read field)).toComputationResult)
+    | none => throw .repeatableContextRequired
+
 end ScalarComputationContext
+
+namespace NumericComputationEvaluationContext
+
+/-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
+def readCheckedNumericComputationAtom
+    (context : NumericComputationEvaluationContext) :
+    CheckedNumericComputationAtom model →
+      Except NumericComputationFault NumericComputationResult :=
+  context.scalar.readNumericComputationAtomWith fun op source =>
+    (source.evaluateComputation op context.document context.outer
+      context.scalar.read context.filterRead context.starRead).mapError
+        NumericComputationFault.repeatableAddressing
+
+end NumericComputationEvaluationContext
 
 namespace NumericComputationResult
 
@@ -448,7 +524,8 @@ def FlatFieldDecl.numericComputationFault?
 
 /-- Preflight one resolved source atom. Checked temporal component atoms already retain their kind, while a forged direct declaration can still carry a non-Number kind. -/
 def NumericComputationAtom.numericComputationFault? :
-    NumericComputationAtom → Option NumericComputationFault
+    ResolvedNumericAtom FlatFieldDecl Aggregate →
+      Option NumericComputationFault
   | .field declaration => declaration.numericComputationFault?
   | .baseYear _ => none
   | .baseYearDatePart _ _ _ => none
@@ -525,15 +602,40 @@ def evaluateComputation (expression : AuthoredNumericExpr FlatFieldDecl)
   | some fault => .error fault
   | none => lowered.evalComputation context.readNumeric
 
-def evaluateResolvedComputation
-    (expression : AuthoredNumericExpr NumericComputationAtom)
-    (context : ScalarComputationContext) :
+private def evaluateResolvedComputationWith
+    (expression :
+      AuthoredNumericExpr (ResolvedNumericAtom FlatFieldDecl Aggregate))
+    (read : ResolvedNumericAtom FlatFieldDecl Aggregate →
+      Except NumericComputationFault NumericComputationResult) :
     Except NumericComputationFault NumericComputationResult :=
   let lowered := expression.lowerForEvaluation
   match lowered.computationFaultWith?
       NumericComputationAtom.numericComputationFault? with
   | some fault => .error fault
-  | none => lowered.evalComputation context.readNumericComputationAtom
+  | none => lowered.evalComputation read
+
+def evaluateResolvedComputation
+    (expression : AuthoredNumericExpr NumericComputationAtom)
+    (context : ScalarComputationContext) :
+    Except NumericComputationFault NumericComputationResult :=
+  expression.evaluateResolvedComputationWith
+    context.readNumericComputationAtom
+
+/-- Evaluate the unified checked computation tree through the scalar compatibility boundary. Repeatable atoms are rejected explicitly. -/
+def evaluateCheckedComputation
+    (expression : AuthoredNumericExpr (CheckedNumericComputationAtom model))
+    (context : ScalarComputationContext) :
+    Except NumericComputationFault NumericComputationResult :=
+  expression.evaluateResolvedComputationWith
+    context.readCheckedNumericComputationAtom
+
+/-- Evaluate the same checked computation tree with the explicit repeatable document, environment, and readers required by entity-list atoms. -/
+def evaluateCheckedComputationIn
+    (expression : AuthoredNumericExpr (CheckedNumericComputationAtom model))
+    (context : NumericComputationEvaluationContext) :
+    Except NumericComputationFault NumericComputationResult :=
+  expression.evaluateResolvedComputationWith
+    context.readCheckedNumericComputationAtom
 
 end AuthoredNumericExpr
 
@@ -542,7 +644,12 @@ namespace CheckedNumericComputationOperation
 def evaluate (operation : CheckedNumericComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericComputationResult :=
-  operation.core.expression.evaluateResolvedComputation context
+  operation.core.expression.evaluateCheckedComputation context
+
+def evaluateIn (operation : CheckedNumericComputationOperation model)
+    (context : NumericComputationEvaluationContext) :
+    Except NumericComputationFault NumericComputationResult :=
+  operation.core.expression.evaluateCheckedComputationIn context
 
 /-- Attach the complete resolved target policy once, rejecting scale/signedness drift from the already-resolved target. The remaining constraints are intentionally not inferred from `FlatFieldDecl`, which does not retain them. -/
 def attachTargetPolicy (operation : CheckedNumericComputationOperation model)
@@ -563,6 +670,16 @@ def evaluate (operation : CheckedNumericTargetComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
   let result ← operation.operation.evaluate context
+  if operation.operation.core.suppressExactScaleWarning then
+    pure (operation.policy.checkWithScaleWarningSuppressed result)
+  else
+    pure (operation.policy.check result)
+
+/-- Preserve the same retained target-policy dispatch after repeatable expression evaluation. Source-relative target policy and result classification are not recomputed or reordered. -/
+def evaluateIn (operation : CheckedNumericTargetComputationOperation model)
+    (context : NumericComputationEvaluationContext) :
+    Except NumericComputationFault NumericTargetCheckResult := do
+  let result ← operation.operation.evaluateIn context
   if operation.operation.core.suppressExactScaleWarning then
     pure (operation.policy.checkWithScaleWarningSuppressed result)
   else
