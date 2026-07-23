@@ -158,6 +158,15 @@ private def crossGroupAggregateOperation :
           [.literal { value := -4, authoredScale := 0 }])
         (.literal { value := 0, authoredScale := 0 }))))
 
+private def crossGroupFirstFilledOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateCompleteNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.firstFilled {
+      first := .field (absolutePath ["Input"] "Source")
+      rest := [.field (absolutePath ["Input"] "Extra")] }))
+
 private def crossGroupStringRangeOperation :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation crossGroupModel) :=
@@ -497,19 +506,26 @@ private def crossGroupExpressionTargetMismatch :
   | .ok _ => none
   | .error error => some error
 
-private def repeatableAggregateGeneratedError :
+private def generatedOperationError {model : FlatModel}
+    (candidate : Except NumericComputationElabError
+      (CheckedNumericComputationOperation model)) :
     Option GeneratedComputationValidationError := do
-  let operation ← repeatableAggregateOperation.toOption
+  let operation ← candidate.toOption
   match operation.generatedMismatchComparison none with
   | .ok _ => none
   | .error error => some error
 
+private def repeatableAggregateGeneratedError :
+    Option GeneratedComputationValidationError :=
+  generatedOperationError repeatableAggregateOperation
+
 private def productAggregateGeneratedError :
-    Option GeneratedComputationValidationError := do
-  let operation ← productAggregateOperation.toOption
-  match operation.generatedMismatchComparison none with
-  | .ok _ => none
-  | .error error => some error
+    Option GeneratedComputationValidationError :=
+  generatedOperationError productAggregateOperation
+
+private def firstFilledGeneratedError :
+    Option GeneratedComputationValidationError :=
+  generatedOperationError crossGroupFirstFilledOperation
 
 private def bothHoldingDifferent : LiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
@@ -890,6 +906,12 @@ example :
         some .repeatableAggregateRequiresAddressedValidation ∧
       productAggregateGeneratedError =
         some .repeatableAggregateRequiresAddressedValidation := by
+  native_decide
+
+/- Even a direct checked `FirstFilledValue` fails closed here: generated partial validation still has one global numeric-leaf relevance gate and cannot preserve the source's ordered prefix relevance without a dedicated checked resolver. -/
+example :
+    firstFilledGeneratedError =
+      some .firstFilledRequiresOrderedValidation := by
   native_decide
 
 /- Generated validation narrows the checked absolute-value/String-range tree without rebuilding either layer and compares the same nonnegative result model-wide. -/

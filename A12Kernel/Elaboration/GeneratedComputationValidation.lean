@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; a repeatable payload fails explicitly because this generated-validation context has no addressed document/relevance inputs. Addressed generated validation, runtime target checks, and general computation scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide nonrepeatable operand scope, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared mixed condition and whole-rule boundary. A checked entity-list aggregate narrows into the existing validation atom only when every operand is direct; a repeatable payload fails explicitly because this generated-validation context has no addressed document/relevance inputs. `FirstFilledValue` also fails explicitly even for direct sources because its reached-prefix relevance cannot be represented by the current leaf-wide all-atoms gate. Addressed and ordered-relevance-aware generated validation, runtime target checks, and general computation scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -126,6 +126,7 @@ inductive GeneratedComputationValidationError where
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | repeatableAggregateRequiresAddressedValidation
+  | firstFilledRequiresOrderedValidation
   | operationScaleMismatch (alternative : Nat)
       (targetScale : Nat) (authoredScale : Int)
   | operationTargetMismatch (alternative : Nat)
@@ -341,6 +342,8 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
 def CheckedNumericComputationAtom.toValidationAtom :
     CheckedNumericComputationAtom model →
       Except GeneratedComputationValidationError NumericValidationAtom
+  | .firstFilled _ =>
+      throw .firstFilledRequiresOrderedValidation
   | .sumOfProducts _ =>
       throw .repeatableAggregateRequiresAddressedValidation
   | .numeric (.field declaration) =>

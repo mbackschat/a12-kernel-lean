@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.NumberEntityList
 import A12Kernel.Elaboration.NumericStar
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Checked Number-star `FirstFilledValue` -/
+/-! # Checked Number entity-list `FirstFilledValue` -/
 
 namespace A12Kernel
 
@@ -132,6 +132,74 @@ def evaluatePartialValidation (checked : CheckedNumberEntitySource model)
     Except StarAddressingError PartialValidationFirstFilledNumberResult :=
   scanCheckedFirstFilledNumberOperands document outer scope
     (model.checkContext directRead) filterRead starRead checked.operands {}
+
+/-- Evaluate the scalar computation fragment exactly when every checked operand is direct. The original source order and the shared stop-at-first scan are retained; no empty synthetic document is constructed for a repeated source. -/
+def evaluateDirectComputationFirstFilled?
+    (checked : CheckedNumberEntitySource model)
+    (directRead : FieldId → CheckedCell) : Option FirstFilledNumberResult := do
+  let (first, rest) ← checked.directFields?
+  pure (match scanFirstFilledItems
+      (fun field => field.valueListCellAt .computation { read := directRead })
+      (first :: rest) {} with
+    | .inl state => state.finish
+    | .inr result => result.asNumber)
+
+end CheckedNumberEntitySource
+
+private def scanComputationFirstFilledNumberOperand
+    (document : Document) (outer : Env) (direct : FlatContext)
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (state : FirstFilledScanState) :
+    CheckedFirstFilledNumberOperand model →
+      Except StarAddressingError
+        (FirstFilledScanState ⊕ FirstFilledNumberResult)
+  | .field source =>
+      match state.step (source.field.valueListCellAt .computation direct) with
+      | .continue next => pure (.inl next)
+      | .done result => pure (.inr result.asNumber)
+  | .star source => do
+      let resolved ← source.source.path.resolve document outer
+      match scanFirstFilledItems
+          (source.checkedValueListCellAt .computation starRead)
+          resolved.environments
+          (state.enterSelection resolved.environments.isEmpty
+            resolved.domain.hasOpenTail false) with
+      | .inl next => pure (.inl next)
+      | .inr result => pure (.inr result.asNumber)
+  | .starHaving source => do
+      let resolved ← source.source.source.path.resolve document outer
+      match scanFilteredComputationFirstFilled source.having
+          { read := filterRead } outer
+          (source.source.checkedValueListCellAt .computation starRead)
+          resolved.environments resolved.domain.hasOpenTail state with
+      | .inl next => pure (.inl next)
+      | .inr result => pure (.inr result.asNumber)
+
+private def scanComputationFirstFilledNumberOperands
+    (document : Document) (outer : Env) (direct : FlatContext)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
+      Except StarAddressingError FirstFilledNumberResult
+  | [], state => pure state.finish
+  | operand :: remaining, state => do
+      match ← scanComputationFirstFilledNumberOperand document outer direct
+          filterRead starRead state operand with
+      | .inl next =>
+          scanComputationFirstFilledNumberOperands document outer direct
+            filterRead starRead remaining next
+      | .inr result => pure result
+
+namespace CheckedNumberEntitySource
+
+/-- Evaluate the complete checked Number entity list at computation phase. Direct, plain-star, and filtered-star slots remain authored-order lazy; filtered stars delegate to the shared one-kept-successor traversal and the first selected value or formal poison hides every later slot. -/
+def evaluateComputationFirstFilled
+    (checked : CheckedNumberEntitySource model)
+    (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError FirstFilledNumberResult :=
+  scanComputationFirstFilledNumberOperands document outer
+    { read := directRead } filterRead starRead checked.operands {}
 
 end CheckedNumberEntitySource
 
