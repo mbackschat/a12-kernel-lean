@@ -17,10 +17,15 @@ def ResolvedEnumerationProjection.asRepetitionKeyComponent
   | .notEvaluated => .empty
   | .unknown cause => .unknown cause
 
-/-- Check one raw Enumeration value once, then project its validation observation into an RNU key component. -/
+/-- Project one already checked Enumeration value through the selected phase into an RNU key component. -/
+def CheckedEnumerationProjection.classifyCheckedKeyAt
+    (operand : CheckedEnumerationProjection) (phase : Phase)
+    (cell : CheckedCell) : RepetitionKeyComponent :=
+  operand.projection.asRepetitionKeyComponent (observeCell phase cell)
+
+/-- Check one raw Enumeration value once, then delegate its validation observation to the checked-key boundary. -/
 def CheckedEnumerationProjection.classifyRawKey
     (operand : CheckedEnumerationProjection) (raw : RawCell) : RepetitionKeyComponent :=
-  operand.projection.asRepetitionKeyComponent
-    (observeCell .validation (operand.declaration.checkRaw raw))
+  operand.classifyCheckedKeyAt .validation (operand.declaration.checkRaw raw)
 
 end A12Kernel

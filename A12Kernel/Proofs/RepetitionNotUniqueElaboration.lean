@@ -41,11 +41,13 @@ theorem repetitionKey_tokenValueList_unknown (cause : FormalCause) :
 /-- An authored Enumeration key projects the deepest row to its own declared ancestry, then delegates unchanged to the established checked stored-token classifier. -/
 theorem checkedRepetitionEnumerationKey_classify
     (key : CheckedRepetitionEnumerationKey model)
-    (read : Env → FieldId → RawCell) (environment : Env) :
+    (read : Env → FieldId → CheckedCell) (environment : Env) :
     (CheckedRepetitionKey.enumeration key).classify read environment =
-      key.projection.classifyRawKey
-        (read (environment.take key.source.path.axes.length)
-          key.source.declaration.id) := by
+      key.projection.classifyCheckedKeyAt .validation
+        (key.source.contextualizeCell
+          (environment.take key.source.path.axes.length)
+          (read (environment.take key.source.path.axes.length)
+            key.source.declaration.id)) := by
   rfl
 
 /-- Checked composite keys contain no repeated direct field identifier. -/
@@ -94,7 +96,7 @@ theorem checkedRepetitionNotUnique_referenceLevel
 /-- Resolved checked rows preserve their complete topology environment and authored composite-key order. -/
 theorem checkedRepetitionNotUnique_resolvedRow_shape
     (checked : CheckedRepetitionNotUniqueSource model)
-    (read : Env → FieldId → RawCell) (environment : Env) :
+    (read : Env → FieldId → CheckedCell) (environment : Env) :
     (checked.resolvedRow read environment).row = environment ∧
       (checked.resolvedRow read environment).key =
         checked.keys.map fun key => key.classify read environment := by
@@ -104,7 +106,7 @@ theorem checkedRepetitionNotUnique_resolvedRow_shape
 theorem checkedRepetitionNotUnique_resolvedRows_of_topology
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) (topology : ResolvedStarTopology)
+    (read : Env → FieldId → CheckedCell) (topology : ResolvedStarTopology)
     (resolved : checked.topology.path.resolve document outer = .ok topology) :
     checked.resolvedRows document outer scope read =
       .ok ((topology.environments.filter (checked.rowRelevant scope)).map
@@ -116,7 +118,8 @@ theorem checkedRepetitionNotUnique_resolvedRows_of_topology
 theorem checkedRepetitionNotUnique_evaluate_of_rows
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) (rows : List ResolvedRepetitionKeyRow)
+    (read : Env → FieldId → CheckedCell)
+    (rows : List ResolvedRepetitionKeyRow)
     (resolved : checked.resolvedRows document outer scope read = .ok rows) :
     checked.evaluate document outer scope read =
       .ok (evalRepetitionNotUnique rows) := by

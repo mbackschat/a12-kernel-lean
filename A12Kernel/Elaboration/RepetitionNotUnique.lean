@@ -81,19 +81,24 @@ def fieldId (key : CheckedRepetitionKey model) : FieldId :=
 def environmentPrefix (key : CheckedRepetitionKey model) (environment : Env) : Env :=
   environment.take key.source.path.axes.length
 
-/-- Classify one component through its existing typed star reader. -/
+/-- Classify one caller-checked component through its existing typed star reader after projecting the deepest environment to that component's own ancestry. -/
 def classify (key : CheckedRepetitionKey model)
-    (read : Env → FieldId → RawCell) (environment : Env) : RepetitionKeyComponent :=
+    (read : Env → FieldId → CheckedCell)
+    (environment : Env) : RepetitionKeyComponent :=
   let keyEnvironment := key.environmentPrefix environment
   match key with
   | .number key =>
-      RepetitionKeyComponent.ofNumberValueListCell (key.valueListCell read keyEnvironment)
+      RepetitionKeyComponent.ofNumberValueListCell
+        (key.checkedValueListCellAt .validation read keyEnvironment)
   | .string key =>
       RepetitionKeyComponent.ofTokenValueListCell
-        (key.source.stringValueListCell key.field key.fieldOwned read keyEnvironment)
+        ((FlatTextFieldOperand.string key.field).checkedValueListCellAt .validation
+          (key.source.contextualizeCell keyEnvironment
+            (read keyEnvironment key.field.id)))
   | .enumeration key =>
-      key.projection.classifyRawKey
-        (read keyEnvironment key.source.declaration.id)
+      key.projection.classifyCheckedKeyAt .validation
+        (key.source.contextualizeCell keyEnvironment
+          (read keyEnvironment key.source.declaration.id))
 
 end CheckedRepetitionKey
 
@@ -352,7 +357,7 @@ def rowRelevant (checked : CheckedRepetitionNotUniqueSource model)
 
 /-- Construct one ordered heterogeneous key from the existing declaration-owned typed star classifiers. -/
 def resolvedRow (checked : CheckedRepetitionNotUniqueSource model)
-    (read : Env → FieldId → RawCell) (environment : Env) :
+    (read : Env → FieldId → CheckedCell) (environment : Env) :
     ResolvedRepetitionKeyRow :=
   { row := environment
     key := checked.keys.map fun key => key.classify read environment }
@@ -360,7 +365,7 @@ def resolvedRow (checked : CheckedRepetitionNotUniqueSource model)
 /-- Resolve one selected default or explicit `@From` scope, then exclude composite-key rows whose components are not all relevant before reading any key cell. -/
 def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError (List ResolvedRepetitionKeyRow) := do
   let topology ← checked.topology.path.resolve document outer
   pure ((topology.environments.filter (checked.rowRelevant scope)).map
@@ -369,7 +374,7 @@ def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
 /-- Evaluate one selected checked scope through the established branch-independent RNU relation. -/
 def evaluate (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError (List RepetitionNotUniqueResult) := do
   pure (evalRepetitionNotUnique (← checked.resolvedRows document outer scope read))
 

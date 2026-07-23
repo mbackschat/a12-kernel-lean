@@ -45,6 +45,7 @@ theorem checkedEnumerationRepetitionKey_outOfDomain
   have absent' : stored ∉ operand.declaration.declaration.storedTokens := by
     simpa using absent
   simp [CheckedEnumerationProjection.classifyRawKey,
+    CheckedEnumerationProjection.classifyCheckedKeyAt,
     CheckedEnumerationDeclaration.checkRaw,
     CheckedEnumerationDeclaration.classifyValue,
     ResolvedEnumerationProjection.asRepetitionKeyComponent,
