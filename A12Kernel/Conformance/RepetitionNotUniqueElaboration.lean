@@ -157,13 +157,20 @@ private def referenceGroupOf (surface : SurfaceRepetitionNotUniqueSource)
   | .ok checked => some checked.referenceGroup
   | .error _ => none
 
+private def checkedRead (read : Env → FieldId → RawCell) :
+    Env → FieldId → CheckedCell :=
+  fun environment id =>
+    match model.lookupUniqueId id with
+    | .ok declaration => declaration.checkRaw (read environment id)
+    | .error _ => malformedCheckedCell
+
 private def verdictsOf (surface : SurfaceRepetitionNotUniqueSource)
     (outer : Env) (relevance : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) : Option (List (Env × Verdict)) :=
   match elaborateRepetitionNotUniqueSource model ["Project"] surface with
   | .error _ => none
   | .ok checked =>
-      match checked.evaluate document outer relevance read with
+      match checked.evaluate document outer relevance (checkedRead read) with
       | .error _ => none
       | .ok results => some (results.map fun result => (result.row, result.verdict))
 
