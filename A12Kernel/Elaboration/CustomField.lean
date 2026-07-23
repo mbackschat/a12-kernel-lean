@@ -12,75 +12,70 @@ inductive FlatCustomFieldPreparationError where
   | custom (error : CustomFieldTypeElabError)
   deriving Repr, DecidableEq
 
-inductive FlatCustomFieldEvaluationError where
-  | preparation (error : FlatCustomFieldPreparationError)
-  | condition (error : ElabError)
-  deriving Repr, DecidableEq
-
 /-- One flat String declaration paired with its checked registered custom type. -/
 structure PreparedFlatCustomField where
   declaration : FlatFieldDecl
   customType : CheckedCustomFieldType
 
 /-- Ordered checked custom declarations over the exact original flat model. -/
-structure PreparedFlatCustomFields where
-  model : FlatModel
+structure PreparedFlatCustomFields (model : FlatModel) where
   fields : List PreparedFlatCustomField
 
 namespace PreparedFlatCustomFields
 
-def lookup? (prepared : PreparedFlatCustomFields) (id : FieldId) :
+def lookup? (prepared : PreparedFlatCustomFields model) (id : FieldId) :
     Option PreparedFlatCustomField :=
   prepared.fields.find? fun field => field.declaration.id == id
 
-/-- Compile heterogeneous raw cells through the exact prepared custom overlay. Ordinary declarations reuse their declaration-owned checker; any incoherent hand-built overlay fails closed. -/
-def checkContext (prepared : PreparedFlatCustomFields) (locale : String)
+/-- Overlay exact prepared custom declarations on an already checked context. Missing required entries and every forged declaration/type mismatch fail closed. -/
+def checkContextOver (prepared : PreparedFlatCustomFields model)
+    (locale : String) (fallback : FlatContext)
     (raw : RawFlatContext) : FlatContext where
   read id :=
-    match prepared.model.lookupUniqueId id with
+    match model.lookupUniqueId id with
     | .error _ => malformedCheckedCell
     | .ok declaration =>
         match prepared.lookup? id with
-        | none => declaration.checkRaw (raw.read id)
+        | none =>
+            if declaration.customType.isSome then
+              malformedCheckedCell
+            else
+              fallback.read id
         | some customField =>
-            if customField.declaration == declaration then
+            if customField.declaration == declaration &&
+                declaration.customType ==
+                  some customField.customType.declaration then
               customField.customType.checkValueRaw locale (raw.read id)
             else
               malformedCheckedCell
+
+/-- Compile heterogeneous raw cells through the exact prepared custom overlay while ordinary declarations retain the model-owned checker. -/
+def checkContext (prepared : PreparedFlatCustomFields model) (locale : String)
+    (raw : RawFlatContext) : FlatContext :=
+  prepared.checkContextOver locale (model.checkContext raw) raw
 
 end PreparedFlatCustomFields
 
 def prepareCustomDeclarations (world : World) :
     List FlatFieldDecl →
-      Except FlatCustomFieldPreparationError (List PreparedFlatCustomField)
+      Except CustomFieldTypeElabError (List PreparedFlatCustomField)
   | [] => .ok []
   | declaration :: rest =>
       match declaration.customType with
       | none => prepareCustomDeclarations world rest
       | some customDeclaration => do
-          let customType ←
-            (elaborateCustomFieldType world customDeclaration).mapError .custom
+          let customType ← elaborateCustomFieldType world customDeclaration
           let preparedRest ← prepareCustomDeclarations world rest
           pure ({ declaration, customType } :: preparedRest)
 
 /-- Validate the flat model and resolve every declared custom String validator once. -/
 def prepareFlatCustomFields (world : World) (model : FlatModel) :
-    Except FlatCustomFieldPreparationError PreparedFlatCustomFields :=
+    Except FlatCustomFieldPreparationError (PreparedFlatCustomFields model) :=
   match model.validate with
   | .error error => .error (.model error)
   | .ok () =>
       match prepareCustomDeclarations world model.fields with
-      | .error error => .error error
-      | .ok fields => .ok { model, fields }
-
-/-- Prepare custom declarations, elaborate against the exact same model, and evaluate through the prepared locale-aware context. -/
-def elaborateAndEvalCustomFull (model : FlatModel) (world : World)
-    (locale : String) (declaringGroup : GroupPath) (raw : RawFlatContext)
-    (hasContent : Bool) (condition : SurfaceCondition) :
-    Except FlatCustomFieldEvaluationError Verdict := do
-  let prepared ← (prepareFlatCustomFields world model).mapError .preparation
-  let checked ← (elaborate model declaringGroup condition).mapError .condition
-  pure (checked.core.evalFull
-    ((prepared.checkContext locale raw).withWorld world) hasContent)
+      | .error error => .error (.custom error)
+      | .ok fields => .ok { fields }
 
 end A12Kernel

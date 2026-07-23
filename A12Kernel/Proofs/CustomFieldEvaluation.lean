@@ -1,44 +1,54 @@
-import A12Kernel.Elaboration.CustomField
+import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.Proofs.CustomFieldEvaluation — checked custom full-evaluation laws -/
 
 namespace A12Kernel
 
 /-- Preparation fails before condition elaboration and preserves its exact integration error. -/
-theorem elaborateAndEvalCustomFull_preparationError
+theorem elaborateAndEvalStringContextFull_preparationError
+    (compilePattern : StringPatternCompiler)
     (model : FlatModel) (world : World) (locale : String)
     (declaringGroup : GroupPath) (raw : RawFlatContext)
     (hasContent : Bool) (condition : SurfaceCondition)
-    (error : FlatCustomFieldPreparationError)
-    (failed : prepareFlatCustomFields world model = .error error) :
-    elaborateAndEvalCustomFull model world locale declaringGroup raw hasContent
+    (error : FlatStringContextPreparationError)
+    (failed :
+      prepareFlatStringContext world compilePattern model = .error error) :
+    elaborateAndEvalStringContextFull compilePattern model world locale
+      declaringGroup raw hasContent
       condition = .error (.preparation error) := by
-  simp [elaborateAndEvalCustomFull, failed] <;> rfl
+  simp [elaborateAndEvalStringContextFull, failed] <;> rfl
 
 /-- After successful preparation, a condition error remains a distinct elaboration failure. -/
-theorem elaborateAndEvalCustomFull_conditionError
+theorem elaborateAndEvalStringContextFull_conditionError
+    (compilePattern : StringPatternCompiler)
     (model : FlatModel) (world : World) (locale : String)
     (declaringGroup : GroupPath) (raw : RawFlatContext)
     (hasContent : Bool) (condition : SurfaceCondition)
-    (prepared : PreparedFlatCustomFields) (error : ElabError)
-    (preparedOk : prepareFlatCustomFields world model = .ok prepared)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (error : ElabError)
+    (preparedOk :
+      prepareFlatStringContext world compilePattern model = .ok prepared)
     (failed : elaborate model declaringGroup condition = .error error) :
-    elaborateAndEvalCustomFull model world locale declaringGroup raw hasContent
+    elaborateAndEvalStringContextFull compilePattern model world locale
+      declaringGroup raw hasContent
       condition = .error (.condition error) := by
-  simp [elaborateAndEvalCustomFull, preparedOk, failed] <;> rfl
+  simp [elaborateAndEvalStringContextFull, preparedOk, failed] <;> rfl
 
 /-- Successful composition evaluates the exact checked core over the exact prepared locale-aware context with the supplied world. -/
-theorem elaborateAndEvalCustomFull_success
+theorem elaborateAndEvalStringContextFull_success
+    (compilePattern : StringPatternCompiler)
     (model : FlatModel) (world : World) (locale : String)
     (declaringGroup : GroupPath) (raw : RawFlatContext)
     (hasContent : Bool) (condition : SurfaceCondition)
-    (prepared : PreparedFlatCustomFields)
+    (prepared : PreparedFlatStringContext model compilePattern)
     (checked : CheckedFlatCondition model)
-    (preparedOk : prepareFlatCustomFields world model = .ok prepared)
+    (preparedOk :
+      prepareFlatStringContext world compilePattern model = .ok prepared)
     (elaborated : elaborate model declaringGroup condition = .ok checked) :
-    elaborateAndEvalCustomFull model world locale declaringGroup raw hasContent
+    elaborateAndEvalStringContextFull compilePattern model world locale
+      declaringGroup raw hasContent
       condition = .ok (checked.core.evalFull
         ((prepared.checkContext locale raw).withWorld world) hasContent) := by
-  simp [elaborateAndEvalCustomFull, preparedOk, elaborated] <;> rfl
+  simp [elaborateAndEvalStringContextFull, preparedOk, elaborated] <;> rfl
 
 end A12Kernel

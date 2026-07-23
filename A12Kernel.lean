@@ -68,6 +68,7 @@ import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.CustomField
+import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Elaboration.SingleGroup

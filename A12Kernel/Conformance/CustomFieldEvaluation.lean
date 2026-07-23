@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CustomField
+import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.Conformance.CustomFieldEvaluation — checked custom full-evaluation locks -/
 
@@ -20,6 +20,13 @@ private def worldWithValidator : World where
 private def emptyWorld : World :=
   { now := { epochMillis := 0 } }
 
+private def compilePattern : StringPatternCompiler := fun source =>
+  if source == "A+" then
+    some fun value =>
+      !value.isEmpty && value.toList.all fun character => character == 'A'
+  else
+    none
+
 private def code : FlatFieldDecl :=
   {
     id := 1
@@ -32,6 +39,15 @@ private def code : FlatFieldDecl :=
 private def ordinary : FlatFieldDecl :=
   { id := 2, groupPath := ["Order"], name := "Note",
     policy := { kind := .string } }
+
+private def patterned : FlatFieldDecl :=
+  {
+    id := 4
+    groupPath := ["Order"]
+    name := "Patterned"
+    policy := { kind := .string }
+    stringPatternSource := some "A+"
+  }
 
 private def invalidCustomNumber : FlatFieldDecl :=
   {
@@ -48,10 +64,18 @@ private def path (name : String) : SurfaceFieldPath :=
 private def rawAt (id : FieldId) (cell : RawCell) : RawFlatContext where
   read candidate := if candidate == id then cell else .empty
 
+private def rawPair (leftId : FieldId) (left : RawCell)
+    (rightId : FieldId) (right : RawCell) : RawFlatContext where
+  read candidate :=
+    if candidate == leftId then left
+    else if candidate == rightId then right
+    else .empty
+
 private def outcome (model : FlatModel) (world : World) (locale : String)
     (raw : RawFlatContext) (condition : SurfaceCondition) :
-    Except FlatCustomFieldEvaluationError Verdict :=
-  elaborateAndEvalCustomFull model world locale ["Order"] raw true condition
+    Except FlatStringContextEvaluationError Verdict :=
+  elaborateAndEvalStringContextFull compilePattern model world locale
+    ["Order"] raw true condition
 
 private def verdictOf (model : FlatModel) (world : World) (locale : String)
     (raw : RawFlatContext) (condition : SurfaceCondition) : Option Verdict :=
@@ -61,10 +85,16 @@ private def verdictOf (model : FlatModel) (world : World) (locale : String)
 
 private def errorOf (model : FlatModel) (world : World) (locale : String)
     (raw : RawFlatContext) (condition : SurfaceCondition) :
-    Option FlatCustomFieldEvaluationError :=
+    Option FlatStringContextEvaluationError :=
   match outcome model world locale raw condition with
   | .ok _ => none
   | .error error => some error
+
+private def unpreparedVerdict (model : FlatModel) (world : World)
+    (raw : RawFlatContext) (condition : SurfaceCondition) : Option Verdict :=
+  match elaborateAndEvalFull model world ["Order"] raw true condition with
+  | .ok verdict => some verdict
+  | .error _ => none
 
 /- Accepted, rejected, and empty custom fields flow through one prepared checked context. -/
 example : verdictOf { fields := [code] } worldWithValidator "en_US"
@@ -86,6 +116,37 @@ example : verdictOf { fields := [code] } worldWithValidator "en_US"
 example : verdictOf { fields := [ordinary] } emptyWorld "en_US"
     (rawAt ordinary.id (.parsed (.str "note")))
     (.fieldFilled (path "Note")) = some (.fired .value) := by
+  native_decide
+
+/- A prepared custom entry point must not bypass an ordinary declared pattern on another field. -/
+example : verdictOf { fields := [patterned] } emptyWorld "en_US"
+    (rawAt patterned.id (.parsed (.str "BBB")))
+    (.fieldFilled (path "Patterned")) = some .unknown := by
+  native_decide
+
+example : unpreparedVerdict { fields := [patterned] } emptyWorld
+    (rawAt patterned.id (.parsed (.str "BBB")))
+    (.fieldFilled (path "Patterned")) = some .unknown := by
+  native_decide
+
+example : verdictOf { fields := [patterned] } emptyWorld "en_US"
+    (rawAt patterned.id (.parsed (.str "AAA")))
+    (.fieldFilled (path "Patterned")) = some (.fired .value) := by
+  native_decide
+
+/- One mixed row dispatches the ordinary pattern and registered custom fields through their distinct prepared checkers before the shared condition tree. -/
+example : verdictOf { fields := [patterned, code] } worldWithValidator "en_US"
+    (rawPair patterned.id (.parsed (.str "AAA"))
+      code.id (.parsed (.str "accepted")))
+    (.and (.fieldFilled (path "Patterned")) (.fieldFilled (path "Code"))) =
+      some (.fired .value) := by
+  native_decide
+
+example : verdictOf { fields := [patterned, code] } worldWithValidator "en_US"
+    (rawPair patterned.id (.parsed (.str "BBB"))
+      code.id (.parsed (.str "accepted")))
+    (.and (.fieldFilled (path "Patterned")) (.fieldFilled (path "Code"))) =
+      some .unknown := by
   native_decide
 
 /- Preparation and condition elaboration failures remain distinct. -/

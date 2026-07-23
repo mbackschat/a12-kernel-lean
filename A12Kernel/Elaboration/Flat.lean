@@ -1605,7 +1605,7 @@ def malformedCheckedCell : CheckedCell :=
   { rawPresent := true, parsed := none, findings := [.malformed] }
 
 /-- Return the one declaration matcher whose meaning is already implemented without an injected host compiler. Every wider admitted source remains available only through the prepared pattern capability. -/
-private def FlatFieldDecl.executableStringPatternMatcher?
+def FlatFieldDecl.executableStringPatternMatcher?
     (declaration : FlatFieldDecl) : Option (String → Bool) :=
   if declaration.stringPatternSource == some asciiDigitsPatternSource then
     some matchesAsciiDigitsPattern
@@ -1625,8 +1625,18 @@ def FlatFieldDecl.checkRaw (declaration : FlatFieldDecl) (raw : RawCell) : Check
       if declaration.stringValueMode == .raw then
         formalCheck declaration.policy raw
       else
-        declaration.stringPolicy.checkRawWithPattern
-          declaration.executableStringPatternMatcher? raw
+        match declaration.stringPatternSource with
+        | none =>
+            declaration.stringPolicy.checkRawWithPattern none raw
+        | some source =>
+            if source.isEmpty then
+              declaration.stringPolicy.checkRawWithPattern none raw
+            else
+              match declaration.executableStringPatternMatcher? with
+              | some matcher =>
+                  declaration.stringPolicy.checkRawWithPattern
+                    (some matcher) raw
+              | none => malformedCheckedCell
   | none, _, some _ => malformedCheckedCell
   | none, _, none => formalCheck declaration.policy raw
 
