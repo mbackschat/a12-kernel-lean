@@ -32,6 +32,40 @@ private def rejectsAs (expected : StarAddressingError)
   | .error actual => actual == expected
   | .ok _ => false
 
+private inductive EnvPathSnapshot where
+  | path (coordinates : List Nat)
+  | missing (level : RepeatableLevel)
+  | duplicate (level : RepeatableLevel)
+  | zero (level : RepeatableLevel)
+  deriving Repr, DecidableEq
+
+private def envPathSnapshot (environment : Env)
+    (scope : List RepeatableLevel) : EnvPathSnapshot :=
+  match environment.pathForScope scope with
+  | .ok coordinates => .path coordinates
+  | .error (.missingBinding level) => .missing level
+  | .error (.duplicateBinding level) => .duplicate level
+  | .error (.zeroBinding level) => .zero level
+
+/- A complete environment projects an arbitrary model scope by named level and in scope order; extra/deeper bindings do not become part of an ancestor address. Missing, repeated, and zero coordinates are distinct structural failures. -/
+example :
+    let environment : Env := [(20, 2), (30, 3), (10, 1)]
+    envPathSnapshot environment [10, 20] = .path [1, 2] ∧
+      envPathSnapshot environment [20] = .path [2] := by
+  native_decide
+
+example :
+    envPathSnapshot [(10, 1)] [40] = .missing 40 := by
+  native_decide
+
+example :
+    envPathSnapshot [(10, 1), (10, 2)] [10] = .duplicate 10 := by
+  native_decide
+
+example :
+    envPathSnapshot [(10, 0)] [10] = .zero 10 := by
+  native_decide
+
 /- Caller-supplied plans and raw bindings fail closed before row enumeration. -/
 example :
     rejectsAs (.invalidStarPosition 1 1) { axes := [outer], firstStar := 1 } ∧

@@ -15,19 +15,11 @@ inductive CheckedGroupPresenceError where
 
 namespace CheckedDocument
 
-private def bindingAt (environment : Env) (level : RepeatableLevel) :
-    Except CheckedGroupPresenceError Nat :=
-  match environment.filter fun binding => binding.1 == level with
-  | [] => .error (.missingBinding level)
-  | [(_, coordinate)] =>
-      if coordinate == 0 then .error (.zeroBinding level) else .ok coordinate
-  | _ => .error (.duplicateBinding level)
-
-private def pathForScope (environment : Env) :
-    List RepeatableLevel → Except CheckedGroupPresenceError (List Nat)
-  | [] => pure []
-  | level :: levels => do
-      pure ((← bindingAt environment level) :: (← pathForScope environment levels))
+private def CheckedGroupPresenceError.ofEnvBinding : EnvBindingError →
+    CheckedGroupPresenceError
+  | .missingBinding level => .missingBinding level
+  | .duplicateBinding level => .duplicateBinding level
+  | .zeroBinding level => .zeroBinding level
 
 private def NatPath.isPrefixOf : List Nat → List Nat → Bool
   | [], _ => true
@@ -63,7 +55,8 @@ private def resolveGroupPresenceScope (model : FlatModel)
     (rows : List RowAddr) (groupPath : GroupPath) (environment : Env) :
     Except CheckedGroupPresenceError (List Nat × Bool) := do
   let addressPrefix ←
-    pathForScope environment (model.repeatableScopeForGroupPath groupPath)
+    (environment.pathForScope (model.repeatableScopeForGroupPath groupPath))
+      |>.mapError CheckedGroupPresenceError.ofEnvBinding
   let overLimitRow ← hasOverLimitRowWithin model groupPath addressPrefix
     rows
   pure (addressPrefix, overLimitRow)

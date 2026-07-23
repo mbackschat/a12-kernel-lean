@@ -2,6 +2,37 @@ import A12Kernel.Semantics.StarAddressing
 
 namespace A12Kernel
 
+/-- A successful named environment projection has exactly one coordinate per requested model scope level. -/
+theorem env_pathForScope_length (environment : Env)
+    (scope : List RepeatableLevel) (path : List Nat)
+    (resolved : environment.pathForScope scope = .ok path) :
+    path.length = scope.length := by
+  induction scope generalizing path with
+  | nil =>
+      simp [Env.pathForScope, pure, Except.pure] at resolved
+      simp [← resolved]
+  | cons level levels induction =>
+      simp only [Env.pathForScope] at resolved
+      cases binding : environment.bindingAt level with
+      | error cause =>
+          simp [binding, bind, Except.bind] at resolved
+      | ok coordinate =>
+          cases remaining : environment.pathForScope levels with
+          | error cause =>
+              simp [binding, remaining, bind, Except.bind] at resolved
+          | ok tail =>
+              simp [binding, remaining, bind, Except.bind, pure, Except.pure]
+                at resolved
+              subst path
+              simp [induction tail remaining]
+
+/-- One positive singleton binding projects to its exact coordinate; no positional default is involved. -/
+theorem env_pathForScope_singleton (level : RepeatableLevel) (coordinate : Nat)
+    (positive : coordinate ≠ 0) :
+    Env.pathForScope [(level, coordinate)] [level] = .ok [coordinate] := by
+  simp [Env.pathForScope, Env.bindingAt, positive, bind, Except.bind,
+    pure, Except.pure]
+
 /-- The shared structural overlay replaces any prior scalar result with the exact over-repetition finding. -/
 @[simp] theorem withOverRepetitionIf_true {α : Type}
     (cell : CheckedCell α) :

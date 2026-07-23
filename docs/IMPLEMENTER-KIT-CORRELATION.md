@@ -145,7 +145,7 @@ The statements below are language-neutral requirements of the Lean account. Thei
 | Truth bridge | For any closed `Having` and frame, executable truth is definitely `True` iff the independent declarative `Holds` predicate is derivable; it does not identify `False` with `Unknown` | `correlatedHaving_truth_iff_holds` |
 | Ordered selector bridge | For any candidates and output list, executable selection equals that list iff the independent keep/drop relation derives it from the complete candidate sequence | `selectCorrelatedRows_iff` |
 | Filter-before-consumer footprint | Equal selected lists, equal outer-guard observation, and equal consumer observations on selected rows imply equal guarded result in three-valued truth; dropped consumer cells need not agree | `evalGuardedAnyFilledOn_filter_before_consumer` |
-| Self inequality | `CurrentRepetition(Inner) != CurrentRepetition(Outer)` is false when inner equals outer | `currentRepetition_selfExclusion_false` |
+| Self inequality | On a positive checked row, `CurrentRepetition(Inner) != CurrentRepetition(Outer)` is false when inner equals outer | `currentRepetition_selfExclusion_false` |
 | Explicit self-exclusion | A conjunction beginning with that repetition inequality never selects the outer row | `explicitSelfExclusion_drops_outer` |
 | Same-field self-match | If inner/outer equality uses the same field, the row is a candidate, and its operand resolves to a value, the row selects itself; a value of zero may come from empty substitution | `sameFieldEquality_selfMatches` |
 | Topology certificate | Successful raw context validation implies positive, duplicate-free candidates in the semantic context | `rawSingleGroupContext_validate_wellFormed` |
