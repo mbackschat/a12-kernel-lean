@@ -260,7 +260,8 @@ private def crossGroupOutcome (source target : Rat) : Option FlatRuleOutcome := 
   let operation ← crossGroupNumberOperation.toOption
   let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
     "computedCrossGroup" none messagePlan).toOption
-  pure (rule.evalFull evaluationWorld (crossGroupRaw source target) true)
+  pure (rule.evalFull evaluationWorld (crossGroupRaw source target)
+    GroupPresenceContext.unavailable true)
 
 private def crossGroupDatePartOutcome (target : Rat) : Option FlatRuleOutcome := do
   let operation ← crossGroupDatePartOperation.toOption
@@ -273,7 +274,7 @@ private def crossGroupDatePartOutcome (target : Rat) : Option FlatRuleOutcome :=
           { year := 2024, month := 6, day := 25 } .storedGregorian))
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
-  pure (rule.evalFull evaluationWorld raw true)
+  pure (rule.evalFull evaluationWorld raw GroupPresenceContext.unavailable true)
 
 private def crossGroupGeneratedBoundary :
     Option (GroupPath × NumericOperandScope) := do
@@ -336,7 +337,8 @@ private def crossGroupExpressionTableOutcome
   let table ← crossGroupExpressionTable secondTolerance
   let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
     { table with commonPrecondition := common }).toOption
-  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 3) true)
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 3)
+    GroupPresenceContext.unavailable true)
 
 private def crossGroupExpressionSingletonOutcome
     (target : Rat) : Option FlatRuleOutcome := do
@@ -348,13 +350,15 @@ private def crossGroupExpressionSingletonOutcome
     alternatives := .singleton { operation }
     messagePlan }
   let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel table).toOption
-  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target)
+    GroupPresenceContext.unavailable true)
 
 private def crossGroupAggregateOutcome (target : Rat) : Option FlatRuleOutcome := do
   let operation ← crossGroupAggregateOperation.toOption
   let rule ← (assembleGeneratedNumericOperationRule crossGroupModel operation
     "computedAggregate" none messagePlan).toOption
-  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target)
+    GroupPresenceContext.unavailable true)
 
 private def crossGroupAggregateTableOutcome (target : Rat) : Option FlatRuleOutcome := do
   let first ← crossGroupNumberOperation.toOption
@@ -373,7 +377,8 @@ private def crossGroupAggregateTableOutcome (target : Rat) : Option FlatRuleOutc
     messagePlan }
   let rule ←
     (assembleGeneratedNumericOperationTableRule crossGroupModel table).toOption
-  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target) true)
+  pure (rule.evalFull evaluationWorld (crossGroupRaw 3 target)
+    GroupPresenceContext.unavailable true)
 
 private def crossGroupStringRangeOutcome (target : Rat)
     (code : RawCell := .parsed (.str "12X")) : Option FlatRuleOutcome := do
@@ -385,7 +390,7 @@ private def crossGroupStringRangeOutcome (target : Rat)
       if field = crossGroupCode.id then code
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
-  pure (rule.evalFull evaluationWorld raw true)
+  pure (rule.evalFull evaluationWorld raw GroupPresenceContext.unavailable true)
 
 private def crossGroupStringRangeExpectedMessage
     (messageType : Polarity) : FlatRuleMessage :=
@@ -405,7 +410,7 @@ private def crossGroupFieldValueAsNumberOutcome (target : Rat)
       if field = crossGroupNumericChoice.id then source
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
-  pure (rule.evalFull evaluationWorld raw true)
+  pure (rule.evalFull evaluationWorld raw GroupPresenceContext.unavailable true)
 
 private def crossGroupFieldValueAsNumberExpectedMessage
     (messageType : Polarity) : FlatRuleMessage :=

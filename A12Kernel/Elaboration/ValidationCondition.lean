@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.NumericValidation
+import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Semantics.GroupPresence
 
 /-! # Shared resolved validation conditions
 
@@ -7,10 +9,12 @@ This boundary joins the established flat leaves and resolved numeric-expression 
 
 namespace A12Kernel
 
-/-- The two currently resolved validation leaf families. -/
+/-- The currently resolved validation leaf families. -/
 inductive ValidationConditionLeaf where
   | flat (condition : FlatConditionLeaf)
   | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
+  | groupPresence (operator : GroupPresenceOperator)
+      (reference : ResolvedGroupReference)
   deriving Repr, DecidableEq
 
 /-- One connective tree whose leaves may be ordinary flat clauses or resolved numeric-expression comparisons. -/
@@ -31,17 +35,51 @@ def numericIn (scope : NumericOperandScope)
     (comparison : NumericComparison) : ValidationCondition :=
   .leaf (.numeric scope comparison)
 
+/-- Embed one resolved scalar group-presence predicate without re-traversing document state. -/
+def groupPresence (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference) : ValidationCondition :=
+  .leaf (.groupPresence operator reference)
+
 end ValidationCondition
+
+/-- Runtime group states are supplied by the checked-document boundary and keyed by resolved group path. Missing state is explicit unavailability. -/
+abbrev GroupPresenceContext := GroupPath → Option GroupPresenceState
+
+namespace GroupPresenceContext
+
+/-- Explicitly provide no resolved group slices to a condition known to use only other leaf families. -/
+def unavailable : GroupPresenceContext := fun _ => none
+
+end GroupPresenceContext
+
+/-- The shared checked-condition evaluator keeps field observations and already-resolved group states separate. -/
+structure ValidationEvaluationContext where
+  fields : FlatContext
+  groups : GroupPresenceContext
+
+namespace ResolvedGroupReference
+
+/-- A scalar group-presence leaf either names a nonrepeatable ordinary group, or uses `RuleGroup` to bind the already-selected concrete rule instance. Wider repeatable addressing must be resolved before this boundary grows. -/
+def scalarPresenceWellFormedBool (reference : ResolvedGroupReference)
+    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
+  model.hasGroupPath reference.path &&
+    match reference.origin with
+    | .path => (model.repeatableScopeForGroupPath reference.path).isEmpty
+    | .ruleGroup => reference.path == rowGroup
+
+end ResolvedGroupReference
 
 namespace ValidationConditionLeaf
 
 def canFireOnEmpty : ValidationConditionLeaf → Bool
   | .flat condition => condition.canFireOnEmpty
   | .numeric _ _ => false
+  | .groupPresence operator _ => operator.canFireOnEmpty
 
-def referencesField : ValidationConditionLeaf → FieldId → Bool
+def referencesField (model : FlatModel) : ValidationConditionLeaf → FieldId → Bool
   | .flat condition, field => condition.referencesField field
   | .numeric _ comparison, field => comparison.referencesField field
+  | .groupPresence _ reference, field => reference.referencesField model field
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
@@ -49,14 +87,21 @@ def wellFormedBool (model : FlatModel) (rowGroup : GroupPath) :
   | .flat condition => condition.wellFormedBool model
   | .numeric scope comparison =>
       comparison.wellFormedInBool model rowGroup scope
+  | .groupPresence _ reference =>
+      reference.scalarPresenceWellFormedBool model rowGroup
 
 /-- Evaluate one reached leaf with its own relevance rule. Numeric expressions require every field atom, while flat leaf rules retain their existing operator-specific checks. -/
-def evalSelected (context : FlatContext) (isRelevant : FlatRelevance) :
+def evalSelected (context : ValidationEvaluationContext)
+    (isRelevant : FlatRelevance) :
     ValidationConditionLeaf → Verdict
-  | .flat condition => condition.evalSelected context isRelevant
+  | .flat condition => condition.evalSelected context.fields isRelevant
   | .numeric _ comparison =>
-      if comparison.allRelevant isRelevant then comparison.evalSelected context
+      if comparison.allRelevant isRelevant then comparison.evalSelected context.fields
       else .unknown
+  | .groupPresence operator reference =>
+      match context.groups reference.path with
+      | some state => operator.eval state
+      | none => .unknown
 
 end ValidationConditionLeaf
 
@@ -65,20 +110,23 @@ namespace ValidationCondition
 def canFireOnEmpty (condition : ValidationCondition) : Bool :=
   condition.evalBool ValidationConditionLeaf.canFireOnEmpty
 
-def referencesField (condition : ValidationCondition) (field : FieldId) : Bool :=
-  condition.anyLeaf fun leaf => leaf.referencesField field
+def referencesField (condition : ValidationCondition) (model : FlatModel)
+    (field : FieldId) : Bool :=
+  condition.anyLeaf fun leaf => leaf.referencesField model field
 
 def wellFormedBool (condition : ValidationCondition)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
   condition.allLeaves fun leaf => leaf.wellFormedBool model rowGroup
 
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
-def evalSelected (condition : ValidationCondition) (context : FlatContext)
+def evalSelected (condition : ValidationCondition)
+    (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
   condition.evalVerdict fun leaf => leaf.evalSelected context isRelevant
 
 /-- Apply the ordinary full-validation content gate to a mixed resolved tree. -/
-def evalFull (condition : ValidationCondition) (context : FlatContext)
+def evalFull (condition : ValidationCondition)
+    (context : ValidationEvaluationContext)
     (hasContent : Bool) : Verdict :=
   if hasContent || condition.canFireOnEmpty then condition.evalSelected context
   else .notFired
@@ -86,6 +134,10 @@ def evalFull (condition : ValidationCondition) (context : FlatContext)
 end ValidationCondition
 
 inductive ValidationConditionAssemblyError where
+  | invalidModel (error : ResolveError)
+  | groupReference (error : SingleGroupElabError)
+  | unknownGroup (path : GroupPath)
+  | repeatableGroupRequiresAddress (path : GroupPath)
   | rowGroupMismatch (left right : GroupPath)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -120,6 +172,32 @@ def fromNumeric (comparison : CheckedNumericComparison model) :
   checkCore model comparison.rowGroup
     (ValidationCondition.numericIn comparison.operandScope comparison.core)
     comparison.modelWellFormed
+
+/-- Resolve and certify one scalar group-presence predicate against the same model and declaring group used by the surrounding rule. -/
+def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
+    (reference : SurfaceGroupReference) (operator : GroupPresenceOperator) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () =>
+      match reference.resolveAgainst rowGroup with
+      | .error error => .error (.groupReference error)
+      | .ok resolved =>
+          if model.hasGroupPath resolved.path then
+            match resolved.origin with
+            | .path =>
+                if (model.repeatableScopeForGroupPath resolved.path).isEmpty then
+                  checkCore model rowGroup
+                    (ValidationCondition.groupPresence operator resolved)
+                    (by rw [hModel]; rfl)
+                else
+                  .error (.repeatableGroupRequiresAddress resolved.path)
+            | .ruleGroup =>
+                checkCore model rowGroup
+                  (ValidationCondition.groupPresence operator resolved)
+                  (by rw [hModel]; rfl)
+          else
+            .error (.unknownGroup resolved.path)
 
 private def combine (constructor : ValidationCondition → ValidationCondition →
     ValidationCondition) (left right : CheckedValidationCondition model) :

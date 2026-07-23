@@ -73,6 +73,22 @@ def GroupPresenceState.groupNotFilled (state : GroupPresenceState) : Verdict :=
   else if state.relevance == .fullyRelevant then .fired .omission
   else .unknown
 
+/-- The two scalar group-presence predicates share one checked-condition leaf family. -/
+inductive GroupPresenceOperator where
+  | filled
+  | notFilled
+  deriving Repr, DecidableEq
+
+def GroupPresenceOperator.canFireOnEmpty : GroupPresenceOperator → Bool
+  | .filled => false
+  | .notFilled => true
+
+def GroupPresenceOperator.eval (operator : GroupPresenceOperator)
+    (state : GroupPresenceState) : Verdict :=
+  match operator with
+  | .filled => state.groupFilled
+  | .notFilled => state.groupNotFilled
+
 /-- Parent-filled requiredness uses the same positive admitted-content projection. -/
 def GroupPresenceState.activatesRelativeRequiredness (state : GroupPresenceState) : Bool :=
   state.definitelyFilled
