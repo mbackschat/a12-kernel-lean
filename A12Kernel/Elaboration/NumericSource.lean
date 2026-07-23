@@ -76,13 +76,6 @@ def parseJavaDecimalToken? (input : String) : Option ParsedJavaDecimalToken := d
       scale
       digitCount := wholeCharacters.length + fractionCharacters.length }
 
-/-- The exact selected stored/category token domain of one already-checked Enumeration projection. -/
-def CheckedEnumerationProjection.selectedTokens
-    (checked : CheckedEnumerationProjection) : List String :=
-  match checked.projection with
-  | .stored => checked.declaration.declaration.storedTokens
-  | .category mapping => mapping.categoryTokens
-
 /-- Derive the conversion result scale only when every selected token belongs to the pinned Java-host decimal profile and stays within the kernel digit budget. -/
 def CheckedEnumerationProjection.numericScale?
     (checked : CheckedEnumerationProjection) : Option Nat := do

@@ -905,6 +905,13 @@ run_cmd do
 #print axioms A12Kernel.checkedEnumeration_stored_rejected
 #print axioms A12Kernel.checkedEnumeration_evalRaw_present
 #print axioms A12Kernel.checkedEnumeration_evalRaw_outOfDomain
+#print axioms A12Kernel.nonemptyToken_asEnumerationTargetOutcome
+#print axioms A12Kernel.noValue_asEnumerationTargetOutcome
+#print axioms A12Kernel.poisonedToken_asEnumerationTargetOutcome
+#print axioms A12Kernel.enumerationCompatibility_coversSelectedDomain
+#print axioms A12Kernel.checkedEnumerationComputation_source_allowed
+#print axioms A12Kernel.checkedEnumerationComputation_excludes_target_reference
+#print axioms A12Kernel.checkedEnumerationComputation_evaluate
 #print axioms A12Kernel.enumerationValueList_empty
 #print axioms A12Kernel.enumerationValueList_unknown
 #print axioms A12Kernel.enumerationValueList_present
