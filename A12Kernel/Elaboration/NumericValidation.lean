@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericAggregate
+import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
@@ -10,6 +11,12 @@ namespace A12Kernel
 
 /-- Model-resolved numeric-validation atoms. Numeric Base Year and component sources remain non-expandable scale-0 atoms rather than becoming authored literals. -/
 abbrev NumericValidationAtom := ResolvedNumericAtom FlatNumberField
+
+/-- Numeric source unavailability preserves a reached formal cell cause when one exists while representing unresolved/erroneous group product state without fabricating such a cause. Both project to `Verdict.unknown`; the distinction remains available to Explain and later checked-document consumers. -/
+inductive NumericValidationUnavailable where
+  | formal (cause : FormalCause)
+  | groupState
+  deriving Repr, DecidableEq
 
 /-- Parser-independent input to the checked numeric consumer. -/
 structure SurfaceNumericComparison where
@@ -41,6 +48,12 @@ inductive NumericValidationElabError where
   | incompatibleDateDifference
   | baseYearNotDeclared
   | aggregate (error : NumericAggregateElabError)
+  | groupReference (error : SingleGroupElabError)
+  | unknownGroupInCount (path : GroupPath)
+  | repeatableGroupCountRequiresStar (path : GroupPath)
+  | groupCountNeedsMultipleOperands
+  | rootGroupInGroupCount (path : GroupPath)
+  | overlappingGroupCountOperands (left right : GroupPath)
   | constantExpression
   | unsupportedExpression
   | authoring (result : NumericAuthoringCheck)
@@ -164,6 +177,11 @@ private def NumericValidationAtom.admitted
           match scope with
           | .sameGroup => model.admitsNumberInGroup rowGroup field
           | .modelWideNonrepeatable => model.admitsNumberModelWide field
+  | .filledGroupCount groups =>
+      1 < groups.length &&
+        !groups.any ResolvedGroupReference.isRoot &&
+        (ResolvedGroupReferences.firstOverlap? groups).isNone &&
+        ResolvedGroupReferences.wellFormedBool groups model rowGroup
 
 /-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
 def NumericValidationOp.acceptsScales (op : NumericValidationOp)
@@ -188,8 +206,8 @@ def NumericComparison.wellFormedInBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
-  (comparison.left.anyAtom ResolvedNumericAtom.isField ||
-      comparison.right.anyAtom ResolvedNumericAtom.isField) &&
+  (comparison.left.anyAtom ResolvedNumericAtom.isDataDependent ||
+      comparison.right.anyAtom ResolvedNumericAtom.isDataDependent) &&
     comparison.left.isAdmittedResolvedNumericOperation &&
     comparison.right.isAdmittedResolvedNumericOperation &&
     comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&
@@ -228,8 +246,9 @@ structure CheckedNumericComparison (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormedIn model rowGroup operandScope
 
-/-- Whether one resolved validation atom references a field ID. Context-free Base-Year sources contribute no reference. -/
-def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId → Bool
+/-- Whether one resolved validation atom references a field ID. Context-free Base-Year sources contribute no reference; a fixed group count references every field in each counted subtree. -/
+def NumericValidationAtom.referencesField (model : FlatModel) :
+    NumericValidationAtom → FieldId → Bool
   | .field source, field => source.id == field
   | .baseYear _, _ | .baseYearDatePart _ _ _, _ => false
   | .temporalFieldPart source _, field => source.id == field
@@ -238,6 +257,8 @@ def NumericValidationAtom.referencesField : NumericValidationAtom → FieldId �
   | .dateDifference _ left right, field =>
       left.references field || right.references field
   | .aggregate _ source, field => source.referencesField field
+  | .filledGroupCount groups, field =>
+      groups.any fun group => group.referencesField model field
 
 /-- Whether every field read by one resolved validation atom is relevant. -/
 def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
@@ -254,12 +275,13 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
         | .baseYear _ _ => true
       operandRelevant left && operandRelevant right
   | .aggregate _ source => source.allRelevant isRelevant
+  | .filledGroupCount _ => true
 
 /-- Reference membership traverses both authored operands without erasing expression shape. -/
 def NumericComparison.referencesField (comparison : NumericComparison)
-    (field : FieldId) : Bool :=
-  comparison.left.anyAtom (·.referencesField field) ||
-    comparison.right.anyAtom (·.referencesField field)
+    (model : FlatModel) (field : FieldId) : Bool :=
+  comparison.left.anyAtom (·.referencesField model field) ||
+    comparison.right.anyAtom (·.referencesField model field)
 
 /-- Partial relevance covers every field atom across both operands. -/
 def NumericComparison.allRelevant (comparison : NumericComparison)
@@ -278,6 +300,23 @@ private def FlatModel.ensureNumericAggregateRowGroup (model : FlatModel)
           if declaration.groupPath != rowGroup then
             throw (.fieldOutsideRowGroup declaration.path rowGroup)
           model.ensureNumericAggregateRowGroup rowGroup remaining
+
+private def NumericValidationElabError.ofFixedGroupReferenceError :
+    FixedGroupReferenceError → NumericValidationElabError
+  | .reference error => .groupReference error
+  | .unknownGroup path => .unknownGroupInCount path
+  | .repeatableGroupRequiresAddress path =>
+      .repeatableGroupCountRequiresStar path
+
+private def resolveFixedGroupCountOperands (model : FlatModel)
+    (rowGroup : GroupPath) :
+    List SurfaceGroupReference →
+      Except NumericValidationElabError (List ResolvedGroupReference)
+  | [] => pure []
+  | surface :: remaining => do
+      let resolved ← model.resolveFixedGroupReference rowGroup surface
+        |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
+      pure (resolved :: (← resolveFixedGroupCountOperands model rowGroup remaining))
 
 private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
@@ -346,6 +385,17 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         NumericValidationElabError.aggregate
       model.ensureNumericAggregateRowGroup rowGroup checked.fields
       pure (.aggregate op checked.resolvedFields)
+  | .filledGroupCount surfaces => do
+      let groups ← resolveFixedGroupCountOperands model rowGroup surfaces
+      if groups.length < 2 then
+        throw .groupCountNeedsMultipleOperands
+      match groups.find? ResolvedGroupReference.isRoot with
+      | some root => throw (.rootGroupInGroupCount root.path)
+      | none => pure ()
+      match ResolvedGroupReferences.firstOverlap? groups with
+      | some (left, right) =>
+          throw (.overlappingGroupCountOperands left right)
+      | none => pure (.filledGroupCount groups)
 
 private def resolveNumericExpression (model : FlatModel) (rowGroup : GroupPath) :
     AuthoredNumericExpr SurfaceNumericAtom →
@@ -364,8 +414,8 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
         throw (.resolve (.invalidRuleGroup rowGroup))
       let left ← resolveNumericExpression model rowGroup surface.left
       let right ← resolveNumericExpression model rowGroup surface.right
-      if !(left.anyAtom ResolvedNumericAtom.isField ||
-          right.anyAtom ResolvedNumericAtom.isField) then
+      if !(left.anyAtom ResolvedNumericAtom.isDataDependent ||
+          right.anyAtom ResolvedNumericAtom.isDataDependent) then
         throw .constantExpression
       if !left.isAdmittedResolvedNumericOperation then
         throw .unsupportedExpression
@@ -405,60 +455,89 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
 
 /-- Lift one already-classified validation numeric operand into the arithmetic outcome domain. Number and temporal component reads share this exact boundary. -/
 def NumericOperand.toValidationArithmetic
-    (operand : NumericOperand) : Except FormalCause NumericArithmeticOutcome :=
+    (operand : NumericOperand) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome :=
   match operand with
   | .value amount fillability => .ok (.value amount fillability)
-  | .unknown cause => .error cause
+  | .unknown cause => .error (.formal cause)
 
 /-- Lift the existing validation-phase Number read into the arithmetic outcome domain. -/
 def FlatContext.resolveNumericArithmetic (context : FlatContext)
-    (field : FlatNumberField) : Except FormalCause NumericArithmeticOutcome :=
+    (field : FlatNumberField) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome :=
   (context.resolveNumberComparisonOperand field).toValidationArithmetic
 
-def FlatContext.resolveNumericValidationAtom (context : FlatContext) :
-    NumericValidationAtom → Except FormalCause NumericArithmeticOutcome
-  | .field field => context.resolveNumericArithmetic field
+def ValidationEvaluationContext.resolveNumericValidationAtom
+    (context : ValidationEvaluationContext) :
+    NumericValidationAtom →
+      Except NumericValidationUnavailable NumericArithmeticOutcome
+  | .field field => context.fields.resolveNumericArithmetic field
   | .baseYear year => .ok (.value year .fixed)
   | .baseYearDatePart year source part =>
       .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .temporalFieldPart field part =>
-      (context.resolveTemporalNumericOperand field part).toValidationArithmetic
+      (context.fields.resolveTemporalNumericOperand field part).toValidationArithmetic
   | .stringRange field start finish =>
-      match context.observeValidationAt field.id with
+      match context.fields.observeValidationAt field.id with
       | .empty => .ok (.value 0 .growOnly)
       | .value (.str value) =>
           .ok (.value (utf16RangeAsNatural value start finish) .fixed)
-      | .value _ => .error .malformed
-      | .unknown cause | .poison cause => .error cause
+      | .value _ => .error (.formal .malformed)
+      | .unknown cause | .poison cause => .error (.formal cause)
   | .fieldValueAsNumber source =>
-      match context.observeValidationAt source.fieldId with
+      match context.fields.observeValidationAt source.fieldId with
       | .empty => .ok (.value 0 .both)
       | .value value =>
           match source.valueFor? value with
           | some amount => .ok (.value amount .fixed)
-          | none => .error .malformed
-      | .unknown cause | .poison cause => .error cause
+          | none => .error (.formal .malformed)
+      | .unknown cause | .poison cause => .error (.formal cause)
   | .dateDifference unit left right =>
       match DateDifferenceOperand.evaluate unit
-          (left.validationOperand context) (right.validationOperand context) with
+          (left.validationOperand context.fields)
+          (right.validationOperand context.fields) with
       | .ok operand => operand.toValidationArithmetic
-      | .error _ => .error .malformed
+      | .error _ => .error (.formal .malformed)
   | .aggregate op source =>
-      (source.evaluate op context.observeValidationAt).toValidationArithmetic
+      (source.evaluate op context.fields.observeValidationAt).toValidationArithmetic
+  | .filledGroupCount groups =>
+      match context.groups.resolveAll groups with
+      | none => .error .groupState
+      | some states =>
+          match numberOfFilledGroups states with
+          | .unknown => .error .groupState
+          | .value count =>
+              .ok (.value count
+                (if count < groups.length then .growOnly else .fixed))
+
+/-- Preserve the established flat-only numeric entry point. A group-count atom evaluated without resolved group state becomes explicitly unavailable. -/
+def FlatContext.resolveNumericValidationAtom (context : FlatContext)
+    (atom : NumericValidationAtom) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome :=
+  ({ fields := context, groups := GroupPresenceContext.unavailable } :
+    ValidationEvaluationContext).resolveNumericValidationAtom atom
+
+@[simp]
+theorem ValidationEvaluationContext.resolveNumericValidationAtom_withoutGroups
+    (fields : FlatContext) (atom : NumericValidationAtom) :
+    ({ fields, groups := GroupPresenceContext.unavailable } :
+      ValidationEvaluationContext).resolveNumericValidationAtom atom =
+        fields.resolveNumericValidationAtom atom := by
+  rfl
 
 def combineNumericValidationOutcomes
     (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
       NumericArithmeticOutcome)
-    (left right : Except FormalCause NumericArithmeticOutcome) :
-    Except FormalCause NumericArithmeticOutcome :=
+    (left right : Except Error NumericArithmeticOutcome) :
+    Except Error NumericArithmeticOutcome :=
   match left, right with
   | .error cause, _ => .error cause
   | _, .error cause => .error cause
   | .ok leftOutcome, .ok rightOutcome => .ok (combine leftOutcome rightOutcome)
 
 def evalPlainBinary (op : NumericScaleBinaryOp)
-    (left right : Except FormalCause NumericArithmeticOutcome) :
-    Except FormalCause NumericArithmeticOutcome :=
+    (left right : Except Error NumericArithmeticOutcome) :
+    Except Error NumericArithmeticOutcome :=
   combineNumericValidationOutcomes
     (fun leftOutcome rightOutcome =>
       match op with
@@ -504,15 +583,15 @@ def LoweredNumericExpr.isAdmittedValidation (expression : LoweredNumericExpr Ato
 
 /-- Preserve the first formal cause across exact extremum selection of two reached validation outcomes. -/
 def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
-    Except FormalCause NumericArithmeticOutcome →
-      Except FormalCause NumericArithmeticOutcome →
-        Except FormalCause NumericArithmeticOutcome
+    Except Error NumericArithmeticOutcome →
+      Except Error NumericArithmeticOutcome →
+        Except Error NumericArithmeticOutcome
   | left, right =>
       combineNumericValidationOutcomes op.selectOutcome left right
 
 def LoweredNumericExpr.evalNumericOperationTree
-    (read : Atom → Except FormalCause NumericArithmeticOutcome) :
-    LoweredNumericExpr Atom → Except FormalCause NumericArithmeticOutcome
+    (read : Atom → Except Error NumericArithmeticOutcome) :
+    LoweredNumericExpr Atom → Except Error NumericArithmeticOutcome
   | .atom sourceAtom => read sourceAtom
   | .literal amount => .ok (.value amount .fixed)
   | .binary op left right =>
@@ -539,9 +618,9 @@ def LoweredNumericExpr.evalNumericOperationTree
 
 /-- Evaluate one complete numeric operation after checking its lowered admission certificate. -/
 def LoweredNumericExpr.evalNumericOperation?
-    (read : Atom → Except FormalCause NumericArithmeticOutcome)
+    (read : Atom → Except Error NumericArithmeticOutcome)
     (expression : LoweredNumericExpr Atom) :
-      Option (Except FormalCause NumericArithmeticOutcome) :=
+      Option (Except Error NumericArithmeticOutcome) :=
   if expression.isNumericOperation then
     some (expression.evalNumericOperationTree read)
   else
@@ -549,21 +628,35 @@ def LoweredNumericExpr.evalNumericOperation?
 
 /-- Evaluate exactly the checked runtime fragment. Value functions compose recursively with arithmetic while formal invalidity and arithmetic domain failure remain distinct. -/
 def LoweredNumericExpr.evalAdmittedValidation?
-    (read : Atom → Except FormalCause NumericArithmeticOutcome)
+    (read : Atom → Except Error NumericArithmeticOutcome)
     (expression : LoweredNumericExpr Atom) :
-      Option (Except FormalCause NumericArithmeticOutcome) :=
+      Option (Except Error NumericArithmeticOutcome) :=
   expression.evalNumericOperation? read
 
-/-- Evaluate a raw core. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/
-def NumericComparison.evalSelected
-    (comparison : NumericComparison) (context : FlatContext) : Verdict :=
+/-- Evaluate a raw core through one supplied numeric-source resolver. The unknown fallback fails closed for a forged unsupported operand and is unreachable through the checked route. -/
+def NumericComparison.evalWith
+    (comparison : NumericComparison)
+    (resolve :
+      NumericValidationAtom →
+        Except NumericValidationUnavailable NumericArithmeticOutcome) : Verdict :=
   match
       comparison.left.lowerForEvaluation.evalAdmittedValidation?
-        context.resolveNumericValidationAtom,
+        resolve,
       comparison.right.lowerForEvaluation.evalAdmittedValidation?
-        context.resolveNumericValidationAtom with
-  | some left, some right => comparison.op.evalArithmetic left right
+        resolve with
+  | some left, some right => comparison.op.evalArithmeticWith left right
   | _, _ => .unknown
+
+/-- Evaluate against resolved field and group state. -/
+def NumericComparison.evalSelectedWithGroups
+    (comparison : NumericComparison)
+    (context : ValidationEvaluationContext) : Verdict :=
+  comparison.evalWith context.resolveNumericValidationAtom
+
+/-- Preserve the established field-only entry point. Group-count sources require the explicit resolved-group variant and therefore evaluate as unavailable here. -/
+def NumericComparison.evalSelected
+    (comparison : NumericComparison) (context : FlatContext) : Verdict :=
+  comparison.evalWith context.resolveNumericValidationAtom
 
 /-- Evaluate one already row-selected checked comparison. -/
 def CheckedNumericComparison.evalSelected

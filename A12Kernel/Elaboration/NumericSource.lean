@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.DateDifference
 import A12Kernel.Semantics.String
 
@@ -323,6 +324,7 @@ inductive SurfaceNumericAtom where
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : SurfaceNumericAggregateFields)
+  | filledGroupCount (groups : List SurfaceGroupReference)
   deriving Repr, DecidableEq
 
 inductive ResolvedNumericAtom (Field : Type) where
@@ -336,11 +338,12 @@ inductive ResolvedNumericAtom (Field : Type) where
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : ResolvedNumericAggregateFields)
+  | filledGroupCount (groups : List ResolvedGroupReference)
   deriving Repr, DecidableEq
 
 namespace ResolvedNumericAtom
 
-def isField : ResolvedNumericAtom Field → Bool
+def isDataDependent : ResolvedNumericAtom Field → Bool
   | .field _ => true
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
@@ -349,6 +352,7 @@ def isField : ResolvedNumericAtom Field → Bool
   | .fieldValueAsNumber _ => true
   | .dateDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
+  | .filledGroupCount _ => true
 
 def summary (fieldSummary : Field → NumericScaleSummary) :
     ResolvedNumericAtom Field → NumericScaleSummary
@@ -360,6 +364,7 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
   | .aggregate op source => op.scaleSummary source
+  | .filledGroupCount _ => NumericScaleSummary.field 0
 
 end ResolvedNumericAtom
 

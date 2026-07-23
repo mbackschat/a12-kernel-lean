@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.SingleGroup
-import A12Kernel.Semantics.GroupPresence
+import A12Kernel.Elaboration.ValidationContext
 
 /-! # Shared resolved validation conditions
 
@@ -29,7 +29,7 @@ def entityPath : ResolvedGroupListOperand → List String
 
 def isRootGroup : ResolvedGroupListOperand → Bool
   | .field _ => false
-  | .group reference => reference.path.length == 1
+  | .group reference => reference.isRoot
 
 def referencesField (operand : ResolvedGroupListOperand)
     (model : FlatModel) (field : FieldId) : Bool :=
@@ -46,10 +46,7 @@ def wellFormedBool (operand : ResolvedGroupListOperand)
           checked == declaration && declaration.repeatableScope.isEmpty
       | .error _ => false
   | .group reference =>
-      model.hasGroupPath reference.path &&
-        match reference.origin with
-        | .path => (model.repeatableScopeForGroupPath reference.path).isEmpty
-        | .ruleGroup => reference.path == rowGroup
+      reference.fixedWellFormedBool model rowGroup
 
 /-- Kernel entity-list duplicate checking rejects direct duplicates and every group/descendant pair. Sibling fields and sibling groups remain independent. -/
 def overlaps (left right : ResolvedGroupListOperand) : Bool :=
@@ -57,8 +54,7 @@ def overlaps (left right : ResolvedGroupListOperand) : Bool :=
   | .field leftDeclaration, .field rightDeclaration =>
       leftDeclaration.id == rightDeclaration.id
   | .group leftReference, .group rightReference =>
-      leftReference.path.isPrefixOf rightReference.path ||
-        rightReference.path.isPrefixOf leftReference.path
+      leftReference.overlaps rightReference
   | .group reference, .field declaration
   | .field declaration, .group reference =>
       reference.path.isPrefixOf declaration.groupPath
@@ -125,30 +121,12 @@ def groupList (operator : GroupFillQuantifier)
 
 end ValidationCondition
 
-/-- Runtime group states are supplied by the checked-document boundary and keyed by resolved group path. Missing state is explicit unavailability. -/
-abbrev GroupPresenceContext := GroupPath → Option GroupPresenceState
-
-namespace GroupPresenceContext
-
-/-- Explicitly provide no resolved group slices to a condition known to use only other leaf families. -/
-def unavailable : GroupPresenceContext := fun _ => none
-
-end GroupPresenceContext
-
-/-- The shared checked-condition evaluator keeps field observations and already-resolved group states separate. -/
-structure ValidationEvaluationContext where
-  fields : FlatContext
-  groups : GroupPresenceContext
-
 namespace ResolvedGroupReference
 
 /-- A scalar group-presence leaf either names a nonrepeatable ordinary group, or uses `RuleGroup` to bind the already-selected concrete rule instance. Wider repeatable addressing must be resolved before this boundary grows. -/
 def scalarPresenceWellFormedBool (reference : ResolvedGroupReference)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
-  model.hasGroupPath reference.path &&
-    match reference.origin with
-    | .path => (model.repeatableScopeForGroupPath reference.path).isEmpty
-    | .ruleGroup => reference.path == rowGroup
+  reference.fixedWellFormedBool model rowGroup
 
 end ResolvedGroupReference
 
@@ -175,7 +153,7 @@ def canFireOnEmpty : ValidationConditionLeaf → Bool
 
 def referencesField (model : FlatModel) : ValidationConditionLeaf → FieldId → Bool
   | .flat condition, field => condition.referencesField field
-  | .numeric _ comparison, field => comparison.referencesField field
+  | .numeric _ comparison, field => comparison.referencesField model field
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField model field
@@ -197,7 +175,8 @@ def evalSelected (context : ValidationEvaluationContext)
     ValidationConditionLeaf → Verdict
   | .flat condition => condition.evalSelected context.fields isRelevant
   | .numeric _ comparison =>
-      if comparison.allRelevant isRelevant then comparison.evalSelected context.fields
+      if comparison.allRelevant isRelevant then
+        comparison.evalSelectedWithGroups context
       else .unknown
   | .groupPresence operator reference =>
       match context.groups reference.path with
@@ -259,6 +238,13 @@ structure CheckedValidationCondition (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.wellFormedBool model rowGroup = true
 
+private def ValidationConditionAssemblyError.ofFixedGroupReferenceError :
+    FixedGroupReferenceError → ValidationConditionAssemblyError
+  | .reference error => .groupReference error
+  | .unknownGroup path => .unknownGroup path
+  | .repeatableGroupRequiresAddress path =>
+      .repeatableGroupRequiresAddress path
+
 namespace CheckedValidationCondition
 
 /-- Certify a resolved mixed core once after a semantic desugaring has assembled its complete tree. -/
@@ -289,25 +275,12 @@ def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
-  | .ok () =>
-      match reference.resolveAgainst rowGroup with
-      | .error error => .error (.groupReference error)
-      | .ok resolved =>
-          if model.hasGroupPath resolved.path then
-            match resolved.origin with
-            | .path =>
-                if (model.repeatableScopeForGroupPath resolved.path).isEmpty then
-                  checkCore model rowGroup
-                    (ValidationCondition.groupPresence operator resolved)
-                    (by rw [hModel]; rfl)
-                else
-                  .error (.repeatableGroupRequiresAddress resolved.path)
-            | .ruleGroup =>
-                checkCore model rowGroup
-                  (ValidationCondition.groupPresence operator resolved)
-                  (by rw [hModel]; rfl)
-          else
-            .error (.unknownGroup resolved.path)
+  | .ok () => do
+      let resolved ← model.resolveFixedGroupReference rowGroup reference
+        |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
+      checkCore model rowGroup
+        (ValidationCondition.groupPresence operator resolved)
+        (by rw [hModel]; rfl)
 
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceGroupListOperand →
@@ -317,16 +290,9 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
         (model.resolveNonrepeatableFieldUnchecked rowGroup reference).mapError .fieldReference
       pure (.field declaration)
   | .group reference => do
-      let resolved ← reference.resolveAgainst rowGroup |>.mapError .groupReference
-      if !model.hasGroupPath resolved.path then
-        throw (.unknownGroup resolved.path)
-      match resolved.origin with
-      | .path =>
-          if (model.repeatableScopeForGroupPath resolved.path).isEmpty then
-            pure (.group resolved)
-          else
-            throw (.repeatableGroupRequiresAddress resolved.path)
-      | .ruleGroup => pure (.group resolved)
+      let resolved ← model.resolveFixedGroupReference rowGroup reference
+        |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
+      pure (.group resolved)
 
 private def resolveGroupListOperands (model : FlatModel) (rowGroup : GroupPath) :
     List SurfaceGroupListOperand →

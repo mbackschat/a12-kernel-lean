@@ -15,6 +15,7 @@ abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 inductive NumericComputationFault where
   | fieldKindMismatch (field : FieldId)
   | unsupportedDateCalendar
+  | unsupportedGroupCount
   deriving Repr, DecidableEq
 
 inductive NumericComputationElabError where
@@ -88,6 +89,7 @@ def FlatModel.admitsNumericComputationOperand
               declaration.repeatableScope.isEmpty &&
                 declaration.toNumberField? == some field
           | .error _ => false
+  | .filledGroupCount _ => false
 
 def FlatModel.admitsNumericComputationTarget
     (model : FlatModel) (target : FlatNumberField) : Bool :=
@@ -108,7 +110,7 @@ def NumericComputationAtom.numericScaleSummary
   atom.summary FlatFieldDecl.numericScaleSummary
 
 def NumericComputationAtom.references
-    (field : FieldId) : NumericComputationAtom → Bool
+    (model : FlatModel) (field : FieldId) : NumericComputationAtom → Bool
   | .field declaration => declaration.id == field
   | .baseYear _ => false
   | .baseYearDatePart _ _ _ => false
@@ -118,13 +120,15 @@ def NumericComputationAtom.references
   | .dateDifference _ left right =>
       left.references field || right.references field
   | .aggregate _ source => source.referencesField field
+  | .filledGroupCount groups =>
+      groups.any fun group => group.referencesField model field
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation) (model : FlatModel) : Bool :=
   model.admitsNumericComputationTarget operation.target &&
     operation.expression.allAtoms model.admitsNumericComputationOperand &&
     !operation.expression.anyAtom
-      (NumericComputationAtom.references operation.target.id) &&
+      (NumericComputationAtom.references model operation.target.id) &&
     operation.expression.isAdmittedResolvedNumericOperation &&
     operation.expression.numericOperationAuthoringCheck == .accepted &&
     match operation.expression.summary? NumericComputationAtom.numericScaleSummary with
@@ -251,6 +255,7 @@ private def FlatModel.resolveNumericComputationExpression
         if checked.resolvedFields.referencesField target then
           throw (.targetSelfReference target)
         pure (.aggregate op checked.resolvedFields)
+    | .filledGroupCount _ => throw .unsupportedExpression
 
 /-- Resolve and check one nonrepeatable numeric computation operation in the shared complete numeric-operation fragment. The default unsuppressed route preserves the exact result-scale gate; the explicit suppression flag bypasses only that gate. Repeatable evaluation, table integration, target-policy construction, and scheduling remain separate owners. -/
 def elaborateNumericComputationOperation
@@ -378,6 +383,7 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
   | .aggregate op source =>
       pure ((source.evaluate op fun field =>
         observeCell .computation (context.read field)).toComputationResult)
+  | .filledGroupCount _ => throw .unsupportedGroupCount
 
 end ScalarComputationContext
 
@@ -432,6 +438,7 @@ def NumericComputationAtom.numericComputationFault? :
       | some fault => some fault
       | none => fault? right
   | .aggregate _ _ => none
+  | .filledGroupCount _ => some .unsupportedGroupCount
 
 namespace LoweredNumericExpr
 
