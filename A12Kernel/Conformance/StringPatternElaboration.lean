@@ -60,11 +60,10 @@ private def raw (value : RawCell) : RawFlatContext where
   read id := if id == 1 then value else .empty
 
 private def normalizedResult : Option Verdict :=
-  match elaborateStringPatternCondition compileNormalized lineBreakModel ["Claim"]
-      (condition "AB\\sCD") with
+  match elaborateAndEvalStringPatternFull compileNormalized lineBreakModel ["Claim"]
+      (raw (.parsed (.str "AB\r\nCD"))) true (condition "AB\\sCD") with
   | .error _ => none
-  | .ok checked =>
-      some (checked.evalFull (raw (.parsed (.str "AB\r\nCD"))) true)
+  | .ok verdict => some verdict
 
 private def errorOf :
     Except StringPatternConditionElabError α → Option StringPatternConditionElabError
@@ -75,7 +74,11 @@ private def verdictOf (cell : RawCell) (hasContent : Bool) :
     Except StringPatternConditionElabError
       (CheckedStringPatternCondition model compilePattern) → Option Verdict
   | .error _ => none
-  | .ok checked => some (checked.evalFull (raw cell) hasContent)
+  | .ok checked =>
+      match prepareFlatStringPatterns compilePattern model with
+      | .error _ => none
+      | .ok prepared =>
+          some (checked.evalFull prepared (raw cell) hasContent)
 
 example : verdictOf (.parsed (.str "ABC")) true
     (elaborateStringPatternCondition compilePattern model ["Claim"]
@@ -115,7 +118,7 @@ example :
         some (.pattern .kernelRestriction) := by
   native_decide
 
-/- Raw, registered-custom, arbitrary declared-pattern, and repeatable fields remain explicit unchecked-context boundaries. -/
+/- Raw, registered-custom, and repeatable fields remain explicit separate-context boundaries; an ordinary declared-pattern field is now admitted for prepared evaluation. -/
 example :
     let rawDecl := {
       stringDeclaration with
@@ -140,7 +143,7 @@ example :
         some (.preparedCustomFieldRequired ["Claim", "Code"]) ∧
     errorOf (elaborateStringPatternCondition compilePattern
       { fields := [patternDecl] } ["Claim"] (condition)) =
-        some (.declaredPatternRequiresPreparation ["Claim", "Code"]) ∧
+        none ∧
     errorOf (elaborateStringPatternCondition compilePattern
       repeatableModel ["Claim", "Items"] (condition)) =
         some (.fieldReference (.repeatableReference ["Claim", "Items", "Code"])) := by
@@ -263,6 +266,98 @@ example :
         some (declaration.checkRaw (.parsed (.str "123"))) ∧
       preparedCell declaredModel 1 (.parsed (.str "12A")) =
         some (declaration.checkRaw (.parsed (.str "12A"))) := by
+  native_decide
+
+private def multiPatternModel : FlatModel :=
+  { fields := [{
+      stringDeclaration with stringPatternSource := some "A" }, {
+      stringDeclaration with
+      id := 3
+      name := "OtherCode"
+      stringPatternSource := some "B" },
+    numberDeclaration] }
+
+private def multiPatternRaw (first second : String)
+    (amount : RawCell := .parsed (.num 7)) : RawFlatContext where
+  read id :=
+    if id == 1 then .parsed (.str first)
+    else if id == 3 then .parsed (.str second)
+    else if id == 2 then amount
+    else .empty
+
+private def preparedModelCell (field : FieldId) (raw : RawFlatContext) :
+    Option CheckedCell :=
+  match prepareFlatStringPatterns compileDeclared multiPatternModel with
+  | .error _ => none
+  | .ok prepared => some ((prepared.checkContext raw).read field)
+
+/- Model-complete preparation compiles every nonempty ordinary declared source in declaration order and keeps each matcher on its own field. -/
+example :
+    preparedModelCell 1 (multiPatternRaw "A" "B") =
+        some {
+          rawPresent := true
+          parsed := some (.str "A")
+          findings := [] } ∧
+      preparedModelCell 3 (multiPatternRaw "A" "B") =
+        some {
+          rawPresent := true
+          parsed := some (.str "B")
+          findings := [] } ∧
+      preparedModelCell 1 (multiPatternRaw "B" "A") =
+        some {
+          rawPresent := true
+          parsed := none
+          findings := [.declaredConstraint] } := by
+  native_decide
+
+/- A forged incomplete plan cannot silently fall back to the unprepared ordinary checker, while an unrelated declaration keeps its ordinary model-owned result. -/
+example :
+    let incomplete : PreparedFlatStringPatterns multiPatternModel compileDeclared := {
+      fields := []
+      modelWellFormed := by native_decide }
+    (incomplete.checkContext (multiPatternRaw "A" "B")).read 1 =
+        malformedCheckedCell ∧
+      (incomplete.checkContext (multiPatternRaw "A" "B")).read 2 =
+        (multiPatternModel.checkContext
+          (multiPatternRaw "A" "B")).read 2 := by
+  native_decide
+
+private def preparedVerdict (model : FlatModel) (cell : RawCell) :
+    Option Verdict :=
+  match elaborateAndEvalStringPatternFull compileDeclared model ["Claim"]
+      (raw cell) true (condition "A") with
+  | .error _ => none
+  | .ok verdict => some verdict
+
+/- The existing checked pattern-condition consumer can now read a field whose own arbitrary declaration pattern was prepared first. A declaration mismatch remains formal unavailability, not a condition mismatch. -/
+example :
+    let declaredModel : FlatModel := {
+      fields := [{
+        stringDeclaration with stringPatternSource := some "[A-Z]+" }] }
+    preparedVerdict declaredModel (.parsed (.str "A")) =
+        some (.fired .value) ∧
+      preparedVerdict declaredModel (.parsed (.str "1")) =
+        some .unknown := by
+  native_decide
+
+private def preparedEvaluationErrorOf :
+    Except PreparedStringPatternEvaluationError Verdict →
+      Option PreparedStringPatternEvaluationError
+  | .ok _ => none
+  | .error error => some error
+
+/- Preparation covers the complete model before the condition evaluates, so an unreferenced invalid declared source cannot leak through a partial plan. -/
+example :
+    let invalidModel : FlatModel := {
+      fields := [stringDeclaration, {
+        stringDeclaration with
+        id := 3
+        name := "OtherCode"
+        stringPatternSource := some "(" }] }
+    preparedEvaluationErrorOf
+      (elaborateAndEvalStringPatternFull compileDeclared invalidModel ["Claim"]
+        (raw (.parsed (.str "A"))) true (condition "A")) =
+      some (.preparation (.pattern .javaSyntax)) := by
   native_decide
 
 end A12Kernel.Conformance.StringPatternElaboration

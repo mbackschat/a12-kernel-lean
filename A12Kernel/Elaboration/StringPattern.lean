@@ -136,102 +136,154 @@ def DeclaredStringPatternCoherent (declaration : FlatFieldDecl)
   | some source, some admitted => admitted.source = source
   | _, _ => False
 
-/-- One ordinary evaluated String declaration, its exact optional compiled matcher, and the model facts that make the pair safe to reuse for formal checking. -/
-structure PreparedDeclaredStringField (model : FlatModel)
+/-- One ordinary evaluated String declaration and its exact optional compiled matcher. Model-wide preparation retains the validated model separately and rechecks declaration identity at every read. -/
+structure PreparedDeclaredStringField
     (compilePattern : StringPatternCompiler) where
-  field : FieldId
   declaration : FlatFieldDecl
   pattern : Option (AdmittedStringPattern compilePattern)
-  modelWellFormed : model.validate.isOk = true
-  declaredByModel :
-    model.lookupUniqueId field = .ok declaration
   stringKind : declaration.policy.kind = .string
   evaluatedValue : declaration.stringValueMode = .evaluated
   ordinaryValue : declaration.customType = none
   patternCoherent :
     DeclaredStringPatternCoherent declaration pattern
 
-/-- Prepare one ordinary String declaration. A nonempty declared source is compiled and admitted once; an absent or empty source remains the ordinary no-pattern policy. -/
+/-- Prepare one already-selected ordinary String declaration. A nonempty declared source is compiled and admitted once; an absent or empty source remains the ordinary no-pattern policy. -/
+def prepareDeclaredStringDeclaration (compilePattern : StringPatternCompiler)
+    (declaration : FlatFieldDecl) :
+    Except DeclaredStringPatternElabError
+      (PreparedDeclaredStringField compilePattern) :=
+  match hCustom : declaration.customType with
+  | some _ =>
+      .error (.preparedCustomFieldRequired declaration.path)
+  | none =>
+      match hValueMode : declaration.stringValueMode with
+      | .raw => .error (.rawStringValue declaration.path)
+      | .evaluated =>
+          match hKind : declaration.policy.kind with
+          | .string =>
+              match hSource : declaration.effectiveStringPatternSource with
+              | none =>
+                  .ok {
+                    declaration
+                    pattern := none
+                    stringKind := hKind
+                    evaluatedValue := hValueMode
+                    ordinaryValue := hCustom
+                    patternCoherent := by
+                      simp [DeclaredStringPatternCoherent, hSource]
+                  }
+              | some source =>
+                  match admitStringPattern compilePattern source with
+                  | .error error => .error (.pattern error)
+                  | .ok admitted =>
+                      if hExact : admitted.source = source then
+                        .ok {
+                          declaration
+                          pattern := some admitted
+                          stringKind := hKind
+                          evaluatedValue := hValueMode
+                          ordinaryValue := hCustom
+                          patternCoherent := by
+                            simp [DeclaredStringPatternCoherent, hSource, hExact]
+                        }
+                      else
+                        .error .incoherentCore
+          | kind =>
+              .error (.fieldKind declaration.path kind.surfaceKind)
+
+/-- Validate the model, resolve one exact declaration, and prepare its ordinary String format. -/
 def prepareDeclaredStringField (compilePattern : StringPatternCompiler)
     (model : FlatModel) (field : FieldId) :
     Except DeclaredStringPatternElabError
-      (PreparedDeclaredStringField model compilePattern) :=
-  match hModel : model.validate with
+      (PreparedDeclaredStringField compilePattern) :=
+  match model.validate with
   | .error error => .error (.model error)
   | .ok () =>
-      match hDeclaration : model.lookupUniqueId field with
+      match model.lookupUniqueId field with
       | .error error => .error (.field error)
       | .ok declaration =>
-          match hCustom : declaration.customType with
-          | some _ =>
-              .error (.preparedCustomFieldRequired declaration.path)
-          | none =>
-              match hValueMode : declaration.stringValueMode with
-              | .raw => .error (.rawStringValue declaration.path)
-              | .evaluated =>
-                  match hKind : declaration.policy.kind with
-                  | .string =>
-                      match hSource : declaration.effectiveStringPatternSource with
-                      | none =>
-                          .ok {
-                            field
-                            declaration
-                            pattern := none
-                            modelWellFormed := by
-                              rw [hModel]
-                              rfl
-                            declaredByModel := hDeclaration
-                            stringKind := hKind
-                            evaluatedValue := hValueMode
-                            ordinaryValue := hCustom
-                            patternCoherent := by
-                              simp [DeclaredStringPatternCoherent, hSource]
-                          }
-                      | some source =>
-                          match admitStringPattern compilePattern source with
-                          | .error error => .error (.pattern error)
-                          | .ok admitted =>
-                              if hExact : admitted.source = source then
-                                .ok {
-                                  field
-                                  declaration
-                                  pattern := some admitted
-                                  modelWellFormed := by
-                                    rw [hModel]
-                                    rfl
-                                  declaredByModel := hDeclaration
-                                  stringKind := hKind
-                                  evaluatedValue := hValueMode
-                                  ordinaryValue := hCustom
-                                  patternCoherent := by
-                                    simp [DeclaredStringPatternCoherent, hSource, hExact]
-                                }
-                              else
-                                .error .incoherentCore
-                  | kind =>
-                      .error (.fieldKind declaration.path kind.surfaceKind)
+          prepareDeclaredStringDeclaration compilePattern declaration
 
 namespace PreparedDeclaredStringField
 
 /-- Formally check one raw cell through the exact matcher prepared for this declaration. The optional matcher changes no other String-policy clause. -/
-def checkRaw (prepared : PreparedDeclaredStringField model compilePattern)
+def checkRaw (prepared : PreparedDeclaredStringField compilePattern)
     (raw : RawCell) : CheckedCell :=
   prepared.declaration.stringPolicy.checkRawWithPattern
     (prepared.pattern.map (·.wholeValueMatches)) raw
 
-/-- Overlay this one prepared declaration on the ordinary model context without weakening every other declaration's existing checked route. -/
-def checkContext (prepared : PreparedDeclaredStringField model compilePattern)
+end PreparedDeclaredStringField
+
+/-- A validated model's declaration-ordered set of every effective ordinary declared String pattern. -/
+structure PreparedFlatStringPatterns (model : FlatModel)
+    (compilePattern : StringPatternCompiler) where
+  fields : List (PreparedDeclaredStringField compilePattern)
+  modelWellFormed : model.validate.isOk = true
+
+namespace PreparedFlatStringPatterns
+
+def lookup? (prepared : PreparedFlatStringPatterns model compilePattern)
+    (field : FieldId) : Option (PreparedDeclaredStringField compilePattern) :=
+  prepared.fields.find? fun candidate =>
+    candidate.declaration.id == field
+
+/-- Check every prepared pattern through its exact declaration and delegate declarations without an effective pattern to the existing model-owned checker. A missing required entry fails closed instead of silently using the no-pattern route. -/
+def checkContext (prepared : PreparedFlatStringPatterns model compilePattern)
     (raw : RawFlatContext) : FlatContext :=
   let ordinary := model.checkContext raw
   {
     read := fun field =>
-      if field == prepared.field then
-        prepared.checkRaw (raw.read field)
-      else
-        ordinary.read field
+      match model.lookupUniqueId field with
+      | .error _ => malformedCheckedCell
+      | .ok declaration =>
+          match prepared.lookup? field with
+          | some preparedField =>
+              if preparedField.declaration == declaration then
+                preparedField.checkRaw (raw.read field)
+              else
+                malformedCheckedCell
+          | none =>
+              if declaration.effectiveStringPatternSource.isSome then
+                malformedCheckedCell
+              else
+                ordinary.read field
   }
 
-end PreparedDeclaredStringField
+end PreparedFlatStringPatterns
+
+/-- Prepare every effective ordinary declared String pattern in declaration order. Model validation has already excluded raw, custom, and non-String pattern carriers. -/
+def prepareDeclaredStringPatterns (compilePattern : StringPatternCompiler) :
+    List FlatFieldDecl →
+      Except DeclaredStringPatternElabError
+        (List (PreparedDeclaredStringField compilePattern))
+  | [] => .ok []
+  | declaration :: remaining =>
+      match declaration.effectiveStringPatternSource with
+      | none => prepareDeclaredStringPatterns compilePattern remaining
+      | some _ => do
+          let prepared ←
+            prepareDeclaredStringDeclaration compilePattern declaration
+          let preparedRemaining ←
+            prepareDeclaredStringPatterns compilePattern remaining
+          pure (prepared :: preparedRemaining)
+
+/-- Validate one model once, then compile and accept all of its effective ordinary declared String patterns. -/
+def prepareFlatStringPatterns (compilePattern : StringPatternCompiler)
+    (model : FlatModel) :
+    Except DeclaredStringPatternElabError
+      (PreparedFlatStringPatterns model compilePattern) :=
+  match hModel : model.validate with
+  | .error error => .error (.model error)
+  | .ok () =>
+      match prepareDeclaredStringPatterns compilePattern model.fields with
+      | .error error => .error error
+      | .ok fields =>
+          .ok {
+            fields
+            modelWellFormed := by
+              rw [hModel]
+              rfl
+          }
 
 /-- The parser-level pattern shape: a direct field path, one of the two dedicated operators, and a constant source. Arbitrary expressions cannot inhabit this type. -/
 structure SurfaceStringPatternCondition where
@@ -240,19 +292,18 @@ structure SurfaceStringPatternCondition where
   source : String
   deriving Repr, DecidableEq
 
-/-- Exact checked-construction failures for the ordinary nonrepeatable String fragment. Prepared custom/predefined fields and arbitrary declaration patterns need their own checked context instead of bypassing formal validation. -/
+/-- Exact checked-construction failures for the ordinary nonrepeatable String fragment. Prepared custom/predefined and repeatable fields retain separate context boundaries. -/
 inductive StringPatternConditionElabError where
   | model (error : ResolveError)
   | fieldReference (error : ResolveError)
   | fieldKind (path : List String) (kind : SurfaceScalarKind)
   | rawStringValue (path : List String)
   | preparedCustomFieldRequired (path : List String)
-  | declaredPatternRequiresPreparation (path : List String)
   | pattern (error : PatternAdmissionError)
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- Recheck that a field belongs to the validated model and is executable through the ordinary declaration-owned String context used by this capsule. -/
+/-- Recheck that a field belongs to the validated model and is an ordinary nonrepeatable evaluated String. Its optional declared pattern is supplied separately by the model-complete prepared context. -/
 def FlatModel.admitsOrdinaryStringPatternField (model : FlatModel)
     (field : FlatStringField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -260,7 +311,10 @@ def FlatModel.admitsOrdinaryStringPatternField (model : FlatModel)
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
         declaration.customType.isNone &&
-        declaration.toStringValueField? == some field
+        declaration.stringValueMode == .evaluated &&
+        match declaration.policy.kind with
+        | .string => true
+        | _ => false
 
 /-- One authored condition whose direct field and exact compiled pattern are certified against the same model. It is a checked leaf, not a second connective tree. -/
 structure CheckedStringPatternCondition (model : FlatModel)
@@ -290,13 +344,9 @@ def elaborateStringPatternCondition (compilePattern : StringPatternCompiler)
       if declaration.isRawString then
         throw (.rawStringValue declaration.path)
       let field ←
-        match declaration.toStringValueField? with
-        | some field => pure field
-        | none =>
-            match declaration.policy.kind with
-            | .string =>
-                throw (.declaredPatternRequiresPreparation declaration.path)
-            | kind => throw (.fieldKind declaration.path kind.surfaceKind)
+        match declaration.policy.kind with
+        | .string => pure { id := declaration.id }
+        | kind => throw (.fieldKind declaration.path kind.surfaceKind)
       let pattern ←
         (admitStringPattern compilePattern surface.source).mapError .pattern
       if hField : model.admitsOrdinaryStringPatternField field = true then
@@ -321,11 +371,12 @@ def evalSelected (checked : CheckedStringPatternCondition model compilePattern)
   checked.pattern.evalResolved checked.op
     (context.resolveDirectStringComparisonOperand checked.field)
 
-/-- Apply the ordinary full-validation row gate, then use the declaration-owned checked String context. Pattern leaves cannot fire on an all-empty row. -/
+/-- Apply the ordinary full-validation row gate, then use the model-complete prepared String-pattern context. Pattern leaves cannot fire on an all-empty row. -/
 def evalFull (checked : CheckedStringPatternCondition model compilePattern)
+    (prepared : PreparedFlatStringPatterns model compilePattern)
     (raw : RawFlatContext) (hasContent : Bool) : Verdict :=
   if hasContent then
-    checked.evalSelected (model.checkContext raw)
+    checked.evalSelected (prepared.checkContext raw)
   else
     .notFired
 
@@ -335,5 +386,23 @@ def referencesField (checked : CheckedStringPatternCondition model compilePatter
   checked.field.id == field
 
 end CheckedStringPatternCondition
+
+inductive PreparedStringPatternEvaluationError where
+  | preparation (error : DeclaredStringPatternElabError)
+  | condition (error : StringPatternConditionElabError)
+  deriving Repr, DecidableEq
+
+/-- Prepare every declared field pattern, elaborate the authored pattern leaf against the same model, and evaluate through that complete checked context. -/
+def elaborateAndEvalStringPatternFull
+    (compilePattern : StringPatternCompiler) (model : FlatModel)
+    (rowGroup : GroupPath) (raw : RawFlatContext) (hasContent : Bool)
+    (surface : SurfaceStringPatternCondition) :
+    Except PreparedStringPatternEvaluationError Verdict := do
+  let prepared ←
+    (prepareFlatStringPatterns compilePattern model).mapError .preparation
+  let checked ←
+    (elaborateStringPatternCondition compilePattern model rowGroup surface)
+      |>.mapError .condition
+  pure (checked.evalFull prepared raw hasContent)
 
 end A12Kernel

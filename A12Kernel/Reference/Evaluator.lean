@@ -66,6 +66,7 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
   | .stringPolicyRequiresString path
   | .stringPolicyForbidsCustomType path
   | .stringPatternRequiresString path
+  | .stringPatternForbidsCustomType path
   | .rawStringRequiresLineBreakPermission path
   | .rawStringForbidsMinimumLength path
   | .rawStringForbidsPattern path

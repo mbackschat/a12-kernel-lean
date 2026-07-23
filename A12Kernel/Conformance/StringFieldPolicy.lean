@@ -203,6 +203,13 @@ example : errorOf ({ fields := [{
     some (.rawStringForbidsPattern ["Claim", "Note"]) := by
   native_decide
 
+example : errorOf ({ fields := [{
+      (stringDeclaration) with
+      customType := some { name := "ProjectCode" }
+      stringPatternSource := some "[A-Z]+" }] } : FlatModel).validate =
+    some (.stringPatternForbidsCustomType ["Claim", "Note"]) := by
+  native_decide
+
 example : errorOf ({ fields := [{ (stringDeclaration {
       maxLength := some 5 }) with customType := some { name := "Code" } }] } :
       FlatModel).validate =
