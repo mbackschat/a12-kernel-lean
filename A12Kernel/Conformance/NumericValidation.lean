@@ -858,7 +858,7 @@ example : errorOf
       (atom "U")) = some .unsupportedExpression := by
   native_decide
 
-/- Enclosing arithmetic does not let a wrapper evade its own source gate: immediate constants, another wrapper, and extrema remain rejected wrapper bodies. -/
+/- Enclosing arithmetic does not let a wrapper evade the immediate-literal gate. Nested wrappers remain ordered transformations, and a direct operand-list extremum is another nonliteral numeric child. -/
 example :
     errorOf
         (comparison .less
@@ -866,20 +866,28 @@ example :
             (.round .halfUp omittedRoundingPlaces (literal 1 0))
             (atom "U"))
           0) = some .unsupportedExpression ∧
-      errorOf
-        (comparison .less
-          (.binary .add
-            (.round .halfUp omittedRoundingPlaces (.abs (atom "U")))
-            (literal 1 0))
-          0) = some .unsupportedExpression ∧
-      errorOf
-        (comparison .less
+      verdictOf
+        (comparison .equal
+          (.round .floor omittedRoundingPlaces (.abs (atom "S")))
+          1)
+        (raw .empty .empty (.parsed (.num ((-14 : Rat) / 10)))) =
+          some (.fired .value) ∧
+      verdictOf
+        (comparison .equal
+          (.abs (.round .floor omittedRoundingPlaces (atom "S")))
+          2)
+        (raw .empty .empty (.parsed (.num ((-14 : Rat) / 10)))) =
+          some (.fired .value) ∧
+      verdictOf
+        (comparison .equal
           (.binary .add
             (.round .halfUp omittedRoundingPlaces
               (AuthoredNumericExpr.extremumList .minimum
                 (atom "U") [atom "V"]))
             (literal 1 0))
-          0) = some .unsupportedExpression := by
+          3)
+        (raw (.parsed (.num 2)) (.parsed (.num 4))) =
+          some (.fired .value) := by
   native_decide
 
 /- The wrapper opens no exemption for an illegal division region inside its body. -/

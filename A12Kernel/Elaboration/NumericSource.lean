@@ -320,11 +320,12 @@ def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
   | .group body => body.isImmediateResolvedNumericLiteral
   | _ => false
 
-/-- Admit unary wrappers wherever ordinary arithmetic may consume a numeric operand. Each wrapper's complete child must remain plain arithmetic and nonconstant, so this closes enclosing arithmetic without silently admitting wrapper-over-wrapper or wrapper-over-extrema forms. -/
+/-- Admit unary wrappers wherever ordinary arithmetic may consume a numeric operand. A wrapper child may be recursively unary arithmetic or the separately checked direct-extremum form, but an immediate/grouped literal remains illegal. -/
 def AuthoredNumericExpr.isAdmittedResolvedUnaryArithmetic :
     AuthoredNumericExpr (ResolvedNumericAtom Field) → Bool
   | .round _ _ body | .abs body =>
-      body.isPlainArithmetic && !body.isImmediateResolvedNumericLiteral
+      !body.isImmediateResolvedNumericLiteral &&
+        (body.isAdmittedResolvedUnaryArithmetic || body.isDirectValueFunction)
   | .atom _ | .literal _ => true
   | .group body => body.isAdmittedResolvedUnaryArithmetic
   | .binary _ left right | .power left right =>

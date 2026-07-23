@@ -306,6 +306,22 @@ example : (.binary .add
       .directLeftNestedPower := by
   native_decide
 
+/- Nested unary wrappers and a direct operand-list extremum are ordinary nonliteral wrapper children. Their inner authoring failures remain visible. -/
+example : (.round .floor omittedRoundingPlaces
+    (.abs (source 0)) : Expr).numericOperationAuthoringCheck = .accepted := by
+  native_decide
+
+example : (.abs
+    (.extremum .minimum (source 0) (source 1)) : Expr).numericOperationAuthoringCheck =
+      .accepted := by
+  native_decide
+
+example : (.binary .divide
+    (.round .halfUp omittedRoundingPlaces
+      (.abs (quotient (source 0) (source 1))))
+    (source 2) : Expr).numericOperationAuthoringCheck = .tooManyDivisions := by
+  native_decide
+
 example : (.extremum .minimum (source 0) (source 1) : Expr).authoringCheck =
     .outsideFragment := by
   native_decide

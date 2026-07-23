@@ -194,18 +194,19 @@ theorem numericOperation_directValueFunction_authoringAccepted
   | extremum op left right =>
       simp [AuthoredNumericExpr.numericOperationAuthoringCheck, direct]
 
-/-- A root unary wrapper delegates the division/power authoring result of its complete plain-arithmetic body. -/
+/-- A root rounding node delegates exactly to the recursive value-function body checker. -/
 theorem numericOperation_round_body_authoringCheck
     (mode : DecimalRoundingMode) (places : RoundingPlaces)
     (body : AuthoredNumericExpr Atom) :
     (AuthoredNumericExpr.round mode places body).numericOperationAuthoringCheck =
-      body.authoringCheck := by
+      body.numericWrapperBodyAuthoringCheck := by
   rfl
 
+/-- A root absolute-value node delegates exactly to the same recursive value-function body checker. -/
 theorem numericOperation_abs_body_authoringCheck
     (body : AuthoredNumericExpr Atom) :
     (AuthoredNumericExpr.abs body).numericOperationAuthoringCheck =
-      body.authoringCheck := by
+      body.numericWrapperBodyAuthoringCheck := by
   rfl
 
 end A12Kernel
