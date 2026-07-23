@@ -197,9 +197,27 @@ theorem checkedNumberEntitySource_partialAggregate_skipsHaving
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (directRead : RawFlatContext) (starRead : Env → FieldId → RawCell)
     (hasHaving : checked.hasHaving = true) :
-    checked.evaluatePartialAggregate op document outer scope directRead starRead =
+  checked.evaluatePartialAggregate op document outer scope directRead starRead =
       .ok .skippedHaving := by
-  simp [CheckedNumberEntitySource.evaluatePartialAggregate, hasHaving]
-  rfl
+  simp [CheckedNumberEntitySource.evaluatePartialAggregate,
+    CheckedNumberEntitySource.evaluatePartialAggregateWith, hasHaving,
+    pure, Except.pure]
+
+/-- The immutable checked-document route keeps the source-wide partial filter gate ahead of either aggregate fold. -/
+theorem checkedNumberEntitySource_checkedDocumentPartial_skipsHaving
+    (checked : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (expected : Rat) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (hasHaving : checked.hasHaving = true) :
+    checked.evaluateCheckedDocumentPartialAggregate op document outer scope =
+        .ok .skippedHaving ∧
+      checked.evaluateCheckedDocumentPartialValueCount expected document outer scope =
+        .ok .skippedHaving := by
+  constructor <;>
+    simp [CheckedNumberEntitySource.evaluateCheckedDocumentPartialAggregate,
+      CheckedNumberEntitySource.evaluateCheckedDocumentPartialValueCount,
+      CheckedNumberEntitySource.evaluatePartialAggregateWith,
+      CheckedNumberEntitySource.evaluatePartialValueCountWith, hasHaving,
+      pure, Except.pure]
 
 end A12Kernel

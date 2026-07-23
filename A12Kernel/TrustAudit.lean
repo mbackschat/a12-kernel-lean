@@ -819,6 +819,7 @@ run_cmd do
 #print axioms A12Kernel.checkedNumberEntityField_partialAggregate_relevance
 #print axioms A12Kernel.checkedNumberEntityStar_partialAggregate_nonRelevant
 #print axioms A12Kernel.checkedNumberEntitySource_partialAggregate_skipsHaving
+#print axioms A12Kernel.checkedNumberEntitySource_checkedDocumentPartial_skipsHaving
 #print axioms A12Kernel.tokenDistinctCount_equal_pair
 #print axioms A12Kernel.tokenValueCount_singleton_match_fixed
 #print axioms A12Kernel.checkedTokenValueCount_expectedAllowed

@@ -525,6 +525,36 @@ def resolvedCheckedDocumentComputationAggregateSide
       | .terminated cause | .poison cause =>
           pure (.inr (.unknown cause))
 
+/-- Resolve one unfiltered partial-validation slot from the checked document. Direct nonrelevance precedes its cell query; star topology precedes the established all-rows gate; a local filter remains a rule-level skip. -/
+def resolvedCheckedDocumentPartialAggregateSide
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then do
+        match ← resolvedCheckedDocumentSide document .validation source.field
+            [[]] false false with
+        | .inl side => pure (.inl side)
+        | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
+  | .star source => do
+      let resolved ←
+        (source.source.path.resolve document.source.toDocument outer)
+          |>.mapError .addressing
+      if source.source.allRowsRelevant scope then do
+        match ← resolvedCheckedDocumentSide document .validation source.field
+            resolved.environments resolved.domain.hasOpenTail false with
+        | .inl side => pure (.inl side)
+        | .inr result => pure (.inr (.evaluated result))
+      else
+        pure (.inr .nonRelevant)
+  | .starHaving _ => pure (.inr .skippedHaving)
+
 /-- Resolve one partial-validation aggregate slot. Direct fields require their concrete cell; ordinary stars require complete wildcard/ancestor coverage and retain the established topology-produced side unchanged. Filtered slots return the rule-level skip marker without evaluating their filter. -/
 def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
@@ -614,28 +644,45 @@ def evaluateCheckedDocumentComputationAggregate
   checked.evaluateAggregateWith op fun operand =>
     operand.resolvedCheckedDocumentComputationAggregateSide document outer
 
+/-- Run the common partial aggregate fold after the caller selects a raw or checked-document operand resolver. The source-wide filter skip remains before every resolver call. -/
+def evaluatePartialAggregateWith
+    (checked : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (resolve : CheckedNumberEntityOperand model →
+      Except Error (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult)) :
+    Except Error PartialValidationNumberAggregateResult :=
+  if checked.hasHaving then
+    pure .skippedHaving
+  else do
+    match ← scanResolvedValueListOperands
+        (state := ResolvedNumberEntityAggregateSides)
+        (terminal := PartialValidationNumberAggregateResult)
+        resolve
+        (fun cause => .evaluated (.unknown cause))
+        (fun accumulated operand side =>
+          accumulated.append operand.declarationSigned side)
+        checked.operands {} with
+    | .inl accumulated => pure (.evaluated (accumulated.evaluate op))
+    | .inr result => pure result
+
 /-- Evaluate an unfiltered checked Number aggregate under partial validation. A locally visible `Having` skips the rule before topology, relevance, or reads. Otherwise direct slots use concrete relevance and every star uses the established all-rows wildcard/ancestor gate, with the same authored-order early termination as full validation. A containing whole condition must still discover filters across every branch before invoking any leaf. -/
 def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : Document) (outer : Env)
     (scope : ValidationRelevanceScope) (directRead : RawFlatContext)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult :=
-  if checked.hasHaving then
-    pure .skippedHaving
-  else
-    let direct := model.checkContext directRead
-    do
-      match ← scanResolvedValueListOperands
-          (state := ResolvedNumberEntityAggregateSides)
-          (terminal := PartialValidationNumberAggregateResult)
-          (fun operand => operand.resolvedPartialAggregateSide document outer scope
-            direct starRead)
-          (fun cause => .evaluated (.unknown cause))
-          (fun accumulated operand side =>
-            accumulated.append operand.declarationSigned side)
-          checked.operands {} with
-      | .inl accumulated => pure (.evaluated (accumulated.evaluate op))
-      | .inr result => pure result
+  checked.evaluatePartialAggregateWith op fun operand =>
+    operand.resolvedPartialAggregateSide document outer scope
+      (model.checkContext directRead) starRead
+
+/-- Evaluate partial aggregate accumulation from the immutable checked document with the same filter-skip and relevance gates. -/
+def evaluateCheckedDocumentPartialAggregate
+    (checked : CheckedNumberEntitySource model)
+    (op : NumericAggregateOp) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError PartialValidationNumberAggregateResult :=
+  checked.evaluatePartialAggregateWith op fun operand =>
+    operand.resolvedCheckedDocumentPartialAggregateSide document outer scope
 
 /-- Evaluate numeric `NumberOfValueInFields` without an addressed document exactly when every checked operand is direct. This scalar compatibility path never invents topology for a repeatable source. -/
 def evaluateDirectValueCountAt? (checked : CheckedNumberEntitySource model)
@@ -702,28 +749,45 @@ def evaluateCheckedDocumentValueCountComputation
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedCheckedDocumentComputationAggregateSide document outer
 
+/-- Run the common partial value-count fold over a raw or checked-document operand resolver. -/
+def evaluatePartialValueCountWith
+    (checked : CheckedNumberEntitySource model) (expected : Rat)
+    (resolve : CheckedNumberEntityOperand model →
+      Except Error (Sum (ResolvedValueListSide .number)
+        PartialValidationNumberAggregateResult)) :
+    Except Error PartialValidationNumberAggregateResult :=
+  if checked.hasHaving then
+    pure .skippedHaving
+  else do
+    match ← scanResolvedValueListOperands
+        (state := ResolvedValueCountSide .number)
+        (terminal := PartialValidationNumberAggregateResult)
+        resolve
+        (fun cause => .evaluated (.unknown cause))
+        (fun accumulated _ side => accumulated.appendResolved side)
+        checked.operands ResolvedValueCountSide.empty with
+    | .inl accumulated =>
+        pure (.evaluated (evalValueCountAggregate expected accumulated))
+    | .inr result => pure result
+
 /-- Evaluate the unfiltered numeric value count under partial validation. A locally visible filter skips the rule before topology, relevance, or target reads, matching the other entity-list aggregate leaves. -/
 def evaluatePartialValueCount (checked : CheckedNumberEntitySource model)
     (expected : Rat) (document : Document) (outer : Env)
     (scope : ValidationRelevanceScope) (directRead : RawFlatContext)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult :=
-  if checked.hasHaving then
-    pure .skippedHaving
-  else
-    let direct := model.checkContext directRead
-    do
-      match ← scanResolvedValueListOperands
-          (state := ResolvedValueCountSide .number)
-          (terminal := PartialValidationNumberAggregateResult)
-          (fun operand => operand.resolvedPartialAggregateSide document outer scope
-            direct starRead)
-          (fun cause => .evaluated (.unknown cause))
-          (fun accumulated _ side => accumulated.appendResolved side)
-          checked.operands ResolvedValueCountSide.empty with
-      | .inl accumulated =>
-          pure (.evaluated (evalValueCountAggregate expected accumulated))
-      | .inr result => pure result
+  checked.evaluatePartialValueCountWith expected fun operand =>
+    operand.resolvedPartialAggregateSide document outer scope
+      (model.checkContext directRead) starRead
+
+/-- Evaluate partial numeric value count from the immutable checked document without changing per-cell filter provenance or partial gates. -/
+def evaluateCheckedDocumentPartialValueCount
+    (checked : CheckedNumberEntitySource model)
+    (expected : Rat) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError PartialValidationNumberAggregateResult :=
+  checked.evaluatePartialValueCountWith expected fun operand =>
+    operand.resolvedCheckedDocumentPartialAggregateSide document outer scope
 
 end CheckedNumberEntitySource
 
