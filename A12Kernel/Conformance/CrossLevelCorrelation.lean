@@ -137,6 +137,43 @@ private def computationSnapshot : Except ResolvingProbeError
   | .ok value => .computation value
   | .error cause => .error cause
 
+private def resolvingCandidate (row : RowIndex) : Env :=
+  [(parentLevel, row)]
+
+private def orderedResolvingContext :
+    ResolvingCorrelationContext ResolvingProbeError where
+  read environment field :=
+    if environment == resolvingCandidate 3 && field == 2 then
+      .error (.read field)
+    else
+      .ok resolvingCell
+  bindingError := .binding
+
+private def trueResolvingHaving : CorrelatedHaving :=
+  CorrelatedHaving.compareNumbers .equal
+    (resolvingNumber 2) (resolvingNumber 1)
+
+private inductive ResolvingTraversalSnapshot where
+  | selected (environments : List Env)
+  | exhausted (state : Nat)
+  | terminated (result : Nat)
+  | poison (cause : FormalCause)
+  | error (cause : ResolvingProbeError)
+  deriving Repr, DecidableEq
+
+private def selectionSnapshot :
+    Except ResolvingProbeError (List Env) → ResolvingTraversalSnapshot
+  | .ok environments => .selected environments
+  | .error cause => .error cause
+
+private def scanSnapshot :
+    Except ResolvingProbeError (ComputationHavingScanResult Nat Nat) →
+      ResolvingTraversalSnapshot
+  | .ok (.exhausted state) => .exhausted state
+  | .ok (.terminated result) => .terminated result
+  | .ok (.poison cause) => .poison cause
+  | .error cause => .error cause
+
 /- Validation's strong-Kleene connective still reaches the right leaf, so structural failure cannot be collapsed into UNKNOWN or hidden by a false left truth. -/
 example :
     truthSnapshot
@@ -159,6 +196,37 @@ example :
         { origin := .outer, level := parentLevel }).evalTruthInResolving
           resolvingContext resolvingFrame) =
         .error (.binding (.missingBinding childLevel)) := by
+  native_decide
+
+/- Validation selection evaluates every candidate in encounter order, retains earlier successes, and still reports a later structural read failure. -/
+example :
+    selectionSnapshot (
+      trueResolvingHaving.selectEnvironmentsResolving orderedResolvingContext []
+        [resolvingCandidate 1, resolvingCandidate 3]) =
+      .error (.read 2) := by
+  native_decide
+
+/- Computation's one-kept-successor scan evaluates the successor before the current target, so a structural failure there wins before target consumption. -/
+example :
+    let consume : Nat → Env →
+        Except ResolvingProbeError (Nat ⊕ Nat) :=
+      fun _ _ => .ok (.inr 7)
+    scanSnapshot (
+      trueResolvingHaving.scanComputationResolving orderedResolvingContext []
+        consume [resolvingCandidate 1, resolvingCandidate 3] 0) =
+      .error (.read 2) := by
+  native_decide
+
+/- Once a good successor exists, a terminal current target hides every later filter and its structural failures. -/
+example :
+    let consume : Nat → Env →
+        Except ResolvingProbeError (Nat ⊕ Nat) :=
+      fun _ _ => .ok (.inr 7)
+    scanSnapshot (
+      trueResolvingHaving.scanComputationResolving orderedResolvingContext []
+        consume
+        [resolvingCandidate 1, resolvingCandidate 2, resolvingCandidate 3] 0) =
+      .terminated 7 := by
   native_decide
 
 end A12Kernel.Conformance.CrossLevelCorrelation
