@@ -8,11 +8,12 @@ namespace A12Kernel
 /-- A successfully resolved checked source delegates phase behavior and numeric-key comparison to the existing resolved semantic-index evaluator. -/
 theorem checkedNumberSemanticIndex_lookupValue_delegates
     (checked : CheckedNumberSemanticIndexSource model)
-    (raw : RawSingleGroupContext) (phase : Phase)
+    (raw : RawSingleGroupContext) (keyRaw : RawFlatContext) (phase : Phase)
     (column : ResolvedSemanticIndexColumn)
     (resolved : checked.resolveColumn raw = .ok column) :
-    checked.lookupValue raw phase =
-      .ok (column.lookupNumberValue phase checked.key) := by
+    checked.lookupValue raw keyRaw phase =
+      .ok (column.lookupNumberObservation phase
+        (checked.key.observe model keyRaw phase)) := by
   unfold CheckedNumberSemanticIndexSource.lookupValue
   rw [resolved]
   rfl
@@ -20,10 +21,12 @@ theorem checkedNumberSemanticIndex_lookupValue_delegates
 /-- The checked validation Number consumer reuses the target declaration's signedness/scale and the sole resolved numeric-key projection. -/
 theorem checkedNumberSemanticIndex_validationNumberOperand_delegates
     (checked : CheckedNumberSemanticIndexSource model)
-    (raw : RawSingleGroupContext) (column : ResolvedSemanticIndexColumn)
+    (raw : RawSingleGroupContext) (keyRaw : RawFlatContext)
+    (column : ResolvedSemanticIndexColumn)
     (resolved : checked.resolveColumn raw = .ok column) :
-    checked.validationNumberOperand raw =
-      .ok (column.validationNumberKeyOperand checked.targetField.info checked.key) := by
+    checked.validationNumberOperand raw keyRaw =
+      .ok (column.validationNumberObservedKeyOperand checked.targetField.info
+        (checked.key.observe model keyRaw .validation)) := by
   unfold CheckedNumberSemanticIndexSource.validationNumberOperand
   rw [resolved]
   rfl
@@ -49,16 +52,18 @@ theorem semanticIndex_numberKey_does_not_match_text
       ResolvedSemanticIndexColumn.lookupKey,
       ResolvedSemanticIndexColumn.targetFor?]
 
-/-- A clean numeric head match is observed through the requested phase, irrespective of alternate decimal spellings erased by preceding Number admission. -/
+/-- A clean numeric head match reached through either a literal or field-valued Number observation is observed through the requested phase, irrespective of alternate decimal spellings erased by preceding Number admission. -/
 theorem semanticIndex_numberKey_cleanMatch
     (value : Rat) (target : CheckedCell)
     (remaining : List ResolvedSemanticIndexEntry) (phase : Phase) :
     ({ entries := { token := .number value, target } :: remaining
        unavailableKey := none } :
-      ResolvedSemanticIndexColumn).lookupNumberValue phase value =
+      ResolvedSemanticIndexColumn).lookupNumberObservation phase
+        (.value (.num value)) =
         observeCell phase target := by
   cases phase <;>
-    simp [ResolvedSemanticIndexColumn.lookupNumberValue,
+    simp [ResolvedSemanticIndexColumn.lookupNumberObservation,
+      ResolvedSemanticIndexColumn.lookupNumberValue,
       ResolvedSemanticIndexColumn.lookupKey,
       ResolvedSemanticIndexColumn.targetFor?]
 
