@@ -912,6 +912,9 @@ run_cmd do
 #print axioms A12Kernel.checkedEnumerationComputation_source_allowed
 #print axioms A12Kernel.checkedEnumerationComputation_excludes_target_reference
 #print axioms A12Kernel.checkedEnumerationComputation_evaluate
+#print axioms A12Kernel.checkedEnumerationFirstFilled_sources_allowed
+#print axioms A12Kernel.checkedEnumerationFirstFilled_excludes_target_reference
+#print axioms A12Kernel.checkedEnumerationFirstFilled_evaluate
 #print axioms A12Kernel.enumerationValueList_empty
 #print axioms A12Kernel.enumerationValueList_unknown
 #print axioms A12Kernel.enumerationValueList_present
@@ -966,6 +969,8 @@ run_cmd do
 #print axioms A12Kernel.resolvedValueList_hasPresent_of_anyOutside
 #print axioms A12Kernel.valueList_evalClassified_noNonRelevant
 #print axioms A12Kernel.valueList_classified_fired_implies_resolved_fired
+#print axioms A12Kernel.scanFirstFilledItems_present_head
+#print axioms A12Kernel.scanFirstFilledItems_unknown_head
 #print axioms A12Kernel.firstFilledNumber_present_head
 #print axioms A12Kernel.firstFilledNumber_unknown_head
 #print axioms A12Kernel.firstFilledNumber_empty_then_present
