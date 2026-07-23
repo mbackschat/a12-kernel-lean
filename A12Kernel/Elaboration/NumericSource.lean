@@ -374,14 +374,14 @@ end ResolvedNumericAtom
 
 /-- The wrapper checker rejects only an immediate numeric literal or its grouped form. Semantically fixed sources such as numeric `BaseYear` remain distinct syntax and are admitted. -/
 def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
-    AuthoredNumericExpr (ResolvedNumericAtom Field Aggregate) → Bool
+    AuthoredNumericExpr Atom → Bool
   | .literal _ => true
   | .group body => body.isImmediateResolvedNumericLiteral
   | _ => false
 
 /-- Check the source-specific immediate-literal prohibition at every rounding/absolute-value boundary while traversing the complete numeric operation tree, including operand-list calls and their normalized folds. -/
 def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
-    AuthoredNumericExpr (ResolvedNumericAtom Field Aggregate) → Bool
+    AuthoredNumericExpr Atom → Bool
   | .round _ _ body | .abs body =>
       !body.isImmediateResolvedNumericLiteral &&
         body.respectsResolvedWrapperLiteralBoundary
@@ -394,8 +394,7 @@ def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
 
 /-- A resolved numeric operation must satisfy the shared authored shape and the source-specific wrapper boundary at every depth. -/
 def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
-    (expression :
-      AuthoredNumericExpr (ResolvedNumericAtom Field Aggregate)) : Bool :=
+    (expression : AuthoredNumericExpr Atom) : Bool :=
   expression.isAdmittedNumericOperation &&
     expression.respectsResolvedWrapperLiteralBoundary
 

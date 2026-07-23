@@ -341,27 +341,30 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
 def CheckedNumericComputationAtom.toValidationAtom :
     CheckedNumericComputationAtom model →
       Except GeneratedComputationValidationError NumericValidationAtom
-  | .field declaration =>
+  | .sumOfProducts _ =>
+      throw .repeatableAggregateRequiresAddressedValidation
+  | .numeric (.field declaration) =>
       match declaration.toNumberField? with
       | some field => pure (.field field)
       | none => throw (.conditionAssembly .incoherentCore)
-  | .baseYear year => pure (.baseYear year)
-  | .baseYearDatePart year source part =>
+  | .numeric (.baseYear year) => pure (.baseYear year)
+  | .numeric (.baseYearDatePart year source part) =>
       pure (.baseYearDatePart year source part)
-  | .temporalFieldPart source part =>
+  | .numeric (.temporalFieldPart source part) =>
       pure (.temporalFieldPart source part)
-  | .stringLength source => pure (.stringLength source)
-  | .stringRange source start finish =>
+  | .numeric (.stringLength source) => pure (.stringLength source)
+  | .numeric (.stringRange source start finish) =>
       pure (.stringRange source start finish)
-  | .fieldValueAsNumber source =>
+  | .numeric (.fieldValueAsNumber source) =>
       pure (.fieldValueAsNumber source)
-  | .dateDifference unit left right =>
+  | .numeric (.dateDifference unit left right) =>
       pure (.dateDifference unit left right)
-  | .aggregate op source =>
+  | .numeric (.aggregate op source) =>
       match source.directAggregateFields? with
       | some direct => pure (.aggregate op direct)
       | none => throw .repeatableAggregateRequiresAddressedValidation
-  | .filledGroupCount _ => throw (.conditionAssembly .incoherentCore)
+  | .numeric (.filledGroupCount _) =>
+      throw (.conditionAssembly .incoherentCore)
 
 /-- The pure generated mismatch core after the checked computation expression has been narrowed to validation atoms. -/
 def generatedNumericOperationMismatch

@@ -40,6 +40,7 @@ private def dateId : FieldId := 7
 private def enumerationId : FieldId := 8
 private def numericStringId : FieldId := 9
 private def hostDigitEnumerationId : FieldId := 11
+private def productRightId : FieldId := 12
 
 private def timeComponents : TemporalComponents :=
   { year := false, month := false, day := false,
@@ -71,12 +72,19 @@ private def repeated : FlatFieldDecl :=
     policy := { kind := .number numberInfo }
     repeatableScope := [10] }
 
+private def productRight : FlatFieldDecl :=
+  { id := productRightId
+    groupPath := ["Root", "Rows"]
+    name := "ProductRight"
+    policy := { kind := .number numberInfo }
+    repeatableScope := [10] }
+
 private def model : FlatModel :=
   { fields := [source, later, numberDeclaration targetId "Target", wrong, repeated,
       temporalDeclaration timeId "Time" .time timeComponents,
       temporalDeclaration dateTimeId "DateTime" .dateTime dateTimeComponents,
       temporalDeclaration dateId "Date" .date TemporalComponents.fullDate,
-      numericString,
+      numericString, productRight,
       { id := enumerationId
         groupPath := ["Root"]
         name := "NumericChoice"
@@ -126,6 +134,15 @@ private def repeatedStarPath : SurfaceStarFieldPath :=
       { name := "Root" },
       { name := "Rows", starred := true }]
     field := "Repeated" }
+
+private def productRightStarPath : SurfaceStarFieldPath :=
+  { repeatedStarPath with field := "ProductRight" }
+
+private def surfaceProductAggregate :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.sumOfProducts {
+    left := repeatedStarPath
+    right := productRightStarPath })
 
 private def repeatedAggregateHaving (outerField : String := "Source") :
     SurfaceCorrelatedHaving :=
@@ -229,6 +246,13 @@ private def repeatableCheckedRead (root : CheckedCell)
   else if field == repeatedId then
     match environment with
     | [(10, row)] => rows row
+    | _ => malformedCheckedCell
+  else if field == productRightId then
+    match environment with
+    | [(10, 1)] => checkedNumber (.parsed (.num 2))
+    | [(10, 2)] => checkedNumber (.parsed (.num 4))
+    | [(10, 3)] => checkedNumber (.parsed (.num 6))
+    | [(10, _)] => checkedNumber .empty
     | _ => malformedCheckedCell
   else
     malformedCheckedCell
@@ -356,6 +380,50 @@ private def checkedRepeatableErrorOf
   | .ok _ => none
   | .error error => some error
 
+private def checkedProductResultOf
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
+    (input : NumericComputationEvaluationContext) :
+    Option NumericComputationResult :=
+  match elaborateCompleteNumericComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => checked.evaluateIn input |>.toOption
+
+private def checkedProductFaultOf
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
+    (input : NumericComputationEvaluationContext) :
+    Option NumericComputationFault :=
+  match elaborateCompleteNumericComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluateIn input with
+      | .ok _ => none
+      | .error fault => some fault
+
+private def checkedProductScalarFaultOf
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
+    Option NumericComputationFault :=
+  match elaborateCompleteNumericComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.evaluate context with
+      | .ok _ => none
+      | .error fault => some fault
+
+private def checkedProductTargetResultOf
+    (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
+    (input : NumericComputationEvaluationContext) :
+    Option NumericTargetCheckResult :=
+  match elaborateCompleteNumericComputationOperation
+      model ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked =>
+      match checked.attachTargetPolicy targetPolicy with
+      | .error _ => none
+      | .ok targetChecked => targetChecked.evaluateIn input |>.toOption
+
 private def targetPolicyAttachErrorOf (policy : NumericTargetPolicy) :
     Option NumericComputationElabError :=
   match elaborateNumericComputationOperation model ["Root"] targetId
@@ -380,6 +448,47 @@ example :
       checkedResultOf (surfaceFieldValueAsNumber)
         (context (choice := formalCheck { kind := .enumeration }
           (.rejected .declaredConstraint))) = some (.poison .declaredConstraint) := by
+  native_decide
+
+/- `SumOfProducts` is another ordinary numeric atom after its distinct row-aligned source has been checked: the shared expression stages the pair fold before surrounding arithmetic. -/
+example :
+    let rows := cells3
+      (checkedNumber (.parsed (.num 1)))
+      (checkedNumber (.parsed (.num 3)))
+      (checkedNumber (.parsed (.num 5)))
+    let negativeRows := cells3
+      (checkedNumber (.parsed (.num (-1))))
+      (checkedNumber (.parsed (.num (-3))))
+      (checkedNumber (.parsed (.num (-5))))
+    let input := repeatableContext (checkedNumber .empty) rows
+    checkedProductResultOf
+        (.binary .add surfaceProductAggregate
+          (.literal { value := 1, authoredScale := 0 }))
+        input =
+        some (.value 45) ∧
+      checkedProductTargetResultOf
+        (.binary .add surfaceProductAggregate
+          (.literal { value := 1, authoredScale := 0 }))
+        input =
+        some (.supported (.accepted { unscaled := 45, scale := 0 })) ∧
+      checkedProductResultOf (.abs surfaceProductAggregate)
+        (repeatableContext (checkedNumber .empty) negativeRows) =
+        some (.value 44) := by
+  native_decide
+
+/- The product atom cannot cross the scalar compatibility boundary, and malformed common-row topology remains an explicit addressing fault. -/
+example :
+    let malformedDocument : Document := {
+      instantiatedRows := [{ group := 10, path := [1, 2] }]
+      rawCells := fun _ => none }
+    let input := {
+      repeatableContext (checkedNumber .empty)
+        (fun _ => checkedNumber .empty) with
+      document := malformedDocument }
+    checkedProductScalarFaultOf surfaceProductAggregate =
+        some .repeatableContextRequired ∧
+      checkedProductFaultOf surfaceProductAggregate input =
+        some (.repeatableAddressing (.invalidRowDepth 10 [1, 2] 1)) := by
   native_decide
 
 /- String and non-ASCII host-decimal sources enter the same checked computation atom and preserve exact pattern poison. -/

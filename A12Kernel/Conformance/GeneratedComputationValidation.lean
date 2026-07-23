@@ -48,6 +48,9 @@ private def repeatedGateStar : SurfaceStarFieldPath :=
       { name := "Rows", starred := true }]
     field := "Gate" }
 
+private def repeatedTargetStar : SurfaceStarFieldPath :=
+  { repeatedGateStar with field := "Target" }
+
 private def repeatableAggregateOperation :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation repeatableModel) :=
@@ -55,6 +58,14 @@ private def repeatableAggregateOperation :
     (.atom (.aggregate .sum {
       first := .star repeatedGateStar
       rest := [] }))
+
+private def productAggregateOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel) :=
+  elaborateCompleteNumericComputationOperation repeatableModel ["Form"] target.id
+    (.atom (.sumOfProducts {
+      left := repeatedGateStar
+      right := repeatedTargetStar }))
 
 private def crossGroupSource : FlatFieldDecl :=
   { id := 20, groupPath := ["Input"], name := "Source",
@@ -493,6 +504,13 @@ private def repeatableAggregateGeneratedError :
   | .ok _ => none
   | .error error => some error
 
+private def productAggregateGeneratedError :
+    Option GeneratedComputationValidationError := do
+  let operation ← productAggregateOperation.toOption
+  match operation.generatedMismatchComparison none with
+  | .ok _ => none
+  | .error error => some error
+
 private def bothHoldingDifferent : LiteralNumberComputation :=
   computation (.fieldFilled gate.id) 1 (.fieldFilled gate.id) 2
 
@@ -869,7 +887,9 @@ example :
 /- The computation expression may contain a checked repeatable aggregate, but the current generated-validation context is deliberately flat-only and fails explicitly instead of erasing its address. -/
 example :
     repeatableAggregateGeneratedError =
-      some .repeatableAggregateRequiresAddressedValidation := by
+        some .repeatableAggregateRequiresAddressedValidation ∧
+      productAggregateGeneratedError =
+        some .repeatableAggregateRequiresAddressedValidation := by
   native_decide
 
 /- Generated validation narrows the checked absolute-value/String-range tree without rebuilding either layer and compares the same nonnegative result model-wide. -/
