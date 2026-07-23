@@ -12,7 +12,7 @@ namespace A12Kernel
 theorem numericComputationAtom_stringLength_toValidationAtom
     (model : FlatModel) (source : FlatStringField) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
-        (.stringLength source) =
+        (.numeric (.stringLength source)) =
       .ok (.stringLength source) := by
   rfl
 
@@ -20,7 +20,7 @@ theorem numericComputationAtom_stringLength_toValidationAtom
 theorem numericComputationAtom_stringRange_toValidationAtom
     (model : FlatModel) (source : FlatStringField) (start finish : Nat) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
-        (.stringRange source start finish) =
+        (.numeric (.stringRange source start finish)) =
       .ok (.stringRange source start finish) := by
   rfl
 
@@ -28,7 +28,7 @@ theorem numericComputationAtom_stringRange_toValidationAtom
 theorem numericComputationAtom_fieldValueAsNumber_toValidationAtom
     (model : FlatModel) (source : ResolvedFieldValueAsNumberSource) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
-        (.fieldValueAsNumber source) =
+        (.numeric (.fieldValueAsNumber source)) =
       .ok (.fieldValueAsNumber source) := by
   rfl
 
@@ -38,7 +38,7 @@ theorem checkedNumericComputationAtom_directAggregate_toValidationAtom
     (direct : ResolvedNumericAggregateFields)
     (narrowed : source.directAggregateFields? = some direct) :
     CheckedNumericComputationAtom.toValidationAtom
-        (.aggregate op source) =
+        (.numeric (.aggregate op source)) =
       .ok (.aggregate op direct) := by
   simp [CheckedNumericComputationAtom.toValidationAtom, narrowed]
   rfl
@@ -48,9 +48,17 @@ theorem checkedNumericComputationAtom_repeatableAggregate_rejectedByGeneratedVal
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
     (repeatable : source.directAggregateFields? = none) :
     CheckedNumericComputationAtom.toValidationAtom
-        (.aggregate op source) =
+        (.numeric (.aggregate op source)) =
       .error .repeatableAggregateRequiresAddressedValidation := by
   simp [CheckedNumericComputationAtom.toValidationAtom, repeatable]
+  rfl
+
+/-- A checked `SumOfProducts` atom cannot be flattened into the current nonrepeatable generated-validation context. -/
+theorem checkedNumericComputationAtom_product_rejectedByGeneratedValidation
+    (source : CheckedNumericProductAggregate model) :
+    CheckedNumericComputationAtom.toValidationAtom
+        (.sumOfProducts source) =
+      .error .repeatableAggregateRequiresAddressedValidation := by
   rfl
 
 /-- Every direct or nested reference to the computed target is rejected before guard lowering can produce a phase-specific condition. -/

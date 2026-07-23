@@ -31,7 +31,7 @@ theorem checkedNumberEntitySource_computation_delegates
 theorem numericComputationEvaluationContext_aggregate_delegates
     (context : NumericComputationEvaluationContext)
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp) :
-    context.readCheckedNumericComputationAtom (.aggregate op source) =
+    context.readCheckedNumericComputationAtom (.numeric (.aggregate op source)) =
       (source.evaluateComputation op context.document context.outer
         context.scalar.read context.filterRead context.starRead).mapError
           NumericComputationFault.repeatableAddressing := by
@@ -42,10 +42,44 @@ theorem scalarComputationContext_repeatableAggregate_requiresContext
     (context : ScalarComputationContext)
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
     (repeatable : source.directAggregateFields? = none) :
-    context.readCheckedNumericComputationAtom (.aggregate op source) =
+    context.readCheckedNumericComputationAtom (.numeric (.aggregate op source)) =
       .error .repeatableContextRequired := by
   simp [ScalarComputationContext.readCheckedNumericComputationAtom,
     ScalarComputationContext.readNumericComputationAtomWith, repeatable]
+  rfl
+
+/-- The addressed computation context delegates a checked `SumOfProducts` atom to the existing common-row product fold and maps only structural addressing failure. -/
+theorem numericComputationEvaluationContext_product_delegates
+    (context : NumericComputationEvaluationContext)
+    (source : CheckedNumericProductAggregate model) :
+    context.readCheckedNumericComputationAtom (.sumOfProducts source) =
+      (source.evaluateComputation context.document context.outer
+        context.starRead).mapError
+          NumericComputationFault.repeatableAddressing := by
+  rfl
+
+/-- The scalar compatibility evaluator rejects `SumOfProducts` explicitly because the checked pair requires its certified repeatable topology. -/
+theorem scalarComputationContext_product_requiresContext
+    (context : ScalarComputationContext)
+    (source : CheckedNumericProductAggregate model) :
+    context.readCheckedNumericComputationAtom (.sumOfProducts source) =
+      .error .repeatableContextRequired := by
+  rfl
+
+/-- A checked product atom reports exactly its two owned field references. -/
+theorem checkedNumericComputationAtom_product_references
+    (source : CheckedNumericProductAggregate model) (field : FieldId) :
+    CheckedNumericComputationAtom.references model field
+        (.sumOfProducts source) =
+      (source.left.field.id == field || source.right.field.id == field) := by
+  rfl
+
+/-- A checked product atom derives its result-scale summary from the existing multiplication-shaped pair summary. -/
+theorem checkedNumericComputationAtom_product_scaleSummary
+    (source : CheckedNumericProductAggregate model) :
+    CheckedNumericComputationAtom.numericScaleSummary
+        (.sumOfProducts source) =
+      source.scaleSummary := by
   rfl
 
 /-- Computation selects its own phase observation before reusing the shared String-length projection. -/
