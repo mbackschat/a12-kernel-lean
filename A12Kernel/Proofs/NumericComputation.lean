@@ -37,6 +37,17 @@ theorem numericComputationEvaluationContext_aggregate_delegates
           NumericComputationFault.repeatableAddressing := by
   rfl
 
+/-- The full computation context retains the checked value-count source, authored constant, addressed readers, and structural-failure channel exactly. -/
+theorem numericComputationEvaluationContext_valueCount_delegates
+    (context : NumericComputationEvaluationContext)
+    (source : CheckedNumberEntitySource model) (expected : Rat) :
+    context.readCheckedNumericComputationAtom (.valueCount expected source) =
+      ((source.evaluateValueCountComputation expected context.document
+        context.outer context.scalar.read context.filterRead
+        context.starRead).map NumericOperand.toComputationResult).mapError
+          NumericComputationFault.repeatableAddressing := by
+  rfl
+
 /-- The scalar compatibility evaluator cannot erase repeatable addressing by inventing an empty document. -/
 theorem scalarComputationContext_repeatableAggregate_requiresContext
     (context : ScalarComputationContext)
@@ -46,6 +57,25 @@ theorem scalarComputationContext_repeatableAggregate_requiresContext
       .error .repeatableContextRequired := by
   simp [ScalarComputationContext.readCheckedNumericComputationAtom,
     ScalarComputationContext.readNumericComputationAtomWith, repeatable]
+  rfl
+
+/-- Scalar computation rejects a repeatable value-count source rather than discarding its topology and filter provenance. -/
+theorem scalarComputationContext_repeatableValueCount_requiresContext
+    (context : ScalarComputationContext)
+    (source : CheckedNumberEntitySource model) (expected : Rat)
+    (repeatable : source.directFields? = none) :
+    context.readCheckedNumericComputationAtom (.valueCount expected source) =
+      .error .repeatableContextRequired := by
+  simp [ScalarComputationContext.readCheckedNumericComputationAtom,
+    CheckedNumberEntitySource.evaluateDirectValueCountAt?, repeatable]
+  rfl
+
+/-- A value-count atom has integral scale independently of its selected Number declarations. -/
+theorem checkedNumericComputationAtom_valueCount_scaleSummary
+    (source : CheckedNumberEntitySource model) (expected : Rat) :
+    CheckedNumericComputationAtom.numericScaleSummary
+        (.valueCount expected source) =
+      NumericScaleSummary.field 0 := by
   rfl
 
 /-- The addressed computation context delegates a checked `SumOfProducts` atom to the existing common-row product fold and maps only structural addressing failure. -/

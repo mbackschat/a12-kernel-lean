@@ -80,6 +80,14 @@ private def repeatableFirstFilledOperation :
       first := .starHaving repeatedTargetStar repeatableFirstFilledHaving
       rest := [] }))
 
+private def repeatableValueCountOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation repeatableModel) :=
+  elaborateCompleteNumericComputationOperation repeatableModel ["Form"] target.id
+    (.atom (.valueCount 5 {
+      first := .starHaving repeatedTargetStar repeatableFirstFilledHaving
+      rest := [] }))
+
 private def productAggregateOperation :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation repeatableModel) :=
@@ -363,6 +371,17 @@ private def repeatableAggregateReferences :
     comparison.core.referencesField repeatedGate.id,
     comparison.operandScope)
 
+private def repeatableValueCountReferences :
+    Option (Bool × Bool × Bool × NumericOperandScope) := do
+  let operation ← repeatableValueCountOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  pure (
+    comparison.core.referencesField target.id,
+    comparison.core.referencesField repeatedTarget.id,
+    comparison.core.referencesField repeatedGate.id &&
+      comparison.core.referencesField gate.id,
+    comparison.operandScope)
+
 private def productAggregateReferences :
     Option (Bool × Bool × Bool × NumericOperandScope) := do
   let operation ← productAggregateOperation.toOption
@@ -411,6 +430,14 @@ private def repeatableAggregateAddressedOutcome
   repeatableGeneratedAddressedOutcome repeatableAggregateOperation
     "computedRepeatableAggregate" document .empty targetCell
     sourceRows (fun _ => checkedNumber .empty)
+
+private def repeatableValueCountAddressedOutcome
+    (document : Document) (targetCell : RawCell)
+    (filterRows targetRows : RowIndex → CheckedCell) :
+    Option (Except StarAddressingError FlatRuleOutcome) :=
+  repeatableGeneratedAddressedOutcome repeatableValueCountOperation
+    "computedRepeatableValueCount" document (.parsed (.num 1)) targetCell
+    filterRows targetRows
 
 private def productAggregateAddressedOutcome
     (document : Document) (targetCell : RawCell)
@@ -775,6 +802,10 @@ private def generatedOperationError {model : FlatModel}
 private def repeatableAggregateGeneratedError :
     Option GeneratedComputationValidationError :=
   generatedOperationError repeatableAggregateOperation
+
+private def repeatableValueCountGeneratedError :
+    Option GeneratedComputationValidationError :=
+  generatedOperationError repeatableValueCountOperation
 
 private def productAggregateGeneratedError :
     Option GeneratedComputationValidationError :=
@@ -1179,6 +1210,7 @@ example :
 example :
     repeatableFirstFilledGeneratedError = none ∧
       repeatableAggregateGeneratedError = none ∧
+      repeatableValueCountGeneratedError = none ∧
       productAggregateGeneratedError = none ∧
       hasAddressedScalarRejection
           (repeatableGeneratedScalarCapability repeatableFirstFilledOperation
@@ -1187,8 +1219,37 @@ example :
           (repeatableGeneratedScalarCapability repeatableAggregateOperation
             "computedRepeatableAggregate") = true ∧
       hasAddressedScalarRejection
+          (repeatableGeneratedScalarCapability repeatableValueCountOperation
+            "computedRepeatableValueCount") = true ∧
+      hasAddressedScalarRejection
           (repeatableGeneratedScalarCapability productAggregateOperation
             "computedProductAggregate") = true := by
+  native_decide
+
+/- Value-count generated validation preserves source and filter dependencies plus the current matching-filter witness. Flattening to aggregate-wide filter presence would incorrectly make the selected non-match shrinkable. -/
+example :
+    let selected : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 1))
+      | _ => checkedNumber .empty
+    let matching : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 5))
+      | _ => checkedNumber .empty
+    let nonmatching : RowIndex → CheckedCell
+      | 1 => checkedNumber (.parsed (.num 7))
+      | _ => checkedNumber .empty
+    let document := repeatableDocument [1]
+    repeatableValueCountReferences =
+        some (true, true, true, .modelWideCheckedComputation) ∧
+      hasAddressedOutcome
+        (repeatableValueCountAddressedOutcome document
+          (.parsed (.num (-1))) selected matching)
+        (.fired (repeatableExpectedMessage
+          "computedRepeatableValueCount" .omission)) ∧
+      hasAddressedOutcome
+        (repeatableValueCountAddressedOutcome document
+          (.parsed (.num (-1))) selected nonmatching)
+        (.fired (repeatableExpectedMessage
+          "computedRepeatableValueCount" .value)) := by
   native_decide
 
 /- The model-indexed leaf exposes the target, selected repeatable field, and both `Having` dependencies to Analyze/Transform consumers, then executes through the sole checked tree. Structural address failure remains outside semantic UNKNOWN. -/

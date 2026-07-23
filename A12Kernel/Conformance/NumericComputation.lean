@@ -180,6 +180,12 @@ private def surfaceFirstFilled
     AuthoredNumericExpr SurfaceNumericComputationAtom :=
   .atom (.firstFilled { first, rest })
 
+private def surfaceValueCount (expected : Rat)
+    (first : SurfaceNumberEntityOperand)
+    (rest : List SurfaceNumberEntityOperand) :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  .atom (.valueCount expected { first, rest })
+
 private def repeatedAggregateHaving (outerField : String := "Source") :
     SurfaceCorrelatedHaving :=
   .compareNumbers .equal
@@ -199,6 +205,12 @@ private def surfaceRepeatableFirstFilled
     (outerField : String := "Source") :
     AuthoredNumericExpr SurfaceNumericComputationAtom :=
   surfaceFirstFilled
+    (.starHaving repeatedStarPath (repeatedAggregateHaving outerField)) []
+
+private def surfaceRepeatableValueCount (expected : Rat)
+    (outerField : String := "Source") :
+    AuthoredNumericExpr SurfaceNumericComputationAtom :=
+  surfaceValueCount expected
     (.starHaving repeatedStarPath (repeatedAggregateHaving outerField)) []
 
 private def surfaceBaseYear : AuthoredNumericExpr SurfaceNumericAtom :=
@@ -1488,6 +1500,37 @@ example :
     checkedRepeatableResultOf expression input = some (.value 7) ∧
       checkedRepeatableTargetResultOf expression input =
         some (.supported (.accepted { unscaled := 7, scale := 0 })) := by
+  native_decide
+
+/- A checked value count composes in the same expression and target path while retaining its selected source certificate. -/
+example :
+    let rows := cells3
+      (checkedNumber (.parsed (.num 5)))
+      (checkedNumber (.parsed (.num 7)))
+      (checkedNumber (.parsed (.num 5)))
+    let input := repeatableContext
+      (checkedNumber (.parsed (.num 5))) rows
+    let repeatedExpression :=
+      AuthoredNumericExpr.binary .add
+        (surfaceRepeatableValueCount 5)
+        (.literal { value := 1, authoredScale := 0 })
+    let directExpression := surfaceValueCount 5
+      (.field (surfacePath ["Root"] "Source"))
+      [.field (surfacePath ["Root"] "Later")]
+    checkedCompleteResultOf repeatedExpression input = some (.value 3) ∧
+      checkedCompleteTargetResultOf repeatedExpression input =
+        some (.supported (.accepted { unscaled := 3, scale := 0 })) ∧
+      checkedCompleteScalarResultOf directExpression
+        (context (checkedNumber (.parsed (.num 5)))
+          (checkedNumber (.parsed (.num 7)))) =
+        some (.value 1) ∧
+      checkedCompleteScalarFaultOf (surfaceRepeatableValueCount 5) =
+        some .repeatableContextRequired ∧
+      checkedCompleteErrorOf
+        (surfaceValueCount 5
+          (.field (surfacePath ["Root"] "Target"))
+          [.field (surfacePath ["Root"] "Source")]) =
+        some (.targetSelfReference targetId) := by
   native_decide
 
 /- A repeatable aggregate never degrades into a scalar empty-document result, and malformed row topology stays an explicit addressing fault. -/

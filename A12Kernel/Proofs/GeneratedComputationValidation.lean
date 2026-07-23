@@ -62,6 +62,14 @@ theorem checkedNumericComputationAtom_repeatableAggregate_preservedForGeneratedV
   simp [CheckedNumericComputationAtom.toValidationAtom, repeatable]
   rfl
 
+/-- Generated validation retains a value count's authored constant and complete checked entity-list source without flattening filter provenance. -/
+theorem checkedNumericComputationAtom_valueCount_preservedForGeneratedValidation
+    (source : CheckedNumberEntitySource model) (expected : Rat) :
+    CheckedNumericComputationAtom.toValidationAtom
+        (.valueCount expected source) =
+      .ok (.valueCount expected source) := by
+  rfl
+
 /-- A checked `SumOfProducts` atom retains its row-paired source for addressed generated validation. -/
 theorem checkedNumericComputationAtom_product_preservedForGeneratedValidation
     (source : CheckedNumericProductAggregate model) :

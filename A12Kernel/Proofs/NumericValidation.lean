@@ -55,6 +55,17 @@ theorem orderedNumericValidationAtom_aggregate_addressed_delegates
           NumericOperand.toValidationArithmetic := by
   rfl
 
+/-- Addressed generated validation preserves the checked value-count constant and per-selected-cell filter provenance through the sole validation-phase evaluator. -/
+theorem orderedNumericValidationAtom_valueCount_addressed_delegates
+    (source : CheckedNumberEntitySource model) (expected : Rat)
+    (context : AddressedValidationEvaluationContext model) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.valueCount expected source) context =
+      (source.evaluateValueCountValidationIn expected context.document
+        context.outer context.scalar.fields context.read).map
+          NumericOperand.toValidationArithmetic := by
+  rfl
+
 /-- Addressed generated validation delegates `SumOfProducts` to the sole checked row-paired fold and changes only its numeric-domain projection. -/
 theorem orderedNumericValidationAtom_sumOfProducts_addressed_delegates
     (source : CheckedNumericProductAggregate model)
