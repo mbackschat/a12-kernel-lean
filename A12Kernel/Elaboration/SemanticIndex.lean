@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
 
 /-! # Checked one-group Number semantic-index construction
@@ -126,48 +127,55 @@ inductive SemanticIndexContextError where
   deriving Repr, DecidableEq
 
 private structure NumberIndexCandidate where
-  key : Rat
   row : RowIndex
+  key : RepetitionKeyComponent
   deriving Repr, DecidableEq
-
-private structure NumberIndexScan where
-  candidates : List NumberIndexCandidate := []
-  unavailableKey : Option FormalCause := none
-  deriving Repr, DecidableEq
-
-private def NumberIndexScan.noteUnavailable
-    (scan : NumberIndexScan) (cause : FormalCause) : NumberIndexScan :=
-  match scan.unavailableKey with
-  | some _ => scan
-  | none => { scan with unavailableKey := some cause }
 
 private def scanNumberIndexKeys (context : SingleGroupValidationContext)
-    (indexField : FlatNumberField) : List RowIndex → NumberIndexScan
-  | [] => {}
+    (indexField : FlatNumberField) : List RowIndex → List NumberIndexCandidate
+  | [] => []
   | row :: remaining =>
-      let rest := scanNumberIndexKeys context indexField remaining
-      match observeCell .validation (context.read row indexField.id) with
-      | .value (.num key) =>
-          { rest with candidates := { key, row } :: rest.candidates }
-      | .empty => rest.noteUnavailable .required
-      | .unknown cause => rest.noteUnavailable cause
-      | .value _ | .poison _ => rest.noteUnavailable .malformed
+      let key := match observeCell .validation (context.read row indexField.id) with
+        | .value (.num value) => .present (.number value)
+        | .empty => .empty
+        | .unknown cause | .poison cause => .unknown cause
+        | .value _ => .unknown .malformed
+      { row, key } :: scanNumberIndexKeys context indexField remaining
 
-private def NumberIndexCandidate.isDuplicate
-    (all : List NumberIndexCandidate) (candidate : NumberIndexCandidate) : Bool :=
-  (all.filter fun other => other.key == candidate.key).length > 1
+private def NumberIndexCandidate.resolved
+    (level : RepeatableLevel) (candidate : NumberIndexCandidate) :
+    ResolvedRepetitionKeyRow :=
+  { row := [(level, candidate.row)], key := [candidate.key] }
 
-private def NumberIndexScan.toColumn (scan : NumberIndexScan)
+private def NumberIndexCandidate.directUnavailable? :
+    NumberIndexCandidate → Option FormalCause
+  | { key := .empty, .. } => some .required
+  | { key := .unknown cause, .. } => some cause
+  | _ => none
+
+private def NumberIndexCandidates.toColumn
+    (candidates : List NumberIndexCandidate) (level : RepeatableLevel)
     (context : SingleGroupValidationContext) (targetField : FlatNumberField) :
     ResolvedSemanticIndexColumn :=
-  let hasDuplicate := scan.candidates.any (NumberIndexCandidate.isDuplicate scan.candidates)
-  let unavailableKey := match scan.unavailableKey with
+  let results := evalRepetitionNotUnique (candidates.map (·.resolved level))
+  let unavailableKey := match
+      (candidates.filterMap NumberIndexCandidate.directUnavailable?).head? with
     | some cause => some cause
-    | none => if hasDuplicate then some .duplicateIndex else none
-  let entries := (scan.candidates.filter fun candidate =>
-      !candidate.isDuplicate scan.candidates).map fun candidate =>
-        { token := SemanticIndexKey.number candidate.key
-          target := context.read candidate.row targetField.id }
+    | none =>
+        if results.any fun result => match result.verdict with
+          | .fired _ => true
+          | _ => false then
+          some .duplicateIndex
+        else
+          none
+  let entries := (candidates.zip results).filterMap fun pair =>
+    match pair.1.key, pair.2.verdict with
+    | .present (.number key), .notFired =>
+        some {
+          token := SemanticIndexKey.number key
+          target := context.read pair.1.row targetField.id
+        }
+    | _, _ => none
   { entries, unavailableKey }
 
 namespace CheckedNumberSemanticIndexSource
@@ -178,8 +186,9 @@ def resolveColumn (checked : CheckedNumberSemanticIndexSource model)
     Except SemanticIndexContextError ResolvedSemanticIndexColumn := do
   raw.validate |>.mapError .topology
   let context := model.checkSingleGroupContext checked.group raw
-  pure ((scanNumberIndexKeys context checked.indexField raw.candidates).toColumn
-    context checked.targetField)
+  pure (NumberIndexCandidates.toColumn
+    (scanNumberIndexKeys context checked.indexField raw.candidates)
+    checked.group.level context checked.targetField)
 
 /-- Evaluate the checked literal or dynamic Number lookup through the sole resolved phase-policy owner. -/
 def lookupValue (checked : CheckedNumberSemanticIndexSource model)

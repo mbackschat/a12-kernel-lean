@@ -104,5 +104,6 @@ import A12Kernel.Conformance.SemanticIndex
 import A12Kernel.Conformance.SemanticIndexElaboration
 import A12Kernel.Conformance.CustomCondition
 import A12Kernel.Conformance.CheckedDocument
+import A12Kernel.Conformance.CheckedIndexPreliminary
 
 /-! Executable semantic locks built with the default library target. -/

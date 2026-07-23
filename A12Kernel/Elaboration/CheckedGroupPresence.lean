@@ -68,8 +68,9 @@ private def resolveGroupPresenceScope (checked : CheckedDocument model)
     checked.source.instantiatedRows
   pure (addressPrefix, overLimitRow)
 
-/-- Derive one resolved validation-group slice from the checked document. Relevance and later structural findings remain explicit phase inputs; base over-repetition is derived from immutable row topology. -/
-def groupPresenceInput (checked : CheckedDocument model)
+/-- Derive one resolved validation-group slice using a later checked-cell placement view over the same immutable document. The supplied placements must retain the base addresses and may add model-owned absent-cell findings. -/
+def groupPresenceInputFromCells (checked : CheckedDocument model)
+    (cells : List CheckedCellPlacement)
     (groupPath : GroupPath) (environment : Env)
     (relevance : GroupRelevance) (structuralError : Bool) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
@@ -79,7 +80,7 @@ def groupPresenceInput (checked : CheckedDocument model)
     match resolveGroupPresenceScope checked groupPath environment with
     | .error error => .error error
     | .ok (addressPrefix, overLimitRow) =>
-        let descendantCells := checked.checkedCells.filterMap fun placement =>
+        let descendantCells := cells.filterMap fun placement =>
           match model.lookupUniqueId placement.address.field with
           | .ok declaration =>
               if groupPath.isPrefixOf declaration.groupPath &&
@@ -95,6 +96,14 @@ def groupPresenceInput (checked : CheckedDocument model)
           structuralError := structuralError || overLimitRow
           relevance
         }
+
+/-- Derive one resolved validation-group slice from the base checked document. Relevance and later structural findings remain explicit phase inputs; base over-repetition is derived from immutable row topology. -/
+def groupPresenceInput (checked : CheckedDocument model)
+    (groupPath : GroupPath) (environment : Env)
+    (relevance : GroupRelevance) (structuralError : Bool) :
+    Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
+  checked.groupPresenceInputFromCells checked.checkedCells groupPath environment
+    relevance structuralError
 
 end CheckedDocument
 
