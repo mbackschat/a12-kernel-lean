@@ -533,6 +533,33 @@ private def checkedDocumentAggregateStructuralSnapshot
     | .ok operand => .result operand
     | .error cause => .error cause)
 
+private inductive CheckedDocumentPartialSnapshot where
+  | result (result : PartialValidationNumberAggregateResult)
+  | error (cause : CheckedAddressingError)
+  deriving Repr, DecidableEq
+
+private def checkedDocumentPartialStructuralSnapshot
+    (directFailure : Bool) :
+    Option CheckedDocumentPartialSnapshot := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      productModel).toOption
+  let data : DocumentData := {
+    instantiatedRows := []
+    cells := if directFailure then [{
+      address := { field := unsignedA.id, path := [] }
+      stored := "bad", raw := .rejected .declaredConstraint
+    }] else []
+  }
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let source ← (elaborateNumberEntitySource productModel ["Form"]
+    (aggregateSource (.field (bare "UnsignedA"))
+      [.star (nestedProductStar false)])).toOption
+  pure (match source.evaluateCheckedDocumentPartialAggregate
+      .sum document [] .full with
+    | .ok result => .result result
+    | .error cause => .error cause)
+
 private def checkedDocumentFilteredAggregateSnapshot
     (computation : Bool) : Option CheckedDocumentAggregateSnapshot := do
   let prepared ←
@@ -570,6 +597,49 @@ private def checkedDocumentValueCountSnapshot
     | .ok operand => .result operand
     | .error cause => .error cause)
 
+private structure NumberEntityConsumerSlot where
+  field : FieldId
+  repeated : Bool
+  filtered : Bool
+  signed : Bool
+  deriving Repr, DecidableEq
+
+private def numberEntityConsumerSlots
+    (source : CheckedNumberEntitySource model) :
+    List NumberEntityConsumerSlot :=
+  source.operands.map fun
+    | .field operand =>
+        { field := operand.field.id, repeated := false, filtered := false,
+          signed := operand.field.info.signed }
+    | .star operand =>
+        { field := operand.field.id, repeated := true, filtered := false,
+          signed := operand.field.info.signed }
+    | .starHaving operand =>
+        { field := operand.source.field.id, repeated := true, filtered := true,
+          signed := operand.source.field.info.signed }
+
+private def checkedDocumentPartialSnapshot
+    (valueCount filtered : Bool) (scope : ValidationRelevanceScope) :
+    Option (List NumberEntityConsumerSlot × CheckedDocumentPartialSnapshot) := do
+  let prepared ←
+    (prepareFlatStringContext aggregateWorld builtinStringPatternCompiler
+      model).toOption
+  let document ← (checkDocument prepared "en_US" checkedAggregateData).toOption
+  let authored :=
+    if filtered then
+      aggregateSource
+        (.starHaving aggregateStar computationAggregateHaving) []
+    else
+      aggregateSource (.field (bare "UnsignedA")) [.star aggregateStar]
+  let source ← (elaborateNumberEntitySource model ["Form"] authored).toOption
+  let result := match if valueCount then
+      source.evaluateCheckedDocumentPartialValueCount 2 document [] scope
+    else
+      source.evaluateCheckedDocumentPartialAggregate .sum document [] scope with
+    | .ok result => .result result
+    | .error cause => .error cause
+  pure (numberEntityConsumerSlots source, result)
+
 /- Both phases accumulate the same authored direct/star source from one immutable checked document. -/
 example :
     checkedDocumentAggregateSnapshot false =
@@ -587,6 +657,14 @@ example :
     checkedDocumentAggregateStructuralSnapshot false false =
       some (.error (.addressing (.missingBinding 10))) ∧
     checkedDocumentAggregateStructuralSnapshot true false =
+      some (.error (.addressing (.missingBinding 10))) := by
+  native_decide
+
+/- Partial evaluation keeps the same prefix laziness and structural-error boundary rather than mapping a reached addressing failure to UNKNOWN. -/
+example :
+    checkedDocumentPartialStructuralSnapshot true =
+      some (.result (.evaluated (.unknown .declaredConstraint))) ∧
+    checkedDocumentPartialStructuralSnapshot false =
       some (.error (.addressing (.missingBinding 10))) := by
   native_decide
 
@@ -608,6 +686,35 @@ example :
       some (.result (.value 1 .both)) ∧
     checkedDocumentValueCountSnapshot true true =
       some (.result (.value 1 .both)) := by
+  native_decide
+
+/- Partial checked-document evaluation preserves concrete direct relevance, wildcard star extent, and rule-level filter skip for both accumulators. -/
+example :
+    let relevant := ValidationRelevanceScope.partialSet [
+      { path := unsignedA.path,
+        indices := [.concrete 1, .concrete 1] },
+      { path := repeated.path,
+        indices := [.concrete 1, .all, .concrete 1] }]
+    let unfilteredSlots := [
+      { field := unsignedA.id, repeated := false, filtered := false,
+        signed := false : NumberEntityConsumerSlot },
+      { field := repeated.id, repeated := true, filtered := false,
+        signed := false }]
+    let filteredSlots := [
+      { field := repeated.id, repeated := true, filtered := true,
+        signed := false : NumberEntityConsumerSlot }]
+    checkedDocumentPartialSnapshot false false relevant =
+      some (unfilteredSlots, .result (.evaluated (.value 10 .fixed))) ∧
+    checkedDocumentPartialSnapshot true false relevant =
+      some (unfilteredSlots, .result (.evaluated (.value 1 .fixed))) ∧
+    checkedDocumentPartialSnapshot false false (.partialSet []) =
+      some (unfilteredSlots, .result .nonRelevant) ∧
+    checkedDocumentPartialSnapshot true false (.partialSet []) =
+      some (unfilteredSlots, .result .nonRelevant) ∧
+    checkedDocumentPartialSnapshot false true (.partialSet []) =
+      some (filteredSlots, .result .skippedHaving) ∧
+    checkedDocumentPartialSnapshot true true (.partialSet []) =
+      some (filteredSlots, .result .skippedHaving) := by
   native_decide
 
 private def checkedComputationAggregateOf (op : NumericAggregateOp)
