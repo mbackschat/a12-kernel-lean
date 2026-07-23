@@ -20,6 +20,19 @@ The accepted evidence consolidation divides work into three tiers. Tier 1 is the
 
 An unavailable external observation no longer blocks unrelated internal semantics or theorem work. Mark the capsule `external evidence pending`, keep the claim narrow, and schedule the smallest useful family calibration. It still blocks a kernel-correspondence-complete or shipment-ready claim.
 
+## Pre-implementation consumer hypothesis
+
+Before writing the first red case for a selected semantic capsule, state one compact consumer hypothesis in the working context. This is a design discriminator, not a new committed template or harness:
+
+- name the consumer task, usually Execute plus one or more of Analyze, Transform, or Compile;
+- state the exact decision that consumer must make;
+- list the minimum semantic distinctions the representation must expose;
+- name one realistic unsafe transformation or wrong account;
+- predict one public query or result the finished API must support;
+- name one explicit `insufficient information` outcome rather than guessing or collapsing it into a semantic result.
+
+Use the hypothesis to choose the red separator and representation before implementation. At same-context closure, run the predicted query against the finished API and verify that the unsafe account remains distinguishable; if the representation cannot answer without renewed source archaeology or consumer-specific reconstruction, fix the semantic root or record the precise open gap. This check adds no runner, schema, registry, permanent report, or per-capsule cold review. Trigger-based artifact-only probes keep the milestone cadence below.
+
 ## Same-context capsule closure assessment
 
 After the focused and integrated implementation is stable, the agent that performed the source audit and capsule work must assess the completed unit before the final trust/hygiene gate and commit. Apply the same rule proportionally to every approved substantive architecture, harness, process, or documentation unit. This is deliberately an in-context review: the agent must use its knowledge of rejected accounts, failed red cases, source discriminators, assumptions, measurements, and implementation tradeoffs rather than delegating the retrospective to a cold reviewer.
@@ -60,7 +73,7 @@ A cold reviewer supplements rather than replaces the same-context assessment. Ru
 
 Every new semantic capsule uses red/green TDD.
 
-1. State the exact supported fragment, its observable result domain, its evidence source, the useful law, and the nearest false generalization before adding a general abstraction.
+1. State the exact supported fragment, its observable result domain, its evidence source, the useful law, the nearest false generalization, and the [consumer hypothesis](#pre-implementation-consumer-hypothesis) before adding a general abstraction.
 2. Add concrete separating examples under `A12Kernel/Conformance/` against the intended public API.
 3. Run the focused module and confirm a meaningful red result: the module, definition, constructor, or behavior is absent or wrong for the expected semantic reason.
 4. Implement the smallest total pure definition that makes those examples green.
