@@ -804,6 +804,11 @@ run_cmd do
 #print axioms A12Kernel.checkedNumberEntityStar_partialAggregate_nonRelevant
 #print axioms A12Kernel.checkedNumberEntitySource_partialAggregate_skipsHaving
 #print axioms A12Kernel.tokenDistinctCount_equal_pair
+#print axioms A12Kernel.tokenValueCount_singleton_match_fixed
+#print axioms A12Kernel.checkedTokenValueCount_expectedAllowed
+#print axioms A12Kernel.checkedTokenValueCount_scaleSummary
+#print axioms A12Kernel.checkedTokenValueCount_direct_none
+#print axioms A12Kernel.checkedTokenValueCount_partialHaving_skips
 #print axioms A12Kernel.checkedFieldEntityShape_requiredMultiplicity
 #print axioms A12Kernel.checkedTokenDistinctSource_requiredMultiplicity
 #print axioms A12Kernel.checkedTokenDistinctSource_uniqueDirectOperands
