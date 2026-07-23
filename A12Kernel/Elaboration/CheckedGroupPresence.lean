@@ -72,7 +72,8 @@ private def resolveGroupPresenceScope (model : FlatModel)
 def groupPresenceInputFromSlice (_checked : CheckedDocument model)
     (rows : List RowAddr) (cells : List CheckedCellPlacement)
     (groupPath : GroupPath) (environment : Env)
-    (relevance : GroupRelevance) (structuralError : Bool) :
+    (relevance : GroupRelevance) (structuralError : Bool)
+    (silentErrorAddresses : List CellAddr := []) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
   if !model.hasGroupPath groupPath then
     .error (.unknownGroup groupPath)
@@ -89,11 +90,18 @@ def groupPresenceInputFromSlice (_checked : CheckedDocument model)
               else
                 none
           | .error _ => none
+        let silentError := silentErrorAddresses.any fun address =>
+          match model.lookupUniqueId address.field with
+          | .ok declaration =>
+              groupPath.isPrefixOf declaration.groupPath &&
+                addressPrefix.isPrefixOf address.path
+          | .error _ => false
         .ok {
           descendantCells
           hasInstantiatedRow := rows.any
             (rowWithinGroup model groupPath addressPrefix)
           structuralError := structuralError || overLimitRow
+          silentError
           relevance
         }
 

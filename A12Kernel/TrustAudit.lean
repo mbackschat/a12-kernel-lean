@@ -890,6 +890,7 @@ run_cmd do
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
 #print axioms A12Kernel.groupPresence_rowContent_admitted
+#print axioms A12Kernel.groupPresence_silentError_erroneous
 #print axioms A12Kernel.checkedCell_duplicate_preservesGroupAdmission
 #print axioms A12Kernel.checkedCell_rejected_notGroupContent
 #print axioms A12Kernel.groupListPresenceTally_partition
@@ -1276,4 +1277,6 @@ run_cmd do
 #print axioms A12Kernel.indexPreliminary_mandatory_contract
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed
+#print axioms A12Kernel.checkedIndexPreliminary_default_read
 #print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
+#print axioms A12Kernel.checkedPartialPreliminary_silent_read

@@ -5,7 +5,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked full and partial generated-preliminary findings
 
-This boundary derives generated index mandatory and uniqueness findings from one immutable checked document. Its partial view selects index candidates before duplicate construction and combines the existing absolute nonrepeatable required evaluator without merging their roles. An empty ordinary required field remains computation-ignored while an empty index remains a distinct later formal-operand fact.
+This boundary derives generated index mandatory and uniqueness findings from one immutable checked document. One declaration/row/cell eligibility projection stages an Enumeration S-value only in the full validation view and turns the same address into cause-free silent unavailability in partial validation. The partial view selects index candidates before duplicate construction and combines the existing absolute nonrepeatable required evaluator without merging their roles. An empty ordinary required field remains computation-ignored while an empty index remains a distinct later formal-operand fact.
 -/
 
 namespace A12Kernel
@@ -36,6 +36,12 @@ structure IndexPreliminaryFinding where
   kind : IndexPreliminaryKind
   deriving Repr, DecidableEq
 
+/-- One model-certified stored default injected only into a validation-stage view. It is not a physical document cell. -/
+structure CheckedIndexDefault where
+  address : CellAddr
+  stored : String
+  deriving Repr, DecidableEq
+
 inductive CheckedIndexPreliminaryError where
   | document (error : CheckedDocumentError)
   | model (error : ResolveError)
@@ -48,45 +54,62 @@ inductive CheckedIndexPreliminaryError where
   | incoherentValueKind (address : CellAddr)
   deriving Repr, DecidableEq
 
-/-- One later full-validation view over the exact immutable checked input. Findings are extensional by address and kind; list order is not a public message-order contract. -/
+/-- One later full-validation view over the exact immutable checked input. Defaults and findings are extensional by address and payload; list order is not a public message-order contract. -/
 structure CheckedIndexPreliminary (model : FlatModel) where
   private mk ::
   base : CheckedDocument model
+  defaulted : List CheckedIndexDefault
   findings : List IndexPreliminaryFinding
 
 private structure CheckedIndexCandidate where
   address : CellAddr
   resolved : ResolvedRepetitionKeyRow
 
-private def CheckedDocument.storedAt? (checked : CheckedDocument model)
-    (address : CellAddr) : Option String :=
-  (checked.source.cells.find? fun input => input.address == address).map (·.stored)
+private def CheckedIndexDefault.cell (defaulted : CheckedIndexDefault) :
+    CheckedCell :=
+  checkAdmittedRawCell (.parsed (.enum defaulted.stored))
+
+private def storedAt? (checked : CheckedDocument model)
+    (defaulted : List CheckedIndexDefault) (address : CellAddr) :
+    Option String :=
+  match defaulted.find? fun input => input.address == address with
+  | some input => some input.stored
+  | none =>
+      (checked.source.cells.find? fun input =>
+        input.address == address).map (·.stored)
 
 private def CheckedDocument.indexComponentAt (checked : CheckedDocument model)
+    (defaulted : List CheckedIndexDefault)
     (declaration : FlatFieldDecl) (address : CellAddr) :
     Except CheckedIndexPreliminaryError RepetitionKeyComponent := do
-  let cell ← checked.read address |>.mapError .document
+  let cell ← match defaulted.find? fun input => input.address == address with
+    | some input => pure input.cell
+    | none => checked.read address |>.mapError .document
   match declaration.policy.kind, observeCell .validation cell with
   | _, .empty => pure .empty
   | _, .unknown cause | _, .poison cause => pure (.unknown cause)
   | .number _, .value (.num value) => pure (.present (.number value))
   | .number _, .value _ => throw (.incoherentValueKind address)
   | _, .value _ =>
-      match checked.storedAt? address with
+      match storedAt? checked defaulted address with
       | some stored => pure (.present (.token stored))
       | none => throw (.missingStoredValue address)
 
 private def CheckedDocument.indexCandidates
     (checked : CheckedDocument model) (group : RepeatableGroupDecl)
+    (defaulted : List CheckedIndexDefault)
+    (silentlyUnavailable : List CellAddr)
     (declaration : FlatFieldDecl) (relevance : ValidationRelevanceScope) :
     Except CheckedIndexPreliminaryError (List CheckedIndexCandidate) :=
   (checked.source.instantiatedRows.filter fun row =>
       let environment :=
         (model.repeatableScopeForGroupPath group.path).zip row.path
+      let address : CellAddr := { field := declaration.id, path := row.path }
       row.group == group.level &&
-        relevance.coversCell model declaration.path environment).mapM fun row => do
+        relevance.coversCell model declaration.path environment &&
+        !silentlyUnavailable.contains address).mapM fun row => do
     let address := { field := declaration.id, path := row.path }
-    let component ← checked.indexComponentAt declaration address
+    let component ← checked.indexComponentAt defaulted declaration address
     pure {
       address
       resolved := {
@@ -100,6 +123,56 @@ private def CheckedIndexCandidates.parentPaths
   candidates.foldl (fun parents candidate =>
     let parent := candidate.address.path.dropLast
     if parents.contains parent then parents else parents ++ [parent]) []
+
+private def RowAddrs.parentPaths (rows : List RowAddr) : List (List Nat) :=
+  rows.foldl (fun parents row =>
+    let parent := row.path.dropLast
+    if parents.contains parent then parents else parents ++ [parent]) []
+
+private def FlatFieldDecl.indexDefaultStored? (declaration : FlatFieldDecl) :
+    Option String :=
+  match declaration.policy.kind, declaration.enumeration,
+      declaration.requiredness with
+  | .enumeration, some source, none => do
+      let checked ← (elaborateEnumeration source).toOption
+      checked.declaration.defaultStoredToken
+  | _, _, _ => none
+
+/-- Derive eligible validation-stage defaults from physical row cardinality and evaluation-empty index cells. Both absent and present-empty cells are eligible; an admitted or formally unavailable cell is not. -/
+private def CheckedDocument.indexDefaultsForGroup
+    (checked : CheckedDocument model) (group : RepeatableGroupDecl) :
+    List CheckedIndexDefault :=
+  match group.indexField with
+  | none => []
+  | some field =>
+      match model.lookupUniqueId field with
+      | .error _ => []
+      | .ok declaration =>
+          match declaration.indexDefaultStored? with
+          | none => []
+          | some stored =>
+              let rows := checked.source.instantiatedRows.filter fun row =>
+                row.group == group.level
+              RowAddrs.parentPaths rows |>.filterMap fun parent =>
+                match rows.filter fun row => row.path.dropLast == parent with
+                | [row] =>
+                    let address : CellAddr :=
+                      { field := declaration.id, path := row.path }
+                    match checked.read address with
+                    | .ok cell =>
+                        if observeCell .validation cell == .empty then
+                          some { address, stored }
+                        else
+                          none
+                    | .error _ => none
+                | _ => none
+
+private def CheckedDocument.indexDefaults
+    (checked : CheckedDocument model) :
+    List RepeatableGroupDecl → List CheckedIndexDefault
+  | [] => []
+  | group :: groups =>
+      checked.indexDefaultsForGroup group ++ checked.indexDefaults groups
 
 private def indexFindingsForParent
     (candidates : List CheckedIndexCandidate) (parent : List Nat) :
@@ -120,7 +193,10 @@ private def indexFindingsForGroup
     (indexFindingsForParent candidates)
 
 private def CheckedDocument.indexFindings
-    (checked : CheckedDocument model) (relevance : ValidationRelevanceScope) :
+    (checked : CheckedDocument model)
+    (defaulted : List CheckedIndexDefault)
+    (silentlyUnavailable : List CellAddr)
+    (relevance : ValidationRelevanceScope) :
     List RepeatableGroupDecl →
       Except CheckedIndexPreliminaryError (List IndexPreliminaryFinding)
   | [] => pure []
@@ -133,10 +209,17 @@ private def CheckedDocument.indexFindings
             | .number _ | .boolean | .confirm | .string | .enumeration
             | .temporal _ _ =>
                 pure (indexFindingsForGroup
-                  (← checked.indexCandidates group declaration relevance))
-      pure (current ++ (← checked.indexFindings relevance groups))
+                  (← checked.indexCandidates group defaulted
+                    silentlyUnavailable declaration relevance))
+      pure (current ++ (← checked.indexFindings defaulted
+        silentlyUnavailable relevance groups))
 
 namespace CheckedIndexPreliminary
+
+def defaultStoredAt? (preliminary : CheckedIndexPreliminary model)
+    (address : CellAddr) : Option String :=
+  (preliminary.defaulted.find? fun defaulted =>
+    defaulted.address == address).map (·.stored)
 
 def findingAt? (preliminary : CheckedIndexPreliminary model)
     (address : CellAddr) : Option IndexPreliminaryFinding :=
@@ -153,18 +236,36 @@ def annotateCell (preliminary : CheckedIndexPreliminary model)
   | none => cell
   | some finding => cell.withFinding finding.kind.cause
 
+/-- Resolve one full-validation cell through the transient default overlay without changing the immutable base. -/
+def stagedCell (preliminary : CheckedIndexPreliminary model)
+    (address : CellAddr) (base : CheckedCell) : CheckedCell :=
+  match preliminary.defaulted.find? fun defaulted =>
+      defaulted.address == address with
+  | some defaulted => defaulted.cell
+  | none => base
+
 /-- Read the cell view seen by authored full-validation rules after index preliminary processing. This is not the computation formal-operand channel. -/
 def readAuthoredValidation (preliminary : CheckedIndexPreliminary model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell := do
-  pure (preliminary.annotateCell address (← preliminary.base.read address))
+  let base ← preliminary.base.read address
+  pure (preliminary.annotateCell address
+    (preliminary.stagedCell address base))
 
 private def placements (preliminary : CheckedIndexPreliminary model) :
     List CheckedCellPlacement :=
   let placed := preliminary.base.checkedCells.map fun placement =>
     { placement with
-      cell := preliminary.annotateCell placement.address placement.cell }
-  let absent := preliminary.findings.filterMap fun finding =>
+      cell := preliminary.annotateCell placement.address
+        (preliminary.stagedCell placement.address placement.cell) }
+  let injected := preliminary.defaulted.filterMap fun defaulted =>
     if preliminary.base.checkedCells.any fun placement =>
+        placement.address == defaulted.address then
+      none
+    else
+      some { address := defaulted.address, cell := defaulted.cell }
+  let staged := placed ++ injected
+  let absent := preliminary.findings.filterMap fun finding =>
+    if staged.any fun placement =>
         placement.address == finding.address then
       none
     else
@@ -172,7 +273,7 @@ private def placements (preliminary : CheckedIndexPreliminary model) :
         address := finding.address
         cell := (checkAdmittedRawCell .empty).withFinding finding.kind.cause
       }
-  placed ++ absent
+  staged ++ absent
 
 /-- Reuse the sole resolved group-scope owner with the addressed preliminary cell view, including required findings on physically absent index cells. -/
 def groupPresenceInput (preliminary : CheckedIndexPreliminary model)
@@ -189,9 +290,12 @@ namespace CheckedDocument
 /-- Run every model-declared index mandatory/uniqueness preliminary rule over the immutable base checked document without mutating it. -/
 def applyFullIndexPreliminary (checked : CheckedDocument model) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) := do
+  let defaulted := checked.indexDefaults model.repeatableGroups
   pure {
     base := checked
-    findings := ← checked.indexFindings .full model.repeatableGroups
+    defaulted
+    findings := ← checked.indexFindings defaulted [] .full
+      model.repeatableGroups
   }
 
 end CheckedDocument
@@ -248,11 +352,18 @@ structure PartialRequiredEvaluation where
   verdict : Verdict
   deriving Repr, DecidableEq
 
-/-- One call-local partial generated-preliminary view. Index and ordinary-required outcomes remain separate, while both annotate the same immutable checked input for authored validation and group-state consumers. -/
+/-- A relevant partial-validation read either retains its checked cell or reports call-local silent unavailability without fabricating a formal cause. -/
+inductive PartialValidationCellRead where
+  | checked (cell : CheckedCell)
+  | silentlyUnavailable
+  deriving Repr, DecidableEq
+
+/-- One call-local partial generated-preliminary view. Silent default suppression, index findings, and ordinary-required outcomes remain separate while sharing the same immutable checked input. -/
 structure CheckedPartialPreliminary (model : FlatModel) where
   private mk ::
   relevance : ValidationRelevanceScope
   index : CheckedIndexPreliminary model
+  silentlyUnavailable : List CellAddr
   required : List PartialRequiredEvaluation
 
 namespace CheckedPartialPreliminary
@@ -280,12 +391,14 @@ def annotateRequiredCell (view : CheckedPartialPreliminary model)
 
 def readAuthoredValidation (view : CheckedPartialPreliminary model)
     (address : CellAddr) :
-    Except CheckedIndexPreliminaryError CheckedCell := do
-  let cell ← view.index.readAuthoredValidation address |>.mapError .document
-  if view.isAddressRelevant address then
-    pure (view.annotateRequiredCell address cell)
-  else
+    Except CheckedIndexPreliminaryError PartialValidationCellRead := do
+  if !view.isAddressRelevant address then
     throw (.nonRelevantAddress address)
+  else if view.silentlyUnavailable.contains address then
+    pure .silentlyUnavailable
+  else
+    let cell ← view.index.readAuthoredValidation address |>.mapError .document
+    pure (.checked (view.annotateRequiredCell address cell))
 
 private def placements (view : CheckedPartialPreliminary model) :
     List CheckedCellPlacement :=
@@ -339,7 +452,7 @@ def groupPresenceInput (view : CheckedPartialPreliminary model)
     (relevance : GroupRelevance) (structuralError : Bool) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
   view.index.base.groupPresenceInputFromSlice view.relevantRows view.placements
-    groupPath environment relevance structuralError
+    groupPath environment relevance structuralError view.silentlyUnavailable
 
 end CheckedPartialPreliminary
 
@@ -370,13 +483,18 @@ def applyPartialGeneratedPreliminary (checked : CheckedDocument model)
     Except CheckedIndexPreliminaryError (CheckedPartialPreliminary model) := do
   let normalized ← model.normalizeRelevantEntities relevantEntities
   let relevance := ValidationRelevanceScope.partialSet normalized
+  let silentlyUnavailable := checked.indexDefaults model.repeatableGroups
+    |>.map (·.address)
   let index : CheckedIndexPreliminary model := {
     base := checked
-    findings := ← checked.indexFindings relevance model.repeatableGroups
+    defaulted := []
+    findings := ← checked.indexFindings [] silentlyUnavailable relevance
+      model.repeatableGroups
   }
   pure {
     relevance
     index
+    silentlyUnavailable
     required := ← checked.partialRequiredEvaluations relevance
       absoluteRequiredFields
   }

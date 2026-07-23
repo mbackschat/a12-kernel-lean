@@ -32,6 +32,8 @@ structure ResolvedGroupPresenceInput where
   descendantCells : List CheckedCell
   hasInstantiatedRow : Bool
   structuralError : Bool
+  /-- A call-local unavailable descendant may make the group erroneous without manufacturing a formal finding. -/
+  silentError : Bool := false
   relevance : GroupRelevance
   deriving Repr, DecidableEq
 
@@ -50,7 +52,8 @@ def CheckedCell.hasGroupError (cell : CheckedCell) : Bool :=
 /-- Fold already checked descendants and structural row facts into the product state. -/
 def ResolvedGroupPresenceInput.derive (input : ResolvedGroupPresenceInput) : GroupPresenceState :=
   { content := input.hasInstantiatedRow || input.descendantCells.any CheckedCell.admitsGroupContent
-    erroneous := input.structuralError || input.descendantCells.any CheckedCell.hasGroupError
+    erroneous := input.structuralError || input.silentError ||
+      input.descendantCells.any CheckedCell.hasGroupError
     relevance := input.relevance }
 
 def GroupPresenceState.definitelyFilled (state : GroupPresenceState) : Bool :=

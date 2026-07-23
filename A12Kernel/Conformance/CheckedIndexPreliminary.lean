@@ -180,6 +180,117 @@ private def relevantKey (sectionIndex item : Nat) : RelevantEntityPattern :=
   { path := key.path
     indices := [.concrete 1, .concrete sectionIndex, .concrete item, .concrete 1] }
 
+private def defaultKey : FlatFieldDecl :=
+  { key with
+    policy := { kind := .enumeration }
+    enumeration := some {
+      storedTokens := ["A", "B"]
+      defaultStoredToken := some "B"
+    } }
+
+private def defaultModel : FlatModel :=
+  { model with fields := [defaultKey] }
+
+private def oneDefaultRow (cells : List ClassifiedCellInput := []) :
+    DocumentData :=
+  { instantiatedRows := [row 10 [1], row 20 [1, 1]]
+    cells }
+
+private def defaultAddress : CellAddr :=
+  { field := defaultKey.id, path := [1, 1] }
+
+/- Full validation injects the checked stored default into its transient view for both an absent and a physically present-empty cell, without mutating the checked source. -/
+example :
+    let absent := preliminaryFor defaultModel (oneDefaultRow)
+    let presentEmpty :=
+      preliminaryFor defaultModel
+        (oneDefaultRow [cell [1, 1] "" .presentEmpty])
+    absent.bind (fun preliminary => do
+      let base ← (preliminary.base.read defaultAddress).toOption
+      let staged ←
+        (preliminary.readAuthoredValidation defaultAddress).toOption
+      let presence ←
+        (preliminary.groupPresenceInput
+          ["Order", "Sections", "Items"]
+          [(10, 1), (20, 1)] .fullyRelevant false).toOption
+      pure (
+        preliminary.defaultStoredAt? defaultAddress == some "B" &&
+        preliminary.findingKindAt? defaultAddress == none &&
+        observeCell .validation base == .empty &&
+        observeCell .validation staged == .value (.enum "B") &&
+        presence.derive ==
+          { content := true, erroneous := false,
+            relevance := .fullyRelevant })) =
+      some true ∧
+    presentEmpty.bind (fun preliminary => do
+      let staged ←
+        (preliminary.readAuthoredValidation defaultAddress).toOption
+      pure (
+        preliminary.defaultStoredAt? defaultAddress == some "B" &&
+        observeCell .validation staged == .value (.enum "B") &&
+        preliminary.base.source.cells.length == 1)) =
+      some true := by
+  native_decide
+
+/- Partial validation retains the same eligible address as silent call-local unavailability: no generated index finding is exposed, dependent reads do not see the default, and the containing group remains erroneous. -/
+example :
+    ((partialFor defaultModel (oneDefaultRow)
+        [relevantKey 1 1]).bind fun view => do
+      let read ← (view.readAuthoredValidation defaultAddress).toOption
+      let presence ←
+        (view.groupPresenceInput ["Order", "Sections", "Items"]
+          [(10, 1), (20, 1)] .fullyRelevant false).toOption
+      pure (
+        view.silentlyUnavailable.contains defaultAddress &&
+        view.index.findingKindAt? defaultAddress == none &&
+        read == .silentlyUnavailable &&
+        presence.derive ==
+          { content := true, erroneous := true,
+            relevance := .fullyRelevant })) =
+      some true := by
+  native_decide
+
+/- Eligibility remains source-grounded: two sibling rows, explicit requiredness, an admitted explicit value, a non-Enumeration index, and no physical row cannot manufacture a default. -/
+example :
+    let twoRows : DocumentData :=
+      { instantiatedRows := [
+          row 10 [1], row 20 [1, 1], row 20 [1, 2]]
+        cells := [] }
+    let mandatoryKey := {
+      defaultKey with
+      requiredness := some .absoluteOrNearestRepeatableAncestor
+    }
+    let mandatoryModel := { defaultModel with fields := [mandatoryKey] }
+    let explicit :=
+      oneDefaultRow [cell [1, 1] "A" (.parsed (.enum "A"))]
+    (preliminaryFor defaultModel twoRows).map
+        (fun preliminary =>
+          preliminary.defaulted.isEmpty &&
+          preliminary.findings.length == 2) =
+      some true ∧
+    (preliminaryFor mandatoryModel (oneDefaultRow)).map
+        (fun preliminary =>
+          preliminary.defaulted.isEmpty &&
+          preliminary.findingKindAt? defaultAddress == some .mandatory) =
+      some true ∧
+    (preliminaryFor defaultModel explicit).bind
+        (fun preliminary => do
+          let staged ←
+            (preliminary.readAuthoredValidation defaultAddress).toOption
+          pure (
+            preliminary.defaulted.isEmpty &&
+            observeCell .validation staged == .value (.enum "A"))) =
+      some true ∧
+    (preliminaryFor stringModel (oneDefaultRow)).map
+        (fun preliminary => preliminary.defaulted.isEmpty) =
+      some true ∧
+    (preliminaryFor defaultModel
+        { instantiatedRows := [row 10 [1]], cells := [] }).map
+        (fun preliminary =>
+          preliminary.defaulted.isEmpty && preliminary.findings.isEmpty) =
+      some true := by
+  native_decide
+
 private def relevantItems (sectionIndex : Nat) : RelevantEntityPattern :=
   { path := items.path
     indices := [.concrete 1, .concrete sectionIndex, .all] }
@@ -214,10 +325,13 @@ example :
   native_decide
 
 /- A selected cell that already failed scalar checking remains malformed and receives no generated index finding. -/
-example : ((partialFor model emptyAndInvalidData [relevantKey 1 3]).bind fun view =>
-    (view.readAuthoredValidation { field := 1, path := [1, 3] }).toOption.map
-      fun cell =>
-        (view.index.findings.isEmpty, observeCell .validation cell)) =
+example : ((partialFor model emptyAndInvalidData [relevantKey 1 3]).bind fun view => do
+    let read ←
+      (view.readAuthoredValidation { field := 1, path := [1, 3] }).toOption
+    match read with
+    | .checked cell =>
+        some (view.index.findings.isEmpty, observeCell .validation cell)
+    | .silentlyUnavailable => none) =
     some (true, .unknown .malformed) := by
   native_decide
 
@@ -265,15 +379,18 @@ example : ((partialFor requiredModel
           { field := requiredField.id, path := [] }).toOption
       let presence ←
         (view.groupPresenceInput ["Order"] [] .partlyRelevant false).toOption
-      pure (
-        view.requiredVerdictAt? { field := requiredField.id, path := [] } ==
-          some (.fired .omission) &&
-        view.index.findings.isEmpty &&
-        observeCell .validation authored == .unknown .required &&
-        observeCell .computation authored == .empty &&
-        presence.derive ==
-          { content := false, erroneous := true,
-            relevance := .partlyRelevant })) = some true := by
+      match authored with
+      | .silentlyUnavailable => none
+      | .checked cell =>
+          pure (
+            view.requiredVerdictAt? { field := requiredField.id, path := [] } ==
+              some (.fired .omission) &&
+            view.index.findings.isEmpty &&
+            observeCell .validation cell == .unknown .required &&
+            observeCell .computation cell == .empty &&
+            presence.derive ==
+              { content := false, erroneous := true,
+                relevance := .partlyRelevant })) = some true := by
   native_decide
 
 /- The same absent absolute field is not readable when its error field is outside the call-local relevant set. -/
