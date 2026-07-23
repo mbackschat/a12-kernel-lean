@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year-difference, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, and the distinct row-aligned `SumOfProducts` pair through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains the prefix-selecting first-filled source and product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, and both product fields; scale checking uses the selected declarations' union, integral distinct-count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates back into its existing nonrepeatable atom and retains repeatable entity-list, product, and first-filled payloads through the full-only addressed validation context; its scalar checked entry point rejects such a rule with an explicit context requirement. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
+This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, and the distinct row-aligned `SumOfProducts` pair through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains the prefix-selecting first-filled source and product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, and both product fields; scale checking uses the selected declarations' union, integral distinct-count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates back into its existing nonrepeatable atom and retains repeatable entity-list, product, and first-filled payloads through the full-only addressed validation context; its scalar checked entry point rejects such a rule with an explicit context requirement. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
 -/
 
 namespace A12Kernel
@@ -56,6 +56,7 @@ inductive NumericComputationElabError where
       (error : EnumerationOperandError)
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
+  | unsupportedCalendarProfile (zoneId : String)
   | baseYearNotDeclared
   | aggregate (error : NumberEntityElabError)
   | productAggregate (error : NumericProductAggregateElabError)
@@ -111,6 +112,17 @@ def FlatModel.admitsNumericComputationOperand
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
+  | .numeric (.dayDifference profile left right) =>
+      let admitted : ResolvedDateDifferenceOperand → Bool
+        | .field source =>
+            model.admitsTemporalComputationOperand source
+              (CalendarDayDifference.admittedBy
+                source.kind source.components)
+        | .baseYear year _ => model.baseYear == some year
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+        admitted left && admitted right &&
+        CalendarDayDifference.yearCompatible model.hasBaseYear
+          left.components right.components
   | .numeric (.aggregate _ _) => true
   | .numeric (.filledGroupCount _) => false
 
@@ -151,6 +163,8 @@ def CheckedNumericComputationAtom.references
   | .numeric (.stringRange source _ _) => source.id == field
   | .numeric (.fieldValueAsNumber source) => source.fieldId == field
   | .numeric (.dateDifference _ left right) =>
+      left.references field || right.references field
+  | .numeric (.dayDifference _ left right) =>
       left.references field || right.references field
   | .numeric (.aggregate _ source) => source.referencesField field
   | .numeric (.filledGroupCount groups) =>
@@ -212,6 +226,7 @@ def SurfaceNumericAtom.toNumberEntityComputationAtom :
   | .stringRange path start finish => .stringRange path start finish
   | .fieldValueAsNumber source => .fieldValueAsNumber source
   | .dateDifference unit left right => .dateDifference unit left right
+  | .dayDifference left right => .dayDifference left right
   | .aggregate op source => .aggregate op source.toNumberEntitySource
   | .filledGroupCount groups => .filledGroupCount groups
 
@@ -322,6 +337,31 @@ private def FlatModel.resolveNumericComputationExpression
         if unit.compatible model.hasBaseYear
             resolvedLeft.components resolvedRight.components then
           pure (.numeric (.dateDifference unit resolvedLeft resolvedRight))
+        else
+          throw .incompatibleDateDifference
+    | .numeric (.dayDifference left right) => do
+        let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+          | some profile => pure profile
+          | none => throw (.unsupportedCalendarProfile model.timeZoneId)
+        let resolveOperand : SurfaceDateDifferenceOperand →
+            Except NumericComputationElabError ResolvedDateDifferenceOperand
+          | .field reference => do
+              let field ← model.resolveTemporalNumericComputationField
+                declaringGroup target reference
+                (fun source =>
+                  CalendarDayDifference.admittedBy
+                    source.kind source.components)
+              pure (.field field)
+          | .baseYear source =>
+              match model.baseYear with
+              | some year => pure (.baseYear year source)
+              | none => throw .baseYearNotDeclared
+        let resolvedLeft ← resolveOperand left
+        let resolvedRight ← resolveOperand right
+        if CalendarDayDifference.yearCompatible model.hasBaseYear
+            resolvedLeft.components resolvedRight.components then
+          pure (.numeric
+            (.dayDifference profile resolvedLeft resolvedRight))
         else
           throw .incompatibleDateDifference
     | .numeric (.aggregate op source) => do
@@ -462,6 +502,14 @@ def readDateDifferenceOperand (context : ScalarComputationContext) :
       (observeCell .computation (context.read source.id))
   | .baseYear year source => .value (source.parts year)
 
+def readCalendarDayDifferenceOperand (context : ScalarComputationContext)
+    (profile : ModelZone.ConcreteProfile) :
+    ResolvedDateDifferenceOperand → CalendarDayDifferenceOperand
+  | .field source => CalendarDayDifferenceOperand.ofObservation
+      (observeCell .computation (context.read source.id))
+  | .baseYear year source =>
+      CalendarDayDifferenceOperand.ofBaseYear profile year source
+
 /-- Share every non-aggregate computation atom branch while allowing the direct and addressed evaluators to supply their own aggregate projection. -/
 def readNumericComputationAtomWith
     (context : ScalarComputationContext)
@@ -497,6 +545,12 @@ def readNumericComputationAtomWith
       match DateDifferenceOperand.evaluate unit
           (context.readDateDifferenceOperand left)
           (context.readDateDifferenceOperand right) with
+      | .error _ => throw .unsupportedDateCalendar
+      | .ok operand => pure operand.toComputationResult
+  | .dayDifference profile left right =>
+      match CalendarDayDifferenceOperand.evaluate profile
+          (context.readCalendarDayDifferenceOperand profile left)
+          (context.readCalendarDayDifferenceOperand profile right) with
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
   | .aggregate op source => readAggregate op source
@@ -603,6 +657,15 @@ def NumericComputationAtom.numericComputationFault? :
       let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
         | .field source =>
             if source.kind == .date then none
+            else some (.fieldKindMismatch source.id)
+        | .baseYear _ _ => none
+      match fault? left with
+      | some fault => some fault
+      | none => fault? right
+  | .dayDifference _ left right =>
+      let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
+        | .field source =>
+            if CalendarDayDifference.admitsKind source.kind then none
             else some (.fieldKindMismatch source.id)
         | .baseYear _ _ => none
       match fault? left with

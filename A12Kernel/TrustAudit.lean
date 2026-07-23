@@ -218,6 +218,8 @@ run_cmd do
 #print axioms A12Kernel.instant_shiftHours_inverse
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_3600
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_7200
+#print axioms A12Kernel.berlin_differenceResolvedInDays_self
+#print axioms A12Kernel.berlin_differenceResolvedInDays_swap
 #print axioms A12Kernel.berlin_differenceInDays_self
 #print axioms A12Kernel.berlin_differenceInDays_swap
 #print axioms A12Kernel.fullDate_addDays_zero
@@ -239,6 +241,9 @@ run_cmd do
 #print axioms A12Kernel.dateDifferenceOperand_unavailable_left
 #print axioms A12Kernel.dateDifferenceOperand_empty_unsupported_zero
 #print axioms A12Kernel.dateDifferenceOperand_values_delegate
+#print axioms A12Kernel.calendarDayDifferenceOperand_unavailable_left
+#print axioms A12Kernel.calendarDayDifferenceOperand_empty_unsupported_zero
+#print axioms A12Kernel.calendarDayDifferenceOperand_values_delegate
 
 #print axioms A12Kernel.selectRows_iff
 #print axioms A12Kernel.sumSelected_filter_before_consumer
@@ -401,6 +406,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputationAtom_stringRange_toValidationAtom
 #print axioms A12Kernel.numericComputationAtom_stringLength_toValidationAtom
 #print axioms A12Kernel.numericComputationAtom_fieldValueAsNumber_toValidationAtom
+#print axioms A12Kernel.numericComputationAtom_dayDifference_toValidationAtom
 #print axioms A12Kernel.checkedNumericComputationAtom_directAggregate_toValidationAtom
 #print axioms A12Kernel.checkedNumericComputationAtom_repeatableAggregate_preservedForGeneratedValidation
 #print axioms A12Kernel.checkedNumericComputationAtom_product_preservedForGeneratedValidation
@@ -536,6 +542,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputation_fieldValueAsNumber_poison_preservesCause
 #print axioms A12Kernel.readTemporalNumeric_value
 #print axioms A12Kernel.readDateDifference_evaluated
+#print axioms A12Kernel.readCalendarDayDifference_evaluated
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
 #print axioms A12Kernel.numericComputationResult_evalPower_values
 #print axioms A12Kernel.numericComputation_zeroToNegativePower_domainFailure
@@ -669,6 +676,7 @@ run_cmd do
 #print axioms A12Kernel.numericTolerance_field_baseYearDatePart_delegates
 #print axioms A12Kernel.numericValidation_temporalFieldPart_literal_delegates
 #print axioms A12Kernel.numericValidation_dateDifference_literal_delegates
+#print axioms A12Kernel.numericValidation_dayDifference_literal_delegates
 #print axioms A12Kernel.checkedNumericComparison_emptyRow_notFired
 #print axioms A12Kernel.numericTolerance_threshold_pos
 #print axioms A12Kernel.normalizedNumericDifference_comm

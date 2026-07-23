@@ -20,6 +20,14 @@ The accepted evidence consolidation divides work into three tiers. Tier 1 is the
 
 An unavailable external observation no longer blocks unrelated internal semantics or theorem work. Mark the capsule `external evidence pending`, keep the claim narrow, and schedule the smallest useful family calibration. It still blocks a kernel-correspondence-complete or shipment-ready claim.
 
+## High-connectivity keystone pre-audit
+
+Before selecting work in SG1, SG2, SG4, SG6, or another high-connectivity owner, prepare a bounded source-audit packet in the working context. Name the exact supported family and observable result domain, the source owners, static admission gates, runtime precedence and read order, the common mechanism and true deviations in a compact decision matrix, at least two realistic wrong accounts with separating witnesses, and every unresolved fact with its reopening trigger. Run the highest-risk discriminator first. If it disproves the proposed representation, change the design before broadening the family.
+
+Follow that packet with the consumer hypothesis below, then implement through the existing checked plan, runtime, and result owners without collapsing those phases or creating a parallel representation. Add temporary diagnostics only inside an existing conformance example and remove them before closure. A new runner, schema, trace format, generator, or harness remains prohibited unless the same unmet observation has blocked at least two real semantic families, the current mechanisms have been measured and shown insufficient, and the user explicitly approves the resulting infrastructure work.
+
+This packet is working context, not another committed template, receipt, registry, or report. Record only its durable outcomes: implemented status in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), live gaps and reopening facts in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md), immediate sequencing in [`PLAN.md`](PLAN.md), and a genuinely non-obvious semantic lesson in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md). A cold artifact-only probe remains milestone-triggered rather than per-capsule.
+
 ## Pre-implementation consumer hypothesis
 
 Before writing the first red case for a selected semantic capsule, state one compact consumer hypothesis in the working context. This is a design discriminator, not a new committed template or harness:
@@ -73,7 +81,7 @@ A cold reviewer supplements rather than replaces the same-context assessment. Ru
 
 Every new semantic capsule uses red/green TDD.
 
-1. State the exact supported fragment, its observable result domain, its evidence source, the useful law, the nearest false generalization, and the [consumer hypothesis](#pre-implementation-consumer-hypothesis) before adding a general abstraction.
+1. For a high-connectivity family, complete the [bounded pre-audit](#high-connectivity-keystone-pre-audit). Then state the exact supported fragment, its observable result domain, its evidence source, the useful law, the nearest false generalization, and the [consumer hypothesis](#pre-implementation-consumer-hypothesis) before adding a general abstraction.
 2. Add concrete separating examples under `A12Kernel/Conformance/` against the intended public API.
 3. Run the focused module and confirm a meaningful red result: the module, definition, constructor, or behavior is absent or wrong for the expected semantic reason.
 4. Implement the smallest total pure definition that makes those examples green.

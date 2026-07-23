@@ -4,7 +4,7 @@ import A12Kernel.Semantics.DateTime
 
 This capsule implements the post-resolution core of [`spec/05-dates-and-time.md` §2](../../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected). Both operands are already exact instants. It computes `second − first` in authored argument order and divides by the selected positive unit with truncation toward zero.
 
-Parsing, zone resolution, empty and malformed operands, static operator admission, numeric result storage, validation polarity, and the Date/DateTime `DifferenceInDays` wall-coordinate rule remain separate.
+Parsing, zone resolution, empty and malformed operands, static operator admission, numeric result storage, validation polarity, and the Date/DateTime `DifferenceInDays` model-zone calendar-step rule remain separate.
 -/
 
 namespace A12Kernel

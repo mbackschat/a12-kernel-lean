@@ -32,6 +32,15 @@ theorem numericComputationAtom_fieldValueAsNumber_toValidationAtom
       .ok (.ordinary (.fieldValueAsNumber source)) := by
   rfl
 
+/-- Generated validation preserves the selected concrete profile and both checked temporal operands of a calendar-day difference exactly. -/
+theorem numericComputationAtom_dayDifference_toValidationAtom
+    (model : FlatModel) (profile : ModelZone.ConcreteProfile)
+    (left right : ResolvedDateDifferenceOperand) :
+    CheckedNumericComputationAtom.toValidationAtom (model := model)
+        (.numeric (.dayDifference profile left right)) =
+      .ok (.ordinary (.dayDifference profile left right)) := by
+  rfl
+
 /-- A checked entity-list aggregate narrows to the existing validation atom exactly when every source is direct. -/
 theorem checkedNumericComputationAtom_directAggregate_toValidationAtom
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)

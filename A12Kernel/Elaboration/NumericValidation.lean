@@ -7,7 +7,7 @@ import A12Kernel.Semantics.NumericTolerance
 
 /-! # Checked numeric validation
 
-This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, and direct Number field-list aggregates share arithmetic. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator. Its bounded addressed context is full-validation-only; partial filter/relevance orchestration remains separate, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
+This capsule connects model-resolved numeric expressions to the existing authored-scale, one-pass lowering, arithmetic-fillability, ordinary-comparison, and fixed-tolerance semantics. Ordinary rules retain exact same-group admission; generated computation validation selects model-wide nonrepeatable admission for scalar sources and model-wide checked-computation admission for sources that retain repeatable certificates. Number fields, numeric `BaseYear`, Base-Year date-component extraction, direct temporal field-component sources, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, concrete-profile Date/DateTime day differences, and direct Number field-list aggregates share arithmetic. The atom-parameterized comparison carrier lets generated validation retain checked direct/plain-star/filtered-star `FirstFilledValue`, entity-list aggregate, and row-paired `SumOfProducts` sources without adding another arithmetic tree or evaluator. Its bounded addressed context is full-validation-only; partial filter/relevance orchestration remains separate, and structural address failures remain outside semantic UNKNOWN. Operation-form rounding, absolute value, and Min/Max operand-list calls compose at ordinary arithmetic operand positions. Every Min/Max list member is a complete numeric operation, while each call independently permits at most one immediate or grouped literal. Rounding and absolute value still reject an immediate literal body. Structured input is assumed to come from a grammar-valid decoder that keeps each literal value coherent with its authored scale; concrete parsing, partially-known Date policy, constructed-Date legacy execution, and that decoder contract remain outside this module.
 -/
 
 namespace A12Kernel
@@ -73,6 +73,7 @@ inductive NumericValidationElabError where
       (error : EnumerationOperandError)
   | incompatibleTemporalSource (path : List String)
   | incompatibleDateDifference
+  | unsupportedCalendarProfile (zoneId : String)
   | baseYearNotDeclared
   | aggregate (error : NumericAggregateElabError)
   | groupReference (error : SingleGroupElabError)
@@ -209,6 +210,19 @@ private def NumericValidationAtom.admitted
         | .baseYear year _ => model.baseYear == some year
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
+  | .dayDifference profile left right =>
+      let admitted : ResolvedDateDifferenceOperand → Bool
+        | .field source =>
+            (match scope with
+              | .sameGroup => model.admitsTemporalInGroup rowGroup source
+              | .modelWideNonrepeatable | .modelWideCheckedComputation =>
+                  model.admitsTemporalModelWide source) &&
+              CalendarDayDifference.admittedBy source.kind source.components
+        | .baseYear year _ => model.baseYear == some year
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+        admitted left && admitted right &&
+        CalendarDayDifference.yearCompatible model.hasBaseYear
+          left.components right.components
   | .aggregate _ source =>
       source.hasMultipleFields && source.hasUniqueFields &&
         source.fields.all fun field =>
@@ -296,6 +310,8 @@ def NumericValidationAtom.referencesField (model : FlatModel) :
   | .fieldValueAsNumber source, field => source.fieldId == field
   | .dateDifference _ left right, field =>
       left.references field || right.references field
+  | .dayDifference _ left right, field =>
+      left.references field || right.references field
   | .aggregate _ source, field => source.referencesField field
   | .filledGroupCount groups, field =>
       groups.any fun group => group.referencesField model field
@@ -311,6 +327,11 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .stringRange source _ _ => isRelevant source.id
   | .fieldValueAsNumber source => isRelevant source.fieldId
   | .dateDifference _ left right =>
+      let operandRelevant : ResolvedDateDifferenceOperand → Bool
+        | .field source => isRelevant source.id
+        | .baseYear _ _ => true
+      operandRelevant left && operandRelevant right
+  | .dayDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
         | .baseYear _ _ => true
@@ -521,6 +542,29 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         pure (.dateDifference unit resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
+  | .dayDifference left right => do
+      let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile => pure profile
+        | none => throw (.unsupportedCalendarProfile model.timeZoneId)
+      let resolveOperand : SurfaceDateDifferenceOperand →
+          Except NumericValidationElabError ResolvedDateDifferenceOperand
+        | .field reference => do
+            let field ← resolveTemporalNumericField model rowGroup reference
+              (fun source =>
+                CalendarDayDifference.admittedBy
+                  source.kind source.components)
+            pure (.field field)
+        | .baseYear source =>
+            match model.baseYear with
+            | some year => pure (.baseYear year source)
+            | none => throw .baseYearNotDeclared
+      let resolvedLeft ← resolveOperand left
+      let resolvedRight ← resolveOperand right
+      if CalendarDayDifference.yearCompatible model.hasBaseYear
+          resolvedLeft.components resolvedRight.components then
+        pure (.dayDifference profile resolvedLeft resolvedRight)
+      else
+        throw .incompatibleDateDifference
   | .aggregate op source => do
       let checked ← (elaborateNumericAggregateFields model rowGroup source).mapError
         NumericValidationElabError.aggregate
@@ -639,6 +683,12 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       match DateDifferenceOperand.evaluate unit
           (left.validationOperand context.fields)
           (right.validationOperand context.fields) with
+      | .ok operand => operand.toValidationArithmetic
+      | .error _ => .error (.formal .malformed)
+  | .dayDifference profile left right =>
+      match CalendarDayDifferenceOperand.evaluate profile
+          (left.calendarDayValidationOperand profile context.fields)
+          (right.calendarDayValidationOperand profile context.fields) with
       | .ok operand => operand.toValidationArithmetic
       | .error _ => .error (.formal .malformed)
   | .aggregate op source =>
