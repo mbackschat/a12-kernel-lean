@@ -6,38 +6,61 @@ import A12Kernel.Proofs.StringPattern
 namespace A12Kernel
 
 @[simp]
-theorem classifyStringPattern_java_rejected (javaCompiles : String → Bool)
-    (source : String) (rejected : javaCompiles source = false) :
-    classifyStringPattern javaCompiles source = .rejected .javaSyntax := by
+theorem classifyStringPattern_java_rejected (compilePattern : StringPatternCompiler)
+    (source : String) (rejected : compilePattern source = none) :
+    classifyStringPattern compilePattern source = .rejected .javaSyntax := by
   simp [classifyStringPattern, rejected]
 
 @[simp]
-theorem classifyStringPattern_admitted_iff (javaCompiles : String → Bool)
+theorem classifyStringPattern_admitted_iff (compilePattern : StringPatternCompiler)
     (source : String) :
-    classifyStringPattern javaCompiles source = .admitted ↔
-      javaCompiles source = true ∧ kernelPatternSourceAllowed source = true := by
-  cases compiles : javaCompiles source <;>
-    cases allowed : kernelPatternSourceAllowed source <;>
-    simp [classifyStringPattern, compiles, allowed]
+    classifyStringPattern compilePattern source = .admitted ↔
+      (∃ wholeValueMatches,
+        compilePattern source = some wholeValueMatches) ∧
+        kernelPatternSourceAllowed source = true := by
+  cases compiled : compilePattern source with
+  | none =>
+      simp [classifyStringPattern, compiled]
+  | some wholeValueMatches =>
+      cases allowed : kernelPatternSourceAllowed source <;>
+        simp [classifyStringPattern, compiled, allowed]
 
 /-- Once both admission facts hold, the convenience boundary delegates exactly to the existing resolved matcher semantics. -/
-theorem evalAdmittedStringPattern_success (javaCompiles : String → Bool)
+theorem evalAdmittedStringPattern_success (compilePattern : StringPatternCompiler)
     (source : String) (op : StringPatternOp) (wholeValueMatches : String → Bool)
     (operand : SimpleComparisonOperand String)
-    (compiles : javaCompiles source = true)
+    (compiled : compilePattern source = some wholeValueMatches)
     (allowed : kernelPatternSourceAllowed source = true) :
-    evalAdmittedStringPattern javaCompiles source op wholeValueMatches operand =
+    evalAdmittedStringPattern compilePattern source op operand =
       .ok (op.evalResolved wholeValueMatches operand) := by
-  simp [evalAdmittedStringPattern, admitStringPattern, compiles, allowed,
+  let admitted : AdmittedStringPattern compilePattern := {
+    source
+    wholeValueMatches
+    compiledSource := compiled
+    kernelSourceAllowed := allowed
+  }
+  have admittedEq :
+      admitStringPattern compilePattern source = .ok admitted := by
+    unfold admitStringPattern
+    split
+    next hCompiled =>
+      simp_all
+    next matcher hCompiled =>
+      have matcherEq : matcher = wholeValueMatches :=
+        Option.some.inj (hCompiled.symm.trans compiled)
+      subst matcher
+      simp [allowed, admitted]
+  simp [evalAdmittedStringPattern, admittedEq, admitted,
     AdmittedStringPattern.evalResolved]
 
 /-- Admission cannot introduce omission polarity; the admitted wrapper inherits the resolved consumer's stronger law. -/
 theorem admittedStringPattern_fired_is_value
-    (admitted : AdmittedStringPattern javaCompiles)
-    (op : StringPatternOp) (wholeValueMatches : String → Bool)
+    (admitted : AdmittedStringPattern compilePattern)
+    (op : StringPatternOp)
     (operand : SimpleComparisonOperand String) (polarity : Polarity)
-    (fired : admitted.evalResolved op wholeValueMatches operand = .fired polarity) :
+    (fired : admitted.evalResolved op operand = .fired polarity) :
     polarity = .value := by
-  exact stringPattern_evalResolved_fired_is_value op wholeValueMatches operand polarity fired
+  exact stringPattern_evalResolved_fired_is_value op admitted.wholeValueMatches
+    operand polarity fired
 
 end A12Kernel

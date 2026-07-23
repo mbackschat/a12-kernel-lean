@@ -1052,6 +1052,10 @@ run_cmd do
 #print axioms A12Kernel.classifyStringPattern_admitted_iff
 #print axioms A12Kernel.evalAdmittedStringPattern_success
 #print axioms A12Kernel.admittedStringPattern_fired_is_value
+#print axioms A12Kernel.checkedStringPattern_evalSelected
+#print axioms A12Kernel.checkedStringPattern_emptyRow_notFired
+#print axioms A12Kernel.checkedStringPattern_fired_is_value
+#print axioms A12Kernel.checkedStringPattern_referencesField
 #print axioms A12Kernel.stringLengthOperand_readsNormalized
 #print axioms A12Kernel.stringComputationField_readsNormalized
 #print axioms A12Kernel.legalCharset_defaultBmp_accepts_iff

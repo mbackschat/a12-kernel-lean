@@ -61,6 +61,7 @@ import A12Kernel.Proofs.StringIngestion
 import A12Kernel.Proofs.StringFieldPolicy
 import A12Kernel.Proofs.StringPattern
 import A12Kernel.Proofs.PatternAdmission
+import A12Kernel.Proofs.StringPatternElaboration
 import A12Kernel.Proofs.LegalCharset
 import A12Kernel.Proofs.LegalCharsetElaboration
 import A12Kernel.Proofs.CustomFieldCause
