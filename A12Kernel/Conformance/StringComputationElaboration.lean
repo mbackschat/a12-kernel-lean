@@ -68,6 +68,40 @@ private def preparedWorld : World where
   customFieldValidator? := fun name =>
     if name == "ProjectCode" then some preparedValidator else none
 
+private def patternInput : FlatFieldDecl :=
+  {
+    id := 20
+    groupPath := ["Form"]
+    name := "PatternInput"
+    policy := { kind := .string }
+  }
+
+private def patternTarget : FlatFieldDecl :=
+  {
+    id := 21
+    groupPath := ["Form"]
+    name := "PatternTarget"
+    policy := { kind := .string }
+    stringPolicy := {
+      minLength := some 2
+      maxLength := some 4
+    }
+    stringPatternSource := some "A+"
+  }
+
+private def patternTargetModel : FlatModel :=
+  { fields := [patternInput, patternTarget] }
+
+private def patternCompiler : StringPatternCompiler := fun source =>
+  if source == "A+" then
+    some fun value =>
+      !value.isEmpty && value.toList.all fun character => character == 'A'
+  else
+    none
+
+private def patternWorld : World :=
+  { now := { epochMillis := 0 } }
+
 private def preparedRaw (field : FieldId) (value : String) : RawFlatContext where
   read id := if id == field then .parsed (.str value) else .empty
 
@@ -126,6 +160,15 @@ private def operationErrorOf {candidateModel : FlatModel}
   match result with
   | .ok _ => none
   | .error error => some error
+
+private def patternTargetOutcomeOf (expression : StringExpr SurfaceFieldPath)
+    (input : RawFlatContext) : Option StringTargetOutcome := do
+  let checked ←
+    (elaborateStringComputationOperation patternTargetModel ["Form"]
+      patternTarget.id expression).toOption
+  let prepared ←
+    (prepareFlatStringContext patternWorld patternCompiler patternTargetModel).toOption
+  (checked.evaluateOutcome prepared "en_US" input).toOption
 
 private def raw (sourceCell suffixCell : RawCell) : RawFlatContext where
   read field :=
@@ -270,7 +313,7 @@ example :
       (.literal "TEXT")) = some (.targetKindMismatch amount.path .number) := by
   native_decide
 
-/- Raw, registered-custom, and pattern-bearing String targets require their own target semantics and fail before the ordinary target operation is constructed. -/
+/- Raw and registered-custom String targets require their own target semantics and fail before the ordinary target operation is constructed. -/
 example :
     let rawTarget := { target with
       stringValueMode := StringValueMode.raw
@@ -292,13 +335,32 @@ example :
         some (.customStringTarget customTarget.path) := by
   native_decide
 
+/- An ordinary pattern-bearing String target remains statically legal. -/
 example :
     let patternTarget := { target with
       stringPatternSource := some "[0-9]+" }
     let patternModel : FlatModel := { fields := [patternTarget] }
     operationErrorOf (elaborateStringComputationOperation patternModel ["Form"]
       patternTarget.id (.literal "123")) =
-        some (.patternStringTarget patternTarget.path) := by
+        none := by
+  native_decide
+
+/- The exact model-prepared matcher accepts both literal and field-copy results without adding a second pattern evaluator. -/
+example :
+    patternTargetOutcomeOf (.literal "AAA") (preparedRaw 99 "") =
+        some (.accepted { text := "AAA", nonempty := by decide }) ∧
+      patternTargetOutcomeOf (.field (bare "PatternInput"))
+        (preparedRaw patternInput.id "AAAA") =
+          some (.accepted { text := "AAAA", nonempty := by decide }) := by
+  native_decide
+
+/- Pattern failure retains the attempted value, and the target's pattern check precedes its simultaneously failing minimum-length check. -/
+example :
+    patternTargetOutcomeOf (.literal "BBB") (preparedRaw 99 "") =
+        some (.errored { text := "BBB", nonempty := by decide } .pattern) ∧
+      patternTargetOutcomeOf (.field (bare "PatternInput"))
+        (preparedRaw patternInput.id "B") =
+          some (.errored { text := "B", nonempty := by decide } .pattern) := by
   native_decide
 
 end A12Kernel.Conformance.StringComputationElaboration

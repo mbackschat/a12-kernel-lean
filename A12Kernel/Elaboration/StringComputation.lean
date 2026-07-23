@@ -3,7 +3,7 @@ import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable String declarations from one validated flat model. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, patterns, raw/custom targets, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable String declarations from one validated flat model. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, raw/custom targets, and scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -17,7 +17,6 @@ inductive StringComputationElabError where
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
-  | patternStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -89,7 +88,6 @@ def FlatModel.admitsStringComputationTarget (model : FlatModel)
         declaration.policy.kind == .string &&
         declaration.stringValueMode == .evaluated &&
         declaration.customType.isNone &&
-        declaration.stringPatternSource.isNone &&
         declaration.enumeration.isNone &&
         declaration.stringPolicy == policy
   | .error _ => false
@@ -161,8 +159,6 @@ def elaborateStringComputationOperation
         throw (.rawStringTarget declaration.path)
       if declaration.customType.isSome then
         throw (.customStringTarget declaration.path)
-      if declaration.stringPatternSource.isSome then
-        throw (.patternStringTarget declaration.path)
       let core ← elaborateStringExprCore model declaringGroup expression
       let checked ← certifyStringExpr model hModel core
       if hReference : checked.core.referencesField targetField = true then
@@ -194,14 +190,39 @@ def evaluate (expression : CheckedStringExpr model)
 
 end CheckedStringExpr
 
+namespace PreparedFlatStringPatterns
+
+/-- Recover the exact optional matcher already prepared for a model-owned target declaration. A missing or substituted required entry fails closed. -/
+def targetMatcher?
+    (prepared : PreparedFlatStringPatterns model compilePattern)
+    (field : FieldId) : Option (Option (String → Bool)) :=
+  match model.lookupUniqueId field with
+  | .error _ => none
+  | .ok declaration =>
+      match declaration.effectiveStringPatternSource with
+      | none => some none
+      | some _ =>
+          match prepared.lookup? field with
+          | none => none
+          | some preparedField =>
+              if preparedField.declaration == declaration then
+                some (preparedField.pattern.map (·.wholeValueMatches))
+              else
+                none
+
+end PreparedFlatStringPatterns
+
 namespace CheckedStringComputationOperation
 
-/-- Read through the prepared model context, then apply the retained declaration policy to the exact root write attempt. -/
+/-- Read through the prepared model context, then apply the retained declaration policy and exact prepared target matcher to the root write attempt. -/
 def evaluateOutcome (operation : CheckedStringComputationOperation model)
     (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (raw : RawFlatContext) :
     Except StringComputationFault StringTargetOutcome := do
-  pure (operation.targetPolicy.checkTarget
+  let matcher ← match prepared.patterns.targetMatcher? operation.targetField with
+    | some matcher => pure matcher
+    | none => throw (.targetPatternUnavailable operation.targetField)
+  pure (operation.targetPolicy.checkTargetWithPattern matcher
     (← operation.expression.evaluate prepared locale raw))
 
 end CheckedStringComputationOperation

@@ -71,14 +71,30 @@ theorem checkedStringComputation_excludes_target_reference
     operation.expression.core.referencesField operation.targetField = false :=
   operation.targetNotReferenced
 
-/-- The checked wrapper adds no second target evaluator: it composes the established expression evaluation with the shared declaration-owned target check. -/
+/-- The checked wrapper adds no second target evaluator: once its exact prepared matcher is recovered, it composes the established expression evaluation with the shared declaration-owned target check. -/
 theorem checkedStringComputation_evaluateOutcome
     (operation : CheckedStringComputationOperation model)
     (prepared : PreparedFlatStringContext model compilePattern)
-    (locale : String) (raw : RawFlatContext) :
+    (locale : String) (raw : RawFlatContext)
+    (matcher : Option (String → Bool))
+    (preparedTarget :
+      prepared.patterns.targetMatcher? operation.targetField = some matcher) :
     operation.evaluateOutcome prepared locale raw = (do
       let store ← operation.expression.evaluate prepared locale raw
-      pure (operation.targetPolicy.checkTarget store)) := by
+      pure (operation.targetPolicy.checkTargetWithPattern matcher store)) := by
+  simp [CheckedStringComputationOperation.evaluateOutcome, preparedTarget]
+
+/-- A forged or incomplete prepared target plan fails closed instead of silently treating a required declared pattern as absent. -/
+theorem checkedStringComputation_missingTargetPattern_failsClosed
+    (operation : CheckedStringComputationOperation model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext)
+    (missing :
+      prepared.patterns.targetMatcher? operation.targetField = none) :
+    operation.evaluateOutcome prepared locale raw =
+      .error (.targetPatternUnavailable operation.targetField) := by
+  unfold CheckedStringComputationOperation.evaluateOutcome
+  rw [missing]
   rfl
 
 end A12Kernel

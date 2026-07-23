@@ -168,19 +168,41 @@ theorem changedString_has_value_delta (value previous : StoredString)
     (StringStore.produced value).projectDelta (.filled previous) = some (.value value) := by
   simp [StringStore.projectDelta, StringDelta.projectValue, changed]
 
-/-- Successful basic target checking retains the exact attempted payload rather than the normalized text used internally for length measurement. -/
+/-- Successful prepared target checking retains the exact attempted payload rather than the normalized text used internally for pattern and length measurement. -/
+theorem acceptedStringTargetWithPattern_preserves_attempt
+    (policy : StringFieldPolicy) (wholeValueMatches? : Option (String → Bool))
+    (attempted : StoredString) (checked : Option String)
+    (accepted :
+      policy.checkTextWithPattern wholeValueMatches? attempted.text = .ok checked) :
+    policy.checkTargetWithPattern wholeValueMatches? (.produced attempted) =
+      .accepted attempted := by
+  simp [StringFieldPolicy.checkTargetWithPattern, accepted]
+
+/-- Successful no-pattern target checking is the exact specialization retained by the resolved computation boundary. -/
 theorem acceptedStringTarget_preserves_attempt (policy : StringFieldPolicy)
     (attempted : StoredString) (checked : Option String)
     (accepted : policy.checkText attempted.text = .ok checked) :
     policy.checkTarget (.produced attempted) = .accepted attempted := by
-  simp [StringFieldPolicy.checkTarget, accepted]
+  apply acceptedStringTargetWithPattern_preserves_attempt
+  simpa [StringFieldPolicy.checkText] using accepted
 
-/-- Every declaration-owned basic target failure retains the exact attempted payload and first failure cause. -/
+/-- Every declaration-owned prepared target failure retains the exact attempted payload and first failure cause. -/
+theorem rejectedStringTargetWithPattern_preserves_attempt
+    (policy : StringFieldPolicy) (wholeValueMatches? : Option (String → Bool))
+    (attempted : StoredString) (cause : StringTargetError)
+    (rejected :
+      policy.checkTextWithPattern wholeValueMatches? attempted.text = .error cause) :
+    policy.checkTargetWithPattern wholeValueMatches? (.produced attempted) =
+      .errored attempted cause := by
+  simp [StringFieldPolicy.checkTargetWithPattern, rejected]
+
+/-- The no-pattern target failure law remains an exact specialization. -/
 theorem rejectedStringTarget_preserves_attempt (policy : StringFieldPolicy)
     (attempted : StoredString) (cause : StringTargetError)
     (rejected : policy.checkText attempted.text = .error cause) :
     policy.checkTarget (.produced attempted) = .errored attempted cause := by
-  simp [StringFieldPolicy.checkTarget, rejected]
+  apply rejectedStringTargetWithPattern_preserves_attempt
+  simpa [StringFieldPolicy.checkText] using rejected
 
 /-- A forbidden raw CR/LF is the target error before either length clause. -/
 theorem forbiddenLineBreakStringTarget_is_errored (policy : StringFieldPolicy)
@@ -213,8 +235,8 @@ theorem acceptedStringTarget_preserves_store_delta
     (prior : PriorStringTarget) :
     (policy.checkTarget (.produced attempted)).projectDelta prior =
       (StringStore.produced attempted).projectDelta prior := by
-  simp [StringFieldPolicy.checkTarget, accepted, StringStore.projectDelta,
-    StringTargetOutcome.projectDelta]
+  rw [acceptedStringTarget_preserves_attempt policy attempted checked accepted]
+  rfl
 
 /-- ERRORED reporting is independent of target absence, stale content, or typed equality. -/
 theorem erroredStringTarget_reports_unconditionally (attempted : StoredString)

@@ -1150,7 +1150,9 @@ run_cmd do
 #print axioms A12Kernel.poison_is_not_noValue
 #print axioms A12Kernel.unchangedString_has_no_delta
 #print axioms A12Kernel.changedString_has_value_delta
+#print axioms A12Kernel.acceptedStringTargetWithPattern_preserves_attempt
 #print axioms A12Kernel.acceptedStringTarget_preserves_attempt
+#print axioms A12Kernel.rejectedStringTargetWithPattern_preserves_attempt
 #print axioms A12Kernel.rejectedStringTarget_preserves_attempt
 #print axioms A12Kernel.forbiddenLineBreakStringTarget_is_errored
 #print axioms A12Kernel.noValue_bypassesStringTargetPolicy
@@ -1168,6 +1170,7 @@ run_cmd do
 #print axioms A12Kernel.checkedStringComputation_target_admitted
 #print axioms A12Kernel.checkedStringComputation_excludes_target_reference
 #print axioms A12Kernel.checkedStringComputation_evaluateOutcome
+#print axioms A12Kernel.checkedStringComputation_missingTargetPattern_failsClosed
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic
