@@ -22,10 +22,11 @@ theorem authoredNumericLower_group
     body.lowerForEvaluation := by
   rfl
 
-/-- A singleton source Min/Max list normalizes to its sole operand, with no synthetic numeric seed. -/
+/-- A singleton source Min/Max list retains its authored call boundary while introducing no synthetic numeric seed. -/
 theorem authoredNumericExtremumList_singleton
     (op : NumericExtremumOp) (operand : AuthoredNumericExpr Atom) :
-    AuthoredNumericExpr.extremumList op operand [] = operand := by
+    AuthoredNumericExpr.extremumList op operand [] =
+      .extremumCall op operand := by
   rfl
 
 /-- Absolute value preserves the complete authored numeric scale summary. -/
@@ -166,33 +167,29 @@ theorem numericAuthoring_abs_is_outside_fragment
       NumericAuthoringCheck.outsideFragment := by
   rfl
 
-/-- Every independently audited direct root value function belongs to the shared checked numeric-operation fragment. -/
-theorem numericOperation_directValueFunction_admitted
+/-- Every admitted operand-list-extremum call belongs to the shared checked numeric-operation fragment. -/
+theorem numericOperation_extremumCall_admitted
     (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectValueFunction = true) :
+    (direct : expression.isExtremumCall = true) :
     expression.isAdmittedNumericOperation = true := by
-  simp [AuthoredNumericExpr.isAdmittedNumericOperation, direct]
+  induction expression with
+  | group body ih => exact ih direct
+  | extremumCall op body ih =>
+      simpa [AuthoredNumericExpr.isAdmittedNumericOperation,
+        AuthoredNumericExpr.isNumericOperation,
+        AuthoredNumericExpr.isExtremumCall,
+        AuthoredNumericExpr.extremumCallConstantUse?] using direct
+  | atom | literal | binary | power | abs | extremum | round =>
+      simp [AuthoredNumericExpr.isExtremumCall] at direct
 
-/-- Direct root value functions bypass only the inapplicable plain-arithmetic scan. -/
-theorem numericOperation_directValueFunction_authoringAccepted
+/-- Root operand-list-extremum calls bypass only the inapplicable plain-arithmetic scan. -/
+theorem numericOperation_extremumCall_authoringAccepted
     (expression : AuthoredNumericExpr Atom)
-    (direct : expression.isDirectValueFunction = true) :
+    (direct : expression.isExtremumCall = true) :
     expression.numericOperationAuthoringCheck = .accepted := by
-  cases expression with
-  | atom | literal | group | binary | power =>
-      simp [AuthoredNumericExpr.isDirectValueFunction] at direct
-  | abs body =>
-      cases body with
-      | atom => rfl
-      | literal | group | binary | power | abs | extremum | round =>
-          simp [AuthoredNumericExpr.isDirectValueFunction] at direct
-  | round mode places body =>
-      cases body with
-      | atom => rfl
-      | literal | group | binary | power | abs | extremum | round =>
-          simp [AuthoredNumericExpr.isDirectValueFunction] at direct
-  | extremum op left right =>
-      simp [AuthoredNumericExpr.numericOperationAuthoringCheck, direct]
+  cases expression <;>
+    simp_all [AuthoredNumericExpr.isExtremumCall,
+      AuthoredNumericExpr.numericOperationAuthoringCheck]
 
 /-- A root rounding node delegates exactly to the recursive value-function body checker. -/
 theorem numericOperation_round_body_authoringCheck

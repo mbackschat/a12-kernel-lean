@@ -22,6 +22,15 @@ private def oneThird : Expr :=
 private def fourFifths : Expr :=
   .group (.binary .divide (literal 4 0) (literal 5 0))
 
+/- Operand-list call boundaries are authored structure: the nested form may use one constant per call, while flattening would put two constants in one list. -/
+example :
+    AuthoredNumericExpr.extremumList .minimum
+        (AuthoredNumericExpr.extremumList .minimum (.atom 0) [literal 1 0])
+        [literal 2 0] ≠
+      AuthoredNumericExpr.extremumList .minimum (.atom 0)
+        [literal 1 0, literal 2 0] := by
+  native_decide
+
 /- Equal numeric values retain distinct authored scales. -/
 example : (literal 0 0).summary? noAtoms =
     some { scale := .exact 0, canExpandScale := true } := by
@@ -306,7 +315,7 @@ example : (.binary .add
       .directLeftNestedPower := by
   native_decide
 
-/- Nested unary wrappers and a direct operand-list extremum are ordinary nonliteral wrapper children. Their inner authoring failures remain visible. -/
+/- Nested unary wrappers and a checked operand-list extremum are ordinary nonliteral wrapper children. Their inner authoring failures remain visible. -/
 example : (.round .floor omittedRoundingPlaces
     (.abs (source 0)) : Expr).numericOperationAuthoringCheck = .accepted := by
   native_decide
