@@ -50,6 +50,16 @@ def hasHaving : CheckedTokenEntityOperand model → Bool
   | .field _ => false
   | .star source => source.filter.isSome
 
+def referencesField (checked : CheckedTokenEntityOperand model)
+    (field : FieldId) : Bool :=
+  match checked with
+  | .field source => source.operand.field.id == field
+  | .star source =>
+      source.operand.field.id == field ||
+        match source.filter with
+        | none => false
+        | some having => having.condition.referencesField field
+
 end CheckedTokenEntityOperand
 
 def firstDuplicateDirectTokenField? :
@@ -74,6 +84,10 @@ def operands (checked : CheckedTokenEntitySource model) :
 
 def hasHaving (checked : CheckedTokenEntitySource model) : Bool :=
   checked.operands.any (fun operand => operand.hasHaving)
+
+def referencesField (checked : CheckedTokenEntitySource model)
+    (field : FieldId) : Bool :=
+  checked.operands.any (fun operand => operand.referencesField field)
 
 end CheckedTokenEntitySource
 
@@ -212,6 +226,66 @@ def resolvedUnfilteredSideAt (checked : CheckedTokenStarSource model)
   checked.source.resolvedValueListSide document outer
     (checked.valueListCellAt phase read)
 
+/-- Full validation resolves topology and its optional checked filter before classifying selected token cells. -/
+def resolvedValidationSide (checked : CheckedTokenStarSource model)
+    (document : Document) (outer : Env)
+    (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError (ResolvedValueListSide .token) :=
+  checked.source.resolvedOptionalValidationHavingValueListSide document outer
+    checked.filter read (checked.valueListCellAt .validation read)
+
+/-- Partial all-rows validation checks wildcard/ancestor extent before reading any selected target. Filtered rules are skipped by the owning whole-source consumer. -/
+def resolvedPartialValidationSide
+    (checked : CheckedTokenStarSource model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → CheckedCell)
+    (_unfiltered : checked.filter.isNone = true) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .token) Unit) := do
+  let resolved ← checked.source.path.resolve document outer
+  if checked.source.allRowsRelevant scope then
+    pure (.inl (resolved.toResolvedSide
+      (checked.valueListCellAt .validation read)))
+  else
+    pure (.inr ())
+
 end CheckedTokenStarSource
+
+namespace CheckedTokenEntityOperand
+
+/-- Resolve one direct or starred token slot for full validation through the shared declaration-owned classifier. -/
+def resolvedValidationSide (checked : CheckedTokenEntityOperand model)
+    (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError (ResolvedValueListSide .token) :=
+  match checked with
+  | .field source => pure (source.resolvedSideAt .validation directRead)
+  | .star source => source.resolvedValidationSide document outer starRead
+
+/-- Resolve one unfiltered token slot under partial-validation relevance, preserving rule-level skip/nonrelevance outside the cell domain. -/
+def resolvedPartialValidationSide
+    (checked : CheckedTokenEntityOperand model)
+    (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
+    (directRead : FieldId → CheckedCell)
+    (starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .token) PartialValidationAggregateResult) :=
+  match checked with
+  | .field source =>
+      if scope.coversCell model source.declaration.path [] then
+        pure (.inl (source.resolvedSideAt .validation directRead))
+      else
+        pure (.inr .nonRelevant)
+  | .star source =>
+      if hUnfiltered : source.filter.isNone = true then do
+        match ← source.resolvedPartialValidationSide document outer scope
+            starRead hUnfiltered with
+        | .inl side => pure (.inl side)
+        | .inr () => pure (.inr .nonRelevant)
+      else
+        pure (.inr .skippedHaving)
+
+end CheckedTokenEntityOperand
 
 end A12Kernel
