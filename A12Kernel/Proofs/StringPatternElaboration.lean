@@ -20,6 +20,21 @@ theorem preparedDeclaredStringField_source_coherent
     DeclaredStringPatternCoherent prepared.declaration prepared.pattern :=
   prepared.patternCoherent
 
+/-- An unprepared ordinary declaration with a nonempty pattern and no local matcher fails closed instead of silently skipping formal pattern validation. -/
+theorem unpreparedDeclaredStringPattern_failsClosed
+    (declaration : FlatFieldDecl) (source : String) (raw : RawCell)
+    (ordinary : declaration.customType = none)
+    (stringKind : declaration.policy.kind = .string)
+    (noEnumeration : declaration.enumeration = none)
+    (evaluated : declaration.stringValueMode = .evaluated)
+    (declared : declaration.stringPatternSource = some source)
+    (nonempty : source.isEmpty = false)
+    (unavailable :
+      declaration.executableStringPatternMatcher? = none) :
+    declaration.checkRaw raw = malformedCheckedCell := by
+  simp [FlatFieldDecl.checkRaw, ordinary, stringKind, noEnumeration,
+    evaluated, declared, nonempty, unavailable]
+
 /-- An exact prepared declaration replaces its model-owned raw read. -/
 theorem preparedFlatStringPatterns_checkContext_prepared
     (prepared : PreparedFlatStringPatterns model compilePattern)

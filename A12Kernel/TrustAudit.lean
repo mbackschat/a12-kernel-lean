@@ -1058,6 +1058,7 @@ run_cmd do
 #print axioms A12Kernel.admittedStringPattern_fired_is_value
 #print axioms A12Kernel.preparedDeclaredStringField_checkRaw
 #print axioms A12Kernel.preparedDeclaredStringField_source_coherent
+#print axioms A12Kernel.unpreparedDeclaredStringPattern_failsClosed
 #print axioms A12Kernel.preparedFlatStringPatterns_checkContext_prepared
 #print axioms A12Kernel.preparedFlatStringPatterns_missingPattern_is_malformed
 #print axioms A12Kernel.preparedFlatStringPatterns_noPattern_delegates
@@ -1110,18 +1111,21 @@ run_cmd do
 #print axioms A12Kernel.prepareCustomDeclarations_ordinary
 #print axioms A12Kernel.prepareCustomDeclarations_registered
 #print axioms A12Kernel.prepareFlatCustomFields_modelError
-#print axioms A12Kernel.prepareFlatCustomFields_model_exact
 #print axioms A12Kernel.customField_checkValueRaw_acceptance_exact
 #print axioms A12Kernel.customField_checkValueRaw_rejection_exact
 #print axioms A12Kernel.customField_checkValueRaw_empty
 #print axioms A12Kernel.customField_checkValueRaw_wrongKind
 #print axioms A12Kernel.preparedCustomContext_lookup_exact
 #print axioms A12Kernel.preparedCustomContext_noOverlay_exact
+#print axioms A12Kernel.preparedCustomContextOver_ordinary_exact
+#print axioms A12Kernel.preparedCustomContext_typeMismatch_is_malformed
+#print axioms A12Kernel.preparedFlatStringContext_pattern_exact
+#print axioms A12Kernel.preparedFlatStringContext_custom_exact
 #print axioms A12Kernel.unpreparedCustomContext_failsClosed
 #print axioms A12Kernel.preparedCustomContext_unknownId
-#print axioms A12Kernel.elaborateAndEvalCustomFull_preparationError
-#print axioms A12Kernel.elaborateAndEvalCustomFull_conditionError
-#print axioms A12Kernel.elaborateAndEvalCustomFull_success
+#print axioms A12Kernel.elaborateAndEvalStringContextFull_preparationError
+#print axioms A12Kernel.elaborateAndEvalStringContextFull_conditionError
+#print axioms A12Kernel.elaborateAndEvalStringContextFull_success
 
 #print axioms A12Kernel.emptyStringField_evaluates_noValue
 #print axioms A12Kernel.emptyStringRange_evaluates_emptyText

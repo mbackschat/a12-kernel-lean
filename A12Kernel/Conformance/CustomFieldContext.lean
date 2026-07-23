@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CustomField
+import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.Conformance.CustomFieldContext — prepared flat custom checks -/
 
@@ -96,6 +96,22 @@ example : observe 3 (.parsed (.num 7)) = .value (.num 7) := by
 
 /- Unknown IDs retain the established malformed fail-closed result. -/
 example : observe 99 (.parsed (.str "accepted")) = .unknown .malformed := by
+  native_decide
+
+private def forgedOtherType : CheckedCustomFieldType where
+  declaration := { name := "OtherType" }
+  validator := fun _ _ => none
+
+private def forgedCustomObservation : CellObservation :=
+  let prepared : PreparedFlatCustomFields model := {
+    fields := [{ declaration := customCode, customType := forgedOtherType }] }
+  let raw : RawFlatContext := {
+    read := fun candidate =>
+      if candidate == customCode.id then .parsed (.str "accepted") else .empty }
+  (prepared.checkContext "en_US" raw).observeValidationAt customCode.id
+
+/- Copying the flat declaration cannot attach a checker resolved for another registered custom type. -/
+example : forgedCustomObservation = .unknown .malformed := by
   native_decide
 
 end A12Kernel.Conformance.CustomFieldContext

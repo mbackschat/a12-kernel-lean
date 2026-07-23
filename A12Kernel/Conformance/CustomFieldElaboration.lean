@@ -42,11 +42,11 @@ private def world : World where
     if name == "ProjectCode" || name == "CountryCode" then some acceptAll else none
 
 private def summary (model : FlatModel) :
-    Option (Bool × List (FieldId × String)) :=
+    Option (List (FieldId × String)) :=
   match prepareFlatCustomFields world model with
   | .error _ => none
-  | .ok prepared => some (prepared.model == model,
-      prepared.fields.map fun field =>
+  | .ok prepared =>
+      some (prepared.fields.map fun field =>
         (field.declaration.id, field.customType.declaration.name))
 
 private def errorOf (model : FlatModel) : Option FlatCustomFieldPreparationError :=
@@ -54,15 +54,15 @@ private def errorOf (model : FlatModel) : Option FlatCustomFieldPreparationError
   | .error error => some error
   | .ok _ => none
 
-/- Ordinary declarations need no custom metadata and preserve the existing model unchanged. -/
-example : summary { fields := [ordinary] } = some (true, []) := by
+/- Ordinary declarations need no custom metadata; exact model identity is retained by the indexed result type. -/
+example : summary { fields := [ordinary] } = some [] := by
   native_decide
 
 /- Every declared custom String field is retained in model order with its exact resolved name. -/
 example :
     summary { fields := [ordinary, custom 1 "Code" "ProjectCode",
       custom 2 "Country" "CountryCode"] } =
-      some (true, [(1, "ProjectCode"), (2, "CountryCode")]) := by
+      some [(1, "ProjectCode"), (2, "CountryCode")] := by
   native_decide
 
 /- Custom metadata on a non-String declaration is rejected by ordinary model validation. -/

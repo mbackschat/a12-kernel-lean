@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CustomField
+import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.Proofs.CustomFieldContext — prepared flat custom context laws -/
 
@@ -56,25 +56,91 @@ theorem customField_checkValueRaw_wrongKind (checked : CheckedCustomFieldType)
 
 /-- A coherent prepared overlay delegates the exact declaration to its resolved custom checker. -/
 theorem preparedCustomContext_lookup_exact
-    (prepared : PreparedFlatCustomFields) (locale : String)
+    (prepared : PreparedFlatCustomFields model) (locale : String)
     (raw : RawFlatContext) (id : FieldId) (declaration : FlatFieldDecl)
     (customField : PreparedFlatCustomField)
-    (modelLookup : prepared.model.lookupUniqueId id = .ok declaration)
+    (modelLookup : model.lookupUniqueId id = .ok declaration)
     (customLookup : prepared.lookup? id = some customField)
-    (matching : customField.declaration = declaration) :
+    (matching : customField.declaration = declaration)
+    (typeMatching :
+      declaration.customType = some customField.customType.declaration) :
     (prepared.checkContext locale raw).read id =
       customField.customType.checkValueRaw locale (raw.read id) := by
-  simp [PreparedFlatCustomFields.checkContext, modelLookup, customLookup, matching]
+  simp [PreparedFlatCustomFields.checkContext,
+    PreparedFlatCustomFields.checkContextOver, modelLookup, customLookup,
+    matching, typeMatching]
 
 /-- A declaration with no overlay entry retains its declaration-owned checker exactly. -/
 theorem preparedCustomContext_noOverlay_exact
-    (prepared : PreparedFlatCustomFields) (locale : String)
+    (prepared : PreparedFlatCustomFields model) (locale : String)
     (raw : RawFlatContext) (id : FieldId) (declaration : FlatFieldDecl)
-    (modelLookup : prepared.model.lookupUniqueId id = .ok declaration)
+    (modelLookup : model.lookupUniqueId id = .ok declaration)
     (customLookup : prepared.lookup? id = none) :
     (prepared.checkContext locale raw).read id =
       declaration.checkRaw (raw.read id) := by
-  simp [PreparedFlatCustomFields.checkContext, modelLookup, customLookup]
+  cases customType : declaration.customType <;>
+    simp [PreparedFlatCustomFields.checkContext,
+      PreparedFlatCustomFields.checkContextOver, modelLookup, customLookup,
+      customType, FlatModel.checkContext, FlatFieldDecl.checkRaw]
+
+/-- An ordinary declaration delegates to a caller-supplied checked context, enabling the second prepared String consumer without duplicating custom classification. -/
+theorem preparedCustomContextOver_ordinary_exact
+    (prepared : PreparedFlatCustomFields model) (locale : String)
+    (fallback : FlatContext) (raw : RawFlatContext) (id : FieldId)
+    (declaration : FlatFieldDecl)
+    (modelLookup : model.lookupUniqueId id = .ok declaration)
+    (customLookup : prepared.lookup? id = none)
+    (ordinary : declaration.customType = none) :
+    (prepared.checkContextOver locale fallback raw).read id =
+      fallback.read id := by
+  simp [PreparedFlatCustomFields.checkContextOver, modelLookup, customLookup,
+    ordinary]
+
+/-- A forged custom checker for a different custom declaration fails closed even when its flat declaration field was copied. -/
+theorem preparedCustomContext_typeMismatch_is_malformed
+    (prepared : PreparedFlatCustomFields model) (locale : String)
+    (fallback : FlatContext) (raw : RawFlatContext) (id : FieldId)
+    (declaration : FlatFieldDecl) (customField : PreparedFlatCustomField)
+    (modelLookup : model.lookupUniqueId id = .ok declaration)
+    (customLookup : prepared.lookup? id = some customField)
+    (matching : customField.declaration = declaration)
+    (typeMismatch :
+      declaration.customType ≠ some customField.customType.declaration) :
+    (prepared.checkContextOver locale fallback raw).read id =
+      malformedCheckedCell := by
+  simp [PreparedFlatCustomFields.checkContextOver, modelLookup, customLookup,
+    matching, typeMismatch]
+
+/-- The shared prepared String context selects the ordinary pattern checker when no custom declaration exists. -/
+theorem preparedFlatStringContext_pattern_exact
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (id : FieldId)
+    (declaration : FlatFieldDecl)
+    (modelLookup : model.lookupUniqueId id = .ok declaration)
+    (customLookup : prepared.customFields.lookup? id = none)
+    (ordinary : declaration.customType = none) :
+    (prepared.checkContext locale raw).read id =
+      (prepared.patterns.checkContext raw).read id := by
+  simp [PreparedFlatStringContext.checkContext,
+    PreparedFlatCustomFields.checkContextOver, modelLookup, customLookup,
+    ordinary]
+
+/-- The shared prepared String context selects the exact registered custom checker when that declaration owns the field. -/
+theorem preparedFlatStringContext_custom_exact
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (id : FieldId)
+    (declaration : FlatFieldDecl) (customField : PreparedFlatCustomField)
+    (modelLookup : model.lookupUniqueId id = .ok declaration)
+    (customLookup :
+      prepared.customFields.lookup? id = some customField)
+    (matching : customField.declaration = declaration)
+    (typeMatching :
+      declaration.customType = some customField.customType.declaration) :
+    (prepared.checkContext locale raw).read id =
+      customField.customType.checkValueRaw locale (raw.read id) := by
+  simp [PreparedFlatStringContext.checkContext,
+    PreparedFlatCustomFields.checkContextOver, modelLookup, customLookup,
+    matching, typeMatching]
 
 /-- The unprepared legacy context cannot silently treat a declared custom field as an ordinary String. -/
 theorem unpreparedCustomContext_failsClosed
@@ -90,10 +156,11 @@ theorem unpreparedCustomContext_failsClosed
 
 @[simp]
 theorem preparedCustomContext_unknownId
-    (prepared : PreparedFlatCustomFields) (locale : String)
+    (prepared : PreparedFlatCustomFields model) (locale : String)
     (raw : RawFlatContext) (id : FieldId) (error : ResolveError)
-    (modelLookup : prepared.model.lookupUniqueId id = .error error) :
+    (modelLookup : model.lookupUniqueId id = .error error) :
     (prepared.checkContext locale raw).read id = malformedCheckedCell := by
-  simp [PreparedFlatCustomFields.checkContext, modelLookup]
+  simp [PreparedFlatCustomFields.checkContext,
+    PreparedFlatCustomFields.checkContextOver, modelLookup]
 
 end A12Kernel

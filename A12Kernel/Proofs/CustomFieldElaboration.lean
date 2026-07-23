@@ -38,23 +38,4 @@ theorem prepareFlatCustomFields_modelError
     prepareFlatCustomFields world model = .error (.model error) := by
   simp [prepareFlatCustomFields, invalid] <;> rfl
 
-/-- Every successful overlay retains the exact source model rather than rebuilding or normalizing it. -/
-theorem prepareFlatCustomFields_model_exact
-    (world : World) (model : FlatModel)
-    (prepared : PreparedFlatCustomFields)
-    (success : prepareFlatCustomFields world model = .ok prepared) :
-    prepared.model = model := by
-  unfold prepareFlatCustomFields at success
-  cases modelResult : model.validate with
-  | error error =>
-      simp [modelResult] at success
-  | ok _ =>
-      cases fieldsResult : prepareCustomDeclarations world model.fields with
-      | error error =>
-          simp [modelResult, fieldsResult] at success
-      | ok fields =>
-          simp [modelResult, fieldsResult] at success
-          cases success
-          rfl
-
 end A12Kernel
