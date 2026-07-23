@@ -91,6 +91,7 @@ import A12Kernel.Proofs.NumericAggregate
 import A12Kernel.Proofs.NumberEntityList
 import A12Kernel.Proofs.NumericAggregateElaboration
 import A12Kernel.Proofs.TokenDistinctCount
+import A12Kernel.Proofs.TokenValueCount
 import A12Kernel.Proofs.RepetitionNotUnique
 import A12Kernel.Proofs.RepetitionNotUniqueElaboration
 import A12Kernel.Proofs.Enumeration
