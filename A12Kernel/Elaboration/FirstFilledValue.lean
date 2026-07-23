@@ -241,13 +241,6 @@ def evaluateComputationFirstFilled
   scanComputationFirstFilledNumberOperands document outer
     { read := directRead } filterRead starRead checked.operands {}
 
-private def checkedDocumentNumberCellAt
-    (document : CheckedDocument model) (phase : Phase)
-    (environment : Env) (field : FieldId) :
-    Except CheckedAddressingError (ValueListCell .number) := do
-  let addressed ← document.addressedCell environment field
-  pure (observeCell phase addressed.cell).asNumberValueListCell
-
 private def scanCheckedDocumentValidationOperand
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope) (state : FirstFilledScanState) :
@@ -257,7 +250,7 @@ private def scanCheckedDocumentValidationOperand
   | .field source =>
       if scope.coversCell model source.declaration.path [] then do
         match state.step
-            (← checkedDocumentNumberCellAt document .validation [] source.field.id) with
+            (← document.numberValueListCellAt .validation [] source.field) with
         | .continue next => pure (.inl next)
         | .done result => pure (.inr (.evaluated result.asNumber))
       else
@@ -268,8 +261,8 @@ private def scanCheckedDocumentValidationOperand
           |>.mapError .addressing
       source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
-          checkedDocumentNumberCellAt document .validation environment
-            source.field.id)
+          document.numberValueListCellAt .validation environment
+            source.field)
         resolved.environments
         (state.enterSelection resolved.environments.isEmpty
           resolved.domain.hasOpenTail false)
@@ -281,8 +274,8 @@ private def scanCheckedDocumentValidationOperand
         document.resolvingCorrelationContext outer resolved.environments
       source.source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
-          checkedDocumentNumberCellAt document .validation environment
-            source.source.field.id)
+          document.numberValueListCellAt .validation environment
+            source.source.field)
         selected (state.enterSelection selected.isEmpty
           resolved.domain.hasOpenTail true)
 
@@ -317,7 +310,7 @@ private def scanCheckedDocumentComputationOperand
         (FirstFilledScanState ⊕ FirstFilledNumberResult)
   | .field source => do
       match state.step
-          (← checkedDocumentNumberCellAt document .computation [] source.field.id) with
+          (← document.numberValueListCellAt .computation [] source.field) with
       | .continue next => pure (.inl next)
       | .done result => pure (.inr result.asNumber)
   | .star source => do
@@ -326,8 +319,8 @@ private def scanCheckedDocumentComputationOperand
           |>.mapError .addressing
       match ← scanFirstFilledItemsResolving
           (fun environment =>
-            checkedDocumentNumberCellAt document .computation environment
-              source.field.id)
+            document.numberValueListCellAt .computation environment
+              source.field)
           resolved.environments
           (state.enterSelection resolved.environments.isEmpty
             resolved.domain.hasOpenTail false) with
@@ -340,8 +333,8 @@ private def scanCheckedDocumentComputationOperand
       match ← scanFilteredComputationFirstFilledResolving source.having
           document.resolvingCorrelationContext outer
           (fun environment =>
-            checkedDocumentNumberCellAt document .computation environment
-              source.source.field.id)
+            document.numberValueListCellAt .computation environment
+              source.source.field)
           resolved.environments resolved.domain.hasOpenTail state with
       | .inl next => pure (.inl next)
       | .inr result => pure (.inr result.asNumber)

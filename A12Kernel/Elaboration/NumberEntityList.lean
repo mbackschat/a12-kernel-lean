@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.NumericScale
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Shared checked Number entity lists
 
@@ -9,6 +10,17 @@ This boundary owns the common authoring contract for Number-valued entity lists 
 -/
 
 namespace A12Kernel
+
+namespace CheckedDocument
+
+/-- Classify one model-owned Number field instance from the immutable checked input. The caller retains the authored operand and traversal; this query owns only address resolution and phase observation. -/
+def numberValueListCellAt (document : CheckedDocument model)
+    (phase : Phase) (environment : Env) (field : FlatNumberField) :
+    Except CheckedAddressingError (ValueListCell .number) := do
+  let addressed ← document.addressedCell environment field.id
+  pure (observeCell phase addressed.cell).asNumberValueListCell
+
+end CheckedDocument
 
 /-- Number entity-list authors use the shared kind-independent syntax. -/
 abbrev SurfaceNumberEntityOperand := SurfaceFieldEntityOperand

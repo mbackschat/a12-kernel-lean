@@ -791,6 +791,7 @@ run_cmd do
 #print axioms A12Kernel.numericProductAggregate_leftUnknown
 #print axioms A12Kernel.numericProductAggregate_singleton_tail
 #print axioms A12Kernel.checkedNumberEntitySource_requiredMultiplicity
+#print axioms A12Kernel.checkedDocument_numberValueListCellAt_delegates
 #print axioms A12Kernel.checkedNumberEntitySource_uniqueDirectOperands
 #print axioms A12Kernel.checkedNumberEntity_star_skipsDirectDuplicateGate
 #print axioms A12Kernel.checkedNumberEntity_starHaving_skipsDirectDuplicateGate
