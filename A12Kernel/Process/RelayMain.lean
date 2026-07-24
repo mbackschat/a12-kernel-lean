@@ -19,8 +19,16 @@ private partial def copy (source : IO.FS.Handle) (destination : IO.FS.Stream) : 
   loop
 
 private def writeInput (stdin : IO.FS.Handle) (input : ByteArray) : IO Unit := do
-  stdin.write input
-  stdin.flush
+  try
+    stdin.write input
+    stdin.flush
+  catch error =>
+    match error with
+    | .resourceVanished .. =>
+        -- A candidate may legitimately terminate without consuming all input.
+        -- Its closed read end makes the remaining pipe write irrelevant.
+        pure ()
+    | _ => throw error
 
 private def runCandidate (candidate inputPath : System.FilePath)
     (candidateArgs : Array String) : IO UInt32 := do
@@ -56,5 +64,8 @@ end A12Kernel.Process.Relay
 def main (args : List String) : IO UInt32 := do
   try
     A12Kernel.Process.Relay.run args
-  catch _ =>
+  catch error =>
+    let stderr ← IO.getStderr
+    stderr.putStr s!"a12-bounded-process-relay: {error}\n"
+    stderr.flush
     pure 1
