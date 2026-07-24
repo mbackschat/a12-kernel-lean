@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.Flat.Context
 import A12Kernel.Proofs.ScalarEquality
 
 /-! # A12Kernel.Proofs.CheckedEnumeration — checked observation laws -/

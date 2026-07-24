@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.Flat.Condition
 
 /-! # Checked raw-String rule elimination
 
