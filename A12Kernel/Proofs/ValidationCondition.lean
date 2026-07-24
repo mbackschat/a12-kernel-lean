@@ -8,6 +8,32 @@ These laws show that the shared connective tree preserves an established flat co
 namespace A12Kernel
 
 @[simp]
+theorem decodedNumericLiteral_negative_scale_has_no_iterationHostInt32
+    (value : Rat) (scale : Int) (negative : scale < 0) :
+    DecodedNumericLiteral.iterationHostInt32?
+      { value, authoredScale := scale } = none := by
+  simp [DecodedNumericLiteral.iterationHostInt32?, negative]
+
+/-- Once both checked scales certify the same finite decimal value, redundant trailing-zero spelling cannot change the kernel host integer. -/
+theorem decodedNumericLiteral_iterationHostInt32_scale_invariant
+    (value : Rat) (leftScale rightScale : Int)
+    (leftNonnegative : 0 ≤ leftScale)
+    (rightNonnegative : 0 ≤ rightScale)
+    (leftDecimal :
+      (value * (10 ^ leftScale.toNat : Nat)).den = 1)
+    (rightDecimal :
+      (value * (10 ^ rightScale.toNat : Nat)).den = 1) :
+    DecodedNumericLiteral.iterationHostInt32? {
+        value, authoredScale := leftScale
+      } =
+      DecodedNumericLiteral.iterationHostInt32? {
+        value, authoredScale := rightScale
+      } := by
+  simp only [DecodedNumericLiteral.iterationHostInt32?,
+    Int.not_lt.mpr leftNonnegative, Int.not_lt.mpr rightNonnegative,
+    leftDecimal, rightDecimal, ↓reduceIte]
+
+@[simp]
 theorem conditionTree_evalVerdict_map (condition : ConditionTree Source)
     (transform : Source → Target) (evalLeaf : Target → Verdict) :
     (condition.map transform).evalVerdict evalLeaf =

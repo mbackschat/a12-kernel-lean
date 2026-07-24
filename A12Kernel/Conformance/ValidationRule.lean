@@ -705,15 +705,15 @@ private def ancestorCurrentNumericRule? :
   (assembleResolvedValidationRule ordinaryIterationModel condition innerAmount.id
     "ancestorCurrentNumeric" .error { parts := [] }).toOption
 
-private def directRepeatableNumericCondition?
-    (op : NumericValidationOp) (expected : Rat)
+private def directRepeatableNumericLiteralCondition?
+    (op : NumericValidationOp) (literalValue : DecodedNumericLiteral)
     (literalOnLeft : Bool := false) :
     Option (CheckedValidationCondition ordinaryIterationModel) := do
   let field : AuthoredNumericExpr SurfaceNumericAtom :=
     .atom (.field
       (ordinaryPath ["Order", "Sections"] "OuterAmount"))
   let literal : AuthoredNumericExpr SurfaceNumericAtom :=
-    .literal { value := expected, authoredScale := 0 }
+    .literal literalValue
   let numeric ←
     (elaborateRepeatableNumericComparison ordinaryIterationModel
       ["Order", "Sections"] {
@@ -722,6 +722,21 @@ private def directRepeatableNumericCondition?
         right := if literalOnLeft then field else literal
       }).toOption
   (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def directRepeatableNumericCondition?
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  directRepeatableNumericLiteralCondition? op
+    { value := expected, authoredScale := 0 } literalOnLeft
+
+private def directRepeatableNumericLiteralLegality?
+    (op : NumericValidationOp) (literal : DecodedNumericLiteral)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ←
+    directRepeatableNumericLiteralCondition? op literal literalOnLeft
+  condition.core.iterationLegality.toOption
 
 private def directRepeatableNumericLegality?
     (op : NumericValidationOp) (expected : Rat)
@@ -880,9 +895,9 @@ private def checkedOuterEntityComparison?
   else
     none
 
-private def orderedAtomLegality?
+private def orderedAtomLiteralLegality?
     (atom : OrderedNumericValidationAtom ordinaryIterationModel)
-    (op : NumericValidationOp) (expected : Rat)
+    (op : NumericValidationOp) (literalValue : DecodedNumericLiteral)
     (literalOnLeft : Bool := false) :
     Option ValidationCondition.IterationLegality := do
   let entity : AuthoredNumericExpr
@@ -890,7 +905,7 @@ private def orderedAtomLegality?
     .atom atom
   let literal : AuthoredNumericExpr
       (OrderedNumericValidationAtom ordinaryIterationModel) :=
-    .literal { value := expected, authoredScale := 0 }
+    .literal literalValue
   let comparison ← checkedOuterEntityComparison? {
     op
     left := if literalOnLeft then literal else entity
@@ -899,6 +914,14 @@ private def orderedAtomLegality?
   let condition ←
     (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
   condition.core.iterationLegality.toOption
+
+private def orderedAtomLegality?
+    (atom : OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality :=
+  orderedAtomLiteralLegality? atom op
+    { value := expected, authoredScale := 0 } literalOnLeft
 
 private def numberEntityLegality?
     (source? : Option
@@ -1217,7 +1240,7 @@ example :
       some (.negativeConditionInIteration 10) := by
   native_decide
 
-/- Direct iterating Number comparisons against safe integral zero reproduce the source visitor's exact operator partition in both operand orders. -/
+/- Direct iterating Number comparisons against host-converted zero reproduce the source visitor's exact operator partition in both operand orders. -/
 example :
     directRepeatableNumericLegality? (.ordinary .equal) 0 =
       some (.invalid 10) ∧
@@ -1232,7 +1255,7 @@ example :
       outerAmount = some (.negativeConditionInIteration 10) := by
   native_decide
 
-/- Strict, not-equal, tolerance, and nonzero integral controls are admitted; normalized constants whose host rounding/narrowing cannot be reconstructed remain explicitly unclassified. -/
+/- Strict, not-equal, tolerance, and converted-nonzero controls are admitted; a rational that is not representable at its asserted authored scale remains explicitly unclassified. -/
 example :
     directRepeatableNumericLegality? (.ordinary .notEqual) 0 =
       some .legal ∧
@@ -1246,6 +1269,50 @@ example :
       some .legal ∧
     directRepeatableNumericLegality? (.ordinary .equal) (2 / 5) =
       some (.insufficient 10) := by
+  native_decide
+
+private def halfTieFromBelow : DecodedNumericLiteral :=
+  { value := (1 / 2 : Rat) - 1 / (2 ^ 55)
+    authoredScale := 55 }
+
+private def belowHalfTie : DecodedNumericLiteral :=
+  { value := halfTieFromBelow.value - 1 / (10 ^ 56)
+    authoredScale := 56 }
+
+/- The pure conversion owner also retains Java's asymmetric half rounding, long saturation, signed-int wrap, and the checked finite-decimal representation boundary. -/
+example :
+    DecodedNumericLiteral.iterationHostInt32?
+      { value := -1 / 2, authoredScale := 1 } = some 0 ∧
+    DecodedNumericLiteral.iterationHostInt32?
+      { value := -51 / 100, authoredScale := 2 } = some (-1) ∧
+    DecodedNumericLiteral.iterationHostInt32?
+      { value := 9223372036854775807, authoredScale := 0 } = some (-1) ∧
+    DecodedNumericLiteral.iterationHostInt32?
+      { value := -9223372036854775808, authoredScale := 0 } = some 0 ∧
+    DecodedNumericLiteral.iterationHostInt32?
+      { value := 2 / 5, authoredScale := 0 } = none ∧
+    DecodedNumericLiteral.iterationHostInt32?
+      { value := 1, authoredScale := -1 } = none := by
+  native_decide
+
+/- The checked decimal carrier is sufficient for the kernel host conversion. Binary64 tie-to-even can move an exact value below one half onto one half; Java rounding and signed-32-bit narrowing then determine the static zero test. -/
+example :
+    directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
+      { value := 2 / 5, authoredScale := 1 } =
+        some (.invalid 10) ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
+      { value := 1 / 2, authoredScale := 1 } =
+        some .legal ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
+      halfTieFromBelow = some .legal ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
+      belowHalfTie = some (.invalid 10) ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .equal)
+      { value := 4294967296, authoredScale := 0 } =
+        some (.invalid 10) ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .equal)
+      { value := 4294967297, authoredScale := 0 } =
+        some .legal := by
   native_decide
 
 /- An outer guard cannot legalize an inner negative condition: the first unguarded level remains explicit. Adding the existing inner group-presence guard closes that same level. -/
@@ -1383,6 +1450,20 @@ example :
       (.ordinary .equal) 1 = some .legal ∧
     tokenValueCountLegality? mixedTokenValueCountSource?
       (.ordinary .greater) (2 / 5) = some (.invalid 10) := by
+  native_decide
+
+/- Positive-threshold classification observes the same narrowed host integer rather than the exact positive decimal. -/
+example :
+    (plainStarTokenValueCountSource?.bind fun source =>
+      orderedAtomLiteralLegality? (.tokenValueCount source)
+        (.ordinary .less)
+        { value := 4294967296, authoredScale := 0 }) =
+      some .legal ∧
+    (plainStarTokenValueCountSource?.bind fun source =>
+      orderedAtomLiteralLegality? (.tokenValueCount source)
+        (.ordinary .less)
+        { value := 4294967297, authoredScale := 0 }) =
+      some (.invalid 10) := by
   native_decide
 
 /- `SumOfProducts` shares only the plain-star zero-sensitive branch; a positive not-equal threshold remains admitted. -/
