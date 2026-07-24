@@ -16,11 +16,27 @@ Every top-level clause has one compact five-dimensional record. `none` means the
 
 - **Executable:** checked Lean definitions and executable separators exist for the named behavior.
 - **Proof-closed:** the chosen account has its required proof spine, payoff-selected laws, and nearest checked non-law for the named behavior.
-- **Kernel-calibrated:** retained versioned kernel observations replay through a typed project-local projection for the named behavior. Source reading and a12-dmkits agreement are provenance, not this status.
+- **Kernel-locked:** an upstream a12-dmkits law or differential test that **executes the kernel** confirms the named behavior, and the record cites that test class plus the reviewed revision. This is kernel evidence, not peer agreement: the peer's discipline is "source-read proposes, law test confirms," and its estate runs the real engine. It is distinct from the next dimension because it is not replayable here — it cannot guard a local refactor and cannot be cited by a derived consumer as this project's own evidence.
+- **Kernel-calibrated:** retained versioned kernel observations replay through a typed project-local projection for the named behavior. Source reading is provenance, not this status; *peer interpreter agreement* is triangulation and also not this status. Note that the previous single rule collapsed peer interpreter agreement with peer kernel-executing law tests, understating the project's grounding and hiding which clauses are genuinely unprobed — hence the split above.
+
+  Population of `Kernel-locked` is incremental: existing clause records were written under the collapsed rule and have not been re-read, so absence of the label currently means "not yet assessed," not "no upstream lock exists." The 48 `SPEC-` identifiers cited across a12-dmkits documentation, 33 of them beside a named test class, are the candidate set.
 - **Publicly exposed:** the named behavior is reachable through the versioned normalized reference process with its support declaration and process controls.
 - **Consumer-qualified:** a completed same-context or milestone-triggered artifact-only probe has demonstrated the named consumer decision without renewed kernel archaeology.
 
-Never collapse these dimensions into one completion flag. A percentage may be reported only against an explicit named capability inventory and weighting rule; repository size, theorem count, top-level clause count, peer agreement, and a green build are not denominators. When a capsule changes a dimension, update the owning clause's `Coverage` record and the exact supporting detail in the same change.
+Never collapse these dimensions into one completion flag. A percentage may be reported only against an explicit named capability inventory and weighting rule; repository size, theorem count, top-level clause count, peer agreement, and a green build are not denominators.
+
+### The capability denominator — mined from the kernel, not from `spec/`
+
+The eventual-100% goal is only meaningful against an inventory that is complete *by construction*. A `spec/`-derived inventory cannot be: it is complete only relative to what is already known. The kernel's own structure can be, and the peer already demonstrates the technique — its [`RT-SEMANTICS-LEDGER`](../../a12-rulekit/docs/RT-SEMANTICS-LEDGER.md) enumerates every top-level runtime-evaluation class with a CI lock that fails if the table misses a class or names a vanished one, so a kernel bump reopens the right cells loudly.
+
+The denominator therefore has two halves, both kernel-mined:
+
+- **Runtime observables** — spine: the runtime-evaluation class inventory, reusing the peer's ledger rather than re-deriving it.
+- **Required static legality** — spine: the `MVK_`-prefixed constants of the kernel's error enums. Measured at kernel 30.8.1: `ParserErrorTypesEnum` 176, `ParserErrorTypesEnumForHModel` 40, `NoMetaModelCheckErrorType` 26, `CalculationErrorType` 18, `DynEnumErrorType` 12, `CommonParserErrorTypesEnum` 6, `FehlertextErrorType` 1 of its 50 members — 279 in total across seven enums. `MigrationErrorType`, `CSVTableErrorType`, and `CharsetErrorType` carry no `MVK_` constants and are not static-legality diagnostics in this sense.
+
+Scope subtraction matters more than the gross figure. The parser tiers (176 + 6) sit outside the semantic center, which begins after bilingual text parsing, and the 40 H-model constants are outside the expanded-A12-model contract entirely. **The in-scope static-legality denominator is therefore on the order of 57 codes** — codegen-tier 26, calculation 18, dynamic-enumeration 12, plus the single `MVK_` errortext member — rather than hundreds, and it is enumerable and CI-lockable in the same way.
+
+One hole is known and must be closed deliberately: `NoMetaModelCheckErrorType` is a `NoMetaModelCheckErrorType`, outside the three enum scopes the peer's MVK ledger classifies, so its 26 codegen-tier codes are covered by neither project's existing classification. That is where `MVK_TABLE_ENUMS_NOT_ALLOWED_FOR_PROGRAMMING_LANGUAGE` lives — the constant that makes the table-enumeration region unwitnessable by the normative anchor. When a capsule changes a dimension, update the owning clause's `Coverage` record and the exact supporting detail in the same change.
 
 ## Evidence snapshot
 

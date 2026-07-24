@@ -41,6 +41,40 @@ The introducing revision cannot name itself inside the same commit. Until handof
 git log -S 'SPEC-YYYY-MM-DD-NN' --format='%H' -- docs/A12-DMKITS-SPEC-SYNC-LEDGER.md
 ```
 
+## Kinds of entry
+
+The ledger carries two kinds, distinguished by identifier prefix, because they ask for different things and must not be confused.
+
+- **`SPEC-…` — a semantic correction.** A behavioral `spec/` change originated here that still needs a12-dmkits reconciliation. This is the ledger's original and dominant purpose; the rules above govern it.
+- **`EXP-…` — an experiment request.** A request to *run a specific probe*, because this project has identified a case whose outcome it cannot determine and which no existing evidence route exercises. It changes no `spec/` clause and asserts no correction; a disposition may legitimately be "observed, and the local account was already right."
+
+The distinction matters because the two arms of this project's convergence design fail differently. A correction transports knowledge the analytical arm has; an experiment request supplies a *shape* the empirical arm cannot generate for itself. The second is the mechanism for shared blind spots — cases where both projects agree because neither has probed, rather than because the account is right. An `EXP-` entry must therefore name the exact input shape, the competing accounts, what each predicts, and why existing coverage cannot reach it.
+
+## Experiment requests
+
+### EXP-2026-07-25-01 — condition-line splitting above fifty terms is unreached by either corpus
+
+- **Status:** pending
+- **Kind:** experiment request
+- **Kernel behavior:** 30.8.1
+- **Basis:** a12-dmkits revision `7d17733a` measured the three Groovy-only size-triggered lowering modes individually. Object splitting (`NUM_RULES_PER_CLASS_GROOVY = 10`) is engaged — kernel-mm 11 of 13 canonical models, max 89 rules. Calculation closures are unconditional for Groovy and therefore engaged across 646 computations. **Condition-line splitting (`NUM_CONDITIONLINES_PER_METHOD_GROOVY = 50`) has never been engaged:** over 2,460 rules the atomic-condition-term count peaks at 4 in workspaces and 21 in kernel-mm, and the committed corpus is one rule per model by design.
+- **The shape needed:** one rule whose condition carries at least fifty `And`/`Or` terms, so Groovy crosses into chunked split functions while Java emits its straight-line list. A dependent observation must then distinguish evaluation order and short-circuit reachability across the split boundary.
+- **Competing accounts:** the kernel's own `SplitFunctionsHelper` documentation states the split is a 64 KiB method-limit workaround and therefore order-preserving. That is a *stated intent* read from source, which the hypothesis rule classifies as a hypothesis. The alternative is that chunking changes which operand is reached first, or changes short-circuit behavior at a chunk boundary — which would be observable wherever a formally invalid cell sits after a deciding operand.
+- **Why existing coverage cannot reach it:** structurally, not by luck. A corpus of one-rule models and a generator emitting few condition terms per rule can never cross the threshold, exactly as the compute fuzz could not generate a final-empty concatenation before `IF123`.
+- **What this project will do with the result:** if order is preserved, the peer's zero characterized static-Java divergences extends to all three modes and the locus is closed. If not, it is a genuine strategy split at the codegen tier and both projects need it characterized.
+- **Acceptance:** either an observation over a threshold-crossing rule, or a reasoned refusal recording that the shape is unreachable from a12-dmkits' authoring surface — in which case this project records the mode as permanently uncalibrated rather than pending.
+
+### EXP-2026-07-25-02 — the table-enumeration region has no normative witness
+
+- **Status:** pending, blocked on a doctrine decision here
+- **Kind:** experiment request
+- **Kernel behavior:** 30.8.1
+- **Basis:** a12-dmkits revision `7d17733a` established that `NoMetaModelChecks.checkEnumTables()` rejects table-enum fields for `GROOVY` and `JAVA_SCRIPT_VK` with `MVK_TABLE_ENUMS_NOT_ALLOWED_FOR_PROGRAMMING_LANGUAGE`, so table enumerations are a Java-only capability by declared, diagnosed policy. Its ledger rows now scope the exclusion explicitly as a front-end-reach claim rather than a claim about the kernel's language, and record that the region is reachable through the kernel's other front-end.
+- **The problem, which is not a missing probe:** the dynamic-Groovy observation anchor **structurally cannot produce an observation in this region**. No Groovy-anchored differential, this project's or the peer's, can follow. Static-Java is the only emitted witness.
+- **Blocked on:** a local decision, not upstream work. This project's differential doctrine makes dynamic-Groovy normative and static-Java co-evidence. Closing this region would require an explicit doctrine exception promoting co-evidence to sole evidence for it. Until that exception is adopted or refused, requesting a probe would be premature.
+- **If the exception is adopted:** the request becomes a static-Java observation of table-enumeration evaluation over a legal Java-target model, with the claim scoped to that strategy alone and labelled as such wherever it is cited.
+- **If the exception is refused:** [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)'s dynamic/table portion is recorded as permanently outside kernel-correspondence claims, with this entry as the stated reason, and the eventual-100% goal carries its first acknowledged structurally uncalibratable region.
+
 ## Copy-ready handoff prompt
 
 Use this prompt for one or more pending IDs, replacing both placeholders with the exact values:

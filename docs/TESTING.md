@@ -51,6 +51,7 @@ The assessment covers:
 
 - **Semantic root:** whether the mechanism and a second predicted instance are fixed, or only the reported symptom.
 - **Scope and claim integrity:** whether the supported fragment, exclusions, and kernel-correspondence claim remain exact rather than silently widening.
+- **Composition-claim routing:** every claim the unit makes about read order, precedence, reachability, short-circuiting, prefix termination, or interaction *between* runtime classes must name the engine layer that established it, using the routing rule in [`SOURCES.md`](SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit). Source reading of a runtime class is reliable for a local clause and unreliable for composition, so a composition claim resting on it alone stays a hypothesis until a codegen template, a backing bean, a generated program, or a probe confirms it. This check is what keeps composition debt from re-accumulating, so it is not optional for a capsule that makes such a claim.
 - **Architecture:** reuse, duplication, dependency direction, ownership, coupling, and whether every extracted abstraction has at least two real completed consumers.
 - **Tests and proofs:** missing boundary cases, realistic wrong accounts, mutation seams, false generalizations, weak hypotheses, missing non-laws, and trust-root registration.
 - **Harness and executable cost:** measured latency, repeated/noisy gates, poor diagnostics, unnecessary scans, termination structure, and support code outweighing semantic code.

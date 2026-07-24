@@ -195,6 +195,14 @@ field-kind baseline
 
 This layering prevents a type-only dispatch table from erasing the exact distinctions catalogued in [`LF5`](LEAN-FINDINGS.md#lf5--empty-handling-is-a-layered-consuming-clause-policy-not-a-field-kind-function). Each evaluator shipment should omit irrelevant layers explicitly rather than leaving the implementer to wonder whether they were forgotten.
 
+### Host-boundary traps that the Lean account cannot warn you about
+
+Some traps are invisible in the semantics precisely because Lean has no way to fall into them. They still bite a consumer written in a language with native strings, decimals, or dates, so a shipment must name them explicitly.
+
+**Every String operand must enter the A12 string domain, never the host's.** In Lean, `StringExpr` has exactly four constructors and a literal evaluates into the same `noValue | text | poison` domain as a field read, so a host string cannot appear as an operand — the trap is unrepresentable. The kernel, generating into Java, must actively avoid it: its composite-operation backing bean special-cases operand **position zero**, emitting a String *constant* in an extended form that produces the kernel's own string type rather than a plain host string, while later operands need no such treatment. The reason is dispatch and semantics: with a plain host string as the receiver, a later not-given operand would stringify by host rules instead of contributing the A12 empty account. A consumer in Rust or TypeScript that represents a leading literal as a native `String`/`string` reproduces exactly the bug the kernel's codegen is written to avoid, and it will diverge on the empty and not-given concatenation cases rather than on ordinary ones — so ordinary fixtures will not catch it.
+
+The general rule this instances: **where the kernel's own code generator contains a workaround, the workaround marks a host boundary a consumer must also handle.** Lean's immunity is evidence that the distinction is real, not evidence that it can be ignored.
+
 ## Assurance boundary
 
 Lean proofs establish universal consequences of the Lean definitions over their hypotheses. They do not automatically prove an independent Rust, Python, Kotlin, or TypeScript consumer correct. Canonical fixtures, differential testing, and transformation tests establish conformance only over executed inputs; a preservation theorem applies only to its modeled transformation and hypotheses; retained evidence establishes kernel correspondence only over its recorded projection. The candidate qualification record must keep those claims separate.
