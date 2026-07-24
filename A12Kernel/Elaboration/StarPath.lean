@@ -145,17 +145,6 @@ structure CheckedStarPlan where
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
 
-/-- Recheck the public checked-star carrier at another checked boundary so a caller cannot forge a declaration/path pair. -/
-def CheckedStarFieldPath.wellFormedBool
-    (source : CheckedStarFieldPath model) : Bool :=
-  match model.lookupUniqueId source.declaration.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration == source.declaration &&
-        source.path.axes.map (·.level) == declaration.repeatableScope &&
-        decide (source.path.firstStar < source.path.axes.length) &&
-        source.path.validate.isOk
-
 /-- Whether this checked starred field is completely relevant for an all-rows validation consumer. This gate does not apply to order-aware `FirstFilledValue`. -/
 def CheckedStarFieldPath.allRowsRelevant (checked : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) : Bool :=

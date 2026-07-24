@@ -206,28 +206,6 @@ theorem validationCondition_groupList_fired_iff
         operand.evalPresence context isRelevant) operands) = outcome
   cases outcome <;> simp [ValidationFillOutcome.asConservativeVerdict]
 
-/-- A repeatable presence leaf is its own ordinary rule-iteration source; the checked tree does not accept a caller-supplied parallel field inventory. -/
-@[simp]
-theorem validationCondition_iteratedFieldPresence_iterationSource
-    (operator : IteratedFieldPresenceOperator)
-    (source : CheckedStarFieldPath model) :
-    (ValidationCondition.iteratedFieldPresence operator source).iterationSource =
-      .ok (some source) := by
-  rfl
-
-/-- Reached repeatable presence delegates to the scalar presence law at the complete current environment while retaining the source's over-repetition overlay. -/
-@[simp]
-theorem validationCondition_iteratedFieldPresence_evalAddressed
-    (operator : IteratedFieldPresenceOperator)
-    (source : CheckedStarFieldPath model)
-    (context : AddressedValidationEvaluationContext model) :
-    (ValidationCondition.iteratedFieldPresence operator source).evalAddressed
-        context =
-      .ok (operator.eval (observeCell .validation
-        (source.contextualizeCell context.outer
-          (context.read context.outer source.declaration.id)))) := by
-  rfl
-
 /-- The checked mixed wrapper carries one model and exact row-group certificate for its complete resolved core. -/
 theorem checkedValidationCondition_coherent
     (condition : CheckedValidationCondition model) :
