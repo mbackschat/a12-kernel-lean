@@ -15,6 +15,22 @@ abbrev SurfaceTokenEntityOperand := SurfaceFieldEntityOperand
 /-- A nonempty authored token-family entity-list source. -/
 abbrev SurfaceTokenEntitySource := SurfaceFieldEntitySource
 
+/-- One projection-bearing token slot retains the exact stored/category selection on a direct or starred field reference. -/
+inductive SurfaceProjectedTokenEntityOperand where
+  | field (source : SurfaceTextFieldOperand)
+  | star (source : SurfaceStarFieldPath)
+      (projectionRef : EnumerationProjectionRef)
+  | starHaving (source : SurfaceStarFieldPath)
+      (projectionRef : EnumerationProjectionRef)
+      (having : SurfaceCorrelatedHaving)
+  deriving Repr, DecidableEq
+
+/-- A nonempty projection-bearing token-family entity list. -/
+structure SurfaceProjectedTokenEntitySource where
+  first : SurfaceProjectedTokenEntityOperand
+  rest : List SurfaceProjectedTokenEntityOperand
+  deriving Repr, DecidableEq
+
 /-- Resolve the exact stored/category token projection selected by a token-family consumer. String supports only the stored/default selection. -/
 def FlatFieldDecl.toTokenFieldComparison? (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) :
@@ -79,6 +95,18 @@ def hasHaving : CheckedTokenEntityOperand model → Bool
 def tokenOperand : CheckedTokenEntityOperand model → FlatTextFieldOperand
   | .field source => source.operand
   | .star source => source.operand
+
+/-- The exact stored/category selection retained by an Enumeration slot; String has no Enumeration projection. -/
+def projectionRef? :
+    CheckedTokenEntityOperand model → Option EnumerationProjectionRef
+  | .field source =>
+      match source.operand with
+      | .string _ => none
+      | .enumeration operand => some operand.projectionRef
+  | .star source =>
+      match source.operand with
+      | .string _ => none
+      | .enumeration operand => some operand.projectionRef
 
 def referencesField (checked : CheckedTokenEntityOperand model)
     (field : FieldId) : Bool :=
@@ -258,6 +286,103 @@ def elaborateTokenEntitySource (model : FlatModel)
   let first ← certifyTokenEntityOperand model declaringGroup shape.first
   let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
   assembleTokenEntitySource shape.modelWellFormed first rest
+
+/-- A path-resolved projection-bearing token slot. Keeping this intermediate private preserves duplicate-before-certification diagnostics without exposing a second checked representation. -/
+private inductive ResolvedProjectedTokenEntityOperand
+    (model : FlatModel) where
+  | field (declaration : FlatFieldDecl)
+      (projectionRef : EnumerationProjectionRef)
+  | star (source : CheckedStarFieldPath model)
+      (projectionRef : EnumerationProjectionRef)
+      (having : Option SurfaceCorrelatedHaving)
+
+namespace ResolvedProjectedTokenEntityOperand
+
+private def isStar :
+    ResolvedProjectedTokenEntityOperand model → Bool
+  | .field _ _ => false
+  | .star _ _ _ => true
+
+private def directReference? :
+    ResolvedProjectedTokenEntityOperand model →
+      Option (FieldId × EnumerationProjectionRef)
+  | .field declaration projectionRef => some (declaration.id, projectionRef)
+  | .star _ _ _ => none
+
+end ResolvedProjectedTokenEntityOperand
+
+private def resolveProjectedTokenEntityOperand (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    SurfaceProjectedTokenEntityOperand →
+      Except TokenEntityElabError
+        (ResolvedProjectedTokenEntityOperand model)
+  | .field source => do
+      let reference := match source with
+        | .direct field | .category field _ => field
+      let projectionRef := match source with
+        | .direct _ => EnumerationProjectionRef.stored
+        | .category _ name => .category name
+      let declaration ←
+        (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError
+          (fun error => .shape (.resolve error))
+      pure (.field declaration projectionRef)
+  | .star source projectionRef => do
+      let checked ← elaborateStarFieldPath model declaringGroup source
+        |>.mapError (fun error => .shape (.starPath error))
+      pure (.star checked projectionRef none)
+  | .starHaving source projectionRef having => do
+      let checked ← elaborateStarFieldPath model declaringGroup source
+        |>.mapError (fun error => .shape (.starPath error))
+      pure (.star checked projectionRef (some having))
+
+private def firstDuplicateResolvedProjectedTokenField? :
+    List (ResolvedProjectedTokenEntityOperand model) → Option FieldId
+  | [] => none
+  | operand :: remaining =>
+      match operand.directReference? with
+      | none => firstDuplicateResolvedProjectedTokenField? remaining
+      | some reference =>
+          if remaining.any fun candidate =>
+              candidate.directReference? == some reference then
+            some reference.1
+          else
+            firstDuplicateResolvedProjectedTokenField? remaining
+
+private def certifyProjectedTokenEntityOperand (model : FlatModel)
+    (declaringGroup : GroupPath) :
+    ResolvedProjectedTokenEntityOperand model →
+      Except TokenEntityElabError (CheckedTokenEntityOperand model)
+  | .field declaration projectionRef => do
+      pure (.field
+        (← certifyDirectTokenOperand model declaration projectionRef))
+  | .star source projectionRef having => do
+      pure (.star
+        (← certifyStarTokenOperand declaringGroup source having projectionRef))
+
+/-- Resolve paths before exact-reference duplication and cardinality, then certify kind, category, and `Having` in authored order. This is the sole projection-bearing token entity-list authoring boundary. -/
+def elaborateProjectedTokenEntitySource (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceProjectedTokenEntitySource) :
+    Except TokenEntityElabError (CheckedTokenEntitySource model) :=
+  match hModel : model.validate with
+  | .error error => .error (.shape (.resolve error))
+  | .ok () => do
+      let first ←
+        resolveProjectedTokenEntityOperand model declaringGroup authored.first
+      let rest ← authored.rest.mapM fun operand =>
+        resolveProjectedTokenEntityOperand model declaringGroup operand
+      match firstDuplicateResolvedProjectedTokenField? (first :: rest) with
+      | some field => throw (.shape (.duplicateOperand field))
+      | none =>
+          if first.isStar || !rest.isEmpty then
+            let checkedFirst ←
+              certifyProjectedTokenEntityOperand model declaringGroup first
+            let checkedRest ← rest.mapM fun operand =>
+              certifyProjectedTokenEntityOperand model declaringGroup operand
+            assembleTokenEntitySource (by rw [hModel]; rfl)
+              checkedFirst checkedRest
+          else
+            throw (.shape .tooFewFields)
 
 /-- One authored String/stored-or-category Enumeration operand resolved against the immutable checked input. The typed source retains the exact projection certificate, while the shared core retains topology, selected addresses/payload, hierarchical extent, filter provenance, and positional relevance. -/
 structure ResolvedCheckedTokenEntityOperand (model : FlatModel) where
