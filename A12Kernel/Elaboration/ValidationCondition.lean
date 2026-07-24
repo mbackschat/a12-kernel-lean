@@ -661,7 +661,7 @@ private def numberEntityOperandReferenceScope? :
       Option (List RepeatableLevel)
   | .field _ => some []
   | .star checked => checkedStarBindingScope checked.source
-  | .starHaving _ => none
+  | .starHaving checked => checkedStarBindingScope checked.source.source
 
 private def numberEntityReferenceScopes?
     (source : CheckedNumberEntitySource model) :
