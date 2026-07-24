@@ -575,6 +575,25 @@ private def baseToken : FlatFieldDecl :=
     name := "BaseToken"
     policy := { kind := .string } }
 
+private def innerNumericCode : FlatFieldDecl :=
+  { id := 37
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerNumericCode"
+    policy := { kind := .string }
+    stringPatternSource := some "[0-9]+"
+    stringPolicy := { maxLength := some 15 }
+    repeatableScope := [10, 20] }
+
+private def innerNumericChoice : FlatFieldDecl :=
+  { id := 38
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerNumericChoice"
+    policy := { kind := .enumeration }
+    enumeration := some {
+      storedTokens := ["1.50", "2"]
+      categories := [{ name := "Factor", tokens := ["15", "20"] }] }
+    repeatableScope := [10, 20] }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -584,7 +603,7 @@ private def sectionDetail : FlatFieldDecl :=
 
 private def ordinaryIterationModel : FlatModel :=
   { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount,
-      innerToken, baseToken]
+      innerToken, baseToken, innerNumericCode, innerNumericChoice]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -778,6 +797,50 @@ private def repeatableStringLengthRule? :
     repeatableStringLengthCondition? (.ordinary .equal) 3
   (assembleResolvedValidationRule ordinaryIterationModel condition innerToken.id
     "repeatableStringLength" .error { parts := [] }).toOption
+
+private def repeatableFieldValueAsNumberCondition?
+    (source : SurfaceTextFieldOperand)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let converted : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.fieldValueAsNumber source)
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := if literalOnLeft then literal else converted
+        right := if literalOnLeft then converted else literal
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableFieldValueAsNumberLegality?
+    (source : SurfaceTextFieldOperand)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ←
+    repeatableFieldValueAsNumberCondition? source op expected literalOnLeft
+  condition.core.iterationLegality.toOption
+
+private def repeatableNumericCode : SurfaceTextFieldOperand :=
+  .direct
+    (ordinaryPath ["Order", "Sections", "Items"] "InnerNumericCode")
+
+private def repeatableNumericFactor : SurfaceTextFieldOperand :=
+  .category
+    (ordinaryPath ["Order", "Sections", "Items"] "InnerNumericChoice")
+    "Factor"
+
+private def repeatableFieldValueAsNumberRule?
+    (source : SurfaceTextFieldOperand) (expected : Rat) (target : FieldId) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ←
+    repeatableFieldValueAsNumberCondition? source (.ordinary .equal) expected
+  (assembleResolvedValidationRule ordinaryIterationModel condition target
+    "repeatableFieldValueAsNumber" .error { parts := [] }).toOption
 
 private def compositeRepeatableNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
@@ -1410,6 +1473,25 @@ example :
       some .legal := by
   native_decide
 
+/- `FieldValueAsNumber` retains its checked String or category projection while sharing the direct-operation host-zero branch. -/
+example :
+    repeatableFieldValueAsNumberLegality? repeatableNumericCode
+        (.ordinary .equal) 0 =
+      some (.invalid 10) ∧
+    repeatableFieldValueAsNumberLegality? repeatableNumericCode
+        (.ordinary .equal) 0 true =
+      some (.invalid 10) ∧
+    repeatableFieldValueAsNumberLegality? repeatableNumericCode
+        (.ordinary .equal) 7 =
+      some .legal ∧
+    repeatableFieldValueAsNumberLegality? repeatableNumericFactor
+        (.ordinary .greaterEqual) 0 =
+      some (.invalid 10) ∧
+    repeatableFieldValueAsNumberLegality? repeatableNumericFactor
+        (.ordinary .less) 0 =
+      some .legal := by
+  native_decide
+
 /- Single-field operand-list Min/Max calls retain the same top-level operation-list guard without being flattened into direct fields. -/
 example :
     wrappedRepeatableNumericLegality?
@@ -1604,6 +1686,95 @@ example :
           some { field := innerToken.id, path := [1, 1] })])) = true ∧
       repeatableStringLengthStructuralFailure? =
         some (.environment (.missingBinding 10)) := by
+  native_decide
+
+private def repeatableFieldValueAsNumberData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells := [
+      { address := { field := innerNumericCode.id, path := [1, 1] }
+        stored := "007"
+        raw := .parsed (.str "007") },
+      { address := { field := innerNumericChoice.id, path := [1, 1] }
+        stored := "1.50"
+        raw := .parsed (.enum "1.50") }] }
+
+private def repeatableFieldValueAsNumberSnapshot?
+    (source : SurfaceTextFieldOperand) (expected : Rat) (target : FieldId) :
+    Option (Option (List RepeatableLevel) × Bool ×
+      List (Env × Verdict × Option CellAddr)) := do
+  let rule ← repeatableFieldValueAsNumberRule? source expected target
+  let outcomes ← evalOrdinaryRule? rule repeatableFieldValueAsNumberData
+  pure (
+    rule.iterationScope,
+    rule.requiresAddressedValidation,
+    outcomes.map fun entry =>
+      (entry.1, entry.2.verdict,
+        entry.2.message?.map (·.errorAddress)))
+
+private def repeatableFieldValueAsNumberStructuralFailure? :
+    Option CheckedAddressingError := do
+  let rule ←
+    repeatableFieldValueAsNumberRule? repeatableNumericFactor 15
+      innerNumericChoice.id
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US"
+      repeatableFieldValueAsNumberData).toOption
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match rule.condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
+
+private def repeatableFieldValueAsNumberRejectedVerdict? : Option Verdict := do
+  let rule ←
+    repeatableFieldValueAsNumberRule? repeatableNumericCode 7
+      innerNumericCode.id
+  let data : DocumentData := {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells := [{
+      address := { field := innerNumericCode.id, path := [1, 1] }
+      stored := "ABC"
+      raw := .parsed (.str "ABC")
+    }] }
+  let outcomes ← evalOrdinaryRule? rule data
+  outcomes.head?.map (·.2.verdict)
+
+/- Addressed conversion reuses the checked String policy and exact Enumeration category projection; a missing outer binding remains structural. -/
+example :
+    (repeatableFieldValueAsNumberSnapshot? repeatableNumericCode 7
+      innerNumericCode.id ==
+      some (
+        some [10, 20],
+        true,
+        [(
+          [(10, 1), (20, 1)],
+          .fired .value,
+          some { field := innerNumericCode.id, path := [1, 1] })])) = true ∧
+    (repeatableFieldValueAsNumberSnapshot? repeatableNumericFactor 15
+      innerNumericChoice.id ==
+      some (
+        some [10, 20],
+        true,
+        [(
+          [(10, 1), (20, 1)],
+          .fired .value,
+          some { field := innerNumericChoice.id, path := [1, 1] })])) = true ∧
+    repeatableFieldValueAsNumberRejectedVerdict? = some .unknown ∧
+    repeatableFieldValueAsNumberStructuralFailure? =
+      some (.environment (.missingBinding 10)) := by
   native_decide
 
 private def outerInnerTokenValueCountData : DocumentData :=

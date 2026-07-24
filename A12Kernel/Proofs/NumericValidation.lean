@@ -50,6 +50,17 @@ theorem orderedNumericValidationAtom_repeatableStringLength_requiresAddressed
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
     lookup, repeatable]
 
+/-- A certified conversion source under a nonempty repeatable declaration uses the shared addressed entry requirement without erasing its text projection. -/
+theorem orderedNumericValidationAtom_repeatableFieldValueAsNumber_requiresAddressed
+    (source : ResolvedFieldValueAsNumberSource) (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId source.fieldId = .ok declaration)
+    (repeatable : declaration.repeatableScope.isEmpty = false) :
+    (OrderedNumericValidationAtom.ordinary
+        (.fieldValueAsNumber source)).requiresAddressedValidation
+        (model := model) = true := by
+  simp [OrderedNumericValidationAtom.requiresAddressedValidation,
+    lookup, repeatable]
+
 /-- A relevant present first source terminates direct `FirstFilledValue` before any suffix relevance decision. -/
 theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
     (source : ResolvedNumericAggregateFields)

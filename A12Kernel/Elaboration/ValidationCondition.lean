@@ -472,6 +472,8 @@ private def ordinaryNumericAtomFieldDeclaration?
             some declaration
           else none
       | .error _ => none
+  | .fieldValueAsNumber source =>
+      model.certifiedFieldValueAsNumberDeclaration? source
   | _ => none
 
 private def ordinaryNumericAtomRepeatableDeclaration?
