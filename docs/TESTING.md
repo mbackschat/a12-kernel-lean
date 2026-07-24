@@ -52,6 +52,7 @@ The assessment covers:
 - **Architecture:** reuse, duplication, dependency direction, ownership, coupling, and whether every extracted abstraction has at least two real completed consumers.
 - **Tests and proofs:** missing boundary cases, realistic wrong accounts, mutation seams, false generalizations, weak hypotheses, missing non-laws, and trust-root registration.
 - **Harness and executable cost:** measured latency, repeated/noisy gates, poor diagnostics, unnecessary scans, termination structure, and support code outweighing semantic code.
+- **Capsule roundtrip efficiency:** source-navigation cost, number and quality of red/green turns, diagnostic friction, repeated audits or gates, consumer-probe payoff, and one concrete adjustment that would make the next capsule faster without weakening its discriminators or claims.
 - **Consumer adequacy:** distinctions required by one named task, the supported decision or preservation procedure, and unsafe transformations that must remain representable.
 - **Evidence and calibration:** exact external status, provenance strength, claim limits, and whether the unit belongs in an existing coherent calibration batch.
 - **Cross-project directionality:** inbound handback versus outbound request, exact revision provenance, owner overlap, and feedback-loop risk.
@@ -59,6 +60,8 @@ The assessment covers:
 - **Consolidation and hygiene:** code smells, obsolete mechanisms, live-value failures, line/estate pressure, sibling cleanliness, temporary artifacts, and the highest-connectivity ready frontier.
 
 Fix a same-capsule defect before committing. Record a genuinely open semantic obligation only in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md); route a durable formalization lesson to [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md), implemented/evidence state to [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md), and immediate sequencing to [`PLAN.md`](PLAN.md). A routine assessment with no concrete finding creates no repository report. Infrastructure, protocol, dependency, shipment, or governance work found by the assessment remains a proposal subject to its existing approval rule.
+
+Every capsule or feature handoff must include a compact roundtrip verdict: keep the current method, apply a named process adjustment to the next unit, or propose a separately approved infrastructure change. Apply no-file workflow improvements immediately. Do not create metrics files, timing registries, or assessment reports merely to prove the routine occurred.
 
 If the assessment changes code, proofs, executable cases, or a gate-consumed artifact, rerun the affected focused check and every later applicable rung before commit. Documentation-only corrections do not restart unrelated semantic gates.
 
