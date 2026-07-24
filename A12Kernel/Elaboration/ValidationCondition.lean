@@ -645,15 +645,22 @@ private def commonPlainStarNumberSourceScope?
   let first ← scopes.head?
   if scopes.all (· == first) then some first else none
 
-private structure PlainStarNumberEntityGuardShape where
+private def commonPlainStarProductScope?
+    (source : CheckedNumericProductAggregate model) :
+    Option (List RepeatableLevel) := do
+  let left ← checkedStarBindingScope source.left.source
+  let right ← checkedStarBindingScope source.right.source
+  if left == right then some left else none
+
+private structure PlainStarNumericGuardShape where
   scope : List RepeatableLevel
   zeroSensitive : Bool
   positiveSensitive : Bool
 
-/-- The source visitor gives plain-star Number entity-list operations two independent static sensitivities: empty-zero substitution and a positive count threshold. -/
-private def plainStarNumberEntityGuardShape? :
+/-- The source visitor gives plain-star Number operations two independent static sensitivities: empty-zero substitution and a positive count threshold. -/
+private def plainStarNumericGuardShape? :
     OrderedNumericValidationAtom model →
-      Option PlainStarNumberEntityGuardShape
+      Option PlainStarNumericGuardShape
   | .firstFilled source =>
       (commonPlainStarNumberSourceScope? source).map (⟨·, true, false⟩)
   | .valueCount _ source =>
@@ -663,7 +670,9 @@ private def plainStarNumberEntityGuardShape? :
         match op with
         | .sum | .minimum | .maximum => ⟨scope, true, false⟩
         | .distinctCount => ⟨scope, false, true⟩
-  | .ordinary _ | .tokenValueCount _ | .sumOfProducts _ => none
+  | .sumOfProducts source =>
+      (commonPlainStarProductScope? source).map (⟨·, true, false⟩)
+  | .ordinary _ | .tokenValueCount _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool
@@ -678,7 +687,7 @@ private def positiveCountThresholdIsUnguarded
         | .greater | .greaterEqual | .notEqual => true
         | .equal | .less | .lessEqual => false
 
-private def orderedNumericPlainStarEntityLiteralGuardAt
+private def orderedNumericPlainStarLiteralGuardAt
     (level : RepeatableLevel)
     (comparison : OrderedNumericComparison model) :
     Option IterationGuardStatus :=
@@ -686,7 +695,7 @@ private def orderedNumericPlainStarEntityLiteralGuardAt
     let atom ← match entityExpr with
       | .atom atom => some atom
       | _ => none
-    let shape ← plainStarNumberEntityGuardShape? atom
+    let shape ← plainStarNumericGuardShape? atom
     let literal ← safeIntegralLiteralValue? literalExpr
     if shape.scope.contains level then
       if (shape.zeroSensitive && literal == 0 &&
@@ -732,7 +741,7 @@ private def ValidationConditionLeaf.iterationGuardAt
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status
       | none =>
-          match orderedNumericPlainStarEntityLiteralGuardAt level comparison with
+          match orderedNumericPlainStarLiteralGuardAt level comparison with
           | some status => status
           | none =>
               match orderedNumericDirectWrapperLiteralGuardAt level comparison with

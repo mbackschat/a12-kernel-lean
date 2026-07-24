@@ -549,6 +549,13 @@ private def innerAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } }
     repeatableScope := [10, 20] }
 
+private def innerPrice : FlatFieldDecl :=
+  { id := 33
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerPrice"
+    policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := [10, 20] }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -557,7 +564,7 @@ private def sectionDetail : FlatFieldDecl :=
     repeatableScope := [10] }
 
 private def ordinaryIterationModel : FlatModel :=
-  { fields := [outerAmount, innerAmount, sectionDetail]
+  { fields := [outerAmount, innerAmount, sectionDetail, innerPrice]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -732,6 +739,9 @@ private def deeperInnerAmountStar : SurfaceStarFieldPath :=
       { name := "Items", starred := true }]
     field := "InnerAmount" }
 
+private def deeperInnerPriceStar : SurfaceStarFieldPath :=
+  { deeperInnerAmountStar with field := "InnerPrice" }
+
 private def outerWithInnerAggregateCore? :
     Option (OrderedNumericComparison ordinaryIterationModel) := do
   let outerField ← outerAmount.toNumberField?
@@ -827,6 +837,40 @@ private def plainStarEntityLegality?
   let condition ←
     (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
   condition.core.iterationLegality.toOption
+
+private def plainStarProductCondition?
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let source ←
+    (elaborateNumericProductAggregate ordinaryIterationModel
+      ["Order", "Sections"] {
+        left := deeperInnerAmountStar
+        right := deeperInnerPriceStar
+      }).toOption
+  let comparison ← checkedOuterEntityComparison? {
+    op
+    left := .atom (.sumOfProducts source)
+    right := .literal { value := expected, authoredScale := 0 }
+  }
+  (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+
+private def plainStarProductLegality?
+    (op : NumericValidationOp) (expected : Rat) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ← plainStarProductCondition? op expected
+  condition.core.iterationLegality.toOption
+
+private def guardedPlainStarProductRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let outer ←
+    (CheckedValidationCondition.fromRepeatableFieldPresence
+      ordinaryIterationModel ["Order", "Sections"] .filled
+      (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+  let product ←
+    plainStarProductCondition? (.ordinary .greater) 0
+  let condition ← (outer.and product).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition
+    outerAmount.id "guardedProduct" .error { parts := [] }).toOption
 
 private def outerWithInnerEntityComparison?
     (atom : OrderedNumericValidationAtom ordinaryIterationModel)
@@ -1118,6 +1162,18 @@ example :
       (.ordinary .notEqual) 1 = some (.invalid 10) := by
   native_decide
 
+/- `SumOfProducts` shares only the plain-star zero-sensitive branch; a positive not-equal threshold remains admitted. -/
+example :
+    plainStarProductLegality? (.ordinary .equal) 0 =
+        some (.invalid 10) ∧
+    plainStarProductLegality? (.ordinary .notEqual) 1 =
+        some .legal ∧
+    (guardedPlainStarProductRule?.map fun rule =>
+      (rule.iterationScope, rule.condition.core.iterationLegality.toOption,
+        rule.requiresAddressedValidation)) =
+      some (some [10], some .legal, true) := by
+  native_decide
+
 private def ordinaryIterationData : DocumentData :=
   { instantiatedRows := [
       { group := 10, path := [2] },
@@ -1138,6 +1194,65 @@ private def evalOrdinaryRule? (rule :
       ordinaryIterationModel).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
   (rule.evalOrdinaryRepeatableFull checked).toOption
+
+private def plainStarProductData (withRightValues : Bool) : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := [
+      { address := { field := outerAmount.id, path := [1] }
+        stored := "1"
+        raw := .parsed (.num 1) },
+      { address := { field := innerAmount.id, path := [1, 1] }
+        stored := "2"
+        raw := .parsed (.num 2) },
+      { address := { field := innerAmount.id, path := [1, 2] }
+        stored := "3"
+        raw := .parsed (.num 3) }] ++
+      if withRightValues then [
+        { address := { field := innerPrice.id, path := [1, 1] }
+          stored := "4"
+          raw := .parsed (.num 4) },
+        { address := { field := innerPrice.id, path := [1, 2] }
+          stored := "5"
+          raw := .parsed (.num 5) }]
+      else [] }
+
+private def plainStarProductVerdict? (withRightValues : Bool) :
+    Option (Verdict × Option CellAddr) := do
+  let rule ← guardedPlainStarProductRule?
+  let outcomes ← evalOrdinaryRule? rule (plainStarProductData withRightValues)
+  let outcome ← outcomes.head?
+  pure (outcome.2.verdict, outcome.2.message?.map (·.errorAddress))
+
+private def plainStarProductStructuralFailure? :
+    Option CheckedAddressingError := do
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US" (plainStarProductData true)).toOption
+  let source ←
+    (elaborateNumericProductAggregate ordinaryIterationModel
+      ["Order", "Sections"] {
+        left := deeperInnerAmountStar
+        right := deeperInnerPriceStar
+      }).toOption
+  match source.evaluateCheckedDocumentAt .validation document [] with
+  | .ok _ => none
+  | .error error => some error
+
+/- The ordinary checked-document route executes the admitted paired fold. Filled products fire at the outer error field, while empty right operands contribute zero and leave the same rule decided rather than UNKNOWN. -/
+example :
+    plainStarProductVerdict? true =
+        some (.fired .value,
+          some { field := outerAmount.id, path := [1] }) ∧
+    plainStarProductVerdict? false =
+        some (.notFired, none) ∧
+    plainStarProductStructuralFailure? =
+        some (.addressing (.missingBinding 10)) := by
+  native_decide
 
 private def classifiedCell (field : FieldId) (path : List Nat)
     (stored : String) (raw : RawCell) : ClassifiedCellInput :=

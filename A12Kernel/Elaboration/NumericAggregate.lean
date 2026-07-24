@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two same-group Number stars at the lowest repeatable level, resolves their shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context. Group operands, rule-level partial integration, wider whole-rule addressed orchestration, and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two same-group Number stars at the lowest repeatable level, resolves their shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; `SumOfProducts` also reaches ordinary addressed rules through the same immutable checked-document projection. Group operands, rule-level partial integration, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -106,6 +106,34 @@ def evaluateAt (checked : CheckedNumericProductAggregate model)
     Except StarAddressingError NumericOperand := do
   let resolved ← checked.left.source.path.resolve document outer
   pure (evalNumericProductAggregate (checked.selectedSideAt phase resolved read))
+
+/-- Classify one product operand from the immutable checked input while retaining path-owned over-repetition. -/
+private def checkedDocumentValueListCellAt
+    (source : CheckedStarNumberSource model) (phase : Phase)
+    (document : CheckedDocument model) (environment : Env) :
+    Except CheckedAddressingError (ValueListCell .number) := do
+  let addressed ← document.addressedCell environment source.field.id
+  pure (source.checkedValueListCell phase addressed.cell environment)
+
+/-- Resolve the product's one certified topology against the immutable checked input, then read each left/right pair in kernel encounter order. -/
+def evaluateCheckedDocumentAt (checked : CheckedNumericProductAggregate model)
+    (phase : Phase) (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  let resolved ←
+    (checked.left.source.path.resolve document.source.toDocument outer)
+      |>.mapError .addressing
+  let rows ← resolved.environments.mapM fun environment => do
+    let left ←
+      checkedDocumentValueListCellAt checked.left phase document environment
+    let right ←
+      checkedDocumentValueListCellAt checked.right phase document environment
+    pure { left, right }
+  pure (evalNumericProductAggregate {
+    rows
+    leftSigned := checked.left.field.info.signed
+    rightSigned := checked.right.field.info.signed
+    hasUninstantiatedTail := resolved.domain.hasOpenTail
+  })
 
 /-- Check either owned declaration from raw storage without inventing a third policy. -/
 private def checkedRawCell (checked : CheckedNumericProductAggregate model)

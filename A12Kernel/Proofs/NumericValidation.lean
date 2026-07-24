@@ -154,6 +154,20 @@ theorem orderedNumericValidationAtom_sumOfProducts_addressed_delegates
           NumericOperand.toValidationArithmetic := by
   rfl
 
+/-- The immutable checked-document branch delegates the same product source without replacing its topology or collapsing structural failure. -/
+theorem orderedNumericValidationAtom_sumOfProducts_checked_document_delegates
+    (source : CheckedNumericProductAggregate model)
+    (scalar : ValidationEvaluationContext)
+    (document : CheckedDocument model) (outer : Env) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.sumOfProducts source) {
+          scalar, outer, input := .checked document
+        } =
+      (source.evaluateCheckedDocumentAt
+        .validation document outer).map
+          NumericOperand.toValidationArithmetic := by
+  rfl
+
 /-- A resolved validation aggregate atom consumes the shared aggregate fold and only then enters the existing arithmetic-outcome domain. -/
 theorem numericValidationAggregate_evaluatesThroughSharedFold
     (context : FlatContext) (op : NumericAggregateOp)
