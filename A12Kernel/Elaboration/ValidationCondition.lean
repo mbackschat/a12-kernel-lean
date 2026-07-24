@@ -392,10 +392,29 @@ private def checkedTokenSourceIterationScope
   mergeIterationScopeList
     (← source.operands.mapM checkedTokenOperandIterationScope)
 
+private def ordinaryNumericAtomRepeatableDeclaration?
+    (model : FlatModel) :
+    NumericValidationAtom → Option FlatFieldDecl
+  | .field source =>
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if declaration.repeatableScope.isEmpty then
+            none
+          else
+            some declaration
+      | .error _ => none
+  | _ => none
+
+private def ordinaryNumericAtomIterationScope
+    (model : FlatModel) (source : NumericValidationAtom) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
+  pure ((ordinaryNumericAtomRepeatableDeclaration? model source).map
+    (·.repeatableScope))
+
 private def orderedNumericAtomIterationScope :
     OrderedNumericValidationAtom model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .ordinary _ => pure none
+  | .ordinary source => ordinaryNumericAtomIterationScope model source
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       checkedNumberSourceIterationScope source
   | .tokenValueCount source =>
@@ -441,20 +460,45 @@ def ordinaryIterationScope :
       mergeIterationScopes
         (← ordinaryIterationScope left) (← ordinaryIterationScope right)
 
+/-- Ordinary repeatable Number declarations retained by one ordered expression in authored order. -/
+private def ordinaryNumericAtomRepeatableFields
+    (model : FlatModel) :
+    OrderedNumericValidationAtom model → List FlatFieldDecl
+  | .ordinary source =>
+      (ordinaryNumericAtomRepeatableDeclaration? model source).toList
+  | _ => []
+
+private def authoredNumericRepeatableFields
+    (fieldsOf : Atom → List FlatFieldDecl) :
+    AuthoredNumericExpr Atom → List FlatFieldDecl
+  | .atom atom => fieldsOf atom
+  | .literal _ => []
+  | .group body | .abs body | .extremumCall _ body | .round _ _ body =>
+      authoredNumericRepeatableFields fieldsOf body
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      authoredNumericRepeatableFields fieldsOf left ++
+        authoredNumericRepeatableFields fieldsOf right
+
 /-- Ordinary repeatable field declarations in authored tree order. Whole-rule checked-document execution resolves these exact cells before evaluation so a structural address failure cannot be collapsed into semantic UNKNOWN. -/
 def ordinaryRepeatableFields (condition : ValidationCondition model) :
     List FlatFieldDecl :=
   match condition with
   | .leaf (.repeatableFieldPresence _ declaration) => [declaration]
+  | .leaf (.orderedNumeric _ comparison) =>
+      authoredNumericRepeatableFields
+          (ordinaryNumericAtomRepeatableFields model) comparison.left ++
+        authoredNumericRepeatableFields
+          (ordinaryNumericAtomRepeatableFields model) comparison.right
   | .leaf _ => []
   | .and left right | .or left right =>
       ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
 
-/-- The first whole-rule route accepts established nonrepeatable flat leaves plus ordinary repeatable presence leaves. Specialized addressed sources retain their existing owners until their rule-environment bridge closes. -/
+/-- The first whole-rule route accepts established nonrepeatable flat leaves, ordinary repeatable presence, and the checked same-group addressed Number policy. Specialized star sources retain their existing owners until their rule-environment bridge closes. -/
 def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
     | .flat _ | .repeatableFieldPresence _ _ => true
+    | .orderedNumeric .sameGroupAddressed _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
@@ -554,6 +598,15 @@ def fromNumeric (comparison : CheckedNumericComparison model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   checkCore model comparison.rowGroup
     (ValidationCondition.numericIn comparison.operandScope comparison.core)
+    comparison.modelWellFormed
+
+/-- Lift one checked ordered-numeric comparison without reconstructing or flattening its authored expression tree. -/
+def fromOrderedNumeric
+    (comparison : CheckedOrderedNumericComparison model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model comparison.rowGroup
+    (ValidationCondition.orderedNumericIn
+      comparison.operandScope comparison.core)
     comparison.modelWellFormed
 
 /-- Resolve and certify one scalar group-presence predicate against the same model and declaring group used by the surrounding rule. -/

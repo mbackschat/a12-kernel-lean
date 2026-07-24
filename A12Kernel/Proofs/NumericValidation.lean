@@ -29,6 +29,16 @@ theorem checkedNumericComparison_wellFormed
     checked.core.WellFormedIn model checked.rowGroup checked.operandScope :=
   checked.wellFormed
 
+/-- A model-certified direct Number source under a nonempty repeatable declaration cannot silently select the scalar evaluator. -/
+theorem orderedNumericValidationAtom_repeatableField_requiresAddressed
+    (field : FlatNumberField) (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId field.id = .ok declaration)
+    (repeatable : declaration.repeatableScope.isEmpty = false) :
+    (OrderedNumericValidationAtom.ordinary (.field field)).requiresAddressedValidation
+        (model := model) = true := by
+  simp [OrderedNumericValidationAtom.requiresAddressedValidation,
+    lookup, repeatable]
+
 /-- A relevant present first source terminates direct `FirstFilledValue` before any suffix relevance decision. -/
 theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
     (source : ResolvedNumericAggregateFields)
