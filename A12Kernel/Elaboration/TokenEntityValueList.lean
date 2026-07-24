@@ -47,6 +47,13 @@ structure SurfaceTokenEntityValueListSource where
   values : SurfaceTokenEntitySource
   deriving Repr, DecidableEq
 
+/-- A two-sided token value list whose direct and starred slots retain exact stored/category projection authoring. -/
+structure SurfaceProjectedTokenEntityValueListSource where
+  quantifier : ValueListQuantifier
+  fields : SurfaceProjectedTokenEntitySource
+  values : SurfaceProjectedTokenEntitySource
+  deriving Repr, DecidableEq
+
 /-- A checked two-sided String or Enumeration value list. Both sides share one base family, and exact direct-reference uniqueness spans the complete authored operation. -/
 structure CheckedTokenEntityValueListSource (model : FlatModel) where
   quantifier : ValueListQuantifier
@@ -104,6 +111,20 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
     |>.mapError .fields
   let values ← elaborateTokenEntitySource model declaringGroup authored.values
     |>.mapError .values
+  assembleTokenEntityValueListSource authored.quantifier fields values
+
+/-- Check both projection-bearing token sides through the sole shared entity-list authoring boundary, then apply the operation-wide family and exact-reference gates. -/
+def elaborateProjectedTokenEntityValueListSource (model : FlatModel)
+    (declaringGroup : GroupPath)
+    (authored : SurfaceProjectedTokenEntityValueListSource) :
+    Except TokenEntityValueListElabError
+      (CheckedTokenEntityValueListSource model) := do
+  let fields ←
+    elaborateProjectedTokenEntitySource model declaringGroup authored.fields
+      |>.mapError .fields
+  let values ←
+    elaborateProjectedTokenEntitySource model declaringGroup authored.values
+      |>.mapError .values
   assembleTokenEntityValueListSource authored.quantifier fields values
 
 /-- The rich two-sided addressed token stream consumed by Execute/Transform/Explain clients. -/

@@ -38,15 +38,33 @@ private def nestedField : FlatFieldDecl :=
 private def enumField : FlatFieldDecl :=
   { id := 7, groupPath := ["Form"], name := "Choice"
     policy := { kind := .enumeration }
-    enumeration := some { storedTokens := ["A", "B"] } }
+    enumeration := some {
+      storedTokens := ["A", "B"]
+      categories := [
+        { name := "Band", tokens := ["X", "X"] },
+        { name := "Tier", tokens := ["X", "Y"] }] } }
 
 private def otherEnumField : FlatFieldDecl :=
   { enumField with id := 8, name := "OtherChoice" }
 
+private def repeatedEnumField : FlatFieldDecl :=
+  { enumField with
+    id := 9
+    groupPath := ["Form", "Rows"]
+    name := "RowChoice"
+    repeatableScope := [10] }
+
+private def nestedEnumField : FlatFieldDecl :=
+  { enumField with
+    id := 11
+    groupPath := ["Form", "Rows", "Details"]
+    name := "NestedChoice"
+    repeatableScope := [10, 20] }
+
 private def model : FlatModel :=
   { fields := [
       matchField, needleField, spareField, repeatedField, otherRepeatedField,
-      nestedField, enumField, otherEnumField]
+      nestedField, enumField, otherEnumField, repeatedEnumField, nestedEnumField]
     repeatableGroups := [
       { level := 10, path := ["Form", "Rows"], repeatability := some 2 },
       { level := 20, path := ["Form", "Rows", "Details"],
@@ -162,7 +180,21 @@ private def multipleStarData : DocumentData :=
       { address := { field := 6, path := [1, 2] }
         stored := "N12", raw := .parsed (.str "N12") },
       { address := { field := 6, path := [2, 1] }
-        stored := "N21", raw := .parsed (.str "N21") }] }
+        stored := "N21", raw := .parsed (.str "N21") },
+      { address := { field := 7, path := [] }
+        stored := "A", raw := .parsed (.enum "A") },
+      { address := { field := 8, path := [] }
+        stored := "B", raw := .parsed (.enum "B") },
+      { address := { field := 9, path := [1] }
+        stored := "A", raw := .parsed (.enum "A") },
+      { address := { field := 9, path := [2] }
+        stored := "B", raw := .parsed (.enum "B") },
+      { address := { field := 11, path := [1, 1] }
+        stored := "A", raw := .parsed (.enum "A") },
+      { address := { field := 11, path := [1, 2] }
+        stored := "B", raw := .parsed (.enum "B") },
+      { address := { field := 11, path := [2, 1] }
+        stored := "A", raw := .parsed (.enum "A") }] }
 
 private def checkedDocument? (source : DocumentData) :
     Option (CheckedDocument model) := do
@@ -297,6 +329,7 @@ private def projectedToken : ValueListCell .token → ProjectedToken
 
 private structure OperandView where
   field : FieldId
+  projection : Option EnumerationProjectionRef
   topology : Option (List Env)
   openTail : Bool
   addressed : List (CellAddr × Option String)
@@ -311,6 +344,7 @@ private def sourceField :
 private def operandView
     (resolved : ResolvedCheckedTokenEntityOperand model) : OperandView :=
   { field := sourceField resolved.source
+    projection := resolved.source.projectionRef?
     topology := resolved.topology.map (·.environments)
     openTail := resolved.hasUninstantiatedTail
     addressed := resolved.addressedCells.map fun cell =>
@@ -328,7 +362,6 @@ private structure ConsumerView where
 private inductive ConsumerQuery where
   | storedString (surface : SurfaceTokenEntityValueListSource)
       (source : DocumentData)
-  | projectedEnumeration
 
 private inductive ConsumerResult where
   | available (view : ConsumerView)
@@ -337,9 +370,8 @@ private inductive ConsumerResult where
   | insufficientInformation
   deriving Repr, DecidableEq
 
-/-- Same-context Execute/Transform/Explain probe: execute the public checked route, traverse source-preserving operands, and explain topology, exact stored payload, and declaration-owned evaluated tokens. Projection-bearing Enumeration authoring remains explicit insufficient information at this surface. -/
+/-- Same-context Execute/Transform/Explain probe for the stored-projection route: execute the public checked route, traverse source-preserving operands, and explain topology, exact stored payload, and declaration-owned evaluated tokens. -/
 private def inspectForConsumer : ConsumerQuery → ConsumerResult
-  | .projectedEnumeration => .insufficientInformation
   | .storedString surface source =>
       match elaborateTokenEntityValueListSource model ["Form"] surface with
       | .error _ => .rejected
@@ -366,6 +398,7 @@ example :
         family := .string
         fields := [
           { field := 6
+            projection := none
             topology := some [
               [(10, 1), (20, 1)],
               [(10, 1), (20, 2)],
@@ -378,6 +411,7 @@ example :
             projected := [
               .present "N11", .present "N12", .present "N21"] },
           { field := 4
+            projection := none
             topology := some [[(10, 1)], [(10, 2)]]
             openTail := false
             addressed := [
@@ -386,17 +420,263 @@ example :
             projected := [.present "A\nB", .present "SECOND"] }]
         values := [
           { field := 2
+            projection := none
             topology := none
             openTail := false
             addressed := [({ field := 2, path := [] }, some "MATCH")]
             projected := [.present "MATCH"] },
           { field := 3
+            projection := none
             topology := none
             openTail := false
             addressed := [({ field := 3, path := [] }, some "SPARE")]
             projected := [.present "SPARE"] }]
-        verdict := .notFired } ∧
-      inspectForConsumer .projectedEnumeration =
+        verdict := .notFired } := by
+  native_decide
+
+private def projectedDirect (name : String)
+    (projection : EnumerationProjectionRef) :
+    SurfaceProjectedTokenEntityOperand :=
+  match projection with
+  | .stored => .field (.direct {
+      base := .absolute, groups := ["Form"], field := name })
+  | .category category => .field (.category {
+      base := .absolute, groups := ["Form"], field := name } category)
+
+private def projectedStar (field : String)
+    (projection : EnumerationProjectionRef) :
+    SurfaceProjectedTokenEntityOperand :=
+  .star {
+    base := .absolute
+    groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+    field } projection
+
+private def projectedNestedChildStar
+    (projection : EnumerationProjectionRef) :
+    SurfaceProjectedTokenEntityOperand :=
+  .star {
+    base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Rows" },
+      { name := "Details", starred := true }]
+    field := "NestedChoice" } projection
+
+private def projectedNestedAllStar
+    (projection : EnumerationProjectionRef) :
+    SurfaceProjectedTokenEntityOperand :=
+  .star {
+    base := .absolute
+    groups := [
+      { name := "Form" },
+      { name := "Rows", starred := true },
+      { name := "Details", starred := true }]
+    field := "NestedChoice" } projection
+
+private def projectedSource (first : SurfaceProjectedTokenEntityOperand)
+    (rest : List SurfaceProjectedTokenEntityOperand) :
+    SurfaceProjectedTokenEntitySource :=
+  { first, rest }
+
+private def projectedAuthored (quantifier : ValueListQuantifier)
+    (fields values : SurfaceProjectedTokenEntitySource) :
+    SurfaceProjectedTokenEntityValueListSource :=
+  { quantifier, fields, values }
+
+private def projectedFullSnapshot
+    (surface : SurfaceProjectedTokenEntityValueListSource)
+    (source : DocumentData := multipleStarData) (outer : Env := []) :
+    Snapshot :=
+  match elaborateProjectedTokenEntityValueListSource model ["Form"] surface with
+  | .error _ => .elaboration
+  | .ok checked =>
+      match checkedDocument? source with
+      | none => .elaboration
+      | some document =>
+          match checked.evaluateFull document outer with
+          | .ok verdict => .verdict verdict
+          | .error cause => .structural cause
+
+private def projectedPartialSnapshot
+    (surface : SurfaceProjectedTokenEntityValueListSource)
+    (scope : ValidationRelevanceScope) : Snapshot :=
+  match elaborateProjectedTokenEntityValueListSource model ["Form"] surface with
+  | .error _ => .elaboration
+  | .ok checked =>
+      match checkedDocument? multipleStarData with
+      | none => .elaboration
+      | some document =>
+          match checked.evaluatePartial document [] scope with
+          | .ok (.evaluated verdict) => .verdict verdict
+          | .ok .skippedHaving => .elaboration
+          | .error cause => .structural cause
+
+private def projectedDirectOnlyScope : ValidationRelevanceScope :=
+  .partialSet [
+    relevance enumField.path [.concrete 1, .concrete 1],
+    relevance otherEnumField.path [.concrete 1, .concrete 1]]
+
+private def projectedEmptyData : DocumentData :=
+  { instantiatedRows := [row1]
+    cells := [
+      { address := { field := 7, path := [] }
+        stored := "A", raw := .parsed (.enum "A") },
+      { address := { field := 8, path := [] }
+        stored := "B", raw := .parsed (.enum "B") },
+      { address := { field := 9, path := [1] }
+        stored := "", raw := .presentEmpty }] }
+
+/- Stored access and two named categories on one physical Enumeration remain distinct exact references, while repeating the same category across sides is rejected. -/
+example :
+    projectedFullSnapshot
+        (projectedAuthored .atLeastOne
+          (projectedSource (projectedDirect "Choice" .stored)
+            [projectedDirect "Choice" (.category "Band")])
+          (projectedSource (projectedDirect "Choice" (.category "Tier"))
+            [projectedDirect "OtherChoice" .stored])) =
+      .verdict (.fired .value) ∧
+    projectedFullSnapshot
+        (projectedAuthored .atLeastOne
+          (projectedSource (projectedDirect "Choice" (.category "Band")) [])
+          (projectedSource (projectedDirect "Choice" (.category "Band")) [])) =
+      .elaboration := by
+  native_decide
+
+/- Multiple and nested Enumeration stars preserve their independent topology and apply each authored category positionally before ordered matching. -/
+example :
+    projectedFullSnapshot
+        (projectedAuthored .atLeastOne
+          (projectedSource
+            (projectedNestedAllStar (.category "Band"))
+            [projectedStar "RowChoice" (.category "Tier")])
+          (projectedSource
+            (projectedDirect "OtherChoice" (.category "Band"))
+            [projectedDirect "OtherChoice" .stored])) =
+      .verdict (.fired .value) := by
+  native_decide
+
+/- Positional partial relevance remains on the exact projected Enumeration operand instead of becoming semantic UNKNOWN globally. -/
+example :
+    projectedPartialSnapshot
+        (projectedAuthored .no
+          (projectedSource
+            (projectedDirect "Choice" (.category "Band"))
+            [projectedStar "RowChoice" (.category "Tier")])
+          (projectedSource
+            (projectedDirect "OtherChoice" (.category "Band"))
+            [projectedDirect "OtherChoice" .stored]))
+        projectedDirectOnlyScope = .verdict .notFired ∧
+      projectedPartialSnapshot
+        (projectedAuthored .no
+          (projectedSource
+            (projectedStar "RowChoice" (.category "Tier"))
+            [projectedDirect "Choice" (.category "Band")])
+          (projectedSource
+            (projectedDirect "OtherChoice" (.category "Band"))
+            [projectedDirect "OtherChoice" .stored]))
+        projectedDirectOnlyScope = .verdict .unknown := by
+  native_decide
+
+/- Physical emptiness survives category projection and contributes omission polarity rather than a fabricated category token. -/
+example :
+    projectedFullSnapshot
+        (projectedAuthored .no
+          (projectedSource
+            (projectedStar "RowChoice" (.category "Band")) [])
+          (projectedSource
+            (projectedDirect "OtherChoice" (.category "Band"))
+            [projectedDirect "OtherChoice" .stored]))
+        projectedEmptyData =
+      .verdict (.fired .omission) := by
+  native_decide
+
+/- A nested projected star with no fixed outer binding remains a structural addressing failure outside the semantic verdict. -/
+example :
+    projectedFullSnapshot
+        (projectedAuthored .no
+          (projectedSource
+            (projectedNestedChildStar (.category "Band")) [])
+          (projectedSource
+            (projectedDirect "OtherChoice" (.category "Band"))
+            [projectedDirect "OtherChoice" .stored])) =
+      .structural (.addressing (.missingBinding 10)) := by
+  native_decide
+
+private inductive ProjectedConsumerQuery where
+  | enumeration (surface : SurfaceProjectedTokenEntityValueListSource)
+      (source : DocumentData)
+  | unsupportedCrossLevel
+
+/-- Same-context projected-Enumeration probe. Exact category certificates remain attached to the addressed streams; a cross-level form outside this packet remains explicit insufficient information. -/
+private def inspectProjectedForConsumer :
+    ProjectedConsumerQuery → ConsumerResult
+  | .unsupportedCrossLevel => .insufficientInformation
+  | .enumeration surface source =>
+      match elaborateProjectedTokenEntityValueListSource
+          model ["Form"] surface with
+      | .error _ => .rejected
+      | .ok checked =>
+          match checkedDocument? source with
+          | none => .rejected
+          | some document =>
+              match checked.resolveFull document [] with
+              | .error cause => .structural cause
+              | .ok resolved =>
+                  .available {
+                    family := resolved.family
+                    fields := resolved.fields.map operandView
+                    values := resolved.values.map operandView
+                    verdict := resolved.evaluate }
+
+/- Execute, Transform, and Explain recover exact category identity, independent topologies, exact stored payload, positional projected tokens, and the semantic verdict from one checked stream. -/
+example :
+    inspectProjectedForConsumer (.enumeration
+      (projectedAuthored .atLeastOne
+        (projectedSource
+          (projectedNestedAllStar (.category "Band"))
+          [projectedStar "RowChoice" (.category "Tier")])
+        (projectedSource
+          (projectedDirect "OtherChoice" (.category "Band"))
+          [projectedDirect "OtherChoice" .stored]))
+      multipleStarData) =
+      .available {
+        family := .enumeration
+        fields := [
+          { field := 11
+            projection := some (.category "Band")
+            topology := some [
+              [(10, 1), (20, 1)],
+              [(10, 1), (20, 2)],
+              [(10, 2), (20, 1)]]
+            openTail := true
+            addressed := [
+              ({ field := 11, path := [1, 1] }, some "A"),
+              ({ field := 11, path := [1, 2] }, some "B"),
+              ({ field := 11, path := [2, 1] }, some "A")]
+            projected := [.present "X", .present "X", .present "X"] },
+          { field := 9
+            projection := some (.category "Tier")
+            topology := some [[(10, 1)], [(10, 2)]]
+            openTail := false
+            addressed := [
+              ({ field := 9, path := [1] }, some "A"),
+              ({ field := 9, path := [2] }, some "B")]
+            projected := [.present "X", .present "Y"] }]
+        values := [
+          { field := 8
+            projection := some (.category "Band")
+            topology := none
+            openTail := false
+            addressed := [({ field := 8, path := [] }, some "B")]
+            projected := [.present "X"] },
+          { field := 8
+            projection := some .stored
+            topology := none
+            openTail := false
+            addressed := [({ field := 8, path := [] }, some "B")]
+            projected := [.present "B"] }]
+        verdict := .fired .value } ∧
+      inspectProjectedForConsumer .unsupportedCrossLevel =
         .insufficientInformation := by
   native_decide
 

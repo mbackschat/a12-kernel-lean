@@ -872,6 +872,7 @@ run_cmd do
 #print axioms A12Kernel.resolvedCheckedNumberEntityValueList_evaluate_delegates
 #print axioms A12Kernel.checkedTokenEntityValueList_uniqueDirectOperands
 #print axioms A12Kernel.checkedTokenEntityValueList_commonFamily
+#print axioms A12Kernel.checkedTokenEntityOperand_projection_exact
 #print axioms A12Kernel.resolvedCheckedTokenEntityOperand_valueListSideAt_cells
 #print axioms A12Kernel.resolvedCheckedTokenEntityValueList_evaluate_delegates
 #print axioms A12Kernel.valueListNo_match_before_nonRelevantOperand

@@ -18,6 +18,17 @@ theorem checkedTokenEntityValueList_commonFamily
       checked.values.valueListFamily? = some checked.family :=
   ⟨checked.fieldsFamily, checked.valuesFamily⟩
 
+/-- The public projection query exposes exactly the projection carried by the typed token operand and never fabricates one for String. -/
+theorem checkedTokenEntityOperand_projection_exact
+    (checked : CheckedTokenEntityOperand model) :
+    checked.projectionRef? =
+      match checked.tokenOperand with
+      | .string _ => none
+      | .enumeration operand => some operand.projectionRef := by
+  cases checked with
+  | field source => cases source.operand <;> rfl
+  | star source => cases source.operand <;> rfl
+
 /-- The shared addressed core is projected through the exact checked String/Enumeration operand retained by this authored slot. -/
 theorem resolvedCheckedTokenEntityOperand_valueListSideAt_cells
     (resolved : ResolvedCheckedTokenEntityOperand model) (phase : Phase) :
