@@ -2,11 +2,9 @@ import A12Kernel
 import A12Kernel.Trust.Environment
 
 /-!
-The elaborated-environment audit is authoritative: it checks every declaration in the
-trusted project modules regardless of source modifiers, attributes, or command macros.
-Conformance modules are deliberately outside this root because their executable locks
-may use `native_decide`. The explicit theorem reports below remain the human-readable
-proof-spine registry.
+The elaborated-environment audit is authoritative: it checks every declaration in the trusted project modules regardless of source modifiers, attributes, or command macros. Conformance modules are deliberately outside this root because their executable locks may use `native_decide`. The explicit theorem reports below remain the human-readable proof-spine registry.
+
+This is a mechanically exhaustive, single-session gate registry rather than a semantic module. It may exceed the ordinary module-size limit to avoid restoring one Lean process per theorem family; it must contain no semantic implementation or conformance fixtures.
 -/
 
 open Lean Lean.Elab Command
@@ -695,6 +693,8 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_repeatablePresence_evalAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_iterationScope
 #print axioms A12Kernel.validationCondition_repeatablePresence_iterationGuardStatusAt
+#print axioms A12Kernel.validationCondition_repetitionNotUnique_addressingPolicy
+#print axioms A12Kernel.validationCondition_repetitionNotUnique_preparedResult
 #print axioms A12Kernel.validationCondition_iterationLegality_singleton_unguarded
 #print axioms A12Kernel.validationCondition_iterationLegality_singleton_guarded
 #print axioms A12Kernel.validationCondition_repeatablePresence_supported
@@ -1163,6 +1163,7 @@ run_cmd do
 #print axioms A12Kernel.checkedRepetitionNotUnique_resolvedRow_shape
 #print axioms A12Kernel.checkedRepetitionNotUnique_resolvedRows_of_topology
 #print axioms A12Kernel.checkedRepetitionNotUnique_evaluate_of_rows
+#print axioms A12Kernel.checkedRepetitionNotUnique_evaluateChecked_of_rows
 
 #print axioms A12Kernel.directEmptyStringComparison_notFired
 #print axioms A12Kernel.directEmptyStringLiteral_notFired

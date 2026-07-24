@@ -1,10 +1,11 @@
 import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Semantics.EnumerationRepetitionNotUnique
 import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` construction
 
-This capsule resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are admitted here; temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys remain separate. Whole-rule composition and message-pointer projection also remain separate.
+This capsule resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are admitted here; temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys remain separate. One-level ordinary full-validation composition consumes this source through the shared checked condition/rule owner; nested reference-scope preparation, whole-rule partial relevance, and message-pointer projection remain separate.
 -/
 
 namespace A12Kernel
@@ -81,29 +82,35 @@ def fieldId (key : CheckedRepetitionKey model) : FieldId :=
 def environmentPrefix (key : CheckedRepetitionKey model) (environment : Env) : Env :=
   environment.take key.source.path.axes.length
 
+/-- Classify one already-addressed checked cell through the exact typed key owner, applying the key path's structural over-repetition overlay once. -/
+def classifyCheckedCell (key : CheckedRepetitionKey model)
+    (cell : CheckedCell) (environment : Env) : RepetitionKeyComponent :=
+  let keyEnvironment := key.environmentPrefix environment
+  match key with
+  | .number key =>
+      RepetitionKeyComponent.ofNumberValueListCell
+        (key.checkedValueListCell .validation cell keyEnvironment)
+  | .string key =>
+      RepetitionKeyComponent.ofTokenValueListCell
+        ((FlatTextFieldOperand.string key.field).checkedValueListCellAt .validation
+          (key.source.contextualizeCell keyEnvironment cell))
+  | .enumeration key =>
+      key.projection.classifyCheckedKeyAt .validation
+        (key.source.contextualizeCell keyEnvironment cell)
+
 /-- Classify one caller-checked component through its existing typed star reader after projecting the deepest environment to that component's own ancestry. -/
 def classify (key : CheckedRepetitionKey model)
     (read : Env → FieldId → CheckedCell)
     (environment : Env) : RepetitionKeyComponent :=
   let keyEnvironment := key.environmentPrefix environment
-  match key with
-  | .number key =>
-      RepetitionKeyComponent.ofNumberValueListCell
-        (key.checkedValueListCellAt .validation read keyEnvironment)
-  | .string key =>
-      RepetitionKeyComponent.ofTokenValueListCell
-        ((FlatTextFieldOperand.string key.field).checkedValueListCellAt .validation
-          (key.source.contextualizeCell keyEnvironment
-            (read keyEnvironment key.field.id)))
-  | .enumeration key =>
-      key.projection.classifyCheckedKeyAt .validation
-        (key.source.contextualizeCell keyEnvironment
-          (read keyEnvironment key.source.declaration.id))
+  key.classifyCheckedCell
+    (read keyEnvironment key.source.declaration.id) environment
 
 end CheckedRepetitionKey
 
 /-- A checked RNU source retains one typed star-classifiable owner per key field. Every owner shares the exact topology plan stored by `firstKey`. -/
 structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
+  ruleGroup : GroupPath
   referenceGroup : RepeatableGroupDecl
   terminalGroup : GroupPath
   topology : CheckedStarPlan
@@ -323,6 +330,7 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
                         if hReferenceOwned :
                             model.repeatableGroups.contains referenceGroup = true then
                           pure {
+                            ruleGroup := declaringGroup
                             referenceGroup
                             terminalGroup := terminalDeclaration.groupPath
                             topology
@@ -350,6 +358,32 @@ def keys (checked : CheckedRepetitionNotUniqueSource model) :
     List (CheckedRepetitionKey model) :=
   checked.firstKey :: checked.restKeys
 
+/-- Recheck the source certificate at the mixed-condition boundary so a checked RNU source cannot be transplanted to another rule group. -/
+def wellFormedBool (checked : CheckedRepetitionNotUniqueSource model)
+    (rowGroup : GroupPath) : Bool :=
+  checked.ruleGroup == rowGroup &&
+    model.validate.isOk &&
+    model.repeatableGroups.contains checked.referenceGroup &&
+    FieldId.firstDuplicate? (checked.keys.map (·.fieldId)) == none &&
+    checked.keys.any (fun key =>
+      key.source.declaration.groupPath == checked.terminalGroup) &&
+    checked.keys.all (fun key =>
+      key.source.declaration.groupPath.isPrefixOf checked.terminalGroup) &&
+    checked.keys.all (fun key =>
+      key.source.path.axes ==
+        checked.topology.path.axes.take key.source.path.axes.length) &&
+    checked.topology.path.axes.map (·.level) ==
+      model.repeatableScopeForGroupPath checked.terminalGroup &&
+    ((checked.topology.path.axes.drop
+      checked.topology.path.firstStar).head?.map (·.level)) ==
+        some checked.referenceGroup.level
+
+/-- The first ordinary-rule capsule closes one reopened repeatable level. Nested reference-scope cache partitioning remains a separate source-grounded widening. -/
+def supportsOneLevelOrdinaryRule
+    (checked : CheckedRepetitionNotUniqueSource model) : Bool :=
+  checked.topology.path.firstStar == 0 &&
+    checked.topology.path.axes.length == 1
+
 /-- Partial relevance admits a row only when every component of its composite key is relevant. -/
 def rowRelevant (checked : CheckedRepetitionNotUniqueSource model)
     (scope : ValidationRelevanceScope) (environment : Env) : Bool :=
@@ -362,6 +396,17 @@ def resolvedRow (checked : CheckedRepetitionNotUniqueSource model)
   { row := environment
     key := checked.keys.map fun key => key.classify read environment }
 
+/-- Construct one key row from the immutable checked document, preserving any model, environment, or document addressing failure outside key UNKNOWN. -/
+def resolvedRowChecked
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (document : CheckedDocument model) (environment : Env) :
+    Except CheckedAddressingError ResolvedRepetitionKeyRow := do
+  let key ← checked.keys.mapM fun key => do
+    let keyEnvironment := key.environmentPrefix environment
+    let addressed ← document.addressedCell keyEnvironment key.fieldId
+    pure (key.classifyCheckedCell addressed.cell environment)
+  pure { row := environment, key }
+
 /-- Resolve one selected default or explicit `@From` scope, then exclude composite-key rows whose components are not all relevant before reading any key cell. -/
 def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
@@ -371,12 +416,33 @@ def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
   pure ((topology.environments.filter (checked.rowRelevant scope)).map
     (checked.resolvedRow read))
 
+/-- Resolve the selected scope against the immutable checked input, filter complete-key relevance before reads, and preserve every reached address failure structurally. -/
+def resolvedRowsChecked
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError (List ResolvedRepetitionKeyRow) := do
+  let topology ←
+    (checked.topology.path.resolve document.source.toDocument outer)
+      |>.mapError .addressing
+  (topology.environments.filter (checked.rowRelevant scope)).mapM
+    (checked.resolvedRowChecked document)
+
 /-- Evaluate one selected checked scope through the established branch-independent RNU relation. -/
 def evaluate (checked : CheckedRepetitionNotUniqueSource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError (List RepetitionNotUniqueResult) := do
   pure (evalRepetitionNotUnique (← checked.resolvedRows document outer scope read))
+
+/-- Evaluate one checked scope through the same branch-independent relation while deriving every key observation from the immutable checked document. -/
+def evaluateChecked
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError (List RepetitionNotUniqueResult) := do
+  pure (evalRepetitionNotUnique
+    (← checked.resolvedRowsChecked document outer scope))
 
 end CheckedRepetitionNotUniqueSource
 

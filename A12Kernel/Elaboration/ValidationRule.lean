@@ -178,7 +178,8 @@ private def ordinaryRepeatableFieldIds
 
 private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
-    (checked : CheckedDocument model) (environment : Env) :
+    (checked : CheckedDocument model) (environment : Env)
+    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult := none) :
     Except OrdinaryRepeatableRuleEvaluationError (Env × FlatRuleOutcome) := do
   let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
     (checked.addressedCell environment field).mapError .addressing
@@ -190,9 +191,11 @@ private def evalOrdinaryRepeatableAt
     outer := environment
     input := .checked checked
   }
-  let outcome ←
-    (rule.core.evalAddressedFullAt context true errorCell.address.path)
+  let verdict ←
+    (rule.condition.core.evalAddressedFullWithRepetitionNotUnique
+      context true repetitionNotUniqueResult?)
       |>.mapError .conditionAddressing
+  let outcome := rule.core.emitAt errorCell.address.path verdict
   pure (environment, outcome)
 
 /-- Execute the first checked ordinary nonparallel repeatable rule family over actual deepest-scope rows in immutable document order. Every repeated read and the error target resolve through `CheckedDocument.addressedCell`; no declared tail or phantom row becomes an environment. -/
@@ -208,7 +211,20 @@ def evalOrdinaryRepeatableFull
     | none => throw .missingIterationScope
   let environments ←
     ordinaryIterationEnvironments scope checked.source.instantiatedRows
-  environments.mapM (rule.evalOrdinaryRepeatableAt checked)
+  let repetitionNotUniqueResults ←
+    match rule.condition.core.repetitionNotUniqueSource? with
+    | none => pure []
+    | some source =>
+        let sourceScope := source.topology.path.axes.map (·.level)
+        if !source.supportsOneLevelOrdinaryRule || sourceScope != scope then
+          throw .unsupportedCondition
+        (source.evaluateChecked checked [] .full)
+          |>.mapError .conditionAddressing
+  environments.mapM fun environment =>
+    let result? :=
+      repetitionNotUniqueResults.find? fun result =>
+        result.row == environment
+    rule.evalOrdinaryRepeatableAt checked environment result?
 
 end CheckedResolvedValidationRule
 

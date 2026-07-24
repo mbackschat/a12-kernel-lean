@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.CheckedGroupPresence
+import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.ValidationContext
 
@@ -159,8 +160,10 @@ inductive ValidationConditionLeaf (model : FlatModel) where
       (operands : List ResolvedGroupListOperand)
   | repeatableFieldPresence (operator : RepeatableFieldPresenceOperator)
       (declaration : FlatFieldDecl)
+  | repetitionNotUnique
+      (source : CheckedRepetitionNotUniqueSource model)
 
-/-- One connective tree whose leaves may be ordinary flat clauses or model-certified resolved numeric-expression comparisons. -/
+/-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
   ConditionTree (ValidationConditionLeaf model)
 
@@ -199,6 +202,12 @@ def repeatableFieldPresence (operator : RepeatableFieldPresenceOperator)
     (declaration : FlatFieldDecl) : ValidationCondition model :=
   .leaf (.repeatableFieldPresence operator declaration)
 
+/-- Embed one checked branch-independent RNU source as an ordinary condition leaf. Whole-rule execution owns the once-per-scope result preparation. -/
+def repetitionNotUnique
+    (source : CheckedRepetitionNotUniqueSource model) :
+    ValidationCondition model :=
+  .leaf (.repetitionNotUnique source)
+
 end ValidationCondition
 
 namespace ResolvedGroupReference
@@ -234,6 +243,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
   | .repeatableFieldPresence operator _ => operator.canFireOnEmpty
+  | .repetitionNotUnique _ => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
@@ -245,12 +255,14 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       operands.any fun operand => operand.referencesField model field
   | .repeatableFieldPresence _ declaration, field =>
       declaration.id == field
+  | .repetitionNotUnique source, field =>
+      source.keys.any fun key => key.fieldId == field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
-  | .repeatableFieldPresence _ _ => false
+  | .repeatableFieldPresence _ _ | .repetitionNotUnique _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
@@ -259,6 +271,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .groupPresence _ reference =>
       !(model.repeatableScopeForGroupPath reference.path).isEmpty
   | .repeatableFieldPresence _ _ => true
+  | .repetitionNotUnique _ => true
   | _ => false
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
@@ -278,6 +291,8 @@ def wellFormedBool (rowGroup : GroupPath) :
       | .ok checked =>
           checked == declaration && !declaration.repeatableScope.isEmpty
       | .error _ => false
+  | .repetitionNotUnique source =>
+      source.wellFormedBool rowGroup
 
 /-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
@@ -298,6 +313,7 @@ def evalSelected (context : ValidationEvaluationContext)
       (operator.evalPresence
         (operands.map fun operand => operand.evalPresence context isRelevant)).asConservativeVerdict
   | .repeatableFieldPresence _ _ => .unknown
+  | .repetitionNotUnique _ => .unknown
 
 /-- Evaluate one addressed leaf through the same relevance rules. Only the model-indexed ordered numeric branch can produce a structural addressing error; every existing scalar/group leaf remains the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
@@ -318,7 +334,24 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       pure (operator.eval
         (observeCell .validation
           (← context.readCell context.outer declaration.id)))
+  | .repetitionNotUnique _ =>
+      .error (.repetitionNotUniqueResult context.outer)
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
+
+/-- Evaluate one reached leaf with the rule-owned current-row RNU result. Every other leaf delegates to the established addressed evaluator unchanged. -/
+def evalAddressedWithRepetitionNotUnique
+    (context : AddressedValidationEvaluationContext model)
+    (result? : Option RepetitionNotUniqueResult) :
+    ValidationConditionLeaf model → Except CheckedAddressingError Verdict
+  | .repetitionNotUnique _ =>
+      match result? with
+      | some result =>
+          if result.row == context.outer then
+            pure result.verdict
+          else
+            .error (.repetitionNotUniqueResult context.outer)
+      | none => .error (.repetitionNotUniqueResult context.outer)
+  | leaf => leaf.evalAddressed context
 
 end ValidationConditionLeaf
 
@@ -330,6 +363,21 @@ def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
+
+/-- The checked condition retains at most one RNU source; exposing it lets the ordinary rule prepare the branch-independent relation before the connective walk. -/
+def repetitionNotUniqueSources
+    (condition : ValidationCondition model) :
+    List (CheckedRepetitionNotUniqueSource model) :=
+  match condition with
+  | .leaf (.repetitionNotUnique source) => [source]
+  | .leaf _ => []
+  | .and left right | .or left right =>
+      repetitionNotUniqueSources left ++ repetitionNotUniqueSources right
+
+def repetitionNotUniqueSource?
+    (condition : ValidationCondition model) :
+    Option (CheckedRepetitionNotUniqueSource model) :=
+  condition.repetitionNotUniqueSources.head?
 
 private def repeatableScopePrefix : List RepeatableLevel →
     List RepeatableLevel → Bool
@@ -599,6 +647,8 @@ def ordinaryIterationScope :
       pure (if scope.isEmpty then none else some scope)
   | .leaf (.orderedNumeric _ comparison) =>
       orderedNumericComparisonIterationScope comparison
+  | .leaf (.repetitionNotUnique source) =>
+      pure (some (source.topology.path.axes.map (·.level)))
   | .leaf _ => pure none
   | .and left right | .or left right => do
       mergeIterationScopes
@@ -962,6 +1012,11 @@ private def ValidationConditionLeaf.iterationGuardAt
         | .notFilled => .unguarded
       else
         .noReference
+  | .repetitionNotUnique source =>
+      if (source.topology.path.axes.map (·.level)).contains level then
+        .guarded
+      else
+        .noReference
 
 def iterationGuardStatusAt (condition : ValidationCondition model)
     (level : RepeatableLevel) : IterationGuardStatus :=
@@ -1018,6 +1073,8 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
           (ordinaryNumericAtomRepeatableFields model) comparison.left ++
         authoredNumericRepeatableFields
           (ordinaryNumericAtomRepeatableFields model) comparison.right
+  | .leaf (.repetitionNotUnique source) =>
+      source.keys.map fun key => key.source.declaration
   | .leaf _ => []
   | .and left right | .or left right =>
       ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
@@ -1028,6 +1085,7 @@ def supportsOrdinaryIteration
   condition.allLeaves fun
     | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
+    | .repetitionNotUnique source => source.supportsOneLevelOrdinaryRule
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
@@ -1041,7 +1099,8 @@ def requiresAddressedValidation
 
 def wellFormedBool (condition : ValidationCondition model)
     (rowGroup : GroupPath) : Bool :=
-  condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup
+  condition.repetitionNotUniqueSources.length < 2 &&
+    condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup
 
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
 def evalSelected (condition : ValidationCondition model)
@@ -1062,12 +1121,32 @@ def evalAddressed (condition : ValidationCondition model)
     Except CheckedAddressingError Verdict :=
   condition.evalVerdictExcept fun leaf => leaf.evalAddressed context
 
+/-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
+def evalAddressedWithRepetitionNotUnique
+    (condition : ValidationCondition model)
+    (context : AddressedValidationEvaluationContext model)
+    (result? : Option RepetitionNotUniqueResult) :
+    Except CheckedAddressingError Verdict :=
+  condition.evalVerdictExcept fun leaf =>
+    leaf.evalAddressedWithRepetitionNotUnique context result?
+
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model)
     (hasContent : Bool) : Except CheckedAddressingError Verdict :=
   if hasContent || condition.canFireOnEmpty then condition.evalAddressed context
   else pure .notFired
+
+/-- Apply the ordinary content gate before the RNU-aware addressed connective walk. -/
+def evalAddressedFullWithRepetitionNotUnique
+    (condition : ValidationCondition model)
+    (context : AddressedValidationEvaluationContext model)
+    (hasContent : Bool) (result? : Option RepetitionNotUniqueResult) :
+    Except CheckedAddressingError Verdict :=
+  if hasContent || condition.canFireOnEmpty then
+    condition.evalAddressedWithRepetitionNotUnique context result?
+  else
+    pure .notFired
 
 end ValidationCondition
 
@@ -1084,6 +1163,8 @@ inductive ValidationConditionAssemblyError where
   | rootGroupRequiresSoleOperand (path : GroupPath)
   | overlappingGroupListOperands (left right : List String)
   | rowGroupMismatch (left right : GroupPath)
+  | repetitionNotUnique (error : RepetitionNotUniqueElabError)
+  | multipleRepetitionNotUnique
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -1171,6 +1252,18 @@ def fromRepeatableFieldPresence (model : FlatModel) (rowGroup : GroupPath)
         (ValidationCondition.repeatableFieldPresence operator declaration)
         (by rw [hModel]; rfl)
 
+/-- Resolve one checked RNU source and retain it as an ordinary leaf in the shared condition tree. -/
+def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)
+    (authored : SurfaceRepetitionNotUniqueSource) :
+    Except ValidationConditionAssemblyError
+      (CheckedValidationCondition model) := do
+  let source ←
+    (elaborateRepetitionNotUniqueSource model rowGroup authored)
+      |>.mapError .repetitionNotUnique
+  checkCore model rowGroup
+    (ValidationCondition.repetitionNotUnique source)
+    source.modelWellFormed
+
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError ResolvedGroupListOperand
@@ -1248,7 +1341,10 @@ private def combine (constructor : ValidationCondition model →
     ValidationCondition model → ValidationCondition model)
     (left right : CheckedValidationCondition model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  if left.rowGroup == right.rowGroup then
+  if !left.core.repetitionNotUniqueSources.isEmpty &&
+      !right.core.repetitionNotUniqueSources.isEmpty then
+    .error .multipleRepetitionNotUnique
+  else if left.rowGroup == right.rowGroup then
     checkCore model left.rowGroup (constructor left.core right.core)
       left.modelWellFormed
   else
