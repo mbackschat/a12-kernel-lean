@@ -629,6 +629,7 @@ run_cmd do
 #print axioms A12Kernel.equal_flatRuleSilence_doesNotImply_equalVerdict
 #print axioms A12Kernel.checkedFlatRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_errorField_coherent
+#print axioms A12Kernel.checkedValidationRule_iterationScope_owned
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
 #print axioms A12Kernel.checkedFlatRule_fired_message_exact
 #print axioms A12Kernel.checkedValidationRule_fired_message_exact
@@ -670,6 +671,9 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_groupPresence_missing_isUnknown
 #print axioms A12Kernel.validationCondition_groupList_evalSelected
 #print axioms A12Kernel.validationCondition_groupList_fired_iff
+#print axioms A12Kernel.validationCondition_repeatablePresence_requiresAddressed
+#print axioms A12Kernel.validationCondition_repeatablePresence_evalAddressed
+#print axioms A12Kernel.validationCondition_repeatablePresence_iterationScope
 #print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.numericValidation_scaleSuppression_accepts

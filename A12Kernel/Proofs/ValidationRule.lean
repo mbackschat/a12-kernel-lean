@@ -146,23 +146,36 @@ theorem equal_flatRuleSilence_doesNotImply_equalVerdict :
       FlatRuleOutcome.notFired.verdict ≠ FlatRuleOutcome.unknown.verdict := by
   decide
 
-/-- Checked assembly carries one unique, nonrepeatable, referenced error declaration from the same model as the condition. -/
+/-- Flat checked assembly carries one unique, nonrepeatable, referenced error declaration from the same model as the condition. -/
 theorem checkedFlatRule_errorField_coherent
     (rule : CheckedResolvedFlatRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
       rule.errorDeclaration.repeatableScope.isEmpty = true ∧
       rule.condition.core.referencesField rule.errorField = true :=
-  ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
-    rule.errorFieldReferenced⟩
+  by
+    have noScope : rule.iterationScope = none := by
+      simpa using rule.iterationScopeOwned.symm
+    exact ⟨rule.errorFieldLookup,
+      by
+        simpa [ruleErrorScopeCompatible, noScope] using
+          rule.errorFieldScopeCompatible,
+      rule.errorFieldReferenced⟩
 
-/-- Mixed checked assembly uses the shared traversal to certify the exact error declaration. -/
+/-- Mixed checked assembly uses the shared traversal to certify the exact error declaration and its derived ordinary iteration scope. -/
 theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
-      rule.errorDeclaration.repeatableScope.isEmpty = true ∧
+      ruleErrorScopeCompatible rule.errorDeclaration rule.iterationScope = true ∧
       rule.condition.core.referencesField rule.errorField = true :=
-  ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
+  ⟨rule.errorFieldLookup, rule.errorFieldScopeCompatible,
     rule.errorFieldReferenced⟩
+
+/-- Checked assembly cannot substitute a caller-selected ordinary iteration scope for the one derived from the complete checked condition tree. -/
+theorem checkedValidationRule_iterationScope_owned
+    (rule : CheckedResolvedValidationRule model) :
+    rule.condition.core.ordinaryIterationScope =
+      .ok rule.iterationScope :=
+  rule.iterationScopeOwned
 
 /-- The scalar checked entry point reports missing addressed context before evaluating a repeatable condition; it cannot manufacture semantic UNKNOWN. -/
 theorem checkedValidationRule_scalar_rejects_addressed

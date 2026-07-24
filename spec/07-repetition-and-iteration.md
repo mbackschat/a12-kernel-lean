@@ -8,11 +8,12 @@ The mental model to hold: **iteration produces a set of repetition contexts** (t
 
 ## 1. When a rule iterates, and where its error lands
 
-A rule **iterates when it references repeatable fields.** Its **iteration scope is the set of repeatable fields the condition *and* the error field reference — never the rule node's placement in the model tree.**
+A rule **iterates when its condition contains an iteration-bearing repeatable reference.** Its **iteration scope is derived from the condition's references — never from the rule node's placement or from the error entity by itself.** An ordinary unstarred reference contributes its repeatable path. A starred operand contributes only the already-bound repeatable prefix strictly above its first `*`; the starred level and every level below it are reopened by that operand rather than added to the surrounding rule iteration. Candidate-local references inside `Having` likewise belong to the operand-local traversal rather than to the surrounding rule scope.
 
-- The rule is evaluated **once per repetition present in the document** (always at least once), and each message attaches to **that specific row**.
-- The **error field must share** that scope — a genuine cross-cardinality split is rejected (`MVK_ERROR_FIELD_NOT_IN_RULEGROUP`).
-- The **error field must be *referenced* by the condition** — directly, or indirectly (an enclosing `GroupFilled(Group)` counts) — or the model is rejected (`MVK_ERROR_FIELD_NOT_REFERENCED`). So the error field both *selects* the iteration and *must appear* in the logic.
+- The rule is evaluated **once per actual repetition present in the document**, preserving full parent coordinates and document order; an iterating scope with no actual row produces no evaluation, and each emitted message attaches to **that specific row**.
+- Compatible nested references select the deepest ordinary nonparallel path. Incompatible sibling/cross-branch paths require the separate parallel-iteration construction; they are not merged positionally.
+- The **error field must inhabit a scope compatible with** the derived iteration — a genuine cross-cardinality split is rejected (`MVK_ERROR_FIELD_NOT_IN_RULEGROUP`).
+- The **error field must be *referenced* by the condition** — directly, or indirectly (an enclosing `GroupFilled(Group)` counts) — or the model is rejected (`MVK_ERROR_FIELD_NOT_REFERENCED`). This is an admission and error-targeting constraint, not another source of iteration levels.
 
 Example: a rule with error field `Round` inside a repeatable `Poker` group, condition `FieldFilled(Poker/Round) And [Poker/Win_Loss] >= 0`, evaluates once per existing round and reports on the offending round.
 
@@ -21,7 +22,7 @@ Two boundary rules sharpen this:
 - **The error entity alone is not an anchor.** A rule whose error field sits *deeper-repeatable* than its condition references keeps the *references'* scope (the error field does not deepen iteration on its own).
 - **A rule with no repeatable (non-starred) reference evaluates exactly once**, anchored at its error entity, regardless of its declaring container's instance content. The declaring group matters only for resolving relative references.
 
-> **Lean modelling note.** `iterationScope : Rule → Set RepeatableLevel` is computed from the **references** in the condition and error field. `evalRule` then enumerates the contexts (`Env`s) that assign a row to each level in scope, evaluating once per `Env`. Do **not** derive scope from where the rule node is declared — that is the single most common structural mistake. A rule with empty scope evaluates once at the root `Env`.
+> **Lean modelling note.** `iterationScope : Rule → Except ScopeError (Option (List RepeatableLevel))` is computed from the checked condition references. Compatible scopes merge by prefix and retain the deepest path; sibling paths fail into the separately specified parallel boundary. Rule assembly then proves that the checked error declaration is compatible with the derived scope and is referenced by the condition. `evalRule` enumerates the actual instantiated contexts (`Env`s) that assign a row to each level in scope, preserving complete parent coordinates and document order. Do **not** derive scope from where the rule node or error entity is declared. A rule with empty scope evaluates once at the root `Env`.
 
 ---
 
@@ -139,7 +140,7 @@ A model-legal condition contains at most one `RepetitionNotUnique` leaf. A secon
 
 ## Checklist for §9
 
-- [ ] Iteration scope = referenced repeatable fields (condition + error field), **not** placement; empty scope ⇒ evaluate once.
+- [ ] Ordinary iteration scope = compatible iteration-bearing condition references, **not** rule placement or the error entity alone; the error field must be referenced and scope-compatible; an empty derived scope evaluates once, while an iterating scope with zero actual rows evaluates zero times.
 - [ ] Error field must be referenced by the condition and share its scope.
 - [ ] Parallel iteration = outer join over the **union** of shared-index values; unmatched side = sentinel `-5` "not specified"; invalid index ⇒ UNKNOWN ⇒ suppresses negatives.
 - [ ] `Having` keeps only known-true candidates before consuming their selected cells; false/unknown rows drop; `$` switches to the **complete captured outer environment**, and the resolved level selects its coordinate; same-group correlation includes self unless explicitly excluded; filter-content restrictions enforced.
