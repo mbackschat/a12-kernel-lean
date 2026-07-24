@@ -580,6 +580,33 @@ private def outerIterationCondition? :
     ordinaryIterationModel ["Order"] .filled
     (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
 
+private def ordinaryRepeatableNumericRuleAt?
+    (groups : List String) (field : String)
+    (target : FieldId) (errorCode : String) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      groups {
+        op := .ordinary .greaterEqual
+        left := .binary .add
+          (.atom (.field
+            (ordinaryPath groups field)))
+          (.literal { value := 1, authoredScale := 0 })
+        right := .literal { value := 1, authoredScale := 0 }
+      }).toOption
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition target
+    errorCode .error { parts := [] }).toOption
+
+private def ordinaryRepeatableNumericRule? :=
+  ordinaryRepeatableNumericRuleAt? ["Order", "Sections"]
+    "OuterAmount" outerAmount.id "ordinaryNumeric"
+
+private def nestedRepeatableNumericRule? :=
+  ordinaryRepeatableNumericRuleAt? ["Order", "Sections", "Items"]
+    "InnerAmount" innerAmount.id "nestedNumeric"
+
 /- Nested compatible ordinary references derive the deepest scope from the checked tree; the declaring group and error-field argument cannot override it. -/
 example :
     (ordinaryIterationRule?.map fun rule =>
@@ -596,6 +623,23 @@ example :
       | .error error => some error) =
       some (some
         (.iterationScopeMismatch innerAmount.id [10] [10, 20])) := by
+  native_decide
+
+/- A repeatable Number comparison must enter the existing ordered numeric condition carrier and derive the current-row scope without a new expression tree. -/
+example :
+    (ordinaryRepeatableNumericRule?.map fun rule =>
+      (rule.iterationScope, rule.requiresAddressedValidation)) =
+      some (some [10], true) ∧
+    (nestedRepeatableNumericRule?.map fun rule =>
+      (rule.iterationScope, rule.requiresAddressedValidation)) =
+      some (some [10, 20], true) := by
+  native_decide
+
+/- The addressed entry rejects a scalar-only comparison because the established scalar elaborator already owns that representation. -/
+example :
+    (elaborateNumericComparison model ["Order"] amountPositive).isOk = true ∧
+      (elaborateRepeatableNumericComparison
+        model ["Order"] amountPositive).isOk = false := by
   native_decide
 
 private def outerEmptyRule? :
@@ -654,6 +698,60 @@ example :
     (outerEmptyRule?.bind fun rule =>
       evalOrdinaryRule? rule { instantiatedRows := [], cells := [] }) =
       some [] := by
+  native_decide
+
+private def ordinaryNumericData (stored : String) (raw : Option RawCell) : DocumentData :=
+  { instantiatedRows := [{ group := 10, path := [1] }]
+    cells := match raw with
+      | none => []
+      | some cell => [{
+          address := { field := outerAmount.id, path := [1] }
+          stored
+          raw := cell
+        }] }
+
+private def evalOrdinaryNumeric? (stored : String) (raw : Option RawCell) :
+    Option (Verdict × Option CellAddr) :=
+  ordinaryRepeatableNumericRule?.bind fun rule =>
+    (evalOrdinaryRule? rule (ordinaryNumericData stored raw)).bind fun outcomes =>
+      (outcomes.map (fun entry =>
+        (entry.2.verdict, entry.2.message?.map (·.errorAddress)))).head?
+
+/- Addressed ordinary Number evaluation preserves the established nested arithmetic and direct-comparison empty polarity at the selected row: present zero is a value firing, absence is an omission firing, and malformed input stays semantic UNKNOWN. -/
+example :
+    evalOrdinaryNumeric? "2" (some (.parsed (.num 2))) =
+        some (.fired .value,
+          some { field := outerAmount.id, path := [1] }) ∧
+      evalOrdinaryNumeric? "0" (some (.parsed (.num 0))) =
+        some (.fired .value,
+          some { field := outerAmount.id, path := [1] }) ∧
+      evalOrdinaryNumeric? "" none =
+        some (.fired .omission,
+          some { field := outerAmount.id, path := [1] }) ∧
+      evalOrdinaryNumeric? "bad" (some (.rejected .malformed)) =
+        some (.unknown, none) := by
+  native_decide
+
+/- A nested direct Number keeps the complete outer/inner environment and emits at the exact two-level error address. -/
+example :
+    (nestedRepeatableNumericRule?.bind fun rule =>
+      (evalOrdinaryRule? rule {
+        instantiatedRows := [
+          { group := 10, path := [1] },
+          { group := 10, path := [2] },
+          { group := 20, path := [2, 1] }]
+        cells := [{
+          address := { field := innerAmount.id, path := [2, 1] }
+          stored := "3"
+          raw := .parsed (.num 3)
+        }]
+      }).map fun outcomes => outcomes.map fun entry =>
+        (entry.1, entry.2.verdict,
+          entry.2.message?.map (·.errorAddress))) =
+      some [(
+        [(10, 2), (20, 1)],
+        .fired .value,
+        some { field := innerAmount.id, path := [2, 1] })] := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule
