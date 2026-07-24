@@ -1059,6 +1059,20 @@ example :
       (.ordinary .equal) 1 = some .legal := by
   native_decide
 
+/- Single-field operand-list Min/Max calls retain the same top-level operation-list guard without being flattened into direct fields. -/
+example :
+    wrappedRepeatableNumericLegality?
+      (fun body => .extremumCall .minimum body)
+      (.ordinary .lessEqual) 0 = some (.invalid 10) ∧
+    wrappedRepeatableNumericLegality?
+      (fun body => .extremumCall .minimum
+        (.extremum .minimum body body))
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    wrappedRepeatableNumericLegality?
+      (fun body => .extremumCall .maximum body)
+      (.ordinary .notEqual) 0 = some .legal := by
+  native_decide
+
 private def ordinaryIterationData : DocumentData :=
   { instantiatedRows := [
       { group := 10, path := [2] },

@@ -592,14 +592,41 @@ private def orderedNumericDirectFieldLiteralGuardAt
   orderedNumericScopedLiteralGuardAt
     (directOrdinaryNumberScope? model) level comparison
 
-/-- Direct-field `Abs` and rounding are the first two operation-list consumers of the same source guard. Wider operation-list bodies retain their own mixed-reference and entity-list packet. -/
+/-- Collect only direct Number references from one operation-list body without flattening away their model-owned scopes. Specialized entity-list atoms retain their separate packet. -/
+private def directOrdinaryNumberReferenceScopes?
+    (model : FlatModel) :
+    AuthoredNumericExpr (OrderedNumericValidationAtom model) →
+      Option (List (List RepeatableLevel))
+  | expression@(.atom (.ordinary (.field _))) => do
+      let scope ← directOrdinaryNumberScope? model expression
+      pure [scope]
+  | .literal _ => some []
+  | .group body | .abs body | .extremumCall _ body
+  | .round _ _ body =>
+      directOrdinaryNumberReferenceScopes? model body
+  | .binary _ left right | .power left right | .extremum _ left right => do
+      let leftScopes ← directOrdinaryNumberReferenceScopes? model left
+      let rightScopes ← directOrdinaryNumberReferenceScopes? model right
+      pure (leftScopes ++ rightScopes)
+  | .atom _ => none
+
+private def commonDirectOrdinaryNumberScope?
+    (model : FlatModel)
+    (expression :
+      AuthoredNumericExpr (OrderedNumericValidationAtom model)) :
+    Option (List RepeatableLevel) := do
+  let scopes ← directOrdinaryNumberReferenceScopes? model expression
+  let first ← scopes.head?
+  if scopes.all (· == first) then some first else none
+
+/-- Direct-field `Abs`, rounding, and Min/Max are operation-list consumers of the same source guard. Compatible-but-mixed scopes and specialized entity-list bodies retain their own packet. -/
 private def directNumberWrapperScope?
     (model : FlatModel) :
     AuthoredNumericExpr (OrderedNumericValidationAtom model) →
       Option (List RepeatableLevel)
   | .group body => directNumberWrapperScope? model body
-  | .abs body | .round _ _ body =>
-      directOrdinaryNumberScope? model body
+  | .abs body | .round _ _ body | .extremumCall _ body =>
+      commonDirectOrdinaryNumberScope? model body
   | _ => none
 
 private def orderedNumericDirectWrapperLiteralGuardAt
