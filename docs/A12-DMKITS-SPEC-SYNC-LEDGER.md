@@ -79,6 +79,18 @@ The distinction matters because the two arms of this project's convergence desig
 - **What this project will do with the result:** if order is preserved, the peer's zero characterized static-Java divergences extends to all three modes and the locus is closed. If not, it is a genuine strategy split at the codegen tier and both projects need it characterized.
 - **Acceptance:** either an observation over a threshold-crossing rule, or a reasoned refusal recording that the shape is unreachable from a12-dmkits' authoring surface — in which case this project records the mode as permanently uncalibrated rather than pending.
 
+### EXP-2026-07-25-03 — the semantic-index computation gate may be route-selected, not read-time
+
+- **Status:** pending
+- **Kind:** experiment request
+- **Kernel behavior:** 30.8.1
+- **Basis:** the computed-field template branches on parallel iteration. On the ordinary indexed-read route, computation's column-first gate is a read-time throw before the match is delegated, and your maintained pair observes exactly that discriminator — a clean matching key coexisting with an unavailable key elsewhere in the column, firing under validation and clearing under computation on both kernel strategies. On the **parallel-iteration** branch there is no read-time gate: the iteration-values lookup returns an empty list so the loop body never executes, and a post-loop call marks affected instances afterwards. The kernel's own comment on that call concedes it "might be marking more field instances as invalid than strictly necessary," which is precisely the behavioural difference at issue.
+- **The shape needed:** one model with an index group carrying a Number index, reached by a computation through a parallel-iteration operand rather than a `For`-key read, and **two sibling parent rows where only one carries a malformed index key**. Observe whether the clean sibling's computed target survives.
+- **Competing accounts:** (1) the gate is a read-time poison uniformly, so marking is confined to instances that actually read the bad column and the clean sibling's target is computed; (2) the mechanism is route-selected, and post-loop marking can clear target instances under parent coordinates where no invalid key exists but which share the computed field name and iteration-group prefix — so the clean sibling's target may be cleared.
+- **Why existing coverage cannot reach it:** no fixture in either repository sets up sibling parents under a parallel-iterated index group. The ordinary-route pair, which is otherwise an excellent discriminator, exercises only the `For`-key read.
+- **What this project will do with the result:** account 1 lets the uniform read-time claim stand and closes the locus. Account 2 means a route-selected mechanism substitution underlies a clause stated uniformly, requiring the claim to be split by route in both projects' accounts — and it would be the second instance of the pattern after the `NotAll` prepass, which suggests looking for route selection systematically rather than case by case.
+- **Acceptance:** either an observation over a sibling-parent parallel-iteration document, or a reasoned refusal recording that the shape is unreachable from a12-dmkits' authoring surface, in which case this project scopes the claim to the ordinary route permanently rather than leaving it pending.
+
 ### EXP-2026-07-25-02 — the table-enumeration region has no normative witness
 
 - **Status:** pending, blocked on a doctrine decision here
