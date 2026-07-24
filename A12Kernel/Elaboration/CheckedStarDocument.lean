@@ -33,6 +33,37 @@ structure ResolvedCheckedStarField where
   topology : ResolvedStarTopology
   cells : List CheckedAddressedCell
 
+/-- Kind-neutral addressed content for one checked entity-list operand. Family owners retain the typed declaration and project these cached cells; this core owns only canonical topology, addressing, filter selection, omitted-tail extent, and positional relevance. -/
+structure ResolvedCheckedEntityOperandCore where
+  private mk ::
+  topology : Option ResolvedStarTopology
+  addressedCells : List CheckedAddressedCell
+  hasUninstantiatedTail : Bool
+  hasHaving : Bool
+  hasNonRelevant : Bool
+
+namespace ResolvedCheckedEntityOperandCore
+
+/-- A direct or starred operand masked by partial-validation relevance. -/
+def nonRelevant : ResolvedCheckedEntityOperandCore := {
+  topology := none
+  addressedCells := []
+  hasUninstantiatedTail := false
+  hasHaving := false
+  hasNonRelevant := true
+}
+
+/-- A filtered operand suppressed by the owning partial-validation rule gate. -/
+def skippedHaving : ResolvedCheckedEntityOperandCore := {
+  topology := none
+  addressedCells := []
+  hasUninstantiatedTail := false
+  hasHaving := true
+  hasNonRelevant := false
+}
+
+end ResolvedCheckedEntityOperandCore
+
 namespace CheckedDocument
 
 /-- Read one model-owned field instance from a complete environment. The declaration selects its named repeatable scope; environment order and unrelated deeper bindings cannot change the address. -/
@@ -60,6 +91,19 @@ def resolvingCorrelationContext (checked : CheckedDocument model) :
     (checked.addressedCell environment field).map (·.cell)
   bindingError := .environment
 
+/-- Resolve one direct entity-list occurrence through the same model-owned address query as every starred occurrence. -/
+def resolveCheckedDirectEntityOperandCore
+    (checked : CheckedDocument model) (field : FieldId) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
+  let addressed ← checked.addressedCell [] field
+  pure {
+    topology := none
+    addressedCells := [addressed]
+    hasUninstantiatedTail := false
+    hasHaving := false
+    hasNonRelevant := false
+  }
+
 end CheckedDocument
 
 namespace CheckedStarFieldPath
@@ -77,6 +121,47 @@ def resolveCheckedField (source : CheckedStarFieldPath model)
     (source.path.resolve checked.source.toDocument outer).mapError .addressing
   let cells ← topology.environments.mapM (source.addressedCell checked)
   pure { topology, cells }
+
+/-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
+def resolveCheckedValidationEntityOperandCore
+    (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model) (outer : Env)
+    (having : Option CorrelatedHaving) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
+  let topology ←
+    (source.path.resolve checked.source.toDocument outer).mapError .addressing
+  let selected ← match having with
+    | none => pure topology.environments
+    | some condition =>
+        condition.selectEnvironmentsResolving
+          checked.resolvingCorrelationContext outer topology.environments
+  let addressedCells ← selected.mapM (source.addressedCell checked)
+  pure {
+    topology := some topology
+    addressedCells
+    hasUninstantiatedTail := topology.domain.hasOpenTail
+    hasHaving := having.isSome
+    hasNonRelevant := false
+  }
+
+/-- Resolve one unfiltered starred occurrence under partial-validation relevance. Candidate topology remains complete while only relevant concrete cells are addressed, and incomplete extent stays on this exact operand. -/
+def resolveCheckedPartialValidationEntityOperandCore
+    (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
+  let topology ←
+    (source.path.resolve checked.source.toDocument outer).mapError .addressing
+  let relevant := topology.environments.filter fun environment =>
+    source.cellRelevant scope environment
+  let addressedCells ← relevant.mapM (source.addressedCell checked)
+  pure {
+    topology := some topology
+    addressedCells
+    hasUninstantiatedTail := topology.domain.hasOpenTail
+    hasHaving := false
+    hasNonRelevant := !source.allRowsRelevant scope
+  }
 
 end CheckedStarFieldPath
 

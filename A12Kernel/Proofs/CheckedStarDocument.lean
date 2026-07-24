@@ -39,6 +39,19 @@ theorem resolveCheckedField_addressing_error
   rw [failed]
   simp only [Except.mapError, bind, Except.bind]
 
+/-- The common rich-operand construction preserves a topology failure before filtering or addressed reads. -/
+theorem resolveCheckedValidationEntityOperandCore_addressing_error
+    (source : CheckedStarFieldPath model) (checked : CheckedDocument model)
+    (outer : Env) (having : Option CorrelatedHaving)
+    (cause : StarAddressingError)
+    (failed :
+      source.path.resolve checked.source.toDocument outer = .error cause) :
+    source.resolveCheckedValidationEntityOperandCore checked outer having =
+      .error (.addressing cause) := by
+  unfold CheckedStarFieldPath.resolveCheckedValidationEntityOperandCore
+  rw [failed]
+  rfl
+
 /-- A topology with no concrete leaf produces no addressed cell; an omitted declared tail remains only in the retained hierarchical domain. -/
 theorem resolveCheckedField_empty_topology
     (source : CheckedStarFieldPath model) (checked : CheckedDocument model)

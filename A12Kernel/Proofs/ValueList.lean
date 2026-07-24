@@ -7,6 +7,22 @@ These laws cover only the already-expanded, already-filtered runtime boundary. T
 
 namespace A12Kernel
 
+/-- `No` resolves the values side first and preserves its structural failure without touching the fields thunk. -/
+theorem valueListQuantifier_resolveSidesOrdered_no_values_error
+    (resolveFields : Unit → Except error fields) (cause : error) :
+    ValueListQuantifier.no.resolveSidesOrdered resolveFields
+      (fun () => (.error cause : Except error values)) =
+        (.error cause : Except error (fields × values)) := by
+  rfl
+
+/-- `NotAll` resolves the fields side first and preserves its structural failure without touching the values thunk. -/
+theorem valueListQuantifier_resolveSidesOrdered_notAll_fields_error
+    (resolveValues : Unit → Except error values) (cause : error) :
+    ValueListQuantifier.notAll.resolveSidesOrdered
+      (fun () => (.error cause : Except error fields)) resolveValues =
+        (.error cause : Except error (fields × values)) := by
+  rfl
+
 /-- The strict classified-cell scan is unavailable exactly when its input contains an unavailable cell. The accumulator step cannot create or erase availability. -/
 theorem valueListCell_scanPresent_error_iff
     (step : state → ValueListAtom kind → state)

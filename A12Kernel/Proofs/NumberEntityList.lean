@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumberEntityList
+import A12Kernel.Proofs.CheckedStarDocument
 
 /-! # Shared checked Number entity-list laws -/
 
@@ -72,8 +73,11 @@ theorem resolvedCheckedNumberEntityOperand_valueListSideAt_metadata
       (resolved.valueListSideAt phase).hasHaving =
         resolved.hasHaving ∧
       (resolved.valueListSideAt phase).hasNonRelevant =
-        resolved.hasNonRelevant := by
-  simp [ResolvedCheckedNumberEntityOperand.valueListSideAt]
+  resolved.hasNonRelevant := by
+  simp [ResolvedCheckedNumberEntityOperand.valueListSideAt,
+    ResolvedCheckedNumberEntityOperand.hasUninstantiatedTail,
+    ResolvedCheckedNumberEntityOperand.hasHaving,
+    ResolvedCheckedNumberEntityOperand.hasNonRelevant]
 
 /-- A failed starred topology remains an addressed construction error before any semantic side exists. -/
 theorem checkedNumberEntityStarValidationOperand_addressing_error
@@ -86,7 +90,9 @@ theorem checkedNumberEntityStarValidationOperand_addressing_error
     (CheckedNumberEntityOperand.star source).resolveCheckedValidationOperand
         document outer =
       .error (.addressing cause) := by
-  simp [CheckedNumberEntityOperand.resolveCheckedValidationOperand,
-    failed, Except.mapError, bind, Except.bind]
+  simp only [CheckedNumberEntityOperand.resolveCheckedValidationOperand]
+  rw [resolveCheckedValidationEntityOperandCore_addressing_error
+    source.source document outer none cause failed]
+  rfl
 
 end A12Kernel

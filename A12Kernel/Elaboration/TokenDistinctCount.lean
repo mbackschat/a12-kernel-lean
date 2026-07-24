@@ -53,6 +53,23 @@ def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
   | .inl side => pure (evalDistinctCountAggregate side)
   | .inr result => pure result
 
+/-- Evaluate full validation from the immutable checked document through the shared rich addressed operand construction. Consumer-specific first-unavailability stopping and distinct-token folding remain here. -/
+def evaluateCheckedDocumentDistinctValidation
+    (checked : CheckedTokenEntitySource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueListSide .token) (terminal := NumericOperand)
+      (fun operand => do
+        let resolved ←
+          operand.resolveCheckedValidationOperand document outer
+        pure (.inl (resolved.valueListSideAt .validation)))
+      (fun cause => .unknown cause)
+      (fun accumulated _ side => accumulated.append side)
+      checked.operands emptySide with
+  | .inl side => pure (evalDistinctCountAggregate side)
+  | .inr result => pure result
+
 /-- Partial validation skips a filtered rule before topology or reads. Otherwise direct slots require concrete relevance and every star requires wildcard/ancestor all-rows coverage. -/
 def evaluatePartialDistinctValidation (checked : CheckedTokenEntitySource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)

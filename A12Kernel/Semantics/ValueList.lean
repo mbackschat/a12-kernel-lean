@@ -286,6 +286,23 @@ inductive ValueListQuantifier where
   | notAll
   deriving Repr, DecidableEq
 
+/-- Resolve both authored sides in the same operator-specific order as the ordered evaluator. Thunks preserve the structural short circuit: a failure on the first side prevents resolving the second. -/
+def ValueListQuantifier.resolveSidesOrdered
+    {fields values error : Type}
+    (quantifier : ValueListQuantifier)
+    (resolveFields : Unit → Except error fields)
+    (resolveValues : Unit → Except error values) :
+    Except error (fields × values) :=
+  match quantifier with
+  | .notAll => do
+      let fields ← resolveFields ()
+      let values ← resolveValues ()
+      pure (fields, values)
+  | .atLeastOne | .no => do
+      let values ← resolveValues ()
+      let fields ← resolveFields ()
+      pure (fields, values)
+
 private def collectAtLeastOneValueListMembers :
     List (ResolvedValueListSide kind) → List (ValueListAtom kind) × Bool
   | [] => ([], false)
