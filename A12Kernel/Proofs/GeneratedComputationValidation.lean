@@ -41,6 +41,15 @@ theorem numericComputationAtom_dayDifference_toValidationAtom
       .ok (.ordinary (.dayDifference profile left right)) := by
   rfl
 
+/-- Generated validation preserves the exact sub-day unit and both checked DateTime field certificates. -/
+theorem numericComputationAtom_dateTimeDifference_toValidationAtom
+    (model : FlatModel) (unit : DateTimeDifferenceUnit)
+    (left right : FlatTemporalField) :
+    CheckedNumericComputationAtom.toValidationAtom (model := model)
+        (.numeric (.dateTimeDifference unit left right)) =
+      .ok (.ordinary (.dateTimeDifference unit left right)) := by
+  rfl
+
 /-- A checked entity-list aggregate narrows to the existing validation atom exactly when every source is direct. -/
 theorem checkedNumericComputationAtom_directAggregate_toValidationAtom
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)

@@ -59,4 +59,26 @@ theorem instant_difference_shiftHours
     instant.difference .hours (instant.shiftHours hours) = hours := by
   exact instant_difference_exactUnits instant .hours hours
 
+/-- A left formal cause wins before sub-day empty substitution or exact-instant evaluation. -/
+theorem dateTimeDifferenceOperand_unavailable_left
+    (unit : DateTimeDifferenceUnit) (cause : FormalCause)
+    (right : DateTimeDifferenceOperand) :
+    DateTimeDifferenceOperand.evaluate unit (.unavailable cause) right =
+      .unknown cause := by
+  rfl
+
+/-- Either empty DateTime operand supplies the symmetric scale-0 value with both fill directions. -/
+theorem dateTimeDifferenceOperand_empty_left
+    (unit : DateTimeDifferenceUnit) (right : Instant) :
+    DateTimeDifferenceOperand.evaluate unit .empty (.value right) =
+      .value 0 .both := by
+  rfl
+
+/-- Two exact DateTime operands delegate to the existing authored-order millisecond core. -/
+theorem dateTimeDifferenceOperand_values_delegate
+    (unit : DateTimeDifferenceUnit) (first second : Instant) :
+    DateTimeDifferenceOperand.evaluate unit (.value first) (.value second) =
+      .value (first.difference unit second) .fixed := by
+  rfl
+
 end A12Kernel

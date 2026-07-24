@@ -367,6 +367,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       pure (.ordinary (.fieldValueAsNumber source))
   | .numeric (.dateDifference unit left right) =>
       pure (.ordinary (.dateDifference unit left right))
+  | .numeric (.dateTimeDifference unit left right) =>
+      pure (.ordinary (.dateTimeDifference unit left right))
   | .numeric (.dayDifference profile left right) =>
       pure (.ordinary (.dayDifference profile left right))
   | .numeric (.aggregate op source) =>
