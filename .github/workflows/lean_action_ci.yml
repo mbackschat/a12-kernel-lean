@@ -13,8 +13,8 @@ jobs:
       - uses: leanprover/lean-action@v1
         # Uses the pinned toolchain (lean-toolchain) and runs `lake build`, which also
         # elaborates the #eval / example smoke checks.
-      - name: Audit trusted theorem roots
-        run: ./scripts/check-lean-trust.sh
+      - name: Audit trust and published README statistics
+        run: ./scripts/prepare-github-publish.sh --check
       - name: Replay retained kernel evidence
         run: lake test
       - name: Check reference process contract
