@@ -24,6 +24,11 @@ private def repeatedAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } },
     repeatableScope := [10] }
 
+private def nestedAmount : FlatFieldDecl :=
+  { id := 30, groupPath := ["Order", "Sections", "Items"], name := "Amount",
+    policy := { kind := .number { scale := 0, signed := true } },
+    repeatableScope := [10, 20] }
+
 private def dateTimeComponents : TemporalComponents :=
   { year := true, month := true, day := true,
     hour := true, minute := true, second := true }
@@ -49,8 +54,31 @@ private def model : FlatModel :=
       adjustment, outsider, detailsValue]
     repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
 
+private def nestedModel : FlatModel :=
+  { fields := [nestedAmount]
+    repeatableGroups := [
+      { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
+      { level := 20, path := ["Order", "Sections", "Items"],
+        repeatability := some 2 }] }
+
 private def path (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups := ["Order"], field }
+
+private def iteratedAmountPath : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Sections" },
+      { name := "Items", starred := true }]
+    field := "Amount" }
+
+private def iteratedRule? :
+    Option (CheckedResolvedValidationRule nestedModel) := do
+  let condition ←
+    (CheckedValidationCondition.fromIteratedFieldPresence nestedModel ["Order"]
+      .filled iteratedAmountPath).toOption
+  (assembleResolvedValidationRule nestedModel condition nestedAmount.id
+    "nestedAmountFilled" .error { parts := [] }).toOption
 
 private def amountNonnegative : SurfaceCondition :=
   .compare .greaterEqual (path "Amount") (.number 0)
@@ -478,6 +506,18 @@ example :
         some (.inr (.repeatableErrorField repeatedAmount.id)) ∧
       errorOf (assemble amountNonnegative 99) =
         some (.inr (.errorField (.unknownFieldId 99))) := by
+  native_decide
+
+/- The checked condition tree, rather than the rule's declaring group or a caller-supplied field list, owns the ordinary iteration source. Assembly admits the repeatable error field only when that derived source has the same complete scope. -/
+example :
+    iteratedRule?.map (fun rule =>
+      (rule.errorField, rule.errorDeclaration.repeatableScope,
+        rule.iterationSource.map fun source => source.path)) =
+      some (nestedAmount.id, [10, 20], some {
+        axes := [
+          { level := 10, repeatability := some 2 },
+          { level := 20, repeatability := some 2 }]
+        firstStar := 1 }) := by
   native_decide
 
 /- Rendering happens once over structured parts: missing values use their format-supplied default, while replacement bytes remain opaque. The first dollar below is decoded literal text; `$Other$` is replacement data. -/
