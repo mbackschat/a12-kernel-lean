@@ -455,14 +455,14 @@ private def checkedTokenSourceIterationScope
   mergeIterationScopeList
     (← source.operands.mapM checkedTokenOperandIterationScope)
 
-private def ordinaryNumericAtomFieldDeclaration?
+private def ordinaryNumericAtomFieldDeclarations?
     (model : FlatModel) :
-    NumericValidationAtom → Option FlatFieldDecl
+    NumericValidationAtom → Option (List FlatFieldDecl)
   | .field source =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>
           if declaration.toNumberField? == some source then
-            some declaration
+            some [declaration]
           else none
       | .error _ => none
   | .temporalFieldPart source part =>
@@ -470,38 +470,57 @@ private def ordinaryNumericAtomFieldDeclaration?
       | .ok declaration =>
           if declaration.toTemporalField? == some source &&
               part.admittedBy source model.hasBaseYear then
-            some declaration
+            some [declaration]
           else none
       | .error _ => none
   | .stringLength source =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>
           if declaration.toStringValueField? == some source then
-            some declaration
+            some [declaration]
           else none
       | .error _ => none
   | .stringRange source _ _ =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>
           if declaration.toStringValueField? == some source then
-            some declaration
+            some [declaration]
           else none
       | .error _ => none
   | .fieldValueAsNumber source =>
-      model.certifiedFieldValueAsNumberDeclaration? source
+      (model.certifiedFieldValueAsNumberDeclaration? source).map (· :: [])
+  | .dateDifference unit left right => do
+      let declarations :
+          ResolvedDateDifferenceOperand → Option (List FlatFieldDecl)
+        | .field source =>
+            match model.lookupUniqueId source.id with
+            | .ok declaration =>
+                if declaration.toTemporalField? == some source &&
+                    source.kind == .date &&
+                    unit.admittedBy model.hasBaseYear source.components then
+                  some [declaration]
+                else none
+            | .error _ => none
+        | .baseYear year _ =>
+            if model.baseYear == some year then some [] else none
+      let leftDeclarations ← declarations left
+      let rightDeclarations ← declarations right
+      if unit.compatible model.hasBaseYear left.components right.components then
+        some (leftDeclarations ++ rightDeclarations)
+      else none
   | _ => none
-
-private def ordinaryNumericAtomRepeatableDeclaration?
-    (model : FlatModel) (source : NumericValidationAtom) :
-    Option FlatFieldDecl := do
-  let declaration ← ordinaryNumericAtomFieldDeclaration? model source
-  if declaration.repeatableScope.isEmpty then none else some declaration
 
 private def ordinaryNumericAtomIterationScope
     (model : FlatModel) (source : NumericValidationAtom) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
-  pure ((ordinaryNumericAtomRepeatableDeclaration? model source).map
-    (·.repeatableScope))
+  match ordinaryNumericAtomFieldDeclarations? model source with
+  | none => pure none
+  | some declarations =>
+      mergeIterationScopeList (declarations.map fun declaration =>
+        if declaration.repeatableScope.isEmpty then
+          none
+        else
+          some declaration.repeatableScope)
 
 private def orderedNumericAtomIterationScope :
     OrderedNumericValidationAtom model →
@@ -574,8 +593,16 @@ private def directOrdinaryZeroSensitiveScope?
     AuthoredNumericExpr (OrderedNumericValidationAtom model) →
       Option (List RepeatableLevel)
   | .atom (.ordinary source) =>
-      (ordinaryNumericAtomFieldDeclaration? model source).map
-        (·.repeatableScope)
+      match ordinaryNumericAtomFieldDeclarations? model source with
+      | none => none
+      | some declarations =>
+          match mergeIterationScopeList (declarations.map fun declaration =>
+              if declaration.repeatableScope.isEmpty then
+                none
+              else
+                some declaration.repeatableScope) with
+          | .ok scope => scope
+          | .error _ => none
   | _ => none
 
 end ValidationCondition
@@ -933,7 +960,11 @@ private def ordinaryNumericAtomRepeatableFields
     (model : FlatModel) :
     OrderedNumericValidationAtom model → List FlatFieldDecl
   | .ordinary source =>
-      (ordinaryNumericAtomRepeatableDeclaration? model source).toList
+      match ordinaryNumericAtomFieldDeclarations? model source with
+      | none => []
+      | some declarations =>
+          declarations.filter fun declaration =>
+            !declaration.repeatableScope.isEmpty
   | _ => []
 
 private def authoredNumericRepeatableFields
