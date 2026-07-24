@@ -57,44 +57,70 @@ theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
 /-- Addressed generated validation delegates an entity-list aggregate to the sole checked validation-phase fold and changes only its numeric-domain projection. -/
 theorem orderedNumericValidationAtom_aggregate_addressed_delegates
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
-    (context : AddressedValidationEvaluationContext model) :
+    (scalar : ValidationEvaluationContext) (document : Document)
+    (outer : Env) (read : Env → FieldId → CheckedCell) :
     OrderedNumericValidationAtom.resolveAddressed
-        (.aggregate op source) context =
-      (source.evaluateValidationAggregateIn op context.document context.outer
-        context.scalar.fields context.read).map
+        (.aggregate op source) {
+          scalar, outer, input := .legacy document read
+        } =
+      ((source.evaluateValidationAggregateIn op document outer
+        scalar.fields read).mapError CheckedAddressingError.addressing).map
           NumericOperand.toValidationArithmetic := by
+  rfl
+
+/-- Whole-rule addressed validation delegates the same aggregate atom to the immutable checked-document owner and preserves its richer structural error unchanged. -/
+theorem orderedNumericValidationAtom_aggregate_checkedDocument_delegates
+    (source : CheckedNumberEntitySource model) (op : NumericAggregateOp)
+    (scalar : ValidationEvaluationContext) (document : CheckedDocument model)
+    (outer : Env) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.aggregate op source) {
+          scalar, outer, input := .checked document
+        } =
+      (source.evaluateCheckedDocumentValidationAggregate
+        op document outer).map NumericOperand.toValidationArithmetic := by
   rfl
 
 /-- Addressed generated validation preserves the checked value-count constant and per-selected-cell filter provenance through the sole validation-phase evaluator. -/
 theorem orderedNumericValidationAtom_valueCount_addressed_delegates
     (source : CheckedNumberEntitySource model) (expected : Rat)
-    (context : AddressedValidationEvaluationContext model) :
+    (scalar : ValidationEvaluationContext) (document : Document)
+    (outer : Env) (read : Env → FieldId → CheckedCell) :
     OrderedNumericValidationAtom.resolveAddressed
-        (.valueCount expected source) context =
-      (source.evaluateValueCountValidationIn expected context.document
-        context.outer context.scalar.fields context.read).map
+        (.valueCount expected source) {
+          scalar, outer, input := .legacy document read
+        } =
+      ((source.evaluateValueCountValidationIn expected document
+        outer scalar.fields read).mapError CheckedAddressingError.addressing).map
           NumericOperand.toValidationArithmetic := by
   rfl
 
 /-- Addressed generated validation preserves the complete checked token source and delegates to its sole validation-phase traversal. -/
 theorem orderedNumericValidationAtom_tokenValueCount_addressed_delegates
     (source : CheckedTokenValueCountSource model)
-    (context : AddressedValidationEvaluationContext model) :
+    (scalar : ValidationEvaluationContext) (document : Document)
+    (outer : Env) (read : Env → FieldId → CheckedCell) :
     OrderedNumericValidationAtom.resolveAddressed
-        (.tokenValueCount source) context =
-      (source.evaluateValidation context.document context.outer
-        context.scalar.fields.read context.read).map
+        (.tokenValueCount source) {
+          scalar, outer, input := .legacy document read
+        } =
+      ((source.evaluateValidation document outer
+        scalar.fields.read read).mapError CheckedAddressingError.addressing).map
           NumericOperand.toValidationArithmetic := by
   rfl
 
 /-- Addressed generated validation delegates `SumOfProducts` to the sole checked row-paired fold and changes only its numeric-domain projection. -/
 theorem orderedNumericValidationAtom_sumOfProducts_addressed_delegates
     (source : CheckedNumericProductAggregate model)
-    (context : AddressedValidationEvaluationContext model) :
+    (scalar : ValidationEvaluationContext) (document : Document)
+    (outer : Env) (read : Env → FieldId → CheckedCell) :
     OrderedNumericValidationAtom.resolveAddressed
-        (.sumOfProducts source) context =
-      (source.evaluateAt .validation context.document context.outer
-        context.read).map NumericOperand.toValidationArithmetic := by
+        (.sumOfProducts source) {
+          scalar, outer, input := .legacy document read
+        } =
+      ((source.evaluateAt .validation document outer read).mapError
+        CheckedAddressingError.addressing).map
+          NumericOperand.toValidationArithmetic := by
   rfl
 
 /-- A resolved validation aggregate atom consumes the shared aggregate fold and only then enters the existing arithmetic-outcome domain. -/

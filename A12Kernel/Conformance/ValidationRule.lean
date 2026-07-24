@@ -607,6 +607,55 @@ private def nestedRepeatableNumericRule? :=
   ordinaryRepeatableNumericRuleAt? ["Order", "Sections", "Items"]
     "InnerAmount" innerAmount.id "nestedNumeric"
 
+private def deeperInnerAmountStar : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Sections" },
+      { name := "Items", starred := true }]
+    field := "InnerAmount" }
+
+private def outerWithInnerAggregateCore? :
+    Option (OrderedNumericComparison ordinaryIterationModel) := do
+  let outerField ← outerAmount.toNumberField?
+  let innerSource ←
+    (elaborateNumberEntitySource ordinaryIterationModel
+      ["Order", "Sections"] {
+        first := .star deeperInnerAmountStar
+        rest := []
+      }).toOption
+  let core : OrderedNumericComparison ordinaryIterationModel := {
+    op := .ordinary .greater
+    left := .binary .add
+      (.atom (.ordinary (.field outerField)))
+      (.atom (.aggregate .sum innerSource))
+    right := .literal { value := 5, authoredScale := 0 }
+  }
+  pure core
+
+private def outerWithInnerAggregateComparison? :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) := do
+  let core ← outerWithInnerAggregateCore?
+  if hCore : core.wellFormedInBool ["Order", "Sections"]
+      .sameGroupAddressed = true then
+    pure {
+      rowGroup := ["Order", "Sections"]
+      operandScope := .sameGroupAddressed
+      core
+      modelWellFormed := by native_decide
+      wellFormed := hCore
+    }
+  else
+    none
+
+private def outerWithInnerAggregateRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let numeric ← outerWithInnerAggregateComparison?
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
+    "outerWithInnerAggregate" .error { parts := [] }).toOption
+
 /- Nested compatible ordinary references derive the deepest scope from the checked tree; the declaring group and error-field argument cannot override it. -/
 example :
     (ordinaryIterationRule?.map fun rule =>
@@ -633,6 +682,13 @@ example :
     (nestedRepeatableNumericRule?.map fun rule =>
       (rule.iterationScope, rule.requiresAddressedValidation)) =
       some (some [10, 20], true) := by
+  native_decide
+
+/- A checked deeper-star aggregate composes with the ordinary current-row Number under the same addressed numeric tree; the star contributes only its captured outer binding to whole-rule iteration. -/
+example :
+    (outerWithInnerAggregateRule?.map fun rule =>
+      (rule.iterationScope, rule.requiresAddressedValidation)) =
+      some (some [10], true) := by
   native_decide
 
 /- The addressed entry rejects a scalar-only comparison because the established scalar elaborator already owns that representation. -/
@@ -671,6 +727,74 @@ private def evalOrdinaryRule? (rule :
       ordinaryIterationModel).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
   (rule.evalOrdinaryRepeatableFull checked).toOption
+
+private def classifiedCell (field : FieldId) (path : List Nat)
+    (stored : String) (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field, path }, stored, raw }
+
+private def outerInnerAggregateData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [2] },
+      { group := 10, path := [1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [2, 2] },
+      { group := 20, path := [1, 1] }]
+    cells := [
+      classifiedCell outerAmount.id [2] "1" (.parsed (.num 1)),
+      classifiedCell outerAmount.id [1] "1" (.parsed (.num 1)),
+      classifiedCell innerAmount.id [2, 1] "3" (.parsed (.num 3)),
+      classifiedCell innerAmount.id [2, 2] "4" (.parsed (.num 4)),
+      classifiedCell innerAmount.id [1, 1] "2" (.parsed (.num 2))] }
+
+private def oneOuterAggregateData
+    (outer : Option (String × RawCell)) : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := outer.toList.map (fun (stored, raw) =>
+      classifiedCell outerAmount.id [1] stored raw) ++ [
+      classifiedCell innerAmount.id [1, 1] "3" (.parsed (.num 3)),
+      classifiedCell innerAmount.id [1, 2] "4" (.parsed (.num 4))] }
+
+private def oneOuterAggregateVerdict?
+    (outer : Option (String × RawCell)) : Option Verdict :=
+  outerWithInnerAggregateRule?.bind fun rule =>
+    (evalOrdinaryRule? rule (oneOuterAggregateData outer)).bind fun outcomes =>
+      outcomes.head?.map fun outcome => outcome.2.verdict
+
+private def checkedOuterInnerAggregate? :
+    Option (CheckedDocument ordinaryIterationModel ×
+      CheckedNumberEntitySource ordinaryIterationModel) := do
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US" outerInnerAggregateData).toOption
+  let source ←
+    (elaborateNumberEntitySource ordinaryIterationModel
+      ["Order", "Sections"] {
+        first := .star deeperInnerAmountStar
+        rest := []
+      }).toOption
+  pure (document, source)
+
+private def outerInnerAggregateConsumerSnapshot?
+    (outer : Env) :
+    Option (List CellAddr × List (Option String) × Bool) := do
+  let (document, source) ← checkedOuterInnerAggregate?
+  let resolved ←
+    (source.first.resolveCheckedValidationOperand document outer).toOption
+  pure (resolved.addressedCells.map (·.address),
+    resolved.addressedCells.map (·.stored),
+    resolved.hasUninstantiatedTail)
+
+private def innerAggregateStructuralFailure? :
+    Option CheckedAddressingError := do
+  let (document, source) ← checkedOuterInnerAggregate?
+  match source.evaluateCheckedDocumentValidationAggregate .sum document [] with
+  | .ok _ => none
+  | .error cause => some cause
 
 /- Runtime follows actual deepest-row document order and retains complete parent coordinates in both the consumer-visible environment and emitted error address. -/
 example :
@@ -752,6 +876,43 @@ example :
         [(10, 2), (20, 1)],
         .fired .value,
         some { field := innerAmount.id, path := [2, 1] })] := by
+  native_decide
+
+/- The surrounding rule environment fixes only the outer row; the deeper aggregate reopens its checked suffix and therefore selects different inner instances even when both parents contain local coordinate 1. -/
+example :
+    (outerWithInnerAggregateRule?.bind
+      (evalOrdinaryRule? · outerInnerAggregateData)).map
+        (·.map fun outcome => (outcome.1, outcome.2.verdict)) =
+      some [
+        ([(10, 2)], .fired .value),
+        ([(10, 1)], .notFired)] := by
+  native_decide
+
+/- The current-row Number keeps its established validation polarity inside the mixed expression: present input fires as VALUE, physical absence fires as OMISSION, and malformed input remains semantic UNKNOWN. -/
+example :
+    oneOuterAggregateVerdict? (some ("1", .parsed (.num 1))) =
+        some (.fired .value) ∧
+      oneOuterAggregateVerdict? none = some (.fired .omission) ∧
+      oneOuterAggregateVerdict? (some ("bad", .rejected .malformed)) =
+        some .unknown := by
+  native_decide
+
+/- Execute/Transform/Explain consumers can recover complete addresses, exact stored payload, and hierarchical extent from the same checked source used by rule evaluation; a terminal coordinate never identifies a cell by itself. -/
+example :
+    outerInnerAggregateConsumerSnapshot? [(10, 2)] =
+        some ([
+            { field := innerAmount.id, path := [2, 1] },
+            { field := innerAmount.id, path := [2, 2] }],
+          [some "3", some "4"], false) ∧
+      outerInnerAggregateConsumerSnapshot? [(10, 1)] =
+        some ([{ field := innerAmount.id, path := [1, 1] }],
+          [some "2"], true) := by
+  native_decide
+
+/- A reached missing captured binding remains a structural addressing failure outside semantic UNKNOWN. -/
+example :
+    innerAggregateStructuralFailure? =
+      some (.addressing (.missingBinding 10)) := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule

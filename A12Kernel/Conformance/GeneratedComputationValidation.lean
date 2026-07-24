@@ -457,7 +457,7 @@ private def repeatableGeneratedAddressedOutcome
     (errorCode : String)
     (document : Document) (outerGate targetCell : RawCell)
     (filterRows targetRows : RowIndex → CheckedCell) :
-    Option (Except StarAddressingError FlatRuleOutcome) := do
+    Option (Except CheckedAddressingError FlatRuleOutcome) := do
   let rule ← repeatableGeneratedRule? operationResult errorCode
   let prepared ←
     (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
@@ -469,15 +469,15 @@ private def repeatableGeneratedAddressedOutcome
     scalar := {
       fields
       groups := GroupPresenceContext.unavailable }
-    document
     outer := []
-    read := repeatableRead (fields.read gate.id) filterRows targetRows
+    input := .legacy document
+      (repeatableRead (fields.read gate.id) filterRows targetRows)
   } true)
 
 private def repeatableFirstFilledAddressedOutcome
     (document : Document) (outerGate targetCell : RawCell)
     (filterRows targetRows : RowIndex → CheckedCell) :
-    Option (Except StarAddressingError FlatRuleOutcome) :=
+    Option (Except CheckedAddressingError FlatRuleOutcome) :=
   repeatableGeneratedAddressedOutcome repeatableFirstFilledOperation
     "computedRepeatableFirstFilled" document outerGate targetCell
     filterRows targetRows
@@ -485,7 +485,7 @@ private def repeatableFirstFilledAddressedOutcome
 private def repeatableAggregateAddressedOutcome
     (document : Document) (targetCell : RawCell)
     (sourceRows : RowIndex → CheckedCell) :
-    Option (Except StarAddressingError FlatRuleOutcome) :=
+    Option (Except CheckedAddressingError FlatRuleOutcome) :=
   repeatableGeneratedAddressedOutcome repeatableAggregateOperation
     "computedRepeatableAggregate" document .empty targetCell
     sourceRows (fun _ => checkedNumber .empty)
@@ -493,7 +493,7 @@ private def repeatableAggregateAddressedOutcome
 private def repeatableValueCountAddressedOutcome
     (document : Document) (targetCell : RawCell)
     (filterRows targetRows : RowIndex → CheckedCell) :
-    Option (Except StarAddressingError FlatRuleOutcome) :=
+    Option (Except CheckedAddressingError FlatRuleOutcome) :=
   repeatableGeneratedAddressedOutcome repeatableValueCountOperation
     "computedRepeatableValueCount" document (.parsed (.num 1)) targetCell
     filterRows targetRows
@@ -501,7 +501,7 @@ private def repeatableValueCountAddressedOutcome
 private def repeatableTokenValueCountAddressedOutcome
     (document : Document) (targetCell : RawCell)
     (filterRows targetRows : RowIndex → CheckedCell) :
-    Option (Except StarAddressingError FlatRuleOutcome) :=
+    Option (Except CheckedAddressingError FlatRuleOutcome) :=
   repeatableGeneratedAddressedOutcome repeatableTokenValueCountOperation
     "computedRepeatableTokenValueCount" document (.parsed (.num 1)) targetCell
     filterRows targetRows
@@ -509,7 +509,7 @@ private def repeatableTokenValueCountAddressedOutcome
 private def productAggregateAddressedOutcome
     (document : Document) (targetCell : RawCell)
     (leftRows rightRows : RowIndex → CheckedCell) :
-    Option (Except StarAddressingError FlatRuleOutcome) :=
+    Option (Except CheckedAddressingError FlatRuleOutcome) :=
   repeatableGeneratedAddressedOutcome productAggregateOperation
     "computedProductAggregate" document .empty targetCell leftRows rightRows
 
@@ -531,17 +531,17 @@ private def productAggregateExpectedMessage : FlatRuleMessage :=
   repeatableExpectedMessage "computedProductAggregate" .omission
 
 private def hasAddressedOutcome
-    (result : Option (Except StarAddressingError FlatRuleOutcome))
+    (result : Option (Except CheckedAddressingError FlatRuleOutcome))
     (expected : FlatRuleOutcome) : Bool :=
   match result with
   | some (.ok actual) => decide (actual = expected)
   | _ => false
 
 private def hasAddressingError
-    (result : Option (Except StarAddressingError FlatRuleOutcome))
+    (result : Option (Except CheckedAddressingError FlatRuleOutcome))
     (expected : StarAddressingError) : Bool :=
   match result with
-  | some (.error actual) => decide (actual = expected)
+  | some (.error (.addressing actual)) => decide (actual = expected)
   | _ => false
 
 private def evalFlatRule? (checkedModel : FlatModel)
