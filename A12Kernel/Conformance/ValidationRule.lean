@@ -746,6 +746,39 @@ private def directRepeatableNumericLegality?
     directRepeatableNumericCondition? op expected literalOnLeft
   condition.core.iterationLegality.toOption
 
+private def repeatableStringLengthCondition?
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let length : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.stringLength
+      (ordinaryPath ["Order", "Sections", "Items"] "InnerToken"))
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := if literalOnLeft then literal else length
+        right := if literalOnLeft then length else literal
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableStringLengthLegality?
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ←
+    repeatableStringLengthCondition? op expected literalOnLeft
+  condition.core.iterationLegality.toOption
+
+private def repeatableStringLengthRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ←
+    repeatableStringLengthCondition? (.ordinary .equal) 3
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerToken.id
+    "repeatableStringLength" .error { parts := [] }).toOption
+
 private def compositeRepeatableNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
     Option ValidationCondition.IterationLegality := do
@@ -1359,6 +1392,24 @@ example :
       (.ordinary .equal) 1 = some .legal := by
   native_decide
 
+/- Evaluated String `Length` is a direct field operation with the same host-zero branch; its own repeatable field supplies the ordinary scope. -/
+example :
+    repeatableStringLengthLegality? (.ordinary .equal) 0 =
+      some (.invalid 10) ∧
+    repeatableStringLengthLegality? (.ordinary .greaterEqual) 0 =
+      some (.invalid 10) ∧
+    repeatableStringLengthLegality? (.ordinary .lessEqual) 0 =
+      some (.invalid 10) ∧
+    repeatableStringLengthLegality? (.ordinary .equal) 0 true =
+      some (.invalid 10) ∧
+    repeatableStringLengthLegality? (.ordinary .greaterEqual) 0 true =
+      some (.invalid 10) ∧
+    repeatableStringLengthLegality? (.ordinary .equal) 1 =
+      some .legal ∧
+    repeatableStringLengthLegality? (.ordinary .less) 0 =
+      some .legal := by
+  native_decide
+
 /- Single-field operand-list Min/Max calls retain the same top-level operation-list guard without being flattened into direct fields. -/
 example :
     wrappedRepeatableNumericLegality?
@@ -1498,6 +1549,62 @@ private def evalOrdinaryRule? (rule :
       ordinaryIterationModel).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
   (rule.evalOrdinaryRepeatableFull checked).toOption
+
+private def repeatableStringLengthData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells := [{
+      address := { field := innerToken.id, path := [1, 1] }
+      stored := "ABC"
+      raw := .parsed (.str "ABC")
+    }] }
+
+private def repeatableStringLengthSnapshot? :
+    Option (Option (List RepeatableLevel) × Bool ×
+      List (Env × Verdict × Option CellAddr)) := do
+  let rule ← repeatableStringLengthRule?
+  let outcomes ← evalOrdinaryRule? rule repeatableStringLengthData
+  pure (
+    rule.iterationScope,
+    rule.requiresAddressedValidation,
+    outcomes.map fun entry =>
+      (entry.1, entry.2.verdict,
+        entry.2.message?.map (·.errorAddress)))
+
+private def repeatableStringLengthStructuralFailure? :
+    Option CheckedAddressingError := do
+  let rule ← repeatableStringLengthRule?
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US" repeatableStringLengthData).toOption
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match rule.condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
+
+/- Addressed `Length` reads the checked evaluated String through the existing UTF-16 owner, attaches the message to the complete current row, and preserves a missing binding structurally. -/
+example :
+    (repeatableStringLengthSnapshot? ==
+      some (
+        some [10, 20],
+        true,
+        [(
+          [(10, 1), (20, 1)],
+          .fired .value,
+          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+      repeatableStringLengthStructuralFailure? =
+        some (.environment (.missingBinding 10)) := by
+  native_decide
 
 private def outerInnerTokenValueCountData : DocumentData :=
   { instantiatedRows := [
