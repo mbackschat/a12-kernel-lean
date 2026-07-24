@@ -842,6 +842,42 @@ private def repeatableFieldValueAsNumberRule?
   (assembleResolvedValidationRule ordinaryIterationModel condition target
     "repeatableFieldValueAsNumber" .error { parts := [] }).toOption
 
+private def repeatableStringRangeCondition?
+    (op : NumericValidationOp) (expected : Rat)
+    (start : Nat := 2) (finish : Nat := 3)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let range : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.stringRange
+      (ordinaryPath ["Order", "Sections", "Items"] "InnerToken")
+      start finish)
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := if literalOnLeft then literal else range
+        right := if literalOnLeft then range else literal
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableStringRangeLegality?
+    (op : NumericValidationOp) (expected : Rat)
+    (start : Nat := 2) (finish : Nat := 3)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ←
+    repeatableStringRangeCondition? op expected start finish literalOnLeft
+  condition.core.iterationLegality.toOption
+
+private def repeatableStringRangeRule?
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ← repeatableStringRangeCondition? op expected
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerToken.id
+    "repeatableStringRange" .error { parts := [] }).toOption
+
 private def compositeRepeatableNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
     Option ValidationCondition.IterationLegality := do
@@ -1492,6 +1528,20 @@ example :
       some .legal := by
   native_decide
 
+/- `RangeAsNumber` retains its checked interval while sharing the direct-operation host-zero branch. -/
+example :
+    repeatableStringRangeLegality? (.ordinary .equal) 0 =
+      some (.invalid 10) ∧
+    repeatableStringRangeLegality? (.ordinary .equal) 0 2 3 true =
+      some (.invalid 10) ∧
+    repeatableStringRangeLegality? (.ordinary .equal) 12 =
+      some .legal ∧
+    repeatableStringRangeLegality? (.ordinary .less) 0 =
+      some .legal ∧
+    repeatableStringRangeLegality? (.ordinary .equal) 12 0 3 =
+      none := by
+  native_decide
+
 /- Single-field operand-list Min/Max calls retain the same top-level operation-list guard without being flattened into direct fields. -/
 example :
     wrappedRepeatableNumericLegality?
@@ -1774,6 +1824,86 @@ example :
           some { field := innerNumericChoice.id, path := [1, 1] })])) = true ∧
     repeatableFieldValueAsNumberRejectedVerdict? = some .unknown ∧
     repeatableFieldValueAsNumberStructuralFailure? =
+      some (.environment (.missingBinding 10)) := by
+  native_decide
+
+private def repeatableStringRangeData (raw : Option RawCell) : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells := match raw with
+      | none => []
+      | some cell => [{
+          address := { field := innerToken.id, path := [1, 1] }
+          stored := match cell with
+            | .parsed (.str value) => value
+            | _ => ""
+          raw := cell
+        }] }
+
+private def repeatableStringRangeSnapshot?
+    (op : NumericValidationOp) (expected : Rat) (raw : Option RawCell) :
+    Option (Option (List RepeatableLevel) × Bool ×
+      List (Env × Verdict × Option CellAddr)) := do
+  let rule ← repeatableStringRangeRule? op expected
+  let outcomes ← evalOrdinaryRule? rule (repeatableStringRangeData raw)
+  pure (
+    rule.iterationScope,
+    rule.requiresAddressedValidation,
+    outcomes.map fun entry =>
+      (entry.1, entry.2.verdict,
+        entry.2.message?.map (·.errorAddress)))
+
+private def repeatableStringRangeStructuralFailure? :
+    Option CheckedAddressingError := do
+  let rule ← repeatableStringRangeRule? (.ordinary .equal) 12
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US"
+      (repeatableStringRangeData (some (.parsed (.str "A12B"))))).toOption
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match rule.condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
+
+/- Addressed range selection reuses the checked normalized String. Missing input keeps grow-only omission polarity, a present nondigit fallback is fixed VALUE zero, and missing bindings remain structural. -/
+example :
+    (repeatableStringRangeSnapshot? (.ordinary .equal) 12
+      (some (.parsed (.str "A12B"))) ==
+      some (
+        some [10, 20],
+        true,
+        [(
+          [(10, 1), (20, 1)],
+          .fired .value,
+          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+    (repeatableStringRangeSnapshot? (.ordinary .less) 100 none ==
+      some (
+        some [10, 20],
+        true,
+        [(
+          [(10, 1), (20, 1)],
+          .fired .omission,
+          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+    (repeatableStringRangeSnapshot? (.ordinary .less) 100
+      (some (.parsed (.str "ABCD"))) ==
+      some (
+        some [10, 20],
+        true,
+        [(
+          [(10, 1), (20, 1)],
+          .fired .value,
+          some { field := innerToken.id, path := [1, 1] })])) = true ∧
+    repeatableStringRangeStructuralFailure? =
       some (.environment (.missingBinding 10)) := by
   native_decide
 

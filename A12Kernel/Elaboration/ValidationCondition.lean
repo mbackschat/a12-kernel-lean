@@ -472,6 +472,13 @@ private def ordinaryNumericAtomFieldDeclaration?
             some declaration
           else none
       | .error _ => none
+  | .stringRange source _ _ =>
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if declaration.toStringValueField? == some source then
+            some declaration
+          else none
+      | .error _ => none
   | .fieldValueAsNumber source =>
       model.certifiedFieldValueAsNumberDeclaration? source
   | _ => none
