@@ -297,7 +297,8 @@ private def NumericValidationAtom.admitted
         | .field source =>
             (match scope with
               | .sameGroup => model.admitsTemporalInGroup rowGroup source
-              | .sameGroupAddressed => false
+              | .sameGroupAddressed =>
+                  model.admitsAddressedTemporal rowGroup source
               | .modelWideNonrepeatable | .modelWideCheckedComputation =>
                   model.admitsTemporalModelWide source) &&
               CalendarDayDifference.admittedBy source.kind source.components
@@ -446,7 +447,7 @@ private def addressedNumericValidationFieldIds :
   | .stringLength source => [source.id]
   | .stringRange source _ _ => [source.id]
   | .fieldValueAsNumber source => [source.fieldId]
-  | .dateDifference _ left right =>
+  | .dateDifference _ left right | .dayDifference _ left right =>
       let fieldId : ResolvedDateDifferenceOperand → List FieldId
         | .field source => [source.id]
         | .baseYear _ _ => []
@@ -793,6 +794,29 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       if unit.compatible model.hasBaseYear
           resolvedLeft.components resolvedRight.components then
         pure (.dateDifference unit resolvedLeft resolvedRight)
+      else
+        throw .incompatibleDateDifference
+  | .dayDifference left right => do
+      let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile => pure profile
+        | none => throw (.unsupportedCalendarProfile model.timeZoneId)
+      let resolveOperand := resolveDateDifferenceOperandWith model
+        (fun reference => do
+          let declaration ←
+            resolveAddressedNumericDeclaration model rowGroup reference
+          match declaration.toTemporalField? with
+          | some field =>
+              if CalendarDayDifference.admittedBy
+                  field.kind field.components then
+                pure field
+              else
+                throw (.incompatibleTemporalSource declaration.path)
+          | none => throw (.incompatibleTemporalSource declaration.path))
+      let resolvedLeft ← resolveOperand left
+      let resolvedRight ← resolveOperand right
+      if CalendarDayDifference.yearCompatible model.hasBaseYear
+          resolvedLeft.components resolvedRight.components then
+        pure (.dayDifference profile resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
   | source => resolveNumericAtom model rowGroup source

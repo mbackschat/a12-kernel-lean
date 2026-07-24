@@ -65,6 +65,20 @@ theorem orderedNumericValidationAtom_repeatableDateDifference_requiresAddressed
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
     lookup, repeatable]
 
+/-- A concrete-profile calendar-day difference keeps addressed evaluation when its model-certified Date or DateTime field operand is repeatable. -/
+theorem orderedNumericValidationAtom_repeatableDayDifference_requiresAddressed
+    (profile : ModelZone.ConcreteProfile) (field : FlatTemporalField)
+    (year : Int) (source : BaseYearDateSource)
+    (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId field.id = .ok declaration)
+    (repeatable : declaration.repeatableScope.isEmpty = false) :
+    (OrderedNumericValidationAtom.ordinary
+      (.dayDifference profile (.field field)
+        (.baseYear year source))).requiresAddressedValidation
+        (model := model) = true := by
+  simp [OrderedNumericValidationAtom.requiresAddressedValidation,
+    lookup, repeatable]
+
 /-- A model-certified evaluated-String `Length` source under a nonempty repeatable declaration uses the same addressed entry requirement. -/
 theorem orderedNumericValidationAtom_repeatableStringLength_requiresAddressed
     (field : FlatStringField) (declaration : FlatFieldDecl)
