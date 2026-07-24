@@ -137,6 +137,15 @@ private def FlatModel.admitsAddressedNumber (model : FlatModel)
           (model.repeatableScopeForGroupPath rowGroup)
   | .error _ => false
 
+private def FlatModel.admitsAddressedTemporal (model : FlatModel)
+    (rowGroup : GroupPath) (field : FlatTemporalField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.toTemporalField? == some field &&
+        declaration.repeatableScope.isPrefixOf
+          (model.repeatableScopeForGroupPath rowGroup)
+  | .error _ => false
+
 private def FlatModel.admitsTemporalInGroup (model : FlatModel)
     (rowGroup : GroupPath) (field : FlatTemporalField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -231,7 +240,8 @@ private def NumericValidationAtom.admitted
   | .temporalFieldPart source part =>
       (match scope with
         | .sameGroup => model.admitsTemporalInGroup rowGroup source
-        | .sameGroupAddressed => false
+        | .sameGroupAddressed =>
+            model.admitsAddressedTemporal rowGroup source
         | .modelWideNonrepeatable | .modelWideCheckedComputation =>
             model.admitsTemporalModelWide source) &&
         part.admittedBy source model.hasBaseYear
@@ -419,6 +429,7 @@ namespace OrderedNumericValidationAtom
 private def addressedNumericValidationFieldId? :
     NumericValidationAtom → Option FieldId
   | .field source => some source.id
+  | .temporalFieldPart source _ => some source.id
   | .stringLength source => some source.id
   | .stringRange source _ _ => some source.id
   | .fieldValueAsNumber source => some source.fieldId
@@ -732,6 +743,16 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       match declaration.toNumberField? with
       | some field => pure (.field field)
       | none => throw (.fieldNotNumber declaration.path)
+  | .temporalFieldPart reference part => do
+      let declaration ←
+        resolveAddressedNumericDeclaration model rowGroup reference
+      match declaration.toTemporalField? with
+      | some field =>
+          if part.admittedBy field model.hasBaseYear then
+            pure (.temporalFieldPart field part)
+          else
+            throw (.incompatibleTemporalSource declaration.path)
+      | none => throw (.incompatibleTemporalSource declaration.path)
   | .stringLength reference => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
@@ -813,7 +834,7 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
   elaborateNumericComparisonWith model rowGroup .sameGroup
     (resolveNumericAtom model rowGroup) surface
 
-/-- Admit the smallest ordinary addressed Number route through the existing ordered-numeric carrier. Only direct Number atoms may be repeatable; every other atom remains under its established scalar owner. -/
+/-- Admit the ordinary addressed single-field route through the existing ordered-numeric carrier. The atom retains its typed declaration certificate while only the field read changes from scalar to addressed. -/
 def elaborateRepeatableNumericComparison
     (model : FlatModel) (rowGroup : GroupPath)
     (surface : SurfaceNumericComparison) :

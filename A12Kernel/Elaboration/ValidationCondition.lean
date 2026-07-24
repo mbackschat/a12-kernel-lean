@@ -465,6 +465,14 @@ private def ordinaryNumericAtomFieldDeclaration?
             some declaration
           else none
       | .error _ => none
+  | .temporalFieldPart source part =>
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if declaration.toTemporalField? == some source &&
+              part.admittedBy source model.hasBaseYear then
+            some declaration
+          else none
+      | .error _ => none
   | .stringLength source =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>

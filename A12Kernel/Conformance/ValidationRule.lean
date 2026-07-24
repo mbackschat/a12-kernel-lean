@@ -594,6 +594,29 @@ private def innerNumericChoice : FlatFieldDecl :=
       categories := [{ name := "Factor", tokens := ["15", "20"] }] }
     repeatableScope := [10, 20] }
 
+private def innerDate : FlatFieldDecl :=
+  { id := 39
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerDate"
+    policy := { kind := .temporal .date TemporalComponents.fullDate }
+    repeatableScope := [10, 20] }
+
+private def innerTime : FlatFieldDecl :=
+  { id := 40
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerTime"
+    policy := { kind := .temporal .time {
+      year := false, month := false, day := false,
+      hour := true, minute := true, second := true } }
+    repeatableScope := [10, 20] }
+
+private def innerDateTime : FlatFieldDecl :=
+  { id := 41
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerDateTime"
+    policy := { kind := .temporal .dateTime dateTimeComponents }
+    repeatableScope := [10, 20] }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -603,7 +626,8 @@ private def sectionDetail : FlatFieldDecl :=
 
 private def ordinaryIterationModel : FlatModel :=
   { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount,
-      innerToken, baseToken, innerNumericCode, innerNumericChoice]
+      innerToken, baseToken, innerNumericCode, innerNumericChoice, innerDate,
+      innerTime, innerDateTime]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -877,6 +901,42 @@ private def repeatableStringRangeRule?
   let condition ← repeatableStringRangeCondition? op expected
   (assembleResolvedValidationRule ordinaryIterationModel condition innerToken.id
     "repeatableStringRange" .error { parts := [] }).toOption
+
+private def repeatableTemporalPartCondition?
+    (field : String) (part : TemporalNumericPart)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let component : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.temporalFieldPart
+      (ordinaryPath ["Order", "Sections", "Items"] field) part)
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := if literalOnLeft then literal else component
+        right := if literalOnLeft then component else literal
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableTemporalPartLegality?
+    (field : String) (part : TemporalNumericPart)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ←
+    repeatableTemporalPartCondition? field part op expected literalOnLeft
+  condition.core.iterationLegality.toOption
+
+private def repeatableTemporalPartRule?
+    (field : String) (part : TemporalNumericPart)
+    (op : NumericValidationOp) (expected : Rat) (target : FieldId) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ← repeatableTemporalPartCondition? field part op expected
+  (assembleResolvedValidationRule ordinaryIterationModel condition target
+    "repeatableTemporalPart" .error { parts := [] }).toOption
 
 private def compositeRepeatableNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
@@ -1542,6 +1602,25 @@ example :
       none := by
   native_decide
 
+/- Direct temporal component extraction retains its kind/component certificate while sharing the direct-operation host-zero branch. -/
+example :
+    repeatableTemporalPartLegality? "InnerDate" (.date .day)
+        (.ordinary .equal) 0 =
+      some (.invalid 10) ∧
+    repeatableTemporalPartLegality? "InnerTime" (.time .second)
+        (.ordinary .equal) 0 true =
+      some (.invalid 10) ∧
+    repeatableTemporalPartLegality? "InnerDateTime" (.date .quarter)
+        (.ordinary .equal) 2 =
+      some .legal ∧
+    repeatableTemporalPartLegality? "InnerDate" (.time .hour)
+        (.ordinary .equal) 5 =
+      none ∧
+    repeatableTemporalPartLegality? "InnerTime" (.date .year)
+        (.ordinary .equal) 2024 =
+      none := by
+  native_decide
+
 /- Single-field operand-list Min/Max calls retain the same top-level operation-list guard without being flattened into direct fields. -/
 example :
     wrappedRepeatableNumericLegality?
@@ -1905,6 +1984,135 @@ example :
           some { field := innerToken.id, path := [1, 1] })])) = true ∧
     repeatableStringRangeStructuralFailure? =
       some (.environment (.missingBinding 10)) := by
+  native_decide
+
+private def repeatableTemporalPartData
+    (field : FieldId) (stored : String) (raw : Option RawCell) :
+    DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells := raw.toList.map fun cell => {
+      address := { field, path := [1, 1] }
+      stored
+      raw := cell } }
+
+private def repeatableTemporalPartSnapshot?
+    (fieldName : String) (field : FieldId) (part : TemporalNumericPart)
+    (op : NumericValidationOp) (expected : Rat)
+    (stored : String) (raw : Option RawCell) :
+    Option (Option (List RepeatableLevel) × Bool ×
+      List (Env × Verdict × Option CellAddr)) := do
+  let rule ← repeatableTemporalPartRule? fieldName part op expected field
+  let outcomes ←
+    evalOrdinaryRule? rule (repeatableTemporalPartData field stored raw)
+  pure (
+    rule.iterationScope,
+    rule.requiresAddressedValidation,
+    outcomes.map fun entry =>
+      (entry.1, entry.2.verdict,
+        entry.2.message?.map (·.errorAddress)))
+
+private def repeatableTemporalPartStructuralFailure? :
+    Option CheckedAddressingError := do
+  let rule ←
+    repeatableTemporalPartRule? "InnerDateTime" (.time .minute)
+      (.ordinary .equal) 21 innerDateTime.id
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let data := repeatableTemporalPartData innerDateTime.id
+    "2024-06-25T05:21:07"
+    (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
+      temporalDateParts temporalClock .storedGregorian))))
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match rule.condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
+
+private def repeatableTemporalConsumerSnapshot? :
+    Option (List String × List RepeatableLevel × FlatTemporalField ×
+      TemporalNumericPart × CellAddr × Option String × Verdict) := do
+  let declaration ←
+    (ordinaryIterationModel.lookupUniqueId innerDateTime.id).toOption
+  let temporal ← declaration.toTemporalField?
+  let data := repeatableTemporalPartData innerDateTime.id
+    "2024-06-25T05:21:07"
+    (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
+      temporalDateParts temporalClock .storedGregorian))))
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let addressed ←
+    (document.addressedCell [(10, 1), (20, 1)] innerDateTime.id).toOption
+  let rule ←
+    repeatableTemporalPartRule? "InnerDateTime" (.date .quarter)
+      (.ordinary .equal) 2 innerDateTime.id
+  let outcomes ← evalOrdinaryRule? rule data
+  let outcome ← outcomes.head?
+  pure (declaration.path, declaration.repeatableScope, temporal,
+    .date .quarter, addressed.address, addressed.stored, outcome.2.verdict)
+
+private def expectedRepeatableTemporalSnapshot
+    (verdict : Verdict) (address : Option CellAddr) :
+    Option (Option (List RepeatableLevel) × Bool ×
+      List (Env × Verdict × Option CellAddr)) :=
+  some (some [10, 20], true, [
+    ([(10, 1), (20, 1)], verdict, address)])
+
+/- Addressed temporal extraction reuses the checked decoded Date, Time, and DateTime payload owners. Empty input preserves symmetric omission polarity, formal invalidity remains UNKNOWN, and missing bindings remain structural. -/
+example :
+    (repeatableTemporalPartSnapshot? "InnerDate" innerDate.id
+      (.date .day) (.ordinary .equal) 25 "2024-06-25"
+      (some (.parsed (.temporal (.date { epochMillis := 0 }
+        temporalDateParts .storedGregorian)))) ==
+      expectedRepeatableTemporalSnapshot (.fired .value)
+        (some { field := innerDate.id, path := [1, 1] })) = true ∧
+    (repeatableTemporalPartSnapshot? "InnerTime" innerTime.id
+      (.time .second) (.ordinary .equal) 7 "05:21:07"
+      (some (.parsed (.temporal (.time { epochMillis := 0 }
+        temporalClock)))) ==
+      expectedRepeatableTemporalSnapshot (.fired .value)
+        (some { field := innerTime.id, path := [1, 1] })) = true ∧
+    (repeatableTemporalPartSnapshot? "InnerDateTime" innerDateTime.id
+      (.date .quarter) (.ordinary .equal) 2 "2024-06-25T05:21:07"
+      (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
+        temporalDateParts temporalClock .storedGregorian)))) ==
+      expectedRepeatableTemporalSnapshot (.fired .value)
+        (some { field := innerDateTime.id, path := [1, 1] })) = true ∧
+    (repeatableTemporalPartSnapshot? "InnerTime" innerTime.id
+      (.time .hour) (.ordinary .less) 100 "" none ==
+      expectedRepeatableTemporalSnapshot (.fired .omission)
+        (some { field := innerTime.id, path := [1, 1] })) = true ∧
+    (repeatableTemporalPartSnapshot? "InnerDate" innerDate.id
+      (.date .day) (.ordinary .equal) 25 "bad"
+      (some (.rejected .malformed)) ==
+      expectedRepeatableTemporalSnapshot .unknown none) = true ∧
+    repeatableTemporalPartStructuralFailure? =
+      some (.environment (.missingBinding 10)) := by
+  native_decide
+
+/- Execute uses the same checked DateTime cell whose declaration, exact selected component, complete address, and stored payload remain available to Transform and Explain consumers. -/
+example :
+    (repeatableTemporalConsumerSnapshot? ==
+      some (
+        ["Order", "Sections", "Items", "InnerDateTime"],
+        [10, 20],
+        { id := innerDateTime.id, kind := .dateTime,
+          components := dateTimeComponents },
+        .date .quarter,
+        { field := innerDateTime.id, path := [1, 1] },
+        some "2024-06-25T05:21:07",
+        .fired .value)) = true := by
   native_decide
 
 private def outerInnerTokenValueCountData : DocumentData :=
