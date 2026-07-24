@@ -686,6 +686,23 @@ private def directRepeatableNumericLegality?
     directRepeatableNumericCondition? op expected literalOnLeft
   condition.core.iterationLegality.toOption
 
+private def compositeRepeatableNumericLegality?
+    (op : NumericValidationOp) (expected : Rat) :
+    Option ValidationCondition.IterationLegality := do
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections"] {
+        op
+        left := .binary .add
+          (.atom (.field
+            (ordinaryPath ["Order", "Sections"] "OuterAmount")))
+          (.literal { value := 0, authoredScale := 0 })
+        right := .literal { value := expected, authoredScale := 0 }
+      }).toOption
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+  condition.core.iterationLegality.toOption
+
 private def deeperInnerAmountStar : SurfaceStarFieldPath :=
   { base := .absolute
     groups := [
@@ -993,11 +1010,16 @@ example :
       condition.core.iterationLegality.toOption) = some (.invalid 20) := by
   native_decide
 
-/- Unclassified repeatable numeric leaf rules remain executable with an exact insufficient-information result; this capsule does not guess their operator-specific static law. -/
+/- A top-level composite arithmetic operation is admitted even where its direct field/zero counterpart is rejected; the source visitor's direct-zero branch does not erase parse-tree topology. -/
 example :
+    compositeRepeatableNumericLegality? (.ordinary .equal) 0 =
+        some .legal ∧
     (ordinaryRepeatableNumericRule?.bind fun rule =>
       rule.condition.core.iterationLegality.toOption) =
-        some (.insufficient 10) := by
+        some .legal ∧
+    (nestedRepeatableNumericRule?.bind fun rule =>
+      rule.condition.core.iterationLegality.toOption) =
+        some .legal := by
   native_decide
 
 private def ordinaryIterationData : DocumentData :=

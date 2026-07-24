@@ -582,19 +582,44 @@ private def orderedNumericDirectFieldLiteralGuardAt
   | some status => some status
   | none => classify comparison.right comparison.left
 
+/-- Preserve the source visitor's top-level parse-tree distinction: ordinary binary arithmetic and power are composite operations, so the direct field/list-versus-constant branches do not classify them. Grouping retains the underlying operation root. -/
+private def isTopLevelCompositeNumericOperation :
+    AuthoredNumericExpr Atom → Bool
+  | .group body => isTopLevelCompositeNumericOperation body
+  | .binary _ _ _ | .power _ _ => true
+  | .atom _ | .literal _ | .abs _ | .extremum _ _ _
+  | .extremumCall _ _ | .round _ _ _ => false
+
+private def orderedNumericCompositeGuardAt
+    (level : RepeatableLevel)
+    (comparison : OrderedNumericComparison model) :
+    Option IterationGuardStatus :=
+  if isTopLevelCompositeNumericOperation comparison.left ||
+      isTopLevelCompositeNumericOperation comparison.right then
+    match orderedNumericComparisonIterationScope comparison with
+    | .ok (some scope) =>
+        some (if scope.contains level then .guarded else .noReference)
+    | .ok none => some .noReference
+    | .error _ => none
+  else
+    none
+
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ | .groupList _ _ => .noReference
   | .orderedNumeric _ comparison =>
-      match orderedNumericDirectFieldLiteralGuardAt level comparison with
+      match orderedNumericCompositeGuardAt level comparison with
       | some status => status
       | none =>
-          match orderedNumericComparisonIterationScope comparison with
-          | .ok (some scope) =>
-              if scope.contains level then .unclassified else .noReference
-          | .ok none => .noReference
-          | .error _ => .unclassified
+          match orderedNumericDirectFieldLiteralGuardAt level comparison with
+          | some status => status
+          | none =>
+              match orderedNumericComparisonIterationScope comparison with
+              | .ok (some scope) =>
+                  if scope.contains level then .unclassified else .noReference
+              | .ok none => .noReference
+              | .error _ => .unclassified
   | .groupPresence operator reference =>
       if (model.repeatableScopeForGroupPath reference.path).contains level then
         match operator with
