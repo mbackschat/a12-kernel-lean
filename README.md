@@ -69,12 +69,13 @@ The project considers ten consumer tasks: **Execute, Translate, Transform, Compi
 This is an active formal-semantics project, not a complete A12 interpreter or a qualified production release.
 
 <!-- github-publish-stats:start -->
-**Verified at publication:** **1,263 trusted theorem roots**, **26,103 audited declarations**, and **234 trusted modules** in the mechanized theory.
+**Verified at publication:** **1,314 trusted theorem roots**, **27,184 audited declarations**, and **250 trusted modules** in the mechanized theory.
 <!-- github-publish-stats:end -->
 
 - The internal theory already covers substantial validation, computation, numeric, String, Enumeration, Date/DateTime, repeatable, addressing, message, checked-document, and dependency behavior, with coverage varying independently across execution, proof, kernel evidence, public exposure, and consumer qualification.
 - One immutable, model-certified checked document now owns declared topology and address resolution. A shared addressed core resolves checked Number, String, and stored/category Enumeration operands across independent and nested repeatable groups, preserves hierarchical extent and positional relevance, and keeps structural addressing failures distinct from semantic `UNKNOWN`; typed wrappers retain their exact declaration and projection certificates.
 - Ordered checked Number and token value-list evaluation plus Number aggregates, token distinct count, and projection-bearing token value count consume that same resolved representation with their distinct stopping and fold rules; stored access and multiple named categories on one Enumeration remain distinct exact references rather than a flattened display value.
+- Large semantic families are decomposed into import-only compatibility roots and focused elaboration, evaluation, proof, and conformance modules. This keeps ordinary source below the project’s 1,000-nonblank-line ceiling and lets red/green work rebuild only the affected family.
 - The public reference process advertises reference semantics **0.3.0** over protocol **1**. It currently exposes checked flat validation and one single-group correlation capability and rejects unsupported constructs explicitly.
 - Compact retained observations calibrate selected semantic families; other internally closed families remain honestly marked `external evidence pending`.
 - The immediate hard frontier is completing that canonical addressed operand stream across cross-level, RNU, group, and whole-rule repeatable routes. Whole-document computation scheduling remains gated behind this boundary and its source audit.
@@ -92,6 +93,8 @@ lake build
 lake test
 ./scripts/check-lean-trust.sh
 ```
+
+During development, build the narrowest owning module—for example `lake build A12Kernel.Conformance.NumericValidation.Comparison`—before paying for the integrated gate.
 
 Run the complete reference-process checks:
 
