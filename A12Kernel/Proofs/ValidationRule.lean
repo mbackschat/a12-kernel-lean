@@ -151,38 +151,18 @@ theorem checkedFlatRule_errorField_coherent
     (rule : CheckedResolvedFlatRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
       rule.errorDeclaration.repeatableScope.isEmpty = true ∧
-      rule.condition.core.referencesField rule.errorField = true := by
-  have source : none = rule.iterationSource := by
-    simpa using rule.iterationSourceOwned
-  refine ⟨rule.errorFieldLookup, ?_, rule.errorFieldReferenced⟩
-  cases h : rule.iterationSource with
-  | none =>
-      simpa [h, ruleErrorScopeCompatible] using
-        rule.errorFieldScopeCompatible
-  | some value =>
-      simp [h] at source
+      rule.condition.core.referencesField rule.errorField = true :=
+  ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
+    rule.errorFieldReferenced⟩
 
-/-- Mixed checked assembly uses the shared traversal to certify the exact error declaration and derives its optional iteration source from the same condition tree. -/
+/-- Mixed checked assembly uses the shared traversal to certify the exact error declaration. -/
 theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
-      (match rule.iterationSource with
-        | none => rule.errorDeclaration.repeatableScope.isEmpty = true
-        | some source =>
-            rule.errorDeclaration.repeatableScope =
-              source.path.axes.map (·.level)) ∧
+      rule.errorDeclaration.repeatableScope.isEmpty = true ∧
       rule.condition.core.referencesField rule.errorField = true :=
-  ⟨rule.errorFieldLookup, by
-      cases h : rule.iterationSource <;>
-        simpa [h, ruleErrorScopeCompatible] using
-          rule.errorFieldScopeCompatible,
+  ⟨rule.errorFieldLookup, rule.errorFieldNonrepeatable,
     rule.errorFieldReferenced⟩
-
-/-- A checked mixed rule cannot carry a caller-selected iteration path: its source is exactly the result of traversing the checked condition tree. -/
-theorem checkedValidationRule_iterationSource_owned
-    (rule : CheckedResolvedValidationRule model) :
-    rule.condition.core.iterationSource = .ok rule.iterationSource :=
-  rule.iterationSourceOwned
 
 /-- The scalar checked entry point reports missing addressed context before evaluating a repeatable condition; it cannot manufacture semantic UNKNOWN. -/
 theorem checkedValidationRule_scalar_rejects_addressed

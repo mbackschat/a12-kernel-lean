@@ -21,26 +21,6 @@ inductive ResolvedGroupListOperand where
   | group (reference : ResolvedGroupReference)
   deriving Repr, DecidableEq
 
-/-- Presence operators for one ordinary repeatable rule reference. They reuse the scalar `FieldFilled`/`FieldNotFilled` observation law after the containing rule has supplied the current complete environment. -/
-inductive IteratedFieldPresenceOperator where
-  | filled
-  | notFilled
-  deriving Repr, DecidableEq
-
-namespace IteratedFieldPresenceOperator
-
-def canFireOnEmpty : IteratedFieldPresenceOperator → Bool
-  | .filled => false
-  | .notFilled => true
-
-def eval (operator : IteratedFieldPresenceOperator)
-    (observation : CellObservation) : Verdict :=
-  match operator with
-  | .filled => observation.evalValidationFilled
-  | .notFilled => observation.evalValidationNotFilled
-
-end IteratedFieldPresenceOperator
-
 namespace ResolvedGroupListOperand
 
 def entityPath : ResolvedGroupListOperand → List String
@@ -111,16 +91,10 @@ inductive ValidationConditionLeaf (model : FlatModel) where
       (reference : ResolvedGroupReference)
   | groupList (operator : GroupFillQuantifier)
       (operands : List ResolvedGroupListOperand)
-  | iteratedFieldPresence (operator : IteratedFieldPresenceOperator)
-      (source : CheckedStarFieldPath model)
 
 /-- One connective tree whose leaves may be ordinary flat clauses or model-certified resolved numeric-expression comparisons. -/
 abbrev ValidationCondition (model : FlatModel) :=
   ConditionTree (ValidationConditionLeaf model)
-
-inductive RuleIterationSourceError where
-  | incompatiblePaths (left right : StarPath)
-  deriving Repr, DecidableEq
 
 namespace ValidationCondition
 
@@ -151,11 +125,6 @@ def groupPresence (operator : GroupPresenceOperator)
 def groupList (operator : GroupFillQuantifier)
     (operands : List ResolvedGroupListOperand) : ValidationCondition model :=
   .leaf (.groupList operator operands)
-
-/-- Embed one model-certified ordinary repeatable field reference. The starred path is metadata on the shared tree leaf; whole-rule assembly derives its runtime iteration source from this exact owner. -/
-def iteratedFieldPresence (operator : IteratedFieldPresenceOperator)
-    (source : CheckedStarFieldPath model) : ValidationCondition model :=
-  .leaf (.iteratedFieldPresence operator source)
 
 end ValidationCondition
 
@@ -188,7 +157,6 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
-  | .iteratedFieldPresence operator _ => operator.canFireOnEmpty
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .flat condition, field => condition.referencesField field
@@ -198,20 +166,16 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField model field
-  | .iteratedFieldPresence _ source, field =>
-      source.declaration.id == field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
-  | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
-  | .iteratedFieldPresence _ _ => false
+  | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
-  | .iteratedFieldPresence _ _ => true
   | _ => false
 
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
@@ -226,8 +190,6 @@ def wellFormedBool (rowGroup : GroupPath) :
       reference.scalarPresenceWellFormedBool model rowGroup
   | .groupList _ operands =>
       ResolvedGroupListOperands.wellFormedBool operands model rowGroup
-  | .iteratedFieldPresence _ source =>
-      source.wellFormedBool
 
 /-- Evaluate one reached leaf with its own relevance rule. Ordinary numeric expressions require every field atom, ordered numeric atoms gate their own reached sources, and flat leaf rules retain their existing operator-specific checks. -/
 def evalSelected (context : ValidationEvaluationContext)
@@ -247,16 +209,11 @@ def evalSelected (context : ValidationEvaluationContext)
   | .groupList operator operands =>
       (operator.evalPresence
         (operands.map fun operand => operand.evalPresence context isRelevant)).asConservativeVerdict
-  | .iteratedFieldPresence _ _ => .unknown
 
 /-- Evaluate one addressed leaf through the same relevance rules. Only the model-indexed ordered numeric branch can produce a structural addressing error; every existing scalar/group leaf remains the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except StarAddressingError Verdict
   | .orderedNumeric _ comparison => comparison.evalAddressed context
-  | .iteratedFieldPresence operator source =>
-      pure (operator.eval (observeCell .validation
-        (source.contextualizeCell context.outer
-          (context.read context.outer source.declaration.id))))
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
 
 end ValidationConditionLeaf
@@ -269,24 +226,6 @@ def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
-
-private def mergeIterationSources
-    (left right : Option (CheckedStarFieldPath model)) :
-    Except RuleIterationSourceError (Option (CheckedStarFieldPath model)) :=
-  match left, right with
-  | none, source | source, none => pure source
-  | some leftSource, some rightSource =>
-      if leftSource.path == rightSource.path then pure (some leftSource)
-      else throw (.incompatiblePaths leftSource.path rightSource.path)
-
-/-- Derive the sole ordinary rule-iteration topology from the checked connective tree. Multiple field references may share one path, but incompatible paths cannot be hidden behind connective structure. -/
-def iterationSource :
-    ValidationCondition model →
-      Except RuleIterationSourceError (Option (CheckedStarFieldPath model))
-  | .leaf (.iteratedFieldPresence _ source) => pure (some source)
-  | .leaf _ => pure none
-  | .and left right | .or left right => do
-      mergeIterationSources (← iterationSource left) (← iterationSource right)
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
 def hasHaving (condition : ValidationCondition model) : Bool :=
@@ -341,7 +280,6 @@ inductive ValidationConditionAssemblyError where
   | rootGroupRequiresSoleOperand (path : GroupPath)
   | overlappingGroupListOperands (left right : List String)
   | rowGroupMismatch (left right : GroupPath)
-  | iteratedField (error : StarPathElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -398,21 +336,6 @@ def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
         |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
       checkCore model rowGroup
         (ValidationCondition.groupPresence operator resolved)
-        (by rw [hModel]; rfl)
-
-/-- Resolve one ordinary repeatable field presence reference onto the existing general checked-star owner. Its source remains in the shared condition tree so whole-rule assembly can derive, rather than accept, the runtime iteration plan. -/
-def fromIteratedFieldPresence (model : FlatModel) (rowGroup : GroupPath)
-    (operator : IteratedFieldPresenceOperator)
-    (source : SurfaceStarFieldPath) :
-    Except ValidationConditionAssemblyError
-      (CheckedValidationCondition model) :=
-  match hModel : model.validate with
-  | .error error => .error (.invalidModel error)
-  | .ok () => do
-      let checked ←
-        (elaborateStarFieldPath model rowGroup source).mapError .iteratedField
-      checkCore model rowGroup
-        (ValidationCondition.iteratedFieldPresence operator checked)
         (by rw [hModel]; rfl)
 
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
