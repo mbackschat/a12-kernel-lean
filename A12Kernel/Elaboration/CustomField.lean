@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.Flat.Context
 
 /-! # A12Kernel.Elaboration.CustomField — checked flat custom declarations
 

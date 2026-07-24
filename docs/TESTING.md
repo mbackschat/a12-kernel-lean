@@ -6,13 +6,15 @@ This document owns the test harness and working method for `a12-kernel-lean`. Th
 
 Pay only for the narrowest rung that can answer the current question:
 
-1. **Red/green loop:** build the focused Lake target, for example `lake build A12Kernel.Conformance.NumericValidation`. This refreshes changed imported modules before checking the consumer; direct `lake env lean` elaboration may otherwise read an older built dependency. Stay on this rung while changing the capsule.
+1. **Red/green loop:** build the focused semantic-family Lake target, for example `lake build A12Kernel.Conformance.NumericValidation.Comparison`, not its import-only `A12Kernel.Conformance.NumericValidation` umbrella. This refreshes changed imported modules before checking the consumer; direct `lake env lean` elaboration may otherwise read an older built dependency. Stay on this rung while changing the capsule. If the smallest target is an umbrella or a legacy file containing unrelated families, extract the family being changed before extending it; focused compilation is part of the module-boundary acceptance criterion.
 2. **Integrated semantic check:** run `lake build` once after the focused modules are green. This checks the complete library, proof root, conformance root, and default executable targets.
 3. **Retained evidence:** run `lake test` once for a completed Tier 1 semantic capsule. Add a family-specific replay only when the capsule belongs to an active Tier 2 calibration batch.
 4. **Pre-commit trust and hygiene:** run `./scripts/check-lean-trust.sh`, `git diff --check`, and the scoped/full status checks once after the integrated diff is stable. A successful trust audit emits one summary line; a failure preserves the underlying Lean diagnostics.
 5. **Public-process checks:** run `checkReferenceProcess`, `checkBoundedProcess`, and candidate self-tests only when the public process, shipment, or process machinery changed, or before a release.
 
 Do not restart at a more expensive rung after a documentation-only edit unless that document is itself consumed by the corresponding gate.
+
+Lean elaborates and caches one `.olean` per module, so semantic ownership and compilation ownership must agree. Keep import-only compatibility roots at the historical module path, place definitions/proofs/cases in focused child modules, and import the narrowest dependency stratum that actually owns the used declaration. The permanent size policy in [`CLAUDE.md`](../CLAUDE.md#semantic-first-simplification-rule) targets at most 600 nonblank lines and forbids ordinary source above 1,000. `TrustAudit.lean` is the sole current exception: its exhaustive theorem-root presentation intentionally remains one Lean session because splitting it would restore repeated process startup and duplicate environment loading; it contains registry commands only, not semantics or fixtures.
 
 ## Default assurance cadence
 

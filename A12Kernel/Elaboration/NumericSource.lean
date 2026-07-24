@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.DateDifference
