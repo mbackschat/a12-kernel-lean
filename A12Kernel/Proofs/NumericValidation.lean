@@ -81,6 +81,24 @@ theorem orderedNumericValidationAtom_aggregate_checkedDocument_delegates
         op document outer).map NumericOperand.toValidationArithmetic := by
   rfl
 
+/-- Whole-rule addressed validation preserves `FirstFilledValue`'s checked-document prefix scan and changes only its terminal numeric projection. -/
+theorem orderedNumericValidationAtom_firstFilled_checkedDocument_delegates
+    (source : CheckedNumberEntitySource model)
+    (scalar : ValidationEvaluationContext) (document : CheckedDocument model)
+    (outer : Env) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.firstFilled source) {
+          scalar, outer, input := .checked document
+        } =
+      (do
+        let result ←
+          source.evaluateCheckedDocumentValidation document outer .full
+        match result with
+        | .nonRelevant => pure (.error .nonRelevant)
+        | .evaluated result =>
+            pure result.asValidationOperand.toValidationArithmetic) := by
+  rfl
+
 /-- Addressed generated validation preserves the checked value-count constant and per-selected-cell filter provenance through the sole validation-phase evaluator. -/
 theorem orderedNumericValidationAtom_valueCount_addressed_delegates
     (source : CheckedNumberEntitySource model) (expected : Rat)
@@ -93,6 +111,19 @@ theorem orderedNumericValidationAtom_valueCount_addressed_delegates
       ((source.evaluateValueCountValidationIn expected document
         outer scalar.fields read).mapError CheckedAddressingError.addressing).map
           NumericOperand.toValidationArithmetic := by
+  rfl
+
+/-- Whole-rule addressed validation delegates Number value count to the sole checked-document draining fold without altering its expected value or filter provenance. -/
+theorem orderedNumericValidationAtom_valueCount_checkedDocument_delegates
+    (source : CheckedNumberEntitySource model) (expected : Rat)
+    (scalar : ValidationEvaluationContext) (document : CheckedDocument model)
+    (outer : Env) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.valueCount expected source) {
+          scalar, outer, input := .checked document
+        } =
+      (source.evaluateCheckedDocumentValueCountValidation
+        expected document outer).map NumericOperand.toValidationArithmetic := by
   rfl
 
 /-- Addressed generated validation preserves the complete checked token source and delegates to its sole validation-phase traversal. -/
