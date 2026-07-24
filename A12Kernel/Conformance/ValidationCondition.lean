@@ -15,6 +15,14 @@ private def x : FlatNumberField := { id := 4, info := unsigned }
 private def d : FlatNumberField := { id := 5, info := unsigned }
 private def p : FlatNumberField := { id := 6, info := unsigned }
 
+private def nestedValue : FlatFieldDecl :=
+  { id := 7, groupPath := ["Order", "Items", "Lines"], name := "Z",
+    policy := { kind := .number unsigned }, repeatableScope := [10, 20] }
+
+private def otherRowValue : FlatFieldDecl :=
+  { id := 8, groupPath := ["Order", "OtherRows"], name := "Y",
+    policy := { kind := .number unsigned }, repeatableScope := [30] }
+
 private def model : FlatModel :=
   { fields := [
       { id := u.id, groupPath := ["Order"], name := "U",
@@ -28,8 +36,13 @@ private def model : FlatModel :=
       { id := d.id, groupPath := ["Order", "Details"], name := "D",
         policy := { kind := .number unsigned } },
       { id := p.id, groupPath := ["Order", "Preferences"], name := "P",
-        policy := { kind := .number unsigned } }]
-    repeatableGroups := [{ level := 10, path := ["Order", "Items"] }] }
+        policy := { kind := .number unsigned } },
+      nestedValue,
+      otherRowValue]
+    repeatableGroups := [
+      { level := 10, path := ["Order", "Items"] },
+      { level := 20, path := ["Order", "Items", "Lines"] },
+      { level := 30, path := ["Order", "OtherRows"] }] }
 
 private def fieldPath (name : String) : SurfaceFieldPath :=
   { base := .absolute, groups := ["Order"], field := name }
@@ -42,6 +55,109 @@ private def numericSurface : SurfaceNumericComparison :=
 private def numericSurfaceIn (group field : String) : SurfaceNumericComparison :=
   { numericSurface with left := .atom (.field {
       base := .absolute, groups := [group], field }) }
+
+private def nestedStarPath (outerStar : Bool) : SurfaceStarFieldPath :=
+  { base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Items", starred := outerStar },
+      { name := "Lines", starred := true }]
+    field := "Z" }
+
+private def nestedStarSource (outerStar : Bool) : SurfaceNumberEntitySource :=
+  { first := .star (nestedStarPath outerStar)
+    rest := [] }
+
+private def nestedStarHavingSource
+    (outerStar : Bool) : SurfaceNumberEntitySource :=
+  { first := .starHaving (nestedStarPath outerStar)
+      (.compareNumbers .equal
+        { origin := .inner
+          field := {
+            base := .absolute
+            groups := ["Order", "Items", "Lines"]
+            field := "Z" } }
+        { origin := .outer
+          field := {
+            base := .absolute
+            groups := ["Order", "Items"]
+            field := "X" } })
+    rest := [] }
+
+private def nestedStarHavingRepetitionSource :
+    SurfaceNumberEntitySource :=
+  { first := .starHaving (nestedStarPath true)
+      (.compareRepetitions .equal
+        { origin := .inner
+          group := .path {
+            base := .absolute
+            groups := ["Order", "Items", "Lines"] } }
+        { origin := .outer
+          group := .path {
+            base := .absolute
+            groups := ["Order", "Items"] } })
+    rest := [] }
+
+private def checkedAggregateCondition?
+    (authored : SurfaceNumberEntitySource) :
+    Option (ValidationCondition model) := do
+  let source ←
+    (elaborateNumberEntitySource model ["Order", "Items"]
+      authored).toOption
+  let comparison : OrderedNumericComparison model := {
+    op := .ordinary .greater
+    left := .atom (.aggregate .sum source)
+    right := .literal { value := 0, authoredScale := 0 } }
+  pure (ValidationCondition.orderedNumericIn
+    .modelWideCheckedComputation comparison)
+
+private def checkedStarAggregateCondition?
+    (outerStar : Bool) (having : Bool := false) :
+    Option (ValidationCondition model) :=
+  checkedAggregateCondition?
+    (if having then nestedStarHavingSource outerStar
+      else nestedStarSource outerStar)
+
+private def checkedStarRepetitionHavingCondition? :
+    Option (ValidationCondition model) :=
+  checkedAggregateCondition? nestedStarHavingRepetitionSource
+
+private def starAggregateIterationScope
+    (outerStar : Bool) (having : Bool := false) :
+    Option (Except ValidationCondition.RuleIterationScopeError
+      (Option (List RepeatableLevel))) :=
+  checkedStarAggregateCondition? outerStar having
+    |>.map (·.ordinaryIterationScope)
+
+private def incompatibleStarAndOrdinaryScope :
+    Option (Except ValidationCondition.RuleIterationScopeError
+      (Option (List RepeatableLevel))) := do
+  let star ← checkedStarAggregateCondition? false
+  let ordinary := ValidationCondition.repeatableFieldPresence
+    (model := model) .filled otherRowValue
+  pure (ValidationCondition.ordinaryIterationScope
+    (ConditionTree.and star ordinary))
+
+private def hasStarAggregateIterationScope
+    (outerStar : Bool) (expected : Option (List RepeatableLevel))
+    (having : Bool := false) : Bool :=
+  match starAggregateIterationScope outerStar having with
+  | some (.ok actual) => actual == expected
+  | _ => false
+
+private def hasIncompatibleStarAndOrdinaryScope : Bool :=
+  match incompatibleStarAndOrdinaryScope with
+  | some (.error (.incompatibleScopes left right)) =>
+      left == [10] && right == [30]
+  | _ => false
+
+private def hasOuterRepetitionIterationScope : Bool :=
+  match checkedStarRepetitionHavingCondition? with
+  | some condition =>
+      match condition.ordinaryIterationScope with
+      | .ok actual => actual == some [10]
+      | .error _ => false
+  | _ => false
 
 private def condition? : Option (ValidationCondition model) := do
   let checked ← (elaborateNumericComparison model ["Order"] numericSurface).toOption
@@ -442,6 +558,15 @@ example :
       checked.core.referencesField d.id &&
         checked.core.referencesField p.id &&
         !checked.core.referencesField u.id) = some true := by
+  native_decide
+
+/- A starred numeric operand contributes its nonempty checked binding prefix above the first star. Candidate-local filter references remain operand-local, but checked `$` Number and repetition references contribute their captured outer scope. An unrelated ordinary scope is rejected rather than positional-joined. -/
+example :
+    hasStarAggregateIterationScope false (some [10]) = true ∧
+      hasStarAggregateIterationScope true none = true ∧
+      hasStarAggregateIterationScope true (some [10]) true = true ∧
+      hasOuterRepetitionIterationScope = true ∧
+      hasIncompatibleStarAndOrdinaryScope = true := by
   native_decide
 
 end A12Kernel.Conformance.ValidationCondition

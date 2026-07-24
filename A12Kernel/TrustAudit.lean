@@ -861,6 +861,7 @@ run_cmd do
 #print axioms A12Kernel.observe_withOverRepetition_computation
 #print axioms A12Kernel.checkedStarFieldPath_ancestry
 #print axioms A12Kernel.checkedStarFieldPath_firstStar_lt
+#print axioms A12Kernel.checkedStarFieldPath_bindingScope
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_partialSet_iff
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
