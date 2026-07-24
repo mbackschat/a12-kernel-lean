@@ -128,12 +128,13 @@ private def FlatModel.admitsNumberInGroup (model : FlatModel) (rowGroup : GroupP
         declaration.toNumberField? == some field
   | .error _ => false
 
-private def FlatModel.admitsAddressedNumberInGroup (model : FlatModel)
+private def FlatModel.admitsAddressedNumber (model : FlatModel)
     (rowGroup : GroupPath) (field : FlatNumberField) : Bool :=
   match model.lookupUniqueId field.id with
   | .ok declaration =>
-      declaration.groupPath == rowGroup &&
-        declaration.toNumberField? == some field
+      declaration.toNumberField? == some field &&
+        declaration.repeatableScope.isPrefixOf
+          (model.repeatableScopeForGroupPath rowGroup)
   | .error _ => false
 
 private def FlatModel.admitsTemporalInGroup (model : FlatModel)
@@ -205,7 +206,7 @@ private def NumericValidationAtom.admitted
       match scope with
       | .sameGroup => model.admitsNumberInGroup rowGroup source
       | .sameGroupAddressed =>
-          model.admitsAddressedNumberInGroup rowGroup source
+          model.admitsAddressedNumber rowGroup source
       | .modelWideNonrepeatable | .modelWideCheckedComputation =>
           model.admitsNumberModelWide source
   | .baseYear year => model.baseYear == some year
@@ -682,7 +683,8 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .field reference => do
       let declaration ←
         (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .resolve
-      if declaration.groupPath != rowGroup then
+      if !declaration.repeatableScope.isPrefixOf
+          (model.repeatableScopeForGroupPath rowGroup) then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       match declaration.toNumberField? with
       | some field => pure (.field field)

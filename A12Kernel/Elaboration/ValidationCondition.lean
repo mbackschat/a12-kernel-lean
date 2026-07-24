@@ -610,68 +610,91 @@ private def directOrdinaryNumberReferenceScopes?
       pure (leftScopes ++ rightScopes)
   | .atom _ => none
 
-private def commonDirectOrdinaryNumberScope?
-    (model : FlatModel)
-    (expression :
-      AuthoredNumericExpr (OrderedNumericValidationAtom model)) :
-    Option (List RepeatableLevel) := do
-  let scopes ← directOrdinaryNumberReferenceScopes? model expression
-  let first ← scopes.head?
-  if scopes.all (· == first) then some first else none
+private inductive LevelReferenceShape where
+  | none
+  | allIterating
+  | mixed
 
-/-- Direct-field `Abs`, rounding, and Min/Max are operation-list consumers of the same source guard. Compatible-but-mixed scopes and specialized entity-list bodies retain their own packet. -/
-private def directNumberWrapperScope?
+private def levelReferenceShapeAt (level : RepeatableLevel)
+    (scopes : List (List RepeatableLevel)) : LevelReferenceShape :=
+  let iterating := scopes.map (·.contains level)
+  if iterating.any id then
+    if iterating.all id then .allIterating else .mixed
+  else
+    .none
+
+/-- Direct-field `Abs`, rounding, and Min/Max are operation-list consumers of the same per-level reference classifier. -/
+private def directNumberWrapperReferenceScopes?
     (model : FlatModel) :
     AuthoredNumericExpr (OrderedNumericValidationAtom model) →
-      Option (List RepeatableLevel)
-  | .group body => directNumberWrapperScope? model body
+      Option (List (List RepeatableLevel))
+  | .group body => directNumberWrapperReferenceScopes? model body
   | .abs body | .round _ _ body | .extremumCall _ body =>
-      commonDirectOrdinaryNumberScope? model body
+      directOrdinaryNumberReferenceScopes? model body
   | _ => none
 
 private def orderedNumericDirectWrapperLiteralGuardAt
     (level : RepeatableLevel)
     (comparison : OrderedNumericComparison model) :
     Option IterationGuardStatus :=
-  orderedNumericScopedLiteralGuardAt
-    (directNumberWrapperScope? model) level comparison
+  let classify wrapperExpr literalExpr := do
+    let scopes ← directNumberWrapperReferenceScopes? model wrapperExpr
+    match literalExpr with
+    | .literal _ =>
+        match levelReferenceShapeAt level scopes with
+        | .none => some .noReference
+        | .mixed => some .unguarded
+        | .allIterating =>
+            let literal ← safeIntegralLiteralValue? literalExpr
+            if literal == 0 &&
+                directEmptyZeroIsUnguarded comparison.op then
+              some .unguarded
+            else
+              some .guarded
+    | _ => none
+  match classify comparison.left comparison.right with
+  | some status => some status
+  | none => classify comparison.right comparison.left
 
-private def commonPlainStarNumberSourceScope?
+private def numberEntityOperandReferenceScope? :
+    CheckedNumberEntityOperand model →
+      Option (List RepeatableLevel)
+  | .field _ => some []
+  | .star checked => checkedStarBindingScope checked.source
+  | .starHaving _ => none
+
+private def numberEntityReferenceScopes?
     (source : CheckedNumberEntitySource model) :
-    Option (List RepeatableLevel) := do
-  let scopes ← source.operands.mapM fun
-    | .star checked => checkedStarBindingScope checked.source
-    | .field _ | .starHaving _ => none
-  let first ← scopes.head?
-  if scopes.all (· == first) then some first else none
+    Option (List (List RepeatableLevel)) :=
+  source.operands.mapM numberEntityOperandReferenceScope?
 
-private def commonPlainStarProductScope?
+private def productReferenceScopes?
     (source : CheckedNumericProductAggregate model) :
-    Option (List RepeatableLevel) := do
+    Option (List (List RepeatableLevel)) := do
   let left ← checkedStarBindingScope source.left.source
   let right ← checkedStarBindingScope source.right.source
-  if left == right then some left else none
+  pure [left, right]
 
-private structure PlainStarNumericGuardShape where
-  scope : List RepeatableLevel
+private structure NumericEntityGuardShape where
+  referenceScopes : List (List RepeatableLevel)
   zeroSensitive : Bool
   positiveSensitive : Bool
 
-/-- The source visitor gives plain-star Number operations two independent static sensitivities: empty-zero substitution and a positive count threshold. -/
-private def plainStarNumericGuardShape? :
+/-- The source visitor gives Number entity operations two independent static sensitivities plus a stronger any-constant rejection when their references mix at the queried level. -/
+private def numericEntityGuardShape? :
     OrderedNumericValidationAtom model →
-      Option PlainStarNumericGuardShape
+      Option NumericEntityGuardShape
   | .firstFilled source =>
-      (commonPlainStarNumberSourceScope? source).map (⟨·, true, false⟩)
+      (numberEntityReferenceScopes? source).map (⟨·, true, false⟩)
   | .valueCount _ source =>
-      (commonPlainStarNumberSourceScope? source).map (⟨·, true, true⟩)
+      (numberEntityReferenceScopes? source).map (⟨·, true, true⟩)
   | .aggregate op source =>
-      (commonPlainStarNumberSourceScope? source).map fun scope =>
+      (numberEntityReferenceScopes? source).map fun scopes =>
         match op with
-        | .sum | .minimum | .maximum => ⟨scope, true, false⟩
-        | .distinctCount => ⟨scope, false, true⟩
+        | .sum | .minimum | .maximum => ⟨scopes, true, false⟩
+        | .distinctCount => ⟨scopes, false, true⟩
   | .sumOfProducts source =>
-      (commonPlainStarProductScope? source).map (⟨·, true, false⟩)
+      (productReferenceScopes? source).map (⟨·, true, false⟩)
   | .ordinary _ | .tokenValueCount _ => none
 
 private def positiveCountThresholdIsUnguarded
@@ -695,18 +718,23 @@ private def orderedNumericPlainStarLiteralGuardAt
     let atom ← match entityExpr with
       | .atom atom => some atom
       | _ => none
-    let shape ← plainStarNumericGuardShape? atom
-    let literal ← safeIntegralLiteralValue? literalExpr
-    if shape.scope.contains level then
-      if (shape.zeroSensitive && literal == 0 &&
-            directEmptyZeroIsUnguarded comparison.op) ||
-          (shape.positiveSensitive && 0 < literal &&
-            positiveCountThresholdIsUnguarded entityOnLeft comparison.op) then
-        some .unguarded
-      else
-        some .guarded
-    else
-      some .noReference
+    let shape ← numericEntityGuardShape? atom
+    match literalExpr with
+    | .literal _ =>
+        match levelReferenceShapeAt level shape.referenceScopes with
+        | .none => some .noReference
+        | .mixed => some .unguarded
+        | .allIterating =>
+            let literal ← safeIntegralLiteralValue? literalExpr
+            if (shape.zeroSensitive && literal == 0 &&
+                  directEmptyZeroIsUnguarded comparison.op) ||
+                (shape.positiveSensitive && 0 < literal &&
+                  positiveCountThresholdIsUnguarded
+                    entityOnLeft comparison.op) then
+              some .unguarded
+            else
+              some .guarded
+    | _ => none
   match classify comparison.left comparison.right true with
   | some status => some status
   | none => classify comparison.right comparison.left false
