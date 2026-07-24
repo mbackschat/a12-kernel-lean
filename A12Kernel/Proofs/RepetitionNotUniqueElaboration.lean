@@ -126,4 +126,17 @@ theorem checkedRepetitionNotUnique_evaluate_of_rows
   simp [CheckedRepetitionNotUniqueSource.evaluate, resolved]
   rfl
 
+/-- Once immutable checked-document row construction succeeds, evaluation changes no key, order, cluster, or verdict; it delegates to the same branch-independent relation. -/
+theorem checkedRepetitionNotUnique_evaluateChecked_of_rows
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope)
+    (rows : List ResolvedRepetitionKeyRow)
+    (resolved :
+      checked.resolvedRowsChecked document outer scope = .ok rows) :
+    checked.evaluateChecked document outer scope =
+      .ok (evalRepetitionNotUnique rows) := by
+  simp [CheckedRepetitionNotUniqueSource.evaluateChecked, resolved]
+  rfl
+
 end A12Kernel

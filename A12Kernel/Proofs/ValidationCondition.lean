@@ -358,6 +358,34 @@ theorem validationCondition_repeatablePresence_iterationGuardStatusAt
         else .noReference := by
   rfl
 
+/-- One checked RNU source always selects the addressed evaluator and contributes its model-owned key declarations to ordinary row reads. -/
+theorem validationCondition_repetitionNotUnique_addressingPolicy
+    (model : FlatModel)
+    (source : CheckedRepetitionNotUniqueSource model) :
+    (ValidationCondition.repetitionNotUnique source).requiresAddressedValidation =
+        true ∧
+      (ValidationCondition.repetitionNotUnique source).ordinaryRepeatableFields =
+        source.keys.map fun key => key.source.declaration := by
+  exact ⟨rfl, rfl⟩
+
+/-- A prepared current-row RNU result enters the shared connective evaluator unchanged; a row mismatch remains a structural failure. -/
+theorem validationCondition_repetitionNotUnique_preparedResult
+    (model : FlatModel)
+    (source : CheckedRepetitionNotUniqueSource model)
+    (context : AddressedValidationEvaluationContext model)
+    (result : RepetitionNotUniqueResult) :
+    (ValidationCondition.repetitionNotUnique source).evalAddressedWithRepetitionNotUnique
+        context (some result) =
+      if result.row == context.outer then
+        (pure result.verdict : Except CheckedAddressingError Verdict)
+      else
+        .error (.repetitionNotUniqueResult context.outer) := by
+  by_cases sameRow : result.row = context.outer <;>
+    simp [ValidationCondition.repetitionNotUnique,
+    ValidationCondition.evalAddressedWithRepetitionNotUnique,
+    ValidationConditionLeaf.evalAddressedWithRepetitionNotUnique,
+    ConditionTree.evalVerdictExcept, sameRow]
+
 /-- At a singleton ordinary scope, one source-classified unguarded condition becomes the exact static rejection level. -/
 theorem validationCondition_iterationLegality_singleton_unguarded
     (condition : ValidationCondition model) (level : RepeatableLevel)

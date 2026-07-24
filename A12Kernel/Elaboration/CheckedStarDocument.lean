@@ -16,6 +16,7 @@ inductive CheckedAddressingError where
   | field (field : FieldId) (cause : ResolveError)
   | environment (cause : EnvBindingError)
   | document (cause : CheckedDocumentError)
+  | repetitionNotUniqueResult (row : Env)
   deriving Repr, DecidableEq
 
 /-- Compatibility name for the original one-star projection API. -/

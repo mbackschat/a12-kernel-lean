@@ -91,6 +91,7 @@ import A12Kernel.Conformance.TokenDistinctCount
 import A12Kernel.Conformance.TokenValueCount
 import A12Kernel.Conformance.RepetitionNotUnique
 import A12Kernel.Conformance.RepetitionNotUniqueElaboration
+import A12Kernel.Conformance.RepetitionNotUniqueValidationRule
 import A12Kernel.Conformance.Enumeration
 import A12Kernel.Conformance.EnumerationComparability
 import A12Kernel.Conformance.EnumerationElaboration
