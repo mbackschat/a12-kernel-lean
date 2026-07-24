@@ -549,8 +549,15 @@ private def innerAmount : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } }
     repeatableScope := [10, 20] }
 
+private def sectionDetail : FlatFieldDecl :=
+  { id := 32
+    groupPath := ["Order", "Sections", "Details"]
+    name := "SectionDetail"
+    policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := [10] }
+
 private def ordinaryIterationModel : FlatModel :=
-  { fields := [outerAmount, innerAmount]
+  { fields := [outerAmount, innerAmount, sectionDetail]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -579,6 +586,31 @@ private def outerIterationCondition? :
   (CheckedValidationCondition.fromRepeatableFieldPresence
     ordinaryIterationModel ["Order"] .filled
     (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+
+private def absoluteGroup (groups : GroupPath) : SurfaceGroupReference := .path { base := .absolute, groups }
+
+private def ordinaryGroupPresenceRule?
+    (rowGroup : GroupPath) (reference : SurfaceGroupReference)
+    (target : FlatFieldDecl) (errorCode : String) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ←
+    (CheckedValidationCondition.fromGroupPresence ordinaryIterationModel
+      rowGroup reference .filled).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition target.id
+    errorCode .error { parts := [] }).toOption
+
+private def outerGroupPathRule? :=
+  ordinaryGroupPresenceRule? ["Order"]
+    (absoluteGroup ["Order", "Sections"]) outerAmount "outerGroupPath"
+
+private def outerRuleGroupRule? :=
+  ordinaryGroupPresenceRule? ["Order", "Sections"]
+    (.ruleGroup false) outerAmount "outerRuleGroup"
+
+private def detailGroupPathRule? :=
+  ordinaryGroupPresenceRule? ["Order"]
+    (absoluteGroup ["Order", "Sections", "Details"])
+    sectionDetail "detailGroupPath"
 
 private def ordinaryRepeatableNumericRuleAt?
     (groups : List String) (field : String)
@@ -794,6 +826,22 @@ example :
         some (some [10], true) := by
   native_decide
 
+/- Ordinary group paths and `RuleGroup` retain distinct authored origins while deriving the same current-row scope. -/
+example :
+    (outerGroupPathRule?.map fun rule =>
+      (rule.iterationScope, rule.requiresAddressedValidation,
+        match rule.condition.core with
+        | .leaf (.groupPresence _ reference) => reference.origin
+        | _ => .ruleGroup)) =
+        some (some [10], true, .path) ∧
+    (outerRuleGroupRule?.map fun rule =>
+      (rule.iterationScope, rule.requiresAddressedValidation,
+        match rule.condition.core with
+        | .leaf (.groupPresence _ reference) => reference.origin
+        | _ => .path)) =
+        some (some [10], true, .ruleGroup) := by
+  native_decide
+
 /- The addressed entry rejects a scalar-only comparison because the established scalar elaborator already owns that representation. -/
 example :
     (elaborateNumericComparison model ["Order"] amountPositive).isOk = true ∧
@@ -834,6 +882,64 @@ private def evalOrdinaryRule? (rule :
 private def classifiedCell (field : FieldId) (path : List Nat)
     (stored : String) (raw : RawCell) : ClassifiedCellInput :=
   { address := { field, path }, stored, raw }
+
+private def instantiatedEmptySectionsData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [2] },
+      { group := 10, path := [1] }]
+    cells := [] }
+
+private def oneSectionDetailData (cell : Option RawCell) : DocumentData :=
+  { instantiatedRows := [{ group := 10, path := [1] }]
+    cells := cell.toList.map fun raw =>
+      classifiedCell sectionDetail.id [1]
+        (match raw with
+        | .parsed (.num value) => toString value
+        | .presentEmpty => ""
+        | .rejected _ => "bad"
+        | _ => "")
+        raw }
+
+private def groupRuleVerdicts?
+    (rule : Option (CheckedResolvedValidationRule ordinaryIterationModel))
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checkedRule ← rule
+  let outcomes ← evalOrdinaryRule? checkedRule data
+  pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+private def checkedOrdinaryIterationDocument?
+    (data : DocumentData) : Option (CheckedDocument ordinaryIterationModel) := do
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  (checkDocument prepared "en_US" data).toOption
+
+private def addressedGroupConsumerSnapshot?
+    (data : DocumentData) (groupPath : GroupPath) (environment : Env)
+    (target : FlatFieldDecl) (relevance : GroupRelevance) :
+    Option (GroupPath × CellAddr × GroupPresenceState) := do
+  let document ← checkedOrdinaryIterationDocument? data
+  let input ←
+    (document.groupPresenceInput groupPath environment relevance false).toOption
+  let errorTarget ← (document.addressedCell environment target.id).toOption
+  pure (groupPath, errorTarget.address, input.derive)
+
+private def detailGroupStructuralFailure? :
+    Option CheckedAddressingError := do
+  let rule ← detailGroupPathRule?
+  let document ←
+    checkedOrdinaryIterationDocument? (oneSectionDetailData none)
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match rule.condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
 
 private def outerInnerAggregateData : DocumentData :=
   { instantiatedRows := [
@@ -1002,6 +1108,68 @@ example :
     (outerEmptyRule?.bind fun rule =>
       evalOrdinaryRule? rule { instantiatedRows := [], cells := [] }) =
       some [] := by
+  native_decide
+
+/- Both authored group-reference forms iterate the actual group rows in immutable document order. A created empty row is structural content, while zero rows produce no evaluation. -/
+example :
+    (groupRuleVerdicts? outerGroupPathRule? instantiatedEmptySectionsData ==
+        some [
+          ([(10, 2)], .fired .value),
+          ([(10, 1)], .fired .value)]) = true ∧
+    (groupRuleVerdicts? outerRuleGroupRule? instantiatedEmptySectionsData ==
+        some [
+          ([(10, 2)], .fired .value),
+          ([(10, 1)], .fired .value)]) = true ∧
+    (groupRuleVerdicts? outerGroupPathRule?
+        { instantiatedRows := [], cells := [] } == some []) = true := by
+  native_decide
+
+/- A nonrepeatable descendant group inside the selected row is filled only by admitted descendant content: absence and malformed-only input remain non-firing, while the malformed cell remains independently visible as group error. -/
+example :
+    (groupRuleVerdicts? detailGroupPathRule?
+        (oneSectionDetailData (some (.parsed (.num 7)))) ==
+      some [([(10, 1)], .fired .value)]) = true ∧
+    (groupRuleVerdicts? detailGroupPathRule?
+        (oneSectionDetailData none) ==
+      some [([(10, 1)], .notFired)]) = true ∧
+    (groupRuleVerdicts? detailGroupPathRule?
+        (oneSectionDetailData (some (.rejected .malformed))) ==
+      some [([(10, 1)], .notFired)]) = true := by
+  native_decide
+
+/- Execute/Transform/Explain consumers recover the exact group and target addresses plus the uncollapsed admitted-content × error × relevance state from the same checked document used by rule execution. -/
+example :
+    addressedGroupConsumerSnapshot? instantiatedEmptySectionsData
+        ["Order", "Sections"] [(10, 1)] outerAmount .fullyRelevant =
+      some (
+        ["Order", "Sections"],
+        { field := outerAmount.id, path := [1] },
+        { content := true, erroneous := false,
+          relevance := .fullyRelevant }) ∧
+    addressedGroupConsumerSnapshot?
+        (oneSectionDetailData (some (.parsed (.num 7))))
+        ["Order", "Sections", "Details"] [(10, 1)]
+        sectionDetail .partlyRelevant =
+      some (
+        ["Order", "Sections", "Details"],
+        { field := sectionDetail.id, path := [1] },
+        { content := true, erroneous := false,
+          relevance := .partlyRelevant }) ∧
+    addressedGroupConsumerSnapshot?
+        (oneSectionDetailData (some (.rejected .malformed)))
+        ["Order", "Sections", "Details"] [(10, 1)]
+        sectionDetail .fullyRelevant =
+      some (
+        ["Order", "Sections", "Details"],
+        { field := sectionDetail.id, path := [1] },
+        { content := false, erroneous := true,
+          relevance := .fullyRelevant }) := by
+  native_decide
+
+/- A missing group binding is structural insufficient information, never semantic UNKNOWN. -/
+example :
+    detailGroupStructuralFailure? =
+      some (.group (.missingBinding 10)) := by
   native_decide
 
 private def ordinaryNumericData (stored : String) (raw : Option RawCell) : DocumentData :=

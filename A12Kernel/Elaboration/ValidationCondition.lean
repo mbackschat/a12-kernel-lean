@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation
+import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.ValidationContext
 
@@ -157,10 +158,13 @@ end ValidationCondition
 
 namespace ResolvedGroupReference
 
-/-- A scalar group-presence leaf either names a nonrepeatable ordinary group, or uses `RuleGroup` to bind the already-selected concrete rule instance. Wider repeatable addressing must be resolved before this boundary grows. -/
-def scalarPresenceWellFormedBool (reference : ResolvedGroupReference)
+/-- A group-presence leaf retains one known ordinary group path or the exact declaring `RuleGroup`. Whether it needs a row environment is derived separately from the resolved path's repeatable scope. -/
+def presenceWellFormedBool (reference : ResolvedGroupReference)
     (model : FlatModel) (rowGroup : GroupPath) : Bool :=
-  reference.fixedWellFormedBool model rowGroup
+  model.hasGroupPath reference.path &&
+    match reference.origin with
+    | .path => true
+    | .ruleGroup => reference.path == rowGroup
 
 end ResolvedGroupReference
 
@@ -207,6 +211,8 @@ def hasHaving : ValidationConditionLeaf model → Bool
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
+  | .groupPresence _ reference =>
+      !(model.repeatableScopeForGroupPath reference.path).isEmpty
   | .repeatableFieldPresence _ _ => true
   | _ => false
 
@@ -219,7 +225,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   | .orderedNumeric scope comparison =>
       comparison.wellFormedInBool rowGroup scope
   | .groupPresence _ reference =>
-      reference.scalarPresenceWellFormedBool model rowGroup
+      reference.presenceWellFormedBool model rowGroup
   | .groupList _ operands =>
       ResolvedGroupListOperands.wellFormedBool operands model rowGroup
   | .repeatableFieldPresence _ declaration =>
@@ -252,6 +258,17 @@ def evalSelected (context : ValidationEvaluationContext)
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
   | .orderedNumeric _ comparison => comparison.evalAddressed context
+  | .groupPresence operator reference =>
+      match context.input with
+      | .legacy _ _ =>
+          let leaf : ValidationConditionLeaf model :=
+            .groupPresence operator reference
+          pure (leaf.evalSelected context.scalar context.directRelevant)
+      | .checked document => do
+          let input ←
+            (document.groupPresenceInput reference.path context.outer
+              .fullyRelevant false).mapError .group
+          pure (operator.eval input.derive)
   | .repeatableFieldPresence operator declaration => do
       pure (operator.eval
         (observeCell .validation
@@ -454,6 +471,9 @@ def ordinaryIterationScope :
       Except RuleIterationScopeError (Option (List RepeatableLevel))
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
+  | .leaf (.groupPresence _ reference) =>
+      let scope := model.repeatableScopeForGroupPath reference.path
+      pure (if scope.isEmpty then none else some scope)
   | .leaf (.orderedNumeric _ comparison) =>
       orderedNumericComparisonIterationScope comparison
   | .leaf _ => pure none
@@ -494,11 +514,11 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
   | .and left right | .or left right =>
       ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
 
-/-- The first whole-rule route accepts established nonrepeatable flat leaves, ordinary repeatable presence, and the checked same-group addressed Number policy. Specialized star sources retain their existing owners until their rule-environment bridge closes. -/
+/-- The first whole-rule route accepts established nonrepeatable flat leaves, ordinary repeatable field/group presence, and the checked same-group addressed Number policy. Specialized star sources retain their existing owners until their rule-environment bridge closes. -/
 def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
-    | .flat _ | .repeatableFieldPresence _ _ => true
+    | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | _ => false
 
@@ -610,15 +630,17 @@ def fromOrderedNumeric
       comparison.operandScope comparison.core)
     comparison.modelWellFormed
 
-/-- Resolve and certify one scalar group-presence predicate against the same model and declaring group used by the surrounding rule. -/
+  /-- Resolve and certify one group-presence predicate against the same model and declaring group used by the surrounding rule. Repeatable ancestry is retained for the addressed whole-rule route rather than rejected as a fixed-list operand. -/
 def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
     (reference : SurfaceGroupReference) (operator : GroupPresenceOperator) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
-      let resolved ← model.resolveFixedGroupReference rowGroup reference
-        |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
+      let resolved ← reference.resolveAgainst rowGroup
+        |>.mapError ValidationConditionAssemblyError.groupReference
+      if !model.hasGroupPath resolved.path then
+        throw (.unknownGroup resolved.path)
       checkCore model rowGroup
         (ValidationCondition.groupPresence operator resolved)
         (by rw [hModel]; rfl)
