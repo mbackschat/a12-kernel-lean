@@ -269,8 +269,8 @@ run_cmd do
 #print axioms A12Kernel.computationHavingResolvingScan_terminalCurrent_hidesAfterSuccessor
 #print axioms A12Kernel.explicitSelfExclusion_drops_outer
 #print axioms A12Kernel.sameFieldEquality_selfMatches
-#print axioms A12Kernel.crossLevelCorrelation_outer_levels_resolve
-#print axioms A12Kernel.crossLevelCorrelation_no_single_outer_row
+#print axioms A12Kernel.env_crossLevel_bindings_resolve
+#print axioms A12Kernel.env_offDiagonal_bindings_not_collapsible
 
 #print axioms A12Kernel.checkedSingleCorrelatedRule_wellFormed
 #print axioms A12Kernel.checkedSingleCorrelatedRule_modelWellFormed

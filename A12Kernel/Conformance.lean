@@ -29,7 +29,6 @@ import A12Kernel.Conformance.CorrelationElaboration
 import A12Kernel.Conformance.FlatValidation
 import A12Kernel.Conformance.ValidationRule
 import A12Kernel.Conformance.Correlation
-import A12Kernel.Conformance.CrossLevelCorrelation
 import A12Kernel.Conformance.Iteration
 import A12Kernel.Conformance.Observation
 import A12Kernel.Conformance.TemporalValue
