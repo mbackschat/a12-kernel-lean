@@ -636,6 +636,72 @@ private def orderedNumericDirectWrapperLiteralGuardAt
   orderedNumericScopedLiteralGuardAt
     (directNumberWrapperScope? model) level comparison
 
+private def commonPlainStarNumberSourceScope?
+    (source : CheckedNumberEntitySource model) :
+    Option (List RepeatableLevel) := do
+  let scopes ← source.operands.mapM fun
+    | .star checked => checkedStarBindingScope checked.source
+    | .field _ | .starHaving _ => none
+  let first ← scopes.head?
+  if scopes.all (· == first) then some first else none
+
+private structure PlainStarNumberEntityGuardShape where
+  scope : List RepeatableLevel
+  zeroSensitive : Bool
+  positiveSensitive : Bool
+
+/-- The source visitor gives plain-star Number entity-list operations two independent static sensitivities: empty-zero substitution and a positive count threshold. -/
+private def plainStarNumberEntityGuardShape? :
+    OrderedNumericValidationAtom model →
+      Option PlainStarNumberEntityGuardShape
+  | .firstFilled source =>
+      (commonPlainStarNumberSourceScope? source).map (⟨·, true, false⟩)
+  | .valueCount _ source =>
+      (commonPlainStarNumberSourceScope? source).map (⟨·, true, true⟩)
+  | .aggregate op source =>
+      (commonPlainStarNumberSourceScope? source).map fun scope =>
+        match op with
+        | .sum | .minimum | .maximum => ⟨scope, true, false⟩
+        | .distinctCount => ⟨scope, false, true⟩
+  | .ordinary _ | .tokenValueCount _ | .sumOfProducts _ => none
+
+private def positiveCountThresholdIsUnguarded
+    (entityOnLeft : Bool) : NumericValidationOp → Bool
+  | .tolerance _ => true
+  | .ordinary comparison =>
+      if entityOnLeft then
+        match comparison with
+        | .less | .lessEqual | .notEqual => true
+        | .equal | .greater | .greaterEqual => false
+      else
+        match comparison with
+        | .greater | .greaterEqual | .notEqual => true
+        | .equal | .less | .lessEqual => false
+
+private def orderedNumericPlainStarEntityLiteralGuardAt
+    (level : RepeatableLevel)
+    (comparison : OrderedNumericComparison model) :
+    Option IterationGuardStatus :=
+  let classify entityExpr literalExpr entityOnLeft := do
+    let atom ← match entityExpr with
+      | .atom atom => some atom
+      | _ => none
+    let shape ← plainStarNumberEntityGuardShape? atom
+    let literal ← safeIntegralLiteralValue? literalExpr
+    if shape.scope.contains level then
+      if (shape.zeroSensitive && literal == 0 &&
+            directEmptyZeroIsUnguarded comparison.op) ||
+          (shape.positiveSensitive && 0 < literal &&
+            positiveCountThresholdIsUnguarded entityOnLeft comparison.op) then
+        some .unguarded
+      else
+        some .guarded
+    else
+      some .noReference
+  match classify comparison.left comparison.right true with
+  | some status => some status
+  | none => classify comparison.right comparison.left false
+
 /-- Preserve the source visitor's top-level parse-tree distinction: ordinary binary arithmetic and power are composite operations, so the direct field/list-versus-constant branches do not classify them. Grouping retains the underlying operation root. -/
 private def isTopLevelCompositeNumericOperation :
     AuthoredNumericExpr Atom → Bool
@@ -666,17 +732,20 @@ private def ValidationConditionLeaf.iterationGuardAt
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status
       | none =>
-          match orderedNumericDirectWrapperLiteralGuardAt level comparison with
+          match orderedNumericPlainStarEntityLiteralGuardAt level comparison with
           | some status => status
           | none =>
-              match orderedNumericDirectFieldLiteralGuardAt level comparison with
+              match orderedNumericDirectWrapperLiteralGuardAt level comparison with
               | some status => status
               | none =>
-                  match orderedNumericComparisonIterationScope comparison with
-                  | .ok (some scope) =>
-                      if scope.contains level then .unclassified else .noReference
-                  | .ok none => .noReference
-                  | .error _ => .unclassified
+                  match orderedNumericDirectFieldLiteralGuardAt level comparison with
+                  | some status => status
+                  | none =>
+                      match orderedNumericComparisonIterationScope comparison with
+                      | .ok (some scope) =>
+                          if scope.contains level then .unclassified else .noReference
+                      | .ok none => .noReference
+                      | .error _ => .unclassified
   | .groupPresence operator reference =>
       if (model.repeatableScopeForGroupPath reference.path).contains level then
         match operator with
