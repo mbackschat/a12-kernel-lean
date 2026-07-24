@@ -28,17 +28,16 @@ The detailed readiness fields live only in those gap entries. Every capsule rece
 
 ## Active capsule
 
-First reconcile the returned a12-dmkits disposition for [`SPEC-2026-07-24-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-24-01--ordinary-rule-iteration-is-derived-from-condition-references) in its existing row. Then continue [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by widening the now-closed ordinary/deeper-aggregate whole-rule bridge to the existing checked prefix-lazy `FirstFilledValue` and Number value-count sources. Preserve each source’s established stopping, filter, tail, and failure timing; do not generalize the bridge to token/product/computation sources without their own checked-document owner and bounded packet.
+Continue [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by widening the now-closed ordinary/deeper-aggregate whole-rule bridge to the existing checked prefix-lazy `FirstFilledValue` and Number value-count sources. Preserve each source’s established stopping, filter, tail, and failure timing; do not generalize the bridge to token/product/computation sources without their own checked-document owner and bounded packet. Accepted [`SPEC-2026-07-24-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-24-01--ordinary-rule-iteration-is-derived-from-condition-references) closes the peer canonical correction and triangulates the existing iteration matrix without changing local semantics.
 
 Consumer hypothesis: Execute, Transform, and Explain consumers must follow one checked rule instance through a prefix-lazy or counting source, recover fixed outer bindings and exact selected addresses, and distinguish hidden suffixes, selected empty cells, hierarchical tails, and structural failure. Reusing aggregate draining semantics for `FirstFilledValue`, or prefix stopping for value count, is unsafe. Token/product sources and indirect group or parallel joins remain explicit insufficient information.
 
 ## Immediate frontier
 
-1. Verify a12-dmkits revision `f43a7ccf` against the existing `SPEC-2026-07-24-01` acceptance and contrary-evidence rules, including the negative-condition by-catch, then update only that row and any genuinely corrected canonical owner.
-2. Red-lock bound-outer `FirstFilledValue` and Number value-count separators: present or formal head hiding later structural failure, earlier empty reaching the next selected cell, counting every selected cell, hierarchical tail polarity, and filtered successor timing.
-3. Reuse the exclusive addressed input, immutable checked document, captured `Env`, existing checked source evaluators, ordered numeric tree, and sole emitter. Do not add another resolver, iterator, numeric carrier, or error projection.
-4. Close with the same-context Execute/Transform/Explain hypothesis above. This remains widening of one runtime bridge, not the SG2 cold milestone.
-5. Keep SG4 prohibited until SG2, the explicit processing context, and every SG4 source-audit category close. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix.
+1. Red-lock bound-outer `FirstFilledValue` and Number value-count separators: present or formal head hiding later structural failure, earlier empty reaching the next selected cell, counting every selected cell, hierarchical tail polarity, and filtered successor timing.
+2. Reuse the exclusive addressed input, immutable checked document, captured `Env`, existing checked source evaluators, ordered numeric tree, and sole emitter. Do not add another resolver, iterator, numeric carrier, or error projection.
+3. Close with the same-context Execute/Transform/Explain hypothesis above. This remains widening of one runtime bridge, not the SG2 cold milestone.
+4. Keep SG4 prohibited until SG2, the explicit processing context, and every SG4 source-audit category close. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix.
 
 ## Parked boundaries
 
