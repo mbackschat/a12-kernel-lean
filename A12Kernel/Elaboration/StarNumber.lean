@@ -67,12 +67,19 @@ def checkedCell (checked : CheckedStarNumberSource model)
     (read : Env → FieldId → RawCell) (environment : Env) : CheckedCell :=
   checked.source.checkedCell read environment
 
-/-- Classify one caller-supplied checked leaf in the requested phase after applying the path-owned over-repetition overlay. SG2 must derive this low-level reader from the closed checked document for whole-rule consumers. -/
+/-- Classify one caller-supplied checked leaf in the requested phase after applying the path-owned over-repetition overlay. -/
+def checkedValueListCell (checked : CheckedStarNumberSource model)
+    (phase : Phase) (cell : CheckedCell)
+    (environment : Env) : ValueListCell .number :=
+  (observeCell phase
+    (checked.source.contextualizeCell environment cell)).asNumberValueListCell
+
+/-- Read and classify one checked leaf through the same source-owned projection. SG2 derives this low-level reader from the closed checked document for whole-rule consumers. -/
 def checkedValueListCellAt (checked : CheckedStarNumberSource model)
     (phase : Phase) (read : Env → FieldId → CheckedCell)
     (environment : Env) : ValueListCell .number :=
-  (observeCell phase (checked.source.contextualizeCell environment
-    (read environment checked.field.id))).asNumberValueListCell
+  checked.checkedValueListCell phase
+    (read environment checked.field.id) environment
 
 /-- Classify one raw leaf in the requested phase through declaration-owned scalar checking and the common checked-cell route. -/
 def valueListCellAt (checked : CheckedStarNumberSource model) (phase : Phase)
