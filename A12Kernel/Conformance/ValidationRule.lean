@@ -656,6 +656,99 @@ private def outerWithInnerAggregateRule? :
   (assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
     "outerWithInnerAggregate" .error { parts := [] }).toOption
 
+private def innerAmountSelfHaving : SurfaceCorrelatedHaving :=
+  .compareNumbers .equal
+    { origin := .inner
+      field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
+    { origin := .inner
+      field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
+
+private def deeperInnerNumberSource?
+    (withFilteredDuplicate : Bool := false) :
+    Option (CheckedNumberEntitySource ordinaryIterationModel) :=
+  (elaborateNumberEntitySource ordinaryIterationModel
+    ["Order", "Sections"] {
+      first := .star deeperInnerAmountStar
+      rest := if withFilteredDuplicate then
+        [.starHaving deeperInnerAmountStar innerAmountSelfHaving]
+      else []
+    }).toOption
+
+private def checkedOuterEntityComparison?
+    (core : OrderedNumericComparison ordinaryIterationModel) :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) :=
+  if hCore : core.wellFormedInBool ["Order", "Sections"]
+      .sameGroupAddressed = true then
+    some {
+      rowGroup := ["Order", "Sections"]
+      operandScope := .sameGroupAddressed
+      core
+      modelWellFormed := by native_decide
+      wellFormed := hCore
+    }
+  else
+    none
+
+private def outerWithInnerEntityComparison?
+    (atom : OrderedNumericValidationAtom ordinaryIterationModel)
+    (right : Rat) :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) := do
+  let outerField ← outerAmount.toNumberField?
+  checkedOuterEntityComparison? {
+    op := .ordinary .equal
+    left := .binary .add
+      (.atom (.ordinary (.field outerField)))
+      (.atom atom)
+    right := .literal { value := right, authoredScale := 0 }
+  }
+
+private def outerWithInnerFirstFilledComparison? :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) := do
+  let source ← deeperInnerNumberSource?
+  outerWithInnerEntityComparison? (.firstFilled source) 5
+
+private def outerWithInnerValueCountComparison? :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) := do
+  let source ← deeperInnerNumberSource?
+  outerWithInnerEntityComparison? (.valueCount 4 source) 2
+
+private def outerWithFilteredInnerFirstFilledComparison? :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) := do
+  let source ← deeperInnerNumberSource? true
+  outerWithInnerEntityComparison? (.firstFilled source) 5
+
+private def outerWithFilteredInnerValueCountComparison? :
+    Option (CheckedOrderedNumericComparison ordinaryIterationModel) := do
+  let source ← deeperInnerNumberSource? true
+  outerWithInnerEntityComparison? (.valueCount 4 source) 3
+
+private def outerWithInnerEntityRule?
+    (comparison :
+      Option (CheckedOrderedNumericComparison ordinaryIterationModel))
+    (errorCode : String) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let numeric ← comparison
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
+    errorCode .error { parts := [] }).toOption
+
+private def outerWithInnerFirstFilledRule? :=
+  outerWithInnerEntityRule? outerWithInnerFirstFilledComparison?
+    "outerWithInnerFirstFilled"
+
+private def outerWithInnerValueCountRule? :=
+  outerWithInnerEntityRule? outerWithInnerValueCountComparison?
+    "outerWithInnerValueCount"
+
+private def outerWithFilteredInnerFirstFilledRule? :=
+  outerWithInnerEntityRule? outerWithFilteredInnerFirstFilledComparison?
+    "outerWithFilteredInnerFirstFilled"
+
+private def outerWithFilteredInnerValueCountRule? :=
+  outerWithInnerEntityRule? outerWithFilteredInnerValueCountComparison?
+    "outerWithFilteredInnerValueCount"
+
 /- Nested compatible ordinary references derive the deepest scope from the checked tree; the declaring group and error-field argument cannot override it. -/
 example :
     (ordinaryIterationRule?.map fun rule =>
@@ -689,6 +782,16 @@ example :
     (outerWithInnerAggregateRule?.map fun rule =>
       (rule.iterationScope, rule.requiresAddressedValidation)) =
       some (some [10], true) := by
+  native_decide
+
+/- The existing checked prefix and counting sources enter the same addressed whole-rule bridge and contribute only the fixed outer binding above their reopened star. -/
+example :
+    (outerWithInnerFirstFilledRule?.map fun rule =>
+      (rule.iterationScope, rule.requiresAddressedValidation)) =
+        some (some [10], true) ∧
+      (outerWithInnerValueCountRule?.map fun rule =>
+        (rule.iterationScope, rule.requiresAddressedValidation)) =
+        some (some [10], true) := by
   native_decide
 
 /- The addressed entry rejects a scalar-only comparison because the established scalar elaborator already owns that representation. -/
@@ -763,6 +866,42 @@ private def oneOuterAggregateVerdict?
     (evalOrdinaryRule? rule (oneOuterAggregateData outer)).bind fun outcomes =>
       outcomes.head?.map fun outcome => outcome.2.verdict
 
+private def oneOuterEntityData
+    (rows : List RowIndex)
+    (cells : List (RowIndex × String × RawCell)) : DocumentData :=
+  { instantiatedRows :=
+      { group := 10, path := [1] } ::
+        rows.map fun row => { group := 20, path := [1, row] }
+    cells :=
+      classifiedCell outerAmount.id [1] "1" (.parsed (.num 1)) ::
+        cells.map fun (row, stored, raw) =>
+          classifiedCell innerAmount.id [1, row] stored raw }
+
+private def prefixBeforeMalformedEntityData : DocumentData :=
+  oneOuterEntityData [1, 2] [
+    (1, "4", .parsed (.num 4)),
+    (2, "bad", .rejected .malformed)]
+
+private def emptyBeforeValueEntityData : DocumentData :=
+  oneOuterEntityData [1, 2] [(2, "4", .parsed (.num 4))]
+
+private def openTailAfterValueEntityData : DocumentData :=
+  oneOuterEntityData [1] [(1, "4", .parsed (.num 4))]
+
+private def entityRuleVerdict?
+    (rule :
+      Option (CheckedResolvedValidationRule ordinaryIterationModel))
+    (data : DocumentData) : Option Verdict := do
+  let checkedRule ← rule
+  let outcomes ← evalOrdinaryRule? checkedRule data
+  outcomes.head?.map fun outcome => outcome.2.verdict
+
+private def firstFilledEntityVerdict? (data : DocumentData) : Option Verdict :=
+  entityRuleVerdict? outerWithInnerFirstFilledRule? data
+
+private def valueCountEntityVerdict? (data : DocumentData) : Option Verdict :=
+  entityRuleVerdict? outerWithInnerValueCountRule? data
+
 private def checkedOuterInnerAggregate? :
     Option (CheckedDocument ordinaryIterationModel ×
       CheckedNumberEntitySource ordinaryIterationModel) := do
@@ -795,6 +934,47 @@ private def innerAggregateStructuralFailure? :
   match source.evaluateCheckedDocumentValidationAggregate .sum document [] with
   | .ok _ => none
   | .error cause => some cause
+
+private def checkedInnerEntitySource?
+    (data : DocumentData) :
+    Option (CheckedDocument ordinaryIterationModel ×
+      CheckedNumberEntitySource ordinaryIterationModel) := do
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let source ← deeperInnerNumberSource?
+  pure (document, source)
+
+private def innerEntityConsumerSnapshot?
+    (data : DocumentData) (outer : Env) :
+    Option (List CellAddr × List (Option String) × Bool ×
+      PartialValidationFirstFilledNumberResult × NumericOperand) := do
+  let (document, source) ← checkedInnerEntitySource? data
+  let resolved ←
+    (source.first.resolveCheckedValidationOperand document outer).toOption
+  let firstFilled ←
+    (source.evaluateCheckedDocumentValidation document outer .full).toOption
+  let valueCount ←
+    (source.evaluateCheckedDocumentValueCountValidation
+      4 document outer).toOption
+  pure (resolved.addressedCells.map (·.address),
+    resolved.addressedCells.map (·.stored),
+    resolved.hasUninstantiatedTail, firstFilled, valueCount)
+
+private def innerEntityStructuralFailures? :
+    Option (CheckedAddressingError × CheckedAddressingError) := do
+  let (document, source) ←
+    checkedInnerEntitySource? openTailAfterValueEntityData
+  let firstFilledFailure ←
+    match source.evaluateCheckedDocumentValidation document [] .full with
+    | .ok _ => none
+    | .error cause => some cause
+  let valueCountFailure ←
+    match source.evaluateCheckedDocumentValueCountValidation 4 document [] with
+    | .ok _ => none
+    | .error cause => some cause
+  pure (firstFilledFailure, valueCountFailure)
 
 /- Runtime follows actual deepest-row document order and retains complete parent coordinates in both the consumer-visible environment and emitted error address. -/
 example :
@@ -897,6 +1077,40 @@ example :
         some .unknown := by
   native_decide
 
+/- `FirstFilledValue` retains its prefix stop through the whole-rule bridge, while value count drains the same selected cells and reaches the malformed suffix. -/
+example :
+    firstFilledEntityVerdict? prefixBeforeMalformedEntityData =
+        some (.fired .value) ∧
+      valueCountEntityVerdict? prefixBeforeMalformedEntityData =
+        some .unknown := by
+  native_decide
+
+/- An earlier empty selected cell reaches the later value for both consumers and preserves the established fillable polarity. -/
+example :
+    firstFilledEntityVerdict? emptyBeforeValueEntityData =
+        some (.fired .omission) ∧
+      valueCountEntityVerdict? emptyBeforeValueEntityData =
+        some (.fired .omission) := by
+  native_decide
+
+/- A present prefix makes the uninstantiated suffix irrelevant to `FirstFilledValue`; the draining count retains the same hierarchical tail as grow-only uncertainty. -/
+example :
+    firstFilledEntityVerdict? openTailAfterValueEntityData =
+        some (.fired .value) ∧
+      valueCountEntityVerdict? openTailAfterValueEntityData =
+        some (.fired .omission) := by
+  native_decide
+
+/- A terminal value in an unfiltered slot hides the later filtered duplicate from `FirstFilledValue`; value count drains it, counts the second match, and retains matched-filter shrinkability. -/
+example :
+    entityRuleVerdict? outerWithFilteredInnerFirstFilledRule?
+        openTailAfterValueEntityData =
+        some (.fired .value) ∧
+      entityRuleVerdict? outerWithFilteredInnerValueCountRule?
+        openTailAfterValueEntityData =
+        some (.fired .omission) := by
+  native_decide
+
 /- Execute/Transform/Explain consumers can recover complete addresses, exact stored payload, and hierarchical extent from the same checked source used by rule evaluation; a terminal coordinate never identifies a cell by itself. -/
 example :
     outerInnerAggregateConsumerSnapshot? [(10, 2)] =
@@ -909,10 +1123,28 @@ example :
           [some "2"], true) := by
   native_decide
 
+/- The same checked source exposes the exact selected address, stored payload, hierarchical tail, and each consumer-specific result without a second operand stream. -/
+example :
+    innerEntityConsumerSnapshot? openTailAfterValueEntityData [(10, 1)] =
+      some ([
+          { field := innerAmount.id, path := [1, 1] }],
+        [some "4"], true,
+        .evaluated (.value 4 false),
+        .value 1 .growOnly) := by
+  native_decide
+
 /- A reached missing captured binding remains a structural addressing failure outside semantic UNKNOWN. -/
 example :
     innerAggregateStructuralFailure? =
       some (.addressing (.missingBinding 10)) := by
+  native_decide
+
+/- Both newly admitted consumers preserve the same missing binding as a rich structural failure rather than projecting it to semantic UNKNOWN. -/
+example :
+    innerEntityStructuralFailures? =
+      some (
+        .addressing (.missingBinding 10),
+        .addressing (.missingBinding 10)) := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule

@@ -399,7 +399,7 @@ private def checkedNumberEntitySourceAdmittedIn
     (rowGroup : GroupPath) (scope : NumericOperandScope) : Bool :=
   match scope with
   | .modelWideCheckedComputation => true
-  | .sameGroupAddressed => false
+  | .sameGroupAddressed => source.directResolvedFields?.isNone
   | .sameGroup | .modelWideNonrepeatable =>
       match source.directResolvedFields? with
       | none => false
