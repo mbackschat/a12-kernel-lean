@@ -562,6 +562,19 @@ private def baseAmount : FlatFieldDecl :=
     name := "BaseAmount"
     policy := { kind := .number { scale := 0, signed := true } } }
 
+private def innerToken : FlatFieldDecl :=
+  { id := 35
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerToken"
+    policy := { kind := .string }
+    repeatableScope := [10, 20] }
+
+private def baseToken : FlatFieldDecl :=
+  { id := 36
+    groupPath := ["Order"]
+    name := "BaseToken"
+    policy := { kind := .string } }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -570,7 +583,8 @@ private def sectionDetail : FlatFieldDecl :=
     repeatableScope := [10] }
 
 private def ordinaryIterationModel : FlatModel :=
-  { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount]
+  { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount,
+      innerToken, baseToken]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -766,6 +780,9 @@ private def deeperInnerAmountStar : SurfaceStarFieldPath :=
 private def deeperInnerPriceStar : SurfaceStarFieldPath :=
   { deeperInnerAmountStar with field := "InnerPrice" }
 
+private def deeperInnerTokenStar : SurfaceStarFieldPath :=
+  { deeperInnerAmountStar with field := "InnerToken" }
+
 private def outerWithInnerAggregateCore? :
     Option (OrderedNumericComparison ordinaryIterationModel) := do
   let outerField ← outerAmount.toNumberField?
@@ -863,18 +880,14 @@ private def checkedOuterEntityComparison?
   else
     none
 
-private def numberEntityLegality?
-    (source? : Option
-      (CheckedNumberEntitySource ordinaryIterationModel))
-    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
-      OrderedNumericValidationAtom ordinaryIterationModel)
+private def orderedAtomLegality?
+    (atom : OrderedNumericValidationAtom ordinaryIterationModel)
     (op : NumericValidationOp) (expected : Rat)
     (literalOnLeft : Bool := false) :
     Option ValidationCondition.IterationLegality := do
-  let source ← source?
   let entity : AuthoredNumericExpr
       (OrderedNumericValidationAtom ordinaryIterationModel) :=
-    .atom (atomOf source)
+    .atom atom
   let literal : AuthoredNumericExpr
       (OrderedNumericValidationAtom ordinaryIterationModel) :=
     .literal { value := expected, authoredScale := 0 }
@@ -886,6 +899,17 @@ private def numberEntityLegality?
   let condition ←
     (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
   condition.core.iterationLegality.toOption
+
+private def numberEntityLegality?
+    (source? : Option
+      (CheckedNumberEntitySource ordinaryIterationModel))
+    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
+      OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let source ← source?
+  orderedAtomLegality? (atomOf source) op expected literalOnLeft
 
 private def plainStarEntityLegality?
     (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
@@ -918,6 +942,48 @@ private def filterMixedReferenceEntityLegality?
     Option ValidationCondition.IterationLegality :=
   numberEntityLegality? filterMixedReferenceNumberSource?
     atomOf op expected
+
+private def plainStarTokenValueCountSource? :
+    Option (CheckedTokenValueCountSource ordinaryIterationModel) :=
+  (elaborateTokenValueCountSource ordinaryIterationModel
+    ["Order", "Sections"] "A" {
+      first := .star deeperInnerTokenStar .stored
+      rest := []
+    }).toOption
+
+private def mixedTokenValueCountSource? :
+    Option (CheckedTokenValueCountSource ordinaryIterationModel) :=
+  (elaborateTokenValueCountSource ordinaryIterationModel
+    ["Order", "Sections"] "A" {
+      first := .field (.direct (ordinaryPath ["Order"] "BaseToken"))
+      rest := [.star deeperInnerTokenStar .stored]
+    }).toOption
+
+private def tokenValueCountLegality?
+    (source? : Option
+      (CheckedTokenValueCountSource ordinaryIterationModel))
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let source ← source?
+  orderedAtomLegality? (.tokenValueCount source)
+    op expected literalOnLeft
+
+private def outerWithInnerTokenValueCountRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let outerField ← outerAmount.toNumberField?
+  let source ← plainStarTokenValueCountSource?
+  let comparison ← checkedOuterEntityComparison? {
+    op := .ordinary .greater
+    left := .binary .add
+      (.atom (.ordinary (.field outerField)))
+      (.atom (.tokenValueCount source))
+    right := .literal { value := 2, authoredScale := 0 }
+  }
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
+    "outerWithInnerTokenValueCount" .error { parts := [] }).toOption
 
 private def mixedScopeWrappedNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
@@ -1305,6 +1371,20 @@ example :
       (.ordinary .equal) 1 = some .legal := by
   native_decide
 
+/- String/Enumeration `NumberOfValueInFields` has the same zero and positive-threshold sensitivities as its Number overload. A mixed direct/star target list takes the stronger any-literal branch. -/
+example :
+    tokenValueCountLegality? plainStarTokenValueCountSource?
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    tokenValueCountLegality? plainStarTokenValueCountSource?
+      (.ordinary .lessEqual) 1 = some (.invalid 10) ∧
+    tokenValueCountLegality? plainStarTokenValueCountSource?
+      (.ordinary .greaterEqual) 1 true = some (.invalid 10) ∧
+    tokenValueCountLegality? plainStarTokenValueCountSource?
+      (.ordinary .equal) 1 = some .legal ∧
+    tokenValueCountLegality? mixedTokenValueCountSource?
+      (.ordinary .greater) (2 / 5) = some (.invalid 10) := by
+  native_decide
+
 /- `SumOfProducts` shares only the plain-star zero-sensitive branch; a positive not-equal threshold remains admitted. -/
 example :
     plainStarProductLegality? (.ordinary .equal) 0 =
@@ -1337,6 +1417,60 @@ private def evalOrdinaryRule? (rule :
       ordinaryIterationModel).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
   (rule.evalOrdinaryRepeatableFull checked).toOption
+
+private def outerInnerTokenValueCountData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] },
+      { group := 20, path := [1, 2] }]
+    cells := [
+      { address := { field := outerAmount.id, path := [1] }
+        stored := "1"
+        raw := .parsed (.num 1) },
+      { address := { field := innerToken.id, path := [1, 1] }
+        stored := "A"
+        raw := .parsed (.str "A") },
+      { address := { field := innerToken.id, path := [1, 2] }
+        stored := "A"
+        raw := .parsed (.str "A") }] }
+
+private def outerInnerTokenValueCountSnapshot? :
+    Option (Option (List RepeatableLevel) × Bool ×
+      List (Env × Verdict × Option CellAddr)) := do
+  let rule ← outerWithInnerTokenValueCountRule?
+  let outcomes ← evalOrdinaryRule? rule outerInnerTokenValueCountData
+  pure (
+    rule.iterationScope,
+    rule.requiresAddressedValidation,
+    outcomes.map fun entry =>
+      (entry.1, entry.2.verdict,
+        entry.2.message?.map (·.errorAddress)))
+
+private def tokenValueCountStructuralFailure? :
+    Option CheckedAddressingError := do
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US" outerInnerTokenValueCountData).toOption
+  let source ← plainStarTokenValueCountSource?
+  match source.evaluateCheckedDocumentValidation document [] with
+  | .ok _ => none
+  | .error error => some error
+
+/- The ordinary checked-document route retains the typed token source and its projection-aware count fold, then emits through the same outer-row rule environment. -/
+example :
+    (outerInnerTokenValueCountSnapshot? ==
+      some (
+        some [10],
+        true,
+        [(
+          [(10, 1)],
+          .fired .value,
+          some { field := outerAmount.id, path := [1] })])) = true ∧
+      tokenValueCountStructuralFailure? =
+        some (.addressing (.missingBinding 10)) := by
+  native_decide
 
 private def plainStarProductData (withRightValues : Bool) : DocumentData :=
   { instantiatedRows := [

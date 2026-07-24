@@ -140,6 +140,19 @@ theorem orderedNumericValidationAtom_tokenValueCount_addressed_delegates
           NumericOperand.toValidationArithmetic := by
   rfl
 
+/-- Whole-rule addressed validation delegates typed token value count to the shared checked-document operand resolver and unchanged projection-aware fold. -/
+theorem orderedNumericValidationAtom_tokenValueCount_checkedDocument_delegates
+    (source : CheckedTokenValueCountSource model)
+    (scalar : ValidationEvaluationContext) (document : CheckedDocument model)
+    (outer : Env) :
+    OrderedNumericValidationAtom.resolveAddressed
+        (.tokenValueCount source) {
+          scalar, outer, input := .checked document
+        } =
+      (source.evaluateCheckedDocumentValidation
+        document outer).map NumericOperand.toValidationArithmetic := by
+  rfl
+
 /-- Addressed generated validation delegates `SumOfProducts` to the sole checked row-paired fold and changes only its numeric-domain projection. -/
 theorem orderedNumericValidationAtom_sumOfProducts_addressed_delegates
     (source : CheckedNumericProductAggregate model)
