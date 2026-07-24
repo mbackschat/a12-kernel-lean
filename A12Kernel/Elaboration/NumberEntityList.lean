@@ -222,30 +222,39 @@ def elaborateNumberEntitySource (model : FlatModel)
 structure ResolvedCheckedNumberEntityOperand (model : FlatModel) where
   private mk ::
   source : CheckedNumberEntityOperand model
-  topology : Option ResolvedStarTopology
-  addressedCells : List CheckedAddressedCell
-  hasUninstantiatedTail : Bool
-  hasHaving : Bool
-  hasNonRelevant : Bool
+  core : ResolvedCheckedEntityOperandCore
 
 namespace ResolvedCheckedNumberEntityOperand
+
+def topology (resolved : ResolvedCheckedNumberEntityOperand model) :
+    Option ResolvedStarTopology :=
+  resolved.core.topology
+
+def addressedCells (resolved : ResolvedCheckedNumberEntityOperand model) :
+    List CheckedAddressedCell :=
+  resolved.core.addressedCells
+
+def hasUninstantiatedTail
+    (resolved : ResolvedCheckedNumberEntityOperand model) : Bool :=
+  resolved.core.hasUninstantiatedTail
+
+def hasHaving (resolved : ResolvedCheckedNumberEntityOperand model) : Bool :=
+  resolved.core.hasHaving
+
+def hasNonRelevant
+    (resolved : ResolvedCheckedNumberEntityOperand model) : Bool :=
+  resolved.core.hasNonRelevant
 
 /-- Project the rich addressed operand to the existing semantic side without losing its operand-local structural metadata. -/
 def valueListSideAt (resolved : ResolvedCheckedNumberEntityOperand model)
     (phase : Phase) : ResolvedValueListSide .number :=
-  { cells := resolved.addressedCells.map fun addressed =>
+  { cells := resolved.core.addressedCells.map fun addressed =>
       (observeCell phase addressed.cell).asNumberValueListCell
-    hasUninstantiatedTail := resolved.hasUninstantiatedTail
-    hasHaving := resolved.hasHaving
-    hasNonRelevant := resolved.hasNonRelevant }
+    hasUninstantiatedTail := resolved.core.hasUninstantiatedTail
+    hasHaving := resolved.core.hasHaving
+    hasNonRelevant := resolved.core.hasNonRelevant }
 
 end ResolvedCheckedNumberEntityOperand
-
-private def addressNumberEnvironments (document : CheckedDocument model)
-    (field : FlatNumberField) (environments : List Env) :
-    Except CheckedAddressingError (List CheckedAddressedCell) :=
-  environments.mapM fun environment =>
-    document.addressedCell environment field.id
 
 namespace CheckedNumberEntityOperand
 
@@ -257,42 +266,17 @@ def resolveCheckedValidationOperand
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
   | .field direct => do
-      let addressed ← document.addressedCell [] direct.field.id
-      pure {
-        source
-        topology := none
-        addressedCells := [addressed]
-        hasUninstantiatedTail := false
-        hasHaving := false
-        hasNonRelevant := false }
+      let core ← document.resolveCheckedDirectEntityOperandCore direct.field.id
+      pure { source, core }
   | .star starSource => do
-      let topology ←
-        (starSource.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let addressedCells ←
-        addressNumberEnvironments document starSource.field topology.environments
-      pure {
-        source
-        topology := some topology
-        addressedCells
-        hasUninstantiatedTail := topology.domain.hasOpenTail
-        hasHaving := false
-        hasNonRelevant := false }
+      let core ← starSource.source.resolveCheckedValidationEntityOperandCore
+        document outer none
+      pure { source, core }
   | .starHaving filtered => do
-      let topology ←
-        (filtered.source.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let selected ← filtered.having.selectEnvironmentsResolving
-        document.resolvingCorrelationContext outer topology.environments
-      let addressedCells ←
-        addressNumberEnvironments document filtered.source.field selected
-      pure {
-        source
-        topology := some topology
-        addressedCells
-        hasUninstantiatedTail := topology.domain.hasOpenTail
-        hasHaving := true
-        hasNonRelevant := false }
+      let core ←
+        filtered.source.source.resolveCheckedValidationEntityOperandCore
+          document outer (some filtered.having)
+      pure { source, core }
 
 /-- Resolve one unfiltered partial-validation operand. Direct masking precedes its read; a star retains canonical topology, reads only relevant concrete cells, and records incomplete extent on that exact authored operand. -/
 def resolveCheckedPartialValidationOperand
@@ -304,46 +288,18 @@ def resolveCheckedPartialValidationOperand
   match source with
   | .field direct =>
       if scope.coversCell model direct.declaration.path [] then do
-        let addressed ← document.addressedCell [] direct.field.id
-        pure {
-          source
-          topology := none
-          addressedCells := [addressed]
-          hasUninstantiatedTail := false
-          hasHaving := false
-          hasNonRelevant := false }
+        let core ← document.resolveCheckedDirectEntityOperandCore direct.field.id
+        pure { source, core }
       else
-        pure {
-          source
-          topology := none
-          addressedCells := []
-          hasUninstantiatedTail := false
-          hasHaving := false
-          hasNonRelevant := true }
+        pure { source, core := .nonRelevant }
   | .star starSource => do
-      let topology ←
-        (starSource.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let relevant := topology.environments.filter fun environment =>
-        starSource.source.cellRelevant scope environment
-      let addressedCells ←
-        addressNumberEnvironments document starSource.field relevant
-      pure {
-        source
-        topology := some topology
-        addressedCells
-        hasUninstantiatedTail := topology.domain.hasOpenTail
-        hasHaving := false
-        hasNonRelevant := !starSource.source.allRowsRelevant scope }
+      let core ←
+        starSource.source.resolveCheckedPartialValidationEntityOperandCore
+          document outer scope
+      pure { source, core }
   | .starHaving _ =>
       -- The owning rule checks `hasHaving` and skips before any operand resolver.
-      pure {
-        source
-        topology := none
-        addressedCells := []
-        hasUninstantiatedTail := false
-        hasHaving := true
-        hasNonRelevant := false }
+      pure { source, core := .skippedHaving }
 
 end CheckedNumberEntityOperand
 

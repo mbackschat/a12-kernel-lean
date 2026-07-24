@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Semantics.EnumerationValueList
 
@@ -74,6 +75,10 @@ def isStar : CheckedTokenEntityOperand model → Bool
 def hasHaving : CheckedTokenEntityOperand model → Bool
   | .field _ => false
   | .star source => source.filter.isSome
+
+def tokenOperand : CheckedTokenEntityOperand model → FlatTextFieldOperand
+  | .field source => source.operand
+  | .star source => source.operand
 
 def referencesField (checked : CheckedTokenEntityOperand model)
     (field : FieldId) : Bool :=
@@ -254,6 +259,44 @@ def elaborateTokenEntitySource (model : FlatModel)
   let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
   assembleTokenEntitySource shape.modelWellFormed first rest
 
+/-- One authored String/stored-or-category Enumeration operand resolved against the immutable checked input. The typed source retains the exact projection certificate, while the shared core retains topology, selected addresses/payload, hierarchical extent, filter provenance, and positional relevance. -/
+structure ResolvedCheckedTokenEntityOperand (model : FlatModel) where
+  private mk ::
+  source : CheckedTokenEntityOperand model
+  core : ResolvedCheckedEntityOperandCore
+
+namespace ResolvedCheckedTokenEntityOperand
+
+def topology (resolved : ResolvedCheckedTokenEntityOperand model) :
+    Option ResolvedStarTopology :=
+  resolved.core.topology
+
+def addressedCells (resolved : ResolvedCheckedTokenEntityOperand model) :
+    List CheckedAddressedCell :=
+  resolved.core.addressedCells
+
+def hasUninstantiatedTail
+    (resolved : ResolvedCheckedTokenEntityOperand model) : Bool :=
+  resolved.core.hasUninstantiatedTail
+
+def hasHaving (resolved : ResolvedCheckedTokenEntityOperand model) : Bool :=
+  resolved.core.hasHaving
+
+def hasNonRelevant
+    (resolved : ResolvedCheckedTokenEntityOperand model) : Bool :=
+  resolved.core.hasNonRelevant
+
+/-- Apply the exact declaration-owned String or Enumeration/category projection to the shared addressed cells. -/
+def valueListSideAt (resolved : ResolvedCheckedTokenEntityOperand model)
+    (phase : Phase) : ResolvedValueListSide .token :=
+  { cells := resolved.core.addressedCells.map fun addressed =>
+      resolved.source.tokenOperand.checkedValueListCellAt phase addressed.cell
+    hasUninstantiatedTail := resolved.core.hasUninstantiatedTail
+    hasHaving := resolved.core.hasHaving
+    hasNonRelevant := resolved.core.hasNonRelevant }
+
+end ResolvedCheckedTokenEntityOperand
+
 namespace CheckedTokenField
 
 /-- Classify one caller-supplied checked direct cell; this permits prepared custom String checking without moving that host concern into the aggregate. -/
@@ -315,6 +358,48 @@ def resolvedPartialValidationSide
 end CheckedTokenStarSource
 
 namespace CheckedTokenEntityOperand
+
+/-- Resolve one full-validation token operand through the sole checked topology, filter, and addressed-cell owners while retaining its exact String/Enumeration projection certificate. -/
+def resolveCheckedValidationOperand
+    (source : CheckedTokenEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError
+      (ResolvedCheckedTokenEntityOperand model) :=
+  match source with
+  | .field direct => do
+      let core ←
+        document.resolveCheckedDirectEntityOperandCore direct.operand.field.id
+      pure { source, core }
+  | .star starSource => do
+      let having := starSource.filter.map fun filter => filter.condition
+      let core ←
+        starSource.source.resolveCheckedValidationEntityOperandCore
+          document outer having
+      pure { source, core }
+
+/-- Resolve one partial-validation token operand without collapsing nonrelevance into a semantic cell. Filtered rules remain suppressed by the owning whole-source gate. -/
+def resolveCheckedPartialValidationOperand
+    (source : CheckedTokenEntityOperand model)
+    (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedAddressingError
+      (ResolvedCheckedTokenEntityOperand model) :=
+  match source with
+  | .field direct =>
+      if scope.coversCell model direct.declaration.path [] then do
+        let core ←
+          document.resolveCheckedDirectEntityOperandCore direct.operand.field.id
+        pure { source, core }
+      else
+        pure { source, core := .nonRelevant }
+  | .star starSource =>
+      match starSource.filter with
+      | some _ => pure { source, core := .skippedHaving }
+      | none => do
+          let core ←
+            starSource.source.resolveCheckedPartialValidationEntityOperandCore
+              document outer scope
+          pure { source, core }
 
 /-- Resolve one direct or starred token slot for full validation through the shared declaration-owned classifier. -/
 def resolvedValidationSide (checked : CheckedTokenEntityOperand model)

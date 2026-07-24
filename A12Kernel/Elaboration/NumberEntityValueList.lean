@@ -64,18 +64,6 @@ def evaluate (resolved : ResolvedCheckedNumberEntityValueList model) : Verdict :
 
 end ResolvedCheckedNumberEntityValueList
 
-private def resolveNumberValueListOperands
-    (resolve : CheckedNumberEntityOperand model →
-      Except CheckedAddressingError
-        (ResolvedCheckedNumberEntityOperand model)) :
-    List (CheckedNumberEntityOperand model) →
-      Except CheckedAddressingError
-        (List (ResolvedCheckedNumberEntityOperand model))
-  | [] => pure []
-  | operand :: remaining => do
-      pure ((← resolve operand) ::
-        (← resolveNumberValueListOperands resolve remaining))
-
 namespace CheckedNumberEntityValueListSource
 
 def hasHaving (checked : CheckedNumberEntityValueListSource model) : Bool :=
@@ -84,31 +72,24 @@ def hasHaving (checked : CheckedNumberEntityValueListSource model) : Bool :=
 private def resolveFullFields
     (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env) :=
-  resolveNumberValueListOperands
-    (fun operand => operand.resolveCheckedValidationOperand document outer)
-    checked.fields.operands
+  checked.fields.operands.mapM fun operand =>
+    operand.resolveCheckedValidationOperand document outer
 
 private def resolveFullValues
     (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env) :=
-  resolveNumberValueListOperands
-    (fun operand => operand.resolveCheckedValidationOperand document outer)
-    checked.values.operands
+  checked.values.operands.mapM fun operand =>
+    operand.resolveCheckedValidationOperand document outer
 
 /-- Construct both rich sides in the kernel's operator-specific side order, without flattening authored operand boundaries. -/
 def resolveFull (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError
-      (ResolvedCheckedNumberEntityValueList model) :=
-  match checked.quantifier with
-  | .notAll => do
-      let fields ← checked.resolveFullFields document outer
-      let values ← checked.resolveFullValues document outer
-      pure { quantifier := checked.quantifier, fields, values }
-  | .atLeastOne | .no => do
-      let values ← checked.resolveFullValues document outer
-      let fields ← checked.resolveFullFields document outer
-      pure { quantifier := checked.quantifier, fields, values }
+      (ResolvedCheckedNumberEntityValueList model) := do
+  let (fields, values) ← checked.quantifier.resolveSidesOrdered
+    (fun () => checked.resolveFullFields document outer)
+    (fun () => checked.resolveFullValues document outer)
+  pure { quantifier := checked.quantifier, fields, values }
 
 /-- Resolve and execute full validation while retaining structural addressing failure outside the semantic verdict. -/
 def evaluateFull (checked : CheckedNumberEntityValueListSource model)
@@ -120,19 +101,15 @@ private def resolvePartialFields
     (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope) :=
-  resolveNumberValueListOperands
-    (fun operand =>
-      operand.resolveCheckedPartialValidationOperand document outer scope)
-    checked.fields.operands
+  checked.fields.operands.mapM fun operand =>
+    operand.resolveCheckedPartialValidationOperand document outer scope
 
 private def resolvePartialValues
     (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope) :=
-  resolveNumberValueListOperands
-    (fun operand =>
-      operand.resolveCheckedPartialValidationOperand document outer scope)
-    checked.values.operands
+  checked.values.operands.mapM fun operand =>
+    operand.resolveCheckedPartialValidationOperand document outer scope
 
 /-- Partial validation skips a rule containing any filter before topology, relevance, or target reads; otherwise it constructs the same rich ordered operands with positional nonrelevance. -/
 def evaluatePartial (checked : CheckedNumberEntityValueListSource model)
@@ -141,20 +118,13 @@ def evaluatePartial (checked : CheckedNumberEntityValueListSource model)
     Except CheckedAddressingError PartialHavingValueListResult :=
   if checked.hasHaving then
     pure .skippedHaving
-  else
-    match checked.quantifier with
-    | .notAll => do
-        let fields ← checked.resolvePartialFields document outer scope
-        let values ← checked.resolvePartialValues document outer scope
-        pure (.evaluated (checked.quantifier.evalOrdered
-          (fields.map (·.valueListSideAt .validation))
-          (values.map (·.valueListSideAt .validation))))
-    | .atLeastOne | .no => do
-        let values ← checked.resolvePartialValues document outer scope
-        let fields ← checked.resolvePartialFields document outer scope
-        pure (.evaluated (checked.quantifier.evalOrdered
-          (fields.map (·.valueListSideAt .validation))
-          (values.map (·.valueListSideAt .validation))))
+  else do
+    let (fields, values) ← checked.quantifier.resolveSidesOrdered
+      (fun () => checked.resolvePartialFields document outer scope)
+      (fun () => checked.resolvePartialValues document outer scope)
+    pure (.evaluated (checked.quantifier.evalOrdered
+      (fields.map (·.valueListSideAt .validation))
+      (values.map (·.valueListSideAt .validation))))
 
 end CheckedNumberEntityValueListSource
 

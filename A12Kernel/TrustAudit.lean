@@ -834,6 +834,7 @@ run_cmd do
 #print axioms A12Kernel.checkedTokenDistinctField_resolvedSideAt
 #print axioms A12Kernel.checkedTokenDistinctStar_resolvedUnfilteredSideAt
 #print axioms A12Kernel.checkedTokenDistinctField_partial_relevance
+#print axioms A12Kernel.checkedTokenDistinctSource_checkedDocument_delegates
 #print axioms A12Kernel.reopenedStar_selectedLeaf_closed
 #print axioms A12Kernel.reopenedStar_unbounded_open
 #print axioms A12Kernel.reopenedStar_finite_closed_iff
@@ -869,7 +870,13 @@ run_cmd do
 #print axioms A12Kernel.resolvedCheckedNumberEntityOperand_valueListSideAt_cells
 #print axioms A12Kernel.resolvedCheckedNumberEntityOperand_valueListSideAt_metadata
 #print axioms A12Kernel.resolvedCheckedNumberEntityValueList_evaluate_delegates
+#print axioms A12Kernel.checkedTokenEntityValueList_uniqueDirectOperands
+#print axioms A12Kernel.checkedTokenEntityValueList_commonFamily
+#print axioms A12Kernel.resolvedCheckedTokenEntityOperand_valueListSideAt_cells
+#print axioms A12Kernel.resolvedCheckedTokenEntityValueList_evaluate_delegates
 #print axioms A12Kernel.valueListNo_match_before_nonRelevantOperand
+#print axioms A12Kernel.valueListQuantifier_resolveSidesOrdered_no_values_error
+#print axioms A12Kernel.valueListQuantifier_resolveSidesOrdered_notAll_fields_error
 #print axioms A12Kernel.valueListNo_nonRelevantOperand_before_match
 #print axioms A12Kernel.checkedNumberEntityStarValidationOperand_addressing_error
 #print axioms A12Kernel.checkedStarNumberValueList_uniqueValueFields
@@ -1304,6 +1311,7 @@ run_cmd do
 #print axioms A12Kernel.checkedDocument_addressedCell_field_error
 #print axioms A12Kernel.checkedDocument_addressedCell_environment_error
 #print axioms A12Kernel.resolveCheckedField_addressing_error
+#print axioms A12Kernel.resolveCheckedValidationEntityOperandCore_addressing_error
 #print axioms A12Kernel.resolveCheckedField_empty_topology
 #print axioms A12Kernel.indexPreliminary_mandatory_contract
 #print axioms A12Kernel.indexPreliminary_unique_contract

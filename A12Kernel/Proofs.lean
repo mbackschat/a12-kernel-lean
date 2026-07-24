@@ -86,6 +86,7 @@ import A12Kernel.Proofs.CheckedStarDocument
 import A12Kernel.Proofs.StarGroupElaboration
 import A12Kernel.Proofs.StarNumberElaboration
 import A12Kernel.Proofs.NumberEntityValueList
+import A12Kernel.Proofs.TokenEntityValueList
 import A12Kernel.Proofs.StarNumberValueList
 import A12Kernel.Proofs.StarStringValueList
 import A12Kernel.Proofs.StarEnumerationValueList
