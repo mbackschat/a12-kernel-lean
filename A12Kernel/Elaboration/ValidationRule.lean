@@ -30,7 +30,7 @@ inductive OrdinaryRepeatableRuleEvaluationError where
   | unsupportedCondition
   | incoherentRow (row : RowAddr)
   | addressing (error : CheckedAddressingError)
-  | conditionAddressing (error : StarAddressingError)
+  | conditionAddressing (error : CheckedAddressingError)
   deriving Repr, DecidableEq
 
 /-- The first ordinary repeatable rule route requires the error field to inhabit the exact deepest compatible nonparallel reference scope. Wider indirect group-reference anchoring remains outside this capsule. -/
@@ -110,14 +110,14 @@ def evalFull (rule : ResolvedValidationRule model)
 def evalAddressedFullAt (rule : ResolvedValidationRule model)
     (context : AddressedValidationEvaluationContext model)
     (hasContent : Bool) (errorPath : List Nat) :
-    Except StarAddressingError FlatRuleOutcome := do
+    Except CheckedAddressingError FlatRuleOutcome := do
   pure (rule.emitAt errorPath
     (← rule.condition.evalAddressedFull context hasContent))
 
 /-- The established addressed entry is the nonrepeatable error-path specialization. -/
 def evalAddressedFull (rule : ResolvedValidationRule model)
     (context : AddressedValidationEvaluationContext model)
-    (hasContent : Bool) : Except StarAddressingError FlatRuleOutcome :=
+    (hasContent : Bool) : Except CheckedAddressingError FlatRuleOutcome :=
   rule.evalAddressedFullAt context hasContent []
 
 end ResolvedValidationRule
@@ -156,7 +156,7 @@ def evalFull (rule : CheckedResolvedValidationRule model)
 /-- Evaluate a model-certified addressed rule through the same checked core and message emitter. The caller must supply one coherent prepared scalar/repeatable view; SG1 remains responsible for constructing that view from a general document. -/
 def evalAddressedFull (rule : CheckedResolvedValidationRule model)
     (context : AddressedValidationEvaluationContext model)
-    (hasContent : Bool) : Except StarAddressingError FlatRuleOutcome :=
+    (hasContent : Bool) : Except CheckedAddressingError FlatRuleOutcome :=
   rule.core.evalAddressedFull context hasContent
 
 private def ordinaryIterationEnvironments
@@ -179,22 +179,15 @@ private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) (environment : Env) :
     Except OrdinaryRepeatableRuleEvaluationError (Env × FlatRuleOutcome) := do
-  let addressed ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
+  let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
     (checked.addressedCell environment field).mapError .addressing
   let errorCell ←
     (checked.addressedCell environment rule.errorField).mapError .addressing
   let base := checked.flatContext
   let context : AddressedValidationEvaluationContext model := {
     scalar := { fields := base, groups := GroupPresenceContext.unavailable }
-    document := checked.source.toDocument
     outer := environment
-    read := fun requested field =>
-      if requested == environment then
-        match addressed.find? fun cell => cell.address.field == field with
-        | some cell => cell.cell
-        | none => base.read field
-      else
-        malformedCheckedCell
+    input := .checked checked
   }
   let outcome ←
     (rule.core.evalAddressedFullAt context true errorCell.address.path)

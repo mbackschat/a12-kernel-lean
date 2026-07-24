@@ -25,12 +25,29 @@ inductive NumericValidationUnavailable where
   | nonRelevant
   deriving Repr, DecidableEq
 
-/-- The bounded checked inputs needed when one full-validation numeric leaf retains a repeatable computation source. Partial validation has distinct filter/relevance orchestration and is intentionally unrepresentable here. This is an addressed leaf context, not a general checked document, scheduler, or result boundary. -/
+/-- One exclusive backing input for addressed validation. Generated computation validation retains its established bounded document/read pair; whole-rule validation consumes the immutable model-certified checked document directly. The two forms cannot drift inside one context. -/
+inductive AddressedValidationInput (model : FlatModel) where
+  | legacy (document : Document) (read : Env → FieldId → CheckedCell)
+  | checked (document : CheckedDocument model)
+
+/-- The bounded checked inputs needed when one full-validation numeric leaf retains a repeatable source. Partial validation has distinct filter/relevance orchestration and is intentionally unrepresentable here. This is an addressed leaf context, not a scheduler or result boundary. -/
 structure AddressedValidationEvaluationContext (model : FlatModel) where
   scalar : ValidationEvaluationContext
-  document : Document
   outer : Env
-  read : Env → FieldId → CheckedCell
+  input : AddressedValidationInput model
+
+namespace AddressedValidationEvaluationContext
+
+/-- Read one addressed cell without collapsing a checked-document field, environment, or placement failure into semantic malformed input. -/
+def readCell (context : AddressedValidationEvaluationContext model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedCell :=
+  match context.input with
+  | .legacy _ read => pure (read environment field)
+  | .checked document =>
+      (document.addressedCell environment field).map (·.cell)
+
+end AddressedValidationEvaluationContext
 
 /-- Parser-independent input to the checked numeric consumer. -/
 structure SurfaceNumericComparison where
@@ -449,7 +466,8 @@ def admitted (atom : OrderedNumericValidationAtom model)
   | .tokenValueCount source =>
       checkedTokenValueCountAdmittedIn source rowGroup scope
   | .aggregate _ source =>
-      scope == .modelWideCheckedComputation &&
+      (scope == .modelWideCheckedComputation ||
+        scope == .sameGroupAddressed) &&
         source.directAggregateFields?.isNone
   | .sumOfProducts _ =>
       scope == .modelWideCheckedComputation
@@ -901,53 +919,83 @@ def addressedDirectRelevant
 private def resolveAddressedOrdinary
     (source : NumericValidationAtom)
     (context : AddressedValidationEvaluationContext model) :
-    Except NumericValidationUnavailable NumericArithmeticOutcome :=
+    Except CheckedAddressingError
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
   match source with
   | .field field =>
       match model.lookupUniqueId field.id with
       | .ok declaration =>
           if declaration.repeatableScope.isEmpty then
-            context.scalar.resolveNumericValidationAtom source
-          else
+            pure (context.scalar.resolveNumericValidationAtom source)
+          else do
+            let addressed ← context.readCell context.outer field.id
             let fields : FlatContext := {
               read := fun requested =>
                 if requested == field.id then
-                  context.read context.outer requested
+                  addressed
                 else
                   context.scalar.fields.read requested }
-            fields.resolveNumericArithmetic field
-      | .error _ => .error (.formal .malformed)
-  | _ => context.scalar.resolveNumericValidationAtom source
+            pure (fields.resolveNumericArithmetic field)
+      | .error _ => pure (.error (.formal .malformed))
+  | _ => pure (context.scalar.resolveNumericValidationAtom source)
 
 /-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
 def resolveAddressed (atom : OrderedNumericValidationAtom model)
     (context : AddressedValidationEvaluationContext model) :
-    Except StarAddressingError
+    Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
   | .ordinary source =>
       if source.allRelevant (addressedDirectRelevant context) then
-        pure (resolveAddressedOrdinary source context)
+        resolveAddressedOrdinary source context
       else
         pure (.error .nonRelevant)
   | .firstFilled source =>
-      match ← source.evaluateValidationIn context.document context.outer
-          .full context.scalar.fields context.read with
+      let result ← match context.input with
+        | .legacy document read =>
+            (source.evaluateValidationIn document context.outer
+              .full context.scalar.fields read).mapError .addressing
+        | .checked document =>
+            source.evaluateCheckedDocumentValidation
+              document context.outer .full
+      match result with
       | .nonRelevant => pure (.error .nonRelevant)
       | .evaluated result =>
           pure result.asValidationOperand.toValidationArithmetic
   | .valueCount expected source =>
-      pure ((← source.evaluateValueCountValidationIn expected context.document
-        context.outer context.scalar.fields context.read).toValidationArithmetic)
+      let result ← match context.input with
+        | .legacy document read =>
+            (source.evaluateValueCountValidationIn expected document
+              context.outer context.scalar.fields read).mapError .addressing
+        | .checked document =>
+            source.evaluateCheckedDocumentValueCountValidation
+              expected document context.outer
+      pure result.toValidationArithmetic
   | .tokenValueCount source =>
-      pure ((← source.evaluateValidation context.document context.outer
-        context.scalar.fields.read context.read).toValidationArithmetic)
+      match context.input with
+      | .legacy document read => do
+          let result ←
+            (source.evaluateValidation document context.outer
+              context.scalar.fields.read read).mapError .addressing
+          pure result.toValidationArithmetic
+      | .checked _ => pure (.error .groupState)
   | .aggregate op source =>
-      pure ((← source.evaluateValidationAggregateIn op context.document
-        context.outer context.scalar.fields context.read).toValidationArithmetic)
+      let result ← match context.input with
+        | .legacy document read =>
+            (source.evaluateValidationAggregateIn op document context.outer
+              context.scalar.fields read).mapError .addressing
+        | .checked document =>
+            source.evaluateCheckedDocumentValidationAggregate
+              op document context.outer
+      pure result.toValidationArithmetic
   | .sumOfProducts source =>
-      pure ((← source.evaluateAt .validation context.document context.outer
-        context.read).toValidationArithmetic)
+      match context.input with
+      | .legacy document read => do
+          let result ←
+            (source.evaluateAt .validation document context.outer read)
+              |>.mapError .addressing
+          pure result.toValidationArithmetic
+      | .checked _ => pure (.error .groupState)
 
 end OrderedNumericValidationAtom
 
@@ -1132,7 +1180,7 @@ def OrderedNumericComparison.evalSelected
 def OrderedNumericComparison.evalAddressed
     (comparison : OrderedNumericComparison model)
     (context : AddressedValidationEvaluationContext model) :
-    Except StarAddressingError Verdict := do
+    Except CheckedAddressingError Verdict := do
   let left ← comparison.left.mapM (·.resolveAddressed context)
   let right ← comparison.right.mapM (·.resolveAddressed context)
   let resolved : NumericComparisonOf
@@ -1152,7 +1200,7 @@ def CheckedOrderedNumericComparison.evalSelected
 def CheckedOrderedNumericComparison.evalAddressed
     (checked : CheckedOrderedNumericComparison model)
     (context : AddressedValidationEvaluationContext model) :
-    Except StarAddressingError Verdict :=
+    Except CheckedAddressingError Verdict :=
   checked.core.evalAddressed context
 
 /-- Full validation supplies universal relevance and the established unavailable group projection. -/

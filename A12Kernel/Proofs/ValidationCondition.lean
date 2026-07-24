@@ -223,9 +223,8 @@ theorem validationCondition_repeatablePresence_evalAddressed
     (context : AddressedValidationEvaluationContext model) :
     (ValidationCondition.repeatableFieldPresence (model := model)
       operator declaration).evalAddressed context =
-      .ok (operator.eval
-        (observeCell .validation
-          (context.read context.outer declaration.id))) := by
+      (context.readCell context.outer declaration.id).map fun cell =>
+        operator.eval (observeCell .validation cell) := by
   rfl
 
 /-- One non-starred repeatable field declaration is the sole source of its ordinary rule-iteration scope. -/

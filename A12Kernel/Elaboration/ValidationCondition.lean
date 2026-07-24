@@ -250,11 +250,12 @@ def evalSelected (context : ValidationEvaluationContext)
 
 /-- Evaluate one addressed leaf through the same relevance rules. Only the model-indexed ordered numeric branch can produce a structural addressing error; every existing scalar/group leaf remains the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
-    ValidationConditionLeaf model → Except StarAddressingError Verdict
+    ValidationConditionLeaf model → Except CheckedAddressingError Verdict
   | .orderedNumeric _ comparison => comparison.evalAddressed context
-  | .repeatableFieldPresence operator declaration =>
+  | .repeatableFieldPresence operator declaration => do
       pure (operator.eval
-        (observeCell .validation (context.read context.outer declaration.id)))
+        (observeCell .validation
+          (← context.readCell context.outer declaration.id)))
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
 
 end ValidationConditionLeaf
@@ -530,13 +531,13 @@ def evalFull (condition : ValidationCondition model)
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. The generic effectful connective fold preserves the ordinary decisive-left short-circuit boundary. -/
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
-    Except StarAddressingError Verdict :=
+    Except CheckedAddressingError Verdict :=
   condition.evalVerdictExcept fun leaf => leaf.evalAddressed context
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model)
-    (hasContent : Bool) : Except StarAddressingError Verdict :=
+    (hasContent : Bool) : Except CheckedAddressingError Verdict :=
   if hasContent || condition.canFireOnEmpty then condition.evalAddressed context
   else pure .notFired
 
