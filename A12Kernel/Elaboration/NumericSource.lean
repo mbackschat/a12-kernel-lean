@@ -2,11 +2,12 @@ import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.DateDifference
+import A12Kernel.Semantics.DateTimeDifference
 import A12Kernel.Semantics.String
 
 /-! # Shared checked numeric-expression sources
 
-Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary String/Enumeration/category conversion, Date-only month/year differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
+Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary String/Enumeration/category conversion, Date-only month/year differences, exact-instant DateTime hour/minute/second differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
 -/
 
 namespace A12Kernel
@@ -334,6 +335,8 @@ inductive SurfaceNumericAtom
   | fieldValueAsNumber (source : SurfaceTextFieldOperand)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : SurfaceDateDifferenceOperand)
+  | dateTimeDifference (unit : DateTimeDifferenceUnit)
+      (left right : SurfaceDateDifferenceOperand)
   | dayDifference (left right : SurfaceDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
   | filledGroupCount (groups : List SurfaceGroupReference)
@@ -351,6 +354,8 @@ inductive ResolvedNumericAtom (Field : Type)
   | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
+  | dateTimeDifference (unit : DateTimeDifferenceUnit)
+      (left right : FlatTemporalField)
   | dayDifference (profile : ModelZone.ConcreteProfile)
       (left right : ResolvedDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
@@ -368,6 +373,7 @@ def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .stringRange _ _ _ => true
   | .fieldValueAsNumber _ => true
   | .dateDifference _ left right => left.isField || right.isField
+  | .dateTimeDifference _ _ _ => true
   | .dayDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
   | .filledGroupCount _ => true
@@ -383,6 +389,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
   | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
   | .dateDifference _ _ _ => NumericScaleSummary.field 0
+  | .dateTimeDifference _ _ _ => NumericScaleSummary.field 0
   | .dayDifference _ _ _ => NumericScaleSummary.field 0
   | .aggregate op source => aggregateSummary op source
   | .filledGroupCount _ => NumericScaleSummary.field 0

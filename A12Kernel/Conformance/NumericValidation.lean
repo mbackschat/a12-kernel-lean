@@ -119,6 +119,11 @@ private def dateDifference (unit : DateDifferenceUnit)
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateDifference unit left right)
 
+private def dateTimeDifference (unit : DateTimeDifferenceUnit)
+    (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.dateTimeDifference unit left right)
+
 private def dayDifference
     (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
@@ -183,6 +188,9 @@ private def clock : TimeOfDay :=
 
 private def dateTimeValue : Value :=
   .temporal (.dateTime instant dateParts clock .storedGregorian)
+
+private def dateTimeValueAt (epochMillis : Int) : Value :=
+  .temporal (.dateTime { epochMillis } dateParts clock .storedGregorian)
 
 private def localDateTime (year : Int) (month day hour minute second : Nat)
     (admissible :
@@ -1394,6 +1402,35 @@ example :
           (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
             (by native_decide) (by native_decide))))
         true berlinModel = some .unknown := by
+  native_decide
+
+/- Checked sub-day differences admit only two DateTime fields, preserve authored order, and reuse the exact-millisecond operand boundary. -/
+example :
+    let elapsed := dateTimeDifference .hours
+      (dateOperand "DateTime") (dateOperand "LaterDateTime")
+    let reverse := dateTimeDifference .hours
+      (dateOperand "LaterDateTime") (dateOperand "DateTime")
+    let input := temporalPairRaw
+      (.parsed (dateTimeValueAt 19815000))
+      (.parsed (dateTimeValueAt 0))
+    verdictOf (comparison .equal elapsed (-5)) input =
+        some (.fired .value) ∧
+      verdictOf (comparison .equal reverse 5) input =
+        some (.fired .value) ∧
+      verdictOf (comparison .less elapsed 1)
+        (temporalPairRaw .empty (.parsed (dateTimeValueAt 0))) =
+          some (.fired .omission) ∧
+      verdictOf (comparison .equal elapsed 0)
+        (temporalPairRaw (.rejected .malformed)
+          (.parsed (dateTimeValueAt 0))) = some .unknown ∧
+      errorOf (comparison .equal
+        (dateTimeDifference .hours
+          (dateOperand "NoYear") (dateOperand "DateTime")) 0) =
+          some (.incompatibleTemporalSource ["Order", "NoYear"]) ∧
+      errorOf (comparison .equal
+        (dateTimeDifference .seconds
+          (.baseYear .direct) (dateOperand "DateTime")) 0) =
+          some .incompatibleDateDifference := by
   native_decide
 
 /- Day admission permits mixed Date/DateTime and rejects Time or an unavailable concrete profile before evaluation. -/

@@ -638,6 +638,13 @@ private def siblingDate : FlatFieldDecl :=
     policy := { kind := .temporal .date TemporalComponents.fullDate }
     repeatableScope := [10, 30] }
 
+private def innerEarlierDateTime : FlatFieldDecl :=
+  { id := 45
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerEarlierDateTime"
+    policy := { kind := .temporal .dateTime dateTimeComponents }
+    repeatableScope := [10, 20] }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -648,7 +655,8 @@ private def sectionDetail : FlatFieldDecl :=
 private def ordinaryIterationModel : FlatModel :=
   { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount,
       innerToken, baseToken, innerNumericCode, innerNumericChoice, innerDate,
-      innerTime, innerDateTime, innerEarlierDate, outerDate, siblingDate]
+      innerTime, innerDateTime, innerEarlierDate, outerDate, siblingDate,
+      innerEarlierDateTime]
     baseYear := some 2020
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
@@ -1028,6 +1036,33 @@ private def repeatableDayDifferenceRule?
   let condition ← repeatableDayDifferenceCondition? left right op expected
   (assembleResolvedValidationRule ordinaryIterationModel condition innerDate.id
     "repeatableDayDifference" .error { parts := [] }).toOption
+
+private def repeatableDateTimeDifferenceCondition?
+    (unit : DateTimeDifferenceUnit)
+    (left right : SurfaceDateDifferenceOperand)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let difference : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.dateTimeDifference unit left right)
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := difference
+        right := .literal { value := expected, authoredScale := 0 }
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableDateTimeDifferenceRule?
+    (unit : DateTimeDifferenceUnit)
+    (left right : SurfaceDateDifferenceOperand)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ←
+    repeatableDateTimeDifferenceCondition? unit left right op expected
+  (assembleResolvedValidationRule ordinaryIterationModel condition
+    innerDateTime.id "repeatableDateTimeDifference" .error
+    { parts := [] }).toOption
 
 private def repeatableDateDifferenceRuleWith?
     (unit : DateDifferenceUnit)
@@ -1449,6 +1484,38 @@ example :
       some .legal ∧
     (repeatableDayDifferenceCondition?
       (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerTime"))
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+      (.ordinary .equal) 1).isNone := by
+  native_decide
+
+/- Sub-day differences are distinct zero-sensitive operations over two DateTime operands only. -/
+example :
+    dateDifferenceConditionLegality?
+      (repeatableDateTimeDifferenceCondition? .hours
+        (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+        (.field
+          (ordinaryPath ["Order", "Sections", "Items"]
+            "InnerEarlierDateTime"))
+        (.ordinary .equal) 0) =
+      some (.invalid 10) ∧
+    dateDifferenceConditionLegality?
+      (repeatableDateTimeDifferenceCondition? .seconds
+        (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+        (.field
+          (ordinaryPath ["Order", "Sections", "Items"]
+            "InnerEarlierDateTime"))
+        (.ordinary .equal) 1) =
+      some .legal ∧
+    (repeatableDateTimeDifferenceCondition? .hours
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDate"))
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+      (.ordinary .equal) 1).isNone ∧
+    (repeatableDateTimeDifferenceCondition? .minutes
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerTime"))
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+      (.ordinary .equal) 1).isNone ∧
+    (repeatableDateTimeDifferenceCondition? .seconds
+      (.baseYear .direct)
       (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
       (.ordinary .equal) 1).isNone := by
   native_decide
@@ -2287,12 +2354,21 @@ private def checkedDateRawAt
 private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
   checkedDateRawAt 0 year month day
 
+private def checkedDateTimeRawAtTime
+    (epochMillis year : Int) (month day : Nat) (time : TimeOfDay) : RawCell :=
+  .parsed (.temporal (.dateTime { epochMillis }
+    { year, month, day } time
+    .storedGregorian))
+
+private def midnight : TimeOfDay :=
+  (TimeOfDay.ofHms? 0 0 0).get (by native_decide)
+
+private def fiveThirtyFifteen : TimeOfDay :=
+  (TimeOfDay.ofHms? 5 30 15).get (by native_decide)
+
 private def checkedDateTimeRawAt
     (epochMillis year : Int) (month day : Nat) : RawCell :=
-  .parsed (.temporal (.dateTime { epochMillis }
-    { year, month, day }
-    ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))
-    .storedGregorian))
+  checkedDateTimeRawAtTime epochMillis year month day midnight
 
 private def repeatableDateDifferenceData
     (leftStored : String) (leftRaw : Option RawCell)
@@ -2340,6 +2416,22 @@ private def repeatableDayDifferenceData
       dateTimeRaw.toList.map (fun cell => {
         address := { field := innerDateTime.id, path := [1, 1] }
         stored := dateTimeStored
+        raw := cell }) }
+
+private def repeatableDateTimeDifferenceData
+    (leftStored : String) (leftRaw : Option RawCell)
+    (rightStored : String) (rightRaw : Option RawCell) : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells :=
+      leftRaw.toList.map (fun cell => {
+        address := { field := innerDateTime.id, path := [1, 1] }
+        stored := leftStored
+        raw := cell }) ++
+      rightRaw.toList.map (fun cell => {
+        address := { field := innerEarlierDateTime.id, path := [1, 1] }
+        stored := rightStored
         raw := cell }) }
 
 private def dateDifferenceRuleSnapshot?
@@ -2474,6 +2566,53 @@ private def repeatableDayDifferenceConsumerSnapshot? :
   pure (.utc, date.kind, dateTime.kind,
     left.address, right.address, outcome.2.verdict)
 
+private def repeatableDateTimeDifferenceSnapshot?
+    (unit : DateTimeDifferenceUnit) (op : NumericValidationOp)
+    (expected : Rat) (reverse : Bool) (data : DocumentData) :
+    Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) :=
+  let left : SurfaceDateDifferenceOperand :=
+    .field (ordinaryPath ["Order", "Sections", "Items"]
+      (if reverse then "InnerEarlierDateTime" else "InnerDateTime"))
+  let right : SurfaceDateDifferenceOperand :=
+    .field (ordinaryPath ["Order", "Sections", "Items"]
+      (if reverse then "InnerDateTime" else "InnerEarlierDateTime"))
+  dateDifferenceRuleSnapshot?
+    (repeatableDateTimeDifferenceRule? unit left right op expected) data
+
+private def repeatableDateTimeDifferenceConsumerSnapshot? :
+    Option (DateTimeDifferenceUnit × FlatTemporalField × FlatTemporalField ×
+      CellAddr × Option String × CellAddr × Option String × Verdict) := do
+  let leftDeclaration ←
+    (ordinaryIterationModel.lookupUniqueId innerDateTime.id).toOption
+  let rightDeclaration ←
+    (ordinaryIterationModel.lookupUniqueId innerEarlierDateTime.id).toOption
+  let leftField ← leftDeclaration.toTemporalField?
+  let rightField ← rightDeclaration.toTemporalField?
+  let data := repeatableDateTimeDifferenceData
+    "2024-06-25T05:30:15"
+    (some (checkedDateTimeRawAtTime 19815000 2024 6 25 fiveThirtyFifteen))
+    "2024-06-25T00:00:00"
+    (some (checkedDateTimeRawAtTime 0 2024 6 25 midnight))
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let left ←
+    (document.addressedCell [(10, 1), (20, 1)]
+      innerDateTime.id).toOption
+  let right ←
+    (document.addressedCell [(10, 1), (20, 1)]
+      innerEarlierDateTime.id).toOption
+  let rule ← repeatableDateTimeDifferenceRule? .hours
+    (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+    (.field
+      (ordinaryPath ["Order", "Sections", "Items"] "InnerEarlierDateTime"))
+    (.ordinary .equal) (-5)
+  let outcomes ← evalOrdinaryRule? rule data
+  let outcome ← outcomes.head?
+  pure (.hours, leftField, rightField, left.address, left.stored,
+    right.address, right.stored, outcome.2.verdict)
+
 private def expectedRepeatableDateDifference
     (verdict : Verdict) :
     Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) :=
@@ -2542,6 +2681,48 @@ example :
       expectedRepeatableDateDifference (.fired .value)) = true ∧
     dateDifferenceStructuralFailure?
       (repeatableDayDifferenceRule? date dateTime (.ordinary .equal) 1)
+      data [] = some (.environment (.missingBinding 10)) := by
+  native_decide
+
+/- Addressed sub-day differences reuse the exact-instant core in authored order. Each unit truncates independently, negative hours truncate toward zero, missing is symmetric omission-typed zero, formal invalidity remains UNKNOWN, and incomplete addressing remains structural. -/
+example :
+    let data := repeatableDateTimeDifferenceData
+      "2024-06-25T05:30:15"
+      (some (checkedDateTimeRawAtTime 19815000 2024 6 25 fiveThirtyFifteen))
+      "2024-06-25T00:00:00"
+      (some (checkedDateTimeRawAtTime 0 2024 6 25 midnight))
+    (repeatableDateTimeDifferenceSnapshot? .hours
+      (.ordinary .equal) (-5) false data ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (repeatableDateTimeDifferenceSnapshot? .hours
+      (.ordinary .equal) 5 true data ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (repeatableDateTimeDifferenceSnapshot? .minutes
+      (.ordinary .equal) (-330) false data ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (repeatableDateTimeDifferenceSnapshot? .seconds
+      (.ordinary .equal) (-19815) false data ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (repeatableDateTimeDifferenceSnapshot? .minutes
+      (.ordinary .less) 1 false
+      (repeatableDateTimeDifferenceData ""
+        none "2024-06-25T00:00:00"
+        (some (checkedDateTimeRawAtTime 0 2024 6 25 midnight))) ==
+      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+    (repeatableDateTimeDifferenceSnapshot? .seconds
+      (.ordinary .equal) 1 false
+      (repeatableDateTimeDifferenceData "bad"
+        (some (.rejected .malformed)) "2024-06-25T00:00:00"
+        (some (checkedDateTimeRawAtTime 0 2024 6 25 midnight))) ==
+      expectedRepeatableDateDifference .unknown) = true ∧
+    dateDifferenceStructuralFailure?
+      (repeatableDateTimeDifferenceRule? .hours
+        (.field
+          (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+        (.field
+          (ordinaryPath ["Order", "Sections", "Items"]
+            "InnerEarlierDateTime"))
+        (.ordinary .equal) (-5))
       data [] = some (.environment (.missingBinding 10)) := by
   native_decide
 
@@ -2618,6 +2799,22 @@ example :
         { field := innerDate.id, path := [1, 1] },
         { field := innerDateTime.id, path := [1, 1] },
         .fired .value) := by
+  native_decide
+
+/- Execute, Transform, and Explain recover the elapsed unit, ordered DateTime certificates, checked addresses and payloads, and the same result without flattening either source or re-resolving an instant. -/
+example :
+    (repeatableDateTimeDifferenceConsumerSnapshot? ==
+      some (
+        .hours,
+        { id := innerDateTime.id, kind := .dateTime,
+          components := dateTimeComponents },
+        { id := innerEarlierDateTime.id, kind := .dateTime,
+          components := dateTimeComponents },
+        { field := innerDateTime.id, path := [1, 1] },
+        some "2024-06-25T05:30:15",
+        { field := innerEarlierDateTime.id, path := [1, 1] },
+        some "2024-06-25T00:00:00",
+        .fired .value)) = true := by
   native_decide
 
 private def outerInnerTokenValueCountData : DocumentData :=

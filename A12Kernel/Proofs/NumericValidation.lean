@@ -65,6 +65,18 @@ theorem orderedNumericValidationAtom_repeatableDateDifference_requiresAddressed
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
     lookup, repeatable]
 
+/-- A checked sub-day difference cannot fall back to scalar evaluation when either model-certified DateTime field is repeatable. -/
+theorem orderedNumericValidationAtom_repeatableDateTimeDifference_requiresAddressed
+    (unit : DateTimeDifferenceUnit)
+    (left right : FlatTemporalField) (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId left.id = .ok declaration)
+    (repeatable : declaration.repeatableScope.isEmpty = false) :
+    (OrderedNumericValidationAtom.ordinary
+      (.dateTimeDifference unit left right)).requiresAddressedValidation
+        (model := model) = true := by
+  simp [OrderedNumericValidationAtom.requiresAddressedValidation,
+    lookup, repeatable]
+
 /-- A concrete-profile calendar-day difference keeps addressed evaluation when its model-certified Date or DateTime field operand is repeatable. -/
 theorem orderedNumericValidationAtom_repeatableDayDifference_requiresAddressed
     (profile : ModelZone.ConcreteProfile) (field : FlatTemporalField)
@@ -939,6 +951,31 @@ theorem numericValidation_dateDifference_literal_delegates
       op.eval operand (.value literal.value .fixed) := by
   cases op <;>
     cases operand <;>
+    simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
+      AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?,
+      FlatContext.resolveNumericValidationAtom,
+      ValidationEvaluationContext.resolveNumericValidationAtom,
+      NumericOperand.toValidationArithmetic,
+      NumericValidationOp.eval,
+      NumericComparisonOp.eval, NumericToleranceRange.eval, evaluated]
+
+/-- A checked sub-day atom delegates its exact-instant operand through the shared numeric validator without a second difference or comparison path. -/
+theorem numericValidation_dateTimeDifference_literal_delegates
+    (op : NumericValidationOp) (unit : DateTimeDifferenceUnit)
+    (left right : FlatTemporalField)
+    (literal : DecodedNumericLiteral) (context : FlatContext) :
+    ({ op, left := .atom (.dateTimeDifference unit left right),
+        right := .literal literal } : NumericComparison).evalSelected context =
+      op.eval
+        (DateTimeDifferenceOperand.evaluate unit
+          (.ofObservation (context.observeValidationAt left.id))
+          (.ofObservation (context.observeValidationAt right.id)))
+        (.value literal.value .fixed) := by
+  cases op <;>
+    cases evaluated : DateTimeDifferenceOperand.evaluate unit
+      (.ofObservation (context.observeValidationAt left.id))
+      (.ofObservation (context.observeValidationAt right.id)) <;>
     simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,

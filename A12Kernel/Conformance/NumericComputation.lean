@@ -263,6 +263,11 @@ private def surfaceDateDifference (unit : DateDifferenceUnit)
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateDifference unit left right)
 
+private def surfaceDateTimeDifference (unit : DateTimeDifferenceUnit)
+    (left right : SurfaceDateDifferenceOperand) :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .atom (.dateTimeDifference unit left right)
+
 private def surfaceDayDifference
     (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
@@ -387,6 +392,9 @@ private def clock : TimeOfDay :=
 
 private def dateTimeValue : Value :=
   .temporal (.dateTime instant dateParts clock .storedGregorian)
+
+private def dateTimeValueAt (epochMillis : Int) : Value :=
+  .temporal (.dateTime { epochMillis } dateParts clock .storedGregorian)
 
 private def localDateTime (year : Int) (month day hour minute second : Nat)
     (admissible :
@@ -1229,6 +1237,35 @@ example :
             (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
               (by native_decide) (by native_decide))))) =
         some (.poison .malformed) := by
+  native_decide
+
+/- Checked computation consumes the same exact-instant sub-day source, including authored-order truncation, symmetric empty zero, and computation poison. -/
+example :
+    let elapsed := surfaceDateTimeDifference .hours
+      (surfaceDateOperand "DateTime") (surfaceDateOperand "LaterDateTime")
+    let input := context
+      (dateTime := checkedTemporal .dateTime dateTimeComponents
+        (.parsed (dateTimeValueAt 19815000)))
+      (laterDateTime := checkedTemporal .dateTime dateTimeComponents
+        (.parsed (dateTimeValueAt 0)))
+    checkedResultOf elapsed input = some (.value (-5)) ∧
+      checkedResultOf
+        (surfaceDateTimeDifference .minutes
+          (surfaceDateOperand "LaterDateTime")
+          (surfaceDateOperand "DateTime")) input = some (.value 330) ∧
+      checkedResultOf elapsed = some (.value 0) ∧
+      checkedResultOf elapsed
+        (context
+          (dateTime := checkedTemporal .dateTime dateTimeComponents
+            (.rejected .malformed))) = some (.poison .malformed) ∧
+      checkedErrorOf
+        (surfaceDateTimeDifference .seconds
+          (surfaceDateOperand "Date") (surfaceDateOperand "DateTime")) =
+          some (.incompatibleTemporalSource ["Root", "Date"]) ∧
+      checkedErrorOf
+        (surfaceDateTimeDifference .seconds
+          (.baseYear .direct) (surfaceDateOperand "DateTime")) =
+          some .incompatibleDateDifference := by
   native_decide
 
 /- Day admission accepts Date/DateTime mixing, rejects Time, and reports unsupported profile selection before runtime. -/

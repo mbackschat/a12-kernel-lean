@@ -511,6 +511,21 @@ private def ordinaryNumericAtomFieldDeclarations?
       if unit.compatible model.hasBaseYear left.components right.components then
         some (leftDeclarations ++ rightDeclarations)
       else none
+  | .dateTimeDifference unit left right => do
+      let declarationFor (source : FlatTemporalField) := do
+        let declaration ← model.lookupUniqueId source.id |>.toOption
+        if declaration.toTemporalField? == some source &&
+            source.kind == .dateTime &&
+            unit.admittedBy source.components then
+          some declaration
+        else
+          none
+      let leftDeclaration ← declarationFor left
+      let rightDeclaration ← declarationFor right
+      if unit.compatible left.components right.components then
+        some [leftDeclaration, rightDeclaration]
+      else
+        none
   | .dayDifference profile left right => do
       if ModelZone.ConcreteProfile.ofId? model.timeZoneId != some profile then
         none
