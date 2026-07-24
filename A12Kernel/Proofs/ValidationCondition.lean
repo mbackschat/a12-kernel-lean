@@ -332,6 +332,44 @@ theorem validationCondition_repeatablePresence_iterationGuardStatusAt
         else .noReference := by
   rfl
 
+/-- At a singleton ordinary scope, one source-classified unguarded condition becomes the exact static rejection level. -/
+theorem validationCondition_iterationLegality_singleton_unguarded
+    (condition : ValidationCondition model) (level : RepeatableLevel)
+    (scope :
+      condition.ordinaryIterationScope = .ok (some [level]))
+    (unguarded :
+      condition.iterationGuardStatusAt level = .unguarded) :
+    condition.iterationLegality = .ok (.invalid level) := by
+  rw [ValidationCondition.iterationLegality, scope]
+  change Except.ok
+    (match condition.iterationGuardStatusAt level with
+    | .guarded => ValidationCondition.IterationLegality.legal
+    | .unguarded =>
+        ValidationCondition.IterationLegality.invalid level
+    | .noReference | .unclassified =>
+        ValidationCondition.IterationLegality.insufficient level) =
+      .ok (ValidationCondition.IterationLegality.invalid level)
+  rw [unguarded]
+
+/-- The same singleton route is legal when its complete tree supplies a source-classified guard at that level. -/
+theorem validationCondition_iterationLegality_singleton_guarded
+    (condition : ValidationCondition model) (level : RepeatableLevel)
+    (scope :
+      condition.ordinaryIterationScope = .ok (some [level]))
+    (guarded :
+      condition.iterationGuardStatusAt level = .guarded) :
+    condition.iterationLegality = .ok .legal := by
+  rw [ValidationCondition.iterationLegality, scope]
+  change Except.ok
+    (match condition.iterationGuardStatusAt level with
+    | .guarded => ValidationCondition.IterationLegality.legal
+    | .unguarded =>
+        ValidationCondition.IterationLegality.invalid level
+    | .noReference | .unclassified =>
+        ValidationCondition.IterationLegality.insufficient level) =
+      .ok ValidationCondition.IterationLegality.legal
+  rw [guarded]
+
 /-- The first ordinary repeatable route is closed under flat/repeatable connective composition and excludes specialized addressed leaf families. -/
 @[simp]
 theorem validationCondition_repeatablePresence_supported
