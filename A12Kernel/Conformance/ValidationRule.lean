@@ -617,6 +617,13 @@ private def innerDateTime : FlatFieldDecl :=
     policy := { kind := .temporal .dateTime dateTimeComponents }
     repeatableScope := [10, 20] }
 
+private def innerEarlierDate : FlatFieldDecl :=
+  { id := 42
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerEarlierDate"
+    policy := { kind := .temporal .date TemporalComponents.fullDate }
+    repeatableScope := [10, 20] }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -627,7 +634,7 @@ private def sectionDetail : FlatFieldDecl :=
 private def ordinaryIterationModel : FlatModel :=
   { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount,
       innerToken, baseToken, innerNumericCode, innerNumericChoice, innerDate,
-      innerTime, innerDateTime]
+      innerTime, innerDateTime, innerEarlierDate]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -937,6 +944,43 @@ private def repeatableTemporalPartRule?
   let condition ← repeatableTemporalPartCondition? field part op expected
   (assembleResolvedValidationRule ordinaryIterationModel condition target
     "repeatableTemporalPart" .error { parts := [] }).toOption
+
+private def repeatableDateDifferenceCondition?
+    (unit : DateDifferenceUnit) (left right : String)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let difference : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.dateDifference unit
+      (.field (ordinaryPath ["Order", "Sections", "Items"] left))
+      (.field (ordinaryPath ["Order", "Sections", "Items"] right)))
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := if literalOnLeft then literal else difference
+        right := if literalOnLeft then difference else literal
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableDateDifferenceLegality?
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ← repeatableDateDifferenceCondition? .months
+    "InnerDate" "InnerEarlierDate" op expected literalOnLeft
+  condition.core.iterationLegality.toOption
+
+private def repeatableDateDifferenceRule?
+    (unit : DateDifferenceUnit) (left right : String)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ←
+    repeatableDateDifferenceCondition? unit left right op expected
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerDate.id
+    "repeatableDateDifference" .error { parts := [] }).toOption
 
 private def compositeRepeatableNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
@@ -1319,6 +1363,18 @@ example :
     (ordinaryIterationRule?.map fun rule =>
       (rule.iterationScope, rule.errorDeclaration.repeatableScope)) =
       some (some [10, 20], [10, 20]) := by
+  native_decide
+
+/- Date-only completed-period differences preserve their two ordered checked operands while sharing the direct-operation host-zero branch. -/
+example :
+    repeatableDateDifferenceLegality? (.ordinary .equal) 0 =
+      some (.invalid 10) ∧
+    repeatableDateDifferenceLegality? (.ordinary .equal) 0 true =
+      some (.invalid 10) ∧
+    repeatableDateDifferenceLegality? (.ordinary .equal) 17 =
+      some .legal ∧
+    (repeatableDateDifferenceCondition? .years
+      "InnerDateTime" "InnerEarlierDate" (.ordinary .equal) 1).isNone := by
   native_decide
 
 /- A deeper error declaration cannot manufacture a deeper iteration level when the condition references only the outer scope. -/
@@ -2112,6 +2168,137 @@ example :
         .date .quarter,
         { field := innerDateTime.id, path := [1, 1] },
         some "2024-06-25T05:21:07",
+        .fired .value)) = true := by
+  native_decide
+
+private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
+  .parsed (.temporal (.date { epochMillis := 0 }
+    { year, month, day } .storedGregorian))
+
+private def repeatableDateDifferenceData
+    (leftStored : String) (leftRaw : Option RawCell)
+    (rightStored : String) (rightRaw : Option RawCell) : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells :=
+      leftRaw.toList.map (fun cell => {
+        address := { field := innerDate.id, path := [1, 1] }
+        stored := leftStored
+        raw := cell }) ++
+      rightRaw.toList.map (fun cell => {
+        address := { field := innerEarlierDate.id, path := [1, 1] }
+        stored := rightStored
+        raw := cell }) }
+
+private def repeatableDateDifferenceSnapshot?
+    (unit : DateDifferenceUnit) (left right : String)
+    (op : NumericValidationOp) (expected : Rat)
+    (data : DocumentData) :
+    Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) := do
+  let rule ← repeatableDateDifferenceRule? unit left right op expected
+  let outcomes ← evalOrdinaryRule? rule data
+  pure (rule.iterationScope, rule.requiresAddressedValidation,
+    outcomes.map fun entry => (entry.1, entry.2.verdict))
+
+private def repeatableDateDifferenceStructuralFailure? :
+    Option CheckedAddressingError := do
+  let rule ← repeatableDateDifferenceRule? .months
+    "InnerDate" "InnerEarlierDate" (.ordinary .equal) (-17)
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ←
+    (checkDocument prepared "en_US"
+      (repeatableDateDifferenceData "2024-06-25"
+        (some (checkedDateRaw 2024 6 25)) "2023-01-25"
+        (some (checkedDateRaw 2023 1 25)))).toOption
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match rule.condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
+
+private def repeatableDateDifferenceConsumerSnapshot? :
+    Option (List String × List String × List RepeatableLevel ×
+      DateDifferenceUnit × CellAddr × Option String × CellAddr × Option String ×
+      Verdict) := do
+  let leftDeclaration ←
+    (ordinaryIterationModel.lookupUniqueId innerDate.id).toOption
+  let rightDeclaration ←
+    (ordinaryIterationModel.lookupUniqueId innerEarlierDate.id).toOption
+  let data := repeatableDateDifferenceData "2024-06-25"
+    (some (checkedDateRaw 2024 6 25)) "2023-01-25"
+    (some (checkedDateRaw 2023 1 25))
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let left ←
+    (document.addressedCell [(10, 1), (20, 1)] innerDate.id).toOption
+  let right ←
+    (document.addressedCell [(10, 1), (20, 1)]
+      innerEarlierDate.id).toOption
+  let rule ← repeatableDateDifferenceRule? .months
+    "InnerDate" "InnerEarlierDate" (.ordinary .equal) (-17)
+  let outcomes ← evalOrdinaryRule? rule data
+  let outcome ← outcomes.head?
+  pure (leftDeclaration.path, rightDeclaration.path,
+    leftDeclaration.repeatableScope, .months,
+    left.address, left.stored, right.address, right.stored, outcome.2.verdict)
+
+private def expectedRepeatableDateDifference
+    (verdict : Verdict) :
+    Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) :=
+  some (some [10, 20], true, [([(10, 1), (20, 1)], verdict)])
+
+/- One addressed ordinary atom now reads two Date operands in authored order. Missing input keeps the symmetric-zero omission account, formal invalidity remains UNKNOWN, and an incomplete structural environment cannot become UNKNOWN. -/
+example :
+    (repeatableDateDifferenceSnapshot? .months
+      "InnerDate" "InnerEarlierDate" (.ordinary .equal) (-17)
+      (repeatableDateDifferenceData "2024-06-25"
+        (some (checkedDateRaw 2024 6 25)) "2023-01-25"
+        (some (checkedDateRaw 2023 1 25))) ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (repeatableDateDifferenceSnapshot? .months
+      "InnerEarlierDate" "InnerDate" (.ordinary .equal) 17
+      (repeatableDateDifferenceData "2024-06-25"
+        (some (checkedDateRaw 2024 6 25)) "2023-01-25"
+        (some (checkedDateRaw 2023 1 25))) ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (repeatableDateDifferenceSnapshot? .months
+      "InnerDate" "InnerEarlierDate" (.ordinary .less) 1
+      (repeatableDateDifferenceData "" none "2023-01-25"
+        (some (checkedDateRaw 2023 1 25))) ==
+      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+    (repeatableDateDifferenceSnapshot? .years
+      "InnerDate" "InnerEarlierDate" (.ordinary .equal) 1
+      (repeatableDateDifferenceData "2024-06-25"
+        (some (checkedDateRaw 2024 6 25)) "bad"
+        (some (.rejected .malformed))) ==
+      expectedRepeatableDateDifference .unknown) = true ∧
+    repeatableDateDifferenceStructuralFailure? =
+      some (.environment (.missingBinding 10)) := by
+  native_decide
+
+/- Execute, Transform, and Explain can recover both ordered model certificates, both checked addresses and stored payloads, the selected period unit, and the same verdict. -/
+example :
+    (repeatableDateDifferenceConsumerSnapshot? ==
+      some (
+        ["Order", "Sections", "Items", "InnerDate"],
+        ["Order", "Sections", "Items", "InnerEarlierDate"],
+        [10, 20],
+        .months,
+        { field := innerDate.id, path := [1, 1] },
+        some "2024-06-25",
+        { field := innerEarlierDate.id, path := [1, 1] },
+        some "2023-01-25",
         .fired .value)) = true := by
   native_decide
 

@@ -221,6 +221,18 @@ private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPat
       else throw (.incompatibleTemporalSource declaration.path)
   | none => throw (.incompatibleTemporalSource declaration.path)
 
+private def resolveDateDifferenceOperandWith
+    (model : FlatModel)
+    (resolveField : SurfaceFieldPath →
+      Except NumericValidationElabError FlatTemporalField) :
+    SurfaceDateDifferenceOperand →
+      Except NumericValidationElabError ResolvedDateDifferenceOperand
+  | .field reference => return .field (← resolveField reference)
+  | .baseYear source =>
+      match model.baseYear with
+      | some year => pure (.baseYear year source)
+      | none => throw .baseYearNotDeclared
+
 private def numericValidationSummary (atom : NumericValidationAtom) :
     NumericScaleSummary :=
   atom.summary fun source => NumericScaleSummary.field source.info.scale
@@ -273,7 +285,8 @@ private def NumericValidationAtom.admitted
             source.kind == .date &&
               match scope with
               | .sameGroup => model.admitsTemporalInGroup rowGroup source
-              | .sameGroupAddressed => false
+              | .sameGroupAddressed =>
+                  model.admitsAddressedTemporal rowGroup source
               | .modelWideNonrepeatable | .modelWideCheckedComputation =>
                   model.admitsTemporalModelWide source
         | .baseYear year _ => model.baseYear == some year
@@ -426,14 +439,19 @@ def NumericComparison.allRelevant (comparison : NumericComparison)
 namespace OrderedNumericValidationAtom
 
 @[simp]
-private def addressedNumericValidationFieldId? :
-    NumericValidationAtom → Option FieldId
-  | .field source => some source.id
-  | .temporalFieldPart source _ => some source.id
-  | .stringLength source => some source.id
-  | .stringRange source _ _ => some source.id
-  | .fieldValueAsNumber source => some source.fieldId
-  | _ => none
+private def addressedNumericValidationFieldIds :
+    NumericValidationAtom → List FieldId
+  | .field source => [source.id]
+  | .temporalFieldPart source _ => [source.id]
+  | .stringLength source => [source.id]
+  | .stringRange source _ _ => [source.id]
+  | .fieldValueAsNumber source => [source.fieldId]
+  | .dateDifference _ left right =>
+      let fieldId : ResolvedDateDifferenceOperand → List FieldId
+        | .field source => [source.id]
+        | .baseYear _ _ => []
+      (fieldId left ++ fieldId right).eraseDups
+  | _ => []
 
 private def checkedNumberEntitySourceAdmittedIn
     (source : CheckedNumberEntitySource model)
@@ -483,15 +501,13 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
 
-/-- An ordinary direct single-field atom needs addressed evaluation exactly when its checked declaration is repeatable. Specialized sources retain their established addressed criteria. -/
+/-- An ordinary direct atom needs addressed evaluation exactly when any checked field declaration is repeatable. Specialized sources retain their established addressed criteria. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .ordinary source =>
-      match addressedNumericValidationFieldId? source with
-      | some field =>
+      (addressedNumericValidationFieldIds source).any fun field =>
           match model.lookupUniqueId field with
           | .ok declaration => !declaration.repeatableScope.isEmpty
           | .error _ => false
-      | none => false
   | .firstFilled source => source.directResolvedFields?.isNone
   | .valueCount _ source => source.directResolvedFields?.isNone
   | .tokenValueCount source => source.source.directFields?.isNone
@@ -666,17 +682,11 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
-      let resolveOperand : SurfaceDateDifferenceOperand →
-          Except NumericValidationElabError ResolvedDateDifferenceOperand
-        | .field reference => do
-            let field ← resolveTemporalNumericField model rowGroup reference
-              (fun source => source.kind == .date &&
-                unit.admittedBy model.hasBaseYear source.components)
-            pure (.field field)
-        | .baseYear source =>
-            match model.baseYear with
-            | some year => pure (.baseYear year source)
-            | none => throw .baseYearNotDeclared
+      let resolveOperand := resolveDateDifferenceOperandWith model
+        (fun reference =>
+          resolveTemporalNumericField model rowGroup reference
+            (fun source => source.kind == .date &&
+              unit.admittedBy model.hasBaseYear source.components))
       let resolvedLeft ← resolveOperand left
       let resolvedRight ← resolveOperand right
       if unit.compatible model.hasBaseYear
@@ -688,18 +698,12 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
       let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
         | some profile => pure profile
         | none => throw (.unsupportedCalendarProfile model.timeZoneId)
-      let resolveOperand : SurfaceDateDifferenceOperand →
-          Except NumericValidationElabError ResolvedDateDifferenceOperand
-        | .field reference => do
-            let field ← resolveTemporalNumericField model rowGroup reference
-              (fun source =>
-                CalendarDayDifference.admittedBy
-                  source.kind source.components)
-            pure (.field field)
-        | .baseYear source =>
-            match model.baseYear with
-            | some year => pure (.baseYear year source)
-            | none => throw .baseYearNotDeclared
+      let resolveOperand := resolveDateDifferenceOperandWith model
+        (fun reference =>
+          resolveTemporalNumericField model rowGroup reference
+            (fun source =>
+              CalendarDayDifference.admittedBy
+                source.kind source.components))
       let resolvedLeft ← resolveOperand left
       let resolvedRight ← resolveOperand right
       if CalendarDayDifference.yearCompatible model.hasBaseYear
@@ -771,6 +775,26 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup surface.reference
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
+  | .dateDifference unit left right => do
+      let resolveOperand := resolveDateDifferenceOperandWith model
+        (fun reference => do
+          let declaration ←
+            resolveAddressedNumericDeclaration model rowGroup reference
+          match declaration.toTemporalField? with
+          | some field =>
+              if field.kind == .date &&
+                  unit.admittedBy model.hasBaseYear field.components then
+                pure field
+              else
+                throw (.incompatibleTemporalSource declaration.path)
+          | none => throw (.incompatibleTemporalSource declaration.path))
+      let resolvedLeft ← resolveOperand left
+      let resolvedRight ← resolveOperand right
+      if unit.compatible model.hasBaseYear
+          resolvedLeft.components resolvedRight.components then
+        pure (.dateDifference unit resolvedLeft resolvedRight)
+      else
+        throw .incompatibleDateDifference
   | source => resolveNumericAtom model rowGroup source
 
 private def elaborateNumericComparisonWith
@@ -834,7 +858,7 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
   elaborateNumericComparisonWith model rowGroup .sameGroup
     (resolveNumericAtom model rowGroup) surface
 
-/-- Admit the ordinary addressed single-field route through the existing ordered-numeric carrier. The atom retains its typed declaration certificate while only the field read changes from scalar to addressed. -/
+/-- Admit ordinary addressed field operands through the existing ordered-numeric carrier. Each atom retains its typed declaration certificates while only repeatable reads change from scalar to addressed. -/
 def elaborateRepeatableNumericComparison
     (model : FlatModel) (rowGroup : GroupPath)
     (surface : SurfaceNumericComparison) :
@@ -1000,31 +1024,39 @@ def addressedDirectRelevant
     (_context : AddressedValidationEvaluationContext model) :
     FlatRelevance := fun _ => true
 
-/-- Resolve an ordinary direct single-field atom at its checked row address when its declaration is repeatable; every established scalar atom keeps the scalar evaluator. -/
+/-- Resolve every repeatable field of one ordinary atom in authored encounter order, then reuse its scalar evaluator over the checked substitutions. -/
 private def resolveAddressedOrdinary
     (source : NumericValidationAtom)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError
-      (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
-  match addressedNumericValidationFieldId? source with
-  | some field =>
-      match model.lookupUniqueId field with
-      | .ok declaration =>
-          if declaration.repeatableScope.isEmpty then
-            pure (context.scalar.resolveNumericValidationAtom source)
-          else do
-            let addressed ← context.readCell context.outer field
-            let fields : FlatContext := {
-              read := fun requested =>
-                if requested == field then
-                  addressed
-                else
-                  context.scalar.fields.read requested }
-            let scalar : ValidationEvaluationContext := {
-              context.scalar with fields }
-            pure (scalar.resolveNumericValidationAtom source)
-      | .error _ => pure (.error (.formal .malformed))
-  | none => pure (context.scalar.resolveNumericValidationAtom source)
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  let rec readRepeatable :
+      List FieldId →
+        Except CheckedAddressingError
+          (Option (List (FieldId × CheckedCell)))
+    | [] => pure (some [])
+    | field :: remaining =>
+        match model.lookupUniqueId field with
+        | .error _ => pure none
+        | .ok declaration =>
+            if declaration.repeatableScope.isEmpty then
+              readRepeatable remaining
+            else do
+              let addressed ← context.readCell context.outer field
+              match ← readRepeatable remaining with
+              | none => pure none
+              | some cells => pure (some ((field, addressed) :: cells))
+  match ← readRepeatable (addressedNumericValidationFieldIds source) with
+  | none => pure (.error (.formal .malformed))
+  | some addressed =>
+      let fields : FlatContext := {
+        read := fun requested =>
+          match addressed.find? fun entry => entry.1 == requested with
+          | some entry => entry.2
+          | none => context.scalar.fields.read requested }
+      let scalar : ValidationEvaluationContext := {
+        context.scalar with fields }
+      pure (scalar.resolveNumericValidationAtom source)
 
 /-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
 def resolveAddressed (atom : OrderedNumericValidationAtom model)
