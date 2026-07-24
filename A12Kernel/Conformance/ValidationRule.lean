@@ -556,6 +556,12 @@ private def innerPrice : FlatFieldDecl :=
     policy := { kind := .number { scale := 0, signed := true } }
     repeatableScope := [10, 20] }
 
+private def baseAmount : FlatFieldDecl :=
+  { id := 34
+    groupPath := ["Order"]
+    name := "BaseAmount"
+    policy := { kind := .number { scale := 0, signed := true } } }
+
 private def sectionDetail : FlatFieldDecl :=
   { id := 32
     groupPath := ["Order", "Sections", "Details"]
@@ -564,7 +570,7 @@ private def sectionDetail : FlatFieldDecl :=
     repeatableScope := [10] }
 
 private def ordinaryIterationModel : FlatModel :=
-  { fields := [outerAmount, innerAmount, sectionDetail, innerPrice]
+  { fields := [outerAmount, innerAmount, sectionDetail, innerPrice, baseAmount]
     repeatableGroups := [
       { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
       { level := 20, path := ["Order", "Sections", "Items"],
@@ -666,6 +672,24 @@ private def ordinaryRepeatableNumericRule? :=
 private def nestedRepeatableNumericRule? :=
   ordinaryRepeatableNumericRuleAt? ["Order", "Sections", "Items"]
     "InnerAmount" innerAmount.id "nestedNumeric"
+
+private def ancestorCurrentNumericRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op := .ordinary .greater
+        left := .binary .add
+          (.atom (.field
+            (ordinaryPath ["Order", "Sections"] "OuterAmount")))
+          (.atom (.field
+            (ordinaryPath ["Order", "Sections", "Items"] "InnerAmount")))
+        right := .literal { value := 4, authoredScale := 0 }
+      }).toOption
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerAmount.id
+    "ancestorCurrentNumeric" .error { parts := [] }).toOption
 
 private def directRepeatableNumericCondition?
     (op : NumericValidationOp) (expected : Rat)
@@ -801,6 +825,14 @@ private def deeperInnerNumberSource?
       else []
     }).toOption
 
+private def mixedDirectStarNumberSource? :
+    Option (CheckedNumberEntitySource ordinaryIterationModel) :=
+  (elaborateNumberEntitySource ordinaryIterationModel
+    ["Order", "Sections"] {
+      first := .field (ordinaryPath ["Order"] "BaseAmount")
+      rest := [.star deeperInnerAmountStar]
+    }).toOption
+
 private def checkedOuterEntityComparison?
     (core : OrderedNumericComparison ordinaryIterationModel) :
     Option (CheckedOrderedNumericComparison ordinaryIterationModel) :=
@@ -816,13 +848,15 @@ private def checkedOuterEntityComparison?
   else
     none
 
-private def plainStarEntityLegality?
+private def numberEntityLegality?
+    (source? : Option
+      (CheckedNumberEntitySource ordinaryIterationModel))
     (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
       OrderedNumericValidationAtom ordinaryIterationModel)
     (op : NumericValidationOp) (expected : Rat)
     (literalOnLeft : Bool := false) :
     Option ValidationCondition.IterationLegality := do
-  let source ← deeperInnerNumberSource?
+  let source ← source?
   let entity : AuthoredNumericExpr
       (OrderedNumericValidationAtom ordinaryIterationModel) :=
     .atom (atomOf source)
@@ -836,6 +870,50 @@ private def plainStarEntityLegality?
   }
   let condition ←
     (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  condition.core.iterationLegality.toOption
+
+private def plainStarEntityLegality?
+    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
+      OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality :=
+  numberEntityLegality? deeperInnerNumberSource? atomOf op expected literalOnLeft
+
+private def mixedDirectStarEntityLegality?
+    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
+      OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality :=
+  numberEntityLegality? mixedDirectStarNumberSource?
+    atomOf op expected literalOnLeft
+
+private def filteredEntityLegality?
+    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
+      OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option ValidationCondition.IterationLegality :=
+  numberEntityLegality? (deeperInnerNumberSource? true) atomOf op expected
+
+private def mixedScopeWrappedNumericLegality?
+    (op : NumericValidationOp) (expected : Rat) :
+    Option ValidationCondition.IterationLegality := do
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := .extremumCall .minimum
+          (.extremum .minimum
+            (.atom (.field
+              (ordinaryPath ["Order", "Sections"] "OuterAmount")))
+            (.atom (.field
+              (ordinaryPath ["Order", "Sections", "Items"]
+                "InnerAmount"))))
+        right := .literal { value := expected, authoredScale := 0 }
+      }).toOption
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
   condition.core.iterationLegality.toOption
 
 private def plainStarProductCondition?
@@ -1160,6 +1238,35 @@ example :
       (.ordinary .notEqual) 1 = some .legal ∧
     plainStarEntityLegality? (fun source => .valueCount 4 source)
       (.ordinary .notEqual) 1 = some (.invalid 10) := by
+  native_decide
+
+/- Mixed-scope operation lists remain all-iterating at their common outer level but reject every numeric-constant comparison at the inner level where one reference stops iterating. -/
+example :
+    mixedScopeWrappedNumericLegality? (.ordinary .equal) 0 =
+        some (.invalid 10) ∧
+    mixedScopeWrappedNumericLegality? (.ordinary .equal) 1 =
+        some (.invalid 20) ∧
+    mixedScopeWrappedNumericLegality? (.ordinary .greater) 1 =
+        some (.invalid 20) := by
+  native_decide
+
+/- A direct-plus-star entity list is mixed at the star's surrounding level, so every immediate numeric literal is rejected without consulting comparison direction or host conversion. Filter-bearing lists remain explicit insufficient information. -/
+example :
+    mixedDirectStarEntityLegality?
+      (fun source => .aggregate .sum source)
+      (.ordinary .equal) 1 = some (.invalid 10) ∧
+    mixedDirectStarEntityLegality?
+      (fun source => .firstFilled source)
+      (.ordinary .notEqual) (-1) true = some (.invalid 10) ∧
+    mixedDirectStarEntityLegality?
+      (fun source => .aggregate .distinctCount source)
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    mixedDirectStarEntityLegality?
+      (fun source => .valueCount 4 source)
+      (.ordinary .greater) (2 / 5) = some (.invalid 10) ∧
+    filteredEntityLegality?
+      (fun source => .aggregate .sum source)
+      (.ordinary .equal) 1 = some (.insufficient 10) := by
   native_decide
 
 /- `SumOfProducts` shares only the plain-star zero-sensitive branch; a positive not-equal threshold remains admitted. -/
@@ -1585,6 +1692,29 @@ example :
         [(10, 2), (20, 1)],
         .fired .value,
         some { field := innerAmount.id, path := [2, 1] })] := by
+  native_decide
+
+/- One checked composite may read an ancestor and current-row Number through their declaration-owned scopes. Execute preserves the full target environment, while Transform/Explain recover both certified declarations from the same tree. -/
+example :
+    ((ancestorCurrentNumericRule?.bind fun rule =>
+      (evalOrdinaryRule? rule {
+        instantiatedRows := [
+          { group := 10, path := [1] },
+          { group := 20, path := [1, 1] }]
+        cells := [
+          classifiedCell outerAmount.id [1] "2" (.parsed (.num 2)),
+          classifiedCell innerAmount.id [1, 1] "3" (.parsed (.num 3))]
+      }).map fun outcomes =>
+        (rule.condition.core.ordinaryRepeatableFields.map (·.id),
+          outcomes.map fun entry =>
+            (entry.1, entry.2.verdict,
+              entry.2.message?.map (·.errorAddress)))) ==
+      some (
+        [outerAmount.id, innerAmount.id],
+        [(
+          [(10, 1), (20, 1)],
+          .fired .value,
+          some { field := innerAmount.id, path := [1, 1] })])) = true := by
   native_decide
 
 /- The surrounding rule environment fixes only the outer row; the deeper aggregate reopens its checked suffix and therefore selects different inner instances even when both parents contain local coordinate 1. -/
