@@ -1051,7 +1051,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-23-12 — filtered value counts shrink only from a currently selected match
 
-- **Status:** pending
+- **Status:** accepted
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `434f4ec8585797677d032639c50b491172bbbf54`
 - **Kernel behavior:** 30.8.1
@@ -1061,8 +1061,8 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Requested a12-dmkits reconciliation:** Keep the existing AST, typed field expansion, interpreter count fold, and maintained differential route. Audit the complete Number/String/Enumeration/Boolean/Confirm authoring matrix and preserve the existing exact domain comparisons. Correct only an observed runtime or metadata divergence. Add focused dual-kernel-route plus JVM/Node controls that distinguish a filtered current match from a filtered selected non-match, alongside empty-number-versus-zero, omitted-tail, scale-normalized Number equality, exact token identity, and first-formal-cause controls. Reuse the existing filter traversal and numeric result metadata; do not add a second aggregate evaluator, result type, protocol, or harness.
 - **Compatibility:** Treating any reached filter as both-directional overstates omission repair for a selected non-match; treating every filter as grow-only understates the possibility that a currently counted selected match disappears. Empty-to-zero substitution inflates the count, and exact rational equality disagrees with the kernel's scale-19 Number boundary.
 - **Acceptance:** Both kernel strategies and the JVM/Node peer agree on the two filter-polarity separators, empty/zero, omitted-tail, typed equality, and first-unavailability behavior; the complete legal authoring matrix is documented and locked or explicitly corrected at its current owners; no duplicate count/filter mechanism is introduced; and the handback supplies the exact committed revision plus per-surface disposition.
-- **a12-dmkits revision:** `a07409daeb69ad2d169c64ff1738c6fc22e0b3c4`
-- **Disposition:** handback reviewed; follow-up required — the typed count, match-sensitive polarity, empty/zero, omitted-tail, equality, token, and first-unavailability results agree across both kernel strategies and JVM/Node. However, `ExprEval.numberOfValueInFields` directly walks `rowContexts` and evaluates `havingInterp` instead of consuming the shared `keptRowsWithSuccessorLookahead` traversal introduced for filtered field-list consumers. Public count outcomes are currently cause-blind and draining, but this duplicates the traversal mechanism and fails the entry's explicit ownership acceptance condition. Keep this same entry pending until the count route reuses the sole filtered traversal owner and focused controls remain green; do not create a replacement ledger row.
+- **a12-dmkits revision:** `f4e420856ee0203048a88a5798fb5004afec44ff`
+- **Disposition:** accepted after corrective follow-up — the typed count, match-sensitive polarity, empty/zero, omitted-tail, equality, token, and first-unavailability results agree across both kernel strategies and JVM/Node. `NumberOfValueInFields` now consumes the sole `keptRowsWithSuccessorLookahead` filtered traversal owner rather than calling the filter loop directly; the same root correction removes the identical bypass from `NumberOfFilledFields` while preserving each consumer's distinct fold. The focused families, neighboring traversal controls, both interpreter hosts, and full differential estate pass. The interpreter purity lint now rejects a second direct filter-loop call site, so the no-duplicate-mechanism acceptance condition is satisfied without a new iterator, evaluator, result type, harness, protocol, or ledger row.
 
 ### SPEC-2026-07-23-13 — over-repetition is an address-formal gate before scalar checking
 
