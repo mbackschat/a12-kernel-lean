@@ -195,6 +195,19 @@ theorem checkedValidationRule_iterationScope_owned
       .ok rule.iterationScope :=
   rule.iterationScopeOwned
 
+/-- Checked rule assembly rejects the first known unguarded repeatable level before it can enter runtime evaluation. -/
+theorem assembleResolvedValidationRule_rejects_negativeIteration
+    (model : FlatModel) (condition : CheckedValidationCondition model)
+    (errorField : FieldId) (errorCode : String)
+    (severity : ValidationSeverity) (messagePlan : MessageRenderPlan)
+    (level : RepeatableLevel)
+    (invalid :
+      condition.core.iterationLegality = .ok (.invalid level)) :
+    assembleResolvedValidationRule model condition errorField errorCode
+        severity messagePlan =
+      .error (.negativeConditionInIteration level) := by
+  simp [assembleResolvedValidationRule, invalid]
+
 /-- The scalar checked entry point reports missing addressed context before evaluating a repeatable condition; it cannot manufacture semantic UNKNOWN. -/
 theorem checkedValidationRule_scalar_rejects_addressed
     (rule : CheckedResolvedValidationRule model)

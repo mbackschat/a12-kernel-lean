@@ -567,25 +567,46 @@ private def ordinaryPath (groups : List String) (field : String) :
     SurfaceFieldPath :=
   { base := .absolute, groups, field }
 
-private def ordinaryIterationRule? :
-    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
-  let outer ←
-    (CheckedValidationCondition.fromRepeatableFieldPresence
-      ordinaryIterationModel ["Order"] .filled
-      (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
-  let inner ←
-    (CheckedValidationCondition.fromRepeatableFieldPresence
-      ordinaryIterationModel ["Order"] .notFilled
-      (ordinaryPath ["Order", "Sections", "Items"] "InnerAmount")).toOption
-  let condition ← (outer.and inner).toOption
-  (assembleResolvedValidationRule ordinaryIterationModel condition innerAmount.id
-    "ordinaryIteration" .error { parts := [] }).toOption
-
 private def outerIterationCondition? :
     Option (CheckedValidationCondition ordinaryIterationModel) :=
   (CheckedValidationCondition.fromRepeatableFieldPresence
     ordinaryIterationModel ["Order"] .filled
     (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+
+private def innerEmptyCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  (CheckedValidationCondition.fromRepeatableFieldPresence
+    ordinaryIterationModel ["Order"] .notFilled
+    (ordinaryPath ["Order", "Sections", "Items"] "InnerAmount")).toOption
+
+private def innerGroupFilledCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  (CheckedValidationCondition.fromGroupPresence ordinaryIterationModel
+    ["Order"] (.path {
+      base := .absolute
+      groups := ["Order", "Sections", "Items"]
+    }) .filled).toOption
+
+private def nestedUnguardedCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let outer ← outerIterationCondition?
+  let inner ← innerEmptyCondition?
+  (outer.and inner).toOption
+
+private def ordinaryIterationCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let outer ←
+    outerIterationCondition?
+  let innerGroup ← innerGroupFilledCondition?
+  let inner ← innerEmptyCondition?
+  let guardedInner ← (innerGroup.and inner).toOption
+  (outer.and guardedInner).toOption
+
+private def ordinaryIterationRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ← ordinaryIterationCondition?
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerAmount.id
+    "ordinaryIteration" .error { parts := [] }).toOption
 
 private def absoluteGroup (groups : GroupPath) : SurfaceGroupReference := .path { base := .absolute, groups }
 
@@ -849,14 +870,78 @@ example :
         model ["Order"] amountPositive).isOk = false := by
   native_decide
 
+private def outerEmptyCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  (CheckedValidationCondition.fromRepeatableFieldPresence
+    ordinaryIterationModel ["Order"] .notFilled
+    (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+
 private def outerEmptyRule? :
     Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
-  let condition ←
-    (CheckedValidationCondition.fromRepeatableFieldPresence
-      ordinaryIterationModel ["Order"] .notFilled
-      (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+  let condition ← outerEmptyCondition?
   (assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
     "outerEmpty" .error { parts := [] }).toOption
+
+private def ordinaryAssemblyError?
+    (condition? : Option
+      (CheckedValidationCondition ordinaryIterationModel))
+    (target : FlatFieldDecl) : Option FlatRuleAssemblyError := do
+  let condition ← condition?
+  match assembleResolvedValidationRule ordinaryIterationModel condition target.id
+      "iterationLegality" .error { parts := [] } with
+  | .ok _ => none
+  | .error error => some error
+
+private def outerGroupEmptyCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  (CheckedValidationCondition.fromGroupPresence ordinaryIterationModel
+    ["Order"] (absoluteGroup ["Order", "Sections"]) .notFilled).toOption
+
+private def guardedOrMissingInnerLevelCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let outer ← outerIterationCondition?
+  let innerGroup ← innerGroupFilledCondition?
+  (outer.or innerGroup).toOption
+
+private def guardedOuterOrCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let outer ← outerIterationCondition?
+  let outerGroup ←
+    (CheckedValidationCondition.fromGroupPresence ordinaryIterationModel
+      ["Order"] (absoluteGroup ["Order", "Sections"]) .filled).toOption
+  (outer.or outerGroup).toOption
+
+/- Per-level static legality rejects pure negative field and group conditions at their outer repeatable level. -/
+example :
+    outerEmptyRule?.isNone = true ∧
+    ordinaryAssemblyError? outerEmptyCondition? outerAmount =
+      some (.negativeConditionInIteration 10) ∧
+    ordinaryAssemblyError? outerGroupEmptyCondition? outerAmount =
+      some (.negativeConditionInIteration 10) := by
+  native_decide
+
+/- An outer guard cannot legalize an inner negative condition: the first unguarded level remains explicit. Adding the existing inner group-presence guard closes that same level. -/
+example :
+    (nestedUnguardedCondition?.bind fun condition =>
+      condition.core.iterationLegality.toOption) = some (.invalid 20) ∧
+    (ordinaryIterationCondition?.bind fun condition =>
+      condition.core.iterationLegality.toOption) = some .legal := by
+  native_decide
+
+/- `Or` requires every branch to reference and guard each selected level. Two outer guards are legal, but an outer-only branch does not guard the inner level selected by its sibling. -/
+example :
+    (guardedOuterOrCondition?.bind fun condition =>
+      condition.core.iterationLegality.toOption) = some .legal ∧
+    (guardedOrMissingInnerLevelCondition?.bind fun condition =>
+      condition.core.iterationLegality.toOption) = some (.invalid 20) := by
+  native_decide
+
+/- Unclassified repeatable numeric leaf rules remain executable with an exact insufficient-information result; this capsule does not guess their operator-specific static law. -/
+example :
+    (ordinaryRepeatableNumericRule?.bind fun rule =>
+      rule.condition.core.iterationLegality.toOption) =
+        some (.insufficient 10) := by
+  native_decide
 
 private def ordinaryIterationData : DocumentData :=
   { instantiatedRows := [
@@ -1094,20 +1179,6 @@ example :
           messageType := .omission
           text := { text := "" }
         })] := by
-  native_decide
-
-/- An instantiated empty row is evaluated and may fire, while zero actual rows produce zero rule environments rather than a phantom row. -/
-example :
-    (outerEmptyRule?.bind fun rule =>
-      (evalOrdinaryRule? rule {
-        instantiatedRows := [{ group := 10, path := [1] }]
-        cells := []
-      }).map fun outcomes => outcomes.map fun entry =>
-        (entry.1, entry.2.verdict)) =
-      some [([(10, 1)], .fired .omission)] ∧
-    (outerEmptyRule?.bind fun rule =>
-      evalOrdinaryRule? rule { instantiatedRows := [], cells := [] }) =
-      some [] := by
   native_decide
 
 /- Both authored group-reference forms iterate the actual group rows in immutable document order. A created empty row is structural content, while zero rows produce no evaluation. -/
