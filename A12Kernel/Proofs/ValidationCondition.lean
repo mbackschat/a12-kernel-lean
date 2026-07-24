@@ -206,6 +206,38 @@ theorem validationCondition_groupList_fired_iff
         operand.evalPresence context isRelevant) operands) = outcome
   cases outcome <;> simp [ValidationFillOutcome.asConservativeVerdict]
 
+/-- An ordinary repeatable presence leaf always requires the addressed evaluator; selecting the scalar entry point cannot silently substitute UNKNOWN. -/
+@[simp]
+theorem validationCondition_repeatablePresence_requiresAddressed
+    (model : FlatModel) (operator : RepeatableFieldPresenceOperator)
+    (declaration : FlatFieldDecl) :
+    (ValidationCondition.repeatableFieldPresence (model := model)
+      operator declaration).requiresAddressedValidation = true := by
+  rfl
+
+/-- A selected ordinary repeatable presence leaf reads the exact current environment and delegates to the established phase observation. -/
+@[simp]
+theorem validationCondition_repeatablePresence_evalAddressed
+    (model : FlatModel) (operator : RepeatableFieldPresenceOperator)
+    (declaration : FlatFieldDecl)
+    (context : AddressedValidationEvaluationContext model) :
+    (ValidationCondition.repeatableFieldPresence (model := model)
+      operator declaration).evalAddressed context =
+      .ok (operator.eval
+        (observeCell .validation
+          (context.read context.outer declaration.id))) := by
+  rfl
+
+/-- One non-starred repeatable field declaration is the sole source of its ordinary rule-iteration scope. -/
+@[simp]
+theorem validationCondition_repeatablePresence_iterationScope
+    (model : FlatModel) (operator : RepeatableFieldPresenceOperator)
+    (declaration : FlatFieldDecl) :
+    (ValidationCondition.repeatableFieldPresence (model := model)
+      operator declaration).ordinaryIterationScope =
+      .ok (some declaration.repeatableScope) := by
+  rfl
+
 /-- The checked mixed wrapper carries one model and exact row-group certificate for its complete resolved core. -/
 theorem checkedValidationCondition_coherent
     (condition : CheckedValidationCondition model) :

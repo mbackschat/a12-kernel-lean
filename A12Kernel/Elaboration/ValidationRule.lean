@@ -12,6 +12,9 @@ namespace A12Kernel
 inductive FlatRuleAssemblyError where
   | errorField (error : ResolveError)
   | repeatableErrorField (field : FieldId)
+  | iterationScope (error : ValidationCondition.RuleIterationScopeError)
+  | iterationScopeMismatch (field : FieldId)
+      (expected actual : List RepeatableLevel)
   | errorFieldNotReferenced (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -20,11 +23,20 @@ inductive ValidationEvaluationError where
   | addressedContextRequired
   deriving Repr, DecidableEq
 
+/-- The first ordinary repeatable rule route requires the error field to inhabit the exact deepest compatible nonparallel reference scope. Wider indirect group-reference anchoring remains outside this capsule. -/
+def ruleErrorScopeCompatible (declaration : FlatFieldDecl) :
+    Option (List RepeatableLevel) → Bool
+  | none => declaration.repeatableScope.isEmpty
+  | some scope => declaration.repeatableScope == scope
+
 /-- A complete resolved rule whose condition and explicit error field are certified against the same validated model. The condition projection and reference traversal are parameters so flat and mixed rules share one metadata certificate. -/
 structure CheckedResolvedRule (model : FlatModel)
     (CheckedCondition CoreCondition : Type)
     (coreOf : CheckedCondition → CoreCondition)
-    (referencesField : CoreCondition → FieldId → Bool) where
+    (referencesField : CoreCondition → FieldId → Bool)
+    (iterationScopeOf : CoreCondition →
+      Except ValidationCondition.RuleIterationScopeError
+        (Option (List RepeatableLevel))) where
   condition : CheckedCondition
   errorField : FieldId
   errorCode : String
@@ -33,14 +45,21 @@ structure CheckedResolvedRule (model : FlatModel)
   errorDeclaration : FlatFieldDecl
   errorFieldLookup :
     model.lookupUniqueId errorField = .ok errorDeclaration
-  errorFieldNonrepeatable :
-    errorDeclaration.repeatableScope.isEmpty = true
+  iterationScope : Option (List RepeatableLevel)
+  iterationScopeOwned :
+    iterationScopeOf (coreOf condition) = .ok iterationScope
+  errorFieldScopeCompatible :
+    ruleErrorScopeCompatible errorDeclaration iterationScope = true
   errorFieldReferenced :
     referencesField (coreOf condition) errorField = true
 
 abbrev CheckedResolvedFlatRule (model : FlatModel) :=
   CheckedResolvedRule model (CheckedFlatCondition model) FlatCondition
     (fun condition => condition.core) FlatCondition.referencesField
+    (fun _ =>
+      (.ok none :
+        Except ValidationCondition.RuleIterationScopeError
+          (Option (List RepeatableLevel))))
 
 abbrev ResolvedValidationRule (model : FlatModel) :=
   ResolvedRule (ValidationCondition model)
@@ -50,6 +69,7 @@ abbrev CheckedResolvedValidationRule (model : FlatModel) :=
     (ValidationCondition model)
     (fun condition => condition.core)
     (fun condition field => condition.referencesField field)
+    ValidationCondition.ordinaryIterationScope
 
 namespace CheckedResolvedFlatRule
 
@@ -126,18 +146,26 @@ end CheckedResolvedValidationRule
 private def assembleResolvedRule (model : FlatModel)
     (coreOf : CheckedCondition → CoreCondition)
     (referencesField : CoreCondition → FieldId → Bool)
+    (iterationScopeOf : CoreCondition →
+      Except ValidationCondition.RuleIterationScopeError
+        (Option (List RepeatableLevel)))
     (condition : CheckedCondition)
     (errorField : FieldId) (errorCode : String)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
     Except FlatRuleAssemblyError
       (CheckedResolvedRule model CheckedCondition CoreCondition
-        coreOf referencesField) :=
-  match hLookup : model.lookupUniqueId errorField with
-  | .error error => .error (.errorField error)
-  | .ok declaration =>
-      if hNonrepeatable : declaration.repeatableScope.isEmpty = true then
-        if hReferenced : referencesField (coreOf condition) errorField = true then
+        coreOf referencesField iterationScopeOf) :=
+  match hIteration : iterationScopeOf (coreOf condition) with
+  | .error error => .error (.iterationScope error)
+  | .ok iterationScope =>
+    match hLookup : model.lookupUniqueId errorField with
+    | .error error => .error (.errorField error)
+    | .ok declaration =>
+      if hScope :
+          ruleErrorScopeCompatible declaration iterationScope = true then
+        if hReferenced :
+            referencesField (coreOf condition) errorField = true then
           .ok {
             condition
             errorField
@@ -146,13 +174,19 @@ private def assembleResolvedRule (model : FlatModel)
             messagePlan
             errorDeclaration := declaration
             errorFieldLookup := hLookup
-            errorFieldNonrepeatable := hNonrepeatable
+            iterationScope
+            iterationScopeOwned := hIteration
+            errorFieldScopeCompatible := hScope
             errorFieldReferenced := hReferenced
           }
         else
           .error (.errorFieldNotReferenced errorField)
       else
-        .error (.repeatableErrorField errorField)
+        match iterationScope with
+        | none => .error (.repeatableErrorField errorField)
+        | some expected =>
+            .error (.iterationScopeMismatch errorField expected
+              declaration.repeatableScope)
 
 /-- Assemble the metadata boundary after condition elaboration. A repeatable error field is rejected before reference membership because this capsule has no row address. -/
 def assembleResolvedFlatRule (model : FlatModel)
@@ -160,9 +194,14 @@ def assembleResolvedFlatRule (model : FlatModel)
     (errorField : FieldId) (errorCode : String)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
-    Except FlatRuleAssemblyError (CheckedResolvedFlatRule model) :=
+  Except FlatRuleAssemblyError (CheckedResolvedFlatRule model) :=
   assembleResolvedRule model (fun checked => checked.core)
-    FlatCondition.referencesField condition errorField errorCode severity messagePlan
+    FlatCondition.referencesField
+    (fun _ =>
+      (.ok none :
+        Except ValidationCondition.RuleIterationScopeError
+          (Option (List RepeatableLevel))))
+    condition errorField errorCode severity messagePlan
 
 /-- Assemble the existing message/error-field boundary around a checked mixed condition. -/
 def assembleResolvedValidationRule (model : FlatModel)
@@ -170,9 +209,10 @@ def assembleResolvedValidationRule (model : FlatModel)
     (errorField : FieldId) (errorCode : String)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
-    Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
+  Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
   assembleResolvedRule model (fun checked => checked.core)
     (fun core field => core.referencesField field)
+    ValidationCondition.ordinaryIterationScope
     condition errorField errorCode severity messagePlan
 
 end A12Kernel

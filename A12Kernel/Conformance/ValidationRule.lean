@@ -534,4 +534,67 @@ example :
       { text := "A\r\nB|A\r\nB" } := by
   native_decide
 
+private def outerAmount : FlatFieldDecl :=
+  { id := 30
+    groupPath := ["Order", "Sections"]
+    name := "OuterAmount"
+    policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := [10] }
+
+private def innerAmount : FlatFieldDecl :=
+  { id := 31
+    groupPath := ["Order", "Sections", "Items"]
+    name := "InnerAmount"
+    policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := [10, 20] }
+
+private def ordinaryIterationModel : FlatModel :=
+  { fields := [outerAmount, innerAmount]
+    repeatableGroups := [
+      { level := 10, path := ["Order", "Sections"], repeatability := some 2 },
+      { level := 20, path := ["Order", "Sections", "Items"],
+        repeatability := some 2 }] }
+
+private def ordinaryPath (groups : List String) (field : String) :
+    SurfaceFieldPath :=
+  { base := .absolute, groups, field }
+
+private def ordinaryIterationRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let outer ←
+    (CheckedValidationCondition.fromRepeatableFieldPresence
+      ordinaryIterationModel ["Order"] .filled
+      (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+  let inner ←
+    (CheckedValidationCondition.fromRepeatableFieldPresence
+      ordinaryIterationModel ["Order"] .notFilled
+      (ordinaryPath ["Order", "Sections", "Items"] "InnerAmount")).toOption
+  let condition ← (outer.and inner).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerAmount.id
+    "ordinaryIteration" .error { parts := [] }).toOption
+
+private def outerIterationCondition? :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  (CheckedValidationCondition.fromRepeatableFieldPresence
+    ordinaryIterationModel ["Order"] .filled
+    (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+
+/- Nested compatible ordinary references derive the deepest scope from the checked tree; the declaring group and error-field argument cannot override it. -/
+example :
+    (ordinaryIterationRule?.map fun rule =>
+      (rule.iterationScope, rule.errorDeclaration.repeatableScope)) =
+      some (some [10, 20], [10, 20]) := by
+  native_decide
+
+/- A deeper error declaration cannot manufacture a deeper iteration level when the condition references only the outer scope. -/
+example :
+    (outerIterationCondition?.map fun condition =>
+      match assembleResolvedValidationRule ordinaryIterationModel condition
+          innerAmount.id "ordinaryIteration" .error { parts := [] } with
+      | .ok _ => none
+      | .error error => some error) =
+      some (some
+        (.iterationScopeMismatch innerAmount.id [10] [10, 20])) := by
+  native_decide
+
 end A12Kernel.Conformance.ValidationRule
