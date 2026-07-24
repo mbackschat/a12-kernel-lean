@@ -31,11 +31,12 @@ inductive ValueListCell (kind : ValueListKind) where
   | empty
   | unknown (cause : FormalCause)
 
-/-- One already-expanded and already-filtered operand side. An uninstantiated declared tail is tracked separately because it contributes no cell but can still make a firing omission-typed. -/
+/-- One already-expanded and already-filtered authored operand. An uninstantiated declared tail is tracked separately because it contributes no cell but can still make a firing omission-typed. Partial nonrelevance stays on this exact operand so an ordered consumer can distinguish an earlier decision from a later unavailable extent. -/
 structure ResolvedValueListSide (kind : ValueListKind) where
   cells : List (ValueListCell kind)
   hasUninstantiatedTail : Bool
   hasHaving : Bool
+  hasNonRelevant : Bool := false
 
 namespace ValueListCell
 
@@ -76,7 +77,8 @@ def append (left right : ResolvedValueListSide kind) :
   { cells := left.cells ++ right.cells
     hasUninstantiatedTail :=
       left.hasUninstantiatedTail || right.hasUninstantiatedTail
-    hasHaving := left.hasHaving || right.hasHaving }
+    hasHaving := left.hasHaving || right.hasHaving
+    hasNonRelevant := left.hasNonRelevant || right.hasNonRelevant }
 
 /-- Check whether every reached cell is available, stopping at the first formal cause. -/
 def available (side : ResolvedValueListSide kind) : Except FormalCause Unit :=
@@ -143,7 +145,7 @@ def scanResolvedValueListOperands {operand state terminal error : Type}
               scanResolvedValueListOperands resolve onUnavailable append remaining
                 (append accumulated operand side)
 
-/-- The quantifier-specific view of one resolved side. Partial validation removes nonrelevant cells before classification but retains their existence because `No` and values-side `NotAll` treat them as UNKNOWN. The ordinary resolved side remains unchanged for aggregates and other consumers. -/
+/-- Compatibility view for established single-operand partial routes. New ordered routes retain nonrelevance on each `ResolvedValueListSide`; this wrapper remains the pre-existing scalar/one-star API until those callers are widened. -/
 structure ResolvedValueListQuantifierSide (kind : ValueListKind) where
   side : ResolvedValueListSide kind
   hasNonRelevant : Bool := false
@@ -301,7 +303,7 @@ private def collectPoisoningValueListMembers :
     List (ResolvedValueListSide kind) → PoisoningValueListMembers kind
   | [] => .known [] false
   | side :: remaining =>
-      if side.hasUnknown then
+      if side.hasUnknown || side.hasNonRelevant then
         .unknown
       else
         match collectPoisoningValueListMembers remaining with
@@ -325,12 +327,15 @@ private def scanValueListNoFields
     List (ResolvedValueListSide kind) → Bool → Verdict
   | [], omission => .fired (if omission then .omission else .value)
   | side :: remaining, omission =>
-      match scanValueListNoCells members side.cells
-          (omission || side.hasHaving || side.hasUninstantiatedTail) with
-      | .matched => .notFired
-      | .unknown => .unknown
-      | .exhausted nextOmission =>
-          scanValueListNoFields members remaining nextOmission
+      if side.hasNonRelevant then
+        .unknown
+      else
+        match scanValueListNoCells members side.cells
+            (omission || side.hasHaving || side.hasUninstantiatedTail) with
+        | .matched => .notFired
+        | .unknown => .unknown
+        | .exhausted nextOmission =>
+            scanValueListNoFields members remaining nextOmission
 
 private def orderedValueListFieldsHavePresent :
     List (ResolvedValueListSide kind) → Bool
@@ -390,7 +395,7 @@ def ValueListQuantifier.canFireOnEmpty : ValueListQuantifier → Bool
   | .no => true
   | .atLeastOne | .notAll => false
 
-/-- Closed dispatch after phase-specific relevance has been classified. This is the sole quantifier evaluator used by both full and partial routes. -/
+/-- Compatibility dispatch for one classified operand per side. Wider multi-operand routes use `evalOrdered` directly so operand-local nonrelevance is not flattened into this single-side view. -/
 def ValueListQuantifier.evalClassified (quantifier : ValueListQuantifier)
     (fields values : ResolvedValueListQuantifierSide kind) : Verdict :=
   match quantifier with
@@ -398,7 +403,7 @@ def ValueListQuantifier.evalClassified (quantifier : ValueListQuantifier)
   | .no => evalClassifiedValueListNo fields values
   | .notAll => evalClassifiedValueListNotAll fields values
 
-/-- Closed dispatch over the three value-list quantifiers. Each arm delegates to its own semantic clause rather than a generic quantifier fold. -/
+/-- Closed dispatch over one resolved operand per side. -/
 def ValueListQuantifier.eval (quantifier : ValueListQuantifier)
     (fields values : ResolvedValueListSide kind) : Verdict :=
   quantifier.evalClassified (.ofResolved fields) (.ofResolved values)

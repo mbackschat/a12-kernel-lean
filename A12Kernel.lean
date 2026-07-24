@@ -83,6 +83,7 @@ import A12Kernel.Elaboration.StarPath
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StarNumber
+import A12Kernel.Elaboration.NumberEntityValueList
 import A12Kernel.Elaboration.StarNumberValueList
 import A12Kernel.Elaboration.StarStringValueList
 import A12Kernel.Elaboration.StarEnumerationValueList

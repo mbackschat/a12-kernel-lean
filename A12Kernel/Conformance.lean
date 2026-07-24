@@ -81,6 +81,7 @@ import A12Kernel.Conformance.StarPathElaboration
 import A12Kernel.Conformance.CheckedStarDocument
 import A12Kernel.Conformance.StarGroupElaboration
 import A12Kernel.Conformance.StarNumberElaboration
+import A12Kernel.Conformance.NumberEntityValueList
 import A12Kernel.Conformance.StarNumberValueList
 import A12Kernel.Conformance.StarStringValueList
 import A12Kernel.Conformance.StarEnumerationValueList
