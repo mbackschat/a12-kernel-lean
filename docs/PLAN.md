@@ -40,15 +40,15 @@ The detailed readiness fields live only in those gap entries. Every capsule rece
 
 ## Active capsule
 
-Apply the explicitly approved bounded SG4 traceability refinement after the completed elapsed-difference semantic capsule. This is an adoption/resumption documentation unit only: inspect the accepted computation-execution decision and current owners, record stable local scheduling-step labels, the source/trace/law/discriminator/consumer traceability requirement, runtime-only activation provenance/lifecycle/public-projection requirements, and soundness plus justified-completeness obligations against an independent step/trace relation. Do not select SG4, define a trace schema or registry, introduce scheduler/runtime types, or disturb SG2.
+No semantic capsule is selected at this checkpoint. The bounded SG4 traceability refinement is adopted in [`ARCHITECTURE.md`](ARCHITECTURE.md#whole-model-computation-execution-keeps-definition-activation-result-application-and-validation-separate) and its future entry/proof obligations are owned by [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition). This adoption did not select SG4, define a trace schema or registry, introduce scheduler/runtime types, or disturb SG2.
 
-Consumer hypothesis: a future Compile/Analyze/Explain consumer must connect each meaningful checked scheduling step to its source basis, observable trace contribution, proof or non-law, conformance separator, and decision need while keeping runtime-only activation state non-public unless explicitly projected. A scheduler proved only against its own implementation, an unlabeled operational trace, or an overlay item with no lifecycle/public-projection account is insufficient.
+At resumption, select the smallest remaining SG2 family whose bounded packet closes a real unresolved source fact and widens the existing canonical addressed construction. The consumer hypothesis must require Execute plus Transform/Explain to recover complete environments, hierarchical extent, authored order, model certificates, relevance/filter provenance, and structural failure without reconstructing a second stream.
 
 ## Immediate frontier
 
-1. Inspect the accepted computation-execution decision, current architecture and SG4 readiness owner, relevant history, and the existing checked-plan/dependency/result boundaries before editing.
-2. Record the four approved traceability/proof constraints in the minimum live owners, referencing the archived rationale instead of duplicating it.
-3. Verify links and documentation consistency, commit the bounded adoption separately, and return the active semantic queue to SG2 without selecting SG4.
+1. Reconcile the remaining SG2 families against the checked ordinary-rule resolver, addressed operand core, static per-level classifier, existing handbacks, and recent Git history before selecting work.
+2. Prepare one bounded source packet and separating matrix for the highest-connectivity ready family; if the existing owner already closes it, record a verified no-op or consolidate rather than adding an adapter.
+3. Implement through the existing checked document, canonical topology/addressing, typed projection, and consumer owners with red/green TDD; keep structural failure outside semantic UNKNOWN.
 4. Keep SG4 prohibited until SG2, the explicit processing context, and every SG4 source-audit category close. Batch external evidence under [`SG12`](SEMANTICS-GAPS.md#sg12--retained-kernel-correspondence-coverage) only for a coherent closed family with a separating matrix.
 
 ## Parked boundaries
