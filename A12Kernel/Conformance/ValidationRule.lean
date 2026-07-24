@@ -703,6 +703,27 @@ private def compositeRepeatableNumericLegality?
     (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
   condition.core.iterationLegality.toOption
 
+private def wrappedRepeatableNumericLegality?
+    (wrap : AuthoredNumericExpr SurfaceNumericAtom →
+      AuthoredNumericExpr SurfaceNumericAtom)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let wrapped := wrap (.atom (.field
+    (ordinaryPath ["Order", "Sections"] "OuterAmount")))
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections"] {
+        op
+        left := if literalOnLeft then literal else wrapped
+        right := if literalOnLeft then wrapped else literal
+      }).toOption
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+  condition.core.iterationLegality.toOption
+
 private def deeperInnerAmountStar : SurfaceStarFieldPath :=
   { base := .absolute
     groups := [
@@ -1020,6 +1041,22 @@ example :
     (nestedRepeatableNumericRule?.bind fun rule =>
       rule.condition.core.iterationLegality.toOption) =
         some .legal := by
+  native_decide
+
+/- Direct-field operation-list wrappers retain their distinct zero guard while sharing the same checked expression tree. -/
+example :
+    wrappedRepeatableNumericLegality? (fun body => .abs body)
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    wrappedRepeatableNumericLegality? (fun body => .abs body)
+      (.ordinary .equal) 0 true = some (.invalid 10) ∧
+    wrappedRepeatableNumericLegality?
+      (fun body => .round .floor omittedRoundingPlaces body)
+      (.ordinary .greaterEqual) 0 = some (.invalid 10) ∧
+    wrappedRepeatableNumericLegality? (fun body => .abs body)
+      (.ordinary .notEqual) 0 = some .legal ∧
+    wrappedRepeatableNumericLegality?
+      (fun body => .round .floor omittedRoundingPlaces body)
+      (.ordinary .equal) 1 = some .legal := by
   native_decide
 
 private def ordinaryIterationData : DocumentData :=

@@ -563,13 +563,16 @@ private def safeIntegralLiteralValue? :
       else none
   | _ => none
 
-/-- Source-closed direct field/literal subset of the kernel visitor. Nonintegral and out-of-range constants remain unclassified until a source-grounded binary64 rounding and narrowing account exists; exact `Rat` comparison would be the wrong substitute. -/
-private def orderedNumericDirectFieldLiteralGuardAt
+/-- Apply the source-closed safe-integral literal partition after an exact operand-shape recognizer supplies its model-owned scope. Nonintegral and out-of-range constants remain unclassified until a source-grounded binary64 rounding and narrowing account exists; exact `Rat` comparison would be the wrong substitute. -/
+private def orderedNumericScopedLiteralGuardAt
+    (scopeOf :
+      AuthoredNumericExpr (OrderedNumericValidationAtom model) →
+        Option (List RepeatableLevel))
     (level : RepeatableLevel)
     (comparison : OrderedNumericComparison model) :
     Option IterationGuardStatus :=
-  let classify fieldExpr literalExpr := do
-    let scope ← directOrdinaryNumberScope? model fieldExpr
+  let classify scopedExpr literalExpr := do
+    let scope ← scopeOf scopedExpr
     let literal ← safeIntegralLiteralValue? literalExpr
     if scope.contains level then
       if literal == 0 && directEmptyZeroIsUnguarded comparison.op then
@@ -581,6 +584,30 @@ private def orderedNumericDirectFieldLiteralGuardAt
   match classify comparison.left comparison.right with
   | some status => some status
   | none => classify comparison.right comparison.left
+
+private def orderedNumericDirectFieldLiteralGuardAt
+    (level : RepeatableLevel)
+    (comparison : OrderedNumericComparison model) :
+    Option IterationGuardStatus :=
+  orderedNumericScopedLiteralGuardAt
+    (directOrdinaryNumberScope? model) level comparison
+
+/-- Direct-field `Abs` and rounding are the first two operation-list consumers of the same source guard. Wider operation-list bodies retain their own mixed-reference and entity-list packet. -/
+private def directNumberWrapperScope?
+    (model : FlatModel) :
+    AuthoredNumericExpr (OrderedNumericValidationAtom model) →
+      Option (List RepeatableLevel)
+  | .group body => directNumberWrapperScope? model body
+  | .abs body | .round _ _ body =>
+      directOrdinaryNumberScope? model body
+  | _ => none
+
+private def orderedNumericDirectWrapperLiteralGuardAt
+    (level : RepeatableLevel)
+    (comparison : OrderedNumericComparison model) :
+    Option IterationGuardStatus :=
+  orderedNumericScopedLiteralGuardAt
+    (directNumberWrapperScope? model) level comparison
 
 /-- Preserve the source visitor's top-level parse-tree distinction: ordinary binary arithmetic and power are composite operations, so the direct field/list-versus-constant branches do not classify them. Grouping retains the underlying operation root. -/
 private def isTopLevelCompositeNumericOperation :
@@ -612,14 +639,17 @@ private def ValidationConditionLeaf.iterationGuardAt
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status
       | none =>
-          match orderedNumericDirectFieldLiteralGuardAt level comparison with
+          match orderedNumericDirectWrapperLiteralGuardAt level comparison with
           | some status => status
           | none =>
-              match orderedNumericComparisonIterationScope comparison with
-              | .ok (some scope) =>
-                  if scope.contains level then .unclassified else .noReference
-              | .ok none => .noReference
-              | .error _ => .unclassified
+              match orderedNumericDirectFieldLiteralGuardAt level comparison with
+              | some status => status
+              | none =>
+                  match orderedNumericComparisonIterationScope comparison with
+                  | .ok (some scope) =>
+                      if scope.contains level then .unclassified else .noReference
+                  | .ok none => .noReference
+                  | .error _ => .unclassified
   | .groupPresence operator reference =>
       if (model.repeatableScopeForGroupPath reference.path).contains level then
         match operator with
