@@ -188,6 +188,23 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
   | .inl side => pure (evalValueCountAggregate checked.expected side)
   | .inr result => pure result
 
+/-- Full validation over the immutable checked document reuses the shared addressed token operand and retains per-slot filter provenance for the existing value-count fold. -/
+def evaluateCheckedDocumentValidation
+    (checked : CheckedTokenValueCountSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueCountSide .token) (terminal := NumericOperand)
+      (fun operand => do
+        let resolved ←
+          operand.resolveCheckedValidationOperand document outer
+        pure (.inl (resolved.valueListSideAt .validation)))
+      (fun cause => .unknown cause)
+      (fun accumulated _ side => accumulated.appendResolved side)
+      checked.source.operands .empty with
+  | .inl side => pure (evalValueCountAggregate checked.expected side)
+  | .inr result => pure result
+
 /-- Computation shares the same checked source and count fold while each filtered slot uses the computation iterator's one-kept-successor traversal. -/
 def evaluateComputation (checked : CheckedTokenValueCountSource model)
     (document : Document) (outer : Env)

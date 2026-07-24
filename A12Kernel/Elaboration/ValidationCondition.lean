@@ -668,6 +668,17 @@ private def numberEntityReferenceScopes?
     Option (List (List RepeatableLevel)) :=
   source.operands.mapM numberEntityOperandReferenceScope?
 
+private def tokenEntityOperandReferenceScope? :
+    CheckedTokenEntityOperand model →
+      Option (List RepeatableLevel)
+  | .field _ => some []
+  | .star checked => checkedStarBindingScope checked.source
+
+private def tokenEntityReferenceScopes?
+    (source : CheckedTokenEntitySource model) :
+    Option (List (List RepeatableLevel)) :=
+  source.operands.mapM tokenEntityOperandReferenceScope?
+
 private def productReferenceScopes?
     (source : CheckedNumericProductAggregate model) :
     Option (List (List RepeatableLevel)) := do
@@ -695,7 +706,9 @@ private def numericEntityGuardShape? :
         | .distinctCount => ⟨scopes, false, true⟩
   | .sumOfProducts source =>
       (productReferenceScopes? source).map (⟨·, true, false⟩)
-  | .ordinary _ | .tokenValueCount _ => none
+  | .tokenValueCount source =>
+      (tokenEntityReferenceScopes? source.source).map (⟨·, true, true⟩)
+  | .ordinary _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool

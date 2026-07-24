@@ -418,7 +418,7 @@ private def checkedTokenValueCountAdmittedIn
     (rowGroup : GroupPath) (scope : NumericOperandScope) : Bool :=
   match scope with
   | .modelWideCheckedComputation => true
-  | .sameGroupAddressed => false
+  | .sameGroupAddressed => source.source.directFields?.isNone
   | .sameGroup | .modelWideNonrepeatable =>
       match source.source.directFields? with
       | none => false
@@ -981,7 +981,9 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             (source.evaluateValidation document context.outer
               context.scalar.fields.read read).mapError .addressing
           pure result.toValidationArithmetic
-      | .checked _ => pure (.error .groupState)
+      | .checked document =>
+          (source.evaluateCheckedDocumentValidation
+            document context.outer).map NumericOperand.toValidationArithmetic
   | .aggregate op source =>
       let result ← match context.input with
         | .legacy document read =>
