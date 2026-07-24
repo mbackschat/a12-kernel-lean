@@ -806,6 +806,28 @@ private def checkedOuterEntityComparison?
   else
     none
 
+private def plainStarEntityLegality?
+    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
+      OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let source ← deeperInnerNumberSource?
+  let entity : AuthoredNumericExpr
+      (OrderedNumericValidationAtom ordinaryIterationModel) :=
+    .atom (atomOf source)
+  let literal : AuthoredNumericExpr
+      (OrderedNumericValidationAtom ordinaryIterationModel) :=
+    .literal { value := expected, authoredScale := 0 }
+  let comparison ← checkedOuterEntityComparison? {
+    op
+    left := if literalOnLeft then literal else entity
+    right := if literalOnLeft then entity else literal
+  }
+  let condition ←
+    (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  condition.core.iterationLegality.toOption
+
 private def outerWithInnerEntityComparison?
     (atom : OrderedNumericValidationAtom ordinaryIterationModel)
     (right : Rat) :
@@ -1071,6 +1093,29 @@ example :
     wrappedRepeatableNumericLegality?
       (fun body => .extremumCall .maximum body)
       (.ordinary .notEqual) 0 = some .legal := by
+  native_decide
+
+/- Plain-star entity-list operations retain distinct zero and positive-threshold admission families. -/
+example :
+    plainStarEntityLegality? (fun source => .firstFilled source)
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    plainStarEntityLegality? (fun source => .valueCount 4 source)
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    plainStarEntityLegality? (fun source => .aggregate .sum source)
+      (.ordinary .greaterEqual) 0 = some (.invalid 10) ∧
+    plainStarEntityLegality?
+      (fun source => .aggregate .distinctCount source)
+      (.ordinary .equal) 0 = some .legal ∧
+    plainStarEntityLegality?
+      (fun source => .aggregate .distinctCount source)
+      (.ordinary .lessEqual) 1 = some (.invalid 10) ∧
+    plainStarEntityLegality?
+      (fun source => .aggregate .distinctCount source)
+      (.ordinary .greaterEqual) 1 true = some (.invalid 10) ∧
+    plainStarEntityLegality? (fun source => .firstFilled source)
+      (.ordinary .notEqual) 1 = some .legal ∧
+    plainStarEntityLegality? (fun source => .valueCount 4 source)
+      (.ordinary .notEqual) 1 = some (.invalid 10) := by
   native_decide
 
 private def ordinaryIterationData : DocumentData :=
