@@ -533,16 +533,68 @@ inductive IterationLegality where
   | insufficient (level : RepeatableLevel)
   deriving Repr, DecidableEq
 
+/-- The kernel's direct Number/literal visitor treats exactly these ordinary operators as empty-zero negative conditions. Tolerance and the other ordinary directions remain admitted for this source shape. -/
+private def directEmptyZeroIsUnguarded :
+    NumericValidationOp → Bool
+  | .ordinary .equal | .ordinary .lessEqual
+  | .ordinary .greaterEqual => true
+  | _ => false
+
+private def directOrdinaryNumberScope?
+    (model : FlatModel) :
+    AuthoredNumericExpr (OrderedNumericValidationAtom model) →
+      Option (List RepeatableLevel)
+  | .atom (.ordinary (.field source)) =>
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if declaration.toNumberField? == some source then
+            some declaration.repeatableScope
+          else none
+      | .error _ => none
+  | _ => none
+
+private def safeIntegralLiteralValue? :
+    AuthoredNumericExpr Atom → Option Rat
+  | .literal literal =>
+      if literal.value.den == 1 &&
+          decide ((-2147483648 : Rat) ≤ literal.value) &&
+          decide (literal.value ≤ (2147483647 : Rat)) then
+        some literal.value
+      else none
+  | _ => none
+
+/-- Source-closed direct field/literal subset of the kernel visitor. Nonintegral and out-of-range constants remain unclassified until a source-grounded binary64 rounding and narrowing account exists; exact `Rat` comparison would be the wrong substitute. -/
+private def orderedNumericDirectFieldLiteralGuardAt
+    (level : RepeatableLevel)
+    (comparison : OrderedNumericComparison model) :
+    Option IterationGuardStatus :=
+  let classify fieldExpr literalExpr := do
+    let scope ← directOrdinaryNumberScope? model fieldExpr
+    let literal ← safeIntegralLiteralValue? literalExpr
+    if scope.contains level then
+      if literal == 0 && directEmptyZeroIsUnguarded comparison.op then
+        some .unguarded
+      else
+        some .guarded
+    else
+      some .noReference
+  match classify comparison.left comparison.right with
+  | some status => some status
+  | none => classify comparison.right comparison.left
+
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ | .groupList _ _ => .noReference
   | .orderedNumeric _ comparison =>
-      match orderedNumericComparisonIterationScope comparison with
-      | .ok (some scope) =>
-          if scope.contains level then .unclassified else .noReference
-      | .ok none => .noReference
-      | .error _ => .unclassified
+      match orderedNumericDirectFieldLiteralGuardAt level comparison with
+      | some status => status
+      | none =>
+          match orderedNumericComparisonIterationScope comparison with
+          | .ok (some scope) =>
+              if scope.contains level then .unclassified else .noReference
+          | .ok none => .noReference
+          | .error _ => .unclassified
   | .groupPresence operator reference =>
       if (model.repeatableScopeForGroupPath reference.path).contains level then
         match operator with

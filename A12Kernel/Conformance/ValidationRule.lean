@@ -660,6 +660,32 @@ private def nestedRepeatableNumericRule? :=
   ordinaryRepeatableNumericRuleAt? ["Order", "Sections", "Items"]
     "InnerAmount" innerAmount.id "nestedNumeric"
 
+private def directRepeatableNumericCondition?
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let field : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.field
+      (ordinaryPath ["Order", "Sections"] "OuterAmount"))
+  let literal : AuthoredNumericExpr SurfaceNumericAtom :=
+    .literal { value := expected, authoredScale := 0 }
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections"] {
+        op
+        left := if literalOnLeft then literal else field
+        right := if literalOnLeft then field else literal
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def directRepeatableNumericLegality?
+    (op : NumericValidationOp) (expected : Rat)
+    (literalOnLeft : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ←
+    directRepeatableNumericCondition? op expected literalOnLeft
+  condition.core.iterationLegality.toOption
+
 private def deeperInnerAmountStar : SurfaceStarFieldPath :=
   { base := .absolute
     groups := [
@@ -918,6 +944,37 @@ example :
       some (.negativeConditionInIteration 10) ∧
     ordinaryAssemblyError? outerGroupEmptyCondition? outerAmount =
       some (.negativeConditionInIteration 10) := by
+  native_decide
+
+/- Direct iterating Number comparisons against safe integral zero reproduce the source visitor's exact operator partition in both operand orders. -/
+example :
+    directRepeatableNumericLegality? (.ordinary .equal) 0 =
+      some (.invalid 10) ∧
+    directRepeatableNumericLegality? (.ordinary .lessEqual) 0 =
+      some (.invalid 10) ∧
+    directRepeatableNumericLegality? (.ordinary .greaterEqual) 0 =
+      some (.invalid 10) ∧
+    directRepeatableNumericLegality? (.ordinary .equal) 0 true =
+      some (.invalid 10) ∧
+    ordinaryAssemblyError?
+      (directRepeatableNumericCondition? (.ordinary .equal) 0)
+      outerAmount = some (.negativeConditionInIteration 10) := by
+  native_decide
+
+/- Strict, not-equal, tolerance, and nonzero integral controls are admitted; normalized constants whose host rounding/narrowing cannot be reconstructed remain explicitly unclassified. -/
+example :
+    directRepeatableNumericLegality? (.ordinary .notEqual) 0 =
+      some .legal ∧
+    directRepeatableNumericLegality? (.ordinary .less) 0 =
+      some .legal ∧
+    directRepeatableNumericLegality? (.ordinary .greater) 0 =
+      some .legal ∧
+    directRepeatableNumericLegality? (.tolerance .range1) 0 =
+      some .legal ∧
+    directRepeatableNumericLegality? (.ordinary .equal) 1 =
+      some .legal ∧
+    directRepeatableNumericLegality? (.ordinary .equal) (2 / 5) =
+      some (.insufficient 10) := by
   native_decide
 
 /- An outer guard cannot legalize an inner negative condition: the first unguarded level remains explicit. Adding the existing inner group-presence guard closes that same level. -/
