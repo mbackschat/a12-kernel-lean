@@ -455,18 +455,30 @@ private def checkedTokenSourceIterationScope
   mergeIterationScopeList
     (← source.operands.mapM checkedTokenOperandIterationScope)
 
-private def ordinaryNumericAtomRepeatableDeclaration?
+private def ordinaryNumericAtomFieldDeclaration?
     (model : FlatModel) :
     NumericValidationAtom → Option FlatFieldDecl
   | .field source =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>
-          if declaration.repeatableScope.isEmpty then
-            none
-          else
+          if declaration.toNumberField? == some source then
             some declaration
+          else none
+      | .error _ => none
+  | .stringLength source =>
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if declaration.toStringValueField? == some source then
+            some declaration
+          else none
       | .error _ => none
   | _ => none
+
+private def ordinaryNumericAtomRepeatableDeclaration?
+    (model : FlatModel) (source : NumericValidationAtom) :
+    Option FlatFieldDecl := do
+  let declaration ← ordinaryNumericAtomFieldDeclaration? model source
+  if declaration.repeatableScope.isEmpty then none else some declaration
 
 private def ordinaryNumericAtomIterationScope
     (model : FlatModel) (source : NumericValidationAtom) :
@@ -540,17 +552,13 @@ private def directEmptyZeroIsUnguarded :
   | .ordinary .greaterEqual => true
   | _ => false
 
-private def directOrdinaryNumberScope?
+private def directOrdinaryZeroSensitiveScope?
     (model : FlatModel) :
     AuthoredNumericExpr (OrderedNumericValidationAtom model) →
       Option (List RepeatableLevel)
-  | .atom (.ordinary (.field source)) =>
-      match model.lookupUniqueId source.id with
-      | .ok declaration =>
-          if declaration.toNumberField? == some source then
-            some declaration.repeatableScope
-          else none
-      | .error _ => none
+  | .atom (.ordinary source) =>
+      (ordinaryNumericAtomFieldDeclaration? model source).map
+        (·.repeatableScope)
   | _ => none
 
 end ValidationCondition
@@ -660,7 +668,7 @@ private def orderedNumericDirectFieldLiteralGuardAt
     (comparison : OrderedNumericComparison model) :
     Option IterationGuardStatus :=
   orderedNumericScopedLiteralGuardAt
-    (directOrdinaryNumberScope? model) level comparison
+    (directOrdinaryZeroSensitiveScope? model) level comparison
 
 /-- Collect only direct Number references from one operation-list body without flattening away their model-owned scopes. Specialized entity-list atoms retain their separate packet. -/
 private def directOrdinaryNumberReferenceScopes?
@@ -668,7 +676,7 @@ private def directOrdinaryNumberReferenceScopes?
     AuthoredNumericExpr (OrderedNumericValidationAtom model) →
       Option (List (List RepeatableLevel))
   | expression@(.atom (.ordinary (.field _))) => do
-      let scope ← directOrdinaryNumberScope? model expression
+      let scope ← directOrdinaryZeroSensitiveScope? model expression
       pure [scope]
   | .literal _ => some []
   | .group body | .abs body | .extremumCall _ body

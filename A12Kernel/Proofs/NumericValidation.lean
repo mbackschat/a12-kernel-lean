@@ -39,6 +39,17 @@ theorem orderedNumericValidationAtom_repeatableField_requiresAddressed
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
     lookup, repeatable]
 
+/-- A model-certified evaluated-String `Length` source under a nonempty repeatable declaration uses the same addressed entry requirement. -/
+theorem orderedNumericValidationAtom_repeatableStringLength_requiresAddressed
+    (field : FlatStringField) (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId field.id = .ok declaration)
+    (repeatable : declaration.repeatableScope.isEmpty = false) :
+    (OrderedNumericValidationAtom.ordinary
+        (.stringLength field)).requiresAddressedValidation
+        (model := model) = true := by
+  simp [OrderedNumericValidationAtom.requiresAddressedValidation,
+    lookup, repeatable]
+
 /-- A relevant present first source terminates direct `FirstFilledValue` before any suffix relevance decision. -/
 theorem orderedNumericValidationAtom_firstFilled_presentHead_hidesSuffix
     (source : ResolvedNumericAggregateFields)

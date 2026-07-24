@@ -155,6 +155,15 @@ private def FlatModel.admitsStringInGroup (model : FlatModel)
         declaration.toStringValueField? == some field
   | .error _ => false
 
+private def FlatModel.admitsAddressedString (model : FlatModel)
+    (rowGroup : GroupPath) (field : FlatStringField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration =>
+      declaration.toStringValueField? == some field &&
+        declaration.repeatableScope.isPrefixOf
+          (model.repeatableScopeForGroupPath rowGroup)
+  | .error _ => false
+
 private def FlatModel.admitsNumberModelWide (model : FlatModel)
     (field : FlatNumberField) : Bool :=
   match model.lookupUniqueId field.id with
@@ -221,7 +230,8 @@ private def NumericValidationAtom.admitted
   | .stringLength source =>
       match scope with
       | .sameGroup => model.admitsStringInGroup rowGroup source
-      | .sameGroupAddressed => false
+      | .sameGroupAddressed =>
+          model.admitsAddressedString rowGroup source
       | .modelWideNonrepeatable | .modelWideCheckedComputation =>
           model.admitsStringModelWide source
   | .stringRange source start finish =>
@@ -395,6 +405,13 @@ def NumericComparison.allRelevant (comparison : NumericComparison)
 
 namespace OrderedNumericValidationAtom
 
+@[simp]
+private def addressedNumericValidationFieldId? :
+    NumericValidationAtom → Option FieldId
+  | .field source => some source.id
+  | .stringLength source => some source.id
+  | _ => none
+
 private def checkedNumberEntitySourceAdmittedIn
     (source : CheckedNumberEntitySource model)
     (rowGroup : GroupPath) (scope : NumericOperandScope) : Bool :=
@@ -443,13 +460,15 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
 
-/-- An ordinary direct field needs addressed evaluation exactly when its checked declaration is repeatable. Specialized sources retain their established addressed criteria. -/
+/-- An ordinary direct single-field atom needs addressed evaluation exactly when its checked declaration is repeatable. Specialized sources retain their established addressed criteria. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
-  | .ordinary (.field source) =>
-      match model.lookupUniqueId source.id with
-      | .ok declaration => !declaration.repeatableScope.isEmpty
-      | .error _ => false
-  | .ordinary _ => false
+  | .ordinary source =>
+      match addressedNumericValidationFieldId? source with
+      | some field =>
+          match model.lookupUniqueId field with
+          | .ok declaration => !declaration.repeatableScope.isEmpty
+          | .error _ => false
+      | none => false
   | .firstFilled source => source.directResolvedFields?.isNone
   | .valueCount _ source => source.directResolvedFields?.isNone
   | .tokenValueCount source => source.source.directFields?.isNone
@@ -677,18 +696,31 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
           throw (.overlappingGroupCountOperands left right)
       | none => pure (.filledGroupCount groups)
 
+private def resolveAddressedNumericDeclaration (model : FlatModel)
+    (rowGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except NumericValidationElabError FlatFieldDecl := do
+  let declaration ←
+    (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .resolve
+  if !declaration.repeatableScope.isPrefixOf
+      (model.repeatableScopeForGroupPath rowGroup) then
+    throw (.fieldOutsideRowGroup declaration.path rowGroup)
+  pure declaration
+
 private def resolveAddressedNumericAtom (model : FlatModel)
     (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
   | .field reference => do
       let declaration ←
-        (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .resolve
-      if !declaration.repeatableScope.isPrefixOf
-          (model.repeatableScopeForGroupPath rowGroup) then
-        throw (.fieldOutsideRowGroup declaration.path rowGroup)
+        resolveAddressedNumericDeclaration model rowGroup reference
       match declaration.toNumberField? with
       | some field => pure (.field field)
       | none => throw (.fieldNotNumber declaration.path)
+  | .stringLength reference => do
+      let declaration ←
+        resolveAddressedNumericDeclaration model rowGroup reference
+      match declaration.toStringValueField? with
+      | some field => pure (.stringLength field)
+      | none => throw (.lengthOperandNotEvaluatedString declaration.path)
   | source => resolveNumericAtom model rowGroup source
 
 private def elaborateNumericComparisonWith
@@ -918,29 +950,31 @@ def addressedDirectRelevant
     (_context : AddressedValidationEvaluationContext model) :
     FlatRelevance := fun _ => true
 
-/-- Resolve an ordinary direct Number atom at its checked row address when its declaration is repeatable; every established scalar atom keeps the scalar evaluator. -/
+/-- Resolve an ordinary direct single-field atom at its checked row address when its declaration is repeatable; every established scalar atom keeps the scalar evaluator. -/
 private def resolveAddressedOrdinary
     (source : NumericValidationAtom)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
-  match source with
-  | .field field =>
-      match model.lookupUniqueId field.id with
+  match addressedNumericValidationFieldId? source with
+  | some field =>
+      match model.lookupUniqueId field with
       | .ok declaration =>
           if declaration.repeatableScope.isEmpty then
             pure (context.scalar.resolveNumericValidationAtom source)
           else do
-            let addressed ← context.readCell context.outer field.id
+            let addressed ← context.readCell context.outer field
             let fields : FlatContext := {
               read := fun requested =>
-                if requested == field.id then
+                if requested == field then
                   addressed
                 else
                   context.scalar.fields.read requested }
-            pure (fields.resolveNumericArithmetic field)
+            let scalar : ValidationEvaluationContext := {
+              context.scalar with fields }
+            pure (scalar.resolveNumericValidationAtom source)
       | .error _ => pure (.error (.formal .malformed))
-  | _ => pure (context.scalar.resolveNumericValidationAtom source)
+  | none => pure (context.scalar.resolveNumericValidationAtom source)
 
 /-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
 def resolveAddressed (atom : OrderedNumericValidationAtom model)
