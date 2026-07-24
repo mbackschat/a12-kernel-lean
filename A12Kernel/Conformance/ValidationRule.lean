@@ -814,6 +814,13 @@ private def innerAmountSelfHaving : SurfaceCorrelatedHaving :=
     { origin := .inner
       field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
 
+private def innerAmountBaseHaving : SurfaceCorrelatedHaving :=
+  .compareNumbers .notEqual
+    { origin := .inner
+      field := ordinaryPath ["Order", "Sections", "Items"] "InnerAmount" }
+    { origin := .inner
+      field := ordinaryPath ["Order"] "BaseAmount" }
+
 private def deeperInnerNumberSource?
     (withFilteredDuplicate : Bool := false) :
     Option (CheckedNumberEntitySource ordinaryIterationModel) :=
@@ -831,6 +838,14 @@ private def mixedDirectStarNumberSource? :
     ["Order", "Sections"] {
       first := .field (ordinaryPath ["Order"] "BaseAmount")
       rest := [.star deeperInnerAmountStar]
+    }).toOption
+
+private def filterMixedReferenceNumberSource? :
+    Option (CheckedNumberEntitySource ordinaryIterationModel) :=
+  (elaborateNumberEntitySource ordinaryIterationModel
+    ["Order", "Sections"] {
+      first := .starHaving deeperInnerAmountStar innerAmountBaseHaving
+      rest := []
     }).toOption
 
 private def checkedOuterEntityComparison?
@@ -895,6 +910,14 @@ private def filteredEntityLegality?
     (op : NumericValidationOp) (expected : Rat) :
     Option ValidationCondition.IterationLegality :=
   numberEntityLegality? (deeperInnerNumberSource? true) atomOf op expected
+
+private def filterMixedReferenceEntityLegality?
+    (atomOf : CheckedNumberEntitySource ordinaryIterationModel →
+      OrderedNumericValidationAtom ordinaryIterationModel)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option ValidationCondition.IterationLegality :=
+  numberEntityLegality? filterMixedReferenceNumberSource?
+    atomOf op expected
 
 private def mixedScopeWrappedNumericLegality?
     (op : NumericValidationOp) (expected : Rat) :
@@ -1250,7 +1273,7 @@ example :
         some (.invalid 20) := by
   native_decide
 
-/- A direct-plus-star entity list is mixed at the star's surrounding level, so every immediate numeric literal is rejected without consulting comparison direction or host conversion. Filter-bearing lists remain explicit insufficient information. -/
+/- A direct-plus-star entity list is mixed at the star's surrounding level, so every immediate numeric literal is rejected without consulting comparison direction or host conversion. -/
 example :
     mixedDirectStarEntityLegality?
       (fun source => .aggregate .sum source)
@@ -1263,10 +1286,23 @@ example :
       (.ordinary .equal) 0 = some (.invalid 10) ∧
     mixedDirectStarEntityLegality?
       (fun source => .valueCount 4 source)
-      (.ordinary .greater) (2 / 5) = some (.invalid 10) ∧
+      (.ordinary .greater) (2 / 5) = some (.invalid 10) := by
+  native_decide
+
+/- `Having` references do not participate in the operation-list reference classifier. A filtered target keeps its own star scope even when its filter also reads a noniterating field. -/
+example :
     filteredEntityLegality?
       (fun source => .aggregate .sum source)
-      (.ordinary .equal) 1 = some (.insufficient 10) := by
+      (.ordinary .equal) 1 = some .legal ∧
+    filteredEntityLegality?
+      (fun source => .aggregate .sum source)
+      (.ordinary .equal) 0 = some (.invalid 10) ∧
+    filteredEntityLegality?
+      (fun source => .aggregate .distinctCount source)
+      (.ordinary .equal) 0 = some .legal ∧
+    filterMixedReferenceEntityLegality?
+      (fun source => .aggregate .sum source)
+      (.ordinary .equal) 1 = some .legal := by
   native_decide
 
 /- `SumOfProducts` shares only the plain-star zero-sensitive branch; a positive not-equal threshold remains admitted. -/
