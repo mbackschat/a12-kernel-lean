@@ -68,10 +68,16 @@ The project considers ten consumer tasks: **Execute, Translate, Transform, Compi
 
 This is an active formal-semantics project, not a complete A12 interpreter or a qualified production release.
 
+<!-- github-publish-stats:start -->
+**Verified at publication:** **1,263 trusted theorem roots**, **26,103 audited declarations**, and **234 trusted modules** in the mechanized theory.
+<!-- github-publish-stats:end -->
+
 - The internal theory already covers substantial validation, computation, numeric, String, Enumeration, Date/DateTime, repeatable, addressing, message, checked-document, and dependency behavior, with coverage varying independently across execution, proof, kernel evidence, public exposure, and consumer qualification.
+- One immutable, model-certified checked document now owns declared topology and address resolution. The active addressed-operand work resolves checked Number operands across independent and nested repeatable groups, preserves hierarchical extent and positional relevance, and keeps structural addressing failures distinct from semantic `UNKNOWN`.
+- Ordered checked Number value-list evaluation and full-validation aggregates consume that same resolved representation; there is no parallel consumer-specific stream or topology.
 - The public reference process advertises reference semantics **0.3.0** over protocol **1**. It currently exposes checked flat validation and one single-group correlation capability and rejects unsupported constructs explicitly.
 - Compact retained observations calibrate selected semantic families; other internally closed families remain honestly marked `external evidence pending`.
-- The immediate hard frontier is the canonical addressed operand stream over the immutable checked document. Whole-document computation scheduling remains gated behind that boundary and its source audit.
+- The immediate hard frontier is completing that canonical addressed operand stream across String/Enumeration token semantics and the remaining nested/mixed routes. Whole-document computation scheduling remains gated behind this boundary and its source audit.
 
 [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) is the exact coverage index. [`docs/PLAN.md`](docs/PLAN.md) records the active capsule and next frontier, while [`docs/SEMANTICS-GAPS.md`](docs/SEMANTICS-GAPS.md) owns unresolved semantic obligations.
 
@@ -144,6 +150,14 @@ See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the normalized request/response c
 Semantic changes use red/green TDD and close as small executable capsules with focused conformance cases, payoff-selected proofs, honest evidence status, and minimum documentation updates. Read [`CLAUDE.md`](CLAUDE.md) for the project rules and [`docs/TESTING.md`](docs/TESTING.md) for the workflow before contributing.
 
 The clean-room boundary is a licensing constraint: learn behavior from the kernel, then write original Lean and independent semantic prose. Never link, call, ship, or transcribe kernel implementation code. Every behavioral change to [`spec/`](spec/) must be reconciled through the [`a12-dmkits spec-sync ledger`](docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+Immediately before publishing committed source to GitHub, refresh the README's verified theory statistics:
+
+```sh
+./scripts/prepare-github-publish.sh --update
+```
+
+Review and commit any resulting README change, then push explicitly. The script runs the trust audit and updates only the marked statistics line; it never commits, tags, pushes, publishes a release, or distributes binaries. GitHub CI runs its `--check` mode so published statistics cannot silently drift from the trusted Lean closure.
 
 ## License
 
