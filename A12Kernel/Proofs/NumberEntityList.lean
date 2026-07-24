@@ -54,4 +54,39 @@ theorem checkedNumberEntitySource_hasHaving_of_mem
   simp [CheckedNumberEntitySource.hasHaving, List.any_eq_true]
   exact ⟨operand, member, hasHaving⟩
 
+/-- The semantic projection reads each already-addressed checked cell exactly once and preserves encounter order. -/
+theorem resolvedCheckedNumberEntityOperand_valueListSideAt_cells
+    (resolved : ResolvedCheckedNumberEntityOperand model)
+    (phase : Phase) :
+    (resolved.valueListSideAt phase).cells =
+      resolved.addressedCells.map fun addressed =>
+        (observeCell phase addressed.cell).asNumberValueListCell := by
+  rfl
+
+/-- Hierarchical tail, filter, and positional nonrelevance metadata cross the rich addressed boundary unchanged. -/
+theorem resolvedCheckedNumberEntityOperand_valueListSideAt_metadata
+    (resolved : ResolvedCheckedNumberEntityOperand model)
+    (phase : Phase) :
+    (resolved.valueListSideAt phase).hasUninstantiatedTail =
+        resolved.hasUninstantiatedTail ∧
+      (resolved.valueListSideAt phase).hasHaving =
+        resolved.hasHaving ∧
+      (resolved.valueListSideAt phase).hasNonRelevant =
+        resolved.hasNonRelevant := by
+  simp [ResolvedCheckedNumberEntityOperand.valueListSideAt]
+
+/-- A failed starred topology remains an addressed construction error before any semantic side exists. -/
+theorem checkedNumberEntityStarValidationOperand_addressing_error
+    (source : CheckedStarNumberSource model)
+    (document : CheckedDocument model) (outer : Env)
+    (cause : StarAddressingError)
+    (failed :
+      source.source.path.resolve document.source.toDocument outer =
+        .error cause) :
+    (CheckedNumberEntityOperand.star source).resolveCheckedValidationOperand
+        document outer =
+      .error (.addressing cause) := by
+  simp [CheckedNumberEntityOperand.resolveCheckedValidationOperand,
+    failed, Except.mapError, bind, Except.bind]
+
 end A12Kernel

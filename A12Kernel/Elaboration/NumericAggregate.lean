@@ -470,24 +470,13 @@ def resolvedCheckedDocumentValidationAggregateSide
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
-  match checked with
-  | .field source =>
-      resolvedCheckedDocumentSide document .validation source.field
-        [[]] false false
-  | .star source => do
-      let resolved ←
-        (source.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      resolvedCheckedDocumentSide document .validation source.field
-        resolved.environments resolved.domain.hasOpenTail false
-  | .starHaving source => do
-      let resolved ←
-        (source.source.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let selected ← source.having.selectEnvironmentsResolving
-        document.resolvingCorrelationContext outer resolved.environments
-      resolvedCheckedDocumentSide document .validation source.source.field
-        selected resolved.domain.hasOpenTail true
+  do
+    let side :=
+      (← checked.resolveCheckedValidationOperand document outer)
+        |>.valueListSideAt .validation
+    match side.available with
+    | .error cause => pure (.inr (.unknown cause))
+    | .ok () => pure (.inl side)
 
 /-- Resolve one computation aggregate slot from the same checked document. A filtered slot retains one-kept-successor lookahead and keeps structural target/filter failure outside formal poison. -/
 def resolvedCheckedDocumentComputationAggregateSide
