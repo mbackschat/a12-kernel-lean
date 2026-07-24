@@ -20,7 +20,9 @@ The primary target is eventual **100% semantic conformance with A12 Kernel 30.8.
 - retained differential observations that calibrate selected families against the real kernel;
 - concrete consumer probes that test whether the representation preserves the information downstream tools actually need.
 
-Lean does not make a semantic clause correct merely because it typechecks, and a proof about the Lean theory is not a universal proof about the external kernel. Internal proof, empirical kernel correspondence, and consumer adequacy are tracked as separate claims.
+The point of that precision is that the knowledge has to come back out. Capturing semantics is worthless if a consumer cannot use them, so the theory exists to be derived from: invest once in extracting the kernel's behavior exactly, then build each consumer from that account instead of repeating the kernel archaeology. How much a consumer can inherit depends on what it is. An analyzer or a refactoring tool emits artifacts a small trusted checker can validate, so it can carry real proof; an interpreter evaluates continuously and can only reach conformance over the inputs actually tested. “Derived from Lean” is never by itself an assurance claim.
+
+Lean does not make a semantic clause correct merely because it typechecks, and a proof about the Lean theory is not a universal proof about the external kernel. Internal proof, empirical kernel correspondence, and consumer adequacy are tracked as separate claims. Because of that split, a consumer derived with perfect fidelity still inherits this account's calibration status: retained kernel evidence is the ceiling on every downstream claim, and no amount of internal proof raises it.
 
 ## What is in this repository
 
@@ -60,7 +62,7 @@ kernel behavior and source knowledge
    optional purpose-specific shipment
 ```
 
-The kernel remains the behavioral oracle. The specification and Lean theory state the project's chosen account, proofs establish consequences of that account, and retained observations provide finite empirical correspondence. Consumer probes then check that a closed capability transports enough knowledge for a named task without growing a second implementation inside this repository.
+The kernel remains the behavioral oracle. The specification and Lean theory state the project's chosen account, proofs establish consequences of that account, and finite empirical correspondence arrives both from observations retained and replayed here and from peer law tests that execute the kernel upstream. Consumer probes then check that a closed capability transports enough knowledge for a named task without growing a second implementation inside this repository.
 
 The project considers ten consumer tasks: **Execute, Translate, Transform, Compile, Analyze, Verify, Synthesize, Qualify, Explain, and Govern**. The [`use-case guide`](docs/USE-CASES.md) explains each task and the role Lean can—and cannot—play.
 
@@ -77,7 +79,7 @@ This is an active formal-semantics project, not a complete A12 interpreter or a 
 - Ordered checked Number and token value-list evaluation plus Number aggregates, token distinct count, and projection-bearing token value count consume that same resolved representation with their distinct stopping and fold rules; stored access and multiple named categories on one Enumeration remain distinct exact references rather than a flattened display value.
 - Large semantic families are decomposed into import-only compatibility roots and focused elaboration, evaluation, proof, and conformance modules. This keeps ordinary source below the project’s 1,000-nonblank-line ceiling and lets red/green work rebuild only the affected family.
 - The public reference process advertises reference semantics **0.3.0** over protocol **1**. It currently exposes checked flat validation and one single-group correlation capability and rejects unsupported constructs explicitly.
-- Compact retained observations calibrate selected semantic families; other internally closed families remain honestly marked `external evidence pending`.
+- Empirical correspondence arrives through two channels: compact observations retained and replayed here, and corrections confirmed upstream by a12-dmkits law tests that execute the real kernel. They are tracked separately because only local replay can guard a refactor in this repository. A family with neither remains honestly marked `external evidence pending`.
 - The immediate hard frontier is completing that canonical addressed operand stream across cross-level, RNU, group, and whole-rule repeatable routes. Whole-document computation scheduling remains gated behind this boundary and its source audit.
 
 [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md) is the exact coverage index. [`docs/PLAN.md`](docs/PLAN.md) records the active capsule and next frontier, while [`docs/SEMANTICS-GAPS.md`](docs/SEMANTICS-GAPS.md) owns unresolved semantic obligations.
@@ -152,7 +154,7 @@ See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) for the normalized request/response c
 
 Semantic changes use red/green TDD and close as small executable capsules with focused conformance cases, payoff-selected proofs, honest evidence status, and minimum documentation updates. Read [`CLAUDE.md`](CLAUDE.md) for the project rules and [`docs/TESTING.md`](docs/TESTING.md) for the workflow before contributing.
 
-The clean-room boundary is a licensing constraint: learn behavior from the kernel, then write original Lean and independent semantic prose. Never link, call, ship, or transcribe kernel implementation code. Every behavioral change to [`spec/`](spec/) must be reconciled through the [`a12-dmkits spec-sync ledger`](docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+The clean-room boundary is a licensing constraint: learn behavior from the kernel, then write original Lean and independent semantic prose. Never link, call, ship, or transcribe kernel implementation code. Every behavioral change to [`spec/`](spec/) must be reconciled through the [`a12-dmkits spec-sync ledger`](docs/A12-DMKITS-SPEC-SYNC-LEDGER.md), which also carries experiment requests asking the peer to run a specific probe rather than reconcile a correction.
 
 Immediately before publishing committed source to GitHub, refresh the README's verified theory statistics:
 
