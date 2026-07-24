@@ -138,13 +138,14 @@ end FlatRuleOutcome
 
 namespace ResolvedRule
 
-/-- Attach metadata to one already-computed verdict. Every condition family reuses this sole post-verdict boundary. -/
-def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :=
+/-- Attach metadata and one already-resolved error path to a computed verdict. Every scalar and addressed condition family reuses this sole post-verdict boundary. -/
+def emitAt (rule : ResolvedRule Condition) (errorPath : List Nat)
+    (verdict : Verdict) : FlatRuleOutcome :=
   match verdict with
   | .notFired => .notFired
   | .fired messageType =>
       .fired {
-        errorAddress := { field := rule.errorField, path := [] }
+        errorAddress := { field := rule.errorField, path := errorPath }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
@@ -152,10 +153,19 @@ def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :
       }
   | .unknown => .unknown
 
+/-- The established nonrepeatable emitter is the empty-path specialization. -/
+def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :=
+  rule.emitAt [] verdict
+
+/-- Evaluate a condition exactly once, then pass only its verdict and resolved error path to the shared emitter. -/
+def evalWithAt (rule : ResolvedRule Condition) (errorPath : List Nat)
+    (evaluate : Condition → Verdict) : FlatRuleOutcome :=
+  rule.emitAt errorPath (evaluate rule.condition)
+
 /-- Evaluate a condition exactly once, then pass only its verdict to the shared emitter. -/
 def evalWith (rule : ResolvedRule Condition)
     (evaluate : Condition → Verdict) : FlatRuleOutcome :=
-  rule.emit (evaluate rule.condition)
+  rule.evalWithAt [] evaluate
 
 /-- The established flat specialization. Keeping it on the underlying generic structure preserves dot notation after record updates. -/
 def evalFull (rule : ResolvedRule FlatCondition) (context : FlatContext)

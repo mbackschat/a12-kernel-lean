@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.ValidationRule
 
 /-! # Checked flat whole-rule conformance locks -/
@@ -595,6 +596,64 @@ example :
       | .error error => some error) =
       some (some
         (.iterationScopeMismatch innerAmount.id [10] [10, 20])) := by
+  native_decide
+
+private def outerEmptyRule? :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ←
+    (CheckedValidationCondition.fromRepeatableFieldPresence
+      ordinaryIterationModel ["Order"] .notFilled
+      (ordinaryPath ["Order", "Sections"] "OuterAmount")).toOption
+  (assembleResolvedValidationRule ordinaryIterationModel condition outerAmount.id
+    "outerEmpty" .error { parts := [] }).toOption
+
+private def ordinaryIterationData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [2] },
+      { group := 10, path := [1] },
+      { group := 20, path := [2, 1] },
+      { group := 20, path := [1, 1] }]
+    cells := [{
+      address := { field := outerAmount.id, path := [1] }
+      stored := "1"
+      raw := .parsed (.num 1)
+    }] }
+
+private def evalOrdinaryRule? (rule :
+    CheckedResolvedValidationRule ordinaryIterationModel)
+    (data : DocumentData) : Option (List (Env × FlatRuleOutcome)) := do
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let checked ← (checkDocument prepared "en_US" data).toOption
+  (rule.evalOrdinaryRepeatableFull checked).toOption
+
+/- Runtime follows actual deepest-row document order and retains complete parent coordinates in both the consumer-visible environment and emitted error address. -/
+example :
+    ordinaryIterationRule?.bind (evalOrdinaryRule? · ordinaryIterationData) =
+      some [
+        ([(10, 2), (20, 1)], .notFired),
+        ([(10, 1), (20, 1)], .fired {
+          errorAddress := { field := innerAmount.id, path := [1, 1] }
+          errorCode := "ordinaryIteration"
+          severity := .error
+          messageType := .omission
+          text := { text := "" }
+        })] := by
+  native_decide
+
+/- An instantiated empty row is evaluated and may fire, while zero actual rows produce zero rule environments rather than a phantom row. -/
+example :
+    (outerEmptyRule?.bind fun rule =>
+      (evalOrdinaryRule? rule {
+        instantiatedRows := [{ group := 10, path := [1] }]
+        cells := []
+      }).map fun outcomes => outcomes.map fun entry =>
+        (entry.1, entry.2.verdict)) =
+      some [([(10, 1)], .fired .omission)] ∧
+    (outerEmptyRule?.bind fun rule =>
+      evalOrdinaryRule? rule { instantiatedRows := [], cells := [] }) =
+      some [] := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule

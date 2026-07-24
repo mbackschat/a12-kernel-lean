@@ -54,14 +54,32 @@ theorem messageValue_present_isOpaque (value defaultDisplay : String)
     }).render = value := by
   simp [MessageRenderPart.render, MessageValueInput.resolve, nonempty]
 
+/-- The addressed emitter preserves the exact verdict while changing only metadata on a firing. -/
+@[simp]
+theorem resolvedRule_emitAt_verdict (rule : ResolvedRule Condition)
+    (errorPath : List Nat) (verdict : Verdict) :
+    (rule.emitAt errorPath verdict).verdict = verdict := by
+  cases verdict <;> rfl
+
+/-- A firing carries the caller-resolved path through the sole emitter unchanged. -/
+@[simp]
+theorem resolvedRule_emitAt_fired_exact (rule : ResolvedRule Condition)
+    (errorPath : List Nat) (messageType : Polarity) :
+    rule.emitAt errorPath (.fired messageType) =
+      .fired {
+        errorAddress := { field := rule.errorField, path := errorPath }
+        errorCode := rule.errorCode
+        severity := rule.severity
+        messageType
+        text := rule.messagePlan.render
+      } := by
+  rfl
+
 /-- Forgetting emitted metadata recovers exactly the verdict of the reused condition evaluator. -/
 theorem resolvedRule_evalWith_verdict (rule : ResolvedRule Condition)
     (evaluate : Condition → Verdict) :
     (rule.evalWith evaluate).verdict = evaluate rule.condition := by
-  unfold ResolvedRule.evalWith
-  generalize verdictEq : evaluate rule.condition = verdict
-  cases verdict <;>
-    simp [ResolvedRule.emit, FlatRuleOutcome.verdict]
+  simp [ResolvedRule.evalWith, ResolvedRule.evalWithAt]
 
 /-- Forgetting emitted metadata recovers exactly the verdict of the reused flat condition evaluator. -/
 theorem flatRule_eval_verdict (rule : ResolvedFlatRule)
@@ -90,9 +108,9 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
         severity := rule.severity
         messageType
         text := rule.messagePlan.render
-      } := by
+  } := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.emit, fires]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, fires]
 
 /-- Error address, code, severity, and already-resolved text cannot change firing or polarity. -/
 theorem flatRule_metadata_doesNotChangeVerdict (rule : ResolvedFlatRule)
@@ -113,7 +131,7 @@ theorem flatRule_notFired_independentOfMessagePlan
     ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
       rule.evalFull context hasContent := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.emit, notFired]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, notFired]
 
 /-- An unavailable condition likewise suppresses message resolution rather than manufacturing text. -/
 theorem flatRule_unknown_independentOfMessagePlan
@@ -123,7 +141,7 @@ theorem flatRule_unknown_independentOfMessagePlan
     ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
       rule.evalFull context hasContent := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.emit, unknown]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, unknown]
 
 /-- A rule carries a message exactly when the reused condition evaluator fired. -/
 theorem flatRule_hasMessage_iff_fired (rule : ResolvedFlatRule)
@@ -235,6 +253,7 @@ theorem checkedValidationRule_fired_message_exact
       }) := by
   simp [CheckedResolvedValidationRule.evalFull,
     CheckedResolvedValidationRule.core, ResolvedValidationRule.evalFull,
-    ResolvedRule.evalWith, ResolvedRule.emit, scalar, fires]
+    ResolvedRule.evalWith, ResolvedRule.evalWithAt, ResolvedRule.emitAt,
+    scalar, fires]
 
 end A12Kernel
