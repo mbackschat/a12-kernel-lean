@@ -31,8 +31,22 @@ structure CheckedStarredGroupSource (model : FlatModel) where
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
 
-private def SurfaceStarGroupPath.resolveAgainst (reference : SurfaceStarGroupPath)
-    (declaringGroup : GroupPath) : Except StarredGroupElabError (GroupPath × GroupPath) := do
+/-- Base resolution can fail only in these two ways. Keeping it a separate closed type makes
+    a planner diagnostic unrepresentable at this step instead of merely unreached. -/
+inductive StarredGroupBaseError where
+  | resolve (error : ResolveError)
+  | invalidGroupReference (reference : SurfaceStarGroupPath)
+  deriving Repr, DecidableEq
+
+def StarredGroupBaseError.toElabError :
+    StarredGroupBaseError → StarredGroupElabError
+  | .resolve error => .resolve error
+  | .invalidGroupReference reference => .invalidGroupReference reference
+
+/-- Resolve only the base prefix. The caller composes the full group path from this base and
+    the authored segments, so no separate equation is needed to relate the two. -/
+private def SurfaceStarGroupPath.resolveBase (reference : SurfaceStarGroupPath)
+    (declaringGroup : GroupPath) : Except StarredGroupBaseError GroupPath := do
   if !GroupPath.isValid declaringGroup then
     throw (.resolve (.invalidRuleGroup declaringGroup))
   if reference.groups.isEmpty || !reference.groups.all fun segment => !segment.name.isEmpty then
@@ -41,8 +55,7 @@ private def SurfaceStarGroupPath.resolveAgainst (reference : SurfaceStarGroupPat
     | .absolute => pure []
     | .relative parents =>
         GroupPath.walkUp declaringGroup parents |>.mapError .resolve
-  let groupPath := basePath ++ reference.groups.map (·.name)
-  if GroupPath.isValid groupPath then pure (basePath, groupPath)
+  if GroupPath.isValid (basePath ++ reference.groups.map (·.name)) then pure basePath
   else throw (.invalidGroupReference reference)
 
 /-- Resolve one legal terminal-repeatable starred group through the same model-derived star planner used by checked field stars. -/
@@ -51,25 +64,31 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
     Except StarredGroupElabError (CheckedStarredGroupSource model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
-  | .ok () => do
-      let (basePath, groupPath) ← source.resolveAgainst declaringGroup
-      let group ← model.lookupUniqueRepeatablePath groupPath |>.mapError .resolve
-      let plan ← elaborateStarPathPlan model basePath source.groups group.path |>.mapError .path
-      if hGroup : model.repeatableGroups.contains group = true then
-        if hAncestry : plan.path.axes.map (·.level) =
-            model.repeatableScopeForGroupPath group.path then
-          pure {
-            group
-            path := plan.path
-            modelWellFormed := by rw [hModel]; rfl
-            groupOwned := hGroup
-            ancestryOwned := hAncestry
-            firstStarWithin := plan.firstStarWithin
-            pathValid := plan.pathValid }
-        else
-          throw .incoherentCore
-      else
-        throw .incoherentCore
+  | .ok () =>
+      match source.resolveBase declaringGroup with
+      | .error error => .error error.toElabError
+      | .ok basePath =>
+          match model.lookupUniqueRepeatablePath (basePath ++ source.groups.map (·.name)) with
+          | .error error => .error (.resolve error)
+          | .ok group =>
+              match elaborateStarPathPlan model basePath source.groups group.path with
+              | .error error => .error (.path error)
+              | .ok plan =>
+                  if hGroup : model.repeatableGroups.contains group = true then
+                    if hAncestry : plan.path.axes.map (·.level) =
+                        model.repeatableScopeForGroupPath group.path then
+                      .ok {
+                        group
+                        path := plan.path
+                        modelWellFormed := by rw [hModel]; rfl
+                        groupOwned := hGroup
+                        ancestryOwned := hAncestry
+                        firstStarWithin := plan.firstStarWithin
+                        pathValid := plan.pathValid }
+                    else
+                      .error .incoherentCore
+                  else
+                    .error .incoherentCore
 
 /-- The only group-list predicates for which the kernel admits a starred group operand. -/
 inductive StarredGroupFillQuantifier where

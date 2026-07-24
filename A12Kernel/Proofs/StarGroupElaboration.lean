@@ -39,6 +39,82 @@ namespace A12Kernel
     StarredGroupFillQuantifier.toGroupFillQuantifier,
     GroupFillQuantifier.evalTally]
 
+/-- A unique repeatable-path lookup returns a declaration the model actually owns, at exactly
+    the requested path. Both facts are re-checked by the group elaborator's defensive branch. -/
+private theorem lookupUniqueRepeatablePath_owned (model : FlatModel) (path : GroupPath)
+    (group : RepeatableGroupDecl)
+    (found : model.lookupUniqueRepeatablePath path = .ok group) :
+    group ∈ model.repeatableGroups ∧ group.path = path := by
+  unfold FlatModel.lookupUniqueRepeatablePath at found
+  cases hFilter : model.repeatableGroups.filter (fun candidate => candidate.path == path) with
+  | nil => simp only [hFilter] at found; simp at found
+  | cons head tail =>
+      cases tail with
+      | cons second rest => simp only [hFilter] at found; simp at found
+      | nil =>
+          simp only [hFilter, Except.ok.injEq] at found
+          subst found
+          have member : head ∈ model.repeatableGroups.filter
+              (fun candidate => candidate.path == path) := by
+            rw [hFilter]; simp
+          obtain ⟨owned, samePath⟩ := List.mem_filter.mp member
+          exact ⟨owned, by simpa using samePath⟩
+
+/-- Checked group lowering never reaches its own defensive incoherent-core branch: the unique
+    repeatable lookup already establishes model ownership, and the shared planner already
+    establishes the model-derived ancestry the constructor re-checks. -/
+theorem elaborateStarredGroupSource_never_incoherentCore
+    (model : FlatModel) (declaringGroup : GroupPath) (source : SurfaceStarGroupPath) :
+    elaborateStarredGroupSource model declaringGroup source ≠
+      .error .incoherentCore := by
+  unfold elaborateStarredGroupSource
+  split
+  · simp
+  · split
+    · rename_i baseError _
+      cases baseError <;> simp [StarredGroupBaseError.toElabError]
+    · rename_i basePath _
+      split
+      · simp
+      · rename_i group hLookup
+        split
+        · simp
+        · rename_i plan hPlan
+          obtain ⟨member, pathEq⟩ :=
+            lookupUniqueRepeatablePath_owned model
+              (basePath ++ source.groups.map (·.name)) group hLookup
+          have ancestry :=
+            elaborateStarPathPlan_ancestry model basePath source.groups
+              group.path plan hPlan
+          simp [member, pathEq, ancestry]
+
+/-- The shared star planner's defensive incoherent-core branch is likewise dead, so a group
+    operand cannot surface it through the mapped `path` channel either. -/
+theorem elaborateStarredGroupSource_never_path_incoherentCore
+    (model : FlatModel) (declaringGroup : GroupPath) (source : SurfaceStarGroupPath) :
+    elaborateStarredGroupSource model declaringGroup source ≠
+      .error (.path .incoherentCore) := by
+  unfold elaborateStarredGroupSource
+  split
+  · simp
+  · split
+    · rename_i baseError _
+      cases baseError <;> simp [StarredGroupBaseError.toElabError]
+    · rename_i basePath _
+      split
+      · simp
+      · rename_i group _
+        split
+        · rename_i error hPlan
+          have dead := elaborateStarPathPlan_never_incoherentCore model basePath
+            source.groups group.path
+          rw [hPlan] at dead
+          simp only [ne_eq, Except.error.injEq] at dead
+          simp [dead]
+        · split
+          · split <;> simp
+          · simp
+
 /-- Runtime counting is exactly the cardinality of the canonical terminal-row environment stream. -/
 theorem checkedStarredGroupSource_rowCount_of_resolved
     (checked : CheckedStarredGroupSource model) (document : Document)

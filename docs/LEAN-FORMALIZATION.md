@@ -26,6 +26,7 @@ The reference evaluator is useful before the entire theorem program is complete,
 2. phase-observation and formal-check laws that preserve empty, malformed, excluded, and poison distinctions;
 3. executable-evaluator soundness and completeness relative to an independent judgment or read-trace presentation wherever that second presentation adds semantic information;
 4. well-formed elaboration and preservation for real surface-to-core transformations, beginning with required/index and implicit-computation desugarings;
+4a. per checked family, unreachability of every declared-impossible elaboration result: a defensive branch that re-checks a fact its own certificate chain already establishes must be proved dead rather than merely believed dead, and the proof must be paired with executable witnesses that the family's genuine rejections remain reachable. This is the cheap, discharged part of obligation 4 — it makes "checked" an evaluation claim rather than only a construction claim, without requiring an independent surface dynamics;
 5. read-footprint noninterference and poison-on-read causality for the supported fragment;
 6. partial-validation one-sided soundness under a precise relevance/agreement relation;
 7. polarity one-sided soundness under a precise legal fill-extension relation.

@@ -262,31 +262,165 @@ private def firstUnstarredAxis? : List MarkedStarAxis → Option GroupPath
   | [] => none
   | axis :: rest => if axis.starred then firstUnstarredAxis? rest else some axis.path
 
+/-- Select the first reopened axis and validate the resulting plan over already-marked axes.
+    Kept separate from wildcard legality so its star-position and validation obligations are
+    stated over exactly the axes that were scanned. -/
+private def planFromMarkedAxes (marked : List MarkedStarAxis)
+    (targetPath : List String) : Except StarPathElabError CheckedStarPlan :=
+  -- Explicit matches rather than `do`: the star-position branch below must remain
+  -- inspectable so its unreachability can be proved instead of re-checked.
+  match firstStarredAxis? marked 0 with
+  | none => .error (.missingWildcard targetPath)
+  | some firstStar =>
+      match firstUnstarredAxis? (marked.drop firstStar) with
+      | some path => .error (.iterationBelowWildcard path)
+      | none =>
+          let path : StarPath := { axes := marked.map (·.axis), firstStar }
+          if hFirstStar : path.firstStar < path.axes.length then
+            match hPath : path.validate with
+            | .error error => .error (.addressing error)
+            | .ok () => .ok {
+                path
+                firstStarWithin := hFirstStar
+                pathValid := by rw [hPath]; rfl }
+          else
+            .error .incoherentCore
+
 /-- Derive the one shared checked star plan after the caller has resolved the terminal field or group. A relative base is supplied separately so its named repeatable ancestors remain fixed before the first authored star. -/
 def elaborateStarPathPlan (model : FlatModel) (basePath : GroupPath)
     (groups : List SurfaceStarGroupSegment) (targetPath : List String) :
-    Except StarPathElabError CheckedStarPlan := do
+    Except StarPathElabError CheckedStarPlan :=
   match firstInvalidWildcard? model basePath groups with
-  | some path => throw (.wildcardOnNonrepeatable path)
-  | none => pure ()
-  let baseSegments := basePath.map fun name => ({ name } : SurfaceStarGroupSegment)
-  let marked := markedAxes model [] (baseSegments ++ groups)
-  let firstStar ← match firstStarredAxis? marked 0 with
-    | none => throw (.missingWildcard targetPath)
-    | some index => pure index
-  match firstUnstarredAxis? (marked.drop firstStar) with
-  | some path => throw (.iterationBelowWildcard path)
-  | none => pure ()
-  let path : StarPath := { axes := marked.map (·.axis), firstStar }
-  if hFirstStar : path.firstStar < path.axes.length then
-    match hPath : path.validate with
-    | .error error => throw (.addressing error)
-    | .ok () => pure {
-        path
-        firstStarWithin := hFirstStar
-        pathValid := by rw [hPath]; rfl }
-  else
-    throw .incoherentCore
+  | some path => .error (.wildcardOnNonrepeatable path)
+  | none =>
+      let baseSegments := basePath.map fun name => ({ name } : SurfaceStarGroupSegment)
+      planFromMarkedAxes (markedAxes model [] (baseSegments ++ groups)) targetPath
+
+/-- The recursive prefix walk visits exactly the proper nonempty prefixes that
+    `repeatableScopeForGroupPath` indexes, so the marked axes carry the model-derived
+    ancestry by construction rather than by a later re-check. -/
+private theorem markedAxes_levels (model : FlatModel) :
+    ∀ (segments : List SurfaceStarGroupSegment) (prefixPath : GroupPath),
+      (markedAxes model prefixPath segments).map (fun marked => marked.axis.level) =
+        (List.range segments.length).filterMap fun offset =>
+          (model.repeatableGroups.find? fun group =>
+            group.path == prefixPath ++ (segments.map (·.name)).take (offset + 1)).map
+              (·.level) := by
+  intro segments
+  induction segments with
+  | nil => intro prefixPath; simp [markedAxes]
+  | cons segment rest ih =>
+      intro prefixPath
+      have tail :
+          (List.range rest.length).filterMap
+              (fun offset =>
+                (model.repeatableGroups.find? fun group =>
+                  group.path == prefixPath ++
+                    ((segment :: rest).map (·.name)).take (offset + 1 + 1)).map (·.level)) =
+            (markedAxes model (prefixPath ++ [segment.name]) rest).map
+              (fun marked => marked.axis.level) := by
+        rw [ih (prefixPath ++ [segment.name])]
+        simp [List.append_assoc]
+      simp only [markedAxes, List.length_cons, List.range_succ_eq_map, List.map_cons,
+        List.filterMap_cons, List.filterMap_map, List.take_succ_cons, List.take_zero,
+        Function.comp_def]
+      cases hFound : model.repeatableGroups.find? (fun group =>
+          group.path == prefixPath ++ [segment.name]) with
+      | none => simpa [hFound] using tail.symm
+      | some group => simpa [hFound] using tail.symm
+
+/-- The starred-axis scan reports an index inside the axes it scanned. This is the fact the
+    planner's own defensive branch re-checks. -/
+private theorem firstStarredAxis?_lt :
+    ∀ (axes : List MarkedStarAxis) (start index : Nat),
+      firstStarredAxis? axes start = some index → index < start + axes.length := by
+  intro axes
+  induction axes with
+  | nil => intro start index found; simp [firstStarredAxis?] at found
+  | cons axis rest ih =>
+      intro start index found
+      simp only [firstStarredAxis?] at found
+      simp only [List.length_cons]
+      split at found
+      · have : index = start := by simpa using found.symm
+        subst this
+        omega
+      · have bound := ih (start + 1) index found
+        omega
+
+/-- The extracted plan step never reaches its defensive incoherent-core branch: the scan that
+    produced the first starred index already bounds it by the axes it scanned. -/
+private theorem planFromMarkedAxes_never_incoherentCore
+    (marked : List MarkedStarAxis) (targetPath : List String) :
+    planFromMarkedAxes marked targetPath ≠ .error .incoherentCore := by
+  unfold planFromMarkedAxes
+  cases hStar : firstStarredAxis? marked 0 with
+  | none => simp
+  | some index =>
+      have bound : index < (marked.map (·.axis)).length := by
+        simpa using firstStarredAxis?_lt marked 0 index hStar
+      cases hBelow : firstUnstarredAxis? (marked.drop index) with
+      | some path => simp [hBelow]
+      | none =>
+          simp only [hBelow, dif_pos bound]
+          split <;> simp
+
+/-- A successful plan's axes are exactly the marked axes it scanned. -/
+private theorem planFromMarkedAxes_axes (marked : List MarkedStarAxis)
+    (targetPath : List String) (plan : CheckedStarPlan)
+    (success : planFromMarkedAxes marked targetPath = .ok plan) :
+    plan.path.axes = marked.map (·.axis) := by
+  unfold planFromMarkedAxes at success
+  cases hStar : firstStarredAxis? marked 0 with
+  | none => simp [hStar] at success
+  | some index =>
+      cases hBelow : firstUnstarredAxis? (marked.drop index) with
+      | some path => simp [hStar, hBelow] at success
+      | none =>
+          simp only [hStar, hBelow] at success
+          split at success
+          · split at success
+            · simp at success
+            · injection success with plan_eq
+              subst plan_eq
+              rfl
+          · simp at success
+
+/-- A successful plan's axes already equal the model-derived repeatable ancestry of the
+    resolved group path. This is what makes each caller's defensive ancestry re-check a dead
+    branch instead of a real diagnostic. -/
+theorem elaborateStarPathPlan_ancestry (model : FlatModel) (basePath : GroupPath)
+    (groups : List SurfaceStarGroupSegment) (targetPath : List String)
+    (plan : CheckedStarPlan)
+    (success : elaborateStarPathPlan model basePath groups targetPath = .ok plan) :
+    plan.path.axes.map (·.level) =
+      model.repeatableScopeForGroupPath (basePath ++ groups.map (·.name)) := by
+  unfold elaborateStarPathPlan at success
+  cases hWildcard : firstInvalidWildcard? model basePath groups with
+  | some path => simp [hWildcard] at success
+  | none =>
+      simp only [hWildcard] at success
+      rw [planFromMarkedAxes_axes _ _ _ success, List.map_map]
+      simpa [FlatModel.repeatableScopeForGroupPath, List.map_append, List.map_map,
+        Function.comp_def] using
+        markedAxes_levels model
+          (basePath.map (fun name => ({ name } : SurfaceStarGroupSegment)) ++ groups) []
+
+/-- The planner's own defensive incoherent-core branch is unreachable: the first starred axis
+    is found by scanning the marked axes, so its index is always inside them. -/
+theorem elaborateStarPathPlan_never_incoherentCore (model : FlatModel)
+    (basePath : GroupPath) (groups : List SurfaceStarGroupSegment)
+    (targetPath : List String) :
+    elaborateStarPathPlan model basePath groups targetPath ≠ .error .incoherentCore := by
+  unfold elaborateStarPathPlan
+  cases hWildcard : firstInvalidWildcard? model basePath groups with
+  | some path => simp
+  | none =>
+      simpa using
+        planFromMarkedAxes_never_incoherentCore
+          (markedAxes model []
+            (basePath.map (fun name => ({ name } : SurfaceStarGroupSegment)) ++ groups))
+          targetPath
 
 /-- Resolve a legal starred field path into the exact model-owned ancestry consumed by `StarAddressing`. A relative turning point may precede later stars; the first star and every deeper repeatable level must be explicitly starred. -/
 def elaborateStarFieldPath (model : FlatModel) (declaringGroup : GroupPath)

@@ -1132,6 +1132,8 @@ run_cmd do
 #print axioms A12Kernel.starredGroup_noGroupFilled_successor
 #print axioms A12Kernel.starredGroup_atLeastOne_zero
 #print axioms A12Kernel.starredGroup_atLeastOne_successor
+#print axioms A12Kernel.elaborateStarredGroupSource_never_incoherentCore
+#print axioms A12Kernel.elaborateStarredGroupSource_never_path_incoherentCore
 #print axioms A12Kernel.checkedStarredGroupSource_rowCount_of_resolved
 #print axioms A12Kernel.checkedStarredGroupSource_evaluateFull_of_resolved
 #print axioms A12Kernel.checkedStarredGroupSource_numberOfFilledGroups_of_resolved

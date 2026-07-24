@@ -164,6 +164,17 @@ example :
       some (.resolve (.unknownRepeatableGroup items.path)) := by
   native_decide
 
+/- The two dead-branch theorems are not vacuous claims that lowering always succeeds: base
+   resolution still rejects an empty group reference and an unnamed segment, and those
+   rejections are the only shapes it can produce. -/
+example :
+    errorOf { base := .absolute, groups := [] } =
+      some (.invalidGroupReference { base := .absolute, groups := [] }) ∧
+    errorOf { base := .absolute, groups := [segment "Shop", segment ""] } =
+      some (.invalidGroupReference
+        { base := .absolute, groups := [segment "Shop", segment ""] }) := by
+  native_decide
+
 /- Caller-context invalidity remains distinct from an invalid group operand for both path bases. -/
 example :
     errorFromDeclaringGroup [] (absoluteSource false true true) =
