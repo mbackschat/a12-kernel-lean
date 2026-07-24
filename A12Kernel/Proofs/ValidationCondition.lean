@@ -238,6 +238,15 @@ theorem validationCondition_repeatablePresence_iterationScope
       .ok (some declaration.repeatableScope) := by
   rfl
 
+/-- The first ordinary repeatable route is closed under flat/repeatable connective composition and excludes specialized addressed leaf families. -/
+@[simp]
+theorem validationCondition_repeatablePresence_supported
+    (model : FlatModel) (operator : RepeatableFieldPresenceOperator)
+    (declaration : FlatFieldDecl) :
+    (ValidationCondition.repeatableFieldPresence (model := model)
+      operator declaration).supportsOrdinaryIteration = true := by
+  rfl
+
 /-- The checked mixed wrapper carries one model and exact row-group certificate for its complete resolved core. -/
 theorem checkedValidationCondition_coherent
     (condition : CheckedValidationCondition model) :

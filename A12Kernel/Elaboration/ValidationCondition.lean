@@ -303,6 +303,22 @@ def ordinaryIterationScope :
       mergeIterationScopes
         (← ordinaryIterationScope left) (← ordinaryIterationScope right)
 
+/-- Ordinary repeatable field declarations in authored tree order. Whole-rule checked-document execution resolves these exact cells before evaluation so a structural address failure cannot be collapsed into semantic UNKNOWN. -/
+def ordinaryRepeatableFields (condition : ValidationCondition model) :
+    List FlatFieldDecl :=
+  match condition with
+  | .leaf (.repeatableFieldPresence _ declaration) => [declaration]
+  | .leaf _ => []
+  | .and left right | .or left right =>
+      ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
+
+/-- The first whole-rule route accepts established nonrepeatable flat leaves plus ordinary repeatable presence leaves. Specialized addressed sources retain their existing owners until their rule-environment bridge closes. -/
+def supportsOrdinaryIteration
+    (condition : ValidationCondition model) : Bool :=
+  condition.allLeaves fun
+    | .flat _ | .repeatableFieldPresence _ _ => true
+    | _ => false
+
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
 def hasHaving (condition : ValidationCondition model) : Bool :=
   condition.anyLeaf ValidationConditionLeaf.hasHaving

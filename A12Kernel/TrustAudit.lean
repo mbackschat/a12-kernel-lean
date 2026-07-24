@@ -617,6 +617,8 @@ run_cmd do
 #print axioms A12Kernel.messageValue_missingOrEmpty_usesDefault
 #print axioms A12Kernel.messageRenderText_append
 #print axioms A12Kernel.messageValue_present_isOpaque
+#print axioms A12Kernel.resolvedRule_emitAt_verdict
+#print axioms A12Kernel.resolvedRule_emitAt_fired_exact
 #print axioms A12Kernel.flatRule_eval_verdict
 #print axioms A12Kernel.resolvedRule_evalWith_verdict
 #print axioms A12Kernel.validationRule_eval_verdict
@@ -674,6 +676,7 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_repeatablePresence_requiresAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_evalAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_iterationScope
+#print axioms A12Kernel.validationCondition_repeatablePresence_supported
 #print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.numericValidation_scaleSuppression_accepts
