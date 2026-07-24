@@ -55,6 +55,8 @@ private def child : List String → IO UInt32
       stdout.write (ByteArray.mk #[0x00, 0xff, 0x0a])
       stdout.flush
       pure 0
+  | ["ignore-input"] =>
+      pure 0
   | ["sleep"] => do
       IO.sleep 10000
       pure 0
@@ -184,6 +186,16 @@ private def expectBinaryTransparency : IO Unit := do
       require (String.fromUTF8? output.stdout).isNone
         "invalid UTF-8 unexpectedly decoded"
 
+private def expectIgnoredInput : IO Unit := do
+  let input := String.ofList (List.replicate (1024 * 1024) 'i')
+  match ← invoke #["ignore-input"] input { baseLimits with inputBytes := input.utf8ByteSize } with
+  | .error failure =>
+      fail s!"candidate that ignored stdin failed: {repr failure.kind}"
+  | .ok output => do
+      require (output.exitCode == 0) "candidate that ignored stdin changed its exit code"
+      require output.stdout.isEmpty "candidate that ignored stdin wrote stdout"
+      require output.stderr.isEmpty "candidate that ignored stdin wrote stderr"
+
 private def expectGroupTermination : IO Unit := do
   IO.FS.withTempDir fun directory => do
     let marker := directory / "escaped.txt"
@@ -210,6 +222,17 @@ private def expectCandidatePreflight : IO Unit := do
   catch _ =>
     pure false
   require (!accepted) "bounded process reported a missing candidate as a candidate result"
+
+private def expectRelayDiagnostic : IO Unit := do
+  let relay ← executable "a12-bounded-process-relay"
+  let missingInput := System.FilePath.mk "/path/that/does/not/exist/a12-input"
+  let output ← IO.Process.output {
+    cmd := relay.toString
+    args := #[relay.toString, missingInput.toString] }
+  require (output.exitCode == 1)
+    s!"relay classified its own input failure as exit {output.exitCode}"
+  require (output.stderr.startsWith "a12-bounded-process-relay: ")
+    "relay failure omitted its diagnostic prefix"
 
 private def expectStatusGuards : IO Unit := do
   let exact := RelayStatus.render 7
@@ -241,11 +264,13 @@ def selfTest : IO Unit := do
   expectOutputLimits
   expectBlockedInput
   expectBinaryTransparency
+  expectRelayDiagnostic
+  expectIgnoredInput
   expectGroupTermination
   expectCandidatePreflight
   expectStatusGuards
   expectInvalidLimits
-  IO.println "bounded process: exact bytes, exit/status separation, timeout, blocked input, output caps, process-group cleanup, and limit guards passed"
+  IO.println "bounded process: exact bytes, ignored input, relay diagnostics, exit/status separation, timeout, blocked input, output caps, process-group cleanup, and limit guards passed"
 
 def run : List String → IO UInt32
   | "--child" :: arguments => child arguments
