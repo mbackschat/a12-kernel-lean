@@ -172,6 +172,52 @@ theorem validationCondition_groupPresence_missing_isUnknown
   simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected,
     ValidationConditionLeaf.evalSelected, missing]
 
+/-- A group reference contributes exactly its model-owned repeatable ancestry to ordinary rule iteration, and the same fact selects the addressed evaluator. -/
+theorem validationCondition_groupPresence_addressingPolicy
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference) :
+    (ValidationCondition.groupPresence (model := model)
+      operator reference).ordinaryIterationScope =
+        .ok (let scope := model.repeatableScopeForGroupPath reference.path
+          if scope.isEmpty then none else some scope) ∧
+      (ValidationCondition.groupPresence (model := model)
+        operator reference).requiresAddressedValidation =
+          !(model.repeatableScopeForGroupPath reference.path).isEmpty := by
+  exact ⟨rfl, rfl⟩
+
+/-- The ordinary repeatable rule route consumes group presence through its existing checked product owner. -/
+@[simp]
+theorem validationCondition_groupPresence_evalAddressed_checked
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference)
+    (scalar : ValidationEvaluationContext) (outer : Env)
+    (document : CheckedDocument model) :
+    (ValidationCondition.groupPresence (model := model)
+      operator reference).evalAddressed {
+        scalar, outer, input := .checked document
+      } =
+        ((document.groupPresenceInput reference.path outer
+          .fullyRelevant false).mapError CheckedAddressingError.group).map
+            fun input => operator.eval input.derive := by
+  rfl
+
+/-- A structural group-slice failure remains in the addressed error channel and cannot become semantic UNKNOWN. -/
+theorem validationCondition_groupPresence_addressError
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference)
+    (scalar : ValidationEvaluationContext) (outer : Env)
+    (document : CheckedDocument model)
+    (fails : document.groupPresenceInput reference.path outer
+      .fullyRelevant false = .error cause) :
+    (ValidationCondition.groupPresence (model := model)
+      operator reference).evalAddressed {
+        scalar, outer, input := .checked document
+      } =
+        .error (.group cause) := by
+  rw [validationCondition_groupPresence_evalAddressed_checked
+    model operator reference scalar outer document, fails]
+  rfl
+
 /-- A reached fixed field/group list delegates once to the shared entity-presence tally and preserves its conservative collapsed-result embedding. -/
 @[simp]
 theorem validationCondition_groupList_evalSelected

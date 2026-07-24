@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
 
@@ -11,6 +12,7 @@ namespace A12Kernel
 
 inductive CheckedAddressingError where
   | addressing (cause : StarAddressingError)
+  | group (cause : CheckedGroupPresenceError)
   | field (field : FieldId) (cause : ResolveError)
   | environment (cause : EnvBindingError)
   | document (cause : CheckedDocumentError)

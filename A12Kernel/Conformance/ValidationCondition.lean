@@ -255,11 +255,11 @@ private def wildcardRuleGroupError? : Option ValidationConditionAssemblyError :=
   | .ok _ => none
   | .error error => some error
 
-private def repeatablePathError? : Option ValidationConditionAssemblyError :=
-  match CheckedValidationCondition.fromGroupPresence model ["Order"]
-      (.path { base := .absolute, groups := ["Order", "Items"] }) .filled with
-  | .ok _ => none
-  | .error error => some error
+private def checkedRepeatableGroupPath? :
+    Option (CheckedValidationCondition model) :=
+  (CheckedValidationCondition.fromGroupPresence model ["Order"]
+    (.path { base := .absolute, groups := ["Order", "Items"] })
+    .filled).toOption
 
 private def groupOperand (groups : GroupPath) : SurfaceGroupListOperand :=
   .group (.path { base := .absolute, groups })
@@ -369,9 +369,20 @@ example : wildcardRuleGroupError? =
     some (.groupReference .wildcardOnRuleGroup) := by
   native_decide
 
-/- An ordinary repeatable path has no concrete row at this boundary; only `RuleGroup` may consume the already-selected rule instance. -/
-example : repeatablePathError? =
-    some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
+/- An ordinary group path beneath a repeatable level retains that exact resolved entity and declares its need for the addressed rule route. Fixed group-list construction remains the separate owner that rejects the same path without a row environment. -/
+example :
+    (match checkedRepeatableGroupPath? with
+    | some checked =>
+        (match checked.core.ordinaryIterationScope with
+        | .ok (some scope) => scope == [10]
+        | _ => false) &&
+          checked.core.requiresAddressedValidation &&
+          match checked.core with
+          | .leaf (.groupPresence .filled reference) =>
+              reference.path == ["Order", "Items"] &&
+                reference.origin == .path
+          | _ => false
+    | none => false) = true := by
   native_decide
 
 /- Fixed group-list conditions accept fields and groups through one resolved entity-presence tally. The error-field traversal retains the exact field operand and every field in the group subtree. -/
