@@ -106,6 +106,17 @@ private def surfaceSameParentEarlierChild : SurfaceCorrelatedHaving :=
       (surfaceRepetition .inner ["Shop", "Sections", "Items"])
       (surfaceRepetition .outer ["Shop", "Sections", "Items"]))
 
+/-- The historical diagonal/off-diagonal separator, now authored and checked against the general nested-star environment owner. -/
+private def surfaceParentEqualsCapturedParentAndChild :
+    SurfaceCorrelatedHaving :=
+  .and
+    (.compareRepetitions .equal
+      (surfaceRepetition .inner ["Shop", "Sections"])
+      (surfaceRepetition .outer ["Shop", "Sections"]))
+    (.compareRepetitions .equal
+      (surfaceRepetition .inner ["Shop", "Sections"])
+      (surfaceRepetition .outer ["Shop", "Sections", "Items"]))
+
 private def surfaceEarlierThanCapturedLimit : SurfaceCorrelatedHaving :=
   .compareNumbers .less
     (surfaceNumber .inner ["Shop", "Sections", "Items"] "Amount")
@@ -175,6 +186,17 @@ private def authoredNumberHavingCellsOf (outer : Env) :=
       | .error _ => none
       | .ok side => some (side.cells.map snapshotCell,
           side.hasUninstantiatedTail, side.hasHaving)
+
+private def checkedCrossLevelSelectionsOf (outer : Env) : Option (List Env) :=
+  match elaborateStarNumberHavingSource model amount.groupPath (source)
+      surfaceParentEqualsCapturedParentAndChild with
+  | .error _ => none
+  | .ok checked =>
+      match checked.source.source.path.resolve (document standardRows) outer with
+      | .error _ => none
+      | .ok resolved =>
+          some (checked.having.selectEnvironments
+            { read := unusedFilterRead } outer resolved.environments)
 
 private def havingErrorOf (declaringGroup : GroupPath)
     (authoredSource : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving) :=
@@ -304,6 +326,13 @@ example :
         some ([.present 1], true, true) ∧
       authoredHavingCellsOf [(10, 2), (20, 2)] =
         some ([.present 3], true, true) := by
+  native_decide
+
+/- A complete checked outer environment preserves the historical diagonal/off-diagonal discriminator. Collapsing the captured child coordinate to the parent coordinate would make the second result select both children of parent 1. -/
+example :
+    checkedCrossLevelSelectionsOf [(10, 1), (20, 1)] =
+        some [[(10, 1), (20, 1)], [(10, 1), (20, 2)]] ∧
+      checkedCrossLevelSelectionsOf [(10, 1), (20, 2)] = some [] := by
   native_decide
 
 /- Number references route independently: the candidate Amount reads each leaf, while the captured ancestor Limit remains fixed for the outer rule row. -/
