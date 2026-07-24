@@ -48,135 +48,6 @@ def elaborateNumberEntityValueListSource (model : FlatModel)
       values
       uniqueDirectOperands := hUnique }
 
-/-- One authored Number operand resolved against the immutable checked input. The source retains declaration/filter metadata; the optional topology retains every canonical candidate environment, while `addressedCells` retains exactly the relevant or filter-selected cells that were read. -/
-structure ResolvedCheckedNumberEntityOperand (model : FlatModel) where
-  private mk ::
-  source : CheckedNumberEntityOperand model
-  topology : Option ResolvedStarTopology
-  addressedCells : List CheckedAddressedCell
-  hasUninstantiatedTail : Bool
-  hasHaving : Bool
-  hasNonRelevant : Bool
-
-namespace ResolvedCheckedNumberEntityOperand
-
-/-- Project the rich addressed operand to the existing semantic side without losing its operand-local structural metadata. -/
-def valueListSideAt (resolved : ResolvedCheckedNumberEntityOperand model)
-    (phase : Phase) : ResolvedValueListSide .number :=
-  { cells := resolved.addressedCells.map fun addressed =>
-      (observeCell phase addressed.cell).asNumberValueListCell
-    hasUninstantiatedTail := resolved.hasUninstantiatedTail
-    hasHaving := resolved.hasHaving
-    hasNonRelevant := resolved.hasNonRelevant }
-
-end ResolvedCheckedNumberEntityOperand
-
-private def addressNumberEnvironments (document : CheckedDocument model)
-    (field : FlatNumberField) (environments : List Env) :
-    Except CheckedAddressingError (List CheckedAddressedCell) :=
-  environments.mapM fun environment =>
-    document.addressedCell environment field.id
-
-namespace CheckedNumberEntityOperand
-
-/-- Resolve one full-validation operand through the sole checked topology, filter, and addressed-cell owners. -/
-def resolveCheckedValueListOperand
-    (source : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError
-      (ResolvedCheckedNumberEntityOperand model) :=
-  match source with
-  | .field direct => do
-      let addressed ← document.addressedCell [] direct.field.id
-      pure {
-        source
-        topology := none
-        addressedCells := [addressed]
-        hasUninstantiatedTail := false
-        hasHaving := false
-        hasNonRelevant := false }
-  | .star starSource => do
-      let topology ←
-        (starSource.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let addressedCells ←
-        addressNumberEnvironments document starSource.field topology.environments
-      pure {
-        source
-        topology := some topology
-        addressedCells
-        hasUninstantiatedTail := topology.domain.hasOpenTail
-        hasHaving := false
-        hasNonRelevant := false }
-  | .starHaving filtered => do
-      let topology ←
-        (filtered.source.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let selected ← filtered.having.selectEnvironmentsResolving
-        document.resolvingCorrelationContext outer topology.environments
-      let addressedCells ←
-        addressNumberEnvironments document filtered.source.field selected
-      pure {
-        source
-        topology := some topology
-        addressedCells
-        hasUninstantiatedTail := topology.domain.hasOpenTail
-        hasHaving := true
-        hasNonRelevant := false }
-
-/-- Resolve one unfiltered partial-validation operand. Direct masking precedes its read; a star retains canonical topology, reads only relevant concrete cells, and records incomplete extent on that exact authored operand. -/
-def resolveCheckedPartialValueListOperand
-    (source : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) :
-    Except CheckedAddressingError
-      (ResolvedCheckedNumberEntityOperand model) :=
-  match source with
-  | .field direct =>
-      if scope.coversCell model direct.declaration.path [] then do
-        let addressed ← document.addressedCell [] direct.field.id
-        pure {
-          source
-          topology := none
-          addressedCells := [addressed]
-          hasUninstantiatedTail := false
-          hasHaving := false
-          hasNonRelevant := false }
-      else
-        pure {
-          source
-          topology := none
-          addressedCells := []
-          hasUninstantiatedTail := false
-          hasHaving := false
-          hasNonRelevant := true }
-  | .star starSource => do
-      let topology ←
-        (starSource.source.path.resolve document.source.toDocument outer)
-          |>.mapError .addressing
-      let relevant := topology.environments.filter fun environment =>
-        starSource.source.cellRelevant scope environment
-      let addressedCells ←
-        addressNumberEnvironments document starSource.field relevant
-      pure {
-        source
-        topology := some topology
-        addressedCells
-        hasUninstantiatedTail := topology.domain.hasOpenTail
-        hasHaving := false
-        hasNonRelevant := !starSource.source.allRowsRelevant scope }
-  | .starHaving _ =>
-      -- The owning rule checks `hasHaving` and skips before any operand resolver.
-      pure {
-        source
-        topology := none
-        addressedCells := []
-        hasUninstantiatedTail := false
-        hasHaving := true
-        hasNonRelevant := false }
-
-end CheckedNumberEntityOperand
-
 /-- The rich two-sided addressed stream consumed by Execute/Transform/Explain clients. -/
 structure ResolvedCheckedNumberEntityValueList (model : FlatModel) where
   quantifier : ValueListQuantifier
@@ -214,14 +85,14 @@ private def resolveFullFields
     (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env) :=
   resolveNumberValueListOperands
-    (fun operand => operand.resolveCheckedValueListOperand document outer)
+    (fun operand => operand.resolveCheckedValidationOperand document outer)
     checked.fields.operands
 
 private def resolveFullValues
     (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env) :=
   resolveNumberValueListOperands
-    (fun operand => operand.resolveCheckedValueListOperand document outer)
+    (fun operand => operand.resolveCheckedValidationOperand document outer)
     checked.values.operands
 
 /-- Construct both rich sides in the kernel's operator-specific side order, without flattening authored operand boundaries. -/
@@ -251,7 +122,7 @@ private def resolvePartialFields
     (scope : ValidationRelevanceScope) :=
   resolveNumberValueListOperands
     (fun operand =>
-      operand.resolveCheckedPartialValueListOperand document outer scope)
+      operand.resolveCheckedPartialValidationOperand document outer scope)
     checked.fields.operands
 
 private def resolvePartialValues
@@ -260,7 +131,7 @@ private def resolvePartialValues
     (scope : ValidationRelevanceScope) :=
   resolveNumberValueListOperands
     (fun operand =>
-      operand.resolveCheckedPartialValueListOperand document outer scope)
+      operand.resolveCheckedPartialValidationOperand document outer scope)
     checked.values.operands
 
 /-- Partial validation skips a rule containing any filter before topology, relevance, or target reads; otherwise it constructs the same rich ordered operands with positional nonrelevance. -/

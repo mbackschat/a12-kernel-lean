@@ -159,6 +159,20 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
+/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked SG2 projection, then retain the established first-formal-cause terminal result. -/
+theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
+    (checked : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env) :
+    checked.resolvedCheckedDocumentValidationAggregateSide document outer =
+      (do
+        let side :=
+          (← checked.resolveCheckedValidationOperand document outer)
+            |>.valueListSideAt .validation
+        match side.available with
+        | .error cause => pure (.inr (.unknown cause))
+        | .ok () => pure (.inl side)) := by
+  rfl
+
 /-- A relevant direct partial aggregate slot delegates to the same declaration-owned side, while a nonrelevant one is rejected before its checked value is inspected. -/
 theorem checkedNumberEntityField_partialAggregate_relevance
     (source : CheckedNumberEntityField model)

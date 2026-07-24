@@ -11,27 +11,6 @@ theorem checkedNumberEntityValueList_uniqueDirectOperands
       (checked.fields.operands ++ checked.values.operands) = none :=
   checked.uniqueDirectOperands
 
-/-- The semantic projection reads each already-addressed checked cell exactly once and preserves encounter order. -/
-theorem resolvedCheckedNumberEntityOperand_valueListSideAt_cells
-    (resolved : ResolvedCheckedNumberEntityOperand model)
-    (phase : Phase) :
-    (resolved.valueListSideAt phase).cells =
-      resolved.addressedCells.map fun addressed =>
-        (observeCell phase addressed.cell).asNumberValueListCell := by
-  rfl
-
-/-- Hierarchical tail, filter, and positional nonrelevance metadata cross the rich addressed boundary unchanged. -/
-theorem resolvedCheckedNumberEntityOperand_valueListSideAt_metadata
-    (resolved : ResolvedCheckedNumberEntityOperand model)
-    (phase : Phase) :
-    (resolved.valueListSideAt phase).hasUninstantiatedTail =
-        resolved.hasUninstantiatedTail ∧
-      (resolved.valueListSideAt phase).hasHaving =
-        resolved.hasHaving ∧
-      (resolved.valueListSideAt phase).hasNonRelevant =
-        resolved.hasNonRelevant := by
-  simp [ResolvedCheckedNumberEntityOperand.valueListSideAt]
-
 /-- Rich two-sided execution is exactly the existing ordered evaluator over the resolved operand projections. -/
 theorem resolvedCheckedNumberEntityValueList_evaluate_delegates
     (resolved : ResolvedCheckedNumberEntityValueList model) :
@@ -73,19 +52,5 @@ theorem valueListNo_nonRelevantOperand_before_match
          hasHaving := false }] =
       .unknown := by
   rfl
-
-/-- A failed starred topology remains an addressed construction error before any semantic side exists. -/
-theorem checkedNumberEntityStarValueList_addressing_error
-    (source : CheckedStarNumberSource model)
-    (document : CheckedDocument model) (outer : Env)
-    (cause : StarAddressingError)
-    (failed :
-      source.source.path.resolve document.source.toDocument outer =
-        .error cause) :
-    (CheckedNumberEntityOperand.star source).resolveCheckedValueListOperand
-        document outer =
-      .error (.addressing cause) := by
-  simp [CheckedNumberEntityOperand.resolveCheckedValueListOperand,
-    failed, Except.mapError, bind, Except.bind]
 
 end A12Kernel
