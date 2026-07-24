@@ -455,6 +455,19 @@ private def checkedTokenSourceIterationScope
   mergeIterationScopeList
     (← source.operands.mapM checkedTokenOperandIterationScope)
 
+private def temporalDifferenceOperandDeclarations?
+    (model : FlatModel) (accepts : FlatTemporalField → Bool) :
+    ResolvedDateDifferenceOperand → Option (List FlatFieldDecl)
+  | .field source =>
+      match model.lookupUniqueId source.id with
+      | .ok declaration =>
+          if declaration.toTemporalField? == some source && accepts source then
+            some [declaration]
+          else none
+      | .error _ => none
+  | .baseYear year _ =>
+      if model.baseYear == some year then some [] else none
+
 private def ordinaryNumericAtomFieldDeclarations?
     (model : FlatModel) :
     NumericValidationAtom → Option (List FlatFieldDecl)
@@ -490,22 +503,24 @@ private def ordinaryNumericAtomFieldDeclarations?
   | .fieldValueAsNumber source =>
       (model.certifiedFieldValueAsNumberDeclaration? source).map (· :: [])
   | .dateDifference unit left right => do
-      let declarations :
-          ResolvedDateDifferenceOperand → Option (List FlatFieldDecl)
-        | .field source =>
-            match model.lookupUniqueId source.id with
-            | .ok declaration =>
-                if declaration.toTemporalField? == some source &&
-                    source.kind == .date &&
-                    unit.admittedBy model.hasBaseYear source.components then
-                  some [declaration]
-                else none
-            | .error _ => none
-        | .baseYear year _ =>
-            if model.baseYear == some year then some [] else none
+      let declarations := temporalDifferenceOperandDeclarations? model
+        (fun source => source.kind == .date &&
+          unit.admittedBy model.hasBaseYear source.components)
       let leftDeclarations ← declarations left
       let rightDeclarations ← declarations right
       if unit.compatible model.hasBaseYear left.components right.components then
+        some (leftDeclarations ++ rightDeclarations)
+      else none
+  | .dayDifference profile left right => do
+      if ModelZone.ConcreteProfile.ofId? model.timeZoneId != some profile then
+        none
+      let declarations := temporalDifferenceOperandDeclarations? model
+        (fun source =>
+          CalendarDayDifference.admittedBy source.kind source.components)
+      let leftDeclarations ← declarations left
+      let rightDeclarations ← declarations right
+      if CalendarDayDifference.yearCompatible model.hasBaseYear
+          left.components right.components then
         some (leftDeclarations ++ rightDeclarations)
       else none
   | _ => none

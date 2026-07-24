@@ -1006,6 +1006,29 @@ private def dateDifferenceConditionLegality?
   let checked ← condition
   checked.core.iterationLegality.toOption
 
+private def repeatableDayDifferenceCondition?
+    (left right : SurfaceDateDifferenceOperand)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let difference : AuthoredNumericExpr SurfaceNumericAtom :=
+    .atom (.dayDifference left right)
+  let numeric ←
+    (elaborateRepeatableNumericComparison ordinaryIterationModel
+      ["Order", "Sections", "Items"] {
+        op
+        left := difference
+        right := .literal { value := expected, authoredScale := 0 }
+      }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
+
+private def repeatableDayDifferenceRule?
+    (left right : SurfaceDateDifferenceOperand)
+    (op : NumericValidationOp) (expected : Rat) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ← repeatableDayDifferenceCondition? left right op expected
+  (assembleResolvedValidationRule ordinaryIterationModel condition innerDate.id
+    "repeatableDayDifference" .error { parts := [] }).toOption
+
 private def repeatableDateDifferenceRuleWith?
     (unit : DateDifferenceUnit)
     (left right : SurfaceDateDifferenceOperand)
@@ -1406,6 +1429,28 @@ example :
     (ordinaryIterationRule?.map fun rule =>
       (rule.iterationScope, rule.errorDeclaration.repeatableScope)) =
       some (some [10, 20], [10, 20]) := by
+  native_decide
+
+/- Calendar-day difference is a distinct two-operand zero-sensitive operation that admits DateTime but not Time. -/
+example :
+    dateDifferenceConditionLegality?
+      (repeatableDayDifferenceCondition?
+        (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDate"))
+        (.field
+          (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+        (.ordinary .equal) 0) =
+      some (.invalid 10) ∧
+    dateDifferenceConditionLegality?
+      (repeatableDayDifferenceCondition?
+        (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDate"))
+        (.field
+          (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+        (.ordinary .equal) 1) =
+      some .legal ∧
+    (repeatableDayDifferenceCondition?
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerTime"))
+      (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+      (.ordinary .equal) 1).isNone := by
   native_decide
 
 /- Date-only completed-period differences preserve their two ordered checked operands while sharing the direct-operation host-zero branch. -/
@@ -2234,9 +2279,20 @@ example :
         .fired .value)) = true := by
   native_decide
 
-private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
-  .parsed (.temporal (.date { epochMillis := 0 }
+private def checkedDateRawAt
+    (epochMillis year : Int) (month day : Nat) : RawCell :=
+  .parsed (.temporal (.date { epochMillis }
     { year, month, day } .storedGregorian))
+
+private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
+  checkedDateRawAt 0 year month day
+
+private def checkedDateTimeRawAt
+    (epochMillis year : Int) (month day : Nat) : RawCell :=
+  .parsed (.temporal (.dateTime { epochMillis }
+    { year, month, day }
+    ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))
+    .storedGregorian))
 
 private def repeatableDateDifferenceData
     (leftStored : String) (leftRaw : Option RawCell)
@@ -2268,6 +2324,22 @@ private def nestedDateDifferenceData
       innerRaw.toList.map (fun cell => {
         address := { field := innerDate.id, path := [1, 1] }
         stored := innerStored
+        raw := cell }) }
+
+private def repeatableDayDifferenceData
+    (dateStored : String) (dateRaw : Option RawCell)
+    (dateTimeStored : String) (dateTimeRaw : Option RawCell) : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 20, path := [1, 1] }]
+    cells :=
+      dateRaw.toList.map (fun cell => {
+        address := { field := innerDate.id, path := [1, 1] }
+        stored := dateStored
+        raw := cell }) ++
+      dateTimeRaw.toList.map (fun cell => {
+        address := { field := innerDateTime.id, path := [1, 1] }
+        stored := dateTimeStored
         raw := cell }) }
 
 private def dateDifferenceRuleSnapshot?
@@ -2372,6 +2444,36 @@ private def nestedDateDifferenceConsumerSnapshot? :
   pure (outerDeclaration.repeatableScope, innerDeclaration.repeatableScope,
     outer.address, inner.address, outcome.2.verdict)
 
+private def repeatableDayDifferenceConsumerSnapshot? :
+    Option (ModelZone.ConcreteProfile × TemporalKind × TemporalKind ×
+      CellAddr × CellAddr × Verdict) := do
+  let dateDeclaration ←
+    (ordinaryIterationModel.lookupUniqueId innerDate.id).toOption
+  let dateTimeDeclaration ←
+    (ordinaryIterationModel.lookupUniqueId innerDateTime.id).toOption
+  let date ← dateDeclaration.toTemporalField?
+  let dateTime ← dateTimeDeclaration.toTemporalField?
+  let data := repeatableDayDifferenceData "2024-06-25"
+    (some (checkedDateRawAt 0 2024 6 25)) "2024-06-26T00:00:00"
+    (some (checkedDateTimeRawAt 86400000 2024 6 26))
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let left ←
+    (document.addressedCell [(10, 1), (20, 1)] innerDate.id).toOption
+  let right ←
+    (document.addressedCell [(10, 1), (20, 1)]
+      innerDateTime.id).toOption
+  let rule ← repeatableDayDifferenceRule?
+    (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDate"))
+    (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime"))
+    (.ordinary .equal) 1
+  let outcomes ← evalOrdinaryRule? rule data
+  let outcome ← outcomes.head?
+  pure (.utc, date.kind, dateTime.kind,
+    left.address, right.address, outcome.2.verdict)
+
 private def expectedRepeatableDateDifference
     (verdict : Verdict) :
     Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) :=
@@ -2404,6 +2506,43 @@ example :
       expectedRepeatableDateDifference .unknown) = true ∧
     repeatableDateDifferenceStructuralFailure? =
       some (.environment (.missingBinding 10)) := by
+  native_decide
+
+/- Addressed calendar-day difference retains exact instants and decoded Date/DateTime labels under the checked UTC profile. Operand order, Base Year, missing/formal polarity, and structural failure reuse the established two-field boundary. -/
+example :
+    let date : SurfaceDateDifferenceOperand :=
+      .field (ordinaryPath ["Order", "Sections", "Items"] "InnerDate")
+    let dateTime : SurfaceDateDifferenceOperand :=
+      .field (ordinaryPath ["Order", "Sections", "Items"] "InnerDateTime")
+    let data := repeatableDayDifferenceData "2024-06-25"
+      (some (checkedDateRawAt 0 2024 6 25)) "2024-06-26T00:00:00"
+      (some (checkedDateTimeRawAt 86400000 2024 6 26))
+    (dateDifferenceRuleSnapshot?
+      (repeatableDayDifferenceRule? date dateTime (.ordinary .equal) 1)
+      data == expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (dateDifferenceRuleSnapshot?
+      (repeatableDayDifferenceRule? dateTime date (.ordinary .equal) (-1))
+      data == expectedRepeatableDateDifference (.fired .value)) = true ∧
+    (dateDifferenceRuleSnapshot?
+      (repeatableDayDifferenceRule? date dateTime (.ordinary .less) 2)
+      (repeatableDayDifferenceData "" none "2024-06-26T00:00:00"
+        (some (checkedDateTimeRawAt 86400000 2024 6 26))) ==
+      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+    (dateDifferenceRuleSnapshot?
+      (repeatableDayDifferenceRule? date dateTime (.ordinary .equal) 1)
+      (repeatableDayDifferenceData "2024-06-25"
+        (some (checkedDateRawAt 0 2024 6 25)) "bad"
+        (some (.rejected .malformed))) ==
+      expectedRepeatableDateDifference .unknown) = true ∧
+    (dateDifferenceRuleSnapshot?
+      (repeatableDayDifferenceRule? (.baseYear .direct) date
+        (.ordinary .equal) 366)
+      (repeatableDayDifferenceData "2021-01-01"
+        (some (checkedDateRawAt 1609459200000 2021 1 1)) "" none) ==
+      expectedRepeatableDateDifference (.fired .value)) = true ∧
+    dateDifferenceStructuralFailure?
+      (repeatableDayDifferenceRule? date dateTime (.ordinary .equal) 1)
+      data [] = some (.environment (.missingBinding 10)) := by
   native_decide
 
 /- The generalized ordinary resolver projects compatible ancestor/current operands from one complete environment; a Base-Year operand leaves the field scope unchanged. -/
@@ -2466,6 +2605,18 @@ example :
         [10, 20],
         { field := outerDate.id, path := [1] },
         { field := innerDate.id, path := [1, 1] },
+        .fired .value) := by
+  native_decide
+
+/- The calendar-day consumer view retains the concrete profile, both temporal kinds, both checked addresses, and the Execute verdict without re-resolving either instant. -/
+example :
+    repeatableDayDifferenceConsumerSnapshot? =
+      some (
+        .utc,
+        .date,
+        .dateTime,
+        { field := innerDate.id, path := [1, 1] },
+        { field := innerDateTime.id, path := [1, 1] },
         .fired .value) := by
   native_decide
 
