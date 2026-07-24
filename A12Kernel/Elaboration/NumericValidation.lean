@@ -246,7 +246,8 @@ private def NumericValidationAtom.admitted
       validStringRange start finish &&
         match scope with
         | .sameGroup => model.admitsStringInGroup rowGroup source
-        | .sameGroupAddressed => false
+        | .sameGroupAddressed =>
+            model.admitsAddressedString rowGroup source
         | .modelWideNonrepeatable | .modelWideCheckedComputation =>
             model.admitsStringModelWide source
   | .fieldValueAsNumber source =>
@@ -419,6 +420,7 @@ private def addressedNumericValidationFieldId? :
     NumericValidationAtom → Option FieldId
   | .field source => some source.id
   | .stringLength source => some source.id
+  | .stringRange source _ _ => some source.id
   | .fieldValueAsNumber source => some source.fieldId
   | _ => none
 
@@ -736,6 +738,14 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       match declaration.toStringValueField? with
       | some field => pure (.stringLength field)
       | none => throw (.lengthOperandNotEvaluatedString declaration.path)
+  | .stringRange reference start finish => do
+      let declaration ←
+        resolveAddressedNumericDeclaration model rowGroup reference
+      if !validStringRange start finish then
+        throw (.invalidStringRange start finish)
+      match declaration.toStringValueField? with
+      | some field => pure (.stringRange field start finish)
+      | none => throw (.rangeOperandNotString declaration.path)
   | .fieldValueAsNumber surface => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup surface.reference

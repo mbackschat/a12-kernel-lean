@@ -50,6 +50,18 @@ theorem orderedNumericValidationAtom_repeatableStringLength_requiresAddressed
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
     lookup, repeatable]
 
+/-- A checked `RangeAsNumber` source under a nonempty repeatable String declaration uses the shared addressed entry requirement while retaining its interval. -/
+theorem orderedNumericValidationAtom_repeatableStringRange_requiresAddressed
+    (field : FlatStringField) (start finish : Nat)
+    (declaration : FlatFieldDecl)
+    (lookup : model.lookupUniqueId field.id = .ok declaration)
+    (repeatable : declaration.repeatableScope.isEmpty = false) :
+    (OrderedNumericValidationAtom.ordinary
+        (.stringRange field start finish)).requiresAddressedValidation
+        (model := model) = true := by
+  simp [OrderedNumericValidationAtom.requiresAddressedValidation,
+    lookup, repeatable]
+
 /-- A certified conversion source under a nonempty repeatable declaration uses the shared addressed entry requirement without erasing its text projection. -/
 theorem orderedNumericValidationAtom_repeatableFieldValueAsNumber_requiresAddressed
     (source : ResolvedFieldValueAsNumberSource) (declaration : FlatFieldDecl)
