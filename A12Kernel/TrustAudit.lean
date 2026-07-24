@@ -658,6 +658,8 @@ run_cmd do
 #print axioms A12Kernel.numericValidation_fieldValueAsNumber_unknown_preservesCause
 #print axioms A12Kernel.ordinaryNumericValidation_acceptsScales
 #print axioms A12Kernel.ordinaryNumericValidation_eval
+#print axioms A12Kernel.decodedNumericLiteral_negative_scale_has_no_iterationHostInt32
+#print axioms A12Kernel.decodedNumericLiteral_iterationHostInt32_scale_invariant
 #print axioms A12Kernel.conditionTree_evalVerdict_map
 #print axioms A12Kernel.conditionTree_anyLeaf_map
 #print axioms A12Kernel.conditionTree_allLeaves_map

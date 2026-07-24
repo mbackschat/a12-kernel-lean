@@ -553,17 +553,87 @@ private def directOrdinaryNumberScope?
       | .error _ => none
   | _ => none
 
-private def safeIntegralLiteralValue? :
-    AuthoredNumericExpr Atom → Option Rat
-  | .literal literal =>
-      if literal.value.den == 1 &&
-          decide ((-2147483648 : Rat) ≤ literal.value) &&
-          decide (literal.value ≤ (2147483647 : Rat)) then
-        some literal.value
-      else none
+end ValidationCondition
+
+namespace DecodedNumericLiteral
+
+private def pow2Rat (exponent : Int) : Rat :=
+  if 0 ≤ exponent then
+    (2 ^ exponent.toNat : Nat)
+  else
+    1 / (2 ^ (-exponent).toNat : Nat)
+
+private def roundNonnegativeTiesEven (value : Rat) : Nat :=
+  let numerator := value.num.toNat
+  let denominator := value.den
+  let quotient := numerator / denominator
+  let remainder := numerator % denominator
+  if 2 * remainder < denominator then
+    quotient
+  else if denominator < 2 * remainder then
+    quotient + 1
+  else if quotient % 2 == 0 then
+    quotient
+  else
+    quotient + 1
+
+private def floorLog2Positive (value : Rat) : Int :=
+  let estimate :=
+    Int.ofNat value.num.toNat.log2 - Int.ofNat value.den.log2
+  if value < pow2Rat estimate then estimate - 1 else estimate
+
+/-- Round one nonzero finite rational to the nearest IEEE-754 binary64 value, with ties to an even significand. Callers bound the magnitude below `2^63`, so overflow and infinities cannot arise here. -/
+private def roundToBinary64 (value : Rat) : Rat :=
+  let negative := value < 0
+  let magnitude := if negative then -value else value
+  let exponent := floorLog2Positive magnitude
+  let stepExponent :=
+    if magnitude < pow2Rat (-1022) then -1074 else exponent - 52
+  let step := pow2Rat stepExponent
+  let units := roundNonnegativeTiesEven (magnitude / step)
+  let rounded := (units : Rat) * step
+  if negative then -rounded else rounded
+
+private def javaRoundedLong (value : Rat) : Int :=
+  let longLimit : Rat := 2 ^ 63
+  if longLimit ≤ value then
+    9223372036854775807
+  else if value ≤ -longLimit then
+    -9223372036854775808
+  else
+    let binary64 := if value == 0 then 0 else roundToBinary64 value
+    let rounded := (binary64 + 1 / 2).floor
+    if (9223372036854775807 : Int) < rounded then
+      9223372036854775807
+    else if rounded < (-9223372036854775808 : Int) then
+      -9223372036854775808
+    else
+      rounded
+
+private def narrowSignedInt32 (value : Int) : Int :=
+  let residue := value.emod 4294967296
+  if residue < 2147483648 then residue else residue - 4294967296
+
+/-- Reproduce the parser visitor's `Double.parseDouble` → `Math.round` → Java signed-`int` narrowing for one checked finite-decimal literal. Exact rational value plus authored scale is sufficient because the grammar admits no exponent and preserves every fractional digit; values that are not representable by that checked decimal shape remain explicit insufficiency. -/
+def iterationHostInt32? (literal : DecodedNumericLiteral) : Option Int :=
+  if literal.authoredScale < 0 then
+    none
+  else if (literal.value *
+      (10 ^ literal.authoredScale.toNat : Nat)).den != 1 then
+    none
+  else
+    some (narrowSignedInt32 (javaRoundedLong literal.value))
+
+end DecodedNumericLiteral
+
+namespace ValidationCondition
+
+private def hostConvertedLiteralValue? :
+    AuthoredNumericExpr Atom → Option Int
+  | .literal literal => literal.iterationHostInt32?
   | _ => none
 
-/-- Apply the source-closed safe-integral literal partition after an exact operand-shape recognizer supplies its model-owned scope. Nonintegral and out-of-range constants remain unclassified until a source-grounded binary64 rounding and narrowing account exists; exact `Rat` comparison would be the wrong substitute. -/
+/-- Apply the source-closed host-converted literal partition after an exact operand-shape recognizer supplies its model-owned scope. -/
 private def orderedNumericScopedLiteralGuardAt
     (scopeOf :
       AuthoredNumericExpr (OrderedNumericValidationAtom model) →
@@ -573,7 +643,7 @@ private def orderedNumericScopedLiteralGuardAt
     Option IterationGuardStatus :=
   let classify scopedExpr literalExpr := do
     let scope ← scopeOf scopedExpr
-    let literal ← safeIntegralLiteralValue? literalExpr
+    let literal ← hostConvertedLiteralValue? literalExpr
     if scope.contains level then
       if literal == 0 && directEmptyZeroIsUnguarded comparison.op then
         some .unguarded
@@ -645,7 +715,7 @@ private def orderedNumericDirectWrapperLiteralGuardAt
         | .none => some .noReference
         | .mixed => some .unguarded
         | .allIterating =>
-            let literal ← safeIntegralLiteralValue? literalExpr
+            let literal ← hostConvertedLiteralValue? literalExpr
             if literal == 0 &&
                 directEmptyZeroIsUnguarded comparison.op then
               some .unguarded
@@ -738,7 +808,7 @@ private def orderedNumericPlainStarLiteralGuardAt
         | .none => some .noReference
         | .mixed => some .unguarded
         | .allIterating =>
-            let literal ← safeIntegralLiteralValue? literalExpr
+            let literal ← hostConvertedLiteralValue? literalExpr
             if (shape.zeroSensitive && literal == 0 &&
                   directEmptyZeroIsUnguarded comparison.op) ||
                 (shape.positiveSensitive && 0 < literal &&
