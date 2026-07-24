@@ -17,6 +17,7 @@ inductive FlatRuleAssemblyError where
   | iterationScopeMismatch (field : FieldId)
       (expected actual : List RepeatableLevel)
   | errorFieldNotReferenced (field : FieldId)
+  | negativeConditionInIteration (level : RepeatableLevel)
   deriving Repr, DecidableEq
 
 /-- A checked mixed rule cannot be evaluated from a scalar context when its condition retains an addressed source. This is missing execution context, not a semantic validation result. -/
@@ -278,9 +279,13 @@ def assembleResolvedValidationRule (model : FlatModel)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
   Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
-  assembleResolvedRule model (fun checked => checked.core)
-    (fun core field => core.referencesField field)
-    ValidationCondition.ordinaryIterationScope
-    condition errorField errorCode severity messagePlan
+  match condition.core.iterationLegality with
+  | .ok (.invalid level) =>
+      .error (.negativeConditionInIteration level)
+  | .ok .legal | .ok (.insufficient _) | .error _ =>
+      assembleResolvedRule model (fun checked => checked.core)
+        (fun core field => core.referencesField field)
+        ValidationCondition.ordinaryIterationScope
+        condition errorField errorCode severity messagePlan
 
 end A12Kernel

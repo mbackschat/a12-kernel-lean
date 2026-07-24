@@ -632,6 +632,7 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_iterationScope_owned
+#print axioms A12Kernel.assembleResolvedValidationRule_rejects_negativeIteration
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
 #print axioms A12Kernel.checkedFlatRule_fired_message_exact
 #print axioms A12Kernel.checkedValidationRule_fired_message_exact
@@ -660,6 +661,8 @@ run_cmd do
 #print axioms A12Kernel.conditionTree_evalVerdict_map
 #print axioms A12Kernel.conditionTree_anyLeaf_map
 #print axioms A12Kernel.conditionTree_allLeaves_map
+#print axioms A12Kernel.conditionTree_iterationGuardStatus_and_guarded_left
+#print axioms A12Kernel.conditionTree_iterationGuardStatus_or_guarded_iff
 #print axioms A12Kernel.conditionTree_evalVerdictExcept_and_notFired_hidesRight
 #print axioms A12Kernel.conditionTree_evalVerdictExcept_or_value_hidesRight
 #print axioms A12Kernel.conditionTree_evalKExcept_and_right_error
@@ -673,6 +676,7 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_groupPresence_evalSelected
 #print axioms A12Kernel.validationCondition_groupPresence_missing_isUnknown
 #print axioms A12Kernel.validationCondition_groupPresence_addressingPolicy
+#print axioms A12Kernel.validationCondition_groupPresence_iterationGuardStatusAt
 #print axioms A12Kernel.validationCondition_groupPresence_evalAddressed_checked
 #print axioms A12Kernel.validationCondition_groupPresence_addressError
 #print axioms A12Kernel.validationCondition_groupList_evalSelected
@@ -680,6 +684,7 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_repeatablePresence_requiresAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_evalAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_iterationScope
+#print axioms A12Kernel.validationCondition_repeatablePresence_iterationGuardStatusAt
 #print axioms A12Kernel.validationCondition_repeatablePresence_supported
 #print axioms A12Kernel.checkedValidationCondition_coherent
 #print axioms A12Kernel.numericTolerance_acceptsScales

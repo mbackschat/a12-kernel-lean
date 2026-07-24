@@ -39,6 +39,29 @@ theorem conditionTree_allLeaves_map (condition : ConditionTree Source)
   | and left right leftIH rightIH | or left right leftIH rightIH =>
       simp only [ConditionTree.map, ConditionTree.allLeaves, leftIH, rightIH]
 
+/-- One guarded conjunct is sufficient at the queried repeatable level, independently of the other conjunct's classification. -/
+theorem conditionTree_iterationGuardStatus_and_guarded_left
+    (left right : ConditionTree Source)
+    (classify : Source → IterationGuardStatus)
+    (guarded : left.iterationGuardStatus classify = .guarded) :
+    (ConditionTree.and left right).iterationGuardStatus classify =
+      .guarded := by
+  simp [ConditionTree.iterationGuardStatus, guarded,
+    IterationGuardStatus.and]
+
+/-- A disjunction is guarded at one repeatable level exactly when both branches independently reference and guard that level. -/
+theorem conditionTree_iterationGuardStatus_or_guarded_iff
+    (left right : ConditionTree Source)
+    (classify : Source → IterationGuardStatus) :
+    (ConditionTree.or left right).iterationGuardStatus classify =
+        .guarded ↔
+      left.iterationGuardStatus classify = .guarded ∧
+        right.iterationGuardStatus classify = .guarded := by
+  change IterationGuardStatus.or _ _ = .guarded ↔ _
+  generalize left.iterationGuardStatus classify = leftStatus
+  generalize right.iterationGuardStatus classify = rightStatus
+  cases leftStatus <;> cases rightStatus <;> decide
+
 /-- A decisive left non-fire keeps an unreachable structural failure on the right outside the addressed result. -/
 theorem conditionTree_evalVerdictExcept_and_notFired_hidesRight
     (left right : ConditionTree Source)
@@ -185,6 +208,19 @@ theorem validationCondition_groupPresence_addressingPolicy
           !(model.repeatableScopeForGroupPath reference.path).isEmpty := by
   exact ⟨rfl, rfl⟩
 
+/-- Group presence contributes its positive/negative static guard at every model-owned repeatable ancestor and nowhere else. -/
+theorem validationCondition_groupPresence_iterationGuardStatusAt
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference) (level : RepeatableLevel) :
+    (ValidationCondition.groupPresence (model := model)
+      operator reference).iterationGuardStatusAt level =
+        if (model.repeatableScopeForGroupPath reference.path).contains level then
+          match operator with
+          | .filled => .guarded
+          | .notFilled => .unguarded
+        else .noReference := by
+  rfl
+
 /-- The ordinary repeatable rule route consumes group presence through its existing checked product owner. -/
 @[simp]
 theorem validationCondition_groupPresence_evalAddressed_checked
@@ -281,6 +317,19 @@ theorem validationCondition_repeatablePresence_iterationScope
     (ValidationCondition.repeatableFieldPresence (model := model)
       operator declaration).ordinaryIterationScope =
       .ok (some declaration.repeatableScope) := by
+  rfl
+
+/-- Repeatable field presence contributes its positive/negative static guard at every declared repeatable ancestor and nowhere else. -/
+theorem validationCondition_repeatablePresence_iterationGuardStatusAt
+    (model : FlatModel) (operator : RepeatableFieldPresenceOperator)
+    (declaration : FlatFieldDecl) (level : RepeatableLevel) :
+    (ValidationCondition.repeatableFieldPresence (model := model)
+      operator declaration).iterationGuardStatusAt level =
+        if declaration.repeatableScope.contains level then
+          match operator with
+          | .filled => .guarded
+          | .notFilled => .unguarded
+        else .noReference := by
   rfl
 
 /-- The first ordinary repeatable route is closed under flat/repeatable connective composition and excludes specialized addressed leaf families. -/
