@@ -12,6 +12,14 @@ theorem checkedStarFieldPath_firstStar_lt (checked : CheckedStarFieldPath model)
     checked.path.firstStar < checked.path.axes.length :=
   checked.firstStarWithin
 
+/-- The checked binding scope is exactly the declaration ancestry strictly above the first star. -/
+theorem checkedStarFieldPath_bindingScope
+    (checked : CheckedStarFieldPath model) :
+    checked.bindingScope =
+      checked.declaration.repeatableScope.take checked.path.firstStar := by
+  rw [← checked.ancestryOwned]
+  simp [CheckedStarFieldPath.bindingScope]
+
 /-- Full validation always supplies complete all-rows relevance. -/
 @[simp] theorem checkedStarFieldPath_allRowsRelevant_full
     (checked : CheckedStarFieldPath model) :

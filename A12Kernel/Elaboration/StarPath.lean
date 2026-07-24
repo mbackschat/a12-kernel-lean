@@ -157,6 +157,11 @@ def CheckedStarFieldPath.cellRelevant (checked : CheckedStarFieldPath model)
 
 namespace CheckedStarFieldPath
 
+/-- Repeatable levels strictly above the first star remain fixed by the surrounding rule environment. The starred level and every deeper axis stay operand-local. -/
+def bindingScope (checked : CheckedStarFieldPath model) :
+    List RepeatableLevel :=
+  (checked.path.axes.take checked.path.firstStar).map (·.level)
+
 /-- Whether one topology-produced leaf environment lies under any over-capacity repeatable ancestor. This structural check is independent of the terminal field kind. -/
 def environmentOverLimit (checked : CheckedStarFieldPath model)
     (environment : Env) : Bool :=

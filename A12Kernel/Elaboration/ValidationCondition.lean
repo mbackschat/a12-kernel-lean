@@ -292,12 +292,150 @@ private def mergeIterationScopes
       else
         throw (.incompatibleScopes leftScope rightScope)
 
-/-- Derive one ordinary nonparallel rule-iteration scope from non-starred repeatable references. Nested compatible references select the deeper scope; sibling/cross-branch scopes remain explicit unsupported parallel work. Aggregate stars do not enter this traversal. -/
+private def checkedStarBindingScope
+    (source : CheckedStarFieldPath model) :
+    Option (List RepeatableLevel) :=
+  let scope := source.bindingScope
+  if scope.isEmpty then none else some scope
+
+private def mergeIterationScopeList :
+    List (Option (List RepeatableLevel)) →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | [] => pure none
+  | scope :: remaining => do
+      mergeIterationScopes scope (← mergeIterationScopeList remaining)
+
+private def repeatableScopeThrough :
+    List RepeatableLevel → RepeatableLevel →
+      Option (List RepeatableLevel)
+  | [], _ => none
+  | level :: remaining, target =>
+      if level == target then
+        some [level]
+      else
+        (repeatableScopeThrough remaining target).map (level :: ·)
+
+private def outerHavingNumberIterationScope
+    (model : FlatModel) (reference : HavingNumberRef) :
+    Option (List RepeatableLevel) :=
+  match reference.origin with
+  | .inner => none
+  | .outer =>
+      match model.lookupUniqueId reference.field.id with
+      | .error _ => none
+      | .ok declaration =>
+          if declaration.repeatableScope.isEmpty then
+            none
+          else
+            some declaration.repeatableScope
+
+private def outerHavingRepetitionIterationScope
+    (outerLevels : List RepeatableLevel)
+    (reference : HavingRepetitionRef) :
+    Option (List RepeatableLevel) :=
+  match reference.origin with
+  | .inner => none
+  | .outer => repeatableScopeThrough outerLevels reference.level
+
+private def correlatedHavingOuterIterationScopes
+    (model : FlatModel) (outerLevels : List RepeatableLevel) :
+    CorrelatedHaving → List (Option (List RepeatableLevel))
+  | .leaf (.compareNumbers _ left right) =>
+      [outerHavingNumberIterationScope model left,
+        outerHavingNumberIterationScope model right]
+  | .leaf (.compareRepetitions _ left right) =>
+      [outerHavingRepetitionIterationScope outerLevels left,
+        outerHavingRepetitionIterationScope outerLevels right]
+  | .and left right | .or left right =>
+      correlatedHavingOuterIterationScopes model outerLevels left ++
+        correlatedHavingOuterIterationScopes model outerLevels right
+
+private def checkedHavingOuterIterationScope
+    (checked : CheckedStarHaving model source declaringGroup) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
+  mergeIterationScopeList
+    (correlatedHavingOuterIterationScopes model
+      (model.repeatableScopeForGroupPath declaringGroup)
+      checked.condition)
+
+private def checkedNumberOperandIterationScope :
+    CheckedNumberEntityOperand model →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .field _ => pure none
+  | .star source => pure (checkedStarBindingScope source.source)
+  | .starHaving source => do
+      mergeIterationScopes
+        (checkedStarBindingScope source.source.source)
+        (← checkedHavingOuterIterationScope source.filter)
+
+private def checkedTokenOperandIterationScope :
+    CheckedTokenEntityOperand model →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .field _ => pure none
+  | .star source =>
+      match source.filter with
+      | none => pure (checkedStarBindingScope source.source)
+      | some filter => do
+          mergeIterationScopes
+            (checkedStarBindingScope source.source)
+            (← checkedHavingOuterIterationScope filter)
+
+private def checkedNumberSourceIterationScope
+    (source : CheckedNumberEntitySource model) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) := do
+  mergeIterationScopeList
+    (← source.operands.mapM checkedNumberOperandIterationScope)
+
+private def checkedTokenSourceIterationScope
+    (source : CheckedTokenEntitySource model) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) := do
+  mergeIterationScopeList
+    (← source.operands.mapM checkedTokenOperandIterationScope)
+
+private def orderedNumericAtomIterationScope :
+    OrderedNumericValidationAtom model →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .ordinary _ => pure none
+  | .firstFilled source | .valueCount _ source | .aggregate _ source =>
+      checkedNumberSourceIterationScope source
+  | .tokenValueCount source =>
+      checkedTokenSourceIterationScope source.source
+  | .sumOfProducts source =>
+      mergeIterationScopes
+        (checkedStarBindingScope source.left.source)
+        (checkedStarBindingScope source.right.source)
+
+private def authoredNumericIterationScope
+    (scopeOf : Atom →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))) :
+    AuthoredNumericExpr Atom →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .atom atom => scopeOf atom
+  | .literal _ => pure none
+  | .group body | .abs body | .extremumCall _ body | .round _ _ body =>
+      authoredNumericIterationScope scopeOf body
+  | .binary _ left right | .power left right | .extremum _ left right => do
+      mergeIterationScopes
+        (← authoredNumericIterationScope scopeOf left)
+        (← authoredNumericIterationScope scopeOf right)
+
+private def orderedNumericComparisonIterationScope
+    (comparison : OrderedNumericComparison model) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) := do
+  mergeIterationScopes
+    (← authoredNumericIterationScope
+      orderedNumericAtomIterationScope comparison.left)
+    (← authoredNumericIterationScope
+      orderedNumericAtomIterationScope comparison.right)
+
+/-- Derive one ordinary nonparallel rule-iteration scope from repeatable references. Ordinary references contribute their complete declaration scope; a star contributes only its nonempty binding prefix strictly above the first star. Nested compatible references select the deeper scope; sibling/cross-branch scopes remain explicit unsupported parallel work. -/
 def ordinaryIterationScope :
     ValidationCondition model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
+  | .leaf (.orderedNumeric _ comparison) =>
+      orderedNumericComparisonIterationScope comparison
   | .leaf _ => pure none
   | .and left right | .or left right => do
       mergeIterationScopes

@@ -41,6 +41,12 @@ private def resultOf (source : SurfaceStarFieldPath) (targetModel : FlatModel :=
   | .error _ => none
   | .ok checked => some (checked.declaration.id, checked.path)
 
+private def bindingScopeOf
+    (source : SurfaceStarFieldPath) : Option (List RepeatableLevel) :=
+  match elaborateStarFieldPath model amount.groupPath source with
+  | .error _ => none
+  | .ok checked => some checked.bindingScope
+
 private def errorOf (source : SurfaceStarFieldPath) (targetModel : FlatModel := model) :=
   match elaborateStarFieldPath targetModel amount.groupPath source with
   | .ok _ => none
@@ -51,6 +57,12 @@ example :
     resultOf (relativeSource false true) = some (7,
       { axes := [{ level := 10, repeatability := some 2 },
           { level := 20, repeatability := some 3 }], firstStar := 1 }) := by
+  native_decide
+
+/- Only repeatable axes strictly above the first star remain bound by the surrounding rule. -/
+example :
+    bindingScopeOf (relativeSource false true) = some [10] ∧
+      bindingScopeOf (relativeSource true true) = some [] := by
   native_decide
 
 /- A named parent turning point is checked before the later star plan is derived and is otherwise semantically transparent. -/
