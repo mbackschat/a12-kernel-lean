@@ -192,6 +192,14 @@ private def FlatModel.admitsFieldValueAsNumberInGroup (model : FlatModel)
         model.admitsFieldValueAsNumberSource source
   | .error _ => false
 
+private def FlatModel.admitsAddressedFieldValueAsNumber (model : FlatModel)
+    (rowGroup : GroupPath) (source : ResolvedFieldValueAsNumberSource) : Bool :=
+  match model.certifiedFieldValueAsNumberDeclaration? source with
+  | some declaration =>
+      declaration.repeatableScope.isPrefixOf
+        (model.repeatableScopeForGroupPath rowGroup)
+  | none => false
+
 private def resolveTemporalNumericField (model : FlatModel) (rowGroup : GroupPath)
     (reference : SurfaceFieldPath) (accepts : FlatTemporalField → Bool) :
     Except NumericValidationElabError FlatTemporalField := do
@@ -244,7 +252,8 @@ private def NumericValidationAtom.admitted
   | .fieldValueAsNumber source =>
       match scope with
       | .sameGroup => model.admitsFieldValueAsNumberInGroup rowGroup source
-      | .sameGroupAddressed => false
+      | .sameGroupAddressed =>
+          model.admitsAddressedFieldValueAsNumber rowGroup source
       | .modelWideNonrepeatable | .modelWideCheckedComputation =>
           model.admitsFieldValueAsNumberSource source
   | .dateDifference unit left right =>
@@ -410,6 +419,7 @@ private def addressedNumericValidationFieldId? :
     NumericValidationAtom → Option FieldId
   | .field source => some source.id
   | .stringLength source => some source.id
+  | .fieldValueAsNumber source => some source.fieldId
   | _ => none
 
 private def checkedNumberEntitySourceAdmittedIn
@@ -587,6 +597,17 @@ private def resolveFixedGroupCountOperands (model : FlatModel)
         |>.mapError NumericValidationElabError.ofFixedGroupReferenceError
       pure (resolved :: (← resolveFixedGroupCountOperands model rowGroup remaining))
 
+private def resolveFieldValueAsNumberAtom
+    (declaration : FlatFieldDecl) (projectionRef : EnumerationProjectionRef) :
+    Except NumericValidationElabError NumericValidationAtom :=
+  match declaration.resolveFieldValueAsNumberSource projectionRef with
+  | .ok source => pure (.fieldValueAsNumber source)
+  | .error .notConvertible =>
+      throw (.fieldValueAsNumberNotConvertible declaration.path)
+  | .error (.enumeration error) =>
+      throw (.fieldValueAsNumberEnumeration declaration.path error)
+  | .error .incoherentEnumeration => throw .incoherentCore
+
 private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
   | .field reference => do
@@ -630,13 +651,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup : GroupPath) :
         (model.resolveField rowGroup surface.reference).mapError .resolve
       if declaration.groupPath != rowGroup then
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
-      match declaration.resolveFieldValueAsNumberSource surface.projectionRef with
-      | .ok source => pure (.fieldValueAsNumber source)
-      | .error .notConvertible =>
-          throw (.fieldValueAsNumberNotConvertible declaration.path)
-      | .error (.enumeration error) =>
-          throw (.fieldValueAsNumberEnumeration declaration.path error)
-      | .error .incoherentEnumeration => throw .incoherentCore
+      resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
       let resolveOperand : SurfaceDateDifferenceOperand →
           Except NumericValidationElabError ResolvedDateDifferenceOperand
@@ -721,6 +736,10 @@ private def resolveAddressedNumericAtom (model : FlatModel)
       match declaration.toStringValueField? with
       | some field => pure (.stringLength field)
       | none => throw (.lengthOperandNotEvaluatedString declaration.path)
+  | .fieldValueAsNumber surface => do
+      let declaration ←
+        resolveAddressedNumericDeclaration model rowGroup surface.reference
+      resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | source => resolveNumericAtom model rowGroup source
 
 private def elaborateNumericComparisonWith

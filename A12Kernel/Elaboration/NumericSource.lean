@@ -174,16 +174,24 @@ def FlatFieldDecl.resolveFieldValueAsNumberSource
                   scale }
   | _, _, _ => .error .notConvertible
 
-/-- Re-derive one resolved conversion source from the same model declaration. This keeps forged nonnumeric domains and scale summaries outside checked validation/computation cores. -/
+/-- Recover the exact model declaration only when it re-derives the complete resolved conversion source. This keeps forged projections, nonnumeric domains, and scale summaries outside every checked consumer. -/
+def FlatModel.certifiedFieldValueAsNumberDeclaration?
+    (model : FlatModel) (source : ResolvedFieldValueAsNumberSource) :
+    Option FlatFieldDecl :=
+  match model.lookupUniqueId source.fieldId with
+  | .error _ => none
+  | .ok declaration =>
+      match declaration.resolveFieldValueAsNumberSource source.projectionRef with
+      | .error _ => none
+      | .ok resolved =>
+          if resolved == source then some declaration else none
+
+/-- Admit a certified conversion source at the existing nonrepeatable scalar boundary. Addressed repeatable consumers retain their separate scope check. -/
 def FlatModel.admitsFieldValueAsNumberSource (model : FlatModel)
     (source : ResolvedFieldValueAsNumberSource) : Bool :=
-  match model.lookupUniqueId source.fieldId with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        match declaration.resolveFieldValueAsNumberSource source.projectionRef with
-        | .error _ => false
-        | .ok resolved => decide (resolved = source)
+  match model.certifiedFieldValueAsNumberDeclaration? source with
+  | some declaration => declaration.repeatableScope.isEmpty
+  | none => false
 
 /-- The seven direct scalar temporal component functions, grouped by the source half they project. -/
 inductive TemporalNumericPart where
