@@ -250,6 +250,61 @@ Out of scope for this proposal, recorded so a later reader need not rediscover t
 - **The core has a second payoff that is not derivation economics.** A reduced construct set with a proved lowering is itself a *simplified language variant* — a deliverable for consumers who cannot afford the full surface — and the preservation theorem is what makes it a proved image rather than a summary. Recorded as a cross-category use case in [`USE-CASES.md`](USE-CASES.md#cross-category-use-case-a-derived-simplified-language-variant). It changes nothing here: no new scope, no process change, and the variant's reach is a consequence of how far lowering has progressed. It does supply a concrete candidate for the consumer probe, and it means the core's value does not rest on the derivation argument alone.
 - **Fix the `Translate` omission** in the certificate row of [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#why-derive--the-animating-principle-and-its-assurance-classes) when that table is next edited.
 
+## 10. Closed — the universal shared-core claim is rejected, 2026-07-25
+
+**Status: closed with a negative architectural result. Route B is not the project's derivation architecture. The `U1 → U2 → U6 → U5 → U4 → U3` sequence is cancelled and the Lean estate is retired.** This is a successful experiment reaching a negative conclusion, not a failed undertaking — the criteria did their job once they were pointed at the right question.
+
+### What the experiments actually established
+
+| | claim | verdict |
+|---|---|---|
+| E1 | three quantifier scans reduce to two folds; preservation provable over resolved operands | **holds**, as a family-local normalization result |
+| E1 | `AtLeastOne`'s empty-member guard is redundant, `NotAll`'s is load-bearing | **holds**, retained as `scanAtLeastOne_nil_members` and [`LF73`](LEAN-FINDINGS.md) |
+| E2 | the numeric route needs no constructs of a new character | **holds only at a post-classification boundary** |
+| §7b | the addressed read closed E2's negative | **rejected** — see below |
+| §1–§4 | the core is the shared substrate replacing prose handover for ~50 families | **rejected** |
+
+### Why the substrate claim fails
+
+**The boundary is not the one the proposal promised.** §3 promises lowering "from each checked family"; the implementation begins after expansion, filtering, relevance and cell observation — stated in `ValueList.lean`'s own module docstring, and in `ofNumericPair`'s "two already-classified comparison operands". A consumer would still implement model checking, addressing, topology, filtering, classification and scope: precisely the elaboration decisions §1 says the core eliminates. E1 is a valuable *post-resolution normalization*, not checked-surface-to-core derivation.
+
+**§7b did not close E2's negative.** The promised fix was a read yielding cell observations against a document. What landed was a positional `Nat` index into an untyped slot list returning any `CoreValue`. The per-family union was moved inside an untyped array rather than eliminated; every family still contributed its own layout and builder. The function signature stabilized; the semantic ABI did not.
+
+**Three of the four core helpers re-expressed existing family algorithms.** `runScanUntilMatch`, `collectPresentOnly` and `collectPoisoning` each carry an agreement theorem against `scanValueListNoFields`, `collectAtLeastOneValueListMembers` and `collectPoisoningValueListMembers` respectively — the last by explicit result correspondence rather than literal equality, since the result domains differ. Agreement alone is not redundancy: every legitimate lowering should have an equivalence theorem. Redundancy follows here from the combination of an identical post-resolution boundary, mirrored recursion and decisions, no independent consumer, and no unique invariant enforced by the second implementation. At that boundary and with no consumer, the agreement theorems show these helpers re-express algorithms the family already owns rather than supplying an independently used abstraction.
+
+**`runFindWitness` was the sole genuine abstraction E1 found:** the two firing scans share the same recursion and `Verdict` domain, with membership direction as the only semantic parameter. They do not compute the same result on the same inputs — they instantiate the same mechanism under opposite predicates. It was retired anyway, because retaining it beside both established scans was net duplication; the relationship is held by [`LF73`](LEAN-FINDINGS.md).
+
+**Two defects the criteria never tested.** A docstring cited `lowerValueListQuantifier_wellFormed`, a theorem that was never written — no `WellFormed` boundary existed at all, though [`ARCHITECTURE.md`](ARCHITECTURE.md) requires one for an extrinsic AST. And `.poisoned` carried two meanings: `collectPoisoning` returned it for a *semantic* poison while `eval` returned it for a *malformed shape*, so `fold`'s `.poisoned → .verdict .unknown` let an out-of-range slot read masquerade as semantic UNKNOWN, violating "structural failure outside semantic UNKNOWN".
+
+### Why the criteria passed a proposal this far off its own boundary
+
+The four criteria in §6 measured constructor count, theorem greenness, universality, and transport-by-rewriting. Every one passed. None asked whether the core sat at the boundary §3 claimed, whether a helper duplicated an existing owner, or whether a cited theorem existed. **The criteria were written by the same agent that then graded against them**, so they converged on that agent's framing; a checklist run by the author confirms the author. Each defect was checkable against text in the same repository — often the same file. The durable lesson is [`LF76`](LEAN-FINDINGS.md), and the one mechanizable part is now a gate: `check-lean-trust.sh` rejects a backticked citation with no referent.
+
+### What is retained
+
+`scanAtLeastOne_nil_members` in [`Proofs/ValueList.lean`](../A12Kernel/Proofs/ValueList.lean) — the one new family theorem worth keeping in Lean source. Everything else lives in this record, [`LF73`](LEAN-FINDINGS.md), [`LF74`](LEAN-FINDINGS.md), [`LF76`](LEAN-FINDINGS.md), and Git. `Semantics/CoreIL.lean` and `Proofs/CoreIL.lean` are deleted; the six `ValueList.lean` helpers de-privatized for them are private again.
+
+### Route A is the incremental default
+
+Use the normalized boundaries that already exist — `ConditionTree`, `AuthoredNumericExpr → LoweredNumericExpr`, operator enums and decision tables, checked source and address plans, resolved value-list structures. When a future capsule adds a genuine decision table, keep it exportable and prove its evaluator agreement. Do not build a universal generator or schema.
+
+### Reopening trigger for a checked-plan IL
+
+A checked-plan IL may eventually be right, and it would **not** pull model checking or topology into the IL evaluator: the shape is `surface model → existing checked elaboration → checked CoreProgram referencing canonical document/SG2 reads → small evaluator`, with model checking staying in elaboration. Reconsider only when **all** of these hold:
+
+1. A named consumer — SMT, refactoring, compilation, or a simplified-language shipment — cannot be closed from the existing normalized representations without duplicating semantics.
+2. The precise consumer artifact and assurance claim are fixed.
+3. SG2 supplies its stable checked document and addressed-stream boundary.
+4. An inventory identifies which existing ASTs are reused, consolidated, or replaced.
+5. One end-to-end preservation theorem is stated before implementation.
+6. The user explicitly approves the resulting infrastructure unit.
+
+### Corrections to this document's own claims
+
+- §2's "**eight of ten** categories can carry genuine inherited assurance" is **not supported by its table**, which has six `yes`, one `no`, one `partial`, and two `n/a`. Nor is a static artifact automatically proof-carrying: Translate needs source and target semantics plus a checked relation, Compile needs a compiler-correctness theorem, Synthesize validates a witness rather than generator completeness, and Explain needs a checked trace relation the extensional theorem does not supply. [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) lists certificate checking for Analyze, Transform, Verify and Synthesize only, and is the more careful account.
+- The §8 recommendation to "fix the `Translate` omission" in that table is **withdrawn**: its certificate contract would have to be specified first.
+- §3's claim that bounded exhaustive testing becomes "a complete argument" holds only for that exact finite bound. The core carried unbounded rationals, strings, lists and slot indices.
+
 ## 9. What would falsify the approach
 
 Stated so the proposal can be abandoned on evidence rather than defended.

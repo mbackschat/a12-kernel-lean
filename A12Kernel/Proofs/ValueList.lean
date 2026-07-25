@@ -406,4 +406,25 @@ theorem valueList_classified_fired_implies_resolved_fired
             evalClassifiedValueListNotAll, fullPresent, fullValuesKnown,
             fullOutside]
 
+/-! ## Retained from the closed core-IL experiment
+
+The experiment recorded in [`SEMANTIC-CORE-IL-PROPOSAL.md`](../../docs/SEMANTIC-CORE-IL-PROPOSAL.md)
+was retired: its helpers re-expressed algorithms this family already owns. One result it produced
+is a fact about *this* family and outlives it. Its companion insight — that the two firing scans
+instantiate one traversal differing only in membership direction — is durable knowledge held by
+[`LF73`](../../docs/LEAN-FINDINGS.md), not by a second implementation. -/
+
+/-- `AtLeastOne`'s empty-member short-circuit is **redundant**: with no members the ordered scan
+already exhausts to non-firing, so the guard in `evalOrdered` is an optimization and not a
+semantic gate. This is the opposite status to `NotAll`'s presence guard, which is load-bearing
+([`LF72`](../../docs/LEAN-FINDINGS.md)); nothing in the two guards' shape distinguishes them, so
+only proof does. -/
+theorem scanAtLeastOne_nil_members (filteredPresent : Bool)
+    (fields : List (ResolvedValueListSide kind)) :
+    scanValueListAtLeastOneFields [] filteredPresent fields = .notFired := by
+  induction fields with
+  | nil => rfl
+  | cons side remaining ih =>
+      simp [scanValueListAtLeastOneFields, valueListMembersContain, ih]
+
 end A12Kernel

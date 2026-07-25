@@ -1082,22 +1082,9 @@ run_cmd do
 #print axioms A12Kernel.valueListNo_unknownMember_before_fields
 #print axioms A12Kernel.valueListNotAll_noPresent_before_unknownMember
 #print axioms A12Kernel.valueListNotAll_noPresent_notFired
--- Core-IL preservation and its supporting fold/collection agreements (SEMANTIC-CORE-IL-PROPOSAL E1).
-#print axioms A12Kernel.lowerValueListQuantifier_preserves
-#print axioms A12Kernel.runFindWitness_inside_eq_scanAtLeastOne
-#print axioms A12Kernel.runFindWitness_outside_eq_scanNotAll
-#print axioms A12Kernel.runScanUntilMatch_eq_scanNo
-#print axioms A12Kernel.collectPresentOnly_eq
-#print axioms A12Kernel.collectPoisoning_eq
-#print axioms A12Kernel.runFindWitness_inside_nil_members
-#print axioms A12Kernel.any_hasPresent_eq
+-- Retained from the closed core-IL experiment: AtLeastOne's empty-member short-circuit is
+-- redundant, which is a fact about this family rather than about the retired core.
 #print axioms A12Kernel.scanAtLeastOne_nil_members
-#print axioms A12Kernel.core_valueListNo_unknownMember_before_fields
-#print axioms A12Kernel.core_valueListNo_filtered_nonmatch
--- E2 generality stressor: the numeric route lowers with operator, mode, and places as term data.
-#print axioms A12Kernel.lowerDirectNumericComparison_preserves
-#print axioms A12Kernel.lowerRoundedArithmetic_preserves
-#print axioms A12Kernel.lowerDirectNumericComparison_unknown
 #print axioms A12Kernel.valueListNotAll_unknown_iff_of_present
 #print axioms A12Kernel.valueListNotAll_prependUnknownField
 #print axioms A12Kernel.valueListAtLeastOne_present_emptyMember

@@ -306,7 +306,7 @@ def ValueListQuantifier.resolveSidesOrdered
 -- The ordered collection and scan helpers below were private until the core-IL preservation
 -- proof needed to state induction lemmas about them from its own module. Exposure is
 -- deliberate and carries no new semantics; `evalOrdered` remains the only intended entry.
-def collectAtLeastOneValueListMembers :
+private def collectAtLeastOneValueListMembers :
     List (ResolvedValueListSide kind) → List (ValueListAtom kind) × Bool
   | [] => ([], false)
   | side :: remaining =>
@@ -315,11 +315,11 @@ def collectAtLeastOneValueListMembers :
       (side.presentValues ++ members,
         (side.hasHaving && side.hasPresent) || filteredPresent)
 
-inductive PoisoningValueListMembers (kind : ValueListKind) where
+private inductive PoisoningValueListMembers (kind : ValueListKind) where
   | unknown
   | known (members : List (ValueListAtom kind)) (omission : Bool)
 
-def collectPoisoningValueListMembers :
+private def collectPoisoningValueListMembers :
     List (ResolvedValueListSide kind) → PoisoningValueListMembers kind
   | [] => .known [] false
   | side :: remaining =>
@@ -342,7 +342,7 @@ def scanValueListAtLeastOneFields
       else
         scanValueListAtLeastOneFields members filteredPresent remaining
 
-def scanValueListNoFields
+private def scanValueListNoFields
     (members : List (ValueListAtom kind)) :
     List (ResolvedValueListSide kind) → Bool → Verdict
   | [], omission => .fired (if omission then .omission else .value)
@@ -357,13 +357,13 @@ def scanValueListNoFields
         | .exhausted nextOmission =>
             scanValueListNoFields members remaining nextOmission
 
-def orderedValueListFieldsHavePresent :
+private def orderedValueListFieldsHavePresent :
     List (ResolvedValueListSide kind) → Bool
   | [] => false
   | side :: remaining =>
       side.hasPresent || orderedValueListFieldsHavePresent remaining
 
-def scanValueListNotAllFields
+private def scanValueListNotAllFields
     (members : List (ValueListAtom kind)) (valuesOmission : Bool) :
     List (ResolvedValueListSide kind) → Verdict
   | [] => .notFired

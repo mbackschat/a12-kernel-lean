@@ -274,6 +274,58 @@ if [[ "$registered_theorem_names" != "$sorted_theorem_names" ]]; then
   exit 1
 fi
 
+# Every backticked identifier that looks like a declaration citation must resolve to a real
+# declaration. A docstring naming a theorem that was never written is a claim with no referent,
+# and it reads as settled to the next agent; one such citation survived a whole capsule review.
+# Underscore-bearing, non-ALL-CAPS tokens are the repository's theorem-name shape; kernel
+# diagnostic codes are ALL-CAPS and namespaced Lean core lemmas carry a dot, so both are excluded.
+project_source_array=()
+while IFS= read -r project_source; do
+  project_source_array+=("$project_source")
+done <<< "$project_source_files"
+
+declared_names=""
+if ! declared_names="$(sed -nE \
+    "s/^[[:space:]]*(@\\[[^]]*\\][[:space:]]*)*((private|protected|public|noncomputable|meta|partial|unsafe)[[:space:]]+)*(theorem|lemma|def|abbrev|inductive|structure|instance|class)[[:space:]]+([A-Za-z0-9_']+).*/\\5/p" \
+    "${project_source_array[@]}" | sort -u)"; then
+  echo "failed to inventory project declarations for citation checking" >&2
+  exit 1
+fi
+if [[ -z "$declared_names" ]]; then
+  echo "project declaration inventory for citation checking is empty" >&2
+  exit 1
+fi
+
+# Lean-provided names that are legitimately cited but are not declarations of this project.
+citation_allowlist=$'native_decide'
+
+cited_names=""
+if cited_names="$(grep -ohE '`[A-Za-z][A-Za-z0-9'"'"']*_[A-Za-z0-9_'"'"']+`' \
+    "${project_source_array[@]}" 2>/dev/null | tr -d '`' | grep -vE '^[A-Z0-9_]+$' | sort -u)"; then
+  :
+fi
+
+unresolved_citation=false
+if [[ -n "$cited_names" ]]; then
+  while IFS= read -r cited_name; do
+    [[ -z "$cited_name" ]] && continue
+    if checked_grep -Fqx -- "$cited_name" <<< "$declared_names"; then
+      continue
+    fi
+    if checked_grep -Fqx -- "$cited_name" <<< "$citation_allowlist"; then
+      continue
+    fi
+    echo "source cites \`${cited_name}\`, which is not a declaration of this project" >&2
+    checked_grep -rn --include='*.lean' -F -- "\`${cited_name}\`" A12Kernel.lean A12Kernel >&2 || true
+    unresolved_citation=true
+  done <<< "$cited_names"
+fi
+
+if [[ "$unresolved_citation" == true ]]; then
+  echo "trusted source contains a citation with no referent" >&2
+  exit 1
+fi
+
 trusted_scan_files=(A12Kernel.lean)
 while IFS= read -r trusted_source; do
   trusted_scan_files+=("$trusted_source")

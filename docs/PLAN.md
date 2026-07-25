@@ -70,47 +70,19 @@ The calculation-closure dispute is **resolved and closed** at a12-dmkits `dda6ba
 
 [`SPEC-2026-07-24-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md) is **accepted but explicitly partial** at `10451733`. The canonical prose correction landed; the evidence half covers the direct-Number partition, the conversion boundary, the negative-half asymmetry, direct `Abs`/`MinValue`/`MaxValue`/`Length`, the composite separator, and now the 32-bit narrowing. The larger remainder is named as not locked and stays `Kernel-locked` negative here: `RangeAsNumber`/`FieldValueAsNumber`, temporal extraction, all six `DifferenceIn*` operations, the entity-list and aggregate partitions, mixed-level rejection, and filter-reference exclusion.
 
-## Core-IL work units and the selected next step
+## Core IL — closed, 2026-07-25
 
-The agreed sequence is **U1 → U2 → U6 → U5 → U4 → U3**. U1 is selected and in progress; nothing is written yet.
+**The universal shared-core claim is rejected and the `U1 → U2 → U6 → U5 → U4 → U3` sequence is cancelled. Nothing from it is pending.** [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) §10 owns the full record; this is the resumption summary.
 
-| Unit | What it decides | Gate |
-|---|---|---|
-| **U1** — third family | whether `CoreValue` accumulates constructors per family, as the environment did before §7b | none; selected |
-| **U2** — scoped iteration | highest remaining risk; likely reopens the interface | after U1 |
-| **U6** — SMT proposal early stages | the only unit yielding *inherited proof* rather than better economics | after U2; needs two user decisions |
-| **U5** — consumer probe | whether the core is pitched below what a task needs, which preservation cannot detect | after U6 |
-| **U4** — emission | first generator; where Routes A and B meet | shape stability; infrastructure approval |
-| **U3** — capsule discipline | whether the per-family cost amortizes | after U1/U2; process approval |
+E1 held as a **family-local post-resolution normalization** result and E2 held only at a post-classification boundary, but the substrate claim did not: the implementation began after expansion, filtering, relevance and cell observation, so a consumer would still have implemented the elaboration decisions the proposal said the core removed. §7b's "addressed read" stabilized `eval`'s signature without closing the semantic ABI, and three of the four core helpers re-expressed algorithms the value-list family already owned.
 
-**U6 is not new work.** It is adopting [`SMT-SOLVER-SUPPORT-PROPOSAL.md`](SMT-SOLVER-SUPPORT-PROPOSAL.md), pending since 2026-07-18, which already owns satisfiability, contradiction analysis, and accepted-document synthesis including mandatory Lean replay of every witness. Scope its translation **over core terms**, so it is one translation rather than one per operator family — that proposal's own warning against "two unnamed SMT semantics" is the reason it must follow the core rather than precede it. Two decisions are owed at that point: Synthesize versus Analyze first, and solver-dependency approval.
+**Retired:** `Semantics/CoreIL.lean` and `Proofs/CoreIL.lean` deleted, 13 net trust-audit entries removed (1330 → 1317 roots), six `ValueList.lean` helpers private again. **Retained:** `scanAtLeastOne_nil_members` in [`Proofs/ValueList.lean`](../A12Kernel/Proofs/ValueList.lean), the one new family theorem worth keeping in source. The common-fold insight and the guard-asymmetry result are durable knowledge in [`LF73`](LEAN-FINDINGS.md); the interface lesson is [`LF74`](LEAN-FINDINGS.md); the reason author-written criteria passed a proposal this far off its own boundary is [`LF76`](LEAN-FINDINGS.md).
 
-### U1 — design settled, implementation not started
+**Route A is the incremental default:** use the normalized boundaries that already exist — `ConditionTree`, `AuthoredNumericExpr → LoweredNumericExpr`, operator enums and decision tables, checked source and address plans, resolved value-list structures. When a capsule adds a genuine decision table, keep it exportable and prove its evaluator agreement. Build no universal generator or schema.
 
-**Family:** the numeric aggregates in [`Semantics/NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean). `evalNumericExtremumAggregate (op : NumericExtremumOp) (side : ResolvedValueListSide .number) : NumericOperand` is the primary case; `evalDistinctCountAggregate (side : ResolvedValueListSide kind) : NumericOperand` is a kind-polymorphic second case that strengthens the result if cheap.
+**A checked-plan IL stays available as a demand-triggered future option**, gated on all six reopening conditions in [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) §10 — a blocked named consumer, a fixed artifact and assurance claim, a stable SG2 boundary, an AST reuse inventory, one end-to-end preservation theorem stated first, and explicit user approval. It would keep model checking in elaboration rather than pulling it into an instruction language.
 
-**Why this family is the right probe.** It consumes value-list-shaped input (`ResolvedValueListSide`) and produces numeric-shaped output (`NumericOperand`) — a crossover neither existing family exercises. If it lowers by reusing `.stream` in and `.numeric` out, the result domain is bounded by result *shapes* rather than by families, and §7b's open question closes affirmatively. If it needs a new `CoreValue` constructor, the union problem fixed at the environment also exists at the result type and needs the same treatment before U2.
-
-**Planned shape**, to be validated rather than assumed:
-
-- add one construct `| numAggregate (op : NumericExtremumOp) (source : CoreTerm)`;
-- eval matches `.stream [side]` and delegates to the family function, with any other shape yielding `.poisoned` — consistent with the existing malformed-term convention already documented on `eval`, so a partial node is not a new smell;
-- add layout `CoreEnv.ofAggregate side := ⟨[.stream [side]]⟩` beside the existing named layouts;
-- **no new `CoreValue` constructor** — that is the hypothesis under test, not a design freedom.
-
-**Method:** red first. Write the preservation theorem naming a lowering that does not exist yet, confirm it fails, then implement until green. Register every new theorem root in [`TrustAudit.lean`](../A12Kernel/TrustAudit.lean), run the full gate, commit, and record the outcome in [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) §7c — including a negative result, which is a valid and reportable outcome.
-
-## Accepted derivation work — core IL
-
-[`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) is accepted and its **experiment E1 is complete and green**: the three value-list quantifiers lower into a four-construct core with `lowerValueListQuantifier_preserves` proved universally, three operator-specific scans collapsed to two folds plus a membership parameter, and two family laws re-derived by rewriting. All four pre-registered criteria passed. The reason this matters is recorded in that proposal's §1–§3: derivation currently runs through prose, eight of ten consumer categories can inherit proof while an interpreter cannot, and the core is the shared substrate for the eight that can.
-
-Two costs were recorded rather than absorbed: seven `Semantics/ValueList.lean` helpers were de-privatized so the preservation proof could state induction lemmas, and the slice ran 327 new nonblank Lean lines against a Tier 1 target of 250 after already splitting by semantic responsibility. Neither was resolved by compressing readable code.
-
-**E2 is partially discharged, and its one negative is now closed.** The numeric fragment lowers and preserves against three existing family primitives, and the central discipline held: nine operators entered as **term data**, costing zero new constructs, and the rounding stage became syntactic. Scoped iteration was not lowered and remains untested.
-
-E2's negative was that `eval` had accumulated one positional argument per family — a union of per-family environments rather than an abstraction. **Fixed by the addressed read:** one `CoreEnv` slot space read by one `read` node, with named per-family layouts. Two constructs collapsed into one, so the core lost a construct while gaining a family (nine to eight), and the numeric preservation theorems shed the `fields`/`values` binders they were forced to carry but never used. Every preservation statement in both families now has the same shape, and a third family adds a lowering and a layout rather than a parameter. The lesson is [`LF74`](LEAN-FINDINGS.md): a binder a theorem must carry but never mentions is the visible symptom of an accumulated union.
-
-**Residual and next open question:** `CoreValue` still has six constructors, two value-list-shaped and two numeric-shaped, so the *result* domain may accumulate where the environment no longer does. The prediction is that this is bounded by result domains rather than by families — a third family with an ordered scan should reuse `stream` and `members` — but only a third family can test it. **The next unit is therefore a third family or scoped iteration**, whichever the plan selects; the interface question is settled. SG4 computation scheduling remains excluded from the core by design rather than by deferral.
+**SMT work is unblocked by this and unchanged.** [`SMT-SOLVER-SUPPORT-PROPOSAL.md`](SMT-SOLVER-SUPPORT-PROPOSAL.md) remains pending on its own terms; its Stage 1 is blocked on first-class numeric bounds, not on any core, and it must keep its solver-neutral constraint relation.
 
 ## Active capsule
 
