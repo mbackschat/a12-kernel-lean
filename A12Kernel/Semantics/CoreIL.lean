@@ -20,13 +20,6 @@ Scope, obligations, exclusions, and the recorded success criteria live in
 
 namespace A12Kernel
 
-/-- Which operand stream a core term reads. The streams are evaluation-time input, so a core
-term is a program over them rather than a container for them. -/
-inductive CoreSide where
-  | fields
-  | values
-  deriving Repr, DecidableEq
-
 /-- Whether a witness is a present value **inside** or **outside** the collected member set.
 This is the only difference between the two firing quantifiers. -/
 inductive CoreMemberTest where
@@ -56,13 +49,12 @@ inductive CoreFold where
 consulted before the body's, so `NotAll`'s fields-before-values order is visible in the term
 rather than asserted in prose. -/
 inductive CoreTerm where
-  | side (s : CoreSide)
+  | read (slot : Nat)
   | collect (policy : CoreCollect) (src : CoreTerm)
   | fold (f : CoreFold) (members source : CoreTerm)
   | guardPresent (guard : CoreTerm) (body : CoreTerm)
   -- E2 (numeric stressor). Each operator is a *parameter* of a shared node rather than a
   -- construct of its own, which is the property E2 exists to test.
-  | numSlot (index : Nat)
   | amountLit (amount : Rat)
   | numArith (op : NumericArithmeticOp) (left right : CoreTerm)
   | numRound (mode : DecimalRoundingMode) (places : RoundingPlaces) (source : CoreTerm)
@@ -81,6 +73,34 @@ inductive CoreValue (kind : ValueListKind) where
   -- projects it, so collapsing these into `verdict` would erase the staging the kernel has.
   | numeric (operand : NumericOperand)
   | amount (value : Rat)
+
+/-- The evaluation environment: one addressed slot space, read by `CoreTerm.read`.
+
+This is the E2 correction. `eval` previously took one positional argument per family — two
+operand streams, then a numeric operand list — which is a union of per-family environments
+rather than an abstraction over them, and grows with every family added. A single slot space
+keeps `eval`'s signature and every preservation theorem's shape stable: a new family contributes
+a *lowering* and a slot layout, not a new parameter. A consumer implements one `read`.
+
+Slot layouts are named below rather than left as bare indices at each call site, so the layout a
+lowering assumes is stated once and pinned by that family's preservation theorem. -/
+structure CoreEnv (kind : ValueListKind) where
+  slots : List (CoreValue kind)
+
+namespace CoreEnv
+
+/-- Value-list layout: the fields stream is slot 0 and the values stream is slot 1. -/
+def ofValueList (fields values : List (ResolvedValueListSide kind)) : CoreEnv kind :=
+  ⟨[.stream fields, .stream values]⟩
+
+/-- Numeric layout: two already-classified comparison operands. -/
+def ofNumericPair (left right : NumericOperand) : CoreEnv kind :=
+  ⟨[.numeric left, .numeric right]⟩
+
+/-- An environment with no readable slot, for terms that read none. -/
+def empty : CoreEnv kind := ⟨[]⟩
+
+end CoreEnv
 
 namespace CoreTerm
 
@@ -143,13 +163,13 @@ def runScanUntilMatch (members : List (ValueListAtom kind)) :
 /-- Evaluate a core term against the two operand streams. A malformed term — one whose operand
 shapes do not fit its constructor — yields `poisoned` rather than a fabricated verdict; the
 lowering never produces one, which `lowerValueListQuantifier_wellFormed` records. -/
-def eval (fields values : List (ResolvedValueListSide kind))
-    (nums : List NumericOperand) :
-    CoreTerm → CoreValue kind
-  | .side .fields => .stream fields
-  | .side .values => .stream values
+def eval (env : CoreEnv kind) : CoreTerm → CoreValue kind
+  | .read slot =>
+      match env.slots[slot]? with
+      | some value => value
+      | none => .poisoned
   | .collect policy src =>
-      match eval fields values nums src with
+      match eval env src with
       | .stream sides =>
           match policy with
           | .presentOnly =>
@@ -158,7 +178,7 @@ def eval (fields values : List (ResolvedValueListSide kind))
           | .poisoning => collectPoisoning sides
       | _ => .poisoned
   | .fold f members source =>
-      match eval fields values nums members, eval fields values nums source with
+      match eval env members, eval env source with
       | .members atoms omission, .stream sides =>
           match f with
           | .findWitness test => .verdict (runFindWitness test atoms omission sides)
@@ -166,30 +186,26 @@ def eval (fields values : List (ResolvedValueListSide kind))
       | .poisoned, _ => .verdict .unknown
       | _, _ => .poisoned
   | .guardPresent guard body =>
-      match eval fields values nums guard with
+      match eval env guard with
       | .stream sides =>
           if sides.any ResolvedValueListSide.hasPresent then
-            eval fields values nums body
+            eval env body
           else
             .verdict .notFired
       | _ => .poisoned
   -- E2 fragment. Each case delegates to the family's own primitive rather than restating it,
   -- so preservation is about the *shape* of the lowering, not about re-deriving arithmetic.
-  | .numSlot index =>
-      match nums[index]? with
-      | some operand => .numeric operand
-      | none => .poisoned
   | .amountLit value => .amount value
   | .numArith op left right =>
-      match eval fields values nums left, eval fields values nums right with
+      match eval env left, eval env right with
       | .amount a, .amount b => .amount (op.eval a b)
       | _, _ => .poisoned
   | .numRound mode places source =>
-      match eval fields values nums source with
+      match eval env source with
       | .amount a => .amount (roundDecimal mode a places)
       | _ => .poisoned
   | .numCompare op left right =>
-      match eval fields values nums left, eval fields values nums right with
+      match eval env left, eval env right with
       | .numeric a, .numeric b => .verdict (op.eval a b)
       | _, _ => .poisoned
 
@@ -205,19 +221,19 @@ requires non-firing, which is exactly [`LF72`](../../docs/LEAN-FINDINGS.md). -/
 def lowerValueListQuantifier : ValueListQuantifier → CoreTerm
   | .atLeastOne =>
       .fold (.findWitness .inside)
-        (.collect .presentOnly (.side .values)) (.side .fields)
+        (.collect .presentOnly (.read 1)) (.read 0)
   | .no =>
       .fold .scanUntilMatch
-        (.collect .poisoning (.side .values)) (.side .fields)
+        (.collect .poisoning (.read 1)) (.read 0)
   | .notAll =>
-      .guardPresent (.side .fields)
+      .guardPresent (.read 0)
         (.fold (.findWitness .outside)
-          (.collect .poisoning (.side .values)) (.side .fields))
+          (.collect .poisoning (.read 1)) (.read 0))
 
 
 /-- Lower a direct numeric comparison between two classified operand slots. -/
 def lowerDirectNumericComparison (op : NumericComparisonOp) : CoreTerm :=
-  .numCompare op (.numSlot 0) (.numSlot 1)
+  .numCompare op (.read 0) (.read 1)
 
 /-- Lower one rounded binary arithmetic stage over two literal amounts. The rounding mode and
 places are term data, so the exact-decimal invariant is syntactic rather than a convention. -/

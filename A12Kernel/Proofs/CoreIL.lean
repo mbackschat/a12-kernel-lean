@@ -123,11 +123,12 @@ theorem scanAtLeastOne_nil_members (omission : Bool)
 for every quantifier and every operand shape. Universal, hypothesis-free beyond checkedness. -/
 theorem lowerValueListQuantifier_preserves (quantifier : ValueListQuantifier)
     (fields values : List (ResolvedValueListSide kind)) :
-    CoreTerm.eval fields values [] (lowerValueListQuantifier quantifier)
+    CoreTerm.eval (CoreEnv.ofValueList fields values) (lowerValueListQuantifier quantifier)
       = .verdict (quantifier.evalOrdered fields values) := by
   cases quantifier with
   | atLeastOne =>
-      simp only [lowerValueListQuantifier, CoreTerm.eval,
+      simp only [lowerValueListQuantifier, CoreTerm.eval, CoreEnv.ofValueList,
+        List.getElem?_cons_zero, List.getElem?_cons_succ,
         ValueListQuantifier.evalOrdered, collectPresentOnly_eq,
         runFindWitness_inside_eq_scanAtLeastOne]
       split
@@ -136,14 +137,17 @@ theorem lowerValueListQuantifier_preserves (quantifier : ValueListQuantifier)
         rw [hEmpty, scanAtLeastOne_nil_members]
       · rfl
   | no =>
-      simp only [lowerValueListQuantifier, CoreTerm.eval, ValueListQuantifier.evalOrdered]
+      simp only [lowerValueListQuantifier, CoreTerm.eval, CoreEnv.ofValueList,
+        List.getElem?_cons_zero, List.getElem?_cons_succ,
+        ValueListQuantifier.evalOrdered]
       rcases collectPoisoning_eq (kind := kind) values with
         ⟨hCore, hFamily⟩ | ⟨atoms, omission, hCore, hFamily⟩
       · simp [hCore, hFamily]
       · simp [hCore, hFamily, runScanUntilMatch_eq_scanNo]
   | notAll =>
-      simp only [lowerValueListQuantifier, CoreTerm.eval, ValueListQuantifier.evalOrdered,
-        any_hasPresent_eq]
+      simp only [lowerValueListQuantifier, CoreTerm.eval, CoreEnv.ofValueList,
+        List.getElem?_cons_zero, List.getElem?_cons_succ,
+        ValueListQuantifier.evalOrdered, any_hasPresent_eq]
       split
       · rcases collectPoisoning_eq (kind := kind) values with
           ⟨hCore, hFamily⟩ | ⟨atoms, omission, hCore, hFamily⟩
@@ -161,23 +165,23 @@ above; the concrete separators are chosen to match the family's own retained cas
 /-- Transported: values-side unavailability poisons an immediate fields match, in the core. -/
 theorem core_valueListNo_unknownMember_before_fields
     (value : ValueListAtom kind) (cause : FormalCause) :
-    CoreTerm.eval
+    CoreTerm.eval (CoreEnv.ofValueList
         [{ cells := [.present value]
            hasUninstantiatedTail := false, hasHaving := false }]
         [{ cells := [.present value, .unknown cause]
-           hasUninstantiatedTail := false, hasHaving := false }]
-        [] (lowerValueListQuantifier .no)
+           hasUninstantiatedTail := false, hasHaving := false }])
+        (lowerValueListQuantifier .no)
       = .verdict .unknown := by
   rw [lowerValueListQuantifier_preserves, valueListNo_unknownMember_before_fields]
 
 /-- Transported: a reached filtered fields operand makes an exhausted `No` scan omission-typed. -/
 theorem core_valueListNo_filtered_nonmatch :
-    CoreTerm.eval (kind := .token)
+    CoreTerm.eval (kind := .token) (CoreEnv.ofValueList
         [{ cells := [.present "B"]
            hasUninstantiatedTail := false, hasHaving := true }]
         [{ cells := [.present "A"]
-           hasUninstantiatedTail := false, hasHaving := false }]
-        [] (lowerValueListQuantifier .no)
+           hasUninstantiatedTail := false, hasHaving := false }])
+        (lowerValueListQuantifier .no)
       = .verdict (.fired .omission) := by
   rw [lowerValueListQuantifier_preserves, valueListNo_filtered_nonmatch]
 
@@ -190,24 +194,25 @@ term data, exactly as membership direction did in E1. -/
 
 /-- A direct numeric comparison lowers to one parameterized node. -/
 theorem lowerDirectNumericComparison_preserves (op : NumericComparisonOp)
-    (fields values : List (ResolvedValueListSide kind)) (left right : NumericOperand) :
-    CoreTerm.eval fields values [left, right] (lowerDirectNumericComparison op)
+    (left right : NumericOperand) :
+    CoreTerm.eval (kind := kind) (CoreEnv.ofNumericPair left right)
+        (lowerDirectNumericComparison op)
       = .verdict (op.eval left right) := by
   rfl
 
 /-- Ordered binary arithmetic lowers with its precision boundary intact. -/
 theorem lowerRoundedArithmetic_preserves (op : NumericArithmeticOp)
-    (mode : DecimalRoundingMode) (places : RoundingPlaces) (left right : Rat)
-    (fields values : List (ResolvedValueListSide kind)) :
-    CoreTerm.eval fields values [] (lowerRoundedArithmetic op mode places left right)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) (left right : Rat) :
+    CoreTerm.eval (kind := kind) CoreEnv.empty
+        (lowerRoundedArithmetic op mode places left right)
       = .amount (roundDecimal mode (op.eval left right) places) := by
   rfl
 
 /-- Unavailability still dominates through the lowered comparison: the core does not turn a
 formally unavailable operand into a verdict of its own. -/
 theorem lowerDirectNumericComparison_unknown (op : NumericComparisonOp) (cause : FormalCause)
-    (fields values : List (ResolvedValueListSide kind)) (right : NumericOperand) :
-    CoreTerm.eval fields values [.unknown cause, right]
+    (right : NumericOperand) :
+    CoreTerm.eval (kind := kind) (CoreEnv.ofNumericPair (.unknown cause) right)
         (lowerDirectNumericComparison op)
       = .verdict .unknown := by
   cases right <;> rfl

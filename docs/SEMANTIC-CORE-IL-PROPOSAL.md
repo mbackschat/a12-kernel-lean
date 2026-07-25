@@ -1,6 +1,6 @@
 # Proposal — a semantic core IL with proved lowering
 
-**Status: accepted 2026-07-25. E1 complete and green; E2 partially discharged with one real negative — the environment abstraction failed and must be fixed before a third family. The core is not yet shared.** Owner: this repository. Supersedes nothing.
+**Status: accepted 2026-07-25. E1 complete and green. E2 partially discharged: the parameter discipline generalized, the environment did not — and that negative is now fixed by the addressed read (§7b), so two families share one core with a stable interface. Scoped iteration remains untested, so the core is not yet shared in full.** Owner: this repository. Supersedes nothing.
 
 ---
 
@@ -222,6 +222,24 @@ That is a genuine design defect, not a cosmetic one. A core whose environment an
 **Cost.** The two modules are now 394 nonblank Lean lines (203 semantics, 191 proofs), against the 250 Tier 1 target already exceeded by E1. E2's own increment was 67 lines for five constructs and three theorems, which is proportionate; the aggregate overage is recorded rather than resolved by compression, and the environment redesign above is the change that would justify revisiting the file boundary.
 
 **What E2 changes about sequencing.** Fixing the environment is now a precondition for a third family rather than an optional refinement, because each family added before the fix widens the union that has to be unpicked. The next unit on this track is therefore the addressed `read`, not a third lowering.
+
+## 7b. Result — the addressed read closed E2's negative
+
+E2's negative was that `eval` carried a union of per-family environments. That is fixed. Gates: `lake build` 471 jobs, trust audit **1330 theorem roots; 27677 declarations in 252 modules**, `lake test` 51/51, `checkReferenceProcess` 51/51 — the same theorem count, so nothing was traded away.
+
+**The change.** `eval` went from three positional per-family arguments to one `CoreEnv`, a single addressed slot space read by a single `read` node. `CoreSide` and `numSlot` both disappeared into `read`, so the core lost a construct while gaining a family: **nine constructs became eight.** Slot layouts are named (`ofValueList`, `ofNumericPair`, `empty`) rather than left as bare indices at call sites, so the layout a lowering assumes is stated once and pinned by that family's preservation theorem.
+
+**The test that it is an abstraction rather than a rename** is what happened to the theorem statements. Before, the numeric preservation theorems had to carry `(fields values : List (ResolvedValueListSide kind))` binders they never used, because `eval` demanded them. Those binders are now gone, and every preservation theorem in both families has the same shape:
+
+```lean
+CoreTerm.eval <env> (lower … ) = <family result>
+```
+
+A third family contributes a lowering and a layout. It does not change `eval`'s signature, and it cannot force unrelated families' theorems to mention its state. That was the property E2 showed was missing.
+
+**Residual, stated rather than glossed.** `CoreValue` still carries six constructors — `stream`, `members`, `poisoned`, `verdict`, `numeric`, `amount` — and the first two are value-list-shaped while the last two are numeric-shaped. The environment no longer grows per family; the *result domain* still might. The honest position is that this is bounded by result domains rather than by families — a third family with an ordered scan should reuse `stream` and `members` rather than add its own — but that is a prediction, and only a third family can test it. It is recorded as the next open question rather than claimed as settled.
+
+**Consequence for the shared-substrate claim.** Two families now lower into one core with a stable interface, which was the bar. What remains untested from E2's original specification is **scoped iteration**, so the claim is still narrower than "the core is shared": it is "two families of expression-shaped semantics share one core, and the interface no longer grows with them."
 
 ## 8. Recommendations recorded but not selected here
 
