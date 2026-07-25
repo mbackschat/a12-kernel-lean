@@ -269,6 +269,16 @@ The probe passes for internal-boundary **Execute**, checked-input **Analyze**, a
 
 **Limit:** formal provenance does not replace organizational approval, production security, platform qualification, or legal review. It makes the semantic part of those decisions precise and reproducible.
 
+## Cross-category use case: a derived simplified language variant
+
+**What it enables:** producing a *smaller language* from the full one — a reduced set of constructs that provably means the same thing on the fragment it covers, together with the mapping from full A12 into it. Consumers who cannot afford the whole surface get something implementable, analyzable, and teachable at a fraction of the cost, without anyone re-deriving A12 semantics from prose.
+
+**This is an output, not a boundary.** The theory continues to target 100% of the observable language; the variant is something the theory *produces*, and the full account remains its source. Nothing here narrows the goal, retires an obligation, or changes a support claim. An unmodelled clause stays a debt in [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) whether or not a variant happens to omit it, and a variant's coverage is a consequence of how far the extraction has reached — never a judgement that the remainder matters less.
+
+**How Lean helps, and it is further along than it looks.** The [core IL](SEMANTIC-CORE-IL-PROPOSAL.md) is already a simplified variant in embryo: eight constructs against fifty `Elaboration/` families, with the lowering as the extraction and the preservation theorem as the guarantee. That theorem is what separates this from summarising — the variant is a **proved image** of the original rather than a shorter description of it, so a consumer that implements the variant is not approximating A12 on the covered fragment. Four deliverables follow from the same material without new machinery: the construct inventory and an admission predicate over lowered terms; a reduced evaluator; a desugaring from full A12 into the variant carrying its preservation result; and a scoped account usable for teaching or effort estimation.
+
+**Limit:** a variant covers exactly the families that have lowerings, so its reach is a fact about the extraction's progress and must be reported as such. It must also keep every distinction the full language keeps — poison separate from unknown and from structural failure, exact decimals and rounding stages, authored order — or it is a different language wearing the same name, which is worse than no variant. Choosing *which* constructs a particular variant admits is a real design question with several candidate inputs (real-model frequency, implementation cost in a target, retained-evidence status); none of them is settled here, and none needs to be until a concrete consumer asks.
+
 ## Turning a use case into a shipment
 
 Before adopting any concrete tool, answer five questions:
