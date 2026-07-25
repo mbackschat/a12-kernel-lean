@@ -97,6 +97,33 @@ Commit each completed coherent unit of work before reporting completion unless t
 
 Keep those commits local: never run `git push`, create or update a remote branch or tag, publish a release, or otherwise send repository state to GitHub or another remote unless the user explicitly asks for that remote action in the current request. Earlier permission or a standing instruction to continue does not authorize a later push.
 
+## ⚠️ HARD RULE — discharge a claim before stating it, or flag it and surface it
+
+A statement that later probing falsifies is worse than no statement: it enters `spec/`, ships to the peer, and costs a reconciliation round. **Every claim leaving this repository — in `spec/`, a ledger entry, a docstring, a finding, or a reply to the user — is either discharged by the method its claim class requires, or explicitly marked unverified.** Confidence, plausibility, and "the peer said so" are not discharge. Prior effort spent reasoning toward a claim is not discharge either.
+
+Classify the claim, then apply its method. Doing this costs seconds; every skipped instance so far has cost a round trip.
+
+| claim class | example | what discharges it |
+|---|---|---|
+| **value** — this input yields that output | `2^32` narrows to `0` | an executable case, written **red first**, in the owning conformance module |
+| **mechanism** — the output happens *because* of this step | "the parse step causes the asymmetry" | independent re-derivation in a second implementation, **or** a witness that isolates the named cause from its neighbours |
+| **reachability / scope** — no legal model expresses this; this gate constrains that | "unauthorable"; "the 15-digit bound gates literals" | **measurement only.** Reading never discharges it. Absent a measurement, do not state it |
+| **provenance** — the peer or a source established this | "measured at `<rev>`" | confirm that revision measured *this* case, not an adjacent one that merely shares an outcome |
+
+Three cheap checks, each of which would have prevented a recorded defect:
+
+- **Before consuming an unreachability claim, grep this repository's own `spec/` for the gate it names.** An unreachability argument is a conjunction and falls to one defeater; the cheapest place to find one is the prose this project already owns. See [`LF75`](docs/LEAN-FINDINGS.md).
+- **Never write "unauthorable", "unrepresentable", or "no legal model can express".** Write `authorable, witness X, measured at <rev>` or `no witness known as of <rev>`. The second claims nothing and so invites no correction; that phrasing difference is the whole ping-pong.
+- **Never let reachability gate a semantic clause.** State the total function unconditionally and keep authorability as a separate annotation allowed to be unknown. A reimplementer needs the function either way, and the coupling is what turns every reachability correction into a semantic rewrite.
+
+**When a claim cannot be discharged, it is never silently softened into hedged prose.** Choose explicitly, and say which was chosen:
+
+1. **Drop it** — the unit does not need the claim. Preferred.
+2. **Record it as a gap** — the answer does not change any dependent work. Add it to its owning document or the ledger with the discriminator named, and continue.
+3. **Escalate it as a blocker** — the answer changes the representation, a proof statement, or dependent work. **Stop and ask the user.** Do not pick an account and proceed.
+
+The gap/blocker test is exactly whether dependent work differs by the answer; when that is itself unclear, treat it as a blocker and ask. An unverified claim that reaches the user must be **visibly flagged in the response**, not buried in a qualifier, so the user can decide whether the measurement is worth its cost.
+
 ## Naming convention
 
 - **a12-dmkits** is the project/repository name. Use it when referring to the software, semantics corpus, interpreter, adapter, catalog, documentation, or project as a whole.
