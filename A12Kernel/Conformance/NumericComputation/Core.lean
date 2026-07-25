@@ -90,6 +90,24 @@ example :
         excessiveMinimum.path 1 0) := by
   native_decide
 
+/- `fieldScaleCap`: 14 is declarable and 15 is not. The pair is the separator — a bound stated
+only as "at most 14" without the accepted side cannot distinguish this from an off-by-one, and
+the kernel's refusal here carries no MVK code. Distinct from `maxRoundingPlaces`, which bounds a
+rounding argument at the same number on a different axis (`spec/04`). -/
+example :
+    let atCap := { target with
+      policy := { target.policy with kind := .number { scale := 14, signed := true } } }
+    let aboveCap := { target with
+      policy := { target.policy with kind := .number { scale := 15, signed := true } } }
+    errorOf
+      ({ model with fields := model.fields.map fun (declaration : FlatFieldDecl) =>
+        if declaration.id == targetId then atCap else declaration }).validate = none ∧
+    errorOf
+      ({ model with fields := model.fields.map fun (declaration : FlatFieldDecl) =>
+        if declaration.id == targetId then aboveCap else declaration }).validate =
+      some (.numericFractionalDigitsAboveCap aboveCap.path 15 14) := by
+  native_decide
+
 /- A present effective integer-digit capacity is positive. -/
 example :
     let zeroCapacity := { target with

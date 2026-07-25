@@ -85,6 +85,12 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
           ("reason", toJson "minimumFractionalDigitsExceedMaximum"),
           ("path", toJson path), ("minimum", toJson minimum),
           ("maximum", toJson maximum)])
+  | .numericFractionalDigitsAboveCap path declared cap =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "numberFieldDeclaration"),
+          ("reason", toJson "fractionalDigitsAboveCap"),
+          ("path", toJson path), ("declared", toJson declared),
+          ("cap", toJson cap)])
   | .numericMaximumIntegerDigitsZero path =>
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "numericTargetPolicy"),

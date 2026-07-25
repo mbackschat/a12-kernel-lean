@@ -94,6 +94,11 @@ private def stringPatternError? : List FlatFieldDecl → Option ResolveError
       | some _, .string, .evaluated, none => stringPatternError? rest
       | some _, _, _, _ => some (.stringPatternRequiresString declaration.path)
 
+/-- The largest `maxFractionalDigits` a Number field may declare. Measured at a12-dmkits
+`ee2f5d84`: 14 is accepted and 15 refused by a plain MVK-less model check. This is the
+`fieldScaleCap` of `spec/04`, not the `maxRoundingPlaces` bound on a rounding argument. -/
+def declaredNumericScaleCap : Nat := 14
+
 private def numericTargetConstraintsError? :
     List FlatFieldDecl → Option ResolveError
   | [] => none
@@ -101,7 +106,13 @@ private def numericTargetConstraintsError? :
       let constraints := declaration.numericTargetConstraints
       match declaration.policy.kind with
       | .number info =>
-          if info.scale < constraints.minFractionalDigits then
+          -- `fieldScaleCap` before `fieldScaleOrdering`: with the cap enforced, a legal model
+          -- has `0 <= min <= max <= 14`, so both endpoints are bounded and a consumer may
+          -- bound either without over-rejecting (`spec/04`).
+          if declaredNumericScaleCap < info.scale then
+            some (.numericFractionalDigitsAboveCap declaration.path
+              info.scale declaredNumericScaleCap)
+          else if info.scale < constraints.minFractionalDigits then
             some (.numericMinimumFractionalDigitsExceedMaximum declaration.path
               constraints.minFractionalDigits info.scale)
           else

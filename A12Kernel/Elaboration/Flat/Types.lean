@@ -325,6 +325,10 @@ inductive ResolveError where
   | numericTargetConstraintsRequireNumber (path : List String)
   | numericMinimumFractionalDigitsExceedMaximum (path : List String)
       (minimum maximum : Nat)
+  -- `fieldScaleCap`: the kernel refuses a declared scale above 14 with a plain MVK-less model
+  -- check. Distinct from `maxRoundingPlaces`, which bounds a rounding *argument* at the same
+  -- number; `spec/04` names all seven digit quantities separately for exactly this reason.
+  | numericFractionalDigitsAboveCap (path : List String) (declared cap : Nat)
   | numericMaximumIntegerDigitsZero (path : List String)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
