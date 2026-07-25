@@ -50,7 +50,7 @@ The detailed readiness fields live only in those gap entries. Every capsule rece
 
 Three ledger items are pending handoff and need no local work until they return. [`SPEC-2026-07-25-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md) narrows the `NotAll` prepass to a size-selected route. [`EXP-2026-07-25-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md) is blocked on a local doctrine decision, not on upstream work — see below. [`EXP-2026-07-25-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md) asks for the semantic-index parallel-iteration observation, with its separating document shape specified.
 
-One outbound correction is recorded but unsent: the calculation-closure mode's engagement is **in dispute**, recorded as such in [`SOURCES.md`](SOURCES.md). The peer reported it unconditional for Groovy; this project's triage found the deciding bean property gated on a computed field's alternative count reaching ten. The two readings name different mechanisms — plausibly an unconditional setter versus a size-gated getter — so the locus is unsettled and one reading upstream would close it. Until then the mode is not assumed engaged, which also means the peer's zero-divergence result does not extend to it.
+The calculation-closure dispute is **resolved and closed** at a12-dmkits `dda6ba01`: the size gate is real, the unconditional setter was a side effect inside a getter body the template evaluates only in the gate's true branch, and the mode is now probed and locked. Consequence for the evidence account: **only object splitting is corpus-exercised**, so the peer's zero characterized static-Java divergences bears on one mode rather than two, and the other two were blind spots now closed by authored shapes.
 
 ## Owner decision required
 

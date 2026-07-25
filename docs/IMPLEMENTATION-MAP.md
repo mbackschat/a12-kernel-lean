@@ -47,6 +47,7 @@ The three triage batches established, per claim, which layer confirms it. This i
 | value-list `NotAll` prepass | **not locked** | the peer case that reads as confirming it asserts non-firing for both the prepass scenario and its control, so it cannot separate the accounts; scoped as a size-selected route via [`SPEC-2026-07-25-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
 | one-kept-successor filter lookahead | upstream law test | `FirstFilledValueKeptSuccessorDiffTest` S1–S4; accepted `SPEC-2026-07-23-10`/`-11` |
 | Groovy condition-line splitting preserves order | upstream law test | `ConditionLineSplitDiffTest` at a12-dmkits `29b3ef53`, which proves the mode engaged before comparing outcomes |
+| Groovy calculation-closure splitting preserves first-match order | upstream law test | `CalculationClosureSplitDiffTest` at a12-dmkits `dda6ba01`; chunk calls are `||`-joined so authored order survives chunking |
 
 Two entries are deliberately negative and carry the dimension's value: the `NotAll` prepass has an upstream test that *cannot see* the distinction, and `LF64` has no observing test at all. Both differ from "no upstream lock exists," and collapsing them was the defect the split was introduced to fix.
 
