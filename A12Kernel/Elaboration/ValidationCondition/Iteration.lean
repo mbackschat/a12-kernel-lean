@@ -296,7 +296,13 @@ private def orderedNumericCompositeGuardAt
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
-  | .flat _ | .numeric _ _ | .groupList _ _ => .noReference
+  | .flat _ | .numeric _ _ => .noReference
+  | .groupList _ operands =>
+      match ResolvedGroupListOperands.iterationScope operands with
+      | .ok (some scope) =>
+          if scope.contains level then .unclassified else .noReference
+      | .ok none => .noReference
+      | .error _ => .unclassified
   | .orderedNumeric _ comparison =>
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status

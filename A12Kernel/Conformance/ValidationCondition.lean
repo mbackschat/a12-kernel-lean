@@ -264,10 +264,50 @@ private def checkedRepeatableGroupPath? :
 private def groupOperand (groups : GroupPath) : SurfaceGroupListOperand :=
   .group (.path { base := .absolute, groups })
 
+private def itemRowsStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [{ name := "Order" }, { name := "Items", starred := true }] }
+
+private def nestedLinesStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [{ name := "Order" }, { name := "Items" },
+      { name := "Lines", starred := true }] }
+
 private def groupList? (operator : GroupFillQuantifier)
     (operands : List SurfaceGroupListOperand) :
     Option (CheckedValidationCondition model) :=
   (CheckedValidationCondition.fromGroupList model ["Order"] operator operands).toOption
+
+private def mixedStarGroupList?
+    (operator : GroupFillQuantifier) (star : SurfaceGroupListOperand := itemRowsStar)
+    (rowGroup : GroupPath := ["Order"]) :
+    Option (CheckedValidationCondition model) :=
+  (CheckedValidationCondition.fromGroupList model rowGroup operator [
+    .field (fieldPath "U"), star]).toOption
+
+private def mixedStarGroupListResult?
+    (operator : GroupFillQuantifier) (fieldFilled : Bool) (rows : List RowAddr)
+    (star : SurfaceGroupListOperand := itemRowsStar)
+    (rowGroup : GroupPath := ["Order"]) :
+    Option (Option Verdict × Option StarAddressingError) := do
+  let checked ← mixedStarGroupList? operator star rowGroup
+  let scalar :=
+    model.checkContext (raw
+      (if fieldFilled then .parsed (.num 1) else .empty) .empty)
+  let document : Document :=
+    { instantiatedRows := rows, rawCells := fun _ => none }
+  match checked.core.evalAddressed {
+    scalar := {
+      fields := scalar
+      groups := GroupPresenceContext.unavailable }
+    outer := []
+    input := .legacy document (fun _ field => scalar.read field)
+  } with
+  | .ok verdict => some (some verdict, none)
+  | .error (.addressing cause) => some (none, some cause)
+  | .error _ => none
 
 private def mixedGroupList? : Option (CheckedValidationCondition model) :=
   groupList? .groupsNotCollectivelyFilled [
@@ -459,7 +499,7 @@ example :
         | _ => false) = some true := by
   native_decide
 
-/- Direct duplicates and group/descendant overlaps are rejected before they can be counted twice. -/
+/- Direct non-wildcard duplicates and strict group/descendant overlaps are rejected before they can be counted twice. -/
 example :
     groupListError? .atLeastOneGroupFilled [
       .field (fieldPath "U"), .field (fieldPath "U")] =
@@ -478,6 +518,39 @@ example :
       groupOperand ["Order", "Items"],
       groupOperand ["Order", "Details"]] =
       some (.repeatableGroupRequiresAddress ["Order", "Items"]) := by
+  native_decide
+
+/- The mixed-star matrix separates addressed-mode admission, scalar refusal, plain-field and created-empty-row witnesses, zero-row omission, both legal polarities, forbidden operators, and structural binding failure. -/
+example :
+    (mixedStarGroupList? .atLeastOneGroupFilled).map
+    (fun checked =>
+      checked.core.requiresAddressedValidation &&
+        checked.core.evalSelected {
+          fields := model.checkContext (raw (.parsed (.num 1)) .empty)
+          groups := GroupPresenceContext.unavailable
+        } == .unknown) = some true ∧
+    mixedStarGroupListResult? .atLeastOneGroupFilled true [] =
+        some (some (.fired .value), none) ∧
+    mixedStarGroupListResult? .atLeastOneGroupFilled false [
+      { group := 10, path := [1] }] =
+        some (some (.fired .value), none) ∧
+    mixedStarGroupListResult? .atLeastOneGroupFilled false [] =
+        some (some .unknown, none) ∧
+    mixedStarGroupListResult? .noGroupFilled false [] =
+        some (some (.fired .omission), none) ∧
+    mixedStarGroupListResult? .noGroupFilled true [] =
+        some (some .unknown, none) ∧
+    mixedStarGroupListResult? .noGroupFilled false [
+      { group := 10, path := [1] }] =
+        some (some .unknown, none) ∧
+    (groupList? .atLeastOneGroupFilled [
+      itemRowsStar, itemRowsStar]).isSome = true ∧
+    groupListError? .allGroupsFilled [
+      .field (fieldPath "U"), itemRowsStar] =
+        some (.starredGroupNotAllowed .allGroupsFilled) ∧
+    mixedStarGroupListResult? .atLeastOneGroupFilled false []
+      nestedLinesStar ["Order", "Items"] =
+        some (none, some (.missingBinding 10)) := by
   native_decide
 
 /- The plain fixed group count is a scale-0 numeric source in the shared checked expression tree. It counts admitted content only after every operand is fully relevant and error-free, and composes with ordinary arithmetic. -/

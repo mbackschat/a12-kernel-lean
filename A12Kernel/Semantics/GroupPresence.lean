@@ -144,7 +144,16 @@ structure GroupListPresenceTally where
   unavailable : Nat
   deriving Repr, DecidableEq
 
-def GroupListPresenceTally.ofStates :
+namespace GroupListPresenceTally
+
+def filledOnly (count : Nat) : GroupListPresenceTally := { filled := count, empty := 0, unavailable := 0 }
+
+def add (left right : GroupListPresenceTally) : GroupListPresenceTally :=
+  { filled := left.filled + right.filled
+    empty := left.empty + right.empty
+    unavailable := left.unavailable + right.unavailable }
+
+def ofStates :
     List GroupListPresenceState → GroupListPresenceTally
   | [] => { filled := 0, empty := 0, unavailable := 0 }
   | state :: rest =>
@@ -154,9 +163,11 @@ def GroupListPresenceTally.ofStates :
       | .empty => { tally with empty := tally.empty + 1 }
       | .unavailable => { tally with unavailable := tally.unavailable + 1 }
 
-def GroupListPresenceTally.ofGroupStates (states : List GroupPresenceState) :
+def ofGroupStates (states : List GroupPresenceState) :
     GroupListPresenceTally :=
   ofStates (states.map GroupPresenceState.asGroupListPresence)
+
+end GroupListPresenceTally
 
 /-- Evaluate the shared group-presence tally. Resolved fixed lists and starred structural row counts supply different classifications to this one operator table. -/
 def GroupFillQuantifier.evalTally (operator : GroupFillQuantifier)

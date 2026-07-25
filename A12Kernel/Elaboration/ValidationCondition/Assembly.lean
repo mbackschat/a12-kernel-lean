@@ -8,6 +8,8 @@ inductive ValidationConditionAssemblyError where
   | invalidModel (error : ResolveError)
   | groupReference (error : SingleGroupElabError)
   | fieldReference (error : ResolveError)
+  | starredGroup (error : StarredGroupElabError)
+  | starredGroupNotAllowed (operator : GroupFillQuantifier)
   | repeatableFieldRequired (path : List String)
   | unknownGroup (path : GroupPath)
   | repeatableGroupRequiresAddress (path : GroupPath)
@@ -120,7 +122,8 @@ def fromRepetitionNotUnique (model : FlatModel) (rowGroup : GroupPath)
 
 private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceGroupListOperand →
-      Except ValidationConditionAssemblyError ResolvedGroupListOperand
+      Except ValidationConditionAssemblyError
+        (ResolvedGroupListOperand model)
   | .field reference => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked rowGroup reference).mapError .fieldReference
@@ -129,10 +132,16 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
       let resolved ← model.resolveFixedGroupReference rowGroup reference
         |>.mapError ValidationConditionAssemblyError.ofFixedGroupReferenceError
       pure (.group resolved)
+  | .starredGroup reference => do
+      let source ←
+        (elaborateStarredGroupSource model rowGroup reference)
+          |>.mapError .starredGroup
+      pure (.starredGroup source)
 
 private def resolveGroupListOperands (model : FlatModel) (rowGroup : GroupPath) :
     List SurfaceGroupListOperand →
-      Except ValidationConditionAssemblyError (List ResolvedGroupListOperand)
+      Except ValidationConditionAssemblyError
+        (List (ResolvedGroupListOperand model))
   | [] => pure []
   | operand :: rest => do
       let resolved ← resolveGroupListOperand model rowGroup operand
@@ -140,7 +149,7 @@ private def resolveGroupListOperands (model : FlatModel) (rowGroup : GroupPath) 
 
 /-- Fixed singletons have an existing checked scalar owner. Keeping them out of the list leaf prevents a second representation of field or group presence. -/
 private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
-    ResolvedGroupListOperand → Option (ValidationCondition model)
+    ResolvedGroupListOperand model → Option (ValidationCondition model)
   | .field declaration =>
       match operator with
       | .atLeastOneGroupFilled =>
@@ -159,8 +168,9 @@ private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
           some (ValidationCondition.groupPresence .notFilled reference)
       | .allGroupsFilled | .notAllGroupsFilled
       | .groupsNotCollectivelyFilled => none
+  | .starredGroup _ => none
 
-/-- Resolve one fixed nonrepeatable field/group list and enforce the kernel's shared duplicate/overlap checks plus its operator-specific arity and root-group gates. Starred group operands remain with the checked SG2 topology owner. -/
+/-- Resolve one field/group entity list and enforce the kernel's shared duplicate/overlap checks plus its operator-specific arity, root-group, and wildcard gates. The two count-zero/count-positive members retain checked starred-group topology beside plain operands. -/
 def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
     (operator : GroupFillQuantifier)
     (operands : List SurfaceGroupListOperand) :
@@ -170,6 +180,9 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
   | .ok () => do
       let resolved ← resolveGroupListOperands model rowGroup operands
       if resolved.isEmpty then throw .emptyGroupList
+      if operator.requiresMultipleOperands &&
+          resolved.any ResolvedGroupListOperand.isStarred then
+        throw (.starredGroupNotAllowed operator)
       match ResolvedGroupListOperands.firstOverlap? resolved with
       | some (left, right) =>
           throw (ValidationConditionAssemblyError.overlappingGroupListOperands left right)
@@ -183,10 +196,15 @@ def fromGroupList (model : FlatModel) (rowGroup : GroupPath)
       | none => pure ()
       match resolved with
       | [operand] =>
-          match singletonGroupListCondition? operator operand with
-          | some condition =>
-              checkCore model rowGroup condition (by rw [hModel]; rfl)
-          | none => throw .groupListNeedsMultipleOperands
+          if operand.isStarred then
+            checkCore model rowGroup
+              (ValidationCondition.groupList operator resolved)
+              (by rw [hModel]; rfl)
+          else
+            match singletonGroupListCondition? operator operand with
+            | some condition =>
+                checkCore model rowGroup condition (by rw [hModel]; rfl)
+            | none => throw .groupListNeedsMultipleOperands
       | _ =>
           checkCore model rowGroup (ValidationCondition.groupList operator resolved)
             (by rw [hModel]; rfl)

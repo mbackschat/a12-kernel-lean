@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.RepetitionNotUnique
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.ValidationContext
 
 /-! # Shared resolved validation conditions
@@ -13,17 +14,18 @@ This boundary joins the established flat leaves and resolved numeric-expression 
 
 namespace A12Kernel
 
-/-- One authored operand of the kernel's fixed group-list condition family. Despite the language-level name, the checked entity list admits both fields and groups. Starred group scopes remain a separate SG2 source shape. -/
+/-- One authored operand of the kernel's group-list condition family. Despite the language-level name, the checked entity list admits fields, ordinary groups, and — for two operators — starred repeatable groups. -/
 inductive SurfaceGroupListOperand where
   | field (reference : SurfaceFieldPath)
   | group (reference : SurfaceGroupReference)
+  | starredGroup (reference : SurfaceStarGroupPath)
   deriving Repr, DecidableEq
 
-/-- A fixed group-list operand after model-owned field/group resolution. A field retains its exact declaration so overlap and checked-core coherence cannot be forged from an ID alone. -/
-inductive ResolvedGroupListOperand where
+/-- A group-list operand after model-owned resolution. Every variant retains its exact declaration or checked source, so overlap, topology, and checked-core coherence cannot be forged from paths alone. -/
+inductive ResolvedGroupListOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl)
   | group (reference : ResolvedGroupReference)
-  deriving Repr, DecidableEq
+  | starredGroup (source : CheckedStarredGroupSource model)
 
 /-- Presence operators for an ordinary non-starred repeatable field reference. Evaluation reuses the established scalar presence observation after the rule environment has selected one exact field instance. -/
 inductive RepeatableFieldPresenceOperator where
@@ -47,22 +49,32 @@ end RepeatableFieldPresenceOperator
 
 namespace ResolvedGroupListOperand
 
-def entityPath : ResolvedGroupListOperand → List String
+def entityPath : ResolvedGroupListOperand model → List String
   | .field declaration => declaration.path
   | .group reference => reference.path
+  | .starredGroup source => source.group.path
 
-def isRootGroup : ResolvedGroupListOperand → Bool
+def isRootGroup : ResolvedGroupListOperand model → Bool
   | .field _ => false
   | .group reference => reference.isRoot
+  | .starredGroup source => source.group.path.length == 1
 
-def referencesField (operand : ResolvedGroupListOperand)
-    (model : FlatModel) (field : FieldId) : Bool :=
+def isStarred : ResolvedGroupListOperand model → Bool
+  | .starredGroup _ => true
+  | .field _ | .group _ => false
+
+def referencesField (operand : ResolvedGroupListOperand model)
+    (field : FieldId) : Bool :=
   match operand with
   | .field declaration => declaration.id == field
   | .group reference => reference.referencesField model field
+  | .starredGroup source =>
+      match model.lookupUniqueId field with
+      | .ok declaration => source.group.path.isPrefixOf declaration.groupPath
+      | .error _ => false
 
-def wellFormedBool (operand : ResolvedGroupListOperand)
-    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
+def wellFormedBool (operand : ResolvedGroupListOperand model)
+    (rowGroup : GroupPath) : Bool :=
   match operand with
   | .field declaration =>
       match model.lookupUniqueId declaration.id with
@@ -71,23 +83,35 @@ def wellFormedBool (operand : ResolvedGroupListOperand)
       | .error _ => false
   | .group reference =>
       reference.fixedWellFormedBool model rowGroup
+  | .starredGroup source => source.wellFormedBool rowGroup
 
-/-- Kernel entity-list duplicate checking rejects direct duplicates and every group/descendant pair. Sibling fields and sibling groups remain independent. -/
-def overlaps (left right : ResolvedGroupListOperand) : Bool :=
+/-- Kernel entity-list duplicate checking rejects direct non-wildcard duplicates and every strict group/descendant pair. Repeated starred operands and unrelated siblings remain independent authored occurrences. -/
+def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
   match left, right with
   | .field leftDeclaration, .field rightDeclaration =>
       leftDeclaration.id == rightDeclaration.id
   | .group leftReference, .group rightReference =>
       leftReference.overlaps rightReference
+  | .starredGroup leftSource, .starredGroup rightSource =>
+      leftSource.group.path != rightSource.group.path &&
+        (leftSource.group.path.isPrefixOf rightSource.group.path ||
+          rightSource.group.path.isPrefixOf leftSource.group.path)
+  | .group reference, .starredGroup source
+  | .starredGroup source, .group reference =>
+      reference.path.isPrefixOf source.group.path ||
+        source.group.path.isPrefixOf reference.path
   | .group reference, .field declaration
   | .field declaration, .group reference =>
       reference.path.isPrefixOf declaration.groupPath
+  | .starredGroup source, .field declaration
+  | .field declaration, .starredGroup source =>
+      source.group.path.isPrefixOf declaration.groupPath
 
 end ResolvedGroupListOperand
 
 namespace ResolvedGroupListOperands
 
-def firstOverlap? : List ResolvedGroupListOperand →
+def firstOverlap? : List (ResolvedGroupListOperand model) →
     Option (List String × List String)
   | [] => none
   | first :: rest =>
@@ -95,13 +119,20 @@ def firstOverlap? : List ResolvedGroupListOperand →
       | some overlapping => some (first.entityPath, overlapping.entityPath)
       | none => firstOverlap? rest
 
-def wellFormedBool (operands : List ResolvedGroupListOperand)
-    (model : FlatModel) (rowGroup : GroupPath) : Bool :=
+def wellFormedBool (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model))
+    (rowGroup : GroupPath) : Bool :=
   !operands.isEmpty &&
-    1 < operands.length &&
-    operands.all (·.wellFormedBool model rowGroup) &&
+    (if operator.requiresMultipleOperands then
+      1 < operands.length &&
+        !operands.any ResolvedGroupListOperand.isStarred
+    else
+      operands.length != 1 ||
+        operands.any ResolvedGroupListOperand.isStarred) &&
+    operands.all (·.wellFormedBool rowGroup) &&
     (firstOverlap? operands).isNone &&
-    !operands.any ResolvedGroupListOperand.isRootGroup
+    (!operands.any ResolvedGroupListOperand.isRootGroup ||
+      (!operator.requiresMultipleOperands && operands.length == 1))
 
 end ResolvedGroupListOperands
 
@@ -159,7 +190,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | groupPresence (operator : GroupPresenceOperator)
       (reference : ResolvedGroupReference)
   | groupList (operator : GroupFillQuantifier)
-      (operands : List ResolvedGroupListOperand)
+      (operands : List (ResolvedGroupListOperand model))
   | repeatableFieldPresence (operator : RepeatableFieldPresenceOperator)
       (declaration : FlatFieldDecl)
   | repetitionNotUnique
@@ -194,9 +225,10 @@ def groupPresence (operator : GroupPresenceOperator)
     (reference : ResolvedGroupReference) : ValidationCondition model :=
   .leaf (.groupPresence operator reference)
 
-/-- Embed one fixed checked field/group presence list without expanding it into a parallel connective tree. -/
+/-- Embed one checked field/group entity list without expanding it into a parallel connective tree. Starred topology remains explicit in its model-indexed operand. -/
 def groupList (operator : GroupFillQuantifier)
-    (operands : List ResolvedGroupListOperand) : ValidationCondition model :=
+    (operands : List (ResolvedGroupListOperand model)) :
+    ValidationCondition model :=
   .leaf (.groupList operator operands)
 
 /-- Embed one ordinary non-starred repeatable field presence reference. Checked construction retains the exact model declaration; whole-rule assembly derives iteration from this leaf rather than accepting caller-supplied scope metadata. -/
@@ -224,18 +256,52 @@ def presenceWellFormedBool (reference : ResolvedGroupReference)
 
 end ResolvedGroupReference
 
-def ResolvedGroupListOperand.evalPresence
+def ResolvedGroupListOperand.evalDirectPresence?
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
-    ResolvedGroupListOperand → GroupListPresenceState
+    ResolvedGroupListOperand model → Option GroupListPresenceState
   | .field declaration =>
-      if isRelevant declaration.id then
-        (declaration.toPresenceField.observeValidation context.fields).asGroupListPresence
+      some (if isRelevant declaration.id then
+        (declaration.toPresenceField.observeValidation
+          context.fields).asGroupListPresence
       else
-        .unavailable
+        .unavailable)
   | .group reference =>
-      match context.groups reference.path with
-      | some state => state.asGroupListPresence
-      | none => .unavailable
+      some (match context.groups reference.path with
+        | some state => state.asGroupListPresence
+        | none => .unavailable)
+  | .starredGroup _ => none
+
+def ResolvedGroupListOperand.evalAddressedTally
+    (context : AddressedValidationEvaluationContext model) :
+    ResolvedGroupListOperand model →
+      Except CheckedAddressingError GroupListPresenceTally
+  | .field declaration =>
+      pure (GroupListPresenceTally.ofStates [if context.directRelevant
+          declaration.id then
+        (declaration.toPresenceField.observeValidation
+          context.scalar.fields).asGroupListPresence
+      else
+        .unavailable])
+  | .group reference =>
+      pure (GroupListPresenceTally.ofStates [match context.scalar.groups
+          reference.path with
+        | some state => state.asGroupListPresence
+        | none => .unavailable])
+  | .starredGroup source => do
+      let document := match context.input with
+        | .legacy document _ => document
+        | .checked checked => checked.source.toDocument
+      let count ← (source.rowCount document context.outer).mapError .addressing
+      pure (GroupListPresenceTally.filledOnly count)
+
+def ResolvedGroupListOperands.evalAddressedTally
+    (context : AddressedValidationEvaluationContext model) :
+    List (ResolvedGroupListOperand model) →
+      Except CheckedAddressingError GroupListPresenceTally
+  | [] => pure { filled := 0, empty := 0, unavailable := 0 }
+  | operand :: remaining => do
+      pure ((← operand.evalAddressedTally context).add
+        (← evalAddressedTally context remaining))
 
 namespace ValidationConditionLeaf
 
@@ -254,7 +320,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       comparison.referencesField field
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
-      operands.any fun operand => operand.referencesField model field
+      operands.any fun operand => operand.referencesField field
   | .repeatableFieldPresence _ declaration, field =>
       declaration.id == field
   | .repetitionNotUnique source, field =>
@@ -272,6 +338,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
       comparison.requiresAddressedValidation
   | .groupPresence _ reference =>
       !(model.repeatableScopeForGroupPath reference.path).isEmpty
+  | .groupList _ operands =>
+      operands.any ResolvedGroupListOperand.isStarred
   | .repeatableFieldPresence _ _ => true
   | .repetitionNotUnique _ => true
   | _ => false
@@ -286,8 +354,8 @@ def wellFormedBool (rowGroup : GroupPath) :
       comparison.wellFormedInBool rowGroup scope
   | .groupPresence _ reference =>
       reference.presenceWellFormedBool model rowGroup
-  | .groupList _ operands =>
-      ResolvedGroupListOperands.wellFormedBool operands model rowGroup
+  | .groupList operator operands =>
+      ResolvedGroupListOperands.wellFormedBool operator operands rowGroup
   | .repeatableFieldPresence _ declaration =>
       match model.lookupUniqueId declaration.id with
       | .ok checked =>
@@ -312,15 +380,22 @@ def evalSelected (context : ValidationEvaluationContext)
       | some state => operator.eval state
       | none => .unknown
   | .groupList operator operands =>
-      (operator.evalPresence
-        (operands.map fun operand => operand.evalPresence context isRelevant)).asConservativeVerdict
+      match operands.mapM fun operand =>
+          operand.evalDirectPresence? context isRelevant with
+      | some states =>
+          (operator.evalPresence states).asConservativeVerdict
+      | none => .unknown
   | .repeatableFieldPresence _ _ => .unknown
   | .repetitionNotUnique _ => .unknown
 
-/-- Evaluate one addressed leaf through the same relevance rules. Only the model-indexed ordered numeric branch can produce a structural addressing error; every existing scalar/group leaf remains the exact pure evaluator lifted into that channel. -/
+/-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
   | .orderedNumeric _ comparison => comparison.evalAddressed context
+  | .groupList operator operands => do
+      pure (operator.evalTally
+        (← ResolvedGroupListOperands.evalAddressedTally
+          context operands)).asConservativeVerdict
   | .groupPresence operator reference =>
       match context.input with
       | .legacy _ _ =>
@@ -417,6 +492,20 @@ private def mergeIterationScopeList :
   | [] => pure none
   | scope :: remaining => do
       mergeIterationScopes scope (← mergeIterationScopeList remaining)
+
+private def groupListOperandIterationScope :
+    ResolvedGroupListOperand model →
+      Option (List RepeatableLevel)
+  | .starredGroup source =>
+      let scope :=
+        (source.path.axes.take source.path.firstStar).map (·.level)
+      if scope.isEmpty then none else some scope
+  | .field _ | .group _ => none
+
+def ResolvedGroupListOperands.iterationScope
+    (operands : List (ResolvedGroupListOperand model)) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
+  mergeIterationScopeList (operands.map groupListOperandIterationScope)
 
 private def repeatableScopeThrough :
     List RepeatableLevel → RepeatableLevel →
@@ -649,6 +738,8 @@ def ordinaryIterationScope :
       pure (if scope.isEmpty then none else some scope)
   | .leaf (.orderedNumeric _ comparison) =>
       orderedNumericComparisonIterationScope comparison
+  | .leaf (.groupList _ operands) =>
+      ResolvedGroupListOperands.iterationScope operands
   | .leaf (.repetitionNotUnique source) =>
       pure (some (source.topology.path.axes.map (·.level)))
   | .leaf _ => pure none

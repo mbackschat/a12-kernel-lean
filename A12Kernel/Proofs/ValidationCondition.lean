@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationCondition
+import A12Kernel.Proofs.GroupPresence
 
 /-! # Shared validation-condition laws
 
@@ -280,39 +281,76 @@ theorem validationCondition_groupPresence_addressError
     model operator reference scalar outer document, fails]
   rfl
 
-/-- A reached fixed field/group list delegates once to the shared entity-presence tally and preserves its conservative collapsed-result embedding. -/
+/-- Scalar evaluation delegates a wholly direct field/group list to the shared entity-presence tally and refuses every list that still needs starred topology. -/
 @[simp]
 theorem validationCondition_groupList_evalSelected
     (model : FlatModel) (operator : GroupFillQuantifier)
-    (operands : List ResolvedGroupListOperand)
+    (operands : List (ResolvedGroupListOperand model))
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
     (ValidationCondition.groupList (model := model)
         operator operands).evalSelected
         context isRelevant =
-      (operator.evalPresence
-        (operands.map fun operand =>
-          operand.evalPresence context isRelevant)).asConservativeVerdict := by
+      match operands.mapM fun operand =>
+          operand.evalDirectPresence? context isRelevant with
+      | some states =>
+          (operator.evalPresence states).asConservativeVerdict
+      | none => .unknown := by
   rfl
 
-/-- The conservative embedding loses only the unobservable false/unknown distinction; it preserves every fired result and its exact polarity. -/
+/-- Scalar group-list evaluation fires exactly when every operand is direct and the shared tally fires with the same polarity. -/
 theorem validationCondition_groupList_fired_iff
     (model : FlatModel) (operator : GroupFillQuantifier)
-    (operands : List ResolvedGroupListOperand)
+    (operands : List (ResolvedGroupListOperand model))
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance)
+    (states : List GroupListPresenceState)
+    (direct : operands.mapM (fun operand =>
+      operand.evalDirectPresence? context isRelevant) = some states)
     (polarity : Polarity) :
     (ValidationCondition.groupList (model := model)
         operator operands).evalSelected
         context isRelevant = .fired polarity ↔
-      operator.evalPresence
-        (operands.map fun operand =>
-          operand.evalPresence context isRelevant) = .fired polarity := by
-  rw [validationCondition_groupList_evalSelected model]
-  generalize operator.evalPresence
-      (List.map (fun operand =>
-        operand.evalPresence context isRelevant) operands) = outcome
-  cases outcome <;> simp [ValidationFillOutcome.asConservativeVerdict]
+      operator.evalPresence states = .fired polarity := by
+  rw [validationCondition_groupList_evalSelected model, direct]
+  exact validationFillOutcome_conservative_fired_iff
+    (operator.evalPresence states) polarity
+
+/-- A group-list leaf requires the addressed evaluator exactly when one checked starred group source remains in its operand list. -/
+@[simp]
+theorem validationCondition_groupList_requiresAddressed
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model)) :
+    (ValidationCondition.groupList (model := model)
+      operator operands).requiresAddressedValidation =
+        operands.any ResolvedGroupListOperand.isStarred := by
+  rfl
+
+/-- Addressed group-list evaluation combines each direct classification and starred row count once, then delegates to the established tally table. -/
+@[simp]
+theorem validationCondition_groupList_evalAddressed
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model))
+    (context : AddressedValidationEvaluationContext model) :
+    (ValidationCondition.groupList (model := model)
+        operator operands).evalAddressed context =
+      (ResolvedGroupListOperands.evalAddressedTally context operands).map
+        fun tally =>
+          (operator.evalTally tally).asConservativeVerdict := by
+  rfl
+
+/-- A reached topology or document failure stays in the structural error channel and cannot become semantic UNKNOWN. -/
+theorem validationCondition_groupList_addressing_failure
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model))
+    (context : AddressedValidationEvaluationContext model)
+    (cause : CheckedAddressingError)
+    (fails : ResolvedGroupListOperands.evalAddressedTally
+      context operands = .error cause) :
+    (ValidationCondition.groupList (model := model)
+      operator operands).evalAddressed context = .error cause := by
+  rw [validationCondition_groupList_evalAddressed, fails]
+  rfl
 
 /-- An ordinary repeatable presence leaf always requires the addressed evaluator; selecting the scalar entry point cannot silently substitute UNKNOWN. -/
 @[simp]

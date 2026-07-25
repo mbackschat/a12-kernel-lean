@@ -11,6 +11,24 @@ namespace A12Kernel
       model.repeatableScopeForGroupPath checked.group.path :=
   checked.ancestryOwned
 
+/-- Every resolved starred group source discharges the generic checked-core boundary from the certificates produced by its sole elaborator. -/
+@[simp] theorem checkedStarredGroupSource_wellFormed
+    (checked : CheckedStarredGroupSource model) :
+    checked.wellFormedBool checked.declaringGroup = true := by
+  have owned : checked.group ∈ model.repeatableGroups := by
+    simpa using checked.groupOwned
+  simp [CheckedStarredGroupSource.wellFormedBool,
+    checked.modelWellFormed, owned, checked.ancestryOwned,
+    checked.firstStarWithin, checked.pathValid]
+
+/-- A starred group source cannot be transplanted into a checked condition owned by another declaring group. -/
+theorem checkedStarredGroupSource_wellFormed_declaringGroup
+    (checked : CheckedStarredGroupSource model) (rowGroup : GroupPath)
+    (valid : checked.wellFormedBool rowGroup = true) :
+    checked.declaringGroup = rowGroup := by
+  simp [CheckedStarredGroupSource.wellFormedBool] at valid
+  exact valid.1.1.1.1
+
 /-- No instantiated terminal row is exactly the omission-typed firing region. -/
 @[simp] theorem starredGroup_noGroupFilled_zero :
     StarredGroupFillQuantifier.noGroupFilled.evalCount 0 =
@@ -23,7 +41,8 @@ namespace A12Kernel
       .falseOrUnknown := by
   simp [StarredGroupFillQuantifier.evalCount,
     StarredGroupFillQuantifier.toGroupFillQuantifier,
-    GroupFillQuantifier.evalTally]
+    GroupFillQuantifier.evalTally,
+    GroupListPresenceTally.filledOnly]
 
 /-- No instantiated terminal row cannot satisfy `AtLeastOneGroupFilled(G*)`. -/
 @[simp] theorem starredGroup_atLeastOne_zero :
@@ -37,7 +56,8 @@ namespace A12Kernel
       .fired .value := by
   simp [StarredGroupFillQuantifier.evalCount,
     StarredGroupFillQuantifier.toGroupFillQuantifier,
-    GroupFillQuantifier.evalTally]
+    GroupFillQuantifier.evalTally,
+    GroupListPresenceTally.filledOnly]
 
 /-- A unique repeatable-path lookup returns a declaration the model actually owns, at exactly
     the requested path. Both facts are re-checked by the group elaborator's defensive branch. -/

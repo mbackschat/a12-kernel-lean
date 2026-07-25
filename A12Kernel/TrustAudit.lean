@@ -689,6 +689,9 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_groupPresence_addressError
 #print axioms A12Kernel.validationCondition_groupList_evalSelected
 #print axioms A12Kernel.validationCondition_groupList_fired_iff
+#print axioms A12Kernel.validationCondition_groupList_requiresAddressed
+#print axioms A12Kernel.validationCondition_groupList_evalAddressed
+#print axioms A12Kernel.validationCondition_groupList_addressing_failure
 #print axioms A12Kernel.validationCondition_repeatablePresence_requiresAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_evalAddressed
 #print axioms A12Kernel.validationCondition_repeatablePresence_iterationScope
@@ -1131,6 +1134,8 @@ run_cmd do
 #print axioms A12Kernel.checkedFirstFilledTokenSource_requiredMultiplicity
 #print axioms A12Kernel.checkedFirstFilledTokenSource_uniqueDirectOperands
 #print axioms A12Kernel.checkedStarredGroupSource_ancestry
+#print axioms A12Kernel.checkedStarredGroupSource_wellFormed
+#print axioms A12Kernel.checkedStarredGroupSource_wellFormed_declaringGroup
 #print axioms A12Kernel.starredGroup_noGroupFilled_zero
 #print axioms A12Kernel.starredGroup_noGroupFilled_successor
 #print axioms A12Kernel.starredGroup_atLeastOne_zero

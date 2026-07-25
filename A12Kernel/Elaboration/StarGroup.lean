@@ -3,7 +3,7 @@ import A12Kernel.Semantics.GroupPresence
 
 /-! # Checked terminal-repeatable group-star consumers
 
-This capsule resolves a sole starred group path whose terminal group is repeatable, counts its concrete topology-produced rows, and feeds that one structural count to the two legal starred group predicates and `NumberOfFilledGroups`. It is a full-validation boundary: mixed starred/plain operand lists, descendant-cell admission, partial group relevance, nonrepeatable terminal groups, filters, and whole-rule orchestration remain outside.
+This capsule resolves a starred group path whose terminal group is repeatable, counts its concrete topology-produced rows, and feeds that one structural count to the two legal starred group predicates and `NumberOfFilledGroups`. Validation-condition assembly may compose the checked source with plain group-list operands; this owner remains responsible only for the source and its count. Descendant-cell admission, partial group relevance, nonrepeatable terminal groups, filters, computation's ordered scan, and whole-rule orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -23,6 +23,7 @@ inductive StarredGroupElabError where
 
 /-- One terminal repeatable group and the shared checked plan that reaches each of its concrete rows exactly once. -/
 structure CheckedStarredGroupSource (model : FlatModel) where
+  declaringGroup : GroupPath
   group : RepeatableGroupDecl
   path : StarPath
   modelWellFormed : model.validate.isOk = true
@@ -78,6 +79,7 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
                     if hAncestry : plan.path.axes.map (·.level) =
                         model.repeatableScopeForGroupPath group.path then
                       .ok {
+                        declaringGroup
                         group
                         path := plan.path
                         modelWellFormed := by rw [hModel]; rfl
@@ -104,10 +106,20 @@ def StarredGroupFillQuantifier.toGroupFillQuantifier :
 /-- Every instantiated terminal row is structural group content, including a created-but-empty or over-limit row. -/
 def StarredGroupFillQuantifier.evalCount (operator : StarredGroupFillQuantifier)
     (count : Nat) : ValidationFillOutcome :=
-  operator.toGroupFillQuantifier.evalTally {
-    filled := count, empty := 0, unavailable := 0 }
+  operator.toGroupFillQuantifier.evalTally
+    (GroupListPresenceTally.filledOnly count)
 
 namespace CheckedStarredGroupSource
+
+/-- Recheck the declaring group and model-owned facts carried by one resolved starred group source at a generic checked-core boundary. -/
+def wellFormedBool (checked : CheckedStarredGroupSource model)
+    (rowGroup : GroupPath) : Bool :=
+  checked.declaringGroup == rowGroup && model.validate.isOk &&
+    model.repeatableGroups.contains checked.group &&
+    checked.path.axes.map (·.level) ==
+      model.repeatableScopeForGroupPath checked.group.path &&
+    decide (checked.path.firstStar < checked.path.axes.length) &&
+    checked.path.validate.isOk
 
 /-- Resolve the canonical nested topology once, retaining its exact terminal-row environments. -/
 def resolvedTopology (checked : CheckedStarredGroupSource model)
