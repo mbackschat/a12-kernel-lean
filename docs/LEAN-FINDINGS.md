@@ -902,3 +902,19 @@ A shared evaluator was given its first family's state as two positional argument
 The fix was one addressed slot space read by one node, with per-family slot layouts named as constructors rather than left as bare indices. Two constructs collapsed into one, so the core lost a construct while gaining a family, the dead binders disappeared, and every preservation theorem in both families took the same shape. The reusable test is therefore cheap: **after adding a family to a shared mechanism, check whether any existing statement had to grow a binder it does not use.** If so, the mechanism has accumulated a union and should be abstracted before the next family, because each one added first widens what has to be unpicked.
 
 The complementary caution is that fixing the environment does not automatically fix the *result* domain, which can accumulate the same way. Whether it does is bounded by result domains rather than by families, and only a third family can establish that.
+
+## LF75 — writing a research guard and applying it are different acts; the same commit can do the first and fail the second
+
+> Date: 2026-07-25. Sections: §5 and §7. Basis: reviewed a12-dmkits revisions `97e35531` and `724926a5`, against this repository's own `spec/` and commit `aff18e5`.
+
+The 2026-07-25 exchange with a12-dmkits produced a guard for [`SOURCES.md`](#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit): *a peer's reachability claim is a hypothesis until measured, and "unrepresentable" is the most tempting unmeasured one.* It was written after two inferences had been adopted here as measured fact and then withdrawn upstream.
+
+**The commit that added that paragraph adopted a third one in the same diff.** The peer's intermediate draft argued the parse-time lift's witness needs 17 fractional digits against a field scale cap of 14, so no legal model can express it; `spec/07` was rewritten to say the classifier is exact-decimal for every authorable input. The peer retracted it two revisions later: the literal gate is `MVK_INVALID_COMPARE_DEC_PLACES`, the kernel's one suppressible code, so the witness is authorable with the documented directive.
+
+Three properties make this worth keeping rather than filing as another instance of the shape named in `SOURCES.md`:
+
+- **The defeater was in this project's own canonical prose**, two files from the edit. [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md) states that the suppression "allows an `==`/`!=` across differing scales" and is the *only* suppressible code; [`12-concrete-syntax.md`](../spec/12-concrete-syntax.md) carries its grammar. Nothing had to be measured, requested, or read from a sibling — only recalled. The earlier instances of this shape at least required evidence the repository did not hold.
+- **The guard's own text names the failure it then permitted.** Proximity to a rule is not application of it, and a rule written in the same session is if anything *less* likely to be applied, because writing it feels like discharging it.
+- **The Lean was right the whole time.** `roundToBinary64` already modelled the parse step, so the executable theory would have classified the witness correctly on the day the prose declared it unreachable. Every defect in this exchange was in prose *about* the formalisation.
+
+The transferable rule is narrow and mechanical, and it is now in `SOURCES.md`: **before consuming an unreachability claim, grep this repository's `spec/` for the gate it names.** An unreachability argument is a conjunction, so it falls to a single defeater; the cheapest place to look for one is the prose this project already owns. A conformance case is the durable form of that check — the case added here carries the authorable pair and would have failed against a model that treated the classifier as exact-decimal, which the retracted clause invited a reimplementer to build.

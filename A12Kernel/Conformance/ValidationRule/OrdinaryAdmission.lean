@@ -237,13 +237,14 @@ example :
       some (.insufficient 10) := by
   native_decide
 
-private def halfTieFromBelow : DecodedNumericLiteral :=
-  { value := (1 / 2 : Rat) - 1 / (2 ^ 55)
-    authoredScale := 55 }
+/- Binary64 tie-to-even lifts every decimal in `[1/2 - 2^-55, 1/2)` onto one half. Its shortest witness carries 17 fractional digits, and the neighbour one ulp below the interval carries the same 17, so this pair separates the parse step from the authored scale rather than confounding the two. Authorable against a scale-14 field only with `MVK_INVALID_COMPARE_DEC_PLACES` suppressed. -/
+private def liftedBelowHalf : DecodedNumericLiteral :=
+  { value := (49999999999999998 : Rat) / 10 ^ 17
+    authoredScale := 17 }
 
-private def belowHalfTie : DecodedNumericLiteral :=
-  { value := halfTieFromBelow.value - 1 / (10 ^ 56)
-    authoredScale := 56 }
+private def unliftedBelowHalf : DecodedNumericLiteral :=
+  { value := (49999999999999990 : Rat) / 10 ^ 17
+    authoredScale := 17 }
 
 /- The pure conversion owner also retains Java's asymmetric half rounding, long saturation, signed-int wrap, and the checked finite-decimal representation boundary. -/
 example :
@@ -261,7 +262,7 @@ example :
       { value := 1, authoredScale := -1 } = none := by
   native_decide
 
-/- The checked decimal carrier is sufficient for the kernel host conversion. Binary64 tie-to-even can move an exact value below one half onto one half; Java rounding and signed-32-bit narrowing then determine the static zero test. -/
+/- The checked decimal carrier is sufficient for the kernel host conversion. Binary64 tie-to-even can move an exact value below one half onto one half; Java rounding and signed-32-bit narrowing then determine the static zero test. The two below-half rows and the `2^32` pair are separately authorable, so each pins one conversion stage on its own. -/
 example :
     directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
       { value := 2 / 5, authoredScale := 1 } =
@@ -270,9 +271,9 @@ example :
       { value := 1 / 2, authoredScale := 1 } =
         some .legal ∧
     directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
-      halfTieFromBelow = some .legal ∧
+      liftedBelowHalf = some .legal ∧
     directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
-      belowHalfTie = some (.invalid 10) ∧
+      unliftedBelowHalf = some (.invalid 10) ∧
     directRepeatableNumericLiteralLegality? (.ordinary .equal)
       { value := 4294967296, authoredScale := 0 } =
         some (.invalid 10) ∧
