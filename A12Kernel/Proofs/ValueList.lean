@@ -139,7 +139,11 @@ theorem valueListNo_unknownMember_before_fields
       .unknown := by
   rfl
 
-/-- `NotAll`'s ordered presence prepass leaves an unknown values member unread when no present field exists. -/
+/-- With no present fields cell, `NotAll` does not fire even against a poisoning values member.
+
+Whether the values side is read is a size-selected emission detail and not observable; only this
+outcome is. The guard in `evalOrdered` is nonetheless load-bearing here, because this encoding
+classifies the values side eagerly — see `spec/06-strings-and-enumerations.md` §B.3 and `LF72`. -/
 theorem valueListNotAll_noPresent_before_unknownMember
     (cause : FormalCause) :
     ValueListQuantifier.evalOrdered (kind := .token) .notAll
