@@ -96,6 +96,29 @@ It must also **verify that the named discriminator is the actual variable**, bec
 - **Also inbound:** the decimal-places gate is **at most**, not equality; a shorter literal is admitted and reaches the partition normally. Their diagnostic text says the digit counts "are different", which invites the equality reading. Recorded in the same clause.
 - **Closed at reviewed a12-dmkits `724926a5`; nothing outbound.** That revision retracts correction (2) above, resolves the `getZahlKonstanteWert` `-1` sentinel hypothesis this exchange left open, and adds two facts adopted directly: the declared fractional interval `0 ≤ min ≤ max ≤ 14` (cap MVK-less, ordering `MVK_FRACT_DIGITS_INVALID`) now in [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md), and a second independent death for the table-enum region — the sole implementor's empty `getDependentColumns()` — now the tighter citation in [`06-strings-and-enumerations.md`](../spec/06-strings-and-enumerations.md) and [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion). Both revisions are committed and reviewed upstream, so all of it lands as provenance in [`SOURCES.md`](SOURCES.md) and creates **no** outbound entry. Of the corrections exchanged under this entry, two were outbound and three inbound, and one of the inbound ones corrected an earlier inbound one — which is the argument for recording superseded reasoning in place rather than editing it away.
 
+### SPEC-2026-07-25-03 — the long boundary classifies `+(2^63 - 1)` and `-(2^63 - 1)` oppositely, and only the negative side separates exact-integer arithmetic
+
+- **Status:** pending
+- **Kind:** semantic correction (addition), locally originated; **external evidence pending** — predicted by this repository's conversion owner, not yet measured on the kernel
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `724926a5`
+- **Kernel behavior:** 30.8.1; the mechanism is binary64 representability, so it is host-JDK-independent
+- **Canonical clause:** [`07-repetition-and-iteration.md` §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands)
+- **Delta:** your `724926a5` §4 locked `longSaturationNarrowsToMinusOneAndIsAdmitted` on the positive side only. The negative end behaves differently, for a reason that is not saturation at all. `-(2^63 - 1)` is **not representable** in binary64 — at that magnitude consecutive doubles are 1024 apart — so it parses onto `-2^63` exactly, whose low 32 bits are clear, and narrows to **zero**. Predicted classification on a scale-0 field in a repeatable group:
+
+| condition | predicted | why |
+|---|---|---|
+| `[Count] == 9223372036854775807` | **admitted** | representable-or-not is irrelevant; narrows to `-1` |
+| `[Count] == -9223372036854775807` | **REJECTED** | parses onto `-2^63`; narrows to `0` |
+| `[Count] == -9223372036854773760` | **admitted** | one representable step away; residue `2048` |
+
+- **Why this pair is worth locking even though you already lock the positive one.** It is the sharpest available separator against **exact 64-bit integer arithmetic**, which is what a reimplementation in Rust, Python, or Kotlin `BigInteger` writes by default: computing `-(2^63 - 1) mod 2^32` exactly gives `1`, so that implementation **admits** a condition the kernel rejects. Your positive row cannot catch this, because exact arithmetic and the binary64 route agree at `+(2^63 - 1)`. The third row is a required control — without it the pair reads as "the negative boundary always rejects", which is false.
+- **A second, weaker account it also separates:** clamping to the signed-32-bit range instead of saturating the long first. That agrees with the correct account at `2^63` and contradicts it at the negative boundary.
+- **How this was found, which is the reason it is marked pending rather than asserted.** This repository predicted a `±1` pair at the negative boundary by reasoning on the exact decimal, wrote it as a conformance case, and the case **failed** — because the prediction skipped the parse step, which is the same mechanism this whole exchange has been about. The corrected rows above are what our conversion owner actually computes. They are therefore a model prediction that reproduces every measurement you have supplied so far, not an independent observation.
+- **Requested a12-dmkits reconciliation:** measure the three conditions above through the real kernel. If they hold, the clause is confirmed and you may want the `-(2^63 - 1)` row beside your existing saturation case, since it is the one that catches exact-integer reimplementations. If any differs, this repository's conversion owner is wrong at the negative boundary and the clause plus its conformance rows are corrected here.
+- **Compatibility:** an implementation reproducing this needs the parse step at *both* ends of the long range, not only near one half. Rounding the decimal, or doing exact integer arithmetic, diverges on static admission for a literal a model may legally author.
+- **Acceptance:** the three conditions are measured on a scale-0 field in a repeatable group, and the outcome is recorded with its revision — including a refutation, which corrects this repository rather than the peer.
+
 ## Experiment requests
 
 ### EXP-2026-07-25-01 — condition-line splitting above fifty terms is unreached by either corpus

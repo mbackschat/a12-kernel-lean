@@ -262,7 +262,7 @@ example :
       { value := 1, authoredScale := -1 } = none := by
   native_decide
 
-/- The checked decimal carrier is sufficient for the kernel host conversion. Binary64 tie-to-even can move an exact value below one half onto one half; Java rounding and signed-32-bit narrowing then determine the static zero test. The two below-half rows and the `2^32` pair are separately authorable, so each pins one conversion stage on its own. -/
+/- The checked decimal carrier is sufficient for the kernel host conversion. Binary64 tie-to-even can move an exact value below one half onto one half; Java rounding and signed-32-bit narrowing then determine the static zero test. The below-half rows and the `2^32` pair are separately authorable, so each pins one conversion stage on its own. The long-boundary rows pin the parse step at the opposite end of the range: `±(2^63 - 1)` classify *oppositely* despite equal magnitude, because the negative one is not representable and parses onto `-2^63`, whose low 32 bits are clear. An implementation doing exact 64-bit integer arithmetic instead of rounding through binary64 admits it. The third row keeps that from reading as "the negative boundary always rejects": one representable step away, the residue is nonzero again. -/
 example :
     directRepeatableNumericLiteralLegality? (.ordinary .greaterEqual)
       { value := 2 / 5, authoredScale := 1 } =
@@ -279,6 +279,15 @@ example :
         some (.invalid 10) ∧
     directRepeatableNumericLiteralLegality? (.ordinary .equal)
       { value := 4294967297, authoredScale := 0 } =
+        some .legal ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .equal)
+      { value := 9223372036854775807, authoredScale := 0 } =
+        some .legal ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .equal)
+      { value := -9223372036854775807, authoredScale := 0 } =
+        some (.invalid 10) ∧
+    directRepeatableNumericLiteralLegality? (.ordinary .equal)
+      { value := -9223372036854773760, authoredScale := 0 } =
         some .legal := by
   native_decide
 
