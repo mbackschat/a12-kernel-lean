@@ -911,7 +911,7 @@ So the sharper lesson is a warning about this finding's own evidence: **dead bin
 
 > Date: 2026-07-25. Sections: §5 and §7. Basis: reviewed a12-dmkits revisions `97e35531` and `724926a5`, against this repository's own `spec/` and commit `aff18e5`.
 
-The 2026-07-25 exchange with a12-dmkits produced a guard for [`SOURCES.md`](#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit): *a peer's reachability claim is a hypothesis until measured, and "unrepresentable" is the most tempting unmeasured one.* It was written after two inferences had been adopted here as measured fact and then withdrawn upstream.
+The 2026-07-25 exchange with a12-dmkits produced a guard for [`SOURCES.md`](SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit): *a peer's reachability claim is a hypothesis until measured, and "unrepresentable" is the most tempting unmeasured one.* It was written after two inferences had been adopted here as measured fact and then withdrawn upstream.
 
 **The commit that added that paragraph adopted a third one in the same diff.** The peer's intermediate draft argued the parse-time lift's witness needs 17 fractional digits against a field scale cap of 14, so no legal model can express it; `spec/07` was rewritten to say the classifier is exact-decimal for every authorable input. The peer retracted it two revisions later: the literal gate is `MVK_INVALID_COMPARE_DEC_PLACES`, the kernel's one suppressible code, so the witness is authorable with the documented directive.
 

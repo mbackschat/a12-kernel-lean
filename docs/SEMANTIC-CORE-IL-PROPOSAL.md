@@ -1,6 +1,12 @@
 # Proposal — a semantic core IL with proved lowering
 
-**Status: accepted 2026-07-25. E1 complete and green. E2 partially discharged: the parameter discipline generalized, the environment did not — and that negative is now fixed by the addressed read (§7b), so two families share one core with a stable interface. Scoped iteration remains untested, so the core is not yet shared in full.** Owner: this repository. Supersedes nothing.
+> ## ⛔ CLOSED — read [§10](#10-closed--the-universal-shared-core-claim-is-rejected-2026-07-25) first
+>
+> **Status: closed 2026-07-25 with a negative architectural result.** The universal shared-core claim is **rejected**, Route B is **not** this project's derivation architecture, the `U1 → U2 → U6 → U5 → U4 → U3` sequence is **cancelled**, and `Semantics/CoreIL.lean` and `Proofs/CoreIL.lean` are **deleted**.
+>
+> **Sections 1–9 are preserved as the historical record and are not corrected in place beyond the inline markers below.** Several of their claims are withdrawn. Do not act on any of them without reading §10, which owns the verdict, the retained result, Route A as the incremental default, and the six conditions for reopening a checked-plan IL.
+>
+> What survives: `scanAtLeastOne_nil_members` in [`Proofs/ValueList.lean`](../A12Kernel/Proofs/ValueList.lean), plus [`LF73`](LEAN-FINDINGS.md), [`LF74`](LEAN-FINDINGS.md), [`LF76`](LEAN-FINDINGS.md).
 
 ---
 
@@ -35,6 +41,8 @@ The ten categories in [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md#general-consum
 | 8 | **Qualify** (conformance, differential, mutation) | n/a — it *is* the checking role | bounded exhaustive generation | partly built |
 | 9 | **Explain** (traces, change reports) | partial | generated traces rather than narrated ones | limited |
 | 10 | **Govern** (manifests, gates) | n/a | metadata | partly built |
+
+> ⛔ **Withdrawn (§10).** The table below has **six** `yes` rows, not eight, and a static artifact is not automatically proof-carrying: Translate needs source and target semantics plus a checked relation, Compile a compiler-correctness theorem, Synthesize validates a witness rather than generator completeness, and Explain needs a checked trace relation this proposal never supplies. [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) is the more careful account.
 
 **Eight of ten categories can carry genuine inherited assurance.** The independent interpreter — the most legible product, and the usual first choice — is one of the two that structurally cannot, because it produces no artifact to check. Any plan that proves the derivation thesis by shipping an interpreter first is proving it in the one place it cannot be proved.
 
@@ -83,7 +91,7 @@ A **semantic core IL** is the smallest set of constructs into which checked surf
 The public contract has three parts:
 
 1. **Core syntax and semantics**, owned in Lean, small enough to reimplement in a page.
-2. **A total lowering** from each checked family into the core.
+2. **A total lowering** from each checked family into the core. ⛔ **Not achieved (§10).** The implementation began *after* expansion, filtering, relevance and cell observation, so the promise in this line is the precise claim the experiment failed to meet.
 3. **A preservation theorem** per family, equating core evaluation with that family's existing executable clause.
 
 ```lean
@@ -112,7 +120,7 @@ The IL does **not** remove the unproved gap. It shrinks and concentrates it.
 | core in Lean → core in a target language | *nothing* | hand-written, reviewable, exhaustively testable because small |
 | Lean → kernel | retained evidence | empirical, unchanged ceiling |
 
-The third row is the honest claim: not "proved correct", but **"the unproved part is now small enough that exhaustive testing over a bounded domain is a complete argument"** — which it never is for a whole language. The fourth row is untouched by this proposal; [two links, one ceiling](PROJECT-DESIGN.md#why-derive--the-animating-principle-and-its-assurance-classes) still governs, and no amount of internal proof raises a derived product's claim above the retained evidence beneath it.
+The third row is the honest claim: not "proved correct", but **"the unproved part is now small enough that exhaustive testing over a bounded domain is a complete argument"** — which it never is for a whole language. ⛔ **Overstated (§10):** it is a complete argument only for that exact finite bound, and the core as built carried unbounded rationals, strings, lists and slot indices, so no bounded suite universally establishes a hand-written target implementation of it. The fourth row is untouched by this proposal; [two links, one ceiling](PROJECT-DESIGN.md#why-derive--the-animating-principle-and-its-assurance-classes) still governs, and no amount of internal proof raises a derived product's claim above the retained evidence beneath it.
 
 ### What a consumer implements
 
@@ -162,6 +170,8 @@ The core is the shared substrate for all eight proof-carrying categories, not an
 
 ### Success criteria, fixed before the work
 
+> ⛔ **All four passed, and all four were insufficient (§10).** They measured constructor count, theorem greenness, universality and transport-by-rewriting. None asked whether the core sat at the boundary §3 claimed, whether a helper duplicated an existing owner, or whether a cited theorem existed. Written by the agent later graded against them; see [`LF76`](LEAN-FINDINGS.md).
+
 E1 succeeds only if all four hold:
 
 1. preservation proved for all three operators, with no `sorry` and no new axiom;
@@ -171,11 +181,11 @@ E1 succeeds only if all four hold:
 
 E1 **fails**, and is to be reported as a negative result with the experimental code removed, if the core needs one construct per surface operator — that is a renaming carrying extra proof obligations rather than a reduction.
 
-## 7. Result — E1 succeeded
+## 7. Result — E1 succeeded *(as a family-local normalization result only — see §10)*
 
 All four criteria met. Gates: `lake build` 471 jobs, trust audit **1327 theorem roots; 27614 declarations in 252 modules**, `lake test` 51/51, `checkReferenceProcess` 51/51.
 
-**Criterion 1.** [`lowerValueListQuantifier_preserves`](../A12Kernel/Proofs/CoreIL.lean) is proved for all three operators, universal over operand shapes. Eleven theorems total, zero `sorry`, and the trust audit's axiom check passes, so no escape hatch was used.
+**Criterion 1.** `lowerValueListQuantifier_preserves` (in the since-deleted `Proofs/CoreIL.lean`; recoverable at commit `f3c086a`) is proved for all three operators, universal over operand shapes. Eleven theorems total, zero `sorry`, and the trust audit's axiom check passes, so no escape hatch was used.
 
 **Criterion 2 — the core is strictly smaller, and the prediction held.** The family carries two collection functions, **three** operator-specific fields scans, a presence predicate, and an empty-member guard. The core carries two collection policies, **two** folds, and one guard:
 
@@ -223,7 +233,9 @@ That is a genuine design defect, not a cosmetic one. A core whose environment an
 
 **What E2 changes about sequencing.** Fixing the environment is now a precondition for a third family rather than an optional refinement, because each family added before the fix widens the union that has to be unpicked. The next unit on this track is therefore the addressed `read`, not a third lowering.
 
-## 7b. Result — the addressed read closed E2's negative
+## 7b. Result — the addressed read closed E2's negative ⛔ *REJECTED (§10)*
+
+> ⛔ **This section's conclusion is withdrawn.** The addressed read did not abstract over the per-family union; it relocated it into an untyped `List CoreValue` indexed by a bare `Nat`, so every family still contributed its own layout and builder while `read` could return any constructor. The *signature* stabilized; the semantic ABI stayed open. The promised read — cell observations against a document, with structural failure distinct from semantic UNKNOWN — was never built, and neither was the `WellFormed` boundary [`ARCHITECTURE.md`](ARCHITECTURE.md) requires of an extrinsic AST.
 
 E2's negative was that `eval` carried a union of per-family environments. That is fixed. Gates: `lake build` 471 jobs, trust audit **1330 theorem roots; 27677 declarations in 252 modules**, `lake test` 51/51, `checkReferenceProcess` 51/51 — the same theorem count, so nothing was traded away.
 
@@ -248,7 +260,7 @@ Out of scope for this proposal, recorded so a later reader need not rediscover t
 - **Ship a proof-carrying consumer before the interpreter.** Synthesize is cheapest — a witness generator whose output a small Lean checker validates. It would demonstrate the derivation thesis with genuine inherited proof at spike scale, which the interpreter structurally cannot do however well the IL works.
 - **Adopt Route A incrementally rather than as a project.** When a future capsule lands a decision table, record it as data with a proved-equivalent lookup instead of burying it in `match` arms. No generator, no new infrastructure — just stop putting new semantics where a generator cannot reach. After two or three capsules there is enough tabulated material to judge whether a generator is worth building, on evidence rather than on a bet.
 - **The core has a second payoff that is not derivation economics.** A reduced construct set with a proved lowering is itself a *simplified language variant* — a deliverable for consumers who cannot afford the full surface — and the preservation theorem is what makes it a proved image rather than a summary. Recorded as a cross-category use case in [`USE-CASES.md`](USE-CASES.md#cross-category-use-case-a-derived-simplified-language-variant). It changes nothing here: no new scope, no process change, and the variant's reach is a consequence of how far lowering has progressed. It does supply a concrete candidate for the consumer probe, and it means the core's value does not rest on the derivation argument alone.
-- **Fix the `Translate` omission** in the certificate row of [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#why-derive--the-animating-principle-and-its-assurance-classes) when that table is next edited.
+- ⛔ **Withdrawn (§10).** **Fix the `Translate` omission** in the certificate row of [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#why-derive--the-animating-principle-and-its-assurance-classes) when that table is next edited.
 
 ## 10. Closed — the universal shared-core claim is rejected, 2026-07-25
 
@@ -306,6 +318,8 @@ A checked-plan IL may eventually be right, and it would **not** pull model check
 - §3's claim that bounded exhaustive testing becomes "a complete argument" holds only for that exact finite bound. The core carried unbounded rationals, strings, lists and slot indices.
 
 ## 9. What would falsify the approach
+
+> ⛔ **Two of these fired (§10).** *"E2 needs constructs that do not generalize"* — the numeric constructs were unusable by the value-list family, which this section names as the E2 falsifier. And the boundary defect means the per-family cost was never measured against the real elaboration surface. Recorded here because predeclaring falsifiers only works if they are checked afterwards, which is what an external review had to do.
 
 Stated so the proposal can be abandoned on evidence rather than defended.
 
