@@ -303,7 +303,10 @@ def ValueListQuantifier.resolveSidesOrdered
       let fields ← resolveFields ()
       pure (fields, values)
 
-private def collectAtLeastOneValueListMembers :
+-- The ordered collection and scan helpers below were private until the core-IL preservation
+-- proof needed to state induction lemmas about them from its own module. Exposure is
+-- deliberate and carries no new semantics; `evalOrdered` remains the only intended entry.
+def collectAtLeastOneValueListMembers :
     List (ResolvedValueListSide kind) → List (ValueListAtom kind) × Bool
   | [] => ([], false)
   | side :: remaining =>
@@ -312,11 +315,11 @@ private def collectAtLeastOneValueListMembers :
       (side.presentValues ++ members,
         (side.hasHaving && side.hasPresent) || filteredPresent)
 
-private inductive PoisoningValueListMembers (kind : ValueListKind) where
+inductive PoisoningValueListMembers (kind : ValueListKind) where
   | unknown
   | known (members : List (ValueListAtom kind)) (omission : Bool)
 
-private def collectPoisoningValueListMembers :
+def collectPoisoningValueListMembers :
     List (ResolvedValueListSide kind) → PoisoningValueListMembers kind
   | [] => .known [] false
   | side :: remaining =>
@@ -329,7 +332,7 @@ private def collectPoisoningValueListMembers :
             .known (side.presentValues ++ members)
               (side.hasHaving || side.hasMissingPotential || omission)
 
-private def scanValueListAtLeastOneFields
+def scanValueListAtLeastOneFields
     (members : List (ValueListAtom kind)) (filteredPresent : Bool) :
     List (ResolvedValueListSide kind) → Verdict
   | [] => .notFired
@@ -339,7 +342,7 @@ private def scanValueListAtLeastOneFields
       else
         scanValueListAtLeastOneFields members filteredPresent remaining
 
-private def scanValueListNoFields
+def scanValueListNoFields
     (members : List (ValueListAtom kind)) :
     List (ResolvedValueListSide kind) → Bool → Verdict
   | [], omission => .fired (if omission then .omission else .value)
@@ -354,13 +357,13 @@ private def scanValueListNoFields
         | .exhausted nextOmission =>
             scanValueListNoFields members remaining nextOmission
 
-private def orderedValueListFieldsHavePresent :
+def orderedValueListFieldsHavePresent :
     List (ResolvedValueListSide kind) → Bool
   | [] => false
   | side :: remaining =>
       side.hasPresent || orderedValueListFieldsHavePresent remaining
 
-private def scanValueListNotAllFields
+def scanValueListNotAllFields
     (members : List (ValueListAtom kind)) (valuesOmission : Bool) :
     List (ResolvedValueListSide kind) → Verdict
   | [] => .notFired

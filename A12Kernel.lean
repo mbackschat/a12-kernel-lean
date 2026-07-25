@@ -39,6 +39,7 @@ import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
 import A12Kernel.Semantics.Condition
+import A12Kernel.Semantics.CoreIL
 import A12Kernel.Semantics.ValueList
 import A12Kernel.Semantics.FirstFilledValue
 import A12Kernel.Semantics.StarCompleteness
