@@ -48,13 +48,13 @@ The detailed readiness fields live only in those gap entries. Every capsule rece
 
 ## Awaiting the peer project
 
-Three ledger items are pending handoff and need no local work until they return. [`SPEC-2026-07-25-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md) narrows the `NotAll` prepass to a size-selected route. [`EXP-2026-07-25-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md) is blocked on a local doctrine decision, not on upstream work — see below. [`EXP-2026-07-25-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md) asks for the semantic-index parallel-iteration observation, with its separating document shape specified.
+Two ledger items are pending handoff and need no local work until they return. [`SPEC-2026-07-25-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md) narrows the `NotAll` prepass to a size-selected route. [`EXP-2026-07-25-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md) asks for the semantic-index parallel-iteration observation, with its separating document shape specified.
 
 The calculation-closure dispute is **resolved and closed** at a12-dmkits `dda6ba01`: the size gate is real, the unconditional setter was a side effect inside a getter body the template evaluates only in the gate's true branch, and the mode is now probed and locked. Consequence for the evidence account: **only object splitting is corpus-exercised**, so the peer's zero characterized static-Java divergences bears on one mode rather than two, and the other two were blind spots now closed by authored shapes.
 
-## Owner decision required
+## Resolved without a decision
 
-[`EXP-2026-07-25-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md) cannot proceed either way without a doctrine ruling. Table enumerations are Java-only by declared, diagnosed kernel policy, so the normative Groovy-dynamic anchor **structurally cannot witness that region** — no Groovy-anchored differential on either side can follow. Closing it would require an explicit exception promoting static-Java co-evidence to sole evidence for that region. Refusing the exception is equally legitimate and records [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)'s dynamic/table portion as permanently outside kernel-correspondence claims — the eventual-100% goal's first acknowledged structurally uncalibratable region. Requesting a probe before this ruling would be premature.
+[`EXP-2026-07-25-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md) is **resolved and needs no ruling.** The doctrine question was void: no in-repo producer supplies a table on any dialect, so the declared Groovy/JS-VK restriction was never the binding constraint and an exception would have unblocked nothing. The region is outside the observable language rather than a conceded hole, so the eventual-100% goal carries no acknowledged uncalibratable region from it. A gate check before editing did narrow the reasoning: dependent columns carry a genuine runtime cascading domain, recorded as a precisely scoped and currently unreachable obligation under [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion). **The 31.1 upgrade is not a re-open trigger** — it was verified alongside 30.8.1. Dynamic enumerations are untouched by this and remain open.
 
 ## Active capsule
 

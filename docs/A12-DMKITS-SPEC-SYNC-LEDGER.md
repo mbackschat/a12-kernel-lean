@@ -12,7 +12,7 @@ Pure spelling, formatting, link, or non-semantic navigation edits do not enter t
 
 Each entry has a stable `SPEC-YYYY-MM-DD-NN` ID and records:
 
-- status: `pending`, `handed-off`, `accepted`, or `superseded`;
+- status: `pending`, `handed-off`, `accepted`, `resolved`, or `superseded`. `accepted` means this repository reviewed an exact a12-dmkits revision against the entry's acceptance condition. `resolved` is the terminal state for an `EXP-` entry closed **locally** as requiring no observation — no upstream revision exists to review, so `accepted` would misdescribe it. An `EXP-` entry answered by an upstream probe uses `accepted` as usual;
 - the changed spec file and section;
 - a concise delta summary;
 - the kernel version and evidence or source basis;
@@ -94,14 +94,19 @@ The distinction matters because the two arms of this project's convergence desig
 
 ### EXP-2026-07-25-02 — the table-enumeration region has no normative witness
 
-- **Status:** pending, blocked on a doctrine decision here
-- **Kind:** experiment request
+- **Status:** resolved — no observation required, no doctrine exception needed
+- **Kind:** experiment request (miscategorised: see the disposition)
 - **Kernel behavior:** 30.8.1
 - **Basis:** a12-dmkits revision `7d17733a` established that `NoMetaModelChecks.checkEnumTables()` rejects table-enum fields for `GROOVY` and `JAVA_SCRIPT_VK` with `MVK_TABLE_ENUMS_NOT_ALLOWED_FOR_PROGRAMMING_LANGUAGE`, so table enumerations are a Java-only capability by declared, diagnosed policy. Its ledger rows now scope the exclusion explicitly as a front-end-reach claim rather than a claim about the kernel's language, and record that the region is reachable through the kernel's other front-end.
 - **The problem, which is not a missing probe:** the dynamic-Groovy observation anchor **structurally cannot produce an observation in this region**. No Groovy-anchored differential, this project's or the peer's, can follow. Static-Java is the only emitted witness.
 - **Blocked on:** a local decision, not upstream work. This project's differential doctrine makes dynamic-Groovy normative and static-Java co-evidence. Closing this region would require an explicit doctrine exception promoting co-evidence to sole evidence for it. Until that exception is adopted or refused, requesting a probe would be premature.
 - **If the exception is adopted:** the request becomes a static-Java observation of table-enumeration evaluation over a legal Java-target model, with the claim scoped to that strategy alone and labelled as such wherever it is cited.
-- **If the exception is refused:** [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion)'s dynamic/table portion is recorded as permanently outside kernel-correspondence claims, with this entry as the stated reason, and the eventual-100% goal carries its first acknowledged structurally uncalibratable region.
+- **Disposition (2026-07-25): the doctrine question was void; neither arm was needed.** Three findings, in ascending order of decisiveness.
+  1. **No producer on any dialect.** `getTableName` is abstract on the tool-internal ADO enumeration type, so every producer must implement it; an exhaustive sweep finds exactly one implementor, in the md model mapping layer, which hardcodes an empty optional for table, column, and dependent columns. The public md API has no table concept at all. So the codegen table check can never fire for any model this repository can construct — for Java as much as for Groovy. Verified at the 30.8.1 pin and at 31.1.0; the check is unchanged, the bridge still empty, and the 28.4.0 → 29.4.0 model-format migration added no producer. A doctrine exception promoting co-evidence to sole evidence would therefore have unblocked nothing.
+  2. **For non-dependent table enums there is no evaluation-semantics delta.** Every table branch is a two-way selector over *where domain data is read from*, returning the same result type in both arms. Lean's checked Enumeration declaration already takes stored tokens, categories, and display facts as explicit given data, so a resolved table enum would elaborate into the identical declaration; the representation is already source-agnostic. What is unmodeled is the model-construction producer, which was never evaluation semantics.
+  3. **But dependent columns *are* an evaluation delta, and the original "no delta" reading missed it.** A gate check before editing traced `getDependentColumns` and found a runtime consumer in the per-operator dispatcher: it filters table rows by *other fields' current values*, extracts the admissible domain from the surviving rows, and fires with omission polarity for a not-given subject and value polarity otherwise. That is a cascading domain conditioned on sibling field values — evaluation semantics with full polarity behaviour, not a static integrity check. Its authoring side carries `MVK_DEPENDENT_COLUMN_SIZE_MISMATCH`. The delta is nonetheless **unreachable** by finding 1, since the sole producer returns an empty dependent-column list, so it is a real kernel mechanism with no modelled input surface rather than a gap in the account.
+  Consequently: no probe is required, no doctrine exception is needed, and the region is *not* recorded as a conceded hole in the eventual-100% goal — an unreachable capability is outside the observable language rather than missing from it. The residual obligation is narrow and precisely scoped in [`SG8`](SEMANTICS-GAPS.md#sg8--enumeration-and-value-list-completion): the dependent-column cascading domain, unmodellable while unreachable, to be reopened only if a producer appears. **Nothing here transfers to dynamic enumerations**, which have separate machinery this resolution did not examine.
+- **On the miscategorisation:** an `EXP-` entry must name an exact input shape, competing accounts, and what each predicts. This one named none, because none existed — it was a doctrine question wearing an experiment identifier. That is the shape of the defect, not a formatting nit: the identifier implied an observation could settle it, which framed the question as empirical when it was structural.
 
 ## Copy-ready handoff prompt
 
