@@ -883,7 +883,7 @@ The prior instances of the session's named defect shape were statements read out
 
 ## LF73 — a family can carry two structurally similar short-circuits with opposite status, and only proof tells them apart
 
-> Date: 2026-07-25. Sections: §8. Basis: experiment E1 of [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md), against this repository's own value-list sources; no external observation is involved.
+> Date: 2026-07-25. Sections: §8. Basis: experiment E1 of the archived [`SEMANTIC-CORE-IL-PROPOSAL.md`](archived/SEMANTIC-CORE-IL-PROPOSAL.md), against this repository's own value-list sources; no external observation is involved.
 
 The value-list quantifier family has two guards that look alike in source and in prose. `NotAll` checks for a present fields cell before consuming values; `AtLeastOne` checks for an empty member set before scanning fields. Both read as ordinary optimizations. They are not the same kind of thing.
 
@@ -893,7 +893,7 @@ The reusable lesson is about method rather than about value lists. **A short-cir
 
 ## LF74 — an environment that is a union of per-family parameters is not an abstraction, and its theorem statements will say so
 
-> Date: 2026-07-25. Sections: §6 and §8. Basis: experiments E1/E2 and the follow-up unit of [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md), against this repository's own sources.
+> Date: 2026-07-25. Sections: §6 and §8. Basis: experiments E1/E2 and the follow-up unit of the archived [`SEMANTIC-CORE-IL-PROPOSAL.md`](archived/SEMANTIC-CORE-IL-PROPOSAL.md), against this repository's own sources.
 
 A shared evaluator was given its first family's state as two positional arguments. Adding a second family added a third argument, because the new family read classified operands rather than operand streams. Each addition type-checked and every proof stayed green, so nothing failed loudly — but the evaluator had become a union of per-family environments rather than an abstraction over them, and a third family would have added a fourth argument.
 
@@ -925,7 +925,7 @@ The transferable rule is narrow and mechanical, and it is now in `SOURCES.md`: *
 
 ## LF76 — success criteria written by the agent that will be graded against them converge on that agent's framing
 
-> Date: 2026-07-25. Sections: cross-cutting. Basis: the closed core-IL experiment ([`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) §10) and an external review of it, against this repository's own sources.
+> Date: 2026-07-25. Sections: cross-cutting. Basis: the closed core-IL experiment (archived [`SEMANTIC-CORE-IL-PROPOSAL.md`](archived/SEMANTIC-CORE-IL-PROPOSAL.md) §10) and an external review of it, against this repository's own sources.
 
 The core-IL proposal pre-registered four success criteria before the work, which is the right discipline and is why [`LF1`](#lf1--differential-evidence-and-proofs-answer-different-questions)-style pre-registration is used at all. All four passed. The experiment was nonetheless at a materially different boundary from the one the proposal claimed, contained a docstring citing a theorem that was never written, and carried three helpers that re-expressed existing family algorithms.
 

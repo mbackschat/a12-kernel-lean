@@ -73,19 +73,9 @@ The calculation-closure dispute is **resolved and closed** at a12-dmkits `dda6ba
 
 [`SPEC-2026-07-24-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md) is **accepted but explicitly partial** at `10451733`. The canonical prose correction landed; the evidence half covers the direct-Number partition, the conversion boundary, the negative-half asymmetry, direct `Abs`/`MinValue`/`MaxValue`/`Length`, the composite separator, and now the 32-bit narrowing. The larger remainder is named as not locked and stays `Kernel-locked` negative here: `RangeAsNumber`/`FieldValueAsNumber`, temporal extraction, all six `DifferenceIn*` operations, the entity-list and aggregate partitions, mixed-level rejection, and filter-reference exclusion.
 
-## Core IL — closed, 2026-07-25
+## Consumer derivation
 
-**The universal shared-core claim is rejected and the `U1 → U2 → U6 → U5 → U4 → U3` sequence is cancelled. Nothing from it is pending.** [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) §10 owns the full record; this is the resumption summary.
-
-E1 held as a **family-local post-resolution normalization** result and E2 held only at a post-classification boundary, but the substrate claim did not: the implementation began after expansion, filtering, relevance and cell observation, so a consumer would still have implemented the elaboration decisions the proposal said the core removed. §7b's "addressed read" stabilized `eval`'s signature without closing the semantic ABI, and three of the four core helpers re-expressed algorithms the value-list family already owned.
-
-**Retired:** `Semantics/CoreIL.lean` and `Proofs/CoreIL.lean` deleted, 13 net trust-audit entries removed (1330 → 1317 roots), six `ValueList.lean` helpers private again. **Retained:** `scanAtLeastOne_nil_members` in [`Proofs/ValueList.lean`](../A12Kernel/Proofs/ValueList.lean), the one new family theorem worth keeping in source. The common-fold insight and the guard-asymmetry result are durable knowledge in [`LF73`](LEAN-FINDINGS.md); the interface lesson is [`LF74`](LEAN-FINDINGS.md); the reason author-written criteria passed a proposal this far off its own boundary is [`LF76`](LEAN-FINDINGS.md).
-
-**Route A is the incremental default:** use the normalized boundaries that already exist — `ConditionTree`, `AuthoredNumericExpr → LoweredNumericExpr`, operator enums and decision tables, checked source and address plans, resolved value-list structures. When a capsule adds a genuine decision table, keep it exportable and prove its evaluator agreement. Build no universal generator or schema.
-
-**A checked-plan IL stays available as a demand-triggered future option**, gated on all six reopening conditions in [`SEMANTIC-CORE-IL-PROPOSAL.md`](SEMANTIC-CORE-IL-PROPOSAL.md) §10 — a blocked named consumer, a fixed artifact and assurance claim, a stable SG2 boundary, an AST reuse inventory, one end-to-end preservation theorem stated first, and explicit user approval. It would keep model checking in elaboration rather than pulling it into an instruction language.
-
-**SMT work is unblocked by this and unchanged.** [`SMT-SOLVER-SUPPORT-PROPOSAL.md`](SMT-SOLVER-SUPPORT-PROPOSAL.md) remains pending on its own terms; its Stage 1 is blocked on first-class numeric bounds, not on any core, and it must keep its solver-neutral constraint relation.
+The universal shared Core IR experiment is closed and nothing from its cancelled unit sequence is pending. [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#representation-policy-for-derived-consumers) owns the live family-data default and six checked-plan reopening conditions; the complete negative result is archived in [`SEMANTIC-CORE-IL-PROPOSAL.md`](archived/SEMANTIC-CORE-IL-PROPOSAL.md). SMT remains governed by its own pending [`SMT-SOLVER-SUPPORT-PROPOSAL.md`](SMT-SOLVER-SUPPORT-PROPOSAL.md), whose Stage 1 needs first-class numeric bounds rather than a universal core.
 
 ## Active capsule
 

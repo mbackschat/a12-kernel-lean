@@ -29,6 +29,23 @@ The consequence is that an **interpreter cannot inherit proof** — it evaluates
 
 **Two links, one ceiling.** A derived consumer's conformance decomposes into *consumer ↔ Lean*, which proof or a certificate can establish, and *Lean ↔ kernel*, which remains empirical forever. A consumer derived with perfect fidelity therefore inherits the Lean account's calibration status. Retained kernel evidence is consequently not one risk among several: it is the ceiling on every derived product's claim, and no amount of internal proof raises it.
 
+#### Representation policy for derived consumers
+
+The universal shared Core IR experiment is closed with a negative result: its implementation began after expansion, filtering, relevance, and cell classification, so it did not replace the elaboration decisions its consumer-facing claim promised; three of its four helpers also re-expressed family algorithms with no independent consumer. The complete rationale, rejected alternatives, retained family theorem, and failure analysis remain in the [archived semantic Core IL proposal](archived/SEMANTIC-CORE-IL-PROPOSAL.md).
+
+The incremental default is **semantics as family-owned data over existing normalized boundaries**. Reuse `ConditionTree`, `AuthoredNumericExpr → LoweredNumericExpr`, operator enums, checked source and address plans, resolved operand streams, and their family evaluators and bridge laws. When a semantic capsule introduces a genuine finite decision table, retain that decision content as exportable Lean data and prove evaluator agreement. Do not launch a back-catalogue conversion, universal generator, schema, or second evaluator in anticipation of a consumer.
+
+A consumer-specific constraint relation, certificate language, checked plan, reduced-language image, or target program remains legitimate when its exact artifact, observable relation, and assurance claim are fixed. Introduce the smallest typed representation the consumer needs; do not call family-local normalization a universal A12 core.
+
+A shared checked-plan IR may be reconsidered only when **all** of the following hold:
+
+1. A named consumer—SMT, refactoring, compilation, or a simplified-language shipment—cannot be closed from the existing normalized representations without duplicating semantics.
+2. The precise consumer artifact and assurance claim are fixed.
+3. SG2 supplies its stable checked-document and addressed-stream boundary.
+4. An inventory identifies which existing ASTs are reused, consolidated, or replaced.
+5. One end-to-end preservation theorem is stated before implementation.
+6. The user explicitly approves the resulting infrastructure unit.
+
 The project follows the broad operating pattern demonstrated by [Cedar](https://github.com/cedar-policy/cedar-spec): an executable Lean semantic model and proved properties coexist with a separately shipped production engine, while differential evidence checks their correspondence. A12 requires a stricter clean-room adaptation: this repository may replay portable evidence but must never link, call, ship, or transcribe the kernel.
 
 The strategy is **executable-first but not evaluator-only**. A reference evaluator makes each semantic clause concrete; the required proof spine, checked non-laws, provenance, and conformance status are part of completion. This is not “Kotlin again in Lean,” and Lean is not an authority over contrary kernel observations merely because internal theorems have been proved.

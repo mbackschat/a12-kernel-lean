@@ -408,7 +408,7 @@ theorem valueList_classified_fired_implies_resolved_fired
 
 /-! ## Retained from the closed core-IL experiment
 
-The experiment recorded in [`SEMANTIC-CORE-IL-PROPOSAL.md`](../../docs/SEMANTIC-CORE-IL-PROPOSAL.md)
+The experiment recorded in [`SEMANTIC-CORE-IL-PROPOSAL.md`](../../docs/archived/SEMANTIC-CORE-IL-PROPOSAL.md)
 was retired: its helpers re-expressed algorithms this family already owns. One result it produced
 is a fact about *this* family and outlives it. Its companion insight — that the two firing scans
 instantiate one traversal differing only in membership direction — is durable knowledge held by
