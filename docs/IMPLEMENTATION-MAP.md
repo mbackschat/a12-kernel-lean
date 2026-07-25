@@ -25,6 +25,31 @@ Every top-level clause has one compact five-dimensional record. `none` means the
 
 Never collapse these dimensions into one completion flag. A percentage may be reported only against an explicit named capability inventory and weighting rule; repository size, theorem count, top-level clause count, peer agreement, and a green build are not denominators.
 
+### Upstream kernel-locked inventory (composition triage, 2026-07-25)
+
+The three triage batches established, per claim, which layer confirms it. This is the candidate population for the `Kernel-locked` dimension; per-clause labels are filled from here as each clause section is next revised, rather than by a bulk edit that would have to guess clause ownership. Recorded once so nothing is re-derived.
+
+| Claim | Confirming layer | Citation |
+|---|---|---|
+| `LF7` malformed `Having` drops its row before consumption | locally retained observation | `having-malformed-consumer-dropped`/`-kept` in the validation bundle — **not** `having-malformed-filter-drops`, whose malformed cell is the filter |
+| `LF19` precondition skipping precedes body poison | upstream law test | `CascadeClearedDependencyDiffTest` (IF77) against the IF85 boundary; `ComputationPreconditionDiffTest` |
+| `LF21` computation connectives are ordered control flow | upstream law test | `ComputePoisonReadDiffTest` |
+| `LF23` partial validation skips filtered rules | codegen template | `rulesDir/CodeGenRuleDefinition.st`, all three dialects — **not** the enclosing `CodeGenRules.st`, which is pass-through |
+| `LF32` division lowering is one ordered post-order pass | upstream controls | accepted `SPEC-2026-07-19-08`/`-09`/`-14` |
+| `LF35` receiver/argument evaluation order | codegen backing bean | `CompositeOperation.getFeldOperationCodeJava`; no target-language branch, so it holds for all three dialects |
+| `LF45` RNU builds one branch-independent relation | upstream law test | `RepetitionNotUniqueGuardedDiffTest` |
+| `LF48` `FirstFilledValue` is prefix-sensitive | upstream law test | `FirstFilledValueOmittedTailDiffTest`; corrected the source-only reading via rejected `SPEC-2026-07-22-06` |
+| `LF50` computation fill quantifiers are ordered scans | upstream law tests | `ComputePoisonReadDiffTest`, `BareGroupComputeExactnessDiffTest`, and `ComputationFillQuantifierRestartDiffTest` — the last is the one that separates the ordering claim |
+| `LF53` index lookup match-first vs column-first | upstream law tests, **ordinary route only** | `IndexedReadSuppressionDiffTest`, `SemanticIndexMatchedInvalidCellDiffTest`; the parallel-iteration route is open under [`EXP-2026-07-25-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#exp-2026-07-25-03--the-semantic-index-computation-gate-may-be-route-selected-not-read-time) |
+| `LF64` no-fit checks the format prefix first | local clause sequence | source-confirmed; **no test observes the precedence on either side** — a coverage gap, not an evidence gap |
+| `LF69` traversal order versus cause blindness | upstream controls, prefix half only | accepted `SPEC-2026-07-23-10`/`-11`; the cause-identity half is knowingly unobservable |
+| value-list `AtLeastOne`/`No` consume values first | upstream law test | `ValueListQuantifierOrderDiffTest` S4/S5; accepted `SPEC-2026-07-23-16` |
+| value-list `NotAll` prepass | **not locked** | the peer case that reads as confirming it asserts non-firing for both the prepass scenario and its control, so it cannot separate the accounts; scoped as a size-selected route via [`SPEC-2026-07-25-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md) |
+| one-kept-successor filter lookahead | upstream law test | `FirstFilledValueKeptSuccessorDiffTest` S1–S4; accepted `SPEC-2026-07-23-10`/`-11` |
+| Groovy condition-line splitting preserves order | upstream law test | `ConditionLineSplitDiffTest` at a12-dmkits `29b3ef53`, which proves the mode engaged before comparing outcomes |
+
+Two entries are deliberately negative and carry the dimension's value: the `NotAll` prepass has an upstream test that *cannot see* the distinction, and `LF64` has no observing test at all. Both differ from "no upstream lock exists," and collapsing them was the defect the split was introduced to fix.
+
 ### The capability denominator — mined from the kernel, not from `spec/`
 
 The eventual-100% goal is only meaningful against an inventory that is complete *by construction*. A `spec/`-derived inventory cannot be: it is complete only relative to what is already known. The kernel's own structure can be, and the peer already demonstrates the technique — its [`RT-SEMANTICS-LEDGER`](../../a12-rulekit/docs/RT-SEMANTICS-LEDGER.md) enumerates every top-level runtime-evaluation class with a CI lock that fails if the table misses a class or names a vanished one, so a kernel bump reopens the right cells loudly.
