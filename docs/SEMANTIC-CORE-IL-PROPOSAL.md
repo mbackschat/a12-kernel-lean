@@ -262,6 +262,16 @@ Out of scope for this proposal, recorded so a later reader need not rediscover t
 - **The core has a second payoff that is not derivation economics.** A reduced construct set with a proved lowering is itself a *simplified language variant* — a deliverable for consumers who cannot afford the full surface — and the preservation theorem is what makes it a proved image rather than a summary. Recorded as a cross-category use case in [`USE-CASES.md`](USE-CASES.md#cross-category-use-case-a-derived-simplified-language-variant). It changes nothing here: no new scope, no process change, and the variant's reach is a consequence of how far lowering has progressed. It does supply a concrete candidate for the consumer probe, and it means the core's value does not rest on the derivation argument alone.
 - ⛔ **Withdrawn (§10).** **Fix the `Translate` omission** in the certificate row of [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#why-derive--the-animating-principle-and-its-assurance-classes) when that table is next edited.
 
+## 9. What would falsify the approach
+
+> ⛔ **Two of these fired (§10).** *"E2 needs constructs that do not generalize"* — the numeric constructs were unusable by the value-list family, which this section names as the E2 falsifier. And the boundary defect means the per-family cost was never measured against the real elaboration surface. Recorded here because predeclaring falsifiers only works if they are checked afterwards, which is what an external review had to do.
+
+Stated so the proposal can be abandoned on evidence rather than defended.
+
+- **E2 needs constructs that do not generalize.** If the addressed numeric rule route forces constructs the value-list family cannot use, the core is a per-family encoding and the shared-substrate argument fails.
+- **The per-family cost does not amortize.** One lowering plus one theorem per family, eventually of the order of the 50 elaborators. This is affordable only because it composes with the capsule discipline — each future capsule lands its clause, its laws, *and* its lowering together. A stop-and-convert migration of the back catalogue is explicitly not proposed, and if the only way to finish were such a migration, the approach has failed at the intended scale.
+- **A consumer needs a distinction the core dropped.** Preservation guards against losing kernel-observable distinctions, not against pitching the core below what a *task* needs. The consumer-adequacy rule still applies, and the first real target implementation is the test.
+
 ## 10. Closed — the universal shared-core claim is rejected, 2026-07-25
 
 **Status: closed with a negative architectural result. Route B is not the project's derivation architecture. The `U1 → U2 → U6 → U5 → U4 → U3` sequence is cancelled and the Lean estate is retired.** This is a successful experiment reaching a negative conclusion, not a failed undertaking — the criteria did their job once they were pointed at the right question.
@@ -316,13 +326,3 @@ A checked-plan IL may eventually be right, and it would **not** pull model check
 - §2's "**eight of ten** categories can carry genuine inherited assurance" is **not supported by its table**, which has six `yes`, one `no`, one `partial`, and two `n/a`. Nor is a static artifact automatically proof-carrying: Translate needs source and target semantics plus a checked relation, Compile needs a compiler-correctness theorem, Synthesize validates a witness rather than generator completeness, and Explain needs a checked trace relation the extensional theorem does not supply. [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) lists certificate checking for Analyze, Transform, Verify and Synthesize only, and is the more careful account.
 - The §8 recommendation to "fix the `Translate` omission" in that table is **withdrawn**: its certificate contract would have to be specified first.
 - §3's claim that bounded exhaustive testing becomes "a complete argument" holds only for that exact finite bound. The core carried unbounded rationals, strings, lists and slot indices.
-
-## 9. What would falsify the approach
-
-> ⛔ **Two of these fired (§10).** *"E2 needs constructs that do not generalize"* — the numeric constructs were unusable by the value-list family, which this section names as the E2 falsifier. And the boundary defect means the per-family cost was never measured against the real elaboration surface. Recorded here because predeclaring falsifiers only works if they are checked afterwards, which is what an external review had to do.
-
-Stated so the proposal can be abandoned on evidence rather than defended.
-
-- **E2 needs constructs that do not generalize.** If the addressed numeric rule route forces constructs the value-list family cannot use, the core is a per-family encoding and the shared-substrate argument fails.
-- **The per-family cost does not amortize.** One lowering plus one theorem per family, eventually of the order of the 50 elaborators. This is affordable only because it composes with the capsule discipline — each future capsule lands its clause, its laws, *and* its lowering together. A stop-and-convert migration of the back catalogue is explicitly not proposed, and if the only way to finish were such a migration, the approach has failed at the intended scale.
-- **A consumer needs a distinction the core dropped.** Preservation guards against losing kernel-observable distinctions, not against pitching the core below what a *task* needs. The consumer-adequacy rule still applies, and the first real target implementation is the test.
