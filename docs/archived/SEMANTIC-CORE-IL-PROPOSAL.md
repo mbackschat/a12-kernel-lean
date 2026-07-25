@@ -1,12 +1,149 @@
 # Archived proposal — a semantic core IL with proved lowering
 
-> ## ⛔ CLOSED — read [§10](#10-closed--the-universal-shared-core-claim-is-rejected-2026-07-25) first
+> ## ⛔ CLOSED — start with the [plain-language Route B case study](#start-here--route-b-in-plain-terms-what-it-was-and-why-it-failed)
 >
 > **Status: closed 2026-07-25 with a negative architectural result.** The universal shared-core claim is **rejected**, Route B is **not** this project's derivation architecture, the `U1 → U2 → U6 → U5 → U4 → U3` sequence is **cancelled**, and `Semantics/CoreIL.lean` and `Proofs/CoreIL.lean` are **deleted**.
 >
-> **This file is an immutable negative-experiment archive, not a live policy or sequencing owner.** Sections 1–9 are preserved as the historical record and are not corrected in place beyond the inline markers below. Several of their claims are withdrawn. Read §10 for the verdict and retained result; [`PROJECT-DESIGN.md`](../PROJECT-DESIGN.md#representation-policy-for-derived-consumers) owns the live derivation policy and the six conditions for reconsidering a checked-plan IR.
+> **This file is an immutable negative-experiment archive, not a live policy or sequencing owner.** Start with the case study immediately below; sections 1–9 then preserve the historical proposal, and §10 records the formal verdict and retained result. Several claims in the historical proposal are withdrawn. [`PROJECT-DESIGN.md`](../PROJECT-DESIGN.md#representation-policy-for-derived-consumers) owns the live derivation policy and the six conditions for reconsidering a checked-plan IR.
 >
 > What survives: `scanAtLeastOne_nil_members` in [`Proofs/ValueList.lean`](../../A12Kernel/Proofs/ValueList.lean); [`LF73`](../LEAN-FINDINGS.md), [`LF74`](../LEAN-FINDINGS.md), and [`LF76`](../LEAN-FINDINGS.md); and the citation-integrity check in [`check-lean-trust.sh`](../../scripts/check-lean-trust.sh) that rejects a Lean docstring reference with no declaration.
+
+---
+
+## Start here — Route B in plain terms: what it was and why it failed
+
+Route B proposed a small common instruction language between A12 and every future consumer. Each checked A12 rule would be translated into that language, Lean would prove that the translation preserved the rule's meaning, and an independent consumer would implement only the small common evaluator instead of reimplementing every A12 semantic family.
+
+The intended contract can be pictured with the following illustrative Lean. These declarations never existed; they show the boundary Route B needed:
+
+```lean
+-- A checked A12 rule still contains its checked paths, scopes, filters, and declarations.
+def lowerRule (rule : CheckedRule model) : CoreProgram model := ...
+
+-- The core reads the same checked document and produces the same observable result.
+theorem lowerRule_preserves (document : CheckedDocument model) :
+    evalCore document (lowerRule rule) = evalCheckedRule document rule := ...
+```
+
+If that theorem existed, a consumer could implement `CoreProgram` and `evalCore` while relying on the lowering to carry all relevant checked A12 decisions into the program.
+
+That would have been useful only if the common language started at this checked A12 boundary. It did not. The value-list experiment explicitly started with `ResolvedValueListSide`, whose owning module says that both operands have already been expanded per cell and filtered. The numeric experiment started with `NumericOperand`, which had already classified the source cell as a number, omission, or formal unavailability.
+
+The actual environment builders, abridged from the deleted experiment at `f3c086a`, make this late starting point visible:
+
+```lean
+def CoreEnv.ofValueList
+    (fields values : List (ResolvedValueListSide kind)) : CoreEnv kind :=
+  ⟨[.stream fields, .stream values]⟩
+
+def CoreEnv.ofNumericPair
+    (left right : NumericOperand) : CoreEnv kind :=
+  ⟨[.numeric left, .numeric right]⟩
+```
+
+Before a caller could construct either environment, some family-specific implementation still had to:
+
+1. check the authored paths and operator shape;
+2. derive compatible repetition scopes;
+3. enumerate actual document rows;
+4. resolve addresses and read cells;
+5. apply filters and partial relevance;
+6. classify the observed cells into `ResolvedValueListSide` or `NumericOperand`.
+
+Those are not peripheral input chores. They are much of the observable A12 semantics that Route B was meant to carry. In everyday terms, Route B promised a common recipe from raw ingredients to a finished dish, but the experiment started with the ingredients already cooked and plated.
+
+### Case study 1 — a preservation theorem that proves delegation, not replacement
+
+The numeric lowering was:
+
+```lean
+def lowerDirectNumericComparison (op : NumericComparisonOp) : CoreTerm :=
+  .numCompare op (.read 0) (.read 1)
+```
+
+The core evaluator's corresponding branch called the existing family evaluator:
+
+```lean
+| .numCompare op left right =>
+    match eval env left, eval env right with
+    | .numeric a, .numeric b => .verdict (op.eval a b)
+    | _, _ => .poisoned
+```
+
+The preservation theorem was consequently:
+
+```lean
+theorem lowerDirectNumericComparison_preserves
+    (op : NumericComparisonOp) (left right : NumericOperand) :
+    CoreTerm.eval (CoreEnv.ofNumericPair left right)
+        (lowerDirectNumericComparison op)
+      = .verdict (op.eval left right) := by
+  rfl
+```
+
+`rfl` is not itself suspicious; many strong Lean theorems are definitionally true by good design. The problem is what the variables already assume. `left` and `right` are already-classified operands, and the new evaluator calls `op.eval`, the existing semantic owner. The theorem therefore proves that a small wrapper delegates correctly after the hard work. It does not prove that a checked A12 numeric expression was lowered into a self-sufficient common program.
+
+For a concrete rule such as “repeatable field A is greater than ancestor field B”, the promised and actual responsibilities differ like this:
+
+| Stage | Promised Route B | Experiment |
+|---|---|---|
+| Check A and B | existing checked elaboration, retained by the core program | still required before constructing the core environment |
+| Derive and enumerate the repetition scope | represented or referenced by the checked core program | still performed entirely by the family route |
+| Read A and B at the correct addresses | core evaluator reads the checked document | family route reads and classifies both cells first |
+| Compare | core evaluator | core branch delegates to the existing `op.eval` |
+| Preservation claim | checked rule evaluation equals core-program evaluation | already-classified comparison equals a wrapper around the same comparison |
+
+The green theorem was correct, but much narrower than the proposal's headline claim.
+
+### Case study 2 — the “addressed read” was only a list lookup
+
+The attempted correction replaced family-specific evaluator arguments with one slot list:
+
+```lean
+structure CoreEnv (kind : ValueListKind) where
+  slots : List (CoreValue kind)
+
+| .read slot =>
+    match env.slots[slot]? with
+    | some value => value
+    | none => .poisoned
+```
+
+This does not name a model declaration, document address, repetition environment, or checked cell. Slot `0` means “fields stream” in one caller and “left numeric operand” in another. Every family must define its own layout and populate the slots with already-resolved values. The common `read` signature therefore hides the family-specific ABI behind a `Nat`; it does not remove that ABI.
+
+An actual checked document read would need a typed reference to the declaration and its resolved address, with structural lookup failure kept distinct from semantic cell states. The experiment had neither.
+
+### Case study 3 — malformed structure could become semantic UNKNOWN
+
+An out-of-range slot returned `.poisoned`, but the same constructor also represented a genuine semantic poison collected from value-list members. The fold then contained:
+
+```lean
+| .poisoned, _ => .verdict .unknown
+```
+
+That conversion is correct for the semantic poison and wrong for the malformed term. For example, a term that reads nonexistent slot `9` can flow through collection and fold into `.verdict .unknown`. The caller then cannot tell “the A12 data was formally unavailable” from “the core program or environment was structurally invalid”.
+
+The proposed protection against malformed terms was a claimed `lowerValueListQuantifier_wellFormed` theorem, but no such theorem or `WellFormed` predicate existed. The core therefore violated the project's invariant that structural failure remains outside semantic UNKNOWN.
+
+### Case study 4 — most of the new mechanisms repeated existing ones
+
+The experiment proved these correspondences:
+
+```lean
+runScanUntilMatch      = scanValueListNoFields
+collectPresentOnly     = collectAtLeastOneValueListMembers
+collectPoisoning       ↔ collectPoisoningValueListMembers
+```
+
+Agreement theorems are normally exactly what a lowering should have. Here, however, both sides accepted the same already-resolved inputs, recursed over them in the same way, and had no independent consumer or additional invariant. The proofs therefore established that three new mechanisms repeated three existing family mechanisms at the same boundary.
+
+`runFindWitness` was the useful exception: it showed that the existing `AtLeastOne` and `NotAll` scans are instances of one parameterized fold. That is a genuine family-local consolidation result, but it does not establish a universal cross-family IL. Retaining the new fold beside both existing scans would also have left three implementations until an authorized family refactor replaced the old owners.
+
+### Bottom line
+
+The Lean experiment was not wrong in the narrow sense: its definitions and theorems described the post-resolution inputs they actually received. Route B failed because those results did not support the architectural claim made for them. They normalized already-decided family data; they did not replace family checking and execution with one proved common plan.
+
+A future checked-plan IR is not ruled out in principle, but it would be a different project. It would have to start from checked A12 forms, retain or reference the canonical checked document and addressing machinery, separate well-formedness from semantic results, state the end-to-end theorem before implementation, and satisfy the reopening conditions in §10.
 
 ---
 
