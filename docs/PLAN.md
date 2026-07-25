@@ -81,7 +81,7 @@ The universal shared Core IR experiment is closed and nothing from its cancelled
 
 The validation-only mixed plain/starred group-list capsule is closed. Its scope deliberately stops before computation's order-sensitive poison scan, partial group relevance, nonrepeatable group terminals below a star, and bound-prefix whole-rule execution; those remain with SG4/SG2 rather than being inferred from the shared validation tally. No semantic capsule is selected at this checkpoint.
 
-At resumption, select the smallest remaining SG2 family whose bounded packet closes a real unresolved source fact and widens the existing canonical addressed construction. Two smaller recorded items may be taken first if a short unit is wanted: the [upstream kernel-locked inventory](IMPLEMENTATION-MAP.md) is recorded centrally and its per-clause `Kernel-locked` labels are still unpopulated, and [`LF64`](LEAN-FINDINGS.md) has an identified test-coverage gap — no case on either side observes the computed-Number no-fit precedence, so one focused conformance case at that seam would close it. The consumer hypothesis must require Execute plus Transform/Explain to recover complete environments, hierarchical extent, authored order, model certificates, relevance/filter provenance, and structural failure without reconstructing a second stream.
+At resumption, select the smallest remaining SG2 family whose bounded packet closes a real unresolved source fact and widens the existing canonical addressed construction. The [upstream kernel-locked inventory](IMPLEMENTATION-MAP.md) is recorded centrally and its per-clause `Kernel-locked` labels remain an incremental documentation task rather than a reason to delay semantics. The consumer hypothesis must require Execute plus Transform/Explain to recover complete environments, hierarchical extent, authored order, model certificates, relevance/filter provenance, and structural failure without reconstructing a second stream.
 
 ## Immediate frontier
 
@@ -105,6 +105,6 @@ At resumption, select the smallest remaining SG2 family whose bounded packet clo
 
 ## Resume procedure
 
-1. Read the active capsule above, its [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) entry including every readiness field, the linked [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) mechanism and five-dimensional coverage record, and the applicable [`TESTING.md`](TESTING.md) rung.
+1. Read the active capsule above, its [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) entry including every readiness field, the linked [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) mechanism and six-dimension coverage model, and the applicable [`TESTING.md`](TESTING.md) rung.
 2. Inspect `git status --short`, recent commits, the current owner/code/tests, Git history, and any active cross-project handoff before writing a red case.
 3. Close one capsule or verified no-op, perform the same-context closure assessment, run its proportional gate, update only fact owners, delete a completed gap, and commit.

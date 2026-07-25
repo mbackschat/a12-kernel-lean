@@ -137,12 +137,10 @@ example :
       .supported (.rejected (stored 24723 4) .suppressedScaleMismatch) := by
   native_decide
 
-/- A no-fit decimal-place failure precedes fitting-only zero/length/range constraints. -/
+/- A no-fit decimal-place failure precedes the fitting-only branch, witnessed here by an active integer-digit-capacity failure. -/
 example :
     ({ target 2 0 with
-      maxIntegerDigits := some 0
-      minStoredLength := some 20
-      minimum := some 1 }).checkWithScaleWarningSuppressed
+      maxIntegerDigits := some 0 }).checkWithScaleWarningSuppressed
         (.value (1 / 1000)) =
       .supported (.rejected (stored 1 3) .suppressedScaleMismatch) := by
   native_decide

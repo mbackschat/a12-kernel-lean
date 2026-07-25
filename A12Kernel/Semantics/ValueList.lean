@@ -303,9 +303,10 @@ def ValueListQuantifier.resolveSidesOrdered
       let fields ← resolveFields ()
       pure (fields, values)
 
--- The ordered collection and scan helpers below were private until the core-IL preservation
--- proof needed to state induction lemmas about them from its own module. Exposure is
--- deliberate and carries no new semantics; `evalOrdered` remains the only intended entry.
+-- The closed core-IL experiment temporarily exposed these family helpers. All are private again
+-- except `scanValueListAtLeastOneFields`, whose exported family theorem
+-- `scanAtLeastOne_nil_members` requires a referent outside this module. `evalOrdered` remains the
+-- intended evaluator entry.
 private def collectAtLeastOneValueListMembers :
     List (ResolvedValueListSide kind) → List (ValueListAtom kind) × Bool
   | [] => ([], false)
