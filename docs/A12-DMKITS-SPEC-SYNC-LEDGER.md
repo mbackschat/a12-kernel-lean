@@ -69,7 +69,7 @@ The distinction matters because the two arms of this project's convergence desig
 
 ### EXP-2026-07-25-01 — condition-line splitting above fifty terms is unreached by either corpus
 
-- **Status:** pending
+- **Status:** accepted — probed at a12-dmkits `29b3ef53`, no divergence
 - **Kind:** experiment request
 - **Kernel behavior:** 30.8.1
 - **Basis:** a12-dmkits revision `7d17733a` measured the three Groovy-only size-triggered lowering modes individually. Object splitting (`NUM_RULES_PER_CLASS_GROOVY = 10`) is engaged — kernel-mm 11 of 13 canonical models, max 89 rules. Calculation closures are unconditional for Groovy and therefore engaged across 646 computations. **Condition-line splitting (`NUM_CONDITIONLINES_PER_METHOD_GROOVY = 50`) has never been engaged:** over 2,460 rules the atomic-condition-term count peaks at 4 in workspaces and 21 in kernel-mm, and the committed corpus is one rule per model by design.
@@ -78,6 +78,7 @@ The distinction matters because the two arms of this project's convergence desig
 - **Why existing coverage cannot reach it:** structurally, not by luck. A corpus of one-rule models and a generator emitting few condition terms per rule can never cross the threshold, exactly as the compute fuzz could not generate a final-empty concatenation before `IF123`.
 - **What this project will do with the result:** if order is preserved, the peer's zero characterized static-Java divergences extends to all three modes and the locus is closed. If not, it is a genuine strategy split at the codegen tier and both projects need it characterized.
 - **Acceptance:** either an observation over a threshold-crossing rule, or a reasoned refusal recording that the shape is unreachable from a12-dmkits' authoring surface — in which case this project records the mode as permanently uncalibrated rather than pending.
+- **Disposition:** answered rather than refused. `ConditionLineSplitDiffTest` authors the shape instead of widening a corpus that structurally cannot reach it, and pins four things: the threshold is exactly 50 (49 stays straight-line), static-Java never splits at any width, split-Groovy is equivalent to straight-line static-Java and to the interpreter for an all-satisfied 60-term chain and for a single veto in first, second, middle, and last position, and a 110-term case (50+50+10, veto at 75) rules out a chunk-call loop emitting only the ends. The mode's order preservation moves from stated intent to probed fact. **Method point worth reusing:** each case proves the mode engaged by reading the emitted Groovy for the chunk closures before comparing any outcome, because no runtime result distinguishes split from straight-line lowering — an outcome-only comparison would have evidenced nothing while looking like coverage. This is the first `EXP-` entry to close, and it closed by the peer authoring the shape, which is exactly the capability the channel exists to reach.
 
 ### EXP-2026-07-25-03 — the semantic-index computation gate may be route-selected, not read-time
 
