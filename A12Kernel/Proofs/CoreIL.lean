@@ -123,7 +123,7 @@ theorem scanAtLeastOne_nil_members (omission : Bool)
 for every quantifier and every operand shape. Universal, hypothesis-free beyond checkedness. -/
 theorem lowerValueListQuantifier_preserves (quantifier : ValueListQuantifier)
     (fields values : List (ResolvedValueListSide kind)) :
-    CoreTerm.eval fields values (lowerValueListQuantifier quantifier)
+    CoreTerm.eval fields values [] (lowerValueListQuantifier quantifier)
       = .verdict (quantifier.evalOrdered fields values) := by
   cases quantifier with
   | atLeastOne =>
@@ -166,7 +166,7 @@ theorem core_valueListNo_unknownMember_before_fields
            hasUninstantiatedTail := false, hasHaving := false }]
         [{ cells := [.present value, .unknown cause]
            hasUninstantiatedTail := false, hasHaving := false }]
-        (lowerValueListQuantifier .no)
+        [] (lowerValueListQuantifier .no)
       = .verdict .unknown := by
   rw [lowerValueListQuantifier_preserves, valueListNo_unknownMember_before_fields]
 
@@ -177,8 +177,39 @@ theorem core_valueListNo_filtered_nonmatch :
            hasUninstantiatedTail := false, hasHaving := true }]
         [{ cells := [.present "A"]
            hasUninstantiatedTail := false, hasHaving := false }]
-        (lowerValueListQuantifier .no)
+        [] (lowerValueListQuantifier .no)
       = .verdict (.fired .omission) := by
   rw [lowerValueListQuantifier_preserves, valueListNo_filtered_nonmatch]
+
+/-! ## E2 — generality stressor over the numeric route
+
+Three preservation theorems against three *existing* family primitives. The question E2 asks is
+not whether arithmetic can be re-derived — it delegates — but whether the numeric route needs
+constructs of a new character. It does not: operator, rounding mode, and places all enter as
+term data, exactly as membership direction did in E1. -/
+
+/-- A direct numeric comparison lowers to one parameterized node. -/
+theorem lowerDirectNumericComparison_preserves (op : NumericComparisonOp)
+    (fields values : List (ResolvedValueListSide kind)) (left right : NumericOperand) :
+    CoreTerm.eval fields values [left, right] (lowerDirectNumericComparison op)
+      = .verdict (op.eval left right) := by
+  rfl
+
+/-- Ordered binary arithmetic lowers with its precision boundary intact. -/
+theorem lowerRoundedArithmetic_preserves (op : NumericArithmeticOp)
+    (mode : DecimalRoundingMode) (places : RoundingPlaces) (left right : Rat)
+    (fields values : List (ResolvedValueListSide kind)) :
+    CoreTerm.eval fields values [] (lowerRoundedArithmetic op mode places left right)
+      = .amount (roundDecimal mode (op.eval left right) places) := by
+  rfl
+
+/-- Unavailability still dominates through the lowered comparison: the core does not turn a
+formally unavailable operand into a verdict of its own. -/
+theorem lowerDirectNumericComparison_unknown (op : NumericComparisonOp) (cause : FormalCause)
+    (fields values : List (ResolvedValueListSide kind)) (right : NumericOperand) :
+    CoreTerm.eval fields values [.unknown cause, right]
+        (lowerDirectNumericComparison op)
+      = .verdict .unknown := by
+  cases right <;> rfl
 
 end A12Kernel

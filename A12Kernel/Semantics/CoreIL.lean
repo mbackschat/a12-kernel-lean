@@ -1,4 +1,6 @@
 import A12Kernel.Semantics.ValueList
+import A12Kernel.Semantics.NumericArithmetic
+import A12Kernel.Semantics.NumericComparison
 
 /-!
 # A semantic core IL — first slice, value-list quantifiers
@@ -58,6 +60,13 @@ inductive CoreTerm where
   | collect (policy : CoreCollect) (src : CoreTerm)
   | fold (f : CoreFold) (members source : CoreTerm)
   | guardPresent (guard : CoreTerm) (body : CoreTerm)
+  -- E2 (numeric stressor). Each operator is a *parameter* of a shared node rather than a
+  -- construct of its own, which is the property E2 exists to test.
+  | numSlot (index : Nat)
+  | amountLit (amount : Rat)
+  | numArith (op : NumericArithmeticOp) (left right : CoreTerm)
+  | numRound (mode : DecimalRoundingMode) (places : RoundingPlaces) (source : CoreTerm)
+  | numCompare (op : NumericComparisonOp) (left right : CoreTerm)
   deriving Repr
 
 /-- A core result. Three constructors because the core must keep member collection, poisoning,
@@ -68,6 +77,10 @@ inductive CoreValue (kind : ValueListKind) where
   | members (atoms : List (ValueListAtom kind)) (omission : Bool)
   | poisoned
   | verdict (v : Verdict)
+  -- E2 adds two result domains. Numeric evaluation is not verdict-valued until a comparison
+  -- projects it, so collapsing these into `verdict` would erase the staging the kernel has.
+  | numeric (operand : NumericOperand)
+  | amount (value : Rat)
 
 namespace CoreTerm
 
@@ -130,12 +143,13 @@ def runScanUntilMatch (members : List (ValueListAtom kind)) :
 /-- Evaluate a core term against the two operand streams. A malformed term — one whose operand
 shapes do not fit its constructor — yields `poisoned` rather than a fabricated verdict; the
 lowering never produces one, which `lowerValueListQuantifier_wellFormed` records. -/
-def eval (fields values : List (ResolvedValueListSide kind)) :
+def eval (fields values : List (ResolvedValueListSide kind))
+    (nums : List NumericOperand) :
     CoreTerm → CoreValue kind
   | .side .fields => .stream fields
   | .side .values => .stream values
   | .collect policy src =>
-      match eval fields values src with
+      match eval fields values nums src with
       | .stream sides =>
           match policy with
           | .presentOnly =>
@@ -144,7 +158,7 @@ def eval (fields values : List (ResolvedValueListSide kind)) :
           | .poisoning => collectPoisoning sides
       | _ => .poisoned
   | .fold f members source =>
-      match eval fields values members, eval fields values source with
+      match eval fields values nums members, eval fields values nums source with
       | .members atoms omission, .stream sides =>
           match f with
           | .findWitness test => .verdict (runFindWitness test atoms omission sides)
@@ -152,13 +166,32 @@ def eval (fields values : List (ResolvedValueListSide kind)) :
       | .poisoned, _ => .verdict .unknown
       | _, _ => .poisoned
   | .guardPresent guard body =>
-      match eval fields values guard with
+      match eval fields values nums guard with
       | .stream sides =>
           if sides.any ResolvedValueListSide.hasPresent then
-            eval fields values body
+            eval fields values nums body
           else
             .verdict .notFired
       | _ => .poisoned
+  -- E2 fragment. Each case delegates to the family's own primitive rather than restating it,
+  -- so preservation is about the *shape* of the lowering, not about re-deriving arithmetic.
+  | .numSlot index =>
+      match nums[index]? with
+      | some operand => .numeric operand
+      | none => .poisoned
+  | .amountLit value => .amount value
+  | .numArith op left right =>
+      match eval fields values nums left, eval fields values nums right with
+      | .amount a, .amount b => .amount (op.eval a b)
+      | _, _ => .poisoned
+  | .numRound mode places source =>
+      match eval fields values nums source with
+      | .amount a => .amount (roundDecimal mode a places)
+      | _ => .poisoned
+  | .numCompare op left right =>
+      match eval fields values nums left, eval fields values nums right with
+      | .numeric a, .numeric b => .verdict (op.eval a b)
+      | _, _ => .poisoned
 
 end CoreTerm
 
@@ -180,5 +213,16 @@ def lowerValueListQuantifier : ValueListQuantifier → CoreTerm
       .guardPresent (.side .fields)
         (.fold (.findWitness .outside)
           (.collect .poisoning (.side .values)) (.side .fields))
+
+
+/-- Lower a direct numeric comparison between two classified operand slots. -/
+def lowerDirectNumericComparison (op : NumericComparisonOp) : CoreTerm :=
+  .numCompare op (.numSlot 0) (.numSlot 1)
+
+/-- Lower one rounded binary arithmetic stage over two literal amounts. The rounding mode and
+places are term data, so the exact-decimal invariant is syntactic rather than a convention. -/
+def lowerRoundedArithmetic (op : NumericArithmeticOp) (mode : DecimalRoundingMode)
+    (places : RoundingPlaces) (left right : Rat) : CoreTerm :=
+  .numRound mode places (.numArith op (.amountLit left) (.amountLit right))
 
 end A12Kernel

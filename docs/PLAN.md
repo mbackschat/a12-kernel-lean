@@ -72,7 +72,11 @@ The calculation-closure dispute is **resolved and closed** at a12-dmkits `dda6ba
 
 Two costs were recorded rather than absorbed: seven `Semantics/ValueList.lean` helpers were de-privatized so the preservation proof could state induction lemmas, and the slice ran 327 new nonblank Lean lines against a Tier 1 target of 250 after already splitting by semantic responsibility. Neither was resolved by compressing readable code.
 
-**E2 is the next step and gates the central claim.** The core may not be called shared until a second, deliberately different family — the addressed numeric rule route, which brings ordered arithmetic, explicit rounding stages, and scoped iteration — lowers into it. Two completed semantic users is this repository's own bar for generalizing a mechanism. E2 is not started, and SG4 computation scheduling is excluded from the core by design rather than by deferral.
+**E2 is partially discharged and produced one real negative. The core is not yet shared.** A numeric fragment now lowers and preserves against three existing family primitives, and the central discipline held: six comparison and three arithmetic operators entered as **term data**, costing zero new constructs, and the rounding stage became syntactic. Scoped iteration was not lowered and remains untested.
+
+The negative is the design finding: **E1's environment was family-specific.** `eval` took two operand streams; the numeric route reads classified operands instead, so it grew a third parameter and now carries a union of per-family environments rather than an abstraction. `CoreValue` gained constructors the same way. A core whose environment and result type accumulate one constructor per family scales as badly as the prose it replaces.
+
+**The next unit on this track is therefore the addressed `read`, not a third lowering** — a single document-addressed read yielding a cell observation, with per-family classification expressed as core terms. Every family added before that fix widens the union that has to be unpicked. SG4 computation scheduling remains excluded from the core by design rather than by deferral.
 
 ## Active capsule
 

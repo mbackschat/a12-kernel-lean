@@ -1094,6 +1094,10 @@ run_cmd do
 #print axioms A12Kernel.scanAtLeastOne_nil_members
 #print axioms A12Kernel.core_valueListNo_unknownMember_before_fields
 #print axioms A12Kernel.core_valueListNo_filtered_nonmatch
+-- E2 generality stressor: the numeric route lowers with operator, mode, and places as term data.
+#print axioms A12Kernel.lowerDirectNumericComparison_preserves
+#print axioms A12Kernel.lowerRoundedArithmetic_preserves
+#print axioms A12Kernel.lowerDirectNumericComparison_unknown
 #print axioms A12Kernel.valueListNotAll_unknown_iff_of_present
 #print axioms A12Kernel.valueListNotAll_prependUnknownField
 #print axioms A12Kernel.valueListAtLeastOne_present_emptyMember

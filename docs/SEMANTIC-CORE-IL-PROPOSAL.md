@@ -1,6 +1,6 @@
 # Proposal — a semantic core IL with proved lowering
 
-**Status: accepted 2026-07-25. Experiment E1 complete and green; E2 not started.** Owner: this repository. Supersedes nothing.
+**Status: accepted 2026-07-25. E1 complete and green; E2 partially discharged with one real negative — the environment abstraction failed and must be fixed before a third family. The core is not yet shared.** Owner: this repository. Supersedes nothing.
 
 ---
 
@@ -202,6 +202,26 @@ Three scans collapse to two folds, with membership direction becoming a *paramet
 **Encapsulation.** Seven collection and scan helpers in `Semantics/ValueList.lean` were `private`; the preservation proof must state induction lemmas about them from its own module, so they are now exposed, with a comment recording why. No semantics changed and `evalOrdered` remains the only intended entry, but the family's public surface is genuinely wider than before. Any future family lowered into the core should expect the same pressure; if it recurs often, the right answer is a reviewed convention rather than repeated ad-hoc exposure.
 
 **Line budget exceeded.** 327 new nonblank Lean lines against a Tier 1 target of 250 — 162 in `Semantics/CoreIL.lean` and 165 in `Proofs/CoreIL.lean`, of which 51 are documentation. Already split by semantic responsibility (core and lowering; proofs and transport), so the target's decomposition signal has been acted on. The residue is proof content required by the criteria: eleven theorems at roughly thirteen lines each. Reaching 250 would mean dropping supporting agreements the preservation proof needs, or the transports criterion 4 requires. Recorded as an overage rather than resolved by compressing readable code, which the rule explicitly disallows.
+
+## 7a. Result — E2 partially succeeded, with one real negative
+
+**Verdict: the parameter discipline generalized; the environment did not. The core may not yet be called shared.**
+
+Gates after E2: `lake build` 471 jobs, trust audit **1330 theorem roots; 27694 declarations in 252 modules**, `lake test` 51/51, `checkReferenceProcess` 51/51.
+
+**Scope actually covered, stated before the findings.** E2 as specified was the *addressed numeric rule route* — ordered arithmetic, explicit rounding stages, and scoped iteration. What was run covers a **fragment**: three existing family primitives lowered and preserved (`NumericComparisonOp.eval`, `NumericArithmeticOp.eval` under `roundDecimal`, and unknown domination through a lowered comparison). **Scoped iteration was not lowered and remains untested.** E2 is therefore partially discharged, and the shared-substrate claim stays open.
+
+**What generalized — the central discipline held.** The numeric route added five constructs, and in every one the operator enters as **term data** rather than as a construct: `NumericArithmeticOp`, `DecimalRoundingMode`, `RoundingPlaces`, and `NumericComparisonOp` are all parameters. Six comparison operators and three arithmetic operators cost zero constructs, exactly as membership direction did in E1. The subtraction test therefore passes on a second, deliberately different family — which is the one thing E2 most needed to establish.
+
+The rounding stage also became syntactic as intended: `numRound` carries mode and places in the term, so the exact-decimal invariant is a property of core terms rather than a convention a reader must honour.
+
+**The negative — E1's environment was family-specific and did not survive contact.** `eval` took two positional operand *streams*. The numeric fragment reads already-*classified* numeric operands, which are neither stream, so `eval` grew a third explicit parameter and now carries a union of per-family environments rather than an abstraction over them. The same pressure appeared in the result domain: `CoreValue` gained `numeric` and `amount` alongside `stream`, `members`, `poisoned`, and `verdict`.
+
+That is a genuine design defect, not a cosmetic one. A core whose environment and result type accumulate one constructor per family scales exactly as badly as the prose it replaces. **The fix is the `read`-against-a-document design this proposal's §4 sketch originally had and E1 did not need** — a single addressed read yielding a cell observation, with per-family classification expressed as core terms rather than as environment slots. Until that lands, "shared core" overstates what exists: what exists is one core syntax with two families' environments bolted alongside each other.
+
+**Cost.** The two modules are now 394 nonblank Lean lines (203 semantics, 191 proofs), against the 250 Tier 1 target already exceeded by E1. E2's own increment was 67 lines for five constructs and three theorems, which is proportionate; the aggregate overage is recorded rather than resolved by compression, and the environment redesign above is the change that would justify revisiting the file boundary.
+
+**What E2 changes about sequencing.** Fixing the environment is now a precondition for a third family rather than an optional refinement, because each family added before the fix widens the union that has to be unpicked. The next unit on this track is therefore the addressed `read`, not a third lowering.
 
 ## 8. Recommendations recorded but not selected here
 
