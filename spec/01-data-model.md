@@ -93,7 +93,8 @@ A **rule** has:
 
 - an **error condition** — the single condition slot; **TRUE means the data is invalid** (fixed polarity — there is no assertion form; [`SEMANTICS-MAP §1.3`](SEMANTICS-MAP.md#13-a-rule-states-the-error--and-that-polarity-is-fixed-));
 - an **error field** — where a fired message attaches. The error field must be *referenced* by the condition (directly, or indirectly via an enclosing `GroupFilled`), or the model is rejected; and it must share the condition's iteration scope ([§9](07-repetition-and-iteration.md));
-- **message metadata** — severity (ERROR/WARNING/INFO) and authored error text (with interpolation, [§13](11-messages-and-custom.md)).
+- **message metadata** — severity (ERROR/WARNING/INFO) and authored error text (with interpolation, [§13](11-messages-and-custom.md));
+- a **name**, which may not begin with the engine-reserved prefix `VK_`. The check is case-**insensitive**, so `VK_x`, `Vk_x`, and `vk_x` are all rejected with `MVK_RULE_NAME_INVALID`; an implementation that compares the prefix case-sensitively admits models the kernel refuses.
 
 Firing a rule against a repetition context yields either *no message* or a **message** carrying: the error field's resolved location, the severity, the computed **message type** (VALUE/OMISSION, [§12](10-validation-and-polarity.md)), the interpolated text, and two structured sets of resolved field-instance pointers. `referenced` reports the condition operands associated with the firing; for an OMISSION, `fillToFix` reports the kernel's omission-responsibility projection, which need not be a minimal set of empty cells whose literal filling alone repairs the rule, while a VALUE message has no fill-to-fix pointers. An operator may define a more specific projection, such as the complete duplicate-peer expansion of [`RepetitionNotUnique`](07-repetition-and-iteration.md#6-repetitionnotunique-precisely); these channels are sets, so no pointer order is specified.
 

@@ -98,8 +98,8 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### SPEC-2026-07-25-03 — the long boundary classifies `+(2^63 - 1)` and `-(2^63 - 1)` oppositely, and only the negative side separates exact-integer arithmetic
 
-- **Status:** pending
-- **Kind:** semantic correction (addition), locally originated; **external evidence pending** — predicted by this repository's conversion owner, not yet measured on the kernel
+- **Status:** accepted and closed — reviewed a12-dmkits `ee2f5d84`; all three predicted rows measured through the real kernel and confirmed
+- **Kind:** semantic correction (addition), locally originated; **kernel-measured** as of `ee2f5d84`
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `724926a5`
 - **Kernel behavior:** 30.8.1; the mechanism is binary64 representability, so it is host-JDK-independent
@@ -120,6 +120,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 - **Riding along, so the family closes in one run rather than another round trip:** your `724926a5` measurement shows a 19-digit comparison literal is admitted at model check, so the 15-digit input bound does not gate authored literals in that position. What that bound *does* constrain is unestablished on both sides; [`04-numbers-and-decimals.md`](../spec/04-numbers-and-decimals.md) now says only what was measured and explicitly declines to state its scope. If it is cheap to determine while measuring the rows above, it closes the last open question in this family.
 - **Compatibility:** an implementation reproducing this needs the parse step at *both* ends of the long range, not only near one half. Rounding the decimal, or doing exact integer arithmetic, diverges on static admission for a literal a model may legally author.
 - **Acceptance:** the three conditions are measured on a scale-0 field in a repeatable group, and the outcome is recorded with its revision — including a refutation, which corrects this repository rather than the peer.
+- **Disposition (reviewed a12-dmkits `ee2f5d84`): confirmed in full, with the mechanism accepted.** `== 9223372036854775807` admitted, `== -9223372036854775807` **rejected**, `== -9223372036854773760` admitted — every predicted row measured through the kernel. The peer also measured the *intermediate* values, which is what settles the cause rather than the outcome: `parseDouble` returns ∓2^63 for **both** literals, so the parse step is symmetric and a binary64-granularity explanation predicts symmetric outcomes and is refuted; `Math.round` then returns `Long.MAX_VALUE` for one and an unchanged `Long.MIN_VALUE` for the other. Saturation on one side only is the mechanism, exactly as the clause states. They additionally measured `== 9223372036854775808` admitted, now in the clause. **The peer retracted its own earlier advice to state this asymmetry without invoking saturation**; that advice never reached `spec/`, so nothing had to be undone. `spec/07` is upgraded from derived to kernel-measured. **Nothing outbound.**
 
 ## Experiment requests
 
