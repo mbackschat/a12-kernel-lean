@@ -34,6 +34,12 @@ inductive OrdinaryRepeatableRuleEvaluationError where
   | conditionAddressing (error : CheckedAddressingError)
   deriving Repr, DecidableEq
 
+/-- Partial execution distinguishes a whole-rule filtered skip from the ordered actual-row scan; each actual row then keeps error-instance skip separate from every evaluated verdict. -/
+inductive PartialRepeatableRuleOutcome where
+  | skipped
+  | evaluated (rows : List (Env × PartialRuleOutcome))
+  deriving Repr, DecidableEq
+
 /-- The first ordinary repeatable rule route requires the error field to inhabit the exact deepest compatible nonparallel reference scope. Wider indirect group-reference anchoring remains outside this capsule. -/
 def ruleErrorScopeCompatible (declaration : FlatFieldDecl) :
     Option (List RepeatableLevel) → Bool
@@ -198,6 +204,41 @@ private def ordinaryRepeatableFieldIds
     (rule : CheckedResolvedValidationRule model) : List FieldId :=
   (rule.condition.core.ordinaryRepeatableFields.map (·.id)).eraseDups
 
+/-- Whether every leaf in this first repeatable partial family has an exact relevance-aware addressed interpretation. Wider addressed leaf families are admitted only when their own partial evaluator exists. -/
+def supportsOrdinaryRepeatablePartial
+    (rule : CheckedResolvedValidationRule model) : Bool :=
+  rule.condition.core.allLeaves
+    ValidationConditionLeaf.supportsAddressedPartial
+
+/-- Evaluate one actual ordinary row under partial relevance. A nonrelevant error instance skips before addressed reads; an admitted row maps only nonrelevant supported leaves to semantic UNKNOWN. -/
+def evalOrdinaryRepeatablePartialAt
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) (environment : Env) :
+    Except OrdinaryRepeatableRuleEvaluationError
+      (Env × PartialRuleOutcome) := do
+  if !rule.supportsOrdinaryRepeatablePartial then
+    throw .unsupportedCondition
+  let effective := scope.withGlobals model
+  if !effective.coversField model rule.errorField environment then
+    pure (environment, .skipped)
+  else
+    let errorCell ←
+      (checked.addressedCell environment rule.errorField).mapError .addressing
+    let base := checked.flatContext
+    let context : AddressedValidationEvaluationContext model := {
+      scalar := { fields := base, groups := GroupPresenceContext.unavailable }
+      outer := environment
+      input := .checked checked
+    }
+    let isRelevant : FlatRelevance := fun field =>
+      effective.coversField model field environment
+    let verdict ← rule.condition.core.evalVerdictExcept fun leaf =>
+      match leaf.evalAddressedPartial? context isRelevant with
+      | some result => result.mapError .conditionAddressing
+      | none => throw .unsupportedCondition
+    pure (environment, .evaluated (rule.core.emitAt errorCell.address.path verdict))
+
 private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) (environment : Env)
@@ -247,6 +288,30 @@ def evalOrdinaryRepeatableFull
       repetitionNotUniqueResults.find? fun result =>
         result.row == environment
     rule.evalOrdinaryRepeatableAt checked environment result?
+
+/-- Execute the first checked one-level partial ordinary-rule family over actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Caller relevance and model-owned globals gate each actual error instance; a relevant entity never becomes document topology, so this per-row route creates no phantom environment. The separate once-evaluation rule shape owns pinned phantom row 1. -/
+def evalOrdinaryRepeatablePartial
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) :
+    Except OrdinaryRepeatableRuleEvaluationError
+      PartialRepeatableRuleOutcome := do
+  if rule.hasHaving then
+    pure .skipped
+  else
+    if !rule.supportsOrdinaryRepeatablePartial then
+      throw .unsupportedCondition
+    let iterationScope ← match rule.iterationScope with
+      | some iterationScope => pure iterationScope
+      | none => throw .missingIterationScope
+    if iterationScope.length != 1 then
+      throw .unsupportedCondition
+    let environments ←
+      ordinaryIterationEnvironments iterationScope
+        checked.source.instantiatedRows
+    let rows ← environments.mapM fun environment =>
+      rule.evalOrdinaryRepeatablePartialAt checked scope environment
+    pure (.evaluated rows)
 
 end CheckedResolvedValidationRule
 

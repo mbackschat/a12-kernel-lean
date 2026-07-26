@@ -251,6 +251,31 @@ theorem checkedValidationRule_partial_evaluated
   simp [CheckedResolvedValidationRule.evalPartial,
     FlatRuleFilterPresence.admits, unfiltered, errorRelevant, scalar]
 
+/-- A filtered repeatable rule skips before support checks, iteration-scope demand, or document-row construction. -/
+theorem checkedValidationRule_partial_repeatable_filtered_skips
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope)
+    (filtered : rule.hasHaving = true) :
+    rule.evalOrdinaryRepeatablePartial checked scope =
+      .ok .skipped := by
+  simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
+    filtered] <;> rfl
+
+/-- At the public one-row boundary, error-instance nonrelevance is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
+theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) (environment : Env)
+    (supported : rule.supportsOrdinaryRepeatablePartial = true)
+    (irrelevant :
+      (scope.withGlobals model).coversField
+        model rule.errorField environment = false) :
+    rule.evalOrdinaryRepeatablePartialAt checked scope environment =
+      .ok (environment, .skipped) := by
+  simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartialAt,
+    supported, irrelevant] <;> rfl
+
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
     (rule : CheckedResolvedFlatRule model)

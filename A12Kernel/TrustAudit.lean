@@ -639,6 +639,8 @@ run_cmd do
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
 #print axioms A12Kernel.checkedValidationRule_partial_filtered_skips
 #print axioms A12Kernel.checkedValidationRule_partial_evaluated
+#print axioms A12Kernel.checkedValidationRule_partial_repeatable_filtered_skips
+#print axioms A12Kernel.checkedValidationRule_partial_repeatable_irrelevant_row_skips
 #print axioms A12Kernel.checkedFlatRule_fired_message_exact
 #print axioms A12Kernel.checkedValidationRule_fired_message_exact
 #print axioms A12Kernel.checkedNumericComparison_modelWellFormed
