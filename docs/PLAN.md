@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 542 jobs · trust audit **1474 theorem roots; 31345 declarations in 299 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 542 jobs · trust audit **1474 theorem roots; 31275 declarations in 299 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,18 +21,18 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-With finite supplied-order repeatable Number plan certification complete, execute it through the existing exact addressed overlay and result owner while retiring the narrower two-target executor.
+Repair the Number result's measured value-less target-error divergence by deriving the exact computation-message pointer partition while keeping every payload already rendered and parametric.
 
 ## Immediate sequence
 
-1. Replace the pair-only execution owner with finite-plan target fields, route concatenation, addressed read policy, table fold, execution, and result classification; retain one target-labelled structural fault and no parallel executor.
-2. Give fields 4 and 6 exact source identities where clearing must be observable, then lock the three-target chain, index-suppressed producers, shared-route non-deduplication, independent supplied orders, and the existing two-target no-value/reached-poison/unread-poison separators.
-3. Prove the read-policy ports, fold-append composition, completed-address ownership, and classifier delegation. Add no relation, scheduler, graph, or trace.
+1. Add the computation-specific coordinate and pointer domain plus an exact-pointer stream partition under SG4; reuse `CellAddr` only for concrete computed instances and keep wildcard/unknown message coordinates representable.
+2. Derive one residual `berechnungsWertFehler` for each Number `.invalidNoValue`, retain supplied eager-prepass messages, and leave accepted/rejected/no-value/inherited-poison behavior unchanged.
+3. Lock exact-pointer matching, payload irrelevance, value-less residual plus clearing, poison/no-value no-message non-laws, the corrected `noErrorOccurred` predicate, and permutation-stable public collections without importing validation rendering.
 
 ## Parked boundaries
 
-- Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its observable residual pointer partition remains parked until SG10 supplies a common structured computation-message/pointer owner; do not introduce an opaque stand-in.
-- Computation scheduling and state transition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); messages under SG10; Boolean/Confirm configured-token metadata under SG5; future operator-family admission and projections under their owning semantic gaps.
+- Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its supplied messages enter the SG4 partition directly; no eager-prepass reconstruction or SG10 rendering belongs in the structural capsule.
+- Computation scheduling, state transition, and the computation-result pointer partition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); message rendering remains under SG10; Boolean/Confirm configured-token metadata under SG5; future operator-family admission and projections under their owning semantic gaps.
 - Public protocol expansion, semantic shipments, dependencies, SMT integration, and new evidence/process machinery require their existing explicit adoption or approval gates.
 
 ## Stop and resume

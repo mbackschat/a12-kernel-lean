@@ -32,16 +32,15 @@ private def table? (target : FieldId) (operand : SurfaceFieldPath)
   let second ← row? target operand (.fieldNotFilled guardField)
   (certifyParallelNumericAlternativeTable [first, second]).toOption
 
-private def checkedRun?
-    (producer consumer :
-      Option (CheckedParallelNumericAlternativeTable model)) :
-    Option (CheckedParallelNumericRun model) := do
-  let producer ← producer
-  let consumer ← consumer
-  (certifyParallelNumericRun producer consumer).toOption
+private def checkedPlan?
+    (tables :
+      List (Option (CheckedParallelNumericAlternativeTable model))) :
+    Option (CheckedParallelNumericPlan model) := do
+  let tables ← tables.mapM id
+  (certifyParallelNumericPlan tables).toOption
 
-private def run? : Option (CheckedParallelNumericRun model) :=
-  checkedRun? (table? 4 offsetPath 6) (table? 2 inputPath 4)
+private def run? : Option (CheckedParallelNumericPlan model) :=
+  checkedPlan? [table? 4 offsetPath 6, table? 2 inputPath 4]
 
 private def invalidProducerTable? :
     Option (CheckedParallelNumericAlternativeTable model) := do
@@ -89,7 +88,7 @@ private def accepted (field : FieldId) (path : List Nat)
 }
 
 private def outcomes?
-    (checked : Option (CheckedParallelNumericRun model))
+    (checked : Option (CheckedParallelNumericPlan model))
     (cells : List ClassifiedCellInput) :
     Option (List ParallelNumericDirectOutcome) := do
   let run ← checked
@@ -97,7 +96,7 @@ private def outcomes?
   (run.execute preliminary).toOption
 
 private def result?
-    (checked : Option (CheckedParallelNumericRun model))
+    (checked : Option (CheckedParallelNumericPlan model))
     (cells : List ClassifiedCellInput) :
     Option (NumericComputationRunView Bool CellAddr) := do
   let run ← checked
@@ -112,27 +111,71 @@ private def computedNumberCell (field : FieldId) (path : List Nat)
   numericSourceIdentity := some (.decimal stored)
 }
 
-/- The checked direction is producer first; duplicate or reversed roles fail structurally. -/
+private def sourceFilledPlanTargets : List ClassifiedCellInput :=
+  (cleanCells.filter fun cell =>
+    ![2, 4, 6].contains cell.address.field) ++ [
+      computedNumberCell 2 [1] { unscaled := 7, scale := 0 },
+      computedNumberCell 2 [2] { unscaled := 8, scale := 0 },
+      computedNumberCell 4 [1] { unscaled := 10, scale := 0 },
+      computedNumberCell 4 [2] { unscaled := 20, scale := 0 },
+      computedNumberCell 6 [1] { unscaled := 1, scale := 0 },
+      computedNumberCell 6 [2] { unscaled := 99, scale := 0 }
+    ]
+
+private def invalidIndexCell (field : FieldId) (path : List Nat) :
+    List ClassifiedCellInput :=
+  sourceFilledPlanTargets.filter fun cell =>
+    cell.address != { field, path }
+
+private def sharedOperandPlan? :
+    Option (CheckedParallelNumericPlan model) :=
+  checkedPlan? [table? 4 offsetPath 6, table? 2 offsetPath 6]
+
+private def appendRouteUnlessOperandGroupSeen
+    (routes : List (CheckedParallelNumericTargetRoute model))
+    (candidate : CheckedParallelNumericTargetRoute model) :
+    List (CheckedParallelNumericTargetRoute model) :=
+  if routes.any fun route =>
+      route.groups.rightGroup.path == candidate.groups.rightGroup.path then
+    routes
+  else
+    routes ++ [candidate]
+
+private def deduplicatePlanRoutesByOperandGroup
+    (plan : CheckedParallelNumericPlan model) :
+    List (CheckedParallelNumericTargetRoute model) :=
+  plan.operandRoutes.foldl appendRouteUnlessOperandGroupSeen []
+
+private def resultWithRoutes?
+    (checked : Option (CheckedParallelNumericPlan model))
+    (cells : List ClassifiedCellInput)
+    (routes :
+      CheckedParallelNumericPlan model →
+        List (CheckedParallelNumericTargetRoute model)) :
+    Option (NumericComputationRunView Bool CellAddr) := do
+  let plan ← checked
+  let preliminary ← preliminaryFor cells
+  let outcomes ← (plan.execute preliminary).toOption
+  (classifyParallelNumericOutcomes preliminary (routes plan) []
+    outcomes).toOption
+
+/- Duplicate targets and reads of later supplied targets fail structurally; independent tables need no artificial dependency edge. -/
 example :
     (do
       let producer ← table? 4 offsetPath 6
-      match certifyParallelNumericRun producer producer with
+      match certifyParallelNumericPlan [producer, producer] with
       | .error error => some error
       | .ok _ => none) = some (.duplicateTarget 4) ∧
     (do
       let producer ← table? 4 offsetPath 6
       let consumer ← table? 2 inputPath 4
-      match certifyParallelNumericRun consumer producer with
+      match certifyParallelNumericPlan [consumer, producer] with
       | .error error => some error
       | .ok _ => none) =
-        some (.producerReadsConsumer 2 4) ∧
-    (do
-      let producer ← table? 4 offsetPath 6
-      let independent ← table? 2 offsetPath 6
-      match certifyParallelNumericRun producer independent with
-      | .error error => some error
-      | .ok _ => none) =
-        some (.consumerDoesNotReadProducer 2 4) := by
+        some (.forwardDependency 2 4) ∧
+    (checkedPlan?
+      [table? 4 offsetPath 6, table? 2 offsetPath 6]).map
+        (·.targetFields) = some [4, 2] := by
   native_decide
 
 /- A genuine three-target chain is accepted; empty, duplicate, and forward-dependent supplied orders fail before execution. -/
@@ -208,7 +251,7 @@ example :
 /- Clean producer no-value reads as numeric empty/zero; reached producer invalidity poisons the dependent target. -/
 example :
     (outcomes?
-      (checkedRun? noValueProducerTable? (table? 2 inputPath 4))
+      (checkedPlan? [noValueProducerTable?, table? 2 inputPath 4])
       cleanCells).map (·.map (·.outcome)) =
         some [
           .noValue, .noValue,
@@ -216,7 +259,7 @@ example :
           .accepted { unscaled := 0, scale := 0 }
         ] ∧
       (outcomes?
-        (checkedRun? invalidProducerTable? (table? 2 inputPath 4))
+        (checkedPlan? [invalidProducerTable?, table? 2 inputPath 4])
         cleanCells).map (·.map (·.outcome)) =
         some [
           .invalidNoValue .calculationValue,
@@ -229,13 +272,85 @@ example :
 /- Static dependency orders the tables but does not poison a selected row that never reads the invalid producer. -/
 example :
     (outcomes?
-      (checkedRun? invalidProducerTable? unreadProducerConsumerTable?)
+      (checkedPlan? [invalidProducerTable?, unreadProducerConsumerTable?])
       cleanCells).map (·.map (·.outcome)) =
       some [
         .invalidNoValue .calculationValue,
         .invalidNoValue .calculationValue,
         .accepted { unscaled := 1, scale := 0 },
         .accepted { unscaled := 0, scale := 0 }
+      ] := by
+  native_decide
+
+/- The finite entry point executes a genuine three-target dependency chain through exact completed addresses. -/
+example :
+    outcomes? finitePlan? cleanCells =
+      some [
+        accepted 6 [1] 2, accepted 6 [2] 0,
+        accepted 4 [1] 2, accepted 4 [2] 0,
+        accepted 2 [1] 2, accepted 2 [2] 0
+      ] := by
+  native_decide
+
+/- An invalid producer index column suppresses and clears that producer while a later consumer reads the absent completion as clean numeric zero. Invalidity in the target group independently suppresses the first and last tables without aborting the middle table. -/
+example :
+    let invalidOffset := invalidIndexCell 5 [2]
+    let invalidTarget := invalidIndexCell 1 [2]
+    (outcomes? finitePlan? invalidOffset,
+      (result? finitePlan? invalidOffset).map (·.cleared)) =
+      (some [
+        accepted 2 [1] 0, accepted 2 [2] 0
+      ], some [
+        { field := 6, path := [1] },
+        { field := 6, path := [2] },
+        { field := 4, path := [1] },
+        { field := 4, path := [2] }
+      ]) ∧
+    (outcomes? finitePlan? invalidTarget,
+      (result? finitePlan? invalidTarget).map (·.cleared)) =
+      (some [
+        accepted 4 [1] 0, accepted 4 [2] 0
+      ], some [
+        { field := 6, path := [1] },
+        { field := 6, path := [2] },
+        { field := 2, path := [1] },
+        { field := 2, path := [2] }
+      ]) := by
+  native_decide
+
+/- Plan-level route deduplication by operand group is unsound: equal operand groups still own different target clears. -/
+example :
+    let invalidOffset := invalidIndexCell 5 [2]
+    (result? sharedOperandPlan? invalidOffset).map (·.cleared) =
+      some [
+        { field := 4, path := [1] },
+        { field := 4, path := [2] },
+        { field := 2, path := [1] },
+        { field := 2, path := [2] }
+      ] ∧
+    (resultWithRoutes? sharedOperandPlan? invalidOffset
+      deduplicatePlanRoutesByOperandGroup).map (·.cleared) =
+      some [
+        { field := 4, path := [1] },
+        { field := 4, path := [2] }
+      ] := by
+  native_decide
+
+/- Independent tables are legal in either supplied order. Their target-indexed values agree while the private outcome list retains supplied table order. -/
+example :
+    let forward :=
+      checkedPlan? [table? 4 offsetPath 6, table? 2 offsetPath 6]
+    let reverse :=
+      checkedPlan? [table? 2 offsetPath 6, table? 4 offsetPath 6]
+    outcomes? forward cleanCells =
+      some [
+        accepted 4 [1] 1, accepted 4 [2] 0,
+        accepted 2 [1] 1, accepted 2 [2] 0
+      ] ∧
+    outcomes? reverse cleanCells =
+      some [
+        accepted 2 [1] 1, accepted 2 [2] 0,
+        accepted 4 [1] 1, accepted 4 [2] 0
       ] := by
   native_decide
 

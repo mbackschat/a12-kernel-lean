@@ -2,9 +2,9 @@ import A12Kernel.Elaboration.ComputationRunPlan
 import A12Kernel.Elaboration.ParallelNumericAlternativeTable
 import A12Kernel.Semantics.NumericDependency
 
-/-! # Checked supplied-order parallel Number runs
+/-! # Checked finite supplied-order parallel Number runs
 
-This capsule retains the completed two-target producer/consumer execution and adds a conservative finite plan over the same already-checked repeatable Number tables. The finite certificate checks only nonemptiness, target uniqueness, and reads of later supplied targets; it adds no graph, sort, scheduler, or trace. Current checked route and operand construction reject the exercised target-group self-reference shapes, but the finite plan does not restate that behavior as a named certificate.
+This capsule certifies and executes a nonempty finite list of already-checked repeatable Number tables in their supplied order. It adds no graph, sort, scheduler, or trace. The transient overlay hides stored inputs at every plan target and exposes completed rich outcomes only at their exact repetition addresses. Current checked route and operand construction reject the exercised target-group self-reference shapes, but the finite plan does not restate that behavior as a named certificate.
 -/
 
 namespace A12Kernel
@@ -64,75 +64,34 @@ def targetFields (plan : CheckedParallelNumericPlan model) :
     List FieldId :=
   plan.tables.map (·.targetField)
 
+/-- Complete checked route inventories for every target method, concatenated in supplied table order. Routes are deliberately not deduplicated across tables: different target fields can share one operand group and still own different source-relative clears. -/
+def operandRoutes (plan : CheckedParallelNumericPlan model) :
+    List (CheckedParallelNumericTargetRoute model) :=
+  plan.tables.flatMap (·.operandRoutes)
+
 end CheckedParallelNumericPlan
 
-inductive ParallelNumericRunPlanError where
-  | duplicateTarget (field : FieldId)
-  | producerReadsConsumer (producer consumer : FieldId)
-  | consumerDoesNotReadProducer (consumer producer : FieldId)
-  deriving Repr, DecidableEq
-
-/-- Two unique tables in their certified producer-first order. The consumer must read the producer, while the producer must not read the pending consumer. -/
-structure CheckedParallelNumericRun (model : FlatModel) where
-  producer : CheckedParallelNumericAlternativeTable model
-  consumer : CheckedParallelNumericAlternativeTable model
-  targetsDistinct : producer.targetField ≠ consumer.targetField
-  producerIndependent :
-    producer.referencesField consumer.targetField = false
-  consumerDepends :
-    consumer.referencesField producer.targetField = true
-
-/-- Certify the exact two-node dependency without constructing or sorting a graph. -/
-def certifyParallelNumericRun
-    (producer consumer : CheckedParallelNumericAlternativeTable model) :
-    Except ParallelNumericRunPlanError (CheckedParallelNumericRun model) :=
-  if targetsDistinct : producer.targetField ≠ consumer.targetField then
-    match producerIndependent :
-        producer.referencesField consumer.targetField with
-    | true =>
-        .error (.producerReadsConsumer
-          producer.targetField consumer.targetField)
-    | false =>
-        match consumerDepends :
-            consumer.referencesField producer.targetField with
-        | true =>
-            .ok {
-              producer
-              consumer
-              targetsDistinct
-              producerIndependent
-              consumerDepends
-            }
-        | false =>
-            .error (.consumerDoesNotReadProducer
-              consumer.targetField producer.targetField)
-  else
-    .error (.duplicateTarget producer.targetField)
-
-/-- Exact addressed outcomes accumulated in producer-first execution order. -/
+/-- Exact addressed outcomes accumulated in supplied table and target-row order. -/
 structure ParallelNumericRunState where
   completed : List ParallelNumericDirectOutcome := []
   deriving Repr, DecidableEq
 
 namespace ParallelNumericRunState
 
+/-- Find an exact completed address. The linear lookup is intentional for the reference semantics; indexing would add mutable or duplicate state without changing the admitted behavior. -/
 def find? (state : ParallelNumericRunState) (address : CellAddr) :
     Option ParallelNumericDirectOutcome :=
   state.completed.find? fun completion => completion.address == address
 
 end ParallelNumericRunState
 
-namespace CheckedParallelNumericRun
+namespace CheckedParallelNumericPlan
 
-def targetFields (run : CheckedParallelNumericRun model) :
-    List FieldId :=
-  [run.producer.targetField, run.consumer.targetField]
-
-/-- Hide every pending computed address, expose an exact completed outcome as a typed dependency cell, and delegate ordinary addresses to the immutable checked document. -/
-def readPolicy (run : CheckedParallelNumericRun model)
+/-- Hide every pending plan-target address, expose an exact completed outcome as a typed dependency cell, and delegate ordinary addresses to the immutable checked document. Stripping by target field is exact for this fragment because each table owns all existing instances of its target; index-invalid instances are independently classified as clears. -/
+def readPolicy (plan : CheckedParallelNumericPlan model)
     (state : ParallelNumericRunState) (input : CheckedDocument model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
-  if run.targetFields.contains address.field then
+  if plan.targetFields.contains address.field then
     match state.find? address with
     | some completion =>
         .ok (NumericDependencyCell.ofOutcome completion.outcome).checked
@@ -141,52 +100,54 @@ def readPolicy (run : CheckedParallelNumericRun model)
   else
     input.read address
 
-/-- Complete checked route inventories for both target methods. Routes are not deduplicated across tables because equal operand groups still own different target clearings. -/
-def operandRoutes (run : CheckedParallelNumericRun model) :
-    List (CheckedParallelNumericTargetRoute model) :=
-  run.producer.operandRoutes ++ run.consumer.operandRoutes
-
-inductive ExecutionError where
-  | producer
-      (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
-  | consumer
+/-- A structural table failure retains its plan target as diagnostic context. Semantic no-value and poison remain rich outcomes instead. -/
+inductive ExecutionFault where
+  | table (target : FieldId)
       (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
   deriving Repr, DecidableEq
 
-/-- Execute the producer against the stripped input, then execute the consumer through the exact completed producer overlay. -/
-def execute (run : CheckedParallelNumericRun model)
+/-- Fold checked tables in supplied order, appending each table's exact addressed outcomes to the overlay before the next table executes. A structural failure retains diagnostic target context; semantic no-value and poison remain rich outcomes. -/
+def executeTables (plan : CheckedParallelNumericPlan model)
     (preliminary : CheckedIndexPreliminary model) :
-    Except ExecutionError (List ParallelNumericDirectOutcome) :=
-  match run.producer.executeWithRead preliminary
-      (run.readPolicy {} preliminary.base) with
-  | .error error => .error (.producer error)
-  | .ok producerOutcomes =>
-      match run.consumer.executeWithRead preliminary
-          (run.readPolicy { completed := producerOutcomes }
-            preliminary.base) with
-      | .error error => .error (.consumer error)
-      | .ok consumerOutcomes =>
-          .ok (producerOutcomes ++ consumerOutcomes)
+    List (CheckedParallelNumericAlternativeTable model) →
+      ParallelNumericRunState → Except ExecutionFault ParallelNumericRunState
+  | [], state => .ok state
+  | table :: remaining, state =>
+      match table.executeWithRead preliminary
+          (plan.readPolicy state preliminary.base) with
+      | .error error => .error (.table table.targetField error)
+      | .ok outcomes =>
+          plan.executeTables preliminary remaining
+            { completed := state.completed ++ outcomes }
 
+/-- Execute every checked table from an empty overlay and return the complete supplied-order outcome list. -/
+def execute (plan : CheckedParallelNumericPlan model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except ExecutionFault (List ParallelNumericDirectOutcome) :=
+  match plan.executeTables preliminary plan.tables {} with
+  | .error error => .error error
+  | .ok state => .ok state.completed
+
+/-- Distinguish table execution faults from failures in the existing addressed-result classifier. -/
 inductive ResultError where
-  | execution (error : ExecutionError)
+  | execution (error : ExecutionFault)
   | classification (error : ParallelNumericDirectRunResultError)
   deriving Repr, DecidableEq
 
-/-- Execute and classify both addressed target families against the same immutable preliminary. Residual-message construction remains outside this boundary. -/
-def executeResult (run : CheckedParallelNumericRun model)
+/-- Execute and classify every addressed target family against the same immutable preliminary. The complete per-table route inventory is retained because equal operand groups for different targets own different index clears. Residual-message construction remains outside this boundary. -/
+def executeResult (plan : CheckedParallelNumericPlan model)
     (preliminary : CheckedIndexPreliminary model)
     (residualMessages : List ResidualMessage) :
     Except ResultError
       (NumericComputationRunView ResidualMessage CellAddr) :=
-  match run.execute preliminary with
+  match plan.execute preliminary with
   | .error error => .error (.execution error)
   | .ok outcomes =>
-      match classifyParallelNumericOutcomes preliminary run.operandRoutes
+      match classifyParallelNumericOutcomes preliminary plan.operandRoutes
           residualMessages outcomes with
       | .error error => .error (.classification error)
       | .ok view => .ok view
 
-end CheckedParallelNumericRun
+end CheckedParallelNumericPlan
 
 end A12Kernel

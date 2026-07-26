@@ -35,64 +35,71 @@ theorem checkedParallelNumericPlan_references_later_false
     (·.targetField) (·.referencesField ·)
     consumer later suffix producer member
 
-theorem parallelNumericRun_read_pending
-    (run : CheckedParallelNumericRun model)
+theorem parallelNumericPlan_read_pending
+    (plan : CheckedParallelNumericPlan model)
     (state : ParallelNumericRunState) (input : CheckedDocument model)
-    (address : CellAddr) (target : address.field ∈ run.targetFields)
+    (address : CellAddr) (target : address.field ∈ plan.targetFields)
     (pending : state.find? address = none) :
-    run.readPolicy state input address =
+    plan.readPolicy state input address =
       .ok (NumericDependencyCell.ofObservation .empty).checked := by
-  simp [CheckedParallelNumericRun.readPolicy, target, pending]
+  simp [CheckedParallelNumericPlan.readPolicy, target, pending]
 
-theorem parallelNumericRun_read_completed
-    (run : CheckedParallelNumericRun model)
+theorem parallelNumericPlan_read_completed
+    (plan : CheckedParallelNumericPlan model)
     (state : ParallelNumericRunState) (input : CheckedDocument model)
     (address : CellAddr) (completion : ParallelNumericDirectOutcome)
-    (target : address.field ∈ run.targetFields)
+    (target : address.field ∈ plan.targetFields)
     (found : state.find? address = some completion) :
-    run.readPolicy state input address =
+    plan.readPolicy state input address =
       .ok (NumericDependencyCell.ofOutcome completion.outcome).checked := by
-  simp [CheckedParallelNumericRun.readPolicy, target, found]
+  simp [CheckedParallelNumericPlan.readPolicy, target, found]
 
-theorem parallelNumericRun_read_input
-    (run : CheckedParallelNumericRun model)
+theorem parallelNumericPlan_read_input
+    (plan : CheckedParallelNumericPlan model)
     (state : ParallelNumericRunState) (input : CheckedDocument model)
-    (address : CellAddr) (ordinary : address.field ∉ run.targetFields) :
-    run.readPolicy state input address = input.read address := by
-  simp [CheckedParallelNumericRun.readPolicy, ordinary]
+    (address : CellAddr) (ordinary : address.field ∉ plan.targetFields) :
+    plan.readPolicy state input address = input.read address := by
+  simp [CheckedParallelNumericPlan.readPolicy, ordinary]
 
-/-- Successful execution is exactly the producer result followed by the consumer result evaluated through that completed producer overlay. -/
-theorem parallelNumericRun_execute_stages
-    (run : CheckedParallelNumericRun model)
+/-- Successful execution of a prefix composes exactly with any remaining supplied suffix. -/
+theorem parallelNumericPlan_executeTables_append
+    (plan : CheckedParallelNumericPlan model)
     (preliminary : CheckedIndexPreliminary model)
-    (producerOutcomes consumerOutcomes :
-      List ParallelNumericDirectOutcome)
-    (producerExecuted :
-      run.producer.executeWithRead preliminary
-        (run.readPolicy {} preliminary.base) =
-          .ok producerOutcomes)
-    (consumerExecuted :
-      run.consumer.executeWithRead preliminary
-        (run.readPolicy { completed := producerOutcomes }
-          preliminary.base) =
-          .ok consumerOutcomes) :
-    run.execute preliminary =
-      .ok (producerOutcomes ++ consumerOutcomes) := by
-  simp [CheckedParallelNumericRun.execute, producerExecuted,
-    consumerExecuted]
+    (left right :
+      List (CheckedParallelNumericAlternativeTable model))
+    (state mid : ParallelNumericRunState)
+    (first :
+      plan.executeTables preliminary left state = .ok mid) :
+    plan.executeTables preliminary (left ++ right) state =
+      plan.executeTables preliminary right mid := by
+  induction left generalizing state mid with
+  | nil =>
+      simp [CheckedParallelNumericPlan.executeTables] at first
+      subst mid
+      rfl
+  | cons table remaining ih =>
+      cases executed :
+          table.executeWithRead preliminary
+            (plan.readPolicy state preliminary.base) with
+      | error error =>
+          simp [CheckedParallelNumericPlan.executeTables, executed] at first
+      | ok outcomes =>
+          simp only [CheckedParallelNumericPlan.executeTables, executed,
+            List.cons_append] at first ⊢
+          exact ih _ _ first
 
 /-- Whole-run result construction delegates the successful addressed outcomes to the existing repeatable Number classifier. -/
-theorem parallelNumericRun_executeResult_classifies
-    (run : CheckedParallelNumericRun model)
+theorem parallelNumericPlan_executeResult_classifies
+    (plan : CheckedParallelNumericPlan model)
     (preliminary : CheckedIndexPreliminary model)
     (residualMessages : List ResidualMessage)
     (outcomes : List ParallelNumericDirectOutcome)
     (view : NumericComputationRunView ResidualMessage CellAddr)
-    (executed : run.execute preliminary = .ok outcomes)
+    (executed : plan.execute preliminary = .ok outcomes)
     (classified :
-      classifyParallelNumericOutcomes preliminary run.operandRoutes
+      classifyParallelNumericOutcomes preliminary plan.operandRoutes
         residualMessages outcomes = .ok view) :
-    run.executeResult preliminary residualMessages = .ok view := by
-  simp [CheckedParallelNumericRun.executeResult, executed, classified]
+    plan.executeResult preliminary residualMessages = .ok view := by
+  simp [CheckedParallelNumericPlan.executeResult, executed, classified]
 
 end A12Kernel
