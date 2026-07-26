@@ -99,7 +99,7 @@ import A12Kernel.Elaboration.TokenFirstFilledValue
 import A12Kernel.Elaboration.NumericComputation
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Elaboration.StringComputationTable
-import A12Kernel.Elaboration.StringComputationRunPlan
+import A12Kernel.Elaboration.StringComputationRun
 import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.NumericValidation

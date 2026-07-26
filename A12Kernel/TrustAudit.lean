@@ -1363,6 +1363,9 @@ run_cmd do
 #print axioms A12Kernel.checkedStringComputationAlternative_excludes_target
 #print axioms A12Kernel.checkedStringComputationAlternative_expression_excludes_target
 #print axioms A12Kernel.checkedStringComputationTable_evaluateOutcome_erases
+#print axioms A12Kernel.stringComputationRun_read_pending
+#print axioms A12Kernel.stringComputationRun_read_completed
+#print axioms A12Kernel.stringComputationRun_read_input
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic
