@@ -446,8 +446,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .flat _ | .repeatableFieldPresence _ _ => true
   | .orderedNumeric _ comparison =>
       comparison.supportsAddressedPartial
-  | .repetitionNotUnique source =>
-      source.supportsOneLevelOrdinaryRule
+  | .repetitionNotUnique _ => true
   | _ => false
 
 /-- Evaluate one partial addressed leaf. `none` is structural unsupported information, not semantic UNKNOWN; a reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/

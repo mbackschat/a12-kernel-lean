@@ -295,23 +295,28 @@ private def evalOrdinaryPartialAdmittedAt
     | none => throw .unsupportedCondition
   pure (rule.core.emitAt errorPath verdict)
 
-/-- Prepare the branch-independent RNU relation once. Partial scope excludes incomplete composite keys before reads; full scope retains every topology row. The checked source and rule must agree on the one-level iteration scope. -/
+/-- Prepare each branch-independent RNU relation once per existing bound prefix. Partial scope excludes incomplete composite keys before reads; full scope retains every topology row. The checked source and rule must agree on the complete deepest-row iteration scope. -/
 private def repetitionNotUniqueResults
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model)
-    (scope : ValidationRelevanceScope) :
+    (scope : ValidationRelevanceScope) (environments : List Env) :
     Except OrdinaryRepeatableRuleEvaluationError
       (List RepetitionNotUniqueResult) :=
   match rule.condition.core.repetitionNotUniqueSource? with
   | none => pure []
   | some source =>
       let sourceScope := source.topology.path.axes.map (·.level)
-      if !source.supportsOneLevelOrdinaryRule ||
-          rule.iterationScope != some sourceScope then
+      if rule.iterationScope != some sourceScope then
         throw .unsupportedCondition
-      else
-        (source.evaluateChecked checked [] scope)
-          |>.mapError .conditionAddressing
+      else do
+        let outerEnvironments ← environments.mapM fun environment =>
+          (source.topology.path.boundEnvironment environment)
+            |>.mapError fun error =>
+              .conditionAddressing (.addressing error)
+        let scopedResults ← outerEnvironments.eraseDups.mapM fun outer =>
+          (source.evaluateChecked checked outer scope)
+            |>.mapError .conditionAddressing
+        pure scopedResults.flatten
 
 /-- Evaluate one actual ordinary row under partial relevance. A nonrelevant error instance skips before addressed reads; an admitted row maps only nonrelevant supported leaves to semantic UNKNOWN. -/
 def evalOrdinaryRepeatablePartialAt
@@ -327,7 +332,7 @@ def evalOrdinaryRepeatablePartialAt
     pure (environment, .skipped)
   else
     let repetitionNotUniqueResults ←
-      rule.repetitionNotUniqueResults checked effective
+      rule.repetitionNotUniqueResults checked effective [environment]
     let result? :=
       repetitionNotUniqueResults.find? fun result =>
         result.row == environment
@@ -374,7 +379,7 @@ def evalOrdinaryRepeatableFull
   let environments ←
     ordinaryIterationEnvironments scope checked.source.instantiatedRows
   let repetitionNotUniqueResults ←
-    rule.repetitionNotUniqueResults checked .full
+    rule.repetitionNotUniqueResults checked .full environments
   environments.mapM fun environment =>
     let result? :=
       repetitionNotUniqueResults.find? fun result =>
@@ -436,7 +441,7 @@ def evalOrdinaryOncePartial
           environment errorPath none
       pure (.evaluated environment outcome)
 
-/-- Execute a checked one-level partial ordinary rule over actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Caller relevance and model-owned globals gate each actual error instance; relevance never becomes document topology, so this route creates no phantom environment. -/
+/-- Execute a checked partial ordinary rule over actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Caller relevance and model-owned globals gate each actual error instance; relevance never becomes document topology, so this route creates no phantom environment. -/
 def evalOrdinaryRepeatablePartial
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model)
@@ -451,19 +456,17 @@ def evalOrdinaryRepeatablePartial
     let iterationScope ← match rule.iterationScope with
       | some iterationScope => pure iterationScope
       | none => throw .missingIterationScope
-    if iterationScope.length != 1 then
-      throw .unsupportedCondition
     let environments ←
       ordinaryIterationEnvironments iterationScope
         checked.source.instantiatedRows
     let effective := scope.withGlobals model
-    let anyAdmitted := environments.any fun environment =>
+    let admittedEnvironments := environments.filter fun environment =>
       effective.coversField model rule.errorField environment
     let repetitionNotUniqueResults ←
-      if anyAdmitted then
-        rule.repetitionNotUniqueResults checked effective
-      else
+      if admittedEnvironments.isEmpty then
         pure []
+      else
+        rule.repetitionNotUniqueResults checked effective admittedEnvironments
     let rows ← environments.mapM fun environment => do
       if !effective.coversField model rule.errorField environment then
         pure (environment, .skipped)

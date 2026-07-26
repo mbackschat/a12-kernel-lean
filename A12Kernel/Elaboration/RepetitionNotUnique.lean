@@ -5,7 +5,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` construction
 
-This boundary resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are its legal key domain. Temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys are rejected. Ordinary rule execution accepts only a source whose complete topology contains one repeatable level; deeper sources require a reference-scope-aware execution context.
+This boundary resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are its legal key domain. Temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys are rejected. A surrounding rule supplies one complete environment per deepest row; the topology's existing bound prefix partitions nested default and explicit `@From` scopes without another address model.
 -/
 
 namespace A12Kernel
@@ -404,12 +404,6 @@ def wellFormedBool (checked : CheckedRepetitionNotUniqueSource model)
     ((checked.topology.path.axes.drop
       checked.topology.path.firstStar).head?.map (·.level)) ==
         some checked.referenceGroup.level
-
-/-- Whether the complete RNU topology contains exactly the one repeatable level supplied by an ordinary rule row. -/
-def supportsOneLevelOrdinaryRule
-    (checked : CheckedRepetitionNotUniqueSource model) : Bool :=
-  checked.topology.path.firstStar == 0 &&
-    checked.topology.path.axes.length == 1
 
 /-- Partial relevance admits a row only when every component of its composite key is relevant. -/
 def rowRelevant (checked : CheckedRepetitionNotUniqueSource model)

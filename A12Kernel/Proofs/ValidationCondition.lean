@@ -514,6 +514,24 @@ theorem validationCondition_repetitionNotUnique_addressingPolicy
         source.keys.map fun key => key.source.declaration := by
   exact ⟨rfl, rfl⟩
 
+/-- Checked RNU depth changes only the existing bound-prefix partition; every source consumes the complete ordinary rule environment. -/
+@[simp]
+theorem validationCondition_repetitionNotUnique_ordinarySupported
+    (model : FlatModel)
+    (source : CheckedRepetitionNotUniqueSource model) :
+    (ValidationCondition.repetitionNotUnique source).supportsOrdinaryIteration =
+      true := by
+  rfl
+
+/-- Partial RNU uses the same checked topology at every depth and applies relevance before each composite-key read. -/
+@[simp]
+theorem validationConditionLeaf_repetitionNotUnique_partialSupported
+    (model : FlatModel)
+    (source : CheckedRepetitionNotUniqueSource model) :
+    (ValidationConditionLeaf.repetitionNotUnique source).supportsAddressedPartial =
+      true := by
+  rfl
+
 /-- Mixed-condition traversal delegates RNU reference membership to the checked source that retains the authored-`@From` distinction. -/
 @[simp]
 theorem validationCondition_repetitionNotUnique_referencesField

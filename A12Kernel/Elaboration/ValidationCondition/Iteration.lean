@@ -416,14 +416,14 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
   | .and left right | .or left right =>
       ordinaryRepeatableFields left ++ ordinaryRepeatableFields right
 
-/-- The first whole-rule route accepts established nonrepeatable flat leaves, ordinary repeatable field/group presence, and the checked same-group addressed Number policy. Specialized star sources retain their existing owners until their rule-environment bridge closes. -/
+/-- Whether every leaf can consume the complete environment selected by ordinary nonparallel rule iteration. Specialized star sources remain with their family owners. -/
 def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
     | .flat _ | .groupPresence _ _ | .groupList _ _
     | .repeatableFieldPresence _ _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
-    | .repetitionNotUnique source => source.supportsOneLevelOrdinaryRule
+    | .repetitionNotUnique _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/

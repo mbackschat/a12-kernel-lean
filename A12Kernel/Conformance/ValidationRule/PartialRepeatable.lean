@@ -1,7 +1,7 @@
 import A12Kernel.Conformance.ValidationRule.OrdinarySupport.Runtime
 
 /-!
-# Checked one-level repeatable partial-validation rule locks
+# Checked repeatable partial-validation rule locks
 
 This family remains independently buildable with `lake build A12Kernel.Conformance.ValidationRule.PartialRepeatable`; the validation-rule conformance module is only its import umbrella.
 -/
@@ -143,9 +143,9 @@ example :
       some (some []) := by
   native_decide
 
-/- The direct-presence leaf family is supported, but this first capsule refuses a nested two-level iteration scope instead of silently generalizing beyond its audited boundary. -/
+/- Complete nested environments use the same addressed presence semantics; depth does not create a second partial-rule execution mode. -/
 example :
-    nestedBoundary? = some (true, some .unsupportedCondition) := by
+    nestedBoundary? = some (true, none) := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.PartialRepeatable

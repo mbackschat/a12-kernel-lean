@@ -257,6 +257,143 @@ private def consumerResults? :
   let document ← checkedDocument? guardedRnuData
   (source.evaluateChecked document [] .full).toOption
 
+private def phase : FlatFieldDecl :=
+  { id := 200
+    groupPath := ["Project", "Milestones"]
+    name := "Phase"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [20] }
+
+private def effort : FlatFieldDecl :=
+  { id := 201
+    groupPath := ["Project", "Milestones", "Tasks"]
+    name := "Effort"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [20, 30] }
+
+private def nestedModel : FlatModel :=
+  { fields := [phase, effort]
+    repeatableGroups := [
+      { level := 20
+        path := ["Project", "Milestones"]
+        repeatability := some 2 },
+      { level := 30
+        path := ["Project", "Milestones", "Tasks"]
+        repeatability := some 2 }
+    ] }
+
+private def nestedPath (groups : GroupPath) (field : String) :
+    SurfaceFieldPath :=
+  { base := .absolute, groups, field }
+
+private def nestedEffortPath : SurfaceFieldPath :=
+  nestedPath ["Project", "Milestones", "Tasks"] "Effort"
+
+private def nestedPhasePath : SurfaceFieldPath :=
+  nestedPath ["Project", "Milestones"] "Phase"
+
+private def nestedSource
+    (scope : SurfaceRepetitionNotUniqueScope := .default)
+    (withPhase : Bool := false) : SurfaceRepetitionNotUniqueSource :=
+  if withPhase then
+    { firstKey := nestedPhasePath
+      restKeys := [nestedEffortPath]
+      scope }
+  else
+    { firstKey := nestedEffortPath, restKeys := [], scope }
+
+private def nestedFrom (groups : GroupPath) :
+    SurfaceRepetitionNotUniqueScope :=
+  .from (.path { base := .absolute, groups })
+
+private def nestedRule?
+    (scope : SurfaceRepetitionNotUniqueScope := .default)
+    (withPhase : Bool := false) :
+    Option (CheckedResolvedValidationRule nestedModel) := do
+  let condition ←
+    (CheckedValidationCondition.fromRepetitionNotUnique
+      nestedModel ["Project"] (nestedSource scope withPhase)).toOption
+  (assembleResolvedValidationRule nestedModel condition effort.id
+    "nestedRnu" .error { parts := [] }).toOption
+
+private def nestedCell (field : FieldId) (path : List Nat)
+    (stored : String) (value : Nat) : ClassifiedCellInput :=
+  { address := { field, path }, stored, raw := .parsed (.num value) }
+
+private def nestedData (withinFirstMilestone : Bool := false) :
+    DocumentData :=
+  { instantiatedRows := [
+      { group := 20, path := [2] },
+      { group := 20, path := [1] },
+      { group := 30, path := [2, 2] },
+      { group := 30, path := [1, 2] },
+      { group := 30, path := [2, 1] },
+      { group := 30, path := [1, 1] }
+    ]
+    cells := [
+      nestedCell phase.id [1] "1" 1,
+      nestedCell phase.id [2] "2" 2,
+      nestedCell effort.id [2, 2] "9" 9,
+      nestedCell effort.id [1, 2] (if withinFirstMilestone then "5" else "7")
+        (if withinFirstMilestone then 5 else 7),
+      nestedCell effort.id [2, 1] (if withinFirstMilestone then "7" else "5")
+        (if withinFirstMilestone then 7 else 5),
+      nestedCell effort.id [1, 1] "5" 5
+    ] }
+
+private def nestedCheckedDocument? (data : DocumentData) :
+    Option (CheckedDocument nestedModel) := do
+  let prepared ←
+    (prepareFlatStringContext world builtinStringPatternCompiler
+      nestedModel).toOption
+  (checkDocument prepared "en_US" data).toOption
+
+private def nestedVerdicts?
+    (rule : Option (CheckedResolvedValidationRule nestedModel))
+    (data : DocumentData) : Option (List (Env × Verdict)) := do
+  let checkedRule ← rule
+  let document ← nestedCheckedDocument? data
+  let outcomes ← (checkedRule.evalOrdinaryRepeatableFull document).toOption
+  pure (outcomes.map fun outcome => (outcome.1, outcome.2.verdict))
+
+private def nestedPartialVerdicts?
+    (rule : Option (CheckedResolvedValidationRule nestedModel))
+    (data : DocumentData) (scope : ValidationRelevanceScope) :
+    Option (List (Env × Option Verdict)) := do
+  let checkedRule ← rule
+  let document ← nestedCheckedDocument? data
+  let outcome ←
+    (checkedRule.evalOrdinaryRepeatablePartial document scope).toOption
+  match outcome with
+  | .skipped => none
+  | .evaluated rows =>
+      pure (rows.map fun row =>
+        (row.1, match row.2 with
+          | .skipped => none
+          | .evaluated result => some result.verdict))
+
+private def nestedMissingOuterError? :
+    Option CheckedAddressingError := do
+  let condition ←
+    (CheckedValidationCondition.fromRepetitionNotUnique
+      nestedModel ["Project"]
+      (nestedSource
+        (nestedFrom ["Project", "Milestones", "Tasks"]))).toOption
+  let source ← condition.core.repetitionNotUniqueSource?
+  let document ← nestedCheckedDocument? (nestedData)
+  match source.evaluateChecked document [] .full with
+  | .ok _ => none
+  | .error error => some error
+
+private def allNestedEffortRelevant : ValidationRelevanceScope :=
+  .partialSet [RelevantEntityPattern.allInstances effort.path]
+
+private def firstNestedEffortRelevant : ValidationRelevanceScope :=
+  .partialSet [{
+    path := effort.path
+    indices := [.all, .concrete 1, .concrete 1, .all]
+  }]
+
 /- RNU remains one ordinary row leaf: duplicate rows fire through it, while an independent positive branch can fire the unique row. -/
 example :
     verdicts? rnuOrWeightRule? rnuOrWeightData =
@@ -353,6 +490,110 @@ example :
 example :
     referenceBoundary? =
       some (true, true, false, false, false, false) := by
+  native_decide
+
+/- Default scope and explicit `@From Milestones` compare equal task keys across parents. Rule outcomes retain the deepest-row encounter order even though duplicate construction uses canonical topology order. -/
+example :
+    nestedVerdicts? (nestedRule?) (nestedData) =
+      some [
+        ([(20, 2), (30, 2)], .notFired),
+        ([(20, 1), (30, 2)], .notFired),
+        ([(20, 2), (30, 1)], .fired .value),
+        ([(20, 1), (30, 1)], .fired .value)
+      ] ∧
+    nestedVerdicts?
+        (nestedRule? (nestedFrom ["Project", "Milestones"]))
+        (nestedData) =
+      some [
+        ([(20, 2), (30, 2)], .notFired),
+        ([(20, 1), (30, 2)], .notFired),
+        ([(20, 2), (30, 1)], .fired .value),
+        ([(20, 1), (30, 1)], .fired .value)
+      ] := by
+  native_decide
+
+/- Explicit `@From Tasks` partitions the same relation by the bound milestone: cross-parent equals stay unique, while an equal pair under one milestone fires. -/
+example :
+    nestedVerdicts?
+        (nestedRule? (nestedFrom ["Project", "Milestones", "Tasks"]))
+        (nestedData) =
+      some [
+        ([(20, 2), (30, 2)], .notFired),
+        ([(20, 1), (30, 2)], .notFired),
+        ([(20, 2), (30, 1)], .notFired),
+        ([(20, 1), (30, 1)], .notFired)
+      ] ∧
+    nestedVerdicts?
+        (nestedRule? (nestedFrom ["Project", "Milestones", "Tasks"]))
+        (nestedData true) =
+      some [
+        ([(20, 2), (30, 2)], .notFired),
+        ([(20, 1), (30, 2)], .fired .value),
+        ([(20, 2), (30, 1)], .notFired),
+        ([(20, 1), (30, 1)], .fired .value)
+      ] := by
+  native_decide
+
+/- An ancestor component is projected through its own one-level address before joining the deepest composite key. Distinct milestone phases therefore separate equal efforts. -/
+example :
+    nestedVerdicts? (nestedRule? (withPhase := true)) (nestedData) =
+      some [
+        ([(20, 2), (30, 2)], .notFired),
+        ([(20, 1), (30, 2)], .notFired),
+        ([(20, 2), (30, 1)], .notFired),
+        ([(20, 1), (30, 1)], .notFired)
+      ] := by
+  native_decide
+
+/- A narrow reference scope cannot be evaluated without its exact parent binding; the failure remains structural. -/
+example :
+    nestedMissingOuterError? =
+      some (.addressing (.missingBinding 20)) := by
+  native_decide
+
+/- Nested partial execution keeps topology separate from relevance. Complete key relevance preserves cross-parent duplicates; one concrete relevant error/key row is evaluated as unique while every other actual row skips. -/
+example :
+    nestedPartialVerdicts? (nestedRule?) (nestedData)
+        allNestedEffortRelevant =
+      some [
+        ([(20, 2), (30, 2)], some .notFired),
+        ([(20, 1), (30, 2)], some .notFired),
+        ([(20, 2), (30, 1)], some (.fired .value)),
+        ([(20, 1), (30, 1)], some (.fired .value))
+      ] ∧
+    nestedPartialVerdicts? (nestedRule?) (nestedData)
+        firstNestedEffortRelevant =
+      some [
+        ([(20, 2), (30, 2)], none),
+        ([(20, 1), (30, 2)], none),
+        ([(20, 2), (30, 1)], none),
+        ([(20, 1), (30, 1)], some .notFired)
+      ] := by
+  native_decide
+
+/- Partial `@From Tasks` retains the authored parent partition when every task key is relevant; relevance changes row admission, not relation scope. -/
+example :
+    nestedPartialVerdicts?
+        (nestedRule? (nestedFrom ["Project", "Milestones", "Tasks"]))
+        (nestedData) allNestedEffortRelevant =
+      some [
+        ([(20, 2), (30, 2)], some .notFired),
+        ([(20, 1), (30, 2)], some .notFired),
+        ([(20, 2), (30, 1)], some .notFired),
+        ([(20, 1), (30, 1)], some .notFired)
+      ] := by
+  native_decide
+
+/- Relevance is component-wise at each key's own depth: relevant task error instances with a nonrelevant ancestor component evaluate RNU as UNKNOWN. -/
+example :
+    nestedPartialVerdicts? (nestedRule? (withPhase := true)) (nestedData)
+        allNestedEffortRelevant =
+      some [
+        ([(20, 2), (30, 2)], some .unknown),
+        ([(20, 1), (30, 2)], some .unknown),
+        ([(20, 2), (30, 1)], some .unknown),
+        ([(20, 1), (30, 1)], some .unknown)
+      ] := by
   native_decide
 
 end A12Kernel.Conformance.RepetitionNotUniqueValidationRule
