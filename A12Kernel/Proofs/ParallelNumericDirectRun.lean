@@ -10,7 +10,7 @@ theorem checkedIsolatedParallelNumericDirectRun_wellFormed
     checked.WellFormed :=
   ⟨checkedParallelNumericClearingPlan_wellFormed checked.route,
     fun additional _ =>
-      checkedParallelNumericClearingPlan_wellFormed additional,
+      checkedParallelNumericTargetRoute_wellFormed additional,
     checked.routeTargetsCoherent, checked.guardAdmitted,
     checked.expressionUsesOperand, checked.expressionOperandsAdmitted,
     checked.expressionAdmitted, checked.expressionAuthoring,

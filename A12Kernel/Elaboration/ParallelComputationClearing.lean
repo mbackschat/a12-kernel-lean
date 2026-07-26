@@ -4,7 +4,7 @@ import A12Kernel.Semantics.ParallelComputationClearing
 
 /-! # Checked parallel-computation clearing plans
 
-This bounded route recognizes one direct non-starred Number operand in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. It derives side-specific mark scopes, resolves checked index columns over actual target rows, and projects covered source-filled targets to an extensional clearing fragment. General computation expressions, guards, starred operands, table execution, successful repeatable outcomes, and application remain separate. -/
+This boundary recognizes one direct non-starred observed field in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. It derives side-specific mark scopes, resolves checked index columns over actual target rows, and projects covered source-filled targets to an extensional clearing fragment. The original direct Number-operand plan is retained as a stronger specialization; presence guards reuse the kind-neutral route without weakening Number expression admission. Starred operands, table execution, successful repeatable outcomes, and application remain separate. -/
 
 namespace A12Kernel
 

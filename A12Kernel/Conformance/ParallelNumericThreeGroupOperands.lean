@@ -27,6 +27,15 @@ private def numberDeclaration (id : FieldId) (path : GroupPath)
   repeatableScope := [level]
 }
 
+private def stringDeclaration (id : FieldId) (path : GroupPath)
+    (name : String) (level : RepeatableLevel) : FlatFieldDecl := {
+  id
+  groupPath := path
+  name
+  policy := { kind := .string }
+  repeatableScope := [level]
+}
+
 private def targetGroup : RepeatableGroupDecl := {
   level := 1
   path := ["Plan", "Target"]
@@ -48,25 +57,29 @@ private def offsetGroup : RepeatableGroupDecl := {
   indexField := some 5
 }
 
-private def model : FlatModel := {
+/-- Shared three-group model for focused multi-group expression and guard locks. -/
+def model : FlatModel := {
   fields := [
     indexDeclaration 1 targetGroup.path 1,
     numberDeclaration 2 targetGroup.path "Result" 1,
     indexDeclaration 3 inputGroup.path 3,
     numberDeclaration 4 inputGroup.path "Amount" 3,
     indexDeclaration 5 offsetGroup.path 5,
-    numberDeclaration 6 offsetGroup.path "Amount" 5
+    numberDeclaration 6 offsetGroup.path "Amount" 5,
+    stringDeclaration 7 offsetGroup.path "Flag" 5
   ]
   repeatableGroups := [targetGroup, inputGroup, offsetGroup]
 }
 
-private def inputPath : SurfaceFieldPath := {
+/-- Anchor Number operand path in the first off-target indexed group. -/
+def inputPath : SurfaceFieldPath := {
   base := .absolute
   groups := inputGroup.path
   field := "Amount"
 }
 
-private def offsetPath : SurfaceFieldPath := {
+/-- Number operand path in the second off-target indexed group. -/
+def offsetPath : SurfaceFieldPath := {
   base := .absolute
   groups := offsetGroup.path
   field := "Amount"
@@ -81,7 +94,8 @@ private def checked? :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
     model ["Plan"] 2 inputPath expression none).toOption
 
-private def rows : List RowAddr := [
+/-- Two physically instantiated rows in each participating indexed group. -/
+def rows : List RowAddr := [
   { group := 1, path := [1] },
   { group := 1, path := [2] },
   { group := 3, path := [1] },
@@ -90,14 +104,16 @@ private def rows : List RowAddr := [
   { group := 5, path := [2] }
 ]
 
-private def indexCell (field : FieldId) (path : List Nat)
+/-- One clean exact-String index cell. -/
+def indexCell (field : FieldId) (path : List Nat)
     (stored : String) : ClassifiedCellInput := {
   address := { field, path }
   stored
   raw := .parsed (.str stored)
 }
 
-private def numberCell (field : FieldId) (path : List Nat)
+/-- One typed Number placement; target cells retain source identity for result classification. -/
+def numberCell (field : FieldId) (path : List Nat)
     (stored : StoredNumber) : ClassifiedCellInput := {
   address := { field, path }
   stored := stored.render
@@ -105,7 +121,8 @@ private def numberCell (field : FieldId) (path : List Nat)
   numericSourceIdentity := if field == 2 then some (.decimal stored) else none
 }
 
-private def cleanCells : List ClassifiedCellInput := [
+/-- Clean columns and Number operands for the two target keys plus one operand-only key. -/
+def cleanCells : List ClassifiedCellInput := [
   indexCell 1 [1] "Alpha",
   indexCell 1 [2] "Beta",
   indexCell 3 [1] "Alpha",
@@ -127,7 +144,8 @@ private def invalidThird : List ClassifiedCellInput :=
 
 private def world : World := { now := { epochMillis := 0 } }
 
-private def preliminary? (cells : List ClassifiedCellInput) :
+/-- Construct the checked preliminary shared by the focused three-group cases. -/
+def preliminaryFor (cells : List ClassifiedCellInput) :
     Option (CheckedIndexPreliminary model) := do
   let prepared ←
     (prepareFlatStringContext
@@ -142,13 +160,13 @@ private def preliminary? (cells : List ClassifiedCellInput) :
 private def outcomes? (cells : List ClassifiedCellInput) :
     Option (List ParallelNumericDirectOutcome) := do
   let checked ← checked?
-  let preliminary ← preliminary? cells
+  let preliminary ← preliminaryFor cells
   (checked.execute preliminary).toOption
 
 private def result? (cells : List ClassifiedCellInput) :
     Option (NumericComputationRunView Bool CellAddr) := do
   let checked ← checked?
-  let preliminary ← preliminary? cells
+  let preliminary ← preliminaryFor cells
   (checked.executeResult preliminary []).toOption
 
 /- The two expression groups retain exactly one route each: the anchor plus one additional route. -/

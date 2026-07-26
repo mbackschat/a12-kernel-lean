@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ParallelComputationClearing
 
 /-! # Isolated direct parallel Number run
 
-This bounded capsule checks one optionally guarded Number expression whose field atoms are model-owned Number declarations addressable through exact-text parallel routes to one target group. It reuses the shared authored numeric tree, lowering, operation admission, authoring rules, scale summary, target policy, checked pairwise join, and evaluator. Because the run has exactly one computed target, every admitted operand is a source field rather than an unresolved computed dependency. Execution enumerates existing target rows only, omits every target covered by any participating group's invalid-index post-loop mark, reads clean unmatched operands as numeric zero, and retains each evaluated result at its exact target address. Presence guards remain kind-neutral and bounded to the anchor operand group; multi-computation scheduling and broader repeatable overlays remain separate. -/
+This bounded capsule checks one optionally guarded Number expression whose field atoms are model-owned declarations addressable through exact-text parallel routes to one target group. It reuses the shared authored numeric tree, lowering, operation admission, authoring rules, scale summary, target policy, checked pairwise join, and evaluator. Because the run has exactly one computed target, every admitted operand is a source field rather than an unresolved computed dependency. Execution enumerates existing target rows only, omits every target covered by any participating group's invalid-index post-loop mark, reads clean unmatched operands as numeric zero, and retains each evaluated result at its exact target address. Presence guards remain kind-neutral; every distinct indexed group referenced by either the operation or its guard participates statically, while guard evaluation retains the existing lazy `And`/`Or` observation semantics. Multi-computation scheduling and broader repeatable overlays remain separate. -/
 
 namespace A12Kernel
 
@@ -19,27 +19,33 @@ inductive ParallelNumericDirectPlanError where
       (targetScale : Nat) (operation : NumericScaleSummary)
   deriving Repr, DecidableEq
 
-/-- Admit one presence-guard field exactly when the model-owned declaration is addressable from the route's selected operand-group environment. Presence remains kind-neutral. -/
-def CheckedParallelNumericClearingPlan.admitsGuardField
-    (route : CheckedParallelNumericClearingPlan model)
+/-- Admit one presence-guard field exactly when the model-owned declaration is addressable from the route's observed-group environment. Presence remains kind-neutral. -/
+def CheckedParallelNumericTargetRoute.admitsGuardField
+    (route : CheckedParallelNumericTargetRoute model)
     (field : FieldId) : Bool :=
   match model.lookupUniqueId field with
   | .ok declaration =>
       declaration.repeatableScope ==
-          route.operandDeclaration.repeatableScope &&
+          route.sourceDeclaration.repeatableScope &&
         route.groups.rightGroup.path.isPrefixOf declaration.groupPath
   | .error _ => false
 
-/-- Whether every leaf of an optional bounded guard reuses the route's selected operand-group environment. -/
+/-- Preserve the original Number-specialized admission surface as the kind-neutral route projection. -/
+def CheckedParallelNumericClearingPlan.admitsGuardField
+    (route : CheckedParallelNumericClearingPlan model)
+    (field : FieldId) : Bool :=
+  route.asTargetRoute.admitsGuardField field
+
+/-- Whether every guard leaf belongs to one statically participating checked route. -/
 def parallelNumericDirectGuardAdmitted
-    (route : CheckedParallelNumericClearingPlan model) :
+    (routes : List (CheckedParallelNumericTargetRoute model)) :
     Option ComputationCondition → Bool
   | none => true
   | some condition => referencesOnly condition
 where
   referencesOnly : ComputationCondition → Bool
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
-        route.admitsGuardField field
+        routes.any fun route => route.admitsGuardField field
     | .and left right | .or left right =>
         referencesOnly left && referencesOnly right
 
@@ -52,18 +58,23 @@ where
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => [field]
     | .and left right | .or left right => fields left ++ fields right
 
-/-- Admit one expression field exactly when it is a model-owned Number declaration addressable from the route's selected operand-group environment. Nested nonrepeatable groups remain legal; another repeatable or indexed scope does not. -/
-def CheckedParallelNumericClearingPlan.admitsExpressionDeclaration
-    (route : CheckedParallelNumericClearingPlan model)
+/-- Admit one expression field exactly when it is a model-owned Number declaration addressable from the route's observed-group environment. Nested nonrepeatable groups remain legal; another repeatable or indexed scope does not. -/
+def CheckedParallelNumericTargetRoute.admitsExpressionDeclaration
+    (route : CheckedParallelNumericTargetRoute model)
     (declaration : FlatFieldDecl) : Bool :=
   match model.lookupUniqueId declaration.id with
   | .ok admitted =>
       admitted == declaration &&
         declaration.toNumberField?.isSome &&
         declaration.repeatableScope ==
-          route.operandDeclaration.repeatableScope &&
+          route.sourceDeclaration.repeatableScope &&
         route.groups.rightGroup.path.isPrefixOf declaration.groupPath
   | .error _ => false
+
+def CheckedParallelNumericClearingPlan.admitsExpressionDeclaration
+    (route : CheckedParallelNumericClearingPlan model)
+    (declaration : FlatFieldDecl) : Bool :=
+  route.asTargetRoute.admitsExpressionDeclaration declaration
 
 /-- Collect authored atoms only to construct checked read routes and fetch carriers. Evaluation retains the original expression tree. -/
 private def parallelNumericExpressionAtoms :
@@ -79,13 +90,13 @@ private def parallelNumericExpressionAtoms :
   | .round _ _ body => parallelNumericExpressionAtoms body
 
 private def parallelNumericRouteScopeAvailable
-    (route : CheckedParallelNumericClearingPlan model) : Bool :=
+    (route : CheckedParallelNumericTargetRoute model) : Bool :=
   match route.groups.outerScopePlan with
   | .framed .right _ _ => false
   | .common _ | .framed .left _ _ => true
 
 private def parallelNumericRoutesAdmitExpression
-    (routes : List (CheckedParallelNumericClearingPlan model))
+    (routes : List (CheckedParallelNumericTargetRoute model))
     (declaration : FlatFieldDecl) : Bool :=
   routes.any fun route => route.admitsExpressionDeclaration declaration
 
@@ -99,7 +110,7 @@ structure ParallelNumericDirectOutcome where
 structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   private mk ::
   route : CheckedParallelNumericClearingPlan model
-  additionalRoutes : List (CheckedParallelNumericClearingPlan model)
+  additionalRoutes : List (CheckedParallelNumericTargetRoute model)
   precondition : Option ComputationCondition
   suppressExactScaleWarning : Bool
   expression : AuthoredNumericExpr FlatFieldDecl
@@ -107,19 +118,20 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
     (additionalRoutes.all fun additional =>
       additional.targetDeclaration == route.targetDeclaration) = true
   guardAdmitted :
-    parallelNumericDirectGuardAdmitted route precondition = true
+    parallelNumericDirectGuardAdmitted
+      (route.asTargetRoute :: additionalRoutes) precondition = true
   expressionUsesOperand :
     expression.anyAtom route.admitsExpressionDeclaration = true
   expressionOperandsAdmitted :
     expression.allAtoms
       (parallelNumericRoutesAdmitExpression
-        (route :: additionalRoutes)) = true
+        (route.asTargetRoute :: additionalRoutes)) = true
   expressionAdmitted :
     expression.isAdmittedResolvedNumericOperation = true
   expressionAuthoring :
     expression.numericOperationAuthoringCheck = .accepted
   operandScopesAvailable :
-    (route :: additionalRoutes).all
+    (route.asTargetRoute :: additionalRoutes).all
       parallelNumericRouteScopeAvailable = true
   operationScale : NumericScaleSummary
   operationScaleOwned :
@@ -136,8 +148,8 @@ namespace CheckedIsolatedParallelNumericDirectRun
 /-- Every distinct operand group is represented by one route to the same checked target. -/
 def operandRoutes
     (checked : CheckedIsolatedParallelNumericDirectRun model) :
-    List (CheckedParallelNumericClearingPlan model) :=
-  checked.route :: checked.additionalRoutes
+    List (CheckedParallelNumericTargetRoute model) :=
+  checked.route.asTargetRoute :: checked.additionalRoutes
 
 def WellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) : Prop :=
@@ -148,7 +160,7 @@ def WellFormed
       additional.targetDeclaration ==
         checked.route.targetDeclaration) = true ∧
     parallelNumericDirectGuardAdmitted
-      checked.route checked.precondition = true ∧
+      checked.operandRoutes checked.precondition = true ∧
     checked.expression.anyAtom
       checked.route.admitsExpressionDeclaration = true ∧
     checked.expression.allAtoms
@@ -180,7 +192,7 @@ inductive ExecutionError where
 
 /-- Resolve one joined operand environment and fetch every declaration owned by that route. A clean unmatched key supplies explicit empty carriers; fetching carriers does not observe their formal findings. -/
 private def operandCellsForRoute
-    (route : CheckedParallelNumericClearingPlan model)
+    (route : CheckedParallelNumericTargetRoute model)
     (declarations : List FlatFieldDecl)
     (preliminary : CheckedIndexPreliminary model)
     (targetEnvironment : Env) (key : SemanticIndexKey) :
@@ -223,9 +235,7 @@ private def operandCells
   let nested ← checked.operandRoutes.mapM fun route => do
     let owned := declarations.filter fun declaration =>
       route.admitsExpressionDeclaration declaration ||
-        (route.groups.rightGroup.path ==
-            checked.route.groups.rightGroup.path &&
-          checked.route.admitsGuardField declaration.id)
+        route.admitsGuardField declaration.id
     operandCellsForRoute route owned preliminary
       targetEnvironment key
   pure nested.flatten
@@ -300,9 +310,9 @@ def execute
 end CheckedIsolatedParallelNumericDirectRun
 
 private def appendParallelNumericRouteIfNew
-    (routes : List (CheckedParallelNumericClearingPlan model))
-    (candidate : CheckedParallelNumericClearingPlan model) :
-    List (CheckedParallelNumericClearingPlan model) :=
+    (routes : List (CheckedParallelNumericTargetRoute model))
+    (candidate : CheckedParallelNumericTargetRoute model) :
+    List (CheckedParallelNumericTargetRoute model) :=
   if routes.any fun route =>
       route.groups.rightGroup.path == candidate.groups.rightGroup.path then
     routes
@@ -316,7 +326,7 @@ private def FlatModel.resolveParallelNumericDirectExpression
     (expression : AuthoredNumericExpr SurfaceNumericAtom) :
     Except ParallelNumericDirectPlanError
       (AuthoredNumericExpr FlatFieldDecl ×
-        List (CheckedParallelNumericClearingPlan model)) := do
+        List (CheckedParallelNumericTargetRoute model)) := do
   let routed ← expression.mapM fun
     | .field reference =>
         match checkParallelNumericComputationClearingPlan
@@ -330,10 +340,47 @@ private def FlatModel.resolveParallelNumericDirectExpression
     | _ => throw .expressionNotLimitedToOperand
   let routes :=
     (parallelNumericExpressionAtoms routed).foldl
-      appendParallelNumericRouteIfNew [route]
+      (fun routes candidate =>
+        appendParallelNumericRouteIfNew routes candidate.asTargetRoute)
+      [route.asTargetRoute]
   pure (routed.map (·.operandDeclaration), routes.drop 1)
 
-/-- Check one optionally guarded Number operation without reimplementing pairwise joins, numeric lowering, operation admission, authoring checks, or the scale gate. Each distinct expression group receives one route to the same target; kind-neutral guards remain in the anchor operand group. The scale-warning directive defaults to false; when true it selects both the shared suppressed static gate and the existing warning-suppressed target check, but never changes expression arithmetic. -/
+/-- Add one checked route for every guard field whose indexed group is not already represented. Guard evaluation remains lazy; this construction records only the groups whose index columns participate in the generated loop. -/
+private def FlatModel.resolveParallelNumericGuardRoutes
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (primary : CheckedParallelNumericTargetRoute model)
+    (additionalRoutes : List (CheckedParallelNumericTargetRoute model))
+    (precondition : Option ComputationCondition) :
+    Except ParallelNumericDirectPlanError
+      (List (CheckedParallelNumericTargetRoute model)) := do
+  let routes ← (parallelNumericGuardFields precondition).foldlM
+    (fun (routes : List (CheckedParallelNumericTargetRoute model))
+        field => do
+      if routes.any fun route => route.admitsGuardField field then
+        pure routes
+      else
+        let declaration ← match model.lookupUniqueId field with
+          | .ok declaration => pure declaration
+          | .error _ =>
+              throw ParallelNumericDirectPlanError.guardNotLimitedToOperand
+        let reference : SurfaceFieldPath := {
+          base := .absolute
+          groups := declaration.groupPath
+          field := declaration.name
+        }
+        match checkParallelNumericTargetRoute
+            model declaringGroup primary.targetField reference with
+        | .ok route =>
+            pure (appendParallelNumericRouteIfNew routes route)
+        | .error (.join (.incompatibleGroups _ _))
+        | .error (.missingIndexedAncestor _) =>
+            throw ParallelNumericDirectPlanError.guardNotLimitedToOperand
+        | .error error =>
+            throw (ParallelNumericDirectPlanError.route error))
+    (primary :: additionalRoutes)
+  pure (routes.drop 1)
+
+/-- Check one optionally guarded Number operation without reimplementing pairwise joins, numeric lowering, operation admission, authoring checks, or the scale gate. Each distinct indexed group referenced by the expression or guard receives one route to the same target. The scale-warning directive defaults to false; when true it selects both the shared suppressed static gate and the existing warning-suppressed target check, but never changes expression arithmetic. -/
 def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
@@ -346,10 +393,13 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     checkParallelNumericComputationClearingPlan
       model declaringGroup targetField operandReference
       |>.mapError .route
-  let (resolved, additionalRoutes) ←
+  let (resolved, expressionRoutes) ←
     model.resolveParallelNumericDirectExpression
       declaringGroup route expression
-  let operandRoutes := route :: additionalRoutes
+  let additionalRoutes ←
+    model.resolveParallelNumericGuardRoutes declaringGroup
+      route.asTargetRoute expressionRoutes precondition
+  let operandRoutes := route.asTargetRoute :: additionalRoutes
   if usesOperand :
       resolved.anyAtom route.admitsExpressionDeclaration = true then
     if targetsCoherent :
@@ -369,7 +419,7 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
             | some operationScale =>
               if guardAdmitted :
                   parallelNumericDirectGuardAdmitted
-                    route precondition = true then
+                    operandRoutes precondition = true then
                 if scopeAvailable :
                     operandRoutes.all
                       parallelNumericRouteScopeAvailable = true then

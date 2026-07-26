@@ -1480,6 +1480,10 @@ run_cmd do
 #print axioms A12Kernel.parallelComputationMark_sharedScope
 #print axioms A12Kernel.parallelComputationMark_causeBlind
 #print axioms A12Kernel.parallelComputationMark_covers_source
+#print axioms A12Kernel.checkedParallelNumericTargetRoute_wellFormed
+#print axioms A12Kernel.parallelNumericTargetRouteEnvironments_cells_irrelevant
+#print axioms A12Kernel.parallelNumericTargetRouteInvalidIndexMarks_noTargets
+#print axioms A12Kernel.parallelNumericTargetRouteClearing_noMarks
 #print axioms A12Kernel.checkedParallelNumericClearingPlan_wellFormed
 #print axioms A12Kernel.parallelNumericTargetEnvironments_cells_irrelevant
 #print axioms A12Kernel.parallelNumericInvalidIndexMarks_noTargets
