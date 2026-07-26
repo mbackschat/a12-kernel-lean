@@ -1504,6 +1504,9 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericAlternativeTable_noMatch
 #print axioms A12Kernel.parallelNumericAlternativeTable_guardPoison
 #print axioms A12Kernel.parallelNumericAlternativeTable_selected
+#print axioms A12Kernel.parallelNumericRun_read_pending
+#print axioms A12Kernel.parallelNumericRun_read_completed
+#print axioms A12Kernel.parallelNumericRun_read_input
 #print axioms A12Kernel.parallelNumericDirect_addIndexClears_noClassifiedIndexClear
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape

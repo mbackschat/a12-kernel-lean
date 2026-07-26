@@ -132,5 +132,6 @@ import A12Kernel.Proofs.EnumerationRepetitionNotUnique
 import A12Kernel.Proofs.SemanticIndex
 import A12Kernel.Proofs.SemanticIndexElaboration
 import A12Kernel.Proofs.CustomCondition
+import A12Kernel.Proofs.ParallelNumericRun
 
 /-! Trusted theorem root for the currently supported semantic fragment. -/

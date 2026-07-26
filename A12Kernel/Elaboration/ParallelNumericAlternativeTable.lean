@@ -91,6 +91,13 @@ def selectableAlternatives
       (CheckedIsolatedParallelNumericDirectRun model)) :=
   table.alternatives.map (·.toSelectable)
 
+/-- Whether any row's guard or complete numeric expression reads one exact field. -/
+def referencesField
+    (table : CheckedParallelNumericAlternativeTable model)
+    (field : FieldId) : Bool :=
+  table.alternatives.any fun alternative =>
+    alternative.operation.referencesField field
+
 /-- Select through the shared computation-condition scan, then evaluate only the selected checked parallel operation. -/
 def evaluate (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext) :

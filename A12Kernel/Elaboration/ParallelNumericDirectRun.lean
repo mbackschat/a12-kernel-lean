@@ -151,6 +151,13 @@ def operandRoutes
     List (CheckedParallelNumericTargetRoute model) :=
   checked.route.asTargetRoute :: checked.additionalRoutes
 
+/-- Whether the guard or resolved numeric expression reads one exact field. -/
+def referencesField
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (field : FieldId) : Bool :=
+  (checked.precondition.map (·.referencesField field)).getD false ||
+    checked.expression.anyAtom fun declaration => declaration.id == field
+
 def WellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) : Prop :=
   checked.route.WellFormed ∧

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 537 jobs · trust audit **1464 theorem roots; 31096 declarations in 295 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 540 jobs · trust audit **1467 theorem roots; 31201 declarations in 297 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked repeatable Number table now executes its already-flattened guarded rows over actual target instances. Before selection it deduplicates the complete route inventory from every row, resolves checked index coverage, and suppresses any covered target; only surviving targets fetch carriers and enter the shared first-selected scan. This preserves the static/lazy split across row boundaries: a group referenced only by an unselected row still participates in index validity, while clean columns evaluate guards lazily. Outcome classification and source-filled index clears reuse the same target-key-parametric result owner as the singleton run.
+The first checked two-target repeatable Number plan certifies one exact producer-to-consumer dependency between already-flattened tables without constructing a graph or scheduler. The supplied pair is accepted only when targets differ, the producer does not read the pending consumer, and the consumer does read the producer. Its addressed read policy hides stored source data at both computed fields, exposes a completed rich outcome only at its exact repetition address through `NumericDependencyCell`, and delegates ordinary addresses to the immutable checked document.
 
 ## Active semantic unit
 
-Audit and implement the smallest two-target repeatable Number dependency run in one target group, reusing the checked table as its atomic step.
+Execute the checked two-target repeatable Number plan in producer-first order, reusing the checked table as its atomic step and the exact addressed policy as its only transient overlay.
 
 ## Immediate sequence
 
-1. Verify from the generated/runtime route how a later repeatable target reads an earlier computed target at the current instance and whether same-group addressing is the smallest source-closed case.
-2. Certify two unique supplied-order table targets and reject self/forward reads without adding a general graph or heterogeneous scheduler.
-3. Strip both pending target inputs, overlay the earlier rich outcome at its exact addressed instance, and separate accepted visibility, clean no-value, reached poison, and an unread invalid producer.
+1. Parameterize the established parallel carrier fetch by one checked addressed read function; preserve the current immutable-preliminary entry point as the default.
+2. Execute the producer table through the empty overlay, append its exact addressed outcomes once, then execute the consumer through the completed overlay.
+3. Separate accepted producer visibility, clean no-value, reached poison, and a statically referenced but dynamically unread invalid producer; classify the combined outcomes through the existing repeatable Number result owner.
 
 ## Parked boundaries
 
