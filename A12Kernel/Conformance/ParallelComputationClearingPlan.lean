@@ -425,7 +425,7 @@ example :
       ] := by
   native_decide
 
-/- An expression cannot acquire a second addressed-read authority by naming another model field. -/
+/- A computed target-group field is not an operand route; admitting it would bypass the checked target self-reference boundary. -/
 example :
     let peerPath : SurfaceFieldPath := {
       base := .absolute

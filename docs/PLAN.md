@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 532 jobs · trust audit **1456 theorem roots; 30927 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 533 jobs · trust audit **1456 theorem roots; 30937 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now admits one optionally guarded resolved Number operation whose field atoms are model-owned Number declarations under the same selected operand indexed group and complete repeatable scope. Guard leaves are independently model-certified in that same group and scope and retain kind-neutral presence semantics. Distinct fields share one matched operand environment without adding an index column or join; each carrier retains its own field identity, while guard short-circuiting, semantic observation, and first-poison order remain with the shared evaluators. The checked payload is the existing authored numeric tree, so lowering, wrapper-literal boundaries, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application remain with their established owners. Plain arithmetic, `Abs`, `Round`, operand-list extrema, and exact-scale warning suppression compose without route-specific evaluators. A clean unmatched join contributes numeric zero for every admitted expression field. Literal-only trees, expression fields outside the selected group, and guards in another indexed group fail checked construction. Invalid index columns still suppress the instance before guard or expression evaluation and use post-loop clearing.
+The isolated repeatable Number run now admits one optionally guarded resolved Number operation whose field atoms may span several model-owned indexed operand groups. Each distinct group retains one existing pairwise route to the same target; pairwise target coherence supplies the common exact-text index name/kind and compatible outer scope without a generalized n-way join type. Several fields in one group share its environment, while another group resolves independently at the target key. The anchor group must occur in the expression. The checked payload is still the existing authored numeric tree, so lowering, wrapper-literal boundaries, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application remain with their established owners. Plain arithmetic, `Abs`, `Round`, operand-list extrema, exact-scale warning suppression, same-group kind-neutral guards, and first-poison order compose without route-specific evaluators. The Kernel's lexical key union does not create a result for an operand-only key because generated code checks target repetition existence; a clean target-only key reads an unmatched group as numeric zero. An invalid participating column suppresses covered targets before evaluation, and source-filled post-loop clears are unioned and deduplicated across every route.
 
 ## Active semantic unit
 
-Audit one additional direct operand from a second indexed group. Determine whether the Kernel route is an n-way exact-key union/intersection over every participating group and whether the existing pairwise checked certificate composes without inventing an under-certified generalized join.
+Admit one presence-guard field from another indexed operand group without collapsing the distinction between static iteration participation and lazy guard observation.
 
 ## Immediate sequence
 
-1. Inspect the computation iterator and code-generation group collection for three participating indexed groups, including key ordering, missing matches, invalid columns, outer-frame reset, and post-loop invalid marking.
-2. Check whether pairwise `CheckedParallelIndexGroups` certificates imply one coherent n-way key domain and whether target coverage can represent every malformed side without caller-supplied truncation.
-3. Run a three-group separating design before Lean implementation. Stop if the existing pairwise owner cannot express the required coherence without a new shared join boundary.
+1. Derive one route for every model-certified guard leaf outside the anchor group and include those groups in invalid-index coverage even when short-circuiting leaves the field unread.
+2. Preserve kind-neutral presence and lazy carrier observation: with clean index columns, a holding left `Or` must hide a malformed right-side guard value in another group.
+3. Separate that case from an invalid right-side index column, which prevents iteration before the guard and therefore suppresses and clears the covered target despite the same left-deciding `Or`.
 
 ## Parked boundaries
 

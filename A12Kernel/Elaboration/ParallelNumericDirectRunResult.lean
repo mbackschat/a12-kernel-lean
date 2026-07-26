@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ParallelNumericDirectRun
 
 /-! # Isolated direct parallel Number result
 
-This boundary executes the complete isolated direct-copy inventory and classifies its exact addressed outcomes against the same checked preliminary document. Post-loop index clears come from that route and input as a second semantic source of public clearing; callers can supply neither outcomes nor clear addresses. Residual messages remain explicit because their construction belongs to the later computation-message boundary. -/
+This boundary executes the complete isolated Number-operation inventory and classifies its exact addressed outcomes against the same checked preliminary document. Post-loop index clears come from every participating checked route and the same input as a second semantic source of public clearing; callers can supply neither outcomes nor clear addresses. Residual messages remain explicit because their construction belongs to the later computation-message boundary. -/
 
 namespace A12Kernel
 
@@ -59,10 +59,12 @@ def executeResult
   let classified :=
     NumericComputationRunView.fromSourceOutcomes
       residualMessages entries
-  let indexClearing ←
-    checked.route.clearedSourceTargets preliminary
+  let indexClearings ← checked.operandRoutes.mapM fun route =>
+    route.clearedSourceTargets preliminary
       |>.mapError .clearing
-  addParallelNumericDirectIndexClears classified indexClearing.cleared
+  let indexClears :=
+    (indexClearings.flatMap (·.cleared)).eraseDups
+  addParallelNumericDirectIndexClears classified indexClears
 
 end CheckedIsolatedParallelNumericDirectRun
 

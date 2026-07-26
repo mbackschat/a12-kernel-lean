@@ -43,6 +43,11 @@ private def outcomes? (cells : List ClassifiedCellInput) :
   let outcomes ← (checked.execute preliminary).toOption
   pure (outcomes.map (·.outcome))
 
+/- One indexed group retains one route even when the expression reads several fields from it. -/
+example :
+    checked?.map (·.additionalRoutes.length) = some 0 := by
+  native_decide
+
 /- Distinct fields in the same matched operand row retain their identities; an unmatched target key supplies zero for both. -/
 example :
     let clean := cleanIndexCells ++ [
