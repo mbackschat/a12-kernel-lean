@@ -21,7 +21,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first isolated repeatable Number run now executes one complete unguarded direct-copy computation inventory over the existing checked exact-text parallel route. It rejects an operand-only frame and unequal field scales statically, enumerates existing target rows only, joins by normalized key rather than row position, reads a clean unmatched operand as zero, and omits every target covered by either side's invalid-index marks. Each evaluated target retains its exact `CellAddr` and rich Number outcome. Separating cases lock clean matching, unmatched zero, on-path invalid-frame omission with clean sibling success, and off-path suppression of all covered outcomes; the already-closed source-relative clearing projection contains the marked source-filled targets instead.
+The first isolated repeatable Number run now executes one complete unguarded direct-copy computation inventory over the existing checked exact-text parallel route. It rejects an operand-only frame and unequal field scales statically, enumerates existing target rows only, joins by normalized key rather than row position, reads a clean unmatched operand as zero, and omits every target covered by either side's invalid-index marks. Each evaluated target retains its exact `CellAddr` and rich Number outcome. Separating cases lock clean matching, unmatched zero, on-path invalid-frame omission with clean sibling success, and off-path suppression of all covered outcomes; the already-closed source-relative clearing projection contains the marked source-filled targets instead. Number result classification and its laws now quantify over the target-key type, so scalar `FieldId` and repeatable `CellAddr` outcomes share the same source-relative mechanism without widening scalar application.
 
 ## Active semantic unit
 
@@ -29,9 +29,8 @@ Build one same-preliminary addressed Number result for the isolated run without 
 
 ## Immediate sequence
 
-1. Generalize the existing Number result classifier over its target-key type now that `FieldId` and `CellAddr` are two completed consumers; keep the scalar names as compatibility aliases and change no scalar behavior.
-2. Add an isolated-run `executeResult` that pairs each exact outcome with the same document's addressed source state and obtains clearing from the same preliminary, with no caller-supplied outcome or clear list.
-3. Prove extensional collection laws and the absence of outcome/clear address collisions before extending addressed application from clears to successful and errored outcomes.
+1. Add an isolated-run `executeResult` that pairs each exact outcome with the same document's addressed source state and obtains clearing from the same preliminary, with no caller-supplied outcome or clear list.
+2. Prove extensional collection laws and the absence of outcome/clear address collisions before extending addressed application from clears to successful and errored outcomes.
 
 ## Parked boundaries
 

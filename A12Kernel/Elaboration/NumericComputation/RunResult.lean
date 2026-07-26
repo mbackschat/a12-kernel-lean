@@ -3,26 +3,26 @@ import A12Kernel.Elaboration.NumericComputation.SourceTarget
 
 /-! # Number-specific V2 computation result projection
 
-This capsule projects a successful checked scalar Number run against its immutable source document. It preserves successful unchanged values, the typed source-relative changed subset, payloadful target errors, source-filled clearing, and an independently supplied residual-message channel. Missing typed Number source identity is structural. Residual-message construction, application, heterogeneous runs, repeatable pointers, and validation remain separate. -/
+This capsule classifies rich Number outcomes paired with their immutable source state. The classification is shared by scalar field IDs and exact repeatable addresses; attaching scalar outcomes to source state remains a checked-document operation below. It preserves successful unchanged values, the typed source-relative changed subset, payloadful target errors, source-filled clearing, and an independently supplied residual-message channel. Missing typed Number source identity is structural. Residual-message construction, application, and validation remain separate. -/
 
 namespace A12Kernel
 
-/-- One successful non-clearing computed Number instance. -/
-structure NumericComputedInstance where
-  targetField : FieldId
+/-- One successful non-clearing computed Number instance at an exact target key. -/
+structure NumericComputedInstance (Target : Type := FieldId) where
+  targetField : Target
   value : StoredNumber
   deriving Repr, DecidableEq
 
 /-- One computed Number instance whose attempted stored value failed target checking. -/
-structure NumericComputedError where
-  targetField : FieldId
+structure NumericComputedError (Target : Type := FieldId) where
+  targetField : Target
   attempted : StoredNumber
   cause : NumericTargetError
   deriving Repr, DecidableEq
 
 /-- One rich run outcome paired with its exact immutable source-target state. This is the minimal input needed for source-relative public classification. -/
-structure SourcedNumericTargetOutcome where
-  targetField : FieldId
+structure SourcedNumericTargetOutcome (Target : Type := FieldId) where
+  targetField : Target
   outcome : NumericTargetOutcome
   source : NumericTargetState
   deriving Repr, DecidableEq
@@ -37,42 +37,46 @@ def hasComputedInstance : NumericTargetOutcome → Bool
 end NumericTargetOutcome
 
 /-- The Number fragment of the immutable V2 result. Lists represent extensional collections; their order is not public. -/
-structure NumericComputationRunView (ResidualMessage : Type) where
+structure NumericComputationRunView (ResidualMessage : Type)
+    (Target : Type := FieldId) where
   private mk ::
-  withoutErrors : List NumericComputedInstance
-  withChanges : List NumericComputedInstance
-  withErrors : List NumericComputedError
-  cleared : List FieldId
+  withoutErrors : List (NumericComputedInstance Target)
+  withChanges : List (NumericComputedInstance Target)
+  withErrors : List (NumericComputedError Target)
+  cleared : List Target
   formalErrorsInOperands : List ResidualMessage
   deriving Repr, DecidableEq
 
 namespace NumericComputationRunView
 
-def successfulInstance? :
-    SourcedNumericTargetOutcome → Option NumericComputedInstance
+def successfulInstance? {Target : Type} :
+    SourcedNumericTargetOutcome Target → Option (NumericComputedInstance Target)
   | ⟨targetField, .accepted value, _⟩ => some ⟨targetField, value⟩
   | _ => none
 
-def changedInstance? (entry : SourcedNumericTargetOutcome) :
-    Option NumericComputedInstance := do
+def changedInstance? {Target : Type}
+    (entry : SourcedNumericTargetOutcome Target) :
+    Option (NumericComputedInstance Target) := do
   let computed ← successfulInstance? entry
   if entry.source.sourceIdentity == some (.decimal computed.value) then
     none
   else some computed
 
-def computedError? :
-    SourcedNumericTargetOutcome → Option NumericComputedError
+def computedError? {Target : Type} :
+    SourcedNumericTargetOutcome Target → Option (NumericComputedError Target)
   | ⟨targetField, .rejected attempted cause, _⟩ =>
       some ⟨targetField, attempted, cause⟩
   | _ => none
 
 /-- A source-filled target is publicly cleared exactly when execution produced no computed-data instance. -/
-def shouldClear (entry : SourcedNumericTargetOutcome) : Bool :=
+def shouldClear {Target : Type}
+    (entry : SourcedNumericTargetOutcome Target) : Bool :=
   !entry.outcome.hasComputedInstance && entry.source.sourceIdentity.isSome
 
-def fromSourceOutcomes (residualMessages : List ResidualMessage)
-    (entries : List SourcedNumericTargetOutcome) :
-    NumericComputationRunView ResidualMessage :=
+def fromSourceOutcomes {Target : Type}
+    (residualMessages : List ResidualMessage)
+    (entries : List (SourcedNumericTargetOutcome Target)) :
+    NumericComputationRunView ResidualMessage Target :=
   {
     withoutErrors := entries.filterMap successfulInstance?
     withChanges := entries.filterMap changedInstance?
@@ -92,10 +96,12 @@ def fromOutcomes (input : CheckedDocument model)
   pure (fromSourceOutcomes residualMessages entries)
 
 /-- The V2 error predicate observes exactly the computed-instance and residual-message channels. -/
-def noErrorOccurred (view : NumericComputationRunView ResidualMessage) : Bool :=
+def noErrorOccurred {Target : Type}
+    (view : NumericComputationRunView ResidualMessage Target) : Bool :=
   view.withErrors.isEmpty && view.formalErrorsInOperands.isEmpty
 
-def ExtensionalEq (left right : NumericComputationRunView ResidualMessage) : Prop :=
+def ExtensionalEq {Target : Type}
+    (left right : NumericComputationRunView ResidualMessage Target) : Prop :=
   left.withoutErrors.Perm right.withoutErrors ∧
     left.withChanges.Perm right.withChanges ∧
     left.withErrors.Perm right.withErrors ∧

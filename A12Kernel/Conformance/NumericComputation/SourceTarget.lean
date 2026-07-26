@@ -87,6 +87,27 @@ example :
         true) := by
   native_decide
 
+/- The result classifier is shared by scalar and exact-addressed targets; source-relative change detection is independent of the target-key representation. -/
+example :
+    let address : CellAddr := { field := 1, path := [1] }
+    let source : NumericTargetState :=
+      .presentValue (.decimal { unscaled := 7, scale := 0 })
+    let view : NumericComputationRunView Bool CellAddr :=
+      NumericComputationRunView.fromSourceOutcomes [] [
+        {
+          targetField := address
+          outcome := .accepted { unscaled := 700, scale := 2 }
+          source
+        }
+      ]
+    view.withoutErrors = [
+      { targetField := address, value := { unscaled := 700, scale := 2 } }
+    ] ∧
+      view.withChanges = [
+        { targetField := address, value := { unscaled := 700, scale := 2 } }
+      ] := by
+  native_decide
+
 private def sourceWith (stored : String) (raw : RawCell)
     (identity : Option NumericSourceIdentity) : DocumentData :=
   { instantiatedRows := []

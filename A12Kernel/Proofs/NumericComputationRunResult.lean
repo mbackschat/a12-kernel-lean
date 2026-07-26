@@ -5,15 +5,15 @@ import A12Kernel.Elaboration.NumericComputation.RunResult
 namespace A12Kernel
 
 theorem numericComputationRun_shouldClear_iff
-    (entry : SourcedNumericTargetOutcome) :
+    {Target : Type} (entry : SourcedNumericTargetOutcome Target) :
     NumericComputationRunView.shouldClear entry = true ↔
       entry.outcome.hasComputedInstance = false ∧
         entry.source.sourceIdentity.isSome = true := by
   simp [NumericComputationRunView.shouldClear]
 
 private theorem numericComputationRun_changedInstance_successful
-    (entry : SourcedNumericTargetOutcome)
-    (computed : NumericComputedInstance)
+    {Target : Type} (entry : SourcedNumericTargetOutcome Target)
+    (computed : NumericComputedInstance Target)
     (changed :
       NumericComputationRunView.changedInstance? entry = some computed) :
     NumericComputationRunView.successfulInstance? entry = some computed := by
@@ -25,9 +25,10 @@ private theorem numericComputationRun_changedInstance_successful
 
 /-- Every changed success is the identical address-and-payload member of the complete successful collection. -/
 theorem numericComputationRun_withChanges_subset
+    {Target : Type}
     (residualMessages : List ResidualMessage)
-    (entries : List SourcedNumericTargetOutcome)
-    (computed : NumericComputedInstance)
+    (entries : List (SourcedNumericTargetOutcome Target))
+    (computed : NumericComputedInstance Target)
     (member : computed ∈
       (NumericComputationRunView.fromSourceOutcomes
         residualMessages entries).withChanges) :
@@ -64,22 +65,25 @@ theorem numericComputationRun_withChanges_subset
               (inductionHypothesis (List.mem_filterMap.mpr tail))))
 
 theorem numericComputationRun_formalErrors_exact
+    {Target : Type}
     (residualMessages : List ResidualMessage)
-    (entries : List SourcedNumericTargetOutcome) :
+    (entries : List (SourcedNumericTargetOutcome Target)) :
     (NumericComputationRunView.fromSourceOutcomes
       residualMessages entries).formalErrorsInOperands = residualMessages := by
   rfl
 
 theorem numericComputationRun_noErrorOccurred_iff
-    (view : NumericComputationRunView ResidualMessage) :
+    {Target : Type}
+    (view : NumericComputationRunView ResidualMessage Target) :
     view.noErrorOccurred = true ↔
       view.withErrors = [] ∧ view.formalErrorsInOperands = [] := by
   simp [NumericComputationRunView.noErrorOccurred]
 
 /-- Reordering successfully source-classified outcomes or residual messages cannot change the extensional public result. -/
 theorem numericComputationRun_fromSourceOutcomes_permutation
+    {Target : Type}
     (firstMessages secondMessages : List ResidualMessage)
-    (firstEntries secondEntries : List SourcedNumericTargetOutcome)
+    (firstEntries secondEntries : List (SourcedNumericTargetOutcome Target))
     (messagesPermutation : firstMessages.Perm secondMessages)
     (entriesPermutation : firstEntries.Perm secondEntries) :
     NumericComputationRunView.ExtensionalEq
