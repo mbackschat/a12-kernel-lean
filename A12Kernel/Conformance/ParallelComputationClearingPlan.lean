@@ -86,6 +86,16 @@ private def guardedDirectChecked? :=
     model ["Plan"] 2 operandPath
       (some (.fieldFilled 4))).toOption
 
+private def incrementExpression :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add
+    (.atom (.field operandPath))
+    (.literal { value := 1, authoredScale := 0 })
+
+private def expressionChecked? :=
+  (checkIsolatedParallelNumericExpressionRunWithGuard
+    model ["Plan"] 2 operandPath incrementExpression none).toOption
+
 private def world : World := { now := { epochMillis := 0 } }
 
 private def rows : List RowAddr := [
@@ -220,6 +230,13 @@ private def guardedDirectOutcomes?
   let preliminary ← preliminaryFor cells
   (checked.execute preliminary).toOption
 
+private def expressionOutcomes?
+    (cells : List ClassifiedCellInput) :
+    Option (List ParallelNumericDirectOutcome) := do
+  let checked ← expressionChecked?
+  let preliminary ← preliminaryFor cells
+  (checked.execute preliminary).toOption
+
 private def guardedDirectView?
     (cells : List ClassifiedCellInput) :
     Option (NumericComputationRunView Bool CellAddr) := do
@@ -348,6 +365,47 @@ example :
         ⟨{ field := 2, path := [1, 2] },
           .accepted { unscaled := 200, scale := 0 }⟩
       ] := by
+  native_decide
+
+/- The parallel route supplies the sole field atom while the shared numeric tree retains ordinary arithmetic and literal scale. An unmatched joined operand is still numeric zero before the addition. -/
+example :
+    let clean := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 }
+    ]
+    expressionOutcomes? clean =
+      some [
+        ⟨{ field := 2, path := [1, 1] },
+          .accepted { unscaled := 101, scale := 0 }⟩,
+        ⟨{ field := 2, path := [2, 1] },
+          .accepted { unscaled := 1, scale := 0 }⟩,
+        ⟨{ field := 2, path := [1, 2] },
+          .accepted { unscaled := 201, scale := 0 }⟩
+      ] := by
+  native_decide
+
+/- An expression cannot acquire a second addressed-read authority by naming another model field. -/
+example :
+    let peerPath : SurfaceFieldPath := {
+      base := .absolute
+      groups := targetGroup.path
+      field := "Peer"
+    }
+    (match checkIsolatedParallelNumericExpressionRunWithGuard
+        model ["Plan"] 2 operandPath (.atom (.field peerPath)) none with
+    | .error error => some error
+    | .ok _ => none) =
+      some .expressionNotLimitedToOperand := by
+  native_decide
+
+/- A literal-only expression cannot retain an irrelevant parallel route. -/
+example :
+    (match checkIsolatedParallelNumericExpressionRunWithGuard
+        model ["Plan"] 2 operandPath
+          (.literal { value := 1, authoredScale := 0 }) none with
+    | .error error => some error
+    | .ok _ => none) =
+      some .expressionNotLimitedToOperand := by
   native_decide
 
 /- A clean false guard is an outcome-derived no-value, not an index failure: a stale source at that exact target enters the ordinary result clear collection. -/
@@ -554,7 +612,7 @@ example :
         scaleMismatchModel ["Plan"] 2 operandPath with
     | .error error => some error
     | .ok _ => none) =
-      some (.operationScaleMismatch 0 1) := by
+      some (.operationScaleMismatch 0 (NumericScaleSummary.field 1)) := by
   native_decide
 
 /- The bounded guarded route cannot silently read another repeatable field without a second checked addressed-read plan. -/

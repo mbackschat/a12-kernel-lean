@@ -3,15 +3,20 @@ import A12Kernel.Elaboration.ParallelComputationClearing
 
 /-! # Isolated direct parallel Number run
 
-This bounded capsule is the complete checked computation inventory for one unguarded direct Number copy across the already-checked exact-text parallel route. Because the run has exactly one computed target and the route's operand lies in a distinct group, the operand is a source field rather than an unresolved computed dependency. Execution enumerates existing target rows only, omits every target covered by an invalid-index post-loop mark, reads a clean unmatched operand as numeric zero, and retains each evaluated result at its exact target address. General expressions, guards, multi-computation scheduling, successful-result projection, clearing classification, and application remain separate. -/
+This bounded capsule checks one optionally guarded Number expression whose every field atom is the already-joined operand of one exact-text parallel route. It reuses the shared authored numeric tree, lowering, authoring rules, scale summary, target policy, and evaluator; the route remains the sole owner of addressed reads and invalid-index disposition. Because the run has exactly one computed target and the route's operand lies in a distinct group, the operand is a source field rather than an unresolved computed dependency. Execution enumerates existing target rows only, omits every target covered by an invalid-index post-loop mark, reads a clean unmatched operand as numeric zero, and retains each evaluated result at its exact target address. Other operand fields, operation-valued wrappers, warning suppression, multi-computation scheduling, and broader repeatable overlays remain separate. -/
 
 namespace A12Kernel
 
 inductive ParallelNumericDirectPlanError where
   | route (error : ParallelComputationPlanError)
   | guardNotLimitedToOperand
+  | expressionResolve (error : ResolveError)
+  | expressionNotLimitedToOperand
+  | unsupportedExpression
+  | authoring (result : NumericAuthoringCheck)
   | operandFrameOutsideTarget (scope : List RepeatableLevel)
-  | operationScaleMismatch (targetScale operandScale : Nat)
+  | operationScaleMismatch
+      (targetScale : Nat) (operation : NumericScaleSummary)
   deriving Repr, DecidableEq
 
 /-- Whether an optional bounded guard reads only the route's already-joined operand. -/
@@ -37,16 +42,27 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   private mk ::
   route : CheckedParallelNumericClearingPlan model
   precondition : Option ComputationCondition
+  expression : AuthoredNumericExpr FlatFieldDecl
   guardAdmitted :
     parallelNumericDirectGuardAdmitted
       route.operandDeclaration.id precondition = true
+  expressionUsesOperand : expression.hasAtom = true
+  expressionOperandsOwned :
+    expression.allAtoms (· == route.operandDeclaration) = true
+  expressionAdmitted : expression.isPlainArithmetic = true
+  expressionAuthoring :
+    expression.numericOperationAuthoringCheck = .accepted
   operandScopeAvailable : (match route.groups.outerScopePlan with
       | .framed .right _ _ => false
       | .common _ | .framed .left _ _ => true) = true
+  operationScale : NumericScaleSummary
+  operationScaleOwned :
+    expression.summary? FlatFieldDecl.numericScaleSummary =
+      some operationScale
   operationScaleAdmitted :
     exactNumericScaleComparisonAllowed
       (.field route.target.info.scale)
-      (.field route.operand.info.scale) = true
+      operationScale = true
 
 namespace CheckedIsolatedParallelNumericDirectRun
 
@@ -55,12 +71,19 @@ def WellFormed
   checked.route.WellFormed ∧
     parallelNumericDirectGuardAdmitted
       checked.route.operandDeclaration.id checked.precondition = true ∧
+    checked.expression.hasAtom = true ∧
+    checked.expression.allAtoms
+      (· == checked.route.operandDeclaration) = true ∧
+    checked.expression.isPlainArithmetic = true ∧
+    checked.expression.numericOperationAuthoringCheck = .accepted ∧
     (match checked.route.groups.outerScopePlan with
       | .framed .right _ _ => false
       | .common _ | .framed .left _ _ => true) = true ∧
+    checked.expression.summary? FlatFieldDecl.numericScaleSummary =
+      some checked.operationScale ∧
     exactNumericScaleComparisonAllowed
       (.field checked.route.target.info.scale)
-      (.field checked.route.operand.info.scale) = true
+      checked.operationScale = true
 
 inductive ExecutionError where
   | marking (side : ParallelComputationIndexSide)
@@ -120,8 +143,7 @@ private def executeTarget
   | .poison cause =>
       pure { address, outcome := .inheritedPoison cause }
   | .holds =>
-      let value ←
-        context.readNumeric checked.route.operandDeclaration
+      let value ← checked.expression.evaluateComputation context
           |>.mapError .numeric
       match checked.route.targetPolicy.check value with
       | .supported outcome => pure { address, outcome }
@@ -148,10 +170,29 @@ def execute
 
 end CheckedIsolatedParallelNumericDirectRun
 
-/-- Check one optionally guarded direct Number copy without reimplementing the parallel route or the shared static scale gate. Every guard leaf must reuse the already-joined operand read. -/
-def checkIsolatedParallelNumericDirectRunWithGuard (model : FlatModel)
+/-- Resolve one bounded expression atom to the route-owned operand. This is a certificate construction over the shared numeric tree, not a second evaluator or addressing path. -/
+private def FlatModel.resolveParallelNumericDirectExpression
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (route : CheckedParallelNumericClearingPlan model)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except ParallelNumericDirectPlanError
+      (AuthoredNumericExpr FlatFieldDecl) :=
+  expression.mapM fun
+    | .field reference => do
+        let declaration ←
+          model.resolveFieldDeclarationUnchecked declaringGroup reference
+            |>.mapError ParallelNumericDirectPlanError.expressionResolve
+        if declaration == route.operandDeclaration then
+          pure declaration
+        else
+          throw .expressionNotLimitedToOperand
+    | _ => throw .expressionNotLimitedToOperand
+
+/-- Check one optionally guarded plain Number expression without reimplementing the parallel route, numeric lowering, authoring checks, or scale gate. Every field atom and guard leaf must reuse the already-joined operand read. -/
+def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (precondition : Option ComputationCondition) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) := do
@@ -159,27 +200,60 @@ def checkIsolatedParallelNumericDirectRunWithGuard (model : FlatModel)
     checkParallelNumericComputationClearingPlan
       model declaringGroup targetField operandReference
       |>.mapError .route
-  if guardAdmitted :
-      parallelNumericDirectGuardAdmitted
-        route.operandDeclaration.id precondition = true then
-    if scopeAvailable :
-        (match route.groups.outerScopePlan with
-          | .framed .right _ _ => false
-          | .common _ | .framed .left _ _ => true) = true then
-      if admitted :
-          exactNumericScaleComparisonAllowed
-            (.field route.target.info.scale)
-            (.field route.operand.info.scale) = true then
-        pure (CheckedIsolatedParallelNumericDirectRun.mk
-          route precondition guardAdmitted scopeAvailable admitted)
+  let resolved ←
+    model.resolveParallelNumericDirectExpression
+      declaringGroup route expression
+  if usesOperand : resolved.hasAtom = true then
+    if operandsOwned :
+        resolved.allAtoms (· == route.operandDeclaration) = true then
+      if expressionAdmitted : resolved.isPlainArithmetic = true then
+        match authoring : resolved.numericOperationAuthoringCheck with
+        | .accepted =>
+          match scaleOwned :
+              resolved.summary? FlatFieldDecl.numericScaleSummary with
+          | none => throw .unsupportedExpression
+          | some operationScale =>
+            if guardAdmitted :
+                parallelNumericDirectGuardAdmitted
+                  route.operandDeclaration.id precondition = true then
+              if scopeAvailable :
+                  (match route.groups.outerScopePlan with
+                    | .framed .right _ _ => false
+                    | .common _ | .framed .left _ _ => true) = true then
+                if scaleAdmitted :
+                    exactNumericScaleComparisonAllowed
+                      (.field route.target.info.scale)
+                      operationScale = true then
+                  pure (CheckedIsolatedParallelNumericDirectRun.mk
+                    route precondition resolved guardAdmitted usesOperand
+                    operandsOwned expressionAdmitted authoring scopeAvailable
+                    operationScale scaleOwned scaleAdmitted)
+                else
+                  throw (.operationScaleMismatch
+                    route.target.info.scale operationScale)
+              else
+                throw (.operandFrameOutsideTarget
+                  (model.repeatableScopeForGroupPath
+                    route.groups.rightGroup.path))
+            else
+              throw .guardNotLimitedToOperand
+        | result => throw (.authoring result)
       else
-        throw (.operationScaleMismatch
-          route.target.info.scale route.operand.info.scale)
+        throw .unsupportedExpression
     else
-      throw (.operandFrameOutsideTarget
-        (model.repeatableScopeForGroupPath route.groups.rightGroup.path))
+      throw .expressionNotLimitedToOperand
   else
-    throw .guardNotLimitedToOperand
+    throw .expressionNotLimitedToOperand
+
+/-- Check one optionally guarded direct Number copy as the atom-only specialization of the shared expression route. -/
+def checkIsolatedParallelNumericDirectRunWithGuard (model : FlatModel)
+    (declaringGroup : GroupPath) (targetField : FieldId)
+    (operandReference : SurfaceFieldPath)
+    (precondition : Option ComputationCondition) :
+    Except ParallelNumericDirectPlanError
+      (CheckedIsolatedParallelNumericDirectRun model) :=
+  checkIsolatedParallelNumericExpressionRunWithGuard model declaringGroup
+    targetField operandReference (.atom (.field operandReference)) precondition
 
 /-- Check the original unguarded direct-copy fragment. -/
 def checkIsolatedParallelNumericDirectRun (model : FlatModel)

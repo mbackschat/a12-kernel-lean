@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30831 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30911 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now admits an optional presence guard whose every leaf is certified to read the already-joined operand. Guard evaluation precedes the direct copy inside each uncovered target instance: holding evaluates the operation, clean false emits an exact no-value outcome, and reached poison emits inherited poison. A false guard therefore clears a stale source through ordinary outcome classification, while invalid index columns still suppress the instance and use post-loop clearing. A guard naming any other field fails before execution because that would require a second addressed-read plan. Exact addressed result application remains closed through the target-key-parametric Number application owner.
+The isolated repeatable Number run now admits one optionally guarded plain-arithmetic expression whose every field atom and guard leaf is certified to read the already-joined operand. The checked payload is the existing authored numeric tree: lowering, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application all remain with their established owners. A clean unmatched join contributes numeric zero before surrounding arithmetic. Literal-only trees and expressions or guards naming a second field fail checked construction, so the route certificate remains the sole addressed-read authority. Invalid index columns still suppress the instance before guard or expression evaluation and use post-loop clearing.
 
 ## Active semantic unit
 
-Audit one simple Number expression over the same checked parallel operand. Determine the smallest existing numeric-expression payload that can retain the route-owned repeatable operand without constructing a second AST or bypassing the established scale, target-policy, and addressed-read owners.
+Audit the operation-valued wrappers already represented by the shared Number tree over the same route-owned repeatable operand. Determine whether `Abs`, `Round`, and operand-list extrema are semantically invariant under the joined scalar read or whether any wrapper introduces a route-specific static or evaluation dependency.
 
 ## Immediate sequence
 
-1. Inventory the complete checked Number expression's current nonrepeatable target restriction and identify whether its addressed evaluator can be specialized without duplicating lowering or target policy.
-2. Admit one expression widening only if the checked route remains the sole owner of the joined operand and index disposition.
-3. Keep broader guard fields and multi-computation repeatable overlays excluded until their additional addressed reads and dependency order are independently source-closed.
+1. Reconcile each wrapper's existing static admission, direct-literal boundary, scale summary, and evaluation behavior against the new plain-arithmetic repeatable crossing.
+2. Admit a wrapper family only by relaxing the existing checked-tree shape gate; do not add a route-specific wrapper evaluator or duplicate authoring logic.
+3. Keep additional expression fields, broader guard fields, warning suppression, and multi-computation repeatable overlays excluded until their additional reads, policy, or dependency order are independently source-closed.
 
 ## Parked boundaries
 
