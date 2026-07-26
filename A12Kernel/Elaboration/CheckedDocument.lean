@@ -49,6 +49,14 @@ inductive CheckedDocumentError where
   | incoherentRepeatableScope (scope : List RepeatableLevel)
   deriving Repr, DecidableEq
 
+/-- Structural failures while projecting one repeatable scope's physically instantiated rows into complete named environments. -/
+inductive ActualRowEnvironmentError where
+  | missingScope
+  | unknownLevel (level : RepeatableLevel)
+  | incoherentScope (supplied expected : List RepeatableLevel)
+  | incoherentRow (row : RowAddr)
+  deriving Repr, DecidableEq
+
 structure CheckedCellPlacement where
   address : CellAddr
   cell : CheckedCell
@@ -204,6 +212,26 @@ def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
   }
 
 namespace CheckedDocument
+
+/-- Project physical rows at the deepest level of one repeatable scope into complete named environments, preserving source order. Blank-but-instantiated rows remain observable; rows belonging to other groups do not enter the result. -/
+def actualRowEnvironments (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) :
+    Except ActualRowEnvironmentError (List Env) :=
+  match scope.reverse with
+  | [] => .error .missingScope
+  | deepest :: _ => do
+      let group ← match model.repeatableGroupAtLevel? deepest with
+        | some group => pure group
+        | none => throw (.unknownLevel deepest)
+      let expected := model.repeatableScopeForGroupPath group.path
+      if scope != expected then
+        throw (.incoherentScope scope expected)
+      (checked.source.instantiatedRows.filter fun row =>
+        row.group == deepest).mapM fun row =>
+          if row.path.length == scope.length then
+            pure (scope.zip row.path)
+          else
+            throw (.incoherentRow row)
 
 /-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
 def read (checked : CheckedDocument model) (address : CellAddr) :

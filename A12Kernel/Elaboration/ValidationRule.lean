@@ -29,6 +29,7 @@ inductive ValidationEvaluationError where
 /-- Structural failures from checked ordinary repeatable rule execution remain outside semantic UNKNOWN. -/
 inductive OrdinaryRepeatableRuleEvaluationError where
   | missingIterationScope
+  | incoherentIterationScope (scope : List RepeatableLevel)
   | unsupportedCondition
   | incoherentRow (row : RowAddr)
   | addressing (error : CheckedAddressingError)
@@ -218,17 +219,12 @@ def evalAddressedFull (rule : CheckedResolvedValidationRule model)
     (hasContent : Bool) : Except CheckedAddressingError FlatRuleOutcome :=
   rule.core.evalAddressedFull context hasContent
 
-private def ordinaryIterationEnvironments
-    (scope : List RepeatableLevel) (rows : List RowAddr) :
-    Except OrdinaryRepeatableRuleEvaluationError (List Env) :=
-  match scope.reverse with
-  | [] => .error .missingIterationScope
-  | deepest :: _ =>
-      (rows.filter fun row => row.group == deepest).mapM fun row =>
-        if row.path.length == scope.length then
-          pure (scope.zip row.path)
-        else
-          throw (.incoherentRow row)
+private def toOrdinaryRowEnvironmentError :
+    ActualRowEnvironmentError → OrdinaryRepeatableRuleEvaluationError
+  | .missingScope => .missingIterationScope
+  | .unknownLevel level => .incoherentIterationScope [level]
+  | .incoherentScope supplied _ => .incoherentIterationScope supplied
+  | .incoherentRow row => .incoherentRow row
 
 private def ordinaryRepeatableFieldIds
     (rule : CheckedResolvedValidationRule model) : List FieldId :=
@@ -396,7 +392,8 @@ def evalOrdinaryRepeatableFull
     | some scope => pure scope
     | none => throw .missingIterationScope
   let environments ←
-    ordinaryIterationEnvironments scope checked.source.instantiatedRows
+    checked.actualRowEnvironments scope
+      |>.mapError toOrdinaryRowEnvironmentError
   let repetitionNotUniqueResults ←
     rule.repetitionNotUniqueResults checked .full environments
   environments.mapM fun environment =>
@@ -490,8 +487,8 @@ def evalOrdinaryRepeatablePartialPrepared
       | none => throw .missingIterationScope
     let checked := preliminary.index.base
     let environments ←
-      ordinaryIterationEnvironments iterationScope
-        checked.source.instantiatedRows
+      checked.actualRowEnvironments iterationScope
+        |>.mapError toOrdinaryRowEnvironmentError
     let admittedEnvironments := environments.filter fun environment =>
       preliminary.relevance.coversField model rule.errorField environment
     let repetitionNotUniqueResults ←

@@ -78,6 +78,13 @@ def WellFormed (plan : CheckedParallelNumericClearingPlan model) : Prop :=
     (plan.operandDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath plan.groups.rightGroup.path) = true
 
+/-- Enumerate exactly the physically instantiated target rows from the checked document. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
+def targetEnvironments (plan : CheckedParallelNumericClearingPlan model)
+    (checked : CheckedDocument model) :
+    Except ActualRowEnvironmentError (List Env) :=
+  checked.actualRowEnvironments
+    plan.targetDeclaration.repeatableScope
+
 /-- Derive the invalid-column mark plan for either checked index group. The target's complete scope remains the coverage domain in both cases. -/
 def markPlanFor (plan : CheckedParallelNumericClearingPlan model) :
     ParallelComputationIndexSide → ParallelComputationMarkPlan

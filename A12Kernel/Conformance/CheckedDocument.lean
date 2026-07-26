@@ -121,6 +121,13 @@ example : ((checked? { classified with instantiatedRows := [] }).bind fun checke
     some { content := false, erroneous := false, relevance := .fullyRelevant } := by
   native_decide
 
+/- Actual-row projection refuses a caller-invented deepest level instead of certifying an empty environment list for an unknown scope. -/
+example : ((checked? classified).map fun checked =>
+    match checked.actualRowEnvironments [99] with
+    | .error (.unknownLevel 99) => true
+    | _ => false) = some true := by
+  native_decide
+
 /- Prepared formal rejection is error without admitted group content. -/
 example : ((checked? classified).bind fun checked =>
     (checked.groupPresenceInput ["Order", "Details"] []

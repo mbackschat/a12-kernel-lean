@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1440 theorem roots; 30146 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1441 theorem roots; 30234 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first checked repeatable SG4 route now derives both post-loop mark plans for one direct non-starred Number operand and repeatable Number target. Both mark plans preserve the target's complete scope as their coverage domain; the malformed target-path index uses its model-owned parent scope, while the off-path operand index uses its own. The checked framed separator therefore retains `[frame]` for on-path invalidity and the root prefix for off-path invalidity, reproducing sibling preservation versus sibling overmarking without a caller-supplied width.
+The first checked repeatable SG4 route now enumerates existing target instances from the immutable checked document. It reuses the model-validated actual-row projection already consumed by ordinary repeatable rules: only physical rows at the target declaration's deepest scope enter, blank instantiated rows remain observable without a target cell, and caller-created environments are impossible at the plan boundary. Complete named environments retain checked-document order only as deterministic internal canonicalization; the Kernel's hash-backed clearing enumeration does not establish a public order. The checked route's result is proved independent of placed cell payloads.
 
 ## Active semantic unit
 
-Assess the smallest document-owned target-instance enumeration needed to consume the checked mark plans without accepting caller-invented environments. Reuse the existing ordinary-rule actual-row mechanism if its meaning and result domain match; otherwise keep the computation enumerator purpose-specific.
+Resolve each checked parallel index column against the same immutable checked document and connect its `unavailableKey` to the already-derived side-specific mark plan over the checked target environments. Keep clean columns mark-free and structural column or environment failure outside semantic invalidity.
 
 ## Immediate sequence
 
-1. Inventory the checked document's existing actual-row enumerators and the kernel's existing-field-instance input to post-loop marking.
-2. Add only the exact target-instance projection if the closed checked document can derive it, preserving document order, complete target scope, absent-cell versus instantiated-row behavior, and structural failure.
+1. Reuse `CheckedIndexColumn` for both model-owned index groups; do not add another index evaluator or accept a caller-supplied unavailable cause.
+2. Produce only the cause-blind post-loop marks for actual target instances and preserve the side-specific blast radius. Public clearing classification remains the next separate capsule.
 
 ## Parked boundaries
 

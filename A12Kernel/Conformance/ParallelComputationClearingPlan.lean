@@ -65,6 +65,37 @@ private def checked? :=
   (checkParallelNumericComputationClearingPlan
     model ["Plan"] 2 operandPath).toOption
 
+private def world : World := { now := { epochMillis := 0 } }
+
+private def checkedDocument? : Option (CheckedDocument model) := do
+  let prepared ←
+    (prepareFlatStringContext
+      world builtinStringPatternCompiler model).toOption
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 50, path := [1] },
+      { group := 60, path := [1, 1] },
+      { group := 70, path := [1] },
+      { group := 50, path := [2] },
+      { group := 60, path := [2, 1] },
+      { group := 60, path := [1, 2] },
+      { group := 70, path := [2] }
+    ]
+    cells := []
+  }).toOption
+
+/- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
+example :
+    (checked?.bind fun checked =>
+      checkedDocument?.bind fun document =>
+        (checked.targetEnvironments document).toOption) =
+      some [
+        [(50, 1), (60, 1)],
+        [(50, 2), (60, 1)],
+        [(50, 1), (60, 2)]
+      ] := by
+  native_decide
+
 /- Each checked index side derives its asymmetric common-prefix mark scope without a caller-supplied truncation width. -/
 example :
     (checked?.map fun checked =>
