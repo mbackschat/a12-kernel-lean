@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValidationCondition.Core
+import A12Kernel.Elaboration.ValidationCondition.StaticIteration
 
 /-! # Validation-condition iteration legality and addressed execution -/
 
