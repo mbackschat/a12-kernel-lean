@@ -227,6 +227,8 @@ The probe passes for internal-boundary **Execute**, checked-input **Analyze**, a
 
 **How Lean helps:** analyses can be defined against the same semantics used for execution, so their claims have precise meanings. A sound analysis theorem can state exactly what a successful answer guarantees and which residual errors remain. When a universal answer is unavailable, the executable semantics can validate a concrete witness or counterexample. Checked non-laws prevent an analyzer from relying on attractive but false algebraic assumptions.
 
+**Current narrow example:** the internal checked-flat pilot recognizes only the exact root shapes `FieldFilled(f) And FieldNotFilled(f)` and its reverse, returns a proof-bearing witness, and proves that the error condition can never fire. Its executable controls also show why the tempting `Or` “tautology” and different-field generalization are false. This demonstrates proof-bearing Analyze reuse over an existing normalized owner; it is not a recursive lint, general reachability procedure, command, protocol, or supported shipment. The precise implementation boundary is recorded in [§12 of the implementation map](IMPLEMENTATION-MAP.md#12--validation-and-polarity).
+
 **Limit:** an analysis must state whether it is exact, sound but incomplete, complete but approximate in another direction, or merely a bounded search. “No counterexample found” is not a proof unless the searched domain is known to be complete.
 
 ## 6. Verify

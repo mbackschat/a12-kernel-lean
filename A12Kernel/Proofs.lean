@@ -42,6 +42,7 @@ import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.NumericValidation.Runtime
 import A12Kernel.Proofs.NumericValidation.Lowering
 import A12Kernel.Proofs.ValidationCondition
+import A12Kernel.Proofs.FlatPresenceContradiction
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.CheckedIndexPreliminary
 import A12Kernel.Proofs.RawString

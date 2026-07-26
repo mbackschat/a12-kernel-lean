@@ -707,6 +707,7 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_iterationLegality_singleton_guarded
 #print axioms A12Kernel.validationCondition_repeatablePresence_supported
 #print axioms A12Kernel.checkedValidationCondition_coherent
+#print axioms A12Kernel.FlatPresenceContradictionWitness.neverFires
 #print axioms A12Kernel.numericTolerance_acceptsScales
 #print axioms A12Kernel.numericValidation_scaleSuppression_accepts
 #print axioms A12Kernel.numericValidation_withoutScaleSuppression
