@@ -84,6 +84,28 @@ private def indexCell (field : FieldId) (path : List Nat)
   raw := .parsed (.str stored)
 }
 
+private def numericCell (path : List Nat) (stored : StoredNumber) :
+    ClassifiedCellInput := {
+  address := { field := 2, path }
+  stored := stored.render
+  raw := .parsed (.num stored.amount)
+  numericSourceIdentity := some (.decimal stored)
+}
+
+private def emptyNumericCell (path : List Nat) :
+    ClassifiedCellInput := {
+  address := { field := 2, path }
+  stored := ""
+  raw := .presentEmpty
+}
+
+private def numericCellWithoutIdentity (path : List Nat)
+    (stored : StoredNumber) : ClassifiedCellInput := {
+  address := { field := 2, path }
+  stored := stored.render
+  raw := .parsed (.num stored.amount)
+}
+
 private def cleanIndexCells : List ClassifiedCellInput := [
   indexCell 1 [1, 1] "Alpha",
   indexCell 1 [1, 2] "Beta",
@@ -119,6 +141,19 @@ private def markCoordinates?
   let marks ← (checked.invalidIndexMarks preliminary side).toOption
   pure (marks.map (·.coordinates))
 
+private def clearingResult?
+    (cells : List ClassifiedCellInput) :
+    Option (Except ParallelNumericClearingError
+      ParallelNumericClearingView) := do
+  let checked ← checked?
+  let preliminary ← preliminaryFor cells
+  pure (checked.clearedSourceTargets preliminary)
+
+private def clearedAddresses?
+    (cells : List ClassifiedCellInput) : Option (List CellAddr) :=
+  (clearingResult? cells).bind fun result =>
+    result.toOption.map (·.cleared)
+
 /- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
 example :
     (checked?.bind fun checked =>
@@ -151,6 +186,54 @@ example :
       input.address != { field := 3, path := [2] }
     markCoordinates? operandInvalid .target = some [] ∧
       markCoordinates? operandInvalid .operand = some [[]] := by
+  native_decide
+
+/- Public clearing remains source-relative: an invalid target-path frame clears its filled target only, not a clean sibling frame. -/
+example :
+    let targetInvalid :=
+      (cleanIndexCells.filter fun input =>
+        input.address != { field := 1, path := [2, 1] }) ++ [
+          numericCell [1, 1] { unscaled := 7, scale := 0 },
+          numericCell [2, 1] { unscaled := 8, scale := 0 }
+        ]
+    clearedAddresses? targetInvalid =
+      some [{ field := 2, path := [2, 1] }] := by
+  native_decide
+
+/- Source identity is demanded only for a covered filled target: an unmarked malformed source annotation stays irrelevant, while the same defect on the marked row remains structural. -/
+example :
+    let targetInvalid :=
+      cleanIndexCells.filter fun input =>
+        input.address != { field := 1, path := [2, 1] }
+    let unmarkedMissingIdentity := targetInvalid ++ [
+      numericCellWithoutIdentity [1, 1] { unscaled := 7, scale := 0 },
+      numericCell [2, 1] { unscaled := 8, scale := 0 }
+    ]
+    let markedMissingIdentity := targetInvalid ++ [
+      numericCell [1, 1] { unscaled := 7, scale := 0 },
+      numericCellWithoutIdentity [2, 1] { unscaled := 8, scale := 0 }
+    ]
+    ((clearedAddresses? unmarkedMissingIdentity ==
+        some [{ field := 2, path := [2, 1] }]) &&
+      match clearingResult? markedMissingIdentity with
+      | some (.error (.sourceTarget (.missingIdentity 2))) => true
+      | _ => false) = true := by
+  native_decide
+
+/- A root off-path mark covers every target row, but public clearing retains only source-filled targets and excludes an explicitly empty sibling. -/
+example :
+    let operandInvalid :=
+      (cleanIndexCells.filter fun input =>
+        input.address != { field := 3, path := [2] }) ++ [
+          numericCell [1, 1] { unscaled := 7, scale := 0 },
+          emptyNumericCell [1, 2],
+          numericCell [2, 1] { unscaled := 8, scale := 0 }
+        ]
+    clearedAddresses? operandInvalid =
+      some [
+        { field := 2, path := [1, 1] },
+        { field := 2, path := [2, 1] }
+      ] := by
   native_decide
 
 /- Each checked index side derives its asymmetric common-prefix mark scope without a caller-supplied truncation width. -/

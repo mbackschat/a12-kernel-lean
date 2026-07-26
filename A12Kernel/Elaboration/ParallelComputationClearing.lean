@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Elaboration.NumericComputation.SourceTarget
 import A12Kernel.Semantics.ParallelComputationClearing
 
 /-! # Checked parallel-computation clearing plans
 
-This bounded constructor recognizes one direct non-starred Number operand in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. The resulting mark plans derive their truncation scopes from those declarations. General computation expressions, guards, starred operands, table execution, index-column evaluation, and public clearing remain separate. -/
+This bounded route recognizes one direct non-starred Number operand in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. It derives side-specific mark scopes, resolves checked index columns over actual target rows, and projects covered source-filled targets to an extensional clearing fragment. General computation expressions, guards, starred operands, table execution, successful repeatable outcomes, and application remain separate. -/
 
 namespace A12Kernel
 
@@ -31,6 +32,30 @@ inductive ParallelComputationMarkingError where
   | indexColumn (error : CheckedIndexColumnError)
   | targetEnvironment (error : EnvBindingError)
   deriving Repr, DecidableEq
+
+/-- Structural failures while projecting checked post-loop marks to source-relative public clears. -/
+inductive ParallelNumericClearingError where
+  | marking (side : ParallelComputationIndexSide)
+      (error : ParallelComputationMarkingError)
+  | targetRows (error : ActualRowEnvironmentError)
+  | targetEnvironment (error : EnvBindingError)
+  | sourceTarget (error : NumericSourceTargetError)
+  deriving Repr, DecidableEq
+
+/-- The repeatable Number fragment of the public computation result. Collection order is not public. -/
+structure ParallelNumericClearingView where
+  private mk ::
+  cleared : List CellAddr
+  deriving Repr, DecidableEq
+
+namespace ParallelNumericClearingView
+
+def empty : ParallelNumericClearingView := { cleared := [] }
+
+def ExtensionalEq (left right : ParallelNumericClearingView) : Prop :=
+  left.cleared.Perm right.cleared
+
+end ParallelNumericClearingView
 
 /-- One model-certified direct Number parallel route. `operandReference` is the parser-independent ordinary field-path shape; starred and semantic-index paths cannot inhabit it. -/
 structure CheckedParallelNumericClearingPlan (model : FlatModel) where
@@ -126,6 +151,49 @@ def invalidIndexMarks (plan : CheckedParallelNumericClearingPlan model)
       column.unavailableKey targetEnvironment
         |>.mapError ParallelComputationMarkingError.targetEnvironment
   pure (candidates.filterMap id).eraseDups
+
+/-- Project both checked index sides to exact source-filled target addresses. A runtime invalid mark remains private unless it covers a target whose immutable source value is nonempty. -/
+def clearedSourceTargets
+    (plan : CheckedParallelNumericClearingPlan model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except ParallelNumericClearingError ParallelNumericClearingView := do
+  let targetMarks ←
+    plan.invalidIndexMarks preliminary .target
+      |>.mapError (ParallelNumericClearingError.marking .target)
+  let operandMarks ←
+    plan.invalidIndexMarks preliminary .operand
+      |>.mapError (ParallelNumericClearingError.marking .operand)
+  if targetMarks.isEmpty && operandMarks.isEmpty then
+    pure ParallelNumericClearingView.empty
+  else
+    let targetEnvironments ←
+      plan.targetEnvironments preliminary.base
+        |>.mapError .targetRows
+    let candidates ← targetEnvironments.mapM fun targetEnvironment => do
+      let coveredByTarget ←
+        (plan.markPlanFor .target).coversAny
+          targetEnvironment targetMarks
+          |>.mapError ParallelNumericClearingError.targetEnvironment
+      let coveredByOperand ←
+        (plan.markPlanFor .operand).coversAny
+          targetEnvironment operandMarks
+          |>.mapError ParallelNumericClearingError.targetEnvironment
+      if !coveredByTarget && !coveredByOperand then
+        pure none
+      else
+        let path ←
+          targetEnvironment.pathForScope
+            plan.targetDeclaration.repeatableScope
+            |>.mapError ParallelNumericClearingError.targetEnvironment
+        let address : CellAddr := { field := plan.targetField, path }
+        let source ←
+          preliminary.base.numericTargetStateAt address
+            |>.mapError ParallelNumericClearingError.sourceTarget
+        if source.sourceIdentity.isSome then
+          pure (some address)
+        else
+          pure none
+    pure { cleared := candidates.filterMap id }
 
 end CheckedParallelNumericClearingPlan
 

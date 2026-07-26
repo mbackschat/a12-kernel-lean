@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1442 theorem roots; 30283 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1443 theorem roots; 30395 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first checked repeatable SG4 route now derives post-loop invalid marks directly from one `CheckedIndexPreliminary`. It enumerates actual target rows from that preliminary's immutable base document, resolves the selected model-owned index column at each target's inherited outer bindings, applies the already-derived side-specific mark plan to the column's `unavailableKey`, and removes duplicate keys. Clean columns emit no marks; a target-path failure retains its frame key, while an off-path failure can collapse to one root mark. With no target instances, no index column is consulted.
+The first repeatable SG4 result fragment now projects checked post-loop marks to exact source-relative public clears. The Number source-target owner accepts one model-legal repeatable address and preserves absent, present-empty, typed filled identity, and structural failure. Only covered source-filled targets enter the clearing view; blank instantiated rows and present-empty target cells stay out, an unmarked malformed source annotation is never inspected, and a marked filled target without typed identity fails structurally. Clean columns provably produce the empty clearing view.
 
 ## Active semantic unit
 
-Project the derived mark set onto the actual target instances it covers and classify only source-filled affected targets as public clears. Preserve cause blindness, exact repeatable addresses, permutation-invariant public collections, and the distinction between an invalid runtime mark and a public source-relative clear.
+Add exact repeatable application for the clearing fragment against a separately supplied compatible addressed destination. Reuse the one-target Number transition, leave absent destinations absent, clear present values in place, and do not merge application with classification.
 
 ## Immediate sequence
 
-1. Reuse `ParallelComputationMarkPlan.covers` and extend the existing Number source-target identity owner to one exact checked repeatable address; do not infer source fill from row existence or normalized value text.
-2. Return an extensional repeatable clearing projection with exact addresses and prove that empty source targets stay absent from it. Repeatable document application remains separate.
+1. Define the smallest `CellAddr → NumericTargetState` destination and update operation needed by the extensional clearing view; add no second document model or missing-ancestor machinery.
+2. Prove one-address specialization, unrelated-address preservation, absent-target noncreation, and permutation-invariant results. Repeated identical clear actions are harmless and do not warrant a structural rejection channel.
 
 ## Parked boundaries
 

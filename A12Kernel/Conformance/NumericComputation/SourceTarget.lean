@@ -35,6 +35,58 @@ private def isMissingIdentity (field : FieldId)
   | some (.error (.missingIdentity actual)) => actual == field
   | _ => false
 
+private def repeatedTarget : FlatFieldDecl := {
+  target with
+    groupPath := ["Order", "Lines"]
+    repeatableScope := [10]
+}
+
+private def repeatedModel : FlatModel := {
+  fields := [repeatedTarget]
+  repeatableGroups := [{
+    level := 10
+    path := ["Order", "Lines"]
+    repeatability := some 2
+  }]
+}
+
+private def repeatedChecked? : Option (CheckedDocument repeatedModel) := do
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler repeatedModel).toOption
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] },
+      { group := 10, path := [2] }
+    ]
+    cells := [{
+      address := { field := 1, path := [1] }
+      stored := "7.00"
+      raw := .parsed (.num 7)
+      numericSourceIdentity :=
+        some (.decimal { unscaled := 700, scale := 2 })
+    }]
+  }).toOption
+
+/- Exact addressed source projection distinguishes a filled repeatable target from an absent sibling, while the scalar entry point keeps rejecting the repeatable declaration. -/
+example :
+    (do
+      let checked ← repeatedChecked?
+      let first ←
+        (checked.numericTargetStateAt { field := 1, path := [1] }).toOption
+      let second ←
+        (checked.numericTargetStateAt { field := 1, path := [2] }).toOption
+      pure (first, second,
+        match checked.numericTargetState 1 with
+        | .error (.repeatableTarget 1) => true
+        | _ => false)) =
+      some (
+        NumericTargetState.presentValue
+          (.decimal { unscaled := 700, scale := 2 }),
+        NumericTargetState.absent,
+        true) := by
+  native_decide
+
 private def sourceWith (stored : String) (raw : RawCell)
     (identity : Option NumericSourceIdentity) : DocumentData :=
   { instantiatedRows := []

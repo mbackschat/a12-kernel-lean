@@ -1482,6 +1482,7 @@ run_cmd do
 #print axioms A12Kernel.checkedParallelNumericClearingPlan_wellFormed
 #print axioms A12Kernel.parallelNumericTargetEnvironments_cells_irrelevant
 #print axioms A12Kernel.parallelNumericInvalidIndexMarks_noTargets
+#print axioms A12Kernel.parallelNumericClearing_noMarks
 #print axioms A12Kernel.parallelNumericClearingMark_targetScope
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape

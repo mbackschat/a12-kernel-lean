@@ -37,6 +37,20 @@ theorem parallelNumericInvalidIndexMarks_noTargets
   rw [empty]
   rfl
 
+/-- Clean columns cannot produce a public clear, regardless of target row topology or source payloads. -/
+theorem parallelNumericClearing_noMarks
+    (plan : CheckedParallelNumericClearingPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetClean :
+      plan.invalidIndexMarks preliminary .target = .ok [])
+    (operandClean :
+      plan.invalidIndexMarks preliminary .operand = .ok []) :
+    plan.clearedSourceTargets preliminary =
+      .ok ParallelNumericClearingView.empty := by
+  unfold CheckedParallelNumericClearingPlan.clearedSourceTargets
+  rw [targetClean, operandClean]
+  rfl
+
 @[simp] theorem parallelNumericClearingMark_targetScope
     (plan : CheckedParallelNumericClearingPlan model)
     (side : ParallelComputationIndexSide) :

@@ -67,6 +67,18 @@ def covers (plan : ParallelComputationMarkPlan)
   | .ok path =>
       .ok (path.take plan.sharedScope.length == mark.coordinates)
 
+/-- Whether any cause-blind mark covers one complete target instance. Structural failure remains explicit and a decisive match stops the scan. -/
+def coversAny (plan : ParallelComputationMarkPlan)
+    (targetEnvironment : Env) :
+    List (ParallelComputationMark plan) →
+      Except EnvBindingError Bool
+  | [] => pure false
+  | mark :: marks => do
+      if ← plan.covers mark targetEnvironment then
+        pure true
+      else
+        plan.coversAny targetEnvironment marks
+
 end ParallelComputationMarkPlan
 
 end A12Kernel
