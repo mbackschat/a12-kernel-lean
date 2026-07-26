@@ -1377,6 +1377,16 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_formalErrors_exact
 #print axioms A12Kernel.stringComputationRun_noErrorOccurred_iff
 #print axioms A12Kernel.stringComputationRun_fromOutcomes_permutation
+#print axioms A12Kernel.stringComputationDestination_update_same
+#print axioms A12Kernel.stringComputationDestination_applyOutcome_same
+#print axioms A12Kernel.stringComputationDestination_applyOutcome_other
+#print axioms A12Kernel.stringComputationRun_applyTo_noActions
+#print axioms A12Kernel.stringComputationRun_applyTo_duplicateTarget
+#print axioms A12Kernel.stringComputationRun_unchanged_notApplied
+#print axioms A12Kernel.stringComputationRun_changed_applies
+#print axioms A12Kernel.stringComputationRun_error_applies
+#print axioms A12Kernel.stringComputationRun_cleared_applies
+#print axioms A12Kernel.stringComputationRun_residualMessages_doNotAffectApplication
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic

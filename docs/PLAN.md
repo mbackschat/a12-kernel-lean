@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 497 jobs · trust audit **1391 theorem roots; 29137 declarations in 266 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 499 jobs · trust audit **1401 theorem roots; 29211 declarations in 268 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Every successful checked nonrepeatable String execution can now return a String-specific V2 result view over the same immutable source. It retains successful unchanged values, filters the source-relative changed subset, separates payloadful target errors from source-filled clearing, threads the API-named residual message channel without constructing it, and derives `noErrorOccurred` from exactly the two error channels. Laws establish subset, exact clearing, unchanged residual payload, and permutation-invariant public collections; application, eager prepass construction, message rendering, repeatables, and heterogeneous results remain separate.
+The String-specific V2 result now applies its already-classified clears, errors, and changed successes to an explicitly supplied exact target-state destination through the existing one-target transition. Successful unchanged values and residual messages are inert, source-relative change is not recomputed against the destination, absent targets are not created merely to clear them, and duplicate action targets fail structurally before application. This closes the nonrepeatable String run → result → exact application composition without constructing a second document, rendering messages, or admitting repeatables or other target families.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the String-specific whole-run application fold: consume the already-classified `withChanges`, `withErrors`, and `cleared` collections against an explicitly supplied compatible destination by specializing the existing exact one-target String application owner. Do not recompute change classification against the destination or add eager prepass construction, message rendering, other target families, repeatables, document-creation machinery, or a generic application framework.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the eager-prepass/residual-partition certificate: identify the exact static noncomputed operand closure admitted by the current String run, derive its immutable computation-phase invalidity from the checked document, and keep the API-named `formalErrorsInOperands` channel as the pointer-match residual rather than assuming it contains only operand errors. Do not add message rendering, other target families, repeatables, document mutation, or a general evidence/message framework.
 
 ## Immediate sequence
 
-1. Add the String-specific whole-run application fold and prove that successful unchanged instances are not applied while changed, errored, and cleared instances specialize the existing exact one-target laws.
-2. Add the eager-prepass/residual-partition certificate as a separate later capsule.
+1. Add the smallest String-run eager-prepass certificate without duplicating checked cells, preliminary-index owners, or message construction.
+2. Add the residual pointer-partition bridge only if the existing structured message owners can represent the admitted error producers without inventing rendered text.
 
 ## Parked boundaries
 

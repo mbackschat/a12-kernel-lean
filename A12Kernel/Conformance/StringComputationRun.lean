@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringComputationRunRelation
 import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Elaboration.StringComputationRunApplication
 
 /-! # Checked nonrepeatable String-run locks
 
@@ -131,6 +132,10 @@ private def resultView?
   let run ← (certifyStringComputationRun tables).toOption
   let input ← checkedDocument cells
   (run.executeResult prepared.patterns input formalErrors).toOption
+
+private def destinationWith (target : FieldId) (state : StringTargetState) :
+    FieldId → StringTargetState :=
+  fun field => if field == target then state else .absent
 
 private def producerTable := FixtureTable.checked .producerValue
 
@@ -325,6 +330,51 @@ example :
         some ([{ targetField := producer.id, value := ⟨"NEW", by decide⟩ }],
           [{ targetField := producer.id, value := ⟨"NEW", by decide⟩ }],
           [.malformed], false) := by
+  native_decide
+
+/- Source-relative unchanged classification is not recomputed against a different destination. -/
+example : (do
+    let view ← resultView? [FixtureTable.checked .producerValue]
+      [cell producer.id "NEW" (.parsed (.str "NEW"))]
+    let applied ← (view.applyTo (destinationWith producer.id
+      (.presentValue ⟨"OLD", by decide⟩))).toOption
+    pure (applied producer.id)) =
+        some (.presentValue ⟨"OLD", by decide⟩) := by
+  native_decide
+
+/- Changed success writes, while both target rejection and public clearing specialize the one-target clear transition. -/
+example :
+    (do
+      let view ← resultView? [FixtureTable.checked .producerValue]
+      let applied ← (view.applyTo (destinationWith producer.id .absent)).toOption
+      pure (applied producer.id)) =
+        some (.presentValue ⟨"NEW", by decide⟩) ∧
+    (do
+      let view ← resultView? [FixtureTable.checked .producerError]
+        [cell producer.id "OLD" (.parsed (.str "OLD"))]
+      let applied ← (view.applyTo (destinationWith producer.id
+        (.presentValue ⟨"DEST", by decide⟩))).toOption
+      pure (applied producer.id)) =
+        some .presentEmpty ∧
+    (do
+      let view ← resultView? [FixtureTable.checked .producerCopySource]
+        [cell producer.id "OLD" (.parsed (.str "OLD"))]
+      let applied ← (view.applyTo (destinationWith producer.id .absent)).toOption
+      pure (applied producer.id)) =
+        some .absent := by
+  native_decide
+
+/- A malformed result cannot let private collection order choose between two writes to one target. -/
+example : (do
+    let input ← checkedDocument []
+    let view := StringComputationRunView.fromOutcomes input
+      ([] : List FormalCause)
+      [(producer.id, .accepted ⟨"NEW", by decide⟩),
+        (producer.id, .accepted ⟨"OLD", by decide⟩)]
+    pure (match view.applyTo (destinationWith producer.id .absent) with
+      | .error fault => some fault
+      | .ok _ => none)) =
+      some (some (.duplicateActionTarget producer.id)) := by
   native_decide
 
 /- The independent relation admits both orders, while field lookup erases their private completion order. -/

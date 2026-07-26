@@ -82,6 +82,7 @@ import A12Kernel.Proofs.StringComputationTable
 import A12Kernel.Proofs.StringComputationRun
 import A12Kernel.Proofs.StringComputationRunRelation
 import A12Kernel.Proofs.StringComputationRunResult
+import A12Kernel.Proofs.StringComputationRunApplication
 import A12Kernel.Proofs.StringApplication
 import A12Kernel.Proofs.Verdict
 import A12Kernel.Proofs.ValueList
