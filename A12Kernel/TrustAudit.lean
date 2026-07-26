@@ -1479,6 +1479,7 @@ run_cmd do
 #print axioms A12Kernel.parallelComputationMark_sharedScope
 #print axioms A12Kernel.parallelComputationMark_causeBlind
 #print axioms A12Kernel.parallelComputationMark_covers_source
+#print axioms A12Kernel.checkedParallelNumericClearingPlan_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape
 #print axioms A12Kernel.checkedParallelPresenceRule_cannotFireOnEmpty

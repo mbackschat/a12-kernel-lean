@@ -196,6 +196,12 @@ def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
 
 end CheckedParallelIndexGroups
 
+/-- Every indexed repeatable ancestor of one model declaration, in model order. Cardinality and consumer-specific scope rules stay with the checked consumer. -/
+def FlatModel.indexedAncestorGroups (model : FlatModel)
+    (declaration : FlatFieldDecl) : List RepeatableGroupDecl :=
+  model.repeatableGroups.filter fun group =>
+    group.path.isPrefixOf declaration.groupPath && group.indexField.isSome
+
 private structure IndexColumnState where
   entries : List ResolvedCheckedIndexEntry := []
   duplicateKeys : List SemanticIndexKey := []

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 520 jobs · trust audit **1438 theorem roots; 29974 declarations in 285 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1439 theorem roots; 30118 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first repeatable SG4 transition slice represents the kernel's post-loop invalid mark after checked analysis has selected parallel iteration. Its plan derives the common repeatable prefix from the target scope and malformed index group's parent scope, resolves every complete target instance structurally, and erases the invalid-column cause. Off-path invalidity therefore covers clean sibling target rows while on-path invalidity retains the sibling coordinate; a clean index column emits no mark.
+The first checked repeatable SG4 route is now certified for one direct non-starred Number operand and repeatable Number target. The target and structured operand path resolve against one model, each determines its sole indexed ancestor, and the existing parallel-group owner proves distinct groups, matching exact-text index identity, and compatible scopes. A same-index-group operand is rejected as ordinary rather than parallel execution. No caller supplies the route bit, indexed groups, or repeatable scopes.
 
 ## Active semantic unit
 
-Audit whether the existing checked computation and index owners retain enough model-relative information to select the parser-derived parallel-iteration route and construct the new post-loop mark plan without a caller-supplied scope assertion. Continue only if that checked crossing reuses the canonical addressed/index owners and preserves route selection, index checking, marking, public clearing, and application as separate boundaries.
+Derive the two post-loop mark plans from that checked route's target and index-group scopes, preserving the target scope as the coverage domain for both the on-path and off-path invalid columns. Then assess the smallest document-owned target-instance enumeration needed to consume those marks without accepting caller-invented environments.
 
 ## Immediate sequence
 
-1. Inventory the checked repeatable computation sources, parallel-index column certificate, parser-derived route marker, and model-derived target/index-parent scopes.
-2. If those owners determine the crossing, add the smallest checked plan and separating off-path/on-path rejection or construction cases. If any required fact is absent, stop before inventing a second path AST, a caller-supplied route bit, or an uncertified scope.
+1. Map each checked index side to a `ParallelComputationMarkPlan` derived solely from the target scope and that side's model-owned index-parent scope; lock the asymmetric `[frame]` versus root-prefix discriminator.
+2. Inventory the checked document's existing actual-row enumerators before adding target-instance construction. Reuse an owning function at its second consumer or stop before accepting a caller-supplied environment list.
 
 ## Parked boundaries
 

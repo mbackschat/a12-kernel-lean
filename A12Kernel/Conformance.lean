@@ -114,6 +114,7 @@ import A12Kernel.Conformance.CheckedDocument
 import A12Kernel.Conformance.CheckedIndexPreliminary
 import A12Kernel.Conformance.CheckedIndexColumn
 import A12Kernel.Conformance.ParallelComputationClearing
+import A12Kernel.Conformance.ParallelComputationClearingPlan
 import A12Kernel.Conformance.ParallelPresenceRule
 
 /-! Executable semantic locks built with the default library target. -/

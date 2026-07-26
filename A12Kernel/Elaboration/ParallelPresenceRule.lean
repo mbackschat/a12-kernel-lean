@@ -211,8 +211,7 @@ end CheckedParallelPresenceRule
 private def indexedOperandGroup (model : FlatModel)
     (declaration : FlatFieldDecl) :
     Except ParallelPresenceRuleAssemblyError RepeatableGroupDecl :=
-  match model.repeatableGroups.filter fun group =>
-      group.path.isPrefixOf declaration.groupPath && group.indexField.isSome with
+  match model.indexedAncestorGroups declaration with
   | [] => .error (.missingIndexedOperandGroup declaration.id)
   | [group] => .ok group
   | groups =>
