@@ -6,15 +6,17 @@ import A12Kernel.Proofs.NumericApplication
 namespace A12Kernel
 
 theorem numericComputationDestination_update_same
-    (destination : NumericComputationDestination)
-    (target : FieldId) (state : NumericTargetState) :
+    {Target : Type} [DecidableEq Target]
+    (destination : NumericComputationDestination Target)
+    (target : Target) (state : NumericTargetState) :
     destination.update target state target = state := by
   simp [NumericComputationDestination.update]
 
 /-- One action delegates exactly to the one-target Number transition. -/
 theorem numericComputationDestination_applyOutcome_same
-    (destination : NumericComputationDestination)
-    (target : FieldId) (outcome : NumericTargetOutcome) :
+    {Target : Type} [DecidableEq Target]
+    (destination : NumericComputationDestination Target)
+    (target : Target) (outcome : NumericTargetOutcome) :
     destination.applyOutcome target outcome target =
       outcome.applyTo (destination target) := by
   simp [NumericComputationDestination.applyOutcome,
@@ -22,8 +24,9 @@ theorem numericComputationDestination_applyOutcome_same
 
 /-- One action preserves every other destination projection. -/
 theorem numericComputationDestination_applyOutcome_other
-    (destination : NumericComputationDestination)
-    (target other : FieldId) (outcome : NumericTargetOutcome)
+    {Target : Type} [DecidableEq Target]
+    (destination : NumericComputationDestination Target)
+    (target other : Target) (outcome : NumericTargetOutcome)
     (different : other ≠ target) :
     destination.applyOutcome target outcome other = destination other := by
   simp [NumericComputationDestination.applyOutcome,
@@ -31,30 +34,34 @@ theorem numericComputationDestination_applyOutcome_other
 
 /-- Unchanged successes and residual messages alone cannot mutate the destination. -/
 theorem numericComputationRun_applyTo_noActions
-    (view : NumericComputationRunView ResidualMessage)
-    (destination : NumericComputationDestination)
+    {Target : Type} [DecidableEq Target]
+    (view : NumericComputationRunView ResidualMessage Target)
+    (destination : NumericComputationDestination Target)
     (noChanges : view.withChanges = [])
     (noErrors : view.withErrors = [])
     (noClears : view.cleared = []) :
     view.applyTo destination = .ok destination := by
   simp [NumericComputationRunView.applyTo,
-    NumericComputationRunView.actionTargets, noChanges, noErrors, noClears,
-    FieldId.firstDuplicate?]
+    NumericComputationRunView.firstDuplicateActionTarget?,
+    NumericComputationRunView.firstDuplicateActionTarget?.firstDuplicate?,
+    NumericComputationRunView.actionTargets, noChanges, noErrors, noClears]
 
 /-- Duplicate action targets fail before destination state participates. -/
 theorem numericComputationRun_applyTo_duplicateTarget
-    (view : NumericComputationRunView ResidualMessage)
-    (destination : NumericComputationDestination) (field : FieldId)
-    (duplicate : FieldId.firstDuplicate? view.actionTargets = some field) :
+    {Target : Type} [DecidableEq Target]
+    (view : NumericComputationRunView ResidualMessage Target)
+    (destination : NumericComputationDestination Target) (target : Target)
+    (duplicate : view.firstDuplicateActionTarget? = some target) :
     view.applyTo destination =
-      .error (.duplicateActionTarget field) := by
+      .error (.duplicateActionTarget target) := by
   simp [NumericComputationRunView.applyTo, duplicate]
 
 /-- Residual messages affect result status but never the application plan. -/
 theorem numericComputationRun_residualMessages_doNotAffectApplication
+    {Target : Type} [DecidableEq Target]
     (firstMessages secondMessages : List ResidualMessage)
-    (entries : List SourcedNumericTargetOutcome)
-    (destination : NumericComputationDestination) :
+    (entries : List (SourcedNumericTargetOutcome Target))
+    (destination : NumericComputationDestination Target) :
     (NumericComputationRunView.fromSourceOutcomes
       firstMessages entries).applyTo destination =
     (NumericComputationRunView.fromSourceOutcomes

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ParallelComputationClearingApplication
+import A12Kernel.Elaboration.NumericComputation.RunApplication
 import A12Kernel.Elaboration.ParallelNumericDirectRun
 import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 
@@ -207,6 +208,13 @@ private def directView?
   let preliminary ← preliminaryFor cells
   (checked.executeResult preliminary []).toOption
 
+private def appliedDirectView?
+    (cells : List ClassifiedCellInput)
+    (address : CellAddr) : Option NumericTargetState := do
+  let view ← directView? cells
+  let applied ← view.applyTo applicationDestination |>.toOption
+  pure (applied address)
+
 /- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
 example :
     (checked?.bind fun checked =>
@@ -352,6 +360,24 @@ example :
         []) := by
   native_decide
 
+/- Addressed full-result application preserves an unchanged success even when the destination differs, applies changed successes at their exact addresses, and leaves unrelated addresses untouched. -/
+example :
+    let clean := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 },
+      numericCell [1, 1] { unscaled := 100, scale := 0 },
+      numericCell [1, 2] { unscaled := 7, scale := 0 }
+    ]
+    appliedDirectView? clean { field := 2, path := [1, 1] } =
+        some (.presentValue (.decimal { unscaled := 70, scale := 1 })) ∧
+      appliedDirectView? clean { field := 2, path := [2, 1] } =
+        some (.presentValue (.decimal { unscaled := 0, scale := 0 })) ∧
+      appliedDirectView? clean { field := 2, path := [1, 2] } =
+        some (.presentValue (.decimal { unscaled := 200, scale := 0 })) ∧
+      appliedDirectView? clean { field := 5, path := [1, 1] } =
+        some (.presentValue (.decimal { unscaled := 9, scale := 0 })) := by
+  native_decide
+
 /- An on-path invalid frame contributes no outcome for its marked target, while clean sibling-frame targets still execute and the source-filled invalid target remains solely in the clearing projection. -/
 example :
     let targetInvalid :=
@@ -400,9 +426,12 @@ example :
           source := .absent
         }
       ]
+    let malformed := classified.withAdditionalClears [address]
     parallelNumericDirectClassifiedIndexClear?
-      (classified.withAdditionalClears [address]) [address] =
-        some address := by
+        malformed [address] = some address ∧
+      (match malformed.applyTo applicationDestination with
+      | .error (.duplicateActionTarget duplicate) => duplicate == address
+      | .ok _ => false) = true := by
   native_decide
 
 /- Addressed clearing empties a present destination target in place, leaves an absent covered target absent, and preserves an unrelated address. -/

@@ -7,40 +7,59 @@ This capsule applies an already-classified Number result to an explicitly suppli
 
 namespace A12Kernel
 
-/-- The exact caller-supplied target-state projection needed by the nonrepeatable Number fragment. -/
-abbrev NumericComputationDestination := FieldId → NumericTargetState
+/-- The exact caller-supplied target-state projection needed by one Number result target-key domain. -/
+abbrev NumericComputationDestination (Target : Type := FieldId) :=
+  Target → NumericTargetState
 
 namespace NumericComputationDestination
 
-def update (destination : NumericComputationDestination)
-    (target : FieldId) (state : NumericTargetState) :
-    NumericComputationDestination :=
-  fun field => if field == target then state else destination field
+def update {Target : Type} [DecidableEq Target]
+    (destination : NumericComputationDestination Target)
+    (target : Target) (state : NumericTargetState) :
+    NumericComputationDestination Target :=
+  fun candidate =>
+    if candidate = target then state else destination candidate
 
-def applyOutcome (destination : NumericComputationDestination)
-    (target : FieldId) (outcome : NumericTargetOutcome) :
-    NumericComputationDestination :=
+def applyOutcome {Target : Type} [DecidableEq Target]
+    (destination : NumericComputationDestination Target)
+    (target : Target) (outcome : NumericTargetOutcome) :
+    NumericComputationDestination Target :=
   destination.update target (outcome.applyTo (destination target))
 
 end NumericComputationDestination
 
 namespace NumericComputationRunView
 
-inductive NumericComputationRunApplicationError where
-  | duplicateActionTarget (field : FieldId)
+inductive NumericComputationRunApplicationError
+    (Target : Type := FieldId) where
+  | duplicateActionTarget (target : Target)
   deriving Repr, DecidableEq
 
 /-- Targets consumed by application. Unchanged successes and residual messages are deliberately absent. -/
-def actionTargets (view : NumericComputationRunView ResidualMessage) :
-    List FieldId :=
+def actionTargets {Target : Type}
+    (view : NumericComputationRunView ResidualMessage Target) :
+    List Target :=
   view.cleared ++ view.withErrors.map (·.targetField) ++
     view.withChanges.map (·.targetField)
 
+def firstDuplicateActionTarget? {Target : Type} [DecidableEq Target]
+    (view : NumericComputationRunView ResidualMessage Target) :
+    Option Target :=
+  firstDuplicate? view.actionTargets
+where
+  firstDuplicate? : List Target → Option Target
+    | [] => none
+    | target :: remaining =>
+        if target ∈ remaining then some target
+        else firstDuplicate? remaining
+
 /-- Apply clears, errors, then source-relative changes. Repeated action targets are structural rather than list-order conflicts. -/
-def applyTo (view : NumericComputationRunView ResidualMessage)
-    (destination : NumericComputationDestination) :
-    Except NumericComputationRunApplicationError NumericComputationDestination :=
-  match FieldId.firstDuplicate? view.actionTargets with
+def applyTo {Target : Type} [DecidableEq Target]
+    (view : NumericComputationRunView ResidualMessage Target)
+    (destination : NumericComputationDestination Target) :
+    Except (NumericComputationRunApplicationError Target)
+      (NumericComputationDestination Target) :=
+  match view.firstDuplicateActionTarget? with
   | some duplicate => .error (.duplicateActionTarget duplicate)
   | none =>
       let afterCleared := view.cleared.foldl

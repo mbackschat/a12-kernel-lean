@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30802 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30811 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now builds one addressed V2 result from the same checked preliminary that drives execution. It attaches every exact rich outcome to that document's typed source state, reuses the target-key-parametric Number classifier for successes, source-relative changes, errors, and outcome-derived clears, and adds source-filled post-loop index clears from the same route and input. A checked merge rejects any outcome-classified target also claimed by an index clear; its theorem and concrete malformed low-level counterexample prevent the generic additive-clear helper from acquiring a false provenance guarantee. Collection order remains non-public.
+The isolated repeatable Number run now reaches exact addressed application. Its same-preliminary result classifies successes, source-relative changes, errors, outcome-derived clears, and post-loop index clears at `CellAddr`, with a checked outcome/index-clear coherence gate. The existing Number application owner and all its laws now quantify over the target-key type: scalar `FieldId` and repeatable `CellAddr` consume only clears, rejected attempts, and changed successes through the same one-target transition, preserve unrelated targets, leave unchanged successes and residual messages inert, and reject duplicate action targets before phase order can select a write. The clear-only repeatable fragment remains intentionally more permissive because repeated identical clears are idempotent there.
 
 ## Active semantic unit
 
-Apply the complete addressed Number result to an explicitly supplied `CellAddr → NumericTargetState` destination. Reuse the existing one-address transition and exact addressed clear behavior, consume only clears, errors, and source-relative changes, and reject duplicate action addresses before phase order can select a write.
+Audit the smallest source-backed widening beyond the isolated unguarded direct Number copy. Compare one guarded direct copy with one simple expression over the same checked parallel operand, select only a route whose generated evaluation and post-loop mark timing are source-closed, and reuse the existing checked guard or Number-expression owner rather than adding repeatable execution machinery.
 
 ## Immediate sequence
 
-1. Extend addressed application from clears to the complete result view without reclassifying against the destination.
-2. Prove exact one-address specialization, unrelated-address preservation, no-action identity, duplicate-action rejection, and residual-message inertness.
-3. After the application capsule, audit the next smallest repeatable operation or guard widening against the source-backed parallel route; do not infer multi-computation overlay semantics from the isolated inventory.
+1. Trace guard and simple-expression placement relative to parallel key enumeration, empty/unmatched operands, poison, target checking, and post-loop invalid marking.
+2. Admit one widening only if its checked surface, addressed read policy, and separating cases fit the existing owners within one Tier-1 capsule.
+3. Keep multi-computation repeatable overlays excluded until a second computed target and dependency order are independently source-closed.
 
 ## Parked boundaries
 
