@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ParallelNumericDirectRun
+import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 
 /-! # Checked parallel Number alternative tables
 
@@ -109,6 +109,78 @@ def WellFormed
       alternative.operation.precondition =
         some alternative.precondition ∧
       alternative.operation.route.targetField = table.targetField
+
+private def appendRouteIfNew
+    (routes : List (CheckedParallelNumericTargetRoute model))
+    (candidate : CheckedParallelNumericTargetRoute model) :
+    List (CheckedParallelNumericTargetRoute model) :=
+  if routes.any fun route =>
+      route.groups.rightGroup.path == candidate.groups.rightGroup.path then
+    routes
+  else
+    routes ++ [candidate]
+
+/-- Every expression and guard group from every row participates, deduplicated by the checked indexed-group path while retaining first encounter order. -/
+def operandRoutes
+    (table : CheckedParallelNumericAlternativeTable model) :
+    List (CheckedParallelNumericTargetRoute model) :=
+  table.alternatives.foldl
+    (fun routes alternative =>
+      alternative.operation.operandRoutes.foldl appendRouteIfNew routes) []
+
+/-- Fetch every row's checked carriers at one matched target key without observing any guard or expression. -/
+private def operandCells
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetEnvironment : Env) (key : SemanticIndexKey) :
+    Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
+      (List (FieldId × CheckedCell)) := do
+  let nested ← table.alternatives.mapM fun alternative =>
+    alternative.operation.operandCells preliminary targetEnvironment key
+  pure nested.flatten
+
+private def executeTarget
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model)
+    (target : ParallelNumericTargetCoverage) :
+    Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
+      ParallelNumericDirectOutcome := do
+  let key ← table.first.operation.targetKeyFor preliminary
+    target.environment target.address
+  let cells ← table.operandCells preliminary target.environment key
+  let context : ScalarComputationContext := {
+    read := fun field =>
+      match cells.find? fun cell => cell.1 == field with
+      | some cell => cell.2
+      | none => malformedCheckedCell
+  }
+  pure {
+    address := target.address
+    outcome := ← table.evaluate context
+  }
+
+/-- Execute the table at every actual target whose complete all-row route inventory has clean checked index columns. -/
+def execute
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
+      (List ParallelNumericDirectOutcome) := do
+  let targets ←
+    CheckedIsolatedParallelNumericDirectRun.executableTargets
+      table.first.operation.route.asTargetRoute
+      (table.operandRoutes.drop 1) preliminary
+  targets.mapM (table.executeTarget preliminary)
+
+/-- Execute and classify the table against the same immutable preliminary, including source-filled clears from every statically participating row route. -/
+def executeResult
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model)
+    (residualMessages : List ResidualMessage) :
+    Except ParallelNumericDirectRunResultError
+      (NumericComputationRunView ResidualMessage CellAddr) := do
+  let outcomes ← table.execute preliminary |>.mapError .execution
+  classifyParallelNumericOutcomes preliminary table.operandRoutes
+    residualMessages outcomes
 
 end CheckedParallelNumericAlternativeTable
 

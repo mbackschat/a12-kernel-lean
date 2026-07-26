@@ -35,18 +35,14 @@ def addParallelNumericDirectIndexClears
   | none =>
       .ok (view.withAdditionalClears indexClears)
 
-namespace CheckedIsolatedParallelNumericDirectRun
-
-/-- Execute and classify one isolated repeatable direct Number computation from one checked preliminary input. -/
-def executeResult
-    (checked : CheckedIsolatedParallelNumericDirectRun model)
+/-- Classify addressed outcomes and merge source-filled index clears from one complete static route inventory. Execution remains with the owning singleton or table. -/
+def classifyParallelNumericOutcomes
     (preliminary : CheckedIndexPreliminary model)
-    (residualMessages : List ResidualMessage) :
+    (routes : List (CheckedParallelNumericTargetRoute model))
+    (residualMessages : List ResidualMessage)
+    (outcomes : List ParallelNumericDirectOutcome) :
     Except ParallelNumericDirectRunResultError
       (NumericComputationRunView ResidualMessage CellAddr) := do
-  let outcomes ←
-    checked.execute preliminary
-      |>.mapError .execution
   let entries ← outcomes.mapM fun result => do
     let source ←
       preliminary.base.numericTargetStateAt result.address
@@ -59,12 +55,27 @@ def executeResult
   let classified :=
     NumericComputationRunView.fromSourceOutcomes
       residualMessages entries
-  let indexClearings ← checked.operandRoutes.mapM fun route =>
+  let indexClearings ← routes.mapM fun route =>
     route.clearedSourceTargets preliminary
-      |>.mapError .clearing
+      |>.mapError ParallelNumericDirectRunResultError.clearing
   let indexClears :=
     (indexClearings.flatMap (·.cleared)).eraseDups
   addParallelNumericDirectIndexClears classified indexClears
+
+namespace CheckedIsolatedParallelNumericDirectRun
+
+/-- Execute and classify one isolated repeatable direct Number computation from one checked preliminary input. -/
+def executeResult
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (preliminary : CheckedIndexPreliminary model)
+    (residualMessages : List ResidualMessage) :
+    Except ParallelNumericDirectRunResultError
+      (NumericComputationRunView ResidualMessage CellAddr) := do
+  let outcomes ←
+    checked.execute preliminary
+      |>.mapError .execution
+  classifyParallelNumericOutcomes preliminary
+    checked.operandRoutes residualMessages outcomes
 
 end CheckedIsolatedParallelNumericDirectRun
 

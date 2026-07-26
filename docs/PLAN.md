@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 537 jobs · trust audit **1464 theorem roots; 31086 declarations in 295 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 537 jobs · trust audit **1464 theorem roots; 31096 declarations in 295 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number operation now composes into one checked already-flattened table of at least two guarded rows for the same target. Each row retains its complete checked expression, routes, target policy, and scale-warning directive; the table adds no operation AST. Selection delegates to `ComputationAlternative.selectFirst`: false guards cross row boundaries, while the first selected operation, reached guard poison, or selected arithmetic-domain failure ends the scan. The original optional-guard singleton remains its own owner. Target-row iteration and static route union across every row are deliberately not claimed by this first table capsule.
+The checked repeatable Number table now executes its already-flattened guarded rows over actual target instances. Before selection it deduplicates the complete route inventory from every row, resolves checked index coverage, and suppresses any covered target; only surviving targets fetch carriers and enter the shared first-selected scan. This preserves the static/lazy split across row boundaries: a group referenced only by an unselected row still participates in index validity, while clean columns evaluate guards lazily. Outcome classification and source-filled index clears reuse the same target-key-parametric result owner as the singleton run.
 
 ## Active semantic unit
 
-Execute the checked repeatable Number alternative table over actual target rows while collecting every row's indexed routes before selection.
+Audit and implement the smallest two-target repeatable Number dependency run in one target group, reusing the checked table as its atomic step.
 
 ## Immediate sequence
 
-1. Deduplicate the complete checked route inventory across all rows without changing row order or introducing an n-way join.
-2. Resolve all participating index columns and target coverage before guard selection, then fetch the union of row carriers at the matched key.
-3. Lock that an invalid group used only by an unselected later row still suppresses and clears the target, while clean columns retain first-selected evaluation.
+1. Verify from the generated/runtime route how a later repeatable target reads an earlier computed target at the current instance and whether same-group addressing is the smallest source-closed case.
+2. Certify two unique supplied-order table targets and reject self/forward reads without adding a general graph or heterogeneous scheduler.
+3. Strip both pending target inputs, overlay the earlier rich outcome at its exact addressed instance, and separate accepted visibility, clean no-value, reached poison, and an unread invalid producer.
 
 ## Parked boundaries
 

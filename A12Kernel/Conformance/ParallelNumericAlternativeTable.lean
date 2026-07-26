@@ -79,6 +79,24 @@ private def tableOutcome?
   let table ← (certifyParallelNumericAlternativeTable checked).toOption
   (table.evaluate inputContext).toOption
 
+private def executionTable? :
+    Option (CheckedParallelNumericAlternativeTable model) := do
+  let first ← row? (.fieldFilled 7) input
+  let second ← row? (.fieldFilled 4) plusOne
+  (certifyParallelNumericAlternativeTable [first, second]).toOption
+
+private def outcomes? (cells : List ClassifiedCellInput) :
+    Option (List ParallelNumericDirectOutcome) := do
+  let table ← executionTable?
+  let preliminary ← preliminaryFor cells
+  (table.execute preliminary).toOption
+
+private def result? (cells : List ClassifiedCellInput) :
+    Option (NumericComputationRunView Bool CellAddr) := do
+  let table ← executionTable?
+  let preliminary ← preliminaryFor cells
+  (table.executeResult preliminary []).toOption
+
 /- Construction requires a genuine table and rejects an unguarded or differently targeted row. -/
 example :
     tableError? [row? (.fieldFilled 4) input] =
@@ -122,6 +140,37 @@ example :
         row? (.fieldFilled 4) plusOne]
         (context (checkedNumber (.parsed (.num 10)))) =
         some (.invalidNoValue .calculationValue) := by
+  native_decide
+
+/- Clean columns evaluate the first selected row independently at each target key. -/
+example :
+    let firstSelected :=
+      cleanCells ++ [{
+        address := { field := 7, path := [1] }
+        stored := "yes"
+        raw := .parsed (.str "yes")
+      }]
+    (outcomes? firstSelected).map (·.map (·.outcome)) =
+      some [
+        .accepted { unscaled := 10, scale := 0 },
+        .accepted { unscaled := 21, scale := 0 }
+      ] := by
+  native_decide
+
+/- A group referenced only by the false first row still participates statically: its invalid column suppresses and clears every covered target before the second row can select. -/
+example :
+    let invalidUnselectedRoute :=
+      (cleanCells.filter fun cell =>
+        cell.address != { field := 5, path := [2] }) ++ [
+          numberCell 2 [1] { unscaled := 7, scale := 0 },
+          numberCell 2 [2] { unscaled := 8, scale := 0 }
+        ]
+    (outcomes? invalidUnselectedRoute).map (·.map (·.outcome)) = some [] ∧
+      (result? invalidUnselectedRoute).map (·.cleared) =
+        some [
+          { field := 2, path := [1] },
+          { field := 2, path := [2] }
+        ] := by
   native_decide
 
 end A12Kernel.Conformance.ParallelNumericAlternativeTable

@@ -217,8 +217,8 @@ private def operandCellsForRoute
         } |>.mapError ExecutionError.document
         pure (declaration.id, cell)
 
-/-- Fetch each admitted field through the sole route for its indexed group. -/
-private def operandCells
+/-- Fetch each admitted field through the sole route for its indexed group. Carrier construction remains observation-free so a table can collect all row inputs before first-selected evaluation. -/
+def operandCells
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
     (targetEnvironment : Env) (key : SemanticIndexKey) :
@@ -239,6 +239,21 @@ private def operandCells
     operandCellsForRoute route owned preliminary
       targetEnvironment key
   pure nested.flatten
+
+/-- Resolve the target's checked semantic key at one actual target environment. The exact address is retained only for structural failure reporting. -/
+def targetKeyFor
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetEnvironment : Env) (address : CellAddr) :
+    Except ExecutionError SemanticIndexKey := do
+  let targetColumn ←
+    preliminary.resolveIndexColumn
+      checked.route.groups.leftGroup targetEnvironment
+      |>.mapError (ExecutionError.indexColumn .target)
+  match targetColumn.entries.find? fun entry =>
+      entry.environment == targetEnvironment with
+  | some entry => pure entry.key
+  | none => throw (.missingTargetIndex address)
 
 /-- Evaluate an already-selected checked operation against one addressed carrier context. Guard selection remains with the caller, allowing both the singleton run and a wider first-selected table to share target semantics without inspecting outcomes to recover selection. -/
 def evaluateSelected
@@ -261,16 +276,9 @@ private def executeTarget
     (preliminary : CheckedIndexPreliminary model)
     (targetEnvironment : Env) (address : CellAddr) :
     Except ExecutionError ParallelNumericDirectOutcome := do
-  let targetColumn ←
-    preliminary.resolveIndexColumn
-      checked.route.groups.leftGroup targetEnvironment
-      |>.mapError (ExecutionError.indexColumn .target)
-  let targetEntry ← match targetColumn.entries.find? fun entry =>
-      entry.environment == targetEnvironment with
-    | some entry => pure entry
-    | none => throw (.missingTargetIndex address)
+  let key ← checked.targetKeyFor preliminary targetEnvironment address
   let cells ← checked.operandCells preliminary
-    targetEnvironment targetEntry.key
+    targetEnvironment key
   let context : ScalarComputationContext := {
     read := fun field =>
       match cells.find? fun cell => cell.1 == field with
@@ -287,18 +295,19 @@ private def executeTarget
   | .holds =>
       pure { address, outcome := ← checked.evaluateSelected context }
 
-/-- Execute every existing target row not covered by any participating group's checked invalid-index marks. Collection order is the checked document's private canonicalization. -/
-def execute
-    (checked : CheckedIsolatedParallelNumericDirectRun model)
+/-- Derive executable target coverage from every statically participating route. Additional routes contribute only invalidity; the primary route owns the canonical actual target inventory. -/
+def executableTargets
+    (primary : CheckedParallelNumericTargetRoute model)
+    (additional : List (CheckedParallelNumericTargetRoute model))
     (preliminary : CheckedIndexPreliminary model) :
-    Except ExecutionError (List ParallelNumericDirectOutcome) := do
+    Except ExecutionError (List ParallelNumericTargetCoverage) := do
   let primaryCoverage ←
-    checked.route.targetCoverage preliminary
+    primary.targetCoverage preliminary
       |>.mapError fun
         | .marking side error => .marking side error
         | .targetRows error => .targetRows error
         | .targetEnvironment error => .environment error
-  let additionalCoverage ← checked.additionalRoutes.mapM fun route =>
+  let additionalCoverage ← additional.mapM fun route =>
     route.targetCoverage preliminary
       |>.mapError fun
         | .marking side error => .marking side error
@@ -306,13 +315,19 @@ def execute
         | .targetEnvironment error => .environment error
   let additionallyInvalid :=
     (additionalCoverage.flatten.filter (·.indexInvalid)).map (·.address)
-  let candidates ← primaryCoverage.mapM fun target => do
-    if target.indexInvalid || additionallyInvalid.contains target.address then
-      pure none
-    else
-      some <$> checked.executeTarget preliminary
-        target.environment target.address
-  pure (candidates.filterMap id)
+  pure (primaryCoverage.filter fun target =>
+    !target.indexInvalid &&
+      !additionallyInvalid.contains target.address)
+
+/-- Execute every existing target row not covered by any participating group's checked invalid-index marks. Collection order is the checked document's private canonicalization. -/
+def execute
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except ExecutionError (List ParallelNumericDirectOutcome) := do
+  let targets ← executableTargets checked.route.asTargetRoute
+    checked.additionalRoutes preliminary
+  targets.mapM fun target =>
+    checked.executeTarget preliminary target.environment target.address
 
 end CheckedIsolatedParallelNumericDirectRun
 
