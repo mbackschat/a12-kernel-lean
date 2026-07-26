@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringComputationRunRelation
 import A12Kernel.Proofs.StringComputationRun
+import A12Kernel.Proofs.FieldId
 
 /-! # Checked String-run relation laws
 
@@ -7,14 +8,6 @@ The proof spine derives fixed-order trace soundness from the checked plan's two 
 -/
 
 namespace A12Kernel
-
-theorem fieldId_firstDuplicate_none_iff_nodup (fields : List FieldId) :
-    FieldId.firstDuplicate? fields = none ↔ fields.Nodup := by
-  induction fields with
-  | nil => simp [FieldId.firstDuplicate?]
-  | cons field remaining inductionHypothesis =>
-      by_cases member : field ∈ remaining <;>
-        simp [FieldId.firstDuplicate?, member, inductionHypothesis]
 
 theorem checkedStringComputationTable_excludes_target
     (table : CheckedStringComputationTable model) :

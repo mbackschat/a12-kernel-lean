@@ -38,6 +38,7 @@ import A12Kernel.Proofs.NumericComputationTable
 import A12Kernel.Proofs.NumericComputationRunPlan
 import A12Kernel.Proofs.NumericComputationRun
 import A12Kernel.Proofs.NumericComputationRunRelation
+import A12Kernel.Proofs.FieldId
 import A12Kernel.Proofs.NumericComputationRunResult
 import A12Kernel.Proofs.NumericComputationRunApplication
 import A12Kernel.Proofs.NumericStoredNumber

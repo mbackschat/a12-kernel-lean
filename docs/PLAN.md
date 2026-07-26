@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 516 jobs · trust audit **1430 theorem roots; 29871 declarations in 282 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 517 jobs · trust audit **1433 theorem roots; 29894 declarations in 283 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked scalar Number run now has an independent dependency-enabled successful-step relation. A step chooses any pending plan table whose structurally referenced computed targets have completed, reuses the same atomic evaluator, and labels the transition only with target plus rich outcome. Two independent tables are admitted in either order and yield the same target-indexed outcomes, while fixed execution remains a separate supplied-order function.
+Every successful fixed-order Number run is now proved sound against its independent dependency-enabled step relation. The proof derives pending and enabled premises from the checked plan's unique-target and backward-dependency certificates, reconstructs each step through the shared atomic evaluator, and carries exactly the executor's returned target/outcome list as trace labels. The relation still permits both orders for independent tables, so the theorem is not scheduler equality.
 
 ## Active semantic unit
 
-Complete the Number relation proof spine by deriving a successful fixed-executor trace from the run plan's existing unique-target and backward-dependency certificates. The theorem must carry exactly the executor's returned target/outcome labels without defining the relation as executor equality.
+Reassess the now-symmetric nonrepeatable String/Number run boundaries against [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), the concrete Execute/Analyze/Explain consumers, and the no-duplicate-representation gate. Identify the smallest remaining semantic capsule that can use existing typed owners without requiring structured messages, repeatable activation, or a heterogeneous carrier.
 
 ## Immediate sequence
 
-1. Prove successful suffix execution is admitted by the independent relation and preserves the newly appended rich outcomes as labels.
-2. Derive whole-run trace soundness, run full gates, then reassess the completed typed String/Number boundary. Do not introduce a heterogeneous carrier as part of this proof.
+1. Compare the two completed typed boundaries against SG4's completion gate and record only an actual missing guarantee, not a desired symmetry.
+2. Continue with a bounded existing-owner semantic capsule if one is ready. Stop before a heterogeneous carrier unless a current consumer needs cross-family execution and its representation preserves the two families' distinct contexts, faults, outcomes, source identities, and target states.
 
 ## Parked boundaries
 
