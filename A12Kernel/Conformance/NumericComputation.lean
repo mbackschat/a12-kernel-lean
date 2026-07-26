@@ -3,6 +3,7 @@ import A12Kernel.Conformance.NumericComputation.Core
 import A12Kernel.Conformance.NumericComputation.Temporal
 import A12Kernel.Conformance.NumericComputation.EvaluationOrder
 import A12Kernel.Conformance.NumericComputation.Repeatable
+import A12Kernel.Conformance.NumericComputation.Table
 
 /-! # Numeric computation-expression outcome locks
 

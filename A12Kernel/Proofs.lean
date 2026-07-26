@@ -34,6 +34,7 @@ import A12Kernel.Proofs.NumericRounding
 import A12Kernel.Proofs.NumericArithmetic
 import A12Kernel.Proofs.NumericFillability
 import A12Kernel.Proofs.NumericComputation
+import A12Kernel.Proofs.NumericComputationTable
 import A12Kernel.Proofs.NumericStoredNumber
 import A12Kernel.Proofs.NumericTarget
 import A12Kernel.Proofs.NumericApplication

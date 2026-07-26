@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 499 jobs · trust audit **1401 theorem roots; 29211 declarations in 268 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 503 jobs · trust audit **1404 theorem roots; 29337 declarations in 271 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,19 +21,20 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The String-specific V2 result now applies its already-classified clears, errors, and changed successes to an explicitly supplied exact target-state destination through the existing one-target transition. Successful unchanged values and residual messages are inert, source-relative change is not recomputed against the destination, absent targets are not created merely to clear them, and duplicate action targets fail structurally before application. This closes the nonrepeatable String run → result → exact application composition without constructing a second document, rendering messages, or admitting repeatables or other target families.
+Checked Number computations now compose into one nonempty guarded table without a second expression tree or selector. Every row retains the same already-checked target and complete target policy; clean guard exhaustion becomes numeric no-value, reached guard poison becomes inherited target poison, and the first selected operation alone reaches the existing scalar Numeric evaluator. Repeatable operations retain its explicit context-required fault. The shared model-relative presence-guard certificate moved out of its former String-specific owner when this second semantic consumer arrived.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the eager-prepass/residual-partition certificate: identify the exact static noncomputed operand closure admitted by the current String run, derive its immutable computation-phase invalidity from the checked document, and keep the API-named `formalErrorsInOperands` channel as the pointer-match residual rather than assuming it contains only operand errors. Do not add message rendering, other target families, repeatables, document mutation, or a general evidence/message framework.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is a scalar Number run plan: admit only tables whose checked operations need no repeatable evaluation context, retain unique supplied-order targets, and reject self or forward computed-target reads through both guards and complete Numeric expressions. Do not introduce a heterogeneous run carrier, duplicate the String executor, or admit repeatable activation.
 
 ## Immediate sequence
 
-1. Add the smallest String-run eager-prepass certificate without duplicating checked cells, preliminary-index owners, or message construction.
-2. Add the residual pointer-partition bridge only if the existing structured message owners can represent the admitted error producers without inventing rendered text.
+1. Certify the direct/scalar subset of checked Number tables and its backward-only dependency order.
+2. Audit the exact accepted stored-Number-to-checked-cell dependency conversion before adding the typed Number completion overlay and fixed executor.
 
 ## Parked boundaries
 
+- Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its observable residual pointer partition remains parked until SG10 supplies a common structured computation-message/pointer owner; do not introduce an opaque stand-in.
 - Computation scheduling and state transition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); messages under SG10; Boolean/Confirm configured-token metadata under SG5; future operator-family admission and projections under their owning semantic gaps.
 - Public protocol expansion, semantic shipments, dependencies, SMT integration, and new evidence/process machinery require their existing explicit adoption or approval gates.
 

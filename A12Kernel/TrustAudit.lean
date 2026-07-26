@@ -602,6 +602,9 @@ run_cmd do
 #print axioms A12Kernel.numericTarget_invalidity_ne_inheritedPoison
 #print axioms A12Kernel.numericTargetApplies_iff_applyTo
 #print axioms A12Kernel.numericTargetApplies_deterministic
+#print axioms A12Kernel.numericComputationTable_noMatch
+#print axioms A12Kernel.numericComputationTable_guardPoison
+#print axioms A12Kernel.numericComputationTable_selected
 #print axioms A12Kernel.acceptedNumericTarget_applies_exactly
 #print axioms A12Kernel.noAppliedNumericValue_clears_exactly
 #print axioms A12Kernel.noAppliedNumericValue_preserves_presence
