@@ -195,12 +195,13 @@ def execute
 def executeResult
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
-    (residualMessages : List ResidualMessage) :
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
     Except ParallelNumericDirectRunResultError
-      (NumericComputationRunView ResidualMessage CellAddr) := do
+      (NumericComputationRunView (ComputationFormalMessage Payload) CellAddr) := do
   let outcomes ← table.execute preliminary |>.mapError .execution
   classifyParallelNumericOutcomes preliminary table.operandRoutes
-    residualMessages outcomes
+    payloadAt supplied outcomes
 
 end CheckedParallelNumericAlternativeTable
 

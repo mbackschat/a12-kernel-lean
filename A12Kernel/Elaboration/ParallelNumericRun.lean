@@ -134,17 +134,18 @@ inductive ResultError where
   | classification (error : ParallelNumericDirectRunResultError)
   deriving Repr, DecidableEq
 
-/-- Execute and classify every addressed target family against the same immutable preliminary. The complete per-table route inventory is retained because equal operand groups for different targets own different index clears. Residual-message construction remains outside this boundary. -/
+/-- Execute and classify every addressed target family against the same immutable preliminary. The complete per-table route inventory is retained because equal operand groups for different targets own different index clears. Message payload rendering remains outside this boundary. -/
 def executeResult (plan : CheckedParallelNumericPlan model)
     (preliminary : CheckedIndexPreliminary model)
-    (residualMessages : List ResidualMessage) :
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
     Except ResultError
-      (NumericComputationRunView ResidualMessage CellAddr) :=
+      (NumericComputationRunView (ComputationFormalMessage Payload) CellAddr) :=
   match plan.execute preliminary with
   | .error error => .error (.execution error)
   | .ok outcomes =>
       match classifyParallelNumericOutcomes preliminary plan.operandRoutes
-          residualMessages outcomes with
+          payloadAt supplied outcomes with
       | .error error => .error (.classification error)
       | .ok view => .ok view
 

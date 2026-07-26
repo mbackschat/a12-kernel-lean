@@ -39,10 +39,11 @@ def addParallelNumericDirectIndexClears
 def classifyParallelNumericOutcomes
     (preliminary : CheckedIndexPreliminary model)
     (routes : List (CheckedParallelNumericTargetRoute model))
-    (residualMessages : List ResidualMessage)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
     (outcomes : List ParallelNumericDirectOutcome) :
     Except ParallelNumericDirectRunResultError
-      (NumericComputationRunView ResidualMessage CellAddr) := do
+      (NumericComputationRunView (ComputationFormalMessage Payload) CellAddr) := do
   let entries ← outcomes.mapM fun result => do
     let source ←
       preliminary.base.numericTargetStateAt result.address
@@ -53,8 +54,8 @@ def classifyParallelNumericOutcomes
       source
     }
   let classified :=
-    NumericComputationRunView.fromSourceOutcomes
-      residualMessages entries
+    NumericComputationRunView.fromSourceOutcomesWithMessages
+      ComputationErrorPointer.ofCellAddr payloadAt supplied entries
   let indexClearings ← routes.mapM fun route =>
     route.clearedSourceTargets preliminary
       |>.mapError ParallelNumericDirectRunResultError.clearing
@@ -68,14 +69,15 @@ namespace CheckedIsolatedParallelNumericDirectRun
 def executeResult
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
-    (residualMessages : List ResidualMessage) :
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
     Except ParallelNumericDirectRunResultError
-      (NumericComputationRunView ResidualMessage CellAddr) := do
+      (NumericComputationRunView (ComputationFormalMessage Payload) CellAddr) := do
   let outcomes ←
     checked.execute preliminary
       |>.mapError .execution
   classifyParallelNumericOutcomes preliminary
-    checked.operandRoutes residualMessages outcomes
+    checked.operandRoutes payloadAt supplied outcomes
 
 end CheckedIsolatedParallelNumericDirectRun
 

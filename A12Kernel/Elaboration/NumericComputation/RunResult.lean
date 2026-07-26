@@ -1,9 +1,10 @@
 import A12Kernel.Elaboration.NumericComputation.Run
 import A12Kernel.Elaboration.NumericComputation.SourceTarget
+import A12Kernel.Semantics.ComputationMessage
 
 /-! # Number-specific V2 computation result projection
 
-This capsule classifies rich Number outcomes paired with their immutable source state. The classification is shared by scalar field IDs and exact repeatable addresses; attaching scalar outcomes to source state remains a checked-document operation below. It preserves successful unchanged values, the typed source-relative changed subset, payloadful target errors, source-filled clearing, and an independently supplied residual-message channel. Missing typed Number source identity is structural. Residual-message construction, application, and validation remain separate. -/
+This capsule classifies rich Number outcomes paired with their immutable source state. The classification is shared by scalar field IDs and exact repeatable addresses; attaching scalar outcomes to source state remains a checked-document operation below. It preserves successful unchanged values, the typed source-relative changed subset, payloadful target errors, source-filled clearing, and the exact-pointer residual-message channel. Missing typed Number source identity is structural. Message rendering, application, and validation remain separate. -/
 
 namespace A12Kernel
 
@@ -33,6 +34,11 @@ namespace NumericTargetOutcome
 def hasComputedInstance : NumericTargetOutcome → Bool
   | .accepted _ | .rejected _ _ => true
   | .noValue | .invalidNoValue _ | .inheritedPoison _ => false
+
+/-- Whether this outcome emits the stable value-less computed-target error. Attempted target rejections have computed instances; clean no-value and inherited poison emit no message. -/
+def emitsValuelessTargetError : NumericTargetOutcome → Bool
+  | .invalidNoValue _ => true
+  | .noValue | .accepted _ | .rejected _ _ | .inheritedPoison _ => false
 
 end NumericTargetOutcome
 
@@ -73,7 +79,8 @@ def shouldClear {Target : Type}
     (entry : SourcedNumericTargetOutcome Target) : Bool :=
   !entry.outcome.hasComputedInstance && entry.source.sourceIdentity.isSome
 
-def fromSourceOutcomes {Target : Type}
+/-- Project outcomes after the caller has already supplied the exact residual partition. Public run paths use `fromSourceOutcomesWithMessages`; this lower-level owner exists for projection and application laws that do not construct messages. -/
+def fromPartitionedSourceOutcomes {Target : Type}
     (residualMessages : List ResidualMessage)
     (entries : List (SourcedNumericTargetOutcome Target)) :
     NumericComputationRunView ResidualMessage Target :=
@@ -84,6 +91,46 @@ def fromSourceOutcomes {Target : Type}
     cleared := (entries.filter shouldClear).map (·.targetField)
     formalErrorsInOperands := residualMessages
   }
+
+/-- Derive the run's value-less Number-target messages without rendering their payload. -/
+def numericValuelessTargetErrors {Target Payload : Type}
+    (pointerAt : Target → ComputationErrorPointer)
+    (payloadAt : Target → Payload)
+    (entries : List (SourcedNumericTargetOutcome Target)) :
+    List (ComputationFormalMessage Payload) :=
+  entries.filterMap fun entry =>
+    if entry.outcome.emitsValuelessTargetError then
+      some {
+        pointer := pointerAt entry.targetField
+        errorCode := berechnungsWertFehler
+        messageType := .value
+        payload := payloadAt entry.targetField
+      }
+    else
+      none
+
+/-- Exact pointers for outcomes that produced computed-data instances. -/
+def computedInstancePointers {Target : Type}
+    (pointerAt : Target → ComputationErrorPointer)
+    (entries : List (SourcedNumericTargetOutcome Target)) :
+    List ComputationErrorPointer :=
+  entries.filterMap fun entry =>
+    if entry.outcome.hasComputedInstance then
+      some (pointerAt entry.targetField)
+    else
+      none
+
+/-- Build the faithful Number result from eager supplied messages plus run-derived value-less target errors. Exact computed-instance pointers absorb matching messages; every unmatched message remains residual. -/
+def fromSourceOutcomesWithMessages {Target Payload : Type}
+    (pointerAt : Target → ComputationErrorPointer)
+    (payloadAt : Target → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
+    (entries : List (SourcedNumericTargetOutcome Target)) :
+    NumericComputationRunView (ComputationFormalMessage Payload) Target :=
+  let computedInstances := computedInstancePointers pointerAt entries
+  let messages := supplied ++ numericValuelessTargetErrors pointerAt payloadAt entries
+  let partition := partitionComputationMessages computedInstances messages
+  fromPartitionedSourceOutcomes partition.residual entries
 
 /-- Add independently classified clears while preserving every outcome-derived projection. The caller remains responsible for proving that its producer cannot also emit a computed instance at an added target. -/
 def withAdditionalClears {Target : Type}
@@ -100,13 +147,17 @@ def withAdditionalClears {Target : Type}
 
 /-- Attach immutable source state to each rich run outcome, then build the public projection. -/
 def fromOutcomes (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage)
+    (payloadAt : FieldId → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
     (outcomes : List (FieldId × NumericTargetOutcome)) :
-    Except NumericSourceTargetError (NumericComputationRunView ResidualMessage) := do
+    Except NumericSourceTargetError
+      (NumericComputationRunView (ComputationFormalMessage Payload)) := do
   let entries ← outcomes.mapM fun (targetField, outcome) => do
     let source ← input.numericTargetState targetField
     pure { targetField, outcome, source }
-  pure (fromSourceOutcomes residualMessages entries)
+  pure (fromSourceOutcomesWithMessages
+    (fun field => ComputationErrorPointer.ofCellAddr { field, path := [] })
+    payloadAt supplied entries)
 
 /-- The V2 error predicate observes exactly the computed-instance and residual-message channels. -/
 def noErrorOccurred {Target : Type}
@@ -133,11 +184,12 @@ namespace CheckedNumericComputationRun
 /-- Execute the checked run and classify its outcomes relative to that same immutable source document. -/
 def executeResult (run : CheckedNumericComputationRun model)
     (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage) :
+    (payloadAt : FieldId → Payload)
+    (supplied : List (ComputationFormalMessage Payload)) :
     Except NumericComputationRunResultFault
-      (NumericComputationRunView ResidualMessage) := do
+      (NumericComputationRunView (ComputationFormalMessage Payload)) := do
   let outcomes ← (run.execute input).mapError .execution
-  (NumericComputationRunView.fromOutcomes input residualMessages outcomes).mapError
+  (NumericComputationRunView.fromOutcomes input payloadAt supplied outcomes).mapError
     .sourceTarget
 
 end CheckedNumericComputationRun

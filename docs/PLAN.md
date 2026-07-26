@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1478 theorem roots; 31418 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1481 theorem roots; 31453 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Integrate the completed exact computation-message pointer partition into every scalar and repeatable Number result entry point, repairing the measured value-less target-error divergence while keeping payloads already rendered and parametric.
+Open the bounded SG6 dynamic-time packet for `DifferenceInHours`, `DifferenceInMinutes`, and `DifferenceInSeconds`, then close the smallest checked `Now` operand route that retains `World` as an explicit evaluation input without duplicating the existing temporal expression tree.
 
 ## Immediate sequence
 
-1. Replace every bare-residual Number result constructor with the checked pointer-partition entry, including scalar, isolated repeatable, table, and finite-plan execution.
-2. Derive one residual `berechnungsWertFehler` for each Number `.invalidNoValue`, retain supplied eager-prepass messages, and leave accepted/rejected/no-value/inherited-poison behavior unchanged.
-3. Lock value-less residual plus clearing, poison/no-value no-message non-laws, the corrected `noErrorOccurred` predicate, and permutation-stable public collections without importing validation rendering.
+1. Inventory the existing `Now`, sub-day difference, `World`, checked numeric-source, computation, and generated-validation owners; verify the source-defined evaluation point and legal authoring shapes without reopening already-closed exact-instant arithmetic.
+2. Run the dangerous discriminator first: the same checked expression under two `World` values must retain different exact instants, while two Berlin overlap values with one wall label remain distinguishable. Reject any design that captures the clock during checking or stores only wall components.
+3. If the existing owners admit a narrow composition, add one explicit-world checked `Now` route through the shared sub-day source and its existing Number computation/generated-validation consumers, with a static rejection or honest gap for every unsupported context. Otherwise stop at the exact missing representation fact rather than adding a temporal-only duplicate AST.
 
 ## Parked boundaries
 
-- Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its supplied messages enter the SG4 partition directly; no eager-prepass reconstruction or SG10 rendering belongs in the structural capsule.
+- Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its supplied messages enter the completed SG4 partition directly; no eager-prepass reconstruction or SG10 rendering belongs in that structural boundary.
 - Computation scheduling, state transition, and the computation-result pointer partition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); message rendering remains under SG10; Boolean/Confirm configured-token metadata under SG5; future operator-family admission and projections under their owning semantic gaps.
 - Public protocol expansion, semantic shipments, dependencies, SMT integration, and new evidence/process machinery require their existing explicit adoption or approval gates.
 

@@ -92,14 +92,16 @@ theorem parallelNumericPlan_executeTables_append
 theorem parallelNumericPlan_executeResult_classifies
     (plan : CheckedParallelNumericPlan model)
     (preliminary : CheckedIndexPreliminary model)
-    (residualMessages : List ResidualMessage)
+    (payloadAt : CellAddr → Payload)
+    (supplied : List (ComputationFormalMessage Payload))
     (outcomes : List ParallelNumericDirectOutcome)
-    (view : NumericComputationRunView ResidualMessage CellAddr)
+    (view :
+      NumericComputationRunView (ComputationFormalMessage Payload) CellAddr)
     (executed : plan.execute preliminary = .ok outcomes)
     (classified :
       classifyParallelNumericOutcomes preliminary plan.operandRoutes
-        residualMessages outcomes = .ok view) :
-    plan.executeResult preliminary residualMessages = .ok view := by
+        payloadAt supplied outcomes = .ok view) :
+    plan.executeResult preliminary payloadAt supplied = .ok view := by
   simp [CheckedParallelNumericPlan.executeResult, executed, classified]
 
 end A12Kernel

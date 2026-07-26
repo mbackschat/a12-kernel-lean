@@ -29,10 +29,11 @@ private def outcomes? (cells : List ClassifiedCellInput) :
   (checked.execute preliminary).toOption
 
 private def result? (cells : List ClassifiedCellInput) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let checked ← guarded?
   let preliminary ← preliminaryFor cells
-  (checked.executeResult preliminary []).toOption
+  (checked.executeResult preliminary (fun _ => true) []).toOption
 
 /- The raw String leaf contributes one kind-neutral checked route without changing the Number operation payload. -/
 example :

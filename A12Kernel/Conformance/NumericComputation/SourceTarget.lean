@@ -93,7 +93,7 @@ example :
     let source : NumericTargetState :=
       .presentValue (.decimal { unscaled := 7, scale := 0 })
     let view : NumericComputationRunView Bool CellAddr :=
-      NumericComputationRunView.fromSourceOutcomes [] [
+      NumericComputationRunView.fromPartitionedSourceOutcomes [] [
         {
           targetField := address
           outcome := .accepted { unscaled := 700, scale := 2 }
@@ -119,14 +119,18 @@ private def sourceWith (stored : String) (raw : RawCell)
     }] }
 
 private def viewResult? (source : DocumentData)
-    (outcome : NumericTargetOutcome) (residual : List Bool := []) :
-    Option (Except NumericSourceTargetError (NumericComputationRunView Bool)) := do
+    (outcome : NumericTargetOutcome)
+    (supplied : List (ComputationFormalMessage Bool) := []) :
+    Option (Except NumericSourceTargetError
+      (NumericComputationRunView (ComputationFormalMessage Bool))) := do
   let checked ← checked? source
-  pure (NumericComputationRunView.fromOutcomes checked residual [(1, outcome)])
+  pure (NumericComputationRunView.fromOutcomes checked
+    (fun _ => true) supplied [(1, outcome)])
 
 private def view? (source : DocumentData) (outcome : NumericTargetOutcome)
-    (residual : List Bool := []) : Option (NumericComputationRunView Bool) :=
-  (viewResult? source outcome residual).bind Except.toOption
+    (supplied : List (ComputationFormalMessage Bool) := []) :
+    Option (NumericComputationRunView (ComputationFormalMessage Bool)) :=
+  (viewResult? source outcome supplied).bind Except.toOption
 
 private def destination : NumericComputationDestination
   | 1 => .presentValue (.decimal { unscaled := 9, scale := 0 })
@@ -139,7 +143,8 @@ private def applied? (source : DocumentData) (outcome : NumericTargetOutcome)
   let applied ← view.applyTo destination |>.toOption
   pure (applied field)
 
-private def duplicateApplication? (view : NumericComputationRunView Bool) :
+private def duplicateApplication?
+    (view : NumericComputationRunView ResidualMessage) :
     Option FieldId :=
   match view.applyTo destination with
   | .error (.duplicateActionTarget field) => some field
@@ -203,24 +208,40 @@ example :
         some [⟨1, { unscaled := 700, scale := 2 }⟩] := by
   native_decide
 
-/- Target rejection owns the computed-error instance; no-value classes clear only a filled source, and residual messages independently control the error predicate. -/
+/- Target rejection owns a computed-error instance, value-less target invalidity derives a residual error, and clean no-value or inherited poison can clear without manufacturing one. -/
 example :
     (do
       let view ← view? (sourceWith "7" (.parsed (.num 7))
         (some (.decimal { unscaled := 7, scale := 0 })))
-        (.rejected { unscaled := 8, scale := 0 } .aboveMaximum)
-      pure (view.withErrors, view.cleared)) =
-        some ([⟨1, { unscaled := 8, scale := 0 }, .aboveMaximum⟩], []) ∧
+        (.rejected { unscaled := 8, scale := 0 } .aboveMaximum) [{
+          pointer := ComputationErrorPointer.ofCellAddr { field := 1, path := [] }
+          errorCode := "target-error"
+          messageType := .value
+          payload := true
+        }]
+      pure (view.withErrors, view.cleared,
+        view.formalErrorsInOperands)) =
+        some ([⟨1, { unscaled := 8, scale := 0 }, .aboveMaximum⟩],
+          [], []) ∧
     (do
       let view ← view? (sourceWith "7" (.parsed (.num 7))
         (some (.decimal { unscaled := 7, scale := 0 })))
-        (.invalidNoValue .calculationValue) [true]
-      pure (view.cleared, view.formalErrorsInOperands, view.noErrorOccurred)) =
-        some ([1], [true], false) ∧
+        (.invalidNoValue .calculationValue)
+      pure (view.cleared,
+        view.formalErrorsInOperands.map (·.errorCode),
+        view.noErrorOccurred)) =
+        some ([1], [berechnungsWertFehler], false) ∧
     (do
-      let view ← view? (sourceWith "" .presentEmpty none)
+      let view ← view? (sourceWith "7" (.parsed (.num 7))
+        (some (.decimal { unscaled := 7, scale := 0 }))) .noValue
+      pure (view.cleared, view.formalErrorsInOperands,
+        view.noErrorOccurred)) = some ([1], [], true) ∧
+    (do
+      let view ← view? (sourceWith "7" (.parsed (.num 7))
+        (some (.decimal { unscaled := 7, scale := 0 })))
         (.inheritedPoison .computedDependency)
-      pure view.cleared) = some [] := by
+      pure (view.cleared, view.formalErrorsInOperands,
+        view.noErrorOccurred)) = some ([1], [], true) := by
   native_decide
 
 /- A filled source without typed comparison identity fails before public classification. -/
@@ -260,7 +281,8 @@ example :
 example :
     let source : NumericTargetState :=
       .presentValue (.decimal { unscaled := 1, scale := 0 })
-    let view := NumericComputationRunView.fromSourceOutcomes ([] : List Bool) [
+    let view := NumericComputationRunView.fromPartitionedSourceOutcomes
+      ([] : List Bool) [
       ⟨1, .rejected { unscaled := 2, scale := 0 } .aboveMaximum, source⟩,
       ⟨1, .accepted { unscaled := 3, scale := 0 }, source⟩
     ]

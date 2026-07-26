@@ -237,10 +237,11 @@ private def directOutcomes?
 
 private def directView?
     (cells : List ClassifiedCellInput) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let checked ← directChecked?
   let preliminary ← preliminaryFor cells
-  (checked.executeResult preliminary []).toOption
+  (checked.executeResult preliminary (fun _ => true) []).toOption
 
 private def guardedDirectOutcomes?
     (cells : List ClassifiedCellInput) :
@@ -265,10 +266,11 @@ private def wrappedExpressionOutcomes?
 
 private def guardedDirectView?
     (cells : List ClassifiedCellInput) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let checked ← guardedDirectChecked?
   let preliminary ← preliminaryFor cells
-  (checked.executeResult preliminary []).toOption
+  (checked.executeResult preliminary (fun _ => true) []).toOption
 
 private def appliedDirectView?
     (cells : List ClassifiedCellInput)
@@ -564,7 +566,8 @@ example :
 example :
     let address : CellAddr := { field := 2, path := [1, 1] }
     let classified :=
-      NumericComputationRunView.fromSourceOutcomes ([] : List Bool) [
+      NumericComputationRunView.fromPartitionedSourceOutcomes
+        ([] : List Bool) [
         {
           targetField := address
           outcome := .accepted { unscaled := 1, scale := 0 }

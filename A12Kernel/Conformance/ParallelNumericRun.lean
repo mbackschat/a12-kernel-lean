@@ -98,10 +98,11 @@ private def outcomes?
 private def result?
     (checked : Option (CheckedParallelNumericPlan model))
     (cells : List ClassifiedCellInput) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let run ← checked
   let preliminary ← preliminaryFor cells
-  (run.executeResult preliminary []).toOption
+  (run.executeResult preliminary (fun _ => true) []).toOption
 
 private def computedNumberCell (field : FieldId) (path : List Nat)
     (stored : StoredNumber) : ClassifiedCellInput := {
@@ -152,12 +153,13 @@ private def resultWithRoutes?
     (routes :
       CheckedParallelNumericPlan model →
         List (CheckedParallelNumericTargetRoute model)) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let plan ← checked
   let preliminary ← preliminaryFor cells
   let outcomes ← (plan.execute preliminary).toOption
-  (classifyParallelNumericOutcomes preliminary (routes plan) []
-    outcomes).toOption
+  (classifyParallelNumericOutcomes preliminary (routes plan)
+    (fun _ => true) [] outcomes).toOption
 
 /- Duplicate targets and reads of later supplied targets fail structurally; independent tables need no artificial dependency edge. -/
 example :

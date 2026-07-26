@@ -92,10 +92,11 @@ private def outcomes? (cells : List ClassifiedCellInput) :
   (table.execute preliminary).toOption
 
 private def result? (cells : List ClassifiedCellInput) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let table ← executionTable?
   let preliminary ← preliminaryFor cells
-  (table.executeResult preliminary []).toOption
+  (table.executeResult preliminary (fun _ => true) []).toOption
 
 /- Construction requires a genuine table and rejects an unguarded or differently targeted row. -/
 example :

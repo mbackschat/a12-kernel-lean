@@ -180,10 +180,11 @@ private def outcomes? (cells : List ClassifiedCellInput) :
   (checked.execute preliminary).toOption
 
 private def result? (cells : List ClassifiedCellInput) :
-    Option (NumericComputationRunView Bool CellAddr) := do
+    Option
+      (NumericComputationRunView (ComputationFormalMessage Bool) CellAddr) := do
   let checked ← checked?
   let preliminary ← preliminaryFor cells
-  (checked.executeResult preliminary []).toOption
+  (checked.executeResult preliminary (fun _ => true) []).toOption
 
 /- The two expression groups retain exactly one route each: the anchor plus one additional route. -/
 example :

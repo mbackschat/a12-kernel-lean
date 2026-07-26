@@ -62,9 +62,9 @@ theorem numericComputationRun_residualMessages_doNotAffectApplication
     (firstMessages secondMessages : List ResidualMessage)
     (entries : List (SourcedNumericTargetOutcome Target))
     (destination : NumericComputationDestination Target) :
-    (NumericComputationRunView.fromSourceOutcomes
+    (NumericComputationRunView.fromPartitionedSourceOutcomes
       firstMessages entries).applyTo destination =
-    (NumericComputationRunView.fromSourceOutcomes
+    (NumericComputationRunView.fromPartitionedSourceOutcomes
       secondMessages entries).applyTo destination := by
   rfl
 
