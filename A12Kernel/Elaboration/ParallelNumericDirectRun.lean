@@ -9,9 +9,22 @@ namespace A12Kernel
 
 inductive ParallelNumericDirectPlanError where
   | route (error : ParallelComputationPlanError)
+  | guardNotLimitedToOperand
   | operandFrameOutsideTarget (scope : List RepeatableLevel)
   | operationScaleMismatch (targetScale operandScale : Nat)
   deriving Repr, DecidableEq
+
+/-- Whether an optional bounded guard reads only the route's already-joined operand. -/
+def parallelNumericDirectGuardAdmitted
+    (operand : FieldId) : Option ComputationCondition → Bool
+  | none => true
+  | some condition => referencesOnly condition
+where
+  referencesOnly : ComputationCondition → Bool
+    | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
+        field == operand
+    | .and left right | .or left right =>
+        referencesOnly left && referencesOnly right
 
 /-- One exact target-addressed rich outcome from the direct parallel computation. -/
 structure ParallelNumericDirectOutcome where
@@ -23,6 +36,10 @@ structure ParallelNumericDirectOutcome where
 structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   private mk ::
   route : CheckedParallelNumericClearingPlan model
+  precondition : Option ComputationCondition
+  guardAdmitted :
+    parallelNumericDirectGuardAdmitted
+      route.operandDeclaration.id precondition = true
   operandScopeAvailable : (match route.groups.outerScopePlan with
       | .framed .right _ _ => false
       | .common _ | .framed .left _ _ => true) = true
@@ -36,6 +53,8 @@ namespace CheckedIsolatedParallelNumericDirectRun
 def WellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) : Prop :=
   checked.route.WellFormed ∧
+    parallelNumericDirectGuardAdmitted
+      checked.route.operandDeclaration.id checked.precondition = true ∧
     (match checked.route.groups.outerScopePlan with
       | .framed .right _ _ => false
       | .common _ | .framed .left _ _ => true) = true ∧
@@ -93,12 +112,20 @@ private def executeTarget
   let cell ← checked.operandCell preliminary
     targetEnvironment targetEntry.key
   let context : ScalarComputationContext := { read := fun _ => cell }
-  let value ←
-    context.readNumeric checked.route.operandDeclaration
-      |>.mapError .numeric
-  match checked.route.targetPolicy.check value with
-  | .supported outcome => pure { address, outcome }
-  | .unsupported fault => throw (.unsupportedTarget fault)
+  let guardResult := match checked.precondition with
+    | none => ComputationConditionResult.holds
+    | some guard => guard.eval context
+  match guardResult with
+  | .notTrue => pure { address, outcome := .noValue }
+  | .poison cause =>
+      pure { address, outcome := .inheritedPoison cause }
+  | .holds =>
+      let value ←
+        context.readNumeric checked.route.operandDeclaration
+          |>.mapError .numeric
+      match checked.route.targetPolicy.check value with
+      | .supported outcome => pure { address, outcome }
+      | .unsupported fault => throw (.unsupportedTarget fault)
 
 /-- Execute every existing target row not covered by either side's checked invalid-index marks. Collection order is the checked document's private canonicalization. -/
 def execute
@@ -121,31 +148,46 @@ def execute
 
 end CheckedIsolatedParallelNumericDirectRun
 
-/-- Check one unguarded direct Number copy without reimplementing the parallel route or the shared static scale gate. -/
-def checkIsolatedParallelNumericDirectRun (model : FlatModel)
+/-- Check one optionally guarded direct Number copy without reimplementing the parallel route or the shared static scale gate. Every guard leaf must reuse the already-joined operand read. -/
+def checkIsolatedParallelNumericDirectRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
-    (operandReference : SurfaceFieldPath) :
+    (operandReference : SurfaceFieldPath)
+    (precondition : Option ComputationCondition) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) := do
   let route ←
     checkParallelNumericComputationClearingPlan
       model declaringGroup targetField operandReference
       |>.mapError .route
-  if scopeAvailable :
-      (match route.groups.outerScopePlan with
-        | .framed .right _ _ => false
-        | .common _ | .framed .left _ _ => true) = true then
-    if admitted :
-        exactNumericScaleComparisonAllowed
-          (.field route.target.info.scale)
-          (.field route.operand.info.scale) = true then
-      pure (CheckedIsolatedParallelNumericDirectRun.mk
-        route scopeAvailable admitted)
+  if guardAdmitted :
+      parallelNumericDirectGuardAdmitted
+        route.operandDeclaration.id precondition = true then
+    if scopeAvailable :
+        (match route.groups.outerScopePlan with
+          | .framed .right _ _ => false
+          | .common _ | .framed .left _ _ => true) = true then
+      if admitted :
+          exactNumericScaleComparisonAllowed
+            (.field route.target.info.scale)
+            (.field route.operand.info.scale) = true then
+        pure (CheckedIsolatedParallelNumericDirectRun.mk
+          route precondition guardAdmitted scopeAvailable admitted)
+      else
+        throw (.operationScaleMismatch
+          route.target.info.scale route.operand.info.scale)
     else
-      throw (.operationScaleMismatch
-        route.target.info.scale route.operand.info.scale)
+      throw (.operandFrameOutsideTarget
+        (model.repeatableScopeForGroupPath route.groups.rightGroup.path))
   else
-    throw (.operandFrameOutsideTarget
-      (model.repeatableScopeForGroupPath route.groups.rightGroup.path))
+    throw .guardNotLimitedToOperand
+
+/-- Check the original unguarded direct-copy fragment. -/
+def checkIsolatedParallelNumericDirectRun (model : FlatModel)
+    (declaringGroup : GroupPath) (targetField : FieldId)
+    (operandReference : SurfaceFieldPath) :
+    Except ParallelNumericDirectPlanError
+      (CheckedIsolatedParallelNumericDirectRun model) :=
+  checkIsolatedParallelNumericDirectRunWithGuard model declaringGroup
+    targetField operandReference none
 
 end A12Kernel

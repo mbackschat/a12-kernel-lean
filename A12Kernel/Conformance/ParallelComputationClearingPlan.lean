@@ -81,6 +81,11 @@ private def directChecked? :=
   (checkIsolatedParallelNumericDirectRun
     model ["Plan"] 2 operandPath).toOption
 
+private def guardedDirectChecked? :=
+  (checkIsolatedParallelNumericDirectRunWithGuard
+    model ["Plan"] 2 operandPath
+      (some (.fieldFilled 4))).toOption
+
 private def world : World := { now := { epochMillis := 0 } }
 
 private def rows : List RowAddr := [
@@ -208,6 +213,20 @@ private def directView?
   let preliminary ← preliminaryFor cells
   (checked.executeResult preliminary []).toOption
 
+private def guardedDirectOutcomes?
+    (cells : List ClassifiedCellInput) :
+    Option (List ParallelNumericDirectOutcome) := do
+  let checked ← guardedDirectChecked?
+  let preliminary ← preliminaryFor cells
+  (checked.execute preliminary).toOption
+
+private def guardedDirectView?
+    (cells : List ClassifiedCellInput) :
+    Option (NumericComputationRunView Bool CellAddr) := do
+  let checked ← guardedDirectChecked?
+  let preliminary ← preliminaryFor cells
+  (checked.executeResult preliminary []).toOption
+
 private def appliedDirectView?
     (cells : List ClassifiedCellInput)
     (address : CellAddr) : Option NumericTargetState := do
@@ -326,6 +345,33 @@ example :
           .accepted { unscaled := 100, scale := 0 }⟩,
         ⟨{ field := 2, path := [2, 1] },
           .accepted { unscaled := 0, scale := 0 }⟩,
+        ⟨{ field := 2, path := [1, 2] },
+          .accepted { unscaled := 200, scale := 0 }⟩
+      ] := by
+  native_decide
+
+/- A clean false guard is an outcome-derived no-value, not an index failure: a stale source at that exact target enters the ordinary result clear collection. -/
+example :
+    let source := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 },
+      numericCell [2, 1] { unscaled := 8, scale := 0 }
+    ]
+    (guardedDirectView? source).map (·.cleared) =
+      some [{ field := 2, path := [2, 1] }] := by
+  native_decide
+
+/- A guard over the joined operand runs before the direct copy: matching filled rows compute, while a clean unmatched operand selects no operation and retains an exact no-value outcome. -/
+example :
+    let clean := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 }
+    ]
+    guardedDirectOutcomes? clean =
+      some [
+        ⟨{ field := 2, path := [1, 1] },
+          .accepted { unscaled := 100, scale := 0 }⟩,
+        ⟨{ field := 2, path := [2, 1] }, .noValue⟩,
         ⟨{ field := 2, path := [1, 2] },
           .accepted { unscaled := 200, scale := 0 }⟩
       ] := by
@@ -509,6 +555,15 @@ example :
     | .error error => some error
     | .ok _ => none) =
       some (.operationScaleMismatch 0 1) := by
+  native_decide
+
+/- The bounded guarded route cannot silently read another repeatable field without a second checked addressed-read plan. -/
+example :
+    (match checkIsolatedParallelNumericDirectRunWithGuard
+        model ["Plan"] 2 operandPath (some (.fieldFilled 5)) with
+    | .error error => some error
+    | .ok _ => none) =
+      some .guardNotLimitedToOperand := by
   native_decide
 
 end A12Kernel.Conformance.ParallelComputationClearingPlan

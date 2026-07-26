@@ -9,6 +9,7 @@ theorem checkedIsolatedParallelNumericDirectRun_wellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) :
     checked.WellFormed :=
   ⟨checkedParallelNumericClearingPlan_wellFormed checked.route,
-    checked.operandScopeAvailable, checked.operationScaleAdmitted⟩
+    checked.guardAdmitted, checked.operandScopeAvailable,
+    checked.operationScaleAdmitted⟩
 
 end A12Kernel

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30811 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30831 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now reaches exact addressed application. Its same-preliminary result classifies successes, source-relative changes, errors, outcome-derived clears, and post-loop index clears at `CellAddr`, with a checked outcome/index-clear coherence gate. The existing Number application owner and all its laws now quantify over the target-key type: scalar `FieldId` and repeatable `CellAddr` consume only clears, rejected attempts, and changed successes through the same one-target transition, preserve unrelated targets, leave unchanged successes and residual messages inert, and reject duplicate action targets before phase order can select a write. The clear-only repeatable fragment remains intentionally more permissive because repeated identical clears are idempotent there.
+The isolated repeatable Number run now admits an optional presence guard whose every leaf is certified to read the already-joined operand. Guard evaluation precedes the direct copy inside each uncovered target instance: holding evaluates the operation, clean false emits an exact no-value outcome, and reached poison emits inherited poison. A false guard therefore clears a stale source through ordinary outcome classification, while invalid index columns still suppress the instance and use post-loop clearing. A guard naming any other field fails before execution because that would require a second addressed-read plan. Exact addressed result application remains closed through the target-key-parametric Number application owner.
 
 ## Active semantic unit
 
-Audit the smallest source-backed widening beyond the isolated unguarded direct Number copy. Compare one guarded direct copy with one simple expression over the same checked parallel operand, select only a route whose generated evaluation and post-loop mark timing are source-closed, and reuse the existing checked guard or Number-expression owner rather than adding repeatable execution machinery.
+Audit one simple Number expression over the same checked parallel operand. Determine the smallest existing numeric-expression payload that can retain the route-owned repeatable operand without constructing a second AST or bypassing the established scale, target-policy, and addressed-read owners.
 
 ## Immediate sequence
 
-1. Trace guard and simple-expression placement relative to parallel key enumeration, empty/unmatched operands, poison, target checking, and post-loop invalid marking.
-2. Admit one widening only if its checked surface, addressed read policy, and separating cases fit the existing owners within one Tier-1 capsule.
-3. Keep multi-computation repeatable overlays excluded until a second computed target and dependency order are independently source-closed.
+1. Inventory the complete checked Number expression's current nonrepeatable target restriction and identify whether its addressed evaluator can be specialized without duplicating lowering or target policy.
+2. Admit one expression widening only if the checked route remains the sole owner of the joined operand and index disposition.
+3. Keep broader guard fields and multi-computation repeatable overlays excluded until their additional addressed reads and dependency order are independently source-closed.
 
 ## Parked boundaries
 
