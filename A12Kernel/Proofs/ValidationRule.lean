@@ -274,18 +274,33 @@ theorem checkedValidationRule_partial_repeatable_filtered_skips
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
     filtered] <;> rfl
 
-/-- At the public one-row boundary, error-instance nonrelevance is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
-theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
+/-- Once the call-local preliminary view is built, the unfiltered convenience boundary delegates to its prepared evaluator without rebuilding relevance inside the rule. -/
+theorem checkedValidationRule_partial_repeatable_prepared
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model)
-    (scope : ValidationRelevanceScope) (environment : Env)
+    (scope : ValidationRelevanceScope)
+    (preliminary : CheckedPartialPreliminary model)
+    (unfiltered : rule.hasHaving = false)
+    (prepared :
+      checked.applyPartialGeneratedPreliminaryForScope scope =
+        .ok preliminary) :
+    rule.evalOrdinaryRepeatablePartial checked scope =
+      rule.evalOrdinaryRepeatablePartialPrepared preliminary := by
+  simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
+    unfiltered, prepared] <;> rfl
+
+/-- At the prepared one-row boundary, error-instance nonrelevance is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
+theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
+    (rule : CheckedResolvedValidationRule model)
+    (preliminary : CheckedPartialPreliminary model)
+    (environment : Env)
     (supported : rule.supportsOrdinaryRepeatablePartial = true)
     (irrelevant :
-      (scope.withGlobals model).coversField
+      preliminary.relevance.coversField
         model rule.errorField environment = false) :
-    rule.evalOrdinaryRepeatablePartialAt checked scope environment =
+    rule.evalOrdinaryRepeatablePartialAtPrepared preliminary environment =
       .ok (environment, .skipped) := by
-  simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartialAt,
+  simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartialAtPrepared,
     supported, irrelevant] <;> rfl
 
 /-- A filtered once rule skips before support, plan construction, relevance, or document reads. -/
@@ -302,19 +317,18 @@ theorem checkedValidationRule_partial_once_filtered_skips
 /-- After a supported once environment is constructed, a nonrelevant pinned error instance skips before condition or target reads. -/
 theorem checkedValidationRule_partial_once_irrelevant_skips
     (rule : CheckedResolvedValidationRule model)
-    (checked : CheckedDocument model)
-    (scope : ValidationRelevanceScope)
+    (preliminary : CheckedPartialPreliminary model)
     (errorScope : List RepeatableLevel)
     (unfiltered : rule.hasHaving = false)
     (supported : rule.supportsOrdinaryRepeatablePartial = true)
     (once : rule.ordinaryIterationPlan = .once errorScope)
     (irrelevant :
-      (scope.withGlobals model).coversField
+      preliminary.relevance.coversField
         model rule.errorField
           (errorScope.map fun level => (level, 1)) = false) :
-    rule.evalOrdinaryOncePartial checked scope =
+    rule.evalOrdinaryOncePartialPrepared preliminary =
       .ok .skipped := by
-  simp [CheckedResolvedValidationRule.evalOrdinaryOncePartial,
+  simp [CheckedResolvedValidationRule.evalOrdinaryOncePartialPrepared,
     CheckedResolvedValidationRule.onceEnvironment,
     unfiltered, supported, once, irrelevant] <;> rfl
 

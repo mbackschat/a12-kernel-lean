@@ -6,10 +6,10 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 483 jobs · trust audit **1367 theorem roots; 28625 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 486 jobs · trust audit **1373 theorem roots; 28662 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
-- SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
+- SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
 - The ordinary repeatable validation loop derives its scope from the checked condition, enumerates actual rows only, reads ancestor/current declarations through the checked document, and emits at exact repeatable error addresses. Current static legality is level-local and preserves `insufficient` for unclassified families.
 - Both group-terminal interpretations below stars are closed for full validation. A terminal repeatable group counts structural terminal rows; a nonrepeatable terminal reuses the same checked topology to select complete environments and derives the existing descendant-content/error group product in each. The shared tally, ordinary rule loop, and structural failure channel remain unchanged.
 - The six coverage dimensions are executable, proof-closed, Kernel-locked, Kernel-calibrated, public, and consumer-qualified. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns their clause-level state; absent `Kernel-locked` rows mean not yet assessed, not no evidence.
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The bounded SG2 cold Execute/Analyze reader reconstructed the complete checked addressed-operand route and found one shared-boundary defect: outer star prefixes still consumed bindings positionally. `StarPath.boundEnvironment` now uses `Env.bindingAt`, accepts unrelated reordered bindings, rejects duplicate required levels explicitly, and preserves the corrected exact prefix in the tree/environment correspondence theorem. The reader's artifact-only reread found no remaining internal API defect; external evidence and protocol exposure remain separate.
+Ordinary repeatable partial group leaves now consume `CheckedPartialPreliminary` directly. Group relevance is derived from the normalized entity set as none, partial, or full; callers cannot relabel the selected slice. The matrix separates a nonrelevant filled descendant from the selected empty group, reached formal error, cause-free suppressed-default error, and unchanged full-validation behavior. The completed route reuses the checked-document slice, group fold, condition tree, and ordinary rule loop and adds no document, topology, evaluator, or harness.
 
 ## Active semantic unit
 
-Close [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by wiring ordinary repeatable partial group leaves to the relevance-selected `CheckedPartialPreliminary.groupPresenceInput` already owned by checked document preparation. Preserve the existing full-validation route and rule loop; do not introduce another document, group evaluator, relevance slice, or condition tree.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) only through its bounded source-audit gate. Reconstruct the smallest source-grounded nonrepeatable scheduling slice, including checked definition, explicit processing context, activation, reached dependency reads, result classification, source-relative change, application, and generated-validation timing. Do not introduce a general SG4 type until the source packet and separating matrix establish the exact atomic step and its consumer-visible distinctions.
 
 ## Immediate sequence
 
-1. Inventory `CheckedPartialPreliminary.groupPresenceInput`, the existing partial rule context, group-leaf evaluation, proofs, and conformance cases; reject any route that would duplicate the selected slice or group fold.
-2. Add red separators in which nonrelevant content/error would change the result if the complete document leaked through, plus a relevant formal/silent-error control.
-3. Extend the smallest existing context, derive the group result through the preliminary view, add the payoff-selected law and nearest non-law, run Tier 1 gates, and close SG2 if the completed capsule exposes no further shared addressing invariant.
+1. Inventory the existing §11 expression, guard, target, delta, application, dependency, generated-validation, and archived SG4 source owners; identify overlap before proposing any new representation.
+2. Audit one nonrepeatable calculation path end to end and write a finite decision table whose cases distinguish reached-read poison, short-circuit hiding, unchanged success, changed success, eager formal-operand error, target error, clearing, and later validation.
+3. Name the smallest meaningful execution step and explicit processing-context input justified by that packet. If any required source fact is missing, leave SG4 blocked at that discriminator; otherwise add the red separators and implement only the selected capsule through existing narrow owners.
 
 ## Parked boundaries
 

@@ -235,7 +235,7 @@ example :
       let read ← (view.readAuthoredValidation defaultAddress).toOption
       let presence ←
         (view.groupPresenceInput ["Order", "Sections", "Items"]
-          [(10, 1), (20, 1)] .fullyRelevant false).toOption
+          [(10, 1), (20, 1)] false).toOption
       pure (
         view.silentlyUnavailable.contains defaultAddress &&
         view.index.findingKindAt? defaultAddress == none &&
@@ -257,7 +257,7 @@ example :
     ((partialFor defaultModel selectedData [relevantKey 1 1]).bind fun view => do
       let presence ←
         (view.groupPresenceInput ["Order"] []
-          .partlyRelevant false).toOption
+          false).toOption
       pure (
         view.silentlyUnavailable.isEmpty &&
         presence.derive ==
@@ -333,11 +333,11 @@ example :
     ((partialFor model duplicateData [relevantKey 1 3]).bind fun view => do
       let presence ←
         (view.groupPresenceInput ["Order", "Sections", "Items"]
-          [(10, 1), (20, 3)] .partlyRelevant false).toOption
+          [(10, 1), (20, 3)] false).toOption
       pure (view.index.findings.isEmpty &&
         presence.derive ==
           { content := false, erroneous := false,
-            relevance := .partlyRelevant })) = some true := by
+            relevance := .fullyRelevant })) = some true := by
   native_decide
 
 /- A selected cell that already failed scalar checking remains malformed and receives no generated index finding. -/
@@ -363,7 +363,7 @@ example :
         | .error error => some error
       let presence ←
         (view.groupPresenceInput ["Order", "Sections"]
-          [(10, 1)] .partlyRelevant false).toOption
+          [(10, 1)] false).toOption
       pure (readError, presence.derive.erroneous)) =
       some (some (.nonRelevantAddress { field := 1, path := [1, 3] }), false) := by
   native_decide
@@ -394,7 +394,7 @@ example : ((partialFor requiredModel
         (view.readAuthoredValidation
           { field := requiredField.id, path := [] }).toOption
       let presence ←
-        (view.groupPresenceInput ["Order"] [] .partlyRelevant false).toOption
+        (view.groupPresenceInput ["Order"] [] false).toOption
       match authored with
       | .silentlyUnavailable => none
       | .checked cell =>
@@ -406,7 +406,7 @@ example : ((partialFor requiredModel
             observeCell .computation cell == .empty &&
             presence.derive ==
               { content := false, erroneous := true,
-                relevance := .partlyRelevant })) = some true := by
+                relevance := .fullyRelevant })) = some true := by
   native_decide
 
 /- The model, not a caller inventory, supplies every relevant absolute-required generated rule. -/
@@ -430,6 +430,16 @@ example :
       | .ok _ => none
       | .error error => some error) =
       some (.nonRelevantAddress address) := by
+  native_decide
+
+/- The call-local preliminary constructor owns global augmentation, so a global field remains relevant even when the caller supplies an empty entity set. -/
+example :
+    let globalField := { requiredField with isGlobal := true }
+    let globalModel : FlatModel := { fields := [globalField] }
+    let address : CellAddr := { field := globalField.id, path := [] }
+    (partialFor globalModel { instantiatedRows := [], cells := [] } []).map
+        (fun view => view.isAddressRelevant address) =
+      some true := by
   native_decide
 
 /- Optional and group-gated declarations are ignored by model-derived absolute staging rather than becoming mandatory. -/

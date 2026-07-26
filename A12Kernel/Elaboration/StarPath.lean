@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Context
+import A12Kernel.Semantics.GroupPresence
 import A12Kernel.Semantics.StarAddressing
 
 /-! # Checked general star-path lowering
@@ -62,9 +63,7 @@ private def actualIndex? (model : FlatModel) (environment : Env)
   match model.repeatableGroups.find? fun group => group.path == path with
   | none => some 1
   | some group =>
-      match environment.find? fun binding => binding.1 == group.level with
-      | none => none
-      | some binding => some binding.2
+      (environment.bindingAt group.level).toOption
 
 private def cellPrefixMatches (model : FlatModel) (environment : Env) :
     GroupPath → List String → List RelevanceIndex → Bool
@@ -103,6 +102,32 @@ def coversCell (entity : RelevantEntityPattern) (model : FlatModel)
   entity.path.isPrefixOf targetPath &&
     cellPrefixMatches model environment [] entity.path entity.indices
 
+/-- Whether one selected entity intersects a concrete group instance. An ancestor selection covers the group; a descendant selection contributes partial coverage when its shared repetition prefix identifies the same instance. -/
+def touchesGroup (entity : RelevantEntityPattern) (model : FlatModel)
+    (groupPath : GroupPath) (environment : Env) : Bool :=
+  if entity.path.isPrefixOf groupPath then
+    entity.coversCell model groupPath environment
+  else if groupPath.isPrefixOf entity.path then
+    ({ path := groupPath
+       indices := entity.indices.take groupPath.length } :
+      RelevantEntityPattern).coversCell model groupPath environment
+  else
+    false
+
+private def coversDescendantCompletely
+    (entity : RelevantEntityPattern) (model : FlatModel)
+    (groupPath : GroupPath) (environment : Env)
+    (fieldPath : List String) : Bool :=
+  entity.touchesGroup model groupPath environment &&
+    entity.path.isPrefixOf fieldPath &&
+    model.repeatableGroups.all fun group =>
+      if groupPath.length < group.path.length &&
+          group.path.isPrefixOf entity.path then
+        entity.indices[group.path.length - 1]? ==
+          some RelevanceIndex.all
+      else
+        true
+
 end RelevantEntityPattern
 
 namespace ValidationRelevanceScope
@@ -138,6 +163,27 @@ def coversField (scope : ValidationRelevanceScope) (model : FlatModel)
   match model.lookupUniqueId field with
   | .ok declaration => scope.coversCell model declaration.path environment
   | .error _ => false
+
+/-- Derive the kernel's three-level relevance for one concrete group instance. Any intersecting selection supplies partial visibility; definite absence additionally requires an ancestor group selection or complete coverage of every declared descendant, wildcarded across every deeper repeatable level. -/
+def groupRelevance (scope : ValidationRelevanceScope) (model : FlatModel)
+    (groupPath : GroupPath) (environment : Env) : GroupRelevance :=
+  match scope with
+  | .full => .fullyRelevant
+  | .partialSet entities =>
+      if !entities.any fun entity =>
+          entity.touchesGroup model groupPath environment then
+        .noneRelevant
+      else if entities.any fun entity =>
+          entity.coversCell model groupPath environment then
+        .fullyRelevant
+      else if (model.fields.filter fun declaration =>
+          groupPath.isPrefixOf declaration.groupPath).all fun declaration =>
+          entities.any fun entity =>
+            entity.coversDescendantCompletely model groupPath environment
+              declaration.path then
+        .fullyRelevant
+      else
+        .partlyRelevant
 
 end ValidationRelevanceScope
 

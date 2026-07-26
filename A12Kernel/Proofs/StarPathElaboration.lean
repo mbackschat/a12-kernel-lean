@@ -74,4 +74,18 @@ theorem validationRelevanceScope_withGlobals_covers_global
         ValidationRelevanceScope.coversCell, List.any_append]
       exact .inr ⟨declaration, owned, global, covered⟩
 
+/-- Full validation makes every group instance completely relevant without inspecting model descendants. -/
+@[simp] theorem validationRelevanceScope_groupRelevance_full
+    (model : FlatModel) (groupPath : GroupPath) (environment : Env) :
+    ValidationRelevanceScope.full.groupRelevance
+      model groupPath environment = .fullyRelevant := by
+  rfl
+
+/-- An empty partial selection cannot make any group instance relevant. -/
+@[simp] theorem validationRelevanceScope_groupRelevance_empty
+    (model : FlatModel) (groupPath : GroupPath) (environment : Env) :
+    (ValidationRelevanceScope.partialSet []).groupRelevance
+      model groupPath environment = .noneRelevant := by
+  rfl
+
 end A12Kernel

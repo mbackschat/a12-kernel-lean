@@ -641,6 +641,7 @@ run_cmd do
 #print axioms A12Kernel.checkedValidationRule_partial_filtered_skips
 #print axioms A12Kernel.checkedValidationRule_partial_evaluated
 #print axioms A12Kernel.checkedValidationRule_partial_repeatable_filtered_skips
+#print axioms A12Kernel.checkedValidationRule_partial_repeatable_prepared
 #print axioms A12Kernel.checkedValidationRule_partial_repeatable_irrelevant_row_skips
 #print axioms A12Kernel.checkedValidationRule_partial_once_filtered_skips
 #print axioms A12Kernel.checkedValidationRule_partial_once_irrelevant_skips
@@ -694,6 +695,8 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_groupPresence_iterationGuardStatusAt
 #print axioms A12Kernel.validationCondition_groupPresence_evalAddressed_checked
 #print axioms A12Kernel.validationCondition_groupPresence_addressError
+#print axioms A12Kernel.validationConditionLeaf_groupPresence_partialSupported
+#print axioms A12Kernel.validationConditionLeaf_groupPresence_partialDelegates
 #print axioms A12Kernel.validationCondition_groupList_evalSelected
 #print axioms A12Kernel.validationCondition_groupList_fired_iff
 #print axioms A12Kernel.validationCondition_groupList_requiresAddressed
@@ -917,6 +920,8 @@ run_cmd do
 #print axioms A12Kernel.checkedStarFieldPath_bindingScope
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_allRowsRelevant_partialSet_iff
+#print axioms A12Kernel.validationRelevanceScope_groupRelevance_full
+#print axioms A12Kernel.validationRelevanceScope_groupRelevance_empty
 #print axioms A12Kernel.checkedStarNumberSource_ancestry
 #print axioms A12Kernel.checkedStarNumberHavingSource_wellFormed
 #print axioms A12Kernel.checkedStarNumberHavingSource_conjunctive
@@ -1416,3 +1421,4 @@ run_cmd do
 #print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedPartialPreliminary_silent_read
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant
+#print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance

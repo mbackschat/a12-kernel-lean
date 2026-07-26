@@ -127,4 +127,29 @@ theorem checkedPartialPreliminary_silent_is_relevant
     view.isAddressRelevant address = true :=
   view.silentRelevant address silent
 
+/-- A successful partial group projection carries exactly the relevance derived from the view's normalized entity set; callers cannot relabel the selected slice. -/
+theorem checkedPartialPreliminary_groupPresence_relevance
+    (view : CheckedPartialPreliminary model)
+    (groupPath : GroupPath) (environment : Env)
+    (structuralError : Bool) :
+    (view.groupPresenceInput groupPath environment structuralError).map
+        (fun input => input.relevance) =
+      (view.groupPresenceInput groupPath environment structuralError).map
+        (fun _ =>
+          view.relevance.groupRelevance model groupPath environment) := by
+  cases result :
+      view.groupPresenceInput groupPath environment structuralError with
+  | error error => rfl
+  | ok input =>
+      simp only [Except.map]
+      unfold CheckedPartialPreliminary.groupPresenceInput at result
+      unfold CheckedDocument.groupPresenceInputFromSlice at result
+      split at result
+      · contradiction
+      · split at result
+        · contradiction
+        · injection result with result
+          subst input
+          rfl
+
 end A12Kernel

@@ -443,17 +443,20 @@ def evalSelected (context : ValidationEvaluationContext)
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
-  | .flat _ | .repeatableFieldPresence _ _ => true
+  | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
   | .orderedNumeric _ comparison =>
       comparison.supportsAddressedPartial
   | .repetitionNotUnique _ => true
   | _ => false
 
-/-- Evaluate one partial addressed leaf. `none` is structural unsupported information, not semantic UNKNOWN; a reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
+/-- Evaluate one partial addressed leaf. The caller supplies the sole relevance-selected group-product query; `none` is structural unsupported information, not semantic UNKNOWN. A reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
 def evalAddressedPartial?
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope)
     (isRelevant : FlatRelevance)
+    (resolveGroup :
+      GroupPath → Env →
+        Except CheckedAddressingError ResolvedGroupPresenceInput)
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
@@ -467,6 +470,10 @@ def evalAddressedPartial?
         pure .unknown)
   | .orderedNumeric _ comparison =>
       comparison.evalAddressedPartial? context scope isRelevant
+  | .groupPresence operator reference =>
+      some do
+        let input ← resolveGroup reference.path context.outer
+        pure (operator.eval input.derive)
   | .repetitionNotUnique _ =>
       some (match repetitionNotUniqueResult? with
         | some result =>

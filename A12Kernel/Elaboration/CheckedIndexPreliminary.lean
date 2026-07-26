@@ -431,14 +431,7 @@ private def relevantEntityCoversRow
   | some group =>
       let environment :=
         (model.repeatableScopeForGroupPath group.path).zip row.path
-      if entity.path.isPrefixOf group.path then
-        entity.coversCell model group.path environment
-      else if group.path.isPrefixOf entity.path then
-        ({ path := group.path
-           indices := entity.indices.take group.path.length } :
-          RelevantEntityPattern).coversCell model group.path environment
-      else
-        false
+      entity.touchesGroup model group.path environment
 
 private def relevanceCoversRow
     (scope : ValidationRelevanceScope) (model : FlatModel)
@@ -455,10 +448,12 @@ private def relevantRows (view : CheckedPartialPreliminary model) :
 
 def groupPresenceInput (view : CheckedPartialPreliminary model)
     (groupPath : GroupPath) (environment : Env)
-    (relevance : GroupRelevance) (structuralError : Bool) :
+    (structuralError : Bool) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
   view.index.base.groupPresenceInputFromSlice view.relevantRows view.placements
-    groupPath environment relevance structuralError view.silentlyUnavailable
+    groupPath environment
+    (view.relevance.groupRelevance model groupPath environment)
+    structuralError view.silentlyUnavailable
 
 end CheckedPartialPreliminary
 
@@ -483,12 +478,10 @@ private def partialRequiredEvaluations (checked : CheckedDocument model)
             pure rest
       | none | some (.relativeTo _) => pure rest
 
-/-- Build the no-default partial generated-preliminary view from normalized relevant entity patterns. Over-capacity concrete selectors are ignored as the public API requires; malformed or unknown patterns fail explicitly. -/
-def applyPartialGeneratedPreliminary (checked : CheckedDocument model)
-    (relevantEntities : List RelevantEntityPattern) :
+private def applyPartialGeneratedPreliminaryNormalized
+    (checked : CheckedDocument model)
+    (relevance : ValidationRelevanceScope) :
     Except CheckedIndexPreliminaryError (CheckedPartialPreliminary model) := do
-  let normalized ← model.normalizeRelevantEntities relevantEntities
-  let relevance := ValidationRelevanceScope.partialSet normalized
   let silentlyUnavailable :=
     checked.indexDefaults model.repeatableGroups
       |>.map (·.address)
@@ -508,6 +501,24 @@ def applyPartialGeneratedPreliminary (checked : CheckedDocument model)
       intro address member
       simpa using (List.mem_filter.mp member).2
   }
+
+/-- Build the no-default partial generated-preliminary view from a relevance scope. Caller entities are normalized, over-capacity concrete selectors are ignored, and model-owned globals are added before any row, cell, requiredness, or group projection is selected. -/
+def applyPartialGeneratedPreliminaryForScope
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) :
+    Except CheckedIndexPreliminaryError (CheckedPartialPreliminary model) := do
+  let effective := scope.withGlobals model
+  let normalized ← match effective with
+    | .full => pure .full
+    | .partialSet entities =>
+        pure (.partialSet (← model.normalizeRelevantEntities entities))
+  checked.applyPartialGeneratedPreliminaryNormalized normalized
+
+/-- Build the ordinary partial-call preliminary view from caller-selected entities. This is the list-shaped public entry; rule consumers reuse the resulting certificate instead of relabeling the complete document. -/
+def applyPartialGeneratedPreliminary (checked : CheckedDocument model)
+    (relevantEntities : List RelevantEntityPattern) :
+    Except CheckedIndexPreliminaryError (CheckedPartialPreliminary model) :=
+  checked.applyPartialGeneratedPreliminaryForScope (.partialSet relevantEntities)
 
 end CheckedDocument
 

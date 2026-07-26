@@ -41,7 +41,7 @@ A shared checked-plan IR may be reconsidered only when **all** of the following 
 
 1. A named consumer—SMT, refactoring, compilation, or a simplified-language shipment—cannot be closed from the existing normalized representations without duplicating semantics.
 2. The precise consumer artifact and assurance claim are fixed.
-3. SG2 supplies its stable checked-document and addressed-stream boundary.
+3. The closed checked-document and addressed-stream boundaries cannot serve the consumer without semantic reconstruction.
 4. An inventory identifies which existing ASTs are reused, consolidated, or replaced.
 5. One end-to-end preservation theorem is stated before implementation.
 6. The user explicitly approves the resulting infrastructure unit.

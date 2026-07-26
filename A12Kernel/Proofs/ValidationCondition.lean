@@ -281,6 +281,34 @@ theorem validationCondition_groupPresence_addressError
     model operator reference scalar outer document, fails]
   rfl
 
+/-- Partial group presence is admitted exactly because its caller must supply the relevance-selected product query. -/
+@[simp]
+theorem validationConditionLeaf_groupPresence_partialSupported
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference) :
+    (ValidationConditionLeaf.groupPresence (model := model)
+      operator reference).supportsAddressedPartial = true := by
+  rfl
+
+/-- A partial group leaf delegates once to the supplied selected-slice resolver and preserves its structural error channel. -/
+@[simp]
+theorem validationConditionLeaf_groupPresence_partialDelegates
+    (model : FlatModel) (operator : GroupPresenceOperator)
+    (reference : ResolvedGroupReference)
+    (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope) (isRelevant : FlatRelevance)
+    (resolveGroup :
+      GroupPath → Env →
+        Except CheckedAddressingError ResolvedGroupPresenceInput)
+    (result? : Option RepetitionNotUniqueResult) :
+    (ValidationConditionLeaf.groupPresence (model := model)
+      operator reference).evalAddressedPartial?
+        context scope isRelevant resolveGroup result? =
+      some (do
+        let input ← resolveGroup reference.path context.outer
+        pure (operator.eval input.derive)) := by
+  rfl
+
 /-- Scalar evaluation delegates a wholly direct field/group list to the shared entity-presence tally and refuses every list that still needs starred topology. -/
 @[simp]
 theorem validationCondition_groupList_evalSelected
@@ -568,9 +596,12 @@ theorem validationConditionLeaf_repetitionNotUnique_partialResult
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope)
     (isRelevant : FlatRelevance)
+    (resolveGroup :
+      GroupPath → Env →
+        Except CheckedAddressingError ResolvedGroupPresenceInput)
     (result? : Option RepetitionNotUniqueResult) :
     (ValidationConditionLeaf.repetitionNotUnique source).evalAddressedPartial?
-        context scope isRelevant result? =
+        context scope isRelevant resolveGroup result? =
       some (match result? with
         | some result =>
             if result.row == context.outer then
