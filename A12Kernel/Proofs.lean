@@ -47,6 +47,7 @@ import A12Kernel.Proofs.NumericApplication
 import A12Kernel.Proofs.NumericDependency
 import A12Kernel.Proofs.ParallelComputationClearing
 import A12Kernel.Proofs.ParallelComputationClearingPlan
+import A12Kernel.Proofs.ParallelComputationClearingApplication
 import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.NumericValidation.Runtime
 import A12Kernel.Proofs.NumericValidation.Lowering

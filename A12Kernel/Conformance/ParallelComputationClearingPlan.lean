@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ParallelComputationClearing
+import A12Kernel.Elaboration.ParallelComputationClearingApplication
 
 /-! # Checked parallel-computation clearing-plan locks -/
 
@@ -154,6 +154,23 @@ private def clearedAddresses?
   (clearingResult? cells).bind fun result =>
     result.toOption.map (·.cleared)
 
+private def applicationDestination : AddressedNumericDestination :=
+  fun address =>
+    if address == { field := 2, path := [1, 1] } then
+      .presentValue (.decimal { unscaled := 70, scale := 1 })
+    else if address == { field := 2, path := [2, 1] } then
+      .absent
+    else
+      .presentValue (.decimal { unscaled := 9, scale := 0 })
+
+private def appliedDestination?
+    (cells : List ClassifiedCellInput) :
+    Option AddressedNumericDestination := do
+  let checked ← checked?
+  let preliminary ← preliminaryFor cells
+  let view ← (checked.clearedSourceTargets preliminary).toOption
+  pure (view.applyTo applicationDestination)
+
 /- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
 example :
     (checked?.bind fun checked =>
@@ -234,6 +251,22 @@ example :
         { field := 2, path := [1, 1] },
         { field := 2, path := [2, 1] }
       ] := by
+  native_decide
+
+/- Addressed clearing empties a present destination target in place, leaves an absent covered target absent, and preserves an unrelated address. -/
+example :
+    let operandInvalid :=
+      (cleanIndexCells.filter fun input =>
+        input.address != { field := 3, path := [2] }) ++ [
+          numericCell [1, 1] { unscaled := 7, scale := 0 },
+          numericCell [2, 1] { unscaled := 8, scale := 0 }
+        ]
+    ((appliedDestination? operandInvalid).map fun destination =>
+      (destination { field := 2, path := [1, 1] },
+        destination { field := 2, path := [2, 1] },
+        destination { field := 5, path := [1, 1] })) =
+      some (.presentEmpty, .absent,
+        .presentValue (.decimal { unscaled := 9, scale := 0 })) := by
   native_decide
 
 /- Each checked index side derives its asymmetric common-prefix mark scope without a caller-supplied truncation width. -/

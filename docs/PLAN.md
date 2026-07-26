@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1443 theorem roots; 30395 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 525 jobs · trust audit **1453 theorem roots; 30416 declarations in 289 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first repeatable SG4 result fragment now projects checked post-loop marks to exact source-relative public clears. The Number source-target owner accepts one model-legal repeatable address and preserves absent, present-empty, typed filled identity, and structural failure. Only covered source-filled targets enter the clearing view; blank instantiated rows and present-empty target cells stay out, an unmarked malformed source annotation is never inspected, and a marked filled target without typed identity fails structurally. Clean columns provably produce the empty clearing view.
+The first repeatable SG4 result fragment now projects checked post-loop marks to exact source-relative public clears and applies them to a separately supplied exact addressed destination. The Number source-target owner accepts one model-legal repeatable address and preserves absent, present-empty, typed filled identity, and structural failure. Only covered source-filled targets enter the clearing view; blank instantiated rows and present-empty target cells stay out, an unmarked malformed source annotation is never inspected, and a marked filled target without typed identity fails structurally. Clean columns provably produce the empty clearing view. Application reuses the one-target clear transition, preserves unrelated addresses, never creates an absent target, and is invariant under clear-list permutation and repeated identical clears.
 
 ## Active semantic unit
 
-Add exact repeatable application for the clearing fragment against a separately supplied compatible addressed destination. Reuse the one-target Number transition, leave absent destinations absent, clear present values in place, and do not merge application with classification.
+Close the smallest successful repeatable Number outcome on the existing checked parallel route, including its interaction with post-loop invalid marks. Do not accept caller-supplied outcomes or infer collision precedence from the current clear-only projection.
 
 ## Immediate sequence
 
-1. Define the smallest `CellAddr → NumericTargetState` destination and update operation needed by the extensional clearing view; add no second document model or missing-ancestor machinery.
-2. Prove one-address specialization, unrelated-address preservation, absent-target noncreation, and permutation-invariant results. Repeated identical clear actions are harmless and do not warrant a structural rejection channel.
+1. Re-audit the generated parallel-row loop, exact index matching, empty operand behavior, and the post-loop mark timing against kernel source; record only a durable correction or new source route.
+2. Admit one direct Number route only if the current checked certificate can own both matching and target address without a second join or plan representation.
+3. Retain each successful or failed row outcome at its exact `CellAddr`, then state and separate the source-defined result when a later coarse invalid mark covers that same address.
 
 ## Parked boundaries
 
