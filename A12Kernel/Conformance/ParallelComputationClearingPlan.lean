@@ -48,7 +48,8 @@ private def operandGroup : RepeatableGroupDecl := {
   indexField := some 3
 }
 
-private def model : FlatModel := {
+/-- Shared checked-route fixture used by the focused parallel Number conformance modules. -/
+def model : FlatModel := {
   fields := [
     indexDeclaration 1 targetGroup.path [50, 60],
     numberDeclaration 2 targetGroup.path "Result" [50, 60],
@@ -67,7 +68,8 @@ private def scaleMismatchModel : FlatModel := {
     else declaration
 }
 
-private def operandPath : SurfaceFieldPath := {
+/-- Exact ordinary operand path selected by the shared parallel route fixture. -/
+def operandPath : SurfaceFieldPath := {
   base := .absolute
   groups := operandGroup.path
   field := "Input"
@@ -136,7 +138,8 @@ private def numericCell (path : List Nat) (stored : StoredNumber) :
   numericSourceIdentity := some (.decimal stored)
 }
 
-private def operandNumericCell (path : List Nat) (stored : StoredNumber) :
+/-- One typed operand placement at an exact repeatable path. -/
+def operandNumericCell (path : List Nat) (stored : StoredNumber) :
     ClassifiedCellInput := {
   address := { field := 4, path }
   stored := stored.render
@@ -157,7 +160,8 @@ private def numericCellWithoutIdentity (path : List Nat)
   raw := .parsed (.num stored.amount)
 }
 
-private def cleanIndexCells : List ClassifiedCellInput := [
+/-- Complete clean exact-text index columns for the shared target rows. -/
+def cleanIndexCells : List ClassifiedCellInput := [
   indexCell 1 [1, 1] "Alpha",
   indexCell 1 [1, 2] "Beta",
   indexCell 1 [2, 1] "Gamma",
@@ -174,7 +178,8 @@ private def checkedDocument? : Option (CheckedDocument model) := do
       world builtinStringPatternCompiler model).toOption
   (checkDocument prepared "en_US" (sourceWith [])).toOption
 
-private def preliminaryFor (cells : List ClassifiedCellInput) :
+/-- Build the one checked preliminary consumed by every route crossing in these fixtures. -/
+def preliminaryFor (cells : List ClassifiedCellInput) :
     Option (CheckedIndexPreliminary model) := do
   let prepared ←
     (prepareFlatStringContext

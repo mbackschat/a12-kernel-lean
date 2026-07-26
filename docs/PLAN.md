@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30911 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 530 jobs · trust audit **1456 theorem roots; 30912 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now admits one optionally guarded resolved Number operation whose every field atom and guard leaf is certified to read the already-joined operand. The checked payload is the existing authored numeric tree: lowering, resolved-operation admission, the wrapper-literal boundary, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application all remain with their established owners. Plain arithmetic, `Abs`, `Round`, and operand-list extrema therefore compose without route-specific evaluators. A clean unmatched join contributes numeric zero before the operation. Literal-only trees and expressions or guards naming a second field fail checked construction, so the route certificate remains the sole addressed-read authority. Invalid index columns still suppress the instance before guard or expression evaluation and use post-loop clearing.
+The isolated repeatable Number run now admits one optionally guarded resolved Number operation whose every field atom and guard leaf is certified to read the already-joined operand. The checked payload is the existing authored numeric tree: lowering, resolved-operation admission, the wrapper-literal boundary, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application all remain with their established owners. Plain arithmetic, `Abs`, `Round`, and operand-list extrema therefore compose without route-specific evaluators. The exact-scale warning directive is retained once and selects both the shared suppression-aware construction gate and existing warning-suppressed target check; it does not recover arithmetic-domain failure. A clean unmatched join contributes numeric zero before the operation. Literal-only trees and expressions or guards naming a second field fail checked construction, so the route certificate remains the sole addressed-read authority. Invalid index columns still suppress the instance before guard or expression evaluation and use post-loop clearing.
 
 ## Active semantic unit
 
-Audit the existing exact-scale warning suppression at the repeatable target boundary. Determine whether the parallel operation can carry the same checked suppression choice as the nonrepeatable target operation without weakening expression summaries or selecting target policy outside the model-owned route.
+Audit one second direct Number operand under the same already-joined indexed operand group. Determine whether the route's selected operand environment can address both model-certified declarations without a second index join, caller-supplied environment, or generalized multi-group read plan.
 
 ## Immediate sequence
 
-1. Reuse `exactNumericScaleComparisonAllowedWithSuppression` for construction and the target policy's warning-suppressed check for execution; do not turn suppression into an unrestricted scale proof.
-2. Separate a scale-mismatch admission case from a runtime arithmetic-domain failure case so suppression is not confused with error recovery.
-3. Keep additional expression fields, broader guard fields, and multi-computation repeatable overlays excluded until their additional reads or dependency order are independently source-closed.
+1. Establish the exact static certificate for an additional Number declaration: same selected operand index group, compatible complete repeatable scope, model ownership, and no target self-reference.
+2. Reuse the one matched operand environment and checked-document read for both fields; preserve expression-authored read order and poison without adding an index column or read-plan AST.
+3. Keep fields from another indexed group, broader guard fields, and multi-computation repeatable overlays excluded until their additional joins, reads, or dependency order are independently source-closed.
 
 ## Parked boundaries
 

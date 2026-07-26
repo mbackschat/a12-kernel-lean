@@ -37,11 +37,12 @@ structure ParallelNumericDirectOutcome where
   outcome : NumericTargetOutcome
   deriving Repr, DecidableEq
 
-/-- The complete one-computation inventory for one checked unguarded direct-copy run over the existing parallel route certificate. -/
+/-- The complete one-computation inventory for one checked optionally guarded Number operation over the existing parallel route certificate. -/
 structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   private mk ::
   route : CheckedParallelNumericClearingPlan model
   precondition : Option ComputationCondition
+  suppressExactScaleWarning : Bool
   expression : AuthoredNumericExpr FlatFieldDecl
   guardAdmitted :
     parallelNumericDirectGuardAdmitted
@@ -61,7 +62,8 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
     expression.summary? FlatFieldDecl.numericScaleSummary =
       some operationScale
   operationScaleAdmitted :
-    exactNumericScaleComparisonAllowed
+    exactNumericScaleComparisonAllowedWithSuppression
+      suppressExactScaleWarning
       (.field route.target.info.scale)
       operationScale = true
 
@@ -82,7 +84,8 @@ def WellFormed
       | .common _ | .framed .left _ _ => true) = true ∧
     checked.expression.summary? FlatFieldDecl.numericScaleSummary =
       some checked.operationScale ∧
-    exactNumericScaleComparisonAllowed
+    exactNumericScaleComparisonAllowedWithSuppression
+      checked.suppressExactScaleWarning
       (.field checked.route.target.info.scale)
       checked.operationScale = true
 
@@ -146,7 +149,12 @@ private def executeTarget
   | .holds =>
       let value ← checked.expression.evaluateComputation context
           |>.mapError .numeric
-      match checked.route.targetPolicy.check value with
+      let checkedTarget :=
+        if checked.suppressExactScaleWarning then
+          checked.route.targetPolicy.checkWithScaleWarningSuppressed value
+        else
+          checked.route.targetPolicy.check value
+      match checkedTarget with
       | .supported outcome => pure { address, outcome }
       | .unsupported fault => throw (.unsupportedTarget fault)
 
@@ -189,12 +197,13 @@ private def FlatModel.resolveParallelNumericDirectExpression
           throw .expressionNotLimitedToOperand
     | _ => throw .expressionNotLimitedToOperand
 
-/-- Check one optionally guarded Number operation without reimplementing the parallel route, numeric lowering, operation admission, authoring checks, or scale gate. Every field atom and guard leaf must reuse the already-joined operand read. -/
+/-- Check one optionally guarded Number operation without reimplementing the parallel route, numeric lowering, operation admission, authoring checks, or scale gate. Every field atom and guard leaf must reuse the already-joined operand read. The scale-warning directive defaults to false; when true it selects both the shared suppressed static gate and the existing warning-suppressed target check, but never changes expression arithmetic. -/
 def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (precondition : Option ComputationCondition) :
+    (precondition : Option ComputationCondition)
+    (suppressExactScaleWarning : Bool := false) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) := do
   let route ←
@@ -223,13 +232,15 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
                     | .framed .right _ _ => false
                     | .common _ | .framed .left _ _ => true) = true then
                 if scaleAdmitted :
-                    exactNumericScaleComparisonAllowed
+                    exactNumericScaleComparisonAllowedWithSuppression
+                      suppressExactScaleWarning
                       (.field route.target.info.scale)
                       operationScale = true then
                   pure (CheckedIsolatedParallelNumericDirectRun.mk
-                    route precondition resolved guardAdmitted usesOperand
-                    operandsOwned expressionAdmitted authoring scopeAvailable
-                    operationScale scaleOwned scaleAdmitted)
+                    route precondition suppressExactScaleWarning resolved
+                    guardAdmitted usesOperand operandsOwned expressionAdmitted
+                    authoring scopeAvailable operationScale scaleOwned
+                    scaleAdmitted)
                 else
                   throw (.operationScaleMismatch
                     route.target.info.scale operationScale)
