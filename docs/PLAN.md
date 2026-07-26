@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 512 jobs · trust audit **1422 theorem roots; 29806 declarations in 278 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 514 jobs · trust audit **1428 theorem roots; 29850 declarations in 280 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked scalar Number run now projects its rich outcomes into the five extensional V2 collections against the same immutable source document. Successful unchanged values remain in `withoutErrors`, exact typed changes form the subset `withChanges`, target-rejected attempts retain their payload and cause in `withErrors`, and clean no-value, calculation invalidity, or inherited poison clears only a source-filled target. The separately supplied residual messages remain unchanged and, together with computed errors, exactly determine `noErrorOccurred`. Missing typed Number source identity fails structurally before classification. The public collections are proved permutation-invariant even though execution retains certified plan order.
+The checked scalar Number run now projects its rich outcomes into the five extensional V2 collections and applies only their clear, error, and source-relative change actions to a separately supplied exact target-state destination. Each action specializes the existing one-address transition; unchanged successes and residual messages are inert, target rejection and no-value classes clear without creating absent targets, and a repeated action target fails structurally before phase order can select a write. Source-relative change is never recomputed against the destination.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. Add the Number-specific whole-run application over the completed result view and existing one-address `NumericTargetOutcome.applyTo` semantics. Consume only `cleared`, `withErrors`, and `withChanges` against a separately supplied exact target-state destination; reject duplicate action targets structurally and never reclassify source-relative changes against that destination.
+Reassess the completed nonrepeatable String/Number boundary against [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), the consumer-adequacy rule, and the no-duplicate-representation gate. Identify the smallest remaining family-specific semantic or proof gap that does not require a heterogeneous carrier, repeatable activation, structured messages, or new infrastructure.
 
 ## Immediate sequence
 
-1. Add the Number-specific application fold with clear → error → change phase order, exact one-address specialization, duplicate-target rejection, and destination-relative noninterference.
-2. Reassess the completed nonrepeatable String/Number boundary before introducing any heterogeneous carrier.
+1. Compare the two typed run boundaries, their proof spines, and their concrete Execute/Analyze consumers; distinguish an actual missing guarantee from intentional family differences.
+2. Continue only with a bounded existing-owner capsule. Stop before a heterogeneous carrier unless the reassessment establishes a present consumer and a representation that preserves both families without collapsing their distinct contexts, faults, outcomes, or target states.
 
 ## Parked boundaries
 

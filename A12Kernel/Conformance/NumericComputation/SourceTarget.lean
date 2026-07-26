@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.NumericComputation.RunResult
+import A12Kernel.Elaboration.NumericComputation.RunApplication
 
 /-! # Checked Number source-target locks -/
 
@@ -54,6 +54,23 @@ private def viewResult? (source : DocumentData)
 private def view? (source : DocumentData) (outcome : NumericTargetOutcome)
     (residual : List Bool := []) : Option (NumericComputationRunView Bool) :=
   (viewResult? source outcome residual).bind Except.toOption
+
+private def destination : NumericComputationDestination
+  | 1 => .presentValue (.decimal { unscaled := 9, scale := 0 })
+  | 2 => .presentValue .nonComputedForm
+  | _ => .absent
+
+private def applied? (source : DocumentData) (outcome : NumericTargetOutcome)
+    (field : FieldId) : Option NumericTargetState := do
+  let view ← view? source outcome
+  let applied ← view.applyTo destination |>.toOption
+  pure (applied field)
+
+private def duplicateApplication? (view : NumericComputationRunView Bool) :
+    Option FieldId :=
+  match view.applyTo destination with
+  | .error (.duplicateActionTarget field) => some field
+  | .ok _ => none
 
 /- Placement remains independent from typed source-value identity. -/
 example :
@@ -137,6 +154,44 @@ example :
 example :
     isMissingIdentity 1
       (viewResult? (sourceWith "7" (.parsed (.num 7)) none) .noValue) = true := by
+  native_decide
+
+/- Application consumes only source-relative actions: an unchanged success cannot overwrite a different destination, while a changed success uses the exact accepted-value transition and preserves every other field. -/
+example :
+    applied? (sourceWith "7.00" (.parsed (.num 7))
+      (some (.decimal { unscaled := 700, scale := 2 })))
+      (.accepted { unscaled := 700, scale := 2 }) 1 =
+        some (.presentValue (.decimal { unscaled := 9, scale := 0 })) ∧
+    applied? (sourceWith "7" (.parsed (.num 7))
+      (some (.decimal { unscaled := 7, scale := 0 })))
+      (.accepted { unscaled := 700, scale := 2 }) 1 =
+        some (.presentValue (.decimal { unscaled := 700, scale := 2 })) ∧
+    applied? (sourceWith "7" (.parsed (.num 7))
+      (some (.decimal { unscaled := 7, scale := 0 })))
+      (.accepted { unscaled := 700, scale := 2 }) 2 =
+        some (.presentValue .nonComputedForm) := by
+  native_decide
+
+/- Both rejected attempts and source-filled no-value outcomes clear through the one-target owner. -/
+example :
+    applied? (sourceWith "7" (.parsed (.num 7))
+      (some (.decimal { unscaled := 7, scale := 0 })))
+      (.rejected { unscaled := 8, scale := 0 } .aboveMaximum) 1 =
+        some .presentEmpty ∧
+    applied? (sourceWith "7" (.parsed (.num 7))
+      (some (.decimal { unscaled := 7, scale := 0 })))
+      (.invalidNoValue .calculationValue) 1 = some .presentEmpty := by
+  native_decide
+
+/- Malformed public action collections fail before clear/error/change order could select a winner. -/
+example :
+    let source : NumericTargetState :=
+      .presentValue (.decimal { unscaled := 1, scale := 0 })
+    let view := NumericComputationRunView.fromSourceOutcomes ([] : List Bool) [
+      ⟨1, .rejected { unscaled := 2, scale := 0 } .aboveMaximum, source⟩,
+      ⟨1, .accepted { unscaled := 3, scale := 0 }, source⟩
+    ]
+    duplicateApplication? view = some 1 := by
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.SourceTarget
