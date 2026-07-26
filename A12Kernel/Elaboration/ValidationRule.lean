@@ -47,6 +47,12 @@ inductive PartialRepeatableRuleOutcome where
   | evaluated (rows : List (Env × PartialRuleOutcome))
   deriving Repr, DecidableEq
 
+/-- Preserve the observable distinction between no rule evaluation and one evaluated pinned instance; UNKNOWN remains inside the evaluated outcome. -/
+inductive PartialOnceRuleOutcome where
+  | skipped
+  | evaluated (environment : Env) (outcome : FlatRuleOutcome)
+  deriving Repr, DecidableEq
+
 /-- Row iteration requires the error field at the exact derived scope. A mixed rule with no per-row scope may instead retain a repeatable error path for once evaluation; scalar flat-rule assembly passes `false` and keeps its nonrepeatable invariant. -/
 def ruleErrorScopeCompatible (allowRepeatableOnce : Bool)
     (declaration : FlatFieldDecl) :
@@ -249,7 +255,8 @@ private def ordinaryOnceRootHasContent
           placement.cell.admitsGroupContent
     | .error _ => false)
 
-private def ordinaryOnceEnvironment
+/-- Construct the all-one environment of a checked once plan. Scalar and actual-row plans remain explicit structural mismatches. -/
+def onceEnvironment
     (rule : CheckedResolvedValidationRule model) :
     Except OrdinaryRepeatableRuleEvaluationError Env :=
   match rule.ordinaryIterationPlan with
@@ -257,11 +264,34 @@ private def ordinaryOnceEnvironment
   | .rows _ => throw .unsupportedCondition
   | .once scope => pure (scope.map fun level => (level, 1))
 
-/-- Whether every leaf in this first repeatable partial family has an exact relevance-aware addressed interpretation. Wider addressed leaf families are admitted only when their own partial evaluator exists. -/
+/-- Whether every leaf has an exact relevance-aware addressed interpretation. `false` is a structural execution error, not semantic UNKNOWN. -/
 def supportsOrdinaryRepeatablePartial
     (rule : CheckedResolvedValidationRule model) : Bool :=
   rule.condition.core.allLeaves
     ValidationConditionLeaf.supportsAddressedPartial
+
+/-- Evaluate an already-admitted partial instance at a derived target path. The caller owns filtering, relevance admission, and path construction; this helper owns leaf evaluation and message emission. -/
+private def evalOrdinaryPartialAdmittedAt
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) (environment : Env)
+    (errorPath : List Nat) :
+    Except OrdinaryRepeatableRuleEvaluationError FlatRuleOutcome := do
+  let context : AddressedValidationEvaluationContext model := {
+    scalar := {
+      fields := checked.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := environment
+    input := .checked checked
+  }
+  let isRelevant : FlatRelevance := fun field =>
+    scope.coversField model field environment
+  let verdict ← rule.condition.core.evalVerdictExcept fun leaf =>
+    match leaf.evalAddressedPartial? context scope isRelevant with
+    | some result => result.mapError .conditionAddressing
+    | none => throw .unsupportedCondition
+  pure (rule.core.emitAt errorPath verdict)
 
 /-- Evaluate one actual ordinary row under partial relevance. A nonrelevant error instance skips before addressed reads; an admitted row maps only nonrelevant supported leaves to semantic UNKNOWN. -/
 def evalOrdinaryRepeatablePartialAt
@@ -278,19 +308,10 @@ def evalOrdinaryRepeatablePartialAt
   else
     let errorCell ←
       (checked.addressedCell environment rule.errorField).mapError .addressing
-    let base := checked.flatContext
-    let context : AddressedValidationEvaluationContext model := {
-      scalar := { fields := base, groups := GroupPresenceContext.unavailable }
-      outer := environment
-      input := .checked checked
-    }
-    let isRelevant : FlatRelevance := fun field =>
-      effective.coversField model field environment
-    let verdict ← rule.condition.core.evalVerdictExcept fun leaf =>
-      match leaf.evalAddressedPartial? context isRelevant with
-      | some result => result.mapError .conditionAddressing
-      | none => throw .unsupportedCondition
-    pure (environment, .evaluated (rule.core.emitAt errorCell.address.path verdict))
+    let outcome ←
+      rule.evalOrdinaryPartialAdmittedAt checked effective
+        environment errorCell.address.path
+    pure (environment, .evaluated outcome)
 
 private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
@@ -350,7 +371,7 @@ def evalOrdinaryOnceFull
       (Env × FlatRuleOutcome) := do
   if !rule.condition.core.supportsOrdinaryIteration then
     throw .unsupportedCondition
-  let environment ← rule.ordinaryOnceEnvironment
+  let environment ← rule.onceEnvironment
   let hasContent ←
     (rule.ordinaryOnceRootHasContent checked environment)
       |>.mapError .addressing
@@ -371,7 +392,33 @@ def evalOrdinaryOnceFull
       |>.mapError .conditionAddressing
   pure (environment, rule.core.emitAt errorPath verdict)
 
-/-- Execute the first checked one-level partial ordinary-rule family over actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Caller relevance and model-owned globals gate each actual error instance; a relevant entity never becomes document topology, so this per-row route creates no phantom environment. The separate once-evaluation rule shape owns pinned phantom row 1. -/
+/-- Execute the once plan under partial validation. A filtered rule skips before plan construction, an irrelevant pinned error instance skips before condition reads, and an admitted instance bypasses the full root-content gate. Relevance never creates the target row. -/
+def evalOrdinaryOncePartial
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope) :
+    Except OrdinaryRepeatableRuleEvaluationError
+      PartialOnceRuleOutcome := do
+  if rule.hasHaving then
+    pure .skipped
+  else
+    if !rule.supportsOrdinaryRepeatablePartial then
+      throw .unsupportedCondition
+    let environment ← rule.onceEnvironment
+    let effective := scope.withGlobals model
+    if !effective.coversField model rule.errorField environment then
+      pure .skipped
+    else
+      let errorPath ←
+        (environment.pathForScope rule.errorDeclaration.repeatableScope)
+          |>.mapError (fun cause =>
+            .addressing (.environment cause))
+      let outcome ←
+        rule.evalOrdinaryPartialAdmittedAt checked effective
+          environment errorPath
+      pure (.evaluated environment outcome)
+
+/-- Execute a checked one-level partial ordinary rule over actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Caller relevance and model-owned globals gate each actual error instance; relevance never becomes document topology, so this route creates no phantom environment. -/
 def evalOrdinaryRepeatablePartial
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model)

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 477 jobs · trust audit **1345 theorem roots; 27714 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 477 jobs · trust audit **1347 theorem roots; 27758 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and one-level RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked ordinary rules now retain the source-distinct scalar, actual-row, and once-evaluation plans. A no-per-row-reference condition with a repeatable error field is statically admitted as `once`, pins every error level to row 1 without reading or inserting a target row, and evaluates exactly once under the full-validation root admitted-value-content gate. Cases separate root content from a wholly empty document while both have zero physical repeatable rows.
+Checked ordinary rules now retain the source-distinct scalar, actual-row, and once-evaluation plans through both full and the first bounded partial routes. A partial once rule skips an irrelevant pinned error instance before reads, bypasses the full root-content gate after admission, and reuses the existing unfiltered checked Number-aggregate relevance fold. Cases separate ancestor/wildcard extent that fires at the phantom target, absent error relevance that skips, and exact row-1 relevance that admits the rule but leaves the all-rows aggregate UNKNOWN.
 
 ## Active semantic unit
 
-Continue [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by adding partial execution to the now-checked once plan. Partial validation must apply the pinned error-instance relevance gate, bypass the full root-content gate for an admitted instance, and use the existing aggregate relevance owner without creating a physical row.
+Continue [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) with the next existing addressed owner rather than another orchestration path. Audit group-product partial construction first; if its current checked input already retains the needed relevance product, compose it as a leaf specialization for actual-row and once plans. Otherwise stop on the exact missing invariant before considering RNU partial relevance.
 
 ## Immediate sequence
 
-1. Add the exact partial ordered-numeric aggregate leaf bridge over its existing checked-document relevance fold; retain rule-wide `Having` skip outside the leaf and reject every still-unsupported addressed family structurally.
-2. Write red whole-rule cases separating relevant versus irrelevant pinned error row 1 on a zero-row document and confirming that partial admission bypasses the full root-content gate.
-3. Prove the read-free irrelevant-instance skip, then run the full capsule gate. Do not add the phantom to `CheckedDocument`, broaden the actual-row iterator, or manufacture semantic UNKNOWN from structural scope failure.
+1. Inventory `CheckedGroupPresence`, group-list addressed evaluation, and their existing partial relevance inputs against one actual-row plus one once-plan consumer.
+2. If exact reuse is possible, write red cases separating none/partial/full group relevance, admitted empty, structural group error, and phantom target addressing before adding only the leaf bridge.
+3. If group products need a new shared document view, stop and report that repeated need instead of hiding infrastructure in the capsule; then assess addressed RNU as the alternative existing owner.
 
 ## Parked boundaries
 

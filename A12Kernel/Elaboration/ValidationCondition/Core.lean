@@ -441,14 +441,17 @@ def evalSelected (context : ValidationEvaluationContext)
   | .repeatableFieldPresence _ _ => .unknown
   | .repetitionNotUnique _ => .unknown
 
-/-- Whether this first addressed partial family has an exact leaf interpretation. Each wider leaf family must add its own relevance rule here before the whole-rule route can accept it. -/
+/-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .flat _ | .repeatableFieldPresence _ _ => true
+  | .orderedNumeric _ comparison =>
+      comparison.supportsAddressedPartial
   | _ => false
 
-/-- Evaluate one leaf in the first addressed partial family. `none` is a static unsupported-family result, not semantic UNKNOWN; admitted nonrelevant repeatable presence is the exact leaf UNKNOWN case. -/
+/-- Evaluate one partial addressed leaf. `none` is structural unsupported information, not semantic UNKNOWN; a reached but nonrelevant supported source returns the family's exact UNKNOWN result. -/
 def evalAddressedPartial?
     (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope)
     (isRelevant : FlatRelevance) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
@@ -460,6 +463,8 @@ def evalAddressedPartial?
           operator.eval (observeCell .validation cell)
       else
         pure .unknown)
+  | .orderedNumeric _ comparison =>
+      comparison.evalAddressedPartial? context scope isRelevant
   | _ => none
 
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/

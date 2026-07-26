@@ -610,6 +610,21 @@ def OrderedNumericComparison.requiresAddressedValidation
   comparison.left.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation ||
     comparison.right.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation
 
+/-- Whether partial addressed evaluation has an exact interpretation for an atom. Ordinary atoms use per-field relevance; entity-list aggregates use their source-owned extent relevance. `false` is structural unsupported information, never numeric UNKNOWN. -/
+def OrderedNumericValidationAtom.supportsAddressedPartial :
+    OrderedNumericValidationAtom model → Bool
+  | .ordinary _ | .aggregate _ _ => true
+  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
+  | .sumOfProducts _ => false
+
+def OrderedNumericComparison.supportsAddressedPartial
+    (comparison : OrderedNumericComparison model) : Bool :=
+  !comparison.hasHaving &&
+    comparison.left.allAtoms
+      OrderedNumericValidationAtom.supportsAddressedPartial &&
+    comparison.right.allAtoms
+      OrderedNumericValidationAtom.supportsAddressedPartial
+
 structure CheckedOrderedNumericComparison (model : FlatModel) where
   rowGroup : GroupPath
   operandScope : NumericOperandScope := .sameGroup

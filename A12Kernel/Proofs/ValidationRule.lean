@@ -288,6 +288,36 @@ theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartialAt,
     supported, irrelevant] <;> rfl
 
+/-- A filtered once rule skips before support, plan construction, relevance, or document reads. -/
+theorem checkedValidationRule_partial_once_filtered_skips
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope)
+    (filtered : rule.hasHaving = true) :
+  rule.evalOrdinaryOncePartial checked scope =
+      .ok .skipped := by
+  simp [CheckedResolvedValidationRule.evalOrdinaryOncePartial,
+    filtered] <;> rfl
+
+/-- After a supported once environment is constructed, a nonrelevant pinned error instance skips before condition or target reads. -/
+theorem checkedValidationRule_partial_once_irrelevant_skips
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model)
+    (scope : ValidationRelevanceScope)
+    (errorScope : List RepeatableLevel)
+    (unfiltered : rule.hasHaving = false)
+    (supported : rule.supportsOrdinaryRepeatablePartial = true)
+    (once : rule.ordinaryIterationPlan = .once errorScope)
+    (irrelevant :
+      (scope.withGlobals model).coversField
+        model rule.errorField
+          (errorScope.map fun level => (level, 1)) = false) :
+    rule.evalOrdinaryOncePartial checked scope =
+      .ok .skipped := by
+  simp [CheckedResolvedValidationRule.evalOrdinaryOncePartial,
+    CheckedResolvedValidationRule.onceEnvironment,
+    unfiltered, supported, once, irrelevant] <;> rfl
+
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
     (rule : CheckedResolvedFlatRule model)

@@ -441,6 +441,59 @@ def OrderedNumericComparison.evalAddressed
     suppressExactScaleWarning := comparison.suppressExactScaleWarning }
   pure (resolved.evalWith id)
 
+/-- Resolve one atom after the public support check. Unsupported branches make recursion total but are unreachable through `evalAddressedPartial?`; they cannot become public semantic UNKNOWN. -/
+private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
+    (atom : OrderedNumericValidationAtom model)
+    (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope)
+    (isRelevant : FlatRelevance) :
+    Except CheckedAddressingError
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  match atom with
+  | .ordinary source =>
+      if source.allRelevant isRelevant then
+        resolveAddressedOrdinary source context
+      else
+        pure (.error .nonRelevant)
+  | .aggregate op source =>
+      match context.input with
+      | .legacy _ _ =>
+          throw (.checkedDocumentRequired [])
+      | .checked document =>
+          match ← source.evaluateCheckedDocumentPartialAggregate
+              op document context.outer scope with
+          | .skippedHaving => pure (.error .groupState)
+          | .nonRelevant => pure (.error .nonRelevant)
+          | .evaluated operand =>
+              pure operand.toValidationArithmetic
+  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
+  | .sumOfProducts _ =>
+      pure (.error .groupState)
+
+/-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/
+def OrderedNumericComparison.evalAddressedPartial?
+    (comparison : OrderedNumericComparison model)
+    (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope)
+    (isRelevant : FlatRelevance) :
+    Option (Except CheckedAddressingError Verdict) :=
+  if comparison.supportsAddressedPartial then
+    some do
+      let left ← comparison.left.mapM fun atom =>
+        atom.resolveAddressedPartialUnchecked context scope isRelevant
+      let right ← comparison.right.mapM fun atom =>
+        atom.resolveAddressedPartialUnchecked context scope isRelevant
+      let resolved : NumericComparisonOf
+          (Except NumericValidationUnavailable NumericArithmeticOutcome) := {
+        op := comparison.op
+        left
+        right
+        suppressExactScaleWarning := comparison.suppressExactScaleWarning
+      }
+      pure (resolved.evalWith id)
+  else
+    none
+
 def CheckedOrderedNumericComparison.evalSelected
     (checked : CheckedOrderedNumericComparison model)
     (context : ValidationEvaluationContext)

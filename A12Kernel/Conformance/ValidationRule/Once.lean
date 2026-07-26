@@ -74,6 +74,24 @@ private def snapshot? (data : DocumentData) :
   pure (rule.ordinaryIterationPlan, result.1, result.2.verdict,
     result.2.message?.map (·.errorAddress))
 
+private def rootRelevant : ValidationRelevanceScope :=
+  .partialSet [{ path := ["Order"], indices := [.concrete 1] }]
+
+private def errorRowOnly : ValidationRelevanceScope :=
+  .partialSet [{
+    path := outerAmount.path
+    indices := [.concrete 1, .concrete 1, .concrete 1]
+  }]
+
+private def partialSnapshot? (scope : ValidationRelevanceScope) :
+    Option PartialOnceRuleOutcome := do
+  let rule ← onceRule?
+  let prepared ←
+    (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
+      ordinaryIterationModel).toOption
+  let checked ← (checkDocument prepared "en_US" emptyData).toOption
+  (rule.evalOrdinaryOncePartial checked scope).toOption
+
 /- A star-only rule has no per-row scope, but its repeatable error declaration yields an explicit once plan pinned to row 1. Root value-content admits the evaluation even though no physical repeatable row or target cell exists. -/
 example :
     snapshot? rootContentData =
@@ -92,6 +110,23 @@ example :
       some (.once [10], [(10, 1)], .notFired, none)) = true ∧
     (snapshot? rejectedRootData ==
       some (.once [10], [(10, 1)], .notFired, none)) = true := by
+  native_decide
+
+/- Partial admission bypasses full root-content gating for a relevant pinned error instance. Exact row relevance alone does not imply the all-rows extent needed by the star aggregate, so that admitted control evaluates UNKNOWN rather than becoming a rule skip. -/
+example :
+    (partialSnapshot? rootRelevant ==
+      some (
+        .evaluated [(10, 1)] (.fired {
+          errorAddress := { field := outerAmount.id, path := [1] }
+          errorCode := "once"
+          severity := .error
+          messageType := .omission
+          text := { text := "" }
+        }))) = true ∧
+    partialSnapshot? (.partialSet []) =
+      some .skipped ∧
+    partialSnapshot? errorRowOnly =
+      some (.evaluated [(10, 1)] .unknown) := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.Once
