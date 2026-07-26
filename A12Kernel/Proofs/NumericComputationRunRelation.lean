@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.RunRelation
+import A12Kernel.Proofs.ComputationRunPlan
 import A12Kernel.Proofs.NumericComputationRun
 import A12Kernel.Proofs.FieldId
 
@@ -66,45 +67,6 @@ theorem checkedNumericComputationTable_excludes_target
   rcases List.mem_map.mp member with ⟨alternative, _, rfl⟩
   simp [checkedNumericComputationAlternative_excludes_target alternative]
 
-private theorem firstForwardNumericDependency_none_tail
-    (table : CheckedNumericComputationTable model)
-    (remaining : List (CheckedNumericComputationTable model))
-    (ordered : firstForwardNumericDependency? (table :: remaining) = none) :
-    firstForwardNumericDependency? remaining = none := by
-  unfold firstForwardNumericDependency? at ordered
-  cases found : remaining.find? fun later =>
-      table.referencesField later.targetField with
-  | none => simpa [found] using ordered
-  | some later => simp [found] at ordered
-
-private theorem firstForwardNumericDependency_none_suffix
-    (earlier suffix : List (CheckedNumericComputationTable model))
-    (ordered : firstForwardNumericDependency? (earlier ++ suffix) = none) :
-    firstForwardNumericDependency? suffix = none := by
-  induction earlier with
-  | nil => simpa using ordered
-  | cons table remaining inductionHypothesis =>
-      apply inductionHypothesis
-      exact firstForwardNumericDependency_none_tail
-        table (remaining ++ suffix) (by simpa using ordered)
-
-private theorem firstForwardNumericDependency_none_head
-    (table : CheckedNumericComputationTable model)
-    (remaining : List (CheckedNumericComputationTable model))
-    (ordered : firstForwardNumericDependency? (table :: remaining) = none)
-    (later : CheckedNumericComputationTable model) (member : later ∈ remaining) :
-    table.referencesField later.targetField = false := by
-  unfold firstForwardNumericDependency? at ordered
-  cases found : remaining.find? fun candidate =>
-      table.referencesField candidate.targetField with
-  | some candidate => simp [found] at ordered
-  | none =>
-      have notReferenced :=
-        (List.find?_eq_none.mp found) later member
-      cases referenced : table.referencesField later.targetField with
-      | false => rfl
-      | true => exact False.elim (notReferenced referenced)
-
 private theorem numericComputationRun_table_ready
     (run : CheckedNumericComputationRun model)
     (earlier remaining : List (CheckedNumericComputationTable model))
@@ -139,10 +101,24 @@ private theorem numericComputationRun_table_ready
       contradiction
     · have orderedSuffix :
           firstForwardNumericDependency? (table :: remaining) = none :=
-        firstForwardNumericDependency_none_suffix earlier
-          (table :: remaining) (by simpa [split] using run.dependenciesOrdered)
+        by
+          have generic :=
+            firstForwardComputationDependency_none_suffix
+              (fun candidate : CheckedNumericComputationTable model =>
+                candidate.targetField)
+              (fun candidate field =>
+                candidate.referencesField field)
+              earlier (table :: remaining) (by
+                simpa [firstForwardNumericDependency?, split]
+                  using run.dependenciesOrdered)
+          simpa [firstForwardNumericDependency?] using generic
       have notReferenced :=
-        firstForwardNumericDependency_none_head table remaining orderedSuffix
+        firstForwardComputationDependency_none_head
+          (fun candidate : CheckedNumericComputationTable model =>
+            candidate.targetField)
+          (fun candidate field => candidate.referencesField field)
+          table remaining (by
+            simpa [firstForwardNumericDependency?] using orderedSuffix)
           dependency inRemaining
       rw [notReferenced] at referenced
       contradiction

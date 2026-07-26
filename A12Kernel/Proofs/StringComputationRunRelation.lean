@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringComputationRunRelation
+import A12Kernel.Proofs.ComputationRunPlan
 import A12Kernel.Proofs.StringComputationRun
 import A12Kernel.Proofs.FieldId
 
@@ -18,45 +19,6 @@ theorem checkedStringComputationTable_excludes_target
     Bool.false_or, List.any_eq_false]
   intro alternative member
   simp [alternative.guardExcludesTarget, alternative.expressionExcludesTarget]
-
-private theorem firstForwardStringDependency_none_tail
-    (table : CheckedStringComputationTable model)
-    (remaining : List (CheckedStringComputationTable model))
-    (ordered : firstForwardStringDependency? (table :: remaining) = none) :
-    firstForwardStringDependency? remaining = none := by
-  unfold firstForwardStringDependency? at ordered
-  cases found : remaining.find? fun later =>
-      table.referencesField later.targetField with
-  | none => simpa [found] using ordered
-  | some later => simp [found] at ordered
-
-private theorem firstForwardStringDependency_none_suffix
-    (earlier suffix : List (CheckedStringComputationTable model))
-    (ordered : firstForwardStringDependency? (earlier ++ suffix) = none) :
-    firstForwardStringDependency? suffix = none := by
-  induction earlier with
-  | nil => simpa using ordered
-  | cons table remaining inductionHypothesis =>
-      apply inductionHypothesis
-      exact firstForwardStringDependency_none_tail table (remaining ++ suffix) (by
-        simpa using ordered)
-
-private theorem firstForwardStringDependency_none_head
-    (table : CheckedStringComputationTable model)
-    (remaining : List (CheckedStringComputationTable model))
-    (ordered : firstForwardStringDependency? (table :: remaining) = none)
-    (later : CheckedStringComputationTable model) (member : later ∈ remaining) :
-    table.referencesField later.targetField = false := by
-  unfold firstForwardStringDependency? at ordered
-  cases found : remaining.find? fun candidate =>
-      table.referencesField candidate.targetField with
-  | some candidate => simp [found] at ordered
-  | none =>
-      have notReferenced :=
-        (List.find?_eq_none.mp found) later member
-      cases referenced : table.referencesField later.targetField with
-      | false => rfl
-      | true => exact False.elim (notReferenced referenced)
 
 /-- Successful atomic evaluation cannot substitute another target into a completion. -/
 theorem stringComputationRun_evaluateTable_target
@@ -121,10 +83,24 @@ private theorem stringComputationRun_table_ready
       contradiction
     · have orderedSuffix :
           firstForwardStringDependency? (table :: remaining) = none :=
-        firstForwardStringDependency_none_suffix earlier (table :: remaining) (by
-          simpa [split] using run.dependenciesOrdered)
+        by
+          have generic :=
+            firstForwardComputationDependency_none_suffix
+              (fun candidate : CheckedStringComputationTable model =>
+                candidate.targetField)
+              (fun candidate field =>
+                candidate.referencesField field)
+              earlier (table :: remaining) (by
+                simpa [firstForwardStringDependency?, split]
+                  using run.dependenciesOrdered)
+          simpa [firstForwardStringDependency?] using generic
       have notReferenced :=
-        firstForwardStringDependency_none_head table remaining orderedSuffix
+        firstForwardComputationDependency_none_head
+          (fun candidate : CheckedStringComputationTable model =>
+            candidate.targetField)
+          (fun candidate field => candidate.referencesField field)
+          table remaining (by
+            simpa [firstForwardStringDependency?] using orderedSuffix)
           dependency inRemaining
       rw [notReferenced] at referenced
       contradiction

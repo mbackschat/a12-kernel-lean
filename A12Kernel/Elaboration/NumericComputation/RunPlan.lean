@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ComputationRunPlan
 import A12Kernel.Elaboration.NumericComputation.Table
 
 /-! # Checked scalar Number computation run plans
@@ -62,15 +63,12 @@ def firstNonScalarNumericTable? :
       else
         some table.targetField
 
-/-- Return the first supplied-order consumer that reads a computed target whose table has not run yet. -/
-def firstForwardNumericDependency? :
-    List (CheckedNumericComputationTable model) → Option (FieldId × FieldId)
-  | [] => none
-  | table :: remaining =>
-      match remaining.find? fun later =>
-          table.referencesField later.targetField with
-      | some dependency => some (table.targetField, dependency.targetField)
-      | none => firstForwardNumericDependency? remaining
+/-- Specialize the shared supplied-order dependency check to checked Number tables. -/
+def firstForwardNumericDependency?
+    (tables : List (CheckedNumericComputationTable model)) :
+    Option (FieldId × FieldId) :=
+  firstForwardComputationDependency?
+    (·.targetField) (·.referencesField ·) tables
 
 inductive NumericComputationRunPlanError where
   | empty

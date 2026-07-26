@@ -69,6 +69,7 @@ import A12Kernel.Proofs.Observation
 import A12Kernel.Proofs.TemporalValue
 import A12Kernel.Proofs.PartialValidation
 import A12Kernel.Proofs.ComputationCondition
+import A12Kernel.Proofs.ComputationRunPlan
 import A12Kernel.Proofs.ComputationFillQuantifier
 import A12Kernel.Proofs.ValidationFillQuantifier
 import A12Kernel.Proofs.GroupPresence

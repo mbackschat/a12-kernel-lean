@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ComputationRunPlan
 import A12Kernel.Elaboration.StringComputationTable
 
 /-! # Checked nonrepeatable String computation run plans
@@ -33,15 +34,12 @@ inductive StringComputationRunPlanError where
   | forwardDependency (consumer dependency : FieldId)
   deriving Repr, DecidableEq
 
-/-- Return the first supplied-order consumer whose table reads a target that has not run yet. -/
-def firstForwardStringDependency? :
-    List (CheckedStringComputationTable model) → Option (FieldId × FieldId)
-  | [] => none
-  | table :: remaining =>
-      match remaining.find? fun later =>
-          table.referencesField later.targetField with
-      | some dependency => some (table.targetField, dependency.targetField)
-      | none => firstForwardStringDependency? remaining
+/-- Specialize the shared supplied-order dependency check to checked String tables. -/
+def firstForwardStringDependency?
+    (tables : List (CheckedStringComputationTable model)) :
+    Option (FieldId × FieldId) :=
+  firstForwardComputationDependency?
+    (·.targetField) (·.referencesField ·) tables
 
 /-- A nonempty finite String run whose target is unique per step and whose computed dependencies precede every consumer. -/
 structure CheckedStringComputationRun (model : FlatModel) where
