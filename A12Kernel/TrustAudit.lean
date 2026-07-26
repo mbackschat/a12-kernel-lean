@@ -618,6 +618,11 @@ run_cmd do
 #print axioms A12Kernel.numericDependency_value_iff_accepted
 #print axioms A12Kernel.numericInvalidity_dependency_is_poisoned
 #print axioms A12Kernel.rejectedNumericDependency_doesNotExposeAttempt
+#print axioms A12Kernel.numericDependencyCell_wellFormed
+#print axioms A12Kernel.noValueNumericDependency_reads_empty
+#print axioms A12Kernel.acceptedNumericDependency_reads_exactAmount
+#print axioms A12Kernel.invalidNumericDependencies_read_computedDependencyPoison
+#print axioms A12Kernel.noValueNumericDependency_ne_invalidityCell
 #print axioms A12Kernel.same_numericApplicationAndDelta_doesNotImply_sameDependency
 #print axioms A12Kernel.messageName_provider_wins
 #print axioms A12Kernel.messageName_missingOrEmptyModelLabel_usesDebug

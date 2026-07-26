@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericTarget
+import A12Kernel.Semantics.Observation
 
 /-! # One numeric outcome-to-dependency projection
 
@@ -23,5 +24,36 @@ def dependencyObservation : NumericTargetOutcome → NumericDependencyObservatio
   | .rejected _ _ | .invalidNoValue _ | .inheritedPoison _ => .poisoned
 
 end NumericTargetOutcome
+
+/-- A checked synthetic Number dependency cell with the same representation invariant as a document cell. The stored decimal remains in the rich producer outcome; a later numeric read observes its exact rational amount. -/
+structure NumericDependencyCell where
+  checked : CheckedCell
+  wellFormed : checked.WellFormed
+
+namespace NumericDependencyCell
+
+/-- Embed the cause-free Number dependency observation in the common checked-cell read boundary. Invalid producer details have already been erased by `dependencyObservation`. -/
+def ofObservation : NumericDependencyObservation → NumericDependencyCell
+  | .empty => {
+      checked := { rawPresent := false, parsed := none, findings := [] }
+      wellFormed := by simp [CheckedCell.WellFormed] }
+  | .value stored => {
+      checked := {
+        rawPresent := true
+        parsed := some (.num stored.amount)
+        findings := [] }
+      wellFormed := by simp [CheckedCell.WellFormed] }
+  | .poisoned => {
+      checked := {
+        rawPresent := true
+        parsed := none
+        findings := [.computedDependency] }
+      wellFormed := by simp [CheckedCell.WellFormed] }
+
+/-- Project one complete Number target outcome to the checked cell observed by a later computation. -/
+def ofOutcome (outcome : NumericTargetOutcome) : NumericDependencyCell :=
+  ofObservation outcome.dependencyObservation
+
+end NumericDependencyCell
 
 end A12Kernel

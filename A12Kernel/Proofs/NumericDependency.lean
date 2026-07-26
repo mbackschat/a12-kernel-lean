@@ -35,6 +35,52 @@ theorem rejectedNumericDependency_doesNotExposeAttempt
       (NumericTargetOutcome.rejected second secondCause).dependencyObservation := by
   rfl
 
+/-- Every Number dependency projection satisfies the checked-cell representation invariant. -/
+theorem numericDependencyCell_wellFormed
+    (outcome : NumericTargetOutcome) :
+    (NumericDependencyCell.ofOutcome outcome).checked.WellFormed :=
+  (NumericDependencyCell.ofOutcome outcome).wellFormed
+
+/-- Clean no-result is a clean empty read after entering the checked-cell boundary. -/
+theorem noValueNumericDependency_reads_empty :
+    observeCell .computation
+      (NumericDependencyCell.ofOutcome .noValue).checked = .empty := by
+  rfl
+
+/-- An accepted Number producer exposes its exact rational amount to a later numeric read. -/
+theorem acceptedNumericDependency_reads_exactAmount
+    (stored : StoredNumber) :
+    observeCell .computation
+      (NumericDependencyCell.ofOutcome (.accepted stored)).checked =
+        .value (.num stored.amount) := by
+  rfl
+
+/-- Rejected attempts, calculation-local invalidity, and inherited poison all become the same cause-blind computed-dependency read. -/
+theorem invalidNumericDependencies_read_computedDependencyPoison
+    (attempted : StoredNumber) (targetError : NumericTargetError)
+    (invalidity : NumericTargetInvalidity) (inherited : FormalCause) :
+    observeCell .computation
+        (NumericDependencyCell.ofOutcome
+          (.rejected attempted targetError)).checked =
+          .poison .computedDependency ∧
+      observeCell .computation
+        (NumericDependencyCell.ofOutcome
+          (.invalidNoValue invalidity)).checked =
+          .poison .computedDependency ∧
+      observeCell .computation
+        (NumericDependencyCell.ofOutcome
+          (.inheritedPoison inherited)).checked =
+          .poison .computedDependency := by
+  exact ⟨rfl, rfl, rfl⟩
+
+/-- Clean no-result and calculation invalidity remain distinct after entering the checked-cell dependency boundary. -/
+theorem noValueNumericDependency_ne_invalidityCell
+    (cause : NumericTargetInvalidity) :
+    (NumericDependencyCell.ofOutcome .noValue).checked ≠
+      (NumericDependencyCell.ofOutcome (.invalidNoValue cause)).checked := by
+  cases cause
+  decide
+
 /-- Exact application plus observable delta still cannot determine dependency meaning: quiet no-result is clean empty, while calculation invalidity is poison. -/
 theorem same_numericApplicationAndDelta_doesNotImply_sameDependency
     (prior : NumericTargetState) (cause : NumericTargetInvalidity) :

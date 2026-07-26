@@ -115,4 +115,40 @@ example :
         (NumericTargetOutcome.invalidNoValue .calculationValue).dependencyObservation := by
   decide
 
+/- Clean no-result becomes a clean empty checked-cell read. -/
+example :
+    observeCell .computation
+      (NumericDependencyCell.ofOutcome .noValue).checked = .empty := by
+  rfl
+
+/- Accepted output exposes its exact numeric amount, independently of stored scale metadata. -/
+example :
+    observeCell .computation
+      (NumericDependencyCell.ofOutcome (.accepted padded)).checked =
+        .value (.num padded.amount) := by
+  rfl
+
+/- Distinct invalid producer classes induce the same cause-blind dependency read. -/
+example :
+    observeCell .computation
+        (NumericDependencyCell.ofOutcome
+          (.rejected overlong .totalDigitsTooLong)).checked =
+          .poison .computedDependency ∧
+      observeCell .computation
+        (NumericDependencyCell.ofOutcome
+          (.invalidNoValue .calculationValue)).checked =
+          .poison .computedDependency ∧
+      observeCell .computation
+        (NumericDependencyCell.ofOutcome
+          (.inheritedPoison .malformed)).checked =
+          .poison .computedDependency := by
+  decide
+
+/- A cleared-looking clean result and calculation invalidity remain different dependency cells. -/
+example :
+    (NumericDependencyCell.ofOutcome .noValue).checked ≠
+      (NumericDependencyCell.ofOutcome
+        (.invalidNoValue .calculationValue)).checked := by
+  decide
+
 end A12Kernel.Conformance.NumericDependency
