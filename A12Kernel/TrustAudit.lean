@@ -613,6 +613,11 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_read_input
 #print axioms A12Kernel.numericComputationRun_execute_targetOrder
 #print axioms A12Kernel.numericComputationRun_execute_targetsUnique
+#print axioms A12Kernel.numericComputationRun_shouldClear_iff
+#print axioms A12Kernel.numericComputationRun_withChanges_subset
+#print axioms A12Kernel.numericComputationRun_formalErrors_exact
+#print axioms A12Kernel.numericComputationRun_noErrorOccurred_iff
+#print axioms A12Kernel.numericComputationRun_fromSourceOutcomes_permutation
 #print axioms A12Kernel.acceptedNumericTarget_applies_exactly
 #print axioms A12Kernel.noAppliedNumericValue_clears_exactly
 #print axioms A12Kernel.noAppliedNumericValue_preserves_presence

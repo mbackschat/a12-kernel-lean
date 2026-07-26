@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 510 jobs · trust audit **1417 theorem roots; 29629 declarations in 276 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 512 jobs · trust audit **1422 theorem roots; 29806 declarations in 278 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked scalar Number run now executes its certified supplied order against one immutable checked document. Pending targets hide stale source content, completed targets expose `NumericDependencyCell`, ordinary inputs delegate unchanged, and the returned rich outcomes preserve the plan's exact unique target sequence. The same checked input retains optional source Number comparison identity and projects absent, present-empty, scale-sensitive decimal, and source forms that can never equal computed Number output without guessing V2 object type from text. Separating cases cover accepted producer visibility, clean no-result followed by numeric empty-as-zero consumption, reached cause-blind poison, `7` versus `7.00`, equal-looking source String identity, missing provenance, and inconsistent annotation.
+The checked scalar Number run now projects its rich outcomes into the five extensional V2 collections against the same immutable source document. Successful unchanged values remain in `withoutErrors`, exact typed changes form the subset `withChanges`, target-rejected attempts retain their payload and cause in `withErrors`, and clean no-value, calculation invalidity, or inherited poison clears only a source-filled target. The separately supplied residual messages remain unchanged and, together with computed errors, exactly determine `noErrorOccurred`. Missing typed Number source identity fails structurally before classification. The public collections are proved permutation-invariant even though execution retains certified plan order.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The checked document now optionally retains the source Number's exact comparison identity because stored text cannot distinguish a V2 `String` from `BigDecimal`, and its scalar `Rat` cannot retain decimal scale. Its scalar source-target projection preserves absent, present-empty, comparable decimal, and source forms unequal to every computed Number; a filled Number without that provenance fails structurally. Add the Number-specific V2 result projection over this boundary. Do not reconstruct identity from text, widen `Value`, duplicate document state, or start application.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. Add the Number-specific whole-run application over the completed result view and existing one-address `NumericTargetOutcome.applyTo` semantics. Consume only `cleared`, `withErrors`, and `withChanges` against a separately supplied exact target-state destination; reject duplicate action targets structurally and never reclassify source-relative changes against that destination.
 
 ## Immediate sequence
 
-1. Add the Number-specific V2 result projection with all successful non-clearing outcomes, the typed changed subset, payloadful target errors, source-filled clears, an unchanged residual message input, and the exact two-error-channel predicate.
-2. Keep whole-run application separate.
+1. Add the Number-specific application fold with clear → error → change phase order, exact one-address specialization, duplicate-target rejection, and destination-relative noninterference.
+2. Reassess the completed nonrepeatable String/Number boundary before introducing any heterogeneous carrier.
 
 ## Parked boundaries
 
