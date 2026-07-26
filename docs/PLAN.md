@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 474 jobs · trust audit **1339 theorem roots; 27565 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 475 jobs · trust audit **1342 theorem roots; 27617 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and one-level RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked RNU now retains whether its reference group came from an authored `@From` clause instead of inferring authoring provenance from the resolved group. Only the authored form contributes the resolved group's complete subtree to error-field reference admission. Whole-rule cases separate inside and descendant fields from the parent and pair every result with the same source using the identical inferred default group; generic laws pin both authored and inferred reference boundaries.
+Checked nonrepeatable partial rules now compose the existing three-stage contract instead of stopping at a low-level flat evaluator. The route derives the complete-tree filter marker, augments wildcardable relevance with model-owned global fields, gates on the explicit error field, maps only out-of-set leaf reads to UNKNOWN, bypasses the full content gate for admitted empty instances, and reuses the sole message emitter. Cases separate global from non-global admission, rule skip from evaluated UNKNOWN, decisive `Or` from suppressed `And`, and partial empty-as-zero from full-validation content suppression.
 
 ## Active semantic unit
 
-Resume [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). Compose the established checked-document relevance products, rule-level entry decision, addressed condition leaves, and error-field/global augmentation without resampling cells or manufacturing semantic UNKNOWN from rule-level nonrelevance.
+Continue [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) with one-level repeatable row admission. Determine how caller relevance adds actual and phantom error-field environments, then reuse the checked document and addressed condition route without turning a missing physical row into topology or a rule-level skip into UNKNOWN.
 
 ## Immediate sequence
 
-1. Audit the current partial-validation rule entry, relevance-set, global/error-field augmentation, and addressed-leaf owners against the bounded kernel and a12-dmkits source routes already named by SG2.
-2. Write one finite decision table that separates rule-level nonrelevance, leaf UNKNOWN, direct error-field relevance, global augmentation, filter-driven entry, and repeated row addressing, then add the smallest failing whole-rule cases.
-3. Extend the existing checked rule route only at the demonstrated missing seam, prove its rule/leaf relevance boundary, and update the SG2 checklist without adding another document, topology, condition tree, or partial evaluator.
+1. Audit kernel and maintained a12-dmkits partial iteration for the exact union and order of physical actual rows and relevant phantom error-field instances at one repeatable level.
+2. Write red whole-rule cases separating an irrelevant actual row, a relevant actual row, a relevant phantom row, and a relevant error row with one nonrelevant condition peer.
+3. Extend the ordinary checked rule loop only at its environment-selection seam, preserve structural checked reads for physical rows and the source-grounded phantom observation rule, then prove that rule admission remains outside semantic UNKNOWN.
 
 ## Parked boundaries
 

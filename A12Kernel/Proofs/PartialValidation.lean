@@ -549,7 +549,8 @@ theorem partialRule_fired_implies_fullWithContent_fired_of_agreesOn
       condition.evalSelected completionContext isRelevant = .fired partialPolarity := by
     rw [← partialSelected_agreesOn condition partialContext completionContext
       isRelevant agreement]
-    simpa [FlatCondition.evalPartial, relevant] using partialFired
+    simpa [FlatCondition.evalPartial, FlatRuleFilterPresence.admits,
+      relevant] using partialFired
   have fullTrue := partialSelected_true_persists_full condition completionContext
     isRelevant (by simp [partialSelectedFired, Verdict.truth])
   rcases (Verdict.truth_eq_tru_iff _).1 fullTrue with ⟨fullPolarity, fullFired⟩

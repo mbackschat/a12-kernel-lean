@@ -51,4 +51,27 @@ theorem checkedStarFieldPath_cellRelevant_partialSet_iff
   simp [CheckedStarFieldPath.cellRelevant,
     ValidationRelevanceScope.coversCell]
 
+/-- Global augmentation makes a model-owned global declaration relevant at every concrete environment covered by its all-instances pattern, independently of the caller's partial set. -/
+theorem validationRelevanceScope_withGlobals_covers_global
+    (scope : ValidationRelevanceScope) (model : FlatModel)
+    (declaration : FlatFieldDecl) (environment : Env)
+    (lookup : model.lookupUniqueId declaration.id = .ok declaration)
+    (owned : declaration ∈ model.fields)
+    (global : declaration.isGlobal = true)
+    (covered :
+      (RelevantEntityPattern.allInstances declaration.path).coversCell
+        model declaration.path environment = true) :
+    (scope.withGlobals model).coversField
+      model declaration.id environment = true := by
+  cases scope with
+  | full =>
+      simp [ValidationRelevanceScope.withGlobals,
+        ValidationRelevanceScope.coversField, lookup,
+        ValidationRelevanceScope.coversCell]
+  | partialSet entities =>
+      simp [ValidationRelevanceScope.withGlobals,
+        ValidationRelevanceScope.coversField, lookup,
+        ValidationRelevanceScope.coversCell, List.any_append]
+      exact .inr ⟨declaration, owned, global, covered⟩
+
 end A12Kernel

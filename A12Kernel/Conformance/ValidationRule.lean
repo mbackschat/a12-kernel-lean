@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.ValidationRule.Flat
+import A12Kernel.Conformance.ValidationRule.Partial
 import A12Kernel.Conformance.ValidationRule.OrdinaryAdmission
 import A12Kernel.Conformance.ValidationRule.OrdinaryScalarSources
 import A12Kernel.Conformance.ValidationRule.OrdinaryTemporal

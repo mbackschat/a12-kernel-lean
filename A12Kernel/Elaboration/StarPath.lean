@@ -53,6 +53,10 @@ end SurfaceStarFieldPath
 
 namespace RelevantEntityPattern
 
+/-- The all-instances partial-validation pattern for one model path. Every path segment receives the public wildcard, including nonrepeatable segments where it is observationally inert. -/
+def allInstances (path : List String) : RelevantEntityPattern :=
+  { path, indices := path.map fun _ => .all }
+
 private def actualIndex? (model : FlatModel) (environment : Env)
     (path : GroupPath) : Option Nat :=
   match model.repeatableGroups.find? fun group => group.path == path with
@@ -103,6 +107,16 @@ end RelevantEntityPattern
 
 namespace ValidationRelevanceScope
 
+/-- Add every model-owned global field to a partial-validation call at the common scope boundary. Full validation is already complete. -/
+def withGlobals (scope : ValidationRelevanceScope)
+    (model : FlatModel) : ValidationRelevanceScope :=
+  match scope with
+  | .full => .full
+  | .partialSet entities =>
+      .partialSet (entities ++
+        (model.fields.filter (·.isGlobal)).map fun declaration =>
+          RelevantEntityPattern.allInstances declaration.path)
+
 /-- All-rows aggregate relevance is an operator-level path fact. Enumerating every concrete row does not substitute for one wildcard-covering entity. -/
 def coversAllRows (scope : ValidationRelevanceScope) (model : FlatModel)
     (targetPath : List String) : Bool :=
@@ -117,6 +131,13 @@ def coversCell (scope : ValidationRelevanceScope) (model : FlatModel)
   | .full => true
   | .partialSet entities =>
       entities.any fun entity => entity.coversCell model targetPath environment
+
+/-- Resolve a field ID through the checked model before applying per-instance relevance. An unresolved or ambiguous ID cannot become relevant. -/
+def coversField (scope : ValidationRelevanceScope) (model : FlatModel)
+    (field : FieldId) (environment : Env) : Bool :=
+  match model.lookupUniqueId field with
+  | .ok declaration => scope.coversCell model declaration.path environment
+  | .error _ => false
 
 end ValidationRelevanceScope
 

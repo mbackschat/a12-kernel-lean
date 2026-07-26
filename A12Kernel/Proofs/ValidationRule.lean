@@ -219,6 +219,38 @@ theorem checkedValidationRule_scalar_rejects_addressed
       .error .addressedContextRequired := by
   simp [CheckedResolvedValidationRule.evalFull, addressed]
 
+/-- The checked whole-rule partial route preserves the observable filtered-rule invariant: a retained `Having` skips without addressed-context demand or condition evaluation. -/
+theorem checkedValidationRule_partial_filtered_skips
+    (rule : CheckedResolvedValidationRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext)
+    (groups : GroupPresenceContext) (scope : ValidationRelevanceScope)
+    (filtered : rule.hasHaving = true) :
+    rule.evalPartial prepared locale raw groups scope =
+      .ok .skipped := by
+  simp [CheckedResolvedValidationRule.evalPartial,
+    FlatRuleFilterPresence.admits, filtered]
+
+/-- After global augmentation and the error-field gate, an admitted scalar partial rule delegates exactly once to the existing relevance-aware condition tree and sole message emitter. -/
+theorem checkedValidationRule_partial_evaluated
+    (rule : CheckedResolvedValidationRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext)
+    (groups : GroupPresenceContext) (scope : ValidationRelevanceScope)
+    (unfiltered : rule.hasHaving = false)
+    (errorRelevant :
+      (scope.withGlobals model).coversField model rule.errorField [] = true)
+    (scalar : rule.requiresAddressedValidation = false) :
+    rule.evalPartial prepared locale raw groups scope =
+      .ok (.evaluated (rule.core.emit
+        (rule.condition.core.evalSelected {
+          fields := (prepared.checkContext locale raw).withWorld prepared.world
+          groups
+        } fun field =>
+          (scope.withGlobals model).coversField model field []))) := by
+  simp [CheckedResolvedValidationRule.evalPartial,
+    FlatRuleFilterPresence.admits, unfiltered, errorRelevant, scalar]
+
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
     (rule : CheckedResolvedFlatRule model)

@@ -637,6 +637,8 @@ run_cmd do
 #print axioms A12Kernel.checkedValidationRule_iterationScope_owned
 #print axioms A12Kernel.assembleResolvedValidationRule_rejects_negativeIteration
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
+#print axioms A12Kernel.checkedValidationRule_partial_filtered_skips
+#print axioms A12Kernel.checkedValidationRule_partial_evaluated
 #print axioms A12Kernel.checkedFlatRule_fired_message_exact
 #print axioms A12Kernel.checkedValidationRule_fired_message_exact
 #print axioms A12Kernel.checkedNumericComparison_modelWellFormed
@@ -966,6 +968,7 @@ run_cmd do
 #print axioms A12Kernel.checkedStringValueListStarValues_partialHaving_skips
 #print axioms A12Kernel.checkedStarFieldPath_cellRelevant_full
 #print axioms A12Kernel.checkedStarFieldPath_cellRelevant_partialSet_iff
+#print axioms A12Kernel.validationRelevanceScope_withGlobals_covers_global
 #print axioms A12Kernel.groupFilled_fired_iff
 #print axioms A12Kernel.groupNotFilled_fired_iff
 #print axioms A12Kernel.groupPresence_rowContent_admitted

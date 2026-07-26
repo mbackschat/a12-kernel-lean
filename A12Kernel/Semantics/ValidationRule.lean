@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.FlatValidation
+import A12Kernel.Semantics.PartialValidation
 
 /-! # One flat validation-rule emission boundary
 
@@ -119,6 +119,12 @@ inductive FlatRuleOutcome where
   | notFired
   | fired (message : FlatRuleMessage)
   | unknown
+  deriving Repr, DecidableEq
+
+/-- Whole-rule partial execution keeps a rule-level skip distinct from every evaluated condition outcome, including clean nonfiring and UNKNOWN. -/
+inductive PartialRuleOutcome where
+  | skipped
+  | evaluated (outcome : FlatRuleOutcome)
   deriving Repr, DecidableEq
 
 namespace FlatRuleOutcome

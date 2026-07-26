@@ -154,6 +154,28 @@ def evalFull (rule : CheckedResolvedValidationRule model)
       { fields := (prepared.checkContext locale raw).withWorld prepared.world, groups }
       hasContent)
 
+/-- Execute one checked nonrepeatable rule under kernel 30.8.1 partial validation. The observational admission normal form makes every filtered rule skip, global fields augment the caller scope for the independent error-field gate, relevant rules bypass the full-validation content gate, and out-of-set leaf reads remain UNKNOWN inside the existing connective evaluator. Kernel dispatches by error field before entering the generated rule method; that unobservable internal order is not represented here. -/
+def evalPartial (rule : CheckedResolvedValidationRule model)
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (locale : String) (raw : RawFlatContext) (groups : GroupPresenceContext)
+    (scope : ValidationRelevanceScope) :
+    Except ValidationEvaluationError PartialRuleOutcome :=
+  let effective := scope.withGlobals model
+  let isRelevant : FlatRelevance := fun field =>
+    effective.coversField model field []
+  let filterPresence : FlatRuleFilterPresence :=
+    if rule.hasHaving then .filtered else .unfiltered
+  if !filterPresence.admits fun _ => isRelevant rule.errorField then
+    .ok .skipped
+  else if rule.requiresAddressedValidation then
+    .error .addressedContextRequired
+  else
+    let context : ValidationEvaluationContext := {
+      fields := (prepared.checkContext locale raw).withWorld prepared.world
+      groups }
+    .ok (.evaluated
+      (rule.core.emit (rule.condition.core.evalSelected context isRelevant)))
+
 /-- Evaluate a model-certified addressed rule through the same checked core and message emitter. The caller must supply one coherent prepared scalar/repeatable view; SG1 remains responsible for constructing that view from a general document. -/
 def evalAddressedFull (rule : CheckedResolvedValidationRule model)
     (context : AddressedValidationEvaluationContext model)

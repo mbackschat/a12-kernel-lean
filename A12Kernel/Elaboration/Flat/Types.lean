@@ -192,6 +192,8 @@ structure FlatFieldDecl where
   stringPatternSource : Option String := none
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
+  /-- A global field is auto-added with all repetition indices wildcarded to every partial-validation relevant set before rule admission or condition reads. -/
+  isGlobal : Bool := false
   /-- Absence means that this field has no model-declared generated mandatory rule. -/
   requiredness : Option RequirednessMode := none
   /-- Resolved Number constraints reachable from computed-target checking. Scale and signedness remain in `policy.kind`. -/
