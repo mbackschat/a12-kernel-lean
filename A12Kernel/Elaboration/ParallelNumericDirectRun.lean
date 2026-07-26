@@ -56,14 +56,6 @@ inductive ExecutionError where
   | unsupportedTarget (fault : NumericTargetCheckFault)
   deriving Repr, DecidableEq
 
-private def targetAddress
-    (checked : CheckedIsolatedParallelNumericDirectRun model)
-    (environment : Env) : Except ExecutionError CellAddr := do
-  let path ←
-    environment.pathForScope checked.route.targetDeclaration.repeatableScope
-      |>.mapError .environment
-  pure { field := checked.route.targetField, path }
-
 private def operandCell
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
@@ -88,9 +80,8 @@ private def operandCell
 private def executeTarget
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
-    (targetEnvironment : Env) :
+    (targetEnvironment : Env) (address : CellAddr) :
     Except ExecutionError ParallelNumericDirectOutcome := do
-  let address ← checked.targetAddress targetEnvironment
   let targetColumn ←
     preliminary.resolveIndexColumn
       checked.route.groups.leftGroup targetEnvironment
@@ -114,28 +105,18 @@ def execute
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model) :
     Except ExecutionError (List ParallelNumericDirectOutcome) := do
-  let targetMarks ←
-    checked.route.invalidIndexMarks preliminary .target
-      |>.mapError (ExecutionError.marking .target)
-  let operandMarks ←
-    checked.route.invalidIndexMarks preliminary .operand
-      |>.mapError (ExecutionError.marking .operand)
-  let targetEnvironments ←
-    checked.route.targetEnvironments preliminary.base
-      |>.mapError .targetRows
-  let candidates ← targetEnvironments.mapM fun targetEnvironment => do
-    let coveredByTarget ←
-      (checked.route.markPlanFor .target).coversAny
-        targetEnvironment targetMarks
-        |>.mapError ExecutionError.environment
-    let coveredByOperand ←
-      (checked.route.markPlanFor .operand).coversAny
-        targetEnvironment operandMarks
-        |>.mapError ExecutionError.environment
-    if coveredByTarget || coveredByOperand then
+  let coverage ←
+    checked.route.targetCoverage preliminary
+      |>.mapError fun
+        | .marking side error => .marking side error
+        | .targetRows error => .targetRows error
+        | .targetEnvironment error => .environment error
+  let candidates ← coverage.mapM fun target => do
+    if target.indexInvalid then
       pure none
     else
-      some <$> checked.executeTarget preliminary targetEnvironment
+      some <$> checked.executeTarget preliminary
+        target.environment target.address
   pure (candidates.filterMap id)
 
 end CheckedIsolatedParallelNumericDirectRun

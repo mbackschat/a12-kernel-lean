@@ -33,6 +33,14 @@ inductive ParallelComputationMarkingError where
   | targetEnvironment (error : EnvBindingError)
   deriving Repr, DecidableEq
 
+/-- Structural failures while projecting every actual target to its exact address and checked post-loop index disposition. -/
+inductive ParallelNumericTargetCoverageError where
+  | marking (side : ParallelComputationIndexSide)
+      (error : ParallelComputationMarkingError)
+  | targetRows (error : ActualRowEnvironmentError)
+  | targetEnvironment (error : EnvBindingError)
+  deriving Repr, DecidableEq
+
 /-- Structural failures while projecting checked post-loop marks to source-relative public clears. -/
 inductive ParallelNumericClearingError where
   | marking (side : ParallelComputationIndexSide)
@@ -40,6 +48,13 @@ inductive ParallelNumericClearingError where
   | targetRows (error : ActualRowEnvironmentError)
   | targetEnvironment (error : EnvBindingError)
   | sourceTarget (error : NumericSourceTargetError)
+  deriving Repr, DecidableEq
+
+/-- One actual target paired with the exact post-loop index disposition derived from both checked index sides. -/
+structure ParallelNumericTargetCoverage where
+  environment : Env
+  address : CellAddr
+  indexInvalid : Bool
   deriving Repr, DecidableEq
 
 /-- The repeatable Number fragment of the public computation result. Collection order is not public. -/
@@ -152,6 +167,49 @@ def invalidIndexMarks (plan : CheckedParallelNumericClearingPlan model)
         |>.mapError ParallelComputationMarkingError.targetEnvironment
   pure (candidates.filterMap id).eraseDups
 
+/-- Classify one already-enumerated target list against already-derived marks. This is the shared coverage crossing used by execution and public clearing. -/
+def targetCoverageWithMarks
+    (plan : CheckedParallelNumericClearingPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetMarks :
+      List (ParallelComputationMark (plan.markPlanFor .target)))
+    (operandMarks :
+      List (ParallelComputationMark (plan.markPlanFor .operand))) :
+    Except ParallelNumericTargetCoverageError
+      (List ParallelNumericTargetCoverage) := do
+  let targetEnvironments ←
+    plan.targetEnvironments preliminary.base
+      |>.mapError .targetRows
+  targetEnvironments.mapM fun environment => do
+    let path ←
+      environment.pathForScope plan.targetDeclaration.repeatableScope
+        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
+    let coveredByTarget ←
+      (plan.markPlanFor .target).coversAny environment targetMarks
+        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
+    let coveredByOperand ←
+      (plan.markPlanFor .operand).coversAny environment operandMarks
+        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
+    pure {
+      environment
+      address := { field := plan.targetField, path }
+      indexInvalid := coveredByTarget || coveredByOperand
+    }
+
+/-- Derive both checked mark sets and project every actual target through their shared coverage decision. -/
+def targetCoverage
+    (plan : CheckedParallelNumericClearingPlan model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except ParallelNumericTargetCoverageError
+      (List ParallelNumericTargetCoverage) := do
+  let targetMarks ←
+    plan.invalidIndexMarks preliminary .target
+      |>.mapError (ParallelNumericTargetCoverageError.marking .target)
+  let operandMarks ←
+    plan.invalidIndexMarks preliminary .operand
+      |>.mapError (ParallelNumericTargetCoverageError.marking .operand)
+  plan.targetCoverageWithMarks preliminary targetMarks operandMarks
+
 /-- Project both checked index sides to exact source-filled target addresses. A runtime invalid mark remains private unless it covers a target whose immutable source value is nonempty. -/
 def clearedSourceTargets
     (plan : CheckedParallelNumericClearingPlan model)
@@ -166,31 +224,21 @@ def clearedSourceTargets
   if targetMarks.isEmpty && operandMarks.isEmpty then
     pure ParallelNumericClearingView.empty
   else
-    let targetEnvironments ←
-      plan.targetEnvironments preliminary.base
-        |>.mapError .targetRows
-    let candidates ← targetEnvironments.mapM fun targetEnvironment => do
-      let coveredByTarget ←
-        (plan.markPlanFor .target).coversAny
-          targetEnvironment targetMarks
-          |>.mapError ParallelNumericClearingError.targetEnvironment
-      let coveredByOperand ←
-        (plan.markPlanFor .operand).coversAny
-          targetEnvironment operandMarks
-          |>.mapError ParallelNumericClearingError.targetEnvironment
-      if !coveredByTarget && !coveredByOperand then
+    let coverage ←
+      plan.targetCoverageWithMarks preliminary targetMarks operandMarks
+        |>.mapError fun
+          | .marking side error => .marking side error
+          | .targetRows error => .targetRows error
+          | .targetEnvironment error => .targetEnvironment error
+    let candidates ← coverage.mapM fun target => do
+      if !target.indexInvalid then
         pure none
       else
-        let path ←
-          targetEnvironment.pathForScope
-            plan.targetDeclaration.repeatableScope
-            |>.mapError ParallelNumericClearingError.targetEnvironment
-        let address : CellAddr := { field := plan.targetField, path }
         let source ←
-          preliminary.base.numericTargetStateAt address
+          preliminary.base.numericTargetStateAt target.address
             |>.mapError ParallelNumericClearingError.sourceTarget
         if source.sourceIdentity.isSome then
-          pure (some address)
+          pure (some target.address)
         else
           pure none
     pure { cleared := candidates.filterMap id }
