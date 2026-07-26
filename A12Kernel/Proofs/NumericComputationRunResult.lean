@@ -72,6 +72,23 @@ theorem numericComputationRun_formalErrors_exact
       residualMessages entries).formalErrorsInOperands = residualMessages := by
   rfl
 
+/-- Independently classified clears change only the clear collection, and permutations of those additions are extensionally equal. -/
+theorem numericComputationRun_withAdditionalClears_permutation
+    {Target : Type}
+    (view : NumericComputationRunView ResidualMessage Target)
+    (first second : List Target)
+    (permutation : first.Perm second) :
+    NumericComputationRunView.ExtensionalEq
+      (view.withAdditionalClears first)
+      (view.withAdditionalClears second) := by
+  exact ⟨
+    List.Perm.refl _,
+    List.Perm.refl _,
+    List.Perm.refl _,
+    permutation.append_left view.cleared,
+    List.Perm.refl _
+  ⟩
+
 theorem numericComputationRun_noErrorOccurred_iff
     {Target : Type}
     (view : NumericComputationRunView ResidualMessage Target) :

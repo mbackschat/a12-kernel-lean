@@ -85,6 +85,19 @@ def fromSourceOutcomes {Target : Type}
     formalErrorsInOperands := residualMessages
   }
 
+/-- Add independently classified clears while preserving every outcome-derived projection. The caller remains responsible for proving that its producer cannot also emit a computed instance at an added target. -/
+def withAdditionalClears {Target : Type}
+    (view : NumericComputationRunView ResidualMessage Target)
+    (additional : List Target) :
+    NumericComputationRunView ResidualMessage Target :=
+  {
+    withoutErrors := view.withoutErrors
+    withChanges := view.withChanges
+    withErrors := view.withErrors
+    cleared := view.cleared ++ additional
+    formalErrorsInOperands := view.formalErrorsInOperands
+  }
+
 /-- Attach immutable source state to each rich run outcome, then build the public projection. -/
 def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)

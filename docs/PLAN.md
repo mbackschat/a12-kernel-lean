@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 527 jobs · trust audit **1454 theorem roots; 30657 declarations in 291 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 529 jobs · trust audit **1456 theorem roots; 30802 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first isolated repeatable Number run now executes one complete unguarded direct-copy computation inventory over the existing checked exact-text parallel route. It rejects an operand-only frame and unequal field scales statically, enumerates existing target rows only, joins by normalized key rather than row position, reads a clean unmatched operand as zero, and omits every target covered by either side's invalid-index marks. Each evaluated target retains its exact `CellAddr` and rich Number outcome. Separating cases lock clean matching, unmatched zero, on-path invalid-frame omission with clean sibling success, and off-path suppression of all covered outcomes; the already-closed source-relative clearing projection contains the marked source-filled targets instead. Number result classification and its laws now quantify over the target-key type, so scalar `FieldId` and repeatable `CellAddr` outcomes share the same source-relative mechanism without widening scalar application.
+The isolated repeatable Number run now builds one addressed V2 result from the same checked preliminary that drives execution. It attaches every exact rich outcome to that document's typed source state, reuses the target-key-parametric Number classifier for successes, source-relative changes, errors, and outcome-derived clears, and adds source-filled post-loop index clears from the same route and input. A checked merge rejects any outcome-classified target also claimed by an index clear; its theorem and concrete malformed low-level counterexample prevent the generic additive-clear helper from acquiring a false provenance guarantee. Collection order remains non-public.
 
 ## Active semantic unit
 
-Build one same-preliminary addressed Number result for the isolated run without cloning scalar result classification. The result must derive outcomes and index clears from the same checked execution input, classify source-relative successes/changes/errors/clears at `CellAddr`, and preserve collection order as non-public.
+Apply the complete addressed Number result to an explicitly supplied `CellAddr → NumericTargetState` destination. Reuse the existing one-address transition and exact addressed clear behavior, consume only clears, errors, and source-relative changes, and reject duplicate action addresses before phase order can select a write.
 
 ## Immediate sequence
 
-1. Add an isolated-run `executeResult` that pairs each exact outcome with the same document's addressed source state and obtains clearing from the same preliminary, with no caller-supplied outcome or clear list.
-2. Prove extensional collection laws and the absence of outcome/clear address collisions before extending addressed application from clears to successful and errored outcomes.
+1. Extend addressed application from clears to the complete result view without reclassifying against the destination.
+2. Prove exact one-address specialization, unrelated-address preservation, no-action identity, duplicate-action rejection, and residual-message inertness.
+3. After the application capsule, audit the next smallest repeatable operation or guard widening against the source-backed parallel route; do not infer multi-computation overlay semantics from the isolated inventory.
 
 ## Parked boundaries
 

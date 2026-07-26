@@ -621,6 +621,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_shouldClear_iff
 #print axioms A12Kernel.numericComputationRun_withChanges_subset
 #print axioms A12Kernel.numericComputationRun_formalErrors_exact
+#print axioms A12Kernel.numericComputationRun_withAdditionalClears_permutation
 #print axioms A12Kernel.numericComputationRun_noErrorOccurred_iff
 #print axioms A12Kernel.numericComputationRun_fromSourceOutcomes_permutation
 #print axioms A12Kernel.numericComputationDestination_update_same
@@ -1495,6 +1496,7 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericClearing_applyTo_preserves_absent
 #print axioms A12Kernel.parallelNumericClearing_applyTo_extensional
 #print axioms A12Kernel.checkedIsolatedParallelNumericDirectRun_wellFormed
+#print axioms A12Kernel.parallelNumericDirect_addIndexClears_noClassifiedIndexClear
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape
 #print axioms A12Kernel.checkedParallelPresenceRule_cannotFireOnEmpty

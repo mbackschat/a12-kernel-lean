@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ParallelComputationClearingApplication
 import A12Kernel.Elaboration.ParallelNumericDirectRun
+import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 
 /-! # Checked parallel-computation clearing-plan locks -/
 
@@ -199,6 +200,13 @@ private def directOutcomes?
   let preliminary ← preliminaryFor cells
   (checked.execute preliminary).toOption
 
+private def directView?
+    (cells : List ClassifiedCellInput) :
+    Option (NumericComputationRunView Bool CellAddr) := do
+  let checked ← directChecked?
+  let preliminary ← preliminaryFor cells
+  (checked.executeResult preliminary []).toOption
+
 /- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
 example :
     (checked?.bind fun checked =>
@@ -315,6 +323,35 @@ example :
       ] := by
   native_decide
 
+/- One checked input owns execution, addressed source comparison, and public classification: exact source identity removes only the unchanged success from the changed subset. -/
+example :
+    let clean := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 },
+      numericCell [1, 1] { unscaled := 100, scale := 0 },
+      numericCell [1, 2] { unscaled := 7, scale := 0 }
+    ]
+    ((directView? clean).map fun view =>
+      (view.withoutErrors, view.withChanges, view.withErrors, view.cleared)) =
+      some (
+        [
+          ⟨{ field := 2, path := [1, 1] },
+            { unscaled := 100, scale := 0 }⟩,
+          ⟨{ field := 2, path := [2, 1] },
+            { unscaled := 0, scale := 0 }⟩,
+          ⟨{ field := 2, path := [1, 2] },
+            { unscaled := 200, scale := 0 }⟩
+        ],
+        [
+          ⟨{ field := 2, path := [2, 1] },
+            { unscaled := 0, scale := 0 }⟩,
+          ⟨{ field := 2, path := [1, 2] },
+            { unscaled := 200, scale := 0 }⟩
+        ],
+        [],
+        []) := by
+  native_decide
+
 /- An on-path invalid frame contributes no outcome for its marked target, while clean sibling-frame targets still execute and the source-filled invalid target remains solely in the clearing projection. -/
 example :
     let targetInvalid :=
@@ -331,6 +368,41 @@ example :
         ] ∧
       clearedAddresses? targetInvalid =
         some [{ field := 2, path := [2, 1] }] := by
+  native_decide
+
+/- Post-loop index invalidity and successful outcomes are classified together from the same preliminary: the blocked filled target is cleared and never appears as a success. -/
+example :
+    let targetInvalid :=
+      (cleanIndexCells.filter fun input =>
+        input.address != { field := 1, path := [2, 1] }) ++ [
+          operandNumericCell [1] { unscaled := 100, scale := 0 },
+          operandNumericCell [2] { unscaled := 200, scale := 0 },
+          numericCell [2, 1] { unscaled := 8, scale := 0 }
+        ]
+    ((directView? targetInvalid).map fun view =>
+      (view.withoutErrors.map (·.targetField), view.cleared)) =
+      some (
+        [
+          { field := 2, path := [1, 1] },
+          { field := 2, path := [1, 2] }
+        ],
+        [{ field := 2, path := [2, 1] }]) := by
+  native_decide
+
+/- The low-level additive-clear constructor deliberately carries no provenance guarantee; the checked parallel result boundary detects a fabricated outcome/index-clear collision instead of inheriting that false law. -/
+example :
+    let address : CellAddr := { field := 2, path := [1, 1] }
+    let classified :=
+      NumericComputationRunView.fromSourceOutcomes ([] : List Bool) [
+        {
+          targetField := address
+          outcome := .accepted { unscaled := 1, scale := 0 }
+          source := .absent
+        }
+      ]
+    parallelNumericDirectClassifiedIndexClear?
+      (classified.withAdditionalClears [address]) [address] =
+        some address := by
   native_decide
 
 /- Addressed clearing empties a present destination target in place, leaves an absent covered target absent, and preserves an unrelated address. -/
