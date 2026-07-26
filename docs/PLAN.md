@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 503 jobs · trust audit **1404 theorem roots; 29337 declarations in 271 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 506 jobs · trust audit **1406 theorem roots; 29443 declarations in 273 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked Number computations now compose into one nonempty guarded table without a second expression tree or selector. Every row retains the same already-checked target and complete target policy; clean guard exhaustion becomes numeric no-value, reached guard poison becomes inherited target poison, and the first selected operation alone reaches the existing scalar Numeric evaluator. Repeatable operations retain its explicit context-required fault. The shared model-relative presence-guard certificate moved out of its former String-specific owner when this second semantic consumer arrived.
+Checked Number tables now compose into a finite scalar run plan. Certification rejects every table containing a repeatable-context operation, duplicate targets, and any guard or complete Numeric-expression read of a computed target at its own or a later position, while preserving supplied order. The plan carries no executor, overlay, graph, result, or cross-family carrier; a theorem makes its scalar certificate usable per retained table.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is a scalar Number run plan: admit only tables whose checked operations need no repeatable evaluation context, retain unique supplied-order targets, and reject self or forward computed-target reads through both guards and complete Numeric expressions. Do not introduce a heterogeneous run carrier, duplicate the String executor, or admit repeatable activation.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the typed computed-dependency invalidity bridge required by both String and Number runs. Kernel computed-target invalidity is cause-free set membership: a later read must observe one explicit computed-dependency poison marker, not preserve an earlier formal cause or invent `.declaredConstraint`. Fit that marker through the existing checked-cell observation boundary, then make each family outcome-to-cell projection erase producer details exactly once. Do not add a generic poison framework, message, trace, or heterogeneous outcome.
 
 ## Immediate sequence
 
-1. Certify the direct/scalar subset of checked Number tables and its backward-only dependency order.
-2. Audit the exact accepted stored-Number-to-checked-cell dependency conversion before adding the typed Number completion overlay and fixed executor.
+1. Add the smallest explicit computed-dependency invalidity marker and correct the String dependency projection to use it.
+2. Add the Number dependency cell: clean empty, exact accepted decimal amount, or the common computed-dependency marker.
+3. Only then add the typed Number completion overlay and fixed executor.
 
 ## Parked boundaries
 

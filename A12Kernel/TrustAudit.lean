@@ -605,6 +605,8 @@ run_cmd do
 #print axioms A12Kernel.numericComputationTable_noMatch
 #print axioms A12Kernel.numericComputationTable_guardPoison
 #print axioms A12Kernel.numericComputationTable_selected
+#print axioms A12Kernel.firstNonScalarNumericTable_eq_none_iff
+#print axioms A12Kernel.checkedNumericComputationRun_table_scalar
 #print axioms A12Kernel.acceptedNumericTarget_applies_exactly
 #print axioms A12Kernel.noAppliedNumericValue_clears_exactly
 #print axioms A12Kernel.noAppliedNumericValue_preserves_presence
