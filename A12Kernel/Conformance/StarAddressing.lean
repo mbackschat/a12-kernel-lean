@@ -147,4 +147,11 @@ example :
       [some 2, some 3, some 3] := by
   native_decide
 
+/- The correspondence is a successful-resolution guarantee, not an invariant of arbitrary caller-constructed topology values. -/
+example :
+    ¬ ReopenedStarDomain.EnvironmentCorrespondence
+      [] [] .selectedLeaf [] := by
+  intro correspondence
+  cases correspondence
+
 end A12Kernel.Conformance.StarAddressing

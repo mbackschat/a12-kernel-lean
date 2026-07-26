@@ -95,6 +95,47 @@ structure ResolvedStarTopology where
   domain : ReopenedStarDomain
   environments : List Env
 
+mutual
+  /-- Ordered correspondence between one reopened tree and its complete named leaf environments. Each tree coordinate extends the exact outer prefix at its named level. -/
+  inductive ReopenedStarDomain.EnvironmentCorrespondence :
+      List RepeatableLevel → Env → ReopenedStarDomain → List Env → Prop
+    | selected (base : Env) :
+        ReopenedStarDomain.EnvironmentCorrespondence
+          [] base .selectedLeaf [base]
+    | repeatable (level : RepeatableLevel)
+        (levels : List RepeatableLevel) (base : Env)
+        (repeatability : Option Nat) (rows : ReopenedStarRows)
+        (environments : List Env)
+        (correspondence :
+          ReopenedStarRows.EnvironmentCorrespondence
+            level levels base rows environments) :
+        ReopenedStarDomain.EnvironmentCorrespondence
+          (level :: levels) base
+          (.repeatable repeatability rows) environments
+
+  /-- Ordered sibling correspondence. A child contributes all of its leaf environments before the remaining sibling rows. -/
+  inductive ReopenedStarRows.EnvironmentCorrespondence :
+      RepeatableLevel → List RepeatableLevel → Env →
+        ReopenedStarRows → List Env → Prop
+    | nil (level : RepeatableLevel) (levels : List RepeatableLevel)
+        (base : Env) :
+        ReopenedStarRows.EnvironmentCorrespondence
+          level levels base .nil []
+    | cons (level : RepeatableLevel) (levels : List RepeatableLevel)
+        (base : Env) (coordinate : Nat) (child : ReopenedStarDomain)
+        (rest : ReopenedStarRows) (childEnvironments restEnvironments : List Env)
+        (childCorrespondence :
+          ReopenedStarDomain.EnvironmentCorrespondence levels
+            (base ++ [(level, coordinate)])
+            child childEnvironments)
+        (restCorrespondence :
+          ReopenedStarRows.EnvironmentCorrespondence level levels base
+            rest restEnvironments) :
+        ReopenedStarRows.EnvironmentCorrespondence level levels base
+          (.cons coordinate child rest)
+          (childEnvironments ++ restEnvironments)
+end
+
 namespace ResolvedStarTopology
 
 /-- Classify selected leaves in the same canonical order used to construct the reopened tree. -/
@@ -166,6 +207,70 @@ private def resolveAxes (document : Document) :
         environments := children.flatMap (·.2.environments)
       }
 
+private theorem resolveAxes_environmentCorrespondence
+    (document : Document) (axes : List StarAxis)
+    (parent : List Nat) (base : Env)
+    (resolved : ResolvedStarTopology)
+    (resolution :
+      document.resolveAxes axes parent base = .ok resolved) :
+    ReopenedStarDomain.EnvironmentCorrespondence
+      (axes.map (·.level)) base
+      resolved.domain resolved.environments := by
+  induction axes generalizing parent base resolved with
+  | nil =>
+      cases resolution
+      exact .selected base
+  | cons axis axes induction =>
+      simp only [resolveAxes] at resolution
+      cases coordinatesResult :
+          canonicalCoordinates axis.level parent
+            (document.coordinatesAt axis.level parent) with
+      | error cause =>
+          simp [coordinatesResult, bind, Except.bind] at resolution
+      | ok coordinates =>
+          simp only [coordinatesResult, bind, Except.bind] at resolution
+          split at resolution
+          · contradiction
+          · rename_i children mappedChildren
+            cases resolution
+            apply ReopenedStarDomain.EnvironmentCorrespondence.repeatable
+            clear coordinatesResult
+            induction coordinates generalizing children with
+              | nil =>
+                  simp only [List.mapM_nil, pure, Except.pure]
+                    at mappedChildren
+                  cases mappedChildren
+                  exact .nil axis.level (axes.map (·.level)) base
+              | cons coordinate coordinates coordinateInduction =>
+                  simp only [List.mapM_cons, bind, Except.bind]
+                    at mappedChildren
+                  cases childResult :
+                      document.resolveAxes axes
+                        (parent ++ [coordinate])
+                        (base ++ [(axis.level, coordinate)]) with
+                  | error cause =>
+                      simp [childResult] at mappedChildren
+                  | ok child =>
+                      simp only [childResult, pure, Except.pure]
+                        at mappedChildren
+                      split at mappedChildren
+                      · contradiction
+                      · rename_i rest restResult
+                        cases mappedChildren
+                        exact .cons axis.level (axes.map (·.level)) base
+                          coordinate child.domain
+                          (rest.foldr
+                            (fun current remaining =>
+                              .cons current.1 current.2.domain remaining)
+                            ReopenedStarRows.nil)
+                          child.environments
+                          (rest.flatMap (·.2.environments))
+                          (induction
+                            (parent := parent ++ [coordinate])
+                            (base := base ++ [(axis.level, coordinate)])
+                            (resolved := child) childResult)
+                          (coordinateInduction rest restResult)
+
 /-- Resolve the actual nested rows selected by one checked starred path. The result is independent of storage encounter order and never materializes a declared Cartesian tail. -/
 def resolveStarPath (document : Document) (path : StarPath) (outer : Env) :
     Except StarAddressingError ResolvedStarTopology := do
@@ -179,5 +284,43 @@ end Document
 def StarPath.resolve (path : StarPath) (document : Document) (outer : Env) :
     Except StarAddressingError ResolvedStarTopology :=
   document.resolveStarPath path outer
+
+/-- A successful checked star resolution constructs its hierarchical tree and ordered leaf environments from the same named axes and exact bound outer prefix. -/
+theorem StarPath.resolve_environmentCorrespondence
+    (path : StarPath) (document : Document) (outer : Env)
+    (resolved : ResolvedStarTopology)
+    (resolution : path.resolve document outer = .ok resolved) :
+    ∃ bound,
+      path.boundEnvironment outer = .ok bound ∧
+      ReopenedStarDomain.EnvironmentCorrespondence
+        ((path.axes.drop path.firstStar).map (·.level))
+        bound resolved.domain resolved.environments := by
+  simp only [StarPath.resolve, Document.resolveStarPath] at resolution
+  cases validation : path.validate with
+  | error cause =>
+      rw [validation] at resolution
+      cases resolution
+  | ok validated =>
+      rw [validation] at resolution
+      cases rowValidation :
+          Document.validateRows document path.axes 1 none with
+      | error cause =>
+          rw [rowValidation] at resolution
+          cases resolution
+      | ok validRows =>
+          rw [rowValidation] at resolution
+          cases boundResult : path.boundEnvironment outer with
+          | error cause =>
+              rw [boundResult] at resolution
+              cases resolution
+          | ok bound =>
+              rw [boundResult] at resolution
+              change document.resolveAxes
+                  (path.axes.drop path.firstStar)
+                  (bound.map (·.2)) bound = .ok resolved at resolution
+              exact ⟨bound, rfl,
+                Document.resolveAxes_environmentCorrespondence
+                  document (path.axes.drop path.firstStar)
+                  (bound.map (·.2)) bound resolved resolution⟩
 
 end A12Kernel

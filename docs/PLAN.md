@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 483 jobs · trust audit **1365 theorem roots; 28565 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 483 jobs · trust audit **1365 theorem roots; 28602 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The exact-text parallel join and its positive two-field full-validation consumer now admit a non-indexed repeatable frame on the emitted error side as well as symmetric/asymmetric nonrepeatable wrappers. The checked pair classifies equal outer scopes or one strict frame suffix and rejects divergent frames on both sides. Framed execution enumerates actual deepest frame rows in document order, excludes over-limit rows, recalculates the unchanged lexical join inside each frame, and leaves the opposite column at the common outer environment. Per-frame invalidity, exact nested error addresses, both operand orders, framed-side error ownership, and complete outer-environment result metadata are locked. The generated-preliminary column remains shared with Number semantic index; Number parallel ordering, synthetic-pointer messages, wider operators, partial validation, and exact Kernel duplicate-winner correspondence remain with their separate owners.
+Successful canonical star resolution now carries a proved inductive correspondence between its hierarchical row tree and its ordered complete environments. Every reopened coordinate extends the exact bound outer prefix at the named axis, and each sibling contributes its leaf environments before the remaining siblings. The guarantee is scoped to successful checked resolution; an arbitrary caller-constructed topology need not satisfy it.
 
 ## Active semantic unit
 
-Continue [`SG2` correspondence closure](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by identifying the checklist's one remaining generic tree/environment theorem in the existing checked construction and proving it at its narrow semantic owner. The theorem must connect a complete named `Env` and the canonical hierarchical construction without restating a family wrapper or inventing another stream. After that proof lands, run the trigger-required bounded cold consumer milestone against the existing public checked representations and reconcile only concrete discoverability or adequacy defects. The separately blocked partial group-product route remains outside until the ordinary partial rule context carries the relevance-selected preliminary slice already owned by `CheckedPartialPreliminary`.
+Run the trigger-required bounded cold consumer milestone for [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) against the existing public checked representations. Test whether an artifact-only Execute/Analyze implementer can discover the canonical checked document, named environment/topology relation, addressed operand construction, filter/relevance provenance, and structural failure boundary without kernel or sibling-project research. Reconcile only concrete discoverability or adequacy defects. The separately blocked partial group-product route remains outside until the ordinary partial rule context carries the relevance-selected preliminary slice already owned by `CheckedPartialPreliminary`.
 
 ## Immediate sequence
 
-1. Inventory the generic environment/topology laws, SG2 same-context queries, and open proof-spine claims to name the exact missing theorem and reject any already-proved restatement.
-2. Add the smallest discriminating theorem statement and its nearest executable non-law/control at the existing owner; prove it without a new representation, adapter, or recursive evaluator.
-3. Run the proportional gates and commit that proof capsule, then perform the artifact-only SG2 consumer review required by the reusable capability milestone. A review result with no concrete defect creates no report or permanent probe source.
+1. Prepare the bounded allowlist from the project-local task contract, checked-document/addressing owners, laws, separating cases, implementation map, and consumer guidance; exclude the kernel, a12-dmkits, Git history, prior discussion, and unlisted files.
+2. Have the cold reader reconstruct the Execute/Analyze decision path and report only concrete discoverability, hidden-assumption, or adequacy defects.
+3. Reconcile any concrete finding at its existing semantic or documentation owner. A clean review creates no report or permanent probe source.
 
 ## Parked boundaries
 
