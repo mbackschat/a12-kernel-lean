@@ -1,8 +1,39 @@
 import A12Kernel.Elaboration.ParallelNumericRun
+import A12Kernel.Proofs.ComputationRunPlan
+import A12Kernel.Proofs.FieldId
 
 /-! # Checked parallel Number run-overlay laws -/
 
 namespace A12Kernel
+
+theorem checkedParallelNumericPlan_targetFields_nodup
+    (plan : CheckedParallelNumericPlan model) :
+    plan.targetFields.Nodup := by
+  exact (fieldId_firstDuplicate_none_iff_nodup _).mp
+    plan.uniqueTargets
+
+/-- A certified table cannot read the target of any later supplied table. This no-later-read result is the exact dependency-order guarantee; self-reference is outside the finite-plan certificate. -/
+theorem checkedParallelNumericPlan_references_later_false
+    (plan : CheckedParallelNumericPlan model)
+    (earlier later :
+      List (CheckedParallelNumericAlternativeTable model))
+    (consumer producer : CheckedParallelNumericAlternativeTable model)
+    (split : plan.tables = earlier ++ consumer :: later)
+    (member : producer ∈ later) :
+    consumer.referencesField producer.targetField = false := by
+  have ordered :
+      firstForwardComputationDependency?
+        (·.targetField) (·.referencesField ·) plan.tables = none := by
+    simpa [firstForwardParallelNumericDependency?] using
+      plan.dependenciesOrdered
+  rw [split] at ordered
+  have suffix :=
+    firstForwardComputationDependency_none_suffix
+      (·.targetField) (·.referencesField ·)
+      earlier (consumer :: later) ordered
+  exact firstForwardComputationDependency_none_head
+    (·.targetField) (·.referencesField ·)
+    consumer later suffix producer member
 
 theorem parallelNumericRun_read_pending
     (run : CheckedParallelNumericRun model)

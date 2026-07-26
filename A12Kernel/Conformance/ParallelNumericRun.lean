@@ -66,6 +66,12 @@ private def unreadProducerConsumerTable? :
   let second ← row? 2 inputPath (.fieldFilled 4)
   (certifyParallelNumericAlternativeTable [first, second]).toOption
 
+private def finitePlan? : Option (CheckedParallelNumericPlan model) := do
+  let seedProducer ← table? 6 seedPath 8
+  let middle ← table? 4 offsetPath 6
+  let consumer ← table? 2 inputPath 4
+  (certifyParallelNumericPlan [seedProducer, middle, consumer]).toOption
+
 private def checkedDocument? (cells : List ClassifiedCellInput) :=
   (preliminaryFor cells).map (·.base)
 
@@ -127,6 +133,27 @@ example :
       | .error error => some error
       | .ok _ => none) =
         some (.consumerDoesNotReadProducer 2 4) := by
+  native_decide
+
+/- A genuine three-target chain is accepted; empty, duplicate, and forward-dependent supplied orders fail before execution. -/
+example :
+    finitePlan?.map (·.targetFields) = some [6, 4, 2] ∧
+      (match certifyParallelNumericPlan
+        ([] : List (CheckedParallelNumericAlternativeTable model)) with
+      | .error error => some error
+      | .ok _ => none) = some .empty ∧
+      (do
+        let table ← table? 6 seedPath 8
+        match certifyParallelNumericPlan [table, table] with
+        | .error error => some error
+        | .ok _ => none) = some (.duplicateTarget 6) ∧
+      (do
+        let first ← table? 6 seedPath 8
+        let middle ← table? 4 offsetPath 6
+        let consumer ← table? 2 inputPath 4
+        match certifyParallelNumericPlan [middle, first, consumer] with
+        | .error error => some error
+        | .ok _ => none) = some (.forwardDependency 4 6) := by
   native_decide
 
 /- Pending computed addresses hide stale input, and completion is exact to one repetition address. -/

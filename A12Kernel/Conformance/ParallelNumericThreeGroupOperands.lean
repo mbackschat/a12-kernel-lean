@@ -66,7 +66,8 @@ def model : FlatModel := {
     numberDeclaration 4 inputGroup.path "Amount" 3,
     indexDeclaration 5 offsetGroup.path 5,
     numberDeclaration 6 offsetGroup.path "Amount" 5,
-    stringDeclaration 7 offsetGroup.path "Flag" 5
+    stringDeclaration 7 offsetGroup.path "Flag" 5,
+    numberDeclaration 8 targetGroup.path "Seed" 1
   ]
   repeatableGroups := [targetGroup, inputGroup, offsetGroup]
 }
@@ -83,6 +84,19 @@ def offsetPath : SurfaceFieldPath := {
   base := .absolute
   groups := offsetGroup.path
   field := "Amount"
+}
+
+private def targetPath : SurfaceFieldPath := {
+  base := .absolute
+  groups := targetGroup.path
+  field := "Result"
+}
+
+/-- Ordinary Number source used to distinguish a genuine three-target dependency chain. -/
+def seedPath : SurfaceFieldPath := {
+  base := .absolute
+  groups := targetGroup.path
+  field := "Seed"
 }
 
 private def expression : AuthoredNumericExpr SurfaceNumericAtom :=
@@ -132,7 +146,9 @@ def cleanCells : List ClassifiedCellInput := [
   numberCell 4 [1] { unscaled := 10, scale := 0 },
   numberCell 4 [2] { unscaled := 20, scale := 0 },
   numberCell 6 [1] { unscaled := 1, scale := 0 },
-  numberCell 6 [2] { unscaled := 99, scale := 0 }
+  numberCell 6 [2] { unscaled := 99, scale := 0 },
+  numberCell 8 [1] { unscaled := 2, scale := 0 },
+  numberCell 8 [2] { unscaled := 3, scale := 0 }
 ]
 
 private def invalidThird : List ClassifiedCellInput :=
@@ -181,6 +197,27 @@ example :
     | .error error => some error
     | .ok _ => none) =
       some .expressionNotLimitedToOperand := by
+  native_decide
+
+/- Current checked construction rejects the target itself as anchor, expression atom, or guard leaf; the finite plan does not promote these cases into a universal exclusion theorem. -/
+example :
+    (match checkIsolatedParallelNumericExpressionRunWithGuard
+        model ["Plan"] 2 targetPath (.atom (.field targetPath)) none with
+    | .error error => some error
+    | .ok _ => none) =
+      some (.route (.join
+        (.incompatibleGroups targetGroup.path targetGroup.path))) ∧
+    (match checkIsolatedParallelNumericExpressionRunWithGuard
+        model ["Plan"] 2 inputPath (.atom (.field targetPath)) none with
+    | .error error => some error
+    | .ok _ => none) =
+      some .expressionNotLimitedToOperand ∧
+    (match checkIsolatedParallelNumericExpressionRunWithGuard
+        model ["Plan"] 2 inputPath (.atom (.field inputPath))
+          (some (.fieldFilled 2)) with
+    | .error error => some error
+    | .ok _ => none) =
+      some .guardNotLimitedToOperand := by
   native_decide
 
 /- The operand-only `Gamma` key does not create a target row; the clean target-only `Beta` key reads the unmatched third operand as zero. -/

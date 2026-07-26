@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 542 jobs · trust audit **1472 theorem roots; 31273 declarations in 299 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 542 jobs · trust audit **1474 theorem roots; 31345 declarations in 299 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked two-target repeatable Number plan now executes its producer table through stripped addressed reads, retains every exact rich producer outcome, and executes the dependent consumer table through that completed overlay. A clean no-value producer reads as numeric empty/zero; a reached invalid producer becomes cause-blind dependency poison; and an invalid producer referenced only by an unselected row remains unread and cannot pre-poison the selected result. Both target families are classified together through the existing `CellAddr`-parametric Number result owner.
+The checked repeatable Number plan now admits an arbitrary nonempty finite list of already-flattened tables. It reuses the shared typed supplied-order dependency scan, rejects duplicate targets and the first table that reads a later target, and proves that no-later-read consequence at every list position. A concrete three-target chain across three indexed groups proves this is a real widening beyond the completed two-target run; the plan certifies no self-reference theorem, graph, sort, independent order, or tie-break.
 
 ## Active semantic unit
 
-Audit and implement the smallest justified widening from the exact two-target dependency to a finite supplied-order repeatable Number plan, reusing the same checked table, addressed overlay, and result classifier without introducing a graph, universal scheduler, or trace framework.
+Execute the finite supplied-order repeatable Number plan through the existing exact addressed overlay and classify all target families through the existing result owner.
 
 ## Immediate sequence
 
-1. Inventory whether the existing scalar finite-run plan's uniqueness and backward-dependency checks specialize exactly to repeatable tables or whether addressed target scope adds a real deviation.
-2. Require a concrete three-table or independent-table semantic user before extracting a finite plan; otherwise retain the two-target owner and move to the next SG4 source-closed boundary.
-3. If the finite plan is justified, preserve supplied order, exact-address stripping/overlay, all-table route clearing, and the reached-read non-law; add a dependency-enabled relation only if it admits behavior not definitionally identical to the fixed executor.
+1. Fold the checked tables in supplied order, passing the accumulated exact addressed outcomes through the established read policy and retaining stage-specific structural failure.
+2. Concatenate each table's complete static route inventory for source-filled index clearing without deduplicating equal operand groups across different targets.
+3. Lock the three-target chain, preserve the two-target clean-no-value/reached-poison/unread-poison separators through the finite entry point, and delegate combined classification without adding a relation or trace.
 
 ## Parked boundaries
 

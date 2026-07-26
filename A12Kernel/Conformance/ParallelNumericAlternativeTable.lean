@@ -32,7 +32,7 @@ private def row? (guard : ComputationCondition)
 private def secondTargetModel : FlatModel := {
   model with
   fields := model.fields ++ [{
-    id := 8
+    id := 9
     groupPath := ["Plan", "Target"]
     name := "OtherResult"
     policy := { kind := .number { scale := 0, signed := false } }
@@ -108,11 +108,11 @@ example :
         some (.unguarded 1) ∧
       (do
         let first ← secondModelRow? 2 input (.fieldFilled 4)
-        let other ← secondModelRow? 8 input (.fieldFilled 4)
+        let other ← secondModelRow? 9 input (.fieldFilled 4)
         match certifyParallelNumericAlternativeTable [first, other] with
         | .error error => some error
         | .ok _ => none) =
-        some (.targetMismatch 2 2 8) := by
+        some (.targetMismatch 2 2 9) := by
   native_decide
 
 /- A false guard crosses the row boundary; a selected value ends the scan. -/

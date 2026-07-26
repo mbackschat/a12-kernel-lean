@@ -1,12 +1,70 @@
+import A12Kernel.Elaboration.ComputationRunPlan
 import A12Kernel.Elaboration.ParallelNumericAlternativeTable
 import A12Kernel.Semantics.NumericDependency
 
-/-! # Checked two-target parallel Number runs
+/-! # Checked supplied-order parallel Number runs
 
-This capsule certifies one exact producer-to-consumer dependency between two already-checked repeatable Number tables. It adds no graph or scheduler: the supplied pair is the complete order. The transient overlay hides stored inputs for both computed fields and exposes completed rich outcomes only at their exact repetition addresses.
+This capsule retains the completed two-target producer/consumer execution and adds a conservative finite plan over the same already-checked repeatable Number tables. The finite certificate checks only nonemptiness, target uniqueness, and reads of later supplied targets; it adds no graph, sort, scheduler, or trace. Current checked route and operand construction reject the exercised target-group self-reference shapes, but the finite plan does not restate that behavior as a named certificate.
 -/
 
 namespace A12Kernel
+
+/-- Return the first table that reads a target owned by a later supplied table. -/
+def firstForwardParallelNumericDependency?
+    (tables : List (CheckedParallelNumericAlternativeTable model)) :
+    Option (FieldId × FieldId) :=
+  firstForwardComputationDependency?
+    (·.targetField) (·.referencesField ·) tables
+
+/-- Structural failures while checking a supplied finite table list. -/
+inductive ParallelNumericPlanError where
+  | empty
+  | duplicateTarget (field : FieldId)
+  | forwardDependency (consumer dependency : FieldId)
+  deriving Repr, DecidableEq
+
+/-- A nonempty finite supplied-order repeatable Number plan with unique targets and no read of a later plan target. -/
+structure CheckedParallelNumericPlan (model : FlatModel) where
+  tables : List (CheckedParallelNumericAlternativeTable model)
+  nonempty : tables ≠ []
+  uniqueTargets :
+    FieldId.firstDuplicate? (tables.map (·.targetField)) = none
+  dependenciesOrdered :
+    firstForwardParallelNumericDependency? tables = none
+
+/-- Check target uniqueness and dependency order without constructing or sorting a graph. -/
+def certifyParallelNumericPlan
+    (tables : List (CheckedParallelNumericAlternativeTable model)) :
+    Except ParallelNumericPlanError (CheckedParallelNumericPlan model) :=
+  match tables with
+  | [] => .error .empty
+  | first :: remaining =>
+      match hDuplicate :
+          FieldId.firstDuplicate?
+            ((first :: remaining).map (·.targetField)) with
+      | some duplicate => .error (.duplicateTarget duplicate)
+      | none =>
+          match hForward :
+              firstForwardParallelNumericDependency?
+                (first :: remaining) with
+          | some (consumer, dependency) =>
+              .error (.forwardDependency consumer dependency)
+          | none =>
+              .ok {
+                tables := first :: remaining
+                nonempty := by simp
+                uniqueTargets := hDuplicate
+                dependenciesOrdered := hForward
+              }
+
+namespace CheckedParallelNumericPlan
+
+/-- The plan's unique target fields in supplied execution order. -/
+def targetFields (plan : CheckedParallelNumericPlan model) :
+    List FieldId :=
+  plan.tables.map (·.targetField)
+
+end CheckedParallelNumericPlan
 
 inductive ParallelNumericRunPlanError where
   | duplicateTarget (field : FieldId)
