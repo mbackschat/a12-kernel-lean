@@ -15,6 +15,21 @@ inductive SurfaceRepetitionNotUniqueScope where
   | from (group : SurfaceGroupReference)
   deriving Repr, DecidableEq
 
+/- Whether the selected reference group was inferred from the key path or named by an authored `@From` clause. The resolved group can be identical in both cases, but only the authored form contributes its subtree to rule reference detection. -/
+inductive RepetitionNotUniqueReferenceOrigin where
+  | inferredDefault
+  | authoredFrom
+  deriving Repr, DecidableEq
+
+namespace SurfaceRepetitionNotUniqueScope
+
+def referenceOrigin : SurfaceRepetitionNotUniqueScope →
+    RepetitionNotUniqueReferenceOrigin
+  | .default => .inferredDefault
+  | .from _ => .authoredFrom
+
+end SurfaceRepetitionNotUniqueScope
+
 structure SurfaceRepetitionNotUniqueSource where
   firstKey : SurfaceFieldPath
   restKeys : List SurfaceFieldPath
@@ -112,6 +127,7 @@ end CheckedRepetitionKey
 structure CheckedRepetitionNotUniqueSource (model : FlatModel) where
   ruleGroup : GroupPath
   referenceGroup : RepeatableGroupDecl
+  referenceOrigin : RepetitionNotUniqueReferenceOrigin
   terminalGroup : GroupPath
   topology : CheckedStarPlan
   firstKey : CheckedRepetitionKey model
@@ -332,6 +348,7 @@ def elaborateRepetitionNotUniqueSource (model : FlatModel)
                           pure {
                             ruleGroup := declaringGroup
                             referenceGroup
+                            referenceOrigin := authored.scope.referenceOrigin
                             terminalGroup := terminalDeclaration.groupPath
                             topology
                             firstKey
@@ -357,6 +374,16 @@ namespace CheckedRepetitionNotUniqueSource
 def keys (checked : CheckedRepetitionNotUniqueSource model) :
     List (CheckedRepetitionKey model) :=
   checked.firstKey :: checked.restKeys
+
+/-- A checked RNU condition directly references its key fields. An authored `@From` additionally contributes the already resolved reference-group subtree; an inferred default group does not. -/
+def referencesField (checked : CheckedRepetitionNotUniqueSource model)
+    (field : FieldId) : Bool :=
+  checked.keys.any (fun key => key.fieldId == field) ||
+    match checked.referenceOrigin with
+    | .inferredDefault => false
+    | .authoredFrom =>
+        ({ path := checked.referenceGroup.path
+           origin := .path } : ResolvedGroupReference).referencesField model field
 
 /-- Recheck the source certificate at the mixed-condition boundary so a checked RNU source cannot be transplanted to another rule group. -/
 def wellFormedBool (checked : CheckedRepetitionNotUniqueSource model)

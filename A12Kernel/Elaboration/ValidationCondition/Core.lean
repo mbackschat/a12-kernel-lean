@@ -377,7 +377,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .repeatableFieldPresence _ declaration, field =>
       declaration.id == field
   | .repetitionNotUnique source, field =>
-      source.keys.any fun key => key.fieldId == field
+      source.referencesField field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Only the model-indexed ordered numeric carrier can currently own such a source; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool

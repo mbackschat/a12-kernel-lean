@@ -93,6 +93,41 @@ theorem checkedRepetitionNotUnique_referenceLevel
         some checked.referenceGroup.level :=
   checked.referenceLevelOwned
 
+/-- An inferred default reference group contributes no field references beyond the authored key fields, even though the checked source retains that resolved group for evaluation. -/
+theorem checkedRepetitionNotUnique_referencesField_inferred
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (field : FieldId)
+    (origin : checked.referenceOrigin = .inferredDefault) :
+    checked.referencesField field =
+      checked.keys.any (fun key => key.fieldId == field) := by
+  simp [CheckedRepetitionNotUniqueSource.referencesField, origin]
+
+/-- An authored `@From` contributes every declaration in its resolved group subtree to field-reference detection. -/
+theorem checkedRepetitionNotUnique_referencesField_authored_subtree
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (field : FieldId) (declaration : FlatFieldDecl)
+    (origin : checked.referenceOrigin = .authoredFrom)
+    (lookup : model.lookupUniqueId field = .ok declaration)
+    (within :
+      checked.referenceGroup.path.isPrefixOf declaration.groupPath = true) :
+    checked.referencesField field = true := by
+  simp [CheckedRepetitionNotUniqueSource.referencesField,
+    ResolvedGroupReference.referencesField, origin, lookup, within]
+
+/-- Even an authored `@From` does not reference a non-key declaration outside the resolved group subtree. -/
+theorem checkedRepetitionNotUnique_referencesField_authored_outside
+    (checked : CheckedRepetitionNotUniqueSource model)
+    (field : FieldId) (declaration : FlatFieldDecl)
+    (origin : checked.referenceOrigin = .authoredFrom)
+    (notKey :
+      checked.keys.any (fun key => key.fieldId == field) = false)
+    (lookup : model.lookupUniqueId field = .ok declaration)
+    (outside :
+      checked.referenceGroup.path.isPrefixOf declaration.groupPath = false) :
+    checked.referencesField field = false := by
+  simp [CheckedRepetitionNotUniqueSource.referencesField,
+    ResolvedGroupReference.referencesField, origin, notKey, lookup, outside]
+
 /-- Resolved checked rows preserve their complete topology environment and authored composite-key order. -/
 theorem checkedRepetitionNotUnique_resolvedRow_shape
     (checked : CheckedRepetitionNotUniqueSource model)

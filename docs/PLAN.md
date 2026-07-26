@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 474 jobs · trust audit **1335 theorem roots; 27530 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 474 jobs · trust audit **1339 theorem roots; 27565 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and one-level RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The nonrepeatable group-star terminal family composes two established owners instead of creating a terminal selector. `CheckedStarPlan` selects each complete ancestor environment exactly once; `CheckedDocument.groupPresenceInput` then derives the ordinary nonrepeatable terminal product from admitted descendants, repeatable-descendant rows, errors, and full relevance. Conformance separates ancestor-only emptiness, admitted scalar and repeatable-descendant content, and malformed-only unavailability. A legacy document/read context fails structurally because it cannot reconstruct per-environment descendant products.
+Checked RNU now retains whether its reference group came from an authored `@From` clause instead of inferring authoring provenance from the resolved group. Only the authored form contributes the resolved group's complete subtree to error-field reference admission. Whole-rule cases separate inside and descendant fields from the parent and pair every result with the same source using the identical inferred default group; generic laws pin both authored and inferred reference boundaries.
 
 ## Active semantic unit
 
-Close [`SG13`](SEMANTICS-GAPS.md#sg13--from-contributes-an-error-field-reference-and-the-checked-rnu-source-cannot-express-it) from the reviewed a12-dmkits handback at `45d24b73549124bf7da342a1ee19401408438fc6`. Retain whether `@From` was authored even when default and explicit scope resolve identically, and contribute the resolved group's whole subtree to error-field references only in the authored case.
+Resume [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction). Compose the established checked-document relevance products, rule-level entry decision, addressed condition leaves, and error-field/global augmentation without resampling cells or manufacturing semantic UNKNOWN from rule-level nonrelevance.
 
 ## Immediate sequence
 
-1. Add red checked-rule cases for an error field inside the authored `@From` group, inside a descendant group, and in the parent, each paired with the same source lacking `@From`.
-2. Retain the authored marker on `CheckedRepetitionNotUniqueSource` without recomputing the already resolved reference group.
-3. Extend `ValidationConditionLeaf.referencesField` through the existing resolved group-subtree query only when the marker is present, prove the with/without boundary, delete SG13, and then resume SG2 whole-rule partial validation.
+1. Audit the current partial-validation rule entry, relevance-set, global/error-field augmentation, and addressed-leaf owners against the bounded kernel and a12-dmkits source routes already named by SG2.
+2. Write one finite decision table that separates rule-level nonrelevance, leaf UNKNOWN, direct error-field relevance, global augmentation, filter-driven entry, and repeated row addressing, then add the smallest failing whole-rule cases.
+3. Extend the existing checked rule route only at the demonstrated missing seam, prove its rule/leaf relevance boundary, and update the SG2 checklist without adding another document, topology, condition tree, or partial evaluator.
 
 ## Parked boundaries
 

@@ -20,8 +20,27 @@ private def count : FlatFieldDecl :=
 private def weight : FlatFieldDecl :=
   { count with id := 101, name := "Weight" }
 
+private def insideNote : FlatFieldDecl :=
+  { count with
+    id := 102
+    name := "InsideNote"
+    policy := { kind := .string } }
+
+private def descendantNote : FlatFieldDecl :=
+  { insideNote with
+    id := 103
+    groupPath := ["Order", "Items", "Details"]
+    name := "DescendantNote" }
+
+private def parentNote : FlatFieldDecl :=
+  { insideNote with
+    id := 104
+    groupPath := ["Order"]
+    name := "ParentNote"
+    repeatableScope := [] }
+
 private def model : FlatModel :=
-  { fields := [count, weight]
+  { fields := [count, weight, insideNote, descendantNote, parentNote]
     repeatableGroups := [{
       level := 10
       path := ["Order", "Items"]
@@ -37,10 +56,22 @@ private def source (restKeys : List SurfaceFieldPath := []) :
     SurfaceRepetitionNotUniqueSource :=
   { firstKey := field "Count", restKeys }
 
-private def checkedCondition? (restKeys : List SurfaceFieldPath := []) :
+private def authoredFromSource : SurfaceRepetitionNotUniqueSource :=
+  { source with
+    scope := .from (.path {
+      base := .absolute
+      groups := ["Order", "Items"] }) }
+
+private def checkedConditionFrom?
+    (authored : SurfaceRepetitionNotUniqueSource)
+    (restKeys : List SurfaceFieldPath := []) :
     Option (CheckedValidationCondition model) :=
   (CheckedValidationCondition.fromRepetitionNotUnique
-    model ["Order"] (source restKeys)).toOption
+    model ["Order"] { authored with restKeys }).toOption
+
+private def checkedCondition? (restKeys : List SurfaceFieldPath := []) :
+    Option (CheckedValidationCondition model) :=
+  checkedConditionFrom? source restKeys
 
 private def filledWeightCondition? :
     Option (CheckedValidationCondition model) :=
@@ -73,6 +104,27 @@ private def compositeRnuRule? :
   let condition ← checkedCondition? [field "Weight"]
   (assembleResolvedValidationRule model condition count.id
     "rnu" .error { parts := [] }).toOption
+
+private def referenceRuleAdmitted?
+    (authored : SurfaceRepetitionNotUniqueSource)
+    (errorField : FieldId) : Bool :=
+  match checkedConditionFrom? authored with
+  | none => false
+  | some condition =>
+      (assembleResolvedValidationRule model condition errorField
+        "rnu" .error { parts := [] }).isOk
+
+private def referenceBoundary? :
+    Option (Bool × Bool × Bool × Bool × Bool × Bool) := do
+  let explicit ← checkedConditionFrom? authoredFromSource
+  let inferred ← checkedConditionFrom? source
+  pure (
+    explicit.core.referencesField insideNote.id,
+    explicit.core.referencesField descendantNote.id,
+    explicit.core.referencesField parentNote.id,
+    inferred.core.referencesField insideNote.id,
+    inferred.core.referencesField descendantNote.id,
+    inferred.core.referencesField parentNote.id)
 
 private def cell (fieldId : FieldId) (row : Nat)
     (stored : String) (value : Nat) : ClassifiedCellInput :=
@@ -216,6 +268,22 @@ example :
       some [
         [[(10, 1)], [(10, 2)]],
         [[(10, 1)], [(10, 2)]]] := by
+  native_decide
+
+/- An authored `@From` contributes its resolved group subtree to the whole-rule error-field gate; selecting the same group by default does not manufacture that authored reference. -/
+example :
+    referenceRuleAdmitted? authoredFromSource insideNote.id = true ∧
+      referenceRuleAdmitted? authoredFromSource descendantNote.id = true ∧
+      referenceRuleAdmitted? authoredFromSource parentNote.id = false ∧
+      referenceRuleAdmitted? source insideNote.id = false ∧
+      referenceRuleAdmitted? source descendantNote.id = false ∧
+      referenceRuleAdmitted? source parentNote.id = false := by
+  native_decide
+
+/- The checked reference query itself excludes the parent; the parent rule also has an independent row-scope mismatch. -/
+example :
+    referenceBoundary? =
+      some (true, true, false, false, false, false) := by
   native_decide
 
 end A12Kernel.Conformance.RepetitionNotUniqueValidationRule

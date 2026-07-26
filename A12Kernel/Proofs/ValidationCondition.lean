@@ -514,6 +514,16 @@ theorem validationCondition_repetitionNotUnique_addressingPolicy
         source.keys.map fun key => key.source.declaration := by
   exact ⟨rfl, rfl⟩
 
+/-- Mixed-condition traversal delegates RNU reference membership to the checked source that retains the authored-`@From` distinction. -/
+@[simp]
+theorem validationCondition_repetitionNotUnique_referencesField
+    (model : FlatModel)
+    (source : CheckedRepetitionNotUniqueSource model)
+    (field : FieldId) :
+    (ValidationCondition.repetitionNotUnique source).referencesField field =
+      source.referencesField field := by
+  rfl
+
 /-- A prepared current-row RNU result enters the shared connective evaluator unchanged; a row mismatch remains a structural failure. -/
 theorem validationCondition_repetitionNotUnique_preparedResult
     (model : FlatModel)
