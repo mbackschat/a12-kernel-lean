@@ -849,7 +849,7 @@ Composition-triage label (2026-07-25): the prefix-reachability half is `confirme
 
 ## LF70 — a defensive re-check is dead only when the caller owns the fact it re-checks
 
-> Date: 2026-07-24. Sections: §9 and §10. Basis: this repository's own checked-lowering sources at revision `72115c9`; no external kernel observation is involved, because the finding is about the formalization's certificate chain rather than about A12 behavior.
+> Date: 2026-07-24. Sections: §9 and §10. Basis: this repository's own checked-lowering sources at revision `6726588`; no external kernel observation is involved, because the finding is about the formalization's certificate chain rather than about A12 behavior.
 
 Checked elaborators across this repository end in a defensive `incoherentCore` branch that re-checks a fact the surrounding certificate chain is supposed to guarantee — 66 such sites across 22 modules at the time of writing. [`PROTOCOL.md`](PROTOCOL.md) already treats the result as an internal failure that "cannot masquerade as an ordinary unsupported request," so the impossibility was being asserted at the public boundary while nothing established it. Proving one such branch dead is cheap; the durable lesson is what made it cheap.
 
@@ -911,7 +911,7 @@ So the sharper lesson is a warning about this finding's own evidence: **dead bin
 
 ## LF75 — writing a research guard and applying it are different acts; the same commit can do the first and fail the second
 
-> Date: 2026-07-25. Sections: §5 and §7. Basis: reviewed a12-dmkits revisions `97e35531` and `724926a5`, against this repository's own `spec/` and commit `aff18e5`.
+> Date: 2026-07-25. Sections: §5 and §7. Basis: reviewed a12-dmkits revisions `97e35531` and `724926a5`, against this repository's own `spec/` and commit `100de09`.
 
 The 2026-07-25 exchange with a12-dmkits produced a guard for [`SOURCES.md`](SOURCES.md#engine-routing-rule--pick-the-layer-by-the-question-not-by-habit): *a peer's reachability claim is a hypothesis until measured, and "unrepresentable" is the most tempting unmeasured one.* It was written after two inferences had been adopted here as measured fact and then withdrawn upstream.
 

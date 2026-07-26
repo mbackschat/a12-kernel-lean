@@ -20,7 +20,7 @@ def bundleFile : System.FilePath :=
   "captures/validation-core-v1/semantic-observations.json"
 
 def bundleSha256 :=
-  "bd8f9411cd479b009a71e7c5a93e0369815c0a0b4647f6eacb5a4b1957532db7"
+  "e781b94e94fcc8b589aafcbbd11b64efca5a2ae175e8994b1e0db0c2e844661c"
 
 private def publicFamilyIds := [
   "flat-validation-empty-logic-v2",

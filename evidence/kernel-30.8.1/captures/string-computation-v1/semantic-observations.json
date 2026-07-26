@@ -8,7 +8,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "23f35e3c23e53283defeb15e792901f9637238f5",
+        "revision": "42ebd8bd75d555c59296fcbd79926800e92ce79e",
         "rawCapture": {
           "path": "captures/string-computation-2026-07-15.json",
           "sha256": "e6a31b7916fc99a8901b26d2a303e436a3909787904fb5803bafaa11d6b40b83"
@@ -254,7 +254,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "23f35e3c23e53283defeb15e792901f9637238f5",
+        "revision": "42ebd8bd75d555c59296fcbd79926800e92ce79e",
         "rawCapture": {
           "path": "captures/string-target-validation-2026-07-15.json",
           "sha256": "3281bac938fd4dbdb199050262bfb58c4b30eb9fde71cf30bd2858d0eef07b37"

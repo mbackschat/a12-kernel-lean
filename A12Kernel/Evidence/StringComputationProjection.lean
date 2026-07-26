@@ -15,10 +15,10 @@ open Lean
 open A12Kernel
 open A12Kernel.Evidence.ObservationBundle
 
-def bundleSha256 := "589ab2268c3347614b524a52a5667bfe5706e2a7a60f09d995da71068ea96d72"
+def bundleSha256 := "2869de08fa2f36ab8c904d28e5d1629689f0155b754472a91bb21054cc19872e"
 private def bundleFile := "captures/string-computation-v1/semantic-observations.json"
 private def familyId := "string-root-computation-v1"
-private def sourceRevision := "23f35e3c23e53283defeb15e792901f9637238f5"
+private def sourceRevision := "42ebd8bd75d555c59296fcbd79926800e92ce79e"
 
 inductive Mode where
   | deltaOnly

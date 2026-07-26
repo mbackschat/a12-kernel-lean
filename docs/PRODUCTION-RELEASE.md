@@ -162,7 +162,7 @@ Size optimization must not weaken protocol limits, diagnostics, checked lowering
 
 **Controlled change:** [`StrictJson.lean`](../A12Kernel/Reference/StrictJson.lean) now imports `Lean.Data.Json.Parser`, and [`Support.lean`](../A12Kernel/Reference/Support.lean) now imports `Lean.Data.Json.FromToJson.Basic`. The protocol and evaluator receive the needed types and printer operations transitively. No request, response, manifest, or semantic definition changes.
 
-**Environment:** source commit `b5dcf8da3c2c0d1905868d82ed26233530e4c7a9` plus the two import edits; Lean 4.31.0 at commit `68218e876d2a38b1985b8590fff244a83c321783`, whose distribution reports build target `arm64-apple-darwin24.6.0`; Lake 5.0.0; the Lean toolchain's clang/LLD 22.1.4 targeting `arm64-apple-darwin25.5.0`; arm64 macOS/Darwin 25.5.0. The produced Mach-O reports the unqualified toolchain default `minos 99.0` and `sdk 99.0`, discussed below. The command was `lake build a12-kernel-reference` with the toolchain's ordinary release configuration.
+**Environment:** source commit `81c4a7a60794dba42ce5c7cfe387a0e6bdeea58b` plus the two import edits; Lean 4.31.0 at commit `68218e876d2a38b1985b8590fff244a83c321783`, whose distribution reports build target `arm64-apple-darwin24.6.0`; Lake 5.0.0; the Lean toolchain's clang/LLD 22.1.4 targeting `arm64-apple-darwin25.5.0`; arm64 macOS/Darwin 25.5.0. The produced Mach-O reports the unqualified toolchain default `minos 99.0` and `sdk 99.0`, discussed below. The command was `lake build a12-kernel-reference` with the toolchain's ordinary release configuration.
 
 | Metric | Umbrella-import baseline | Narrow imports | Difference |
 |---|---:|---:|---:|

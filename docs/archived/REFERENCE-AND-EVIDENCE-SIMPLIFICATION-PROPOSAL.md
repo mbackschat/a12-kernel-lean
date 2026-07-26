@@ -56,7 +56,7 @@ Current V2 already subsumes the finite V1 behavior:
 
 V2 therefore replaces every active V1 conformance use. It does not retroactively relabel the Rust candidate or its 52/52 result as a V2 qualification. Move that historical experiment to one archived document with its exact revisions, verdict distribution, and key hashes, then remove it from live compatibility gates and current handover instructions.
 
-The stale `checkGeneratedDifferential` invocations were already removed from [CI](../../.github/workflows/lean_action_ci.yml) in commit `c2287d5`; the retired Lake target is no longer called. The completed migration:
+The stale `checkGeneratedDifferential` invocations were already removed from [CI](../../.github/workflows/lean_action_ci.yml) in commit `e975e4a`; the retired Lake target is no longer called. The completed migration:
 
 1. Update the two existing implementer-kit paths in place to describe current V2 semantics, manifests, suites, commands, and exclusions. Do not create parallel V1/V2 kits.
 2. Move the historical Rust experiment and reference-semantics 0.2.0 provenance into `docs/archived/`; remove V1 compatibility history from live docs.
@@ -86,7 +86,7 @@ The two older String stacks were migrated together before further computation-co
 | String target-validation schema/replay/binder and retained data | 61,521 bytes | 33,399 bytes | 94,920 bytes |
 | Combined | 114,804 bytes | 80,490 bytes | 195,294 bytes |
 
-Commit `19733d9` is the immutable dual-path checkpoint: the complete old binders, a migration-only typed comparator, and the compact replay agreed on all 22 ordered cases. The deletion then removes the six old modules, the temporary comparator, and 33 raw files. One 13,104-byte compact bundle retains two independent source records, while one 271-nonblank-line typed projection and 65 lines of focused mutation tests preserve the two original observation fidelities without adding a route, reader, registry, or generator. The source replacement is 336 lines versus the old permanent 2,106, a net removal of 1,770 nonblank Lean lines; the data replacement removes 67,386 bytes. Exact recovery identities and limits live in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](STRING-COMPUTATION-RAW-EVIDENCE.md).
+Commit `5ccd242` is the immutable dual-path checkpoint: the complete old binders, a migration-only typed comparator, and the compact replay agreed on all 22 ordered cases. The deletion then removes the six old modules, the temporary comparator, and 33 raw files. One 13,104-byte compact bundle retains two independent source records, while one 271-nonblank-line typed projection and 65 lines of focused mutation tests preserve the two original observation fidelities without adding a route, reader, registry, or generator. The source replacement is 336 lines versus the old permanent 2,106, a net removal of 1,770 nonblank Lean lines; the data replacement removes 67,386 bytes. Exact recovery identities and limits live in [`archived/STRING-COMPUTATION-RAW-EVIDENCE.md`](STRING-COMPUTATION-RAW-EVIDENCE.md).
 
 ### Remaining families — completed
 
@@ -100,7 +100,7 @@ The final migration compacted the remaining old families together because their 
 | Operator-sensitive | 72,000 |
 | Correlation elaboration | 26,266 |
 
-Commit `a04d6d9f51227dbe47014a5181590507e1b269bd` is the immutable validation dual-path checkpoint. Its legacy readers checked all 48 validation cases, the new compact lane replayed all 24 private validation cases, and the current V2 process gates checked the 25 public associations against exact normalized requests and projected responses. The already-compact 22-case root-String and five-case cascade lanes also passed, while their own archives retain their earlier complete-binder comparisons. The public/private directional witness is deliberately shared, so the validation bundle has 49 records for 48 distinct external observations.
+Commit `fe26645a5f6807e79d8a42c6ea0591acf3d51d96` is the immutable validation dual-path checkpoint. Its legacy readers checked all 48 validation cases, the new compact lane replayed all 24 private validation cases, and the current V2 process gates checked the 25 public associations against exact normalized requests and projected responses. The already-compact 22-case root-String and five-case cascade lanes also passed, while their own archives retain their earlier complete-binder comparisons. The public/private directional witness is deliberately shared, so the validation bundle has 49 records for 48 distinct external observations.
 
 The final deletion removes 85 raw files totaling 761,310 bytes and 12 schema/replay/bridge modules totaling 2,061 nonblank Lean lines, then replaces the legacy driver with a small dispatcher. The 116,974-byte validation bundle and 428-line projection/test lane retain the observable boundary without preserving a second model, path, or correlation interpreter. Exact recovery identities and limits live in [`archived/VALIDATION-RAW-EVIDENCE.md`](VALIDATION-RAW-EVIDENCE.md).
 

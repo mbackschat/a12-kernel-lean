@@ -765,7 +765,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-20-14 — Enumeration direct-field comparability uses effective display remapping
 
 - **Status:** accepted
-- **Local revision:** `106874218c12ffb7a1cd4971db815081abe3b198`
+- **Local revision:** `fab65d1684f0808d97f5fc72b904e5ca7c35a610`
 - **a12-dmkits basis revision:** `99f70a23a5bc392aafda05600b4d800848bab513`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`06-strings-and-enumerations.md` B.1 and checklist](../spec/06-strings-and-enumerations.md#b1-comparison-is-by-stored-value-and-direct-field-comparability-depends-on-effective-display-remapping)
@@ -780,7 +780,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-20-15 — all-empty Number aggregate identity is both-directionally fillable
 
 - **Status:** accepted
-- **Local revision:** `0cd607f74bbe7381007574dffe144d87b9ca69ef`
+- **Local revision:** `e97f0cf79ecad44110cab3f8b1d85d763d752763`
 - **a12-dmkits basis revision:** `06128aa0c96f36f34d6f5782c35d33e13001647e`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`03-empty-and-required.md` §A.3](../spec/03-empty-and-required.md#a3-what-an-all-empty-selection-folds-to-the-aggregate-identities) and [`10-validation-and-polarity.md` §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
@@ -796,7 +796,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 - **Status:** superseded
 - **Superseded by:** [`SPEC-2026-07-21-04`](#spec-2026-07-21-04--message-format-default-follows-the-actual-documentv2-profile)
-- **Local revision:** `8fbdbfd5aa973fb9db2ee81a9b7d7512564a8450`
+- **Local revision:** `845ff6c33efbe3853ed721c082ec30a4769459c2`
 - **a12-dmkits basis revision:** `9d6802746eb15f9f7772d89d7ad6ca81ba23a609`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`02-logic-and-formal-errors.md` B.3](../spec/02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state), [`11-messages-and-custom.md` Part A](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation), and [`SEMANTICS-MAP.md` taxonomy](../spec/SEMANTICS-MAP.md#3-the-taxonomy)
@@ -811,7 +811,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-21-02 — Number `Sum` preserves encounter order, staged precision, and missing-declaration polarity
 
 - **Status:** accepted
-- **Local revision:** `8f0f02983894995da2c5047a222f74c4b1203ca8`
+- **Local revision:** `f4055db3044c53a443f52e539f3ceb185ebcf0a0`
 - **a12-dmkits basis revision:** `baf70f0c252475d4a3f6c0f817f0451b5e52a185`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`04-numbers-and-decimals.md` §5](../spec/04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly), [`07-repetition-and-iteration.md` §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation), and [`10-validation-and-polarity.md` §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing)
@@ -917,7 +917,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-22-02 — `Now` retains exact epoch-millisecond identity
 
 - **Status:** accepted
-- **Local revision:** `964af3a9fc4887acf7dcfed641e370794980e4dc`
+- **Local revision:** `6dfa22c30a1e552bae55384ea739c7a01ee39e32`
 - **a12-dmkits basis revision:** `eec6f3ac5bcd1e403d64ba940b3d0daf9d44ed39`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`05-dates-and-time.md` §2](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected) and [§7](../spec/05-dates-and-time.md#7-the-point-in-time-and-reference-sources)
@@ -932,7 +932,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-22-03 — numeric `BaseYear` remains number-like inside computation arithmetic
 
 - **Status:** accepted
-- **Local revision:** `5853847752ef6ee1157ee8b43c310b247235cbb2`
+- **Local revision:** `e0aed76094ddcff17a9608f2e8f4575901ec732b`
 - **a12-dmkits basis revision:** `565333e36805b2beda1ae100ad095f6ad137e86f`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`04-numbers-and-decimals.md` §4](../spec/04-numbers-and-decimals.md#4-other-numeric-constraints)
@@ -947,7 +947,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-22-04 — quarter extraction is the fourth direct date-component projection
 
 - **Status:** accepted
-- **Local revision:** `a4ba930604c0f4c1b165b9c52ec83feb4f2c34da`
+- **Local revision:** `c7c687a280f249400bb91a9f33403b17b8b54a80`
 - **a12-dmkits basis revision:** `565333e36805b2beda1ae100ad095f6ad137e86f`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`05-dates-and-time.md` §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)
@@ -962,7 +962,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-22-05 — Enumeration field-list literals use the union of selected domains
 
 - **Status:** accepted
-- **Local revision:** `06b3f86549755fb2b28563f7a50cf734ffa7715c`
+- **Local revision:** `8d293e4b87dd16341b80a3ab8f7862b326194c96`
 - **a12-dmkits basis revision:** `9c8da06e5692eb6016f44f6b8179bd68f2588bc9`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`06-strings-and-enumerations.md` §B.3](../spec/06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-)
@@ -977,7 +977,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-22-06 — `FirstFilledValue` keeps omitted tail distinct from an empty prefix
 
 - **Status:** rejected — runtime premise disproved; Lean corrected
-- **Local revision:** `657334dc9674dc5027bfb6c42ca772587c244a00`
+- **Local revision:** `b2d17708f691991628980eef46df8b7a779a7746`
 - **a12-dmkits basis revision:** `ec2e82cbaef2a274baa0b091e86919458fe732c6`
 - **Kernel behavior:** 30.8.1
 - **Canonical clause:** [`10-validation-and-polarity.md` §4.1](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type)
@@ -1337,7 +1337,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-24-01 — ordinary rule iteration is derived from condition references
 
 - **Status:** accepted
-- **Local revision:** `8650a82831037b69543984562c9d0b3f4db09d28`
+- **Local revision:** `a44a10cc76d388f8a3e10e12ca802c1f160ace04`
 - **a12-dmkits basis revision:** `f4e420856ee0203048a88a5798fb5004afec44ff`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`07-repetition-and-iteration.md` §1 and checklist](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) and [`SEMANTICS-MAP.md` §3/glossary](../spec/SEMANTICS-MAP.md#3-the-taxonomy)
@@ -1352,7 +1352,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 ### SPEC-2026-07-24-02 — ordinary-iteration negative admission is level- and operand-sensitive
 
 - **Status:** accepted — reviewed a12-dmkits revision `10451733`, **explicitly partial**; the unlocked remainder is inventoried in the disposition rather than implied
-- **Local revision:** `f0510daac99d6643587a04943e8a72136af007dd`
+- **Local revision:** `27aee4182d51985c6b454231e229274351da33f7`
 - **a12-dmkits basis revision:** `98d2aacc256ef8dc7b9300b273748f8bf6151ed1`
 - **Kernel behavior:** 30.8.1
 - **Canonical clauses:** [`07-repetition-and-iteration.md` §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) and the [`SEMANTICS-MAP.md` §9 summary](../spec/SEMANTICS-MAP.md#3-the-taxonomy)

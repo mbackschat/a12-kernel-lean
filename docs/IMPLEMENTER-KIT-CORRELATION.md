@@ -250,7 +250,7 @@ Preserve the complete normalized request and the first divergent response. Class
 
 ## Fresh Rust runtime consumer probe
 
-The first current-version cold implementation completed on 2026-07-20 in the fresh external repository `a12-correlation-rust-probe`. It used semantic baseline `2bb2d232cd62367d6aa92f64b6b0c1dfc591a830`, this kit, the V2 suite index, and only the first twelve request/response pairs. It did not use Lean source or executables, the kernel, a12-dmkits, the historical Rust project, web research, or unlisted semantic material.
+The first current-version cold implementation completed on 2026-07-20 in the fresh external repository `a12-correlation-rust-probe`. It used semantic baseline `18a7b1c4a411070985bafda6969efa37c16d74fc`, this kit, the V2 suite index, and only the first twelve request/response pairs. It did not use Lean source or executables, the kernel, a12-dmkits, the historical Rust project, web research, or unlisted semantic material.
 
 | Artifact | Commit |
 |---|---|

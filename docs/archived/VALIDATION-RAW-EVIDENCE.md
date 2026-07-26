@@ -4,7 +4,7 @@
 
 ## What remains live
 
-Routine replay consumes the project-reviewed compact [`semantic-observations.json`](../../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), SHA-256 `bd8f9411cd479b009a71e7c5a93e0369815c0a0b4647f6eacb5a4b1957532db7`, through [`ValidationProjection.lean`](../../A12Kernel/Evidence/ValidationProjection.lean). The 116,974-byte bundle contains seven closed families and 49 records: 25 normalized public evidence associations and 24 private semantic replays. There are 48 distinct external observations because the directional empty-Number case intentionally appears once in each half.
+Routine replay consumes the project-reviewed compact [`semantic-observations.json`](../../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), SHA-256 `e781b94e94fcc8b589aafcbbd11b64efca5a2ae175e8994b1e0db0c2e844661c`, through [`ValidationProjection.lean`](../../A12Kernel/Evidence/ValidationProjection.lean). The 116,974-byte bundle contains seven closed families and 49 records: 25 normalized public evidence associations and 24 private semantic replays. There are 48 distinct external observations because the directional empty-Number case intentionally appears once in each half.
 
 The public associations are enforced by `lake exe checkReferenceProcess` and the candidate-conformance runner. The runner pins the whole bundle, selects the declared case, requires exact normalized-request equality, and compares the expected response only at the fidelity the external observation supports. `lake test` separately replays the 24 private cases through the live checked semantics. The compact bundle's SHA-256 is the sole exact byte identity; readable family identities, counts, and duplicate checks protect routing without duplicating a second manifest of every pinned byte.
 
@@ -12,11 +12,11 @@ The required-empty record retains the externally observed `mandatoryField` code 
 
 ## One-time migration assurance
 
-Commit `a04d6d9f51227dbe47014a5181590507e1b269bd` is the immutable validation dual-path agreement checkpoint. In that revision one `lake test` run checked all 48 validation cases through their complete legacy binders and also replayed the 24 private compact validation records. The already-settled 22-case root-String and five-case cascade compact lanes passed in the same run; their own archives record their earlier complete-binder comparisons. Both current V2 conformance suites passed their reference and self-test gates against the 25 compact public associations. The compact request/response/case binding also rejected a changed normalized request, a changed projected response, and an alias to another existing retained case.
+Commit `fe26645a5f6807e79d8a42c6ea0591acf3d51d96` is the immutable validation dual-path agreement checkpoint. In that revision one `lake test` run checked all 48 validation cases through their complete legacy binders and also replayed the 24 private compact validation records. The already-settled 22-case root-String and five-case cascade compact lanes passed in the same run; their own archives record their earlier complete-binder comparisons. Both current V2 conformance suites passed their reference and self-test gates against the 25 compact public associations. The compact request/response/case binding also rejected a changed normalized request, a changed projected response, and an alias to another existing retained case.
 
 The migration review independently checked the compact bundle against all five legacy projection digests, the operator receipt, the public fixtures, and the live semantics. It found and closed two information-boundary defects before the checkpoint: static rejection observations now require `kernelCode` and `rejectionClass` together, and the required-empty compact observation retains its modeled message identity. After this checkpoint the legacy readers and raw estate were removed; there is no permanent converter, dual reader, or raw packet binder.
 
-The clean pre-migration revision is `e3f90367df18d504319ea65d29558b5a6c567f3a`. It contains the complete legacy estate before the compact validation bundle was added.
+The clean pre-migration revision is `42c05a6e8ab3c58500260be103bbcc19a37d26e2`. It contains the complete legacy estate before the compact validation bundle was added.
 
 ## Recovery identities
 
@@ -28,7 +28,7 @@ The clean pre-migration revision is `e3f90367df18d504319ea65d29558b5a6c567f3a`. 
 | Iteration projection SHA-256 | `d9b470e94fc577940d7bab2a8b4be9dd303acff31145fe03de68872dd2088be5` |
 | Correlation-runtime projection SHA-256 | `d7da5dcca7e743a7216e3de6a194a243e1fe4af91285fad4779f410dd58db787` |
 | Correlation-authoring projection SHA-256 | `fadb3eaf1e0192ca81291de11786d9aa1b5a9e2fff2d1ffcd6a4a2e972bc6b0e` |
-| Compact validation bundle SHA-256 | `bd8f9411cd479b009a71e7c5a93e0369815c0a0b4647f6eacb5a4b1957532db7` |
+| Compact validation bundle SHA-256 | `e781b94e94fcc8b589aafcbbd11b64efca5a2ae175e8994b1e0db0c2e844661c` |
 | Full `evidence/kernel-30.8.1` Git tree before migration | `0dbad82892810e1f33d8da60752ff9a9152c2352` |
 | Full `A12Kernel/Evidence` Git tree before migration | `e46d23b6813cc01aee85f6813f45acd2e4980e55` |
 | Correlation case-directory Git tree | `aca1fb3d1bdc63e95da3a704b603c1eef9d435f4` |
@@ -40,16 +40,16 @@ The principal introduction and correction revisions are:
 
 | Area | Revision |
 |---|---|
-| Initial flat evidence replay | `49b782d806fe3f745a80afb0567d59bb461a739d` |
-| Corrected two-tier path resolution and expanded flat evidence | `819623f90f39563c5ced571d279168c9d8036347` |
-| Uncorrelated filtered iteration | `3b4262ed9785405e0b5b01740a88121a3a51d54b` |
-| Correlated consumer evidence extension | `4374b4b8604328642e5f5cc31b96d90b8feaef9a` |
-| Initial captured-outer correlation | `658185dbe6a9e25bbbe6cf59b1922972c556a1c0` |
-| Focused correlation evidence closure | `1b148de3283aa45ca7f5152630cc07267857476c` |
-| Checked correlation-authoring evidence | `63b14def7e50b2b5c171129676b9c5b3801fa236` |
-| Operator-sensitive empty-value evidence | `ced07282ca56fa44a6b9d5e81d768cf6d8162b18` |
+| Initial flat evidence replay | `9eead0d14704677c50c9fc49aa6754ce37c7a7b2` |
+| Corrected two-tier path resolution and expanded flat evidence | `239ed71f7ab2be245c7f9a4742b6dd2701c4ee58` |
+| Uncorrelated filtered iteration | `7c49ce8e1cbff5c78a18e8f572fed203c8d28e0b` |
+| Correlated consumer evidence extension | `b4f0c05bb7080367a2eaf158ddae79e583694fe2` |
+| Initial captured-outer correlation | `605915be4a60275fc04bbb6e02ba8768956e3525` |
+| Focused correlation evidence closure | `97c705fb5b65723ebf6c0103cd3deaf72f4a55bd` |
+| Checked correlation-authoring evidence | `3132cd82438874cbb34c2e6c73ee07a7a2e6f2f1` |
+| Operator-sensitive empty-value evidence | `8fea77d6e37d8d45cd0cf39c109b9d0f963955fb` |
 
-Use `git show a04d6d9f51227dbe47014a5181590507e1b269bd:<path>` to inspect a removed artifact, or `git archive a04d6d9f51227dbe47014a5181590507e1b269bd -- <paths>` to reconstruct a disposable audit tree. Do not restore the historical stack to current `main` merely to run ordinary evidence replay.
+Use `git show fe26645a5f6807e79d8a42c6ea0591acf3d51d96:<path>` to inspect a removed artifact, or `git archive fe26645a5f6807e79d8a42c6ea0591acf3d51d96 -- <paths>` to reconstruct a disposable audit tree. Do not restore the historical stack to current `main` merely to run ordinary evidence replay.
 
 ## Operator receipt
 

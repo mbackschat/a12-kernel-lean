@@ -4,13 +4,13 @@
 
 ## What remains live
 
-Routine replay consumes the project-reviewed compact [`semantic-observations.json`](../../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json), SHA-256 `589ab2268c3347614b524a52a5667bfe5706e2a7a60f09d995da71068ea96d72`, through [`StringComputationProjection.lean`](../../A12Kernel/Evidence/StringComputationProjection.lean). Its two ordered source records preserve the independent capture identities and observation fidelity of the 13-case unconstrained delta lane and the nine-case target-validation lane. [`StringComputationProjectionTest.lean`](../../A12Kernel/Evidence/StringComputationProjectionTest.lean) guards row-content independence, final-empty root storage, change-sensitive deltas, target-check enforcement and cause, and exact absent-versus-present-empty application.
+Routine replay consumes the project-reviewed compact [`semantic-observations.json`](../../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json), SHA-256 `2869de08fa2f36ab8c904d28e5d1629689f0155b754472a91bb21054cc19872e`, through [`StringComputationProjection.lean`](../../A12Kernel/Evidence/StringComputationProjection.lean). Its two ordered source records preserve the independent capture identities and observation fidelity of the 13-case unconstrained delta lane and the nine-case target-validation lane. [`StringComputationProjectionTest.lean`](../../A12Kernel/Evidence/StringComputationProjectionTest.lean) guards row-content independence, final-empty root storage, change-sensitive deltas, target-check enforcement and cause, and exact absent-versus-present-empty application.
 
-The compact bytes were reviewed and projected by this repository; they were not exported or qualified by a12-dmkits. Their source identity therefore names `a12-kernel-lean` and the clean pre-migration revision `23f35e3c23e53283defeb15e792901f9637238f5`, where every underlying raw artifact and complete legacy binder remains available. The underlying raw captures were produced by a12-dmkits revision `699e8619ac1667c861e14b285c5924ac57a705f1`.
+The compact bytes were reviewed and projected by this repository; they were not exported or qualified by a12-dmkits. Their source identity therefore names `a12-kernel-lean` and the clean pre-migration revision `42ebd8bd75d555c59296fcbd79926800e92ce79e`, where every underlying raw artifact and complete legacy binder remains available. The underlying raw captures were produced by a12-dmkits revision `699e8619ac1667c861e14b285c5924ac57a705f1`.
 
 ## One-time migration assurance
 
-Revision `19733d967e6ac3dccae1246ec8362b0c59cbb73b` is the immutable dual-path agreement checkpoint. One `lake test` run there performed all three links:
+Revision `5ccd242160d39cd3c8d2508906212f2a3f485d6f` is the immutable dual-path agreement checkpoint. One `lake test` run there performed all three links:
 
 1. The complete legacy binders hash- and shape-checked both capture receipts, seven models, 22 case files, placements, operation and policy declarations, Groovy-dynamic versus Java-static agreement, and a12-dmkits triangulation.
 2. The migration-only Lean checker normalized both legacy input projections and replay results to the new typed representation and required exact ordered equality for all 22 inputs and observations.
@@ -20,7 +20,7 @@ The migration checker and both legacy stacks were then deleted. There is no perm
 
 ## Recovery identities
 
-The clean raw recovery revision is `23f35e3c23e53283defeb15e792901f9637238f5`; the stronger agreement checkpoint is `19733d967e6ac3dccae1246ec8362b0c59cbb73b`.
+The clean raw recovery revision is `42ebd8bd75d555c59296fcbd79926800e92ce79e`; the stronger agreement checkpoint is `5ccd242160d39cd3c8d2508906212f2a3f485d6f`.
 
 | Historical unit | Identity |
 |---|---|
@@ -47,7 +47,7 @@ The seven removed model SHA-256 values were:
 | Minimum length 5 | `7bcc96560c5cfd5ac4e9fedb1645f7dbf2db0692caced57e43de8d2831c2349f` |
 | Space-padded maximum length 5 | `031ec09d33e94ed69be8b5082e110ab57092f10f1bb7760c25e8995a45c9757c` |
 
-Use `git show 19733d967e6ac3dccae1246ec8362b0c59cbb73b:<path>` to inspect one removed artifact, or `git archive 19733d967e6ac3dccae1246ec8362b0c59cbb73b -- <paths>` to reconstruct a disposable audit tree. Do not restore the historical stack to current `main` merely to run ordinary evidence replay.
+Use `git show 5ccd242160d39cd3c8d2508906212f2a3f485d6f:<path>` to inspect one removed artifact, or `git archive 5ccd242160d39cd3c8d2508906212f2a3f485d6f -- <paths>` to reconstruct a disposable audit tree. Do not restore the historical stack to current `main` merely to run ordinary evidence replay.
 
 ## Preserved claims and deliberate exclusions
 

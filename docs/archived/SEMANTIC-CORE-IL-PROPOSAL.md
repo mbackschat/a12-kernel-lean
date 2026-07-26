@@ -29,7 +29,7 @@ If that theorem existed, a consumer could implement `CoreProgram` and `evalCore`
 
 That would have been useful only if the common language started at this checked A12 boundary. It did not. The value-list experiment explicitly started with `ResolvedValueListSide`, whose owning module says that both operands have already been expanded per cell and filtered. The numeric experiment started with `NumericOperand`, which had already classified the source cell as a number, omission, or formal unavailability.
 
-The actual environment builders, abridged from the deleted experiment at `f3c086a`, make this late starting point visible:
+The actual environment builders, abridged from the deleted experiment at `bc9be9b`, make this late starting point visible:
 
 ```lean
 def CoreEnv.ofValueList
@@ -322,7 +322,7 @@ E1 **fails**, and is to be reported as a negative result with the experimental c
 
 All four criteria met. Gates: `lake build` 471 jobs, trust audit **1327 theorem roots; 27614 declarations in 252 modules**, `lake test` 51/51, `checkReferenceProcess` 51/51.
 
-**Criterion 1.** `lowerValueListQuantifier_preserves` (in the since-deleted `Proofs/CoreIL.lean`; recoverable at commit `f3c086a`) is proved for all three operators, universal over operand shapes. Eleven theorems total, zero `sorry`, and the trust audit's axiom check passes, so no escape hatch was used.
+**Criterion 1.** `lowerValueListQuantifier_preserves` (in the since-deleted `Proofs/CoreIL.lean`; recoverable at commit `bc9be9b`) is proved for all three operators, universal over operand shapes. Eleven theorems total, zero `sorry`, and the trust audit's axiom check passes, so no escape hatch was used.
 
 **Criterion 2 — the core is strictly smaller, and the prediction held.** The family carries two collection functions, **three** operator-specific fields scans, a presence predicate, and an empty-member guard. The core carries two collection policies, **two** folds, and one guard:
 

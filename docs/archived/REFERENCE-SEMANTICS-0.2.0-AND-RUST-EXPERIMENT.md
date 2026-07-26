@@ -12,15 +12,15 @@
 | Kernel behavior | `30.8.1` |
 | Flat suite | `flat-validation-empty-logic-v1` |
 | Correlation suite | `single-group-correlation-v1` |
-| Historical reference source | `9fa50276f5fb70dcd879b0a9712c8d69c0868967` |
-| Complete pre-retirement worktree | `07d21272956ec49890267d0fc99deb70e4fd709c` |
-| Retired implementation snapshot | `03186c1` |
+| Historical reference source | `320897baf70c590584899e1e5b1c9bada12ae535` |
+| Complete pre-retirement worktree | `3d690afce07ce254dcad799e13bf23c67d394488` |
+| Retired implementation snapshot | `32158de` |
 
 The historical account differs from current reference semantics 0.3.0 on the separating request `examples/reference-cli/empty-unsigned-number-not-equal-negative.request.json`: the old account returned `Fired(Omission)`, while the corrected current account returns `Fired(Value)`. Requests and responses carry protocol and kernel versions but no reference-semantics selector, so the old result is recoverable only from the pinned historical source rather than from the current executable.
 
 ## Deleted artifact identities
 
-The complete files remain available at pre-retirement revision `07d21272956ec49890267d0fc99deb70e4fd709c`.
+The complete files remain available at pre-retirement revision `3d690afce07ce254dcad799e13bf23c67d394488`.
 
 | Historical path | SHA-256 |
 |---|---|
@@ -41,11 +41,11 @@ The historical artifact lock contains the selected 152-file dependency inventory
 
 The first isolated consumer experiment tested whether a language-neutral semantic handover could carry a nontrivial A12 decision procedure without requiring the implementer to research the kernel.
 
-The handover originated at source revision `fb0a50d8715aaef07431692811ed89ac69a764c5`. The implementer produced natural Rust revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, the initial report at `c39be53cb5031e60a8244d5feadda4c851846288`, the corrected inventory/report state at `91044000c7f71d98e1e67691be035b627e6f7508`, and the feedback report at `9e308bf405ddc7c029a5d1297386ecb2415e5c4c`.
+The handover originated at source revision `ce7c9d07f4d44318b5e78469cb95b23c23244851`. The implementer produced natural Rust revision `7606fd5b881a8bdb8c94daf409ff4c495e572b29`, the initial report at `c39be53cb5031e60a8244d5feadda4c851846288`, the corrected inventory/report state at `91044000c7f71d98e1e67691be035b627e6f7508`, and the feedback report at `9e308bf405ddc7c029a5d1297386ecb2415e5c4c`.
 
-The source-side mutation packet was exported at `e408c9bd87ab8de576c900f2e42e0f13e868da76`; its packet SHA-256 was `28b1e0e074a53dc3abb7fe69f4ae97286f4fdf1e81a1d80e92e8a29709a8ab16`. The isolated consumer committed the accepted seven-mutation result and its 138 raw logs at Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. Every predicted mutation fired, every restoration gate passed, and no unresolved semantic question remained.
+The source-side mutation packet was exported at `758febc8058233fc14ee68d48bf3885ab7a625e7`; its packet SHA-256 was `28b1e0e074a53dc3abb7fe69f4ae97286f4fdf1e81a1d80e92e8a29709a8ab16`. The isolated consumer committed the accepted seven-mutation result and its 138 raw logs at Rust revision `d213005b3972c2acd8f67e87f523a923d69f6a54`. Every predicted mutation fired, every restoration gate passed, and no unresolved semantic question remained.
 
-The later generated differential used Lean source revision `2cdc37746737d83241f91cd89fa0b56c99c2d47a` and the same Rust candidate revision. It executed 52 generated cases through both processes and recorded 52 agreements, zero disagreements, and the same verdict distribution on both sides:
+The later generated differential used Lean source revision `e4186b468914c2ef1201a8eae367ed87f8867866` and the same Rust candidate revision. It executed 52 generated cases through both processes and recorded 52 agreements, zero disagreements, and the same verdict distribution on both sides:
 
 | Verdict | Count |
 |---|---:|
@@ -68,4 +68,4 @@ An isolated documentation audit also consumed the historical 16-case correlation
 
 ## Recovery
 
-Use a detached checkout or worktree at `07d21272956ec49890267d0fc99deb70e4fd709c` to inspect every deleted V1 artifact and its non-writing integrity gate. Use `03186c1` when the retired mutation and generated-differential implementations themselves are required. Do not restore those files or commands to current `main` merely to reproduce history.
+Use a detached checkout or worktree at `3d690afce07ce254dcad799e13bf23c67d394488` to inspect every deleted V1 artifact and its non-writing integrity gate. Use `32158de` when the retired mutation and generated-differential implementations themselves are required. Do not restore those files or commands to current `main` merely to reproduce history.

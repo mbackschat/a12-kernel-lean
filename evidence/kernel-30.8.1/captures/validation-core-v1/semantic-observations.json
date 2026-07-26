@@ -8,7 +8,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "projection.json",
           "sha256": "cee1f64ed7395dcd87da5488ebb4e602c332d9ea1bde50fc06886c1c1e08b468"
@@ -523,7 +523,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "captures/operator-sensitive-empty-2026-07-15.json",
           "sha256": "fe86642caf0354bcdec217801824e64aa9725e1a1662e41b1d55d81185d3c7e2"
@@ -592,7 +592,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "correlation-projection.json",
           "sha256": "d7da5dcca7e743a7216e3de6a194a243e1fe4af91285fad4779f410dd58db787"
@@ -2748,7 +2748,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "correlation-elaboration-projection.json",
           "sha256": "fadb3eaf1e0192ca81291de11786d9aa1b5a9e2fff2d1ffcd6a4a2e972bc6b0e"
@@ -3382,7 +3382,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "projection.json",
           "sha256": "cee1f64ed7395dcd87da5488ebb4e602c332d9ea1bde50fc06886c1c1e08b468"
@@ -3936,7 +3936,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "captures/operator-sensitive-empty-2026-07-15.json",
           "sha256": "fe86642caf0354bcdec217801824e64aa9725e1a1662e41b1d55d81185d3c7e2"
@@ -4083,7 +4083,7 @@
       "projectionVersion": 1,
       "source": {
         "producer": "a12-kernel-lean",
-        "revision": "e3f90367df18d504319ea65d29558b5a6c567f3a",
+        "revision": "42c05a6e8ab3c58500260be103bbcc19a37d26e2",
         "rawCapture": {
           "path": "iteration-projection.json",
           "sha256": "d9b470e94fc577940d7bab2a8b4be9dd303acff31145fe03de68872dd2088be5"

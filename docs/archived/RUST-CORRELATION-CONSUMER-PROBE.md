@@ -10,7 +10,7 @@ The recommended capability is the resolved runtime core of `single-group-correla
 
 The natural phase stops before JSON decoding, model/path elaboration, public diagnostics, process integration, and the four static-authoring cases. Its numeric profile is exactly the integer-valued retained runtime fixtures; broader exact-decimal support is not inferred. A successful result is a finite correlation-runtime consumer probe, not a general A12 interpreter or current-suite qualification.
 
-Semantic source baseline: `2bb2d232cd62367d6aa92f64b6b0c1dfc591a830`. Later documentation-only descendants may be used only if the allowed semantic material below is unchanged from that baseline.
+Semantic source baseline: `18a7b1c4a411070985bafda6969efa37c16d74fc`. Later documentation-only descendants may be used only if the allowed semantic material below is unchanged from that baseline.
 
 ## Allowed source material
 
@@ -37,7 +37,7 @@ The phase-specific allowlist overrides the broader handover list, links, Rust pl
 Immediately before starting the external session, the owner runs the following from `a12-kernel-lean`. Exit status zero confirms that every allowed input still has exactly its baseline bytes; a nonzero result blocks the probe until this work order is deliberately repinned.
 
 ```sh
-baseline=2bb2d232cd62367d6aa92f64b6b0c1dfc591a830
+baseline=18a7b1c4a411070985bafda6969efa37c16d74fc
 git diff --quiet "$baseline" -- \
   docs/IMPLEMENTER-KIT-CORRELATION.md \
   reference/single-group-correlation-v2.conformance.json \
@@ -62,7 +62,7 @@ The owner also confirms that the Lean worktree is clean, records the successful 
 Deliver this prompt first. Do not reveal either later prompt before the readback commit is frozen.
 
 ```text
-You are performing the cold-readback phase of a consumer probe in a brand-new Rust repository. The purpose is to test knowledge transport from a12-kernel-lean, not to rediscover A12 behavior. The owner has already verified that the allowed source bytes match baseline 2bb2d232cd62367d6aa92f64b6b0c1dfc591a830.
+You are performing the cold-readback phase of a consumer probe in a brand-new Rust repository. The purpose is to test knowledge transport from a12-kernel-lean, not to rediscover A12 behavior. The owner has already verified that the allowed source bytes match baseline 18a7b1c4a411070985bafda6969efa37c16d74fc.
 
 Use the existing Homebrew Rust toolchain. Do not install or add dependencies. Use Rust's standard library only. Work only in this new repository; treat every other repository as read-only.
 

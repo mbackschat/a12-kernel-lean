@@ -104,7 +104,7 @@ The red matrix separated unsigned-present/signed-missing from signed-present/uns
 
 ## Completed consumer checkpoint: artifact-only aggregate probe
 
-At revision `6670ce7`, one deliberately cold read-only consumer received only the aggregate clauses, Lean semantics, laws, executable separators, adjacent operator-family definitions, implementation boundary, and consumer guidance. It consulted no kernel, a12-dmkits, web, Git history, prior discussion, or unlisted source and changed no file.
+At revision `7a3fedd`, one deliberately cold read-only consumer received only the aggregate clauses, Lean semantics, laws, executable separators, adjacent operator-family definitions, implementation boundary, and consumer guidance. It consulted no kernel, a12-dmkits, web, Git history, prior discussion, or unlisted source and changed no file.
 
 The reader reconstructed the complete admitted `Sum`/`MinValue`/`MaxValue` evaluator without semantic guessing, including order, staged precision, empty and unavailable cells, first cause, all-empty identity, tail, signedness, `Having`, and the distinctions from operand-list extrema and `FirstFilledValue`. It also classified a narrow set of resolved-stream rewrites and caught the non-obvious fact that inserting or deleting numeric zero is not universally safe because it can alter all-empty provenance or introduce another precision-50 step.
 

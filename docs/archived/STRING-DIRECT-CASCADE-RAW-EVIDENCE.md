@@ -12,7 +12,7 @@ The result establishes only the named direct two-step String cascade over one le
 
 ## Recovery identity
 
-The last current-project revision containing every raw and scenario byte is `e89b8b9a6fbe964928d379b20f628e9968438457`. At that revision:
+The last current-project revision containing every raw and scenario byte is `9a71ba7167cf16721f6ab722507b502dcce10254`. At that revision:
 
 | Historical tree | Git tree object |
 |---|---|
@@ -21,7 +21,7 @@ The last current-project revision containing every raw and scenario byte is `e89
 
 The removed estate comprised 31 tracked files, 123,184 bytes, and 4,056 nonblank lines. The compact observation bundle remains checked out and is not included in those totals.
 
-Use a detached checkout or worktree at `e89b8b9a6fbe964928d379b20f628e9968438457` to inspect the complete unit. Do not restore it to current `main` merely to audit history. Upstream a12-dmkits revision `45b264b2d6213dd7d4d261fa040034371b0c8fcd` independently retired the unused capture implementation; its archived capture proposal and detached Git history own producer-side reconstruction.
+Use a detached checkout or worktree at `9a71ba7167cf16721f6ab722507b502dcce10254` to inspect the complete unit. Do not restore it to current `main` merely to audit history. Upstream a12-dmkits revision `45b264b2d6213dd7d4d261fa040034371b0c8fcd` independently retired the unused capture implementation; its archived capture proposal and detached Git history own producer-side reconstruction.
 
 ## Principal SHA-256 identities
 
