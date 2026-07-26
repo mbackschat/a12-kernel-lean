@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StringComputationRun
+import A12Kernel.Elaboration.StringComputationRunRelation
 
 /-! # Checked nonrepeatable String-run locks
 
@@ -72,6 +72,7 @@ private def FixtureOperation.checked :
 private inductive FixtureTable
   | producerCopySource | producerValue | producerError | producerPoison
   | consumerCopy | consumerReached | consumerHiddenAnd | consumerHiddenOr
+  | consumerIndependent
 
 private def FixtureTable.checked :
     FixtureTable → CheckedStringComputationTable model
@@ -95,6 +96,9 @@ private def FixtureTable.checked :
   | .consumerHiddenOr =>
       (table? [alternative (.or (.fieldNotFilled gate.id) (.fieldFilled producer.id))
         (FixtureOperation.checked .consumerSafe)]).get (by native_decide)
+  | .consumerIndependent =>
+      (table? [alternative holding (FixtureOperation.checked .consumerSafe)]).get
+        (by native_decide)
 
 private def cell (field : FieldId) (stored : String) (raw : RawCell) :
     ClassifiedCellInput :=
@@ -117,6 +121,93 @@ private def outcomeAt (target : FieldId)
   let input ← checkedDocument cells
   let outcomes ← (run.execute prepared.patterns input).toOption
   (outcomes.find? fun entry => entry.1 == target).map (·.2)
+
+private def producerTable := FixtureTable.checked .producerValue
+
+private def independentConsumerTable := FixtureTable.checked .consumerIndependent
+
+private def independentRun : CheckedStringComputationRun model := {
+  tables := [producerTable, independentConsumerTable]
+  nonempty := by simp
+  uniqueTargets := by native_decide
+  dependenciesOrdered := by native_decide
+}
+
+private def independentInput : CheckedDocument model :=
+  (checkedDocument []).get (by native_decide)
+
+private def completionAt? (state : StringComputationRunState)
+    (table : CheckedStringComputationTable model) : Option StringComputationRunCompletion :=
+  (independentRun.evaluateTable prepared.patterns independentInput state table).toOption
+
+private theorem completionAt_ok (state : StringComputationRunState)
+    (table : CheckedStringComputationTable model)
+    (success : (completionAt? state table).isSome = true) :
+    independentRun.evaluateTable prepared.patterns independentInput state table =
+      .ok ((completionAt? state table).get success) := by
+  cases evaluated :
+      independentRun.evaluateTable prepared.patterns independentInput state table with
+  | error fault =>
+      have impossible : False := by
+        simp [completionAt?, evaluated, Except.toOption] at success
+      exact False.elim impossible
+  | ok completion =>
+      simp [completionAt?, evaluated, Except.toOption]
+
+private def producerFirst := (completionAt? {} producerTable).get (by native_decide)
+
+private def consumerFirst := (completionAt? {} independentConsumerTable).get (by native_decide)
+
+private def afterProducer : StringComputationRunState :=
+  { completed := [producerFirst] }
+
+private def afterConsumer : StringComputationRunState :=
+  { completed := [consumerFirst] }
+
+private def consumerSecond :=
+  (completionAt? afterProducer independentConsumerTable).get (by native_decide)
+
+private def producerSecond :=
+  (completionAt? afterConsumer producerTable).get (by native_decide)
+
+private def producerThenConsumer : StringComputationRunState :=
+  { completed := [producerFirst, consumerSecond] }
+
+private def consumerThenProducer : StringComputationRunState :=
+  { completed := [consumerFirst, producerSecond] }
+
+private theorem producerEnabled (state : StringComputationRunState) :
+    StringComputationDependenciesEnabled independentRun producerTable state := by
+  intro dependency member referenced
+  simp [independentRun] at member
+  rcases member with rfl | rfl
+  · have notReferenced :
+        producerTable.referencesField producerTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+  · have notReferenced :
+        producerTable.referencesField independentConsumerTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+
+private theorem consumerEnabled (state : StringComputationRunState) :
+    StringComputationDependenciesEnabled independentRun independentConsumerTable state := by
+  intro dependency member referenced
+  simp [independentRun] at member
+  rcases member with rfl | rfl
+  · have notReferenced :
+        independentConsumerTable.referencesField producerTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+  · have notReferenced :
+        independentConsumerTable.referencesField
+          independentConsumerTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
 
 /- Duplicate targets and forward computed reads fail before execution. -/
 example :
@@ -173,6 +264,43 @@ example :
     outcomeAt producer.id [FixtureTable.checked .producerValue]
       [cell bad.id "bad" (.rejected .malformed)] =
         some (.accepted ⟨"NEW", by decide⟩) := by
+  native_decide
+
+/- The independent relation admits both orders, while field lookup erases their private completion order. -/
+example :
+    StringComputationRunStep independentRun prepared.patterns independentInput {}
+        (producerFirst.targetField, producerFirst.outcome) afterProducer ∧
+    StringComputationRunStep independentRun prepared.patterns independentInput
+        afterProducer (consumerSecond.targetField, consumerSecond.outcome)
+        producerThenConsumer ∧
+    StringComputationRunStep independentRun prepared.patterns independentInput {}
+        (consumerFirst.targetField, consumerFirst.outcome) afterConsumer ∧
+    StringComputationRunStep independentRun prepared.patterns independentInput
+        afterConsumer (producerSecond.targetField, producerSecond.outcome)
+        consumerThenProducer ∧
+    (producerThenConsumer.find? producer.id).map (·.outcome) =
+        (consumerThenProducer.find? producer.id).map (·.outcome) ∧
+    (producerThenConsumer.find? consumer.id).map (·.outcome) =
+        (consumerThenProducer.find? consumer.id).map (·.outcome) := by
+  constructor
+  · exact .compute producerTable (by simp [independentRun])
+      (by native_decide) (producerEnabled {}) producerFirst
+      (by simpa [producerFirst] using completionAt_ok {} producerTable (by native_decide))
+  constructor
+  · exact .compute independentConsumerTable (by simp [independentRun])
+      (by native_decide) (consumerEnabled afterProducer) consumerSecond
+      (by simpa [consumerSecond] using
+        completionAt_ok afterProducer independentConsumerTable (by native_decide))
+  constructor
+  · exact .compute independentConsumerTable (by simp [independentRun])
+      (by native_decide) (consumerEnabled {}) consumerFirst
+      (by simpa [consumerFirst] using
+        completionAt_ok {} independentConsumerTable (by native_decide))
+  constructor
+  · exact .compute producerTable (by simp [independentRun])
+      (by native_decide) (producerEnabled afterConsumer) producerSecond
+      (by simpa [producerSecond] using
+        completionAt_ok afterConsumer producerTable (by native_decide))
   native_decide
 
 end A12Kernel.Conformance.StringComputationRun

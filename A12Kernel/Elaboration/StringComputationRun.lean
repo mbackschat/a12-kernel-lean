@@ -55,6 +55,25 @@ def readPolicy (run : CheckedStringComputationRun model)
     else
       input.flatContext.read field
 
+/-- Evaluate one checked table through the current run overlay and retain the exact dependency cell required by a later step. This is the shared atomic step for fixed execution and the independent relation. -/
+def evaluateTable (run : CheckedStringComputationRun model)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) (state : StringComputationRunState)
+    (table : CheckedStringComputationTable model) :
+    Except StringComputationRunFault StringComputationRunCompletion :=
+  match patterns.targetMatcher? table.targetField with
+  | none =>
+      .error (.evaluation table.targetField
+        (.targetPatternUnavailable table.targetField))
+  | some matcher =>
+      match table.evaluateOutcomeWithPattern matcher (run.readPolicy state input) with
+      | .error fault => .error (.evaluation table.targetField fault)
+      | .ok outcome =>
+          match StringDependencyCell.ofOutcome outcome with
+          | .error fault => .error (.dependency table.targetField fault)
+          | .ok dependencyCell =>
+              .ok { targetField := table.targetField, outcome, dependencyCell }
+
 /-- Execute an explicitly supplied suffix with the same checked run read policy. The public suffix form is the induction boundary for the run relation; `execute` is its only whole-plan entry point. -/
 def executeTables (run : CheckedStringComputationRun model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
@@ -63,32 +82,21 @@ def executeTables (run : CheckedStringComputationRun model)
       Except StringComputationRunFault StringComputationRunState
   | [], state => pure state
   | table :: remaining, state =>
-      match patterns.targetMatcher? table.targetField with
-      | none =>
-          .error (.evaluation table.targetField
-            (.targetPatternUnavailable table.targetField))
-      | some matcher =>
-          match table.evaluateOutcomeWithPattern matcher
-              (run.readPolicy state input) with
-          | .error fault => .error (.evaluation table.targetField fault)
-          | .ok outcome =>
-              match StringDependencyCell.ofOutcome outcome with
-              | .error fault => .error (.dependency table.targetField fault)
-              | .ok dependencyCell =>
-                  executeTables run patterns input remaining {
-                    completed := state.completed ++ [{
-                      targetField := table.targetField
-                      outcome
-                      dependencyCell
-                    }]
-                  }
+      match run.evaluateTable patterns input state table with
+      | .error fault => .error fault
+      | .ok completion =>
+          executeTables run patterns input remaining {
+            completed := state.completed ++ [completion]
+          }
 
 /-- Execute the certified fixed order against one immutable checked document and return rich outcomes in that same order. Pattern preparation is supplied separately because the checked document intentionally retains only checked cells. -/
 def execute (run : CheckedStringComputationRun model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) :
-    Except StringComputationRunFault (List (FieldId × StringTargetOutcome)) := do
-  pure (← executeTables run patterns input run.tables {}).outcomes
+    Except StringComputationRunFault (List (FieldId × StringTargetOutcome)) :=
+  match executeTables run patterns input run.tables {} with
+  | .error fault => .error fault
+  | .ok state => .ok state.outcomes
 
 end CheckedStringComputationRun
 

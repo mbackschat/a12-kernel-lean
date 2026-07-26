@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 493 jobs · trust audit **1380 theorem roots; 28965 declarations in 262 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 494 jobs · trust audit **1380 theorem roots; 28988 declarations in 263 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked nonrepeatable String run now executes its finite unique-target, dependency-ordered plan against one immutable `CheckedDocument`. Pending computed targets hide stale document content; completed targets expose exactly the dependency cell derived from their rich outcome; ordinary inputs remain document reads; prepared target-pattern matching is supplied separately. The run returns rich outcomes in plan order and adds no relation, public result projection, application, validation, or heterogeneous carrier.
+The checked nonrepeatable String run now has a purpose-specific dependency-enabled successful-step relation over its existing completion state. Both the fixed executor and relation call one atomic table evaluator; a relation label contains only target plus rich outcome. Two independent tables are enabled in either order and yield extensionally equal field outcomes while preserving opposite private completion order. No read trace, generic state-machine framework, public result projection, application, validation, or heterogeneous carrier was added.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed String sequence only. The active unit is A2: add the smallest dependency-enabled relation over the existing String run state, label one successful step only with its target and rich outcome, and prove that successful fixed-order execution admits a relation trace with the same ordered completions. Add no read trace, confluence theorem, generic state-machine framework, V2 result projection, or application.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed String sequence only. The active unit is A2b: prove that every successful fixed-order whole-plan execution admits a trace in the independent relation with exactly the returned ordered target/outcome labels. Derive pending/enabled obligations from the checked plan's uniqueness and backward-dependency certificates rather than from scheduler equality. Add no read trace, confluence theorem, generic framework, V2 result projection, or application.
 
 ## Immediate sequence
 
-1. A2: add the smallest dependency-enabled step relation and prove that the fixed-order executable run admits a relation trace; add no read trace or generic state-machine framework.
-2. After A2, add the five extensional V2 result projections, then the eager-prepass certificate and whole-run application fold as separate capsules.
+1. A2b: prove fixed-executor trace soundness against the independent dependency-enabled relation.
+2. After A2b, add the five extensional V2 result projections, then the eager-prepass certificate and whole-run application fold as separate capsules.
 
 ## Parked boundaries
 
