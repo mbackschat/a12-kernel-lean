@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ComputationCondition
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Semantics.StringAlternatives
 
@@ -9,23 +10,6 @@ The guard fragment admits any nonrepeatable scalar declaration, including raw St
 -/
 
 namespace A12Kernel
-
-namespace ComputationCondition
-
-/-- Direct computation-presence guards accept every nonrepeatable scalar declaration. Value-kind restrictions belong to consuming operations, not presence. -/
-def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool :=
-  match condition with
-  | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
-      match model.lookupUniqueId field with
-      | .ok declaration => declaration.repeatableScope.isEmpty
-      | .error _ => false
-  | .and left right | .or left right =>
-      left.wellFormedBool model && right.wellFormedBool model
-
-def WellFormed (condition : ComputationCondition) (model : FlatModel) : Prop :=
-  condition.wellFormedBool model = true
-
-end ComputationCondition
 
 /-- One row after its checked operation has been consolidated into the table's shared target. -/
 structure CheckedStringComputationAlternative (model : FlatModel) (target : FieldId) where

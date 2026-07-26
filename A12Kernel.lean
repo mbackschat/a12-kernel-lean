@@ -70,6 +70,7 @@ import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.ComputationCondition
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedIndexColumn
