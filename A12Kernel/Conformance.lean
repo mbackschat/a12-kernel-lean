@@ -120,6 +120,7 @@ import A12Kernel.Conformance.ParallelNumericSameGroupGuard
 import A12Kernel.Conformance.ParallelNumericScaleSuppression
 import A12Kernel.Conformance.ParallelNumericThreeGroupOperands
 import A12Kernel.Conformance.ParallelNumericCrossGroupGuard
+import A12Kernel.Conformance.ParallelNumericAlternativeTable
 import A12Kernel.Conformance.ParallelPresenceRule
 
 /-! Executable semantic locks built with the default library target. -/

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 534 jobs · trust audit **1460 theorem roots; 30986 declarations in 293 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 537 jobs · trust audit **1464 theorem roots; 31086 declarations in 295 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now admits one optionally guarded resolved Number operation whose expression and kind-neutral presence leaves may span several model-owned indexed operand groups. Each distinct group retains one existing pairwise route to the same target; pairwise target coherence supplies the common exact-text index name/kind and compatible outer scope without a generalized n-way join type. Several fields in one group share its environment, while another group resolves independently at the target key. The anchor Number group must occur in the expression. The checked payload is still the existing authored numeric tree and condition tree, so lowering, wrapper-literal boundaries, authoring restrictions, scale summaries, computation evaluation, target policy, lazy `And`/`Or`, result classification, and exact addressed application remain with their established owners. The Kernel's lexical key union does not create a result for an operand-only key because generated code checks target repetition existence; a clean target-only key reads an unmatched group as numeric zero. Every referenced group participates statically in index-column validity even when short-circuiting leaves its carrier unread, so an invalid unread guard column suppresses and clears covered targets while a malformed unread guard cell remains hidden. Source-filled post-loop clears are unioned and deduplicated across every route.
+The isolated repeatable Number operation now composes into one checked already-flattened table of at least two guarded rows for the same target. Each row retains its complete checked expression, routes, target policy, and scale-warning directive; the table adds no operation AST. Selection delegates to `ComputationAlternative.selectFirst`: false guards cross row boundaries, while the first selected operation, reached guard poison, or selected arithmetic-domain failure ends the scan. The original optional-guard singleton remains its own owner. Target-row iteration and static route union across every row are deliberately not claimed by this first table capsule.
 
 ## Active semantic unit
 
-Lift the isolated repeatable Number operation to one already-flattened nonempty first-selected alternative table without introducing a second selector or admitting same-target multiplicity.
+Execute the checked repeatable Number alternative table over actual target rows while collecting every row's indexed routes before selection.
 
 ## Immediate sequence
 
-1. Inventory the scalar checked Number table and reuse `ComputationAlternative.selectFirst`; represent repeatable rows as one shared target/policy plus existing guards and authored numeric expressions.
-2. Lock first-selected behavior: a false guard falls through, while a selected value, reached poison, or arithmetic failure prevents every later row.
-3. Collect checked routes statically from every row before iteration, so an invalid indexed group used only by an unselected later alternative still suppresses and clears the covered target.
+1. Deduplicate the complete checked route inventory across all rows without changing row order or introducing an n-way join.
+2. Resolve all participating index columns and target coverage before guard selection, then fetch the union of row carriers at the matched key.
+3. Lock that an invalid group used only by an unselected later row still suppresses and clears the target, while clean columns retain first-selected evaluation.
 
 ## Parked boundaries
 

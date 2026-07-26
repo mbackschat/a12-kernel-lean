@@ -240,6 +240,22 @@ private def operandCells
       targetEnvironment key
   pure nested.flatten
 
+/-- Evaluate an already-selected checked operation against one addressed carrier context. Guard selection remains with the caller, allowing both the singleton run and a wider first-selected table to share target semantics without inspecting outcomes to recover selection. -/
+def evaluateSelected
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (context : ScalarComputationContext) :
+    Except ExecutionError NumericTargetOutcome := do
+  let value ← checked.expression.evaluateComputation context
+      |>.mapError .numeric
+  let checkedTarget :=
+    if checked.suppressExactScaleWarning then
+      checked.route.targetPolicy.checkWithScaleWarningSuppressed value
+    else
+      checked.route.targetPolicy.check value
+  match checkedTarget with
+  | .supported outcome => pure outcome
+  | .unsupported fault => throw (.unsupportedTarget fault)
+
 private def executeTarget
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
@@ -269,16 +285,7 @@ private def executeTarget
   | .poison cause =>
       pure { address, outcome := .inheritedPoison cause }
   | .holds =>
-      let value ← checked.expression.evaluateComputation context
-          |>.mapError .numeric
-      let checkedTarget :=
-        if checked.suppressExactScaleWarning then
-          checked.route.targetPolicy.checkWithScaleWarningSuppressed value
-        else
-          checked.route.targetPolicy.check value
-      match checkedTarget with
-      | .supported outcome => pure { address, outcome }
-      | .unsupported fault => throw (.unsupportedTarget fault)
+      pure { address, outcome := ← checked.evaluateSelected context }
 
 /-- Execute every existing target row not covered by any participating group's checked invalid-index marks. Collection order is the checked document's private canonicalization. -/
 def execute

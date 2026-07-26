@@ -50,6 +50,7 @@ import A12Kernel.Proofs.ParallelComputationClearingPlan
 import A12Kernel.Proofs.ParallelComputationClearingApplication
 import A12Kernel.Proofs.ParallelNumericDirectRun
 import A12Kernel.Proofs.ParallelNumericDirectRunResult
+import A12Kernel.Proofs.ParallelNumericAlternativeTable
 import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.NumericValidation.Runtime
 import A12Kernel.Proofs.NumericValidation.Lowering
