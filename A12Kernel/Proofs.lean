@@ -80,6 +80,7 @@ import A12Kernel.Proofs.StringComputation
 import A12Kernel.Proofs.StringComputationElaboration
 import A12Kernel.Proofs.StringComputationTable
 import A12Kernel.Proofs.StringComputationRun
+import A12Kernel.Proofs.StringComputationRunRelation
 import A12Kernel.Proofs.StringApplication
 import A12Kernel.Proofs.Verdict
 import A12Kernel.Proofs.ValueList

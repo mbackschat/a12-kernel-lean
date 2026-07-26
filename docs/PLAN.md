@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 494 jobs · trust audit **1380 theorem roots; 28988 declarations in 263 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 495 jobs · trust audit **1385 theorem roots; 29028 declarations in 264 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked nonrepeatable String run now has a purpose-specific dependency-enabled successful-step relation over its existing completion state. Both the fixed executor and relation call one atomic table evaluator; a relation label contains only target plus rich outcome. Two independent tables are enabled in either order and yield extensionally equal field outcomes while preserving opposite private completion order. No read trace, generic state-machine framework, public result projection, application, validation, or heterogeneous carrier was added.
+Every successful checked nonrepeatable String execution now has a proved trace in the independent dependency-enabled relation with exactly the returned plan-ordered target/outcome labels. The proof derives target pendingness and dependency enabledness from the checked plan's uniqueness and backward-dependency certificates, not from scheduler equality. The relation still admits both orders for independent tables; no read trace, completeness/confluence claim, generic framework, public result projection, application, validation, or heterogeneous carrier was added.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed String sequence only. The active unit is A2b: prove that every successful fixed-order whole-plan execution admits a trace in the independent relation with exactly the returned ordered target/outcome labels. Derive pending/enabled obligations from the checked plan's uniqueness and backward-dependency certificates rather than from scheduler equality. Add no read trace, confluence theorem, generic framework, V2 result projection, or application.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the first V2 result-view capsule: classify existing rich String run outcomes against source target state into successful instances, changed successes, errored attempts, and cleared targets while retaining the residual-message boundary for its later owner. Do not add the eager prepass, message rendering, application, Number/Enumeration variants, repeatables, or a generic result framework.
 
 ## Immediate sequence
 
-1. A2b: prove fixed-executor trace soundness against the independent dependency-enabled relation.
-2. After A2b, add the five extensional V2 result projections, then the eager-prepass certificate and whole-run application fold as separate capsules.
+1. Add the String-specific extensional V2 result view and its subset/clearing/no-error laws without application or eager-prepass construction.
+2. Add the eager-prepass certificate and whole-run application fold as separate later capsules.
 
 ## Parked boundaries
 

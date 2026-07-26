@@ -1366,6 +1366,11 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_read_pending
 #print axioms A12Kernel.stringComputationRun_read_completed
 #print axioms A12Kernel.stringComputationRun_read_input
+#print axioms A12Kernel.fieldId_firstDuplicate_none_iff_nodup
+#print axioms A12Kernel.checkedStringComputationTable_excludes_target
+#print axioms A12Kernel.stringComputationRun_evaluateTable_target
+#print axioms A12Kernel.stringComputationRun_executeTables_trace
+#print axioms A12Kernel.stringComputationRun_execute_trace
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic
