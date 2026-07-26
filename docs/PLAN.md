@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1441 theorem roots; 30234 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1442 theorem roots; 30283 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first checked repeatable SG4 route now enumerates existing target instances from the immutable checked document. It reuses the model-validated actual-row projection already consumed by ordinary repeatable rules: only physical rows at the target declaration's deepest scope enter, blank instantiated rows remain observable without a target cell, and caller-created environments are impossible at the plan boundary. Complete named environments retain checked-document order only as deterministic internal canonicalization; the Kernel's hash-backed clearing enumeration does not establish a public order. The checked route's result is proved independent of placed cell payloads.
+The first checked repeatable SG4 route now derives post-loop invalid marks directly from one `CheckedIndexPreliminary`. It enumerates actual target rows from that preliminary's immutable base document, resolves the selected model-owned index column at each target's inherited outer bindings, applies the already-derived side-specific mark plan to the column's `unavailableKey`, and removes duplicate keys. Clean columns emit no marks; a target-path failure retains its frame key, while an off-path failure can collapse to one root mark. With no target instances, no index column is consulted.
 
 ## Active semantic unit
 
-Resolve each checked parallel index column against the same immutable checked document and connect its `unavailableKey` to the already-derived side-specific mark plan over the checked target environments. Keep clean columns mark-free and structural column or environment failure outside semantic invalidity.
+Project the derived mark set onto the actual target instances it covers and classify only source-filled affected targets as public clears. Preserve cause blindness, exact repeatable addresses, permutation-invariant public collections, and the distinction between an invalid runtime mark and a public source-relative clear.
 
 ## Immediate sequence
 
-1. Reuse `CheckedIndexColumn` for both model-owned index groups; do not add another index evaluator or accept a caller-supplied unavailable cause.
-2. Produce only the cause-blind post-loop marks for actual target instances and preserve the side-specific blast radius. Public clearing classification remains the next separate capsule.
+1. Reuse `ParallelComputationMarkPlan.covers` and extend the existing Number source-target identity owner to one exact checked repeatable address; do not infer source fill from row existence or normalized value text.
+2. Return an extensional repeatable clearing projection with exact addresses and prove that empty source targets stay absent from it. Repeatable document application remains separate.
 
 ## Parked boundaries
 

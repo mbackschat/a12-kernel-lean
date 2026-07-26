@@ -67,22 +67,57 @@ private def checked? :=
 
 private def world : World := { now := { epochMillis := 0 } }
 
+private def rows : List RowAddr := [
+  { group := 50, path := [1] },
+  { group := 60, path := [1, 1] },
+  { group := 70, path := [1] },
+  { group := 50, path := [2] },
+  { group := 60, path := [2, 1] },
+  { group := 60, path := [1, 2] },
+  { group := 70, path := [2] }
+]
+
+private def indexCell (field : FieldId) (path : List Nat)
+    (stored : String) : ClassifiedCellInput := {
+  address := { field, path }
+  stored
+  raw := .parsed (.str stored)
+}
+
+private def cleanIndexCells : List ClassifiedCellInput := [
+  indexCell 1 [1, 1] "Alpha",
+  indexCell 1 [1, 2] "Beta",
+  indexCell 1 [2, 1] "Gamma",
+  indexCell 3 [1] "Alpha",
+  indexCell 3 [2] "Beta"
+]
+
+private def sourceWith (cells : List ClassifiedCellInput) :
+    DocumentData := { instantiatedRows := rows, cells }
+
 private def checkedDocument? : Option (CheckedDocument model) := do
   let prepared ←
     (prepareFlatStringContext
       world builtinStringPatternCompiler model).toOption
-  (checkDocument prepared "en_US" {
-    instantiatedRows := [
-      { group := 50, path := [1] },
-      { group := 60, path := [1, 1] },
-      { group := 70, path := [1] },
-      { group := 50, path := [2] },
-      { group := 60, path := [2, 1] },
-      { group := 60, path := [1, 2] },
-      { group := 70, path := [2] }
-    ]
-    cells := []
-  }).toOption
+  (checkDocument prepared "en_US" (sourceWith [])).toOption
+
+private def preliminaryFor (cells : List ClassifiedCellInput) :
+    Option (CheckedIndexPreliminary model) := do
+  let prepared ←
+    (prepareFlatStringContext
+      world builtinStringPatternCompiler model).toOption
+  let checked ←
+    (checkDocument prepared "en_US" (sourceWith cells)).toOption
+  checked.applyFullIndexPreliminary.toOption
+
+private def markCoordinates?
+    (cells : List ClassifiedCellInput)
+    (side : ParallelComputationIndexSide) :
+    Option (List (List Nat)) := do
+  let checked ← checked?
+  let preliminary ← preliminaryFor cells
+  let marks ← (checked.invalidIndexMarks preliminary side).toOption
+  pure (marks.map (·.coordinates))
 
 /- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
 example :
@@ -94,6 +129,28 @@ example :
         [(50, 2), (60, 1)],
         [(50, 1), (60, 2)]
       ] := by
+  native_decide
+
+/- A clean checked index column emits no mark on either side. -/
+example :
+    markCoordinates? cleanIndexCells .target = some [] ∧
+      markCoordinates? cleanIndexCells .operand = some [] := by
+  native_decide
+
+/- An unavailable target-path index marks only its frame, while the same clean document leaves the off-path operand side unmarked. -/
+example :
+    let targetInvalid := cleanIndexCells.filter fun input =>
+      input.address != { field := 1, path := [2, 1] }
+    markCoordinates? targetInvalid .target = some [[2]] ∧
+      markCoordinates? targetInvalid .operand = some [] := by
+  native_decide
+
+/- An unavailable off-path operand index collapses to one root mark covering every target frame; the clean target-path column contributes nothing. -/
+example :
+    let operandInvalid := cleanIndexCells.filter fun input =>
+      input.address != { field := 3, path := [2] }
+    markCoordinates? operandInvalid .target = some [] ∧
+      markCoordinates? operandInvalid .operand = some [[]] := by
   native_decide
 
 /- Each checked index side derives its asymmetric common-prefix mark scope without a caller-supplied truncation width. -/

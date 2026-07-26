@@ -25,6 +25,13 @@ inductive ParallelComputationPlanError where
   | incoherentOperandScope (path : List String)
   deriving Repr, DecidableEq
 
+/-- Structural failures while deriving post-loop marks from one checked preliminary document. Index-column failure and malformed target addressing never become semantic invalidity. -/
+inductive ParallelComputationMarkingError where
+  | targetRows (error : ActualRowEnvironmentError)
+  | indexColumn (error : CheckedIndexColumnError)
+  | targetEnvironment (error : EnvBindingError)
+  deriving Repr, DecidableEq
+
 /-- One model-certified direct Number parallel route. `operandReference` is the parser-independent ordinary field-path shape; starred and semantic-index paths cannot inhabit it. -/
 structure CheckedParallelNumericClearingPlan (model : FlatModel) where
   private mk ::
@@ -98,6 +105,27 @@ def markPlanFor (plan : CheckedParallelNumericClearingPlan model) :
         plan.targetDeclaration.repeatableScope
         (model.repeatableScopeForGroupPath
           plan.groups.rightGroup.path).dropLast
+
+/-- Derive the cause-blind post-loop mark keys for one checked index side. Each column is resolved at the target instance's inherited outer bindings, duplicate keys are collapsed, and the returned order is private execution detail. -/
+def invalidIndexMarks (plan : CheckedParallelNumericClearingPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (side : ParallelComputationIndexSide) :
+    Except ParallelComputationMarkingError
+      (List (ParallelComputationMark (plan.markPlanFor side))) := do
+  let targetEnvironments ←
+    plan.targetEnvironments preliminary.base
+      |>.mapError .targetRows
+  let group := match side with
+    | .target => plan.groups.leftGroup
+    | .operand => plan.groups.rightGroup
+  let candidates ← targetEnvironments.mapM fun targetEnvironment => do
+    let column ←
+      preliminary.resolveIndexColumn group targetEnvironment
+        |>.mapError ParallelComputationMarkingError.indexColumn
+    (plan.markPlanFor side).markForUnavailable
+      column.unavailableKey targetEnvironment
+        |>.mapError ParallelComputationMarkingError.targetEnvironment
+  pure (candidates.filterMap id).eraseDups
 
 end CheckedParallelNumericClearingPlan
 

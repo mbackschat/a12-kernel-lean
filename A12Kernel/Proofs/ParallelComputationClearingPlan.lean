@@ -25,6 +25,18 @@ theorem parallelNumericTargetEnvironments_cells_irrelevant
   simp [CheckedParallelNumericClearingPlan.targetEnvironments,
     CheckedDocument.actualRowEnvironments, rows]
 
+/-- With no existing target instance, no index column is consulted and no post-loop mark exists. -/
+theorem parallelNumericInvalidIndexMarks_noTargets
+    (plan : CheckedParallelNumericClearingPlan model)
+    (preliminary : CheckedIndexPreliminary model)
+    (side : ParallelComputationIndexSide)
+    (empty :
+      plan.targetEnvironments preliminary.base = .ok []) :
+    plan.invalidIndexMarks preliminary side = .ok [] := by
+  unfold CheckedParallelNumericClearingPlan.invalidIndexMarks
+  rw [empty]
+  rfl
+
 @[simp] theorem parallelNumericClearingMark_targetScope
     (plan : CheckedParallelNumericClearingPlan model)
     (side : ParallelComputationIndexSide) :
