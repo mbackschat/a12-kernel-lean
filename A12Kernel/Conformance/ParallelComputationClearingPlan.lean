@@ -96,6 +96,19 @@ private def expressionChecked? :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
     model ["Plan"] 2 operandPath incrementExpression none).toOption
 
+private def wrappedExpression :
+    AuthoredNumericExpr SurfaceNumericAtom :=
+  .round .halfUp omittedRoundingPlaces
+    (.abs (AuthoredNumericExpr.extremumList .minimum
+      (.binary .subtract
+        (.atom (.field operandPath))
+        (.literal { value := 150, authoredScale := 0 }))
+      [.literal { value := -25, authoredScale := 0 }]))
+
+private def wrappedExpressionChecked? :=
+  (checkIsolatedParallelNumericExpressionRunWithGuard
+    model ["Plan"] 2 operandPath wrappedExpression none).toOption
+
 private def world : World := { now := { epochMillis := 0 } }
 
 private def rows : List RowAddr := [
@@ -237,6 +250,13 @@ private def expressionOutcomes?
   let preliminary ← preliminaryFor cells
   (checked.execute preliminary).toOption
 
+private def wrappedExpressionOutcomes?
+    (cells : List ClassifiedCellInput) :
+    Option (List ParallelNumericDirectOutcome) := do
+  let checked ← wrappedExpressionChecked?
+  let preliminary ← preliminaryFor cells
+  (checked.execute preliminary).toOption
+
 private def guardedDirectView?
     (cells : List ClassifiedCellInput) :
     Option (NumericComputationRunView Bool CellAddr) := do
@@ -364,6 +384,21 @@ example :
           .accepted { unscaled := 0, scale := 0 }⟩,
         ⟨{ field := 2, path := [1, 2] },
           .accepted { unscaled := 200, scale := 0 }⟩
+      ] := by
+  native_decide
+
+/- Operand-list extrema, absolute value, and rounding compose over the same joined read through the shared operation tree. -/
+example :
+    let clean := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 }
+    ]
+    (wrappedExpressionOutcomes? clean).map
+        (List.map fun result => result.outcome) =
+      some [
+        .accepted { unscaled := 50, scale := 0 },
+        .accepted { unscaled := 150, scale := 0 },
+        .accepted { unscaled := 25, scale := 0 }
       ] := by
   native_decide
 

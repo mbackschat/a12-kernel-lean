@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The isolated repeatable Number run now admits one optionally guarded plain-arithmetic expression whose every field atom and guard leaf is certified to read the already-joined operand. The checked payload is the existing authored numeric tree: lowering, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application all remain with their established owners. A clean unmatched join contributes numeric zero before surrounding arithmetic. Literal-only trees and expressions or guards naming a second field fail checked construction, so the route certificate remains the sole addressed-read authority. Invalid index columns still suppress the instance before guard or expression evaluation and use post-loop clearing.
+The isolated repeatable Number run now admits one optionally guarded resolved Number operation whose every field atom and guard leaf is certified to read the already-joined operand. The checked payload is the existing authored numeric tree: lowering, resolved-operation admission, the wrapper-literal boundary, authoring restrictions, scale summaries, computation evaluation, target policy, result classification, and exact addressed application all remain with their established owners. Plain arithmetic, `Abs`, `Round`, and operand-list extrema therefore compose without route-specific evaluators. A clean unmatched join contributes numeric zero before the operation. Literal-only trees and expressions or guards naming a second field fail checked construction, so the route certificate remains the sole addressed-read authority. Invalid index columns still suppress the instance before guard or expression evaluation and use post-loop clearing.
 
 ## Active semantic unit
 
-Audit the operation-valued wrappers already represented by the shared Number tree over the same route-owned repeatable operand. Determine whether `Abs`, `Round`, and operand-list extrema are semantically invariant under the joined scalar read or whether any wrapper introduces a route-specific static or evaluation dependency.
+Audit the existing exact-scale warning suppression at the repeatable target boundary. Determine whether the parallel operation can carry the same checked suppression choice as the nonrepeatable target operation without weakening expression summaries or selecting target policy outside the model-owned route.
 
 ## Immediate sequence
 
-1. Reconcile each wrapper's existing static admission, direct-literal boundary, scale summary, and evaluation behavior against the new plain-arithmetic repeatable crossing.
-2. Admit a wrapper family only by relaxing the existing checked-tree shape gate; do not add a route-specific wrapper evaluator or duplicate authoring logic.
-3. Keep additional expression fields, broader guard fields, warning suppression, and multi-computation repeatable overlays excluded until their additional reads, policy, or dependency order are independently source-closed.
+1. Reuse `exactNumericScaleComparisonAllowedWithSuppression` for construction and the target policy's warning-suppressed check for execution; do not turn suppression into an unrestricted scale proof.
+2. Separate a scale-mismatch admission case from a runtime arithmetic-domain failure case so suppression is not confused with error recovery.
+3. Keep additional expression fields, broader guard fields, and multi-computation repeatable overlays excluded until their additional reads or dependency order are independently source-closed.
 
 ## Parked boundaries
 

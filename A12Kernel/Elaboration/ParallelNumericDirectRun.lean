@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ParallelComputationClearing
 
 /-! # Isolated direct parallel Number run
 
-This bounded capsule checks one optionally guarded Number expression whose every field atom is the already-joined operand of one exact-text parallel route. It reuses the shared authored numeric tree, lowering, authoring rules, scale summary, target policy, and evaluator; the route remains the sole owner of addressed reads and invalid-index disposition. Because the run has exactly one computed target and the route's operand lies in a distinct group, the operand is a source field rather than an unresolved computed dependency. Execution enumerates existing target rows only, omits every target covered by an invalid-index post-loop mark, reads a clean unmatched operand as numeric zero, and retains each evaluated result at its exact target address. Other operand fields, operation-valued wrappers, warning suppression, multi-computation scheduling, and broader repeatable overlays remain separate. -/
+This bounded capsule checks one optionally guarded Number expression whose every field atom is the already-joined operand of one exact-text parallel route. It reuses the shared authored numeric tree, lowering, operation admission, authoring rules, scale summary, target policy, and evaluator; the route remains the sole owner of addressed reads and invalid-index disposition. Because the run has exactly one computed target and the route's operand lies in a distinct group, the operand is a source field rather than an unresolved computed dependency. Execution enumerates existing target rows only, omits every target covered by an invalid-index post-loop mark, reads a clean unmatched operand as numeric zero, and retains each evaluated result at its exact target address. Other operand fields, warning suppression, multi-computation scheduling, and broader repeatable overlays remain separate. -/
 
 namespace A12Kernel
 
@@ -49,7 +49,8 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   expressionUsesOperand : expression.hasAtom = true
   expressionOperandsOwned :
     expression.allAtoms (· == route.operandDeclaration) = true
-  expressionAdmitted : expression.isPlainArithmetic = true
+  expressionAdmitted :
+    expression.isAdmittedResolvedNumericOperation = true
   expressionAuthoring :
     expression.numericOperationAuthoringCheck = .accepted
   operandScopeAvailable : (match route.groups.outerScopePlan with
@@ -74,7 +75,7 @@ def WellFormed
     checked.expression.hasAtom = true ∧
     checked.expression.allAtoms
       (· == checked.route.operandDeclaration) = true ∧
-    checked.expression.isPlainArithmetic = true ∧
+    checked.expression.isAdmittedResolvedNumericOperation = true ∧
     checked.expression.numericOperationAuthoringCheck = .accepted ∧
     (match checked.route.groups.outerScopePlan with
       | .framed .right _ _ => false
@@ -188,7 +189,7 @@ private def FlatModel.resolveParallelNumericDirectExpression
           throw .expressionNotLimitedToOperand
     | _ => throw .expressionNotLimitedToOperand
 
-/-- Check one optionally guarded plain Number expression without reimplementing the parallel route, numeric lowering, authoring checks, or scale gate. Every field atom and guard leaf must reuse the already-joined operand read. -/
+/-- Check one optionally guarded Number operation without reimplementing the parallel route, numeric lowering, operation admission, authoring checks, or scale gate. Every field atom and guard leaf must reuse the already-joined operand read. -/
 def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
@@ -206,7 +207,8 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
   if usesOperand : resolved.hasAtom = true then
     if operandsOwned :
         resolved.allAtoms (· == route.operandDeclaration) = true then
-      if expressionAdmitted : resolved.isPlainArithmetic = true then
+      if expressionAdmitted :
+          resolved.isAdmittedResolvedNumericOperation = true then
         match authoring : resolved.numericOperationAuthoringCheck with
         | .accepted =>
           match scaleOwned :
