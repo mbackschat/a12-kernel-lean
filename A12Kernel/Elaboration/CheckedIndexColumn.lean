@@ -3,7 +3,7 @@ import A12Kernel.Semantics.SemanticIndex
 
 /-! # Checked index columns and bounded parallel joins
 
-This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for semantic-index exclusion, and one column-unavailability cause. The parallel projection makes its deterministic reference selection separately. The first parallel profile joins groups with a common repeatable parent scope across transparent nonrepeatable wrappers and exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
+This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for semantic-index exclusion, and one column-unavailability cause. The parallel projection makes its deterministic reference selection separately. The checked parallel profile admits either one common outer repeatable scope or one non-indexed frame on exactly one side, across transparent nonrepeatable wrappers and exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
 -/
 
 namespace A12Kernel
@@ -15,6 +15,7 @@ inductive CheckedIndexColumnError where
   | groupNotOwned (path : GroupPath)
   | missingIndexField (path : GroupPath)
   | incoherentScope (path : GroupPath)
+  | incoherentFrameScope (scope : List RepeatableLevel)
   | incoherentIndexDeclaration (path : GroupPath) (expected actual : FieldId)
   | incoherentRow (row : RowAddr) (expected : Nat)
   | incoherentIndexValue (address : CellAddr)
@@ -79,7 +80,47 @@ def parallelCommonParent : GroupPath → GroupPath → GroupPath
         []
   | _, _ => []
 
-/-- A model-certified pair of index groups with one common repeatable parent scope whose exact non-Number stored keys can share one parallel union order. -/
+inductive ParallelFrameSide where
+  | left
+  | right
+  deriving Repr, DecidableEq
+
+/-- The complete outer-scope relation between two keyed groups. A frame suffix is nonempty when produced by `classify`; divergent scopes have no plan. -/
+inductive ParallelOuterScopePlan where
+  | common (scope : List RepeatableLevel)
+  | framed (side : ParallelFrameSide)
+      (commonScope frameScope : List RepeatableLevel)
+  deriving Repr, DecidableEq
+
+namespace ParallelOuterScopePlan
+
+/-- Classify equal scopes or a strict one-sided extension. This is the checked static boundary between a common join, one ordinary outer frame, and incompatible frames on both sides. -/
+def classify :
+    List RepeatableLevel → List RepeatableLevel →
+      Option ParallelOuterScopePlan
+  | [], [] => some (.common [])
+  | left@(_ :: _), [] => some (.framed .left [] left)
+  | [], right@(_ :: _) => some (.framed .right [] right)
+  | left :: leftRest, right :: rightRest =>
+      if left == right then
+        match classify leftRest rightRest with
+        | some (ParallelOuterScopePlan.common shared) =>
+            some (.common (left :: shared))
+        | some (ParallelOuterScopePlan.framed side shared frame) =>
+            some (.framed side (left :: shared) frame)
+        | none => none
+      else
+        none
+
+/-- Whether a selected error operand lies on the side that carries every required frame coordinate. Common-scope joins allow either operand. -/
+def admitsErrorOnLeft : ParallelOuterScopePlan → Bool → Bool
+  | .common _, _ => true
+  | .framed .left _ _, errorOnLeft => errorOnLeft
+  | .framed .right _ _, errorOnLeft => !errorOnLeft
+
+end ParallelOuterScopePlan
+
+/-- A model-certified pair of index groups with either one common outer repeatable scope or one non-indexed frame on exactly one side. -/
 structure CheckedParallelIndexGroups (model : FlatModel) where
   private mk ::
   leftGroup : RepeatableGroupDecl
@@ -98,9 +139,12 @@ structure CheckedParallelIndexGroups (model : FlatModel) where
   commonParentOwned :
     commonParent = parallelCommonParent leftGroup.path rightGroup.path
   commonParentNonempty : commonParent.isEmpty = false
-  commonOuterScope :
-    (model.repeatableScopeForGroupPath leftGroup.path).dropLast =
-      (model.repeatableScopeForGroupPath rightGroup.path).dropLast
+  outerScopePlan : ParallelOuterScopePlan
+  outerScopePlanOwned :
+    ParallelOuterScopePlan.classify
+      (model.repeatableScopeForGroupPath leftGroup.path).dropLast
+      (model.repeatableScopeForGroupPath rightGroup.path).dropLast =
+        some outerScopePlan
   commonIndexName :
     (leftIndexDeclaration.name == rightIndexDeclaration.name) = true
   commonIndexKind :
@@ -139,8 +183,10 @@ def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
     groups.commonParent =
       parallelCommonParent groups.leftGroup.path groups.rightGroup.path ∧
     groups.commonParent.isEmpty = false ∧
-    (model.repeatableScopeForGroupPath groups.leftGroup.path).dropLast =
-      (model.repeatableScopeForGroupPath groups.rightGroup.path).dropLast ∧
+    ParallelOuterScopePlan.classify
+      (model.repeatableScopeForGroupPath groups.leftGroup.path).dropLast
+      (model.repeatableScopeForGroupPath groups.rightGroup.path).dropLast =
+        some groups.outerScopePlan ∧
     (groups.leftIndexDeclaration.name ==
       groups.rightIndexDeclaration.name) = true ∧
     (groups.leftIndexDeclaration.policy.kind ==
@@ -224,7 +270,7 @@ private def CheckedIndexPreliminary.scanIndexRows
         preliminary.scanIndexRows group declaration scope rows
           (state.add entry duplicate cell.findings.head?)
 
-/-- Check the document-independent parallel group profile once. Both indexed groups must share their complete outer repeatable scope; differing nonrepeatable path segments are transparent. Runtime column construction then owns only document rows, preliminary findings, and the selected outer environment. -/
+/-- Check the document-independent parallel group profile once. The indexed groups may share their complete outer repeatable scope or one may add a non-indexed frame suffix; divergent frames are incompatible. Differing nonrepeatable path segments remain transparent. -/
 def checkParallelIndexGroups (model : FlatModel)
     (left right : RepeatableGroupDecl) :
     Except CheckedIndexColumnError
@@ -242,8 +288,10 @@ def checkParallelIndexGroups (model : FlatModel)
                 (model.repeatableScopeForGroupPath left.path).dropLast
               let rightOuterScope :=
                 (model.repeatableScopeForGroupPath right.path).dropLast
-              if hOuterScope :
-                  (leftOuterScope == rightOuterScope) = true then do
+              match hOuterScope :
+                  ParallelOuterScopePlan.classify
+                    leftOuterScope rightOuterScope with
+              | some outerScopePlan => do
                 let leftIndexId ← match left.indexField with
                   | some field => pure field
                   | none => throw (.missingIndexField left.path)
@@ -280,7 +328,8 @@ def checkParallelIndexGroups (model : FlatModel)
                             commonParent
                             commonParentOwned := rfl
                             commonParentNonempty := hCommon
-                            commonOuterScope := by
+                            outerScopePlan
+                            outerScopePlanOwned := by
                               simpa [leftOuterScope, rightOuterScope]
                                 using hOuterScope
                             commonIndexName := hName
@@ -302,7 +351,7 @@ def checkParallelIndexGroups (model : FlatModel)
                 else
                   throw (.incoherentIndexDeclaration
                     left.path leftIndexId leftIndex.id)
-              else
+              | none =>
                 .error (.incompatibleGroups left.path right.path)
             else
               .error (.incompatibleGroups left.path right.path)
@@ -347,6 +396,46 @@ def resolveIndexColumn (preliminary : CheckedIndexPreliminary model)
   else
     throw (.groupNotOwned group.path)
 
+private def collectParallelFrameEnvironments
+    (preliminary : CheckedIndexPreliminary model)
+    (scope : List RepeatableLevel) (commonPath : List Nat) :
+    List RowAddr → List Env →
+      Except CheckedIndexColumnError (List Env)
+  | [], reversed => pure reversed.reverse
+  | row :: rows, reversed => do
+      if row.path.length != scope.length then
+        throw (.incoherentRow row scope.length)
+      let overLimit ← match model.addressOverLimit? scope row.path with
+        | some result => pure result
+        | none => throw (.incoherentFrameScope scope)
+      let belongsToOuter :=
+        row.path.take commonPath.length == commonPath
+      let next :=
+        if overLimit || !belongsToOuter then reversed
+        else scope.zip row.path :: reversed
+      preliminary.collectParallelFrameEnvironments
+        scope commonPath rows next
+
+/-- Enumerate the actual deepest rows of one certified non-indexed frame in immutable document order. The caller supplies only the common outer bindings; over-limit frame rows are excluded before any keyed join is constructed. -/
+def resolveCheckedParallelFrameEnvironments
+    (preliminary : CheckedIndexPreliminary model)
+    (groups : CheckedParallelIndexGroups model)
+    (outer : Env := []) :
+    Except CheckedIndexColumnError (List Env) :=
+  match groups.outerScopePlan with
+  | .common scope => .error (.incoherentFrameScope scope)
+  | .framed _ commonScope frameScope => do
+      let scope := commonScope ++ frameScope
+      let deepest ← match frameScope.getLast? with
+        | some level => pure level
+        | none => throw (.incoherentFrameScope frameScope)
+      let commonPath ←
+        outer.pathForScope commonScope |>.mapError .environment
+      let rows := preliminary.base.source.instantiatedRows.filter fun row =>
+        row.group == deepest
+      preliminary.collectParallelFrameEnvironments
+        scope commonPath rows []
+
 private def entryFor?
     (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey) :
     Option ResolvedCheckedIndexEntry :=
@@ -366,15 +455,15 @@ private def parallelSide (column : ResolvedCheckedIndexColumn model)
   unavailableKey := column.unavailableKey
 }
 
-/-- Resolve document rows for an already-certified pair without repeating its static compatibility decision. -/
-def resolveCheckedParallelIndexJoin
+private def resolveCheckedParallelIndexJoinAt
     (preliminary : CheckedIndexPreliminary model)
-    (groups : CheckedParallelIndexGroups model) (outer : Env := []) :
+    (groups : CheckedParallelIndexGroups model)
+    (leftOuter rightOuter : Env) :
     Except CheckedIndexColumnError ResolvedParallelIndexJoin := do
   let leftColumn ←
-    preliminary.resolveIndexColumn groups.leftGroup outer
+    preliminary.resolveIndexColumn groups.leftGroup leftOuter
   let rightColumn ←
-    preliminary.resolveIndexColumn groups.rightGroup outer
+    preliminary.resolveIndexColumn groups.rightGroup rightOuter
   let unsorted := (textKeys leftColumn ++ textKeys rightColumn).eraseDups
   let sorted := unsorted.mergeSort fun first second =>
     compare first second != .gt
@@ -388,6 +477,28 @@ def resolveCheckedParallelIndexJoin
       right := parallelSide rightColumn key
     }
   }
+
+/-- Resolve document rows for a common-scope certified pair without repeating its static compatibility decision. -/
+def resolveCheckedParallelIndexJoin
+    (preliminary : CheckedIndexPreliminary model)
+    (groups : CheckedParallelIndexGroups model) (outer : Env := []) :
+    Except CheckedIndexColumnError ResolvedParallelIndexJoin :=
+  preliminary.resolveCheckedParallelIndexJoinAt groups outer outer
+
+/-- Resolve one certified framed join. The checked plan, not the caller, decides which column receives the complete frame environment. -/
+def resolveCheckedParallelIndexJoinInFrame
+    (preliminary : CheckedIndexPreliminary model)
+    (groups : CheckedParallelIndexGroups model)
+    (frameOuter commonOuter : Env) :
+    Except CheckedIndexColumnError ResolvedParallelIndexJoin :=
+  match groups.outerScopePlan with
+  | .common scope => .error (.incoherentFrameScope scope)
+  | .framed .left _ _ =>
+      preliminary.resolveCheckedParallelIndexJoinAt
+        groups frameOuter commonOuter
+  | .framed .right _ _ =>
+      preliminary.resolveCheckedParallelIndexJoinAt
+        groups commonOuter frameOuter
 
 def resolveParallelIndexJoin (preliminary : CheckedIndexPreliminary model)
     (left right : RepeatableGroupDecl) (outer : Env := []) :

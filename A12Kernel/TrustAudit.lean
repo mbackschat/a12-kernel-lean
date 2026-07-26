@@ -1399,6 +1399,9 @@ run_cmd do
 #print axioms A12Kernel.checkedIndexPreliminary_default_read
 #print axioms A12Kernel.parallelCommonParent_prefix_left
 #print axioms A12Kernel.parallelCommonParent_prefix_right
+#print axioms A12Kernel.parallelOuterScope_classify_same
+#print axioms A12Kernel.parallelOuterScope_classify_leftFrame
+#print axioms A12Kernel.parallelOuterScope_classify_rightFrame
 #print axioms A12Kernel.checkedIndexColumn_wellFormed
 #print axioms A12Kernel.checkedParallelIndexGroups_wellFormed
 #print axioms A12Kernel.checkedIndexColumn_duplicate_notSemantic

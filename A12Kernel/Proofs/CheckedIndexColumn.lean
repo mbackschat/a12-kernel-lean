@@ -32,6 +32,41 @@ namespace A12Kernel
             simp [parallelCommonParent, GroupPath.isPrefixOf, induction]
           · simp [parallelCommonParent, GroupPath.isPrefixOf, sameHead]
 
+@[simp] theorem parallelOuterScope_classify_same
+    (scope : List RepeatableLevel) :
+    ParallelOuterScopePlan.classify scope scope =
+      some (.common scope) := by
+  induction scope with
+  | nil => rfl
+  | cons level remaining induction =>
+      simp [ParallelOuterScopePlan.classify, induction]
+
+@[simp] theorem parallelOuterScope_classify_leftFrame
+    (shared frame : List RepeatableLevel) (nonempty : frame ≠ []) :
+    ParallelOuterScopePlan.classify (shared ++ frame) shared =
+      some (.framed .left shared frame) := by
+  induction shared with
+  | nil =>
+      cases frame with
+      | nil => contradiction
+      | cons level remaining => rfl
+  | cons level remaining induction =>
+      simp [ParallelOuterScopePlan.classify,
+        induction]
+
+@[simp] theorem parallelOuterScope_classify_rightFrame
+    (shared frame : List RepeatableLevel) (nonempty : frame ≠ []) :
+    ParallelOuterScopePlan.classify shared (shared ++ frame) =
+      some (.framed .right shared frame) := by
+  induction shared with
+  | nil =>
+      cases frame with
+      | nil => contradiction
+      | cons level remaining => rfl
+  | cons level remaining induction =>
+      simp [ParallelOuterScopePlan.classify,
+        induction]
+
 theorem checkedIndexColumn_wellFormed
     (column : ResolvedCheckedIndexColumn model) :
     column.WellFormed :=
@@ -44,7 +79,7 @@ theorem checkedParallelIndexGroups_wellFormed
     groups.rightGroupOwned, groups.leftIndexDeclared,
     groups.rightIndexDeclared, groups.groupsDistinct,
     groups.commonParentOwned, groups.commonParentNonempty,
-    groups.commonOuterScope, groups.commonIndexName,
+    groups.outerScopePlanOwned, groups.commonIndexName,
     groups.commonIndexKind, groups.exactTextIndex⟩
 
 @[simp] theorem checkedIndexColumn_duplicate_notSemantic

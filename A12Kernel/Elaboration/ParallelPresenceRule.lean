@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # Bounded checked parallel presence rules
 
-This capsule places one existing positive presence conjunction into the checked exact-text parallel join. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. Number ordering, repeatable frames, negative leaves, partial validation, and nonphysical error pointers remain outside.
+This capsule places one existing positive presence conjunction into the checked exact-text parallel join. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. One non-indexed repeatable frame may surround the error side and recalculates the same join inside each actual frame row. Number ordering, two framed sides, negative leaves, partial validation, and nonphysical error pointers remain outside.
 -/
 
 namespace A12Kernel
@@ -17,6 +17,7 @@ inductive ParallelPresenceRuleAssemblyError where
   | multipleIndexedOperandGroups (field : FieldId)
       (groups : List GroupPath)
   | errorFieldNotOperand (field left right : FieldId)
+  | errorFieldNotOnFramedSide (field : FieldId)
   deriving Repr, DecidableEq
 
 inductive ParallelPresenceRuleEvaluationError where
@@ -26,13 +27,14 @@ inductive ParallelPresenceRuleEvaluationError where
   | unsupportedCondition
   deriving Repr, DecidableEq
 
-/-- One key-preserving whole-rule result. Silent outcomes retain their join key even though no physical error address is needed. -/
+/-- One key-preserving whole-rule result. The complete outer evaluation environment distinguishes equal join keys in different frame rows; silent outcomes still require no physical error address. -/
 structure ParallelRuleRowOutcome where
+  outerEnvironment : Env
   key : SemanticIndexKey
   outcome : FlatRuleOutcome
   deriving Repr, DecidableEq
 
-/-- A checked full-validation rule for the exact positive conjunction `FieldFilled(left) And FieldFilled(right)` over two index groups with one common outer repeatable scope. -/
+/-- A checked full-validation rule for the exact positive conjunction `FieldFilled(left) And FieldFilled(right)` over two compatible index groups. A one-sided frame must be on the emitted error side so every firing address has its complete physical coordinates. -/
 structure CheckedParallelPresenceRule (model : FlatModel) where
   private mk ::
   condition : CheckedValidationCondition model
@@ -65,6 +67,9 @@ structure CheckedParallelPresenceRule (model : FlatModel) where
   errorFieldIsOperand :
     (errorField == leftDeclaration.id ||
       errorField == rightDeclaration.id) = true
+  errorFieldOnFramedSide :
+    groups.outerScopePlan.admitsErrorOnLeft
+      (errorField == leftDeclaration.id) = true
 
 namespace CheckedParallelPresenceRule
 
@@ -91,7 +96,9 @@ def WellFormed (rule : CheckedParallelPresenceRule model) : Prop :=
         (ValidationCondition.repeatableFieldPresence
           .filled rule.rightDeclaration) ∧
     (rule.errorField == rule.leftDeclaration.id ||
-      rule.errorField == rule.rightDeclaration.id) = true
+      rule.errorField == rule.rightDeclaration.id) = true ∧
+    rule.groups.outerScopePlan.admitsErrorOnLeft
+      (rule.errorField == rule.leftDeclaration.id) = true
 
 def core (rule : CheckedParallelPresenceRule model) :
     ResolvedValidationRule model := {
@@ -128,7 +135,7 @@ private def errorSide (rule : CheckedParallelPresenceRule model)
 
 private def evalRow (rule : CheckedParallelPresenceRule model)
     (preliminary : CheckedIndexPreliminary model)
-    (row : ResolvedParallelIndexRow) :
+    (outerEnvironment : Env) (row : ResolvedParallelIndexRow) :
     Except ParallelPresenceRuleEvaluationError ParallelRuleRowOutcome := do
   let verdict ← rule.condition.core.evalVerdictExcept
     (evalLeaf row preliminary)
@@ -145,17 +152,58 @@ private def evalRow (rule : CheckedParallelPresenceRule model)
         -- `emitAt` does not inspect the address for a silent verdict, so no
         -- nonphysical placeholder enters `CellAddr`.
         pure (rule.core.emitAt [] verdict)
-  pure { key := row.key, outcome }
+  pure { outerEnvironment, key := row.key, outcome }
 
-/-- Evaluate the checked rule once per lexical join key. The join, leaf reads, connective fold, and emitter each remain at their existing owner. -/
-def evalFull (rule : CheckedParallelPresenceRule model)
-    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
+private def evalJoinRows (rule : CheckedParallelPresenceRule model)
+    (preliminary : CheckedIndexPreliminary model)
+    (outerEnvironment : Env) (join : ResolvedParallelIndexJoin) :
+    Except ParallelPresenceRuleEvaluationError
+      (List ParallelRuleRowOutcome) :=
+  join.rows.mapM (rule.evalRow preliminary outerEnvironment)
+
+private def evalCommonAt (rule : CheckedParallelPresenceRule model)
+    (preliminary : CheckedIndexPreliminary model) (outer : Env) :
     Except ParallelPresenceRuleEvaluationError
       (List ParallelRuleRowOutcome) := do
   let join ←
     preliminary.resolveCheckedParallelIndexJoin rule.groups outer
       |>.mapError .join
-  join.rows.mapM (rule.evalRow preliminary)
+  rule.evalJoinRows preliminary outer join
+
+private def evalFrameAt (rule : CheckedParallelPresenceRule model)
+    (preliminary : CheckedIndexPreliminary model)
+    (frameOuter commonOuter : Env) :
+    Except ParallelPresenceRuleEvaluationError
+      (List ParallelRuleRowOutcome) := do
+  let join ← preliminary.resolveCheckedParallelIndexJoinInFrame
+    rule.groups frameOuter commonOuter |>.mapError .join
+  rule.evalJoinRows preliminary frameOuter join
+
+private def evalFrames (rule : CheckedParallelPresenceRule model)
+    (preliminary : CheckedIndexPreliminary model)
+    (commonOuter : Env) :
+    List Env → Except ParallelPresenceRuleEvaluationError
+      (List ParallelRuleRowOutcome)
+  | [] => pure []
+  | frameOuter :: remaining => do
+      let current ←
+        rule.evalFrameAt preliminary frameOuter commonOuter
+      let later ←
+        rule.evalFrames preliminary commonOuter remaining
+      pure (current ++ later)
+
+/-- Evaluate once per lexical key at a common scope, or recalculate that same keyed join inside each actual one-sided frame row. Frame order is document order; key order remains lexical within each frame. -/
+def evalFull (rule : CheckedParallelPresenceRule model)
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
+    Except ParallelPresenceRuleEvaluationError
+      (List ParallelRuleRowOutcome) :=
+  match rule.groups.outerScopePlan with
+  | .common _ => rule.evalCommonAt preliminary outer
+  | .framed _ _ _ => do
+      let frames ←
+        preliminary.resolveCheckedParallelFrameEnvironments
+          rule.groups outer |>.mapError .join
+      rule.evalFrames preliminary outer frames
 
 end CheckedParallelPresenceRule
 
@@ -203,39 +251,45 @@ def checkParallelPresenceRule (model : FlatModel)
           if hError :
               (errorField == leftDeclaration.id ||
                 errorField == rightDeclaration.id) = true then
-            let core : ValidationCondition model :=
-              .and
-                (ValidationCondition.repeatableFieldPresence
-                  .filled leftDeclaration)
-                (ValidationCondition.repeatableFieldPresence
-                  .filled rightDeclaration)
-            let rowGroup := groups.commonParent
-            if hCore : core.wellFormedBool rowGroup = true then
-              let condition : CheckedValidationCondition model := {
-                rowGroup
-                core
-                modelWellFormed := groups.modelWellFormed
-                wellFormed := hCore
-              }
-              pure {
-                condition
-                groups
-                leftDeclaration
-                rightDeclaration
-                errorField
-                errorCode
-                severity
-                messagePlan
-                leftOperandGroup := hLeftGroup
-                rightOperandGroup := hRightGroup
-                leftOperandScope := hLeftScope
-                rightOperandScope := hRightScope
-                rowGroupOwned := rfl
-                conditionShape := rfl
-                errorFieldIsOperand := hError
-              }
+            if hFrameError :
+                groups.outerScopePlan.admitsErrorOnLeft
+                  (errorField == leftDeclaration.id) = true then
+              let core : ValidationCondition model :=
+                .and
+                  (ValidationCondition.repeatableFieldPresence
+                    .filled leftDeclaration)
+                  (ValidationCondition.repeatableFieldPresence
+                    .filled rightDeclaration)
+              let rowGroup := groups.commonParent
+              if hCore : core.wellFormedBool rowGroup = true then
+                let condition : CheckedValidationCondition model := {
+                  rowGroup
+                  core
+                  modelWellFormed := groups.modelWellFormed
+                  wellFormed := hCore
+                }
+                pure {
+                  condition
+                  groups
+                  leftDeclaration
+                  rightDeclaration
+                  errorField
+                  errorCode
+                  severity
+                  messagePlan
+                  leftOperandGroup := hLeftGroup
+                  rightOperandGroup := hRightGroup
+                  leftOperandScope := hLeftScope
+                  rightOperandScope := hRightScope
+                  rowGroupOwned := rfl
+                  conditionShape := rfl
+                  errorFieldIsOperand := hError
+                  errorFieldOnFramedSide := hFrameError
+                }
+              else
+                throw .incoherentCondition
             else
-              throw .incoherentCondition
+              throw (.errorFieldNotOnFramedSide errorField)
           else
             throw (.errorFieldNotOperand errorField
               leftDeclaration.id rightDeclaration.id)
