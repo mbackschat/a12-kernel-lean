@@ -1359,6 +1359,10 @@ run_cmd do
 #print axioms A12Kernel.checkedStringComputation_excludes_target_reference
 #print axioms A12Kernel.checkedStringComputation_evaluateOutcome
 #print axioms A12Kernel.checkedStringComputation_missingTargetPattern_failsClosed
+#print axioms A12Kernel.checkedStringComputationAlternative_guard_wellFormed
+#print axioms A12Kernel.checkedStringComputationAlternative_excludes_target
+#print axioms A12Kernel.checkedStringComputationAlternative_expression_excludes_target
+#print axioms A12Kernel.checkedStringComputationTable_evaluateOutcome_erases
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic

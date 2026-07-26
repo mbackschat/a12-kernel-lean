@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 486 jobs · trust audit **1373 theorem roots; 28662 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 489 jobs · trust audit **1377 theorem roots; 28798 declarations in 259 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,18 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Ordinary repeatable partial group leaves now consume `CheckedPartialPreliminary` directly. Group relevance is derived from the normalized entity set as none, partial, or full; callers cannot relabel the selected slice. The matrix separates a nonrelevant filled descendant from the selected empty group, reached formal error, cause-free suppressed-default error, and unchanged full-validation behavior. The completed route reuses the checked-document slice, group fold, condition tree, and ordinary rule loop and adds no document, topology, evaluator, or harness.
+One nonempty guarded String computation table is now certified against a validated flat model after common-precondition distribution. It consolidates existing checked String operations into one shared target/policy, certifies every direct-presence guard and target exclusion, admits raw String presence without admitting raw String values, and delegates terminal first selection plus prepared target-pattern checking to the existing evaluator. It adds no run state, document view, trace, result projection, or application.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed String sequence only. The active unit is A0: certify one model-relative nonrepeatable String alternative table by reusing the existing condition tree, first-match selector, checked String expression, target policy, and target-reference checks. Do not introduce run state, a scheduling relation, result projections, application, or a heterogeneous computation type in A0.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed String sequence only. The active unit is A1: execute an ordered unique-target, dependency-coherent list of checked String tables through the existing prepared String context, exact computed-input hiding, and typed String outcome overlay. Return only per-target rich outcomes; do not add the relation, V2 result projections, application, or a heterogeneous computation type.
 
 ## Immediate sequence
 
-1. A0: verify the direct-presence guard admission boundary, then add the checked String table with model-certified guards, one shared admitted target/policy, and selected-empty/poison/target-reference separators.
-2. A1: execute an ordered unique-target, dependency-coherent list of those tables through the existing prepared String context, exact computed-input hiding, and typed String outcome overlay. Return only per-target rich outcomes.
-3. A2: add the smallest dependency-enabled step relation and prove that the fixed-order executable run admits a relation trace; add no read trace or generic state-machine framework.
-4. Only after A0–A2, add the five extensional V2 result projections, then the eager-prepass certificate and whole-run application fold as separate capsules.
+1. A1: execute an ordered unique-target, dependency-coherent list of checked String tables through the existing prepared String context, exact computed-input hiding, and typed String outcome overlay. Return only per-target rich outcomes.
+2. A2: add the smallest dependency-enabled step relation and prove that the fixed-order executable run admits a relation trace; add no read trace or generic state-machine framework.
+3. Only after A1–A2, add the five extensional V2 result projections, then the eager-prepass certificate and whole-run application fold as separate capsules.
 
 ## Parked boundaries
 
