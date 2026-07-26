@@ -53,6 +53,7 @@ inductive StarAddressingError where
   | duplicateAxis (level : RepeatableLevel)
   | invalidRepeatability (level : RepeatableLevel)
   | missingBinding (level : RepeatableLevel)
+  | duplicateBinding (level : RepeatableLevel)
   | invalidBinding (level : RepeatableLevel) (coordinate : Nat)
   | invalidRowDepth (level : RepeatableLevel) (path : List Nat) (expected : Nat)
   | orphanRow (level : RepeatableLevel) (path : List Nat) (parentLevel : RepeatableLevel)
@@ -77,17 +78,17 @@ def validate (path : StarPath) : Except StarAddressingError Unit := do
   | some level => throw (.invalidRepeatability level)
   | none => pure ()
 
-private def bind : List StarAxis → Env → Except StarAddressingError Env
-  | [], _ => pure []
-  | axis :: _, [] => throw (.missingBinding axis.level)
-  | axis :: axes, (level, coordinate) :: environment => do
-      if level != axis.level then throw (.missingBinding axis.level)
-      if coordinate == 0 then throw (.invalidBinding level coordinate)
-      pure ((level, coordinate) :: (← bind axes environment))
+private def toStarAddressingError : EnvBindingError → StarAddressingError
+  | .missingBinding level => .missingBinding level
+  | .duplicateBinding level => .duplicateBinding level
+  | .zeroBinding level => .invalidBinding level 0
 
 /-- Keep only the exact named outer bindings above the first star. Bindings at the starred level and below are deliberately discarded. -/
 def boundEnvironment (path : StarPath) (outer : Env) : Except StarAddressingError Env :=
-  bind (path.axes.take path.firstStar) outer
+  (path.axes.take path.firstStar).mapM fun axis => do
+    let coordinate ←
+      (outer.bindingAt axis.level).mapError toStarAddressingError
+    pure (axis.level, coordinate)
 
 end StarPath
 

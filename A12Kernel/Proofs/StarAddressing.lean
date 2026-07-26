@@ -76,6 +76,30 @@ theorem withOverRepetitionIf_preserves_wellFormed {α : Type}
     (StarPath.mk (axis :: axes) 0).boundEnvironment outer = .ok [] := by
   rfl
 
+/-- One bound axis uses the shared named environment lookup; unrelated binding order cannot affect the retained prefix. -/
+theorem starPath_boundEnvironment_single (axis : StarAxis)
+    (axes : List StarAxis) (outer : Env) (coordinate : Nat)
+    (binding : outer.bindingAt axis.level = .ok coordinate) :
+    (StarPath.mk (axis :: axes) 1).boundEnvironment outer =
+      .ok [(axis.level, coordinate)] := by
+  unfold StarPath.boundEnvironment
+  simp only [List.take, List.mapM_cons, List.mapM_nil]
+  rw [binding]
+  rfl
+
+/-- A duplicate required outer binding fails structurally instead of selecting one occurrence. -/
+theorem starPath_boundEnvironment_duplicate (axis : StarAxis)
+    (axes : List StarAxis) (outer : Env)
+    (binding :
+      outer.bindingAt axis.level =
+        .error (.duplicateBinding axis.level)) :
+    (StarPath.mk (axis :: axes) 1).boundEnvironment outer =
+      .error (.duplicateBinding axis.level) := by
+  unfold StarPath.boundEnvironment
+  simp only [List.take, List.mapM_cons, List.mapM_nil]
+  rw [binding]
+  rfl
+
 /-- The common stream bridge reads exactly once per resolved leaf and preserves its canonical order. -/
 @[simp] theorem resolvedStarTopology_cells (resolved : ResolvedStarTopology)
     (read : Env → ValueListCell kind) (hasHaving : Bool) :

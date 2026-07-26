@@ -903,6 +903,8 @@ run_cmd do
 #print axioms A12Kernel.env_pathForScope_length
 #print axioms A12Kernel.env_pathForScope_singleton
 #print axioms A12Kernel.starPath_firstAxis_reopens
+#print axioms A12Kernel.starPath_boundEnvironment_single
+#print axioms A12Kernel.starPath_boundEnvironment_duplicate
 #print axioms A12Kernel.resolvedStarTopology_cells
 #print axioms A12Kernel.resolvedStarTopology_tail
 #print axioms A12Kernel.withOverRepetitionIf_true

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 483 jobs · trust audit **1365 theorem roots; 28602 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 483 jobs · trust audit **1367 theorem roots; 28625 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Successful canonical star resolution now carries a proved inductive correspondence between its hierarchical row tree and its ordered complete environments. Every reopened coordinate extends the exact bound outer prefix at the named axis, and each sibling contributes its leaf environments before the remaining siblings. The guarantee is scoped to successful checked resolution; an arbitrary caller-constructed topology need not satisfy it.
+The bounded SG2 cold Execute/Analyze reader reconstructed the complete checked addressed-operand route and found one shared-boundary defect: outer star prefixes still consumed bindings positionally. `StarPath.boundEnvironment` now uses `Env.bindingAt`, accepts unrelated reordered bindings, rejects duplicate required levels explicitly, and preserves the corrected exact prefix in the tree/environment correspondence theorem. The reader's artifact-only reread found no remaining internal API defect; external evidence and protocol exposure remain separate.
 
 ## Active semantic unit
 
-Run the trigger-required bounded cold consumer milestone for [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) against the existing public checked representations. Test whether an artifact-only Execute/Analyze implementer can discover the canonical checked document, named environment/topology relation, addressed operand construction, filter/relevance provenance, and structural failure boundary without kernel or sibling-project research. Reconcile only concrete discoverability or adequacy defects. The separately blocked partial group-product route remains outside until the ordinary partial rule context carries the relevance-selected preliminary slice already owned by `CheckedPartialPreliminary`.
+Close [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by wiring ordinary repeatable partial group leaves to the relevance-selected `CheckedPartialPreliminary.groupPresenceInput` already owned by checked document preparation. Preserve the existing full-validation route and rule loop; do not introduce another document, group evaluator, relevance slice, or condition tree.
 
 ## Immediate sequence
 
-1. Prepare the bounded allowlist from the project-local task contract, checked-document/addressing owners, laws, separating cases, implementation map, and consumer guidance; exclude the kernel, a12-dmkits, Git history, prior discussion, and unlisted files.
-2. Have the cold reader reconstruct the Execute/Analyze decision path and report only concrete discoverability, hidden-assumption, or adequacy defects.
-3. Reconcile any concrete finding at its existing semantic or documentation owner. A clean review creates no report or permanent probe source.
+1. Inventory `CheckedPartialPreliminary.groupPresenceInput`, the existing partial rule context, group-leaf evaluation, proofs, and conformance cases; reject any route that would duplicate the selected slice or group fold.
+2. Add red separators in which nonrelevant content/error would change the result if the complete document leaked through, plus a relevant formal/silent-error control.
+3. Extend the smallest existing context, derive the group result through the preliminary view, add the payoff-selected law and nearest non-law, run Tier 1 gates, and close SG2 if the completed capsule exposes no further shared addressing invariant.
 
 ## Parked boundaries
 

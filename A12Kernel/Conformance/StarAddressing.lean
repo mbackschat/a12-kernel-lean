@@ -92,6 +92,15 @@ example : envsAndTail { allRows with firstStar := 1 } partialDocument [(10, 2), 
     some ([[(10, 2), (20, 1)]], true) := by
   native_decide
 
+/- Bound outer levels use the shared named lookup: unrelated binding order is irrelevant, while a duplicate required level fails structurally. -/
+example :
+    envsAndTail { allRows with firstStar := 1 } partialDocument
+        [(30, 9), (10, 2), (20, 9)] =
+      some ([[(10, 2), (20, 1)]], true) ∧
+    rejectsAs (.duplicateBinding 10) { allRows with firstStar := 1 }
+      partialDocument [(10, 1), (10, 2)] := by
+  native_decide
+
 /- A same-level star reopens the current level instead of correlating it. -/
 example :
     let path : StarPath := { axes := [outer], firstStar := 0 }
