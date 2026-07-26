@@ -56,6 +56,13 @@ abbrev and (left right : ComputationCondition) : ComputationCondition :=
 abbrev or (left right : ComputationCondition) : ComputationCondition :=
   ConditionTree.or left right
 
+/-- Whether the resolved condition mentions one exact field. This structural query is shared by checked table construction and generated-validation lowering. -/
+def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
+  match condition with
+  | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
+  | .and left right | .or left right =>
+      left.referencesField target || right.referencesField target
+
 /-- Evaluate `FieldFilled` for one resolved checked field. A clean value counts as filled regardless of its scalar value; ordinary formal invalidity is poison rather than filled or empty. -/
 def evalFieldFilled (context : ScalarComputationContext)
     (field : FieldId) : ComputationConditionResult :=

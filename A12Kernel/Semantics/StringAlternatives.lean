@@ -35,14 +35,26 @@ def selectedStep (computation : StringAlternativeComputation)
   targetPolicy := computation.targetPolicy
   prior := computation.prior
 
-/-- Select once, then evaluate only the selected expression. An operation outcome is never fed back into the alternative scan. -/
-def evaluateOutcome (computation : StringAlternativeComputation)
+/-- Select once, then evaluate only the selected expression against an explicitly prepared target matcher. An operation outcome is never fed back into the alternative scan. -/
+def evaluateOutcomeWithPattern (computation : StringAlternativeComputation)
+    (wholeValueMatches? : Option (String → Bool))
     (context : StringComputationContext) :
     Except StringComputationFault StringTargetOutcome :=
   match ComputationAlternative.selectFirst computation.alternatives context with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.poison cause)
-  | .selected expression => (computation.selectedStep expression).evaluateOutcome context
+  | .selected expression =>
+      match expression.evaluate context with
+      | .error fault => .error fault
+      | .ok store =>
+          .ok (computation.targetPolicy.checkTargetWithPattern
+            wholeValueMatches? store)
+
+/-- The no-pattern specialization retained by the resolved table API. -/
+def evaluateOutcome (computation : StringAlternativeComputation)
+    (context : StringComputationContext) :
+    Except StringComputationFault StringTargetOutcome :=
+  computation.evaluateOutcomeWithPattern none context
 
 /-- Evaluate the resolved table through the shared target check and existing change-only delta projection without mutating a document. -/
 def evaluate (computation : StringAlternativeComputation)

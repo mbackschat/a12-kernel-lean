@@ -155,13 +155,6 @@ private def FlatModel.resolveGeneratedNumberTarget
 
 namespace ComputationCondition
 
-/-- Whether this condition mentions the computed target directly. The checked fragment has already resolved every path to a field ID. -/
-def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
-  match condition with
-  | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
-  | .and left right | .or left right =>
-      left.referencesField target || right.referencesField target
-
 /-- Translate guard syntax without evaluating it. Validation then applies its own phase observation, unknown handling, connective algebra, and polarity. -/
 private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
     ComputationCondition →
