@@ -34,20 +34,29 @@ inductive OrdinaryRepeatableRuleEvaluationError where
   | conditionAddressing (error : CheckedAddressingError)
   deriving Repr, DecidableEq
 
+/-- The checked ordinary rule's value-independent execution shape. A once plan pins every repeatable error-field level to row 1 without claiming that row exists in document topology. -/
+inductive OrdinaryRuleIterationPlan where
+  | scalar
+  | once (errorScope : List RepeatableLevel)
+  | rows (scope : List RepeatableLevel)
+  deriving Repr, DecidableEq
+
 /-- Partial execution distinguishes a whole-rule filtered skip from the ordered actual-row scan; each actual row then keeps error-instance skip separate from every evaluated verdict. -/
 inductive PartialRepeatableRuleOutcome where
   | skipped
   | evaluated (rows : List (Env × PartialRuleOutcome))
   deriving Repr, DecidableEq
 
-/-- The first ordinary repeatable rule route requires the error field to inhabit the exact deepest compatible nonparallel reference scope. Wider indirect group-reference anchoring remains outside this capsule. -/
-def ruleErrorScopeCompatible (declaration : FlatFieldDecl) :
+/-- Row iteration requires the error field at the exact derived scope. A mixed rule with no per-row scope may instead retain a repeatable error path for once evaluation; scalar flat-rule assembly passes `false` and keeps its nonrepeatable invariant. -/
+def ruleErrorScopeCompatible (allowRepeatableOnce : Bool)
+    (declaration : FlatFieldDecl) :
     Option (List RepeatableLevel) → Bool
-  | none => declaration.repeatableScope.isEmpty
+  | none => allowRepeatableOnce || declaration.repeatableScope.isEmpty
   | some scope => declaration.repeatableScope == scope
 
 /-- A complete resolved rule whose condition and explicit error field are certified against the same validated model. The condition projection and reference traversal are parameters so flat and mixed rules share one metadata certificate. -/
-structure CheckedResolvedRule (model : FlatModel)
+structure CheckedResolvedRule (allowRepeatableOnce : Bool)
+    (model : FlatModel)
     (CheckedCondition CoreCondition : Type)
     (coreOf : CheckedCondition → CoreCondition)
     (referencesField : CoreCondition → FieldId → Bool)
@@ -66,12 +75,13 @@ structure CheckedResolvedRule (model : FlatModel)
   iterationScopeOwned :
     iterationScopeOf (coreOf condition) = .ok iterationScope
   errorFieldScopeCompatible :
-    ruleErrorScopeCompatible errorDeclaration iterationScope = true
+    ruleErrorScopeCompatible allowRepeatableOnce
+      errorDeclaration iterationScope = true
   errorFieldReferenced :
     referencesField (coreOf condition) errorField = true
 
 abbrev CheckedResolvedFlatRule (model : FlatModel) :=
-  CheckedResolvedRule model (CheckedFlatCondition model) FlatCondition
+  CheckedResolvedRule false model (CheckedFlatCondition model) FlatCondition
     (fun condition => condition.core) FlatCondition.referencesField
     (fun _ =>
       (.ok none :
@@ -82,7 +92,7 @@ abbrev ResolvedValidationRule (model : FlatModel) :=
   ResolvedRule (ValidationCondition model)
 
 abbrev CheckedResolvedValidationRule (model : FlatModel) :=
-  CheckedResolvedRule model (CheckedValidationCondition model)
+  CheckedResolvedRule true model (CheckedValidationCondition model)
     (ValidationCondition model)
     (fun condition => condition.core)
     (fun condition field => condition.referencesField field)
@@ -130,6 +140,18 @@ def evalAddressedFull (rule : ResolvedValidationRule model)
 end ResolvedValidationRule
 
 namespace CheckedResolvedValidationRule
+
+/-- Expose the explicit ordinary execution decision already certified by condition scope plus the error declaration. -/
+def ordinaryIterationPlan
+    (rule : CheckedResolvedValidationRule model) :
+    OrdinaryRuleIterationPlan :=
+  match rule.iterationScope with
+  | some scope => .rows scope
+  | none =>
+      if rule.errorDeclaration.repeatableScope.isEmpty then
+        .scalar
+      else
+        .once rule.errorDeclaration.repeatableScope
 
 /-- Whether the complete checked rule contains a `Having` filter anywhere in its condition. A partial-validation compiler or executor must query this before relevance, iteration, or branch evaluation. -/
 def hasHaving
@@ -203,6 +225,37 @@ private def ordinaryIterationEnvironments
 private def ordinaryRepeatableFieldIds
     (rule : CheckedResolvedValidationRule model) : List FieldId :=
   (rule.condition.core.ordinaryRepeatableFields.map (·.id)).eraseDups
+
+private def NatPath.isPrefixOf : List Nat → List Nat → Bool
+  | [], _ => true
+  | _, [] => false
+  | expected :: expectedRest, actual :: actualRest =>
+      expected == actual && NatPath.isPrefixOf expectedRest actualRest
+
+/-- Full once evaluation uses admitted value-content in the error field's root instance. Physical row existence is deliberately not part of this gate. -/
+private def ordinaryOnceRootHasContent
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model) (environment : Env) :
+    Except CheckedAddressingError Bool := do
+  let root := rule.errorDeclaration.groupPath.take 1
+  let rootScope := model.repeatableScopeForGroupPath root
+  let addressPrefix ←
+    (environment.pathForScope rootScope).mapError .environment
+  pure (checked.checkedCells.any fun placement =>
+    match model.lookupUniqueId placement.address.field with
+    | .ok declaration =>
+        root.isPrefixOf declaration.groupPath &&
+          addressPrefix.isPrefixOf placement.address.path &&
+          placement.cell.admitsGroupContent
+    | .error _ => false)
+
+private def ordinaryOnceEnvironment
+    (rule : CheckedResolvedValidationRule model) :
+    Except OrdinaryRepeatableRuleEvaluationError Env :=
+  match rule.ordinaryIterationPlan with
+  | .scalar => throw .missingIterationScope
+  | .rows _ => throw .unsupportedCondition
+  | .once scope => pure (scope.map fun level => (level, 1))
 
 /-- Whether every leaf in this first repeatable partial family has an exact relevance-aware addressed interpretation. Wider addressed leaf families are admitted only when their own partial evaluator exists. -/
 def supportsOrdinaryRepeatablePartial
@@ -289,6 +342,35 @@ def evalOrdinaryRepeatableFull
         result.row == environment
     rule.evalOrdinaryRepeatableAt checked environment result?
 
+/-- Execute the distinct no-per-row-reference rule shape exactly once. Every repeatable error level is pinned to row 1, but target addressing is derived from the checked declaration and never read or inserted as document topology. Full validation retains the root admitted-content gate before addressed condition reads. -/
+def evalOrdinaryOnceFull
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model) :
+    Except OrdinaryRepeatableRuleEvaluationError
+      (Env × FlatRuleOutcome) := do
+  if !rule.condition.core.supportsOrdinaryIteration then
+    throw .unsupportedCondition
+  let environment ← rule.ordinaryOnceEnvironment
+  let hasContent ←
+    (rule.ordinaryOnceRootHasContent checked environment)
+      |>.mapError .addressing
+  let errorPath ←
+    (environment.pathForScope rule.errorDeclaration.repeatableScope)
+      |>.mapError (fun cause =>
+        .addressing (.environment cause))
+  let context : AddressedValidationEvaluationContext model := {
+    scalar := {
+      fields := checked.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := environment
+    input := .checked checked
+  }
+  let verdict ←
+    (rule.condition.core.evalAddressedFull context hasContent)
+      |>.mapError .conditionAddressing
+  pure (environment, rule.core.emitAt errorPath verdict)
+
 /-- Execute the first checked one-level partial ordinary-rule family over actual deepest-scope rows in immutable document order. Filtered rules skip before row construction. Caller relevance and model-owned globals gate each actual error instance; a relevant entity never becomes document topology, so this per-row route creates no phantom environment. The separate once-evaluation rule shape owns pinned phantom row 1. -/
 def evalOrdinaryRepeatablePartial
     (rule : CheckedResolvedValidationRule model)
@@ -315,7 +397,8 @@ def evalOrdinaryRepeatablePartial
 
 end CheckedResolvedValidationRule
 
-private def assembleResolvedRule (model : FlatModel)
+private def assembleResolvedRule (allowRepeatableOnce : Bool)
+    (model : FlatModel)
     (coreOf : CheckedCondition → CoreCondition)
     (referencesField : CoreCondition → FieldId → Bool)
     (iterationScopeOf : CoreCondition →
@@ -326,7 +409,8 @@ private def assembleResolvedRule (model : FlatModel)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
     Except FlatRuleAssemblyError
-      (CheckedResolvedRule model CheckedCondition CoreCondition
+      (CheckedResolvedRule allowRepeatableOnce model
+        CheckedCondition CoreCondition
         coreOf referencesField iterationScopeOf) :=
   match hIteration : iterationScopeOf (coreOf condition) with
   | .error error => .error (.iterationScope error)
@@ -335,7 +419,8 @@ private def assembleResolvedRule (model : FlatModel)
     | .error error => .error (.errorField error)
     | .ok declaration =>
       if hScope :
-          ruleErrorScopeCompatible declaration iterationScope = true then
+          ruleErrorScopeCompatible allowRepeatableOnce
+            declaration iterationScope = true then
         if hReferenced :
             referencesField (coreOf condition) errorField = true then
           .ok {
@@ -367,7 +452,7 @@ def assembleResolvedFlatRule (model : FlatModel)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
   Except FlatRuleAssemblyError (CheckedResolvedFlatRule model) :=
-  assembleResolvedRule model (fun checked => checked.core)
+  assembleResolvedRule false model (fun checked => checked.core)
     FlatCondition.referencesField
     (fun _ =>
       (.ok none :
@@ -386,7 +471,7 @@ def assembleResolvedValidationRule (model : FlatModel)
   | .ok (.invalid level) =>
       .error (.negativeConditionInIteration level)
   | .ok .legal | .ok (.insufficient _) | .error _ =>
-      assembleResolvedRule model (fun checked => checked.core)
+      assembleResolvedRule true model (fun checked => checked.core)
         (fun core field => core.referencesField field)
         ValidationCondition.ordinaryIterationScope
         condition errorField errorCode severity messagePlan

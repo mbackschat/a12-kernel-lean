@@ -635,6 +635,7 @@ run_cmd do
 #print axioms A12Kernel.checkedFlatRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_errorField_coherent
 #print axioms A12Kernel.checkedValidationRule_iterationScope_owned
+#print axioms A12Kernel.checkedValidationRule_once_plan_exact
 #print axioms A12Kernel.assembleResolvedValidationRule_rejects_negativeIteration
 #print axioms A12Kernel.checkedValidationRule_scalar_rejects_addressed
 #print axioms A12Kernel.checkedValidationRule_partial_filtered_skips

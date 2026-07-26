@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 476 jobs · trust audit **1344 theorem roots; 27659 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 477 jobs · trust audit **1345 theorem roots; 27714 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and one-level RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked partial rules now reach the first one-level repeatable whole-rule slice. It reuses actual deepest-scope rows and checked addresses in immutable document order, skips an irrelevant error instance before reads, evaluates a nonrelevant direct-presence peer as leaf UNKNOWN after admission, and never inserts caller relevance into document topology. Cases separate irrelevant actual rows, admitted UNKNOWN, decisive `Or`, actual row order, and an empty physical row set from phantom creation.
+Checked ordinary rules now retain the source-distinct scalar, actual-row, and once-evaluation plans. A no-per-row-reference condition with a repeatable error field is statically admitted as `once`, pins every error level to row 1 without reading or inserting a target row, and evaluates exactly once under the full-validation root admitted-value-content gate. Cases separate root content from a wholly empty document while both have zero physical repeatable rows.
 
 ## Active semantic unit
 
-Continue [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) with the distinct once-evaluation rule shape. A rule with no repeatable reference level may still have a repeatable error field pinned to row 1; full validation applies root-content/can-fire-empty admission, while partial validation applies the error-instance relevance gate without creating a physical row.
+Continue [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) by adding partial execution to the now-checked once plan. Partial validation must apply the pinned error-instance relevance gate, bypass the full root-content gate for an admitted instance, and use the existing aggregate relevance owner without creating a physical row.
 
 ## Immediate sequence
 
-1. Audit the checked rule assembly and kernel iteration plan for the exact static condition that admits a repeatable error field when the condition has no repeatable per-row reference.
-2. Write red whole-rule cases separating zero physical rows with and without root content, full versus partial admission, relevant versus irrelevant pinned error row 1, and a genuinely per-row rule that must remain at zero environments.
-3. Add the smallest explicit once-environment constructor and phantom read rule at the ordinary rule owner; do not add the phantom to `CheckedDocument`, broaden the actual-row iterator, or manufacture semantic UNKNOWN from structural scope failure.
+1. Add the exact partial ordered-numeric aggregate leaf bridge over its existing checked-document relevance fold; retain rule-wide `Having` skip outside the leaf and reject every still-unsupported addressed family structurally.
+2. Write red whole-rule cases separating relevant versus irrelevant pinned error row 1 on a zero-row document and confirming that partial admission bypasses the full root-content gate.
+3. Prove the read-free irrelevant-instance skip, then run the full capsule gate. Do not add the phantom to `CheckedDocument`, broaden the actual-row iterator, or manufacture semantic UNKNOWN from structural scope failure.
 
 ## Parked boundaries
 

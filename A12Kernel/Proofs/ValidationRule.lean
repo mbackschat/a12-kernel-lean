@@ -183,7 +183,8 @@ theorem checkedFlatRule_errorField_coherent
 theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
-      ruleErrorScopeCompatible rule.errorDeclaration rule.iterationScope = true ∧
+      ruleErrorScopeCompatible true
+        rule.errorDeclaration rule.iterationScope = true ∧
       rule.condition.core.referencesField rule.errorField = true :=
   ⟨rule.errorFieldLookup, rule.errorFieldScopeCompatible,
     rule.errorFieldReferenced⟩
@@ -194,6 +195,17 @@ theorem checkedValidationRule_iterationScope_owned
     rule.condition.core.ordinaryIterationScope =
       .ok rule.iterationScope :=
   rule.iterationScopeOwned
+
+/-- A mixed rule with no per-row reference scope and a repeatable error declaration has the distinct once plan; it cannot silently become scalar or actual-row iteration. -/
+theorem checkedValidationRule_once_plan_exact
+    (rule : CheckedResolvedValidationRule model)
+    (noScope : rule.iterationScope = none)
+    (repeatable :
+      rule.errorDeclaration.repeatableScope.isEmpty = false) :
+    rule.ordinaryIterationPlan =
+      .once rule.errorDeclaration.repeatableScope := by
+  simp [CheckedResolvedValidationRule.ordinaryIterationPlan,
+    noScope, repeatable]
 
 /-- Checked rule assembly rejects the first known unguarded repeatable level before it can enter runtime evaluation. -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
