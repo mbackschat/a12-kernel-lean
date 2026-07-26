@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1439 theorem roots; 30118 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 523 jobs · trust audit **1440 theorem roots; 30146 declarations in 287 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first checked repeatable SG4 route is now certified for one direct non-starred Number operand and repeatable Number target. The target and structured operand path resolve against one model, each determines its sole indexed ancestor, and the existing parallel-group owner proves distinct groups, matching exact-text index identity, and compatible scopes. A same-index-group operand is rejected as ordinary rather than parallel execution. No caller supplies the route bit, indexed groups, or repeatable scopes.
+The first checked repeatable SG4 route now derives both post-loop mark plans for one direct non-starred Number operand and repeatable Number target. Both mark plans preserve the target's complete scope as their coverage domain; the malformed target-path index uses its model-owned parent scope, while the off-path operand index uses its own. The checked framed separator therefore retains `[frame]` for on-path invalidity and the root prefix for off-path invalidity, reproducing sibling preservation versus sibling overmarking without a caller-supplied width.
 
 ## Active semantic unit
 
-Derive the two post-loop mark plans from that checked route's target and index-group scopes, preserving the target scope as the coverage domain for both the on-path and off-path invalid columns. Then assess the smallest document-owned target-instance enumeration needed to consume those marks without accepting caller-invented environments.
+Assess the smallest document-owned target-instance enumeration needed to consume the checked mark plans without accepting caller-invented environments. Reuse the existing ordinary-rule actual-row mechanism if its meaning and result domain match; otherwise keep the computation enumerator purpose-specific.
 
 ## Immediate sequence
 
-1. Map each checked index side to a `ParallelComputationMarkPlan` derived solely from the target scope and that side's model-owned index-parent scope; lock the asymmetric `[frame]` versus root-prefix discriminator.
-2. Inventory the checked document's existing actual-row enumerators before adding target-instance construction. Reuse an owning function at its second consumer or stop before accepting a caller-supplied environment list.
+1. Inventory the checked document's existing actual-row enumerators and the kernel's existing-field-instance input to post-loop marking.
+2. Add only the exact target-instance projection if the closed checked document can derive it, preserving document order, complete target scope, absent-cell versus instantiated-row behavior, and structural failure.
 
 ## Parked boundaries
 

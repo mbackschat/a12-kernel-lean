@@ -65,6 +65,36 @@ private def checked? :=
   (checkParallelNumericComputationClearingPlan
     model ["Plan"] 2 operandPath).toOption
 
+/- Each checked index side derives its asymmetric common-prefix mark scope without a caller-supplied truncation width. -/
+example :
+    (checked?.map fun checked =>
+      ((checked.markPlanFor .target).sharedScope,
+        (checked.markPlanFor .operand).sharedScope)) =
+      some ([50], []) := by
+  native_decide
+
+/- The checked scopes reproduce the observed discriminator: an on-path malformed key keeps frame siblings distinct, while an off-path malformed key covers both. -/
+example :
+    (checked?.bind fun checked => do
+      let onPath ←
+        (checked.markPlanFor .target).markForUnavailable
+          (some .duplicateIndex) [(50, 1), (60, 1)] |>.toOption
+      let offPath ←
+        (checked.markPlanFor .operand).markForUnavailable
+          (some .duplicateIndex) [(50, 1), (60, 1)] |>.toOption
+      let onFirst ←
+        (checked.markPlanFor .target).covers
+          (← onPath) [(50, 1), (60, 1)] |>.toOption
+      let onSecond ←
+        (checked.markPlanFor .target).covers
+          (← onPath) [(50, 2), (60, 1)] |>.toOption
+      let offSecond ←
+        (checked.markPlanFor .operand).covers
+          (← offPath) [(50, 2), (60, 1)] |>.toOption
+      pure (onFirst, onSecond, offSecond)) =
+      some (true, false, true) := by
+  native_decide
+
 /- The ordinary non-starred operand and repeatable target determine both indexed groups and scopes without caller-supplied groups or a route bit. -/
 example :
     (checked?.map fun checked =>

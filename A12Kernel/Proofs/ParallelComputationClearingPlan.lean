@@ -13,4 +13,11 @@ theorem checkedParallelNumericClearingPlan_wellFormed
     plan.operandNumber, plan.targetPolicyOwned, plan.targetGroup,
     plan.operandGroup, plan.targetScope, plan.operandScope⟩
 
+@[simp] theorem parallelNumericClearingMark_targetScope
+    (plan : CheckedParallelNumericClearingPlan model)
+    (side : ParallelComputationIndexSide) :
+    (plan.markPlanFor side).targetScope =
+      plan.targetDeclaration.repeatableScope := by
+  cases side <;> rfl
+
 end A12Kernel

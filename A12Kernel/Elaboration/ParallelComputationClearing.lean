@@ -1,10 +1,16 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Semantics.ParallelComputationClearing
 
 /-! # Checked parallel-computation clearing plans
 
 This bounded constructor recognizes one direct non-starred Number operand in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. The resulting mark plans derive their truncation scopes from those declarations. General computation expressions, guards, starred operands, table execution, index-column evaluation, and public clearing remain separate. -/
 
 namespace A12Kernel
+
+inductive ParallelComputationIndexSide where
+  | target
+  | operand
+  deriving Repr, DecidableEq
 
 inductive ParallelComputationPlanError where
   | targetResolve (error : ResolveError)
@@ -71,6 +77,20 @@ def WellFormed (plan : CheckedParallelNumericClearingPlan model) : Prop :=
       model.repeatableScopeForGroupPath plan.groups.leftGroup.path) = true ∧
     (plan.operandDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath plan.groups.rightGroup.path) = true
+
+/-- Derive the invalid-column mark plan for either checked index group. The target's complete scope remains the coverage domain in both cases. -/
+def markPlanFor (plan : CheckedParallelNumericClearingPlan model) :
+    ParallelComputationIndexSide → ParallelComputationMarkPlan
+  | .target =>
+      ParallelComputationMarkPlan.ofScopes
+        plan.targetDeclaration.repeatableScope
+        (model.repeatableScopeForGroupPath
+          plan.groups.leftGroup.path).dropLast
+  | .operand =>
+      ParallelComputationMarkPlan.ofScopes
+        plan.targetDeclaration.repeatableScope
+        (model.repeatableScopeForGroupPath
+          plan.groups.rightGroup.path).dropLast
 
 end CheckedParallelNumericClearingPlan
 
