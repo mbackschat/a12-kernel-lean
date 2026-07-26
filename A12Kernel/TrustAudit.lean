@@ -1398,9 +1398,14 @@ run_cmd do
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedIndexPreliminary_default_read
 #print axioms A12Kernel.checkedIndexColumn_wellFormed
+#print axioms A12Kernel.checkedParallelIndexGroups_wellFormed
 #print axioms A12Kernel.checkedIndexColumn_duplicate_notSemantic
 #print axioms A12Kernel.parallelIndexSide_cleanMissing
 #print axioms A12Kernel.parallelIndexSide_invalidMissing
+#print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
+#print axioms A12Kernel.checkedParallelPresenceRule_conditionShape
+#print axioms A12Kernel.checkedParallelPresenceRule_cannotFireOnEmpty
+#print axioms A12Kernel.checkedParallelPresenceRule_errorDeclaration_id
 #print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedPartialPreliminary_silent_read
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant

@@ -9,6 +9,15 @@ theorem checkedIndexColumn_wellFormed
     column.WellFormed :=
   ⟨column.modelWellFormed, column.groupOwned, column.indexDeclared⟩
 
+theorem checkedParallelIndexGroups_wellFormed
+    (groups : CheckedParallelIndexGroups model) :
+    groups.WellFormed :=
+  ⟨groups.modelWellFormed, groups.leftGroupOwned,
+    groups.rightGroupOwned, groups.leftIndexDeclared,
+    groups.rightIndexDeclared, groups.groupsDistinct,
+    groups.commonParent, groups.commonIndexName,
+    groups.commonIndexKind, groups.exactTextIndex⟩
+
 @[simp] theorem checkedIndexColumn_duplicate_notSemantic
     (column : ResolvedCheckedIndexColumn model) (key : SemanticIndexKey)
     (duplicate : column.duplicateKeys.contains key = true) :

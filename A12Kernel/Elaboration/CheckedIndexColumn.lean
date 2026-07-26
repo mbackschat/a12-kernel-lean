@@ -20,6 +20,8 @@ inductive CheckedIndexColumnError where
   | incoherentIndexValue (address : CellAddr)
   | missingStoredValue (address : CellAddr)
   | fieldOutsideGroup (field : FieldId) (group : GroupPath)
+  | fieldOutsideParallelGroups (field : FieldId)
+      (left right : GroupPath)
   | incompatibleGroups (left right : GroupPath)
   | incompatibleIndexFields (left right : List String)
   | unsupportedParallelNumberIndex (path : List String)
@@ -59,6 +61,40 @@ structure ResolvedParallelIndexJoin where
   rows : List ResolvedParallelIndexRow
   deriving Repr, DecidableEq
 
+namespace FieldKind
+
+/-- Parallel iteration orders every non-Number index by its exact stored token. Number needs declaration/locale-owned rendering and therefore fails this bounded profile closed. -/
+def supportsExactTextParallelKey : FieldKind → Bool
+  | .number _ => false
+  | .boolean | .confirm | .string | .enumeration | .temporal _ _ => true
+
+end FieldKind
+
+/-- A model-certified pair of direct sibling index groups whose exact non-Number stored keys can share one parallel union order. -/
+structure CheckedParallelIndexGroups (model : FlatModel) where
+  private mk ::
+  leftGroup : RepeatableGroupDecl
+  rightGroup : RepeatableGroupDecl
+  leftIndexDeclaration : FlatFieldDecl
+  rightIndexDeclaration : FlatFieldDecl
+  modelWellFormed : model.validate.isOk = true
+  leftGroupOwned : model.repeatableGroups.contains leftGroup = true
+  rightGroupOwned : model.repeatableGroups.contains rightGroup = true
+  leftIndexDeclared :
+    leftGroup.indexField = some leftIndexDeclaration.id
+  rightIndexDeclared :
+    rightGroup.indexField = some rightIndexDeclaration.id
+  groupsDistinct : (leftGroup.path == rightGroup.path) = false
+  commonParent :
+    (leftGroup.path.dropLast == rightGroup.path.dropLast) = true
+  commonIndexName :
+    (leftIndexDeclaration.name == rightIndexDeclaration.name) = true
+  commonIndexKind :
+    (leftIndexDeclaration.policy.kind ==
+      rightIndexDeclaration.policy.kind) = true
+  exactTextIndex :
+    leftIndexDeclaration.policy.kind.supportsExactTextParallelKey = true
+
 namespace ResolvedCheckedIndexColumn
 
 /-- The public certificate boundary: the column belongs to one validated model and its declaration is the group's exact index field. -/
@@ -73,6 +109,29 @@ def admitsSemanticKey (column : ResolvedCheckedIndexColumn model)
   !column.duplicateKeys.contains key
 
 end ResolvedCheckedIndexColumn
+
+namespace CheckedParallelIndexGroups
+
+/-- The public certificate boundary for the bounded exact-text direct-sibling profile. -/
+def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
+  model.validate.isOk = true ∧
+    model.repeatableGroups.contains groups.leftGroup = true ∧
+    model.repeatableGroups.contains groups.rightGroup = true ∧
+    groups.leftGroup.indexField =
+      some groups.leftIndexDeclaration.id ∧
+    groups.rightGroup.indexField =
+      some groups.rightIndexDeclaration.id ∧
+    (groups.leftGroup.path == groups.rightGroup.path) = false ∧
+    (groups.leftGroup.path.dropLast ==
+      groups.rightGroup.path.dropLast) = true ∧
+    (groups.leftIndexDeclaration.name ==
+      groups.rightIndexDeclaration.name) = true ∧
+    (groups.leftIndexDeclaration.policy.kind ==
+      groups.rightIndexDeclaration.policy.kind) = true ∧
+    groups.leftIndexDeclaration.policy.kind.supportsExactTextParallelKey =
+      true
+
+end CheckedParallelIndexGroups
 
 private structure IndexColumnState where
   entries : List ResolvedCheckedIndexEntry := []
@@ -148,6 +207,82 @@ private def CheckedIndexPreliminary.scanIndexRows
         preliminary.scanIndexRows group declaration scope rows
           (state.add entry duplicate cell.findings.head?)
 
+/-- Check the document-independent parallel group profile once. Runtime column construction then owns only document rows, preliminary findings, and the selected outer environment. -/
+def checkParallelIndexGroups (model : FlatModel)
+    (left right : RepeatableGroupDecl) :
+    Except CheckedIndexColumnError
+      (CheckedParallelIndexGroups model) :=
+  match hModel : model.validate with
+  | .error error => .error (.model error)
+  | .ok () =>
+      if hLeft : model.repeatableGroups.contains left = true then
+        if hRight : model.repeatableGroups.contains right = true then
+          if hDistinct : (left.path == right.path) = false then
+            if hParent :
+                (left.path.dropLast == right.path.dropLast) = true then
+              do
+                let leftIndexId ← match left.indexField with
+                  | some field => pure field
+                  | none => throw (.missingIndexField left.path)
+                let rightIndexId ← match right.indexField with
+                  | some field => pure field
+                  | none => throw (.missingIndexField right.path)
+                let leftIndex ←
+                  model.lookupUniqueId leftIndexId |>.mapError .model
+                let rightIndex ←
+                  model.lookupUniqueId rightIndexId |>.mapError .model
+                if hLeftDeclared :
+                    left.indexField = some leftIndex.id then
+                  if hRightDeclared :
+                      right.indexField = some rightIndex.id then
+                    if hName :
+                        (leftIndex.name == rightIndex.name) = true then
+                      if hKind :
+                          (leftIndex.policy.kind ==
+                            rightIndex.policy.kind) = true then
+                        if hText :
+                            FieldKind.supportsExactTextParallelKey
+                              leftIndex.policy.kind = true then
+                          pure {
+                            leftGroup := left
+                            rightGroup := right
+                            leftIndexDeclaration := leftIndex
+                            rightIndexDeclaration := rightIndex
+                            modelWellFormed := by rw [hModel]; rfl
+                            leftGroupOwned := hLeft
+                            rightGroupOwned := hRight
+                            leftIndexDeclared := hLeftDeclared
+                            rightIndexDeclared := hRightDeclared
+                            groupsDistinct := hDistinct
+                            commonParent := hParent
+                            commonIndexName := hName
+                            commonIndexKind := hKind
+                            exactTextIndex := hText
+                          }
+                        else
+                          throw (.unsupportedParallelNumberIndex
+                            leftIndex.path)
+                      else
+                        throw (.incompatibleIndexFields
+                          leftIndex.path rightIndex.path)
+                    else
+                      throw (.incompatibleIndexFields
+                        leftIndex.path rightIndex.path)
+                  else
+                    throw (.incoherentIndexDeclaration
+                      right.path rightIndexId rightIndex.id)
+                else
+                  throw (.incoherentIndexDeclaration
+                    left.path leftIndexId leftIndex.id)
+            else
+              .error (.incompatibleGroups left.path right.path)
+          else
+            .error (.incompatibleGroups left.path right.path)
+        else
+          .error (.groupNotOwned right.path)
+      else
+        .error (.groupNotOwned left.path)
+
 namespace CheckedIndexPreliminary
 
 def resolveIndexColumn (preliminary : CheckedIndexPreliminary model)
@@ -201,38 +336,34 @@ private def parallelSide (column : ResolvedCheckedIndexColumn model)
   unavailableKey := column.unavailableKey
 }
 
+/-- Resolve document rows for an already-certified pair without repeating its static compatibility decision. -/
+def resolveCheckedParallelIndexJoin
+    (preliminary : CheckedIndexPreliminary model)
+    (groups : CheckedParallelIndexGroups model) (outer : Env := []) :
+    Except CheckedIndexColumnError ResolvedParallelIndexJoin := do
+  let leftColumn ←
+    preliminary.resolveIndexColumn groups.leftGroup outer
+  let rightColumn ←
+    preliminary.resolveIndexColumn groups.rightGroup outer
+  let unsorted := (textKeys leftColumn ++ textKeys rightColumn).eraseDups
+  let sorted := unsorted.mergeSort fun first second =>
+    compare first second != .gt
+  let keys := sorted.map SemanticIndexKey.text
+  pure {
+    leftGroup := groups.leftGroup
+    rightGroup := groups.rightGroup
+    rows := keys.map fun key => {
+      key
+      left := parallelSide leftColumn key
+      right := parallelSide rightColumn key
+    }
+  }
+
 def resolveParallelIndexJoin (preliminary : CheckedIndexPreliminary model)
     (left right : RepeatableGroupDecl) (outer : Env := []) :
     Except CheckedIndexColumnError ResolvedParallelIndexJoin := do
-  if left.path == right.path ||
-      left.path.dropLast != right.path.dropLast then
-    throw (.incompatibleGroups left.path right.path)
-  let leftColumn ← preliminary.resolveIndexColumn left outer
-  let rightColumn ← preliminary.resolveIndexColumn right outer
-  if leftColumn.indexDeclaration.name !=
-      rightColumn.indexDeclaration.name ||
-      leftColumn.indexDeclaration.policy.kind !=
-        rightColumn.indexDeclaration.policy.kind then
-    throw (.incompatibleIndexFields
-      leftColumn.indexDeclaration.path rightColumn.indexDeclaration.path)
-  match leftColumn.indexDeclaration.policy.kind with
-  | .number _ =>
-      throw (.unsupportedParallelNumberIndex
-        leftColumn.indexDeclaration.path)
-  | _ =>
-      let unsorted := (textKeys leftColumn ++ textKeys rightColumn).eraseDups
-      let sorted := unsorted.mergeSort fun first second =>
-        compare first second != .gt
-      let keys := sorted.map SemanticIndexKey.text
-      pure {
-        leftGroup := left
-        rightGroup := right
-        rows := keys.map fun key => {
-          key
-          left := parallelSide leftColumn key
-          right := parallelSide rightColumn key
-        }
-      }
+  let groups ← checkParallelIndexGroups model left right
+  preliminary.resolveCheckedParallelIndexJoin groups outer
 
 end CheckedIndexPreliminary
 
@@ -261,6 +392,23 @@ def readValidation (side : ResolvedParallelIndexSide)
       pure (observeCell .validation cell)
 
 end ResolvedParallelIndexSide
+
+namespace ResolvedParallelIndexRow
+
+/-- Route one resolved field to its joined side by model ownership. A reference outside both groups is a structural rule-shape failure, not a synthetic absent observation. -/
+def readValidation (row : ResolvedParallelIndexRow)
+    (preliminary : CheckedIndexPreliminary model) (field : FieldId) :
+    Except CheckedIndexColumnError CellObservation := do
+  let declaration ← model.lookupUniqueId field |>.mapError .model
+  if row.left.group.path.isPrefixOf declaration.groupPath then
+    row.left.readValidation preliminary field
+  else if row.right.group.path.isPrefixOf declaration.groupPath then
+    row.right.readValidation preliminary field
+  else
+    throw (.fieldOutsideParallelGroups field
+      row.left.group.path row.right.group.path)
+
+end ResolvedParallelIndexRow
 
 namespace ResolvedCheckedIndexColumn
 

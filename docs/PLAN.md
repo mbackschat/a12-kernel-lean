@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 480 jobs · trust audit **1355 theorem roots; 28102 declarations in 255 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 483 jobs · trust audit **1360 theorem roots; 28352 declarations in 257 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-One generated-preliminary checked index column now serves both semantic index and bounded parallel iteration. It retains every ordered normalized-key occurrence, duplicate keys, and column invalidity separately; semantic index excludes duplicates while the deterministic parallel reference selects the last document-order occurrence. The first parallel profile joins exact-text direct siblings in lexical key order, excludes over-limit rows, and represents an unmatched side as `Option Env`. Clean unmatched reads are empty, invalid unmatched reads are UNKNOWN, matched reads remain physical even in an invalid column, and every model/address failure stays structural. Number semantic index consumes the same immutable-document column, while Number parallel ordering fails closed until normalized rendered ordering has an owner. Exact Kernel correspondence for which duplicate occurrence wins remains pending because cache population traverses a `HashMap`.
+The first exact-text direct-sibling parallel join now has a checked whole-rule consumer for `FieldFilled(left) And FieldFilled(right)`, with either operand as the error field. The checked plan derives both indexed groups from the validated operand declarations, evaluates the existing condition tree once per lexical join key, preserves clean-unmatched nonfiring versus invalid-unmatched UNKNOWN, keeps matched reads physical in an invalid column, and emits only at the exact matched error row. Silent union rows never receive a fabricated address. The generated-preliminary column remains shared with Number semantic index; Number parallel ordering, transparent wrappers, the one-sided repeatable frame, synthetic-pointer messages, and exact Kernel duplicate-winner correspondence remain outside this profile.
 
 ## Active semantic unit
 
-Continue [`SG2` semantic-index/parallel construction](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) from the closed checked-column carrier. Select one bounded validation rule shape whose sibling references consume the exact-text direct-sibling join, reuse the existing shared condition tree and message emitter, and preserve each side's optional environment through addressed leaf reads. Do not widen into Number ordering, wrapped/framed joins, computation clearing, peer-pointer messages, a general parallel plan, or an externally exact duplicate-winner claim in that capsule. The group-product audit remains separately blocked because the ordinary partial rule context does not carry the relevance-selected preliminary slice.
+Continue [`SG2` semantic-index/parallel construction](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) with the smallest source-closed topology widening: transparent nonrepeatable path segments between the common parent, keyed group, and positive operand. Reuse `CheckedParallelIndexGroups`, `ResolvedParallelIndexJoin`, `CheckedParallelPresenceRule`, the existing checked model paths, optional side observations, condition tree, and emitter. Do not admit the one-sided repeatable frame, Number ordering, negative operators, partial validation, computation clearing, peer-pointer messages, a general parallel plan, or an externally exact duplicate-winner claim in that capsule. The group-product audit remains separately blocked because the ordinary partial rule context does not carry the relevance-selected preliminary slice.
 
 ## Immediate sequence
 
-1. Inventory the smallest existing checked validation leaf that can distinguish a matched sibling row, a clean unmatched side, and an invalid unmatched side without new scalar semantics.
-2. Add red whole-rule cases for exact key order, both missing-side directions, matched reads in an invalid column, exact error addressing, and structural field-side misuse.
-3. Attach that leaf to the existing checked condition tree, rule loop, and emitter by consuming `ResolvedParallelIndexJoin`; add no new join, cache, topology, document view, or universal evaluator.
+1. Audit the wrapped and asymmetric-depth maintained parallel cases against `FlatModel` group paths and the generated rule-loop parent-index projection; identify the exact transparent-segment normalization and one deliberately excluded repeatable-frame control.
+2. Add red whole-rule cases for symmetric and asymmetric nonrepeatable wrappers, lexical union order, both missing directions, matched reads in an invalid column, exact physical error addressing, and an indexed or repeatable intermediate rejection.
+3. Generalize only checked operand-to-keyed-group ownership and environment projection. Keep the current join, positive tree, leaf observation, result, and emitter unchanged; add no topology, document view, path AST, or general parallel evaluator.
 
 ## Parked boundaries
 
