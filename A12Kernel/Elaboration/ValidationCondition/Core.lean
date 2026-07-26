@@ -107,6 +107,15 @@ def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
   | .field declaration, .starredGroup source =>
       source.group.path.isPrefixOf declaration.groupPath
 
+/-- The captured repeatable prefix of a starred group operand; direct operands contribute no ordinary rule-iteration scope. -/
+def iterationScope :
+    ResolvedGroupListOperand model → Option (List RepeatableLevel)
+  | .starredGroup source =>
+      let scope :=
+        (source.path.axes.take source.path.firstStar).map (·.level)
+      if scope.isEmpty then none else some scope
+  | .field _ | .group _ => none
+
 end ResolvedGroupListOperand
 
 namespace ResolvedGroupListOperands
@@ -493,19 +502,11 @@ private def mergeIterationScopeList :
   | scope :: remaining => do
       mergeIterationScopes scope (← mergeIterationScopeList remaining)
 
-private def groupListOperandIterationScope :
-    ResolvedGroupListOperand model →
-      Option (List RepeatableLevel)
-  | .starredGroup source =>
-      let scope :=
-        (source.path.axes.take source.path.firstStar).map (·.level)
-      if scope.isEmpty then none else some scope
-  | .field _ | .group _ => none
-
 def ResolvedGroupListOperands.iterationScope
     (operands : List (ResolvedGroupListOperand model)) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
-  mergeIterationScopeList (operands.map groupListOperandIterationScope)
+  mergeIterationScopeList
+    (operands.map ResolvedGroupListOperand.iterationScope)
 
 private def repeatableScopeThrough :
     List RepeatableLevel → RepeatableLevel →

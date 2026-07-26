@@ -352,6 +352,83 @@ theorem validationCondition_groupList_addressing_failure
   rw [validationCondition_groupList_evalAddressed, fails]
   rfl
 
+/-- A group-list leaf exposes exactly the captured prefix of its checked starred operands as its ordinary rule-iteration scope. -/
+@[simp]
+theorem validationCondition_groupList_iterationScope
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model)) :
+    (ValidationCondition.groupList (model := model)
+      operator operands).ordinaryIterationScope =
+        ValidationCondition.ResolvedGroupListOperands.iterationScope operands := by
+  rfl
+
+/-- The group-list leaf delegates its level-local static classification to the source-faithful positive/negative list rule. -/
+@[simp]
+theorem validationCondition_groupList_iterationGuardStatusAt
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model))
+    (level : RepeatableLevel) :
+    (ValidationCondition.groupList (model := model)
+      operator operands).iterationGuardStatusAt level =
+        ValidationCondition.ResolvedGroupListOperands.iterationGuardAt
+          operator operands level := by
+  rfl
+
+/-- A negative starred group list is unguarded exactly at levels referenced by at least one captured operand prefix. -/
+theorem resolvedGroupListOperands_noGroupFilled_unguarded_iff
+    (operands : List (ResolvedGroupListOperand model))
+    (level : RepeatableLevel) :
+    ValidationCondition.ResolvedGroupListOperands.iterationGuardAt
+        .noGroupFilled operands level = .unguarded ↔
+      (operands.map fun operand =>
+        match ResolvedGroupListOperand.iterationScope operand with
+        | some scope => scope.contains level
+        | none => false).any id = true := by
+  let references := operands.map fun operand =>
+    match ResolvedGroupListOperand.iterationScope operand with
+    | some scope => scope.contains level
+    | none => false
+  change
+    (if !references.any id then IterationGuardStatus.noReference
+      else IterationGuardStatus.unguarded) =
+        IterationGuardStatus.unguarded ↔
+      references.any id = true
+  cases references.any id <;> simp
+
+/-- A positive starred group list guards exactly when some operand references the level and every operand does. -/
+theorem resolvedGroupListOperands_atLeastOneGroupFilled_guarded_iff
+    (operands : List (ResolvedGroupListOperand model))
+    (level : RepeatableLevel) :
+    ValidationCondition.ResolvedGroupListOperands.iterationGuardAt
+        .atLeastOneGroupFilled operands level = .guarded ↔
+      let references := operands.map fun operand =>
+        match ResolvedGroupListOperand.iterationScope operand with
+        | some scope => scope.contains level
+        | none => false
+      references.any id = true ∧ references.all id = true := by
+  let references := operands.map fun operand =>
+    match ResolvedGroupListOperand.iterationScope operand with
+    | some scope => scope.contains level
+    | none => false
+  change
+    (if !references.any id then IterationGuardStatus.noReference
+      else if references.all id then IterationGuardStatus.guarded
+      else IterationGuardStatus.unguarded) =
+        IterationGuardStatus.guarded ↔
+      references.any id = true ∧ references.all id = true
+  cases references.any id <;>
+    cases references.all id <;>
+    simp
+
+/-- Every checked group-list leaf can use the ordinary addressed evaluator; elaboration already excludes unsupported starred/operator combinations. -/
+@[simp]
+theorem validationCondition_groupList_supported
+    (model : FlatModel) (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model)) :
+    (ValidationCondition.groupList (model := model)
+      operator operands).supportsOrdinaryIteration = true := by
+  rfl
+
 /-- An ordinary repeatable presence leaf always requires the addressed evaluator; selecting the scalar entry point cannot silently substitute UNKNOWN. -/
 @[simp]
 theorem validationCondition_repeatablePresence_requiresAddressed

@@ -55,6 +55,20 @@ The distinction matters because the two arms of this project's convergence desig
 
 It must also **verify that the named discriminator is the actual variable**, because competing accounts can both be true on loci the entry never distinguished. [`EXP-2026-07-25-03`](#exp-2026-07-25-03--the-semantic-index-computation-gate-may-be-route-selected-not-read-time) posed a route-selected mechanism against a uniform one and both turned out to hold — separated by which index group carries the malformed key, a variable the entry never mentioned. Such a request cannot be answered as asked: any observation confirms one account without refuting the other, and the requested single document cannot separate them. Before handing off, state what a *negative* result would look like; if no input distinguishes the accounts, the discriminator is wrong and the entry is not yet an experiment.
 
+### SPEC-2026-07-26-01 — starred group-list iteration guards are operator- and operand-sensitive
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `45d24b73549124bf7da342a1ee19401408438fc6`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`07-repetition-and-iteration.md` §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands)
+- **Delta:** A starred group-list operand contributes only its captured prefix to ordinary rule scope. At a queried level, `AtLeastOneGroupFilled` is guarded only when every list operand references that level, so a fixed peer makes a mixed list unguarded; `NoGroupFilled` is unguarded whenever any operand references the level. Outside every captured prefix the leaf does not reference the level. The existing per-level `And`/`Or` rules then compose these leaf results.
+- **Basis:** Kernel [`IterationNotValidVisitor.java`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/util/IterationNotValidVisitor.java) has distinct group-list branches: once the leaf references the queried level, `NoGroupFilled` rejects it, while `AtLeastOneGroupFilled` rejects when at least one operand does not reference that iteration. The existing checked star plan and rule loop establish that runtime reopens only the suffix below each complete captured outer environment. Current a12-dmkits group-star tests lock row counting and named-ancestry binding but do not state or separate this static mixed-operand admission rule.
+- **Requested a12-dmkits reconciliation:** Add the rule to the canonical §9 account and extend the existing group-star or ordinary-iteration law family with star-only positive admission, mixed fixed/star positive rejection, star-only negative rejection, an independent iterating `And` guard admitting the negative list, the same shape under `Or` remaining rejected, and a legal bound-prefix runtime control that binds by named ancestry and reports at the exact outer row. Reuse the existing condition, iteration, and group-star owners; add no visitor port, evaluator, topology, or harness.
+- **Compatibility:** Treating every positive starred list as guarded admits a mixed list that can fire on an empty current row. Treating every starred list as negative rejects the legal all-iterating positive form. A tree-wide emptiness bit cannot express the `And`/`Or` asymmetry, and positional binding can select the wrong cross-subtree row even after static admission is correct.
+- **Acceptance:** Canonical peer prose states the leaf rule; maintained kernel and JVM/Node cases separate all five admission shapes plus exact bound-prefix runtime selection; the existing owners remain singular; and the handback supplies the exact reviewed revision and per-surface disposition.
+
 ### SPEC-2026-07-25-01 — the `NotAll` fields-presence prepass is a size-selected route detail, not the observable contract
 
 - **Status:** accepted — reviewed a12-dmkits revision `dd02b033`

@@ -20,6 +20,47 @@ def deeperInnerPriceStar : SurfaceStarFieldPath :=
 def deeperInnerTokenStar : SurfaceStarFieldPath :=
   { deeperInnerAmountStar with field := "InnerToken" }
 
+def deeperItemsGroupStar : SurfaceGroupListOperand :=
+  .starredGroup {
+    base := .absolute
+    groups := [
+      { name := "Order" },
+      { name := "Sections" },
+      { name := "Items", starred := true }]
+  }
+
+def boundStarGroupListCondition?
+    (operator : GroupFillQuantifier) (withFixedBase : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) :=
+  let operands :=
+    if withFixedBase then
+      [.field (ordinaryPath ["Order"] "BaseAmount"), deeperItemsGroupStar]
+    else
+      [deeperItemsGroupStar]
+  (CheckedValidationCondition.fromGroupList ordinaryIterationModel
+    ["Order"] operator operands).toOption
+
+def boundStarGroupListLegality?
+    (operator : GroupFillQuantifier) (withFixedBase : Bool := false) :
+    Option ValidationCondition.IterationLegality := do
+  let condition ← boundStarGroupListCondition? operator withFixedBase
+  condition.core.iterationLegality.toOption
+
+def guardedBoundStarGroupListCondition?
+    (operator : GroupFillQuantifier) (useOr : Bool := false) :
+    Option (CheckedValidationCondition ordinaryIterationModel) := do
+  let guard ← outerIterationCondition?
+  let groupList ← boundStarGroupListCondition? operator
+  if useOr then (guard.or groupList).toOption
+  else (guard.and groupList).toOption
+
+def guardedBoundStarGroupListRule?
+    (operator : GroupFillQuantifier) :
+    Option (CheckedResolvedValidationRule ordinaryIterationModel) := do
+  let condition ← guardedBoundStarGroupListCondition? operator
+  (assembleResolvedValidationRule ordinaryIterationModel condition
+    outerAmount.id "boundStarGroupList" .error { parts := [] }).toOption
+
 def outerWithInnerAggregateCore? :
     Option (OrderedNumericComparison ordinaryIterationModel) := do
   let outerField ← outerAmount.toNumberField?

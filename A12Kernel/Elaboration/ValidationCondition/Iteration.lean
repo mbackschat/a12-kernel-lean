@@ -293,16 +293,30 @@ private def orderedNumericCompositeGuardAt
   else
     none
 
+def ResolvedGroupListOperands.iterationGuardAt
+    (operator : GroupFillQuantifier)
+    (operands : List (ResolvedGroupListOperand model))
+    (level : RepeatableLevel) : IterationGuardStatus :=
+  let references := operands.map fun operand =>
+    match ResolvedGroupListOperand.iterationScope operand with
+    | some scope => scope.contains level
+    | none => false
+  if !references.any id then
+    .noReference
+  else
+    match operator with
+    | .noGroupFilled => .unguarded
+    | .atLeastOneGroupFilled =>
+        if references.all id then .guarded else .unguarded
+    | .allGroupsFilled | .notAllGroupsFilled
+    | .groupsNotCollectivelyFilled => .unclassified
+
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ => .noReference
-  | .groupList _ operands =>
-      match ResolvedGroupListOperands.iterationScope operands with
-      | .ok (some scope) =>
-          if scope.contains level then .unclassified else .noReference
-      | .ok none => .noReference
-      | .error _ => .unclassified
+  | .groupList operator operands =>
+      ResolvedGroupListOperands.iterationGuardAt operator operands level
   | .orderedNumeric _ comparison =>
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status
@@ -406,7 +420,8 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
 def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
-    | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
+    | .flat _ | .groupPresence _ _ | .groupList _ _
+    | .repeatableFieldPresence _ _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique source => source.supportsOneLevelOrdinaryRule
     | _ => false

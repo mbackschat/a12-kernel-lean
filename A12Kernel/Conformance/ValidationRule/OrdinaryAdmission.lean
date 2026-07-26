@@ -156,6 +156,36 @@ example :
         some (some [10], true, .ruleGroup) := by
   native_decide
 
+/- A bound-prefix starred group list contributes the exact source-visitor guard shape at the outer level. `AtLeastOneGroupFilled` guards only when every operand iterates there; a fixed peer makes it negative, while `NoGroupFilled` is always negative. `And` may supply an independent outer guard, but `Or` may not. -/
+example :
+    boundStarGroupListLegality? .atLeastOneGroupFilled =
+        some .legal ∧
+    boundStarGroupListLegality? .atLeastOneGroupFilled true =
+        some (.invalid 10) ∧
+    boundStarGroupListLegality? .noGroupFilled =
+        some (.invalid 10) ∧
+    (guardedBoundStarGroupListCondition? .noGroupFilled).bind
+        (·.core.iterationLegality.toOption) =
+      some .legal ∧
+    (guardedBoundStarGroupListCondition? .noGroupFilled true).bind
+        (·.core.iterationLegality.toOption) =
+      some (.invalid 10) := by
+  native_decide
+
+/- The already-checked group-list leaf now enters the ordinary addressed route without another evaluator or iteration carrier. -/
+example :
+    (boundStarGroupListCondition? .atLeastOneGroupFilled).map
+        (fun condition =>
+          (condition.core.supportsOrdinaryIteration,
+            condition.core.iterationGuardStatusAt 10,
+            condition.core.iterationGuardStatusAt 20)) =
+      some (true, .guarded, .noReference) ∧
+    (guardedBoundStarGroupListRule? .atLeastOneGroupFilled).map
+        (fun rule =>
+          (rule.iterationScope, rule.requiresAddressedValidation)) =
+      some (some [10], true) := by
+  native_decide
+
 private def outerEmptyCondition? :
     Option (CheckedValidationCondition ordinaryIterationModel) :=
   (CheckedValidationCondition.fromRepeatableFieldPresence

@@ -154,6 +154,40 @@ private def checkedOrdinaryIterationDocument?
       ordinaryIterationModel).toOption
   (checkDocument prepared "en_US" data).toOption
 
+private def boundStarGroupListData : DocumentData :=
+  { instantiatedRows := [
+      { group := 10, path := [2] },
+      { group := 10, path := [1] },
+      { group := 20, path := [2, 1] }]
+    cells := [
+      classifiedCell outerAmount.id [2] "1" (.parsed (.num 1)),
+      classifiedCell outerAmount.id [1] "1" (.parsed (.num 1))] }
+
+private def boundStarGroupListSnapshot?
+    (operator : GroupFillQuantifier) :
+    Option (List (Env × Verdict × Option CellAddr)) := do
+  let rule ← guardedBoundStarGroupListRule? operator
+  let outcomes ← evalOrdinaryRule? rule boundStarGroupListData
+  pure (outcomes.map fun entry =>
+    (entry.1, entry.2.verdict,
+      entry.2.message?.map (·.errorAddress)))
+
+private def boundStarGroupListStructuralFailure? :
+    Option CheckedAddressingError := do
+  let condition ← boundStarGroupListCondition? .atLeastOneGroupFilled
+  let document ← checkedOrdinaryIterationDocument? boundStarGroupListData
+  let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
+    scalar := {
+      fields := document.flatContext
+      groups := GroupPresenceContext.unavailable
+    }
+    outer := []
+    input := .checked document
+  }
+  match condition.core.evalAddressed context with
+  | .ok _ => none
+  | .error error => some error
+
 private def addressedGroupConsumerSnapshot?
     (data : DocumentData) (groupPath : GroupPath) (environment : Env)
     (target : FlatFieldDecl) (relevance : GroupRelevance) :
@@ -396,6 +430,26 @@ example :
 example :
     detailGroupStructuralFailure? =
       some (.group (.missingBinding 10)) := by
+  native_decide
+
+/- The group-star suffix reopens independently under each complete outer environment. The sole Items row beneath Sections[2] makes the positive list fire only there and the negative list fire only for Sections[1], with exact outer error addresses. -/
+example :
+    (boundStarGroupListSnapshot? .atLeastOneGroupFilled ==
+      some [
+        ([(10, 2)], .fired .value,
+          some { field := outerAmount.id, path := [2] }),
+        ([(10, 1)], .unknown, none)]) = true ∧
+    (boundStarGroupListSnapshot? .noGroupFilled ==
+      some [
+        ([(10, 2)], .unknown, none),
+        ([(10, 1)], .fired .omission,
+          some { field := outerAmount.id, path := [1] })]) = true := by
+  native_decide
+
+/- A missing captured outer binding remains a structural group-star addressing failure outside semantic UNKNOWN. -/
+example :
+    boundStarGroupListStructuralFailure? =
+      some (.addressing (.missingBinding 10)) := by
   native_decide
 
 /- The surrounding rule environment fixes only the outer row; the deeper aggregate reopens its checked suffix and therefore selects different inner instances even when both parents contain local coordinate 1. -/
