@@ -3,7 +3,7 @@ import A12Kernel.Semantics.SemanticIndex
 
 /-! # Checked index columns and bounded parallel joins
 
-This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for semantic-index exclusion, and one column-unavailability cause. The parallel projection makes its deterministic reference selection separately. The first parallel profile joins direct sibling groups with exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
+This family-owned boundary resolves one generated-preliminary index column without inventing another document or address model. It retains every ordered key occurrence, duplicate identity for semantic-index exclusion, and one column-unavailability cause. The parallel projection makes its deterministic reference selection separately. The first parallel profile joins groups with a common repeatable parent scope across transparent nonrepeatable wrappers and exact non-Number stored keys; Number rendering order remains outside until its declaration/locale owner exists.
 -/
 
 namespace A12Kernel
@@ -70,7 +70,16 @@ def supportsExactTextParallelKey : FieldKind → Bool
 
 end FieldKind
 
-/-- A model-certified pair of direct sibling index groups whose exact non-Number stored keys can share one parallel union order. -/
+/-- The exact group-path ancestor shared by two parallel sides. Nonrepeatable segments below this path are transparent to repetition environments. -/
+def parallelCommonParent : GroupPath → GroupPath → GroupPath
+  | left :: leftRest, right :: rightRest =>
+      if left == right then
+        left :: parallelCommonParent leftRest rightRest
+      else
+        []
+  | _, _ => []
+
+/-- A model-certified pair of index groups with one common repeatable parent scope whose exact non-Number stored keys can share one parallel union order. -/
 structure CheckedParallelIndexGroups (model : FlatModel) where
   private mk ::
   leftGroup : RepeatableGroupDecl
@@ -85,8 +94,13 @@ structure CheckedParallelIndexGroups (model : FlatModel) where
   rightIndexDeclared :
     rightGroup.indexField = some rightIndexDeclaration.id
   groupsDistinct : (leftGroup.path == rightGroup.path) = false
-  commonParent :
-    (leftGroup.path.dropLast == rightGroup.path.dropLast) = true
+  commonParent : GroupPath
+  commonParentOwned :
+    commonParent = parallelCommonParent leftGroup.path rightGroup.path
+  commonParentNonempty : commonParent.isEmpty = false
+  commonOuterScope :
+    (model.repeatableScopeForGroupPath leftGroup.path).dropLast =
+      (model.repeatableScopeForGroupPath rightGroup.path).dropLast
   commonIndexName :
     (leftIndexDeclaration.name == rightIndexDeclaration.name) = true
   commonIndexKind :
@@ -112,7 +126,7 @@ end ResolvedCheckedIndexColumn
 
 namespace CheckedParallelIndexGroups
 
-/-- The public certificate boundary for the bounded exact-text direct-sibling profile. -/
+/-- The public certificate boundary for the bounded exact-text transparent-wrapper profile. -/
 def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
   model.validate.isOk = true ∧
     model.repeatableGroups.contains groups.leftGroup = true ∧
@@ -122,8 +136,11 @@ def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
     groups.rightGroup.indexField =
       some groups.rightIndexDeclaration.id ∧
     (groups.leftGroup.path == groups.rightGroup.path) = false ∧
-    (groups.leftGroup.path.dropLast ==
-      groups.rightGroup.path.dropLast) = true ∧
+    groups.commonParent =
+      parallelCommonParent groups.leftGroup.path groups.rightGroup.path ∧
+    groups.commonParent.isEmpty = false ∧
+    (model.repeatableScopeForGroupPath groups.leftGroup.path).dropLast =
+      (model.repeatableScopeForGroupPath groups.rightGroup.path).dropLast ∧
     (groups.leftIndexDeclaration.name ==
       groups.rightIndexDeclaration.name) = true ∧
     (groups.leftIndexDeclaration.policy.kind ==
@@ -207,7 +224,7 @@ private def CheckedIndexPreliminary.scanIndexRows
         preliminary.scanIndexRows group declaration scope rows
           (state.add entry duplicate cell.findings.head?)
 
-/-- Check the document-independent parallel group profile once. Runtime column construction then owns only document rows, preliminary findings, and the selected outer environment. -/
+/-- Check the document-independent parallel group profile once. Both indexed groups must share their complete outer repeatable scope; differing nonrepeatable path segments are transparent. Runtime column construction then owns only document rows, preliminary findings, and the selected outer environment. -/
 def checkParallelIndexGroups (model : FlatModel)
     (left right : RepeatableGroupDecl) :
     Except CheckedIndexColumnError
@@ -218,9 +235,15 @@ def checkParallelIndexGroups (model : FlatModel)
       if hLeft : model.repeatableGroups.contains left = true then
         if hRight : model.repeatableGroups.contains right = true then
           if hDistinct : (left.path == right.path) = false then
-            if hParent :
-                (left.path.dropLast == right.path.dropLast) = true then
-              do
+            let commonParent :=
+              parallelCommonParent left.path right.path
+            if hCommon : commonParent.isEmpty = false then
+              let leftOuterScope :=
+                (model.repeatableScopeForGroupPath left.path).dropLast
+              let rightOuterScope :=
+                (model.repeatableScopeForGroupPath right.path).dropLast
+              if hOuterScope :
+                  (leftOuterScope == rightOuterScope) = true then do
                 let leftIndexId ← match left.indexField with
                   | some field => pure field
                   | none => throw (.missingIndexField left.path)
@@ -254,7 +277,12 @@ def checkParallelIndexGroups (model : FlatModel)
                             leftIndexDeclared := hLeftDeclared
                             rightIndexDeclared := hRightDeclared
                             groupsDistinct := hDistinct
-                            commonParent := hParent
+                            commonParent
+                            commonParentOwned := rfl
+                            commonParentNonempty := hCommon
+                            commonOuterScope := by
+                              simpa [leftOuterScope, rightOuterScope]
+                                using hOuterScope
                             commonIndexName := hName
                             commonIndexKind := hKind
                             exactTextIndex := hText
@@ -274,6 +302,8 @@ def checkParallelIndexGroups (model : FlatModel)
                 else
                   throw (.incoherentIndexDeclaration
                     left.path leftIndexId leftIndex.id)
+              else
+                .error (.incompatibleGroups left.path right.path)
             else
               .error (.incompatibleGroups left.path right.path)
           else

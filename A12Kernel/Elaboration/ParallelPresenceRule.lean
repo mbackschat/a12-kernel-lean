@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # Bounded checked parallel presence rules
 
-This capsule places one existing positive presence conjunction into the checked exact-text direct-sibling join. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Number ordering, framed topology, negative leaves, partial validation, and nonphysical error pointers remain outside.
+This capsule places one existing positive presence conjunction into the checked exact-text parallel join. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. Number ordering, repeatable frames, negative leaves, partial validation, and nonphysical error pointers remain outside.
 -/
 
 namespace A12Kernel
@@ -13,6 +13,9 @@ inductive ParallelPresenceRuleAssemblyError where
   | join (error : CheckedIndexColumnError)
   | incoherentCondition
   | incoherentOperandGroup (field : FieldId) (group : GroupPath)
+  | missingIndexedOperandGroup (field : FieldId)
+  | multipleIndexedOperandGroups (field : FieldId)
+      (groups : List GroupPath)
   | errorFieldNotOperand (field left right : FieldId)
   deriving Repr, DecidableEq
 
@@ -29,7 +32,7 @@ structure ParallelRuleRowOutcome where
   outcome : FlatRuleOutcome
   deriving Repr, DecidableEq
 
-/-- A checked full-validation rule for the exact positive conjunction `FieldFilled(left) And FieldFilled(right)` over two direct sibling index groups. -/
+/-- A checked full-validation rule for the exact positive conjunction `FieldFilled(left) And FieldFilled(right)` over two index groups with one common outer repeatable scope. -/
 structure CheckedParallelPresenceRule (model : FlatModel) where
   private mk ::
   condition : CheckedValidationCondition model
@@ -41,11 +44,17 @@ structure CheckedParallelPresenceRule (model : FlatModel) where
   severity : ValidationSeverity
   messagePlan : MessageRenderPlan
   leftOperandGroup :
-    (leftDeclaration.groupPath == groups.leftGroup.path) = true
+    groups.leftGroup.path.isPrefixOf leftDeclaration.groupPath = true
   rightOperandGroup :
-    (rightDeclaration.groupPath == groups.rightGroup.path) = true
+    groups.rightGroup.path.isPrefixOf rightDeclaration.groupPath = true
+  leftOperandScope :
+    (leftDeclaration.repeatableScope ==
+      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+  rightOperandScope :
+    (rightDeclaration.repeatableScope ==
+      model.repeatableScopeForGroupPath groups.rightGroup.path) = true
   rowGroupOwned :
-    condition.rowGroup = groups.leftGroup.path.dropLast
+    condition.rowGroup = groups.commonParent
   conditionShape :
     condition.core =
       .and
@@ -64,11 +73,17 @@ def WellFormed (rule : CheckedParallelPresenceRule model) : Prop :=
   rule.groups.WellFormed ∧
     model.validate.isOk = true ∧
     rule.condition.core.wellFormedBool rule.condition.rowGroup = true ∧
-    (rule.leftDeclaration.groupPath == rule.groups.leftGroup.path) =
-      true ∧
-    (rule.rightDeclaration.groupPath == rule.groups.rightGroup.path) =
-      true ∧
-    rule.condition.rowGroup = rule.groups.leftGroup.path.dropLast ∧
+    rule.groups.leftGroup.path.isPrefixOf
+      rule.leftDeclaration.groupPath = true ∧
+    rule.groups.rightGroup.path.isPrefixOf
+      rule.rightDeclaration.groupPath = true ∧
+    (rule.leftDeclaration.repeatableScope ==
+      model.repeatableScopeForGroupPath rule.groups.leftGroup.path) =
+        true ∧
+    (rule.rightDeclaration.repeatableScope ==
+      model.repeatableScopeForGroupPath rule.groups.rightGroup.path) =
+        true ∧
+    rule.condition.rowGroup = rule.groups.commonParent ∧
     rule.condition.core =
       .and
         (ValidationCondition.repeatableFieldPresence
@@ -144,7 +159,19 @@ def evalFull (rule : CheckedParallelPresenceRule model)
 
 end CheckedParallelPresenceRule
 
-/-- Check the narrow parallel rule plan without passing caller-selected groups or iteration rows. Each operand declaration determines its exact keyed group in the validated model. -/
+/-- Resolve the sole indexed repeatable ancestor that owns one parallel operand. Nonrepeatable path segments do not appear in this candidate set. -/
+private def indexedOperandGroup (model : FlatModel)
+    (declaration : FlatFieldDecl) :
+    Except ParallelPresenceRuleAssemblyError RepeatableGroupDecl :=
+  match model.repeatableGroups.filter fun group =>
+      group.path.isPrefixOf declaration.groupPath && group.indexField.isSome with
+  | [] => .error (.missingIndexedOperandGroup declaration.id)
+  | [group] => .ok group
+  | groups =>
+      .error (.multipleIndexedOperandGroups declaration.id
+        (groups.map (·.path)))
+
+/-- Check the narrow parallel rule plan without passing caller-selected groups or iteration rows. Each operand declaration determines its sole keyed repeatable ancestor, and its complete repeatable scope must end at that group. -/
 def checkParallelPresenceRule (model : FlatModel)
     (leftField rightField errorField : FieldId)
     (errorCode : String) (severity : ValidationSeverity)
@@ -155,56 +182,69 @@ def checkParallelPresenceRule (model : FlatModel)
     model.lookupUniqueId leftField |>.mapError .model
   let rightDeclaration ←
     model.lookupUniqueId rightField |>.mapError .model
-  let leftGroup ←
-    model.lookupUniqueRepeatablePath leftDeclaration.groupPath
-      |>.mapError .model
-  let rightGroup ←
-    model.lookupUniqueRepeatablePath rightDeclaration.groupPath
-      |>.mapError .model
+  let leftGroup ← indexedOperandGroup model leftDeclaration
+  let rightGroup ← indexedOperandGroup model rightDeclaration
   let groups ←
     checkParallelIndexGroups model leftGroup rightGroup
       |>.mapError .join
   if hLeftGroup :
-      (leftDeclaration.groupPath == groups.leftGroup.path) = true then
+      groups.leftGroup.path.isPrefixOf leftDeclaration.groupPath = true then
     if hRightGroup :
-        (rightDeclaration.groupPath == groups.rightGroup.path) = true then
-      if hError :
-          (errorField == leftDeclaration.id ||
-            errorField == rightDeclaration.id) = true then
-        let core : ValidationCondition model :=
-          .and
-            (ValidationCondition.repeatableFieldPresence
-              .filled leftDeclaration)
-            (ValidationCondition.repeatableFieldPresence
-              .filled rightDeclaration)
-        let rowGroup := groups.leftGroup.path.dropLast
-        if hCore : core.wellFormedBool rowGroup = true then
-          let condition : CheckedValidationCondition model := {
-            rowGroup
-            core
-            modelWellFormed := groups.modelWellFormed
-            wellFormed := hCore
-          }
-          pure {
-            condition
-            groups
-            leftDeclaration
-            rightDeclaration
-            errorField
-            errorCode
-            severity
-            messagePlan
-            leftOperandGroup := hLeftGroup
-            rightOperandGroup := hRightGroup
-            rowGroupOwned := rfl
-            conditionShape := rfl
-            errorFieldIsOperand := hError
-          }
+        groups.rightGroup.path.isPrefixOf
+          rightDeclaration.groupPath = true then
+      if hLeftScope :
+          (leftDeclaration.repeatableScope ==
+            model.repeatableScopeForGroupPath groups.leftGroup.path) =
+              true then
+        if hRightScope :
+            (rightDeclaration.repeatableScope ==
+              model.repeatableScopeForGroupPath groups.rightGroup.path) =
+                true then
+          if hError :
+              (errorField == leftDeclaration.id ||
+                errorField == rightDeclaration.id) = true then
+            let core : ValidationCondition model :=
+              .and
+                (ValidationCondition.repeatableFieldPresence
+                  .filled leftDeclaration)
+                (ValidationCondition.repeatableFieldPresence
+                  .filled rightDeclaration)
+            let rowGroup := groups.commonParent
+            if hCore : core.wellFormedBool rowGroup = true then
+              let condition : CheckedValidationCondition model := {
+                rowGroup
+                core
+                modelWellFormed := groups.modelWellFormed
+                wellFormed := hCore
+              }
+              pure {
+                condition
+                groups
+                leftDeclaration
+                rightDeclaration
+                errorField
+                errorCode
+                severity
+                messagePlan
+                leftOperandGroup := hLeftGroup
+                rightOperandGroup := hRightGroup
+                leftOperandScope := hLeftScope
+                rightOperandScope := hRightScope
+                rowGroupOwned := rfl
+                conditionShape := rfl
+                errorFieldIsOperand := hError
+              }
+            else
+              throw .incoherentCondition
+          else
+            throw (.errorFieldNotOperand errorField
+              leftDeclaration.id rightDeclaration.id)
         else
-          throw .incoherentCondition
+          throw (.incoherentOperandGroup
+            rightDeclaration.id groups.rightGroup.path)
       else
-        throw (.errorFieldNotOperand errorField
-          leftDeclaration.id rightDeclaration.id)
+        throw (.incoherentOperandGroup
+          leftDeclaration.id groups.leftGroup.path)
     else
       throw (.incoherentOperandGroup
         rightDeclaration.id groups.rightGroup.path)

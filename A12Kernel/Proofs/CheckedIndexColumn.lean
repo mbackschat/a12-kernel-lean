@@ -4,6 +4,34 @@ import A12Kernel.Elaboration.CheckedIndexColumn
 
 namespace A12Kernel
 
+@[simp] theorem parallelCommonParent_prefix_left
+    (left right : GroupPath) :
+    (parallelCommonParent left right).isPrefixOf left = true := by
+  induction left generalizing right with
+  | nil => rfl
+  | cons head tail induction =>
+      cases right with
+      | nil => rfl
+      | cons rightHead rightTail =>
+          by_cases sameHead : head = rightHead
+          · subst rightHead
+            simp [parallelCommonParent, GroupPath.isPrefixOf, induction]
+          · simp [parallelCommonParent, GroupPath.isPrefixOf, sameHead]
+
+@[simp] theorem parallelCommonParent_prefix_right
+    (left right : GroupPath) :
+    (parallelCommonParent left right).isPrefixOf right = true := by
+  induction left generalizing right with
+  | nil => rfl
+  | cons head tail induction =>
+      cases right with
+      | nil => rfl
+      | cons rightHead rightTail =>
+          by_cases sameHead : head = rightHead
+          · subst rightHead
+            simp [parallelCommonParent, GroupPath.isPrefixOf, induction]
+          · simp [parallelCommonParent, GroupPath.isPrefixOf, sameHead]
+
 theorem checkedIndexColumn_wellFormed
     (column : ResolvedCheckedIndexColumn model) :
     column.WellFormed :=
@@ -15,7 +43,8 @@ theorem checkedParallelIndexGroups_wellFormed
   ⟨groups.modelWellFormed, groups.leftGroupOwned,
     groups.rightGroupOwned, groups.leftIndexDeclared,
     groups.rightIndexDeclared, groups.groupsDistinct,
-    groups.commonParent, groups.commonIndexName,
+    groups.commonParentOwned, groups.commonParentNonempty,
+    groups.commonOuterScope, groups.commonIndexName,
     groups.commonIndexKind, groups.exactTextIndex⟩
 
 @[simp] theorem checkedIndexColumn_duplicate_notSemantic

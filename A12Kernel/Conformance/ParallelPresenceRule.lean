@@ -126,6 +126,15 @@ example :
       some (.join (.incompatibleGroups demand.path demand.path)) := by
   native_decide
 
+/- Every operand needs one indexed repeatable owner; a field merely sharing the rule's nonrepeatable ancestor cannot enter the join. -/
+example :
+    (match checkParallelPresenceRule model 2 5 2 "PI" .error
+        messagePlan with
+      | .error error => some error
+      | .ok _ => none) =
+      some (.missingIndexedOperandGroup 5) := by
+  native_decide
+
 private def evaluated? (errorField : FieldId) (source : DocumentData) :
     Option (List ParallelRuleRowOutcome) := do
   let preliminary ← preliminaryFor source
@@ -190,6 +199,218 @@ example : (preliminaryFor data).bind (fun preliminary =>
         | .error error => some error
         | .ok _ => none) =
     some (.fieldOutsideParallelGroups 5 demand.path supply.path) := by
+  native_decide
+
+private def wrappedIndexDecl (id : FieldId) (groupPath : GroupPath)
+    (scope : RepeatableLevel) : FlatFieldDecl := {
+  id
+  groupPath
+  name := "Department"
+  policy := { kind := .string }
+  repeatableScope := [scope]
+}
+
+private def wrappedTargetDecl (id : FieldId) (groupPath : GroupPath)
+    (scope : RepeatableLevel) : FlatFieldDecl := {
+  id
+  groupPath
+  name := "Headcount"
+  policy := { kind := .number { scale := 0, signed := false } }
+  repeatableScope := [scope]
+}
+
+private def wrappedDemand : RepeatableGroupDecl := {
+  level := 30
+  path := ["Plan", "W1", "Demand"]
+  repeatability := some 3
+  indexField := some 11
+}
+
+private def wrappedSupply : RepeatableGroupDecl := {
+  level := 40
+  path := ["Plan", "W2", "Inner", "Supply"]
+  repeatability := some 3
+  indexField := some 13
+}
+
+private def wrappedModel : FlatModel := {
+  fields := [
+    wrappedIndexDecl 11 wrappedDemand.path 30,
+    wrappedTargetDecl 12 (wrappedDemand.path ++ ["Leaf"]) 30,
+    wrappedIndexDecl 13 wrappedSupply.path 40,
+    wrappedTargetDecl 14
+      (wrappedSupply.path ++ ["Payload", "Leaf"]) 40
+  ]
+  repeatableGroups := [wrappedDemand, wrappedSupply]
+}
+
+private def wrappedCell (field coordinate : Nat) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput := {
+  address := { field, path := [coordinate] }
+  stored
+  raw
+}
+
+private def wrappedData : DocumentData := {
+  instantiatedRows := [
+    row 30 1, row 30 2, row 40 1, row 40 2
+  ]
+  cells := [
+    wrappedCell 11 1 "Zulu" (.parsed (.str "Zulu")),
+    wrappedCell 12 1 "7" (.parsed (.num 7)),
+    wrappedCell 11 2 "Alpha" (.parsed (.str "Alpha")),
+    wrappedCell 12 2 "3" (.parsed (.num 3)),
+    wrappedCell 13 1 "Alpha" (.parsed (.str "Alpha")),
+    wrappedCell 14 1 "8" (.parsed (.num 8)),
+    wrappedCell 13 2 "Beta" (.parsed (.str "Beta")),
+    wrappedCell 14 2 "2" (.parsed (.num 2))
+  ]
+}
+
+private def invalidWrappedSupplyData : DocumentData := {
+  wrappedData with
+    instantiatedRows := wrappedData.instantiatedRows ++ [row 40 3]
+    cells := wrappedData.cells ++
+      [wrappedCell 14 3 "4" (.parsed (.num 4))]
+}
+
+private def wrappedPreliminaryFor (source : DocumentData) :
+    Option (CheckedIndexPreliminary wrappedModel) := do
+  let prepared ←
+    (prepareFlatStringContext
+      world builtinStringPatternCompiler wrappedModel).toOption
+  let checked ← (checkDocument prepared "en_US" source).toOption
+  checked.applyFullIndexPreliminary.toOption
+
+private def wrappedRule? (errorField : FieldId) :
+    Option (CheckedParallelPresenceRule wrappedModel) :=
+  (checkParallelPresenceRule wrappedModel 12 14 errorField "WPI" .error
+    messagePlan).toOption
+
+private def wrappedEvaluated? (errorField : FieldId)
+    (source : DocumentData) : Option (List ParallelRuleRowOutcome) := do
+  let preliminary ← wrappedPreliminaryFor source
+  let rule ← wrappedRule? errorField
+  (rule.evalFull preliminary).toOption
+
+private def wrappedFired (field : FieldId) (path : List Nat) :
+    FlatRuleOutcome :=
+  .fired {
+    errorAddress := { field, path }
+    errorCode := "WPI"
+    severity := .error
+    messageType := .value
+    text := { text := "parallel" }
+  }
+
+/- Nonrepeatable wrappers before both keyed groups and below both positive operands are transparent; only repeatable coordinates enter the physical address. -/
+example :
+    (wrappedEvaluated? 12 wrappedData).map
+      (·.map fun result => (result.key, result.outcome)) =
+    some [
+      (.text "Alpha", wrappedFired 12 [2]),
+      (.text "Beta", .notFired),
+      (.text "Zulu", .notFired)
+    ] := by
+  native_decide
+
+/- Asymmetric wrapper depth does not change which matched physical side owns the error address. -/
+example :
+    (wrappedEvaluated? 14 wrappedData).map
+      (·.map fun result => (result.key, result.outcome)) =
+    some [
+      (.text "Alpha", wrappedFired 14 [1]),
+      (.text "Beta", .notFired),
+      (.text "Zulu", .notFired)
+    ] := by
+  native_decide
+
+/- A wrapped invalid column still affects only an unmatched read; the matched row remains definite. -/
+example :
+    (wrappedEvaluated? 12 invalidWrappedSupplyData).map
+      (·.map fun result => (result.key, result.outcome)) =
+    some [
+      (.text "Alpha", wrappedFired 12 [2]),
+      (.text "Beta", .notFired),
+      (.text "Zulu", .unknown)
+    ] := by
+  native_decide
+
+private def frame : RepeatableGroupDecl := {
+  level := 50
+  path := ["Plan", "Frame"]
+  repeatability := some 2
+}
+
+private def framedDemand : RepeatableGroupDecl := {
+  level := 60
+  path := ["Plan", "Frame", "Demand"]
+  repeatability := some 2
+  indexField := some 21
+}
+
+private def framedSupply : RepeatableGroupDecl := {
+  level := 70
+  path := ["Plan", "Supply"]
+  repeatability := some 2
+  indexField := some 23
+}
+
+private def framedModel : FlatModel := {
+  fields := [
+    {
+      (wrappedIndexDecl 21 framedDemand.path 60) with
+        repeatableScope := [50, 60]
+    },
+    {
+      (wrappedTargetDecl 22 framedDemand.path 60) with
+        repeatableScope := [50, 60]
+    },
+    wrappedIndexDecl 23 framedSupply.path 70,
+    wrappedTargetDecl 24 framedSupply.path 70
+  ]
+  repeatableGroups := [frame, framedDemand, framedSupply]
+}
+
+/- A repeatable non-indexed intermediate is an outer frame, not a transparent wrapper; this capsule must continue to refuse it. -/
+example :
+    (match checkParallelPresenceRule framedModel 22 24 22 "FPI" .error
+        messagePlan with
+      | .error error => some error
+      | .ok _ => none) =
+      some (.join
+        (.incompatibleGroups framedDemand.path framedSupply.path)) := by
+  native_decide
+
+private def disjointLeft : RepeatableGroupDecl := {
+  level := 80
+  path := ["Left"]
+  repeatability := some 2
+  indexField := some 31
+}
+
+private def disjointRight : RepeatableGroupDecl := {
+  level := 90
+  path := ["Right"]
+  repeatability := some 2
+  indexField := some 32
+}
+
+private def disjointModel : FlatModel := {
+  fields := [
+    wrappedIndexDecl 31 disjointLeft.path 80,
+    wrappedIndexDecl 32 disjointRight.path 90
+  ]
+  repeatableGroups := [disjointLeft, disjointRight]
+}
+
+/- Equal empty outer repeatable scopes do not manufacture a cross-root join; the groups still need a real common group ancestor. -/
+example :
+    (match checkParallelIndexGroups disjointModel
+        disjointLeft disjointRight with
+      | .error error => some error
+      | .ok _ => none) =
+      some (.incompatibleGroups disjointLeft.path disjointRight.path) := by
   native_decide
 
 end A12Kernel.Conformance.ParallelPresenceRule

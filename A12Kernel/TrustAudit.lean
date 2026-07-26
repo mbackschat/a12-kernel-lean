@@ -1397,6 +1397,8 @@ run_cmd do
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedIndexPreliminary_default_read
+#print axioms A12Kernel.parallelCommonParent_prefix_left
+#print axioms A12Kernel.parallelCommonParent_prefix_right
 #print axioms A12Kernel.checkedIndexColumn_wellFormed
 #print axioms A12Kernel.checkedParallelIndexGroups_wellFormed
 #print axioms A12Kernel.checkedIndexColumn_duplicate_notSemantic

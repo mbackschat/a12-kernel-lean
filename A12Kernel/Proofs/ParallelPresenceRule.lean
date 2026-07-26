@@ -11,8 +11,8 @@ theorem checkedParallelPresenceRule_wellFormed
   ⟨checkedParallelIndexGroups_wellFormed rule.groups,
     rule.condition.modelWellFormed, rule.condition.wellFormed,
     rule.leftOperandGroup, rule.rightOperandGroup,
-    rule.rowGroupOwned, rule.conditionShape,
-    rule.errorFieldIsOperand⟩
+    rule.leftOperandScope, rule.rightOperandScope,
+    rule.rowGroupOwned, rule.conditionShape, rule.errorFieldIsOperand⟩
 
 @[simp] theorem checkedParallelPresenceRule_conditionShape
     (rule : CheckedParallelPresenceRule model) :
