@@ -18,9 +18,7 @@ structure RegisteredCustomRejection where
   messageTemplate : Option String := none
   deriving Repr, DecidableEq
 
-/-- Why a cell is formally invalid (the "five+ invalidity sources" of `spec/02` §3, routed
-    through a single `formalCheck`). Puts the cell in the not-check-relevant state, uses a
-    fixed non-authorable message, and blocks the field from all author rules. -/
+/-- Why a checked cell is unavailable. The ordinary constructors are formal-invalidity sources routed through `formalCheck`; `computedDependency` is the cause-blind transient marker placed only in a computation overlay after an earlier computed target became invalid. -/
 inductive FormalCause where
   | malformed                -- not well-formed for the field's type (bad date/number/…)
   | declaredConstraint       -- pattern / length / range / scale violation
@@ -31,6 +29,7 @@ inductive FormalCause where
   | overRepetition           -- rows beyond declared repeatability
   | customValidation         -- fixed declarative predefined-type fallback
   | registeredCustomValidation (rejection : RegisteredCustomRejection)
+  | computedDependency       -- invalid computed target; carries no producer error or message
   deriving Repr, DecidableEq
 
 /-- The evaluation phase; the *same* formal invalidity reads differently per phase. -/

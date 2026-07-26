@@ -248,11 +248,12 @@ example :
       some (.accepted ⟨"NEW", by decide⟩) := by
   native_decide
 
-/- A reached poisoned producer poisons the consumer and suppresses fallback. -/
+/- A reached poisoned producer becomes cause-blind computed-dependency poison and suppresses fallback. -/
 example :
     outcomeAt consumer.id [FixtureTable.checked .producerPoison,
       FixtureTable.checked .consumerReached]
-      [cell bad.id "bad" (.rejected .malformed)] = some (.poison .malformed) := by
+      [cell bad.id "bad" (.rejected .malformed)] =
+        some (.poison .computedDependency) := by
   native_decide
 
 /- Left-deciding And and Or hide the same poisoned dependency read. -/
@@ -267,11 +268,11 @@ example :
         some (.accepted ⟨"SAFE", by decide⟩) := by
   native_decide
 
-/- A target-rejected producer becomes formal poison only when the consumer reads it. -/
+/- A target-rejected producer becomes the same cause-blind computed-dependency poison only when the consumer reads it. -/
 example :
     outcomeAt consumer.id [FixtureTable.checked .producerError,
       FixtureTable.checked .consumerCopy] =
-      some (.poison .declaredConstraint) := by
+      some (.poison .computedDependency) := by
   native_decide
 
 /- An unrelated invalid input cannot affect a literal-only producer. -/

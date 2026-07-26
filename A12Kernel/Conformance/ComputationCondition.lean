@@ -165,7 +165,7 @@ example :
 example :
     ((context (checkedBoolean .empty) (checkedString .empty)).withDependencyOutcome
         probeId (.poison .malformed)).map
-      (fun updated => fieldNotFilled.eval updated) = .ok (.poison .malformed) := by
+      (fun updated => fieldNotFilled.eval updated) = .ok (.poison .computedDependency) := by
   rfl
 
 example : ComputationAlternative.selectFirst

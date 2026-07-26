@@ -70,6 +70,8 @@ Do not put every domain-undefined numeric operation in this clean-empty class. D
 
 Reading a **formally-invalid cell** (an invalid operand's target, a domain-invalid computed Number such as division by zero or runtime-invalid integral power, an ERRORED computed value, [§3](02-logic-and-formal-errors.md)'s third state generally) **throws** inside the computing instance: it **aborts**, skips its remaining alternatives, produces no value, and **is itself marked invalid** — so its dependents' reads poison in turn.
 
+Once a computed target is marked invalid, the cascade is **cause-blind**. The computation cache retains only invalid-target membership; a later value or presence read throws for that target without carrying the producer's attempted value, target-error subclass, originating formal cause, or message, and the generated catch marks the dependent invalid without adding a cascade message. Those producer details may remain in the producer's own rich outcome, but they do not pass through the dependency read.
+
 The poison is **read-driven, therefore order-dependent**:
 
 - compute's `And`/`Or` collapse each clean condition result to whether it is known true and evaluate left-to-right. `And` skips its right side when the clean left is false or unknown; `Or` skips its right side when the clean left is true. A poison already encountered on the left aborts either connective. A bare-group field-fill quantifier consumes the canonical field-major, repetition-major stream defined by [the fill-quantifier clause](02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges) and **stops at its deciding cell**. A reached invalid cell poisons; one *beyond* a connective or scan stop is **never read and never poisons**.

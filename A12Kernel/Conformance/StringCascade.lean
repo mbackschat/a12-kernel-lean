@@ -96,7 +96,7 @@ example :
   · rfl
   · change
       (some (.ok StringTerm.noValue) : Option (Except StringComputationFault StringTerm)) ≠
-        some (.ok (.poison .malformed))
+        some (.ok (.poison .computedDependency))
     simp
 
 /- A changed accepted producer value is consumed by the downstream expression. -/
@@ -127,12 +127,12 @@ example : valueOf ((cascade .empty (.filled storedOldX)).evaluate
     (.accepted storedDashX) (some (.value storedDashX))) := by
   native_decide
 
-/- A rejected attempted producer value becomes dependency poison. The consumer cannot read either the attempted value or stale state. -/
+/- A rejected attempted producer value becomes cause-blind dependency poison. The consumer cannot read either the attempted value, its error subclass, or stale state. -/
 example : valueOf ((cascade (.filled storedOld) (.filled storedOldX)).evaluate
     (context (.parsed (.str "ABCD")) (.parsed (.str "OLD")))) =
   some (expected (.errored storedAbcd .tooLong)
     (some (.errored storedAbcd .tooLong))
-    (.poison .declaredConstraint) (some .cleared)) := by
+    (.poison .computedDependency) (some .cleared)) := by
   native_decide
 
 /- Validation-scoped requiredness cannot be manufactured as a computation dependency poison. -/

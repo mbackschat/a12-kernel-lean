@@ -7,10 +7,6 @@ This capsule composes exactly two already-resolved String computation steps. The
 
 namespace A12Kernel
 
-/-- A target error is formal invalidity when a later computation reads that target. The attempted payload is intentionally not carried into the dependency cell. -/
-def StringTargetError.dependencyCause : StringTargetError → FormalCause
-  | .lineBreak | .pattern | .tooShort | .tooLong => .declaredConstraint
-
 /-- A validation-scoped required finding cannot represent computation poison because computation reads deliberately ignore that finding. -/
 inductive StringDependencyFault where
   | validationScopedRequired
@@ -41,14 +37,14 @@ def poison (cause : FormalCause) : StringDependencyCell := {
     findings := [cause] }
   wellFormed := by simp [CheckedCell.WellFormed] }
 
-/-- Convert one completed target outcome into the cell observed by an explicitly later dependent computation. Accepted values are visible, clean no-value is empty, and target rejection or inherited formal invalidity is poison. -/
+/-- Convert one completed target outcome into the cell observed by an explicitly later dependent computation. The runtime invalid-field set is cause-blind, so every reachable invalid producer becomes the same computed-dependency marker; attempted payloads and original formal causes are erased. -/
 def ofOutcome : StringTargetOutcome → Except StringDependencyFault StringDependencyCell
   | .noValue => pure empty
   | .accepted stored => pure (value stored)
-  | .errored _ cause => pure (poison cause.dependencyCause)
+  | .errored _ _ => pure (poison .computedDependency)
   | .poison .required =>
       throw .validationScopedRequired
-  | .poison cause => pure (poison cause)
+  | .poison _ => pure (poison .computedDependency)
 
 end StringDependencyCell
 

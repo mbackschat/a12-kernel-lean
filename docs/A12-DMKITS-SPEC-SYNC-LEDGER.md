@@ -97,6 +97,20 @@ It must also **verify that the named discriminator is the actual variable**, bec
 - **Compatibility:** Outcome-based first-nonempty dedup lets a later computation overwrite a selected-but-empty earlier result. Treating computation boundaries as unconditional stops instead breaks the already-observed false-guard fall-through. The corrected account keeps one selector and distinguishes selection from storage.
 - **Acceptance:** Peer prose and interpreter use the flattened first-selected table; maintained JVM, Node, and both available kernel-strategy cases separate selected-empty stop from false-guard fall-through; the existing alternative selector remains the single semantic owner; and the handback supplies the exact reviewed revision plus per-surface disposition.
 
+### SPEC-2026-07-26-04 — computed-target dependency poison erases producer cause
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `1106e2b5`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`09-computations.md` §3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons)
+- **Delta:** Once a computed target is invalid, later value and presence reads observe only invalid-target membership. The cascade carries no attempted payload, target-error subclass, originating formal cause, or message; the generated catch marks the dependent invalid and adds no cascade message. Producer details may remain in the producer's own result but cannot be recovered from the dependency read.
+- **Basis:** Kernel [`CalculationCache`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/CalculationCache.java) stores invalid calculated identifiers in `invalidFields`; both `getWertXML` and `isEntityFilled` call `createCascadingError` from membership alone. [`CodeGenCalculationAlternative`](../../a12-kernel/kernel-tool/kernel-core-codegen/src/main/resources/internal/templates/validation/java/calcDir/CodeGenCalculationAlternative.st) catches that exception, marks only the current target invalid, continues, and adds no calculation message in that branch. The existing peer `Poison`/overlay route appears cause-blind, but its canonical prose and maintained laws were not audited for an explicit no-provenance guarantee.
+- **Requested a12-dmkits reconciliation:** State the cause-blind cascade rule in the canonical computation account and confirm that the existing `Poison`/overlay representation, JVM/Node interpreter laws, and kernel differentials do not preserve or reconstruct producer causes across a computed-target read. Add only the smallest representation-level or outcome-level lock needed to distinguish cause-blind poison from a provenance-carrying dependency; reuse the existing invalid-target and poison owners and add no message, trace, scheduler, or cause registry.
+- **Compatibility:** Preserving a source formal cause or mapping a target rejection to a synthetic declared-constraint cause exposes information the kernel discarded and can make two otherwise identical cascades observably different to an analyzer. Collapsing poison to clean empty is also wrong: dependents must still abort when they actually read the invalid target.
+- **Acceptance:** Canonical peer prose states cause erasure, the interpreter retains one cause-blind computed-target poison, focused laws or cases show that distinct invalid producer classes induce the same dependency observation while clean no-value remains distinct, and the handback supplies the exact reviewed revision plus per-surface disposition.
+
 ### SPEC-2026-07-25-01 — the `NotAll` fields-presence prepass is a size-selected route detail, not the observable contract
 
 - **Status:** accepted — reviewed a12-dmkits revision `dd02b033`

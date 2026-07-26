@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 506 jobs · trust audit **1406 theorem roots; 29443 declarations in 273 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 506 jobs · trust audit **1406 theorem roots; 29366 declarations in 273 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked Number tables now compose into a finite scalar run plan. Certification rejects every table containing a repeatable-context operation, duplicate targets, and any guard or complete Numeric-expression read of a computed target at its own or a later position, while preserving supplied order. The plan carries no executor, overlay, graph, result, or cross-family carrier; a theorem makes its scalar certificate usable per retained table.
+Computed-target dependency poison now crosses the checked-cell boundary without invented provenance. Every reachable invalid String producer—target rejection or inherited poison—projects to one transient `.computedDependency` marker, while the producer outcome retains its own attempted payload and cause and clean no-value remains empty. This corrects the earlier String cascade account to match the runtime's cause-blind invalid-target set; [`SPEC-2026-07-26-04`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-26-04--computed-target-dependency-poison-erases-producer-cause) carries the peer reconciliation request.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the typed computed-dependency invalidity bridge required by both String and Number runs. Kernel computed-target invalidity is cause-free set membership: a later read must observe one explicit computed-dependency poison marker, not preserve an earlier formal cause or invent `.declaredConstraint`. Fit that marker through the existing checked-cell observation boundary, then make each family outcome-to-cell projection erase producer details exactly once. Do not add a generic poison framework, message, trace, or heterogeneous outcome.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the Number dependency cell over the existing cause-free `NumericDependencyObservation`: clean empty, the exact accepted stored decimal amount, or `.computedDependency` poison through the shared checked-cell observation boundary. Erase producer details exactly once in this projection and retain the rich producer outcome separately. Do not add a generic poison framework, message, trace, executor, or heterogeneous outcome.
 
 ## Immediate sequence
 
-1. Add the smallest explicit computed-dependency invalidity marker and correct the String dependency projection to use it.
-2. Add the Number dependency cell: clean empty, exact accepted decimal amount, or the common computed-dependency marker.
-3. Only then add the typed Number completion overlay and fixed executor.
+1. Add the Number dependency cell: clean empty, exact accepted decimal amount, or the common computed-dependency marker.
+2. Add the typed Number completion overlay and fixed executor.
 
 ## Parked boundaries
 

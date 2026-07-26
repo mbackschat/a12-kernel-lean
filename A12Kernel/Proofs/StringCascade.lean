@@ -69,32 +69,31 @@ theorem acceptedDependency_reads_value (context : StringComputationContext)
     exact computation_observes_clean_value (Value.str stored.text)]
   simp [stored.nonempty, pure, Except.pure]
 
-/-- Either admitted String target error becomes declared-constraint poison when a later computation reads the target. -/
-theorem erroredDependency_reads_declaredConstraintPoison
+/-- Every String target error becomes the same cause-blind computed-dependency poison when a later computation reads the target. -/
+theorem erroredDependency_reads_computedDependencyPoison
     (context : StringComputationContext) (field : FieldId)
     (attempted : StoredString) (cause : StringTargetError) :
     (context.withDependencyOutcome field (.errored attempted cause)).map
       (fun updated => updated.readTerm field) =
-        .ok (.ok (.poison .declaredConstraint)) := by
-  cases cause <;>
-    simp only [StringComputationContext.withDependencyOutcome,
-      StringDependencyCell.ofOutcome, StringTargetError.dependencyCause,
-      pure, Except.pure, Except.map, Except.ok.injEq]
-  all_goals
-    unfold StringComputationContext.readTerm
-    rw [dependencyCell_shadows_target]
-    rw [show observeCell .computation
-        (StringDependencyCell.poison .declaredConstraint).checked =
-          .poison .declaredConstraint by
-      exact computation_observes_single_poison .declaredConstraint (by decide)]
-    rfl
+        .ok (.ok (.poison .computedDependency)) := by
+  simp only [StringComputationContext.withDependencyOutcome,
+    StringDependencyCell.ofOutcome, pure, Except.pure, Except.map,
+    Except.ok.injEq]
+  unfold StringComputationContext.readTerm
+  rw [dependencyCell_shadows_target]
+  rw [show observeCell .computation
+      (StringDependencyCell.poison .computedDependency).checked =
+        .poison .computedDependency by
+    exact computation_observes_single_poison .computedDependency (by decide)]
+  rfl
 
-/-- Ordinary inherited computation poison remains the same cause at the dependent read. -/
-theorem inheritedDependency_reads_samePoison
+/-- Every reachable inherited producer poison is erased to the cause-blind computed-dependency marker before a later read. -/
+theorem inheritedDependency_reads_computedDependencyPoison
     (context : StringComputationContext) (field : FieldId)
     (cause : FormalCause) (notRequired : cause ≠ .required) :
     (context.withDependencyOutcome field (.poison cause)).map
-      (fun updated => updated.readTerm field) = .ok (.ok (.poison cause)) := by
+      (fun updated => updated.readTerm field) =
+        .ok (.ok (.poison .computedDependency)) := by
   cases cause <;> try contradiction
   all_goals
     simp only [StringComputationContext.withDependencyOutcome,
@@ -103,7 +102,7 @@ theorem inheritedDependency_reads_samePoison
     rw [dependencyCell_shadows_target]
     rw [show observeCell .computation
         (StringDependencyCell.poison _).checked = .poison _ by
-      exact computation_observes_single_poison _ notRequired]
+      exact computation_observes_single_poison .computedDependency (by decide)]
     rfl
 
 /-- Validation-scoped requiredness is rejected rather than silently changing computation poison into absence. -/
@@ -163,13 +162,13 @@ theorem holdingStringPrecondition_consumedInvalidField_poisons
     poisonedStringField_evaluates_poison context operand cause poisonedRead,
     StringFieldPolicy.checkTarget, StringFieldPolicy.checkTargetWithPattern]
 
-/-- Equal immediate deltas do not imply equal dependency states. Clean no-value and malformed poison both clear the same prior target, but their consumer reads remain different. -/
+/-- Equal immediate deltas do not imply equal dependency states. Clean no-value and computed-dependency poison both clear the same prior target, but their consumer reads remain different. -/
 theorem same_delta_does_not_imply_same_dependency
     (prior : PriorStringTarget) :
     StringTargetOutcome.noValue.projectDelta prior =
         (StringTargetOutcome.poison .malformed).projectDelta prior ∧
       StringDependencyCell.empty.checked ≠
-        (StringDependencyCell.poison .malformed).checked := by
+        (StringDependencyCell.poison .computedDependency).checked := by
   constructor
   · cases prior <;> rfl
   · decide
@@ -179,7 +178,7 @@ theorem same_appliedValue_does_not_imply_same_dependency
     (attempted : StoredString) (cause : StringTargetError) :
     (StringTargetOutcome.errored attempted cause).appliedValue =
         StringTargetOutcome.noValue.appliedValue ∧
-      (StringDependencyCell.poison cause.dependencyCause).checked ≠
+      (StringDependencyCell.poison .computedDependency).checked ≠
         StringDependencyCell.empty.checked := by
   constructor
   · rfl
@@ -199,7 +198,8 @@ theorem same_exact_application_does_not_imply_same_dependency_read
   constructor
   · cases prior <;> rfl
   · rw [noValueDependency_reads_noValue,
-      inheritedDependency_reads_samePoison context field cause notRequired]
+      inheritedDependency_reads_computedDependencyPoison
+        context field cause notRequired]
     simp
 
 end A12Kernel

@@ -1408,8 +1408,8 @@ run_cmd do
 #print axioms A12Kernel.dependencyOutcome_preserves_other_read
 #print axioms A12Kernel.noValueDependency_reads_noValue
 #print axioms A12Kernel.acceptedDependency_reads_value
-#print axioms A12Kernel.erroredDependency_reads_declaredConstraintPoison
-#print axioms A12Kernel.inheritedDependency_reads_samePoison
+#print axioms A12Kernel.erroredDependency_reads_computedDependencyPoison
+#print axioms A12Kernel.inheritedDependency_reads_computedDependencyPoison
 #print axioms A12Kernel.requiredDependencyPoison_is_rejected
 #print axioms A12Kernel.erroredDependency_does_not_expose_attempt
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
