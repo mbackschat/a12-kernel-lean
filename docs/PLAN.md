@@ -15,6 +15,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 - The six coverage dimensions are executable, proof-closed, Kernel-locked, Kernel-calibrated, public, and consumer-qualified. [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns their clause-level state; absent `Kernel-locked` rows mean not yet assessed, not no evidence.
 - The universal Core IL is closed and archived. [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md#representation-policy-for-derived-consumers) owns the live family-data default and the six conditions for reconsidering a checked-plan IR.
 - The SG4 dependency-transitive-skip ambiguity is closed in favor of reached-read poison. The static dependency graph constrains generated call order; it does not pre-propagate invalidity through an unread edge. [`LF77`](LEAN-FINDINGS.md#lf77--a-dependency-graph-can-order-every-computation-without-deciding-which-dependency-failures-propagate) owns the durable mechanism.
+- The bounded nonrepeatable SG4 source packet is closed. Code generation topologically orders one generated method per target field; each method owns one flattened first-selected table, and a selected operation ends that target-instance scan even when it stores nothing. [`SPEC-2026-07-26-03`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-26-03--same-target-computations-flatten-into-one-first-selected-table) carries the resulting peer correction and selected-empty String separator.
 - The first proof-bearing internal Analyze pilot is closed over the existing checked flat tree. It detects only the exact root-level same-field presence contradiction in either authored order and proves that every returned witness is never firing; it adds no IR, recursive simplifier, solver, command, protocol, or shipment.
 - Repeated starred group-list admission remains pending peer reconciliation under [`SPEC-2026-07-23-09`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-23-09--fixed-group-list-predicates-admit-field-and-group-operands), the bound-prefix static rule under [`SPEC-2026-07-26-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-26-01--starred-group-list-iteration-guards-are-operator--and-operand-sensitive), and the nonrepeatable-terminal composition under [`SPEC-2026-07-26-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-26-02--a-nonrepeatable-group-below-starred-ancestors-retains-group-product-semantics).
 
@@ -24,13 +25,14 @@ Ordinary repeatable partial group leaves now consume `CheckedPartialPreliminary`
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) only through its bounded source-audit gate. Reconstruct the smallest source-grounded nonrepeatable scheduling slice, including checked definition, explicit processing context, activation, reached dependency reads, result classification, source-relative change, application, and generated-validation timing. Do not introduce a general SG4 type until the source packet and separating matrix establish the exact atomic step and its consumer-visible distinctions.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed String sequence only. The active unit is A0: certify one model-relative nonrepeatable String alternative table by reusing the existing condition tree, first-match selector, checked String expression, target policy, and target-reference checks. Do not introduce run state, a scheduling relation, result projections, application, or a heterogeneous computation type in A0.
 
 ## Immediate sequence
 
-1. Inventory the existing §11 expression, guard, target, delta, application, dependency, generated-validation, and archived SG4 source owners; identify overlap before proposing any new representation.
-2. Audit one nonrepeatable calculation path end to end and write a finite decision table whose cases distinguish reached-read poison, short-circuit hiding, unchanged success, changed success, eager formal-operand error, target error, clearing, and later validation.
-3. Name the smallest meaningful execution step and explicit processing-context input justified by that packet. If any required source fact is missing, leave SG4 blocked at that discriminator; otherwise add the red separators and implement only the selected capsule through existing narrow owners.
+1. A0: verify the direct-presence guard admission boundary, then add the checked String table with model-certified guards, one shared admitted target/policy, and selected-empty/poison/target-reference separators.
+2. A1: execute an ordered unique-target, dependency-coherent list of those tables through the existing prepared String context, exact computed-input hiding, and typed String outcome overlay. Return only per-target rich outcomes.
+3. A2: add the smallest dependency-enabled step relation and prove that the fixed-order executable run admits a relation trace; add no read trace or generic state-machine framework.
+4. Only after A0–A2, add the five extensional V2 result projections, then the eager-prepass certificate and whole-run application fold as separate capsules.
 
 ## Parked boundaries
 
