@@ -1474,6 +1474,11 @@ run_cmd do
 #print axioms A12Kernel.checkedIndexColumn_duplicate_notSemantic
 #print axioms A12Kernel.parallelIndexSide_cleanMissing
 #print axioms A12Kernel.parallelIndexSide_invalidMissing
+#print axioms A12Kernel.commonRepeatablePrefix_prefix_left
+#print axioms A12Kernel.commonRepeatablePrefix_prefix_right
+#print axioms A12Kernel.parallelComputationMark_sharedScope
+#print axioms A12Kernel.parallelComputationMark_causeBlind
+#print axioms A12Kernel.parallelComputationMark_covers_source
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape
 #print axioms A12Kernel.checkedParallelPresenceRule_cannotFireOnEmpty

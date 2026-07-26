@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 517 jobs · trust audit **1433 theorem roots; 29894 declarations in 283 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 520 jobs · trust audit **1438 theorem roots; 29974 declarations in 285 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Every successful fixed-order Number run is now proved sound against its independent dependency-enabled step relation. The proof derives pending and enabled premises from the checked plan's unique-target and backward-dependency certificates, reconstructs each step through the shared atomic evaluator, and carries exactly the executor's returned target/outcome list as trace labels. The relation still permits both orders for independent tables, so the theorem is not scheduler equality.
+The first repeatable SG4 transition slice represents the kernel's post-loop invalid mark after checked analysis has selected parallel iteration. Its plan derives the common repeatable prefix from the target scope and malformed index group's parent scope, resolves every complete target instance structurally, and erases the invalid-column cause. Off-path invalidity therefore covers clean sibling target rows while on-path invalidity retains the sibling coordinate; a clean index column emits no mark.
 
 ## Active semantic unit
 
-Reassess the now-symmetric nonrepeatable String/Number run boundaries against [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition), the concrete Execute/Analyze/Explain consumers, and the no-duplicate-representation gate. Identify the smallest remaining semantic capsule that can use existing typed owners without requiring structured messages, repeatable activation, or a heterogeneous carrier.
+Audit whether the existing checked computation and index owners retain enough model-relative information to select the parser-derived parallel-iteration route and construct the new post-loop mark plan without a caller-supplied scope assertion. Continue only if that checked crossing reuses the canonical addressed/index owners and preserves route selection, index checking, marking, public clearing, and application as separate boundaries.
 
 ## Immediate sequence
 
-1. Compare the two completed typed boundaries against SG4's completion gate and record only an actual missing guarantee, not a desired symmetry.
-2. Continue with a bounded existing-owner semantic capsule if one is ready. Stop before a heterogeneous carrier unless a current consumer needs cross-family execution and its representation preserves the two families' distinct contexts, faults, outcomes, source identities, and target states.
+1. Inventory the checked repeatable computation sources, parallel-index column certificate, parser-derived route marker, and model-derived target/index-parent scopes.
+2. If those owners determine the crossing, add the smallest checked plan and separating off-path/on-path rejection or construction cases. If any required fact is absent, stop before inventing a second path AST, a caller-supplied route bit, or an uncertified scope.
 
 ## Parked boundaries
 

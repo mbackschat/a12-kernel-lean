@@ -45,6 +45,7 @@ import A12Kernel.Proofs.NumericStoredNumber
 import A12Kernel.Proofs.NumericTarget
 import A12Kernel.Proofs.NumericApplication
 import A12Kernel.Proofs.NumericDependency
+import A12Kernel.Proofs.ParallelComputationClearing
 import A12Kernel.Proofs.NumericValidation
 import A12Kernel.Proofs.NumericValidation.Runtime
 import A12Kernel.Proofs.NumericValidation.Lowering
