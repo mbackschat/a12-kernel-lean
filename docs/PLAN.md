@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 495 jobs · trust audit **1385 theorem roots; 29028 declarations in 264 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 497 jobs · trust audit **1391 theorem roots; 29137 declarations in 266 modules** · `lake test` 51/51. The unchanged public reference process last passed 51/51 at the preceding baseline. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Every successful checked nonrepeatable String execution now has a proved trace in the independent dependency-enabled relation with exactly the returned plan-ordered target/outcome labels. The proof derives target pendingness and dependency enabledness from the checked plan's uniqueness and backward-dependency certificates, not from scheduler equality. The relation still admits both orders for independent tables; no read trace, completeness/confluence claim, generic framework, public result projection, application, validation, or heterogeneous carrier was added.
+Every successful checked nonrepeatable String execution can now return a String-specific V2 result view over the same immutable source. It retains successful unchanged values, filters the source-relative changed subset, separates payloadful target errors from source-filled clearing, threads the API-named residual message channel without constructing it, and derives `noErrorOccurred` from exactly the two error channels. Laws establish subset, exact clearing, unchanged residual payload, and permutation-invariant public collections; application, eager prepass construction, message rendering, repeatables, and heterogeneous results remain separate.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the first V2 result-view capsule: classify existing rich String run outcomes against source target state into successful instances, changed successes, errored attempts, and cleared targets while retaining the residual-message boundary for its later owner. Do not add the eager prepass, message rendering, application, Number/Enumeration variants, repeatables, or a generic result framework.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the String-specific whole-run application fold: consume the already-classified `withChanges`, `withErrors`, and `cleared` collections against an explicitly supplied compatible destination by specializing the existing exact one-target String application owner. Do not recompute change classification against the destination or add eager prepass construction, message rendering, other target families, repeatables, document-creation machinery, or a generic application framework.
 
 ## Immediate sequence
 
-1. Add the String-specific extensional V2 result view and its subset/clearing/no-error laws without application or eager-prepass construction.
-2. Add the eager-prepass certificate and whole-run application fold as separate later capsules.
+1. Add the String-specific whole-run application fold and prove that successful unchanged instances are not applied while changed, errored, and cleared instances specialize the existing exact one-target laws.
+2. Add the eager-prepass/residual-partition certificate as a separate later capsule.
 
 ## Parked boundaries
 

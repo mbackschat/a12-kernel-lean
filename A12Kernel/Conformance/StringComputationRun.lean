@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringComputationRunRelation
+import A12Kernel.Elaboration.StringComputationRunResult
 
 /-! # Checked nonrepeatable String-run locks
 
@@ -121,6 +122,15 @@ private def outcomeAt (target : FieldId)
   let input ← checkedDocument cells
   let outcomes ← (run.execute prepared.patterns input).toOption
   (outcomes.find? fun entry => entry.1 == target).map (·.2)
+
+private def resultView?
+    (tables : List (CheckedStringComputationTable model))
+    (cells : List ClassifiedCellInput := [])
+    (formalErrors : List FormalCause := []) :
+    Option (StringComputationRunView FormalCause) := do
+  let run ← (certifyStringComputationRun tables).toOption
+  let input ← checkedDocument cells
+  (run.executeResult prepared.patterns input formalErrors).toOption
 
 private def producerTable := FixtureTable.checked .producerValue
 
@@ -264,6 +274,57 @@ example :
     outcomeAt producer.id [FixtureTable.checked .producerValue]
       [cell bad.id "bad" (.rejected .malformed)] =
         some (.accepted ⟨"NEW", by decide⟩) := by
+  native_decide
+
+/- Successful unchanged values remain public successes but are not changes. -/
+example : (do
+    let view ← resultView? [FixtureTable.checked .producerValue]
+      [cell producer.id "NEW" (.parsed (.str "NEW"))]
+    pure (view.withoutErrors, view.withChanges)) =
+      some ([{ targetField := producer.id, value := ⟨"NEW", by decide⟩ }], []) := by
+  native_decide
+
+/- A target error has one computed instance, so it is an error rather than a cleared target. -/
+example : (do
+    let view ← resultView? [FixtureTable.checked .producerError]
+      [cell producer.id "OLD" (.parsed (.str "OLD"))]
+    pure (view.withErrors, view.cleared, view.noErrorOccurred)) =
+      some ([(⟨producer.id, ⟨"LONG", by decide⟩, .tooLong⟩ :
+        StringComputedError)], [], false) := by
+  native_decide
+
+/- Clean no-value and inherited poison clear a source-filled target without creating a computed error. -/
+example :
+    (do
+      let view ← resultView? [FixtureTable.checked .producerCopySource]
+        [cell producer.id "OLD" (.parsed (.str "OLD"))]
+      pure (view.cleared, view.withErrors, view.noErrorOccurred)) =
+        some ([producer.id], [], true) ∧
+    (do
+      let view ← resultView? [FixtureTable.checked .producerPoison]
+        [cell producer.id "OLD" (.parsed (.str "OLD")),
+          cell bad.id "bad" (.rejected .malformed)]
+      pure (view.cleared, view.withErrors, view.noErrorOccurred)) =
+        some ([producer.id], [], true) := by
+  native_decide
+
+/- An empty source target is not reported as cleared, while the opaque formal-error channel independently controls the error predicate. -/
+example :
+    (do
+      let view ← resultView? [FixtureTable.checked .producerCopySource]
+        [cell producer.id "" .presentEmpty]
+      pure view.cleared) = some [] ∧
+    (do
+      let view ← resultView? [FixtureTable.checked .producerCopySource]
+      pure view.cleared) = some [] ∧
+    (do
+      let view ← resultView? [FixtureTable.checked .producerValue] []
+        [.malformed]
+      pure (view.withoutErrors, view.withChanges, view.formalErrorsInOperands,
+        view.noErrorOccurred)) =
+        some ([{ targetField := producer.id, value := ⟨"NEW", by decide⟩ }],
+          [{ targetField := producer.id, value := ⟨"NEW", by decide⟩ }],
+          [.malformed], false) := by
   native_decide
 
 /- The independent relation admits both orders, while field lookup erases their private completion order. -/

@@ -1371,6 +1371,12 @@ run_cmd do
 #print axioms A12Kernel.stringComputationRun_evaluateTable_target
 #print axioms A12Kernel.stringComputationRun_executeTables_trace
 #print axioms A12Kernel.stringComputationRun_execute_trace
+#print axioms A12Kernel.stringComputationRun_shouldClear_iff
+#print axioms A12Kernel.stringComputationRun_withChanges_subset
+#print axioms A12Kernel.stringComputationRun_cleared_iff
+#print axioms A12Kernel.stringComputationRun_formalErrors_exact
+#print axioms A12Kernel.stringComputationRun_noErrorOccurred_iff
+#print axioms A12Kernel.stringComputationRun_fromOutcomes_permutation
 
 #print axioms A12Kernel.stringTargetApplies_iff_applyTo
 #print axioms A12Kernel.stringTargetApplies_deterministic
