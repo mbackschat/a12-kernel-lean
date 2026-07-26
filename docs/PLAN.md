@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 506 jobs · trust audit **1411 theorem roots; 29394 declarations in 273 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 508 jobs · trust audit **1416 theorem roots; 29519 declarations in 275 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The Number dependency projection now enters the common checked-cell boundary. Clean no-value reads as empty, accepted output reads as its exact rational amount, and rejected attempts, calculation invalidity, and inherited poison all read through the same `.computedDependency` marker; proofs retain the well-formedness and clean-empty/invalid distinction. The rich producer outcome and exact stored decimal remain separate.
+The checked scalar Number run now executes its certified supplied order against one immutable checked document. Pending targets hide stale source content, completed targets expose `NumericDependencyCell`, ordinary inputs delegate unchanged, and the returned rich outcomes preserve the plan's exact unique target sequence. Separating cases cover accepted producer visibility, clean no-result followed by numeric empty-as-zero consumption, and reached cause-blind poison.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The active unit is the typed Number completion overlay and fixed supplied-order executor over the existing checked run plan. Pending targets must hide stale document content, completed targets must expose `NumericDependencyCell`, and ordinary inputs must delegate to the immutable checked document. Retain complete `NumericTargetOutcome` values in plan order. Do not add a generic poison framework, message, trace, result view, application fold, or heterogeneous outcome.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. Before adding a Number V2 result view, close the exact source-value boundary needed for scale-sensitive changed/unchanged classification. `CheckedDocument` retains normalized stored text, but its checked Number value is rational and therefore cannot distinguish `7` from `7.00`; string equality would also be wrong for alternative spellings with the same `BigDecimal.equals` identity. Add only a checked normalized stored-Number decoder and source-target projection that preserve `{unscaled, scale}` or fail structurally. Do not widen `Value`, duplicate document state, or start the result view until this discriminator is executable.
 
 ## Immediate sequence
 
-1. Add the typed Number completion overlay and fixed executor.
-2. Prove pending-target stripping, completed-value/poison visibility, input delegation, insert-once completion, and fixed-order execution.
+1. Add the smallest checked normalized stored-Number decoder/source-target projection and lock `7` versus `7.00`, leading-zero equivalence, malformed stored text, and absent versus present-empty placement.
+2. Then add the Number-specific V2 result projection; keep application separate.
 
 ## Parked boundaries
 
