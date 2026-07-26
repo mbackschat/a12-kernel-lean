@@ -80,6 +80,7 @@ import A12Kernel.Conformance.StarAddressing
 import A12Kernel.Conformance.StarPathElaboration
 import A12Kernel.Conformance.CheckedStarDocument
 import A12Kernel.Conformance.StarGroupElaboration
+import A12Kernel.Conformance.StarredGroupPresence
 import A12Kernel.Conformance.StarNumberElaboration
 import A12Kernel.Conformance.NumberEntityValueList
 import A12Kernel.Conformance.TokenEntityValueList

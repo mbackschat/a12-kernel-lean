@@ -134,9 +134,11 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup : GroupPath) :
       pure (.group resolved)
   | .starredGroup reference => do
       let source ←
-        (elaborateStarredGroupSource model rowGroup reference)
+        (elaborateStarredGroupOperandSource model rowGroup reference)
           |>.mapError .starredGroup
-      pure (.starredGroup source)
+      match source with
+      | .terminalRepeatable checked => pure (.starredGroup checked)
+      | .terminalPresence checked => pure (.starredGroupPresence checked)
 
 private def resolveGroupListOperands (model : FlatModel) (rowGroup : GroupPath) :
     List SurfaceGroupListOperand →
@@ -168,7 +170,7 @@ private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
           some (ValidationCondition.groupPresence .notFilled reference)
       | .allGroupsFilled | .notAllGroupsFilled
       | .groupsNotCollectivelyFilled => none
-  | .starredGroup _ => none
+  | .starredGroup _ | .starredGroupPresence _ => none
 
 /-- Resolve one field/group entity list and enforce the kernel's shared duplicate/overlap checks plus its operator-specific arity, root-group, and wildcard gates. The two count-zero/count-positive members retain checked starred-group topology beside plain operands. -/
 def fromGroupList (model : FlatModel) (rowGroup : GroupPath)

@@ -16,6 +16,7 @@ inductive CheckedAddressingError where
   | field (field : FieldId) (cause : ResolveError)
   | environment (cause : EnvBindingError)
   | document (cause : CheckedDocumentError)
+  | checkedDocumentRequired (path : GroupPath)
   | repetitionNotUniqueResult (row : Env)
   deriving Repr, DecidableEq
 

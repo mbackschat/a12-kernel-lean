@@ -1,9 +1,9 @@
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.GroupPresence
 
-/-! # Checked terminal-repeatable group-star consumers
+/-! # Checked group-star consumers
 
-This capsule resolves a starred group path whose terminal group is repeatable, counts its concrete topology-produced rows, and feeds that one structural count to the two legal starred group predicates and `NumberOfFilledGroups`. Validation-condition assembly may compose the checked source with plain group-list operands; this owner remains responsible only for the source and its count. Descendant-cell admission, partial group relevance, nonrepeatable terminal groups, filters, computation's ordered scan, and whole-rule orchestration remain outside.
+This capsule resolves a starred group path through the shared model-derived topology. A terminal repeatable group retains the established structural-row interpretation used by the two legal group predicates and `NumberOfFilledGroups`. A nonrepeatable terminal retains its exact group path so checked validation can derive the existing descendant-content/error product once per topology-produced environment. Partial group relevance, filters, computation's ordered scan, and whole-rule orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -17,6 +17,7 @@ structure SurfaceStarGroupPath where
 inductive StarredGroupElabError where
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceStarGroupPath)
+  | unknownGroup (path : GroupPath)
   | path (error : StarPathElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -31,6 +32,25 @@ structure CheckedStarredGroupSource (model : FlatModel) where
   ancestryOwned : path.axes.map (·.level) = model.repeatableScopeForGroupPath group.path
   firstStarWithin : path.firstStar < path.axes.length
   pathValid : path.validate.isOk = true
+
+/-- One nonrepeatable terminal group reached through a shared checked star plan. Its concrete presence remains the existing descendant-derived group product, not structural row count. -/
+structure CheckedStarredGroupPresenceSource (model : FlatModel) where
+  declaringGroup : GroupPath
+  groupPath : GroupPath
+  path : StarPath
+  modelWellFormed : model.validate.isOk = true
+  groupOwned : model.hasGroupPath groupPath = true
+  terminalNonrepeatable :
+    model.repeatableGroups.any (fun group => group.path == groupPath) = false
+  ancestryOwned :
+    path.axes.map (·.level) = model.repeatableScopeForGroupPath groupPath
+  firstStarWithin : path.firstStar < path.axes.length
+  pathValid : path.validate.isOk = true
+
+/-- The two terminal interpretations admitted by one authored starred group operand. -/
+inductive CheckedStarredGroupOperandSource (model : FlatModel) where
+  | terminalRepeatable (source : CheckedStarredGroupSource model)
+  | terminalPresence (source : CheckedStarredGroupPresenceSource model)
 
 /-- Base resolution can fail only in these two ways. Keeping it a separate closed type makes
     a planner diagnostic unrepresentable at this step instead of merely unreached. -/
@@ -92,6 +112,46 @@ def elaborateStarredGroupSource (model : FlatModel) (declaringGroup : GroupPath)
                   else
                     .error .incoherentCore
 
+/-- Resolve one starred group operand and retain whether its terminal is a structural repeatable row or an ordinary descendant-derived group product. -/
+def elaborateStarredGroupOperandSource (model : FlatModel)
+    (declaringGroup : GroupPath) (source : SurfaceStarGroupPath) :
+    Except StarredGroupElabError (CheckedStarredGroupOperandSource model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () =>
+      match source.resolveBase declaringGroup with
+      | .error error => .error error.toElabError
+      | .ok basePath =>
+          let groupPath := basePath ++ source.groups.map (·.name)
+          if hRepeatable :
+              model.repeatableGroups.any (fun group => group.path == groupPath) = true then
+            (elaborateStarredGroupSource model declaringGroup source).map
+              .terminalRepeatable
+          else if hOwned : model.hasGroupPath groupPath = true then
+            match elaborateStarPathPlan model basePath source.groups groupPath with
+            | .error error => .error (.path error)
+            | .ok plan =>
+                if hAncestry : plan.path.axes.map (·.level) =
+                    model.repeatableScopeForGroupPath groupPath then
+                  .ok (.terminalPresence {
+                    declaringGroup
+                    groupPath
+                    path := plan.path
+                    modelWellFormed := by rw [hModel]; rfl
+                    groupOwned := hOwned
+                    terminalNonrepeatable := by
+                      cases hTerminal :
+                          model.repeatableGroups.any
+                            (fun group => group.path == groupPath) <;>
+                        simp_all
+                    ancestryOwned := hAncestry
+                    firstStarWithin := plan.firstStarWithin
+                    pathValid := plan.pathValid })
+                else
+                  .error .incoherentCore
+          else
+            .error (.unknownGroup groupPath)
+
 /-- The only group-list predicates for which the kernel admits a starred group operand. -/
 inductive StarredGroupFillQuantifier where
   | noGroupFilled
@@ -144,5 +204,26 @@ def numberOfFilledGroups (checked : CheckedStarredGroupSource model)
   pure (.value (← checked.rowCount document outer))
 
 end CheckedStarredGroupSource
+
+namespace CheckedStarredGroupPresenceSource
+
+/-- Recheck the exact model-owned terminal group and shared topology certificate at a generic checked-core boundary. -/
+def wellFormedBool (checked : CheckedStarredGroupPresenceSource model)
+    (rowGroup : GroupPath) : Bool :=
+  checked.declaringGroup == rowGroup && model.validate.isOk &&
+    model.hasGroupPath checked.groupPath &&
+    !model.repeatableGroups.any (fun group => group.path == checked.groupPath) &&
+    checked.path.axes.map (·.level) ==
+      model.repeatableScopeForGroupPath checked.groupPath &&
+    decide (checked.path.firstStar < checked.path.axes.length) &&
+    checked.path.validate.isOk
+
+/-- Resolve the same canonical nested topology used by every checked starred consumer. -/
+def resolvedTopology (checked : CheckedStarredGroupPresenceSource model)
+    (document : Document) (outer : Env) :
+    Except StarAddressingError ResolvedStarTopology :=
+  checked.path.resolve document outer
+
+end CheckedStarredGroupPresenceSource
 
 end A12Kernel

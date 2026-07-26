@@ -14,7 +14,7 @@ This boundary joins the established flat leaves and resolved numeric-expression 
 
 namespace A12Kernel
 
-/-- One authored operand of the kernel's group-list condition family. Despite the language-level name, the checked entity list admits fields, ordinary groups, and — for two operators — starred repeatable groups. -/
+/-- One authored operand of the kernel's group-list condition family. Despite the language-level name, the checked entity list admits fields, ordinary groups, and — for two operators — groups below starred repeatable ancestry. -/
 inductive SurfaceGroupListOperand where
   | field (reference : SurfaceFieldPath)
   | group (reference : SurfaceGroupReference)
@@ -26,6 +26,7 @@ inductive ResolvedGroupListOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl)
   | group (reference : ResolvedGroupReference)
   | starredGroup (source : CheckedStarredGroupSource model)
+  | starredGroupPresence (source : CheckedStarredGroupPresenceSource model)
 
 /-- Presence operators for an ordinary non-starred repeatable field reference. Evaluation reuses the established scalar presence observation after the rule environment has selected one exact field instance. -/
 inductive RepeatableFieldPresenceOperator where
@@ -53,14 +54,16 @@ def entityPath : ResolvedGroupListOperand model → List String
   | .field declaration => declaration.path
   | .group reference => reference.path
   | .starredGroup source => source.group.path
+  | .starredGroupPresence source => source.groupPath
 
 def isRootGroup : ResolvedGroupListOperand model → Bool
   | .field _ => false
   | .group reference => reference.isRoot
   | .starredGroup source => source.group.path.length == 1
+  | .starredGroupPresence source => source.groupPath.length == 1
 
 def isStarred : ResolvedGroupListOperand model → Bool
-  | .starredGroup _ => true
+  | .starredGroup _ | .starredGroupPresence _ => true
   | .field _ | .group _ => false
 
 def referencesField (operand : ResolvedGroupListOperand model)
@@ -71,6 +74,10 @@ def referencesField (operand : ResolvedGroupListOperand model)
   | .starredGroup source =>
       match model.lookupUniqueId field with
       | .ok declaration => source.group.path.isPrefixOf declaration.groupPath
+      | .error _ => false
+  | .starredGroupPresence source =>
+      match model.lookupUniqueId field with
+      | .ok declaration => source.groupPath.isPrefixOf declaration.groupPath
       | .error _ => false
 
 def wellFormedBool (operand : ResolvedGroupListOperand model)
@@ -84,33 +91,57 @@ def wellFormedBool (operand : ResolvedGroupListOperand model)
   | .group reference =>
       reference.fixedWellFormedBool model rowGroup
   | .starredGroup source => source.wellFormedBool rowGroup
+  | .starredGroupPresence source => source.wellFormedBool rowGroup
+
+private def overlapsStarred (path : GroupPath) :
+    ResolvedGroupListOperand model → Bool
+  | .field declaration => path.isPrefixOf declaration.groupPath
+  | .group reference =>
+      reference.path.isPrefixOf path || path.isPrefixOf reference.path
+  | .starredGroup source =>
+      path != source.group.path &&
+        (path.isPrefixOf source.group.path ||
+          source.group.path.isPrefixOf path)
+  | .starredGroupPresence source =>
+      path != source.groupPath &&
+        (path.isPrefixOf source.groupPath ||
+          source.groupPath.isPrefixOf path)
 
 /-- Kernel entity-list duplicate checking rejects direct non-wildcard duplicates and every strict group/descendant pair. Repeated starred operands and unrelated siblings remain independent authored occurrences. -/
 def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
-  match left, right with
-  | .field leftDeclaration, .field rightDeclaration =>
-      leftDeclaration.id == rightDeclaration.id
-  | .group leftReference, .group rightReference =>
-      leftReference.overlaps rightReference
-  | .starredGroup leftSource, .starredGroup rightSource =>
-      leftSource.group.path != rightSource.group.path &&
-        (leftSource.group.path.isPrefixOf rightSource.group.path ||
-          rightSource.group.path.isPrefixOf leftSource.group.path)
-  | .group reference, .starredGroup source
-  | .starredGroup source, .group reference =>
-      reference.path.isPrefixOf source.group.path ||
-        source.group.path.isPrefixOf reference.path
-  | .group reference, .field declaration
-  | .field declaration, .group reference =>
-      reference.path.isPrefixOf declaration.groupPath
-  | .starredGroup source, .field declaration
-  | .field declaration, .starredGroup source =>
-      source.group.path.isPrefixOf declaration.groupPath
+  match left with
+  | .field leftDeclaration =>
+      match right with
+      | .field rightDeclaration =>
+          leftDeclaration.id == rightDeclaration.id
+      | .group reference =>
+          reference.path.isPrefixOf leftDeclaration.groupPath
+      | .starredGroup source =>
+          source.group.path.isPrefixOf leftDeclaration.groupPath
+      | .starredGroupPresence source =>
+          source.groupPath.isPrefixOf leftDeclaration.groupPath
+  | .group leftReference =>
+      match right with
+      | .field declaration =>
+          leftReference.path.isPrefixOf declaration.groupPath
+      | .group rightReference => leftReference.overlaps rightReference
+      | .starredGroup source =>
+          overlapsStarred (model := model) source.group.path
+            (.group leftReference)
+      | .starredGroupPresence source =>
+          overlapsStarred (model := model) source.groupPath
+            (.group leftReference)
+  | .starredGroup source => overlapsStarred source.group.path right
+  | .starredGroupPresence source => overlapsStarred source.groupPath right
 
 /-- The captured repeatable prefix of a starred group operand; direct operands contribute no ordinary rule-iteration scope. -/
 def iterationScope :
     ResolvedGroupListOperand model → Option (List RepeatableLevel)
   | .starredGroup source =>
+      let scope :=
+        (source.path.axes.take source.path.firstStar).map (·.level)
+      if scope.isEmpty then none else some scope
+  | .starredGroupPresence source =>
       let scope :=
         (source.path.axes.take source.path.firstStar).map (·.level)
       if scope.isEmpty then none else some scope
@@ -278,7 +309,7 @@ def ResolvedGroupListOperand.evalDirectPresence?
       some (match context.groups reference.path with
         | some state => state.asGroupListPresence
         | none => .unavailable)
-  | .starredGroup _ => none
+  | .starredGroup _ | .starredGroupPresence _ => none
 
 def ResolvedGroupListOperand.evalAddressedTally
     (context : AddressedValidationEvaluationContext model) :
@@ -302,6 +333,19 @@ def ResolvedGroupListOperand.evalAddressedTally
         | .checked checked => checked.source.toDocument
       let count ← (source.rowCount document context.outer).mapError .addressing
       pure (GroupListPresenceTally.filledOnly count)
+  | .starredGroupPresence source =>
+      match context.input with
+      | .legacy _ _ => .error (.checkedDocumentRequired source.groupPath)
+      | .checked document => do
+          let topology ←
+            (source.resolvedTopology document.source.toDocument context.outer)
+              |>.mapError .addressing
+          let states ← topology.environments.mapM fun environment => do
+            let input ←
+              (document.groupPresenceInput source.groupPath environment
+                .fullyRelevant false).mapError .group
+            pure input.derive.asGroupListPresence
+          pure (GroupListPresenceTally.ofStates states)
 
 def ResolvedGroupListOperands.evalAddressedTally
     (context : AddressedValidationEvaluationContext model) :

@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.StarGroup
 
-/-! # Laws for checked terminal-repeatable group-star consumers -/
+/-! # Laws for checked group-star terminal consumers -/
 
 namespace A12Kernel
 
@@ -28,6 +28,31 @@ theorem checkedStarredGroupSource_wellFormed_declaringGroup
     checked.declaringGroup = rowGroup := by
   simp [CheckedStarredGroupSource.wellFormedBool] at valid
   exact valid.1.1.1.1
+
+/-- Checked nonrepeatable-terminal lowering retains the model-derived outer-to-inner repeatable ancestry. -/
+@[simp] theorem checkedStarredGroupPresenceSource_ancestry
+    (checked : CheckedStarredGroupPresenceSource model) :
+    checked.path.axes.map (·.level) =
+      model.repeatableScopeForGroupPath checked.groupPath :=
+  checked.ancestryOwned
+
+/-- Every resolved nonrepeatable terminal discharges the generic checked-core boundary from its exact model and topology certificates. -/
+@[simp] theorem checkedStarredGroupPresenceSource_wellFormed
+    (checked : CheckedStarredGroupPresenceSource model) :
+    checked.wellFormedBool checked.declaringGroup = true := by
+  simp [CheckedStarredGroupPresenceSource.wellFormedBool,
+    checked.modelWellFormed, checked.groupOwned,
+    checked.terminalNonrepeatable, checked.ancestryOwned,
+    checked.firstStarWithin, checked.pathValid]
+
+/-- A nonrepeatable-terminal starred source cannot be transplanted into a checked condition owned by another declaring group. -/
+theorem checkedStarredGroupPresenceSource_wellFormed_declaringGroup
+    (checked : CheckedStarredGroupPresenceSource model)
+    (rowGroup : GroupPath)
+    (valid : checked.wellFormedBool rowGroup = true) :
+    checked.declaringGroup = rowGroup := by
+  simp [CheckedStarredGroupPresenceSource.wellFormedBool] at valid
+  exact valid.1.1.1.1.1
 
 /-- No instantiated terminal row is exactly the omission-typed firing region. -/
 @[simp] theorem starredGroup_noGroupFilled_zero :
@@ -134,6 +159,71 @@ theorem elaborateStarredGroupSource_never_path_incoherentCore
         · split
           · split <;> simp
           · simp
+
+/-- General starred-group lowering cannot expose its own defensive incoherent-core branch for either terminal interpretation. -/
+theorem elaborateStarredGroupOperandSource_never_incoherentCore
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (source : SurfaceStarGroupPath) :
+    elaborateStarredGroupOperandSource model declaringGroup source ≠
+      .error .incoherentCore := by
+  unfold elaborateStarredGroupOperandSource
+  split
+  · simp
+  · split
+    · rename_i baseError _
+      cases baseError <;> simp [StarredGroupBaseError.toElabError]
+    · rename_i basePath _
+      simp only
+      split
+      · have dead :=
+          elaborateStarredGroupSource_never_incoherentCore
+            model declaringGroup source
+        cases hSource :
+            elaborateStarredGroupSource model declaringGroup source <;>
+          simp_all [Except.map]
+      · split
+        · split
+          · simp
+          · rename_i plan hPlan
+            have ancestry :=
+              elaborateStarPathPlan_ancestry model basePath source.groups
+                (basePath ++ source.groups.map (·.name)) plan hPlan
+            simp [ancestry]
+        · simp
+
+/-- The shared planner's dead incoherent branch also remains unreachable through the general starred-group operand elaborator. -/
+theorem elaborateStarredGroupOperandSource_never_path_incoherentCore
+    (model : FlatModel) (declaringGroup : GroupPath)
+    (source : SurfaceStarGroupPath) :
+    elaborateStarredGroupOperandSource model declaringGroup source ≠
+      .error (.path .incoherentCore) := by
+  unfold elaborateStarredGroupOperandSource
+  split
+  · simp
+  · split
+    · rename_i baseError _
+      cases baseError <;> simp [StarredGroupBaseError.toElabError]
+    · rename_i basePath _
+      simp only
+      split
+      · have dead :=
+          elaborateStarredGroupSource_never_path_incoherentCore
+            model declaringGroup source
+        cases hSource :
+            elaborateStarredGroupSource model declaringGroup source <;>
+          simp_all [Except.map]
+      · split
+        · split
+          · rename_i error hPlan
+            have dead :=
+              elaborateStarPathPlan_never_incoherentCore
+                model basePath source.groups
+                  (basePath ++ source.groups.map (·.name))
+            rw [hPlan] at dead
+            simp only [ne_eq, Except.error.injEq] at dead
+            simp [dead]
+          · split <;> simp
+        · simp
 
 /-- Runtime counting is exactly the cardinality of the canonical terminal-row environment stream. -/
 theorem checkedStarredGroupSource_rowCount_of_resolved

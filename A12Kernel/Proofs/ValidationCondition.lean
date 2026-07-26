@@ -316,6 +316,37 @@ theorem validationCondition_groupList_fired_iff
   exact validationFillOutcome_conservative_fired_iff
     (operator.evalPresence states) polarity
 
+/-- A nonrepeatable terminal below starred ancestry consumes the canonical topology and classifies each concrete environment through the existing checked group-product owner. -/
+theorem resolvedGroupListOperand_starredGroupPresence_checked
+    (model : FlatModel)
+    (source : CheckedStarredGroupPresenceSource model)
+    (scalar : ValidationEvaluationContext) (outer : Env)
+    (document : CheckedDocument model) :
+    (ResolvedGroupListOperand.starredGroupPresence source).evalAddressedTally {
+        scalar, outer, input := .checked document
+      } = (do
+        let topology ←
+          (source.resolvedTopology document.source.toDocument outer)
+            |>.mapError CheckedAddressingError.addressing
+        let states ← topology.environments.mapM fun environment => do
+          let input ←
+            (document.groupPresenceInput source.groupPath environment
+              .fullyRelevant false).mapError CheckedAddressingError.group
+          pure input.derive.asGroupListPresence
+        pure (GroupListPresenceTally.ofStates states)) := by
+  rfl
+
+/-- The legacy addressed context cannot manufacture descendant-derived group products; that missing checked-document boundary remains structural rather than semantic UNKNOWN. -/
+@[simp] theorem resolvedGroupListOperand_starredGroupPresence_legacy
+    (model : FlatModel)
+    (source : CheckedStarredGroupPresenceSource model)
+    (scalar : ValidationEvaluationContext) (outer : Env)
+    (document : Document) (read : Env → FieldId → CheckedCell) :
+    (ResolvedGroupListOperand.starredGroupPresence source).evalAddressedTally {
+        scalar, outer, input := .legacy document read
+      } = .error (.checkedDocumentRequired source.groupPath) := by
+  rfl
+
 /-- A group-list leaf requires the addressed evaluator exactly when one checked starred group source remains in its operand list. -/
 @[simp]
 theorem validationCondition_groupList_requiresAddressed
@@ -326,7 +357,7 @@ theorem validationCondition_groupList_requiresAddressed
         operands.any ResolvedGroupListOperand.isStarred := by
   rfl
 
-/-- Addressed group-list evaluation combines each direct classification and starred row count once, then delegates to the established tally table. -/
+/-- Addressed group-list evaluation combines each direct classification and starred terminal contribution once, then delegates to the established tally table. -/
 @[simp]
 theorem validationCondition_groupList_evalAddressed
     (model : FlatModel) (operator : GroupFillQuantifier)
