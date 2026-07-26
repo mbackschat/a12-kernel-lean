@@ -1,5 +1,5 @@
 import A12Kernel.Conformance.NumericComputation.Table
-import A12Kernel.Elaboration.NumericComputation.Run
+import A12Kernel.Elaboration.NumericComputation.RunRelation
 
 /-! # Checked scalar Number run locks -/
 
@@ -82,6 +82,104 @@ private def runOutcomes?
   let input ← checkedDocument cells
   (run.execute input).toOption
 
+private def independentSourceTable : CheckedNumericComputationTable model :=
+  (table? sourceId (literal 2)).get (by native_decide)
+
+private def independentTargetTable : CheckedNumericComputationTable model :=
+  (table? targetId (literal 3)).get (by native_decide)
+
+private def independentRun : CheckedNumericComputationRun model := {
+  tables := [independentSourceTable, independentTargetTable]
+  nonempty := by simp
+  scalarTables := by native_decide
+  uniqueTargets := by native_decide
+  dependenciesOrdered := by native_decide
+}
+
+private def independentInput : CheckedDocument model :=
+  (checkedDocument []).get (by native_decide)
+
+private def completionAt? (state : NumericComputationRunState)
+    (table : CheckedNumericComputationTable model) :
+    Option NumericComputationRunCompletion :=
+  (independentRun.evaluateTable independentInput state table).toOption
+
+private theorem completionAt_ok (state : NumericComputationRunState)
+    (table : CheckedNumericComputationTable model)
+    (success : (completionAt? state table).isSome = true) :
+    independentRun.evaluateTable independentInput state table =
+      .ok ((completionAt? state table).get success) := by
+  cases evaluated :
+      independentRun.evaluateTable independentInput state table with
+  | error fault =>
+      have impossible : False := by
+        simp [completionAt?, evaluated, Except.toOption] at success
+      exact False.elim impossible
+  | ok completion =>
+      simp [completionAt?, evaluated, Except.toOption]
+
+private def sourceFirst :=
+  (completionAt? {} independentSourceTable).get (by native_decide)
+
+private def afterSource : NumericComputationRunState :=
+  { completed := [sourceFirst] }
+
+private def targetSecond :=
+  (completionAt? afterSource independentTargetTable).get (by native_decide)
+
+private def targetFirst :=
+  (completionAt? {} independentTargetTable).get (by native_decide)
+
+private def afterTarget : NumericComputationRunState :=
+  { completed := [targetFirst] }
+
+private def sourceSecond :=
+  (completionAt? afterTarget independentSourceTable).get (by native_decide)
+
+private def sourceThenTarget : NumericComputationRunState :=
+  { completed := [sourceFirst, targetSecond] }
+
+private def targetThenSource : NumericComputationRunState :=
+  { completed := [targetFirst, sourceSecond] }
+
+private theorem sourceEnabled (state : NumericComputationRunState) :
+    NumericComputationDependenciesEnabled
+      independentRun independentSourceTable state := by
+  intro dependency member referenced
+  simp [independentRun] at member
+  rcases member with rfl | rfl
+  · have notReferenced :
+        independentSourceTable.referencesField
+          independentSourceTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+  · have notReferenced :
+        independentSourceTable.referencesField
+          independentTargetTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+
+private theorem targetEnabled (state : NumericComputationRunState) :
+    NumericComputationDependenciesEnabled
+      independentRun independentTargetTable state := by
+  intro dependency member referenced
+  simp [independentRun] at member
+  rcases member with rfl | rfl
+  · have notReferenced :
+        independentTargetTable.referencesField
+          independentSourceTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+  · have notReferenced :
+        independentTargetTable.referencesField
+          independentTargetTable.targetField = false := by
+      native_decide
+    rw [notReferenced] at referenced
+    contradiction
+
 /- The scalar plan rejects empty input and the first table whose selected operation could require repeatable context. -/
 example :
     runError? [] = some .empty ∧
@@ -161,6 +259,42 @@ example :
         some [
           (sourceId, .invalidNoValue .calculationValue),
           (targetId, .inheritedPoison .computedDependency)] := by
+  native_decide
+
+/- The relation admits both orders for independent tables, and target lookup erases private completion order. -/
+example :
+    NumericComputationRunStep independentRun independentInput {}
+        (sourceFirst.targetField, sourceFirst.outcome) afterSource ∧
+    NumericComputationRunStep independentRun independentInput afterSource
+        (targetSecond.targetField, targetSecond.outcome) sourceThenTarget ∧
+    NumericComputationRunStep independentRun independentInput {}
+        (targetFirst.targetField, targetFirst.outcome) afterTarget ∧
+    NumericComputationRunStep independentRun independentInput afterTarget
+        (sourceSecond.targetField, sourceSecond.outcome) targetThenSource ∧
+    (sourceThenTarget.find? sourceId).map (·.outcome) =
+        (targetThenSource.find? sourceId).map (·.outcome) ∧
+    (sourceThenTarget.find? targetId).map (·.outcome) =
+        (targetThenSource.find? targetId).map (·.outcome) := by
+  constructor
+  · exact .compute independentSourceTable (by simp [independentRun])
+      (by native_decide) (sourceEnabled {}) sourceFirst
+      (by simpa [sourceFirst] using
+        completionAt_ok {} independentSourceTable (by native_decide))
+  constructor
+  · exact .compute independentTargetTable (by simp [independentRun])
+      (by native_decide) (targetEnabled afterSource) targetSecond
+      (by simpa [targetSecond] using
+        completionAt_ok afterSource independentTargetTable (by native_decide))
+  constructor
+  · exact .compute independentTargetTable (by simp [independentRun])
+      (by native_decide) (targetEnabled {}) targetFirst
+      (by simpa [targetFirst] using
+        completionAt_ok {} independentTargetTable (by native_decide))
+  constructor
+  · exact .compute independentSourceTable (by simp [independentRun])
+      (by native_decide) (sourceEnabled afterTarget) sourceSecond
+      (by simpa [sourceSecond] using
+        completionAt_ok afterTarget independentSourceTable (by native_decide))
   native_decide
 
 end A12Kernel.Conformance.NumericComputation.RunPlan

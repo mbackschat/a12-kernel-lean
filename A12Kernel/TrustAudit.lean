@@ -613,6 +613,8 @@ run_cmd do
 #print axioms A12Kernel.numericComputationRun_read_input
 #print axioms A12Kernel.numericComputationRun_execute_targetOrder
 #print axioms A12Kernel.numericComputationRun_execute_targetsUnique
+#print axioms A12Kernel.numericComputationRun_evaluateTable_target
+#print axioms A12Kernel.numericComputationRunStep_target_mem
 #print axioms A12Kernel.numericComputationRun_shouldClear_iff
 #print axioms A12Kernel.numericComputationRun_withChanges_subset
 #print axioms A12Kernel.numericComputationRun_formalErrors_exact

@@ -32,7 +32,7 @@ theorem numericComputationRun_read_input
   simp [CheckedNumericComputationRun.readPolicy, ordinary]
 
 /-- Successful atomic evaluation retains exactly the checked table's target. -/
-private theorem numericComputationRun_evaluateTable_target
+theorem numericComputationRun_evaluateTable_target
     (run : CheckedNumericComputationRun model)
     (input : CheckedDocument model) (state : NumericComputationRunState)
     (table : CheckedNumericComputationTable model)
