@@ -234,6 +234,19 @@ For Lean-specific architecture and proof-engineering choices, inspect the audite
 ## Conventions
 
 - **English is canonical** — code, identifiers, comments, docs — matching the A12 OSS family.
-- **Lean comments:** Use `/-! ... -/` for a nontrivial module's purpose, semantic scope, and boundary; `/-- ... -/` for public semantic declarations and main theorems; and `--` only beside a non-obvious implementation or proof choice. Following a12-dmkits' intent, explain rationale, phase or context, an invariant or counterexample, and a short provenance pointer (`spec/` section, finding, or evidence ID) when those facts are not evident from the types or statements. Never narrate Lean syntax, restate an encoded definition or truth table, document routine proof steps, or let prose claim more than the formal statement. Keep durable analysis in [`docs/`](docs/); code comments stay concise, local, and synchronized with tests and proofs.
+
+### Comments — document semantic surplus
+
+Comments explain information that cannot be recovered reliably from names, types, theorem statements, and control flow. There is no target comment density; comment according to the source's role.
+
+- **Lean form:** Use `/-! ... -/` for a nontrivial module's purpose, semantic scope, and boundary; `/-- ... -/` for public semantic declarations and main theorems; and `--` or `/- ... -/` only beside a non-obvious implementation, fixture, or proof choice.
+- **Public declarations:** State the contract, legal domain, defaults, failure behavior, ownership or mutability, portability constraints, and a non-obvious example when those facts are not carried by the type. Distinguish structural failure from semantic UNKNOWN and internal proof from external kernel correspondence. Do not expose implementation history.
+- **Semantic and evaluator code:** Document observable ordering, short-circuiting, degradation, omission or poison behavior, and the evidence or oracle behind a surprising rule. Comment a branch when its correct interpretation is not evident from the code or when a tempting alternative would be wrong.
+- **Boundary and infrastructure code:** Document trust boundaries, normalization, deterministic ordering, resource limits, cache lifetime and invalidation, concurrency, and host-specific behavior. Do not narrate ordinary plumbing.
+- **Algorithms and representations:** Document representation invariants and material complexity or performance constraints. Do not restate the type declaration, recursion, or loop.
+- **Proofs and conformance cases:** Module documentation names the contract and claim boundary. Theorem and case names describe the result. Inline comments are reserved for a discriminating fixture, intentional perturbation, provenance constraint, nearest false generalization, or otherwise invisible setup fact; do not narrate routine tactics.
+- **Durability and traceability:** Release identifiers, chronology, implementation status, and "currently" claims belong in the owning proposal, gap ledger, plan, coverage map, or Git history. Stable `spec/` sections, finding IDs, evidence IDs, and theorem names are welcome only when they provide traceability and the referenced claim has been discharged.
+- Delete or shorten a comment when refactoring makes it redundant. A stale comment, nonexistent theorem citation, or claim broader than its evidence or formal statement is a defect.
+
 - **Commits:** Conventional Commits (`type(scope): subject`, imperative, lowercase type); subject-only by default, a 1–2 sentence body only for a non-obvious *why*.
 - Keep this file tool-neutral; [`AGENTS.md`](AGENTS.md) is a symlink to it so Codex and other AGENTS.md-reading agents get the same guidance.
