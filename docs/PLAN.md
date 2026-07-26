@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 477 jobs · trust audit **1347 theorem roots; 27758 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 477 jobs · trust audit **1348 theorem roots; 27761 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and one-level RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked ordinary rules now retain the source-distinct scalar, actual-row, and once-evaluation plans through both full and the first bounded partial routes. A partial once rule skips an irrelevant pinned error instance before reads, bypasses the full root-content gate after admission, and reuses the existing unfiltered checked Number-aggregate relevance fold. Cases separate ancestor/wildcard extent that fires at the phantom target, absent error relevance that skips, and exact row-1 relevance that admits the rule but leaves the all-rows aggregate UNKNOWN.
+Checked ordinary rules now retain the source-distinct scalar, actual-row, and once-evaluation plans through both full and the bounded one-level partial routes. Partial RNU reuses its existing relevance-first composite-key row construction and prepares the branch-independent duplicate relation once per rule call. Missing current-row membership is semantic UNKNOWN under partial relevance, while a mismatched supplied result remains structural. Cases separate complete composite relevance, one relevant row, incomplete composite relevance, and a decisive independent `Or` branch.
 
 ## Active semantic unit
 
-Continue [`SG2` whole-rule partial validation](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) with the next existing addressed owner rather than another orchestration path. Audit group-product partial construction first; if its current checked input already retains the needed relevance product, compose it as a leaf specialization for actual-row and once plans. Otherwise stop on the exact missing invariant before considering RNU partial relevance.
+Continue [`SG2` nested RNU construction](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) from the now-closed one-level full/partial rule route. The group-product audit is blocked at a precise boundary: `ResolvedGroupPresenceInput` retains NONE/PARTIAL/FULL, but the ordinary partial rule context carries the complete `CheckedDocument`, not the relevance-selected cells, rows, and silent errors owned by `CheckedPartialPreliminary`. Passing full descendants with a partial relevance label would be unsound; do not add a second view or widen the rule context inside a leaf capsule.
 
 ## Immediate sequence
 
-1. Inventory `CheckedGroupPresence`, group-list addressed evaluation, and their existing partial relevance inputs against one actual-row plus one once-plan consumer.
-2. If exact reuse is possible, write red cases separating none/partial/full group relevance, admitted empty, structural group error, and phantom target addressing before adding only the leaf bridge.
-3. If group products need a new shared document view, stop and report that repeated need instead of hiding infrastructure in the capsule; then assess addressed RNU as the alternative existing owner.
+1. Inventory the default and authored-`@From` nested RNU scopes against the existing ordinary iteration plan, complete outer environments, checked row construction, and partial composite-key relevance.
+2. Write red cases separating equal local coordinates beneath different parents, exact ancestor-key projection, missing outer binding, complete versus incomplete composite relevance, and immutable row order before widening the rule loop.
+3. Stop if nested execution requires a second cache, topology, or rule-context view; preserve the one-level RNU closure and move to the semantic-index/parallel checklist item rather than manufacturing orchestration.
 
 ## Parked boundaries
 

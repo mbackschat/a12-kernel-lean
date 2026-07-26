@@ -542,6 +542,26 @@ theorem validationCondition_repetitionNotUnique_preparedResult
     ValidationConditionLeaf.evalAddressedWithRepetitionNotUnique,
     ConditionTree.evalVerdictExcept, sameRow]
 
+/-- Partial RNU treats an absent prepared result as semantic UNKNOWN because incomplete key relevance excluded the current row; a supplied result still must belong to that exact row. -/
+@[simp]
+theorem validationConditionLeaf_repetitionNotUnique_partialResult
+    (model : FlatModel)
+    (source : CheckedRepetitionNotUniqueSource model)
+    (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope)
+    (isRelevant : FlatRelevance)
+    (result? : Option RepetitionNotUniqueResult) :
+    (ValidationConditionLeaf.repetitionNotUnique source).evalAddressedPartial?
+        context scope isRelevant result? =
+      some (match result? with
+        | some result =>
+            if result.row == context.outer then
+              pure result.verdict
+            else
+              .error (.repetitionNotUniqueResult context.outer)
+        | none => pure .unknown) := by
+  rfl
+
 /-- At a singleton ordinary scope, one source-classified unguarded condition becomes the exact static rejection level. -/
 theorem validationCondition_iterationLegality_singleton_unguarded
     (condition : ValidationCondition model) (level : RepeatableLevel)
@@ -580,7 +600,7 @@ theorem validationCondition_iterationLegality_singleton_guarded
       .ok ValidationCondition.IterationLegality.legal
   rw [guarded]
 
-/-- The first ordinary repeatable route is closed under flat/repeatable connective composition and excludes specialized addressed leaf families. -/
+/-- Ordinary repeatable execution is closed under flat/repeatable connective composition and excludes specialized addressed leaf families. -/
 @[simp]
 theorem validationCondition_repeatablePresence_supported
     (model : FlatModel) (operator : RepeatableFieldPresenceOperator)

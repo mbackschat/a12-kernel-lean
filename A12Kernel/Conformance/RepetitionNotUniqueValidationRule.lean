@@ -105,6 +105,16 @@ private def compositeRnuRule? :
   (assembleResolvedValidationRule model condition count.id
     "rnu" .error { parts := [] }).toOption
 
+private def compositeRnuOrCountRule? :
+    Option (CheckedResolvedValidationRule model) := do
+  let rnu ← checkedCondition? [field "Weight"]
+  let filledCount ←
+    (CheckedValidationCondition.fromRepeatableFieldPresence
+      model ["Order"] .filled (field "Count")).toOption
+  let condition ← (rnu.or filledCount).toOption
+  (assembleResolvedValidationRule model condition count.id
+    "rnu" .error { parts := [] }).toOption
+
 private def referenceRuleAdmitted?
     (authored : SurfaceRepetitionNotUniqueSource)
     (errorField : FieldId) : Bool :=
@@ -181,6 +191,37 @@ private def verdicts?
   let outcomes ← evalRule? checked data
   pure (outcomes.map fun entry => (entry.1, entry.2.verdict))
 
+private def partialVerdicts?
+    (rule : Option (CheckedResolvedValidationRule model))
+    (data : DocumentData) (scope : ValidationRelevanceScope) :
+    Option (List (Env × Option Verdict)) := do
+  let checkedRule ← rule
+  let document ← checkedDocument? data
+  let outcome ←
+    (checkedRule.evalOrdinaryRepeatablePartial document scope).toOption
+  match outcome with
+  | .skipped => none
+  | .evaluated rows =>
+      pure (rows.map fun row =>
+        (row.1, match row.2 with
+          | .skipped => none
+          | .evaluated result => some result.verdict))
+
+private def allCompositeKeysRelevant : ValidationRelevanceScope :=
+  .partialSet [
+    RelevantEntityPattern.allInstances count.path,
+    RelevantEntityPattern.allInstances weight.path
+  ]
+
+private def countOnlyRelevant : ValidationRelevanceScope :=
+  .partialSet [RelevantEntityPattern.allInstances count.path]
+
+private def firstCompositeKeyRelevant : ValidationRelevanceScope :=
+  .partialSet [
+    { path := count.path, indices := [.all, .concrete 1, .all] },
+    { path := weight.path, indices := [.all, .concrete 1, .all] }
+  ]
+
 private def multipleRnuError? : Option ValidationConditionAssemblyError := do
   let first ← checkedCondition?
   let second ← checkedCondition?
@@ -239,6 +280,34 @@ example :
       some [
         ([(10, 1)], .fired .omission),
         ([(10, 2)], .fired .omission)] := by
+  native_decide
+
+/- Every composite-key component must be relevant before a row joins the duplicate relation. Complete relevance fires both omission-valued duplicates; count-only relevance admits both error instances but leaves the RNU leaf UNKNOWN. -/
+example :
+    partialVerdicts? compositeRnuRule? compositeRnuData
+        allCompositeKeysRelevant =
+      some [
+        ([(10, 1)], some (.fired .omission)),
+        ([(10, 2)], some (.fired .omission))] ∧
+    partialVerdicts? compositeRnuRule? compositeRnuData
+        countOnlyRelevant =
+      some [
+        ([(10, 1)], some .unknown),
+        ([(10, 2)], some .unknown)] := by
+  native_decide
+
+/- A sole relevant composite row cannot duplicate an excluded peer. The same count-only split still permits an independent relevant positive branch to decide `Or`. -/
+example :
+    partialVerdicts? compositeRnuRule? compositeRnuData
+        firstCompositeKeyRelevant =
+      some [
+        ([(10, 1)], some .notFired),
+        ([(10, 2)], none)] ∧
+    partialVerdicts? compositeRnuOrCountRule? compositeRnuData
+        countOnlyRelevant =
+      some [
+        ([(10, 1)], some (.fired .value)),
+        ([(10, 2)], some (.fired .value))] := by
   native_decide
 
 /- The checked condition rejects a second RNU leaf before runtime composition. -/

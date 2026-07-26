@@ -5,7 +5,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked nested heterogeneous `RepetitionNotUnique` construction
 
-This capsule resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are admitted here; temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys remain separate. One-level ordinary full-validation composition consumes this source through the shared checked condition/rule owner; nested reference-scope preparation, whole-rule partial relevance, and message-pointer projection remain separate.
+This boundary resolves one nonempty typed composite key along a single group branch, chooses the default or explicit reference group, expands the deepest key path through the existing star topology, retains each ancestor component's own checked path prefix, removes partially irrelevant composite-key rows before classification, and delegates the resulting ordered rows to the resolved RNU relation. Number, ordinary String, and direct stored-Enumeration components are its legal key domain. Temporal, Boolean/Confirm raw-spelling identity, and prepared custom-String keys are rejected. Ordinary rule execution accepts only a source whose complete topology contains one repeatable level; deeper sources require a reference-scope-aware execution context.
 -/
 
 namespace A12Kernel
@@ -238,7 +238,7 @@ private def elaborateRepetitionKeyPlan (model : FlatModel)
     (repetitionStarSegments model referenceGroup [] declaration.groupPath)
     declaration.path |>.mapError .path
 
-/-- Certify one currently supported RNU key kind without changing its declaration-owned checking. -/
+/-- Certify one legal RNU key kind without bypassing its declaration-owned checking. -/
 private def certifyRepetitionKey (model : FlatModel)
     (modelWellFormed : model.validate.isOk = true)
     (plan : CheckedStarPlan) (declaration : FlatFieldDecl) :
@@ -405,7 +405,7 @@ def wellFormedBool (checked : CheckedRepetitionNotUniqueSource model)
       checked.topology.path.firstStar).head?.map (·.level)) ==
         some checked.referenceGroup.level
 
-/-- The first ordinary-rule capsule closes one reopened repeatable level. Nested reference-scope cache partitioning remains a separate source-grounded widening. -/
+/-- Whether the complete RNU topology contains exactly the one repeatable level supplied by an ordinary rule row. -/
 def supportsOneLevelOrdinaryRule
     (checked : CheckedRepetitionNotUniqueSource model) : Bool :=
   checked.topology.path.firstStar == 0 &&

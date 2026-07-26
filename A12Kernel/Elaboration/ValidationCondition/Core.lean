@@ -7,7 +7,7 @@ import A12Kernel.Elaboration.ValidationContext
 
 /-! # Shared resolved validation conditions
 
-This boundary joins the established flat leaves and resolved numeric-expression comparisons under one connective tree. It deliberately begins after each leaf family's checked elaboration; a later checked whole-rule capsule must preserve those certificates rather than accepting forged cores.
+This boundary joins checked semantic leaves under one connective tree. It accepts only leaf-family certificates produced by their owning elaborators and never reconstructs them from unchecked data.
 -/
 
 /-! This focused module owns resolved validation-condition leaves, connective evaluation, and dependency discovery. Static iteration scope lives in `StaticIteration`. -/
@@ -221,7 +221,7 @@ def iterationGuardStatus (classify : Leaf → IterationGuardStatus) :
 
 end ConditionTree
 
-/-- The currently resolved validation leaf families, indexed by the one checked model that owns every retained source certificate. -/
+/-- The validation leaf families admitted by this checked condition boundary, indexed by the one model that owns every retained source certificate. -/
 inductive ValidationConditionLeaf (model : FlatModel) where
   | flat (condition : FlatConditionLeaf)
   | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
@@ -446,13 +446,16 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .flat _ | .repeatableFieldPresence _ _ => true
   | .orderedNumeric _ comparison =>
       comparison.supportsAddressedPartial
+  | .repetitionNotUnique source =>
+      source.supportsOneLevelOrdinaryRule
   | _ => false
 
-/-- Evaluate one partial addressed leaf. `none` is structural unsupported information, not semantic UNKNOWN; a reached but nonrelevant supported source returns the family's exact UNKNOWN result. -/
+/-- Evaluate one partial addressed leaf. `none` is structural unsupported information, not semantic UNKNOWN; a reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
 def evalAddressedPartial?
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope)
-    (isRelevant : FlatRelevance) :
+    (isRelevant : FlatRelevance)
+    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
   | .flat condition =>
@@ -465,6 +468,14 @@ def evalAddressedPartial?
         pure .unknown)
   | .orderedNumeric _ comparison =>
       comparison.evalAddressedPartial? context scope isRelevant
+  | .repetitionNotUnique _ =>
+      some (match repetitionNotUniqueResult? with
+        | some result =>
+            if result.row == context.outer then
+              pure result.verdict
+            else
+              .error (.repetitionNotUniqueResult context.outer)
+        | none => pure .unknown)
   | _ => none
 
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
