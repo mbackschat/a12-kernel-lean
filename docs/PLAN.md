@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 542 jobs · trust audit **1474 theorem roots; 31275 declarations in 299 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1478 theorem roots; 31418 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Repair the Number result's measured value-less target-error divergence by deriving the exact computation-message pointer partition while keeping every payload already rendered and parametric.
+Integrate the completed exact computation-message pointer partition into every scalar and repeatable Number result entry point, repairing the measured value-less target-error divergence while keeping payloads already rendered and parametric.
 
 ## Immediate sequence
 
-1. Add the computation-specific coordinate and pointer domain plus an exact-pointer stream partition under SG4; reuse `CellAddr` only for concrete computed instances and keep wildcard/unknown message coordinates representable.
+1. Replace every bare-residual Number result constructor with the checked pointer-partition entry, including scalar, isolated repeatable, table, and finite-plan execution.
 2. Derive one residual `berechnungsWertFehler` for each Number `.invalidNoValue`, retain supplied eager-prepass messages, and leave accepted/rejected/no-value/inherited-poison behavior unchanged.
-3. Lock exact-pointer matching, payload irrelevance, value-less residual plus clearing, poison/no-value no-message non-laws, the corrected `noErrorOccurred` predicate, and permutation-stable public collections without importing validation rendering.
+3. Lock value-less residual plus clearing, poison/no-value no-message non-laws, the corrected `noErrorOccurred` predicate, and permutation-stable public collections without importing validation rendering.
 
 ## Parked boundaries
 

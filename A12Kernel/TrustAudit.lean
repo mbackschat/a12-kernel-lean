@@ -618,6 +618,10 @@ run_cmd do
 #print axioms A12Kernel.checkedNumericComputationTable_excludes_target
 #print axioms A12Kernel.numericComputationRun_executeTables_trace
 #print axioms A12Kernel.numericComputationRun_execute_trace
+#print axioms A12Kernel.computationErrorPointer_toCellAddr_ofCellAddr
+#print axioms A12Kernel.partitionComputationMessages_atComputedInstances_iff
+#print axioms A12Kernel.partitionComputationMessages_residual_iff
+#print axioms A12Kernel.partitionComputationMessages_complete
 #print axioms A12Kernel.numericComputationRun_shouldClear_iff
 #print axioms A12Kernel.numericComputationRun_withChanges_subset
 #print axioms A12Kernel.numericComputationRun_formalErrors_exact
