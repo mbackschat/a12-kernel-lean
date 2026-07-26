@@ -1507,6 +1507,8 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericRun_read_pending
 #print axioms A12Kernel.parallelNumericRun_read_completed
 #print axioms A12Kernel.parallelNumericRun_read_input
+#print axioms A12Kernel.parallelNumericRun_execute_stages
+#print axioms A12Kernel.parallelNumericRun_executeResult_classifies
 #print axioms A12Kernel.parallelNumericDirect_addIndexClears_noClassifiedIndexClear
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 540 jobs · trust audit **1467 theorem roots; 31201 declarations in 297 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 540 jobs · trust audit **1469 theorem roots; 31283 declarations in 297 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first checked two-target repeatable Number plan certifies one exact producer-to-consumer dependency between already-flattened tables without constructing a graph or scheduler. The supplied pair is accepted only when targets differ, the producer does not read the pending consumer, and the consumer does read the producer. Its addressed read policy hides stored source data at both computed fields, exposes a completed rich outcome only at its exact repetition address through `NumericDependencyCell`, and delegates ordinary addresses to the immutable checked document.
+The checked two-target repeatable Number plan now executes its producer table through stripped addressed reads, retains every exact rich producer outcome, and executes the dependent consumer table through that completed overlay. A clean no-value producer reads as numeric empty/zero; a reached invalid producer becomes cause-blind dependency poison; and an invalid producer referenced only by an unselected row remains unread and cannot pre-poison the selected result. Both target families are classified together through the existing `CellAddr`-parametric Number result owner.
 
 ## Active semantic unit
 
-Execute the checked two-target repeatable Number plan in producer-first order, reusing the checked table as its atomic step and the exact addressed policy as its only transient overlay.
+Audit and implement the smallest justified widening from the exact two-target dependency to a finite supplied-order repeatable Number plan, reusing the same checked table, addressed overlay, and result classifier without introducing a graph, universal scheduler, or trace framework.
 
 ## Immediate sequence
 
-1. Parameterize the established parallel carrier fetch by one checked addressed read function; preserve the current immutable-preliminary entry point as the default.
-2. Execute the producer table through the empty overlay, append its exact addressed outcomes once, then execute the consumer through the completed overlay.
-3. Separate accepted producer visibility, clean no-value, reached poison, and a statically referenced but dynamically unread invalid producer; classify the combined outcomes through the existing repeatable Number result owner.
+1. Inventory whether the existing scalar finite-run plan's uniqueness and backward-dependency checks specialize exactly to repeatable tables or whether addressed target scope adds a real deviation.
+2. Require a concrete three-table or independent-table semantic user before extracting a finite plan; otherwise retain the two-target owner and move to the next SG4 source-closed boundary.
+3. If the finite plan is justified, preserve supplied order, exact-address stripping/overlay, all-table route clearing, and the reached-read non-law; add a dependency-enabled relation only if it admits behavior not definitionally identical to the fixed executor.
 
 ## Parked boundaries
 

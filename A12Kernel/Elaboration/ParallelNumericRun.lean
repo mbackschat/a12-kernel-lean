@@ -83,6 +83,52 @@ def readPolicy (run : CheckedParallelNumericRun model)
   else
     input.read address
 
+/-- Complete checked route inventories for both target methods. Routes are not deduplicated across tables because equal operand groups still own different target clearings. -/
+def operandRoutes (run : CheckedParallelNumericRun model) :
+    List (CheckedParallelNumericTargetRoute model) :=
+  run.producer.operandRoutes ++ run.consumer.operandRoutes
+
+inductive ExecutionError where
+  | producer
+      (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
+  | consumer
+      (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
+  deriving Repr, DecidableEq
+
+/-- Execute the producer against the stripped input, then execute the consumer through the exact completed producer overlay. -/
+def execute (run : CheckedParallelNumericRun model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except ExecutionError (List ParallelNumericDirectOutcome) :=
+  match run.producer.executeWithRead preliminary
+      (run.readPolicy {} preliminary.base) with
+  | .error error => .error (.producer error)
+  | .ok producerOutcomes =>
+      match run.consumer.executeWithRead preliminary
+          (run.readPolicy { completed := producerOutcomes }
+            preliminary.base) with
+      | .error error => .error (.consumer error)
+      | .ok consumerOutcomes =>
+          .ok (producerOutcomes ++ consumerOutcomes)
+
+inductive ResultError where
+  | execution (error : ExecutionError)
+  | classification (error : ParallelNumericDirectRunResultError)
+  deriving Repr, DecidableEq
+
+/-- Execute and classify both addressed target families against the same immutable preliminary. Residual-message construction remains outside this boundary. -/
+def executeResult (run : CheckedParallelNumericRun model)
+    (preliminary : CheckedIndexPreliminary model)
+    (residualMessages : List ResidualMessage) :
+    Except ResultError
+      (NumericComputationRunView ResidualMessage CellAddr) :=
+  match run.execute preliminary with
+  | .error error => .error (.execution error)
+  | .ok outcomes =>
+      match classifyParallelNumericOutcomes preliminary run.operandRoutes
+          residualMessages outcomes with
+      | .error error => .error (.classification error)
+      | .ok view => .ok view
+
 end CheckedParallelNumericRun
 
 end A12Kernel

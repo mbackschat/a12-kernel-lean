@@ -135,26 +135,30 @@ def operandRoutes
     (fun routes alternative =>
       alternative.operation.operandRoutes.foldl appendRouteIfNew routes) []
 
-/-- Fetch every row's checked carriers at one matched target key without observing any guard or expression. -/
-private def operandCells
+/-- Fetch every row's checked carriers through one addressed read at one matched target key without observing any guard or expression. -/
+def operandCellsWith
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (targetEnvironment : Env) (key : SemanticIndexKey) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       (List (FieldId × CheckedCell)) := do
   let nested ← table.alternatives.mapM fun alternative =>
-    alternative.operation.operandCells preliminary targetEnvironment key
+    alternative.operation.operandCellsWith preliminary read
+      targetEnvironment key
   pure nested.flatten
 
-private def executeTarget
+private def executeTargetWith
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (target : ParallelNumericTargetCoverage) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       ParallelNumericDirectOutcome := do
   let key ← table.first.operation.targetKeyFor preliminary
     target.environment target.address
-  let cells ← table.operandCells preliminary target.environment key
+  let cells ← table.operandCellsWith preliminary read
+    target.environment key
   let context : ScalarComputationContext := {
     read := fun field =>
       match cells.find? fun cell => cell.1 == field with
@@ -166,17 +170,26 @@ private def executeTarget
     outcome := ← table.evaluate context
   }
 
-/-- Execute the table at every actual target whose complete all-row route inventory has clean checked index columns. -/
-def execute
+/-- Execute the table through one addressed carrier read at every actual target whose complete all-row route inventory has clean checked index columns. -/
+def executeWithRead
     (table : CheckedParallelNumericAlternativeTable model)
-    (preliminary : CheckedIndexPreliminary model) :
+    (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       (List ParallelNumericDirectOutcome) := do
   let targets ←
     CheckedIsolatedParallelNumericDirectRun.executableTargets
       table.first.operation.route.asTargetRoute
       (table.operandRoutes.drop 1) preliminary
-  targets.mapM (table.executeTarget preliminary)
+  targets.mapM (table.executeTargetWith preliminary read)
+
+/-- Preserve the standalone table entry point by reading carriers from the immutable preliminary document. -/
+def execute
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
+      (List ParallelNumericDirectOutcome) :=
+  table.executeWithRead preliminary preliminary.base.read
 
 /-- Execute and classify the table against the same immutable preliminary, including source-filled clears from every statically participating row route. -/
 def executeResult

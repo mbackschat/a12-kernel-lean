@@ -202,6 +202,7 @@ private def operandCellsForRoute
     (route : CheckedParallelNumericTargetRoute model)
     (declarations : List FlatFieldDecl)
     (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (targetEnvironment : Env) (key : SemanticIndexKey) :
     Except ExecutionError (List (FieldId × CheckedCell)) := do
   let operandColumn ←
@@ -218,16 +219,17 @@ private def operandCellsForRoute
         let path ←
           entry.environment.pathForScope declaration.repeatableScope
             |>.mapError ExecutionError.environment
-        let cell ← preliminary.base.read {
+        let cell ← read {
           field := declaration.id
           path
         } |>.mapError ExecutionError.document
         pure (declaration.id, cell)
 
-/-- Fetch each admitted field through the sole route for its indexed group. Carrier construction remains observation-free so a table can collect all row inputs before first-selected evaluation. -/
-def operandCells
+/-- Fetch each admitted field through the sole route for its indexed group and one supplied checked addressed read. Carrier construction remains observation-free so a table can collect all row inputs before first-selected evaluation. -/
+def operandCellsWith
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (targetEnvironment : Env) (key : SemanticIndexKey) :
     Except ExecutionError (List (FieldId × CheckedCell)) := do
   let guardDeclarations :=
@@ -243,9 +245,18 @@ def operandCells
     let owned := declarations.filter fun declaration =>
       route.admitsExpressionDeclaration declaration ||
         route.admitsGuardField declaration.id
-    operandCellsForRoute route owned preliminary
+    operandCellsForRoute route owned preliminary read
       targetEnvironment key
   pure nested.flatten
+
+/-- Preserve the isolated-run entry point by reading carriers from the immutable preliminary document. -/
+def operandCells
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetEnvironment : Env) (key : SemanticIndexKey) :
+    Except ExecutionError (List (FieldId × CheckedCell)) :=
+  checked.operandCellsWith preliminary preliminary.base.read
+    targetEnvironment key
 
 /-- Resolve the target's checked semantic key at one actual target environment. The exact address is retained only for structural failure reporting. -/
 def targetKeyFor
