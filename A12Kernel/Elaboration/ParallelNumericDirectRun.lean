@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ParallelComputationClearing
 
 /-! # Isolated direct parallel Number run
 
-This bounded capsule checks one optionally guarded Number expression whose field atoms are model-owned Number declarations addressable from one exact-text parallel route's selected operand-group environment. It reuses the shared authored numeric tree, lowering, operation admission, authoring rules, scale summary, target policy, and evaluator; the route remains the sole owner of the index join and invalid-index disposition. Because the run has exactly one computed target and every admitted operand lies in the distinct joined group, those operands are source fields rather than unresolved computed dependencies. Execution enumerates existing target rows only, omits every target covered by an invalid-index post-loop mark, reads clean unmatched operands as numeric zero, and retains each evaluated result at its exact target address. Guards remain limited to the anchor operand; additional indexed groups, multi-computation scheduling, and broader repeatable overlays remain separate. -/
+This bounded capsule checks one optionally guarded Number expression whose field atoms are model-owned Number declarations addressable from one exact-text parallel route's selected operand-group environment. It reuses the shared authored numeric tree, lowering, operation admission, authoring rules, scale summary, target policy, and evaluator; the route remains the sole owner of the index join and invalid-index disposition. Because the run has exactly one computed target and every admitted operand lies in the distinct joined group, those operands are source fields rather than unresolved computed dependencies. Execution enumerates existing target rows only, omits every target covered by an invalid-index post-loop mark, reads clean unmatched operands as numeric zero, and retains each evaluated result at its exact target address. Presence guards may read any model-owned field addressable from that same environment and remain kind-neutral; additional indexed groups, multi-computation scheduling, and broader repeatable overlays remain separate. -/
 
 namespace A12Kernel
 
@@ -19,17 +19,38 @@ inductive ParallelNumericDirectPlanError where
       (targetScale : Nat) (operation : NumericScaleSummary)
   deriving Repr, DecidableEq
 
-/-- Whether an optional bounded guard reads only the route's already-joined operand. -/
+/-- Admit one presence-guard field exactly when the model-owned declaration is addressable from the route's selected operand-group environment. Presence remains kind-neutral. -/
+def CheckedParallelNumericClearingPlan.admitsGuardField
+    (route : CheckedParallelNumericClearingPlan model)
+    (field : FieldId) : Bool :=
+  match model.lookupUniqueId field with
+  | .ok declaration =>
+      declaration.repeatableScope ==
+          route.operandDeclaration.repeatableScope &&
+        route.groups.rightGroup.path.isPrefixOf declaration.groupPath
+  | .error _ => false
+
+/-- Whether every leaf of an optional bounded guard reuses the route's selected operand-group environment. -/
 def parallelNumericDirectGuardAdmitted
-    (operand : FieldId) : Option ComputationCondition → Bool
+    (route : CheckedParallelNumericClearingPlan model) :
+    Option ComputationCondition → Bool
   | none => true
   | some condition => referencesOnly condition
 where
   referencesOnly : ComputationCondition → Bool
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
-        field == operand
+        route.admitsGuardField field
     | .and left right | .or left right =>
         referencesOnly left && referencesOnly right
+
+private def parallelNumericGuardFields :
+    Option ComputationCondition → List FieldId
+  | none => []
+  | some condition => fields condition
+where
+  fields : ComputationCondition → List FieldId
+    | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => [field]
+    | .and left right | .or left right => fields left ++ fields right
 
 /-- Admit one expression field exactly when it is a model-owned Number declaration addressable from the route's selected operand-group environment. Nested nonrepeatable groups remain legal; another repeatable or indexed scope does not. -/
 def CheckedParallelNumericClearingPlan.admitsExpressionDeclaration
@@ -71,8 +92,7 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   suppressExactScaleWarning : Bool
   expression : AuthoredNumericExpr FlatFieldDecl
   guardAdmitted :
-    parallelNumericDirectGuardAdmitted
-      route.operandDeclaration.id precondition = true
+    parallelNumericDirectGuardAdmitted route precondition = true
   expressionUsesOperand : expression.hasAtom = true
   expressionOperandsAdmitted :
     expression.allAtoms route.admitsExpressionDeclaration = true
@@ -99,7 +119,7 @@ def WellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) : Prop :=
   checked.route.WellFormed ∧
     parallelNumericDirectGuardAdmitted
-      checked.route.operandDeclaration.id checked.precondition = true ∧
+      checked.route checked.precondition = true ∧
     checked.expression.hasAtom = true ∧
     checked.expression.allAtoms
       checked.route.admitsExpressionDeclaration = true ∧
@@ -141,9 +161,15 @@ private def operandCells
   match operandColumn.entries.find? fun entry => entry.key == key with
   | none => pure none
   | some entry =>
+      let guardDeclarations :=
+        (parallelNumericGuardFields checked.precondition).filterMap fun field =>
+          match model.lookupUniqueId field with
+          | .ok declaration => some declaration
+          | .error _ => none
       let declarations :=
         (checked.route.operandDeclaration ::
-          parallelNumericExpressionDeclarations checked.expression).eraseDups
+          parallelNumericExpressionDeclarations checked.expression ++
+          guardDeclarations).eraseDups
       let cells ← declarations.mapM fun declaration => do
         let path ←
           entry.environment.pathForScope declaration.repeatableScope
@@ -237,7 +263,7 @@ private def FlatModel.resolveParallelNumericDirectExpression
           throw .expressionNotLimitedToOperand
     | _ => throw .expressionNotLimitedToOperand
 
-/-- Check one optionally guarded Number operation without reimplementing the parallel route, numeric lowering, operation admission, authoring checks, or scale gate. Every field atom must be addressable from the selected operand-group environment; every guard leaf remains the anchor operand. The scale-warning directive defaults to false; when true it selects both the shared suppressed static gate and the existing warning-suppressed target check, but never changes expression arithmetic. -/
+/-- Check one optionally guarded Number operation without reimplementing the parallel route, numeric lowering, operation admission, authoring checks, or scale gate. Every expression atom must be a Number declaration addressable from the selected operand-group environment; every kind-neutral guard leaf must be a model-owned declaration addressable from that same environment. The scale-warning directive defaults to false; when true it selects both the shared suppressed static gate and the existing warning-suppressed target check, but never changes expression arithmetic. -/
 def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
@@ -266,7 +292,7 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
           | some operationScale =>
             if guardAdmitted :
                 parallelNumericDirectGuardAdmitted
-                  route.operandDeclaration.id precondition = true then
+                  route precondition = true then
               if scopeAvailable :
                   (match route.groups.outerScopePlan with
                     | .framed .right _ _ => false

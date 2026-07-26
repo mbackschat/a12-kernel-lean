@@ -116,6 +116,7 @@ import A12Kernel.Conformance.CheckedIndexColumn
 import A12Kernel.Conformance.ParallelComputationClearing
 import A12Kernel.Conformance.ParallelComputationClearingPlan
 import A12Kernel.Conformance.ParallelNumericJoinedOperands
+import A12Kernel.Conformance.ParallelNumericSameGroupGuard
 import A12Kernel.Conformance.ParallelNumericScaleSuppression
 import A12Kernel.Conformance.ParallelPresenceRule
 
