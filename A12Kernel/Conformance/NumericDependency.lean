@@ -95,12 +95,12 @@ example :
 
 /- Over a stale target, clean no-result and calculation invalidity have the same CLEARED delta and exact empty application but different dependency meaning. -/
 example :
-    NumericTargetOutcome.noValue.projectDelta (.filled old) =
+    NumericTargetOutcome.noValue.projectDelta (.filled (.decimal old)) =
         (NumericTargetOutcome.invalidNoValue .calculationValue).projectDelta
-          (.filled old) ∧
-      NumericTargetOutcome.noValue.applyTo (.presentValue old) =
+          (.filled (.decimal old)) ∧
+      NumericTargetOutcome.noValue.applyTo (.presentValue (.decimal old)) =
         (NumericTargetOutcome.invalidNoValue .calculationValue).applyTo
-          (.presentValue old) ∧
+          (.presentValue (.decimal old)) ∧
       NumericTargetOutcome.noValue.dependencyObservation ≠
         (NumericTargetOutcome.invalidNoValue .calculationValue).dependencyObservation := by
   decide

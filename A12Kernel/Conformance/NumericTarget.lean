@@ -190,9 +190,10 @@ example :
     (NumericTargetOutcome.accepted (stored 700 2)).projectDelta .empty =
         some (.value (stored 700 2)) ∧
       (NumericTargetOutcome.accepted (stored 700 2)).projectDelta
-        (.filled (stored 700 2)) = none ∧
+        (.filled (.decimal (stored 700 2))) = none ∧
       (NumericTargetOutcome.accepted (stored 700 2)).projectDelta
-        (.filled (stored 7 0)) = some (.value (stored 700 2)) := by
+        (.filled (.decimal (stored 7 0))) =
+          some (.value (stored 700 2)) := by
   native_decide
 
 /- Target rejection reports unconditionally and keeps its exact attempt. -/
@@ -210,12 +211,13 @@ example :
         .empty = none ∧
       (NumericTargetOutcome.inheritedPoison .malformed).projectDelta
         .empty = none ∧
-      NumericTargetOutcome.noValue.projectDelta (.filled (stored 7 0)) =
+      NumericTargetOutcome.noValue.projectDelta
+        (.filled (.decimal (stored 7 0))) =
         some .cleared ∧
       (NumericTargetOutcome.invalidNoValue .calculationValue).projectDelta
-        (.filled (stored 7 0)) = some .cleared ∧
+        (.filled (.decimal (stored 7 0))) = some .cleared ∧
       (NumericTargetOutcome.inheritedPoison .malformed).projectDelta
-        (.filled (stored 7 0)) = some .cleared := by
+        (.filled (.decimal (stored 7 0))) = some .cleared := by
   decide
 
 end A12Kernel.Conformance.NumericTarget

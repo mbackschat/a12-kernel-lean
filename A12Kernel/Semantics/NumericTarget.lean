@@ -209,10 +209,10 @@ def checkWithScaleWarningSuppressed (policy : NumericTargetPolicy) :
 
 end NumericTargetPolicy
 
-/-- Prior target state used only for change-only delta reporting. It intentionally erases absent versus present-empty placement. -/
+/-- Prior target state used only for change-only delta reporting. It intentionally erases absent versus present-empty placement while retaining whether typed source equality with computed Number output is possible. -/
 inductive PriorNumericTarget where
   | empty
-  | filled (stored : StoredNumber)
+  | filled (source : NumericSourceIdentity)
   deriving Repr, DecidableEq
 
 /-- Observable Number computation delta. Domain invalidity and inherited poison have no attempted stored value and therefore use the same immediate clear/silence projection as clean no-result. -/
@@ -231,8 +231,9 @@ def projectDelta (outcome : NumericTargetOutcome)
   | .accepted stored =>
       match prior with
       | .empty => some (.value stored)
-      | .filled previous =>
+      | .filled (.decimal previous) =>
           if stored = previous then none else some (.value stored)
+      | .filled .nonComputedForm => some (.value stored)
   | .rejected attempted cause => some (.errored attempted cause)
   | .noValue | .invalidNoValue _ | .inheritedPoison _ =>
       match prior with

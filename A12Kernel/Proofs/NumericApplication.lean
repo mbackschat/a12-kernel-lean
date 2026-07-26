@@ -8,7 +8,8 @@ namespace A12Kernel
 /-- Independent relational account of exact one-target Number application. -/
 def NumericTargetApplies :
     NumericTargetOutcome → NumericTargetState → NumericTargetState → Prop
-  | .accepted stored, _, .presentValue applied => stored = applied
+  | .accepted stored, _, .presentValue source =>
+      source = .decimal stored
   | .noValue, .absent, .absent => True
   | .noValue, .presentEmpty, .presentEmpty => True
   | .noValue, .presentValue _, .presentEmpty => True
@@ -29,7 +30,7 @@ theorem numericTargetApplies_iff_applyTo (outcome : NumericTargetOutcome)
     NumericTargetApplies outcome prior after ↔ outcome.applyTo prior = after := by
   cases outcome <;> cases prior <;> cases after <;>
     simp [NumericTargetApplies, NumericTargetOutcome.applyTo,
-      NumericTargetState.clearValue]
+      NumericTargetState.clearValue, eq_comm]
 
 /-- Exact one-target Number application is deterministic. -/
 theorem numericTargetApplies_deterministic (outcome : NumericTargetOutcome)
@@ -44,7 +45,7 @@ theorem numericTargetApplies_deterministic (outcome : NumericTargetOutcome)
 theorem acceptedNumericTarget_applies_exactly (stored : StoredNumber)
     (prior : NumericTargetState) :
     (NumericTargetOutcome.accepted stored).applyTo prior =
-      .presentValue stored := by
+      .presentValue (.decimal stored) := by
   rfl
 
 /-- Every outcome without an applied value empties a present target in place and leaves an absent target absent. -/
@@ -64,10 +65,11 @@ theorem noAppliedNumericValue_preserves_presence
   rw [noAppliedNumericValue_clears_exactly outcome prior noAppliedValue]
   cases prior <;> rfl
 
-/-- Exact application retains precisely the classified stored decimal and never stores a rejected attempt. -/
-theorem exactNumericApplication_storedValue
+/-- Exact application retains precisely the classified source comparison identity and never stores a rejected attempt. -/
+theorem exactNumericApplication_sourceIdentity
     (outcome : NumericTargetOutcome) (prior : NumericTargetState) :
-    (outcome.applyTo prior).storedValue = outcome.appliedValue := by
+    (outcome.applyTo prior).sourceIdentity =
+      outcome.appliedValue.map .decimal := by
   cases outcome <;> cases prior <;> rfl
 
 /-- Delta-only prior state cannot recover absent versus present-empty placement. -/
@@ -81,12 +83,12 @@ theorem equal_numericDeltaPrior_doesNotImply_equalApplication :
 /-- Equal final empty states do not identify delta provenance: target rejection remains ERRORED rather than CLEARED. -/
 theorem equal_numericApplication_doesNotImply_equalDelta
     (prior attempted : StoredNumber) (cause : NumericTargetError) :
-    NumericTargetOutcome.noValue.applyTo (.presentValue prior) =
+    NumericTargetOutcome.noValue.applyTo (.presentValue (.decimal prior)) =
         (NumericTargetOutcome.rejected attempted cause).applyTo
-          (.presentValue prior) ∧
-      NumericTargetOutcome.noValue.projectDelta (.filled prior) ≠
+          (.presentValue (.decimal prior)) ∧
+      NumericTargetOutcome.noValue.projectDelta (.filled (.decimal prior)) ≠
         (NumericTargetOutcome.rejected attempted cause).projectDelta
-          (.filled prior) := by
+          (.filled (.decimal prior)) := by
   simp [NumericTargetOutcome.applyTo, NumericTargetState.clearValue,
     NumericTargetOutcome.projectDelta]
 

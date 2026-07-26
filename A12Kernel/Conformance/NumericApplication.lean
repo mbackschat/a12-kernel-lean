@@ -13,19 +13,21 @@ private def overlong : StoredNumber :=
 
 /- Accepted output yields its exact decimal form. The equal-value control is extensional and does not claim a physical rewrite. -/
 example : (NumericTargetOutcome.accepted next).applyTo .absent =
-    .presentValue next := by
+    .presentValue (.decimal next) := by
   rfl
 
 example : (NumericTargetOutcome.accepted next).applyTo .presentEmpty =
-    .presentValue next := by
+    .presentValue (.decimal next) := by
   rfl
 
-example : (NumericTargetOutcome.accepted next).applyTo (.presentValue old) =
-    .presentValue next := by
+example : (NumericTargetOutcome.accepted next).applyTo
+    (.presentValue (.decimal old)) =
+    .presentValue (.decimal next) := by
   rfl
 
-example : (NumericTargetOutcome.accepted next).applyTo (.presentValue next) =
-    .presentValue next := by
+example : (NumericTargetOutcome.accepted next).applyTo
+    (.presentValue (.decimal next)) =
+    .presentValue (.decimal next) := by
   rfl
 
 /- Clean no-value preserves placement and clears a filled target in place. -/
@@ -36,7 +38,8 @@ example : NumericTargetOutcome.noValue.applyTo .presentEmpty =
     .presentEmpty := by
   rfl
 
-example : NumericTargetOutcome.noValue.applyTo (.presentValue old) =
+example : NumericTargetOutcome.noValue.applyTo
+    (.presentValue (.decimal old)) =
     .presentEmpty := by
   rfl
 
@@ -45,17 +48,17 @@ example :
     (NumericTargetOutcome.rejected overlong .totalDigitsTooLong).applyTo
         .absent = .absent ∧
       (NumericTargetOutcome.rejected overlong .totalDigitsTooLong).applyTo
-        (.presentValue overlong) = .presentEmpty := by
+        (.presentValue (.decimal overlong)) = .presentEmpty := by
   decide
 
 example :
     (NumericTargetOutcome.invalidNoValue .calculationValue).applyTo
-        (.presentValue old) = .presentEmpty := by
+        (.presentValue (.decimal old)) = .presentEmpty := by
   rfl
 
 example :
     (NumericTargetOutcome.inheritedPoison .malformed).applyTo
-        (.presentValue old) = .presentEmpty := by
+        (.presentValue (.decimal old)) = .presentEmpty := by
   rfl
 
 /- Delta state loses placement, while application preserves it. -/
@@ -68,21 +71,21 @@ example :
 
 /- Equal empty application does not erase delta or semantic-outcome provenance. -/
 example :
-    NumericTargetOutcome.noValue.applyTo (.presentValue overlong) =
+    NumericTargetOutcome.noValue.applyTo (.presentValue (.decimal overlong)) =
         (NumericTargetOutcome.rejected overlong .totalDigitsTooLong).applyTo
-          (.presentValue overlong) ∧
-      NumericTargetOutcome.noValue.projectDelta (.filled overlong) ≠
+          (.presentValue (.decimal overlong)) ∧
+      NumericTargetOutcome.noValue.projectDelta (.filled (.decimal overlong)) ≠
         (NumericTargetOutcome.rejected overlong .totalDigitsTooLong).projectDelta
-          (.filled overlong) := by
+          (.filled (.decimal overlong)) := by
   decide
 
 example :
-    NumericTargetOutcome.noValue.applyTo (.presentValue old) =
+    NumericTargetOutcome.noValue.applyTo (.presentValue (.decimal old)) =
         (NumericTargetOutcome.invalidNoValue .calculationValue).applyTo
-          (.presentValue old) ∧
-      NumericTargetOutcome.noValue.projectDelta (.filled old) =
+          (.presentValue (.decimal old)) ∧
+      NumericTargetOutcome.noValue.projectDelta (.filled (.decimal old)) =
         (NumericTargetOutcome.invalidNoValue .calculationValue).projectDelta
-          (.filled old) ∧
+          (.filled (.decimal old)) ∧
       NumericTargetOutcome.noValue ≠
         .invalidNoValue .calculationValue := by
   decide

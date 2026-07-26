@@ -13,6 +13,8 @@ structure ClassifiedCellInput where
   address : CellAddr
   stored : String
   raw : RawCell
+  /-- Typed V2 source identity needed only for Number computation-result equality. `none` keeps non-Number and pre-SG4 callers unchanged; a filled Number result projection requires the annotation explicitly. -/
+  numericSourceIdentity : Option NumericSourceIdentity := none
   deriving Repr, DecidableEq
 
 /-- Finite immutable document data. Rows remain independent of placed cells. -/
@@ -147,7 +149,11 @@ private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
   pure declaration
 
 private def ClassifiedCellInput.coherent (input : ClassifiedCellInput) : Bool :=
-  if input.stored.isEmpty then
+  let sourceCoherent := match input.numericSourceIdentity with
+    | none => true
+    | some .nonComputedForm => !input.stored.isEmpty
+    | some (.decimal stored) => stored.render == input.stored
+  sourceCoherent && if input.stored.isEmpty then
     input.raw == .presentEmpty
   else
     match input.raw with
@@ -161,6 +167,9 @@ private def checkPlacedCell
     Except CheckedDocumentError CheckedCellPlacement := do
   if !input.coherent then throw (.incoherentCell input.address)
   let declaration ← validateCellAddress model rows input.address
+  if input.numericSourceIdentity.isSome &&
+      !(match declaration.policy.kind with | .number _ => true | _ => false) then
+    throw (.incoherentCell input.address)
   let overLimit ← match model.addressOverLimit?
       declaration.repeatableScope input.address.path with
     | some overLimit => pure overLimit

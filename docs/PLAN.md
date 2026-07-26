@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 508 jobs · trust audit **1416 theorem roots; 29519 declarations in 275 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 510 jobs · trust audit **1417 theorem roots; 29629 declarations in 276 modules** · `lake test` 51/51. The unchanged public reference process passed 51/51 in the same gate. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,16 +21,16 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The checked scalar Number run now executes its certified supplied order against one immutable checked document. Pending targets hide stale source content, completed targets expose `NumericDependencyCell`, ordinary inputs delegate unchanged, and the returned rich outcomes preserve the plan's exact unique target sequence. Separating cases cover accepted producer visibility, clean no-result followed by numeric empty-as-zero consumption, and reached cause-blind poison.
+The checked scalar Number run now executes its certified supplied order against one immutable checked document. Pending targets hide stale source content, completed targets expose `NumericDependencyCell`, ordinary inputs delegate unchanged, and the returned rich outcomes preserve the plan's exact unique target sequence. The same checked input retains optional source Number comparison identity and projects absent, present-empty, scale-sensitive decimal, and source forms that can never equal computed Number output without guessing V2 object type from text. Separating cases cover accepted producer visibility, clean no-result followed by numeric empty-as-zero consumption, reached cause-blind poison, `7` versus `7.00`, equal-looking source String identity, missing provenance, and inconsistent annotation.
 
 ## Active semantic unit
 
-Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. Before adding a Number V2 result view, close the exact source-value boundary needed for scale-sensitive changed/unchanged classification. `CheckedDocument` retains normalized stored text, but its checked Number value is rational and therefore cannot distinguish `7` from `7.00`; string equality would also be wrong for alternative spellings with the same `BigDecimal.equals` identity. Add only a checked normalized stored-Number decoder and source-target projection that preserve `{unscaled, scale}` or fail structurally. Do not widen `Value`, duplicate document state, or start the result view until this discriminator is executable.
+Open [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition) through the source-closed nonrepeatable sequence only. The checked document now optionally retains the source Number's exact comparison identity because stored text cannot distinguish a V2 `String` from `BigDecimal`, and its scalar `Rat` cannot retain decimal scale. Its scalar source-target projection preserves absent, present-empty, comparable decimal, and source forms unequal to every computed Number; a filled Number without that provenance fails structurally. Add the Number-specific V2 result projection over this boundary. Do not reconstruct identity from text, widen `Value`, duplicate document state, or start application.
 
 ## Immediate sequence
 
-1. Add the smallest checked normalized stored-Number decoder/source-target projection and lock `7` versus `7.00`, leading-zero equivalence, malformed stored text, and absent versus present-empty placement.
-2. Then add the Number-specific V2 result projection; keep application separate.
+1. Add the Number-specific V2 result projection with all successful non-clearing outcomes, the typed changed subset, payloadful target errors, source-filled clears, an unchanged residual message input, and the exact two-error-channel predicate.
+2. Keep whole-run application separate.
 
 ## Parked boundaries
 

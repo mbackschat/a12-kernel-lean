@@ -13,6 +13,12 @@ structure StoredNumber where
   scale : Nat
   deriving Repr, DecidableEq
 
+/-- The only source-value distinction relevant to comparison with a computed Number. A decimal retains Java `BigDecimal.equals` identity. A V2 String or a negative-scale `BigDecimal` cannot equal computed output even when its displayed text and amount agree. -/
+inductive NumericSourceIdentity where
+  | decimal (stored : StoredNumber)
+  | nonComputedForm
+  deriving Repr, DecidableEq
+
 namespace StoredNumber
 
 private def zeros (count : Nat) : String :=

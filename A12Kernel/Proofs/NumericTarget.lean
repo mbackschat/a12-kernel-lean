@@ -152,16 +152,25 @@ theorem numericTarget_freshAccepted_reports (stored : StoredNumber) :
 
 /-- An accepted value equal in exact coefficient and scale to the prior stored form produces no delta. -/
 theorem numericTarget_unchangedStored_silent (stored : StoredNumber) :
-    (NumericTargetOutcome.accepted stored).projectDelta (.filled stored) =
+    (NumericTargetOutcome.accepted stored).projectDelta
+      (.filled (.decimal stored)) =
       none := by
   simp [NumericTargetOutcome.projectDelta]
 
 /-- A changed exact stored form produces a VALUE delta carrying that new form. -/
 theorem numericTarget_changedStored_reports
     (previous stored : StoredNumber) (changed : stored ≠ previous) :
-    (NumericTargetOutcome.accepted stored).projectDelta (.filled previous) =
+    (NumericTargetOutcome.accepted stored).projectDelta
+      (.filled (.decimal previous)) =
       some (.value stored) := by
   simp [NumericTargetOutcome.projectDelta, changed]
+
+/-- A source representation outside the computed `BigDecimal` form is always reported as changed, even when its display text or amount agrees. -/
+theorem numericTarget_nonComputedSource_reports
+    (stored : StoredNumber) :
+    (NumericTargetOutcome.accepted stored).projectDelta
+      (.filled .nonComputedForm) = some (.value stored) := by
+  rfl
 
 /-- Target rejection is reported unconditionally, including over an empty prior target. -/
 theorem numericTarget_rejection_reports

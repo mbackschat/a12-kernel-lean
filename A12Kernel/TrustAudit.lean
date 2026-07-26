@@ -602,6 +602,7 @@ run_cmd do
 #print axioms A12Kernel.numericTarget_invalidity_ne_inheritedPoison
 #print axioms A12Kernel.numericTargetApplies_iff_applyTo
 #print axioms A12Kernel.numericTargetApplies_deterministic
+#print axioms A12Kernel.numericTarget_nonComputedSource_reports
 #print axioms A12Kernel.numericComputationTable_noMatch
 #print axioms A12Kernel.numericComputationTable_guardPoison
 #print axioms A12Kernel.numericComputationTable_selected
@@ -615,7 +616,7 @@ run_cmd do
 #print axioms A12Kernel.acceptedNumericTarget_applies_exactly
 #print axioms A12Kernel.noAppliedNumericValue_clears_exactly
 #print axioms A12Kernel.noAppliedNumericValue_preserves_presence
-#print axioms A12Kernel.exactNumericApplication_storedValue
+#print axioms A12Kernel.exactNumericApplication_sourceIdentity
 #print axioms A12Kernel.equal_numericDeltaPrior_doesNotImply_equalApplication
 #print axioms A12Kernel.equal_numericApplication_doesNotImply_equalDelta
 #print axioms A12Kernel.equal_numericApplicationAndDelta_doesNotIdentify_invalidity

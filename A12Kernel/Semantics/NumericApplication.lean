@@ -7,11 +7,11 @@ This capsule models only the placement-sensitive final state of one already-addr
 
 namespace A12Kernel
 
-/-- Exact state of one Number target cell. Unlike `PriorNumericTarget`, this type preserves absent versus present-empty placement. -/
+/-- Exact comparison-relevant state of one Number target cell. Unlike `PriorNumericTarget`, this type preserves absent versus present-empty placement. -/
 inductive NumericTargetState where
   | absent
   | presentEmpty
-  | presentValue (stored : StoredNumber)
+  | presentValue (source : NumericSourceIdentity)
   deriving Repr, DecidableEq
 
 namespace NumericTargetState
@@ -21,9 +21,9 @@ def clearValue : NumericTargetState → NumericTargetState
   | .absent => .absent
   | .presentEmpty | .presentValue _ => .presentEmpty
 
-/-- Project away placement while retaining the exact stored decimal, when present. -/
-def storedValue : NumericTargetState → Option StoredNumber
-  | .presentValue stored => some stored
+/-- Project away placement while retaining the exact source comparison identity, when present. -/
+def sourceIdentity : NumericTargetState → Option NumericSourceIdentity
+  | .presentValue source => some source
   | .absent | .presentEmpty => none
 
 /-- Report target placement independently of its stored value. -/
@@ -33,7 +33,7 @@ def isPresent : NumericTargetState → Bool
 
 /-- Project exact state to the delta-only prior vocabulary, deliberately merging absent and present-empty. -/
 def toDeltaPrior : NumericTargetState → PriorNumericTarget
-  | .presentValue stored => .filled stored
+  | .presentValue source => .filled source
   | .absent | .presentEmpty => .empty
 
 end NumericTargetState
@@ -47,7 +47,7 @@ def appliedValue : NumericTargetOutcome → Option StoredNumber
 
 /-- Apply one supported target outcome to the abstract final state. Accepted output yields its exact decimal form; every other outcome empties a present target in place and leaves an absent target absent. -/
 def applyTo : NumericTargetOutcome → NumericTargetState → NumericTargetState
-  | .accepted stored, _ => .presentValue stored
+  | .accepted stored, _ => .presentValue (.decimal stored)
   | .noValue, prior
   | .rejected _ _, prior
   | .invalidNoValue _, prior

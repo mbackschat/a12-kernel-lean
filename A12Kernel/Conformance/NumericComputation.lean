@@ -5,6 +5,7 @@ import A12Kernel.Conformance.NumericComputation.EvaluationOrder
 import A12Kernel.Conformance.NumericComputation.Repeatable
 import A12Kernel.Conformance.NumericComputation.Table
 import A12Kernel.Conformance.NumericComputation.RunPlan
+import A12Kernel.Conformance.NumericComputation.SourceTarget
 
 /-! # Numeric computation-expression outcome locks
 

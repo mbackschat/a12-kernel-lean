@@ -99,6 +99,8 @@ The over-marking in the first case is deliberate rather than incidental. Both co
 
 The change projection remains exact: **VALUE only on a typed change** (the computed value differs, by typed equality, from what was stored in the computation source), **CLEARED only when the source cell was filled**, and **ERRORED unconditionally**. A report-all evaluator must project to this change boundary before differential comparison, but that projection must not erase successful unchanged instances from the full result. The public computed-instance collections are extensional by pointer and payload; no schedule-order promise follows from their collection iteration order.
 
+For a Number target, “typed equality” is specifically equality of the source and computed V2 objects, not equality of parsed amounts or internal strings. Computed Number output is a `BigDecimal`; an original `BigDecimal` is equal only when value and scale agree, while an original V2 `String` or a negative-scale `BigDecimal` is unequal to every computed Number form even when its plain text and numeric amount agree. Thus computed `7.00` is unchanged only against a source decimal with coefficient `700` and scale `2`; source text `"7.00"` is still a change.
+
 ---
 
 ## 4. The stored form — a computed value lands as a string in the target's shape
