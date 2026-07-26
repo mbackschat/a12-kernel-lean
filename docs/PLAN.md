@@ -19,19 +19,15 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 - The first proof-bearing internal Analyze pilot is closed over the existing checked flat tree. It detects only the exact root-level same-field presence contradiction in either authored order and proves that every returned witness is never firing; it adds no IR, recursive simplifier, solver, command, protocol, or shipment.
 - Repeated starred group-list admission remains pending peer reconciliation under [`SPEC-2026-07-23-09`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-23-09--fixed-group-list-predicates-admit-field-and-group-operands), the bound-prefix static rule under [`SPEC-2026-07-26-01`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-26-01--starred-group-list-iteration-guards-are-operator--and-operand-sensitive), and the nonrepeatable-terminal composition under [`SPEC-2026-07-26-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-26-02--a-nonrepeatable-group-below-starred-ancestors-retains-group-product-semantics).
 
-## Latest semantic milestone
-
-The checked repeatable Number plan now admits an arbitrary nonempty finite list of already-flattened tables. It reuses the shared typed supplied-order dependency scan, rejects duplicate targets and the first table that reads a later target, and proves that no-later-read consequence at every list position. A concrete three-target chain across three indexed groups proves this is a real widening beyond the completed two-target run; the plan certifies no self-reference theorem, graph, sort, independent order, or tie-break.
-
 ## Active semantic unit
 
-Execute the finite supplied-order repeatable Number plan through the existing exact addressed overlay and classify all target families through the existing result owner.
+With finite supplied-order repeatable Number plan certification complete, execute it through the existing exact addressed overlay and result owner while retiring the narrower two-target executor.
 
 ## Immediate sequence
 
-1. Fold the checked tables in supplied order, passing the accumulated exact addressed outcomes through the established read policy and retaining stage-specific structural failure.
-2. Concatenate each table's complete static route inventory for source-filled index clearing without deduplicating equal operand groups across different targets.
-3. Lock the three-target chain, preserve the two-target clean-no-value/reached-poison/unread-poison separators through the finite entry point, and delegate combined classification without adding a relation or trace.
+1. Replace the pair-only execution owner with finite-plan target fields, route concatenation, addressed read policy, table fold, execution, and result classification; retain one target-labelled structural fault and no parallel executor.
+2. Give fields 4 and 6 exact source identities where clearing must be observable, then lock the three-target chain, index-suppressed producers, shared-route non-deduplication, independent supplied orders, and the existing two-target no-value/reached-poison/unread-poison separators.
+3. Prove the read-policy ports, fold-append composition, completed-address ownership, and classifier delegation. Add no relation, scheduler, graph, or trace.
 
 ## Parked boundaries
 
