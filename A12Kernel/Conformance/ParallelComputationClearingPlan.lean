@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ParallelComputationClearingApplication
+import A12Kernel.Elaboration.ParallelNumericDirectRun
 
 /-! # Checked parallel-computation clearing-plan locks -/
 
@@ -16,11 +17,12 @@ private def indexDeclaration (id : FieldId) (path : GroupPath)
 }
 
 private def numberDeclaration (id : FieldId) (path : GroupPath)
-    (name : String) (scope : List RepeatableLevel) : FlatFieldDecl := {
+    (name : String) (scope : List RepeatableLevel) (scale : Nat := 0) :
+    FlatFieldDecl := {
   id
   groupPath := path
   name
-  policy := { kind := .number { scale := 0, signed := false } }
+  policy := { kind := .number { scale, signed := false } }
   repeatableScope := scope
 }
 
@@ -55,6 +57,14 @@ private def model : FlatModel := {
   repeatableGroups := [frame, targetGroup, operandGroup]
 }
 
+private def scaleMismatchModel : FlatModel := {
+  model with
+  fields := model.fields.map fun declaration =>
+    if declaration.id == 4 then
+      numberDeclaration 4 operandGroup.path "Input" [70] 1
+    else declaration
+}
+
 private def operandPath : SurfaceFieldPath := {
   base := .absolute
   groups := operandGroup.path
@@ -63,6 +73,10 @@ private def operandPath : SurfaceFieldPath := {
 
 private def checked? :=
   (checkParallelNumericComputationClearingPlan
+    model ["Plan"] 2 operandPath).toOption
+
+private def directChecked? :=
+  (checkIsolatedParallelNumericDirectRun
     model ["Plan"] 2 operandPath).toOption
 
 private def world : World := { now := { epochMillis := 0 } }
@@ -90,6 +104,13 @@ private def numericCell (path : List Nat) (stored : StoredNumber) :
   stored := stored.render
   raw := .parsed (.num stored.amount)
   numericSourceIdentity := some (.decimal stored)
+}
+
+private def operandNumericCell (path : List Nat) (stored : StoredNumber) :
+    ClassifiedCellInput := {
+  address := { field := 4, path }
+  stored := stored.render
+  raw := .parsed (.num stored.amount)
 }
 
 private def emptyNumericCell (path : List Nat) :
@@ -171,6 +192,13 @@ private def appliedDestination?
   let view ← (checked.clearedSourceTargets preliminary).toOption
   pure (view.applyTo applicationDestination)
 
+private def directOutcomes?
+    (cells : List ClassifiedCellInput) :
+    Option (List ParallelNumericDirectOutcome) := do
+  let checked ← directChecked?
+  let preliminary ← preliminaryFor cells
+  (checked.execute preliminary).toOption
+
 /- Target instances come from physical rows at the deepest target scope, including blank-but-instantiated rows; unrelated group rows do not enter the projection. Document order is the Lean account's deterministic internal order, not a Kernel clearing-order claim. -/
 example :
     (checked?.bind fun checked =>
@@ -217,6 +245,23 @@ example :
       some [{ field := 2, path := [2, 1] }] := by
   native_decide
 
+/- An off-path invalid column suppresses every covered target outcome; source-filled targets appear only in the clearing projection. -/
+example :
+    let operandInvalid :=
+      (cleanIndexCells.filter fun input =>
+        input.address != { field := 3, path := [2] }) ++ [
+          operandNumericCell [1] { unscaled := 100, scale := 0 },
+          numericCell [1, 1] { unscaled := 7, scale := 0 },
+          numericCell [2, 1] { unscaled := 8, scale := 0 }
+        ]
+    directOutcomes? operandInvalid = some [] ∧
+      clearedAddresses? operandInvalid =
+        some [
+          { field := 2, path := [1, 1] },
+          { field := 2, path := [2, 1] }
+        ] := by
+  native_decide
+
 /- Source identity is demanded only for a covered filled target: an unmarked malformed source annotation stays irrelevant, while the same defect on the marked row remains structural. -/
 example :
     let targetInvalid :=
@@ -251,6 +296,41 @@ example :
         { field := 2, path := [1, 1] },
         { field := 2, path := [2, 1] }
       ] := by
+  native_decide
+
+/- Clean target rows copy the matching operand by index key; an unmatched clean operand side contributes numeric zero rather than suppressing that target. -/
+example :
+    let clean := cleanIndexCells ++ [
+      operandNumericCell [1] { unscaled := 100, scale := 0 },
+      operandNumericCell [2] { unscaled := 200, scale := 0 }
+    ]
+    directOutcomes? clean =
+      some [
+        ⟨{ field := 2, path := [1, 1] },
+          .accepted { unscaled := 100, scale := 0 }⟩,
+        ⟨{ field := 2, path := [2, 1] },
+          .accepted { unscaled := 0, scale := 0 }⟩,
+        ⟨{ field := 2, path := [1, 2] },
+          .accepted { unscaled := 200, scale := 0 }⟩
+      ] := by
+  native_decide
+
+/- An on-path invalid frame contributes no outcome for its marked target, while clean sibling-frame targets still execute and the source-filled invalid target remains solely in the clearing projection. -/
+example :
+    let targetInvalid :=
+      (cleanIndexCells.filter fun input =>
+        input.address != { field := 1, path := [2, 1] }) ++ [
+          operandNumericCell [1] { unscaled := 100, scale := 0 },
+          operandNumericCell [2] { unscaled := 200, scale := 0 },
+          numericCell [2, 1] { unscaled := 8, scale := 0 }
+        ]
+    (directOutcomes? targetInvalid).map (List.map (·.address)) =
+        some [
+          { field := 2, path := [1, 1] },
+          { field := 2, path := [1, 2] }
+        ] ∧
+      clearedAddresses? targetInvalid =
+        some [{ field := 2, path := [2, 1] }] := by
   native_decide
 
 /- Addressed clearing empties a present destination target in place, leaves an absent covered target absent, and preserves an unrelated address. -/
@@ -319,6 +399,15 @@ example :
     | .error error => some error
     | .ok _ => none) =
       some (.join (.incompatibleGroups targetGroup.path targetGroup.path)) := by
+  native_decide
+
+/- A direct field copy retains computation's shared exact-scale gate rather than treating any two Number declarations as assignable. -/
+example :
+    (match checkIsolatedParallelNumericDirectRun
+        scaleMismatchModel ["Plan"] 2 operandPath with
+    | .error error => some error
+    | .ok _ => none) =
+      some (.operationScaleMismatch 0 1) := by
   native_decide
 
 end A12Kernel.Conformance.ParallelComputationClearingPlan

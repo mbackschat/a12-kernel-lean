@@ -1494,6 +1494,7 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericClearing_applyTo_other
 #print axioms A12Kernel.parallelNumericClearing_applyTo_preserves_absent
 #print axioms A12Kernel.parallelNumericClearing_applyTo_extensional
+#print axioms A12Kernel.checkedIsolatedParallelNumericDirectRun_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_wellFormed
 #print axioms A12Kernel.checkedParallelPresenceRule_conditionShape
 #print axioms A12Kernel.checkedParallelPresenceRule_cannotFireOnEmpty

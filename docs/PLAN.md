@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 525 jobs · trust audit **1453 theorem roots; 30416 declarations in 289 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 527 jobs · trust audit **1454 theorem roots; 30657 declarations in 291 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,17 +21,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-The first repeatable SG4 result fragment now projects checked post-loop marks to exact source-relative public clears and applies them to a separately supplied exact addressed destination. The Number source-target owner accepts one model-legal repeatable address and preserves absent, present-empty, typed filled identity, and structural failure. Only covered source-filled targets enter the clearing view; blank instantiated rows and present-empty target cells stay out, an unmarked malformed source annotation is never inspected, and a marked filled target without typed identity fails structurally. Clean columns provably produce the empty clearing view. Application reuses the one-target clear transition, preserves unrelated addresses, never creates an absent target, and is invariant under clear-list permutation and repeated identical clears.
+The first isolated repeatable Number run now executes one complete unguarded direct-copy computation inventory over the existing checked exact-text parallel route. It rejects an operand-only frame and unequal field scales statically, enumerates existing target rows only, joins by normalized key rather than row position, reads a clean unmatched operand as zero, and omits every target covered by either side's invalid-index marks. Each evaluated target retains its exact `CellAddr` and rich Number outcome. Separating cases lock clean matching, unmatched zero, on-path invalid-frame omission with clean sibling success, and off-path suppression of all covered outcomes; the already-closed source-relative clearing projection contains the marked source-filled targets instead.
 
 ## Active semantic unit
 
-Close the smallest successful repeatable Number outcome on the existing checked parallel route, including its interaction with post-loop invalid marks. Do not accept caller-supplied outcomes or infer collision precedence from the current clear-only projection.
+Build one same-preliminary addressed Number result for the isolated run without cloning scalar result classification. The result must derive outcomes and index clears from the same checked execution input, classify source-relative successes/changes/errors/clears at `CellAddr`, and preserve collection order as non-public.
 
 ## Immediate sequence
 
-1. Re-audit the generated parallel-row loop, exact index matching, empty operand behavior, and the post-loop mark timing against kernel source; record only a durable correction or new source route.
-2. Admit one direct Number route only if the current checked certificate can own both matching and target address without a second join or plan representation.
-3. Retain each successful or failed row outcome at its exact `CellAddr`, then state and separate the source-defined result when a later coarse invalid mark covers that same address.
+1. Generalize the existing Number result classifier over its target-key type now that `FieldId` and `CellAddr` are two completed consumers; keep the scalar names as compatibility aliases and change no scalar behavior.
+2. Add an isolated-run `executeResult` that pairs each exact outcome with the same document's addressed source state and obtains clearing from the same preliminary, with no caller-supplied outcome or clear list.
+3. Prove extensional collection laws and the absence of outcome/clear address collisions before extending addressed application from clears to successful and errored outcomes.
 
 ## Parked boundaries
 

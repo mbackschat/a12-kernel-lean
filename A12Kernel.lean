@@ -77,6 +77,7 @@ import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedIndexColumn
 import A12Kernel.Elaboration.ParallelComputationClearing
 import A12Kernel.Elaboration.ParallelComputationClearingApplication
+import A12Kernel.Elaboration.ParallelNumericDirectRun
 import A12Kernel.Elaboration.ParallelPresenceRule
 import A12Kernel.Elaboration.CheckedRequired
 import A12Kernel.Elaboration.ValidationRule
