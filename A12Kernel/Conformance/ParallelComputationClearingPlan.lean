@@ -55,7 +55,8 @@ def model : FlatModel := {
     numberDeclaration 2 targetGroup.path "Result" [50, 60],
     numberDeclaration 5 targetGroup.path "Peer" [50, 60],
     indexDeclaration 3 operandGroup.path [70],
-    numberDeclaration 4 operandGroup.path "Input" [70]
+    numberDeclaration 4 operandGroup.path "Input" [70],
+    numberDeclaration 6 operandGroup.path "Offset" [70]
   ]
   repeatableGroups := [frame, targetGroup, operandGroup]
 }

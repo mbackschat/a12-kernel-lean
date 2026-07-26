@@ -10,7 +10,7 @@ theorem checkedIsolatedParallelNumericDirectRun_wellFormed
     checked.WellFormed :=
   ⟨checkedParallelNumericClearingPlan_wellFormed checked.route,
     checked.guardAdmitted, checked.expressionUsesOperand,
-    checked.expressionOperandsOwned, checked.expressionAdmitted,
+    checked.expressionOperandsAdmitted, checked.expressionAdmitted,
     checked.expressionAuthoring, checked.operandScopeAvailable,
     checked.operationScaleOwned, checked.operationScaleAdmitted⟩
 
