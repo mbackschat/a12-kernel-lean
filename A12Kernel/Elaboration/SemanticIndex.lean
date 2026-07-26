@@ -1,10 +1,11 @@
+import A12Kernel.Elaboration.CheckedIndexColumn
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.SemanticIndex
 
 /-! # Checked one-group Number semantic-index construction
 
-This capsule joins the existing checked flat and one-group raw contexts to the resolved semantic-index evaluator for one source-grounded profile: a literal Number or nonrepeatable Number field selects a Number target in a group with one declared direct-child Number index field. Both key forms use normalized numeric identity; a dynamic field key retains ordinary phase observation before lookup. General raw-token keys, repeatable field-valued keys, nested repetitions, and concrete syntax remain outside.
+This capsule supplies reduced raw-context and immutable generated-preliminary routes to the resolved semantic-index evaluator for one source-grounded profile: a literal Number or nonrepeatable Number field selects a Number target in a group with one declared direct-child Number index field. Both key forms use normalized numeric identity; a dynamic field key retains ordinary phase observation before lookup. The immutable route projects the shared checked index column rather than rebuilding defaults or generated findings. General non-Number surface keys, repeatable field-valued keys, nested indices, and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -124,6 +125,7 @@ def elaborateNumberSemanticIndexSource (model : FlatModel)
 
 inductive SemanticIndexContextError where
   | topology (error : SingleGroupContextError)
+  | checkedColumn (error : CheckedIndexColumnError)
   deriving Repr, DecidableEq
 
 private structure NumberIndexCandidate where
@@ -179,6 +181,26 @@ private def NumberIndexCandidates.toColumn
   { entries, unavailableKey }
 
 namespace CheckedNumberSemanticIndexSource
+
+/-- Project the shared generated-preliminary index column into semantic-index's clean unique-entry policy without rebuilding topology, defaults, or generated findings. -/
+def resolvePreliminaryColumn
+    (checked : CheckedNumberSemanticIndexSource model)
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
+    Except SemanticIndexContextError ResolvedSemanticIndexColumn := do
+  let column ← preliminary.resolveIndexColumn checked.group outer
+    |>.mapError .checkedColumn
+  column.toSemanticIndexColumn preliminary checked.targetField.id
+    |>.mapError .checkedColumn
+
+/-- Evaluate a literal or dynamic Number key over the immutable checked preliminary document through the common resolved-column evaluator. -/
+def lookupPreliminaryValue
+    (checked : CheckedNumberSemanticIndexSource model)
+    (preliminary : CheckedIndexPreliminary model)
+    (keyRaw : RawFlatContext) (phase : Phase) (outer : Env := []) :
+    Except SemanticIndexContextError CellObservation := do
+  let column ← checked.resolvePreliminaryColumn preliminary outer
+  pure (column.lookupNumberObservation phase
+    (checked.key.observe model keyRaw phase))
 
 /-- Validate row topology, apply declaration-owned key and target checks, remove every duplicate-key participant, and retain one unavailable-column cause. -/
 def resolveColumn (checked : CheckedNumberSemanticIndexSource model)

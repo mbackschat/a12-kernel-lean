@@ -1019,6 +1019,7 @@ run_cmd do
 #print axioms A12Kernel.semanticIndex_computation_unavailableKey_fillSlot
 #print axioms A12Kernel.semanticIndex_computationFillSlot_orderObservable
 #print axioms A12Kernel.checkedNumberSemanticIndex_lookupValue_delegates
+#print axioms A12Kernel.checkedNumberSemanticIndex_preliminary_delegates
 #print axioms A12Kernel.checkedNumberSemanticIndex_validationNumberOperand_delegates
 #print axioms A12Kernel.checkedNumberSemanticIndex_invalidTopology
 #print axioms A12Kernel.semanticIndex_numberKey_does_not_match_text
@@ -1396,6 +1397,10 @@ run_cmd do
 #print axioms A12Kernel.indexPreliminary_unique_contract
 #print axioms A12Kernel.checkedIndexPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedIndexPreliminary_default_read
+#print axioms A12Kernel.checkedIndexColumn_wellFormed
+#print axioms A12Kernel.checkedIndexColumn_duplicate_notSemantic
+#print axioms A12Kernel.parallelIndexSide_cleanMissing
+#print axioms A12Kernel.parallelIndexSide_invalidMissing
 #print axioms A12Kernel.checkedPartialPreliminary_preserves_parsed
 #print axioms A12Kernel.checkedPartialPreliminary_silent_read
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant

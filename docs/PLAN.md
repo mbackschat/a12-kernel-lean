@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-26:** `lake build` 477 jobs · trust audit **1350 theorem roots; 27762 declarations in 253 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
+**Last full gate, 2026-07-26:** `lake build` 480 jobs · trust audit **1355 theorem roots; 28102 declarations in 255 modules** · `lake test` 51/51 · `lake exe checkReferenceProcess` 51/51. Re-run the four commands in [`CLAUDE.md`](../CLAUDE.md#building--running) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is active. Canonical topology, complete `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, and structural failure already compose across multiple Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers. The finite remaining checklist is in [`SG2`](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction).
@@ -20,17 +20,17 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Latest semantic milestone
 
-Checked ordinary full and partial rules now consume complete nested environments. RNU derives each distinct bound prefix through the existing star path, prepares one branch-independent relation per default or authored-`@From` scope, and supplies only the exact current-row result to the shared condition tree. Cases separate global cross-parent duplicates from per-parent `@From`, equal local coordinates, ancestor-key addressing, missing outer bindings, complete and incomplete composite relevance, and immutable rule-row order. No second cache, topology, document view, condition tree, or address model was added.
+One generated-preliminary checked index column now serves both semantic index and bounded parallel iteration. It retains every ordered normalized-key occurrence, duplicate keys, and column invalidity separately; semantic index excludes duplicates while the deterministic parallel reference selects the last document-order occurrence. The first parallel profile joins exact-text direct siblings in lexical key order, excludes over-limit rows, and represents an unmatched side as `Option Env`. Clean unmatched reads are empty, invalid unmatched reads are UNKNOWN, matched reads remain physical even in an invalid column, and every model/address failure stays structural. Number semantic index consumes the same immutable-document column, while Number parallel ordering fails closed until normalized rendered ordering has an owner. Exact Kernel correspondence for which duplicate occurrence wins remains pending because cache population traverses a `HashMap`.
 
 ## Active semantic unit
 
-Continue [`SG2` semantic-index/parallel construction](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) from the closed nested RNU route. The group-product audit remains blocked at a precise boundary: `ResolvedGroupPresenceInput` retains NONE/PARTIAL/FULL, but the ordinary partial rule context carries the complete `CheckedDocument`, not the relevance-selected cells, rows, and silent errors owned by `CheckedPartialPreliminary`. Passing full descendants with a partial relevance label would be unsound; do not add a second view or widen the rule context inside a leaf capsule.
+Continue [`SG2` semantic-index/parallel construction](SEMANTICS-GAPS.md#sg2--general-repeatable-addressing-and-operand-construction) from the closed checked-column carrier. Select one bounded validation rule shape whose sibling references consume the exact-text direct-sibling join, reuse the existing shared condition tree and message emitter, and preserve each side's optional environment through addressed leaf reads. Do not widen into Number ordering, wrapped/framed joins, computation clearing, peer-pointer messages, a general parallel plan, or an externally exact duplicate-winner claim in that capsule. The group-product audit remains separately blocked because the ordinary partial rule context does not carry the relevance-selected preliminary slice.
 
 ## Immediate sequence
 
-1. Inventory the existing semantic-index elaboration, parallel-iteration fixtures, checked-document addressing, and static legality owners before proposing a validation-phase join.
-2. Build one source decision table for exact joined environments, missing-side observations, row order, index invalidity, and structural failure; identify which distinctions the existing `Env` and checked cell owners already retain.
-3. Write red cases only if the existing boundaries can express the join without a second topology or document model. Stop and report the exact missing shared invariant before adding any parallel framework or cache.
+1. Inventory the smallest existing checked validation leaf that can distinguish a matched sibling row, a clean unmatched side, and an invalid unmatched side without new scalar semantics.
+2. Add red whole-rule cases for exact key order, both missing-side directions, matched reads in an invalid column, exact error addressing, and structural field-side misuse.
+3. Attach that leaf to the existing checked condition tree, rule loop, and emitter by consuming `ResolvedParallelIndexJoin`; add no new join, cache, topology, document view, or universal evaluator.
 
 ## Parked boundaries
 

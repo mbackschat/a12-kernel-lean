@@ -5,6 +5,21 @@ import A12Kernel.Proofs.SemanticIndex
 
 namespace A12Kernel
 
+/-- The document-backed route delegates key policy to the same semantic-index evaluator after the shared checked column has been projected. -/
+theorem checkedNumberSemanticIndex_preliminary_delegates
+    (checked : CheckedNumberSemanticIndexSource model)
+    (preliminary : CheckedIndexPreliminary model)
+    (keyRaw : RawFlatContext) (phase : Phase) (outer : Env)
+    (column : ResolvedSemanticIndexColumn)
+    (resolved : checked.resolvePreliminaryColumn preliminary outer =
+      .ok column) :
+    checked.lookupPreliminaryValue preliminary keyRaw phase outer =
+      .ok (column.lookupNumberObservation phase
+        (checked.key.observe model keyRaw phase)) := by
+  unfold CheckedNumberSemanticIndexSource.lookupPreliminaryValue
+  rw [resolved]
+  rfl
+
 /-- A successfully resolved checked source delegates phase behavior and numeric-key comparison to the existing resolved semantic-index evaluator. -/
 theorem checkedNumberSemanticIndex_lookupValue_delegates
     (checked : CheckedNumberSemanticIndexSource model)

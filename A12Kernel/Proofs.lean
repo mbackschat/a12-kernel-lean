@@ -45,6 +45,7 @@ import A12Kernel.Proofs.ValidationCondition
 import A12Kernel.Proofs.FlatPresenceContradiction
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.CheckedIndexPreliminary
+import A12Kernel.Proofs.CheckedIndexColumn
 import A12Kernel.Proofs.RawString
 import A12Kernel.Proofs.CustomFieldElaboration
 import A12Kernel.Proofs.CustomFieldContext
