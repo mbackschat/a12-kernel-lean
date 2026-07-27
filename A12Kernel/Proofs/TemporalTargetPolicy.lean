@@ -17,4 +17,16 @@ theorem checkedTemporalTargetPolicy_not_time
     (checked : CheckedTemporalTargetPolicy model) :
     checked.timeZoneId = model.timeZoneId := rfl
 
+/-- The optional pre-1900 branch retains the renderer's exact attempted stored form. -/
+theorem fullDateTarget_evaluate_pre1900
+    (target : CheckedFullDateTarget model)
+    (instant : Instant) (date : FullDate)
+    (localDate : target.profile.localDate? instant = some date)
+    (check : target.checked.policy.youngerThan1900Check = true)
+    (before : date.before1900 = true) :
+    target.evaluate (.value instant) =
+      .ok (.errored (target.format.render date) .before1900) := by
+  simp [CheckedFullDateTarget.evaluate, localDate, check, before]
+  rfl
+
 end A12Kernel

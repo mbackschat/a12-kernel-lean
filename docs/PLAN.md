@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 548 jobs · trust audit **1486 theorem roots; 31774 declarations in 303 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 549 jobs · trust audit **1487 theorem roots; 32099 declarations in 304 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close one bounded SG6 computed full-Date target rendering/checking capsule from the checked declaration policy to a rich target outcome, preserving the exact attempted stored text on rejection.
+Close one bounded SG6 full-Date target delta/application capsule that consumes the rich accepted, errored-attempt, no-value, and poison outcomes without reconstructing target text or broadening the admitted renderer.
 
 ## Immediate sequence
 
-1. Bound the first executable renderer to the smallest source-audited full-Date format family that separates component order and separators; do not claim arbitrary `SimpleDateFormat` compatibility.
-2. Run the dangerous discriminator first: one resolved date rendered through two checked target formats must produce distinct stored text, while an opt-in pre-1900 rejection must remain an errored attempted value rather than clean empty.
-3. Reuse the checked target policy, model-zone owner, and existing rich computation-result vocabulary. Stop before DateTime, partial-date input completion, whole-run scheduling, or application unless the full-Date result boundary itself requires one of them.
+1. Audit the existing String and Number delta/application owners against the Date target source path; reuse only distinctions whose result domain is identical.
+2. Separate unchanged accepted text, changed accepted text, retained errored attempt, clean no-value, and poison against absent, empty, and filled prior target states.
+3. Keep document mutation outside the semantic root: classify one source/target transition first, then add only the smallest one-address application law justified by the existing application boundary. Stop before DateTime, partial-Date completion, wider format syntax, or whole-run scheduling.
 
 ## Parked boundaries
 

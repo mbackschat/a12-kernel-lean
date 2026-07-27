@@ -1,8 +1,9 @@
 import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal-target policy
 
-This capsule resolves one nonrepeatable Date or DateTime target against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. It deliberately performs no parsing, rendering, target check, result classification, or application.
+This capsule resolves one nonrepeatable Date or DateTime target against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its bounded full-Date refinement renders and checks two exact formats against one concrete model-zone profile. Parsing, delta classification, and application remain separate.
 -/
 
 namespace A12Kernel
@@ -71,5 +72,93 @@ def elaborateTemporalTargetPolicy
       | .time => throw (.unsupportedTargetKind targetField .time)
       | .date => finish (Or.inl hKind)
       | .dateTime => finish (Or.inr hKind)
+
+/-- Static refusal before the bounded full-Date target can execute. -/
+inductive FullDateTargetElabError where
+  | targetPolicy (error : TemporalTargetElabError)
+  | targetKind (target : FieldId) (actual : TemporalKind)
+  | partialMode (target : FieldId) (actual : TemporalPartialMode)
+  | unsupportedFormat (target : FieldId) (source : String)
+  | unsupportedZone (zoneId : String)
+  deriving Repr, DecidableEq
+
+/-- One checked full-Date target with an executable format and concrete model-zone profile. -/
+structure CheckedFullDateTarget (model : FlatModel) where
+  checked : CheckedTemporalTargetPolicy model
+  format : FullDateTargetFormat
+  profile : ModelZone.ConcreteProfile
+  targetIsDate : checked.target.kind = .date
+  partialModeFull : checked.policy.partialMode = .full
+  formatMatches :
+    FullDateTargetFormat.ofSource? checked.policy.format = some format
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
+
+namespace CheckedTemporalTargetPolicy
+
+/-- Refine a checked temporal target to the first executable full-Date subset. Every wider kind, partial mode, format, or zone is an explicit refusal. -/
+def toFullDateTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except FullDateTargetElabError (CheckedFullDateTarget model) := do
+  if hDate : checked.target.kind = .date then
+    if hMode : checked.policy.partialMode = .full then
+      match hFormat :
+          FullDateTargetFormat.ofSource? checked.policy.format with
+      | none =>
+          throw (.unsupportedFormat checked.target.id checked.policy.format)
+      | some format =>
+          match hProfile :
+              ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+          | none => throw (.unsupportedZone checked.timeZoneId)
+          | some profile =>
+              pure {
+                checked
+                format
+                profile
+                targetIsDate := hDate
+                partialModeFull := hMode
+                formatMatches := hFormat
+                profileMatches := hProfile }
+    else
+      throw (.partialMode checked.target.id checked.policy.partialMode)
+  else
+    throw (.targetKind checked.target.id checked.target.kind)
+
+end CheckedTemporalTargetPolicy
+
+/-- Resolve and refine one model-owned nonrepeatable full-Date target. -/
+def elaborateFullDateTarget
+    (model : FlatModel) (targetField : FieldId) :
+    Except FullDateTargetElabError (CheckedFullDateTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicy model targetField |>.mapError .targetPolicy
+  checked.toFullDateTarget
+
+/-- Runtime refusal when an exact result instant has no post-floor local Date in the selected concrete profile. -/
+inductive FullDateTargetEvaluationFault where
+  | localDateUnavailable (instant : Instant)
+  deriving Repr, DecidableEq
+
+namespace CheckedFullDateTarget
+
+/-- Render and basic-check one already-selected full-Date computation result without classifying a delta or mutating a document. -/
+def evaluate
+    (target : CheckedFullDateTarget model) :
+    FullDateComputationResult →
+      Except FullDateTargetEvaluationFault FullDateTargetOutcome
+  | .noValue => pure .noValue
+  | .poison cause => pure (.poison cause)
+  | .value instant =>
+      match target.profile.localDate? instant with
+      | none => throw (.localDateUnavailable instant)
+      | some date =>
+          let stored := target.format.render date
+          if target.checked.policy.youngerThan1900Check &&
+              date.before1900 then
+            pure (.errored stored .before1900)
+          else
+            pure (.accepted stored)
+
+end CheckedFullDateTarget
 
 end A12Kernel

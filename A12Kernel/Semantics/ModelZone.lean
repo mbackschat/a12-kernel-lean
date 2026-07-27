@@ -56,6 +56,15 @@ def resolveLocal? (profile : ConcreteProfile) (dateTime : LocalDateTime) :
   | .utc => some dateTime.resolveUtc
   | .europeBerlin => EuropeBerlinLegacyProfile.resolveLocal? dateTime
 
+/-- Decode the local admitted Date at one exact instant under this concrete profile. This is the rendering-side counterpart to fresh-label resolution. -/
+def localDate? (profile : ConcreteProfile) (instant : Instant) :
+    Option FullDate :=
+  match profile with
+  | .utc => localDateAtOffset? instant 0
+  | .europeBerlin =>
+      (EuropeBerlinLegacyProfile.offsetSecondsAt? instant).bind
+        (localDateAtOffset? instant)
+
 end ConcreteProfile
 
 def concreteToday? (zoneId : String) (instant : Instant) : Option Instant :=
