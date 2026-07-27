@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1584 theorem roots; 35459 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1585 theorem roots; 35562 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close the smallest nonliteral `HoursFromTime`/`MinutesFromTime`/`SecondsFromTime` source already representable by the checked shifted-DateTime owner. Start with one complete DateTime field shifted by a literal or checked direct-Number expression, and compose its reason-bearing result into the existing matching Time-component position without adding a temporal-expression tree.
+Close the dynamic companion to the bounded shifted-field extractor: matching `HoursFromTime`/`MinutesFromTime`/`SecondsFromTime` over `AddHours`/`AddMinutes`/`AddSeconds(Now, amount)`. Reuse the existing checked `Now` shift and explicit execution `World`; do not sample time, add a temporal-expression tree, or force dynamic input into `CheckedDocument`.
 
 ## Immediate sequence
 
-1. Recheck the matching extractor token gate, generated nested-operation order, and runtime projection for `HoursFromTime(AddHours(...))` and its Minute/Second siblings. Confirm that the existing `ValueAsDateTimeTimeOperand` preserves every reason the component constructor needs.
-2. Add one checked adapter from a shifted complete-DateTime field to the existing `TimeConstructionComponent` result, reusing `CheckedValueAsDateTimeShiftAmount`, exact-instant shifting, model-zone projection, and `TimeNumericPart`; do not widen the general surface enum unless the bounded adapter proves that representation necessary.
-3. Keep separators for matching versus mismatched component position, source-before-amount formal order, empty shifted source, domain-invalid amount, a Berlin transition, and Date-first outer composition. Stop if the existing reason-bearing result cannot project without losing non-relevance or missing provenance. Leave arbitrary temporal-expression recursion, repeatable addressing, message text, and date-like distinct count outside.
+1. Recheck the generated `Now`-before-amount route and confirm that the existing world-dependent shifted-Time owner already retains exact milliseconds until the component boundary.
+2. Add the smallest world-aware component read/evaluate seam and a checked matching-token adapter. Preserve the existing document-only API for static components; do not make `World` implicit or duplicate the shift evaluator.
+3. Keep separators for changing worlds, equal whole-second projection from distinct millisecond identities, Berlin spring-forward, a reached formal or domain-invalid amount, wrong component position, and Date-first outer composition. Stop if this requires a general temporal-expression carrier or changes the static component path. Leave repeatable addressing, message text, wider nested temporal sources, and date-like distinct count outside.
 
 ## Parked boundaries
 

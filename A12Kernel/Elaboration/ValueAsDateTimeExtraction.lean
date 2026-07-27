@@ -42,6 +42,7 @@ inductive ValueAsDateTimeExtractionElabError where
   | amountNotNumber (field : FieldId)
   | amountExpression (error : NumericValidationElabError)
   | amountExpressionNotDirectNumber
+  | unsupportedZone (zoneId : String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -185,6 +186,76 @@ def elaborateValueAsDateTimeExpressionShiftAmount
   else
     throw .amountExpressionNotDirectNumber
 
+/-- One checked complete-DateTime field, model-zone profile, sub-day unit, and checked numeric amount. This is the shared nested shift read before a consumer selects the whole Time or one clock component. -/
+structure CheckedShiftedDateTimeSource (model : FlatModel) where
+  source : FlatTemporalField
+  sourceAdmitted :
+    model.admitsValueAsDateTimeExtractionSource source = true
+  profile : ModelZone.ConcreteProfile
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+  unit : DateTimeSubdayUnit
+  amount : CheckedValueAsDateTimeShiftAmount model
+
+namespace CheckedShiftedDateTimeSource
+
+/-- Read the certified DateTime before its amount and preserve missing, formal, arithmetic-domain, exact-instant, and model-zone outcomes for the consuming extractor. -/
+def readTime (checked : CheckedShiftedDateTimeSource model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
+  let cell ← input.read {
+    field := checked.source.id
+    path := []
+  } |>.mapError .document
+  match observeCell phase cell with
+  | .empty =>
+      match ← checked.amount.read phase input with
+      | .error (.formal cause) => pure (.unavailable cause)
+      | .error unavailable =>
+          throw (.amountExpressionUnavailable unavailable)
+      | .ok _ => pure (.noValue true)
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.temporal (.dateTime instant _ _ _)) =>
+      checked.amount.readShiftedTime phase input
+        checked.profile checked.unit instant
+  | .value _ => throw (.sourcePayloadMismatch checked.source.id)
+
+end CheckedShiftedDateTimeSource
+
+/-- Check the shared field-backed shifted-DateTime source after its amount has been certified by the selected numeric-expression boundary. -/
+def elaborateShiftedDateTimeSource
+    (model : FlatModel) (sourceField : FieldId)
+    (unit : DateTimeSubdayUnit)
+    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedShiftedDateTimeSource model) := do
+  let declaration ←
+    model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
+  let source ← match declaration.toTemporalField? with
+    | some source => pure source
+    | none => throw (.sourceNotTemporal sourceField)
+  if _hKind : source.kind = .dateTime then
+    if _hComponents : source.components.isFullDateTime = true then
+      if hAdmitted :
+          model.admitsValueAsDateTimeExtractionSource source = true then
+        match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile =>
+            pure {
+              source
+              sourceAdmitted := hAdmitted
+              profile
+              profileMatches := hProfile
+              unit
+              amount
+            }
+        | none => throw (.unsupportedZone model.timeZoneId)
+      else
+        throw .incoherentCore
+    else
+      throw (.sourceComponents source.id source.components)
+  else
+    throw (.sourceKind source.id source.kind)
+
 namespace CheckedValueAsDateTimeExtraction
 
 /-- Read the certified scalar DateTime source once and retain its wall clock, empty state, or exact formal cause. The reference semantics uses a linear immutable document lookup and adds no second zone conversion. -/
@@ -218,26 +289,23 @@ structure CheckedValueAsDateTimeShiftExtraction (model : FlatModel)
 
 namespace CheckedValueAsDateTimeShiftExtraction
 
+/-- Forget only the enclosing partial-Date construction while retaining its already-checked model-zone shift source. -/
+def toCheckedShiftedDateTimeSource
+    (checked : CheckedValueAsDateTimeShiftExtraction model) :
+    CheckedShiftedDateTimeSource model := {
+  source := checked.source
+  sourceAdmitted := checked.sourceAdmitted
+  profile := checked.construction.profile
+  profileMatches := checked.construction.profileMatches
+  unit := checked.unit
+  amount := checked.amount
+}
+
 /-- Read the certified source before the amount, apply Java-compatible signed-32-bit conversion, then decode the shifted exact instant under the model-owned profile. A formal source stops before the amount; an empty source still reaches it. -/
 def readShiftedTime (checked : CheckedValueAsDateTimeShiftExtraction model)
     (phase : Phase) (input : CheckedDocument model) :
-    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
-  let cell ← input.read {
-    field := checked.source.id
-    path := []
-  } |>.mapError .document
-  match observeCell phase cell with
-  | .empty =>
-      match ← checked.amount.read phase input with
-      | .error (.formal cause) => pure (.unavailable cause)
-      | .error unavailable =>
-          throw (.amountExpressionUnavailable unavailable)
-      | .ok _ => pure (.noValue true)
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.temporal (.dateTime instant _ _ _)) =>
-      checked.amount.readShiftedTime phase input
-        checked.construction.profile checked.unit instant
-  | .value _ => throw (.sourcePayloadMismatch checked.source.id)
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  checked.toCheckedShiftedDateTimeSource.readTime phase input
 
 /-- Check the bounded partial-Date source, then evaluate the shifted DateTime extraction only when generated left-to-right argument evaluation reaches it. -/
 def evaluateRaw (checked : CheckedValueAsDateTimeShiftExtraction model)

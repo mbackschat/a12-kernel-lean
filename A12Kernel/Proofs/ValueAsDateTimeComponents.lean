@@ -22,6 +22,15 @@ theorem checkedTimeExtractorField_position_matches
   unfold FlatModel.admitsTimeExtractorField at admitted
   split at admitted <;> simp_all
 
+/-- A nested temporal expression that produces no DateTime value still follows the
+    runtime extractor's numeric-zero rule; only not-given provenance keeps the enclosing
+    `Time(...)` component empty. -/
+@[simp] theorem valueAsDateTimeTimeOperand_extractComponent_noValue
+    (part : TimeNumericPart) (notGiven : Bool) :
+    ValueAsDateTimeTimeOperand.extractComponent (.noValue notGiven) part =
+      if notGiven then .empty else .value 0 := by
+  cases notGiven <;> rfl
+
 /-- A formally unavailable partial Date prevents every checked Time component read,
     preserving generated Date-before-Time evaluation. -/
 theorem valueAsDateTimeComponents_evaluateRaw_date_unavailable

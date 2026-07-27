@@ -62,6 +62,21 @@ private def mixedModel : FlatModel := {
   timeZoneId := "Europe/Berlin"
 }
 
+private def componentPath (name : String) : SurfaceFieldPath := {
+  base := .absolute
+  groups := ["Order"]
+  field := name }
+
+private def shiftedHourAmount : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add
+    (.atom (.field (componentPath "Component1")))
+    (.literal { value := 1, authoredScale := 0 })
+
+private def invalidShiftAmount : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .divide
+    (.atom (.field (componentPath "Component1")))
+    (.literal { value := 0, authoredScale := 0 })
+
 private def prepared? (model : FlatModel) :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
@@ -293,6 +308,70 @@ example :
         stored := "bad"
         raw := .rejected .malformed
       }] = some (.unavailable .malformed) := by
+  native_decide
+
+/- A nonliteral extractor reuses exact-instant DateTime shifting before selecting its matching component. Berlin spring-forward therefore skips hour 2. A present-but-valueless shifted source projects to fixed zero, while a not-given source keeps the enclosing Time incomplete. -/
+example :
+    let sourceLocal := (LocalDateTime.ofYmdHms?
+      2024 3 31 1 30 0).get (by native_decide)
+    let sourceInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        sourceLocal).get (by native_decide)
+    let evaluate
+        (expression : AuthoredNumericExpr SurfaceNumericAtom)
+        (source : Option (RawCell Value))
+        (amount : Option (RawCell Value)) := do
+      let component ←
+        (elaborateShiftedTimeExtractorExpression mixedModel ["Order"]
+          .hour .hour 5 .hours expression).toOption
+      let sourceCell := source.toList.map fun raw => {
+        address := { field := 5, path := [] }
+        stored := "source"
+        raw
+      }
+      let amountCell := amount.toList.map fun raw =>
+        numberCell 1 "amount" raw
+      let input ← document? mixedModel (sourceCell ++ amountCell)
+      (CheckedTimeComponents.hour component).evaluate
+        .computation input |>.toOption
+    let presentSource : RawCell Value := .parsed (.temporal
+      (.dateTime sourceInstant sourceLocal.date.civil.parts
+        sourceLocal.time .storedGregorian))
+    evaluate shiftedHourAmount (some presentSource)
+        (some (.parsed (.num 0))) =
+        some (.value ((TimeOfDay.ofHms? 3 0 0).get (by native_decide))) ∧
+      evaluate invalidShiftAmount (some presentSource)
+        (some (.parsed (.num 3))) =
+        some (.value ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))) ∧
+      evaluate invalidShiftAmount none (some (.parsed (.num 3))) =
+        some .incomplete ∧
+      (elaborateShiftedTimeExtractorLiteral mixedModel
+        .hour .hour 5 .hours 1).isOk = true := by
+  native_decide
+
+/- The nested shift preserves source-before-amount formal order, and the component position must match the authored extractor token. -/
+example :
+    let evaluate (source : Option (RawCell Value))
+        (amount : RawCell Value) := do
+      let component ←
+        (elaborateShiftedTimeExtractorExpression mixedModel ["Order"]
+          .hour .hour 5 .hours shiftedHourAmount).toOption
+      let sourceCell := source.toList.map fun raw => {
+        address := { field := 5, path := [] }
+        stored := "source"
+        raw
+      }
+      let input ← document? mixedModel
+        (sourceCell ++ [numberCell 1 "amount" amount])
+      (CheckedTimeComponents.hour component).evaluate
+        .computation input |>.toOption
+    evaluate (some (.rejected .malformed))
+        (.rejected .declaredConstraint) =
+        some (.unavailable .malformed) ∧
+      evaluate none (.rejected .declaredConstraint) =
+        some (.unavailable .declaredConstraint) ∧
+      (elaborateShiftedTimeExtractorExpression mixedModel ["Order"]
+        .hour .minute 5 .hours shiftedHourAmount).isOk = false := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDateTimeComponents

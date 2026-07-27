@@ -1,18 +1,18 @@
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Elaboration.ValueAsDate
+import A12Kernel.Elaboration.ValueAsDateTimeExtraction
 
 /-! # Partial-Date and checked `Time(...)` components
 
 This capsule checks and executes one mixed prefix of ordinary nonrepeatable Number fields,
 pattern-backed String fields, and matching time-component extractors over ordinary Time
-or DateTime fields. Each declaration retains its branch-specific static certificate.
-Execution reads the immutable checked document in Hour/Minute/Second order and delegates
-defaults and clock classification to `TimeConstructionResult`.
+or DateTime fields. A bounded nonliteral extractor may instead consume the shared checked
+field-backed DateTime shift. Each declaration retains its branch-specific static
+certificate. Execution reads the immutable checked document in Hour/Minute/Second order
+and delegates defaults and clock classification to `TimeConstructionResult`.
 
 The String branch covers the six checker-recognized digit patterns. The separate
 extensible-enumeration alternative remains excluded because the flat declaration does not
-retain that fact. Wider expression-sourced extractors remain outside this field-backed
-capsule.
+retain that fact. Wider recursive temporal-expression sources remain outside.
 -/
 
 namespace A12Kernel
@@ -122,6 +122,13 @@ structure CheckedTimeExtractorField (model : FlatModel) where
   source : FlatTemporalField
   admitted : model.admitsTimeExtractorField position part source = true
 
+/-- One matching component extractor over the shared checked field-backed DateTime shift. -/
+structure CheckedShiftedTimeExtractor (model : FlatModel) where
+  position : TimeComponentPosition
+  part : TimeNumericPart
+  source : CheckedShiftedDateTimeSource model
+  positionMatches : position.extractor = part
+
 /-- One grammar-valid field-backed component before model-relative checking. -/
 inductive SurfaceTimeComponent where
   | number (field : FieldId)
@@ -134,6 +141,7 @@ inductive CheckedTimeComponent (model : FlatModel) where
   | number (checked : CheckedTimeNumberField model)
   | string (checked : CheckedTimeStringField model)
   | extractor (checked : CheckedTimeExtractorField model)
+  | shiftedExtractor (checked : CheckedShiftedTimeExtractor model)
 
 /-- The grammar-valid one-to-three-component prefix. Omitted trailing components are
     absent from this type and therefore cannot be read. -/
@@ -157,6 +165,7 @@ inductive TimeComponentsElabError where
   | extractorSourceKind (position : TimeComponentPosition) (field : FieldId)
   | extractorMismatch (position : TimeComponentPosition) (actual : TimeNumericPart)
   | declarationNotAdmitted (position : TimeComponentPosition) (field : FieldId)
+  | shifted (error : ValueAsDateTimeExtractionElabError)
   deriving Repr, DecidableEq
 
 private def elaborateTimeNumberField (model : FlatModel)
@@ -226,12 +235,55 @@ def elaborateTimeComponents (model : FlatModel) :
         (← elaborateTimeComponent model .minute minute)
         (← elaborateTimeComponent model .second second))
 
+/-- Check one matching Time-component extractor over the shared field-backed sub-day shift. -/
+def elaborateShiftedTimeExtractor
+    (model : FlatModel)
+    (position : TimeComponentPosition) (part : TimeNumericPart)
+    (sourceField : FieldId) (unit : DateTimeSubdayUnit)
+    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    Except TimeComponentsElabError (CheckedTimeComponent model) := do
+  if hPosition : position.extractor = part then
+    let source ←
+      elaborateShiftedDateTimeSource model sourceField unit amount
+        |>.mapError .shifted
+    pure (.shiftedExtractor {
+      position
+      part
+      source
+      positionMatches := hPosition
+    })
+  else
+    throw (.extractorMismatch position part)
+
+/-- Check a matching component extractor over one literal field-backed DateTime shift. -/
+def elaborateShiftedTimeExtractorLiteral
+    (model : FlatModel) (position : TimeComponentPosition)
+    (part : TimeNumericPart) (sourceField : FieldId)
+    (unit : DateTimeSubdayUnit) (amount : Rat) :
+    Except TimeComponentsElabError (CheckedTimeComponent model) :=
+  elaborateShiftedTimeExtractor model position part sourceField unit
+    (.literal amount)
+
+/-- Check a matching component extractor over one field-backed DateTime shift whose amount is a checked direct-Number expression. -/
+def elaborateShiftedTimeExtractorExpression
+    (model : FlatModel) (rowGroup : GroupPath)
+    (position : TimeComponentPosition) (part : TimeNumericPart)
+    (sourceField : FieldId) (unit : DateTimeSubdayUnit)
+    (amount : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except TimeComponentsElabError (CheckedTimeComponent model) := do
+  let checkedAmount ←
+    elaborateValueAsDateTimeExpressionShiftAmount model rowGroup amount
+      |>.mapError .shifted
+  elaborateShiftedTimeExtractor model position part
+    sourceField unit checkedAmount
+
 /-- Structural failure outside the reason-bearing `TimeConstructionResult` domain. -/
 inductive TimeComponentsFault where
   | document (error : CheckedDocumentError)
   | payloadKind (field : FieldId)
   | stringNotConvertible (field : FieldId) (value : String)
   | nonIntegralPayload (field : FieldId) (value : Rat)
+  | shifted (error : ValueAsDateTimeExtractionFault)
   deriving Repr, DecidableEq
 
 namespace CheckedTimeNumberField
@@ -338,6 +390,32 @@ def read (checked : CheckedTimeExtractorField model)
 
 end CheckedTimeExtractorField
 
+namespace ValueAsDateTimeTimeOperand
+
+/-- Project one reason-bearing shifted DateTime clock through the runtime extractor's numeric-zero and missingness rules. A present-but-valueless DateTime yields fixed zero; only not-given provenance makes the component empty. -/
+def extractComponent (operand : ValueAsDateTimeTimeOperand)
+    (part : TimeNumericPart) : TimeConstructionComponent :=
+  match operand with
+  | .noValue true => .empty
+  | .noValue false => .value 0
+  | .value _ true => .empty
+  | .value time false => .value (part.extract time).num
+  | .nonRelevant => .nonRelevant
+  | .unavailable cause => .unavailable cause
+
+end ValueAsDateTimeTimeOperand
+
+namespace CheckedShiftedTimeExtractor
+
+/-- Execute the shared checked shift before applying this extractor's exact component and reason projection. -/
+def read (checked : CheckedShiftedTimeExtractor model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except TimeComponentsFault TimeConstructionComponent := do
+  let time ← checked.source.readTime phase input |>.mapError .shifted
+  pure (ValueAsDateTimeTimeOperand.extractComponent time checked.part)
+
+end CheckedShiftedTimeExtractor
+
 namespace CheckedTimeComponent
 
 /-- Execute exactly the statically selected component branch. -/
@@ -348,6 +426,7 @@ def read (checked : CheckedTimeComponent model)
   | .number field => field.read phase input
   | .string field => field.read phase input
   | .extractor field => field.read phase input
+  | .shiftedExtractor source => source.read phase input
 
 end CheckedTimeComponent
 
