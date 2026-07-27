@@ -11,9 +11,16 @@ theorem checkedConstructedDateBaseYear_read
       .ok (.value year) := by
   rfl
 
+/-- A checked quoted constant is fixed input and cannot consult document state. -/
+theorem checkedConstructedDateConstant_read
+    (value : Int) (phase : Phase) (input : CheckedDocument model) :
+    CheckedConstructedDateSource.read (.constant value) phase input =
+      .ok (.value value) := by
+  rfl
+
 /-- A formally unavailable Century stops the split year before Short-Year is consulted. -/
 theorem checkedConstructedDateCentury_read_unavailable
-    (century shortYear : CheckedConstructedDateNumberField model)
+    (century shortYear : CheckedConstructedDateSource model)
     (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
     (observed :
       century.read phase input = .ok (.unavailable cause)) :
@@ -24,7 +31,7 @@ theorem checkedConstructedDateCentury_read_unavailable
 
 /-- Two reached fixed split-year parts compose by decimal place, not addition. -/
 theorem checkedConstructedDateCentury_read_values
-    (century shortYear : CheckedConstructedDateNumberField model)
+    (century shortYear : CheckedConstructedDateSource model)
     (phase : Phase) (input : CheckedDocument model)
     (centuryValue shortYearValue : Int)
     (observedCentury :
@@ -64,7 +71,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
     checked.evaluate phase input ≠ .ok (.resolved .unknown) := by
   unfold CheckedConstructedDateComponents.evaluate
   generalize dayRead :
-    CheckedConstructedDateNumberField.read checked.day phase input = day
+    CheckedConstructedDateSource.read checked.day phase input = day
   cases day with
   | error error => simp
   | ok day =>
@@ -72,7 +79,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
       | unavailable cause => simp
       | value amount =>
           generalize monthRead :
-            CheckedConstructedDateNumberField.read checked.month phase input = month
+            CheckedConstructedDateSource.read checked.month phase input = month
           cases month with
           | error error => simp
           | ok month =>
@@ -96,7 +103,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
                         simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
       | empty =>
           generalize monthRead :
-            CheckedConstructedDateNumberField.read checked.month phase input = month
+            CheckedConstructedDateSource.read checked.month phase input = month
           cases month with
           | error error => simp
           | ok month =>

@@ -22,37 +22,10 @@ structure ParsedJavaDecimalToken where
   digitCount : Nat
   deriving Repr, DecidableEq
 
-/-- Starts of the ten-code-point BMP decimal blocks accepted by Java 21's `Character.isDigit(char)`. Commons Lang 3.20.0 iterates UTF-16 `char`, so supplementary-plane decimal code points are deliberately absent. -/
-private def java21BmpDecimalDigitStarts : List Nat :=
-  [0x0030, 0x0660, 0x06F0, 0x07C0, 0x0966, 0x09E6, 0x0A66, 0x0AE6,
-   0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66, 0x0DE6, 0x0E50, 0x0ED0,
-   0x0F20, 0x1040, 0x1090, 0x17E0, 0x1810, 0x1946, 0x19D0, 0x1A80,
-   0x1A90, 0x1B50, 0x1BB0, 0x1C40, 0x1C50, 0xA620, 0xA8D0, 0xA900,
-   0xA9D0, 0xA9F0, 0xAA50, 0xABF0, 0xFF10]
-
-private def java21DecimalDigitValueFrom? (code : Nat) : List Nat → Option Nat
-  | [] => none
-  | start :: rest =>
-      if start ≤ code ∧ code < start + 10 then
-        some (code - start)
-      else
-        java21DecimalDigitValueFrom? code rest
-
-/-- Decimal value under the exact Java 21 UTF-16 `Character.isDigit(char)` profile used by the pinned kernel's Commons Lang parser. -/
-def java21DecimalDigitValue? (character : Char) : Option Nat :=
-  java21DecimalDigitValueFrom? character.toNat java21BmpDecimalDigitStarts
-
-private def parseJavaDecimalDigitsAux (accumulator : Nat) :
-    List Char → Option Nat
-  | [] => some accumulator
-  | character :: rest => do
-      let digit ← java21DecimalDigitValue? character
-      parseJavaDecimalDigitsAux (accumulator * 10 + digit) rest
-
 private def parseJavaDecimalDigitsAllowEmpty
     (characters : List Char) : Option Nat :=
   if characters.isEmpty then some 0
-  else parseJavaDecimalDigitsAux 0 characters
+  else parseJava21BmpNatural? (String.ofList characters)
 
 /-- Parse exactly the Java 21 `NumberUtils.isParsable` decimal fragment consumed by ordinary numeric Enumeration values: optional leading minus, at most one dot, at least one digit, and no trailing dot. A leading dot is legal. Digit-budget admission remains a separate model check. -/
 def parseJavaDecimalToken? (input : String) : Option ParsedJavaDecimalToken := do

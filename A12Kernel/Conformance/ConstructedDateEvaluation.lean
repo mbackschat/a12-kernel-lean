@@ -77,6 +77,13 @@ private def evaluateCentury? (cells : List ClassifiedCellInput) := do
   let input ← document? cells
   checked.evaluate .validation input |>.toOption
 
+private def evaluateSources? (sources : SurfaceConstructedDateComponents)
+    (cells : List ClassifiedCellInput) := do
+  let checked ←
+    (elaborateConstructedDateSources (dateModel "UTC") sources).toOption
+  let input ← document? cells
+  checked.evaluate .validation input |>.toOption
+
 private def validVerdict? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
@@ -151,6 +158,32 @@ example :
         numberCell 8 "19" (.parsed (.num 19)),
         numberCell 9 "63" (.parsed (.num 63))] ≠
           some (.resolved (.real { year := 82, month := 6, day := 15 })) := by
+  native_decide
+
+/- Checked constants are fixed inputs: they compose with a field component and do not
+   consult unrelated document cells. -/
+example :
+    let sources : SurfaceConstructedDateComponents := {
+      day := .numberField 1
+      month := .constant "6"
+      year := .centuryAndShortYear
+        (.constant "19") (.constant "63") }
+    evaluateSources? sources [
+        numberCell 1 "15" (.parsed (.num 15))] =
+          some (.resolved (.real { year := 1963, month := 6, day := 15 })) ∧
+      evaluateSources? sources [
+        numberCell 1 "15" (.parsed (.num 15)),
+        numberCell 3 "bad-unread-year" (.rejected .malformed)] =
+          some (.resolved (.real {
+            year := 1963, month := 6, day := 15 })) ∧
+      evaluateSources? {
+        day := .constant "15"
+        month := .constant "6"
+        year := .centuryAndShortYear
+          (.constant "19") (.constant "00")
+      } [] =
+        some (.resolved (.real {
+          year := 1900, month := 6, day := 15 })) := by
   native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=

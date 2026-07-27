@@ -1649,6 +1649,7 @@ run_cmd do
 #print axioms A12Kernel.checkedConstructedDateComponents_utc
 #print axioms A12Kernel.checkedConstructedDateComponents_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateBaseYear_read
+#print axioms A12Kernel.checkedConstructedDateConstant_read
 #print axioms A12Kernel.checkedConstructedDateCentury_read_unavailable
 #print axioms A12Kernel.checkedConstructedDateCentury_read_values
 #print axioms A12Kernel.constructedDateObservation_ofAvailableComponents_ne_unknown

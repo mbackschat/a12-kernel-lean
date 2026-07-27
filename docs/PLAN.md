@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1611 theorem roots; 36468 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1612 theorem roots; 36621 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close direct decimal-string constants in the two-, three-, and four-part `Date(...)` forms by extending the existing checked constructed-Date component owner. Reuse the fixed-component route already established by model Base Year, but retain each position's exact lexical/range admission and generated argument order.
+Close matching direct Date-component extractors in the three-part `Date(...)` form through the existing checked constructed-Date component owner. Reuse the established temporal component admission and immutable checked-document projection; preserve the exact Day/Month/Year token-position match and keep all extractor forms rejected in the four-part split-year positions.
 
 ## Immediate sequence
 
-1. Complete the bounded parser/backing-bean/runtime packet for constant Day, Month, complete Year, Century, and Short-Year, including exact accepted digit counts and exclusive range ends.
-2. Add separating red cases for accepted one-/two-digit Day and Month, four-digit complete Year, split 19/63, rejected range/width forms, and document independence.
-3. Generalize only the checked component source seam needed to share field and fixed components; keep String fields, extractors, wider zones, repeatables, targets, and numeric-expression integration outside.
+1. Reconcile the direct extractor checker with the existing `DateNumericPart` admission, including Date versus DateTime kinds, component presence, Base-Year Year supplementation, and the four-part rejection branch.
+2. Add separating red cases for a mixed Day extractor/constant/Year extractor construction, an empty extracted component, exact first-formal precedence, mismatched tokens, missing source components, and every split-year extractor rejection.
+3. Generalize only the checked component source seam needed to reuse the existing temporal payload and component projection; keep recursive extractor operands, String fields, wider zones, repeatables, targets, and numeric-expression integration outside.
 
 ## Parked boundaries
 

@@ -66,6 +66,41 @@ def parseAsciiNatural? (value : String) : Option Nat :=
   | [] => none
   | characters => parseAsciiNaturalAux 0 characters
 
+/-- Starts of the ten-code-point BMP decimal blocks accepted by Java 21's `Character.isDigit(char)`. The `char` overload rejects supplementary-plane decimal code points because it observes their surrogate code units separately. -/
+private def java21BmpDecimalDigitStarts : List Nat :=
+  [0x0030, 0x0660, 0x06F0, 0x07C0, 0x0966, 0x09E6, 0x0A66, 0x0AE6,
+   0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66, 0x0DE6, 0x0E50, 0x0ED0,
+   0x0F20, 0x1040, 0x1090, 0x17E0, 0x1810, 0x1946, 0x19D0, 0x1A80,
+   0x1A90, 0x1B50, 0x1BB0, 0x1C40, 0x1C50, 0xA620, 0xA8D0, 0xA900,
+   0xA9D0, 0xA9F0, 0xAA50, 0xABF0, 0xFF10]
+
+private def java21BmpDecimalDigitValueFrom? (code : Nat) :
+    List Nat → Option Nat
+  | [] => none
+  | start :: rest =>
+      if start ≤ code ∧ code < start + 10 then
+        some (code - start)
+      else
+        java21BmpDecimalDigitValueFrom? code rest
+
+/-- Decimal value under the exact Java 21 UTF-16 `Character.isDigit(char)` profile used by the pinned Kernel's Commons Lang parser. -/
+def java21BmpDecimalDigitValue? (character : Char) : Option Nat :=
+  java21BmpDecimalDigitValueFrom?
+    character.toNat java21BmpDecimalDigitStarts
+
+private def parseJava21BmpNaturalAux (accumulator : Nat) :
+    List Char → Option Nat
+  | [] => some accumulator
+  | character :: rest => do
+      let digit ← java21BmpDecimalDigitValue? character
+      parseJava21BmpNaturalAux (accumulator * 10 + digit) rest
+
+/-- Parse one nonempty natural-number token under the pinned Java 21 per-UTF-16-code-unit decimal-digit profile. -/
+def parseJava21BmpNatural? (value : String) : Option Nat :=
+  match value.toList with
+  | [] => none
+  | characters => parseJava21BmpNaturalAux 0 characters
+
 /-- The exact declared Java-pattern source whose complete runtime language is already executable without embedding a regex engine. This is model metadata, not a `FieldValueAsNumber` eligibility flag. -/
 def asciiDigitsPatternSource : String := "[0-9]+"
 

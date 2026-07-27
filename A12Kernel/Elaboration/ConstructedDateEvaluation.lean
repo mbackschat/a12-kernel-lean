@@ -4,9 +4,9 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule reads one certified direct constructed Date from the immutable checked document in generated component order. The two-argument form replaces the final read with the fixed model Base Year; the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Field-backed components read the immutable checked document, fixed components do not; the two-argument form uses the model Base Year, while the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
-The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Another component form or model zone, DateTime, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. String and extractor components, another model zone, DateTime, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -53,6 +53,18 @@ def read (checked : CheckedConstructedDateNumberField model)
 
 end CheckedConstructedDateNumberField
 
+namespace CheckedConstructedDateSource
+
+/-- Read a field-backed component or return an authored constant without consulting the document. -/
+def read (checked : CheckedConstructedDateSource model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match checked with
+  | .numberField source => source.read phase input
+  | .constant value => pure (.value value)
+
+end CheckedConstructedDateSource
+
 namespace CheckedConstructedDateYear
 
 /-- Read one checked year form. Split-year evaluation preserves Century-before-Short-Year formal precedence, while any ordinary empty component keeps the construction incomplete. -/
@@ -60,7 +72,7 @@ def read (checked : CheckedConstructedDateYear model)
     (phase : Phase) (input : CheckedDocument model) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   match checked with
-  | .field source => source.read phase input
+  | .complete source => source.read phase input
   | .baseYear year => pure (.value year)
   | .centuryAndShortYear century shortYear =>
       match century.read phase input with

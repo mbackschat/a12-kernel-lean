@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.ConstructedDateComponents
 
-/-! # Checked three-Number-field constructed-Date locks -/
+/-! # Checked constructed-Date component locks -/
 
 namespace A12Kernel.Conformance.ConstructedDateComponents
 
@@ -58,7 +58,7 @@ private def baseYearOf? (model : FlatModel) : Option Int :=
   | .ok checked =>
       match checked.year with
       | .baseYear year => some year
-      | .field _ | .centuryAndShortYear _ _ => none
+      | .complete _ | .centuryAndShortYear _ _ => none
   | .error _ => none
 
 example :
@@ -88,6 +88,34 @@ example :
         dateModel "UTC" with
         fields := [componentField 5 { maximum := some 98 }]
       } .shortYear 5).isOk = false := by
+  native_decide
+
+private def constantDateIsOk (day month : String)
+    (year : SurfaceConstructedDateYear) : Bool :=
+  (elaborateConstructedDateSources (dateModel "UTC") {
+    day := .constant day
+    month := .constant month
+    year
+  }).isOk
+
+/- Constant Day/Month have range but no width gate. Complete and split years retain
+   their exact lexical widths and exclusive range ends. -/
+example :
+    constantDateIsOk "0001" "06" (.complete (.constant "1963")) = true ∧
+      constantDateIsOk "١٥" "٦" (.complete (.constant "١٩٦٣")) = true ∧
+      constantDateIsOk "15" "6"
+        (.centuryAndShortYear (.constant "19") (.constant "63")) = true ∧
+      constantDateIsOk "15" "6"
+        (.centuryAndShortYear (.constant "19") (.constant "00")) = true ∧
+      constantDateIsOk "𐒡" "6" (.complete (.constant "1963")) = false ∧
+      constantDateIsOk "32" "6" (.complete (.constant "1963")) = false ∧
+      constantDateIsOk "15" "13" (.complete (.constant "1963")) = false ∧
+      constantDateIsOk "15" "6" (.complete (.constant "01963")) = false ∧
+      constantDateIsOk "15" "6" (.complete (.constant "2200")) = false ∧
+      constantDateIsOk "15" "6"
+        (.centuryAndShortYear (.constant "22") (.constant "00")) = false ∧
+      constantDateIsOk "15" "6"
+        (.centuryAndShortYear (.constant "19") (.constant "0")) = false := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateComponents

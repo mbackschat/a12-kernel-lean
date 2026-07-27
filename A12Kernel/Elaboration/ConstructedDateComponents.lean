@@ -1,11 +1,12 @@
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Semantics.ModelZone
+import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies the direct nonrepeatable three- and four-Number-field `Date` forms and the two-argument Base-Year specialization for model-owned UTC or GMT. Each authored field position keeps the kernel checker's exact stored-width-or-maximum declaration gate; the omitted year is the fixed model Base Year, while the split year is `century * 100 + shortYear`.
+This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields or admitted quoted constants, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width-or-maximum declaration gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-Execution, other model zones, String and extractor components, repeatable placement, targets, and a general temporal-expression tree remain outside.
+String and extractor components, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -38,7 +39,47 @@ def admitsMaximum (position : ConstructedDateComponentPosition) :
       | .shortYear => maximum == 99
   | none => false
 
+/-- Exact parser boundary for one quoted constant under the pinned Java 21 host profile. Day and Month have no width gate; every year form does. -/
+def decodeConstant? (position : ConstructedDateComponentPosition)
+    (source : String) : Option Int := do
+  let value ← parseJava21BmpNatural? source
+  let widthAccepted := match position with
+    | .day | .month => true
+    | .year => utf16CodeUnitLength source == 4
+    | .century | .shortYear => utf16CodeUnitLength source == 2
+  let rangeAccepted := match position with
+    | .day => 1 ≤ value && value < 32
+    | .month => 1 ≤ value && value < 13
+    | .year => 1800 ≤ value && value < 2200
+    | .century => 18 ≤ value && value < 22
+    | .shortYear => value < 100
+  if widthAccepted && rangeAccepted then
+    some value
+  else
+    none
+
 end ConstructedDateComponentPosition
+
+/-- One grammar-valid direct component source before model-relative checking. -/
+inductive SurfaceConstructedDateSource where
+  | numberField (field : FieldId)
+  | constant (source : String)
+  deriving Repr, DecidableEq
+
+/-- The three legal authored year shapes before model-relative checking. -/
+inductive SurfaceConstructedDateYear where
+  | complete (source : SurfaceConstructedDateSource)
+  | baseYear
+  | centuryAndShortYear
+      (century shortYear : SurfaceConstructedDateSource)
+  deriving Repr, DecidableEq
+
+/-- One complete direct Date source in generated component order. -/
+structure SurfaceConstructedDateComponents where
+  day : SurfaceConstructedDateSource
+  month : SurfaceConstructedDateSource
+  year : SurfaceConstructedDateYear
+  deriving Repr, DecidableEq
 
 /-- Exact Number declaration gate for one direct three-field Date component. -/
 def FlatModel.admitsConstructedDateNumberField (model : FlatModel)
@@ -62,17 +103,22 @@ structure CheckedConstructedDateNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsConstructedDateNumberField position source = true
 
-/-- A checked complete Year, fixed model Base Year, or authored Century/Short-Year pair. -/
+/-- One checked field-backed or fixed constant component. -/
+inductive CheckedConstructedDateSource (model : FlatModel) where
+  | numberField (source : CheckedConstructedDateNumberField model)
+  | constant (value : Int)
+
+/-- A checked complete Year source, fixed model Base Year, or authored Century/Short-Year pair. -/
 inductive CheckedConstructedDateYear (model : FlatModel) where
-  | field (source : CheckedConstructedDateNumberField model)
+  | complete (source : CheckedConstructedDateSource model)
   | baseYear (year : Int)
   | centuryAndShortYear
-      (century shortYear : CheckedConstructedDateNumberField model)
+      (century shortYear : CheckedConstructedDateSource model)
 
 /-- The checked direct constructor plus its bounded model-zone certificate. -/
 structure CheckedConstructedDateComponents (model : FlatModel) where
-  day : CheckedConstructedDateNumberField model
-  month : CheckedConstructedDateNumberField model
+  day : CheckedConstructedDateSource model
+  month : CheckedConstructedDateSource model
   year : CheckedConstructedDateYear model
   profileIsUtc :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId =
@@ -84,6 +130,8 @@ inductive ConstructedDateComponentsElabError where
   | sourceKind (position : ConstructedDateComponentPosition) (field : FieldId)
   | declarationNotAdmitted (position : ConstructedDateComponentPosition)
       (field : FieldId)
+  | constantNotAdmitted
+      (position : ConstructedDateComponentPosition) (source : String)
   | missingBaseYear
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
@@ -105,67 +153,72 @@ def elaborateConstructedDateNumberField
   else
     throw (.declarationNotAdmitted position field)
 
-/-- Check the direct Day/Month/Year form and reject unsupported zone behavior before execution. -/
-def elaborateConstructedDateComponents
-    (model : FlatModel) (day month year : FieldId) :
+/-- Check one direct field or quoted constant at its authored position. -/
+def elaborateConstructedDateSource
+    (model : FlatModel) (position : ConstructedDateComponentPosition) :
+    SurfaceConstructedDateSource →
+      Except ConstructedDateComponentsElabError
+        (CheckedConstructedDateSource model)
+  | .numberField field =>
+      .numberField <$> elaborateConstructedDateNumberField model position field
+  | .constant source =>
+      match position.decodeConstant? source with
+      | some value => pure (.constant value)
+      | none => throw (.constantNotAdmitted position source)
+
+/-- Check one two-, three-, or four-part direct Date through a common ordered source seam. -/
+def elaborateConstructedDateSources
+    (model : FlatModel) (sources : SurfaceConstructedDateComponents) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateComponents model) := do
   match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
   | some .utc =>
-      let checkedDay ←
-        elaborateConstructedDateNumberField model .day day
-      let checkedMonth ←
-        elaborateConstructedDateNumberField model .month month
-      let checkedYear ←
-        elaborateConstructedDateNumberField model .year year
-      pure {
-        day := checkedDay
-        month := checkedMonth
-        year := .field checkedYear
-        profileIsUtc := hProfile }
+      let day ← elaborateConstructedDateSource model .day sources.day
+      let month ← elaborateConstructedDateSource model .month sources.month
+      let year ← match sources.year with
+        | .complete source =>
+            CheckedConstructedDateYear.complete <$>
+              elaborateConstructedDateSource model .year source
+        | .baseYear =>
+            match model.baseYear with
+            | some year => pure (.baseYear year)
+            | none => throw .missingBaseYear
+        | .centuryAndShortYear century shortYear =>
+            pure (.centuryAndShortYear
+              (← elaborateConstructedDateSource model .century century)
+              (← elaborateConstructedDateSource model .shortYear shortYear))
+      pure { day, month, year, profileIsUtc := hProfile }
   | _ => throw (.unsupportedZone model.timeZoneId)
+
+/-- Check the direct Day/Month/Year form and reject unsupported zone behavior before execution. -/
+def elaborateConstructedDateComponents
+    (model : FlatModel) (day month year : FieldId) :
+    Except ConstructedDateComponentsElabError
+      (CheckedConstructedDateComponents model) :=
+  elaborateConstructedDateSources model {
+    day := .numberField day
+    month := .numberField month
+    year := .complete (.numberField year) }
 
 /-- Check the two-argument Day/Month form and retain the required model Base Year as its fixed third component. -/
 def elaborateConstructedDateBaseYearComponents
     (model : FlatModel) (day month : FieldId) :
     Except ConstructedDateComponentsElabError
-      (CheckedConstructedDateComponents model) := do
-  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
-  | some .utc =>
-      let checkedDay ←
-        elaborateConstructedDateNumberField model .day day
-      let checkedMonth ←
-        elaborateConstructedDateNumberField model .month month
-      let year ← match model.baseYear with
-        | some year => pure year
-        | none => throw .missingBaseYear
-      pure {
-        day := checkedDay
-        month := checkedMonth
-        year := .baseYear year
-        profileIsUtc := hProfile }
-  | _ => throw (.unsupportedZone model.timeZoneId)
+      (CheckedConstructedDateComponents model) :=
+  elaborateConstructedDateSources model {
+    day := .numberField day
+    month := .numberField month
+    year := .baseYear }
 
 /-- Check the four-argument Day/Month/Century/Short-Year form in source-check order. -/
 def elaborateConstructedDateCenturyComponents
     (model : FlatModel) (day month century shortYear : FieldId) :
     Except ConstructedDateComponentsElabError
-      (CheckedConstructedDateComponents model) := do
-  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
-  | some .utc =>
-      let checkedDay ←
-        elaborateConstructedDateNumberField model .day day
-      let checkedMonth ←
-        elaborateConstructedDateNumberField model .month month
-      let checkedCentury ←
-        elaborateConstructedDateNumberField model .century century
-      let checkedShortYear ←
-        elaborateConstructedDateNumberField model .shortYear shortYear
-      pure {
-        day := checkedDay
-        month := checkedMonth
-        year := .centuryAndShortYear checkedCentury checkedShortYear
-        profileIsUtc := hProfile }
-  | _ => throw (.unsupportedZone model.timeZoneId)
+      (CheckedConstructedDateComponents model) :=
+  elaborateConstructedDateSources model {
+    day := .numberField day
+    month := .numberField month
+    year := .centuryAndShortYear
+      (.numberField century) (.numberField shortYear) }
 
 end A12Kernel
