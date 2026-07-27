@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 606 jobs · trust audit **1597 theorem roots; 35731 declarations in 343 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 609 jobs · trust audit **1598 theorem roots; 35873 declarations in 345 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Test the first checked constructed-Date consumer boundary against the completed default-cutover arithmetic core. Determine whether the existing flat declaration/context facts can certify and evaluate one three-field `Date(day, month, year)` source plus a literal day/month/year operation without adding a general temporal-expression tree or sampling model-zone state during checking.
+Execute the newly certified direct UTC/GMT three-Number-field `Date(day, month, year)` source through the immutable checked document and the completed default-cutover arithmetic core. Preserve the first reached formal cause outside cause-free `DateConstructionResult`, then compose literal day/month/year shifts without adding a general temporal-expression tree.
 
 ## Immediate sequence
 
-1. Inventory the current flat Number declaration, checked document read, construction component-admission metadata, and model-zone profile owners. Pin whether exact formal causes and directional empty provenance survive component conversion into the cause-free `DateConstructionResult`.
-2. Run the consumer query first: three checked nonrepeatable Number fields form `1582-10-04`, one checked literal `AddDays` reaches `1582-10-15`, and an unavailable or empty component preserves the existing reason before arithmetic.
-3. Implement only if one narrow checked carrier can reuse the current numeric read and default-cutover profile without a second document view, duplicate numeric AST, or general temporal expression. Stop if `FlatModel` lacks a required component declaration fact, if exact formal cause cannot be retained honestly, or if model-zone resolution needs a new unapproved calendar framework. Leave targets, repeatable addressing, message text, and date-like distinct count outside.
+1. Add the narrow checked read/evaluation owner over `CheckedConstructedDateComponents`; retain the first Day/Month/Year formal cause in a wrapper rather than widening or replacing `DateConstructionResult`.
+2. Run the consumer query first: three checked nonrepeatable Number fields form `1582-10-04`, one literal `AddDays` reaches `1582-10-15`, and unavailable, empty, and cutover-hole inputs remain distinguishable.
+3. Reuse the three established legacy shift functions and stop before expression-valued amounts, another model zone, another component form, target storage, repeatable addressing, message text, or a general temporal-expression carrier.
 
 ## Parked boundaries
 

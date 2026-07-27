@@ -224,6 +224,16 @@ def toNumberField? (declaration : FlatFieldDecl) : Option FlatNumberField :=
   | .number info => some { id := declaration.id, info }
   | .boolean | .confirm | .string | .enumeration | .temporal _ _ => none
 
+/-- Whether a Number declaration admits only nonnegative values by signedness or an explicit lower bound. Date and Time constructor fields share this exact static condition. -/
+def numberDomainNonnegative (declaration : FlatFieldDecl)
+    (source : FlatNumberField) : Bool :=
+  if source.info.signed then
+    match declaration.numericTargetConstraints.minimum with
+    | some minimum => decide (0 ≤ minimum)
+    | none => false
+  else
+    true
+
 /-- Construct the complete computed-Number target policy from this declaration without accepting caller-supplied constraints. -/
 def toNumericTargetPolicy? (declaration : FlatFieldDecl) :
     Option NumericTargetPolicy :=

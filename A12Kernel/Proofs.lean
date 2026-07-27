@@ -31,6 +31,7 @@ import A12Kernel.Proofs.TimeConstruction
 import A12Kernel.Proofs.TimeLiteral
 import A12Kernel.Proofs.ValueAsDateTimeExtraction
 import A12Kernel.Proofs.ValueAsDateTimeComponents
+import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.FullDateApplication
 import A12Kernel.Proofs.DateTimeApplication
 import A12Kernel.Proofs.FullDateComputationResult

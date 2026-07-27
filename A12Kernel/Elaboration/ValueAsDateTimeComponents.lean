@@ -39,15 +39,6 @@ def extractor : TimeComponentPosition → TimeNumericPart
 
 end TimeComponentPosition
 
-private def hasNonnegativeNumberDomain
-    (declaration : FlatFieldDecl) (source : FlatNumberField) : Bool :=
-  if source.info.signed then
-    match declaration.numericTargetConstraints.minimum with
-    | some minimum => decide (0 ≤ minimum)
-    | none => false
-  else
-    true
-
 /-- Exact Number declaration gate used by one `Time(...)` component position. The
     two-character alternative is the declaration's complete stored-length bound, not its
     integer-digit cap. -/
@@ -63,7 +54,7 @@ def FlatModel.admitsTimeNumberField (model : FlatModel)
         constraints.minFractionalDigits == 0 &&
         (constraints.maxStoredLength == some 2 ||
           constraints.maximum == some position.maximum) &&
-        hasNonnegativeNumberDomain declaration source
+        declaration.numberDomainNonnegative source
 
 /-- One ordinary Number field whose declaration carries the exact component certificate. -/
 structure CheckedTimeNumberField (model : FlatModel) where
