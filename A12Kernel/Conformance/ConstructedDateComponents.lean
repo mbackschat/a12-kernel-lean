@@ -34,6 +34,16 @@ private def temporalField (id : FieldId) (kind : TemporalKind)
   policy := { kind := .temporal kind components }
 }
 
+private def stringComponentField (id : FieldId) (maximum : Nat)
+    (pattern : String := "[0-9]+") : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name := s!"StringComponent{id}"
+  policy := { kind := .string }
+  stringPolicy := { maxLength := some maximum }
+  stringPatternSource := some pattern
+}
+
 private def extractorModel (baseYear : Option Int := none) : FlatModel :=
   let base := dateModel "UTC"
   { base with
@@ -55,6 +65,16 @@ private def extractorModel (baseYear : Option Int := none) : FlatModel :=
         minute := false
         second := false }]
     baseYear }
+
+private def stringModel : FlatModel :=
+  let base := extractorModel
+  { base with
+    fields := base.fields ++ [
+      stringComponentField 20 2,
+      stringComponentField 21 2 "\\d{2}",
+      stringComponentField 22 4 "[0-9]{4}",
+      stringComponentField 23 2,
+      stringComponentField 24 2] }
 
 /- The exact Date declaration gate accepts the positional maximum or stored width, but
    not an integer-digit cap or a complete-year maximum below 1000. -/
@@ -150,6 +170,41 @@ example :
         (.constant "15") (.constant "6")
         (.centuryAndShortYear
           (.extractor .year 10) (.constant "63")) = false := by
+  native_decide
+
+/- Pattern-backed String fields reuse the six exact checker-recognized digit sources at
+   the position's complete stored width. Regex equivalence and a wrong width do not pass. -/
+example :
+    let admitted (position : ConstructedDateComponentPosition)
+        (maximum : Nat) (pattern : String) :=
+      let model : FlatModel := {
+        fields := [stringComponentField 20 maximum pattern]
+      }
+      (elaborateConstructedDateSource model position (.stringField 20)).isOk
+    ["[0-9]+", "[0-9]*", "\\d+", "\\d*"].all
+        (admitted .day 2) = true ∧
+      admitted .day 2 "[0-9]{2}" = true ∧
+      admitted .day 2 "\\d{2}" = true ∧
+      admitted .year 4 "[0-9]{4}" = true ∧
+      admitted .year 4 "\\d{4}" = true ∧
+      admitted .day 2 "[0-9]{1,2}" = false ∧
+      admitted .day 3 "[0-9]+" = false ∧
+      admitted .year 2 "[0-9]+" = false := by
+  native_decide
+
+/- String sources mix with fixed and extractor sources, and both split-year positions
+   accept their own two-character String declarations. -/
+example :
+    extractorDateIsOk stringModel
+        (.stringField 20) (.constant "6")
+        (.complete (.extractor .year 10)) = true ∧
+      extractorDateIsOk stringModel
+        (.constant "15") (.stringField 21)
+        (.complete (.stringField 22)) = true ∧
+      extractorDateIsOk stringModel
+        (.constant "15") (.constant "6")
+        (.centuryAndShortYear
+          (.stringField 23) (.stringField 24)) = true := by
   native_decide
 
 private def constantDateIsOk (day month : String)

@@ -44,12 +44,24 @@ private def temporalField (id : FieldId) (kind : TemporalKind)
   policy := { kind := .temporal kind components }
 }
 
+private def stringComponentField (id : FieldId) (maximum : Nat)
+    (pattern : String := "[0-9]+") : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name := s!"StringComponent{id}"
+  policy := { kind := .string }
+  stringPolicy := { maxLength := some maximum }
+  stringPatternSource := some pattern
+}
+
 private def extractorDateModel : FlatModel :=
   let base := dateModel "UTC"
   { base with
     fields := base.fields ++ [
       temporalField 10 .dateTime TemporalComponents.now,
-      temporalField 11 .date TemporalComponents.fullDate] }
+      temporalField 11 .date TemporalComponents.fullDate,
+      stringComponentField 20 2,
+      stringComponentField 21 4] }
 
 private def documentFor? (model : FlatModel) (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) := do
@@ -66,6 +78,13 @@ private def document? (cells : List ClassifiedCellInput) :
   documentFor? (dateModel "UTC") cells
 
 private def numberCell (field : FieldId) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored
+  raw
+}
+
+private def stringCell (field : FieldId) (stored : String)
     (raw : RawCell) : ClassifiedCellInput := {
   address := { field, path := [] }
   stored
@@ -243,6 +262,31 @@ example :
         temporalCell 10 "bad-day" (.rejected .malformed),
         temporalCell 11 "bad-year" (.rejected .declaredConstraint)] =
           some (.unavailable .malformed) := by
+  native_decide
+
+/- Checked String components use exact decimal conversion but preserve constructor
+   reasons: empty stays incomplete, formal state dominates, and a present 99 Day is
+   unreal rather than clamped or treated as missing. -/
+example :
+    let sources : SurfaceConstructedDateComponents := {
+      day := .stringField 20
+      month := .constant "6"
+      year := .complete (.stringField 21) }
+    evaluateExtractorSources? sources [
+        stringCell 20 "05" (.parsed (.str "05")),
+        stringCell 21 "1963" (.parsed (.str "1963"))] =
+          some (.resolved (.real { year := 1963, month := 6, day := 5 })) ∧
+      evaluateExtractorSources? sources [
+        stringCell 21 "1963" (.parsed (.str "1963"))] =
+          some (.resolved .incomplete) ∧
+      evaluateExtractorSources? sources [
+        stringCell 20 "bad-day" (.rejected .malformed),
+        stringCell 21 "bad-year" (.rejected .declaredConstraint)] =
+          some (.unavailable .malformed) ∧
+      evaluateExtractorSources? sources [
+        stringCell 20 "99" (.parsed (.str "99")),
+        stringCell 21 "1963" (.parsed (.str "1963"))] =
+          some (.resolved .unreal) := by
   native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=

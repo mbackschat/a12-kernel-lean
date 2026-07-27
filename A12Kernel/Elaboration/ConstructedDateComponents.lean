@@ -5,9 +5,9 @@ import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, admitted quoted constants, or matching Date/DateTime field extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each Number-field position keeps the kernel checker's exact stored-width-or-maximum declaration gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, admitted quoted constants, or matching Date/DateTime field extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width or numeric-maximum gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-String components, recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The extensible-enumeration String alternative, the complete-Year Date-field alternative, recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -71,6 +71,7 @@ end ConstructedDateComponentPosition
 /-- One grammar-valid direct component source before model-relative checking. -/
 inductive SurfaceConstructedDateSource where
   | numberField (field : FieldId)
+  | stringField (field : FieldId)
   | constant (source : String)
   | extractor (part : DateNumericPart) (field : FieldId)
   deriving Repr, DecidableEq
@@ -112,6 +113,28 @@ structure CheckedConstructedDateNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsConstructedDateNumberField position source = true
 
+/-- Exact pattern-backed String declaration gate for one direct Date component. Extensible-enumeration admission is deliberately not represented here. -/
+def FlatModel.admitsConstructedDateStringField (model : FlatModel)
+    (position : ConstructedDateComponentPosition)
+    (source : FlatStringField) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toStringValueField? == some source &&
+        declaration.customType.isNone &&
+        declaration.enumeration.isNone &&
+        declaration.stringPolicy.maxLength == some position.storedWidth &&
+        declaration.stringPatternSource.any
+          (isTemporalComponentDigitPattern position.storedWidth)
+
+/-- One ordinary checked String field under the position's exact digit-pattern and stored-width gate. -/
+structure CheckedConstructedDateStringField (model : FlatModel) where
+  position : ConstructedDateComponentPosition
+  source : FlatStringField
+  admitted :
+    model.admitsConstructedDateStringField position source = true
+
 /-- Exact direct Date/DateTime field gate for one matching Date-component extractor. -/
 def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
     (position : ConstructedDateComponentPosition) (part : DateNumericPart)
@@ -136,6 +159,7 @@ structure CheckedConstructedDateExtractorField (model : FlatModel) where
 /-- One checked field-backed, extractor-backed, or fixed constant component. -/
 inductive CheckedConstructedDateSource (model : FlatModel) where
   | numberField (source : CheckedConstructedDateNumberField model)
+  | stringField (source : CheckedConstructedDateStringField model)
   | constant (value : Int)
   | extractor (source : CheckedConstructedDateExtractorField model)
 
@@ -161,6 +185,10 @@ inductive ConstructedDateComponentsElabError where
   | sourceKind (position : ConstructedDateComponentPosition) (field : FieldId)
   | declarationNotAdmitted (position : ConstructedDateComponentPosition)
       (field : FieldId)
+  | stringSourceKind
+      (position : ConstructedDateComponentPosition) (field : FieldId)
+  | stringDeclarationNotAdmitted
+      (position : ConstructedDateComponentPosition) (field : FieldId)
   | constantNotAdmitted
       (position : ConstructedDateComponentPosition) (source : String)
   | extractorMismatch
@@ -191,6 +219,23 @@ def elaborateConstructedDateNumberField
   else
     throw (.declarationNotAdmitted position field)
 
+/-- Resolve one ordinary String field and retain the position-specific pattern and stored-width certificate. -/
+def elaborateConstructedDateStringField
+    (model : FlatModel) (position : ConstructedDateComponentPosition)
+    (field : FieldId) :
+    Except ConstructedDateComponentsElabError
+      (CheckedConstructedDateStringField model) := do
+  let declaration ←
+    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+  let source ← match declaration.toStringValueField? with
+    | some source => pure source
+    | none => throw (.stringSourceKind position field)
+  if admitted :
+      model.admitsConstructedDateStringField position source = true then
+    pure { position, source, admitted }
+  else
+    throw (.stringDeclarationNotAdmitted position field)
+
 /-- Resolve one direct Date/DateTime field and retain the matching component-extractor certificate. -/
 def elaborateConstructedDateExtractorField
     (model : FlatModel) (position : ConstructedDateComponentPosition)
@@ -218,6 +263,9 @@ def elaborateConstructedDateSource
         (CheckedConstructedDateSource model)
   | .numberField field =>
       .numberField <$> elaborateConstructedDateNumberField model position field
+  | .stringField field =>
+      .stringField <$> elaborateConstructedDateStringField
+        model position field
   | .constant source =>
       match position.decodeConstant? source with
       | some value => pure (.constant value)

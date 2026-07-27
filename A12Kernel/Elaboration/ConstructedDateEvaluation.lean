@@ -4,9 +4,9 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields and direct Date/DateTime extractors read the immutable checked document, while fixed components do not; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, and direct Date/DateTime extractors read the immutable checked document, while fixed components do not; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
-The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. String components, recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String and complete-Year Date-field alternatives, recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -15,6 +15,7 @@ namespace A12Kernel
 inductive ConstructedDateEvaluationFault where
   | document (error : CheckedDocumentError)
   | payloadKind (field : FieldId)
+  | stringNotConvertible (field : FieldId) (value : String)
   | nonIntegralPayload (field : FieldId) (value : Rat)
   deriving Repr, DecidableEq
 
@@ -52,6 +53,33 @@ def read (checked : CheckedConstructedDateNumberField model)
   checked.classify (observeCell phase cell)
 
 end CheckedConstructedDateNumberField
+
+namespace CheckedConstructedDateStringField
+
+/-- Convert one already checked digit String through the shared ASCII-natural parser while preserving empty and formal state. -/
+def classify (checked : CheckedConstructedDateStringField model)
+    (observation : CellObservation Value) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match observation with
+  | .empty => pure .empty
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.str value) =>
+      match parseAsciiNatural? value with
+      | some amount => pure (.value amount)
+      | none => throw (.stringNotConvertible checked.source.id value)
+  | .value _ => throw (.payloadKind checked.source.id)
+
+/-- Read one certified scalar String component through the immutable checked document. -/
+def read (checked : CheckedConstructedDateStringField model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent := do
+  let cell ← input.read {
+    field := checked.source.id
+    path := []
+  } |>.mapError .document
+  checked.classify (observeCell phase cell)
+
+end CheckedConstructedDateStringField
 
 namespace CheckedConstructedDateExtractorField
 
@@ -96,6 +124,7 @@ def read (checked : CheckedConstructedDateSource model)
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   match checked with
   | .numberField source => source.read phase input
+  | .stringField source => source.read phase input
   | .constant value => pure (.value value)
   | .extractor source => source.read phase input
 

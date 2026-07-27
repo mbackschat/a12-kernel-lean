@@ -66,6 +66,15 @@ def parseAsciiNatural? (value : String) : Option Nat :=
   | [] => none
   | characters => parseAsciiNaturalAux 0 characters
 
+/-- Whether a declared Date/Time component pattern is one of the checker's four unbounded digit forms or the two forms fixed to the position's stored width. This recognizes exact source spellings, not regular-expression equivalence. -/
+def isTemporalComponentDigitPattern (width : Nat) (source : String) : Bool :=
+  source == "[0-9]+" ||
+    source == "[0-9]*" ||
+    source == "\\d+" ||
+    source == "\\d*" ||
+    source == "[0-9]{" ++ toString width ++ "}" ||
+    source == "\\d{" ++ toString width ++ "}"
+
 /-- Starts of the ten-code-point BMP decimal blocks accepted by Java 21's `Character.isDigit(char)`. The `char` overload rejects supplementary-plane decimal code points because it observes their surrogate code units separately. -/
 private def java21BmpDecimalDigitStarts : List Nat :=
   [0x0030, 0x0660, 0x06F0, 0x07C0, 0x0966, 0x09E6, 0x0A66, 0x0AE6,

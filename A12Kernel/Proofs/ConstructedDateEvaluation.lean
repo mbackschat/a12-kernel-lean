@@ -18,6 +18,15 @@ theorem checkedConstructedDateConstant_read
       .ok (.value value) := by
   rfl
 
+/-- A reached checked digit String contributes its exact natural-number component without numeric truncation. -/
+@[simp] theorem checkedConstructedDateString_classify_value
+    (checked : CheckedConstructedDateStringField model)
+    (text : String) (amount : Nat)
+    (parsed : parseAsciiNatural? text = some amount) :
+    checked.classify (.value (.str text)) = .ok (.value amount) := by
+  simp [CheckedConstructedDateStringField.classify, parsed]
+  rfl
+
 /-- Direct temporal extraction preserves the distinction between an empty operand and one unavailable for an exact formal cause. -/
 theorem checkedConstructedDateExtractor_classify_empty_unavailable
     (checked : CheckedConstructedDateExtractorField model)

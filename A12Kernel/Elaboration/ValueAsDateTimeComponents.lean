@@ -65,12 +65,7 @@ structure CheckedTimeNumberField (model : FlatModel) where
 /-- Whether the exact declared source is one of the six digit patterns the construction
     checker recognizes without interpreting general regular-expression equivalence. -/
 def isTimeComponentDigitPattern (source : String) : Bool :=
-  source == "[0-9]+" ||
-    source == "[0-9]*" ||
-    source == "\\d+" ||
-    source == "\\d*" ||
-    source == "[0-9]{2}" ||
-    source == "\\d{2}"
+  isTemporalComponentDigitPattern 2 source
 
 /-- Exact pattern-backed String declaration gate used by every `Time(...)` position.
     Extensible-enumeration admission is deliberately not represented here. -/

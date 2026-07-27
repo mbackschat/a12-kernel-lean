@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1613 theorem roots; 36739 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1614 theorem roots; 36764 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close ordinary pattern-backed String fields as direct `Date(...)` components through the existing checked constructed-Date component owner. Reuse the established checked String field and exact checker-recognized digit-pattern gate; preserve the position-specific stored-length and maximum rules without introducing another parser or general Date-expression carrier.
+Close the complete-Year `yyyy` Date-field alternative in direct `Date(...)` through the existing checked constructed-Date component owner. Preserve its exact Year-only and format-only static gate, stored-text numeric conversion, empty/formal behavior, and generated component order without treating arbitrary Date values as numeric components.
 
 ## Immediate sequence
 
-1. Reconcile the Date constructor's String declaration gate with the already-closed Time component pattern owner, including maximum stored length, the six accepted digit-only patterns, and every positional width/maximum distinction.
-2. Add separating red cases for a mixed String/constant/extractor construction, leading-zero conversion, empty and first-formal behavior, an unrecognized pattern, excessive stored length, and a present out-of-range component remaining present for the constructor's reality check.
-3. Reuse the existing checked String cell and decimal parser; keep the extensible-enumeration alternative, the Date-valued complete-Year field branch, recursive extractor operands, wider zones, repeatables, targets, and numeric-expression integration outside.
+1. Confirm the field's exact Date kind and retained format source at the checked declaration boundary; component flags alone are insufficient to prove the Kernel's literal `yyyy` gate.
+2. Add separating red cases for exact `yyyy` Year acceptance, another Date format, DateTime, and the same Date field at Day, Month, Century, and Short-Year; retain empty, first-formal, and real mixed-source execution.
+3. Reuse the existing checked temporal field and stored-text/document owner if it retains the exact format. If that declaration fact is absent, stop and report the model gap rather than inferring `yyyy` from component flags.
 
 ## Parked boundaries
 
