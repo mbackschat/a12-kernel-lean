@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ValueAsDateDayDifference
 import A12Kernel.Elaboration.ValueAsDateShiftTarget
+import A12Kernel.Elaboration.ValueAsDateTimeField
 
 /-! # Partial-Date `ValueAsDate` locks -/
 
@@ -65,6 +66,54 @@ private def modelWithTarget
     (target : FlatFieldDecl := dateTarget) : FlatModel := {
   fields := [source, target]
   timeZoneId := "Europe/Berlin" }
+
+private def fullTimeComponents : TemporalComponents := {
+  year := false
+  month := false
+  day := false
+  hour := true
+  minute := true
+  second := true
+}
+
+private def timeSource
+    (components : TemporalComponents := fullTimeComponents) :
+    FlatFieldDecl := {
+  id := 1
+  groupPath := ["Order"]
+  name := "PickupTime"
+  policy := { kind := .temporal .time components } }
+
+private def modelWithTime
+    (time : FlatFieldDecl := timeSource) : FlatModel := {
+  fields := [dayOptionalSource, time]
+  timeZoneId := "Europe/Berlin" }
+
+private def preparedWithTime? (model : FlatModel) :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+
+private def timeDocument? (model : FlatModel) (stored : String)
+    (raw : RawCell) : Option (CheckedDocument model) := do
+  let prepared ← preparedWithTime? model
+  checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [{
+      address := { field := 1, path := [] }
+      stored
+      raw
+    }]
+  } |>.toOption
+
+private def timeRaw (clock : TimeOfDay) : RawCell :=
+  .parsed (.temporal (.time { epochMillis := 0 } clock))
+
+private def valueAsDateTimeFieldError?
+    (result : Except ValueAsDateTimeFieldElabError value) :
+    Option ValueAsDateTimeFieldElabError :=
+  match result with
+  | .ok _ => none
+  | .error error => some error
 
 private def checked? (endpoint : ValueAsDateEndpoint)
     (comparison : TemporalComparisonOp) (expected : FullDate) :
@@ -533,6 +582,45 @@ example :
             date.parts.month == 10 && date.parts.day == 14
       | _ => false
     observed = true := by
+  native_decide
+
+/- A checked full-Time field supplies the second DateTime operand without a caller-injected observation. -/
+example :
+    let model := modelWithTime
+    let clock := (time? 10 30 45).get (by native_decide)
+    let expectedLocal := (LocalDateTime.ofYmdHms?
+      2024 2 29 10 30 45).get (by native_decide)
+    let expectedInstant := (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+      expectedLocal).get (by native_decide)
+    let result := do
+      let checked ← (elaborateValueAsDateTimeField
+        model 0 .lastDay 1).toOption
+      let input ← timeDocument? model "10:30:45" (timeRaw clock)
+      pure (checked.evaluateRaw .validation input
+        (.parsed "00.02.2024") |>.toOption)
+    result = some (some (.value expectedLocal expectedInstant)) := by
+  native_decide
+
+/- Generated Date-before-Time evaluation is observable: a Date formal failure stops first, while unknown-year non-relevance still reaches a failing Time read before the helper runs. -/
+example :
+    let model := modelWithTime
+    let result (dateRaw : RawCell String) := do
+      let checked ← (elaborateValueAsDateTimeField
+        model 0 .firstDay 1).toOption
+      let input ← timeDocument? model "bad" (.rejected .malformed)
+      pure (checked.evaluateRaw .computation input dateRaw |>.toOption)
+    result (.rejected .declaredConstraint) =
+        some (some (.unavailable .declaredConstraint)) ∧
+      result (.parsed "00.00.0000") =
+        some (some (.unavailable .malformed)) := by
+  native_decide
+
+/- The first checked field slice is deliberately complete-Time; a partial component set remains explicit unsupported authoring rather than being default-filled here. -/
+example :
+    let partialComponents := { fullTimeComponents with second := false }
+    valueAsDateTimeFieldError? (elaborateValueAsDateTimeField
+      (modelWithTime (timeSource partialComponents)) 0 .firstDay 1) =
+        some (.timeSourceComponents 1 partialComponents) := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

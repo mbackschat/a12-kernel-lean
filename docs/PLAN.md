@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 583 jobs · trust audit **1566 theorem roots; 34221 declarations in 327 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 584 jobs · trust audit **1567 theorem roots; 34380 declarations in 328 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the next legal Time-operand form inside `DateTime(ValueAsDate(...), time)`. Determine the exact parser-owned `zeitAngabe` subset, authored read order, empty/formal precedence, and whether an existing checked Time observation owner can supply it without adding a general temporal-expression tree. Prefer one source-closed field or constructed-Time form that materially widens the current direct supplied-observation boundary.
+Audit and close the bounded `Time(...)` constructor as the next legal ordinary `datumAngabe` inside `DateTime(ValueAsDate(...), time)`. Determine its exact 0–3 parameter forms, numeric conversion and defaulting, formal/non-relevant/no-value precedence, range handling, zone anchor, and whether the result can enter the existing `TimeOfDay` observation seam without a general temporal-expression tree.
 
 ## Immediate sequence
 
-1. Recheck the grammar and checker for `dateTimeKonstrukt`, then follow its generated Java/Groovy/JavaScript templates and runtime helper. Inventory exactly which Time shapes can occupy `zeitAngabe`, which owner certifies each shape, and whether generated evaluation reaches the Date or Time side first.
-2. Select the smallest form whose model-relative certificate and runtime observation already exist. Compose it with `CheckedValueAsDateTime`; do not widen `FlatTemporalOperand` merely to carry Time, and do not create a parallel Time parser, context, or expression algebra.
-3. Retain separators for Date-first formal failure, reached Time formal failure, ordinary empty input, unknown-year non-relevance, zone-gap no-value, and one accepted exact instant. Stop if the Time shape needs unmodeled authored-expression metadata, missing-provenance state, or a new processing-context capability. Leave target projection, repeatable addressing, wider Date expressions, message text, and date-like distinct count outside.
+1. Recheck `timeKonstrukt`, `CheckTimeKonstruktImpl`, `TimeConstructionOperation.st`, `RuntimeController.constructTime`, and `DateUtil.createTime`. Inventory authored parameter order, omitted-parameter defaults, host numeric conversion, invalid-range behavior, and the exact `VkDate` reason flags reaching outer DateTime construction.
+2. If the existing numeric observation and `TimeOfDay` owners retain every required distinction, add the smallest reason-bearing checked constructor and compose it through the existing partial-Date DateTime evaluator. Do not add a generic temporal AST or a second model-zone engine.
+3. Retain separators for zero-parameter midnight, partial-parameter defaults, fractional/large numeric conversion, invalid clock no-value, first formal cause, outer Date-before-Time precedence, unknown-year non-relevance after a reached Time result, and one accepted exact instant. Stop if the constructor requires an unmodeled numeric-expression carrier or legacy zone behavior that cannot be represented honestly. Leave Time literal/extraction/arithmetic forms, target projection, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

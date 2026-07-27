@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ValueAsDateDayDifference
 import A12Kernel.Elaboration.ValueAsDateShiftTarget
+import A12Kernel.Elaboration.ValueAsDateTimeField
 
 namespace A12Kernel
 
@@ -179,6 +180,19 @@ theorem valueAsDateTime_evaluate_date_unavailable
         .unavailable cause) :
     checked.evaluate phase cell time = .unavailable cause := by
   rw [CheckedValueAsDateTime.evaluate.eq_def, observed]
+
+/-- Generated left-to-right argument evaluation does not read the checked Time field after the partial-Date source has already failed formally. -/
+theorem valueAsDateTimeField_evaluateRaw_date_unavailable
+    (checked : CheckedValueAsDateTimeField model)
+    (phase : Phase) (input : CheckedDocument model)
+    (raw : RawCell String) (cause : FormalCause)
+    (observed :
+      checked.construction.toCheckedValueAsDateSource.observe phase
+        (checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw) =
+          .unavailable cause) :
+    checked.evaluateRaw phase input raw = .ok (.unavailable cause) := by
+  rw [CheckedValueAsDateTimeField.evaluateRaw, observed]
+  rfl
 
 /-- A cause-free unknown year dominates an ordinary empty Time only after the Time read has completed without a formal cause. -/
 theorem valueAsDateTime_evaluate_nonRelevant_empty
