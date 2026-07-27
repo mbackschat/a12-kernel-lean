@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1484 theorem roots; 31670 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 548 jobs · trust audit **1486 theorem roots; 31774 declarations in 303 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Resolve one checked nonrepeatable Date/DateTime target from the declaration-owned temporal policy without admitting rendering or target effects.
+Close one bounded SG6 computed full-Date target rendering/checking capsule from the checked declaration policy to a rich target outcome, preserving the exact attempted stored text on rejection.
 
 ## Immediate sequence
 
-1. Resolve the declaration through the validated flat model and expose the exact retained policy plus the same model's separate time-zone identifier.
-2. Keep missing policy, wrong field kind, and the first capsule's excluded Time target explicit rather than inventing defaults.
-3. Stop before parsing, rendering, target checking, result classification, application, or a shared temporal computation carrier.
+1. Bound the first executable renderer to the smallest source-audited full-Date format family that separates component order and separators; do not claim arbitrary `SimpleDateFormat` compatibility.
+2. Run the dangerous discriminator first: one resolved date rendered through two checked target formats must produce distinct stored text, while an opt-in pre-1900 rejection must remain an errored attempted value rather than clean empty.
+3. Reuse the checked target policy, model-zone owner, and existing rich computation-result vocabulary. Stop before DateTime, partial-date input completion, whole-run scheduling, or application unless the full-Date result boundary itself requires one of them.
 
 ## Parked boundaries
 

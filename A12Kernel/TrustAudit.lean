@@ -200,6 +200,8 @@ run_cmd do
 #print axioms A12Kernel.temporalTargetPolicy_valid_format_nonempty
 #print axioms A12Kernel.temporalTargetPolicy_valid_nonDate
 #print axioms A12Kernel.temporalTargetPolicy_valid_partial
+#print axioms A12Kernel.checkedTemporalTargetPolicy_not_time
+#print axioms A12Kernel.checkedTemporalTargetPolicy_timeZoneId
 #print axioms A12Kernel.todayOperand_resolves_exact
 #print axioms A12Kernel.todayOperand_unsupported
 #print axioms A12Kernel.baseYearOperand_resolves_exact
