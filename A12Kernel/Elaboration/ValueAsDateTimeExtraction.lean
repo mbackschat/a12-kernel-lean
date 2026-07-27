@@ -3,9 +3,9 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked `TimeFromDateTime`
 
-This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model. The generated extractor reads the source wall-clock components in the model zone and re-anchors them at 1970-01-01; the DateTime constructor observes only those components, so the existing decoded `TimeOfDay` is the exact semantic boundary.
+This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal. A sub-day addition shifts the retained exact instant; the generated extractor then reads the shifted wall-clock components in the model zone and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, so the existing decoded `TimeOfDay` remains the exact semantic boundary.
 
-Generated Date-before-Time evaluation remains explicit: a formal Date failure prevents the DateTime read, while cause-free Date non-relevance still reaches it. DateTime expressions, arithmetic descendants, repeatable fields, concrete parsing, and a general temporal-expression tree remain separate.
+Generated Date-before-Time evaluation remains explicit: a formal Date failure prevents the DateTime read, while cause-free Date non-relevance still reaches it. Wider DateTime expressions and amount expressions, repeatable fields, concrete parsing, and a general temporal-expression tree remain separate.
 -/
 
 namespace A12Kernel
@@ -42,6 +42,7 @@ structure CheckedValueAsDateTimeExtraction (model : FlatModel) where
 inductive ValueAsDateTimeExtractionFault where
   | document (error : CheckedDocumentError)
   | sourcePayloadMismatch (field : FieldId)
+  | shiftedInstantOutsideProfile (instant : Instant)
   deriving Repr, DecidableEq
 
 namespace ValueAsDateTimeTimeOperand
@@ -81,6 +82,43 @@ def evaluateRaw (checked : CheckedValueAsDateTimeExtraction model)
 
 end CheckedValueAsDateTimeExtraction
 
+/-- One checked complete-DateTime source shifted by a literal whole sub-day amount before its Time projection. The shared base owns source admission and outer Date-before-Time order. -/
+structure CheckedValueAsDateTimeShiftExtraction (model : FlatModel)
+    extends CheckedValueAsDateTimeExtraction model where
+  unit : DateTimeSubdayUnit
+  amount : Rat
+
+namespace CheckedValueAsDateTimeShiftExtraction
+
+/-- Read the certified source once, apply Java-compatible signed-32-bit amount conversion, then decode the shifted exact instant under the model-owned profile. Empty and formal observations retain the direct extractor's reasons. -/
+def readShiftedTime (checked : CheckedValueAsDateTimeShiftExtraction model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
+  let cell ← input.read {
+    field := checked.source.id
+    path := []
+  } |>.mapError .document
+  match observeCell phase cell with
+  | .empty => pure (.noValue true)
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.temporal (.dateTime instant _ _ _)) =>
+      let shifted := instant.shift checked.unit
+        (ValueAsDateShiftUnit.amountToInt32 checked.amount)
+      match checked.construction.profile.localDateTime? shifted with
+      | some localDateTime => pure (.value localDateTime.time)
+      | none => throw (.shiftedInstantOutsideProfile shifted)
+  | .value _ => throw (.sourcePayloadMismatch checked.source.id)
+
+/-- Check the bounded partial-Date source, then evaluate the shifted DateTime extraction only when generated left-to-right argument evaluation reaches it. -/
+def evaluateRaw (checked : CheckedValueAsDateTimeShiftExtraction model)
+    (phase : Phase) (input : CheckedDocument model)
+    (raw : RawCell String) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
+  checked.construction.evaluateTimeOperandRaw phase raw fun _ =>
+    checked.readShiftedTime phase input
+
+end CheckedValueAsDateTimeShiftExtraction
+
 /-- Resolve one partial-Date endpoint and one ordinary complete-DateTime extraction source against the same validated model. -/
 def elaborateValueAsDateTimeExtraction
     (model : FlatModel) (dateField : FieldId)
@@ -109,5 +147,16 @@ def elaborateValueAsDateTimeExtraction
       throw (.sourceComponents source.id source.components)
   else
     throw (.sourceKind source.id source.kind)
+
+/-- Resolve one checked direct extraction, then retain one source-closed sub-day unit and authored numeric literal for exact-instant shifting. -/
+def elaborateValueAsDateTimeShiftExtraction
+    (model : FlatModel) (dateField : FieldId)
+    (endpoint : ValueAsDateEndpoint) (dateTimeField : FieldId)
+    (unit : DateTimeSubdayUnit) (amount : Rat) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedValueAsDateTimeShiftExtraction model) := do
+  let extraction ←
+    elaborateValueAsDateTimeExtraction model dateField endpoint dateTimeField
+  pure { extraction with unit, amount }
 
 end A12Kernel

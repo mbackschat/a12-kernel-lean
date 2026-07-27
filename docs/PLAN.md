@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1578 theorem roots; 35256 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1580 theorem roots; 35306 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit the smallest source-closed Time-arithmetic family that can serve as the Time operand of `DateTime(ValueAsDate(...), time)`. Start with `AddHours`, `AddMinutes`, and `AddSeconds` over the already-checked exact Time literal and an authored numeric literal; admit no wider expression carrier until the runtime anchor, signed conversion, rollover, and static gate are source-closed.
+Audit the next source-closed DateTime-shift source that can serve as the Time operand of `DateTime(ValueAsDate(...), time)`. Start with `TimeFromDateTime(AddHours|AddMinutes|AddSeconds(Now, literal))`: reuse the checked model-zone profile, shared sub-day unit, signed-32-bit amount conversion, and existing `World.now` identity; add no general temporal-expression carrier until Date-before-Time short-circuiting, millisecond retention, and runtime sampling are source-closed.
 
 ## Immediate sequence
 
-1. Inspect the Date-add checker, `DateAddOperation` backing bean and all Java/Groovy/JavaScript `.st` variants, the `RuntimeController`/`BedingungsOperatorHelper` dispatch, `VkBigDecimal.intValue`, and the Time result-format propagation. Determine whether a Time input is shifted as an anchored instant or a wall-clock coordinate, and separate day rollover from DateTime composition.
-2. Reuse `CheckedTimeLiteral`, the existing signed-32-bit amount conversion if its meaning matches, and the reason-bearing Time operand/Date-first seam. Add a bounded `hours | minutes | seconds` owner only if those three operations share the same exact modulo-day mechanism and result domain; add no general temporal-expression AST.
-3. Retain separators for positive and negative rollover, signed-32-bit narrowing, unit distinction, DateTime composition discarding the Time anchor date, and at least one realistic wrong account. Stop if the checker admits operand or amount forms whose required static facts cannot be represented without a wider expression owner. Leave field/extractor arithmetic, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
+1. Verify the generated `Now` source and sub-day shift use one controller sample, preserve its exact millisecond remainder through `Calendar.add`, and reach `TimeFromDateTime` before the outer constructor's model-zone projection. Reuse the existing reviewed a12-dmkits `NowMillisecondIdentity` and DST controls as provenance rather than requesting duplicate evidence.
+2. Extend the existing shifted extraction owner only if `World.now` can enter through the same exact-instant projection without duplicating checked field admission or introducing a source AST. Retain Date-before-Time evaluation by passing the world-dependent read as the existing thunk.
+3. Keep separators for a same-rendered-second millisecond remainder, Berlin spring-forward or overlap identity, and Date-side formal short-circuiting that proves `World` is not consulted semantically. Stop if the source lifetime cannot be represented by one explicit `World` or if a common field/`Now` source representation would erase different static admission. Leave general amount expressions, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

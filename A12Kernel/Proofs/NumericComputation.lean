@@ -348,7 +348,7 @@ theorem readDateDifference_evaluated
 /-- A checked sub-day source resolves each admitted field/`Now` operand once and maps their exact instant difference into computation outcome space. -/
 theorem readDateTimeDifference_evaluated
     (context : ScalarComputationContext)
-    (unit : DateTimeDifferenceUnit)
+    (unit : DateTimeSubdayUnit)
     (left right : FlatTemporalOperand)
     (leftOperand rightOperand : DateTimeDifferenceOperand)
     (leftResolved :

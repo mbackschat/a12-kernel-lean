@@ -29,4 +29,19 @@ theorem valueAsDateTimeExtraction_evaluateRaw_date_unavailable
       checked.construction phase raw
         (fun _ => checked.readTime phase input) cause observed
 
+/-- The legal sub-day DateTime-shift route retains the same generated Date-before-Time short circuit as direct `TimeFromDateTime`. -/
+theorem valueAsDateTimeShiftExtraction_evaluateRaw_date_unavailable
+    (checked : CheckedValueAsDateTimeShiftExtraction model)
+    (phase : Phase) (input : CheckedDocument model)
+    (raw : RawCell String) (cause : FormalCause)
+    (observed :
+      checked.construction.toCheckedValueAsDateSource.observe phase
+        (checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw) =
+          .unavailable cause) :
+    checked.evaluateRaw phase input raw = .ok (.unavailable cause) := by
+  simpa only [CheckedValueAsDateTimeShiftExtraction.evaluateRaw] using
+    valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
+      checked.construction phase raw
+        (fun _ => checked.readShiftedTime phase input) cause observed
+
 end A12Kernel

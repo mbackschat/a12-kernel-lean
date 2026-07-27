@@ -10,6 +10,27 @@ The definitions are original clean-room semantics for the decoded time, value-ad
 
 namespace A12Kernel
 
+/-- The shared whole sub-day units used by exact-instant DateTime shifts and differences. Closing the enum makes an unsupported unit and a zero divisor unrepresentable. -/
+inductive DateTimeSubdayUnit where
+  | hours
+  | minutes
+  | seconds
+  deriving Repr, DecidableEq
+
+namespace DateTimeSubdayUnit
+
+/-- Positive whole seconds in one admitted unit. -/
+def unitSeconds : DateTimeSubdayUnit → Int
+  | .hours => 3600
+  | .minutes => 60
+  | .seconds => 1
+
+/-- Positive whole milliseconds in one admitted unit. -/
+def unitMillis (unit : DateTimeSubdayUnit) : Int :=
+  unit.unitSeconds * 1000
+
+end DateTimeSubdayUnit
+
 /-- An admitted full local DateTime wall label, not yet an instant. -/
 structure LocalDateTime where
   date : FullDate
@@ -63,9 +84,14 @@ end LocalDateTime
 
 namespace Instant
 
-/-- Shift an instant by an already-truncated whole-hour amount. This is the total runtime core after numeric conversion, not the complete authored `AddHours` operator. -/
+/-- Shift an instant by an already-truncated whole sub-day amount. This is the total runtime core after numeric conversion, not the complete authored operator. -/
+def shift (instant : Instant) (unit : DateTimeSubdayUnit)
+    (amount : Int) : Instant :=
+  { epochMillis := instant.epochMillis + amount * unit.unitMillis }
+
+/-- Specialize exact-instant sub-day shifting to whole hours. -/
 def shiftHours (instant : Instant) (hours : Int) : Instant :=
-  { epochMillis := instant.epochMillis + hours * 3600000 }
+  instant.shift .hours hours
 
 end Instant
 

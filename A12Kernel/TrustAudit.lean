@@ -227,6 +227,7 @@ run_cmd do
 #print axioms A12Kernel.elaborateTimeLiteral_ok_iff
 #print axioms A12Kernel.timeFromDateTime_projects_clock
 #print axioms A12Kernel.valueAsDateTimeExtraction_evaluateRaw_date_unavailable
+#print axioms A12Kernel.valueAsDateTimeShiftExtraction_evaluateRaw_date_unavailable
 #print axioms A12Kernel.checkedTimeStringField_classify_value
 #print axioms A12Kernel.checkedTimeExtractorField_position_matches
 #print axioms A12Kernel.valueAsDateTimeComponents_evaluateRaw_date_unavailable
@@ -300,7 +301,7 @@ run_cmd do
 #print axioms A12Kernel.baseYearRangeStartOperand_eq_baseYearOperand
 #print axioms A12Kernel.baseYearRangeFinishOperand_resolves_exact
 #print axioms A12Kernel.baseYearRangeOperand_unsupported
-#print axioms A12Kernel.dateTimeDifferenceUnit_unitSeconds_pos
+#print axioms A12Kernel.dateTimeSubdayUnit_unitSeconds_pos
 #print axioms A12Kernel.dateTimeDifferenceOperand_unavailable_left
 #print axioms A12Kernel.dateTimeDifferenceOperand_empty_left
 #print axioms A12Kernel.dateTimeDifferenceOperand_values_delegate
@@ -308,6 +309,7 @@ run_cmd do
 #print axioms A12Kernel.instant_difference_swap
 #print axioms A12Kernel.instant_difference_seconds
 #print axioms A12Kernel.instant_difference_exactUnits
+#print axioms A12Kernel.instant_difference_shift
 #print axioms A12Kernel.instant_difference_shiftHours
 #print axioms A12Kernel.instant_shiftHours_epochMillis
 #print axioms A12Kernel.instant_shiftHours_zero

@@ -43,7 +43,7 @@ theorem numericComputationAtom_dayDifference_toValidationAtom
 
 /-- Generated validation preserves the exact sub-day unit and both checked field/`Now` operands. -/
 theorem numericComputationAtom_dateTimeDifference_toValidationAtom
-    (model : FlatModel) (unit : DateTimeDifferenceUnit)
+    (model : FlatModel) (unit : DateTimeSubdayUnit)
     (left right : FlatTemporalOperand) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.numeric (.dateTimeDifference unit left right)) =

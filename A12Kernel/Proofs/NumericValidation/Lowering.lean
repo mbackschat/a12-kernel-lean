@@ -502,7 +502,7 @@ theorem numericValidation_dateDifference_literal_delegates
 
 /-- A checked sub-day atom delegates its exact-instant operand through the shared numeric validator without a second difference or comparison path. -/
 theorem numericValidation_dateTimeDifference_literal_delegates
-    (op : NumericValidationOp) (unit : DateTimeDifferenceUnit)
+    (op : NumericValidationOp) (unit : DateTimeSubdayUnit)
     (left right : FlatTemporalOperand)
     (literal : DecodedNumericLiteral) (context : FlatContext) :
     ({ op, left := .atom (.dateTimeDifference unit left right),

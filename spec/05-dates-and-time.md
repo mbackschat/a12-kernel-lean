@@ -51,7 +51,7 @@ A date shift whose numeric amount is a domain-invalid expression has no amount t
 
 **Sub-day arithmetic** operates on exact integer **milliseconds since epoch**. Stored and constructed Date/Time/DateTime syntax has whole-second precision, but `Now` retains the injected validation clock's millisecond identity:
 
-- `AddHours` / `AddMinutes` / `AddSeconds` carry across the day boundary.
+- `AddHours` / `AddMinutes` / `AddSeconds` require a date-bearing operand whose format exposes the selected time component, preserve that DateTime format, and carry across the day boundary. A Time-only operand is rejected; use `TimeFromDateTime(AddHours(dateTime, amount))` or its Minute/Second counterpart when a Time value is required.
 - `DifferenceIn{Hours,Minutes,Seconds}(a, b) = (epochMillis(b) − epochMillis(a)) / unitMillis`, **truncated toward zero** — a reverse difference of −5 h 30 m is **`-5`**, not `-6`, and a `999 ms` residual is `0` seconds. Argument order is `b − a` (same as `DifferenceInDays`).
 
 > **Lean modelling note.** Do not erase the operand's calendar basis. A proleptic-Gregorian total function is suitable only for a narrowed consumer/domain whose own clause or proof establishes that equivalence; a constructed-Date consumer needs a supplied legacy-calendar operation or a proof-backed supported profile. `AddMonths`/`AddYears` need the explicit end-of-month clamp and the Feb-into-leap-year correction as *code*, not as an assumed library default. The sub-day family is cleanest after resolution as `Int` epoch-milliseconds with truncating integer division (`Int.tdiv`, toward zero — **not** `Int.fdiv`).

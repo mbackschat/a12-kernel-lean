@@ -110,7 +110,7 @@ def repeatableDayDifferenceRule?
     "repeatableDayDifference" .error { parts := [] }).toOption
 
 def repeatableDateTimeDifferenceCondition?
-    (unit : DateTimeDifferenceUnit)
+    (unit : DateTimeSubdayUnit)
     (left right : SurfaceDateDifferenceOperand)
     (op : NumericValidationOp) (expected : Rat) :
     Option (CheckedValidationCondition ordinaryIterationModel) := do
@@ -126,7 +126,7 @@ def repeatableDateTimeDifferenceCondition?
   (CheckedValidationCondition.fromOrderedNumeric numeric).toOption
 
 def repeatableDateTimeDifferenceRule?
-    (unit : DateTimeDifferenceUnit)
+    (unit : DateTimeSubdayUnit)
     (left right : SurfaceDateDifferenceOperand)
     (op : NumericValidationOp) (expected : Rat) :
     Option (CheckedResolvedValidationRule ordinaryIterationModel) := do

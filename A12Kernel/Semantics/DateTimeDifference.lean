@@ -10,23 +10,10 @@ Parsing, zone resolution, empty and malformed operands, static operator admissio
 
 namespace A12Kernel
 
-/-- The three sub-day DateTime-difference units. Closing the enum makes a zero divisor unrepresentable. -/
-inductive DateTimeDifferenceUnit where
-  | hours
-  | minutes
-  | seconds
-  deriving Repr, DecidableEq
-
-namespace DateTimeDifferenceUnit
-
-/-- Positive whole seconds in one admitted unit. -/
-def unitSeconds : DateTimeDifferenceUnit → Int
-  | .hours => 3600
-  | .minutes => 60
-  | .seconds => 1
+namespace DateTimeSubdayUnit
 
 /-- Static DateTime-format admission requires a date half and the selected time component. Kind admission remains with the checked field owner. -/
-def admittedBy (unit : DateTimeDifferenceUnit)
+def admittedBy (unit : DateTimeSubdayUnit)
     (components : TemporalComponents) : Bool :=
   components.hasDate &&
     match unit with
@@ -35,19 +22,19 @@ def admittedBy (unit : DateTimeDifferenceUnit)
     | .seconds => components.second
 
 /-- Both DateTime formats must support the selected unit and agree on explicit year presence. `BaseYear` is not a legal sub-day operand. -/
-def compatible (unit : DateTimeDifferenceUnit)
+def compatible (unit : DateTimeSubdayUnit)
     (left right : TemporalComponents) : Bool :=
   unit.admittedBy left && unit.admittedBy right &&
     left.year == right.year
 
-end DateTimeDifferenceUnit
+end DateTimeSubdayUnit
 
 namespace Instant
 
 /-- Return the exact epoch-millisecond delta divided by the selected unit, using `Int.tdiv` so negative fractional results truncate toward zero. -/
-def difference (first : Instant) (unit : DateTimeDifferenceUnit)
+def difference (first : Instant) (unit : DateTimeSubdayUnit)
     (second : Instant) : Int :=
-  (second.epochMillis - first.epochMillis).tdiv (unit.unitSeconds * 1000)
+  (second.epochMillis - first.epochMillis).tdiv unit.unitMillis
 
 end Instant
 
@@ -68,7 +55,7 @@ def ofObservation : CellObservation Value → DateTimeDifferenceOperand
   | .unknown cause | .poison cause => .unavailable cause
 
 /-- Formal unavailability dominates empty substitution. Either missing operand then yields symmetric zero; two present values reuse the exact millisecond difference core. -/
-def evaluate (unit : DateTimeDifferenceUnit)
+def evaluate (unit : DateTimeSubdayUnit)
     (left right : DateTimeDifferenceOperand) : NumericOperand :=
   match left, right with
   | .unavailable cause, _ => .unknown cause

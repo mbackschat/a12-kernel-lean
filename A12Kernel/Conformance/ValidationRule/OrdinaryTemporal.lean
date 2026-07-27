@@ -232,7 +232,7 @@ private def repeatableDayDifferenceConsumerSnapshot? :
     left.address, right.address, outcome.2.verdict)
 
 private def repeatableDateTimeDifferenceSnapshot?
-    (unit : DateTimeDifferenceUnit) (op : NumericValidationOp)
+    (unit : DateTimeSubdayUnit) (op : NumericValidationOp)
     (expected : Rat) (reverse : Bool) (data : DocumentData) :
     Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) :=
   let left : SurfaceDateDifferenceOperand :=
@@ -245,7 +245,7 @@ private def repeatableDateTimeDifferenceSnapshot?
     (repeatableDateTimeDifferenceRule? unit left right op expected) data
 
 private def repeatableDateTimeDifferenceConsumerSnapshot? :
-    Option (DateTimeDifferenceUnit × FlatTemporalField × FlatTemporalField ×
+    Option (DateTimeSubdayUnit × FlatTemporalField × FlatTemporalField ×
       CellAddr × Option String × CellAddr × Option String × Verdict) := do
   let leftDeclaration ←
     (ordinaryIterationModel.lookupUniqueId innerDateTime.id).toOption

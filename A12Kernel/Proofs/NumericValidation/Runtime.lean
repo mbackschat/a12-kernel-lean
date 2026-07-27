@@ -67,7 +67,7 @@ theorem orderedNumericValidationAtom_repeatableDateDifference_requiresAddressed
 
 /-- A checked sub-day difference cannot fall back to scalar evaluation when either model-certified DateTime field is repeatable. -/
 theorem orderedNumericValidationAtom_repeatableDateTimeDifference_requiresAddressed
-    (unit : DateTimeDifferenceUnit)
+    (unit : DateTimeSubdayUnit)
     (left right : FlatTemporalField) (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId left.id = .ok declaration)
     (repeatable : declaration.repeatableScope.isEmpty = false) :

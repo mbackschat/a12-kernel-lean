@@ -406,7 +406,8 @@ theorem instant_shiftHours_epochMillis
 theorem instant_shiftHours_zero (instant : Instant) :
     instant.shiftHours 0 = instant := by
   cases instant
-  simp [Instant.shiftHours]
+  simp [Instant.shiftHours, Instant.shift, DateTimeSubdayUnit.unitMillis,
+    DateTimeSubdayUnit.unitSeconds]
 
 /-- Consecutive whole-hour shifts compose by addition. -/
 theorem instant_shiftHours_add
@@ -414,7 +415,8 @@ theorem instant_shiftHours_add
     (instant.shiftHours first).shiftHours second =
       instant.shiftHours (first + second) := by
   cases instant
-  simp [Instant.shiftHours]
+  simp [Instant.shiftHours, Instant.shift, DateTimeSubdayUnit.unitMillis,
+    DateTimeSubdayUnit.unitSeconds]
   omega
 
 /-- Shifting by an amount and its negation restores the exact instant. -/

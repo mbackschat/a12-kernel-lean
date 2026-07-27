@@ -122,7 +122,7 @@ def dateDifference (unit : DateDifferenceUnit)
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateDifference unit left right)
 
-def dateTimeDifference (unit : DateTimeDifferenceUnit)
+def dateTimeDifference (unit : DateTimeSubdayUnit)
     (left right : SurfaceDateDifferenceOperand) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.dateTimeDifference unit left right)
