@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValueAsDateTimeComponents
+import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
 
 /-! # Partial-Date and checked `Time(...)` component locks -/
 
@@ -332,8 +332,8 @@ example :
       let amountCell := amount.toList.map fun raw =>
         numberCell 1 "amount" raw
       let input ← document? mixedModel (sourceCell ++ amountCell)
-      (CheckedTimeComponents.hour component).evaluate
-        .computation input |>.toOption
+      CheckedTimeComponents.evaluate
+        (TimeComponentPrefix.hour component) .computation input |>.toOption
     let presentSource : RawCell Value := .parsed (.temporal
       (.dateTime sourceInstant sourceLocal.date.civil.parts
         sourceLocal.time .storedGregorian))
@@ -363,8 +363,8 @@ example :
       }
       let input ← document? mixedModel
         (sourceCell ++ [numberCell 1 "amount" amount])
-      (CheckedTimeComponents.hour component).evaluate
-        .computation input |>.toOption
+      CheckedTimeComponents.evaluate
+        (TimeComponentPrefix.hour component) .computation input |>.toOption
     evaluate (some (.rejected .malformed))
         (.rejected .declaredConstraint) =
         some (.unavailable .malformed) ∧
@@ -372,6 +372,47 @@ example :
         some (.unavailable .declaredConstraint) ∧
       (elaborateShiftedTimeExtractorExpression mixedModel ["Order"]
         .hour .minute 5 .hours shiftedHourAmount).isOk = false := by
+  native_decide
+
+/- A dynamic nested extractor consumes the execution world before its checked amount and
+   shifts the exact instant across the Berlin spring-forward transition. -/
+example :
+    let nowLocal := (LocalDateTime.ofYmdHms?
+      2024 3 31 1 30 0).get (by native_decide)
+    let now :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        nowLocal).get (by native_decide)
+    let result := do
+      let component ←
+        (elaborateNowShiftedTimeExtractorExpression mixedModel ["Order"]
+          .hour .hour .hours shiftedHourAmount).toOption
+      let input ← document? mixedModel [
+        numberCell 1 "0" (.parsed (.num 0))]
+      CheckedWorldTimeComponents.evaluate
+        (TimeComponentPrefix.hour component)
+        .computation { now } input |>.toOption
+    result =
+        some (.value ((TimeOfDay.ofHms? 3 0 0).get (by native_decide))) ∧
+      (elaborateNowShiftedTimeExtractorExpression mixedModel ["Order"]
+        .hour .minute .hours shiftedHourAmount).isOk = false := by
+  native_decide
+
+/- A reached domain-invalid amount becomes fixed component zero, while a reached formal
+   amount remains unavailable with its exact cause. -/
+example :
+    let evaluate (expression : AuthoredNumericExpr SurfaceNumericAtom)
+        (amount : RawCell Value) := do
+      let component ←
+        (elaborateNowShiftedTimeExtractorExpression mixedModel ["Order"]
+          .hour .hour .hours expression).toOption
+      let input ← document? mixedModel [numberCell 1 "amount" amount]
+      CheckedWorldTimeComponents.evaluate
+        (TimeComponentPrefix.hour component)
+        .computation { now := { epochMillis := 0 } } input |>.toOption
+    evaluate invalidShiftAmount (.parsed (.num 3)) =
+        some (.value ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))) ∧
+      evaluate shiftedHourAmount (.rejected .declaredConstraint) =
+        some (.unavailable .declaredConstraint) := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDateTimeComponents

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValueAsDateTimeComponents
+import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
 import A12Kernel.Proofs.ValueAsDate
 
 /-! # Checked mixed-component `Time(...)` laws -/
@@ -48,6 +48,26 @@ theorem valueAsDateTimeComponents_evaluateRaw_date_unavailable
     valueAsDateTime_evaluateTimeOperandRaw_date_unavailable checked phase raw
       (fun _ => do
         let timeResult ← time.evaluate phase input
+        pure timeResult.asDateTimeOperand)
+      cause observed
+
+/-- A formally unavailable partial Date also prevents every world-dependent Time
+    component read, so the result is independent of both the document and `World`. -/
+theorem valueAsDateTimeWorldComponents_evaluateRaw_date_unavailable
+    (checked : CheckedValueAsDateTime model)
+    (time : CheckedWorldTimeComponents model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (raw : RawCell String) (cause : FormalCause)
+    (observed :
+      checked.toCheckedValueAsDateSource.observe phase
+        (checked.toCheckedValueAsDateSource.checkSourceRaw raw) =
+          .unavailable cause) :
+    checked.evaluateWorldComponentsRaw time phase world input raw =
+      .ok (.unavailable cause) := by
+  simpa only [CheckedValueAsDateTime.evaluateWorldComponentsRaw] using
+    valueAsDateTime_evaluateTimeOperandRaw_date_unavailable checked phase raw
+      (fun _ => do
+        let timeResult ← time.evaluate phase world input
         pure timeResult.asDateTimeOperand)
       cause observed
 

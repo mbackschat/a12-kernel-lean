@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1585 theorem roots; 35562 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 597 jobs · trust audit **1586 theorem roots; 35612 declarations in 337 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close the dynamic companion to the bounded shifted-field extractor: matching `HoursFromTime`/`MinutesFromTime`/`SecondsFromTime` over `AddHours`/`AddMinutes`/`AddSeconds(Now, amount)`. Reuse the existing checked `Now` shift and explicit execution `World`; do not sample time, add a temporal-expression tree, or force dynamic input into `CheckedDocument`.
+Resolve the first pre-cutover constructed-Date arithmetic boundary instead of widening routine post-cutover forms. Start with the canonical legacy-hybrid `Date(...)` month/year landing across the October 1582 cutover and determine whether the existing reason-bearing construction plus `DateCalendarBasis.legacyHybrid` can carry the exact Kernel result without a second Date representation.
 
 ## Immediate sequence
 
-1. Recheck the generated `Now`-before-amount route and confirm that the existing world-dependent shifted-Time owner already retains exact milliseconds until the component boundary.
-2. Add the smallest world-aware component read/evaluate seam and a checked matching-token adapter. Preserve the existing document-only API for static components; do not make `World` implicit or duplicate the shift evaluator.
-3. Keep separators for changing worlds, equal whole-second projection from distinct millisecond identities, Berlin spring-forward, a reached formal or domain-invalid amount, wrong component position, and Date-first outer composition. Stop if this requires a general temporal-expression carrier or changes the static component path. Leave repeatable addressing, message text, wider nested temporal sources, and date-like distinct count outside.
+1. Audit the generated `Date(...)` then `AddMonths`/`AddYears` route through the Java/Groovy/JavaScript `.st` templates and the runtime calendar helper. Pin exact source order, cutover normalization, day clamping, February correction, empty/formal precedence, and result calendar identity before changing Lean.
+2. Run the `1582-09-10 + 1 month` and `1581-10-10 + 1 year` discriminators first. Reuse the existing construction result and `DateCalendarBasis` only if both missing-label landings and ordinary post-cutover controls remain representable.
+3. Add the smallest executable core and checked composition only after the representation passes those separators. Stop and report if the Kernel result depends on calendar state absent from the current value, if the source packet cannot distinguish authored construction identity from stored-Date identity, or before adding a general temporal-expression tree. Leave target rendering, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

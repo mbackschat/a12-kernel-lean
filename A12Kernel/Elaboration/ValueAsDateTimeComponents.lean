@@ -143,19 +143,21 @@ inductive CheckedTimeComponent (model : FlatModel) where
   | extractor (checked : CheckedTimeExtractorField model)
   | shiftedExtractor (checked : CheckedShiftedTimeExtractor model)
 
-/-- The grammar-valid one-to-three-component prefix. Omitted trailing components are
-    absent from this type and therefore cannot be read. -/
-inductive SurfaceTimeComponents where
-  | hour (hour : SurfaceTimeComponent)
-  | minute (hour minute : SurfaceTimeComponent)
-  | second (hour minute second : SurfaceTimeComponent)
+/-- The one-to-three-component prefix shared by surface and checked carriers. Omitted
+    trailing components are absent and cannot be read. -/
+inductive TimeComponentPrefix (Component : Type) where
+  | hour (hour : Component)
+  | minute (hour minute : Component)
+  | second (hour minute second : Component)
   deriving Repr, DecidableEq
 
+/-- The grammar-valid component prefix before model-relative checking. -/
+abbrev SurfaceTimeComponents :=
+  TimeComponentPrefix SurfaceTimeComponent
+
 /-- A checked mixed prefix retaining each component's authored position. -/
-inductive CheckedTimeComponents (model : FlatModel) where
-  | hour (hour : CheckedTimeComponent model)
-  | minute (hour minute : CheckedTimeComponent model)
-  | second (hour minute second : CheckedTimeComponent model)
+abbrev CheckedTimeComponents (model : FlatModel) :=
+  TimeComponentPrefix (CheckedTimeComponent model)
 
 /-- Static rejection before any `Time(...)` component source is read. -/
 inductive TimeComponentsElabError where
@@ -430,36 +432,46 @@ def read (checked : CheckedTimeComponent model)
 
 end CheckedTimeComponent
 
-namespace CheckedTimeComponents
+namespace TimeComponentPrefix
 
-/-- Evaluate only the supplied prefix. A reached formal component stops before every later
-    field read; omitted trailing slots are delegated to `TimeConstructionArity`. -/
-def evaluate (checked : CheckedTimeComponents model)
-    (phase : Phase) (input : CheckedDocument model) :
-    Except TimeComponentsFault TimeConstructionResult :=
+/-- Evaluate one supplied prefix through its carrier-specific reader. A reached formal
+    component stops before every later read; omitted trailing slots remain fixed zeroes. -/
+def evaluateWith (checked : TimeComponentPrefix Component)
+    (read : Component → Except Error TimeConstructionComponent) :
+    Except Error TimeConstructionResult :=
   match checked with
-  | CheckedTimeComponents.hour hourField => do
-      let hourValue ← hourField.read phase input
+  | .hour hourField => do
+      let hourValue ← read hourField
       pure (TimeConstructionArity.hour.evaluate hourValue .empty .empty)
-  | CheckedTimeComponents.minute hourField minuteField => do
-      let hourValue ← hourField.read phase input
+  | .minute hourField minuteField => do
+      let hourValue ← read hourField
       match hourValue with
       | .unavailable cause => pure (.unavailable cause)
       | hourValue =>
-          let minuteValue ← minuteField.read phase input
+          let minuteValue ← read minuteField
           pure (TimeConstructionArity.minute.evaluate hourValue minuteValue .empty)
-  | CheckedTimeComponents.second hourField minuteField secondField => do
-      let hourValue ← hourField.read phase input
+  | .second hourField minuteField secondField => do
+      let hourValue ← read hourField
       match hourValue with
       | .unavailable cause => pure (.unavailable cause)
       | hourValue =>
-          let minuteValue ← minuteField.read phase input
+          let minuteValue ← read minuteField
           match minuteValue with
           | .unavailable cause => pure (.unavailable cause)
           | minuteValue =>
-              let secondValue ← secondField.read phase input
+              let secondValue ← read secondField
               pure (TimeConstructionArity.second.evaluate
                 hourValue minuteValue secondValue)
+
+end TimeComponentPrefix
+
+namespace CheckedTimeComponents
+
+/-- Evaluate one document-only checked prefix. -/
+def evaluate (checked : CheckedTimeComponents model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except TimeComponentsFault TimeConstructionResult :=
+  checked.evaluateWith fun component => component.read phase input
 
 end CheckedTimeComponents
 

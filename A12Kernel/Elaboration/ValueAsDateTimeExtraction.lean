@@ -317,7 +317,42 @@ def evaluateRaw (checked : CheckedValueAsDateTimeShiftExtraction model)
 
 end CheckedValueAsDateTimeShiftExtraction
 
-/-- One checked partial-Date constructor whose Time side shifts dynamic `Now` by a checked literal or ordinary Number field before extraction. The world remains an execution input and no instant is sampled during elaboration. -/
+/-- One checked model-zone profile, sub-day unit, and amount for shifting this execution's dynamic `World.now`. -/
+structure CheckedShiftedNowDateTimeSource (model : FlatModel) where
+  profile : ModelZone.ConcreteProfile
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+  unit : DateTimeSubdayUnit
+  amount : CheckedValueAsDateTimeShiftAmount model
+
+namespace CheckedShiftedNowDateTimeSource
+
+/-- Shift this execution's exact instant before a consumer projects the whole Time or one component. -/
+def readTime (checked : CheckedShiftedNowDateTimeSource model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  checked.amount.readShiftedTime phase input
+    checked.profile checked.unit world.now
+
+end CheckedShiftedNowDateTimeSource
+
+/-- Check a dynamic shifted-DateTime source without sampling its execution world. -/
+def elaborateShiftedNowDateTimeSource
+    (model : FlatModel) (unit : DateTimeSubdayUnit)
+    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedShiftedNowDateTimeSource model) :=
+  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | some profile =>
+      pure {
+        profile
+        profileMatches := hProfile
+        unit
+        amount
+      }
+  | none => throw (.unsupportedZone model.timeZoneId)
+
+/-- One checked partial-Date constructor whose Time side shifts dynamic `Now` by a checked amount before extraction. The world remains an execution input and no instant is sampled during elaboration. -/
 structure CheckedValueAsDateTimeNowShiftExtraction (model : FlatModel) where
   construction : CheckedValueAsDateTime model
   unit : DateTimeSubdayUnit
@@ -325,12 +360,21 @@ structure CheckedValueAsDateTimeNowShiftExtraction (model : FlatModel) where
 
 namespace CheckedValueAsDateTimeNowShiftExtraction
 
+/-- Forget only the enclosing partial-Date construction while retaining its already-checked dynamic shift source. -/
+def toCheckedShiftedNowDateTimeSource
+    (checked : CheckedValueAsDateTimeNowShiftExtraction model) :
+    CheckedShiftedNowDateTimeSource model := {
+  profile := checked.construction.profile
+  profileMatches := checked.construction.profileMatches
+  unit := checked.unit
+  amount := checked.amount
+}
+
 /-- Read the checked amount after sampling this execution's exact `World.now`, then project the shifted model-zone clock. -/
 def readShiftedTime (checked : CheckedValueAsDateTimeNowShiftExtraction model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
-    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
-  checked.amount.readShiftedTime phase input
-    checked.construction.profile checked.unit world.now
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  checked.toCheckedShiftedNowDateTimeSource.readTime phase world input
 
 /-- Check the bounded partial-Date source before the world-dependent Time operand, preserving generated Date-before-Time evaluation. -/
 def evaluateRaw (checked : CheckedValueAsDateTimeNowShiftExtraction model)
