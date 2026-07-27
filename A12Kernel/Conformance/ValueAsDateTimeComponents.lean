@@ -44,10 +44,21 @@ private def temporalComponentField (id : FieldId) (kind : TemporalKind)
   policy := { kind := .temporal kind components }
 }
 
+private def stringComponentField (id : FieldId) (pattern : String := "[0-9]+")
+    (maximum : Nat := 2) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name := s!"StringComponent{id}"
+  policy := { kind := .string }
+  stringPolicy := { maxLength := some maximum }
+  stringPatternSource := some pattern
+}
+
 private def mixedModel : FlatModel := {
   fields := timeModel.fields ++ [
     temporalComponentField 4 .time,
-    temporalComponentField 5 .dateTime]
+    temporalComponentField 5 .dateTime,
+    stringComponentField 6]
   timeZoneId := "Europe/Berlin"
 }
 
@@ -76,6 +87,28 @@ private def temporalCell (field : FieldId) (stored : String)
   stored
   raw := .parsed (.temporal value)
 }
+
+private def stringCell (field : FieldId) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored
+  raw
+}
+
+/- The checker recognizes exactly four unbounded digit sources and the two fixed-width
+   sources derived from maximum length 2. A digit-shaped alternative and the wrong
+   maximum remain rejected rather than being interpreted as equivalent regexes. -/
+example :
+    let admitted (pattern : String) (maximum : Nat := 2) :=
+      let model : FlatModel := {
+        fields := [stringComponentField 6 pattern maximum]
+      }
+      (elaborateTimeComponents model (.hour (.string 6))).isOk
+    ["[0-9]+", "[0-9]*", "\\d+", "\\d*", "[0-9]{2}", "\\d{2}"].all
+        admitted = true ∧
+      admitted "[0-9]{1,2}" = false ∧
+      admitted "[0-9]+" 3 = false := by
+  native_decide
 
 /- `Time(...)` checks the Number declaration's stored-length or exact-value bound; an
    integer-digit cap with the same numeral is not a substitute. -/
@@ -170,10 +203,10 @@ example :
     | _ => false) = true := by
   native_decide
 
-/- A mixed checked prefix reaches the partial-Date DateTime constructor without
-   reconstructing document values, extractor semantics, or zone policy. -/
+/- A mixed String/Number/extractor prefix reaches the partial-Date DateTime constructor
+   without reconstructing document values, conversion, extractor semantics, or zone
+   policy. -/
 example :
-    let timeClock := (TimeOfDay.ofHms? 7 30 11).get (by native_decide)
     let dateTimeClock := (TimeOfDay.ofHms? 8 44 45).get (by native_decide)
     let sourceDate : DateParts := { year := 2024, month := 6, day := 15 }
     let expectedLocal := (LocalDateTime.ofYmdHms?
@@ -184,20 +217,35 @@ example :
     let result := do
       let time ←
         (elaborateTimeComponents mixedModel
-          (.second (.number 1) (.extractor .minute 4)
+          (.second (.string 6) (.number 2)
             (.extractor .second 5))).toOption
       let construction ←
         (elaborateValueAsDateTime mixedModel 0 .lastDay).toOption
       let input ← document? mixedModel [
-        numberCell 1 "10" (.parsed (.num 10)),
-        temporalCell 4 "07:30:11"
-          (.time { epochMillis := 27011000 } timeClock),
+        stringCell 6 "10" (.parsed (.str "10")),
+        numberCell 2 "30" (.parsed (.num 30)),
         temporalCell 5 "2024-06-15T08:44:45"
           (.dateTime { epochMillis := 1718441085000 }
             sourceDate dateTimeClock .storedGregorian)]
       construction.evaluateComponentsRaw time .validation input
         (.parsed "00.02.2024") |>.toOption
     result = some (.value expectedLocal expectedInstant) := by
+  native_decide
+
+/- Filled digit Strings convert as decimal integers. Empty and formal inputs retain
+   distinct construction reasons, and a two-digit but impossible hour remains unreal. -/
+example :
+    let result (stored : String) (raw : RawCell) := do
+      let checked ←
+        (elaborateTimeComponents mixedModel (.hour (.string 6))).toOption
+      let input ← document? mixedModel [stringCell 6 stored raw]
+      checked.evaluate .computation input |>.toOption
+    result "08" (.parsed (.str "08")) = some (.value
+        ((TimeOfDay.ofHms? 8 0 0).get (by native_decide))) ∧
+      result "24" (.parsed (.str "24")) = some .unreal ∧
+      result "" .presentEmpty = some .incomplete ∧
+      result "bad" (.rejected .declaredConstraint) =
+        some (.unavailable .declaredConstraint) := by
   native_decide
 
 /- An extractor token belongs only in the matching constructor position. -/

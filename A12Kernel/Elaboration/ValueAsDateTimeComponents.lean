@@ -3,16 +3,16 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked `Time(...)` components
 
-This capsule checks and executes one mixed prefix of ordinary nonrepeatable Number fields
-and matching time-component extractors over ordinary Time or DateTime fields. Number
-declarations retain their integral nonnegative positional certificate; extractor
-declarations retain their temporal kind, component, and exact authored-position
-certificate. Execution reads the immutable checked document in Hour/Minute/Second order
-and delegates defaults and clock classification to `TimeConstructionResult`.
+This capsule checks and executes one mixed prefix of ordinary nonrepeatable Number fields,
+pattern-backed String fields, and matching time-component extractors over ordinary Time
+or DateTime fields. Each declaration retains its branch-specific static certificate.
+Execution reads the immutable checked document in Hour/Minute/Second order and delegates
+defaults and clock classification to `TimeConstructionResult`.
 
-String fields remain excluded because the flat declaration does not retain the kernel
-checker's extensible-enumeration distinction. Wider expression-sourced extractors remain
-outside this field-backed capsule.
+The String branch covers the six checker-recognized digit patterns. The separate
+extensible-enumeration alternative remains excluded because the flat declaration does not
+retain that fact. Wider expression-sourced extractors remain outside this field-backed
+capsule.
 -/
 
 namespace A12Kernel
@@ -71,6 +71,36 @@ structure CheckedTimeNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsTimeNumberField position source = true
 
+/-- Whether the exact declared source is one of the six digit patterns the construction
+    checker recognizes without interpreting general regular-expression equivalence. -/
+def isTimeComponentDigitPattern (source : String) : Bool :=
+  source == "[0-9]+" ||
+    source == "[0-9]*" ||
+    source == "\\d+" ||
+    source == "\\d*" ||
+    source == "[0-9]{2}" ||
+    source == "\\d{2}"
+
+/-- Exact pattern-backed String declaration gate used by every `Time(...)` position.
+    Extensible-enumeration admission is deliberately not represented here. -/
+def FlatModel.admitsTimeStringField (model : FlatModel)
+    (source : FlatStringField) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toStringValueField? == some source &&
+        declaration.customType.isNone &&
+        declaration.enumeration.isNone &&
+        declaration.stringPolicy.maxLength == some 2 &&
+        declaration.stringPatternSource.any isTimeComponentDigitPattern
+
+/-- One ordinary checked String field under the recognized digit-pattern subset. -/
+structure CheckedTimeStringField (model : FlatModel) where
+  position : TimeComponentPosition
+  source : FlatStringField
+  admitted : model.admitsTimeStringField source = true
+
 /-- Exact field-backed extractor admission. The selected temporal half and constructor
     position are both static obligations. -/
 def FlatModel.admitsTimeExtractorField (model : FlatModel)
@@ -95,12 +125,14 @@ structure CheckedTimeExtractorField (model : FlatModel) where
 /-- One grammar-valid field-backed component before model-relative checking. -/
 inductive SurfaceTimeComponent where
   | number (field : FieldId)
+  | string (field : FieldId)
   | extractor (part : TimeNumericPart) (field : FieldId)
   deriving Repr, DecidableEq
 
 /-- One checked component retaining the branch-specific static certificate. -/
 inductive CheckedTimeComponent (model : FlatModel) where
   | number (checked : CheckedTimeNumberField model)
+  | string (checked : CheckedTimeStringField model)
   | extractor (checked : CheckedTimeExtractorField model)
 
 /-- The grammar-valid one-to-three-component prefix. Omitted trailing components are
@@ -121,6 +153,7 @@ inductive CheckedTimeComponents (model : FlatModel) where
 inductive TimeComponentsElabError where
   | field (position : TimeComponentPosition) (error : ResolveError)
   | numberSourceKind (position : TimeComponentPosition) (field : FieldId)
+  | stringSourceKind (position : TimeComponentPosition) (field : FieldId)
   | extractorSourceKind (position : TimeComponentPosition) (field : FieldId)
   | extractorMismatch (position : TimeComponentPosition) (actual : TimeNumericPart)
   | declarationNotAdmitted (position : TimeComponentPosition) (field : FieldId)
@@ -135,6 +168,19 @@ private def elaborateTimeNumberField (model : FlatModel)
     | some source => pure source
     | none => throw (.numberSourceKind position field)
   if admitted : model.admitsTimeNumberField position source = true then
+    pure { position, source, admitted }
+  else
+    throw (.declarationNotAdmitted position field)
+
+private def elaborateTimeStringField (model : FlatModel)
+    (position : TimeComponentPosition) (field : FieldId) :
+    Except TimeComponentsElabError (CheckedTimeStringField model) := do
+  let declaration ←
+    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+  let source ← match declaration.toStringValueField? with
+    | some source => pure source
+    | none => throw (.stringSourceKind position field)
+  if admitted : model.admitsTimeStringField source = true then
     pure { position, source, admitted }
   else
     throw (.declarationNotAdmitted position field)
@@ -159,6 +205,8 @@ private def elaborateTimeComponent (model : FlatModel)
     SurfaceTimeComponent → Except TimeComponentsElabError (CheckedTimeComponent model)
   | .number field =>
       .number <$> elaborateTimeNumberField model position field
+  | .string field =>
+      .string <$> elaborateTimeStringField model position field
   | .extractor part field =>
       .extractor <$> elaborateTimeExtractorField model position part field
 
@@ -182,6 +230,7 @@ def elaborateTimeComponents (model : FlatModel) :
 inductive TimeComponentsFault where
   | document (error : CheckedDocumentError)
   | payloadKind (field : FieldId)
+  | stringNotConvertible (field : FieldId) (value : String)
   | nonIntegralPayload (field : FieldId) (value : Rat)
   deriving Repr, DecidableEq
 
@@ -213,6 +262,34 @@ def read (checked : CheckedTimeNumberField model)
   checked.classify (observeCell phase cell)
 
 end CheckedTimeNumberField
+
+namespace CheckedTimeStringField
+
+/-- Convert one already checked digit String through the existing ASCII-natural parser.
+    Pattern and maximum-length checking happened when the document was constructed. -/
+def classify (checked : CheckedTimeStringField model)
+    (observation : CellObservation Value) :
+    Except TimeComponentsFault TimeConstructionComponent :=
+  match observation with
+  | .empty => pure .empty
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.str value) =>
+      match parseAsciiNatural? value with
+      | some amount => pure (.value amount)
+      | none => throw (.stringNotConvertible checked.source.id value)
+  | .value _ => throw (.payloadKind checked.source.id)
+
+/-- Read one certified scalar String component through the immutable checked document. -/
+def read (checked : CheckedTimeStringField model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except TimeComponentsFault TimeConstructionComponent := do
+  let cell ← input.read {
+    field := checked.source.id
+    path := []
+  } |>.mapError .document
+  checked.classify (observeCell phase cell)
+
+end CheckedTimeStringField
 
 namespace CheckedTimeExtractorField
 
@@ -269,6 +346,7 @@ def read (checked : CheckedTimeComponent model)
     Except TimeComponentsFault TimeConstructionComponent :=
   match checked with
   | .number field => field.read phase input
+  | .string field => field.read phase input
   | .extractor field => field.read phase input
 
 end CheckedTimeComponent

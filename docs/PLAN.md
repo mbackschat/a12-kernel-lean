@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1577 theorem roots; 35163 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1578 theorem roots; 35256 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close the checker-recognized pattern-backed String-field subset of `Time(...)` components. Keep the extensible-enumeration alternative explicitly outside until the flat model retains that declaration fact; do not treat the supported pattern arm as exhaustive String-component legality.
+Audit the smallest source-closed Time-arithmetic family that can serve as the Time operand of `DateTime(ValueAsDate(...), time)`. Start with `AddHours`, `AddMinutes`, and `AddSeconds` over the already-checked exact Time literal and an authored numeric literal; admit no wider expression carrier until the runtime anchor, signed conversion, rollover, and static gate are source-closed.
 
 ## Immediate sequence
 
-1. Recheck `CheckBaseDateConstructionImpl`, the field-value code-generation route, and runtime String-to-number conversion for all Java/Groovy/JavaScript strategies. Confirm the exact six recognized patterns, maximum-length condition, empty/formal propagation, and decimal conversion before writing a case.
-2. Extend the existing `SurfaceTimeComponent` sum with one checked String branch only if `FlatModel` already retains every fact needed by that pattern-backed subset. Reuse the existing checked String policy and `TimeConstructionResult`; add no second String parser, general expression tree, or extensible-enumeration placeholder.
-3. Retain one batch separator for all six recognized patterns, arbitrary digit-shaped pattern rejection, wrong maximum length, empty/formal behavior, mixed String/Number/extractor execution, out-of-range reality, and partial-Date DateTime composition. Stop if generated conversion depends on declaration metadata or locale behavior absent from the checked model. Leave extensible-enumeration String fields, wider nonliteral extractor expressions, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
+1. Inspect the Date-add checker, `DateAddOperation` backing bean and all Java/Groovy/JavaScript `.st` variants, the `RuntimeController`/`BedingungsOperatorHelper` dispatch, `VkBigDecimal.intValue`, and the Time result-format propagation. Determine whether a Time input is shifted as an anchored instant or a wall-clock coordinate, and separate day rollover from DateTime composition.
+2. Reuse `CheckedTimeLiteral`, the existing signed-32-bit amount conversion if its meaning matches, and the reason-bearing Time operand/Date-first seam. Add a bounded `hours | minutes | seconds` owner only if those three operations share the same exact modulo-day mechanism and result domain; add no general temporal-expression AST.
+3. Retain separators for positive and negative rollover, signed-32-bit narrowing, unit distinction, DateTime composition discarding the Time anchor date, and at least one realistic wrong account. Stop if the checker admits operand or amount forms whose required static facts cannot be represented without a wider expression owner. Leave field/extractor arithmetic, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

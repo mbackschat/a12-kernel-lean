@@ -5,6 +5,15 @@ import A12Kernel.Proofs.ValueAsDate
 
 namespace A12Kernel
 
+/-- A reached, checked digit String contributes the exact natural-number component; no
+    truncating numeric operation is introduced by the constructor adapter. -/
+@[simp] theorem checkedTimeStringField_classify_value
+    (checked : CheckedTimeStringField model) (text : String) (amount : Nat)
+    (parsed : parseAsciiNatural? text = some amount) :
+    checked.classify (.value (.str text)) = .ok (.value amount) := by
+  simp [CheckedTimeStringField.classify, parsed]
+  rfl
+
 /-- A checked extractor cannot retain a token from another constructor position. -/
 theorem checkedTimeExtractorField_position_matches
     (checked : CheckedTimeExtractorField model) :
