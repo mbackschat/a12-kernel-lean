@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document, while constants and direct/range-selected Base-Year extractors are fixed inputs; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today` resolves only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
 The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
@@ -20,6 +20,8 @@ inductive ConstructedDateEvaluationFault where
   | dateYearStoredMissing (field : FieldId)
   | dateYearNotConvertible (field : FieldId) (value : String)
   | nonIntegralPayload (field : FieldId) (value : Rat)
+  | todayWorldRequired
+  | todayUnavailable (zoneId : String)
   deriving Repr, DecidableEq
 
 /-- A checked component before cause-free construction classification. -/
@@ -166,11 +168,32 @@ def read (checked : CheckedConstructedDateBaseYearExtractor model)
 
 end CheckedConstructedDateBaseYearExtractor
 
+namespace CheckedConstructedDateTodayExtractor
+
+/-- Resolve `Today` from the supplied execution world, then project the matching local
+    calendar component through the model-certified zone profile. -/
+def read (checked : CheckedConstructedDateTodayExtractor model)
+    (world : Option World) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match world with
+  | none => throw .todayWorldRequired
+  | some world =>
+      match world.today? model.timeZoneId with
+      | none => throw (.todayUnavailable model.timeZoneId)
+      | some instant =>
+          match checked.profile.localDate? instant with
+          | none => throw (.todayUnavailable model.timeZoneId)
+          | some date =>
+              pure (.value (checked.part.extract date.civil.parts).num)
+
+end CheckedConstructedDateTodayExtractor
+
 namespace CheckedConstructedDateSource
 
-/-- Read a field-backed component or return a checked fixed component without consulting the document. -/
+/-- Read one component with the caller's explicit optional execution world. -/
 def read (checked : CheckedConstructedDateSource model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   match checked with
   | .numberField source => source.read phase input
@@ -179,24 +202,26 @@ def read (checked : CheckedConstructedDateSource model)
   | .constant value => pure (.value value)
   | .extractor source => source.read phase input
   | .baseYearExtractor source => source.read phase input
+  | .todayExtractor source => source.read world
 
 end CheckedConstructedDateSource
 
 namespace CheckedConstructedDateYear
 
-/-- Read one checked year form. Split-year evaluation preserves Century-before-Short-Year formal precedence, while any ordinary empty component keeps the construction incomplete. -/
+/-- Read one checked year form with the caller's explicit optional world. Split-year evaluation preserves Century-before-Short-Year formal precedence, while any ordinary empty component keeps the construction incomplete. -/
 def read (checked : CheckedConstructedDateYear model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   match checked with
-  | .complete source => source.read phase input
+  | .complete source => source.read phase input world
   | .baseYear year => pure (.value year)
   | .centuryAndShortYear century shortYear =>
-      match century.read phase input with
+      match century.read phase input world with
       | .error error => .error error
       | .ok (.unavailable cause) => .ok (.unavailable cause)
       | .ok centuryPart =>
-          match shortYear.read phase input with
+          match shortYear.read phase input world with
           | .error error => .error error
           | .ok (.unavailable cause) => .ok (.unavailable cause)
           | .ok shortYearPart =>
@@ -279,19 +304,20 @@ private def availableAmount? : CheckedConstructedDateComponent → Option Int
   | .value amount => some amount
   | .empty | .unavailable _ => none
 
-/-- Read Day, Month, and Year in generated argument order. A reached formal component stops before later reads and retains its exact cause. -/
+/-- Read Day, Month, and Year in generated argument order with one caller-supplied optional world. A reached formal component stops before later reads and retains its exact cause. -/
 def evaluate (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
     Except ConstructedDateEvaluationFault ConstructedDateObservation :=
-  match checked.day.read phase input with
+  match checked.day.read phase input world with
   | .error error => .error error
   | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok day =>
-      match checked.month.read phase input with
+      match checked.month.read phase input world with
       | .error error => .error error
       | .ok (.unavailable cause) => .ok (.unavailable cause)
       | .ok month =>
-          match checked.year.read phase input with
+          match checked.year.read phase input world with
           | .error error => .error error
           | .ok (.unavailable cause) => .ok (.unavailable cause)
           | .ok year =>
@@ -299,25 +325,27 @@ def evaluate (checked : CheckedConstructedDateComponents model)
                 (availableAmount? day) (availableAmount? month)
                 (availableAmount? year))
 
-/-- Evaluate checked `Valid(Date(...))`, keeping document faults and formal causes in their separate channels. -/
+/-- Evaluate checked `Valid(Date(...))` with one explicit optional world, keeping document faults and formal causes in their separate channels. -/
 def evaluateValid (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model) (world : Option World) :
     Except ConstructedDateEvaluationFault (Except FormalCause Verdict) :=
-  (checked.evaluate phase input).map ConstructedDateObservation.validVerdict
+  (checked.evaluate phase input world).map
+    ConstructedDateObservation.validVerdict
 
-/-- Evaluate checked `Invalid(Date(...))`, keeping document faults and formal causes in their separate channels. -/
+/-- Evaluate checked `Invalid(Date(...))` with one explicit optional world, keeping document faults and formal causes in their separate channels. -/
 def evaluateInvalid (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model) (world : Option World) :
     Except ConstructedDateEvaluationFault (Except FormalCause Verdict) :=
-  (checked.evaluate phase input).map ConstructedDateObservation.invalidVerdict
+  (checked.evaluate phase input world).map
+    ConstructedDateObservation.invalidVerdict
 
-/-- Evaluate one checked Day/Month/Quarter/Year projection without adding another numeric result family. -/
+/-- Evaluate one checked Day/Month/Quarter/Year projection with one explicit optional world without adding another numeric result family. -/
 def evaluateNumericPart (checked : CheckedConstructedDateComponents model)
     (part : DateNumericPart) (phase : Phase)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model) (world : Option World) :
     Except ConstructedDateEvaluationFault
       (Except FormalCause ConstructedDateNumericResult) :=
-  (checked.evaluate phase input).map fun observation =>
+  (checked.evaluate phase input world).map fun observation =>
     observation.numericPart part
 
 end CheckedConstructedDateComponents
@@ -386,11 +414,12 @@ def applyAmount (checked : CheckedConstructedDateShift model)
       | .resolved .unreal => pure (.noValue notGiven)
       | .resolved .unknown => pure (.noValue notGiven)
 
-/-- Evaluate the constructed Date before its amount, matching generated Java argument order. A reached source cause therefore stops before the amount; a cause-free no-value source still reaches it. -/
+/-- Evaluate the constructed Date before its amount with one explicit optional world, matching generated Java argument order. A reached source cause therefore stops before the amount; a cause-free no-value source still reaches it. -/
 def evaluate (checked : CheckedConstructedDateShift model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
     Except ConstructedDateShiftFault ConstructedDateShiftResult :=
-  match checked.source.evaluate phase input with
+  match checked.source.evaluate phase input world with
   | .error error => .error (.source error)
   | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok source =>
@@ -427,16 +456,17 @@ def differenceResolved? (unit : DateShiftUnit)
   | .months => first.differenceLegacy? .months second
   | .years => first.differenceLegacy? .years second
 
-/-- Evaluate the first constructed Date before the second, preserve the first reached formal cause, and reuse the established reason-bearing numeric result. -/
+/-- Evaluate the first constructed Date before the second with one explicit optional world, preserve the first reached formal cause, and reuse the established reason-bearing numeric result. -/
 def evaluate (checked : CheckedConstructedDateDifference model)
-    (phase : Phase) (input : CheckedDocument model) :
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
     Except ConstructedDateDifferenceFault
       (Except FormalCause ConstructedDateNumericResult) :=
-  match checked.first.evaluate phase input with
+  match checked.first.evaluate phase input world with
   | .error error => .error (.source error)
   | .ok (.unavailable cause) => .ok (.error cause)
   | .ok (.resolved first) =>
-      match checked.second.evaluate phase input with
+      match checked.second.evaluate phase input world with
       | .error error => .error (.source error)
       | .ok (.unavailable cause) => .ok (.error cause)
       | .ok (.resolved second) =>

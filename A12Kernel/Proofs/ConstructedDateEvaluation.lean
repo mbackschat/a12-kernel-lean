@@ -6,15 +6,18 @@ namespace A12Kernel
 
 /-- The omitted-year form cannot consult document state for its injected model Base Year. -/
 theorem checkedConstructedDateBaseYear_read
-    (year : Int) (phase : Phase) (input : CheckedDocument model) :
-    CheckedConstructedDateYear.read (.baseYear year) phase input =
+    (year : Int) (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
+    CheckedConstructedDateYear.read (.baseYear year) phase input world =
       .ok (.value year) := by
   rfl
 
 /-- A checked quoted constant is fixed input and cannot consult document state. -/
 theorem checkedConstructedDateConstant_read
-    (value : Int) (phase : Phase) (input : CheckedDocument model) :
-    CheckedConstructedDateSource.read (.constant value) phase input =
+    (value : Int) (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
+    CheckedConstructedDateSource.read
+        (.constant value) phase input world =
       .ok (.value value) := by
   rfl
 
@@ -26,6 +29,23 @@ theorem checkedConstructedDateBaseYearExtractor_read
       .ok (.value
         (baseYearDateSourceNumericPart
           checked.year checked.source checked.part).num) := by
+  rfl
+
+/-- Dynamic `Today` has no implicit clock fallback. -/
+theorem checkedConstructedDateTodayExtractor_requires_world
+    (checked : CheckedConstructedDateTodayExtractor model) :
+    checked.read none = .error .todayWorldRequired := by
+  rfl
+
+/-- A resolved `Today` projects exactly the certified local calendar component. -/
+theorem checkedConstructedDateTodayExtractor_read
+    (checked : CheckedConstructedDateTodayExtractor model)
+    (world : World) (instant : Instant) (date : FullDate)
+    (resolved : world.today? model.timeZoneId = some instant)
+    (decoded : checked.profile.localDate? instant = some date) :
+    checked.read (some world) =
+      .ok (.value (checked.part.extract date.civil.parts).num) := by
+  simp [CheckedConstructedDateTodayExtractor.read, resolved, decoded]
   rfl
 
 /-- A reached checked digit String contributes its exact natural-number component without numeric truncation. -/
@@ -63,10 +83,11 @@ theorem checkedConstructedDateExtractor_classify_empty_unavailable
 theorem checkedConstructedDateCentury_read_unavailable
     (century shortYear : CheckedConstructedDateSource model)
     (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
+    (world : Option World)
     (observed :
-      century.read phase input = .ok (.unavailable cause)) :
+      century.read phase input world = .ok (.unavailable cause)) :
     CheckedConstructedDateYear.read
-        (.centuryAndShortYear century shortYear) phase input =
+        (.centuryAndShortYear century shortYear) phase input world =
       .ok (.unavailable cause) := by
   simp [CheckedConstructedDateYear.read, observed]
 
@@ -74,24 +95,25 @@ theorem checkedConstructedDateCentury_read_unavailable
 theorem checkedConstructedDateCentury_read_values
     (century shortYear : CheckedConstructedDateSource model)
     (phase : Phase) (input : CheckedDocument model)
+    (world : Option World)
     (centuryValue shortYearValue : Int)
     (observedCentury :
-      century.read phase input = .ok (.value centuryValue))
+      century.read phase input world = .ok (.value centuryValue))
     (observedShortYear :
-      shortYear.read phase input = .ok (.value shortYearValue)) :
+      shortYear.read phase input world = .ok (.value shortYearValue)) :
     CheckedConstructedDateYear.read
-        (.centuryAndShortYear century shortYear) phase input =
+        (.centuryAndShortYear century shortYear) phase input world =
       .ok (.value (centuryValue * 100 + shortYearValue)) := by
-  simp [CheckedConstructedDateYear.read, observedCentury,
-    observedShortYear]
+  simp [CheckedConstructedDateYear.read, observedCentury, observedShortYear]
 
 /-- A formally unavailable Day prevents every later component read. -/
 theorem checkedConstructedDateComponents_day_unavailable
     (checked : CheckedConstructedDateComponents model)
     (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
+    (world : Option World)
     (observed :
-      checked.day.read phase input = .ok (.unavailable cause)) :
-    checked.evaluate phase input = .ok (.unavailable cause) := by
+      checked.day.read phase input world = .ok (.unavailable cause)) :
+    checked.evaluate phase input world = .ok (.unavailable cause) := by
   unfold CheckedConstructedDateComponents.evaluate
   rw [observed]
 
@@ -108,11 +130,12 @@ theorem constructedDateObservation_ofAvailableComponents_ne_unknown
 /-- Checked component execution routes every reached formal cause through `unavailable`; its resolved branch therefore never contains the cause-free UNKNOWN fallback. -/
 theorem checkedConstructedDateComponents_ne_resolved_unknown
     (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model) :
-    checked.evaluate phase input ≠ .ok (.resolved .unknown) := by
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) :
+    checked.evaluate phase input world ≠ .ok (.resolved .unknown) := by
   unfold CheckedConstructedDateComponents.evaluate
   generalize dayRead :
-    CheckedConstructedDateSource.read checked.day phase input = day
+    CheckedConstructedDateSource.read checked.day phase input world = day
   cases day with
   | error error => simp
   | ok day =>
@@ -120,7 +143,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
       | unavailable cause => simp
       | value amount =>
           generalize monthRead :
-            CheckedConstructedDateSource.read checked.month phase input = month
+            CheckedConstructedDateSource.read checked.month phase input world = month
           cases month with
           | error error => simp
           | ok month =>
@@ -128,7 +151,8 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
               | unavailable cause => simp
               | value amount =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read checked.year phase input = year
+                    CheckedConstructedDateYear.read
+                      checked.year phase input world = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -136,7 +160,8 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
                         simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
               | empty =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read checked.year phase input = year
+                    CheckedConstructedDateYear.read
+                      checked.year phase input world = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -144,7 +169,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
                         simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
       | empty =>
           generalize monthRead :
-            CheckedConstructedDateSource.read checked.month phase input = month
+            CheckedConstructedDateSource.read checked.month phase input world = month
           cases month with
           | error error => simp
           | ok month =>
@@ -152,7 +177,8 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
               | unavailable cause => simp
               | value amount =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read checked.year phase input = year
+                    CheckedConstructedDateYear.read
+                      checked.year phase input world = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -160,7 +186,8 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
                         simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
               | empty =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read checked.year phase input = year
+                    CheckedConstructedDateYear.read
+                      checked.year phase input world = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -213,21 +240,24 @@ theorem constructedDateObservation_shifts_preserve_resolved_nonvalues
 theorem checkedConstructedDateShift_source_unavailable
     (checked : CheckedConstructedDateShift model)
     (phase : Phase) (input : CheckedDocument model)
+    (world : Option World)
     (cause : FormalCause)
     (source :
-      checked.source.evaluate phase input = .ok (.unavailable cause)) :
-    checked.evaluate phase input = .ok (.unavailable cause) := by
+      checked.source.evaluate phase input world = .ok (.unavailable cause)) :
+    checked.evaluate phase input world = .ok (.unavailable cause) := by
   simp [CheckedConstructedDateShift.evaluate, source]
 
 /-- Arithmetic domain failure after a real source remains cause-free no-value; it is not a zero shift and does not acquire omission provenance. -/
 theorem checkedConstructedDateShift_real_domain_failure
     (checked : CheckedConstructedDateShift model)
     (phase : Phase) (input : CheckedDocument model) (parts : DateParts)
+    (world : Option World)
     (source :
-      checked.source.evaluate phase input = .ok (.resolved (.real parts)))
+      checked.source.evaluate phase input world =
+        .ok (.resolved (.real parts)))
     (amount :
       checked.amount.read phase input = .ok (.ok .notEvaluated)) :
-    checked.evaluate phase input = .ok (.noValue false) := by
+    checked.evaluate phase input world = .ok (.noValue false) := by
   unfold CheckedConstructedDateShift.evaluate
   rw [source]
   simp [amount, CheckedConstructedDateShift.applyAmount,
@@ -238,22 +268,24 @@ theorem checkedConstructedDateShift_real_domain_failure
 theorem checkedConstructedDateDifference_first_unavailable
     (checked : CheckedConstructedDateDifference model)
     (phase : Phase) (input : CheckedDocument model)
+    (world : Option World)
     (cause : FormalCause)
     (first :
-      checked.first.evaluate phase input = .ok (.unavailable cause)) :
-    checked.evaluate phase input = .ok (.error cause) := by
+      checked.first.evaluate phase input world = .ok (.unavailable cause)) :
+    checked.evaluate phase input world = .ok (.error cause) := by
   simp [CheckedConstructedDateDifference.evaluate, first]
 
 /-- Once the first source resolves, the second source's exact reached formal cause is retained. -/
 theorem checkedConstructedDateDifference_second_unavailable
     (checked : CheckedConstructedDateDifference model)
     (phase : Phase) (input : CheckedDocument model)
+    (world : Option World)
     (firstResult : DateConstructionResult) (cause : FormalCause)
     (first :
-      checked.first.evaluate phase input = .ok (.resolved firstResult))
+      checked.first.evaluate phase input world = .ok (.resolved firstResult))
     (second :
-      checked.second.evaluate phase input = .ok (.unavailable cause)) :
-    checked.evaluate phase input = .ok (.error cause) := by
+      checked.second.evaluate phase input world = .ok (.unavailable cause)) :
+    checked.evaluate phase input world = .ok (.error cause) := by
   simp [CheckedConstructedDateDifference.evaluate, first, second]
 
 end A12Kernel

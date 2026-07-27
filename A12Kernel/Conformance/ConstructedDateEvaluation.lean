@@ -111,35 +111,35 @@ private def evaluate? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
-  checked.evaluate .validation input |>.toOption
+  checked.evaluate .validation input none |>.toOption
 
 private def evaluateBaseYear? (cells : List ClassifiedCellInput) := do
   let model := { dateModel "UTC" with baseYear := some 2024 }
   let checked ←
     (elaborateConstructedDateBaseYearComponents model 1 2).toOption
   let input ← documentFor? model cells
-  checked.evaluate .validation input |>.toOption
+  checked.evaluate .validation input none |>.toOption
 
 private def evaluateCentury? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateCenturyComponents
       (dateModel "UTC") 1 2 8 9).toOption
   let input ← document? cells
-  checked.evaluate .validation input |>.toOption
+  checked.evaluate .validation input none |>.toOption
 
 private def evaluateSources? (sources : SurfaceConstructedDateComponents)
     (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateSources (dateModel "UTC") sources).toOption
   let input ← document? cells
-  checked.evaluate .validation input |>.toOption
+  checked.evaluate .validation input none |>.toOption
 
 private def evaluateExtractorSources? (sources : SurfaceConstructedDateComponents)
     (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateSources extractorDateModel sources).toOption
   let input ← documentFor? extractorDateModel cells
-  checked.evaluate .validation input |>.toOption
+  checked.evaluate .validation input none |>.toOption
 
 private def evaluateBaseYearExtractorSources?
     (sources : SurfaceConstructedDateComponents)
@@ -147,26 +147,26 @@ private def evaluateBaseYearExtractorSources?
   let model := { extractorDateModel with baseYear := some 2024 }
   let checked ← (elaborateConstructedDateSources model sources).toOption
   let input ← documentFor? model cells
-  checked.evaluate .validation input |>.toOption
+  checked.evaluate .validation input none |>.toOption
 
 private def validVerdict? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
-  checked.evaluateValid .validation input |>.toOption
+  checked.evaluateValid .validation input none |>.toOption
 
 private def invalidVerdict? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
-  checked.evaluateInvalid .validation input |>.toOption
+  checked.evaluateInvalid .validation input none |>.toOption
 
 private def numericPart? (part : DateNumericPart)
     (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
-  checked.evaluateNumericPart part .validation input |>.toOption
+  checked.evaluateNumericPart part .validation input none |>.toOption
 
 private def amountPath : SurfaceFieldPath := {
   base := .absolute
@@ -399,7 +399,7 @@ private def shift? (unit : DateShiftUnit)
   let input ← document? cells
   ({ source, unit, amount } :
       CheckedConstructedDateShift (dateModel "UTC")).evaluate
-        .computation input |>.toOption
+        .computation input none |>.toOption
 
 private inductive DifferenceObservation where
   | numeric (result : ConstructedDateNumericResult)
@@ -415,7 +415,7 @@ private def difference? (unit : DateShiftUnit)
   let input ← document? cells
   match ({ first, second, unit } :
       CheckedConstructedDateDifference (dateModel "UTC")).evaluate
-        .validation input with
+        .validation input none with
   | .error _ => none
   | .ok (.error cause) => some (.formal cause)
   | .ok (.ok result) => some (.numeric result)

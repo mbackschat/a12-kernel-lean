@@ -232,6 +232,21 @@ example :
           (.constant "63")) = false := by
   native_decide
 
+/- `Today` is a complete dynamic Date beneath ordinary extraction. The extracted part
+   must match its outer constructor position, and split-year positions remain closed. -/
+example :
+    extractorDateIsOk extractorModel
+        (.todayExtractor .day) (.todayExtractor .month)
+        (.complete (.todayExtractor .year)) = true ∧
+      extractorDateIsOk extractorModel
+        (.todayExtractor .month) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.constant "15") (.constant "6")
+        (.centuryAndShortYear
+          (.todayExtractor .year) (.constant "63")) = false := by
+  native_decide
+
 /- Pattern-backed String fields reuse the six exact checker-recognized digit sources at
    the position's complete stored width. Regex equivalence and a wrong width do not pass. -/
 example :

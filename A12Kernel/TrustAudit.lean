@@ -1651,6 +1651,8 @@ run_cmd do
 #print axioms A12Kernel.checkedConstructedDateBaseYear_read
 #print axioms A12Kernel.checkedConstructedDateConstant_read
 #print axioms A12Kernel.checkedConstructedDateBaseYearExtractor_read
+#print axioms A12Kernel.checkedConstructedDateTodayExtractor_requires_world
+#print axioms A12Kernel.checkedConstructedDateTodayExtractor_read
 #print axioms A12Kernel.checkedConstructedDateString_classify_value
 #print axioms A12Kernel.checkedConstructedDateYear_classify_value
 #print axioms A12Kernel.checkedConstructedDateExtractor_classify_empty_unavailable
