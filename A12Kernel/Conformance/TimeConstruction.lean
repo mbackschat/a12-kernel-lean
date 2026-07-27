@@ -80,7 +80,7 @@ example :
         expectedLocal).get (by native_decide)
     checked.evaluateConstructionRaw .validation
         (.parsed "00.02.2024") time =
-      .value expectedLocal expectedInstant := by
+      .value expectedLocal expectedInstant false := by
   native_decide
 
 end A12Kernel.Conformance.TimeConstruction

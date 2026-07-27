@@ -11,7 +11,7 @@ namespace A12Kernel
     (basis : DateCalendarBasis) :
     ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
       (.value (.temporal (.dateTime instant date clock basis))) =
-        some (.value clock) := by
+        some (.value clock false) := by
   rfl
 
 /-- Generated Date-before-Time evaluation does not read the checked DateTime extraction source after the partial-Date source has already failed formally. -/
@@ -58,5 +58,26 @@ theorem valueAsDateTimeNowShiftExtraction_evaluateRaw_date_unavailable
     valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
       checked.construction phase raw
         (fun _ => checked.readShiftedTime world) cause observed
+
+/-- The checked field-amount route retains the literal route exactly when its numeric operand is fixed. -/
+theorem shiftedNumericOperand_fixed
+    (profile : ModelZone.ConcreteProfile) (unit : DateTimeSubdayUnit)
+    (instant : Instant) (amount : Rat) :
+    ValueAsDateTimeTimeOperand.ofShiftedNumericOperand?
+        profile unit instant (.value amount .fixed) =
+      ValueAsDateTimeTimeOperand.ofShiftedInstant?
+        profile unit amount instant := by
+  rfl
+
+/-- Missing provenance on a concrete constructed DateTime is observable as omission polarity without changing its exact instant. -/
+theorem valueAsDateTimeResult_equal_self
+    (localDateTime : LocalDateTime) (instant : Instant)
+    (notGiven : Bool) :
+    (ValueAsDateTimeResult.value localDateTime instant notGiven).evalFixedRight
+        .equal instant =
+      .fired (if notGiven then .omission else .value) := by
+  cases notGiven <;> simp [ValueAsDateTimeResult.evalFixedRight,
+    TemporalComparisonOp.evalInstant, evalSymmetricComparison,
+    TemporalComparisonOp.holdsInstant]
 
 end A12Kernel

@@ -563,18 +563,18 @@ def elaborateZonedValueAsDateSource
   | some profile =>
       pure { source with profile, profileMatches := hProfile }
 
-/-- Result of combining one resolved partial-Date endpoint with an already checked direct Time observation. A missing input and a present wall label rejected by the model zone both have no value, but only the former is not-given. -/
+/-- Result of combining one resolved partial-Date endpoint with an already checked Time observation. A real value retains whether an input was missing, because the kernel may construct a value that still produces omission polarity. A missing input and a present wall label rejected by the model zone both have no value, but only the former is not-given. -/
 inductive ValueAsDateTimeResult where
   | noValue (notGiven : Bool)
-  | value (localDateTime : LocalDateTime) (instant : Instant)
+  | value (localDateTime : LocalDateTime) (instant : Instant) (notGiven : Bool)
   | nonRelevant
   | unavailable (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- The Time-side reason domain shared by a checked field and resolved `Time(...)`. `notGiven = false` retains a fully present but impossible clock. -/
+/-- The Time-side reason domain shared by a checked field and resolved Time expression. A value retains missing provenance because date arithmetic can return a concrete clock while an empty numeric input still makes the result not-given. `noValue false` retains a fully present but impossible clock. -/
 inductive ValueAsDateTimeTimeOperand where
   | noValue (notGiven : Bool)
-  | value (time : TimeOfDay)
+  | value (time : TimeOfDay) (notGiven : Bool)
   | nonRelevant
   | unavailable (cause : FormalCause)
   deriving Repr, DecidableEq
@@ -584,7 +584,7 @@ namespace ValueAsDateTimeTimeOperand
 /-- Project one direct checked Time field without losing its empty or formal state. -/
 def ofObservation : CellObservation TimeOfDay → ValueAsDateTimeTimeOperand
   | .empty => .noValue true
-  | .value time => .value time
+  | .value time => .value time false
   | .unknown cause | .poison cause => .unavailable cause
 
 end ValueAsDateTimeTimeOperand
@@ -593,7 +593,7 @@ namespace TimeConstructionResult
 
 /-- Preserve resolved Time-construction reasons at the shared DateTime operand seam. -/
 def asDateTimeOperand : TimeConstructionResult → ValueAsDateTimeTimeOperand
-  | .value time => .value time
+  | .value time => .value time false
   | .incomplete => .noValue true
   | .unreal => .noValue false
   | .nonRelevant => .nonRelevant
@@ -608,8 +608,8 @@ def evalFixedRight (result : ValueAsDateTimeResult)
     (op : TemporalComparisonOp) (expected : Instant) : Verdict :=
   match result with
   | .noValue _ => .notFired
-  | .value _ instant =>
-      op.evalInstant (.value instant true) (.value expected true)
+  | .value _ instant notGiven =>
+      op.evalInstant (.value instant (!notGiven)) (.value expected true)
   | .nonRelevant | .unavailable _ => .unknown
 
 end ValueAsDateTimeResult
@@ -636,10 +636,10 @@ private def combine (checked : CheckedValueAsDateTime model)
           | _, .nonRelevant => .nonRelevant
           | .empty, _ => .noValue true
           | .date _, .noValue notGiven => .noValue notGiven
-          | .date date, .value clock =>
+          | .date date, .value clock notGiven =>
               let localDateTime : LocalDateTime := { date, time := clock }
               match checked.profile.resolveLocal? localDateTime with
-              | some instant => .value localDateTime instant
+              | some instant => .value localDateTime instant notGiven
               | none => .noValue false
           | .unavailable cause, _ => .unavailable cause
           | _, .unavailable cause => .unavailable cause

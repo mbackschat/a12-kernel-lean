@@ -26,11 +26,21 @@ private def dateTimeSource
   name := "ScheduledAt"
   policy := { kind := .temporal kind components } }
 
+private def shiftAmount : FlatFieldDecl := {
+  id := 2
+  groupPath := ["Order"]
+  name := "ShiftAmount"
+  policy := { kind := .number { scale := 2, signed := true } } }
+
 private def modelWith
     (source : FlatFieldDecl := dateTimeSource)
     (timeZoneId : String := "Europe/Berlin") : FlatModel := {
   fields := [partialDate, source]
   timeZoneId }
+
+private def modelWithShiftAmount : FlatModel := {
+  fields := [partialDate, dateTimeSource, shiftAmount]
+  timeZoneId := "Europe/Berlin" }
 
 private def prepared? (model : FlatModel) :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -77,11 +87,11 @@ example :
     ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
         (.value (.temporal (.dateTime
           { epochMillis := 1729989000000 } date clock .storedGregorian))) =
-        some (.value clock) ∧
+        some (.value clock false) ∧
       ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
         (.value (.temporal (.dateTime
           { epochMillis := 1729992600000 } date clock .storedGregorian))) =
-        some (.value clock) := by
+        some (.value clock false) := by
   native_decide
 
 /- One checked DateTime field supplies the extracted Time and reaches the existing Berlin partial-Date constructor. -/
@@ -105,7 +115,7 @@ example :
       }]
       pure (checked.evaluateRaw .validation input
         (.parsed "00.02.2024") |>.toOption)
-    result = some (some (.value expectedLocal expectedInstant)) := by
+    result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
 
 /- An empty DateTime input remains not-given at the shared Time seam. -/
@@ -161,7 +171,7 @@ example :
       }]
       pure (checked.evaluateRaw .validation input
         (.parsed "00.02.2024") |>.toOption)
-    result = some (some (.value expectedLocal expectedInstant)) := by
+    result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
 
 /- A dynamic `Now` source is sampled from the execution world, shifted as an exact instant, and only then projected through the same Berlin Time boundary. -/
@@ -182,7 +192,7 @@ example :
         model 0 .lastDay .hours 1).toOption
       pure (checked.evaluateRaw .validation { now }
         (.parsed "00.02.2024") |>.toOption)
-    result = some (some (.value expectedLocal expectedInstant)) := by
+    result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
 
 /- Exact millisecond identity survives `Now` and the shift but is intentionally unobservable after `TimeFromDateTime` projects a whole-second clock. Crossing the rendered-second boundary remains observable. -/
@@ -250,7 +260,76 @@ example :
       }]
       pure (checked.evaluateRaw .validation input
         (.parsed "00.02.2024") |>.toOption)
-    result = some (some (.value expectedLocal expectedInstant)) := by
+    result = some (some (.value expectedLocal expectedInstant false)) := by
+  native_decide
+
+/- A checked Number-field amount preserves both the helper's truncate-toward-zero conversion and the omission carried by an empty field. Empty is a zero shift with a value, not clean no-value. -/
+example :
+    let model := modelWithShiftAmount
+    let sourceLocal := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 30 0).get (by native_decide)
+    let sourceInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        sourceLocal).get (by native_decide)
+    let shiftedLocal := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 31 0).get (by native_decide)
+    let shiftedInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        shiftedLocal).get (by native_decide)
+    let evaluate (amount : Option Rat) := do
+      let checked ←
+        (elaborateValueAsDateTimeFieldShiftExtraction
+          model 0 .firstDay 1 .minutes 2).toOption
+      let amountCell := amount.toList.map fun value => {
+        address := { field := 2, path := [] }
+        stored := "1.5"
+        raw := .parsed (.num value)
+      }
+      let input ← document? model ({
+        address := { field := 1, path := [] }
+        stored := "2024-06-15T10:30:00"
+        raw := dateTimeRaw sourceInstant sourceLocal.date.civil.parts sourceLocal.time
+      } :: amountCell)
+      pure (checked.evaluateRaw .validation input
+        (.parsed "15.06.2024") |>.toOption)
+    evaluate (some (3 / 2)) =
+        some (some (.value shiftedLocal shiftedInstant false)) ∧
+      evaluate none =
+        some (some (.value sourceLocal sourceInstant true)) := by
+  native_decide
+
+/- Static amount admission rejects a resolved non-Number declaration before evaluation. -/
+example :
+    extractionError?
+        (elaborateValueAsDateTimeFieldShiftExtraction
+          modelWithShiftAmount 0 .firstDay 1 .minutes 1) =
+      some (.amountNotNumber 1) := by
+  native_decide
+
+/- Generated source-before-amount evaluation stops on a formal DateTime source, but an empty source still reaches and exposes a formal amount. -/
+example :
+    let model := modelWithShiftAmount
+    let evaluate (cells : List ClassifiedCellInput) := do
+      let checked ←
+        (elaborateValueAsDateTimeFieldShiftExtraction
+          model 0 .firstDay 1 .seconds 2).toOption
+      let input ← document? model cells
+      pure (checked.evaluateRaw .computation input
+        (.parsed "15.06.2024") |>.toOption)
+    evaluate [{
+        address := { field := 1, path := [] }
+        stored := "bad-date-time"
+        raw := .rejected .malformed
+      }, {
+        address := { field := 2, path := [] }
+        stored := "bad-amount"
+        raw := .rejected .declaredConstraint
+      }] = some (some (.unavailable .malformed)) ∧
+      evaluate [{
+        address := { field := 2, path := [] }
+        stored := "bad-amount"
+        raw := .rejected .declaredConstraint
+      }] = some (some (.unavailable .declaredConstraint)) := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDateTimeExtraction

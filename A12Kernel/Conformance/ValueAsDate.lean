@@ -454,7 +454,7 @@ example :
       expectedLocal).get (by native_decide)
     let result := checked.evaluateRaw Phase.validation
       (.parsed "00.02.2024") (.value clock)
-    result = .value expectedLocal expectedInstant ∧
+    result = .value expectedLocal expectedInstant false ∧
       result.evalFixedRight .equal expectedInstant = .fired .value := by
   native_decide
 
@@ -598,7 +598,7 @@ example :
       let input ← timeDocument? model "10:30:45" (timeRaw clock)
       pure (checked.evaluateRaw .validation input
         (.parsed "00.02.2024") |>.toOption)
-    result = some (some (.value expectedLocal expectedInstant)) := by
+    result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
 
 /- Generated Date-before-Time evaluation is observable: a Date formal failure stops first, while unknown-year non-relevance still reaches a failing Time read before the helper runs. -/

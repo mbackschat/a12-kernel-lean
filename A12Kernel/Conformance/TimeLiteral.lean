@@ -63,8 +63,8 @@ example :
     checked.evaluateOperand .validation
         (checked.toCheckedValueAsDateSource.checkSourceRaw
           (.parsed "00.02.2024"))
-        (.value clock) =
-      .value expectedLocal expectedInstant := by
+        (.value clock false) =
+      .value expectedLocal expectedInstant false := by
   native_decide
 
 /- A valid literal cannot erase the partial Date's cause-free unknown-year non-relevance. -/
@@ -76,7 +76,7 @@ example :
     checked.evaluateOperand .validation
         (checked.toCheckedValueAsDateSource.checkSourceRaw
           (.parsed "00.00.0000"))
-        (.value clock) =
+        (.value clock false) =
       .nonRelevant := by
   native_decide
 

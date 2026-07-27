@@ -49,6 +49,8 @@ The calendar basis of the operand is observable, and no one calendar implementat
 
 A date shift whose numeric amount is a domain-invalid expression has no amount to apply. For example, `AddDays(StartDate, RoundAccounting([x] / 0, 2))` yields a valueless Date and clears a stale Date target; it does not attach the numeric `berechnungsWertFehler` to that Date target. This is a Date-consumer projection of the invalid numeric operand, distinct from assigning the same expression to a Number target.
 
+An empty direct Number-field amount is different: the generated field read supplies numeric zero with missing provenance. When the Date/DateTime source has a value, the shift therefore retains the same concrete value but marks it not-given; a true downstream comparison fires with OMISSION rather than VALUE. The generated shift evaluates its Date/DateTime source before the numeric amount: a formal source stops before the amount, while a cause-free empty source still reaches it.
+
 **Sub-day arithmetic** operates on exact integer **milliseconds since epoch**. Stored and constructed Date/Time/DateTime syntax has whole-second precision, but `Now` retains the injected validation clock's millisecond identity:
 
 - `AddHours` / `AddMinutes` / `AddSeconds` require a date-bearing operand whose format exposes the selected time component, preserve that DateTime format, and carry across the day boundary. A Time-only operand is rejected; use `TimeFromDateTime(AddHours(dateTime, amount))` or its Minute/Second counterpart when a Time value is required.

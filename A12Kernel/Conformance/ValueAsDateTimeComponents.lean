@@ -229,7 +229,7 @@ example :
             sourceDate dateTimeClock .storedGregorian)]
       construction.evaluateComponentsRaw time .validation input
         (.parsed "00.02.2024") |>.toOption
-    result = some (.value expectedLocal expectedInstant) := by
+    result = some (.value expectedLocal expectedInstant false) := by
   native_decide
 
 /- Filled digit Strings convert as decimal integers. Empty and formal inputs retain

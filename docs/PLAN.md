@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1581 theorem roots; 35329 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1583 theorem roots; 35441 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit the smallest nonliteral amount for the checked DateTime-field shift that serves as the Time operand of `DateTime(ValueAsDate(...), time)`. Start with one ordinary nonrepeatable Number field and reuse the checked document plus existing numeric observation semantics; add no general numeric-expression or temporal-expression carrier until source-before-amount evaluation, empty/fillability, formal precedence, and static Number admission are source-closed.
+Extend the already-checked dynamic `Now` sub-day shift by the same ordinary nonrepeatable Number-field amount used by the completed DateTime-field route. Reuse `CheckedValueAsDateTimeShiftAmount`, preserve `World.now` as the source and the immutable checked document as the amount input, and add no general numeric-expression or temporal-expression carrier.
 
 ## Immediate sequence
 
-1. Inspect the Number-amount checker and all generated `DateAddOperation.st` routes together with the checked Number-cell projection. Confirm the exact evaluation order when the DateTime source is empty, non-relevant, or formal and the amount is empty, domain-invalid, or formal.
-2. Reuse the complete-DateTime source certificate, immutable checked document, `NumericComputationResult`, shared signed-32-bit conversion, and existing shifted-instant projection. Generalize the literal amount only when the field route has the same result domain; retain separate static certification for the Number declaration.
-3. Keep separators for source-before-amount formal failure, an empty amount yielding no Time, a present fractional amount narrowing toward zero, and a formal amount reached after an empty source. Stop if the ordinary checked Number read cannot retain the helper's missing provenance without a wider numeric-expression owner. Leave general amount expressions, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
+1. Confirm the generated `PointInTimeOperation.st` plus `DateAddOperation.st` route evaluates `Now` before the amount and that no distinct missing-source branch exists for `Now`.
+2. Generalize the checked `Now` shift to consume `CheckedValueAsDateTimeShiftAmount`; keep the literal elaborator as a specialization and add one field elaborator with the existing static Number admission.
+3. Retain separators for a present fractional field amount, an empty field amount producing a concrete omission-typed result, and a formal field amount. Leave general amount expressions, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

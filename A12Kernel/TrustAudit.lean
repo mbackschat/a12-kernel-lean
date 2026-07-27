@@ -229,6 +229,8 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateTimeExtraction_evaluateRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateTimeShiftExtraction_evaluateRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateTimeNowShiftExtraction_evaluateRaw_date_unavailable
+#print axioms A12Kernel.shiftedNumericOperand_fixed
+#print axioms A12Kernel.valueAsDateTimeResult_equal_self
 #print axioms A12Kernel.checkedTimeStringField_classify_value
 #print axioms A12Kernel.checkedTimeExtractorField_position_matches
 #print axioms A12Kernel.valueAsDateTimeComponents_evaluateRaw_date_unavailable
