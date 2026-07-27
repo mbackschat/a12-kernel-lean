@@ -210,6 +210,12 @@ run_cmd do
 #print axioms A12Kernel.exactFullDateApplication_storedValue
 #print axioms A12Kernel.equal_fullDate_delta_does_not_imply_equal_exact_application
 #print axioms A12Kernel.equal_fullDate_application_does_not_imply_equal_delta
+#print axioms A12Kernel.fullDateComputationRun_shouldClear_iff
+#print axioms A12Kernel.fullDateComputationRun_withChanges_subset
+#print axioms A12Kernel.fullDateComputationRun_cleared_iff
+#print axioms A12Kernel.fullDateComputationRun_formalErrors_exact
+#print axioms A12Kernel.fullDateComputationRun_noErrorOccurred_iff
+#print axioms A12Kernel.fullDateComputationRun_fromOutcomes_permutation
 #print axioms A12Kernel.todayOperand_resolves_exact
 #print axioms A12Kernel.todayOperand_unsupported
 #print axioms A12Kernel.baseYearOperand_resolves_exact

@@ -1,0 +1,73 @@
+import A12Kernel.Elaboration.FullDateComputationResult
+
+/-! # Full-Date computation result-view laws -/
+
+namespace A12Kernel
+
+/-- Clearing is exactly source-filled placement without a computed-data instance. -/
+theorem fullDateComputationRun_shouldClear_iff
+    (input : CheckedDocument model) (field : FieldId)
+    (outcome : FullDateTargetOutcome) :
+    FullDateComputationRunView.shouldClear input (field, outcome) = true ↔
+      outcome.hasComputedInstance = false ∧
+        (input.sourceFullDateTargetState field).storedValue.isSome = true := by
+  simp [FullDateComputationRunView.shouldClear]
+
+/-- Every changed success is the identical member of the complete successful collection. -/
+theorem fullDateComputationRun_withChanges_subset
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List (FieldId × FullDateTargetOutcome))
+    (computed : FullDateComputedInstance)
+    (member : computed ∈
+      (FullDateComputationRunView.fromOutcomes input messages outcomes).withChanges) :
+    computed ∈
+      (FullDateComputationRunView.fromOutcomes input messages outcomes).withoutErrors := by
+  simpa [FullDateComputationRunView.fromOutcomes] using
+    (List.mem_filter.mp member).1
+
+/-- The clear collection is precisely the source-filled, no-instance projection. -/
+theorem fullDateComputationRun_cleared_iff
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List (FieldId × FullDateTargetOutcome)) (field : FieldId) :
+    field ∈
+        (FullDateComputationRunView.fromOutcomes input messages outcomes).cleared ↔
+      ∃ outcome, (field, outcome) ∈ outcomes ∧
+        FullDateComputationRunView.shouldClear input (field, outcome) = true := by
+  simp [FullDateComputationRunView.fromOutcomes]
+
+/-- Result construction retains the supplied residual channel exactly. -/
+theorem fullDateComputationRun_formalErrors_exact
+    (input : CheckedDocument model) (messages : List ResidualMessage)
+    (outcomes : List (FieldId × FullDateTargetOutcome)) :
+    (FullDateComputationRunView.fromOutcomes input messages outcomes).formalErrorsInOperands =
+      messages := by
+  rfl
+
+/-- The error predicate observes exactly its two error channels. -/
+theorem fullDateComputationRun_noErrorOccurred_iff
+    (view : FullDateComputationRunView ResidualMessage) :
+    view.noErrorOccurred = true ↔
+      view.withErrors = [] ∧ view.formalErrorsInOperands = [] := by
+  simp [FullDateComputationRunView.noErrorOccurred]
+
+/-- Reordering rich outcomes or residual messages preserves the extensional result. -/
+theorem fullDateComputationRun_fromOutcomes_permutation
+    (input : CheckedDocument model)
+    (firstMessages secondMessages : List ResidualMessage)
+    (firstOutcomes secondOutcomes : List (FieldId × FullDateTargetOutcome))
+    (messagesPermutation : firstMessages.Perm secondMessages)
+    (outcomesPermutation : firstOutcomes.Perm secondOutcomes) :
+    FullDateComputationRunView.ExtensionalEq
+      (FullDateComputationRunView.fromOutcomes input firstMessages firstOutcomes)
+      (FullDateComputationRunView.fromOutcomes input secondMessages secondOutcomes) := by
+  simp only [FullDateComputationRunView.ExtensionalEq,
+    FullDateComputationRunView.fromOutcomes]
+  exact ⟨
+    outcomesPermutation.filterMap _,
+    (outcomesPermutation.filterMap _).filter _,
+    outcomesPermutation.filterMap _,
+    (outcomesPermutation.filter _).map _,
+    messagesPermutation
+  ⟩
+
+end A12Kernel

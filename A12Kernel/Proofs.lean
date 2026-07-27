@@ -24,6 +24,7 @@ import A12Kernel.Proofs.TimeAggregate
 import A12Kernel.Proofs.TemporalFormat
 import A12Kernel.Proofs.TemporalTargetPolicy
 import A12Kernel.Proofs.FullDateApplication
+import A12Kernel.Proofs.FullDateComputationResult
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.SingleGroupElaboration
 import A12Kernel.Proofs.CorrelationElaboration

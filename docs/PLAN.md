@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 561 jobs · trust audit **1494 theorem roots; 32310 declarations in 311 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 564 jobs · trust audit **1500 theorem roots; 32418 declarations in 313 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close one bounded SG6 full-Date V2 result projection over a supplied finite outcome list and the immutable computation source. Preserve successful unchanged instances, the changed subset, errored attempts, source-filled clearing, an opaque residual-message channel, and the exact two-channel error predicate without adding a Date executor.
+Close one bounded SG6 full-Date whole-result application against an explicitly supplied compatible destination. Consume only the already-classified changed, errored, and cleared collections through the existing one-target transition; do not reclassify against the destination.
 
 ## Immediate sequence
 
-1. Audit the String and Number result-view owners and reuse their five public projections only where the full-Date outcome has the same meaning.
-2. Recover exact absent, present-empty, and nonempty source Date placement from `CheckedDocument` without parsing stored text; classify accepted unchanged/changed, target rejection, clean no-value, and poison.
-3. Prove the changed-subset, exact-clearing, residual-channel, two-error-channel, and extensional-permutation laws. Stop before a Date expression/table executor, scheduling, message construction, whole-document application, DateTime, partial-Date completion, or wider format syntax.
+1. Specialize the existing one-target full-Date transition at one destination field and preserve every other field projection.
+2. Apply clears, target errors, then changed successes in the kernel order; reject duplicate action targets before selecting a write. Successful unchanged instances and residual messages must have no application action.
+3. Prove unchanged-not-applied, changed/error/clear specialization, residual-message independence, and duplicate refusal. Stop before destination compatibility certification, Date expression/table execution, scheduling, message construction, DateTime, partial-Date completion, or wider format syntax.
 
 ## Parked boundaries
 
