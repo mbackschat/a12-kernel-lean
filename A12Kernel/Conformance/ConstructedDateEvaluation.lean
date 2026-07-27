@@ -36,6 +36,21 @@ private def dateModel (zoneId : String := "UTC") : FlatModel := {
   timeZoneId := zoneId
 }
 
+private def temporalField (id : FieldId) (kind : TemporalKind)
+    (components : TemporalComponents) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name := s!"TemporalComponent{id}"
+  policy := { kind := .temporal kind components }
+}
+
+private def extractorDateModel : FlatModel :=
+  let base := dateModel "UTC"
+  { base with
+    fields := base.fields ++ [
+      temporalField 10 .dateTime TemporalComponents.now,
+      temporalField 11 .date TemporalComponents.fullDate] }
+
 private def documentFor? (model : FlatModel) (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) := do
   let prepared ←
@@ -82,6 +97,13 @@ private def evaluateSources? (sources : SurfaceConstructedDateComponents)
   let checked ←
     (elaborateConstructedDateSources (dateModel "UTC") sources).toOption
   let input ← document? cells
+  checked.evaluate .validation input |>.toOption
+
+private def evaluateExtractorSources? (sources : SurfaceConstructedDateComponents)
+    (cells : List ClassifiedCellInput) := do
+  let checked ←
+    (elaborateConstructedDateSources extractorDateModel sources).toOption
+  let input ← documentFor? extractorDateModel cells
   checked.evaluate .validation input |>.toOption
 
 private def validVerdict? (cells : List ClassifiedCellInput) := do
@@ -184,6 +206,43 @@ example :
       } [] =
         some (.resolved (.real {
           year := 1900, month := 6, day := 15 })) := by
+  native_decide
+
+private def temporalCell (field : FieldId) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored
+  raw
+}
+
+private def dateValue (year : Int) (month day : Nat) : TemporalValue :=
+  .date { epochMillis := 0 } { year, month, day } .storedGregorian
+
+private def dateTimeValue (year : Int) (month day : Nat) : TemporalValue :=
+  .dateTime { epochMillis := 0 } { year, month, day }
+    ((TimeOfDay.ofHms? 12 0 0).get (by native_decide)) .storedGregorian
+
+/- Matching field-backed extractors compose with fixed components. Empty extraction stays
+   incomplete, and a formal Day retains precedence over a later formal Year. -/
+example :
+    let sources : SurfaceConstructedDateComponents := {
+      day := .extractor .day 10
+      month := .constant "6"
+      year := .complete (.extractor .year 11) }
+    evaluateExtractorSources? sources [
+        temporalCell 10 "2024-06-15"
+          (.parsed (.temporal (dateTimeValue 2024 6 15))),
+        temporalCell 11 "1963-01-01"
+          (.parsed (.temporal (dateValue 1963 1 1)))] =
+          some (.resolved (.real { year := 1963, month := 6, day := 15 })) ∧
+      evaluateExtractorSources? sources [
+        temporalCell 11 "1963-01-01"
+          (.parsed (.temporal (dateValue 1963 1 1)))] =
+          some (.resolved .incomplete) ∧
+      evaluateExtractorSources? sources [
+        temporalCell 10 "bad-day" (.rejected .malformed),
+        temporalCell 11 "bad-year" (.rejected .declaredConstraint)] =
+          some (.unavailable .malformed) := by
   native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=

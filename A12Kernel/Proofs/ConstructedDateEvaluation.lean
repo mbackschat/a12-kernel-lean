@@ -18,6 +18,17 @@ theorem checkedConstructedDateConstant_read
       .ok (.value value) := by
   rfl
 
+/-- Direct temporal extraction preserves the distinction between an empty operand and one unavailable for an exact formal cause. -/
+theorem checkedConstructedDateExtractor_classify_empty_unavailable
+    (checked : CheckedConstructedDateExtractorField model)
+    (cause : FormalCause) :
+    checked.classify .empty = .ok .empty ∧
+      checked.classify (.unknown cause) = .ok (.unavailable cause) ∧
+      checked.classify (.poison cause) = .ok (.unavailable cause) := by
+  constructor
+  · rfl
+  · constructor <;> rfl
+
 /-- A formally unavailable Century stops the split year before Short-Year is consulted. -/
 theorem checkedConstructedDateCentury_read_unavailable
     (century shortYear : CheckedConstructedDateSource model)

@@ -26,6 +26,36 @@ private def dateModel (zoneId : String := "UTC") : FlatModel := {
   timeZoneId := zoneId
 }
 
+private def temporalField (id : FieldId) (kind : TemporalKind)
+    (components : TemporalComponents) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name := s!"TemporalComponent{id}"
+  policy := { kind := .temporal kind components }
+}
+
+private def extractorModel (baseYear : Option Int := none) : FlatModel :=
+  let base := dateModel "UTC"
+  { base with
+    fields := base.fields ++ [
+      temporalField 10 .date TemporalComponents.fullDate,
+      temporalField 11 .dateTime TemporalComponents.now,
+      temporalField 12 .date {
+        year := false
+        month := true
+        day := true
+        hour := false
+        minute := false
+        second := false },
+      temporalField 13 .time {
+        year := false
+        month := false
+        day := false
+        hour := true
+        minute := false
+        second := false }]
+    baseYear }
+
 /- The exact Date declaration gate accepts the positional maximum or stored width, but
    not an integer-digit cap or a complete-year maximum below 1000. -/
 example :
@@ -88,6 +118,38 @@ example :
         dateModel "UTC" with
         fields := [componentField 5 { maximum := some 98 }]
       } .shortYear 5).isOk = false := by
+  native_decide
+
+private def extractorDateIsOk (model : FlatModel)
+    (day month : SurfaceConstructedDateSource)
+    (year : SurfaceConstructedDateYear) : Bool :=
+  (elaborateConstructedDateSources model { day, month, year }).isOk
+
+/- Direct component extractors are position-specific. Complete Year may use the model's
+   Base Year supplement, while neither split-year position admits an extractor. -/
+example :
+    extractorDateIsOk extractorModel
+        (.extractor .day 10) (.extractor .month 11)
+        (.complete (.extractor .year 10)) = true ∧
+      extractorDateIsOk extractorModel
+        (.extractor .month 10) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.extractor .quarter 10) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.extractor .day 13) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.constant "15") (.constant "6")
+        (.complete (.extractor .year 12)) = false ∧
+      extractorDateIsOk (extractorModel (some 2024))
+        (.constant "15") (.constant "6")
+        (.complete (.extractor .year 12)) = true ∧
+      extractorDateIsOk extractorModel
+        (.constant "15") (.constant "6")
+        (.centuryAndShortYear
+          (.extractor .year 10) (.constant "63")) = false := by
   native_decide
 
 private def constantDateIsOk (day month : String)

@@ -4,9 +4,9 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Field-backed components read the immutable checked document, fixed components do not; the two-argument form uses the model Base Year, while the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields and direct Date/DateTime extractors read the immutable checked document, while fixed components do not; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
-The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. String and extractor components, another model zone, DateTime, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. String components, recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -53,6 +53,41 @@ def read (checked : CheckedConstructedDateNumberField model)
 
 end CheckedConstructedDateNumberField
 
+namespace CheckedConstructedDateExtractorField
+
+/-- Preserve empty and formal state while projecting the certified calendar component from a Date or DateTime payload. -/
+def classify (checked : CheckedConstructedDateExtractorField model)
+    (observation : CellObservation Value) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match observation with
+  | .empty => pure .empty
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.temporal value) =>
+      if value.kind != checked.source.kind then
+        throw (.payloadKind checked.source.id)
+      else
+        match value.dateParts? with
+        | none => throw (.payloadKind checked.source.id)
+        | some parts =>
+            let amount := checked.part.extract parts
+            if amount.den = 1 then
+              pure (.value amount.num)
+            else
+              throw (.nonIntegralPayload checked.source.id amount)
+  | .value _ => throw (.payloadKind checked.source.id)
+
+/-- Read one certified scalar Date component through the immutable checked document. -/
+def read (checked : CheckedConstructedDateExtractorField model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent := do
+  let cell ← input.read {
+    field := checked.source.id
+    path := []
+  } |>.mapError .document
+  checked.classify (observeCell phase cell)
+
+end CheckedConstructedDateExtractorField
+
 namespace CheckedConstructedDateSource
 
 /-- Read a field-backed component or return an authored constant without consulting the document. -/
@@ -62,6 +97,7 @@ def read (checked : CheckedConstructedDateSource model)
   match checked with
   | .numberField source => source.read phase input
   | .constant value => pure (.value value)
+  | .extractor source => source.read phase input
 
 end CheckedConstructedDateSource
 

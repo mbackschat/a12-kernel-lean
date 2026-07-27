@@ -1,12 +1,13 @@
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields or admitted quoted constants, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width-or-maximum declaration gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, admitted quoted constants, or matching Date/DateTime field extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each Number-field position keeps the kernel checker's exact stored-width-or-maximum declaration gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-String and extractor components, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
+String components, recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -58,12 +59,20 @@ def decodeConstant? (position : ConstructedDateComponentPosition)
   else
     none
 
+/-- The only direct Date extractor that may occupy this constructor position. Split-year positions support no extractor. -/
+def extractor? : ConstructedDateComponentPosition → Option DateNumericPart
+  | .day => some .day
+  | .month => some .month
+  | .year => some .year
+  | .century | .shortYear => none
+
 end ConstructedDateComponentPosition
 
 /-- One grammar-valid direct component source before model-relative checking. -/
 inductive SurfaceConstructedDateSource where
   | numberField (field : FieldId)
   | constant (source : String)
+  | extractor (part : DateNumericPart) (field : FieldId)
   deriving Repr, DecidableEq
 
 /-- The three legal authored year shapes before model-relative checking. -/
@@ -103,10 +112,32 @@ structure CheckedConstructedDateNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsConstructedDateNumberField position source = true
 
-/-- One checked field-backed or fixed constant component. -/
+/-- Exact direct Date/DateTime field gate for one matching Date-component extractor. -/
+def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
+    (position : ConstructedDateComponentPosition) (part : DateNumericPart)
+    (source : FlatTemporalField) : Bool :=
+  match model.lookupUniqueId source.id with
+  | .error _ => false
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        declaration.toTemporalField? == some source &&
+        source.kind != .time &&
+        position.extractor? == some part &&
+        part.admittedBy model.hasBaseYear source.components
+
+/-- One ordinary Date or DateTime field carrying the matching component-extractor certificate. -/
+structure CheckedConstructedDateExtractorField (model : FlatModel) where
+  position : ConstructedDateComponentPosition
+  part : DateNumericPart
+  source : FlatTemporalField
+  admitted :
+    model.admitsConstructedDateExtractorField position part source = true
+
+/-- One checked field-backed, extractor-backed, or fixed constant component. -/
 inductive CheckedConstructedDateSource (model : FlatModel) where
   | numberField (source : CheckedConstructedDateNumberField model)
   | constant (value : Int)
+  | extractor (source : CheckedConstructedDateExtractorField model)
 
 /-- A checked complete Year source, fixed model Base Year, or authored Century/Short-Year pair. -/
 inductive CheckedConstructedDateYear (model : FlatModel) where
@@ -132,6 +163,13 @@ inductive ConstructedDateComponentsElabError where
       (field : FieldId)
   | constantNotAdmitted
       (position : ConstructedDateComponentPosition) (source : String)
+  | extractorMismatch
+      (position : ConstructedDateComponentPosition) (part : DateNumericPart)
+  | extractorSourceKind
+      (position : ConstructedDateComponentPosition) (field : FieldId)
+  | extractorDeclarationNotAdmitted
+      (position : ConstructedDateComponentPosition)
+      (part : DateNumericPart) (field : FieldId)
   | missingBaseYear
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
@@ -153,6 +191,25 @@ def elaborateConstructedDateNumberField
   else
     throw (.declarationNotAdmitted position field)
 
+/-- Resolve one direct Date/DateTime field and retain the matching component-extractor certificate. -/
+def elaborateConstructedDateExtractorField
+    (model : FlatModel) (position : ConstructedDateComponentPosition)
+    (part : DateNumericPart) (field : FieldId) :
+    Except ConstructedDateComponentsElabError
+      (CheckedConstructedDateExtractorField model) := do
+  if position.extractor? != some part then
+    throw (.extractorMismatch position part)
+  let declaration ←
+    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+  let source ← match declaration.toTemporalField? with
+    | some source => pure source
+    | none => throw (.extractorSourceKind position field)
+  if admitted :
+      model.admitsConstructedDateExtractorField position part source = true then
+    pure { position, part, source, admitted }
+  else
+    throw (.extractorDeclarationNotAdmitted position part field)
+
 /-- Check one direct field or quoted constant at its authored position. -/
 def elaborateConstructedDateSource
     (model : FlatModel) (position : ConstructedDateComponentPosition) :
@@ -165,6 +222,9 @@ def elaborateConstructedDateSource
       match position.decodeConstant? source with
       | some value => pure (.constant value)
       | none => throw (.constantNotAdmitted position source)
+  | .extractor part field =>
+      .extractor <$> elaborateConstructedDateExtractorField
+        model position part field
 
 /-- Check one two-, three-, or four-part direct Date through a common ordered source seam. -/
 def elaborateConstructedDateSources
