@@ -30,7 +30,7 @@ import A12Kernel.Conformance.ValueAsDate
 import A12Kernel.Conformance.TimeConstruction
 import A12Kernel.Conformance.TimeLiteral
 import A12Kernel.Conformance.ValueAsDateTimeExtraction
-import A12Kernel.Conformance.ValueAsDateTimeNumberFields
+import A12Kernel.Conformance.ValueAsDateTimeComponents
 import A12Kernel.Conformance.FullDateApplication
 import A12Kernel.Conformance.DateTimeApplication
 import A12Kernel.Conformance.FullDateComputationResult

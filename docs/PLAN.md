@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1576 theorem roots; 35033 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1577 theorem roots; 35163 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close matching extractor components inside `Time(...)` as the next ordinary Time operand form. Reuse the existing checked temporal component projections, require `HoursFromTime`, `MinutesFromTime`, or `SecondsFromTime` at its matching constructor position, and compose the resulting checked prefix through the same `TimeConstructionResult` and partial-Date DateTime seam.
+Close the checker-recognized pattern-backed String-field subset of `Time(...)` components. Keep the extensible-enumeration alternative explicitly outside until the flat model retains that declaration fact; do not treat the supported pattern arm as exhaustive String-component legality.
 
 ## Immediate sequence
 
-1. Recheck `CheckTimeKonstruktImpl.checkCorrectDatumExtractOp`, the extractor backing bean and every Java/Groovy/JavaScript `.st` route, and the existing Lean temporal-component source admission. Determine whether the extractor operand may be any admitted Time-bearing expression or only the currently checked ordinary Time/DateTime field routes.
-2. Add the smallest position-indexed checked component form that evaluates through the existing source owner and converts its integral result without a second numeric expression tree. Preserve constructor prefix order and formal short-circuiting; mixed Number/extractor prefixes are in scope only if one closed sum is smaller and more honest than parallel prefix types.
-3. Retain separators for exact position matching, wrong extractor rejection, empty/formal source behavior, first-formal precedence, one mixed prefix if admitted, trailing zero defaults, and partial-Date DateTime composition. Stop if the current checked source type does not retain a load-bearing format/component certificate. Leave the statically blocked String arm, wider Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
+1. Recheck `CheckBaseDateConstructionImpl`, the field-value code-generation route, and runtime String-to-number conversion for all Java/Groovy/JavaScript strategies. Confirm the exact six recognized patterns, maximum-length condition, empty/formal propagation, and decimal conversion before writing a case.
+2. Extend the existing `SurfaceTimeComponent` sum with one checked String branch only if `FlatModel` already retains every fact needed by that pattern-backed subset. Reuse the existing checked String policy and `TimeConstructionResult`; add no second String parser, general expression tree, or extensible-enumeration placeholder.
+3. Retain one batch separator for all six recognized patterns, arbitrary digit-shaped pattern rejection, wrong maximum length, empty/formal behavior, mixed String/Number/extractor execution, out-of-range reality, and partial-Date DateTime composition. Stop if generated conversion depends on declaration metadata or locale behavior absent from the checked model. Leave extensible-enumeration String fields, wider nonliteral extractor expressions, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 
