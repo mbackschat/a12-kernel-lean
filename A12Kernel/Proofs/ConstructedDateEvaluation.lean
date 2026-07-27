@@ -18,12 +18,14 @@ theorem checkedConstructedDateConstant_read
       .ok (.value value) := by
   rfl
 
-/-- A checked Base-Year extraction delegates to the configured January-1 Date source and cannot consult document state. -/
+/-- A checked Base-Year extraction delegates to its configured direct or range-selected Date source and cannot consult document state. -/
 theorem checkedConstructedDateBaseYearExtractor_read
     (checked : CheckedConstructedDateBaseYearExtractor model)
     (phase : Phase) (input : CheckedDocument model) :
     checked.read phase input =
-      .ok (.value (baseYearNumericPart checked.year checked.part).num) := by
+      .ok (.value
+        (baseYearDateSourceNumericPart
+          checked.year checked.source checked.part).num) := by
   rfl
 
 /-- A reached checked digit String contributes its exact natural-number component without numeric truncation. -/

@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document, while constants and Base-Year extractors are fixed inputs; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document, while constants and direct/range-selected Base-Year extractors are fixed inputs; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
 The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
@@ -156,11 +156,13 @@ end CheckedConstructedDateExtractorField
 
 namespace CheckedConstructedDateBaseYearExtractor
 
-/-- Project the matching component from the configured January-1 Date source without consulting document state. `baseYearNumericPart` owns that source interpretation; its normalized rational numerator is exact for every admitted component. -/
+/-- Project the matching component from the configured direct or range-selected Base-Year Date source without consulting document state. `baseYearDateSourceNumericPart` owns that source interpretation; its normalized rational numerator is exact for every admitted component. -/
 def read (checked : CheckedConstructedDateBaseYearExtractor model)
     (_phase : Phase) (_input : CheckedDocument model) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  pure (.value (baseYearNumericPart checked.year checked.part).num)
+  pure (.value
+    (baseYearDateSourceNumericPart
+      checked.year checked.source checked.part).num)
 
 end CheckedConstructedDateBaseYearExtractor
 

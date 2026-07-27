@@ -211,6 +211,27 @@ example :
           (.baseYearExtractor .year) (.constant "63")) = false := by
   native_decide
 
+/- Both selected Base-Year range endpoints are complete fixed Dates beneath ordinary
+   extraction. They retain the same matching-position and split-year gates as direct
+   Base-Year extraction. -/
+example :
+    extractorDateIsOk (extractorModel (some 2024))
+        (.baseYearRangeExtractor .start .day)
+        (.baseYearRangeExtractor .finish .month)
+        (.complete (.baseYearRangeExtractor .finish .year)) = true ∧
+      extractorDateIsOk (extractorModel (some 2024))
+        (.baseYearRangeExtractor .finish .month)
+        (.constant "6") (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.baseYearRangeExtractor .start .day)
+        (.constant "6") (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk (extractorModel (some 2024))
+        (.constant "15") (.constant "6")
+        (.centuryAndShortYear
+          (.baseYearRangeExtractor .finish .year)
+          (.constant "63")) = false := by
+  native_decide
+
 /- Pattern-backed String fields reuse the six exact checker-recognized digit sources at
    the position's complete stored width. Regex equivalence and a wrong width do not pass. -/
 example :

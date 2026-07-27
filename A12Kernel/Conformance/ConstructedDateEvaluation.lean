@@ -312,6 +312,34 @@ example :
           year := 2024, month := 6, day := 1 })) := by
   native_decide
 
+/- Range-selected Base Year preserves endpoint identity beneath each extractor. January
+   1 and December 31 do not collapse, and selected components mix with an ordinary
+   document-backed Day without consulting unrelated cells. -/
+example :
+    let start : SurfaceConstructedDateComponents := {
+      day := .baseYearRangeExtractor .start .day
+      month := .baseYearRangeExtractor .start .month
+      year := .complete (.baseYearRangeExtractor .start .year) }
+    let finish : SurfaceConstructedDateComponents := {
+      day := .baseYearRangeExtractor .finish .day
+      month := .baseYearRangeExtractor .finish .month
+      year := .complete (.baseYearRangeExtractor .finish .year) }
+    let mixed : SurfaceConstructedDateComponents := {
+      day := .numberField 1
+      month := .baseYearRangeExtractor .finish .month
+      year := .complete (.baseYearRangeExtractor .start .year) }
+    evaluateBaseYearExtractorSources? start [] =
+        some (.resolved (.real {
+          year := 2024, month := 1, day := 1 })) ∧
+      evaluateBaseYearExtractorSources? finish [] =
+        some (.resolved (.real {
+          year := 2024, month := 12, day := 31 })) ∧
+      evaluateBaseYearExtractorSources? mixed [
+        numberCell 1 "15" (.parsed (.num 15))] =
+        some (.resolved (.real {
+          year := 2024, month := 12, day := 15 })) := by
+  native_decide
+
 /- Checked String components use exact decimal conversion but preserve constructor
    reasons: empty stays incomplete, formal state dominates, and a present 99 Day is
    unreal rather than clamped or treated as missing. -/

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1616 theorem roots; 36939 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1616 theorem roots; 36961 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close matching Day/Month/Year extraction from `StartOfDateRange(BaseYear)` and `EndOfDateRange(BaseYear)` as the next bounded fixed sources inside direct `Date(...)`. Reuse the existing selected Base-Year range endpoint and numeric component owners without introducing a Date-expression tree.
+Close matching `DayFromDate(Today)`, `MonthFromDate(Today)`, and `YearFromDate(Today)` inside direct checked UTC/GMT `Date(...)`. Retain `Today` as an explicit per-execution `World` dependency and propagate that same world through every existing constructed-Date consumer that can carry the widened source.
 
 ## Immediate sequence
 
-1. Confirm from the range checker, conversion backing bean, and Java/Groovy/JavaScript `.st` routes that both selected Base-Year endpoints enter ordinary component extraction with complete Date shape and that matching outer positions remain mandatory.
-2. Add separating red cases for January-1 versus December-31 projection, all three matching positions, mismatch and split-year rejection, missing configured Base Year, mixed fixed/document/range sources, and document independence.
-3. Reuse `BaseYearDateSource.range` and the existing checked constructed-Date source carrier. Stop rather than add a general range operand, sampled world, or duplicate endpoint decoder.
+1. Confirm the point-in-time checker, conversion backing bean, generated Java/Groovy/JavaScript `.st` routes, and runtime controller lifecycle for complete-Date admission, retained validation instant, model-zone midnight, and matching outer constructor positions.
+2. Add separating red cases for all three components, two worlds on opposite sides of UTC midnight, document independence, unavailable world-zone resolution, mismatch and split-year rejection, and one shift or difference proving the composed consumer receives the same world.
+3. Reuse `World.today?`, the checked model-zone profile, and its local-Date projection. Stop rather than sample during elaboration, add another temporal source AST, or let a nested consumer construct a second world.
 
 ## Parked boundaries
 
