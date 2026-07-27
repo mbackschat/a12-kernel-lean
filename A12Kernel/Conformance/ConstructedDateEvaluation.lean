@@ -15,11 +15,19 @@ private def componentField
   numericTargetConstraints := constraints
 }
 
+private def shiftAmountField : FlatFieldDecl := {
+  id := 4
+  groupPath := ["Order"]
+  name := "ShiftAmount"
+  policy := { kind := .number { scale := 2, signed := true } }
+}
+
 private def dateModel (zoneId : String := "UTC") : FlatModel := {
   fields := [
     componentField 1 { maximum := some 31 },
     componentField 2 { maximum := some 12 },
-    componentField 3 { maxStoredLength := some 4 }]
+    componentField 3 { maxStoredLength := some 4 },
+    shiftAmountField]
   timeZoneId := zoneId
 }
 
@@ -64,6 +72,27 @@ private def numericPart? (part : DateNumericPart)
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
   checked.evaluateNumericPart part .validation input |>.toOption
+
+private def amountPath : SurfaceFieldPath := {
+  base := .absolute
+  groups := ["Order"]
+  field := "ShiftAmount"
+}
+
+private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .divide
+    (.atom (.field amountPath))
+    (.literal { value := 0, authoredScale := 0 })
+
+private def shift? (unit : DateShiftUnit)
+    (amount : CheckedTemporalShiftAmount (dateModel "UTC"))
+    (cells : List ClassifiedCellInput) := do
+  let source ←
+    (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
+  let input ← document? cells
+  ({ source, unit, amount } :
+      CheckedConstructedDateShift (dateModel "UTC")).evaluate
+        .computation input |>.toOption
 
 /- Checked execution preserves the default-cutover identity through all three literal
    calendar shifts. -/
@@ -171,5 +200,62 @@ example :
       ConstructedDateObservation.numericPart
         (.unavailable .malformed) .day = .error .malformed := by
   constructor <;> rfl
+
+/- Fractional and wrapped field amounts both use Java signed-32-bit narrowing before the
+   legacy calendar shift. -/
+example :
+    let amount :=
+      (elaborateTemporalFieldShiftAmount (dateModel "UTC") 4).toOption
+    amount.bind (fun amount => shift? .days amount [
+        numberCell 1 "31" (.parsed (.num 31)),
+        numberCell 2 "1" (.parsed (.num 1)),
+        numberCell 3 "2024" (.parsed (.num 2024)),
+        numberCell 4 "1.5" (.parsed (.num (3 / 2)))]) =
+          some (.value { year := 2024, month := 2, day := 1 } false) ∧
+      amount.bind (fun amount => shift? .days amount [
+        numberCell 1 "31" (.parsed (.num 31)),
+        numberCell 2 "1" (.parsed (.num 1)),
+        numberCell 3 "2024" (.parsed (.num 2024)),
+        numberCell 4 "4294967297" (.parsed (.num 4294967297))]) =
+          some (.value { year := 2024, month := 2, day := 1 } false) := by
+  native_decide
+
+/- Empty direct Number is a concrete zero shift with omission provenance; arithmetic
+   domain failure is no-value and never becomes another zero shift. -/
+example :
+    let fieldAmount :=
+      (elaborateTemporalFieldShiftAmount (dateModel "UTC") 4).toOption
+    let expressionAmount :=
+      (elaborateTemporalExpressionShiftAmount
+        (dateModel "UTC") ["Order"] amountOverZero).toOption
+    fieldAmount.bind (fun amount => shift? .months amount [
+        numberCell 1 "31" (.parsed (.num 31)),
+        numberCell 2 "1" (.parsed (.num 1)),
+        numberCell 3 "2024" (.parsed (.num 2024))]) =
+          some (.value { year := 2024, month := 1, day := 31 } true) ∧
+      expressionAmount.bind (fun amount => shift? .months amount [
+        numberCell 1 "31" (.parsed (.num 31)),
+        numberCell 2 "1" (.parsed (.num 1)),
+        numberCell 3 "2024" (.parsed (.num 2024)),
+        numberCell 4 "1" (.parsed (.num 1))]) =
+          some (.noValue false) := by
+  native_decide
+
+/- Generated source-before-amount evaluation retains the first source cause; once a real
+   source is reached, the amount's exact formal cause becomes observable. -/
+example :
+    let amount :=
+      (elaborateTemporalFieldShiftAmount (dateModel "UTC") 4).toOption
+    amount.bind (fun amount => shift? .years amount [
+        numberCell 1 "bad-day" (.rejected .malformed),
+        numberCell 4 "bad-amount" (.rejected .declaredConstraint)]) =
+          some (.unavailable .malformed) ∧
+      amount.bind (fun amount => shift? .years amount [
+        numberCell 1 "31" (.parsed (.num 31)),
+        numberCell 2 "1" (.parsed (.num 1)),
+        numberCell 3 "2024" (.parsed (.num 2024)),
+        numberCell 4 "bad-amount" (.rejected .declaredConstraint)]) =
+          some (.unavailable .declaredConstraint) := by
+  native_decide
 
 end A12Kernel.Conformance.ConstructedDateEvaluation

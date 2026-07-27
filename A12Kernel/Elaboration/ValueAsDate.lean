@@ -344,24 +344,17 @@ def elaborateValueAsDateComparison
   let source ← elaborateValueAsDateSource model sourceField endpoint
   pure { source with comparison, expected }
 
-/-- Calendar operation selected by one checked `AddDays`, `AddMonths`, or `AddYears` placement. -/
-inductive ValueAsDateShiftUnit where
-  | days
-  | months
-  | years
-  deriving Repr, DecidableEq
-
-namespace ValueAsDateShiftUnit
+namespace DateShiftUnit
 
 /-- Apply the selected calendar rule without imposing the A12 full-Date floor on the landing. -/
-def shift? (unit : ValueAsDateShiftUnit)
+def shift? (unit : DateShiftUnit)
     (date : FullDate) (offset : Int) : Option CivilDate :=
   match unit with
   | .days => date.civil.addDays? offset
   | .months => date.civil.addMonths? offset
   | .years => date.civil.addYears? offset
 
-end ValueAsDateShiftUnit
+end DateShiftUnit
 
 /-- One nested partial-Date calendar-shift result before any computed-target policy is applied. A civil landing can precede the A12 value floor and must remain an attempted value for the later target check. -/
 inductive ValueAsDateShiftResult where
@@ -374,13 +367,13 @@ inductive ValueAsDateShiftResult where
 /-- Structural failure after both operation operands are semantically available. -/
 inductive ValueAsDateShiftFault where
   | landingUnavailable
-      (unit : ValueAsDateShiftUnit) (source : FullDate) (offset : Int)
+      (unit : DateShiftUnit) (source : FullDate) (offset : Int)
   deriving Repr, DecidableEq
 
 /-- One checked nested calendar shift that specializes the shared partial-Date source admission. -/
 structure CheckedValueAsDateShift (model : FlatModel)
     extends CheckedValueAsDateSource model where
-  unit : ValueAsDateShiftUnit
+  unit : DateShiftUnit
 
 namespace CheckedValueAsDateShift
 
@@ -423,7 +416,7 @@ end CheckedValueAsDateShift
 /-- Resolve and certify one nonrepeatable nested partial-Date calendar shift. -/
 def elaborateValueAsDateShift
     (model : FlatModel) (sourceField : FieldId)
-    (endpoint : ValueAsDateEndpoint) (unit : ValueAsDateShiftUnit) :
+    (endpoint : ValueAsDateEndpoint) (unit : DateShiftUnit) :
     Except ValueAsDateElabError (CheckedValueAsDateShift model) := do
   let source ← elaborateValueAsDateSource model sourceField endpoint
   pure { source with unit }

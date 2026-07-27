@@ -1,11 +1,12 @@
 import A12Kernel.Elaboration.ConstructedDateComponents
+import A12Kernel.Elaboration.TemporalShiftAmount
 import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
 This capsule reads one certified direct three-Number-field Date from the immutable checked document in Day/Month/Year order. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
-Expression-valued amounts, another component form or model zone, DateTime, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Another component form or model zone, DateTime, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -166,5 +167,85 @@ def evaluateNumericPart (checked : CheckedConstructedDateComponents model)
     observation.numericPart part
 
 end CheckedConstructedDateComponents
+
+/-- Reason-bearing result of one checked constructed-Date calendar shift. -/
+inductive ConstructedDateShiftResult where
+  | noValue (notGiven : Bool)
+  | value (parts : DateParts) (notGiven : Bool)
+  | unavailable (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Structural failure outside constructed-Date and numeric-operand reason semantics. -/
+inductive ConstructedDateShiftFault where
+  | source (error : ConstructedDateEvaluationFault)
+  | amountDocument (error : CheckedDocumentError)
+  | amountUnavailable (error : NumericValidationUnavailable)
+  | landingUnavailable
+      (unit : DateShiftUnit) (source : DateParts) (offset : Int)
+  deriving Repr, DecidableEq
+
+/-- One checked constructed-Date source, calendar unit, and direct-Number shift amount. -/
+structure CheckedConstructedDateShift (model : FlatModel) where
+  source : CheckedConstructedDateComponents model
+  unit : DateShiftUnit
+  amount : CheckedTemporalShiftAmount model
+
+namespace CheckedConstructedDateShift
+
+/-- Whether the already-evaluated constructed source carries omission provenance into the shift helper. -/
+def sourceNotGiven : ConstructedDateObservation → Bool
+  | .resolved .incomplete => true
+  | .resolved (.real _) => false
+  | .resolved .unreal => false
+  | .resolved .unknown => false
+  | .unavailable _ => false
+
+private def shiftResolved? (unit : DateShiftUnit)
+    (result : DateConstructionResult) (offset : Int) :
+    Option DateConstructionResult :=
+  match unit with
+  | .days => result.addLegacyDays? offset
+  | .months => result.addLegacyMonths? offset
+  | .years => result.addLegacyYears? offset
+
+/-- Apply an already reached numeric amount without losing missing provenance or reinterpreting arithmetic domain failure as zero. -/
+def applyAmount (checked : CheckedConstructedDateShift model)
+    (source : ConstructedDateObservation) :
+    NumericArithmeticOutcome →
+      Except ConstructedDateShiftFault ConstructedDateShiftResult
+  | .notEvaluated => pure (.noValue (sourceNotGiven source))
+  | .value value fillability =>
+      let notGiven :=
+        sourceNotGiven source || fillability.canGrow || fillability.canShrink
+      match source with
+      | .unavailable cause => pure (.unavailable cause)
+      | .resolved (.real parts) =>
+          let offset := temporalShiftAmountToInt32 value
+          match shiftResolved? checked.unit (.real parts) offset with
+          | some (.real shifted) => pure (.value shifted notGiven)
+          | some .incomplete => pure (.noValue notGiven)
+          | some .unreal => pure (.noValue notGiven)
+          | some .unknown => pure (.noValue notGiven)
+          | none =>
+              throw (.landingUnavailable checked.unit parts offset)
+      | .resolved .incomplete => pure (.noValue notGiven)
+      | .resolved .unreal => pure (.noValue notGiven)
+      | .resolved .unknown => pure (.noValue notGiven)
+
+/-- Evaluate the constructed Date before its amount, matching generated Java argument order. A reached source cause therefore stops before the amount; a cause-free no-value source still reaches it. -/
+def evaluate (checked : CheckedConstructedDateShift model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateShiftFault ConstructedDateShiftResult :=
+  match checked.source.evaluate phase input with
+  | .error error => .error (.source error)
+  | .ok (.unavailable cause) => .ok (.unavailable cause)
+  | .ok source =>
+      match checked.amount.read phase input with
+      | .error error => .error (.amountDocument error)
+      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
+      | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
+      | .ok (.ok outcome) => checked.applyAmount source outcome
+
+end CheckedConstructedDateShift
 
 end A12Kernel

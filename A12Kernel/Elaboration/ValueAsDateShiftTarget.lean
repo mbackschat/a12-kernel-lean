@@ -74,7 +74,7 @@ end CheckedValueAsDateShiftTarget
 /-- Resolve one checked special-Date shift and one distinct nonrepeatable Date target. -/
 def elaborateValueAsDateShiftTarget
     (model : FlatModel) (sourceField targetField : FieldId)
-    (endpoint : ValueAsDateEndpoint) (unit : ValueAsDateShiftUnit) :
+    (endpoint : ValueAsDateEndpoint) (unit : DateShiftUnit) :
     Except ValueAsDateShiftTargetElabError
       (CheckedValueAsDateShiftTarget model) := do
   let shift ←

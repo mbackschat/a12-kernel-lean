@@ -35,6 +35,19 @@ inductive ValueAsDateTimeExtractionElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
+namespace ValueAsDateTimeExtractionElabError
+
+/-- Preserve the established DateTime-specific error surface while delegating amount certification to its shared owner. -/
+def ofTemporalShiftAmount : TemporalShiftAmountElabError →
+    ValueAsDateTimeExtractionElabError
+  | .field error => .amount error
+  | .fieldNotNumber field => .amountNotNumber field
+  | .expression error => .amountExpression error
+  | .expressionNotDirectNumber => .amountExpressionNotDirectNumber
+  | .incoherentCore => .incoherentCore
+
+end ValueAsDateTimeExtractionElabError
+
 /-- One checked partial-Date constructor plus its model-owned complete-DateTime extraction source. -/
 structure CheckedValueAsDateTimeExtraction (model : FlatModel) where
   construction : CheckedValueAsDateTime model
@@ -106,32 +119,18 @@ def CheckedTemporalShiftAmount.readShiftedTime
 def elaborateValueAsDateTimeFieldShiftAmount
     (model : FlatModel) (amountField : FieldId) :
     Except ValueAsDateTimeExtractionElabError
-      (CheckedTemporalShiftAmount model) := do
-  let declaration ←
-    model.resolveNonrepeatableDeclarationById amountField |>.mapError .amount
-  let source ← match declaration.toNumberField? with
-    | some source => pure source
-    | none => throw (.amountNotNumber amountField)
-  if hAdmitted :
-      model.admitsTemporalShiftAmountSource source = true then
-    pure (.field source hAdmitted)
-  else
-    throw .incoherentCore
+      (CheckedTemporalShiftAmount model) :=
+  elaborateTemporalFieldShiftAmount model amountField
+    |>.mapError ValueAsDateTimeExtractionElabError.ofTemporalShiftAmount
 
 /-- Resolve one checked same-group numeric operation and retain only the direct Number-field atom subset audited for temporal shifting. -/
 def elaborateValueAsDateTimeExpressionShiftAmount
     (model : FlatModel) (rowGroup : GroupPath)
     (surface : AuthoredNumericExpr SurfaceNumericAtom) :
     Except ValueAsDateTimeExtractionElabError
-      (CheckedTemporalShiftAmount model) := do
-  let checked ← elaborateNumericValidationExpression model rowGroup surface
-    |>.mapError .amountExpression
-  if hDirect :
-      NumericValidationExpression.usesOnlyDirectNumberFields
-        checked.core = true then
-    pure (.expression checked hDirect)
-  else
-    throw .amountExpressionNotDirectNumber
+      (CheckedTemporalShiftAmount model) :=
+  elaborateTemporalExpressionShiftAmount model rowGroup surface
+    |>.mapError ValueAsDateTimeExtractionElabError.ofTemporalShiftAmount
 
 /-- One checked complete-DateTime field, model-zone profile, sub-day unit, and checked numeric amount. This is the shared nested shift read before a consumer selects the whole Time or one clock component. -/
 structure CheckedShiftedDateTimeSource (model : FlatModel) where

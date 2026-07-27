@@ -128,4 +128,29 @@ theorem constructedDateObservation_shifts_preserve_resolved_nonvalues
     DateConstructionResult.addLegacyMonths?,
     DateConstructionResult.addLegacyYears?]
 
+/-- A reached source cause decides the generated source-before-amount composition without any hypothesis about the checked amount or its document cell. -/
+theorem checkedConstructedDateShift_source_unavailable
+    (checked : CheckedConstructedDateShift model)
+    (phase : Phase) (input : CheckedDocument model)
+    (cause : FormalCause)
+    (source :
+      checked.source.evaluate phase input = .ok (.unavailable cause)) :
+    checked.evaluate phase input = .ok (.unavailable cause) := by
+  simp [CheckedConstructedDateShift.evaluate, source]
+
+/-- Arithmetic domain failure after a real source remains cause-free no-value; it is not a zero shift and does not acquire omission provenance. -/
+theorem checkedConstructedDateShift_real_domain_failure
+    (checked : CheckedConstructedDateShift model)
+    (phase : Phase) (input : CheckedDocument model) (parts : DateParts)
+    (source :
+      checked.source.evaluate phase input = .ok (.resolved (.real parts)))
+    (amount :
+      checked.amount.read phase input = .ok (.ok .notEvaluated)) :
+    checked.evaluate phase input = .ok (.noValue false) := by
+  unfold CheckedConstructedDateShift.evaluate
+  rw [source]
+  simp [amount, CheckedConstructedDateShift.applyAmount,
+    CheckedConstructedDateShift.sourceNotGiven]
+  rfl
+
 end A12Kernel

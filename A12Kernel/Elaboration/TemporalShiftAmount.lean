@@ -12,6 +12,13 @@ consumers decide how those distinctions affect their own result domains.
 
 namespace A12Kernel
 
+/-- Calendar unit shared by checked `AddDays`, `AddMonths`, and `AddYears` consumers. -/
+inductive DateShiftUnit where
+  | days
+  | months
+  | years
+  deriving Repr, DecidableEq
+
 /-- Truncate like `BigDecimal.intValue`, then retain the low signed 32 bits rather than saturating or rejecting a large temporal-shift amount. -/
 def temporalShiftAmountToInt32 (value : Rat) : Int :=
   let truncated := if value < 0 then value.ceil else value.floor
@@ -71,5 +78,45 @@ def read (amount : CheckedTemporalShiftAmount model)
         | _ => .error .groupState)
 
 end CheckedTemporalShiftAmount
+
+/-- Static refusal while resolving one checked direct-Number temporal shift amount. -/
+inductive TemporalShiftAmountElabError where
+  | field (error : ResolveError)
+  | fieldNotNumber (field : FieldId)
+  | expression (error : NumericValidationElabError)
+  | expressionNotDirectNumber
+  | incoherentCore
+  deriving Repr, DecidableEq
+
+/-- Resolve one ordinary nonrepeatable Number field as a temporal shift amount. -/
+def elaborateTemporalFieldShiftAmount
+    (model : FlatModel) (amountField : FieldId) :
+    Except TemporalShiftAmountElabError
+      (CheckedTemporalShiftAmount model) := do
+  let declaration ←
+    model.resolveNonrepeatableDeclarationById amountField |>.mapError .field
+  let source ← match declaration.toNumberField? with
+    | some source => pure source
+    | none => throw (.fieldNotNumber amountField)
+  if hAdmitted :
+      model.admitsTemporalShiftAmountSource source = true then
+    pure (.field source hAdmitted)
+  else
+    throw .incoherentCore
+
+/-- Resolve one checked same-group numeric operation and retain only the direct Number-field atom subset audited for temporal shifting. -/
+def elaborateTemporalExpressionShiftAmount
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except TemporalShiftAmountElabError
+      (CheckedTemporalShiftAmount model) := do
+  let checked ← elaborateNumericValidationExpression model rowGroup surface
+    |>.mapError .expression
+  if hDirect :
+      NumericValidationExpression.usesOnlyDirectNumberFields
+        checked.core = true then
+    pure (.expression checked hDirect)
+  else
+    throw .expressionNotDirectNumber
 
 end A12Kernel

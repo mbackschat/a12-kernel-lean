@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 612 jobs · trust audit **1604 theorem roots; 36098 declarations in 347 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1606 theorem roots; 36342 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose the direct UTC/GMT three-Number-field constructed Date with the existing checked temporal shift-amount owner. This is the second real consumer of the same direct-Number literal/field/expression amount semantics, so consolidate only the genuinely shared amount carrier and retain constructed-Date source-before-amount order plus its reason-bearing result.
+Compose two direct UTC/GMT three-Number-field constructed Dates through the existing default-cutover day/month/year difference owners. Retain authored first-source-before-second-source evaluation and exact formal causes while reusing the established incomplete-versus-unreal numeric result.
 
 ## Immediate sequence
 
-1. Inventory `CheckedValueAsDateTimeShiftAmount` and the constructed-Date shift boundary, then write red cases for a fractional amount, signed-32-bit wrap, an empty direct Number amount, a domain-invalid arithmetic expression, source formal failure before amount, and amount formal failure after a real source.
-2. Reuse the checked numeric expression and Java-compatible amount conversion. Preserve empty amount as a concrete zero shift with missing provenance where the downstream result needs it; preserve domain failure as no value and exact formal causes without inventing a Date target error.
-3. Extract or rename the amount carrier only because this is its second completed semantic consumer. Stop before another Date form or zone, computation scheduling, target storage, repeatable addressing, message construction, or a general temporal-expression carrier.
+1. Inventory `DateConstructionResult.differenceLegacy?`, `differenceLegacyDays?`, and the generated Date-difference argument order; write red cases for the cutover day step, month/year completed-period boundaries, first-source formal precedence, a reached second-source formal cause, incomplete omission zero, and unreal fixed zero.
+2. Reuse two `CheckedConstructedDateComponents` values and the existing reason-bearing numeric result. Add no pair AST, second calendar account, or duplicate component evaluator.
+3. Stop before another Date component form or zone, numeric-expression consumption of the difference, computation scheduling, target storage, repeatable addressing, message construction, or a general temporal-expression carrier.
 
 ## Parked boundaries
 
