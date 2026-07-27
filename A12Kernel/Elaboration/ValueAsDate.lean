@@ -1,12 +1,13 @@
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.DateDifference
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Semantics.NumericComputationResult
 import A12Kernel.Semantics.Observation
 
 /-! # Checked partial-Date `ValueAsDate`
 
-This capsule retains every admitted stored Date omission and resolves a known-year interval only after `FirstDay` or `LastDay` is selected. Direct comparison delegates the resulting full Date to the existing evaluator. Day/month/year shifting converts the reached numeric amount with Java `BigDecimal.intValue` semantics and retains a real civil landing below the universal Date floor for the later target check. An unknown year remains cause-free non-relevance rather than acquiring a fabricated year. The bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, Date difference, DateTime construction, target effects, and repeatable addressing remain separate.
+This capsule retains every admitted stored Date omission and resolves a known-year interval only after `FirstDay` or `LastDay` is selected. Direct comparison delegates the resulting full Date to the existing evaluator. Day/month/year shifting converts the reached numeric amount with Java `BigDecimal.intValue` semantics and retains a real civil landing below the universal Date floor for the later target check. Month/year difference delegates completed-period counting to the existing Date-difference core while retaining authored operand order. An unknown year remains cause-free non-relevance rather than acquiring a fabricated year. The bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, day difference, DateTime construction, target effects, and repeatable addressing remain separate.
 -/
 
 namespace A12Kernel
@@ -432,5 +433,106 @@ def elaborateValueAsDateShift
     Except ValueAsDateElabError (CheckedValueAsDateShift model) := do
   let source ← elaborateValueAsDateSource model sourceField endpoint
   pure { source with unit }
+
+/-- Which authored Date-difference operand is supplied by the partial-Date expression. Generated argument evaluation follows this order before the calendar helper runs. -/
+inductive ValueAsDateDifferencePlacement where
+  | left
+  | right
+  deriving Repr, DecidableEq
+
+/-- One nested partial-Date month/year difference result. Cause-free non-relevance stays separate from the established numeric operand because fabricating a `FormalCause` would make it indistinguishable from a rejected read. -/
+inductive ValueAsDateDifferenceResult where
+  | operand (value : NumericOperand)
+  | nonRelevant
+  deriving Repr, DecidableEq
+
+namespace ValueAsDateDifferenceResult
+
+/-- Consume the nested result in a fixed-right numeric validation without collapsing non-relevance into a formal cause. -/
+def evalFixedRight (result : ValueAsDateDifferenceResult)
+    (op : NumericComparisonOp) (expected : Rat) : Verdict :=
+  match result with
+  | .operand value => op.evalFixedRight value expected
+  | .nonRelevant => .unknown
+
+end ValueAsDateDifferenceResult
+
+/-- Structural refusal after both authored operands have been read and neither empty substitution nor non-relevance masks the unsupported calendar. -/
+inductive ValueAsDateDifferenceFault where
+  | unsupportedCalendar
+  deriving Repr, DecidableEq
+
+/-- One checked partial-Date placement in a completed-month or completed-year difference. The ordinary operand has already passed its existing Date-difference admission boundary. -/
+structure CheckedValueAsDateDifference (model : FlatModel)
+    extends CheckedValueAsDateSource model where
+  unit : DateDifferenceUnit
+  placement : ValueAsDateDifferencePlacement
+
+namespace CheckedValueAsDateDifference
+
+private def evaluateAvailable (checked : CheckedValueAsDateDifference model)
+    (sourceObservation : ValueAsDateObservation)
+    (other : DateDifferenceOperand) :
+    Except ValueAsDateDifferenceFault ValueAsDateDifferenceResult :=
+  match sourceObservation, other with
+  | .nonRelevant, _ => pure .nonRelevant
+  | .empty, _ | .date _, .empty =>
+      pure (.operand (.value 0 .both))
+  | .date _, .unsupportedCalendar =>
+      throw .unsupportedCalendar
+  | .date partialDate, .value otherDate =>
+      let value :=
+        match checked.placement with
+        | .left =>
+            checked.unit.between partialDate.civil.parts otherDate
+        | .right =>
+            checked.unit.between otherDate partialDate.civil.parts
+      pure (.operand (.value value .fixed))
+  | .unavailable cause, _ | _, .unavailable cause =>
+      pure (.operand (.unknown cause))
+
+/-- Evaluate formal reads in authored order, then apply the runtime helper's non-relevant, empty, calendar, and completed-period precedence. -/
+def evaluate (checked : CheckedValueAsDateDifference model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (other : DateDifferenceOperand) :
+    Except ValueAsDateDifferenceFault ValueAsDateDifferenceResult :=
+  let sourceObservation :=
+    checked.toCheckedValueAsDateSource.observe phase cell
+  match checked.placement with
+  | .left =>
+      match sourceObservation with
+      | .unavailable cause => pure (.operand (.unknown cause))
+      | _ =>
+          match other with
+          | .unavailable cause => pure (.operand (.unknown cause))
+          | _ => checked.evaluateAvailable sourceObservation other
+  | .right =>
+      match other with
+      | .unavailable cause => pure (.operand (.unknown cause))
+      | _ =>
+          match sourceObservation with
+          | .unavailable cause => pure (.operand (.unknown cause))
+          | _ => checked.evaluateAvailable sourceObservation other
+
+/-- Check one exact stored-text partial source and preserve the already resolved ordinary operand. -/
+def evaluateRaw (checked : CheckedValueAsDateDifference model)
+    (phase : Phase) (raw : RawCell String)
+    (other : DateDifferenceOperand) :
+    Except ValueAsDateDifferenceFault ValueAsDateDifferenceResult :=
+  checked.evaluate phase
+    (checked.toCheckedValueAsDateSource.checkSourceRaw raw) other
+
+end CheckedValueAsDateDifference
+
+/-- Resolve and certify one partial-Date operand in a nonrepeatable month/year difference. -/
+def elaborateValueAsDateDifference
+    (model : FlatModel) (sourceField : FieldId)
+    (endpoint : ValueAsDateEndpoint) (unit : DateDifferenceUnit)
+    (placement : ValueAsDateDifferencePlacement) :
+    Except ValueAsDateElabError (CheckedValueAsDateDifference model) := do
+  let source ← elaborateValueAsDateSource model sourceField endpoint
+  pure { source with unit, placement }
 
 end A12Kernel

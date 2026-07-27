@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1554 theorem roots; 33825 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1557 theorem roots; 33932 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the first nested `ValueAsDate` Date-difference placement by composing the shared checked partial-Date source with the existing resolved full-Date difference core. Keep operand order, endpoint completion, empty/formal precedence, and month/year completed-period behavior explicit; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
+Audit the explicit `DateTime(ValueAsDate(...), time)` placement and determine whether the checked partial-Date source can compose with the existing local-DateTime/model-zone owner without losing cause-free non-relevance or operand read order. Prefer a bounded composite over the two existing owners; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
 
 ## Immediate sequence
 
-1. Audit the generated/runtime `DifferenceInMonths`/`DifferenceInYears` call around `ValueAsDate`, especially left-before-right observation, authored sign, unknown-year non-relevance, empty/formal precedence, and whether the established proleptic full-Date core exactly fits this stored-value route. Reuse the grammar/checker account under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions).
-2. Add the smallest checked composite over `CheckedValueAsDateSource` and the existing resolved Date-difference operation. Accept an already checked second Date observation unless an existing model-owned operand fits exactly; add no general Date-expression carrier or scheduling state.
-3. Retain separators for first/last completion before completed-period calculation, asymmetric authored order, leap/month-end boundaries, unknown-year non-relevance, empty substitution, and first reached formal cause. Stop if the stored partial value carries calendar identity the current full-Date core cannot represent. Leave `DifferenceInDays`, `DateTime(...)`, repeatable addressing, target wiring, scheduling, wider formats/zones, and date-like distinct count outside.
+1. Audit `CheckDateTimeKonstruktImpl`, every generated `DateTime(...)` template, and the runtime construction controller around the special Date operand. Fix the exact Date-before-Time observation order, empty/non-relevant/formal precedence, model-zone resolution, and whether the time operand is already represented by a checked owner. Reuse the grammar correction under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions).
+2. If the existing representations fit, add the smallest checked composite over `CheckedValueAsDateSource`, one already checked Time observation, and the concrete model-zone profile. Keep a cause-free non-relevant result explicit; add no general Date-expression carrier, scheduling state, or new temporal payload.
+3. Retain separators for first/last completion, Date-before-Time formal precedence, unknown-year non-relevance, empty placement, a model-zone offset case, and the nearest unsupported account. Stop if construction uses a legacy-hybrid identity or time-shape rule the current owners cannot represent. Leave `DifferenceInDays`, repeatable addressing, target wiring, scheduling, wider formats/zones, and date-like distinct count outside.
 
 ## Parked boundaries
 

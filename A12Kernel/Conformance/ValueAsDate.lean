@@ -12,6 +12,11 @@ private def date? (year : Int) (month day : Nat) : Option FullDate :=
 private def civil? (year : Int) (month day : Nat) : Option CivilDate :=
   CivilDate.ofYmd? year month day
 
+private def dateDifferenceOperand?
+    (year : Int) (month day : Nat) : Option DateDifferenceOperand :=
+  (date? year month day).map
+    (fun date => DateDifferenceOperand.value date.civil.parts)
+
 private def dayOptionalSource
     (partialMode : TemporalPartialMode := .dayOptional)
     (format : String := "dd.MM.yyyy")
@@ -304,6 +309,59 @@ example :
         some (.poison .computedDependency) ∧
       (shift.evaluateRaw (.rejected .malformed) (.value 1)).toOption =
         some (.poison .malformed) := by
+  native_decide
+
+/- Endpoint completion precedes the established whole-month boundary. -/
+example :
+    let other := (dateDifferenceOperand? 2024 3 28).get (by native_decide)
+    let first := (elaborateValueAsDateDifference
+      (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
+    let last := (elaborateValueAsDateDifference
+      (modelWith) 0 .lastDay .months .left).toOption.get (by native_decide)
+    (first.evaluateRaw Phase.validation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value 1 .fixed)) ∧
+      (last.evaluateRaw Phase.validation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value 0 .fixed)) := by
+  native_decide
+
+/- Authored operand placement changes the sign and the first reached formal cause. -/
+example :
+    let other := (dateDifferenceOperand? 2024 3 28).get (by native_decide)
+    let left := (elaborateValueAsDateDifference
+      (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
+    let right := (elaborateValueAsDateDifference
+      (modelWith) 0 .firstDay .months .right).toOption.get (by native_decide)
+    (left.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value 1 .fixed)) ∧
+      (right.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value (-1) .fixed)) ∧
+      (left.evaluateRaw Phase.computation
+        (.rejected .malformed) (.unavailable .computedDependency)).toOption =
+        some (.operand (.unknown .malformed)) ∧
+      (right.evaluateRaw Phase.computation
+        (.rejected .malformed) (.unavailable .computedDependency)).toOption =
+        some (.operand (.unknown .computedDependency)) := by
+  native_decide
+
+/- Cause-free unknown-year non-relevance precedes empty substitution, while ordinary empty still masks an unsupported present calendar. -/
+example :
+    let checked := (elaborateValueAsDateDifference
+      (modelWith (dayOptionalSource .yearOptional))
+      0 .lastDay .years .left).toOption.get (by native_decide)
+    (checked.evaluateRaw Phase.validation
+        (.parsed "00.00.0000") .empty).toOption =
+        some .nonRelevant ∧
+      (checked.evaluateRaw Phase.validation
+        .empty .unsupportedCalendar).toOption =
+        some (.operand (.value 0 .both)) ∧
+      ValueAsDateDifferenceResult.nonRelevant.evalFixedRight
+        .equal 0 = .unknown ∧
+      (ValueAsDateDifferenceResult.operand (.value 1 .fixed)).evalFixedRight
+        .greater 0 = .fired .value := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate
