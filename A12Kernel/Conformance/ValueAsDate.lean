@@ -170,7 +170,7 @@ example :
     AdmittedPartiallyKnownDate.unknownYear? .dayOptional = none := by
   native_decide
 
-/- Runtime unknown-year suppression reaches the ordinary non-evaluated comparison path. -/
+/- Runtime unknown-year suppression is non-relevance, not ordinary emptiness. -/
 example :
     let expected := (date? 2024 6 15).get (by native_decide)
     let checked := (elaborateValueAsDateComparison
@@ -183,7 +183,7 @@ example :
       rawPresent := true
       parsed := some source
       findings := [] }
-    checked.evaluate cell = .notFired := by
+    checked.evaluate cell = .unknown := by
   native_decide
 
 /- Exact stored text enters the same declaration-indexed value and endpoint evaluator. -/
@@ -221,7 +221,7 @@ example :
     floorChecked.evaluateRaw (.parsed "00.10.1583") = .unknown ∧
       floorChecked.evaluateRaw (.parsed "00.11.1583") = .fired .value ∧
       additional.evaluateRaw (.parsed "00.12.1899") = .unknown ∧
-      additional.evaluateRaw (.parsed "00.00.0000") = .notFired := by
+      additional.evaluateRaw (.parsed "00.00.0000") = .unknown := by
   native_decide
 
 /- Width, separators, suffix legality, and calendar reality all fail before operation evaluation. -/

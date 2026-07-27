@@ -21,9 +21,8 @@ theorem valueAsDate_evaluate_value
       checked.comparison.eval
         (.value resolved true) (.value checked.expected true) := by
   intro resolution
-  simp [CheckedValueAsDateComparison.evaluate, TemporalComparisonOp.evalObserved,
-    observed, CellObservation.resolvePartiallyKnownDate, resolution,
-    CellObservation.asValidationSimpleOperand]
+  simp [CheckedValueAsDateComparison.evaluate, observed,
+    CellObservation.resolvePartiallyKnownDate, resolution]
 
 /-- A physically absent or present-empty source preserves the direct-Date comparison's not-evaluated result. -/
 theorem valueAsDate_evaluate_empty
@@ -32,12 +31,10 @@ theorem valueAsDate_evaluate_empty
       (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
     (observed : observeCell .validation cell = .empty) :
     checked.evaluate cell = .notFired := by
-  simp [CheckedValueAsDateComparison.evaluate, TemporalComparisonOp.evalObserved,
-    observed, CellObservation.resolvePartiallyKnownDate,
-    CellObservation.asValidationSimpleOperand,
-    TemporalComparisonOp.eval, evalSymmetricComparison]
+  simp [CheckedValueAsDateComparison.evaluate, observed,
+    CellObservation.resolvePartiallyKnownDate]
 
-/-- An admitted unknown-year source becomes non-relevant at the operation boundary and therefore cannot fire a comparison. -/
+/-- An admitted unknown-year source becomes non-relevant at the operation boundary and therefore makes an enclosing comparison UNKNOWN rather than merely absent. -/
 theorem valueAsDate_evaluate_nonRelevant
     (checked : CheckedValueAsDateComparison model)
     (cell : CheckedCell
@@ -45,11 +42,9 @@ theorem valueAsDate_evaluate_nonRelevant
     (source : AdmittedPartiallyKnownDate checked.source.policy.partialMode)
     (observed : observeCell .validation cell = .value source)
     (resolution : source.resolve checked.endpoint = .nonRelevant) :
-    checked.evaluate cell = .notFired := by
-  simp [CheckedValueAsDateComparison.evaluate, TemporalComparisonOp.evalObserved,
-    observed, CellObservation.resolvePartiallyKnownDate, resolution,
-    CellObservation.asValidationSimpleOperand, TemporalComparisonOp.eval,
-    evalSymmetricComparison]
+    checked.evaluate cell = .unknown := by
+  simp [CheckedValueAsDateComparison.evaluate, observed,
+    CellObservation.resolvePartiallyKnownDate, resolution]
 
 /-- Formal source invalidity is never completed to an endpoint; it retains the existing UNKNOWN verdict. -/
 theorem valueAsDate_evaluate_unknown
@@ -59,10 +54,8 @@ theorem valueAsDate_evaluate_unknown
     (cause : FormalCause)
     (observed : observeCell .validation cell = .unknown cause) :
     checked.evaluate cell = .unknown := by
-  simp [CheckedValueAsDateComparison.evaluate, TemporalComparisonOp.evalObserved,
-    observed, CellObservation.resolvePartiallyKnownDate,
-    CellObservation.asValidationSimpleOperand,
-    TemporalComparisonOp.eval, evalSymmetricComparison]
+  simp [CheckedValueAsDateComparison.evaluate, observed,
+    CellObservation.resolvePartiallyKnownDate]
 
 /-- Physical absence remains non-evaluated through the exact stored-text adapter. -/
 @[simp] theorem valueAsDate_evaluateRaw_empty
@@ -71,9 +64,7 @@ theorem valueAsDate_evaluate_unknown
   simp [CheckedValueAsDateComparison.evaluateRaw,
     CheckedValueAsDateComparison.checkSourceRaw, checkRawCellWith,
     CheckedValueAsDateComparison.evaluate,
-    observeCell, CellObservation.resolvePartiallyKnownDate,
-    TemporalComparisonOp.evalObserved, CellObservation.asValidationSimpleOperand,
-    TemporalComparisonOp.eval, evalSymmetricComparison]
+    observeCell, CellObservation.resolvePartiallyKnownDate]
 
 /-- A preceding parser rejection keeps its exact formal cause and suppresses endpoint evaluation. -/
 @[simp] theorem valueAsDate_evaluateRaw_rejected
@@ -83,8 +74,6 @@ theorem valueAsDate_evaluate_unknown
   simp [CheckedValueAsDateComparison.evaluateRaw,
     CheckedValueAsDateComparison.checkSourceRaw, checkRawCellWith,
     CheckedValueAsDateComparison.evaluate, observeCell,
-    CellObservation.resolvePartiallyKnownDate,
-    TemporalComparisonOp.evalObserved, CellObservation.asValidationSimpleOperand,
-    TemporalComparisonOp.eval, evalSymmetricComparison]
+    CellObservation.resolvePartiallyKnownDate]
 
 end A12Kernel

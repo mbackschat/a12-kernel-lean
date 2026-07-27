@@ -96,6 +96,14 @@ inductive ValueAsDateResolution where
   | nonRelevant
   deriving Repr, DecidableEq
 
+/-- One phase read after endpoint completion. Non-relevance is not a formal cause and therefore must not be forged into `CellObservation.unknown` or collapsed into ordinary emptiness. -/
+inductive ValueAsDateObservation where
+  | empty
+  | date (value : FullDate)
+  | nonRelevant
+  | unavailable (cause : FormalCause)
+  deriving Repr, DecidableEq
+
 namespace PartiallyKnownDateValue
 
 /-- Resolve only known-year intervals. The unknown-year case follows the runtime’s early non-relevance branch. -/
@@ -148,18 +156,17 @@ end AdmittedPartiallyKnownDate
 
 namespace CellObservation
 
-/-- Preserve validation availability while resolving a present partial value; the runtime’s unknown-year result joins the comparison’s non-evaluated path without becoming an omitted field. -/
+/-- Resolve a present partial value while retaining unknown-year non-relevance outside the formal-cause domain. Validation and computation consumers choose their own projection of that cause-free state. -/
 def resolvePartiallyKnownDate
     (observation : CellObservation (AdmittedPartiallyKnownDate mode))
-    (endpoint : ValueAsDateEndpoint) : CellObservation FullDate :=
+    (endpoint : ValueAsDateEndpoint) : ValueAsDateObservation :=
   match observation with
   | .empty => .empty
   | .value date =>
       match date.resolve endpoint with
-      | .date resolved => .value resolved
-      | .nonRelevant => .empty
-  | .unknown cause => .unknown cause
-  | .poison cause => .poison cause
+      | .date resolved => .date resolved
+      | .nonRelevant => .nonRelevant
+  | .unknown cause | .poison cause => .unavailable cause
 
 end CellObservation
 
@@ -254,9 +261,12 @@ def checkSourceRaw (checked : CheckedValueAsDateComparison model)
 def evaluate (checked : CheckedValueAsDateComparison model)
     (cell : CheckedCell
       (AdmittedPartiallyKnownDate checked.source.policy.partialMode)) : Verdict :=
-  checked.comparison.evalObserved
-    ((observeCell .validation cell).resolvePartiallyKnownDate checked.endpoint)
-    (.value checked.expected)
+  match (observeCell .validation cell).resolvePartiallyKnownDate checked.endpoint with
+  | .empty => .notFired
+  | .nonRelevant | .unavailable _ => .unknown
+  | .date resolved =>
+      checked.comparison.eval
+        (.value resolved true) (.value checked.expected true)
 
 /-- Check and evaluate one exact stored-text input without exposing an unchecked partial-Date constructor. -/
 def evaluateRaw (checked : CheckedValueAsDateComparison model)
