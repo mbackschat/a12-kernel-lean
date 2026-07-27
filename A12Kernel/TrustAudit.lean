@@ -125,6 +125,10 @@ run_cmd do
 #print axioms A12Kernel.classifyDateConstruction3_incomplete_iff
 #print axioms A12Kernel.classifyDateConstruction3_present_real
 #print axioms A12Kernel.classifyDateConstruction3_present_unreal
+#print axioms A12Kernel.constructedDate_addLegacyMonths_preserves_nonvalues
+#print axioms A12Kernel.constructedDate_addLegacyYears_preserves_nonvalues
+#print axioms A12Kernel.constructedDate_legacyCutover_month_year
+#print axioms A12Kernel.constructedDate_addLegacyYears_gregorianLeapPredicate
 #print axioms A12Kernel.dateConstruction_valid_fired_iff
 #print axioms A12Kernel.dateConstruction_invalid_omission_iff
 #print axioms A12Kernel.dateConstruction_invalid_value_iff

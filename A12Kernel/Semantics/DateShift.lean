@@ -25,7 +25,7 @@ def yearLandingDay (source : DateParts) (sourceLastDay targetLastDay : Nat) : Na
 end Shift
 
 /-- Shift a positive-era Gregorian year/month pair by an integer number of months using Euclidean division. Calendar reality remains the following constructor's responsibility. -/
-private def shiftedYearMonth (parts : DateParts) (offset : Int) : Int × Nat :=
+def shiftedYearMonth (parts : DateParts) (offset : Int) : Int × Nat :=
   let totalMonths := parts.year * 12 + Int.ofNat parts.month - 1 + offset
   (totalMonths / 12, Int.toNat (totalMonths % 12) + 1)
 

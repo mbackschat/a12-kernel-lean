@@ -7,6 +7,7 @@ import A12Kernel.Proofs.DateRangeOverlap
 import A12Kernel.Proofs.DateRangeOverlapOperators
 import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateConstructionNumeric
+import A12Kernel.Proofs.ConstructedDateShift
 import A12Kernel.Proofs.DateNumeric
 import A12Kernel.Proofs.TimeNumeric
 import A12Kernel.Proofs.BaseYearDateSource

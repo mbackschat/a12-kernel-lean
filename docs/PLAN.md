@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 597 jobs · trust audit **1586 theorem roots; 35612 declarations in 337 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 600 jobs · trust audit **1590 theorem roots; 35643 declarations in 339 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Resolve the first pre-cutover constructed-Date arithmetic boundary instead of widening routine post-cutover forms. Start with the canonical legacy-hybrid `Date(...)` month/year landing across the October 1582 cutover and determine whether the existing reason-bearing construction plus `DateCalendarBasis.legacyHybrid` can carry the exact Kernel result without a second Date representation.
+Compose the first constructed-Date completed-period consumer over the bounded legacy-hybrid shift owner. Close only `DifferenceInMonths`/`DifferenceInYears` for two real default-profile constructed labels plus the existing reason boundary; do not widen the ordinary stored-Date operand or introduce a general temporal-expression carrier.
 
 ## Immediate sequence
 
-1. Audit the generated `Date(...)` then `AddMonths`/`AddYears` route through the Java/Groovy/JavaScript `.st` templates and the runtime calendar helper. Pin exact source order, cutover normalization, day clamping, February correction, empty/formal precedence, and result calendar identity before changing Lean.
-2. Run the `1582-09-10 + 1 month` and `1581-10-10 + 1 year` discriminators first. Reuse the existing construction result and `DateCalendarBasis` only if both missing-label landings and ordinary post-cutover controls remain representable.
-3. Add the smallest executable core and checked composition only after the representation passes those separators. Stop and report if the Kernel result depends on calendar state absent from the current value, if the source packet cannot distinguish authored construction identity from stored-Date identity, or before adding a general temporal-expression tree. Leave target rendering, repeatable addressing, message text, and date-like distinct count outside.
+1. Audit `getDifferenzInMonaten`/`getDifferenzInJahren` and their generated callers for operand order, chronological ordering, initial year seed, fresh-source month landings, and sign restoration. Reuse the accepted constructed-Date calendar packet and reopen it only if a new source fact is required.
+2. Run the canonical cutover separators first: `1582-09-10 → 1582-10-15` is zero months, `→ 1582-10-20` is one; `1581-10-10 → 1582-10-15` is zero years and eleven months, while `→ 1582-10-20` is one year and twelve months.
+3. Reuse `ConstructedDateShift` as the landing oracle and retain incomplete/unreal/unknown precedence through the existing construction result. Stop if the completed-period algorithm needs exact instant or zone state absent from the two real labels. Leave day difference, checked authoring, target rendering, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

@@ -10,6 +10,7 @@ import A12Kernel.Conformance.DateRangeOverlap
 import A12Kernel.Conformance.DateRangeOverlapOperators
 import A12Kernel.Conformance.DateConstruction
 import A12Kernel.Conformance.DateConstructionNumeric
+import A12Kernel.Conformance.ConstructedDateShift
 import A12Kernel.Conformance.DateNumeric
 import A12Kernel.Conformance.TimeNumeric
 import A12Kernel.Conformance.BaseYearDateSource
