@@ -27,6 +27,7 @@ import A12Kernel.Conformance.TimeAggregate
 import A12Kernel.Conformance.TemporalFormat
 import A12Kernel.Conformance.TemporalTargetPolicy
 import A12Kernel.Conformance.FullDateApplication
+import A12Kernel.Conformance.DateTimeApplication
 import A12Kernel.Conformance.FullDateComputationResult
 import A12Kernel.Conformance.FullDateComputation
 import A12Kernel.Conformance.DateTimeComputation

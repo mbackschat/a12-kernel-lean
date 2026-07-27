@@ -205,6 +205,12 @@ run_cmd do
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.dateTimeTarget_evaluate_value
 #print axioms A12Kernel.dateTimeComputation_transports_now
+#print axioms A12Kernel.dateTimeTargetApplies_iff_applyTo
+#print axioms A12Kernel.dateTimeTargetApplies_deterministic
+#print axioms A12Kernel.acceptedDateTime_unchanged_noDelta
+#print axioms A12Kernel.noAppliedDateTimeValue_clears_exactly
+#print axioms A12Kernel.exactDateTimeApplication_storedValue
+#print axioms A12Kernel.equal_dateTime_delta_does_not_imply_equal_exact_application
 #print axioms A12Kernel.fullDateTargetApplies_iff_applyTo
 #print axioms A12Kernel.fullDateTargetApplies_deterministic
 #print axioms A12Kernel.acceptedFullDate_unchanged_noDelta

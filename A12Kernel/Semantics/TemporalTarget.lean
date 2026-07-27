@@ -44,11 +44,14 @@ def renderText (format : FullDateTargetFormat) (date : FullDate) : String :=
 
 end FullDateTargetFormat
 
-/-- A nonempty rendered Date attempt. Target rejection retains this exact stored form. -/
-structure StoredDate where
+/-- A nonempty rendered temporal attempt indexed by its declared scalar kind. The phantom index prevents Date and DateTime target values from mixing while sharing their exact stored-text invariant. -/
+structure StoredTemporalText (kind : TemporalKind) where
   text : String
   nonempty : text ≠ ""
   deriving Repr, DecidableEq
+
+/-- Stored text for one checked Date target. -/
+abbrev StoredDate := StoredTemporalText .date
 
 namespace FullDateTargetFormat
 
@@ -130,11 +133,8 @@ def renderText (_ : DateTimeTargetFormat)
 
 end DateTimeTargetFormat
 
-/-- A nonempty rendered DateTime attempt at the target's declared precision. -/
-structure StoredDateTime where
-  text : String
-  nonempty : text ≠ ""
-  deriving Repr, DecidableEq
+/-- Stored text for one checked DateTime target. -/
+abbrev StoredDateTime := StoredTemporalText .dateTime
 
 namespace DateTimeTargetFormat
 

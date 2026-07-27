@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Semantics.FullDateApplication
+import A12Kernel.Semantics.TemporalApplication
 
 /-! # Full-Date V2 computation result projection
 

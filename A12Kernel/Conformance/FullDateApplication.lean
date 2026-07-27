@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.FullDateApplication
+import A12Kernel.Semantics.TemporalApplication
 
 /-! # Full-Date delta and one-target application locks
 
@@ -58,8 +58,8 @@ example :
 
 /- Delta state cannot recover absent versus present-empty placement. -/
 example :
-    FullDateTargetState.absent.toDeltaPrior =
-        FullDateTargetState.presentEmpty.toDeltaPrior ∧
+    FullDateTargetState.toDeltaPrior .absent =
+        FullDateTargetState.toDeltaPrior .presentEmpty ∧
       FullDateTargetOutcome.noValue.applyTo .absent ≠
         FullDateTargetOutcome.noValue.applyTo .presentEmpty := by
   decide

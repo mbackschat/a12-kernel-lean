@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.FullDateApplication
+import A12Kernel.Semantics.TemporalApplication
 
 /-! # Full-Date delta and application laws
 
@@ -28,7 +28,7 @@ theorem fullDateTargetApplies_iff_applyTo (outcome : FullDateTargetOutcome)
     FullDateTargetApplies outcome prior after ↔ outcome.applyTo prior = after := by
   cases outcome <;> cases prior <;> cases after <;>
     simp [FullDateTargetApplies, FullDateTargetOutcome.applyTo,
-      FullDateTargetState.clearValue]
+      FullDateTargetState.clearValue, TemporalTargetState.clearValue]
 
 /-- Exact one-target full-Date application is deterministic. -/
 theorem fullDateTargetApplies_deterministic (outcome : FullDateTargetOutcome)
@@ -42,7 +42,8 @@ theorem fullDateTargetApplies_deterministic (outcome : FullDateTargetOutcome)
 /-- An unchanged accepted stored Date produces no source-relative delta. -/
 theorem acceptedFullDate_unchanged_noDelta (value : StoredDate) :
     (FullDateTargetOutcome.accepted value).projectDelta (.filled value) = none := by
-  simp [FullDateTargetOutcome.projectDelta, FullDateDelta.projectValue]
+  simp [FullDateTargetOutcome.projectDelta, FullDateDelta.projectValue,
+    TemporalValueDelta.projectValue]
 
 /-- Any outcome without an applied stored Date clears exactly in place. -/
 theorem noAppliedFullDateValue_clears_exactly
@@ -61,9 +62,9 @@ theorem exactFullDateApplication_storedValue
 /-- Delta classification cannot recover placement: absent and present-empty sources classify equally while quiet no-value preserves their distinct placement. -/
 theorem equal_fullDate_delta_does_not_imply_equal_exact_application :
     FullDateTargetOutcome.noValue.projectDelta
-          FullDateTargetState.absent.toDeltaPrior =
+          (FullDateTargetState.toDeltaPrior .absent) =
         FullDateTargetOutcome.noValue.projectDelta
-          FullDateTargetState.presentEmpty.toDeltaPrior ∧
+          (FullDateTargetState.toDeltaPrior .presentEmpty) ∧
       FullDateTargetOutcome.noValue.applyTo .absent ≠
         FullDateTargetOutcome.noValue.applyTo .presentEmpty := by
   decide
@@ -78,6 +79,7 @@ theorem equal_fullDate_application_does_not_imply_equal_delta
         (FullDateTargetOutcome.errored attempted cause).projectDelta
           (.filled prior) := by
   simp [FullDateTargetOutcome.applyTo, FullDateTargetState.clearValue,
-    FullDateTargetOutcome.projectDelta, FullDateDelta.projectNoValue]
+    TemporalTargetState.clearValue, FullDateTargetOutcome.projectDelta,
+    FullDateDelta.projectNoValue, TemporalValueDelta.projectNoValue]
 
 end A12Kernel
