@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 566 jobs · trust audit **1510 theorem roots; 32492 declarations in 315 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1513 theorem roots; 32686 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close one checked nonrepeatable full-Date field-copy operation that feeds the existing full-Date target, result view, and application boundary end to end. The source and target remain model-owned, full-Date, nonrepeatable declarations; no table or scheduler is introduced.
+Admit `Today` as the second checked full-Date computation operand and consolidate it with the completed direct field-copy route through the existing `FlatTemporalOperand` owner. The operation must take `World` explicitly, preserve the model-owned zone, and feed the same target/result/application boundary without a new temporal AST, table, or scheduler.
 
 ## Immediate sequence
 
-1. Reopen the bounded full-Date source packet only for the operation-execution layer: verify direct Date-field copy admission, empty/formal precedence, exact-instant transport, self-reference rejection, and target-policy composition through the generated template/runtime owners including the `.st` files.
-2. Add one checked operation certificate over an ordinary nonrepeatable full-Date source and the existing checked full-Date target. Evaluate through `CheckedDocument`, preserving source empty and formal cause before target rendering/basic checking.
-3. Prove exact accepted transport and no-value/poison preservation, then exercise source-relative unchanged/changed/error/clear plus destination application through the composed public query. Stop before alternatives, tables, scheduling, shifts, DateTime, partial-Date completion, message construction, destination compatibility certification, or wider format syntax.
+1. Reopen the bounded temporal packet only for `Today` as a computation result: verify generated operation lowering, one retained computation-time sample, model-zone midnight resolution, target delegation, and generated-validation resampling through Java and `.st`.
+2. Extend the checked full-Date operation to the existing `FlatTemporalOperand` field/`Today` subset. Field reads continue through `CheckedDocument`; `Today` consumes the explicit `World` and the checked model's exact zone id. Retire any field-copy-only shape made redundant by the second real operand.
+3. Prove field-copy preservation after consolidation and exact `Today` resolution, then retain UTC/Berlin boundary and another-`World` instability separators through result classification/application. Stop before `Now`, literals, Base Year, shifts, DateTime, partial-Date completion, alternatives/tables/scheduling, message construction, destination compatibility certification, or wider format syntax.
 
 ## Parked boundaries
 
