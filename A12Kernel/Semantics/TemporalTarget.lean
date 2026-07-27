@@ -2,7 +2,7 @@ import A12Kernel.Semantics.ModelZone
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded full-Date and DateTime target result domains. Full Date admits two exact formats and the optional pre-1900 check. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partial dates, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded full-Date and DateTime target result domains. Full Date admits two exact formats and the optional pre-1900 check; a computed Date is concrete even when its target declaration permits partially known stored inputs. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel

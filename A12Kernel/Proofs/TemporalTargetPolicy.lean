@@ -29,6 +29,21 @@ theorem fullDateTarget_evaluate_pre1900
   simp [CheckedFullDateTarget.evaluate, localDate, check, before]
   rfl
 
+/-- Computed-Date evaluation observes only the selected renderer, zone profile, and additional check. In particular, a target's partial-input mode cannot manufacture unknown fragments in the concrete result. -/
+theorem fullDateTarget_evaluate_ignoresPartialMode
+    (left : CheckedFullDateTarget leftModel)
+    (right : CheckedFullDateTarget rightModel)
+    (result : TemporalComputationResult)
+    (sameFormat : left.format = right.format)
+    (sameProfile : left.profile = right.profile)
+    (sameAdditionalCheck :
+      left.checked.policy.youngerThan1900Check =
+        right.checked.policy.youngerThan1900Check) :
+    left.evaluate result = right.evaluate result := by
+  cases result <;>
+    simp [CheckedFullDateTarget.evaluate, sameFormat, sameProfile,
+      sameAdditionalCheck]
+
 /-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
 theorem dateTimeTarget_evaluate_value
     (target : CheckedDateTimeTarget model)

@@ -169,20 +169,38 @@ example :
           nonempty := by decide }) := by
   native_decide
 
-/- Every excluded static axis fails explicitly before target execution. -/
+/- A concrete computed Date renders identically for every target precision: partial modes permit unknown input fragments but do not manufacture them in a computed result. -/
 example :
-    let partialModel := fullDateModel "dd.MM.yyyy" "UTC" .dayOptional
+    let instant := utcInstant? 2024 4 7 0 0 0
+    [ .full, .dayOptional, .monthOptional, .yearOptional ].map
+        (fun mode =>
+          evaluateAt? (fullDateModel "dd.MM.yyyy" "UTC" mode) instant) =
+      List.replicate 4 (some (.accepted {
+        text := "07.04.2024"
+        nonempty := by decide })) := by
+  native_decide
+
+/- Partial-mode admission precedes the ordinary basic checks, so the opt-in pre-1900 rejection remains exact rather than becoming an unknown-fragment result. -/
+example :
+    let instant := utcInstant? 1899 12 31 0 0 0
+    evaluateAt?
+        (fullDateModel "dd.MM.yyyy" "UTC" .yearOptional true) instant =
+      some (.errored {
+        text := "31.12.1899"
+        nonempty := by decide } .before1900) := by
+  native_decide
+
+/- Every remaining excluded static axis fails explicitly before target execution. -/
+example :
     let unsupportedFormat := fullDateModel "yyyy/M/d" "UTC"
     let unsupportedZone := fullDateModel "dd.MM.yyyy" "Pacific/Apia"
     let dateTime : FlatModel := {
       fields := [temporalTarget 0 "At" "yyyy-MM-dd'T'HH:mm:ss"
         .dateTime TemporalComponents.now] }
-    [ fullDateElabError? partialModel
-    , fullDateElabError? unsupportedFormat
+    [ fullDateElabError? unsupportedFormat
     , fullDateElabError? unsupportedZone
     , fullDateElabError? dateTime ] =
-      [ some (.partialMode 0 .dayOptional)
-      , some (.unsupportedFormat 0 "yyyy/M/d")
+      [ some (.unsupportedFormat 0 "yyyy/M/d")
       , some (.unsupportedZone "Pacific/Apia")
       , some (.targetKind 0 .dateTime) ] := by
   native_decide

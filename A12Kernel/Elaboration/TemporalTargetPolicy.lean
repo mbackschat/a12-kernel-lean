@@ -3,7 +3,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal-target policy
 
-This capsule resolves one nonrepeatable Date or DateTime target against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its bounded refinements render full Date in two exact formats and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing, delta classification, and application remain separate.
+This capsule resolves one nonrepeatable Date or DateTime target against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its bounded refinements render concrete computed Date values in two exact formats, including when the target permits partially known stored inputs, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored partial values, delta classification, and application remain separate.
 -/
 
 namespace A12Kernel
@@ -77,18 +77,16 @@ def elaborateTemporalTargetPolicy
 inductive FullDateTargetElabError where
   | targetPolicy (error : TemporalTargetElabError)
   | targetKind (target : FieldId) (actual : TemporalKind)
-  | partialMode (target : FieldId) (actual : TemporalPartialMode)
   | unsupportedFormat (target : FieldId) (source : String)
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
-/-- One checked full-Date target with an executable format and concrete model-zone profile. -/
+/-- One checked concrete-Date target with an executable format and concrete model-zone profile. Its declaration may also permit partially known stored inputs; computation itself supplies no unknown fragments. -/
 structure CheckedFullDateTarget (model : FlatModel) where
   checked : CheckedTemporalTargetPolicy model
   format : FullDateTargetFormat
   profile : ModelZone.ConcreteProfile
   targetIsDate : checked.target.kind = .date
-  partialModeFull : checked.policy.partialMode = .full
   formatMatches :
     FullDateTargetFormat.ofSource? checked.policy.format = some format
   profileMatches :
@@ -96,31 +94,27 @@ structure CheckedFullDateTarget (model : FlatModel) where
 
 namespace CheckedTemporalTargetPolicy
 
-/-- Refine a checked temporal target to the first executable full-Date subset. Every wider kind, partial mode, format, or zone is an explicit refusal. -/
+/-- Refine a checked temporal target to the first executable concrete-Date subset. Partial modes remain admitted because every one accepts a fully known Date; wider kinds, formats, and zones are explicit refusals. -/
 def toFullDateTarget
     (checked : CheckedTemporalTargetPolicy model) :
     Except FullDateTargetElabError (CheckedFullDateTarget model) := do
   if hDate : checked.target.kind = .date then
-    if hMode : checked.policy.partialMode = .full then
-      match hFormat :
-          FullDateTargetFormat.ofSource? checked.policy.format with
-      | none =>
-          throw (.unsupportedFormat checked.target.id checked.policy.format)
-      | some format =>
-          match hProfile :
-              ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
-          | none => throw (.unsupportedZone checked.timeZoneId)
-          | some profile =>
-              pure {
-                checked
-                format
-                profile
-                targetIsDate := hDate
-                partialModeFull := hMode
-                formatMatches := hFormat
-                profileMatches := hProfile }
-    else
-      throw (.partialMode checked.target.id checked.policy.partialMode)
+    match hFormat :
+        FullDateTargetFormat.ofSource? checked.policy.format with
+    | none =>
+        throw (.unsupportedFormat checked.target.id checked.policy.format)
+    | some format =>
+        match hProfile :
+            ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+        | none => throw (.unsupportedZone checked.timeZoneId)
+        | some profile =>
+            pure {
+              checked
+              format
+              profile
+              targetIsDate := hDate
+              formatMatches := hFormat
+              profileMatches := hProfile }
   else
     throw (.targetKind checked.target.id checked.target.kind)
 

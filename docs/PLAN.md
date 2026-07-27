@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 578 jobs · trust audit **1544 theorem roots; 33299 declarations in 323 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 578 jobs · trust audit **1545 theorem roots; 33285 declarations in 323 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the highest-risk remaining SG6 discriminator: partial-Date target rendering and basic-check precedence. Preserve the exact declared partial-date mode and format provenance; do not infer output or error precedence from the completed full-Date renderer.
+Audit and implement the first partially known stored-Date consumer: day-optional `ValueAsDate(field, FirstDay|LastDay)` for direct comparison. Retain the literal `00` omission and its endpoint choice; do not coerce the source to an ordinary full Date before the checked operation selects its boundary.
 
 ## Immediate sequence
 
-1. Prepare a bounded source packet across the temporal declaration policy, calculation controller, basic field checks, formatter/parser owners, and generated `.st` target path. Run the separator between render-first/basic-check-first and any partial-mode-specific empty-component behavior before choosing a representation.
-2. Implement only the smallest source-closed partial-Date target refinement and its separating cases. Reuse `CheckedTemporalTargetPolicy`; do not introduce a general formatter or a second temporal-policy carrier.
-3. Stop if the target's observable partial text or error precedence is not source-determined. Do not proceed into DateTime arithmetic expressions, alternatives/tables/scheduling, message rendering, destination compatibility certification, wider format syntax, or unsupported zones.
+1. Prepare a bounded source packet across `CheckFeldOpMitDatumSpecialImpl`, `RuntimeController.wertAlsDatum`, the partial-date format/basic-check owners, generated field/endpoint operations, and maintained a12-dmkits `ValueAsDate` laws. Separate an unknown day resolved as first versus last day, a fully known value, malformed input, and every forbidden precision/kind/placement.
+2. Introduce only the smallest checked day-optional representation if no existing temporal owner retains the literal omission. Compose the resolved endpoint through the existing direct Date comparison and classified-verdict path; do not add a general partial-date parser or a second comparison evaluator.
+3. Stop if exact empty/formal behavior or endpoint selection is not source-determined. Do not proceed into month/year-optional execution, partial-date computation output, DateTime arithmetic expressions, alternatives/tables/scheduling, message rendering, destination compatibility certification, wider format syntax, or unsupported zones.
 
 ## Parked boundaries
 
