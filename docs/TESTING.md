@@ -16,6 +16,16 @@ Do not restart at a more expensive rung after a documentation-only edit unless t
 
 Lean elaborates and caches one `.olean` per module, so semantic ownership and compilation ownership must agree. Keep import-only compatibility roots at the historical module path, place definitions/proofs/cases in focused child modules, and import the narrowest dependency stratum that actually owns the used declaration. The permanent size policy in [`CLAUDE.md`](../CLAUDE.md#semantic-first-simplification-rule) targets at most 600 nonblank lines and forbids ordinary source above 1,000. `TrustAudit.lean` is the sole current exception: its exhaustive theorem-root presentation intentionally remains one Lean session because splitting it would restore repeated process startup and duplicate environment loading; it contains registry commands only, not semantics or fixtures.
 
+### Lean source-hygiene gate
+
+[`check-lean-source-hygiene.sh`](../scripts/check-lean-source-hygiene.sh) enumerates tracked Lean source with Git, excludes generated/build output, counts nonblank lines, enforces the 600/1,000 thresholds, checks the exact umbrella-root inventory, and validates the exceptional registry structure. Run its dependency-free adversarial fixtures with [`test-check-lean-source-hygiene.sh`](../scripts/test-check-lean-source-hygiene.sh). The default trust gate invokes the source-hygiene guard, so local pre-commit verification and CI share one enforcement path.
+
+The marked entries below are the exact machine-read reviewed-exception map. `review-threshold` may retain one cohesive 601–1,000-line file only with a nonempty reviewed rationale. `exceptional-ceiling` is restricted in the guard to the sole `TrustAudit.lean` registry; adding another path cannot authorize a second over-ceiling file. Remove an entry when its path disappears or its line count no longer needs that mode, because stale and duplicate entries fail the gate.
+
+<!-- lean-source-hygiene-exceptions:start -->
+<!-- lean-source-hygiene-exception: A12Kernel/TrustAudit.lean | exceptional-ceiling | The exhaustive theorem-root presentation and environment audit remain one Lean session to avoid repeated process startup and duplicate environment loading; this file contains only audit-driver setup and registry commands, never semantics or conformance fixtures. -->
+<!-- lean-source-hygiene-exceptions:end -->
+
 ## Default assurance cadence
 
 The accepted evidence consolidation divides work into three tiers. Tier 1 is the default for a semantic capsule: red/green executable examples, the smallest total definition, proof spine, nearest non-law, assumptions, trust audit, and an explicit evidence status. Tier 2 batches related clauses into one focused external calibration family and replays a compact retained semantic account from an existing suitable route or an accepted purpose-specific handback. Tier 3 runs protocol, independent-candidate, mutation, packaging, and release qualification only for a real shipment or consumer. [`SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md`](SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md) owns the exact trust split, budgets, migration, and stop conditions.

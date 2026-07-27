@@ -13,6 +13,8 @@ jobs:
       - uses: leanprover/lean-action@v1
         # Uses the pinned toolchain (lean-toolchain) and runs `lake build`, which also
         # elaborates the #eval / example smoke checks.
+      - name: Exercise Lean source-hygiene guard
+        run: ./scripts/test-check-lean-source-hygiene.sh
       - name: Audit trust and published README statistics
         run: ./scripts/prepare-github-publish.sh --check
       - name: Replay retained kernel evidence

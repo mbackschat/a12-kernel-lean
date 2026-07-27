@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if ! ./scripts/check-lean-source-hygiene.sh >/dev/null; then
+  echo "trusted theorem audit failed: Lean source hygiene did not pass" >&2
+  exit 1
+fi
+
 for required_tool in find grep lake sed sort; do
   if ! command -v "$required_tool" >/dev/null 2>&1; then
     echo "trusted theorem audit requires ${required_tool}" >&2

@@ -88,6 +88,7 @@ import A12Kernel.Conformance.StarredGroupPresence
 import A12Kernel.Conformance.StarNumberElaboration
 import A12Kernel.Conformance.NumberEntityValueList
 import A12Kernel.Conformance.TokenEntityValueList
+import A12Kernel.Conformance.TokenEntityValueListConsumer
 import A12Kernel.Conformance.StarNumberValueList
 import A12Kernel.Conformance.StarStringValueList
 import A12Kernel.Conformance.StarEnumerationValueList

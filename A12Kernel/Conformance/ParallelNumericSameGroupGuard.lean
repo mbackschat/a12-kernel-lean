@@ -33,6 +33,15 @@ private def shortCircuitHead? (cells : List ClassifiedCellInput) :
   let outcomes ← (checked.execute preliminary).toOption
   outcomes.head?.map (·.outcome)
 
+/- A checked parallel guard cannot read another repeatable field without a second addressed-read plan, even when that field shares the operand group. -/
+example :
+    (match checkIsolatedParallelNumericDirectRunWithGuard
+        model ["Plan"] 2 operandPath (some (.fieldFilled 5)) with
+    | .error error => some error
+    | .ok _ => none) =
+      some .guardNotLimitedToOperand := by
+  native_decide
+
 /- Presence of the String index field in the same matched operand row guards the Number operation without becoming a value operand. -/
 example :
     let clean := cleanIndexCells ++ [

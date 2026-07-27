@@ -1,6 +1,7 @@
 import Lake
 import A12Kernel.Evidence.ValidationProjection
 import A12Kernel.Process.Bounded
+import A12Kernel.Process.CandidateConformanceSuite
 import A12Kernel.Reference.StrictJson
 import Lean.Data.Json
 
@@ -10,99 +11,7 @@ This process runs a suite of normalized request/response fixtures against an ind
 -/
 
 open Lean
-
-private inductive EvidenceKind where
-  | kernelRuntimeObservation
-  | kernelStaticDiagnostic
-  | kernelStaticAcceptance
-  deriving Repr, DecidableEq
-
-namespace EvidenceKind
-
-def tag : EvidenceKind → String
-  | .kernelRuntimeObservation => "kernelRuntimeObservation"
-  | .kernelStaticDiagnostic => "kernelStaticDiagnostic"
-  | .kernelStaticAcceptance => "kernelStaticAcceptance"
-
-def fromTag? : String → Option EvidenceKind
-  | "kernelRuntimeObservation" => some .kernelRuntimeObservation
-  | "kernelStaticDiagnostic" => some .kernelStaticDiagnostic
-  | "kernelStaticAcceptance" => some .kernelStaticAcceptance
-  | _ => none
-
-end EvidenceKind
-
-private inductive ExternalSupport where
-  | firingRows
-  | verdictFiringAndPolarity
-  | verdictSuppressionOnly
-  | elaborationRejectionClass
-  | elaborationAcceptanceOnly
-  deriving Repr, DecidableEq
-
-namespace ExternalSupport
-
-def tag : ExternalSupport → String
-  | .firingRows => "firingRows"
-  | .verdictFiringAndPolarity => "verdictFiringAndPolarity"
-  | .verdictSuppressionOnly => "verdictSuppressionOnly"
-  | .elaborationRejectionClass => "elaborationRejectionClass"
-  | .elaborationAcceptanceOnly => "elaborationAcceptanceOnly"
-
-def fromTag? : String → Option ExternalSupport
-  | "firingRows" => some .firingRows
-  | "verdictFiringAndPolarity" => some .verdictFiringAndPolarity
-  | "verdictSuppressionOnly" => some .verdictSuppressionOnly
-  | "elaborationRejectionClass" => some .elaborationRejectionClass
-  | "elaborationAcceptanceOnly" => some .elaborationAcceptanceOnly
-  | _ => none
-
-end ExternalSupport
-
-private inductive ExpectedResponseSource where
-  | retainedProjection
-  | projectDiagnostic
-  | leanRuntimeProjection
-  deriving Repr, DecidableEq
-
-namespace ExpectedResponseSource
-
-def tag : ExpectedResponseSource → String
-  | .retainedProjection => "retainedProjection"
-  | .projectDiagnostic => "projectDiagnostic"
-  | .leanRuntimeProjection => "leanRuntimeProjection"
-
-def fromTag? : String → Option ExpectedResponseSource
-  | "retainedProjection" => some .retainedProjection
-  | "projectDiagnostic" => some .projectDiagnostic
-  | "leanRuntimeProjection" => some .leanRuntimeProjection
-  | _ => none
-
-end ExpectedResponseSource
-
-private structure EvidenceLink where
-  kind : EvidenceKind
-  projection : System.FilePath
-  caseId : String
-  externalSupports : ExternalSupport
-  expectedResponseSource : ExpectedResponseSource
-
-private structure ConformanceCase where
-  id : String
-  request : System.FilePath
-  expectedResponse : System.FilePath
-  evidence : EvidenceLink
-  covers : List String
-
-private structure ConformanceSuite where
-  id : String
-  referenceSemanticsVersion : String
-  protocolVersion : Nat
-  manifestSchemaVersion : Nat
-  kernelBehaviorVersion : String
-  operation : String
-  supportManifest : System.FilePath
-  cases : List ConformanceCase
+open A12Kernel.CandidateConformance
 
 private def fail (message : String) : IO α :=
   throw (IO.userError message)

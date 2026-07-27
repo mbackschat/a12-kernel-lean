@@ -659,13 +659,4 @@ example :
       some (.operationScaleMismatch 0 (NumericScaleSummary.field 1)) := by
   native_decide
 
-/- The bounded guarded route cannot silently read another repeatable field without a second checked addressed-read plan. -/
-example :
-    (match checkIsolatedParallelNumericDirectRunWithGuard
-        model ["Plan"] 2 operandPath (some (.fieldFilled 5)) with
-    | .error error => some error
-    | .ok _ => none) =
-      some .guardNotLimitedToOperand := by
-  native_decide
-
 end A12Kernel.Conformance.ParallelComputationClearingPlan

@@ -316,7 +316,8 @@ example :
         (data .other) = .elaboration := by
   native_decide
 
-private inductive ProjectedToken where
+/-- Consumer-visible token observations preserve value, empty, and formal-unknown distinctions. -/
+inductive ProjectedToken where
   | present (value : String)
   | empty
   | unknown (cause : FormalCause)
@@ -327,7 +328,8 @@ private def projectedToken : ValueListCell .token → ProjectedToken
   | .empty => .empty
   | .unknown cause => .unknown cause
 
-private structure OperandView where
+/-- Source-preserving view of one resolved operand for the bounded consumer probe. -/
+structure OperandView where
   field : FieldId
   projection : Option EnumerationProjectionRef
   topology : Option (List Env)
@@ -352,18 +354,21 @@ private def operandView
     projected :=
       (resolved.valueListSideAt .validation).cells.map projectedToken }
 
-private structure ConsumerView where
+/-- Execute/Transform/Explain projection produced by the bounded consumer probe. -/
+structure ConsumerView where
   family : TokenEntityValueListFamily
   fields : List OperandView
   values : List OperandView
   verdict : Verdict
   deriving Repr, DecidableEq
 
-private inductive ConsumerQuery where
+/-- Inputs admitted by the stored String consumer probe. -/
+inductive ConsumerQuery where
   | storedString (surface : SurfaceTokenEntityValueListSource)
       (source : DocumentData)
 
-private inductive ConsumerResult where
+/-- The probe keeps structural rejection separate from semantic insufficient information. -/
+inductive ConsumerResult where
   | available (view : ConsumerView)
   | structural (cause : CheckedAddressingError)
   | rejected
@@ -371,7 +376,7 @@ private inductive ConsumerResult where
   deriving Repr, DecidableEq
 
 /-- Same-context Execute/Transform/Explain probe for the stored-projection route: execute the public checked route, traverse source-preserving operands, and explain topology, exact stored payload, and declaration-owned evaluated tokens. -/
-private def inspectForConsumer : ConsumerQuery → ConsumerResult
+def inspectForConsumer : ConsumerQuery → ConsumerResult
   | .storedString surface source =>
       match elaborateTokenEntityValueListSource model ["Form"] surface with
       | .error _ => .rejected
@@ -388,51 +393,12 @@ private def inspectForConsumer : ConsumerQuery → ConsumerResult
                     values := resolved.values.map operandView
                     verdict := resolved.evaluate }
 
-/- Nested and outer String stars preserve independent canonical environments, hierarchical extent, exact stored CRLF spelling, normalized evaluated text, and authored order. -/
-example :
-    inspectForConsumer (.storedString
-      (authored .atLeastOne
-        (entitySource nestedAllStar [star]) values)
-      multipleStarData) =
-      .available {
-        family := .string
-        fields := [
-          { field := 6
-            projection := none
-            topology := some [
-              [(10, 1), (20, 1)],
-              [(10, 1), (20, 2)],
-              [(10, 2), (20, 1)]]
-            openTail := true
-            addressed := [
-              ({ field := 6, path := [1, 1] }, some "N11"),
-              ({ field := 6, path := [1, 2] }, some "N12"),
-              ({ field := 6, path := [2, 1] }, some "N21")]
-            projected := [
-              .present "N11", .present "N12", .present "N21"] },
-          { field := 4
-            projection := none
-            topology := some [[(10, 1)], [(10, 2)]]
-            openTail := false
-            addressed := [
-              ({ field := 4, path := [1] }, some "A\r\nB"),
-              ({ field := 4, path := [2] }, some "SECOND")]
-            projected := [.present "A\nB", .present "SECOND"] }]
-        values := [
-          { field := 2
-            projection := none
-            topology := none
-            openTail := false
-            addressed := [({ field := 2, path := [] }, some "MATCH")]
-            projected := [.present "MATCH"] },
-          { field := 3
-            projection := none
-            topology := none
-            openTail := false
-            addressed := [({ field := 3, path := [] }, some "SPARE")]
-            projected := [.present "SPARE"] }]
-        verdict := .notFired } := by
-  native_decide
+/-- Canonical stored String query used by the independent consumer-probe lock. -/
+def storedConsumerQuery : ConsumerQuery :=
+  .storedString
+    (authored .atLeastOne
+      (entitySource nestedAllStar [star]) values)
+    multipleStarData
 
 private def projectedDirect (name : String)
     (projection : EnumerationProjectionRef) :
