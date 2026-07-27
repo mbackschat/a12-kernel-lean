@@ -159,4 +159,72 @@ theorem fullDateComputation_baseYear_unavailable
   unfold CheckedFullDateComputation.evaluateOutcome
   rw [operandRead]
 
+/-- A selected Base-Year range endpoint exposes the exact model-zone instant for its January 1 or December 31 label. -/
+theorem fullDateComputation_baseYearRange_value
+    (operation : CheckedFullDateComputation model)
+    (world : World)
+    (input : CheckedDocument model)
+    (zoneId : String)
+    (year : Int)
+    (endpoint : BaseYearRangeEndpoint)
+    (instant : Instant)
+    (operand :
+      operation.operand =
+        .baseYearRangeValue zoneId year endpoint)
+    (resolved :
+      let parts := baseYearRangeParts year endpoint
+      world.resolveLocal? zoneId
+        parts.year parts.month parts.day 0 0 0 = some instant) :
+    operation.evaluateOutcome world input =
+      (operation.target.evaluate (.value instant)).mapError .target := by
+  have operandRead :
+      operation.evaluateOperand world input = .ok (.value instant) := by
+    simp [CheckedFullDateComputation.evaluateOperand,
+      operand, resolved] <;> rfl
+  unfold CheckedFullDateComputation.evaluateOutcome
+  rw [operandRead]
+
+/-- Base-Year range endpoints are model configuration: changing only the world's clock instant cannot change their result. -/
+theorem fullDateComputation_baseYearRange_now_irrelevant
+    (operation : CheckedFullDateComputation model)
+    (world : World)
+    (input : CheckedDocument model)
+    (zoneId : String)
+    (year : Int)
+    (endpoint : BaseYearRangeEndpoint)
+    (now : Instant)
+    (operand :
+      operation.operand =
+        .baseYearRangeValue zoneId year endpoint) :
+    operation.evaluateOutcome { world with now } input =
+      operation.evaluateOutcome world input := by
+  simp [CheckedFullDateComputation.evaluateOutcome,
+    CheckedFullDateComputation.evaluateOperand,
+    operand, World.resolveLocal?]
+
+/-- Missing model-zone label resolution preserves the selected endpoint in structural failure. -/
+theorem fullDateComputation_baseYearRange_unavailable
+    (operation : CheckedFullDateComputation model)
+    (world : World)
+    (input : CheckedDocument model)
+    (zoneId : String)
+    (year : Int)
+    (endpoint : BaseYearRangeEndpoint)
+    (operand :
+      operation.operand =
+        .baseYearRangeValue zoneId year endpoint)
+    (unsupported :
+      let parts := baseYearRangeParts year endpoint
+      world.resolveLocal? zoneId
+        parts.year parts.month parts.day 0 0 0 = none) :
+    operation.evaluateOutcome world input =
+      .error (.baseYearRangeUnavailable zoneId year endpoint) := by
+  have operandRead :
+      operation.evaluateOperand world input =
+        .error (.baseYearRangeUnavailable zoneId year endpoint) := by
+    simp [CheckedFullDateComputation.evaluateOperand,
+      operand, unsupported] <;> rfl
+  unfold CheckedFullDateComputation.evaluateOutcome
+  rw [operandRead]
+
 end A12Kernel

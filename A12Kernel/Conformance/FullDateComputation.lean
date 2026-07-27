@@ -74,6 +74,12 @@ private def baseYearOperation? (zoneId : String) :
   (elaborateFullDateBaseYearComputation
     (modelFor zoneId) target.id).toOption
 
+private def baseYearRangeOperation? (zoneId : String)
+    (endpoint : BaseYearRangeEndpoint) :
+    Option (CheckedFullDateComputation (modelFor zoneId)) :=
+  (elaborateFullDateBaseYearRangeComputation
+    (modelFor zoneId) target.id endpoint).toOption
+
 private def errorOf (result : Except FullDateComputationElabError value) :
     Option FullDateComputationElabError :=
   match result with
@@ -109,6 +115,14 @@ private def baseYearView? (zoneId : String) (world : World)
     Option (FullDateComputationRunView FormalCause) := do
   let checked ← checked? zoneId data
   let operation ← baseYearOperation? zoneId
+  operation.executeResult world checked [] |>.toOption
+
+private def baseYearRangeView? (zoneId : String)
+    (endpoint : BaseYearRangeEndpoint) (world : World)
+    (data : DocumentData) :
+    Option (FullDateComputationRunView FormalCause) := do
+  let checked ← checked? zoneId data
+  let operation ← baseYearRangeOperation? zoneId endpoint
   operation.executeResult world checked [] |>.toOption
 
 private def destinationWith (state : FullDateTargetState) :
@@ -252,6 +266,41 @@ example : (do
     pure (faultOf (operation.executeResult { now } checked
       ([] : List FormalCause)))) =
     some (some (.baseYearUnavailable "UTC" 2020)) := by
+  native_decide
+
+/- Base-Year range extraction retains the endpoint: start agrees with direct Base Year while finish is December 31 of the same configured year. -/
+example : (do
+    let now ← instant? 2024 4 6
+    let world : World :=
+      { now, modelZoneRules := ModelZone.concreteRules }
+    let start ← baseYearRangeView? "UTC" .start world
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    let finish ← baseYearRangeView? "UTC" .finish world
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    pure (
+      start.withoutErrors.map (·.value.text),
+      finish.withoutErrors.map (·.value.text))) =
+    some (["01.01.2020"], ["31.12.2020"]) := by
+  native_decide
+
+/- A missing configured year rejects range extraction just as it rejects direct date-typed Base Year. -/
+example :
+    let noBaseYear : FlatModel := {
+      modelFor "UTC" with baseYear := none }
+    errorOf (elaborateFullDateBaseYearRangeComputation
+      noBaseYear target.id .finish) =
+        some .baseYearNotDeclared := by
+  native_decide
+
+/- Range endpoints require exact label resolution and never substitute the direct Base-Year start when the selected finish is unsupported. -/
+example : (do
+    let now ← instant? 2024 4 6
+    let checked ← checked? "UTC"
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    let operation ← baseYearRangeOperation? "UTC" .finish
+    pure (faultOf (operation.executeResult { now } checked
+      ([] : List FormalCause)))) =
+    some (some (.baseYearRangeUnavailable "UTC" 2020 .finish)) := by
   native_decide
 
 end A12Kernel.Conformance.FullDateComputation

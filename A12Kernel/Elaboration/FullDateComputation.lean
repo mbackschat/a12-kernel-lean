@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 
 /-! # Checked nonrepeatable full-Date computations
 
-This capsule admits the field, `Today`, and date-typed `BaseYear` forms of the existing `FlatTemporalOperand` against one full-Date target. Field evaluation reads once through `CheckedDocument`; `Today` resolves once from the execution's explicit `World` in the checked model zone; Base Year resolves model-configured January 1 through the same zone capability without reading the clock. Every path retains an exact instant and delegates rendering and basic checking to `CheckedFullDateTarget`. Alternatives, scheduling, DateTime, partial dates, wider expressions, message construction, and destination compatibility remain separate.
+This capsule admits the field, `Today`, date-typed `BaseYear`, and selected Base-Year range forms of the existing `FlatTemporalOperand` against one full-Date target. Field evaluation reads once through `CheckedDocument`; `Today` resolves once from the execution's explicit `World` in the checked model zone; Base Year and its selected January 1/December 31 endpoints resolve model configuration through the same zone capability without reading the clock. Every path retains an exact instant and delegates rendering and basic checking to `CheckedFullDateTarget`. Alternatives, scheduling, DateTime, partial dates, wider expressions, message construction, and destination compatibility remain separate.
 -/
 
 namespace A12Kernel
@@ -41,9 +41,11 @@ def FlatModel.admitsFullDateComputationOperand
   | .todayValue zoneId => zoneId == model.timeZoneId
   | .baseYearValue zoneId year =>
       zoneId == model.timeZoneId && model.baseYear == some year
+  | .baseYearRangeValue zoneId year _ =>
+      zoneId == model.timeZoneId && model.baseYear == some year
   | _ => false
 
-/-- One model-certified field/`Today`/Base-Year computation. The operand, target policy, and model-zone identity cannot be substituted after elaboration. -/
+/-- One model-certified field/`Today`/Base-Year computation. Direct and range-selected Base Year share the existing endpoint representation. -/
 structure CheckedFullDateComputation (model : FlatModel) where
   operand : FlatTemporalOperand
   target : CheckedFullDateTarget model
@@ -114,12 +116,34 @@ def elaborateFullDateBaseYearComputation
   else
     throw .incoherentCore
 
+/-- Build one selected Base-Year range endpoint from the checked model's configured year and exact zone id. -/
+def elaborateFullDateBaseYearRangeComputation
+    (model : FlatModel) (targetField : FieldId)
+    (endpoint : BaseYearRangeEndpoint) :
+    Except FullDateComputationElabError
+      (CheckedFullDateComputation model) := do
+  let target ← elaborateFullDateTarget model targetField |>.mapError .target
+  let year ← match model.baseYear with
+    | some year => pure year
+    | none => throw .baseYearNotDeclared
+  let operand :=
+    FlatTemporalOperand.baseYearRangeValue
+      model.timeZoneId year endpoint
+  if hOperand :
+      model.admitsFullDateComputationOperand
+        target.checked.target.id operand = true then
+    pure { operand, target, operandAdmitted := hOperand }
+  else
+    throw .incoherentCore
+
 /-- Structural failure outside the rich full-Date result domain. -/
 inductive FullDateComputationFault where
   | document (error : CheckedDocumentError)
   | sourceValueKind (source : FieldId)
   | todayUnavailable (zoneId : String)
   | baseYearUnavailable (zoneId : String) (year : Int)
+  | baseYearRangeUnavailable (zoneId : String) (year : Int)
+      (endpoint : BaseYearRangeEndpoint)
   | unsupportedOperand
   | target (error : FullDateTargetEvaluationFault)
   deriving Repr, DecidableEq
@@ -149,6 +173,13 @@ def evaluateOperand (operation : CheckedFullDateComputation model)
       match world.resolveLocal? zoneId year 1 1 0 0 0 with
       | some instant => pure (.value instant)
       | none => throw (.baseYearUnavailable zoneId year)
+  | .baseYearRangeValue zoneId year endpoint =>
+      let parts := baseYearRangeParts year endpoint
+      match world.resolveLocal? zoneId
+          parts.year parts.month parts.day 0 0 0 with
+      | some instant => pure (.value instant)
+      | none =>
+          throw (.baseYearRangeUnavailable zoneId year endpoint)
   | _ => throw .unsupportedOperand
 
 /-- Execute the checked operand through the existing declaration-owned target policy. -/
