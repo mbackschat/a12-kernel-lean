@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 558 jobs · trust audit **1487 theorem roots; 32108 declarations in 309 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 561 jobs · trust audit **1494 theorem roots; 32310 declarations in 311 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close one bounded SG6 full-Date target delta/application capsule that consumes the rich accepted, errored-attempt, no-value, and poison outcomes without reconstructing target text or broadening the admitted renderer.
+Close one bounded SG6 full-Date V2 result projection over a supplied finite outcome list and the immutable computation source. Preserve successful unchanged instances, the changed subset, errored attempts, source-filled clearing, an opaque residual-message channel, and the exact two-channel error predicate without adding a Date executor.
 
 ## Immediate sequence
 
-1. Audit the existing String and Number delta/application owners against the Date target source path; reuse only distinctions whose result domain is identical.
-2. Separate unchanged accepted text, changed accepted text, retained errored attempt, clean no-value, and poison against absent, empty, and filled prior target states.
-3. Keep document mutation outside the semantic root: classify one source/target transition first, then add only the smallest one-address application law justified by the existing application boundary. Stop before DateTime, partial-Date completion, wider format syntax, or whole-run scheduling.
+1. Audit the String and Number result-view owners and reuse their five public projections only where the full-Date outcome has the same meaning.
+2. Recover exact absent, present-empty, and nonempty source Date placement from `CheckedDocument` without parsing stored text; classify accepted unchanged/changed, target rejection, clean no-value, and poison.
+3. Prove the changed-subset, exact-clearing, residual-channel, two-error-channel, and extensional-permutation laws. Stop before a Date expression/table executor, scheduling, message construction, whole-document application, DateTime, partial-Date completion, or wider format syntax.
 
 ## Parked boundaries
 
