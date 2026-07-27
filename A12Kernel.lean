@@ -77,6 +77,7 @@ import A12Kernel.Elaboration.ValueAsDateDayDifference
 import A12Kernel.Elaboration.ValueAsDateShiftTarget
 import A12Kernel.Elaboration.ValueAsDateTimeField
 import A12Kernel.Elaboration.ValueAsDateTimeExtraction
+import A12Kernel.Elaboration.ValueAsDateTimeNumberFields
 import A12Kernel.Elaboration.TemporalComputationResult
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.DateTimeComputationApplication

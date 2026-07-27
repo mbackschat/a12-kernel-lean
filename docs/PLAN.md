@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 593 jobs · trust audit **1574 theorem roots; 34791 declarations in 334 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 595 jobs · trust audit **1574 theorem roots; 34975 declarations in 335 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close model-relative component-field lowering for `Time(...)` as the next ordinary Time operand inside `DateTime(ValueAsDate(...), time)`. Determine the exact Number/String/extractor declaration gates per hour, minute, and second position, runtime conversion and left-to-right precedence, and the smallest checked document adapter that can reuse the existing `TimeConstructionResult`.
+Execute the newly checked one-to-three-Number-field `Time(...)` prefix through the immutable `CheckedDocument` and compose it with `DateTime(ValueAsDate(...), time)`. Preserve authored Hour-before-Minute-before-Second reads, stop after the first reached formal or structural fault, and delegate all clock classification to the existing `TimeConstructionResult`.
 
 ## Immediate sequence
 
-1. Recheck `CheckTimeKonstruktImpl`, `CheckBaseDateConstructionImpl`, component declaration metadata, generated `TimeConstructionOperation.st`, and the runtime numeric/String conversion path. Inventory exactly which declaration properties make a field legal at each position and whether that information is present in `FlatModel`.
-2. If the existing model and checked document retain every required certificate, add the smallest supplied-prefix checked adapter over one to three ordinary nonrepeatable component fields. Preserve hour-before-minute-before-second observation and delegate all result classification to `TimeConstructionResult`; do not add a temporal-expression AST or a second numeric/String evaluator.
-3. Retain separators for a legal one-field hour prefix with defaulted trailing zeroes, a legal full three-field clock, wrong position bounds or declaration shape, empty and formal components at each reached position, first-formal precedence, Date-side formal short-circuit, and an accepted recomposed Berlin instant. Stop if a load-bearing field bound or conversion identity is absent from the current flat declaration. Leave extractor components, literal mixing beyond the existing resolved seam, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
+1. Read each checked Number component through the document's existing typed Number payload; map empty to incomplete/not-given, formal cells to unavailable, and reject a forged nonintegral or wrong-kind payload structurally rather than coercing it.
+2. Evaluate only supplied fields, in Hour/Minute/Second order, and reuse the existing prefix constructor so omitted trailing components remain fixed zeroes. Compose the result through the existing partial-Date DateTime adapter without reading Time after a Date-side failure.
+3. Retain separators for a legal one-field hour prefix with defaulted trailing zeroes, a legal full three-field clock, empty and formal components at each reached position, first-formal precedence, a forged nonintegral payload, Date-side formal short-circuit, and an accepted recomposed Berlin instant. Leave the statically blocked String arm, extractor and mixed components, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 
