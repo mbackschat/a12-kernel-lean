@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1583 theorem roots; 35441 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1583 theorem roots; 35443 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Extend the already-checked dynamic `Now` sub-day shift by the same ordinary nonrepeatable Number-field amount used by the completed DateTime-field route. Reuse `CheckedValueAsDateTimeShiftAmount`, preserve `World.now` as the source and the immutable checked document as the amount input, and add no general numeric-expression or temporal-expression carrier.
+Audit the smallest already-owned numeric expression that can serve as a Date/DateTime shift amount without a temporal-specific duplicate AST. Start from the checked numeric validation-expression result and determine whether its value, missing fillability, formal cause, and domain-invalid no-value can project faithfully into the shift helper.
 
 ## Immediate sequence
 
-1. Confirm the generated `PointInTimeOperation.st` plus `DateAddOperation.st` route evaluates `Now` before the amount and that no distinct missing-source branch exists for `Now`.
-2. Generalize the checked `Now` shift to consume `CheckedValueAsDateTimeShiftAmount`; keep the literal elaborator as a specialization and add one field elaborator with the existing static Number admission.
-3. Retain separators for a present fractional field amount, an empty field amount producing a concrete omission-typed result, and a formal field amount. Leave general amount expressions, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
+1. Inventory `AuthoredNumericExpr`, its checked validation atoms, `NumericArithmeticOutcome`, and the Date-shift helper's `VkBigDecimal` state. Confirm which existing result preserves directional missingness and domain-invalid no-value without target-specific information.
+2. Select one bounded expression with a real connective and one direct source already supported by the numeric owner. Reuse its checked elaboration/evaluation unchanged and add only the projection needed by Date shifting.
+3. Keep separators for left-to-right source/amount evaluation, a missing expression operand that still yields a concrete omission-typed amount where the numeric evaluator does so, and domain-invalid arithmetic yielding a valueless Date/DateTime. Stop if the existing owner cannot expose the required result without a new general expression carrier or a consumer-specific reimplementation. Leave wider temporal sources, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

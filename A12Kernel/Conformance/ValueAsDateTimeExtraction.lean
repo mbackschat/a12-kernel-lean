@@ -190,7 +190,8 @@ example :
     let result := do
       let checked ← (elaborateValueAsDateTimeNowShiftExtraction
         model 0 .lastDay .hours 1).toOption
-      pure (checked.evaluateRaw .validation { now }
+      let input ← document? model []
+      pure (checked.evaluateRaw .validation { now } input
         (.parsed "00.02.2024") |>.toOption)
     result = some (some (.value expectedLocal expectedInstant false)) := by
   native_decide
@@ -204,10 +205,65 @@ example :
     let evaluate (millisecond : Int) := do
       let checked ← (elaborateValueAsDateTimeNowShiftExtraction
         model 0 .firstDay .seconds 1).toOption
+      let input ← document? model []
       pure (checked.evaluateRaw .validation
         { now := { epochMillis := epochMillis + millisecond } }
+        input
         (.parsed "15.06.2024") |>.toOption)
     evaluate 1 = evaluate 999 ∧ evaluate 999 ≠ evaluate 1000 := by
+  native_decide
+
+/- A dynamic `Now` source shares the checked Number-field amount semantics: fractional values narrow toward zero, while an empty field retains the concrete zero-shift value with omission provenance. -/
+example :
+    let model := modelWithShiftAmount
+    let nowLocal := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 30 0).get (by native_decide)
+    let now :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        nowLocal).get (by native_decide)
+    let shiftedLocal := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 31 0).get (by native_decide)
+    let shiftedInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        shiftedLocal).get (by native_decide)
+    let evaluate (amount : Option Rat) := do
+      let checked ←
+        (elaborateValueAsDateTimeNowFieldShiftExtraction
+          model 0 .firstDay .minutes 2).toOption
+      let amountCell := amount.toList.map fun value => {
+        address := { field := 2, path := [] }
+        stored := "1.5"
+        raw := .parsed (.num value)
+      }
+      let input ← document? model amountCell
+      pure (checked.evaluateRaw .validation { now } input
+        (.parsed "15.06.2024") |>.toOption)
+    evaluate (some (3 / 2)) =
+        some (some (.value shiftedLocal shiftedInstant false)) ∧
+      evaluate none =
+        some (some (.value nowLocal now true)) := by
+  native_decide
+
+/- A formal field amount is reached after dynamic `Now` and remains formally unavailable. -/
+example :
+    let model := modelWithShiftAmount
+    let nowLocal := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 30 0).get (by native_decide)
+    let now :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        nowLocal).get (by native_decide)
+    let result := do
+      let checked ←
+        (elaborateValueAsDateTimeNowFieldShiftExtraction
+          model 0 .firstDay .seconds 2).toOption
+      let input ← document? model [{
+        address := { field := 2, path := [] }
+        stored := "bad-amount"
+        raw := .rejected .declaredConstraint
+      }]
+      pure (checked.evaluateRaw .computation { now } input
+        (.parsed "15.06.2024") |>.toOption)
+    result = some (some (.unavailable .declaredConstraint)) := by
   native_decide
 
 /- Shifting does not manufacture an instant for an empty or formally unavailable DateTime source. -/
@@ -303,7 +359,11 @@ example :
     extractionError?
         (elaborateValueAsDateTimeFieldShiftExtraction
           modelWithShiftAmount 0 .firstDay 1 .minutes 1) =
-      some (.amountNotNumber 1) := by
+        some (.amountNotNumber 1) ∧
+      extractionError?
+        (elaborateValueAsDateTimeNowFieldShiftExtraction
+          modelWithShiftAmount 0 .firstDay .minutes 1) =
+        some (.amountNotNumber 1) := by
   native_decide
 
 /- Generated source-before-amount evaluation stops on a formal DateTime source, but an empty source still reaches and exposes a formal amount. -/

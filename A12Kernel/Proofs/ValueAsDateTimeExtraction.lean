@@ -47,17 +47,17 @@ theorem valueAsDateTimeShiftExtraction_evaluateRaw_date_unavailable
 /-- The dynamic `Now` shift route also inherits the shared generated Date-before-Time short circuit, so a failed Date side decides without a semantic clock read. -/
 theorem valueAsDateTimeNowShiftExtraction_evaluateRaw_date_unavailable
     (checked : CheckedValueAsDateTimeNowShiftExtraction model)
-    (phase : Phase) (world : World)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
     (raw : RawCell String) (cause : FormalCause)
     (observed :
       checked.construction.toCheckedValueAsDateSource.observe phase
         (checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw) =
           .unavailable cause) :
-    checked.evaluateRaw phase world raw = .ok (.unavailable cause) := by
+    checked.evaluateRaw phase world input raw = .ok (.unavailable cause) := by
   simpa only [CheckedValueAsDateTimeNowShiftExtraction.evaluateRaw] using
     valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
       checked.construction phase raw
-        (fun _ => checked.readShiftedTime world) cause observed
+        (fun _ => checked.readShiftedTime phase world input) cause observed
 
 /-- The checked field-amount route retains the literal route exactly when its numeric operand is fixed. -/
 theorem shiftedNumericOperand_fixed

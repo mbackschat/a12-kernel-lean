@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked `TimeFromDateTime`
 
-This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal or ordinary Number field. The shifted source may instead be the execution's explicit `World.now` with a literal amount. A sub-day addition shifts the retained exact instant; the generated extractor then reads the shifted wall-clock components in the model zone and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, so the existing decoded `TimeOfDay` remains the exact semantic boundary.
+This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal or ordinary Number field. The shifted source may instead be the execution's explicit `World.now` with either amount form. A sub-day addition shifts the retained exact instant; the generated extractor then reads the shifted wall-clock components in the model zone and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, so the existing decoded `TimeOfDay` remains the exact semantic boundary.
 
 Generated Date-before-Time evaluation remains explicit: a formal Date failure prevents the DateTime read, while cause-free Date non-relevance still reaches it. Within the nested shift, the DateTime source is evaluated before the amount. A direct Number field retains the helper's directional missing provenance: an empty amount supplies zero, so the shifted value remains concrete but omission-typed. Wider DateTime and amount expressions, repeatable fields, concrete parsing, and a general temporal-expression tree remain separate.
 -/
@@ -112,6 +112,22 @@ def read (amount : CheckedValueAsDateTimeShiftAmount model)
 
 end CheckedValueAsDateTimeShiftAmount
 
+/-- Resolve one ordinary nonrepeatable Number shift amount against the validated model. Both field- and `Now`-sourced shifts reuse this exact admission boundary. -/
+def elaborateValueAsDateTimeFieldShiftAmount
+    (model : FlatModel) (amountField : FieldId) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedValueAsDateTimeShiftAmount model) := do
+  let declaration ←
+    model.resolveNonrepeatableDeclarationById amountField |>.mapError .amount
+  let source ← match declaration.toNumberField? with
+    | some source => pure source
+    | none => throw (.amountNotNumber amountField)
+  if hAdmitted :
+      model.admitsValueAsDateTimeShiftAmount source = true then
+    pure (.field source hAdmitted)
+  else
+    throw .incoherentCore
+
 namespace CheckedValueAsDateTimeExtraction
 
 /-- Read the certified scalar DateTime source once and retain its wall clock, empty state, or exact formal cause. The reference semantics uses a linear immutable document lookup and adds no second zone conversion. -/
@@ -182,31 +198,36 @@ def evaluateRaw (checked : CheckedValueAsDateTimeShiftExtraction model)
 
 end CheckedValueAsDateTimeShiftExtraction
 
-/-- One checked partial-Date constructor whose Time side is `TimeFromDateTime(AddHours|AddMinutes|AddSeconds(Now, literal))`. The world remains an execution input and no instant is sampled during elaboration. -/
+/-- One checked partial-Date constructor whose Time side shifts dynamic `Now` by a checked literal or ordinary Number field before extraction. The world remains an execution input and no instant is sampled during elaboration. -/
 structure CheckedValueAsDateTimeNowShiftExtraction (model : FlatModel) where
   construction : CheckedValueAsDateTime model
   unit : DateTimeSubdayUnit
-  amount : Rat
+  amount : CheckedValueAsDateTimeShiftAmount model
 
 namespace CheckedValueAsDateTimeNowShiftExtraction
 
-/-- Shift this execution's exact `World.now`, then project the resulting model-zone clock. -/
+/-- Read the checked amount after sampling this execution's exact `World.now`, then project the shifted model-zone clock. -/
 def readShiftedTime (checked : CheckedValueAsDateTimeNowShiftExtraction model)
-    (world : World) :
-    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
-  let shifted := world.now.shift checked.unit
-    (ValueAsDateShiftUnit.amountToInt32 checked.amount)
-  match ValueAsDateTimeTimeOperand.ofShiftedInstant?
-      checked.construction.profile checked.unit checked.amount world.now with
-  | some time => pure time
-  | none => throw (.shiftedInstantOutsideProfile shifted)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
+  match ← checked.amount.read phase input with
+  | .unknown cause => pure (.unavailable cause)
+  | .value value fillability =>
+      let shifted := world.now.shift checked.unit
+        (ValueAsDateShiftUnit.amountToInt32 value)
+      match ValueAsDateTimeTimeOperand.ofShiftedNumericOperand?
+          checked.construction.profile checked.unit world.now
+            (.value value fillability) with
+      | some time => pure time
+      | none => throw (.shiftedInstantOutsideProfile shifted)
 
 /-- Check the bounded partial-Date source before the world-dependent Time operand, preserving generated Date-before-Time evaluation. -/
 def evaluateRaw (checked : CheckedValueAsDateTimeNowShiftExtraction model)
-    (phase : Phase) (world : World) (raw : RawCell String) :
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (raw : RawCell String) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
   checked.construction.evaluateTimeOperandRaw phase raw fun _ =>
-    checked.readShiftedTime world
+    checked.readShiftedTime phase world input
 
 end CheckedValueAsDateTimeNowShiftExtraction
 
@@ -259,16 +280,8 @@ def elaborateValueAsDateTimeFieldShiftExtraction
       (CheckedValueAsDateTimeShiftExtraction model) := do
   let extraction ←
     elaborateValueAsDateTimeExtraction model dateField endpoint dateTimeField
-  let declaration ←
-    model.resolveNonrepeatableDeclarationById amountField |>.mapError .amount
-  let source ← match declaration.toNumberField? with
-    | some source => pure source
-    | none => throw (.amountNotNumber amountField)
-  if hAdmitted :
-      model.admitsValueAsDateTimeShiftAmount source = true then
-    pure { extraction with unit, amount := .field source hAdmitted }
-  else
-    throw .incoherentCore
+  let amount ← elaborateValueAsDateTimeFieldShiftAmount model amountField
+  pure { extraction with unit, amount }
 
 /-- Resolve the partial-Date side without sampling `Now`, then retain the selected sub-day unit and authored numeric literal for execution. -/
 def elaborateValueAsDateTimeNowShiftExtraction
@@ -279,6 +292,18 @@ def elaborateValueAsDateTimeNowShiftExtraction
       (CheckedValueAsDateTimeNowShiftExtraction model) := do
   let construction ←
     elaborateValueAsDateTime model dateField endpoint |>.mapError .construction
+  pure { construction, unit, amount := .literal amount }
+
+/-- Resolve the partial-Date side and one ordinary nonrepeatable Number amount without sampling `Now`. -/
+def elaborateValueAsDateTimeNowFieldShiftExtraction
+    (model : FlatModel) (dateField : FieldId)
+    (endpoint : ValueAsDateEndpoint)
+    (unit : DateTimeSubdayUnit) (amountField : FieldId) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedValueAsDateTimeNowShiftExtraction model) := do
+  let construction ←
+    elaborateValueAsDateTime model dateField endpoint |>.mapError .construction
+  let amount ← elaborateValueAsDateTimeFieldShiftAmount model amountField
   pure { construction, unit, amount }
 
 end A12Kernel
