@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.TemporalShiftAmount
 import A12Kernel.Semantics.DateComparison
 import A12Kernel.Semantics.DateDifference
 import A12Kernel.Semantics.DateShift
@@ -352,14 +353,6 @@ inductive ValueAsDateShiftUnit where
 
 namespace ValueAsDateShiftUnit
 
-/-- Truncate like `BigDecimal.intValue`, then retain the low signed 32 bits rather than saturating or rejecting a large amount. -/
-def amountToInt32 (value : Rat) : Int :=
-  let truncated := if value < 0 then value.ceil else value.floor
-  let modulus : Int := 4294967296
-  let signBit : Int := 2147483648
-  let lowBits := truncated % modulus
-  if lowBits < signBit then lowBits else lowBits - modulus
-
 /-- Apply the selected calendar rule without imposing the A12 full-Date floor on the landing. -/
 def shift? (unit : ValueAsDateShiftUnit)
     (date : FullDate) (offset : Int) : Option CivilDate :=
@@ -412,7 +405,7 @@ def evaluate (checked : CheckedValueAsDateShift model)
       | .poison cause => pure (.poison cause)
       | .domainFailure => pure .noValue
       | .value value =>
-          let offset := ValueAsDateShiftUnit.amountToInt32 value
+          let offset := temporalShiftAmountToInt32 value
           match checked.unit.shift? date offset with
           | some landing => pure (.value landing)
           | none =>

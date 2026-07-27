@@ -30,7 +30,7 @@ abbrev CheckedWorldTimeComponents (model : FlatModel) :=
 def elaborateNowShiftedTimeExtractor
     (model : FlatModel) (position : TimeComponentPosition)
     (part : TimeNumericPart) (unit : DateTimeSubdayUnit)
-    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    (amount : CheckedTemporalShiftAmount model) :
     Except TimeComponentsElabError (CheckedWorldTimeComponent model) := do
   if hPosition : position.extractor = part then
     let source ←

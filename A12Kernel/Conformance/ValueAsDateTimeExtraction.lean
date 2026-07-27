@@ -304,7 +304,7 @@ example :
     source.shift .hours 1 = { epochMillis := 1718443845000 } ∧
       source.shift .minutes 1 = { epochMillis := 1718440305000 } ∧
       source.shift .seconds
-          (ValueAsDateShiftUnit.amountToInt32 4294967297) =
+          (temporalShiftAmountToInt32 4294967297) =
         { epochMillis := 1718440246000 } := by
   native_decide
 

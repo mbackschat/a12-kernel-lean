@@ -1,5 +1,3 @@
-import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Elaboration.NumericValidation.Evaluation
 import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked `TimeFromDateTime`
@@ -21,15 +19,6 @@ def FlatModel.admitsValueAsDateTimeExtractionSource
         declaration.toTemporalField? == some source &&
         source.kind == .dateTime &&
         source.components.isFullDateTime
-
-/-- Whether one resolved declaration is the exact ordinary Number source admitted as a shift amount. -/
-def FlatModel.admitsValueAsDateTimeShiftAmount
-    (model : FlatModel) (source : FlatNumberField) : Bool :=
-  match model.lookupUniqueId source.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        declaration.toNumberField? == some source
 
 /-- Static refusal before a partial-Date constructor can own one checked `TimeFromDateTime` read. -/
 inductive ValueAsDateTimeExtractionElabError where
@@ -76,7 +65,7 @@ def ofShiftedInstant? (profile : ModelZone.ConcreteProfile)
     (unit : DateTimeSubdayUnit) (amount : Rat) (instant : Instant) :
     Option ValueAsDateTimeTimeOperand :=
   (profile.localDateTime?
-    (instant.shift unit (ValueAsDateShiftUnit.amountToInt32 amount))).map
+    (instant.shift unit (temporalShiftAmountToInt32 amount))).map
       (fun shifted => .value shifted.time false)
 
 /-- Shift one exact instant through a checked numeric operand. Directional fillability is the runtime helper's own not-given test, so an empty Number field retains a concrete zero-shift value with omission provenance. -/
@@ -86,87 +75,45 @@ def ofShiftedNumericOperand? (profile : ModelZone.ConcreteProfile)
   | .unknown cause => some (.unavailable cause)
   | .value amount fillability =>
       (profile.localDateTime?
-        (instant.shift unit (ValueAsDateShiftUnit.amountToInt32 amount))).map
+        (instant.shift unit (temporalShiftAmountToInt32 amount))).map
           (fun shifted =>
             .value shifted.time
               (fillability.canGrow || fillability.canShrink))
 
 end ValueAsDateTimeTimeOperand
 
-/-- Whether every atom in one checked numeric operation is an ordinary Number field. This bounds temporal shifting to the phase-sensitive source class audited here while retaining the shared numeric tree and evaluator. -/
-def NumericValidationExpression.usesOnlyDirectNumberFields
-    (expression : NumericValidationExpression) : Bool :=
-  AuthoredNumericExpr.allAtoms (fun
-    | .field _ => true
-    | _ => false) expression
-
-/-- One statically checked sub-day shift amount. Expressions reuse the shared checked numeric carrier and retain a certificate that every atom has the phase-sensitive direct-Number interpretation audited for this consumer. -/
-inductive CheckedValueAsDateTimeShiftAmount (model : FlatModel) where
-  | literal (amount : Rat)
-  | field (source : FlatNumberField)
-      (sourceAdmitted :
-        model.admitsValueAsDateTimeShiftAmount source = true)
-  | expression (checked : CheckedNumericValidationExpression model)
-      (usesOnlyDirectNumberFields :
-        NumericValidationExpression.usesOnlyDirectNumberFields
-          checked.core = true)
-
-namespace CheckedValueAsDateTimeShiftAmount
-
-/-- Evaluate a checked amount after the DateTime source has been reached. Structural document failure remains outside numeric missingness and formal causes. -/
-def read (amount : CheckedValueAsDateTimeShiftAmount model)
-    (phase : Phase) (input : CheckedDocument model) :
-    Except ValueAsDateTimeExtractionFault
-      (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
-  match amount with
-  | .literal value => pure (.ok (.value value .fixed))
-  | .field source _ => do
-      let cell ← input.read {
-        field := source.id
-        path := []
-      } |>.mapError .document
-      pure ((observeCell phase cell).asDirectNumericComparisonOperand source.info
-        |>.toValidationArithmetic)
-  | .expression checked _ =>
-      pure (checked.evalWith fun
-        | .field source =>
-            (input.flatContext.resolveNumberComparisonOperandAt phase source)
-              |>.toValidationArithmetic
-        | _ => .error .groupState)
-
 /-- Project the shared numeric outcome into DateTime shifting without collapsing arithmetic domain failure to numeric zero. -/
-def readShiftedTime (amount : CheckedValueAsDateTimeShiftAmount model)
+def CheckedTemporalShiftAmount.readShiftedTime
+    (amount : CheckedTemporalShiftAmount model)
     (phase : Phase) (input : CheckedDocument model)
     (profile : ModelZone.ConcreteProfile)
     (unit : DateTimeSubdayUnit) (instant : Instant) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
-  match ← amount.read phase input with
+  match ← amount.read phase input |>.mapError .document with
   | .error (.formal cause) => pure (.unavailable cause)
   | .error unavailable =>
       throw (.amountExpressionUnavailable unavailable)
   | .ok .notEvaluated => pure (.noValue false)
   | .ok (.value value fillability) =>
       let shifted := instant.shift unit
-        (ValueAsDateShiftUnit.amountToInt32 value)
+        (temporalShiftAmountToInt32 value)
       match ValueAsDateTimeTimeOperand.ofShiftedNumericOperand?
           profile unit instant (.value value fillability) with
       | some time => pure time
       | none => throw (.shiftedInstantOutsideProfile shifted)
 
-end CheckedValueAsDateTimeShiftAmount
-
 /-- Resolve one ordinary nonrepeatable Number shift amount against the validated model. Both field- and `Now`-sourced shifts reuse this exact admission boundary. -/
 def elaborateValueAsDateTimeFieldShiftAmount
     (model : FlatModel) (amountField : FieldId) :
     Except ValueAsDateTimeExtractionElabError
-      (CheckedValueAsDateTimeShiftAmount model) := do
+      (CheckedTemporalShiftAmount model) := do
   let declaration ←
     model.resolveNonrepeatableDeclarationById amountField |>.mapError .amount
   let source ← match declaration.toNumberField? with
     | some source => pure source
     | none => throw (.amountNotNumber amountField)
   if hAdmitted :
-      model.admitsValueAsDateTimeShiftAmount source = true then
+      model.admitsTemporalShiftAmountSource source = true then
     pure (.field source hAdmitted)
   else
     throw .incoherentCore
@@ -176,7 +123,7 @@ def elaborateValueAsDateTimeExpressionShiftAmount
     (model : FlatModel) (rowGroup : GroupPath)
     (surface : AuthoredNumericExpr SurfaceNumericAtom) :
     Except ValueAsDateTimeExtractionElabError
-      (CheckedValueAsDateTimeShiftAmount model) := do
+      (CheckedTemporalShiftAmount model) := do
   let checked ← elaborateNumericValidationExpression model rowGroup surface
     |>.mapError .amountExpression
   if hDirect :
@@ -195,7 +142,7 @@ structure CheckedShiftedDateTimeSource (model : FlatModel) where
   profileMatches :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
   unit : DateTimeSubdayUnit
-  amount : CheckedValueAsDateTimeShiftAmount model
+  amount : CheckedTemporalShiftAmount model
 
 namespace CheckedShiftedDateTimeSource
 
@@ -209,7 +156,7 @@ def readTime (checked : CheckedShiftedDateTimeSource model)
   } |>.mapError .document
   match observeCell phase cell with
   | .empty =>
-      match ← checked.amount.read phase input with
+      match ← checked.amount.read phase input |>.mapError .document with
       | .error (.formal cause) => pure (.unavailable cause)
       | .error unavailable =>
           throw (.amountExpressionUnavailable unavailable)
@@ -226,7 +173,7 @@ end CheckedShiftedDateTimeSource
 def elaborateShiftedDateTimeSource
     (model : FlatModel) (sourceField : FieldId)
     (unit : DateTimeSubdayUnit)
-    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    (amount : CheckedTemporalShiftAmount model) :
     Except ValueAsDateTimeExtractionElabError
       (CheckedShiftedDateTimeSource model) := do
   let declaration ←
@@ -285,7 +232,7 @@ end CheckedValueAsDateTimeExtraction
 structure CheckedValueAsDateTimeShiftExtraction (model : FlatModel)
     extends CheckedValueAsDateTimeExtraction model where
   unit : DateTimeSubdayUnit
-  amount : CheckedValueAsDateTimeShiftAmount model
+  amount : CheckedTemporalShiftAmount model
 
 namespace CheckedValueAsDateTimeShiftExtraction
 
@@ -323,7 +270,7 @@ structure CheckedShiftedNowDateTimeSource (model : FlatModel) where
   profileMatches :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
   unit : DateTimeSubdayUnit
-  amount : CheckedValueAsDateTimeShiftAmount model
+  amount : CheckedTemporalShiftAmount model
 
 namespace CheckedShiftedNowDateTimeSource
 
@@ -339,7 +286,7 @@ end CheckedShiftedNowDateTimeSource
 /-- Check a dynamic shifted-DateTime source without sampling its execution world. -/
 def elaborateShiftedNowDateTimeSource
     (model : FlatModel) (unit : DateTimeSubdayUnit)
-    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    (amount : CheckedTemporalShiftAmount model) :
     Except ValueAsDateTimeExtractionElabError
       (CheckedShiftedNowDateTimeSource model) :=
   match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
@@ -356,7 +303,7 @@ def elaborateShiftedNowDateTimeSource
 structure CheckedValueAsDateTimeNowShiftExtraction (model : FlatModel) where
   construction : CheckedValueAsDateTime model
   unit : DateTimeSubdayUnit
-  amount : CheckedValueAsDateTimeShiftAmount model
+  amount : CheckedTemporalShiftAmount model
 
 namespace CheckedValueAsDateTimeNowShiftExtraction
 

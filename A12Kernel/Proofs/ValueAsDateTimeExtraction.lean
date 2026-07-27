@@ -71,7 +71,7 @@ theorem shiftedNumericOperand_fixed
 
 /-- Arithmetic domain failure remains a present-but-valueless Time operand; it is never reinterpreted as a zero shift. -/
 theorem valueAsDateTimeShiftAmount_notEvaluated
-    (amount : CheckedValueAsDateTimeShiftAmount model)
+    (amount : CheckedTemporalShiftAmount model)
     (phase : Phase) (input : CheckedDocument model)
     (profile : ModelZone.ConcreteProfile)
     (unit : DateTimeSubdayUnit) (instant : Instant)
@@ -79,7 +79,7 @@ theorem valueAsDateTimeShiftAmount_notEvaluated
       amount.read phase input = .ok (.ok .notEvaluated)) :
     amount.readShiftedTime phase input profile unit instant =
       .ok (.noValue false) := by
-  rw [CheckedValueAsDateTimeShiftAmount.readShiftedTime, read]
+  rw [CheckedTemporalShiftAmount.readShiftedTime, read]
   rfl
 
 /-- Missing provenance on a concrete constructed DateTime is observable as omission polarity without changing its exact instant. -/

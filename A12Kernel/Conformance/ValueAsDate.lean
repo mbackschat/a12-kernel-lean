@@ -353,10 +353,10 @@ example :
 
 /- Numeric amounts use Java's truncate-toward-zero and low signed-32-bit conversion rather than rounding, saturation, or rejection. -/
 example :
-    ValueAsDateShiftUnit.amountToInt32 (19 / 10) = 1 ∧
-      ValueAsDateShiftUnit.amountToInt32 (-19 / 10) = -1 ∧
-      ValueAsDateShiftUnit.amountToInt32 2147483648 = -2147483648 ∧
-      ValueAsDateShiftUnit.amountToInt32 (-2147483649) = 2147483647 := by
+    temporalShiftAmountToInt32 (19 / 10) = 1 ∧
+      temporalShiftAmountToInt32 (-19 / 10) = -1 ∧
+      temporalShiftAmountToInt32 2147483648 = -2147483648 ∧
+      temporalShiftAmountToInt32 (-2147483649) = 2147483647 := by
   native_decide
 
 /- The year operation preserves a selected non-leap February end into a leap year. -/

@@ -233,7 +233,7 @@ def elaborateShiftedTimeExtractor
     (model : FlatModel)
     (position : TimeComponentPosition) (part : TimeNumericPart)
     (sourceField : FieldId) (unit : DateTimeSubdayUnit)
-    (amount : CheckedValueAsDateTimeShiftAmount model) :
+    (amount : CheckedTemporalShiftAmount model) :
     Except TimeComponentsElabError (CheckedTimeComponent model) := do
   if hPosition : position.extractor = part then
     let source ←
