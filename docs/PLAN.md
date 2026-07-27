@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 603 jobs · trust audit **1593 theorem roots; 35671 declarations in 341 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 606 jobs · trust audit **1597 theorem roots; 35731 declarations in 343 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Resolve the default-cutover constructed-Date day coordinate before widening checked authoring. Determine whether `AddDays` and `DifferenceInDays` can share one bounded legacy-hybrid ordinal over `DateParts` while retaining the existing construction reasons and without claiming other zone-local discontinuities.
+Test the first checked constructed-Date consumer boundary against the completed default-cutover arithmetic core. Determine whether the existing flat declaration/context facts can certify and evaluate one three-field `Date(day, month, year)` source plus a literal day/month/year operation without adding a general temporal-expression tree or sampling model-zone state during checking.
 
 ## Immediate sequence
 
-1. Audit `Calendar.DAY_OF_MONTH` addition and `getDifferenzInTagen`, including the year-based seed, repeated day stepping, sign restoration, and the generated source/amount order. Reuse the accepted constructed-Date packet unless a new composition fact appears.
-2. Run `1582-10-04 + 1 day = 1582-10-15` and `DifferenceInDays(1582-10-04, 1582-10-15) = 1` first, then retain the Julian `1500-02-29 → 1500-03-01` control and a reverse-sign case.
-3. Add a bounded hybrid day coordinate only if it can reuse `DateParts` and the existing reason/numeric result owners. Stop if exact model-zone instant state is needed even inside UTC/GMT/Berlin or before introducing a general timezone/calendar framework. Leave checked authoring, target rendering, repeatable addressing, message text, and date-like distinct count outside.
+1. Inventory the current flat Number declaration, checked document read, construction component-admission metadata, and model-zone profile owners. Pin whether exact formal causes and directional empty provenance survive component conversion into the cause-free `DateConstructionResult`.
+2. Run the consumer query first: three checked nonrepeatable Number fields form `1582-10-04`, one checked literal `AddDays` reaches `1582-10-15`, and an unavailable or empty component preserves the existing reason before arithmetic.
+3. Implement only if one narrow checked carrier can reuse the current numeric read and default-cutover profile without a second document view, duplicate numeric AST, or general temporal expression. Stop if `FlatModel` lacks a required component declaration fact, if exact formal cause cannot be retained honestly, or if model-zone resolution needs a new unapproved calendar framework. Leave targets, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

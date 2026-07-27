@@ -132,6 +132,10 @@ run_cmd do
 #print axioms A12Kernel.constructedDateDifference_unavailable_left
 #print axioms A12Kernel.constructedDateDifference_nonvalue_provenance
 #print axioms A12Kernel.constructedDateDifference_legacyCutover
+#print axioms A12Kernel.legacyHybrid_differenceInDays_of_epochDay
+#print axioms A12Kernel.constructedDate_addLegacyDays_preserves_nonvalues
+#print axioms A12Kernel.constructedDateDifferenceDays_nonvalue_provenance
+#print axioms A12Kernel.constructedDateDay_legacyCutover
 #print axioms A12Kernel.dateConstruction_valid_fired_iff
 #print axioms A12Kernel.dateConstruction_invalid_omission_iff
 #print axioms A12Kernel.dateConstruction_invalid_value_iff

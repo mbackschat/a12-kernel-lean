@@ -20,7 +20,9 @@ theorem constructedDateDifference_nonvalue_provenance
         (if right = .unknown then some .unavailable else
           if right = .incomplete then some (.value 0 true)
           else some (.value 0 false)) := by
-  cases right <;> simp [DateConstructionResult.differenceLegacy?]
+  cases right <;>
+    simp [DateConstructionResult.differenceLegacy?,
+      DateConstructionResult.differenceWith?]
 
 /-- The canonical cutover labels separate incomplete from complete legacy months and years. -/
 theorem constructedDateDifference_legacyCutover :

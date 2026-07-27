@@ -58,17 +58,24 @@ end DateDifferenceUnit
 
 namespace DateConstructionResult
 
-/-- Evaluate a constructed-Date month/year difference without collapsing unavailable, incomplete, and unreal operands. `none` is reserved for a caller-supplied real label outside the bounded legacy profile. -/
-def differenceLegacy? (first : DateConstructionResult)
-    (unit : DateDifferenceUnit) (second : DateConstructionResult) :
+/-- Apply one concrete difference to two constructed results without collapsing unavailable, incomplete, and unreal operands. -/
+def differenceWith?
+    (between : DateParts → DateParts → Option Int)
+    (first second : DateConstructionResult) :
     Option ConstructedDateNumericResult :=
   match first, second with
   | .unknown, _ | _, .unknown => some .unavailable
   | .incomplete, _ | _, .incomplete => some (.value 0 true)
   | .unreal, _ | _, .unreal => some (.value 0 false)
   | .real firstParts, .real secondParts =>
-      (unit.betweenLegacy? firstParts secondParts).map
+      (between firstParts secondParts).map
         (fun amount => .value amount false)
+
+/-- Evaluate a constructed-Date month/year difference in the bounded legacy profile. `none` is reserved for a caller-supplied real label outside that profile. -/
+def differenceLegacy? (first : DateConstructionResult)
+    (unit : DateDifferenceUnit) (second : DateConstructionResult) :
+    Option ConstructedDateNumericResult :=
+  differenceWith? unit.betweenLegacy? first second
 
 end DateConstructionResult
 
