@@ -211,6 +211,12 @@ run_cmd do
 #print axioms A12Kernel.noAppliedDateTimeValue_clears_exactly
 #print axioms A12Kernel.exactDateTimeApplication_storedValue
 #print axioms A12Kernel.equal_dateTime_delta_does_not_imply_equal_exact_application
+#print axioms A12Kernel.dateTimeComputationRun_shouldClear_iff
+#print axioms A12Kernel.dateTimeComputationRun_withChanges_subset
+#print axioms A12Kernel.dateTimeComputationRun_cleared_iff
+#print axioms A12Kernel.dateTimeComputationRun_formalErrors_exact
+#print axioms A12Kernel.dateTimeComputationRun_noErrorOccurred_iff
+#print axioms A12Kernel.dateTimeComputationRun_fromOutcomes_permutation
 #print axioms A12Kernel.fullDateTargetApplies_iff_applyTo
 #print axioms A12Kernel.fullDateTargetApplies_deterministic
 #print axioms A12Kernel.acceptedFullDate_unchanged_noDelta

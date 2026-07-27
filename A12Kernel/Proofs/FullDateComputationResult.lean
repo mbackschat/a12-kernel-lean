@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FullDateComputationResult
+import A12Kernel.Elaboration.TemporalComputationResult
 
 /-! # Full-Date computation result-view laws -/
 
@@ -46,9 +46,10 @@ theorem fullDateComputationRun_formalErrors_exact
 /-- The error predicate observes exactly its two error channels. -/
 theorem fullDateComputationRun_noErrorOccurred_iff
     (view : FullDateComputationRunView ResidualMessage) :
-    view.noErrorOccurred = true ↔
+  view.noErrorOccurred = true ↔
       view.withErrors = [] ∧ view.formalErrorsInOperands = [] := by
-  simp [FullDateComputationRunView.noErrorOccurred]
+  simp [FullDateComputationRunView.noErrorOccurred,
+    TemporalComputationRunView.noErrorOccurred]
 
 /-- Reordering rich outcomes or residual messages preserves the extensional result. -/
 theorem fullDateComputationRun_fromOutcomes_permutation

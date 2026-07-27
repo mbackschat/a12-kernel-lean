@@ -26,6 +26,7 @@ import A12Kernel.Proofs.TemporalTargetPolicy
 import A12Kernel.Proofs.FullDateApplication
 import A12Kernel.Proofs.DateTimeApplication
 import A12Kernel.Proofs.FullDateComputationResult
+import A12Kernel.Proofs.DateTimeComputationResult
 import A12Kernel.Proofs.FullDateComputationApplication
 import A12Kernel.Proofs.FullDateComputation
 import A12Kernel.Proofs.DateTimeComputation

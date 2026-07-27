@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 574 jobs · trust audit **1529 theorem roots; 33184 declarations in 320 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 576 jobs · trust audit **1535 theorem roots; 33231 declarations in 321 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,12 +21,12 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Complete the DateTime V2 result projection and whole-result application for the bounded `Now` operation. Preserve stored-text identity at the target's declared whole-second precision; do not compare or reconstruct the discarded exact millisecond remainder.
+Complete DateTime whole-result application for the bounded `Now` operation over the classified V2 projection. Preserve stored-text identity at the target's declared whole-second precision; do not compare or reconstruct the discarded exact millisecond remainder.
 
 ## Immediate sequence
 
-1. Derive `withoutErrors`, `withChanges`, empty `withErrors`, source-filled `cleared`, and opaque `formalErrorsInOperands` from supplied DateTime outcomes and immutable source placement. The public error predicate observes only the empty computed-error collection plus residual messages.
-2. Fold only clear and change actions over a caller-supplied DateTime target-state destination, reject duplicate action targets before lookup, and retain unchanged successes and residual messages as non-actions. The discarded millisecond remainder must not re-enter equality or application.
+1. Fold only clear and change actions over a caller-supplied DateTime target-state destination. There is no target-error fold in the admitted result domain.
+2. Reject duplicate action targets before destination lookup, and retain unchanged successes and residual messages as non-actions. The discarded millisecond remainder must not re-enter equality or application.
 3. After that capsule, return to the highest-risk remaining SG6 discriminator: partial-Date target rendering/basic-check precedence. Stop before DateTime arithmetic expressions, alternatives/tables/scheduling, message rendering, destination compatibility certification, or wider format syntax.
 
 ## Parked boundaries

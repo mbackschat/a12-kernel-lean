@@ -29,6 +29,7 @@ import A12Kernel.Conformance.TemporalTargetPolicy
 import A12Kernel.Conformance.FullDateApplication
 import A12Kernel.Conformance.DateTimeApplication
 import A12Kernel.Conformance.FullDateComputationResult
+import A12Kernel.Conformance.DateTimeComputationResult
 import A12Kernel.Conformance.FullDateComputation
 import A12Kernel.Conformance.DateTimeComputation
 import A12Kernel.Conformance.CorrelationElaboration

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FullDateComputationResult
+import A12Kernel.Elaboration.TemporalComputationResult
 
 /-! # Full-Date whole-result application
 
