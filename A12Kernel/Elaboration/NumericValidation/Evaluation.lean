@@ -373,6 +373,14 @@ def LoweredNumericExpr.evalAdmittedValidation?
       Option (Except Error NumericArithmeticOutcome) :=
   expression.evalNumericOperation? read
 
+/-- Evaluate a checked standalone operation through the shared one-pass lowering and arithmetic engine. The caller selects the already-checked atom observation policy. -/
+def CheckedNumericValidationExpression.evalWith
+    (checked : CheckedNumericValidationExpression model)
+    (read : NumericValidationAtom →
+      Except NumericValidationUnavailable NumericArithmeticOutcome) :
+    Except NumericValidationUnavailable NumericArithmeticOutcome :=
+  checked.core.lowerForEvaluation.evalNumericOperationTree read
+
 /-- Evaluate a raw core through one supplied numeric-source resolver. The unknown fallback fails closed for a forged unsupported operand and is unreachable through every checked specialization. -/
 def NumericComparisonOf.evalWith
     (comparison : NumericComparisonOf Atom)

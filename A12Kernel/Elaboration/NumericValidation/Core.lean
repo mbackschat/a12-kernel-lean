@@ -70,6 +70,10 @@ structure NumericComparisonOf (Atom : Type) where
 /-- Ordinary resolved numeric comparisons retain their established atom type and API. -/
 abbrev NumericComparison := NumericComparisonOf NumericValidationAtom
 
+/-- One resolved numeric operation before a comparison or another checked consumer projects its arithmetic outcome. -/
+abbrev NumericValidationExpression :=
+  AuthoredNumericExpr NumericValidationAtom
+
 /-- A numeric leaf either delegates one established scalar atom unchanged or retains a model-certified first-filled, aggregate, or row-product source for full addressed validation. -/
 inductive OrderedNumericValidationAtom (model : FlatModel) where
   | ordinary (source : NumericValidationAtom)
@@ -374,6 +378,26 @@ def NumericComparison.WellFormed
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath) : Prop :=
   comparison.wellFormedBool model rowGroup = true
+
+/-- Check one standalone numeric operation without importing comparison-only data-dependency or cross-side scale rules. -/
+def NumericValidationExpression.wellFormedInBool
+    (expression : NumericValidationExpression)
+    (model : FlatModel) (rowGroup : GroupPath)
+    (scope : NumericOperandScope) : Bool :=
+  expression.isAdmittedResolvedNumericOperation &&
+    expression.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&
+    expression.numericOperationAuthoringCheck == .accepted &&
+    (expression.summary? numericValidationSummary).isSome
+
+/-- A model-coherent standalone numeric operation whose existing arithmetic outcome can be consumed without fabricating a comparison. -/
+structure CheckedNumericValidationExpression (model : FlatModel) where
+  rowGroup : GroupPath
+  operandScope : NumericOperandScope := .sameGroup
+  core : NumericValidationExpression
+  modelWellFormed : model.validate.isOk = true
+  wellFormed :
+    NumericValidationExpression.wellFormedInBool
+      core model rowGroup operandScope = true
 
 /-- A model-coherent numeric comparison produced only after every static stage succeeds. -/
 structure CheckedNumericComparison (model : FlatModel) where

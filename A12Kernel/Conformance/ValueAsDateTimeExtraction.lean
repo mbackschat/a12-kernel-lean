@@ -32,6 +32,21 @@ private def shiftAmount : FlatFieldDecl := {
   name := "ShiftAmount"
   policy := { kind := .number { scale := 2, signed := true } } }
 
+private def shiftAmountPath : SurfaceFieldPath := {
+  base := .absolute
+  groups := ["Order"]
+  field := "ShiftAmount" }
+
+private def shiftedByFieldPlusOne : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .add
+    (.atom (.field shiftAmountPath))
+    (.literal { value := 1, authoredScale := 0 })
+
+private def shiftedByFieldOverZero : AuthoredNumericExpr SurfaceNumericAtom :=
+  .binary .divide
+    (.atom (.field shiftAmountPath))
+    (.literal { value := 0, authoredScale := 0 })
+
 private def modelWith
     (source : FlatFieldDecl := dateTimeSource)
     (timeZoneId : String := "Europe/Berlin") : FlatModel := {
@@ -390,6 +405,65 @@ example :
         stored := "bad-amount"
         raw := .rejected .declaredConstraint
       }] = some (some (.unavailable .declaredConstraint)) := by
+  native_decide
+
+/- A checked numeric expression reuses the numeric evaluator for its connective, fillability, formal cause, and domain-invalid no-value. Empty Number plus one remains a concrete omission-typed shift; division by zero does not become a zero shift. -/
+example :
+    let model := modelWithShiftAmount
+    let sourceLocal := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 30 0).get (by native_decide)
+    let sourceInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        sourceLocal).get (by native_decide)
+    let shiftedOne := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 31 0).get (by native_decide)
+    let shiftedOneInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        shiftedOne).get (by native_decide)
+    let shiftedTwo := (LocalDateTime.ofYmdHms?
+      2024 6 15 10 32 0).get (by native_decide)
+    let shiftedTwoInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        shiftedTwo).get (by native_decide)
+    let evaluate
+        (expression : AuthoredNumericExpr SurfaceNumericAtom)
+        (amount : Option (RawCell Value)) := do
+      let checked ←
+        (elaborateValueAsDateTimeExpressionShiftExtraction
+          model ["Order"] 0 .firstDay 1 .minutes expression).toOption
+      let amountCell := amount.toList.map fun raw => {
+        address := { field := 2, path := [] }
+        stored := "amount"
+        raw
+      }
+      let input ← document? model ({
+        address := { field := 1, path := [] }
+        stored := "2024-06-15T10:30:00"
+        raw := dateTimeRaw sourceInstant sourceLocal.date.civil.parts sourceLocal.time
+      } :: amountCell)
+      pure (checked.evaluateRaw .computation input
+        (.parsed "15.06.2024") |>.toOption)
+    evaluate shiftedByFieldPlusOne (some (.parsed (.num (3 / 2)))) =
+        some (some (.value shiftedTwo shiftedTwoInstant false)) ∧
+      evaluate shiftedByFieldPlusOne none =
+        some (some (.value shiftedOne shiftedOneInstant true)) ∧
+      evaluate shiftedByFieldPlusOne
+          (some (.rejected .declaredConstraint)) =
+        some (some (.unavailable .declaredConstraint)) ∧
+    evaluate shiftedByFieldOverZero (some (.parsed (.num 3))) =
+        some (some (.noValue false)) := by
+  native_decide
+
+/- The `Now` source accepts the same checked expression, while a statically valid non-field numeric atom stays outside this bounded shift capsule. -/
+example :
+    (elaborateValueAsDateTimeNowExpressionShiftExtraction
+      modelWithShiftAmount ["Order"] 0 .firstDay .minutes
+        shiftedByFieldPlusOne).isOk = true ∧
+      extractionError?
+        (elaborateValueAsDateTimeExpressionShiftExtraction
+          { modelWithShiftAmount with baseYear := some 2020 }
+          ["Order"] 0 .firstDay 1 .minutes (.atom .baseYear)) =
+        some .amountExpressionNotDirectNumber := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDateTimeExtraction

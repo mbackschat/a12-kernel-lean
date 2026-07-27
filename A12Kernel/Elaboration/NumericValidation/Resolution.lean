@@ -306,6 +306,47 @@ private def resolveAddressedNumericAtom (model : FlatModel)
         throw .incompatibleDateDifference
   | source => resolveNumericAtom model rowGroup source
 
+/-- Resolve one ordinary same-group numeric atom through the established validation source boundary. -/
+def resolveNumericValidationAtom
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : SurfaceNumericAtom) :
+    Except NumericValidationElabError NumericValidationAtom :=
+  resolveNumericAtom model rowGroup surface
+
+/-- Resolve and certify one standalone same-group numeric operation. Comparison-only data-dependency and cross-side scale rules do not apply to an operation-valued consumer. -/
+def elaborateNumericValidationExpression
+    (model : FlatModel) (rowGroup : GroupPath)
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    Except NumericValidationElabError
+      (CheckedNumericValidationExpression model) := do
+  match hModel : model.validate with
+  | .error error => throw (.resolve error)
+  | .ok () =>
+      if !GroupPath.isValid rowGroup then
+        throw (.resolve (.invalidRuleGroup rowGroup))
+      let core ← surface.mapM
+        (resolveNumericValidationAtom model rowGroup)
+      if !core.isAdmittedResolvedNumericOperation then
+        throw .unsupportedExpression
+      match core.numericOperationAuthoringCheck with
+      | .accepted => pure ()
+      | result => throw (.authoring result)
+      if (core.summary? numericValidationSummary).isNone then
+        throw .unsupportedExpression
+      if hCore :
+          NumericValidationExpression.wellFormedInBool
+            core model rowGroup .sameGroup = true then
+        pure {
+          rowGroup
+          core
+          modelWellFormed := by
+            rw [hModel]
+            rfl
+          wellFormed := hCore
+        }
+      else
+        throw .incoherentCore
+
 private def elaborateNumericComparisonWith
     (model : FlatModel) (rowGroup : GroupPath)
     (scope : NumericOperandScope)
