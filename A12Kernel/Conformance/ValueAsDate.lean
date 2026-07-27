@@ -12,6 +12,9 @@ private def date? (year : Int) (month day : Nat) : Option FullDate :=
 private def civil? (year : Int) (month day : Nat) : Option CivilDate :=
   CivilDate.ofYmd? year month day
 
+private def time? (hour minute second : Nat) : Option TimeOfDay :=
+  TimeOfDay.ofHms? hour minute second
+
 private def dateDifferenceOperand?
     (year : Int) (month day : Nat) : Option DateDifferenceOperand :=
   (date? year month day).map
@@ -362,6 +365,50 @@ example :
         .equal 0 = .unknown ∧
       (ValueAsDateDifferenceResult.operand (.value 1 .fixed)).evalFixedRight
         .greater 0 = .fired .value := by
+  native_decide
+
+/- The selected partial-Date endpoint and a direct Time observation resolve through the checked model zone. -/
+example :
+    let clock := (time? 1 30 0).get (by native_decide)
+    let checked := (elaborateValueAsDateTime
+      (modelWith) 0 .lastDay).toOption.get (by native_decide)
+    let expectedLocal := (LocalDateTime.ofYmdHms?
+      2024 2 29 1 30 0).get (by native_decide)
+    let expectedInstant := (checked.profile.resolveLocal?
+      expectedLocal).get (by native_decide)
+    let result := checked.evaluateRaw Phase.validation
+      (.parsed "00.02.2024") (.value clock)
+    result = .value expectedLocal expectedInstant ∧
+      result.evalFixedRight .equal expectedInstant = .fired .value := by
+  native_decide
+
+/- Date is read before Time, but a reached Time failure still precedes helper-level non-relevance. -/
+example :
+    let checked := (elaborateValueAsDateTime
+      (modelWith (dayOptionalSource .yearOptional))
+      0 .firstDay).toOption.get (by native_decide)
+    checked.evaluateRaw Phase.computation
+        (.rejected .malformed) (.poison .computedDependency) =
+        .unavailable .malformed ∧
+      checked.evaluateRaw Phase.validation
+        (.parsed "00.00.0000") (.unknown .computedDependency) =
+        .unavailable .computedDependency ∧
+      checked.evaluateRaw Phase.validation
+        (.parsed "00.00.0000") .empty =
+        .nonRelevant := by
+  native_decide
+
+/- Missing input and a present-but-unresolvable Berlin wall label remain different no-value reasons. -/
+example :
+    let gapClock := (time? 2 30 0).get (by native_decide)
+    let checked := (elaborateValueAsDateTime
+      (modelWith) 0 .firstDay).toOption.get (by native_decide)
+    checked.evaluateRaw Phase.validation
+        .empty (.value gapClock) = .noValue true ∧
+      checked.evaluateRaw Phase.validation
+        (.parsed "31.03.2024") (.value gapClock) = .noValue false ∧
+      ValueAsDateTimeResult.nonRelevant.evalFixedRight
+        .equal { epochMillis := 0 } = .unknown := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

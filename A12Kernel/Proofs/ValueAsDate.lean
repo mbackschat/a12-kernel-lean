@@ -140,4 +140,37 @@ theorem valueAsDateDifference_evaluate_right_unavailable
   rw [CheckedValueAsDateDifference.evaluate.eq_def, placement]
   rfl
 
+/-- Date-side formal unavailability stops construction before the direct Time observation can contribute another cause. -/
+theorem valueAsDateTime_evaluate_date_unavailable
+    (checked : CheckedValueAsDateTime model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (time : CellObservation TimeOfDay)
+    (cause : FormalCause)
+    (observed :
+      checked.toCheckedValueAsDateSource.observe phase cell =
+        .unavailable cause) :
+    checked.evaluate phase cell time = .unavailable cause := by
+  rw [CheckedValueAsDateTime.evaluate.eq_def, observed]
+
+/-- A cause-free unknown year dominates an ordinary empty Time only after the Time read has completed without a formal cause. -/
+theorem valueAsDateTime_evaluate_nonRelevant_empty
+    (checked : CheckedValueAsDateTime model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (observed :
+      checked.toCheckedValueAsDateSource.observe phase cell =
+        .nonRelevant) :
+    checked.evaluate phase cell .empty = .nonRelevant := by
+  rw [CheckedValueAsDateTime.evaluate.eq_def, observed]
+
+/-- Construction non-relevance reaches UNKNOWN only at the exact-instant validation consumer. -/
+@[simp] theorem valueAsDateTime_evalFixedRight_nonRelevant
+    (op : TemporalComparisonOp) (expected : Instant) :
+    ValueAsDateTimeResult.nonRelevant.evalFixedRight op expected =
+      .unknown := by
+  rfl
+
 end A12Kernel

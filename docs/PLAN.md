@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1557 theorem roots; 33932 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1560 theorem roots; 34055 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit the explicit `DateTime(ValueAsDate(...), time)` placement and determine whether the checked partial-Date source can compose with the existing local-DateTime/model-zone owner without losing cause-free non-relevance or operand read order. Prefer a bounded composite over the two existing owners; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
+Audit and close one-sided `DifferenceInDays(ValueAsDate(...), date)` by composing the checked partial-Date endpoint and concrete model-zone profile with the existing resolved calendar-day difference core. Preserve authored operand order, exact endpoint instant, empty/formal precedence, and cause-free non-relevance; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
 
 ## Immediate sequence
 
-1. Audit `CheckDateTimeKonstruktImpl`, every generated `DateTime(...)` template, and the runtime construction controller around the special Date operand. Fix the exact Date-before-Time observation order, empty/non-relevant/formal precedence, model-zone resolution, and whether the time operand is already represented by a checked owner. Reuse the grammar correction under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions).
-2. If the existing representations fit, add the smallest checked composite over `CheckedValueAsDateSource`, one already checked Time observation, and the concrete model-zone profile. Keep a cause-free non-relevant result explicit; add no general Date-expression carrier, scheduling state, or new temporal payload.
-3. Retain separators for first/last completion, Date-before-Time formal precedence, unknown-year non-relevance, empty placement, a model-zone offset case, and the nearest unsupported account. Stop if construction uses a legacy-hybrid identity or time-shape rule the current owners cannot represent. Leave `DifferenceInDays`, repeatable addressing, target wiring, scheduling, wider formats/zones, and date-like distinct count outside.
+1. Recheck `CheckDatumDiffOpImpl`, generated `DateDiffOperation.st`, and the runtime day-difference helper for the special operand. Determine whether the endpoint is resolved at model-zone midnight, whether generated left/right evaluation matches the existing placement account, and whether the existing `CalendarDayDifferenceOperand` can retain the exact local label plus instant without calendar reconstruction.
+2. If the existing representations fit, add the smallest checked composite over `CheckedValueAsDateSource`, `ModelZone.ConcreteProfile`, and one already checked ordinary day-difference operand. Keep cause-free non-relevance explicit and delegate the concrete case to `CalendarDayDifferenceOperand.evaluate`; add no scheduler, general Date operand, or trace.
+3. Retain separators for endpoint selection, authored sign and first formal cause, unknown-year non-relevance, symmetric empty zero, and one Berlin transition-sensitive case. Stop if the special endpoint follows a legacy-hybrid or non-midnight identity the current profile cannot express. Leave repeatable addressing, target wiring, scheduling, wider formats/zones and Date/Time operand expressions, and date-like distinct count outside.
 
 ## Parked boundaries
 
