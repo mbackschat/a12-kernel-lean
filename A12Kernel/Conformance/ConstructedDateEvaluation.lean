@@ -44,6 +44,21 @@ private def temporalField (id : FieldId) (kind : TemporalKind)
   policy := { kind := .temporal kind components }
 }
 
+private def formattedTemporalField (id : FieldId) (kind : TemporalKind)
+    (components : TemporalComponents) (format : String) : FlatFieldDecl := {
+  temporalField id kind components with
+  temporalTargetPolicy := some { format }
+}
+
+private def yearOnlyComponents : TemporalComponents := {
+  year := true
+  month := false
+  day := false
+  hour := false
+  minute := false
+  second := false
+}
+
 private def stringComponentField (id : FieldId) (maximum : Nat)
     (pattern : String := "[0-9]+") : FlatFieldDecl := {
   id
@@ -61,7 +76,8 @@ private def extractorDateModel : FlatModel :=
       temporalField 10 .dateTime TemporalComponents.now,
       temporalField 11 .date TemporalComponents.fullDate,
       stringComponentField 20 2,
-      stringComponentField 21 4] }
+      stringComponentField 21 4,
+      formattedTemporalField 30 .date yearOnlyComponents "yyyy"] }
 
 private def documentFor? (model : FlatModel) (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) := do
@@ -287,6 +303,27 @@ example :
         stringCell 20 "99" (.parsed (.str "99")),
         stringCell 21 "1963" (.parsed (.str "1963"))] =
           some (.resolved .unreal) := by
+  native_decide
+
+/- The exact-format Date field contributes its stored year text. It composes with other
+   source kinds, stays empty when absent, and preserves its formal cause. -/
+example :
+    let sources : SurfaceConstructedDateComponents := {
+      day := .constant "15"
+      month := .stringField 20
+      year := .complete (.dateYearField 30) }
+    evaluateExtractorSources? sources [
+        stringCell 20 "06" (.parsed (.str "06")),
+        temporalCell 30 "1963"
+          (.parsed (.temporal (dateValue 1963 1 1)))] =
+          some (.resolved (.real { year := 1963, month := 6, day := 15 })) ∧
+      evaluateExtractorSources? sources [
+        stringCell 20 "06" (.parsed (.str "06"))] =
+          some (.resolved .incomplete) ∧
+      evaluateExtractorSources? sources [
+        stringCell 20 "06" (.parsed (.str "06")),
+        stringCell 30 "bad-year" (.rejected .declaredConstraint)] =
+          some (.unavailable .declaredConstraint) := by
   native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=

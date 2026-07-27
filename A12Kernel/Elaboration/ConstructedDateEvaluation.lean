@@ -4,9 +4,9 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, and direct Date/DateTime extractors read the immutable checked document, while fixed components do not; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document, while fixed components do not; the two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
-The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String and complete-Year Date-field alternatives, recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String alternative, recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -16,6 +16,8 @@ inductive ConstructedDateEvaluationFault where
   | document (error : CheckedDocumentError)
   | payloadKind (field : FieldId)
   | stringNotConvertible (field : FieldId) (value : String)
+  | dateYearStoredMissing (field : FieldId)
+  | dateYearNotConvertible (field : FieldId) (value : String)
   | nonIntegralPayload (field : FieldId) (value : Rat)
   deriving Repr, DecidableEq
 
@@ -81,6 +83,41 @@ def read (checked : CheckedConstructedDateStringField model)
 
 end CheckedConstructedDateStringField
 
+namespace CheckedConstructedDateYearField
+
+/-- Convert the exact stored `yyyy` text while using the checked cell only for empty, formal, and payload-kind state. This is intentionally distinct from `YearFromDate`, which projects the decoded temporal value. -/
+def classify (checked : CheckedConstructedDateYearField model)
+    (observation : CellObservation Value) (stored : Option String) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match observation with
+  | .empty => pure .empty
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.temporal value) =>
+      if value.kind != .date then
+        throw (.payloadKind checked.source.id)
+      else
+        match stored with
+        | none => throw (.dateYearStoredMissing checked.source.id)
+        | some text =>
+            match parseAsciiNatural? text with
+            | some amount => pure (.value amount)
+            | none => throw (.dateYearNotConvertible checked.source.id text)
+  | .value _ => throw (.payloadKind checked.source.id)
+
+/-- Read one certified `yyyy` Date component from the immutable checked cell and its retained exact stored text. -/
+def read (checked : CheckedConstructedDateYearField model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent := do
+  let address : CellAddr := {
+    field := checked.source.id
+    path := []
+  }
+  let cell ← input.read address |>.mapError .document
+  checked.classify (observeCell phase cell)
+    (input.source.toDocument.rawCells address)
+
+end CheckedConstructedDateYearField
+
 namespace CheckedConstructedDateExtractorField
 
 /-- Preserve empty and formal state while projecting the certified calendar component from a Date or DateTime payload. -/
@@ -125,6 +162,7 @@ def read (checked : CheckedConstructedDateSource model)
   match checked with
   | .numberField source => source.read phase input
   | .stringField source => source.read phase input
+  | .dateYearField source => source.read phase input
   | .constant value => pure (.value value)
   | .extractor source => source.read phase input
 

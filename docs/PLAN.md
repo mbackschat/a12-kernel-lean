@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1614 theorem roots; 36764 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1615 theorem roots; 36891 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close the complete-Year `yyyy` Date-field alternative in direct `Date(...)` through the existing checked constructed-Date component owner. Preserve its exact Year-only and format-only static gate, stored-text numeric conversion, empty/formal behavior, and generated component order without treating arbitrary Date values as numeric components.
+Close `DayFromDate(BaseYear)`, `MonthFromDate(BaseYear)`, and `YearFromDate(BaseYear)` as bounded recursive sources inside direct `Date(...)`. Reuse the existing configured Base-Year Date source and matching component projection without introducing a general temporal-expression carrier or confusing this explicit extractor with the constructor's omitted-year shorthand.
 
 ## Immediate sequence
 
-1. Confirm the field's exact Date kind and retained format source at the checked declaration boundary; component flags alone are insufficient to prove the Kernel's literal `yyyy` gate.
-2. Add separating red cases for exact `yyyy` Year acceptance, another Date format, DateTime, and the same Date field at Day, Month, Century, and Short-Year; retain empty, first-formal, and real mixed-source execution.
-3. Reuse the existing checked temporal field and stored-text/document owner if it retains the exact format. If that declaration fact is absent, stop and report the model gap rather than inferring `yyyy` from component flags.
+1. Confirm from checker, lowering, and generated `.st` routes that the configured Base Year is admitted beneath the three matching Date extractors and remains rejected at both split-year positions.
+2. Add separating red cases for Day/Month/Year projection, mismatched extractor tokens, missing configured Base Year, mixed fixed/document/Base-Year sources, and document independence.
+3. Reuse `BaseYearDateSource` and the existing checked constructed-Date source carrier. Stop rather than add a Date-expression AST, sampled world, or duplicate Base-Year decoder.
 
 ## Parked boundaries
 

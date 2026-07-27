@@ -34,6 +34,21 @@ private def temporalField (id : FieldId) (kind : TemporalKind)
   policy := { kind := .temporal kind components }
 }
 
+private def formattedTemporalField (id : FieldId) (kind : TemporalKind)
+    (components : TemporalComponents) (format : String) : FlatFieldDecl := {
+  temporalField id kind components with
+  temporalTargetPolicy := some { format }
+}
+
+private def yearOnlyComponents : TemporalComponents := {
+  year := true
+  month := false
+  day := false
+  hour := false
+  minute := false
+  second := false
+}
+
 private def stringComponentField (id : FieldId) (maximum : Nat)
     (pattern : String := "[0-9]+") : FlatFieldDecl := {
   id
@@ -74,7 +89,12 @@ private def stringModel : FlatModel :=
       stringComponentField 21 2 "\\d{2}",
       stringComponentField 22 4 "[0-9]{4}",
       stringComponentField 23 2,
-      stringComponentField 24 2] }
+      stringComponentField 24 2,
+      formattedTemporalField 30 .date yearOnlyComponents "yyyy",
+      formattedTemporalField 31 .date
+        TemporalComponents.fullDate "dd.MM.yyyy",
+      formattedTemporalField 32 .dateTime
+        TemporalComponents.now "yyyy"] }
 
 /- The exact Date declaration gate accepts the positional maximum or stored width, but
    not an integer-digit cap or a complete-year maximum below 1000. -/
@@ -205,6 +225,22 @@ example :
         (.constant "15") (.constant "6")
         (.centuryAndShortYear
           (.stringField 23) (.stringField 24)) = true := by
+  native_decide
+
+/- A direct Date field is a numeric constructor source only for complete Year and exact
+   `yyyy`. Another format, DateTime, and every other position remain rejected. -/
+example :
+    let admitted (position : ConstructedDateComponentPosition)
+        (field : FieldId) :=
+      (elaborateConstructedDateSource stringModel position
+        (.dateYearField field)).isOk
+    admitted .year 30 = true ∧
+      admitted .year 31 = false ∧
+      admitted .year 32 = false ∧
+      admitted .day 30 = false ∧
+      admitted .month 30 = false ∧
+      admitted .century 30 = false ∧
+      admitted .shortYear 30 = false := by
   native_decide
 
 private def constantDateIsOk (day month : String)

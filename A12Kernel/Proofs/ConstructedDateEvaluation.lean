@@ -27,6 +27,17 @@ theorem checkedConstructedDateConstant_read
   simp [CheckedConstructedDateStringField.classify, parsed]
   rfl
 
+/-- A reached exact-format Date field contributes the year parsed from its retained stored text; it does not silently become the `YearFromDate` projection. -/
+@[simp] theorem checkedConstructedDateYear_classify_value
+    (checked : CheckedConstructedDateYearField model)
+    (value : TemporalValue) (text : String) (amount : Nat)
+    (dateKind : value.kind = .date)
+    (parsed : parseAsciiNatural? text = some amount) :
+    checked.classify (.value (.temporal value)) (some text) =
+      .ok (.value amount) := by
+  simp [CheckedConstructedDateYearField.classify, dateKind, parsed]
+  rfl
+
 /-- Direct temporal extraction preserves the distinction between an empty operand and one unavailable for an exact formal cause. -/
 theorem checkedConstructedDateExtractor_classify_empty_unavailable
     (checked : CheckedConstructedDateExtractorField model)
