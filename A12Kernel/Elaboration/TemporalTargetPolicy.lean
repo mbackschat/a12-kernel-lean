@@ -3,7 +3,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal-target policy
 
-This capsule resolves one nonrepeatable Date or DateTime target against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its bounded full-Date refinement renders and checks two exact formats against one concrete model-zone profile. Parsing, delta classification, and application remain separate.
+This capsule resolves one nonrepeatable Date or DateTime target against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its bounded refinements render full Date in two exact formats and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing, delta classification, and application remain separate.
 -/
 
 namespace A12Kernel
@@ -144,7 +144,7 @@ namespace CheckedFullDateTarget
 /-- Render and basic-check one already-selected full-Date computation result without classifying a delta or mutating a document. -/
 def evaluate
     (target : CheckedFullDateTarget model) :
-    FullDateComputationResult →
+    TemporalComputationResult →
       Except FullDateTargetEvaluationFault FullDateTargetOutcome
   | .noValue => pure .noValue
   | .poison cause => pure (.poison cause)
@@ -160,5 +160,90 @@ def evaluate
             pure (.accepted stored)
 
 end CheckedFullDateTarget
+
+/-- Static refusal before the bounded DateTime target can execute. -/
+inductive DateTimeTargetElabError where
+  | targetPolicy (error : TemporalTargetElabError)
+  | targetKind (target : FieldId) (actual : TemporalKind)
+  | components (target : FieldId) (actual : TemporalComponents)
+  | unsupportedFormat (target : FieldId) (source : String)
+  | unsupportedZone (zoneId : String)
+  deriving Repr, DecidableEq
+
+/-- One checked complete DateTime target with an executable whole-second format and concrete model-zone profile. -/
+structure CheckedDateTimeTarget (model : FlatModel) where
+  checked : CheckedTemporalTargetPolicy model
+  format : DateTimeTargetFormat
+  profile : ModelZone.ConcreteProfile
+  targetIsDateTime : checked.target.kind = .dateTime
+  componentsComplete :
+    checked.target.components = TemporalComponents.now
+  formatMatches :
+    DateTimeTargetFormat.ofSource? checked.policy.format = some format
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
+
+namespace CheckedTemporalTargetPolicy
+
+/-- Refine a checked temporal target to the first executable DateTime subset. Every wider kind, component set, format, or zone is an explicit refusal. -/
+def toDateTimeTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except DateTimeTargetElabError (CheckedDateTimeTarget model) := do
+  if hKind : checked.target.kind = .dateTime then
+    if hComponents :
+        checked.target.components = TemporalComponents.now then
+      match hFormat :
+          DateTimeTargetFormat.ofSource? checked.policy.format with
+      | none =>
+          throw (.unsupportedFormat checked.target.id checked.policy.format)
+      | some format =>
+          match hProfile :
+              ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+          | none => throw (.unsupportedZone checked.timeZoneId)
+          | some profile =>
+              pure {
+                checked
+                format
+                profile
+                targetIsDateTime := hKind
+                componentsComplete := hComponents
+                formatMatches := hFormat
+                profileMatches := hProfile }
+    else
+      throw (.components checked.target.id checked.target.components)
+  else
+    throw (.targetKind checked.target.id checked.target.kind)
+
+end CheckedTemporalTargetPolicy
+
+/-- Resolve and refine one model-owned nonrepeatable complete DateTime target. -/
+def elaborateDateTimeTarget
+    (model : FlatModel) (targetField : FieldId) :
+    Except DateTimeTargetElabError (CheckedDateTimeTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicy model targetField |>.mapError .targetPolicy
+  checked.toDateTimeTarget
+
+/-- Runtime refusal when an exact result instant has no local DateTime label in the selected concrete profile. -/
+inductive DateTimeTargetEvaluationFault where
+  | localDateTimeUnavailable (instant : Instant)
+  deriving Repr, DecidableEq
+
+namespace CheckedDateTimeTarget
+
+/-- Render one already-selected DateTime computation result at the target's declared whole-second precision without classifying a delta or mutating a document. -/
+def evaluate
+    (target : CheckedDateTimeTarget model) :
+    TemporalComputationResult →
+      Except DateTimeTargetEvaluationFault DateTimeTargetOutcome
+  | .noValue => pure .noValue
+  | .poison cause => pure (.poison cause)
+  | .value instant =>
+      match target.profile.localDateTime? instant with
+      | none => throw (.localDateTimeUnavailable instant)
+      | some dateTime =>
+          pure (.accepted (target.format.render dateTime))
+
+end CheckedDateTimeTarget
 
 end A12Kernel

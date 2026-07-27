@@ -29,4 +29,15 @@ theorem fullDateTarget_evaluate_pre1900
   simp [CheckedFullDateTarget.evaluate, localDate, check, before]
   rfl
 
+/-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
+theorem dateTimeTarget_evaluate_value
+    (target : CheckedDateTimeTarget model)
+    (instant : Instant) (dateTime : LocalDateTime)
+    (decoded :
+      target.profile.localDateTime? instant = some dateTime) :
+    target.evaluate (.value instant) =
+      .ok (.accepted (target.format.render dateTime)) := by
+  simp [CheckedDateTimeTarget.evaluate, decoded]
+  rfl
+
 end A12Kernel

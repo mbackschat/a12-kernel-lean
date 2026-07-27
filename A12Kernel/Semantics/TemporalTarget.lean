@@ -1,11 +1,19 @@
 import A12Kernel.Semantics.ModelZone
 
-/-! # Bounded full-Date computation targets
+/-! # Bounded temporal computation targets
 
-This capsule owns the first executable temporal target result domain. It admits two exact full-Date formats, renders a resolved model-zone date with two-digit day and month, and retains an invalid pre-1900 attempt. DateTime, partial dates, arbitrary `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded full-Date and DateTime target result domains. Full Date admits two exact formats and the optional pre-1900 check. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partial dates, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
+
+namespace TemporalTargetText
+
+/-- Render a bounded date/time component with at least two decimal digits. -/
+def twoDigits (value : Nat) : String :=
+  if value < 10 then "0" ++ toString value else toString value
+
+end TemporalTargetText
 
 /-- Exact declared formats admitted by the first full-Date target renderer. This is a bounded source-checked subset, not a general date-format parser. -/
 inductive FullDateTargetFormat where
@@ -21,19 +29,18 @@ def ofSource? : String → Option FullDateTargetFormat
   | "yyyy-MM-dd" => some .yearMonthDayDashes
   | _ => none
 
-private def twoDigits (value : Nat) : String :=
-  if value < 10 then "0" ++ toString value else toString value
-
 /-- Render one admitted local Date. The year is untruncated; day and month are always two digits, matching the kernel's computed-Date store. -/
 def renderText (format : FullDateTargetFormat) (date : FullDate) : String :=
   let parts := date.civil.parts
   match format with
   | .dayMonthYearDots =>
-      twoDigits parts.day ++ "." ++ twoDigits parts.month ++ "." ++
+      TemporalTargetText.twoDigits parts.day ++ "." ++
+        TemporalTargetText.twoDigits parts.month ++ "." ++
         toString parts.year
   | .yearMonthDayDashes =>
-      toString parts.year ++ "-" ++ twoDigits parts.month ++ "-" ++
-        twoDigits parts.day
+      toString parts.year ++ "-" ++
+        TemporalTargetText.twoDigits parts.month ++ "-" ++
+        TemporalTargetText.twoDigits parts.day
 
 end FullDateTargetFormat
 
@@ -51,13 +58,13 @@ def render (format : FullDateTargetFormat) (date : FullDate) : StoredDate :=
     text := format.renderText date
     nonempty := by
       cases format <;>
-        simp [renderText, twoDigits]
+        simp [renderText, TemporalTargetText.twoDigits]
   }
 
 end FullDateTargetFormat
 
-/-- Root result before a full-Date target consumes it. -/
-inductive FullDateComputationResult where
+/-- Root result before a checked temporal target consumes it. Exact instant identity is retained until the target-specific renderer runs. -/
+inductive TemporalComputationResult where
   | noValue
   | value (instant : Instant)
   | poison (cause : FormalCause)
@@ -93,5 +100,61 @@ def before1900 (date : FullDate) : Bool :=
   date.before year1900Start
 
 end FullDate
+
+/-- The first exact DateTime declaration source admitted by the executable target renderer. -/
+inductive DateTimeTargetFormat where
+  | dayMonthYearTime
+  deriving Repr, DecidableEq
+
+namespace DateTimeTargetFormat
+
+/-- Admit only the kernel's standard whole-second DateTime format. -/
+def ofSource? : String → Option DateTimeTargetFormat
+  | "dd.MM.yyyy'T'HH:mm:ss" => some .dayMonthYearTime
+  | _ => none
+
+/-- Render one admitted local DateTime wall label. The exact source instant may retain finer precision than this text. -/
+def renderText (_ : DateTimeTargetFormat)
+    (dateTime : LocalDateTime) : String :=
+  let date := dateTime.date.civil.parts
+  let seconds := dateTime.time.secondsSinceMidnight
+  let hour := seconds / 3600
+  let minute := (seconds % 3600) / 60
+  let second := seconds % 60
+  TemporalTargetText.twoDigits date.day ++ "." ++
+    TemporalTargetText.twoDigits date.month ++ "." ++
+    toString date.year ++ "T" ++
+    TemporalTargetText.twoDigits hour ++ ":" ++
+    TemporalTargetText.twoDigits minute ++ ":" ++
+    TemporalTargetText.twoDigits second
+
+end DateTimeTargetFormat
+
+/-- A nonempty rendered DateTime attempt at the target's declared precision. -/
+structure StoredDateTime where
+  text : String
+  nonempty : text ≠ ""
+  deriving Repr, DecidableEq
+
+namespace DateTimeTargetFormat
+
+/-- Render an admitted local DateTime into a nonempty target value. -/
+def render (format : DateTimeTargetFormat)
+    (dateTime : LocalDateTime) : StoredDateTime :=
+  {
+    text := format.renderText dateTime
+    nonempty := by
+      cases format
+      simp [renderText, TemporalTargetText.twoDigits]
+  }
+
+end DateTimeTargetFormat
+
+/-- Rich DateTime target result before source-relative classification or application. This bounded fragment has no target-local rejection branch. -/
+inductive DateTimeTargetOutcome where
+  | noValue
+  | accepted (stored : StoredDateTime)
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
 
 end A12Kernel

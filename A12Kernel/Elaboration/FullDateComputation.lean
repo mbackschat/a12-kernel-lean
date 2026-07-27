@@ -154,7 +154,7 @@ namespace CheckedFullDateComputation
 def evaluateOperand (operation : CheckedFullDateComputation model)
     (world : World)
     (input : CheckedDocument model) :
-    Except FullDateComputationFault FullDateComputationResult :=
+    Except FullDateComputationFault TemporalComputationResult :=
   match operation.operand with
   | .fieldValue source =>
       match input.read { field := source.id, path := [] } with

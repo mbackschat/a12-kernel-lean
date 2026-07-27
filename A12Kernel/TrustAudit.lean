@@ -203,6 +203,7 @@ run_cmd do
 #print axioms A12Kernel.checkedTemporalTargetPolicy_not_time
 #print axioms A12Kernel.checkedTemporalTargetPolicy_timeZoneId
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
+#print axioms A12Kernel.dateTimeTarget_evaluate_value
 #print axioms A12Kernel.fullDateTargetApplies_iff_applyTo
 #print axioms A12Kernel.fullDateTargetApplies_deterministic
 #print axioms A12Kernel.acceptedFullDate_unchanged_noDelta

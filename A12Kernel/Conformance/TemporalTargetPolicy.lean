@@ -112,6 +112,29 @@ private def fullDateElabError?
   | .ok _ => none
   | .error error => some error
 
+private def dateTimeModel
+    (format zoneId : String)
+    (components : TemporalComponents := TemporalComponents.now) :
+    FlatModel := {
+  fields := [temporalTarget 0 "At" format .dateTime components]
+  timeZoneId := zoneId }
+
+private def evaluateDateTimeAt?
+    (model : FlatModel) (instant? : Option Instant) :
+    Option DateTimeTargetOutcome :=
+  match elaborateDateTimeTarget model 0, instant? with
+  | .ok target, some instant =>
+      match target.evaluate (.value instant) with
+      | .ok outcome => some outcome
+      | .error _ => none
+  | _, _ => none
+
+private def dateTimeElabError?
+    (model : FlatModel) : Option DateTimeTargetElabError :=
+  match elaborateDateTimeTarget model 0 with
+  | .ok _ => none
+  | .error error => some error
+
 /- The same local date renders differently under the two exact target formats. -/
 example :
     (FullDate.ofYmd? 2024 4 7).map (fun date => (
@@ -162,6 +185,43 @@ example :
       , some (.unsupportedFormat 0 "yyyy/M/d")
       , some (.unsupportedZone "Pacific/Apia")
       , some (.targetKind 0 .dateTime) ] := by
+  native_decide
+
+/- DateTime target rendering follows the checked model zone and the bounded seconds format; an exact millisecond remainder is deliberately absent from stored text. -/
+example :
+    let instant? := (utcInstant? 2025 6 23 10 0 0).map fun instant =>
+      { epochMillis := instant.epochMillis + 999 }
+    evaluateDateTimeAt?
+        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC") instant? =
+        some (.accepted {
+          text := "23.06.2025T10:00:00"
+          nonempty := by decide }) ∧
+      evaluateDateTimeAt?
+        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss"
+          "Europe/Berlin") instant? =
+        some (.accepted {
+          text := "23.06.2025T12:00:00"
+          nonempty := by decide }) := by
+  native_decide
+
+/- The first executable DateTime target remains bounded by kind, complete components, exact format source, and concrete model-zone support. -/
+example :
+    let missingSeconds : TemporalComponents :=
+      { TemporalComponents.now with second := false }
+    [ dateTimeElabError?
+        (fullDateModel "dd.MM.yyyy" "UTC")
+    , dateTimeElabError?
+        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss" "UTC"
+          missingSeconds)
+    , dateTimeElabError?
+        (dateTimeModel "yyyy-MM-dd'T'HH:mm:ss" "UTC")
+    , dateTimeElabError?
+        (dateTimeModel "dd.MM.yyyy'T'HH:mm:ss"
+          "Pacific/Apia") ] =
+      [ some (.targetKind 0 .date)
+      , some (.components 0 missingSeconds)
+      , some (.unsupportedFormat 0 "yyyy-MM-dd'T'HH:mm:ss")
+      , some (.unsupportedZone "Pacific/Apia") ] := by
   native_decide
 
 end A12Kernel.Conformance.TemporalTargetPolicy

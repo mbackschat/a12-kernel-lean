@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1521 theorem roots; 32792 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1522 theorem roots; 33017 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Open the bounded `Now`-to-DateTime computation boundary. First determine the exact generated target format, model-zone projection, millisecond truncation or preservation, one calculation-controller clock sample, and later generated-validation resampling. Implement only after a source-backed separator distinguishes exact-instant identity from stored DateTime text.
+Complete the bounded `Now`-to-DateTime computation operation over the checked target that now owns exact `dd.MM.yyyy'T'HH:mm:ss`, concrete UTC/GMT/Berlin wall-label projection, and whole-second stored text. The operation must retain no clock sample and must obtain the exact instant only from the execution's explicit `World`.
 
 ## Immediate sequence
 
-1. Reopen the temporal packet for `Now` as a computation result through parser typing, backing beans, Java/Groovy/JavaScript operation templates, `RuntimeController.getJetzt`, `CalculationController.handleBerechnetenWert(VkDate, ...)`, DateTime target rendering/checking, and the generated validation rule. Name the retained instant and stored-text precision separately.
-2. If the source packet closes, add the smallest executable DateTime target refinement before admitting `FlatTemporalOperand.nowValue`; reuse `CheckedTemporalTargetPolicy`, `World.now`, the existing rich result classifications where their domains agree, and explicit source-relative application. Do not coerce DateTime into the full-Date renderer.
-3. Retain at least a millisecond-remainder separator, a model-zone wall-label separator, and a later-sample generated-validation non-law or explicit gap. Stop before DateTime arithmetic expressions, partial dates, alternatives/tables/scheduling, message rendering, destination compatibility certification, or wider format syntax.
+1. Add one checked DateTime computation operation whose sole operand is the existing `FlatTemporalOperand.nowValue`, admitted only against the bounded complete DateTime target. Evaluation reads `World.now` once and delegates the exact instant to `CheckedDateTimeTarget`; no document read, host clock, or retained sample is permitted.
+2. Retain an exact theorem that execution transports the supplied instant, plus conformance separators showing that two worlds within one rendered second produce equal stored text while exact-instant consumers can still distinguish them, and that a separately supplied later validation world need not agree.
+3. Then decide whether source-relative DateTime result classification and exact application form the next independent capsule or whether a higher-risk remaining SG6 discriminator should go first. Stop before DateTime arithmetic expressions, partial dates, alternatives/tables/scheduling, message rendering, destination compatibility certification, or wider format syntax.
 
 ## Parked boundaries
 
