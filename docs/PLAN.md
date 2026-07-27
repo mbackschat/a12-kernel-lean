@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 587 jobs · trust audit **1571 theorem roots; 34600 declarations in 330 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 590 jobs · trust audit **1572 theorem roots; 34630 declarations in 332 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the bounded Time literal as the next ordinary `datumAngabe` inside `DateTime(ValueAsDate(...), time)`. Determine the exact accepted literal syntax and locale independence, static type/format admission, invalid-literal behavior, 1970 model-zone anchor, and whether decoding can reuse `TimeOfDay` plus the resolved Time operand without adding a general temporal-expression tree.
+Audit and close the direct `TimeFromDateTime(...)` extraction as the next ordinary Time operand inside `DateTime(ValueAsDate(...), time)`. Determine its static input-format gate, exact-instant versus wall-clock projection, empty/formal precedence, Date-before-Time evaluation, and whether the existing typed DateTime observation and `TimeOfDay` seam suffice without a general temporal-expression tree.
 
 ## Immediate sequence
 
-1. Recheck `datumAngabe`, the constant/date checker path, `ConstantOperation` typing and templates, `RuntimeController.constructDatum(String, format)`, and the time-literal format owner. Inventory exact token syntax, accepted component widths, invalid syntax/range behavior, and whether the model zone affects only the hidden 1970 instant or also literal acceptance.
-2. If the literal decodes to the existing `TimeOfDay` boundary without losing a reachable reason, add the smallest checked decoder and compose it through the shared partial-Date DateTime operand. Reuse the current Date-before-Time effectful seam; do not add a generic temporal AST, locale service, or second zone engine.
-3. Retain separators for an accepted whole-second literal, wrong width, impossible clock, a locale-shaped near miss, Date-side formal short-circuit, unknown-year reachability, and one accepted Berlin instant. Stop if the literal's runtime identity requires an unmodeled zone-history fact rather than the existing wall-time seam. Leave model-relative `Time(...)` component-field lowering, Time extraction/arithmetic forms, target projection, repeatable addressing, message text, and date-like distinct count outside.
+1. Recheck `datumExtractOp`, `CheckDatumExtractOpImpl`, the generated extraction templates/backing beans, and the runtime Time-from-DateTime helper. Inventory allowed DateTime component shapes, authored evaluation order, no-value/formal behavior, and whether the extracted clock is decoded from the retained local label or reconstructed from the instant.
+2. If the existing checked DateTime observation retains every required distinction, add the smallest checked extraction adapter and compose it through the shared partial-Date DateTime operand. Reuse the current document and zone owners; do not add a generic temporal AST, second parser, or second instant-to-local resolver.
+3. Retain separators for an accepted Berlin DateTime, an overlap-hour instant whose retained local label matters, empty input, formal unavailability, Date-side formal short-circuit, unknown-year reachability, and one accepted recomposed instant. Stop if extraction requires a wider format profile or runtime identity absent from the typed DateTime payload. Leave model-relative `Time(...)` component-field lowering, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

@@ -23,7 +23,9 @@ The literal is typed **by its own syntax, not by context**:
 - an **ISO-format literal** `"2022-01-01"` is lexed as a **string**, never a date.
 - the **omitted-year form** `"13.07."` (trailing dot) injects the model's **Base Year** (a reference year, *not* a floor); a model without a Base Year **rejects** it.
 
-> **Lean modelling note.** Resolve the ambiguity in the **lexer/typer**, not the evaluator: a literal token is classified as `dateConst` iff it matches `DD.MM.YYYY` (or the omitted-year shape), else `strConst`, with ISO shapes always `strConst`. Downstream evaluation then never has to "guess" a literal's kind. This mirrors the engine: the literal is typed by syntax.
+A Time constant is likewise typed by its own syntax and is locale-independent: exactly eight ASCII characters in `HH:mm:ss` form, with two digits per component and a real `00:00:00`–`23:59:59` clock. Short widths, different separators, non-ASCII digits, hour 24, and minute or second 60 are rejected statically as invalid date strings rather than reaching evaluation as ordinary Strings. Generated evaluation represents an admitted Time constant on 1970-01-01 in the model zone, but Time comparison and `DateTime(date, time)` observe only its decoded hour, minute, and second.
+
+> **Lean modelling note.** Resolve the ambiguity in the **lexer/typer**, not the evaluator: a literal token is classified as `dateConst` iff it matches `DD.MM.YYYY` (or the omitted-year shape), as `timeConst` iff it matches the exact real `HH:mm:ss` shape, and otherwise as `strConst`, with ISO date shapes always remaining `strConst`. Downstream evaluation then never has to "guess" a literal's kind. This mirrors the engine: the literal is typed by syntax.
 
 ---
 
