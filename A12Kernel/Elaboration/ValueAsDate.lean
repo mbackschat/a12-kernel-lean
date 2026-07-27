@@ -1,10 +1,12 @@
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Semantics.DateComparison
+import A12Kernel.Semantics.DateShift
+import A12Kernel.Semantics.NumericComputationResult
 import A12Kernel.Semantics.Observation
 
 /-! # Checked partial-Date `ValueAsDate`
 
-This capsule retains every admitted stored Date omission, resolves a known-year interval only after `FirstDay` or `LastDay` is selected, and delegates the resulting full Date to the existing direct-comparison evaluator. An unknown year is retained as its own value and becomes non-relevant at the operation boundary rather than acquiring a fabricated year. Its bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, Date arithmetic, DateTime construction, and repeatable addressing remain separate.
+This capsule retains every admitted stored Date omission and resolves a known-year interval only after `FirstDay` or `LastDay` is selected. Direct comparison delegates the resulting full Date to the existing evaluator. Day/month/year shifting converts the reached numeric amount with Java `BigDecimal.intValue` semantics and retains a real civil landing below the universal Date floor for the later target check. An unknown year remains cause-free non-relevance rather than acquiring a fabricated year. The bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, Date difference, DateTime construction, target effects, and repeatable addressing remain separate.
 -/
 
 namespace A12Kernel
@@ -178,19 +180,17 @@ inductive ValueAsDateElabError where
   | unsupportedFormat (source : FieldId) (format : String)
   deriving Repr, DecidableEq
 
-/-- One checked direct comparison whose source declaration, interval endpoint, operator, and literal cannot be replaced independently after elaboration. -/
-structure CheckedValueAsDateComparison (model : FlatModel) where
+/-- One checked partial-Date source whose declaration policy, interval endpoint, and raw format cannot be replaced independently after elaboration. Comparison and calendar shifting share this exact admission boundary. -/
+structure CheckedValueAsDateSource (model : FlatModel) where
   source : CheckedTemporalTargetPolicy model
   endpoint : ValueAsDateEndpoint
-  comparison : TemporalComparisonOp
-  expected : FullDate
   format : FullDateTargetFormat
   sourceIsDate : source.target.kind = .date
   sourceIsPartial : source.policy.partialMode ≠ .full
   formatMatches :
     FullDateTargetFormat.ofSource? source.policy.format = some format
 
-namespace CheckedValueAsDateComparison
+namespace CheckedValueAsDateSource
 
 /-- Decode one exact-width ASCII component. The bounded parser deliberately accepts no locale digits or width relaxation. -/
 private def parseComponent? (width : Nat) (text : String) : Option Nat :=
@@ -245,7 +245,7 @@ private def admitStoredParts?
     admitKnownYearParts? mode year month day
 
 /-- Project raw stored text through the checked declaration policy. All lexical, suffix, calendar, floor, and enabled pre-1900 failures become the ordinary malformed formal finding before the operation reads the cell. -/
-def checkSourceRaw (checked : CheckedValueAsDateComparison model)
+def checkSourceRaw (checked : CheckedValueAsDateSource model)
     (raw : RawCell String) :
     CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode) :=
   checkRawCellWith (fun text =>
@@ -257,11 +257,68 @@ def checkSourceRaw (checked : CheckedValueAsDateComparison model)
         | none => .error .malformed
         | some value => .ok (some value)) raw
 
+/-- Resolve one parser-admitted checked cell at the selected interval endpoint for an operation-specific consumer. -/
+def observe (checked : CheckedValueAsDateSource model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode)) :
+    ValueAsDateObservation :=
+  (observeCell phase cell).resolvePartiallyKnownDate checked.endpoint
+
+end CheckedValueAsDateSource
+
+/-- Resolve and certify one nonrepeatable partial-Date source for every partial precision. -/
+def elaborateValueAsDateSource
+    (model : FlatModel) (sourceField : FieldId)
+    (endpoint : ValueAsDateEndpoint) :
+    Except ValueAsDateElabError (CheckedValueAsDateSource model) := do
+  let source ←
+    elaborateTemporalTargetPolicy model sourceField |>.mapError .sourcePolicy
+  if hKind : source.target.kind = .date then
+    if hMode : source.policy.partialMode ≠ .full then
+      match hFormat :
+          FullDateTargetFormat.ofSource? source.policy.format with
+      | none => throw (.unsupportedFormat sourceField source.policy.format)
+      | some format =>
+          pure {
+            source
+            endpoint
+            format
+            sourceIsDate := hKind
+            sourceIsPartial := hMode
+            formatMatches := hFormat }
+    else
+      throw (.unsupportedPartialMode sourceField source.policy.partialMode)
+  else
+    throw (.sourceKind sourceField source.target.kind)
+
+/-- One checked direct comparison that specializes the shared partial-Date source admission. -/
+structure CheckedValueAsDateComparison (model : FlatModel)
+    extends CheckedValueAsDateSource model where
+  comparison : TemporalComparisonOp
+  expected : FullDate
+
+namespace CheckedValueAsDateComparison
+
+/-- Shared raw-source projection retained at the comparison boundary for existing direct consumers. -/
+def checkSourceRaw (checked : CheckedValueAsDateComparison model)
+    (raw : RawCell String) :
+    CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode) :=
+  checked.toCheckedValueAsDateSource.checkSourceRaw raw
+
+/-- Shared endpoint observation retained at the comparison boundary for its direct laws. -/
+def observe (checked : CheckedValueAsDateComparison model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode)) :
+    ValueAsDateObservation :=
+  checked.toCheckedValueAsDateSource.observe phase cell
+
 /-- Evaluate one already parser-admitted stored value through the existing checked-cell observation and full-Date comparison paths. -/
 def evaluate (checked : CheckedValueAsDateComparison model)
     (cell : CheckedCell
       (AdmittedPartiallyKnownDate checked.source.policy.partialMode)) : Verdict :=
-  match (observeCell .validation cell).resolvePartiallyKnownDate checked.endpoint with
+  match checked.observe Phase.validation cell with
   | .empty => .notFired
   | .nonRelevant | .unavailable _ => .unknown
   | .date resolved =>
@@ -281,26 +338,99 @@ def elaborateValueAsDateComparison
     (endpoint : ValueAsDateEndpoint)
     (comparison : TemporalComparisonOp) (expected : FullDate) :
     Except ValueAsDateElabError (CheckedValueAsDateComparison model) := do
-  let source ←
-    elaborateTemporalTargetPolicy model sourceField |>.mapError .sourcePolicy
-  if hKind : source.target.kind = .date then
-    if hMode : source.policy.partialMode ≠ .full then
-      match hFormat :
-          FullDateTargetFormat.ofSource? source.policy.format with
-      | none => throw (.unsupportedFormat sourceField source.policy.format)
-      | some format =>
-          pure {
-            source
-            endpoint
-            comparison
-            expected
-            format
-            sourceIsDate := hKind
-            sourceIsPartial := hMode
-            formatMatches := hFormat }
-    else
-      throw (.unsupportedPartialMode sourceField source.policy.partialMode)
-  else
-    throw (.sourceKind sourceField source.target.kind)
+  let source ← elaborateValueAsDateSource model sourceField endpoint
+  pure { source with comparison, expected }
+
+/-- Calendar operation selected by one checked `AddDays`, `AddMonths`, or `AddYears` placement. -/
+inductive ValueAsDateShiftUnit where
+  | days
+  | months
+  | years
+  deriving Repr, DecidableEq
+
+namespace ValueAsDateShiftUnit
+
+/-- Truncate like `BigDecimal.intValue`, then retain the low signed 32 bits rather than saturating or rejecting a large amount. -/
+def amountToInt32 (value : Rat) : Int :=
+  let truncated := if value < 0 then value.ceil else value.floor
+  let modulus : Int := 4294967296
+  let signBit : Int := 2147483648
+  let lowBits := truncated % modulus
+  if lowBits < signBit then lowBits else lowBits - modulus
+
+/-- Apply the selected calendar rule without imposing the A12 full-Date floor on the landing. -/
+def shift? (unit : ValueAsDateShiftUnit)
+    (date : FullDate) (offset : Int) : Option CivilDate :=
+  match unit with
+  | .days => date.civil.addDays? offset
+  | .months => date.civil.addMonths? offset
+  | .years => date.civil.addYears? offset
+
+end ValueAsDateShiftUnit
+
+/-- One nested partial-Date calendar-shift result before any computed-target policy is applied. A civil landing can precede the A12 value floor and must remain an attempted value for the later target check. -/
+inductive ValueAsDateShiftResult where
+  | noValue
+  | value (date : CivilDate)
+  | nonRelevant
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Structural failure after both operation operands are semantically available. -/
+inductive ValueAsDateShiftFault where
+  | landingUnavailable
+      (unit : ValueAsDateShiftUnit) (source : FullDate) (offset : Int)
+  deriving Repr, DecidableEq
+
+/-- One checked nested calendar shift that specializes the shared partial-Date source admission. -/
+structure CheckedValueAsDateShift (model : FlatModel)
+    extends CheckedValueAsDateSource model where
+  unit : ValueAsDateShiftUnit
+
+namespace CheckedValueAsDateShift
+
+/-- Evaluate the source first and the numeric amount second, matching generated Java argument order. A reached formal poison therefore ends evaluation at its own operand; ordinary numeric domain failure reaches the calendar helper as no-value. -/
+def evaluate (checked : CheckedValueAsDateShift model)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (amount : NumericComputationResult) :
+    Except ValueAsDateShiftFault ValueAsDateShiftResult :=
+  match checked.toCheckedValueAsDateSource.observe Phase.computation cell with
+  | .unavailable cause => pure (.poison cause)
+  | .empty =>
+      match amount with
+      | .poison cause => pure (.poison cause)
+      | .domainFailure | .value _ => pure .noValue
+  | .nonRelevant =>
+      match amount with
+      | .poison cause => pure (.poison cause)
+      | .domainFailure | .value _ => pure .nonRelevant
+  | .date date =>
+      match amount with
+      | .poison cause => pure (.poison cause)
+      | .domainFailure => pure .noValue
+      | .value value =>
+          let offset := ValueAsDateShiftUnit.amountToInt32 value
+          match checked.unit.shift? date offset with
+          | some landing => pure (.value landing)
+          | none =>
+              throw (.landingUnavailable checked.unit date offset)
+
+/-- Check an exact stored-text source and evaluate it with one already reached numeric amount. -/
+def evaluateRaw (checked : CheckedValueAsDateShift model)
+    (raw : RawCell String) (amount : NumericComputationResult) :
+    Except ValueAsDateShiftFault ValueAsDateShiftResult :=
+  checked.evaluate
+    (checked.toCheckedValueAsDateSource.checkSourceRaw raw) amount
+
+end CheckedValueAsDateShift
+
+/-- Resolve and certify one nonrepeatable nested partial-Date calendar shift. -/
+def elaborateValueAsDateShift
+    (model : FlatModel) (sourceField : FieldId)
+    (endpoint : ValueAsDateEndpoint) (unit : ValueAsDateShiftUnit) :
+    Except ValueAsDateElabError (CheckedValueAsDateShift model) := do
+  let source ← elaborateValueAsDateSource model sourceField endpoint
+  pure { source with unit }
 
 end A12Kernel

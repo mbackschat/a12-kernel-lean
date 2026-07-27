@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1552 theorem roots; 33666 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1554 theorem roots; 33825 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close the first explicit nested `ValueAsDate` placement by composing its checked partial-Date source with the existing full-Date calendar-shift core. Keep endpoint completion, amount conversion, empty/formal precedence, and post-shift floor failure explicit; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
+Audit and close the first nested `ValueAsDate` Date-difference placement by composing the shared checked partial-Date source with the existing resolved full-Date difference core. Keep operand order, endpoint completion, empty/formal precedence, and month/year completed-period behavior explicit; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
 
 ## Immediate sequence
 
-1. Audit the generated/runtime call for `AddDays`/`AddMonths`/`AddYears` around `ValueAsDate`, especially left-before-amount observation, integer conversion, empty/formal precedence, and the distinction between source completion failure and a shifted result below the universal floor. Reuse the source-closed grammar/checker account under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions).
-2. Add the smallest checked composite over `CheckedValueAsDateComparison`'s declaration-indexed source policy and `FullDate.addDays?`/`addMonths?`/`addYears?`. The composite accepts an already checked amount observation unless an existing checked numeric owner fits exactly; it does not add a general Date-expression carrier.
-3. Retain separators for first/last completion before shifting, month-end clamping, leap-year preservation, unknown-year non-relevance, source formal suppression, empty amount behavior, and shifted-floor failure. Stop if exact numeric conversion or operation-level failure precedence is not source-closed. Leave Date difference, `DateTime(...)`, repeatable addressing, partial-Date computation output, scheduling, wider formats, unsupported zones, and date-like distinct count outside.
+1. Audit the generated/runtime `DifferenceInMonths`/`DifferenceInYears` call around `ValueAsDate`, especially left-before-right observation, authored sign, unknown-year non-relevance, empty/formal precedence, and whether the established proleptic full-Date core exactly fits this stored-value route. Reuse the grammar/checker account under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions).
+2. Add the smallest checked composite over `CheckedValueAsDateSource` and the existing resolved Date-difference operation. Accept an already checked second Date observation unless an existing model-owned operand fits exactly; add no general Date-expression carrier or scheduling state.
+3. Retain separators for first/last completion before completed-period calculation, asymmetric authored order, leap/month-end boundaries, unknown-year non-relevance, empty substitution, and first reached formal cause. Stop if the stored partial value carries calendar identity the current full-Date core cannot represent. Leave `DifferenceInDays`, `DateTime(...)`, repeatable addressing, target wiring, scheduling, wider formats/zones, and date-like distinct count outside.
 
 ## Parked boundaries
 

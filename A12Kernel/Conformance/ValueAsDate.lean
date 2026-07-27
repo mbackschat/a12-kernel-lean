@@ -9,6 +9,9 @@ open A12Kernel
 private def date? (year : Int) (month day : Nat) : Option FullDate :=
   FullDate.ofYmd? year month day
 
+private def civil? (year : Int) (month day : Nat) : Option CivilDate :=
+  CivilDate.ofYmd? year month day
+
 private def dayOptionalSource
     (partialMode : TemporalPartialMode := .dayOptional)
     (format : String := "dd.MM.yyyy")
@@ -250,6 +253,57 @@ example :
       (modelWith) 0 .firstDay .equal expected).toOption.get (by native_decide)
     checked.evaluateRaw .empty = .notFired ∧
       checked.evaluateRaw .presentEmpty = .notFired := by
+  native_decide
+
+/- Endpoint completion precedes fractional truncation and the existing month landing rule. -/
+example :
+    let first := (elaborateValueAsDateShift
+      (modelWith) 0 .firstDay .months).toOption.get (by native_decide)
+    let last := (elaborateValueAsDateShift
+      (modelWith) 0 .lastDay .months).toOption.get (by native_decide)
+    (first.evaluateRaw (.parsed "00.02.2024") (.value (19 / 10))).toOption =
+        some (.value ((civil? 2024 3 1).get (by native_decide))) ∧
+      (last.evaluateRaw (.parsed "00.02.2024") (.value (19 / 10))).toOption =
+        some (.value ((civil? 2024 3 29).get (by native_decide))) := by
+  native_decide
+
+/- Numeric amounts use Java's truncate-toward-zero and low signed-32-bit conversion rather than rounding, saturation, or rejection. -/
+example :
+    ValueAsDateShiftUnit.amountToInt32 (19 / 10) = 1 ∧
+      ValueAsDateShiftUnit.amountToInt32 (-19 / 10) = -1 ∧
+      ValueAsDateShiftUnit.amountToInt32 2147483648 = -2147483648 ∧
+      ValueAsDateShiftUnit.amountToInt32 (-2147483649) = 2147483647 := by
+  native_decide
+
+/- The year operation preserves a selected non-leap February end into a leap year. -/
+example :
+    let shift := (elaborateValueAsDateShift
+      (modelWith) 0 .lastDay .years).toOption.get (by native_decide)
+    (shift.evaluateRaw (.parsed "00.02.2023") (.value 1)).toOption =
+      some (.value ((civil? 2024 2 29).get (by native_decide))) := by
+  native_decide
+
+/- The expression retains a real below-floor landing so the later target check can reject the attempted Date rather than clear it as no-value. -/
+example :
+    let shift := (elaborateValueAsDateShift
+      (modelWith) 0 .firstDay .days).toOption.get (by native_decide)
+    (shift.evaluateRaw (.parsed "16.10.1583") (.value (-1))).toOption =
+      some (.value ((civil? 1583 10 15).get (by native_decide))) := by
+  native_decide
+
+/- Non-relevance and reached poison dominate no-value, while a numeric domain failure remains clean no-value. -/
+example :
+    let shift := (elaborateValueAsDateShift
+      (modelWith (dayOptionalSource .yearOptional))
+      0 .firstDay .days).toOption.get (by native_decide)
+    (shift.evaluateRaw (.parsed "00.00.0000") (.value 1)).toOption =
+        some .nonRelevant ∧
+      (shift.evaluateRaw .empty .domainFailure).toOption =
+        some .noValue ∧
+      (shift.evaluateRaw .empty (.poison .computedDependency)).toOption =
+        some (.poison .computedDependency) ∧
+      (shift.evaluateRaw (.rejected .malformed) (.value 1)).toOption =
+        some (.poison .malformed) := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

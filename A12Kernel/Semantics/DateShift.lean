@@ -1,8 +1,8 @@
 import A12Kernel.Semantics.CivilDateCoordinate
 
-/-! # Admitted full-Date day/month/year shifts
+/-! # Civil and admitted full-Date day/month/year shifts
 
-This capsule starts with a stored/full Date and an already converted integer offset. Day shifting uses a bounded inverse of the existing Gregorian day coordinate; month shifting applies the post-cutover target-day clamp; year shifting applies the distinct end-of-February preservation. Every result passes through the universal A12 Date floor. Numeric truncation and 32-bit conversion, `Date(...)` legacy-hybrid provenance, partial dates, DateTime, target formatting, and result-cell effects remain outside.
+This capsule starts with a complete civil Date and an already converted integer offset. Day shifting uses a bounded inverse of the existing Gregorian day coordinate; month shifting applies the post-cutover target-day clamp; year shifting applies the distinct end-of-February preservation. The `FullDate` projections additionally enforce the universal A12 Date floor, while expression consumers may retain a real pre-floor landing for a later target check. Numeric truncation and 32-bit conversion, `Date(...)` legacy-hybrid provenance, partial dates, DateTime, target formatting, and result-cell effects remain outside.
 -/
 
 namespace A12Kernel
@@ -33,8 +33,13 @@ end DateParts
 
 namespace CivilDate
 
+/-- Shift a civil Date by whole days in work bounded independently of the offset. Unlike the `FullDate` projection, this retains a real landing below the A12 value floor. -/
+def addDays? (date : CivilDate) (offset : Int) : Option CivilDate :=
+  if offset = 0 then some date
+  else CivilDate.ofUnixEpochDay? (date.unixEpochDay + offset)
+
 /-- Gregorian month shift with target-month day clamping. -/
-private def addMonths? (date : CivilDate) (offset : Int) : Option CivilDate :=
+def addMonths? (date : CivilDate) (offset : Int) : Option CivilDate :=
   let (targetYear, targetMonth) := date.parts.shiftedYearMonth offset
   match DateParts.daysInMonth? targetYear targetMonth with
   | none => none
@@ -43,7 +48,7 @@ private def addMonths? (date : CivilDate) (offset : Int) : Option CivilDate :=
         (DateParts.Shift.monthLandingDay date.parts targetLastDay)
 
 /-- Gregorian year shift with the kernel's distinct last-of-February preservation. Other days merely clamp to the target month's length. -/
-private def addYears? (date : CivilDate) (offset : Int) : Option CivilDate :=
+def addYears? (date : CivilDate) (offset : Int) : Option CivilDate :=
   let targetYear := date.parts.year + offset
   match
       DateParts.daysInMonth? date.parts.year date.parts.month,
@@ -59,11 +64,7 @@ namespace FullDate
 
 /-- Shift an admitted Date by whole days in work bounded independently of the offset, then reapply the full-Date floor. -/
 def addDays? (date : FullDate) (offset : Int) : Option FullDate :=
-  if offset = 0 then
-    some date
-  else
-    (CivilDate.ofUnixEpochDay? (date.unixEpochDay + offset)).bind
-      FullDate.ofCivil?
+  (date.civil.addDays? offset).bind FullDate.ofCivil?
 
 /-- Shift an admitted Date by whole months and return the result only when it remains in the full-Date domain. -/
 def addMonths? (date : FullDate) (offset : Int) : Option FullDate :=

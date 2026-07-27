@@ -55,6 +55,20 @@ The distinction matters because the two arms of this project's convergence desig
 
 It must also **verify that the named discriminator is the actual variable**, because competing accounts can both be true on loci the entry never distinguished. [`EXP-2026-07-25-03`](#exp-2026-07-25-03--the-semantic-index-computation-gate-may-be-route-selected-not-read-time) posed a route-selected mechanism against a uniform one and both turned out to hold — separated by which index group carries the malformed key, a variable the entry never mentioned. Such a request cannot be answered as asked: any observation confirms one account without refuting the other, and the requested single document cannot separate them. Before handing off, state what a *negative* result would look like; if no input distinguishes the accounts, the discriminator is wrong and the entry is not yet an experiment.
 
+### SPEC-2026-07-27-04 — Date-shift amounts use Java signed-32-bit narrowing
+
+- **Status:** pending
+- **Kind:** semantic correction
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `d4fab2d2fe2f4d02ef79499e81f804daacd4ac51`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`05-dates-and-time.md` §2](../spec/05-dates-and-time.md#2-arithmetic-and-difference)
+- **Delta:** Every Date/DateTime `Add*` amount is converted through Java `BigDecimal.intValue()`: truncate the decimal toward zero, then retain the low signed 32 bits. Large amounts are neither rejected nor saturated.
+- **Basis:** Generated [`DateAddOperation.st`](../../a12-kernel/kernel-tool/kernel-core-codegen-condition/src/main/resources/internal/templates/validation/java/operationsDir/DateAddOperation.st) evaluates the Date operand before the numeric amount and passes both to the runtime controller. [`BedingungsOperatorHelper.addTime`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/BedingungsOperatorHelper.java) calls [`VkBigDecimal.intValue`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/util/VkBigDecimal.java), which delegates directly to `java.math.BigDecimal.intValue()`. The reviewed a12-dmkits evaluator at the basis revision converts its decimal amount with Kotlin `toInt()` and has no maintained overflow separator, so equivalence at the signed-32-bit boundary is not established.
+- **Requested a12-dmkits reconciliation:** State the signed-32-bit narrowing rule in the canonical Date arithmetic account, verify the multiplatform decimal conversion against Java `BigDecimal.intValue()`, and correct it if necessary. Add focused JVM/Node and both-kernel-route controls for `1.9 → 1`, `-1.9 → -1`, `2147483648 → -2147483648`, and `-2147483649 → 2147483647`; reuse the existing Date arithmetic owner and harness.
+- **Compatibility:** Rounding changes ordinary fractional shifts. Saturation, range rejection, arbitrary-precision offsets, or a platform-specific decimal-to-int conversion changes reachable results at and beyond the signed-32-bit boundary.
+- **Acceptance:** Canonical prose names truncation plus low signed-32-bit narrowing, the shared evaluator has one platform-independent conversion with the four separators above, maintained JVM/Node and both available kernel strategies agree, and the handback supplies the exact reviewed revision and per-surface disposition.
+
 ### SPEC-2026-07-27-03 — partial-Date precision forms a suffix and unknown year is non-relevant
 
 - **Status:** pending

@@ -209,6 +209,7 @@ run_cmd do
 #print axioms A12Kernel.valueAsDate_evaluate_unknown
 #print axioms A12Kernel.valueAsDate_evaluateRaw_empty
 #print axioms A12Kernel.valueAsDate_evaluateRaw_rejected
+#print axioms A12Kernel.valueAsDateShift_evaluate_empty_amountPoison
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.fullDateTarget_evaluate_ignoresPartialMode
 #print axioms A12Kernel.dateTimeTarget_evaluate_value
@@ -297,6 +298,7 @@ run_cmd do
 #print axioms A12Kernel.fullDate_addDays_zero
 #print axioms A12Kernel.fullDate_addDays_gregorianEra
 #print axioms A12Kernel.fullDate_addDays_belowFloor_none
+#print axioms A12Kernel.civilDate_addDays_retains_belowFullDateFloor
 #print axioms A12Kernel.fullDate_addMonths_addYears_february_separator
 #print axioms A12Kernel.fullDate_addMonths_januaryEnd_leapLanding
 #print axioms A12Kernel.fullDate_addMonths_belowFloor_none

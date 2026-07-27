@@ -7,7 +7,10 @@ namespace A12Kernel
 /-- Zero day shifting preserves every admitted full Date definitionally. -/
 theorem fullDate_addDays_zero (date : FullDate) :
     date.addDays? 0 = some date := by
-  simp [FullDate.addDays?]
+  cases date with
+  | mk civil admissible =>
+      simp [FullDate.addDays?, CivilDate.addDays?,
+        FullDate.ofCivil?, admissible]
 
 /-- A complete Gregorian era preserves the leap-day label while exercising the bounded coordinate inverse. -/
 theorem fullDate_addDays_gregorianEra :
@@ -19,6 +22,16 @@ theorem fullDate_addDays_gregorianEra :
 /-- Day shifting also reapplies the universal full-Date floor. -/
 theorem fullDate_addDays_belowFloor_none :
     (FullDate.ofYmd? 1583 10 16).bind (fun date => date.addDays? (-1)) = none := by
+  set_option maxRecDepth 2000 in
+    decide
+
+/-- A real civil landing below the A12 Date floor is retained by expression arithmetic even though the admitted full-Date projection rejects it. -/
+theorem civilDate_addDays_retains_belowFullDateFloor :
+    (FullDate.ofYmd? 1583 10 16).bind
+        (fun date => date.civil.addDays? (-1)) =
+        CivilDate.ofYmd? 1583 10 15 ∧
+      (FullDate.ofYmd? 1583 10 16).bind
+        (fun date => date.addDays? (-1)) = none := by
   set_option maxRecDepth 2000 in
     decide
 
