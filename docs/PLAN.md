@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 584 jobs · trust audit **1567 theorem roots; 34380 declarations in 328 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 587 jobs · trust audit **1571 theorem roots; 34600 declarations in 330 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the bounded `Time(...)` constructor as the next legal ordinary `datumAngabe` inside `DateTime(ValueAsDate(...), time)`. Determine its exact 0–3 parameter forms, numeric conversion and defaulting, formal/non-relevant/no-value precedence, range handling, zone anchor, and whether the result can enter the existing `TimeOfDay` observation seam without a general temporal-expression tree.
+Audit and close the bounded Time literal as the next ordinary `datumAngabe` inside `DateTime(ValueAsDate(...), time)`. Determine the exact accepted literal syntax and locale independence, static type/format admission, invalid-literal behavior, 1970 model-zone anchor, and whether decoding can reuse `TimeOfDay` plus the resolved Time operand without adding a general temporal-expression tree.
 
 ## Immediate sequence
 
-1. Recheck `timeKonstrukt`, `CheckTimeKonstruktImpl`, `TimeConstructionOperation.st`, `RuntimeController.constructTime`, and `DateUtil.createTime`. Inventory authored parameter order, omitted-parameter defaults, host numeric conversion, invalid-range behavior, and the exact `VkDate` reason flags reaching outer DateTime construction.
-2. If the existing numeric observation and `TimeOfDay` owners retain every required distinction, add the smallest reason-bearing checked constructor and compose it through the existing partial-Date DateTime evaluator. Do not add a generic temporal AST or a second model-zone engine.
-3. Retain separators for zero-parameter midnight, partial-parameter defaults, fractional/large numeric conversion, invalid clock no-value, first formal cause, outer Date-before-Time precedence, unknown-year non-relevance after a reached Time result, and one accepted exact instant. Stop if the constructor requires an unmodeled numeric-expression carrier or legacy zone behavior that cannot be represented honestly. Leave Time literal/extraction/arithmetic forms, target projection, repeatable addressing, message text, and date-like distinct count outside.
+1. Recheck `datumAngabe`, the constant/date checker path, `ConstantOperation` typing and templates, `RuntimeController.constructDatum(String, format)`, and the time-literal format owner. Inventory exact token syntax, accepted component widths, invalid syntax/range behavior, and whether the model zone affects only the hidden 1970 instant or also literal acceptance.
+2. If the literal decodes to the existing `TimeOfDay` boundary without losing a reachable reason, add the smallest checked decoder and compose it through the shared partial-Date DateTime operand. Reuse the current Date-before-Time effectful seam; do not add a generic temporal AST, locale service, or second zone engine.
+3. Retain separators for an accepted whole-second literal, wrong width, impossible clock, a locale-shaped near miss, Date-side formal short-circuit, unknown-year reachability, and one accepted Berlin instant. Stop if the literal's runtime identity requires an unmodeled zone-history fact rather than the existing wall-time seam. Leave model-relative `Time(...)` component-field lowering, Time extraction/arithmetic forms, target projection, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

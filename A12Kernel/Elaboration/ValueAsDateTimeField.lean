@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked Time-field construction
 
-This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from one ordinary nonrepeatable complete-Time field in the same validated model. It preserves generated Date-before-Time evaluation: a formal Date failure prevents the Time read, while a cause-free non-relevant Date still reaches the Time read before the constructor decides non-relevance. The existing partial-Date constructor owns zone resolution and semantic result classification. Time literals, `Time(...)`, extraction, temporal arithmetic, repeatable fields, and a general temporal-expression tree remain separate.
+This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from one ordinary nonrepeatable complete-Time field in the same validated model. It preserves generated Date-before-Time evaluation: a formal Date failure prevents the Time read, while a cause-free non-relevant Date still reaches the Time read before the constructor decides non-relevance. The existing partial-Date constructor owns zone resolution and the reason-bearing Time operand shared with resolved `Time(...)`. Time literals, model-relative constructor-component lowering, extraction, temporal arithmetic, repeatable fields, and a general temporal-expression tree remain separate.
 -/
 
 namespace A12Kernel

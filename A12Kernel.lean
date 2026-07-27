@@ -19,6 +19,7 @@ import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.DateRangeOverlapOperators
 import A12Kernel.Semantics.DateConstruction
 import A12Kernel.Semantics.DateConstructionNumeric
+import A12Kernel.Semantics.TimeConstruction
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.TimeNumeric
 import A12Kernel.Semantics.BaseYearDateSource

@@ -219,6 +219,10 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateTimeField_evaluateRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateTime_evaluate_nonRelevant_empty
 #print axioms A12Kernel.valueAsDateTime_evalFixedRight_nonRelevant
+#print axioms A12Kernel.timeConstruction_zero_ignores_inputs
+#print axioms A12Kernel.timeConstruction_first_unavailable
+#print axioms A12Kernel.timeConstruction_missing_precedes_reality
+#print axioms A12Kernel.timeConstruction_nonRelevant_precedes_missing
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_left_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_right_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_nonRelevant_empty

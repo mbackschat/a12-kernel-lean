@@ -24,6 +24,7 @@ import A12Kernel.Proofs.TimeAggregate
 import A12Kernel.Proofs.TemporalFormat
 import A12Kernel.Proofs.TemporalTargetPolicy
 import A12Kernel.Proofs.ValueAsDate
+import A12Kernel.Proofs.TimeConstruction
 import A12Kernel.Proofs.FullDateApplication
 import A12Kernel.Proofs.DateTimeApplication
 import A12Kernel.Proofs.FullDateComputationResult

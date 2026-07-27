@@ -4,6 +4,7 @@ import A12Kernel.Semantics.DateDifference
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Semantics.NumericComputationResult
 import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.TimeConstruction
 
 /-! # Checked partial-Date `ValueAsDate`
 
@@ -570,6 +571,36 @@ inductive ValueAsDateTimeResult where
   | unavailable (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- The Time-side reason domain shared by a checked field and resolved `Time(...)`. `notGiven = false` retains a fully present but impossible clock. -/
+inductive ValueAsDateTimeTimeOperand where
+  | noValue (notGiven : Bool)
+  | value (time : TimeOfDay)
+  | nonRelevant
+  | unavailable (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+namespace ValueAsDateTimeTimeOperand
+
+/-- Project one direct checked Time field without losing its empty or formal state. -/
+def ofObservation : CellObservation TimeOfDay → ValueAsDateTimeTimeOperand
+  | .empty => .noValue true
+  | .value time => .value time
+  | .unknown cause | .poison cause => .unavailable cause
+
+end ValueAsDateTimeTimeOperand
+
+namespace TimeConstructionResult
+
+/-- Preserve resolved Time-construction reasons at the shared DateTime operand seam. -/
+def asDateTimeOperand : TimeConstructionResult → ValueAsDateTimeTimeOperand
+  | .value time => .value time
+  | .incomplete => .noValue true
+  | .unreal => .noValue false
+  | .nonRelevant => .nonRelevant
+  | .unavailable cause => .unavailable cause
+
+end TimeConstructionResult
+
 namespace ValueAsDateTimeResult
 
 /-- Consume one constructed result in an exact-instant fixed-right validation. No-value does not fire; non-relevance and formal unavailability both project to UNKNOWN without being identified with each other. -/
@@ -591,30 +622,45 @@ abbrev ValueAsDateTimeElabError := ValueAsDateZonedElabError
 
 namespace CheckedValueAsDateTime
 
-/-- Read Date before Time as generated code does, then apply the runtime constructor's non-relevance, missingness, and zone-resolution distinctions. This first composite accepts a direct typed Time observation; wider Time expressions retain their own missing-provenance work. -/
-def evaluate (checked : CheckedValueAsDateTime model)
-    (phase : Phase)
-    (cell : CheckedCell
-      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
-    (time : CellObservation TimeOfDay) : ValueAsDateTimeResult :=
-  let dateObservation :=
-    checked.toCheckedValueAsDateSource.observe phase cell
+private def combine (checked : CheckedValueAsDateTime model)
+    (dateObservation : ValueAsDateObservation)
+    (time : ValueAsDateTimeTimeOperand) : ValueAsDateTimeResult :=
   match dateObservation with
   | .unavailable cause => .unavailable cause
   | _ =>
       match time with
-      | .unknown cause | .poison cause => .unavailable cause
+      | .unavailable cause => .unavailable cause
       | _ =>
           match dateObservation, time with
           | .nonRelevant, _ => .nonRelevant
-          | .empty, _ | .date _, .empty => .noValue true
+          | _, .nonRelevant => .nonRelevant
+          | .empty, _ => .noValue true
+          | .date _, .noValue notGiven => .noValue notGiven
           | .date date, .value clock =>
               let localDateTime : LocalDateTime := { date, time := clock }
               match checked.profile.resolveLocal? localDateTime with
               | some instant => .value localDateTime instant
               | none => .noValue false
           | .unavailable cause, _ => .unavailable cause
-          | _, .unknown cause | _, .poison cause => .unavailable cause
+          | _, .unavailable cause => .unavailable cause
+
+/-- Read Date before one reason-bearing Time operand, then apply the runtime constructor's non-relevance, missingness, and zone-resolution distinctions. -/
+def evaluateOperand (checked : CheckedValueAsDateTime model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (time : ValueAsDateTimeTimeOperand) : ValueAsDateTimeResult :=
+  checked.combine
+    (checked.toCheckedValueAsDateSource.observe phase cell) time
+
+/-- Compatibility entry for one direct typed Time observation. -/
+def evaluate (checked : CheckedValueAsDateTime model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (time : CellObservation TimeOfDay) : ValueAsDateTimeResult :=
+  checked.evaluateOperand phase cell
+    (ValueAsDateTimeTimeOperand.ofObservation time)
 
 /-- Check one exact stored-text special Date while preserving the caller's already checked direct Time observation. -/
 def evaluateRaw (checked : CheckedValueAsDateTime model)
@@ -622,6 +668,14 @@ def evaluateRaw (checked : CheckedValueAsDateTime model)
     (time : CellObservation TimeOfDay) : ValueAsDateTimeResult :=
   checked.evaluate phase
     (checked.toCheckedValueAsDateSource.checkSourceRaw raw) time
+
+/-- Compose one already resolved `Time(...)` result through the shared reason-bearing operand seam. -/
+def evaluateConstructionRaw (checked : CheckedValueAsDateTime model)
+    (phase : Phase) (raw : RawCell String)
+    (time : TimeConstructionResult) : ValueAsDateTimeResult :=
+  checked.evaluateOperand phase
+    (checked.toCheckedValueAsDateSource.checkSourceRaw raw)
+    time.asDateTimeOperand
 
 end CheckedValueAsDateTime
 

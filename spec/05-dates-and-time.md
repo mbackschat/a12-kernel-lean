@@ -60,6 +60,8 @@ A date shift whose numeric amount is a domain-invalid expression has no amount t
 
 `Date(Day, Month, Year)` builds a date from numeric parts (also: a 2-argument form supplying the year from the Base Year, and a 4-argument century form). `Time(...)` and `DateTime(...)` construct the corresponding values. A constructed date is **invalid** if any referenced part is unfilled, or the parts don't form a real calendar date (`Date(31, 11, 2000)` — November has 30 days; or 30 February).
 
+`Time()` through `Time(Hour, Minute, Second)` supply a leading prefix of zero to three components; every omitted trailing component is the fixed value zero, so `Time()` is midnight and `Time(10, 30)` is `10:30:00`. Each authored component is statically restricted to its matching bounded integral Number field, matching fixed-width digit-only String field, matching time extractor, or in-range decimal-digit string constant before runtime conversion. At runtime a formally unavailable/non-relevant supplied component dominates missingness, a missing supplied component produces an incomplete/not-given no-value, and a fully present but impossible clock produces a distinct present/unreal no-value. `DateTime(date, time)` evaluates Date before Time, retains those Time-side reasons, gives non-relevance precedence over ordinary no-value after both operands are reached, and resolves a real combined wall label in the model zone.
+
 ```
 Invalid(Date(Day, Month, Year))   -- fires on 31.11, 30.02, an unfilled part, …
 ```

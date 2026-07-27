@@ -179,7 +179,9 @@ theorem valueAsDateTime_evaluate_date_unavailable
       checked.toCheckedValueAsDateSource.observe phase cell =
         .unavailable cause) :
     checked.evaluate phase cell time = .unavailable cause := by
-  rw [CheckedValueAsDateTime.evaluate.eq_def, observed]
+  rw [CheckedValueAsDateTime.evaluate,
+    CheckedValueAsDateTime.evaluateOperand, observed]
+  rfl
 
 /-- Generated left-to-right argument evaluation does not read the checked Time field after the partial-Date source has already failed formally. -/
 theorem valueAsDateTimeField_evaluateRaw_date_unavailable
@@ -204,7 +206,9 @@ theorem valueAsDateTime_evaluate_nonRelevant_empty
       checked.toCheckedValueAsDateSource.observe phase cell =
         .nonRelevant) :
     checked.evaluate phase cell .empty = .nonRelevant := by
-  rw [CheckedValueAsDateTime.evaluate.eq_def, observed]
+  rw [CheckedValueAsDateTime.evaluate,
+    CheckedValueAsDateTime.evaluateOperand, observed]
+  rfl
 
 /-- Construction non-relevance reaches UNKNOWN only at the exact-instant validation consumer. -/
 @[simp] theorem valueAsDateTime_evalFixedRight_nonRelevant
