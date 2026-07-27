@@ -216,6 +216,7 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateDifference_evaluate_left_unavailable
 #print axioms A12Kernel.valueAsDateDifference_evaluate_right_unavailable
 #print axioms A12Kernel.valueAsDateTime_evaluate_date_unavailable
+#print axioms A12Kernel.valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateTimeField_evaluateRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateTime_evaluate_nonRelevant_empty
 #print axioms A12Kernel.valueAsDateTime_evalFixedRight_nonRelevant
@@ -226,6 +227,7 @@ run_cmd do
 #print axioms A12Kernel.elaborateTimeLiteral_ok_iff
 #print axioms A12Kernel.timeFromDateTime_projects_clock
 #print axioms A12Kernel.valueAsDateTimeExtraction_evaluateRaw_date_unavailable
+#print axioms A12Kernel.valueAsDateTimeNumberFields_evaluateRaw_date_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_left_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_right_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_nonRelevant_empty

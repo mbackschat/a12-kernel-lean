@@ -1,10 +1,13 @@
-import A12Kernel.Elaboration.Flat
+import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and Number-field `Time(...)`
 
-This capsule checks the ordinary nonrepeatable Number-field form of each supplied
-`Time(...)` component. The declaration must guarantee an integral nonnegative value and
-either the two-character stored bound or the exact maximum for its position.
+This capsule checks and executes the ordinary nonrepeatable Number-field form of each
+supplied `Time(...)` component. The declaration must guarantee an integral nonnegative
+value and either the two-character stored bound or the exact maximum for its position.
+Execution reads the immutable checked document in Hour/Minute/Second order and delegates
+all component defaults and clock classification to `TimeConstructionResult`.
 
 String fields remain excluded because the flat declaration does not retain the kernel
 checker's extensible-enumeration distinction. Extractors and mixed component forms remain
@@ -110,5 +113,88 @@ def elaborateTimeNumberFields (model : FlatModel) :
         (← elaborateTimeNumberField model .hour hour)
         (← elaborateTimeNumberField model .minute minute)
         (← elaborateTimeNumberField model .second second))
+
+/-- Structural failure outside the reason-bearing `TimeConstructionResult` domain. -/
+inductive TimeNumberFieldsFault where
+  | document (error : CheckedDocumentError)
+  | payloadKind (field : FieldId)
+  | nonIntegralPayload (field : FieldId) (value : Rat)
+  deriving Repr, DecidableEq
+
+namespace CheckedTimeNumberField
+
+/-- Project one checked Number cell to the constructor component domain without applying
+    arithmetic truncation or accepting a mismatched runtime payload. -/
+def classify (checked : CheckedTimeNumberField model)
+    (observation : CellObservation Value) :
+    Except TimeNumberFieldsFault TimeConstructionComponent :=
+  match observation with
+  | .empty => pure .empty
+  | .unknown cause | .poison cause => pure (.unavailable cause)
+  | .value (.num value) =>
+      if value.den = 1 then
+        pure (.value value.num)
+      else
+        throw (.nonIntegralPayload checked.source.id value)
+  | .value _ => throw (.payloadKind checked.source.id)
+
+/-- Read one certified scalar component through the immutable checked document. -/
+def read (checked : CheckedTimeNumberField model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except TimeNumberFieldsFault TimeConstructionComponent := do
+  let cell ← input.read {
+    field := checked.source.id
+    path := []
+  } |>.mapError .document
+  checked.classify (observeCell phase cell)
+
+end CheckedTimeNumberField
+
+namespace CheckedTimeNumberFields
+
+/-- Evaluate only the supplied prefix. A reached formal component stops before every later
+    field read; omitted trailing slots are delegated to `TimeConstructionArity`. -/
+def evaluate (checked : CheckedTimeNumberFields model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except TimeNumberFieldsFault TimeConstructionResult :=
+  match checked with
+  | CheckedTimeNumberFields.hour hourField => do
+      let hourValue ← hourField.read phase input
+      pure (TimeConstructionArity.hour.evaluate hourValue .empty .empty)
+  | CheckedTimeNumberFields.minute hourField minuteField => do
+      let hourValue ← hourField.read phase input
+      match hourValue with
+      | .unavailable cause => pure (.unavailable cause)
+      | hourValue =>
+          let minuteValue ← minuteField.read phase input
+          pure (TimeConstructionArity.minute.evaluate hourValue minuteValue .empty)
+  | CheckedTimeNumberFields.second hourField minuteField secondField => do
+      let hourValue ← hourField.read phase input
+      match hourValue with
+      | .unavailable cause => pure (.unavailable cause)
+      | hourValue =>
+          let minuteValue ← minuteField.read phase input
+          match minuteValue with
+          | .unavailable cause => pure (.unavailable cause)
+          | minuteValue =>
+              let secondValue ← secondField.read phase input
+              pure (TimeConstructionArity.second.evaluate
+                hourValue minuteValue secondValue)
+
+end CheckedTimeNumberFields
+
+namespace CheckedValueAsDateTime
+
+/-- Check the bounded partial-Date source first, then execute a checked Number-field Time
+    prefix only when generated left-to-right DateTime construction reaches it. -/
+def evaluateNumberFieldsRaw (checked : CheckedValueAsDateTime model)
+    (time : CheckedTimeNumberFields model)
+    (phase : Phase) (input : CheckedDocument model) (raw : RawCell String) :
+    Except TimeNumberFieldsFault ValueAsDateTimeResult :=
+  checked.evaluateTimeOperandRaw phase raw fun _ => do
+    let timeResult ← time.evaluate phase input
+    pure timeResult.asDateTimeOperand
+
+end CheckedValueAsDateTime
 
 end A12Kernel

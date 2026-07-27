@@ -27,6 +27,7 @@ import A12Kernel.Proofs.ValueAsDate
 import A12Kernel.Proofs.TimeConstruction
 import A12Kernel.Proofs.TimeLiteral
 import A12Kernel.Proofs.ValueAsDateTimeExtraction
+import A12Kernel.Proofs.ValueAsDateTimeNumberFields
 import A12Kernel.Proofs.FullDateApplication
 import A12Kernel.Proofs.DateTimeApplication
 import A12Kernel.Proofs.FullDateComputationResult

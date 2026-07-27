@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 595 jobs · trust audit **1574 theorem roots; 34975 declarations in 335 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1576 theorem roots; 35033 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Execute the newly checked one-to-three-Number-field `Time(...)` prefix through the immutable `CheckedDocument` and compose it with `DateTime(ValueAsDate(...), time)`. Preserve authored Hour-before-Minute-before-Second reads, stop after the first reached formal or structural fault, and delegate all clock classification to the existing `TimeConstructionResult`.
+Close matching extractor components inside `Time(...)` as the next ordinary Time operand form. Reuse the existing checked temporal component projections, require `HoursFromTime`, `MinutesFromTime`, or `SecondsFromTime` at its matching constructor position, and compose the resulting checked prefix through the same `TimeConstructionResult` and partial-Date DateTime seam.
 
 ## Immediate sequence
 
-1. Read each checked Number component through the document's existing typed Number payload; map empty to incomplete/not-given, formal cells to unavailable, and reject a forged nonintegral or wrong-kind payload structurally rather than coercing it.
-2. Evaluate only supplied fields, in Hour/Minute/Second order, and reuse the existing prefix constructor so omitted trailing components remain fixed zeroes. Compose the result through the existing partial-Date DateTime adapter without reading Time after a Date-side failure.
-3. Retain separators for a legal one-field hour prefix with defaulted trailing zeroes, a legal full three-field clock, empty and formal components at each reached position, first-formal precedence, a forged nonintegral payload, Date-side formal short-circuit, and an accepted recomposed Berlin instant. Leave the statically blocked String arm, extractor and mixed components, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
+1. Recheck `CheckTimeKonstruktImpl.checkCorrectDatumExtractOp`, the extractor backing bean and every Java/Groovy/JavaScript `.st` route, and the existing Lean temporal-component source admission. Determine whether the extractor operand may be any admitted Time-bearing expression or only the currently checked ordinary Time/DateTime field routes.
+2. Add the smallest position-indexed checked component form that evaluates through the existing source owner and converts its integral result without a second numeric expression tree. Preserve constructor prefix order and formal short-circuiting; mixed Number/extractor prefixes are in scope only if one closed sum is smaller and more honest than parallel prefix types.
+3. Retain separators for exact position matching, wrong extractor rejection, empty/formal source behavior, first-formal precedence, one mixed prefix if admitted, trailing zero defaults, and partial-Date DateTime composition. Stop if the current checked source type does not retain a load-bearing format/component certificate. Leave the statically blocked String arm, wider Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

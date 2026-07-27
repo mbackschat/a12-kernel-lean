@@ -669,6 +669,20 @@ def evaluateRaw (checked : CheckedValueAsDateTime model)
   checked.evaluate phase
     (checked.toCheckedValueAsDateSource.checkSourceRaw raw) time
 
+/-- Check the bounded partial-Date source before invoking one caller-supplied Time operand
+    thunk. This is the shared generated-order seam for complete-Time fields,
+    `TimeFromDateTime`, and checked component prefixes. -/
+def evaluateTimeOperandRaw (checked : CheckedValueAsDateTime model)
+    (phase : Phase) (raw : RawCell String)
+    (time : Unit → Except error ValueAsDateTimeTimeOperand) :
+    Except error ValueAsDateTimeResult := do
+  let dateCell := checked.toCheckedValueAsDateSource.checkSourceRaw raw
+  match checked.toCheckedValueAsDateSource.observe phase dateCell with
+  | .unavailable cause => pure (.unavailable cause)
+  | _ =>
+      let timeOperand ← time ()
+      pure (checked.evaluateOperand phase dateCell timeOperand)
+
 /-- Compose one already resolved `Time(...)` result through the shared reason-bearing operand seam. -/
 def evaluateConstructionRaw (checked : CheckedValueAsDateTime model)
     (phase : Phase) (raw : RawCell String)

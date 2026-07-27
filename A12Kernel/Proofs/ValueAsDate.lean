@@ -183,6 +183,22 @@ theorem valueAsDateTime_evaluate_date_unavailable
     CheckedValueAsDateTime.evaluateOperand, observed]
   rfl
 
+/-- The shared Date-first seam never invokes its Time thunk after formal Date
+    unavailability. Every checked Time operand adapter specializes this law. -/
+theorem valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
+    (checked : CheckedValueAsDateTime model)
+    (phase : Phase) (raw : RawCell String)
+    (time : Unit → Except error ValueAsDateTimeTimeOperand)
+    (cause : FormalCause)
+    (observed :
+      checked.toCheckedValueAsDateSource.observe phase
+        (checked.toCheckedValueAsDateSource.checkSourceRaw raw) =
+          .unavailable cause) :
+    checked.evaluateTimeOperandRaw phase raw time =
+      .ok (.unavailable cause) := by
+  rw [CheckedValueAsDateTime.evaluateTimeOperandRaw, observed]
+  rfl
+
 /-- Generated left-to-right argument evaluation does not read the checked Time field after the partial-Date source has already failed formally. -/
 theorem valueAsDateTimeField_evaluateRaw_date_unavailable
     (checked : CheckedValueAsDateTimeField model)
@@ -193,8 +209,13 @@ theorem valueAsDateTimeField_evaluateRaw_date_unavailable
         (checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw) =
           .unavailable cause) :
     checked.evaluateRaw phase input raw = .ok (.unavailable cause) := by
-  rw [CheckedValueAsDateTimeField.evaluateRaw, observed]
-  rfl
+  simpa only [CheckedValueAsDateTimeField.evaluateRaw] using
+    valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
+      checked.construction phase raw
+        (fun _ => do
+          let time ← checked.readTime phase input
+          pure (ValueAsDateTimeTimeOperand.ofObservation time))
+        cause observed
 
 /-- A cause-free unknown year dominates an ordinary empty Time only after the Time read has completed without a formal cause. -/
 theorem valueAsDateTime_evaluate_nonRelevant_empty

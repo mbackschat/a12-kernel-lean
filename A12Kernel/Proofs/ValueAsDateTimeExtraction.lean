@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValueAsDateTimeExtraction
+import A12Kernel.Proofs.ValueAsDate
 
 /-! # Checked `TimeFromDateTime` laws -/
 
@@ -23,7 +24,9 @@ theorem valueAsDateTimeExtraction_evaluateRaw_date_unavailable
         (checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw) =
           .unavailable cause) :
     checked.evaluateRaw phase input raw = .ok (.unavailable cause) := by
-  simp only [CheckedValueAsDateTimeExtraction.evaluateRaw, observed]
-  rfl
+  simpa only [CheckedValueAsDateTimeExtraction.evaluateRaw] using
+    valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
+      checked.construction phase raw
+        (fun _ => checked.readTime phase input) cause observed
 
 end A12Kernel

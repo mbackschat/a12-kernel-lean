@@ -75,14 +75,9 @@ def readTime (checked : CheckedValueAsDateTimeExtraction model)
 def evaluateRaw (checked : CheckedValueAsDateTimeExtraction model)
     (phase : Phase) (input : CheckedDocument model)
     (raw : RawCell String) :
-    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult := do
-  let dateCell :=
-    checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw
-  match checked.construction.toCheckedValueAsDateSource.observe phase dateCell with
-  | .unavailable cause => pure (.unavailable cause)
-  | _ =>
-      let time ← checked.readTime phase input
-      pure (checked.construction.evaluateOperand phase dateCell time)
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
+  checked.construction.evaluateTimeOperandRaw phase raw fun _ =>
+    checked.readTime phase input
 
 end CheckedValueAsDateTimeExtraction
 
