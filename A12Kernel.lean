@@ -71,6 +71,7 @@ import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.Flat
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Elaboration.FullDateComputationResult
+import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.CustomField
 import A12Kernel.Elaboration.StringContext

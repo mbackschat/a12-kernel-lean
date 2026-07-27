@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 564 jobs · trust audit **1500 theorem roots; 32418 declarations in 313 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 566 jobs · trust audit **1510 theorem roots; 32492 declarations in 315 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close one bounded SG6 full-Date whole-result application against an explicitly supplied compatible destination. Consume only the already-classified changed, errored, and cleared collections through the existing one-target transition; do not reclassify against the destination.
+Close one checked nonrepeatable full-Date field-copy operation that feeds the existing full-Date target, result view, and application boundary end to end. The source and target remain model-owned, full-Date, nonrepeatable declarations; no table or scheduler is introduced.
 
 ## Immediate sequence
 
-1. Specialize the existing one-target full-Date transition at one destination field and preserve every other field projection.
-2. Apply clears, target errors, then changed successes in the kernel order; reject duplicate action targets before selecting a write. Successful unchanged instances and residual messages must have no application action.
-3. Prove unchanged-not-applied, changed/error/clear specialization, residual-message independence, and duplicate refusal. Stop before destination compatibility certification, Date expression/table execution, scheduling, message construction, DateTime, partial-Date completion, or wider format syntax.
+1. Reopen the bounded full-Date source packet only for the operation-execution layer: verify direct Date-field copy admission, empty/formal precedence, exact-instant transport, self-reference rejection, and target-policy composition through the generated template/runtime owners including the `.st` files.
+2. Add one checked operation certificate over an ordinary nonrepeatable full-Date source and the existing checked full-Date target. Evaluate through `CheckedDocument`, preserving source empty and formal cause before target rendering/basic checking.
+3. Prove exact accepted transport and no-value/poison preservation, then exercise source-relative unchanged/changed/error/clear plus destination application through the composed public query. Stop before alternatives, tables, scheduling, shifts, DateTime, partial-Date completion, message construction, destination compatibility certification, or wider format syntax.
 
 ## Parked boundaries
 

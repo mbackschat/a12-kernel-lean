@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FullDateComputationResult
+import A12Kernel.Elaboration.FullDateComputationApplication
 
 /-! # Full-Date V2 result projection locks -/
 
@@ -39,6 +39,10 @@ private def view? (input : DocumentData) (outcome : FullDateTargetOutcome)
 private def sourceState? (input : DocumentData) : Option FullDateTargetState := do
   let checked ← (checkDocument prepared "en_US" input).toOption
   pure (checked.sourceFullDateTargetState target.id)
+
+private def destinationWith (state : FullDateTargetState) :
+    FullDateComputationDestination :=
+  fun field => if field == target.id then state else .absent
 
 /- Source recovery retains placement while accepting the stored Date text as an opaque identity. -/
 example :
@@ -85,6 +89,42 @@ example :
       [.malformed]).map (fun view =>
         (view.formalErrorsInOperands, view.noErrorOccurred)) =
       some ([.malformed], false) := by
+  native_decide
+
+/- Source-unchanged success is not reclassified against a different destination. -/
+example : (do
+    let view ← view? oldSource (.accepted oldDate)
+    let applied ← view.applyTo (destinationWith (.presentValue nextDate)) |>.toOption
+    pure (applied target.id)) = some (.presentValue nextDate) := by
+  native_decide
+
+/- Changed success writes, while rejection and public clearing use the one-target clear transition. -/
+example :
+    (do
+      let view ← view? oldSource (.accepted nextDate)
+      let applied ← view.applyTo (destinationWith .absent) |>.toOption
+      pure (applied target.id)) = some (.presentValue nextDate) ∧
+    (do
+      let view ← view? oldSource (.errored nextDate .before1900)
+      let applied ← view.applyTo (destinationWith (.presentValue nextDate)) |>.toOption
+      pure (applied target.id)) = some .presentEmpty ∧
+    (do
+      let view ← view? oldSource .noValue
+      let applied ← view.applyTo (destinationWith (.presentValue nextDate)) |>.toOption
+      pure (applied target.id)) = some .presentEmpty := by
+  native_decide
+
+/- A malformed result cannot let action-list order choose between writes at one target. -/
+example : (do
+    let checked ← (checkDocument prepared "en_US" oldSource).toOption
+    let view := FullDateComputationRunView.fromOutcomes checked
+      ([] : List FormalCause)
+      [(target.id, .accepted nextDate),
+        (target.id, .errored nextDate .before1900)]
+    pure (match view.applyTo (destinationWith .absent) with
+      | .error error => some error
+      | .ok _ => none)) =
+        some (some (.duplicateActionTarget target.id)) := by
   native_decide
 
 end A12Kernel.Conformance.FullDateComputationResult
