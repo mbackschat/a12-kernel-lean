@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 590 jobs · trust audit **1572 theorem roots; 34630 declarations in 332 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 593 jobs · trust audit **1574 theorem roots; 34791 declarations in 334 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the direct `TimeFromDateTime(...)` extraction as the next ordinary Time operand inside `DateTime(ValueAsDate(...), time)`. Determine its static input-format gate, exact-instant versus wall-clock projection, empty/formal precedence, Date-before-Time evaluation, and whether the existing typed DateTime observation and `TimeOfDay` seam suffice without a general temporal-expression tree.
+Audit and close model-relative component-field lowering for `Time(...)` as the next ordinary Time operand inside `DateTime(ValueAsDate(...), time)`. Determine the exact Number/String/extractor declaration gates per hour, minute, and second position, runtime conversion and left-to-right precedence, and the smallest checked document adapter that can reuse the existing `TimeConstructionResult`.
 
 ## Immediate sequence
 
-1. Recheck `datumExtractOp`, `CheckDatumExtractOpImpl`, the generated extraction templates/backing beans, and the runtime Time-from-DateTime helper. Inventory allowed DateTime component shapes, authored evaluation order, no-value/formal behavior, and whether the extracted clock is decoded from the retained local label or reconstructed from the instant.
-2. If the existing checked DateTime observation retains every required distinction, add the smallest checked extraction adapter and compose it through the shared partial-Date DateTime operand. Reuse the current document and zone owners; do not add a generic temporal AST, second parser, or second instant-to-local resolver.
-3. Retain separators for an accepted Berlin DateTime, an overlap-hour instant whose retained local label matters, empty input, formal unavailability, Date-side formal short-circuit, unknown-year reachability, and one accepted recomposed instant. Stop if extraction requires a wider format profile or runtime identity absent from the typed DateTime payload. Leave model-relative `Time(...)` component-field lowering, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
+1. Recheck `CheckTimeKonstruktImpl`, `CheckBaseDateConstructionImpl`, component declaration metadata, generated `TimeConstructionOperation.st`, and the runtime numeric/String conversion path. Inventory exactly which declaration properties make a field legal at each position and whether that information is present in `FlatModel`.
+2. If the existing model and checked document retain every required certificate, add the smallest supplied-prefix checked adapter over one to three ordinary nonrepeatable component fields. Preserve hour-before-minute-before-second observation and delegate all result classification to `TimeConstructionResult`; do not add a temporal-expression AST or a second numeric/String evaluator.
+3. Retain separators for a legal one-field hour prefix with defaulted trailing zeroes, a legal full three-field clock, wrong position bounds or declaration shape, empty and formal components at each reached position, first-formal precedence, Date-side formal short-circuit, and an accepted recomposed Berlin instant. Stop if a load-bearing field bound or conversion identity is absent from the current flat declaration. Leave extractor components, literal mixing beyond the existing resolved seam, Time arithmetic, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

@@ -64,6 +64,8 @@ A date shift whose numeric amount is a domain-invalid expression has no amount t
 
 `Time()` through `Time(Hour, Minute, Second)` supply a leading prefix of zero to three components; every omitted trailing component is the fixed value zero, so `Time()` is midnight and `Time(10, 30)` is `10:30:00`. Each authored component is statically restricted to its matching bounded integral Number field, matching fixed-width digit-only String field, matching time extractor, or in-range decimal-digit string constant before runtime conversion. At runtime a formally unavailable/non-relevant supplied component dominates missingness, a missing supplied component produces an incomplete/not-given no-value, and a fully present but impossible clock produces a distinct present/unreal no-value. `DateTime(date, time)` evaluates Date before Time, retains those Time-side reasons, gives non-relevance precedence over ordinary no-value after both operands are reached, and resolves a real combined wall label in the model zone.
 
+`TimeFromDateTime(source)` requires a DateTime operand whose declared or derived format contains Year, Month, Day, Hour, Minute, and Second. A valueless source is returned with its not-given or non-relevant reason unchanged. For a present source, the operation reads Hour, Minute, and Second in the model zone and constructs a Time value anchored at 1970-01-01; downstream Time consumers therefore observe the retained wall clock, not the source Date or exact instant. When used as the Time argument of `DateTime(date, time)`, the outer constructor still evaluates its Date argument before evaluating this extraction.
+
 ```
 Invalid(Date(Day, Month, Year))   -- fires on 31.11, 30.02, an unfilled part, …
 ```
