@@ -226,9 +226,11 @@ run_cmd do
 #print axioms A12Kernel.fullDateComputationRun_error_applies
 #print axioms A12Kernel.fullDateComputationRun_cleared_applies
 #print axioms A12Kernel.fullDateComputationRun_residualMessages_doNotAffectApplication
-#print axioms A12Kernel.fullDateFieldCopy_empty
-#print axioms A12Kernel.fullDateFieldCopy_poison
-#print axioms A12Kernel.fullDateFieldCopy_value
+#print axioms A12Kernel.fullDateComputation_field_empty
+#print axioms A12Kernel.fullDateComputation_field_poison
+#print axioms A12Kernel.fullDateComputation_field_value
+#print axioms A12Kernel.fullDateComputation_today_value
+#print axioms A12Kernel.fullDateComputation_today_unavailable
 #print axioms A12Kernel.todayOperand_resolves_exact
 #print axioms A12Kernel.todayOperand_unsupported
 #print axioms A12Kernel.baseYearOperand_resolves_exact

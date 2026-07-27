@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1513 theorem roots; 32686 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1515 theorem roots; 32717 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Admit `Today` as the second checked full-Date computation operand and consolidate it with the completed direct field-copy route through the existing `FlatTemporalOperand` owner. The operation must take `World` explicitly, preserve the model-owned zone, and feed the same target/result/application boundary without a new temporal AST, table, or scheduler.
+Admit date-typed `BaseYear` as the third checked full-Date computation operand through the existing `FlatTemporalOperand` owner. It must be accepted only when the checked model declares the exact year, resolve January 1 through the model-zone capability rather than the clock or a numeric coercion, and feed the existing target/result/application boundary without a new temporal AST or source-specific evaluator.
 
 ## Immediate sequence
 
-1. Reopen the bounded temporal packet only for `Today` as a computation result: verify generated operation lowering, one retained computation-time sample, model-zone midnight resolution, target delegation, and generated-validation resampling through Java and `.st`.
-2. Extend the checked full-Date operation to the existing `FlatTemporalOperand` field/`Today` subset. Field reads continue through `CheckedDocument`; `Today` consumes the explicit `World` and the checked model's exact zone id. Retire any field-copy-only shape made redundant by the second real operand.
-3. Prove field-copy preservation after consolidation and exact `Today` resolution, then retain UTC/Berlin boundary and another-`World` instability separators through result classification/application. Stop before `Now`, literals, Base Year, shifts, DateTime, partial-Date completion, alternatives/tables/scheduling, message construction, destination compatibility certification, or wider format syntax.
+1. Finish the bounded source packet for date-typed `BaseYear`: verify parse-time Date transformation, configured-year admission, generated `getReferenzjahr()` lowering, January 1 construction in the model time zone, and target delegation through Java and `.st`.
+2. Extend the checked full-Date operand admission and evaluator to `FlatTemporalOperand.baseYearValue`, with an elaborator that captures exactly `model.baseYear` and `model.timeZoneId`. Reuse `World.resolveLocal?` only as the explicit model-zone capability; the result must be independent of `World.now`.
+3. Prove exact January 1 resolution and clock independence, then retain missing-Base-Year, unsupported-zone, and numeric-coercion separators through the existing result/application query. Stop before `Now`, literals, Base-Year ranges, shifts, DateTime, partial-Date completion, alternatives/tables/scheduling, message construction, destination compatibility certification, or wider format syntax.
 
 ## Parked boundaries
 

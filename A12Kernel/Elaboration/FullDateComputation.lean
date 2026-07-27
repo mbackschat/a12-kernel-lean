@@ -1,14 +1,14 @@
 import A12Kernel.Elaboration.FullDateComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 
-/-! # Checked nonrepeatable full-Date field copy
+/-! # Checked nonrepeatable full-Date computations
 
-This capsule resolves one ordinary nonrepeatable full-Date source and one distinct full-Date target from the same validated model. Evaluation reads the source once through `CheckedDocument`, preserves computation-phase empty and poison, transports the exact source instant, and delegates rendering and basic checking to `CheckedFullDateTarget`. Alternatives, scheduling, DateTime, partial dates, wider expressions, message construction, and destination compatibility remain separate.
+This capsule admits the field and `Today` forms of the existing `FlatTemporalOperand` against one full-Date target. Field evaluation reads once through `CheckedDocument`; `Today` resolves once from the execution's explicit `World` in the checked model zone. Both retain an exact instant and delegate rendering and basic checking to `CheckedFullDateTarget`. Alternatives, scheduling, DateTime, partial dates, wider expressions, message construction, and destination compatibility remain separate.
 -/
 
 namespace A12Kernel
 
-/-- Static refusal before a direct full-Date field copy can execute. -/
+/-- Static refusal before a bounded full-Date computation can execute. -/
 inductive FullDateComputationElabError where
   | target (error : FullDateTargetElabError)
   | source (error : ResolveError)
@@ -30,18 +30,29 @@ def FlatModel.admitsFullDateComputationSource
         source.kind == .date &&
         source.components == TemporalComponents.fullDate
 
-/-- One model-certified direct full-Date copy. Source and target identities cannot be substituted after elaboration. -/
-structure CheckedFullDateFieldCopy (model : FlatModel) where
-  source : FlatTemporalField
-  target : CheckedFullDateTarget model
-  sourceAdmitted : model.admitsFullDateComputationSource source = true
-  targetDistinct : source.id ≠ target.checked.target.id
+/-- Admit exactly an ordinary distinct full-Date field or `Today` in this model's zone. This is a refinement of the shared temporal operand, not another expression tree. -/
+def FlatModel.admitsFullDateComputationOperand
+    (model : FlatModel) (targetField : FieldId) :
+    FlatTemporalOperand → Bool
+  | .fieldValue source =>
+      model.admitsFullDateComputationSource source &&
+        source.id != targetField
+  | .todayValue zoneId => zoneId == model.timeZoneId
+  | _ => false
 
-/-- Resolve one ordinary nonrepeatable full-Date source and one distinct full-Date target against the same validated model. -/
-def elaborateFullDateFieldCopy
+/-- One model-certified field/`Today` computation. The operand, target policy, and model-zone identity cannot be substituted after elaboration. -/
+structure CheckedFullDateComputation (model : FlatModel) where
+  operand : FlatTemporalOperand
+  target : CheckedFullDateTarget model
+  operandAdmitted :
+    model.admitsFullDateComputationOperand
+      target.checked.target.id operand = true
+
+/-- Resolve one ordinary nonrepeatable full-Date field operand and one distinct target against the same validated model. -/
+def elaborateFullDateFieldComputation
     (model : FlatModel) (sourceField targetField : FieldId) :
     Except FullDateComputationElabError
-      (CheckedFullDateFieldCopy model) := do
+      (CheckedFullDateComputation model) := do
   let target ← elaborateFullDateTarget model targetField |>.mapError .target
   let declaration ←
     model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
@@ -50,16 +61,17 @@ def elaborateFullDateFieldCopy
     | none => throw (.sourceNotTemporal sourceField)
   if _hKind : source.kind = .date then
     if _hComponents : source.components = TemporalComponents.fullDate then
-      if hDistinct : source.id = target.checked.target.id then
+      if _hDistinct : source.id = target.checked.target.id then
         throw (.targetSelfReference targetField)
       else
-        if hSource :
-            model.admitsFullDateComputationSource source = true then
+        let operand := FlatTemporalOperand.fieldValue source
+        if hOperand :
+            model.admitsFullDateComputationOperand
+              target.checked.target.id operand = true then
           pure {
-            source
+            operand
             target
-            sourceAdmitted := hSource
-            targetDistinct := hDistinct }
+            operandAdmitted := hOperand }
         else
           throw .incoherentCore
     else
@@ -67,46 +79,72 @@ def elaborateFullDateFieldCopy
   else
     throw (.sourceKind source.id source.kind)
 
+/-- Build the dynamic `Today` operand from the checked model's exact zone id. No clock sample is retained in the operation. -/
+def elaborateFullDateTodayComputation
+    (model : FlatModel) (targetField : FieldId) :
+    Except FullDateComputationElabError
+      (CheckedFullDateComputation model) := do
+  let target ← elaborateFullDateTarget model targetField |>.mapError .target
+  let operand := FlatTemporalOperand.todayValue model.timeZoneId
+  if hOperand :
+      model.admitsFullDateComputationOperand
+        target.checked.target.id operand = true then
+    pure { operand, target, operandAdmitted := hOperand }
+  else
+    throw .incoherentCore
+
 /-- Structural failure outside the rich full-Date result domain. -/
 inductive FullDateComputationFault where
   | document (error : CheckedDocumentError)
   | sourceValueKind (source : FieldId)
+  | todayUnavailable (zoneId : String)
+  | unsupportedOperand
   | target (error : FullDateTargetEvaluationFault)
   deriving Repr, DecidableEq
 
-namespace CheckedFullDateFieldCopy
+namespace CheckedFullDateComputation
 
-/-- Project one checked source read to the root full-Date computation result. The exact instant is retained; decoded source components and stored text do not become target policy. -/
-def readSource (operation : CheckedFullDateFieldCopy model)
+/-- Evaluate the admitted operand without ambient time. A field preserves computation-phase empty and poison; `Today` resolves from the supplied world at this call. -/
+def evaluateOperand (operation : CheckedFullDateComputation model)
+    (world : World)
     (input : CheckedDocument model) :
     Except FullDateComputationFault FullDateComputationResult :=
-  match input.read { field := operation.source.id, path := [] } with
-  | .error error => .error (.document error)
-  | .ok cell =>
-      match observeCell .computation cell with
-      | .empty => pure .noValue
-      | .poison cause | .unknown cause => pure (.poison cause)
-      | .value (.temporal (.date instant _ _)) => pure (.value instant)
-      | .value _ => throw (.sourceValueKind operation.source.id)
+  match operation.operand with
+  | .fieldValue source =>
+      match input.read { field := source.id, path := [] } with
+      | .error error => .error (.document error)
+      | .ok cell =>
+          match observeCell .computation cell with
+          | .empty => pure .noValue
+          | .poison cause | .unknown cause => pure (.poison cause)
+          | .value (.temporal (.date instant _ _)) => pure (.value instant)
+          | .value _ => throw (.sourceValueKind source.id)
+  | .todayValue zoneId =>
+      match world.today? zoneId with
+      | some instant => pure (.value instant)
+      | none => throw (.todayUnavailable zoneId)
+  | _ => throw .unsupportedOperand
 
-/-- Execute the checked direct copy through the existing declaration-owned target policy. -/
-def evaluateOutcome (operation : CheckedFullDateFieldCopy model)
+/-- Execute the checked operand through the existing declaration-owned target policy. -/
+def evaluateOutcome (operation : CheckedFullDateComputation model)
+    (world : World)
     (input : CheckedDocument model) :
     Except FullDateComputationFault FullDateTargetOutcome :=
-  match operation.readSource input with
+  match operation.evaluateOperand world input with
   | .error error => .error error
   | .ok result => operation.target.evaluate result |>.mapError .target
 
 /-- Execute and classify the one rich target outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
-def executeResult (operation : CheckedFullDateFieldCopy model)
+def executeResult (operation : CheckedFullDateComputation model)
+    (world : World)
     (input : CheckedDocument model)
     (residualMessages : List ResidualMessage) :
     Except FullDateComputationFault
       (FullDateComputationRunView ResidualMessage) := do
-  let outcome ← operation.evaluateOutcome input
+  let outcome ← operation.evaluateOutcome world input
   pure (FullDateComputationRunView.fromOutcomes input residualMessages
     [(operation.target.checked.target.id, outcome)])
 
-end CheckedFullDateFieldCopy
+end CheckedFullDateComputation
 
 end A12Kernel
