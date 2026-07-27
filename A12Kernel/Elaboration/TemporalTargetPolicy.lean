@@ -3,7 +3,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal declaration policy
 
-This capsule resolves one nonrepeatable Date or DateTime declaration against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its first consumers render computed targets and certify stored day-optional `ValueAsDate`; the bounded target refinements render concrete Date values in two exact formats, including when the target permits partially known stored inputs, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored text, delta classification, and application remain separate.
+This capsule resolves one nonrepeatable Date or DateTime declaration against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its first consumers render computed targets and certify stored partial-Date `ValueAsDate`; the bounded target refinements render concrete Date values in two exact formats, including when the target permits partially known stored inputs, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored text, delta classification, and application remain separate.
 -/
 
 namespace A12Kernel

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1549 theorem roots; 33506 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1550 theorem roots; 33617 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Extend the checked `ValueAsDate(field, FirstDay|LastDay)` owner from `DAY_OPTIONAL` to the remaining kernel-admitted `MONTH_OPTIONAL` and `YEAR_OPTIONAL` stored-Date modes without changing its direct-comparison result boundary. Preserve every literal unknown component until endpoint selection and preserve the runtime's non-relevant result for an unknown year.
+Connect the checked partial-Date `ValueAsDate` owner to exact stored-text admission for its two currently supported declaration formats. Produce the declaration-indexed typed cell from absent, present-empty, well-formed full/partial, or malformed raw input before endpoint evaluation; do not widen the universal instant-bearing `Value`.
 
 ## Immediate sequence
 
-1. Audit the exact well-formed stored shapes for `MONTH_OPTIONAL` and `YEAR_OPTIONAL`, the order of unknown-year suppression versus month/day completion, and first/last behavior across leap years and the universal Date floor. Use `IDateType.DatePrecision`, `TeilbekanntesDatumUtil`/`FormatDefinitionDatum`, `RuntimeController.wertAlsDatum`, `PartiallyKnownDatesUtil`, and the existing a12-dmkits formal/interpreter owners; do not infer legal combinations from enum names.
-2. Generalize the existing typed omitted-day carrier only as far as those source-closed combinations require. Reuse the current checked declaration policy, checked-cell observation, full-Date endpoint, and comparison verdict owners; an unknown year must project to not evaluated rather than a fabricated reference year.
-3. Keep static rejection exact for `FULL`, non-Date, repeatable placement, and unsupported formats. Stop if a legal omission shape or the empty/non-relevant distinction is not source-determined. Do not proceed into the nested Date-add/difference/`DateTime(...)` placements pending peer reconciliation under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions), partial-Date computation output, scheduling, message rendering, wider format syntax, or unsupported zones.
+1. Audit the exact lexical and formal-check order for `dd.MM.yyyy` and `yyyy-MM-dd`: placement/empty handling, exact-width zero markers, suffix consistency, calendar reality, the universal floor, and the opt-in pre-1900 check. Reuse `FormatDefinitionDatum`, `TeilbekanntesDatumUtil`, `ValidationDateParser`, and the already-closed precision packet; do not infer parser behavior from the new typed constructors.
+2. Add the smallest declaration-policy-owned adapter from raw stored text to `CheckedCell (AdmittedPartiallyKnownDate mode)`. Reuse `checkRawCellWith` and the existing partial-Date constructors; malformed syntax, illegal omission shape, impossible date, floor failure, and the enabled pre-1900 failure remain formal invalidity rather than operation-level outcomes.
+3. Retain separators for both component orders, every legal omission tier, illegal mixed omissions, leap day, exact floor, unknown-year non-relevance, absent versus present-empty, and formal suppression. Stop if the exact supported-format parser or error precedence needs a broader locale/display or legacy-calendar owner. Do not proceed into nested Date-add/difference/`DateTime(...)` placements pending peer reconciliation under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions), repeatable addressing, partial-Date computation output, scheduling, message rendering, wider format syntax, or unsupported zones.
 
 ## Parked boundaries
 
