@@ -153,4 +153,26 @@ theorem checkedConstructedDateShift_real_domain_failure
     CheckedConstructedDateShift.sourceNotGiven]
   rfl
 
+/-- A reached first-source cause decides the generated two-source difference without any hypothesis about the second checked source. -/
+theorem checkedConstructedDateDifference_first_unavailable
+    (checked : CheckedConstructedDateDifference model)
+    (phase : Phase) (input : CheckedDocument model)
+    (cause : FormalCause)
+    (first :
+      checked.first.evaluate phase input = .ok (.unavailable cause)) :
+    checked.evaluate phase input = .ok (.error cause) := by
+  simp [CheckedConstructedDateDifference.evaluate, first]
+
+/-- Once the first source resolves, the second source's exact reached formal cause is retained. -/
+theorem checkedConstructedDateDifference_second_unavailable
+    (checked : CheckedConstructedDateDifference model)
+    (phase : Phase) (input : CheckedDocument model)
+    (firstResult : DateConstructionResult) (cause : FormalCause)
+    (first :
+      checked.first.evaluate phase input = .ok (.resolved firstResult))
+    (second :
+      checked.second.evaluate phase input = .ok (.unavailable cause)) :
+    checked.evaluate phase input = .ok (.error cause) := by
+  simp [CheckedConstructedDateDifference.evaluate, first, second]
+
 end A12Kernel

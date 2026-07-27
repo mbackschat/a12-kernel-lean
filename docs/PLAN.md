@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1606 theorem roots; 36342 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 613 jobs · trust audit **1608 theorem roots; 36404 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose two direct UTC/GMT three-Number-field constructed Dates through the existing default-cutover day/month/year difference owners. Retain authored first-source-before-second-source evaluation and exact formal causes while reusing the established incomplete-versus-unreal numeric result.
+Integrate the checked direct constructed-Date numeric consumers into the existing numeric-expression boundary only where its current authored AST already retains the exact nested operation. Reuse the established `ConstructedDateNumericResult` and formal-cause projection; do not introduce a general temporal AST merely to force the integration.
 
 ## Immediate sequence
 
-1. Inventory `DateConstructionResult.differenceLegacy?`, `differenceLegacyDays?`, and the generated Date-difference argument order; write red cases for the cutover day step, month/year completed-period boundaries, first-source formal precedence, a reached second-source formal cause, incomplete omission zero, and unreal fixed zero.
-2. Reuse two `CheckedConstructedDateComponents` values and the existing reason-bearing numeric result. Add no pair AST, second calendar account, or duplicate component evaluator.
-3. Stop before another Date component form or zone, numeric-expression consumption of the difference, computation scheduling, target storage, repeatable addressing, message construction, or a general temporal-expression carrier.
+1. Inventory `SurfaceNumericAtom`, `ResolvedNumericAtom`, the direct temporal component/difference carriers, and checked elaboration to determine whether `Date(...)` component extraction or difference is already representable without a new expression family.
+2. If representable, add one bounded checked atom and red cases for real value, incomplete omission zero, unreal fixed zero, and exact formal propagation through validation and Number computation. Reuse existing arithmetic/generated-validation paths by specialization.
+3. If the surface AST does not retain the nested constructed-Date shape, record that exact authoring gap and select the next SG6 family; do not add a general temporal-expression carrier, adapter-only parallel AST, scheduler, target storage, repeatable addressing, or message construction.
 
 ## Parked boundaries
 

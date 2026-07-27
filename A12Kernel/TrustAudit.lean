@@ -1655,3 +1655,5 @@ run_cmd do
 #print axioms A12Kernel.constructedDateObservation_shifts_preserve_resolved_nonvalues
 #print axioms A12Kernel.checkedConstructedDateShift_source_unavailable
 #print axioms A12Kernel.checkedConstructedDateShift_real_domain_failure
+#print axioms A12Kernel.checkedConstructedDateDifference_first_unavailable
+#print axioms A12Kernel.checkedConstructedDateDifference_second_unavailable

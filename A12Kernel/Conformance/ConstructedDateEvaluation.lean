@@ -27,7 +27,10 @@ private def dateModel (zoneId : String := "UTC") : FlatModel := {
     componentField 1 { maximum := some 31 },
     componentField 2 { maximum := some 12 },
     componentField 3 { maxStoredLength := some 4 },
-    shiftAmountField]
+    shiftAmountField,
+    componentField 5 { maximum := some 31 },
+    componentField 6 { maximum := some 12 },
+    componentField 7 { maxStoredLength := some 4 }]
   timeZoneId := zoneId
 }
 
@@ -93,6 +96,25 @@ private def shift? (unit : DateShiftUnit)
   ({ source, unit, amount } :
       CheckedConstructedDateShift (dateModel "UTC")).evaluate
         .computation input |>.toOption
+
+private inductive DifferenceObservation where
+  | numeric (result : ConstructedDateNumericResult)
+  | formal (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+private def difference? (unit : DateShiftUnit)
+    (cells : List ClassifiedCellInput) : Option DifferenceObservation := do
+  let first ←
+    (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
+  let second ←
+    (elaborateConstructedDateComponents (dateModel "UTC") 5 6 7).toOption
+  let input ← document? cells
+  match ({ first, second, unit } :
+      CheckedConstructedDateDifference (dateModel "UTC")).evaluate
+        .validation input with
+  | .error _ => none
+  | .ok (.error cause) => some (.formal cause)
+  | .ok (.ok result) => some (.numeric result)
 
 /- Checked execution preserves the default-cutover identity through all three literal
    calendar shifts. -/
@@ -256,6 +278,70 @@ example :
         numberCell 3 "2024" (.parsed (.num 2024)),
         numberCell 4 "bad-amount" (.rejected .declaredConstraint)]) =
           some (.unavailable .declaredConstraint) := by
+  native_decide
+
+/- Checked day difference crosses the cutover hole as one step; month and year counting
+   retain their established fresh-landing boundary. -/
+example :
+    difference? .days [
+        numberCell 1 "4" (.parsed (.num 4)),
+        numberCell 2 "10" (.parsed (.num 10)),
+        numberCell 3 "1582" (.parsed (.num 1582)),
+        numberCell 5 "15" (.parsed (.num 15)),
+        numberCell 6 "10" (.parsed (.num 10)),
+        numberCell 7 "1582" (.parsed (.num 1582))] =
+          some (.numeric (.value 1 false)) ∧
+      difference? .months [
+        numberCell 1 "10" (.parsed (.num 10)),
+        numberCell 2 "9" (.parsed (.num 9)),
+        numberCell 3 "1582" (.parsed (.num 1582)),
+        numberCell 5 "15" (.parsed (.num 15)),
+        numberCell 6 "10" (.parsed (.num 10)),
+        numberCell 7 "1582" (.parsed (.num 1582))] =
+          some (.numeric (.value 0 false)) ∧
+      difference? .years [
+        numberCell 1 "10" (.parsed (.num 10)),
+        numberCell 2 "10" (.parsed (.num 10)),
+        numberCell 3 "1581" (.parsed (.num 1581)),
+        numberCell 5 "20" (.parsed (.num 20)),
+        numberCell 6 "10" (.parsed (.num 10)),
+        numberCell 7 "1582" (.parsed (.num 1582))] =
+          some (.numeric (.value 1 false)) := by
+  native_decide
+
+/- Generated first-before-second evaluation preserves the first reached formal cause and
+   exposes a second-source cause only after the first source resolves. -/
+example :
+    difference? .days [
+        numberCell 1 "bad-first" (.rejected .malformed),
+        numberCell 5 "bad-second" (.rejected .declaredConstraint)] =
+          some (.formal .malformed) ∧
+      difference? .days [
+        numberCell 1 "4" (.parsed (.num 4)),
+        numberCell 2 "10" (.parsed (.num 10)),
+        numberCell 3 "1582" (.parsed (.num 1582)),
+        numberCell 5 "bad-second" (.rejected .declaredConstraint)] =
+          some (.formal .declaredConstraint) := by
+  native_decide
+
+/- Incomplete and present-but-unreal checked sources both yield zero through the shared
+   numeric result, but retain omission versus fixed provenance. -/
+example :
+    difference? .months [
+        numberCell 1 "4" (.parsed (.num 4)),
+        numberCell 3 "1582" (.parsed (.num 1582)),
+        numberCell 5 "20" (.parsed (.num 20)),
+        numberCell 6 "10" (.parsed (.num 10)),
+        numberCell 7 "1582" (.parsed (.num 1582))] =
+          some (.numeric (.value 0 true)) ∧
+      difference? .months [
+        numberCell 1 "10" (.parsed (.num 10)),
+        numberCell 2 "10" (.parsed (.num 10)),
+        numberCell 3 "1582" (.parsed (.num 1582)),
+        numberCell 5 "20" (.parsed (.num 20)),
+        numberCell 6 "10" (.parsed (.num 10)),
+        numberCell 7 "1582" (.parsed (.num 1582))] =
+          some (.numeric (.value 0 false)) := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateEvaluation

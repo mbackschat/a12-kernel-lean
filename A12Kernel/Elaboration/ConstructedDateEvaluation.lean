@@ -248,4 +248,49 @@ def evaluate (checked : CheckedConstructedDateShift model)
 
 end CheckedConstructedDateShift
 
+/-- Structural failure outside the reason-bearing result of a checked constructed-Date difference. -/
+inductive ConstructedDateDifferenceFault where
+  | source (error : ConstructedDateEvaluationFault)
+  | operationUnavailable
+      (unit : DateShiftUnit)
+      (first second : DateConstructionResult)
+  deriving Repr, DecidableEq
+
+/-- Two checked constructed-Date sources and one supplied day/month/year difference unit. -/
+structure CheckedConstructedDateDifference (model : FlatModel) where
+  first : CheckedConstructedDateComponents model
+  second : CheckedConstructedDateComponents model
+  unit : DateShiftUnit
+
+namespace CheckedConstructedDateDifference
+
+/-- Delegate one resolved pair to the established default-cutover day or completed-period owner. -/
+def differenceResolved? (unit : DateShiftUnit)
+    (first second : DateConstructionResult) :
+    Option ConstructedDateNumericResult :=
+  match unit with
+  | .days => first.differenceLegacyDays? second
+  | .months => first.differenceLegacy? .months second
+  | .years => first.differenceLegacy? .years second
+
+/-- Evaluate the first constructed Date before the second, preserve the first reached formal cause, and reuse the established reason-bearing numeric result. -/
+def evaluate (checked : CheckedConstructedDateDifference model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateDifferenceFault
+      (Except FormalCause ConstructedDateNumericResult) :=
+  match checked.first.evaluate phase input with
+  | .error error => .error (.source error)
+  | .ok (.unavailable cause) => .ok (.error cause)
+  | .ok (.resolved first) =>
+      match checked.second.evaluate phase input with
+      | .error error => .error (.source error)
+      | .ok (.unavailable cause) => .ok (.error cause)
+      | .ok (.resolved second) =>
+          match differenceResolved? checked.unit first second with
+          | some result => .ok (.ok result)
+          | none =>
+              .error (.operationUnavailable checked.unit first second)
+
+end CheckedConstructedDateDifference
+
 end A12Kernel
