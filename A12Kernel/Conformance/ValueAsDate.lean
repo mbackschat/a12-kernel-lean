@@ -11,13 +11,17 @@ private def date? (year : Int) (month day : Nat) : Option FullDate :=
 
 private def dayOptionalSource
     (partialMode : TemporalPartialMode := .dayOptional)
-    (format : String := "dd.MM.yyyy") : FlatFieldDecl := {
+    (format : String := "dd.MM.yyyy")
+    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
   id := 0
   groupPath := ["Order"]
   name := "ApproxDate"
   policy := {
     kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some { format, partialMode } }
+  temporalTargetPolicy := some {
+    format
+    partialMode
+    youngerThan1900Check } }
 
 private def modelWith
     (source : FlatFieldDecl := dayOptionalSource) : FlatModel := {
@@ -180,6 +184,72 @@ example :
       parsed := some source
       findings := [] }
     checked.evaluate cell = .notFired := by
+  native_decide
+
+/- Exact stored text enters the same declaration-indexed value and endpoint evaluator. -/
+example :
+    let expected := (date? 2024 6 15).get (by native_decide)
+    let checked := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .monthOptional))
+      0 .firstDay .before expected).toOption.get (by native_decide)
+    checked.evaluateRaw (.parsed "00.00.2024") = .fired .value := by
+  native_decide
+
+/- Both exact component orders reach the same typed month interval. -/
+example :
+    let expected := (date? 2024 6 15).get (by native_decide)
+    let german := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .monthOptional))
+      0 .lastDay .after expected).toOption.get (by native_decide)
+    let iso := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .monthOptional "yyyy-MM-dd"))
+      0 .lastDay .after expected).toOption.get (by native_decide)
+    german.evaluateRaw (.parsed "00.00.2024") = .fired .value ∧
+      iso.evaluateRaw (.parsed "2024-00-00") = .fired .value := by
+  native_decide
+
+/- The exact floor and optional pre-1900 policy run after earliest completion; unknown year bypasses only the latter and remains non-relevant. -/
+example :
+    let floor := (date? 1583 11 1).get (by native_decide)
+    let floorChecked := (elaborateValueAsDateComparison
+      (modelWith) 0 .firstDay .equal floor).toOption.get (by native_decide)
+    let modern := (date? 1900 1 1).get (by native_decide)
+    let additional := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .yearOptional
+        "dd.MM.yyyy" true))
+      0 .firstDay .before modern).toOption.get (by native_decide)
+    floorChecked.evaluateRaw (.parsed "00.10.1583") = .unknown ∧
+      floorChecked.evaluateRaw (.parsed "00.11.1583") = .fired .value ∧
+      additional.evaluateRaw (.parsed "00.12.1899") = .unknown ∧
+      additional.evaluateRaw (.parsed "00.00.0000") = .notFired := by
+  native_decide
+
+/- Width, separators, suffix legality, and calendar reality all fail before operation evaluation. -/
+example :
+    let expected := (date? 2024 1 1).get (by native_decide)
+    let day := (elaborateValueAsDateComparison
+      (modelWith) 0 .firstDay .equal expected).toOption.get (by native_decide)
+    let month := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .monthOptional))
+      0 .firstDay .equal expected).toOption.get (by native_decide)
+    let year := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .yearOptional))
+      0 .firstDay .equal expected).toOption.get (by native_decide)
+    day.evaluateRaw (.parsed "0.01.2024") = .unknown ∧
+      day.evaluateRaw (.parsed "00-01-2024") = .unknown ∧
+      day.evaluateRaw (.parsed "00.00.2024") = .unknown ∧
+      month.evaluateRaw (.parsed "15.00.2024") = .unknown ∧
+      year.evaluateRaw (.parsed "00.06.0000") = .unknown ∧
+      year.evaluateRaw (.parsed "31.02.2024") = .unknown := by
+  native_decide
+
+/- Physical absence and present-empty placement stay distinct checked cells but share the operation's non-evaluated result. -/
+example :
+    let expected := (date? 2024 1 1).get (by native_decide)
+    let checked := (elaborateValueAsDateComparison
+      (modelWith) 0 .firstDay .equal expected).toOption.get (by native_decide)
+    checked.evaluateRaw .empty = .notFired ∧
+      checked.evaluateRaw .presentEmpty = .notFired := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

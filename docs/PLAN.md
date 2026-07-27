@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1550 theorem roots; 33617 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1552 theorem roots; 33638 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Connect the checked partial-Date `ValueAsDate` owner to exact stored-text admission for its two currently supported declaration formats. Produce the declaration-indexed typed cell from absent, present-empty, well-formed full/partial, or malformed raw input before endpoint evaluation; do not widen the universal instant-bearing `Value`.
+Close the first explicit nested `ValueAsDate` placement by composing its checked partial-Date source with the existing full-Date calendar-shift core. Keep endpoint completion, amount conversion, empty/formal precedence, and post-shift floor failure explicit; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
 
 ## Immediate sequence
 
-1. Audit the exact lexical and formal-check order for `dd.MM.yyyy` and `yyyy-MM-dd`: placement/empty handling, exact-width zero markers, suffix consistency, calendar reality, the universal floor, and the opt-in pre-1900 check. Reuse `FormatDefinitionDatum`, `TeilbekanntesDatumUtil`, `ValidationDateParser`, and the already-closed precision packet; do not infer parser behavior from the new typed constructors.
-2. Add the smallest declaration-policy-owned adapter from raw stored text to `CheckedCell (AdmittedPartiallyKnownDate mode)`. Reuse `checkRawCellWith` and the existing partial-Date constructors; malformed syntax, illegal omission shape, impossible date, floor failure, and the enabled pre-1900 failure remain formal invalidity rather than operation-level outcomes.
-3. Retain separators for both component orders, every legal omission tier, illegal mixed omissions, leap day, exact floor, unknown-year non-relevance, absent versus present-empty, and formal suppression. Stop if the exact supported-format parser or error precedence needs a broader locale/display or legacy-calendar owner. Do not proceed into nested Date-add/difference/`DateTime(...)` placements pending peer reconciliation under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions), repeatable addressing, partial-Date computation output, scheduling, message rendering, wider format syntax, or unsupported zones.
+1. Audit the generated/runtime call for `AddDays`/`AddMonths`/`AddYears` around `ValueAsDate`, especially left-before-amount observation, integer conversion, empty/formal precedence, and the distinction between source completion failure and a shifted result below the universal floor. Reuse the source-closed grammar/checker account under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions).
+2. Add the smallest checked composite over `CheckedValueAsDateComparison`'s declaration-indexed source policy and `FullDate.addDays?`/`addMonths?`/`addYears?`. The composite accepts an already checked amount observation unless an existing checked numeric owner fits exactly; it does not add a general Date-expression carrier.
+3. Retain separators for first/last completion before shifting, month-end clamping, leap-year preservation, unknown-year non-relevance, source formal suppression, empty amount behavior, and shifted-floor failure. Stop if exact numeric conversion or operation-level failure precedence is not source-closed. Leave Date difference, `DateTime(...)`, repeatable addressing, partial-Date computation output, scheduling, wider formats, unsupported zones, and date-like distinct count outside.
 
 ## Parked boundaries
 

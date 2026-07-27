@@ -4,7 +4,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # Checked partial-Date `ValueAsDate`
 
-This capsule retains every parser-admitted stored Date omission, resolves a known-year interval only after `FirstDay` or `LastDay` is selected, and delegates the resulting full Date to the existing direct-comparison evaluator. An unknown year is retained as its own value and becomes non-relevant at the operation boundary rather than acquiring a fabricated year. Date arithmetic, DateTime construction, repeatable addressing, and parsing stored text remain separate.
+This capsule retains every admitted stored Date omission, resolves a known-year interval only after `FirstDay` or `LastDay` is selected, and delegates the resulting full Date to the existing direct-comparison evaluator. An unknown year is retained as its own value and becomes non-relevant at the operation boundary rather than acquiring a fabricated year. Its bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, Date arithmetic, DateTime construction, and repeatable addressing remain separate.
 -/
 
 namespace A12Kernel
@@ -185,6 +185,71 @@ structure CheckedValueAsDateComparison (model : FlatModel) where
 
 namespace CheckedValueAsDateComparison
 
+/-- Decode one exact-width ASCII component. The bounded parser deliberately accepts no locale digits or width relaxation. -/
+private def parseComponent? (width : Nat) (text : String) : Option Nat :=
+  if text.length = width then parseAsciiNatural? text else none
+
+/-- Decode the three stored components in semantic year/month/day order for the checked exact format. -/
+private def parseStoredParts?
+    (format : FullDateTargetFormat) (text : String) :
+    Option (Nat × Nat × Nat) :=
+  match format, text.splitOn (match format with
+    | .dayMonthYearDots => "."
+    | .yearMonthDayDashes => "-") with
+  | .dayMonthYearDots, [dayText, monthText, yearText] => do
+      let day ← parseComponent? 2 dayText
+      let month ← parseComponent? 2 monthText
+      let year ← parseComponent? 4 yearText
+      pure (year, month, day)
+  | .yearMonthDayDashes, [yearText, monthText, dayText] => do
+      let year ← parseComponent? 4 yearText
+      let month ← parseComponent? 2 monthText
+      let day ← parseComponent? 2 dayText
+      pure (year, month, day)
+  | _, _ => none
+
+private def admitKnownYearParts?
+    (mode : TemporalPartialMode) (year month day : Nat) :
+    Option (AdmittedPartiallyKnownDate mode) :=
+  if month = 0 then
+    if day = 0 then
+      AdmittedPartiallyKnownDate.ofOmittedMonth? mode year
+    else
+      none
+  else if day = 0 then
+    AdmittedPartiallyKnownDate.ofOmittedDay? mode year month
+  else
+    (FullDate.ofYmd? year month day).bind
+      (AdmittedPartiallyKnownDate.ofFull? mode)
+
+/-- Apply suffix legality, calendar/floor admission, and the declaration’s optional pre-1900 check after exact lexical decoding. Unknown year is the sole exception to the pre-1900 branch because formal validation substitutes 2000 and runtime evaluation later marks it non-relevant. -/
+private def admitStoredParts?
+    (mode : TemporalPartialMode) (youngerThan1900Check : Bool)
+    (year month day : Nat) :
+    Option (AdmittedPartiallyKnownDate mode) :=
+  if year = 0 then
+    if month = 0 then
+      if day = 0 then AdmittedPartiallyKnownDate.unknownYear? mode else none
+    else
+      none
+  else if youngerThan1900Check then
+    if year < 1900 then none else admitKnownYearParts? mode year month day
+  else
+    admitKnownYearParts? mode year month day
+
+/-- Project raw stored text through the checked declaration policy. All lexical, suffix, calendar, floor, and enabled pre-1900 failures become the ordinary malformed formal finding before the operation reads the cell. -/
+def checkSourceRaw (checked : CheckedValueAsDateComparison model)
+    (raw : RawCell String) :
+    CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode) :=
+  checkRawCellWith (fun text =>
+    match parseStoredParts? checked.format text with
+    | none => .error .malformed
+    | some (year, month, day) =>
+        match admitStoredParts? checked.source.policy.partialMode
+            checked.source.policy.youngerThan1900Check year month day with
+        | none => .error .malformed
+        | some value => .ok (some value)) raw
+
 /-- Evaluate one already parser-admitted stored value through the existing checked-cell observation and full-Date comparison paths. -/
 def evaluate (checked : CheckedValueAsDateComparison model)
     (cell : CheckedCell
@@ -192,6 +257,11 @@ def evaluate (checked : CheckedValueAsDateComparison model)
   checked.comparison.evalObserved
     ((observeCell .validation cell).resolvePartiallyKnownDate checked.endpoint)
     (.value checked.expected)
+
+/-- Check and evaluate one exact stored-text input without exposing an unchecked partial-Date constructor. -/
+def evaluateRaw (checked : CheckedValueAsDateComparison model)
+    (raw : RawCell String) : Verdict :=
+  checked.evaluate (checked.checkSourceRaw raw)
 
 end CheckedValueAsDateComparison
 

@@ -207,6 +207,8 @@ run_cmd do
 #print axioms A12Kernel.valueAsDate_evaluate_empty
 #print axioms A12Kernel.valueAsDate_evaluate_nonRelevant
 #print axioms A12Kernel.valueAsDate_evaluate_unknown
+#print axioms A12Kernel.valueAsDate_evaluateRaw_empty
+#print axioms A12Kernel.valueAsDate_evaluateRaw_rejected
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.fullDateTarget_evaluate_ignoresPartialMode
 #print axioms A12Kernel.dateTimeTarget_evaluate_value

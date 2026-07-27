@@ -64,4 +64,27 @@ theorem valueAsDate_evaluate_unknown
     CellObservation.asValidationSimpleOperand,
     TemporalComparisonOp.eval, evalSymmetricComparison]
 
+/-- Physical absence remains non-evaluated through the exact stored-text adapter. -/
+@[simp] theorem valueAsDate_evaluateRaw_empty
+    (checked : CheckedValueAsDateComparison model) :
+    checked.evaluateRaw .empty = .notFired := by
+  simp [CheckedValueAsDateComparison.evaluateRaw,
+    CheckedValueAsDateComparison.checkSourceRaw, checkRawCellWith,
+    CheckedValueAsDateComparison.evaluate,
+    observeCell, CellObservation.resolvePartiallyKnownDate,
+    TemporalComparisonOp.evalObserved, CellObservation.asValidationSimpleOperand,
+    TemporalComparisonOp.eval, evalSymmetricComparison]
+
+/-- A preceding parser rejection keeps its exact formal cause and suppresses endpoint evaluation. -/
+@[simp] theorem valueAsDate_evaluateRaw_rejected
+    (checked : CheckedValueAsDateComparison model)
+    (cause : BaseFormalCause) :
+    checked.evaluateRaw (.rejected cause) = .unknown := by
+  simp [CheckedValueAsDateComparison.evaluateRaw,
+    CheckedValueAsDateComparison.checkSourceRaw, checkRawCellWith,
+    CheckedValueAsDateComparison.evaluate, observeCell,
+    CellObservation.resolvePartiallyKnownDate,
+    TemporalComparisonOp.evalObserved, CellObservation.asValidationSimpleOperand,
+    TemporalComparisonOp.eval, evalSymmetricComparison]
+
 end A12Kernel
