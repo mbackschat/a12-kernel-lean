@@ -192,6 +192,25 @@ example :
           (.extractor .year 10) (.constant "63")) = false := by
   native_decide
 
+/- Base Year is a complete Date source for all three matching constructor positions.
+   A mismatched extractor, either split-year position, and missing model configuration
+   remain static rejections. -/
+example :
+    extractorDateIsOk (extractorModel (some 2024))
+        (.baseYearExtractor .day) (.baseYearExtractor .month)
+        (.complete (.baseYearExtractor .year)) = true ∧
+      extractorDateIsOk (extractorModel (some 2024))
+        (.baseYearExtractor .month) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.baseYearExtractor .day) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk (extractorModel (some 2024))
+        (.constant "15") (.constant "6")
+        (.centuryAndShortYear
+          (.baseYearExtractor .year) (.constant "63")) = false := by
+  native_decide
+
 /- Pattern-backed String fields reuse the six exact checker-recognized digit sources at
    the position's complete stored width. Regex equivalence and a wrong width do not pass. -/
 example :

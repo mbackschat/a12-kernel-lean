@@ -5,9 +5,9 @@ import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime field extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-The extensible-enumeration String alternative, recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The extensible-enumeration String alternative, other recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -75,6 +75,7 @@ inductive SurfaceConstructedDateSource where
   | dateYearField (field : FieldId)
   | constant (source : String)
   | extractor (part : DateNumericPart) (field : FieldId)
+  | baseYearExtractor (part : DateNumericPart)
   deriving Repr, DecidableEq
 
 /-- The three legal authored year shapes before model-relative checking. -/
@@ -179,13 +180,23 @@ structure CheckedConstructedDateExtractorField (model : FlatModel) where
   admitted :
     model.admitsConstructedDateExtractorField position part source = true
 
-/-- One checked field-backed, extractor-backed, or fixed constant component. -/
+/-- One matching Date component extracted from the configured model Base Year. The equality records the model-relative source check rather than treating Base Year as an unowned literal. -/
+structure CheckedConstructedDateBaseYearExtractor (model : FlatModel) where
+  position : ConstructedDateComponentPosition
+  part : DateNumericPart
+  year : Int
+  configured : model.baseYear = some year
+  matchesPosition : position.extractor? = some part
+
+/-- One checked field-backed, extractor-backed, or fixed component. -/
 inductive CheckedConstructedDateSource (model : FlatModel) where
   | numberField (source : CheckedConstructedDateNumberField model)
   | stringField (source : CheckedConstructedDateStringField model)
   | dateYearField (source : CheckedConstructedDateYearField model)
   | constant (value : Int)
   | extractor (source : CheckedConstructedDateExtractorField model)
+  | baseYearExtractor
+      (source : CheckedConstructedDateBaseYearExtractor model)
 
 /-- A checked complete Year source, fixed model Base Year, or authored Century/Short-Year pair. -/
 inductive CheckedConstructedDateYear (model : FlatModel) where
@@ -305,6 +316,20 @@ def elaborateConstructedDateExtractorField
   else
     throw (.extractorDeclarationNotAdmitted position part field)
 
+/-- Resolve Base Year as a Date source and retain the matching outer constructor position. The nested missing-configuration check precedes the outer position check, as it does during authored parsing. -/
+def elaborateConstructedDateBaseYearExtractor
+    (model : FlatModel) (position : ConstructedDateComponentPosition)
+    (part : DateNumericPart) :
+    Except ConstructedDateComponentsElabError
+      (CheckedConstructedDateBaseYearExtractor model) := do
+  match configured : model.baseYear with
+  | some year =>
+      if matchesPosition : position.extractor? = some part then
+        pure { position, part, year, configured, matchesPosition }
+      else
+        throw (.extractorMismatch position part)
+  | none => throw .missingBaseYear
+
 /-- Check one direct field or quoted constant at its authored position. -/
 def elaborateConstructedDateSource
     (model : FlatModel) (position : ConstructedDateComponentPosition) :
@@ -326,6 +351,9 @@ def elaborateConstructedDateSource
   | .extractor part field =>
       .extractor <$> elaborateConstructedDateExtractorField
         model position part field
+  | .baseYearExtractor part =>
+      .baseYearExtractor <$>
+        elaborateConstructedDateBaseYearExtractor model position part
 
 /-- Check one two-, three-, or four-part direct Date through a common ordered source seam. -/
 def elaborateConstructedDateSources

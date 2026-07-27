@@ -141,6 +141,14 @@ private def evaluateExtractorSources? (sources : SurfaceConstructedDateComponent
   let input ← documentFor? extractorDateModel cells
   checked.evaluate .validation input |>.toOption
 
+private def evaluateBaseYearExtractorSources?
+    (sources : SurfaceConstructedDateComponents)
+    (cells : List ClassifiedCellInput) := do
+  let model := { extractorDateModel with baseYear := some 2024 }
+  let checked ← (elaborateConstructedDateSources model sources).toOption
+  let input ← documentFor? model cells
+  checked.evaluate .validation input |>.toOption
+
 private def validVerdict? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
@@ -278,6 +286,30 @@ example :
         temporalCell 10 "bad-day" (.rejected .malformed),
         temporalCell 11 "bad-year" (.rejected .declaredConstraint)] =
           some (.unavailable .malformed) := by
+  native_decide
+
+/- Base-Year extractors reuse the configured January-1 Date source at every matching
+   position. They are fixed inputs: neither an empty document nor an unrelated formal
+   cell changes the constructed result. -/
+example :
+    let allBaseYear : SurfaceConstructedDateComponents := {
+      day := .baseYearExtractor .day
+      month := .baseYearExtractor .month
+      year := .complete (.baseYearExtractor .year) }
+    let mixed : SurfaceConstructedDateComponents := {
+      day := .baseYearExtractor .day
+      month := .constant "6"
+      year := .complete (.baseYearExtractor .year) }
+    evaluateBaseYearExtractorSources? allBaseYear [] =
+        some (.resolved (.real {
+          year := 2024, month := 1, day := 1 })) ∧
+      evaluateBaseYearExtractorSources? mixed [] =
+        some (.resolved (.real {
+          year := 2024, month := 6, day := 1 })) ∧
+      evaluateBaseYearExtractorSources? mixed [
+        numberCell 1 "unread" (.rejected .malformed)] =
+        some (.resolved (.real {
+          year := 2024, month := 6, day := 1 })) := by
   native_decide
 
 /- Checked String components use exact decimal conversion but preserve constructor
