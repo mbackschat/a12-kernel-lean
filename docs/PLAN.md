@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1481 theorem roots; 31538 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1484 theorem roots; 31670 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Open the bounded SG6 computed Date/DateTime target-policy packet and determine the smallest declaration-owned representation that can preserve exact format spelling/order/separators, partial-date mode, additional-date policy, and model-zone rendering without inventing canonical output.
+Resolve one checked nonrepeatable Date/DateTime target from the declaration-owned temporal policy without admitting rendering or target effects.
 
 ## Immediate sequence
 
-1. Inventory the current temporal declaration, stored-value, format, computation-result, and application owners against the already recorded target source drill; name which exact format and policy facts are absent from `FlatFieldDecl`.
-2. Run the dangerous discriminator first: two target declarations with the same component set but different order or separators must not collapse to one checked target policy, and an invalid computed attempt must retain attempted-value error semantics rather than becoming clean empty.
-3. Add no renderer or parser until the checked declaration certificate can represent the complete target policy. If the policy cannot fit the existing model owner without duplicating the temporal format algebra, stop at the exact missing invariant.
+1. Resolve the declaration through the validated flat model and expose the exact retained policy plus the same model's separate time-zone identifier.
+2. Keep missing policy, wrong field kind, and the first capsule's excluded Time target explicit rather than inventing defaults.
+3. Stop before parsing, rendering, target checking, result classification, application, or a shared temporal computation carrier.
 
 ## Parked boundaries
 

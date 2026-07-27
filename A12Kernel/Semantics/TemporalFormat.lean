@@ -26,6 +26,52 @@ def TemporalComponents.today : TemporalComponents := TemporalComponents.fullDate
 
 def TemporalComponents.baseYear : TemporalComponents := TemporalComponents.fullDate
 
+/-- Which suffix of an otherwise complete Date may be unknown in stored form. The cases are ordered by increasing permitted uncertainty, but no Boolean collapse is sound: month-optional also permits an unknown day, and year-optional permits all three omissions. -/
+inductive TemporalPartialMode where
+  | full
+  | dayOptional
+  | monthOptional
+  | yearOptional
+  deriving Repr, DecidableEq
+
+/-- Static incoherence in declaration-owned temporal target policy. Exact format syntax is checked before this parser-independent boundary; this layer preserves its source without trying to reconstruct it from component flags. -/
+inductive TemporalTargetPolicyError where
+  | emptyFormat
+  | partialModeRequiresFullDate
+  | youngerThan1900RequiresDate
+  deriving Repr, DecidableEq
+
+/-- Complete declaration-owned policy needed before a resolved temporal value can be rendered and checked as a computed target. The model time zone remains a separate model-wide input. -/
+structure TemporalTargetPolicy where
+  /-- Exact already-admitted format source, including component order, separators, and quoting. -/
+  format : String
+  partialMode : TemporalPartialMode := .full
+  youngerThan1900Check : Bool := false
+  deriving Repr, DecidableEq
+
+/-- Check only the cross-field invariants visible at the parser-independent flat boundary. A non-full partial mode belongs to a full Date declaration; the opt-in pre-1900 check belongs only to Date. -/
+def TemporalTargetPolicy.errorFor?
+    (policy : TemporalTargetPolicy)
+    (kind : TemporalKind) (components : TemporalComponents) :
+    Option TemporalTargetPolicyError :=
+  if policy.format.isEmpty then
+    some .emptyFormat
+  else
+    match kind with
+    | .date =>
+        if policy.partialMode == .full ||
+            components == TemporalComponents.fullDate then
+          none
+        else
+          some .partialModeRequiresFullDate
+    | .time | .dateTime =>
+        if policy.partialMode != .full then
+          some .partialModeRequiresFullDate
+        else if policy.youngerThan1900Check then
+          some .youngerThan1900RequiresDate
+        else
+          none
+
 /-- Equality and inequality, unlike directional comparisons, require both formats to agree on whether they expose a time component. -/
 def TemporalComparisonOp.requiresSameTimePresence : TemporalComparisonOp → Bool
   | .equal | .notEqual => true

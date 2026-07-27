@@ -124,6 +124,18 @@ private def numericTargetConstraintsError? :
             numericTargetConstraintsError? rest
           else some (.numericTargetConstraintsRequireNumber declaration.path)
 
+private def temporalTargetPolicyError? :
+    List FlatFieldDecl → Option ResolveError
+  | [] => none
+  | declaration :: rest =>
+      match declaration.policy.kind, declaration.temporalTargetPolicy with
+      | _, none => temporalTargetPolicyError? rest
+      | .temporal kind components, some policy =>
+          match policy.errorFor? kind components with
+          | some error => some (.invalidTemporalTargetPolicy declaration.path error)
+          | none => temporalTargetPolicyError? rest
+      | _, some _ => some (.temporalTargetPolicyRequiresTemporal declaration.path)
+
 private def enumerationDeclarationError? :
     List FlatFieldDecl → Option ResolveError
   | [] => none
@@ -225,6 +237,9 @@ def FlatModel.validate (model : FlatModel) : Except ResolveError Unit := do
   | some error => throw error
   | none => pure ()
   match numericTargetConstraintsError? model.fields with
+  | some error => throw error
+  | none => pure ()
+  match temporalTargetPolicyError? model.fields with
   | some error => throw error
   | none => pure ()
   match enumerationDeclarationError? model.fields with

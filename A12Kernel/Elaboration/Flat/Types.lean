@@ -199,6 +199,8 @@ structure FlatFieldDecl where
   /-- Resolved Number constraints reachable from computed-target checking. Scale and signedness remain in `policy.kind`. -/
   numericTargetConstraints : NumericTargetConstraints :=
     NumericTargetConstraints.unconstrained
+  /-- Complete resolved temporal policy when this declaration may be used as a computed target. Absence keeps ordinary temporal reads available but makes target construction explicitly insufficient. -/
+  temporalTargetPolicy : Option TemporalTargetPolicy := none
   repeatableScope : List RepeatableLevel := []
   deriving Repr, DecidableEq
 
@@ -234,6 +236,14 @@ def toTemporalField? (declaration : FlatFieldDecl) : Option FlatTemporalField :=
   match declaration.policy.kind with
   | .temporal kind components => some { id := declaration.id, kind, components }
   | .number _ | .boolean | .confirm | .string | .enumeration => none
+
+/-- Recover the complete checked temporal-target policy only when it agrees with this declaration's kind and component shape. -/
+def toTemporalTargetPolicy? (declaration : FlatFieldDecl) :
+    Option TemporalTargetPolicy :=
+  match declaration.policy.kind, declaration.temporalTargetPolicy with
+  | .temporal kind components, some policy =>
+      if policy.errorFor? kind components == none then some policy else none
+  | _, _ => none
 
 def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   match declaration.policy.kind with
@@ -332,6 +342,9 @@ inductive ResolveError where
   -- number; `spec/04` names all seven digit quantities separately for exactly this reason.
   | numericFractionalDigitsAboveCap (path : List String) (declared cap : Nat)
   | numericMaximumIntegerDigitsZero (path : List String)
+  | temporalTargetPolicyRequiresTemporal (path : List String)
+  | invalidTemporalTargetPolicy (path : List String)
+      (error : TemporalTargetPolicyError)
   | rawStringRequiresLineBreakPermission (path : List String)
   | rawStringForbidsMinimumLength (path : List String)
   | rawStringForbidsPattern (path : List String)

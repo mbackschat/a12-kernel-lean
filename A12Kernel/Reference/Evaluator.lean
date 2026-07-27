@@ -43,6 +43,11 @@ private def scalarKindTag : SurfaceScalarKind → String
   | .temporal .time => "time"
   | .temporal .dateTime => "dateTime"
 
+private def temporalTargetPolicyErrorTag : TemporalTargetPolicyError → String
+  | .emptyFormat => "emptyFormat"
+  | .partialModeRequiresFullDate => "partialModeRequiresFullDate"
+  | .youngerThan1900RequiresDate => "youngerThan1900RequiresDate"
+
 private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → Diagnostic
   | .invalidModelPath path =>
       .make .invalidPath "$.model" (pathDetails path)
@@ -95,6 +100,15 @@ private def resolveDiagnosticAt (referenceLocation : String) : ResolveError → 
       .make .fieldKindMismatch "$.model"
         (Json.mkObj [("operation", toJson "numericTargetPolicy"),
           ("reason", toJson "maximumIntegerDigitsMustBePositive"),
+          ("path", toJson path)])
+  | .temporalTargetPolicyRequiresTemporal path =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "temporalTargetPolicy"),
+          ("path", toJson path), ("expected", toJson "temporal")])
+  | .invalidTemporalTargetPolicy path error =>
+      .make .fieldKindMismatch "$.model"
+        (Json.mkObj [("operation", toJson "temporalTargetPolicy"),
+          ("reason", toJson (temporalTargetPolicyErrorTag error)),
           ("path", toJson path)])
   | .enumerationMetadataRequiresEnumeration _
   | .enumerationDeclarationRequired _

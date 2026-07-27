@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.TemporalFormat
+import A12Kernel.Elaboration.Flat.Model
 
 /-! # Temporal format-admission executable locks -/
 
@@ -77,5 +77,73 @@ example :
     fullDateTime.isFullDateTime = true ∧
       hoursMinutesSeconds.isFullDateTime = false := by
   decide
+
+private def temporalTarget
+    (id : FieldId) (name format : String)
+    (kind : TemporalKind) (components : TemporalComponents)
+    (partialMode : TemporalPartialMode := .full)
+    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name
+  policy := { kind := .temporal kind components }
+  temporalTargetPolicy := some {
+    format
+    partialMode
+    youngerThan1900Check } }
+
+private def validationError (model : FlatModel) : Option ResolveError :=
+  match model.validate with
+  | .ok () => none
+  | .error error => some error
+
+/- Exact source and four-valued partial-date mode survive independently of component shape. -/
+example :
+    let european := temporalTarget 0 "EuropeanDate" "dd.MM.yyyy"
+      .date fullDate .dayOptional
+    let iso := temporalTarget 1 "IsoDate" "yyyy-MM-dd"
+      .date fullDate .monthOptional
+    european.toTemporalTargetPolicy?.map (fun policy =>
+        (policy.format, policy.partialMode)) =
+        some ("dd.MM.yyyy", .dayOptional) ∧
+      iso.toTemporalTargetPolicy?.map (fun policy =>
+        (policy.format, policy.partialMode)) =
+        some ("yyyy-MM-dd", .monthOptional) := by
+  native_decide
+
+/- A non-full partial-date mode requires a full Date declaration. -/
+example :
+    let target := temporalTarget 0 "ScheduledAt" "yyyy-MM-dd'T'HH:mm:ss"
+      .dateTime fullDateTime .dayOptional
+    validationError { fields := [target] } =
+      some (.invalidTemporalTargetPolicy target.path
+        .partialModeRequiresFullDate) := by
+  native_decide
+
+/- The opt-in pre-1900 check belongs only to Date declarations. -/
+example :
+    let target := temporalTarget 0 "ScheduledAt" "yyyy-MM-dd'T'HH:mm:ss"
+      .dateTime fullDateTime .full true
+    validationError { fields := [target] } =
+      some (.invalidTemporalTargetPolicy target.path
+        .youngerThan1900RequiresDate) := by
+  native_decide
+
+/- A retained exact format source cannot be empty. -/
+example :
+    let target := temporalTarget 0 "Date" "" .date fullDate
+    validationError { fields := [target] } =
+      some (.invalidTemporalTargetPolicy target.path .emptyFormat) := by
+  native_decide
+
+/- Temporal target policy cannot attach to a non-temporal declaration. -/
+example :
+    let target := temporalTarget 0 "Date" "dd.MM.yyyy" .date fullDate
+    let numberTarget : FlatFieldDecl := {
+      target with
+      policy := { kind := .number { scale := 0, signed := true } } }
+    validationError { fields := [numberTarget] } =
+      some (.temporalTargetPolicyRequiresTemporal numberTarget.path) := by
+  native_decide
 
 end A12Kernel.Conformance.TemporalFormat

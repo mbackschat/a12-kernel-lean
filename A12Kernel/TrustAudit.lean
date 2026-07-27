@@ -197,6 +197,9 @@ run_cmd do
 #print axioms A12Kernel.temporalComparison_admitsToday_admitsFormats
 #print axioms A12Kernel.temporalEqual_admitsToday_hasNoTime
 #print axioms A12Kernel.temporalComparison_admitsBaseYear_hasDate
+#print axioms A12Kernel.temporalTargetPolicy_valid_format_nonempty
+#print axioms A12Kernel.temporalTargetPolicy_valid_nonDate
+#print axioms A12Kernel.temporalTargetPolicy_valid_partial
 #print axioms A12Kernel.todayOperand_resolves_exact
 #print axioms A12Kernel.todayOperand_unsupported
 #print axioms A12Kernel.baseYearOperand_resolves_exact

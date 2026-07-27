@@ -87,4 +87,49 @@ theorem temporalComparison_admitsBaseYear_hasDate
   simp [TemporalComparisonOp.admitsBaseYear] at admitted
   exact admitted.left
 
+/-- Every admitted temporal target retains a nonempty exact format source. -/
+theorem temporalTargetPolicy_valid_format_nonempty
+    (policy : TemporalTargetPolicy)
+    (kind : TemporalKind) (components : TemporalComponents)
+    (valid : policy.errorFor? kind components = none) :
+    policy.format.isEmpty = false := by
+  cases h : policy.format.isEmpty <;>
+    simp_all [TemporalTargetPolicy.errorFor?]
+
+/-- A non-Date target can retain neither partial-date admission nor the Date-only pre-1900 check. -/
+theorem temporalTargetPolicy_valid_nonDate
+    (policy : TemporalTargetPolicy)
+    (kind : TemporalKind) (components : TemporalComponents)
+    (notDate : kind ≠ .date)
+    (valid : policy.errorFor? kind components = none) :
+    policy.partialMode = .full ∧ policy.youngerThan1900Check = false := by
+  cases kind <;> simp_all
+  all_goals
+    cases hPartialMode : policy.partialMode <;>
+      cases hAdditional : policy.youngerThan1900Check <;>
+      by_cases hFormat : policy.format = "" <;>
+      simp_all [TemporalTargetPolicy.errorFor?]
+
+/-- A non-full partial-date mode certifies a full Date component set. -/
+theorem temporalTargetPolicy_valid_partial
+    (policy : TemporalTargetPolicy)
+    (kind : TemporalKind) (components : TemporalComponents)
+    (notFull : policy.partialMode ≠ .full)
+    (valid : policy.errorFor? kind components = none) :
+    kind = .date ∧ components = TemporalComponents.fullDate := by
+  cases kind with
+  | date =>
+      by_cases hFormat : policy.format = ""
+      · simp [TemporalTargetPolicy.errorFor?, hFormat] at valid
+      by_cases hComponents : components = TemporalComponents.fullDate
+      · exact ⟨rfl, hComponents⟩
+      · simp [TemporalTargetPolicy.errorFor?, hFormat, notFull,
+          hComponents] at valid
+  | time =>
+      by_cases hFormat : policy.format = "" <;>
+        simp_all [TemporalTargetPolicy.errorFor?]
+  | dateTime =>
+      by_cases hFormat : policy.format = "" <;>
+        simp_all [TemporalTargetPolicy.errorFor?]
+
 end A12Kernel
