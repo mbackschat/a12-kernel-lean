@@ -60,6 +60,44 @@ inductive ConstructedDateObservation where
 
 namespace ConstructedDateObservation
 
+/-- Resolve three cause-free checked components. `none` means empty; formal unavailability is intercepted before this seam, so this constructor cannot produce `.resolved .unknown`. -/
+def ofAvailableComponents (day month year : Option Int) :
+    ConstructedDateObservation :=
+  let availability : Option Int → DateComponentAvailability
+    | some _ => .present
+    | none => .empty
+  let reality := match day, month, year with
+    | some day, some month, some year =>
+        let parts : DateParts := {
+          year
+          month := Int.toNat month
+          day := Int.toNat day }
+        if DateParts.LegacyHybrid.isReal parts then
+          .real parts
+        else
+          .unreal
+    | _, _, _ => .unreal
+  .resolved (classifyDateConstruction3
+    (availability day) (availability month) (availability year) reality)
+
+/-- Project checked `Valid(Date(...))` without discarding a reached formal cause. -/
+def validVerdict : ConstructedDateObservation → Except FormalCause Verdict
+  | .resolved result => .ok result.validVerdict
+  | .unavailable cause => .error cause
+
+/-- Project checked `Invalid(Date(...))` without discarding a reached formal cause. -/
+def invalidVerdict : ConstructedDateObservation → Except FormalCause Verdict
+  | .resolved result => .ok result.invalidVerdict
+  | .unavailable cause => .error cause
+
+/-- Project one checked numeric component through the existing cause-free result family. A forged resolved UNKNOWN remains explicitly cause-free; checked evaluation never produces that branch. -/
+def numericPart (observation : ConstructedDateObservation)
+    (part : DateNumericPart) :
+    Except FormalCause ConstructedDateNumericResult :=
+  match observation with
+  | .resolved result => .ok (result.numericPart part)
+  | .unavailable cause => .error cause
+
 /-- Shift a resolved observation by default-cutover calendar days without losing a formal cause. -/
 def addLegacyDays? : ConstructedDateObservation → Int →
     Option ConstructedDateObservation
@@ -82,45 +120,50 @@ end ConstructedDateObservation
 
 namespace CheckedConstructedDateComponents
 
-private def availability : CheckedConstructedDateComponent →
-    DateComponentAvailability
-  | .value _ => .present
-  | .empty => .empty
-  | .unavailable _ => .unknown
-
-private def resolve
-    (day month year : CheckedConstructedDateComponent) :
-    ConstructedDateObservation :=
-  let reality := match day, month, year with
-    | .value day, .value month, .value year =>
-        let parts : DateParts := {
-          year
-          month := Int.toNat month
-          day := Int.toNat day }
-        if DateParts.LegacyHybrid.isReal parts then
-          .real parts
-        else
-          .unreal
-    | _, _, _ => .unreal
-  .resolved (classifyDateConstruction3
-    (availability day) (availability month) (availability year) reality)
+private def availableAmount? : CheckedConstructedDateComponent → Option Int
+  | .value amount => some amount
+  | .empty | .unavailable _ => none
 
 /-- Read Day, Month, and Year in generated argument order. A reached formal component stops before later reads and retains its exact cause. -/
 def evaluate (checked : CheckedConstructedDateComponents model)
     (phase : Phase) (input : CheckedDocument model) :
-    Except ConstructedDateEvaluationFault ConstructedDateObservation := do
-  let day ← checked.day.read phase input
-  match day with
-  | .unavailable cause => pure (.unavailable cause)
-  | day =>
-      let month ← checked.month.read phase input
-      match month with
-      | .unavailable cause => pure (.unavailable cause)
-      | month =>
-          let year ← checked.year.read phase input
-          match year with
-          | .unavailable cause => pure (.unavailable cause)
-          | year => pure (resolve day month year)
+    Except ConstructedDateEvaluationFault ConstructedDateObservation :=
+  match checked.day.read phase input with
+  | .error error => .error error
+  | .ok (.unavailable cause) => .ok (.unavailable cause)
+  | .ok day =>
+      match checked.month.read phase input with
+      | .error error => .error error
+      | .ok (.unavailable cause) => .ok (.unavailable cause)
+      | .ok month =>
+          match checked.year.read phase input with
+          | .error error => .error error
+          | .ok (.unavailable cause) => .ok (.unavailable cause)
+          | .ok year =>
+              .ok (ConstructedDateObservation.ofAvailableComponents
+                (availableAmount? day) (availableAmount? month)
+                (availableAmount? year))
+
+/-- Evaluate checked `Valid(Date(...))`, keeping document faults and formal causes in their separate channels. -/
+def evaluateValid (checked : CheckedConstructedDateComponents model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault (Except FormalCause Verdict) :=
+  (checked.evaluate phase input).map ConstructedDateObservation.validVerdict
+
+/-- Evaluate checked `Invalid(Date(...))`, keeping document faults and formal causes in their separate channels. -/
+def evaluateInvalid (checked : CheckedConstructedDateComponents model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault (Except FormalCause Verdict) :=
+  (checked.evaluate phase input).map ConstructedDateObservation.invalidVerdict
+
+/-- Evaluate one checked Day/Month/Quarter/Year projection without adding another numeric result family. -/
+def evaluateNumericPart (checked : CheckedConstructedDateComponents model)
+    (part : DateNumericPart) (phase : Phase)
+    (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault
+      (Except FormalCause ConstructedDateNumericResult) :=
+  (checked.evaluate phase input).map fun observation =>
+    observation.numericPart part
 
 end CheckedConstructedDateComponents
 
