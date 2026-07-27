@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 600 jobs · trust audit **1590 theorem roots; 35643 declarations in 339 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 603 jobs · trust audit **1593 theorem roots; 35671 declarations in 341 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose the first constructed-Date completed-period consumer over the bounded legacy-hybrid shift owner. Close only `DifferenceInMonths`/`DifferenceInYears` for two real default-profile constructed labels plus the existing reason boundary; do not widen the ordinary stored-Date operand or introduce a general temporal-expression carrier.
+Resolve the default-cutover constructed-Date day coordinate before widening checked authoring. Determine whether `AddDays` and `DifferenceInDays` can share one bounded legacy-hybrid ordinal over `DateParts` while retaining the existing construction reasons and without claiming other zone-local discontinuities.
 
 ## Immediate sequence
 
-1. Audit `getDifferenzInMonaten`/`getDifferenzInJahren` and their generated callers for operand order, chronological ordering, initial year seed, fresh-source month landings, and sign restoration. Reuse the accepted constructed-Date calendar packet and reopen it only if a new source fact is required.
-2. Run the canonical cutover separators first: `1582-09-10 → 1582-10-15` is zero months, `→ 1582-10-20` is one; `1581-10-10 → 1582-10-15` is zero years and eleven months, while `→ 1582-10-20` is one year and twelve months.
-3. Reuse `ConstructedDateShift` as the landing oracle and retain incomplete/unreal/unknown precedence through the existing construction result. Stop if the completed-period algorithm needs exact instant or zone state absent from the two real labels. Leave day difference, checked authoring, target rendering, repeatable addressing, message text, and date-like distinct count outside.
+1. Audit `Calendar.DAY_OF_MONTH` addition and `getDifferenzInTagen`, including the year-based seed, repeated day stepping, sign restoration, and the generated source/amount order. Reuse the accepted constructed-Date packet unless a new composition fact appears.
+2. Run `1582-10-04 + 1 day = 1582-10-15` and `DifferenceInDays(1582-10-04, 1582-10-15) = 1` first, then retain the Julian `1500-02-29 → 1500-03-01` control and a reverse-sign case.
+3. Add a bounded hybrid day coordinate only if it can reuse `DateParts` and the existing reason/numeric result owners. Stop if exact model-zone instant state is needed even inside UTC/GMT/Berlin or before introducing a general timezone/calendar framework. Leave checked authoring, target rendering, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 
