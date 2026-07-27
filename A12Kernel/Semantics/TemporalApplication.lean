@@ -69,6 +69,20 @@ def toDeltaPrior :
 
 end TemporalTargetState
 
+/-- Exact caller-supplied field projection used by scalar temporal whole-result application. -/
+abbrev TemporalComputationDestination (Stored : Type) :=
+  FieldId → TemporalTargetState Stored
+
+namespace TemporalComputationDestination
+
+/-- Replace one temporal target projection while preserving every other field. -/
+def update (destination : TemporalComputationDestination Stored)
+    (target : FieldId) (state : TemporalTargetState Stored) :
+    TemporalComputationDestination Stored :=
+  fun field => if field == target then state else destination field
+
+end TemporalComputationDestination
+
 /-- Date-specific prior target value. -/
 abbrev PriorFullDateTarget := PriorTemporalTarget StoredDate
 

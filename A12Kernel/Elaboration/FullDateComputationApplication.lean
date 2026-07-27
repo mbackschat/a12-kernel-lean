@@ -8,7 +8,8 @@ This capsule applies an already-classified full-Date result to an explicitly sup
 namespace A12Kernel
 
 /-- Exact caller-supplied target-state projection needed by the nonrepeatable full-Date fragment. -/
-abbrev FullDateComputationDestination := FieldId → FullDateTargetState
+abbrev FullDateComputationDestination :=
+  TemporalComputationDestination StoredDate
 
 namespace FullDateComputationDestination
 
@@ -16,7 +17,7 @@ namespace FullDateComputationDestination
 def update (destination : FullDateComputationDestination)
     (target : FieldId) (state : FullDateTargetState) :
     FullDateComputationDestination :=
-  fun field => if field == target then state else destination field
+  TemporalComputationDestination.update destination target state
 
 /-- Specialize the existing one-target transition at one field. -/
 def applyOutcome (destination : FullDateComputationDestination)

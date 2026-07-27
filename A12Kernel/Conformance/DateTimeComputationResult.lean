@@ -1,6 +1,6 @@
-import A12Kernel.Elaboration.TemporalComputationResult
+import A12Kernel.Elaboration.DateTimeComputationApplication
 
-/-! # DateTime V2 result projection locks -/
+/-! # DateTime V2 result and application locks -/
 
 namespace A12Kernel.Conformance.DateTimeComputationResult
 
@@ -52,6 +52,10 @@ private def sourceState? (input : DocumentData) :
   let checked ← (checkDocument prepared "en_US" input).toOption
   pure (checked.sourceDateTimeTargetState target.id)
 
+private def destinationWith (state : DateTimeTargetState) :
+    DateTimeComputationDestination :=
+  fun field => if field == target.id then state else .absent
+
 /- Source recovery retains absent, present-empty, and exact stored DateTime text without reparsing. -/
 example :
     sourceState? { instantiatedRows := [], cells := [] } = some .absent ∧
@@ -89,6 +93,47 @@ example :
         (view.withErrors, view.formalErrorsInOperands,
           view.noErrorOccurred)) =
       some ([], [.malformed], false) := by
+  native_decide
+
+/- Source-unchanged success remains public but is not reclassified against a different destination. -/
+example : (do
+    let view ← view? oldSource (.accepted oldValue)
+    let applied ← view.applyTo
+      (destinationWith (.presentValue nextValue)) |>.toOption
+    pure (applied target.id)) = some (.presentValue nextValue) := by
+  native_decide
+
+/- Changed success writes, while public clearing uses the existing one-target transition. -/
+example :
+    (do
+      let view ← view? oldSource (.accepted nextValue)
+      let applied ← view.applyTo (destinationWith .absent) |>.toOption
+      pure (applied target.id)) = some (.presentValue nextValue) ∧
+    (do
+      let view ← view? oldSource .noValue
+      let applied ← view.applyTo
+        (destinationWith (.presentValue nextValue)) |>.toOption
+      pure (applied target.id)) = some .presentEmpty := by
+  native_decide
+
+/- Residual messages change error status but never the already-classified actions. -/
+example : (do
+    let view ← view? oldSource (.accepted nextValue) [.malformed]
+    let applied ← view.applyTo (destinationWith .absent) |>.toOption
+    pure (applied target.id, view.noErrorOccurred)) =
+      some (.presentValue nextValue, false) := by
+  native_decide
+
+/- A malformed result cannot let action order choose between clear and write at one target. -/
+example : (do
+    let checked ← (checkDocument prepared "en_US" oldSource).toOption
+    let view := DateTimeComputationRunView.fromOutcomes checked
+      ([] : List FormalCause)
+      [(target.id, .accepted nextValue), (target.id, .noValue)]
+    pure (match view.applyTo (destinationWith .absent) with
+      | .error error => some error
+      | .ok _ => none)) =
+        some (some (.duplicateActionTarget target.id)) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeComputationResult

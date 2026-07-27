@@ -9,7 +9,8 @@ theorem fullDateComputationDestination_update_same
     (destination : FullDateComputationDestination)
     (target : FieldId) (state : FullDateTargetState) :
     destination.update target state target = state := by
-  simp [FullDateComputationDestination.update]
+  simp [FullDateComputationDestination.update,
+    TemporalComputationDestination.update]
 
 /-- One action delegates exactly to the one-target full-Date transition. -/
 theorem fullDateComputationDestination_applyOutcome_same
@@ -27,7 +28,8 @@ theorem fullDateComputationDestination_applyOutcome_other
     (different : other ≠ target) :
     destination.applyOutcome target outcome other = destination other := by
   simp [FullDateComputationDestination.applyOutcome,
-    FullDateComputationDestination.update, different]
+    FullDateComputationDestination.update,
+    TemporalComputationDestination.update, different]
 
 /-- Unchanged successes and residual messages alone cannot mutate the destination. -/
 theorem fullDateComputationRun_applyTo_noActions
