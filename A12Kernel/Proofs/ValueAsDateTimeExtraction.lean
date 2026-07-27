@@ -44,4 +44,19 @@ theorem valueAsDateTimeShiftExtraction_evaluateRaw_date_unavailable
       checked.construction phase raw
         (fun _ => checked.readShiftedTime phase input) cause observed
 
+/-- The dynamic `Now` shift route also inherits the shared generated Date-before-Time short circuit, so a failed Date side decides without a semantic clock read. -/
+theorem valueAsDateTimeNowShiftExtraction_evaluateRaw_date_unavailable
+    (checked : CheckedValueAsDateTimeNowShiftExtraction model)
+    (phase : Phase) (world : World)
+    (raw : RawCell String) (cause : FormalCause)
+    (observed :
+      checked.construction.toCheckedValueAsDateSource.observe phase
+        (checked.construction.toCheckedValueAsDateSource.checkSourceRaw raw) =
+          .unavailable cause) :
+    checked.evaluateRaw phase world raw = .ok (.unavailable cause) := by
+  simpa only [CheckedValueAsDateTimeNowShiftExtraction.evaluateRaw] using
+    valueAsDateTime_evaluateTimeOperandRaw_date_unavailable
+      checked.construction phase raw
+        (fun _ => checked.readShiftedTime world) cause observed
+
 end A12Kernel

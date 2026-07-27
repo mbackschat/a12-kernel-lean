@@ -164,6 +164,42 @@ example :
     result = some (some (.value expectedLocal expectedInstant)) := by
   native_decide
 
+/- A dynamic `Now` source is sampled from the execution world, shifted as an exact instant, and only then projected through the same Berlin Time boundary. -/
+example :
+    let model := modelWith
+    let nowLocal := (LocalDateTime.ofYmdHms?
+      2024 3 31 1 30 0).get (by native_decide)
+    let now :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        nowLocal).get (by native_decide)
+    let expectedLocal := (LocalDateTime.ofYmdHms?
+      2024 2 29 3 30 0).get (by native_decide)
+    let expectedInstant :=
+      (ModelZone.ConcreteProfile.europeBerlin.resolveLocal?
+        expectedLocal).get (by native_decide)
+    let result := do
+      let checked ← (elaborateValueAsDateTimeNowShiftExtraction
+        model 0 .lastDay .hours 1).toOption
+      pure (checked.evaluateRaw .validation { now }
+        (.parsed "00.02.2024") |>.toOption)
+    result = some (some (.value expectedLocal expectedInstant)) := by
+  native_decide
+
+/- Exact millisecond identity survives `Now` and the shift but is intentionally unobservable after `TimeFromDateTime` projects a whole-second clock. Crossing the rendered-second boundary remains observable. -/
+example :
+    let model := modelWith
+    let base := (LocalDateTime.ofYmdHms?
+      2025 6 23 12 0 0).get (by native_decide)
+    let epochMillis := base.resolveUtc.epochMillis
+    let evaluate (millisecond : Int) := do
+      let checked ← (elaborateValueAsDateTimeNowShiftExtraction
+        model 0 .firstDay .seconds 1).toOption
+      pure (checked.evaluateRaw .validation
+        { now := { epochMillis := epochMillis + millisecond } }
+        (.parsed "15.06.2024") |>.toOption)
+    evaluate 1 = evaluate 999 ∧ evaluate 999 ≠ evaluate 1000 := by
+  native_decide
+
 /- Shifting does not manufacture an instant for an empty or formally unavailable DateTime source. -/
 example :
     let model := modelWith

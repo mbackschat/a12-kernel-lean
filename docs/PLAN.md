@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1580 theorem roots; 35306 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 596 jobs · trust audit **1581 theorem roots; 35329 declarations in 336 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit the next source-closed DateTime-shift source that can serve as the Time operand of `DateTime(ValueAsDate(...), time)`. Start with `TimeFromDateTime(AddHours|AddMinutes|AddSeconds(Now, literal))`: reuse the checked model-zone profile, shared sub-day unit, signed-32-bit amount conversion, and existing `World.now` identity; add no general temporal-expression carrier until Date-before-Time short-circuiting, millisecond retention, and runtime sampling are source-closed.
+Audit the smallest nonliteral amount for the checked DateTime-field shift that serves as the Time operand of `DateTime(ValueAsDate(...), time)`. Start with one ordinary nonrepeatable Number field and reuse the checked document plus existing numeric observation semantics; add no general numeric-expression or temporal-expression carrier until source-before-amount evaluation, empty/fillability, formal precedence, and static Number admission are source-closed.
 
 ## Immediate sequence
 
-1. Verify the generated `Now` source and sub-day shift use one controller sample, preserve its exact millisecond remainder through `Calendar.add`, and reach `TimeFromDateTime` before the outer constructor's model-zone projection. Reuse the existing reviewed a12-dmkits `NowMillisecondIdentity` and DST controls as provenance rather than requesting duplicate evidence.
-2. Extend the existing shifted extraction owner only if `World.now` can enter through the same exact-instant projection without duplicating checked field admission or introducing a source AST. Retain Date-before-Time evaluation by passing the world-dependent read as the existing thunk.
-3. Keep separators for a same-rendered-second millisecond remainder, Berlin spring-forward or overlap identity, and Date-side formal short-circuiting that proves `World` is not consulted semantically. Stop if the source lifetime cannot be represented by one explicit `World` or if a common field/`Now` source representation would erase different static admission. Leave general amount expressions, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
+1. Inspect the Number-amount checker and all generated `DateAddOperation.st` routes together with the checked Number-cell projection. Confirm the exact evaluation order when the DateTime source is empty, non-relevant, or formal and the amount is empty, domain-invalid, or formal.
+2. Reuse the complete-DateTime source certificate, immutable checked document, `NumericComputationResult`, shared signed-32-bit conversion, and existing shifted-instant projection. Generalize the literal amount only when the field route has the same result domain; retain separate static certification for the Number declaration.
+3. Keep separators for source-before-amount formal failure, an empty amount yielding no Time, a present fractional amount narrowing toward zero, and a formal amount reached after an empty source. Stop if the ordinary checked Number read cannot retain the helper's missing provenance without a wider numeric-expression owner. Leave general amount expressions, extensible-enumeration String components, repeatable addressing, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 
