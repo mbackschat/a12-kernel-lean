@@ -101,4 +101,62 @@ theorem fullDateComputation_today_unavailable
   unfold CheckedFullDateComputation.evaluateOutcome
   rw [operandRead]
 
+/-- Date-typed `BaseYear` exposes the exact model-zone January 1 instant supplied by the explicit capability. -/
+theorem fullDateComputation_baseYear_value
+    (operation : CheckedFullDateComputation model)
+    (world : World)
+    (input : CheckedDocument model)
+    (zoneId : String)
+    (year : Int)
+    (instant : Instant)
+    (operand :
+      operation.operand = .baseYearValue zoneId year)
+    (resolved :
+      world.resolveLocal? zoneId year 1 1 0 0 0 = some instant) :
+    operation.evaluateOutcome world input =
+      (operation.target.evaluate (.value instant)).mapError .target := by
+  have operandRead :
+      operation.evaluateOperand world input = .ok (.value instant) := by
+    simp [CheckedFullDateComputation.evaluateOperand,
+      operand, resolved] <;> rfl
+  unfold CheckedFullDateComputation.evaluateOutcome
+  rw [operandRead]
+
+/-- Base Year is model configuration: changing only the world's clock instant cannot change its operand result. -/
+theorem fullDateComputation_baseYear_now_irrelevant
+    (operation : CheckedFullDateComputation model)
+    (world : World)
+    (input : CheckedDocument model)
+    (zoneId : String)
+    (year : Int)
+    (now : Instant)
+    (operand :
+      operation.operand = .baseYearValue zoneId year) :
+    operation.evaluateOutcome { world with now } input =
+      operation.evaluateOutcome world input := by
+  simp [CheckedFullDateComputation.evaluateOutcome,
+    CheckedFullDateComputation.evaluateOperand,
+    operand, World.resolveLocal?]
+
+/-- Missing model-zone label resolution is structural failure; date-typed Base Year never degrades to the numeric year. -/
+theorem fullDateComputation_baseYear_unavailable
+    (operation : CheckedFullDateComputation model)
+    (world : World)
+    (input : CheckedDocument model)
+    (zoneId : String)
+    (year : Int)
+    (operand :
+      operation.operand = .baseYearValue zoneId year)
+    (unsupported :
+      world.resolveLocal? zoneId year 1 1 0 0 0 = none) :
+    operation.evaluateOutcome world input =
+      .error (.baseYearUnavailable zoneId year) := by
+  have operandRead :
+      operation.evaluateOperand world input =
+        .error (.baseYearUnavailable zoneId year) := by
+    simp [CheckedFullDateComputation.evaluateOperand,
+      operand, unsupported] <;> rfl
+  unfold CheckedFullDateComputation.evaluateOutcome
+  rw [operandRead]
+
 end A12Kernel

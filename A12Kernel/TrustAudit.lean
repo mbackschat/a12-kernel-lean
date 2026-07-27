@@ -231,6 +231,9 @@ run_cmd do
 #print axioms A12Kernel.fullDateComputation_field_value
 #print axioms A12Kernel.fullDateComputation_today_value
 #print axioms A12Kernel.fullDateComputation_today_unavailable
+#print axioms A12Kernel.fullDateComputation_baseYear_value
+#print axioms A12Kernel.fullDateComputation_baseYear_now_irrelevant
+#print axioms A12Kernel.fullDateComputation_baseYear_unavailable
 #print axioms A12Kernel.todayOperand_resolves_exact
 #print axioms A12Kernel.todayOperand_unsupported
 #print axioms A12Kernel.baseYearOperand_resolves_exact

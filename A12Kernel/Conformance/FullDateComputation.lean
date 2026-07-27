@@ -25,7 +25,8 @@ private def target : FlatFieldDecl := {
 
 private def modelFor (zoneId : String) : FlatModel := {
   fields := [source, target]
-  timeZoneId := zoneId }
+  timeZoneId := zoneId
+  baseYear := some 2020 }
 
 private def prepared? (zoneId : String) :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }
@@ -68,6 +69,11 @@ private def todayOperation? (zoneId : String) :
   (elaborateFullDateTodayComputation
     (modelFor zoneId) target.id).toOption
 
+private def baseYearOperation? (zoneId : String) :
+    Option (CheckedFullDateComputation (modelFor zoneId)) :=
+  (elaborateFullDateBaseYearComputation
+    (modelFor zoneId) target.id).toOption
+
 private def errorOf (result : Except FullDateComputationElabError value) :
     Option FullDateComputationElabError :=
   match result with
@@ -97,6 +103,13 @@ private def todayView? (zoneId : String) (now : Instant)
   operation.executeResult
     { now, modelZoneRules := ModelZone.concreteRules }
     checked [] |>.toOption
+
+private def baseYearView? (zoneId : String) (world : World)
+    (data : DocumentData) :
+    Option (FullDateComputationRunView FormalCause) := do
+  let checked ← checked? zoneId data
+  let operation ← baseYearOperation? zoneId
+  operation.executeResult world checked [] |>.toOption
 
 private def destinationWith (state : FullDateTargetState) :
     FullDateComputationDestination :=
@@ -188,6 +201,57 @@ example : (do
     pure (faultOf (operation.executeResult { now } checked
       ([] : List FormalCause)))) =
     some (some (.todayUnavailable "UTC")) := by
+  native_decide
+
+/- Date-typed `BaseYear` is January 1 of the configured year and reaches the existing target/result boundary as a Date, not the number 2020. -/
+example : (do
+    let now ← instant? 2024 4 6
+    let view ← baseYearView? "UTC"
+      { now, modelZoneRules := ModelZone.concreteRules }
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    pure (view.withoutErrors.map (·.value.text),
+      view.withChanges.map (·.value.text))) =
+    some (["01.01.2020"], ["01.01.2020"]) := by
+  native_decide
+
+/- Changing only the clock instant cannot change model-configured `BaseYear`. -/
+example : (do
+    let first ← instant? 2024 4 6
+    let second ← instant? 2025 9 17
+    let firstView ← baseYearView? "Europe/Berlin"
+      { now := first, modelZoneRules := ModelZone.concreteRules }
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    let secondView ← baseYearView? "Europe/Berlin"
+      { now := second, modelZoneRules := ModelZone.concreteRules }
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    pure (firstView.withoutErrors, secondView.withoutErrors)) =
+    some ([
+      { targetField := target.id,
+        value := ⟨"01.01.2020", by decide⟩ }
+    ], [
+      { targetField := target.id,
+        value := ⟨"01.01.2020", by decide⟩ }
+    ]) := by
+  native_decide
+
+/- A model without configured Base Year is rejected before execution. -/
+example :
+    let noBaseYear : FlatModel := {
+      modelFor "UTC" with baseYear := none }
+    errorOf (elaborateFullDateBaseYearComputation
+      noBaseYear target.id) =
+        some .baseYearNotDeclared := by
+  native_decide
+
+/- Base Year needs model-zone label resolution but never falls back to a numeric year or the clock when that capability is missing. -/
+example : (do
+    let now ← instant? 2024 4 6
+    let checked ← checked? "UTC"
+      (input "ignored" oldDate.text copiedRaw oldRaw)
+    let operation ← baseYearOperation? "UTC"
+    pure (faultOf (operation.executeResult { now } checked
+      ([] : List FormalCause)))) =
+    some (some (.baseYearUnavailable "UTC" 2020)) := by
   native_decide
 
 end A12Kernel.Conformance.FullDateComputation

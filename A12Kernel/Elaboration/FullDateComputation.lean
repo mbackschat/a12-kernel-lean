@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 
 /-! # Checked nonrepeatable full-Date computations
 
-This capsule admits the field and `Today` forms of the existing `FlatTemporalOperand` against one full-Date target. Field evaluation reads once through `CheckedDocument`; `Today` resolves once from the execution's explicit `World` in the checked model zone. Both retain an exact instant and delegate rendering and basic checking to `CheckedFullDateTarget`. Alternatives, scheduling, DateTime, partial dates, wider expressions, message construction, and destination compatibility remain separate.
+This capsule admits the field, `Today`, and date-typed `BaseYear` forms of the existing `FlatTemporalOperand` against one full-Date target. Field evaluation reads once through `CheckedDocument`; `Today` resolves once from the execution's explicit `World` in the checked model zone; Base Year resolves model-configured January 1 through the same zone capability without reading the clock. Every path retains an exact instant and delegates rendering and basic checking to `CheckedFullDateTarget`. Alternatives, scheduling, DateTime, partial dates, wider expressions, message construction, and destination compatibility remain separate.
 -/
 
 namespace A12Kernel
@@ -16,6 +16,7 @@ inductive FullDateComputationElabError where
   | sourceKind (source : FieldId) (actual : TemporalKind)
   | sourceComponents (source : FieldId) (actual : TemporalComponents)
   | targetSelfReference (field : FieldId)
+  | baseYearNotDeclared
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -38,9 +39,11 @@ def FlatModel.admitsFullDateComputationOperand
       model.admitsFullDateComputationSource source &&
         source.id != targetField
   | .todayValue zoneId => zoneId == model.timeZoneId
+  | .baseYearValue zoneId year =>
+      zoneId == model.timeZoneId && model.baseYear == some year
   | _ => false
 
-/-- One model-certified field/`Today` computation. The operand, target policy, and model-zone identity cannot be substituted after elaboration. -/
+/-- One model-certified field/`Today`/Base-Year computation. The operand, target policy, and model-zone identity cannot be substituted after elaboration. -/
 structure CheckedFullDateComputation (model : FlatModel) where
   operand : FlatTemporalOperand
   target : CheckedFullDateTarget model
@@ -93,11 +96,30 @@ def elaborateFullDateTodayComputation
   else
     throw .incoherentCore
 
+/-- Build date-typed `BaseYear` from the checked model's configured year and exact zone id. It is model configuration, not a clock sample or numeric coercion. -/
+def elaborateFullDateBaseYearComputation
+    (model : FlatModel) (targetField : FieldId) :
+    Except FullDateComputationElabError
+      (CheckedFullDateComputation model) := do
+  let target ← elaborateFullDateTarget model targetField |>.mapError .target
+  let year ← match model.baseYear with
+    | some year => pure year
+    | none => throw .baseYearNotDeclared
+  let operand :=
+    FlatTemporalOperand.baseYearValue model.timeZoneId year
+  if hOperand :
+      model.admitsFullDateComputationOperand
+        target.checked.target.id operand = true then
+    pure { operand, target, operandAdmitted := hOperand }
+  else
+    throw .incoherentCore
+
 /-- Structural failure outside the rich full-Date result domain. -/
 inductive FullDateComputationFault where
   | document (error : CheckedDocumentError)
   | sourceValueKind (source : FieldId)
   | todayUnavailable (zoneId : String)
+  | baseYearUnavailable (zoneId : String) (year : Int)
   | unsupportedOperand
   | target (error : FullDateTargetEvaluationFault)
   deriving Repr, DecidableEq
@@ -123,6 +145,10 @@ def evaluateOperand (operation : CheckedFullDateComputation model)
       match world.today? zoneId with
       | some instant => pure (.value instant)
       | none => throw (.todayUnavailable zoneId)
+  | .baseYearValue zoneId year =>
+      match world.resolveLocal? zoneId year 1 1 0 0 0 with
+      | some instant => pure (.value instant)
+      | none => throw (.baseYearUnavailable zoneId year)
   | _ => throw .unsupportedOperand
 
 /-- Execute the checked operand through the existing declaration-owned target policy. -/

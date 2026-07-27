@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1515 theorem roots; 32717 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 569 jobs · trust audit **1518 theorem roots; 32766 declarations in 317 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Admit date-typed `BaseYear` as the third checked full-Date computation operand through the existing `FlatTemporalOperand` owner. It must be accepted only when the checked model declares the exact year, resolve January 1 through the model-zone capability rather than the clock or a numeric coercion, and feed the existing target/result/application boundary without a new temporal AST or source-specific evaluator.
+Admit `StartOfDateRange(BaseYear)` and `EndOfDateRange(BaseYear)` as the next checked full-Date computation operands through the existing `FlatTemporalOperand` and `BaseYearRangeEndpoint` owners. Each must retain the checked model's exact year and zone, resolve January 1 or December 31 through the model-zone capability, and feed the existing target/result/application boundary without a new range type or evaluator.
 
 ## Immediate sequence
 
-1. Finish the bounded source packet for date-typed `BaseYear`: verify parse-time Date transformation, configured-year admission, generated `getReferenzjahr()` lowering, January 1 construction in the model time zone, and target delegation through Java and `.st`.
-2. Extend the checked full-Date operand admission and evaluator to `FlatTemporalOperand.baseYearValue`, with an elaborator that captures exactly `model.baseYear` and `model.timeZoneId`. Reuse `World.resolveLocal?` only as the explicit model-zone capability; the result must be independent of `World.now`.
-3. Prove exact January 1 resolution and clock independence, then retain missing-Base-Year, unsupported-zone, and numeric-coercion separators through the existing result/application query. Stop before `Now`, literals, Base-Year ranges, shifts, DateTime, partial-Date completion, alternatives/tables/scheduling, message construction, destination compatibility certification, or wider format syntax.
+1. Close the bounded source packet for Base-Year range extraction: verify endpoint selection, generated `01.01.<year>`/`31.12.<year>` construction, fixed full-Date format, configured-year admission, and target delegation through Java and `.st`.
+2. Extend the checked operand admission and evaluator to `FlatTemporalOperand.baseYearRangeValue`, with one elaborator parameterized by the existing endpoint enum. Reuse `baseYearRangeParts` and `World.resolveLocal?`; do not reconstruct endpoint dates or add a second range carrier.
+3. Prove exact endpoint resolution and clock independence, then retain start/finish, missing-Base-Year, and unsupported-zone separators through the existing result/application query. Stop before field-based Date ranges, `Now`, literals, shifts, DateTime, partial-Date completion, alternatives/tables/scheduling, message construction, destination compatibility certification, or wider format syntax.
 
 ## Parked boundaries
 
