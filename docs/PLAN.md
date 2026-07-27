@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 609 jobs · trust audit **1598 theorem roots; 35873 declarations in 345 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 612 jobs · trust audit **1601 theorem roots; 36047 declarations in 347 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Execute the newly certified direct UTC/GMT three-Number-field `Date(day, month, year)` source through the immutable checked document and the completed default-cutover arithmetic core. Preserve the first reached formal cause outside cause-free `DateConstructionResult`, then compose literal day/month/year shifts without adding a general temporal-expression tree.
+Test the first checked validation consumer of the direct UTC/GMT three-Number-field constructed Date. Reuse `DateConstructionResult.validVerdict`/`invalidVerdict` and the existing numeric component projection while preserving the exact cause-bearing observation boundary; do not add a second validity table or numeric result family.
 
 ## Immediate sequence
 
-1. Add the narrow checked read/evaluation owner over `CheckedConstructedDateComponents`; retain the first Day/Month/Year formal cause in a wrapper rather than widening or replacing `DateConstructionResult`.
-2. Run the consumer query first: three checked nonrepeatable Number fields form `1582-10-04`, one literal `AddDays` reaches `1582-10-15`, and unavailable, empty, and cutover-hole inputs remain distinguishable.
-3. Reuse the three established legacy shift functions and stop before expression-valued amounts, another model zone, another component form, target storage, repeatable addressing, message text, or a general temporal-expression carrier.
+1. Pin the invariant that checked evaluation never constructs `.resolved .unknown`; formal causes use `.unavailable cause`. Make any cause-free fallback explicit rather than inventing a cause.
+2. Run the consumer query first: real/incomplete/unreal/malformed checked inputs reproduce the existing `Valid`/`Invalid` polarity table, while Day/Month/Quarter/Year projection retains present versus fillable zero and exact formal unavailability.
+3. Implement only the smallest adapters needed by checked validation and numeric consumers. Stop before expression-valued amounts, another model zone or component form, computation scheduling, target storage, repeatable addressing, message text, or a general temporal-expression carrier.
 
 ## Parked boundaries
 

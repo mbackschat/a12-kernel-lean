@@ -1647,3 +1647,6 @@ run_cmd do
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant
 #print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance
 #print axioms A12Kernel.checkedConstructedDateComponents_utc
+#print axioms A12Kernel.checkedConstructedDateComponents_day_unavailable
+#print axioms A12Kernel.constructedDateObservation_shifts_preserve_unavailable
+#print axioms A12Kernel.constructedDateObservation_shifts_preserve_resolved_nonvalues
