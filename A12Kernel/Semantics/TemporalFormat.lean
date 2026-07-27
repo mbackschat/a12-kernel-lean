@@ -41,7 +41,7 @@ inductive TemporalTargetPolicyError where
   | youngerThan1900RequiresDate
   deriving Repr, DecidableEq
 
-/-- Complete declaration-owned policy needed before a resolved temporal value can be rendered and checked as a computed target. The model time zone remains a separate model-wide input. -/
+/-- Complete declaration-owned policy needed by stored partial-Date consumers and before a resolved temporal value can be rendered and checked as a computed target. The model time zone remains a separate model-wide input. -/
 structure TemporalTargetPolicy where
   /-- Exact already-admitted format source, including component order, separators, and quoting. -/
   format : String

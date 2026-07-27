@@ -199,7 +199,7 @@ structure FlatFieldDecl where
   /-- Resolved Number constraints reachable from computed-target checking. Scale and signedness remain in `policy.kind`. -/
   numericTargetConstraints : NumericTargetConstraints :=
     NumericTargetConstraints.unconstrained
-  /-- Complete resolved temporal policy when this declaration may be used as a computed target. Absence keeps ordinary temporal reads available but makes target construction explicitly insufficient. -/
+  /-- Complete resolved temporal policy for consumers that need exact stored format, partial precision, or the additional Date check. Absence keeps ordinary temporal reads available but makes such consumers explicitly insufficient. -/
   temporalTargetPolicy : Option TemporalTargetPolicy := none
   repeatableScope : List RepeatableLevel := []
   deriving Repr, DecidableEq

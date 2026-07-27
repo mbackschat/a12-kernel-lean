@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 578 jobs · trust audit **1545 theorem roots; 33285 declarations in 323 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1549 theorem roots; 33506 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and implement the first partially known stored-Date consumer: day-optional `ValueAsDate(field, FirstDay|LastDay)` for direct comparison. Retain the literal `00` omission and its endpoint choice; do not coerce the source to an ordinary full Date before the checked operation selects its boundary.
+Extend the checked `ValueAsDate(field, FirstDay|LastDay)` owner from `DAY_OPTIONAL` to the remaining kernel-admitted `MONTH_OPTIONAL` and `YEAR_OPTIONAL` stored-Date modes without changing its direct-comparison result boundary. Preserve every literal unknown component until endpoint selection and preserve the runtime's non-relevant result for an unknown year.
 
 ## Immediate sequence
 
-1. Prepare a bounded source packet across `CheckFeldOpMitDatumSpecialImpl`, `RuntimeController.wertAlsDatum`, the partial-date format/basic-check owners, generated field/endpoint operations, and maintained a12-dmkits `ValueAsDate` laws. Separate an unknown day resolved as first versus last day, a fully known value, malformed input, and every forbidden precision/kind/placement.
-2. Introduce only the smallest checked day-optional representation if no existing temporal owner retains the literal omission. Compose the resolved endpoint through the existing direct Date comparison and classified-verdict path; do not add a general partial-date parser or a second comparison evaluator.
-3. Stop if exact empty/formal behavior or endpoint selection is not source-determined. Do not proceed into month/year-optional execution, partial-date computation output, DateTime arithmetic expressions, alternatives/tables/scheduling, message rendering, destination compatibility certification, wider format syntax, or unsupported zones.
+1. Audit the exact well-formed stored shapes for `MONTH_OPTIONAL` and `YEAR_OPTIONAL`, the order of unknown-year suppression versus month/day completion, and first/last behavior across leap years and the universal Date floor. Use `IDateType.DatePrecision`, `TeilbekanntesDatumUtil`/`FormatDefinitionDatum`, `RuntimeController.wertAlsDatum`, `PartiallyKnownDatesUtil`, and the existing a12-dmkits formal/interpreter owners; do not infer legal combinations from enum names.
+2. Generalize the existing typed omitted-day carrier only as far as those source-closed combinations require. Reuse the current checked declaration policy, checked-cell observation, full-Date endpoint, and comparison verdict owners; an unknown year must project to not evaluated rather than a fabricated reference year.
+3. Keep static rejection exact for `FULL`, non-Date, repeatable placement, and unsupported formats. Stop if a legal omission shape or the empty/non-relevant distinction is not source-determined. Do not proceed into the nested Date-add/difference/`DateTime(...)` placements pending peer reconciliation under [`SPEC-2026-07-27-02`](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-07-27-02--valueasdate-is-admitted-in-explicit-nested-date-positions), partial-Date computation output, scheduling, message rendering, wider format syntax, or unsupported zones.
 
 ## Parked boundaries
 
