@@ -6,7 +6,7 @@ import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today` extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic `Today` retains the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
 The extensible-enumeration String alternative, other recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
@@ -80,6 +80,7 @@ inductive SurfaceConstructedDateSource where
   | baseYearRangeExtractor
       (endpoint : BaseYearRangeEndpoint) (part : DateNumericPart)
   | todayExtractor (part : DateNumericPart)
+  | nowExtractor (part : DateNumericPart)
   deriving Repr, DecidableEq
 
 /-- The three legal authored year shapes before model-relative checking. -/
@@ -193,9 +194,16 @@ structure CheckedConstructedDateBaseYearExtractor (model : FlatModel) where
   configured : model.baseYear = some year
   matchesPosition : position.extractor? = some part
 
-/-- One matching Date component extracted from dynamic `Today`. The selected profile is
-   retained so execution can decode the world-supplied instant without ambient state. -/
-structure CheckedConstructedDateTodayExtractor (model : FlatModel) where
+/-- The two dynamic point-in-time values admitted beneath Date-component extraction. -/
+inductive ConstructedDatePointInTime where
+  | today
+  | now
+  deriving Repr, DecidableEq
+
+/-- One matching Date component extracted from a dynamic point in time. The selected
+   profile decodes the world-supplied instant without ambient state. -/
+structure CheckedConstructedDatePointInTimeExtractor (model : FlatModel) where
+  point : ConstructedDatePointInTime
   position : ConstructedDateComponentPosition
   part : DateNumericPart
   profile : ModelZone.ConcreteProfile
@@ -212,8 +220,8 @@ inductive CheckedConstructedDateSource (model : FlatModel) where
   | extractor (source : CheckedConstructedDateExtractorField model)
   | baseYearExtractor
       (source : CheckedConstructedDateBaseYearExtractor model)
-  | todayExtractor
-      (source : CheckedConstructedDateTodayExtractor model)
+  | pointInTimeExtractor
+      (source : CheckedConstructedDatePointInTimeExtractor model)
 
 /-- A checked complete Year source, fixed model Base Year, or authored Century/Short-Year pair. -/
 inductive CheckedConstructedDateYear (model : FlatModel) where
@@ -348,18 +356,19 @@ def elaborateConstructedDateBaseYearExtractor
         throw (.extractorMismatch position part)
   | none => throw .missingBaseYear
 
-/-- Resolve dynamic `Today` without sampling it and retain both the model-zone profile and
-   the matching outer constructor position. -/
-def elaborateConstructedDateTodayExtractor
+/-- Check a dynamic point-in-time source without sampling it and retain the model-zone
+   profile plus matching outer constructor position. -/
+def elaborateConstructedDatePointInTimeExtractor
     (model : FlatModel) (position : ConstructedDateComponentPosition)
-    (part : DateNumericPart) :
+    (point : ConstructedDatePointInTime) (part : DateNumericPart) :
     Except ConstructedDateComponentsElabError
-      (CheckedConstructedDateTodayExtractor model) := do
+      (CheckedConstructedDatePointInTimeExtractor model) := do
   match profileSelected :
       ModelZone.ConcreteProfile.ofId? model.timeZoneId with
   | some profile =>
       if matchesPosition : position.extractor? = some part then
-        pure { position, part, profile, profileSelected, matchesPosition }
+        pure {
+          point, position, part, profile, profileSelected, matchesPosition }
       else
         throw (.extractorMismatch position part)
   | none => throw (.unsupportedZone model.timeZoneId)
@@ -393,8 +402,13 @@ def elaborateConstructedDateSource
         elaborateConstructedDateBaseYearExtractor
           model position (.range endpoint) part
   | .todayExtractor part =>
-      .todayExtractor <$>
-        elaborateConstructedDateTodayExtractor model position part
+      .pointInTimeExtractor <$>
+        elaborateConstructedDatePointInTimeExtractor
+          model position .today part
+  | .nowExtractor part =>
+      .pointInTimeExtractor <$>
+        elaborateConstructedDatePointInTimeExtractor
+          model position .now part
 
 /-- Check one two-, three-, or four-part direct Date through a common ordered source seam. -/
 def elaborateConstructedDateSources

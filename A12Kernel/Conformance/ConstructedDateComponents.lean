@@ -247,6 +247,21 @@ example :
           (.todayExtractor .year) (.constant "63")) = false := by
   native_decide
 
+/- `Now` is a complete dynamic DateTime beneath ordinary extraction. Its matching
+   components are legal, but mismatched and split-year placements remain closed. -/
+example :
+    extractorDateIsOk extractorModel
+        (.nowExtractor .day) (.nowExtractor .month)
+        (.complete (.nowExtractor .year)) = true ∧
+      extractorDateIsOk extractorModel
+        (.nowExtractor .month) (.constant "6")
+        (.complete (.constant "1963")) = false ∧
+      extractorDateIsOk extractorModel
+        (.constant "15") (.constant "6")
+        (.centuryAndShortYear
+          (.nowExtractor .year) (.constant "63")) = false := by
+  native_decide
+
 /- Pattern-backed String fields reuse the six exact checker-recognized digit sources at
    the position's complete stored width. Regex equivalence and a wrong width do not pass. -/
 example :

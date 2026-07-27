@@ -33,19 +33,43 @@ theorem checkedConstructedDateBaseYearExtractor_read
 
 /-- Dynamic `Today` has no implicit clock fallback. -/
 theorem checkedConstructedDateTodayExtractor_requires_world
-    (checked : CheckedConstructedDateTodayExtractor model) :
+    (checked : CheckedConstructedDatePointInTimeExtractor model)
+    (isToday : checked.point = .today) :
     checked.read none = .error .todayWorldRequired := by
+  simp [CheckedConstructedDatePointInTimeExtractor.read, isToday]
   rfl
 
 /-- A resolved `Today` projects exactly the certified local calendar component. -/
 theorem checkedConstructedDateTodayExtractor_read
-    (checked : CheckedConstructedDateTodayExtractor model)
+    (checked : CheckedConstructedDatePointInTimeExtractor model)
     (world : World) (instant : Instant) (date : FullDate)
+    (isToday : checked.point = .today)
     (resolved : world.today? model.timeZoneId = some instant)
     (decoded : checked.profile.localDate? instant = some date) :
     checked.read (some world) =
       .ok (.value (checked.part.extract date.civil.parts).num) := by
-  simp [CheckedConstructedDateTodayExtractor.read, resolved, decoded]
+  simp [CheckedConstructedDatePointInTimeExtractor.read, isToday,
+    CheckedConstructedDatePointInTimeExtractor.project, resolved, decoded]
+  rfl
+
+/-- Dynamic `Now` has no implicit clock fallback. -/
+theorem checkedConstructedDateNowExtractor_requires_world
+    (checked : CheckedConstructedDatePointInTimeExtractor model)
+    (isNow : checked.point = .now) :
+    checked.read none = .error .nowWorldRequired := by
+  simp [CheckedConstructedDatePointInTimeExtractor.read, isNow]
+  rfl
+
+/-- `Now` projects the retained exact world instant without consulting zone rules. -/
+theorem checkedConstructedDateNowExtractor_read
+    (checked : CheckedConstructedDatePointInTimeExtractor model)
+    (world : World) (date : FullDate)
+    (isNow : checked.point = .now)
+    (decoded : checked.profile.localDate? world.now = some date) :
+    checked.read (some world) =
+      .ok (.value (checked.part.extract date.civil.parts).num) := by
+  simp [CheckedConstructedDatePointInTimeExtractor.read,
+    CheckedConstructedDatePointInTimeExtractor.project, isNow, decoded]
   rfl
 
 /-- A reached checked digit String contributes its exact natural-number component without numeric truncation. -/

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 614 jobs · trust audit **1618 theorem roots; 37059 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 614 jobs · trust audit **1620 theorem roots; 37073 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close matching `DayFromDate(Now)`, `MonthFromDate(Now)`, and `YearFromDate(Now)` inside direct checked UTC/GMT `Date(...)`. Consolidate the completed `Today` source into a checked point-in-time source only where both dynamic values share the same position/profile contract; preserve their distinct instant acquisition.
+Admit the pinned `Europe/Berlin` profile for direct checked constructed Dates while retaining civil construction and model-zone decoding as separate responsibilities. Start with the dynamic `Today`/`Now` component sources and one post-floor UTC-versus-Berlin midnight separator; do not claim pre-floor hybrid-calendar identity.
 
 ## Immediate sequence
 
-1. Confirm `Now`'s DateTime admission, generated Java/Groovy/JavaScript point-in-time and extraction routes, retained validation instant, and local component projection.
-2. Add separating red cases for all three matching positions, mismatch and split-year rejection, two exact instants on opposite sides of UTC midnight, document independence, and one composed consumer.
-3. Reuse the explicit `World.now`, checked profile, and existing local-Date projection. Consolidate only the shared source certificate/evaluator seam; keep `Today`'s model-zone-midnight resolution distinct from `Now`'s exact retained instant.
+1. Audit `RuntimeController.makeDate`, `DateUtil`, generated construction order, and model-zone `GregorianCalendar` setup for which constructed-Date observables depend on the selected zone.
+2. Add red cases that separate UTC from Berlin near local midnight for both point-in-time sources, preserve matching component order, and keep an unsupported zone explicit.
+3. Replace the UTC-only outer certificate with the existing concrete-profile certificate only if civil validity, shifts, differences, and dynamic component projection remain type-correct under that exact profile. Stop at the first pre-floor or DST behavior that needs a new calendar account.
 
 ## Parked boundaries
 

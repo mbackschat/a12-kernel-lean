@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today` resolves only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
 The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
@@ -22,6 +22,8 @@ inductive ConstructedDateEvaluationFault where
   | nonIntegralPayload (field : FieldId) (value : Rat)
   | todayWorldRequired
   | todayUnavailable (zoneId : String)
+  | nowWorldRequired
+  | nowUnavailable (zoneId : String)
   deriving Repr, DecidableEq
 
 /-- A checked component before cause-free construction classification. -/
@@ -168,25 +170,41 @@ def read (checked : CheckedConstructedDateBaseYearExtractor model)
 
 end CheckedConstructedDateBaseYearExtractor
 
-namespace CheckedConstructedDateTodayExtractor
+namespace CheckedConstructedDatePointInTimeExtractor
 
-/-- Resolve `Today` from the supplied execution world, then project the matching local
-    calendar component through the model-certified zone profile. -/
-def read (checked : CheckedConstructedDateTodayExtractor model)
+/-- Decode one exact instant through the certified profile and project the selected Date
+    component, preserving the acquisition-specific structural fault. -/
+def project
+    (checked : CheckedConstructedDatePointInTimeExtractor model)
+    (instant : Instant) (unavailable : ConstructedDateEvaluationFault) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match checked.profile.localDate? instant with
+  | none => throw unavailable
+  | some date =>
+      pure (.value (checked.part.extract date.civil.parts).num)
+
+/-- Resolve the selected point in time from the supplied execution world, then project
+    the matching local calendar component through the model-certified zone profile.
+    `Today` asks the world for model-zone midnight; `Now` keeps its exact instant. -/
+def read (checked : CheckedConstructedDatePointInTimeExtractor model)
     (world : Option World) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   match world with
-  | none => throw .todayWorldRequired
+  | none =>
+      match checked.point with
+      | .today => throw .todayWorldRequired
+      | .now => throw .nowWorldRequired
   | some world =>
-      match world.today? model.timeZoneId with
-      | none => throw (.todayUnavailable model.timeZoneId)
-      | some instant =>
-          match checked.profile.localDate? instant with
+      match checked.point with
+      | .today =>
+          match world.today? model.timeZoneId with
           | none => throw (.todayUnavailable model.timeZoneId)
-          | some date =>
-              pure (.value (checked.part.extract date.civil.parts).num)
+          | some instant =>
+              checked.project instant (.todayUnavailable model.timeZoneId)
+      | .now =>
+          checked.project world.now (.nowUnavailable model.timeZoneId)
 
-end CheckedConstructedDateTodayExtractor
+end CheckedConstructedDatePointInTimeExtractor
 
 namespace CheckedConstructedDateSource
 
@@ -202,7 +220,7 @@ def read (checked : CheckedConstructedDateSource model)
   | .constant value => pure (.value value)
   | .extractor source => source.read phase input
   | .baseYearExtractor source => source.read phase input
-  | .todayExtractor source => source.read world
+  | .pointInTimeExtractor source => source.read world
 
 end CheckedConstructedDateSource
 
