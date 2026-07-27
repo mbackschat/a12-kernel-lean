@@ -9,9 +9,16 @@ This capsule admits direct, already-resolved field presence, ordered `And`/`Or`,
 
 namespace A12Kernel
 
-/-- Pure checked-cell reads shared by the first scalar computation fragments. Model and path checking remain outside this context. -/
+/-- Pure checked-cell reads plus the optional explicit evaluation world shared by scalar computation fragments. Model and path checking remain outside this context; a clock-dependent checked expression fails structurally when `world` is absent. -/
 structure ScalarComputationContext where
   read : FieldId → CheckedCell
+  world : Option World := none
+
+/-- Supply the explicit evaluation world without changing the checked-cell read policy. -/
+def ScalarComputationContext.withWorld
+    (context : ScalarComputationContext) (world : World) :
+    ScalarComputationContext :=
+  { context with world := some world }
 
 /-- Atomic leaves of the parser-independent computation-condition fragment. -/
 inductive ComputationConditionLeaf where

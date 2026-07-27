@@ -503,19 +503,19 @@ theorem numericValidation_dateDifference_literal_delegates
 /-- A checked sub-day atom delegates its exact-instant operand through the shared numeric validator without a second difference or comparison path. -/
 theorem numericValidation_dateTimeDifference_literal_delegates
     (op : NumericValidationOp) (unit : DateTimeDifferenceUnit)
-    (left right : FlatTemporalField)
+    (left right : FlatTemporalOperand)
     (literal : DecodedNumericLiteral) (context : FlatContext) :
     ({ op, left := .atom (.dateTimeDifference unit left right),
         right := .literal literal } : NumericComparison).evalSelected context =
       op.eval
         (DateTimeDifferenceOperand.evaluate unit
-          (.ofObservation (context.observeValidationAt left.id))
-          (.ofObservation (context.observeValidationAt right.id)))
+          (context.resolveDateTimeDifferenceOperand left)
+          (context.resolveDateTimeDifferenceOperand right))
         (.value literal.value .fixed) := by
   cases op <;>
     cases evaluated : DateTimeDifferenceOperand.evaluate unit
-      (.ofObservation (context.observeValidationAt left.id))
-      (.ofObservation (context.observeValidationAt right.id)) <;>
+      (context.resolveDateTimeDifferenceOperand left)
+      (context.resolveDateTimeDifferenceOperand right) <;>
     simp [NumericComparisonOf.evalSelected, NumericComparisonOf.evalWith,
       AuthoredNumericExpr.lowerForEvaluation,
       LoweredNumericExpr.evalAdmittedValidation?,

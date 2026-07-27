@@ -67,6 +67,23 @@ def crossGroupDayDifferenceOutcome
   evalValidationRule? crossGroupModel rule raw
     GroupPresenceContext.unavailable true
 
+def crossGroupNowDifferenceVerdict
+    (nowMillis : Int) (target : Rat) : Option Verdict := do
+  let operation ← crossGroupNowDifferenceOperation.toOption
+  let comparison ← (operation.generatedMismatchComparison none).toOption
+  let raw : RawFlatContext := {
+    read field :=
+      if field = crossGroupDateTime.id then
+        .parsed (.temporal (.dateTime { epochMillis := 0 }
+          { year := 1970, month := 1, day := 1 }
+          ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))
+          .storedGregorian))
+      else if field = crossGroupTarget.id then .parsed (.num target)
+      else .empty }
+  pure (comparison.evalFull
+    ((crossGroupModel.checkContext raw).withWorld
+      { now := { epochMillis := nowMillis } }) true)
+
 def crossGroupGeneratedBoundary :
     Option (GroupPath × NumericOperandScope) := do
   let operation ← crossGroupNumberOperation.toOption

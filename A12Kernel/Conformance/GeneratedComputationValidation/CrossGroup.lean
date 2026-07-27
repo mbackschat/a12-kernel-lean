@@ -40,6 +40,12 @@ example :
         some (.fired crossGroupDayDifferenceExpectedMessage) := by
   native_decide
 
+/- Generated validation reuses the checked dynamic sub-day operand: the same lowered mismatch observes the evaluation world's exact clock rather than a checking-time capture. -/
+example :
+    crossGroupNowDifferenceVerdict 999 1 = some (.fired .value) ∧
+      crossGroupNowDifferenceVerdict 1000 1 = some .notFired := by
+  native_decide
+
 /- Checked expression payloads reuse the source table: computation selects the first holding row, generated validation retains the later root-rounding/arithmetic mismatch, and tolerance remains validation-only. -/
 example :
     selectedCrossGroupExpression =

@@ -18,6 +18,17 @@ def FlatContext.resolveNumericArithmetic (context : FlatContext)
     Except NumericValidationUnavailable NumericArithmeticOutcome :=
   (context.resolveNumberComparisonOperand field).toValidationArithmetic
 
+/-- Resolve the checked sub-day field/`Now` operand domain. An absent evaluation world or a forged broader temporal operand stays formally unavailable instead of acquiring a numeric default. -/
+def FlatContext.resolveDateTimeDifferenceOperand
+    (context : FlatContext) : FlatTemporalOperand → DateTimeDifferenceOperand
+  | .fieldValue source =>
+      .ofObservation (context.observeValidationAt source.id)
+  | .nowValue =>
+      match context.world with
+      | some world => .value world.now
+      | none => .unavailable .malformed
+  | _ => .unavailable .malformed
+
 def ValidationEvaluationContext.resolveNumericValidationAtom
     (context : ValidationEvaluationContext) :
     NumericValidationAtom →
@@ -53,8 +64,8 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       | .error _ => .error (.formal .malformed)
   | .dateTimeDifference unit left right =>
       (DateTimeDifferenceOperand.evaluate unit
-        (.ofObservation (context.fields.observeValidationAt left.id))
-        (.ofObservation (context.fields.observeValidationAt right.id)))
+        (context.fields.resolveDateTimeDifferenceOperand left)
+        (context.fields.resolveDateTimeDifferenceOperand right))
         |>.toValidationArithmetic
   | .dayDifference profile left right =>
       match CalendarDayDifferenceOperand.evaluate profile

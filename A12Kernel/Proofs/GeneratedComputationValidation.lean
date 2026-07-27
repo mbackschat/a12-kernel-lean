@@ -41,10 +41,10 @@ theorem numericComputationAtom_dayDifference_toValidationAtom
       .ok (.ordinary (.dayDifference profile left right)) := by
   rfl
 
-/-- Generated validation preserves the exact sub-day unit and both checked DateTime field certificates. -/
+/-- Generated validation preserves the exact sub-day unit and both checked field/`Now` operands. -/
 theorem numericComputationAtom_dateTimeDifference_toValidationAtom
     (model : FlatModel) (unit : DateTimeDifferenceUnit)
-    (left right : FlatTemporalField) :
+    (left right : FlatTemporalOperand) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.numeric (.dateTimeDifference unit left right)) =
       .ok (.ordinary (.dateTimeDifference unit left right)) := by

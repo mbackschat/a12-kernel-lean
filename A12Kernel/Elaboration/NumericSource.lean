@@ -7,7 +7,7 @@ import A12Kernel.Semantics.String
 
 /-! # Shared checked numeric-expression sources
 
-Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary String/Enumeration/category conversion, Date-only month/year differences, exact-instant DateTime hour/minute/second differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, and runtime reads remain with each checked owner.
+Validation and computation both consume Number-field references, numeric `BaseYear`, direct numeric date-component extraction from a Base-Year date source, direct Date/Time/DateTime field-component sources, checked ordinary String/Enumeration/category conversion, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, and direct resolved Number field-list aggregates through the same authored expression tree. Consumer-specific field resolution, model coherence, explicit-world injection, and runtime reads remain with each checked owner.
 -/
 
 namespace A12Kernel
@@ -230,6 +230,7 @@ def FlatContext.resolveTemporalNumericOperand (context : FlatContext)
 inductive SurfaceDateDifferenceOperand where
   | field (path : SurfaceFieldPath)
   | baseYear (source : BaseYearDateSource)
+  | now
   deriving Repr, DecidableEq
 
 inductive ResolvedDateDifferenceOperand where
@@ -266,6 +267,21 @@ def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
       CalendarDayDifferenceOperand.ofBaseYear profile year source
 
 end ResolvedDateDifferenceOperand
+
+namespace FlatTemporalOperand
+
+/-- The static component identity of an admitted sub-day operand. Other temporal comparison operands remain outside the checked difference route. -/
+def dateTimeDifferenceComponents? : FlatTemporalOperand → Option TemporalComponents
+  | .fieldValue source => some source.components
+  | .nowValue => some TemporalComponents.now
+  | _ => none
+
+/-- Whether an admitted sub-day operand reads one exact document field. -/
+def dateTimeDifferenceReferences
+    (operand : FlatTemporalOperand) (field : FieldId) : Bool :=
+  operand.fields.any (·.id == field)
+
+end FlatTemporalOperand
 
 /-- The Number-valued field-list aggregate operations whose resolved folds share one classified-cell owner. -/
 inductive NumericAggregateOp where
@@ -355,7 +371,7 @@ inductive ResolvedNumericAtom (Field : Type)
   | dateDifference (unit : DateDifferenceUnit)
       (left right : ResolvedDateDifferenceOperand)
   | dateTimeDifference (unit : DateTimeDifferenceUnit)
-      (left right : FlatTemporalField)
+      (left right : FlatTemporalOperand)
   | dayDifference (profile : ModelZone.ConcreteProfile)
       (left right : ResolvedDateDifferenceOperand)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
@@ -373,7 +389,8 @@ def isDataDependent : ResolvedNumericAtom Field Aggregate → Bool
   | .stringRange _ _ _ => true
   | .fieldValueAsNumber _ => true
   | .dateDifference _ left right => left.isField || right.isField
-  | .dateTimeDifference _ _ _ => true
+  | .dateTimeDifference _ left right =>
+      !left.fields.isEmpty || !right.fields.isEmpty
   | .dayDifference _ left right => left.isField || right.isField
   | .aggregate _ _ => true
   | .filledGroupCount _ => true

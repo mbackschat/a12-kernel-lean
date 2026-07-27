@@ -132,6 +132,22 @@ example :
           some .incompatibleDateDifference := by
   native_decide
 
+/- The checked sub-day source samples `Now` only from the explicit evaluation world. Reusing the checked expression under another world changes the exact quotient, while omitting the world is a structural fault rather than field poison or zero. -/
+example :
+    let elapsed := surfaceDateTimeDifference .seconds
+      (surfaceDateOperand "DateTime") .now
+    let input := context
+      (dateTime := checkedTemporal .dateTime dateTimeComponents
+        (.parsed (dateTimeValueAt 0)))
+    checkedResultOf elapsed
+        (input.withWorld { now := { epochMillis := 999 } }) =
+          some (.value 0) ∧
+      checkedResultOf elapsed
+        (input.withWorld { now := { epochMillis := 1000 } }) =
+          some (.value 1) ∧
+      checkedFaultOf elapsed input = some .worldRequired := by
+  native_decide
+
 /- Day admission accepts Date/DateTime mixing, rejects Time, and reports unsupported profile selection before runtime. -/
 example :
     let mixed := surfaceDayDifference

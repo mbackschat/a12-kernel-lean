@@ -71,11 +71,13 @@ theorem orderedNumericValidationAtom_repeatableDateTimeDifference_requiresAddres
     (left right : FlatTemporalField) (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId left.id = .ok declaration)
     (repeatable : declaration.repeatableScope.isEmpty = false) :
-    (OrderedNumericValidationAtom.ordinary
-      (.dateTimeDifference unit left right)).requiresAddressedValidation
-        (model := model) = true := by
+    ((.ordinary
+      (.dateTimeDifference unit (.fieldValue left) (.fieldValue right)) :
+        OrderedNumericValidationAtom model).requiresAddressedValidation) =
+  true := by
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
-    lookup, repeatable]
+    OrderedNumericValidationAtom.addressedNumericValidationFieldIds,
+    FlatTemporalOperand.fields, FlatField.id, lookup, repeatable]
 
 /-- A concrete-profile calendar-day difference keeps addressed evaluation when its model-certified Date or DateTime field operand is repeatable. -/
 theorem orderedNumericValidationAtom_repeatableDayDifference_requiresAddressed

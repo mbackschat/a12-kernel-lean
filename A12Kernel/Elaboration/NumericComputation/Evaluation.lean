@@ -76,6 +76,18 @@ def readCalendarDayDifferenceOperand (context : ScalarComputationContext)
   | .baseYear year source =>
       CalendarDayDifferenceOperand.ofBaseYear profile year source
 
+/-- Resolve one checked sub-day operand through computation-phase field reads or the explicit evaluation world. Unsupported temporal comparison shapes fail structurally rather than becoming field poison. -/
+def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
+    FlatTemporalOperand →
+      Except NumericComputationFault DateTimeDifferenceOperand
+  | .fieldValue source =>
+      pure (.ofObservation (observeCell .computation (context.read source.id)))
+  | .nowValue =>
+      match context.world with
+      | some world => pure (.value world.now)
+      | none => throw .worldRequired
+  | _ => throw .unsupportedDateTimeDifferenceOperand
+
 /-- Share every non-aggregate computation atom branch while allowing the direct and addressed evaluators to supply their own aggregate projection. -/
 def readNumericComputationAtomWith
     (context : ScalarComputationContext)
@@ -113,11 +125,11 @@ def readNumericComputationAtomWith
           (context.readDateDifferenceOperand right) with
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
-  | .dateTimeDifference unit left right =>
+  | .dateTimeDifference unit left right => do
+      let leftOperand ← context.readDateTimeDifferenceOperand left
+      let rightOperand ← context.readDateTimeDifferenceOperand right
       pure ((DateTimeDifferenceOperand.evaluate unit
-        (.ofObservation (observeCell .computation (context.read left.id)))
-        (.ofObservation (observeCell .computation (context.read right.id))))
-        |>.toComputationResult)
+        leftOperand rightOperand).toComputationResult)
   | .dayDifference profile left right =>
       match CalendarDayDifferenceOperand.evaluate profile
           (context.readCalendarDayDifferenceOperand profile left)
@@ -253,12 +265,15 @@ def NumericComputationAtom.numericComputationFault? :
       | some fault => some fault
       | none => fault? right
   | .dateTimeDifference _ left right =>
-      if left.kind != .dateTime then
-        some (.fieldKindMismatch left.id)
-      else if right.kind != .dateTime then
-        some (.fieldKindMismatch right.id)
-      else
-        none
+      let fault? : FlatTemporalOperand → Option NumericComputationFault
+        | .fieldValue source =>
+            if source.kind == .dateTime then none
+            else some (.fieldKindMismatch source.id)
+        | .nowValue => none
+        | _ => some .unsupportedDateTimeDifferenceOperand
+      match fault? left with
+      | some fault => some fault
+      | none => fault? right
   | .dayDifference _ left right =>
       let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
         | .field source =>

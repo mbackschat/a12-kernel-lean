@@ -122,6 +122,10 @@ def crossGroupDate : FlatFieldDecl :=
   { id := 21, groupPath := ["Input"], name := "StartDate",
     policy := { kind := .temporal .date TemporalComponents.fullDate } }
 
+def crossGroupDateTime : FlatFieldDecl :=
+  { id := 26, groupPath := ["Input"], name := "StartedAt",
+    policy := { kind := .temporal .dateTime TemporalComponents.now } }
+
 def crossGroupExtra : FlatFieldDecl :=
   { id := 13, groupPath := ["Input"], name := "Extra",
     policy := { kind := .number { scale := 0, signed := false } } }
@@ -147,7 +151,8 @@ def crossGroupOtherTarget : FlatFieldDecl :=
 
 def crossGroupModel : FlatModel :=
   { fields := [crossGroupSource, crossGroupDate, crossGroupExtra, crossGroupTarget,
-      crossGroupOtherTarget, crossGroupCode, crossGroupNumericChoice]
+      crossGroupOtherTarget, crossGroupCode, crossGroupNumericChoice,
+      crossGroupDateTime]
     baseYear := some 2024
     timeZoneId := "Europe/Berlin" }
 
@@ -177,6 +182,14 @@ def crossGroupDayDifferenceOperation :
     crossGroupTarget.id
     (.atom (.dayDifference (.baseYear .direct)
       (.field (absolutePath ["Input"] "StartDate"))))
+
+def crossGroupNowDifferenceOperation :
+    Except NumericComputationElabError
+      (CheckedNumericComputationOperation crossGroupModel) :=
+  elaborateNumericComputationOperation crossGroupModel ["Rules"]
+    crossGroupTarget.id
+    (.atom (.dateTimeDifference .seconds
+      (.field (absolutePath ["Input"] "StartedAt")) .now))
 
 def crossGroupOffsetOperation :
     Except NumericComputationElabError

@@ -345,17 +345,24 @@ theorem readDateDifference_evaluated
   rw [evaluated]
   rfl
 
-/-- A checked sub-day source reads both exact DateTime instants once and maps their shared difference operand into computation outcome space. -/
+/-- A checked sub-day source resolves each admitted field/`Now` operand once and maps their exact instant difference into computation outcome space. -/
 theorem readDateTimeDifference_evaluated
     (context : ScalarComputationContext)
     (unit : DateTimeDifferenceUnit)
-    (left right : FlatTemporalField) :
+    (left right : FlatTemporalOperand)
+    (leftOperand rightOperand : DateTimeDifferenceOperand)
+    (leftResolved :
+      context.readDateTimeDifferenceOperand left = .ok leftOperand)
+    (rightResolved :
+      context.readDateTimeDifferenceOperand right = .ok rightOperand) :
     context.readNumericComputationAtom
         (.dateTimeDifference unit left right) =
       .ok ((DateTimeDifferenceOperand.evaluate unit
-        (.ofObservation (observeCell .computation (context.read left.id)))
-        (.ofObservation (observeCell .computation (context.read right.id))))
+        leftOperand rightOperand)
         |>.toComputationResult) := by
+  simp only [ScalarComputationContext.readNumericComputationAtom,
+    ScalarComputationContext.readNumericComputationAtomWith]
+  rw [leftResolved, rightResolved]
   rfl
 
 /-- A supported checked calendar-day source preserves its exact resolved instants and maps the selected profile result once into computation outcome space. -/

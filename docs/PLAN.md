@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1481 theorem roots; 31453 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 545 jobs · trust audit **1481 theorem roots; 31538 declarations in 301 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Open the bounded SG6 dynamic-time packet for `DifferenceInHours`, `DifferenceInMinutes`, and `DifferenceInSeconds`, then close the smallest checked `Now` operand route that retains `World` as an explicit evaluation input without duplicating the existing temporal expression tree.
+Thread one caller-supplied `World` through the scalar checked Number run so every admitted dynamic `Now` operand in a multi-table execution observes the same evaluation instant.
 
 ## Immediate sequence
 
-1. Inventory the existing `Now`, sub-day difference, `World`, checked numeric-source, computation, and generated-validation owners; verify the source-defined evaluation point and legal authoring shapes without reopening already-closed exact-instant arithmetic.
-2. Run the dangerous discriminator first: the same checked expression under two `World` values must retain different exact instants, while two Berlin overlap values with one wall label remain distinguishable. Reject any design that captures the clock during checking or stores only wall components.
-3. If the existing owners admit a narrow composition, add one explicit-world checked `Now` route through the shared sub-day source and its existing Number computation/generated-validation consumers, with a static rejection or honest gap for every unsupported context. Otherwise stop at the exact missing representation fact rather than adding a temporal-only duplicate AST.
+1. Reuse the direct checked expression's explicit-world evaluation and extend the existing run entry point with one `World`; do not place the world in `CheckedDocument`, the checked plan, or table construction.
+2. Run the dangerous discriminator first: one checked multi-table run under two worlds must differ at its `Now` consumer, while all tables in one run must observe the same instant and ordinary field-only runs remain unchanged.
+3. Prove or lock that the run merely threads the supplied world through its existing overlay context. Add no ambient clock, temporal scheduler, trace, or second processing-context representation.
 
 ## Parked boundaries
 
