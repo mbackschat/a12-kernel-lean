@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Integrate the checked direct constructed-Date numeric consumers into the existing numeric-expression boundary only where its current authored AST already retains the exact nested operation. Reuse the established `ConstructedDateNumericResult` and formal-cause projection; do not introduce a general temporal AST merely to force the integration.
+Close the direct four-Number-field `Date(day, month, century, shortYear)` form by extending the existing checked constructed-Date component owner. Reuse the exact positional declaration gates, generated argument order, reason-bearing result, consumers, shifts, and differences; combine the two year parts only after both are reached.
 
 ## Immediate sequence
 
-1. Inventory `SurfaceNumericAtom`, `ResolvedNumericAtom`, the direct temporal component/difference carriers, and checked elaboration to determine whether `Date(...)` component extraction or difference is already representable without a new expression family.
-2. If representable, add one bounded checked atom and red cases for real value, incomplete omission zero, unreal fixed zero, and exact formal propagation through validation and Number computation. Reuse existing arithmetic/generated-validation paths by specialization.
-3. If the surface AST does not retain the nested constructed-Date shape, record that exact authoring gap and select the next SG6 family; do not add a general temporal-expression carrier, adapter-only parallel AST, scheduler, target storage, repeatable addressing, or message construction.
+1. Complete the bounded checker/runtime packet for direct Number Century and Short-Year fields, including flexible versus exact maxima, component order, empty/fixed behavior, and full-year composition.
+2. Add separating red cases for accepted 19/63, rejected declaration shapes, Century-before-Short-Year formal precedence, an empty year part, and the non-law that `century + shortYear` is the full year.
+3. Extend the existing checked year carrier and evaluator without a new Date result, document view, or temporal-expression family; keep String/extractor components, wider zones, repeatables, targets, and numeric-expression integration outside.
 
 ## Parked boundaries
 

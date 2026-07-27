@@ -34,15 +34,19 @@ private def dateModel (zoneId : String := "UTC") : FlatModel := {
   timeZoneId := zoneId
 }
 
-private def document? (cells : List ClassifiedCellInput) :
-    Option (CheckedDocument (dateModel "UTC")) := do
+private def documentFor? (model : FlatModel) (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument model) := do
   let prepared ←
     (prepareFlatStringContext { now := { epochMillis := 0 } }
-      builtinStringPatternCompiler (dateModel "UTC")).toOption
+      builtinStringPatternCompiler model).toOption
   checkDocument prepared "en_US" {
     instantiatedRows := []
     cells
   } |>.toOption
+
+private def document? (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument (dateModel "UTC")) :=
+  documentFor? (dateModel "UTC") cells
 
 private def numberCell (field : FieldId) (stored : String)
     (raw : RawCell) : ClassifiedCellInput := {
@@ -55,6 +59,13 @@ private def evaluate? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
+  checked.evaluate .validation input |>.toOption
+
+private def evaluateBaseYear? (cells : List ClassifiedCellInput) := do
+  let model := { dateModel "UTC" with baseYear := some 2024 }
+  let checked ←
+    (elaborateConstructedDateBaseYearComponents model 1 2).toOption
+  let input ← documentFor? model cells
   checked.evaluate .validation input |>.toOption
 
 private def validVerdict? (cells : List ClassifiedCellInput) := do
@@ -81,6 +92,18 @@ private def amountPath : SurfaceFieldPath := {
   groups := ["Order"]
   field := "ShiftAmount"
 }
+
+/- The model Base Year is a present fixed component: no Year cell is read, and an
+   empty Day remains incomplete instead of acquiring a default Day. -/
+example :
+    evaluateBaseYear? [
+        numberCell 1 "29" (.parsed (.num 29)),
+        numberCell 2 "2" (.parsed (.num 2))] =
+          some (.resolved (.real { year := 2024, month := 2, day := 29 })) ∧
+      evaluateBaseYear? [
+        numberCell 2 "2" (.parsed (.num 2))] =
+          some (.resolved .incomplete) := by
+  native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .divide

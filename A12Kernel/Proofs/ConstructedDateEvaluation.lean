@@ -4,6 +4,13 @@ import A12Kernel.Elaboration.ConstructedDateEvaluation
 
 namespace A12Kernel
 
+/-- The omitted-year form cannot consult document state for its injected model Base Year. -/
+theorem checkedConstructedDateBaseYear_read
+    (year : Int) (phase : Phase) (input : CheckedDocument model) :
+    CheckedConstructedDateYear.read (.baseYear year) phase input =
+      .ok (.value year) := by
+  rfl
+
 /-- A formally unavailable Day prevents every later component read. -/
 theorem checkedConstructedDateComponents_day_unavailable
     (checked : CheckedConstructedDateComponents model)
@@ -47,7 +54,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
               | unavailable cause => simp
               | value amount =>
                   generalize yearRead :
-                    CheckedConstructedDateNumberField.read checked.year phase input = year
+                    CheckedConstructedDateYear.read checked.year phase input = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -55,7 +62,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
                         simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
               | empty =>
                   generalize yearRead :
-                    CheckedConstructedDateNumberField.read checked.year phase input = year
+                    CheckedConstructedDateYear.read checked.year phase input = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -71,7 +78,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
               | unavailable cause => simp
               | value amount =>
                   generalize yearRead :
-                    CheckedConstructedDateNumberField.read checked.year phase input = year
+                    CheckedConstructedDateYear.read checked.year phase input = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -79,7 +86,7 @@ theorem checkedConstructedDateComponents_ne_resolved_unknown
                         simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
               | empty =>
                   generalize yearRead :
-                    CheckedConstructedDateNumberField.read checked.year phase input = year
+                    CheckedConstructedDateYear.read checked.year phase input = year
                   cases year with
                   | error error => simp
                   | ok year =>

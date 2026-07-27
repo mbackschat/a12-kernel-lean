@@ -49,4 +49,28 @@ example :
     | _ => false) = true := by
   native_decide
 
+/- The two-argument form requires an explicit model Base Year and retains it as a
+   fixed checked component rather than fabricating a field read. -/
+private def baseYearOf? (model : FlatModel) : Option Int :=
+  match elaborateConstructedDateBaseYearComponents model 1 2 with
+  | .ok checked =>
+      match checked.year with
+      | .baseYear year => some year
+      | .field _ => none
+  | .error _ => none
+
+example :
+    baseYearOf? (dateModel "UTC") = none ∧
+      baseYearOf? { dateModel "UTC" with baseYear := some 2024 } =
+        some 2024 := by
+  native_decide
+
+/- Day admission precedes the missing-Base-Year rejection, matching the source checker. -/
+example :
+    (match elaborateConstructedDateBaseYearComponents
+        (dateModel "UTC") 99 2 with
+    | .error (.field .day _) => true
+    | _ => false) = true := by
+  native_decide
+
 end A12Kernel.Conformance.ConstructedDateComponents

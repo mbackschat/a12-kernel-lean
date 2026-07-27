@@ -1,11 +1,11 @@
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Semantics.ModelZone
 
-/-! # Checked three-Number-field constructed Dates
+/-! # Checked direct constructed Dates
 
-This capsule certifies the direct nonrepeatable `Date(day, month, year)` Number-field form for model-owned UTC or GMT. Each position keeps the kernel checker's exact stored-width-or-maximum declaration gate.
+This capsule certifies the direct nonrepeatable `Date(day, month, year)` Number-field form and its two-argument Base-Year specialization for model-owned UTC or GMT. Each authored field position keeps the kernel checker's exact stored-width-or-maximum declaration gate; the omitted year is the fixed model Base Year, not a document read.
 
-Execution, other model zones, String and extractor components, Base-Year and four-component forms, numeric expression amounts, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Execution, other model zones, String and extractor components, the four-component form, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -58,11 +58,16 @@ structure CheckedConstructedDateNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsConstructedDateNumberField position source = true
 
-/-- The checked direct three-field constructor plus its bounded model-zone certificate. -/
+/-- The checked year is either an authored complete-Year field or the fixed model Base Year injected by the two-argument form. -/
+inductive CheckedConstructedDateYear (model : FlatModel) where
+  | field (source : CheckedConstructedDateNumberField model)
+  | baseYear (year : Int)
+
+/-- The checked direct constructor plus its bounded model-zone certificate. -/
 structure CheckedConstructedDateComponents (model : FlatModel) where
   day : CheckedConstructedDateNumberField model
   month : CheckedConstructedDateNumberField model
-  year : CheckedConstructedDateNumberField model
+  year : CheckedConstructedDateYear model
   profileIsUtc :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId =
       some .utc
@@ -73,6 +78,7 @@ inductive ConstructedDateComponentsElabError where
   | sourceKind (position : ConstructedDateComponentPosition) (field : FieldId)
   | declarationNotAdmitted (position : ConstructedDateComponentPosition)
       (field : FieldId)
+  | missingBaseYear
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
@@ -109,7 +115,28 @@ def elaborateConstructedDateComponents
       pure {
         day := checkedDay
         month := checkedMonth
-        year := checkedYear
+        year := .field checkedYear
+        profileIsUtc := hProfile }
+  | _ => throw (.unsupportedZone model.timeZoneId)
+
+/-- Check the two-argument Day/Month form and retain the required model Base Year as its fixed third component. -/
+def elaborateConstructedDateBaseYearComponents
+    (model : FlatModel) (day month : FieldId) :
+    Except ConstructedDateComponentsElabError
+      (CheckedConstructedDateComponents model) := do
+  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | some .utc =>
+      let checkedDay ←
+        elaborateConstructedDateNumberField model .day day
+      let checkedMonth ←
+        elaborateConstructedDateNumberField model .month month
+      let year ← match model.baseYear with
+        | some year => pure year
+        | none => throw .missingBaseYear
+      pure {
+        day := checkedDay
+        month := checkedMonth
+        year := .baseYear year
         profileIsUtc := hProfile }
   | _ => throw (.unsupportedZone model.timeZoneId)
 

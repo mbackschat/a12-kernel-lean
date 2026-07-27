@@ -4,7 +4,7 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule reads one certified direct three-Number-field Date from the immutable checked document in Day/Month/Year order. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule reads one certified direct constructed Date from the immutable checked document in generated Day/Month/Year order. The two-argument form replaces the final read with the fixed model Base Year. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
 
 The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Another component form or model zone, DateTime, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
@@ -52,6 +52,18 @@ def read (checked : CheckedConstructedDateNumberField model)
   checked.classify (observeCell phase cell)
 
 end CheckedConstructedDateNumberField
+
+namespace CheckedConstructedDateYear
+
+/-- Read an authored complete-Year field or return the injected model Base Year as an always-present fixed component. -/
+def read (checked : CheckedConstructedDateYear model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match checked with
+  | .field source => source.read phase input
+  | .baseYear year => pure (.value year)
+
+end CheckedConstructedDateYear
 
 /-- A cause-preserving checked observation around the existing four-way construction result. -/
 inductive ConstructedDateObservation where

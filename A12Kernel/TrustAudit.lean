@@ -1648,6 +1648,7 @@ run_cmd do
 #print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance
 #print axioms A12Kernel.checkedConstructedDateComponents_utc
 #print axioms A12Kernel.checkedConstructedDateComponents_day_unavailable
+#print axioms A12Kernel.checkedConstructedDateBaseYear_read
 #print axioms A12Kernel.constructedDateObservation_ofAvailableComponents_ne_unknown
 #print axioms A12Kernel.checkedConstructedDateComponents_ne_resolved_unknown
 #print axioms A12Kernel.constructedDateObservation_consumers_preserve_unavailable
