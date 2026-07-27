@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValueAsDateDayDifference
+import A12Kernel.Elaboration.ValueAsDateShiftTarget
 
 /-! # Partial-Date `ValueAsDate` locks -/
 
@@ -45,6 +46,24 @@ private def dayOptionalSource
 private def modelWith
     (source : FlatFieldDecl := dayOptionalSource) : FlatModel := {
   fields := [source]
+  timeZoneId := "Europe/Berlin" }
+
+private def dateTarget
+    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+  id := 1
+  groupPath := ["Order"]
+  name := "ComputedDate"
+  policy := {
+    kind := .temporal .date TemporalComponents.fullDate }
+  temporalTargetPolicy := some {
+    format := "dd.MM.yyyy"
+    partialMode := .full
+    youngerThan1900Check } }
+
+private def modelWithTarget
+    (source : FlatFieldDecl := dayOptionalSource)
+    (target : FlatFieldDecl := dateTarget) : FlatModel := {
+  fields := [source, target]
   timeZoneId := "Europe/Berlin" }
 
 private def checked? (endpoint : ValueAsDateEndpoint)
@@ -468,6 +487,52 @@ example :
       (checkedLeft.evaluateRaw Phase.validation
         .empty .unsupportedCalendar).toOption =
         some (.operand (.value 0 .both)) := by
+  native_decide
+
+/- A civil shift reaches the existing Date target without losing accepted text or source-state distinctions. -/
+example :
+    let checked := (elaborateValueAsDateShiftTarget
+      (modelWithTarget) 0 1 .lastDay .months).toOption.get
+        (by native_decide)
+    (checked.evaluateRaw (.parsed "00.02.2024") (.value 1)).toOption =
+        some (.accepted ⟨"29.03.2024", by decide⟩) ∧
+      (checked.evaluateRaw .empty .domainFailure).toOption =
+        some .noValue ∧
+      (checked.evaluateRaw (.rejected .malformed) (.value 1)).toOption =
+        some (.poison .malformed) := by
+  native_decide
+
+/- The always-on floor retains the exact attempted text; the optional pre-1900 check has earlier target-policy precedence. -/
+example :
+    let ordinary := (elaborateValueAsDateShiftTarget
+      (modelWithTarget) 0 1 .firstDay .days).toOption.get
+        (by native_decide)
+    let additional := (elaborateValueAsDateShiftTarget
+      (modelWithTarget (target := dateTarget true))
+      0 1 .firstDay .days).toOption.get (by native_decide)
+    (ordinary.evaluateRaw
+        (.parsed "16.10.1583") (.value (-1))).toOption =
+        some (.errored ⟨"15.10.1583", by decide⟩
+          .beforeGregorianFloor) ∧
+      (additional.evaluateRaw
+        (.parsed "16.10.1583") (.value (-1))).toOption =
+        some (.errored ⟨"15.10.1583", by decide⟩
+          .before1900) := by
+  native_decide
+
+/- A proleptic landing before the legacy cutover is refused instead of exposing the wrong attempted label. -/
+example :
+    let checked := (elaborateValueAsDateShiftTarget
+      (modelWithTarget) 0 1 .firstDay .days).toOption.get
+        (by native_decide)
+    let observed : Bool :=
+      match checked.evaluateRaw
+          (.parsed "16.10.1583") (.value (-367)) with
+      | .error (.unsupportedLegacyLanding date) =>
+          date.parts.year == 1582 &&
+            date.parts.month == 10 && date.parts.day == 14
+      | _ => false
+    observed = true := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

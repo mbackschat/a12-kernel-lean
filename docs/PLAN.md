@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 582 jobs · trust audit **1563 theorem roots; 34095 declarations in 326 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 583 jobs · trust audit **1566 theorem roots; 34221 declarations in 327 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close the target projection of `AddDays`/`AddMonths`/`AddYears(ValueAsDate(...), amount)` into one checked nonrepeatable Date target. Preserve the shift's reason-bearing `CivilDate` until the target's own formatting and basic-check boundary so a real below-floor landing remains an errored attempted value rather than becoming structural failure or clean no-value. Reuse the existing target outcome, result projection, and application owners; do not widen `FlatTemporalOperand` or introduce a general Date-expression tree.
+Audit and close the next legal Time-operand form inside `DateTime(ValueAsDate(...), time)`. Determine the exact parser-owned `zeitAngabe` subset, authored read order, empty/formal precedence, and whether an existing checked Time observation owner can supply it without adding a general temporal-expression tree. Prefer one source-closed field or constructed-Time form that materially widens the current direct supplied-observation boundary.
 
 ## Immediate sequence
 
-1. Recheck generated `DateAddOperation.st`, `CalculationController.handleBerechnetenWert(VkDate, ...)`, and the Date target's reduced basic-check route. Determine the exact stored attempt and error class for a real shifted date below the universal Date floor, the ordering of target formatting versus checks, and whether the existing `FullDateTargetOutcome` can represent every reachable result without identifying a target error with an execution fault.
-2. If the existing result boundary fits, add the smallest checked composite over `CheckedValueAsDateShift` and `CheckedFullDateTarget`. Reuse the current source read, amount conversion, target rendering, run-result projection, and application path; isolate only the civil-attempt-to-target seam that the exact-instant computation entry cannot currently express.
-3. Retain separators for accepted concrete output, source formal poison, clean numeric no-value, unknown-year non-relevance, below-floor attempted-value rejection, and target policy precedence. Stop if the kernel emits a formal error family or stored attempt the current target domain cannot represent without a source-closed extension. Leave repeatable addressing, scheduling, wider formats/zones and Date expressions, message text, destination compatibility, and date-like distinct count outside.
+1. Recheck the grammar and checker for `dateTimeKonstrukt`, then follow its generated Java/Groovy/JavaScript templates and runtime helper. Inventory exactly which Time shapes can occupy `zeitAngabe`, which owner certifies each shape, and whether generated evaluation reaches the Date or Time side first.
+2. Select the smallest form whose model-relative certificate and runtime observation already exist. Compose it with `CheckedValueAsDateTime`; do not widen `FlatTemporalOperand` merely to carry Time, and do not create a parallel Time parser, context, or expression algebra.
+3. Retain separators for Date-first formal failure, reached Time formal failure, ordinary empty input, unknown-year non-relevance, zone-gap no-value, and one accepted exact instant. Stop if the Time shape needs unmodeled authored-expression metadata, missing-provenance state, or a new processing-context capability. Leave target projection, repeatable addressing, wider Date expressions, message text, and date-like distinct count outside.
 
 ## Parked boundaries
 

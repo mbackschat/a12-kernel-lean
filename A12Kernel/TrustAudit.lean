@@ -210,6 +210,8 @@ run_cmd do
 #print axioms A12Kernel.valueAsDate_evaluateRaw_empty
 #print axioms A12Kernel.valueAsDate_evaluateRaw_rejected
 #print axioms A12Kernel.valueAsDateShift_evaluate_empty_amountPoison
+#print axioms A12Kernel.valueAsDateShiftTarget_evaluate_poison
+#print axioms A12Kernel.valueAsDateShiftTarget_executeResult_projects
 #print axioms A12Kernel.valueAsDateDifference_evalFixedRight_nonRelevant
 #print axioms A12Kernel.valueAsDateDifference_evaluate_left_unavailable
 #print axioms A12Kernel.valueAsDateDifference_evaluate_right_unavailable
@@ -220,6 +222,7 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_right_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_nonRelevant_empty
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
+#print axioms A12Kernel.fullDateTarget_evaluateCivil_beforeGregorianFloor
 #print axioms A12Kernel.fullDateTarget_evaluate_ignoresPartialMode
 #print axioms A12Kernel.dateTimeTarget_evaluate_value
 #print axioms A12Kernel.dateTimeComputation_transports_now

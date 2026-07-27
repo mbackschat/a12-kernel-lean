@@ -2,7 +2,7 @@ import A12Kernel.Semantics.ModelZone
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded full-Date and DateTime target result domains. Full Date admits two exact formats and the optional pre-1900 check; a computed Date is concrete even when its target declaration permits partially known stored inputs. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded full-Date and DateTime target result domains. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; a computed Date is concrete even when its target declaration permits partially known stored inputs. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -29,9 +29,9 @@ def ofSource? : String → Option FullDateTargetFormat
   | "yyyy-MM-dd" => some .yearMonthDayDashes
   | _ => none
 
-/-- Render one admitted local Date. The year is untruncated; day and month are always two digits, matching the kernel's computed-Date store. -/
-def renderText (format : FullDateTargetFormat) (date : FullDate) : String :=
-  let parts := date.civil.parts
+/-- Render one real civil Date. The year is untruncated; day and month are always two digits, matching the kernel's computed-Date store before its later target checks. -/
+def renderCivilText (format : FullDateTargetFormat) (date : CivilDate) : String :=
+  let parts := date.parts
   match format with
   | .dayMonthYearDots =>
       TemporalTargetText.twoDigits parts.day ++ "." ++
@@ -41,6 +41,10 @@ def renderText (format : FullDateTargetFormat) (date : FullDate) : String :=
       toString parts.year ++ "-" ++
         TemporalTargetText.twoDigits parts.month ++ "-" ++
         TemporalTargetText.twoDigits parts.day
+
+/-- Compatibility renderer for an already floor-admitted full Date. -/
+def renderText (format : FullDateTargetFormat) (date : FullDate) : String :=
+  format.renderCivilText date.civil
 
 end FullDateTargetFormat
 
@@ -55,14 +59,18 @@ abbrev StoredDate := StoredTemporalText .date
 
 namespace FullDateTargetFormat
 
-/-- Render an admitted Date into a nonempty target attempt. -/
-def render (format : FullDateTargetFormat) (date : FullDate) : StoredDate :=
+/-- Render one real civil Date into the exact nonempty attempt that the target basic check will consume. -/
+def renderCivil (format : FullDateTargetFormat) (date : CivilDate) : StoredDate :=
   {
-    text := format.renderText date
+    text := format.renderCivilText date
     nonempty := by
       cases format <;>
-        simp [renderText, TemporalTargetText.twoDigits]
+        simp [renderCivilText, TemporalTargetText.twoDigits]
   }
+
+/-- Render an admitted Date into a nonempty target attempt. -/
+def render (format : FullDateTargetFormat) (date : FullDate) : StoredDate :=
+  format.renderCivil date.civil
 
 end FullDateTargetFormat
 
@@ -73,8 +81,9 @@ inductive TemporalComputationResult where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Reachable basic target-check cause in the admitted post-floor full-Date fragment. -/
+/-- Reachable basic target-check causes in the bounded computed-Date fragment. -/
 inductive FullDateTargetError where
+  | beforeGregorianFloor
   | before1900
   deriving Repr, DecidableEq
 

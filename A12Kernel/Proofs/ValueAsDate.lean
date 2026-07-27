@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValueAsDateDayDifference
+import A12Kernel.Elaboration.ValueAsDateShiftTarget
 
 namespace A12Kernel
 
@@ -101,6 +102,31 @@ theorem valueAsDateShift_evaluate_empty_amountPoison
         .empty) :
     checked.evaluate cell (.poison cause) = .ok (.poison cause) := by
   rw [CheckedValueAsDateShift.evaluate.eq_def, observed]
+  rfl
+
+/-- A reached source or amount poison crosses the composed shift/target boundary unchanged; target rendering and basic checks are not run. -/
+theorem valueAsDateShiftTarget_evaluate_poison
+    (checked : CheckedValueAsDateShiftTarget model)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.shift.source.policy.partialMode))
+    (amount : NumericComputationResult) (cause : FormalCause)
+    (shifted : checked.shift.evaluate cell amount = .ok (.poison cause)) :
+    checked.evaluateOutcome cell amount = .ok (.poison cause) := by
+  rw [CheckedValueAsDateShiftTarget.evaluateOutcome, shifted]
+  rfl
+
+/-- The composed entry classifies the checked target's exact rich outcome through the established immutable full-Date result owner; it does not rebuild source placement or reclassify the target. -/
+theorem valueAsDateShiftTarget_executeResult_projects
+    (checked : CheckedValueAsDateShiftTarget model)
+    (input : CheckedDocument model) (raw : RawCell String)
+    (amount : NumericComputationResult)
+    (residualMessages : List ResidualMessage)
+    (outcome : FullDateTargetOutcome)
+    (evaluated : checked.evaluateRaw raw amount = .ok outcome) :
+    checked.executeResult input raw amount residualMessages =
+      .ok (FullDateComputationRunView.fromOutcomes input residualMessages
+        [(checked.target.checked.target.id, outcome)]) := by
+  rw [CheckedValueAsDateShiftTarget.executeResult, evaluated]
   rfl
 
 /-- Cause-free non-relevance projects to UNKNOWN only at the enclosing validation boundary. -/

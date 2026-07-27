@@ -135,6 +135,18 @@ inductive FullDateTargetEvaluationFault where
 
 namespace CheckedFullDateTarget
 
+/-- Render one real civil result before applying the target's ordered additional-check and universal-floor gates. The attempted text survives either rejection. -/
+def evaluateCivil (target : CheckedFullDateTarget model)
+    (date : CivilDate) : FullDateTargetOutcome :=
+  let stored := target.format.renderCivil date
+  if target.checked.policy.youngerThan1900Check &&
+      date.Before FullDate.year1900Start.civil then
+    .errored stored .before1900
+  else if date.Before CivilDate.gregorianFloor then
+    .errored stored .beforeGregorianFloor
+  else
+    .accepted stored
+
 /-- Render and basic-check one already-selected full-Date computation result without classifying a delta or mutating a document. -/
 def evaluate
     (target : CheckedFullDateTarget model) :
@@ -146,12 +158,7 @@ def evaluate
       match target.profile.localDate? instant with
       | none => throw (.localDateUnavailable instant)
       | some date =>
-          let stored := target.format.render date
-          if target.checked.policy.youngerThan1900Check &&
-              date.before1900 then
-            pure (.errored stored .before1900)
-          else
-            pure (.accepted stored)
+          pure (target.evaluateCivil date.civil)
 
 end CheckedFullDateTarget
 

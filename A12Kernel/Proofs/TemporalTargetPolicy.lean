@@ -26,8 +26,24 @@ theorem fullDateTarget_evaluate_pre1900
     (before : date.before1900 = true) :
     target.evaluate (.value instant) =
       .ok (.errored (target.format.render date) .before1900) := by
-  simp [CheckedFullDateTarget.evaluate, localDate, check, before]
+  have before' :
+      date.civil.Before FullDate.year1900Start.civil := by
+    simpa [FullDate.before1900, FullDate.before] using before
+  simp [CheckedFullDateTarget.evaluate, localDate,
+    CheckedFullDateTarget.evaluateCivil, check, before',
+    FullDateTargetFormat.render]
   rfl
+
+/-- Without the optional pre-1900 policy, a real civil result below the universal Date floor retains the renderer's exact attempted stored form. -/
+theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
+    (target : CheckedFullDateTarget model) (date : CivilDate)
+    (noAdditionalCheck :
+      target.checked.policy.youngerThan1900Check = false)
+    (beforeFloor : date.Before CivilDate.gregorianFloor) :
+    target.evaluateCivil date =
+      .errored (target.format.renderCivil date) .beforeGregorianFloor := by
+  simp [CheckedFullDateTarget.evaluateCivil, noAdditionalCheck,
+    beforeFloor]
 
 /-- Computed-Date evaluation observes only the selected renderer, zone profile, and additional check. In particular, a target's partial-input mode cannot manufacture unknown fragments in the concrete result. -/
 theorem fullDateTarget_evaluate_ignoresPartialMode
@@ -40,9 +56,13 @@ theorem fullDateTarget_evaluate_ignoresPartialMode
       left.checked.policy.youngerThan1900Check =
         right.checked.policy.youngerThan1900Check) :
     left.evaluate result = right.evaluate result := by
-  cases result <;>
-    simp [CheckedFullDateTarget.evaluate, sameFormat, sameProfile,
-      sameAdditionalCheck]
+  cases result with
+  | noValue => rfl
+  | poison => rfl
+  | value instant =>
+      simp [CheckedFullDateTarget.evaluate, sameProfile,
+        CheckedFullDateTarget.evaluateCivil, sameFormat,
+        sameAdditionalCheck]
 
 /-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
 theorem dateTimeTarget_evaluate_value
