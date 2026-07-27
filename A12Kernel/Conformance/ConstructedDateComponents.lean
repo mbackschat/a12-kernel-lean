@@ -20,7 +20,9 @@ private def dateModel (zoneId : String := "UTC") : FlatModel := {
   fields := [
     componentField 1 { maximum := some 31 },
     componentField 2 { maximum := some 12 },
-    componentField 3 { maxStoredLength := some 4 }]
+    componentField 3 { maxStoredLength := some 4 },
+    componentField 4 { maximum := some 22 },
+    componentField 5 { maximum := some 99 }]
   timeZoneId := zoneId
 }
 
@@ -56,7 +58,7 @@ private def baseYearOf? (model : FlatModel) : Option Int :=
   | .ok checked =>
       match checked.year with
       | .baseYear year => some year
-      | .field _ => none
+      | .field _ | .centuryAndShortYear _ _ => none
   | .error _ => none
 
 example :
@@ -71,6 +73,21 @@ example :
         (dateModel "UTC") 99 2 with
     | .error (.field .day _) => true
     | _ => false) = true := by
+  native_decide
+
+/- The split-year form admits the Century checker's flexible maximum but keeps the
+   Short-Year maximum exact. -/
+example :
+    (elaborateConstructedDateCenturyComponents
+      (dateModel "UTC") 1 2 4 5).isOk = true ∧
+    (elaborateConstructedDateNumberField {
+        dateModel "UTC" with
+        fields := [componentField 4 { maximum := some 9 }]
+      } .century 4).isOk = false ∧
+    (elaborateConstructedDateNumberField {
+        dateModel "UTC" with
+        fields := [componentField 5 { maximum := some 98 }]
+      } .shortYear 5).isOk = false := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateComponents

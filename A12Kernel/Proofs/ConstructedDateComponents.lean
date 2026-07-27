@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.ConstructedDateComponents
 
-/-! # Checked three-Number-field constructed-Date laws -/
+/-! # Checked direct constructed-Date laws -/
 
 namespace A12Kernel
 

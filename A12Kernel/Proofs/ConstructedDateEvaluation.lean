@@ -11,6 +11,32 @@ theorem checkedConstructedDateBaseYear_read
       .ok (.value year) := by
   rfl
 
+/-- A formally unavailable Century stops the split year before Short-Year is consulted. -/
+theorem checkedConstructedDateCentury_read_unavailable
+    (century shortYear : CheckedConstructedDateNumberField model)
+    (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
+    (observed :
+      century.read phase input = .ok (.unavailable cause)) :
+    CheckedConstructedDateYear.read
+        (.centuryAndShortYear century shortYear) phase input =
+      .ok (.unavailable cause) := by
+  simp [CheckedConstructedDateYear.read, observed]
+
+/-- Two reached fixed split-year parts compose by decimal place, not addition. -/
+theorem checkedConstructedDateCentury_read_values
+    (century shortYear : CheckedConstructedDateNumberField model)
+    (phase : Phase) (input : CheckedDocument model)
+    (centuryValue shortYearValue : Int)
+    (observedCentury :
+      century.read phase input = .ok (.value centuryValue))
+    (observedShortYear :
+      shortYear.read phase input = .ok (.value shortYearValue)) :
+    CheckedConstructedDateYear.read
+        (.centuryAndShortYear century shortYear) phase input =
+      .ok (.value (centuryValue * 100 + shortYearValue)) := by
+  simp [CheckedConstructedDateYear.read, observedCentury,
+    observedShortYear]
+
 /-- A formally unavailable Day prevents every later component read. -/
 theorem checkedConstructedDateComponents_day_unavailable
     (checked : CheckedConstructedDateComponents model)

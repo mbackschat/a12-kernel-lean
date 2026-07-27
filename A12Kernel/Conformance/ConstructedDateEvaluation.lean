@@ -30,7 +30,9 @@ private def dateModel (zoneId : String := "UTC") : FlatModel := {
     shiftAmountField,
     componentField 5 { maximum := some 31 },
     componentField 6 { maximum := some 12 },
-    componentField 7 { maxStoredLength := some 4 }]
+    componentField 7 { maxStoredLength := some 4 },
+    componentField 8 { maximum := some 22 },
+    componentField 9 { maximum := some 99 }]
   timeZoneId := zoneId
 }
 
@@ -68,6 +70,13 @@ private def evaluateBaseYear? (cells : List ClassifiedCellInput) := do
   let input ← documentFor? model cells
   checked.evaluate .validation input |>.toOption
 
+private def evaluateCentury? (cells : List ClassifiedCellInput) := do
+  let checked ←
+    (elaborateConstructedDateCenturyComponents
+      (dateModel "UTC") 1 2 8 9).toOption
+  let input ← document? cells
+  checked.evaluate .validation input |>.toOption
+
 private def validVerdict? (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
@@ -103,6 +112,45 @@ example :
       evaluateBaseYear? [
         numberCell 2 "2" (.parsed (.num 2))] =
           some (.resolved .incomplete) := by
+  native_decide
+
+/- The four-part form composes a full year only after both authored parts are reached.
+   Fixed Short-Year zero is present; an absent part remains incomplete. -/
+example :
+    evaluateCentury? [
+        numberCell 1 "15" (.parsed (.num 15)),
+        numberCell 2 "6" (.parsed (.num 6)),
+        numberCell 8 "19" (.parsed (.num 19)),
+        numberCell 9 "63" (.parsed (.num 63))] =
+          some (.resolved (.real { year := 1963, month := 6, day := 15 })) ∧
+      evaluateCentury? [
+        numberCell 1 "1" (.parsed (.num 1)),
+        numberCell 2 "1" (.parsed (.num 1)),
+        numberCell 8 "19" (.parsed (.num 19)),
+        numberCell 9 "0" (.parsed (.num 0))] =
+          some (.resolved (.real { year := 1900, month := 1, day := 1 })) ∧
+      evaluateCentury? [
+        numberCell 1 "15" (.parsed (.num 15)),
+        numberCell 2 "6" (.parsed (.num 6)),
+        numberCell 8 "19" (.parsed (.num 19))] =
+          some (.resolved .incomplete) := by
+  native_decide
+
+/- A reached Century formal cause wins before Short-Year, and the full year is not the
+   tempting sum of the two authored parts. -/
+example :
+    evaluateCentury? [
+        numberCell 1 "15" (.parsed (.num 15)),
+        numberCell 2 "6" (.parsed (.num 6)),
+        numberCell 8 "bad-century" (.rejected .malformed),
+        numberCell 9 "bad-year" (.rejected .declaredConstraint)] =
+          some (.unavailable .malformed) ∧
+      evaluateCentury? [
+        numberCell 1 "15" (.parsed (.num 15)),
+        numberCell 2 "6" (.parsed (.num 6)),
+        numberCell 8 "19" (.parsed (.num 19)),
+        numberCell 9 "63" (.parsed (.num 63))] ≠
+          some (.resolved (.real { year := 82, month := 6, day := 15 })) := by
   native_decide
 
 private def amountOverZero : AuthoredNumericExpr SurfaceNumericAtom :=
