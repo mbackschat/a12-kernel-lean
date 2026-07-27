@@ -9,12 +9,12 @@ namespace A12Kernel
 
 /-- Every successful step label names a target owned by the checked run. -/
 theorem numericComputationRunStep_target_mem
-    (step : NumericComputationRunStep run input state label next) :
+    (step : NumericComputationRunStep run world input state label next) :
     label.1 ∈ run.targetFields := by
   cases step with
   | compute table member pending enabled completion evaluated =>
       rw [numericComputationRun_evaluateTable_target
-        run input state table completion evaluated]
+        run world input state table completion evaluated]
       exact List.mem_map.mpr ⟨table, member, rfl⟩
 
 /-- Checked Numeric expressions cannot read their own target. -/
@@ -126,27 +126,29 @@ private theorem numericComputationRun_table_ready
 /-- Successful fixed-order suffix execution is a trace of independently enabled steps with exactly the newly appended labels. -/
 theorem numericComputationRun_executeTables_trace
     (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (earlier remaining : List (CheckedNumericComputationTable model))
     (state result : NumericComputationRunState)
     (split : run.tables = earlier ++ remaining)
     (stateTargets : state.targetFields = earlier.map (·.targetField))
-    (executed : run.executeTables input remaining state = .ok result) :
+    (executed :
+      run.executeTables world input remaining state = .ok result) :
     ∃ labels,
-      NumericComputationRunTrace run input state labels result ∧
+      NumericComputationRunTrace run world input state labels result ∧
         state.outcomes ++ labels = result.outcomes := by
   induction remaining generalizing earlier state result with
   | nil =>
       cases executed
       exact ⟨[], .nil state, by simp⟩
   | cons table remaining inductionHypothesis =>
-      cases evaluated : run.evaluateTable input state table with
+      cases evaluated :
+          run.evaluateTable world input state table with
       | error fault =>
           simp [CheckedNumericComputationRun.executeTables, evaluated] at executed
       | ok completion =>
           simp [CheckedNumericComputationRun.executeTables, evaluated] at executed
           have target := numericComputationRun_evaluateTable_target
-            run input state table completion evaluated
+            run world input state table completion evaluated
           have ready := numericComputationRun_table_ready
             run earlier remaining table split state stateTargets
           let next : NumericComputationRunState :=
@@ -177,20 +179,21 @@ theorem numericComputationRun_executeTables_trace
 /-- Successful fixed execution therefore has a non-self-justifying relation trace carrying exactly its returned labels. -/
 theorem numericComputationRun_execute_trace
     (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (outcomes : List NumericComputationRunLabel)
-    (executed : run.execute input = .ok outcomes) :
+    (executed : run.execute world input = .ok outcomes) :
     ∃ result,
-      NumericComputationRunTrace run input {} outcomes result ∧
+      NumericComputationRunTrace run world input {} outcomes result ∧
         result.outcomes = outcomes := by
-  cases runResult : run.executeTables input run.tables {} with
+  cases runResult : run.executeTables world input run.tables {} with
   | error fault =>
       simp [CheckedNumericComputationRun.execute, runResult] at executed
   | ok result =>
       have resultOutcomes : result.outcomes = outcomes := by
         simpa [CheckedNumericComputationRun.execute, runResult] using executed
       obtain ⟨labels, trace, labelsEqual⟩ :=
-        numericComputationRun_executeTables_trace run input [] run.tables
+        numericComputationRun_executeTables_trace
+          run world input [] run.tables
           {} result (by simp)
             (by simp [NumericComputationRunState.targetFields]) runResult
       have labelsResult : labels = result.outcomes := by

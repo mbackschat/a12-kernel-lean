@@ -73,6 +73,16 @@ private def inputCell (field : FieldId) (stored : String) (amount : Rat) :
     ClassifiedCellInput :=
   { address := { field, path := [] }, stored, raw := .parsed (.num amount) }
 
+private def dateTimeInput (epochMillis : Int) : ClassifiedCellInput :=
+  { address := { field := dateTimeId, path := [] }
+    stored := "2024-06-25T05:21:07"
+    raw := .parsed (dateTimeValueAt epochMillis) }
+
+private def worldAt (epochMillis : Int) : World :=
+  { now := { epochMillis } }
+
+private def executionWorld : World := worldAt 0
+
 private def runOutcomes?
     (tables : List (Option (CheckedNumericComputationTable model)))
     (cells : List ClassifiedCellInput := []) :
@@ -80,7 +90,17 @@ private def runOutcomes?
   let checked ← collectTables? tables
   let run ← (certifyNumericComputationRun checked).toOption
   let input ← checkedDocument cells
-  (run.execute input).toOption
+  (run.execute executionWorld input).toOption
+
+private def runOutcomesAt?
+    (nowMillis : Int)
+    (tables : List (Option (CheckedNumericComputationTable model)))
+    (cells : List ClassifiedCellInput := []) :
+    Option (List (FieldId × NumericTargetOutcome)) := do
+  let checked ← collectTables? tables
+  let run ← (certifyNumericComputationRun checked).toOption
+  let input ← checkedDocument cells
+  (run.execute (worldAt nowMillis) input).toOption
 
 private def independentSourceTable : CheckedNumericComputationTable model :=
   (table? sourceId (literal 2)).get (by native_decide)
@@ -102,15 +122,15 @@ private def independentInput : CheckedDocument model :=
 private def completionAt? (state : NumericComputationRunState)
     (table : CheckedNumericComputationTable model) :
     Option NumericComputationRunCompletion :=
-  (independentRun.evaluateTable independentInput state table).toOption
+  (independentRun.evaluateTable executionWorld independentInput state table).toOption
 
 private theorem completionAt_ok (state : NumericComputationRunState)
     (table : CheckedNumericComputationTable model)
     (success : (completionAt? state table).isSome = true) :
-    independentRun.evaluateTable independentInput state table =
+    independentRun.evaluateTable executionWorld independentInput state table =
       .ok ((completionAt? state table).get success) := by
   cases evaluated :
-      independentRun.evaluateTable independentInput state table with
+      independentRun.evaluateTable executionWorld independentInput state table with
   | error fault =>
       have impossible : False := by
         simp [completionAt?, evaluated, Except.toOption] at success
@@ -261,15 +281,32 @@ example :
           (targetId, .inheritedPoison .computedDependency)] := by
   native_decide
 
+/- One caller-supplied world reaches every selected table through the existing overlay. Reusing the checked plan under another world changes only the dynamic `Now` result. -/
+example :
+    let elapsed := surfaceDateTimeDifference .seconds
+      (surfaceDateOperand "DateTime") .now
+    let tables := [
+      table? sourceId (literal 2) (.fieldNotFilled wrongId),
+      table? laterId elapsed (.fieldFilled sourceId)]
+    runOutcomesAt? 999 tables [dateTimeInput 0] =
+        some [
+          (sourceId, .accepted { unscaled := 2, scale := 0 }),
+          (laterId, .accepted { unscaled := 0, scale := 0 })] ∧
+      runOutcomesAt? 1000 tables [dateTimeInput 0] =
+        some [
+          (sourceId, .accepted { unscaled := 2, scale := 0 }),
+          (laterId, .accepted { unscaled := 1, scale := 0 })] := by
+  native_decide
+
 /- The relation admits both orders for independent tables, and target lookup erases private completion order. -/
 example :
-    NumericComputationRunStep independentRun independentInput {}
+    NumericComputationRunStep independentRun executionWorld independentInput {}
         (sourceFirst.targetField, sourceFirst.outcome) afterSource ∧
-    NumericComputationRunStep independentRun independentInput afterSource
+    NumericComputationRunStep independentRun executionWorld independentInput afterSource
         (targetSecond.targetField, targetSecond.outcome) sourceThenTarget ∧
-    NumericComputationRunStep independentRun independentInput {}
+    NumericComputationRunStep independentRun executionWorld independentInput {}
         (targetFirst.targetField, targetFirst.outcome) afterTarget ∧
-    NumericComputationRunStep independentRun independentInput afterTarget
+    NumericComputationRunStep independentRun executionWorld independentInput afterTarget
         (sourceSecond.targetField, sourceSecond.outcome) targetThenSource ∧
     (sourceThenTarget.find? sourceId).map (·.outcome) =
         (targetThenSource.find? sourceId).map (·.outcome) ∧

@@ -34,12 +34,15 @@ theorem numericComputationRun_read_input
 /-- Successful atomic evaluation retains exactly the checked table's target. -/
 theorem numericComputationRun_evaluateTable_target
     (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model) (state : NumericComputationRunState)
+    (world : World) (input : CheckedDocument model)
+    (state : NumericComputationRunState)
     (table : CheckedNumericComputationTable model)
     (completion : NumericComputationRunCompletion)
-    (evaluated : run.evaluateTable input state table = .ok completion) :
+    (evaluated :
+      run.evaluateTable world input state table = .ok completion) :
     completion.targetField = table.targetField := by
-  cases result : table.evaluate (run.readPolicy state input) with
+  cases result :
+      table.evaluate ((run.readPolicy state input).withWorld world) with
   | error fault =>
       simp [CheckedNumericComputationRun.evaluateTable, result] at evaluated
   | ok checked =>
@@ -54,10 +57,11 @@ theorem numericComputationRun_evaluateTable_target
 /-- Successful suffix execution appends completion targets in exactly the supplied table order. -/
 private theorem numericComputationRun_executeTables_targetOrder
     (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (tables : List (CheckedNumericComputationTable model))
     (state result : NumericComputationRunState)
-    (executed : run.executeTables input tables state = .ok result) :
+    (executed :
+      run.executeTables world input tables state = .ok result) :
     result.completed.map (·.targetField) =
       state.completed.map (·.targetField) ++
         tables.map (·.targetField) := by
@@ -67,13 +71,14 @@ private theorem numericComputationRun_executeTables_targetOrder
       cases executed
       simp
   | cons table remaining inductionHypothesis =>
-      cases evaluation : run.evaluateTable input state table with
+      cases evaluation :
+          run.evaluateTable world input state table with
       | error fault =>
           simp [CheckedNumericComputationRun.executeTables, evaluation] at executed
       | ok completion =>
           have target :=
             numericComputationRun_evaluateTable_target
-              run input state table completion evaluation
+              run world input state table completion evaluation
           have order := inductionHypothesis
             (state := {
               completed := state.completed ++ [completion]
@@ -85,11 +90,11 @@ private theorem numericComputationRun_executeTables_targetOrder
 /-- The public successful run preserves supplied target order exactly. -/
 theorem numericComputationRun_execute_targetOrder
     (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (outcomes : List (FieldId × NumericTargetOutcome))
-    (executed : run.execute input = .ok outcomes) :
+    (executed : run.execute world input = .ok outcomes) :
     outcomes.map (·.1) = run.targetFields := by
-  cases result : run.executeTables input run.tables {} with
+  cases result : run.executeTables world input run.tables {} with
   | error fault =>
       simp [CheckedNumericComputationRun.execute, result] at executed
   | ok state =>
@@ -99,16 +104,17 @@ theorem numericComputationRun_execute_targetOrder
         CheckedNumericComputationRun.targetFields, List.map_map,
         Function.comp_def] using
         numericComputationRun_executeTables_targetOrder
-          run input run.tables {} state result
+          run world input run.tables {} state result
 
 /-- Unique checked plan targets make every successful public completion insert-once. -/
 theorem numericComputationRun_execute_targetsUnique
     (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (outcomes : List (FieldId × NumericTargetOutcome))
-    (executed : run.execute input = .ok outcomes) :
+    (executed : run.execute world input = .ok outcomes) :
     FieldId.firstDuplicate? (outcomes.map (·.1)) = none := by
-  rw [numericComputationRun_execute_targetOrder run input outcomes executed]
+  rw [numericComputationRun_execute_targetOrder
+    run world input outcomes executed]
   simpa [CheckedNumericComputationRun.targetFields] using run.uniqueTargets
 
 end A12Kernel

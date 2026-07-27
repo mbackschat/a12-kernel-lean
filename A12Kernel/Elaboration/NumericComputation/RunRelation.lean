@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.NumericComputation.Run
 
 /-! # Dependency-enabled checked Number-run relation
 
-This capsule permits any pending scalar Number table whose statically referenced computed targets have completed. It reuses the run's atomic evaluator and labels a successful step only with the target and rich outcome, so the relation can permit independent schedules beyond the fixed executor without introducing a generic scheduler or read trace. -/
+This capsule permits any pending scalar Number table whose statically referenced computed targets have completed under one caller-supplied `World`. It reuses the run's atomic evaluator and labels a successful step only with the target and rich outcome, so the relation can permit independent schedules beyond the fixed executor without introducing a generic scheduler or read trace. -/
 
 namespace A12Kernel
 
@@ -26,6 +26,7 @@ def NumericComputationDependenciesEnabled
 
 inductive NumericComputationRunStep
     (run : CheckedNumericComputationRun model)
+    (world : World)
     (input : CheckedDocument model) :
     NumericComputationRunState → NumericComputationRunLabel →
       NumericComputationRunState → Prop where
@@ -35,20 +36,22 @@ inductive NumericComputationRunStep
       (pending : table.targetField ∉ state.targetFields)
       (enabled : NumericComputationDependenciesEnabled run table state)
       (completion : NumericComputationRunCompletion)
-      (evaluated : run.evaluateTable input state table = .ok completion) :
-      NumericComputationRunStep run input state
+      (evaluated :
+        run.evaluateTable world input state table = .ok completion) :
+      NumericComputationRunStep run world input state
         (completion.targetField, completion.outcome)
         { completed := state.completed ++ [completion] }
 
 inductive NumericComputationRunTrace
     (run : CheckedNumericComputationRun model)
+    (world : World)
     (input : CheckedDocument model) :
     NumericComputationRunState → List NumericComputationRunLabel →
       NumericComputationRunState → Prop where
-  | nil (state) : NumericComputationRunTrace run input state [] state
+  | nil (state) : NumericComputationRunTrace run world input state [] state
   | cons
-      (step : NumericComputationRunStep run input state label next)
-      (rest : NumericComputationRunTrace run input next labels final) :
-      NumericComputationRunTrace run input state (label :: labels) final
+      (step : NumericComputationRunStep run world input state label next)
+      (rest : NumericComputationRunTrace run world input next labels final) :
+      NumericComputationRunTrace run world input state (label :: labels) final
 
 end A12Kernel

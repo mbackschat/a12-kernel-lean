@@ -181,14 +181,14 @@ inductive NumericComputationRunResultFault where
 
 namespace CheckedNumericComputationRun
 
-/-- Execute the checked run and classify its outcomes relative to that same immutable source document. -/
+/-- Execute the checked run under one explicit world and classify its outcomes relative to that same immutable source document. -/
 def executeResult (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model)
+    (world : World) (input : CheckedDocument model)
     (payloadAt : FieldId → Payload)
     (supplied : List (ComputationFormalMessage Payload)) :
     Except NumericComputationRunResultFault
       (NumericComputationRunView (ComputationFormalMessage Payload)) := do
-  let outcomes ← (run.execute input).mapError .execution
+  let outcomes ← (run.execute world input).mapError .execution
   (NumericComputationRunView.fromOutcomes input payloadAt supplied outcomes).mapError
     .sourceTarget
 

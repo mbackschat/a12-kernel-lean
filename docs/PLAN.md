@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Thread one caller-supplied `World` through the scalar checked Number run so every admitted dynamic `Now` operand in a multi-table execution observes the same evaluation instant.
+Open the bounded SG6 computed Date/DateTime target-policy packet and determine the smallest declaration-owned representation that can preserve exact format spelling/order/separators, partial-date mode, additional-date policy, and model-zone rendering without inventing canonical output.
 
 ## Immediate sequence
 
-1. Reuse the direct checked expression's explicit-world evaluation and extend the existing run entry point with one `World`; do not place the world in `CheckedDocument`, the checked plan, or table construction.
-2. Run the dangerous discriminator first: one checked multi-table run under two worlds must differ at its `Now` consumer, while all tables in one run must observe the same instant and ordinary field-only runs remain unchanged.
-3. Prove or lock that the run merely threads the supplied world through its existing overlay context. Add no ambient clock, temporal scheduler, trace, or second processing-context representation.
+1. Inventory the current temporal declaration, stored-value, format, computation-result, and application owners against the already recorded target source drill; name which exact format and policy facts are absent from `FlatFieldDecl`.
+2. Run the dangerous discriminator first: two target declarations with the same component set but different order or separators must not collapse to one checked target policy, and an invalid computed attempt must retain attempted-value error semantics rather than becoming clean empty.
+3. Add no renderer or parser until the checked declaration certificate can represent the complete target policy. If the policy cannot fit the existing model owner without duplicating the temporal format algebra, stop at the exact missing invariant.
 
 ## Parked boundaries
 

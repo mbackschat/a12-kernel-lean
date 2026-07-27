@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericDependency
 
 /-! # Checked nonrepeatable Number computation runs
 
-This capsule executes a finite scalar Number plan in its certified supplied order. Pending computed targets hide stored document content, completed targets expose their typed dependency cells, and every ordinary input delegates to the immutable checked document. The run retains rich target outcomes only; result projection, application, messages, validation, repeatable activation, and heterogeneous scheduling remain separate.
+This capsule executes a finite scalar Number plan in its certified supplied order under one caller-supplied evaluation `World`. Pending computed targets hide stored document content, completed targets expose their typed dependency cells, and every ordinary input delegates to the immutable checked document. The run retains rich target outcomes only; result projection, application, messages, validation, repeatable activation, and heterogeneous scheduling remain separate.
 -/
 
 namespace A12Kernel
@@ -60,10 +60,11 @@ def readPolicy (run : CheckedNumericComputationRun model)
 
 /-- Evaluate one checked table through the current overlay and retain its complete target outcome. -/
 def evaluateTable (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model) (state : NumericComputationRunState)
+    (world : World) (input : CheckedDocument model)
+    (state : NumericComputationRunState)
     (table : CheckedNumericComputationTable model) :
     Except NumericComputationRunFault NumericComputationRunCompletion :=
-  match table.evaluate (run.readPolicy state input) with
+  match table.evaluate ((run.readPolicy state input).withWorld world) with
   | .error fault => .error (.evaluation table.targetField fault)
   | .ok (.unsupported fault) =>
       .error (.targetCheck table.targetField fault)
@@ -72,25 +73,25 @@ def evaluateTable (run : CheckedNumericComputationRun model)
 
 /-- Execute one supplied-order table suffix through the same immutable input and transient overlay. -/
 def executeTables (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model) :
+    (world : World) (input : CheckedDocument model) :
     List (CheckedNumericComputationTable model) →
       NumericComputationRunState →
       Except NumericComputationRunFault NumericComputationRunState
   | [], state => pure state
   | table :: remaining, state =>
-      match run.evaluateTable input state table with
+      match run.evaluateTable world input state table with
       | .error fault => .error fault
       | .ok completion =>
-          executeTables run input remaining {
+          executeTables run world input remaining {
             completed := state.completed ++ [completion]
           }
 
-/-- Execute the certified fixed order and return rich target outcomes in that same order. -/
+/-- Execute the certified fixed order under one unchanged world and return rich target outcomes in that same order. -/
 def execute (run : CheckedNumericComputationRun model)
-    (input : CheckedDocument model) :
+    (world : World) (input : CheckedDocument model) :
     Except NumericComputationRunFault
       (List (FieldId × NumericTargetOutcome)) :=
-  match run.executeTables input run.tables {} with
+  match run.executeTables world input run.tables {} with
   | .error fault => .error fault
   | .ok state => .ok state.outcomes
 
