@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 581 jobs · trust audit **1560 theorem roots; 34055 declarations in 325 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-27:** `lake build` 582 jobs · trust audit **1563 theorem roots; 34095 declarations in 326 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Audit and close one-sided `DifferenceInDays(ValueAsDate(...), date)` by composing the checked partial-Date endpoint and concrete model-zone profile with the existing resolved calendar-day difference core. Preserve authored operand order, exact endpoint instant, empty/formal precedence, and cause-free non-relevance; do not widen `FlatTemporalOperand` or introduce another temporal expression tree.
+Audit and close the target projection of `AddDays`/`AddMonths`/`AddYears(ValueAsDate(...), amount)` into one checked nonrepeatable Date target. Preserve the shift's reason-bearing `CivilDate` until the target's own formatting and basic-check boundary so a real below-floor landing remains an errored attempted value rather than becoming structural failure or clean no-value. Reuse the existing target outcome, result projection, and application owners; do not widen `FlatTemporalOperand` or introduce a general Date-expression tree.
 
 ## Immediate sequence
 
-1. Recheck `CheckDatumDiffOpImpl`, generated `DateDiffOperation.st`, and the runtime day-difference helper for the special operand. Determine whether the endpoint is resolved at model-zone midnight, whether generated left/right evaluation matches the existing placement account, and whether the existing `CalendarDayDifferenceOperand` can retain the exact local label plus instant without calendar reconstruction.
-2. If the existing representations fit, add the smallest checked composite over `CheckedValueAsDateSource`, `ModelZone.ConcreteProfile`, and one already checked ordinary day-difference operand. Keep cause-free non-relevance explicit and delegate the concrete case to `CalendarDayDifferenceOperand.evaluate`; add no scheduler, general Date operand, or trace.
-3. Retain separators for endpoint selection, authored sign and first formal cause, unknown-year non-relevance, symmetric empty zero, and one Berlin transition-sensitive case. Stop if the special endpoint follows a legacy-hybrid or non-midnight identity the current profile cannot express. Leave repeatable addressing, target wiring, scheduling, wider formats/zones and Date/Time operand expressions, and date-like distinct count outside.
+1. Recheck generated `DateAddOperation.st`, `CalculationController.handleBerechnetenWert(VkDate, ...)`, and the Date target's reduced basic-check route. Determine the exact stored attempt and error class for a real shifted date below the universal Date floor, the ordering of target formatting versus checks, and whether the existing `FullDateTargetOutcome` can represent every reachable result without identifying a target error with an execution fault.
+2. If the existing result boundary fits, add the smallest checked composite over `CheckedValueAsDateShift` and `CheckedFullDateTarget`. Reuse the current source read, amount conversion, target rendering, run-result projection, and application path; isolate only the civil-attempt-to-target seam that the exact-instant computation entry cannot currently express.
+3. Retain separators for accepted concrete output, source formal poison, clean numeric no-value, unknown-year non-relevance, below-floor attempted-value rejection, and target policy precedence. Stop if the kernel emits a formal error family or stored attempt the current target domain cannot represent without a source-closed extension. Leave repeatable addressing, scheduling, wider formats/zones and Date expressions, message text, destination compatibility, and date-like distinct count outside.
 
 ## Parked boundaries
 

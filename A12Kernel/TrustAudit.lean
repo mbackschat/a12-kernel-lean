@@ -216,6 +216,9 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateTime_evaluate_date_unavailable
 #print axioms A12Kernel.valueAsDateTime_evaluate_nonRelevant_empty
 #print axioms A12Kernel.valueAsDateTime_evalFixedRight_nonRelevant
+#print axioms A12Kernel.valueAsDateDayDifference_evaluate_left_unavailable
+#print axioms A12Kernel.valueAsDateDayDifference_evaluate_right_unavailable
+#print axioms A12Kernel.valueAsDateDayDifference_evaluate_nonRelevant_empty
 #print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.fullDateTarget_evaluate_ignoresPartialMode
 #print axioms A12Kernel.dateTimeTarget_evaluate_value

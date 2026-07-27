@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValueAsDate
+import A12Kernel.Elaboration.ValueAsDateDayDifference
 
 /-! # Partial-Date `ValueAsDate` locks -/
 
@@ -19,6 +19,14 @@ private def dateDifferenceOperand?
     (year : Int) (month day : Nat) : Option DateDifferenceOperand :=
   (date? year month day).map
     (fun date => DateDifferenceOperand.value date.civil.parts)
+
+private def calendarDayOperand? (profile : ModelZone.ConcreteProfile)
+    (year : Int) (month day hour minute second : Nat) :
+    Option CalendarDayDifferenceOperand := do
+  let localDateTime ←
+    LocalDateTime.ofYmdHms? year month day hour minute second
+  let instant ← profile.resolveLocal? localDateTime
+  pure (.value localDateTime instant)
 
 private def dayOptionalSource
     (partialMode : TemporalPartialMode := .dayOptional)
@@ -409,6 +417,57 @@ example :
         (.parsed "31.03.2024") (.value gapClock) = .noValue false ∧
       ValueAsDateTimeResult.nonRelevant.evalFixedRight
         .equal { epochMillis := 0 } = .unknown := by
+  native_decide
+
+/- Endpoint choice and authored placement reach the existing signed calendar-day core. -/
+example :
+    let checkedLeft := (elaborateValueAsDateDayDifference
+      (modelWith) 0 .lastDay .left).toOption.get (by native_decide)
+    let checkedRight := (elaborateValueAsDateDayDifference
+      (modelWith) 0 .lastDay .right).toOption.get (by native_decide)
+    let other := (calendarDayOperand? checkedLeft.profile
+      2024 4 1 0 0 0).get (by native_decide)
+    (checkedLeft.evaluateRaw Phase.validation
+        (.parsed "00.03.2024") other).toOption =
+        some (.operand (.value 1 .fixed)) ∧
+      (checkedRight.evaluateRaw Phase.validation
+        (.parsed "00.03.2024") other).toOption =
+        some (.operand (.value (-1) .fixed)) := by
+  native_decide
+
+/- A Berlin spring transition is a calendar day even though fewer than 24 elapsed hours separate the two midnights. -/
+example :
+    let checked := (elaborateValueAsDateDayDifference
+      (modelWith) 0 .firstDay .left).toOption.get (by native_decide)
+    let other := (calendarDayOperand? checked.profile
+      2024 4 1 0 0 0).get (by native_decide)
+    (checked.evaluateRaw Phase.validation
+      (.parsed "31.03.2024") other).toOption =
+        some (.operand (.value 1 .fixed)) := by
+  native_decide
+
+/- Formal order precedes helper-level non-relevance and symmetric empty substitution. -/
+example :
+    let checkedLeft := (elaborateValueAsDateDayDifference
+      (modelWith (dayOptionalSource .yearOptional))
+      0 .firstDay .left).toOption.get (by native_decide)
+    let checkedRight := (elaborateValueAsDateDayDifference
+      (modelWith (dayOptionalSource .yearOptional))
+      0 .firstDay .right).toOption.get (by native_decide)
+    (checkedLeft.evaluateRaw Phase.computation
+        (.rejected .malformed)
+        (.unavailable .computedDependency)).toOption =
+        some (.operand (.unknown .malformed)) ∧
+      (checkedRight.evaluateRaw Phase.computation
+        (.rejected .malformed)
+        (.unavailable .computedDependency)).toOption =
+        some (.operand (.unknown .computedDependency)) ∧
+      (checkedLeft.evaluateRaw Phase.validation
+        (.parsed "00.00.0000") .empty).toOption =
+        some .nonRelevant ∧
+      (checkedLeft.evaluateRaw Phase.validation
+        .empty .unsupportedCalendar).toOption =
+        some (.operand (.value 0 .both)) := by
   native_decide
 
 end A12Kernel.Conformance.ValueAsDate

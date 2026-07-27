@@ -7,7 +7,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # Checked partial-Date `ValueAsDate`
 
-This capsule retains every admitted stored Date omission and resolves a known-year interval only after `FirstDay` or `LastDay` is selected. Direct comparison delegates the resulting full Date to the existing evaluator. Day/month/year shifting converts the reached numeric amount with Java `BigDecimal.intValue` semantics and retains a real civil landing below the universal Date floor for the later target check. Month/year difference delegates completed-period counting to the existing Date-difference core while retaining authored operand order. Bounded DateTime construction combines the endpoint with one direct typed Time observation through the checked model-zone profile and distinguishes missing input from a present but unresolvable wall label. An unknown year remains cause-free non-relevance rather than acquiring a fabricated year. The bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, day difference, wider Time expressions, target effects, and repeatable addressing remain separate.
+This capsule retains every admitted stored Date omission and resolves a known-year interval only after `FirstDay` or `LastDay` is selected. Direct comparison delegates the resulting full Date to the existing evaluator. Day/month/year shifting converts the reached numeric amount with Java `BigDecimal.intValue` semantics and retains a real civil landing below the universal Date floor for the later target check. Month/year difference delegates completed-period counting to the existing Date-difference core while retaining authored operand order. A shared checked zoned source supplies both bounded DateTime construction and the separate calendar-day-difference composition without allowing either consumer to replace the model-owned profile. DateTime construction combines the endpoint with one direct typed Time observation and distinguishes missing input from a present but unresolvable wall label. An unknown year remains cause-free non-relevance rather than acquiring a fabricated year. The bounded raw adapter accepts the two exact declaration formats already owned by temporal targets. Wider format syntax, detailed formal-error codes, wider Time expressions, target effects, and repeatable addressing remain separate.
 -/
 
 namespace A12Kernel
@@ -535,6 +535,33 @@ def elaborateValueAsDateDifference
   let source ← elaborateValueAsDateSource model sourceField endpoint
   pure { source with unit, placement }
 
+/-- Static refusal before a partial-Date consumer can select the model's concrete zone profile. -/
+inductive ValueAsDateZonedElabError where
+  | source (error : ValueAsDateElabError)
+  | unsupportedZone (zoneId : String)
+  deriving Repr, DecidableEq
+
+/-- The checked partial-Date source plus its model-owned concrete zone profile. DateTime construction and calendar-day difference share this exact capability; neither may substitute a caller-selected zone. -/
+structure CheckedZonedValueAsDateSource (model : FlatModel)
+    extends CheckedValueAsDateSource model where
+  profile : ModelZone.ConcreteProfile
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? source.timeZoneId = some profile
+
+/-- Resolve one partial-Date endpoint and its model-owned concrete profile. -/
+def elaborateZonedValueAsDateSource
+    (model : FlatModel) (sourceField : FieldId)
+    (endpoint : ValueAsDateEndpoint) :
+    Except ValueAsDateZonedElabError
+      (CheckedZonedValueAsDateSource model) := do
+  let source ←
+    elaborateValueAsDateSource model sourceField endpoint |>.mapError .source
+  match hProfile :
+      ModelZone.ConcreteProfile.ofId? source.source.timeZoneId with
+  | none => throw (.unsupportedZone source.source.timeZoneId)
+  | some profile =>
+      pure { source with profile, profileMatches := hProfile }
+
 /-- Result of combining one resolved partial-Date endpoint with an already checked direct Time observation. A missing input and a present wall label rejected by the model zone both have no value, but only the former is not-given. -/
 inductive ValueAsDateTimeResult where
   | noValue (notGiven : Bool)
@@ -556,18 +583,11 @@ def evalFixedRight (result : ValueAsDateTimeResult)
 
 end ValueAsDateTimeResult
 
-/-- Static refusal before partial-Date/Time construction can select the model's concrete zone profile. -/
-inductive ValueAsDateTimeElabError where
-  | source (error : ValueAsDateElabError)
-  | unsupportedZone (zoneId : String)
-  deriving Repr, DecidableEq
+/-- DateTime construction uses the shared checked zoned partial-Date source without adding operation-specific static state. -/
+abbrev CheckedValueAsDateTime := CheckedZonedValueAsDateSource
 
-/-- One checked special Date operand paired with the model-owned zone used to resolve an already checked direct Time observation. -/
-structure CheckedValueAsDateTime (model : FlatModel)
-    extends CheckedValueAsDateSource model where
-  profile : ModelZone.ConcreteProfile
-  profileMatches :
-    ModelZone.ConcreteProfile.ofId? source.timeZoneId = some profile
+/-- Compatibility name for the shared zoned-source refusal. -/
+abbrev ValueAsDateTimeElabError := ValueAsDateZonedElabError
 
 namespace CheckedValueAsDateTime
 
@@ -610,12 +630,6 @@ def elaborateValueAsDateTime
     (model : FlatModel) (sourceField : FieldId)
     (endpoint : ValueAsDateEndpoint) :
     Except ValueAsDateTimeElabError (CheckedValueAsDateTime model) := do
-  let source ←
-    elaborateValueAsDateSource model sourceField endpoint |>.mapError .source
-  match hProfile :
-      ModelZone.ConcreteProfile.ofId? source.source.timeZoneId with
-  | none => throw (.unsupportedZone source.source.timeZoneId)
-  | some profile =>
-      pure { source with profile, profileMatches := hProfile }
+  elaborateZonedValueAsDateSource model sourceField endpoint
 
 end A12Kernel

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ValueAsDate
+import A12Kernel.Elaboration.ValueAsDateDayDifference
 
 namespace A12Kernel
 
@@ -172,5 +172,48 @@ theorem valueAsDateTime_evaluate_nonRelevant_empty
     ValueAsDateTimeResult.nonRelevant.evalFixedRight op expected =
       .unknown := by
   rfl
+
+/-- A left-positioned partial-Date formal cause wins before the ordinary calendar-day operand is inspected. -/
+theorem valueAsDateDayDifference_evaluate_left_unavailable
+    (checked : CheckedValueAsDateDayDifference model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (other : CalendarDayDifferenceOperand)
+    (cause : FormalCause)
+    (placement : checked.placement = .left)
+    (observed :
+      checked.toCheckedZonedValueAsDateSource.toCheckedValueAsDateSource.observe
+        phase cell = .unavailable cause) :
+    checked.evaluate phase cell other =
+      .ok (.operand (.unknown cause)) := by
+  rw [CheckedValueAsDateDayDifference.evaluate.eq_def, placement, observed]
+  rfl
+
+/-- A right-positioned ordinary formal cause wins without consulting the partial-Date observation. -/
+theorem valueAsDateDayDifference_evaluate_right_unavailable
+    (checked : CheckedValueAsDateDayDifference model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (cause : FormalCause)
+    (placement : checked.placement = .right) :
+    checked.evaluate phase cell (.unavailable cause) =
+      .ok (.operand (.unknown cause)) := by
+  rw [CheckedValueAsDateDayDifference.evaluate.eq_def, placement]
+  rfl
+
+/-- Unknown-year non-relevance remains distinct from the ordinary day-difference empty-zero path. -/
+theorem valueAsDateDayDifference_evaluate_nonRelevant_empty
+    (checked : CheckedValueAsDateDayDifference model)
+    (phase : Phase)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (observed :
+      checked.toCheckedZonedValueAsDateSource.toCheckedValueAsDateSource.observe
+        phase cell = .nonRelevant) :
+    checked.evaluate phase cell .empty = .ok .nonRelevant := by
+  rw [CheckedValueAsDateDayDifference.evaluate.eq_def, observed]
+  cases checked.placement <;> rfl
 
 end A12Kernel
