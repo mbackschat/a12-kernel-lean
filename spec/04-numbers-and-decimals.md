@@ -7,6 +7,19 @@ The number type is exact decimal (think `BigDecimal`, never binary floating poin
 
 Empty-number behaviour (`0` substitution, its exceptions in aggregates) is in [§2](03-empty-and-required.md); this file is about *filled* numbers.
 
+## Stored decimal identity and runtime read text are different
+
+An in-memory Number retains its exact decimal coefficient and scale: `250.00` and `250` have the same amount but different stored identities. When the runtime feeds that value into the ordinary input formal checker, however, it derives a checking text by stripping fractional trailing zeros, flooring the resulting scale at the declaration's `minFractionalDigits`, rescaling exactly, and rendering in plain notation:
+
+```
+readScale = max(value.stripTrailingZeros().scale, minFractionalDigits)
+readText  = value.setScale(readScale).toPlainString()
+```
+
+Thus `250.00` in a scale-0 field is checked as `250`, while the same value in a field with `minFractionalDigits = 2` is checked as `250.00`; a negative-scale value such as `1E+5` is checked as plain `100000`. This checking text does not replace the source decimal identity retained by the document. In particular, persistence may preserve `250.00` while runtime checking consumes `250`. A representation with only one text per Number cell cannot express both observables. The computed-target store rule in [§11](09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape) remains separately staged through its scale-19 pre-round and target classification.
+
+> **Lean modelling note.** Keep exact source coefficient/scale, runtime input-check rendering, and computed-target rendering as distinct projections. The first is needed for scale-sensitive change equality, the second for stored-input formal checking, and the third for target application. Sharing a decimal core does not make their provenance or consumers interchangeable.
+
 ---
 
 ## 1. Scale gates `==` / `!=` (checked at parse time)

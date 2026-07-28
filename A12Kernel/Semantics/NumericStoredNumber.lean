@@ -2,7 +2,7 @@ import A12Kernel.Semantics.NumericRounding
 
 /-! # Stored Number representation
 
-Numeric expressions remain exact rational values. This capsule owns their scale-19 store pre-round and conversion into the exact decimal form used at a Number target. Target admission, validation, delta projection, and document application remain separate.
+Numeric expressions remain exact rational values. This capsule owns their scale-19 store pre-round and conversion into the exact decimal form used at a Number target. Its rendering preserves that exact identity; it is not the stored-input formal check's separate strip-and-minimum-scale projection. Target admission, validation, delta projection, scalar ingestion, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -35,7 +35,7 @@ private def renderMagnitude (magnitude scale : Nat) : String :=
     String.ofList (digits.toList.take wholeLength) ++ "." ++
       String.ofList (digits.toList.drop wholeLength)
 
-/-- Normalized dot-decimal stored text with exactly `scale` fractional digits. Model-configured output materialization is a later boundary. -/
+/-- Exact dot-decimal identity text with exactly `scale` fractional digits. This is not the runtime checking text for a stored input, which first strips fractional trailing zeros and reapplies the declaration's minimum scale. Model-configured output materialization is a later boundary. -/
 def render (value : StoredNumber) : String :=
   let unsigned := renderMagnitude value.unscaled.natAbs value.scale
   if value.unscaled < 0 then "-" ++ unsigned else unsigned

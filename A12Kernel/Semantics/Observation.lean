@@ -5,9 +5,11 @@ import A12Kernel.Semantics.String
 
 The first executable semantics capsule begins at the scalar-parser boundary: input is
 already classified as absent, successfully parsed, or rejected with a formal cause.
-Text-to-scalar parsing is a separate later layer. This keeps the validation semantics
-independent from concrete syntax while preserving every distinction needed by `spec/02`
-§3 and `spec/03` §2/§4.
+Text-to-scalar parsing is a separate later layer. In particular, exact stored
+Boolean/Confirm token casing and the stored-Number runtime checking text have already
+been classified before `.parsed`; this module cannot recover either from `Value`. This
+keeps the validation semantics independent from concrete syntax while preserving every
+distinction needed by `spec/02` §3 and `spec/03` §2/§4.
 -/
 
 namespace A12Kernel
@@ -72,7 +74,9 @@ def CheckedCell.WellFormed {α : Type} (cell : CheckedCell α) : Prop :=
   cell.rawPresent = false → cell.parsed = none
 
 /-- Whether a parsed value is legal for a field kind. A stored `false` Confirm is not
-    legal; `false` is only the comparison substitution for an empty Confirm. -/
+    legal; `false` is only the comparison substitution for an empty Confirm. Boolean
+    token spelling was decided by the preceding classifier, so accepting `.bool` here
+    does not make the storage check case-insensitive. -/
 def FieldKind.accepts : FieldKind → Value → Bool
   | .number _, .num _ => true
   | .boolean, .bool _ => true
