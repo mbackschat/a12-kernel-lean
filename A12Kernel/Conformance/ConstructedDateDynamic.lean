@@ -9,6 +9,8 @@ open A12Kernel
 private def model : FlatModel := { fields := [], timeZoneId := "UTC" }
 private def berlinModel : FlatModel :=
   { fields := [], timeZoneId := "Europe/Berlin", baseYear := some 1583 }
+private def berlin1916Model : FlatModel :=
+  { fields := [], timeZoneId := "Europe/Berlin", baseYear := some 1916 }
 
 private def todaySources : SurfaceConstructedDateComponents := {
   day := .todayExtractor .day, month := .todayExtractor .month
@@ -22,6 +24,16 @@ private def nowSources : SurfaceConstructedDateComponents := {
 
 private def preFloorSources : SurfaceConstructedDateComponents := {
   day := .constant "15", month := .constant "10"
+  year := .baseYear
+}
+
+private def berlinBeforeOverlapSources : SurfaceConstructedDateComponents := {
+  day := .constant "30", month := .constant "9"
+  year := .baseYear
+}
+
+private def berlinNormalSources : SurfaceConstructedDateComponents := {
+  day := .constant "29", month := .constant "9"
   year := .baseYear
 }
 
@@ -67,7 +79,7 @@ private def shift? (sources : SurfaceConstructedDateComponents)
   let source ← (elaborateConstructedDateSources model sources).toOption
   let input ← documentFor? model
   let shift : CheckedConstructedDateShift model :=
-    { source, unit := .days, amount := .literal 1, profileIsUtc := by decide }
+    { source, unit := .days, amount := .literal 1 }
   some (shift.evaluate
     .computation input (some world))
 
@@ -75,7 +87,7 @@ private def shiftedParts? (sources : SurfaceConstructedDateComponents)
     (world : World) : Option DateParts := do
   let result ← shift? sources world
   match result with
-  | .ok (.value parts false) => some parts
+  | .ok (.value _ parts false) => some parts
   | _ => none
 
 private def missingAndUnavailable? (now : Instant) : Option (Bool × Bool) := do
@@ -95,6 +107,45 @@ private def berlinPreFloorUnsupported? : Option Bool := do
     | .error (.profileDateUnsupported "Europe/Berlin"
         { year := 1583, month := 10, day := 15 }) => true
     | _ => false)
+
+private def berlin1916Shift?
+    (sources : SurfaceConstructedDateComponents)
+    (unit : DateShiftUnit) (amount : Rat) :
+    Option (Except ConstructedDateShiftFault ConstructedDateShiftResult) := do
+  let source ←
+    (elaborateConstructedDateSources
+      berlin1916Model sources).toOption
+  let input ← documentFor? berlin1916Model
+  let shift : CheckedConstructedDateShift berlin1916Model := {
+    source
+    unit
+    amount := .literal amount
+  }
+  some (shift.evaluate .computation input none)
+
+private def berlinShiftSeparators? : Option Bool := do
+  let forward ← berlin1916Shift? berlinBeforeOverlapSources .days 1
+  let normal ← berlin1916Shift? berlinNormalSources .days 1
+  let reverse ← berlin1916Shift? berlinBeforeOverlapSources .days (-1)
+  let month ← berlin1916Shift? berlinBeforeOverlapSources .months 1
+  let overlapLabel ← LocalDateTime.ofYmdHms? 1916 10 1 0 0 0
+  let normalLabel ← LocalDateTime.ofYmdHms? 1916 9 30 0 0 0
+  let freshOverlap ←
+    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? overlapLabel
+  let freshNormal ←
+    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? normalLabel
+  pure (match forward, freshOverlap, normal, freshNormal, reverse, month with
+    | .ok (.value { epochMillis := -1680487200000 }
+          { year := 1916, month := 10, day := 1 } false),
+        { epochMillis := -1680483600000 },
+        .ok (.value { epochMillis := -1680573600000 }
+          { year := 1916, month := 9, day := 30 } false),
+        { epochMillis := -1680573600000 },
+        .error (.profileShiftUnsupported
+          "Europe/Berlin" .days (-1)),
+        .error (.profileShiftUnsupported
+          "Europe/Berlin" .months 1) => true
+    | _, _, _, _, _, _ => false)
 
 /- Changing only the explicit world across UTC midnight changes all three components. -/
 example : (do
@@ -168,8 +219,14 @@ example : (do
   native_decide
 
 /- Berlin stays explicitly bounded at the stored-Date floor; UTC's separate Julian-side
-   account is not silently reused. Berlin shifts remain statically outside this capsule. -/
+   account is not silently reused. -/
 example : berlinPreFloorUnsupported? = some true := by
+  native_decide
+
+/- Forward Calendar addition retains the earlier CEST instant at the repeated midnight,
+   unlike fresh construction's later CET instant. An ordinary landing agrees with fresh
+   resolution, while reverse and month routes stay explicitly outside this first slice. -/
+example : berlinShiftSeparators? = some true := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateDynamic

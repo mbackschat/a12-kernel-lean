@@ -7,6 +7,15 @@ These laws characterize the signed partial API over the pinned versioned Berlin 
 
 namespace A12Kernel
 
+/-- A zero-day Berlin landing preserves both the decoded local state and its already
+    selected exact instant; it never re-resolves an ambiguous wall label. -/
+@[simp] theorem berlin_calendarDayLanding_zero
+    (dateTime : LocalDateTime) (instant : Instant) :
+    EuropeBerlinLegacyProfile.calendarDayLanding?
+        dateTime instant 0 =
+      some (dateTime, instant) := by
+  simp [EuropeBerlinLegacyProfile.calendarDayLanding?]
+
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self
     (dateTime : LocalDateTime) (instant : Instant) :

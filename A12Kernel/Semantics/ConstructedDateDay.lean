@@ -70,11 +70,17 @@ def epochDay? (parts : DateParts) : Option Int :=
   else if decide (parts.Before DayCoordinate.cutoverGregorian) then
     some (DayCoordinate.cutoverGregorianEpochDay - 1 -
       (DayCoordinate.julianAbsoluteDay DayCoordinate.cutoverJulian -
-        DayCoordinate.julianAbsoluteDay parts))
+      DayCoordinate.julianAbsoluteDay parts))
   else
     some (CivilDate.daysBeforeYear parts.year +
       (CivilDate.daysBeforeMonth parts.year parts.month : Int) +
       (parts.day : Int) - 1 - 719162)
+
+/-- Resolve one real default-profile legacy Date to exact UTC midnight. This remains
+    available before the stored-Date floor because the hybrid coordinate owns that era. -/
+def midnightInstant? (parts : DateParts) : Option Instant :=
+  (epochDay? parts).map fun epochDay =>
+    { epochMillis := epochDay * 86400000 }
 
 /-- Invert the bounded legacy-hybrid day coordinate. Coordinates before positive-era year one fail closed. -/
 def ofEpochDay? (epochDay : Int) : Option DateParts :=

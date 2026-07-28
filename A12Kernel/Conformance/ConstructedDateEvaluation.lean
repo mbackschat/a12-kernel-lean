@@ -397,7 +397,7 @@ private def shift? (unit : DateShiftUnit)
   let source ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
-  ({ source, unit, amount, profileIsUtc := by decide } :
+  ({ source, unit, amount } :
       CheckedConstructedDateShift (dateModel "UTC")).evaluate
         .computation input none |>.toOption
 
@@ -537,13 +537,15 @@ example :
         numberCell 2 "1" (.parsed (.num 1)),
         numberCell 3 "2024" (.parsed (.num 2024)),
         numberCell 4 "1.5" (.parsed (.num (3 / 2)))]) =
-          some (.value { year := 2024, month := 2, day := 1 } false) ∧
+          some (.value { epochMillis := 1706745600000 }
+            { year := 2024, month := 2, day := 1 } false) ∧
       amount.bind (fun amount => shift? .days amount [
         numberCell 1 "31" (.parsed (.num 31)),
         numberCell 2 "1" (.parsed (.num 1)),
         numberCell 3 "2024" (.parsed (.num 2024)),
         numberCell 4 "4294967297" (.parsed (.num 4294967297))]) =
-          some (.value { year := 2024, month := 2, day := 1 } false) := by
+          some (.value { epochMillis := 1706745600000 }
+            { year := 2024, month := 2, day := 1 } false) := by
   native_decide
 
 /- Empty direct Number is a concrete zero shift with omission provenance; arithmetic
@@ -558,7 +560,8 @@ example :
         numberCell 1 "31" (.parsed (.num 31)),
         numberCell 2 "1" (.parsed (.num 1)),
         numberCell 3 "2024" (.parsed (.num 2024))]) =
-          some (.value { year := 2024, month := 1, day := 31 } true) ∧
+          some (.value { epochMillis := 1706659200000 }
+            { year := 2024, month := 1, day := 31 } true) ∧
       expressionAmount.bind (fun amount => shift? .months amount [
         numberCell 1 "31" (.parsed (.num 31)),
         numberCell 2 "1" (.parsed (.num 1)),

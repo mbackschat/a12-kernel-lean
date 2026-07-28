@@ -2,12 +2,13 @@ import A12Kernel.Elaboration.ConstructedDateComponents
 import A12Kernel.Elaboration.TemporalShiftAmount
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.ConstructedDateDay
+import A12Kernel.Semantics.DateTimeDayDifference
 
 /-! # Checked constructed-Date execution
 
 This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
 
-The checked shift and difference consumers remain explicitly UTC/GMT while their Berlin calendar-addition account is still open. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin shift/difference behavior, Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Checked shifts retain exact landing instants as well as Date parts. UTC/GMT use the complete hybrid owner; pinned Berlin additionally admits nonnegative `AddDays` through the shared forward-calendar landing and keeps reverse and month/year additions explicit structural insufficiencies. Differences remain UTC/GMT. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin reverse/month/year shifts and differences, Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -398,10 +399,10 @@ def evaluateNumericPart (checked : CheckedConstructedDateComponents model)
 
 end CheckedConstructedDateComponents
 
-/-- Reason-bearing result of one checked constructed-Date calendar shift. -/
+/-- Reason-bearing checked shift result retaining both exact instant and local Date parts. -/
 inductive ConstructedDateShiftResult where
   | noValue (notGiven : Bool)
-  | value (parts : DateParts) (notGiven : Bool)
+  | value (instant : Instant) (parts : DateParts) (notGiven : Bool)
   | unavailable (cause : FormalCause)
   deriving Repr, DecidableEq
 
@@ -412,15 +413,15 @@ inductive ConstructedDateShiftFault where
   | amountUnavailable (error : NumericValidationUnavailable)
   | landingUnavailable
       (unit : DateShiftUnit) (source : DateParts) (offset : Int)
+  | profileShiftUnsupported
+      (zoneId : String) (unit : DateShiftUnit) (offset : Int)
   deriving Repr, DecidableEq
 
-/-- One checked constructed-Date source, calendar unit, and direct-Number shift amount. -/
+/-- One checked constructed-Date source, calendar unit, and shared checked shift amount. -/
 structure CheckedConstructedDateShift (model : FlatModel) where
   source : CheckedConstructedDateComponents model
   unit : DateShiftUnit
   amount : CheckedTemporalShiftAmount model
-  profileIsUtc :
-    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some .utc
 
 namespace CheckedConstructedDateShift
 
@@ -440,6 +441,48 @@ private def shiftResolved? (unit : DateShiftUnit)
   | .months => result.addLegacyMonths? offset
   | .years => result.addLegacyYears? offset
 
+/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete
+    hybrid-calendar owner. Berlin currently admits only nonnegative day additions and
+    retains the exact profile landing, including the earlier instant at an overlap. -/
+private def applyRealAmount (checked : CheckedConstructedDateShift model)
+    (parts : DateParts) (offset : Int) (notGiven : Bool) :
+    Except ConstructedDateShiftFault ConstructedDateShiftResult :=
+  match checked.source.profile with
+  | .utc =>
+      match shiftResolved? checked.unit (.real parts) offset with
+      | some (.real shifted) =>
+          match DateParts.LegacyHybrid.midnightInstant? shifted with
+          | some instant => pure (.value instant shifted notGiven)
+          | none => throw (.landingUnavailable checked.unit parts offset)
+      | some .incomplete => pure (.noValue notGiven)
+      | some .unreal => pure (.noValue notGiven)
+      | some .unknown => pure (.noValue notGiven)
+      | none => throw (.landingUnavailable checked.unit parts offset)
+  | .europeBerlin =>
+      match checked.unit with
+      | .days =>
+          if offset < 0 then
+            throw (.profileShiftUnsupported
+              model.timeZoneId checked.unit offset)
+          else
+            match LocalDateTime.ofYmdHms?
+                parts.year parts.month parts.day 0 0 0 with
+            | none => throw (.landingUnavailable checked.unit parts offset)
+            | some sourceLocal =>
+                match checked.source.profile.resolveLocal? sourceLocal with
+                | none => throw (.landingUnavailable checked.unit parts offset)
+                | some instant =>
+                    match EuropeBerlinLegacyProfile.calendarDayLanding?
+                        sourceLocal instant offset.toNat with
+                    | none =>
+                        throw (.landingUnavailable checked.unit parts offset)
+                    | some (shifted, shiftedInstant) =>
+                        pure (.value shiftedInstant
+                          shifted.date.civil.parts notGiven)
+      | .months | .years =>
+          throw (.profileShiftUnsupported
+            model.timeZoneId checked.unit offset)
+
 /-- Apply an already reached numeric amount without losing missing provenance or reinterpreting arithmetic domain failure as zero. -/
 def applyAmount (checked : CheckedConstructedDateShift model)
     (source : ConstructedDateObservation) :
@@ -453,13 +496,7 @@ def applyAmount (checked : CheckedConstructedDateShift model)
       | .unavailable cause => pure (.unavailable cause)
       | .resolved (.real parts) =>
           let offset := temporalShiftAmountToInt32 value
-          match shiftResolved? checked.unit (.real parts) offset with
-          | some (.real shifted) => pure (.value shifted notGiven)
-          | some .incomplete => pure (.noValue notGiven)
-          | some .unreal => pure (.noValue notGiven)
-          | some .unknown => pure (.noValue notGiven)
-          | none =>
-              throw (.landingUnavailable checked.unit parts offset)
+          checked.applyRealAmount parts offset notGiven
       | .resolved .incomplete => pure (.noValue notGiven)
       | .resolved .unreal => pure (.noValue notGiven)
       | .resolved .unknown => pure (.noValue notGiven)

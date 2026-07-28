@@ -37,7 +37,7 @@ private def forwardLanding? (date : FullDate) (time : TimeOfDay) :
   pure (next, landing)
 
 /-- Add a nonnegative number of calendar days from the current resolved local state and return both the resulting local state and exact instant. -/
-private def calendarDayLanding? (current : LocalDateTime)
+def calendarDayLanding? (current : LocalDateTime)
     (currentInstant : Instant) (days : Nat) :
     Option (LocalDateTime × Instant) := do
   if days = 0 then

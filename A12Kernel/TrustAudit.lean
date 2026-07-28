@@ -136,6 +136,7 @@ run_cmd do
 #print axioms A12Kernel.constructedDate_addLegacyDays_preserves_nonvalues
 #print axioms A12Kernel.constructedDateDifferenceDays_nonvalue_provenance
 #print axioms A12Kernel.constructedDateDay_legacyCutover
+#print axioms A12Kernel.constructedDateDay_legacyCutover_instant
 #print axioms A12Kernel.dateConstruction_valid_fired_iff
 #print axioms A12Kernel.dateConstruction_invalid_omission_iff
 #print axioms A12Kernel.dateConstruction_invalid_value_iff
@@ -335,6 +336,7 @@ run_cmd do
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_3600
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_7200
 #print axioms A12Kernel.berlin_differenceResolvedInDays_self
+#print axioms A12Kernel.berlin_calendarDayLanding_zero
 #print axioms A12Kernel.berlin_differenceResolvedInDays_swap
 #print axioms A12Kernel.berlin_differenceInDays_self
 #print axioms A12Kernel.berlin_differenceInDays_swap

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-28:** `lake build` 614 jobs · trust audit **1621 theorem roots; 37100 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-28:** `lake build` 614 jobs · trust audit **1623 theorem roots; 37125 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close the first pinned-Berlin checked constructed-Date calendar-addition boundary without conflating strict fresh-label construction with `Calendar.add` landing policy. Start with `AddDays` and the autumn 1916 repeated local-midnight hour; keep reverse additions, month/year additions, differences, and pre-floor hybrid identity outside unless the same bounded account decides them.
+Close reverse pinned-Berlin checked constructed-Date `AddDays` while preserving the exact instant selected by reverse `GregorianCalendar` landing. Start at the autumn-1916 repeated local-midnight hour; do not infer reverse policy by negating or reusing the forward selector.
 
 ## Immediate sequence
 
-1. Audit the exact `GregorianCalendar.add(DAY_OF_MONTH, …)` forward and reverse behavior at the autumn 1916 midnight overlap, including the selected offset, exact instant, and unchanged local Date label.
-2. Add a red checked-construction shift case that distinguishes the forward `Calendar.add` landing from fresh overlap resolution and a normal-date control.
-3. Reuse the existing pinned-profile forward-landing mechanism only if its source and result identity match this Date-only consumer exactly; otherwise keep Berlin shifts rejected and record the missing bounded mechanism rather than duplicating it.
+1. Audit reverse additions from both sides of the repeated midnight and one ordinary control, retaining source instant, target label, target offset, and target instant.
+2. Add a red checked shift case that distinguishes reverse landing from forward landing and fresh resolution rather than merely checking Date parts.
+3. Extend the existing profile landing owner with a direction-specific helper only if the source sweep establishes one rule across the pinned profile; otherwise keep negative offsets explicitly unsupported.
 
 ## Parked boundaries
 
