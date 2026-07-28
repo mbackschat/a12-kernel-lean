@@ -2,7 +2,7 @@
 
 A trivial module that proves the toolchain is wired end to end. The real content
 lives in `A12Kernel.Core` and the modules the staged build order
-(`spec/13-lean-encoding-guide.md` §3) adds next. -/
+(`docs/LEAN-ENCODING-GUIDE.md` §3) adds next. -/
 
 namespace A12Kernel
 

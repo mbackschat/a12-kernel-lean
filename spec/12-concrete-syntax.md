@@ -2,7 +2,7 @@
 
 The other half of "syntax and semantics". Everything above describes how a condition *evaluates*; this file describes how a condition is *written* — enough to build a lexer/parser or hand the grammar to a parser generator. It is a **sketch of the surface**, not a transcription of the engine's grammar file; production *names* are borrowed for orientation, the EBNF below is an original re-expression.
 
-The AST the parser targets is the closed set of constructs described across §1–§14; [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md) proposes an `inductive` shape.
+The AST the parser targets is the closed set of constructs described across §1–§14; [`../docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md) proposes an `inductive` shape.
 
 ---
 
@@ -29,7 +29,7 @@ The complete bilingual spelling table is source-characterized by the kernel's [`
 | boolean / confirm const | `True` / `False` | compared to Boolean/Confirm fields per [§1](02-logic-and-formal-errors.md) |
 | value list | `( "A", "B" )` / `( 1, 2, 3 )` | string list or number list, introduced by the `In` separator (see §4) |
 
-> **Lean modelling note.** The date/string ambiguity is a **lexer/typer** decision, not an evaluator one: classify a `"…"` token as `dateConst` iff its content matches `DD.MM.YYYY` (or the omitted-year shape), else `strConst`; ISO shapes are always `strConst`. Then the AST literal node already carries the right kind.
+> **Non-normative implementation note.** The date/string ambiguity is a **lexer/typer** decision, not an evaluator one: classify a `"…"` token as `dateConst` iff its content matches `DD.MM.YYYY` (or the omitted-year shape), else `strConst`; ISO shapes are always `strConst`. Then the AST literal node already carries the right kind.
 
 ---
 
@@ -93,7 +93,7 @@ valueListIntro   = "In" ;                                            (* separate
 
 *(Predicate/function argument shapes—how many operands and whether a `Having` or `$` form is allowed—vary per operator; consult the operator inventory in §5 and the semantics files for each family's operands. Those operator-specific attachments remain leaves in this sketch. The ordinary bracketed `fieldValue` production explicitly includes its optional literal- or field-keyed semantic index.)*
 
-> **Lean modelling note.** Parse to a single `inductive Ast` with constructors mirroring `simpleCondition`/`operand`/`function`. Encode the structural laws as *parser* rules (reject mixed And/Or, reject a star attached to a `..` step, reject a second unbraced `/`) rather than as post-hoc validation—they are genuinely syntactic. Keep `Having` and `For` as path modifiers and `$` as a correlated path form, since they modify how a path resolves ([§9](07-repetition-and-iteration.md)/[§10](08-paths-and-references.md)) rather than being operators in their own right.
+> **Non-normative implementation note.** Parse to a single `inductive Ast` with constructors mirroring `simpleCondition`/`operand`/`function`. Encode the structural laws as *parser* rules (reject mixed And/Or, reject a star attached to a `..` step, reject a second unbraced `/`) rather than as post-hoc validation—they are genuinely syntactic. Keep `Having` and `For` as path modifiers and `$` as a correlated path form, since they modify how a path resolves ([§9](07-repetition-and-iteration.md)/[§10](08-paths-and-references.md)) rather than being operators in their own right.
 
 ---
 
@@ -141,7 +141,7 @@ Worded operators carry both spellings; symbols are language-neutral. A represent
 | `AbsValue` | `AbsWert` |
 | `FirstDay` / `LastDay` (of `ValueAsDate`) | `ErsterTag` / `LetzterTag` |
 
-> **Lean modelling note.** Model keywords as a table of explicitly accepted spellings mapped to `(opId, lang)`, plus one canonical render spelling per `(opId, lang)`. Do not normalize case before lookup. Keep it *data*, not code — a future port to another surface re-reads the same table. English is the canonical render target; German is a supported second target.
+> **Non-normative implementation note.** Model keywords as a table of explicitly accepted spellings mapped to `(opId, lang)`, plus one canonical render spelling per `(opId, lang)`. Do not normalize case before lookup. Keep it *data*, not code — a future port to another surface re-reads the same table. English is the canonical render target; German is a supported second target.
 
 ---
 

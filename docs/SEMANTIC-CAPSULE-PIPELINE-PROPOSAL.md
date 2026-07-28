@@ -1,6 +1,6 @@
 # Compact semantic-evidence pipeline
 
-> Status: implemented and measured, last consolidated 2026-07-19. This document owns the settled compact Lean consumer boundary, the completed retirement of its one-time upstream producer estate, and the scaling constraints for future demand-driven calibration. Current implementation state remains in [`PLAN.md`](PLAN.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`EVIDENCE.md`](EVIDENCE.md), and [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
+> Status: implemented and measured, last consolidated 2026-07-19. This document owns the settled compact Lean consumer boundary, the completed retirement of its one-time upstream producer estate, and the scaling constraints for future demand-driven calibration. Current sequencing remains in [`PLAN.md`](PLAN.md), retained evidence in [`EVIDENCE.md`](EVIDENCE.md), and executable/proof/evidence coverage in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 
 ## Decision
 

@@ -36,7 +36,7 @@ The consequence that bites: **positive/negative predicate pairs are not always l
 NotExactlyOneFieldFilled(A, B, C)   -- satisfied at 0 filled AND at 2+ filled
 ```
 
-> **Lean modelling note.** Do **not** model predicates as `p` and `Not p`. Model each predicate as its own constructor in the AST with its own evaluation clause. There is no `K.not` combinator (§B below), and you will never need one — which is a feature, because Kleene negation would otherwise force awkward choices on the unknown value. Treat the non-complementary pairs as *distinct predicates that happen to read related*.
+> **Non-normative implementation note.** Do **not** model predicates as `p` and `Not p`. Model each predicate as its own constructor in the AST with its own evaluation clause. There is no `K.not` combinator (§B below), and you will never need one — which is a feature, because Kleene negation would otherwise force awkward choices on the unknown value. Treat the non-complementary pairs as *distinct predicates that happen to read related*.
 
 ### A.3 Boolean is a three-state field *type* (distinct from three-valued logic)
 
@@ -103,7 +103,7 @@ Computation uses the following ordered scans over the canonical resolved slot st
 
 Every reached invalid slot in these computation scans poisons the computation instance. Each component scan stops at its own result, but a successful first stage of either composite starts the stated second scan again from the beginning. Only a suffix after the full predicate's final decision is unread.
 
-> **Lean modelling note.** "Declared range vs instantiated range" is a real semantic fork, not an optimisation — encode both. A clean approach: give a repeatable group both its `repeatability` (declared) and its actual row count, and let each quantifier state which range it folds over. `AllFieldsFilled` folds over the 1-based semantic range `1 .. repeatability` (missing rows = empty); `AtLeastOneFieldFilled` folds over `1 .. rowCount` (an empty range when `rowCount = 0`).
+> **Non-normative implementation note.** "Declared range vs instantiated range" is a real semantic fork, not an optimisation — encode both. A clean approach: give a repeatable group both its `repeatability` (declared) and its actual row count, and let each quantifier state which range it folds over. `AllFieldsFilled` folds over the 1-based semantic range `1 .. repeatability` (missing rows = empty); `AtLeastOneFieldFilled` folds over `1 .. rowCount` (an empty range when `rowCount = 0`).
 
 ---
 
@@ -155,7 +155,7 @@ A String field declared with `noValueValidation` is **not** a producer of the th
 
 These boundaries are source- and dual-strategy-differential-locked in a12-dmkits' [`CrlfLengthNormalizationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrlfLengthNormalizationDiffTest.kt) (IF124) and [`NvvRawTypeDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NvvRawTypeDiffTest.kt) (IF125).
 
-> **Lean modelling note.** Keep one checked-cell representation, but do not collapse every producer into the base `formalCheck : FieldPolicy → RawCell → CheckedCell`. The base function handles ordinary local findings such as malformed data and declared constraints, including String normalization at the ingestion boundary after the raw-text line-break gate. Over-repetition is the address-formal exception: decide it first and construct the same checked-cell shape with `.overRepetition` without running the scalar checker. Generated preliminary findings then annotate admitted base cells. Requiredness specifically runs in this order: evaluate the generated `mandatoryField` rule against the base cells, retain its hit/message, then, on a hit, annotate the empty target with `.required` before authored validation rules run. Annotating first would make the mandatory rule's own `FieldNotFilled` read UNKNOWN and suppress the message that creates the annotation — a circular self-suppression. `observeCell` maps applicable findings to validation `unknown` and ordinary computation `poison`, but ignores `.required` during computation so the cell remains empty. Raw-type values never reach `observeCell` through a legal value-reading rule; reject those windows during elaboration. Do not scatter invalidity handling across operators, and do not perform per-kind empty substitution inside the read.
+> **Non-normative implementation note.** Keep one checked-cell representation, but do not collapse every producer into the base `formalCheck : FieldPolicy → RawCell → CheckedCell`. The base function handles ordinary local findings such as malformed data and declared constraints, including String normalization at the ingestion boundary after the raw-text line-break gate. Over-repetition is the address-formal exception: decide it first and construct the same checked-cell shape with `.overRepetition` without running the scalar checker. Generated preliminary findings then annotate admitted base cells. Requiredness specifically runs in this order: evaluate the generated `mandatoryField` rule against the base cells, retain its hit/message, then, on a hit, annotate the empty target with `.required` before authored validation rules run. Annotating first would make the mandatory rule's own `FieldNotFilled` read UNKNOWN and suppress the message that creates the annotation — a circular self-suppression. `observeCell` maps applicable findings to validation `unknown` and ordinary computation `poison`, but ignores `.required` during computation so the cell remains empty. Raw-type values never reach `observeCell` through a legal value-reading rule; reject those windows during elaboration. Do not scatter invalidity handling across operators, and do not perform per-kind empty substitution inside the read.
 
 ### B.4 Suppression is branch-scoped, and reaches presence checks
 
@@ -180,7 +180,7 @@ The propagation follows strong three-valued Kleene logic (the third value is wri
 
 Note the absorbing cases that make suppression branch-scoped: `F And U = F`, `T Or U = T`. There is **no** negation row — the language provides none, so you never need to define `¬U`.
 
-> **Lean modelling note.**
+> **Non-normative implementation note.**
 > ```lean
 > inductive K where | tru | fls | unknown
 > def K.and : K → K → K

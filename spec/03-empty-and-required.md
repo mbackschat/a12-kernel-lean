@@ -39,7 +39,7 @@ Two immediate riders:
 - The `0` substitution does **not** apply to minimum/maximum *aggregate* calculations — there, unspecified fields are *ignored* (see A.3–A.4; note the operand-list `Min`/`Max` are a *different* family that *does* substitute).
 - **There is no empty String semantic value.** A physically placed raw `""` becomes present-empty at the [evaluation-ingestion boundary](01-data-model.md#2-document--an-instance-of-the-tree), not a filled zero-length String and not an absent placement. `[F] == ""` is never satisfied, even when `F` is unfilled — and neither is `!= ""`: a String comparison with an empty operand on *either* side (a literal `""`, or an empty coercion result) is **not evaluated**, for both `==` and `!=`. Use `FieldNotFilled(F)` to test whether the field has an evaluation value.
 
-> **Lean modelling note.** Separate whether an operand is evaluated from the provenance needed by the later polarity calculation ([§12](10-validation-and-polarity.md)):
+> **Non-normative implementation note.** Separate whether an operand is evaluated from the provenance needed by the later polarity calculation ([§12](10-validation-and-polarity.md)):
 > ```lean
 > inductive OperandRead (Provenance : Type) where
 >   | value (v : Value) (provenance : Provenance)
@@ -80,7 +80,7 @@ All of the above happens **inside a content-bearing row.** Under full validation
 
 One wrinkle in "what counts as content": an **instantiated repeatable row is itself content** — a created-but-blank repeat row *is* evaluated, so per-row empty-as-`0` fires on every such row — whereas a non-repeatable group's bare structural presence is *not* content. Partial validation overrides the gate entirely: a *relevant* instance is always evaluated, even empty or phantom ([§12](10-validation-and-polarity.md)).
 
-> **Lean modelling note.** The row gate is easy to miss and produces "fires on a blank document" bugs. Model it as a predicate `canFireOnEmpty : Ast → Bool` (structurally: true for the negative-presence predicates and `CustomCondition`, closed under `And`/`Or`), and gate a row's evaluation on `hasContent(row) ∨ canFireOnEmpty(cond)`. Treat an instantiated repeatable row as `hasContent := true` by construction. This eligibility says only that the callback may be reached; its supplied relevance/formal-invalid context still determines what a conforming implementation should return.
+> **Non-normative implementation note.** The row gate is easy to miss and produces "fires on a blank document" bugs. Model it as a predicate `canFireOnEmpty : Ast → Bool` (structurally: true for the negative-presence predicates and `CustomCondition`, closed under `And`/`Or`), and gate a row's evaluation on `hasContent(row) ∨ canFireOnEmpty(cond)`. Treat an instantiated repeatable row as `hasContent := true` by construction. This eligibility says only that the callback may be reached; its supplied relevance/formal-invalid context still determines what a conforming implementation should return.
 
 ---
 
@@ -130,7 +130,7 @@ A duplicate-flagged cell enters the third state ([§3](02-logic-and-formal-error
 
 Because the engine generates both checks, a model must **not** also author the equivalent rules — they would double up. (The index field is also the join key for parallel iteration and the semantic index; [§9](07-repetition-and-iteration.md).)
 
-> **Lean modelling note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3.B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). Concretely, a `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base `formalCheck` result, derives the referenced group's admitted-content/error/relevance state, retains any hit/message, and only on a hit adds `.required` to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule, the per-parent-row uniqueness check (marking *all* duplicate participants `notCheckRelevant`), and registers the join key. Doing this as desugaring keeps the evaluator's core small and mirrors how the real engine treats these as generated, not special-cased.
+> **Non-normative implementation note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3.B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). Concretely, a `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base `formalCheck` result, derives the referenced group's admitted-content/error/relevance state, retains any hit/message, and only on a hit adds `.required` to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule, the per-parent-row uniqueness check (marking *all* duplicate participants `notCheckRelevant`), and registers the join key. Doing this as desugaring keeps the evaluator's core small and mirrors how the real engine treats these as generated, not special-cased.
 
 ---
 

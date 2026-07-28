@@ -1,7 +1,7 @@
 /-! # A12Kernel.Core — the truth/polarity algebra and the value domain
 
 The foundational types every operator clause hangs off. Refines
-`spec/13-lean-encoding-guide.md` §1 and `spec/SEMANTICS-MAP.md` §6, taking the verdict
+`docs/LEAN-ENCODING-GUIDE.md` §1 and `spec/SEMANTICS-MAP.md` §6, taking the verdict
 algebra in the unified 4-state form (rationale + the full decision record in
 [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md)).
 

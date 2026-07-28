@@ -12,7 +12,7 @@ Pure spelling, formatting, link, or non-semantic navigation edits do not enter t
 
 Each entry has a stable `SPEC-YYYY-MM-DD-NN` ID and records:
 
-- status: `pending`, `handed-off`, `accepted`, `resolved`, or `superseded`. `accepted` means this repository reviewed an exact a12-dmkits revision against the entry's acceptance condition. `resolved` is the terminal state for an `EXP-` entry closed **locally** as requiring no observation — no upstream revision exists to review, so `accepted` would misdescribe it. An `EXP-` entry answered by an upstream probe uses `accepted` as usual;
+- status: exactly one of `pending`, `handed-off`, `accepted`, `resolved`, `rejected`, or `superseded`, with no explanatory suffix. `accepted` means this repository reviewed an exact a12-dmkits revision against the entry's acceptance condition. `resolved` is the terminal state for an `EXP-` entry closed **locally** as requiring no observation—no upstream revision exists to review, so `accepted` would misdescribe it. `rejected` means contrary kernel evidence disproved the entry's proposed correction and the local semantic account was corrected. Explanatory text belongs in the disposition, not the status field;
 - the changed spec file and section;
 - a concise delta summary;
 - the kernel version and evidence or source basis;
@@ -28,7 +28,8 @@ Status advances as follows:
 2. `handed-off` — delivered with the exact entry IDs and local revision; a returned handback remains here until reviewed;
 3. `accepted` — this repository reviewed the exact a12-dmkits revision against the entry's acceptance condition and relevant gates, then recorded the result;
 4. `resolved` — an `EXP-` entry closed locally as requiring no observation, per the definition above; no upstream revision exists to review;
-5. `superseded` — a successor replaced a pending or handed-off entry and names it explicitly.
+5. `rejected` — contrary kernel evidence disproved the proposed correction, the local account was corrected, and the disposition names the evidence and correcting revision;
+6. `superseded` — a successor replaced a pending or handed-off entry and names it explicitly.
 
 A returned handback that is neither an observation nor a reasoned refusal leaves the entry `handed-off` with its inconclusive outcome recorded. Do not promote it to `accepted`: the acceptance condition is unmet, and recording the mechanism learned along the way is not the same as answering the question.
 
@@ -309,7 +310,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### SPEC-2026-07-25-01 — the `NotAll` fields-presence prepass is a size-selected route detail, not the observable contract
 
-- **Status:** accepted — reviewed a12-dmkits revision `dd02b033`
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `7d17733a`
@@ -327,7 +328,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### SPEC-2026-07-25-02 — the below-half separator is real, but it is a parse-time mechanism rather than a `Math.round` one
 
-- **Status:** accepted — reviewed a12-dmkits revision `97e35531`; the correction landed and returned three corrections of its own
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `10451733`
@@ -350,7 +351,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### SPEC-2026-07-25-03 — the long boundary classifies `+(2^63 - 1)` and `-(2^63 - 1)` oppositely, and only the negative side separates exact-integer arithmetic
 
-- **Status:** accepted and closed — reviewed a12-dmkits `ee2f5d84`; all three predicted rows measured through the real kernel and confirmed
+- **Status:** accepted
 - **Kind:** semantic correction (addition), locally originated; **kernel-measured** as of `ee2f5d84`
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `724926a5`
@@ -378,7 +379,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### EXP-2026-07-25-01 — condition-line splitting above fifty terms is unreached by either corpus
 
-- **Status:** accepted — probed at a12-dmkits `29b3ef53`, no divergence
+- **Status:** accepted
 - **Kind:** experiment request
 - **Kernel behavior:** 30.8.1
 - **Basis:** a12-dmkits revision `7d17733a` measured the three Groovy-only size-triggered lowering modes individually. Object splitting (`NUM_RULES_PER_CLASS_GROOVY = 10`) is engaged — kernel-mm 11 of 13 canonical models, max 89 rules. Calculation closures are unconditional for Groovy and therefore engaged across 646 computations. **Condition-line splitting (`NUM_CONDITIONLINES_PER_METHOD_GROOVY = 50`) has never been engaged:** over 2,460 rules the atomic-condition-term count peaks at 4 in workspaces and 21 in kernel-mm, and the committed corpus is one rule per model by design.
@@ -391,7 +392,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### EXP-2026-07-25-03 — the semantic-index computation gate may be route-selected, not read-time
 
-- **Status:** accepted — observed at a12-dmkits `3d1c2858` on both kernel strategies; both accounts hold, by locus
+- **Status:** accepted
 - **Kind:** experiment request
 - **Kernel behavior:** 30.8.1
 - **Basis:** the computed-field template branches on parallel iteration. On the ordinary indexed-read route, computation's column-first gate is a read-time throw before the match is delegated, and your maintained pair observes exactly that discriminator — a clean matching key coexisting with an unavailable key elsewhere in the column, firing under validation and clearing under computation on both kernel strategies. On the **parallel-iteration** branch there is no read-time gate: the iteration-values lookup returns an empty list so the loop body never executes, and a post-loop call marks affected instances afterwards. The kernel's own comment on that call concedes it "might be marking more field instances as invalid than strictly necessary," which is precisely the behavioural difference at issue.
@@ -418,7 +419,7 @@ It must also **verify that the named discriminator is the actual variable**, bec
 
 ### EXP-2026-07-25-02 — the table-enumeration region has no normative witness
 
-- **Status:** resolved — no observation required, no doctrine exception needed
+- **Status:** resolved
 - **Kind:** experiment request (miscategorised: see the disposition)
 - **Kernel behavior:** 30.8.1
 - **Basis:** a12-dmkits revision `7d17733a` established that `NoMetaModelChecks.checkEnumTables()` rejects table-enum fields for `GROOVY` and `JAVA_SCRIPT_VK` with `MVK_TABLE_ENUMS_NOT_ALLOWED_FOR_PROGRAMMING_LANGUAGE`, so table enumerations are a Java-only capability by declared, diagnosed policy. Its ledger rows now scope the exclusion explicitly as a front-end-reach claim rather than a claim about the kernel's language, and record that the region is reachable through the kernel's other front-end.
@@ -754,7 +755,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `978991836ce298c6382b65e0559d3ccf9af24b3c`
 - **Kernel behavior:** 30.8.1
-- **Canonical clauses:** [`13-lean-encoding-guide.md` §§4–5](../spec/13-lean-encoding-guide.md#4-regression-conformance-and-theorem-guards), [`SEMANTICS-MAP.md` §9](../spec/SEMANTICS-MAP.md#9-drilling-into-the-authoritative-sources), and [`01-data-model.md` §5](../spec/01-data-model.md#5-what-is-not-modelled-here)
+- **Canonical clauses and implementation guide:** [`LEAN-ENCODING-GUIDE.md` §§4–5](LEAN-ENCODING-GUIDE.md#4-regression-conformance-and-theorem-guards), [`SEMANTICS-MAP.md` §9](../spec/SEMANTICS-MAP.md#9-drilling-into-the-authoritative-sources), and [`01-data-model.md` §5](../spec/01-data-model.md#5-what-is-not-modelled-here)
 - **Delta:** Name the kernel's Groovy-dynamic runtime service as the normative behavioral observation anchor. Generated static-Java remains required co-evidence and a strategy-split detector; a legal split is recorded and does not override Groovy-dynamic. The a12-dmkits interpreter remains a clean-room triangulation peer, never an oracle.
 - **Basis:** a12-dmkits IF136 and its conformance divergence enforcement establish the ratified strategy policy; this repository's [`TESTING.md`](TESTING.md) already used the same contract.
 - **Requested a12-dmkits reconciliation:** None. This is an inbound policy synchronization from the reviewed peer account.
@@ -830,7 +831,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `883e0e22f87e22e3a7ff4529fd41ab87f331de8f`
 - **Kernel behavior:** 30.8.1
-- **Canonical clauses:** [`05-dates-and-time.md` §3 and checklist](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity), [`SEMANTICS-MAP.md` §5](../spec/SEMANTICS-MAP.md#5-cross-cutting-invariants), and [`13-lean-encoding-guide.md` §4](../spec/13-lean-encoding-guide.md#4-regression-conformance-and-theorem-guards)
+- **Canonical clauses and implementation guide:** [`05-dates-and-time.md` §3 and checklist](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity), [`SEMANTICS-MAP.md` §5](../spec/SEMANTICS-MAP.md#5-cross-cutting-invariants), and [`LEAN-ENCODING-GUIDE.md` §4](LEAN-ENCODING-GUIDE.md#4-regression-conformance-and-theorem-guards)
 - **Delta:** Replace the mathematically imprecise claim that `Valid(Date(...))` and `Invalid(Date(...))` are not complements. Their truth projections are exact strong-Kleene complements across real, unreal, incomplete, and formally unavailable constructions. The non-derivability is at the full verdict level: incomplete and unreal both make `Valid` not fire, while `Invalid` must recover OMISSION for incomplete and VALUE for unreal; malformed makes both UNKNOWN. A reason-bearing construction result is therefore required even though the truth table complements.
 - **Basis:** kernel `RuntimeController.constructDatumHelper`, `dateGueltig`, and `dateUngueltig` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` establish the four classifications and directional verdicts; a12-dmkits `DateConstructionDiffTest`, `DateValidityLawsTest`, and its `DateStatus` evaluator at the basis revision already implement the same classification-to-verdict table. The local Lean capsule takes concrete calendar reality as a separate input and proves truth complementation, both fired-polarity characterizations, and the nearest non-law: `Valid(incomplete) = Valid(unreal)` while `Invalid(incomplete) ≠ Invalid(unreal)`. Exact model-zone/cutover calendar resolution is a separate semantic issue and is not folded into this entry.
 - **Requested a12-dmkits reconciliation:** Correct only prose and comments that call the predicates non-complements because an unspecified component fires `Invalid` but not `Valid`. State strong-Kleene truth complementation separately from full-verdict/polarity recovery and preserve the already-correct four-way evaluator and focused kernel differentials. Do not add a general negation operator or change runtime behavior merely to produce a source diff.
@@ -1012,7 +1013,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 - **Local revision:** introducing commit
 - **a12-dmkits basis revision:** `f78f4fc864b7be05f94736070cd2da7bf95d04b3`
 - **Kernel behavior:** 30.8.1
-- **Canonical clauses:** [`01-data-model.md` §2](../spec/01-data-model.md#2-document--an-instance-of-the-tree), [`03-empty-and-required.md` A.1](../spec/03-empty-and-required.md#a1-the-per-kind-default), and [`13-lean-encoding-guide.md` §§1–3](../spec/13-lean-encoding-guide.md#1-the-semantic-foundations)
+- **Canonical clauses and implementation guide:** [`01-data-model.md` §2](../spec/01-data-model.md#2-document--an-instance-of-the-tree), [`03-empty-and-required.md` A.1](../spec/03-empty-and-required.md#a1-the-per-kind-default), and [`LEAN-ENCODING-GUIDE.md` §§1–3](LEAN-ENCODING-GUIDE.md#1-the-semantic-foundations)
 - **Delta:** Separate physical field placement from the evaluation value at ingestion. An omitted cell is absent; a present cell carrying `null` or raw `""` is present-empty; and nonempty raw text proceeds to parsing and formal checking. Present-empty and absent both supply the ordinary empty observation, but normalization must not erase placement. Field-level fill, requiredness, and quantifier consumers therefore see no value, while placement-sensitive read-back and computation application may retain the distinction. Repeatable-row existence remains an independent structural content source, and operator-specific empty policies remain downstream.
 - **Basis:** Pinned kernel `DocumentUtils.valueExists` at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66` admits a value only when it is non-null and not the empty String. At the reviewed a12-dmkits revision, `Document.add` retains the field placement while normalizing null or empty text to no evaluation value; `cellStateAt` reports present-empty, and `EmptyStringIngestionDiffTest` makes both kernel strategies and the peer interpreter agree on field presence, non-repeatable group presence, and generated requiredness. The common interpreter lock runs on JVM and Node. Custom-validator exclusion and repeatable-row structural content follow their separate existing source mechanisms rather than this differential's asserted matrix.
 - **Requested a12-dmkits reconciliation:** None. IF198 corrected the ingestion root and added the focused multiplatform and tri-engine locks before this specification clarification arrived.
@@ -1160,7 +1161,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-22-06 — `FirstFilledValue` keeps omitted tail distinct from an empty prefix
 
-- **Status:** rejected — runtime premise disproved; Lean corrected
+- **Status:** rejected
 - **Local revision:** `b2d17708f691991628980eef46df8b7a779a7746`
 - **a12-dmkits basis revision:** `ec2e82cbaef2a274baa0b091e86919458fe732c6`
 - **Kernel behavior:** 30.8.1
@@ -1535,7 +1536,7 @@ Use this prompt for one or more pending IDs, replacing both placeholders with th
 
 ### SPEC-2026-07-24-02 — ordinary-iteration negative admission is level- and operand-sensitive
 
-- **Status:** accepted — reviewed a12-dmkits revision `10451733`, **explicitly partial**; the unlocked remainder is inventoried in the disposition rather than implied
+- **Status:** accepted
 - **Local revision:** `27aee4182d51985c6b454231e229274351da33f7`
 - **a12-dmkits basis revision:** `98d2aacc256ef8dc7b9300b273748f8bf6151ed1`
 - **Kernel behavior:** 30.8.1

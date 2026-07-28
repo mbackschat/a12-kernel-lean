@@ -1,15 +1,18 @@
-# A12 Kernel — validation-language semantics, mapped for a Lean reimplementation
+# A12 Kernel validation and computation semantics
 
-This is the entry point to a standalone description of how the **A12 kernel's validation/computation language evaluates**, written so a future reader with no access to the source project can (a) understand the semantics precisely and (b) reimplement them — the working assumption is **Lean 4** as the eventual target, but the content is a language-neutral specification with Lean-flavoured modelling notes layered on top.
+<a id="a12-kernel-validation-language-semantics-mapped-for-a-lean-reimplementation"></a>
+<a id="a12-kernel--validation-language-semantics-mapped-for-a-lean-reimplementation"></a>
 
-> **How to read this set.** This file is the *map*: the mental model, the taxonomy, the difficulty ranking, the cross-cutting invariants, the recommended Lean core types, and a glossary. Each numbered companion file deep-dives one area. You do **not** need any other repository or document to *understand or reimplement* the semantics — everything needed to reason is inside this folder; the sole exception is [§9](#9-drilling-into-the-authoritative-sources), an optional layer for *verifying* claims against the real engine that points to the sibling repos. Where a companion file exists it is linked; where it is still to be written the map entry already states the essential behaviour.
+This is the entry point to a standalone, language-neutral description of how the **A12 Kernel's validation and computation language evaluates**. The Kernel validates a Document/DocumentV2 (a data document) against a DocumentModel. The numbered clauses state the observable behavior and static legality needed to understand or independently reimplement that process.
+
+> **How to read this set.** This file is the map: the mental model, taxonomy, cross-cutting invariants, glossary, and routes to the numbered deep dives. The clauses are normative. Clearly labeled **Non-normative implementation notes** explain consequences for reimplementers but do not own project status or alter the behavioral account. Provenance and source navigation live in [`docs/SOURCES.md`](../docs/SOURCES.md); Lean encoding guidance lives in [`docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md).
 
 ---
 
 ## 0. Provenance, scope, and the license posture
 
-- **What is being described.** The evaluation semantics of the A12 kernel's *validation language* (also called the condition language or DSL) as observed in kernel version **30.8.1**. "Evaluation semantics" means: given a document model and a document instance, *when does a rule fire, what message type does it carry, and what value does a computation produce* — beyond what the surface syntax shows.
-- **Last full inbound synchronization.** This set was completely audited against a12-dmkits through revision **`a8b86ff6` (2026-07-18)** (previously `cdf79872`, 2026-07-17; the 07-18 sync incorporated the model-timezone/DST edge-hour laws and the per-operator DateTime gates into [`01-data-model.md`](01-data-model.md) and [`05-dates-and-time.md`](05-dates-and-time.md)). Update this global pin only after another complete inbound specification audit. Partial outbound changes and their a12-dmkits handbacks are tracked individually in [`docs/A12-DMKITS-SPEC-SYNC-LEDGER.md`](../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md) and do not imply that the whole spec was re-audited.
+- **What is being described.** The evaluation semantics of the A12 Kernel's validation language (also called the condition language or DSL) and computation language as observed in Kernel version **30.8.1**: when a rule fires, which message type it carries, what a computation produces, and which authored shapes are legal.
+- **Where provenance lives.** The reusable source routes, Kernel revision, and reviewed a12-dmkits provenance are maintained in [`docs/SOURCES.md`](../docs/SOURCES.md). Outbound reconciliation state lives in [`docs/A12-DMKITS-SPEC-SYNC-LEDGER.md`](../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). Revision chronology does not belong in this semantic map.
 - **What is out of scope.** The kernel's Java/host API surface, its code-generation targets, model include/expansion mechanics, the editor UI, and persistence. These are touched only where they change evaluation (mainly full-vs-partial validation, and the compute→apply→validate flow).
 - **Clean-room posture (important if you reimplement).** Everything here describes *observable behaviour* — facts about what the engine does for given inputs, established by experiment and by reading the specification, not by transcribing engine source. Behaviour and ideas are free to reimplement; a line-by-line port of the original engine's source expression would be a derivative work. So: **read this to learn the exact behaviour, then write original code and lock it against the behaviour with tests.** Copy the *mechanism*, never the *expression*.
 - **Confidence markers.** Claims are of two kinds. Most are settled behaviour verified against kernel 30.8.1 (by differential testing against the normative Groovy-dynamic observation anchor, static-Java split-detection co-evidence where available, and source reading); a few carry the caveat *"observed, not exhaustively pinned"* inline. Where a behaviour was surprising enough that a naive reimplementation is likely to get it wrong, it is flagged **⚠ trap**.
@@ -117,7 +120,7 @@ Fourteen numbered areas cover the language. This is the same `§n` numbering the
 | §13 | Error-message interpolation | `$Field$` / `$Field.value$`; provider → model label → debug; missing/empty display → exact format default | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
 | §14 | CustomCondition — the escape hatch | Delegates the decision to host code; barred in compute + filters | ★★☆☆☆ | [`11-messages-and-custom.md`](11-messages-and-custom.md) |
 | — | Concrete syntax (lexing & grammar) | Keyword catalog (EN/DE), comments, `@`-directives, literals, path grammar, an EBNF sketch | ★★★☆☆ | [`12-concrete-syntax.md`](12-concrete-syntax.md) |
-| — | Lean encoding guide | Recommended core types, the encoding traps, a "start here" order, what to property-test | — | [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md) |
+| — | Lean encoding guide | Recommended core types, the encoding traps, a "start here" order, what to property-test | — | [`../docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md) |
 | — | Data model & call surface | Documents/models/rows, the compute→apply→validate flow, the iteration environment | ★★☆☆☆ | [`01-data-model.md`](01-data-model.md) |
 
 ---
@@ -153,65 +156,11 @@ These hold across the whole language; a reimplementation can assert them as glob
 
 ---
 
-## 6. Lean-encoding orientation
+## 6. Implementation orientation
 
-The full plan is [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md); this is the orientation so the deep-dive callouts have shared vocabulary. The current types separate invariant cell classification from phase-sensitive observation.
+<a id="6-lean-encoding-orientation"></a>
 
-**(a) The checked-cell and observation boundary.** Formal checking records raw presence, a parsed value when one exists, and formal findings. A phase read then distinguishes empty, value, validation-unknown, and computation-poison. Required-and-empty is a validation-scoped finding and remains ordinary empty in computation; operator-specific empty substitution happens after the read.
-
-```lean
-structure CheckedCell where
-  rawPresent : Bool
-  parsed     : Option Value
-  findings   : List FormalCause
-
-inductive CellObservation where
-  | empty
-  | value   (v : Value)
-  | unknown (cause : FormalCause)
-  | poison  (cause : FormalCause)
-```
-
-**(b) Kleene three-valued logic** for truth, with the caveat that the third value arises only from reads, and the connectives are the strong-Kleene tables:
-
-```lean
-inductive K where | tru | fls | unknown
-def K.and : K → K → K | .fls,_ => .fls | _,.fls => .fls | .tru,.tru => .tru | _,_ => .unknown
-def K.or  : K → K → K | .tru,_ => .tru | _,.tru => .tru | .fls,.fls => .fls | _,_ => .unknown
--- (there is no K.not: the language has no negation combinator)
-```
-
-**(c) The verdict algebra** retains both Kleene-unknown and a fired message's polarity:
-
-```lean
-inductive Polarity where | value | omission
-inductive Verdict where
-  | notFired
-  | fired (polarity : Polarity)
-  | unknown
--- And: notFired dominates; among fires omission wins.
--- Or: a fire dominates; among fires value wins.
-```
-
-This unified result avoids treating a suppressed/invalid rule as though it were definitely not fired (see [§12](#3-the-taxonomy)).
-
-**(d) The value domain** must model per-kind values *and* the "not-given / fillable" information polarity needs. A first cut:
-
-```lean
-inductive Value where
-  | num  (d : Rat)                       -- declared scale is separate static field data
-  | str  (s : String)
-  | bool (b : Bool)
-  | date (d : CalDate)                   -- with precision; unreal dates have no date value, though named numeric consumers may project a fixed 0
-  | enum (stored : String)               -- compared by stored token, not display text
-  -- …
-```
-
-**(e) The AST** is a closed hierarchy — the ideal case for a Lean `inductive` + exhaustive pattern-match evaluator. (Concrete shape: [`12-concrete-syntax.md`](12-concrete-syntax.md).)
-
-**(f) The environment / document.** Evaluation happens *at a repetition context* — a binding of each enclosing repeatable level to a row index. Iteration produces a set of such contexts; a path resolves against one. Model this explicitly (an `Env` mapping repeatable levels → row indices) rather than trying to thread positions implicitly — the star-binding and correlation rules ([§9](#3-the-taxonomy), [§10](#3-the-taxonomy)) are *about* how that environment is extended.
-
-> **The one-sentence encoding thesis.** A faithful reference evaluator is a total pure function of model, world, document, environment, and well-formed core rule; validation returns a `Verdict`, while computation is a separate outcome-producing function with read-driven poison. The hard parts are the phase-sensitive cell boundary, directional polarity, iteration environment, observable read order, and the evidence/proof chain around each clause.
+The semantic clauses imply a phase-aware checked-cell boundary, strong-Kleene truth, a verdict that retains message polarity, explicit repetition environments, and separate validation/computation outcomes. The project-specific Lean representation, dependency spine, traps, and proof/evidence gate live in [`docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md). This section remains only as the stable bridge from the language-neutral map to that non-normative guide.
 
 ---
 
@@ -250,49 +199,28 @@ Self-contained definitions of the recurring vocabulary (the deep-dive files assu
 
 ## 8. The document set
 
-| File | Covers | Status |
-|---|---|---|
-| [`SEMANTICS-MAP.md`](SEMANTICS-MAP.md) | this map | ✅ written |
-| [`01-data-model.md`](01-data-model.md) | mental model, data model, call surface, iteration environment | ✅ written |
-| [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) | §1 truth/logic + §3 formal errors / the third state | ✅ written |
-| [`03-empty-and-required.md`](03-empty-and-required.md) | §2 empty values + §4 the required property | ✅ written |
-| [`04-numbers-and-decimals.md`](04-numbers-and-decimals.md) | §5 numbers & decimals | ✅ written |
-| [`05-dates-and-time.md`](05-dates-and-time.md) | §6 dates & time | ✅ written |
-| [`06-strings-and-enumerations.md`](06-strings-and-enumerations.md) | §7 strings & patterns + §8 enumerations | ✅ written |
-| [`07-repetition-and-iteration.md`](07-repetition-and-iteration.md) | §9 repetition, iteration, cross-array evaluation | ✅ written |
-| [`08-paths-and-references.md`](08-paths-and-references.md) | §10 paths & references | ✅ written |
-| [`09-computations.md`](09-computations.md) | §11 computations | ✅ written |
-| [`10-validation-and-polarity.md`](10-validation-and-polarity.md) | §12 the validation model, VALUE/OMISSION | ✅ written |
-| [`11-messages-and-custom.md`](11-messages-and-custom.md) | §13 interpolation + §14 CustomCondition | ✅ written |
-| [`12-concrete-syntax.md`](12-concrete-syntax.md) | lexing, keyword catalog, directives, grammar sketch | ✅ written |
-| [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md) | the consolidated Lean formalization plan | ✅ written |
+| File | Covers |
+|---|---|
+| [`01-data-model.md`](01-data-model.md) | mental model, data model, call surface, iteration environment |
+| [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) | §1 truth/logic + §3 formal errors and the third state |
+| [`03-empty-and-required.md`](03-empty-and-required.md) | §2 empty values + §4 required |
+| [`04-numbers-and-decimals.md`](04-numbers-and-decimals.md) | §5 numbers and decimals |
+| [`05-dates-and-time.md`](05-dates-and-time.md) | §6 dates and time |
+| [`06-strings-and-enumerations.md`](06-strings-and-enumerations.md) | §7 strings/patterns + §8 enumerations |
+| [`07-repetition-and-iteration.md`](07-repetition-and-iteration.md) | §9 repetition, iteration, and cross-array evaluation |
+| [`08-paths-and-references.md`](08-paths-and-references.md) | §10 paths and references |
+| [`09-computations.md`](09-computations.md) | §11 computations |
+| [`10-validation-and-polarity.md`](10-validation-and-polarity.md) | §12 validation and VALUE/OMISSION polarity |
+| [`11-messages-and-custom.md`](11-messages-and-custom.md) | §13 interpolation + §14 `CustomCondition` |
+| [`12-concrete-syntax.md`](12-concrete-syntax.md) | lexing, keyword catalog, directives, and grammar sketch |
 
-The status column is updated as files land. Read in file order for a first pass; the map plus any single deep-dive is self-contained for a targeted question.
+Read in file order for a first pass. This map plus the relevant deep dive is the normative route for a targeted question; project-specific implementation guidance starts in [`docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md).
 
 ---
 
 ## 9. Drilling into the authoritative sources
 
-An **optional verification layer** — unlike §0–§8, it points *outside* this folder and assumes the sibling repos ([`../../a12-kernel`](../../a12-kernel), [a12-dmkits' `../../a12-rulekit/` checkout](../../a12-rulekit)) are checked out alongside. The prose above is enough to *understand and reimplement*; this section is for *verifying* a claim against the Groovy-dynamic kernel anchor and checking static-Java for strategy splits. It is keyed by the same `§n` taxonomy: for each area, the canonical a12-dmkits prose ([`KERNEL-SEMANTICS.md`](../../a12-rulekit/docs/KERNEL-SEMANTICS.md) + [`KERNEL-FINDINGS.md`](../../a12-rulekit/docs/KERNEL-FINDINGS.md)), whether a machine-readable catalog facet or a replayable corpus family exists, and the kernel runtime class holding the mechanism. Repo inventory + the general drill chain: [`../docs/SOURCES.md`](../docs/SOURCES.md). For the exhaustive per-`§n` lock-test list, follow a12-dmkits' guard-checked [`docs/SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) (it re-derives from the live surface, so it never rots).
-
-| § | Area | Canonical (a12-dmkits `§n`) | Facet | Corpus | Kernel class (mechanism) |
-|---|---|---|---|---|---|
-| §1 | Truth / logic | §1 | — | — | `ValidierungsErgebnis` (combineUND/ODER), `DreiWertBool` |
-| §2 | Empty values | §2 | `emptyOperand`, `aggregateIdentity` | `empty-polarity` | `VkBigDecimal` (empty sentinels), `NumberCombiner` |
-| §3 | Formal errors / unknown | §3 | — | — | `FormalChecker`, `VkBigDecimal` (`NICHT_PRUEF_REL_ZAHL`) |
-| §4 | Required | §4 | — | — | generated mandatory rule; `IndexFieldCache` |
-| §5 | Numbers / decimals | §5 | `boundary` | `comparison`, `empty-polarity` | `VkBigDecimal` (scale-19, `MathContext(50)`, divide), `BedingungsOperatorHelper.vergleiche` |
-| §6 | Dates / time | §6 | `boundary` | `clock` | `NoMetaModelChecks.checkTimeZone`; `MetaDataValidierungIntern.getTimeZone` / `java.util.TimeZone`; non-lenient `ValidationDateParser` / `SimpleDateFormat`; `BedingungsOperatorHelper` (add/diff/extract); `DateUtil.clearTime` |
-| §7 | Strings / patterns / field checks | §7 | — | `empty-polarity` | Java compilation plus bounded kernel-admission evidence: the source-visible `PatternUtils` blacklist through `CheckVergleichsBedingungImpl`, plus direct typed/full-kernel rejection of uppercase `\P` without an inferred hidden grammar; `BedingungsOperatorHelper` condition-pattern runtime; `FormatDefinitionString` declared-pattern runtime; string conversion (`kernel-conversion-java`), `VkString`, `FormalChecker`, `LegalCharTester`, custom field validator |
-| §8 | Enumerations | §8 | — | — | `BedingungsOperatorHelper` (compare by stored value), value-list |
-| §9 | Repetition / iteration | §9 | `iterationRange` | `compute`, `fuzz` | `EntityIterator`/`KontextIterator`/`EbenenIterator`, `Combiner` |
-| §10 | Paths / references | §10 | — | — | codegen path resolution (`SemanticIndexLevelVisitor`); runtime index caches |
-| §11 | Computations | §11 | — | `compute`, `fuzz` | `CalculationController`/`CalculationCommand`/`CalculationCache` |
-| §12 | Validation / polarity | §12 | `polarity` | `empty-polarity`, `partial` | `ValidierungsErgebnis` (WF/AF), `VkBigDecimal.kannGroesser/KleinerWerden` |
-| §13 | Interpolation | §13 | — | — | `kernel-core-service` errortext grammar |
-| §14 | CustomCondition | §14 | — | — | custom-condition SPI (`ICustomCondition`) |
-
-Machine-readable facets exist for only §2 / §5 / §6 / §9 / §12, and a replayable corpus for only §2 / §5 / §6 / §7 / §9 / §11 / §12. Elsewhere the available drill path is prose, findings, focused tests, and the relevant kernel class. The kernel's Groovy-dynamic runtime service remains the normative behavioral observation anchor; generated static-Java is co-evidence and a strategy-split detector, and the a12-dmkits interpreter is an independent clean-room peer rather than an oracle. Concrete syntax (lexing, keywords, directives) sits outside the taxonomy → [`12-concrete-syntax.md`](12-concrete-syntax.md) here; a12-dmkits locks it under its "Outside the taxonomy" lane.
+Verification against source or maintained differentials is optional for reading this specification but mandatory when changing a semantic claim. [`docs/SOURCES.md`](../docs/SOURCES.md) owns the authority order, engine-layer routing rule, mandatory `.st` review for generated control flow, Kernel entry points, per-clause drill table, focused cross-layer packets, and reviewed a12-dmkits provenance. a12-dmkits' guard-checked [`SEMANTICS-MAP.md`](../../a12-rulekit/docs/SEMANTICS-MAP.md) owns its exhaustive per-clause prose/test/corpus index. This map does not duplicate either inventory.
 
 ---
 
