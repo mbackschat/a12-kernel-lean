@@ -151,6 +151,33 @@ theorem constructedDateObservation_ofAvailableComponents_ne_unknown
       classifyDateConstruction3]
   split <;> simp_all
 
+/-- Profile reality can retain a cause-free UNKNOWN only when its input already was
+    UNKNOWN; profile selection never manufactures that fallback. -/
+@[simp] theorem checkedConstructedDate_applyProfileReality_eq_unknown_iff
+    (checked : CheckedConstructedDateComponents model)
+    (observation : ConstructedDateObservation) :
+    checked.applyProfileReality observation =
+        .ok (.resolved .unknown) ↔
+      observation = .resolved .unknown := by
+  cases observation with
+  | unavailable cause =>
+      simp [CheckedConstructedDateComponents.applyProfileReality,
+        pure, Except.pure]
+  | resolved result =>
+      cases result with
+      | real parts =>
+          cases accepted : checked.profileAcceptsDate parts with
+          | error error =>
+              simp [CheckedConstructedDateComponents.applyProfileReality,
+                accepted, bind, Except.bind]
+          | ok isReal =>
+              cases isReal <;>
+                simp [CheckedConstructedDateComponents.applyProfileReality,
+                  accepted, bind, Except.bind, pure, Except.pure]
+      | incomplete | unreal | unknown =>
+          simp [CheckedConstructedDateComponents.applyProfileReality,
+            pure, Except.pure]
+
 /-- Checked component execution routes every reached formal cause through `unavailable`; its resolved branch therefore never contains the cause-free UNKNOWN fallback. -/
 theorem checkedConstructedDateComponents_ne_resolved_unknown
     (checked : CheckedConstructedDateComponents model)

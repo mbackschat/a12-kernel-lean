@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-27:** `lake build` 614 jobs · trust audit **1620 theorem roots; 37073 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-28:** `lake build` 614 jobs · trust audit **1621 theorem roots; 37100 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Admit the pinned `Europe/Berlin` profile for direct checked constructed Dates while retaining civil construction and model-zone decoding as separate responsibilities. Start with the dynamic `Today`/`Now` component sources and one post-floor UTC-versus-Berlin midnight separator; do not claim pre-floor hybrid-calendar identity.
+Close the first pinned-Berlin checked constructed-Date calendar-addition boundary without conflating strict fresh-label construction with `Calendar.add` landing policy. Start with `AddDays` and the autumn 1916 repeated local-midnight hour; keep reverse additions, month/year additions, differences, and pre-floor hybrid identity outside unless the same bounded account decides them.
 
 ## Immediate sequence
 
-1. Audit `RuntimeController.makeDate`, `DateUtil`, generated construction order, and model-zone `GregorianCalendar` setup for which constructed-Date observables depend on the selected zone.
-2. Add red cases that separate UTC from Berlin near local midnight for both point-in-time sources, preserve matching component order, and keep an unsupported zone explicit.
-3. Replace the UTC-only outer certificate with the existing concrete-profile certificate only if civil validity, shifts, differences, and dynamic component projection remain type-correct under that exact profile. Stop at the first pre-floor or DST behavior that needs a new calendar account.
+1. Audit the exact `GregorianCalendar.add(DAY_OF_MONTH, …)` forward and reverse behavior at the autumn 1916 midnight overlap, including the selected offset, exact instant, and unchanged local Date label.
+2. Add a red checked-construction shift case that distinguishes the forward `Calendar.add` landing from fresh overlap resolution and a normal-date control.
+3. Reuse the existing pinned-profile forward-landing mechanism only if its source and result identity match this Date-only consumer exactly; otherwise keep Berlin shifts rejected and record the missing bounded mechanism rather than duplicating it.
 
 ## Parked boundaries
 

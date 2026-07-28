@@ -1646,7 +1646,7 @@ run_cmd do
 #print axioms A12Kernel.checkedPartialPreliminary_silent_read
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant
 #print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance
-#print axioms A12Kernel.checkedConstructedDateComponents_utc
+#print axioms A12Kernel.checkedConstructedDateComponents_profile
 #print axioms A12Kernel.checkedConstructedDateComponents_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateBaseYear_read
 #print axioms A12Kernel.checkedConstructedDateConstant_read
@@ -1661,6 +1661,7 @@ run_cmd do
 #print axioms A12Kernel.checkedConstructedDateCentury_read_unavailable
 #print axioms A12Kernel.checkedConstructedDateCentury_read_values
 #print axioms A12Kernel.constructedDateObservation_ofAvailableComponents_ne_unknown
+#print axioms A12Kernel.checkedConstructedDate_applyProfileReality_eq_unknown_iff
 #print axioms A12Kernel.checkedConstructedDateComponents_ne_resolved_unknown
 #print axioms A12Kernel.constructedDateObservation_consumers_preserve_unavailable
 #print axioms A12Kernel.constructedDateObservation_shifts_preserve_unavailable

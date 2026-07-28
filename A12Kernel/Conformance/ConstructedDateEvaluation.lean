@@ -397,7 +397,7 @@ private def shift? (unit : DateShiftUnit)
   let source ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
-  ({ source, unit, amount } :
+  ({ source, unit, amount, profileIsUtc := by decide } :
       CheckedConstructedDateShift (dateModel "UTC")).evaluate
         .computation input none |>.toOption
 
@@ -413,7 +413,7 @@ private def difference? (unit : DateShiftUnit)
   let second ←
     (elaborateConstructedDateComponents (dateModel "UTC") 5 6 7).toOption
   let input ← document? cells
-  match ({ first, second, unit } :
+  match ({ first, second, unit, profileIsUtc := by decide } :
       CheckedConstructedDateDifference (dateModel "UTC")).evaluate
         .validation input none with
   | .error _ => none

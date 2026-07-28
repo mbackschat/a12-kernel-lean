@@ -5,9 +5,10 @@ import A12Kernel.Elaboration.ConstructedDateComponents
 namespace A12Kernel
 
 /-- The checked boundary cannot silently select another model-zone account. -/
-theorem checkedConstructedDateComponents_utc
+theorem checkedConstructedDateComponents_profile
     (checked : CheckedConstructedDateComponents model) :
-    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some .utc :=
-  checked.profileIsUtc
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId =
+      some checked.profile :=
+  checked.profileSelected
 
 end A12Kernel

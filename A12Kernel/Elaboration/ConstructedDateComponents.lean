@@ -6,9 +6,9 @@ import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for model-owned UTC or GMT. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-The extensible-enumeration String alternative, other recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Berlin execution remains bounded to post-floor Gregorian labels; its pre-floor hybrid-calendar identity, the extensible-enumeration String alternative, other recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -230,14 +230,14 @@ inductive CheckedConstructedDateYear (model : FlatModel) where
   | centuryAndShortYear
       (century shortYear : CheckedConstructedDateSource model)
 
-/-- The checked direct constructor plus its bounded model-zone certificate. -/
+/-- The checked direct constructor plus its selected concrete model-zone profile. -/
 structure CheckedConstructedDateComponents (model : FlatModel) where
   day : CheckedConstructedDateSource model
   month : CheckedConstructedDateSource model
   year : CheckedConstructedDateYear model
-  profileIsUtc :
-    ModelZone.ConcreteProfile.ofId? model.timeZoneId =
-      some .utc
+  profile : ModelZone.ConcreteProfile
+  profileSelected :
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
 
 /-- Static rejection before any component is read. -/
 inductive ConstructedDateComponentsElabError where
@@ -415,8 +415,9 @@ def elaborateConstructedDateSources
     (model : FlatModel) (sources : SurfaceConstructedDateComponents) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateComponents model) := do
-  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
-  | some .utc =>
+  match profileSelected :
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | some profile =>
       let day ← elaborateConstructedDateSource model .day sources.day
       let month ← elaborateConstructedDateSource model .month sources.month
       let year ← match sources.year with
@@ -431,8 +432,8 @@ def elaborateConstructedDateSources
             pure (.centuryAndShortYear
               (← elaborateConstructedDateSource model .century century)
               (← elaborateConstructedDateSource model .shortYear shortYear))
-      pure { day, month, year, profileIsUtc := hProfile }
-  | _ => throw (.unsupportedZone model.timeZoneId)
+      pure { day, month, year, profile, profileSelected }
+  | none => throw (.unsupportedZone model.timeZoneId)
 
 /-- Check the direct Day/Month/Year form and reject unsupported zone behavior before execution. -/
 def elaborateConstructedDateComponents

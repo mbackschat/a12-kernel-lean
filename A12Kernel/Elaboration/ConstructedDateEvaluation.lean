@@ -5,9 +5,9 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Checked constructed-Date execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause, then delegates calendar reality and literal day/month/year shifts to the default-cutover owners.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
 
-The same checked source may be shifted by a literal, ordinary Number field, or checked same-group numeric expression. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. The extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+The checked shift and difference consumers remain explicitly UTC/GMT while their Berlin calendar-addition account is still open. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin shift/difference behavior, Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -24,6 +24,7 @@ inductive ConstructedDateEvaluationFault where
   | todayUnavailable (zoneId : String)
   | nowWorldRequired
   | nowUnavailable (zoneId : String)
+  | profileDateUnsupported (zoneId : String) (parts : DateParts)
   deriving Repr, DecidableEq
 
 /-- A checked component before cause-free construction classification. -/
@@ -318,6 +319,34 @@ end ConstructedDateObservation
 
 namespace CheckedConstructedDateComponents
 
+/-- Decide whether one already hybrid-real Date also exists at local midnight in the
+    selected profile. UTC retains the established pre-floor hybrid account; Berlin is
+    deliberately bounded to labels admitted by `FullDate` before zone resolution. -/
+def profileAcceptsDate (checked : CheckedConstructedDateComponents model)
+    (parts : DateParts) :
+    Except ConstructedDateEvaluationFault Bool :=
+  match checked.profile with
+  | .utc => pure true
+  | .europeBerlin =>
+      match LocalDateTime.ofYmdHms?
+          parts.year parts.month parts.day 0 0 0 with
+      | none =>
+          throw (.profileDateUnsupported model.timeZoneId parts)
+      | some dateTime =>
+          pure (checked.profile.resolveLocal? dateTime).isSome
+
+/-- Apply the selected profile's local-midnight reality without changing incomplete,
+    already-unreal, or formally unavailable construction results. -/
+def applyProfileReality (checked : CheckedConstructedDateComponents model) :
+    ConstructedDateObservation →
+      Except ConstructedDateEvaluationFault ConstructedDateObservation
+  | .resolved (.real parts) => do
+      if ← checked.profileAcceptsDate parts then
+        pure (.resolved (.real parts))
+      else
+        pure (.resolved .unreal)
+  | observation => pure observation
+
 private def availableAmount? : CheckedConstructedDateComponent → Option Int
   | .value amount => some amount
   | .empty | .unavailable _ => none
@@ -339,9 +368,10 @@ def evaluate (checked : CheckedConstructedDateComponents model)
           | .error error => .error error
           | .ok (.unavailable cause) => .ok (.unavailable cause)
           | .ok year =>
-              .ok (ConstructedDateObservation.ofAvailableComponents
-                (availableAmount? day) (availableAmount? month)
-                (availableAmount? year))
+              checked.applyProfileReality
+                (ConstructedDateObservation.ofAvailableComponents
+                  (availableAmount? day) (availableAmount? month)
+                  (availableAmount? year))
 
 /-- Evaluate checked `Valid(Date(...))` with one explicit optional world, keeping document faults and formal causes in their separate channels. -/
 def evaluateValid (checked : CheckedConstructedDateComponents model)
@@ -389,6 +419,8 @@ structure CheckedConstructedDateShift (model : FlatModel) where
   source : CheckedConstructedDateComponents model
   unit : DateShiftUnit
   amount : CheckedTemporalShiftAmount model
+  profileIsUtc :
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some .utc
 
 namespace CheckedConstructedDateShift
 
@@ -462,6 +494,8 @@ structure CheckedConstructedDateDifference (model : FlatModel) where
   first : CheckedConstructedDateComponents model
   second : CheckedConstructedDateComponents model
   unit : DateShiftUnit
+  profileIsUtc :
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some .utc
 
 namespace CheckedConstructedDateDifference
 
