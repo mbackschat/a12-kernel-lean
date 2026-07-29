@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked `TimeFromDateTime`
 
-This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal, ordinary Number field, or checked same-group arithmetic expression over ordinary Number fields. The shifted source may instead be the execution's explicit `World.now` with any amount form, and one field-backed exact shift may feed one further checked sub-day shift. A sub-day addition retains the whole shifted exact instant and model-zone label; the generated extractor is a proved projection that reads only the shifted wall-clock components and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, while whole-DateTime computation consumers retain the exact instant.
+This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal, ordinary Number field, or checked same-group arithmetic expression over ordinary Number fields. The shifted source may instead be the execution's explicit `World.now` with any amount form, and either exact shifted source may feed one further checked sub-day shift. A sub-day addition retains the whole shifted exact instant and model-zone label; the generated extractor is a proved projection that reads only the shifted wall-clock components and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, while whole-DateTime computation consumers retain the exact instant.
 
 Generated Date-before-Time evaluation remains explicit: a formal Date failure prevents the DateTime read, while cause-free Date non-relevance still reaches it. Within the nested shift, the DateTime source is evaluated before the amount. Numeric expressions reuse the existing one-pass lowering and arithmetic-fillability result: an empty amount can still supply a concrete omission-typed value, while domain-invalid arithmetic yields no DateTime value. Wider DateTime sources, non-Number numeric atoms, repeatable fields, concrete parsing, and a general temporal-expression tree remain separate.
 
@@ -212,6 +212,33 @@ def inheritNotGiven (result : ValueAsDateTimeResult)
   | .nonRelevant => .nonRelevant
   | .unavailable cause => .unavailable cause
 
+/-- Apply one reached outer numeric amount to an exact inner DateTime result. This
+    owns the shared value, no-value, omission, and bounded-profile behavior used by
+    both field-backed and dynamic nested sub-day shifts. -/
+def applyShiftedAmount (profile : ModelZone.ConcreteProfile)
+    (nextUnit : DateTimeSubdayUnit) (source : ValueAsDateTimeResult) :
+    NumericArithmeticOutcome →
+      Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult
+  | .notEvaluated =>
+      match source with
+      | .noValue notGiven | .value _ _ notGiven => pure (.noValue notGiven)
+      | .nonRelevant => pure .nonRelevant
+      | .unavailable cause => pure (.unavailable cause)
+  | .value amount fillability =>
+      match source with
+      | .noValue notGiven =>
+          pure (.noValue
+            (notGiven || fillability.canGrow || fillability.canShrink))
+      | .value _ instant notGiven =>
+          let shiftedInstant :=
+            instant.shift nextUnit (temporalShiftAmountToInt32 amount)
+          match ofShiftedNumericOperand?
+              profile nextUnit instant (.value amount fillability) with
+          | some result => pure (result.inheritNotGiven notGiven)
+          | none => throw (.shiftedInstantOutsideProfile shiftedInstant)
+      | .nonRelevant => pure .nonRelevant
+      | .unavailable cause => pure (.unavailable cause)
+
 end ValueAsDateTimeResult
 
 namespace CheckedShiftedDateTimeSource
@@ -249,25 +276,8 @@ def applyResultAmount (checked : CheckedShiftedDateTimeSource model)
     (nextUnit : DateTimeSubdayUnit) (source : ValueAsDateTimeResult) :
     NumericArithmeticOutcome →
       Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult
-  | .notEvaluated =>
-      match source with
-      | .noValue notGiven | .value _ _ notGiven => pure (.noValue notGiven)
-      | .nonRelevant => pure .nonRelevant
-      | .unavailable cause => pure (.unavailable cause)
-  | .value amount fillability =>
-      match source with
-      | .noValue notGiven =>
-          pure (.noValue
-            (notGiven || fillability.canGrow || fillability.canShrink))
-      | .value _ instant notGiven =>
-          let shiftedInstant :=
-            instant.shift nextUnit (temporalShiftAmountToInt32 amount)
-          match ValueAsDateTimeResult.ofShiftedNumericOperand?
-              checked.profile nextUnit instant (.value amount fillability) with
-          | some result => pure (result.inheritNotGiven notGiven)
-          | none => throw (.shiftedInstantOutsideProfile shiftedInstant)
-      | .nonRelevant => pure .nonRelevant
-      | .unavailable cause => pure (.unavailable cause)
+  | outcome =>
+      source.applyShiftedAmount checked.profile nextUnit outcome
 
 /-- Feed one exact sub-day result into one further generated sub-day shift. The inner
     operation runs before the outer amount; cause-free no-value still reaches it. -/
@@ -424,6 +434,33 @@ def readTime (checked : CheckedShiftedNowDateTimeSource model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
   checked.evaluate phase world input |>.map (·.asTimeOperand)
+
+/-- Apply a reached outer amount through the shared exact-result mechanism. -/
+def applyResultAmount (checked : CheckedShiftedNowDateTimeSource model)
+    (nextUnit : DateTimeSubdayUnit) (source : ValueAsDateTimeResult) :
+    NumericArithmeticOutcome →
+      Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult
+  | outcome =>
+      source.applyShiftedAmount checked.profile nextUnit outcome
+
+/-- Feed one dynamically sampled exact result into one further generated sub-day
+    shift. The inner amount runs before the outer amount, and the supplied `World`
+    remains the sole dynamic input. -/
+def evaluateThen (checked : CheckedShiftedNowDateTimeSource model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
+  match checked.evaluate phase world input with
+  | .error error => .error error
+  | .ok (.unavailable cause) => .ok (.unavailable cause)
+  | .ok source =>
+      match nextAmount.read phase input with
+      | .error error => .error (.document error)
+      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
+      | .ok (.error unavailable) =>
+          .error (.amountExpressionUnavailable unavailable)
+      | .ok (.ok outcome) => checked.applyResultAmount nextUnit source outcome
 
 end CheckedShiftedNowDateTimeSource
 
