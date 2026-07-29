@@ -37,6 +37,7 @@ import A12Kernel.Proofs.DateTimeDayThenSubdayShiftEvaluation
 import A12Kernel.Proofs.DateTimeDayShiftDifferenceEvaluation
 import A12Kernel.Proofs.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Proofs.DateTimeDayShiftComputation
+import A12Kernel.Proofs.DateTimeMixedShiftComputation
 import A12Kernel.Proofs.DateTimeSubdayShiftComputation
 import A12Kernel.Proofs.ValueAsDateTimeComponents
 import A12Kernel.Proofs.ConstructedDateComponents

@@ -85,6 +85,7 @@ import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 import A12Kernel.Elaboration.DateTimeDayShiftDifferenceEvaluation
 import A12Kernel.Elaboration.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
+import A12Kernel.Elaboration.DateTimeMixedShiftComputation
 import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
 import A12Kernel.Elaboration.ValueAsDateTimeComponents
 import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents

@@ -42,6 +42,7 @@ import A12Kernel.Conformance.DateTimeDayShiftEvaluation
 import A12Kernel.Conformance.DateTimeNowDayShiftEvaluation
 import A12Kernel.Conformance.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Conformance.DateTimeDayShiftComputation
+import A12Kernel.Conformance.DateTimeMixedShiftComputation
 import A12Kernel.Conformance.DateTimeSubdayShiftComputation
 import A12Kernel.Conformance.ValueAsDateTimeComponents
 import A12Kernel.Conformance.ConstructedDateComponents
