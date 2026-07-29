@@ -62,14 +62,18 @@ example :
       some (.targetNotTemporal 0) := by
   native_decide
 
-/- Time metadata is coherent but outside this first Date/DateTime target boundary. -/
+/- The exact complete Time declaration exposes its policy without inventing a model-zone instant. -/
 example :
     let time : TemporalComponents :=
       { year := false, month := false, day := false,
         hour := true, minute := true, second := true }
     let target := temporalTarget 0 "Time" "HH:mm:ss" .time time
-    errorOf (elaborateTemporalTargetPolicy { fields := [target] } 0) =
-      some (.unsupportedTargetKind 0 .time) := by
+    checkedPolicyOf { fields := [target] } 0 =
+      some ({
+        format := "HH:mm:ss"
+        partialMode := .full
+        youngerThan1900Check := false },
+        "UTC") := by
   native_decide
 
 /- Missing declaration policy is explicit insufficient information, never a guessed canonical format. -/

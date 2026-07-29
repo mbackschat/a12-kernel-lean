@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 645 jobs · trust audit **1702 theorem roots; 38538 declarations in 368 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 648 jobs · trust audit **1704 theorem roots; 38721 declarations in 370 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Source-close the computed `Time` target boundary and, only if the source packet is complete, execute the smallest admitted `Time(...)` result through declaration-owned target policy, rich source-relative result classification, and exact application.
+Carry the now source-closed exact `Time(...)` target outcome through rich source-relative result classification and exact application.
 
 ## Immediate sequence
 
-1. Read the parser/checker, generated Java/Groovy/JavaScript `.st` templates, runtime value handler, target basic-check path, and application path for computed `Time`; record only durable drill routes in [`SOURCES.md`](SOURCES.md).
-2. Derive a separating matrix for exact target formats/components, concrete value, present-empty, formal poison, target-local rejection if reachable, source-relative changed/unchanged classification, and application.
-3. Reuse the existing temporal policy/result/application vocabulary only where the source meaning fits exactly. Stop and report if `Time` needs an unresolved payload or check distinction; exclude wider temporal formats, recursive expressions, repeatable placement, and unrelated Date/DateTime widening.
+1. Reuse the kind-indexed temporal stored text and source-placement vocabulary; do not reparse `HH:mm:ss` or invent a Time instant.
+2. Separate unchanged success, changed success, absent/present-empty/source-filled clearing, formal poison, residual-message status, duplicate action targets, and exact application order.
+3. Stop after nonrepeatable result/application closure; exclude wider temporal formats, recursive expressions, repeatable placement, scheduling, message construction, and unrelated Date/DateTime widening.
 
 ## Parked boundaries
 

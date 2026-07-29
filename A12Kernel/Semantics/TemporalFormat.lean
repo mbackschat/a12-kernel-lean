@@ -21,6 +21,11 @@ def TemporalComponents.fullDate : TemporalComponents :=
   { year := true, month := true, day := true,
     hour := false, minute := false, second := false }
 
+/-- Static identity of a complete whole-second Time with no date component. -/
+def TemporalComponents.time : TemporalComponents :=
+  { year := false, month := false, day := false,
+    hour := true, minute := true, second := true }
+
 /-- Static component identity carried by `Today`. -/
 def TemporalComponents.today : TemporalComponents := TemporalComponents.fullDate
 

@@ -2,7 +2,7 @@ import A12Kernel.Semantics.ModelZone
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded full-Date and DateTime target result domains. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; a computed Date is concrete even when its target declaration permits partially known stored inputs. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded Time, full-Date, and DateTime target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; a computed Date is concrete even when its target declaration permits partially known stored inputs. DateTime admits the kernel's standard seconds format and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -14,6 +14,27 @@ def twoDigits (value : Nat) : String :=
   if value < 10 then "0" ++ toString value else toString value
 
 end TemporalTargetText
+
+/-- The only authorable Time target format in the bounded kernel profile. -/
+inductive TimeTargetFormat where
+  | wholeSecond
+  deriving Repr, DecidableEq
+
+namespace TimeTargetFormat
+
+/-- Admit exactly the kernel's complete Time storage format. -/
+def ofSource? : String → Option TimeTargetFormat
+  | "HH:mm:ss" => some .wholeSecond
+  | _ => none
+
+/-- Render a whole-second clock without introducing a date or zone. -/
+def renderText (_ : TimeTargetFormat) (time : TimeOfDay) : String :=
+  let seconds := time.secondsSinceMidnight
+  TemporalTargetText.twoDigits (seconds / 3600) ++ ":" ++
+    TemporalTargetText.twoDigits ((seconds % 3600) / 60) ++ ":" ++
+    TemporalTargetText.twoDigits (seconds % 60)
+
+end TimeTargetFormat
 
 /-- Exact declared formats admitted by the first full-Date target renderer. This is a bounded source-checked subset, not a general date-format parser. -/
 inductive FullDateTargetFormat where
@@ -52,6 +73,36 @@ end FullDateTargetFormat
 structure StoredTemporalText (kind : TemporalKind) where
   text : String
   nonempty : text ≠ ""
+  deriving Repr, DecidableEq
+
+/-- Stored text for one checked Time target. -/
+abbrev StoredTime := StoredTemporalText .time
+
+namespace TimeTargetFormat
+
+/-- Render a clock into the exact nonempty attempt consumed by the target basic check. -/
+def render (format : TimeTargetFormat) (time : TimeOfDay) : StoredTime :=
+  {
+    text := format.renderText time
+    nonempty := by
+      cases format
+      simp [renderText, TemporalTargetText.twoDigits]
+  }
+
+end TimeTargetFormat
+
+/-- Root result before a checked Time target consumes it. Time has clock identity but no exact instant identity. -/
+inductive TimeComputationResult where
+  | noValue
+  | value (time : TimeOfDay)
+  | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- Rich Time target result before source-relative classification or application. Every admitted clock passes the exact target basic check. -/
+inductive TimeTargetOutcome where
+  | noValue
+  | accepted (stored : StoredTime)
+  | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
 /-- Stored text for one checked Date target. -/

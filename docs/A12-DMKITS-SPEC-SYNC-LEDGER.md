@@ -56,6 +56,23 @@ The distinction matters because the two arms of this project's convergence desig
 
 It must also **verify that the named discriminator is the actual variable**, because competing accounts can both be true on loci the entry never distinguished. [`EXP-2026-07-25-03`](#exp-2026-07-25-03--the-semantic-index-computation-gate-may-be-route-selected-not-read-time) posed a route-selected mechanism against a uniform one and both turned out to hold — separated by which index group carries the malformed key, a variable the entry never mentioned. Such a request cannot be answered as asked: any observation confirms one account without refuting the other, and the requested single document cannot separate them. Before handing off, state what a *negative* result would look like; if no input distinguishes the accounts, the discriminator is wrong and the entry is not yet an experiment.
 
+<a id="spec-2026-07-29-02"></a>
+<a id="spec-2026-07-29-02--computed-time-retains-zone-free-clock-identity"></a>
+
+### SPEC-2026-07-29-02 — computed Time retains zone-free clock identity
+
+- **Status:** pending
+- **Kind:** semantic extension
+- **Local revision:** introducing commit
+- **a12-dmkits basis revision:** `ec853294e49af9b1eb90967077ac141e6caaa7a2`
+- **Kernel behavior:** 30.8.1
+- **Canonical clause:** [`09-computations.md` §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape)
+- **Delta:** An authorable computed `Time(...)` target has complete hour/minute/second components and exact format `HH:mm:ss`. A real clock stores as zero-padded `HH:mm:ss` and passes the basic target check. The runtime's 1970-01-01 model-zone date is transport-only and does not become Time identity. Missing, impossible, and non-relevant construction results store no value; formal unavailability remains poison.
+- **Basis:** `CheckTimeKonstruktImpl`, `TimeConstructionOperationImpl`, all three generated `TimeConstructionOperation.st` and `CodeGenCalculationAlternative.st` dialects, `RuntimeController.constructTime`, `DateUtil.createTime`, `CalculationController.handleBerechnetenWert(VkDate, …)`, and `FormatDefinitionDatum.validiereFormat` establish the complete route. The reviewed a12-dmkits revision already stores Time as `HH:mm:ss` and documents the fixed format, but its canonical computation stored-form account does not state the transport-identity and no-value boundary.
+- **Requested a12-dmkits reconciliation:** Add this boundary to the canonical computation semantics and confirm the existing Time evaluator retains clock identity rather than a transport instant. Reuse the existing Time value, computation result, and target application owners; add only compact maintained separators for UTC/Berlin identical rendering, impossible/no-value, formal poison, changed/unchanged classification, and clearing/application. No new temporal representation or harness.
+- **Compatibility:** Treating the 1970 transport value as an exact instant makes Time zone-dependent; accepting a wider target format admits models rejected by authoring; converting impossible or non-relevant construction to an attempted `00:00:00` changes clearing and downstream reads.
+- **Acceptance:** Canonical peer prose and maintained existing-family cases state and separate exact `HH:mm:ss`, zone-free clock identity, no-value/poison, source-relative result classification, and exact application without adding a value type or harness; the handback supplies the exact reviewed revision and disposition.
+
 <a id="spec-2026-07-29-01"></a>
 <a id="spec-2026-07-29-01--constructed-date-day-and-month-shifts-retain-distinct-overlap-instants"></a>
 

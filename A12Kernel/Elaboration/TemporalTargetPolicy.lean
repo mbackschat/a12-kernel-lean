@@ -3,7 +3,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked temporal declaration policy
 
-This capsule resolves one nonrepeatable Date or DateTime declaration against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its first consumers render computed targets and certify stored partial-Date `ValueAsDate`; the bounded target refinements render concrete Date values in two exact formats, including when the target permits partially known stored inputs, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored text, delta classification, and application remain separate.
+This capsule resolves one nonrepeatable temporal declaration against a validated flat model and retains the complete declaration-owned format policy plus the model-owned time zone. Its first consumers render computed targets and certify stored partial-Date `ValueAsDate`; the bounded target refinements render Time in its exact whole-second format without zone resolution, concrete Date values in two exact formats, and DateTime in the kernel's standard whole-second format against one concrete model-zone profile. Parsing stored text, delta classification, and application remain separate.
 -/
 
 namespace A12Kernel
@@ -12,16 +12,14 @@ namespace A12Kernel
 inductive TemporalTargetElabError where
   | resolve (error : ResolveError)
   | targetNotTemporal (target : FieldId)
-  | unsupportedTargetKind (target : FieldId) (kind : TemporalKind)
   | targetPolicyUnavailable (target : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- One checked Date/DateTime declaration whose policy cannot be replaced by caller input. Existing field names remain target-oriented because computed targets were the first consumer. -/
+/-- One checked temporal declaration whose policy cannot be replaced by caller input. Existing field names remain target-oriented because computed targets were the first consumer. -/
 structure CheckedTemporalTargetPolicy (model : FlatModel) where
   target : FlatTemporalField
   policy : TemporalTargetPolicy
-  targetSupported : target.kind = .date ∨ target.kind = .dateTime
   modelWellFormed : model.validate.isOk = true
   policyAdmitted :
     policy.errorFor? target.kind target.components = none
@@ -34,7 +32,7 @@ def timeZoneId (_ : CheckedTemporalTargetPolicy model) : String :=
 
 end CheckedTemporalTargetPolicy
 
-/-- Resolve one complete nonrepeatable Date/DateTime target policy. A temporal declaration without retained exact policy is explicit insufficient information. -/
+/-- Resolve one complete nonrepeatable temporal target policy. A temporal declaration without retained exact policy is explicit insufficient information. -/
 def elaborateTemporalTargetPolicy
     (model : FlatModel) (targetField : FieldId) :
     Except TemporalTargetElabError (CheckedTemporalTargetPolicy model) := do
@@ -46,9 +44,7 @@ def elaborateTemporalTargetPolicy
       let target ← match declaration.toTemporalField? with
         | some target => pure target
         | none => throw (.targetNotTemporal targetField)
-      let finish
-          (targetSupported :
-            target.kind = .date ∨ target.kind = .dateTime) :
+      let finish :
           Except TemporalTargetElabError
             (CheckedTemporalTargetPolicy model) := do
         let policy ←
@@ -61,17 +57,65 @@ def elaborateTemporalTargetPolicy
           pure {
             target
             policy
-            targetSupported
             modelWellFormed := by
               rw [hModel]
               rfl
             policyAdmitted := hPolicy }
         else
           throw .incoherentCore
-      match hKind : target.kind with
-      | .time => throw (.unsupportedTargetKind targetField .time)
-      | .date => finish (Or.inl hKind)
-      | .dateTime => finish (Or.inr hKind)
+      finish
+
+/-- Static refusal before the bounded Time target can execute. -/
+inductive TimeTargetElabError where
+  | targetPolicy (error : TemporalTargetElabError)
+  | targetKind (target : FieldId) (actual : TemporalKind)
+  | components (target : FieldId) (actual : TemporalComponents)
+  | unsupportedFormat (target : FieldId) (source : String)
+  deriving Repr, DecidableEq
+
+/-- One checked complete Time target. The runtime's 1970 transport date and model zone do not enter clock rendering. -/
+structure CheckedTimeTarget (model : FlatModel) where
+  checked : CheckedTemporalTargetPolicy model
+  format : TimeTargetFormat
+  targetIsTime : checked.target.kind = .time
+  componentsComplete :
+    checked.target.components = TemporalComponents.time
+  formatMatches :
+    TimeTargetFormat.ofSource? checked.policy.format = some format
+
+namespace CheckedTemporalTargetPolicy
+
+/-- Refine a checked temporal target to the exact complete Time subset. -/
+def toTimeTarget
+    (checked : CheckedTemporalTargetPolicy model) :
+    Except TimeTargetElabError (CheckedTimeTarget model) := do
+  if hKind : checked.target.kind = .time then
+    if hComponents :
+        checked.target.components = TemporalComponents.time then
+      match hFormat : TimeTargetFormat.ofSource? checked.policy.format with
+      | none =>
+          throw (.unsupportedFormat checked.target.id checked.policy.format)
+      | some format =>
+          pure {
+            checked
+            format
+            targetIsTime := hKind
+            componentsComplete := hComponents
+            formatMatches := hFormat }
+    else
+      throw (.components checked.target.id checked.target.components)
+  else
+    throw (.targetKind checked.target.id checked.target.kind)
+
+end CheckedTemporalTargetPolicy
+
+/-- Resolve and refine one model-owned nonrepeatable complete Time target. -/
+def elaborateTimeTarget
+    (model : FlatModel) (targetField : FieldId) :
+    Except TimeTargetElabError (CheckedTimeTarget model) := do
+  let checked ←
+    elaborateTemporalTargetPolicy model targetField |>.mapError .targetPolicy
+  checked.toTimeTarget
 
 /-- Static refusal before the bounded full-Date target can execute. -/
 inductive FullDateTargetElabError where

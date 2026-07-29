@@ -212,8 +212,10 @@ run_cmd do
 #print axioms A12Kernel.temporalTargetPolicy_valid_format_nonempty
 #print axioms A12Kernel.temporalTargetPolicy_valid_nonDate
 #print axioms A12Kernel.temporalTargetPolicy_valid_partial
-#print axioms A12Kernel.checkedTemporalTargetPolicy_not_time
 #print axioms A12Kernel.checkedTemporalTargetPolicy_timeZoneId
+#print axioms A12Kernel.timeConstructionResult_value
+#print axioms A12Kernel.timeConstructionResult_unavailable
+#print axioms A12Kernel.timeTarget_evaluate_value
 #print axioms A12Kernel.partiallyKnownDateValue_resolve_full
 #print axioms A12Kernel.valueAsDate_evaluate_value
 #print axioms A12Kernel.valueAsDate_evaluate_empty

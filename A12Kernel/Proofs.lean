@@ -27,6 +27,7 @@ import A12Kernel.Proofs.TimeComparison
 import A12Kernel.Proofs.TimeAggregate
 import A12Kernel.Proofs.TemporalFormat
 import A12Kernel.Proofs.TemporalTargetPolicy
+import A12Kernel.Proofs.TimeComputation
 import A12Kernel.Proofs.ValueAsDate
 import A12Kernel.Proofs.TimeConstruction
 import A12Kernel.Proofs.TimeLiteral
