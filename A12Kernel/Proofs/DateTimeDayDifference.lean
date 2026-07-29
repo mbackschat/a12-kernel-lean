@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.DateShift
 import A12Kernel.Semantics.DateTimeDayDifference
 
 /-! # Concrete Berlin calendar-day difference laws
@@ -16,13 +17,13 @@ namespace A12Kernel
       some (dateTime, instant) := by
   simp [EuropeBerlinLegacyProfile.calendarDayLanding?]
 
-/-- A zero-day backward Berlin landing preserves the already selected exact instant just like the forward zero case; neither direction re-resolves an ambiguous wall label. -/
-@[simp] theorem berlin_calendarDayLandingBackward_zero
+/-- A zero-month Berlin mutation preserves the already selected exact instant; even an ambiguous source label is not resolved again. -/
+@[simp] theorem berlin_calendarMonthLanding_zero
     (dateTime : LocalDateTime) (instant : Instant) :
-    EuropeBerlinLegacyProfile.calendarDayLandingBackward?
+    EuropeBerlinLegacyProfile.calendarMonthLanding?
         dateTime instant 0 =
       some (dateTime, instant) := by
-  simp [EuropeBerlinLegacyProfile.calendarDayLandingBackward?]
+  simp [EuropeBerlinLegacyProfile.calendarMonthLanding?]
 
 /-- A zero-year Berlin mutation preserves the already selected exact instant; even an ambiguous source label is not resolved again. -/
 @[simp] theorem berlin_calendarYearLanding_zero
@@ -31,6 +32,35 @@ namespace A12Kernel
         dateTime instant 0 =
       some (dateTime, instant) := by
   simp [EuropeBerlinLegacyProfile.calendarYearLanding?]
+
+/-- Every successful Berlin day mutation preserves its nominal target civil date even when an offset re-fit changes the clock or exact instant. -/
+theorem berlin_calendarDayLanding_preserves_date
+    (current landed : LocalDateTime) (currentInstant landedInstant : Instant)
+    (days : Int)
+    (result :
+      EuropeBerlinLegacyProfile.calendarDayLanding?
+          current currentInstant days =
+        some (landed, landedInstant)) :
+    current.date.addDays? days = some landed.date := by
+  by_cases zero : days = 0
+  · subst days
+    simp [EuropeBerlinLegacyProfile.calendarDayLanding?] at result
+    rcases result with ⟨rfl, rfl⟩
+    exact fullDate_addDays_zero current.date
+  · simp only [EuropeBerlinLegacyProfile.calendarDayLanding?, zero,
+      ↓reduceIte] at result
+    cases nextDateEq : current.date.addDays? days with
+    | none => simp [nextDateEq] at result
+    | some nextDate =>
+        cases landingEq :
+            EuropeBerlinLegacyProfile.calendarDayTargetLanding?
+              current currentInstant nextDate with
+        | none => simp [nextDateEq, landingEq] at result
+        | some landing =>
+            simp [nextDateEq, landingEq] at result
+            have dateEq : nextDate = landed.date :=
+              congrArg LocalDateTime.date result.1
+            simp [dateEq]
 
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self

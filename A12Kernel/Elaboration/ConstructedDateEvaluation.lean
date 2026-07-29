@@ -8,7 +8,7 @@ import A12Kernel.Semantics.DateTimeDayDifference
 
 This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
 
-Checked shifts retain exact landing instants as well as Date parts. UTC/GMT use the complete hybrid owner; pinned Berlin admits signed day, month, and year additions after the checked Date floor while preserving each `GregorianCalendar` field mutation's distinct overlap policy. Differences remain UTC/GMT. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin differences, Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Checked shifts retain exact landing instants as well as Date parts. UTC/GMT use the complete hybrid owner; pinned Berlin admits signed day, month, and year additions after the checked Date floor while preserving each `GregorianCalendar` field mutation's offset policy. Differences remain UTC/GMT. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin differences, Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -439,7 +439,7 @@ private def shiftResolved? (unit : DateShiftUnit)
   | .months => result.addLegacyMonths? offset
   | .years => result.addLegacyYears? offset
 
-/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete hybrid-calendar owner. Berlin admits signed day, month, and year additions: days retain direction-specific gap/overlap landings, while month and year field mutation select the later overlap instant independently of sign. -/
+/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete hybrid-calendar owner. Berlin dispatches to the unit-specific field-mutation semantics: day mutation carries the source offset, while month and year use sign-independent compute-time resolution. -/
 private def applyRealAmount (checked : CheckedConstructedDateShift model)
     (parts : DateParts) (offset : Int) (notGiven : Bool) :
     Except ConstructedDateShiftFault ConstructedDateShiftResult :=
@@ -455,62 +455,30 @@ private def applyRealAmount (checked : CheckedConstructedDateShift model)
       | some .unknown => pure (.noValue notGiven)
       | none => throw (.landingUnavailable checked.unit parts offset)
   | .europeBerlin =>
-      match checked.unit with
-      | .days =>
-          match LocalDateTime.ofYmdHms?
-              parts.year parts.month parts.day 0 0 0 with
+      match LocalDateTime.ofYmdHms?
+          parts.year parts.month parts.day 0 0 0 with
+      | none => throw (.landingUnavailable checked.unit parts offset)
+      | some sourceLocal =>
+          match checked.source.profile.resolveLocal? sourceLocal with
           | none => throw (.landingUnavailable checked.unit parts offset)
-          | some sourceLocal =>
-              match checked.source.profile.resolveLocal? sourceLocal with
-              | none => throw (.landingUnavailable checked.unit parts offset)
-              | some instant =>
-                  let landing :=
-                    if offset < 0 then
-                      EuropeBerlinLegacyProfile.calendarDayLandingBackward?
-                        sourceLocal instant offset.natAbs
-                    else
-                      EuropeBerlinLegacyProfile.calendarDayLanding?
-                        sourceLocal instant offset.toNat
-                  match landing with
-                  | none =>
-                      throw (.landingUnavailable checked.unit parts offset)
-                  | some (shifted, shiftedInstant) =>
-                      pure (.value shiftedInstant
-                        shifted.date.civil.parts notGiven)
-      | .months =>
-          match DateParts.LegacyHybrid.addMonths? parts offset with
-          | none =>
-              throw (.landingUnavailable checked.unit parts offset)
-          | some shifted =>
-              match LocalDateTime.ofYmdHms?
-                  shifted.year shifted.month shifted.day 0 0 0 with
+          | some sourceInstant =>
+              let landing :=
+                match checked.unit with
+                | .days =>
+                    EuropeBerlinLegacyProfile.calendarDayLanding?
+                      sourceLocal sourceInstant offset
+                | .months =>
+                    EuropeBerlinLegacyProfile.calendarMonthLanding?
+                      sourceLocal sourceInstant offset
+                | .years =>
+                    EuropeBerlinLegacyProfile.calendarYearLanding?
+                      sourceLocal sourceInstant offset
+              match landing with
               | none =>
                   throw (.landingUnavailable checked.unit parts offset)
-              | some shiftedLocal =>
-                  -- `GregorianCalendar.add(MONTH, …)` resolves the constructed
-                  -- target as a fresh label. At the repeated 1916 midnight both
-                  -- signed directions therefore choose the later CET instant,
-                  -- unlike forward `DAY_OF_MONTH` addition.
-                  match checked.source.profile.resolveLocal? shiftedLocal with
-                  | none =>
-                      throw (.landingUnavailable checked.unit parts offset)
-                  | some shiftedInstant =>
-                      pure (.value shiftedInstant shifted notGiven)
-      | .years =>
-          match LocalDateTime.ofYmdHms?
-              parts.year parts.month parts.day 0 0 0 with
-          | none => throw (.landingUnavailable checked.unit parts offset)
-          | some sourceLocal =>
-              match checked.source.profile.resolveLocal? sourceLocal with
-              | none => throw (.landingUnavailable checked.unit parts offset)
-              | some sourceInstant =>
-                  match EuropeBerlinLegacyProfile.calendarYearLanding?
-                      sourceLocal sourceInstant offset with
-                  | none =>
-                      throw (.landingUnavailable checked.unit parts offset)
-                  | some (shifted, shiftedInstant) =>
-                      pure (.value shiftedInstant
-                        shifted.date.civil.parts notGiven)
+              | some (shifted, shiftedInstant) =>
+                  pure (.value shiftedInstant
+                    shifted.date.civil.parts notGiven)
 
 /-- Apply an already reached numeric amount without losing missing provenance or reinterpreting arithmetic domain failure as zero. -/
 def applyAmount (checked : CheckedConstructedDateShift model)

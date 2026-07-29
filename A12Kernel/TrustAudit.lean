@@ -337,8 +337,9 @@ run_cmd do
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_7200
 #print axioms A12Kernel.berlin_differenceResolvedInDays_self
 #print axioms A12Kernel.berlin_calendarDayLanding_zero
-#print axioms A12Kernel.berlin_calendarDayLandingBackward_zero
+#print axioms A12Kernel.berlin_calendarMonthLanding_zero
 #print axioms A12Kernel.berlin_calendarYearLanding_zero
+#print axioms A12Kernel.berlin_calendarDayLanding_preserves_date
 #print axioms A12Kernel.berlin_differenceResolvedInDays_swap
 #print axioms A12Kernel.berlin_differenceInDays_self
 #print axioms A12Kernel.berlin_differenceInDays_swap

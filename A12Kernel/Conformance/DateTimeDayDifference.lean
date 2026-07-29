@@ -15,6 +15,10 @@ private def dateTime (year : Int) (month day hour minute second : Nat)
     LocalDateTime :=
   (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
 
+private def berlinDayLanding? (source : LocalDateTime) (days : Int) := do
+  let sourceInstant ← EuropeBerlinLegacyProfile.resolveLocal? source
+  EuropeBerlinLegacyProfile.calendarDayLanding? source sourceInstant days
+
 /- An ordinary consecutive day with the same clock counts once. -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?
@@ -30,18 +34,45 @@ example :
       none := by
   native_decide
 
-/- A backward landing on that nominal gap label keeps the later post-gap wall clock. Fresh-label resolution would reject the nominal 02:30, while the forward rule would land at 01:30. -/
+/- A source carrying the post-transition offset into a backward day landing re-fits the nominal gap label to the post-gap wall clock. -/
 example :
-    (do
-      let source :=
-        dateTime 2024 4 1 2 30 0 (by native_decide)
-      let sourceInstant ←
-        EuropeBerlinLegacyProfile.resolveLocal? source
-      EuropeBerlinLegacyProfile.calendarDayLandingBackward?
-        source sourceInstant 1) =
+    berlinDayLanding?
+        (dateTime 2024 4 1 2 30 0 (by native_decide)) (-1) =
       some (
         dateTime 2024 3 31 3 30 0 (by native_decide),
         { epochMillis := 1711848600000 }) := by
+  native_decide
+
+/- A long forward addition carries the source's standard-time offset into the repeated target label. Direction alone would choose the wrong instant. -/
+example :
+    berlinDayLanding?
+        (dateTime 1916 3 1 0 0 0 (by native_decide)) 214 =
+      some (
+        dateTime 1916 10 1 0 0 0 (by native_decide),
+        { epochMillis := -1680483600000 }) := by
+  native_decide
+
+/- Long landings into the modern spring gap retain the source offset: the standard-time source re-fits forward to 03:30, while the daylight-time source keeps the first 01:30 candidate when moving backward. -/
+example :
+    berlinDayLanding?
+        (dateTime 2023 8 31 2 30 0 (by native_decide)) 213 =
+      some (
+        dateTime 2024 3 31 3 30 0 (by native_decide),
+        { epochMillis := 1711848600000 }) ∧
+    berlinDayLanding?
+        (dateTime 2024 11 30 2 30 0 (by native_decide)) (-244) =
+      some (
+        dateTime 2024 3 31 1 30 0 (by native_decide),
+        { epochMillis := 1711845000000 }) := by
+  native_decide
+
+/- If re-fitting a gap candidate would change the target civil date, Calendar keeps the first source-offset candidate. -/
+example :
+    berlinDayLanding?
+        (dateTime 1916 5 1 23 30 0 (by native_decide)) (-1) =
+      some (
+        dateTime 1916 4 30 22 30 0 (by native_decide),
+        { epochMillis := -1693708200000 }) := by
   native_decide
 
 /- `Calendar.YEAR` is not forward day mutation. At an overlap it chooses the later
@@ -69,12 +100,80 @@ example :
         { epochMillis := -1693704600000 }) := by
   native_decide
 
+/- Day and year mutation are not interchangeable landing policies. The day source carries CEST into the repeated label; year compute-time resolution selects CET. -/
+example :
+    (do
+      let daySource :=
+        dateTime 1916 9 30 0 0 0 (by native_decide)
+      let yearSource :=
+        dateTime 1915 10 1 0 0 0 (by native_decide)
+      let yearInstant ←
+        EuropeBerlinLegacyProfile.resolveLocal? yearSource
+      let dayLanding ← berlinDayLanding? daySource 1
+      let yearLanding ←
+        EuropeBerlinLegacyProfile.calendarYearLanding?
+          yearSource yearInstant 1
+      pure (dayLanding.2 != yearLanding.2)) =
+      some true := by
+  native_decide
+
 /- The adjusted landing is before 01:45, so one calendar day fits even though fewer than 86,400 elapsed seconds fit. -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?
         (dateTime 2024 3 30 2 30 0 (by native_decide))
         (dateTime 2024 3 31 1 45 0 (by native_decide)) =
       some 1 := by
+  native_decide
+
+/- The source-offset rule affects the public count once a multi-day seed crosses both offset seasons. -/
+example :
+    EuropeBerlinLegacyProfile.differenceInDays?
+        (dateTime 2023 4 1 2 30 0 (by native_decide))
+        (dateTime 2024 4 5 2 30 0 (by native_decide)) =
+      some 369 := by
+  native_decide
+
+/- Calendar field mutation preserves the source millisecond. The exact endpoint at the same whole-second label is therefore still too early for one complete day. -/
+example :
+    (do
+      let firstLabel :=
+        dateTime 2024 6 1 2 30 0 (by native_decide)
+      let secondLabel :=
+        dateTime 2024 6 2 2 30 0 (by native_decide)
+      let first ← EuropeBerlinLegacyProfile.resolveLocal? firstLabel
+      let second ← EuropeBerlinLegacyProfile.resolveLocal? secondLabel
+      EuropeBerlinLegacyProfile.differenceResolvedInDays?
+        firstLabel { epochMillis := first.epochMillis + 500 }
+        secondLabel second) =
+      some 0 := by
+  native_decide
+
+/- Month mutation shares the sign-independent compute-time resolver: a nominal gap normalizes to the post-gap label. -/
+example :
+    (do
+      let source :=
+        dateTime 2024 1 31 2 30 0 (by native_decide)
+      let sourceInstant ←
+        EuropeBerlinLegacyProfile.resolveLocal? source
+      EuropeBerlinLegacyProfile.calendarMonthLanding?
+        source sourceInstant 2) =
+      some (
+        dateTime 2024 3 31 3 30 0 (by native_decide),
+        { epochMillis := 1711848600000 }) := by
+  native_decide
+
+/- The leap-to-nonleap February-28 branch clears the entire clock even for a negative year shift. -/
+example :
+    (do
+      let source :=
+        dateTime 2000 2 28 2 30 0 (by native_decide)
+      let sourceInstant ←
+        EuropeBerlinLegacyProfile.resolveLocal? source
+      EuropeBerlinLegacyProfile.calendarYearLanding?
+        source sourceInstant (-1)) =
+      some (
+        dateTime 1999 2 28 0 0 0 (by native_decide),
+        { epochMillis := 920156400000 }) := by
   native_decide
 
 example :
@@ -119,7 +218,7 @@ example :
       some 211 := by
   native_decide
 
-/- A forward fall-back landing chooses the earlier instant; fresh-label resolution would choose the later standard-time instant and count zero here. -/
+/- The source carries its larger daylight offset into the overlap, choosing the earlier instant; fresh-label resolution would choose the later standard-time instant and count zero here. -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?
         (dateTime 2024 10 26 2 30 0 (by native_decide))
@@ -127,7 +226,7 @@ example :
       some 1 := by
   native_decide
 
-/- The same no-overshoot rule survives the historical CEMT-to-CEST overlap. -/
+/- The three-offset candidate set is load-bearing at the historical CEMT-to-CEST overlap: the source carries CEMT into the repeated target label. -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?
         (dateTime 1945 9 23 2 30 0 (by native_decide))

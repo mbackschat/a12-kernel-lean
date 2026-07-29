@@ -3,87 +3,116 @@ import A12Kernel.Semantics.ModelZone
 
 /-! # Concrete model-zone calendar-day differences
 
-This capsule implements the resolved `DifferenceInDays` core for UTC and the versioned Europe/Berlin legacy profile. Berlin qualifies the kernel's whole-year candidate through the distinct `Calendar.YEAR` mutation, makes the `365 × whole-years` lower-bound day landing, then counts stateful residual forward day landings in authored operand order. Year mutation chooses the later overlap instant and post-gap wall label; forward day landings choose the earlier overlap instant and pre-gap wall clock. The adjusted day landing becomes the source of the next residual step.
+This capsule implements the resolved `DifferenceInDays` core for UTC and the versioned Europe/Berlin legacy profile. Berlin qualifies the kernel's whole-year candidate through the distinct `Calendar.YEAR` mutation, makes the `365 × whole-years` lower-bound day landing, then counts stateful residual day landings in authored operand order. Month and year mutation use the calendar's sign-independent compute-time resolver. Day mutation instead carries the source instant's offset into the nominal target and re-fits only when doing so preserves the target civil date. Every field mutation preserves source milliseconds unless the legacy February-28 rule clears the clock.
 
 Parsing, Date-versus-DateTime admission, empty and malformed operands, calendar identity outside the concrete profiles, numeric result storage, validation polarity, and a general model-zone interface remain separate.
 -/
 
 namespace A12Kernel.EuropeBerlinLegacyProfile
 
-/-- Offset used by a forward calendar landing. Valid overlaps choose the larger offset and therefore the earlier instant. In a gap, the first candidate whose assumed offset exceeds the actual offset reproduces the legacy pre-gap wall clock. -/
-private def forwardOffset? (dateTime : LocalDateTime) : Option Int :=
-  match candidateOffsets.reverse.find? fun offsetSeconds =>
-      offsetSecondsAt? (candidateInstant dateTime offsetSeconds) ==
-        some offsetSeconds with
-  | some offsetSeconds => some offsetSeconds
-  | none =>
-      candidateOffsets.find? fun offsetSeconds =>
-        match offsetSecondsAt? (candidateInstant dateTime offsetSeconds) with
-        | some actualOffset => actualOffset < offsetSeconds
-        | none => false
+/-- Millisecond component retained by a calendar field mutation. Lean's integer remainder is nonnegative, including before the Unix epoch. -/
+private def millisecondPart (instant : Instant) : Int :=
+  instant.epochMillis % 1000
 
-/-- Offset used by a backward calendar landing. Valid overlaps choose the smaller offset and therefore the later instant. In a gap, the largest candidate whose assumed offset is below the actual offset reproduces the legacy post-gap wall clock. -/
-private def backwardOffset? (dateTime : LocalDateTime) : Option Int :=
+/-- Interpret a whole-second wall label under one assumed offset without dropping the source calendar's millisecond field. -/
+private def candidateInstantWithMillisecond (dateTime : LocalDateTime)
+    (offsetSeconds millisecond : Int) : Instant :=
+  { epochMillis :=
+      (candidateInstant dateTime offsetSeconds).epochMillis + millisecond }
+
+/-- Offset used when `GregorianCalendar.computeTime` resolves a month or year field mutation. Valid overlaps choose the smaller offset and therefore the later instant. In a gap, the largest candidate below the actual offset produces the post-gap wall label. -/
+private def computeTimeOffset? (dateTime : LocalDateTime)
+    (millisecond : Int) : Option Int :=
   match candidateOffsets.find? fun offsetSeconds =>
-      offsetSecondsAt? (candidateInstant dateTime offsetSeconds) ==
+      offsetSecondsAt?
+          (candidateInstantWithMillisecond
+            dateTime offsetSeconds millisecond) ==
         some offsetSeconds with
   | some offsetSeconds => some offsetSeconds
   | none =>
       candidateOffsets.reverse.find? fun offsetSeconds =>
-        match offsetSecondsAt? (candidateInstant dateTime offsetSeconds) with
+        match offsetSecondsAt?
+            (candidateInstantWithMillisecond
+              dateTime offsetSeconds millisecond) with
         | some actualOffset => offsetSeconds < actualOffset
         | none => false
 
-/-- Resolve one nominal label created by a forward calendar addition. This deliberately differs from fresh-label resolution at gaps and overlaps. -/
-private def resolveForwardLanding? (dateTime : LocalDateTime) :
-    Option Instant :=
-  (forwardOffset? dateTime).map (candidateInstant dateTime)
-
-/-- Resolve one nominal label created by a backward calendar addition. At an overlap this agrees with fresh-label resolution, while a gap keeps the post-gap wall clock instead of rejecting the label. -/
-private def resolveBackwardLanding? (dateTime : LocalDateTime) :
-    Option Instant :=
-  (backwardOffset? dateTime).map (candidateInstant dateTime)
-
-/-- Decode one calendar landing after its direction-specific resolver has selected the exact instant. Keeping decoding shared prevents forward and backward paths from diverging on the adjusted wall label produced at a gap. -/
-private def resolvedLanding?
-    (resolveLanding? : LocalDateTime → Option Instant)
-    (date : FullDate) (time : TimeOfDay) :
+/-- Decode one selected calendar instant under the offset actually in force there. The exact instant retains milliseconds even though the decoded wall label is whole-second. -/
+private def decodeLanding? (landing : Instant) :
     Option (LocalDateTime × Instant) := do
-  let nominal : LocalDateTime := { date, time }
-  let landing ← resolveLanding? nominal
   let actualOffset ← offsetSecondsAt? landing
   let next ← LocalDateTime.atOffset? landing actualOffset
   pure (next, landing)
 
-/-- Resolve and decode one policy-selected forward calendar landing for `DAY_OF_MONTH` mutation. -/
-private def forwardLanding? :=
-  resolvedLanding? resolveForwardLanding?
+/-- Resolve one month or year field mutation through `GregorianCalendar.computeTime`. This policy is independent of the signed amount; a gap may decode to a different wall label. -/
+private def computeTimeLanding? (date : FullDate) (time : TimeOfDay)
+    (millisecond : Int) : Option (LocalDateTime × Instant) := do
+  let nominal : LocalDateTime := { date, time }
+  let offset ← computeTimeOffset? nominal millisecond
+  decodeLanding?
+    (candidateInstantWithMillisecond nominal offset millisecond)
 
-/-- Resolve and decode one policy-selected backward calendar landing. The decoded label can differ from the nominal label at a gap. -/
-private def backwardLanding? :=
-  resolvedLanding? resolveBackwardLanding?
+/-- Resolve the clock and exact instant for one already selected day-mutation target. The nominal target first keeps the source instant's own offset. When the offset actually in force there differs, the target is re-fitted to that offset only if the decoded civil date is preserved; otherwise the first candidate remains authoritative. -/
+def calendarDayTargetLanding? (current : LocalDateTime)
+    (currentInstant : Instant) (nextDate : FullDate) :
+    Option (TimeOfDay × Instant) := do
+  let sourceOffset ← offsetSecondsAt? currentInstant
+  let millisecond := millisecondPart currentInstant
+  let nominal : LocalDateTime := { date := nextDate, time := current.time }
+  let first :=
+    candidateInstantWithMillisecond
+      nominal sourceOffset millisecond
+  let firstActualOffset ← offsetSecondsAt? first
+  let landing ←
+    if firstActualOffset == sourceOffset then
+      some first
+    else
+      let refitted :=
+        candidateInstantWithMillisecond
+          nominal firstActualOffset millisecond
+      let refittedActualOffset ← offsetSecondsAt? refitted
+      let refittedLabel ←
+        LocalDateTime.atOffset? refitted refittedActualOffset
+      pure (if refittedLabel.date == nextDate then refitted else first)
+  let result ← decodeLanding? landing
+  if result.1.date == nextDate then
+    pure (result.1.time, result.2)
+  else
+    none
 
-/-- Add a nonnegative number of calendar days from the current resolved local state and return both the resulting local state and exact instant. -/
+/-- Apply signed `Calendar.DAY_OF_MONTH` mutation. Travel direction selects the target date but not the landing offset. -/
 def calendarDayLanding? (current : LocalDateTime)
-    (currentInstant : Instant) (days : Nat) :
+    (currentInstant : Instant) (days : Int) :
     Option (LocalDateTime × Instant) := do
   if days = 0 then
     pure (current, currentInstant)
   else
     let nextDate ← current.date.addDays? days
-    forwardLanding? nextDate current.time
+    let (time, landing) ←
+      calendarDayTargetLanding? current currentInstant nextDate
+    pure ({ date := nextDate, time }, landing)
 
-/-- Subtract a nonnegative number of calendar days from the current resolved local state and return both the resulting local state and exact instant. This is direction-specific because legacy gap and overlap landings are not obtained by negating the forward selector. -/
-def calendarDayLandingBackward? (current : LocalDateTime)
-    (currentInstant : Instant) (days : Nat) :
+/-- Apply signed `Calendar.MONTH` mutation, including the leap-to-nonleap February-28 clock reset. Month mutation has no nonleap-to-leap promotion. -/
+def calendarMonthLanding? (current : LocalDateTime)
+    (currentInstant : Instant) (months : Int) :
     Option (LocalDateTime × Instant) := do
-  if days = 0 then
+  if months = 0 then
     pure (current, currentInstant)
   else
-    let nextDate ← current.date.addDays? (-(days : Int))
-    backwardLanding? nextDate current.time
+    let nextDate ← current.date.addMonths? months
+    let source := current.date.civil.parts
+    let target := nextDate.civil.parts
+    let clearClock :=
+      source.month == 2 && source.day == 28 &&
+        DateParts.isLeapYear source.year &&
+        target.month == 2 && target.day == 28 &&
+        !DateParts.isLeapYear target.year
+    let time ← if clearClock then TimeOfDay.ofHms? 0 0 0 else some current.time
+    let millisecond :=
+      if clearClock then 0 else millisecondPart currentInstant
+    computeTimeLanding? nextDate time millisecond
 
-/-- Apply signed `Calendar.YEAR` mutation with the legacy February-28 clock reset. Unlike forward day mutation, year mutation always selects the later overlap instant and normalizes a gap to the post-gap wall label, independent of sign. -/
+/-- Apply signed `Calendar.YEAR` mutation with both legacy February-28 corrections. `FullDate.addYears?` folds the nonleap-to-leap extra-day mutation into its target date; the explicit branch below clears the clock for leap-to-nonleap February 28. Compute-time resolution selects the later overlap instant and post-gap wall label independently of sign. -/
 def calendarYearLanding? (current : LocalDateTime)
     (currentInstant : Instant) (years : Int) :
     Option (LocalDateTime × Instant) := do
@@ -99,7 +128,9 @@ def calendarYearLanding? (current : LocalDateTime)
         target.month == 2 && target.day == 28 &&
         !DateParts.isLeapYear target.year
     let time ← if clearClock then TimeOfDay.ofHms? 0 0 0 else some current.time
-    backwardLanding? nextDate time
+    let millisecond :=
+      if clearClock then 0 else millisecondPart currentInstant
+    computeTimeLanding? nextDate time millisecond
 
 /-- Whole completed years between ordered exact instants, using the same final-landing rule as legacy calendar year addition. -/
 private def wholeYears? (earlier : LocalDateTime) (earlierInstant : Instant)
@@ -132,7 +163,7 @@ private def forwardDifferenceInDays? (earlier : LocalDateTime)
   let years ← wholeYears? earlier earlierInstant later laterInstant
   let seedDays := years * 365
   let (seeded, seededInstant) ←
-    calendarDayLanding? earlier earlierInstant seedDays
+    calendarDayLanding? earlier earlierInstant (seedDays : Int)
   let fuel :=
     Int.toNat
       (later.date.unixEpochDay - seeded.date.unixEpochDay) + 1
