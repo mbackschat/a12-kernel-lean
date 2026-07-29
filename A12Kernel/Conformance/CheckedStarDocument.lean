@@ -11,6 +11,7 @@ private def amount : FlatFieldDecl :=
     groupPath := ["Shop", "Sections", "Items"]
     name := "Amount"
     policy := { kind := .number { scale := 0, signed := true } }
+    numericTargetConstraints := { leadingZerosAllowed := true }
     repeatableScope := [10, 20] }
 
 private def model : FlatModel :=

@@ -109,7 +109,10 @@ private def computedNumberCell (field : FieldId) (path : List Nat)
   address := { field, path }
   stored := stored.render
   raw := .parsed (.num stored.amount)
-  numericSourceIdentity := some (.decimal stored)
+  numericDecimal := some {
+    unscaled := stored.unscaled
+    scale := stored.scale
+  }
 }
 
 private def sourceFilledPlanTargets : List ClassifiedCellInput :=

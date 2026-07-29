@@ -52,6 +52,12 @@ private def temporalRaw : RawCell :=
   .parsed (.temporal (.dateTime instant
     sourceLocal.date.civil.parts sourceLocal.time .storedGregorian))
 
+private def amountStored : RawCell → String
+  | .parsed (.num value) => toString value
+  | .rejected .declaredConstraint => "0.1"
+  | .presentEmpty => ""
+  | _ => "bad"
+
 private def sourceData (sourceStored targetStored : String)
     (sourceRaw : RawCell) : DocumentData := {
   instantiatedRows := []
@@ -72,7 +78,7 @@ private def dynamicData (targetStored : String) (amountRaw : RawCell) :
       stored := targetStored
       raw := temporalRaw },
     { address := { field := amount.id, path := [] }
-      stored := "amount"
+      stored := amountStored amountRaw
       raw := amountRaw }
   ] }
 
@@ -84,10 +90,10 @@ private def twoDayData (targetStored : String)
       stored := targetStored
       raw := temporalRaw },
     { address := { field := amount.id, path := [] }
-      stored := "first"
+      stored := amountStored firstRaw
       raw := firstRaw },
     { address := { field := nextAmount.id, path := [] }
-      stored := "second"
+      stored := amountStored secondRaw
       raw := secondRaw }
   ] }
 
@@ -102,10 +108,10 @@ private def fieldTwoDayData (sourceStored targetStored : String)
       stored := targetStored
       raw := temporalRaw },
     { address := { field := amount.id, path := [] }
-      stored := "first"
+      stored := amountStored firstRaw
       raw := firstRaw },
     { address := { field := nextAmount.id, path := [] }
-      stored := "second"
+      stored := amountStored secondRaw
       raw := secondRaw }
   ] }
 

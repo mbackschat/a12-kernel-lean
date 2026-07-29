@@ -132,7 +132,10 @@ def numberCell (field : FieldId) (path : List Nat)
   address := { field, path }
   stored := stored.render
   raw := .parsed (.num stored.amount)
-  numericSourceIdentity := if field == 2 then some (.decimal stored) else none
+  numericDecimal := some {
+    unscaled := stored.unscaled
+    scale := stored.scale
+  }
 }
 
 /-- Clean columns and Number operands for the two target keys plus one operand-only key. -/

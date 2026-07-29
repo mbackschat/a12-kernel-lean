@@ -8,8 +8,22 @@ This capsule consumes one already-evaluated Number expression at one nonrepeatab
 
 namespace A12Kernel
 
-/-- Resolved Number declaration constraints that remain reachable from canonical computed rendering. Scale and signedness stay in the shared `NumField`; leading-zero policy is omitted because computed rendering cannot reach it. -/
+/-- Resolved Number declaration constraints. Scale and signedness stay in the shared `NumField`; `leadingZerosAllowed` applies only while checking a stored String-valued input. -/
 structure NumericTargetConstraints where
+  minFractionalDigits : Nat := 0
+  maxIntegerDigits : Option Nat := none
+  zeroAllowed : Bool := true
+  /-- Input-only lexical permission. Canonical computed rendering never has leading zeros. -/
+  leadingZerosAllowed : Bool := false
+  minStoredLength : Option Nat := none
+  maxStoredLength : Option Nat := none
+  minimum : Option Rat := none
+  maximum : Option Rat := none
+  deriving Repr, DecidableEq
+
+/-- Resolved Number target constraints consumed after separate assignment-scale admission. Input-only leading-zero policy is absent because canonical computed rendering cannot reach it. Warning suppression selects an evaluator entry point rather than changing this policy. -/
+structure NumericTargetPolicy where
+  info : NumField
   minFractionalDigits : Nat := 0
   maxIntegerDigits : Option Nat := none
   zeroAllowed : Bool := true
@@ -17,11 +31,6 @@ structure NumericTargetConstraints where
   maxStoredLength : Option Nat := none
   minimum : Option Rat := none
   maximum : Option Rat := none
-  deriving Repr, DecidableEq
-
-/-- Resolved Number target constraints consumed after separate assignment-scale admission. The declaration data is retained structurally rather than copied into a parallel policy shape. Warning suppression selects an evaluator entry point rather than changing this policy. -/
-structure NumericTargetPolicy extends NumericTargetConstraints where
-  info : NumField
   minLeMax : minFractionalDigits ≤ info.scale
   deriving Repr, DecidableEq
 

@@ -29,12 +29,6 @@ private def stateResult? (source : DocumentData) :
 private def state? (source : DocumentData) : Option NumericTargetState :=
   (stateResult? source).bind Except.toOption
 
-private def isMissingIdentity (field : FieldId)
-    (result : Option (Except NumericSourceTargetError α)) : Bool :=
-  match result with
-  | some (.error (.missingIdentity actual)) => actual == field
-  | _ => false
-
 private def repeatedTarget : FlatFieldDecl := {
   target with
     groupPath := ["Order", "Lines"]
@@ -63,8 +57,7 @@ private def repeatedChecked? : Option (CheckedDocument repeatedModel) := do
       address := { field := 1, path := [1] }
       stored := "7.00"
       raw := .parsed (.num 7)
-      numericSourceIdentity :=
-        some (.decimal { unscaled := 700, scale := 2 })
+      numericDecimal := some { unscaled := 700, scale := 2 }
     }]
   }).toOption
 
@@ -115,7 +108,12 @@ private def sourceWith (stored : String) (raw : RawCell)
       address := { field := 1, path := [] }
       stored
       raw
-      numericSourceIdentity := identity
+      numericDecimal := identity.bind fun source => match source with
+        | .decimal value => some {
+            unscaled := value.unscaled
+            scale := value.scale
+          }
+        | .nonComputedForm => none
     }] }
 
 private def viewResult? (source : DocumentData)
@@ -178,10 +176,10 @@ example :
         some (.value { unscaled := 700, scale := 2 }) := by
   native_decide
 
-/- Missing typed identity and a decimal identity inconsistent with stored text fail structurally. -/
+/- A filled Number without an explicit decimal annotation is the exact String-valued regime, while a decimal identity inconsistent with stored text fails structurally. -/
 example :
-    isMissingIdentity 1
-        (stateResult? (sourceWith "7" (.parsed (.num 7)) none)) = true ∧
+    state? (sourceWith "7" (.parsed (.num 7)) none) =
+        some (.presentValue .nonComputedForm) ∧
       (checked? (sourceWith "7.00" (.parsed (.num 7))
         (some (.decimal { unscaled := 7, scale := 0 })))).isNone = true := by
   native_decide
@@ -244,10 +242,11 @@ example :
         view.noErrorOccurred)) = some ([1], [], true) := by
   native_decide
 
-/- A filled source without typed comparison identity fails before public classification. -/
+/- The implicit String-valued regime reaches result classification and remains unequal to every computed decimal form. -/
 example :
-    isMissingIdentity 1
-      (viewResult? (sourceWith "7" (.parsed (.num 7)) none) .noValue) = true := by
+    (do
+      let view ← view? (sourceWith "7" (.parsed (.num 7)) none) .noValue
+      pure (view.cleared, view.noErrorOccurred)) = some ([1], true) := by
   native_decide
 
 /- Application consumes only source-relative actions: an unchanged success cannot overwrite a different destination, while a changed success uses the exact accepted-value transition and preserves every other field. -/

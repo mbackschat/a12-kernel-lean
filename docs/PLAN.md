@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 654 jobs · trust audit **1720 theorem roots; 39333 declarations in 374 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 657 jobs · trust audit **1724 theorem roots; 39542 declarations in 376 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,14 +21,14 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Admit Number formal-read checking without collapsing decimal-valued and String-valued storage regimes or replacing exact decimal source identity.
+Admit nonrepeatable Number `FieldValueAsString` through the existing checked String computation path without adding a second document read channel.
 
 ## Immediate sequence
 
-1. Inventory the stored Number carrier, raw/checking boundary, every current scalar read, and the source-locked `ValidationData.getValue` / `FormatDefinitionZahl.convertFromBasicType` mechanism before choosing a representation change.
-2. Separate decimal-valued input from String-valued input at the checked-document boundary: decimal values derive strip-and-minimum-scale formal-read text, while String values remain byte-for-byte verbatim.
-3. Preserve exact decimal coefficient/scale identity independently of the selected formal-read text, then route every existing Number evaluation consumer through that checked selection.
-4. Lock length constraints and `FieldValueAsString` as independent separators; exclude host wire codecs, computed-target rendering, semantic-index normalization, and any new ingestion framework.
+1. Inventory the existing `StringExpr`, checked lowering, table/run overlay, and source-locked Number-only operand gate before changing the expression leaf or computation context.
+2. Reuse `CheckedDocument.observeNumberFormalRead` as the sole Number-to-String read. Preserve a clean absent read as root no-value and as `""` only when concatenation consumes it; preserve exact computation poison.
+3. Lock decimal-valued versus String-valued text with the same stored spelling, plus standalone-copy versus concatenation empty behavior, through the existing target/result/application path.
+4. Exclude repeatable coercion, String-field copy syntax, host codecs, semantic-index normalization, target rendering changes, and any generic heterogeneous expression or scheduler.
 
 ## Parked boundaries
 

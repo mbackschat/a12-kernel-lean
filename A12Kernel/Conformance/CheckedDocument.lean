@@ -107,6 +107,18 @@ example : ((checked? classified).map fun checked =>
     some (.unknown (.registeredCustomValidation rejection), some true, some false) := by
   native_decide
 
+/- A decimal-valued Number placement cannot carry an unrelated caller-supplied parsed value; the checked-document boundary must derive the formal read from the retained input representation. -/
+example : checked? {
+    instantiatedRows := []
+    cells := [{
+      address := { field := 4, path := [] }
+      stored := "250"
+      raw := .parsed (.num 999)
+      numericDecimal := some { unscaled := 250, scale := 0 }
+    }]
+  } = none := by
+  native_decide
+
 /- An instantiated empty repeat row remains group content even with no cell placement. -/
 example : ((checked? classified).bind fun checked =>
     (checked.groupPresenceInput ["Order", "Items"] [(10, 1)]

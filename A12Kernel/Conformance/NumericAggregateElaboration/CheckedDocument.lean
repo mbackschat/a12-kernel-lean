@@ -127,7 +127,7 @@ def checkedDocumentAggregateStructuralSnapshot
     instantiatedRows := []
     cells := if directFailure then [{
       address := { field := unsignedA.id, path := [] }
-      stored := "bad", raw := .rejected .declaredConstraint
+      stored := "-1", raw := .rejected .declaredConstraint
     }] else []
   }
   let document ← (checkDocument prepared "en_US" data).toOption
@@ -156,7 +156,7 @@ def checkedDocumentPartialStructuralSnapshot
     instantiatedRows := []
     cells := if directFailure then [{
       address := { field := unsignedA.id, path := [] }
-      stored := "bad", raw := .rejected .declaredConstraint
+      stored := "-1", raw := .rejected .declaredConstraint
     }] else []
   }
   let document ← (checkDocument prepared "en_US" data).toOption

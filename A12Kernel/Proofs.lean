@@ -73,6 +73,7 @@ import A12Kernel.Proofs.NumericComputationRunResult
 import A12Kernel.Proofs.NumericComputationRunApplication
 import A12Kernel.Proofs.NumericStoredNumber
 import A12Kernel.Proofs.NumericTarget
+import A12Kernel.Proofs.NumericInput
 import A12Kernel.Proofs.NumericApplication
 import A12Kernel.Proofs.NumericDependency
 import A12Kernel.Proofs.ParallelComputationClearing

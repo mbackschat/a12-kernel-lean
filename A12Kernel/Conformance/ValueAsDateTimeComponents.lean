@@ -90,11 +90,17 @@ private def document? (model : FlatModel)
   } |>.toOption
 
 private def numberCell (field : FieldId) (stored : String)
-    (raw : RawCell) : ClassifiedCellInput := {
-  address := { field, path := [] }
-  stored
-  raw
-}
+    (raw : RawCell) : ClassifiedCellInput :=
+  let selectedStored := match raw with
+    | .parsed (.num value) => toString value
+    | .rejected .declaredConstraint => "100"
+    | .presentEmpty => ""
+    | _ => stored
+  {
+    address := { field, path := [] }
+    stored := selectedStored
+    raw
+  }
 
 private def temporalCell (field : FieldId) (stored : String)
     (value : TemporalValue) : ClassifiedCellInput := {

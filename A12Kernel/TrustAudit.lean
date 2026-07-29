@@ -654,6 +654,10 @@ run_cmd do
 #print axioms A12Kernel.numericAuthoring_round_is_outside_fragment
 #print axioms A12Kernel.numericAuthoring_abs_is_outside_fragment
 #print axioms A12Kernel.numericTargetConstraints_policyConstruction_retains
+#print axioms A12Kernel.numericStoredInput_formalReadText_text
+#print axioms A12Kernel.numericStoredInput_sourceIdentity_text
+#print axioms A12Kernel.numericInputDecimal_sourceIdentity_of_negativeScale
+#print axioms A12Kernel.numericStoredInput_sourceIdentity_ofStoredNumber
 #print axioms A12Kernel.numericOperation_extremumCall_admitted
 #print axioms A12Kernel.numericOperation_extremumCall_authoringAccepted
 #print axioms A12Kernel.numericOperation_round_body_authoringCheck

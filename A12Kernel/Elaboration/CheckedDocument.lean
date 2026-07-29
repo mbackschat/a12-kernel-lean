@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.StarAddressing
 
@@ -9,16 +10,13 @@ This module starts at the theory's established scalar-parser boundary. A finite 
 
 namespace A12Kernel
 
-/-- One physically placed field plus its parser-boundary classification. `stored` retains
-    application/identity text; `raw` must already reflect canonical Boolean/Confirm token
-    checking and the Number storage regime's selected formal-read text. Neither can be
-    reconstructed from the other. An absent cell has no entry. -/
+/-- One physically placed field plus its parser-boundary classification. `stored` retains application text. `raw` remains caller-classified for non-Number kinds and must match the canonical Boolean/Confirm token classifier. A filled Number may carry an explicit decimal representation in `numericDecimal`; `none` selects the exact String-valued regime already carried by `stored`. Document checking derives and verifies the selected formal-read classification. An absent cell has no entry. -/
 structure ClassifiedCellInput where
   address : CellAddr
   stored : String
   raw : RawCell
-  /-- Typed V2 source identity needed only for Number computation-result equality. `none` keeps non-Number and pre-SG4 callers unchanged; a filled Number result projection requires the annotation explicitly. -/
-  numericSourceIdentity : Option NumericSourceIdentity := none
+  /-- Explicit decimal-valued Number input. On a filled Number, `none` means the exact String-valued `stored` input; non-Number and present-empty inputs also require `none`. -/
+  numericDecimal : Option NumericInputDecimal := none
   deriving Repr, DecidableEq
 
 /-- Finite immutable document data. Rows remain independent of placed cells. -/
@@ -51,6 +49,7 @@ inductive CheckedDocumentError where
   | zeroCellIndex (address : CellAddr)
   | missingRow (row : RowAddr)
   | incoherentRepeatableScope (scope : List RepeatableLevel)
+  | nonNumericField (address : CellAddr)
   deriving Repr, DecidableEq
 
 /-- Structural failures while projecting one repeatable scope's physically instantiated rows into complete named environments. -/
@@ -64,6 +63,10 @@ inductive ActualRowEnvironmentError where
 structure CheckedCellPlacement where
   address : CellAddr
   cell : CheckedCell
+  /-- The exact selected Number input regime. Non-Number and empty placements carry `none`. -/
+  numericInput : Option NumericStoredInput := none
+  /-- The selected Number formal-read text, including on a formally rejected Number placement. Non-Number and empty placements carry `none`. -/
+  numericFormalReadText : Option String := none
   deriving Repr, DecidableEq
 
 /-- One exact-model checked input. Only `checkDocument` can construct the certificate; the source placement remains immutable and every placed cell has one cached base formal-check result. -/
@@ -160,17 +163,25 @@ private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
     if !rows.contains row then throw (.missingRow row)
   pure declaration
 
-private def ClassifiedCellInput.coherent (input : ClassifiedCellInput) : Bool :=
-  let sourceCoherent := match input.numericSourceIdentity with
-    | none => true
-    | some .nonComputedForm => !input.stored.isEmpty
-    | some (.decimal stored) => stored.render == input.stored
-  sourceCoherent && if input.stored.isEmpty then
+private def ClassifiedCellInput.ordinaryCoherent
+    (input : ClassifiedCellInput) : Bool :=
+  input.numericDecimal.isNone && if input.stored.isEmpty then
     input.raw == .presentEmpty
   else
     match input.raw with
     | .parsed _ | .rejected _ => true
     | .empty | .presentEmpty => false
+
+private def ClassifiedCellInput.numberCoherent
+    (input : ClassifiedCellInput) (constraints : NumericTargetConstraints)
+    (info : NumField) : Bool :=
+  if input.stored.isEmpty then
+    input.numericDecimal.isNone && input.raw == .presentEmpty
+  else
+    let numeric := input.numericDecimal.map NumericStoredInput.decimal
+      |>.getD (.text input.stored)
+    numeric.storedText == input.stored &&
+      constraints.classifyFormalRead info numeric == input.raw
 
 private def ClassifiedCellInput.canonicalScalarCoherent
     (input : ClassifiedCellInput) : FieldKind → Bool
@@ -183,12 +194,14 @@ private def checkPlacedCell
     (locale : String) (rows : List RowAddr)
     (input : ClassifiedCellInput) :
     Except CheckedDocumentError CheckedCellPlacement := do
-  if !input.coherent then throw (.incoherentCell input.address)
   let declaration ← validateCellAddress model rows input.address
+  let coherent := match declaration.policy.kind with
+    | .number info =>
+        input.numberCoherent declaration.numericTargetConstraints info
+    | .boolean | .confirm | .string | .enumeration | .temporal _ _ =>
+        input.ordinaryCoherent
+  if !coherent then throw (.incoherentCell input.address)
   if !input.canonicalScalarCoherent declaration.policy.kind then
-    throw (.incoherentCell input.address)
-  if input.numericSourceIdentity.isSome &&
-      !(match declaration.policy.kind with | .number _ => true | _ => false) then
     throw (.incoherentCell input.address)
   let overLimit ← match model.addressOverLimit?
       declaration.repeatableScope input.address.path with
@@ -202,9 +215,21 @@ private def checkPlacedCell
       checkAdmittedRawCell input.raw
     else
       (prepared.checkContext locale raw).read input.address.field
+  let numericInput := match declaration.policy.kind with
+    | .number _ =>
+        if input.stored.isEmpty then none
+        else some (input.numericDecimal.map NumericStoredInput.decimal
+          |>.getD (.text input.stored))
+    | _ => none
   pure {
     address := input.address
     cell := base.withOverRepetitionIf overLimit
+    numericInput
+    numericFormalReadText := match declaration.policy.kind, numericInput with
+      | .number _, some numeric =>
+          some (numeric.formalReadText
+            declaration.numericTargetConstraints.minFractionalDigits)
+      | _, _ => none
   }
 
 /-- Validate finite placement, suppress scalar checking beneath over-limit ancestry, and cache every placed cell in one exact checked view. -/
@@ -256,6 +281,25 @@ def read (checked : CheckedDocument model) (address : CellAddr) :
   match checked.checkedCells.find? fun placement => placement.address == address with
   | some placement => pure placement.cell
   | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
+
+/-- Read the checked Number input through the regime-selected text required by `FieldValueAsString`. Empty, invalid, and over-limit states retain the ordinary phase behavior; the text is never reconstructed from the parsed rational. -/
+def observeNumberFormalRead (checked : CheckedDocument model)
+    (phase : Phase) (address : CellAddr) :
+    Except CheckedDocumentError (CellObservation String) := do
+  let declaration ← validateCellAddress model checked.source.instantiatedRows address
+  match declaration.policy.kind with
+  | .number _ => pure ()
+  | _ => throw (.nonNumericField address)
+  let cell ← checked.read address
+  let formalRead := (checked.checkedCells.find?
+    fun placement => placement.address == address).bind
+      (fun placement => placement.numericFormalReadText)
+  let textCell : CheckedCell String := {
+    rawPresent := cell.rawPresent
+    parsed := if cell.parsed.isSome then formalRead else none
+    findings := cell.findings
+  }
+  pure (observeCell phase textCell)
 
 /-- Existing nonrepeatable evaluators consume the same checked cells. Their checked plans cannot request repeatable fields; a forged request fails closed. -/
 def flatContext (checked : CheckedDocument model) : FlatContext where

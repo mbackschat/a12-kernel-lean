@@ -3,7 +3,7 @@ import A12Kernel.Semantics.NumericApplication
 
 /-! # Checked Number source targets
 
-This boundary projects one exact Number target from the immutable checked document into the typed source state used by result classification. The addressed entry point accepts model-legal scalar or repeatable addresses; the original scalar entry point still rejects repeatable declarations. The input annotation is required because stored text alone cannot distinguish a V2 `String` from a `BigDecimal`, or a negative-scale `BigDecimal` from its plain rendering.
+This boundary projects one exact Number target from the immutable checked document into the typed source state used by result classification. The addressed entry point accepts model-legal scalar or repeatable addresses; the original scalar entry point still rejects repeatable declarations. The checked placement retains whether the exact source was String-valued or decimal-valued because their equality against computed output differs even when their displayed text agrees.
 -/
 
 namespace A12Kernel
@@ -13,7 +13,6 @@ inductive NumericSourceTargetError where
   | document (cause : CheckedDocumentError)
   | nonNumericTarget (field : FieldId)
   | repeatableTarget (field : FieldId)
-  | missingIdentity (field : FieldId)
   deriving Repr, DecidableEq
 
 namespace CheckedDocument
@@ -21,15 +20,12 @@ namespace CheckedDocument
 private def numericTargetStateFromSource
     (checked : CheckedDocument model) (address : CellAddr) :
     Except NumericSourceTargetError NumericTargetState :=
-  match checked.source.cells.find? fun cell => cell.address == address with
+  match checked.checkedCells.find? fun cell => cell.address == address with
   | none => pure .absent
   | some cell =>
-      if cell.stored.isEmpty then
-        pure .presentEmpty
-      else
-        match cell.numericSourceIdentity with
-        | some identity => pure (.presentValue identity)
-        | none => throw (.missingIdentity address.field)
+      match cell.numericInput with
+      | some input => pure (.presentValue input.sourceIdentity)
+      | none => pure .presentEmpty
 
 /-- Project one exact model-legal Number target address without reparsing or duplicating the document. Missing row topology and typed provenance remain structural. -/
 def numericTargetStateAt (checked : CheckedDocument model)
@@ -43,7 +39,7 @@ def numericTargetStateAt (checked : CheckedDocument model)
   let _ ← checked.read address |>.mapError .document
   checked.numericTargetStateFromSource address
 
-/-- Project one scalar Number target without reparsing or duplicating the document. Missing typed provenance on a filled cell is structural, never semantic empty or poison. -/
+/-- Project one scalar Number target without reparsing or duplicating the document. -/
 def numericTargetState (checked : CheckedDocument model)
     (field : FieldId) :
     Except NumericSourceTargetError NumericTargetState := do

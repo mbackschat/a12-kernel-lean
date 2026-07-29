@@ -161,12 +161,25 @@ private def invalidVerdict? (cells : List ClassifiedCellInput) := do
   let input ← document? cells
   checked.evaluateInvalid .validation input none |>.toOption
 
+private def verdictSnapshot :
+    Option (Except FormalCause Verdict) → Option (FormalCause ⊕ Verdict)
+  | none => none
+  | some (.error cause) => some (.inl cause)
+  | some (.ok verdict) => some (.inr verdict)
+
 private def numericPart? (part : DateNumericPart)
     (cells : List ClassifiedCellInput) := do
   let checked ←
     (elaborateConstructedDateComponents (dateModel "UTC") 1 2 3).toOption
   let input ← document? cells
   checked.evaluateNumericPart part .validation input none |>.toOption
+
+private def numericPartSnapshot :
+    Option (Except FormalCause ConstructedDateNumericResult) →
+      Option (FormalCause ⊕ ConstructedDateNumericResult)
+  | none => none
+  | some (.error cause) => some (.inl cause)
+  | some (.ok result) => some (.inr result)
 
 private def amountPath : SurfaceFieldPath := {
   base := .absolute
@@ -215,7 +228,7 @@ example :
         numberCell 1 "15" (.parsed (.num 15)),
         numberCell 2 "6" (.parsed (.num 6)),
         numberCell 8 "bad-century" (.rejected .malformed),
-        numberCell 9 "bad-year" (.rejected .declaredConstraint)] =
+        numberCell 9 "100" (.rejected .declaredConstraint)] =
           some (.unavailable .malformed) ∧
       evaluateCentury? [
         numberCell 1 "15" (.parsed (.num 15)),
@@ -447,11 +460,11 @@ example :
     evaluate? [
         numberCell 1 "10" (.parsed (.num 10)),
         numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
+        numberCell 3 "1582" (.parsed (.num 1582))] ==
           some (.resolved .unreal) ∧
       evaluate? [
         numberCell 1 "4" (.parsed (.num 4)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
+        numberCell 3 "1582" (.parsed (.num 1582))] ==
           some (.resolved .incomplete) := by
   native_decide
 
@@ -474,54 +487,46 @@ example :
 /- Checked `Valid` and `Invalid` reuse the reason-bearing polarity table while retaining
    a formal component cause outside `Verdict`. -/
 example :
-    validVerdict? [
+    verdictSnapshot (validVerdict? [
         numberCell 1 "4" (.parsed (.num 4)),
         numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
-          some (.ok (.fired .value)) ∧
-      invalidVerdict? [
+        numberCell 3 "1582" (.parsed (.num 1582))]) =
+          some (.inr (.fired .value)) ∧
+      verdictSnapshot (invalidVerdict? [
         numberCell 1 "4" (.parsed (.num 4)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
-          some (.ok (.fired .omission)) ∧
-      invalidVerdict? [
+        numberCell 3 "1582" (.parsed (.num 1582))]) =
+          some (.inr (.fired .omission)) ∧
+      verdictSnapshot (invalidVerdict? [
         numberCell 1 "10" (.parsed (.num 10)),
         numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
-          some (.ok (.fired .value)) ∧
-      validVerdict? [
-        numberCell 1 "bad" (.rejected .malformed)] =
-          some (.error .malformed) := by
-  constructor
-  · rfl
-  constructor
-  · rfl
-  constructor <;> rfl
+        numberCell 3 "1582" (.parsed (.num 1582))]) =
+          some (.inr (.fired .value)) ∧
+      verdictSnapshot (validVerdict? [
+        numberCell 1 "bad" (.rejected .malformed)]) =
+          some (.inl .malformed) := by
+  native_decide
 
 /- Checked component extraction retains present versus fillable zero and the exact
    formal cause without adding a second numeric result family. -/
 example :
-    numericPart? .day [
+    numericPartSnapshot (numericPart? .day [
         numberCell 1 "4" (.parsed (.num 4)),
         numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
-          some (.ok (.value 4 false)) ∧
-      numericPart? .month [
+        numberCell 3 "1582" (.parsed (.num 1582))]) =
+          some (.inr (.value 4 false)) ∧
+      numericPartSnapshot (numericPart? .month [
         numberCell 1 "4" (.parsed (.num 4)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
-          some (.ok (.value 0 true)) ∧
-      numericPart? .year [
+        numberCell 3 "1582" (.parsed (.num 1582))]) =
+          some (.inr (.value 0 true)) ∧
+      numericPartSnapshot (numericPart? .year [
         numberCell 1 "10" (.parsed (.num 10)),
         numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))] =
-          some (.ok (.value 0 false)) ∧
-      numericPart? .quarter [
-        numberCell 1 "bad" (.rejected .declaredConstraint)] =
-          some (.error .declaredConstraint) := by
-  constructor
-  · rfl
-  constructor
-  · rfl
-  constructor <;> rfl
+        numberCell 3 "1582" (.parsed (.num 1582))]) =
+          some (.inr (.value 0 false)) ∧
+      numericPartSnapshot (numericPart? .quarter [
+        numberCell 1 "100" (.rejected .declaredConstraint)]) =
+          some (.inl .declaredConstraint) := by
+  native_decide
 
 /- A forged cause-free UNKNOWN is distinguishable from a checked formal cause. -/
 example :
@@ -581,13 +586,13 @@ example :
       (elaborateTemporalFieldShiftAmount (dateModel "UTC") 4).toOption
     amount.bind (fun amount => shift? .years amount [
         numberCell 1 "bad-day" (.rejected .malformed),
-        numberCell 4 "bad-amount" (.rejected .declaredConstraint)]) =
+        numberCell 4 "0.001" (.rejected .declaredConstraint)]) =
           some (.unavailable .malformed) ∧
       amount.bind (fun amount => shift? .years amount [
         numberCell 1 "31" (.parsed (.num 31)),
         numberCell 2 "1" (.parsed (.num 1)),
         numberCell 3 "2024" (.parsed (.num 2024)),
-        numberCell 4 "bad-amount" (.rejected .declaredConstraint)]) =
+        numberCell 4 "0.001" (.rejected .declaredConstraint)]) =
           some (.unavailable .declaredConstraint) := by
   native_decide
 
@@ -596,13 +601,13 @@ example :
 example :
     difference? .days [
         numberCell 1 "bad-first" (.rejected .malformed),
-        numberCell 5 "bad-second" (.rejected .declaredConstraint)] =
+        numberCell 5 "100" (.rejected .declaredConstraint)] =
           some (.formal .malformed) ∧
       difference? .days [
         numberCell 1 "4" (.parsed (.num 4)),
         numberCell 2 "10" (.parsed (.num 10)),
         numberCell 3 "1582" (.parsed (.num 1582)),
-        numberCell 5 "bad-second" (.rejected .declaredConstraint)] =
+        numberCell 5 "100" (.rejected .declaredConstraint)] =
           some (.formal .declaredConstraint) := by
   native_decide
 

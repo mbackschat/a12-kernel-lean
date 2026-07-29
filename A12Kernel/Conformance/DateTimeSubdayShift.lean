@@ -202,7 +202,7 @@ example :
           model 0 .firstDay .seconds 2).toOption
       let input ← document? model [{
         address := { field := 2, path := [] }
-        stored := "bad-amount"
+        stored := "0.001"
         raw := .rejected .declaredConstraint
       }]
       pure (checked.evaluateRaw .computation { now } input
@@ -326,12 +326,12 @@ example :
         raw := .rejected .malformed
       }, {
         address := { field := 2, path := [] }
-        stored := "bad-amount"
+        stored := "0.001"
         raw := .rejected .declaredConstraint
       }] = some (some (.unavailable .malformed)) ∧
       evaluate [{
         address := { field := 2, path := [] }
-        stored := "bad-amount"
+        stored := "0.001"
         raw := .rejected .declaredConstraint
       }] = some (some (.unavailable .declaredConstraint)) := by
   native_decide
@@ -362,7 +362,12 @@ example :
           model ["Order"] 0 .firstDay 1 .minutes expression).toOption
       let amountCell := amount.toList.map fun raw => {
         address := { field := 2, path := [] }
-        stored := "amount"
+        stored := match raw with
+          | .parsed (.num value) =>
+              if value = 3 / 2 then "1.5" else toString value
+          | .rejected .declaredConstraint => "0.001"
+          | .presentEmpty => ""
+          | _ => "bad"
         raw
       }
       let input ← document? model ({
@@ -483,7 +488,7 @@ example : (do
         stored := "bad-source"
         raw := .rejected .malformed },
       { address := { field := 2, path := [] }
-        stored := "bad-outer"
+        stored := "0.001"
         raw := .rejected .declaredConstraint }]
     let fixed ←
       (elaborateShiftedDateTimeSource modelWithShiftAmount
@@ -496,7 +501,7 @@ example : (do
         .computation badSourceInput |>.toOption
     let emptyInput ← document? modelWithShiftAmount [{
       address := { field := 2, path := [] }
-      stored := "bad-outer"
+      stored := "0.001"
       raw := .rejected .declaredConstraint }]
     let reached ←
       fixed.evaluateThen .seconds outerField .computation emptyInput |>.toOption

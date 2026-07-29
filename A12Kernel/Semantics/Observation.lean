@@ -7,8 +7,8 @@ The first executable semantics capsule begins at the scalar-parser boundary: inp
 already classified as absent, successfully parsed, or rejected with a formal cause.
 Text-to-scalar parsing is a separate layer. `ScalarText` now owns canonical lowercase
 Boolean/Confirm classification without consulting `@NotInD` display-token declarations;
-stored-Number formal-read text by storage regime remains open. Both decisions precede
-`.parsed`; this module cannot recover either from `Value`.
+`NumericInput` and `CheckedDocument` own Number storage-regime selection and formal-read
+checking. Both decisions precede `.parsed`; this module cannot recover either from `Value`.
 This keeps the validation semantics independent from concrete syntax while preserving
 every distinction needed by `spec/02` §3 and `spec/03` §2/§4.
 -/

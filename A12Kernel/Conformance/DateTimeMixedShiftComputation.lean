@@ -53,9 +53,19 @@ private def input? (sourceLabel : LocalDateTime) (millisecond : Int)
         raw := .parsed (.temporal (.dateTime resolved
           sourceLabel.date.civil.parts sourceLabel.time .storedGregorian)) },
       { address := { field := dayAmount.id, path := [] }
-        stored := "day", raw := dayRaw },
+        stored := match dayRaw with
+          | .parsed (.num value) => toString value
+          | .rejected .declaredConstraint => "0.1"
+          | .presentEmpty => ""
+          | _ => "bad"
+        raw := dayRaw },
       { address := { field := subdayAmount.id, path := [] }
-        stored := "subday", raw := subdayRaw }
+        stored := match subdayRaw with
+          | .parsed (.num value) => toString value
+          | .rejected .declaredConstraint => "0.1"
+          | .presentEmpty => ""
+          | _ => "bad"
+        raw := subdayRaw }
     ] } |>.toOption
 
 private def operation? (unit : DateTimeSubdayUnit)

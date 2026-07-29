@@ -40,7 +40,11 @@ private def inputFor? (format : String)
     instantiatedRows := []
     cells := [
       { address := { field := amount.id, path := [] }
-        stored := "amount"
+        stored := match amountRaw with
+          | .parsed (.num value) => toString value
+          | .rejected .declaredConstraint => "0.1"
+          | .presentEmpty => ""
+          | _ => "bad"
         raw := amountRaw },
       { address := { field := (targetFor format).id, path := [] }
         stored := targetStored

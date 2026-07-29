@@ -110,7 +110,7 @@ example : (do
     let stoppedInput ← input [
       { address := { field := 2, path := [] }, stored := "bad-inner",
         raw := .rejected .malformed },
-      { address := { field := 3, path := [] }, stored := "bad-outer",
+      { address := { field := 3, path := [] }, stored := "0.001",
         raw := .rejected .declaredConstraint }]
     let stopped ←
       checkedField.evaluateThenDays outerField .computation stoppedInput
@@ -123,7 +123,7 @@ example : (do
     let reachedInput ← input [
       { address := { field := 2, path := [] }, stored := "3",
         raw := .parsed (.num 3) },
-      { address := { field := 3, path := [] }, stored := "bad-outer",
+      { address := { field := 3, path := [] }, stored := "0.001",
         raw := .rejected .declaredConstraint }]
     let reached ←
       checkedDomain.evaluateThenDays outerField .computation reachedInput
@@ -202,7 +202,7 @@ example : (do
     let stoppedInput ← document? [
       { address := { field := 2, path := [] }, stored := "bad-inner",
         raw := .rejected .malformed },
-      { address := { field := 3, path := [] }, stored := "bad-outer",
+      { address := { field := 3, path := [] }, stored := "0.001",
         raw := .rejected .declaredConstraint }]
     let stopped ←
       checkedField.evaluateThenDays outerField
@@ -215,7 +215,7 @@ example : (do
     let reachedInput ← document? [
       { address := { field := 2, path := [] }, stored := "3",
         raw := .parsed (.num 3) },
-      { address := { field := 3, path := [] }, stored := "bad-outer",
+      { address := { field := 3, path := [] }, stored := "0.001",
         raw := .rejected .declaredConstraint }]
     let reached ←
       checkedDomain.evaluateThenDays outerField

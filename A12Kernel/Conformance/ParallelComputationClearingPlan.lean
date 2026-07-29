@@ -136,7 +136,10 @@ private def numericCell (path : List Nat) (stored : StoredNumber) :
   address := { field := 2, path }
   stored := stored.render
   raw := .parsed (.num stored.amount)
-  numericSourceIdentity := some (.decimal stored)
+  numericDecimal := some {
+    unscaled := stored.unscaled
+    scale := stored.scale
+  }
 }
 
 /-- One typed operand placement at an exact repeatable path. -/
@@ -154,7 +157,7 @@ private def emptyNumericCell (path : List Nat) :
   raw := .presentEmpty
 }
 
-private def numericCellWithoutIdentity (path : List Nat)
+private def stringValuedNumericCell (path : List Nat)
     (stored : StoredNumber) : ClassifiedCellInput := {
   address := { field := 2, path }
   stored := stored.render
@@ -342,24 +345,23 @@ example :
         ] := by
   native_decide
 
-/- Source identity is demanded only for a covered filled target: an unmarked malformed source annotation stays irrelevant, while the same defect on the marked row remains structural. -/
+/- Decimal-valued and String-valued target inputs are both complete checked regimes; index coverage decides clearing independently of that source identity. -/
 example :
     let targetInvalid :=
       cleanIndexCells.filter fun input =>
         input.address != { field := 1, path := [2, 1] }
-    let unmarkedMissingIdentity := targetInvalid ++ [
-      numericCellWithoutIdentity [1, 1] { unscaled := 7, scale := 0 },
+    let unmarkedString := targetInvalid ++ [
+      stringValuedNumericCell [1, 1] { unscaled := 7, scale := 0 },
       numericCell [2, 1] { unscaled := 8, scale := 0 }
     ]
-    let markedMissingIdentity := targetInvalid ++ [
+    let markedString := targetInvalid ++ [
       numericCell [1, 1] { unscaled := 7, scale := 0 },
-      numericCellWithoutIdentity [2, 1] { unscaled := 8, scale := 0 }
+      stringValuedNumericCell [2, 1] { unscaled := 8, scale := 0 }
     ]
-    ((clearedAddresses? unmarkedMissingIdentity ==
+    ((clearedAddresses? unmarkedString ==
         some [{ field := 2, path := [2, 1] }]) &&
-      match clearingResult? markedMissingIdentity with
-      | some (.error (.sourceTarget (.missingIdentity 2))) => true
-      | _ => false) = true := by
+      clearedAddresses? markedString ==
+        some [{ field := 2, path := [2, 1] }]) = true := by
   native_decide
 
 /- A root off-path mark covers every target row, but public clearing retains only source-filled targets and excludes an explicitly empty sibling. -/

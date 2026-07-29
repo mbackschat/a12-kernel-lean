@@ -196,7 +196,7 @@ structure FlatFieldDecl where
   isGlobal : Bool := false
   /-- Absence means that this field has no model-declared generated mandatory rule. -/
   requiredness : Option RequirednessMode := none
-  /-- Resolved Number constraints reachable from computed-target checking. Scale and signedness remain in `policy.kind`. -/
+  /-- Resolved Number declaration constraints shared by stored-input checking and computed-target checking. Scale and signedness remain in `policy.kind`; leading-zero permission is input-only. -/
   numericTargetConstraints : NumericTargetConstraints :=
     NumericTargetConstraints.unconstrained
   /-- Complete resolved temporal policy for consumers that need exact stored format, partial precision, or the additional Date check. Absence keeps ordinary temporal reads available but makes such consumers explicitly insufficient. -/

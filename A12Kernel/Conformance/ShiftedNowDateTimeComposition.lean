@@ -96,7 +96,7 @@ example : (do
     let reachedInput ← input [
       { address := { field := 2, path := [] }, stored := "3",
         raw := .parsed (.num 3) },
-      { address := { field := 3, path := [] }, stored := "bad-outer",
+      { address := { field := 3, path := [] }, stored := "0.001",
         raw := .rejected .declaredConstraint }]
     let reached ←
       domainFirst.evaluateThen .seconds outerField
@@ -108,7 +108,7 @@ example : (do
     let stoppedInput ← input [
       { address := { field := 2, path := [] }, stored := "bad-inner",
         raw := .rejected .malformed },
-      { address := { field := 3, path := [] }, stored := "bad-outer",
+      { address := { field := 3, path := [] }, stored := "0.001",
         raw := .rejected .declaredConstraint }]
     let stopped ←
       fieldFirst.evaluateThen .seconds outerField

@@ -180,7 +180,7 @@ example : (do
         stored := "bad-other"
         raw := .rejected .malformed },
       { address := { field := amount.id, path := [] }
-        stored := "bad-amount"
+        stored := "0.1"
         raw := .rejected .declaredConstraint }]
     let fieldAmount ←
       (elaborateValueAsDateTimeFieldShiftAmount model amount.id).toOption

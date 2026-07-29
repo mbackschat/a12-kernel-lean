@@ -67,7 +67,10 @@ private def componentField (id : FieldId) : FlatFieldDecl := {
   groupPath := ["Order"]
   name := s!"Component{id}"
   policy := { kind := .number { scale := 0, signed := false } }
-  numericTargetConstraints := { maxStoredLength := some 2 } }
+  numericTargetConstraints := {
+    maxStoredLength := some 2
+    leadingZerosAllowed := true
+  } }
 
 private def executionModel : FlatModel := {
   fields := [target, componentField 2, componentField 3, componentField 4]

@@ -56,7 +56,11 @@ private def input? (sourceLocal : LocalDateTime) (millisecond : Int)
         stored := "source"
         raw := actualSourceRaw },
       { address := { field := amount.id, path := [] }
-        stored := "amount"
+        stored := match amountRaw with
+          | .parsed (.num value) => toString value
+          | .rejected .declaredConstraint => "0.1"
+          | .presentEmpty => ""
+          | _ => "bad"
         raw := amountRaw },
       { address := { field := target.id, path := [] }
         stored := targetStored

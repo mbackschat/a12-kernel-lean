@@ -32,7 +32,9 @@ private def offsetNumericCell (path : List Nat) (stored : StoredNumber) :
 private def rejectedNumericCell (field : FieldId) (path : List Nat)
     (cause : BaseFormalCause) : ClassifiedCellInput := {
   address := { field, path }
-  stored := "bad"
+  stored := match cause with
+    | .declaredConstraint => "-1"
+    | _ => "bad"
   raw := .rejected cause
 }
 

@@ -92,7 +92,11 @@ example : (do
     let evaluateField (raw : Option (RawCell Value)) := do
       let input ← document? (raw.toList.map fun cell => {
         address := { field := 1, path := [] }
-        stored := "amount"
+        stored := match cell with
+          | .parsed (.num value) =>
+              if value = 3 / 2 then "1.5" else toString value
+          | .rejected .declaredConstraint => "0.001"
+          | _ => "bad"
         raw := cell
       })
       fieldChecked.evaluate .computation world input |>.toOption
@@ -207,7 +211,7 @@ example : (do
         stored := "bad-first"
         raw := .rejected .malformed },
       { address := { field := nextAmount.id, path := [] }
-        stored := "bad-second"
+        stored := "0.001"
         raw := .rejected .declaredConstraint }]
     let badInner ←
       (elaborateNowDateTimeDayShift model firstField).toOption
@@ -224,7 +228,7 @@ example : (do
         stored := "1"
         raw := .parsed (.num 1) },
       { address := { field := nextAmount.id, path := [] }
-        stored := "bad-second"
+        stored := "0.001"
         raw := .rejected .declaredConstraint }]
     let domainResult ←
       domainInner.evaluateThen secondField .computation { now } domainInput

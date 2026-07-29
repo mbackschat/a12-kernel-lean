@@ -80,6 +80,7 @@ import A12Kernel.Conformance.NumericComputation
 import A12Kernel.Conformance.ComputationMessage
 import A12Kernel.Conformance.NumericStoredNumber
 import A12Kernel.Conformance.NumericTarget
+import A12Kernel.Conformance.NumericInput
 import A12Kernel.Conformance.NumericApplication
 import A12Kernel.Conformance.NumericDependency
 import A12Kernel.Conformance.NumericValidation
