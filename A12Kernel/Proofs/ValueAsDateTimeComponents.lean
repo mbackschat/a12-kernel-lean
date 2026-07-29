@@ -5,6 +5,12 @@ import A12Kernel.Proofs.ValueAsDate
 
 namespace A12Kernel
 
+/-- The zero-component prefix performs no read and delegates fixed omitted zeroes to the resolved arity owner. -/
+@[simp] theorem timeComponentPrefix_evaluateWith_empty
+    (read : Component → Except Error TimeConstructionComponent) :
+    (TimeComponentPrefix.empty : TimeComponentPrefix Component).evaluateWith read =
+      .ok (TimeConstructionArity.zero.evaluate .empty .empty .empty) := rfl
+
 /-- A reached, checked digit String contributes the exact natural-number component; no
     truncating numeric operation is introduced by the constructor adapter. -/
 @[simp] theorem checkedTimeStringField_classify_value

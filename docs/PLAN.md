@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1708 theorem roots; 38869 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1709 theorem roots; 38926 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Complete the legal zero-through-three direct `Time(...)` arities with parser-checked quoted constants.
+Carry one checked world-dependent `Time(...)` prefix with a shifted-`Now` extractor through the exact Time target, result view, and application path.
 
 ## Immediate sequence
 
-1. Extend the existing component-prefix owner with the grammar's zero-argument form and exact checked constant branch; retain fixed omitted zeroes rather than representing them as missing inputs.
-2. Lock `Time() = 00:00:00`, one- and two-constant defaults, position-specific bounds, malformed constants, and the same target/result/application path without introducing another literal or clock type.
-3. Stop after direct nonrepeatable construction; exclude alternatives, computation tables, scheduling, repeatable placement, general recursive temporal operands, message construction, wider formats, and unrelated Date/DateTime widening.
+1. Reuse `CheckedWorldTimeComponents.evaluate`, its explicit per-call `World`, and the settled Time target/result/application stages; add no ambient clock or second prefix representation.
+2. Certify complete target-reference exclusion across static components and the checked dynamic amount, then lock changing-world output, source-before-amount/formal order, quiet no-value, and exact application.
+3. Stop after one nonrepeatable dynamic operation; exclude alternatives, computation tables, scheduling, repeatable placement, general recursive temporal operands, message construction, wider formats, and unrelated Date/DateTime widening.
 
 ## Parked boundaries
 

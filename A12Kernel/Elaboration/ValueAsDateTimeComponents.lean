@@ -26,10 +26,23 @@ inductive TimeComponentPosition where
 
 namespace TimeComponentPosition
 
-/-- Inclusive maximum accepted as the position-specific alternative to stored length 2. -/
-def maximum : TimeComponentPosition → Rat
+/-- Inclusive natural-number bound for a quoted constant at this position. -/
+def maximumNat : TimeComponentPosition → Nat
   | .hour => 23
   | .minute | .second => 59
+
+/-- Inclusive maximum accepted as the position-specific alternative to stored length 2. -/
+def maximum : TimeComponentPosition → Rat
+  | position => position.maximumNat
+
+/-- Decode one already-unescaped quoted constant under the pinned Java 21 decimal-digit profile and position bound. -/
+def decodeConstant? (position : TimeComponentPosition)
+    (source : String) : Option Int := do
+  let value ← parseJava21BmpNatural? source
+  if value ≤ position.maximumNat then
+    some value
+  else
+    none
 
 /-- The only extractor token admitted at this constructor position. -/
 def extractor : TimeComponentPosition → TimeNumericPart
@@ -119,6 +132,7 @@ structure CheckedShiftedTimeExtractor (model : FlatModel) where
 inductive SurfaceTimeComponent where
   | number (field : FieldId)
   | string (field : FieldId)
+  | constant (source : String)
   | extractor (part : TimeNumericPart) (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -126,12 +140,13 @@ inductive SurfaceTimeComponent where
 inductive CheckedTimeComponent (model : FlatModel) where
   | number (checked : CheckedTimeNumberField model)
   | string (checked : CheckedTimeStringField model)
+  | constant (value : Int)
   | extractor (checked : CheckedTimeExtractorField model)
   | shiftedExtractor (checked : CheckedShiftedTimeExtractor model)
 
-/-- The one-to-three-component prefix shared by surface and checked carriers. Omitted
-    trailing components are absent and cannot be read. -/
+/-- The zero-to-three-component prefix shared by surface and checked carriers. Omitted trailing components are fixed zeroes and cannot be read. -/
 inductive TimeComponentPrefix (Component : Type) where
+  | empty
   | hour (hour : Component)
   | minute (hour minute : Component)
   | second (hour minute second : Component)
@@ -150,6 +165,7 @@ inductive TimeComponentsElabError where
   | field (position : TimeComponentPosition) (error : ResolveError)
   | numberSourceKind (position : TimeComponentPosition) (field : FieldId)
   | stringSourceKind (position : TimeComponentPosition) (field : FieldId)
+  | constantNotAdmitted (position : TimeComponentPosition) (source : String)
   | extractorSourceKind (position : TimeComponentPosition) (field : FieldId)
   | extractorMismatch (position : TimeComponentPosition) (actual : TimeNumericPart)
   | declarationNotAdmitted (position : TimeComponentPosition) (field : FieldId)
@@ -204,6 +220,10 @@ private def elaborateTimeComponent (model : FlatModel)
       .number <$> elaborateTimeNumberField model position field
   | .string field =>
       .string <$> elaborateTimeStringField model position field
+  | .constant source =>
+      match position.decodeConstant? source with
+      | some value => pure (.constant value)
+      | none => throw (.constantNotAdmitted position source)
   | .extractor part field =>
       .extractor <$> elaborateTimeExtractorField model position part field
 
@@ -211,6 +231,7 @@ private def elaborateTimeComponent (model : FlatModel)
 def elaborateTimeComponents (model : FlatModel) :
     SurfaceTimeComponents →
       Except TimeComponentsElabError (CheckedTimeComponents model)
+  | .empty => pure .empty
   | .hour hour => do
       pure (.hour (← elaborateTimeComponent model .hour hour))
   | .minute hour minute => do
@@ -412,6 +433,7 @@ def referencesField (checked : CheckedTimeComponent model)
   match checked with
   | .number checked => checked.source.id == field
   | .string checked => checked.source.id == field
+  | .constant _ => false
   | .extractor checked => checked.source.id == field
   | .shiftedExtractor checked =>
       checked.source.source.id == field ||
@@ -428,6 +450,7 @@ def read (checked : CheckedTimeComponent model)
   match checked with
   | .number field => field.read phase input
   | .string field => field.read phase input
+  | .constant value => pure (.value value)
   | .extractor field => field.read phase input
   | .shiftedExtractor source => source.read phase input
 
@@ -441,6 +464,8 @@ def evaluateWith (checked : TimeComponentPrefix Component)
     (read : Component → Except Error TimeConstructionComponent) :
     Except Error TimeConstructionResult :=
   match checked with
+  | .empty =>
+      pure (TimeConstructionArity.zero.evaluate .empty .empty .empty)
   | .hour hourField => do
       let hourValue ← read hourField
       pure (TimeConstructionArity.hour.evaluate hourValue .empty .empty)
@@ -472,6 +497,7 @@ namespace CheckedTimeComponents
 def referencesField (checked : CheckedTimeComponents model)
     (field : FieldId) : Bool :=
   match checked with
+  | .empty => false
   | .hour hour => hour.referencesField field
   | .minute hour minute =>
       hour.referencesField field || minute.referencesField field

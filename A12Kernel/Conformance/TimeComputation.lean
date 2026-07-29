@@ -249,4 +249,32 @@ example :
         pure (applied 1)) = some (.presentValue nextTime) := by
   native_decide
 
+/- The zero-argument form is real midnight; one and two constants supply fixed trailing zeroes and reach the same target path. -/
+example :
+    (executionView? .empty oldSource).map (·.withChanges) =
+        some [{ targetField := 1, value := ⟨"00:00:00", by decide⟩ }] ∧
+      (executionView? (.hour (.constant "10")) oldSource).map
+        (·.withoutErrors) =
+          some [{ targetField := 1, value := ⟨"10:00:00", by decide⟩ }] ∧
+      (do
+        let view ←
+          executionView? (.minute (.constant "05") (.constant "02"))
+            oldSource
+        let applied ← view.applyTo (destinationWith .absent) |>.toOption
+        pure (applied 1)) =
+          some (.presentValue ⟨"05:02:00", by decide⟩) := by
+  native_decide
+
+/- Constant legality is position-specific and uses the pinned Java decimal-digit profile without imposing a width. -/
+example :
+    (operation? (.hour (.constant "23"))).isSome = true ∧
+      (operation? (.hour (.constant "٢٣"))).isSome = true ∧
+      operationError? (.hour (.constant "24")) =
+        some (.components (.constantNotAdmitted .hour "24")) ∧
+      operationError? (.minute (.constant "0") (.constant "60")) =
+        some (.components (.constantNotAdmitted .minute "60")) ∧
+      operationError? (.hour (.constant "2.0")) =
+        some (.components (.constantNotAdmitted .hour "2.0")) := by
+  native_decide
+
 end A12Kernel.Conformance.TimeComputation
