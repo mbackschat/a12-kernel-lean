@@ -15,11 +15,12 @@ namespace A12Kernel
       .ok (.value sourceLocal sourceInstant false) := by
   have offsetZero : temporalShiftAmountToInt32 0 = 0 := by
     decide
-  cases profileEq : checked.profile
-  all_goals
-    simp [CheckedDateTimeDayShift.applyAmount, offsetZero, profileEq,
-      CheckedDateTimeDayShift.utcLanding?, NumericFillability.fixed,
-      pure, Except.pure]
+  change CheckedDateTimeDayShift.applyProfileAmount
+    checked.profile sourceLocal sourceInstant (.value 0 .fixed) =
+      .ok (.value sourceLocal sourceInstant false)
+  simp only [CheckedDateTimeDayShift.applyProfileAmount.eq_def]
+  rw [offsetZero]
+  rfl
 
 /-- A reached formal DateTime source decides the generated source-before-amount
     evaluation without any hypothesis about the amount or its document cell. -/
@@ -72,6 +73,7 @@ theorem checkedDateTimeDayShift_evaluateThen_inner_unavailable
     checked.evaluateThen nextAmount phase input =
       .ok (.unavailable cause) := by
   simp [CheckedDateTimeDayShift.evaluateThen, inner,
-    CheckedDateTimeDayShift.evaluateResult]
+    CheckedDateTimeDayShift.evaluateResult,
+    CheckedDateTimeDayShift.evaluateProfileResult]
 
 end A12Kernel

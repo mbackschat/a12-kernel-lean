@@ -2,13 +2,14 @@ import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 
 /-! # Checked elapsed-sub-day then calendar-day DateTime shifts
 
-This bounded composition evaluates one field-backed `AddHours`, `AddMinutes`, or
-`AddSeconds` before one `AddDays`. The exact inner instant and decoded label feed the
-existing calendar-day application directly. No wall label is reconstructed, and the
-two operation-specific structural fault domains remain explicit.
+This bounded composition evaluates one field-backed or dynamic-`Now` `AddHours`,
+`AddMinutes`, or `AddSeconds` before one `AddDays`. The exact inner instant and decoded
+label feed the existing calendar-day application directly. No wall label is
+reconstructed, the dynamic route keeps `World` explicit, and the two operation-specific
+structural fault domains remain explicit.
 
-Dynamic `Now`, the reverse operation order, wider recursion, differences, targets, and
-repeatable placement remain separate.
+The reverse operation order, wider recursion, differences, targets, and repeatable
+placement remain separate.
 -/
 
 namespace A12Kernel
@@ -44,5 +45,20 @@ def evaluateThenDays (checked : CheckedShiftedDateTimeSource model)
     source phase input |>.mapError .day
 
 end CheckedShiftedDateTimeSource
+
+namespace CheckedShiftedNowDateTimeSource
+
+/-- Evaluate a dynamic elapsed sub-day shift before one calendar-day mutation. The
+    supplied `World` is sampled only by the inner operation; the outer landing consumes
+    that exact result under the same certified profile. -/
+def evaluateThenDays (checked : CheckedShiftedNowDateTimeSource model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except DateTimeSubdayThenDayShiftFault ValueAsDateTimeResult := do
+  let source ← checked.evaluate phase world input |>.mapError .subday
+  CheckedDateTimeDayShift.evaluateProfileResult
+    checked.profile nextAmount source phase input |>.mapError .day
+
+end CheckedShiftedNowDateTimeSource
 
 end A12Kernel

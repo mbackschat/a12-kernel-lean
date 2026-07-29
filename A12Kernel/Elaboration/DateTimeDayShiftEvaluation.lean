@@ -60,10 +60,10 @@ def utcLanding? (sourceLocal : LocalDateTime)
         next.resolveUtc.epochMillis + sourceInstant.epochMillis % 1000
     })
 
-/-- Apply one reached numeric amount to the exact DateTime source. Arithmetic domain
-    failure produces no value; a reached value uses Java signed-32-bit narrowing and
-    retains directional fillability as DateTime omission provenance. -/
-def applyAmount (checked : CheckedDateTimeDayShift model)
+/-- Apply one reached numeric amount under a certified concrete profile. Arithmetic
+    domain failure produces no value; a reached value uses Java signed-32-bit narrowing
+    and retains directional fillability as DateTime omission provenance. -/
+def applyProfileAmount (profile : ModelZone.ConcreteProfile)
     (sourceLocal : LocalDateTime) (sourceInstant : Instant) :
     NumericArithmeticOutcome →
       Except DateTimeDayShiftFault ValueAsDateTimeResult
@@ -71,20 +71,32 @@ def applyAmount (checked : CheckedDateTimeDayShift model)
   | .value value fillability =>
       let offset := temporalShiftAmountToInt32 value
       let notGiven := fillability.canGrow || fillability.canShrink
-      let landing :=
-        match checked.profile with
-        | .utc => utcLanding? sourceLocal sourceInstant offset
-        | .europeBerlin =>
-            EuropeBerlinLegacyProfile.calendarDayLanding?
-              sourceLocal sourceInstant offset
-      match landing with
-      | some (shifted, shiftedInstant) =>
-          pure (.value shifted shiftedInstant notGiven)
-      | none => throw (.landingUnavailable sourceInstant offset)
+      if offset = 0 then
+        pure (.value sourceLocal sourceInstant notGiven)
+      else
+        let landing :=
+          match profile with
+          | .utc => utcLanding? sourceLocal sourceInstant offset
+          | .europeBerlin =>
+              EuropeBerlinLegacyProfile.calendarDayLanding?
+                sourceLocal sourceInstant offset
+        match landing with
+        | some (shifted, shiftedInstant) =>
+            pure (.value shifted shiftedInstant notGiven)
+        | none => throw (.landingUnavailable sourceInstant offset)
 
-/-- Apply an outer amount to one already-evaluated DateTime day result. A concrete
-    inner value remains the exact calendar source and retains its omission provenance. -/
-def applyResultAmount (checked : CheckedDateTimeDayShift model)
+/-- Apply one reached numeric amount to the exact DateTime source through the profile
+    selected by this checked field-backed carrier. -/
+def applyAmount (checked : CheckedDateTimeDayShift model)
+    (sourceLocal : LocalDateTime) (sourceInstant : Instant) :
+    NumericArithmeticOutcome →
+      Except DateTimeDayShiftFault ValueAsDateTimeResult
+  | outcome =>
+      applyProfileAmount checked.profile sourceLocal sourceInstant outcome
+
+/-- Apply an outer amount to one already-evaluated exact DateTime result under a
+    certified profile. A concrete inner value retains its omission provenance. -/
+def applyProfileResultAmount (profile : ModelZone.ConcreteProfile)
     (source : ValueAsDateTimeResult) :
     NumericArithmeticOutcome →
       Except DateTimeDayShiftFault ValueAsDateTimeResult
@@ -99,12 +111,21 @@ def applyResultAmount (checked : CheckedDateTimeDayShift model)
           pure (.noValue
             (notGiven || fillability.canGrow || fillability.canShrink))
       | .value sourceLocal sourceInstant notGiven =>
-          match checked.applyAmount sourceLocal sourceInstant
+          match applyProfileAmount profile sourceLocal sourceInstant
               (.value value fillability) with
           | .error error => .error error
           | .ok result => .ok (result.inheritNotGiven notGiven)
       | .nonRelevant => pure .nonRelevant
       | .unavailable cause => pure (.unavailable cause)
+
+/-- Apply an outer amount through the profile selected by this checked field-backed
+    carrier. -/
+def applyResultAmount (checked : CheckedDateTimeDayShift model)
+    (source : ValueAsDateTimeResult) :
+    NumericArithmeticOutcome →
+      Except DateTimeDayShiftFault ValueAsDateTimeResult
+  | outcome =>
+      applyProfileResultAmount checked.profile source outcome
 
 /-- Classify one reached DateTime cell before reading its numeric amount. A formal
     source stops; an empty source still reaches the amount and remains not-given. -/
@@ -140,20 +161,29 @@ def evaluate (checked : CheckedDateTimeDayShift model)
   } |>.mapError .document
   checked.evaluateCell phase input cell
 
-/-- Read and apply the next day amount to one already evaluated exact DateTime result.
-    A reached formal cause stops before this read; cause-free no-value still reaches it. -/
-def evaluateResult (checked : CheckedDateTimeDayShift model)
+/-- Read and apply one checked day amount to an already evaluated exact DateTime result
+    under a certified profile. A reached formal cause stops before this read;
+    cause-free no-value still reaches it. -/
+def evaluateProfileResult (profile : ModelZone.ConcreteProfile)
+    (amount : CheckedTemporalShiftAmount model)
     (source : ValueAsDateTimeResult)
     (phase : Phase) (input : CheckedDocument model) :
     Except DateTimeDayShiftFault ValueAsDateTimeResult :=
   match source with
   | .unavailable cause => .ok (.unavailable cause)
   | source =>
-      match checked.amount.read phase input with
+      match amount.read phase input with
       | .error error => .error (.document error)
       | .ok (.error (.formal cause)) => .ok (.unavailable cause)
       | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
-      | .ok (.ok outcome) => checked.applyResultAmount source outcome
+      | .ok (.ok outcome) => applyProfileResultAmount profile source outcome
+
+/-- Read and apply the next day amount through this checked field-backed carrier. -/
+def evaluateResult (checked : CheckedDateTimeDayShift model)
+    (source : ValueAsDateTimeResult)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except DateTimeDayShiftFault ValueAsDateTimeResult :=
+  evaluateProfileResult checked.profile checked.amount source phase input
 
 /-- Feed one exact DateTime day result into a further generated `AddDays`. The inner
     operation runs before the outer amount; a formal inner result stops that read. -/
