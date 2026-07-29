@@ -124,4 +124,98 @@ example : (do
         .value 1 .both) := by
   native_decide
 
+/- One checked dynamic composition observes the world supplied to each call; all three
+   elapsed units retain exact shifted milliseconds rather than elaboration-time state. -/
+example : (do
+    let otherLocal ← LocalDateTime.ofYmdHms? 2024 6 15 12 30 2
+    let otherCell ← dateTimeCell? 2 otherLocal 999
+    let input ← input? [otherCell]
+    let firstLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 0 0
+    let secondLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 0 1
+    let firstBase ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? firstLocal
+    let secondBase ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? secondLocal
+    let first : World := {
+      now := { epochMillis := firstBase.epochMillis + 500 } }
+    let second : World := {
+      now := { epochMillis := secondBase.epochMillis + 500 } }
+    let evaluate (world : World) (unit : DateTimeSubdayUnit) := do
+      let operation ←
+        (elaborateShiftedNowDateTimeDifference model
+          .seconds (.literal 1) 2 unit .first).toOption
+      operation.evaluate .validation world input |>.toOption
+    pure (
+      [← evaluate first .hours, ← evaluate first .minutes,
+        ← evaluate first .seconds],
+      [← evaluate second .hours, ← evaluate second .minutes,
+        ← evaluate second .seconds])) =
+      some (
+        [.value 2 .fixed, .value 150 .fixed, .value 9001 .fixed],
+        [.value 2 .fixed, .value 150 .fixed, .value 9000 .fixed]) := by
+  native_decide
+
+/- Dynamic exact shifting retains the daylight-side repeated-hour instant before the
+   direct fresh DateTime supplies the standard-side sibling. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 10 27 1 30 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let repeated ← LocalDateTime.ofYmdHms? 2024 10 27 2 30 0
+    let repeatedCell ← dateTimeCell? 2 repeated
+    let input ← input? [repeatedCell]
+    let operation ←
+      (elaborateShiftedNowDateTimeDifference model
+        .hours (.literal 1) 2 .minutes .first).toOption
+    operation.evaluate .validation { now } input |>.toOption) =
+      some (.value 60 .fixed) := by
+  native_decide
+
+/- Authored order decides whether a formal dynamic amount or the direct DateTime cause
+   wins. Arithmetic no-value still uses the shared symmetric-zero result. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 0 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let badInput ← input? [
+      { address := { field := 2, path := [] }
+        stored := "bad-other"
+        raw := .rejected .malformed },
+      { address := { field := amount.id, path := [] }
+        stored := "bad-amount"
+        raw := .rejected .declaredConstraint }]
+    let fieldAmount ←
+      (elaborateValueAsDateTimeFieldShiftAmount model amount.id).toOption
+    let first ←
+      (elaborateShiftedNowDateTimeDifference model
+        .seconds fieldAmount 2 .seconds .first).toOption
+    let second ←
+      (elaborateShiftedNowDateTimeDifference model
+        .seconds fieldAmount 2 .seconds .second).toOption
+    let badFirst ← first.evaluate .computation { now } badInput |>.toOption
+    let badSecond ← second.evaluate .computation { now } badInput |>.toOption
+    let otherLocal ← LocalDateTime.ofYmdHms? 2024 6 15 11 0 0
+    let otherCell ← dateTimeCell? 2 otherLocal
+    let valueInput ← input? [otherCell]
+    let domainAmount ←
+      (elaborateValueAsDateTimeExpressionShiftAmount model ["Order"]
+        (.binary .divide
+          (.literal { value := 1, authoredScale := 0 })
+          (.literal { value := 0, authoredScale := 0 }))).toOption
+    let domain ←
+      (elaborateShiftedNowDateTimeDifference model
+        .seconds domainAmount 2 .hours .first).toOption
+    let domainResult ←
+      domain.evaluate .computation { now } valueInput |>.toOption
+    let omitted ←
+      (elaborateShiftedNowDateTimeDifference model
+        .seconds fieldAmount 2 .hours .first).toOption
+    let omittedResult ←
+      omitted.evaluate .computation { now } valueInput |>.toOption
+    pure (badFirst, badSecond, domainResult, omittedResult)) =
+      some (
+        .unknown .declaredConstraint,
+        .unknown .malformed,
+        .value 0 .both,
+        .value 1 .both) := by
+  native_decide
+
 end A12Kernel.Conformance.DateTimeSubdayShiftDifferenceEvaluation

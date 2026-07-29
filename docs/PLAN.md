@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 633 jobs · trust audit **1659 theorem roots; 37993 declarations in 362 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 633 jobs · trust audit **1661 theorem roots; 38019 declarations in 362 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose one dynamic shifted-`Now` result with one direct DateTime in `DifferenceInHours`/`DifferenceInMinutes`/`DifferenceInSeconds`, in either authored operand position. Keep `World` explicit, feed the retained exact shifted instant into the landed elapsed-difference composition, preserve omission and first-reached formal cause, and do not merge the world-dependent carrier with the field-backed form.
+Compose one field-backed exact `AddHours`/`AddMinutes`/`AddSeconds` result into one further sub-day shift. Feed the inner exact instant and model-zone label directly to the outer checked amount, preserve accumulated omission and generated inner-before-outer evaluation, and add no recursive temporal AST.
 
 ## Immediate sequence
 
-1. Reuse `CheckedShiftedNowDateTimeSource`, the landed exact-result projection/finish semantics, `CheckedDateTimeSource`, and `DateTimeDifferenceOperand`; add only the distinct world-dependent checked carrier.
-2. Evaluate in authored order from the world supplied to that call: a direct first-operand cause stops before the dynamic shift, while dynamic amount failure in first position stops before the direct operand.
-3. Lock two distinct worlds, all three elapsed units, millisecond truncation, Berlin repeated-hour identity, both authored positions, cause precedence, and arithmetic no-value; retain field-backed execution as an equivalence control and exclude calendar-day difference, targets, wider recursion, and repeatable placement.
+1. Add one `evaluateThen`-style operation to the existing `CheckedShiftedDateTimeSource`; reuse `CheckedTemporalShiftAmount.readShiftedDateTime` for a concrete inner value and keep non-values reason-bearing.
+2. Evaluate the inner source and amount before reading the outer amount. A formal inner result stops; a cause-free inner no-value still reaches the outer amount; value-carrying omission accumulates.
+3. Lock representative cross-unit pairs, exact milliseconds, Berlin overlap identity, outer formal-cause reachability, arithmetic no-value, and accumulated omission; retain dynamic `Now`, calendar-day mutation, differences, targets, recursion beyond two shifts, and repeatable placement as excluded controls.
 
 ## Parked boundaries
 
