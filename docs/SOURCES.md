@@ -227,6 +227,7 @@ The detailed review chronology is recoverable from Git. These consolidated check
 | `0005740c60f1db558cdcb9ad54df11b997302ffe` | exact static `HH:mm:ss` literal gate and initial partial-Date DateTime context witness |
 | `751715fff53006bd47c65d2596395e13664ade1a` | Berlin/UTC dual-kernel and multiplatform separation of the Time literal's transport carrier from its decoded clock |
 | `e32d1a0c3fe5d89c2f3ada4a426fdd202b127af4` | JVM/Node partial-Date DateTime composition completing the Time-literal acceptance routes |
+| `4ebe84fc5e9a342c042e4b0f488f416a6e7771e1` | same-target computation root correction and dual-kernel/JVM/Node separation of selected-empty termination from false-guard fall-through |
 | `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b` | measured Time arities, wider Date precisions, and Date/Time component declaration gates recorded under a12-dmkits `IG105`–`IG107` and `DG26`–`DG27` |
 | `5093cfb8a500a1093fce80520b64d7b1a02641d5` | handback checkpoint retaining the measured constant, extractor, and `TimeFromDateTime` static matrices under a12-dmkits `IG108` |
 

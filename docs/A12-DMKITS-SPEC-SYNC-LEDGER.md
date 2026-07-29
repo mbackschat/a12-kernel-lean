@@ -340,7 +340,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-26-03 — same-target computations flatten into one first-selected table
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** `f5b54e9ee282e8c84d638dae25c6a6882b139888`
 - **a12-dmkits basis revision:** `1106e2b5`
@@ -351,8 +351,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical §11 account, IF87 finding, and computation engine to the single flattened first-selected mechanism. Add a String-target differential in which the first supplied computation selects an unguarded bare copy of an empty String operand and the second supplies a nonempty literal: the target must remain without a stored result because the first selection ended the scan. Retain the current false-guard fall-through case as the opposite control, and cover the split Groovy route if its maintained test surface can force the same selected-empty discriminator above the chunk threshold.
 - **Compatibility:** Outcome-based first-nonempty dedup lets a later computation overwrite a selected-but-empty earlier result. Treating computation boundaries as unconditional stops instead breaks the already-observed false-guard fall-through. The corrected account keeps one selector and distinguishes selection from storage.
 - **Acceptance:** Peer prose and interpreter use the flattened first-selected table; maintained JVM, Node, and both available kernel-strategy cases separate selected-empty stop from false-guard fall-through; the existing alternative selector remains the single semantic owner; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback checkpoint:** `5093cfb8a500a1093fce80520b64d7b1a02641d5`
-- **Disposition:** handed off; no upstream reconciliation had started at the reviewed checkpoint.
+- **a12-dmkits revision:** `4ebe84fc5e9a342c042e4b0f488f416a6e7771e1`
+- **Disposition:** accepted — canonical prose and the interpreter now distinguish selection from storage. The shared computation evaluator returns whether an alternative was selected independently of the value it produced; a selected clean no-value marks the target cell decided and clears stale storage, while a false common guard remains unselected and permits the next computation to win. Dynamic-Groovy, static-Java, and interpreter tri-checks cover an unguarded empty String copy and all-empty concatenation beside false-guard and selected-value controls; focused JVM and Node cases retain the same four branches. The previously maintained Number cases did not separate the accounts because their empty-first arms were unselected through false guards, and an empty Number source would render and store real zero. No second selector, table, or scheduling mechanism was introduced.
 
 ### SPEC-2026-07-26-04 — computed-target dependency poison erases producer cause
 
