@@ -67,6 +67,19 @@ theorem shiftedNumericOperand_fixed
         profile unit instant (.value amount .fixed) =
       ValueAsDateTimeTimeOperand.ofShiftedInstant?
         profile unit amount instant := by
+  simp [ValueAsDateTimeTimeOperand.ofShiftedNumericOperand?,
+    ValueAsDateTimeResult.ofShiftedNumericOperand?,
+    ValueAsDateTimeTimeOperand.ofShiftedInstant?,
+    ValueAsDateTimeResult.asTimeOperand, NumericFillability.fixed,
+    Function.comp_def]
+
+/-- The wall-clock extractor is exactly the projection of the whole shifted DateTime;
+    it cannot replace that whole result for an exact-instant consumer. -/
+theorem checkedShiftedDateTimeSource_readTime_projects_evaluate
+    (checked : CheckedShiftedDateTimeSource model)
+    (phase : Phase) (input : CheckedDocument model) :
+    checked.readTime phase input =
+      (checked.evaluate phase input).map (·.asTimeOperand) := by
   rfl
 
 /-- Arithmetic domain failure remains a present-but-valueless Time operand; it is never reinterpreted as a zero shift. -/
@@ -79,7 +92,8 @@ theorem valueAsDateTimeShiftAmount_notEvaluated
       amount.read phase input = .ok (.ok .notEvaluated)) :
     amount.readShiftedTime phase input profile unit instant =
       .ok (.noValue false) := by
-  rw [CheckedTemporalShiftAmount.readShiftedTime, read]
+  rw [CheckedTemporalShiftAmount.readShiftedTime,
+    CheckedTemporalShiftAmount.readShiftedDateTime, read]
   rfl
 
 /-- Missing provenance on a concrete constructed DateTime is observable as omission polarity without changing its exact instant. -/

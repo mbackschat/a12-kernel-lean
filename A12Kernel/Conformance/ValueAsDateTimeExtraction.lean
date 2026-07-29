@@ -466,4 +466,29 @@ example :
         some .amountExpressionNotDirectNumber := by
   native_decide
 
+/- Whole sub-day evaluation retains the earlier repeated-midnight instant; the existing
+   Time extractor is only its wall-clock projection, and fresh resolution selects the
+   distinct later sibling. -/
+example : (do
+    let sourceLocal ← LocalDateTime.ofYmdHms? 1916 9 30 23 30 0
+    let sourceInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? sourceLocal
+    let input ← document? modelWithShiftAmount [{
+      address := { field := 1, path := [] }
+      stored := "30.09.1916T23:30:00"
+      raw := dateTimeRaw sourceInstant
+        sourceLocal.date.civil.parts sourceLocal.time
+    }]
+    let checked ←
+      (elaborateShiftedDateTimeSource
+        modelWithShiftAmount 1 .hours (.literal 1)).toOption
+    let whole ← checked.evaluate .computation input |>.toOption
+    let time ← checked.readTime .computation input |>.toOption
+    match whole with
+    | .value label instant false =>
+        let fresh ← checked.profile.resolveLocal? label
+        pure (time = .value label.time false, instant ≠ fresh)
+    | _ => none) = some (true, true) := by
+  native_decide
+
 end A12Kernel.Conformance.ValueAsDateTimeExtraction

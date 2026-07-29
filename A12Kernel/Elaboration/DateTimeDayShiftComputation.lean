@@ -50,19 +50,6 @@ inductive DateTimeDayShiftComputationFault where
   | target (error : DateTimeTargetEvaluationFault)
   deriving Repr, DecidableEq
 
-namespace ValueAsDateTimeResult
-
-/-- Project one generated DateTime expression result into target execution. Quiet
-    no-value and cause-free non-relevance store nothing; a reached formal cause remains
-    poison; a value carries only its exact instant into declaration-owned rendering. -/
-def asTemporalComputationResult :
-    ValueAsDateTimeResult → TemporalComputationResult
-  | .noValue _ | .nonRelevant => .noValue
-  | .value _ instant _ => .value instant
-  | .unavailable cause => .poison cause
-
-end ValueAsDateTimeResult
-
 namespace CheckedDateTimeDayShiftComputation
 
 /-- Execute the checked shift in computation phase and retain its target-facing result. -/

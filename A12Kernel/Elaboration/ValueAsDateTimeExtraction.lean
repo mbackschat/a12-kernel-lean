@@ -65,6 +65,31 @@ inductive ValueAsDateTimeExtractionFault where
   | shiftedInstantOutsideProfile (instant : Instant)
   deriving Repr, DecidableEq
 
+namespace ValueAsDateTimeResult
+
+/-- Forget only the whole DateTime value after exact-instant shifting, for consumers
+    whose authored operation explicitly extracts the wall clock. -/
+def asTimeOperand : ValueAsDateTimeResult → ValueAsDateTimeTimeOperand
+  | .noValue notGiven => .noValue notGiven
+  | .value localDateTime _ notGiven => .value localDateTime.time notGiven
+  | .nonRelevant => .nonRelevant
+  | .unavailable cause => .unavailable cause
+
+/-- Shift one exact instant through a checked numeric operand while retaining its whole
+    model-zone DateTime label, exact instant, and omission provenance. -/
+def ofShiftedNumericOperand? (profile : ModelZone.ConcreteProfile)
+    (unit : DateTimeSubdayUnit) (instant : Instant) :
+    NumericOperand → Option ValueAsDateTimeResult
+  | .unknown cause => some (.unavailable cause)
+  | .value amount fillability =>
+      let shiftedInstant :=
+        instant.shift unit (temporalShiftAmountToInt32 amount)
+      (profile.localDateTime? shiftedInstant).map fun shifted =>
+        .value shifted shiftedInstant
+          (fillability.canGrow || fillability.canShrink)
+
+end ValueAsDateTimeResult
+
 namespace ValueAsDateTimeTimeOperand
 
 /-- Project one phase-classified complete-DateTime value to the extractor's wall-clock result. `none` identifies a forged payload whose runtime kind contradicts the checked source declaration. -/
@@ -87,23 +112,19 @@ def ofShiftedInstant? (profile : ModelZone.ConcreteProfile)
 def ofShiftedNumericOperand? (profile : ModelZone.ConcreteProfile)
     (unit : DateTimeSubdayUnit) (instant : Instant) :
     NumericOperand → Option ValueAsDateTimeTimeOperand
-  | .unknown cause => some (.unavailable cause)
-  | .value amount fillability =>
-      (profile.localDateTime?
-        (instant.shift unit (temporalShiftAmountToInt32 amount))).map
-          (fun shifted =>
-            .value shifted.time
-              (fillability.canGrow || fillability.canShrink))
+  | operand =>
+      (ValueAsDateTimeResult.ofShiftedNumericOperand?
+        profile unit instant operand).map (·.asTimeOperand)
 
 end ValueAsDateTimeTimeOperand
 
-/-- Project the shared numeric outcome into DateTime shifting without collapsing arithmetic domain failure to numeric zero. -/
-def CheckedTemporalShiftAmount.readShiftedTime
+/-- Read and apply a checked amount without collapsing arithmetic domain failure to zero. -/
+def CheckedTemporalShiftAmount.readShiftedDateTime
     (amount : CheckedTemporalShiftAmount model)
     (phase : Phase) (input : CheckedDocument model)
     (profile : ModelZone.ConcreteProfile)
     (unit : DateTimeSubdayUnit) (instant : Instant) :
-    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult := do
   match ← amount.read phase input |>.mapError .document with
   | .error (.formal cause) => pure (.unavailable cause)
   | .error unavailable =>
@@ -112,10 +133,20 @@ def CheckedTemporalShiftAmount.readShiftedTime
   | .ok (.value value fillability) =>
       let shifted := instant.shift unit
         (temporalShiftAmountToInt32 value)
-      match ValueAsDateTimeTimeOperand.ofShiftedNumericOperand?
+      match ValueAsDateTimeResult.ofShiftedNumericOperand?
           profile unit instant (.value value fillability) with
-      | some time => pure time
+      | some result => pure result
       | none => throw (.shiftedInstantOutsideProfile shifted)
+
+/-- Specialize exact DateTime shifting to the authored wall-clock extraction result. -/
+def CheckedTemporalShiftAmount.readShiftedTime
+    (amount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (input : CheckedDocument model)
+    (profile : ModelZone.ConcreteProfile)
+    (unit : DateTimeSubdayUnit) (instant : Instant) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  amount.readShiftedDateTime phase input profile unit instant
+    |>.map (·.asTimeOperand)
 
 /-- Resolve one ordinary nonrepeatable Number shift amount against the validated model. Both field- and `Now`-sourced shifts reuse this exact admission boundary. -/
 def elaborateValueAsDateTimeFieldShiftAmount
@@ -154,12 +185,26 @@ structure CheckedShiftedDateTimeSource (model : FlatModel)
     extends CheckedDateTimeNumericShiftSource model where
   unit : DateTimeSubdayUnit
 
+namespace ValueAsDateTimeResult
+
+/-- Project one generated DateTime expression result into target execution. Quiet
+    no-value and cause-free non-relevance store nothing; a reached formal cause remains
+    poison; a value carries only its exact instant into declaration-owned rendering. -/
+def asTemporalComputationResult :
+    ValueAsDateTimeResult → TemporalComputationResult
+  | .noValue _ | .nonRelevant => .noValue
+  | .value _ instant _ => .value instant
+  | .unavailable cause => .poison cause
+
+end ValueAsDateTimeResult
+
 namespace CheckedShiftedDateTimeSource
 
-/-- Read the certified DateTime before its amount and preserve missing, formal, arithmetic-domain, exact-instant, and model-zone outcomes for the consuming extractor. -/
-def readTime (checked : CheckedShiftedDateTimeSource model)
+/-- Read the certified DateTime before its amount and retain the shifted whole
+    DateTime's exact instant, wall label, omission provenance, and formal cause. -/
+def evaluate (checked : CheckedShiftedDateTimeSource model)
     (phase : Phase) (input : CheckedDocument model) :
-    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand := do
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult := do
   let cell ← input.read {
     field := checked.source.id
     path := []
@@ -173,9 +218,15 @@ def readTime (checked : CheckedShiftedDateTimeSource model)
       | .ok _ => pure (.noValue true)
   | .unknown cause | .poison cause => pure (.unavailable cause)
   | .value (.temporal (.dateTime instant _ _ _)) =>
-      checked.amount.readShiftedTime phase input
+      checked.amount.readShiftedDateTime phase input
         checked.profile checked.unit instant
   | .value _ => throw (.sourcePayloadMismatch checked.source.id)
+
+/-- Specialize the whole shifted value to the existing wall-clock extraction result. -/
+def readTime (checked : CheckedShiftedDateTimeSource model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
+  checked.evaluate phase input |>.map (·.asTimeOperand)
 
 end CheckedShiftedDateTimeSource
 
