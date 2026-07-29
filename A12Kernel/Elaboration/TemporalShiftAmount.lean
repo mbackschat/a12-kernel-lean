@@ -19,6 +19,12 @@ inductive DateShiftUnit where
   | years
   deriving Repr, DecidableEq
 
+/-- Authored position of a checked shift result in one bounded binary difference. -/
+inductive ShiftDifferencePosition where
+  | first
+  | second
+  deriving Repr, DecidableEq
+
 /-- Truncate like `BigDecimal.intValue`, then retain the low signed 32 bits rather than saturating or rejecting a large temporal-shift amount. -/
 def temporalShiftAmountToInt32 (value : Rat) : Int :=
   let truncated := if value < 0 then value.ceil else value.floor

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
+import A12Kernel.Elaboration.DateTimeDayShiftDifferenceEvaluation
 
 /-! # Checked DateTime calendar-day shift locks -/
 
@@ -20,6 +20,29 @@ private def model (zoneId : String) : FlatModel := {
   timeZoneId := zoneId
 }
 
+private def other : FlatFieldDecl := {
+  id := 2
+  groupPath := ["Order"]
+  name := "FinishedAt"
+  policy := {
+    kind := .temporal .dateTime TemporalComponents.now
+  }
+}
+
+private def amount : FlatFieldDecl := {
+  id := 3
+  groupPath := ["Order"]
+  name := "Days"
+  policy := {
+    kind := .number { scale := 0, signed := true }
+  }
+}
+
+private def compositionModel : FlatModel := {
+  fields := [source, other, amount]
+  timeZoneId := "Europe/Berlin"
+}
+
 private def document? (checkedModel : FlatModel)
     (instant : Instant) (localDateTime : LocalDateTime) :
     Option (CheckedDocument checkedModel) := do
@@ -35,6 +58,15 @@ private def document? (checkedModel : FlatModel)
         localDateTime.date.civil.parts localDateTime.time .storedGregorian))
     }]
   } |>.toOption
+
+private def dateTimeCell (field : FieldId)
+    (instant : Instant) (localDateTime : LocalDateTime) :
+    ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored := "DateTime"
+  raw := .parsed (.temporal (.dateTime instant
+    localDateTime.date.civil.parts localDateTime.time .storedGregorian))
+}
 
 private def shift? (zoneId : String)
     (sourceLocal : LocalDateTime) (amount : Rat)
@@ -103,6 +135,50 @@ example :
       .value
         ((LocalDateTime.ofYmdHms? 1916 10 1 0 0 0).get (by native_decide))
         { epochMillis := -1680487200000 } false) := by
+  native_decide
+
+private def differenceSnapshot? :
+    Option (NumericOperand × NumericOperand × NumericOperand) := do
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler compositionModel).toOption
+  let springSource ← LocalDateTime.ofYmdHms? 2024 3 30 2 30 0
+  let springInstant ←
+    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? springSource
+  let springLater ← LocalDateTime.ofYmdHms? 2024 3 31 1 45 0
+  let springLaterInstant ←
+    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? springLater
+  let springInput ← checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [
+      dateTimeCell 1 springInstant springSource,
+      dateTimeCell 2 springLaterInstant springLater
+    ]
+  } |>.toOption
+  let first ←
+    (elaborateDateTimeDayShiftDifference compositionModel
+      1 (.literal 0) 2 .first).toOption
+  let second ←
+    (elaborateDateTimeDayShiftDifference compositionModel
+      1 (.literal 0) 2 .second).toOption
+  let omitted ←
+    (elaborateDateTimeDayShiftDifference compositionModel
+      1 (.field {
+        id := 3
+        info := { scale := 0, signed := true }
+      } (by native_decide)) 2 .first).toOption
+  let firstResult ← first.evaluate .validation springInput |>.toOption
+  let secondResult ← second.evaluate .validation springInput |>.toOption
+  let omittedResult ← omitted.evaluate .validation springInput |>.toOption
+  pure (firstResult, secondResult, omittedResult)
+
+/- Mixed differences retain authored sign, and a value-carrying omitted shift amount
+   makes the Number result fillable instead of erasing that provenance. -/
+example :
+    differenceSnapshot? = some (
+      .value 1 .fixed,
+      .value (-1) .fixed,
+      .value 1 .both) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeDayShiftEvaluation

@@ -113,11 +113,9 @@ def evaluate (checked : CheckedConstructedDateDifference model)
 
 end CheckedConstructedDateDifference
 
-/-- Authored position of the checked shift in the bounded mixed difference form. -/
-inductive ConstructedDateShiftDifferencePosition where
-  | first
-  | second
-  deriving Repr, DecidableEq
+/-- Compatibility name for the shared authored shift position. -/
+abbrev ConstructedDateShiftDifferencePosition :=
+  ShiftDifferencePosition
 
 /-- Structural failure while evaluating the bounded shift/constructed-Date difference form. -/
 inductive ConstructedDateShiftDifferenceFault where

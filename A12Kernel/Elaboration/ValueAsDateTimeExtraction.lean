@@ -134,15 +134,19 @@ def elaborateValueAsDateTimeExpressionShiftAmount
   elaborateTemporalExpressionShiftAmount model rowGroup surface
     |>.mapError ValueAsDateTimeExtractionElabError.ofTemporalShiftAmount
 
-/-- One checked complete-DateTime field, model-zone profile, and checked numeric
-    amount shared by elapsed sub-day and calendar-day shift consumers. -/
-structure CheckedDateTimeNumericShiftSource (model : FlatModel) where
+/-- One checked complete-DateTime field and its exact model-zone profile. -/
+structure CheckedDateTimeSource (model : FlatModel) where
   source : FlatTemporalField
   sourceAdmitted :
     model.admitsValueAsDateTimeExtractionSource source = true
   profile : ModelZone.ConcreteProfile
   profileMatches :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+
+/-- The checked DateTime source plus one numeric amount shared by elapsed sub-day and
+    calendar-day shift consumers. -/
+structure CheckedDateTimeNumericShiftSource (model : FlatModel)
+    extends CheckedDateTimeSource model where
   amount : CheckedTemporalShiftAmount model
 
 /-- One shared checked DateTime shift source specialized to elapsed sub-day arithmetic. -/
@@ -175,13 +179,11 @@ def readTime (checked : CheckedShiftedDateTimeSource model)
 
 end CheckedShiftedDateTimeSource
 
-/-- Check the shared field-backed DateTime source and numeric amount before one
-    operation selects elapsed or calendar-day shifting. -/
-def elaborateDateTimeNumericShiftSource
-    (model : FlatModel) (sourceField : FieldId)
-    (amount : CheckedTemporalShiftAmount model) :
+/-- Check one ordinary complete-DateTime field and select its exact model-zone profile. -/
+def elaborateDateTimeSource
+    (model : FlatModel) (sourceField : FieldId) :
     Except ValueAsDateTimeExtractionElabError
-      (CheckedDateTimeNumericShiftSource model) := do
+      (CheckedDateTimeSource model) := do
   let declaration ←
     model.resolveNonrepeatableDeclarationById sourceField |>.mapError .source
   let source ← match declaration.toTemporalField? with
@@ -198,7 +200,6 @@ def elaborateDateTimeNumericShiftSource
               sourceAdmitted := hAdmitted
               profile
               profileMatches := hProfile
-              amount
             }
         | none => throw (.unsupportedZone model.timeZoneId)
       else
@@ -207,6 +208,16 @@ def elaborateDateTimeNumericShiftSource
       throw (.sourceComponents source.id source.components)
   else
     throw (.sourceKind source.id source.kind)
+
+/-- Check the shared field-backed DateTime source and numeric amount before one
+    operation selects elapsed or calendar-day shifting. -/
+def elaborateDateTimeNumericShiftSource
+    (model : FlatModel) (sourceField : FieldId)
+    (amount : CheckedTemporalShiftAmount model) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedDateTimeNumericShiftSource model) := do
+  let source ← elaborateDateTimeSource model sourceField
+  pure { source with amount }
 
 /-- Check the shared field-backed shifted-DateTime source after its amount has been certified by the selected numeric-expression boundary. -/
 def elaborateShiftedDateTimeSource
