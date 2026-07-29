@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.NumericValidation.Core
+import A12Kernel.Elaboration.NumericValidation.Ordered
 
 /-! # Numeric-validation source resolution
 
