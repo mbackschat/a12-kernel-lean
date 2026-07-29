@@ -8,7 +8,7 @@ import A12Kernel.Semantics.DateTimeDayDifference
 
 This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
 
-Checked shifts retain exact landing instants as well as Date parts. UTC/GMT use the complete hybrid owner; pinned Berlin supports signed day, month, and year additions after the checked Date floor while preserving each `GregorianCalendar` field mutation's offset policy. Constructed-Date differences retain all three UTC/GMT units and support Berlin days and years over exact local-midnight instants; Berlin months remain statically excluded. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Checked shifts retain exact landing instants as well as Date parts. UTC/GMT use the complete hybrid owner; pinned Berlin supports signed day, month, and year additions after the checked Date floor while preserving each `GregorianCalendar` field mutation's offset policy. Constructed-Date differences retain all three units under UTC/GMT and Berlin, dispatching Berlin to exact local-midnight field mutations. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -525,12 +525,12 @@ inductive ConstructedDateDifferenceFault where
 
 namespace ModelZone.ConcreteProfile
 
-/-- Static constructed-Date difference support for one selected profile and unit. UTC/GMT retain all three units; the pinned Berlin profile currently admits only the independently closed day and year mechanisms. -/
+/-- Static constructed-Date difference support for one selected profile and unit. Both implemented profiles now own all three independently closed mechanisms. -/
 def admitsConstructedDateDifference :
     ConcreteProfile → DateShiftUnit → Bool
   | .utc, _ => true
   | .europeBerlin, .days => true
-  | .europeBerlin, .months => false
+  | .europeBerlin, .months => true
   | .europeBerlin, .years => true
 
 end ModelZone.ConcreteProfile
@@ -562,7 +562,9 @@ private def differenceBerlin?
   | .days =>
       EuropeBerlinLegacyProfile.differenceResolvedInDays?
         firstLocal firstInstant secondLocal secondInstant
-  | .months => none
+  | .months =>
+      EuropeBerlinLegacyProfile.differenceResolvedInMonths?
+        firstLocal firstInstant secondLocal secondInstant
   | .years =>
       EuropeBerlinLegacyProfile.differenceResolvedInYears?
         firstLocal firstInstant secondLocal secondInstant
@@ -576,7 +578,6 @@ def differenceResolved? (profile : ModelZone.ConcreteProfile)
   | .utc, .days => first.differenceLegacyDays? second
   | .utc, .months => first.differenceLegacy? .months second
   | .utc, .years => first.differenceLegacy? .years second
-  | .europeBerlin, .months => none
   | .europeBerlin, unit =>
       DateConstructionResult.differenceWith?
         (differenceBerlin? unit) first second

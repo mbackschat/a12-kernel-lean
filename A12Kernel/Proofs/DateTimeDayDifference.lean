@@ -62,7 +62,7 @@ theorem berlin_calendarDayLanding_preserves_date
               congrArg LocalDateTime.date result.1
             simp [dateEq]
 
-/-- A zero year candidate cannot underflow the completed-year count: zero mutation is the exact source identity and natural subtraction remains zero. -/
+/-- A zero year candidate cannot underflow the completed-period count. -/
 @[simp] theorem berlin_wholeYearsForward_same_label
     (dateTime : LocalDateTime) (firstInstant secondInstant : Instant) :
     EuropeBerlinLegacyProfile.wholeYearsForward?
@@ -70,6 +70,37 @@ theorem berlin_calendarDayLanding_preserves_date
       some 0 := by
   simp [EuropeBerlinLegacyProfile.wholeYearsForward?,
     berlin_calendarYearLanding_zero]
+
+/-- Exact-instant ordering makes every completed-period wrapper zero on identical operands, independently of its forward calculator. -/
+@[simp] theorem berlin_signedWholePeriods_self
+    (forward :
+      LocalDateTime → Instant → LocalDateTime → Instant → Option Nat)
+    (dateTime : LocalDateTime) (instant : Instant) :
+    EuropeBerlinLegacyProfile.signedWholePeriods?
+        forward dateTime instant dateTime instant =
+      some 0 := by
+  simp [EuropeBerlinLegacyProfile.signedWholePeriods?]
+
+/-- The shared exact-instant sign wrapper is antisymmetric for every forward completed-period calculator. -/
+theorem berlin_signedWholePeriods_swap
+    (forward :
+      LocalDateTime → Instant → LocalDateTime → Instant → Option Nat)
+    (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) :
+    (EuropeBerlinLegacyProfile.signedWholePeriods?
+      forward first firstInstant second secondInstant).map (-·) =
+    EuropeBerlinLegacyProfile.signedWholePeriods?
+      forward second secondInstant first firstInstant := by
+  by_cases before : firstInstant.epochMillis < secondInstant.epochMillis
+  · have notAfter : ¬secondInstant.epochMillis < firstInstant.epochMillis := by
+      omega
+    simp [EuropeBerlinLegacyProfile.signedWholePeriods?,
+      before, notAfter, Function.comp_def]
+  · by_cases after : secondInstant.epochMillis < firstInstant.epochMillis
+    · simp [EuropeBerlinLegacyProfile.signedWholePeriods?,
+        before, after, Function.comp_def]
+    · simp [EuropeBerlinLegacyProfile.signedWholePeriods?,
+        before, after]
 
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self
@@ -98,15 +129,34 @@ theorem berlin_differenceResolvedInDays_swap
     · simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?,
         before, after]
 
-/-- An already resolved Berlin value is zero completed years from itself. -/
+/- Month and year laws are direct specializations of the shared completed-period sign wrapper. -/
+@[simp] theorem berlin_differenceResolvedInMonths_self
+    (dateTime : LocalDateTime) (instant : Instant) :
+    EuropeBerlinLegacyProfile.differenceResolvedInMonths?
+        dateTime instant dateTime instant =
+      some 0 := by
+  exact berlin_signedWholePeriods_self
+    EuropeBerlinLegacyProfile.wholeMonthsForward? dateTime instant
+
+theorem berlin_differenceResolvedInMonths_swap
+    (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) :
+    (EuropeBerlinLegacyProfile.differenceResolvedInMonths?
+      first firstInstant second secondInstant).map (-·) =
+    EuropeBerlinLegacyProfile.differenceResolvedInMonths?
+      second secondInstant first firstInstant := by
+  exact berlin_signedWholePeriods_swap
+    EuropeBerlinLegacyProfile.wholeMonthsForward?
+    first firstInstant second secondInstant
+
 @[simp] theorem berlin_differenceResolvedInYears_self
     (dateTime : LocalDateTime) (instant : Instant) :
     EuropeBerlinLegacyProfile.differenceResolvedInYears?
         dateTime instant dateTime instant =
       some 0 := by
-  simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?]
+  exact berlin_signedWholePeriods_self
+    EuropeBerlinLegacyProfile.wholeYearsForward? dateTime instant
 
-/-- Swapping two already resolved Berlin operands negates the completed-year result selected by exact instant order. -/
 theorem berlin_differenceResolvedInYears_swap
     (first : LocalDateTime) (firstInstant : Instant)
     (second : LocalDateTime) (secondInstant : Instant) :
@@ -114,16 +164,9 @@ theorem berlin_differenceResolvedInYears_swap
       first firstInstant second secondInstant).map (-·) =
     EuropeBerlinLegacyProfile.differenceResolvedInYears?
       second secondInstant first firstInstant := by
-  by_cases before : firstInstant.epochMillis < secondInstant.epochMillis
-  · have notAfter : ¬secondInstant.epochMillis < firstInstant.epochMillis := by
-      omega
-    simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?,
-      before, notAfter, Function.comp_def]
-  · by_cases after : secondInstant.epochMillis < firstInstant.epochMillis
-    · simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?,
-        before, after, Function.comp_def]
-    · simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?,
-        before, after]
+  exact berlin_signedWholePeriods_swap
+    EuropeBerlinLegacyProfile.wholeYearsForward?
+    first firstInstant second secondInstant
 
 /-- A Berlin label is zero calendar days from itself exactly when the profile admits it. -/
 theorem berlin_differenceInDays_self (dateTime : LocalDateTime) :

@@ -10,7 +10,7 @@ theorem fullDate_wholeMonthsForward_self (date : FullDate) :
     FullDate.Difference.wholeMonthsForward date date = 0 := by
   simp [FullDate.Difference.wholeMonthsForward,
     DateParts.Difference.wholeMonthsForward,
-    DateParts.Difference.monthCoordinate,
+    DateParts.monthCoordinate,
     DateParts.Shift.monthLandingDay]
   exact Nat.min_le_left _ _
 
@@ -117,7 +117,7 @@ theorem baseYearDateDifference_direct_start_zero (year : Int) :
     BaseYearDateSource.parts, DateParts.Difference.signedWholePeriods,
     DateParts.Difference.wholeMonthsForward,
     DateParts.Difference.wholeYearsForward,
-    DateParts.Difference.monthCoordinate,
+    DateParts.monthCoordinate,
     DateParts.Difference.monthLastDay,
     DateParts.daysInMonth?,
     DateParts.Shift.monthLandingDay,
@@ -135,7 +135,7 @@ theorem baseYearDateDifference_finish_boundary (year : Int) :
     BaseYearDateSource.parts, DateParts.Difference.signedWholePeriods,
     DateParts.Difference.wholeMonthsForward,
     DateParts.Difference.wholeYearsForward,
-    DateParts.Difference.monthCoordinate,
+    DateParts.monthCoordinate,
     DateParts.Difference.monthLastDay,
     DateParts.daysInMonth?,
     DateParts.Shift.monthLandingDay, before]

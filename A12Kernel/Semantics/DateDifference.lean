@@ -58,17 +58,13 @@ namespace DateParts
 
 namespace Difference
 
-/-- Linear year/month coordinate used to obtain the only two possible forward month counts. -/
-def monthCoordinate (parts : DateParts) : Int :=
-  parts.year * 12 + Int.ofNat parts.month - 1
-
 /-- An admitted consumer supplies a real month; zero is an unreachable defensive default. -/
 def monthLastDay (parts : DateParts) : Nat :=
   (DateParts.daysInMonth? parts.year parts.month).getD 0
 
 /-- Completed months for an already ordered pair. The raw coordinate count is reduced only when its clamped landing passes the later day. -/
 def wholeMonthsForward (earlier later : DateParts) : Int :=
-  let candidate := monthCoordinate later - monthCoordinate earlier
+  let candidate := later.monthCoordinate - earlier.monthCoordinate
   let landingDay :=
     DateParts.Shift.monthLandingDay earlier (monthLastDay later)
   if later.day < landingDay then candidate - 1 else candidate

@@ -143,17 +143,61 @@ def wholeYearsForward? (earlier : LocalDateTime) (earlierInstant : Instant)
   pure (if laterInstant.epochMillis < landing.epochMillis then
     candidate - 1 else candidate)
 
+/-- Test fresh source-relative month candidates until the first landing passes the later instant. Each candidate is independent: an intermediate gap normalization must not be skipped by jumping to the final year/month coordinate. -/
+private def firstOvershootingMonth? (source : LocalDateTime)
+    (sourceInstant laterInstant : Instant) :
+    Nat → Nat → Option Nat
+  | 0, _ => none
+  | fuel + 1, candidate => do
+      let (_, landing) ←
+        calendarMonthLanding? source sourceInstant (candidate : Int)
+      if laterInstant.epochMillis < landing.epochMillis then
+        some (candidate - 1)
+      else
+        firstOvershootingMonth? source sourceInstant laterInstant
+          fuel (candidate + 1)
+
+/-- Whole completed months between ordered exact instants. Search starts at twelve times the completed-year lower bound and applies every candidate to a fresh source value. The civil month coordinate bounds the remaining search; profile or fuel failure stays explicit. -/
+def wholeMonthsForward? (earlier : LocalDateTime) (earlierInstant : Instant)
+    (later : LocalDateTime) (laterInstant : Instant) : Option Nat := do
+  let years ←
+    wholeYearsForward? earlier earlierInstant later laterInstant
+  let firstCandidate := 12 * years
+  let coordinateCandidate :=
+    Int.toNat
+      (later.date.civil.parts.monthCoordinate -
+        earlier.date.civil.parts.monthCoordinate)
+  let lastCandidate := max firstCandidate coordinateCandidate + 1
+  firstOvershootingMonth? earlier earlierInstant laterInstant
+    (lastCandidate - firstCandidate + 1) firstCandidate
+
+/-- Restore authored sign around one nonnegative completed-period calculation, ordering by exact instants rather than possibly repeated wall labels. -/
+def signedWholePeriods?
+    (forward :
+      LocalDateTime → Instant → LocalDateTime → Instant → Option Nat)
+    (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
+  if firstInstant.epochMillis < secondInstant.epochMillis then
+    (forward first firstInstant second secondInstant).map
+      (fun amount => (amount : Int))
+  else if secondInstant.epochMillis < firstInstant.epochMillis then
+    (forward second secondInstant first firstInstant).map
+      (fun amount => -(amount : Int))
+  else
+    some 0
+
+/-- Signed completed-month count for two already resolved Berlin values. Exact instants establish order before the fresh candidate landing is tested. -/
+def differenceResolvedInMonths? (first : LocalDateTime)
+    (firstInstant : Instant) (second : LocalDateTime)
+    (secondInstant : Instant) : Option Int :=
+  signedWholePeriods? wholeMonthsForward?
+    first firstInstant second secondInstant
+
 /-- Signed completed-year count for two already resolved Berlin values. Exact instants establish order before the nonnegative candidate is qualified. -/
 def differenceResolvedInYears? (first : LocalDateTime) (firstInstant : Instant)
     (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
-  if firstInstant.epochMillis < secondInstant.epochMillis then
-    (wholeYearsForward? first firstInstant second secondInstant).map
-      (fun years => (years : Int))
-  else if secondInstant.epochMillis < firstInstant.epochMillis then
-    (wholeYearsForward? second secondInstant first firstInstant).map
-      (fun years => -(years : Int))
-  else
-    some 0
+  signedWholePeriods? wholeYearsForward?
+    first firstInstant second secondInstant
 
 /-- Count consecutive profile landings that do not pass the later instant. Fuel is derived from the civil-date distance; exhaustion or an unresolved landing remains explicit absence rather than collapsing to the legitimate result zero. -/
 private def countResidualLandings :

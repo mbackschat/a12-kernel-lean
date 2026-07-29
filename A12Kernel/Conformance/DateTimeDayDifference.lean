@@ -162,6 +162,20 @@ example :
         { epochMillis := 1711848600000 }) := by
   native_decide
 
+/- A normalized intermediate month can already pass an endpoint whose calendar coordinate is two months away. The completed-month search must test fresh candidates from its year lower bound rather than jumping to the coordinate candidate. -/
+example :
+    (do
+      let firstLabel :=
+        dateTime 1916 3 30 23 30 0 (by native_decide)
+      let secondLabel :=
+        dateTime 1916 5 1 0 0 0 (by native_decide)
+      let first ← EuropeBerlinLegacyProfile.resolveLocal? firstLabel
+      let second ← EuropeBerlinLegacyProfile.resolveLocal? secondLabel
+      EuropeBerlinLegacyProfile.differenceResolvedInMonths?
+        firstLabel first secondLabel second) =
+      some 0 := by
+  native_decide
+
 /- The leap-to-nonleap February-28 branch clears the entire clock even for a negative year shift. -/
 example :
     (do

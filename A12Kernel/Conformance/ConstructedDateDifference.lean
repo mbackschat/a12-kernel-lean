@@ -145,10 +145,10 @@ example :
       some (.value (-366) false) := by
   native_decide
 
-/- Berlin months remain excluded at the checked boundary; UTC keeps all three legacy-hybrid units. -/
+/- Berlin months use their independently closed candidate loop; UTC keeps all three legacy-hybrid units. -/
 example :
     ModelZone.ConcreteProfile.admitsConstructedDateDifference
-        .europeBerlin .months = false ∧
+        .europeBerlin .months = true ∧
       ModelZone.ConcreteProfile.admitsConstructedDateDifference
         .europeBerlin .days = true ∧
       ModelZone.ConcreteProfile.admitsConstructedDateDifference
@@ -157,7 +157,31 @@ example :
         .utc .months = true := by
   native_decide
 
-/- Non-value precedence is profile-independent, while a forged Berlin month pair still has no dynamic meaning. -/
+/- Month completion tests one fresh source-relative landing: end-of-month clamping, reverse sign, and the February year-seed boundary remain observable. -/
+example :
+    checkedDifference? "Europe/Berlin" .months
+        { year := 2024, month := 1, day := 31 }
+        { year := 2024, month := 2, day := 28 } =
+      some (.value 0 false) ∧
+    checkedDifference? "Europe/Berlin" .months
+        { year := 2024, month := 1, day := 31 }
+        { year := 2024, month := 2, day := 29 } =
+      some (.value 1 false) ∧
+    checkedDifference? "Europe/Berlin" .months
+        { year := 2024, month := 2, day := 29 }
+        { year := 2024, month := 1, day := 31 } =
+      some (.value (-1) false) ∧
+    checkedDifference? "Europe/Berlin" .months
+        { year := 1999, month := 2, day := 28 }
+        { year := 2000, month := 2, day := 28 } =
+      some (.value 12 false) ∧
+    checkedDifference? "Europe/Berlin" .years
+        { year := 1999, month := 2, day := 28 }
+        { year := 2000, month := 2, day := 28 } =
+      some (.value 0 false) := by
+  native_decide
+
+/- The repeated 1916 midnight and non-value precedence both flow through the same checked Berlin month branch. -/
 example :
     CheckedConstructedDateDifference.differenceResolved?
         .europeBerlin .days .incomplete (constructed 2000 2 29) =
@@ -166,8 +190,8 @@ example :
         .europeBerlin .years .unreal (constructed 2000 2 29) =
       some (.value 0 false) ∧
     CheckedConstructedDateDifference.differenceResolved?
-        .europeBerlin .months (constructed 2000 1 1)
-          (constructed 2000 2 1) = none := by
+        .europeBerlin .months (constructed 1916 9 1)
+          (constructed 1916 10 1) = some (.value 1 false) := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateDifference

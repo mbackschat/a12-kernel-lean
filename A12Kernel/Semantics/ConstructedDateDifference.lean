@@ -16,8 +16,7 @@ namespace DateParts.LegacyHybrid
 /-- Completed months for an already ordered pair, using one fresh legacy-hybrid landing from the earlier source. -/
 def wholeMonthsForward? (earlier later : DateParts) : Option Int := do
   let candidate :=
-    DateParts.Difference.monthCoordinate later -
-      DateParts.Difference.monthCoordinate earlier
+    later.monthCoordinate - earlier.monthCoordinate
   let landing ← DateParts.LegacyHybrid.addMonths? earlier candidate
   pure (if decide (later.Before landing) then candidate - 1 else candidate)
 

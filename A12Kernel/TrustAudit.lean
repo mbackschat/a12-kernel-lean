@@ -341,7 +341,11 @@ run_cmd do
 #print axioms A12Kernel.berlin_calendarYearLanding_zero
 #print axioms A12Kernel.berlin_calendarDayLanding_preserves_date
 #print axioms A12Kernel.berlin_wholeYearsForward_same_label
+#print axioms A12Kernel.berlin_signedWholePeriods_self
+#print axioms A12Kernel.berlin_signedWholePeriods_swap
 #print axioms A12Kernel.berlin_differenceResolvedInDays_swap
+#print axioms A12Kernel.berlin_differenceResolvedInMonths_self
+#print axioms A12Kernel.berlin_differenceResolvedInMonths_swap
 #print axioms A12Kernel.berlin_differenceResolvedInYears_self
 #print axioms A12Kernel.berlin_differenceResolvedInYears_swap
 #print axioms A12Kernel.berlin_differenceInDays_self
@@ -1680,5 +1684,5 @@ run_cmd do
 #print axioms A12Kernel.checkedConstructedDateDifference_second_unavailable
 #print axioms A12Kernel.checkedConstructedDateDifference_first_fault
 #print axioms A12Kernel.checkedConstructedDateDifference_profiles_eq
-#print axioms A12Kernel.checkedConstructedDateDifference_berlin_not_months
+#print axioms A12Kernel.concreteProfile_admitsConstructedDateDifference
 #print axioms A12Kernel.checkedConstructedDateDifference_utc_unchanged

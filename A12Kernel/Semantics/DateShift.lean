@@ -24,9 +24,13 @@ def yearLandingDay (source : DateParts) (sourceLastDay targetLastDay : Nat) : Na
 
 end Shift
 
+/-- Linear year/month coordinate shared by month shifts and completed-month consumers. -/
+def monthCoordinate (parts : DateParts) : Int :=
+  parts.year * 12 + Int.ofNat parts.month - 1
+
 /-- Shift a positive-era Gregorian year/month pair by an integer number of months using Euclidean division. Calendar reality remains the following constructor's responsibility. -/
 def shiftedYearMonth (parts : DateParts) (offset : Int) : Int × Nat :=
-  let totalMonths := parts.year * 12 + Int.ofNat parts.month - 1 + offset
+  let totalMonths := parts.monthCoordinate + offset
   (totalMonths / 12, Int.toNat (totalMonths % 12) + 1)
 
 end DateParts

@@ -358,15 +358,11 @@ theorem checkedConstructedDateDifference_profiles_eq
       checked.second.profileSelected
   exact Option.some.inj selected
 
-/-- The checked Berlin boundary excludes months structurally; no runtime branch can acquire that unsupported unit. -/
-theorem checkedConstructedDateDifference_berlin_not_months
-    (checked : CheckedConstructedDateDifference model)
-    (berlin : checked.first.profile = .europeBerlin) :
-    checked.unit ≠ .months := by
-  intro months
-  have admitted := checked.unitAdmitted
-  rw [months, berlin] at admitted
-  simp [ModelZone.ConcreteProfile.admitsConstructedDateDifference] at admitted
+/-- Every unit is now available for each implemented constructed-Date profile. The certificate still prevents silent widening when another profile is added. -/
+@[simp] theorem concreteProfile_admitsConstructedDateDifference
+    (profile : ModelZone.ConcreteProfile) (unit : DateShiftUnit) :
+    profile.admitsConstructedDateDifference unit = true := by
+  cases profile <;> cases unit <;> rfl
 
 /-- Widening the checked profile gate leaves all three UTC/GMT result branches definitionally unchanged. -/
 theorem checkedConstructedDateDifference_utc_unchanged
