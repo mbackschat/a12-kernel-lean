@@ -44,6 +44,31 @@ example :
         { epochMillis := 1711848600000 }) := by
   native_decide
 
+/- `Calendar.YEAR` is not forward day mutation. At an overlap it chooses the later
+   standard-time instant, and at a gap it normalizes to the post-gap wall label. -/
+example :
+    (do
+      let source :=
+        dateTime 1915 10 1 0 0 0 (by native_decide)
+      let sourceInstant ←
+        EuropeBerlinLegacyProfile.resolveLocal? source
+      EuropeBerlinLegacyProfile.calendarYearLanding?
+        source sourceInstant 1) =
+      some (
+        dateTime 1916 10 1 0 0 0 (by native_decide),
+        { epochMillis := -1680483600000 }) ∧
+    (do
+      let source :=
+        dateTime 1915 4 30 23 30 0 (by native_decide)
+      let sourceInstant ←
+        EuropeBerlinLegacyProfile.resolveLocal? source
+      EuropeBerlinLegacyProfile.calendarYearLanding?
+        source sourceInstant 1) =
+      some (
+        dateTime 1916 5 1 0 30 0 (by native_decide),
+        { epochMillis := -1693704600000 }) := by
+  native_decide
+
 /- The adjusted landing is before 01:45, so one calendar day fits even though fewer than 86,400 elapsed seconds fit. -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?

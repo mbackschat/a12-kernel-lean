@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ModelZone
 
 /-! # Concrete model-zone calendar-day differences
 
-This capsule implements the resolved `DifferenceInDays` core for UTC and the versioned Europe/Berlin legacy profile. Berlin makes the kernel's `365 × whole-years` lower-bound calendar landing, then counts stateful residual forward day landings in authored operand order. A gap landing uses the new offset to choose the pre-gap wall clock; an overlap landing uses the earlier instant. The adjusted wall clock then becomes the source of the next residual step.
+This capsule implements the resolved `DifferenceInDays` core for UTC and the versioned Europe/Berlin legacy profile. Berlin qualifies the kernel's whole-year candidate through the distinct `Calendar.YEAR` mutation, makes the `365 × whole-years` lower-bound day landing, then counts stateful residual forward day landings in authored operand order. Year mutation chooses the later overlap instant and post-gap wall label; forward day landings choose the earlier overlap instant and pre-gap wall clock. The adjusted day landing becomes the source of the next residual step.
 
 Parsing, Date-versus-DateTime admission, empty and malformed operands, calendar identity outside the concrete profiles, numeric result storage, validation polarity, and a general model-zone interface remain separate.
 -/
@@ -55,7 +55,7 @@ private def resolvedLanding?
   let next ← LocalDateTime.atOffset? landing actualOffset
   pure (next, landing)
 
-/-- Resolve and decode one policy-selected forward calendar landing. Day and year additions share this exact gap/overlap mechanism. -/
+/-- Resolve and decode one policy-selected forward calendar landing for `DAY_OF_MONTH` mutation. -/
 private def forwardLanding? :=
   resolvedLanding? resolveForwardLanding?
 
@@ -83,9 +83,9 @@ def calendarDayLandingBackward? (current : LocalDateTime)
     let nextDate ← current.date.addDays? (-(days : Int))
     backwardLanding? nextDate current.time
 
-/-- Add whole years with the legacy February-28 clock reset before resolving the final calendar landing. -/
-private def calendarYearLanding? (current : LocalDateTime)
-    (currentInstant : Instant) (years : Nat) :
+/-- Apply signed `Calendar.YEAR` mutation with the legacy February-28 clock reset. Unlike forward day mutation, year mutation always selects the later overlap instant and normalizes a gap to the post-gap wall label, independent of sign. -/
+def calendarYearLanding? (current : LocalDateTime)
+    (currentInstant : Instant) (years : Int) :
     Option (LocalDateTime × Instant) := do
   if years = 0 then
     pure (current, currentInstant)
@@ -99,7 +99,7 @@ private def calendarYearLanding? (current : LocalDateTime)
         target.month == 2 && target.day == 28 &&
         !DateParts.isLeapYear target.year
     let time ← if clearClock then TimeOfDay.ofHms? 0 0 0 else some current.time
-    forwardLanding? nextDate time
+    backwardLanding? nextDate time
 
 /-- Whole completed years between ordered exact instants, using the same final-landing rule as legacy calendar year addition. -/
 private def wholeYears? (earlier : LocalDateTime) (earlierInstant : Instant)
@@ -107,7 +107,8 @@ private def wholeYears? (earlier : LocalDateTime) (earlierInstant : Instant)
   let candidate :=
     Int.toNat
       (later.date.civil.parts.year - earlier.date.civil.parts.year)
-  let (_, landing) ← calendarYearLanding? earlier earlierInstant candidate
+  let (_, landing) ←
+    calendarYearLanding? earlier earlierInstant (candidate : Int)
   pure (if laterInstant.epochMillis < landing.epochMillis then
     candidate - 1 else candidate)
 

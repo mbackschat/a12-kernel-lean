@@ -9,8 +9,6 @@ open A12Kernel
 private def model : FlatModel := { fields := [], timeZoneId := "UTC" }
 private def berlinModel : FlatModel :=
   { fields := [], timeZoneId := "Europe/Berlin", baseYear := some 1583 }
-private def berlin1916Model : FlatModel :=
-  { fields := [], timeZoneId := "Europe/Berlin", baseYear := some 1916 }
 
 private def todaySources : SurfaceConstructedDateComponents := {
   day := .todayExtractor .day, month := .todayExtractor .month
@@ -59,6 +57,16 @@ private def berlinMarchEndSources : SurfaceConstructedDateComponents := {
 
 private def berlinNormalSources : SurfaceConstructedDateComponents := {
   day := .constant "29", month := .constant "9"
+  year := .baseYear
+}
+
+private def berlinOctoberFirstSources : SurfaceConstructedDateComponents := {
+  day := .constant "1", month := .constant "10"
+  year := .baseYear
+}
+
+private def berlinFebruaryEndSources : SurfaceConstructedDateComponents := {
+  day := .constant "28", month := .constant "2"
   year := .baseYear
 }
 
@@ -133,15 +141,18 @@ private def berlinPreFloorUnsupported? : Option Bool := do
         { year := 1583, month := 10, day := 15 }) => true
     | _ => false)
 
-private def berlin1916Shift?
+private def berlinShift?
+    (year : Int)
     (sources : SurfaceConstructedDateComponents)
     (unit : DateShiftUnit) (amount : Rat) :
     Option (Except ConstructedDateShiftFault ConstructedDateShiftResult) := do
+  let checkedModel : FlatModel :=
+    { fields := [], timeZoneId := "Europe/Berlin", baseYear := some year }
   let source ←
     (elaborateConstructedDateSources
-      berlin1916Model sources).toOption
-  let input ← documentFor? berlin1916Model
-  let shift : CheckedConstructedDateShift berlin1916Model := {
+      checkedModel sources).toOption
+  let input ← documentFor? checkedModel
+  let shift : CheckedConstructedDateShift checkedModel := {
     source
     unit
     amount := .literal amount
@@ -149,11 +160,11 @@ private def berlin1916Shift?
   some (shift.evaluate .computation input none)
 
 private def berlinShiftSeparators? : Option Bool := do
-  let forward ← berlin1916Shift? berlinBeforeOverlapSources .days 1
-  let normal ← berlin1916Shift? berlinNormalSources .days 1
-  let reverse ← berlin1916Shift? berlinAfterOverlapSources .days (-1)
+  let forward ← berlinShift? 1916 berlinBeforeOverlapSources .days 1
+  let normal ← berlinShift? 1916 berlinNormalSources .days 1
+  let reverse ← berlinShift? 1916 berlinAfterOverlapSources .days (-1)
   let ordinaryReverse ←
-    berlin1916Shift? berlinBeforeOverlapSources .days (-1)
+    berlinShift? 1916 berlinBeforeOverlapSources .days (-1)
   let overlapLabel ← LocalDateTime.ofYmdHms? 1916 10 1 0 0 0
   let normalLabel ← LocalDateTime.ofYmdHms? 1916 9 30 0 0 0
   let freshOverlap ←
@@ -177,15 +188,15 @@ private def berlinShiftSeparators? : Option Bool := do
 
 private def berlinMonthShiftSeparators? : Option Bool := do
   let forward ←
-    berlin1916Shift? berlinSeptemberFirstSources .months 1
+    berlinShift? 1916 berlinSeptemberFirstSources .months 1
   let reverse ←
-    berlin1916Shift? berlinNovemberFirstSources .months (-1)
+    berlinShift? 1916 berlinNovemberFirstSources .months (-1)
   let clampForward ←
-    berlin1916Shift? berlinJanuaryEndSources .months 1
+    berlinShift? 1916 berlinJanuaryEndSources .months 1
   let clampReverse ←
-    berlin1916Shift? berlinMarchEndSources .months (-1)
+    berlinShift? 1916 berlinMarchEndSources .months (-1)
   let ordinary ←
-    berlin1916Shift? berlinNormalSources .months 1
+    berlinShift? 1916 berlinNormalSources .months 1
   pure (match forward, reverse, clampForward, clampReverse, ordinary with
     | .ok (.value { epochMillis := -1680483600000 }
           { year := 1916, month := 10, day := 1 } false),
@@ -197,6 +208,31 @@ private def berlinMonthShiftSeparators? : Option Bool := do
           { year := 1916, month := 2, day := 29 } false),
         .ok (.value { epochMillis := -1678064400000 }
           { year := 1916, month := 10, day := 29 } false) => true
+    | _, _, _, _, _ => false)
+
+private def berlinYearShiftSeparators? : Option Bool := do
+  let forwardOverlap ←
+    berlinShift? 1915 berlinOctoberFirstSources .years 1
+  let reverseOverlap ←
+    berlinShift? 1917 berlinOctoberFirstSources .years (-1)
+  let leapForward ←
+    berlinShift? 1915 berlinFebruaryEndSources .years 1
+  let leapReverse ←
+    berlinShift? 1917 berlinFebruaryEndSources .years (-1)
+  let ordinary ←
+    berlinShift? 1915 berlinNormalSources .years 1
+  pure (match
+      forwardOverlap, reverseOverlap, leapForward, leapReverse, ordinary with
+    | .ok (.value { epochMillis := -1680483600000 }
+          { year := 1916, month := 10, day := 1 } false),
+        .ok (.value { epochMillis := -1680483600000 }
+          { year := 1916, month := 10, day := 1 } false),
+        .ok (.value { epochMillis := -1699059600000 }
+          { year := 1916, month := 2, day := 29 } false),
+        .ok (.value { epochMillis := -1699059600000 }
+          { year := 1916, month := 2, day := 29 } false),
+        .ok (.value { epochMillis := -1680660000000 }
+          { year := 1916, month := 9, day := 29 } false) => true
     | _, _, _, _, _ => false)
 
 /- Changing only the explicit world across UTC midnight changes all three components. -/
@@ -286,6 +322,12 @@ example : berlinShiftSeparators? = some true := by
    same leap-day target. In particular, its forward overlap landing differs from the
    forward day landing above. -/
 example : berlinMonthShiftSeparators? = some true := by
+  native_decide
+
+/- Year mutation also selects the later CET instant at the repeated midnight in both
+   directions. Its separate February rule promotes the non-leap 28th to the target leap
+   day; neither behavior can be inferred from day mutation. -/
+example : berlinYearShiftSeparators? = some true := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateDynamic

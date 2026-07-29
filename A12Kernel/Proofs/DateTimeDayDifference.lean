@@ -24,6 +24,14 @@ namespace A12Kernel
       some (dateTime, instant) := by
   simp [EuropeBerlinLegacyProfile.calendarDayLandingBackward?]
 
+/-- A zero-year Berlin mutation preserves the already selected exact instant; even an ambiguous source label is not resolved again. -/
+@[simp] theorem berlin_calendarYearLanding_zero
+    (dateTime : LocalDateTime) (instant : Instant) :
+    EuropeBerlinLegacyProfile.calendarYearLanding?
+        dateTime instant 0 =
+      some (dateTime, instant) := by
+  simp [EuropeBerlinLegacyProfile.calendarYearLanding?]
+
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self
     (dateTime : LocalDateTime) (instant : Instant) :

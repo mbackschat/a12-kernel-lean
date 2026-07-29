@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 614 jobs · trust audit **1624 theorem roots; 37132 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 614 jobs · trust audit **1625 theorem roots; 37116 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close signed pinned-Berlin checked constructed-Date `AddYears` while preserving the runtime's legacy February-28 correction and exact model-zone landing. Start with positive and negative year shifts into the autumn-1916 repeated local-midnight hour and with the Gregorian-leap correction on both sides of the 1582 cutover; do not infer the year landing from the already-distinct day or month mechanisms.
+Source and close checked constructed-Date `DifferenceInDays`/`DifferenceInMonths`/`DifferenceInYears` under the pinned Berlin profile without inheriting shift landing policy by name alone. Start with exact-instant overlap pairs that separate fresh construction, `Calendar.YEAR` qualification, and day/month/year difference behavior; retain UTC/GMT's completed legacy-hybrid accounts unchanged.
 
 ## Immediate sequence
 
-1. Audit `BedingungsOperatorHelper.addiereJahre` for positive and negative February-28 correction, generated operand order, and exact Berlin landing on both sides of the repeated midnight.
-2. Add a red checked shift matrix that separates Gregorian leap correction, legacy cutover behavior, positive/negative overlap instant selection, and an ordinary control.
-3. Compose the existing legacy constructed-Date year helper with the established profile only after the source packet determines its exact landing; otherwise keep Berlin years explicitly unsupported.
+1. Audit `BedingungsOperatorHelper.getDatumsDiff`/`getDifferenzIn{Tagen,Monaten,Jahren}` from two constructed operands through generated order and exact model-zone Calendar identity.
+2. Build one separating matrix over equal wall labels with distinct instants, completed-period boundary crossings, cutover normalization, empty/formal precedence, and ordinary controls.
+3. Reuse the existing checked source/result owners and the established per-unit Calendar helpers only where the source packet proves equality; otherwise keep that Berlin difference unit explicitly unsupported.
 
 ## Parked boundaries
 
