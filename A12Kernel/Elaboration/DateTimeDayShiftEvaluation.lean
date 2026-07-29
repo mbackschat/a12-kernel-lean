@@ -12,8 +12,8 @@ landing label, exact instant, milliseconds, and omission provenance. One such re
 feed one further day shift without label reconstruction. The reached-result step is also
 reused by the separate bounded elapsed-sub-day-then-calendar-day owner.
 
-DateTime `AddMonths` and `AddYears`, dynamic `Now`, wider recursion, other model zones,
-repeatable placement, and target storage remain outside.
+DateTime `AddMonths` and `AddYears`, wider recursion, other model zones, repeatable
+placement, and dynamic target storage remain outside.
 -/
 
 namespace A12Kernel
@@ -31,6 +31,14 @@ inductive DateTimeDayShiftFault where
 abbrev CheckedDateTimeDayShift :=
   CheckedDateTimeNumericShiftSource
 
+/-- One checked model-zone profile and numeric amount for calendar-day shifting this
+    execution's explicit `World.now`. -/
+structure CheckedNowDateTimeDayShift (model : FlatModel) where
+  profile : ModelZone.ConcreteProfile
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+  amount : CheckedTemporalShiftAmount model
+
 /-- Check one ordinary complete-DateTime field and checked numeric amount for the
     calendar-day operation. Month/year DateTime operations have no constructor. -/
 def elaborateDateTimeDayShift
@@ -39,6 +47,15 @@ def elaborateDateTimeDayShift
     Except ValueAsDateTimeExtractionElabError
       (CheckedDateTimeDayShift model) :=
   elaborateDateTimeNumericShiftSource model sourceField amount
+
+/-- Check a dynamic calendar-day shift without sampling its execution world. -/
+def elaborateNowDateTimeDayShift
+    (model : FlatModel) (amount : CheckedTemporalShiftAmount model) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedNowDateTimeDayShift model) :=
+  match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | some profile => pure { profile, profileMatches := hProfile, amount }
+  | none => throw (.unsupportedZone model.timeZoneId)
 
 namespace CheckedDateTimeDayShift
 
@@ -200,5 +217,21 @@ def evaluateThen (checked : CheckedDateTimeDayShift model)
         source phase input
 
 end CheckedDateTimeDayShift
+
+namespace CheckedNowDateTimeDayShift
+
+/-- Decode this execution's exact `World.now`, then apply the checked calendar-day
+    amount under the model-owned profile. No world value is sampled during checking. -/
+def evaluate (checked : CheckedNowDateTimeDayShift model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except DateTimeDayShiftFault ValueAsDateTimeResult :=
+  match checked.profile.localDateTime? world.now with
+  | none => .error (.sourceOutsideProfile world.now)
+  | some sourceLocal =>
+      CheckedDateTimeDayShift.evaluateProfileResult
+        checked.profile checked.amount
+        (.value sourceLocal world.now false) phase input
+
+end CheckedNowDateTimeDayShift
 
 end A12Kernel

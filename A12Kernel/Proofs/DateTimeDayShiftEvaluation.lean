@@ -76,4 +76,46 @@ theorem checkedDateTimeDayShift_evaluateThen_inner_unavailable
     CheckedDateTimeDayShift.evaluateResult,
     CheckedDateTimeDayShift.evaluateProfileResult]
 
+/-- A formally unavailable dynamic day amount remains the exact result once this
+    execution's world instant has decoded under the checked profile. -/
+theorem checkedNowDateTimeDayShift_formal_amount
+    (checked : CheckedNowDateTimeDayShift model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (sourceLocal : LocalDateTime) (cause : FormalCause)
+    (decoded : checked.profile.localDateTime? world.now = some sourceLocal)
+    (amount :
+      checked.amount.read phase input =
+        .ok (.error (.formal cause))) :
+    checked.evaluate phase world input =
+      .ok (.unavailable cause) := by
+  simp [CheckedNowDateTimeDayShift.evaluate, decoded,
+    CheckedDateTimeDayShift.evaluateProfileResult, amount]
+
+/-- A fixed zero dynamic day amount preserves the supplied world's exact instant
+    instead of re-resolving its decoded label. -/
+theorem checkedNowDateTimeDayShift_zero
+    (checked : CheckedNowDateTimeDayShift model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (sourceLocal : LocalDateTime)
+    (decoded : checked.profile.localDateTime? world.now = some sourceLocal)
+    (amount :
+      checked.amount.read phase input =
+        .ok (.ok (.value 0 .fixed))) :
+    checked.evaluate phase world input =
+      .ok (.value sourceLocal world.now false) := by
+  have offsetZero : temporalShiftAmountToInt32 0 = 0 := by
+    decide
+  rw [CheckedNowDateTimeDayShift.evaluate, decoded]
+  simp only [CheckedDateTimeDayShift.evaluateProfileResult, amount]
+  have applied :
+      CheckedDateTimeDayShift.applyProfileAmount checked.profile
+          sourceLocal world.now (.value 0 .fixed) =
+        .ok (.value sourceLocal world.now false) := by
+    simp only [CheckedDateTimeDayShift.applyProfileAmount.eq_def]
+    rw [offsetZero]
+    rfl
+  simp only [CheckedDateTimeDayShift.applyProfileResultAmount.eq_def,
+    applied, ValueAsDateTimeResult.inheritNotGiven]
+  rfl
+
 end A12Kernel
