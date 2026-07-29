@@ -491,4 +491,116 @@ example : (do
     | _ => none) = some (true, true) := by
   native_decide
 
+/- A second checked sub-day shift consumes the inner exact instant directly. Cross-unit
+   pairs preserve calendar carry, wall label, and the millisecond-relative delta. -/
+example : (do
+    let sourceLocal ← LocalDateTime.ofYmdHms? 2024 6 15 23 59 30
+    let resolved ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? sourceLocal
+    let sourceInstant : Instant := {
+      epochMillis := resolved.epochMillis + 777
+    }
+    let input ← document? modelWithShiftAmount [{
+      address := { field := 1, path := [] }
+      stored := "15.06.2024T23:59:30"
+      raw := dateTimeRaw sourceInstant
+        sourceLocal.date.civil.parts sourceLocal.time
+    }]
+    let evaluate (firstUnit : DateTimeSubdayUnit) (firstAmount : Rat)
+        (secondUnit : DateTimeSubdayUnit) (secondAmount : Rat)
+        (hour minute second : Nat) (delta : Int) := do
+      let checked ←
+        (elaborateShiftedDateTimeSource modelWithShiftAmount
+          1 firstUnit (.literal firstAmount)).toOption
+      let result ←
+        checked.evaluateThen secondUnit (.literal secondAmount)
+          .computation input |>.toOption
+      match result with
+      | .value label instant false =>
+          pure (label.date.civil.parts ==
+              { year := 2024, month := 6, day := 16 } &&
+            label.time.hour == hour && label.time.minute == minute &&
+            label.time.second == second &&
+            instant.epochMillis - sourceInstant.epochMillis == delta)
+      | _ => none
+    pure [
+      ← evaluate .hours 1 .minutes 2 1 1 30 3720000,
+      ← evaluate .minutes 2 .seconds 45 0 2 15 165000,
+      ← evaluate .seconds 45 .hours 2 2 0 15 7245000
+    ]) = some [true, true, true] := by
+  native_decide
+
+/- Nested evaluation preserves the inner repeated-hour instant. A formal inner source
+   stops the outer amount; inner no-value reaches it; arithmetic no-value and inherited
+   omission remain distinct. -/
+example : (do
+    let overlapLocal ← LocalDateTime.ofYmdHms? 2024 10 27 1 30 0
+    let overlapInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? overlapLocal
+    let overlapInput ← document? modelWithShiftAmount [{
+      address := { field := 1, path := [] }
+      stored := "27.10.2024T01:30:00"
+      raw := dateTimeRaw overlapInstant
+        overlapLocal.date.civil.parts overlapLocal.time
+    }]
+    let overlap ←
+      (elaborateShiftedDateTimeSource modelWithShiftAmount
+        1 .hours (.literal 1)).toOption
+    let nestedOverlap ←
+      overlap.evaluateThen .seconds (.literal 0)
+        .computation overlapInput |>.toOption
+    let badSourceInput ← document? modelWithShiftAmount [
+      { address := { field := 1, path := [] }
+        stored := "bad-source"
+        raw := .rejected .malformed },
+      { address := { field := 2, path := [] }
+        stored := "bad-outer"
+        raw := .rejected .declaredConstraint }]
+    let fixed ←
+      (elaborateShiftedDateTimeSource modelWithShiftAmount
+        1 .seconds (.literal 0)).toOption
+    let outerField ←
+      (elaborateValueAsDateTimeFieldShiftAmount
+        modelWithShiftAmount 2).toOption
+    let stopped ←
+      fixed.evaluateThen .seconds outerField
+        .computation badSourceInput |>.toOption
+    let emptyInput ← document? modelWithShiftAmount [{
+      address := { field := 2, path := [] }
+      stored := "bad-outer"
+      raw := .rejected .declaredConstraint }]
+    let reached ←
+      fixed.evaluateThen .seconds outerField .computation emptyInput |>.toOption
+    let omittedInner ←
+      (elaborateShiftedDateTimeSource modelWithShiftAmount
+        1 .seconds outerField).toOption
+    let omitted ←
+      omittedInner.evaluateThen .seconds (.literal 1)
+        .computation overlapInput |>.toOption
+    let domainAmount ←
+      (elaborateValueAsDateTimeExpressionShiftAmount
+        modelWithShiftAmount ["Order"] shiftedByFieldOverZero).toOption
+    let domainInput ← document? modelWithShiftAmount [
+      { address := { field := 1, path := [] }
+        stored := "27.10.2024T01:30:00"
+        raw := dateTimeRaw overlapInstant
+          overlapLocal.date.civil.parts overlapLocal.time },
+      { address := { field := 2, path := [] }
+        stored := "3"
+        raw := .parsed (.num 3) }]
+    let domain ←
+      fixed.evaluateThen .seconds domainAmount .computation domainInput |>.toOption
+    pure (nestedOverlap, stopped, reached, omitted, domain)) =
+      some (
+        .value
+          ((LocalDateTime.ofYmdHms? 2024 10 27 2 30 0).get (by native_decide))
+          { epochMillis := 1729989000000 } false,
+        .unavailable .malformed,
+        .unavailable .declaredConstraint,
+        .value
+          ((LocalDateTime.ofYmdHms? 2024 10 27 1 30 1).get (by native_decide))
+          { epochMillis := 1729985401000 } true,
+        .noValue false) := by
+  native_decide
+
 end A12Kernel.Conformance.ValueAsDateTimeExtraction

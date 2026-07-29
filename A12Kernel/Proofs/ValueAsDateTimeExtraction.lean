@@ -91,6 +91,34 @@ theorem checkedShiftedNowDateTimeSource_readTime_projects_evaluate
       (checked.evaluate phase world input).map (·.asTimeOperand) := by
   rfl
 
+/-- A reached inner formal cause decides nested sub-day evaluation before the outer
+    amount is read. -/
+theorem checkedShiftedDateTimeSource_evaluateThen_inner_unavailable
+    (checked : CheckedShiftedDateTimeSource model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (input : CheckedDocument model)
+    (cause : FormalCause)
+    (inner :
+      checked.evaluate phase input = .ok (.unavailable cause)) :
+    checked.evaluateThen nextUnit nextAmount phase input =
+      .ok (.unavailable cause) := by
+  simp [CheckedShiftedDateTimeSource.evaluateThen, inner]
+
+/-- A cause-free inner no-value still reaches a formal outer amount. -/
+theorem checkedShiftedDateTimeSource_evaluateThen_noValue_reaches_amount
+    (checked : CheckedShiftedDateTimeSource model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (input : CheckedDocument model)
+    (notGiven : Bool) (cause : FormalCause)
+    (inner : checked.evaluate phase input = .ok (.noValue notGiven))
+    (outer :
+      nextAmount.read phase input = .ok (.error (.formal cause))) :
+    checked.evaluateThen nextUnit nextAmount phase input =
+      .ok (.unavailable cause) := by
+  simp [CheckedShiftedDateTimeSource.evaluateThen, inner, outer]
+
 /-- Arithmetic domain failure remains a present-but-valueless Time operand; it is never reinterpreted as a zero shift. -/
 theorem valueAsDateTimeShiftAmount_notEvaluated
     (amount : CheckedTemporalShiftAmount model)

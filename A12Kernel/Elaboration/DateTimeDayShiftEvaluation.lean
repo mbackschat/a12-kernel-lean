@@ -39,21 +39,6 @@ def elaborateDateTimeDayShift
       (CheckedDateTimeDayShift model) :=
   elaborateDateTimeNumericShiftSource model sourceField amount
 
-namespace ValueAsDateTimeResult
-
-/-- Add inherited omission provenance to a composed DateTime result without changing
-    exact value, non-relevance, or formal cause identity. -/
-def inheritNotGiven (result : ValueAsDateTimeResult)
-    (inherited : Bool) : ValueAsDateTimeResult :=
-  match result with
-  | .noValue notGiven => .noValue (inherited || notGiven)
-  | .value localDateTime instant notGiven =>
-      .value localDateTime instant (inherited || notGiven)
-  | .nonRelevant => .nonRelevant
-  | .unavailable cause => .unavailable cause
-
-end ValueAsDateTimeResult
-
 namespace CheckedDateTimeDayShift
 
 /-- Apply one UTC calendar-day mutation, preserving the selected exact instant for zero
