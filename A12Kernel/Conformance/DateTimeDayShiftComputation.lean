@@ -21,8 +21,14 @@ private def target : FlatFieldDecl := {
     format := "dd.MM.yyyy'T'HH:mm:ss"
     partialMode := .full } }
 
+private def amount : FlatFieldDecl := {
+  id := 3
+  groupPath := ["Order"]
+  name := "Days"
+  policy := { kind := .number { scale := 0, signed := true } } }
+
 private def model : FlatModel := {
-  fields := [source, target]
+  fields := [source, target, amount]
   timeZoneId := "Europe/Berlin" }
 
 private def prepared :=
@@ -50,6 +56,18 @@ private def sourceData (sourceStored targetStored : String)
     { address := { field := target.id, path := [] }
       stored := targetStored
       raw := temporalRaw }
+  ] }
+
+private def dynamicData (targetStored : String) (amountRaw : RawCell) :
+    DocumentData := {
+  instantiatedRows := []
+  cells := [
+    { address := { field := target.id, path := [] }
+      stored := targetStored
+      raw := temporalRaw },
+    { address := { field := amount.id, path := [] }
+      stored := "amount"
+      raw := amountRaw }
   ] }
 
 private def operation? :=
@@ -124,6 +142,116 @@ example :
     errorOf (elaborateDateTimeDayShiftComputation
       selfModel target.id (.literal 1) target.id) =
         some (.targetSelfReference target.id) := by
+  native_decide
+
+/- One checked dynamic computation consumes each supplied world independently, retains
+   exact milliseconds through the day landing, and classifies declaration-owned text
+   relative to the immutable source. -/
+example : (do
+    let checked ←
+      (checkDocument prepared "en_US"
+        (dynamicData old.text (.parsed (.num 1)))).toOption
+    let operation ←
+      (elaborateNowDateTimeDayShiftComputation
+        model (.literal 1) target.id).toOption
+    let firstLocal ← LocalDateTime.ofYmdHms? 2024 3 30 2 30 0
+    let secondLocal ← LocalDateTime.ofYmdHms? 2024 10 26 2 30 0
+    let firstNow ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? firstLocal
+    let secondNow ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? secondLocal
+    let firstOperand ←
+      operation.evaluateOperand { now := {
+        epochMillis := firstNow.epochMillis + 777 } } checked |>.toOption
+    let firstView ←
+      operation.executeResult { now := {
+        epochMillis := firstNow.epochMillis + 777 } } checked
+          ([] : List FormalCause) |>.toOption
+    let firstApplied ←
+      firstView.applyTo (destinationWith .absent) |>.toOption
+    let secondView ←
+      operation.executeResult { now := {
+        epochMillis := secondNow.epochMillis + 333 } } checked
+          ([] : List FormalCause) |>.toOption
+    pure (firstOperand,
+      firstView.withChanges.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text),
+      firstApplied target.id,
+      secondView.withChanges.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
+    some (
+      .value { epochMillis := 1711845000777 },
+      ["31.03.2024T01:30:00"],
+      .presentValue ⟨"31.03.2024T01:30:00", by decide⟩,
+      ["27.10.2024T02:30:00"]) := by
+  native_decide
+
+/- Dynamic day target execution preserves the settled distinction between formal
+   poison and arithmetic no-value. A reached formal cause remains poison and clears a
+   filled source without becoming a target-local error. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let poisonedInput ←
+      (checkDocument prepared "en_US"
+        (dynamicData old.text (.rejected .declaredConstraint))).toOption
+    let checkedAmount ←
+      (elaborateValueAsDateTimeFieldShiftAmount model amount.id).toOption
+    let poisoned ←
+      (elaborateNowDateTimeDayShiftComputation
+        model checkedAmount target.id).toOption
+    let poisonOutcome ←
+      poisoned.evaluateOutcome { now } poisonedInput |>.toOption
+    let poisonView ←
+      poisoned.executeResult { now } poisonedInput ([] : List FormalCause)
+        |>.toOption
+    pure (poisonOutcome, poisonView.cleared)) =
+    some (.poison .declaredConstraint, [target.id]) := by
+  native_decide
+
+/- Arithmetic domain failure remains quiet no-value and clears a filled source without
+   manufacturing any public error. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let input ←
+      (checkDocument prepared "en_US"
+        (dynamicData old.text (.parsed (.num 1)))).toOption
+    let domainAmount ←
+      (elaborateValueAsDateTimeExpressionShiftAmount model ["Order"]
+        (.binary .divide
+          (.literal { value := 1, authoredScale := 0 })
+          (.literal { value := 0, authoredScale := 0 }))).toOption
+    let empty ←
+      (elaborateNowDateTimeDayShiftComputation
+        model domainAmount target.id).toOption
+    let emptyView ←
+      empty.executeResult { now } input ([] : List FormalCause)
+        |>.toOption
+    pure (emptyView.cleared, emptyView.noErrorOccurred)) =
+    some ([target.id], true) := by
+  native_decide
+
+/- A successful value equal to the immutable source remains public but is not
+   re-applied as a source-relative change. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let unchangedInput ←
+      (checkDocument prepared "en_US"
+        (dynamicData "15.06.2024T10:30:00" (.parsed (.num 0)))).toOption
+    let unchanged ←
+      (elaborateNowDateTimeDayShiftComputation
+        model (.literal 0) target.id).toOption
+    let unchangedView ←
+      unchanged.executeResult { now } unchangedInput ([] : List FormalCause)
+        |>.toOption
+    pure (
+      unchangedView.withoutErrors.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text),
+      unchangedView.withChanges.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
+    some (["15.06.2024T10:30:00"], ([] : List String)) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeDayShiftComputation
