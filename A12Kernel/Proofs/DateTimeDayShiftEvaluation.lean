@@ -118,4 +118,64 @@ theorem checkedNowDateTimeDayShift_zero
     applied, ValueAsDateTimeResult.inheritNotGiven]
   rfl
 
+/-- A reached inner formal cause decides dynamic two-day evaluation before the outer
+    amount is read. -/
+theorem checkedNowDateTimeDayShift_evaluateThen_inner_unavailable
+    (checked : CheckedNowDateTimeDayShift model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (cause : FormalCause)
+    (inner :
+      checked.evaluate phase world input = .ok (.unavailable cause)) :
+    checked.evaluateThen nextAmount phase world input =
+      .ok (.unavailable cause) := by
+  simp [CheckedNowDateTimeDayShift.evaluateThen, inner,
+    CheckedDateTimeDayShift.evaluateProfileResult]
+
+/-- Cause-free inner no-value reaches the outer amount and retains its formal cause. -/
+theorem checkedNowDateTimeDayShift_evaluateThen_noValue_reaches_amount
+    (checked : CheckedNowDateTimeDayShift model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (notGiven : Bool) (cause : FormalCause)
+    (inner :
+      checked.evaluate phase world input = .ok (.noValue notGiven))
+    (amount :
+      nextAmount.read phase input =
+        .ok (.error (.formal cause))) :
+    checked.evaluateThen nextAmount phase world input =
+      .ok (.unavailable cause) := by
+  simp [CheckedNowDateTimeDayShift.evaluateThen, inner,
+    CheckedDateTimeDayShift.evaluateProfileResult, amount]
+
+/-- A zero outer day amount preserves the inner exact instant and omission provenance. -/
+theorem checkedNowDateTimeDayShift_evaluateThen_zero
+    (checked : CheckedNowDateTimeDayShift model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (sourceLocal : LocalDateTime) (sourceInstant : Instant)
+    (notGiven : Bool)
+    (inner :
+      checked.evaluate phase world input =
+        .ok (.value sourceLocal sourceInstant notGiven))
+    (amount :
+      nextAmount.read phase input =
+        .ok (.ok (.value 0 .fixed))) :
+    checked.evaluateThen nextAmount phase world input =
+      .ok (.value sourceLocal sourceInstant notGiven) := by
+  have offsetZero : temporalShiftAmountToInt32 0 = 0 := by
+    decide
+  rw [CheckedNowDateTimeDayShift.evaluateThen, inner]
+  simp only [CheckedDateTimeDayShift.evaluateProfileResult, amount]
+  have applied :
+      CheckedDateTimeDayShift.applyProfileAmount checked.profile
+          sourceLocal sourceInstant (.value 0 .fixed) =
+        .ok (.value sourceLocal sourceInstant false) := by
+    simp only [CheckedDateTimeDayShift.applyProfileAmount.eq_def]
+    rw [offsetZero]
+    rfl
+  simp only [CheckedDateTimeDayShift.applyProfileResultAmount.eq_def,
+    applied, ValueAsDateTimeResult.inheritNotGiven]
+  cases notGiven <;> rfl
+
 end A12Kernel

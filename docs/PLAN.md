@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 642 jobs · trust audit **1681 theorem roots; 38283 declarations in 366 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 642 jobs · trust audit **1684 theorem roots; 38288 declarations in 366 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose dynamic `AddDays(Now, firstAmount)` with one further checked `AddDays(secondAmount)`. Keep `World` explicit, feed the inner exact instant directly to the outer source-offset landing, and preserve accumulated omission and first-cause order.
+Execute dynamic `AddDays(AddDays(Now, firstAmount), secondAmount)` through the existing checked DateTime target, rich source-relative result view, and exact application path. Reuse the landed dynamic two-day evaluator and declaration-owned rendering; add no recursive target semantics.
 
 ## Immediate sequence
 
-1. Reuse the field-backed `CheckedDateTimeDayShift.evaluateThen` mechanism in [`DateTimeDayShiftEvaluation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftEvaluation.lean) and specialize it to the existing `CheckedNowDateTimeDayShift`; do not introduce a recursive temporal AST.
-2. Add red cases for two supplied worlds, Berlin gap/overlap identity, accumulated omission from either amount, inner formal-cause short circuit, outer formal cause after inner no-value, and zero-step exact identity.
-3. Implement only the dynamic two-day continuation plus compact cause/zero laws. Keep a third calendar step, month/year DateTime shifts, target execution of nested forms, broader recursion, and repeatable placement outside this unit.
+1. Reuse `CheckedNowDateTimeDayShift.evaluateThen` from [`DateTimeDayShiftEvaluation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftEvaluation.lean) and the target/result/application mechanism in [`DateTimeDayShiftComputation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftComputation.lean); keep both checked amounts explicit.
+2. Add red cases for changed exact value and application, unchanged source-relative classification, quiet inner/outer no-value, inner/outer formal cause, source-filled clear, and two supplied worlds.
+3. Implement only one checked dynamic two-day computation carrier plus compact exact-value/cause/profile laws. Keep a third calendar step, mixed nested target forms, month/year DateTime shifts, broader recursion, and repeatable placement outside this unit.
 
 ## Parked boundaries
 

@@ -232,6 +232,18 @@ def evaluate (checked : CheckedNowDateTimeDayShift model)
         checked.profile checked.amount
         (.value sourceLocal world.now false) phase input
 
+/-- Feed this execution's exact dynamic day result into one further generated
+    `AddDays`. The inner operation runs before the outer amount. -/
+def evaluateThen (checked : CheckedNowDateTimeDayShift model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except DateTimeDayShiftFault ValueAsDateTimeResult :=
+  match checked.evaluate phase world input with
+  | .error error => .error error
+  | .ok source =>
+      CheckedDateTimeDayShift.evaluateProfileResult
+        checked.profile nextAmount source phase input
+
 end CheckedNowDateTimeDayShift
 
 end A12Kernel
