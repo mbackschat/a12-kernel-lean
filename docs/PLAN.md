@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 645 jobs · trust audit **1699 theorem roots; 38511 declarations in 368 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 645 jobs · trust audit **1702 theorem roots; 38538 declarations in 368 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Execute dynamic-`Now` `AddDays` after one checked `AddHours`/`AddMinutes`/`AddSeconds` through the existing DateTime target, rich source-relative result view, and exact application path. Retain the inner elapsed result's exact instant and consume the supplied world once per call.
+Source-close the computed `Time` target boundary and, only if the source packet is complete, execute the smallest admitted `Time(...)` result through declaration-owned target policy, rich source-relative result classification, and exact application.
 
 ## Immediate sequence
 
-1. Extend [`DateTimeMixedShiftComputation.lean`](../A12Kernel/Elaboration/DateTimeMixedShiftComputation.lean) with one dynamic carrier that delegates to `CheckedShiftedNowDateTimeSource.evaluateThenDays`; keep both checked amounts and the sub-day unit explicit.
-2. Add red cases for independent worlds, all three sub-day units, Berlin gap/overlap order identity, changed value/application, quiet inner/outer no-value, and inner/outer formal cause.
-3. Add compact exact-value/cause/profile laws. Keep a third step, month/year DateTime shifts, broader recursion, and repeatable placement outside this unit.
+1. Read the parser/checker, generated Java/Groovy/JavaScript `.st` templates, runtime value handler, target basic-check path, and application path for computed `Time`; record only durable drill routes in [`SOURCES.md`](SOURCES.md).
+2. Derive a separating matrix for exact target formats/components, concrete value, present-empty, formal poison, target-local rejection if reachable, source-relative changed/unchanged classification, and application.
+3. Reuse the existing temporal policy/result/application vocabulary only where the source meaning fits exactly. Stop and report if `Time` needs an unresolved payload or check distinction; exclude wider temporal formats, recursive expressions, repeatable placement, and unrelated Date/DateTime widening.
 
 ## Parked boundaries
 
