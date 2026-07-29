@@ -1690,3 +1690,6 @@ run_cmd do
 #print axioms A12Kernel.checkedConstructedDateShift_difference_first_unavailable
 #print axioms A12Kernel.checkedConstructedDateShift_difference_second_constructed_unavailable
 #print axioms A12Kernel.checkedConstructedDateShift_difference_profiles_eq
+#print axioms A12Kernel.checkedDateTimeDayShift_applyAmount_zero
+#print axioms A12Kernel.checkedDateTimeDayShift_source_unavailable
+#print axioms A12Kernel.checkedDateTimeDayShift_empty_reaches_amount
