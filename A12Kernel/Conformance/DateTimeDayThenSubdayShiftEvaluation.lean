@@ -151,4 +151,94 @@ example : (do
         ValueAsDateTimeResult.noValue false) := by
   native_decide
 
+/- Dynamic calendar mutation consumes each supplied world first; elapsed arithmetic
+   then preserves the exact ordinary, spring-gap, and autumn-overlap landings. -/
+example : (do
+    let input ← document? []
+    let evaluate (sourceLabel : LocalDateTime) (millisecond : Int)
+        (days hours : Rat) := do
+      let resolved ←
+        ModelZone.ConcreteProfile.europeBerlin.resolveLocal? sourceLabel
+      let world : World := {
+        now := { epochMillis := resolved.epochMillis + millisecond }
+      }
+      let checked ←
+        (elaborateNowDateTimeDayShift model (.literal days)).toOption
+      checked.evaluateThenSubday .hours (.literal hours)
+        .computation world input |>.toOption
+    let ordinary ← LocalDateTime.ofYmdHms? 2024 6 15 23 30 0
+    let spring ← LocalDateTime.ofYmdHms? 2024 3 30 1 30 0
+    let autumn ← LocalDateTime.ofYmdHms? 2024 10 26 2 30 0
+    pure (
+      ← evaluate ordinary 777 1 2,
+      ← evaluate spring 333 1 1,
+      ← evaluate autumn 444 1 1)) =
+      some (
+        ValueAsDateTimeResult.value
+          ((LocalDateTime.ofYmdHms? 2024 6 17 1 30 0).get (by native_decide))
+          { epochMillis := 1718580600777 } false,
+        ValueAsDateTimeResult.value
+          ((LocalDateTime.ofYmdHms? 2024 3 31 3 30 0).get (by native_decide))
+          { epochMillis := 1711848600333 } false,
+        ValueAsDateTimeResult.value
+          ((LocalDateTime.ofYmdHms? 2024 10 27 2 30 0).get (by native_decide))
+          { epochMillis := 1729992600444 } false) := by
+  native_decide
+
+/- Dynamic reverse composition retains the same inner-before-outer cause and omission
+   order without merging its checked carrier with field-backed execution. -/
+example : (do
+    let nowLabel ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let nowInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLabel
+    let world : World := { now := nowInstant }
+    let innerField ←
+      (elaborateValueAsDateTimeFieldShiftAmount model 2).toOption
+    let outerField ←
+      (elaborateValueAsDateTimeFieldShiftAmount model 3).toOption
+    let checkedField ←
+      (elaborateNowDateTimeDayShift model innerField).toOption
+    let stoppedInput ← document? [
+      { address := { field := 2, path := [] }, stored := "bad-inner",
+        raw := .rejected .malformed },
+      { address := { field := 3, path := [] }, stored := "bad-outer",
+        raw := .rejected .declaredConstraint }]
+    let stopped ←
+      checkedField.evaluateThenSubday .hours outerField
+        .computation world stoppedInput |>.toOption
+    let innerDomain ←
+      (elaborateValueAsDateTimeExpressionShiftAmount
+        model ["Order"] innerAmountOverZero).toOption
+    let checkedDomain ←
+      (elaborateNowDateTimeDayShift model innerDomain).toOption
+    let reachedInput ← document? [
+      { address := { field := 2, path := [] }, stored := "3",
+        raw := .parsed (.num 3) },
+      { address := { field := 3, path := [] }, stored := "bad-outer",
+        raw := .rejected .declaredConstraint }]
+    let reached ←
+      checkedDomain.evaluateThenSubday .hours outerField
+        .computation world reachedInput |>.toOption
+    let omittedInput ← document? []
+    let omitted ←
+      checkedField.evaluateThenSubday .hours (.literal 1)
+        .computation world omittedInput |>.toOption
+    let fixed ←
+      (elaborateNowDateTimeDayShift model (.literal 0)).toOption
+    let domainInput ← document? [{
+      address := { field := 2, path := [] }, stored := "3",
+      raw := .parsed (.num 3) }]
+    let outerDomain ←
+      fixed.evaluateThenSubday .hours innerDomain
+        .computation world domainInput |>.toOption
+    pure (stopped, reached, omitted, outerDomain)) =
+      some (
+        ValueAsDateTimeResult.unavailable .malformed,
+        ValueAsDateTimeResult.unavailable .declaredConstraint,
+        ValueAsDateTimeResult.value
+          ((LocalDateTime.ofYmdHms? 2024 6 15 11 30 0).get (by native_decide))
+          { epochMillis := 1718443800000 } true,
+        ValueAsDateTimeResult.noValue false) := by
+  native_decide
+
 end A12Kernel.Conformance.DateTimeDayThenSubdayShiftEvaluation

@@ -42,4 +42,38 @@ theorem checkedDateTimeDayShift_evaluateThenSubday_noValue_reaches_amount
     ValueAsDateTimeResult.evaluateShiftedAmount, outer,
     Except.mapError, bind, Except.bind]
 
+/-- A reached formal cause from the dynamic calendar-day shift decides composition
+    before the outer elapsed amount is read. -/
+theorem checkedNowDateTimeDayShift_evaluateThenSubday_inner_unavailable
+    (checked : CheckedNowDateTimeDayShift model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (cause : FormalCause)
+    (inner :
+      checked.evaluate phase world input = .ok (.unavailable cause)) :
+    checked.evaluateThenSubday nextUnit nextAmount phase world input =
+      .ok (.unavailable cause) := by
+  simp [CheckedNowDateTimeDayShift.evaluateThenSubday, inner,
+    ValueAsDateTimeResult.evaluateShiftedAmount, Except.mapError,
+    bind, Except.bind]
+
+/-- A cause-free dynamic calendar-day no-value still reaches a formal outer elapsed
+    amount. -/
+theorem checkedNowDateTimeDayShift_evaluateThenSubday_noValue_reaches_amount
+    (checked : CheckedNowDateTimeDayShift model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model)
+    (notGiven : Bool) (cause : FormalCause)
+    (inner :
+      checked.evaluate phase world input = .ok (.noValue notGiven))
+    (outer :
+      nextAmount.read phase input = .ok (.error (.formal cause))) :
+    checked.evaluateThenSubday nextUnit nextAmount phase world input =
+      .ok (.unavailable cause) := by
+  simp [CheckedNowDateTimeDayShift.evaluateThenSubday, inner,
+    ValueAsDateTimeResult.evaluateShiftedAmount, outer,
+    Except.mapError, bind, Except.bind]
+
 end A12Kernel

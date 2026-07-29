@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 642 jobs · trust audit **1673 theorem roots; 38226 declarations in 366 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 642 jobs · trust audit **1675 theorem roots; 38230 declarations in 366 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose one dynamic `AddDays(Now, amount)` result into one checked `AddHours`/`AddMinutes`/`AddSeconds`. Keep `World` explicit, feed the exact calendar landing directly into elapsed arithmetic, preserve calendar-then-elapsed order, milliseconds, omission, and generated inner-before-outer evaluation, and do not merge the dynamic carrier with field-backed execution.
+Execute direct dynamic `AddDays(Now, amount)` through the existing checked DateTime target, rich source-relative result view, and exact application path. Keep `World` explicit, reuse the landed dynamic day evaluation and declaration-owned rendering, and add no dynamic-specific target or application semantics.
 
 ## Immediate sequence
 
-1. Reuse `CheckedNowDateTimeDayShift` from [`DateTimeDayShiftEvaluation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftEvaluation.lean) and the shared exact-result elapsed application from [`ValueAsDateTimeExtraction.lean`](../A12Kernel/Elaboration/ValueAsDateTimeExtraction.lean); add no generic temporal carrier.
-2. Add red cases over distinct supplied worlds for ordinary carry, the Berlin spring-gap and autumn-overlap order separators, exact milliseconds, outer formal-cause reachability after inner no-value, inner formal short-circuit, arithmetic no-value, and accumulated omission.
-3. Implement only the bounded dynamic continuation and payoff order laws. Keep targets, differences, recursion beyond two operations, and repeatable placement outside this unit.
+1. Reuse `CheckedNowDateTimeDayShift` from [`DateTimeDayShiftEvaluation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftEvaluation.lean) and the target/result/application mechanism in [`DateTimeDayShiftComputation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftComputation.lean); keep the target declaration and dynamic source as separate checked owners.
+2. Add red cases for accepted exact value, rejected target value, quiet no-value, inherited formal poison, source-filled clear, and source-relative unchanged/changed classification over at least two supplied worlds.
+3. Implement only the dynamic computation entry point and compact projection/profile laws. Keep nested dynamic target expressions, differences, recursion beyond the landed forms, and repeatable placement outside this unit.
 
 ## Parked boundaries
 

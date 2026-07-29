@@ -2,13 +2,12 @@ import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 
 /-! # Checked calendar-day then elapsed-sub-day DateTime shifts
 
-This bounded composition evaluates one field-backed `AddDays` before one `AddHours`,
-`AddMinutes`, or `AddSeconds`. The exact calendar landing feeds elapsed arithmetic
-directly, so operation order, overlap identity, milliseconds, and omission provenance
-remain observable.
+This bounded composition evaluates one field-backed or dynamic-`Now` `AddDays` before
+one `AddHours`, `AddMinutes`, or `AddSeconds`. The exact calendar landing feeds elapsed
+arithmetic directly, so operation order, overlap identity, milliseconds, omission
+provenance, and explicit world transport remain observable.
 
-Dynamic `Now`, wider recursion, differences, targets, and repeatable placement remain
-separate.
+Wider recursion, differences, targets, and repeatable placement remain separate.
 -/
 
 namespace A12Kernel
@@ -34,5 +33,21 @@ def evaluateThenSubday (checked : CheckedDateTimeDayShift model)
     nextUnit nextAmount phase input |>.mapError .subday
 
 end CheckedDateTimeDayShift
+
+namespace CheckedNowDateTimeDayShift
+
+/-- Evaluate one dynamic calendar-day mutation before one elapsed sub-day shift. The
+    supplied `World` remains the sole dynamic input and the outer operation consumes
+    the exact calendar landing. -/
+def evaluateThenSubday (checked : CheckedNowDateTimeDayShift model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except DateTimeDayThenSubdayShiftFault ValueAsDateTimeResult := do
+  let source ← checked.evaluate phase world input |>.mapError .day
+  source.evaluateShiftedAmount checked.profile
+    nextUnit nextAmount phase input |>.mapError .subday
+
+end CheckedNowDateTimeDayShift
 
 end A12Kernel
