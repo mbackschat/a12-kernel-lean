@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.ConstructedDateDifference
+import A12Kernel.Elaboration.ConstructedDateEvaluation
 
 /-! # Constructed-Date legacy-hybrid completed-period locks -/
 
@@ -8,6 +8,47 @@ open A12Kernel
 
 private def constructed (year : Int) (month day : Nat) : DateConstructionResult :=
   .real { year, month, day }
+
+private def model (zoneId : String) : FlatModel := {
+  fields := []
+  timeZoneId := zoneId
+}
+
+private def sources (parts : DateParts) : SurfaceConstructedDateComponents := {
+  day := .constant s!"{parts.day}"
+  month := .constant s!"{parts.month}"
+  year := .complete (.constant s!"{parts.year}")
+}
+
+private def documentFor? (checkedModel : FlatModel) :
+    Option (CheckedDocument checkedModel) := do
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler checkedModel).toOption
+  checkDocument prepared "en_US"
+    { instantiatedRows := [], cells := [] } |>.toOption
+
+private def checkedDifference? (zoneId : String)
+    (unit : DateShiftUnit) (firstParts secondParts : DateParts) :
+    Option ConstructedDateNumericResult := do
+  let checkedModel := model zoneId
+  let first ←
+    (elaborateConstructedDateSources
+      checkedModel (sources firstParts)).toOption
+  let second ←
+    (elaborateConstructedDateSources
+      checkedModel (sources secondParts)).toOption
+  let input ← documentFor? checkedModel
+  if unitAdmitted :
+      first.profile.admitsConstructedDateDifference unit = true then
+    let checked : CheckedConstructedDateDifference checkedModel := {
+      first, second, unit, unitAdmitted
+    }
+    match checked.evaluate .validation input none with
+    | .ok (.ok result) => some result
+    | _ => none
+  else
+    none
 
 /- The cutover-hole landing makes 15 October incomplete and 20 October complete from 10 September. -/
 example :
@@ -54,6 +95,79 @@ example :
         { year := 1582, month := 10, day := 15 } = 1 ∧
       (constructed 1582 9 10).differenceLegacy? .months
         (constructed 1582 10 15) = some (.value 0 false) := by
+  native_decide
+
+/- Widening the checked profile certificate leaves all three UTC/GMT legacy-hybrid branches unchanged. -/
+example :
+    checkedDifference? "UTC" .days
+        { year := 2024, month := 1, day := 1 }
+        { year := 2024, month := 1, day := 2 } =
+      some (.value 1 false) ∧
+    checkedDifference? "UTC" .months
+        { year := 2024, month := 1, day := 31 }
+        { year := 2024, month := 2, day := 28 } =
+      some (.value 0 false) ∧
+    checkedDifference? "UTC" .years
+        { year := 2023, month := 1, day := 1 }
+        { year := 2024, month := 1, day := 1 } =
+      some (.value 1 false) := by
+  native_decide
+
+/- Berlin constructed Dates reuse the exact resolved calendar-day account, including the repeated-midnight source-offset landing. -/
+example :
+    checkedDifference? "Europe/Berlin" .days
+        { year := 1916, month := 9, day := 30 }
+        { year := 1916, month := 10, day := 1 } =
+      some (.value 1 false) := by
+  native_decide
+
+/- Berlin completed years use the February-promoted candidate rather than plain year subtraction. -/
+example :
+    checkedDifference? "Europe/Berlin" .years
+        { year := 1999, month := 2, day := 28 }
+        { year := 2000, month := 2, day := 28 } =
+      some (.value 0 false) ∧
+    checkedDifference? "Europe/Berlin" .years
+        { year := 1999, month := 2, day := 28 }
+        { year := 2000, month := 2, day := 29 } =
+      some (.value 1 false) := by
+  native_decide
+
+/- The 365-times-years seed remains a lower bound: the leap day contributes one residual day, and authored order restores sign. -/
+example :
+    checkedDifference? "Europe/Berlin" .days
+        { year := 2000, month := 2, day := 28 }
+        { year := 2001, month := 2, day := 28 } =
+      some (.value 366 false) ∧
+    checkedDifference? "Europe/Berlin" .days
+        { year := 2001, month := 2, day := 28 }
+        { year := 2000, month := 2, day := 28 } =
+      some (.value (-366) false) := by
+  native_decide
+
+/- Berlin months remain excluded at the checked boundary; UTC keeps all three legacy-hybrid units. -/
+example :
+    ModelZone.ConcreteProfile.admitsConstructedDateDifference
+        .europeBerlin .months = false ∧
+      ModelZone.ConcreteProfile.admitsConstructedDateDifference
+        .europeBerlin .days = true ∧
+      ModelZone.ConcreteProfile.admitsConstructedDateDifference
+        .europeBerlin .years = true ∧
+      ModelZone.ConcreteProfile.admitsConstructedDateDifference
+        .utc .months = true := by
+  native_decide
+
+/- Non-value precedence is profile-independent, while a forged Berlin month pair still has no dynamic meaning. -/
+example :
+    CheckedConstructedDateDifference.differenceResolved?
+        .europeBerlin .days .incomplete (constructed 2000 2 29) =
+      some (.value 0 true) ∧
+    CheckedConstructedDateDifference.differenceResolved?
+        .europeBerlin .years .unreal (constructed 2000 2 29) =
+      some (.value 0 false) ∧
+    CheckedConstructedDateDifference.differenceResolved?
+        .europeBerlin .months (constructed 2000 1 1)
+          (constructed 2000 2 1) = none := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateDifference

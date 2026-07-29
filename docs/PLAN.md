@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 614 jobs · trust audit **1626 theorem roots; 37117 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 614 jobs · trust audit **1633 theorem roots; 37145 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close checked constructed-Date `DifferenceInDays` and `DifferenceInYears` under the pinned Berlin profile by specializing the corrected exact-instant day and year owners. Keep `DifferenceInMonths` explicitly unsupported until the follow-on capsule sources its candidate loop independently; retain UTC/GMT's completed legacy-hybrid accounts unchanged.
+Source and close checked constructed-Date `DifferenceInMonths` under the pinned Berlin profile without conflating its compute-time landing with the completed-year qualifier. Retain the completed Berlin day/year and UTC/GMT all-unit branches unchanged.
 
 ## Immediate sequence
 
-1. Add the pinned-profile wall-midnight reachability lock that the constructed-Date-only boundary relies on.
-2. Dispatch Berlin day differences through `differenceResolvedInDays?` and expose the signed whole-year wrapper over the existing `Calendar.YEAR` qualifier.
-3. Retain authored-order sign, empty/formal precedence, UTC/GMT behavior, explicit pre-floor insufficiency, and the static rejection of Berlin months in one separating matrix.
+1. Re-read `getDifferenzInMonaten`/`addiereMonate` and the `GregorianCalendar` ordering path, separating the one-candidate completed-month test from the completed-year and day mechanisms.
+2. Add the exact Berlin month candidate boundary, authored-order sign, end-of-month clamp, overlap/gap landing, and February controls red-first.
+3. Replace the checked Berlin month exclusion only after the sourced matrix is green; retain explicit pre-floor insufficiency and UTC/GMT behavior.
 
 ## Parked boundaries
 

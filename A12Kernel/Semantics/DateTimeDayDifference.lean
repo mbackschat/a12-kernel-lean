@@ -133,7 +133,7 @@ def calendarYearLanding? (current : LocalDateTime)
     computeTimeLanding? nextDate time millisecond
 
 /-- Whole completed years between ordered exact instants, using the same final-landing rule as legacy calendar year addition. -/
-private def wholeYears? (earlier : LocalDateTime) (earlierInstant : Instant)
+def wholeYearsForward? (earlier : LocalDateTime) (earlierInstant : Instant)
     (later : LocalDateTime) (laterInstant : Instant) : Option Nat := do
   let candidate :=
     Int.toNat
@@ -142,6 +142,18 @@ private def wholeYears? (earlier : LocalDateTime) (earlierInstant : Instant)
     calendarYearLanding? earlier earlierInstant (candidate : Int)
   pure (if laterInstant.epochMillis < landing.epochMillis then
     candidate - 1 else candidate)
+
+/-- Signed completed-year count for two already resolved Berlin values. Exact instants establish order before the nonnegative candidate is qualified. -/
+def differenceResolvedInYears? (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
+  if firstInstant.epochMillis < secondInstant.epochMillis then
+    (wholeYearsForward? first firstInstant second secondInstant).map
+      (fun years => (years : Int))
+  else if secondInstant.epochMillis < firstInstant.epochMillis then
+    (wholeYearsForward? second secondInstant first firstInstant).map
+      (fun years => -(years : Int))
+  else
+    some 0
 
 /-- Count consecutive profile landings that do not pass the later instant. Fuel is derived from the civil-date distance; exhaustion or an unresolved landing remains explicit absence rather than collapsing to the legitimate result zero. -/
 private def countResidualLandings :
@@ -160,7 +172,7 @@ private def countResidualLandings :
 private def forwardDifferenceInDays? (earlier : LocalDateTime)
     (earlierInstant : Instant) (later : LocalDateTime)
     (laterInstant : Instant) : Option Int := do
-  let years ← wholeYears? earlier earlierInstant later laterInstant
+  let years ← wholeYearsForward? earlier earlierInstant later laterInstant
   let seedDays := years * 365
   let (seeded, seededInstant) ←
     calendarDayLanding? earlier earlierInstant (seedDays : Int)

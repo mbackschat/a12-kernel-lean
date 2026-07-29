@@ -413,12 +413,16 @@ private def difference? (unit : DateShiftUnit)
   let second ←
     (elaborateConstructedDateComponents (dateModel "UTC") 5 6 7).toOption
   let input ← document? cells
-  match ({ first, second, unit, profileIsUtc := by decide } :
-      CheckedConstructedDateDifference (dateModel "UTC")).evaluate
-        .validation input none with
-  | .error _ => none
-  | .ok (.error cause) => some (.formal cause)
-  | .ok (.ok result) => some (.numeric result)
+  if unitAdmitted :
+      first.profile.admitsConstructedDateDifference unit = true then
+    match ({ first, second, unit, unitAdmitted } :
+        CheckedConstructedDateDifference (dateModel "UTC")).evaluate
+          .validation input none with
+    | .error _ => none
+    | .ok (.error cause) => some (.formal cause)
+    | .ok (.ok result) => some (.numeric result)
+  else
+    none
 
 /- Checked execution preserves the default-cutover identity through all three literal
    calendar shifts. -/
@@ -585,35 +589,6 @@ example :
         numberCell 3 "2024" (.parsed (.num 2024)),
         numberCell 4 "bad-amount" (.rejected .declaredConstraint)]) =
           some (.unavailable .declaredConstraint) := by
-  native_decide
-
-/- Checked day difference crosses the cutover hole as one step; month and year counting
-   retain their established fresh-landing boundary. -/
-example :
-    difference? .days [
-        numberCell 1 "4" (.parsed (.num 4)),
-        numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582)),
-        numberCell 5 "15" (.parsed (.num 15)),
-        numberCell 6 "10" (.parsed (.num 10)),
-        numberCell 7 "1582" (.parsed (.num 1582))] =
-          some (.numeric (.value 1 false)) ∧
-      difference? .months [
-        numberCell 1 "10" (.parsed (.num 10)),
-        numberCell 2 "9" (.parsed (.num 9)),
-        numberCell 3 "1582" (.parsed (.num 1582)),
-        numberCell 5 "15" (.parsed (.num 15)),
-        numberCell 6 "10" (.parsed (.num 10)),
-        numberCell 7 "1582" (.parsed (.num 1582))] =
-          some (.numeric (.value 0 false)) ∧
-      difference? .years [
-        numberCell 1 "10" (.parsed (.num 10)),
-        numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1581" (.parsed (.num 1581)),
-        numberCell 5 "20" (.parsed (.num 20)),
-        numberCell 6 "10" (.parsed (.num 10)),
-        numberCell 7 "1582" (.parsed (.num 1582))] =
-          some (.numeric (.value 1 false)) := by
   native_decide
 
 /- Generated first-before-second evaluation preserves the first reached formal cause and

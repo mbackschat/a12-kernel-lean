@@ -62,6 +62,15 @@ theorem berlin_calendarDayLanding_preserves_date
               congrArg LocalDateTime.date result.1
             simp [dateEq]
 
+/-- A zero year candidate cannot underflow the completed-year count: zero mutation is the exact source identity and natural subtraction remains zero. -/
+@[simp] theorem berlin_wholeYearsForward_same_label
+    (dateTime : LocalDateTime) (firstInstant secondInstant : Instant) :
+    EuropeBerlinLegacyProfile.wholeYearsForward?
+        dateTime firstInstant dateTime secondInstant =
+      some 0 := by
+  simp [EuropeBerlinLegacyProfile.wholeYearsForward?,
+    berlin_calendarYearLanding_zero]
+
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self
     (dateTime : LocalDateTime) (instant : Instant) :
@@ -87,6 +96,33 @@ theorem berlin_differenceResolvedInDays_swap
     · simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?,
         before, after, Function.comp_def]
     · simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?,
+        before, after]
+
+/-- An already resolved Berlin value is zero completed years from itself. -/
+@[simp] theorem berlin_differenceResolvedInYears_self
+    (dateTime : LocalDateTime) (instant : Instant) :
+    EuropeBerlinLegacyProfile.differenceResolvedInYears?
+        dateTime instant dateTime instant =
+      some 0 := by
+  simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?]
+
+/-- Swapping two already resolved Berlin operands negates the completed-year result selected by exact instant order. -/
+theorem berlin_differenceResolvedInYears_swap
+    (first : LocalDateTime) (firstInstant : Instant)
+    (second : LocalDateTime) (secondInstant : Instant) :
+    (EuropeBerlinLegacyProfile.differenceResolvedInYears?
+      first firstInstant second secondInstant).map (-·) =
+    EuropeBerlinLegacyProfile.differenceResolvedInYears?
+      second secondInstant first firstInstant := by
+  by_cases before : firstInstant.epochMillis < secondInstant.epochMillis
+  · have notAfter : ¬secondInstant.epochMillis < firstInstant.epochMillis := by
+      omega
+    simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?,
+      before, notAfter, Function.comp_def]
+  · by_cases after : secondInstant.epochMillis < firstInstant.epochMillis
+    · simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?,
+        before, after, Function.comp_def]
+    · simp [EuropeBerlinLegacyProfile.differenceResolvedInYears?,
         before, after]
 
 /-- A Berlin label is zero calendar days from itself exactly when the profile admits it. -/

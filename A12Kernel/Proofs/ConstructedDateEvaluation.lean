@@ -339,4 +339,44 @@ theorem checkedConstructedDateDifference_second_unavailable
     checked.evaluate phase input world = .ok (.error cause) := by
   simp [CheckedConstructedDateDifference.evaluate, first, second]
 
+/-- A structural first-source failure, including Berlin's explicit pre-floor insufficiency, stops before the second source and remains outside semantic unreal. -/
+theorem checkedConstructedDateDifference_first_fault
+    (checked : CheckedConstructedDateDifference model)
+    (phase : Phase) (input : CheckedDocument model) (world : Option World)
+    (error : ConstructedDateEvaluationFault)
+    (first : checked.first.evaluate phase input world = .error error) :
+    checked.evaluate phase input world = .error (.source error) := by
+  simp [CheckedConstructedDateDifference.evaluate, first]
+
+/-- Both constructed sources necessarily carry the same selected profile because they were checked against one model zone id. -/
+theorem checkedConstructedDateDifference_profiles_eq
+    (checked : CheckedConstructedDateDifference model) :
+    checked.first.profile = checked.second.profile := by
+  have selected :
+      some checked.first.profile = some checked.second.profile :=
+    checked.first.profileSelected.symm.trans
+      checked.second.profileSelected
+  exact Option.some.inj selected
+
+/-- The checked Berlin boundary excludes months structurally; no runtime branch can acquire that unsupported unit. -/
+theorem checkedConstructedDateDifference_berlin_not_months
+    (checked : CheckedConstructedDateDifference model)
+    (berlin : checked.first.profile = .europeBerlin) :
+    checked.unit ≠ .months := by
+  intro months
+  have admitted := checked.unitAdmitted
+  rw [months, berlin] at admitted
+  simp [ModelZone.ConcreteProfile.admitsConstructedDateDifference] at admitted
+
+/-- Widening the checked profile gate leaves all three UTC/GMT result branches definitionally unchanged. -/
+theorem checkedConstructedDateDifference_utc_unchanged
+    (unit : DateShiftUnit) (first second : DateConstructionResult) :
+    CheckedConstructedDateDifference.differenceResolved?
+        .utc unit first second =
+      match unit with
+      | .days => first.differenceLegacyDays? second
+      | .months => first.differenceLegacy? .months second
+      | .years => first.differenceLegacy? .years second := by
+  cases unit <;> rfl
+
 end A12Kernel
