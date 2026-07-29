@@ -1701,3 +1701,5 @@ run_cmd do
 #print axioms A12Kernel.dateTimeDayShiftComputation_unavailable
 #print axioms A12Kernel.dateTimeDayShiftComputation_profiles_eq
 #print axioms A12Kernel.checkedShiftedDateTimeSource_readTime_projects_evaluate
+#print axioms A12Kernel.dateTimeSubdayShiftComputation_value
+#print axioms A12Kernel.dateTimeSubdayShiftComputation_profiles_eq

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 627 jobs · trust audit **1652 theorem roots; 37688 declarations in 358 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 630 jobs · trust audit **1654 theorem roots; 37805 declarations in 360 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Route the now-checked direct field-backed DateTime `AddHours`/`AddMinutes`/`AddSeconds` whole-value evaluator through the existing declaration-owned DateTime target, rich outcome, public result view, and exact application path. Preserve the shifted exact instant until rendering, source-relative change/clear behavior, numeric omission, and source-before-amount causes without reusing the wall-clock extraction result or widening the `Now`-only computation carrier into a temporal AST.
+Expose dynamic shifted-`Now` for `AddHours`/`AddMinutes`/`AddSeconds` as a whole exact DateTime and route it through the existing declaration-owned target, rich outcome, public result view, and exact application path. Keep `World` as an explicit execution input, sample it once per call, and preserve milliseconds and numeric omission without merging this branch into the field-backed carrier or a temporal AST.
 
 ## Immediate sequence
 
-1. Reuse `CheckedShiftedDateTimeSource.evaluate`; the dynamic shifted-`Now` sibling remains excluded because it has a different execution input.
-2. Add one distinct-target computation specialization that delegates target execution and reuses the current run view/application unchanged.
-3. Lock all three units, cross-day carry, millisecond retention before whole-second rendering, source-before-amount cause order, source-relative action classification, and self-reference rejection; retain the landed overlap control as the reason wall-clock extraction cannot substitute for the whole result.
+1. Add a whole-DateTime evaluator to `CheckedShiftedNowDateTimeSource` by delegating its checked amount to the landed exact shift helper; keep `readTime` as the proved wall-clock projection.
+2. Add a separate target specialization with explicit `World` input and reuse the current target/result/application owners unchanged.
+3. Lock all three units, two distinct worlds, millisecond retention before whole-second rendering, amount cause/no-value behavior, and source-relative application; retain field-backed and calendar-day branches as excluded controls.
 
 ## Parked boundaries
 
