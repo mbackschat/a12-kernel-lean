@@ -277,6 +277,28 @@ private def berlinYearShiftSeparators? : Option Bool := do
           { year := 1916, month := 9, day := 29 } false) => true
     | _, _, _, _, _ => false)
 
+private def berlinFreshOverlapComparisons? :
+    Option (Bool × Bool × Bool) := do
+  let day ←
+    berlinShift? 1916 berlinBeforeOverlapSources .days 1
+  let month ←
+    berlinShift? 1916 berlinSeptemberFirstSources .months 1
+  let year ←
+    berlinShift? 1915 berlinOctoberFirstSources .years 1
+  let overlapLabel ← LocalDateTime.ofYmdHms? 1916 10 1 0 0 0
+  let fresh ←
+    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? overlapLabel
+  match day, month, year with
+  | .ok (.value dayInstant _ false),
+      .ok (.value monthInstant _ false),
+      .ok (.value yearInstant _ false) =>
+      pure (dayInstant == fresh, monthInstant == fresh, yearInstant == fresh)
+  | _, _, _ => none
+
+/- Fresh construction selects the later repeated-midnight instant. Source-offset day mutation remains unequal to it, while sign-independent month and year mutation are equal. -/
+example : berlinFreshOverlapComparisons? = some (false, true, true) := by
+  native_decide
+
 /- Changing only the explicit world across UTC midnight changes all three components. -/
 example : (do
     let first ← worldAt? 2024 6 30 23 59
