@@ -96,9 +96,14 @@ private def stringModel : FlatModel :=
       formattedTemporalField 32 .dateTime
         TemporalComponents.now "yyyy"] }
 
-/- The exact Date declaration gate accepts the positional maximum or stored width, but
-   not an integer-digit cap or a complete-year maximum below 1000. -/
+/- The exact Date declaration gate accepts the positional maximum or stored width with
+   the declaration-default zero fractional scale, but rejects a positive fractional
+   scale, an integer-digit cap, or a complete-year maximum below 1000. -/
 example :
+    let positiveFractional : FlatModel := {
+      fields := [componentField 1 { maximum := some 31 }
+        { scale := 1, signed := false }]
+    }
     let wrongWidth : FlatModel := {
       fields := [componentField 1 { maxIntegerDigits := some 2 }]
     }
@@ -108,7 +113,11 @@ example :
     let boundedYear : FlatModel := {
       fields := [componentField 3 { maximum := some 1000 }]
     }
-    (elaborateConstructedDateNumberField wrongWidth .day 1).isOk = false ∧
+    (elaborateConstructedDateNumberField
+        (dateModel "UTC") .day 1).isOk = true ∧
+      (elaborateConstructedDateNumberField
+        positiveFractional .day 1).isOk = false ∧
+      (elaborateConstructedDateNumberField wrongWidth .day 1).isOk = false ∧
       (elaborateConstructedDateNumberField shortYear .year 3).isOk = false ∧
       (elaborateConstructedDateNumberField boundedYear .year 3).isOk = true := by
   native_decide

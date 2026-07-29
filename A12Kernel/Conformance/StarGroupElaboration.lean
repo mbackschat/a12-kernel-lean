@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.StarGroup
+import A12Kernel.Elaboration.ValidationCondition.Assembly
 
 /-! # Checked terminal-repeatable group-star locks -/
 
@@ -75,6 +75,27 @@ private def outcomeOf (operator : StarredGroupFillQuantifier)
       | .ok outcome => some outcome
       | .error _ => none
 
+private def repeatedOutcomeOf (operator : GroupFillQuantifier)
+    (rows : List RowAddr) : Option (Nat × Verdict) := do
+  let operand : SurfaceGroupListOperand :=
+    .starredGroup (absoluteSource false true true)
+  let checked ←
+    (CheckedValidationCondition.fromGroupList
+      model amount.groupPath operator [operand, operand]).toOption
+  let scalar := model.checkContext { read := fun _ => .empty }
+  let occurrences := match checked.core with
+    | .leaf (.groupList _ operands) => operands.length
+    | _ => 0
+  match checked.core.evalAddressed {
+      scalar := {
+        fields := scalar
+        groups := GroupPresenceContext.unavailable }
+      outer := []
+      input := .legacy (document rows) (fun _ field => scalar.read field)
+    } with
+  | .ok verdict => some (occurrences, verdict)
+  | .error _ => none
+
 private def countResultOf (source : SurfaceStarGroupPath) (rows : List RowAddr)
     (outer : Env := []) : Option FilledGroupCount :=
   match checkedOf source with
@@ -123,6 +144,18 @@ example :
       some .falseOrUnknown ∧
     outcomeOf .atLeastOneGroupFilled (absoluteSource false true true) oneEmptyItem =
       some (.fired .value) := by
+  native_decide
+
+/- Repeated starred operands remain two authored occurrences. Truth is idempotent, but
+   zero-row `NoGroupFilled` still fires with OMISSION while the positive form stays
+   UNKNOWN; a created row makes the positive form fire with VALUE. -/
+example :
+    repeatedOutcomeOf .noGroupFilled [] =
+        some (2, .fired .omission) ∧
+      repeatedOutcomeOf .atLeastOneGroupFilled [] =
+        some (2, .unknown) ∧
+      repeatedOutcomeOf .atLeastOneGroupFilled oneEmptyItem =
+        some (2, .fired .value) := by
   native_decide
 
 /- The numeric consumer shares the same row count, including the zero-row case. -/

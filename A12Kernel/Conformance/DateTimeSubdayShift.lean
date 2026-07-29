@@ -234,7 +234,10 @@ example :
       source.shift .minutes 1 = { epochMillis := 1718440305000 } ∧
       source.shift .seconds
           (temporalShiftAmountToInt32 4294967297) =
-        { epochMillis := 1718440246000 } := by
+        { epochMillis := 1718440246000 } ∧
+      source.shift .hours
+          (temporalShiftAmountToInt32 2147483648) =
+        { epochMillis := -7729222692555000 } := by
   native_decide
 
 /- Negative rollover changes the shifted DateTime day, but the enclosing constructor keeps its independently evaluated partial-Date day and consumes only the shifted clock. -/

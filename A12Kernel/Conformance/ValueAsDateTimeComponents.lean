@@ -131,8 +131,9 @@ example :
       admitted "[0-9]+" 3 = false := by
   native_decide
 
-/- `Time(...)` checks the Number declaration's stored-length or exact-value bound; an
-   integer-digit cap with the same numeral is not a substitute. -/
+/- `Time(...)` checks the Number declaration's stored-length or exact-value bound. The
+   declaration-default zero fractional scale is admitted; an integer-digit cap with the
+   same numeral is not a substitute. -/
 example :
     let storedLengthModel : FlatModel := {
       fields := [componentField 1 { maxStoredLength := some 2 }]

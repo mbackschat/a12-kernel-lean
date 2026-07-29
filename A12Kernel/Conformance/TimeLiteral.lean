@@ -30,9 +30,13 @@ example :
         TimeOfDay.ofHms? 23 59 59 := by
   native_decide
 
-/- Component width is fixed; neither a short component nor trailing text is accepted. -/
+/- Component width is fixed; short components, missing components, and surrounding
+   whitespace are rejected by the same static gate. -/
 example :
     (elaborateTimeLiteral "1:30:45").toOption = none ∧
+      (elaborateTimeLiteral "10:3:45").toOption = none ∧
+      (elaborateTimeLiteral "10:30").toOption = none ∧
+      (elaborateTimeLiteral "10:30:45 ").toOption = none ∧
       (elaborateTimeLiteral "10:30:45Z").toOption = none := by
   native_decide
 
@@ -43,9 +47,11 @@ example :
       (elaborateTimeLiteral "23:59:60").toOption = none := by
   native_decide
 
-/- Locale-shaped punctuation and non-ASCII digits never become Time literals. -/
+/- Alternate punctuation and non-ASCII digits never become Time literals. -/
 example :
     (elaborateTimeLiteral "10.30.45").toOption = none ∧
+      (elaborateTimeLiteral "10-30-45").toOption = none ∧
+      (elaborateTimeLiteral "١٠:٣٠:٤٥").toOption = none ∧
       (elaborateTimeLiteral "１０:３０:４５").toOption = none := by
   native_decide
 

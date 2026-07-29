@@ -204,7 +204,7 @@ An a12-dmkits interpreter agreement is triangulation. A maintained adapter test 
 
 ## Inbound provenance checkpoints
 
-The detailed review chronology is recoverable from Git. These consolidated checkpoints are retained because their exact revisions ground current spec/source routes without an outbound feedback loop:
+The detailed review chronology is recoverable from Git. These consolidated checkpoints retain exact reviewed routes without an outbound feedback loop. Historical identifiers `27afb555aae29d3acd4ed04e3aea4772ae85505a` and `45d24b73549124bf7da342a1ee19401408438fc6` no longer resolve at reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`; they remain receipt history rather than current drill routes. The [ledger receipt-continuity note](A12-DMKITS-SPEC-SYNC-LEDGER.md#receipt-continuity) owns the complete measured list and avoids inferring replacement mappings.
 
 | Reviewed a12-dmkits revision | Inbound scope |
 |---|---|
@@ -220,6 +220,12 @@ The detailed review chronology is recoverable from Git. These consolidated check
 | `d2755319` | computation result-channel laws, including value-less target errors in the residual channel |
 | `2f7cb8526bdda21bee5fb5a2c3eb1ea310f023f3` | consolidated scalar codec-boundary and declared-token reachability review, incorporating the corrections at `40fca1dadb00f08716069fffeaa39046c2d43f5f`, `ff1c85eb8d48c323e261b2ed336f2d4bc61d362a`, and `c4c16399e021a5080e4192bf190e2629b5a8d0f9` |
 | `422dda2626cea8689935c87ea380a17bcd15cdfe` | Date-construction validity, hybrid-calendar, and component-projection review |
+| `11526d9cc6d522add97494f60e7b4389131b8f1f` | Java-compatible Date/DateTime shift-amount narrowing, narrow-before-unit multiplication, and neighboring amount-result controls |
+| `3c27df48e3aae20372e0db3a69197470036ccaa6` | corrected `ValueAsDate` placement matrix and nested runtime compositions; JVM/Node and dual-kernel acceptance remains open under the existing ledger entry |
+| `b6fa6eb82678081b40594ab3c33ededac31f5a6e` | repeated-star group-list occurrence preservation and the zero-row polarity correction |
+| `0005740c60f1db558cdcb9ad54df11b997302ffe` | exact static `HH:mm:ss` literal gate and partial-Date DateTime context witness; runtime carrier coverage remains open |
+| `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b` | measured Time arities, wider Date precisions, and Date/Time component declaration gates recorded under a12-dmkits `IG105`–`IG107` and `DG26`–`DG27` |
+| `5093cfb8a500a1093fce80520b64d7b1a02641d5` | handback checkpoint retaining the measured constant, extractor, and `TimeFromDateTime` static matrices under a12-dmkits `IG108` |
 
 Additional exact checkpoints retained from the pre-consolidation drill map:
 
