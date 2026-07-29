@@ -3,16 +3,18 @@ import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 
 /-! # Checked DateTime day-shift computations
 
-This capsule executes one direct nonrepeatable `AddDays(DateTime, Number)` or dynamic
-`AddDays(Now, Number)` through one declaration-owned DateTime target, then delegates
-the rich outcome to the existing public result view and application path. Each shift
-retains its exact instant until target rendering; target text and source-relative
-change remain owned by the settled DateTime target/result capsules.
+This capsule executes one direct nonrepeatable `AddDays(DateTime, Number)`, dynamic
+`AddDays(Now, Number)`, or bounded dynamic two-day continuation through one
+declaration-owned DateTime target, then delegates the rich outcome to the existing
+public result view and application path. Each shift retains its exact instant until
+target rendering; target text and source-relative change remain owned by the settled
+DateTime target/result capsules.
 
 Alternatives, scheduling, repeatable placement, wider recursive expressions, generated
 validation, and message construction remain separate. The field and dynamic carriers
 remain distinct because only the field-backed form owns a source declaration and
-self-reference obligation.
+self-reference obligation. Checked day amounts read only Number declarations, so a
+validated model cannot make either amount the DateTime target declaration.
 -/
 
 namespace A12Kernel
@@ -34,6 +36,12 @@ structure CheckedDateTimeDayShiftComputation (model : FlatModel) where
 /-- One checked dynamic `Now` day shift and its declaration-owned target. -/
 structure CheckedNowDateTimeDayShiftComputation (model : FlatModel) where
   shift : CheckedNowDateTimeDayShift model
+  target : CheckedDateTimeTarget model
+
+/-- One checked dynamic two-day continuation and its declaration-owned target. -/
+structure CheckedNowDateTimeTwoDayShiftComputation (model : FlatModel) where
+  shift : CheckedNowDateTimeDayShift model
+  nextAmount : CheckedTemporalShiftAmount model
   target : CheckedDateTimeTarget model
 
 /-- Check one direct DateTime day shift and one distinct complete-DateTime target. -/
@@ -60,6 +68,19 @@ def elaborateNowDateTimeDayShiftComputation
   let shift ← elaborateNowDateTimeDayShift model amount |>.mapError .shift
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
   pure { shift, target }
+
+/-- Check one dynamic two-day continuation and complete-DateTime target without
+    sampling the execution world. -/
+def elaborateNowDateTimeTwoDayShiftComputation
+    (model : FlatModel)
+    (firstAmount nextAmount : CheckedTemporalShiftAmount model)
+    (targetField : FieldId) :
+    Except DateTimeDayShiftComputationElabError
+      (CheckedNowDateTimeTwoDayShiftComputation model) := do
+  let shift ←
+    elaborateNowDateTimeDayShift model firstAmount |>.mapError .shift
+  let target ← elaborateDateTimeTarget model targetField |>.mapError .target
+  pure { shift, nextAmount, target }
 
 /-- Structural execution failure outside the rich DateTime target outcome. -/
 inductive DateTimeDayShiftComputationFault where
@@ -127,5 +148,38 @@ def executeResult (operation : CheckedNowDateTimeDayShiftComputation model)
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedNowDateTimeDayShiftComputation
+
+namespace CheckedNowDateTimeTwoDayShiftComputation
+
+/-- Sample this call's world, run both day amounts, and retain the exact result. -/
+def evaluateOperand (operation : CheckedNowDateTimeTwoDayShiftComputation model)
+    (world : World) (input : CheckedDocument model) :
+    Except DateTimeDayShiftComputationFault TemporalComputationResult :=
+  match operation.shift.evaluateThen operation.nextAmount
+      .computation world input with
+  | .error error => .error (.shift error)
+  | .ok result => .ok result.asTemporalComputationResult
+
+/-- Execute the bounded dynamic result through declaration-owned DateTime rendering. -/
+def evaluateOutcome
+    (operation : CheckedNowDateTimeTwoDayShiftComputation model)
+    (world : World) (input : CheckedDocument model) :
+    Except DateTimeDayShiftComputationFault DateTimeTargetOutcome :=
+  match operation.evaluateOperand world input with
+  | .error error => .error error
+  | .ok result => operation.target.evaluate result |>.mapError .target
+
+/-- Execute and classify the rich target outcome against the immutable source. -/
+def executeResult
+    (operation : CheckedNowDateTimeTwoDayShiftComputation model)
+    (world : World) (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except DateTimeDayShiftComputationFault
+      (DateTimeComputationRunView ResidualMessage) := do
+  let outcome ← operation.evaluateOutcome world input
+  pure (DateTimeComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.checked.target.id, outcome)])
+
+end CheckedNowDateTimeTwoDayShiftComputation
 
 end A12Kernel

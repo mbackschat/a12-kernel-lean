@@ -27,8 +27,14 @@ private def amount : FlatFieldDecl := {
   name := "Days"
   policy := { kind := .number { scale := 0, signed := true } } }
 
+private def nextAmount : FlatFieldDecl := {
+  id := 4
+  groupPath := ["Order"]
+  name := "MoreDays"
+  policy := { kind := .number { scale := 0, signed := true } } }
+
 private def model : FlatModel := {
-  fields := [source, target, amount]
+  fields := [source, target, amount, nextAmount]
   timeZoneId := "Europe/Berlin" }
 
 private def prepared :=
@@ -68,6 +74,21 @@ private def dynamicData (targetStored : String) (amountRaw : RawCell) :
     { address := { field := amount.id, path := [] }
       stored := "amount"
       raw := amountRaw }
+  ] }
+
+private def twoDayData (targetStored : String)
+    (firstRaw secondRaw : RawCell) : DocumentData := {
+  instantiatedRows := []
+  cells := [
+    { address := { field := target.id, path := [] }
+      stored := targetStored
+      raw := temporalRaw },
+    { address := { field := amount.id, path := [] }
+      stored := "first"
+      raw := firstRaw },
+    { address := { field := nextAmount.id, path := [] }
+      stored := "second"
+      raw := secondRaw }
   ] }
 
 private def operation? :=
@@ -252,6 +273,126 @@ example : (do
       unchangedView.withChanges.map
         (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
     some (["15.06.2024T10:30:00"], ([] : List String)) := by
+  native_decide
+
+/- The bounded dynamic two-day computation retains exact milliseconds, samples each
+   supplied world independently, and applies declaration-owned target text. -/
+example : (do
+    let checked ←
+      (checkDocument prepared "en_US"
+        (twoDayData old.text (.parsed (.num 1)) (.parsed (.num 1)))).toOption
+    let operation ←
+      (elaborateNowDateTimeTwoDayShiftComputation
+        model (.literal 1) (.literal 1) target.id).toOption
+    let firstLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let secondLocal ← LocalDateTime.ofYmdHms? 2024 6 16 10 30 0
+    let firstNow ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? firstLocal
+    let secondNow ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? secondLocal
+    let firstOperand ←
+      operation.evaluateOperand
+        { now := { epochMillis := firstNow.epochMillis + 777 } } checked
+        |>.toOption
+    let firstView ←
+      operation.executeResult
+        { now := { epochMillis := firstNow.epochMillis + 777 } } checked
+        ([] : List FormalCause) |>.toOption
+    let applied ←
+      firstView.applyTo (destinationWith .absent) |>.toOption
+    let secondView ←
+      operation.executeResult
+        { now := { epochMillis := secondNow.epochMillis + 333 } } checked
+        ([] : List FormalCause) |>.toOption
+    pure (firstOperand, firstView.withChanges.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text),
+      applied target.id, secondView.withChanges.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
+    some (
+      .value { epochMillis := 1718613000777 },
+      ["17.06.2024T10:30:00"],
+      .presentValue ⟨"17.06.2024T10:30:00", by decide⟩,
+      ["18.06.2024T10:30:00"]) := by
+  native_decide
+
+/- Source-relative equality remains public without becoming a change. Quiet failure
+   in either day amount clears a filled source without manufacturing an error. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let unchangedInput ←
+      (checkDocument prepared "en_US"
+        (twoDayData "17.06.2024T10:30:00"
+          (.parsed (.num 1)) (.parsed (.num 1)))).toOption
+    let unchanged ←
+      (elaborateNowDateTimeTwoDayShiftComputation
+        model (.literal 1) (.literal 1) target.id).toOption
+    let unchangedView ←
+      unchanged.executeResult { now } unchangedInput ([] : List FormalCause)
+        |>.toOption
+    let domainAmount ←
+      (elaborateValueAsDateTimeExpressionShiftAmount model ["Order"]
+        (.binary .divide
+          (.literal { value := 1, authoredScale := 0 })
+          (.literal { value := 0, authoredScale := 0 }))).toOption
+    let innerEmpty ←
+      (elaborateNowDateTimeTwoDayShiftComputation
+        model domainAmount (.literal 1) target.id).toOption
+    let outerEmpty ←
+      (elaborateNowDateTimeTwoDayShiftComputation
+        model (.literal 1) domainAmount target.id).toOption
+    let innerView ←
+      innerEmpty.executeResult { now } unchangedInput
+        ([] : List FormalCause) |>.toOption
+    let outerView ←
+      outerEmpty.executeResult { now } unchangedInput
+        ([] : List FormalCause) |>.toOption
+    pure (
+      unchangedView.withoutErrors.map
+        (fun (entry : DateTimeComputedInstance) => entry.value.text),
+      unchangedView.withChanges,
+      innerView.cleared, outerView.cleared,
+      innerView.noErrorOccurred && outerView.noErrorOccurred)) =
+    some (
+      ["17.06.2024T10:30:00"], [],
+      [target.id], [target.id], true) := by
+  native_decide
+
+/- Inner and outer formal causes remain distinct rich poison outcomes and both clear a
+   source-filled target through the shared result classifier. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let input ←
+      (checkDocument prepared "en_US"
+        (twoDayData old.text
+          (.rejected .malformed)
+          (.rejected .declaredConstraint))).toOption
+    let firstField ←
+      (elaborateValueAsDateTimeFieldShiftAmount model amount.id).toOption
+    let secondField ←
+      (elaborateValueAsDateTimeFieldShiftAmount model nextAmount.id).toOption
+    let innerPoison ←
+      (elaborateNowDateTimeTwoDayShiftComputation
+        model firstField secondField target.id).toOption
+    let outerPoison ←
+      (elaborateNowDateTimeTwoDayShiftComputation
+        model (.literal 1) secondField target.id).toOption
+    let innerOutcome ←
+      innerPoison.evaluateOutcome { now } input |>.toOption
+    let outerOutcome ←
+      outerPoison.evaluateOutcome { now } input |>.toOption
+    let innerView ←
+      innerPoison.executeResult { now } input ([] : List FormalCause)
+        |>.toOption
+    let outerView ←
+      outerPoison.executeResult { now } input ([] : List FormalCause)
+        |>.toOption
+    pure (innerOutcome, outerOutcome, innerView.cleared, outerView.cleared)) =
+    some (
+      .poison .malformed,
+      .poison .declaredConstraint,
+      [target.id], [target.id]) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeDayShiftComputation

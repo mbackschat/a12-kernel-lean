@@ -93,4 +93,50 @@ theorem nowDateTimeDayShiftComputation_profiles_eq
       operation.target.profileMatches
   exact Option.some.inj selected
 
+/-- A value-producing dynamic two-day continuation transports its exact instant into
+    declaration-owned target rendering. -/
+theorem nowDateTimeTwoDayShiftComputation_value
+    (operation : CheckedNowDateTimeTwoDayShiftComputation model)
+    (world : World) (input : CheckedDocument model)
+    (localDateTime : LocalDateTime) (instant : Instant)
+    (notGiven : Bool)
+    (shift :
+      operation.shift.evaluateThen operation.nextAmount
+          .computation world input =
+        .ok (.value localDateTime instant notGiven)) :
+    operation.evaluateOutcome world input =
+      (operation.target.evaluate (.value instant)).mapError .target := by
+  simp [CheckedNowDateTimeTwoDayShiftComputation.evaluateOutcome,
+    CheckedNowDateTimeTwoDayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+
+/-- A reached formal cause from either day amount remains target poison. -/
+theorem nowDateTimeTwoDayShiftComputation_unavailable
+    (operation : CheckedNowDateTimeTwoDayShiftComputation model)
+    (world : World) (input : CheckedDocument model) (cause : FormalCause)
+    (shift :
+      operation.shift.evaluateThen operation.nextAmount
+          .computation world input =
+        .ok (.unavailable cause)) :
+    operation.evaluateOutcome world input = .ok (.poison cause) := by
+  unfold CheckedNowDateTimeTwoDayShiftComputation.evaluateOutcome
+  simp only [CheckedNowDateTimeTwoDayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+  change
+    Except.mapError DateTimeDayShiftComputationFault.target
+      (.ok (.poison cause) :
+        Except DateTimeTargetEvaluationFault DateTimeTargetOutcome) =
+      .ok (.poison cause)
+  rfl
+
+/-- Dynamic two-day mutation and target rendering select the same model-zone profile. -/
+theorem nowDateTimeTwoDayShiftComputation_profiles_eq
+    (operation : CheckedNowDateTimeTwoDayShiftComputation model) :
+    operation.shift.profile = operation.target.profile := by
+  have selected :
+      some operation.shift.profile = some operation.target.profile :=
+    operation.shift.profileMatches.symm.trans
+      operation.target.profileMatches
+  exact Option.some.inj selected
+
 end A12Kernel
