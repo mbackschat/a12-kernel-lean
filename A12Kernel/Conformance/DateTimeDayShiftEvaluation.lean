@@ -43,6 +43,19 @@ private def compositionModel : FlatModel := {
   timeZoneId := "Europe/Berlin"
 }
 
+private def compositionPrepared :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler compositionModel).toOption.get
+      (by native_decide)
+
+private def compositionInput?
+    (cells : List ClassifiedCellInput) :
+    Option (CheckedDocument compositionModel) :=
+  checkDocument compositionPrepared "en_US" {
+    instantiatedRows := []
+    cells
+  } |>.toOption
+
 private def document? (checkedModel : FlatModel)
     (instant : Instant) (localDateTime : LocalDateTime) :
     Option (CheckedDocument checkedModel) := do
@@ -179,6 +192,128 @@ example :
       .value 1 .fixed,
       .value (-1) .fixed,
       .value 1 .both) := by
+  native_decide
+
+/- One checked dynamic day composition observes the world supplied to each call.
+   The spring-gap result is a calendar-day count, not elapsed milliseconds divided by
+   one day, and authored operand position controls its sign. -/
+example : (do
+    let otherLocal ← LocalDateTime.ofYmdHms? 2024 4 1 1 45 0
+    let otherInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? otherLocal
+    let input ←
+      compositionInput? [dateTimeCell other.id otherInstant otherLocal]
+    let firstLocal ← LocalDateTime.ofYmdHms? 2024 3 29 2 30 0
+    let secondLocal ← LocalDateTime.ofYmdHms? 2024 3 30 2 30 0
+    let firstNow ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? firstLocal
+    let secondNow ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? secondLocal
+    let first ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        (.literal 1) other.id .first).toOption
+    let second ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        (.literal 1) other.id .second).toOption
+    let firstEarlier ←
+      first.evaluate .validation { now := firstNow } input |>.toOption
+    let firstLater ←
+      first.evaluate .validation { now := secondNow } input |>.toOption
+    let secondLater ←
+      second.evaluate .validation { now := secondNow } input |>.toOption
+    let landed ←
+      first.shift.evaluate .validation { now := secondNow } input |>.toOption
+    let elapsedUnderDay :=
+      match landed with
+      | .value _ instant _ =>
+          otherInstant.epochMillis - instant.epochMillis < 86400000
+      | _ => false
+    pure (firstEarlier, firstLater, secondLater, elapsedUnderDay)) =
+    some (
+      .value 2 .fixed,
+      .value 1 .fixed,
+      .value (-1) .fixed,
+      true) := by
+  native_decide
+
+/- The dynamic day shift retains the earlier repeated-midnight instant selected from
+   its source offset before the direct sibling enters the calendar-day core. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 1916 9 30 0 0 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let otherLocal ← LocalDateTime.ofYmdHms? 1916 10 2 0 0 0
+    let otherInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? otherLocal
+    let input ←
+      compositionInput? [dateTimeCell other.id otherInstant otherLocal]
+    let operation ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        (.literal 1) other.id .first).toOption
+    let shifted ←
+      operation.shift.evaluate .validation { now } input |>.toOption
+    let result ←
+      operation.evaluate .validation { now } input |>.toOption
+    pure (shifted, result)) =
+    some (
+      .value
+        ((LocalDateTime.ofYmdHms? 1916 10 1 0 0 0).get (by native_decide))
+        { epochMillis := -1680487200000 } false,
+      .value 1 .fixed) := by
+  native_decide
+
+/- Authored order decides whether a formal dynamic amount or direct DateTime cause
+   wins. Missing amount retains a concrete zero shift with fillability; arithmetic
+   no-value keeps the shared symmetric-zero result. -/
+example : (do
+    let nowLocal ← LocalDateTime.ofYmdHms? 2024 6 15 10 0 0
+    let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
+    let badInput ← compositionInput? [
+      { address := { field := other.id, path := [] }
+        stored := "bad-other"
+        raw := .rejected .malformed },
+      { address := { field := amount.id, path := [] }
+        stored := "bad-amount"
+        raw := .rejected .declaredConstraint }]
+    let fieldAmount ←
+      (elaborateValueAsDateTimeFieldShiftAmount
+        compositionModel amount.id).toOption
+    let first ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        fieldAmount other.id .first).toOption
+    let second ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        fieldAmount other.id .second).toOption
+    let badFirst ←
+      first.evaluate .computation { now } badInput |>.toOption
+    let badSecond ←
+      second.evaluate .computation { now } badInput |>.toOption
+    let otherLocal ← LocalDateTime.ofYmdHms? 2024 6 16 10 0 0
+    let otherInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? otherLocal
+    let valueInput ←
+      compositionInput? [dateTimeCell other.id otherInstant otherLocal]
+    let omitted ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        fieldAmount other.id .first).toOption
+    let omittedResult ←
+      omitted.evaluate .computation { now } valueInput |>.toOption
+    let domainAmount ←
+      (elaborateValueAsDateTimeExpressionShiftAmount
+        compositionModel ["Order"]
+        (.binary .divide
+          (.literal { value := 1, authoredScale := 0 })
+          (.literal { value := 0, authoredScale := 0 }))).toOption
+    let domain ←
+      (elaborateNowDateTimeDayShiftDifference compositionModel
+        domainAmount other.id .first).toOption
+    let domainResult ←
+      domain.evaluate .computation { now } valueInput |>.toOption
+    pure (badFirst, badSecond, omittedResult, domainResult)) =
+    some (
+      .unknown .declaredConstraint,
+      .unknown .malformed,
+      .value 1 .both,
+      .value 0 .both) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeDayShiftEvaluation

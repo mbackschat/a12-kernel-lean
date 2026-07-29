@@ -2,14 +2,15 @@ import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 
 /-! # Checked DateTime day-shift differences
 
-This capsule combines one checked `AddDays(DateTime, Number)` result with one direct
-DateTime in `DifferenceInDays`, in either authored operand position. The shift retains
-its exact instant and omission provenance; the direct operand reuses the same checked
-complete-DateTime/profile certificate. The existing concrete-profile calendar-day core
-owns the count.
+This capsule combines one checked field-backed or dynamic-`Now`
+`AddDays(DateTime, Number)` result with one direct DateTime in `DifferenceInDays`, in
+either authored operand position. The shift retains its exact instant and omission
+provenance; the direct operand reuses the same checked complete-DateTime/profile
+certificate. The existing concrete-profile calendar-day core owns the count.
 
 Other recursive forms, Date operands, other zones, repeatable placement, and numeric
-target storage remain outside.
+target storage remain outside. The dynamic carrier remains distinct because it consumes
+an explicit execution `World`.
 -/
 
 namespace A12Kernel
@@ -27,6 +28,13 @@ structure CheckedDateTimeDayShiftDifference (model : FlatModel) where
   other : CheckedDateTimeSource model
   position : ShiftDifferencePosition
 
+/-- One checked dynamic `Now` day shift combined with one direct DateTime in authored
+    order. -/
+structure CheckedNowDateTimeDayShiftDifference (model : FlatModel) where
+  shift : CheckedNowDateTimeDayShift model
+  other : CheckedDateTimeSource model
+  position : ShiftDifferencePosition
+
 /-- Check one direct DateTime day shift and its other direct DateTime difference operand. -/
 def elaborateDateTimeDayShiftDifference
     (model : FlatModel) (sourceField : FieldId)
@@ -35,6 +43,17 @@ def elaborateDateTimeDayShiftDifference
     Except ValueAsDateTimeExtractionElabError
       (CheckedDateTimeDayShiftDifference model) := do
   let shift ← elaborateDateTimeDayShift model sourceField amount
+  let other ← elaborateDateTimeSource model otherField
+  pure { shift, other, position }
+
+/-- Check one dynamic `Now` day shift and its other direct DateTime difference operand
+    without sampling the execution world. -/
+def elaborateNowDateTimeDayShiftDifference
+    (model : FlatModel) (amount : CheckedTemporalShiftAmount model)
+    (otherField : FieldId) (position : ShiftDifferencePosition) :
+    Except ValueAsDateTimeExtractionElabError
+      (CheckedNowDateTimeDayShiftDifference model) := do
+  let shift ← elaborateNowDateTimeDayShift model amount
   let other ← elaborateDateTimeSource model otherField
   pure { shift, other, position }
 
@@ -49,6 +68,28 @@ def calendarDayDifferenceOperand :
   | .value localDateTime instant _ => .value localDateTime instant
   | .nonRelevant => .unsupportedCalendar
   | .unavailable cause => .unavailable cause
+
+/-- Evaluate one shifted result and direct DateTime operand through the shared
+    concrete-profile calendar-day core. `none` retains structural profile
+    insufficiency outside the numeric result domain. -/
+def evaluateCalendarDayDifference?
+    (shiftResult : ValueAsDateTimeResult)
+    (profile : ModelZone.ConcreteProfile)
+    (other : CalendarDayDifferenceOperand)
+    (position : ShiftDifferencePosition) : Option NumericOperand :=
+  let shiftOperand := shiftResult.calendarDayDifferenceOperand
+  let evaluated :=
+    match position with
+    | .first =>
+        CalendarDayDifferenceOperand.evaluate profile shiftOperand other
+    | .second =>
+        CalendarDayDifferenceOperand.evaluate profile other shiftOperand
+  match evaluated with
+  | .error () => none
+  | .ok (.unknown cause) => some (.unknown cause)
+  | .ok (.value amount fillability) =>
+      some (.value amount
+        (if shiftResult.shiftNotGiven then .both else fillability))
 
 end ValueAsDateTimeResult
 
@@ -70,21 +111,10 @@ private def finish
     (shiftResult : ValueAsDateTimeResult)
     (other : CalendarDayDifferenceOperand) :
     Except DateTimeDayShiftDifferenceFault NumericOperand :=
-  let shiftOperand := shiftResult.calendarDayDifferenceOperand
-  let evaluated :=
-    match checked.position with
-    | .first =>
-        CalendarDayDifferenceOperand.evaluate
-          checked.shift.profile shiftOperand other
-    | .second =>
-        CalendarDayDifferenceOperand.evaluate
-          checked.shift.profile other shiftOperand
-  match evaluated with
-  | .error () => .error (.operationUnavailable checked.position)
-  | .ok (.unknown cause) => .ok (.unknown cause)
-  | .ok (.value amount fillability) =>
-      .ok (.value amount
-        (if shiftResult.shiftNotGiven then .both else fillability))
+  match shiftResult.evaluateCalendarDayDifference?
+      checked.shift.profile other checked.position with
+  | some result => .ok result
+  | none => .error (.operationUnavailable checked.position)
 
 /-- Evaluate the shift and direct DateTime in authored order. The first reached formal
     cause stops before the later operand, while empty/no-value still reaches it. -/
@@ -112,5 +142,44 @@ def evaluate (checked : CheckedDateTimeDayShiftDifference model)
           | .ok shiftResult => checked.finish shiftResult other
 
 end CheckedDateTimeDayShiftDifference
+
+namespace CheckedNowDateTimeDayShiftDifference
+
+private def finish
+    (checked : CheckedNowDateTimeDayShiftDifference model)
+    (shiftResult : ValueAsDateTimeResult)
+    (other : CalendarDayDifferenceOperand) :
+    Except DateTimeDayShiftDifferenceFault NumericOperand :=
+  match shiftResult.evaluateCalendarDayDifference?
+      checked.shift.profile other checked.position with
+  | some result => .ok result
+  | none => .error (.operationUnavailable checked.position)
+
+/-- Evaluate the direct operand and dynamic day shift in authored order against the
+    world supplied to this call. The first reached formal cause short-circuits. -/
+def evaluate (checked : CheckedNowDateTimeDayShiftDifference model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except DateTimeDayShiftDifferenceFault NumericOperand :=
+  match checked.position with
+  | .first =>
+      match checked.shift.evaluate phase world input with
+      | .error error => .error (.shift error)
+      | .ok (.unavailable cause) => .ok (.unknown cause)
+      | .ok shiftResult =>
+          match checked.other.readCalendarDayOperand phase input with
+          | .error error => .error (.document error)
+          | .ok (.unavailable cause) => .ok (.unknown cause)
+          | .ok other => checked.finish shiftResult other
+  | .second =>
+      match checked.other.readCalendarDayOperand phase input with
+      | .error error => .error (.document error)
+      | .ok (.unavailable cause) => .ok (.unknown cause)
+      | .ok other =>
+          match checked.shift.evaluate phase world input with
+          | .error error => .error (.shift error)
+          | .ok (.unavailable cause) => .ok (.unknown cause)
+          | .ok shiftResult => checked.finish shiftResult other
+
+end CheckedNowDateTimeDayShiftDifference
 
 end A12Kernel
