@@ -112,6 +112,54 @@ private def executionOutcome? (components : SurfaceTimeComponents)
   let checked ← (checkDocument prepared "en_US" input).toOption
   operation.evaluateOutcome checked |>.toOption
 
+private def executionDocument? (input : DocumentData) :
+    Option (CheckedDocument executionModel) := do
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler executionModel).toOption
+  (checkDocument prepared "en_US" input).toOption
+
+private def worldLiteralOperation? (amount : Rat := 0) :
+    Option (CheckedWorldTimeConstructionComputation executionModel) := do
+  let component ←
+    (elaborateNowShiftedTimeExtractorLiteral executionModel
+      .hour .hour .hours amount).toOption
+  (certifyWorldTimeConstructionComputation executionModel
+    (.hour component) 1).toOption
+
+private def worldFieldOperation? (amountField : FieldId := 2) :
+    Option (CheckedWorldTimeConstructionComputation executionModel) := do
+  let amount ←
+    (elaborateTemporalFieldShiftAmount executionModel amountField).toOption
+  let component ←
+    (elaborateNowShiftedTimeExtractor executionModel
+      .hour .hour .hours amount).toOption
+  (certifyWorldTimeConstructionComputation executionModel
+    (.hour component) 1).toOption
+
+private def worldOutcome? (operation :
+    CheckedWorldTimeConstructionComputation executionModel)
+    (world : World) (input : DocumentData) : Option TimeTargetOutcome := do
+  let checked ← executionDocument? input
+  operation.evaluateOutcome world checked |>.toOption
+
+private def worldView? (operation :
+    CheckedWorldTimeConstructionComputation executionModel)
+    (world : World) (input : DocumentData) :
+    Option (TimeComputationRunView FormalCause) := do
+  let checked ← executionDocument? input
+  operation.executeResult world checked [] |>.toOption
+
+private def worldSelfReferenceError? :
+    Option WorldTimeConstructionComputationElabError := do
+  let static ←
+    (elaborateTimeComponents executionModel
+      (.hour (.extractor .hour 1))).toOption
+  match certifyWorldTimeConstructionComputation executionModel
+      static.toWorld 1 with
+  | .error error => some error
+  | .ok _ => none
+
 /- Exact complete Time is admitted; component or format widening fails before execution. -/
 example :
     timeTargetError? (model) = none ∧
@@ -275,6 +323,50 @@ example :
         some (.components (.constantNotAdmitted .minute "60")) ∧
       operationError? (.hour (.constant "2.0")) =
         some (.components (.constantNotAdmitted .hour "2.0")) := by
+  native_decide
+
+/- The operation samples the supplied world per call; equal structure with another world can produce another exact clock. -/
+example :
+    (do
+      let operation ← worldLiteralOperation?
+      let first ← worldOutcome? operation { now := { epochMillis := 18000000 } }
+        oldSource
+      let second ← worldOutcome? operation { now := { epochMillis := 21600000 } }
+        oldSource
+      pure (first, second)) =
+        some (.accepted ⟨"05:00:00", by decide⟩,
+          .accepted ⟨"06:00:00", by decide⟩) := by
+  native_decide
+
+/- An empty amount keeps the enclosing Time incomplete, while a reached formal amount remains exact poison. -/
+example :
+    (do
+      let operation ← worldFieldOperation?
+      let empty ← worldOutcome? operation
+        { now := { epochMillis := 18000000 } } oldSource
+      let formal ← worldOutcome? operation
+        { now := { epochMillis := 18000000 } }
+        (executionSource [
+          componentCell 2 "bad" (.rejected .malformed)])
+      pure (empty, formal)) =
+        some (.noValue, .poison .malformed) := by
+  native_decide
+
+/- Static components inside the world carrier retain the same target-reference prohibition. -/
+example :
+    worldSelfReferenceError? = some (.targetSelfReference 1) := by
+  native_decide
+
+/- A dynamic accepted clock reaches the settled source-relative result and exact application path. -/
+example :
+    (do
+      let operation ← worldLiteralOperation?
+      let view ← worldView? operation
+        { now := { epochMillis := 21600000 } } oldSource
+      let applied ← view.applyTo (destinationWith .absent) |>.toOption
+      pure (view.withChanges, applied 1)) =
+        some ([{ targetField := 1, value := ⟨"06:00:00", by decide⟩ }],
+          .presentValue ⟨"06:00:00", by decide⟩) := by
   native_decide
 
 end A12Kernel.Conformance.TimeComputation

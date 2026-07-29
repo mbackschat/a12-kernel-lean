@@ -437,11 +437,7 @@ def referencesField (checked : CheckedTimeComponent model)
   | .extractor checked => checked.source.id == field
   | .shiftedExtractor checked =>
       checked.source.source.id == field ||
-        match checked.source.amount with
-        | .literal _ => false
-        | .field source _ => source.id == field
-        | .expression amount _ =>
-            amount.core.anyAtom (·.referencesField model field)
+        checked.source.amount.referencesField field
 
 /-- Execute exactly the statically selected component branch. -/
 def read (checked : CheckedTimeComponent model)
@@ -457,6 +453,21 @@ def read (checked : CheckedTimeComponent model)
 end CheckedTimeComponent
 
 namespace TimeComponentPrefix
+
+/-- Whether any supplied component satisfies its carrier-specific field-reference predicate; omitted suffixes contribute no reference. -/
+def referencesFieldWith (checked : TimeComponentPrefix Component)
+    (referencesField : Component → FieldId → Bool)
+    (field : FieldId) : Bool :=
+  match checked with
+  | .empty => false
+  | .hour hourComponent => referencesField hourComponent field
+  | .minute hourComponent minuteComponent =>
+      referencesField hourComponent field ||
+        referencesField minuteComponent field
+  | .second hourComponent minuteComponent secondComponent =>
+      referencesField hourComponent field ||
+        referencesField minuteComponent field ||
+        referencesField secondComponent field
 
 /-- Evaluate one supplied prefix through its carrier-specific reader. A reached formal
     component stops before every later read; omitted trailing slots remain fixed zeroes. -/
@@ -496,14 +507,7 @@ namespace CheckedTimeComponents
 /-- Whether any supplied component reads one field; omitted suffixes contribute no reference. -/
 def referencesField (checked : CheckedTimeComponents model)
     (field : FieldId) : Bool :=
-  match checked with
-  | .empty => false
-  | .hour hour => hour.referencesField field
-  | .minute hour minute =>
-      hour.referencesField field || minute.referencesField field
-  | .second hour minute second =>
-      hour.referencesField field || minute.referencesField field ||
-        second.referencesField field
+  checked.referencesFieldWith CheckedTimeComponent.referencesField field
 
 /-- Evaluate one document-only checked prefix. -/
 def evaluate (checked : CheckedTimeComponents model)

@@ -1758,3 +1758,5 @@ run_cmd do
 #print axioms A12Kernel.dateTimeSubdayShiftComputation_profiles_eq
 #print axioms A12Kernel.shiftedNowDateTimeComputation_value
 #print axioms A12Kernel.shiftedNowDateTimeComputation_profiles_eq
+#print axioms A12Kernel.checkedWorldTimeConstructionComputation_excludes_target
+#print axioms A12Kernel.checkedWorldTimeConstructionComputation_evaluate_value

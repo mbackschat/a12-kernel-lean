@@ -79,6 +79,14 @@ end CheckedNowShiftedTimeExtractor
 
 namespace CheckedWorldTimeComponent
 
+/-- Whether this exact world-aware component reads one field. Dynamic `Now` has no document source, but its checked amount may read direct Number fields. -/
+def referencesField (checked : CheckedWorldTimeComponent model)
+    (field : FieldId) : Bool :=
+  match checked with
+  | .static component => component.referencesField field
+  | .shiftedNowExtractor source =>
+      source.source.amount.referencesField field
+
 /-- Read a static component without consulting `World`, or the dynamic component with it. -/
 def read (checked : CheckedWorldTimeComponent model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
@@ -91,6 +99,11 @@ end CheckedWorldTimeComponent
 
 namespace CheckedWorldTimeComponents
 
+/-- Whether any supplied world-aware component reads one field. -/
+def referencesField (checked : CheckedWorldTimeComponents model)
+    (field : FieldId) : Bool :=
+  checked.referencesFieldWith CheckedWorldTimeComponent.referencesField field
+
 /-- Evaluate one checked prefix against the immutable document and explicit world. -/
 def evaluate (checked : CheckedWorldTimeComponents model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
@@ -98,6 +111,18 @@ def evaluate (checked : CheckedWorldTimeComponents model)
   checked.evaluateWith fun component => component.read phase world input
 
 end CheckedWorldTimeComponents
+
+namespace CheckedTimeComponents
+
+/-- Embed a document-only checked prefix into the world-aware carrier without changing its arity or dependencies. -/
+def toWorld : CheckedTimeComponents model → CheckedWorldTimeComponents model
+  | .empty => .empty
+  | .hour hour => .hour (.static hour)
+  | .minute hour minute => .minute (.static hour) (.static minute)
+  | .second hour minute second =>
+      .second (.static hour) (.static minute) (.static second)
+
+end CheckedTimeComponents
 
 namespace CheckedValueAsDateTime
 

@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1709 theorem roots; 38926 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1711 theorem roots; 38991 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,18 +21,18 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Carry one checked world-dependent `Time(...)` prefix with a shifted-`Now` extractor through the exact Time target, result view, and application path.
+Admit concrete stored Boolean and Confirm text through the canonical lowercase formal-check boundary without consulting ignored model token declarations.
 
 ## Immediate sequence
 
-1. Reuse `CheckedWorldTimeComponents.evaluate`, its explicit per-call `World`, and the settled Time target/result/application stages; add no ambient clock or second prefix representation.
-2. Certify complete target-reference exclusion across static components and the checked dynamic amount, then lock changing-world output, source-before-amount/formal order, quiet no-value, and exact application.
-3. Stop after one nonrepeatable dynamic operation; exclude alternatives, computation tables, scheduling, repeatable placement, general recursive temporal operands, message construction, wider formats, and unrelated Date/DateTime widening.
+1. Reuse the existing raw-cell, formal-check, and `CheckedDocument` owners; classify only exact lowercase `true`/`false` for Boolean and exact lowercase `true` for Confirm, with the already named formal codes for every other nonempty token.
+2. Lock that uppercase, locale/display spellings, declared `@NotInD` alternatives, and stored Confirm `false` remain rejected while empty stays empty and canonical values reach the existing scalar equality consumers.
+3. Stop after ordinary stored scalar ingestion; exclude display rendering, host ingress conversion, model token metadata, repeatable aggregation, computation targets, protocol widening, and unrelated String/Number formal-read work.
 
 ## Parked boundaries
 
 - Eager prepass invalidity needs no second snapshot because `CheckedDocument` already owns computation-phase checked cells. Its supplied messages enter the completed SG4 partition directly; no eager-prepass reconstruction or SG10 rendering belongs in that structural boundary.
-- Computation scheduling, state transition, and the computation-result pointer partition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); message rendering remains under SG10; concrete canonical Boolean/Confirm token ingestion under SG5; future operator-family admission and projections under their owning semantic gaps.
+- Computation scheduling, state transition, and the computation-result pointer partition remain under [`SG4`](SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition); message rendering remains under SG10; future operator-family admission and projections remain under their owning semantic gaps.
 - Public protocol expansion, semantic shipments, dependencies, SMT integration, and new evidence/process machinery require their existing explicit adoption or approval gates.
 
 ## Stop and resume

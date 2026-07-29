@@ -62,6 +62,15 @@ inductive CheckedTemporalShiftAmount (model : FlatModel) where
 
 namespace CheckedTemporalShiftAmount
 
+/-- Whether this checked amount reads one Number field. Expression amounts include every checked direct-Number atom. -/
+def referencesField (amount : CheckedTemporalShiftAmount model)
+    (field : FieldId) : Bool :=
+  match amount with
+  | .literal _ => false
+  | .field source _ => source.id == field
+  | .expression checked _ =>
+      checked.core.anyAtom (·.referencesField model field)
+
 /-- Evaluate a checked amount after its temporal source has been reached. Document failure stays structural; numeric missingness, formal causes, and arithmetic domain failure remain in the shared numeric result. -/
 def read (amount : CheckedTemporalShiftAmount model)
     (phase : Phase) (input : CheckedDocument model) :

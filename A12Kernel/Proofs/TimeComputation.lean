@@ -39,6 +39,25 @@ theorem checkedTimeConstructionComputation_evaluate_value
     TimeConstructionResult.asTimeComputationResult,
     CheckedTimeTarget.evaluate, Except.map]
 
+/-- The checked world-aware computation certificate excludes its target from every static component and dynamic amount dependency. -/
+theorem checkedWorldTimeConstructionComputation_excludes_target
+    (operation : CheckedWorldTimeConstructionComputation model) :
+    operation.components.referencesField
+      operation.target.checked.target.id = false :=
+  operation.targetNotReferenced
+
+/-- A real world-aware construction reaches exact target rendering without retaining the transport date or instant. -/
+theorem checkedWorldTimeConstructionComputation_evaluate_value
+    (operation : CheckedWorldTimeConstructionComputation model)
+    (world : World) (input : CheckedDocument model) (time : TimeOfDay)
+    (evaluated :
+      operation.evaluateConstruction world input = .ok (.value time)) :
+    operation.evaluateOutcome world input =
+      .ok (.accepted (operation.target.format.render time)) := by
+  simp [CheckedWorldTimeConstructionComputation.evaluateOutcome, evaluated,
+    TimeConstructionResult.asTimeComputationResult,
+    CheckedTimeTarget.evaluate, Except.map]
+
 /-- Time has no target-local error branch, so only residual messages affect the public error predicate. -/
 theorem timeComputationRun_noErrorOccurred_iff
     (view : TimeComputationRunView ResidualMessage) :
