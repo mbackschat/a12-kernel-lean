@@ -102,8 +102,19 @@ private def patternCompiler : StringPatternCompiler := fun source =>
 private def patternWorld : World :=
   { now := { epochMillis := 0 } }
 
-private def preparedRaw (field : FieldId) (value : String) : RawFlatContext where
-  read id := if id == field then .parsed (.str value) else .empty
+private def placed (field : FieldId) (stored : String) (raw : RawCell) :
+    ClassifiedCellInput :=
+  { address := { field, path := [] }, stored, raw }
+
+private def checkedWith? {candidateModel : FlatModel}
+    {compilePattern : StringPatternCompiler}
+    (prepared : PreparedFlatStringContext candidateModel compilePattern)
+    (cells : List ClassifiedCellInput) : Option (CheckedDocument candidateModel) :=
+  (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
+
+private def stringCells (field : FieldId) (value : String) :
+    List ClassifiedCellInput :=
+  [placed field value (.parsed (.str value))]
 
 private def preparedStore (field : FlatFieldDecl) (value : String) :
     Option StringStore := do
@@ -117,7 +128,8 @@ private def preparedStore (field : FlatFieldDecl) (value : String) :
         groups := ["Form"]
         field := field.name
       })).toOption
-  (expression.evaluate prepared "en_US" (preparedRaw field.id value)).toOption
+  let input ← checkedWith? prepared (stringCells field.id value)
+  (expression.evaluate input).toOption
 
 private def absolute (groups : List String) (field : String) : SurfaceFieldPath :=
   { base := .absolute, groups, field }
@@ -147,12 +159,13 @@ private def operationPolicyOf
 private def operationOutcomeOf
     (result : Except StringComputationElabError
       (CheckedStringComputationOperation model))
-    (input : RawFlatContext) : Option StringTargetOutcome := do
+    (cells : List ClassifiedCellInput) : Option StringTargetOutcome := do
   let checked ← result.toOption
   let prepared ←
     (prepareFlatStringContext preparedWorld builtinStringPatternCompiler
       model).toOption
-  (checked.evaluateOutcome prepared "en_US" input).toOption
+  let input ← checkedWith? prepared cells
+  (checked.evaluateOutcome prepared.patterns input).toOption
 
 private def operationErrorOf {candidateModel : FlatModel}
     (result : Except StringComputationElabError
@@ -162,27 +175,34 @@ private def operationErrorOf {candidateModel : FlatModel}
   | .error error => some error
 
 private def patternTargetOutcomeOf (expression : StringExpr SurfaceFieldPath)
-    (input : RawFlatContext) : Option StringTargetOutcome := do
+    (cells : List ClassifiedCellInput) : Option StringTargetOutcome := do
   let checked ←
     (elaborateStringComputationOperation patternTargetModel ["Form"]
       patternTarget.id expression).toOption
   let prepared ←
     (prepareFlatStringContext patternWorld patternCompiler patternTargetModel).toOption
-  (checked.evaluateOutcome prepared "en_US" input).toOption
+  let input ← checkedWith? prepared cells
+  (checked.evaluateOutcome prepared.patterns input).toOption
 
-private def raw (sourceCell suffixCell : RawCell) : RawFlatContext where
-  read field :=
-    if field = source.id then sourceCell
-    else if field = suffix.id then suffixCell
-    else .empty
+private def cellFor? (field : FieldId) : RawCell → Option ClassifiedCellInput
+  | .empty => none
+  | .presentEmpty => some (placed field "" .presentEmpty)
+  | .parsed (.str value) => some (placed field value (.parsed (.str value)))
+  | .parsed value => some (placed field "wrong-kind" (.parsed value))
+  | .rejected cause => some (placed field "rejected" (.rejected cause))
+
+private def cells (sourceCell suffixCell : RawCell) :
+    List ClassifiedCellInput :=
+  [cellFor? source.id sourceCell, cellFor? suffix.id suffixCell].filterMap id
 
 private def storeOf (expression : StringExpr SurfaceFieldPath)
-    (input : RawFlatContext) : Option StringStore := do
+    (cells : List ClassifiedCellInput) : Option StringStore := do
   let checked ← (elaborateStringExpr model ["Form"] expression).toOption
   let prepared ←
     (prepareFlatStringContext preparedWorld builtinStringPatternCompiler
       model).toOption
-  (checked.evaluate prepared "en_US" input).toOption
+  let input ← checkedWith? prepared cells
+  (checked.evaluate input).toOption
 
 private def normalizedResult : StoredString :=
   { text := "A\nB!", nonempty := by decide }
@@ -215,6 +235,13 @@ example :
       (.range (bare "Source") 2 4)) = some (.range source.id 2 4) := by
   native_decide
 
+/- `FieldValueAsString` is the typed Number-to-String leaf; it does not widen ordinary String copy syntax. -/
+example :
+    coreOf (elaborateStringExpr model ["Form"]
+      (.fieldValueAsString (bare "Amount"))) =
+        some (.fieldValueAsString amount.id) := by
+  native_decide
+
 /- Field resolution and repeatable-shape rejection precede interval checking. -/
 example :
     errorOf (elaborateStringExpr model ["Form"]
@@ -244,7 +271,7 @@ example :
 example :
     storeOf
       (.concat (.field (bare "Source")) (.literal "!"))
-      (raw (.parsed (.str "A\r\nB")) .empty) =
+      (cells (.parsed (.str "A\r\nB")) .empty) =
       some (.produced normalizedResult) := by
   native_decide
 
@@ -261,13 +288,13 @@ example :
 example :
     storeOf
       (.concat (.field (bare "Source")) (.field (bare "Suffix")))
-      (raw .presentEmpty .empty) = some .noValue := by
+      (cells .presentEmpty .empty) = some .noValue := by
   native_decide
 
 /- Raw cells are checked with the same model policy before the runtime tree reads them. -/
 example :
     storeOf (.field (bare "Source"))
-      (raw (.parsed (.num 7)) .empty) = some (.poison .malformed) := by
+      (cells (.parsed (.num 7)) .empty) = some (.poison .malformed) := by
   native_decide
 
 /- Wrong-kind and repeatable reads fail before a runtime expression can be constructed. -/
@@ -285,7 +312,7 @@ example :
     let result := elaborateStringComputationOperation model ["Form"] target.id
       (.literal "AB\r\nCD")
     operationPolicyOf result = some target.stringPolicy ∧
-      operationOutcomeOf result (raw .empty .empty) = some (.accepted rawCrLfResult) := by
+      operationOutcomeOf result [] = some (.accepted rawCrLfResult) := by
   native_decide
 
 /- The checked target operation consumes the range result without a parallel target path. -/
@@ -293,7 +320,7 @@ example :
     operationOutcomeOf
       (elaborateStringComputationOperation model ["Form"] target.id
         (.range (bare "Source") 2 4))
-      (raw (.parsed (.str "ABCDE")) .empty) = some (.accepted rangeResult) := by
+      (cells (.parsed (.str "ABCDE")) .empty) = some (.accepted rangeResult) := by
   native_decide
 
 /- The integrated checked operation rejects self-reference instead of leaving it to runtime evaluation. -/
@@ -347,19 +374,19 @@ example :
 
 /- The exact model-prepared matcher accepts both literal and field-copy results without adding a second pattern evaluator. -/
 example :
-    patternTargetOutcomeOf (.literal "AAA") (preparedRaw 99 "") =
+    patternTargetOutcomeOf (.literal "AAA") [] =
         some (.accepted { text := "AAA", nonempty := by decide }) ∧
       patternTargetOutcomeOf (.field (bare "PatternInput"))
-        (preparedRaw patternInput.id "AAAA") =
+        (stringCells patternInput.id "AAAA") =
           some (.accepted { text := "AAAA", nonempty := by decide }) := by
   native_decide
 
 /- Pattern failure retains the attempted value, and the target's pattern check precedes its simultaneously failing minimum-length check. -/
 example :
-    patternTargetOutcomeOf (.literal "BBB") (preparedRaw 99 "") =
+    patternTargetOutcomeOf (.literal "BBB") [] =
         some (.errored { text := "BBB", nonempty := by decide } .pattern) ∧
       patternTargetOutcomeOf (.field (bare "PatternInput"))
-        (preparedRaw patternInput.id "B") =
+        (stringCells patternInput.id "B") =
           some (.errored { text := "B", nonempty := by decide } .pattern) := by
   native_decide
 

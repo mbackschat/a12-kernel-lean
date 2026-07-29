@@ -1,9 +1,9 @@
-import A12Kernel.Elaboration.StringContext
+import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable String declarations from one validated flat model. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, raw/custom targets, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable declarations of the exact kind required by each leaf. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. Alternatives, concrete syntax, repeatable reads, indexed coercion, raw/custom targets, and scheduling remain outside.
 -/
 
 namespace A12Kernel
@@ -39,6 +39,21 @@ def elaborateStringValueField (model : FlatModel) (declaringGroup : GroupPath)
     (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
   admitStringComputationValueField declaration
 
+/-- Admit one already-resolved nonrepeatable Number declaration as a `FieldValueAsString` operand. -/
+def admitNumberAsStringField
+    (declaration : FlatFieldDecl) : Except StringComputationElabError FieldId :=
+  match declaration.policy.kind with
+  | .number _ => pure declaration.id
+  | actual => throw (.fieldKindMismatch declaration.path actual.surfaceKind)
+
+/-- Resolve one legal nonrepeatable Number field for `FieldValueAsString`. -/
+def elaborateNumberAsStringField (model : FlatModel)
+    (declaringGroup : GroupPath) (reference : SurfaceFieldPath) :
+    Except StringComputationElabError FieldId := do
+  let declaration ←
+    (model.resolveNonrepeatableFieldUnchecked declaringGroup reference).mapError .resolve
+  admitNumberAsStringField declaration
+
 /-- Whether one runtime leaf is the exact nonrepeatable String-value declaration in the model. -/
 private def FlatModel.admitsStringComputationOperand (model : FlatModel)
     (fieldId : FieldId) : Bool :=
@@ -48,12 +63,25 @@ private def FlatModel.admitsStringComputationOperand (model : FlatModel)
         declaration.toStringValueField? == some { id := fieldId }
   | .error _ => false
 
+/-- Whether one runtime coercion leaf is the exact nonrepeatable Number declaration in the model. -/
+private def FlatModel.admitsNumberAsStringOperand (model : FlatModel)
+    (fieldId : FieldId) : Bool :=
+  match model.lookupUniqueId fieldId with
+  | .ok declaration =>
+      declaration.repeatableScope.isEmpty &&
+        match declaration.policy.kind with
+        | .number _ => true
+        | _ => false
+  | .error _ => false
+
 namespace StringExpr
 
 /-- Check that every runtime leaf names the exact nonrepeatable String declaration in one model. -/
 def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
   | StringExpr.field fieldId =>
       model.admitsStringComputationOperand fieldId
+  | StringExpr.fieldValueAsString fieldId =>
+      model.admitsNumberAsStringOperand fieldId
   | StringExpr.literal _ => true
   | StringExpr.range fieldId start finish =>
       validStringRange start finish &&
@@ -67,6 +95,7 @@ def WellFormed (expression : StringExpr FieldId) (model : FlatModel) : Prop :=
 /-- Whether the resolved expression contains the named field anywhere in its authored tree. -/
 def referencesField (field : FieldId) : StringExpr FieldId → Bool
   | .field candidate => candidate == field
+  | .fieldValueAsString candidate => candidate == field
   | .literal _ => false
   | .range candidate _ _ => candidate == field
   | .concat left right => left.referencesField field || right.referencesField field
@@ -106,6 +135,9 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup : GroupPath) :
       Except StringComputationElabError (StringExpr FieldId)
   | StringExpr.field reference => do
       pure (.field (← elaborateStringValueField model declaringGroup reference))
+  | StringExpr.fieldValueAsString reference => do
+      pure (.fieldValueAsString
+        (← elaborateNumberAsStringField model declaringGroup reference))
   | StringExpr.literal value => pure (.literal value)
   | StringExpr.range reference start finish => do
       let declaration ←
@@ -181,12 +213,11 @@ def elaborateStringComputationOperation
 
 namespace CheckedStringExpr
 
-/-- Read raw cells through the prepared context for the model that certified the expression, then run only the established String evaluator. -/
+/-- Read through the immutable checked document that owns Number storage-regime selection, then run only the established String evaluator. -/
 def evaluate (expression : CheckedStringExpr model)
-    (prepared : PreparedFlatStringContext model compilePattern)
-    (locale : String) (raw : RawFlatContext) :
+    (input : CheckedDocument model) :
     Except StringComputationFault StringStore :=
-  expression.core.evaluate { read := (prepared.checkContext locale raw).read }
+  expression.core.evaluate input.stringComputationContext
 
 end CheckedStringExpr
 
@@ -214,16 +245,16 @@ end PreparedFlatStringPatterns
 
 namespace CheckedStringComputationOperation
 
-/-- Read through the prepared model context, then apply the retained declaration policy and exact prepared target matcher to the root write attempt. -/
+/-- Read through the immutable checked document, then apply the retained declaration policy and exact prepared target matcher to the root write attempt. -/
 def evaluateOutcome (operation : CheckedStringComputationOperation model)
-    (prepared : PreparedFlatStringContext model compilePattern)
-    (locale : String) (raw : RawFlatContext) :
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model) :
     Except StringComputationFault StringTargetOutcome := do
-  let matcher ← match prepared.patterns.targetMatcher? operation.targetField with
+  let matcher ← match patterns.targetMatcher? operation.targetField with
     | some matcher => pure matcher
     | none => throw (.targetPatternUnavailable operation.targetField)
   pure (operation.targetPolicy.checkTargetWithPattern matcher
-    (← operation.expression.evaluate prepared locale raw))
+    (← operation.expression.evaluate input))
 
 end CheckedStringComputationOperation
 

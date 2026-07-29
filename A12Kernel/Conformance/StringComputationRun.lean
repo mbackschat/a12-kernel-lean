@@ -27,8 +27,12 @@ private def producer : FlatFieldDecl :=
 private def consumer : FlatFieldDecl :=
   { id := 4, groupPath := ["Form"], name := "Consumer", policy := { kind := .string } }
 
+private def amount : FlatFieldDecl :=
+  { id := 5, groupPath := ["Form"], name := "Amount",
+    policy := { kind := .number { scale := 2, signed := true } } }
+
 private def model : FlatModel :=
-  { fields := [source, gate, bad, producer, consumer] }
+  { fields := [source, gate, bad, producer, consumer, amount] }
 
 private def world : World := { now := { epochMillis := 0 } }
 
@@ -58,6 +62,7 @@ private def holding : ComputationCondition := .fieldNotFilled gate.id
 private inductive FixtureOperation
   | producerCopySource | producerValue | producerError | producerPoison
   | consumerCopy | consumerWrong | consumerFallback | consumerSafe
+  | consumerNumberText | consumerNumberConcat
 
 private def FixtureOperation.checked :
     FixtureOperation → CheckedStringComputationOperation model
@@ -70,11 +75,18 @@ private def FixtureOperation.checked :
   | .consumerWrong => (operation? consumer.id (.literal "WRONG")).get (by native_decide)
   | .consumerFallback => (operation? consumer.id (.literal "FALLBACK")).get (by native_decide)
   | .consumerSafe => (operation? consumer.id (.literal "SAFE")).get (by native_decide)
+  | .consumerNumberText =>
+      (operation? consumer.id (.fieldValueAsString (bare "Amount"))).get
+        (by native_decide)
+  | .consumerNumberConcat =>
+      (operation? consumer.id
+        (.concat (.fieldValueAsString (bare "Amount")) (.literal " G"))).get
+        (by native_decide)
 
 private inductive FixtureTable
   | producerCopySource | producerValue | producerError | producerPoison
   | consumerCopy | consumerReached | consumerHiddenAnd | consumerHiddenOr
-  | consumerIndependent
+  | consumerIndependent | consumerNumberText | consumerNumberConcat
 
 private def FixtureTable.checked :
     FixtureTable → CheckedStringComputationTable model
@@ -101,10 +113,23 @@ private def FixtureTable.checked :
   | .consumerIndependent =>
       (table? [alternative holding (FixtureOperation.checked .consumerSafe)]).get
         (by native_decide)
+  | .consumerNumberText =>
+      (table? [alternative holding (FixtureOperation.checked .consumerNumberText)]).get
+        (by native_decide)
+  | .consumerNumberConcat =>
+      (table? [alternative holding (FixtureOperation.checked .consumerNumberConcat)]).get
+        (by native_decide)
 
 private def cell (field : FieldId) (stored : String) (raw : RawCell) :
     ClassifiedCellInput :=
   { address := { field, path := [] }, stored, raw }
+
+private def decimalCell (field : FieldId) (stored : String)
+    (unscaled scale : Int) (raw : RawCell) : ClassifiedCellInput :=
+  { address := { field, path := [] }
+    stored
+    raw
+    numericDecimal := some { unscaled, scale } }
 
 private def checkedDocument (cells : List ClassifiedCellInput) :
     Option (CheckedDocument model) :=
@@ -280,6 +305,40 @@ example :
     outcomeAt producer.id [FixtureTable.checked .producerValue]
       [cell bad.id "bad" (.rejected .malformed)] =
         some (.accepted ⟨"NEW", by decide⟩) := by
+  native_decide
+
+/- Equal physical text remains distinguishable by Number storage regime: decimal input uses the selected formal read, while String-valued input remains verbatim. -/
+example :
+    outcomeAt consumer.id [FixtureTable.checked .consumerNumberText]
+      [decimalCell amount.id "250.00" 25000 2 (.parsed (.num 250))] =
+        some (.accepted ⟨"250", by decide⟩) ∧
+    outcomeAt consumer.id [FixtureTable.checked .consumerNumberText]
+      [cell amount.id "250.00" (.parsed (.num 250))] =
+        some (.accepted ⟨"250.00", by decide⟩) := by
+  native_decide
+
+/- A not-given coercion is root no-value but contributes `""` inside concatenation; a reached formal Number error remains poison. -/
+example :
+    outcomeAt consumer.id [FixtureTable.checked .consumerNumberText]
+      [cell amount.id "" .presentEmpty] = some .noValue ∧
+    outcomeAt consumer.id [FixtureTable.checked .consumerNumberConcat]
+      [cell amount.id "" .presentEmpty] =
+        some (.accepted ⟨" G", by decide⟩) ∧
+    outcomeAt consumer.id [FixtureTable.checked .consumerNumberText]
+      [cell amount.id "250.000" (.rejected .declaredConstraint)] =
+        some (.poison .declaredConstraint) := by
+  native_decide
+
+/- Standalone no-value reaches the existing result and application clearing path without a coercion-specific transition. -/
+example : (do
+    let view ← resultView? [FixtureTable.checked .consumerNumberText]
+      [cell amount.id "" .presentEmpty,
+        cell consumer.id "OLD" (.parsed (.str "OLD"))]
+    let applied ←
+      (view.applyTo (destinationWith consumer.id
+        (.presentValue ⟨"OLD", by decide⟩))).toOption
+    pure (view.cleared, applied consumer.id)) =
+      some ([consumer.id], .presentEmpty) := by
   native_decide
 
 /- Successful unchanged values remain public successes but are not changes. -/

@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.StringContext
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.StarAddressing
+import A12Kernel.Semantics.StringComputation
 
 /-! # Immutable model-certified checked documents
 
@@ -282,10 +283,10 @@ def read (checked : CheckedDocument model) (address : CellAddr) :
   | some placement => pure placement.cell
   | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
 
-/-- Read the checked Number input through the regime-selected text required by `FieldValueAsString`. Empty, invalid, and over-limit states retain the ordinary phase behavior; the text is never reconstructed from the parsed rational. -/
-def observeNumberFormalRead (checked : CheckedDocument model)
-    (phase : Phase) (address : CellAddr) :
-    Except CheckedDocumentError (CellObservation String) := do
+/-- Read one checked Number input as a typed cell carrying the regime-selected text. Empty, invalid, and over-limit states retain their ordinary checked-cell structure; the text is never reconstructed from the parsed rational. -/
+def readNumberFormalText (checked : CheckedDocument model)
+    (address : CellAddr) :
+    Except CheckedDocumentError (CheckedCell String) := do
   let declaration ← validateCellAddress model checked.source.instantiatedRows address
   match declaration.policy.kind with
   | .number _ => pure ()
@@ -299,13 +300,37 @@ def observeNumberFormalRead (checked : CheckedDocument model)
     parsed := if cell.parsed.isSome then formalRead else none
     findings := cell.findings
   }
-  pure (observeCell phase textCell)
+  pure textCell
+
+/-- Observe the checked Number input through the regime-selected text required by `FieldValueAsString`. -/
+def observeNumberFormalRead (checked : CheckedDocument model)
+    (phase : Phase) (address : CellAddr) :
+    Except CheckedDocumentError (CellObservation String) := do
+  pure (observeCell phase (← checked.readNumberFormalText address))
 
 /-- Existing nonrepeatable evaluators consume the same checked cells. Their checked plans cannot request repeatable fields; a forged request fails closed. -/
 def flatContext (checked : CheckedDocument model) : FlatContext where
   read field :=
     match checked.read { field, path := [] } with
     | .ok cell => cell
+    | .error _ => malformedCheckedCell
+
+/-- The sole checked context for String computation. Ordinary leaves retain the exact checked document cell; Number leaves replace only their parsed payload with the already-selected formal-read text. Presence and formal poison are therefore unchanged for guards. -/
+def stringComputationContext (checked : CheckedDocument model) :
+    StringComputationContext where
+  read field :=
+    match model.lookupUniqueId field with
+    | .ok declaration =>
+        match declaration.policy.kind with
+        | .number _ =>
+            match checked.readNumberFormalText { field, path := [] } with
+            | .ok cell => {
+                rawPresent := cell.rawPresent
+                parsed := cell.parsed.map Value.str
+                findings := cell.findings
+              }
+            | .error _ => malformedCheckedCell
+        | _ => checked.flatContext.read field
     | .error _ => malformedCheckedCell
 
 end CheckedDocument

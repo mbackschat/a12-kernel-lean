@@ -1533,7 +1533,9 @@ run_cmd do
 #print axioms A12Kernel.acceptedStringTarget_applies_value
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_delta
 
+#print axioms A12Kernel.fieldValueAsString_evaluates_selected_text
 #print axioms A12Kernel.elaborateStringExprCore_literal
+#print axioms A12Kernel.elaborateStringExprCore_fieldValueAsString
 #print axioms A12Kernel.elaborateStringExprCore_range
 #print axioms A12Kernel.elaborateStringExprCore_concat
 #print axioms A12Kernel.checkedStringExpr_evaluate

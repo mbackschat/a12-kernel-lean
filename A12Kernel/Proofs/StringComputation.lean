@@ -5,6 +5,13 @@ import A12Kernel.Proofs.StringFieldPolicy
 
 namespace A12Kernel
 
+/-- `FieldValueAsString` adds no second runtime renderer: after the checked context selects the Number text, it has the same expression behavior as an ordinary field read. -/
+theorem fieldValueAsString_evaluates_selected_text
+    (context : StringComputationContext) (field : FieldId) :
+    (StringExpr.fieldValueAsString field).eval context =
+      (StringExpr.field field).eval context := by
+  rfl
+
 /-- The library evaluator maps a computation-phase empty field observation to a clean missing term. This bridges the phase-sensitive checked-cell boundary to the String expression semantics. -/
 theorem emptyStringField_evaluates_noValue (context : StringComputationContext)
     (field : FieldId)

@@ -32,7 +32,8 @@ theorem stringComputationRun_read_input
     (state : StringComputationRunState) (input : CheckedDocument model)
     (field : FieldId)
     (ordinary : field ∉ run.targetFields) :
-    (run.readPolicy state input).read field = input.flatContext.read field := by
+    (run.readPolicy state input).read field =
+      input.stringComputationContext.read field := by
   simp [CheckedStringComputationRun.readPolicy, ordinary]
 
 end A12Kernel

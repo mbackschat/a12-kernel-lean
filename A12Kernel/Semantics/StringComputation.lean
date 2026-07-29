@@ -6,7 +6,7 @@ import A12Kernel.Document
 
 /-! # A12Kernel.Semantics.StringComputation — one-target-instance String computation
 
-This capsule implements a non-repeatable, unconditional subset of `spec/09-computations.md` (§11): resolved String-field reads, String literals, concatenation, checked `RangeAsString`, root storage, declaration-owned ordinary target checks, payloadful `ERRORED`, value-only application, and kernel-style delta projection. Expression evaluation, root storage, target checking, application, and delta reporting remain separate because each exposes a different semantic boundary.
+This capsule implements a non-repeatable String computation core from `spec/09-computations.md` (§11): resolved String-field reads, Number `FieldValueAsString` reads, String literals, concatenation, checked `RangeAsString`, root storage, declaration-owned ordinary target checks, payloadful `ERRORED`, value-only application, and kernel-style delta projection. Expression evaluation, root storage, target checking, application, and delta reporting remain separate because each exposes a different semantic boundary.
 -/
 
 namespace A12Kernel
@@ -65,6 +65,7 @@ end StringComputationContext
 /-- Parser-independent String expression admitted by the first computation capsule. Parameterizing only the leaf lets checked lowering reuse the runtime tree without defining a parallel expression language. -/
 inductive StringExpr (Atom : Type := FieldId) where
   | field (field : Atom)
+  | fieldValueAsString (field : Atom)
   | literal (value : String)
   | range (field : Atom) (start finish : Nat)
   | concat (left right : StringExpr Atom)
@@ -75,6 +76,7 @@ namespace StringExpr
 /-- Evaluate without deciding whether the resulting text can be stored. The right operand is not consulted after a left poison. -/
 def eval (context : StringComputationContext) : StringExpr FieldId → Except StringComputationFault StringTerm
   | StringExpr.field fieldId => context.readTerm fieldId
+  | StringExpr.fieldValueAsString fieldId => context.readTerm fieldId
   | StringExpr.literal value => pure (.text value)
   | StringExpr.range fieldId start finish => do
       if !validStringRange start finish then

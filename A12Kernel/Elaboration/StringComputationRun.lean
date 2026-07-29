@@ -53,7 +53,7 @@ def readPolicy (run : CheckedStringComputationRun model)
       | some completion => completion.dependencyCell.checked
       | none => StringDependencyCell.empty.checked
     else
-      input.flatContext.read field
+      input.stringComputationContext.read field
 
 /-- Evaluate one checked table through the current run overlay and retain the exact dependency cell required by a later step. This is the shared atomic step for fixed execution and the independent relation. -/
 def evaluateTable (run : CheckedStringComputationRun model)

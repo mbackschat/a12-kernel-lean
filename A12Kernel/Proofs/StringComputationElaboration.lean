@@ -11,6 +11,19 @@ theorem elaborateStringExprCore_literal (model : FlatModel)
       .ok (.literal value) := by
   rfl
 
+/-- Successful `FieldValueAsString` lowering retains the dedicated coercion leaf around the resolved Number field. -/
+theorem elaborateStringExprCore_fieldValueAsString (model : FlatModel)
+    (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
+    (field : FieldId)
+    (lowered :
+      elaborateNumberAsStringField model declaringGroup reference = .ok field) :
+    elaborateStringExprCore model declaringGroup
+      (.fieldValueAsString reference) =
+        .ok (.fieldValueAsString field) := by
+  unfold elaborateStringExprCore
+  rw [lowered]
+  rfl
+
 /-- A successfully lowered `RangeAsString` retains the exact authored interval around its resolved field leaf. -/
 theorem elaborateStringExprCore_range (model : FlatModel)
     (declaringGroup : GroupPath) (reference : SurfaceFieldPath)
@@ -50,12 +63,9 @@ theorem elaborateStringExprCore_concat (model : FlatModel)
 
 /-- The checked wrapper adds no evaluator: it delegates to the established runtime tree. -/
 theorem checkedStringExpr_evaluate (expression : CheckedStringExpr model)
-    (prepared : PreparedFlatStringContext model compilePattern)
-    (locale : String) (raw : RawFlatContext) :
-    expression.evaluate prepared locale raw =
-      expression.core.evaluate {
-        read := (prepared.checkContext locale raw).read
-      } := by
+    (input : CheckedDocument model) :
+    expression.evaluate input =
+      expression.core.evaluate input.stringComputationContext := by
   rfl
 
 /-- A checked ordinary String operation retains the exact declaration-owned target relation. -/
@@ -74,24 +84,24 @@ theorem checkedStringComputation_excludes_target_reference
 /-- The checked wrapper adds no second target evaluator: once its exact prepared matcher is recovered, it composes the established expression evaluation with the shared declaration-owned target check. -/
 theorem checkedStringComputation_evaluateOutcome
     (operation : CheckedStringComputationOperation model)
-    (prepared : PreparedFlatStringContext model compilePattern)
-    (locale : String) (raw : RawFlatContext)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
     (matcher : Option (String → Bool))
     (preparedTarget :
-      prepared.patterns.targetMatcher? operation.targetField = some matcher) :
-    operation.evaluateOutcome prepared locale raw = (do
-      let store ← operation.expression.evaluate prepared locale raw
+      patterns.targetMatcher? operation.targetField = some matcher) :
+    operation.evaluateOutcome patterns input = (do
+      let store ← operation.expression.evaluate input
       pure (operation.targetPolicy.checkTargetWithPattern matcher store)) := by
   simp [CheckedStringComputationOperation.evaluateOutcome, preparedTarget]
 
 /-- A forged or incomplete prepared target plan fails closed instead of silently treating a required declared pattern as absent. -/
 theorem checkedStringComputation_missingTargetPattern_failsClosed
     (operation : CheckedStringComputationOperation model)
-    (prepared : PreparedFlatStringContext model compilePattern)
-    (locale : String) (raw : RawFlatContext)
+    (patterns : PreparedFlatStringPatterns model compilePattern)
+    (input : CheckedDocument model)
     (missing :
-      prepared.patterns.targetMatcher? operation.targetField = none) :
-    operation.evaluateOutcome prepared locale raw =
+      patterns.targetMatcher? operation.targetField = none) :
+    operation.evaluateOutcome patterns input =
       .error (.targetPatternUnavailable operation.targetField) := by
   unfold CheckedStringComputationOperation.evaluateOutcome
   rw [missing]

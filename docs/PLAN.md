@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 657 jobs · trust audit **1724 theorem roots; 39542 declarations in 376 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 657 jobs · trust audit **1726 theorem roots; 39574 declarations in 376 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,14 +21,14 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Admit nonrepeatable Number `FieldValueAsString` through the existing checked String computation path without adding a second document read channel.
+Admit model-owned checked authoring for the smallest nonrepeatable flat validation-message template fragment, lowering it into the existing post-fire `MessageRenderPlan` without changing firing or inventing another renderer.
 
 ## Immediate sequence
 
-1. Inventory the existing `StringExpr`, checked lowering, table/run overlay, and source-locked Number-only operand gate before changing the expression leaf or computation context.
-2. Reuse `CheckedDocument.observeNumberFormalRead` as the sole Number-to-String read. Preserve a clean absent read as root no-value and as `""` only when concatenation consumes it; preserve exact computation poison.
-3. Lock decimal-valued versus String-valued text with the same stored spelling, plus standalone-copy versus concatenation empty behavior, through the existing target/result/application path.
-4. Exclude repeatable coercion, String-field copy syntax, host codecs, semantic-index normalization, target rendering changes, and any generic heterogeneous expression or scheduler.
+1. Build the SG10 source-audit packet across static error-text checking, `FehlertextBuilder`, backing beans, generated rule templates in every `.st` dialect, and runtime replacement. Separate authoring legality, generated token lowering, and post-fire rendering.
+2. Red-first, admit only the token and nonrepeatable reference shapes established by that packet. Lower directly to the existing literal/name/value render parts and preserve exact static failure precedence.
+3. Prove that checked authoring cannot change rule firing and that inserted provider/display bytes remain opaque; retain separators for literal dollar syntax, name versus value, and illegal value references.
+4. Exclude locale/provider invocation, display-value construction, repeatable/index/category/`BaseYear` paths, custom-field templates, computation messages, and any shared message envelope until their own source packets close them.
 
 ## Parked boundaries
 
