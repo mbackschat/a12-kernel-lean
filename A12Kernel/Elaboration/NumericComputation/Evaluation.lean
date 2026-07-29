@@ -164,6 +164,8 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
       match source.evaluateDirectAt? .computation context.read with
       | some result => pure result.toComputationResult
       | none => throw .repeatableContextRequired
+  | .booleanValueCount source =>
+      pure (source.evaluateAt .computation context.read).toComputationResult
   | .sumOfProducts _ => throw .repeatableContextRequired
   | .numeric source =>
       context.readNumericComputationAtomWith (Aggregate := CheckedNumberEntitySource model)
@@ -200,6 +202,9 @@ def readCheckedNumericComputationAtom
         context.scalar.read context.filterRead context.starRead).map
           NumericOperand.toComputationResult
         |>.mapError NumericComputationFault.repeatableAddressing
+  | .booleanValueCount source =>
+      pure (source.evaluateAt .computation
+        context.scalar.read).toComputationResult
   | .sumOfProducts source =>
       (source.evaluateComputation context.document context.outer
         context.starRead).mapError NumericComputationFault.repeatableAddressing
@@ -291,6 +296,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenValueCount _ => none
+  | .booleanValueCount _ => none
   | .numeric source =>
       NumericComputationAtom.numericComputationFault? source
   | .sumOfProducts _ => none

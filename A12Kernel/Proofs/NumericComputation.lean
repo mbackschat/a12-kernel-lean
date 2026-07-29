@@ -59,6 +59,15 @@ theorem numericComputationEvaluationContext_tokenValueCount_delegates
             NumericComputationFault.repeatableAddressing := by
   rfl
 
+/-- The full computation context preserves the direct Boolean/Confirm source and erases only validation fillability after the shared exact-token tally. -/
+theorem numericComputationEvaluationContext_booleanValueCount_delegates
+    (context : NumericComputationEvaluationContext)
+    (source : CheckedBooleanValueCountSource model) :
+    context.readCheckedNumericComputationAtom (.booleanValueCount source) =
+      .ok (source.evaluateAt .computation
+        context.scalar.read).toComputationResult := by
+  rfl
+
 /-- The scalar compatibility evaluator cannot erase repeatable addressing by inventing an empty document. -/
 theorem scalarComputationContext_repeatableAggregate_requiresContext
     (context : ScalarComputationContext)
@@ -105,6 +114,14 @@ theorem checkedNumericComputationAtom_tokenValueCount_scaleSummary
     (source : CheckedTokenValueCountSource model) :
     CheckedNumericComputationAtom.numericScaleSummary
         (.tokenValueCount source) =
+      NumericScaleSummary.field 0 := by
+  rfl
+
+/-- A Boolean/Confirm value count exposes the same fixed integral scale independently of its admitted constant and source kinds. -/
+theorem checkedNumericComputationAtom_booleanValueCount_scaleSummary
+    (source : CheckedBooleanValueCountSource model) :
+    CheckedNumericComputationAtom.numericScaleSummary
+        (.booleanValueCount source) =
       NumericScaleSummary.field 0 := by
   rfl
 

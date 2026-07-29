@@ -154,6 +154,12 @@ def resolve (atom : OrderedNumericValidationAtom model)
         else
           .error .nonRelevant
       | none => .error .groupState
+  | .booleanValueCount source =>
+      if source.fields.all fun field => isRelevant field.id then
+        source.evaluateAt .validation
+          context.fields.read |>.toValidationArithmetic
+      else
+        .error .nonRelevant
   | .aggregate _ _ | .sumOfProducts _ => .error .groupState
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
@@ -237,6 +243,9 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
       | .checked document =>
           (source.evaluateCheckedDocumentValidation
             document context.outer).map NumericOperand.toValidationArithmetic
+  | .booleanValueCount source =>
+      pure (source.evaluateAt .validation
+        context.scalar.fields.read).toValidationArithmetic
   | .aggregate op source =>
       let result ← match context.input with
         | .legacy document read =>
@@ -486,7 +495,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .evaluated operand =>
               pure operand.toValidationArithmetic
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .sumOfProducts _ =>
+  | .booleanValueCount _ | .sumOfProducts _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

@@ -1,5 +1,6 @@
 import A12Kernel.Conformance.NumericComputation.Conversion
 import A12Kernel.Conformance.NumericComputation.Core
+import A12Kernel.Conformance.NumericComputation.BooleanValueCount
 import A12Kernel.Conformance.NumericComputation.Temporal
 import A12Kernel.Conformance.NumericComputation.EvaluationOrder
 import A12Kernel.Conformance.NumericComputation.Repeatable

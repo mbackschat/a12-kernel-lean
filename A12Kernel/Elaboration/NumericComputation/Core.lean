@@ -6,9 +6,9 @@ import A12Kernel.Semantics.NumericTarget
 
 /-! # Numeric computation-expression outcomes
 
-This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, typed String/stored-Enumeration value count, and the distinct row-aligned `SumOfProducts` pair through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains each specialized checked source and the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, and both product fields; scale checking uses the selected declarations' union, integral count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources, reads dynamic `Now` only from its explicit optional `World`, fails structurally when that input is absent, and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates back into its existing nonrepeatable atom and retains repeatable entity-list, token-count, product, and first-filled payloads through the full-only addressed validation context; its scalar checked entry point rejects such a rule with an explicit context requirement. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
+This capsule checks one parser-independent numeric operation with an ordinary nonrepeatable Number target against a validated model and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, typed String/stored-Enumeration value count, direct Boolean/Confirm value count, and the distinct row-aligned `SumOfProducts` pair through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains each specialized checked source and the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, and both product fields; the Boolean/Confirm count cannot include its Number target by construction. Scale checking uses the selected declarations' union, integral count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources, reads dynamic `Now` only from its explicit optional `World`, fails structurally when that input is absent, and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates back into its existing nonrepeatable atom and retains repeatable entity-list, token-count, product, and first-filled payloads through the full-only addressed validation context; direct Boolean/Confirm counts keep their distinct kind certificate through the scalar generated-validation path. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
 
-Numeric `NumberOfValueInFields` remains a distinct checked atom over the same entity-list source so its per-cell filter-match provenance survives arithmetic, target evaluation, and generated validation without a second expression tree or aggregate fold.
+Numeric and Boolean/Confirm `NumberOfValueInFields` remain distinct checked atoms so their different field-kind matrices and per-cell provenance survive arithmetic, target evaluation, and generated validation without a second expression tree or aggregate fold.
 -/
 
 namespace A12Kernel
@@ -21,6 +21,8 @@ inductive SurfaceNumericComputationAtom where
   | firstFilled (source : SurfaceNumberEntitySource)
   | valueCount (expected : Rat) (source : SurfaceNumberEntitySource)
   | tokenValueCount (expected : String) (source : SurfaceTokenValueCountSource)
+  | booleanValueCount (expected : Bool)
+      (source : SurfaceBooleanValueCountSource)
   | sumOfProducts (source : SurfaceNumericProductAggregate)
   deriving Repr, DecidableEq
 
@@ -32,6 +34,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
   | firstFilled (source : CheckedNumberEntitySource model)
   | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
   | tokenValueCount (source : CheckedTokenValueCountSource model)
+  | booleanValueCount (source : CheckedBooleanValueCountSource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
 
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
@@ -69,6 +72,7 @@ inductive NumericComputationElabError where
   | baseYearNotDeclared
   | aggregate (error : NumberEntityElabError)
   | tokenValueCount (error : TokenValueCountElabError)
+  | booleanValueCount (error : BooleanValueCountElabError)
   | productAggregate (error : NumericProductAggregateElabError)
   | targetSelfReference (field : FieldId)
   | authoring (result : NumericAuthoringCheck)
@@ -97,6 +101,7 @@ def FlatModel.admitsNumericComputationOperand
   | .firstFilled _ => true
   | .valueCount _ _ => true
   | .tokenValueCount _ => true
+  | .booleanValueCount _ => true
   | .sumOfProducts _ => true
   | .numeric (.field declaration) =>
       match model.lookupUniqueId declaration.id with
@@ -175,6 +180,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
   | .firstFilled source => source.scaleSummary
   | .valueCount _ _ => NumericScaleSummary.field 0
   | .tokenValueCount source => source.scaleSummary
+  | .booleanValueCount source => source.scaleSummary
   | .sumOfProducts source => source.scaleSummary
 
 def CheckedNumericComputationAtom.references
@@ -183,6 +189,7 @@ def CheckedNumericComputationAtom.references
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
   | .tokenValueCount source => source.referencesField field
+  | .booleanValueCount source => source.referencesField field
   | .sumOfProducts source =>
       source.left.field.id == field || source.right.field.id == field
   | .numeric (.field declaration) => declaration.id == field
@@ -306,6 +313,11 @@ private def FlatModel.resolveNumericComputationExpression
         if checked.referencesField target then
           throw (.targetSelfReference target)
         pure (.tokenValueCount checked)
+    | .booleanValueCount expected source => do
+        let checked ←
+          (elaborateBooleanValueCountSource model declaringGroup expected source).mapError
+            NumericComputationElabError.booleanValueCount
+        pure (.booleanValueCount checked)
     | .sumOfProducts source => do
         let checked ←
           (elaborateNumericProductAggregate model declaringGroup source).mapError

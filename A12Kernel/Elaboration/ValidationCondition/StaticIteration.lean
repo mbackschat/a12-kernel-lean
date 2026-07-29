@@ -250,6 +250,7 @@ private def orderedNumericAtomIterationScope :
       checkedNumberSourceIterationScope source
   | .tokenValueCount source =>
       checkedTokenSourceIterationScope source.source
+  | .booleanValueCount _ => pure none
   | .sumOfProducts source =>
       mergeIterationScopes
         (checkedStarBindingScope source.left.source)

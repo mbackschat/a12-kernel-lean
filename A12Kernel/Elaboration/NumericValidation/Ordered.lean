@@ -13,6 +13,7 @@ inductive OrderedNumericValidationAtom (model : FlatModel) where
   | firstFilled (source : CheckedNumberEntitySource model)
   | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
   | tokenValueCount (source : CheckedTokenValueCountSource model)
+  | booleanValueCount (source : CheckedBooleanValueCountSource model)
   | aggregate (op : NumericAggregateOp)
       (source : CheckedNumberEntitySource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
@@ -77,14 +78,15 @@ private def checkedTokenValueCountAdmittedIn
 
 def isDataDependent : OrderedNumericValidationAtom model → Bool
   | .ordinary source => source.isDataDependent
-  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _ | .aggregate _ _
-  | .sumOfProducts _ => true
+  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
+  | .booleanValueCount _ | .aggregate _ _ | .sumOfProducts _ => true
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
   | .valueCount _ _ => NumericScaleSummary.field 0
   | .tokenValueCount source => source.scaleSummary
+  | .booleanValueCount source => source.scaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
 
@@ -98,6 +100,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .firstFilled source => source.directResolvedFields?.isNone
   | .valueCount _ source => source.directResolvedFields?.isNone
   | .tokenValueCount source => source.source.directFields?.isNone
+  | .booleanValueCount _ => false
   | .aggregate _ _ | .sumOfProducts _ => true
 
 def admitted (atom : OrderedNumericValidationAtom model)
@@ -111,6 +114,13 @@ def admitted (atom : OrderedNumericValidationAtom model)
       checkedNumberEntitySourceAdmittedIn source rowGroup scope
   | .tokenValueCount source =>
       checkedTokenValueCountAdmittedIn source rowGroup scope
+  | .booleanValueCount source =>
+      match scope with
+      | .sameGroup =>
+          source.fields.all fun field =>
+            field.groupPath == rowGroup
+      | .sameGroupAddressed => false
+      | .modelWideNonrepeatable | .modelWideCheckedComputation => true
   | .aggregate _ source =>
       (scope == .modelWideCheckedComputation ||
         scope == .sameGroupAddressed) &&
@@ -126,6 +136,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
   | .tokenValueCount source => source.referencesField field
+  | .booleanValueCount source => source.referencesField field
   | .aggregate _ source => source.referencesField field
   | .sumOfProducts source =>
       source.left.field.id == field || source.right.field.id == field
@@ -135,7 +146,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.hasHaving
   | .tokenValueCount source => source.source.hasHaving
-  | .ordinary _ | .sumOfProducts _ => false
+  | .ordinary _ | .booleanValueCount _ | .sumOfProducts _ => false
 
 end OrderedNumericValidationAtom
 
@@ -182,7 +193,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
   | .ordinary _ | .aggregate _ _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .sumOfProducts _ => false
+  | .booleanValueCount _ | .sumOfProducts _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

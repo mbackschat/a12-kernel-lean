@@ -87,6 +87,14 @@ theorem checkedNumericComputationAtom_tokenValueCount_preservedForGeneratedValid
       .ok (.tokenValueCount source) := by
   rfl
 
+/-- Generated validation retains the Boolean constant, mixed Boolean/Confirm kind certificate, and complete direct source exactly. -/
+theorem checkedNumericComputationAtom_booleanValueCount_preservedForGeneratedValidation
+    (source : CheckedBooleanValueCountSource model) :
+    CheckedNumericComputationAtom.toValidationAtom
+        (.booleanValueCount source) =
+      .ok (.booleanValueCount source) := by
+  rfl
+
 /-- A checked `SumOfProducts` atom retains its row-paired source for addressed generated validation. -/
 theorem checkedNumericComputationAtom_product_preservedForGeneratedValidation
     (source : CheckedNumericProductAggregate model) :

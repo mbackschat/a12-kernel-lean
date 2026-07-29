@@ -227,7 +227,7 @@ private def numericEntityGuardShape? :
       (productReferenceScopes? source).map (⟨·, true, false⟩)
   | .tokenValueCount source =>
       (tokenEntityReferenceScopes? source.source).map (⟨·, true, true⟩)
-  | .ordinary _ => none
+  | .ordinary _ | .booleanValueCount _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool
