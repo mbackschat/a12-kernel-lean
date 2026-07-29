@@ -441,7 +441,7 @@ private def shiftResolved? (unit : DateShiftUnit)
   | .months => result.addLegacyMonths? offset
   | .years => result.addLegacyYears? offset
 
-/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete hybrid-calendar owner. Berlin admits signed day additions and retains the direction-selected exact profile landing at gaps and overlaps. -/
+/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete hybrid-calendar owner. Berlin admits signed day and month additions: days retain direction-specific gap/overlap landings, while months apply their separate legacy clamp before fresh-label resolution. -/
 private def applyRealAmount (checked : CheckedConstructedDateShift model)
     (parts : DateParts) (offset : Int) (notGiven : Bool) :
     Except ConstructedDateShiftFault ConstructedDateShiftResult :=
@@ -479,7 +479,26 @@ private def applyRealAmount (checked : CheckedConstructedDateShift model)
                   | some (shifted, shiftedInstant) =>
                       pure (.value shiftedInstant
                         shifted.date.civil.parts notGiven)
-      | .months | .years =>
+      | .months =>
+          match DateParts.LegacyHybrid.addMonths? parts offset with
+          | none =>
+              throw (.landingUnavailable checked.unit parts offset)
+          | some shifted =>
+              match LocalDateTime.ofYmdHms?
+                  shifted.year shifted.month shifted.day 0 0 0 with
+              | none =>
+                  throw (.landingUnavailable checked.unit parts offset)
+              | some shiftedLocal =>
+                  -- `GregorianCalendar.add(MONTH, …)` resolves the constructed
+                  -- target as a fresh label. At the repeated 1916 midnight both
+                  -- signed directions therefore choose the later CET instant,
+                  -- unlike forward `DAY_OF_MONTH` addition.
+                  match checked.source.profile.resolveLocal? shiftedLocal with
+                  | none =>
+                      throw (.landingUnavailable checked.unit parts offset)
+                  | some shiftedInstant =>
+                      pure (.value shiftedInstant shifted notGiven)
+      | .years =>
           throw (.profileShiftUnsupported
             model.timeZoneId checked.unit offset)
 

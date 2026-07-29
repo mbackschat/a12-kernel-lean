@@ -37,6 +37,26 @@ private def berlinAfterOverlapSources : SurfaceConstructedDateComponents := {
   year := .baseYear
 }
 
+private def berlinSeptemberFirstSources : SurfaceConstructedDateComponents := {
+  day := .constant "1", month := .constant "9"
+  year := .baseYear
+}
+
+private def berlinNovemberFirstSources : SurfaceConstructedDateComponents := {
+  day := .constant "1", month := .constant "11"
+  year := .baseYear
+}
+
+private def berlinJanuaryEndSources : SurfaceConstructedDateComponents := {
+  day := .constant "31", month := .constant "1"
+  year := .baseYear
+}
+
+private def berlinMarchEndSources : SurfaceConstructedDateComponents := {
+  day := .constant "31", month := .constant "3"
+  year := .baseYear
+}
+
 private def berlinNormalSources : SurfaceConstructedDateComponents := {
   day := .constant "29", month := .constant "9"
   year := .baseYear
@@ -134,7 +154,6 @@ private def berlinShiftSeparators? : Option Bool := do
   let reverse ← berlin1916Shift? berlinAfterOverlapSources .days (-1)
   let ordinaryReverse ←
     berlin1916Shift? berlinBeforeOverlapSources .days (-1)
-  let month ← berlin1916Shift? berlinBeforeOverlapSources .months 1
   let overlapLabel ← LocalDateTime.ofYmdHms? 1916 10 1 0 0 0
   let normalLabel ← LocalDateTime.ofYmdHms? 1916 9 30 0 0 0
   let freshOverlap ←
@@ -143,7 +162,7 @@ private def berlinShiftSeparators? : Option Bool := do
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? normalLabel
   pure (match
       forward, freshOverlap, normal, freshNormal, reverse,
-      ordinaryReverse, month with
+      ordinaryReverse with
     | .ok (.value { epochMillis := -1680487200000 }
           { year := 1916, month := 10, day := 1 } false),
         { epochMillis := -1680483600000 },
@@ -153,10 +172,32 @@ private def berlinShiftSeparators? : Option Bool := do
         .ok (.value { epochMillis := -1680483600000 }
           { year := 1916, month := 10, day := 1 } false),
         .ok (.value { epochMillis := -1680660000000 }
-          { year := 1916, month := 9, day := 29 } false),
-        .error (.profileShiftUnsupported
-          "Europe/Berlin" .months 1) => true
-    | _, _, _, _, _, _, _ => false)
+          { year := 1916, month := 9, day := 29 } false) => true
+    | _, _, _, _, _, _ => false)
+
+private def berlinMonthShiftSeparators? : Option Bool := do
+  let forward ←
+    berlin1916Shift? berlinSeptemberFirstSources .months 1
+  let reverse ←
+    berlin1916Shift? berlinNovemberFirstSources .months (-1)
+  let clampForward ←
+    berlin1916Shift? berlinJanuaryEndSources .months 1
+  let clampReverse ←
+    berlin1916Shift? berlinMarchEndSources .months (-1)
+  let ordinary ←
+    berlin1916Shift? berlinNormalSources .months 1
+  pure (match forward, reverse, clampForward, clampReverse, ordinary with
+    | .ok (.value { epochMillis := -1680483600000 }
+          { year := 1916, month := 10, day := 1 } false),
+        .ok (.value { epochMillis := -1680483600000 }
+          { year := 1916, month := 10, day := 1 } false),
+        .ok (.value { epochMillis := -1699059600000 }
+          { year := 1916, month := 2, day := 29 } false),
+        .ok (.value { epochMillis := -1699059600000 }
+          { year := 1916, month := 2, day := 29 } false),
+        .ok (.value { epochMillis := -1678064400000 }
+          { year := 1916, month := 10, day := 29 } false) => true
+    | _, _, _, _, _ => false)
 
 /- Changing only the explicit world across UTC midnight changes all three components. -/
 example : (do
@@ -234,11 +275,17 @@ example : (do
 example : berlinPreFloorUnsupported? = some true := by
   native_decide
 
-/- Forward Calendar addition retains the earlier CEST instant at the repeated midnight,
-   while reverse addition from the other side retains the later CET instant chosen by
-   fresh construction. Ordinary landings agree in both directions; month shifts remain
-   outside this slice. -/
+/- Forward day addition retains the earlier CEST instant at the repeated midnight, while
+   reverse addition from the other side retains the later CET instant chosen by fresh
+   construction. Ordinary landings agree in both directions. -/
 example : berlinShiftSeparators? = some true := by
+  native_decide
+
+/- Month mutation is a different Calendar mechanism: both directions select the later
+   CET instant at the repeated midnight, and both end-of-month directions clamp to the
+   same leap-day target. In particular, its forward overlap landing differs from the
+   forward day landing above. -/
+example : berlinMonthShiftSeparators? = some true := by
   native_decide
 
 end A12Kernel.Conformance.ConstructedDateDynamic

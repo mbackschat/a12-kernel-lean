@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close signed pinned-Berlin checked constructed-Date `AddMonths` while preserving the runtime's legacy end-of-month correction and direction-selected exact landing. Start with a month landing on the autumn-1916 repeated local-midnight hour; do not substitute the ordinary proleptic `FullDate` helper or infer negative behavior from the positive case.
+Close signed pinned-Berlin checked constructed-Date `AddYears` while preserving the runtime's legacy February-28 correction and exact model-zone landing. Start with positive and negative year shifts into the autumn-1916 repeated local-midnight hour and with the Gregorian-leap correction on both sides of the 1582 cutover; do not infer the year landing from the already-distinct day or month mechanisms.
 
 ## Immediate sequence
 
-1. Audit `BedingungsOperatorHelper.addiereMonate` for positive and negative end-of-month correction, generated operand order, and exact Berlin landing on both sides of the repeated midnight.
-2. Add a red checked shift matrix that separates legacy clamp, positive/negative overlap instant selection, and an ordinary control.
-3. Compose the existing legacy constructed-Date month helper with the established direction-specific profile landing only if the audit shows the same source mechanism; otherwise keep Berlin months explicitly unsupported.
+1. Audit `BedingungsOperatorHelper.addiereJahre` for positive and negative February-28 correction, generated operand order, and exact Berlin landing on both sides of the repeated midnight.
+2. Add a red checked shift matrix that separates Gregorian leap correction, legacy cutover behavior, positive/negative overlap instant selection, and an ordinary control.
+3. Compose the existing legacy constructed-Date year helper with the established profile only after the source packet determines its exact landing; otherwise keep Berlin years explicitly unsupported.
 
 ## Parked boundaries
 
