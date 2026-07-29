@@ -37,6 +37,7 @@ import A12Kernel.Conformance.ValueAsDateTimeExtraction
 import A12Kernel.Conformance.DateTimeSubdayShift
 import A12Kernel.Conformance.ShiftedNowDateTimeComposition
 import A12Kernel.Conformance.DateTimeSubdayThenDayShiftEvaluation
+import A12Kernel.Conformance.DateTimeDayThenSubdayShiftEvaluation
 import A12Kernel.Conformance.DateTimeDayShiftEvaluation
 import A12Kernel.Conformance.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Conformance.DateTimeDayShiftComputation

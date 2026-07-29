@@ -103,7 +103,8 @@ theorem checkedShiftedDateTimeSource_evaluateThen_inner_unavailable
       checked.evaluate phase input = .ok (.unavailable cause)) :
     checked.evaluateThen nextUnit nextAmount phase input =
       .ok (.unavailable cause) := by
-  simp [CheckedShiftedDateTimeSource.evaluateThen, inner]
+  simp [CheckedShiftedDateTimeSource.evaluateThen, inner,
+    ValueAsDateTimeResult.evaluateShiftedAmount]
 
 /-- A cause-free inner no-value still reaches a formal outer amount. -/
 theorem checkedShiftedDateTimeSource_evaluateThen_noValue_reaches_amount
@@ -117,7 +118,8 @@ theorem checkedShiftedDateTimeSource_evaluateThen_noValue_reaches_amount
       nextAmount.read phase input = .ok (.error (.formal cause))) :
     checked.evaluateThen nextUnit nextAmount phase input =
       .ok (.unavailable cause) := by
-  simp [CheckedShiftedDateTimeSource.evaluateThen, inner, outer]
+  simp [CheckedShiftedDateTimeSource.evaluateThen, inner, outer,
+    ValueAsDateTimeResult.evaluateShiftedAmount]
 
 /-- A reached formal cause from the dynamic inner shift decides nested evaluation
     before the outer amount is read. -/
@@ -131,7 +133,8 @@ theorem checkedShiftedNowDateTimeSource_evaluateThen_inner_unavailable
       checked.evaluate phase world input = .ok (.unavailable cause)) :
     checked.evaluateThen nextUnit nextAmount phase world input =
       .ok (.unavailable cause) := by
-  simp [CheckedShiftedNowDateTimeSource.evaluateThen, inner]
+  simp [CheckedShiftedNowDateTimeSource.evaluateThen, inner,
+    ValueAsDateTimeResult.evaluateShiftedAmount]
 
 /-- A cause-free dynamic inner no-value still reaches a formal outer amount. -/
 theorem checkedShiftedNowDateTimeSource_evaluateThen_noValue_reaches_amount
@@ -146,7 +149,8 @@ theorem checkedShiftedNowDateTimeSource_evaluateThen_noValue_reaches_amount
       nextAmount.read phase input = .ok (.error (.formal cause))) :
     checked.evaluateThen nextUnit nextAmount phase world input =
       .ok (.unavailable cause) := by
-  simp [CheckedShiftedNowDateTimeSource.evaluateThen, inner, outer]
+  simp [CheckedShiftedNowDateTimeSource.evaluateThen, inner, outer,
+    ValueAsDateTimeResult.evaluateShiftedAmount]
 
 /-- Arithmetic domain failure remains a present-but-valueless Time operand; it is never reinterpreted as a zero shift. -/
 theorem valueAsDateTimeShiftAmount_notEvaluated

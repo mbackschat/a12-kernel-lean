@@ -33,6 +33,7 @@ import A12Kernel.Proofs.TimeLiteral
 import A12Kernel.Proofs.ValueAsDateTimeExtraction
 import A12Kernel.Proofs.DateTimeDayShiftEvaluation
 import A12Kernel.Proofs.DateTimeSubdayThenDayShiftEvaluation
+import A12Kernel.Proofs.DateTimeDayThenSubdayShiftEvaluation
 import A12Kernel.Proofs.DateTimeDayShiftDifferenceEvaluation
 import A12Kernel.Proofs.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Proofs.DateTimeDayShiftComputation

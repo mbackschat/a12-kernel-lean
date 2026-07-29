@@ -239,6 +239,26 @@ def applyShiftedAmount (profile : ModelZone.ConcreteProfile)
       | .nonRelevant => pure .nonRelevant
       | .unavailable cause => pure (.unavailable cause)
 
+/-- Read and apply one checked elapsed amount to an already evaluated exact DateTime
+    result. A reached formal cause stops before this read; cause-free no-value reaches
+    it. -/
+def evaluateShiftedAmount (profile : ModelZone.ConcreteProfile)
+    (unit : DateTimeSubdayUnit)
+    (amount : CheckedTemporalShiftAmount model)
+    (source : ValueAsDateTimeResult)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
+  match source with
+  | .unavailable cause => .ok (.unavailable cause)
+  | source =>
+      match amount.read phase input with
+      | .error error => .error (.document error)
+      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
+      | .ok (.error reason) =>
+          .error (.amountExpressionUnavailable reason)
+      | .ok (.ok outcome) =>
+          source.applyShiftedAmount profile unit outcome
+
 end ValueAsDateTimeResult
 
 namespace CheckedShiftedDateTimeSource
@@ -288,14 +308,9 @@ def evaluateThen (checked : CheckedShiftedDateTimeSource model)
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
   match checked.evaluate phase input with
   | .error error => .error error
-  | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok source =>
-      match nextAmount.read phase input with
-      | .error error => .error (.document error)
-      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
-      | .ok (.error unavailable) =>
-          .error (.amountExpressionUnavailable unavailable)
-      | .ok (.ok outcome) => checked.applyResultAmount nextUnit source outcome
+      source.evaluateShiftedAmount checked.profile
+        nextUnit nextAmount phase input
 
 end CheckedShiftedDateTimeSource
 
@@ -453,14 +468,9 @@ def evaluateThen (checked : CheckedShiftedNowDateTimeSource model)
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
   match checked.evaluate phase world input with
   | .error error => .error error
-  | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok source =>
-      match nextAmount.read phase input with
-      | .error error => .error (.document error)
-      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
-      | .ok (.error unavailable) =>
-          .error (.amountExpressionUnavailable unavailable)
-      | .ok (.ok outcome) => checked.applyResultAmount nextUnit source outcome
+      source.evaluateShiftedAmount checked.profile
+        nextUnit nextAmount phase input
 
 end CheckedShiftedNowDateTimeSource
 
