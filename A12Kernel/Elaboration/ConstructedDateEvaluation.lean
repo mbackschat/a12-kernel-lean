@@ -8,7 +8,7 @@ import A12Kernel.Semantics.DateTimeDayDifference
 
 This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
 
-Checked shifts retain exact landing instants as well as Date parts. UTC/GMT use the complete hybrid owner; pinned Berlin supports signed day, month, and year additions after the checked Date floor while preserving each `GregorianCalendar` field mutation's offset policy. Constructed-Date differences retain all three units under UTC/GMT and Berlin, dispatching Berlin to exact local-midnight field mutations. Source components are evaluated before the amount; exact formal causes, missing provenance, arithmetic domain failure, and Java signed-32-bit narrowing remain distinguishable. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Constructed-Date differences retain all three units under UTC/GMT and Berlin, dispatching Berlin to exact local-midnight field mutations. Exact formal causes and missing provenance remain distinguishable. Checked shifts have their own execution owner in `ConstructedDateShiftEvaluation`. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -398,122 +398,6 @@ def evaluateNumericPart (checked : CheckedConstructedDateComponents model)
     observation.numericPart part
 
 end CheckedConstructedDateComponents
-
-/-- Reason-bearing checked shift result retaining both exact instant and local Date parts. -/
-inductive ConstructedDateShiftResult where
-  | noValue (notGiven : Bool)
-  | value (instant : Instant) (parts : DateParts) (notGiven : Bool)
-  | unavailable (cause : FormalCause)
-  deriving Repr, DecidableEq
-
-/-- Structural failure outside constructed-Date and numeric-operand reason semantics. -/
-inductive ConstructedDateShiftFault where
-  | source (error : ConstructedDateEvaluationFault)
-  | amountDocument (error : CheckedDocumentError)
-  | amountUnavailable (error : NumericValidationUnavailable)
-  | landingUnavailable
-      (unit : DateShiftUnit) (source : DateParts) (offset : Int)
-  deriving Repr, DecidableEq
-
-/-- One checked constructed-Date source, calendar unit, and shared checked shift amount. -/
-structure CheckedConstructedDateShift (model : FlatModel) where
-  source : CheckedConstructedDateComponents model
-  unit : DateShiftUnit
-  amount : CheckedTemporalShiftAmount model
-
-namespace CheckedConstructedDateShift
-
-/-- Whether the already-evaluated constructed source carries omission provenance into the shift helper. -/
-def sourceNotGiven : ConstructedDateObservation → Bool
-  | .resolved .incomplete => true
-  | .resolved (.real _) => false
-  | .resolved .unreal => false
-  | .resolved .unknown => false
-  | .unavailable _ => false
-
-private def shiftResolved? (unit : DateShiftUnit)
-    (result : DateConstructionResult) (offset : Int) :
-    Option DateConstructionResult :=
-  match unit with
-  | .days => result.addLegacyDays? offset
-  | .months => result.addLegacyMonths? offset
-  | .years => result.addLegacyYears? offset
-
-/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete hybrid-calendar owner. Berlin dispatches to the unit-specific field-mutation semantics: day mutation carries the source offset, while month and year use sign-independent compute-time resolution. -/
-private def applyRealAmount (checked : CheckedConstructedDateShift model)
-    (parts : DateParts) (offset : Int) (notGiven : Bool) :
-    Except ConstructedDateShiftFault ConstructedDateShiftResult :=
-  match checked.source.profile with
-  | .utc =>
-      match shiftResolved? checked.unit (.real parts) offset with
-      | some (.real shifted) =>
-          match DateParts.LegacyHybrid.midnightInstant? shifted with
-          | some instant => pure (.value instant shifted notGiven)
-          | none => throw (.landingUnavailable checked.unit parts offset)
-      | some .incomplete => pure (.noValue notGiven)
-      | some .unreal => pure (.noValue notGiven)
-      | some .unknown => pure (.noValue notGiven)
-      | none => throw (.landingUnavailable checked.unit parts offset)
-  | .europeBerlin =>
-      match LocalDateTime.ofYmdHms?
-          parts.year parts.month parts.day 0 0 0 with
-      | none => throw (.landingUnavailable checked.unit parts offset)
-      | some sourceLocal =>
-          match checked.source.profile.resolveLocal? sourceLocal with
-          | none => throw (.landingUnavailable checked.unit parts offset)
-          | some sourceInstant =>
-              let landing :=
-                match checked.unit with
-                | .days =>
-                    EuropeBerlinLegacyProfile.calendarDayLanding?
-                      sourceLocal sourceInstant offset
-                | .months =>
-                    EuropeBerlinLegacyProfile.calendarMonthLanding?
-                      sourceLocal sourceInstant offset
-                | .years =>
-                    EuropeBerlinLegacyProfile.calendarYearLanding?
-                      sourceLocal sourceInstant offset
-              match landing with
-              | none =>
-                  throw (.landingUnavailable checked.unit parts offset)
-              | some (shifted, shiftedInstant) =>
-                  pure (.value shiftedInstant
-                    shifted.date.civil.parts notGiven)
-
-/-- Apply an already reached numeric amount without losing missing provenance or reinterpreting arithmetic domain failure as zero. -/
-def applyAmount (checked : CheckedConstructedDateShift model)
-    (source : ConstructedDateObservation) :
-    NumericArithmeticOutcome →
-      Except ConstructedDateShiftFault ConstructedDateShiftResult
-  | .notEvaluated => pure (.noValue (sourceNotGiven source))
-  | .value value fillability =>
-      let notGiven :=
-        sourceNotGiven source || fillability.canGrow || fillability.canShrink
-      match source with
-      | .unavailable cause => pure (.unavailable cause)
-      | .resolved (.real parts) =>
-          let offset := temporalShiftAmountToInt32 value
-          checked.applyRealAmount parts offset notGiven
-      | .resolved .incomplete => pure (.noValue notGiven)
-      | .resolved .unreal => pure (.noValue notGiven)
-      | .resolved .unknown => pure (.noValue notGiven)
-
-/-- Evaluate the constructed Date before its amount with one explicit optional world, matching generated Java argument order. A reached source cause therefore stops before the amount; a cause-free no-value source still reaches it. -/
-def evaluate (checked : CheckedConstructedDateShift model)
-    (phase : Phase) (input : CheckedDocument model)
-    (world : Option World) :
-    Except ConstructedDateShiftFault ConstructedDateShiftResult :=
-  match checked.source.evaluate phase input world with
-  | .error error => .error (.source error)
-  | .ok (.unavailable cause) => .ok (.unavailable cause)
-  | .ok source =>
-      match checked.amount.read phase input with
-      | .error error => .error (.amountDocument error)
-      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
-      | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
-      | .ok (.ok outcome) => checked.applyAmount source outcome
-
-end CheckedConstructedDateShift
 
 /-- Structural failure outside the reason-bearing result of a checked constructed-Date difference. -/
 inductive ConstructedDateDifferenceFault where

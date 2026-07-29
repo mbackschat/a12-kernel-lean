@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstructedDateEvaluation
+import A12Kernel.Elaboration.ConstructedDateShiftEvaluation
 
 /-! # Checked constructed-Date execution laws -/
 
@@ -297,6 +297,20 @@ theorem checkedConstructedDateShift_source_unavailable
       checked.source.evaluate phase input world = .ok (.unavailable cause)) :
     checked.evaluate phase input world = .ok (.unavailable cause) := by
   simp [CheckedConstructedDateShift.evaluate, source]
+
+/-- A reached inner-shift cause decides nested generated evaluation before the outer
+    amount is read. -/
+theorem checkedConstructedDateShift_evaluateThen_inner_unavailable
+    (checked : CheckedConstructedDateShift model)
+    (nextUnit : DateShiftUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) (cause : FormalCause)
+    (inner :
+      checked.evaluate phase input world = .ok (.unavailable cause)) :
+    checked.evaluateThen nextUnit nextAmount phase input world =
+      .ok (.unavailable cause) := by
+  simp [CheckedConstructedDateShift.evaluateThen, inner]
 
 /-- Arithmetic domain failure after a real source remains cause-free no-value; it is not a zero shift and does not acquire omission provenance. -/
 theorem checkedConstructedDateShift_real_domain_failure

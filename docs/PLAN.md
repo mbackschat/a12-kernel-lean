@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 617 jobs · trust audit **1637 theorem roots; 37148 declarations in 350 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 618 jobs · trust audit **1638 theorem roots; 37159 declarations in 351 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Source the first authorable recursive constructed-Date composition and preserve the produced value's legacy-hybrid calendar identity plus exact model-zone instant into its next shift or difference consumer. Reuse the completed checked construction/shift/difference owners; do not introduce a general temporal expression tree.
+Feed one checked constructed-Date shift result into a constructed-Date difference operand while preserving its legacy-hybrid calendar identity, exact model-zone instant, and generated operand order. Reuse the completed result and difference owners; do not introduce a general temporal expression tree.
 
 ## Immediate sequence
 
-1. Audit generated nesting and checker admission for `Add{Days,Months,Years}(Date(...), ...)` as an operand of another shift or constructed-Date difference; identify the smallest live form.
-2. Separate exact-value composition from rendered/reparsed labels at Berlin's repeated midnight, and retain incomplete/unreal/formal precedence.
-3. Add only the checked result bridge required by that form. Stop if source cannot establish authorability or if the bridge would duplicate the settled family owners.
+1. Reuse the source-closed nested Difference form and define the smallest operand adapter from `ConstructedDateShiftResult` to the existing exact profile/unit difference mechanism.
+2. Lock Berlin's repeated-midnight case against label re-resolution and preserve first/second operand plus formal/no-value precedence.
+3. Stop after the live shift-to-difference form; do not generalize to an expression tree or arbitrary recursion without another completed consumer.
 
 ## Parked boundaries
 

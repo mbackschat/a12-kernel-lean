@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstructedDateEvaluation
+import A12Kernel.Elaboration.ConstructedDateShiftEvaluation
 
 /-! # Dynamic checked constructed-Date execution locks -/
 
@@ -164,6 +164,25 @@ private def berlinShift?
   }
   some (shift.evaluate .computation input none)
 
+private def berlinShiftThen?
+    (year : Int)
+    (sources : SurfaceConstructedDateComponents)
+    (firstUnit : DateShiftUnit) (firstAmount : Rat)
+    (secondUnit : DateShiftUnit) (secondAmount : Rat) :
+    Option (Except ConstructedDateShiftFault ConstructedDateShiftResult) := do
+  let checkedModel : FlatModel :=
+    { fields := [], timeZoneId := "Europe/Berlin", baseYear := some year }
+  let source ←
+    (elaborateConstructedDateSources checkedModel sources).toOption
+  let input ← documentFor? checkedModel
+  let first : CheckedConstructedDateShift checkedModel := {
+    source
+    unit := firstUnit
+    amount := .literal firstAmount
+  }
+  some (first.evaluateThen secondUnit (.literal secondAmount)
+    .computation input none)
+
 private def berlinShiftSeparators? : Option Bool := do
   let forward ← berlinShift? 1916 berlinBeforeOverlapSources .days 1
   let longForward ←
@@ -194,6 +213,20 @@ private def berlinShiftSeparators? : Option Bool := do
         .ok (.value { epochMillis := -1680660000000 }
           { year := 1916, month := 9, day := 29 } false) => true
     | _, _, _, _, _, _, _ => false)
+
+private def berlinShiftCompositionPreservesInstant? : Option Bool := do
+  let result ←
+    berlinShiftThen? 1916 berlinBeforeOverlapSources
+      .days 1 .days 0
+  pure (match result with
+    | .ok (.value
+        { epochMillis := -1680487200000 }
+        { year := 1916, month := 10, day := 1 } false) => true
+    | _ => false)
+
+/- A nested shift consumes the inner `VkDate` identity directly. Re-resolving the repeated midnight label would change this CEST instant to CET. -/
+example : berlinShiftCompositionPreservesInstant? = some true := by
+  native_decide
 
 private def berlinMonthShiftSeparators? : Option Bool := do
   let forward ←
