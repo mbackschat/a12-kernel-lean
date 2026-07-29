@@ -15,6 +15,57 @@ private def dateTime (year : Int) (month day hour minute second : Nat)
     LocalDateTime :=
   (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
 
+private def matchingOffsetCount (dateTime : LocalDateTime) : Nat :=
+  (EuropeBerlinLegacyProfile.candidateOffsets.filter fun offset =>
+    EuropeBerlinLegacyProfile.offsetSecondsAt?
+        (EuropeBerlinLegacyProfile.candidateInstant dateTime offset) ==
+      some offset).length
+
+private def midnightMatchingOffsetCount? (date : CivilDate) : Option Nat := do
+  let fullDate ← FullDate.ofCivil? date
+  let midnight ← LocalDateTime.ofDateHms? fullDate 0 0 0
+  pure (matchingOffsetCount midnight)
+
+private def midnightsUnique : Nat → CivilDate → Bool
+  | 0, _ => true
+  | fuel + 1, date =>
+      midnightMatchingOffsetCount? date == some 1 &&
+        match date.next? with
+        | some next => midnightsUnique fuel next
+        | none => false
+
+private def recurrenceMidnightsUnique? : Option Bool := do
+  let first ← CivilDate.ofYmd? 1998 1 1
+  let afterLast ← CivilDate.ofYmd? 2101 1 1
+  let count := Int.toNat (afterLast.unixEpochDay - first.unixEpochDay)
+  pure (midnightsUnique count first)
+
+private def intervalContainsMidnight (start width : Int) : Bool :=
+  let secondOfDay := start % 86400
+  decide (0 < width ∧
+    (secondOfDay = 0 ∨ 86400 < secondOfDay + width))
+
+private def historicalMidnightDiscontinuities? :
+    List EuropeBerlinLegacyProfile.Transition → Int →
+      Option (Nat × Nat)
+  | [], _ => some (0, 0)
+  | item :: rest, beforeOffset => do
+      let boundary ← item.epochSecond?
+      let afterOffset := item.offsetSecondsAfter
+      let gap :=
+        if beforeOffset < afterOffset &&
+            intervalContainsMidnight
+              (boundary + beforeOffset) (afterOffset - beforeOffset)
+        then 1 else 0
+      let overlap :=
+        if afterOffset < beforeOffset &&
+            intervalContainsMidnight
+              (boundary + afterOffset) (beforeOffset - afterOffset)
+        then 1 else 0
+      let (laterGaps, laterOverlaps) ←
+        historicalMidnightDiscontinuities? rest afterOffset
+      pure (gap + laterGaps, overlap + laterOverlaps)
+
 /- The pinned historical table is complete, begins from flat CET, and changes at the exact first UTC boundary. -/
 example :
     EuropeBerlinLegacyProfile.transitions.length = 62 ∧
@@ -67,6 +118,15 @@ example :
     EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 1945 9 24 2 30 0 (by native_decide)) =
       some ((dateTime 1945 9 24 2 30 0 (by native_decide)).resolveUtc.shiftHours (-2)) := by
+  native_decide
+
+/- The pinned historical table has no midnight gap and exactly one midnight overlap, witnessed by both valid offsets at 1916-10-01. Every midnight in a bounded post-table recurrence span has exactly one valid offset. -/
+example :
+    historicalMidnightDiscontinuities?
+        EuropeBerlinLegacyProfile.transitions 3600 = some (0, 1) ∧
+      matchingOffsetCount
+        (dateTime 1916 10 1 0 0 0 (by native_decide)) = 2 ∧
+      recurrenceMidnightsUnique? = some true := by
   native_decide
 
 /- Chained instant arithmetic keeps the early-side identity instead of reparsing the rendered overlap label. -/
