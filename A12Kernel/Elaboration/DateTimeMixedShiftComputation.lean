@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
 import A12Kernel.Elaboration.DateTimeDayThenSubdayShiftEvaluation
+import A12Kernel.Elaboration.DateTimeSubdayThenDayShiftEvaluation
 
 /-! # Checked mixed DateTime shift computations
 
@@ -24,6 +25,13 @@ structure CheckedNowDateTimeDayThenSubdayShiftComputation (model : FlatModel) wh
   nextUnit : DateTimeSubdayUnit
   nextAmount : CheckedTemporalShiftAmount model
   target : CheckedDateTimeTarget model
+
+/-- One checked field-backed sub-day-then-day shift and its distinct target. -/
+structure CheckedDateTimeSubdayThenDayShiftComputation (model : FlatModel) where
+  shift : CheckedShiftedDateTimeSource model
+  nextAmount : CheckedTemporalShiftAmount model
+  target : CheckedDateTimeTarget model
+  sourceDistinct : shift.source.id ≠ target.checked.target.id
 
 /-- Check one bounded field-backed mixed shift and complete-DateTime target. -/
 def elaborateDateTimeDayThenSubdayShiftComputation
@@ -55,9 +63,31 @@ def elaborateNowDateTimeDayThenSubdayShiftComputation
   let target ← elaborateDateTimeTarget model targetField |>.mapError .target
   pure { shift, nextUnit, nextAmount, target }
 
+/-- Check one bounded reverse-order mixed shift and complete-DateTime target. -/
+def elaborateDateTimeSubdayThenDayShiftComputation
+    (model : FlatModel) (sourceField : FieldId)
+    (unit : DateTimeSubdayUnit)
+    (subdayAmount nextAmount : CheckedTemporalShiftAmount model)
+    (targetField : FieldId) :
+    Except DateTimeDayShiftComputationElabError
+      (CheckedDateTimeSubdayThenDayShiftComputation model) := do
+  let shift ← elaborateShiftedDateTimeSource
+    model sourceField unit subdayAmount |>.mapError .shift
+  let target ← elaborateDateTimeTarget model targetField |>.mapError .target
+  if distinct : shift.source.id = target.checked.target.id then
+    throw (.targetSelfReference targetField)
+  else
+    pure { shift, nextAmount, target, sourceDistinct := distinct }
+
 /-- Structural execution failure outside the rich DateTime target outcome. -/
 inductive DateTimeMixedShiftComputationFault where
   | shift (error : DateTimeDayThenSubdayShiftFault)
+  | target (error : DateTimeTargetEvaluationFault)
+  deriving Repr, DecidableEq
+
+/-- Structural failure from a reverse-order mixed shift or its target. -/
+inductive DateTimeReverseMixedShiftComputationFault where
+  | shift (error : DateTimeSubdayThenDayShiftFault)
   | target (error : DateTimeTargetEvaluationFault)
   deriving Repr, DecidableEq
 
@@ -127,5 +157,39 @@ def executeResult (operation :
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedNowDateTimeDayThenSubdayShiftComputation
+
+namespace CheckedDateTimeSubdayThenDayShiftComputation
+
+/-- Execute elapsed arithmetic before calendar mutation and retain the final instant. -/
+def evaluateOperand (operation :
+    CheckedDateTimeSubdayThenDayShiftComputation model)
+    (input : CheckedDocument model) :
+    Except DateTimeReverseMixedShiftComputationFault
+      TemporalComputationResult :=
+  match operation.shift.evaluateThenDays
+      operation.nextAmount .computation input with
+  | .error error => .error (.shift error)
+  | .ok result => .ok result.asTemporalComputationResult
+
+/-- Execute the reverse-order result through declaration-owned rendering. -/
+def evaluateOutcome (operation :
+    CheckedDateTimeSubdayThenDayShiftComputation model)
+    (input : CheckedDocument model) :
+    Except DateTimeReverseMixedShiftComputationFault DateTimeTargetOutcome :=
+  match operation.evaluateOperand input with
+  | .error error => .error error
+  | .ok result => operation.target.evaluate result |>.mapError .target
+
+/-- Classify the rich outcome against the immutable source document. -/
+def executeResult (operation :
+    CheckedDateTimeSubdayThenDayShiftComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except DateTimeReverseMixedShiftComputationFault
+      (DateTimeComputationRunView ResidualMessage) := do
+  let outcome ← operation.evaluateOutcome input
+  pure (DateTimeComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.checked.target.id, outcome)])
+
+end CheckedDateTimeSubdayThenDayShiftComputation
 
 end A12Kernel

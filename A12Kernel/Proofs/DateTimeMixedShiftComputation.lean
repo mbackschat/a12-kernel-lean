@@ -94,4 +94,49 @@ theorem nowDateTimeDayThenSubdayShiftComputation_profiles_eq
       operation.target.profileMatches
   exact Option.some.inj selected
 
+/-- A reverse-order mixed value transports its exact final instant to the target. -/
+theorem dateTimeSubdayThenDayShiftComputation_value
+    (operation : CheckedDateTimeSubdayThenDayShiftComputation model)
+    (input : CheckedDocument model)
+    (localDateTime : LocalDateTime) (instant : Instant) (notGiven : Bool)
+    (shift :
+      operation.shift.evaluateThenDays operation.nextAmount
+          .computation input =
+        .ok (.value localDateTime instant notGiven)) :
+    operation.evaluateOutcome input =
+      (operation.target.evaluate (.value instant)).mapError .target := by
+  simp [CheckedDateTimeSubdayThenDayShiftComputation.evaluateOutcome,
+    CheckedDateTimeSubdayThenDayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+
+/-- A reached source or amount cause remains target poison. -/
+theorem dateTimeSubdayThenDayShiftComputation_unavailable
+    (operation : CheckedDateTimeSubdayThenDayShiftComputation model)
+    (input : CheckedDocument model) (cause : FormalCause)
+    (shift :
+      operation.shift.evaluateThenDays operation.nextAmount
+          .computation input =
+        .ok (.unavailable cause)) :
+    operation.evaluateOutcome input = .ok (.poison cause) := by
+  unfold CheckedDateTimeSubdayThenDayShiftComputation.evaluateOutcome
+  simp only [
+    CheckedDateTimeSubdayThenDayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+  change
+    Except.mapError DateTimeReverseMixedShiftComputationFault.target
+      (.ok (.poison cause) :
+        Except DateTimeTargetEvaluationFault DateTimeTargetOutcome) =
+      .ok (.poison cause)
+  rfl
+
+/-- Reverse-order mutation and target rendering select one model-zone profile. -/
+theorem dateTimeSubdayThenDayShiftComputation_profiles_eq
+    (operation : CheckedDateTimeSubdayThenDayShiftComputation model) :
+    operation.shift.profile = operation.target.profile := by
+  have selected :
+      some operation.shift.profile = some operation.target.profile :=
+    operation.shift.profileMatches.symm.trans
+      operation.target.profileMatches
+  exact Option.some.inj selected
+
 end A12Kernel

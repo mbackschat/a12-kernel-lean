@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 645 jobs · trust audit **1696 theorem roots; 38446 declarations in 368 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 645 jobs · trust audit **1699 theorem roots; 38511 declarations in 368 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Execute field-backed `AddDays` after one checked `AddHours`/`AddMinutes`/`AddSeconds` through the existing DateTime target, rich source-relative result view, and exact application path. Retain the inner elapsed result's exact instant and preserve direct-source target exclusion.
+Execute dynamic-`Now` `AddDays` after one checked `AddHours`/`AddMinutes`/`AddSeconds` through the existing DateTime target, rich source-relative result view, and exact application path. Retain the inner elapsed result's exact instant and consume the supplied world once per call.
 
 ## Immediate sequence
 
-1. Extend [`DateTimeMixedShiftComputation.lean`](../A12Kernel/Elaboration/DateTimeMixedShiftComputation.lean) with one field-backed carrier that delegates to `CheckedShiftedDateTimeSource.evaluateThenDay`; keep both checked amounts, the sub-day unit, and source/target distinction explicit.
-2. Add red cases for all three sub-day units, Berlin gap/overlap order identity, changed value/application, quiet inner/outer no-value, inner/outer formal cause, and target self-reference rejection.
-3. Add compact exact-value/cause/profile laws. Keep the dynamic reverse-order target form, a third step, month/year DateTime shifts, broader recursion, and repeatable placement outside this unit.
+1. Extend [`DateTimeMixedShiftComputation.lean`](../A12Kernel/Elaboration/DateTimeMixedShiftComputation.lean) with one dynamic carrier that delegates to `CheckedShiftedNowDateTimeSource.evaluateThenDays`; keep both checked amounts and the sub-day unit explicit.
+2. Add red cases for independent worlds, all three sub-day units, Berlin gap/overlap order identity, changed value/application, quiet inner/outer no-value, and inner/outer formal cause.
+3. Add compact exact-value/cause/profile laws. Keep a third step, month/year DateTime shifts, broader recursion, and repeatable placement outside this unit.
 
 ## Parked boundaries
 
