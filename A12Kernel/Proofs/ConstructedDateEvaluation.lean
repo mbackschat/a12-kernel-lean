@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstructedDateShiftEvaluation
+import A12Kernel.Elaboration.ConstructedDateDifferenceEvaluation
 
 /-! # Checked constructed-Date execution laws -/
 
@@ -388,5 +388,50 @@ theorem checkedConstructedDateDifference_utc_unchanged
       | .months => first.differenceLegacy? .months second
       | .years => first.differenceLegacy? .years second := by
   cases unit <;> rfl
+
+/-- With the shift authored first, its reached cause decides the mixed difference
+    before the direct constructed operand is evaluated. -/
+theorem checkedConstructedDateShift_difference_first_unavailable
+    (checked : CheckedConstructedDateShift model)
+    (other : CheckedConstructedDateComponents model)
+    (unit : DateShiftUnit)
+    (unitAdmitted :
+      checked.source.profile.admitsConstructedDateDifference unit = true)
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) (cause : FormalCause)
+    (shift :
+      checked.evaluate phase input world = .ok (.unavailable cause)) :
+    checked.evaluateDifferenceWith other .first unit unitAdmitted
+        phase input world =
+      .ok (.error cause) := by
+  simp [CheckedConstructedDateShift.evaluateDifferenceWith, shift]
+
+/-- With the direct constructed operand authored first, its reached cause decides
+    the mixed difference before the checked shift is evaluated. -/
+theorem checkedConstructedDateShift_difference_second_constructed_unavailable
+    (checked : CheckedConstructedDateShift model)
+    (other : CheckedConstructedDateComponents model)
+    (unit : DateShiftUnit)
+    (unitAdmitted :
+      checked.source.profile.admitsConstructedDateDifference unit = true)
+    (phase : Phase) (input : CheckedDocument model)
+    (world : Option World) (cause : FormalCause)
+    (constructed :
+      other.evaluate phase input world = .ok (.unavailable cause)) :
+    checked.evaluateDifferenceWith other .second unit unitAdmitted
+        phase input world =
+      .ok (.error cause) := by
+  simp [CheckedConstructedDateShift.evaluateDifferenceWith, constructed]
+
+/-- The mixed difference's direct and shifted sources select the same concrete
+    profile because both were checked against one model zone id. -/
+theorem checkedConstructedDateShift_difference_profiles_eq
+    (checked : CheckedConstructedDateShift model)
+    (other : CheckedConstructedDateComponents model) :
+    checked.source.profile = other.profile := by
+  have selected :
+      some checked.source.profile = some other.profile :=
+    checked.source.profileSelected.symm.trans other.profileSelected
+  exact Option.some.inj selected
 
 end A12Kernel

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstructedDateShiftEvaluation
+import A12Kernel.Elaboration.ConstructedDateDifferenceEvaluation
 
 /-! # Checked constructed-Date execution locks -/
 

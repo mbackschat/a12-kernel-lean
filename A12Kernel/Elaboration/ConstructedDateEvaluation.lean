@@ -1,14 +1,12 @@
 import A12Kernel.Elaboration.ConstructedDateComponents
-import A12Kernel.Elaboration.TemporalShiftAmount
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.ConstructedDateDay
-import A12Kernel.Semantics.DateTimeDayDifference
 
-/-! # Checked constructed-Date execution
+/-! # Checked constructed-Date component execution
 
 This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
 
-Constructed-Date differences retain all three units under UTC/GMT and Berlin, dispatching Berlin to exact local-midnight field mutations. Exact formal causes and missing provenance remain distinguishable. Checked shifts have their own execution owner in `ConstructedDateShiftEvaluation`. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Exact formal causes and missing provenance remain distinguishable. Checked shifts and differences have their own execution owners in `ConstructedDateShiftEvaluation` and `ConstructedDateDifferenceEvaluation`. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
 -/
 
 namespace A12Kernel
@@ -398,94 +396,5 @@ def evaluateNumericPart (checked : CheckedConstructedDateComponents model)
     observation.numericPart part
 
 end CheckedConstructedDateComponents
-
-/-- Structural failure outside the reason-bearing result of a checked constructed-Date difference. -/
-inductive ConstructedDateDifferenceFault where
-  | source (error : ConstructedDateEvaluationFault)
-  | operationUnavailable
-      (unit : DateShiftUnit)
-      (first second : DateConstructionResult)
-  deriving Repr, DecidableEq
-
-namespace ModelZone.ConcreteProfile
-
-/-- Static constructed-Date difference support for one selected profile and unit. Both implemented profiles now own all three independently closed mechanisms. -/
-def admitsConstructedDateDifference :
-    ConcreteProfile → DateShiftUnit → Bool
-  | .utc, _ => true
-  | .europeBerlin, .days => true
-  | .europeBerlin, .months => true
-  | .europeBerlin, .years => true
-
-end ModelZone.ConcreteProfile
-
-/-- Two checked constructed-Date sources and one profile-admitted day/month/year difference unit. -/
-structure CheckedConstructedDateDifference (model : FlatModel) where
-  first : CheckedConstructedDateComponents model
-  second : CheckedConstructedDateComponents model
-  unit : DateShiftUnit
-  unitAdmitted :
-    first.profile.admitsConstructedDateDifference unit = true
-
-namespace CheckedConstructedDateDifference
-
-/-- Resolve one post-floor constructed-Date label at local midnight under the pinned Berlin profile. -/
-private def resolveBerlin? (parts : DateParts) :
-    Option (LocalDateTime × Instant) := do
-  let localLabel ←
-    LocalDateTime.ofYmdHms? parts.year parts.month parts.day 0 0 0
-  let instant ← EuropeBerlinLegacyProfile.resolveLocal? localLabel
-  pure (localLabel, instant)
-
-/-- Apply one independently closed Berlin day or year difference to two real constructed-Date labels. -/
-private def differenceBerlin?
-    (unit : DateShiftUnit) (first second : DateParts) : Option Int := do
-  let (firstLocal, firstInstant) ← resolveBerlin? first
-  let (secondLocal, secondInstant) ← resolveBerlin? second
-  match unit with
-  | .days =>
-      EuropeBerlinLegacyProfile.differenceResolvedInDays?
-        firstLocal firstInstant secondLocal secondInstant
-  | .months =>
-      EuropeBerlinLegacyProfile.differenceResolvedInMonths?
-        firstLocal firstInstant secondLocal secondInstant
-  | .years =>
-      EuropeBerlinLegacyProfile.differenceResolvedInYears?
-        firstLocal firstInstant secondLocal secondInstant
-
-/-- Delegate one resolved pair to the profile- and unit-specific completed-calendar owner. -/
-def differenceResolved? (profile : ModelZone.ConcreteProfile)
-    (unit : DateShiftUnit)
-    (first second : DateConstructionResult) :
-    Option ConstructedDateNumericResult :=
-  match profile, unit with
-  | .utc, .days => first.differenceLegacyDays? second
-  | .utc, .months => first.differenceLegacy? .months second
-  | .utc, .years => first.differenceLegacy? .years second
-  | .europeBerlin, unit =>
-      DateConstructionResult.differenceWith?
-        (differenceBerlin? unit) first second
-
-/-- Evaluate the first constructed Date before the second with one explicit optional world, preserve the first reached formal cause, and reuse the established reason-bearing numeric result. -/
-def evaluate (checked : CheckedConstructedDateDifference model)
-    (phase : Phase) (input : CheckedDocument model)
-    (world : Option World) :
-    Except ConstructedDateDifferenceFault
-      (Except FormalCause ConstructedDateNumericResult) :=
-  match checked.first.evaluate phase input world with
-  | .error error => .error (.source error)
-  | .ok (.unavailable cause) => .ok (.error cause)
-  | .ok (.resolved first) =>
-      match checked.second.evaluate phase input world with
-      | .error error => .error (.source error)
-      | .ok (.unavailable cause) => .ok (.error cause)
-      | .ok (.resolved second) =>
-          match differenceResolved?
-              checked.first.profile checked.unit first second with
-          | some result => .ok (.ok result)
-          | none =>
-              .error (.operationUnavailable checked.unit first second)
-
-end CheckedConstructedDateDifference
 
 end A12Kernel

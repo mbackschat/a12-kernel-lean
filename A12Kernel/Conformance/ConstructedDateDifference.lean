@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ConstructedDateEvaluation
+import A12Kernel.Elaboration.ConstructedDateDifferenceEvaluation
 
 /-! # Constructed-Date legacy-hybrid completed-period locks -/
 
@@ -47,6 +47,30 @@ private def checkedDifference? (zoneId : String)
     match checked.evaluate .validation input none with
     | .ok (.ok result) => some result
     | _ => none
+  else
+    none
+
+private def checkedShiftDifference? (unit : DateShiftUnit)
+    (shiftParts otherParts : DateParts)
+    (position : ConstructedDateShiftDifferencePosition)
+    (shiftAmount : Rat) := do
+  let checkedModel := model "Europe/Berlin"
+  let shiftSource ←
+    (elaborateConstructedDateSources
+      checkedModel (sources shiftParts)).toOption
+  let other ←
+    (elaborateConstructedDateSources
+      checkedModel (sources otherParts)).toOption
+  let input ← documentFor? checkedModel
+  let shift : CheckedConstructedDateShift checkedModel := {
+    source := shiftSource
+    unit := .days
+    amount := .literal shiftAmount
+  }
+  if unitAdmitted :
+      shift.source.profile.admitsConstructedDateDifference unit = true then
+    some (shift.evaluateDifferenceWith other position unit unitAdmitted
+      .validation input none)
   else
     none
 
@@ -119,6 +143,40 @@ example :
         { year := 1916, month := 9, day := 30 }
         { year := 1916, month := 10, day := 1 } =
       some (.value 1 false) := by
+  native_decide
+
+private def checkedShiftDifferencePreservesInstant? : Option Bool := do
+  let secondResult ←
+    checkedShiftDifference? .years
+      { year := 1916, month := 9, day := 30 }
+      { year := 1915, month := 10, day := 1 }
+      .second 1
+  let firstResult ←
+    checkedShiftDifference? .years
+      { year := 1916, month := 9, day := 30 }
+      { year := 1914, month := 10, day := 1 }
+      .first 1
+  pure (match secondResult, firstResult with
+    | .ok (.ok (.value 0 false)),
+        .ok (.ok (.value (-1) false)) => true
+    | _, _ => false)
+
+/- The second operand's inner shift retains the earlier CEST repeated-midnight instant. Freshly resolving its equal-looking label as CET would incorrectly count one completed year. -/
+example : checkedShiftDifferencePreservesInstant? = some true := by
+  native_decide
+
+private def shiftedDifferencePreservesNotGiven : Bool :=
+  match CheckedConstructedDateShift.differenceWithConstruction?
+      .utc .days .first
+        (.value { epochMillis := 1704067200000 }
+          { year := 2024, month := 1, day := 1 } true)
+        (.resolved (.real
+          { year := 2024, month := 1, day := 2 })) with
+  | some (.ok (.value 1 true)) => true
+  | _ => false
+
+/- A shifted value can carry a concrete instant and omission provenance together; the difference retains both rather than treating the value as fixed. -/
+example : shiftedDifferencePreservesNotGiven = true := by
   native_decide
 
 /- Berlin completed years use the February-promoted candidate rather than plain year subtraction. -/
