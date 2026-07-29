@@ -212,7 +212,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-06 — Time constants are exact locale-independent `HH:mm:ss`
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic extension
 - **Local revision:** `ee52ac9ce07728a0e827d512552249630886b1ee`
 - **a12-dmkits basis revision:** `572aadf732733a47c1433c2ce699333b3d33e7de`
@@ -223,8 +223,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Extend the existing Time-literal owner and tests, not the harness: state the exact ASCII fixed-width and real-clock admission in the canonical semantics; reject wrong width, dot punctuation, non-ASCII digits, `24:00:00`, and `23:59:60`; and retain one kernel-backed `DateTime(ValueAsDate(...), "10:30:45")` acceptance case under the model zone.
 - **Compatibility:** Contextual String coercion would admit text the Kernel rejects or mis-type a valid Time constant. Locale parsing, relaxed widths, or leap-second acceptance changes static legality. Retaining a model-zone instant instead of the decoded clock can make a Time-only consumer depend spuriously on the hidden 1970 carrier.
 - **Acceptance:** Canonical prose and the checked decoder agree on exact syntax and bounds; maintained JVM/Node and both-kernel-route cases retain at least one accepted literal, every named rejection class, and the partial-Date DateTime composition; the handback supplies the exact reviewed revision and per-surface disposition.
-- **a12-dmkits handback revision:** `0005740c60f1db558cdcb9ad54df11b997302ffe`
-- **Disposition:** handed off with the exact static literal matrix and one `DateTime(ValueAsDate(...), "10:30:45")` context witness. The change adds no JVM/Node evaluator lock or model-zone runtime-carrier separator, so the full acceptance condition remains open.
+- **a12-dmkits revisions:** static gate `0005740c60f1db558cdcb9ad54df11b997302ffe`; model-zone carrier `751715fff53006bd47c65d2596395e13664ade1a`; partial-Date composition `e32d1a0c3fe5d89c2f3ada4a426fdd202b127af4`
+- **Disposition:** accepted — the exact static matrix retains all named syntax and range rejections under the kernel's single invalid-date-string gate. Dynamic-Groovy, static-Java, and interpreter tri-checks under both Berlin and UTC separate decoded `10:30:45` clock identity from the instant-based `08:30:45` failure mode, while JVM and Node retain the same carrier boundary and the named partial-Date `DateTime(ValueAsDate(...), timeLiteral)` composition. Static rejection is terminal because an invalid literal prevents model loading, so rejected forms correctly have no runtime or Node route. The existing literal, temporal value, extraction, and DateTime owners remain unchanged.
 
 ### SPEC-2026-07-27-05 — `Time(...)` defaults trailing components and retains no-value reasons
 
@@ -276,7 +276,7 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 
 ### SPEC-2026-07-27-02 — `ValueAsDate` is admitted in explicit nested Date positions
 
-- **Status:** handed-off
+- **Status:** accepted
 - **Kind:** semantic correction
 - **Local revision:** `0ca6ac0d76853856cca4ad0c11fcfb48d3a58b61`
 - **a12-dmkits basis revision:** `e3d6415e894365221c0b37c2880b5e215eba4946`
@@ -287,8 +287,8 @@ At reviewed a12-dmkits checkpoint `5093cfb8a500a1093fce80520b64d7b1a02641d5`, hi
 - **Requested a12-dmkits reconciliation:** Correct the canonical Date account and any finding that infers direct-only placement from the extractor rejection. Reuse the existing `ValueAsDate` operation and Date add/difference/DateTime owners; add the smallest maintained authoring/runtime controls for one nested Date addition, one difference or `DateTime(...)` composition, and the rejected ordinary extractor control. Do not widen the operation to arbitrary expression positions, create a second partial-Date value, or add a new harness.
 - **Compatibility:** A direct-only checker rejects kernel-legal models before evaluation. Generalizing from the explicit `datumAngabe2` positions to every Date consumer is also wrong: ordinary extraction uses a narrower grammar and remains rejected.
 - **Acceptance:** Peer prose names the explicit nested positions and the extractor exclusion; maintained JVM, Node, and both available kernel strategies separate at least one admitted nested position from the rejected extractor; existing operation and Date consumer owners remain singular; and the handback supplies the exact reviewed revision plus per-surface disposition.
-- **a12-dmkits handback revision:** `3c27df48e3aae20372e0db3a69197470036ccaa6`
-- **Disposition:** handed off with the canonical placement account corrected, a nine-case static matrix, the distinct in-position format failure, and dynamic nested shift/difference/DateTime controls. The delivered tests do not exercise the JVM/Node interpreter pair or both kernel strategies against the admitted-versus-extractor discriminator required by this entry, so acceptance remains open.
+- **a12-dmkits revisions:** placement account `3c27df48e3aae20372e0db3a69197470036ccaa6`; route-complete evidence `976474a4c70f4acdf6c7080b0d4a4ef4bf1495b3`
+- **Disposition:** accepted — canonical prose and the nine-case kernel admission matrix retain the three wider Date positions, the narrower extractor rejection, and the distinct in-position format failure. Dynamic-Groovy and static-Java kernel execution plus the interpreter pin nested shift, both difference operands, and the DateTime Date argument with explicit negative controls; JVM and Node pin the exact stored result for the same consumer classes. The extractor rejection is terminal at model admission and therefore has no runtime route. No evaluator, temporal AST, or consumer owner changed.
 
 ### SPEC-2026-07-27-01 — computed Dates remain concrete in partial-precision targets
 

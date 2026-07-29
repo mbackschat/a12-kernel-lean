@@ -221,9 +221,12 @@ The detailed review chronology is recoverable from Git. These consolidated check
 | `2f7cb8526bdda21bee5fb5a2c3eb1ea310f023f3` | consolidated scalar codec-boundary and declared-token reachability review, incorporating the corrections at `40fca1dadb00f08716069fffeaa39046c2d43f5f`, `ff1c85eb8d48c323e261b2ed336f2d4bc61d362a`, and `c4c16399e021a5080e4192bf190e2629b5a8d0f9` |
 | `422dda2626cea8689935c87ea380a17bcd15cdfe` | Date-construction validity, hybrid-calendar, and component-projection review |
 | `11526d9cc6d522add97494f60e7b4389131b8f1f` | Java-compatible Date/DateTime shift-amount narrowing, narrow-before-unit multiplication, and neighboring amount-result controls |
-| `3c27df48e3aae20372e0db3a69197470036ccaa6` | corrected `ValueAsDate` placement matrix and nested runtime compositions; JVM/Node and dual-kernel acceptance remains open under the existing ledger entry |
+| `3c27df48e3aae20372e0db3a69197470036ccaa6` | corrected `ValueAsDate` placement matrix and initial nested runtime compositions |
+| `976474a4c70f4acdf6c7080b0d4a4ef4bf1495b3` | route-complete `ValueAsDate` nested-placement evidence across kernel admission, dynamic Groovy, static Java, JVM, and Node |
 | `b6fa6eb82678081b40594ab3c33ededac31f5a6e` | repeated-star group-list occurrence preservation and the zero-row polarity correction |
-| `0005740c60f1db558cdcb9ad54df11b997302ffe` | exact static `HH:mm:ss` literal gate and partial-Date DateTime context witness; runtime carrier coverage remains open |
+| `0005740c60f1db558cdcb9ad54df11b997302ffe` | exact static `HH:mm:ss` literal gate and initial partial-Date DateTime context witness |
+| `751715fff53006bd47c65d2596395e13664ade1a` | Berlin/UTC dual-kernel and multiplatform separation of the Time literal's transport carrier from its decoded clock |
+| `e32d1a0c3fe5d89c2f3ada4a426fdd202b127af4` | JVM/Node partial-Date DateTime composition completing the Time-literal acceptance routes |
 | `8529c7200d1b5cdcd1ef7ba4364e905d73d4270b` | measured Time arities, wider Date precisions, and Date/Time component declaration gates recorded under a12-dmkits `IG105`–`IG107` and `DG26`–`DG27` |
 | `5093cfb8a500a1093fce80520b64d7b1a02641d5` | handback checkpoint retaining the measured constant, extractor, and `TimeFromDateTime` static matrices under a12-dmkits `IG108` |
 
