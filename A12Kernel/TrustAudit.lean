@@ -1693,3 +1693,4 @@ run_cmd do
 #print axioms A12Kernel.checkedDateTimeDayShift_applyAmount_zero
 #print axioms A12Kernel.checkedDateTimeDayShift_source_unavailable
 #print axioms A12Kernel.checkedDateTimeDayShift_empty_reaches_amount
+#print axioms A12Kernel.checkedDateTimeDayShift_evaluateThen_inner_unavailable

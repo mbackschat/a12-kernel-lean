@@ -60,4 +60,17 @@ theorem checkedDateTimeDayShift_empty_reaches_amount
   simp [CheckedDateTimeDayShift.evaluate, read, cellResult,
     Except.mapError, bind, Except.bind]
 
+/-- A reached inner formal cause decides nested generated evaluation before the outer
+    DateTime day amount is read. -/
+theorem checkedDateTimeDayShift_evaluateThen_inner_unavailable
+    (checked : CheckedDateTimeDayShift model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (input : CheckedDocument model)
+    (cause : FormalCause)
+    (inner :
+      checked.evaluate phase input = .ok (.unavailable cause)) :
+    checked.evaluateThen nextAmount phase input =
+      .ok (.unavailable cause) := by
+  simp [CheckedDateTimeDayShift.evaluateThen, inner]
+
 end A12Kernel

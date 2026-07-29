@@ -83,4 +83,26 @@ private def berlinLongRangeGap? : Option Bool := do
 example : berlinLongRangeGap? = some true := by
   native_decide
 
+private def nestedOverlap? : Option ValueAsDateTimeResult := do
+  let overlapSource ← LocalDateTime.ofYmdHms? 1916 9 30 0 0 0
+  let overlapInstant ←
+    ModelZone.ConcreteProfile.europeBerlin.resolveLocal? overlapSource
+  let checkedModel := model "Europe/Berlin"
+  let overlapInput ←
+    document? checkedModel overlapInstant overlapSource
+  let overlapShift ←
+    (elaborateDateTimeDayShift
+      checkedModel 1 (.literal 1)).toOption
+  overlapShift.evaluateThen (.literal 0) .validation overlapInput
+    |>.toOption
+
+/- A nested zero shift preserves the inner repeated-midnight CEST instant instead of
+   resolving the carried wall label again to its CET sibling. -/
+example :
+    nestedOverlap? = some (
+      .value
+        ((LocalDateTime.ofYmdHms? 1916 10 1 0 0 0).get (by native_decide))
+        { epochMillis := -1680487200000 } false) := by
+  native_decide
+
 end A12Kernel.Conformance.DateTimeDayShiftEvaluation

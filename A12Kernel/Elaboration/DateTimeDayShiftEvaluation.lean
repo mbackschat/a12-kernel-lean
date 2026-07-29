@@ -3,15 +3,16 @@ import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
 
 /-! # Checked DateTime calendar-day shifts
 
-This capsule evaluates the direct nonrepeatable `AddDays(DateTime, Number)` form under
-UTC/GMT and the pinned Berlin profile. It reuses the shared checked DateTime source and
-numeric amount boundary, but applies a calendar `DAY_OF_MONTH` mutation rather than
-elapsed sub-day arithmetic. The source exact instant is decoded under the selected
-profile before the mutation, and the result retains the landing label, exact instant,
-milliseconds, and omission provenance.
+This capsule evaluates direct and bounded recursively composed nonrepeatable
+`AddDays(DateTime, Number)` forms under UTC/GMT and the pinned Berlin profile. It reuses
+the shared checked DateTime source and numeric amount boundary, but applies a calendar
+`DAY_OF_MONTH` mutation rather than elapsed sub-day arithmetic. The source exact instant
+is decoded under the selected profile before the mutation, and the result retains the
+landing label, exact instant, milliseconds, and omission provenance. One such result can
+feed one further day shift without label reconstruction.
 
-DateTime `AddMonths` and `AddYears`, dynamic `Now`, recursive operands, other model
-zones, repeatable placement, and target storage remain outside.
+DateTime `AddMonths` and `AddYears`, dynamic `Now`, wider recursion, other model zones,
+repeatable placement, and target storage remain outside.
 -/
 
 namespace A12Kernel
@@ -37,6 +38,21 @@ def elaborateDateTimeDayShift
     Except ValueAsDateTimeExtractionElabError
       (CheckedDateTimeDayShift model) :=
   elaborateDateTimeNumericShiftSource model sourceField amount
+
+namespace ValueAsDateTimeResult
+
+/-- Add inherited omission provenance to a composed DateTime result without changing
+    exact value, non-relevance, or formal cause identity. -/
+def inheritNotGiven (result : ValueAsDateTimeResult)
+    (inherited : Bool) : ValueAsDateTimeResult :=
+  match result with
+  | .noValue notGiven => .noValue (inherited || notGiven)
+  | .value localDateTime instant notGiven =>
+      .value localDateTime instant (inherited || notGiven)
+  | .nonRelevant => .nonRelevant
+  | .unavailable cause => .unavailable cause
+
+end ValueAsDateTimeResult
 
 namespace CheckedDateTimeDayShift
 
@@ -80,6 +96,30 @@ def applyAmount (checked : CheckedDateTimeDayShift model)
           pure (.value shifted shiftedInstant notGiven)
       | none => throw (.landingUnavailable sourceInstant offset)
 
+/-- Apply an outer amount to one already-evaluated DateTime day result. A concrete
+    inner value remains the exact calendar source and retains its omission provenance. -/
+def applyResultAmount (checked : CheckedDateTimeDayShift model)
+    (source : ValueAsDateTimeResult) :
+    NumericArithmeticOutcome →
+      Except DateTimeDayShiftFault ValueAsDateTimeResult
+  | .notEvaluated =>
+      match source with
+      | .noValue notGiven | .value _ _ notGiven => pure (.noValue notGiven)
+      | .nonRelevant => pure .nonRelevant
+      | .unavailable cause => pure (.unavailable cause)
+  | .value value fillability =>
+      match source with
+      | .noValue notGiven =>
+          pure (.noValue
+            (notGiven || fillability.canGrow || fillability.canShrink))
+      | .value sourceLocal sourceInstant notGiven =>
+          match checked.applyAmount sourceLocal sourceInstant
+              (.value value fillability) with
+          | .error error => .error error
+          | .ok result => .ok (result.inheritNotGiven notGiven)
+      | .nonRelevant => pure .nonRelevant
+      | .unavailable cause => pure (.unavailable cause)
+
 /-- Classify one reached DateTime cell before reading its numeric amount. A formal
     source stops; an empty source still reaches the amount and remains not-given. -/
 def evaluateCell (checked : CheckedDateTimeDayShift model)
@@ -113,6 +153,22 @@ def evaluate (checked : CheckedDateTimeDayShift model)
     path := []
   } |>.mapError .document
   checked.evaluateCell phase input cell
+
+/-- Feed one exact DateTime day result into a further generated `AddDays`. The inner
+    operation runs before the outer amount; a formal inner result stops that read. -/
+def evaluateThen (checked : CheckedDateTimeDayShift model)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except DateTimeDayShiftFault ValueAsDateTimeResult :=
+  match checked.evaluate phase input with
+  | .error error => .error error
+  | .ok (.unavailable cause) => .ok (.unavailable cause)
+  | .ok source =>
+      match nextAmount.read phase input with
+      | .error error => .error (.document error)
+      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
+      | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
+      | .ok (.ok outcome) => checked.applyResultAmount source outcome
 
 end CheckedDateTimeDayShift
 
