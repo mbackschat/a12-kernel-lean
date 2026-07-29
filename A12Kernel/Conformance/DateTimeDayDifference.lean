@@ -30,6 +30,20 @@ example :
       none := by
   native_decide
 
+/- A backward landing on that nominal gap label keeps the later post-gap wall clock. Fresh-label resolution would reject the nominal 02:30, while the forward rule would land at 01:30. -/
+example :
+    (do
+      let source :=
+        dateTime 2024 4 1 2 30 0 (by native_decide)
+      let sourceInstant ←
+        EuropeBerlinLegacyProfile.resolveLocal? source
+      EuropeBerlinLegacyProfile.calendarDayLandingBackward?
+        source sourceInstant 1) =
+      some (
+        dateTime 2024 3 31 3 30 0 (by native_decide),
+        { epochMillis := 1711848600000 }) := by
+  native_decide
+
 /- The adjusted landing is before 01:45, so one calendar day fits even though fewer than 86,400 elapsed seconds fit. -/
 example :
     EuropeBerlinLegacyProfile.differenceInDays?

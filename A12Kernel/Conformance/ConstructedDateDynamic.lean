@@ -32,6 +32,11 @@ private def berlinBeforeOverlapSources : SurfaceConstructedDateComponents := {
   year := .baseYear
 }
 
+private def berlinAfterOverlapSources : SurfaceConstructedDateComponents := {
+  day := .constant "2", month := .constant "10"
+  year := .baseYear
+}
+
 private def berlinNormalSources : SurfaceConstructedDateComponents := {
   day := .constant "29", month := .constant "9"
   year := .baseYear
@@ -126,7 +131,9 @@ private def berlin1916Shift?
 private def berlinShiftSeparators? : Option Bool := do
   let forward ← berlin1916Shift? berlinBeforeOverlapSources .days 1
   let normal ← berlin1916Shift? berlinNormalSources .days 1
-  let reverse ← berlin1916Shift? berlinBeforeOverlapSources .days (-1)
+  let reverse ← berlin1916Shift? berlinAfterOverlapSources .days (-1)
+  let ordinaryReverse ←
+    berlin1916Shift? berlinBeforeOverlapSources .days (-1)
   let month ← berlin1916Shift? berlinBeforeOverlapSources .months 1
   let overlapLabel ← LocalDateTime.ofYmdHms? 1916 10 1 0 0 0
   let normalLabel ← LocalDateTime.ofYmdHms? 1916 9 30 0 0 0
@@ -134,18 +141,22 @@ private def berlinShiftSeparators? : Option Bool := do
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? overlapLabel
   let freshNormal ←
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? normalLabel
-  pure (match forward, freshOverlap, normal, freshNormal, reverse, month with
+  pure (match
+      forward, freshOverlap, normal, freshNormal, reverse,
+      ordinaryReverse, month with
     | .ok (.value { epochMillis := -1680487200000 }
           { year := 1916, month := 10, day := 1 } false),
         { epochMillis := -1680483600000 },
         .ok (.value { epochMillis := -1680573600000 }
           { year := 1916, month := 9, day := 30 } false),
         { epochMillis := -1680573600000 },
-        .error (.profileShiftUnsupported
-          "Europe/Berlin" .days (-1)),
+        .ok (.value { epochMillis := -1680483600000 }
+          { year := 1916, month := 10, day := 1 } false),
+        .ok (.value { epochMillis := -1680660000000 }
+          { year := 1916, month := 9, day := 29 } false),
         .error (.profileShiftUnsupported
           "Europe/Berlin" .months 1) => true
-    | _, _, _, _, _, _ => false)
+    | _, _, _, _, _, _, _ => false)
 
 /- Changing only the explicit world across UTC midnight changes all three components. -/
 example : (do
@@ -224,8 +235,9 @@ example : berlinPreFloorUnsupported? = some true := by
   native_decide
 
 /- Forward Calendar addition retains the earlier CEST instant at the repeated midnight,
-   unlike fresh construction's later CET instant. An ordinary landing agrees with fresh
-   resolution, while reverse and month routes stay explicitly outside this first slice. -/
+   while reverse addition from the other side retains the later CET instant chosen by
+   fresh construction. Ordinary landings agree in both directions; month shifts remain
+   outside this slice. -/
 example : berlinShiftSeparators? = some true := by
   native_decide
 

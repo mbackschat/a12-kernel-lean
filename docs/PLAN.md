@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-28:** `lake build` 614 jobs · trust audit **1623 theorem roots; 37125 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 614 jobs · trust audit **1624 theorem roots; 37132 declarations in 348 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Close reverse pinned-Berlin checked constructed-Date `AddDays` while preserving the exact instant selected by reverse `GregorianCalendar` landing. Start at the autumn-1916 repeated local-midnight hour; do not infer reverse policy by negating or reusing the forward selector.
+Close signed pinned-Berlin checked constructed-Date `AddMonths` while preserving the runtime's legacy end-of-month correction and direction-selected exact landing. Start with a month landing on the autumn-1916 repeated local-midnight hour; do not substitute the ordinary proleptic `FullDate` helper or infer negative behavior from the positive case.
 
 ## Immediate sequence
 
-1. Audit reverse additions from both sides of the repeated midnight and one ordinary control, retaining source instant, target label, target offset, and target instant.
-2. Add a red checked shift case that distinguishes reverse landing from forward landing and fresh resolution rather than merely checking Date parts.
-3. Extend the existing profile landing owner with a direction-specific helper only if the source sweep establishes one rule across the pinned profile; otherwise keep negative offsets explicitly unsupported.
+1. Audit `BedingungsOperatorHelper.addiereMonate` for positive and negative end-of-month correction, generated operand order, and exact Berlin landing on both sides of the repeated midnight.
+2. Add a red checked shift matrix that separates legacy clamp, positive/negative overlap instant selection, and an ordinary control.
+3. Compose the existing legacy constructed-Date month helper with the established direction-specific profile landing only if the audit shows the same source mechanism; otherwise keep Berlin months explicitly unsupported.
 
 ## Parked boundaries
 

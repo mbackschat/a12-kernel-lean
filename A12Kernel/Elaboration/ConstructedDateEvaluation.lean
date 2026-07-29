@@ -441,9 +441,7 @@ private def shiftResolved? (unit : DateShiftUnit)
   | .months => result.addLegacyMonths? offset
   | .years => result.addLegacyYears? offset
 
-/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete
-    hybrid-calendar owner. Berlin currently admits only nonnegative day additions and
-    retains the exact profile landing, including the earlier instant at an overlap. -/
+/-- Apply one real shift under the selected concrete profile. UTC/GMT use the complete hybrid-calendar owner. Berlin admits signed day additions and retains the direction-selected exact profile landing at gaps and overlaps. -/
 private def applyRealAmount (checked : CheckedConstructedDateShift model)
     (parts : DateParts) (offset : Int) (notGiven : Bool) :
     Except ConstructedDateShiftFault ConstructedDateShiftResult :=
@@ -461,24 +459,26 @@ private def applyRealAmount (checked : CheckedConstructedDateShift model)
   | .europeBerlin =>
       match checked.unit with
       | .days =>
-          if offset < 0 then
-            throw (.profileShiftUnsupported
-              model.timeZoneId checked.unit offset)
-          else
-            match LocalDateTime.ofYmdHms?
-                parts.year parts.month parts.day 0 0 0 with
-            | none => throw (.landingUnavailable checked.unit parts offset)
-            | some sourceLocal =>
-                match checked.source.profile.resolveLocal? sourceLocal with
-                | none => throw (.landingUnavailable checked.unit parts offset)
-                | some instant =>
-                    match EuropeBerlinLegacyProfile.calendarDayLanding?
-                        sourceLocal instant offset.toNat with
-                    | none =>
-                        throw (.landingUnavailable checked.unit parts offset)
-                    | some (shifted, shiftedInstant) =>
-                        pure (.value shiftedInstant
-                          shifted.date.civil.parts notGiven)
+          match LocalDateTime.ofYmdHms?
+              parts.year parts.month parts.day 0 0 0 with
+          | none => throw (.landingUnavailable checked.unit parts offset)
+          | some sourceLocal =>
+              match checked.source.profile.resolveLocal? sourceLocal with
+              | none => throw (.landingUnavailable checked.unit parts offset)
+              | some instant =>
+                  let landing :=
+                    if offset < 0 then
+                      EuropeBerlinLegacyProfile.calendarDayLandingBackward?
+                        sourceLocal instant offset.natAbs
+                    else
+                      EuropeBerlinLegacyProfile.calendarDayLanding?
+                        sourceLocal instant offset.toNat
+                  match landing with
+                  | none =>
+                      throw (.landingUnavailable checked.unit parts offset)
+                  | some (shifted, shiftedInstant) =>
+                      pure (.value shiftedInstant
+                        shifted.date.civil.parts notGiven)
       | .months | .years =>
           throw (.profileShiftUnsupported
             model.timeZoneId checked.unit offset)

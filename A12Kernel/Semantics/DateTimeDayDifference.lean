@@ -22,19 +22,46 @@ private def forwardOffset? (dateTime : LocalDateTime) : Option Int :=
         | some actualOffset => actualOffset < offsetSeconds
         | none => false
 
+/-- Offset used by a backward calendar landing. Valid overlaps choose the smaller offset and therefore the later instant. In a gap, the largest candidate whose assumed offset is below the actual offset reproduces the legacy post-gap wall clock. -/
+private def backwardOffset? (dateTime : LocalDateTime) : Option Int :=
+  match candidateOffsets.find? fun offsetSeconds =>
+      offsetSecondsAt? (candidateInstant dateTime offsetSeconds) ==
+        some offsetSeconds with
+  | some offsetSeconds => some offsetSeconds
+  | none =>
+      candidateOffsets.reverse.find? fun offsetSeconds =>
+        match offsetSecondsAt? (candidateInstant dateTime offsetSeconds) with
+        | some actualOffset => offsetSeconds < actualOffset
+        | none => false
+
 /-- Resolve one nominal label created by a forward calendar addition. This deliberately differs from fresh-label resolution at gaps and overlaps. -/
 private def resolveForwardLanding? (dateTime : LocalDateTime) :
     Option Instant :=
   (forwardOffset? dateTime).map (candidateInstant dateTime)
 
-/-- Resolve and decode one policy-selected forward calendar landing. Day and year additions share this exact gap/overlap mechanism. -/
-private def forwardLanding? (date : FullDate) (time : TimeOfDay) :
+/-- Resolve one nominal label created by a backward calendar addition. At an overlap this agrees with fresh-label resolution, while a gap keeps the post-gap wall clock instead of rejecting the label. -/
+private def resolveBackwardLanding? (dateTime : LocalDateTime) :
+    Option Instant :=
+  (backwardOffset? dateTime).map (candidateInstant dateTime)
+
+/-- Decode one calendar landing after its direction-specific resolver has selected the exact instant. Keeping decoding shared prevents forward and backward paths from diverging on the adjusted wall label produced at a gap. -/
+private def resolvedLanding?
+    (resolveLanding? : LocalDateTime → Option Instant)
+    (date : FullDate) (time : TimeOfDay) :
     Option (LocalDateTime × Instant) := do
   let nominal : LocalDateTime := { date, time }
-  let landing ← resolveForwardLanding? nominal
+  let landing ← resolveLanding? nominal
   let actualOffset ← offsetSecondsAt? landing
   let next ← LocalDateTime.atOffset? landing actualOffset
   pure (next, landing)
+
+/-- Resolve and decode one policy-selected forward calendar landing. Day and year additions share this exact gap/overlap mechanism. -/
+private def forwardLanding? :=
+  resolvedLanding? resolveForwardLanding?
+
+/-- Resolve and decode one policy-selected backward calendar landing. The decoded label can differ from the nominal label at a gap. -/
+private def backwardLanding? :=
+  resolvedLanding? resolveBackwardLanding?
 
 /-- Add a nonnegative number of calendar days from the current resolved local state and return both the resulting local state and exact instant. -/
 def calendarDayLanding? (current : LocalDateTime)
@@ -45,6 +72,16 @@ def calendarDayLanding? (current : LocalDateTime)
   else
     let nextDate ← current.date.addDays? days
     forwardLanding? nextDate current.time
+
+/-- Subtract a nonnegative number of calendar days from the current resolved local state and return both the resulting local state and exact instant. This is direction-specific because legacy gap and overlap landings are not obtained by negating the forward selector. -/
+def calendarDayLandingBackward? (current : LocalDateTime)
+    (currentInstant : Instant) (days : Nat) :
+    Option (LocalDateTime × Instant) := do
+  if days = 0 then
+    pure (current, currentInstant)
+  else
+    let nextDate ← current.date.addDays? (-(days : Int))
+    backwardLanding? nextDate current.time
 
 /-- Add whole years with the legacy February-28 clock reset before resolving the final calendar landing. -/
 private def calendarYearLanding? (current : LocalDateTime)

@@ -16,6 +16,14 @@ namespace A12Kernel
       some (dateTime, instant) := by
   simp [EuropeBerlinLegacyProfile.calendarDayLanding?]
 
+/-- A zero-day backward Berlin landing preserves the already selected exact instant just like the forward zero case; neither direction re-resolves an ambiguous wall label. -/
+@[simp] theorem berlin_calendarDayLandingBackward_zero
+    (dateTime : LocalDateTime) (instant : Instant) :
+    EuropeBerlinLegacyProfile.calendarDayLandingBackward?
+        dateTime instant 0 =
+      some (dateTime, instant) := by
+  simp [EuropeBerlinLegacyProfile.calendarDayLandingBackward?]
+
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self
     (dateTime : LocalDateTime) (instant : Instant) :
