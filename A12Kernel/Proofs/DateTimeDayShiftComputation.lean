@@ -93,6 +93,52 @@ theorem nowDateTimeDayShiftComputation_profiles_eq
       operation.target.profileMatches
   exact Option.some.inj selected
 
+/-- A value-producing field-backed two-day continuation transports its exact instant
+    into declaration-owned target rendering. -/
+theorem dateTimeTwoDayShiftComputation_value
+    (operation : CheckedDateTimeTwoDayShiftComputation model)
+    (input : CheckedDocument model)
+    (localDateTime : LocalDateTime) (instant : Instant)
+    (notGiven : Bool)
+    (shift :
+      operation.shift.evaluateThen operation.nextAmount
+          .computation input =
+        .ok (.value localDateTime instant notGiven)) :
+    operation.evaluateOutcome input =
+      (operation.target.evaluate (.value instant)).mapError .target := by
+  simp [CheckedDateTimeTwoDayShiftComputation.evaluateOutcome,
+    CheckedDateTimeTwoDayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+
+/-- A reached formal cause from the source or either day amount remains target poison. -/
+theorem dateTimeTwoDayShiftComputation_unavailable
+    (operation : CheckedDateTimeTwoDayShiftComputation model)
+    (input : CheckedDocument model) (cause : FormalCause)
+    (shift :
+      operation.shift.evaluateThen operation.nextAmount
+          .computation input =
+        .ok (.unavailable cause)) :
+    operation.evaluateOutcome input = .ok (.poison cause) := by
+  unfold CheckedDateTimeTwoDayShiftComputation.evaluateOutcome
+  simp only [CheckedDateTimeTwoDayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+  change
+    Except.mapError DateTimeDayShiftComputationFault.target
+      (.ok (.poison cause) :
+        Except DateTimeTargetEvaluationFault DateTimeTargetOutcome) =
+      .ok (.poison cause)
+  rfl
+
+/-- Field-backed two-day mutation and target rendering select one model-zone profile. -/
+theorem dateTimeTwoDayShiftComputation_profiles_eq
+    (operation : CheckedDateTimeTwoDayShiftComputation model) :
+    operation.shift.profile = operation.target.profile := by
+  have selected :
+      some operation.shift.profile = some operation.target.profile :=
+    operation.shift.profileMatches.symm.trans
+      operation.target.profileMatches
+  exact Option.some.inj selected
+
 /-- A value-producing dynamic two-day continuation transports its exact instant into
     declaration-owned target rendering. -/
 theorem nowDateTimeTwoDayShiftComputation_value
