@@ -38,6 +38,30 @@ private def evaluate? (candidate : FlatModel)
 
 private def nextTime : StoredTime := ⟨"05:02:09", by decide⟩
 
+private def oldTime : StoredTime := ⟨"05:02:08", by decide⟩
+
+private def source (stored : String) (raw : RawCell) : DocumentData := {
+  instantiatedRows := []
+  cells := [{ address := { field := 1, path := [] }, stored, raw }] }
+
+private def oldSource : DocumentData :=
+  source oldTime.text (.parsed (.temporal
+    (.time { epochMillis := 0 } (clock 5 2 8 (by decide)))))
+
+private def prepared :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler (model)).toOption.get (by native_decide)
+
+private def view? (input : DocumentData) (outcome : TimeTargetOutcome)
+    (messages : List FormalCause := []) :
+    Option (TimeComputationRunView FormalCause) := do
+  let checked ← (checkDocument prepared "en_US" input).toOption
+  pure (TimeComputationRunView.fromOutcomes checked messages [(1, outcome)])
+
+private def destinationWith (state : TimeTargetState) :
+    TimeComputationDestination :=
+  fun field => if field == 1 then state else .absent
+
 /- Exact complete Time is admitted; component or format widening fails before execution. -/
 example :
     timeTargetError? (model) = none ∧
@@ -67,6 +91,57 @@ example :
       checked.evaluate
         (TimeConstructionResult.unavailable .malformed).asTimeComputationResult =
         .poison .malformed := by
+  native_decide
+
+/- Unchanged success stays public but is not a change; changed success is in both projections. -/
+example :
+    (view? oldSource (.accepted oldTime)).map
+        (fun view => (view.withoutErrors, view.withChanges)) =
+      some ([{ targetField := 1, value := oldTime }], []) ∧
+    (view? oldSource (.accepted nextTime)).map
+        (fun view => (view.withoutErrors, view.withChanges)) =
+      some ([{ targetField := 1, value := nextTime }],
+        [{ targetField := 1, value := nextTime }]) := by
+  native_decide
+
+/- Quiet no-value and poison clear only a source-filled target and manufacture no target-local error. -/
+example :
+    (view? oldSource .noValue).map
+        (fun view => (view.cleared, view.withErrors)) = some ([1], []) ∧
+      (view? { instantiatedRows := [], cells := [] } .noValue).map
+        (·.cleared) = some [] ∧
+      (view? (source "" .presentEmpty) .noValue).map
+        (·.cleared) = some [] ∧
+      (view? oldSource (.poison .malformed)).map
+        (fun view => (view.cleared, view.noErrorOccurred)) =
+          some ([1], true) := by
+  native_decide
+
+/- Application writes changed text, clears a filled target in place, and ignores residual messages. -/
+example :
+    (do
+      let view ← view? oldSource (.accepted nextTime) [.malformed]
+      let applied ← view.applyTo (destinationWith .absent) |>.toOption
+      pure (applied 1, view.noErrorOccurred)) =
+        some (.presentValue nextTime, false) ∧
+      (do
+        let view ← view? oldSource .noValue
+        let applied ← view.applyTo
+          (destinationWith (.presentValue nextTime)) |>.toOption
+        pure (applied 1)) = some .presentEmpty := by
+  native_decide
+
+/- A duplicate clear/write target is rejected before destination state participates. -/
+example :
+    (do
+      let checked ← (checkDocument prepared "en_US" oldSource).toOption
+      let view := TimeComputationRunView.fromOutcomes checked
+        ([] : List FormalCause)
+        [(1, .noValue), (1, .accepted nextTime)]
+      pure (match view.applyTo (destinationWith .absent) with
+        | .error error => some error
+        | .ok _ => none)) =
+        some (some (.duplicateActionTarget 1)) := by
   native_decide
 
 end A12Kernel.Conformance.TimeComputation

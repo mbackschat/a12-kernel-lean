@@ -1,9 +1,10 @@
+import A12Kernel.Elaboration.TemporalValueComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
 import A12Kernel.Semantics.TimeConstruction
 
 /-! # Checked `Time(...)` target execution
 
-This capsule carries an already-resolved `Time(...)` result through one exact `HH:mm:ss` target. The clock remains zone-free; the runtime's 1970 date is only a transport representation. Source-relative result classification, application, wider formats, repeatable targets, scheduling, and message construction remain separate.
+This capsule carries an already-resolved `Time(...)` result through one exact `HH:mm:ss` target, source-relative result classification, and exact scalar application. The clock remains zone-free; the runtime's 1970 date is only a transport representation. Wider formats, repeatable targets, scheduling, and message construction remain separate.
 -/
 
 namespace A12Kernel
@@ -28,5 +29,37 @@ def evaluate (target : CheckedTimeTarget model) :
   | .value time => .accepted (target.format.render time)
 
 end CheckedTimeTarget
+
+/-- Exact caller-supplied Time destination. -/
+abbrev TimeComputationDestination :=
+  TemporalComputationDestination StoredTime
+
+namespace TimeComputationDestination
+
+/-- Specialize the existing one-target transition at one Time field. -/
+def applyOutcome (destination : TimeComputationDestination)
+    (target : FieldId) (outcome : TimeTargetOutcome) :
+    TimeComputationDestination :=
+  TemporalComputationDestination.update destination target
+    (outcome.applyTo (destination target))
+
+end TimeComputationDestination
+
+namespace TimeComputationRunView
+
+/-- Targets consumed by Time application; unchanged successes and residual messages are absent. -/
+def actionTargets (view : TimeComputationRunView ResidualMessage) :
+    List FieldId :=
+  TemporalValueComputationRunView.actionTargets view
+
+/-- Apply clears before changed values; unchanged successes and residual messages never mutate the destination. -/
+def applyTo (view : TimeComputationRunView ResidualMessage)
+    (destination : TimeComputationDestination) :
+    Except TemporalValueComputationApplicationError
+      TimeComputationDestination :=
+  TemporalValueComputationRunView.applyTo view destination
+    TimeComputationDestination.applyOutcome .noValue .accepted
+
+end TimeComputationRunView
 
 end A12Kernel

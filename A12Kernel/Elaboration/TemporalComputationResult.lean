@@ -3,7 +3,7 @@ import A12Kernel.Semantics.TemporalApplication
 
 /-! # Temporal V2 computation result projection
 
-This capsule shares the five extensional result collections used by full Date and DateTime while retaining family-specific outcome and computed-error domains. Each projection consumes supplied rich outcomes, exact immutable source placement, and an independently supplied residual-message channel. Execution, message construction, whole-result application, other temporal kinds, and repeatable pointers remain separate.
+This capsule shares the five extensional result collections used by scalar temporal targets while retaining family-specific outcome and computed-error domains. Each projection consumes supplied rich outcomes, exact immutable source placement, and an independently supplied residual-message channel. Execution, message construction, whole-result application, and repeatable pointers remain separate.
 -/
 
 namespace A12Kernel
@@ -13,6 +13,9 @@ structure TemporalComputedInstance (kind : TemporalKind) where
   targetField : FieldId
   value : StoredTemporalText kind
   deriving Repr, DecidableEq
+
+/-- Successful Time instance. -/
+abbrev TimeComputedInstance := TemporalComputedInstance .time
 
 /-- Successful full-Date instance. -/
 abbrev FullDateComputedInstance := TemporalComputedInstance .date
@@ -30,6 +33,19 @@ structure FullDateComputedError where
 /-- The bounded DateTime target has no target-local rejection outcome, so its computed-error collection is uninhabited. -/
 inductive DateTimeComputedError
   deriving Repr, DecidableEq
+
+/-- The admitted Time target has no target-local rejection outcome. -/
+inductive TimeComputedError
+  deriving Repr, DecidableEq
+
+namespace TimeTargetOutcome
+
+/-- Whether the Time outcome produced a nonempty computed-data instance. -/
+def hasComputedInstance : TimeTargetOutcome → Bool
+  | .accepted _ => true
+  | .noValue | .poison _ => false
+
+end TimeTargetOutcome
 
 namespace FullDateTargetOutcome
 
@@ -51,7 +67,8 @@ end DateTimeTargetOutcome
 
 namespace CheckedDocument
 
-private def sourceTemporalTargetState (input : CheckedDocument model)
+/-- Recover exact nonrepeatable source placement and opaque stored temporal text at one kind-indexed target. -/
+def sourceTemporalTargetState (input : CheckedDocument model)
     (field : FieldId) : TemporalTargetState (StoredTemporalText kind) :=
   match input.source.cells.find? fun cell =>
       cell.address == ({ field, path := [] } : CellAddr) with
@@ -65,6 +82,11 @@ private def sourceTemporalTargetState (input : CheckedDocument model)
 /-- Recover exact nonrepeatable source placement and stored Date text without reparsing it. -/
 def sourceFullDateTargetState (input : CheckedDocument model)
     (field : FieldId) : FullDateTargetState :=
+  sourceTemporalTargetState input field
+
+/-- Recover exact nonrepeatable source placement and opaque stored Time text. -/
+def sourceTimeTargetState (input : CheckedDocument model)
+    (field : FieldId) : TimeTargetState :=
   sourceTemporalTargetState input field
 
 /-- Recover exact nonrepeatable source placement and stored DateTime text without reparsing it. -/
@@ -84,6 +106,11 @@ structure TemporalComputationRunView
   cleared : List FieldId
   formalErrorsInOperands : List ResidualMessage
   deriving Repr, DecidableEq
+
+/-- Time specialization of the shared temporal result collections. -/
+abbrev TimeComputationRunView (ResidualMessage : Type) :=
+  TemporalComputationRunView
+    TimeComputedInstance TimeComputedError ResidualMessage
 
 /-- Full-Date specialization of the shared temporal result collections. -/
 abbrev FullDateComputationRunView (ResidualMessage : Type) :=
@@ -113,7 +140,61 @@ def ExtensionalEq
     left.cleared.Perm right.cleared ∧
     left.formalErrorsInOperands.Perm right.formalErrorsInOperands
 
+/-- Shared value/clear projection for target families with no target-local error branch. -/
+def fromValueOutcomes
+    (successfulInstance? :
+      FieldId × Outcome → Option (TemporalComputedInstance kind))
+    (sourceValueChanged : TemporalComputedInstance kind → Bool)
+    (shouldClear : FieldId × Outcome → Bool)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (FieldId × Outcome)) :
+    TemporalComputationRunView
+      (TemporalComputedInstance kind) Error ResidualMessage :=
+  let withoutErrors := outcomes.filterMap successfulInstance?
+  {
+    withoutErrors
+    withChanges := withoutErrors.filter sourceValueChanged
+    withErrors := []
+    cleared := (outcomes.filter shouldClear).map Prod.fst
+    formalErrorsInOperands := residualMessages
+  }
+
 end TemporalComputationRunView
+
+namespace TimeComputationRunView
+
+/-- Project one accepted Time outcome into a computed instance. -/
+def successfulInstance? :
+    FieldId × TimeTargetOutcome → Option TimeComputedInstance
+  | (targetField, .accepted value) => some { targetField, value }
+  | _ => none
+
+/-- Compare exact opaque stored text against the immutable source document. -/
+def sourceValueChanged (input : CheckedDocument model)
+    (computed : TimeComputedInstance) : Bool :=
+  (input.sourceTimeTargetState computed.targetField).storedValue !=
+    some computed.value
+
+/-- A source-filled Time target is cleared exactly when no computed-data instance was produced. -/
+def shouldClear (input : CheckedDocument model)
+    (entry : FieldId × TimeTargetOutcome) : Bool :=
+  !entry.2.hasComputedInstance &&
+    (input.sourceTimeTargetState entry.1).storedValue.isSome
+
+/-- Build the five public Time projections from rich outcomes and an already-classified residual channel. -/
+def fromOutcomes (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage)
+    (outcomes : List (FieldId × TimeTargetOutcome)) :
+    TimeComputationRunView ResidualMessage :=
+  TemporalComputationRunView.fromValueOutcomes
+    successfulInstance? (sourceValueChanged input) (shouldClear input)
+    residualMessages outcomes
+
+/-- Time reports an error exactly when the supplied residual channel is nonempty. -/
+def noErrorOccurred (view : TimeComputationRunView ResidualMessage) : Bool :=
+  TemporalComputationRunView.noErrorOccurred view
+
+end TimeComputationRunView
 
 namespace FullDateComputationRunView
 
@@ -186,14 +267,9 @@ def fromOutcomes (input : CheckedDocument model)
     (residualMessages : List ResidualMessage)
     (outcomes : List (FieldId × DateTimeTargetOutcome)) :
     DateTimeComputationRunView ResidualMessage :=
-  let withoutErrors := outcomes.filterMap successfulInstance?
-  {
-    withoutErrors
-    withChanges := withoutErrors.filter (sourceValueChanged input)
-    withErrors := []
-    cleared := (outcomes.filter (shouldClear input)).map Prod.fst
-    formalErrorsInOperands := residualMessages
-  }
+  TemporalComputationRunView.fromValueOutcomes
+    successfulInstance? (sourceValueChanged input) (shouldClear input)
+    residualMessages outcomes
 
 /-- The bounded DateTime result reports an error exactly when the supplied residual channel is nonempty. -/
 def noErrorOccurred

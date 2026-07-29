@@ -39,7 +39,8 @@ theorem dateTimeComputationRun_applyTo_noActions
     (noClears : view.cleared = []) :
     view.applyTo destination = .ok destination := by
   simp [DateTimeComputationRunView.applyTo,
-    DateTimeComputationRunView.actionTargets, noChanges, noClears,
+    TemporalValueComputationRunView.applyTo,
+    TemporalValueComputationRunView.actionTargets, noChanges, noClears,
     FieldId.firstDuplicate?]
 
 /-- Duplicate action targets fail before destination state participates. -/
@@ -48,7 +49,14 @@ theorem dateTimeComputationRun_applyTo_duplicateTarget
     (destination : DateTimeComputationDestination) (field : FieldId)
     (duplicate : FieldId.firstDuplicate? view.actionTargets = some field) :
     view.applyTo destination = .error (.duplicateActionTarget field) := by
-  simp [DateTimeComputationRunView.applyTo, duplicate]
+  have duplicate' :
+      FieldId.firstDuplicate?
+        (TemporalValueComputationRunView.actionTargets view) =
+          some field := by
+    simpa [DateTimeComputationRunView.actionTargets] using duplicate
+  simp [DateTimeComputationRunView.applyTo,
+    TemporalValueComputationRunView.applyTo,
+    duplicate']
 
 /-- A source-unchanged accepted DateTime is not applied to a different destination. -/
 theorem dateTimeComputationRun_unchanged_notApplied
@@ -60,8 +68,10 @@ theorem dateTimeComputationRun_unchanged_notApplied
     (DateTimeComputationRunView.fromOutcomes input messages
       [(target, .accepted value)]).applyTo destination = .ok destination := by
   simp [DateTimeComputationRunView.applyTo,
-    DateTimeComputationRunView.actionTargets,
+    TemporalValueComputationRunView.applyTo,
+    TemporalValueComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromValueOutcomes,
     DateTimeComputationRunView.successfulInstance?,
     DateTimeComputationRunView.shouldClear,
     DateTimeTargetOutcome.hasComputedInstance,
@@ -79,8 +89,10 @@ theorem dateTimeComputationRun_changed_applies
       [(target, .accepted value)]).applyTo destination =
         .ok (destination.applyOutcome target (.accepted value)) := by
   simp [DateTimeComputationRunView.applyTo,
-    DateTimeComputationRunView.actionTargets,
+    TemporalValueComputationRunView.applyTo,
+    TemporalValueComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromValueOutcomes,
     DateTimeComputationRunView.successfulInstance?,
     DateTimeComputationRunView.shouldClear,
     DateTimeTargetOutcome.hasComputedInstance,
@@ -97,8 +109,10 @@ theorem dateTimeComputationRun_cleared_applies
       [(target, .noValue)]).applyTo destination =
         .ok (destination.applyOutcome target .noValue) := by
   simp [DateTimeComputationRunView.applyTo,
-    DateTimeComputationRunView.actionTargets,
+    TemporalValueComputationRunView.applyTo,
+    TemporalValueComputationRunView.actionTargets,
     DateTimeComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromValueOutcomes,
     DateTimeComputationRunView.successfulInstance?,
     DateTimeComputationRunView.shouldClear,
     DateTimeTargetOutcome.hasComputedInstance, sourceFilled,

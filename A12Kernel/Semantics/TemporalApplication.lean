@@ -2,7 +2,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Temporal delta and exact one-target application
 
-This capsule shares only the source-placement mechanism whose meaning agrees for Date and DateTime. Stored text remains kind-indexed, and each target family retains its own outcome and delta domain. Application preserves exact text and absent versus present-empty placement without reparsing. Document traversal, missing-ancestor creation, repeatable addressing, scheduling, and multi-target application remain separate.
+This capsule shares only the source-placement mechanism whose meaning agrees for Time, Date, and DateTime. Stored text remains kind-indexed, and each target family retains its own outcome and delta domain. Application preserves exact text and absent versus present-empty placement without reparsing. Document traversal, missing-ancestor creation, repeatable addressing, scheduling, and multi-target application remain separate.
 -/
 
 namespace A12Kernel
@@ -82,6 +82,40 @@ def update (destination : TemporalComputationDestination Stored)
   fun field => if field == target then state else destination field
 
 end TemporalComputationDestination
+
+/-- Time-specific prior target value. -/
+abbrev PriorTimeTarget := PriorTemporalTarget StoredTime
+
+/-- Time has the shared value/clear delta domain. -/
+abbrev TimeDelta := TemporalValueDelta StoredTime
+
+/-- Exact state of one Time target cell. -/
+abbrev TimeTargetState := TemporalTargetState StoredTime
+
+namespace TimeTargetState
+
+/-- Recover the stored Time exactly when the target currently has a nonempty value. -/
+def storedValue : TimeTargetState → Option StoredTime :=
+  TemporalTargetState.storedValue
+
+end TimeTargetState
+
+namespace TimeTargetOutcome
+
+/-- Project one rich Time outcome relative to exact prior source placement. -/
+def projectDelta (outcome : TimeTargetOutcome)
+    (prior : PriorTimeTarget) : Option TimeDelta :=
+  match outcome with
+  | .accepted value => TemporalValueDelta.projectValue value prior
+  | .noValue | .poison _ => TemporalValueDelta.projectNoValue prior
+
+/-- Apply one Time outcome without reparsing its stored text. -/
+def applyTo : TimeTargetOutcome → TimeTargetState → TimeTargetState
+  | .accepted value, _ => .presentValue value
+  | .noValue, prior => prior.clearValue
+  | .poison _, prior => prior.clearValue
+
+end TimeTargetOutcome
 
 /-- Date-specific prior target value. -/
 abbrev PriorFullDateTarget := PriorTemporalTarget StoredDate

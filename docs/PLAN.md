@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 648 jobs · trust audit **1704 theorem roots; 38721 declarations in 370 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1706 theorem roots; 38773 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Carry the now source-closed exact `Time(...)` target outcome through rich source-relative result classification and exact application.
+Execute one checked nonrepeatable `Time(...)` component prefix through the exact Time target, result view, and application path.
 
 ## Immediate sequence
 
-1. Reuse the kind-indexed temporal stored text and source-placement vocabulary; do not reparse `HH:mm:ss` or invent a Time instant.
-2. Separate unchanged success, changed success, absent/present-empty/source-filled clearing, formal poison, residual-message status, duplicate action targets, and exact application order.
-3. Stop after nonrepeatable result/application closure; exclude wider temporal formats, recursive expressions, repeatable placement, scheduling, message construction, and unrelated Date/DateTime widening.
+1. Reuse `CheckedTimeComponents.evaluate` in generated Hour/Minute/Second order and the now-closed Time target/result/application stages; add no second component tree or clock representation.
+2. Certify that every admitted direct or shifted component dependency excludes the target before execution, then preserve reached formal short-circuiting and quiet incomplete/unreal/no-value behavior end to end.
+3. Stop after one nonrepeatable operation; exclude alternatives, computation tables, scheduling, repeatable placement, message construction, wider formats, and unrelated Date/DateTime widening.
 
 ## Parked boundaries
 

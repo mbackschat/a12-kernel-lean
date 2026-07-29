@@ -26,7 +26,8 @@ theorem dateTimeComputationRun_withChanges_subset
     computed ∈
       (DateTimeComputationRunView.fromOutcomes
         input messages outcomes).withoutErrors := by
-  simpa [DateTimeComputationRunView.fromOutcomes] using
+  simpa [DateTimeComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromValueOutcomes] using
     (List.mem_filter.mp member).1
 
 /-- The clear collection is precisely the source-filled, no-instance projection. -/
@@ -41,7 +42,8 @@ theorem dateTimeComputationRun_cleared_iff
       ∃ outcome, (field, outcome) ∈ outcomes ∧
         DateTimeComputationRunView.shouldClear
           input (field, outcome) = true := by
-  simp [DateTimeComputationRunView.fromOutcomes]
+  simp [DateTimeComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromValueOutcomes]
 
 /-- Result construction retains the supplied residual channel exactly. -/
 theorem dateTimeComputationRun_formalErrors_exact
@@ -79,7 +81,8 @@ theorem dateTimeComputationRun_fromOutcomes_permutation
         input secondMessages secondOutcomes) := by
   simp only [DateTimeComputationRunView.ExtensionalEq,
     TemporalComputationRunView.ExtensionalEq,
-    DateTimeComputationRunView.fromOutcomes]
+    DateTimeComputationRunView.fromOutcomes,
+    TemporalComputationRunView.fromValueOutcomes]
   exact ⟨
     outcomesPermutation.filterMap _,
     (outcomesPermutation.filterMap _).filter _,
