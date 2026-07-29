@@ -20,6 +20,25 @@ theorem timeTarget_evaluate_value
     target.evaluate (.value time) =
       .accepted (target.format.render time) := rfl
 
+/-- The checked computation certificate excludes its target from every supplied component dependency. -/
+theorem checkedTimeConstructionComputation_excludes_target
+    (operation : CheckedTimeConstructionComputation model) :
+    operation.components.referencesField
+      operation.target.checked.target.id = false :=
+  operation.targetNotReferenced
+
+/-- A real checked construction reaches exact target rendering without an intermediate instant. -/
+theorem checkedTimeConstructionComputation_evaluate_value
+    (operation : CheckedTimeConstructionComputation model)
+    (input : CheckedDocument model) (time : TimeOfDay)
+    (evaluated :
+      operation.evaluateConstruction input = .ok (.value time)) :
+    operation.evaluateOutcome input =
+      .ok (.accepted (operation.target.format.render time)) := by
+  simp [CheckedTimeConstructionComputation.evaluateOutcome, evaluated,
+    TimeConstructionResult.asTimeComputationResult,
+    CheckedTimeTarget.evaluate, Except.map]
+
 /-- Time has no target-local error branch, so only residual messages affect the public error predicate. -/
 theorem timeComputationRun_noErrorOccurred_iff
     (view : TimeComputationRunView ResidualMessage) :

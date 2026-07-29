@@ -62,6 +62,56 @@ private def destinationWith (state : TimeTargetState) :
     TimeComputationDestination :=
   fun field => if field == 1 then state else .absent
 
+private def componentField (id : FieldId) : FlatFieldDecl := {
+  id
+  groupPath := ["Order"]
+  name := s!"Component{id}"
+  policy := { kind := .number { scale := 0, signed := false } }
+  numericTargetConstraints := { maxStoredLength := some 2 } }
+
+private def executionModel : FlatModel := {
+  fields := [target, componentField 2, componentField 3, componentField 4]
+  timeZoneId := "UTC" }
+
+private def componentCell (field : FieldId) (stored : String)
+    (raw : RawCell) : ClassifiedCellInput := {
+  address := { field, path := [] }
+  stored
+  raw }
+
+private def executionSource
+    (components : List ClassifiedCellInput) : DocumentData := {
+  oldSource with cells := oldSource.cells ++ components }
+
+private def operation? (components : SurfaceTimeComponents) :
+    Option (CheckedTimeConstructionComputation executionModel) :=
+  (elaborateTimeConstructionComputation executionModel components 1).toOption
+
+private def operationError? (components : SurfaceTimeComponents) :
+    Option TimeConstructionComputationElabError :=
+  match elaborateTimeConstructionComputation executionModel components 1 with
+  | .error error => some error
+  | .ok _ => none
+
+private def executionView? (components : SurfaceTimeComponents)
+    (input : DocumentData) :
+    Option (TimeComputationRunView FormalCause) := do
+  let operation ← operation? components
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler executionModel).toOption
+  let checked ← (checkDocument prepared "en_US" input).toOption
+  operation.executeResult checked [] |>.toOption
+
+private def executionOutcome? (components : SurfaceTimeComponents)
+    (input : DocumentData) : Option TimeTargetOutcome := do
+  let operation ← operation? components
+  let prepared ←
+    (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler executionModel).toOption
+  let checked ← (checkDocument prepared "en_US" input).toOption
+  operation.evaluateOutcome checked |>.toOption
+
 /- Exact complete Time is admitted; component or format widening fails before execution. -/
 example :
     timeTargetError? (model) = none ∧
@@ -142,6 +192,61 @@ example :
         | .error error => some error
         | .ok _ => none)) =
         some (some (.duplicateActionTarget 1)) := by
+  native_decide
+
+/- A checked mixed prefix is admitted, while a matching extractor from the Time target is rejected before execution. -/
+example :
+    (operation? (.second
+      (.number 2) (.number 3) (.number 4))).isSome = true ∧
+      operationError? (.hour (.extractor .hour 1)) =
+        some (.targetSelfReference 1) := by
+  native_decide
+
+/- One checked component defaults the omitted suffix to zero and flows through source-relative result classification. -/
+example :
+    (executionView? (.hour (.number 2))
+      (executionSource [
+        componentCell 2 "05" (.parsed (.num 5))])).map
+      (fun view => (view.withoutErrors, view.withChanges)) =
+        some ([{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }],
+          [{ targetField := 1, value := ⟨"05:00:00", by decide⟩ }]) := by
+  native_decide
+
+/- The complete prefix reads in generated order; the first reached formal cause wins and clears a source-filled target without manufacturing an error. -/
+example :
+    executionOutcome? (.second
+      (.number 2) (.number 3) (.number 4))
+      (executionSource [
+        componentCell 2 "bad" (.rejected .malformed),
+        componentCell 3 "100" (.rejected .declaredConstraint)]) =
+        some (.poison .malformed) ∧
+      (executionView? (.second
+      (.number 2) (.number 3) (.number 4))
+      (executionSource [
+        componentCell 2 "bad" (.rejected .malformed),
+        componentCell 3 "100" (.rejected .declaredConstraint)])).map
+      (fun view => (view.cleared, view.withErrors, view.noErrorOccurred)) =
+        some ([1], [], true) := by
+  native_decide
+
+/- A fully present impossible clock is quiet no-value, while a valid complete clock reaches exact application. -/
+example :
+    (executionView? (.second
+      (.number 2) (.number 3) (.number 4))
+      (executionSource [
+        componentCell 2 "25" (.parsed (.num 25)),
+        componentCell 3 "00" (.parsed (.num 0)),
+        componentCell 4 "00" (.parsed (.num 0))])).map
+      (·.cleared) = some [1] ∧
+      (do
+        let view ← executionView? (.second
+          (.number 2) (.number 3) (.number 4))
+          (executionSource [
+            componentCell 2 "05" (.parsed (.num 5)),
+            componentCell 3 "02" (.parsed (.num 2)),
+            componentCell 4 "09" (.parsed (.num 9))])
+        let applied ← view.applyTo (destinationWith .absent) |>.toOption
+        pure (applied 1)) = some (.presentValue nextTime) := by
   native_decide
 
 end A12Kernel.Conformance.TimeComputation

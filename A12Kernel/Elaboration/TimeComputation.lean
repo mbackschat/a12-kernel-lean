@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.TemporalValueComputationApplication
 import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.ValueAsDateTimeComponents
 import A12Kernel.Semantics.TimeConstruction
 
 /-! # Checked `Time(...)` target execution
@@ -8,6 +9,48 @@ This capsule carries an already-resolved `Time(...)` result through one exact `H
 -/
 
 namespace A12Kernel
+
+/-- Static refusal before one checked component-backed Time computation can execute. -/
+inductive TimeConstructionComputationElabError where
+  | components (error : TimeComponentsElabError)
+  | target (error : TimeTargetElabError)
+  | targetSelfReference (field : FieldId)
+  deriving Repr, DecidableEq
+
+/-- One checked nonrepeatable Time component prefix and its distinct exact target. -/
+structure CheckedTimeConstructionComputation (model : FlatModel) where
+  components : CheckedTimeComponents model
+  target : CheckedTimeTarget model
+  targetNotReferenced :
+    components.referencesField target.checked.target.id = false
+
+/-- Pair an already-checked component prefix with its exact Time target and reject every direct or nested dependency on that target. -/
+def certifyTimeConstructionComputation
+    (model : FlatModel) (components : CheckedTimeComponents model)
+    (targetField : FieldId) :
+    Except TimeConstructionComputationElabError
+      (CheckedTimeConstructionComputation model) := do
+  let target ←
+    elaborateTimeTarget model targetField |>.mapError .target
+  if hReference :
+      components.referencesField target.checked.target.id = true then
+    throw (.targetSelfReference targetField)
+  else
+    pure {
+      components
+      target
+      targetNotReferenced := by simpa using hReference
+    }
+
+/-- Check one surface component prefix, then certify it against its exact Time target. -/
+def elaborateTimeConstructionComputation
+    (model : FlatModel) (components : SurfaceTimeComponents)
+    (targetField : FieldId) :
+    Except TimeConstructionComputationElabError
+      (CheckedTimeConstructionComputation model) := do
+  let checkedComponents ←
+    elaborateTimeComponents model components |>.mapError .components
+  certifyTimeConstructionComputation model checkedComponents targetField
 
 namespace TimeConstructionResult
 
@@ -29,6 +72,35 @@ def evaluate (target : CheckedTimeTarget model) :
   | .value time => .accepted (target.format.render time)
 
 end CheckedTimeTarget
+
+namespace CheckedTimeConstructionComputation
+
+/-- Evaluate the checked component prefix in generated computation-phase order. -/
+def evaluateConstruction
+    (operation : CheckedTimeConstructionComputation model)
+    (input : CheckedDocument model) :
+    Except TimeComponentsFault TimeConstructionResult :=
+  operation.components.evaluate .computation input
+
+/-- Carry the reason-bearing construction through the exact checked Time target. -/
+def evaluateOutcome
+    (operation : CheckedTimeConstructionComputation model)
+    (input : CheckedDocument model) :
+    Except TimeComponentsFault TimeTargetOutcome :=
+  operation.evaluateConstruction input |>.map fun result =>
+    operation.target.evaluate result.asTimeComputationResult
+
+/-- Execute and classify the one rich target outcome against the immutable source document. -/
+def executeResult
+    (operation : CheckedTimeConstructionComputation model)
+    (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except TimeComponentsFault (TimeComputationRunView ResidualMessage) := do
+  let outcome ← operation.evaluateOutcome input
+  pure (TimeComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.checked.target.id, outcome)])
+
+end CheckedTimeConstructionComputation
 
 /-- Exact caller-supplied Time destination. -/
 abbrev TimeComputationDestination :=

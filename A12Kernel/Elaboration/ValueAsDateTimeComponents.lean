@@ -406,6 +406,21 @@ end CheckedShiftedTimeExtractor
 
 namespace CheckedTimeComponent
 
+/-- Whether this exact checked component reads one field. Shifted extractors include their DateTime source and every checked direct-Number amount atom. -/
+def referencesField (checked : CheckedTimeComponent model)
+    (field : FieldId) : Bool :=
+  match checked with
+  | .number checked => checked.source.id == field
+  | .string checked => checked.source.id == field
+  | .extractor checked => checked.source.id == field
+  | .shiftedExtractor checked =>
+      checked.source.source.id == field ||
+        match checked.source.amount with
+        | .literal _ => false
+        | .field source _ => source.id == field
+        | .expression amount _ =>
+            amount.core.anyAtom (·.referencesField model field)
+
 /-- Execute exactly the statically selected component branch. -/
 def read (checked : CheckedTimeComponent model)
     (phase : Phase) (input : CheckedDocument model) :
@@ -452,6 +467,17 @@ def evaluateWith (checked : TimeComponentPrefix Component)
 end TimeComponentPrefix
 
 namespace CheckedTimeComponents
+
+/-- Whether any supplied component reads one field; omitted suffixes contribute no reference. -/
+def referencesField (checked : CheckedTimeComponents model)
+    (field : FieldId) : Bool :=
+  match checked with
+  | .hour hour => hour.referencesField field
+  | .minute hour minute =>
+      hour.referencesField field || minute.referencesField field
+  | .second hour minute second =>
+      hour.referencesField field || minute.referencesField field ||
+        second.referencesField field
 
 /-- Evaluate one document-only checked prefix. -/
 def evaluate (checked : CheckedTimeComponents model)

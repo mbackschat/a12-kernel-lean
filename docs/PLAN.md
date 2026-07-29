@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1706 theorem roots; 38773 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 649 jobs · trust audit **1708 theorem roots; 38869 declarations in 371 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Execute one checked nonrepeatable `Time(...)` component prefix through the exact Time target, result view, and application path.
+Complete the legal zero-through-three direct `Time(...)` arities with parser-checked quoted constants.
 
 ## Immediate sequence
 
-1. Reuse `CheckedTimeComponents.evaluate` in generated Hour/Minute/Second order and the now-closed Time target/result/application stages; add no second component tree or clock representation.
-2. Certify that every admitted direct or shifted component dependency excludes the target before execution, then preserve reached formal short-circuiting and quiet incomplete/unreal/no-value behavior end to end.
-3. Stop after one nonrepeatable operation; exclude alternatives, computation tables, scheduling, repeatable placement, message construction, wider formats, and unrelated Date/DateTime widening.
+1. Extend the existing component-prefix owner with the grammar's zero-argument form and exact checked constant branch; retain fixed omitted zeroes rather than representing them as missing inputs.
+2. Lock `Time() = 00:00:00`, one- and two-constant defaults, position-specific bounds, malformed constants, and the same target/result/application path without introducing another literal or clock type.
+3. Stop after direct nonrepeatable construction; exclude alternatives, computation tables, scheduling, repeatable placement, general recursive temporal operands, message construction, wider formats, and unrelated Date/DateTime widening.
 
 ## Parked boundaries
 
