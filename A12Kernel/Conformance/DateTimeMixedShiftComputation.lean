@@ -63,6 +63,11 @@ private def operation? (unit : DateTimeSubdayUnit)
   (elaborateDateTimeDayThenSubdayShiftComputation
     model source.id days unit subdays target.id).toOption
 
+private def dynamicOperation? (unit : DateTimeSubdayUnit)
+    (days subdays : CheckedTemporalShiftAmount model) :=
+  (elaborateNowDateTimeDayThenSubdayShiftComputation
+    model days unit subdays target.id).toOption
+
 private def destination : DateTimeComputationDestination :=
   fun _ => .absent
 
@@ -152,6 +157,88 @@ example :
     errorOf (elaborateDateTimeDayThenSubdayShiftComputation
       selfModel target.id (.literal 1) .hours (.literal 1) target.id) =
         some (.targetSelfReference target.id) := by
+  native_decide
+
+/- One dynamic carrier consumes each supplied world independently. All elapsed units
+   preserve the inner day landing, including Berlin gap and overlap identity. -/
+example : (do
+    let documentLabel ← LocalDateTime.ofYmdHms? 2024 6 1 0 0 0
+    let input ← input? documentLabel 0 none (.parsed (.num 1))
+      (.parsed (.num 1)) "old"
+    let evaluate (label : LocalDateTime) (ms : Int)
+        (unit : DateTimeSubdayUnit) (amount : Rat) := do
+      let instant ←
+        ModelZone.ConcreteProfile.europeBerlin.resolveLocal? label
+      let operation ← dynamicOperation? unit (.literal 1) (.literal amount)
+      let result ← operation.evaluateOperand
+        { now := { epochMillis := instant.epochMillis + ms } } input
+        |>.toOption
+      match result with
+      | .value exact => some exact.epochMillis
+      | _ => none
+    let ordinary ← LocalDateTime.ofYmdHms? 2024 6 15 23 30 0
+    let later ← LocalDateTime.ofYmdHms? 2024 6 16 23 30 0
+    let spring ← LocalDateTime.ofYmdHms? 2024 3 30 1 30 0
+    let autumn ← LocalDateTime.ofYmdHms? 2024 10 26 2 30 0
+    let ordinaryInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? ordinary
+    let operation ← dynamicOperation? .hours (.literal 1) (.literal 2)
+    let view ← operation.executeResult
+      { now := { epochMillis := ordinaryInstant.epochMillis + 777 } }
+      input ([] : List FormalCause) |>.toOption
+    let applied ← view.applyTo destination |>.toOption
+    let appliedText ← match applied target.id with
+      | .presentValue value => some value.text
+      | _ => none
+    pure ([
+      ← evaluate ordinary 777 .hours 2,
+      ← evaluate later 333 .hours 2,
+      ← evaluate ordinary 777 .minutes 120,
+      ← evaluate ordinary 777 .seconds 7200,
+      ← evaluate spring 333 .hours 1,
+      ← evaluate autumn 444 .hours 1],
+      view.withChanges.map (fun entry => entry.value.text), appliedText)) =
+    some ([
+      1718580600777, 1718667000333, 1718580600777,
+      1718580600777, 1711848600333, 1729992600444],
+      ["17.06.2024T01:30:00"], "17.06.2024T01:30:00") := by
+  native_decide
+
+/- Dynamic quiet failure in either amount clears a filled target; the two checked
+   amount positions retain their distinct formal causes. -/
+example : (do
+    let label ← LocalDateTime.ofYmdHms? 2024 6 15 10 30 0
+    let worldInstant ←
+      ModelZone.ConcreteProfile.europeBerlin.resolveLocal? label
+    let world : World := { now := worldInstant }
+    let clean ← input? label 0 none (.parsed (.num 1))
+      (.parsed (.num 1)) "filled"
+    let innerRejected ← input? label 0 none (.rejected .malformed)
+      (.parsed (.num 1)) "filled"
+    let outerRejected ← input? label 0 none (.parsed (.num 1))
+      (.rejected .declaredConstraint) "filled"
+    let domain ← domainAmount?
+    let dayField ←
+      (elaborateValueAsDateTimeFieldShiftAmount model dayAmount.id).toOption
+    let subdayField ←
+      (elaborateValueAsDateTimeFieldShiftAmount model subdayAmount.id).toOption
+    let innerEmpty ← dynamicOperation? .hours domain (.literal 1)
+    let outerEmpty ← dynamicOperation? .hours (.literal 1) domain
+    let innerPoison ← dynamicOperation? .hours dayField (.literal 1)
+    let outerPoison ← dynamicOperation? .hours (.literal 1) subdayField
+    let innerView ← innerEmpty.executeResult world clean
+      ([] : List FormalCause) |>.toOption
+    let outerView ← outerEmpty.executeResult world clean
+      ([] : List FormalCause) |>.toOption
+    let innerOutcome ←
+      innerPoison.evaluateOutcome world innerRejected |>.toOption
+    let outerOutcome ←
+      outerPoison.evaluateOutcome world outerRejected |>.toOption
+    pure (innerView.cleared, outerView.cleared,
+      innerView.noErrorOccurred && outerView.noErrorOccurred,
+      innerOutcome, outerOutcome)) =
+    some ([target.id], [target.id], true,
+      .poison .malformed, .poison .declaredConstraint) := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeMixedShiftComputation

@@ -49,4 +49,49 @@ theorem dateTimeDayThenSubdayShiftComputation_profiles_eq
       operation.target.profileMatches
   exact Option.some.inj selected
 
+/-- A dynamic mixed value transports this call's exact final instant to the target. -/
+theorem nowDateTimeDayThenSubdayShiftComputation_value
+    (operation : CheckedNowDateTimeDayThenSubdayShiftComputation model)
+    (world : World) (input : CheckedDocument model)
+    (localDateTime : LocalDateTime) (instant : Instant) (notGiven : Bool)
+    (shift :
+      operation.shift.evaluateThenSubday operation.nextUnit
+          operation.nextAmount .computation world input =
+        .ok (.value localDateTime instant notGiven)) :
+    operation.evaluateOutcome world input =
+      (operation.target.evaluate (.value instant)).mapError .target := by
+  simp [CheckedNowDateTimeDayThenSubdayShiftComputation.evaluateOutcome,
+    CheckedNowDateTimeDayThenSubdayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+
+/-- A reached dynamic amount cause remains target poison. -/
+theorem nowDateTimeDayThenSubdayShiftComputation_unavailable
+    (operation : CheckedNowDateTimeDayThenSubdayShiftComputation model)
+    (world : World) (input : CheckedDocument model) (cause : FormalCause)
+    (shift :
+      operation.shift.evaluateThenSubday operation.nextUnit
+          operation.nextAmount .computation world input =
+        .ok (.unavailable cause)) :
+    operation.evaluateOutcome world input = .ok (.poison cause) := by
+  unfold CheckedNowDateTimeDayThenSubdayShiftComputation.evaluateOutcome
+  simp only [
+    CheckedNowDateTimeDayThenSubdayShiftComputation.evaluateOperand, shift,
+    ValueAsDateTimeResult.asTemporalComputationResult]
+  change
+    Except.mapError DateTimeMixedShiftComputationFault.target
+      (.ok (.poison cause) :
+        Except DateTimeTargetEvaluationFault DateTimeTargetOutcome) =
+      .ok (.poison cause)
+  rfl
+
+/-- Dynamic day mutation and target rendering select one model-zone profile. -/
+theorem nowDateTimeDayThenSubdayShiftComputation_profiles_eq
+    (operation : CheckedNowDateTimeDayThenSubdayShiftComputation model) :
+    operation.shift.profile = operation.target.profile := by
+  have selected :
+      some operation.shift.profile = some operation.target.profile :=
+    operation.shift.profileMatches.symm.trans
+      operation.target.profileMatches
+  exact Option.some.inj selected
+
 end A12Kernel

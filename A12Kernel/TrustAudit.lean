@@ -1726,6 +1726,9 @@ run_cmd do
 #print axioms A12Kernel.dateTimeDayThenSubdayShiftComputation_value
 #print axioms A12Kernel.dateTimeDayThenSubdayShiftComputation_unavailable
 #print axioms A12Kernel.dateTimeDayThenSubdayShiftComputation_profiles_eq
+#print axioms A12Kernel.nowDateTimeDayThenSubdayShiftComputation_value
+#print axioms A12Kernel.nowDateTimeDayThenSubdayShiftComputation_unavailable
+#print axioms A12Kernel.nowDateTimeDayThenSubdayShiftComputation_profiles_eq
 #print axioms A12Kernel.dateTimeTwoDayShiftComputation_value
 #print axioms A12Kernel.dateTimeTwoDayShiftComputation_unavailable
 #print axioms A12Kernel.dateTimeTwoDayShiftComputation_profiles_eq

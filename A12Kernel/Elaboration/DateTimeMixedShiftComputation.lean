@@ -18,6 +18,13 @@ structure CheckedDateTimeDayThenSubdayShiftComputation (model : FlatModel) where
   target : CheckedDateTimeTarget model
   sourceDistinct : shift.source.id ≠ target.checked.target.id
 
+/-- One checked dynamic day-then-sub-day shift and declaration-owned target. -/
+structure CheckedNowDateTimeDayThenSubdayShiftComputation (model : FlatModel) where
+  shift : CheckedNowDateTimeDayShift model
+  nextUnit : DateTimeSubdayUnit
+  nextAmount : CheckedTemporalShiftAmount model
+  target : CheckedDateTimeTarget model
+
 /-- Check one bounded field-backed mixed shift and complete-DateTime target. -/
 def elaborateDateTimeDayThenSubdayShiftComputation
     (model : FlatModel) (sourceField : FieldId)
@@ -34,6 +41,19 @@ def elaborateDateTimeDayThenSubdayShiftComputation
     throw (.targetSelfReference targetField)
   else
     pure { shift, nextUnit, nextAmount, target, sourceDistinct := distinct }
+
+/-- Check one dynamic mixed shift and target without sampling the execution world. -/
+def elaborateNowDateTimeDayThenSubdayShiftComputation
+    (model : FlatModel) (dayAmount : CheckedTemporalShiftAmount model)
+    (nextUnit : DateTimeSubdayUnit)
+    (nextAmount : CheckedTemporalShiftAmount model)
+    (targetField : FieldId) :
+    Except DateTimeDayShiftComputationElabError
+      (CheckedNowDateTimeDayThenSubdayShiftComputation model) := do
+  let shift ←
+    elaborateNowDateTimeDayShift model dayAmount |>.mapError .shift
+  let target ← elaborateDateTimeTarget model targetField |>.mapError .target
+  pure { shift, nextUnit, nextAmount, target }
 
 /-- Structural execution failure outside the rich DateTime target outcome. -/
 inductive DateTimeMixedShiftComputationFault where
@@ -73,5 +93,39 @@ def executeResult (operation :
     [(operation.target.checked.target.id, outcome)])
 
 end CheckedDateTimeDayThenSubdayShiftComputation
+
+namespace CheckedNowDateTimeDayThenSubdayShiftComputation
+
+/-- Execute both operations from this call's world and retain the final instant. -/
+def evaluateOperand (operation :
+    CheckedNowDateTimeDayThenSubdayShiftComputation model)
+    (world : World) (input : CheckedDocument model) :
+    Except DateTimeMixedShiftComputationFault TemporalComputationResult :=
+  match operation.shift.evaluateThenSubday operation.nextUnit
+      operation.nextAmount .computation world input with
+  | .error error => .error (.shift error)
+  | .ok result => .ok result.asTemporalComputationResult
+
+/-- Execute the dynamic mixed shift through declaration-owned rendering. -/
+def evaluateOutcome (operation :
+    CheckedNowDateTimeDayThenSubdayShiftComputation model)
+    (world : World) (input : CheckedDocument model) :
+    Except DateTimeMixedShiftComputationFault DateTimeTargetOutcome :=
+  match operation.evaluateOperand world input with
+  | .error error => .error error
+  | .ok result => operation.target.evaluate result |>.mapError .target
+
+/-- Classify the rich dynamic outcome against the immutable source document. -/
+def executeResult (operation :
+    CheckedNowDateTimeDayThenSubdayShiftComputation model)
+    (world : World) (input : CheckedDocument model)
+    (residualMessages : List ResidualMessage) :
+    Except DateTimeMixedShiftComputationFault
+      (DateTimeComputationRunView ResidualMessage) := do
+  let outcome ← operation.evaluateOutcome world input
+  pure (DateTimeComputationRunView.fromOutcomes input residualMessages
+    [(operation.target.checked.target.id, outcome)])
+
+end CheckedNowDateTimeDayThenSubdayShiftComputation
 
 end A12Kernel
