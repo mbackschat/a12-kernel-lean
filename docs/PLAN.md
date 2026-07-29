@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 652 jobs · trust audit **1714 theorem roots; 39073 declarations in 373 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 652 jobs · trust audit **1717 theorem roots; 39184 declarations in 373 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Carry checked Boolean and Confirm values through the existing `NumberOfValueInFields` aggregate without re-reading stored text or introducing model token metadata.
+Carry the new direct Boolean/Confirm value-count source through checked numeric computation and generated validation without widening it to repeatable topology.
 
 ## Immediate sequence
 
-1. Inventory the existing typed value-count source, entity-list topology, scalar observations, and Kernel/a12-dmkits family matrix; distinguish shared tally behavior from Boolean/Confirm-specific static admission.
-2. Add red direct nonrepeatable cases for canonical Boolean `true`/`false`, Confirm `true`, empty, and formal-invalid cells, then reuse the existing ordered value-count fold and fixed scale-0 result.
-3. Stop at the smallest source-closed Boolean/Confirm entity-list shape; exclude repeatable placement, display-token rendering, declared `@NotInD` metadata, Number/String ingestion, unrelated aggregate widening, and protocol changes.
+1. Add a distinct Boolean value-count surface/checked atom to the existing numeric computation tree; keep String/Enumeration token count separate so the static family matrices cannot collapse.
+2. Lock scalar execution, exact field references and target self-reference, fixed scale 0, reached formal poison, and generated-validation delegation through the same checked source.
+3. Stop after direct nonrepeatable computation/validation integration; exclude starred Boolean/Confirm lists, display rendering, declared `@NotInD` metadata, unrelated aggregate widening, and protocol changes.
 
 ## Parked boundaries
 

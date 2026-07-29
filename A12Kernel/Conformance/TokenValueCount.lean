@@ -99,6 +99,82 @@ private def categoryStar : SurfaceTokenValueCountSource :=
   { first := .star (starPath "Kind") (.category "Band")
     rest := [] }
 
+private def booleanCountA : FlatFieldDecl :=
+  { id := 20
+    groupPath := ["Flags"]
+    name := "A"
+    policy := { kind := .boolean } }
+
+private def booleanCountB : FlatFieldDecl :=
+  { id := 21
+    groupPath := ["Flags"]
+    name := "B"
+    policy := { kind := .boolean } }
+
+private def confirmCount : FlatFieldDecl :=
+  { id := 22
+    groupPath := ["Flags"]
+    name := "Confirmed"
+    policy := { kind := .confirm } }
+
+private def numberCount : FlatFieldDecl :=
+  { id := 23
+    groupPath := ["Flags"]
+    name := "Amount"
+    policy := { kind := .number { scale := 0, signed := false } } }
+
+private def repeatedBooleanCount : FlatFieldDecl :=
+  { id := 24
+    groupPath := ["Flags", "Rows"]
+    name := "Selected"
+    policy := { kind := .boolean }
+    repeatableScope := [20] }
+
+private def booleanCountModel : FlatModel :=
+  { fields := [
+      booleanCountA, booleanCountB, confirmCount, numberCount,
+      repeatedBooleanCount]
+    repeatableGroups := [{
+      level := 20
+      path := ["Flags", "Rows"]
+      repeatability := some 3 }] }
+
+private def booleanCountPath (field : String) : SurfaceFieldPath :=
+  { base := .absolute, groups := ["Flags"], field }
+
+private def booleanCountSource (first second : String) :
+    SurfaceBooleanValueCountSource :=
+  { first := .field (booleanCountPath first)
+    rest := [.field (booleanCountPath second)] }
+
+private def booleanCountStar : SurfaceBooleanValueCountSource :=
+  { first := .star {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Selected" }
+    rest := [] }
+
+private def booleanCountError (expected : Bool)
+    (source : SurfaceBooleanValueCountSource) :
+    Option BooleanValueCountElabError :=
+  match elaborateBooleanValueCountSource booleanCountModel ["Flags"]
+      expected source with
+  | .ok _ => none
+  | .error error => some error
+
+private def evaluatedBooleanCount (expected : Bool)
+    (source : SurfaceBooleanValueCountSource)
+    (a b confirmed : RawCell) : Option NumericOperand :=
+  match elaborateBooleanValueCountSource booleanCountModel ["Flags"]
+      expected source with
+  | .error _ => none
+  | .ok checked =>
+      some (checked.evaluateAt .validation fun field =>
+        if field == booleanCountA.id then booleanCountA.checkRaw a
+        else if field == booleanCountB.id then booleanCountB.checkRaw b
+        else if field == confirmCount.id then confirmCount.checkRaw confirmed
+        else malformedCheckedCell)
+
 private def unknownCategorySource : SurfaceTokenValueCountSource :=
   { first := .field (.category (directPath "Priority") "Missing")
     rest := [
@@ -378,6 +454,47 @@ example :
       some (.value 2 .fixed) ∧
     sourceError "C" categoryStar =
       some (.literalOutsideEnumerationDomain repeatedEnumeration.path "C") := by
+  native_decide
+
+/- `True` admits a mixed Boolean/Confirm direct list, while `False` admits only Boolean fields and every other scalar kind fails statically. -/
+example :
+    booleanCountError true (booleanCountSource "A" "Confirmed") = none ∧
+      booleanCountError false (booleanCountSource "A" "B") = none ∧
+      booleanCountError false (booleanCountSource "A" "Confirmed") =
+        some (.fieldKindMismatch confirmCount.path false .confirm) ∧
+      booleanCountError true (booleanCountSource "A" "Amount") =
+        some (.fieldKindMismatch numberCount.path true .number) := by
+  native_decide
+
+/- The direct checked source derives canonical tokens from scalar values and delegates both constants to the established exact-token tally. -/
+example :
+    evaluatedBooleanCount true (booleanCountSource "A" "Confirmed")
+        (.parsed (.bool true)) .empty (.parsed (.conf true)) =
+      some (.value 2 .fixed) ∧
+    evaluatedBooleanCount false (booleanCountSource "A" "B")
+        (.parsed (.bool true)) (.parsed (.bool false)) .empty =
+      some (.value 1 .fixed) := by
+  native_decide
+
+/- Empty Confirm stays an unfilled cell rather than manufacturing the comparison-only false default; the count is zero and growable. -/
+example :
+    evaluatedBooleanCount true (booleanCountSource "A" "Confirmed")
+        .presentEmpty .empty .presentEmpty =
+      some (.value 0 .growOnly) := by
+  native_decide
+
+/- The first reached canonical token failure owns the aggregate result before a later matching Confirm. -/
+example :
+    evaluatedBooleanCount true (booleanCountSource "A" "Confirmed")
+        (classifyStoredBooleanText "TRUE") .empty
+        (classifyStoredConfirmText "true") =
+      some (.unknown .booleanToken) := by
+  native_decide
+
+/- This capsule is deliberately direct-only: the common list shape accepts one star, then the Boolean/Confirm family gate rejects it explicitly. -/
+example :
+    booleanCountError true booleanCountStar =
+      some (.repeatableUnsupported repeatedBooleanCount.path) := by
   native_decide
 
 end A12Kernel
