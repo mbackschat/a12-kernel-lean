@@ -20,6 +20,7 @@ import A12Kernel.Proofs.ModelZone
 import A12Kernel.Proofs.DateTimeComparison
 import A12Kernel.Proofs.DateTimeAggregate
 import A12Kernel.Proofs.DateTimeDifference
+import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
 import A12Kernel.Proofs.DateTimeDayDifference
 import A12Kernel.Proofs.DateShift
 import A12Kernel.Proofs.TimeComparison

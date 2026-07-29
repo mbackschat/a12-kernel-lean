@@ -23,6 +23,7 @@ import A12Kernel.Conformance.ModelZone
 import A12Kernel.Conformance.DateTimeComparison
 import A12Kernel.Conformance.DateTimeAggregate
 import A12Kernel.Conformance.DateTimeDifference
+import A12Kernel.Conformance.BerlinLegacyCalendarArithmetic
 import A12Kernel.Conformance.DateTimeDayDifference
 import A12Kernel.Conformance.DateShift
 import A12Kernel.Conformance.TimeComparison
