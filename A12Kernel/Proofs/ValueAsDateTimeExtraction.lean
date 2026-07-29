@@ -82,6 +82,15 @@ theorem checkedShiftedDateTimeSource_readTime_projects_evaluate
       (checked.evaluate phase input).map (·.asTimeOperand) := by
   rfl
 
+/-- The dynamic wall-clock extractor is exactly the projection of the whole shifted
+    `World.now`; it cannot replace that exact result for a DateTime target. -/
+theorem checkedShiftedNowDateTimeSource_readTime_projects_evaluate
+    (checked : CheckedShiftedNowDateTimeSource model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    checked.readTime phase world input =
+      (checked.evaluate phase world input).map (·.asTimeOperand) := by
+  rfl
+
 /-- Arithmetic domain failure remains a present-but-valueless Time operand; it is never reinterpreted as a zero shift. -/
 theorem valueAsDateTimeShiftAmount_notEvaluated
     (amount : CheckedTemporalShiftAmount model)

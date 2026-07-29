@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date and checked `TimeFromDateTime`
 
-This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal, ordinary Number field, or checked same-group arithmetic expression over ordinary Number fields. The shifted source may instead be the execution's explicit `World.now` with any amount form. A sub-day addition shifts the retained exact instant; the generated extractor then reads the shifted wall-clock components in the model zone and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, so the existing decoded `TimeOfDay` remains the exact semantic boundary.
+This capsule supplies the second operand of `DateTime(ValueAsDate(...), time)` from `TimeFromDateTime` over one ordinary nonrepeatable complete-DateTime field in the same validated model, either directly or after one `AddHours`, `AddMinutes`, or `AddSeconds` with an authored numeric literal, ordinary Number field, or checked same-group arithmetic expression over ordinary Number fields. The shifted source may instead be the execution's explicit `World.now` with any amount form. A sub-day addition retains the whole shifted exact instant and model-zone label; the generated extractor is a proved projection that reads only the shifted wall-clock components and re-anchors them at 1970-01-01. The outer DateTime constructor observes only those components, while whole-DateTime computation consumers retain the exact instant.
 
 Generated Date-before-Time evaluation remains explicit: a formal Date failure prevents the DateTime read, while cause-free Date non-relevance still reaches it. Within the nested shift, the DateTime source is evaluated before the amount. Numeric expressions reuse the existing one-pass lowering and arithmetic-fillability result: an empty amount can still supply a concrete omission-typed value, while domain-invalid arithmetic yields no DateTime value. Wider DateTime sources, non-Number numeric atoms, repeatable fields, concrete parsing, and a general temporal-expression tree remain separate.
 
@@ -352,12 +352,19 @@ structure CheckedShiftedNowDateTimeSource (model : FlatModel) where
 
 namespace CheckedShiftedNowDateTimeSource
 
+/-- Shift this execution's exact `World.now` while retaining the whole model-zone
+    DateTime label, exact instant, and numeric omission provenance. -/
+def evaluate (checked : CheckedShiftedNowDateTimeSource model)
+    (phase : Phase) (world : World) (input : CheckedDocument model) :
+    Except ValueAsDateTimeExtractionFault ValueAsDateTimeResult :=
+  checked.amount.readShiftedDateTime phase input
+    checked.profile checked.unit world.now
+
 /-- Shift this execution's exact instant before a consumer projects the whole Time or one component. -/
 def readTime (checked : CheckedShiftedNowDateTimeSource model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
     Except ValueAsDateTimeExtractionFault ValueAsDateTimeTimeOperand :=
-  checked.amount.readShiftedTime phase input
-    checked.profile checked.unit world.now
+  checked.evaluate phase world input |>.map (·.asTimeOperand)
 
 end CheckedShiftedNowDateTimeSource
 
