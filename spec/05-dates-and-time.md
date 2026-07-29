@@ -4,6 +4,8 @@ Dates carry more surprises than any other scalar type. The recurring theme: a da
 
 Empty-date behaviour (not-evaluated in comparisons; `0` in the extractors/differences; dropped/`no value` in aggregates) is in [§2](03-empty-and-required.md).
 
+Stored Date, Time, DateTime, and DateRange text is converted non-leniently against the field's declared format. A noncanonical spelling such as `2024-3-5` or `20240305` for a `yyyy-MM-dd` declaration, `14:5:0` for `HH:mm:ss`, or `1.1.2024-31.12.2024` for a fixed-width range does not normalize to a temporal value: conversion fails, the physical placement and exact text remain, and formal checking makes the cell not-check-relevant. Conversely, text that converts already has the model format, so stored temporal input has no Number-like canonicalization stage.
+
 ---
 
 ## 1. Constant format and the string/date literal ambiguity ⚠
@@ -284,6 +286,7 @@ The date **extractors** (`DayFromDate`, …) accept a DateTime operand and see i
 - [ ] `Date(...)` reality uses non-lenient legacy `GregorianCalendar` in the model zone: hybrid cutover and zone-skipped local dates matter; a zone-free proleptic replacement is not equivalent. Preserve both calendar identity and no-value reason through legal `DateTime`, extraction, shift, difference, and direct date `Min`/`Max` composition.
 - [ ] **Gregorian floor** at 1583-10-16 on *values* (stored → `datumFalsch`, computed → ERRORED), day-optional completes day first; **not** applied to the `Date(...)` constructor's reality test.
 - [ ] Dates stored/checked in the field's **declared format**.
+- [ ] Stored Date/Time/DateTime/DateRange conversion is non-lenient: noncanonical text remains physically present and becomes formally invalid rather than being normalized or dropped.
 - [ ] Time-zone admission follows the legacy recognized-id rule: absent ⇒ UTC; literal GMT or an id that does not collapse to GMT is legal; collapsed empty/unknown/typo ids draw `MVK_INVALID_TIME_ZONE`.
 - [ ] Zone resolution uses a versioned legacy `java.util.TimeZone` profile; the Berlin account is flat CET before 1916, uses the 62-transition table through 1997, then the recurring EU rule.
 - [ ] Sub-day differences and datetime comparison are instant-based; every historical gap draws `datumFormatFalsch`, every overlap selects the smaller/after offset, chained sub-day `Add*` keeps instant identity, and wall-day landings never overshoot the travel direction.

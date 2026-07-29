@@ -8,7 +8,10 @@ This module starts at the theory's established scalar-parser boundary. A finite 
 
 namespace A12Kernel
 
-/-- One physically placed field plus the parser-boundary classification of its stored text. An absent cell has no entry. -/
+/-- One physically placed field plus its parser-boundary classification. `stored` retains
+    application/identity text; `raw` must already reflect canonical Boolean/Confirm token
+    checking and the Number storage regime's selected formal-read text. Neither can be
+    reconstructed from the other. An absent cell has no entry. -/
 structure ClassifiedCellInput where
   address : CellAddr
   stored : String
