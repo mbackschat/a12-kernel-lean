@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 624 jobs · trust audit **1648 theorem roots; 37541 declarations in 356 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 627 jobs · trust audit **1651 theorem roots; 37663 declarations in 358 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Execute one checked nonrepeatable DateTime `AddDays` result through the existing declaration-owned DateTime target, rich outcome, public result view, and exact application path. Preserve exact instant, target rendering, source-relative change/clear behavior, and operand causes without widening the `Now`-only computation carrier into a temporal AST.
+Execute the direct field-backed DateTime `AddHours`/`AddMinutes`/`AddSeconds` family through the existing declaration-owned DateTime target, rich outcome, public result view, and exact application path. Preserve the shifted exact instant until rendering, source-relative change/clear behavior, numeric omission, and source-before-amount causes without reusing the wall-clock extraction result or widening the `Now`-only computation carrier into a temporal AST.
 
 ## Immediate sequence
 
-1. Inventory `CheckedDateTimeComputation`, `CheckedDateTimeTarget`, DateTime outcome classification/application, and the generated calculation target route; identify the smallest specialization that does not duplicate the settled `Now` path.
-2. Add one checked day-shift computation wrapper that delegates source execution and target evaluation to their existing owners; reuse the current run-view/application functions unchanged.
-3. Lock accepted exact text, source-relative change, clear on no-value, formal/poison separation, and a repeated-midnight instant whose target text distinguishes accidental re-resolution.
+1. Inventory `CheckedShiftedDateTimeSource`, the dynamic shifted-`Now` sibling, the target/result/application owners, and the generated sub-day calculation route; keep this unit field-backed unless the dynamic branch has the identical execution inputs and result domain.
+2. Add one whole-DateTime exact-instant evaluator for the existing checked source/unit/amount certificate, then one distinct-target computation specialization that delegates target execution and reuses the current run view/application unchanged.
+3. Lock all three units, cross-day carry, millisecond retention before whole-second rendering, source-before-amount cause order, source-relative action classification, self-reference rejection, and the overlap control showing why a wall-clock extraction is not a whole-DateTime result.
 
 ## Parked boundaries
 
