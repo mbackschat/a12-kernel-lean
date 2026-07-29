@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 630 jobs · trust audit **1657 theorem roots; 37911 declarations in 360 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 633 jobs · trust audit **1659 theorem roots; 37993 declarations in 362 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose one checked field-backed `AddHours`/`AddMinutes`/`AddSeconds` result with one direct DateTime in `DifferenceInHours`/`DifferenceInMinutes`/`DifferenceInSeconds`, in either authored operand position. Feed the retained exact shifted instant directly to the existing elapsed-difference core, preserve omission and first-reached formal cause, and add no temporal AST or generic evaluator.
+Compose one dynamic shifted-`Now` result with one direct DateTime in `DifferenceInHours`/`DifferenceInMinutes`/`DifferenceInSeconds`, in either authored operand position. Keep `World` explicit, feed the retained exact shifted instant into the landed elapsed-difference composition, preserve omission and first-reached formal cause, and do not merge the world-dependent carrier with the field-backed form.
 
 ## Immediate sequence
 
-1. Reuse `CheckedShiftedDateTimeSource`, `CheckedDateTimeSource`, and `DateTimeDifferenceOperand`; add only the bounded authored-position composition and its structural fault channel.
-2. Evaluate in generated authored order: a reached formal first operand stops before the second, while cause-free no-value still reaches it; retain shift omission on a concrete numeric result.
-3. Lock all three elapsed units, exact milliseconds, the Berlin repeated-hour instant separator, both authored positions, cause precedence, and arithmetic no-value; retain dynamic `Now`, calendar-day difference, targets, recursion beyond one shift, and repeatable placement as excluded controls.
+1. Reuse `CheckedShiftedNowDateTimeSource`, the landed exact-result projection/finish semantics, `CheckedDateTimeSource`, and `DateTimeDifferenceOperand`; add only the distinct world-dependent checked carrier.
+2. Evaluate in authored order from the world supplied to that call: a direct first-operand cause stops before the dynamic shift, while dynamic amount failure in first position stops before the direct operand.
+3. Lock two distinct worlds, all three elapsed units, millisecond truncation, Berlin repeated-hour identity, both authored positions, cause precedence, and arithmetic no-value; retain field-backed execution as an equivalence control and exclude calendar-day difference, targets, wider recursion, and repeatable placement.
 
 ## Parked boundaries
 

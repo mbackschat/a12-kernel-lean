@@ -50,11 +50,6 @@ def calendarDayDifferenceOperand :
   | .nonRelevant => .unsupportedCalendar
   | .unavailable cause => .unavailable cause
 
-/-- Omission carried by a value-producing or value-less DateTime shift. -/
-def shiftNotGiven : ValueAsDateTimeResult → Bool
-  | .noValue notGiven | .value _ _ notGiven => notGiven
-  | .nonRelevant | .unavailable _ => false
-
 end ValueAsDateTimeResult
 
 namespace CheckedDateTimeSource

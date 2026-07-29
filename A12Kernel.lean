@@ -83,6 +83,7 @@ import A12Kernel.Elaboration.ValueAsDateTimeField
 import A12Kernel.Elaboration.ValueAsDateTimeExtraction
 import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
 import A12Kernel.Elaboration.DateTimeDayShiftDifferenceEvaluation
+import A12Kernel.Elaboration.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
 import A12Kernel.Elaboration.DateTimeSubdayShiftComputation
 import A12Kernel.Elaboration.ValueAsDateTimeComponents
