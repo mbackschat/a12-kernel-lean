@@ -71,6 +71,7 @@ theorem checkedDateTimeDayShift_evaluateThen_inner_unavailable
       checked.evaluate phase input = .ok (.unavailable cause)) :
     checked.evaluateThen nextAmount phase input =
       .ok (.unavailable cause) := by
-  simp [CheckedDateTimeDayShift.evaluateThen, inner]
+  simp [CheckedDateTimeDayShift.evaluateThen, inner,
+    CheckedDateTimeDayShift.evaluateResult]
 
 end A12Kernel

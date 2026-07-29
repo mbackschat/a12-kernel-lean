@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 635 jobs · trust audit **1665 theorem roots; 38034 declarations in 362 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 638 jobs · trust audit **1667 theorem roots; 38109 declarations in 364 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,13 +21,13 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Compose one field-backed exact `AddHours`/`AddMinutes`/`AddSeconds` result into one checked DateTime `AddDays`. Feed the retained exact inner instant and decoded label directly into the calendar mutation, preserve elapsed-then-calendar order, milliseconds, omission, and generated inner-before-outer evaluation, and add no general temporal expression tree.
+Compose one dynamic shifted-`Now` result into one checked DateTime `AddDays`. Keep `World` explicit, feed the exact inner instant and decoded label directly into the landed calendar application, preserve elapsed-then-calendar order, milliseconds, omission, and generated inner-before-outer evaluation, and do not merge the dynamic carrier with field-backed execution.
 
 ## Immediate sequence
 
-1. Inventory [`DateTimeDayShiftEvaluation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftEvaluation.lean) and [`ValueAsDateTimeExtraction.lean`](../A12Kernel/Elaboration/ValueAsDateTimeExtraction.lean); reuse the existing exact-result and calendar-day amount application rather than introducing a third result carrier or duplicating source-offset landing.
-2. Add red cases for one field-backed sub-day shift followed by one `AddDays`: ordinary carry, a Berlin gap or overlap where re-resolution would change identity, exact milliseconds, outer formal-cause reachability after inner no-value, inner formal short-circuit, arithmetic no-value, and accumulated omission.
-3. Implement only the bounded continuation and payoff order laws. Keep dynamic `Now`, reverse calendar-then-elapsed composition, differences, targets, recursion beyond two operations, and repeatable placement outside this unit.
+1. Reuse the checked calendar-day reached-result step from [`DateTimeDayShiftEvaluation.lean`](../A12Kernel/Elaboration/DateTimeDayShiftEvaluation.lean) and the exact dynamic source from [`ValueAsDateTimeExtraction.lean`](../A12Kernel/Elaboration/ValueAsDateTimeExtraction.lean); add no second landing implementation or generic temporal carrier.
+2. Add red cases over two supplied worlds for dynamic elapsed-then-calendar composition: ordinary carry, the Berlin spring-gap and autumn-overlap source-offset separators, exact milliseconds, outer formal-cause reachability after inner no-value, inner formal short-circuit, arithmetic no-value, and accumulated omission.
+3. Implement only the bounded dynamic continuation and payoff order laws. Keep reverse calendar-then-elapsed composition, differences, targets, recursion beyond two operations, and repeatable placement outside this unit.
 
 ## Parked boundaries
 

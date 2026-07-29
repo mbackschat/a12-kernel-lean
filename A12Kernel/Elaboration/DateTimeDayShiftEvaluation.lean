@@ -9,7 +9,8 @@ the shared checked DateTime source and numeric amount boundary, but applies a ca
 `DAY_OF_MONTH` mutation rather than elapsed sub-day arithmetic. The source exact instant
 is decoded under the selected profile before the mutation, and the result retains the
 landing label, exact instant, milliseconds, and omission provenance. One such result can
-feed one further day shift without label reconstruction.
+feed one further day shift without label reconstruction. The reached-result step is also
+reused by the separate bounded elapsed-sub-day-then-calendar-day owner.
 
 DateTime `AddMonths` and `AddYears`, dynamic `Now`, wider recursion, other model zones,
 repeatable placement, and target storage remain outside.
@@ -139,6 +140,21 @@ def evaluate (checked : CheckedDateTimeDayShift model)
   } |>.mapError .document
   checked.evaluateCell phase input cell
 
+/-- Read and apply the next day amount to one already evaluated exact DateTime result.
+    A reached formal cause stops before this read; cause-free no-value still reaches it. -/
+def evaluateResult (checked : CheckedDateTimeDayShift model)
+    (source : ValueAsDateTimeResult)
+    (phase : Phase) (input : CheckedDocument model) :
+    Except DateTimeDayShiftFault ValueAsDateTimeResult :=
+  match source with
+  | .unavailable cause => .ok (.unavailable cause)
+  | source =>
+      match checked.amount.read phase input with
+      | .error error => .error (.document error)
+      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
+      | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
+      | .ok (.ok outcome) => checked.applyResultAmount source outcome
+
 /-- Feed one exact DateTime day result into a further generated `AddDays`. The inner
     operation runs before the outer amount; a formal inner result stops that read. -/
 def evaluateThen (checked : CheckedDateTimeDayShift model)
@@ -147,13 +163,11 @@ def evaluateThen (checked : CheckedDateTimeDayShift model)
     Except DateTimeDayShiftFault ValueAsDateTimeResult :=
   match checked.evaluate phase input with
   | .error error => .error error
-  | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok source =>
-      match nextAmount.read phase input with
-      | .error error => .error (.document error)
-      | .ok (.error (.formal cause)) => .ok (.unavailable cause)
-      | .ok (.error unavailable) => .error (.amountUnavailable unavailable)
-      | .ok (.ok outcome) => checked.applyResultAmount source outcome
+      CheckedDateTimeDayShift.evaluateResult
+        ({ checked with amount := nextAmount } :
+          CheckedDateTimeDayShift model)
+        source phase input
 
 end CheckedDateTimeDayShift
 
