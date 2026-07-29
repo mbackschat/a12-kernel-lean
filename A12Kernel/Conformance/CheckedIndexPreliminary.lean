@@ -512,9 +512,9 @@ private def clock : TimeOfDay :=
 /- Every legal scalar index kind uses the one duplicate relation: Number remains numeric, while all other kinds compare their exact stored token after formal admission. -/
 example :
     duplicatesFor { key with policy := { kind := .boolean } }
-      "Y" (.parsed (.bool true)) &&
+      "true" (.parsed (.bool true)) &&
     duplicatesFor { key with policy := { kind := .confirm } }
-      "Y" (.parsed (.conf true)) &&
+      "true" (.parsed (.conf true)) &&
     duplicatesFor {
         key with
         policy := { kind := .string }

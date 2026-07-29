@@ -57,6 +57,7 @@ import A12Kernel.Semantics.ValidationFillQuantifier
 import A12Kernel.Semantics.GroupPresence
 import A12Kernel.Semantics.RepetitionNotUnique
 import A12Kernel.Semantics.ScalarEquality
+import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.Enumeration
 import A12Kernel.Semantics.CheckedEnumeration
 import A12Kernel.Semantics.EnumerationValueList

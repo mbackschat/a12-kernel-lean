@@ -1760,3 +1760,6 @@ run_cmd do
 #print axioms A12Kernel.shiftedNowDateTimeComputation_profiles_eq
 #print axioms A12Kernel.checkedWorldTimeConstructionComputation_excludes_target
 #print axioms A12Kernel.checkedWorldTimeConstructionComputation_evaluate_value
+#print axioms A12Kernel.classifiedStoredBoolean_rejection_observes_unknown
+#print axioms A12Kernel.classifiedStoredConfirm_rejection_observes_poison
+#print axioms A12Kernel.classifyStoredConfirmText_ne_false

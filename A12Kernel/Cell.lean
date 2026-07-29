@@ -21,6 +21,8 @@ structure RegisteredCustomRejection where
 /-- Why a checked cell is unavailable. The ordinary constructors are formal-invalidity sources routed through `formalCheck`; `computedDependency` is the cause-blind transient marker placed only in a computation overlay after an earlier computed target became invalid. -/
 inductive FormalCause where
   | malformed                -- not well-formed for the field's type (bad date/number/…)
+  | booleanToken             -- stored Boolean token outside exact lowercase `true` / `false`
+  | confirmToken             -- stored Confirm token outside exact lowercase `true`
   | declaredConstraint       -- pattern / length / range / scale violation
   | unsupportedCharacter     -- outside the legal charset (default BMP)
   | leadingOrTrailingSpace

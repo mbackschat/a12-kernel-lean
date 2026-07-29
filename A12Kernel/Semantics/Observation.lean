@@ -5,10 +5,10 @@ import A12Kernel.Semantics.String
 
 The first executable semantics capsule begins at the scalar-parser boundary: input is
 already classified as absent, successfully parsed, or rejected with a formal cause.
-Text-to-scalar parsing is a separate later layer. In particular, the preceding boundary
-must classify canonical lowercase Boolean/Confirm tokens without consulting `@NotInD`
-display-token declarations, and must select stored-Number formal-read text by storage
-regime. Both decisions precede `.parsed`; this module cannot recover either from `Value`.
+Text-to-scalar parsing is a separate layer. `ScalarText` now owns canonical lowercase
+Boolean/Confirm classification without consulting `@NotInD` display-token declarations;
+stored-Number formal-read text by storage regime remains open. Both decisions precede
+`.parsed`; this module cannot recover either from `Value`.
 This keeps the validation semantics independent from concrete syntax while preserving
 every distinction needed by `spec/02` §3 and `spec/03` §2/§4.
 -/
@@ -38,6 +38,8 @@ structure FieldPolicy where
     here and enter only through their later model/document passes. -/
 inductive BaseFormalCause where
   | malformed
+  | booleanToken
+  | confirmToken
   | declaredConstraint
   | unsupportedCharacter
   | leadingOrTrailingSpace
@@ -47,6 +49,8 @@ inductive BaseFormalCause where
 
 def BaseFormalCause.toFormalCause : BaseFormalCause → FormalCause
   | .malformed => .malformed
+  | .booleanToken => .booleanToken
+  | .confirmToken => .confirmToken
   | .declaredConstraint => .declaredConstraint
   | .unsupportedCharacter => .unsupportedCharacter
   | .leadingOrTrailingSpace => .leadingOrTrailingSpace

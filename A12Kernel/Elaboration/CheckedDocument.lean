@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.StarAddressing
 
 /-! # Immutable model-certified checked documents
@@ -171,6 +172,12 @@ private def ClassifiedCellInput.coherent (input : ClassifiedCellInput) : Bool :=
     | .parsed _ | .rejected _ => true
     | .empty | .presentEmpty => false
 
+private def ClassifiedCellInput.canonicalScalarCoherent
+    (input : ClassifiedCellInput) : FieldKind → Bool
+  | .boolean => input.raw == classifyStoredBooleanText input.stored
+  | .confirm => input.raw == classifyStoredConfirmText input.stored
+  | _ => true
+
 private def checkPlacedCell
     (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (rows : List RowAddr)
@@ -178,6 +185,8 @@ private def checkPlacedCell
     Except CheckedDocumentError CheckedCellPlacement := do
   if !input.coherent then throw (.incoherentCell input.address)
   let declaration ← validateCellAddress model rows input.address
+  if !input.canonicalScalarCoherent declaration.policy.kind then
+    throw (.incoherentCell input.address)
   if input.numericSourceIdentity.isSome &&
       !(match declaration.policy.kind with | .number _ => true | _ => false) then
     throw (.incoherentCell input.address)
