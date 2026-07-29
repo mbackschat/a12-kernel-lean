@@ -50,17 +50,21 @@ theorem checkedTokenValueCount_partialHaving_skips
   simp [CheckedTokenValueCountSource.evaluatePartialValidation, filtered]
   rfl
 
-/-- A checked `False` count contains only Boolean declarations; Confirm is admitted only by `True`. -/
+/-- Every operand admitted by a checked `False` count owns a Boolean declaration; Confirm is admitted only by `True`. -/
 theorem checkedBooleanValueCount_false_fields_boolean
-    (checked : CheckedBooleanValueCountSource model)
-    (falseExpected : checked.expected = false)
-    (field : FlatFieldDecl) (member : field ∈ checked.fields) :
-    field.policy.kind = .boolean := by
-  have allowed :=
-    List.all_eq_true.mp checked.fieldKindsAllowed field member
-  rw [falseExpected] at allowed
-  cases kind : field.policy.kind <;>
-    simp [booleanValueCountKindAllowed, kind] at allowed ⊢
+    (operand : CheckedBooleanValueCountOperand model false) :
+    operand.declaration.policy.kind = .boolean := by
+  cases operand with
+  | field source =>
+      have allowed := source.kindAllowed
+      cases kind : source.declaration.policy.kind <;>
+        simp [booleanValueCountKindAllowed, kind] at allowed
+      simpa [CheckedBooleanValueCountOperand.declaration] using kind
+  | star source =>
+      have allowed := source.kindAllowed
+      cases kind : source.source.declaration.policy.kind <;>
+        simp [booleanValueCountKindAllowed, kind] at allowed
+      simpa [CheckedBooleanValueCountOperand.declaration] using kind
 
 /-- Boolean/Confirm value count retains the fixed integral result scale of the shared tally. -/
 theorem checkedBooleanValueCount_scaleSummary

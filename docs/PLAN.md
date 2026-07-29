@@ -6,7 +6,7 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Verified baseline
 
-**Last full gate, 2026-07-29:** `lake build` 654 jobs · trust audit **1720 theorem roots; 39237 declarations in 374 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
+**Last full gate, 2026-07-29:** `lake build` 654 jobs · trust audit **1720 theorem roots; 39333 declarations in 374 modules** · `lake test` 51/51. Re-run the applicable tier commands in [`TESTING.md`](TESTING.md#tier-gates) before relying on these changing counts.
 
 - SG1 is closed at one immutable model-certified `CheckedDocument`; processing context remains separate.
 - SG2 is closed. Canonical topology, complete named `Env`, checked addressed reads, hierarchical omitted tails, exact stored payload, filter/relevance provenance, structural failure, and relevance-derived partial group products compose across Number, String, Enumeration, aggregate, value-list, temporal, group-presence, and nested RNU consumers.
@@ -21,14 +21,14 @@ This is the resumption checkpoint, not a work log. Detailed coverage belongs in 
 
 ## Active semantic unit
 
-Admit repeatable Boolean/Confirm value-count entity lists through the existing checked star topology without changing the fixed `True`/`False` family matrix.
+Admit Number formal-read checking without collapsing decimal-valued and String-valued storage regimes or replacing exact decimal source identity.
 
 ## Immediate sequence
 
-1. Extend the Boolean/Confirm source itself with plain-star and filtered-star operands while retaining direct fields and the existing common shape diagnostics.
-2. Reuse checked document addressing, correlation, and the exact-token count fold; lock uninstantiated tails, per-slot `Having`, first reached formal poison, and the `False` rejection of every Confirm source.
-3. Carry the complete source through addressed numeric computation and generated validation, while scalar run plans reject it explicitly.
-4. Exclude display rendering, declared `@NotInD` metadata, unrelated aggregate widening, new topology, and protocol changes.
+1. Inventory the stored Number carrier, raw/checking boundary, every current scalar read, and the source-locked `ValidationData.getValue` / `FormatDefinitionZahl.convertFromBasicType` mechanism before choosing a representation change.
+2. Separate decimal-valued input from String-valued input at the checked-document boundary: decimal values derive strip-and-minimum-scale formal-read text, while String values remain byte-for-byte verbatim.
+3. Preserve exact decimal coefficient/scale identity independently of the selected formal-read text, then route every existing Number evaluation consumer through that checked selection.
+4. Lock length constraints and `FieldValueAsString` as independent separators; exclude host wire codecs, computed-target rendering, semantic-index normalization, and any new ingestion framework.
 
 ## Parked boundaries
 

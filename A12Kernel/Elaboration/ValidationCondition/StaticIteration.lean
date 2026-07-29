@@ -141,6 +141,25 @@ private def checkedTokenSourceIterationScope
   mergeIterationScopeList
     (← source.operands.mapM checkedTokenOperandIterationScope)
 
+private def checkedBooleanValueCountOperandIterationScope :
+    CheckedBooleanValueCountOperand model expected →
+      Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .field _ => pure none
+  | .star source =>
+      match source.filter with
+      | none => pure (checkedStarBindingScope source.source)
+      | some filter => do
+          mergeIterationScopes
+            (checkedStarBindingScope source.source)
+            (← checkedHavingOuterIterationScope filter)
+
+private def checkedBooleanValueCountSourceIterationScope
+    (source : CheckedBooleanValueCountSource model) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) := do
+  mergeIterationScopeList
+    (← source.operands.mapM
+      checkedBooleanValueCountOperandIterationScope)
+
 private def temporalDifferenceOperandDeclarations?
     (model : FlatModel) (accepts : FlatTemporalField → Bool) :
     ResolvedDateDifferenceOperand → Option (List FlatFieldDecl)
@@ -250,7 +269,8 @@ private def orderedNumericAtomIterationScope :
       checkedNumberSourceIterationScope source
   | .tokenValueCount source =>
       checkedTokenSourceIterationScope source.source
-  | .booleanValueCount _ => pure none
+  | .booleanValueCount source =>
+      checkedBooleanValueCountSourceIterationScope source
   | .sumOfProducts source =>
       mergeIterationScopes
         (checkedStarBindingScope source.left.source)

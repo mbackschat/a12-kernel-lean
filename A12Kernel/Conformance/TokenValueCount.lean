@@ -130,10 +130,24 @@ private def repeatedBooleanCount : FlatFieldDecl :=
     policy := { kind := .boolean }
     repeatableScope := [20] }
 
+private def repeatedConfirmCount : FlatFieldDecl :=
+  { id := 25
+    groupPath := ["Flags", "Rows"]
+    name := "Confirmed"
+    policy := { kind := .confirm }
+    repeatableScope := [20] }
+
+private def repeatedBooleanGuard : FlatFieldDecl :=
+  { id := 26
+    groupPath := ["Flags", "Rows"]
+    name := "Guard"
+    policy := { kind := .number { scale := 0, signed := false } }
+    repeatableScope := [20] }
+
 private def booleanCountModel : FlatModel :=
   { fields := [
       booleanCountA, booleanCountB, confirmCount, numberCount,
-      repeatedBooleanCount]
+      repeatedBooleanCount, repeatedConfirmCount, repeatedBooleanGuard]
     repeatableGroups := [{
       level := 20
       path := ["Flags", "Rows"]
@@ -154,6 +168,31 @@ private def booleanCountStar : SurfaceBooleanValueCountSource :=
       field := "Selected" }
     rest := [] }
 
+private def booleanCountConfirmStar : SurfaceBooleanValueCountSource :=
+  { first := .star {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Confirmed" }
+    rest := [] }
+
+private def booleanCountStarHaving : SurfaceBooleanValueCountSource :=
+  { first := .starHaving {
+      base := .absolute
+      groups := [{ name := "Flags" }, { name := "Rows", starred := true }]
+      field := "Selected" }
+      (.compareNumbers .equal
+        { origin := .inner
+          field := {
+            base := .absolute
+            groups := ["Flags", "Rows"]
+            field := "Guard" } }
+        { origin := .inner
+          field := {
+            base := .absolute
+            groups := ["Flags", "Rows"]
+            field := "Guard" } })
+    rest := [] }
+
 private def booleanCountError (expected : Bool)
     (source : SurfaceBooleanValueCountSource) :
     Option BooleanValueCountElabError :=
@@ -169,11 +208,43 @@ private def evaluatedBooleanCount (expected : Bool)
       expected source with
   | .error _ => none
   | .ok checked =>
-      some (checked.evaluateAt .validation fun field =>
+      checked.evaluateDirectAt? .validation fun field =>
         if field == booleanCountA.id then booleanCountA.checkRaw a
         else if field == booleanCountB.id then booleanCountB.checkRaw b
         else if field == confirmCount.id then confirmCount.checkRaw confirmed
-        else malformedCheckedCell)
+        else malformedCheckedCell
+
+private def booleanCountDocument (rows : List RowIndex) : Document :=
+  { instantiatedRows := rows.map fun row => { group := 20, path := [row] }
+    rawCells := fun _ => none }
+
+private def evaluatedBooleanStarCount
+    (authored : SurfaceBooleanValueCountSource)
+    (rows : List RowIndex)
+    (first second : RawCell) (firstGuard secondGuard : RawCell)
+    (computation : Bool := false) :
+    Option NumericOperand := do
+  let checked ←
+    (elaborateBooleanValueCountSource booleanCountModel ["Flags"]
+      true authored).toOption
+  let read := fun (environment : Env) (field : FieldId) =>
+    let raw := match environment with
+      | [(20, 1)] =>
+          if field == repeatedBooleanGuard.id then firstGuard else first
+      | [(20, 2)] =>
+          if field == repeatedBooleanGuard.id then secondGuard else second
+      | _ => .empty
+    match booleanCountModel.lookupUniqueId field with
+    | .ok declaration => declaration.checkRaw raw
+    | .error _ => malformedCheckedCell
+  let result :=
+    if computation then
+      checked.evaluateComputation (booleanCountDocument rows) []
+        (fun _ => malformedCheckedCell) read read
+    else
+      checked.evaluateValidation (booleanCountDocument rows) []
+        (fun _ => malformedCheckedCell) read
+  result.toOption
 
 private def unknownCategorySource : SurfaceTokenValueCountSource :=
   { first := .field (.category (directPath "Priority") "Missing")
@@ -491,10 +562,27 @@ example :
       some (.unknown .booleanToken) := by
   native_decide
 
-/- This capsule is deliberately direct-only: the common list shape accepts one star, then the Boolean/Confirm family gate rejects it explicitly. -/
+/- Repeatable Boolean uses the common star topology, while `False` still rejects Confirm at the family gate. -/
 example :
-    booleanCountError true booleanCountStar =
-      some (.repeatableUnsupported repeatedBooleanCount.path) := by
+    booleanCountError true booleanCountStar = none ∧
+      booleanCountError false booleanCountConfirmStar =
+        some (.fieldKindMismatch repeatedConfirmCount.path false .confirm) := by
+  native_decide
+
+/- Omitted tail and per-slot `Having` provenance survive the canonical token count; reached filter poison suppresses the tally. -/
+example :
+    evaluatedBooleanStarCount booleanCountStar [1, 2]
+        (.parsed (.bool true)) (.parsed (.bool false))
+        (.parsed (.num 1)) (.parsed (.num 1)) =
+      some (.value 1 .growOnly) ∧
+    evaluatedBooleanStarCount booleanCountStarHaving [1, 2]
+        (.parsed (.bool true)) (.parsed (.bool false))
+        (.parsed (.num 1)) (.parsed (.num 1)) =
+      some (.value 1 .both) ∧
+    evaluatedBooleanStarCount booleanCountStarHaving [1, 2]
+        (.parsed (.bool true)) (.parsed (.bool false))
+        (.rejected .malformed) (.parsed (.num 1)) true =
+      some (.unknown .malformed) := by
   native_decide
 
 end A12Kernel

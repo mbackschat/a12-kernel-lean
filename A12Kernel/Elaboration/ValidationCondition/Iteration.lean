@@ -198,6 +198,17 @@ private def tokenEntityReferenceScopes?
     Option (List (List RepeatableLevel)) :=
   source.operands.mapM tokenEntityOperandReferenceScope?
 
+private def booleanValueCountOperandReferenceScope? :
+    CheckedBooleanValueCountOperand model expected →
+      Option (List RepeatableLevel)
+  | .field _ => some []
+  | .star source => checkedStarBindingScope source.source
+
+private def booleanValueCountReferenceScopes?
+    (source : CheckedBooleanValueCountSource model) :
+    Option (List (List RepeatableLevel)) :=
+  source.operands.mapM booleanValueCountOperandReferenceScope?
+
 private def productReferenceScopes?
     (source : CheckedNumericProductAggregate model) :
     Option (List (List RepeatableLevel)) := do
@@ -227,7 +238,9 @@ private def numericEntityGuardShape? :
       (productReferenceScopes? source).map (⟨·, true, false⟩)
   | .tokenValueCount source =>
       (tokenEntityReferenceScopes? source.source).map (⟨·, true, true⟩)
-  | .ordinary _ | .booleanValueCount _ => none
+  | .booleanValueCount source =>
+      (booleanValueCountReferenceScopes? source).map (⟨·, true, true⟩)
+  | .ordinary _ => none
 
 private def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool

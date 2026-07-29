@@ -155,11 +155,15 @@ def resolve (atom : OrderedNumericValidationAtom model)
           .error .nonRelevant
       | none => .error .groupState
   | .booleanValueCount source =>
-      if source.fields.all fun field => isRelevant field.id then
-        source.evaluateAt .validation
-          context.fields.read |>.toValidationArithmetic
-      else
-        .error .nonRelevant
+      match source.directFields? with
+      | some fields =>
+          if fields.all fun field => isRelevant field.id then
+            match source.evaluateDirectAt? .validation context.fields.read with
+            | some result => result.toValidationArithmetic
+            | none => .error .groupState
+          else
+            .error .nonRelevant
+      | none => .error .groupState
   | .aggregate _ _ | .sumOfProducts _ => .error .groupState
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
@@ -244,8 +248,15 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
           (source.evaluateCheckedDocumentValidation
             document context.outer).map NumericOperand.toValidationArithmetic
   | .booleanValueCount source =>
-      pure (source.evaluateAt .validation
-        context.scalar.fields.read).toValidationArithmetic
+      match context.input with
+      | .legacy document read => do
+          let result ←
+            (source.evaluateValidation document context.outer
+              context.scalar.fields.read read).mapError .addressing
+          pure result.toValidationArithmetic
+      | .checked document =>
+          (source.evaluateCheckedDocumentValidation
+            document context.outer).map NumericOperand.toValidationArithmetic
   | .aggregate op source =>
       let result ← match context.input with
         | .legacy document read =>

@@ -100,7 +100,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .firstFilled source => source.directResolvedFields?.isNone
   | .valueCount _ source => source.directResolvedFields?.isNone
   | .tokenValueCount source => source.source.directFields?.isNone
-  | .booleanValueCount _ => false
+  | .booleanValueCount source => source.directFields?.isNone
   | .aggregate _ _ | .sumOfProducts _ => true
 
 def admitted (atom : OrderedNumericValidationAtom model)
@@ -117,10 +117,13 @@ def admitted (atom : OrderedNumericValidationAtom model)
   | .booleanValueCount source =>
       match scope with
       | .sameGroup =>
-          source.fields.all fun field =>
-            field.groupPath == rowGroup
-      | .sameGroupAddressed => false
-      | .modelWideNonrepeatable | .modelWideCheckedComputation => true
+          match source.directFields? with
+          | some fields =>
+              fields.all fun field => field.groupPath == rowGroup
+          | none => false
+      | .sameGroupAddressed => source.directFields?.isNone
+      | .modelWideNonrepeatable => source.directFields?.isSome
+      | .modelWideCheckedComputation => true
   | .aggregate _ source =>
       (scope == .modelWideCheckedComputation ||
         scope == .sameGroupAddressed) &&
@@ -146,7 +149,8 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       source.hasHaving
   | .tokenValueCount source => source.source.hasHaving
-  | .ordinary _ | .booleanValueCount _ | .sumOfProducts _ => false
+  | .booleanValueCount source => source.hasHaving
+  | .ordinary _ | .sumOfProducts _ => false
 
 end OrderedNumericValidationAtom
 

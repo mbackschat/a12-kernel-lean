@@ -16,7 +16,7 @@ def supportsScalarEvaluation :
   | .firstFilled source | .valueCount _ source =>
       source.directFields?.isSome
   | .tokenValueCount source => source.source.directFields?.isSome
-  | .booleanValueCount _ => true
+  | .booleanValueCount source => source.directFields?.isSome
   | .sumOfProducts _ => false
   | .numeric (.aggregate _ source) => source.directAggregateFields?.isSome
   | .numeric (.filledGroupCount _) => false
