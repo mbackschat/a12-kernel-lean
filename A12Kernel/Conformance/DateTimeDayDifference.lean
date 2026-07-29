@@ -46,6 +46,14 @@ example :
       some 369 := by
   native_decide
 
+/- A long spring-gap span makes the completed-year qualifier observable: compute-time year resolution rejects the final whole-year candidate, and the lower seed's residual scan stops one day before the direction-selected account. -/
+example :
+    EuropeBerlinLegacyProfile.differenceInDays?
+        (dateTime 2003 3 31 2 30 0 (by native_decide))
+        (dateTime 2024 3 31 3 0 0 (by native_decide)) =
+      some 7670 := by
+  native_decide
+
 /- Calendar field mutation preserves the source millisecond. The exact endpoint at the same whole-second label is therefore still too early for one complete day. -/
 example :
     (do
