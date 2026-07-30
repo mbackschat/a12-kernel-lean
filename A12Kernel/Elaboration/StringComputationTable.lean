@@ -99,11 +99,15 @@ def certifyStringComputationTable
 
 namespace CheckedStringComputationTable
 
+/-- The checked alternatives in their authored encounter order. -/
+def selectableAlternatives (table : CheckedStringComputationTable model) :
+    List (CheckedStringComputationAlternative model table.targetField) :=
+  table.first :: table.remaining
+
 /-- Erase only model certificates, retaining target, policy, guard order, and expression trees exactly. Prior target state is supplied by the later result-projection boundary. -/
 def toResolved (table : CheckedStringComputationTable model) (prior : PriorStringTarget) : StringAlternativeComputation where
   targetField := table.targetField
-  alternatives :=
-    table.first.toResolved :: table.remaining.map (·.toResolved)
+  alternatives := table.selectableAlternatives.map (·.toResolved)
   targetPolicy := table.targetPolicy
   prior
 

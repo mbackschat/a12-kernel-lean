@@ -127,6 +127,7 @@ import A12Kernel.Proofs.StringAlternatives
 import A12Kernel.Proofs.StringComputation
 import A12Kernel.Proofs.StringComputationElaboration
 import A12Kernel.Proofs.StringComputationTable
+import A12Kernel.Proofs.StringComputationRunPlan
 import A12Kernel.Proofs.StringComputationRun
 import A12Kernel.Proofs.StringComputationRunRelation
 import A12Kernel.Proofs.StringComputationRunResult

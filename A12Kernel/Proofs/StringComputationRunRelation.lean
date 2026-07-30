@@ -15,8 +15,7 @@ theorem checkedStringComputationTable_excludes_target
     table.referencesField table.targetField = false := by
   simp only [CheckedStringComputationTable.referencesField,
     CheckedStringComputationAlternative.referencesField,
-    table.first.guardExcludesTarget, table.first.expressionExcludesTarget,
-    Bool.false_or, List.any_eq_false]
+    List.any_eq_false]
   intro alternative member
   simp [alternative.guardExcludesTarget, alternative.expressionExcludesTarget]
 

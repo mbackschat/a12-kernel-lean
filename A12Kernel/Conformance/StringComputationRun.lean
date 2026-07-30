@@ -60,7 +60,7 @@ private def table? (alternatives : List
 private def holding : ComputationCondition := .fieldNotFilled gate.id
 
 private inductive FixtureOperation
-  | producerCopySource | producerValue | producerError | producerPoison
+  | producerCopySource | producerValue | producerFallback | producerError | producerPoison
   | consumerCopy | consumerWrong | consumerFallback | consumerSafe
   | consumerNumberText | consumerNumberConcat
 
@@ -69,6 +69,7 @@ private def FixtureOperation.checked :
   | .producerCopySource =>
       (operation? producer.id (.field (bare "Source"))).get (by native_decide)
   | .producerValue => (operation? producer.id (.literal "NEW")).get (by native_decide)
+  | .producerFallback => (operation? producer.id (.literal "ALT")).get (by native_decide)
   | .producerError => (operation? producer.id (.literal "LONG")).get (by native_decide)
   | .producerPoison => (operation? producer.id (.field (bare "Bad"))).get (by native_decide)
   | .consumerCopy => (operation? consumer.id (.field (bare "Producer"))).get (by native_decide)
@@ -84,7 +85,8 @@ private def FixtureOperation.checked :
         (by native_decide)
 
 private inductive FixtureTable
-  | producerCopySource | producerValue | producerError | producerPoison
+  | producerCopySource | producerFalseCopy | producerValue | producerFallback
+  | producerError | producerPoison
   | consumerCopy | consumerReached | consumerHiddenAnd | consumerHiddenOr
   | consumerIndependent | consumerNumberText | consumerNumberConcat
 
@@ -92,8 +94,13 @@ private def FixtureTable.checked :
     FixtureTable → CheckedStringComputationTable model
   | .producerCopySource =>
       (table? [alternative holding (FixtureOperation.checked .producerCopySource)]).get (by native_decide)
+  | .producerFalseCopy =>
+      (table? [alternative (.fieldFilled gate.id)
+        (FixtureOperation.checked .producerCopySource)]).get (by native_decide)
   | .producerValue =>
       (table? [alternative holding (FixtureOperation.checked .producerValue)]).get (by native_decide)
+  | .producerFallback =>
+      (table? [alternative holding (FixtureOperation.checked .producerFallback)]).get (by native_decide)
   | .producerError =>
       (table? [alternative holding (FixtureOperation.checked .producerError)]).get (by native_decide)
   | .producerPoison =>
@@ -138,6 +145,12 @@ private def checkedDocument (cells : List ClassifiedCellInput) :
 private def runError (tables : List (CheckedStringComputationTable model)) :
     Option StringComputationRunPlanError :=
   match certifyStringComputationRun tables with
+  | .ok _ => none
+  | .error error => some error
+
+private def uniqueRunError (tables : List (CheckedStringComputationTable model)) :
+    Option StringComputationRunPlanError :=
+  match certifyUniqueStringComputationRun tables with
   | .ok _ => none
   | .error error => some error
 
@@ -251,12 +264,47 @@ private theorem consumerEnabled (state : StringComputationRunState) :
 
 /- Duplicate targets and forward computed reads fail before execution. -/
 example :
-    runError [FixtureTable.checked .producerValue,
+    uniqueRunError [FixtureTable.checked .producerValue,
       FixtureTable.checked .producerCopySource] =
       some (.duplicateTarget producer.id) ∧
     runError [FixtureTable.checked .consumerCopy,
       FixtureTable.checked .producerValue] =
       some (.forwardDependency consumer.id producer.id) := by
+  native_decide
+
+/- Same-target tables flatten in encounter order: a selected empty first computation terminates the target and clears stale source state. -/
+example : (do
+    let view ← resultView?
+      [FixtureTable.checked .producerCopySource,
+        FixtureTable.checked .producerFallback]
+      [cell producer.id "OLD" (.parsed (.str "OLD"))]
+    let applied ←
+      (view.applyTo (destinationWith producer.id
+        (.presentValue ⟨"OLD", by decide⟩))).toOption
+    pure (view.cleared, applied producer.id)) =
+      some ([producer.id], .presentEmpty) := by
+  native_decide
+
+/- An unselected first computation falls through to the next same-target table. -/
+example : (do
+    let view ← resultView?
+      [FixtureTable.checked .producerFalseCopy,
+        FixtureTable.checked .producerFallback]
+      [cell producer.id "OLD" (.parsed (.str "OLD"))]
+    let applied ←
+      (view.applyTo (destinationWith producer.id
+        (.presentValue ⟨"OLD", by decide⟩))).toOption
+    pure (view.withChanges, applied producer.id)) =
+      some ([{ targetField := producer.id, value := ⟨"ALT", by decide⟩ }],
+        .presentValue ⟨"ALT", by decide⟩) := by
+  native_decide
+
+/- A selected value in the first computation prevents a later same-target table from replacing it. -/
+example :
+    outcomeAt producer.id
+      [FixtureTable.checked .producerValue,
+        FixtureTable.checked .producerFallback] =
+      some (.accepted ⟨"NEW", by decide⟩) := by
   native_decide
 
 /- A pending or clean-no-value computed target hides its stale source value. -/
