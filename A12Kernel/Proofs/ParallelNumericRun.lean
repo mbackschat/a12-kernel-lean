@@ -13,7 +13,7 @@ theorem checkedParallelNumericPlan_targetFields_nodup
   exact (fieldId_firstDuplicate_none_iff_nodup _).mp
     plan.uniqueTargets
 
-/-- A certified table cannot read the target of any later supplied table. This no-later-read result is the exact dependency-order guarantee; self-reference is outside the finite-plan certificate. -/
+/-- A certified table cannot read the target of any later supplied table. This no-later-read result is the exact cross-table dependency-order guarantee; each table's separate target-exclusion theorem owns self-reference. -/
 theorem checkedParallelNumericPlan_references_later_false
     (plan : CheckedParallelNumericPlan model)
     (earlier later :

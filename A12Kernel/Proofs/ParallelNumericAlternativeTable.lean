@@ -13,6 +13,18 @@ theorem checkedParallelNumericAlternativeTable_wellFormed
       alternative.operation,
     alternative.preconditionOwned, alternative.targetMatches⟩
 
+/-- Every checked row excludes the table target from both its guard and expression. -/
+theorem checkedParallelNumericAlternativeTable_excludes_target
+    (table : CheckedParallelNumericAlternativeTable model) :
+    table.referencesField table.targetField = false := by
+  unfold CheckedParallelNumericAlternativeTable.referencesField
+  apply List.any_eq_false.mpr
+  intro alternative member
+  have excluded :=
+    checkedIsolatedParallelNumericDirectRun_excludes_target
+      alternative.operation
+  simpa [alternative.targetMatches] using excluded
+
 theorem parallelNumericAlternativeTable_noMatch
     (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext)

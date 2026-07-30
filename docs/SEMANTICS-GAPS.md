@@ -21,7 +21,7 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 - Missing invariant: authored computation tables, dependency order, poison/clearing, repeatable targets, rich result projections, exact application, and later validation must compose without collapsing definition, transient state, dependency outcomes, public results, source-relative deltas, or applied document state.
 - Current boundary: [§11](IMPLEMENTATION-MAP.md#11--calculations-and-formal-checking) owns the implemented surface; the stable phase separation is in [`ARCHITECTURE.md`](ARCHITECTURE.md#whole-model-computation-execution-keeps-definition-activation-result-application-and-validation-separate).
 - Open:
-  - prove a named repeatable-table self-reference exclusion after the validated-model scope/path injectivity bridge exists;
+  - prove exact repeatable-plan output-address uniqueness before adding whole-document application;
   - retain route attribution for addressed index clearing when an Explain consumer requires it;
   - separate target-labelled structural faults with a reachable retained case before claiming the target label as evidenced;
   - source missing-ancestor creation, destination compatibility, whole-document application, and later validation as separate phases;

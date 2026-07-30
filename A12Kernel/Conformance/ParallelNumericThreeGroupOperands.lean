@@ -203,7 +203,7 @@ example :
       some .expressionNotLimitedToOperand := by
   native_decide
 
-/- Current checked construction rejects the target itself as anchor, expression atom, or guard leaf; the finite plan does not promote these cases into a universal exclusion theorem. -/
+/- Checked construction retains the distinct anchor, expression, and guard rejection classes that support the universal operation/table target-exclusion theorems. -/
 example :
     (match checkIsolatedParallelNumericExpressionRunWithGuard
         model ["Plan"] 2 targetPath (.atom (.field targetPath)) none with

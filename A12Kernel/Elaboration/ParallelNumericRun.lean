@@ -4,7 +4,7 @@ import A12Kernel.Semantics.NumericDependency
 
 /-! # Checked finite supplied-order parallel Number runs
 
-This capsule certifies and executes a nonempty finite list of already-checked repeatable Number tables in their supplied order. It adds no graph, sort, scheduler, or trace. The transient overlay hides stored inputs at every plan target and exposes completed rich outcomes only at their exact repetition addresses. Current checked route and operand construction reject the exercised target-group self-reference shapes, but the finite plan does not restate that behavior as a named certificate.
+This capsule certifies and executes a nonempty finite list of already-checked repeatable Number tables in their supplied order. It adds no graph, sort, scheduler, or trace. The transient overlay hides stored inputs at every plan target and exposes completed rich outcomes only at their exact repetition addresses. Each checked table carries the operation-owned target-exclusion certificate proved at its complete guard/expression boundary.
 -/
 
 namespace A12Kernel

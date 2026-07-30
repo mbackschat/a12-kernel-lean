@@ -114,6 +114,12 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   precondition : Option ComputationCondition
   suppressExactScaleWarning : Bool
   expression : AuthoredNumericExpr FlatFieldDecl
+  guardExcludesTarget :
+    (precondition.map
+      (·.referencesField route.targetField)).getD false = false
+  expressionExcludesTarget :
+    expression.anyAtom
+      (fun declaration => declaration.id == route.targetField) = false
   routeTargetsCoherent :
     (additionalRoutes.all fun additional =>
       additional.targetDeclaration == route.targetDeclaration) = true
@@ -166,6 +172,11 @@ def WellFormed
     checked.additionalRoutes.all (fun additional =>
       additional.targetDeclaration ==
         checked.route.targetDeclaration) = true ∧
+    (checked.precondition.map
+      (·.referencesField checked.route.targetField)).getD false = false ∧
+    checked.expression.anyAtom
+      (fun declaration =>
+        declaration.id == checked.route.targetField) = false ∧
     parallelNumericDirectGuardAdmitted
       checked.operandRoutes checked.precondition = true ∧
     checked.expression.anyAtom
@@ -420,6 +431,39 @@ private def FlatModel.resolveParallelNumericGuardRoutes
     (primary :: additionalRoutes)
   pure (routes.drop 1)
 
+/-- Certify target exclusion at the complete operation boundary. Keeping the direct guard and expression facts makes the checked operation's public self-reference invariant eliminable without reconstructing model paths in every consumer proof. -/
+private structure ParallelNumericTargetExclusion
+    (target : FieldId)
+    (precondition : Option ComputationCondition)
+    (expression : AuthoredNumericExpr FlatFieldDecl) : Type where
+  guard :
+    (precondition.map
+      (·.referencesField target)).getD false = false
+  expression :
+    expression.anyAtom
+      (fun declaration => declaration.id == target) = false
+
+private def checkParallelNumericTargetExclusion
+    (target : FieldId)
+    (precondition : Option ComputationCondition)
+    (expression : AuthoredNumericExpr FlatFieldDecl) :
+    Except ParallelNumericDirectPlanError
+      (ParallelNumericTargetExclusion target precondition expression) :=
+  if expressionExcluded :
+      expression.anyAtom
+        (fun declaration => declaration.id == target) = false then
+    if guardExcluded :
+        (precondition.map
+          (·.referencesField target)).getD false = false then
+      .ok {
+        guard := guardExcluded
+        expression := expressionExcluded
+      }
+    else
+      .error .guardNotLimitedToOperand
+  else
+    .error .expressionNotLimitedToOperand
+
 /-- Check one optionally guarded Number operation without reimplementing pairwise joins, numeric lowering, operation admission, authoring checks, or the scale gate. Each distinct indexed group referenced by the expression or guard receives one route to the same target. The scale-warning directive defaults to false; when true it selects both the shared suppressed static gate and the existing warning-suppressed target check, but never changes expression arithmetic. -/
 def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
@@ -436,6 +480,9 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
   let (resolved, expressionRoutes) ←
     model.resolveParallelNumericDirectExpression
       declaringGroup route expression
+  let targetExclusion ←
+    checkParallelNumericTargetExclusion
+      route.targetField precondition resolved
   let additionalRoutes ←
     model.resolveParallelNumericGuardRoutes declaringGroup
       route.asTargetRoute expressionRoutes precondition
@@ -470,8 +517,10 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
                         operationScale = true then
                     pure (CheckedIsolatedParallelNumericDirectRun.mk
                       route additionalRoutes precondition
-                      suppressExactScaleWarning resolved targetsCoherent
-                      guardAdmitted usesOperand operandsAdmitted
+                      suppressExactScaleWarning resolved
+                      targetExclusion.guard targetExclusion.expression
+                      targetsCoherent guardAdmitted
+                      usesOperand operandsAdmitted
                       expressionAdmitted authoring scopeAvailable
                       operationScale scaleOwned scaleAdmitted)
                   else
