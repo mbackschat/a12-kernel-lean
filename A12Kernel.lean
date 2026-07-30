@@ -45,6 +45,7 @@ import A12Kernel.Semantics.NumericTarget
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.NumericApplication
 import A12Kernel.Semantics.NumericDependency
+import A12Kernel.Semantics.HeterogeneousComputationDependency
 import A12Kernel.Semantics.ComputationMessage
 import A12Kernel.Semantics.ParallelComputationClearing
 import A12Kernel.Semantics.Condition
@@ -147,6 +148,7 @@ import A12Kernel.Elaboration.StringComputationRunResult
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Elaboration.NumberToStringComputationRun
 import A12Kernel.Elaboration.StringToNumberComputationRun
+import A12Kernel.Elaboration.ScalarComputationRun
 import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.NumericValidation

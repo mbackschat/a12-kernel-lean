@@ -1613,6 +1613,15 @@ run_cmd do
 #print axioms A12Kernel.stringToNumberRun_preservesFamilyOutcomes
 #print axioms A12Kernel.stringOutcomeOverlay_preservesOtherRead
 #print axioms A12Kernel.stringOutcomeOverlay_holdingNumberHead_suffixIrrelevant
+#print axioms A12Kernel.scalarComputationRun_stringRead_pending
+#print axioms A12Kernel.scalarComputationRun_stringRead_completed
+#print axioms A12Kernel.scalarComputationRun_stringRead_input
+#print axioms A12Kernel.scalarComputationRun_numberRead_pending
+#print axioms A12Kernel.scalarComputationRun_numberRead_completed
+#print axioms A12Kernel.scalarComputationRun_numberRead_input
+#print axioms A12Kernel.scalarComputationRun_numberContext_world
+#print axioms A12Kernel.scalarComputationRun_evaluateStringStep
+#print axioms A12Kernel.scalarComputationRun_evaluateNumberStep
 #print axioms A12Kernel.stringStep_outcome_independent_of_prior
 #print axioms A12Kernel.notTrueStringPrecondition_evaluates_noValue
 #print axioms A12Kernel.holdingStringPrecondition_preserves_outcome

@@ -108,6 +108,7 @@ import A12Kernel.Conformance.StringComputationTable
 import A12Kernel.Conformance.StringComputationRun
 import A12Kernel.Conformance.NumberToStringComputationRun
 import A12Kernel.Conformance.StringToNumberComputationRun
+import A12Kernel.Conformance.ScalarComputationRun
 import A12Kernel.Conformance.StringApplication
 import A12Kernel.Conformance.ValueList
 import A12Kernel.Conformance.FirstFilledValue

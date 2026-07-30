@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumericComputation.RunResult
 import A12Kernel.Elaboration.StringComputationRunResult
+import A12Kernel.Semantics.HeterogeneousComputationDependency
 
 /-! # One checked Number-to-String computation run
 
@@ -9,22 +10,6 @@ Repeatable activation, additional families, a generic dependency graph, and whol
 -/
 
 namespace A12Kernel
-
-namespace StringDependencyCell
-
-/-- Convert a completed Number outcome into the String computation read it exposes. Accepted output retains canonical stored decimal text; every invalid Number outcome becomes the same cause-blind computed-dependency poison. -/
-def ofNumericOutcome : NumericTargetOutcome → StringDependencyCell
-  | .noValue => empty
-  | .accepted stored => {
-      checked := {
-        rawPresent := true
-        parsed := some (.str stored.render)
-        findings := [] }
-      wellFormed := by simp [CheckedCell.WellFormed] }
-  | .rejected _ _ | .invalidNoValue _ | .inheritedPoison _ =>
-      poison .computedDependency
-
-end StringDependencyCell
 
 namespace StringExpr
 
